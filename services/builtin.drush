@@ -1,0 +1,81 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Built-in basic actions for drush.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+
+drush_alias('help',     array('builtin', 'help'));
+drush_alias('usage',    array('builtin', 'usage'));
+drush_alias('services', array('builtin', 'services'));
+drush_alias('actions',  array('builtin', 'commands'));
+drush_alias('commands', array('builtin', 'commands'));
+drush_alias('aliases',  array('builtin', 'aliases'));
+drush_alias('version',  array('builtin', 'version'));
+
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Outputs usage instructions and lists the available services and commands.
+ */
+function drush_builtin_help() {
+  drush_builtin_usage();
+  drush_print();
+  drush_builtin_services();
+  drush_print();
+  drush_builtin_commands();
+}
+
+/**
+ * Outputs usage instructions for drush.
+ */
+function drush_builtin_usage() {
+  drush_print('drush ' . DRUSH_VERSION);
+  drush_print('Usage: drush [options] <service> <action> ...', 2);
+}
+
+/**
+ * Lists all available drush services with their descriptions.
+ */
+function drush_builtin_services() {
+  drush_print('Services:', 2);
+  $services = array(); // TODO: implementation
+  drush_print_table($services, 4);
+}
+
+/**
+ * Lists all available drush commands with their descriptions.
+ */
+function drush_builtin_commands() {
+  drush_print('Commands:', 2);
+  $aliases = drush_alias();
+  $registry = _drush_array_merge_values(drush_register());
+  $registry = array_map(
+    create_function('$k, $v', 'return array(drush_lookup_alias($k), $v);'),
+    array_keys($registry),
+    array_values($registry));
+  drush_print_table($registry, 4);
+}
+
+/**
+ * Lists all defined drush aliases with their expansions.
+ */
+function drush_builtin_aliases() {
+  drush_print('Aliases:', 2);
+  $aliases = array_map(
+    create_function('$a', 'return array($a[0], "=", (string)(is_array($a[1]) ? implode(" ", $a[1]) : $a[1]));'),
+    _drush_array_tuples(drush_alias()));
+  drush_print_table($aliases, 4);
+}
+
+/**
+ * Outputs the drush version number.
+ */
+function drush_builtin_version() {
+  drush_print(DRUSH_VERSION);
+}
+
+//////////////////////////////////////////////////////////////////////////////

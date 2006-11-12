@@ -1,0 +1,90 @@
+// $Id$
+
+SYNTAX
+------
+
+  # drush [options] <service> <action> ...
+  # drush [options] <alias> ...
+
+TERMINOLOGY
+-----------
+Currently, drush uses the following terminology:
+
+* DRUSH COMMAND
+  the combination of the service and action name parameters, or
+  alternatively the alias parameter, given to drush on the command line (see
+  Syntax, above).
+
+* DRUSH SERVICE
+  a collection of related drush actions. A number of built-in services,
+  mostly relating to the Drupal core, are provided with drush. Third-party
+  Drupal modules can provide additional services. A drush service is
+  distributed as a file with the .drush suffix.
+
+* DRUSH ACTION
+  an individual, specific command or task provided by a drush service. Each
+  drush action is implemented by means of a PHP function in a .drush file.
+  Any command line parameters given after the action name are passed as
+  arguments to the function in the same order as given on the command line.
+
+* DRUSH ALIAS
+  a shorter or alternate name for a drush action. drush services can provide
+  aliases via calls to the drush_alias() API function. The alias mechanism
+  can also be used to extend or override any built-in drush action.
+
+MAGIC GOES HERE
+---------------
+To reduce RSI risk and encourage well-documented code, drush contains the
+following bits of implicit magic:
+
+* The PHPDoc @file block comment is used as the description for a drush
+  service (i.e. a file with the .drush suffix).
+* The PHPDoc block comment preceding the function declaration of a drush
+  action is used as the description for that action.
+
+NOTE: these features rely on PHP's tokenizer, which could possibly be
+problematic in situations where the entire Drupal code base has been
+encrypted or compressed with some third-party utility, and tokenizing isn't
+possible. This should only affect actions that actually make use of these
+reflective features, the primary example being 'drush help'.
+
+EXAMPLE: ECHO SERVICE
+---------------------
+Here's a very simple example of providing a third-party drush service, in
+this case for a hypothetical Drupal module called 'echo':
+
+  modules/echo/echo.drush:
+
+    <?php
+    /**
+     * @file
+     * Example drush actions for the imaginary echo module.
+     */
+    
+    /**
+     * Echoes the provided text argument back at the user.
+     */
+    function drush_echo_text($text) {
+      print $text . "\n";
+    }
+    
+    // Add shorter form so that 'drush echo' == 'drush echo text'
+    drush_alias('echo', array('echo', 'text'));
+    
+    ?>
+
+The .drush file will be automatically found by drush upon startup, so we can
+proceed directly to trying out our new action. First, we should verify that
+the 'drush help' command includes a line for our addition:
+
+  # drush help | grep echo
+    echo        Echoes the provided text argument back at the user.
+
+That looks good (and note the automagically included PHPDoc description), so
+let's proceed to using the echo facility:
+
+  # drush echo 'hello world!'
+    hello world!
+
+For more advanced examples, please refer to the built-in drush services
+supplied in the modules/drush/drush/ directory.

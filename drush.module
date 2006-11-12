@@ -1,0 +1,92 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides a command line shell and Unix scripting interface for Drupal.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+
+define('DRUSH_PHP_PATH',   variable_get('drush_php_path', '/usr/bin/env php'));
+define('DRUSH_CVS_PATH',   variable_get('drush_cvs_path', '/usr/bin/env cvs'));
+define('DRUSH_RSYNC_PATH', variable_get('drush_rsync_path', '/usr/bin/env rsync'));
+
+require_once dirname(__FILE__) . '/drush.inc';
+
+//////////////////////////////////////////////////////////////////////////////
+// DRUPAL API HOOKS
+
+/**
+ * Implementation of hook_help(). Provides online user help.
+ */
+function drush_help($section) {
+  switch ($section) {
+    case 'admin/modules#name':
+      return t('drush');
+    case 'admin/modules#description':
+      return t('Provides a command line shell and Unix scripting interface for Drupal.');
+    case 'admin/help#drush':
+      return drush_help_page();
+  }
+}
+
+/**
+ * Implementation of hook_settings(). Declares administrative settings for a module.
+ */
+function drush_settings() {
+  $form['paths'] = array('#type' => 'fieldset', '#title' => t('Program paths'), '#collapsible' => TRUE, '#collapsed' => TRUE);
+  $form['paths']['drush_php_path'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Path to PHP binary'),
+    '#default_value' => DRUSH_PHP_PATH,
+    '#size'          => 60,
+    '#maxlength'     => 255,
+    '#description'   => t('Used for the <a href="%define-shebang">shebang line</a> of the command line <tt>drush</tt> program.', array('%define-shebang' => 'http://en.wikipedia.org/wiki/Shebang_%28Unix%29')),
+  );
+  $form['paths']['drush_cvs_path'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Path to CVS binary'),
+    '#default_value' => DRUSH_CVS_PATH,
+    '#size'          => 60,
+    '#maxlength'     => 255,
+    '#description'   => t('Required for commands that install or update themes, modules and the core.'),
+  );
+  $form['paths']['drush_rsync_path'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Path to rsync binary'),
+    '#default_value' => DRUSH_RSYNC_PATH,
+    '#size'          => 60,
+    '#maxlength'     => 255,
+    '#description'   => t('Required for commands that synchronize data between servers.'),
+  );
+  // TODO: rewrite shebang in drush.php on save based on drush_php_path.
+  return $form;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Renders the administer >> help >> drush page, providing a list of drush
+ * commands for all installed drush services.
+ */
+function drush_help_page() {
+  $output = '<p>' . drush_help('admin/modules#description') . '</p>';
+  $output .= '<p>' . t('You can') . '</p>';
+  $output .= '<ul>';
+  $output .= '<li>' . t('configure drush at <a href="%url">administer >> settings >> drush</a>', array('%url' => url('admin/settings/drush'))) . '</li>';
+  $output .= '<li>' . t('use drush from the command line with the <tt>drush</tt> command (see the accompanying README.txt file).') . '</li>';
+  $output .= '</ul>';
+  if (!drush_load_builtins()) {
+    $output .= '<p><strong>' . t('Unable to load any drush services (this is probably a bug).') . '</strong></p>';
+  }
+  else {
+    // TODO: group commands with <h3>service name</h3> headers?
+    $header = array(t('Command'), t('Description'));
+    $rows = _drush_array_tuples(_drush_array_merge_values(drush_register()));
+    $output .= theme('table', $header, $rows);
+  }
+  return $output;
+}
+
+//////////////////////////////////////////////////////////////////////////////
