@@ -167,7 +167,7 @@ function _drush_parse_metadata($file) {
             if (count($lines) > 1) {
               $comment = '';
               foreach ($lines as $line) {
-                $line = trim(preg_replace('/^\*\s/', '', trim($line)));
+                $line = trim(preg_replace('/^\*\s*/', '', trim($line)));
                 if ($line == '@file')
                   continue;
                 if ($line == '' || $line == '*/')
