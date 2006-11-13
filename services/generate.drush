@@ -1,0 +1,34 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Built-in developer utilities for skeleton generation and scaffolding.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Generates a random, alphanumeric password of the given length (default: 10 chars).
+ */
+function drush_generate_password($length = 10) {
+  drush_print(user_password($length));
+}
+
+/**
+ * Generates a Drupal module skeleton for the given module name.
+ */
+function drush_generate_module($name) {
+  // TODO: implementation
+  drush_die('not implemented yet.');
+}
+
+/**
+ * Generates a Drupal theme skeleton for the given theme name.
+ */
+function drush_generate_theme($name) {
+  // TODO: implementation
+  drush_die('not implemented yet.');
+}
+
+//////////////////////////////////////////////////////////////////////////////
