@@ -130,10 +130,10 @@ function drush_print($msg = '', $indent = 0) {
 function drush_print_table($rows, $indent = 0) {
   if (count($rows) == 0)
     return; // nothing to output
-  $format = str_repeat(' ', $indent);
-  $format .= _drush_get_table_row_format($rows);
+  $indent = str_repeat(' ', $indent);
+  $format = _drush_get_table_row_format($rows);
   foreach ($rows as $cols) {
-    vprintf($format, $cols);
+    print $indent . trim(vsprintf($format, $cols)) . "\n";
   }
 }
 
@@ -247,7 +247,7 @@ function _drush_dispatch_lookup($lookup, $aliases, $args = array()) {
 function _drush_get_table_row_format($table) {
   $widths = _drush_get_table_column_widths($table);
   $format = implode("\t", array_map(create_function('$width', 'return "%-{$width}s";'), $widths));
-  return $format . "\n";
+  return $format;
 }
 
 /**
