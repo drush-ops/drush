@@ -162,10 +162,19 @@ function _drush_parse_metadata($file) {
         case T_ML_COMMENT:
         case T_DOC_COMMENT:
           if (strpos(trim($text), '/**') === 0) {
-            $comments = explode("\n", $text);
             $comment = NULL;
-            if (count($comments) > 1 && ereg('\s*\*\s*(.*)', $comments[1], $matches))
-              $comment = trim($matches[1]);
+            $lines = array_slice(explode("\n", $text), 1); // skip first line with /**
+            if (count($lines) > 1) {
+              $comment = '';
+              foreach ($lines as $line) {
+                $line = trim(preg_replace('/^\*\s/', '', trim($line)));
+                if ($line == '@file')
+                  continue;
+                if ($line == '' || $line == '*/')
+                  break;
+                $comment = trim($comment . ' ' . $line);
+              }
+            }
           }
           break;
         case T_FUNCTION:
