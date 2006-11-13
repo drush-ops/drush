@@ -56,6 +56,21 @@ function drush_register($file = NULL) {
 /**
  *
  */
+function drush_commands($like = NULL) {
+  $registry = _drush_array_merge_values(drush_register());
+  if (!empty($like)) {
+    foreach ($registry as $command => $description) {
+      if (!preg_match('/^' . preg_quote($like, '/') . '/', $command)) {
+        unset($registry[$command]);
+      }
+    }
+  }
+  return $registry;
+}
+
+/**
+ *
+ */
 function drush_alias($alias = NULL, $target = NULL) {
   static $aliases = array();
   if (!empty($alias)) {
@@ -105,7 +120,7 @@ function drush_lookup_alias($command) {
 /**
  *
  */
-function drush_exec($cmd) {
+function drush_dispatch($cmd) {
   return _drush_dispatch(explode(' ', $cmd));
 }
 
@@ -239,6 +254,50 @@ function _drush_dispatch_lookup($lookup, $aliases, $args = array()) {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// DRUSH CVS HELPERS
+
+/**
+ *
+ */
+function _drush_shell_exec($cmd, $indent = 0) {
+  if (DRUSH_VERBOSE) drush_print('Executing: ' . $cmd, $indent);
+  if (!DRUSH_SIMULATE) exec($cmd . ' 2>&1', $output, $result);
+
+  if (DRUSH_VERBOSE) {
+    foreach ($output as $line) {
+      drush_print($line, $indent + 2);
+    }
+  }
+
+  return ($result == 0); // exit code zero means success
+}
+
+/**
+ *
+ */
+function _drush_cvs_is_available() {
+  $cmd = DRUSH_CVS_PATH . ' --help';
+  return TRUE;
+}
+
+/**
+ *
+ */
+function _drush_cvs_checkout($path, $type, $name, $version = NULL) {
+  $cmd = DRUSH_CVS_PATH;
+  $cmd .= ' -d:pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal';
+  $cmd .= ' checkout -d ' . $path . (empty($version) ? '' : ' -r ' . $version);
+  $cmd .= ' contributions/' . $type . 's/' . $name;
+  return _drush_shell_exec($cmd, 2);
+}
+
+/**
+ *
+ */
+function _drush_cvs_update($path) {
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // DRUSH OUTPUT HELPERS
 
 /**
@@ -261,6 +320,18 @@ function _drush_get_table_column_widths($table) {
     }
   }
   return $widths;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// DRUSH INPUT HELPERS
+
+/**
+ *
+ */
+function _drush_confirm($msg) {
+  if (DRUSH_AFFIRMATIVE) 
+    return TRUE;
+  return FALSE;
 }
 
 //////////////////////////////////////////////////////////////////////////////
