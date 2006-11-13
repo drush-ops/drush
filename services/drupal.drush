@@ -1,0 +1,70 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Built-in core services for managing Drupal sites.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Displays the currently installed Drupal core version.
+ */
+function drush_drupal_version() {
+  drush_print(defined('VERSION') ? VERSION : 'N/A');
+}
+
+/**
+ * Outputs a table of all Drupal settings.
+ */
+function drush_drupal_settings() {
+  if (DRUSH_VERBOSE) drush_print(t('Drupal settings:'));
+
+  $settings = _drush_array_tuples($GLOBALS['conf']);
+  foreach ($settings as $index => $setting) {
+    list($key, $value) = $setting;
+    if (is_array($value) || is_object($value)) {
+      $settings[$index] = array($key, implode('; ', (array)$value));
+    }
+  }
+  drush_print_table($settings, 2);
+}
+
+/**
+ * Fires off the cron handles for all installed Drupal modules.
+ */
+function drush_drupal_cron() {
+  // Check if the last cron run completed
+  if (variable_get('cron_busy', FALSE))
+    watchdog('cron', t('Last cron run did not complete.'), WATCHDOG_WARNING);
+
+  // Iterate through the modules calling their cron handlers (if any):
+  variable_set('cron_busy', TRUE);
+  module_invoke_all('cron');
+
+  // Clean up
+  variable_set('cron_busy', FALSE);
+  variable_set('cron_last', time());
+  watchdog('cron', t('Cron run completed'));
+
+  drush_print(t('Cron run completed.'));
+}
+
+/**
+ * Sends a ping to a specified Drupal directory server.
+ */
+function drush_drupal_notify($server = NULL) {
+  if (empty($server))
+    drush_die(t('No server URL specified as argument.'));
+  if (!module_exist('drupal'))
+    drush_die(t('This action requires the `drupal\' module to be enabled.'));
+
+  if (DRUSH_VERBOSE) drush_print(t('Pinging server %server...', array('%server' => $server)));
+  drupal_notify($server);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+// TODO: action to toggle the site's offline switch.
+// TODO: action to purge all existing sessions from database.
