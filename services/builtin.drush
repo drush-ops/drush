@@ -34,9 +34,8 @@ function drush_builtin_help() {
   if (count($args) == 0) {
     drush_builtin_usage();
     drush_print();
-    // TODO: options
-    drush_builtin_services();
-    drush_print();
+    //drush_builtin_services();
+    //drush_print();
     drush_builtin_commands();
   }
   else { // command
@@ -62,6 +61,9 @@ function drush_builtin_help() {
 function drush_builtin_usage() {
   drush_print('drush ' . DRUSH_VERSION);
   drush_print('Usage: drush [options] <service> <action> ...', 2);
+  drush_print();
+  drush_print('Options:', 2);
+  drush_print_table(_drush_array_tuples(_drush_get_option_info()), 4);
 }
 
 /**

@@ -88,7 +88,7 @@ function _drush_bootstrap_services() {
 function _drush_get_option_info() {
   return array(
     '-q'      => 'Don\'t output anything at all (be as quiet as possible).',
-    '-v'      => 'Display action output (be verbose).',
+    '-v'      => 'Display all output from an action (be verbose).',
     '-y'      => 'Assume that the answer to simple yes/no questions is \'yes\'.',
     '-s'      => 'Simulate actions, but do not actually perform them.',
     '-h host' => 'Drupal host name to use (for multi-site Drupal installations).',
