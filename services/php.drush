@@ -1,0 +1,69 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Built-in generic PHP utilities not related to Drupal per se.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Outputs the PHP version.
+ */
+function drush_php_version() {
+  drush_print(phpversion());
+}
+
+/**
+ * Outputs the credits listing the PHP developers, modules, etc.
+ */
+function drush_php_credits($what = 'all') {
+  $what_const = 'CREDITS_' . strtoupper($what);
+  if (!defined($what_const))
+    drush_die(t('Invalid phpcredits() argument given: %what', array('%what' => $what)));
+  phpcredits(constant($what_const));
+}
+
+/**
+ * Outputs lots of PHP system and configuration information.
+ */
+function drush_php_info($what = 'all') {
+  $what_const = 'INFO_' . strtoupper($what);
+  if (!defined($what_const))
+    drush_die(t('Invalid phpinfo() argument given: %what', array('%what' => $what)));
+  phpinfo(constant($what_const));
+}
+
+/**
+ * Outputs a table of all PHP configuration options.
+ */
+function drush_php_config($extension = NULL) {
+  $output = array(
+    array(t('Setting:'), t('Global value:'), t('Local value:')),
+    array('--------', '-------------', '------------'),
+  );
+  $settings = $extension ? ini_get_all($extension) : ini_get_all();
+  $output += array_map(
+    create_function('$k, $v', 'return array($k, $v["global_value"], $v["local_value"]);'),
+    array_keys($settings),
+    array_values($settings)
+  );
+  drush_print_table($output, 2);
+}
+
+/**
+ * Outputs the names of all the modules compiled and loaded in the PHP interpreter.
+ */
+function drush_php_extensions() {
+  if (DRUSH_VERBOSE)
+    drush_print(t('Loaded PHP extensions:'));
+  $extensions = array_map(
+    create_function('$v', 'return array($v);'),
+    get_loaded_extensions());
+  drush_print_table($extensions, 2);
+}
+
+// TODO: action to delete old PHP session files from /tmp.
+
+//////////////////////////////////////////////////////////////////////////////
