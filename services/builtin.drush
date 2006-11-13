@@ -29,11 +29,31 @@ function drush_builtin_version() {
  * Outputs usage instructions and lists the available services and commands.
  */
 function drush_builtin_help() {
-  drush_builtin_usage();
-  drush_print();
-  drush_builtin_services();
-  drush_print();
-  drush_builtin_commands();
+  $args = func_get_args();
+
+  if (count($args) == 0) {
+    drush_builtin_usage();
+    drush_print();
+    // TODO: options
+    drush_builtin_services();
+    drush_print();
+    drush_builtin_commands();
+  }
+  else { // command
+    $registry = drush_commands();
+    $alias = implode(' ', $args);
+    $command = drush_lookup_alias($alias);
+
+    if (count($args) == 1 && $command == $alias) { // service, not an alias
+      $services = array(); // TODO: show service information.
+      drush_builtin_commands($command);
+      return;
+    }
+
+    if (!isset($registry[$command]))
+      drush_die('Unknown command: ' . $command);
+    drush_print_table(array(array($alias, $registry[$command])), 4);
+  }
 }
 
 /**
@@ -56,15 +76,16 @@ function drush_builtin_services() {
 /**
  * Lists all available drush commands with their descriptions.
  */
-function drush_builtin_commands() {
+function drush_builtin_commands($like = NULL) {
   drush_print('Commands:', 2);
+
   $aliases = drush_alias();
-  $registry = _drush_array_merge_values(drush_register());
-  $registry = array_map(
+  $commands = drush_commands($like);
+  $commands = array_map(
     create_function('$k, $v', 'return array(drush_lookup_alias($k), $v);'),
-    array_keys($registry),
-    array_values($registry));
-  drush_print_table($registry, 4);
+    array_keys($commands),
+    array_values($commands));
+  drush_print_table($commands, 4);
 }
 
 /**
@@ -79,3 +100,5 @@ function drush_builtin_aliases() {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+// TODO: action to show credits for drush and Drupal.

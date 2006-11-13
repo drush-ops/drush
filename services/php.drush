@@ -83,6 +83,6 @@ function drush_php_functions($extension) {
   drush_print_table($funcs, 2);
 }
 
-// TODO: action to delete old PHP session files from /tmp.
-
 //////////////////////////////////////////////////////////////////////////////
+
+// TODO: action to delete old PHP session files from /tmp.
