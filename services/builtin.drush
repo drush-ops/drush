@@ -8,15 +8,22 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
+drush_alias('version',  array('builtin', 'version'));
 drush_alias('help',     array('builtin', 'help'));
 drush_alias('usage',    array('builtin', 'usage'));
 drush_alias('services', array('builtin', 'services'));
 drush_alias('actions',  array('builtin', 'commands'));
 drush_alias('commands', array('builtin', 'commands'));
 drush_alias('aliases',  array('builtin', 'aliases'));
-drush_alias('version',  array('builtin', 'version'));
 
 //////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Outputs the drush version number.
+ */
+function drush_builtin_version() {
+  drush_print(DRUSH_VERSION);
+}
 
 /**
  * Outputs usage instructions and lists the available services and commands.
@@ -69,13 +76,6 @@ function drush_builtin_aliases() {
     create_function('$a', 'return array($a[0], "=", (string)(is_array($a[1]) ? implode(" ", $a[1]) : $a[1]));'),
     _drush_array_tuples(drush_alias()));
   drush_print_table($aliases, 4);
-}
-
-/**
- * Outputs the drush version number.
- */
-function drush_builtin_version() {
-  drush_print(DRUSH_VERSION);
 }
 
 //////////////////////////////////////////////////////////////////////////////
