@@ -8,7 +8,7 @@ SYNTAX
 
 TERMINOLOGY
 -----------
-Currently, drush uses the following terminology:
+At present drush uses the following terminology:
 
 * DRUSH COMMAND
   the combination of the service and action name parameters, or
@@ -32,26 +32,37 @@ Currently, drush uses the following terminology:
   aliases via calls to the drush_alias() API function. The alias mechanism
   can also be used to extend or override any built-in drush action.
 
-MAGIC GOES HERE
----------------
-To reduce RSI risk and encourage well-documented code, drush contains the
-following bits of implicit magic:
+NAMESPACES
+----------
+All drush-related functions live in the PHP `drush_' top-level namespace
+(that is, they all have this as their prefix -- this has nothing to do with
+PHP5 namespaces ;-)).
 
-* The PHPDoc @file block comment is used as the description for a drush
-  service (i.e. a file with the .drush suffix).
-* The PHPDoc block comment preceding the function declaration of a drush
-  action is used as the description for that action.
+The first-level namespace `drush_*()' is reserved solely for the drush core
+itself, and includes functions such as the Drupal hook implementations
+(drush_help(), drush_cron(), etc.), as well the exported drush API that is
+made available for writing drush services (e.g. drush_register(),
+drush_alias(), drush_print(), and so on). As this is hotly-contested piece
+of real estate, services MUST NOT define functions on this level.
 
-NOTE: these features rely on PHP's tokenizer, which could possibly be
-problematic in situations where the entire Drupal code base has been
-encrypted or compressed with some third-party utility, and tokenizing isn't
-possible. This should only affect actions that actually make use of these
-reflective features, the primary example being 'drush help'.
+The second-level namespace `drush_*_*()' is intended for the implementations
+of the specific actions provided by drush services: the action name is always
+qualified by the service name, and the function names map into drush
+commands in a straightforward way:
 
-EXAMPLE: ECHO SERVICE
----------------------
+  function drush_drupal_version()
+    => drush command: `drupal version'
+
+  function drush_generate_password($length = 10)
+    => drush command: `generate password [length]'
+
+  function drush_module_list_outdated()
+    => drush command: `module list outdated'
+
+AN EXAMPLE: THE ECHO SERVICE
+----------------------------
 Here's a very simple example of providing a third-party drush service, in
-this case for a hypothetical Drupal module called 'echo':
+this case for a hypothetical Drupal module called `echo':
 
   modules/echo/echo.drush:
 
@@ -75,7 +86,7 @@ this case for a hypothetical Drupal module called 'echo':
 
 The .drush file will be automatically found by drush upon startup, so we can
 proceed directly to trying out our new action. First, we should verify that
-the 'drush help' command includes a line for our addition:
+the `drush help' command includes a line for our addition:
 
   # drush help | grep echo
     echo        Echoes the provided text argument back at the user.
@@ -88,3 +99,27 @@ let's proceed to using the echo facility:
 
 For more advanced examples, please refer to the built-in drush services
 supplied in the modules/drush/services/ directory.
+
+COMMAND DISPATCH
+----------------
+TODO
+
+DRUSH BOOTSTRAP
+---------------
+TODO
+
+MAGIC GOES HERE
+---------------
+To reduce RSI risk and encourage well-documented code, drush contains the
+following bits of implicit magic:
+
+* The PHPDoc @file block comment is used as the description for a drush
+  service (i.e. a file with the .drush suffix).
+* The PHPDoc block comment preceding the function declaration of a drush
+  action is used as the description for that action.
+
+NOTE: these features rely on PHP's tokenizer, which could possibly be
+problematic in situations where the entire Drupal code base has been
+encrypted or compressed with some third-party utility, and tokenizing isn't
+possible. This should only affect actions that actually make use of these
+reflective features, the primary example being 'drush help'.
