@@ -1,0 +1,87 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Built-in commands for viewing and managing the Drupal watchdog log.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+// WATCHDOG SERVICE ACTIONS
+
+/**
+ * Displays the most recent watchdog log messages (default: 10 messages).
+ */
+function drush_watchdog_tail($limit = 10, $type = NULL) {
+  $severities = array(WATCHDOG_NOTICE => t('notice'), WATCHDOG_WARNING => t('warning'), WATCHDOG_ERROR => t('error'));
+
+  $sql = 'SELECT w.*, u.name, u.uid FROM {watchdog} w INNER JOIN {users} u ON w.uid = u.uid';
+  $sort = ' ORDER BY w.wid DESC';
+  $result = (!empty($type) ?
+    pager_query($sql . " WHERE w.type = '%s'" . $sort, (int)$limit, 0, NULL, $type) :
+    pager_query($sql . $sort, (int)$limit));
+
+  $rows = array();
+  while ($watchdog = db_fetch_object($result)) {
+    $rows[] = array(
+      format_date($watchdog->timestamp, 'small'),
+      str_pad($severities[$watchdog->severity], strlen(t('Severity'))),
+      t($watchdog->type),
+      _drush_watchdog_format_message($watchdog->message),
+      theme('username', $watchdog),
+    );
+  }
+
+  if (count($rows) == 0)
+    drush_die(t('No log messages available.'));
+
+  if (DRUSH_VERBOSE)
+    $rows[] = array(t('Date'), t('Severity'), t('Type'), t('Message'), t('User'));
+
+  drush_print_table(array_reverse($rows), 2, DRUSH_VERBOSE);
+}
+
+/**
+ * Deletes all log messages of a certain type from the watchdog log
+ * (default: all).
+ */
+function drush_watchdog_delete($type = NULL) {
+  if (!empty($type)) {
+    db_query('DELETE FROM {watchdog} WHERE type = \'%s\'', $type);
+  }
+  else {
+    db_query('DELETE FROM {watchdog}'); // indiscriminately delete all
+  }
+}
+
+/**
+ * Logs a system message using the WATCHDOG_NOTICE severity level.
+ */
+function drush_watchdog_notice($message) {
+  watchdog('drush', $message, WATCHDOG_NOTICE);
+}
+
+/**
+ * Logs a system message using the WATCHDOG_WARNING severity level.
+ */
+function drush_watchdog_warning($message) {
+  watchdog('drush', $message, WATCHDOG_WARNING);
+}
+
+/**
+ * Logs a system message using the WATCHDOG_ERROR severity level.
+ */
+function drush_watchdog_error($message) {
+  watchdog('drush', $message, WATCHDOG_ERROR);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// WATCHDOG SERVICE HELPERS
+
+function _drush_watchdog_format_message($message, $length = 56) {
+  return strip_tags(
+    preg_replace('|<em>([^<]+)</em>|', '`$1\'',
+      truncate_utf8($message, $length, TRUE, TRUE)));
+}
+
+//////////////////////////////////////////////////////////////////////////////
