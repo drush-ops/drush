@@ -1,0 +1,165 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Built-in actions for querying and managing the Drupal database.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+
+drush_alias(array('sql', 'version'), array('sql', 'version', 'server'));
+
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Displays the Drupal site's database connection string.
+ */
+function drush_sql_url() {
+  drush_print($GLOBALS['db_url']);
+}
+
+/**
+ * Displays the MySQL or PostgreSQL server version number.
+ */
+function drush_sql_version_server() {
+  switch (_drush_sql_get_scheme()) {
+    case 'mysql':
+    case 'mysqli':
+      drush_print(mysql_get_server_info());
+      break;
+    case 'pgsql':
+      // NOTE: apparently the server version is only available if PHP was
+      // compiled with PostgreSQL 7.4 or later, so we'll fall back to
+      // displaying the client version if that's the case.
+      $info = pg_version();
+      drush_print(isset($info['server_version']) ? $info['server_version'] : $info['client']);
+      break;
+    default:
+      drush_die(_drush_sql_get_invalid_url_msg());
+  }
+}
+
+/**
+ * Displays the MySQL or PostgreSQL client version number.
+ */
+function drush_sql_version_client() {
+  switch (_drush_sql_get_scheme()) {
+    case 'mysql':
+    case 'mysqli':
+      drush_print(mysql_get_client_info());
+      break;
+    case 'pgsql':
+      $info = pg_version();
+      drush_print($info['client']);
+      break;
+    default:
+      drush_die(_drush_sql_get_invalid_url_msg());
+  }
+}
+
+/**
+ * Outputs the entire Drupal database in SQL format using mysqldump or
+ * pg_dump.
+ */
+function drush_sql_dump() {
+  switch (_drush_sql_get_scheme()) {
+    case 'mysql':
+    case 'mysqli':
+      $exec = 'mysqldump' . (DRUSH_VERBOSE ? ' -v' : '');
+      $exec .= ' --opt -Q' . _drush_sql_get_credentials();
+      break;
+    case 'pgsql':
+      drush_die(t('Sorry, pg_dump support not implemented yet.')); // TODO: pg_dump command.
+      break;
+    default:
+      drush_die(_drush_sql_get_invalid_url_msg());
+  }
+
+  // Get any arguments to be passed through to the SQL client program.
+  if (func_num_args() > 0 && ($args = func_get_args()))
+    $exec .= ' ' . implode(' ', $args);
+
+  if (DRUSH_VERBOSE) {
+    drush_print(t('Executing: `%cmd\'', array('%cmd' => $exec)));
+  }
+
+  if (!DRUSH_SIMULATE) system($exec);
+}
+
+/**
+ * Executes the given SQL query on the Drupal database.
+ */
+function drush_sql_query($query = NULL) {
+  // FIXME: currently we require the query due to an apparent inability to
+  // run the mysql child process interactively. Need to look more into
+  // proc_open() to see if it could be used for interactive execution.
+  if (empty($query)) {
+    drush_die(t('No SQL query given as argument.'));
+  }
+
+  switch (_drush_sql_get_scheme()) {
+    case 'mysql':
+    case 'mysqli':
+      $exec = 'mysql' . (DRUSH_VERBOSE ? ' -v' : '') . (DRUSH_QUIET ? ' -s' : '');
+      $exec .= _drush_sql_get_credentials();
+      $exec .= ' -e "' . str_replace('"', '\"', str_replace('\"', '"', $query)) . '"';
+      break;
+    case 'pgsql':
+      drush_die(t('Sorry, psql support not implemented yet.')); // TODO: psql command.
+      break;
+    default:
+      drush_die(_drush_sql_get_invalid_url_msg());
+  }
+
+  // Get any arguments to be passed through to the SQL client program.
+  if (func_num_args() > 1 && ($args = func_get_args()))
+    $exec .= ' ' . implode(' ', array_slice($args, 1)); // skip query argument
+
+  if (DRUSH_VERBOSE) {
+    drush_print(t('Executing: `%cmd\'', array('%cmd' => $exec)));
+  }
+
+  if (!DRUSH_SIMULATE) system($exec);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// SQL SERVICE HELPERS
+
+function _drush_sql_get_scheme() {
+  $url = (object)parse_url($GLOBALS['db_url']);
+  return ($url->scheme);
+}
+
+function _drush_sql_get_credentials() {
+  // NOTE: this regex could also parse the connection string URL:
+  //   ^([\w]+)://([\w\d_]+):([^@]*)@([\w\d\.\-]*)/([\w\d_]+)$
+
+  $url = (object)parse_url($GLOBALS['db_url']);
+  $url->user = urldecode($url->user);
+  $url->pass = urldecode($url->pass);
+  $url->host = urldecode($url->host);
+  $url->path = substr(urldecode($url->path), 1); // skip leading '/' character
+
+  switch ($url->scheme) {
+    case 'mysql':
+    case 'mysqli':
+      return ' -h' . $url->host .
+        (!isset($url->port) ? '' : ' -P' . $url->port) .
+        ' -u' . $url->user .
+        (empty($url->pass) ? '' : ' -p' . $url->pass) . ' ' . $url->path;
+    case 'pgsql':
+      drush_die(t('Sorry, psql support not implemented yet.')); // TODO: psql credentials.
+      return;
+    default:
+      drush_die(_drush_sql_get_invalid_url_msg());
+  }
+}
+
+function _drush_sql_get_invalid_url_msg() {
+  return t('Unable to parse DB connection string: `%url\'.', array('%url' => $GLOBALS['db_url']));
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+// TODO: 'load' action for database restoration.

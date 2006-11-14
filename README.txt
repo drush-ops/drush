@@ -151,6 +151,22 @@ The following built-in commands are currently available:
     Outputs the names of all the functions exported by the given PHP
     extension.
 
+  sql url
+    Displays the Drupal site's database connection string.
+
+  sql version
+    Displays the MySQL or PostgreSQL server version number.
+
+  sql version client
+    Displays the MySQL or PostgreSQL client version number.
+
+  sql dump
+    Outputs the entire Drupal database in SQL format using mysqldump or
+    pg_dump.
+
+  sql query
+    Executes the given SQL query on the Drupal database.
+
   theme list
     Lists all currently installed Drupal themes.
 
