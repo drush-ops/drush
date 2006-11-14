@@ -29,6 +29,7 @@ TODO: SERVICES
 TODO: MISCELLANEOUS
 -------------------
 * Unix user / Drupal site-specific .drush/ directory for settings and state.
+* Handle indented output better with dynamic environment state.
 * Improve option parsing and handling.
 * Do partial command matching (allow use of shortest unique match).
 * Command tab completion and on-demand service auto-loading.

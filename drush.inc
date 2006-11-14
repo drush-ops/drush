@@ -123,7 +123,11 @@ function drush_lookup_alias($command) {
  *
  */
 function drush_dispatch($cmd) {
-  return _drush_dispatch(explode(' ', $cmd));
+  if (_drush_dispatch(explode(' ', $cmd), $result))
+    return $result;
+
+  trigger_error(t('Unknown command: `%cmd\'', array('%cmd' => $cmd)), E_USER_ERROR);
+  return FALSE;
 }
 
 /**
@@ -131,6 +135,14 @@ function drush_dispatch($cmd) {
  */
 function drush_die($msg = NULL, $status = NULL) {
   die($msg ? "drush: $msg\n" : '');
+}
+
+/**
+ *
+ */
+function drush_error($msg = '', $indent = 0) {
+  // TODO: print to stderr if running in CLI mode.
+  drush_print($msg, $indent);
 }
 
 /**
@@ -225,7 +237,7 @@ function _drush_parse_metadata($file) {
 /**
  *
  */
-function _drush_dispatch($lookup) {
+function _drush_dispatch($lookup, &$result) {
   $lookup = (is_array($lookup) ? $lookup : func_get_args());
   $aliases = drush_alias();
   if ($handler = _drush_dispatch_lookup($lookup, $aliases)) {
@@ -233,9 +245,10 @@ function _drush_dispatch($lookup) {
     $function = DRUSH_HANDLER_PREFIX . $handler;
     if (!function_exists($function))
       return trigger_error("Call to undefined function $function()", E_USER_ERROR);
-    return call_user_func_array($function, $args);
+    $result = call_user_func_array($function, $args);
+    return TRUE;
   }
-  return trigger_error('Unknown command: `' . implode(' ', $lookup) . '\'', E_USER_ERROR);
+  return FALSE;
 }
 
 /**

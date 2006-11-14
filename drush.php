@@ -34,7 +34,12 @@ function main($argc, $argv) {
   // Try and locate the Drupal root directory
   define('DRUSH_BOOTSTRAP',   'includes/bootstrap.inc');
   define('DRUSH_ROOT',        _drush_get_option('r:', $argv, _drush_locate_root()));
-  if (!DRUSH_ROOT) drush_die('Could not locate the Drupal installation directory.');
+
+  // If the Drupal directory can't be found, and no -r option was specified,
+  // we have no alternative but to give up the ghost at this point.
+  // (NOTE: t() is not available yet.)
+  if (!DRUSH_ROOT)
+    drush_die('Could not locate the Drupal installation directory.');
 
   // Fake the necessary HTTP headers that Drupal needs
   $_SERVER['HTTP_HOST'] = DRUSH_HOST;
@@ -45,14 +50,18 @@ function main($argc, $argv) {
   _drush_bootstrap_drupal();
   _drush_bootstrap_services();
 
-  // If no actions given, let's show some usage instructions
+  // If no actions were given, let's show some usage instructions
   if (count($argv) == 0)
     $argv[] = 'usage';
 
   // Dispatch to the specified service and action
   if (DRUSH_QUIET) ob_start();
-  $result = _drush_dispatch($argv);
+  $found = _drush_dispatch($argv, $result);
   if (DRUSH_QUIET) ob_end_clean();
+
+  // If action lookup failed, let's be informative about it
+  if (!$found)
+    drush_die(t('Unknown command: `%cmd\'', array('%cmd' => implode(' ', $argv))));
 
   // Terminate with the correct exit status
   return (empty($result) || $result === TRUE ? 0 : $result);
