@@ -7,11 +7,130 @@ DESCRIPTION
 -----------
 drush is a command line shell and Unix scripting interface for Drupal.
 
-Use the 'help' command to get a list of built-in services and actions:
+USAGE
+-----
+Once installed and setup (see below), you can use drush as follows while in
+a Drupal directory:
+
+  Usage: drush [options] <service> <action> ...
+
+  Options:
+    -q          Don't output anything at all (be as quiet as possible).
+    -v          Display all output from an action (be verbose).
+    -y          Assume that the answer to simple yes/no questions is 'yes'.
+    -s          Simulate actions, but do not actually perform them.
+    -h host     HTTP host name to use (for multi-site Drupal installations).
+    -u uid      Drupal user name (or numeric ID) to execute actions under.
+    -r path     Drupal root directory to use (default: current directory).
+
+AVAILABLE COMMANDS
+------------------
+Use the 'help' command to get a list of available services and actions:
 
   # drush help
 
 (You can also view the command listing at administer >> help >> drush.)
+
+BUILT-IN COMMANDS
+-----------------
+
+  version
+    Outputs the drush version number.
+
+  help
+    Outputs usage instructions and lists the available services and
+    commands.
+
+  usage
+    Outputs usage instructions for drush.
+
+  services
+    Lists all available drush services with their descriptions.
+
+  actions
+    Lists all available drush commands with their descriptions.
+
+  aliases
+    Lists all defined drush aliases with their expansions.
+
+  drupal version
+    Displays the currently installed Drupal core version.
+
+  drupal settings
+    Outputs a table of all Drupal settings.
+
+  drupal cron
+    Fires off the cron handles for all installed Drupal modules.
+
+  drupal notify
+    Sends a ping to a specified Drupal directory server.
+
+  generate password
+    Generates a random, alphanumeric password of the given length (default:
+    10 chars).
+
+  generate module
+    Generates a Drupal module skeleton for the given module name.
+
+  generate theme
+    Generates a Drupal theme skeleton for the given theme name.
+
+  module list
+    Lists all installed Drupal modules with their versions and descriptions.
+
+  module list outdated
+    Lists all installed Drupal modules that have updates available.
+
+  module list available
+    Lists all available Drupal modules from the Drupal CVS repository.
+
+  module info
+    Displays information on a given installed Drupal module.
+
+  module version
+    Displays the current version number of a given installed Drupal module.
+
+  module download
+    Downloads a given Drupal module into to the modules/ directory using
+    CVS.
+
+  module install
+    Downloads, installs and enables a given Drupal module using CVS.
+
+  module enable
+    Enables a given Drupal module.
+
+  module disable
+    Disables a given Drupal module.
+
+  module uninstall
+    Disables, uninstalls and deletes a given Drupal module. (Use caution!)
+
+  php version
+    Outputs the PHP version.
+
+  php credits
+    Outputs the credits listing the PHP developers, modules, etc.
+
+  php info
+    Outputs lots of PHP system and configuration information.
+
+  php config
+    Outputs a table of all PHP configuration options.
+
+  php extensions
+    Outputs the names of all the modules compiled and loaded in the PHP
+    interpreter.
+
+  php functions
+    Outputs the names of all the functions exported by the given PHP
+    extension.
+
+  theme list
+    Lists all currently installed Drupal themes.
+
+  theme download
+    Downloads a given theme using CVS.
 
 REQUIREMENTS
 ------------
@@ -64,22 +183,6 @@ LIMITATIONS
 * Due to reliance on PHP's tokenizer, drush may not work well in situations
   where the PHP code for the Drupal code base is encrypted (refer to API.txt
   for more information). This is unlikely to change.
-
-TODO/IDEAS
-----------
-* user.drush, node.drush: finish up remaining core services.
-* setup.drush: setup a new Drupal instance, load database scripts, etc.
-* stats.drush: calculate and report code base statistics (KLOCs, etc) for
-  the Drupal core or an installed module.
-* phpdoc.drush: rebuild all PHPDoc documentation, and provide summary of
-  TODO and FIXME comments in code base.
-* simpletest.drush: service for easier unit testing.
-* Add a setting for running admin-specified drush commands on cron.
-* Ability to register drush commands as XML-RPC callbacks.
-  (http://api.drupal.org/api/4.7/function/hook_xmlrpc)
-* Unix user / Drupal site-specific .drush/ directory for settings and state.
-* Enter interactive mode when no command given on command line.
-* Command tab completion and service on-demand auto-loading.
 
 CREDITS
 -------
