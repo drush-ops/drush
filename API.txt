@@ -87,4 +87,4 @@ let's proceed to using the echo facility:
     hello world!
 
 For more advanced examples, please refer to the built-in drush services
-supplied in the modules/drush/drush/ directory.
+supplied in the modules/drush/services/ directory.
