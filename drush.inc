@@ -8,8 +8,8 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-define('DRUSH_PATH', dirname(__FILE__));
-define('DRUSH_VERSION', drush_version());
+define('DRUSH_PATH',           dirname(__FILE__));
+define('DRUSH_VERSION',        drush_version());
 define('DRUSH_HANDLER_PREFIX', 'drush_');
 
 //////////////////////////////////////////////////////////////////////////////
