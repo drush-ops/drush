@@ -7,6 +7,7 @@ TODO: DRUSH CORE
 * Add -D option argument for defining PHP constants.
 * Add -C option argument for overriding Drupal configuration variables.
 * Add -I option argument for including arbitrary PHP files.
+* Add -L option argument for specifying the language/locale to be used.
 
 TODO: SERVICES
 --------------

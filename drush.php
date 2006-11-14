@@ -114,9 +114,9 @@ function _drush_get_option_info() {
     '-v'      => 'Display all output from an action (be verbose).',
     '-y'      => 'Assume that the answer to simple yes/no questions is \'yes\'.',
     '-s'      => 'Simulate actions, but do not actually perform them.',
+    '-r path' => 'Drupal root directory to use (default: current directory).',
     '-h host' => 'HTTP host name to use (for multi-site Drupal installations).',
     '-u uid'  => 'Drupal user name (or numeric ID) to execute actions under.',
-    '-r path' => 'Drupal root directory to use (default: current directory).',
   );
 }
 

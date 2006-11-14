@@ -19,9 +19,9 @@ a Drupal directory:
     -v          Display all output from an action (be verbose).
     -y          Assume that the answer to simple yes/no questions is 'yes'.
     -s          Simulate actions, but do not actually perform them.
+    -r path     Drupal root directory to use (default: current directory).
     -h host     HTTP host name to use (for multi-site Drupal installations).
     -u uid      Drupal user name (or numeric ID) to execute actions under.
-    -r path     Drupal root directory to use (default: current directory).
 
 Use the 'help' command to get a list of available services and actions:
 
@@ -131,6 +131,22 @@ The following built-in commands are currently available:
   theme download
     Downloads a given theme using CVS.
 
+  watchdog tail
+    Displays the most recent watchdog log messages (default: 10 messages).
+
+  watchdog delete
+    Deletes all log messages of a certain type from the watchdog log
+    (default: all).
+
+  watchdog notice
+    Logs a system message using the WATCHDOG_NOTICE severity level.
+
+  watchdog warning
+    Logs a system message using the WATCHDOG_WARNING severity level.
+
+  watchdog error
+    Logs a system message using the WATCHDOG_ERROR severity level.
+
 REQUIREMENTS
 ------------
 This version of drush is designed for Drupal 4.7.x running on a Unix
@@ -153,8 +169,8 @@ INSTALLATION
 
 UNIX SETUP
 ----------
-To use drush in a pleasant manner, you'll probably want to setup a shell
-alias like the following:
+To use drush in a pleasant manner on a Linux, BSD or Mac OS X system, you'll
+probably want to setup a shell alias like the following:
 
   alias drush='php modules/drush/drush.php'
 
