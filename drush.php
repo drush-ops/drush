@@ -22,16 +22,16 @@ exit(main($GLOBALS['argc'], $GLOBALS['argv']));
 function main($argc, $argv) {
   require_once dirname(__FILE__) . '/drush.inc';
 
-  // Parse command line options and arguments
+  // Parse command line options and arguments:
   array_shift($argv); // ignore program name
   define('DRUSH_VERBOSE',     _drush_get_option('v', $argv, FALSE));
   define('DRUSH_QUIET',       _drush_get_option('q', $argv, FALSE));
   define('DRUSH_AFFIRMATIVE', _drush_get_option('y', $argv, FALSE));
   define('DRUSH_SIMULATE',    _drush_get_option('s', $argv, FALSE));
   define('DRUSH_HOST',        _drush_get_option('h:', $argv, @$_SERVER['HTTP_HOST']));
-  define('DRUSH_USER',        _drush_get_option('u:', $argv, '0'));
+  define('DRUSH_USER',        _drush_get_option('u:', $argv, 0));
 
-  // Try and locate the Drupal root directory
+  // Try and locate the Drupal root directory:
   define('DRUSH_BOOTSTRAP',   'includes/bootstrap.inc');
   define('DRUSH_ROOT',        _drush_get_option('r:', $argv, _drush_locate_root()));
 
@@ -41,7 +41,7 @@ function main($argc, $argv) {
   if (!DRUSH_ROOT)
     drush_die('Could not locate the Drupal installation directory.');
 
-  // Fake the necessary HTTP headers that Drupal needs
+  // Fake the necessary HTTP headers that Drupal needs:
   $_SERVER['HTTP_HOST'] = DRUSH_HOST;
   $_SERVER['PHP_SELF'] = '/index.php';
 
@@ -50,20 +50,24 @@ function main($argc, $argv) {
   _drush_bootstrap_drupal();
   _drush_bootstrap_services();
 
-  // If no actions were given, let's show some usage instructions
+  // Fake a user login if that argument was specified - by default we'll
+  // just pretend to be the anonymous user.
+  _drush_login();
+
+  // If no actions were given, let's show some usage instructions.
   if (count($argv) == 0)
     $argv[] = 'usage';
 
-  // Dispatch to the specified service and action
+  // Dispatch to the specified service and action:
   if (DRUSH_QUIET) ob_start();
   $found = _drush_dispatch($argv, $result);
   if (DRUSH_QUIET) ob_end_clean();
 
-  // If action lookup failed, let's be informative about it
+  // If action lookup failed, let's die an informative death...
   if (!$found)
     drush_die(t('Unknown command: `%cmd\'', array('%cmd' => implode(' ', $argv))));
 
-  // Terminate with the correct exit status
+  // Terminate with the correct exit status.
   return (empty($result) || $result === TRUE ? 0 : $result);
 }
 
@@ -110,6 +114,19 @@ function _drush_bootstrap_drupal() {
 function _drush_bootstrap_services() {
   if (!drush_load_builtins())
     drush_die('Unable to load any drush services from ' . DRUSH_PATH . '.');
+
+  return TRUE;
+}
+
+function _drush_login() {
+  global $user;
+  $user = user_load(is_numeric(DRUSH_USER) ? array('uid' => DRUSH_USER) : array('name' => DRUSH_USER));
+
+  if (empty($user)) {
+    drush_die(is_numeric(DRUSH_USER) ?
+      t('Could not login with user ID #%user.', array('%user' => DRUSH_USER)) :
+      t('Could not login with user account `%user\'.', array('%user' => DRUSH_USER)));
+  }
 
   return TRUE;
 }
