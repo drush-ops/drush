@@ -19,8 +19,6 @@ function drush_drupal_version() {
  * Outputs a table of all Drupal settings.
  */
 function drush_drupal_settings() {
-  if (DRUSH_VERBOSE) drush_print(t('Drupal settings:'));
-
   $settings = _drush_array_tuples($GLOBALS['conf']);
   foreach ($settings as $index => $setting) {
     list($key, $value) = $setting;
@@ -28,7 +26,12 @@ function drush_drupal_settings() {
       $settings[$index] = array($key, implode('; ', (array)$value));
     }
   }
-  drush_print_table($settings, 2);
+
+  if (DRUSH_VERBOSE) {
+    $settings = array(array(t('Variable'), t('Value'))) + $settings;
+    drush_print(t('Drupal configuration settings:') . "\n");
+  }
+  drush_print_table($settings, 2, DRUSH_VERBOSE);
 }
 
 /**

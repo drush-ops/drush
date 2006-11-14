@@ -19,15 +19,19 @@
  * Lists all installed Drupal modules with their versions and descriptions.
  */
 function drush_module_list() {
-  if (DRUSH_VERBOSE) drush_print('Installed modules:');
-
   $modules = array();
   foreach(module_list() as $name) {
     if ($module = _drush_module_info($name)) {
       $modules[] = array($name, $module->version, $module->description);
     }
   }
-  drush_print_table($modules, 2);
+
+  if (DRUSH_VERBOSE) {
+    $modules = array(array(t('Name'), t('Version'), t('Description'))) + $modules;
+    drush_print(t('Installed Drupal modules:'));
+    drush_print();
+  }
+  drush_print_table($modules, 2, DRUSH_VERBOSE);
 }
 
 /**

@@ -35,8 +35,11 @@ function drush_watchdog_tail($limit = 10, $type = NULL) {
   if (count($rows) == 0)
     drush_die(t('No log messages available.'));
 
-  if (DRUSH_VERBOSE)
+  if (DRUSH_VERBOSE) {
     $rows[] = array(t('Date'), t('Severity'), t('Type'), t('Message'), t('User'));
+    drush_print(t('Last %count watchdog log messages:', array('%count' => $limit)));
+    drush_print();
+  }
 
   drush_print_table(array_reverse($rows), 2, DRUSH_VERBOSE);
 }

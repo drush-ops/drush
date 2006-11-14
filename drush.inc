@@ -12,6 +12,8 @@ define('DRUSH_PATH',           dirname(__FILE__));
 define('DRUSH_VERSION',        drush_version());
 define('DRUSH_HANDLER_PREFIX', 'drush_');
 
+define('DRUSH_CVS_CMD',        DRUSH_CVS_PATH . ' -d:pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal');
+
 //////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -142,13 +144,23 @@ function drush_print($msg = '', $indent = 0) {
 /**
  *
  */
-function drush_print_table($rows, $indent = 0) {
+function drush_print_table($rows, $indent = 0, $header = FALSE) {
   if (count($rows) == 0)
     return; // nothing to output
+
   $indent = str_repeat(' ', $indent);
   $format = _drush_get_table_row_format($rows);
+
+  $counter = 0;
   foreach ($rows as $cols) {
     print $indent . trim(vsprintf($format, $cols)) . "\n";
+    if ($counter == 0 && $header) {
+      $headers = array();
+      foreach ($cols as $col)
+        $headers[] = str_repeat('-', strlen($col));
+      print $indent . trim(vsprintf($format, $headers)) . "\n";
+    }
+    $counter++;
   }
 }
 
@@ -277,6 +289,7 @@ function _drush_shell_exec($cmd, $indent = 0) {
  */
 function _drush_cvs_is_available() {
   $cmd = DRUSH_CVS_PATH . ' --help';
+  // TODO
   return TRUE;
 }
 
@@ -284,9 +297,8 @@ function _drush_cvs_is_available() {
  *
  */
 function _drush_cvs_checkout($path, $type, $name, $version = NULL) {
-  $cmd = DRUSH_CVS_PATH;
-  $cmd .= ' -d:pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal';
-  $cmd .= ' checkout -d ' . $path . (empty($version) ? '' : ' -r ' . $version);
+  $cmd = DRUSH_CVS_CMD . ' checkout';
+  $cmd .= ' -d ' . $path . (empty($version) ? '' : ' -r ' . $version);
   $cmd .= ' contributions/' . $type . 's/' . $name;
   return _drush_shell_exec($cmd, 2);
 }
@@ -295,6 +307,10 @@ function _drush_cvs_checkout($path, $type, $name, $version = NULL) {
  *
  */
 function _drush_cvs_update($path) {
+  // FIXME: this is untested as of yet.
+  $cmd = DRUSH_CVS_CMD . ' update';
+  $cmd .= ' ' . $path;
+  return _drush_shell_exec($cmd, 2);
 }
 
 //////////////////////////////////////////////////////////////////////////////

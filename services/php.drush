@@ -22,6 +22,7 @@ function drush_php_credits($what = 'all') {
   $what_const = 'CREDITS_' . strtoupper($what);
   if (!defined($what_const))
     drush_die(t('Invalid phpcredits() argument given: %what', array('%what' => $what)));
+
   phpcredits(constant($what_const));
 }
 
@@ -32,6 +33,7 @@ function drush_php_info($what = 'all') {
   $what_const = 'INFO_' . strtoupper($what);
   if (!defined($what_const))
     drush_die(t('Invalid phpinfo() argument given: %what', array('%what' => $what)));
+
   phpinfo(constant($what_const));
 }
 
@@ -39,28 +41,33 @@ function drush_php_info($what = 'all') {
  * Outputs a table of all PHP configuration options.
  */
 function drush_php_config($extension = NULL) {
-  $output = array(
-    array(t('Setting:'), t('Global value:'), t('Local value:')),
-    array('--------', '-------------', '------------'),
-  );
   $settings = $extension ? ini_get_all($extension) : ini_get_all();
-  $output += array_map(
+  $output = array_map(
     create_function('$k, $v', 'return array($k, $v["global_value"], $v["local_value"]);'),
     array_keys($settings),
     array_values($settings)
   );
-  drush_print_table($output, 2);
+
+  if (DRUSH_VERBOSE) {
+    $output = array(array(t('Setting'), t('Global value'), t('Local value'))) + $output;
+    drush_print(t('PHP configuration settings:'));
+    drush_print();
+  }
+  drush_print_table($output, 2, DRUSH_VERBOSE);
 }
 
 /**
  * Outputs the names of all the modules compiled and loaded in the PHP interpreter.
  */
 function drush_php_extensions() {
-  if (DRUSH_VERBOSE)
-    drush_print(t('Loaded PHP extensions:'));
   $extensions = array_map(
     create_function('$v', 'return array($v);'),
     get_loaded_extensions());
+
+  if (DRUSH_VERBOSE) {
+    drush_print(t('Loaded PHP extensions:'));
+    drush_print();
+  }
   drush_print_table($extensions, 2);
 }
 
@@ -75,11 +82,14 @@ function drush_php_functions($extension) {
   if (!extension_loaded($extension))
     drush_die(t('The extension %ext is not loaded.', array('%ext' => $extension)));
 
-  if (DRUSH_VERBOSE)
-    drush_print(t('PHP extension functions:'));
   $funcs = array_map(
     create_function('$v', 'return array($v);'),
     get_extension_funcs($extension));
+
+  if (DRUSH_VERBOSE) {
+    drush_print(t('PHP extension functions:'));
+    drush_print();
+  }
   drush_print_table($funcs, 2);
 }
 
