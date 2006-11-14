@@ -5,7 +5,12 @@ you're a developer and don't mind looking at the code to figure things out.
 
 DESCRIPTION
 -----------
-drush is a command line shell and Unix scripting interface for Drupal.
+drush is a command line shell and Unix scripting interface for Drupal, a
+veritable Swiss Army knife designed to make life easier for those of us who
+spend most of our working hours hacking away at the command prompt.
+
+Green text against a black background is optional. Perhaps you would like
+some alpha-channel translucency with that?
 
 USAGE
 -----
@@ -83,9 +88,11 @@ The following built-in commands are currently available:
   drupal notify
     Sends a ping to a specified Drupal directory server.
 
+  generate uuid
+    Generates random 32-character (128-bit) identifiers.
+
   generate password
-    Generates a random, alphanumeric password of the given length (default:
-    10 chars).
+    Generates random alphanumeric passwords.
 
   generate module
     Generates a Drupal module skeleton for the given module name.

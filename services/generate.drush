@@ -9,10 +9,21 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /**
- * Generates a random, alphanumeric password of the given length (default: 10 chars).
+ * Generates random 32-character (128-bit) identifiers.
  */
-function drush_generate_password($length = 10) {
-  drush_print(user_password($length));
+function drush_generate_uuid($count = 1) {
+  for ($i = 0; $i < (int)$count; $i++) {
+    drush_print(md5(uniqid(mt_rand(), true)));
+  }
+}
+
+/**
+ * Generates random alphanumeric passwords.
+ */
+function drush_generate_password($count = 1, $length = 10) {
+  for ($i = 0; $i < (int)$count; $i++) {
+    drush_print(user_password($length));
+  }
 }
 
 /**
