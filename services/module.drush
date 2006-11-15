@@ -88,7 +88,7 @@ function drush_module_download($name, $version = NULL) {
   if (DRUSH_VERBOSE) drush_print(t('Downloading module `%name\' using CVS...', array('%name' => $name)));
 
   $path = 'modules/' . $name;
-  if (!($result = _drush_cvs_checkout($path, 'module', $name, $version))) {
+  if (!DRUSH_SIMULATE && !($result = _drush_cvs_checkout($path, 'module', $name, $version))) {
     drush_die(t('Download of module `%name\' failed (use -v to see verbose output).', array('%name' => $name)));
   }
 

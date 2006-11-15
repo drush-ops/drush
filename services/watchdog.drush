@@ -50,10 +50,10 @@ function drush_watchdog_tail($limit = 10, $type = NULL) {
  */
 function drush_watchdog_delete($type = NULL) {
   if (!empty($type)) {
-    db_query('DELETE FROM {watchdog} WHERE type = \'%s\'', $type);
+    drush_op('db_query', 'DELETE FROM {watchdog} WHERE type = \'%s\'', $type);
   }
   else {
-    db_query('DELETE FROM {watchdog}'); // indiscriminately delete all
+    drush_op('db_query', 'DELETE FROM {watchdog}'); // indiscriminately delete all
   }
 }
 
@@ -61,21 +61,21 @@ function drush_watchdog_delete($type = NULL) {
  * Logs a system message using the WATCHDOG_NOTICE severity level.
  */
 function drush_watchdog_notice($message) {
-  watchdog('drush', $message, WATCHDOG_NOTICE);
+  drush_op('watchdog', 'drush', $message, WATCHDOG_NOTICE);
 }
 
 /**
  * Logs a system message using the WATCHDOG_WARNING severity level.
  */
 function drush_watchdog_warning($message) {
-  watchdog('drush', $message, WATCHDOG_WARNING);
+  drush_op('watchdog', 'drush', $message, WATCHDOG_WARNING);
 }
 
 /**
  * Logs a system message using the WATCHDOG_ERROR severity level.
  */
 function drush_watchdog_error($message) {
-  watchdog('drush', $message, WATCHDOG_ERROR);
+  drush_op('watchdog', 'drush', $message, WATCHDOG_ERROR);
 }
 
 //////////////////////////////////////////////////////////////////////////////

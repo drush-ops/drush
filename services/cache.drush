@@ -13,8 +13,7 @@
  * page cache.
  */
 function drush_cache_clear($key = NULL) {
-  if (!DRUSH_SIMULATE)
-    cache_clear_all($key, TRUE);
+  drush_op('cache_clear_all', $key, TRUE);
 
   if (DRUSH_VERBOSE) {
     drush_print(empty($key) ?
@@ -66,12 +65,10 @@ function drush_cache_get($key) {
  */
 function drush_cache_set($key, $value = NULL) {
   if ($data = cache_get($key)) { // already exists
-    if (!DRUSH_SIMULATE)
-      cache_set($key, $value, $data->expire, $data->headers);
+    drush_op('cache_set', $key, $value, $data->expire, $data->headers);
   }
   else {
-    if (!DRUSH_SIMULATE)
-      cache_set($key, $value);
+    drush_op('cache_set', $key, $value);
   }
 }
 
@@ -79,8 +76,7 @@ function drush_cache_set($key, $value = NULL) {
  * Enables the Drupal page cache.
  */
 function drush_cache_enable() {
-  if (!DRUSH_SIMULATE)
-    variable_set('cache', CACHE_ENABLED);
+  drush_op('variable_set', 'cache', CACHE_ENABLED);
 
   if (DRUSH_VERBOSE)
     drush_print(t('Drupal page cache enabled.'));
@@ -90,8 +86,7 @@ function drush_cache_enable() {
  * Disables the Drupal page cache.
  */
 function drush_cache_disable() {
-  if (!DRUSH_SIMULATE)
-    variable_set('cache', CACHE_DISABLED);
+  drush_op('variable_set', 'cache', CACHE_DISABLED);
 
   if (DRUSH_VERBOSE)
     drush_print(t('Drupal page cache disabled.'));

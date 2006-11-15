@@ -100,6 +100,29 @@ let's proceed to using the echo facility:
 For more advanced examples, please refer to the built-in drush services
 supplied in the modules/drush/services/ directory.
 
+SIMULATED ACTIONS
+-----------------
+Services SHOULD make sure that all operations that cause side effects (e.g.
+modify or delete objects in the database, or execute external programs) go
+through the wrapper function drush_op():
+
+  BAD:  variable_set('my_var', $value);
+  GOOD: drush_op('variable_set', 'my_var', $value);
+
+  BAD:  system($cmd);
+  GOOD: drush_op('system', $cmd);
+
+Using this technique consistently for every mutative, destructive or
+external operation ensures that:
+
+* The operations can be supressed when running in simulation mode (i.e.
+  when using the `-s' command line argument to drush).
+
+* The operations can be recorded, meaning drush can be used to create
+  pre-recorded scripts that can easily be played back on another system.
+  (Note that this is only a preliminary notion and hasn't yet been
+  actually implemented.)
+
 COMMAND DISPATCH
 ----------------
 TODO

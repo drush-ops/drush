@@ -84,7 +84,7 @@ function drush_sql_dump() {
     drush_print(t('Executing: `%cmd\'', array('%cmd' => $exec)));
   }
 
-  if (!DRUSH_SIMULATE) system($exec);
+  return drush_op('system', $exec) !== FALSE;
 }
 
 /**
@@ -120,7 +120,7 @@ function drush_sql_query($query = NULL) {
     drush_print(t('Executing: `%cmd\'', array('%cmd' => $exec)));
   }
 
-  if (!DRUSH_SIMULATE) system($exec);
+  return drush_op('system', $exec) !== FALSE;
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -37,19 +37,21 @@ function drush_drupal_settings() {
 /**
  * Fires off the cron handles for all installed Drupal modules.
  */
-function drush_drupal_cron() {
-  // Check if the last cron run completed
-  if (variable_get('cron_busy', FALSE))
-    watchdog('cron', t('Last cron run did not complete.'), WATCHDOG_WARNING);
+function drush_drupal_cron($module = NULL) {
+  if (!DRUSH_SIMULATE) {
+    // Check if the last cron run completed
+    if (variable_get('cron_busy', FALSE))
+      watchdog('cron', t('Last cron run did not complete.'), WATCHDOG_WARNING);
 
-  // Iterate through the modules calling their cron handlers (if any):
-  variable_set('cron_busy', TRUE);
-  module_invoke_all('cron');
+    // Iterate through the modules calling their cron handlers (if any):
+    variable_set('cron_busy', TRUE);
+    module_invoke_all('cron');
 
-  // Clean up
-  variable_set('cron_busy', FALSE);
-  variable_set('cron_last', time());
-  watchdog('cron', t('Cron run completed'));
+    // Clean up
+    variable_set('cron_busy', FALSE);
+    variable_set('cron_last', time());
+    watchdog('cron', t('Cron run completed'));
+  }
 
   drush_print(t('Cron run completed.'));
 }
@@ -64,7 +66,7 @@ function drush_drupal_notify($server = NULL) {
     drush_die(t('This action requires the `drupal\' module to be enabled.'));
 
   if (DRUSH_VERBOSE) drush_print(t('Pinging server %server...', array('%server' => $server)));
-  drupal_notify($server);
+  drush_op('drupal_notify', $server);
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -131,6 +131,29 @@ function drush_dispatch($cmd) {
 }
 
 /**
+ * Calls a given function, passing through all arguments unchanged.
+ *
+ * Allows operations that have mutative or destructive side effects to be
+ * systematically suppressed or recorded.
+ */
+function drush_op($function) {
+  $args = func_get_args();
+  array_shift($args); // skip function name
+
+  // TODO: support for recording operations.
+
+  // Only actually perform the operation if not running in simulation mode.
+  if (!DRUSH_SIMULATE)
+    return call_user_func_array($function, $args);
+
+  // If running in simulation mode, all operations return NULL. This is
+  // acceptable since, most of the time, the functions are being called
+  // purely for their side effects and the return value is discarded,
+  // anyway.
+  return NULL;
+}
+
+/**
  *
  */
 function drush_die($msg = NULL, $status = NULL) {
