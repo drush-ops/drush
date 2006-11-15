@@ -1,5 +1,17 @@
 // $Id$
 
+This is a listing of known bugs, features that mostly work but are still
+somewhat in progress, features that are being considered or planned for
+implementation, and just miscellaneous far-out ideas that could, in
+principle, be implemented if one had the time and inclination to do so.
+
+(NOTE: there is no guarantee any of these items will, in fact, be
+implemented, nor should any possible scheduling indications be construed as
+promises under any circumstances. TANSTAAFL. If you absolutely need
+something implemented right now, please contact the developers to see if
+they're available for contract work, or if perhaps a modest donation could
+speed things along.)
+
 TODO: DRUSH CORE
 ----------------
 * Search the entire Drupal module directory for drush services, not just the
