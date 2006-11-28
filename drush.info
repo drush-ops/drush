@@ -2,4 +2,3 @@
 name = Drush
 description = Provides a command line shell and Unix scripting interface for Drupal.
 package = Administration
-version = HEAD
