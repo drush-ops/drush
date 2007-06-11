@@ -3,90 +3,91 @@
 
 /**
  * @file
- * Provides a command line shell and Unix scripting interface for Drupal.
+ *
  */
-
-//////////////////////////////////////////////////////////////////////////////
-
-define('DRUSH_PHP_PATH',   variable_get('drush_php_path', '/usr/bin/env php'));
-define('DRUSH_CVS_PATH',   variable_get('drush_cvs_path', '/usr/bin/env cvs'));
-define('DRUSH_RSYNC_PATH', variable_get('drush_rsync_path', '/usr/bin/env rsync'));
-
-require_once dirname(__FILE__) . '/drush.inc';
-
-//////////////////////////////////////////////////////////////////////////////
-// DRUPAL API HOOKS
 
 /**
- * Implementation of hook_help(). Provides online user help.
+ * Implementation of hook_menu().
  */
-function drush_help($section) {
-  switch ($section) {
-    case 'admin/modules#name':
-      return t('drush');
-    case 'admin/modules#description':
-      return t('Provides a command line shell and Unix scripting interface for Drupal.');
-    case 'admin/help#drush':
-      return drush_help_page();
-  }
+function drush_menu($may_cache) {
+  $items = array();
+  return $items;
 }
 
 /**
- * Implementation of hook_settings(). Declares administrative settings for a module.
+ * Implementation of hook_drush_command().
  */
-function drush_settings() {
-  $form['paths'] = array('#type' => 'fieldset', '#title' => t('Program paths'), '#collapsible' => TRUE, '#collapsed' => TRUE);
-  $form['paths']['drush_php_path'] = array(
-    '#type'          => 'textfield',
-    '#title'         => t('Path to PHP binary'),
-    '#default_value' => DRUSH_PHP_PATH,
-    '#size'          => 60,
-    '#maxlength'     => 255,
-    '#description'   => t('Used for the <a href="%define-shebang">shebang line</a> of the command line <tt>drush</tt> program.', array('%define-shebang' => 'http://en.wikipedia.org/wiki/Shebang_%28Unix%29')),
+function drush_drush_command() {
+  $items['help'] = array(
+    'callback' => 'drush_callback_help',
+    'description' => 'View help. Run "drush help command" to view command-specific help.'
   );
-  $form['paths']['drush_cvs_path'] = array(
-    '#type'          => 'textfield',
-    '#title'         => t('Path to CVS binary'),
-    '#default_value' => DRUSH_CVS_PATH,
-    '#size'          => 60,
-    '#maxlength'     => 255,
-    '#description'   => t('Required for commands that install or update themes, modules and the core.'),
-  );
-  $form['paths']['drush_rsync_path'] = array(
-    '#type'          => 'textfield',
-    '#title'         => t('Path to rsync binary'),
-    '#default_value' => DRUSH_RSYNC_PATH,
-    '#size'          => 60,
-    '#maxlength'     => 255,
-    '#description'   => t('Required for commands that synchronize data between servers.'),
-  );
-  // TODO: rewrite shebang in drush.php on save based on drush_php_path.
-  return $form;
+  return $items;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 /**
- * Renders the administer >> help >> drush page, providing a list of drush
- * commands for all installed drush services.
+ * Command callback. Display help.
  */
-function drush_help_page() {
-  $output = '<p>' . drush_help('admin/modules#description') . '</p>';
-  $output .= '<p>' . t('You can') . '</p>';
-  $output .= '<ul>';
-  $output .= '<li>' . t('configure drush at <a href="%url">administer >> settings >> drush</a>', array('%url' => url('admin/settings/drush'))) . '</li>';
-  $output .= '<li>' . t('use drush from the command line with the <tt>drush</tt> command (see the accompanying README.txt file).') . '</li>';
-  $output .= '</ul>';
-  if (!drush_load_builtins()) {
-    $output .= '<p><strong>' . t('Unable to load any drush services (this is probably a bug).') . '</strong></p>';
+function drush_callback_help() {
+  $commands = func_get_args();
+
+  // display general help text if no command is specified
+  if (empty($commands)) {
+    drush_print('drush ' . drush_version());
+    drush_print(t('Usage: drush [options] <command> <command> ...'));
+    drush_print();
+    drush_print(t('Options: '));
+    
+    // TODO: Add a hook for this, to allow other modules to add their options
+    $rows[] = array('-r <path>, --root=<path>', t("Drupal root directory to use (default: current directory)"));
+    $rows[] = array('-l <uri> , --uri=<uri>', t('URI of the drupal site to use (only needed in multisite environments)'));
+    $rows[] = array('-v, --verbose', t('Display all available output'));
+    $rows[] = array('-y, --yes', t("Assume 'yes' as answer to all prompts"));
+    $rows[] = array('-s, --simulate', t("Simulate all relevant actions (don't actually change the system)"));
+    
+    drush_print_table($rows, 2);
+    drush_print();
+    drush_print('Commands: ');
+    
+    $commands = drush_get_commands();
+    $rows = array();
+    foreach($commands as $key => $command) {
+      $rows[] = array($key, $commands[$key]['description']);
+    }
+    drush_print_table($rows, 2);
   }
+  // print command specific help
   else {
-    // TODO: group commands with <h3>service name</h3> headers?
-    $header = array(t('Command'), t('Description'));
-    $rows = _drush_array_tuples(_drush_array_merge_values(drush_register()));
-    $output .= theme('table', $header, $rows);
+    $commandstring = implode(" ", $commands);
+
+    if (!drush_is_command($commandstring))
+      return drush_error(t('Invalid command !command.', array('!command' => implode(" ", $commands))));
+
+    $help = module_invoke_all('help', 'drush:'.$commandstring);
+    if (!empty($help)) {
+      drush_print(implode("\n", $help));
+    }
+    else {
+      drush_print(t("No help available for command 'drush $commandstring'"));
+    }
+    //drush_print('');
+    //drush_print(t('Run drush help for general help'));
   }
-  return $output;
+  
+  // return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////////
+/**
+ * This is called if no command or an unknown command is entered.
+ */
+function drush_usage() {
+  $commands = func_get_args();
+  if (drush_get_option('version'))
+    return drush_print('drush ' . drush_version());
+  
+  if (drush_get_option('help') || empty($commands))
+    return drush_callback_help();
+  
+  return drush_error(t('Invalid command !command.', array('!command' => implode(" ", $commands))));
+    
+}

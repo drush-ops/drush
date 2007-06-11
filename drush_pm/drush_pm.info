@@ -1,0 +1,6 @@
+; $Id$
+name = Drupal Shell Packet Manager
+description = Allows you to install and update modules from the command line.
+package = drush
+dependencies = update_status drush
+version = "$Name$"

@@ -6,134 +6,82 @@
  * The drush API implementation and helpers.
  */
 
-//////////////////////////////////////////////////////////////////////////////
-
-define('DRUSH_PATH',           dirname(__FILE__));
-define('DRUSH_VERSION',        drush_version());
-define('DRUSH_HANDLER_PREFIX', 'drush_');
-
-define('DRUSH_CVS_CMD',        DRUSH_CVS_PATH . ' -d:pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal');
-
-//////////////////////////////////////////////////////////////////////////////
+// Basic constants.
+define('DRUSH_PATH', dirname(__FILE__));
 
 /**
- * Returns the drush module version number.
+ * Returns the drush version (parsed from drush.ini).
  */
 function drush_version() {
-  $ini = parse_ini_file(DRUSH_PATH . '/drush.info', FALSE);
-  return $ini['version'];
+  static $version;
+  if (isset($version) && $version)
+    return $ini;
+    
+  $ini = parse_ini_file(drupal_get_path('module','drush') . '/drush.info', FALSE);
+  $version = $ini['version'];
+  return $version;
 }
 
 /**
- *
+ * Dispatch a given set of commands.
+ * Modules can add commands by implementing hook_drush_commands().
  */
-function drush_load_builtins() {
-  foreach (glob(DRUSH_PATH . '/services/*.drush') as $file) {
-    drush_register($file);
-    require_once $file;
-  }
-  return count(drush_register()) > 0;
-}
-
-/**
- *
- */
-function drush_load_services($path) {
-  // TODO
-  return TRUE;
-}
-
-/**
- *
- */
-function drush_register($file = NULL) {
-  static $registry = array();
-  if (!empty($file)) {
-    if (!isset($registry[$file]))
-      $registry[$file] = _drush_parse_metadata($file);
-  }
-  return $registry;
-}
-
-/**
- *
- */
-function drush_commands($like = NULL) {
-  $registry = _drush_array_merge_values(drush_register());
-  if (!empty($like)) {
-    foreach ($registry as $command => $description) {
-      if (!preg_match('/^' . preg_quote($like, '/') . '/', $command)) {
-        unset($registry[$command]);
-      }
-    }
-  }
-  return $registry;
-}
-
-/**
- *
- */
-function drush_alias($alias = NULL, $target = NULL) {
-  static $aliases = array();
-  if (!empty($alias)) {
-    if (is_array($alias)) // normalize alias
-      $alias = trim(implode(' ', $alias));
-    if (empty($target)) {
-      unset($aliases[$alias]);
+function drush_dispatch($commands) {
+  
+  // Get a list of all implemented commands.
+  $implemented = drush_get_commands();
+  
+  $go = TRUE;
+  $result = FALSE;
+  // try to determine the handler for the current command
+  while(!$result && count($commands)) {
+    $command = implode(" ", $commands);
+    if(isset($implemented[$command])) {
+      $result = $implemented[$command];
     }
     else {
-      if (is_array($target)) // normalize target
-        $target = trim(implode(' ', $target));
-      $aliases[$alias] = $target;
+      $funcargs[] = array_pop($commands);
     }
   }
-  return $aliases;
-}
-
-/**
- *
- */
-function drush_unalias($alias) {
-  return drush_alias($alias);
-}
-
-/**
- *
- */
-function drush_resolve_alias($alias) {
-  if ($aliases = drush_alias()) {
-    if (isset($aliases[$alias]))
-      return $aliases[$alias];
+  if($result) {
+    // call the callback function of the active command
+    return call_user_func_array($result['callback'], array_reverse($funcargs));
   }
-  return $alias;
-}
-
-/**
- *
- */
-function drush_lookup_alias($command) {
-  if ($aliases = drush_alias()) {
-    if (in_array($command, $aliases))
-      return array_search($command, $aliases);
+  else {
+    // Special case: If no command is found, display usage info
+    return call_user_func_array('drush_usage', array_reverse($funcargs));
   }
-  return $command;
-}
-
-/**
- *
- */
-function drush_dispatch($cmd) {
-  if (_drush_dispatch(explode(' ', $cmd), $result))
-    return $result;
-
-  trigger_error(t('Unknown command: `%cmd\'', array('%cmd' => $cmd)), E_USER_ERROR);
+  
   return FALSE;
+}
+
+/**
+ * Get a list of all implemented commands.
+ * This invokes hook_drush_command()
+ */
+function drush_get_commands($refresh = FALSE) {
+  static $commands;
+  
+  if (!$refresh && !empty($commands))
+    return $commands;
+    
+  $commands = module_invoke_all('drush_command', TRUE);
+  
+  return $commands; 
+}
+
+function drush_is_command($command) {
+  $commands = drush_get_commands();
+  if (isset($commands[$command]))
+    return true;
+  else
+    return false;
 }
 
 /**
  * Calls a given function, passing through all arguments unchanged.
  *
- * Allows operations that have mutative or destructive side effects to be
+ * TODO: Allow operations that have mutative or destructive side effects to be
  * systematically suppressed or recorded.
  */
 function drush_op($function) {
@@ -141,175 +89,30 @@ function drush_op($function) {
   array_shift($args); // skip function name
 
   // TODO: support for recording operations.
+  // TODO: maybe re-add the simulation mode
 
-  // Only actually perform the operation if not running in simulation mode.
-  if (!DRUSH_SIMULATE)
-    return call_user_func_array($function, $args);
+  if (DRUSH_VERBOSE || DRUSH_SIMULATE)
+    drush_print("Calling $function(" . implode(", ", $args) . ')');
+  
+  if (DRUSH_SIMULATE)
+    return true;
 
-  // If running in simulation mode, all operations return NULL. This is
-  // acceptable since, most of the time, the functions are being called
-  // purely for their side effects and the return value is discarded,
-  // anyway.
-  return NULL;
+  return call_user_func_array($function, $args);
 }
 
 /**
- *
+ * Executes a shell command.
+ * Output is only printed if in verbose mode.
+ * If in simulation mode, no action is taken.
  */
-function drush_die($msg = NULL, $status = NULL) {
-  die($msg ? "drush: $msg\n" : '');
-}
+function drush_shell_exec($cmd, $indent = 0) {
+  if (DRUSH_VERBOSE || DRUSH_SIMULATE) 
+    drush_print('Executing: ' . $cmd, $indent);
+  
+  if (DRUSH_SIMULATE)
+    return true;
 
-/**
- *
- */
-function drush_error($msg = '', $indent = 0) {
-  // TODO: print to stderr if running in CLI mode.
-  drush_print($msg, $indent);
-}
-
-/**
- *
- */
-function drush_print($msg = '', $indent = 0) {
-  if ($indent > 0) print str_repeat(' ', $indent);
-  print (string)$msg . "\n";
-}
-
-/**
- *
- */
-function drush_print_table($rows, $indent = 0, $header = FALSE) {
-  if (count($rows) == 0)
-    return; // nothing to output
-
-  $indent = str_repeat(' ', $indent);
-  $format = _drush_get_table_row_format($rows);
-
-  $counter = 0;
-  foreach ($rows as $cols) {
-    print $indent . trim(vsprintf($format, $cols)) . "\n";
-    if ($counter == 0 && $header) {
-      $headers = array();
-      foreach ($cols as $col)
-        $headers[] = str_repeat('-', strlen($col));
-      print $indent . trim(vsprintf($format, $headers)) . "\n";
-    }
-    $counter++;
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// DRUSH REGISTRY HELPERS
-
-/**
- *
- */
-function _drush_parse_metadata($file) {
-  // Resolve PHP version differences
-  if (!defined('T_ML_COMMENT'))
-    define('T_ML_COMMENT', T_COMMENT);
-  if (!defined('T_DOC_COMMENT'))
-    define('T_DOC_COMMENT', T_ML_COMMENT);
-
-  $functions = array();
-  $tokens = token_get_all(file_get_contents($file));
-  $last_token = NULL;
-  $comment = NULL;
-  foreach ($tokens as $token) {
-    if (!is_string($token)) {
-      list($id, $text) = $token;
-      switch ($id) {
-        case T_COMMENT:
-        case T_ML_COMMENT:
-        case T_DOC_COMMENT:
-          if (strpos(trim($text), '/**') === 0) {
-            $comment = NULL;
-            $lines = array_slice(explode("\n", $text), 1); // skip first line with /**
-            if (count($lines) > 1) {
-              $comment = '';
-              foreach ($lines as $line) {
-                $line = trim(preg_replace('/^\*\s*/', '', trim($line)));
-                if ($line == '@file')
-                  continue;
-                if ($line == '' || $line == '/')
-                  break;
-                $comment = trim($comment . ' ' . $line);
-              }
-            }
-          }
-          break;
-        case T_FUNCTION:
-          break;
-        case T_STRING:
-          if ($last_token == T_FUNCTION && strpos($text, 'drush_') === 0) {
-            $handler = substr($text, strlen('drush_'));
-            $handler = str_replace('_', ' ', $handler);
-            $functions[$handler] = $comment;
-            $comment = NULL;
-          }
-          break;
-      }
-      if ($id != T_WHITESPACE)
-        $last_token = $id;
-    }
-  }
-  return $functions;
-}
-
-/**
- *
- */
-function _drush_dispatch($lookup, &$result) {
-  $lookup = (is_array($lookup) ? $lookup : func_get_args());
-  $aliases = drush_alias();
-  if ($handler = _drush_dispatch_lookup($lookup, $aliases)) {
-    list($handler, $args) = $handler;
-    $function = DRUSH_HANDLER_PREFIX . $handler;
-    if (!function_exists($function))
-      return trigger_error("Call to undefined function $function()", E_USER_ERROR);
-    $result = call_user_func_array($function, $args);
-    return TRUE;
-  }
-  return FALSE;
-}
-
-/**
- *
- */
-function _drush_dispatch_lookup($lookup, $aliases, $args = array()) {
-  if (count($lookup) > 0) {
-
-    $handler = implode(' ', $lookup);
-    if (isset($aliases[$handler])) {
-      $handler = $aliases[$handler];
-      if (is_array($handler))
-        $handler = implode(' ', $handler);
-      $handler = str_replace(' ', '_', $handler);
-      return array($handler, $args);
-    }
-
-    if (count($lookup) > 1) {
-      $handler = str_replace('-', '_', implode('_', $lookup));
-      if (function_exists(DRUSH_HANDLER_PREFIX . $handler))
-        return array($handler, $args);
-    }
-
-    array_unshift($args, array_pop($lookup));
-    return _drush_dispatch_lookup($lookup, $aliases, $args);
-  }
-  return NULL;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// DRUSH CVS HELPERS
-
-/**
- *
- */
-function _drush_shell_exec($cmd, $indent = 0) {
-  if (DRUSH_VERBOSE) drush_print('Executing: ' . $cmd, $indent);
-  if (!DRUSH_SIMULATE) exec($cmd . ' 2>&1', $output, $result);
+  exec($cmd . ' 2>&1', $output, $result);
 
   if (DRUSH_VERBOSE) {
     foreach ($output as $line) {
@@ -321,39 +124,105 @@ function _drush_shell_exec($cmd, $indent = 0) {
 }
 
 /**
- *
+ * Exits with a message.
+ * TODO: Exit with a correct status code.
  */
-function _drush_cvs_is_available() {
-  $cmd = DRUSH_CVS_PATH . ' --help';
-  // TODO
+function drush_die($msg = NULL, $status = NULL) {
+  die($msg ? "drush: $msg\n" : '');
+}
+
+/**
+ * Prints an error message.
+ * Always returns FALSE. This allows to do e.g.
+ * if ($error) return drush_error('A error occured);
+ */
+function drush_error($msg = '') {
+  // TODO: print to stderr if running in CLI mode.
+  drush_print("E: " . $msg);
+  return FALSE;
+}
+
+/**
+ * Prints a message.
+ * @param $msg The message to print.
+ * @param $indent The indentation (space chars)
+ */
+function drush_print($msg = '', $indent = 0) {
+  if ($indent > 0) 
+    print str_repeat(' ', $indent);
+  print (string)$msg . "\n";
+}
+
+/**
+ * Prints a message, but only if verbose mode is activated.
+ * Returns TRUE if in verbose mode, otherwise FALSE.
+ */
+function drush_verbose($msg = FALSE, $indent = 0) {
+  if (!DRUSH_VERBOSE)
+    return FALSE;
+  if (DRUSH_VERBOSE && $msg === FALSE)
+    return TRUE;
+  
+  if ($indent > 0) 
+    print str_repeat(' ', $indent);
+  
+  print (string)$msg . "\n";
+  
   return TRUE;
 }
 
 /**
- *
+ * Ask the user a basic yes/no question.
+ * 
+ * @param $msg The question to ask
+ * @return TRUE if the user entered 'y', FALSE if he entered 'n'
  */
-function _drush_cvs_checkout($path, $type, $name, $version = NULL) {
-  $cmd = DRUSH_CVS_CMD . ' checkout';
-  $cmd .= ' -d ' . $path . (empty($version) ? '' : ' -r ' . $version);
-  $cmd .= ' contributions/' . $type . 's/' . $name;
-  return _drush_shell_exec($cmd, 2);
+function drush_confirm($msg, $indent = 0) {
+  print str_repeat(' ', $indent) . $msg . " (y/n): ";
+  
+  if (DRUSH_AFFIRMATIVE) {
+    print "y\n";
+    return TRUE;
+  }
+  while ($line = trim(fgets(STDIN))) {
+    if ($line == 'y')
+      return TRUE;
+    if ($line == 'n')
+      return FALSE;
+    print $msg . " (y/n): ";
+  }
+
 }
 
 /**
- *
+ * Print a formatted table.
+ * @param $rows The rows to print
+ * @param $indent Indent for the whole table
+ * @param $header If TRUE, the first line will be treated as table
+ *        header and be underlined.
  */
-function _drush_cvs_update($path) {
-  // FIXME: this is untested as of yet.
-  $cmd = DRUSH_CVS_CMD . ' update';
-  $cmd .= ' ' . $path;
-  return _drush_shell_exec($cmd, 2);
+function drush_print_table($rows, $indent = 0, $header = FALSE) {
+  if (count($rows) == 0)
+    return; // nothing to output
+
+  $indent = str_repeat(' ', $indent);
+  $format = _drush_get_table_row_format($rows);
+
+  $counter = 0;
+  foreach ($rows as $cols) {
+    print $indent . vsprintf($format, $cols) . "\n";
+    if ($counter == 0 && $header) {
+      $headers = array();
+      foreach ($cols as $col)
+        $headers[] = str_repeat('-', strlen($col));
+      print $indent . trim(vsprintf($format, $headers)) . "\n";
+    }
+    $counter++;
+  }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// DRUSH OUTPUT HELPERS
-
 /**
- *
+ * Format a table
  */
 function _drush_get_table_row_format($table) {
   $widths = _drush_get_table_column_widths($table);
@@ -361,9 +230,6 @@ function _drush_get_table_row_format($table) {
   return $format;
 }
 
-/**
- *
- */
 function _drush_get_table_column_widths($table) {
   $widths = array();
   foreach ($table as $row => $cols) {
@@ -373,46 +239,3 @@ function _drush_get_table_column_widths($table) {
   }
   return $widths;
 }
-
-//////////////////////////////////////////////////////////////////////////////
-// DRUSH INPUT HELPERS
-
-/**
- *
- */
-function _drush_confirm($msg) {
-  if (DRUSH_AFFIRMATIVE) 
-    return TRUE;
-  return FALSE;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// GENERAL PHP HELPERS
-
-/**
- * Merges the values of a multidimensional array.
- *
- *   array(0 => array($key1 => $val1, $key2 => $val2, ...),
- *         1 => array($key3 => $val3, $key4 => $val4, ...),
- *         ...)
- *   => array($key1 => $val1, $key2 => $val2,
- *            $key3 => $val3, $key4 => $val4, ...)
- */
-function _drush_array_merge_values($array) {
-  return call_user_func_array('array_merge', array_values($array));
-}
-
-/**
- * Returns an associative array as an array of tuples, where the array key
- * is the first element of the tuple and the value the second.
- *
- *   array($key1 => $val1, $key2 => $val2, ...)
- *   => array(array($key1, $val1), array($key2, $val2), ...)
- */
-function _drush_array_tuples($array) {
-  static $tuple_func = NULL;
-  if (!$tuple_func) $tuple_func = create_function('$k, $v', 'return array($k, $v);');
-  return array_map($tuple_func, array_keys($array), array_values($array));
-}
-
-//////////////////////////////////////////////////////////////////////////////
