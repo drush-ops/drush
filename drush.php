@@ -23,15 +23,16 @@ exit(drush_bootstrap($GLOBALS['argc'], $GLOBALS['argv']));
 function drush_bootstrap($argc, $argv) {
   global $args;
   // Parse command line options and arguments.
-  $args = drush_parse_args($argv, array('h', 'u', 'r'));
+  $args = drush_parse_args($argv, array('h', 'u', 'r', 'l'));
 
   // Define basic options as constants.
   define('DRUSH_URI',         drush_get_option(array('l', 'uri'), FALSE));
-  define('DRUSH_VERBOSE',     drush_get_option(array('v','verbose'), FALSE));
-  define('DRUSH_AFFIRMATIVE', drush_get_option(array('y','yes'), FALSE));
-  define('DRUSH_SIMULATE',    drush_get_option(array('s','simulate'), FALSE));
+  define('DRUSH_VERBOSE',     drush_get_option(array('v', 'verbose'), FALSE));
+  define('DRUSH_AFFIRMATIVE', drush_get_option(array('y', 'yes'), FALSE));
+  define('DRUSH_SIMULATE',    drush_get_option(array('s', 'simulate'), FALSE));
 
-  // define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
+  // TODO: Make use of this as soon as the external
+  define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
 
   // If no root is defined, we try to guess from the current directory.
   define('DRUSH_DRUPAL_ROOT',  drush_get_option(array('r', 'root'), _drush_locate_root()));
@@ -57,10 +58,14 @@ function drush_bootstrap($argc, $argv) {
   // Bootstrap Drupal.
   _drush_bootstrap_drupal();
 
-  // Now we can use all of Drupal.
-  require_once drupal_get_path('module','drush') . '/drush.inc';
+  // Login the specified user (if given).
+  if (DRUSH_USER) {
+    _drush_login(DRUSH_USER);
+  }
 
-  if(DRUSH_SIMULATE) {
+  // Now we can use all of Drupal.
+
+  if (DRUSH_SIMULATE) {
     drush_print(t('SIMULATION MODE IS ENABLED. NO ACTUAL ACTION WILL BE TAKEN. SYSTEM WILL REMAIN UNCHANGED.'));
   }
 
@@ -92,8 +97,9 @@ function _drush_locate_root() {
   }
   // Move up dir by dir and check each.
   while ($path = _drush_locate_root_moveup($path)) {
-    if (file_exists($path . '/' . DRUSH_DRUPAL_BOOTSTRAP))
+    if (file_exists($path . '/' . DRUSH_DRUPAL_BOOTSTRAP)) {
       return $path;
+    }
   }
 
   return FALSE;
@@ -111,9 +117,10 @@ function _drush_locate_root_moveup($path) {
 
 /**
  * Bootstrap Drupal.
- **/
+ */
 function _drush_bootstrap_drupal() {
   require_once DRUSH_DRUPAL_BOOTSTRAP;
+  require_once drupal_get_path('module', 'drush') . '/drush.inc';;
 
   if (($conf_path = conf_path()) && !file_exists("./$conf_path/settings.php")) {
     drush_die("Unable to load Drupal configuration from $conf_path/.");
@@ -124,14 +131,21 @@ function _drush_bootstrap_drupal() {
   return TRUE;
 }
 
-function _drush_login() {
+/**
+ * Log a certain user in.
+ */
+function _drush_login($drush_user) {
   global $user;
-  $user = user_load(is_numeric(DRUSH_USER) ? array('uid' => DRUSH_USER) : array('name' => DRUSH_USER));
+  $user = user_load(is_numeric($drush_user) ? array('uid' => $drush_user) : array('name' => $drush_user));
 
   if (empty($user)) {
-    drush_die(is_numeric(DRUSH_USER) ?
-      t('Could not login with user ID #%user.', array('%user' => DRUSH_USER)) :
-      t('Could not login with user account `%user\'.', array('%user' => DRUSH_USER)));
+    if (is_numeric($drush_user)) {
+      drush_die(t('Could not login with user ID #%user.', array('%user' => $drush_user)));
+    }
+    else {
+      drush_die(t('Could not login with user account `%user\'.', array('%user' => $drush_user)));
+    }
+    return FALSE;
   }
 
   return TRUE;
@@ -153,26 +167,26 @@ function _drush_login() {
  *   are always noted without - or -- and are set to TRUE if they were
  *   invoked, to the argument if followed by an argument, and if not present
  *   to their default value or FALSE if no default value was specified.
- **/
+ */
 function drush_parse_args($args = array(), $arg_opts = array(), $default_options = array()) {
   $options = $default_options;
   $commands = array();
 
-  for($i = 1; $i < count($args); $i++) {
+  for ($i = 1; $i < count($args); $i++) {
     $opt = $args[$i];
     // Is the arg an option (starting with '-')?
-    if($opt{0} == "-" && strlen($opt) != 1) {
+    if ($opt{0} == "-" && strlen($opt) != 1) {
       // Do we have multiple options behind one '-'?
       if (strlen($opt) > 2 && $opt{1} != "-") {
         // Each char becomes a key of its own.
-        for($j = 1; $j < strlen($opt); $j++) {
+        for ($j = 1; $j < strlen($opt); $j++) {
           $options[substr($opt, $j, 1)] = true;
         }
       }
       // Do we have a longopt (starting with '--')?
       elseif ($opt{1} == "-") {
         if ($pos = strpos($opt, '=')) {
-          $options[substr($opt, 2, $pos-2)] = substr($opt, $pos+1);
+          $options[substr($opt, 2, $pos - 2)] = substr($opt, $pos + 1);
         }
         else {
           $options[substr($opt, 2)] = true;
@@ -182,10 +196,10 @@ function drush_parse_args($args = array(), $arg_opts = array(), $default_options
         $opt = substr($opt, 1);
         // Check if the current opt is in $arg_opts (= has to be followed by an argument).
         if ((in_array($opt, $arg_opts))) {
-          if (($args[$i+1] == NULL) || ($args[$i+1] == "") || ($args[$i+1]{0} == "-")) {
+          if (($args[$i+1] == NULL) || ($args[$i+1] == "") || ($args[$i + 1]{0} == "-")) {
             exit("Invalid input: -$opt needs to be followed by an argument.");
           }
-          $options[$opt] = $args[$i+1];
+          $options[$opt] = $args[$i + 1];
           $i++;
         }
         else {
@@ -198,7 +212,7 @@ function drush_parse_args($args = array(), $arg_opts = array(), $default_options
       $commands[] = $opt;
     }
   }
-  return array('options'=>$options, 'commands'=>$commands);
+  return array('options' => $options, 'commands' => $commands);
 }
 
 /**
@@ -208,13 +222,14 @@ function drush_parse_args($args = array(), $arg_opts = array(), $default_options
  * exists and return the value of the first one found. Useful for allowing both
  * -h and --host-name
  *
- **/
+ */
 function drush_get_option($option, $default = NULL) {
   $options = $GLOBALS['args']['options'];
   if (is_array($option)) {
-    foreach($option as $current){
-      if (array_key_exists($current, $options))
+    foreach ($option as $current) {
+      if (array_key_exists($current, $options)) {
         return $options[$current];
+      }
     }
     return $default;
   }
@@ -228,8 +243,8 @@ function drush_get_option($option, $default = NULL) {
 }
 
 /**
- * Converts a windows path (dir1\dir2\dir3) into a unix path (dir1/dir2/dir3).
- **/
+ * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
+ */
 function drush_convert_path($path) {
   return str_replace('\\','/', $path);
 }

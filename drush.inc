@@ -7,7 +7,7 @@
  */
 
 /**
- * Returns the drush version (parsed from drush.ini).
+ * Returns the drush version (parsed from drush.info).
  */
 function drush_version() {
   static $version;
@@ -22,7 +22,7 @@ function drush_version() {
 
 /**
  * Dispatch a given set of commands.
- * Modules can add commands by implementing hook_drush_commands().
+ * Modules can add commands by implementing hook_drush_command().
  */
 function drush_dispatch($commands) {
   // Get a list of all implemented commands.
@@ -30,6 +30,7 @@ function drush_dispatch($commands) {
 
   $go = TRUE;
   $result = FALSE;
+  $funcargs = array();
   // Try to determine the handler for the current command.
   while (!$result && count($commands)) {
     $command = implode(" ", $commands);
@@ -45,7 +46,7 @@ function drush_dispatch($commands) {
     return call_user_func_array($result['callback'], array_reverse($funcargs));
   }
   else {
-    // Special case: If no command is found, display usage info
+    // Special case: If no command is found, display usage info.
     return call_user_func_array('drush_usage', array_reverse($funcargs));
   }
 
@@ -90,7 +91,7 @@ function drush_op($function) {
   array_shift($args); // Skip function name
 
   if (DRUSH_VERBOSE || DRUSH_SIMULATE) {
-    drush_print("Calling $function(" . implode(", ", $args) . ')');
+     drush_print("Calling $function(". implode(", ", $args) .')');
   }
 
   if (DRUSH_SIMULATE) {
@@ -257,7 +258,8 @@ function _drush_get_table_column_widths($table) {
   $widths = array();
   foreach ($table as $row => $cols) {
     foreach ($cols as $col => $value) {
-      $widths[$col] = max($widths[$col], strlen((string)$value));
+      $old_width = isset($widths[$col]) ? $widths[$col] : 0;
+      $widths[$col] = max($old_width, strlen((string)$value));
     }
   }
   return $widths;
