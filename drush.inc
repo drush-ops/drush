@@ -14,7 +14,7 @@ function drush_version() {
   if (isset($version) && $version) {
     return $version;
   }
-    
+
   $ini = parse_ini_file(drupal_get_path('module','drush') . '/drush.info', FALSE);
   $version = $ini['version'];
   return $version;
@@ -27,7 +27,7 @@ function drush_version() {
 function drush_dispatch($commands) {
   // Get a list of all implemented commands.
   $implemented = drush_get_commands();
-  
+
   $go = TRUE;
   $result = FALSE;
   // Try to determine the handler for the current command.
@@ -48,7 +48,7 @@ function drush_dispatch($commands) {
     // Special case: If no command is found, display usage info
     return call_user_func_array('drush_usage', array_reverse($funcargs));
   }
-  
+
   return FALSE;
 }
 
@@ -58,14 +58,14 @@ function drush_dispatch($commands) {
  */
 function drush_get_commands($refresh = FALSE) {
   static $commands;
-  
+
   if (!$refresh && !empty($commands)) {
     return $commands;
   }
-    
+
   $commands = module_invoke_all('drush_command', TRUE);
-  
-  return $commands; 
+
+  return $commands;
 }
 
 function drush_is_command($command) {
@@ -92,7 +92,7 @@ function drush_op($function) {
   if (DRUSH_VERBOSE || DRUSH_SIMULATE) {
     drush_print("Calling $function(" . implode(", ", $args) . ')');
   }
-  
+
   if (DRUSH_SIMULATE) {
     return true;
   }
@@ -114,7 +114,7 @@ function drush_shell_exec($cmd, $indent = 0) {
   if (DRUSH_VERBOSE || DRUSH_SIMULATE) {
     drush_print('Executing: ' . $cmd, $indent);
   }
-  
+
   if (DRUSH_SIMULATE) {
     return true;
   }
@@ -126,7 +126,7 @@ function drush_shell_exec($cmd, $indent = 0) {
       drush_print($line, $indent + 2);
     }
   }
-  
+
   // Exit code 0 means success.
   return ($result == 0);
 }
@@ -153,9 +153,9 @@ function drush_error($msg = '') {
 
 /**
  * Prints a message.
- * @param $message 
+ * @param $message
  *   The message to print.
- * @param $indent 
+ * @param $indent
  *    The indentation (space chars)
  */
 function drush_print($message = '', $indent = 0) {
@@ -173,20 +173,20 @@ function drush_verbose($msg = FALSE, $indent = 0) {
   if (DRUSH_VERBOSE && $msg === FALSE) {
     return TRUE;
   }
-  
+
   print str_repeat(' ', $indent) . (string)$msg . "\n";
   return TRUE;
 }
 
 /**
  * Ask the user a basic yes/no question.
- * 
+ *
  * @param $msg The question to ask
  * @return TRUE if the user entered 'y', FALSE if he entered 'n'
  */
 function drush_confirm($msg, $indent = 0) {
   print str_repeat(' ', $indent) . (string)$msg . " (y/n): ";
-  
+
   if (DRUSH_AFFIRMATIVE) {
     print "y\n";
     return TRUE;
@@ -205,11 +205,11 @@ function drush_confirm($msg, $indent = 0) {
 
 /**
  * Print a formatted table.
- * @param $rows 
+ * @param $rows
  *   The rows to print
- * @param $indent 
+ * @param $indent
  *   Indentation for the whole table
- * @param $header 
+ * @param $header
  *   If TRUE, the first line will be treated as table
  *   header and therefore be underlined.
  */

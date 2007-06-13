@@ -24,15 +24,15 @@ function drush_bootstrap($argc, $argv) {
   global $args;
   // Parse command line options and arguments.
   $args = drush_parse_args($argv, array('h', 'u', 'r'));
-  
+
   // Define basic options as constants.
   define('DRUSH_URI',         drush_get_option(array('l', 'uri'), FALSE));
   define('DRUSH_VERBOSE',     drush_get_option(array('v','verbose'), FALSE));
   define('DRUSH_AFFIRMATIVE', drush_get_option(array('y','yes'), FALSE));
   define('DRUSH_SIMULATE',    drush_get_option(array('s','simulate'), FALSE));
-  
+
   // define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
-  
+
   // If no root is defined, we try to guess from the current directory.
   define('DRUSH_DRUPAL_ROOT',  drush_get_option(array('r', 'root'), _drush_locate_root()));
 
@@ -56,22 +56,22 @@ function drush_bootstrap($argc, $argv) {
   chdir(DRUSH_DRUPAL_ROOT);
   // Bootstrap Drupal.
   _drush_bootstrap_drupal();
-  
+
   // Now we can use all of Drupal.
   require_once drupal_get_path('module','drush') . '/drush.inc';
-  
+
   if(DRUSH_SIMULATE) {
     drush_print(t('SIMULATION MODE IS ENABLED. NO ACTUAL ACTION WILL BE TAKEN. SYSTEM WILL REMAIN UNCHANGED.'));
   }
-  
+
   // Dispatch the command.
   $output = drush_dispatch($args['commands']);
-  
+
   // prevent a '1' at the end of the outputs
   if ($output === true) {
     $output = '';
   }
-  
+
   // TODO: Terminate with the correct exit status.
   return $output;
 }
@@ -92,7 +92,7 @@ function _drush_locate_root() {
   }
   // Move up dir by dir and check each.
   while ($path = _drush_locate_root_moveup($path)) {
-    if (file_exists($path . '/' . DRUSH_DRUPAL_BOOTSTRAP)) 
+    if (file_exists($path . '/' . DRUSH_DRUPAL_BOOTSTRAP))
       return $path;
   }
 
@@ -140,15 +140,15 @@ function _drush_login() {
 /**
  * Parse console arguments.
  *
- * @param $args 
+ * @param $args
  *   The console argument array (usually $argv)
- * @param $arg_opts 
+ * @param $arg_opts
  *   An array of options that are followed by an argument.
  *   e.g. shell.php -u admin -v --> $arg_opts = array('u')
  * @param $default_options
- * @return 
+ * @return
  *   A associative array:
- *   $return['commands'] ia a numeric array of all commands, 
+ *   $return['commands'] ia a numeric array of all commands,
  *   $return['options'] contains the options. The option keys
  *   are always noted without - or -- and are set to TRUE if they were
  *   invoked, to the argument if followed by an argument, and if not present

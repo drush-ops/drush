@@ -11,7 +11,7 @@ some alpha-channel translucency with that? ;)
 
 drush.module itself doesn't provide any actual tools or commands but the API
 for those. There are several modules that provide Drush utilities included in
-this download, though (namely the Drush Packet Manager, drush_pm.module, and 
+this download, though (namely the Drush Packet Manager, drush_pm.module, and
 the Drush Toolbox, drush_tools.module.
 
 INSTALLATION
@@ -19,22 +19,22 @@ INSTALLATION
 For Linux/Unix (and probably also Mac):
   1. Untar the tarball into your module directory (sites/all/modules)
   2. Enable drush.module and any submodules you want to use
-  3. (optional, but recommended:) To ease the use of drush, 
+  3. (optional, but recommended:) To ease the use of drush,
      - create a link to drush.php in a directory that is in your $PATH:
        $ ln sites/all/modules/drush/drush.php /usr/bin/drush
      OR
      - create an alias to drush.php:
        $ alias drush='php modules/drush/drush.php'
        (this goes into .profile or .bash_aliases in your home folder)
-     
+
   4. Start using drush by running "drush" from your Drupal root directory.
-     
+
      (or, if you did not follow step 3, by running "./sites/all/modules/drush.php"
       or navigating to sites/all/modules/drush and running "./drush.php" )
- 
+
 For Windows (experimental!):
   - Follow steps 1 and 2. Use drush by navigating to sites/all/modules/drush
-    and running 'drush.bat'. 
+    and running 'drush.bat'.
   - Whenever the documentation or the help text refers to
    'drush [option] <command>' or something similar, 'drush' has to be replaced
     by 'drush.bat'.
@@ -74,7 +74,7 @@ LIMITATIONS
 * Due to reliance on PHP's tokenizer, drush may not work well in situations
   where the PHP code for the Drupal code base is encrypted (refer to API.txt
   for more information). This is unlikely to change.
-  
+
 CREDITS
 -------
 Originally developed by Arto Bendiken <http://bendiken.net/> for Drupal 4.7.

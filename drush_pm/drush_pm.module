@@ -3,7 +3,7 @@
 
 /**
  * @file
- * 
+ *  The drush Package Manager
  */
 
 /**
@@ -26,100 +26,15 @@ function drush_pm_drush_command() {
     'callback' => 'drush_pm_install',
     'description' => 'Install one or more modules'
   );
+  $items['pm refresh'] = array(
+    'callback' => 'drush_pm_refresh',
+    'description' => 'Refresh update status information'
+  );
   $items['pm update'] = array(
     'callback' => 'drush_pm_update',
     'description' => 'Update your modules'
   );
   return $items;
-}
-
-/**
- * Get update information for all installed projects
- * 
- * @return An array containing remote and local versions for all installed projects
- */
-function _drush_pm_get_update_info() {
-  // @TODO: determine when we want to refresh.
-  // update_status_refresh();
-  $info = _update_status_get_info();
-  $data = update_status_calculate_project_data($info);
-  $data = drush_pm_get_project_path($data);
-  return $data;
-}
-
-/**
- * Get project information from drupal.org
- * 
- * @param $projects An array of project names
- */
-function drush_pm_get_project_info($projects) {
-  $info = array();
-  $data = array();
-  foreach ($projects as $project) {
-    $url = UPDATE_STATUS_DEFAULT_URL .'/'. $project .'/'. UPDATE_STATUS_MAJOR_VERSION;
-    $xml = drupal_http_request($url);
-    $data[] = $xml->data;
-  }
-
-  if ($data) {
-    $parser = new update_status_xml_parser;
-    $info = $parser->parse($data);
-  }
-  return $info;
-}
-
-/**
- * Get the recommended release for a certain project.
- * 
- * @param $project A project information array, as returned by drush_pm_get_project_info()
- */
-function drush_pm_get_release($project) {
-  $found_latest_version = false;
-  $found_recommended_version = false;
-  $minor = '';
-  $version_patch_changed = '';
-  
-  foreach($project['releases'] as $version => $release_info) {
-     // ignore unpublished releases.
-    if ($release_info['status'] != 'published') {
-      continue;
-    }
-    
-    // If we haven't found a recommended version yet, put the dev
-    // version as recommended and hope it gets overwritten later.
-    // Look for the 'latest version' if we haven't found it yet.
-    // Latest version is defined as the most recent version for the
-    // default major version.
-    if (!$found_latest_version &&
-        $release_info['version_major'] == $project['default_major']) {
-      
-      $latest_version = $version;
-      $found_latest_version = TRUE;
-    }
-    
-    if (!$found_recommended_version &&
-      $release_info['version_major'] == $project['default_major']) {
-      if ($minor != $release_info['version_patch']) {
-        $minor = $release_info['version_patch'];
-        $version_patch_changed = $version;
-      }
-      if (empty($release_info['version_extra']) && $minor == $release_info['version_patch']) { 
-        $recommended_version = $version_patch_changed;
-        $found_recommended_version = TRUE;
-      }
-      continue;
-    }
-  }
-  
-  if ($found_recommended_version) {
-    return $project['releases'][$recommended_version];
-  }
-  else if ($found_latest_version) {
-    return $project['releases'][$latest_version];
-  }
-  else {
-    return false;
-  }
 }
 
 /**
@@ -132,16 +47,16 @@ function drush_pm_install() {
 
   // TODO: Make it possible to install modules only for a specific site, e.g. sites/example.com/modules
   $modulepath = DRUSH_DRUPAL_ROOT . '/sites/all/modules/';
-  
+
   // Get the module info from drupal.org via xml-rpc
   $info = drush_pm_get_project_info($projects);
 
   if (!$info) {
     drush_die(t("None of the given projects exists or has releases that are compatible with your Drupal version."));
   }
- 
+
   $startdir = getcwd();
-  
+
   // Download and install each module
   foreach($projects as $project) {
     if (isset($info[$project]) && $release = drush_pm_get_release($info[$project])) {
@@ -149,15 +64,15 @@ function drush_pm_install() {
         drush_error(t('Project !project is already installed. Skipping.', array('!project' => $project)));
       }
       elseif (drush_pm_install_project($project, $release, $modulepath)) {
-        drush_print(t("Project !project successfully installed (version !version).", 
+        drush_print(t("Project !project successfully installed (version !version).",
           array('!project' => $project, '!version' => $release['version'])));
       }
     }
     else {
       drush_error(t('Project !project doesn\' exist or has no releases that are compatible with your Drupal version. Skipping.', array('!project' => $project)));
-    } 
+    }
   }
-  
+
   drush_op('chdir', $startdir);
 }
 
@@ -173,20 +88,20 @@ function drush_pm_install_project($project, $info, $path = '.') {
   drush_op('chdir', $path);
 
   drush_verbose("Downloading project $project ...");
-  
+
   // Get the filename...
   $filename = explode('/', $info['download_link']);
   $filename = array_pop($filename);
-  
+
   // Download it.
   drush_shell_exec("wget " .$info['download_link']);
-  
-  
+
+
   if (file_exists($path . $filename) || DRUSH_SIMULATE)
     drush_verbose("Downloading " . $filename . " was successful.");
-  else 
+  else
     return drush_error("Downloading " . $filename . " from ".$info['download_link']." failed.");
-  
+
   // Check Md5 hash
   if (md5_file($filename) != $info['mdhash'] && !DRUSH_SIMULATE) {
     drush_op('unlink', $filename);
@@ -195,17 +110,17 @@ function drush_pm_install_project($project, $info, $path = '.') {
   else {
     drush_verbose("Md5 checksum of $filename verified.");
   }
-  
+
   // Decompress
   drush_shell_exec("gzip -d " . $filename);
   $filename = substr($filename, 0, strlen($filename)-3);
   // Untar
   drush_shell_exec("tar -xf " . $filename);
-  // We're not using tar -xzf because that's not working on windows...  
-  
+  // We're not using tar -xzf because that's not working on windows...
+
   // Remove the tarball
   drush_op('unlink', $filename);
-  
+
   if (!is_dir($path . $project) && !DRUSH_SIMULATE)
     return drush_error("Error. Downloaded file $filename couldn't be untarred correctly");
   else
@@ -218,15 +133,20 @@ function drush_pm_install_project($project, $info, $path = '.') {
 function drush_pm_update() {
   // Get update status information.
   $data = _drush_pm_get_update_info();
+
+  $last = variable_get('update_status_last', 0);
+  drush_print(t('Update information last refreshed: ') . ($last  ? format_date($last) : t('Never')));
+  drush_print();
+
   // table headers
   $rows[] = array(t('name'), t('installed version'), t('candidate version'), t('status'));
-  
+
   foreach ($data as $project) {
     if (!$project['title']) {
       continue;
     }
-    
-    // We try to guess wether the installed version is newer than the recommended version, but older than the 
+
+    // We try to guess wether the installed version is newer than the recommended version, but older than the
     // latest version. If so, we will update to the newest version instead of the recommended version.
     // Example: Recommended version is foo-5.x-1.5 , you have foo-5.x-1.6-beta1 , latest is foo-5.x-1.6-beta2
     // Then, you wouldn't want to udpate to version 1.5, but to 1.6-beta2
@@ -237,7 +157,7 @@ function drush_pm_update() {
         $project['version'] = $project['latest_version'];
       }
     }
-    
+
     switch($project['status']) {
       case UPDATE_STATUS_CURRENT:
         $status = t('OK');
@@ -252,23 +172,23 @@ function drush_pm_update() {
         $project['version'] = t('unknown');
         break;
     }
-    
+
     $rows[] = array($project['title'], $project['existing_version'], $project['version'], $status);
   }
-  
-  drush_print(t("Update status information on all installed and enabled Drupal modules:\n"));
+
+  drush_print(t("Update status information on all installed and enabled Drupal modules:"));
   drush_print_table($rows, 2, TRUE);
   drush_print();
-  
+
   if (isset($updateable['drupal'])) {
     drush_print("NOTE: An update for the Drupal core is available. \nDrupal itself can't yet be updated by this tool. Please update Drupal manually.\n");
     unset($updateable['drupal']);
   }
-  
+
   if (empty($updateable)) {
     drush_die(t('No updates available.'));
   }
-  
+
   drush_print(t('Updates are available for the following projects:'));
   foreach($updateable as $project) {
     $print .= $project['title'] . " [" . $project['name'] . "], ";
@@ -281,11 +201,11 @@ function drush_pm_update() {
   if(!drush_confirm(t('Do you really want to continue?'))) {
     drush_die('Aborting.');
   }
-  
+
   // No we start the actual updating.
   foreach($updateable as $project) {
     drush_verbose(t('Starting to update !project ...', array('!project' => $project['title'])));
-    
+
     // $basepath is the dir where the current module is installed. It's one dir up from the
     // place of the project's info files.
     $basepath = explode('/', $project['path']);
@@ -295,7 +215,7 @@ function drush_pm_update() {
     $rename_ext = '_backup' . md5(rand(0,1) . microtime());
     // Move the module to module_backup.
     drush_op('rename', DRUSH_DRUPAL_ROOT .'/' . $project['path'], $basepath . $project['name'] . $rename_ext);
-    
+
     // Install the new version.
     if (!drush_pm_install_project($project['name'], $project['releases'][$project['version']], $basepath)) {
       drush_error(t('Updating project !project failed. Restoring previously installed version.', array('!project' => $project['name'])));
@@ -310,6 +230,102 @@ function drush_pm_update() {
   }
   drush_print();
   drush_print(t("Update finished. You should now run update.php through your browser."));
+}
+
+
+/**
+ * Get update information for all installed projects.
+ *
+ * @return An array containing remote and local versions for all installed projects
+ */
+function _drush_pm_get_update_info() {
+  $info = _update_status_get_info();
+  $data = update_status_calculate_project_data($info);
+  $data = drush_pm_get_project_path($data);
+  return $data;
+}
+
+/**
+ * Command callback. Refresh update status information.
+ */
+function drush_pm_refresh() {
+  drush_print(t("Refreshing update status information ..."));
+  update_status_refresh();
+  drush_print(t("Done."));
+}
+
+/**
+ * Get project information from drupal.org.
+ *
+ * @param $projects An array of project names
+ */
+function drush_pm_get_project_info($projects) {
+  $info = array();
+  $data = array();
+  foreach ($projects as $project) {
+    $url = UPDATE_STATUS_DEFAULT_URL .'/'. $project .'/'. UPDATE_STATUS_MAJOR_VERSION;
+    $xml = drupal_http_request($url);
+    $data[] = $xml->data;
+  }
+  if ($data) {
+    $parser = new update_status_xml_parser;
+    $info = $parser->parse($data);
+  }
+  return $info;
+}
+
+/**
+ * Get the recommended release for a certain project.
+ *
+ * @param $project A project information array, as returned by drush_pm_get_project_info()
+ */
+function drush_pm_get_release($project) {
+  $found_latest_version = false;
+  $found_recommended_version = false;
+  $minor = '';
+  $version_patch_changed = '';
+
+  foreach($project['releases'] as $version => $release_info) {
+     // ignore unpublished releases.
+    if ($release_info['status'] != 'published') {
+      continue;
+    }
+
+    // If we haven't found a recommended version yet, put the dev
+    // version as recommended and hope it gets overwritten later.
+    // Look for the 'latest version' if we haven't found it yet.
+    // Latest version is defined as the most recent version for the
+    // default major version.
+    if (!$found_latest_version &&
+        $release_info['version_major'] == $project['default_major']) {
+
+      $latest_version = $version;
+      $found_latest_version = TRUE;
+    }
+
+    if (!$found_recommended_version &&
+      $release_info['version_major'] == $project['default_major']) {
+      if ($minor != $release_info['version_patch']) {
+        $minor = $release_info['version_patch'];
+        $version_patch_changed = $version;
+      }
+      if (empty($release_info['version_extra']) && $minor == $release_info['version_patch']) {
+        $recommended_version = $version_patch_changed;
+        $found_recommended_version = TRUE;
+      }
+      continue;
+    }
+  }
+
+  if ($found_recommended_version) {
+    return $project['releases'][$recommended_version];
+  }
+  else if ($found_latest_version) {
+    return $project['releases'][$latest_version];
+  }
+  else {
+    return false;
+  }
 }
 
 /**
@@ -360,7 +376,7 @@ function drush_pm_get_project_path($projects) {
 
     if (array_key_exists($info['project'], $projects)) {
       if (!isset($projects[$info['project']]['path'])) {
-        $projects[$info['project']]['path'] = dirname($file->filename); 
+        $projects[$info['project']]['path'] = dirname($file->filename);
       }
       else {
         $old_path = $projects[$info['project']]['path'];
@@ -383,26 +399,28 @@ function drush_pm_get_project_path($projects) {
 function delete_dir($dir) {
   if (substr($dir, strlen($dir)-1, 1) != '/')
     $dir .= '/';
-  
+
   if ($handle = opendir($dir)) {
     while ($obj = readdir($handle)) {
       if ($obj != '.' && $obj != '..') {
         if (is_dir($dir.$obj)) {
-          if (!delete_dir($dir.$obj))
+          if (!delete_dir($dir.$obj)) {
             return false;
+          }
         }
         elseif (is_file($dir.$obj)) {
-          if (!unlink($dir.$obj))
+          if (!unlink($dir.$obj)) {
             return false;
+          }
         }
       }
     }
 
     closedir($handle);
 
-    if (!@rmdir($dir))
+    if (!@rmdir($dir)) {
       return false;
-    
+    }
     return true;
   }
   return false;

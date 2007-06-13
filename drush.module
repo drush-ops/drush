@@ -29,18 +29,18 @@ function drush_callback_help() {
     drush_print(t('Usage: drush [options] <command> <command> ...'));
     drush_print();
     drush_print(t('Options: '));
-    
+
     // TODO: Add a hook for this, to allow other modules to add their options
     $rows[] = array('-r <path>, --root=<path>', t("Drupal root directory to use (default: current directory)"));
     $rows[] = array('-l <uri> , --uri=<uri>', t('URI of the drupal site to use (only needed in multisite environments)'));
     $rows[] = array('-v, --verbose', t('Display all available output'));
     $rows[] = array('-y, --yes', t("Assume 'yes' as answer to all prompts"));
     $rows[] = array('-s, --simulate', t("Simulate all relevant actions (don't actually change the system)"));
-    
+
     drush_print_table($rows, 2);
     drush_print();
     drush_print('Commands: ');
-    
+
     $commands = drush_get_commands();
     $rows = array();
     foreach($commands as $key => $command) {
@@ -74,11 +74,11 @@ function drush_usage() {
   if (drush_get_option('version')) {
     return drush_print('drush ' . drush_version());
   }
-  
+
   if (drush_get_option('help') || empty($commands)) {
     return drush_callback_help();
   }
-  
+
   return drush_error(t('Invalid command !command.', array('!command' => implode(" ", $commands))));
-    
+
 }

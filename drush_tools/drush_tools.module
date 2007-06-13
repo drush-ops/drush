@@ -3,7 +3,7 @@
 
 /**
  * @file
- * 
+ *
  */
 
 /**
@@ -49,7 +49,7 @@ function drush_tools_cron() {
 function drush_tools_cache_clear() {
   // clear preprocessor cache
   drupal_clear_css_cache();
-  
+
   // clear core tables
   $core = array('cache', 'cache_filter', 'cache_menu', 'cache_page');
   $alltables = array_merge($core, module_invoke_all('devel_caches'));
