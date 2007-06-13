@@ -3,16 +3,8 @@
 
 /**
  * @file
- *
+ * drush (the drupal shell) provides a command line interface for Drupal.
  */
-
-/**
- * Implementation of hook_menu().
- */
-function drush_menu($may_cache) {
-  $items = array();
-  return $items;
-}
 
 /**
  * Implementation of hook_drush_command().
@@ -31,7 +23,7 @@ function drush_drush_command() {
 function drush_callback_help() {
   $commands = func_get_args();
 
-  // display general help text if no command is specified
+  // Display general help text if no command is specified.
   if (empty($commands)) {
     drush_print('drush ' . drush_version());
     drush_print(t('Usage: drush [options] <command> <command> ...'));
@@ -56,25 +48,22 @@ function drush_callback_help() {
     }
     drush_print_table($rows, 2);
   }
-  // print command specific help
+  // Print command specific help.
   else {
     $commandstring = implode(" ", $commands);
 
-    if (!drush_is_command($commandstring))
+    if (!drush_is_command($commandstring)) {
       return drush_error(t('Invalid command !command.', array('!command' => implode(" ", $commands))));
+    }
 
-    $help = module_invoke_all('help', 'drush:'.$commandstring);
+    $help = module_invoke_all('help', 'drush:'. $commandstring);
     if (!empty($help)) {
       drush_print(implode("\n", $help));
     }
     else {
-      drush_print(t("No help available for command 'drush $commandstring'"));
+      drush_print(t("No help available for command 'drush $commandstring'."));
     }
-    //drush_print('');
-    //drush_print(t('Run drush help for general help'));
   }
-  
-  // return TRUE;
 }
 
 /**
@@ -82,11 +71,13 @@ function drush_callback_help() {
  */
 function drush_usage() {
   $commands = func_get_args();
-  if (drush_get_option('version'))
+  if (drush_get_option('version')) {
     return drush_print('drush ' . drush_version());
+  }
   
-  if (drush_get_option('help') || empty($commands))
+  if (drush_get_option('help') || empty($commands)) {
     return drush_callback_help();
+  }
   
   return drush_error(t('Invalid command !command.', array('!command' => implode(" ", $commands))));
     

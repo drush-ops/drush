@@ -13,8 +13,9 @@
 define('DRUSH_DRUPAL_BOOTSTRAP', 'includes/bootstrap.inc');
 
 // Terminate immediately unless invoked as a command line script
-if (!empty($_SERVER['REQUEST_METHOD']))
+if (!empty($_SERVER['REQUEST_METHOD'])) {
   die();
+}
 
 exit(drush_bootstrap($GLOBALS['argc'], $GLOBALS['argv']));
 
@@ -32,15 +33,16 @@ function drush_bootstrap($argc, $argv) {
   
   // define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
   
-  // If no root is defined, we try to guess from the current directory
+  // If no root is defined, we try to guess from the current directory.
   define('DRUSH_DRUPAL_ROOT',  drush_get_option(array('r', 'root'), _drush_locate_root()));
 
   // If the Drupal directory can't be found, and no -r option was specified,
   // or the path specified in -r does not point to a Drupal directory,
   // we have no alternative but to give up the ghost at this point.
   // (NOTE: t() is not available yet.)
-  if (!DRUSH_DRUPAL_ROOT || !is_dir(DRUSH_DRUPAL_ROOT) || !file_exists(DRUSH_DRUPAL_ROOT . '/' . DRUSH_DRUPAL_BOOTSTRAP))
+  if (!DRUSH_DRUPAL_ROOT || !is_dir(DRUSH_DRUPAL_ROOT) || !file_exists(DRUSH_DRUPAL_ROOT . '/' . DRUSH_DRUPAL_BOOTSTRAP))  {
     exit("E: Could not locate the Drupal installation directory. Aborting.\n");
+  }
 
   // Fake the necessary HTTP headers that Drupal needs:
   $drupal_base_url = parse_url(DRUSH_URI);
@@ -50,12 +52,12 @@ function drush_bootstrap($argc, $argv) {
   $_SERVER['REMOTE_ADDR'] = NULL;
   $_SERVER['REQUEST_METHOD'] = NULL;
 
-  // Change to drupal root dir.
+  // Change to Drupal root dir.
   chdir(DRUSH_DRUPAL_ROOT);
-  // Bootstrap drupal.
+  // Bootstrap Drupal.
   _drush_bootstrap_drupal();
   
-  // Now we can use all of drupal.
+  // Now we can use all of Drupal.
   require_once drupal_get_path('module','drush') . '/drush.inc';
   
   if(DRUSH_SIMULATE) {
@@ -66,8 +68,9 @@ function drush_bootstrap($argc, $argv) {
   $output = drush_dispatch($args['commands']);
   
   // prevent a '1' at the end of the outputs
-  if ($output === true)
+  if ($output === true) {
     $output = '';
+  }
   
   // TODO: Terminate with the correct exit status.
   return $output;
@@ -81,12 +84,13 @@ function drush_bootstrap($argc, $argv) {
 function _drush_locate_root() {
 
   $path = getcwd();
-  // convert windows paths
+  // Convert windows paths.
   $path = drush_convert_path($path);
-  // check the current path
-  if (file_exists($path . '/' . DRUSH_DRUPAL_BOOTSTRAP)) 
-      return $path;
-  // move up dir by dir and check each
+  // Check the current path.
+  if (file_exists($path . '/' . DRUSH_DRUPAL_BOOTSTRAP)) {
+    return $path;
+  }
+  // Move up dir by dir and check each.
   while ($path = _drush_locate_root_moveup($path)) {
     if (file_exists($path . '/' . DRUSH_DRUPAL_BOOTSTRAP)) 
       return $path;
@@ -96,11 +100,12 @@ function _drush_locate_root() {
 }
 
 function _drush_locate_root_moveup($path) {
-  if (empty($path))
+  if (empty($path)) {
     return FALSE;
-
+  }
   $path = explode('/', $path);
-  array_pop($path); // move one directory up
+  // Move one directory up.
+  array_pop($path);
   return implode($path, '/');
 }
 
@@ -110,8 +115,9 @@ function _drush_locate_root_moveup($path) {
 function _drush_bootstrap_drupal() {
   require_once DRUSH_DRUPAL_BOOTSTRAP;
 
-  if (($conf_path = conf_path()) && !file_exists("./$conf_path/settings.php"))
+  if (($conf_path = conf_path()) && !file_exists("./$conf_path/settings.php")) {
     drush_die("Unable to load Drupal configuration from $conf_path/.");
+  }
 
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
@@ -134,15 +140,19 @@ function _drush_login() {
 /**
  * Parse console arguments.
  *
- * @param $args The console argument array (usually $argv)
- * @param $arg_opts An array of options that are followed by an argument.
- *                  e.g. shell.php -u admin -v --> $arg_opts = array('u')
+ * @param $args 
+ *   The console argument array (usually $argv)
+ * @param $arg_opts 
+ *   An array of options that are followed by an argument.
+ *   e.g. shell.php -u admin -v --> $arg_opts = array('u')
  * @param $default_options
- * @return A associative array, $return['commands'] ia a numeric array of all
- *         commands, $return['options'] contains the options. The option keys
- *         are always noted without - or -- and are set to TRUE if they were
- *         invoked, to the argument if followed by an argument, and if not present
- *         to their default value or FALSE if no default value was specified.
+ * @return 
+ *   A associative array:
+ *   $return['commands'] ia a numeric array of all commands, 
+ *   $return['options'] contains the options. The option keys
+ *   are always noted without - or -- and are set to TRUE if they were
+ *   invoked, to the argument if followed by an argument, and if not present
+ *   to their default value or FALSE if no default value was specified.
  **/
 function drush_parse_args($args = array(), $arg_opts = array(), $default_options = array()) {
   $options = $default_options;
@@ -150,16 +160,16 @@ function drush_parse_args($args = array(), $arg_opts = array(), $default_options
 
   for($i = 1; $i < count($args); $i++) {
     $opt = $args[$i];
-    // is the arg an option (starting with '-') ?
+    // Is the arg an option (starting with '-')?
     if($opt{0} == "-" && strlen($opt) != 1) {
-      // do we have multiple options behind one '-'?
+      // Do we have multiple options behind one '-'?
       if (strlen($opt) > 2 && $opt{1} != "-") {
-        // each char becomes a key of its own
+        // Each char becomes a key of its own.
         for($j = 1; $j < strlen($opt); $j++) {
           $options[substr($opt, $j, 1)] = true;
         }
       }
-      // do we have a longopt (starting with '--')?
+      // Do we have a longopt (starting with '--')?
       elseif ($opt{1} == "-") {
         if ($pos = strpos($opt, '=')) {
           $options[substr($opt, 2, $pos-2)] = substr($opt, $pos+1);
@@ -170,7 +180,7 @@ function drush_parse_args($args = array(), $arg_opts = array(), $default_options
       }
       else {
         $opt = substr($opt, 1);
-        // check if the current opt is in $arg_opts (= has to be followed by an argument)
+        // Check if the current opt is in $arg_opts (= has to be followed by an argument).
         if ((in_array($opt, $arg_opts))) {
           if (($args[$i+1] == NULL) || ($args[$i+1] == "") || ($args[$i+1]{0} == "-")) {
             exit("Invalid input: -$opt needs to be followed by an argument.");
@@ -183,7 +193,7 @@ function drush_parse_args($args = array(), $arg_opts = array(), $default_options
         }
       }
     }
-    // if it's not an option, it's a command
+    // If it's not an option, it's a command.
     else {
       $commands[] = $opt;
     }

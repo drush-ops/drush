@@ -6,16 +6,14 @@
  * The drush API implementation and helpers.
  */
 
-// Basic constants.
-define('DRUSH_PATH', dirname(__FILE__));
-
 /**
  * Returns the drush version (parsed from drush.ini).
  */
 function drush_version() {
   static $version;
-  if (isset($version) && $version)
-    return $ini;
+  if (isset($version) && $version) {
+    return $version;
+  }
     
   $ini = parse_ini_file(drupal_get_path('module','drush') . '/drush.info', FALSE);
   $version = $ini['version'];
@@ -27,24 +25,23 @@ function drush_version() {
  * Modules can add commands by implementing hook_drush_commands().
  */
 function drush_dispatch($commands) {
-  
   // Get a list of all implemented commands.
   $implemented = drush_get_commands();
   
   $go = TRUE;
   $result = FALSE;
-  // try to determine the handler for the current command
-  while(!$result && count($commands)) {
+  // Try to determine the handler for the current command.
+  while (!$result && count($commands)) {
     $command = implode(" ", $commands);
-    if(isset($implemented[$command])) {
+    if (isset($implemented[$command])) {
       $result = $implemented[$command];
     }
     else {
       $funcargs[] = array_pop($commands);
     }
   }
-  if($result) {
-    // call the callback function of the active command
+  if ($result) {
+    // Call the callback function of the active command.
     return call_user_func_array($result['callback'], array_reverse($funcargs));
   }
   else {
@@ -57,13 +54,14 @@ function drush_dispatch($commands) {
 
 /**
  * Get a list of all implemented commands.
- * This invokes hook_drush_command()
+ * This invokes hook_drush_command().
  */
 function drush_get_commands($refresh = FALSE) {
   static $commands;
   
-  if (!$refresh && !empty($commands))
+  if (!$refresh && !empty($commands)) {
     return $commands;
+  }
     
   $commands = module_invoke_all('drush_command', TRUE);
   
@@ -72,30 +70,32 @@ function drush_get_commands($refresh = FALSE) {
 
 function drush_is_command($command) {
   $commands = drush_get_commands();
-  if (isset($commands[$command]))
-    return true;
-  else
-    return false;
+  return (isset($commands[$command])) ? TRUE : FALSE;
 }
 
 /**
  * Calls a given function, passing through all arguments unchanged.
  *
- * TODO: Allow operations that have mutative or destructive side effects to be
- * systematically suppressed or recorded.
+ * This should be used when calling possibly mutative or destructive functions
+ * (e.g. unlink() and other file system functions) so that can be suppressed
+ * if the simulation mode is enabled.
+ *
+ * @param $function
+ *   The name of the function.
+ * @return
+ *   The return value of the function, or TRUE if simulation mode is enabled.
  */
 function drush_op($function) {
   $args = func_get_args();
-  array_shift($args); // skip function name
+  array_shift($args); // Skip function name
 
-  // TODO: support for recording operations.
-  // TODO: maybe re-add the simulation mode
-
-  if (DRUSH_VERBOSE || DRUSH_SIMULATE)
+  if (DRUSH_VERBOSE || DRUSH_SIMULATE) {
     drush_print("Calling $function(" . implode(", ", $args) . ')');
+  }
   
-  if (DRUSH_SIMULATE)
+  if (DRUSH_SIMULATE) {
     return true;
+  }
 
   return call_user_func_array($function, $args);
 }
@@ -104,13 +104,20 @@ function drush_op($function) {
  * Executes a shell command.
  * Output is only printed if in verbose mode.
  * If in simulation mode, no action is taken.
+ *
+ * @param $cmd
+ *   The command to execute.
+ * @param $indent
+ *   Indentation for the output (only for verbose mode).
  */
 function drush_shell_exec($cmd, $indent = 0) {
-  if (DRUSH_VERBOSE || DRUSH_SIMULATE) 
+  if (DRUSH_VERBOSE || DRUSH_SIMULATE) {
     drush_print('Executing: ' . $cmd, $indent);
+  }
   
-  if (DRUSH_SIMULATE)
+  if (DRUSH_SIMULATE) {
     return true;
+  }
 
   exec($cmd . ' 2>&1', $output, $result);
 
@@ -119,8 +126,9 @@ function drush_shell_exec($cmd, $indent = 0) {
       drush_print($line, $indent + 2);
     }
   }
-
-  return ($result == 0); // exit code zero means success
+  
+  // Exit code 0 means success.
+  return ($result == 0);
 }
 
 /**
@@ -134,7 +142,8 @@ function drush_die($msg = NULL, $status = NULL) {
 /**
  * Prints an error message.
  * Always returns FALSE. This allows to do e.g.
- * if ($error) return drush_error('A error occured);
+ * if ($error) { return drush_error('A error occured); }
+ * to make your function return FALSE in case of an error.
  */
 function drush_error($msg = '') {
   // TODO: print to stderr if running in CLI mode.
@@ -144,13 +153,13 @@ function drush_error($msg = '') {
 
 /**
  * Prints a message.
- * @param $msg The message to print.
- * @param $indent The indentation (space chars)
+ * @param $message 
+ *   The message to print.
+ * @param $indent 
+ *    The indentation (space chars)
  */
-function drush_print($msg = '', $indent = 0) {
-  if ($indent > 0) 
-    print str_repeat(' ', $indent);
-  print (string)$msg . "\n";
+function drush_print($message = '', $indent = 0) {
+  print str_repeat(' ', $indent) . (string)$message . "\n";
 }
 
 /**
@@ -158,16 +167,14 @@ function drush_print($msg = '', $indent = 0) {
  * Returns TRUE if in verbose mode, otherwise FALSE.
  */
 function drush_verbose($msg = FALSE, $indent = 0) {
-  if (!DRUSH_VERBOSE)
+  if (!DRUSH_VERBOSE) {
     return FALSE;
-  if (DRUSH_VERBOSE && $msg === FALSE)
+  }
+  if (DRUSH_VERBOSE && $msg === FALSE) {
     return TRUE;
+  }
   
-  if ($indent > 0) 
-    print str_repeat(' ', $indent);
-  
-  print (string)$msg . "\n";
-  
+  print str_repeat(' ', $indent) . (string)$msg . "\n";
   return TRUE;
 }
 
@@ -178,58 +185,74 @@ function drush_verbose($msg = FALSE, $indent = 0) {
  * @return TRUE if the user entered 'y', FALSE if he entered 'n'
  */
 function drush_confirm($msg, $indent = 0) {
-  print str_repeat(' ', $indent) . $msg . " (y/n): ";
+  print str_repeat(' ', $indent) . (string)$msg . " (y/n): ";
   
   if (DRUSH_AFFIRMATIVE) {
     print "y\n";
     return TRUE;
   }
   while ($line = trim(fgets(STDIN))) {
-    if ($line == 'y')
+    if ($line == 'y') {
       return TRUE;
-    if ($line == 'n')
+    }
+    if ($line == 'n') {
       return FALSE;
-    print $msg . " (y/n): ";
+    }
+    print str_repeat(' ', $indent) . (string)$msg . " (y/n): ";
   }
 
 }
 
 /**
  * Print a formatted table.
- * @param $rows The rows to print
- * @param $indent Indent for the whole table
- * @param $header If TRUE, the first line will be treated as table
- *        header and be underlined.
+ * @param $rows 
+ *   The rows to print
+ * @param $indent 
+ *   Indentation for the whole table
+ * @param $header 
+ *   If TRUE, the first line will be treated as table
+ *   header and therefore be underlined.
  */
 function drush_print_table($rows, $indent = 0, $header = FALSE) {
-  if (count($rows) == 0)
-    return; // nothing to output
+  if (count($rows) == 0) {
+    // Nothing to output.
+    return;
+  }
 
   $indent = str_repeat(' ', $indent);
   $format = _drush_get_table_row_format($rows);
 
-  $counter = 0;
+  $header_printed = FALSE;
   foreach ($rows as $cols) {
+    // Print the current line.
     print $indent . vsprintf($format, $cols) . "\n";
-    if ($counter == 0 && $header) {
+    // Underline the first row if $header is set to true.
+    if (!$header_printed && $header) {
       $headers = array();
-      foreach ($cols as $col)
+      foreach ($cols as $col) {
         $headers[] = str_repeat('-', strlen($col));
+      }
       print $indent . trim(vsprintf($format, $headers)) . "\n";
+      $header_printed = TRUE;
     }
-    $counter++;
   }
 }
 
 /**
- * Format a table
+ * Create the table row format string to be used in vsprintf().
  */
 function _drush_get_table_row_format($table) {
   $widths = _drush_get_table_column_widths($table);
-  $format = implode("\t", array_map(create_function('$width', 'return "%-{$width}s";'), $widths));
+  foreach ($widths as $col_width) {
+    $col_formats[] = "%-{$col_width}s";
+  }
+  $format = implode("\t", $col_formats);
   return $format;
 }
 
+/**
+ * Calculate table column widths.
+ */
 function _drush_get_table_column_widths($table) {
   $widths = array();
   foreach ($table as $row => $cols) {
