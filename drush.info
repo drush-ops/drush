@@ -2,4 +2,3 @@
 name = drush
 description = "drush (the drupal shell) provides a command line interface for Drupal."
 package = drush
-version = "$Name$"
