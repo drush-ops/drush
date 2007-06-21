@@ -321,59 +321,20 @@ function drush_pm_get_release($project) {
  * We need to set the project path by looking at the module info files.
  */
 function drush_pm_get_project_path($projects) {
-
-  // Get current list of modules.
-  $files = drupal_system_listing('\.module$', 'modules', 'name', 0);
-
-  // Extract current files from database.
-  system_get_files_database($files, 'module');
-
-  foreach ($files as $filename => $file) {
-    // Skip not enabled modules.
-    if (empty($file->status)) {
-      continue;
-    }
-
-    $info = _module_parse_info_file(dirname($file->filename) .'/'. $file->name .'.info');
-
-    // Skip if this is broken.
-    if (empty($info)) {
-      continue;
-    }
-    if (!array_key_exists('project', $info)) {
-      // If we don't know the project yet, first see if this is core:
-      if (isset($info['package']) && (strpos($info['package'], 'Core -') !== FALSE)) {
-        $info['project'] = 'drupal';
+  foreach ($projects as $project => $info) {
+    if (!isset($projects[$project]['path'])) {
+      $path = explode('/', $info['filename']);
+      // As some modules are not located in their project's root directory
+      // but in a subdirectory (e.g. all the ecommerce modules), we take the module's
+      // info file's path, and then move up until we are at a directory with the
+      // project's name.
+      $i = count($path) - 1;
+      $stop = array_search($project, $path);
+      while ($i > $stop) {
+        unset($path[$i]);
+        $i--;
       }
-      else {
-        // This isn't a core module, so guess the project from the directory.
-        $last = '';
-        foreach (array_reverse(explode('/', $file->filename)) as $dir) {
-          if ($dir == 'modules') {
-            break;
-          }
-          $last = $dir;
-        }
-        if ($last) {
-          $info['project'] = $last;
-        }
-        else {
-          continue;
-        }
-      }
-    }
-
-    if (array_key_exists($info['project'], $projects)) {
-      if (!isset($projects[$info['project']]['path'])) {
-        $projects[$info['project']]['path'] = dirname($file->filename);
-      }
-      else {
-        $old_path = $projects[$info['project']]['path'];
-        $new_path = dirname($file->filename);
-        if (strlen($old_path) > strlen($new_path)) {
-          $projects[$info['project']]['path'] = $new_path;
-        }
-      }
+      $projects[$project]['path'] = implode('/', $path);
     }
   }
   return $projects;
