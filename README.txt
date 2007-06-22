@@ -10,9 +10,9 @@ Green text against a black background is optional. Perhaps you would like
 some alpha-channel translucency with that? ;)
 
 drush.module itself doesn't provide any actual tools or commands but the API
-for those. There are several modules that provide Drush utilities included in
-this download, though (namely the Drush Packet Manager, drush_pm.module, and
-the Drush Toolbox, drush_tools.module.
+for those. There are several modules that provide drush utilities included in
+this download, though (namely the drush Packet Manager, drush_pm.module, and
+the drush Toolbox, drush_tools.module).
 
 INSTALLATION
 ------------
@@ -20,8 +20,8 @@ For Linux/Unix (and probably also Mac):
   1. Untar the tarball into your module directory (sites/all/modules)
   2. Enable drush.module and any submodules you want to use
   3. (optional, but recommended:) To ease the use of drush,
-     - create a link to drush.php in a directory that is in your $PATH:
-       $ ln sites/all/modules/drush/drush.php /usr/bin/drush
+     - create a link to drush.php in a directory that is in your $PATH, e.g.:
+       $ ln /path/to/drush.php /usr/bin/drush
      OR
      - create an alias to drush.php:
        $ alias drush='php modules/drush/drush.php'
@@ -59,7 +59,7 @@ platform.
 
 * To use drush from the command line, you'll need a CLI-mode capable PHP
   binary. The minimum required PHP version is 4.3.0 (PHP 5.x is OK, too).
-* Drush should also run on windows, however, drush modules might make use of
+* drush should also run on Windows, however, drush modules might make use of
   unix command line tools, so to use it effectively, you have to install
   some of them, e.g. from GnuWin32 (http://gnuwin32.sourceforge.net/).
   The READMEs of the individual modules should state which binaries are required.
