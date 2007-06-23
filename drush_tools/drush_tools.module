@@ -27,7 +27,7 @@ function drush_tools_drush_command() {
     'description' => 'Clear all caches'
   );
   $items['cron'] = array(
-    'callback' => 'drush_tools_cron',
+    'callback' => 'drush_tools_cron_run',
     'description' => 'Run cron'
   );
   $items['watchdog show'] = array(
@@ -41,7 +41,7 @@ function drush_tools_drush_command() {
   return $items;
 }
 
-function drush_tools_cron() {
+function drush_tools_cron_run() {
   drupal_cron_run();
   drush_print(t('Cron run successfully.'));
 }
