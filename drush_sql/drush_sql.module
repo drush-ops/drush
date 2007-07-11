@@ -14,7 +14,9 @@ function drush_sql_help($section) {
     case 'drush:sql dump':
       return t('Prints the whole database to STDOUT');
     case 'drush:sql query':
-      return t('Usage: drush [options] sql query <query> ...\n\n<query> is a SQL statement.');
+      return t('Usage: drush [options] sql query <query> ...\n\n<query> is a SQL statement, which can alternatively be passed via STDIN. Any additional arguments are passed to the mysql command directly.');
+    case 'drush:sql load':
+      return t('Usage: drush [options] sql load <source_dir> <target_dir>. <source_dir> and <target_dir> are names of directories under \'sites\'. These determine from where and to where you want your database copied. Any additional arguments are passed to the mysql command directly.');;
   }
 }
 
@@ -41,6 +43,10 @@ function drush_sql_drush_command() {
   $items['sql query'] = array(
     'callback' => 'drush_sql_query',
     'description' => 'Execute a query against the site database.'
+  );
+  $items['sql load'] = array(
+    'callback' => 'drush_sql_load',
+    'description' => 'Copy source database to target database.'
   );
   return $items;
 }
@@ -96,26 +102,26 @@ function drush_sql_version_client() {
  * Command callback. Outputs the entire Drupal database in SQL format using mysqldump or
  * pg_dump.
  */
-function drush_sql_dump() {
+function drush_sql_dump($db_url = NULL) {
   switch (_drush_sql_get_scheme()) {
     case 'mysql':
     case 'mysqli':
       $exec = 'mysqldump' . (DRUSH_VERBOSE ? ' -v' : '');
-      $exec .= ' --opt -Q' . _drush_sql_get_credentials();
+      $exec .= ' --opt -Q' . _drush_sql_get_credentials($db_url);
       break;
     case 'pgsql':
       drush_die(t('Sorry, pg_dump support not implemented yet.')); // TODO: pg_dump command.
       break;
     default:
-      drush_die(_drush_sql_get_invalid_url_msg());
+      drush_die(_drush_sql_get_invalid_url_msg($db_url));
   }
 
   // Get any arguments to be passed through to the SQL client program.
-  if (func_num_args() > 0 && ($args = func_get_args()))
-    $exec .= ' ' . implode(' ', $args);
-
+  if (func_num_args() > 1 && ($args = func_get_args())) {
+    $args = ' ' . implode(' ', array_slice($args, 1)); // skip query argument
+  }
   if (DRUSH_VERBOSE) {
-    drush_print(t('Executing: `%cmd\'', array('%cmd' => $exec)));
+    drush_print(t('Executing: !cmd', array('!cmd' => $exec)));
   }
 
   return drush_op('system', $exec) !== FALSE;
@@ -123,53 +129,129 @@ function drush_sql_dump() {
 
 /**
  * Command callback. Executes the given SQL query on the Drupal database.
+ * Reads from STDIN if no query is provided.
  */
 function drush_sql_query($query = NULL) {
+  // Get any arguments to be passed through to the SQL client program.
+  if (func_num_args() > 1 && ($args = func_get_args())) {
+    $args = ' ' . implode(' ', array_slice($args, 1)); // skip query argument
+  }
+  
+  return drush_sql_query_execute($query, NULL, $args);
+}
+
+function drush_sql_query_execute($query, $db_url = NULL, $args = NULL) {
   // FIXME: currently we require the query due to an apparent inability to
   // run the mysql child process interactively. Need to look more into
   // proc_open() to see if it could be used for interactive execution.
   if (empty($query)) {
-    drush_die(t('No SQL query given as argument.'));
+    if ($fstat = fstat(STDIN)) {
+      $query = fread(STDIN,$fstat[size]);
+    }
+    else {
+      drush_die(t('No SQL query given as argument.'));
+    }
   }
+  
+  // Save query to a file. we will redirect it in.
+  $filename = time(). '.sql';
+  if ($file = file_save_data($query, $filename)) {
+    switch (_drush_sql_get_scheme()) {
+      case 'mysql':
+      case 'mysqli':
+        $exec = 'mysql' . (DRUSH_VERBOSE ? ' -v' : '');
+        $exec .= _drush_sql_get_credentials($db_url);
+        $exec .= " < ./$file";
+        break;
+      case 'pgsql':
+        drush_die(t('Sorry, psql support not implemented yet.')); // TODO: psql command.
+        break;
+      default:
+        drush_die(_drush_sql_get_invalid_url_msg($db_url));
+    }
+    $exec .= $args;
 
-  switch (_drush_sql_get_scheme()) {
-    case 'mysql':
-    case 'mysqli':
-      $exec = 'mysql' . (DRUSH_VERBOSE ? ' -v' : '') . (DRUSH_QUIET ? ' -s' : '');
-      $exec .= _drush_sql_get_credentials();
-      $exec .= ' -e "' . str_replace('"', '\"', str_replace('\"', '"', $query)) . '"';
-      break;
-    case 'pgsql':
-      drush_die(t('Sorry, psql support not implemented yet.')); // TODO: psql command.
-      break;
-    default:
-      drush_die(_drush_sql_get_invalid_url_msg());
+    if (DRUSH_VERBOSE) {
+      drush_print(t('Executing: !cmd', array('!cmd' => $exec)));
+    }
+    $return = drush_op('system', $exec) !== FALSE;
+    unlink($file);  
+    return $return;
   }
+}
 
-  // Get any arguments to be passed through to the SQL client program.
-  if (func_num_args() > 1 && ($args = func_get_args()))
-    $exec .= ' ' . implode(' ', array_slice($args, 1)); // skip query argument
-
+/**
+ * Copy an entire database to another database.
+ * We allow specifying of source instead of assuming since drush might be installed elsewhere.
+ * conf_path() uses a static var so we can't use it to figure out paths based on URIs
+ *
+ * @return void
+ **/
+function drush_sql_load($source, $target) {
+  // TODO: not compatible with VERBOSE because that prints debug text and we use output buffer.
+  // Not especially compatible with SIMULATE EITHER but OK for now.
   if (DRUSH_VERBOSE) {
-    drush_print(t('Executing: `%cmd\'', array('%cmd' => $exec)));
+    drush_die('sql load command is not currently compatible with verbose flag.');
   }
+  
+  // Don't use require_once - we need to ovewrite db_url under some circumstances.
+  require "./sites/$source/settings.php";
+  $db_url_source = $db_url;
+  require "./sites/$target/settings.php";
+  $db_url_target = $db_url;
+  
+  // Prompt for confirmation. This is destructive.
+  if (!DRUSH_SIMULATE) {
+    drush_print(t("You will destroy data from !target and replace with data from !source.", array('!source' => $db_url_source, '!target' => $db_url_target)));
+    // TOOD: actually make the backup if desired.
+    drush_print(t("You might want to make a backup first, using sql_dump command."));
+    if (!drush_confirm(t('Do you really want to continue?'))) {
+      drush_die('Aborting.');
+    }
+  }
+  
+  // Get dump from source.
+  ob_start();
+  if ($return = drush_sql_dump($db_url_source)) {
+    $dump = ob_get_contents();
+    
+    // Import dump into target.
+    // Get any arguments to be passed through to the SQL client program.
+    $args = '';
+    if (func_num_args() > 2 && ($args = func_get_args())) {
+      $args = ' ' . implode(' ', array_slice($args, 2)); // skip standard arguments
+    }
 
-  return drush_op('system', $exec) !== FALSE;
+    $return = drush_sql_query_execute($dump, $db_url_target, $args);
+  }
+  return $return;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // SQL SERVICE HELPERS
+
+// this sets some globals so please beware.
+function drush_sql_get_path($uri) {
+  $drupal_base_url = parse_url($uri);
+  $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
+  $_SERVER['PHP_SELF'] = $drupal_base_url['path'].'/index.php';
+  return conf_path();
+}
 
 function _drush_sql_get_scheme() {
   $url = (object)parse_url($GLOBALS['db_url']);
   return ($url->scheme);
 }
 
-function _drush_sql_get_credentials() {
+function _drush_sql_get_credentials($db_url = NULL) {
+  if (is_null($db_url)) {
+    $db_url = $GLOBALS['db_url'];
+  }
+  
   // NOTE: this regex could also parse the connection string URL:
   //   ^([\w]+)://([\w\d_]+):([^@]*)@([\w\d\.\-]*)/([\w\d_]+)$
 
-  $url = (object)parse_url($GLOBALS['db_url']);
+  $url = (object)parse_url($db_url);
   $url->user = urldecode($url->user);
   $url->pass = urldecode($url->pass);
   $url->host = urldecode($url->host);
@@ -190,6 +272,9 @@ function _drush_sql_get_credentials() {
   }
 }
 
-function _drush_sql_get_invalid_url_msg() {
-  return t('Unable to parse DB connection string: `%url\'.', array('%url' => $GLOBALS['db_url']));
+function _drush_sql_get_invalid_url_msg($db_url = NULL) {
+  if (is_null($db_url)) {
+    $db_url = $GLOBALS['db_url'];
+  }
+  return t('Unable to parse DB connection string: `%url\'.', array('%url' => $db_url));
 }
