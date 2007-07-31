@@ -259,7 +259,7 @@ function drush_pm_get_project_info($projects) {
   $info = array();
   $data = array();
   foreach ($projects as $project) {
-    $url = UPDATE_STATUS_DEFAULT_URL .'/'. $project .'/'. UPDATE_STATUS_CORE_VERSION;
+    $url = UPDATE_STATUS_DEFAULT_URL. "/$project/$project-". UPDATE_STATUS_CORE_VERSION. '.xml';
     $xml = drupal_http_request($url);
     $data[] = $xml->data;
   }
