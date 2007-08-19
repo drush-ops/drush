@@ -46,8 +46,14 @@ function drush_pm_install() {
     drush_die(t("No project specified.\n\nRun drush help pm install for more information."));
   }
 
-  // TODO: Make it possible to install modules only for a specific site, e.g. sites/example.com/modules
-  $modulepath = DRUSH_DRUPAL_ROOT . '/sites/all/modules/';
+  // If a URI is provided then we install to that specific site, otherwise we install to sites/all/modules
+  if (DRUSH_URI) {
+    $path = conf_path();
+  }
+  else {
+    $path = 'sites/all';
+  }
+  $modulepath = DRUSH_DRUPAL_ROOT .'/'. $path .'/modules/';
 
   // Get the module info from drupal.org via xml-rpc
   $info = drush_pm_get_project_info($projects);
