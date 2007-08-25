@@ -13,7 +13,7 @@ REQUIREMENTS
 ------------
 drush_pm requires update_status.module, version 5.x-2.0-beta or above.
 No other special requirements on unix-like systems.
-drush_pm uses  wget, tar and gzip, so if you're trying to use drush_pm on Windows, you have to install
+drush_pm uses  wget (or curl), tar and gzip, so if you're trying to use drush_pm on Windows, you have to install
 these binaries before, for example from GnuWin32 (http://gnuwin32.sourceforge.net/).
 
 ------------

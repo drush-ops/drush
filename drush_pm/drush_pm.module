@@ -101,7 +101,9 @@ function drush_pm_install_project($project, $info, $path = '.') {
   $filename = array_pop($filename);
 
   // Download it.
-  drush_shell_exec("wget " .$info['download_link']);
+  if (!drush_shell_exec("wget " .$info['download_link'])) {
+    drush_shell_exec("curl -O " .$info['download_link']);
+  }
 
 
   if (file_exists($path . $filename) || DRUSH_SIMULATE) {
