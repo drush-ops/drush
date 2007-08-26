@@ -49,11 +49,12 @@ function drush_pm_install() {
   // If a URI is provided then we install to that specific site, otherwise we install to sites/all/modules
   if (DRUSH_URI) {
     $path = conf_path();
+    $modulepath = DRUSH_DRUPAL_ROOT .'/'. $path .'/modules/';
   }
-  else {
-    $path = 'sites/all';
+  
+  if (!isset($modulepath) || !file_exists($modulepath)) {
+    $modulepath = DRUSH_DRUPAL_ROOT .'/sites/all/modules/';
   }
-  $modulepath = DRUSH_DRUPAL_ROOT .'/'. $path .'/modules/';
 
   // Get the module info from drupal.org via xml-rpc
   $info = drush_pm_get_project_info($projects);
@@ -105,12 +106,11 @@ function drush_pm_install_project($project, $info, $path = '.') {
     drush_shell_exec("curl -O " .$info['download_link']);
   }
 
-
-  if (file_exists($path . $filename) || DRUSH_SIMULATE) {
+  if (file_exists($path. $filename) || DRUSH_SIMULATE) {
     drush_verbose("Downloading " . $filename . " was successful.");
   }
   else {
-    return drush_error("Downloading " . $filename . " from ".$info['download_link']." failed.");
+    return drush_error("Unable to download $filename to $path from ". $info['download_link']);
   }
 
   // Check Md5 hash
