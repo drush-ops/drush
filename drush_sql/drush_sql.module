@@ -14,9 +14,9 @@ function drush_sql_help($section) {
     case 'drush:sql dump':
       return t('Prints the whole database to STDOUT');
     case 'drush:sql query':
-      return t('Usage: drush [options] sql query <query> ...\n\n<query> is a SQL statement, which can alternatively be passed via STDIN. Any additional arguments are passed to the mysql command directly.');
+      return t('Usage: drush [options] sql query <query> <skip>...\n\n<query> is a SQL statement, which can alternatively be passed via STDIN. Optional - send 1 for <skip> if you wish to omit disposable tables like cache*, search*, etc. Any additional arguments are passed to the mysql command directly.');
     case 'drush:sql load':
-      return t('Usage: drush [options] sql load <source_dir> <target_dir>. <source_dir> and <target_dir> are names of directories under \'sites\'. These determine from where and to where you want your database copied. Any additional arguments are passed to the mysql command directly.');;
+      return t('Usage: drush [options] sql load <source_dir> <target_dir> <skip>. <source_dir> and <target_dir> are names of directories under \'sites\'. These determine from where and to where you want your database copied. Optional - send 1 for <skip> if you wish to omit disposable tables like cache*, search*, etc. Any additional arguments are passed to the mysql command directly.');;
   }
 }
 
@@ -102,7 +102,7 @@ function drush_sql_version_client() {
  * Command callback. Outputs the entire Drupal database in SQL format using mysqldump or
  * pg_dump.
  */
-function drush_sql_dump($db_url = NULL, $execute = TRUE) {
+function drush_sql_dump($db_url = NULL, $execute = TRUE, $skip = FALSE) {
   switch (_drush_sql_get_scheme()) {
     case 'mysql':
     case 'mysqli':
@@ -117,8 +117,18 @@ function drush_sql_dump($db_url = NULL, $execute = TRUE) {
   }
 
   // Get any arguments to be passed through to the SQL client program.
-  if (func_num_args() > 1 && ($args = func_get_args())) {
-    $args = ' ' . implode(' ', array_slice($args, 1)); // skip query argument
+  if (func_num_args() > 3 && ($args = func_get_args())) {
+    $args = ' ' . implode(' ', array_slice($args, 3)); // skip standard arguments
+  }
+  
+  // Skip large core tables.  Used by sql load command, by default.
+  if ($skip && strpos($exec, '--ignore-table') === FALSE) {
+    $skip_tables = array('accesslog', 'cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'search_dataset', 'search_index', 'search_total', 'sessions', 'watchdog');
+    $database = _drush_sql_get_database();
+    foreach ($skip_tables as $table) {
+      $ignores[] = "--ignore-table=$database.$table";
+    }
+    $exec .= ' '. implode(' ', $ignores);
   }
   
   if (!$execute) {
@@ -187,12 +197,13 @@ function drush_sql_query_execute($query, $db_url = NULL, $args = NULL) {
 
 /**
  * Copy an entire database to another database.
- * We allow specifying of source instead of assuming since drush might be installed elsewhere.
+ * We allow specifying of source instead of assuming since drush might be installed 
+ * only on certain sites. Do 'sql load TRUE' if you to skip the standard disposable tables.
  * conf_path() uses a static var so we can't use it to figure out paths based on URIs
  *
  * @return void
  **/
-function drush_sql_load($source, $target) {
+function drush_sql_load($source, $target, $skip = FALSE) {
   // Don't use require_once - we need to ovewrite db_url under some circumstances.
   require "./sites/$source/settings.php";
   $db_url_source = $db_url;
@@ -209,20 +220,20 @@ function drush_sql_load($source, $target) {
     }
   }
   
-  // Get dump from source.
-  if ($retrieve = drush_sql_dump($db_url_source, FALSE)) {
-    
-    // Import dump into target.
-    $send = 'mysql' . (DRUSH_VERBOSE ? ' -v' : '');
-    $send .= _drush_sql_get_credentials($db_url_target);
-    // Get any arguments to be passed through to the SQL client program.
-    $args = '';
-    if (func_num_args() > 2 && ($args = func_get_args())) {
-      $send .= ' ' . implode(' ', array_slice($args, 2)); // skip standard arguments
+  // Get command to export from source.
+  if ($retrieve = drush_sql_dump($db_url_source, FALSE, $skip)) {
+    // Get any arguments to be passed through to the mysqldump.
+    $args = array();
+    if (func_num_args() > 3 && ($args = func_get_args())) {
+      $retrieve .= ' ' . implode(' ', array_slice($args, 3)); // skip standard arguments
     }
     
+    // Build import command for target.
+    $send = 'mysql' . (DRUSH_VERBOSE ? ' -v' : '');
+    $send .= _drush_sql_get_credentials($db_url_target);
+    
     // Build pipe command and redirect output to the bit bucket.
-    // Redirection prevented loads of SQL from writing to screen while using drupal2.drupal.org
+    // Redirection prevented loads of SQL from writing to screen.
     $exec = "$retrieve | $send > /dev/null 2>&1";
 
     if (DRUSH_VERBOSE) {
@@ -250,6 +261,11 @@ function drush_sql_get_path($uri) {
 function _drush_sql_get_scheme() {
   $url = (object)parse_url($GLOBALS['db_url']);
   return ($url->scheme);
+}
+
+function _drush_sql_get_database() {
+  $url = (object)parse_url($GLOBALS['db_url']);
+  return substr($url->path, 1);
 }
 
 function _drush_sql_get_credentials($db_url = NULL) {
