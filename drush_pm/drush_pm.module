@@ -203,8 +203,8 @@ function drush_pm_update() {
   drush_print(substr($print, 0, strlen($print)-2));
   drush_print();
   drush_print(t("Note: Updated modules can potentially break your site. It's not recommended to update production sites without prior testing."));
-  drush_print(t("Note: You should backup any production site before updating."));
-  drush_print(t('IMPORTANT WARNING: If you have made any modifications to any file that belongs to one of these projects, THEY WILL BE LOST!'));
+  drush_print(t("Note: A backup of your package will be stored to backups directory."));
+  drush_print(t('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
   if(!drush_confirm(t('Do you really want to continue?'))) {
     drush_die('Aborting.');
   }
@@ -212,32 +212,33 @@ function drush_pm_update() {
   // No we start the actual updating.
   foreach($updateable as $project) {
     drush_verbose(t('Starting to update !project ...', array('!project' => $project['title'])));
+    
+    $date = date('Ymd');
+    $backup_dir = DRUSH_DRUPAL_ROOT. "/backup/modules/$date";
+    drush_op('mkdir', $backup_dir, 0777, TRUE);
+    $source = DRUSH_DRUPAL_ROOT .'/' . $project['path'];
+    $backup_target = $backup_dir . '/'. $project['name'];
+    if (!drush_op('rename', $source, $backup_target)) {
+      drush_die(t('Failed to backup project directory !source to !backup_target', array('!source' => $source, '!backup_target' => $backup_target)));
+    }
 
+    // Install the new version.
     // $basepath is the dir where the current module is installed. It's one dir up from the
     // place of the project's info files.
     $basepath = explode('/', $project['path']);
-    array_pop($basepath); // move one directory up
-    $basepath = DRUSH_DRUPAL_ROOT . '/' . implode($basepath, '/') . '/';
-
-    $rename_ext = '_backup' . md5(rand(0,1) . microtime());
-    // Move the module to module_backup.
-    drush_op('rename', DRUSH_DRUPAL_ROOT .'/' . $project['path'], $basepath . $project['name'] . $rename_ext);
-
-    // Install the new version.
-    if (!drush_pm_install_project($project['name'], $project['releases'][$project['candidate_version']], $basepath)) {
+    // move a directory up, so we can copy updated dir to parent
+    array_pop($basepath);
+    $project_parent_path = DRUSH_DRUPAL_ROOT. '/'. implode('/', $basepath). '/';
+    if (!drush_pm_install_project($project['name'], $project['releases'][$project['candidate_version']], $project_parent_path)) {
       drush_error(t('Updating project !project failed. Restoring previously installed version.', array('!project' => $project['name'])));
-      drush_op('rename', $basepath . $project['name'] . $rename_ext, DRUSH_DRUPAL_ROOT .'/' . $project['path']);
+      drush_op('rename', $backup_target, $source);
     }
     else {
       drush_print(t('Project !project was updated successfully. Installed version is now !version.', array('!project' => $project['name'], '!version' => $project['candidate_version'])));
-      // Remove the backup directory.
-      if(!drush_op('delete_dir', $basepath . $project['name'] . $rename_ext)) {
-        drush_error(t("Deleting the auto-generated backup failed. Please delete this directory manually: !dir", array('!dir' => $basepath . $project['name'] . $rename_ext)));
-      }
     }
   }
   drush_print();
-  drush_print(t("Update finished. You should now run update.php through your browser."));
+  drush_print(t("Update finished. Backups were saved into backups directory. You should now run update.php through your browser."));
 }
 
 
@@ -330,23 +331,29 @@ function drush_pm_get_release($project) {
 }
 
 /**
- * We need to set the project path by looking at the module info files.
+ * We need to set the project path by looking at the module location. Ideally, update_status would do this for us.
  */
 function drush_pm_get_project_path($projects) {
   foreach ($projects as $project => $info) {
-    if (!isset($projects[$project]['path'])) {
-      $path = explode('/', $info['filename']);
+    if (!isset($info['path'])  && $project != 'drupal') {
+      // looks for an enabled module.
+      foreach ($info['modules'] as $module => $name) {
+        if ($path = drupal_get_path('module', $module)) {
+          continue;
+        }
+      }
       // As some modules are not located in their project's root directory
       // but in a subdirectory (e.g. all the ecommerce modules), we take the module's
       // info file's path, and then move up until we are at a directory with the
       // project's name.
-      $i = count($path) - 1;
-      $stop = array_search($project, $path);
+      $parts = explode('/', $path);
+      $i = count($parts) - 1;
+      $stop = array_search($project, $parts);
       while ($i > $stop) {
-        unset($path[$i]);
+        unset($parts[$i]);
         $i--;
       }
-      $projects[$project]['path'] = implode('/', $path);
+      $projects[$project]['path'] = implode('/', $parts);
     }
   }
   return $projects;
