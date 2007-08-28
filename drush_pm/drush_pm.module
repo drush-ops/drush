@@ -169,6 +169,10 @@ function drush_pm_update() {
         $status = t('Update available');
         $updateable[$project['name']] = $project;
         break;
+      case UPDATE_STATUS_NOT_SECURE:
+        $status = t('SECURITY UPDATE available');
+        $updateable[$project['name']] = $project;
+        break;
       default:
         $status = t('ignored: !reason', array('!reason' => $project['reason']));
         $project['title'] = $project['name'];
