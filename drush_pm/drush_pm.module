@@ -14,7 +14,7 @@ function drush_pm_help($section) {
     case 'drush:pm install':
       return t("Usage: drush [options] pm install <package_1> <package_2> ...\n\n<package_n> is the short name of a project hosted on drupal.org.\nSo far, only modules are supported.\nThe modules will be installed into the sites/all/modules directory.\n\nTo use the modules, they still have to be activated on the normal module administration page.");
     case 'drush:pm update':
-      return t("Usage: drush [options] pm udpate\n\nDisplays update status information and allows to update all installed packages\n(so far, only modules are supported).\n\nNote: The user is asked to confirm before the actual update is started.\n  Use the -y option to answer all questions with yes automatically.");
+      return t("Usage: drush [options] pm udpate\n\nDisplays update status information and allows to update all installed packages\n(so far, only modules are supported). If you only want to update certain projects, pass those as additional arguments (e.g. cck devel views ...)\n\nNote: The user is asked to confirm before the actual update is started.\n  Use the -y option to answer all questions with yes automatically.");
   }
 }
 
@@ -142,11 +142,24 @@ function drush_pm_install_project($project, $info, $path = '.') {
 
 /**
  * Command callback. Displays update status info and allows to update installed modules.
+ * Pass specific projects as arguments, ortherwise we update all that have candidate releases.
+ *
+ * This command prompts for confirmation before updating, so it is safe to run just to check on 
+ * In this case, say at the confirmation prompt.
  */
-function drush_pm_update() {
+function drush_pm_update() {  
   // Get update status information.
   $data = _drush_pm_get_update_info();
-
+  
+  // Remove info for projects we don't care about (if specified)
+  if ($specified_projects = func_get_args()) {
+    foreach ($data as $key => $value) {
+      if (!in_array($key, $specified_projects)) {
+        unset($data[$key]);
+      }
+    }
+  }
+  
   $last = variable_get('update_status_last', 0);
   drush_print(t('Update information last refreshed: ') . ($last  ? format_date($last) : t('Never')));
   drush_print();
@@ -247,7 +260,7 @@ function drush_pm_update() {
  *
  * @return An array containing remote and local versions for all installed projects
  */
-function _drush_pm_get_update_info() {
+function _drush_pm_get_update_info($projects = NULL) {
   $info = update_status_get_available();
   $data = update_status_calculate_project_data($info);
   $data = drush_pm_get_project_path($data);
