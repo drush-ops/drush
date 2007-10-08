@@ -16,7 +16,7 @@ the drush Toolbox, drush_tools.module).
 
 INSTALLATION
 ------------
-For Linux/Unix (and probably also Mac):
+For Linux/Unix/Mac:
   1. Untar the tarball into your module directory (sites/all/modules)
   2. Enable drush.module and any submodules you want to use
   3. (optional, but recommended:) To ease the use of drush,
@@ -52,6 +52,17 @@ Use the 'help' command to get a list of available options and commands:
 
   $ drush help
 
+Please note that drush requires a working drupal setup in order to function
+correctly. So for multisite installations, you might need to use the -l or other command line 
+options just to get the help comamnd to work:
+
+  $ drush -l http://association.drupal.org/drupal help
+
+Related Options:
+  -r <path>, --root=<path>      Drupal root directory to use (default: current directory)            
+  -l <uri> , --uri=<uri>        URI of the drupal site to use (only needed in multisite environments)
+  -v, --verbose                 Display all available output                                         
+
 REQUIREMENTS
 ------------
 This version of drush is designed for Drupal 5.x running on a Unix/Linux
@@ -79,3 +90,4 @@ CREDITS
 -------
 Originally developed by Arto Bendiken <http://bendiken.net/> for Drupal 4.7.
 Redesigned by Franz Heinzmann (frando) <http://unbiskant.org/> in May 2007 for Drupal 5.
+Further refined by Moshe Weitzman <http://drupal.org/moshe>
