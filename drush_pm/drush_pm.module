@@ -142,7 +142,7 @@ function drush_pm_install_project($project, $info, $path = '.') {
 
 /**
  * Command callback. Displays update status info and allows to update installed modules.
- * Pass specific projects as arguments, ortherwise we update all that have candidate releases.
+ * Pass specific projects as arguments, otherwise we update all that have candidate releases.
  *
  * This command prompts for confirmation before updating, so it is safe to run just to check on 
  * In this case, say at the confirmation prompt.
@@ -216,23 +216,31 @@ function drush_pm_update() {
   drush_print(substr($print, 0, strlen($print)-2));
   drush_print();
   drush_print(t("Note: Updated modules can potentially break your site. It's not recommended to update production sites without prior testing."));
-  drush_print(t("Note: A backup of your package will be stored to backups directory."));
+  drush_print(t("Note: A backup of your package will be stored to backups directory if no .svn directory is found."));
   drush_print(t('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
   if(!drush_confirm(t('Do you really want to continue?'))) {
     drush_die('Aborting.');
   }
 
-  // No we start the actual updating.
+  // Now we start the actual updating.
   foreach($updateable as $project) {
     drush_verbose(t('Starting to update !project ...', array('!project' => $project['title'])));
     
-    $date = date('Ymd');
-    $backup_dir = DRUSH_DRUPAL_ROOT. "/backup/modules/$date";
-    drush_op('mkdir', $backup_dir, 0777, TRUE);
+    $svn = FALSE;
     $source = DRUSH_DRUPAL_ROOT .'/' . $project['path'];
-    $backup_target = $backup_dir . '/'. $project['name'];
-    if (!drush_op('rename', $source, $backup_target)) {
-      drush_die(t('Failed to backup project directory !source to !backup_target', array('!source' => $source, '!backup_target' => $backup_target)));
+    if (file_exists($source. '/.svn')) {
+      // Skip backup since we need all .svn  directories. Assuming admin can use svn revert if new project is bad.
+      drush_verbose(t('Backup skipped because .svn directory was detected. Use Subversion to revert if needed.'));
+      $svn = TRUE;
+    }
+    else {
+      $date = date('Ymd');
+      $backup_dir = DRUSH_DRUPAL_ROOT. "/backup/modules/$date";
+      drush_op('mkdir', $backup_dir, 0777, TRUE);
+      $backup_target = $backup_dir . '/'. $project['name'];
+      if (!drush_op('rename', $source, $backup_target)) {
+        drush_die(t('Failed to backup project directory !source to !backup_target', array('!source' => $source, '!backup_target' => $backup_target)));
+      }
     }
 
     // Install the new version.
@@ -248,10 +256,16 @@ function drush_pm_update() {
     }
     else {
       drush_print(t('Project !project was updated successfully. Installed version is now !version.', array('!project' => $project['name'], '!version' => $project['candidate_version'])));
-    }
   }
-  drush_print();
-  drush_print(t("Update finished. Backups were saved into backups directory. You should now run update.php through your browser."));
+  
+  if ($svn) {
+    drush_print(t('You should consider committing the new code to your Subversion repository. If this version becomes undesireable, use \'svn revert\' to roll back.'));
+  }
+  else {
+    drush_print(t("Backups were saved into 'backups' directory.")); 
+  }
+  drush_print(t("You should now run update.php through your browser."));
+}
 }
 
 
