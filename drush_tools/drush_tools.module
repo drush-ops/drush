@@ -15,6 +15,8 @@ function drush_tools_help($section) {
       return t("Usage: drush [options] watchdog show <n> <type>\n\nShow the <n> (default 10) most recent watchdog messages. Optionally show only messages of type <type>.");
     case 'drush:watchdog delete':
       return t("Usage: drush [options] watchdog delete <type>\n\nDelete all messages of type <type>. Use 'all' to delete all messages, no matter which type they are of.");
+      case 'drush:sync':
+        return t("Usage: drush [options] sync <destination> <source>\n\nRsync the entire drupal directory (or subdirectory, using $source parameter) to <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, for example. The most common case for specifying $source is for pointing to a 'files' directory when thats all you want to sync. <source> may be relative to Drupal root or an absolute path. If <source> is omitted, the whole Drupal tree is pushed. ");
   }
 }
 
@@ -38,6 +40,10 @@ function drush_tools_drush_command() {
     'callback' => 'drush_tools_watchdog_delete',
     'description' => 'Delete all messages of a certain type'
   );
+  $items['sync'] = array(
+    'callback' => 'drush_tools_sync',
+    'description' => 'Rsync the Drupal tree to any <destination> using ssh'
+  );
   return $items;
 }
 
@@ -59,7 +65,21 @@ function drush_tools_cache_clear() {
   drush_print(t('Cache cleared.'));
 }
 
+/**
+ * Push the current Drupal install to another server via SSH and RSync
+ *
+ * @return void
+ **/
+function drush_tools_sync($destination, $source = DRUSH_DRUPAL_ROOT) {
+  $options = '-az';
+  if (DRUSH_VERBOSE) {
+    drush_print(t('Executing: !cmd', array('!cmd' => $exec)));
+    $options .= 'v';
+  }
+  $exec = "rsync -e ssh $options --exclude \"*.svn*\" $source $destination";
 
+  return drush_op('system', $exec) !== FALSE;
+}
 /**
  * Displays the most recent watchdog log messages (default: 10 messages).
  */
