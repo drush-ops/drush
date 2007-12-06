@@ -23,7 +23,7 @@ function drush_pm_help($section) {
  */
 function drush_pm_drush_command() {
   $items['pm install'] = array(
-    'callback' => 'drush_pm_install',
+    'callback' => 'drush_pm_install_package',
     'description' => 'Install one or more modules'
   );
   $items['pm refresh'] = array(
@@ -40,7 +40,7 @@ function drush_pm_drush_command() {
 /**
  * Command callback. Installs one or more packages (so far only modules).
  */
-function drush_pm_install() {
+function drush_pm_install_package() {
   $projects = func_get_args();
   if (empty($projects)) {
     drush_die(t("No project specified.\n\nRun drush help pm install for more information."));
