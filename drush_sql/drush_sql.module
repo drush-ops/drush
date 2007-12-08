@@ -16,7 +16,7 @@ function drush_sql_help($section) {
     case 'drush:sql query':
       return t('Usage: drush [options] sql query <query> <skip>...\n\n<query> is a SQL statement, which can alternatively be passed via STDIN. Optional - send 1 for <skip> if you wish to omit disposable tables like cache*, search*, etc. Any additional arguments are passed to the mysql command directly.');
     case 'drush:sql load':
-      return t('Usage: drush [options] sql load <source_dir> <target_dir> <skip>. <source_dir> and <target_dir> are names of directories under \'sites\'. These determine from where and to where you want your database copied. Optional: specify 1 for <skip> if you wish to omit disposable tables like cache*, search*, etc. Any additional arguments are passed to the mysqldump command directly.');;
+      return t('Usage: drush [options] sql load <source_dir> <target_dir> <skip>. <source_dir> and <target_dir> are names of directories under \'sites\'. These determine from where and to where you want your database copied. Optional: specify 1 for <skip> if you wish to omit disposable tables like cache*, search*, etc. Any additional arguments are passed to the mysqldump command directly.');
   }
 }
 
@@ -103,7 +103,11 @@ function drush_sql_version_client() {
  * pg_dump.
  */
 function drush_sql_dump($db_url = NULL, $execute = TRUE, $skip = FALSE) {
-  switch (_drush_sql_get_scheme()) {
+  if (is_null($db_url)) {
+    $db_url = $GLOBALS['db_url'];
+  }
+
+  switch (_drush_sql_get_scheme($db_url)) {
     case 'mysql':
     case 'mysqli':
       $exec = 'mysqldump' . (DRUSH_VERBOSE ? ' -v' : '');
@@ -206,9 +210,9 @@ function drush_sql_query_execute($query, $db_url = NULL, $args = NULL) {
 function drush_sql_load($source, $target, $skip = FALSE) {
   // Don't use require_once - we need to ovewrite db_url under some circumstances.
   require "./sites/$source/settings.php";
-  $db_url_source = $db_url;
+  $db_url_source = is_array($db_url) ? $db_url['default'] : $db_url;
   require "./sites/$target/settings.php";
-  $db_url_target = $db_url;
+  $db_url_target = is_array($db_url) ? $db_url['default'] : $db_url;
   
   // Prompt for confirmation. This is destructive.
   if (!DRUSH_SIMULATE) {
@@ -258,13 +262,19 @@ function drush_sql_get_path($uri) {
   return conf_path();
 }
 
-function _drush_sql_get_scheme() {
-  $url = (object)parse_url($GLOBALS['db_url']);
+function _drush_sql_get_scheme($db_url = NULL) {
+  if (is_null($db_url)) {
+    $db_url = $GLOBALS['db_url'];
+  }
+  $url = (object)parse_url($db_url);
   return ($url->scheme);
 }
 
-function _drush_sql_get_database() {
-  $url = (object)parse_url($GLOBALS['db_url']);
+function _drush_sql_get_database($db_url = NULL) {
+  if (is_null($db_url)) {
+    $db_url = $GLOBALS['db_url'];
+  }
+  $url = (object)parse_url($db_url = NULL);
   return substr($url->path, 1);
 }
 
@@ -272,7 +282,7 @@ function _drush_sql_get_credentials($db_url = NULL) {
   if (is_null($db_url)) {
     $db_url = $GLOBALS['db_url'];
   }
-  
+
   // NOTE: this regex could also parse the connection string URL:
   //   ^([\w]+)://([\w\d_]+):([^@]*)@([\w\d\.\-]*)/([\w\d_]+)$
 
