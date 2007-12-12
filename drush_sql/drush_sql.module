@@ -128,7 +128,7 @@ function drush_sql_dump($db_url = NULL, $execute = TRUE, $skip = FALSE) {
   // Skip large core tables.  Used by sql load command, by default.
   if ($skip && strpos($exec, '--ignore-table') === FALSE) {
     $skip_tables = array('accesslog', 'cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'search_dataset', 'search_index', 'search_total', 'sessions', 'watchdog');
-    $database = _drush_sql_get_database();
+    $database = _drush_sql_get_database($db_url);
     foreach ($skip_tables as $table) {
       $ignores[] = "--ignore-table=$database.$table";
     }
