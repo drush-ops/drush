@@ -70,7 +70,7 @@ function drush_tools_cache_clear() {
  *
  * @return void
  **/
-function drush_tools_sync($destination, $source = DRUSH_DRUPAL_ROOT) {
+function drush_tools_sync($source = DRUSH_DRUPAL_ROOT, $destination) {
   $options = '-az';
   if (DRUSH_VERBOSE) {
     drush_print(t('Executing: !cmd', array('!cmd' => $exec)));
