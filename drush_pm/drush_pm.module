@@ -10,11 +10,34 @@
  * Implementation of hook_help().
  */
 function drush_pm_help($section) {
+  $handlers = str_replace('drush_pm_', '', module_invoke_all('drush_pm_package_handler'));
+  if ($handlers) {
+    $handlers[0] = $handlers[0] .' (default)'; 
+    $handler = '--handler - specify which package handler you would like to use.
+  Available options: '. implode(', ', $handlers) . "\n";
+  }
+  else {
+    $handler = "ERROR: You must activate a drush Package Manager handler module in order
+     to install or update packages.";
+  }
+  
   switch ($section) {
     case 'drush:pm install':
-      return t("Usage: drush [options] pm install <package_1> <package_2> ...\n\n<package_n> is the short name of a project hosted on drupal.org.\nSo far, only modules are supported.\nThe modules will be installed into the sites/all/modules directory.\n\nTo use the modules, they still have to be activated on the normal module administration page.");
+      return t("Usage: drush [options] pm install <package_1> <package_2> ...
+<package_n> is the short name of a project hosted on drupal.org.
+So far, only modules are supported.\n
+The modules will be installed into a site specific modules directory if one
+exists, otherwise sites/all/modules is used.
+After installing, you still have to activate on the normal module
+administration page\n\n". $handler);
+      
     case 'drush:pm update':
-      return t("Usage: drush [options] pm udpate\n\nDisplays update status information and allows to update all installed packages\n(so far, only modules are supported). If you only want to update certain projects, pass those as additional arguments (e.g. cck devel views ...)\n\nNote: The user is asked to confirm before the actual update is started.\n  Use the -y option to answer all questions with yes automatically.");
+      return t("Usage: drush [options] pm update\n
+Displays update status information and allows to update all installed packages
+(so far, only modules are supported). If you only want to update certain
+projects, pass those as additional arguments (e.g. cck devel views ...).
+Note: The user is asked to confirm before the actual update is started.
+Use the -y option to answer all questions with yes automatically.\n\n". $handler);
   }
 }
 
@@ -65,13 +88,18 @@ function drush_pm_install_package() {
   
   $startdir = getcwd();
 
+  $package_handler = drush_pm_get_package_handler() .'_install_project';
+  if (!function_exists($package_handler)) {
+  	drush_die(t("The $package_handler package handler does not handle installs."));
+  }
+
   // Download and install each module
   foreach($projects as $project) {
     if (isset($info[$project]) && $release = drush_pm_get_release($info[$project])) {
       if (is_dir($modulepath . $project)) {
         drush_error(t('Project !project is already installed. Skipping.', array('!project' => $project)));
       }
-      elseif (drush_pm_install_project($project, $release, $modulepath)) {
+      elseif ($package_handler($project, $release, $modulepath)) {
         drush_print(t("Project !project successfully installed (version !version).",
           array('!project' => $project, '!version' => $release['version'])));
       }
@@ -82,62 +110,6 @@ function drush_pm_install_package() {
   }
 
   drush_op('chdir', $startdir);
-}
-
-/**
- * Install a project (so far, only modules are supported).
- *
- * @param $project The short name of the drupal.org project
- * @param $info The details (fetched from drupal.org via xml-rpc)
- * @param $path The path to install the module to.
- */
-function drush_pm_install_project($project, $info, $path = '.') {
-
-  drush_op('chdir', $path);
-
-  drush_verbose("Downloading project $project ...");
-
-  // Get the filename...
-  $filename = explode('/', $info['download_link']);
-  $filename = array_pop($filename);
-
-  // Download it.
-  if (!drush_shell_exec("wget " .$info['download_link'])) {
-    drush_shell_exec("curl -O " .$info['download_link']);
-  }
-
-  if (file_exists($path. $filename) || DRUSH_SIMULATE) {
-    drush_verbose("Downloading " . $filename . " was successful.");
-  }
-  else {
-    return drush_error("Unable to download $filename to $path from ". $info['download_link']);
-  }
-
-  // Check Md5 hash
-  if (md5_file($filename) != $info['mdhash'] && !DRUSH_SIMULATE) {
-    drush_op('unlink', $filename);
-    return drush_error("Error: File $filename is corrupt (wrong md5 checksum).");
-  }
-  else {
-    drush_verbose("Md5 checksum of $filename verified.");
-  }
-
-  // Decompress
-  drush_shell_exec("gzip -d " . $filename);
-  $filename = substr($filename, 0, strlen($filename)-3);
-  // Untar
-  drush_shell_exec("tar -xf " . $filename);
-  // We're not using tar -xzf because that's not working on windows...
-
-  // Remove the tarball
-  drush_op('unlink', $filename);
-
-  if (!is_dir($path . $project) && !DRUSH_SIMULATE) {
-    return drush_error("Error. Downloaded file $filename couldn't be untarred correctly");
-  }
-  else {
-    return TRUE;
-  }
 }
 
 /**
@@ -222,6 +194,11 @@ function drush_pm_update() {
     drush_die('Aborting.');
   }
 
+  $package_handler = drush_pm_get_package_handler() .'_update_project';
+  if (!function_exists($package_handler)) {
+  	drush_die(t("The $package_handler package handler does not handle updates."));
+  }
+  
   // Now we start the actual updating.
   foreach($updateable as $project) {
     drush_verbose(t('Starting to update !project ...', array('!project' => $project['title'])));
@@ -250,7 +227,7 @@ function drush_pm_update() {
     // move a directory up, so we can copy updated dir to parent
     array_pop($basepath);
     $project_parent_path = DRUSH_DRUPAL_ROOT. '/'. implode('/', $basepath). '/';
-    if (!drush_pm_install_project($project['name'], $project['releases'][$project['candidate_version']], $project_parent_path)) {
+    if (!$package_handler($project['name'], $project['releases'][$project['candidate_version']], $project_parent_path)) {
       drush_error(t('Updating project !project failed. Restoring previously installed version.', array('!project' => $project['name'])));
       drush_op('rename', $backup_target, $source);
     }
@@ -268,6 +245,29 @@ function drush_pm_update() {
 }
 }
 
+/**
+ * Find a module handler
+ */
+function drush_pm_get_package_handler() {
+  $package_handlers = module_invoke_all('drush_pm_package_handler');
+  
+  if (empty($package_handlers)) {
+    drush_die(t("No package handlers found."));
+  }
+
+  $handler = drush_get_option('handler');
+  // See if we have the full handler provided
+  if (array_search($handler, $package_handlers)) {
+    return $handler;
+  }
+  // Allow a shortcut for any functions named drush_pm_*
+  if (array_search('drush_pm_'. $handler, $package_handlers)) {
+    return 'drush_pm_'. $handler;
+  }
+
+  // Fallback on the first provided handler (from the lightest module)
+  return $package_handlers[0];
+}
 
 /**
  * Get update information for all installed projects.
