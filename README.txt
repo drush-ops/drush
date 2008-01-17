@@ -11,8 +11,7 @@ some alpha-channel translucency with that? ;)
 
 drush.module itself doesn't provide any actual tools or commands but the API
 for those. There are several modules that provide drush utilities included in
-this download, though (namely the drush Packet Manager, drush_pm.module, and
-the drush Toolbox, drush_tools.module).
+this download. See Package Manager, SQL Tools, and Toolbox.
 
 INSTALLATION
 ------------
@@ -61,7 +60,9 @@ options just to get the help comamnd to work:
 Related Options:
   -r <path>, --root=<path>      Drupal root directory to use (default: current directory)            
   -l <uri> , --uri=<uri>        URI of the drupal site to use (only needed in multisite environments)
-  -v, --verbose                 Display all available output                                         
+  -v, --verbose                 Display all available output
+  
+If you get tired of typing options all the time, you can add them to your drush.php alias or create a drushrc.php file. These provide additional options for your drush call. They provide great flexibility for a multi-site installation, for example. See example.drushrc.php.                                         
 
 REQUIREMENTS
 ------------

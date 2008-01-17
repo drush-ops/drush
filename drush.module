@@ -36,6 +36,7 @@ function drush_callback_help() {
     $rows[] = array('-v, --verbose', t('Display all available output'));
     $rows[] = array('-y, --yes', t("Assume 'yes' as answer to all prompts"));
     $rows[] = array('-s, --simulate', t("Simulate all relevant actions (don't actually change the system)"));
+    $rows[] = array('-c, --config', t("Specify a config file to use. See example.drushrc.php"));  
 
     drush_print_table($rows, 2);
     drush_print();

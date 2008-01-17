@@ -19,12 +19,39 @@ if (!empty($_SERVER['REQUEST_METHOD'])) {
 
 exit(drush_bootstrap($GLOBALS['argc'], $GLOBALS['argv']));
 
+function drush_load_rc() {
+  global $conf;
+  global $args;
+  # Specified rc file
+  $configs[] = drush_get_option(array('c', 'config'), FALSE);
+  # Rc file in same directory as the drush.php file
+  $configs[] = dirname($_SERVER['SCRIPT_FILENAME']) . "/drushrc.php";
+  # Rc file in current directory
+  $configs[] = "drushrc.php";  
+  # Rc file in located drupal root
+  $configs[] = drush_get_option(array('r', 'root'), _drush_locate_root()). '/drushrc.php'; 
+  # Rc file in user's home directory
+  $configs[] = $_SERVER['HOME'] . '/.drushrc.php';
+  
+  foreach ($configs as $config) {
+    if (file_exists($config)) {
+      define('DRUSH_CONFIG', $config);
+      require_once($config);
+      $args['options'] = array_merge($args['options'], $options); # Sets all the default options for drush
+      break;
+    }
+  }
+}
 
 function drush_bootstrap($argc, $argv) {
   global $args;
+
   // Parse command line options and arguments.
   $args = drush_parse_args($argv, array('h', 'u', 'r', 'l'));
 
+  // Load .drushrc file if available. Allows you to provide defaults for options and variables.
+  drush_load_rc();
+  
   // Define basic options as constants.
   define('DRUSH_URI',         drush_get_option(array('l', 'uri'), FALSE));
   define('DRUSH_VERBOSE',     drush_get_option(array('v', 'verbose'), FALSE));
@@ -120,7 +147,6 @@ function _drush_locate_root_moveup($path) {
  */
 function _drush_bootstrap_drupal() {
   require_once DRUSH_DRUPAL_BOOTSTRAP;
-
   if (($conf_path = conf_path()) && !file_exists("./$conf_path/settings.php")) {
     // drush_die() is not available yet.
     die("Unable to load Drupal configuration from $conf_path/.\n");
