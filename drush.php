@@ -35,8 +35,8 @@ function drush_verify_cli() {
 }
 
 function drush_load_rc() {
-  global $conf;
-  global $args;
+  global $override, $args;
+  
   # Specified rc file
   $configs[] = drush_get_option(array('c', 'config'), FALSE);
   # Rc file in same directory as the drush.php file
@@ -59,7 +59,7 @@ function drush_load_rc() {
 }
 
 function drush_bootstrap($argc, $argv) {
-  global $args;
+  global $args, $override;
 
   // Parse command line options and arguments.
   $args = drush_parse_args($argv, array('h', 'u', 'r', 'l'));
@@ -100,6 +100,14 @@ function drush_bootstrap($argc, $argv) {
   // Bootstrap Drupal.
   _drush_bootstrap_drupal();
   
+  /**
+   * Allow the drushrc.php file to override $conf settings.
+   * This is a separate variable because the $conf array gets initialized to an empty array,
+   * in the drupal bootstrap process, and changes in settings.php would wipe out the drushrc.php
+   * settings
+   */
+  $conf = array_merge($conf, (array) $override);
+    
   // Login the specified user (if given).
   if (DRUSH_USER) {
     _drush_login(DRUSH_USER);
