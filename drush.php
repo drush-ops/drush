@@ -13,11 +13,26 @@
 define('DRUSH_DRUPAL_BOOTSTRAP', 'includes/bootstrap.inc');
 
 // Terminate immediately unless invoked as a command line script
-if (!empty($_SERVER['REQUEST_METHOD'])) {
-  die();
+if (!drush_verify_cli()) {
+  die('drush.php is designed to run via the command line.');
 }
 
 exit(drush_bootstrap($GLOBALS['argc'], $GLOBALS['argv']));
+
+/**
+ * Verify that we are running PHP through the command line interface.
+ *
+ * This function is useful for making sure that code cannot be run via the web server,
+ * such as a function that needs to write files to which the web server should not have
+ * access to.
+ *
+ * @return
+ *   A boolean value that is true when PHP is being run through the command line, 
+ *   and false if being run through cgi or mod_php.
+ */
+function drush_verify_cli() {
+  return (php_isapi_name() == 'cli');
+}
 
 function drush_load_rc() {
   global $conf;
