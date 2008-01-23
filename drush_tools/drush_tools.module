@@ -42,7 +42,7 @@ function drush_tools_drush_command() {
   );
   $items['sync'] = array(
     'callback' => 'drush_tools_sync',
-    'description' => 'Rsync the Drupal tree to any <destination> using ssh'
+    'description' => 'Rsync the Drupal tree to any [destination] using ssh'
   );
   return $items;
 }

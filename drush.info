@@ -1,4 +1,4 @@
 ; $Id$
-name = drush
+name = Drush
 description = "drush (the drupal shell) provides a command line interface for Drupal."
 package = drush

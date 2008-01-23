@@ -6,15 +6,76 @@
  * drush (the drupal shell) provides a command line interface for Drupal.
  */
 
+
+/**
+ * Implementation of hook_help()
+ */
+function drush_help($section) {
+  switch ($section) {
+    case 'admin/help#drush':
+      include_once('drush.inc');
+      
+      $output .= t('<p>Drush is a command line shell and Unix scripting interface for Drupal, a
+      veritable Swiss Army knife designed to make life easier for those of us who
+      spend most of our working hours hacking away at the command prompt.</p>');
+
+      // Usage
+      $output .= '<a name=\'usage\'><h3>' . t('Usage') . '</h3></a>';
+      $output .= '<p><code>drush.php [options] &lt;command&gt; &lt;command&gt; ...</code></p>';
+      
+      // Options
+      $output .= '<a name=\'options\'><h3>' . t('Options') . '</h3></a>';
+      $options = drush_get_options();
+      $output .= "<dl>";
+      foreach ($options as $option => $description) {
+        $output .= '<dt>' . "<code>$option</code>" . '</dt>';
+        $output .= '<dd>' .  $description . '</dd>';
+      }
+      $output .= "</dl>";
+            
+      // Commands
+      $commands = drush_get_commands();
+      $output .= '<a name=\'commands\'><h3>' . t('Commands') . '</h3></a>';
+      $output .= "<dl>";
+      foreach ($commands as $command => $info) {
+        $output .= '<dt>' . "<code>drush.php $command</code>" . '</dt>';
+        $output .= '<dd>' .  $info["description"] . '</dd>';
+      }
+      $output .= "</dl>";
+      
+      return $output;
+    
+  }
+}
+
+
 /**
  * Implementation of hook_drush_command().
  */
 function drush_drush_command() {
   $items['help'] = array(
     'callback' => 'drush_callback_help',
-    'description' => 'View help. Run "drush help command" to view command-specific help.'
+    'description' => 'View help. Run "drush help [command]" to view command-specific help.'
   );
   return $items;
+}
+
+/**
+ * Get the available options for Drush.
+ *
+ * @return
+ *    An associative array containing the option definition as the key, and the description as the value,
+ *    for each of the available options.
+ */
+function drush_get_options() {
+  // TODO: Add a hook for this, to allow other modules to add their options
+  $options['-r <path>, --root=<path>'] = t("Drupal root directory to use (default: current directory)");
+  $options['-l <uri> , --uri=<uri>']   = t('URI of the drupal site to use (only needed in multisite environments)');
+  $options['-v, --verbose']            = t('Display all available output');
+  $options['-y, --yes']                = t("Assume 'yes' as answer to all prompts");
+  $options['-s, --simulate']           = t("Simulate all relevant actions (don't actually change the system)");
+  $options['-c, --config']             = t("Specify a config file to use. See example.drushrc.php");
+  return $options;
 }
 
 /**
@@ -26,17 +87,12 @@ function drush_callback_help() {
   // Display general help text if no command is specified.
   if (empty($commands)) {
     drush_print('drush ' . drush_version());
-    drush_print(t('Usage: drush [options] <command> <command> ...'));
+    drush_print(t('Usage: drush.php [options] <command> <command> ...'));
     drush_print();
     drush_print(t('Options: '));
-
-    // TODO: Add a hook for this, to allow other modules to add their options
-    $rows[] = array('-r <path>, --root=<path>', t("Drupal root directory to use (default: current directory)"));
-    $rows[] = array('-l <uri> , --uri=<uri>', t('URI of the drupal site to use (only needed in multisite environments)'));
-    $rows[] = array('-v, --verbose', t('Display all available output'));
-    $rows[] = array('-y, --yes', t("Assume 'yes' as answer to all prompts"));
-    $rows[] = array('-s, --simulate', t("Simulate all relevant actions (don't actually change the system)"));
-    $rows[] = array('-c, --config', t("Specify a config file to use. See example.drushrc.php"));  
+    foreach (drush_get_options() as $option => $description) {
+      $rows[] = array($option, $description);
+    }
 
     drush_print_table($rows, 2);
     drush_print();
