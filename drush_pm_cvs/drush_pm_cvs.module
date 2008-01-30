@@ -81,7 +81,9 @@ function drush_pm_cvs_update_project($project, $info, $path = '.') {
   if (substr($cvsmethod, 0, 2) == 'up') {
   	// Update the working copy.
   	drush_op('chdir', $project);
-  	drush_shell_exec('cvs update -dP '. $cvsparams . ' -r '. $info['tag']);
+  	if (!drush_shell_exec('cvs update -dP '. $cvsparams . ' -r '. $info['tag'])) {
+  	  drush_die("Unable to update $project from cvs.drupal.org.");
+  	}
   	drush_op('chdir', '..');
   }
   else {
@@ -99,5 +101,7 @@ function drush_pm_cvs_update_project($project, $info, $path = '.') {
 }
 
 function drush_pm_cvs_checkout($project, $tag, $cvsparams) {
-  drush_shell_exec('cvs -z6 '. $cvsparams .' -d:pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal-contrib checkout -d '. $project .' -r '. $tag .' contributions/modules/'. $project);
+  if (!drush_shell_exec('cvs -z6 '. $cvsparams .' -d:pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal-contrib checkout -d '. $project .' -r '. $tag .' contributions/modules/'. $project)) {
+    drush_die("Unable to checkout $project from cvs.drupal.org.");
+  }
 }
