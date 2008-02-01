@@ -86,7 +86,6 @@ function drush_callback_help() {
 
   // Display general help text if no command is specified.
   if (empty($commands)) {
-    drush_print('drush ' . drush_version());
     drush_print(t('Usage: drush.php [options] <command> <command> ...'));
     drush_print();
     drush_print(t('Options: '));
@@ -128,9 +127,6 @@ function drush_callback_help() {
  */
 function drush_usage() {
   $commands = func_get_args();
-  if (drush_get_option('version')) {
-    return drush_print('drush ' . drush_version());
-  }
 
   if (drush_get_option('help') || empty($commands)) {
     return drush_callback_help();

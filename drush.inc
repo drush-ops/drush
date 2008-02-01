@@ -7,20 +7,6 @@
  */
 
 /**
- * Returns the drush version (parsed from drush.info).
- */
-function drush_version() {
-  static $version;
-  if (isset($version) && $version) {
-    return $version;
-  }
-
-  $ini = parse_ini_file(drupal_get_path('module','drush') . '/drush.info', FALSE);
-  $version = $ini['version'];
-  return $version;
-}
-
-/**
  * Dispatch a given set of commands.
  * Modules can add commands by implementing hook_drush_command().
  */
