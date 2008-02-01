@@ -52,7 +52,9 @@ function drush_load_rc() {
     if (file_exists($config)) {
       define('DRUSH_CONFIG', $config);
       require_once($config);
-      $args['options'] = array_merge($args['options'], $options); # Sets all the default options for drush
+      if (is_array($options)) {
+        $args['options'] = array_merge($args['options'], $options); # Sets all the default options for drush
+      }
       break;
     }
   }
