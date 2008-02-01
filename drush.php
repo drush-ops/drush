@@ -108,7 +108,9 @@ function drush_bootstrap($argc, $argv) {
    * in the drupal bootstrap process, and changes in settings.php would wipe out the drushrc.php
    * settings
    */
-  $conf = array_merge($conf, (array) $override);
+  if (is_array($override)) {
+    $conf = array_merge($conf, $override);
+  }
     
   // Login the specified user (if given).
   if (DRUSH_USER) {
