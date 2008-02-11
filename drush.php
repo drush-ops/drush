@@ -61,7 +61,7 @@ function drush_load_rc() {
 }
 
 function drush_bootstrap($argc, $argv) {
-  global $args, $override;
+  global $args, $override, $conf;
 
   // Parse command line options and arguments.
   $args = drush_parse_args($argv, array('h', 'u', 'r', 'l'));
