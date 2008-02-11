@@ -17,7 +17,8 @@ INSTALLATION
 ------------
 For Linux/Unix/Mac:
   1. Untar the tarball into your module directory (sites/all/modules)
-  2. Enable drush.module and any submodules you want to use
+  2. Enable drush.module and any submodules you want to use. You must enable the CVS or wget modules
+     if you want to install modules (you do).
   3. (optional, but recommended:) To ease the use of drush,
      - create a link to drush.php in a directory that is in your $PATH, e.g.:
        $ ln /path/to/drush.php /usr/bin/drush
@@ -30,6 +31,8 @@ For Linux/Unix/Mac:
 
      (or, if you did not follow step 3, by running "./sites/all/modules/drush.php"
       or navigating to sites/all/modules/drush and running "./drush.php" )
+      
+    If you have troubles, try using the -l and -r flags when invoking drush.php. See below.
 
 For Windows (experimental!):
   - Follow steps 1 and 2. Use drush by navigating to sites/all/modules/drush
@@ -43,7 +46,7 @@ For Windows (experimental!):
 USAGE
 -----
 Once installed and setup (see above), you can use drush as follows while in
-a Drupal directory:
+any Drupal directory:
 
   $ drush [options] <command> <command> ...
 
@@ -53,7 +56,7 @@ Use the 'help' command to get a list of available options and commands:
 
 Please note that drush requires a working drupal setup in order to function
 correctly. So for multisite installations, you might need to use the -l or other command line 
-options just to get the help comamnd to work:
+options just to get the help command to work:
 
   $ drush -l http://association.drupal.org/drupal help
 

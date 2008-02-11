@@ -10,4 +10,4 @@ drush.module
 
 ------------
 Written by Franz Heinzmann (frando) <http://unbiskant.org>.
-No warranties of any kind.
+Expanded by Moshe Weitzman - http://drupal.org/moshe
