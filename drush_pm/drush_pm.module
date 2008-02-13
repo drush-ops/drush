@@ -60,6 +60,20 @@ function drush_pm_drush_command() {
   return $items;
 }
 
+function drush_pm_requirements($phase) {
+  switch ($phase) {
+    case 'runtime':
+    $package_handlers = module_invoke_all('drush_pm_package_handler');
+      $requirements['handlers'] = array(
+        'title' => t('Drush: Package handler'),
+        'description' => t('In order to use the Drush package manager module to install/update projects, you must install one of its package handler modules.'),
+        'severity' => empty($package_handlers) ? REQUIREMENT_ERROR : REQUIREMENT_OK,
+      );
+      break;
+  }
+  return is_array($requirements) ? $requirements : array();
+}
+
 /**
  * Command callback. Installs one or more packages (so far only modules).
  */
