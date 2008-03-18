@@ -1,0 +1,5 @@
+; $Id$
+name = Drush simpletest runner
+description = Run unit tests.
+package = drush
+dependencies = drush simpletest
