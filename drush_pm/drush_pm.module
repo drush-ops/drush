@@ -24,7 +24,9 @@ function drush_pm_help($section) {
   switch ($section) {
     case 'drush:pm install':
       return t("Usage: drush [options] pm install <package_1> <package_2> ...
-<package_n> is the short name of a project hosted on drupal.org.
+<package_n> is the short name of a project hosted on drupal.org,
+or the short name and the version number (Drupal major version is optional).
+e.g. project, project-5.x-1.0, project-1.0, project-1.x-dev, project-1.1-rc1
 So far, only modules are supported.\n
 The modules will be installed into a site specific modules directory if one
 exists, otherwise sites/all/modules is used.
@@ -34,8 +36,9 @@ administration page\n\n". $handler);
     case 'drush:pm update':
       return t("Usage: drush [options] pm update\n
 Displays update status information and allows to update all installed packages
-(so far, only modules are supported). If you only want to update certain
-projects, pass those as additional arguments (e.g. cck devel views ...).
+to the latest recommended version (so far, only modules are supported).
+If you only want to update certain projects, pass those as additional
+arguments (e.g. cck devel views ...).
 Note: The user is asked to confirm before the actual update is started.
 Use the -y option to answer all questions with yes automatically.\n\n". $handler);
   }
@@ -75,6 +78,37 @@ function drush_pm_requirements($phase) {
 }
 
 /**
+ * Parse out the project name and version and return as a structured array
+ *
+ * @param $projects an array of project names
+ */
+function drush_pm_parse_package_name($projects) {
+  $projectdata = array();
+  foreach($projects as $project) {
+    // project-HEAD or project-5.x-1.0-beta
+    // '5.x-' is optional, as is '-beta'
+    preg_match('/-(HEAD|(\d+)\.([\dx]+)(-.+)?)$/', $project, $matches);
+    if ($matches[0]) {
+      // Specific version requested
+      $version = $matches[0];
+      $name = substr($project, 0, strlen($project) - strlen($version));
+    }
+    else {
+      // Recommended stable version requested
+      $name = $project;
+    }
+    if (empty($name)) {
+      drush_die(t("Project name not found.\n\nRun drush help pm install for more information."));
+    }
+    $projectdata[$name] = array(
+      'name' => $name,
+      'version' => trim($version, ' -'),
+    );
+  }
+  return $projectdata;
+}
+
+/**
  * Command callback. Installs one or more packages (so far only modules).
  */
 function drush_pm_install_package() {
@@ -82,7 +116,10 @@ function drush_pm_install_package() {
   if (empty($projects)) {
     drush_die(t("No project specified.\n\nRun drush help pm install for more information."));
   }
-
+  
+  // Parse out project name and version
+  $projects = drush_pm_parse_package_name($projects);
+  
   // If a URI is provided then we install to that specific site, otherwise we install to sites/all/modules
   if (DRUSH_URI) {
     $path = conf_path();
@@ -108,18 +145,18 @@ function drush_pm_install_package() {
   }
 
   // Download and install each module
-  foreach($projects as $project) {
-    if (isset($info[$project]) && $release = drush_pm_get_release($info[$project])) {
-      if (is_dir($modulepath . $project)) {
-        drush_error(t('Project !project is already installed. Skipping.', array('!project' => $project)));
+  foreach($projects as $project_name => $project) {
+    if (isset($info[$project_name]) && $release = drush_pm_get_release($project, $info[$project_name])) {
+      if (is_dir($modulepath . $project_name)) {
+        drush_error(t('Project !project is already installed. Skipping.', array('!project' => $project['full'])));
       }
-      elseif ($package_handler($project, $release, $modulepath)) {
+      elseif ($package_handler($project_name, $release, $modulepath)) {
         drush_print(t("Project !project successfully installed (version !version).",
-          array('!project' => $project, '!version' => $release['version'])));
+          array('!project' => $project['full'], '!version' => $release['version'])));
       }
     }
     else {
-      drush_error(t('Project !project doesn\' exist or has no releases that are compatible with your Drupal version. Skipping.', array('!project' => $project)));
+      drush_error(t('Project !project doesn\' exist or has no releases that are compatible with your Drupal version. Skipping.', array('!project' => $project['full'])));
     }
   }
 
@@ -151,7 +188,7 @@ function drush_pm_update() {
   drush_print();
 
   // table headers
-  $rows[] = array(t('name'), t('installed version'), t('candidate version'), t('status'));
+  $rows[] = array(t('Name'), t('Installed version'), t('Recommended version'), t('Status'));
 
   foreach ($data as $project) {
     if (!$project['title']) {
@@ -159,7 +196,7 @@ function drush_pm_update() {
     }
     
     $project['candidate_version'] = $project['recommended'];
-
+print_r($project);
     switch($project['status']) {
       case UPDATE_STATUS_CURRENT:
         $status = t('OK');
@@ -312,8 +349,8 @@ function drush_pm_refresh() {
 function drush_pm_get_project_info($projects) {
   $info = array();
   $data = array();
-  foreach ($projects as $project) {
-    $url = UPDATE_STATUS_DEFAULT_URL. "/$project/". UPDATE_STATUS_CORE_VERSION;
+  foreach ($projects as $project_name => $project) {
+    $url = UPDATE_STATUS_DEFAULT_URL. "/$project_name/". UPDATE_STATUS_CORE_VERSION;
     $xml = drupal_http_request($url);
     $data[] = $xml->data;
   }
@@ -327,44 +364,66 @@ function drush_pm_get_project_info($projects) {
 /**
  * Get the recommended release for a certain so far uninstalled project.
  *
- * @param $project A project information array, as returned by drush_pm_get_project_info()
+ * @param $project A project information array for the requested project 
+ * @param $info A project information array for this project, as returned by an update service from drush_pm_get_project_info()
  */
-function drush_pm_get_release($project) {
+function drush_pm_get_release($project, $info) {
   $minor = '';
   $version_patch_changed = '';
 
-  foreach($project['releases'] as $version => $release) {
-     // Ignore unpublished releases.
-    if ($release['status'] != 'published') {
-      continue;
-    }
-
-    // If we haven't found a recommended version yet, put the dev
-    // version as recommended and hope it gets overwritten later.
-    // Look for the 'latest version' if we haven't found it yet.
-    // Latest version is defined as the most recent version for the
-    // default major version.
-    if (!isset($latest_version) && $release['version_major'] == $project['default_major']) {
-      $latest_version = $version;
-    }
-
-    if (!isset($recommended_version) && $release['version_major'] == $project['default_major']) {
-      if ($minor != $release['version_patch']) {
-        $minor = $release['version_patch'];
-        $version_patch_changed = $version;
+  if ($project['version']) {
+    // The user specified a specific version - try to find that exact version
+    foreach($info['releases'] as $version => $release) {
+       // Ignore unpublished releases.
+      if ($release['status'] != 'published') {
+        continue;
       }
-      if (empty($release['version_extra']) && $minor == $release['version_patch']) {
-        $recommended_version = $version_patch_changed;
+      
+      // Straight match
+      if (!isset($recommended_version) && $release['version'] == $project['version']) {
+        $recommended_version = $version;
       }
-      continue;
+      // Shortcut match with ommitted Drupal version
+      if (!isset($recommended_version) && $release['version'] == UPDATE_STATUS_CORE_VERSION .'-'. $project['version']) {
+        $recommended_version = $version;
+      }
+    }
+  }
+  else {
+    // No version specified - try to find the best version we can
+    foreach($info['releases'] as $version => $release) {
+       // Ignore unpublished releases.
+      if ($release['status'] != 'published') {
+        continue;
+      }
+  
+      // If we haven't found a recommended version yet, put the dev
+      // version as recommended and hope it gets overwritten later.
+      // Look for the 'latest version' if we haven't found it yet.
+      // Latest version is defined as the most recent version for the
+      // default major version.
+      if (!isset($latest_version) && $release['version_major'] == $info['default_major']) {
+        $latest_version = $version;
+      }
+  
+      if (!isset($recommended_version) && $release['version_major'] == $info['default_major']) {
+        if ($minor != $release['version_patch']) {
+          $minor = $release['version_patch'];
+          $version_patch_changed = $version;
+        }
+        if (empty($release['version_extra']) && $minor == $release['version_patch']) {
+          $recommended_version = $version_patch_changed;
+        }
+        continue;
+      }
     }
   }
 
   if (isset($recommended_version)) {
-    return $project['releases'][$recommended_version];
+    return $info['releases'][$recommended_version];
   }
   else if (isset($latest_version)) {
-    return $project['releases'][$latest_version];
+    return $info['releases'][$latest_version];
   }
   else {
     return false;
