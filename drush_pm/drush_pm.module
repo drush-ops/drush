@@ -148,15 +148,15 @@ function drush_pm_install_package() {
   foreach($projects as $project_name => $project) {
     if (isset($info[$project_name]) && $release = drush_pm_get_release($project, $info[$project_name])) {
       if (is_dir($modulepath . $project_name)) {
-        drush_error(t('Project !project is already installed. Skipping.', array('!project' => $project['full'])));
+        drush_error(t('Project !project is already installed. Skipping.', array('!project' => $project_name)));
       }
       elseif ($package_handler($project_name, $release, $modulepath)) {
         drush_print(t("Project !project successfully installed (version !version).",
-          array('!project' => $project['full'], '!version' => $release['version'])));
+          array('!project' => $project_name, '!version' => $release['version'])));
       }
     }
     else {
-      drush_error(t('Project !project doesn\' exist or has no releases that are compatible with your Drupal version. Skipping.', array('!project' => $project['full'])));
+      drush_error(t('Project !project doesn\' exist or has no releases that are compatible with your Drupal version. Skipping.', array('!project' => $project_name)));
     }
   }
 
@@ -196,7 +196,7 @@ function drush_pm_update() {
     }
     
     $project['candidate_version'] = $project['recommended'];
-print_r($project);
+
     switch($project['status']) {
       case UPDATE_STATUS_CURRENT:
         $status = t('OK');
