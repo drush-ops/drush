@@ -132,7 +132,6 @@ function drush_pm_install_package() {
 
   // Get the module info from drupal.org via xml-rpc
   $info = drush_pm_get_project_info($projects);
-  
   if (!$info) {
     drush_die(t("None of the given projects exists or has releases that are compatible with your Drupal version."));
   }
@@ -183,7 +182,7 @@ function drush_pm_update() {
     }
   }
   
-  $last = variable_get('update_status_last', 0);
+  $last = variable_get('update_last_check', 0);
   drush_print(t('Update information last refreshed: ') . ($last  ? format_date($last) : t('Never')));
   drush_print();
 
@@ -198,14 +197,14 @@ function drush_pm_update() {
     $project['candidate_version'] = $project['recommended'];
 
     switch($project['status']) {
-      case UPDATE_STATUS_CURRENT:
+      case UPDATE_CURRENT:
         $status = t('OK');
         break;
-      case UPDATE_STATUS_NOT_CURRENT:
+      case UPDATE_NOT_CURRENT:
         $status = t('Update available');
         $updateable[$project['name']] = $project;
         break;
-      case UPDATE_STATUS_NOT_SECURE:
+      case UPDATE_NOT_SECURE:
         $status = t('SECURITY UPDATE available');
         $updateable[$project['name']] = $project;
         break;
@@ -326,8 +325,8 @@ function drush_pm_get_package_handler() {
  * @return An array containing remote and local versions for all installed projects
  */
 function _drush_pm_get_update_info($projects = NULL) {
-  $info = update_status_get_available();
-  $data = update_status_calculate_project_data($info);
+  $info = update_get_available();
+  $data = update_calculate_project_data($info);
   $data = drush_pm_get_project_path($data);
   return $data;
 }
@@ -337,7 +336,7 @@ function _drush_pm_get_update_info($projects = NULL) {
  */
 function drush_pm_refresh() {
   drush_print(t("Refreshing update status information ..."));
-  update_status_refresh();
+  update_refresh();
   drush_print(t("Done."));
 }
 
@@ -350,12 +349,13 @@ function drush_pm_get_project_info($projects) {
   $info = array();
   $data = array();
   foreach ($projects as $project_name => $project) {
-    $url = UPDATE_STATUS_DEFAULT_URL. "/$project_name/". UPDATE_STATUS_CORE_VERSION;
+    $url = UPDATE_DEFAULT_URL. "/$project_name/". DRUPAL_CORE_COMPATIBILITY;
     $xml = drupal_http_request($url);
     $data[] = $xml->data;
   }
   if ($data) {
-    $parser = new update_status_xml_parser;
+    include_once drupal_get_path('module', 'update') .'/update.fetch.inc';
+    $parser = new update_xml_parser;
     $info = $parser->parse($data);
   }
   return $info;
@@ -384,7 +384,7 @@ function drush_pm_get_release($project, $info) {
         $recommended_version = $version;
       }
       // Shortcut match with ommitted Drupal version
-      if (!isset($recommended_version) && $release['version'] == UPDATE_STATUS_CORE_VERSION .'-'. $project['version']) {
+      if (!isset($recommended_version) && $release['version'] == DRUPAL_CORE_COMPATIBILITY .'-'. $project['version']) {
         $recommended_version = $version;
       }
     }

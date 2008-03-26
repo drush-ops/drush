@@ -2,4 +2,5 @@
 name = drush SQL commands
 description = Provides several tools for database query and management
 package = drush
-dependencies = drush
+dependencies[] = drush
+core = 6.x

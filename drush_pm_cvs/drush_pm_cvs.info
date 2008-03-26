@@ -2,5 +2,7 @@
 name = drush Package Manager CVS Support
 description = Allows drush to install and update modules using CVS.
 package = drush
-dependencies = update_status drush drush_pm
-
+dependencies[] = update
+dependencies[] = drush
+dependencies[] = drush_pm
+core = 6.x

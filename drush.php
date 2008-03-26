@@ -96,6 +96,7 @@ function drush_bootstrap($argc, $argv) {
   $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
   $_SERVER['REMOTE_ADDR'] = NULL;
   $_SERVER['REQUEST_METHOD'] = NULL;
+  $_SERVER['SERVER_SOFTWARE'] = NULL;
 
   // Change to Drupal root dir.
   chdir(DRUSH_DRUPAL_ROOT);
@@ -315,4 +316,3 @@ function drush_convert_path($path) {
   return str_replace('\\','/', $path);
 }
 
-?>

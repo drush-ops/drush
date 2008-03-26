@@ -52,7 +52,7 @@ function drush_test_list() {
     include_once($file);
   }
   $classes = array_diff(get_declared_classes(), $existing_classes);
-  return implode("\n", $classes);
+  return implode("\n", $classes). "\n";
 }
 
 
