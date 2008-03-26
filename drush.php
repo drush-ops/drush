@@ -182,7 +182,12 @@ function _drush_bootstrap_drupal() {
   // The bootstrap can fail silently, so we catch that in a shutdown function.
   register_shutdown_function('drush_shutdown');
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-  require_once drupal_get_path('module', 'drush') . '/drush.inc';
+  if (module_exists('drush')) {
+    require_once drupal_get_path('module', 'drush') . '/drush.inc';
+  }
+  else {
+    die("Drush: You must enable the Drush module.\n");
+  }
 }
 
 function drush_shutdown() {
