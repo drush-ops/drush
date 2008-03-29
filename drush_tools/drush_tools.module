@@ -83,18 +83,18 @@ function drush_tools_sync($source, $destination) {
   
   // Prompt for confirmation. This is destructive.
   if (!DRUSH_SIMULATE) {
-    drush_print(t("You will destroy data from !target and replace with data from !source.", array('!source' => $source, '!target' => $destination)));
+    drush_print(t("You will destroy data from !target and replace with data from !source", array('!source' => $source, '!target' => $destination)));
     if (!drush_confirm(t('Do you really want to continue?'))) {
       drush_die('Aborting.');
     }
   }
   
   $options = '-az';
+  $exec = "rsync -e ssh $options --exclude \"*.svn*\" $source $destination";
   if (DRUSH_VERBOSE) {
-    drush_print(t('Executing: !cmd', array('!cmd' => $exec)));
+    // the drush_op() will be verbose about the command that gets executed.
     $options .= 'v';
   }
-  $exec = "rsync -e ssh $options --exclude \"*.svn*\" $source $destination";
 
   return drush_op('system', $exec) !== FALSE;
 }
