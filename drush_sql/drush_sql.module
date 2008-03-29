@@ -217,7 +217,7 @@ function drush_sql_load($source, $target, $skip = FALSE) {
   // Prompt for confirmation. This is destructive.
   if (!DRUSH_SIMULATE) {
     drush_print(t("You will destroy data from !target and replace with data from !source.", array('!source' => $db_url_source, '!target' => $db_url_target)));
-    // TOOD: actually make the backup if desired.
+    // TODO: actually make the backup if desired.
     drush_print(t("You might want to make a backup first, using sql_dump command."));
     if (!drush_confirm(t('Do you really want to continue?'))) {
       drush_die('Aborting.');

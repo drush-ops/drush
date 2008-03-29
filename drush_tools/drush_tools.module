@@ -2,7 +2,9 @@
 // $Id$
 
 /**
- * @file
+ * @file drush_trools.sql
+ *
+ * A soup of site utilities.
  *
  */
 
@@ -16,7 +18,7 @@ function drush_tools_help($section) {
     case 'drush:watchdog delete':
       return t("Usage: drush [options] watchdog delete <type>\n\nDelete all messages of type <type>. Use 'all' to delete all messages, no matter which type they are of.");
       case 'drush:sync':
-        return t("Usage: drush [options] sync <destination> <source>\n\nRsync the entire drupal directory (or subdirectory, using $source parameter) to <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, for example. The most common case for specifying $source is for pointing to a 'files' directory when thats all you want to sync. <source> may be relative to Drupal root or an absolute path. If <source> is omitted, the whole Drupal tree is pushed. ");
+        return t("Usage: drush [options] sync <source> <destination>\n\nRsync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
   }
 }
 
@@ -42,7 +44,7 @@ function drush_tools_drush_command() {
   );
   $items['sync'] = array(
     'callback' => 'drush_tools_sync',
-    'description' => 'Rsync the Drupal tree to any [destination] using ssh'
+    'description' => 'Rsync the Drupal tree to/from another server using ssh'
   );
   return $items;
 }
@@ -66,11 +68,27 @@ function drush_tools_cache_clear() {
 }
 
 /**
- * Push the current Drupal install to another server via SSH and RSync
+ * Push files from or to the local Drupal install using SSH and RSync
  *
  * @return void
  **/
-function drush_tools_sync($source = DRUSH_DRUPAL_ROOT, $destination) {
+function drush_tools_sync($source, $destination) {
+  // Local paths are relative to Drupal root
+  if (!strstr($source, ':')) {
+    $source = DRUSH_DRUPAL_ROOT. ":";
+  }
+  if (!strstr($destination, ':')) {
+    $destination = DRUSH_DRUPAL_ROOT. "/$destination";
+  }
+  
+  // Prompt for confirmation. This is destructive.
+  if (!DRUSH_SIMULATE) {
+    drush_print(t("You will destroy data from !target and replace with data from !source.", array('!source' => $source, '!target' => $destination)));
+    if (!drush_confirm(t('Do you really want to continue?'))) {
+      drush_die('Aborting.');
+    }
+  }
+  
   $options = '-az';
   if (DRUSH_VERBOSE) {
     drush_print(t('Executing: !cmd', array('!cmd' => $exec)));
