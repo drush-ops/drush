@@ -101,8 +101,13 @@ function drush_sql_version_client() {
 /**
  * Command callback. Outputs the entire Drupal database in SQL format using mysqldump or
  * pg_dump.
+ *
+ * @param db_url
+ * @param execute
+ * @param skip
+ *    A key in the sql_skip array which specifies a list of tables to ignore when migrating.
  */
-function drush_sql_dump($db_url = NULL, $execute = TRUE, $skip = FALSE) {
+function drush_sql_dump($db_url = NULL, $execute = TRUE, $skip = NULL) {
   if (is_null($db_url)) {
     $db_url = $GLOBALS['db_url'];
   }
@@ -127,7 +132,8 @@ function drush_sql_dump($db_url = NULL, $execute = TRUE, $skip = FALSE) {
   
   // Skip large core tables if instructed.  Used by 'sql load' command.
     if ($skip && strpos($exec, '--ignore-table') === FALSE) {
-      $skip_tables = (array)drush_get_option('skip-tables');
+      $all_skip_tables = (array)drush_get_option('skip-tables');
+      $skip_tables = $all_skip_tables[$skip];
       $database = _drush_sql_get_database($db_url);
       foreach ($skip_tables as $table) {
         $ignores[] = "--ignore-table=$database.$table";
@@ -200,14 +206,21 @@ function drush_sql_query_execute($query, $db_url = NULL, $args = NULL) {
 }
 
 /**
- * Copy an entire database to another database.
- * We allow specifying of source instead of assuming since drush might be installed 
- * only on certain sites. Do 'sql load TRUE' if you to skip the standard disposable tables.
- * conf_path() uses a static var so we can't use it to figure out paths based on URIs
+ * Copy an entire database to another database. For example, migrate from Production to dev
+ * or dev to staging.
+ * 
+ * conf_path() uses a static var so we can't use it to figure out paths based on URIs.
  *
- * @return void
+ * @param source
+ *   The name of a subdirectory under sites. Its settings.php specifies the database which should be migrated.
+ * @param target
+ *    The name of a subdirectory under sites. Its settings.php specifies the database which whose tables will 
+ *    be replaced with the contents of `source`.
+ * @param skip
+ *    A key in the sql_skip array which specifies a list of tables to ignore when migrating.
+ * 
  **/
-function drush_sql_load($source, $target, $skip = FALSE) {
+function drush_sql_load($source, $target, $skip = NULL) {
   // Don't use require_once - we need to ovewrite db_url under some circumstances.
   require "./sites/$source/settings.php";
   $db_url_source = is_array($db_url) ? $db_url['default'] : $db_url;
@@ -244,9 +257,7 @@ function drush_sql_load($source, $target, $skip = FALSE) {
       drush_print(t('Executing: !cmd', array('!cmd' => $exec)));
     }
     
-    if (!DRUSH_SIMULATE) {
-      $return = drush_op('system', $exec) !== FALSE;
-    }
+    $return = drush_op('system', $exec) !== FALSE;
   }
   return $return;
 }
