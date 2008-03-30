@@ -18,10 +18,16 @@
 // enable verbose mode
 // $options['v'] = 1; 
 
+/*
+ * Uncomment and customize this list with your own tables. This is the 
+ * list of tables that are omitted by the 'sql dump' and 'sql load' 
+ * commands when a skip is requested.
+ */
+# $options['skip-tables'] = array('accesslog', 'cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'search_dataset', 'search_index', 'search_total', 'sessions', 'watchdog');
+
 // use cvs checkouts when installing modules
 // an example of a command specific argument being set in drushrc.php
 // $options['handler'] = 'cvs';
-
 
 /**
  * Variable overrides:

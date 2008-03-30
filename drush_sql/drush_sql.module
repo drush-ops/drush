@@ -14,9 +14,9 @@ function drush_sql_help($section) {
     case 'drush:sql dump':
       return t('Prints the whole database to STDOUT');
     case 'drush:sql query':
-      return t('Usage: drush [options] sql query <query> <skip>...\n\n<query> is a SQL statement, which can alternatively be passed via STDIN. Optional - send 1 for <skip> if you wish to omit disposable tables like cache*, search*, etc. Any additional arguments are passed to the mysql command directly.');
+      return t('Usage: drush [options] sql query <query> <skip>...\n\n<query> is a SQL statement, which can alternatively be passed via STDIN. Optional - send 1 for <skip> if you wish to omit disposable tables like cache*, search*, etc. Your skip list is specified in your drushrc.php file. Any additional arguments are passed to the mysql command directly.');
     case 'drush:sql load':
-      return t('Usage: drush [options] sql load <source_dir> <target_dir> <skip>. <source_dir> and <target_dir> are names of directories under \'sites\'. These determine from where and to where you want your database copied. Optional: specify 1 for <skip> if you wish to omit disposable tables like cache*, search*, etc. Any additional arguments are passed to the mysqldump command directly.');
+      return t('Usage: drush [options] sql load <source_dir> <target_dir> <skip>. <source_dir> and <target_dir> are names of directories under \'sites\'. These determine from where and to where you want your database copied. Optional: specify 1 for <skip> if you wish to omit disposable tables like cache*, search*, etc. Your skip list is specified in your drushrc.php file. Any additional arguments are passed to the mysqldump command directly.');
   }
 }
 
@@ -125,15 +125,15 @@ function drush_sql_dump($db_url = NULL, $execute = TRUE, $skip = FALSE) {
     $args = ' ' . implode(' ', array_slice($args, 3)); // skip standard arguments
   }
   
-  // Skip large core tables.  Used by sql load command, by default.
-  if ($skip && strpos($exec, '--ignore-table') === FALSE) {
-    $skip_tables = array('accesslog', 'cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'search_dataset', 'search_index', 'search_total', 'sessions', 'watchdog');
-    $database = _drush_sql_get_database($db_url);
-    foreach ($skip_tables as $table) {
-      $ignores[] = "--ignore-table=$database.$table";
+  // Skip large core tables if instructed.  Used by 'sql load' command.
+    if ($skip && strpos($exec, '--ignore-table') === FALSE) {
+      $skip_tables = (array)drush_get_option('skip-tables');
+      $database = _drush_sql_get_database($db_url);
+      foreach ($skip_tables as $table) {
+        $ignores[] = "--ignore-table=$database.$table";
+      }
+      $exec .= ' '. implode(' ', $ignores);
     }
-    $exec .= ' '. implode(' ', $ignores);
-  }
   
   if (!$execute) {
     return $exec;
