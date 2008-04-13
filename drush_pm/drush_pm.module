@@ -289,7 +289,7 @@ function drush_pm_update() {
     drush_print(t('You should consider committing the new code to your Subversion repository. If this version becomes undesireable, use \'svn revert\' to roll back.'));
   }
   else {
-    drush_print(t("Backups were saved into 'backups' directory.")); 
+    drush_print(t("Backups were saved into 'backup' directory.")); 
   }
   drush_print(t("You should now run update.php through your browser."));
 }
@@ -431,13 +431,13 @@ function drush_pm_get_release($project, $info) {
 }
 
 /**
- * We need to set the project path by looking at the module location. Ideally, update_status would do this for us.
+ * We need to set the project path by looking at the module location. Ideally, update.module would do this for us.
  */
 function drush_pm_get_project_path($projects) {
   foreach ($projects as $project => $info) {
     if (!isset($info['path'])  && $project != 'drupal') {
       // looks for an enabled module.
-      foreach ($info['modules'] as $module => $name) {
+      foreach ($info['includes'] as $module => $name) {
         if ($path = drupal_get_path('module', $module)) {
           continue;
         }
