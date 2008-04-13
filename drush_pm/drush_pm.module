@@ -208,6 +208,10 @@ function drush_pm_update() {
         $status = t('SECURITY UPDATE available');
         $updateable[$project['name']] = $project;
         break;
+      case UPDATE_REVOKED:
+        $status = t('Intalled version REVOKED');
+        $updateable[$project['name']] = $project;
+        break;
       default:
         $status = t('ignored: !reason', array('!reason' => $project['reason']));
         $project['title'] = $project['name'];
