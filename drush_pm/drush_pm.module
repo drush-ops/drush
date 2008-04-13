@@ -290,7 +290,7 @@ function drush_pm_update() {
     drush_print(t('You should consider committing the new code to your Subversion repository. If this version becomes undesireable, use \'svn revert\' to roll back.'));
   }
   else {
-    drush_print(t("Backups were saved into 'backups' directory.")); 
+    drush_print(t("Backups were saved into 'backup' directory.")); 
   }
   drush_print(t("You should now run update.php through your browser."));
 }
