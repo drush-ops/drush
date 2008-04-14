@@ -41,6 +41,11 @@ If you only want to update certain projects, pass those as additional
 arguments (e.g. cck devel views ...).
 Note: The user is asked to confirm before the actual update is started.
 Use the -y option to answer all questions with yes automatically.\n\n". $handler);
+    
+  case 'drush:pm info':
+    return t("Usage: drush [options] pm info <package_1> <package_2> ...\n
+View all releases for a given project. Useful for deciding which version to install/update. 
+    ");
   }
 }
 
@@ -59,6 +64,10 @@ function drush_pm_drush_command() {
   $items['pm update'] = array(
     'callback' => 'drush_pm_update',
     'description' => 'Update your modules'
+  );
+  $items['pm info'] = array(
+    'callback' => 'drush_pm_info',
+    'description' => 'Release information for a module'
   );
   return $items;
 }
@@ -463,6 +472,37 @@ function drush_pm_get_project_path($projects) {
   return $projects;
 }
 
+/**
+ * A drush command callback. Show release info for given project(s).
+ *
+ **/
+function drush_pm_info() {
+  $projects = func_get_args();
+  if (empty($projects)) {
+    drush_die(t("No project specified.\n\nRun drush help pm info for more information."));
+  }
+  
+  
+  // Get update status information.
+  $data = _drush_pm_get_update_info();
+  $rows[] = array(t('Release'), t('Date'), t('Rating'));
+  foreach ($projects as $project) {
+    foreach ($data[$project]['releases'] as $release) {
+      if ($release['version'] == $data[$project]['recommended']) {
+        $rating = t('Recommended');
+      }
+      else {
+        $rating = '';
+      }
+      $rows[] = array(
+        $release['version'],
+        format_date($release['date'], 'custom', 'Y-M-d'),
+        $rating,
+      );
+    }
+  }
+  return drush_print_table($rows, 0, 1);
+}
 
 /**
  * Deletes a directory, all files in it and all subdirectories in it (recursively).
