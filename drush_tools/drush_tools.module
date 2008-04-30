@@ -75,7 +75,7 @@ function drush_tools_cache_clear() {
 function drush_tools_sync($source, $destination) {
   // Local paths are relative to Drupal root
   if (!strstr($source, ':')) {
-    $source = DRUSH_DRUPAL_ROOT. ":";
+    $source = DRUSH_DRUPAL_ROOT. "/$source";
   }
   if (!strstr($destination, ':')) {
     $destination = DRUSH_DRUPAL_ROOT. "/$destination";
