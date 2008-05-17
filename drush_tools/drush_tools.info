@@ -1,5 +1,5 @@
 ; $Id$
-name = drush Toolbox
+name = Drush toolbox
 description = Provides several tools that are aimed at site administrators and developers.
 package = drush
 dependencies[] = drush
