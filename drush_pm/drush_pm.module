@@ -263,6 +263,9 @@ function drush_pm_update() {
   	drush_die(t("The $package_handler package handler does not handle updates."));
   }
   
+  // Save the date to be used in the backup directory's path name.
+  $date = date('YmdHis');
+  
   // Now we start the actual updating.
   foreach($updateable as $project) {
     drush_verbose(t('Starting to update !project ...', array('!project' => $project['title'])));
@@ -271,9 +274,12 @@ function drush_pm_update() {
     
     $skip_backup = module_invoke_all('drush_pm_skip_backup', $source);
     if (!count($skip_backup)) {
-      $date = date('Ymd');
-      $backup_dir = DRUSH_DRUPAL_ROOT. "/backup/modules/$date";
-      drush_op('mkdir', $backup_dir, 0777, TRUE);
+      $backup_dir = DRUSH_DRUPAL_ROOT. '/backup';
+      drush_op('mkdir', $backup_dir, 0777);
+      $backup_dir .= '/modules';
+      drush_op('mkdir', $backup_dir, 0777);
+      $backup_dir .= "/$date";
+      drush_op('mkdir', $backup_dir, 0777);
       $backup_target = $backup_dir . '/'. $project['name'];
       if (!drush_op('rename', $source, $backup_target)) {
         drush_die(t('Failed to backup project directory !source to !backup_target', array('!source' => $source, '!backup_target' => $backup_target)));
