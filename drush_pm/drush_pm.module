@@ -161,6 +161,7 @@ function drush_pm_install_package() {
       elseif ($package_handler($project_name, $release, $modulepath)) {
         drush_print(t("Project !project successfully installed (version !version).",
           array('!project' => $project_name, '!version' => $release['version'])));
+        module_invoke_all('drush_pm_post_install', $project_name, $release, $modulepath);
       }
     }
     else {
@@ -266,14 +267,10 @@ function drush_pm_update() {
   foreach($updateable as $project) {
     drush_verbose(t('Starting to update !project ...', array('!project' => $project['title'])));
     
-    $svn = FALSE;
     $source = DRUSH_DRUPAL_ROOT .'/' . $project['path'];
-    if (file_exists($source. '/.svn')) {
-      // Skip backup since we need all .svn  directories. Assuming admin can use svn revert if new project is bad.
-      drush_verbose(t('Backup skipped because .svn directory was detected. Use Subversion to revert if needed.'));
-      $svn = TRUE;
-    }
-    else {
+    
+    $skip_backup = module_invoke_all('drush_pm_skip_backup', $source);
+    if (!count($skip_backup)) {
       $date = date('Ymd');
       $backup_dir = DRUSH_DRUPAL_ROOT. "/backup/modules/$date";
       drush_op('mkdir', $backup_dir, 0777, TRUE);
@@ -291,21 +288,23 @@ function drush_pm_update() {
     array_pop($basepath);
     $project_parent_path = DRUSH_DRUPAL_ROOT. '/'. implode('/', $basepath). '/';
     if (!$package_handler($project['name'], $project['releases'][$project['candidate_version']], $project_parent_path)) {
-      drush_error(t('Updating project !project failed. Restoring previously installed version.', array('!project' => $project['name'])));
-      drush_op('rename', $backup_target, $source);
+      if (!count($skip_backup)) {
+        drush_error(t('Updating project !project failed. Restoring previously installed version.', array('!project' => $project['name'])));
+        drush_op('rename', $backup_target, $source);
+      }
+      else {
+        drush_error(t('Updating project !project failed. Please revert to the previously installed version.', array('!project' => $project['name'])));
+      }
     }
     else {
       drush_print(t('Project !project was updated successfully. Installed version is now !version.', array('!project' => $project['name'], '!version' => $project['candidate_version'])));
+      module_invoke_all('drush_pm_post_update', $project['name'], $project['releases'][$project['candidate_version']], $project_parent_path);
+    }
   }
-  
-  if ($svn) {
-    drush_print(t('You should consider committing the new code to your Subversion repository. If this version becomes undesireable, use \'svn revert\' to roll back.'));
-  }
-  else {
-    drush_print(t("Backups were saved into 'backup' directory.")); 
+  if ($backup_dir) {
+    drush_print(t("Backups were saved into the directory !backup_dir.", array('!backup_dir' => $backup_dir))); 
   }
   drush_print(t("You should now run update.php through your browser."));
-}
 }
 
 /**

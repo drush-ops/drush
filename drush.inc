@@ -90,6 +90,7 @@ function drush_op($function) {
 /**
  * Executes a shell command.
  * Output is only printed if in verbose mode.
+ * Output is stored and can be retrieved using drush_shell_exec_output().
  * If in simulation mode, no action is taken.
  *
  * @param $cmd
@@ -107,6 +108,8 @@ function drush_shell_exec($cmd, $indent = 0) {
   }
 
   exec($cmd . ' 2>&1', $output, $result);
+  
+  _drush_shell_exec_output_set($output);
 
   if (DRUSH_VERBOSE) {
     foreach ($output as $line) {
@@ -116,6 +119,27 @@ function drush_shell_exec($cmd, $indent = 0) {
 
   // Exit code 0 means success.
   return ($result == 0);
+}
+
+/**
+ * Stores output for the most recent shell command.
+ * This should only be run from drush_shell_exec().
+ *
+ * @param $output
+ *   The output of the most recent shell command.
+ *   If this is not set the stored value will be returned.
+ */
+function _drush_shell_exec_output_set($output = FALSE) {
+  static $stored_output;
+  if (!$output) return $stored_output;
+  $stored_output = $output;
+}
+
+/**
+ * Returns the output of the most recent shell command as an array of lines.
+ */
+function drush_shell_exec_output() {
+  return _drush_shell_exec_output_set();
 }
 
 /**

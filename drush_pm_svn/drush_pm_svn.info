@@ -1,0 +1,9 @@
+; $Id$
+name = Drush package manager SVN support
+description = Allows drush to manage a site sandbox using SVN.
+package = drush
+core = 6.x
+dependencies[] = update
+dependencies[] = drush 
+dependencies[] = drush_pm
+
