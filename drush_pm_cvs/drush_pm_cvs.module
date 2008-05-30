@@ -77,7 +77,7 @@ function drush_pm_cvs_update_project($project, $info, $path = '.') {
   $cvsparams = drush_get_option('cvsparams');
   
   drush_verbose($cvsmethod);
-  drush_verbose(stripos($cvsmethod, 'up'));
+  drush_verbose(strpos(strtolower($cvsmethod), 'up'));
   if (substr($cvsmethod, 0, 2) == 'up') {
   	// Update the working copy.
   	drush_op('chdir', $project);
