@@ -31,6 +31,10 @@ exit(drush_bootstrap($GLOBALS['argc'], $GLOBALS['argv']));
  *   and false if being run through cgi or mod_php.
  */
 function drush_verify_cli() {
+  if (php_sapi_name() == 'cgi') {
+    return (is_numeric($_SERVER['argc']) && $_SERVER['argc'] > 0);
+  }
+  
   return (php_sapi_name() == 'cli');
 }
 
