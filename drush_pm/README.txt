@@ -5,13 +5,14 @@ DESCRIPTION
 
 drush_pm.module (The Drupal Shell Packet Manager) allows you to install and update contributed modules from the command line.
 
-It provides two commands, "pm install" and "pm update"
+It provides three commands, "pm install", "pm update", and "pm info".
 
 Run "drush help pm install" and "drush help pm update" to see supported command line options and arguments.
 
+If you use SVN for version control and want to suppress backup of modules when performing a `pm update`, enable drush_pm_svn.module.
+
 REQUIREMENTS
 ------------
-drush_pm requires update_status.module, version 5.x-2 or above.
 No other special requirements on unix-like systems.
 drush_pm uses  wget (or curl), tar and gzip, so if you're trying to use drush_pm on Windows, you have to install
 these binaries before, for example from GnuWin32 (http://gnuwin32.sourceforge.net/).
