@@ -252,7 +252,9 @@ function drush_pm_update() {
   drush_print(substr($print, 0, strlen($print)-2));
   drush_print();
   drush_print(t("Note: Updated modules can potentially break your site. It's not recommended to update production sites without prior testing."));
-  drush_print(t("Note: A backup of your package will be stored to backups directory if no .svn directory is found."));
+  if (module_exists('drush_pm_svn')) {
+    drush_print(t("Note: A backup of your package will be stored to backups directory if no .svn directory is found."));
+  }
   drush_print(t('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
   if(!drush_confirm(t('Do you really want to continue?'))) {
     drush_die('Aborting.');
