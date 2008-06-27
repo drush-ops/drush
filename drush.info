@@ -1,5 +1,7 @@
 ; $Id$
 name = Drush
-description = "drush (the drupal shell) provides a command line interface for Drupal."
-package = drush
-core = 6.x
+description = "Drush (the drupal shell) provides a command line interface for Drupal."
+package = Drush
+core = 7.x
+files[] = drush.module
+files[] = drush.inc

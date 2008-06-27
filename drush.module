@@ -15,7 +15,7 @@ function drush_help($section) {
     case 'admin/help#drush':
       include_once('drush.inc');
       
-      $output .= t('<p>Drush is a command line shell and Unix scripting interface for Drupal, a
+      $output = t('<p>Drush is a command line shell and Unix scripting interface for Drupal, a
       veritable Swiss Army knife designed to make life easier for those of us who
       spend most of our working hours hacking away at the command prompt.</p>');
 

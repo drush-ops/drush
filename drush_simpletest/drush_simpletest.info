@@ -1,7 +1,8 @@
 ; $Id$
 name = Drush simpletest runner
 description = Run unit tests.
-package = drush
+package = Drush
 dependencies[] = drush
 dependencies[] = simpletest
-core = 6.x
+core = 7.x
+files[] = drush_simpletest.module

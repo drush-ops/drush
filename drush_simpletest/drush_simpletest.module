@@ -34,30 +34,16 @@ function drush_simpletest_drush_command() {
 }
 
 function drush_test_list() {
-  simpletest_load();
-  // TODO: Refactor simpletest.module so we don't copy code from DrupalUnitTests
-  $files = array();
-  foreach (module_list() as $module) {
-    $module_path = drupal_get_path('module', $module);
-    if (file_exists($module_path .'/tests/')) {
-      $dir = $module_path .'/tests';
-      $tests = file_scan_directory($dir, '\.test$');
-      $files = array_merge($files, $tests);
-    }   
-  }   
-  $files = array_keys($files);
-
-  $existing_classes = get_declared_classes();
-  foreach ($files as $file) {
-    include_once($file);
-  }
-  $classes = array_diff(get_declared_classes(), $existing_classes);
-  $rows[] = array(t('Class'), t('Name'), t('Description'));
-  foreach ($classes as $class) {
-    $tmp = new $class;
-    if (method_exists($tmp, 'get_info')) {
-      $info =  $tmp->get_info();
-      $rows[] = array($class, $info['name'], truncate_utf8($info['desc'], 30, TRUE, TRUE));
+  $uncategorized_tests = simpletest_get_all_tests();
+  $tests = simpletest_categorize_tests($uncategorized_tests);
+  $rows[] = array(t('Group'), t('Class'), t('Name'));
+  foreach ($tests as $group_name => $test_group) {
+    foreach ($test_group as $test) {
+      $test_info = $test->getInfo();
+      $test_class = get_class($test);
+      $title = $test_info['name'];
+      $description = $test_info['description'];
+      $rows[] = array($group_name, $test_class, $test_info['name']);
     }
   }
   return drush_print_table($rows, 0, TRUE);
@@ -65,13 +51,25 @@ function drush_test_list() {
 
 
 function drush_test_run($tests = NULL) {
+  simpletest_get_all_tests();
   if (is_null($tests)) {
     drush_print(t('Running all tests'));
-    $result = simpletest_run_tests();
-    }
+    simpletest_run_tests($tests, 'text', FALSE);
+  }
   else {
     $tests = explode(',', $tests);
-    $result = simpletest_run_tests($tests, 'text');
+    foreach ($tests as $class_name) {
+      if (class_exists($class_name) || $run_all_tests) {
+        $tests_list[] = $class_name;
+      }
+    }
+    if (count($tests_list) > 0 ) {
+      simpletest_run_tests($tests_list, 'text', FALSE);
+    }
+    else {
+      drush_error(t('No test has been selected.'), 'error');
+    }
   }
+  print_r($_SESSION);
   return $result;
 }

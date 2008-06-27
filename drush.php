@@ -207,7 +207,7 @@ function drush_shutdown() {
  */
 function _drush_login($drush_user) {
   global $user;
-  $user = user_load(is_numeric($drush_user) ? array('uid' => $drush_user) : array('name' => $drush_user));
+  $user = module_invoke('user', 'load', is_numeric($drush_user) ? array('uid' => $drush_user) : array('name' => $drush_user));
 
   if (empty($user)) {
     if (is_numeric($drush_user)) {
