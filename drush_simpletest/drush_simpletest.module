@@ -15,6 +15,8 @@ function drush_simpletest_help($section) {
         return t("Usage drush [options] test run<classes>.\n\nRun the specified specified unit tests. If <classes> is omitted, all tests are run. <classes> should be a list of classes separated by a comma. For example: PageCreationTest,PageViewTest.");
       case 'drush:test list':
         return t("Usage drush [options] test list.\n\nList the available tests. Use drush test run command to run them. ");
+      case 'drush:test clean':
+        return t("Usage drush [options] test clean.\n\nClean leftover tables and file directories from prior test runs.");  
   }
 }
 
@@ -30,10 +32,20 @@ function drush_simpletest_drush_command() {
     'callback' => 'drush_test_list',
     'description' => 'List the available Simpletest test classes.',
   );
+  $items['test clean'] = array(
+    'callback' => 'drush_test_clean',
+    'description' => 'Delete leftover tables and files from prior test runs.',
+  );
   return $items;
 }
 
-function drush_test_list() {
+function drush_test_clean() {
+  simpletest_clean_environment();
+  drush_print("Simpletest environment successfully cleaned.");
+}
+
+// If you want the rows returned to you instead of printed as a table, send $action = 'rows'.
+function drush_test_list($action = 'table') {
   $uncategorized_tests = simpletest_get_all_tests();
   $tests = simpletest_categorize_tests($uncategorized_tests);
   $rows[] = array(t('Group'), t('Class'), t('Name'));
@@ -46,30 +58,60 @@ function drush_test_list() {
       $rows[] = array($group_name, $test_class, $test_info['name']);
     }
   }
-  return drush_print_table($rows, 0, TRUE);
+  return $action == 'table' ? drush_print_table($rows, 0, TRUE) : $rows;
 }
 
+/**
+ * Present in plain text the failures for a given test run.   
+ *
+ * @param $test_id
+ *  The test run for which results are needed. These are usually retrieved from $_SESSION['test_id']
+ */
+function drush_results_table($test_id) {
+  $result = db_query("SELECT * FROM {simpletest} WHERE test_id = %d ORDER BY test_class, message_id", $test_id);
+  while ($row = db_fetch_object($result)) {
+    if ($include_pass || $row->status != 'pass') {
+      $rows[] = array(
+        $row->message,
+        $row->message_group,
+        basename($row->file),
+        $row->line,
+        $row->caller,
+      );
+    }
+  }
+  if (!isset($rows)) {
+    drush_print(t("All tests passed."));
+  }
+  else {
+    $header = array(t('Message'), t('Group'), t('Filename'), t('Line'), t('Function'));
+    array_unshift($rows, $header);
+    drush_print_table($rows, 0, TRUE);
+  }
+}
 
+// Command callback
 function drush_test_run($tests = NULL) {
   simpletest_get_all_tests();
   if (is_null($tests)) {
     drush_print(t('Running all tests'));
-    simpletest_run_tests($tests, 'text', FALSE);
+    $rows = drush_test_list('rows');
+    unset($rows[0]); // Remove header row.
+    foreach ($rows as $row) {
+      $class_names[] = $row[1];
+    }
   }
   else {
-    $tests = explode(',', $tests);
-    foreach ($tests as $class_name) {
-      if (class_exists($class_name) || $run_all_tests) {
-        $tests_list[] = $class_name;
-      }
-    }
-    if (count($tests_list) > 0 ) {
-      simpletest_run_tests($tests_list, 'text', FALSE);
-    }
-    else {
-      drush_error(t('No test has been selected.'), 'error');
-    }
+    $class_names = explode(',', $tests); 
   }
-  print_r($_SESSION);
-  return $result;
+  
+  foreach ($class_names as $class_name) {
+  }
+  if (count($class_names) > 0 ) {
+    simpletest_run_tests($class_names);
+    drush_results_table($_SESSION['test_id']);
+  }
+  else {
+    drush_error(t('No test has been selected.'), 'error');
+  }
 }
