@@ -65,6 +65,7 @@ function drush_test_list() {
 
 
 function drush_test_run($tests = NULL) {
+  simpletest_load();
   if (is_null($tests)) {
     drush_print(t('Running all tests'));
     $result = simpletest_run_tests();
