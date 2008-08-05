@@ -489,23 +489,27 @@ function drush_pm_info() {
     drush_die(t("No project specified.\n\nRun drush help pm info for more information."));
   }
   
-  
   // Get update status information.
   $data = _drush_pm_get_update_info();
   $rows[] = array(t('Release'), t('Date'), t('Rating'));
   foreach ($projects as $project) {
-    foreach ($data[$project]['releases'] as $release) {
-      if ($release['version'] == $data[$project]['recommended']) {
-        $rating = t('Recommended');
+    if (!module_exists($project)) {
+      drush_error("$project is not enabled. You may only retrieve information about projects that are enabled.");
+    }
+    else {
+      foreach ($data[$project]['releases'] as $release) {
+        if ($release['version'] == $data[$project]['recommended']) {
+          $rating = t('Recommended');
+        }
+        else {
+          $rating = '';
+        }
+        $rows[] = array(
+          $release['version'],
+          format_date($release['date'], 'custom', 'Y-M-d'),
+          $rating,
+        );
       }
-      else {
-        $rating = '';
-      }
-      $rows[] = array(
-        $release['version'],
-        format_date($release['date'], 'custom', 'Y-M-d'),
-        $rating,
-      );
     }
   }
   return drush_print_table($rows, 0, 1);
