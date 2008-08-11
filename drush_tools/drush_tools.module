@@ -61,15 +61,7 @@ function drush_tools_cron_run() {
 }
 
 function drush_tools_cache_clear() {
-  // clear preprocessor cache
-  drupal_clear_css_cache();
-
-  // clear core tables
-  $core = array('cache', 'cache_filter', 'cache_menu', 'cache_page');
-  $alltables = array_merge($core, module_invoke_all('devel_caches'));
-  foreach ($alltables as $table) {
-    cache_clear_all('*', $table, TRUE);
-  }
+  drupal_flush_all_caches();
   drush_print(t('Cache cleared.'));
 }
 
