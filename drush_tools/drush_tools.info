@@ -1,6 +1,8 @@
 ; $Id$
 name = Drush toolbox
 description = Provides several tools that are aimed at site administrators and developers.
-package = drush
+package = Drush
 dependencies[] = drush
-core = 6.x
+core = 7.x
+files[] = drush_tools.module
+
