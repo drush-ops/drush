@@ -1,7 +1,7 @@
 ; $Id$
 name = Drush package manager wget support
 description = Allows drush to install and update modules using wget or curl.
-package = drush
+package = Drush
 dependencies[] = update
 dependencies[] = drush
 dependencies[] = drush_pm

@@ -1,6 +1,6 @@
 ; $Id$
 name = Drush SQL commands
 description = Provides several tools for database query and management
-package = drush
+package = Drush
 dependencies[] = drush
 core = 6.x
