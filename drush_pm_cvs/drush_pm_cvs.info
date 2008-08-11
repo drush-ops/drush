@@ -1,7 +1,7 @@
 ; $Id$
 name = Drush package manager CVS support
 description = Allows drush to install and update modules using CVS.
-package = drush
+package = Drush
 dependencies[] = update
 dependencies[] = drush
 dependencies[] = drush_pm
