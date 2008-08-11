@@ -17,8 +17,10 @@ function drush_tools_help($section) {
       return t("Usage: drush [options] watchdog show <n> <type>\n\nShow the <n> (default 10) most recent watchdog messages. Optionally show only messages of type <type>.");
     case 'drush:watchdog delete':
       return t("Usage: drush [options] watchdog delete <type>\n\nDelete all messages of type <type>. Use 'all' to delete all messages, no matter which type they are of.");
-      case 'drush:sync':
+    case 'drush:sync':
         return t("Usage: drush [options] sync <source> <destination>\n\nRsync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
+    case 'drush:eval':
+      return t("Usage: drush eval <code>\n\nRun arbitrary PHP code in the context of Drupal. For example: drush eval \"variable_set('hello', 'world');\".");
   }
 }
 
@@ -45,6 +47,10 @@ function drush_tools_drush_command() {
   $items['sync'] = array(
     'callback' => 'drush_tools_sync',
     'description' => 'Rsync the Drupal tree to/from another server using ssh'
+  );
+  $items['eval'] = array(
+    'callback' => 'drush_tools_eval',
+    'description' => 'Evaluate a command',
   );
   return $items;
 }
@@ -154,3 +160,6 @@ function drush_tools_watchdog_delete($type = NULL) {
   }
 }
 
+function drush_tools_eval($command) {
+  eval($command);
+}
