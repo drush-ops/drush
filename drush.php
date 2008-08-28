@@ -98,7 +98,7 @@ function drush_bootstrap($argc, $argv) {
   $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
   $_SERVER['PHP_SELF'] = $drupal_base_url['path'].'/index.php';
   $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
-  $_SERVER['REMOTE_ADDR'] = NULL;
+  $_SERVER['REMOTE_ADDR'] = '';
   $_SERVER['REQUEST_METHOD'] = NULL;
   $_SERVER['SERVER_SOFTWARE'] = NULL;
 
