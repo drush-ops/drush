@@ -105,8 +105,9 @@ function drush_tools_watchdog_show($limit = 10, $type = NULL) {
   $sql = 'SELECT w.*, u.name, u.uid FROM {watchdog} w INNER JOIN {users} u ON w.uid = u.uid';
   $sort = ' ORDER BY w.wid DESC';
   $result = (!empty($type) ?
-    pager_query($sql . " WHERE w.type = '%s'" . $sort, (int)$limit, 0, NULL, $type) :
-    pager_query($sql . $sort, (int)$limit));
+    db_query_range($sql . " WHERE w.type = '%s'" . $sort, $type, 0, (int)$limit) :
+    db_query_range($sql . $sort, (int)$limit));
+  
 
   $rows = array();
   module_load_include('inc', 'dblog', 'dblog.admin');
