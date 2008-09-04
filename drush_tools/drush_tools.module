@@ -129,12 +129,6 @@ function drush_tools_watchdog_show($limit = 10, $type = NULL) {
   drush_print_table(array_reverse($rows), 2, true);
 }
 
-function _drush_tools_watchdog_format_message($message, $length = 56) {
-  return strip_tags(
-    preg_replace('|<em>([^<]+)</em>|', '`$1\'',
-      truncate_utf8($message, $length, TRUE, TRUE)));
-}
-
 /**
  * Deletes all log messages of a certain type from the watchdog log
  * (default: all).
