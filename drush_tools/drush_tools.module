@@ -109,12 +109,13 @@ function drush_tools_watchdog_show($limit = 10, $type = NULL) {
     pager_query($sql . $sort, (int)$limit));
 
   $rows = array();
+  module_load_include('inc', 'dblog', 'dblog.admin');
   while ($watchdog = db_fetch_object($result)) {
     $rows[] = array(
       format_date($watchdog->timestamp, 'small'),
-      str_pad($severities[$watchdog->severity], strlen(t('Severity'))),
+      $severities[$watchdog->severity],
       t($watchdog->type),
-      _drush_tools_watchdog_format_message($watchdog->message),
+      truncate_utf8(strip_tags(_dblog_format_message($watchdog)), 68, FALSE, FALSE),
       theme('username', $watchdog),
     );
   }
