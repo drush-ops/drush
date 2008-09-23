@@ -84,6 +84,9 @@ function drush_bootstrap($argc, $argv) {
 
   // If no root is defined, we try to guess from the current directory.
   define('DRUSH_DRUPAL_ROOT',  drush_get_option(array('r', 'root'), _drush_locate_root()));
+  
+  // Possible temporary. See http://drupal.org/node/312421.
+  define('DRUPAL_ROOT', DRUSH_DRUPAL_ROOT);
 
   // If the Drupal directory can't be found, and no -r option was specified,
   // or the path specified in -r does not point to a Drupal directory,
