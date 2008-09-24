@@ -2,8 +2,8 @@
 name = Drush package manager SVN support
 description = Allows drush to manage a site sandbox using SVN.
 package = Drush
-core = 6.x
+core = 7.x
 dependencies[] = update
 dependencies[] = drush 
 dependencies[] = drush_pm
-
+files[] = drush_pm_svn.module

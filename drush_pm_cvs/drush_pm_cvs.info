@@ -5,4 +5,5 @@ package = Drush
 dependencies[] = update
 dependencies[] = drush
 dependencies[] = drush_pm
-core = 6.x
+core = 7.x
+files[] = drush_pm_cvs.module
