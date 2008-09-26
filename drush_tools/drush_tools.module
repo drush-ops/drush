@@ -102,11 +102,10 @@ function drush_tools_sync($source, $destination) {
 function drush_tools_watchdog_show($limit = 10, $type = NULL) {
   $severities = array(WATCHDOG_NOTICE => t('notice'), WATCHDOG_WARNING => t('warning'), WATCHDOG_ERROR => t('error'));
 
-  $sql = 'SELECT w.*, u.name, u.uid FROM {watchdog} w INNER JOIN {users} u ON w.uid = u.uid';
-  $sort = ' ORDER BY w.wid DESC';
+  $sql = 'SELECT w.*, u.name, u.uid FROM {watchdog} w INNER JOIN {users} u ON w.uid = u.uid ORDER BY w.wid DESC';
   $result = (!empty($type) ?
-    db_query_range($sql . " WHERE w.type = '%s'" . $sort, $type, 0, (int)$limit) :
-    db_query_range($sql . $sort, (int)$limit));
+    db_query_range($sql . " WHERE w.type = '%s'", $type, 0, (int)$limit) :
+    db_query_range($sql, 0, (int)$limit));
   
 
   $rows = array();
@@ -126,8 +125,8 @@ function drush_tools_watchdog_show($limit = 10, $type = NULL) {
   }
   drush_verbose(t('Last !count watchdog log messages:', array('!count' => $limit)));
 
-  $rows[] = array(t('Date'), t('Severity'), t('Type'), t('Message'), t('User'));
-  drush_print_table(array_reverse($rows), 2, true);
+  array_unshift($rows, array(t('Date'), t('Severity'), t('Type'), t('Message'), t('User')));
+  drush_print_table($rows, 2, TRUE);
 }
 
 /**
