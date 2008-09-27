@@ -56,14 +56,15 @@ function drush_sql_drush_command() {
  * Command callback. Displays the Drupal site's database connection string.
  */
 function drush_sql_url() {
-  drush_print($GLOBALS['db_url']);
+  global $databases;
+  print_r($databases['default']['default']);
 }
 
 /**
  * Command callback. Displays the MySQL or PostgreSQL server version number.
  */
 function drush_sql_version_server() {
-  switch (_drush_sql_get_scheme()) {
+  switch (db_driver()) {
     case 'mysql':
     case 'mysqli':
       drush_print(mysql_get_server_info());
@@ -84,7 +85,7 @@ function drush_sql_version_server() {
  * Command callback. Displays the MySQL or PostgreSQL client version number.
  */
 function drush_sql_version_client() {
-  switch (_drush_sql_get_scheme()) {
+  switch (db_driver()) {
     case 'mysql':
     case 'mysqli':
       drush_print(mysql_get_client_info());
@@ -112,7 +113,7 @@ function drush_sql_dump($db_url = NULL, $execute = TRUE, $skip = NULL) {
     $db_url = $GLOBALS['db_url'];
   }
 
-  switch (_drush_sql_get_scheme($db_url)) {
+  switch (db_driver()) {
     case 'mysql':
     case 'mysqli':
       $exec = 'mysqldump' . (DRUSH_VERBOSE ? ' -v' : '');
@@ -149,7 +150,7 @@ function drush_sql_dump($db_url = NULL, $execute = TRUE, $skip = NULL) {
     drush_print(t('Executing: !cmd', array('!cmd' => $exec)));
   }
 
-  return drush_op('system', $exec) !== FALSE;
+  return drush_op('system', $exec) !== FALSE; 
 }
 
 /**
@@ -181,7 +182,7 @@ function drush_sql_query_execute($query, $db_url = NULL, $args = NULL) {
   // Save query to a file. we will redirect it in.
   $filename = time(). '.sql';
   if ($file = file_save_data($query, $filename)) {
-    switch (_drush_sql_get_scheme()) {
+    switch (db_driver()) {
       case 'mysql':
       case 'mysqli':
         $exec = 'mysql' . (DRUSH_VERBOSE ? ' -v' : '');
@@ -271,14 +272,6 @@ function drush_sql_get_path($uri) {
   $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
   $_SERVER['PHP_SELF'] = $drupal_base_url['path'].'/index.php';
   return conf_path();
-}
-
-function _drush_sql_get_scheme($db_url = NULL) {
-  if (is_null($db_url)) {
-    $db_url = $GLOBALS['db_url'];
-  }
-  $url = (object)parse_url($db_url);
-  return ($url->scheme);
 }
 
 function _drush_sql_get_database($db_url = NULL) {
