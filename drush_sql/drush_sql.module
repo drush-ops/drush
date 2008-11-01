@@ -12,9 +12,9 @@
 function drush_sql_help($section) {
   switch ($section) {
     case 'drush:sql dump':
-      return t('Prints the whole database to STDOUT');
+      return t('Prints the whole database to STDOUT or save to a file by passing --result-file option. The file should be relative to Drupal root.');;
     case 'drush:sql query':
-      return t('Usage: drush [options] sql query <query> <skip>...\n\n<query> is a SQL statement, which can alternatively be passed via STDIN. Optional - send 1 for <skip> if you wish to omit disposable tables like cache*, search*, etc. Your skip list is specified in your drushrc.php file. Any additional arguments are passed to the mysql command directly.');
+      return t('Usage: drush [options] sql query <query> <skip>...\n\n<query> is a SQL statement, which can alternatively be passed via STDIN. Any additional arguments are passed to the mysql command directly.');
     case 'drush:sql load':
       return t('Usage: drush [options] sql load <source_dir> <target_dir> <skip>. <source_dir> and <target_dir> are names of directories under \'sites\'. These determine from where and to where you want your database copied. Optional: specify \'common\' for <skip> if you wish to omit disposable tables like cache*, search*, etc. Your skip lists are specified in your drushrc.php file. Any additional arguments are passed to the mysqldump command directly.');
   }
@@ -117,6 +117,9 @@ function drush_sql_dump($db_url = NULL, $execute = TRUE, $skip = NULL) {
     case 'mysql':
     case 'mysqli':
       $exec = 'mysqldump' . (DRUSH_VERBOSE ? ' -v' : '');
+      if ($file = drush_get_option('result-file')) {
+        $exec .= ' --result-file '. $file;
+      }
       $exec .= ' --opt -Q' . _drush_sql_get_credentials($db_url);
       break;
     case 'pgsql':
@@ -232,7 +235,7 @@ function drush_sql_load($source, $target, $skip = NULL) {
   if (!DRUSH_SIMULATE) {
     drush_print(t("You will destroy data from !target and replace with data from !source.", array('!source' => $db_url_source, '!target' => $db_url_target)));
     // TODO: actually make the backup if desired.
-    drush_print(t("You might want to make a backup first, using sql_dump command."));
+    drush_print(t("You might want to make a backup first, using sql_dump command.\n"));
     if (!drush_confirm(t('Do you really want to continue?'))) {
       drush_die('Aborting.');
     }
