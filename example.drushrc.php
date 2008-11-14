@@ -15,6 +15,9 @@
 // specify a particular multisite
 // $options['l'] = 'http://example.com/subir';
 
+// specify your Drupal core base directory (useful if you use symlinks)
+// $options['r'] = '/home/USER/workspace/drupal-7';
+
 // enable verbose mode
 // $options['v'] = 1; 
 
