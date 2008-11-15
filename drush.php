@@ -94,9 +94,15 @@ function drush_bootstrap($argc, $argv) {
   }
 
   // Fake the necessary HTTP headers that Drupal needs:
-  $drupal_base_url = parse_url(DRUSH_URI);
-  $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
-  $_SERVER['PHP_SELF'] = $drupal_base_url['path'].'/index.php';
+  if (DRUSH_URI) {
+    $drupal_base_url = parse_url(DRUSH_URI);
+    $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
+    $_SERVER['PHP_SELF'] = $drupal_base_url['path'].'/index.php';
+  }
+  else {
+    $_SERVER['HTTP_HOST'] = NULL;
+    $_SERVER['PHP_SELF'] = NULL;
+  }
   $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
   $_SERVER['REMOTE_ADDR'] = NULL;
   $_SERVER['REQUEST_METHOD'] = NULL;
@@ -145,8 +151,8 @@ function drush_bootstrap($argc, $argv) {
  * This makes it possible to run drush from a subdirectory of the drupal root.
  */
 function _drush_locate_root() {
-
   $path = getcwd();
+  
   // Convert windows paths.
   $path = drush_convert_path($path);
   // Check the current path.
