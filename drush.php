@@ -110,6 +110,7 @@ function drush_bootstrap($argc, $argv) {
   $_SERVER['REMOTE_ADDR'] = '';
   $_SERVER['REQUEST_METHOD'] = NULL;
   $_SERVER['SERVER_SOFTWARE'] = NULL;
+  $_SERVER['HTTP_USER_AGENT'] = NULL;
 
   // Change to Drupal root dir.
   chdir(DRUSH_DRUPAL_ROOT);
