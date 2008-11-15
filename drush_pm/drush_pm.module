@@ -446,9 +446,8 @@ function drush_pm_get_project_info($projects) {
     $data[] = $xml->data;
   }
   if ($data) {
-    include_once drupal_get_path('module', 'update') .'/update.fetch.inc';
-    $parser = new update_xml_parser;
-    $info = $parser->parse($data);
+    drupal_function_exists('update_parse_xml');
+    $info = update_parse_xml($data);
   }
   return $info;
 }
@@ -557,31 +556,23 @@ function drush_pm_get_project_path($projects) {
  **/
 function drush_pm_info() {
   $projects = func_get_args();
-  if (empty($projects)) {
-    drush_die(t("No project specified.\n\nRun drush help pm info for more information."));
-  }
+  $projects = drupal_map_assoc($projects);
+  $info = drush_pm_get_project_info($projects);
   
-  // Get update status information.
-  $data = _drush_pm_get_update_info();
-  $rows[] = array(t('Release'), t('Date'), t('Rating'));
-  foreach ($projects as $project) {
-    if (!module_exists($project)) {
-      drush_error("$project is not enabled. You may only retrieve information about projects that are enabled.");
-    }
-    else {
-      foreach ($data[$project]['releases'] as $release) {
-        if ($release['version'] == $data[$project]['recommended']) {
-          $rating = t('Recommended');
-        }
-        else {
-          $rating = '';
-        }
-        $rows[] = array(
-          $release['version'],
-          format_date($release['date'], 'custom', 'Y-M-d'),
-          $rating,
-        );
+  $rows[] = array(t('Project'), t('Release'), t('Date'));
+  foreach ($info as $key => $project) {
+    foreach ($project['releases'] as $release) {
+      if ($release['version'] == $data[$project]['recommended']) {
+        $rating = t('Recommended');
       }
+      else {
+        $rating = '';
+      }
+      $rows[] = array(
+        $key,
+        $release['version'],
+        format_date($release['date'], 'custom', 'Y-M-d'),
+      );
     }
   }
   return drush_print_table($rows, 0, 1);
