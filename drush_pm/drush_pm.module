@@ -237,7 +237,7 @@ function drush_pm_update() {
 
     switch($release['status']) {
       case UPDATE_CURRENT:
-        $status = t('OK');
+        $status = t('Up to date');
         $release['candidate_version'] = $release['recommended'];
         break;
       case UPDATE_NOT_CURRENT:
@@ -253,7 +253,7 @@ function drush_pm_update() {
       case UPDATE_REVOKED:
         $status = t('Intalled version REVOKED');
         $release['candidate_version'] = $release['recommended'];
-        $updateable[$project['name']] = $project;
+        $updateable[$project['name']] = $release;
         break;
       case DRUSH_PM_REQUESTED_UPDATE:
         $status = t('Specified version available');
@@ -262,10 +262,17 @@ function drush_pm_update() {
       case DRUSH_PM_REQUESTED_CURRENT:
         $status = t('Specified version already installed');
         break;
+      case UPDATE_NOT_SUPPORTED:
+        $status = t('Installed version not supported');
+        $release['candidate_version'] = $release['recommended'];
+        $updateable[$project['name']] = $release;
+        break;
+      case UPDATE_NOT_CHECKED:
+        $status = t('Unable to check status');
+        break;
+      case UPDATE_UNKNOWN:
       default:
-        $status = t('Ignored: !reason', array('!reason' => $project['reason']));
-        $release['title'] = $release['name'];
-        $release['candidate_version'] = t('Unknown');
+        $status = t('Unknown');
         break;
     }
 
