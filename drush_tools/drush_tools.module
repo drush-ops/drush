@@ -115,7 +115,7 @@ function drush_tools_watchdog_show($limit = 10, $type = NULL) {
       format_date($watchdog->timestamp, 'small'),
       $severities[$watchdog->severity],
       t($watchdog->type),
-      truncate_utf8(strip_tags(_dblog_format_message($watchdog)), 68, FALSE, FALSE),
+      truncate_utf8(decode_entities(strtr($watchdog->message, unserialize($watchdog->variables))), 68, FALSE, FALSE),
       theme('username', $watchdog),
     );
   }
