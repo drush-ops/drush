@@ -38,7 +38,13 @@ function drush_verify_cli() {
   return (php_sapi_name() == 'cli');
 }
 
-function drush_load_rc() {
+/**
+ * Load drushrc files (if available) from several possible locations.
+ * 
+ * @param $root
+ *   The Drupal root to check. 
+ */
+function drush_load_rc($root) {
   global $override, $args;
   
   # Specified rc file
@@ -48,7 +54,7 @@ function drush_load_rc() {
   # Rc file in current directory
   $configs[] = "drushrc.php";  
   # Rc file in located drupal root
-  $configs[] = drush_get_option(array('r', 'root'), _drush_locate_root()). '/drushrc.php'; 
+  $configs[] = drush_get_option(array('r', 'root'), $root). '/drushrc.php'; 
   # Rc file in user's home directory
   $configs[] = $_SERVER['HOME'] . '/.drushrc.php';
   
@@ -69,12 +75,45 @@ function drush_bootstrap($argc, $argv) {
 
   // Parse command line options and arguments.
   $args = drush_parse_args($argv, array('h', 'u', 'r', 'l'));
+  
+  // We use PWD if available because getcwd() resolves symlinks, which
+  // could take us outside of the Drupal root, making it impossible to find. 
+  $path = $_SERVER['PWD'];
+  if (empty($path)) {
+    $path = getcwd();
+  }
+
+  // Convert windows paths.
+  $path = drush_convert_path($path);
+
+  // Try and locate the Drupal root directory
+  $root = _drush_locate_root($path);
 
   // Load .drushrc file if available. Allows you to provide defaults for options and variables.
-  drush_load_rc();
+  drush_load_rc($root);
   
+  $uri = FALSE;
+  // If the current directory contains a settings.php we assume that is the desired site URI.
+  if (file_exists('./settings.php')) {
+    // Export the following settings.php variables to the global namespace.
+    global $db_url, $db_prefix, $cookie_domain, $conf, $installed_profile, $update_free_access;
+    // If the settings.php has a defined path we use the URI from that.
+    include_once('./settings.php');
+    if (isset($base_url)) {
+      $uri = $base_url;
+    }
+    else {
+      // Alternatively we default to the name of the current directory, if it is not 'default'.
+      $elements = explode('/', $path);
+      $current = array_pop($elements);
+      if ($current != 'default') {
+        $uri = 'http://'. $current;
+      }
+    }
+  }
+
   // Define basic options as constants.
-  define('DRUSH_URI',         drush_get_option(array('l', 'uri'), FALSE));
+  define('DRUSH_URI',         drush_get_option(array('l', 'uri'), $uri));
   define('DRUSH_VERBOSE',     drush_get_option(array('v', 'verbose'), FALSE));
   define('DRUSH_AFFIRMATIVE', drush_get_option(array('y', 'yes'), FALSE));
   define('DRUSH_SIMULATE',    drush_get_option(array('s', 'simulate'), FALSE));
@@ -83,7 +122,7 @@ function drush_bootstrap($argc, $argv) {
   define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
 
   // If no root is defined, we try to guess from the current directory.
-  define('DRUSH_DRUPAL_ROOT',  drush_get_option(array('r', 'root'), _drush_locate_root()));
+  define('DRUSH_DRUPAL_ROOT',  drush_get_option(array('r', 'root'), $root));
   
   // Possible temporary. See http://drupal.org/node/312421.
   define('DRUPAL_ROOT', DRUSH_DRUPAL_ROOT);
@@ -93,7 +132,16 @@ function drush_bootstrap($argc, $argv) {
   // we have no alternative but to give up the ghost at this point.
   // (NOTE: t() is not available yet.)
   if (!DRUSH_DRUPAL_ROOT || !is_dir(DRUSH_DRUPAL_ROOT) || !file_exists(DRUSH_DRUPAL_ROOT . '/' . DRUSH_DRUPAL_BOOTSTRAP))  {
-    exit("E: Could not locate the Drupal installation directory. Aborting.\n");
+    $dir = '';
+    if (DRUSH_DRUPAL_ROOT) {
+      $dir = ' in ' . DRUSH_DRUPAL_ROOT;
+    }
+    // Provide a helpful exit message, letting the user know where we looked
+    // (if we looked at all) and a hint on how to specify the directory manually.
+    $message = "E: Could not locate a Drupal installation directory$dir. Aborting.\n";
+    $message .= "Hint: You can specify your Drupal installation directory with the --root\n";
+    $message .= "parameter on the command line or \$options['root'] in your drushrc.php file.\n";
+    die($message);
   }
 
   // Fake the necessary HTTP headers that Drupal needs:
@@ -116,7 +164,6 @@ function drush_bootstrap($argc, $argv) {
   chdir(DRUSH_DRUPAL_ROOT);
   // Bootstrap Drupal.
   _drush_bootstrap_drupal();
-  
   /**
    * Allow the drushrc.php file to override $conf settings.
    * This is a separate variable because the $conf array gets initialized to an empty array,
@@ -154,12 +201,11 @@ function drush_bootstrap($argc, $argv) {
 /**
  * Exhaustive depth-first search to try and locate the Drupal root directory.
  * This makes it possible to run drush from a subdirectory of the drupal root.
+ * 
+ * @param $path
+ *   The path the start the search from.
  */
-function _drush_locate_root() {
-
-  $path = getcwd();
-  // Convert windows paths.
-  $path = drush_convert_path($path);
+function _drush_locate_root($path) {
   // Check the current path.
   if (file_exists($path . '/' . DRUSH_DRUPAL_BOOTSTRAP)) {
     return $path;
@@ -190,8 +236,12 @@ function _drush_locate_root_moveup($path) {
 function _drush_bootstrap_drupal() {
   require_once DRUSH_DRUPAL_BOOTSTRAP;
   if (($conf_path = conf_path()) && !file_exists("./$conf_path/settings.php")) {
-    // drush_die() is not available yet.
-    die("Unable to load Drupal configuration from $conf_path/.\n");
+    // Provide a helpful exit message, letting the user know where we looked
+    // (if we looked at all) and a hint on how to specify the URI manually.
+    $message = "E: Unable to load Drupal configuration from $conf_path. Aborting.\n";
+    $message .= "Hint: You can specify your Drupal URI to use with the --uri\n";
+    $message .= "parameter on the command line or \$options['uri'] in your drushrc.php file.\n";
+    die($message);
   }
 
   // The bootstrap can fail silently, so we catch that in a shutdown function.
@@ -201,14 +251,23 @@ function _drush_bootstrap_drupal() {
     require_once drupal_get_path('module', 'drush') . '/drush.inc';
   }
   else {
-    die("Drush: You must enable the Drush module.\n");
+    $message = "E: You must enable the Drush module for the site you want to use.\n";
+    $message .= "Hint: Drush was looking in the site '$conf_path'. You can select another site\n";
+    $message .= "with Drush enabled by specifying the Drupal URI to use with the --uri\n";
+    $message .= "parameter on the command line or \$options['uri'] in your drushrc.php file.\n";
+    die($message);
   }
 }
 
 function drush_shutdown() {
   if (!function_exists('drupal_set_content')) {
-    // can't use drush.inc function here.
-    die("Drush: Bootstrap failed. Perhaps you need to pass a valid value for the -l argument.\n");
+    $message = "E: Drush was not able to start (bootstrap) Drupal.\n";
+    $message .= "Hint: This error often occurs when Drush is trying to bootstrap a site\n";
+    $message .= "that has not been installed or does not have a configured \$db_url.\n";
+    $message .= "Drush was looking in the site '$conf_path'. You can select another site\n";
+    $message .= "with a working database setup by specifying the URI to use with the --uri\n";
+    $message .= "parameter on the command line or \$options['uri'] in your drushrc.php file.\n";
+    die($message);
   }
 }
 
