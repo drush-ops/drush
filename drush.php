@@ -63,7 +63,7 @@ function drush_load_rc($root) {
       define('DRUSH_CONFIG', $config);
       require_once($config);
       if (is_array($options)) {
-        $args['options'] = array_merge($args['options'], $options); # Sets all the default options for drush
+        $args['options'] = array_merge($options, $args['options']); # Sets all the default options for drush
       }
       break;
     }
