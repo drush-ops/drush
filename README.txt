@@ -9,33 +9,31 @@ spend most of our working hours hacking away at the command prompt.
 Green text against a black background is optional. Perhaps you would like
 some alpha-channel translucency with that? ;)
 
-drush.module itself doesn't provide any actual tools or commands but the API
-for those. There are several modules that provide drush utilities included in
-this download. See Package Manager, SQL Tools, and Toolbox.
+drush.php itself doesn't provide any actual tools or commands but the API
+for those. There are several command files that provide drush utilities
+included in this download. See Package Manager, SQL Tools, and Toolbox.
 
 INSTALLATION
 ------------
 For Linux/Unix/Mac:
-  1. Untar the tarball into your module directory (sites/all/modules)
-  2. Enable drush.module and any submodules you want to use. You must enable the CVS or wget modules
-     if you want to install modules (you do).
-  3. (optional, but recommended:) To ease the use of drush,
+  1. Untar the tarball into a convenient folder (/path/to/drush)
+  2. (optional, but recommended:) To ease the use of drush,
      - create a link to drush.php in a directory that is in your $PATH, e.g.:
-       $ ln /path/to/drush.php /usr/bin/drush
+       $ ln /path/to/drush/drush.php /usr/bin/drush
      OR
      - create an alias to drush.php:
-       $ alias drush='php modules/drush/drush.php'
+       $ alias drush='php /path/to/drush/drush.php'
        (this goes into .profile or .bash_aliases in your home folder)
 
-  4. Start using drush by running "drush" from your Drupal root directory.
+  3. Start using drush by running "drush" from your Drupal root directory.
 
-     (or, if you did not follow step 3, by running "./sites/all/modules/drush.php"
-      or navigating to sites/all/modules/drush and running "./drush.php" )
-      
+     (or, if you did not follow step 3, by running "/path/to/drush/drush.php"
+      or navigating to /path/to/drush and running "./drush.php" )
+
     If you have troubles, try using the -l and -r flags when invoking drush.php. See below.
 
 For Windows (experimental!):
-  - Follow steps 1 and 2. Use drush by navigating to sites/all/modules/drush
+  - Follow step 1. Use drush by navigating to /path/to/drush
     and running 'drush.bat'.
   - Whenever the documentation or the help text refers to
    'drush [option] <command>' or something similar, 'drush' has to be replaced
@@ -54,18 +52,47 @@ Use the 'help' command to get a list of available options and commands:
 
   $ drush help
 
-Please note that drush requires a working drupal setup in order to function
-correctly. So for multisite installations, you might need to use the -l or other command line 
-options just to get the help command to work:
+For multisite installations, you might need to use the -l or other command line
+options just to get drush to work:
 
   $ drush -l http://association.drupal.org/drupal help
 
 Related Options:
-  -r <path>, --root=<path>      Drupal root directory to use (default: current directory)            
-  -l <uri> , --uri=<uri>        URI of the drupal site to use (only needed in multisite environments)
+  -r <path>, --root=<path>      Drupal root directory to use
+                                (default: current directory or anywhere in a Drupal directory tree)
+  -l <uri> , --uri=<uri>        URI of the drupal site to use
+                                (only needed in multisite environments)
   -v, --verbose                 Display all available output
-  
-If you get tired of typing options all the time, you can add them to your drush.php alias or create a drushrc.php file. These provide additional options for your drush call. They provide great flexibility for a multi-site installation, for example. See example.drushrc.php.                                         
+
+Other options:
+  -i <path>, --include=<path>   Path to folder(s) containing additional drush command files.
+                                Follows the POSIX convention of separating paths with a ':'
+
+If you get tired of typing options all the time, you can add them to your drush.php alias or
+create a drushrc.php file. These provide additional options for your drush call. They provide
+great flexibility for a multi-site installation, for example. See example.drushrc.php.
+
+COMMANDS
+--------
+Drush ships with a number of commands (see above), but you can easily write
+your own. In fact, writing a drush command is no harder that writing simple
+Drupal extensions, since drush command files closely follows the structure of
+ordinary Drupal modules.
+
+See example.drush.inc for details on the internals of a drush command
+file.
+
+You can put your drush command file in a number of places:
+
+  - In a .drush folder in your HOME folder. Note, that you have
+    to make the .drush folder yourself.
+  - Along with one of your existing modules. If your command is
+    related to an existing module, this is the preferred option.
+  - In a folder specified with the include option (see above).
+  - In /path/to/drush/commands (not a Smart Thing, but it would work).
+
+In any case, it is important that you append it with ".drush.inc", so
+that drush can find it.
 
 REQUIREMENTS
 ------------
@@ -77,7 +104,8 @@ platform.
 * drush should also run on Windows, however, drush modules might make use of
   unix command line tools, so to use it effectively, you have to install
   some of them, e.g. from GnuWin32 (http://gnuwin32.sourceforge.net/).
-  The READMEs of the individual modules should state which binaries are required.
+  The READMEs of the individual command files should state which binaries
+  are required.
 
 FAQ
 ---

@@ -1,7 +1,0 @@
-; $Id$
-name = Drush SQL commands
-description = Provides several tools for database query and management
-package = Drush
-dependencies[] = drush
-core = 7.x
-files[] = drush_sql.module

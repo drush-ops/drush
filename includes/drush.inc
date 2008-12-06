@@ -9,55 +9,76 @@
 /**
  * Dispatch a given set of commands.
  * Modules can add commands by implementing hook_drush_command().
+ *
+ * @param
+ *
  */
 function drush_dispatch($commands) {
-  // Get a list of all implemented commands.
-  $implemented = drush_get_commands();
 
-  $go = TRUE;
-  $result = FALSE;
-  $funcargs = array();
-  // Try to determine the handler for the current command.
-  while (!$result && count($commands)) {
-    $command = implode(" ", $commands);
-    if (isset($implemented[$command])) {
-      $result = $implemented[$command];
-    }
-    else {
-      $funcargs[] = array_pop($commands);
-    }
+  // Special case for help command
+  $show_help = FALSE;
+  if ($commands[0] == 'help') {
+    $show_help = TRUE;
+    array_shift($commands);
+    drush_show_help($commands);
+    return TRUE;
   }
-  if ($result) {
+
+  list($command, $arguments) = drush_parse_command($commands);
+
+  if ($command) {
     // Call the callback function of the active command.
-    return call_user_func_array($result['callback'], array_reverse($funcargs));
+    return call_user_func_array($command['callback'], $arguments);
   }
   else {
     // Special case: If no command is found, display usage info.
-    return call_user_func_array('drush_usage', array_reverse($funcargs));
+    return call_user_func_array('drush_usage', $arguments);
   }
 
   return FALSE;
 }
 
 /**
- * Get a list of all implemented commands.
- * This invokes hook_drush_command().
+ * Detects the version number of the current Drupal installation,
+ * if any. Returns false if there is no current Drupal installation,
+ * or it is somehow broken.
+ *
+ * This function relies on the presence of DRUPAL_ROOT/modules/system/system.module
+ *
+ * @return
+ *   A string containing the version number of the current
+ *   Drupal installation, if any. Otherwise, return false.
  */
-function drush_get_commands($refresh = FALSE) {
-  static $commands;
+function drush_drupal_version() {
+  static $version = FALSE;
 
-  if (!$refresh && !empty($commands)) {
-    return $commands;
+  if (!$version) {
+    if (defined('DRUSH_DRUPAL_ROOT')) {
+      if (file_exists(DRUSH_DRUPAL_ROOT . '/modules/system/system.module')) {
+        // We can safely include system.module as it contains defines and functions only.
+        require_once(DRUSH_DRUPAL_ROOT . '/modules/system/system.module');
+        // We just might be dealing with an early Drupal version (pre 4.7)
+        if (defined('VERSION')) {
+          $version = VERSION;
+        }
+      }
+    }
   }
-
-  $commands = module_invoke_all('drush_command', TRUE);
-
-  return $commands;
+  return $version;
 }
 
-function drush_is_command($command) {
-  $commands = drush_get_commands();
-  return (isset($commands[$command])) ? TRUE : FALSE;
+/**
+ * Returns the Drupal major version number (5, 6, 7 ...)
+ */
+function drush_drupal_major_version() {
+  $major_version = FALSE;
+  if ($version = drush_drupal_version()) {
+    $version_parts = explode('.', $version);
+    if (is_numeric($version_parts[0])) {
+      $major_version = (integer)$version_parts[0];
+    }
+  }
+  return $major_version;
 }
 
 /**
@@ -85,6 +106,122 @@ function drush_op($function) {
   }
 
   return call_user_func_array($function, $args);
+}
+
+/**
+ * Rudimentary replacement for Drupal API t() function.
+ *
+ * @param string
+ *   String to process, possibly with replacement item.
+ * @param array
+ *  An associative array of replacement items.
+ *
+ * @return
+ *   The processed string.
+ *
+ * @see t()
+ */
+function dt($string, $args = NULL) {
+  if (function_exists('t')) {
+    return t($string, $args);
+  }
+  else {
+    if (!empty($args)) {
+      return strtr($string, $args);
+    }
+    else {
+      return $string;
+    }
+  }
+}
+
+/**
+ * This is called if no command or an unknown command is entered.
+ */
+function drush_usage() {
+  $commands = func_get_args();
+
+  if (drush_get_option('help') || empty($commands)) {
+    drush_print(dt('Usage: drush.php [options] <command> <command> ...'));
+    drush_print();
+    drush_print('Run "drush help [command]" to view command-specific help.');
+    drush_print(dt('Options: '));
+    foreach (drush_get_options() as $option => $description) {
+      $rows[] = array($option, $description);
+    }
+
+    drush_print_table($rows, 2);
+    drush_print();
+    drush_print('Commands: ');
+
+    $commands = drush_get_commands();
+    $rows = array();
+    foreach($commands as $key => $command) {
+      $rows[] = array($key, $commands[$key]['description']);
+    }
+    drush_print_table($rows, 2);
+    return;
+  }
+
+  return drush_error(dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
+}
+
+/**
+ * Get the available options for Drush for use by help page.
+ *
+ * @return
+ *   An associative array containing the option definition as the key, and the description as the value,
+ *   for each of the available options.
+ */
+function drush_get_options() {
+  // TODO: Add a hook for this, to allow other modules to add their options
+  $options['-r <path>, --root=<path>'] = dt("Drupal root directory to use (default: current directory)");
+  $options['-l <uri> , --uri=<uri>']   = dt('URI of the drupal site to use (only needed in multisite environments)');
+  $options['-v, --verbose']            = dt('Display all available output');
+  $options['-y, --yes']                = dt("Assume 'yes' as answer to all prompts");
+  $options['-s, --simulate']           = dt("Simulate all relevant actions (don't actually change the system)");
+  $options['-i, --include']            = dt("A list of paths to search for drush commands");
+  $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
+  $options['-u, --user']               = dt("Specify a user to login with");
+  return $options;
+}
+
+/**
+ * Prints out the default drush help page.
+ */
+function drush_show_help($commands) {
+  $commandstring = implode(" ", $commands);
+
+  if (!drush_is_command($commandstring)) {
+    return drush_error(dt('Invalid command !command.', array('!command' => $commandstring)));
+  }
+
+  $help = drush_command_invoke_all('drush_help', 'drush:'. $commandstring);
+  if (!empty($help)) {
+    drush_print(implode("\n", $help));
+  }
+  else {
+    drush_print("No help available for command 'drush $commandstring'.");
+  }
+}
+
+/**
+ *
+ */
+function drush_help_command($command) {
+  $commandstring = implode(" ", $commands);
+
+  if (!drush_is_command($commandstring)) {
+    return drush_error(dt('Invalid command: !command.', array('!command' => implode(" ", $commands))));
+  }
+
+  $help = drush_command_invoke_all('drush_help', 'drush:'. $commandstring);
+  if (!empty($help)) {
+    drush_print(implode("\n", $help));
+  }
+  else {
+    drush_print("No help available for command 'drush $commandstring'.");
+  }
 }
 
 /**
@@ -211,7 +348,6 @@ function drush_confirm($msg, $indent = 0) {
     }
     print str_repeat(' ', $indent) . (string)$msg . " (y/n): ";
   }
-
 }
 
 /**
