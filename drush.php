@@ -74,7 +74,7 @@ function drush_bootstrap($argc, $argv) {
   global $args, $override, $conf;
 
   // Parse command line options and arguments.
-  $args = drush_parse_args($argv, array('h', 'u', 'r', 'l'));
+  $args = drush_parse_args($argv, array('h', 'u', 'r', 'l', 'c'));
   
   // We use PWD if available because getcwd() resolves symlinks, which
   // could take us outside of the Drupal root, making it impossible to find. 
