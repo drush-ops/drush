@@ -165,7 +165,7 @@ function drush_command_implements($hook) {
  */
 function drush_is_command($command) {
   $commands = drush_get_commands();
-  return (isset($commands[$command])) ? TRUE : FALSE;
+  return isset($commands[$command]);
 }
 
 /**
@@ -176,7 +176,7 @@ function drush_is_command($command) {
  * - The ".drush" folder in the users HOME folder.
  * - The "/path/to/drush/includes" folder.
  * - Folders listed in the 'include' option (see example.drushrc.php).
- * - The current Drupal installation, if any.
+ * - Active modules in the current Drupal installation (if any).
  *
  * A drush command file is a file that matches "*.drush.inc".
  * 

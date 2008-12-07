@@ -89,8 +89,6 @@ function drush_bootstrap($argc, $argv) {
       if (DRUSH_USER) {
         drush_drupal_login(DRUSH_USER);
       }
-
-      // Now we can use all of Drupal.
     }
   }
 

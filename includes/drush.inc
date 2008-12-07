@@ -182,7 +182,7 @@ function drush_get_options() {
   $options['-s, --simulate']           = dt("Simulate all relevant actions (don't actually change the system)");
   $options['-i, --include']            = dt("A list of paths to search for drush commands");
   $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
-  $options['-u, --user']               = dt("Specify a user to login with");
+  $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
   return $options;
 }
 
