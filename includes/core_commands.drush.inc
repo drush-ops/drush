@@ -40,8 +40,8 @@ function core_commands_drush_command() {
     'callback' => 'core_commands_cache_clear',
     'description' => 'Clear all caches.'
   );
-  $items['hatch'] = array(
-    'callback' => 'core_commands_hatch',
+  $items['dl'] = array(
+    'callback' => 'core_commands_dl',
     'description' => 'Download core Drupal and modules like Drush Extras',
   );
   return $items;
@@ -166,15 +166,18 @@ function core_commands_cache_clear() {
   }
 }
 
-function core_commands_hatch_destination() {
+function core_commands_dl_destination() {
   // If a URI is provided then we install to that specific site, otherwise we install to sites/all/modules
   if (DRUSH_URI) {
     $path = conf_path();
-    $modulepath = DRUSH_DRUPAL_ROOT .'/'. $path .'/modules/';
+    return DRUSH_DRUPAL_ROOT .'/'. $path .'/modules/';
   }
-
-  if (!isset($modulepath) || !file_exists($modulepath)) {
-    $modulepath = DRUSH_DRUPAL_ROOT .'/sites/all/modules/';
+  
+  if (DRUSH_DRUPAL_ROOT) { // !file_exists($modulepath)
+    $modulepath = DRUSH_DRUPAL_ROOT . '/sites/all/modules/';
+  }
+  else {
+    $modulepath = getcwd() . '/';
   }
   
   return $modulepath;
@@ -187,8 +190,6 @@ function core_commands_hatch_destination() {
  */
 // TODO: rename
 function drush_pm_parse_project_version($requests) {
-  $destination = core_commands_hatch_destination();
-  
   $requestdata = array();
   foreach($requests as $request) {
     // project-HEAD or project-5.x-1.0-beta
@@ -218,28 +219,33 @@ function drush_pm_parse_project_version($requests) {
 /**
  * Command callback. Download drupal core.
  */
-function core_commands_hatch($full_project) {
+function core_commands_dl($full_project) {
   define('UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
   if (!$destination = drush_get_option('destination')) {
-    $destination = getcwd() . '/';
+    $destination = core_commands_dl_destination();
   }
   
   $requestdata = drush_pm_parse_project_version(explode(' ', $full_project));
   foreach ($requestdata as $package) {
-    if (empty($package['version'])) {
-      $version = '6.x';
-    }
+    $version = empty($package['version']) ? '6.x' : $package['version'];
+    $major_version = defined(DRUPAL_CORE_COMPATIBILITY) ? DRUPAL_CORE_COMPATIBILITY : substr($version, 0, 3);
     $project = $package['name'];
-    $url = UPDATE_DEFAULT_URL . "/$project/". $version;
-    $xml = simplexml_load_file($url);
-    $release = $xml->releases->release;
-    $filename = $project . '-' . (string)$release->version;
-    $info = array(
-      'download_link' => (string)$release->download_link,
-      'mdhash' => (string)$release->mdhash,
-    );
-    if (drush_pm_wget_install_project($filename, $info, $destination)) {
-      drush_print(dt("Project !project !version successfully hatched to !dest", array('!version' => $version, '!dest' => $destination, '!project' => $project))) ;
+    $url = UPDATE_DEFAULT_URL . "/$project/". $major_version;
+    if ($xml = simplexml_load_file($url)) {
+      $release = $version ? $xml->xpath("releases/release[name=$version]") : $xml->releases->release;
+      print_r($release);
+      $filename = $project . '-' . (string)$release->version;
+      $info = array(
+        'download_link' => (string)$release->download_link,
+        'mdhash' => (string)$release->mdhash,
+      );
+      if (drush_pm_wget_install_project($filename, $info, $destination)) {
+        drush_print(dt("Project !filename successfully downloaded to !dest", array('!filename' => $filename, '!dest' => $destination))) ;
+      }
+    }
+    else {
+      // TODO: We are not getting here - have to catch errors in the XML.
+      drush_error(dt('Could not download !url', array('!url' => $url)));
     }
   }
 }
