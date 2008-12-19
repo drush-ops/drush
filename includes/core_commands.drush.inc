@@ -40,6 +40,10 @@ function core_commands_drush_command() {
     'callback' => 'core_commands_cache_clear',
     'description' => 'Clear all caches.'
   );
+  $items['extras'] = array(
+    'callback' => 'core_commands_extras',
+    'description' => 'Download the Drush extras commands.'
+  );
   return $items;
 }
 
@@ -63,6 +67,8 @@ function core_commands_drush_help($section) {
       return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:script':
       return dt("Runs the given php scripts against the current Drupal site. Pass one or more file paths as arguments. Paths may be absolute or relative to the current working directory.");
+      case 'drush:extras':
+        return dt("Download the Drush Extras project to the ~/.drush directory.");
   }
 }
 
@@ -156,6 +162,35 @@ function core_commands_cache_clear() {
       drush_print(dt('Cache cleared.'));
       break;
   }
+}
+
+/**
+ * Command callback. Download drush extras project.
+ */
+function core_commands_extras() {
+  $destination = core_commands_extras_destination();
+  $project = 'drush_extras';
+  $url = UPDATE_DEFAULT_URL . "/$project/". DRUPAL_CORE_COMPATIBILITY;
+  $xml = simplexml_load_file($url);
+  $info = array(
+    'download_link' => (string)$xml->releases->release->download_link,
+    'mdhash' => (string)$xml->releases->release->mdhash,
+  );
+  drush_pm_wget_install_project($project, $info, $destination);
+}
+
+function core_commands_extras_destination() {
+  // If a URI is provided then we install to that specific site, otherwise we install to sites/all/modules
+  if (DRUSH_URI) {
+    $path = conf_path();
+    $modulepath = DRUSH_DRUPAL_ROOT .'/'. $path .'/modules/';
+  }
+
+  if (!isset($modulepath) || !file_exists($modulepath)) {
+    $modulepath = DRUSH_DRUPAL_ROOT .'/sites/all/modules/';
+  }
+  
+  return $modulepath;
 }
 
 

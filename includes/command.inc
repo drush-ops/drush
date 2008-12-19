@@ -192,8 +192,8 @@ function drush_commandfile_list() {
   if (empty($list)) {
     $searchpath = array();
 
-    // Standard commands shipping with drush
-    $searchpath[] = dirname(__FILE__) . '/../includes';
+    // Core commands shipping with drush
+    $searchpath[] = dirname(__FILE__);
 
     // User commands, residing i ~/.drush
     if (!empty($_SERVER['HOME'])) {
