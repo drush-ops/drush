@@ -20,7 +20,7 @@ function drush_dispatch($commands) {
   if ($commands[0] == 'help') {
     $show_help = TRUE;
     array_shift($commands);
-    drush_show_help($commands);
+    (empty($commands)) ? drush_usage() : drush_show_help($commands);
     return TRUE;
   }
 
