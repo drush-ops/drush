@@ -40,9 +40,9 @@ function core_commands_drush_command() {
     'callback' => 'core_commands_cache_clear',
     'description' => 'Clear all caches.'
   );
-  $items['extras'] = array(
-    'callback' => 'core_commands_extras',
-    'description' => 'Download the Drush extras commands.'
+  $items['hatch'] = array(
+    'callback' => 'core_commands_hatch',
+    'description' => 'Download core Drupal and modules like Drush Extras',
   );
   return $items;
 }
@@ -67,8 +67,10 @@ function core_commands_drush_help($section) {
       return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:script':
       return dt("Runs the given php scripts against the current Drupal site. Pass one or more file paths as arguments. Paths may be absolute or relative to the current working directory.");
-      case 'drush:extras':
-        return dt("Download the Drush Extras project to the ~/.drush directory.");
+    case 'drush:extras':
+      return dt("Download the Drush Extras project.");
+    case 'drush:hatch':
+      return dt("Usage: drush [options] hatch. \n\nUse the --destination option to specify the directory to which drupal or the module should be downloaded.");  
   }
 }
 
@@ -164,22 +166,7 @@ function core_commands_cache_clear() {
   }
 }
 
-/**
- * Command callback. Download drush extras project.
- */
-function core_commands_extras() {
-  $destination = core_commands_extras_destination();
-  $project = 'drush_extras';
-  $url = UPDATE_DEFAULT_URL . "/$project/". DRUPAL_CORE_COMPATIBILITY;
-  $xml = simplexml_load_file($url);
-  $info = array(
-    'download_link' => (string)$xml->releases->release->download_link,
-    'mdhash' => (string)$xml->releases->release->mdhash,
-  );
-  drush_pm_wget_install_project($project, $info, $destination);
-}
-
-function core_commands_extras_destination() {
+function core_commands_hatch_destination() {
   // If a URI is provided then we install to that specific site, otherwise we install to sites/all/modules
   if (DRUSH_URI) {
     $path = conf_path();
@@ -193,4 +180,67 @@ function core_commands_extras_destination() {
   return $modulepath;
 }
 
+/**
+ * Parse out the project name and version and return as a structured array
+ *
+ * @param $requests an array of project names
+ */
+// TODO: rename
+function drush_pm_parse_project_version($requests) {
+  $destination = core_commands_hatch_destination();
+  
+  $requestdata = array();
+  foreach($requests as $request) {
+    // project-HEAD or project-5.x-1.0-beta
+    // '5.x-' is optional, as is '-beta'
+    preg_match('/-(HEAD|(\d+)\.([\dx]+)(-.+)?)$/', $request, $matches);
+    if ($matches[0]) {
+      // Specific version requested
+      $version = $matches[0];
+      $project = substr($request, 0, strlen($request) - strlen($version));
+    }
+    else {
+      // Recommended stable version requested
+      $project = $request;
+    }
+    if (empty($project)) {
+      drush_die(dt("Project name not found.\n\nRun drush help pm install for more information."));
+    }
+    $requestdata[$project] = array(
+      'name' => $project,
+      'version' => trim($version, ' -'),
+    );
+  }
+  return $requestdata;
+}
+
+
+/**
+ * Command callback. Download drupal core.
+ */
+function core_commands_hatch($full_project) {
+  define('UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
+  if (!$destination = drush_get_option('destination')) {
+    $destination = getcwd() . '/';
+  }
+  
+  $requestdata = drush_pm_parse_project_version(explode(' ', $full_project));
+  foreach ($requestdata as $package) {
+    if (empty($package['version'])) {
+      $version = '6.x';
+    }
+    $project = $package['name'];
+    $url = UPDATE_DEFAULT_URL . "/$project/". $version;
+    $xml = simplexml_load_file($url);
+    $release = $xml->releases->release;
+    $filename = $project . '-' . (string)$release->version;
+    $info = array(
+      'download_link' => (string)$release->download_link,
+      'mdhash' => (string)$release->mdhash,
+    );
+    if (drush_pm_wget_install_project($filename, $info, $destination)) {
+      drush_print(dt("Project !project !version successfully hatched to !dest", array('!version' => $version, '!dest' => $destination, '!project' => $project))) ;
+    }
+  }
+}
 
