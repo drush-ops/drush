@@ -85,6 +85,9 @@ function drush_bootstrap($argc, $argv) {
         $GLOBALS['conf'] = array_merge($GLOBALS['conf'], $GLOBALS['override']);
       }
 
+      // We have changed bootstrap level, so re-detect command files.
+      drush_commandfile_cache_flush();
+
       // Login the specified user (if given).
       if (DRUSH_USER) {
         drush_drupal_login(DRUSH_USER);
@@ -187,6 +190,7 @@ function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
 
   // The bootstrap succeeded.
   define('DRUSH_DRUPAL_BOOTSTRAPPED', TRUE);
+
   return TRUE;
 }
 

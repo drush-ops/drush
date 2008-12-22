@@ -25,14 +25,8 @@
  *   Associative array of currently active command descriptors.
  *
  */
-function drush_get_commands($refresh = FALSE) {
-  static $commands;
-
-  if (!$refresh && !empty($commands)) {
-    return $commands;
-  }
-
-  $commands = drush_command_invoke_all('drush_command', TRUE);
+function drush_get_commands() {
+  $commands = drush_command_invoke_all('drush_command');
 
   return $commands;
 }
@@ -142,15 +136,11 @@ function drush_command_invoke_all() {
  *   An array with the names of the command files which are implementing this hook.
  */
 function drush_command_implements($hook) {
-  static $implementations;
-
-  if (!isset($implementations[$hook])) {
-    $implementations[$hook] = array();
-    $list = drush_commandfile_list();
-    foreach ($list as $commandfile) {
-      if (drush_command_hook($commandfile, $hook)) {
-        $implementations[$hook][] = $commandfile;
-      }
+  $implementations[$hook] = array();
+  $list = drush_commandfile_list();
+  foreach ($list as $commandfile) {
+    if (drush_command_hook($commandfile, $hook)) {
+      $implementations[$hook][] = $commandfile;
     }
   }
   return (array)$implementations[$hook];
@@ -187,9 +177,9 @@ function drush_is_command($command) {
  *   command files.
  */
 function drush_commandfile_list() {
-  static $list = array();
+  $cache = _drush_commandfile_cache();
 
-  if (empty($list)) {
+  if (!$cache) {
     $searchpath = array();
 
     // Core commands shipping with drush
@@ -204,7 +194,7 @@ function drush_commandfile_list() {
     if ($include = drush_get_option(array('i', 'include'), FALSE)) {
       $searchpath = array_merge($searchpath, explode(":", $include));
     }
-
+    
     // Site commands, found in current Drupal site.
     if (defined('DRUSH_DRUPAL_BOOTSTRAPPED')) {
       // Add enabled module paths. Since we are bootstrapped,
@@ -213,7 +203,6 @@ function drush_commandfile_list() {
         $searchpath[] = drupal_get_path('module', $module);
       }
     }
-
     // Scan for drush command files, load if found
     foreach ($searchpath as $path) {
       if (is_dir($path)) {
@@ -225,8 +214,47 @@ function drush_commandfile_list() {
       }
     }
   }
+  return _drush_commandfile_cache($list);
+}
 
-  return $list;
+// This constant, when passed to _drush_commandfile_cache, will wipe out the command file cache
+define('DRUSH_FLUSH_COMMANDFILE_CACHE', 1);
+
+/**
+ * Storage mechanism for the cached commandfile list.
+ *
+ * This function populates an internal static variable,
+ * that contains the previously found command files.
+ *
+ * @param mixed
+ *    Possible types :
+ *      null - return the previous data only.
+ *      array - replace the current cache contents with the contents of the array
+ *      constant - when passed the DRUSH_FLUSH_COMMANDFILE_CACHE constant, this will wipe out the previous values, so future calls
+ *                 to drush_command_file will automatically regenerate the cache.
+ *  @return array
+ *    The current file list that has been cached.
+ */
+function _drush_commandfile_cache($list = null) {
+  static $cache = array();
+  if ($list === DRUSH_FLUSH_COMMANDFILE_CACHE) {
+    $cache = array();
+  }
+  elseif (!is_null($list)) {
+    $cache = $list;
+  }
+  return $cache;
+}
+
+/**
+ * Flush the commandfile list cache.
+ *
+ * This is needed whenever drush code changes bootstrap level,
+ * to allow additional information (such as commands in enabled modules)
+ * to be retrieved.
+ */
+function drush_commandfile_cache_flush() {
+  _drush_commandfile_cache(DRUSH_FLUSH_COMMANDFILE_CACHE);
 }
 
 /**
