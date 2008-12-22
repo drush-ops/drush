@@ -42,6 +42,7 @@ function drush_get_commands() {
  * drush_parse_command returns a normalized command descriptor, which
  * is an associative array with the following entries:
  * - callback: name of function to invoke for this command.
+ * - callback arguments: an array of arguments to pass to the calback.
  * - description: description of the command.
  * - scope: one of 'system', 'project', 'site'.
  * - bootstrap: drupal bootstrap level (depends on Drupal major version).
@@ -94,7 +95,14 @@ function drush_parse_command($commands) {
     }
   }
 
-  return array($command, array_reverse($arguments));
+  $arguments = array_reverse($arguments);
+
+  // Merge specified callback arguments, which precede the arguments passed on the command line.
+  if (is_array($command['callback arguments'])) {
+    $arguments = array_merge($command['callback arguments'], $arguments);
+  }
+
+  return array($command, $arguments);
 }
 
 /**
