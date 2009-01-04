@@ -62,6 +62,7 @@ function drush_get_commands() {
  *   - The command arguments, i.e. the remaining
  */
 function drush_parse_command($commands) {
+
   // Get a list of all implemented commands.
   $implemented = drush_get_commands();
 
@@ -211,8 +212,9 @@ function drush_commandfile_list() {
         $searchpath[] = drupal_get_path('module', $module);
       }
     }
+
     // Scan for drush command files, load if found
-    foreach ($searchpath as $path) {
+    foreach (array_unique($searchpath) as $path) {
       if (is_dir($path)) {
         $files = drush_scan_directory($path, '\.drush\.inc$');
         foreach ($files as $filename => $info) {
