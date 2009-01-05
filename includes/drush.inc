@@ -17,7 +17,7 @@ function drush_dispatch($commands) {
 
   // Special case for help command
   $show_help = FALSE;
-  if ($commands[0] == 'help') {
+  if (!isset($commands[0]) && $commands[0] == 'help') {
     $show_help = TRUE;
     array_shift($commands);
     (empty($commands)) ? drush_usage() : drush_show_help($commands);
