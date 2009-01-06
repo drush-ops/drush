@@ -45,7 +45,7 @@ function drush_get_commands() {
  * - callback arguments: an array of arguments to pass to the calback.
  * - description: description of the command.
  * - scope: one of 'system', 'project', 'site'.
- * - bootstrap: drupal bootstrap level (depends on Drupal major version).
+ * - bootstrap: drupal bootstrap level (depends on Drupal major version). -1=no_bootstrap.
  * - core: Drupal major version required.
  * - drupal dependencies: drupal modules required for this command.
  * - drush dependencies: other drush command files required for this command.
@@ -80,7 +80,7 @@ function drush_parse_command($commands) {
       }
       else {
         // Normalize command descriptor
-        $normal_command = array(
+        $command += array(
           'description' => NULL,
           'core' => NULL,
           'scope' => 'site',
@@ -88,7 +88,6 @@ function drush_parse_command($commands) {
           'drupal dependencies' => array(),
           'drush dependencies' => array(),
         );
-        $command = array_merge_recursive($normal_command, $command);
       }
     }
     else {
