@@ -298,7 +298,7 @@ function drush_parse_args($args = array(), $arg_opts = array(), $default_options
 /**
  * Get the value for an option.
  *
- * If the first argument is an array, then it checks wether one of the options
+ * If the first argument is an array, then it checks whether one of the options
  * exists and return the value of the first one found. Useful for allowing both
  * -h and --host-name
  *
