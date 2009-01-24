@@ -28,6 +28,9 @@
 function drush_get_commands() {
   $commands = drush_command_invoke_all('drush_command');
   
+  // Filter out commands which are invalid for the current version of core Drupal.
+  $commands = drush_enforce_requirement_core($commands);
+  
   return $commands;
 }
 
@@ -82,7 +85,7 @@ function drush_parse_command($commands) {
         // Normalize command descriptor
         $command += array(
           'description' => NULL,
-          'core' => NULL,
+          'core' => array(),
           'scope' => 'site',
           'bootstrap' => NULL,
           'drupal dependencies' => array(),
@@ -163,6 +166,7 @@ function drush_command_implements($hook) {
  */
 function drush_is_command($command) {
   $commands = drush_get_commands();
+  // print_r($commands);
   return isset($commands[$command]);
 }
 
@@ -346,4 +350,14 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
   }
 
   return $files;
+}
+
+// Return commands that are valid for the current major version of core.
+function drush_enforce_requirement_core($commands) {
+  foreach ($commands as $key => $command) {
+    if (empty($command['core']) || in_array(drush_drupal_major_version(), $command['core'])) {
+      $valid[$key] = $command;
+    }
+  }
+  return $valid;
 }
