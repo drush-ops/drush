@@ -30,15 +30,13 @@
 // specify your Drupal core base directory (useful if you use symlinks)
 # $options['r'] = '/home/USER/workspace/drupal-6';
 
-// specify additional directories to search for *.drush.inc files
+// Specify additional directories to search for *.drush.inc files
+// Use POSIX path separator (':')
 # $options['i'] = 'sites/default:profiles/myprofile'; 
 
 // enable verbose mode
 # $options['v'] = 1; 
 
-// Set search path for drush command files
-// Use POSIX path separator (':')
-# $options['i'] = '/path/to/command_files';
 
 /*
  * Customize this associative array with your own tables. This is the 
