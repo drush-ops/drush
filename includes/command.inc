@@ -31,6 +31,9 @@ function drush_get_commands() {
   // Filter out commands which are invalid for the current version of core Drupal.
   $commands = drush_enforce_requirement_core($commands);
   
+  // Filter out commands which are missing their dependant Drupal modules.
+  $commands = drush_enforce_requirement_drupal_dependencies($commands);
+  
   return $commands;
 }
 
@@ -350,6 +353,23 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
   }
 
   return $files;
+}
+
+// Return commands which have their declared dependencies or have no dependencies.
+function drush_enforce_requirement_drupal_dependencies($commands) {
+  foreach ($commands as $key => $command) {
+    if (empty($command['drupal dependencies'])) {
+      $valid[$key] = $command;
+    }
+    else {
+      foreach ($command['drupal dependencies'] as $dependency) {
+        if (module_exists($dependency)) {
+          $valid[$key] = $command;
+        }
+      }
+    }
+  }
+  return $valid;
 }
 
 // Return commands that are valid for the current major version of core.
