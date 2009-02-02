@@ -232,16 +232,21 @@ function core_commands_dl($full_project) {
     // Don't rely on UPDATE_DEFAULT_URL since we might not be bootstrapped.
     $url = 'http://updates.drupal.org/release-history' . "/$project/". $major_version;
     if ($xml = simplexml_load_file($url)) {
-      $xpath = "/project/releases/release[version='$version']";
-      $release = $package['version'] ? $xml->xpath($xpath) : $xml->releases->release;
-      $release = $release[0];
-      $filename = $project . '-' . (string)$release->version;
-      $info = array(
-        'download_link' => (string)$release->download_link,
-        'mdhash' => (string)$release->mdhash,
-      );
-      if (drush_pm_wget_install_project($filename, $info, $destination)) {
-        drush_print(dt("Project !filename successfully downloaded to !dest", array('!filename' => $filename, '!dest' => $destination))) ;
+      if ($error = $xml->xpath('/error')) {
+        drush_error($error[0]);
+      }
+      else {
+        $xpath = "/project/releases/release[version='$version']";
+        $release = $package['version'] ? $xml->xpath($xpath) : $xml->releases->release;
+        $release = $release[0];
+        $filename = $project . '-' . (string)$release->version;
+        $info = array(
+          'download_link' => (string)$release->download_link,
+          'mdhash' => (string)$release->mdhash,
+        );
+        if (drush_pm_wget_install_project($filename, $info, $destination)) {
+          drush_print(dt("Project !filename successfully downloaded to !dest", array('!filename' => $filename, '!dest' => $destination))) ;
+        }
       }
     }
     else {
