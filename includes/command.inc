@@ -54,7 +54,7 @@ function drush_get_commands() {
  * - bootstrap: drupal bootstrap level (depends on Drupal major version). -1=no_bootstrap.
  * - core: Drupal major version required.
  * - drupal dependencies: drupal modules required for this command.
- * - drush dependencies: other drush command files required for this command.
+ * - drush dependencies: other drush command files required for this command (not yet implemented)
  *
  * @example
  *   list($command, $arguments) = drush_parse_command($GLOBALS['args']['commands']);
@@ -363,7 +363,7 @@ function drush_enforce_requirement_drupal_dependencies($commands) {
     }
     else {
       foreach ($command['drupal dependencies'] as $dependency) {
-        if (module_exists($dependency)) {
+        if (function_exists('module_exists') && module_exists($dependency)) {
           $valid[$key] = $command;
         }
       }
