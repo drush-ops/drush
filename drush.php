@@ -69,7 +69,7 @@ function drush_bootstrap($argc, $argv) {
   // Preliminary check on command descriptor
   list($command, $arguments) = drush_parse_command($GLOBALS['args']['commands']);
 
-  if ($drupal_root = drush_get_option(array('r', 'root'), drush_locate_root($path))) {
+  if (($drupal_root = drush_get_option(array('r', 'root'), drush_locate_root($path))) && $command) {
 
     drush_drupal_set_environment($drupal_root);
 
