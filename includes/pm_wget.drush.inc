@@ -44,7 +44,7 @@ function drush_pm_wget_install_project($project, $info, $path = '.') {
     drush_shell_exec("curl -O " .$info['download_link']);
   }
 
-  if (file_exists($path. $filename) || DRUSH_SIMULATE) {
+  if (file_exists($path . $filename) || DRUSH_SIMULATE) {
     drush_verbose("Downloading " . $filename . " was successful.");
   }
   else {
@@ -53,7 +53,7 @@ function drush_pm_wget_install_project($project, $info, $path = '.') {
 
   // Check Md5 hash
   if (md5_file($filename) != $info['mdhash'] && !DRUSH_SIMULATE) {
-    drush_op('unlink', $filename);
+    drush_op('unlink', $path . filename);
     return drush_error("Error: File $filename is corrupt (wrong md5 checksum).");
   }
   else {
@@ -61,14 +61,14 @@ function drush_pm_wget_install_project($project, $info, $path = '.') {
   }
 
   // Decompress
-  drush_shell_exec("gzip -d " . $filename);
+  drush_shell_exec("gzip -d " . $path . $filename);
   $filename = substr($filename, 0, strlen($filename)-3);
   // Untar
-  drush_shell_exec("tar -xf " . $filename);
+  drush_shell_exec("tar -xf " . $path . $filename);
   // We're not using tar -xzf because that's not working on windows...
 
   // Remove the tarball
-  drush_op('unlink', $filename);
+  drush_op('unlink', $path . $filename);
 
   // TODO: giving error for non drupal downloads
   if (FALSE && !is_dir($path . $project) && !DRUSH_SIMULATE) {

@@ -250,9 +250,19 @@ function core_commands_dl($full_project) {
         drush_error($error[0]);
       }
       else {
-        $xpath = "/project/releases/release[version='$version']";
-        $release = $package['version'] ? $xml->xpath($xpath) : $xml->releases->release;
-        $release = $release[0];
+        // Try to get the specified release.
+        if ($package['version']) {
+          $xpath = "/project/releases/release[version='$version']";
+          if ($releases = $xml->xpath($xpath)) {
+            $release = $releases[0];
+          }
+        }
+        
+        // If that did not work, get the fist listed release.
+        if (empty($release)) {
+          $release = $xml->releases->release;
+        }
+        
         $filename = $project . '-' . (string)$release->version;
         $info = array(
           'download_link' => (string)$release->download_link,
