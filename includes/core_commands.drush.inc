@@ -225,11 +225,11 @@ function drush_pm_parse_project_version($requests) {
  * Command callback. Download drupal core.
  */
 function core_commands_dl($full_project) {
-  define('UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
-  
-  // Try to bootstrap to config phase so we can determine destination and default version.
-  // Bootstrap constants not yet available.
-  drush_drupal_bootstrap(DRUSH_DRUPAL_ROOT, 0);
+  // Try to bootstrap to config phase so we can determine destination.
+  if (defined('DRUSH_DRUPAL_ROOT')) {
+    // Bootstrap constants not yet available.
+    drush_drupal_bootstrap(DRUSH_DRUPAL_ROOT, 0);
+  }
   
   if (!$destination = drush_get_option('destination')) {
     $destination = core_commands_dl_destination();
@@ -243,7 +243,7 @@ function core_commands_dl($full_project) {
     $version = empty($package['version']) ? $version_default : $package['version'];
     $major_version = defined('DRUPAL_CORE_COMPATIBILITY') ? DRUPAL_CORE_COMPATIBILITY : substr($version, 0, 3);
     $project = $package['name'];
-    // Don't rely on UPDATE_DEFAULT_URL since we might not be bootstrapped.
+    // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
     $url = 'http://updates.drupal.org/release-history' . "/$project/". $major_version;
     if ($xml = simplexml_load_file($url)) {
       if ($error = $xml->xpath('/error')) {
