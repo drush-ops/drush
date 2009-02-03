@@ -66,10 +66,8 @@ function core_commands_drush_help($section) {
       return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:script':
       return dt("Runs the given php scripts against the current Drupal site. Pass one or more file paths as arguments. Paths may be absolute or relative to the current working directory.");
-    case 'drush:extras':
-      return dt("Download the Drush Extras project.");
-    case 'drush:hatch':
-      return dt("Usage: drush [options] hatch. \n\nUse the --destination option to specify the directory to which drupal or the module should be downloaded.");  
+    case 'drush:dl':
+      return dt("Usage: drush [options] dl. \n\nYou may provide just the module name or 'drupal' to download the latest version. You may specify a particular version with a module name like diff-6.x-2.0\n\nUse the --destination option to specify the directory to which drupal or the module should be downloaded. If not provided, the module will download to a site specific modules directory if available, and then to sites/all/modules if available, else to the current directory.");
   }
 }
 
@@ -168,11 +166,17 @@ function core_commands_cache_clear() {
 function core_commands_dl_destination() {
   // If a URI is provided then we install to that specific site, otherwise we install to sites/all/modules
   // TODO: we are never bootstrapped so the condition below is never TRUE.
-  if (defined('DRUSH_URI') && DRUSH_URI != FALSE && function_exists('conf_path')) {
-    var_dump(DRUSH_URI);
-    $path = conf_path();
-    return DRUSH_DRUPAL_ROOT .'/'. $path .'/modules/';
+  if (defined('DRUSH_URI') && DRUSH_URI != FALSE) {
+    // 0 is the configuration phase of bootstrap. Constants not yet available.
+    if (drush_drupal_bootstrap(DRUSH_DRUPAL_ROOT, 0)) {
+      $path = conf_path();
+      $modulepath = DRUSH_DRUPAL_ROOT .'/'. $path .'/modules/';
+      if (is_dir($fullpath)) {
+        return $modulepath;
+      }
+    }
   }
+  
   if (defined('DRUSH_DRUPAL_ROOT')) { // !file_exists($modulepath)
     $modulepath = DRUSH_DRUPAL_ROOT . '/sites/all/modules/';
   }
@@ -251,7 +255,7 @@ function core_commands_dl($full_project) {
       }
     }
     else {
-      // TODO: We are not getting here - have to catch errors in the XML.
+      // We are not getting here since drupal.org always serves an XML response.
       drush_error(dt('Could not download !url', array('!url' => $url)));
     }
   }
