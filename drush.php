@@ -120,6 +120,9 @@ function drush_bootstrap($argc, $argv) {
  */
 function drush_drupal_set_environment($drupal_root) {
   define('DRUSH_DRUPAL_ROOT', $drupal_root);
+  define('DRUSH_DRUPAL_VERSION', drush_drupal_version());
+  define('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
+  
   // Possibly temporary. See http://drupal.org/node/312421.
   define('DRUPAL_ROOT', DRUSH_DRUPAL_ROOT);
 
@@ -180,10 +183,13 @@ function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
       return FALSE;
     }
 
-    // The bootstrap can fail silently, so we catch that in a shutdown function.
-    register_shutdown_function('drush_shutdown');
     if (is_null($bootstrap)) {
+      // The bootstrap can fail silently, so we catch that in a shutdown function.
+      register_shutdown_function('drush_shutdown');
+      
       drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+      
+      // Set this constant when we are fully bootstrapped.
       define('DRUSH_DRUPAL_BOOTSTRAPPED', TRUE);
     }
     else {
