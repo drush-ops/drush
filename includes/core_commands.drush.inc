@@ -166,12 +166,12 @@ function core_commands_cache_clear() {
 function core_commands_dl_destination() {
   // If a URI is provided then we install to that specific site, otherwise we install to sites/all/modules
   // TODO: we are never bootstrapped so the condition below is never TRUE.
-  if (defined('DRUSH_URI') && DRUSH_URI != FALSE) {
-    // 0 is the configuration phase of bootstrap. Constants not yet available.
-    if (drush_drupal_bootstrap(DRUSH_DRUPAL_ROOT, 0)) {
+  if (defined('DRUSH_URI') && DRUSH_URI) {
+    // We tried to bootstrap to config but might have failed. Check if conf_path() exists.
+    if (function_exists('conf_path')) {
       $path = conf_path();
       $modulepath = DRUSH_DRUPAL_ROOT .'/'. $path .'/modules/';
-      if (is_dir($fullpath)) {
+      if (is_dir($modulepath)) {
         return $modulepath;
       }
     }
@@ -199,7 +199,7 @@ function drush_pm_parse_project_version($requests) {
     // project-HEAD or project-5.x-1.0-beta
     // '5.x-' is optional, as is '-beta'
     preg_match('/-(HEAD|(\d+)\.([\dx]+)(-.+)?)$/', $request, $matches);
-    if ($matches[0]) {
+    if (!empty($matches[0])) {
       // Specific version requested
       $version = $matches[0];
       $project = substr($request, 0, strlen($request) - strlen($version));
@@ -207,6 +207,7 @@ function drush_pm_parse_project_version($requests) {
     else {
       // Recommended stable version requested
       $project = $request;
+      $version = NULL;
     }
     if (empty($project)) {
       drush_die(dt("Project name not found.\n\nRun drush help pm install for more information."));
@@ -225,14 +226,22 @@ function drush_pm_parse_project_version($requests) {
  */
 function core_commands_dl($full_project) {
   define('UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
+  
+  // Try to bootstrap to config phase so we can determine destination and default version.
+  // Bootstrap constants not yet available.
+  drush_drupal_bootstrap(DRUSH_DRUPAL_ROOT, 0);
+  
   if (!$destination = drush_get_option('destination')) {
     $destination = core_commands_dl_destination();
   }
   
   $requestdata = drush_pm_parse_project_version(explode(' ', $full_project));
   foreach ($requestdata as $package) {
-    $version = empty($package['version']) ? '6.x' : $package['version'];
-    $major_version = defined(DRUPAL_CORE_COMPATIBILITY) ? DRUPAL_CORE_COMPATIBILITY : substr($version, 0, 3);
+    $version_default = defined('DRUSH_DRUPAL_MAJOR_VERSION') ? DRUSH_DRUPAL_MAJOR_VERSION : 6;
+    $version_default .= '.x';
+
+    $version = empty($package['version']) ? $version_default : $package['version'];
+    $major_version = defined('DRUPAL_CORE_COMPATIBILITY') ? DRUPAL_CORE_COMPATIBILITY : substr($version, 0, 3);
     $project = $package['name'];
     // Don't rely on UPDATE_DEFAULT_URL since we might not be bootstrapped.
     $url = 'http://updates.drupal.org/release-history' . "/$project/". $major_version;
