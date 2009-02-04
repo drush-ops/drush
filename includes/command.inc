@@ -226,7 +226,7 @@ function drush_commandfile_list() {
         $files = drush_scan_directory($path, '\.drush\.inc$');
         foreach ($files as $filename => $info) {
           require_once($filename);
-          $list[] = basename($filename, '.drush.inc');
+          $list[$filename] = basename($filename, '.drush.inc');
         }
       }
     }
