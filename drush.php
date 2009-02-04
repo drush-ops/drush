@@ -53,23 +53,23 @@ function drush_bootstrap($argc, $argv) {
   // Parse command line options and arguments.
   $GLOBALS['args'] = drush_parse_args($argv, array('c', 'h', 'u', 'r', 'l', 'i'));
 
-  $path = drush_cwd();
+  $path = drush_get_option(array('r', 'root'), drush_cwd());
+  $drupal_root = drush_locate_root($path);
 
   // Load available .drushrc file(s). Allows you to provide defaults for options and variables.
-  drush_load_config($path);
+  drush_load_config($drupal_root);
 
   // Define basic options as constants.
   define('DRUSH_VERBOSE',     drush_get_option(array('v', 'verbose'), FALSE));
   define('DRUSH_AFFIRMATIVE', drush_get_option(array('y', 'yes'), FALSE));
   define('DRUSH_SIMULATE',    drush_get_option(array('s', 'simulate'), FALSE));
 
-  define('DRUSH_URI',         drush_get_option(array('l', 'uri'), drush_site_uri($path)));
+  define('DRUSH_URI',         drush_get_option(array('l', 'uri'), drush_site_uri($drupal_root)));
   define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
 
   // Preliminary check on command descriptor
   list($command, $arguments) = drush_parse_command($GLOBALS['args']['commands']);
-
-  if (($drupal_root = drush_get_option(array('r', 'root'), drush_locate_root($path))) && $command) {
+  if ($drupal_root && $command) {
 
     drush_drupal_set_environment($drupal_root);
 
