@@ -19,7 +19,7 @@ For Linux/Unix/Mac:
   1. Untar the tarball into a convenient folder (/path/to/drush)
   2. (optional, but recommended:) To ease the use of drush,
      - create a link to drush.php in a directory that is in your $PATH, e.g.:
-       $ ln /path/to/drush/drush.php /usr/bin/drush
+       $ ln -s /path/to/drush/drush.php /usr/bin/drush
      OR
      - create an alias to drush.php:
        $ alias drush='php /path/to/drush/drush.php'
@@ -27,7 +27,7 @@ For Linux/Unix/Mac:
 
   3. Start using drush by running "drush" from your Drupal root directory.
 
-     (or, if you did not follow step 3, by running "/path/to/drush/drush.php"
+     (or, if you did not follow step 2, by running "/path/to/drush/drush.php"
       or navigating to /path/to/drush and running "./drush.php" )
 
     If you have troubles, try using the -l and -r flags when invoking drush.php. See below.
