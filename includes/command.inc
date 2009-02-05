@@ -50,6 +50,9 @@ function drush_get_commands() {
  * - callback: name of function to invoke for this command.
  * - callback arguments: an array of arguments to pass to the calback.
  * - description: description of the command.
+ * - arguments: an array of arguments that are understood by the command. for help texts.
+ * - options: an array of options that are understood by the command. for help texts.
+ * - examples: an array of examples that are understood by the command. for help texts.
  * - scope: one of 'system', 'project', 'site'.
  * - bootstrap: drupal bootstrap level (depends on Drupal major version). -1=no_bootstrap.
  * - core: Drupal major version required.
@@ -88,6 +91,9 @@ function drush_parse_command($commands) {
         // Normalize command descriptor
         $command += array(
           'description' => NULL,
+          'arguments' => array(),
+          'options' => array(),
+          'extras' => array(),
           'core' => array(),
           'scope' => 'site',
           'bootstrap' => NULL,

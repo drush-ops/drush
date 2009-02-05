@@ -82,6 +82,24 @@ function drush_drupal_major_version() {
 }
 
 /**
+ * Save a string to a temporary file. Does not depend on Drupal's API.
+ *
+ * @param string $data 
+ * @param string $filename 
+ * @return string
+ *   A path to the file.
+ */
+function drush_save_data_to_temp_file($data, $filename) {
+  static $fp;
+
+  $fp = tmpfile();
+  fwrite($fp, $data);
+  $meta_data = stream_get_meta_data($fp);
+  return $meta_data['uri'];
+}
+
+
+/**
  * Calls a given function, passing through all arguments unchanged.
  *
  * This should be used when calling possibly mutative or destructive functions
@@ -195,29 +213,36 @@ function drush_show_help($commands) {
   if (!drush_is_command($commandstring)) {
     return drush_error(dt('Invalid command !command.', array('!command' => $commandstring)));
   }
-
-  $help = drush_command_invoke_all('drush_help', 'drush:'. $commandstring);
-  if (!empty($help)) {
-    drush_print(implode("\n", $help));
-  }
   else {
-    drush_print("No help available for command 'drush $commandstring'.");
-  }
-}
-
-/**
- *
- */
-function drush_help_command($command) {
-  $commandstring = implode(" ", $commands);
-
-  if (!drush_is_command($commandstring)) {
-    return drush_error(dt('Invalid command: !command.', array('!command' => implode(" ", $commands))));
+    // Get the full command array
+    $all = drush_get_commands();
+    $command = $all[$commandstring];
   }
 
   $help = drush_command_invoke_all('drush_help', 'drush:'. $commandstring);
   if (!empty($help)) {
-    drush_print(implode("\n", $help));
+    drush_print(wordwrap(implode("\n", $help), 80));
+    drush_print();
+    
+// TODO: Just let commands define their own sections? Standardization need not be mandated?
+    $sections = array(
+      'examples' => 'Examples',
+      'arguments' => 'Arguments',
+      'options' => 'Options',
+    );
+    
+    foreach ($sections as $key => $value) {
+      if ($command[$key]) {
+        drush_print(dt($value) . ':');
+        foreach ($command[$key] as $name => $description) {
+          $rows[] = array($name, $description);
+        }
+        drush_print_table($rows, 2);
+        unset($rows);
+        drush_print();
+      }
+    }
+
   }
   else {
     drush_print("No help available for command 'drush $commandstring'.");

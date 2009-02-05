@@ -33,6 +33,9 @@ function core_commands_drush_command() {
   $items['script'] = array(
     'callback' => 'core_commands_script',
     'description' => "Run php script(s).",
+    'arguments' => array(
+      'path/to/script' => dt('One or more file paths. Paths may be absolute or relative to the current working dir.'),
+    ),
   );
   $items['cache clear'] = array(
     'callback' => 'core_commands_cache_clear',
@@ -40,8 +43,20 @@ function core_commands_drush_command() {
   );
   $items['dl'] = array(
     'callback' => 'core_commands_dl',
-    'description' => 'Download core Drupal and modules like Drush Extras',
+    'description' => 'Download core Drupal and modules like Drush Extras.',
     'bootstrap' => -1, // No bootstrap at all.
+    'arguments' => array(
+      'project' => dt('\'drupal\', or module name, with optional version.'),
+    ),
+    'options' => array(
+      'destination' => dt('Path to which the project will be copied.'),
+    ),
+    'examples' => array(
+      'drush dl drupal' => dt('Download latest version of Drupal core.'), 
+      'drush dl drupal-5.x' => dt('Download latest version of Drupal core for 5.x release'), 
+      'drush dl diff-6.x-2.0' => dt('Download a specfic version of diff module.'),
+      'drush dl views' => dt('Download latest versions of Views for my version of Drupal.'),
+    ),
   );
   return $items;
 }
@@ -65,9 +80,9 @@ function core_commands_drush_help($section) {
     case 'drush:status':
       return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:script':
-      return dt("Runs the given php scripts against the current Drupal site. Pass one or more file paths as arguments. Paths may be absolute or relative to the current working directory.");
+      return dt("Runs the given php script(s) against the current Drupal site.");
     case 'drush:dl':
-      return dt("Usage: drush [options] dl. \n\nYou may provide just the module name or 'drupal' to download the latest version. You may specify a particular version with a module name like diff-6.x-2.0\n\nUse the --destination option to specify the directory to which drupal or the module should be downloaded. If not provided, the module will download to a site specific modules directory if available, and then to sites/all/modules if available, else to the current directory.");
+      return dt("Quickly download projects from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
   }
 }
 
@@ -181,7 +196,7 @@ function core_commands_dl_destination() {
     $modulepath = DRUSH_DRUPAL_ROOT . '/sites/all/modules/';
   }
   else {
-    $modulepath = getcwd() . '/';
+    $modulepath = drush_cwd() . '/';
   }
   
   return $modulepath;
