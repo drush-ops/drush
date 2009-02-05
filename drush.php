@@ -67,9 +67,9 @@ function drush_bootstrap($argc, $argv) {
   define('DRUSH_URI',         drush_get_option(array('l', 'uri'), drush_site_uri($drupal_root)));
   define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
 
-  // Preliminary check on command descriptor
+  // Quickly attempt to find the command. A second attempt is performed in drush_dispatch().
   list($command, $arguments) = drush_parse_command($GLOBALS['args']['commands']);
-  if ($drupal_root && $command) {
+  if ($drupal_root) {
 
     drush_drupal_set_environment($drupal_root);
 
@@ -188,7 +188,7 @@ function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
       register_shutdown_function('drush_shutdown');
       
       drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-      
+
       // Set this constant when we are fully bootstrapped.
       define('DRUSH_DRUPAL_BOOTSTRAPPED', TRUE);
     }
