@@ -85,11 +85,10 @@ function drush_drupal_major_version() {
  * Save a string to a temporary file. Does not depend on Drupal's API.
  *
  * @param string $data 
- * @param string $filename 
  * @return string
  *   A path to the file.
  */
-function drush_save_data_to_temp_file($data, $filename) {
+function drush_save_data_to_temp_file($data) {
   static $fp;
 
   $fp = tmpfile();
