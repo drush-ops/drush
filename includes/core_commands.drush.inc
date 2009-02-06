@@ -33,8 +33,11 @@ function core_commands_drush_command() {
   $items['script'] = array(
     'callback' => 'core_commands_script',
     'description' => "Run php script(s).",
+    'examples' => array(
+      'drush script update_variables.php',
+    ),
     'arguments' => array(
-      'path/to/script' => dt('One or more file paths. Paths may be absolute or relative to the current working dir.'),
+      'path/to/script' => 'One or more file paths. Paths may be absolute or relative to the current working dir.',
     ),
   );
   $items['cache clear'] = array(
@@ -46,16 +49,16 @@ function core_commands_drush_command() {
     'description' => 'Download core Drupal and modules like Drush Extras.',
     'bootstrap' => -1, // No bootstrap at all.
     'arguments' => array(
-      'project' => dt('\'drupal\', or module name, with optional version.'),
+      'project' => '\'drupal\', or module name, with optional version.',
     ),
     'options' => array(
-      'destination' => dt('Path to which the project will be copied.'),
+      '--destination' => 'Path to which the project will be copied.',
     ),
     'examples' => array(
-      'drush dl drupal' => dt('Download latest version of Drupal core.'), 
-      'drush dl drupal-5.x' => dt('Download latest version of Drupal core for 5.x release'), 
-      'drush dl diff-6.x-2.0' => dt('Download a specfic version of diff module.'),
-      'drush dl views' => dt('Download latest versions of Views for my version of Drupal.'),
+      'drush dl drupal' => 'Download latest version of Drupal core.', 
+      'drush dl drupal-5.x' => 'Download latest version of Drupal core for 5.x release', 
+      'drush dl diff-6.x-2.0' => 'Download a specfic version of diff module.',
+      'drush dl views' => 'Download latest versions of Views for my version of Drupal.',
     ),
   );
   return $items;

@@ -234,7 +234,7 @@ function drush_show_help($commands) {
       if ($command[$key]) {
         drush_print(dt($value) . ':');
         foreach ($command[$key] as $name => $description) {
-          $rows[] = array($name, $description);
+          $rows[] = array($name, dt($description));
         }
         drush_print_table($rows, 2);
         unset($rows);
