@@ -47,19 +47,19 @@ function core_commands_drush_command() {
   $items['dl'] = array(
     'callback' => 'core_commands_dl',
     'description' => 'Download core Drupal and modules like Drush Extras.',
-    'bootstrap' => -1, // No bootstrap at all.
-    'arguments' => array(
-      'project' => '\'drupal\', or module name, with optional version.',
-    ),
-    'options' => array(
-      '--destination' => 'Path to which the project will be copied.',
-    ),
     'examples' => array(
       'drush dl drupal' => 'Download latest version of Drupal core.', 
       'drush dl drupal-5.x' => 'Download latest version of Drupal core for 5.x release', 
       'drush dl diff-6.x-2.0' => 'Download a specfic version of diff module.',
       'drush dl views' => 'Download latest versions of Views for my version of Drupal.',
     ),
+    'arguments' => array(
+      'project' => '\'drupal\', or module name, with optional version.',
+    ),
+    'options' => array(
+      '--destination' => 'Path to which the project will be copied.',
+    ),
+    'bootstrap' => -1, // No bootstrap at all.
   );
   return $items;
 }
