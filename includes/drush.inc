@@ -180,7 +180,7 @@ function drush_usage() {
     return;
   }
 
-  return drush_error(dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
+  drush_log(dt('Invalid command !command.', array('!command' => implode(" ", $commands))), 'error');
 }
 
 /**
@@ -210,7 +210,7 @@ function drush_show_help($commands) {
   $commandstring = implode(" ", $commands);
 
   if (!drush_is_command($commandstring)) {
-    return drush_error(dt('Invalid command !command.', array('!command' => $commandstring)));
+    return drush_log(dt('Invalid command !command.', array('!command' => $commandstring)), 'error');
   }
   else {
     // Get the full command array
@@ -434,3 +434,110 @@ function _drush_get_table_column_widths($table) {
   }
   return $widths;
 }
+
+
+/**
+ * @defgroup logging Logging information to be provided as output.
+ * @{
+ *
+ * These functions are primarily for diagnostic purposes, but also provide an overview of tasks that were taken
+ * by drush.
+ */
+
+/**
+ * Maintain a static array containing all the log messages
+ *
+ * @param entry
+ *   Associative array containing the log message.
+ * @return
+ *   Entire log history, only if $entry is NULL. If entry is not null, it will return the return of _drush_print_log.
+ */
+function _drush_set_log($entry = NULL) {
+  static $log = array();
+  if ($entry == NULL) {
+    return $log;
+  }
+  else {
+    $log[] = $entry;
+    return _drush_print_log($entry);
+  }
+}
+
+/**
+ * Add a log message to the log history.
+ *
+ * @param message
+ *   String containing the message to be logged.
+ * @param type
+ *   The type of message to be logged. Common types are 'warning', 'error', 'success' and 'notice'.
+ *   A type of 'failed' can also be supplied to flag as an 'error'.
+ *   A type of 'ok' or 'completed' can also be supplied to flag as a 'success'
+ *   All other types of messages will be assumed to be notices.
+ */
+function drush_log($message, $type = 'notice' ) {
+  return _drush_set_log(array(
+     'type' => $type, 
+     'message' => $message, 
+     'timestamp' => time()
+    ));
+}
+
+/**
+ * Retrieve the log messages from the log history
+ *
+ * @return
+ *   Entire log history
+ */
+function drush_get_log() {
+  return _drush_set_log();
+}
+
+/**
+ * Display the log message
+ *
+ * By default, only warnings and errors will be displayed, if 'verbose' is specified, it will also display notices.
+ *
+ * @param
+ *   The associative array for the entry.
+ *
+ * @return
+ *   False in case of an error or failed type, True in all other cases.
+ */
+function _drush_print_log($entry) {
+  $red = "[\033[31m%s\033[0m]";
+  $yellow = "[\033[1;33m%s\033[0m]";
+  $green = "[\033[0;33m%s\033[0m]";
+
+  $return = TRUE;
+  switch ($entry['type']) {
+    case 'warning' : 
+      $type_msg = sprintf($yellow, $entry['type']);
+      break;
+    case 'failed' : 
+    case 'error' : 
+      $type_msg = sprintf($red, $entry['type']);
+      $return = FALSE;
+      break;
+    case 'ok' :
+    case 'completed' :
+    case 'success' :
+      $type_msg = sprintf($green, $entry['type']);
+      break;
+    default : 
+      if (!DRUSH_VERBOSE) {
+        // print nothing. exit cleanly.
+        return TRUE;
+      }
+      $type_msg = sprintf("[%s]", $entry['type']);
+      break;
+ }
+ $message = $type_msg . ' ' . $entry['message'];
+
+ drush_print($message);
+ return $return;
+}
+
+/**
+ * @} End of "defgroup logging".
+ */
+
