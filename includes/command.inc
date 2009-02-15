@@ -110,7 +110,7 @@ function drush_parse_command($commands) {
   $arguments = array_reverse($arguments);
 
   // Merge specified callback arguments, which precede the arguments passed on the command line.
-  if (is_array($command['callback arguments'])) {
+  if (isset($command['callback arguments']) && is_array($command['callback arguments'])) {
     $arguments = array_merge($command['callback arguments'], $arguments);
   }
 
@@ -200,6 +200,8 @@ function drush_is_command($command) {
 function drush_commandfile_list() {
   $cache = _drush_commandfile_cache();
 
+  $list = NULL;
+
   if (!$cache) {
     $searchpath = array();
 
@@ -224,8 +226,8 @@ function drush_commandfile_list() {
         $searchpath[] = drupal_get_path('module', $module);
       }
     }
-
     $list = array();
+
     // Scan for drush command files, load if found
     foreach (array_unique($searchpath) as $path) {
       if (is_dir($path)) {
@@ -363,6 +365,7 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
 
 // Return commands which have their declared dependencies or have no dependencies.
 function drush_enforce_requirement_drupal_dependencies($commands) {
+  $valid = array();
   foreach ($commands as $key => $command) {
     if (empty($command['drupal dependencies'])) {
       $valid[$key] = $command;
@@ -380,10 +383,14 @@ function drush_enforce_requirement_drupal_dependencies($commands) {
 
 // Return commands that are valid for the current major version of core.
 function drush_enforce_requirement_core($commands) {
-  foreach ($commands as $key => $command) {
-    if (empty($command['core']) || in_array(drush_drupal_major_version(), $command['core'])) {
-      $valid[$key] = $command;
+  $valid = array();
+  if (!empty($commands)) {
+    foreach ($commands as $key => $command) {
+      if (empty($command['core']) || in_array(drush_drupal_major_version(), $command['core'])) {
+        $valid[$key] = $command;
+      }
     }
   }
   return $valid;
 }
+
