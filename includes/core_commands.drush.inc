@@ -267,9 +267,9 @@ function core_commands_dl($full_project=NULL) {
     $project = $package['name'];
     // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
     $url = 'http://updates.drupal.org/release-history' . "/$project/". $major_version;
-    if ($xml = simplexml_load_file($url)) {
+    if ($xml = @simplexml_load_file($url)) {
       if ($error = $xml->xpath('/error')) {
-        drush_error($error[0]);
+        drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
       }
       else {
         // Try to get the specified release.
@@ -297,7 +297,7 @@ function core_commands_dl($full_project=NULL) {
     }
     else {
       // We are not getting here since drupal.org always serves an XML response.
-      drush_error(dt('Could not download !url', array('!url' => $url)));
+      drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download !url', array('!url' => $url)));
     }
   }
 }

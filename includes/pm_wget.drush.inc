@@ -48,13 +48,13 @@ function drush_pm_wget_install_project($project, $info, $path = '.') {
     drush_verbose("Downloading " . $filename . " was successful.");
   }
   else {
-    return drush_error("Unable to download $filename to $path from ". $info['download_link']);
+    return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', "Unable to download $filename to $path from ". $info['download_link']);
   }
 
   // Check Md5 hash
   if (md5_file($filename) != $info['mdhash'] && !DRUSH_SIMULATE) {
     drush_op('unlink', $path . filename);
-    return drush_error("Error: File $filename is corrupt (wrong md5 checksum).");
+    return drush_set_error('DRUSH_PM_FILE_CORRUPT', "Error: File $filename is corrupt (wrong md5 checksum).");
   }
   else {
     drush_verbose("Md5 checksum of $filename verified.");
@@ -72,7 +72,7 @@ function drush_pm_wget_install_project($project, $info, $path = '.') {
 
   // TODO: giving error for non drupal downloads
   if (FALSE && !is_dir($path . $project) && !DRUSH_SIMULATE) {
-    return drush_error("Error. Downloaded file $filename couldn't be untarred correctly");
+    return drush_error('DRUSH_PM_FILE_UNTAR_ERROR', "Error. Downloaded file $filename couldn't be untarred correctly");
   }
   else {
     return TRUE;

@@ -6,6 +6,21 @@
  * The drush API implementation and helpers.
  */
 
+function drush_drush_help($section) {
+  switch ($section) {
+    case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR' :
+      $site_path = drush_site_path();
+      $message = "Drush was not able to start (bootstrap) Drupal.\n";
+      $message .= "Hint: This error often occurs when Drush is trying to bootstrap a site\n";
+      $message .= "that has not been installed or does not have a configured database.\n";
+      $message .= "Drush was looking for the site in '$site_path'. You can select another site\n";
+      $message .= "with a working database setup by specifying the URI to use with the --uri\n";
+      $message .= "parameter on the command line or \$options['uri'] in your drushrc.php file.\n";
+      return $message;
+      break;
+  }
+}
+
 /**
  * Dispatch a given set of commands.
  * Modules can add commands by implementing hook_drush_command().
@@ -26,13 +41,14 @@ function drush_dispatch($commands) {
 
   list($command, $arguments) = drush_parse_command($commands);
 
+  $return = FALSE;
   if ($command) {
     // Call the callback function of the active command.
-    return call_user_func_array($command['callback'], $arguments);
+    $return = call_user_func_array($command['callback'], $arguments);
   }
   else {
     // Special case: If no command is found, display usage info.
-    return call_user_func_array('drush_usage', $arguments);
+    $return = call_user_func_array('drush_usage', $arguments);
   }
 
   return FALSE;
@@ -180,7 +196,7 @@ function drush_usage() {
     return;
   }
 
-  drush_log(dt('Invalid command !command.', array('!command' => implode(" ", $commands))), 'error');
+  drush_set_error(DRUSH_COMMAND_NOT_FOUND, dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
 }
 
 /**
@@ -210,7 +226,7 @@ function drush_show_help($commands) {
   $commandstring = implode(" ", $commands);
 
   if (!drush_is_command($commandstring)) {
-    return drush_log(dt('Invalid command !command.', array('!command' => $commandstring)), 'error');
+    return drush_set_error(DRUSH_COMMAND_NOT_FOUND, dt('Invalid command !command.', array('!command' => $commandstring)));
   }
   else {
     // Get the full command array
@@ -309,18 +325,6 @@ function drush_shell_exec_output() {
  */
 function drush_die($msg = NULL, $status = NULL) {
   die($msg ? "drush: $msg\n" : '');
-}
-
-/**
- * Prints an error message.
- * Always returns FALSE. This allows to do e.g.
- * if ($error) { return drush_error('A error occured); }
- * to make your function return FALSE in case of an error.
- */
-function drush_error($msg = '') {
-  // TODO: print to stderr if running in CLI mode.
-  drush_print("E: " . $msg);
-  return FALSE;
 }
 
 /**
@@ -539,5 +543,175 @@ function _drush_print_log($entry) {
 
 /**
  * @} End of "defgroup logging".
+ */
+
+/**
+* @name Error status definitions
+* @{
+* Bitmask values used to generate the error code to return.
+* @see drush_set_error(), drush_get_error(), drush_get_error_log(), drush_cmp_error()
+*/
+
+/** The command was not successfully completed. This is the default error status. */
+define('DRUSH_NOT_COMPLETED', 0);
+/** The command completed succesfully. */
+define('DRUSH_SUCCESS', 1);
+/** The command was not found. **/
+define('DRUSH_COMMAND_NOT_FOUND', 2);
+/** Drupal was unable to bootstrap. */
+define('DRUSH_DRUPAL_BOOTSTRAP_ERROR', 4);
+/** The Drupal database API exited due to unsuccesful connection. */ 
+define('DRUSH_DRUPAL_DB_ERROR', 8);
+/** Web server could not be restarted, or other server related issues - less severe. */
+define('DRUSH_PERM_ERROR', 16);
+/** The command could not be completed because the framework has specified errors that have occured. */
+define('DRUSH_FRAMEWORK_ERROR', 32);
+
+/**
+ * @} End of "name Error status defintions".
+ */
+
+/**
+ * @defgroup errorhandling Managing errors that occur in the Drush framework.
+ * @{
+ * Functions that manage the current error status of the Drush framework.
+ *
+ * These functions operate by maintaining a static variable that is a bitmask of all the errors that have occurred.
+ * This bitmask value is returned at the end of program execution, and provide the shell or calling application with
+ * more information on how to diagnose any problems that may have occurred.
+ */
+
+/**
+ * Set an error code for the error handling system.
+ *
+ * @param error
+ *   Any of the defined error status definitions or a text string identifying the type of error.
+ *
+ * @param message
+ *   Optional. Error message to be logged. If no message is specified, hook_drush_help will be consulted, 
+ *   using a key of 'error:MY_ERROR_STRING'.
+ *
+ * @return
+ *   If the error parameter is specified, always returns FALSE, to allow you to return with false in the calling functions,
+ *   such as <code>return drush_set_error(DRUSH_FRAMEWORK_ERROR)</code>
+ */
+function drush_set_error($error = null, $message = null) {
+  static $error_code = DRUSH_NOT_COMPLETED;
+
+  if ($error) {
+    $error_code = $error_code | _drush_map_error_code($error);    
+    _drush_error_log($error, $message);
+    return FALSE;
+  }
+
+  return $error_code;
+}
+
+/**
+ * Map the constant or error index key to a error code.
+ *
+ * If the error is not one of the pre-defined error status codes, it will
+ * assume the error is a DRUSH_FRAMEWORK_ERROR, which is a catch-all
+ * for any application specific errors.
+ */
+function _drush_map_error_code($error) {
+  if (is_numeric($error) && in_array($error, array(2, 4, 8, 16, 32))) {
+    $code = $error; 
+  }
+  else {
+    $code = 32;
+  }
+  return $code;
+}
+
+/**
+ * Map the error code to a textual representation.
+ *
+ * This simplifies the error log control array, by not having numeric indexes.
+ * This in turn simplifies the process of checking for errors that have occured.
+ */
+
+function _drush_map_error_string($error) {
+  static $code_map = array(
+    DRUSH_COMMAND_NOT_FOUND => 'DRUSH_COMMAND_NOT_FOUND',
+    DRUSH_DRUPAL_BOOTSTRAP_ERROR => 'DRUSH_DRUPAL_BOOTSTRAP_ERROR',
+    DRUSH_DRUPAL_DB_ERROR => 'DRUSH_DRUPAL_DB_ERROR',
+    DRUSH_PERM_ERROR => 'DRUSH_PERM_ERROR',
+    DRUSH_FRAMEWORK_ERROR => 'DRUSH_FRAMEWORK_ERROR',
+  );
+  if (is_numeric($error)) {
+    // map a numeric exit code to a string representation
+    return $code_map[$error];
+  }
+  else {
+    // already a string representation, just return.
+    return $error;
+  }
+}
+
+/**
+ * Log the errors that occurred.
+ *
+ * These messages are logged separately so that other commands and applications
+ * can inspect the exact causes of the errors.
+ *
+ * @param $error
+ *   Optional. If this is null, it returns the current error log. 
+ *   If it is not null, this is the error that has occurred. 
+ *
+ * @param $message
+ *   Optional. The error message to log.
+ *   If no message parameter is specified, it will attempt to find a message through
+ *   hook_drush_help.
+ *
+ * @return
+ *   An array of all errors that have occurred.
+ */
+function _drush_error_log($error = null, $message = null) {
+  static $error_log = array();
+  if ($error) {
+    $error = _drush_map_error_string($error);
+    $message = ($message) ? $message : drush_command_invoke_all('drush_help', 'error:' . $error);
+    $error_log[$error][] = $message;
+    drush_log(($message) ? $message : $error, 'error');
+  }
+  return $error_log;
+}
+
+/**
+ * Return the current error handling status
+ *
+ * @return
+ *   The current aggregate error status
+ */
+function drush_get_error() {
+  return drush_set_error();
+}
+
+/**
+ * Return the current list of errors that have occurred.
+ *
+ * @return
+ *   An associative array of error messages indexed by the type of message.
+ */
+function drush_get_error_log() {
+  return _drush_error_log();
+}
+
+/**
+ * Check if a specific error status has been set.
+ *
+ * @param error
+ *   Any of the defined error status constants, or a text string identifying the error that has occurred.
+ * @return
+ *   TRUE if the specified error has been set, FALSE if not 
+ */
+function drush_cmp_error($error) {
+  $error_log = drush_get_error_log();
+  return array_key_exists(_drush_map_error_string($error), $error_log);
+}
+
+/**
+ * @} End of "defgroup errorhandling".
  */
 
