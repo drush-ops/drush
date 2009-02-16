@@ -86,6 +86,16 @@ function core_commands_drush_help($section) {
       return dt("Runs the given php script(s) against the current Drupal site.");
     case 'drush:dl':
       return dt("Quickly download projects from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
+    case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR' :
+      $site_path = drush_site_path();
+      $message = "Drush was not able to start (bootstrap) Drupal.\n";
+      $message .= "Hint: This error often occurs when Drush is trying to bootstrap a site\n";
+      $message .= "that has not been installed or does not have a configured database.\n";
+      $message .= "Drush was looking for the site in '$site_path'. You can select another site\n";
+      $message .= "with a working database setup by specifying the URI to use with the --uri\n";
+      $message .= "parameter on the command line or \$options['uri'] in your drushrc.php file.\n";
+      return $message;
+      break;
   }
 }
 

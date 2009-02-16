@@ -6,20 +6,6 @@
  * The drush API implementation and helpers.
  */
 
-function drush_drush_help($section) {
-  switch ($section) {
-    case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR' :
-      $site_path = drush_site_path();
-      $message = "Drush was not able to start (bootstrap) Drupal.\n";
-      $message .= "Hint: This error often occurs when Drush is trying to bootstrap a site\n";
-      $message .= "that has not been installed or does not have a configured database.\n";
-      $message .= "Drush was looking for the site in '$site_path'. You can select another site\n";
-      $message .= "with a working database setup by specifying the URI to use with the --uri\n";
-      $message .= "parameter on the command line or \$options['uri'] in your drushrc.php file.\n";
-      return $message;
-      break;
-  }
-}
 
 /**
  * Dispatch a given set of commands.
@@ -672,6 +658,9 @@ function _drush_error_log($error = null, $message = null) {
   if ($error) {
     $error = _drush_map_error_string($error);
     $message = ($message) ? $message : drush_command_invoke_all('drush_help', 'error:' . $error);
+    if (is_array($message)) {
+      $message = implode("\n", $message);
+    }
     $error_log[$error][] = $message;
     drush_log(($message) ? $message : $error, 'error');
   }
