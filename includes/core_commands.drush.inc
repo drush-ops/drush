@@ -124,7 +124,6 @@ function _core_commands_site_credentials() {
       case 6:
         if (isset($GLOBALS['db_url'])) {
           $parts = parse_url($GLOBALS['db_url']);
-          print_r($parts);
           $db_driver = $parts['scheme'];
           $db_user = $parts['user'];
           $db_host = $parts['host'];
