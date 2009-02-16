@@ -494,9 +494,9 @@ function drush_get_log() {
  *   False in case of an error or failed type, True in all other cases.
  */
 function _drush_print_log($entry) {
-  $red = "[\033[31m%s\033[0m]";
-  $yellow = "[\033[1;33m%s\033[0m]";
-  $green = "[\033[0;33m%s\033[0m]";
+  $red = "\033[31m\033[1m[%s]\033[0m";
+  $yellow = "\033[1;33m\033[1m%s]\033[0m";
+  $green = "\033[0;33m\033[1m%s]\033[0m";
 
   $return = TRUE;
   switch ($entry['type']) {
@@ -521,10 +521,39 @@ function _drush_print_log($entry) {
       $type_msg = sprintf("[%s]", $entry['type']);
       break;
  }
- $message = $type_msg . ' ' . $entry['message'];
 
+ // Place the status message right aligned with the top line of the error message.
+ $message = wordwrap($entry['message'], 73);
+ $lines = explode("\n", $message);
+ $lines[0] = sprintf("%-73s%7s", $lines[0], $type_msg);
+ $message = implode("\n", $lines);
  drush_print($message);
  return $return;
+}
+
+/**
+* Turn drupal_set_message errors into drush_log errors
+*/
+function _drush_log_drupal_messages() {
+  if (function_exists('drupal_get_messages')) {
+
+    $messages = drupal_get_messages();
+    
+    if (array_key_exists('error', $messages)) {
+      //Drupal message errors.
+      foreach ((array) $messages['error'] as $error) {
+        if (preg_match('/^warning:/', $error)) {
+          drush_log(ereg_replace('/^warning: /', '', $error), 'warning');
+        }
+        elseif (preg_match('/^user warning:/', $error)) {
+          drush_log(ereg_replace('/^user warning: /', '', $error), 'error');  
+        }
+        else {
+          drush_log($error, 'error');
+        }
+      }
+    }
+  }
 }
 
 /**

@@ -147,9 +147,16 @@ function drush_drupal_set_environment($drupal_root) {
  * Shutdown function for use while Drupal is bootstrapping.
  */
 function drush_shutdown() {
-  if (!defined('DRUSH_DRUPAL_BOOTSTRAPPED')) {
+  if (!defined('DRUSH_DRUPAL_BOOTSTRAP_DATABASE')) {
+    ob_end_clean();
+    drush_set_error(DRUSH_DRUPAL_DB_ERROR);
+  }
+  elseif (!defined('DRUSH_DRUPAL_BOOTSTRAP_FULL')) {
+    ob_end_clean();
     drush_set_error(DRUSH_DRUPAL_BOOTSTRAP_ERROR);
   }
+
+  _drush_log_drupal_messages();
   $error = drush_get_error();
   exit(($error) ? $error : DRUSH_SUCCESS);
 }
@@ -181,8 +188,9 @@ function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
     if (is_null($bootstrap)) {
       // The bootstrap can fail silently, so we catch that in a shutdown function.
       register_shutdown_function('drush_shutdown');
-      
-      drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+
+      drush_drupal_bootstrap_db(); 
+      drush_drupal_bootstrap_full(); 
 
       // Set this constant when we are fully bootstrapped.
       define('DRUSH_DRUPAL_BOOTSTRAPPED', TRUE);
@@ -193,6 +201,26 @@ function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
   }
 
   return TRUE;
+}
+
+/**
+ * Bootstrap the Drupal database.
+ */
+function drush_drupal_bootstrap_db() {
+  ob_start();
+  drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
+  ob_end_clean();
+  define('DRUSH_DRUPAL_BOOTSTRAP_DATABASE', TRUE);
+}
+
+/**
+ * Fully bootstrap Drupal.
+ */
+function drush_drupal_bootstrap_full() {
+  ob_start();
+  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  ob_end_clean();
+  define('DRUSH_DRUPAL_BOOTSTRAP_FULL', TRUE);
 }
 
 /**

@@ -86,7 +86,19 @@ function core_commands_drush_help($section) {
       return dt("Runs the given php script(s) against the current Drupal site.");
     case 'drush:dl':
       return dt("Quickly download projects from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
+    case 'error:DRUSH_DRUPAL_DB_ERROR' : 
+      $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
+      $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
+      $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_commands_site_credentials()));
+      $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
+      return $message;
     case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR' :
+      $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
+      $message .= dt("Hint: This error can only occur once the database connection has already been succesfully initiated, therefor this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
+      $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_commands_site_credentials()));
+      $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
+      return $message;
+
       $site_path = drush_site_path();
       $message = "Drush was not able to start (bootstrap) Drupal.\n";
       $message .= "Hint: This error often occurs when Drush is trying to bootstrap a site\n";
@@ -98,6 +110,46 @@ function core_commands_drush_help($section) {
       break;
   }
 }
+
+function _core_commands_site_credentials() {
+   $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', DRUSH_DRUPAL_ROOT);
+   $credentials .= sprintf("  %-18s: %s\n", 'Site Path', conf_path());
+   $credentials .= sprintf("  %-18s: %s\n", 'Site URI', DRUSH_URI);
+   $db_driver = 'not defined';
+   $db_host = 'not defined';
+   $db_user = 'not defined';
+   $db_name = 'not defined';
+   switch (drush_drupal_major_version()) {
+      case 5:
+      case 6:
+        if (isset($GLOBALS['db_url'])) {
+          $parts = parse_url($GLOBALS['db_url']);
+          print_r($parts);
+          $db_driver = $parts['scheme'];
+          $db_user = $parts['user'];
+          $db_host = $parts['host'];
+          $db_name = trim($parts['path'], '/');
+        }
+        break;
+      case 7:
+        if (isset($GLOBALS['databases']['default'])) {
+          $conn = $GLOBALS['databases']['default'];
+          $db_driver = $conn['driver'];
+          $db_user = $conn['username'];
+          $db_host = $conn['host'];
+          $db_name = $conn['database'];
+        }
+        break;
+  }
+  $credentials .= sprintf("  %-18s: %s\n", 'Database Driver', $db_driver);
+  $credentials .= sprintf("  %-18s: %s\n", 'Database Hostname', $db_host);
+  $credentials .= sprintf("  %-18s: %s\n", 'Database Username', $db_user);
+  $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $db_name);
+  return $credentials;
+}
+
+
+
 
 /**
  * Command callback. Runs cron hooks.
