@@ -495,8 +495,8 @@ function drush_get_log() {
  */
 function _drush_print_log($entry) {
   $red = "\033[31m\033[1m[%s]\033[0m";
-  $yellow = "\033[1;33m\033[1m%s]\033[0m";
-  $green = "\033[0;33m\033[1m%s]\033[0m";
+  $yellow = "\033[1;33m\033[1m[%s]\033[0m";
+  $green = "\033[0;33m\033[1m[%s]\033[0m";
 
   $return = TRUE;
   switch ($entry['type']) {
