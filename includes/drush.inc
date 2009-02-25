@@ -197,11 +197,13 @@ function drush_get_options() {
   $options['-r <path>, --root=<path>'] = dt("Drupal root directory to use (default: current directory)");
   $options['-l <uri> , --uri=<uri>']   = dt('URI of the drupal site to use (only needed in multisite environments)');
   $options['-v, --verbose']            = dt('Display all available output');
+  $options['-q, --quiet']              = dt('Hide all output');
   $options['-y, --yes']                = dt("Assume 'yes' as answer to all prompts");
   $options['-s, --simulate']           = dt("Simulate all relevant actions (don't actually change the system)");
   $options['-i, --include']            = dt("A list of paths to search for drush commands");
   $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
   $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
+  $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
   return $options;
 }
 
@@ -520,15 +522,21 @@ function _drush_print_log($entry) {
       }
       $type_msg = sprintf("[%s]", $entry['type']);
       break;
- }
+  }
 
- // Place the status message right aligned with the top line of the error message.
- $message = wordwrap($entry['message'], 73);
- $lines = explode("\n", $message);
- $lines[0] = sprintf("%-73s%7s", $lines[0], $type_msg);
- $message = implode("\n", $lines);
- drush_print($message);
- return $return;
+  // When running in backend mode, log messages are not displayed, as they will
+  // be returned in the JSON encoded associative array.  
+  if (DRUSH_BACKEND) {
+    return $return;
+  }
+
+  // Place the status message right aligned with the top line of the error message.
+  $message = wordwrap($entry['message'], 73);
+  $lines = explode("\n", $message);
+  $lines[0] = sprintf("%-73s%7s", $lines[0], $type_msg);
+  $message = implode("\n", $lines);
+  drush_print($message);
+  return $return;
 }
 
 /**

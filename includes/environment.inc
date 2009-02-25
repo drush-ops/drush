@@ -54,6 +54,12 @@ function drush_load_config() {
       }
     }
   }
+  if (DRUSH_BACKEND) {
+    $stdin_options = _drush_backend_get_stdin();
+    if (is_array($stdin_options)) {
+      $args['options'] = array_merge($args['options'], $stdin_options);
+    }
+  }
 }
 
 /**

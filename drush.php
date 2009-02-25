@@ -17,6 +17,7 @@ if (!drush_verify_cli()) {
 require_once dirname(__FILE__) . '/includes/environment.inc';
 require_once dirname(__FILE__) . '/includes/command.inc';
 require_once dirname(__FILE__) . '/includes/drush.inc';
+require_once dirname(__FILE__) . '/includes/backend.inc';
 
 exit(drush_bootstrap($GLOBALS['argc'], $GLOBALS['argv']));
 
@@ -50,8 +51,20 @@ function drush_verify_cli() {
  *   Whatever the given command returns.
  */
 function drush_bootstrap($argc, $argv) {
+  // The bootstrap can fail silently, so we catch that in a shutdown function.
+  register_shutdown_function('drush_shutdown');
+
   // Parse command line options and arguments.
   $GLOBALS['args'] = drush_parse_args($argv, array('c', 'h', 'u', 'r', 'l', 'i'));
+
+  define('DRUSH_BACKEND',     drush_get_option(array('b', 'backend'), FALSE));
+  define('DRUSH_QUIET',     drush_get_option(array('q', 'quiet'), FALSE));
+
+  // When running in backend mode, all output is buffered, and returned
+  // as a property of a JSON encoded associative array.
+  if (DRUSH_BACKEND || DRUSH_QUIET) {
+    ob_start();
+  }
 
   $path = drush_get_option(array('r', 'root'), drush_cwd());
   $drupal_root = drush_locate_root($path);
@@ -66,7 +79,6 @@ function drush_bootstrap($argc, $argv) {
 
   define('DRUSH_URI',         drush_get_option(array('l', 'uri'), drush_site_uri($drupal_root)));
   define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
-
   // Quickly attempt to find the command. A second attempt is performed in drush_dispatch().
   list($command, $arguments) = drush_parse_command($GLOBALS['args']['commands']);
   if ($drupal_root) {
@@ -147,18 +159,22 @@ function drush_drupal_set_environment($drupal_root) {
  * Shutdown function for use while Drupal is bootstrapping.
  */
 function drush_shutdown() {
-  if (!defined('DRUSH_DRUPAL_BOOTSTRAP_DATABASE')) {
-    ob_end_clean();
-    drush_set_error(DRUSH_DRUPAL_DB_ERROR);
+  if (DRUSH_URI) {
+    if (!defined('DRUSH_DRUPAL_BOOTSTRAP_DATABASE')) {
+      ob_end_clean();
+      drush_set_error(DRUSH_DRUPAL_DB_ERROR);
+    }
+    elseif (!defined('DRUSH_DRUPAL_BOOTSTRAP_FULL')) {
+      ob_end_clean();
+      drush_set_error(DRUSH_DRUPAL_BOOTSTRAP_ERROR);
+    }
+    _drush_log_drupal_messages();
   }
-  elseif (!defined('DRUSH_DRUPAL_BOOTSTRAP_FULL')) {
-    ob_end_clean();
-    drush_set_error(DRUSH_DRUPAL_BOOTSTRAP_ERROR);
+  if (DRUSH_BACKEND) {
+    drush_backend_output();
   }
 
-  _drush_log_drupal_messages();
-  $error = drush_get_error();
-  exit(($error) ? $error : DRUSH_SUCCESS);
+  exit(($error = drush_get_error()) ? $error : DRUSH_SUCCESS);
 }
 
 /**
@@ -186,9 +202,6 @@ function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
     }
 
     if (is_null($bootstrap)) {
-      // The bootstrap can fail silently, so we catch that in a shutdown function.
-      register_shutdown_function('drush_shutdown');
-
       drush_drupal_bootstrap_db(); 
       drush_drupal_bootstrap_full(); 
 

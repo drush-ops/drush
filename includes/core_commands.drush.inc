@@ -112,33 +112,35 @@ function core_commands_drush_help($section) {
 }
 
 function _core_commands_site_credentials() {
-   $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', DRUSH_DRUPAL_ROOT);
-   $credentials .= sprintf("  %-18s: %s\n", 'Site Path', conf_path());
-   $credentials .= sprintf("  %-18s: %s\n", 'Site URI', DRUSH_URI);
-   $db_driver = 'not defined';
-   $db_host = 'not defined';
-   $db_user = 'not defined';
-   $db_name = 'not defined';
-   switch (drush_drupal_major_version()) {
-      case 5:
-      case 6:
-        if (isset($GLOBALS['db_url'])) {
-          $parts = parse_url($GLOBALS['db_url']);
-          $db_driver = $parts['scheme'];
-          $db_user = $parts['user'];
-          $db_host = $parts['host'];
-          $db_name = trim($parts['path'], '/');
-        }
-        break;
-      case 7:
-        if (isset($GLOBALS['databases']['default'])) {
-          $conn = $GLOBALS['databases']['default'];
-          $db_driver = $conn['driver'];
-          $db_user = $conn['username'];
-          $db_host = $conn['host'];
-          $db_name = $conn['database'];
-        }
-        break;
+  $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', drush_cwd());
+  if (function_exists('conf_path')) {
+    $credentials .= sprintf("  %-18s: %s\n", 'Site Path', conf_path());
+  }
+  $credentials .= sprintf("  %-18s: %s\n", 'Site URI', DRUSH_URI);
+  $db_driver = 'not defined';
+  $db_host = 'not defined';
+  $db_user = 'not defined';
+  $db_name = 'not defined';
+  switch (drush_drupal_major_version()) {
+     case 5:
+     case 6:
+       if (isset($GLOBALS['db_url'])) {
+         $parts = parse_url($GLOBALS['db_url']);
+         $db_driver = $parts['scheme'];
+         $db_user = $parts['user'];
+         $db_host = $parts['host'];
+         $db_name = trim($parts['path'], '/');
+       }
+       break;
+     case 7:
+       if (isset($GLOBALS['databases']['default'])) {
+         $conn = $GLOBALS['databases']['default'];
+         $db_driver = $conn['driver'];
+         $db_user = $conn['username'];
+         $db_host = $conn['host'];
+         $db_name = $conn['database'];
+       }
+       break;
   }
   $credentials .= sprintf("  %-18s: %s\n", 'Database Driver', $db_driver);
   $credentials .= sprintf("  %-18s: %s\n", 'Database Hostname', $db_host);
