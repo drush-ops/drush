@@ -112,7 +112,11 @@ function core_commands_drush_help($section) {
 }
 
 function _core_commands_site_credentials() {
-  $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', drush_cwd());
+  $drupal_root = 'not found in ' . drush_cwd();
+  if (defined('DRUSH_DRUPAL_ROOT')) {
+    $drupal_root = DRUSH_DRUPAL_ROOT;
+  }
+  $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', $drupal_root);
   if (function_exists('conf_path')) {
     $credentials .= sprintf("  %-18s: %s\n", 'Site Path', conf_path());
   }

@@ -51,11 +51,13 @@ function drush_verify_cli() {
  *   Whatever the given command returns.
  */
 function drush_bootstrap($argc, $argv) {
+  global $args, $conf, $override;
+
   // The bootstrap can fail silently, so we catch that in a shutdown function.
   register_shutdown_function('drush_shutdown');
 
   // Parse command line options and arguments.
-  $GLOBALS['args'] = drush_parse_args($argv, array('c', 'h', 'u', 'r', 'l', 'i'));
+  $args = drush_parse_args($argv, array('c', 'h', 'u', 'r', 'l', 'i'));
 
   define('DRUSH_BACKEND',     drush_get_option(array('b', 'backend'), FALSE));
   define('DRUSH_QUIET',     drush_get_option(array('q', 'quiet'), FALSE));
@@ -65,12 +67,11 @@ function drush_bootstrap($argc, $argv) {
   if (DRUSH_BACKEND || DRUSH_QUIET) {
     ob_start();
   }
+  // Load available .drushrc file(s). Allows you to provide defaults for options and variables.
+  drush_load_config();
 
   $path = drush_get_option(array('r', 'root'), drush_cwd());
   $drupal_root = drush_locate_root($path);
-
-  // Load available .drushrc file(s). Allows you to provide defaults for options and variables.
-  drush_load_config($drupal_root);
 
   // Define basic options as constants.
   define('DRUSH_VERBOSE',     drush_get_option(array('v', 'verbose'), FALSE));
@@ -80,7 +81,7 @@ function drush_bootstrap($argc, $argv) {
   define('DRUSH_URI',         drush_get_option(array('l', 'uri'), drush_site_uri($drupal_root)));
   define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
   // Quickly attempt to find the command. A second attempt is performed in drush_dispatch().
-  list($command, $arguments) = drush_parse_command($GLOBALS['args']['commands']);
+  list($command, $arguments) = drush_parse_command($args['commands']);
   if ($drupal_root) {
 
     drush_drupal_set_environment($drupal_root);
@@ -93,8 +94,8 @@ function drush_bootstrap($argc, $argv) {
        * in the drupal bootstrap process, and changes in settings.php would wipe out the drushrc.php
        * settings
        */
-      if (is_array($GLOBALS['override'])) {
-        $GLOBALS['conf'] = array_merge($GLOBALS['conf'], $GLOBALS['override']);
+      if (is_array($override)) {
+        $conf = array_merge($conf, $override);
       }
 
       // We have changed bootstrap level, so re-detect command files.
@@ -112,7 +113,7 @@ function drush_bootstrap($argc, $argv) {
   }
 
   // Dispatch the command(s).
-  $output = drush_dispatch($GLOBALS['args']['commands']);
+  $output = drush_dispatch($args['commands']);
 
   // prevent a '1' at the end of the outputs
   if ($output === TRUE) {

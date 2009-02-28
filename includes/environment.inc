@@ -20,12 +20,17 @@ function drush_load_config() {
 
   // Did the user explicitly specify a config file?
   if ($config = drush_get_option(array('c', 'config'), FALSE)) {
-    // If so, we use only that ...
-    $options = array();
-    require_once($config);
-    if (is_array($options)) {
-      // Sets all the default options for drush
-      $args['options'] = array_merge($options, $args['options']);
+    if (file_exists($config)) {
+      // If so, we use only that ...
+      $options = array();
+      require_once($config);
+      if (is_array($options)) {
+        // Sets all the default options for drush
+        $args['options'] = array_merge($options, $args['options']);
+      }
+    }
+    else {
+      drush_die(dt('Could not load config file: '. $config));
     }
   }
   else {
@@ -200,23 +205,19 @@ function drush_site_uri($path = NULL) {
  *   Search start path. Defaults to current working directory.
  */
 function drush_locate_root($path = NULL) {
-  static $drupal_root;
-  
-  if (!isset($drupal_root)) {
-    $drupal_root = FALSE;
+  $drupal_root = FALSE;
 
-    $path = empty($path) ? drush_cwd() : $path;
-    // Check the start path.
-    if (drush_valid_drupal_root($path)) {
-      $drupal_root = $path;
-    }
-    else {
-      // Move up dir by dir and check each.
-      while ($path = _drush_shift_path_up($path)) {
-        if (drush_valid_drupal_root($path)) {
-          $drupal_root = $path;
-          break;
-        }
+  $path = empty($path) ? drush_cwd() : $path;
+  // Check the start path.
+  if (drush_valid_drupal_root($path)) {
+    $drupal_root = $path;
+  }
+  else {
+    // Move up dir by dir and check each.
+    while ($path = _drush_shift_path_up($path)) {
+      if (drush_valid_drupal_root($path)) {
+        $drupal_root = $path;
+        break;
       }
     }
   }
@@ -310,7 +311,8 @@ function drush_parse_args($args = array(), $arg_opts = array(), $default_options
  *
  */
 function drush_get_option($option, $default = NULL) {
-  $options = $GLOBALS['args']['options'];
+  global $args;
+  $options = $args['options'];
   if (is_array($option)) {
     foreach ($option as $current) {
       if (array_key_exists($current, $options)) {
