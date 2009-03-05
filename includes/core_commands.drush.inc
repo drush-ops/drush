@@ -248,28 +248,43 @@ function core_commands_cache_clear() {
   }
 }
 
-function core_commands_dl_destination() {
-  // If a URI is provided then we install to that specific site, otherwise we install to sites/all/modules
-  // TODO: we are never bootstrapped so the condition below is never TRUE.
-  if (defined('DRUSH_URI') && DRUSH_URI) {
-    // We tried to bootstrap to config but might have failed. Check if conf_path() exists.
-    if (function_exists('conf_path')) {
-      $path = conf_path();
-      $modulepath = DRUSH_DRUPAL_ROOT .'/'. $path .'/modules/';
-      if (is_dir($modulepath)) {
-        return $modulepath;
-      }
-    }
+function core_commands_dl_destination($type) {
+  if ($destination = drush_get_option('destination')) {
+    return $destination;
   }
   
-  if (defined('DRUSH_DRUPAL_ROOT')) { // !file_exists($modulepath)
-    $modulepath = DRUSH_DRUPAL_ROOT . '/sites/all/modules/';
+  // If a URI is provided and we bootstrapped successfully then we install to
+  // that specific site, otherwise we install to sites/all/modules
+  if (defined('DRUSH_URI') && DRUSH_URI && function_exists('conf_path')) {
+    $sitepath = DRUSH_DRUPAL_ROOT .'/'. conf_path() .'/';
   }
-  else {
-    $modulepath = drush_cwd() . '/';
+  else if (defined('DRUSH_DRUPAL_ROOT')) {
+    $sitepath = DRUSH_DRUPAL_ROOT . '/sites/all/';
   }
-  
-  return $modulepath;
+
+  switch ($type) {
+    case 'module':
+      $destination = $sitepath . 'modules/';
+      break;
+    case 'theme':
+      $destination = $sitepath . 'themes/';
+      break;
+    case 'theme engine':
+      $destination = $sitepath . 'themes/engines/';
+      break;
+    case 'translation':
+      $destination = DRUSH_DRUPAL_ROOT . '/';
+      break;
+    case 'profile':
+      $destination = DRUSH_DRUPAL_ROOT . 'profiles/';
+      break;
+  }
+
+  // By default (including for core) we always fall back to the current directory.
+  if (empty($destination) || !is_dir($destination)) {
+    $destination = drush_cwd() . '/';
+  }
+  return $destination;
 }
 
 /**
@@ -305,6 +320,18 @@ function drush_pm_parse_project_version($requests) {
   return $requestdata;
 }
 
+function core_commands_drush_dl_project_types() {
+  // Lookup the 'Project type' vocabulary to some standard strings.
+  $types = array(
+    'core' => 'Drupal project',
+    'profile' => 'Installation profiles',
+    'module' => 'Modules',
+    'theme' => 'Themes',
+    'theme engine' => 'Theme engines',
+    'translation' => 'Translations',
+  );
+  return $types;
+}
 
 /**
  * Command callback. Download drupal core.
@@ -319,12 +346,18 @@ function core_commands_dl($full_project=NULL) {
     // Bootstrap constants not yet available.
     drush_drupal_bootstrap(DRUSH_DRUPAL_ROOT, 0);
   }
-  
-  if (!$destination = drush_get_option('destination')) {
-    $destination = core_commands_dl_destination();
+
+  $package_handler = 'drush_pm_wget_install_project';
+  if (function_exists(drush_pm_get_package_handler)) {
+    $package_handler = drush_pm_get_package_handler() .'_install_project';
+    if (!function_exists($package_handler)) {
+      return drush_set_error('DRUSH_PM_HANDLER_NON_INSTALL', dt("The $package_handler package handler does not handle installs."));
+    }
   }
-  
+
   $requestdata = drush_pm_parse_project_version(explode(' ', $full_project));
+  $project_types = core_commands_drush_dl_project_types();
+  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
   foreach ($requestdata as $package) {
     $version_default = defined('DRUSH_DRUPAL_MAJOR_VERSION') ? DRUSH_DRUPAL_MAJOR_VERSION : 6;
     $version_default .= '.x';
@@ -341,24 +374,26 @@ function core_commands_dl($full_project=NULL) {
       else {
         // Try to get the specified release.
         if ($package['version']) {
-          $xpath = "/project/releases/release[version='$version']";
-          if ($releases = $xml->xpath($xpath)) {
-            $release = $releases[0];
+          if ($releases = $xml->xpath("/project/releases/release[version='$version']")) {
+            $release = (array)$releases[0];
           }
         }
-        
-        // If that did not work, get the fist listed release.
+        // If that did not work, get the first listed release.
         if (empty($release)) {
-          $release = $xml->releases->release;
+          $release = (array)$xml->releases->release;
         }
+        // Determine what type of project we have, so we know where to put it.
+        $release['type'] = 'module';
         
-        $filename = $project . '-' . (string)$release->version;
-        $info = array(
-          'download_link' => (string)$release->download_link,
-          'mdhash' => (string)$release->mdhash,
-        );
-        if (drush_pm_wget_install_project($filename, $info, $destination)) {
-          drush_print(dt("Project !filename successfully downloaded to !dest", array('!filename' => $filename, '!dest' => $destination))) ;
+        if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
+          $release['type'] = array_search($types[0]->value, $project_types);
+        }
+        $destination = core_commands_dl_destination($release['type']);
+        
+        if ($package_handler($project, $release, $destination)) {
+          drush_print(dt("Project !project (!version) successfully downloaded to !dest.",
+                         array('!project' => $project, '!version' => $release['version'], '!dest' => $destination)));
+          drush_command_invoke_all('drush_pm_post_install', $project, $release, $destination);
         }
       }
     }
@@ -368,4 +403,3 @@ function core_commands_dl($full_project=NULL) {
     }
   }
 }
-
