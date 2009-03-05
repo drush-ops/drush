@@ -157,10 +157,24 @@ function drush_drupal_set_environment($drupal_root) {
 }
 
 /**
- * Shutdown function for use while Drupal is bootstrapping.
+ * Shutdown function for use while Drupal is bootstrapping and to return any
+ * registered errors.
+ * 
+ * @param $handle_bootstrap
+ *   Sending a TRUE here will cause this function to report any issues if the
+ *   Drupal bootstrap fails silently. Once the bootstrap is complete you can
+ *   send FALSE to disable handling for these errors, since they can cause false
+ *   positives if you are just doing DRUPAL_BOOTSTRAP_CONFIGURATION.
+ *   Leaving this parameter empty (NULL) will cause it handle the shutdown as\
+ *   appropriate.
  */
-function drush_shutdown() {
-  if (DRUSH_URI) {
+function drush_shutdown($handle_bootstrap = NULL) {
+  static $handling_bootstrap;
+  if (!is_null($handle_bootstrap)) {
+    $handling_bootstrap = $handle_bootstrap;
+    return;
+  }
+  if ($handling_bootstrap && DRUSH_URI) {
     if (!defined('DRUSH_DRUPAL_BOOTSTRAP_DATABASE')) {
       ob_end_clean();
       drush_set_error(DRUSH_DRUPAL_DB_ERROR);
@@ -202,6 +216,9 @@ function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
       return FALSE;
     }
 
+    // Enable error reporting if the bootstrap fails silently.
+    drush_shutdown(TRUE);
+
     if (is_null($bootstrap)) {
       drush_drupal_bootstrap_db(); 
       drush_drupal_bootstrap_full(); 
@@ -212,6 +229,9 @@ function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
     else {
       drupal_bootstrap($bootstrap);
     }
+
+    // If we are still running here then we don't need to worry about handling bootstrap failures.
+    drush_shutdown(FALSE);
   }
 
   return TRUE;
