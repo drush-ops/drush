@@ -249,8 +249,16 @@ function core_commands_cache_clear() {
 }
 
 function core_commands_dl_destination($type) {
-  if ($destination = drush_get_option('destination')) {
-    return $destination;
+  $destination = drush_get_option('destination');
+  if (!empty($destination)) {
+    $destination = rtrim($destination, '/') . '/';
+    if (is_dir($destination)) {
+      return $destination;
+    }
+    else {
+      drush_set_error('DRUSH_PM_NO_DESTINATION', dt('The destination directory !destination does not appear to exist.', array('!destination' => $destination)));
+      exit();
+    }
   }
   
   // If a URI is provided and we bootstrapped successfully then we install to
@@ -351,7 +359,7 @@ function core_commands_dl($full_project=NULL) {
   if (function_exists(drush_pm_get_package_handler)) {
     $package_handler = drush_pm_get_package_handler() .'_install_project';
     if (!function_exists($package_handler)) {
-      return drush_set_error('DRUSH_PM_HANDLER_NON_INSTALL', dt("The $package_handler package handler does not handle installs."));
+      return drush_set_error('DRUSH_PM_HANDLER_NON_INSTALL', dt('The !package_handler package handler does not handle installs.', array('!package_handler' => $package_handler)));
     }
   }
 
@@ -399,7 +407,7 @@ function core_commands_dl($full_project=NULL) {
     }
     else {
       // We are not getting here since drupal.org always serves an XML response.
-      drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download !url', array('!url' => $url)));
+      drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
     }
   }
 }
