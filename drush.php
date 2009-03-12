@@ -51,10 +51,7 @@ function drush_verify_cli() {
  *   Whatever the given command returns.
  */
 function drush_bootstrap($argc, $argv) {
-  global $args, $conf, $override;
-
-  // The bootstrap can fail silently, so we catch that in a shutdown function.
-  register_shutdown_function('drush_shutdown');
+  global $args, $conf, $override, $bootstrap_level;
 
   // Parse command line options and arguments.
   $args = drush_parse_args($argv, array('c', 'h', 'u', 'r', 'l', 'i'));
@@ -80,34 +77,61 @@ function drush_bootstrap($argc, $argv) {
 
   define('DRUSH_URI',         drush_get_option(array('l', 'uri'), drush_site_uri($drupal_root)));
   define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
-  // Quickly attempt to find the command. A second attempt is performed in drush_dispatch().
-  list($command, $arguments) = drush_parse_command($args['commands']);
+
+  $bootstrap_level = -1;
   if ($drupal_root) {
-
+    // Attempt to bootstrap progressively, until we fail (passing execution on to
+    // drush_continue) or complete a full bootstrap.
     drush_drupal_set_environment($drupal_root);
+    register_shutdown_function('drush_bootstrap_continue');
+    drush_drupal_bootstrap($drupal_root);
+  }
+  // We are completely unbootstrapped, or we made it to full bootstrap.
+  // Either way, exit so that we continue to dispatch the commands.
+  // Note that we can't call the drush_bootstrap_continue function directly
+  // here, because then it stays registered as a shutdown function, which
+  // can cause the command to be dispatched twice if it exits on an error. 
+  exit();
+}
 
-    // Bootstrap Drupal.
-    if (drush_drupal_bootstrap($drupal_root, $command['bootstrap'])) {
-      /**
-       * Allow the drushrc.php file to override $conf settings.
-       * This is a separate variable because the $conf array gets initialized to an empty array,
-       * in the drupal bootstrap process, and changes in settings.php would wipe out the drushrc.php
-       * settings
-       */
-      if (is_array($override)) {
-        $conf = array_merge($conf, $override);
-      }
+function drush_bootstrap_continue() {
+  global $bootstrap_level, $args;
+  // Clean up any maintanance pages from a failed bootstrap.
+  ob_end_clean();
 
-      // We have changed bootstrap level, so re-detect command files.
-      drush_commandfile_cache_flush();
+  if (defined('DRUSH_DRUPAL_BOOTSTRAPPED')) {
+    /**
+     * Allow the drushrc.php file to override $conf settings.
+     * This is a separate variable because the $conf array gets initialized to an empty array,
+     * in the drupal bootstrap process, and changes in settings.php would wipe out the drushrc.php
+     * settings
+     */
+    if (is_array($override)) {
+      $conf = array_merge($conf, $override);
+    }
 
-      // Login the specified user (if given).
-      if (DRUSH_USER) {
-        drush_drupal_login(DRUSH_USER);
-      }
+    // We have changed bootstrap level, so re-detect command files.
+    drush_commandfile_cache_flush();
+
+    // Login the specified user (if given).
+    if (DRUSH_USER) {
+      drush_drupal_login(DRUSH_USER);
     }
   }
 
+  if (DRUSH_URI) {
+    // Only display the database errors/hints if have a specific URL,
+    // which suggests the user wanted to bootstrap in the first place.
+    if ($bootstrap_level < 2) {
+      drush_set_error(DRUSH_DRUPAL_DB_ERROR);
+    }
+    elseif (!defined('DRUSH_DRUPAL_BOOTSTRAPPED')) {
+      drush_set_error(DRUSH_DRUPAL_BOOTSTRAP_ERROR);
+    }
+    // Collect any other log messages.
+    _drush_log_drupal_messages();
+  }
+ 
   if (DRUSH_SIMULATE) {
     drush_print('SIMULATION MODE IS ENABLED. NO ACTUAL ACTION WILL BE TAKEN. SYSTEM WILL REMAIN UNCHANGED.');
   }
@@ -120,8 +144,11 @@ function drush_bootstrap($argc, $argv) {
     $output = '';
   }
 
-  // TODO: Terminate with the correct exit status.
-  return $output;
+  if (DRUSH_BACKEND) {
+    drush_backend_output();
+  }
+
+  exit(($error = drush_get_error()) ? $error : DRUSH_SUCCESS);
 }
 
 /**
@@ -157,42 +184,6 @@ function drush_drupal_set_environment($drupal_root) {
 }
 
 /**
- * Shutdown function for use while Drupal is bootstrapping and to return any
- * registered errors.
- * 
- * @param $handle_bootstrap
- *   Sending a TRUE here will cause this function to report any issues if the
- *   Drupal bootstrap fails silently. Once the bootstrap is complete you can
- *   send FALSE to disable handling for these errors, since they can cause false
- *   positives if you are just doing DRUPAL_BOOTSTRAP_CONFIGURATION.
- *   Leaving this parameter empty (NULL) will cause it handle the shutdown as\
- *   appropriate.
- */
-function drush_shutdown($handle_bootstrap = NULL) {
-  static $handling_bootstrap;
-  if (!is_null($handle_bootstrap)) {
-    $handling_bootstrap = $handle_bootstrap;
-    return;
-  }
-  if ($handling_bootstrap && DRUSH_URI) {
-    if (!defined('DRUSH_DRUPAL_BOOTSTRAP_DATABASE')) {
-      ob_end_clean();
-      drush_set_error(DRUSH_DRUPAL_DB_ERROR);
-    }
-    elseif (!defined('DRUSH_DRUPAL_BOOTSTRAP_FULL')) {
-      ob_end_clean();
-      drush_set_error(DRUSH_DRUPAL_BOOTSTRAP_ERROR);
-    }
-    _drush_log_drupal_messages();
-  }
-  if (DRUSH_BACKEND) {
-    drush_backend_output();
-  }
-
-  exit(($error = drush_get_error()) ? $error : DRUSH_SUCCESS);
-}
-
-/**
  * Bootstrap Drupal.
  *
  * @param string
@@ -206,55 +197,41 @@ function drush_shutdown($handle_bootstrap = NULL) {
  *   TRUE if Drupal successfully bootstrapped to the given state.
  */
 function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
+  global $bootstrap_level;
+
   // Change to Drupal root dir.
   chdir($drupal_root);
 
   if ($bootstrap != -1) {
     require_once DRUSH_DRUPAL_BOOTSTRAP;
 
+    if (is_null($bootstrap)) {
+      $bootstrap = DRUPAL_BOOTSTRAP_FULL;
+    }
+
     if (($conf_path = conf_path()) && !file_exists("./$conf_path/settings.php")) {
+      $bootstrap_level = -1;
       return FALSE;
     }
 
-    // Enable error reporting if the bootstrap fails silently.
-    drush_shutdown(TRUE);
+    // Enable output buffering so we don't get a maintanance page
+    ob_start();
+    
+    while ($bootstrap_level < $bootstrap) {
+      // We attempt the next bootstrap in the sequence, so that if it fails we
+      // are left with the maximum reachable bootstrap. 
+      drupal_bootstrap($bootstrap_level + 1);
+      $bootstrap_level++;
+    }
 
-    if (is_null($bootstrap)) {
-      drush_drupal_bootstrap_db(); 
-      drush_drupal_bootstrap_full(); 
+    if ($bootstrap_level == DRUPAL_BOOTSTRAP_FULL) {
 
       // Set this constant when we are fully bootstrapped.
       define('DRUSH_DRUPAL_BOOTSTRAPPED', TRUE);
     }
-    else {
-      drupal_bootstrap($bootstrap);
-    }
-
-    // If we are still running here then we don't need to worry about handling bootstrap failures.
-    drush_shutdown(FALSE);
   }
 
   return TRUE;
-}
-
-/**
- * Bootstrap the Drupal database.
- */
-function drush_drupal_bootstrap_db() {
-  ob_start();
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
-  ob_end_clean();
-  define('DRUSH_DRUPAL_BOOTSTRAP_DATABASE', TRUE);
-}
-
-/**
- * Fully bootstrap Drupal.
- */
-function drush_drupal_bootstrap_full() {
-  ob_start();
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-  ob_end_clean();
-  define('DRUSH_DRUPAL_BOOTSTRAP_FULL', TRUE);
 }
 
 /**
