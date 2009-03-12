@@ -79,11 +79,11 @@ function drush_bootstrap($argc, $argv) {
   define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
 
   $bootstrap_level = -1;
+  register_shutdown_function('drush_bootstrap_continue');
   if ($drupal_root) {
     // Attempt to bootstrap progressively, until we fail (passing execution on to
     // drush_continue) or complete a full bootstrap.
     drush_drupal_set_environment($drupal_root);
-    register_shutdown_function('drush_bootstrap_continue');
     drush_drupal_bootstrap($drupal_root);
   }
   // We are completely unbootstrapped, or we made it to full bootstrap.
