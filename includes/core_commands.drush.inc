@@ -29,7 +29,6 @@ function core_commands_drush_command() {
   $items['status'] = array(
     'callback' => 'core_commands_status',
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
-    'bootstrap' => 0, // Just configuration (no point otherwise).
   );
   $items['script'] = array(
     'callback' => 'core_commands_script',
@@ -40,7 +39,6 @@ function core_commands_drush_command() {
     'arguments' => array(
       'path/to/script' => 'One or more file paths. Paths may be absolute or relative to the current working dir.',
     ),
-    'bootstrap' => -1, // No bootstrap at all.
   );
   $items['cache clear'] = array(
     'callback' => 'core_commands_cache_clear',
@@ -89,17 +87,27 @@ function core_commands_drush_help($section) {
     case 'drush:dl':
       return dt("Quickly download projects from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
     case 'error:DRUSH_DRUPAL_DB_ERROR' : 
-      $message = dt("Drush was not able to start (bootstrap) the Drupal database and so you only have access to a limited number of commands.\n");
+      $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
       $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_commands_site_credentials()));
       $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
       return $message;
     case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR' :
-      $message = dt("Drush was not able to start (bootstrap) Drupal and so you only have access to a limited number of commands.\n");
+      $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
       $message .= dt("Hint: This error can only occur once the database connection has already been succesfully initiated, therefor this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
       $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_commands_site_credentials()));
       $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
       return $message;
+
+      $site_path = drush_site_path();
+      $message = "Drush was not able to start (bootstrap) Drupal.\n";
+      $message .= "Hint: This error often occurs when Drush is trying to bootstrap a site\n";
+      $message .= "that has not been installed or does not have a configured database.\n";
+      $message .= "Drush was looking for the site in '$site_path'. You can select another site\n";
+      $message .= "with a working database setup by specifying the URI to use with the --uri\n";
+      $message .= "parameter on the command line or \$options['uri'] in your drushrc.php file.\n";
+      return $message;
+      break;
   }
 }
 
