@@ -38,7 +38,7 @@ function drush_get_commands() {
 }
 
 /**
- * Matches a commands array, as parsed by drush_parse_args, with the
+ * Matches a commands array, as returned by drush_get_arguments, with the
  * current command table.
  *
  * Note that not all commands may be discoverable at the point-of-call,
@@ -60,17 +60,11 @@ function drush_get_commands() {
  * - drush dependencies: other drush command files required for this command (not yet implemented)
  *
  * @example
- *   list($command, $arguments) = drush_parse_command($GLOBALS['args']['commands']);
+ *   drush_parse_command();
  *
- * @param array
- *   Commands, as parsed by drush_parse_args()
- *
- * @return array
- *   An array consisting of two elements:
- *   - A normalized command descriptor (itself an array)
- *   - The command arguments, i.e. the remaining
  */
-function drush_parse_command($commands) {
+function drush_parse_command() {
+  $args = drush_get_arguments();
 
   // Get a list of all implemented commands.
   $implemented = drush_get_commands();
@@ -78,8 +72,8 @@ function drush_parse_command($commands) {
   $command = FALSE;
   $arguments = array();
   // Try to determine the handler for the current command.
-  while (!$command && count($commands)) {
-    $part = implode(" ", $commands);
+  while (!$command && count($args)) {
+    $part = implode(" ", $args);
     if (isset($implemented[$part])) {
       $command = $implemented[$part];
       // We found a command descriptor, now we check if it is valid.
@@ -90,6 +84,7 @@ function drush_parse_command($commands) {
       else {
         // Normalize command descriptor
         $command += array(
+          'command' => $part,
           'description' => NULL,
           'arguments' => array(),
           'options' => array(),
@@ -103,18 +98,22 @@ function drush_parse_command($commands) {
       }
     }
     else {
-      $arguments[] = array_pop($commands);
+      $arguments[] = array_pop($args);
     }
   }
 
-  $arguments = array_reverse($arguments);
+  // We have found a command that can be executed. Set the appropriate values.
+  if ($command) {
+    $arguments = array_reverse($arguments);
 
-  // Merge specified callback arguments, which precede the arguments passed on the command line.
-  if (isset($command['callback arguments']) && is_array($command['callback arguments'])) {
-    $arguments = array_merge($command['callback arguments'], $arguments);
+    // Merge specified callback arguments, which precede the arguments passed on the command line.
+    if (isset($command['callback arguments']) && is_array($command['callback arguments'])) {
+      $arguments = array_merge($command['callback arguments'], $arguments);
+    }
+
+    drush_set_command($command);
+    drush_set_arguments($arguments);
   }
-
-  return array($command, $arguments);
 }
 
 /**

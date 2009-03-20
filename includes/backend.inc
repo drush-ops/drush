@@ -71,7 +71,7 @@ function drush_backend_output() {
   $data['error_log'] = drush_get_error_log();
 
   // Return the options that were set at the end of the process.
-  $data['options']  = $GLOBALS['args']['options'];
+  $data['context']  = drush_get_merged_options();
   if (!DRUSH_QUIET) {
     printf(DRUSH_BACKEND_OUTPUT_DELIMITER, json_encode($data));
   }

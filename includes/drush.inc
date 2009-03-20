@@ -14,20 +14,34 @@
  * @param
  *
  */
-function drush_dispatch($commands) {
+function drush_dispatch() {
+  if (!drush_get_command()) {
+    $arguments = drush_get_arguments();
 
-  // Special case for help command
-  $show_help = FALSE;
-  if (isset($commands[0]) && $commands[0] == 'help') {
-    $show_help = TRUE;
-    array_shift($commands);
-    (empty($commands)) ? drush_usage() : drush_show_help($commands);
-    return TRUE;
+    // Special case for help command
+    $show_help = FALSE;
+    if (isset($arguments[0]) && $arguments[0] == 'help') {
+      $show_help = TRUE;
+      array_shift($arguments);
+      (empty($arguments)) ? drush_usage() : drush_show_help($arguments);
+      return TRUE;
+    }
+
+    drush_parse_command();
   }
 
-  list($command, $arguments) = drush_parse_command($commands);
+  return _drush_dispatch_cmd();
+}
 
+/**
+ * Dispatch a command if one has been found.
+ */
+function _drush_dispatch_cmd() {
   $return = FALSE;
+
+  $command = drush_get_command();
+  $arguments = drush_get_arguments();
+
   if ($command) {
     // Call the callback function of the active command.
     $return = call_user_func_array($command['callback'], $arguments);
@@ -37,8 +51,9 @@ function drush_dispatch($commands) {
     $return = call_user_func_array('drush_usage', $arguments);
   }
 
-  return FALSE;
+  return $return;
 }
+
 
 /**
  * Detects the version number of the current Drupal installation,
@@ -516,20 +531,18 @@ function _drush_print_log($entry) {
       $type_msg = sprintf($green, $entry['type']);
       break;
     default : 
-      if (!DRUSH_VERBOSE) {
+      if (!defined('DRUSH_VERBOSE')) {
         // print nothing. exit cleanly.
         return TRUE;
       }
       $type_msg = sprintf("[%s]", $entry['type']);
       break;
   }
-
   // When running in backend mode, log messages are not displayed, as they will
   // be returned in the JSON encoded associative array.  
   if (DRUSH_BACKEND) {
     return $return;
   }
-
   // Place the status message right aligned with the top line of the error message.
   $message = wordwrap($entry['message'], 73);
   $lines = explode("\n", $message);

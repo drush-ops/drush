@@ -18,6 +18,7 @@ require_once dirname(__FILE__) . '/includes/environment.inc';
 require_once dirname(__FILE__) . '/includes/command.inc';
 require_once dirname(__FILE__) . '/includes/drush.inc';
 require_once dirname(__FILE__) . '/includes/backend.inc';
+require_once dirname(__FILE__) . '/includes/context.inc';
 
 exit(drush_bootstrap($GLOBALS['argc'], $GLOBALS['argv']));
 
@@ -51,28 +52,30 @@ function drush_verify_cli() {
  *   Whatever the given command returns.
  */
 function drush_bootstrap($argc, $argv) {
-  global $args, $conf, $override;
-
   // The bootstrap can fail silently, so we catch that in a shutdown function.
   register_shutdown_function('drush_shutdown');
 
   // Parse command line options and arguments.
-  $args = drush_parse_args($argv, array('c', 'h', 'u', 'r', 'l', 'i'));
+  // This will poplate the 'arguments', 'cli' and 'stdin' contexts. 
+  drush_parse_args($argv, array('c', 'h', 'u', 'r', 'l', 'i'));
 
+  $path = drush_get_option(array('r', 'root'), drush_cwd());
+  $drupal_root = drush_locate_root($path);
+
+  // Load available .drushrc file(s). 
+  // Allows you to provide defaults for options and variables.
+  drush_load_config();
   define('DRUSH_BACKEND',     drush_get_option(array('b', 'backend'), FALSE));
   define('DRUSH_QUIET',     drush_get_option(array('q', 'quiet'), FALSE));
-
   // When running in backend mode, all output is buffered, and returned
   // as a property of a JSON encoded associative array.
   if (DRUSH_BACKEND || DRUSH_QUIET) {
     ob_start();
   }
-  // Load available .drushrc file(s). Allows you to provide defaults for options and variables.
-  drush_load_config();
-
-  $path = drush_get_option(array('r', 'root'), drush_cwd());
-  $drupal_root = drush_locate_root($path);
-
+  // Quickly attempt to find the command. 
+  // A second attempt is performed in drush_dispatch().
+  drush_parse_command();
+  $command = drush_get_command();
   // Define basic options as constants.
   define('DRUSH_VERBOSE',     drush_get_option(array('v', 'verbose'), FALSE));
   define('DRUSH_AFFIRMATIVE', drush_get_option(array('y', 'yes'), FALSE));
@@ -80,8 +83,7 @@ function drush_bootstrap($argc, $argv) {
 
   define('DRUSH_URI',         drush_get_option(array('l', 'uri'), drush_site_uri($drupal_root)));
   define('DRUSH_USER',        drush_get_option(array('u', 'user'), 0));
-  // Quickly attempt to find the command. A second attempt is performed in drush_dispatch().
-  list($command, $arguments) = drush_parse_command($args['commands']);
+
   if ($drupal_root) {
 
     drush_drupal_set_environment($drupal_root);
@@ -90,9 +92,9 @@ function drush_bootstrap($argc, $argv) {
     if (drush_drupal_bootstrap($drupal_root, $command['bootstrap'])) {
       /**
        * Allow the drushrc.php file to override $conf settings.
-       * This is a separate variable because the $conf array gets initialized to an empty array,
-       * in the drupal bootstrap process, and changes in settings.php would wipe out the drushrc.php
-       * settings
+       * This is a separate variable because the $conf array gets
+       * initialized to an empty array, in the drupal bootstrap process,
+       * and changes in settings.php would wipe out the drushrc.php settings.
        */
       if (is_array($override)) {
         $conf = array_merge($conf, $override);
@@ -113,14 +115,15 @@ function drush_bootstrap($argc, $argv) {
   }
 
   // Dispatch the command(s).
-  $output = drush_dispatch($args['commands']);
+  $output = drush_dispatch();
 
   // prevent a '1' at the end of the outputs
   if ($output === TRUE) {
     $output = '';
   }
 
-  // TODO: Terminate with the correct exit status.
+  // After this point the drush_shutdown function will run,
+  // exiting with the correct exit code.
   return $output;
 }
 
@@ -159,27 +162,25 @@ function drush_drupal_set_environment($drupal_root) {
 /**
  * Shutdown function for use while Drupal is bootstrapping and to return any
  * registered errors.
+ *
+ * The shutdown command checks whether certain options are set to reliably
+ * detect and log some common Drupal initialization errors.
+ *
+ * If the command is being executed with the --backend option, the script
+ * will return a json string containing the options and log information
+ * used by the script.
  * 
- * @param $handle_bootstrap
- *   Sending a TRUE here will cause this function to report any issues if the
- *   Drupal bootstrap fails silently. Once the bootstrap is complete you can
- *   send FALSE to disable handling for these errors, since they can cause false
- *   positives if you are just doing DRUPAL_BOOTSTRAP_CONFIGURATION.
- *   Leaving this parameter empty (NULL) will cause it handle the shutdown as\
- *   appropriate.
+ * The command will exit with '1' if it was succesfully executed, and the 
+ * result of drush_get_error() if it wasn't.
  */
-function drush_shutdown($handle_bootstrap = NULL) {
-  static $handling_bootstrap;
-  if (!is_null($handle_bootstrap)) {
-    $handling_bootstrap = $handle_bootstrap;
-    return;
-  }
-  if ($handling_bootstrap && DRUSH_URI) {
-    if (!defined('DRUSH_DRUPAL_BOOTSTRAP_DATABASE')) {
+function drush_shutdown() {
+  $handle_bootstrap = drush_get_option('handle_bootstrap', FALSE, 'process');
+  if ($handle_bootstrap && DRUSH_URI) {
+    if (!drush_get_option('handle_bootstrap_database', FALSE, 'process')) {
       ob_end_clean();
       drush_set_error(DRUSH_DRUPAL_DB_ERROR);
     }
-    elseif (!defined('DRUSH_DRUPAL_BOOTSTRAP_FULL')) {
+    elseif (!drush_get_option('handle_bootstrap_database', FALSE, 'process')) {
       ob_end_clean();
       drush_set_error(DRUSH_DRUPAL_BOOTSTRAP_ERROR);
     }
@@ -189,7 +190,9 @@ function drush_shutdown($handle_bootstrap = NULL) {
     drush_backend_output();
   }
 
-  exit(($error = drush_get_error()) ? $error : DRUSH_SUCCESS);
+  $error = drush_get_error();
+  $error = ($error) ? $error : DRUSH_SUCCESS;
+  exit($error);
 }
 
 /**
@@ -217,7 +220,7 @@ function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
     }
 
     // Enable error reporting if the bootstrap fails silently.
-    drush_shutdown(TRUE);
+    drush_set_option('handle_bootstrap', TRUE);
 
     if (is_null($bootstrap)) {
       drush_drupal_bootstrap_db(); 
@@ -226,12 +229,9 @@ function drush_drupal_bootstrap($drupal_root, $bootstrap = NULL) {
       // Set this constant when we are fully bootstrapped.
       define('DRUSH_DRUPAL_BOOTSTRAPPED', TRUE);
     }
-    else {
-      drupal_bootstrap($bootstrap);
-    }
 
     // If we are still running here then we don't need to worry about handling bootstrap failures.
-    drush_shutdown(FALSE);
+    drush_set_option('handle_bootstrap', FALSE);
   }
 
   return TRUE;
@@ -244,7 +244,7 @@ function drush_drupal_bootstrap_db() {
   ob_start();
   drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
   ob_end_clean();
-  define('DRUSH_DRUPAL_BOOTSTRAP_DATABASE', TRUE);
+  drush_set_option('handle_bootstrap_database', TRUE);
 }
 
 /**
@@ -254,7 +254,7 @@ function drush_drupal_bootstrap_full() {
   ob_start();
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   ob_end_clean();
-  define('DRUSH_DRUPAL_BOOTSTRAP_FULL', TRUE);
+  drush_set_option('handle_bootstrap_full', TRUE);
 }
 
 /**
