@@ -15,6 +15,65 @@
  */
 
 /**
+ * Parse console arguments.
+ */
+function drush_parse_args() {
+  $args = drush_get_context('argv');
+
+  static $default_options = array('c', 'h', 'u', 'r', 'l', 'i');
+
+  $arguments = array();
+
+  for ($i = 1; $i < count($args); $i++) {
+    $opt = $args[$i];
+    // Is the arg an option (starting with '-')?
+    if ($opt{0} == "-" && strlen($opt) != 1) {
+      // Do we have multiple options behind one '-'?
+      if (strlen($opt) > 2 && $opt{1} != "-") {
+        // Each char becomes a key of its own.
+        for ($j = 1; $j < strlen($opt); $j++) {
+          $options[substr($opt, $j, 1)] = true;
+        }
+      }
+      // Do we have a longopt (starting with '--')?
+      elseif ($opt{1} == "-") {
+        if ($pos = strpos($opt, '=')) {
+          $options[substr($opt, 2, $pos - 2)] = substr($opt, $pos + 1);
+        }
+        else {
+          $options[substr($opt, 2)] = true;
+        }
+      }
+      else {
+        $opt = substr($opt, 1);
+        // Check if the current opt is in $arg_opts (= has to be followed by an argument).
+        if ((in_array($opt, $arg_opts))) {
+          if (($args[$i+1] == NULL) || ($args[$i+1] == "") || ($args[$i + 1]{0} == "-")) {
+            exit("Invalid input: -$opt needs to be followed by an argument.");
+          }
+          $options[$opt] = $args[$i + 1];
+          $i++;
+        }
+        else {
+          $options[$opt] = true;
+        }
+      }
+    }
+    // If it's not an option, it's a command.
+    else {
+      $arguments[] = $opt;
+    }
+  }
+
+  // If arguments are specified, print the help screen.
+  $arguments = sizeof($arguments) ? $arguments : array('help');
+
+  drush_set_arguments($arguments);
+  drush_set_context('options', $options);
+}
+
+
+/**
  * Get a list of all implemented commands.
  * This invokes hook_drush_command().
  *
@@ -27,14 +86,17 @@
  */
 function drush_get_commands() {
   $commands = drush_command_invoke_all('drush_command');
-  
+
+  // Filter out commands which are invalid for this bootstrap phase.
+  $commands = drush_enforce_requirement_bootstrap_phase($commands);
+
   // Filter out commands which are invalid for the current version of core Drupal.
   $commands = drush_enforce_requirement_core($commands);
   
   // Filter out commands which are missing their dependant Drupal modules.
   $commands = drush_enforce_requirement_drupal_dependencies($commands);
-  
-  return $commands;
+
+  return drush_set_context('DRUSH_COMMANDS', $commands);
 }
 
 /**
@@ -110,10 +172,10 @@ function drush_parse_command() {
     if (isset($command['callback arguments']) && is_array($command['callback arguments'])) {
       $arguments = array_merge($command['callback arguments'], $arguments);
     }
-
+    $command['arguments'] = $arguments;
     drush_set_command($command);
-    drush_set_arguments($arguments);
   }
+  return $command;
 }
 
 /**
@@ -174,7 +236,6 @@ function drush_command_implements($hook) {
  */
 function drush_is_command($command) {
   $commands = drush_get_commands();
-  // print_r($commands);
   return isset($commands[$command]);
 }
 
@@ -197,34 +258,41 @@ function drush_is_command($command) {
  *   command files.
  */
 function drush_commandfile_list() {
-  $cache = _drush_commandfile_cache();
+  return drush_get_context('DRUSH_COMMAND_FILES', array());
+}
 
-  $list = NULL;
+function _drush_find_commandfiles($phase) {
+  $cache =& drush_get_context('DRUSH_COMMAND_FILES', array());
 
-  if (!$cache) {
-    $searchpath = array();
+  $searchpath = array();
+  switch ($phase) {
+    case DRUSH_BOOTSTRAP_DRUSH :
+      // Core commands shipping with drush
+      $searchpath[] = dirname(__FILE__);
 
-    // Core commands shipping with drush
-    $searchpath[] = dirname(__FILE__);
-
-    // User commands, residing i ~/.drush
-    if (!empty($_SERVER['HOME'])) {
-      $searchpath[] = $_SERVER['HOME'] . '/.drush';
-    }
-
-    // User commands, specified by 'include' option
-    if ($include = drush_get_option(array('i', 'include'), FALSE)) {
-      $searchpath = array_merge($searchpath, explode(":", $include));
-    }
-    
-    // Site commands, found in current Drupal site.
-    if (defined('DRUSH_DRUPAL_BOOTSTRAPPED')) {
-      // Add enabled module paths. Since we are bootstrapped,
-      // we can use the Drupal API.
-      foreach (array_keys(module_rebuild_cache()) as $module) {
-        $searchpath[] = drupal_get_path('module', $module);
+      // User commands, specified by 'include' option
+      if ($include = drush_get_option(array('i', 'include'), FALSE)) {
+        foreach (explode(":", $include) as $path) {
+          $searchpath[] = $path;
+        }
       }
-    }
+
+      // User commands, residing i ~/.drush
+      if (!empty($_SERVER['HOME'])) {
+        $searchpath[] = $_SERVER['HOME'] . '/.drush';
+      }
+      break;
+    case DRUSH_BOOTSTRAP_DRUPAL_FULL :
+     // Add enabled module paths. Since we are bootstrapped,
+     // we can use the Drupal API.
+     foreach (array_keys(module_rebuild_cache()) as $module) {
+       $searchpath[] = drupal_get_path('module', $module);
+     }
+     break;
+
+  }
+
+  if (sizeof($searchpath)) {
     $list = array();
 
     // Scan for drush command files, load if found
@@ -237,13 +305,12 @@ function drush_commandfile_list() {
         }
       }
     }
+
+    if (sizeof($list)) {
+      $cache = array_merge($cache, $list);
+    }
   }
-
-  return _drush_commandfile_cache($list);
 }
-
-// This constant, when passed to _drush_commandfile_cache, will wipe out the command file cache
-define('DRUSH_FLUSH_COMMANDFILE_CACHE', 1);
 
 /**
  * Storage mechanism for the cached commandfile list.
@@ -362,6 +429,21 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
   return $files;
 }
 
+// Return commands that are valid for the current bootstrap phase.
+function drush_enforce_requirement_bootstrap_phase($commands) {
+  $valid = array();
+  $current_phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+  if (!empty($commands)) {
+    foreach ($commands as $key => $command) {
+      $command += array('bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL);
+      if ($command['bootstrap'] == $current_phase) {
+        $valid[$key] = $command;
+      }
+    }
+  }
+  return $valid;
+}
+
 // Return commands which have their declared dependencies or have no dependencies.
 function drush_enforce_requirement_drupal_dependencies($commands) {
   $valid = array();
@@ -392,4 +474,5 @@ function drush_enforce_requirement_core($commands) {
   }
   return $valid;
 }
+
 

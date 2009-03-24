@@ -47,7 +47,7 @@
  *    Specified by config files : 
  *      custom   : Loaded from the config file specified by --config or -c
  *      site     : Loaded from the drushrc.php file in the Drupal sites directory.
- *      platform : Loaded from the drushrc.php file in the Drupal root directory.
+ *      drupal    : Loaded from the drushrc.php file in the Drupal root directory.
  *      user     : Loaded from the drushrc.php file in the user's home directory.
  *      drush    : Loaded from the drushrc.php file in the same directory as drush.php.
  *
@@ -67,19 +67,21 @@
  *   The keys are the 'context' of the files, the values are the file
  *   system locations.
  */
-function _drush_config_files() {
+function _drush_config_file($context) {
   $configs = array();
 
   // Did the user explicitly specify a config file?
-  if ($config = drush_get_option(array('c', 'config'), FALSE)) {
+  if ($config = drush_get_option(array('c', 'config'))) {
     $configs['custom'] = $config;
   }
 
-  // in the current site directory
-  $configs['site'] = drush_site_path() . "/drushrc.php";
+  if ($site_path = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+    $configs['site'] = $site_path . "/drushrc.php";
+  }
 
-  // in the located drupal root
-  $configs['platform'] = drush_get_option(array('r', 'root'), drush_locate_root()). '/drushrc.php';
+  if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+    $configs['drupal'] = $drupal_root . '/drushrc.php';
+  }
 
   // in the user home directory
   $configs['user'] = $_SERVER['HOME'] . '/.drushrc.php';
@@ -88,23 +90,30 @@ function _drush_config_files() {
   // TODO: This really should be a proper, system-wide location.
   $configs['drush'] = dirname(__FILE__) . '/../drushrc.php';
 
-  return $configs;
+  return $configs[$context];
 }
 
 
 /**
  * Load drushrc files (if available) from several possible locations.
  */
-function drush_load_config() {
-  global $override;
+function drush_load_config($context) {
+  global $conf;
 
-  $configs = _drush_config_files();
-  foreach ($configs as $context => $config) {
-    $options = array();
-    if (file_exists($config)) {
-      // Sets all the default options for drush
-      require_once($config);
-      drush_set_context($context, $options);
+  $config = _drush_config_file($context);
+  if (file_exists($config)) {
+    drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
+    require_once($config);
+    drush_set_context($context, $options);
+
+    /**
+     * Allow the drushrc.php file to override $conf settings.
+     * This is a separate variable because the $conf array gets
+     * initialized to an empty array, in the drupal bootstrap process,
+     * and changes in settings.php would wipe out the drushrc.php settings.
+     */
+    if (is_array($override)) {
+      $conf = array_merge($conf, $override);
     }
   }
 }
@@ -114,28 +123,16 @@ function drush_load_config() {
  *
  * @param context
  *   Any of the default defined contexts.
- * @param options
+ * @param value 
  *   The value to store in the context
- * @param merge
- *   Optional. Should the pervious options be merged, retaining any settings not defined in options.
  * 
  * @return
  *   An associative array of the settings specified in the request context.
  */
-function drush_set_context($context, $options, $merge = FALSE) {
-
-  $options = (array) $options;
-
-  $cache =& _drush_get_context($context);
-
-  if ($merge) {
-    $cache = array_merge($cache, $options);
-  }
-  else {
-    $cache = $options;
-  }
-
-  return $cache;
+function drush_set_context($context, $value) {
+  $cache =& drush_get_context($context);
+  $cache = $value;
+  return $value;
 }
 
 
@@ -149,7 +146,7 @@ function drush_set_context($context, $options, $merge = FALSE) {
  *
  * Functions that operate on the context cache, can retrieve a reference
  * to the context cache using :
- *     $cache = &_drush_get_context($context);
+ *     $cache = &drush_get_context($context);
  *
  * This is a private function, because it is meant as an internal 
  * generalized API for writing static cache functions, not as a general
@@ -167,7 +164,7 @@ function drush_set_context($context, $options, $merge = FALSE) {
  *   Otherwise only the requested context will be returned.
  *   If the context does not exist yet, it will be initialied to an empty array.
  */
-function &_drush_get_context($context = null) {
+function &drush_get_context($context = null) {
   static $cache = array();
   if (!is_null($context)) {
     if (!isset($cache[$context])) {
@@ -203,7 +200,7 @@ function drush_set_arguments($arguments) {
  * arguments to the command.
  */
 function drush_get_arguments() {
-  return _drush_get_context('arguments');
+  return drush_get_context('arguments');
 }
 
 /**
@@ -226,82 +223,8 @@ function drush_set_command($command) {
  * 
  */
 function drush_get_command() {
-  return _drush_get_context('command');
+  return drush_get_context('command');
 }
-
-/**
- * Parse console arguments.
- *
- * @param $args
- *   The console argument array (usually $argv)
- * @param $arg_opts
- *   An array of options that are followed by an argument.
- *   e.g. shell.php -u admin -v --> $arg_opts = array('u')
- * @param $default_options
- * @return
- *   A associative array:
- *   $return['commands'] ia a numeric array of all commands,
- *   $return['options'] contains the options. The option keys
- *   are always noted without - or -- and are set to TRUE if they were
- *   invoked, to the argument if followed by an argument, and if not present
- *   to their default value or FALSE if no default value was specified.
- */
-function drush_parse_args($args = array(), $arg_opts = array(), $default_options = array()) {
-  $options = $default_options;
-  $arguments = array();
-
-  for ($i = 1; $i < count($args); $i++) {
-    $opt = $args[$i];
-    // Is the arg an option (starting with '-')?
-    if ($opt{0} == "-" && strlen($opt) != 1) {
-      // Do we have multiple options behind one '-'?
-      if (strlen($opt) > 2 && $opt{1} != "-") {
-        // Each char becomes a key of its own.
-        for ($j = 1; $j < strlen($opt); $j++) {
-          $options[substr($opt, $j, 1)] = true;
-        }
-      }
-      // Do we have a longopt (starting with '--')?
-      elseif ($opt{1} == "-") {
-        if ($pos = strpos($opt, '=')) {
-          $options[substr($opt, 2, $pos - 2)] = substr($opt, $pos + 1);
-        }
-        else {
-          $options[substr($opt, 2)] = true;
-        }
-      }
-      else {
-        $opt = substr($opt, 1);
-        // Check if the current opt is in $arg_opts (= has to be followed by an argument).
-        if ((in_array($opt, $arg_opts))) {
-          if (($args[$i+1] == NULL) || ($args[$i+1] == "") || ($args[$i + 1]{0} == "-")) {
-            exit("Invalid input: -$opt needs to be followed by an argument.");
-          }
-          $options[$opt] = $args[$i + 1];
-          $i++;
-        }
-        else {
-          $options[$opt] = true;
-        }
-      }
-    }
-    // If it's not an option, it's a command.
-    else {
-      $arguments[] = $opt;
-    }
-  }
-  drush_set_arguments($arguments);
-  drush_set_context('options', $options);
-
-  if (DRUSH_BACKEND) {
-    // Load options passed as a JSON encoded string through STDIN.
-    $stdin_options = _drush_backend_get_stdin();
-    if (is_array($stdin_options)) {
-      drush_set_context('stdin', $stdin_options);
-    }
-  }
-}
-
 /**
  * Get the value for an option.
  *
@@ -321,17 +244,17 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
 
   if ($context) {
     // We have a definite context to check for the presence of an option.
-    $value = _drush_get_option($option, _drush_get_context($context));
+    $value = _drush_get_option($option, drush_get_context($context));
   }
   else {
     // We are not checking a specific context, so check them in a predefined order of precedence.
     static $contexts = array(
       'process', 'options', 'stdin', 
-      'custom', 'site', 'platform', 'user', 
+      'custom', 'site', 'drupal', 'user', 
       'drush', 'default');
 
     foreach ($contexts as $context) {
-      $value = _drush_get_option($option, _drush_get_context($context));
+      $value = _drush_get_option($option, drush_get_context($context));
 
       if ($value !== null) {
         return $value;
@@ -352,9 +275,9 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
 function drush_get_merged_options() {
   static $contexts = array(
       'process', 'options', 'stdin', 
-      'custom', 'site', 'platform', 'user',
+      'custom', 'site', 'drupal', 'user',
       'drush', 'default');
-  $cache = _drush_get_context();
+  $cache = drush_get_context();
   $result = array();
   foreach (array_reverse($contexts) as $context) {
     if (array_key_exists($context, $cache)) {
@@ -398,7 +321,7 @@ function _drush_get_option($option, $context) {
  *   Without having to constantly type out the value parameter.
  */
 function drush_set_option($option, $value, $context = 'process') {
-  $cache =& _drush_get_context($context);
+  $cache =& drush_get_context($context);
   $cache[$option] = $value;
   return $value;
 }
@@ -419,7 +342,7 @@ function drush_set_default($option, $value) {
  *   Context in which to unset the value in.
  */
 function drush_unset_option($option, $context) {
-  $cache =& _drush_get_context($context);
+  $cache =& drush_get_context($context);
   if (array_key_exists($option, $cache)) {
     unset($cache[$option]);
   }
@@ -433,16 +356,14 @@ function drush_unset_option($option, $context) {
  *   The context to save
  */
 function drush_save_config($context) {
-  $files = _drush_config_files();
+  $filename = _drush_config_file($context);
 
-  if (array_key_exists($context, $files)) {
-    $filename = $files[$context];
-
-    $cache = _drush_get_context($context);
+  if ($filename) {
+    $cache = drush_get_context($context);
 
     $fp = fopen($filename, "w+");
     if (!$fp) {
-      return drush_set_error(DRUSH_PERM_ERROR, dt('Config file (!filename) could not be written', array('!filename' => $filename)));
+      return drush_set_error(DRUSH_PERM_ERROR, dt('Drushrc (!filename) could not be written', array('!filename' => $filename)));
     }
     else {
       fwrite($fp, "<?php\n");
@@ -453,6 +374,7 @@ function drush_save_config($context) {
       }
       fwrite($fp, "\n");
       fclose($fp);
+      drush_log(dt('Drushrc file (!filename) was written successfully', array('!filename' => $filename)));
       return true;
     }
 

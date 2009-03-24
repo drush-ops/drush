@@ -22,6 +22,11 @@
 function core_commands_drush_command() {
   $items = array();
 
+  $items['help'] = array(
+    'callback' => 'drush_usage',
+    'description' => 'Print this help message.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+  );
   $items['cron'] = array(
     'callback' => 'core_commands_cron_run',
     'description' => 'Run all cron hooks.',
@@ -59,7 +64,7 @@ function core_commands_drush_command() {
     'options' => array(
       '--destination' => 'Path to which the project will be copied.',
     ),
-    'bootstrap' => -1, // No bootstrap at all.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
   return $items;
 }
@@ -98,59 +103,50 @@ function core_commands_drush_help($section) {
       $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_commands_site_credentials()));
       $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
       return $message;
-
-      $site_path = drush_site_path();
-      $message = "Drush was not able to start (bootstrap) Drupal.\n";
-      $message .= "Hint: This error often occurs when Drush is trying to bootstrap a site\n";
-      $message .= "that has not been installed or does not have a configured database.\n";
-      $message .= "Drush was looking for the site in '$site_path'. You can select another site\n";
-      $message .= "with a working database setup by specifying the URI to use with the --uri\n";
-      $message .= "parameter on the command line or \$options['uri'] in your drushrc.php file.\n";
-      return $message;
       break;
   }
 }
 
 function _core_commands_site_credentials() {
-  $drupal_root = 'not found in ' . drush_cwd();
-  if (defined('DRUSH_DRUPAL_ROOT')) {
-    $drupal_root = DRUSH_DRUPAL_ROOT;
+  if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+    $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', $drupal_root);
+    $credentials .= sprintf("  %-18s: %s\n", 'Drupal version', drush_drupal_major_version());
+    if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+      $credentials .= sprintf("  %-18s: %s\n", 'Site Path', $site_root);
+      $credentials .= sprintf("  %-18s: %s\n", 'Site URI', drush_get_context('DRUSH_URI'));
+      $db_driver = 'not defined';
+      $db_host = 'not defined';
+      $db_user = 'not defined';
+      $db_name = 'not defined';
+      switch (drush_drupal_major_version()) {
+         case 5:
+         case 6:
+           if (isset($GLOBALS['db_url'])) {
+             $parts = parse_url($GLOBALS['db_url']);
+             $db_driver = $parts['scheme'];
+             $db_user = $parts['user'];
+             $db_host = $parts['host'];
+             $db_name = trim($parts['path'], '/');
+           }
+           break;
+         case 7:
+           if (isset($GLOBALS['databases']['default'])) {
+             $conn = $GLOBALS['databases']['default'];
+             $db_driver = $conn['driver'];
+             $db_user = $conn['username'];
+             $db_host = $conn['host'];
+             $db_name = $conn['database'];
+           }
+           break;
+      }
+      $credentials .= sprintf("  %-18s: %s\n", 'Database Driver', $db_driver);
+      $credentials .= sprintf("  %-18s: %s\n", 'Database Hostname', $db_host);
+      $credentials .= sprintf("  %-18s: %s\n", 'Database Username', $db_user);
+      $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $db_name);
+      return $credentials;
+    }
   }
-  $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', $drupal_root);
-  if (function_exists('conf_path')) {
-    $credentials .= sprintf("  %-18s: %s\n", 'Site Path', conf_path());
-  }
-  $credentials .= sprintf("  %-18s: %s\n", 'Site URI', DRUSH_URI);
-  $db_driver = 'not defined';
-  $db_host = 'not defined';
-  $db_user = 'not defined';
-  $db_name = 'not defined';
-  switch (drush_drupal_major_version()) {
-     case 5:
-     case 6:
-       if (isset($GLOBALS['db_url'])) {
-         $parts = parse_url($GLOBALS['db_url']);
-         $db_driver = $parts['scheme'];
-         $db_user = $parts['user'];
-         $db_host = $parts['host'];
-         $db_name = trim($parts['path'], '/');
-       }
-       break;
-     case 7:
-       if (isset($GLOBALS['databases']['default'])) {
-         $conn = $GLOBALS['databases']['default'];
-         $db_driver = $conn['driver'];
-         $db_user = $conn['username'];
-         $db_host = $conn['host'];
-         $db_name = $conn['database'];
-       }
-       break;
-  }
-  $credentials .= sprintf("  %-18s: %s\n", 'Database Driver', $db_driver);
-  $credentials .= sprintf("  %-18s: %s\n", 'Database Hostname', $db_host);
-  $credentials .= sprintf("  %-18s: %s\n", 'Database Username', $db_user);
-  $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $db_name);
-  return $credentials;
+  return null;
 }
 
 
@@ -177,15 +173,15 @@ function core_commands_cron_run() {
  * installation.
  */
 function core_commands_status() {
-  if (defined('DRUSH_DRUPAL_ROOT')) {
-    drush_print(dt("Drupal !version is installed at !DRUSH_DRUPAL_ROOT.", array('!version' => drush_drupal_version(), '!DRUSH_DRUPAL_ROOT' => DRUSH_DRUPAL_ROOT)));
-    if (DRUSH_URI != '') {
-      drush_print(dt("Current site: !DRUSH_URI", array('!DRUSH_URI' => DRUSH_URI)));
+  if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+    drush_print(dt("Drupal !version is installed at !DRUSH_DRUPAL_ROOT.", array('!version' => drush_drupal_version(), '!DRUSH_DRUPAL_ROOT' => $drupal_root)));
+    if ($drush_uri = drush_get_context('DRUSH_URI')) {
+      drush_print(dt("Current site: !DRUSH_URI", array('!DRUSH_URI' => $drush_uri)));
     }
     else {
       drush_print(dt("No site uri was determined. Using default site path."));
     }
-    if (defined('DRUSH_DRUPAL_BOOTSTRAPPED')) {
+    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
       switch (drush_drupal_major_version()) {
         case 5:
         case 6:
@@ -261,13 +257,15 @@ function core_commands_dl_destination($type) {
     }
   }
   
+  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+  
   // If a URI is provided and we bootstrapped successfully then we install to
   // that specific site, otherwise we install to sites/all/modules
-  if (defined('DRUSH_URI') && DRUSH_URI && function_exists('conf_path')) {
-    $sitepath = DRUSH_DRUPAL_ROOT .'/'. conf_path() .'/';
+  if (drush_get_context('DRUSH_URI') && function_exists('conf_path')) {
+    $sitepath = $drupal_root .'/'. conf_path() .'/';
   }
-  else if (defined('DRUSH_DRUPAL_ROOT')) {
-    $sitepath = DRUSH_DRUPAL_ROOT . '/sites/all/';
+  else if ($drupal_root) {
+    $sitepath = $drupal_root . '/sites/all/';
   }
 
   switch ($type) {
@@ -281,10 +279,10 @@ function core_commands_dl_destination($type) {
       $destination = $sitepath . 'themes/engines/';
       break;
     case 'translation':
-      $destination = DRUSH_DRUPAL_ROOT . '/';
+      $destination = $drupal_root . '/';
       break;
     case 'profile':
-      $destination = DRUSH_DRUPAL_ROOT . 'profiles/';
+      $destination = $drupal_root . 'profiles/';
       break;
   }
 
@@ -344,19 +342,19 @@ function core_commands_drush_dl_project_types() {
 /**
  * Command callback. Download drupal core.
  */
-function core_commands_dl($full_project=NULL) {
+function core_commands_dl($full_project = NULL) {
   if (empty($full_project)) {
     drush_die(dt("Please tell me what to download \n(eg. `drush dl views` or `drush dl diff-6.x-2.0`"));
   }
 
   // Try to bootstrap to config phase so we can determine destination.
-  if (defined('DRUSH_DRUPAL_ROOT')) {
-    // Bootstrap constants not yet available.
-    drush_drupal_bootstrap(DRUSH_DRUPAL_ROOT, 0);
-  }
+  // TODO
+  // if (defined('DRUSH_DRUPAL_ROOT')) {
+    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_ROOT);
+  // }
 
   $package_handler = 'drush_pm_wget_install_project';
-  if (function_exists(drush_pm_get_package_handler)) {
+  if (function_exists('drush_pm_get_package_handler')) {
     $package_handler = drush_pm_get_package_handler() .'_install_project';
     if (!function_exists($package_handler)) {
       return drush_set_error('DRUSH_PM_HANDLER_NON_INSTALL', dt('The !package_handler package handler does not handle installs.', array('!package_handler' => $package_handler)));
@@ -367,7 +365,7 @@ function core_commands_dl($full_project=NULL) {
   $project_types = core_commands_drush_dl_project_types();
   $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
   foreach ($requestdata as $package) {
-    $version_default = defined('DRUSH_DRUPAL_MAJOR_VERSION') ? DRUSH_DRUPAL_MAJOR_VERSION : 6;
+    $version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION') ? drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION') : 6;
     $version_default .= '.x';
 
     $version = empty($package['version']) ? $version_default : $package['version'];

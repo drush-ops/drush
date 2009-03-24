@@ -72,7 +72,7 @@ function drush_backend_output() {
 
   // Return the options that were set at the end of the process.
   $data['context']  = drush_get_merged_options();
-  if (!DRUSH_QUIET) {
+  if (!drush_get_context('DRUSH_QUIET')) {
     printf(DRUSH_BACKEND_OUTPUT_DELIMITER, json_encode($data));
   }
 }
@@ -167,7 +167,7 @@ function _drush_proc_open($cmd, $data = NULL) {
   $process = proc_open($cmd, $descriptorspec, $pipes, null, null, array('context' => $context));
   if (is_resource($process)) {
     if ($data) {
-      fwrite($pipes[0], json_encode($data, TRUE)); // pass the data array in a JSON encoded string
+      fwrite($pipes[0], json_encode($data)); // pass the data array in a JSON encoded string
     }
 
     $info = stream_get_meta_data($pipes[1]);
@@ -291,8 +291,10 @@ function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
 function _drush_backend_generate_command($command, &$data, $method = 'GET', $drush_path = null, $hostname = null, $username = null) {
 
   $drush_path = !is_null($drush_path) ? $drush_path : $_SERVER['argv'][0]; // Call own drush.php file.
-  $data['root'] = ($data['root']) ? $data['root'] : drush_get_option(array('r', 'root'), drush_cwd());
-  $data['uri'] = ($data['uri']) ? $data['uri'] : DRUSH_URI;
+  $data['root'] = ($data['root']) ? $data['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
+  if (!is_null($data['uri'])) {
+    $data['uri'] = ($data['uri']) ? $data['uri'] : drush_get_context('DRUSH_URI');
+  }
 
   $option_str = _drush_backend_argument_string($data, $method);
   $args = explode(" ", $command);

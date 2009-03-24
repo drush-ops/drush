@@ -14,41 +14,18 @@
  * @param
  *
  */
-function drush_dispatch() {
-  if (!drush_get_command()) {
-    $arguments = drush_get_arguments();
-
-    // Special case for help command
-    $show_help = FALSE;
-    if (isset($arguments[0]) && $arguments[0] == 'help') {
-      $show_help = TRUE;
-      array_shift($arguments);
-      (empty($arguments)) ? drush_usage() : drush_show_help($arguments);
-      return TRUE;
-    }
-
-    drush_parse_command();
-  }
-
-  return _drush_dispatch_cmd();
-}
-
-/**
- * Dispatch a command if one has been found.
- */
-function _drush_dispatch_cmd() {
+function drush_dispatch($command = NULL) {
+  $command = ($command) ? $command : drush_get_command();
   $return = FALSE;
-
-  $command = drush_get_command();
-  $arguments = drush_get_arguments();
 
   if ($command) {
     // Call the callback function of the active command.
-    $return = call_user_func_array($command['callback'], $arguments);
+    $return = call_user_func_array($command['callback'], $command['arguments']);
   }
-  else {
-    // Special case: If no command is found, display usage info.
-    $return = call_user_func_array('drush_usage', $arguments);
+  
+  // prevent a '1' at the end of the output
+  if ($return === TRUE) {
+    $return = '';
   }
 
   return $return;
@@ -70,10 +47,10 @@ function drush_drupal_version() {
   static $version = FALSE;
 
   if (!$version) {
-    if (defined('DRUSH_DRUPAL_ROOT')) {
-      if (file_exists(DRUSH_DRUPAL_ROOT . '/modules/system/system.module')) {
+    if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+      if (file_exists($drupal_root . '/modules/system/system.module')) {
         // We can safely include system.module as it contains defines and functions only.
-        require_once(DRUSH_DRUPAL_ROOT . '/modules/system/system.module');
+        require_once($drupal_root . '/modules/system/system.module');
         // We just might be dealing with an early Drupal version (pre 4.7)
         if (defined('VERSION')) {
           $version = VERSION;
@@ -131,11 +108,11 @@ function drush_op($function) {
   $args = func_get_args();
   array_shift($args); // Skip function name
 
-  if (DRUSH_VERBOSE || DRUSH_SIMULATE) {
+  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
      drush_print("Calling $function(". implode(", ", $args) .')');
   }
 
-  if (DRUSH_SIMULATE) {
+  if (drush_get_context('DRUSH_SIMULATE')) {
     return true;
   }
 
@@ -174,13 +151,15 @@ function dt($string, $args = NULL) {
  */
 function drush_usage() {
   $commands = func_get_args();
-
-  if (drush_get_option('help') || empty($commands)) {
+  drush_set_context('DRUSH_SHOWING_HELP', TRUE);
+  
+  if (empty($commands)) {
+    $phases = _drush_bootstrap_phases(); 
     drush_print(dt('Usage: drush.php [options] <command> <command> ...'));
     drush_print();
     drush_print('Run "drush help [command]" to view command-specific help.');
     drush_print(dt('Options: '));
-    foreach (drush_get_options() as $option => $description) {
+    foreach (drush_get_option_help() as $option => $description) {
       $rows[] = array($option, $description);
     }
 
@@ -188,13 +167,32 @@ function drush_usage() {
     drush_print();
     drush_print('Commands: ');
 
-    $commands = drush_get_commands();
-    $rows = array();
-    foreach($commands as $key => $command) {
-      $rows[] = array($key, $commands[$key]['description']);
+    $printed_rows = array();
+    $phase_index = DRUSH_BOOTSTRAP_DRUSH;
+
+    foreach ($phases as $phase_index) {
+      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
+        drush_bootstrap($phase_index);
+      }
+      if (!drush_get_error()) {
+        $commands = drush_get_commands();
+        $rows = array();
+        foreach($commands as $key => $command) {
+          if (!array_key_exists($key, $printed_rows)) {
+            $rows[$key] = array(sprintf("%-20s", $key), $commands[$key]['description']);
+          }
+        }
+        drush_print_table($rows, 2);
+        $printed_rows = array_merge($printed_rows, $rows);
+      }
+      else {
+        break; 
+      }
     }
-    drush_print_table($rows, 2);
     return;
+  }
+  else {
+    return drush_show_help($commands);
   }
 
   drush_set_error(DRUSH_COMMAND_NOT_FOUND, dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
@@ -207,7 +205,7 @@ function drush_usage() {
  *   An associative array containing the option definition as the key, and the description as the value,
  *   for each of the available options.
  */
-function drush_get_options() {
+function drush_get_option_help() {
   // TODO: Add a hook for this, to allow other modules to add their options
   $options['-r <path>, --root=<path>'] = dt("Drupal root directory to use (default: current directory)");
   $options['-l <uri> , --uri=<uri>']   = dt('URI of the drupal site to use (only needed in multisite environments)');
@@ -226,45 +224,55 @@ function drush_get_options() {
  * Prints out the default drush help page.
  */
 function drush_show_help($commands) {
+  $phases = _drush_bootstrap_phases();
+
   $commandstring = implode(" ", $commands);
 
-  if (!drush_is_command($commandstring)) {
-    return drush_set_error(DRUSH_COMMAND_NOT_FOUND, dt('Invalid command !command.', array('!command' => $commandstring)));
-  }
-  else {
-    // Get the full command array
-    $all = drush_get_commands();
-    $command = $all[$commandstring];
-  }
-
-  $help = drush_command_invoke_all('drush_help', 'drush:'. $commandstring);
-  if (!empty($help)) {
-    drush_print(wordwrap(implode("\n", $help), 80));
-    drush_print();
-    
-// TODO: Just let commands define their own sections? Standardization need not be mandated?
-    $sections = array(
-      'examples' => 'Examples',
-      'arguments' => 'Arguments',
-      'options' => 'Options',
-    );
-    
-    foreach ($sections as $key => $value) {
-      if ($command[$key]) {
-        drush_print(dt($value) . ':');
-        foreach ($command[$key] as $name => $description) {
-          $rows[] = array($name, dt($description));
+  foreach ($phases as $phase_index) {
+    if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
+      drush_bootstrap($phase_index);
+    }
+    if (!drush_get_error()) {
+      $commands = drush_get_commands();
+      if (array_key_exists($commandstring, $commands)) {
+        $command = $commands[$commandstring];
+        $help = drush_command_invoke_all('drush_help', 'drush:'. $commandstring);
+        if (!empty($help)) {
+          drush_print(wordwrap(implode("\n", $help), 80));
+          drush_print();
+          
+          // TODO: Just let commands define their own sections?
+          // Standardization need not be mandated?
+          $sections = array(
+            'examples' => 'Examples',
+            'arguments' => 'Arguments',
+            'options' => 'Options',
+          );
+          
+          foreach ($sections as $key => $value) {
+            if ($command[$key]) {
+              drush_print(dt($value) . ':');
+              foreach ($command[$key] as $name => $description) {
+                $rows[] = array($name, dt($description));
+              }
+              drush_print_table($rows, 2);
+              unset($rows);
+              drush_print();
+            }
+          }
+          return TRUE;
         }
-        drush_print_table($rows, 2);
-        unset($rows);
-        drush_print();
+        else {
+          drush_print("No help available for command 'drush $commandstring'.");
+          return TRUE;
+        }
       }
     }
-
+    else {
+      break;
+    }
   }
-  else {
-    drush_print("No help available for command 'drush $commandstring'.");
-  }
+  return drush_set_error(DRUSH_COMMAND_NOT_FOUND, dt('Invalid command !command.', array('!command' => $commandstring)));
 }
 
 /**
@@ -279,11 +287,11 @@ function drush_show_help($commands) {
  *   Indentation for the output (only for verbose mode).
  */
 function drush_shell_exec($cmd, $indent = 0) {
-  if (DRUSH_VERBOSE || DRUSH_SIMULATE) {
+  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
     drush_print('Executing: ' . $cmd, $indent);
   }
 
-  if (DRUSH_SIMULATE) {
+  if (drush_get_context('DRUSH_SIMULATE')) {
     return true;
   }
 
@@ -291,7 +299,7 @@ function drush_shell_exec($cmd, $indent = 0) {
   
   _drush_shell_exec_output_set($output);
 
-  if (DRUSH_VERBOSE) {
+  if (drush_get_context('DRUSH_VERBOSE')) {
     foreach ($output as $line) {
       drush_print($line, $indent + 2);
     }
@@ -346,10 +354,10 @@ function drush_print($message = '', $indent = 0) {
  * Returns TRUE if in verbose mode, otherwise FALSE.
  */
 function drush_verbose($msg = FALSE, $indent = 0) {
-  if (!DRUSH_VERBOSE) {
+  if (!drush_get_context('DRUSH_VERBOSE')) {
     return FALSE;
   }
-  if (DRUSH_VERBOSE && $msg === FALSE) {
+  if (drush_get_context('DRUSH_VERBOSE') && $msg === FALSE) {
     return TRUE;
   }
 
@@ -366,7 +374,7 @@ function drush_verbose($msg = FALSE, $indent = 0) {
 function drush_confirm($msg, $indent = 0) {
   print str_repeat(' ', $indent) . (string)$msg . " (y/n): ";
 
-  if (DRUSH_AFFIRMATIVE) {
+  if (drush_get_context('DRUSH_AFFIRMATIVE')) {
     print "y\n";
     return TRUE;
   }
@@ -531,7 +539,7 @@ function _drush_print_log($entry) {
       $type_msg = sprintf($green, $entry['type']);
       break;
     default : 
-      if (!defined('DRUSH_VERBOSE')) {
+      if (!drush_get_context('DRUSH_VERBOSE')) {
         // print nothing. exit cleanly.
         return TRUE;
       }
@@ -539,14 +547,14 @@ function _drush_print_log($entry) {
       break;
   }
   // When running in backend mode, log messages are not displayed, as they will
-  // be returned in the JSON encoded associative array.  
-  if (DRUSH_BACKEND) {
+  // be returned in the JSON encoded associative array.
+  if (drush_get_context('DRUSH_BACKEND') || drush_get_context('DRUSH_SHOWING_HELP')) {
     return $return;
   }
   // Place the status message right aligned with the top line of the error message.
-  $message = wordwrap($entry['message'], 73);
+  $message = wordwrap($entry['message'], 128);
   $lines = explode("\n", $message);
-  $lines[0] = sprintf("%-73s%7s", $lines[0], $type_msg);
+  $lines[0] = sprintf("%-128s%7s", $lines[0], $type_msg);
   $message = implode("\n", $lines);
   drush_print($message);
   return $return;
@@ -567,10 +575,10 @@ function _drush_log_drupal_messages() {
           drush_log(ereg_replace('/^warning: /', '', $error), 'warning');
         }
         elseif (preg_match('/^user warning:/', $error)) {
-          drush_log(ereg_replace('/^user warning: /', '', $error), 'error');  
+          drush_set_error('DRUSH_DRUPAL_ERROR_MESSAGE', ereg_replace('/^user warning: /', '', $error));
         }
         else {
-          drush_log($error, 'error');
+          drush_set_error('DRUSH_DRUPAL_ERROR_MESSAGE', $error);
         }
       }
     }
