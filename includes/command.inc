@@ -20,7 +20,7 @@
 function drush_parse_args() {
   $args = drush_get_context('argv');
 
-  static $default_options = array('c', 'h', 'u', 'r', 'l', 'i');
+  static $arg_opts = array('c', 'h', 'u', 'r', 'l', 'i');
 
   $arguments = array();
 
@@ -49,7 +49,7 @@ function drush_parse_args() {
         // Check if the current opt is in $arg_opts (= has to be followed by an argument).
         if ((in_array($opt, $arg_opts))) {
           if (($args[$i+1] == NULL) || ($args[$i+1] == "") || ($args[$i + 1]{0} == "-")) {
-            exit("Invalid input: -$opt needs to be followed by an argument.");
+            drush_set_error('DRUSH_INVALID_INPUT', "Invalid input: -$opt needs to be followed by an argument.");
           }
           $options[$opt] = $args[$i + 1];
           $i++;
@@ -64,7 +64,6 @@ function drush_parse_args() {
       $arguments[] = $opt;
     }
   }
-
   // If arguments are specified, print the help screen.
   $arguments = sizeof($arguments) ? $arguments : array('help');
 
@@ -276,6 +275,7 @@ function _drush_find_commandfiles($phase) {
           $searchpath[] = $path;
         }
       }
+      print_r($searchpath);
 
       // User commands, residing i ~/.drush
       if (!empty($_SERVER['HOME'])) {
