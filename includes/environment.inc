@@ -162,7 +162,7 @@ function drush_bootstrap($phase) {
       $current_phase();
       ob_end_clean();
       
-      if ($phase >= DRUSH_DRUPAL_BOOTSTRAP_FULL) {
+      if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
         // We have enough of the system bootstrapped now to 
         // capture and integrate and drupal messages.
         _drush_log_drupal_messages();
