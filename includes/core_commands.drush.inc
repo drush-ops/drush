@@ -362,6 +362,7 @@ function core_commands_dl($full_project = NULL) {
   }
 
   $requestdata = drush_pm_parse_project_version(explode(' ', $full_project));
+
   $project_types = core_commands_drush_dl_project_types();
   $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
   foreach ($requestdata as $package) {
@@ -370,6 +371,7 @@ function core_commands_dl($full_project = NULL) {
 
     $version = empty($package['version']) ? $version_default : $package['version'];
     $major_version = substr($version, 0, 3);
+
     $project = $package['name'];
     // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
     $url = 'http://updates.drupal.org/release-history' . "/$project/". $major_version;
