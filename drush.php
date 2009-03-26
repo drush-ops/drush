@@ -93,11 +93,11 @@ function drush_shutdown() {
     switch ($phase) {
       case DRUSH_BOOTSTRAP_DRUPAL_DATABASE :
         ob_end_clean();
-        drush_set_error(DRUSH_DRUPAL_DB_ERROR);
+        drush_set_error('DRUSH_DRUPAL_DB_ERROR');
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_FULL :
         ob_end_clean();
-        drush_set_error(DRUSH_DRUPAL_BOOTSTRAP_ERROR);
+        drush_set_error('DRUSH_DRUPAL_BOOTSTRAP_ERROR');
         break;
     }
   }
@@ -108,9 +108,7 @@ function drush_shutdown() {
     drush_backend_output();
   }
 
-  $error = drush_get_error();
-  $error = ($error) ? $error : DRUSH_SUCCESS;
-  exit($error);
+  exit((drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS);
 }
 
 /**
@@ -133,7 +131,7 @@ function drush_drupal_login($drush_user) {
     else {
       $message = dt('Could not login with user account `%user\'.', array('%user' => $drush_user));
     }
-    return drush_set_error(DRUPAL_USER_LOGIN_FAILED, $message);
+    return drush_set_error('DRUPAL_USER_LOGIN_FAILED', $message);
   }
 
   return TRUE;

@@ -363,7 +363,7 @@ function drush_save_config($context) {
 
     $fp = fopen($filename, "w+");
     if (!$fp) {
-      return drush_set_error(DRUSH_PERM_ERROR, dt('Drushrc (!filename) could not be written', array('!filename' => $filename)));
+      return drush_set_error('DRUSH_PERM_ERROR', dt('Drushrc (!filename) could not be written', array('!filename' => $filename)));
     }
     else {
       fwrite($fp, "<?php\n");

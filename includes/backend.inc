@@ -125,20 +125,9 @@ function drush_backend_parse_output($string, $integrate = TRUE) {
 function _drush_backend_integrate($data) {
   // Output will either be printed, or buffered to the drush_backend_output command.
   print ($data['output']);
-
-  if (is_array($data['error_log'])) {
-    foreach (array_keys($data['error_log']) as $error_type) {
-      foreach ($data['error_log'][$error_type] as $error) {
-        drush_set_error($error_type, $error);
-      }
-    }
-  }
-
   if (is_array($data['log'])) {
     foreach($data['log'] as $log) {
-      if (!in_array($log['type'], array('failed', 'error'))) {
-        drush_log($log['message'], $log['type']); 
-      }
+      drush_log($log['message'], $log['type'], $log['error']); 
     }
   }
 }
@@ -252,7 +241,7 @@ function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
       return $values;
     }
     else {
-      return drush_set_error(DRUSH_FRAMEWORK_ERROR, dt("The command could not be executed succesfully (returned: !return, code: %code)", array("!return" => $proc['output'], "%code" =>  $proc['code'])));
+      return drush_set_error('DRUSH_FRAMEWORK_ERROR', dt("The command could not be executed succesfully (returned: !return, code: %code)", array("!return" => $proc['output'], "%code" =>  $proc['code'])));
     }
   }
   return FALSE;

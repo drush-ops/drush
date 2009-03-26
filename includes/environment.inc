@@ -299,7 +299,7 @@ function _drush_bootstrap_drupal_site() {
 
   $site = drush_set_context('DRUSH_DRUPAL_SITE', $_SERVER['HTTP_HOST']);
   if (($conf_path = conf_path()) && !file_exists("./$conf_path/settings.php")) {
-    drush_set_error(DRUPAL_SITE_SETTINGS_NOT_FOUND);
+    drush_set_error('DRUPAL_SITE_SETTINGS_NOT_FOUND');
   }
   else {
     drush_set_context('DRUSH_DRUPAL_SITE_ROOT', $conf_path);
