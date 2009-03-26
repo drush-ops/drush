@@ -478,7 +478,7 @@ function drush_log($message, $type = 'notice', $error = null) {
      'timestamp' => time()
    );
   $entry['error'] = $error;
-  $log[] = $item;
+  $log[] = $entry;
   return _drush_print_log($entry);
 }
 
