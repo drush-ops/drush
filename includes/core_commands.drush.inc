@@ -316,7 +316,7 @@ function drush_pm_parse_project_version($requests) {
       $version = NULL;
     }
     if (empty($project)) {
-      drush_die(dt("Project name not found.\n\nRun drush help pm install for more information."));
+      drush_set_error('DRUSH_PM_MISSING_PROJECT_NAME', 'Project name not found. Run drush help pm install for more information.');
     }
     $requestdata[$project] = array(
       'name' => $project,
@@ -344,14 +344,11 @@ function core_commands_drush_dl_project_types() {
  */
 function core_commands_dl($full_project = NULL) {
   if (empty($full_project)) {
-    drush_die(dt("Please tell me what to download \n(eg. `drush dl views` or `drush dl diff-6.x-2.0`"));
+    return drush_set_error('DRUSH_DL_EMPTY_PROJECT', "Please tell me what to download. (eg. `drush dl views` or `drush dl diff-6.x-2.0`)");
   }
 
   // Try to bootstrap to config phase so we can determine destination.
-  // TODO
-  // if (defined('DRUSH_DRUPAL_ROOT')) {
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_ROOT);
-  // }
+  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_ROOT);
 
   $package_handler = 'drush_pm_wget_install_project';
   if (function_exists('drush_pm_get_package_handler')) {
