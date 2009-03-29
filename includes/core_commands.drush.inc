@@ -367,9 +367,8 @@ function core_commands_dl($full_project = NULL) {
     $version_default .= '.x';
 
     $version = empty($package['version']) ? $version_default : $package['version'];
-    $major_version = substr($version, 0, 3);
-
     $project = $package['name'];
+    $major_version = ($project == 'drupal') ? substr($version, 0, 1) .'.x' : substr($version, 0, 3);
     // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
     $url = 'http://updates.drupal.org/release-history' . "/$project/". $major_version;
     if ($xml = @simplexml_load_file($url)) {
