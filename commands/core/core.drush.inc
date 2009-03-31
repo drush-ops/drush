@@ -19,7 +19,7 @@
  * @return
  *   An associative array describing your command(s).
  */
-function core_commands_drush_command() {
+function core_drush_command() {
   $items = array();
 
   $items['help'] = array(
@@ -28,15 +28,15 @@ function core_commands_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
   );
   $items['cron'] = array(
-    'callback' => 'core_commands_cron_run',
+    'callback' => 'core_cron_run',
     'description' => 'Run all cron hooks.',
   );
   $items['status'] = array(
-    'callback' => 'core_commands_status',
+    'callback' => 'core_status',
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
   );
   $items['script'] = array(
-    'callback' => 'core_commands_script',
+    'callback' => 'core_script',
     'description' => "Run php script(s).",
     'examples' => array(
       'drush script update_variables.php',
@@ -46,11 +46,11 @@ function core_commands_drush_command() {
     ),
   );
   $items['cache clear'] = array(
-    'callback' => 'core_commands_cache_clear',
+    'callback' => 'core_cache_clear',
     'description' => 'Clear all caches.'
   );
   $items['dl'] = array(
-    'callback' => 'core_commands_dl',
+    'callback' => 'core_dl',
     'description' => 'Download core Drupal and modules like Drush Extras.',
     'examples' => array(
       'drush dl drupal' => 'Download latest version of Drupal core.', 
@@ -81,7 +81,7 @@ function core_commands_drush_command() {
  * @return
  *   A string with the help text for your command.
  */
-function core_commands_drush_help($section) {
+function core_drush_help($section) {
   switch ($section) {
     case 'drush:cron':
       return dt("Runs all cron hooks in all active modules for specified site.");
@@ -94,20 +94,20 @@ function core_commands_drush_help($section) {
     case 'error:DRUSH_DRUPAL_DB_ERROR' : 
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
-      $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_commands_site_credentials()));
+      $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_site_credentials()));
       $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
       return $message;
     case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR' :
       $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
       $message .= dt("Hint: This error can only occur once the database connection has already been succesfully initiated, therefor this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
-      $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_commands_site_credentials()));
+      $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_site_credentials()));
       $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
       return $message;
       break;
   }
 }
 
-function _core_commands_site_credentials() {
+function _core_site_credentials() {
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', $drupal_root);
     $credentials .= sprintf("  %-18s: %s\n", 'Drupal version', drush_drupal_major_version());
@@ -163,7 +163,7 @@ function _core_commands_site_credentials() {
  * To print something to the terminal window, use drush_print().
  *
  */
-function core_commands_cron_run() {
+function core_cron_run() {
   drupal_cron_run();
   drush_print(dt('Cron run successfully.'));
 }
@@ -172,7 +172,7 @@ function core_commands_cron_run() {
  * Command callback. Provides a birds-eye view of the current Drupal
  * installation.
  */
-function core_commands_status() {
+function core_status() {
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     drush_print(dt("Drupal !version is installed at !DRUSH_DRUPAL_ROOT.", array('!version' => drush_drupal_version(), '!DRUSH_DRUPAL_ROOT' => $drupal_root)));
     if ($drush_uri = drush_get_context('DRUSH_URI')) {
@@ -211,7 +211,7 @@ function core_commands_status() {
 /**
  * Command callback. Runs "naked" php scripts.
  */
-function core_commands_script() {
+function core_script() {
   $scripts = func_get_args();
   foreach ($scripts as $script) {
     $script_filename = drush_cwd() . '/' . $script;
@@ -221,7 +221,7 @@ function core_commands_script() {
   }
 }
 
-function core_commands_cache_clear() {
+function core_cache_clear() {
   switch (drush_drupal_major_version()) {
     case 5:
       // clear preprocessor cache
@@ -244,7 +244,7 @@ function core_commands_cache_clear() {
   }
 }
 
-function core_commands_dl_destination($type) {
+function core_dl_destination($type) {
   $destination = drush_get_option('destination');
   if (!empty($destination)) {
     $destination = rtrim($destination, '/') . '/';
@@ -326,7 +326,7 @@ function drush_pm_parse_project_version($requests) {
   return $requestdata;
 }
 
-function core_commands_drush_dl_project_types() {
+function core_drush_dl_project_types() {
   // Lookup the 'Project type' vocabulary to some standard strings.
   $types = array(
     'core' => 'Drupal project',
@@ -342,7 +342,7 @@ function core_commands_drush_dl_project_types() {
 /**
  * Command callback. Download drupal core.
  */
-function core_commands_dl($full_project = NULL) {
+function core_dl($full_project = NULL) {
   if (empty($full_project)) {
     return drush_set_error('DRUSH_DL_EMPTY_PROJECT', "Please tell me what to download. (eg. `drush dl views` or `drush dl diff-6.x-2.0`)");
   }
@@ -360,7 +360,7 @@ function core_commands_dl($full_project = NULL) {
 
   $requestdata = drush_pm_parse_project_version(explode(' ', $full_project));
 
-  $project_types = core_commands_drush_dl_project_types();
+  $project_types = core_drush_dl_project_types();
   $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
   foreach ($requestdata as $package) {
     $version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION') ? drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION') : 6;
@@ -392,7 +392,7 @@ function core_commands_dl($full_project = NULL) {
         if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
           $release['type'] = array_search($types[0]->value, $project_types);
         }
-        $destination = core_commands_dl_destination($release['type']);
+        $destination = core_dl_destination($release['type']);
         
         if ($package_handler($project, $release, $destination)) {
           drush_print(dt("Project !project (!version) successfully downloaded to !dest.",
