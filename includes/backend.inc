@@ -287,12 +287,15 @@ function _drush_backend_generate_command($command, &$data, $method = 'GET', $dru
 
   $option_str = _drush_backend_argument_string($data, $method);
   $args = explode(" ", $command);
+  if (sizeof($data)) {
+    $args = array_merge($args, $data);
+  }
   $command = '';
   foreach ($args as $arg) {
     $command .= ' ' . escapeshellarg($arg);
   }
   // @TODO: Implement proper multi platform / multi server support.
-  $cmd = sprintf(escapeshellcmd("php %s %s %s"), escapeshellcmd($drush_path), $command,  $option_str);
+  $cmd = sprintf(escapeshellcmd("php %s %s %s --backend"), escapeshellcmd($drush_path), $option_str, $command);
 
   if (!is_null($hostname)) {
     $username = (!is_null($username)) ? $username : get_current_user();
@@ -300,6 +303,22 @@ function _drush_backend_generate_command($command, &$data, $method = 'GET', $dru
   }
 
   return $cmd;
+}
+
+/**
+ * A small utility function to call a drush command in the background.
+ *
+ * Takes the same parameters as drush_backend_invoke, but forks a new
+ * process by calling the command using system() and adding a '&' at the
+ * end of the command.
+ * 
+ * Use this if you don't care what the return value of the command may be.
+ */
+function drush_backend_fork($command, $data) {
+  $data['quiet'] = TRUE;
+  $cmd = "(" . _drush_backend_generate_command($command, $data) . ' &) > /dev/null';
+  drush_log(dt("Forking : !cmd", array('!cmd' => $cmd)));
+  system($cmd);
 }
 
 /**
@@ -337,15 +356,6 @@ function _drush_backend_argument_string(&$data, $method = 'GET') {
     unset($data['backend']);
   }
 
-
-  $arg_str = '';
-  ksort($args);
-  foreach ($args as $value) {
-    $arg_str .= ' ' . escapeshellarg($value);
-    unset($data[$key]);
-  }
-
-
   $special = array('root', 'uri'); // These should be in the command line.
   $option_str = '';
   foreach ($options as $key => $value) {
@@ -355,7 +365,7 @@ function _drush_backend_argument_string(&$data, $method = 'GET') {
     }
   }
 
-  return $arg_str . $option_str . ' --backend';
+  return $option_str;
 }
 
 /**
