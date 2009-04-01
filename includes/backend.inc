@@ -287,8 +287,11 @@ function _drush_backend_generate_command($command, &$data, $method = 'GET', $dru
 
   $option_str = _drush_backend_argument_string($data, $method);
   $args = explode(" ", $command);
-  if (sizeof($data)) {
-    $args = array_merge($args, $data);
+  foreach ($data as $key => $arg) {
+    if (is_numeric($key)) {
+      $args[] = $arg;
+      unset($data[$key]);
+    }
   }
   $command = '';
   foreach ($args as $arg) {
