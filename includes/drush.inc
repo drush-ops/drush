@@ -250,7 +250,7 @@ function drush_show_help($commands) {
           );
           
           foreach ($sections as $key => $value) {
-            if ($command[$key]) {
+            if (!empty($command[$key])) {
               drush_print(dt($value) . ':');
               foreach ($command[$key] as $name => $description) {
                 $rows[] = array($name, dt($description));
@@ -339,7 +339,7 @@ function drush_die($msg = NULL, $status = NULL) {
 }
 
 /**
- * Prints a message.
+ * Prints a message with optional indentation.
  * @param $message
  *   The message to print.
  * @param $indent
@@ -348,6 +348,16 @@ function drush_die($msg = NULL, $status = NULL) {
 function drush_print($message = '', $indent = 0) {
   print str_repeat(' ', $indent) . (string)$message . "\n";
 }
+
+/**
+ * Prints an array or string.
+ * @param $array
+ *   The array to print.
+ */
+function drush_print_r($array) {
+  print_r($array);
+}
+
 
 /**
  * Prints a message, but only if verbose mode is activated.
