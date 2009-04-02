@@ -10,7 +10,7 @@
  */
 function sql_drush_help($section) {
   switch ($section) {
-    case 'drush:sql url':
+    case 'drush:sql conf':
       return dt('Show database connection details.');
     case 'drush:sql cli':
       return dt('Quickly enter the mysql command line.');
@@ -28,30 +28,30 @@ function sql_drush_help($section) {
  */
 function sql_drush_command() {
   $options['--database'] = 'The DB connection key if using multiple connections in settings.php.';
-  if (drush_drupal_major_version() > 6) {
+  if (drush_drupal_major_version() >= 7) {
     $options['--target'] = 'The name of a target within the specified database.';
   }
   
-  $items['sql url'] = array(
-    'callback' => 'drush_sql_url',
+  $items['sql conf'] = array(
+    'callback' => 'drush_sql_conf',
     'description' => 'Print database connection details.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
   );
   $items['sql version server'] = array(
     'callback' => 'drush_sql_version_server',
     'description' => 'Print database server version number.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
   );
   $items['sql version client'] = array(
     'callback' => 'drush_sql_version_client',
     'description' => 'Print database client library version number.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
   );
   $items['sql dump'] = array(
     'callback' => 'drush_sql_dump_execute',
     'description' => 'Exports the Drupal DB as SQL using mysqldump or pg_dump.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'examples' => array(
       'drush sql dump --result-file=../18.sql' => 'Save SQL dump to the directory containing Drupal.',
       'drush sql dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.com',
@@ -63,7 +63,7 @@ function sql_drush_command() {
   );
   $items['sql query'] = array(
     'callback' => 'drush_sql_query',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'description' => 'Execute a query against the site database.',
     'examples' => array(
       'drush sql query "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record',
@@ -76,7 +76,7 @@ function sql_drush_command() {
   $items['sql load'] = array(
     'callback' => 'drush_sql_load',
     'description' => 'Copy source database to target database.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'examples' => array(
       'drush sql load prod dev' => 'Copy the DB defined in sites/prod to the DB in sites/dev.',
     ),
@@ -91,6 +91,7 @@ function sql_drush_command() {
   $items['sql cli'] = array(
     'callback' => 'drush_sql_cli',
     'description' => 'Open a SQL command-line interface using Drupal’s credentials.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
   );
   return $items;
@@ -99,7 +100,7 @@ function sql_drush_command() {
 /**
  * Command callback. Displays the Drupal site's database connection string.
  */
-function drush_sql_url() {
+function drush_sql_conf() {
   drush_print_r(_drush_sql_get_db_spec_default());
 }
 
@@ -109,7 +110,6 @@ function drush_sql_url() {
 function drush_sql_version_server() {
   switch (_drush_sql_get_scheme()) {
     case 'mysql':
-    case 'mysqli':
       drush_print(mysql_get_server_info());
       break;
     case 'pgsql':
@@ -130,7 +130,6 @@ function drush_sql_version_server() {
 function drush_sql_version_client() {
   switch (_drush_sql_get_scheme()) {
     case 'mysql':
-    case 'mysqli':
       drush_print(mysql_get_client_info());
       break;
     case 'pgsql':
@@ -280,8 +279,20 @@ function _drush_sql_get_db_spec_default() {
     case 6:
       $url = $GLOBALS['db_url'];
       // TODO: array version not working?
-      return is_array($url) ? $url[$database] : $url;
+      $url =  is_array($url) ? $url[$database] : $url;
+      $url = (object)parse_url($url);
+      return array(
+        'driver' => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
+        'username' => urldecode($url->user),
+        'password' => urldecode($url->pass),
+        'port' => urldecode($url->port),
+        'host' => urldecode($url->host),
+        'database' => substr(urldecode($url->path), 1), // skip leading '/' character≈
+      );
+      
     default:
+      require_once DRUPAL_ROOT . '/includes/database/database.inc';
+      
       $connection_info = Database::getConnectionInfo($database);
       $target = $connection_info[$target];
       return $target;
@@ -300,30 +311,14 @@ function _drush_sql_get_scheme($db_spec = NULL) {
   if (is_null($db_spec)) {
     $db_spec = _drush_sql_get_db_spec_default();
   }
-  
-  switch (drush_drupal_major_version()) {
-    case 5:
-    case 6:    
-      $url = (object)parse_url($db_spec);
-      return ($url->scheme);
-   default:
-     return $db_spec['driver'];
-  }
+  return $db_spec['driver'];
 }
 
 function _drush_sql_get_database($db_spec = NULL) {
   if (is_null($db_spec)) {
     $db_spec = _drush_sql_get_db_spec_default();
   }
-  
-  switch (drush_drupal_major_version()) {
-    case 5:
-    case 6:    
-      $url = (object)parse_url($db_spec);
-      return substr($url->path, 1);
-   default:
-     return $db_spec['database'];
-  }
+  return $db_spec['database'];
 }
 
 /**
@@ -336,26 +331,11 @@ function _drush_sql_get_credentials($db_spec = NULL) {
   if (is_null($db_spec)) {
     $db_spec = _drush_sql_get_db_spec_default();
   }
-  
-  switch (drush_drupal_major_version()) {
-    case 5:
-    case 6:    
-      $url = (object)parse_url($db_spec);
-      $url->user = urldecode($url->user);
-      $url->pass = urldecode($url->pass);
-      $url->host = urldecode($url->host);
-      $url->path = substr(urldecode($url->path), 1); // skip leading '/' character
-      
-      return ' -h' . $url->host .
-        (!isset($url->port) ? '' : ' -P' . $url->port) .
-        ' -u' . $url->user .
-        (empty($url->pass) ? '' : ' -p' . $url->pass) . ' ' . $url->path;
-   default:
-     return ' -h' . $db_spec['host'] .
-       (empty($db_spec['port']) ? '' : ' -P' . $db_spec['port']) .
-       ' -u' . $db_spec['username'] .
-       (empty($db_spec['password']) ? '' : ' -p' . $db_spec['password']) . ' ' . $db_spec['database'];
-  }
+    
+  return ' -h' . $db_spec['host'] .
+     (empty($db_spec['port']) ? '' : ' -P' . $db_spec['port']) .
+     ' -u' . $db_spec['username'] .
+     (empty($db_spec['password']) ? '' : ' -p' . $db_spec['password']) . ' ' . $db_spec['database'];
 }
 
 function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
@@ -365,7 +345,7 @@ function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
   switch (drush_drupal_major_version()) {
     case 5:
     case 6:    
-      return dt('Unable to parse DB connection string: `%url\'.', array('%url' => $db_url));
+      return dt('Unable to parse DB connection string');
    default:
      return dt('Unable to parse DB connection array');
   }
