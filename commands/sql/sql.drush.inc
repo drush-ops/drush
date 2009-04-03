@@ -101,7 +101,7 @@ function sql_drush_command() {
  * Command callback. Displays the Drupal site's database connection string.
  */
 function drush_sql_conf() {
-  drush_print_r(_drush_sql_get_db_spec_default());
+  drush_print_r(_drush_sql_get_db_spec());
 }
 
 /**
@@ -161,7 +161,7 @@ function drush_sql_dump_execute() {
  */
 function drush_sql_dump($db_spec = NULL) {
   if (is_null($db_spec)) {
-    $db_spec = _drush_sql_get_db_spec_default();
+    $db_spec = _drush_sql_get_db_spec();
   }
 
   $exec = 'mysqldump' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
@@ -175,7 +175,7 @@ function drush_sql_dump($db_spec = NULL) {
   $all_skip_tables = drush_get_option('skip-tables');
   if ($key && $all_skip_tables) {
     $skip_tables = $all_skip_tables[$key];
-    $database = _drush_sql_get_database($db_spec);
+    $database = $db_spec['database'];
     foreach ($skip_tables as $table) {
       $ignores[] = "--ignore-table=$database.$table";
     }
@@ -215,16 +215,16 @@ function drush_sql_query($query) {
  *    The name of a subdirectory under sites. Its settings.php specifies the database which whose tables will
  *    be replaced with the contents of `source`. *
  **/
-function drush_sql_load($source, $target) {
-  // Don't use require_once - we need to ovewrite db_url under some circumstances.
-  require "./sites/$source/settings.php";
-  $db_url_source = is_array($db_url) ? $db_url['default'] : $db_url;
-  require "./sites/$target/settings.php";
-  $db_url_target = is_array($db_url) ? $db_url['default'] : $db_url;
+function drush_sql_load($source, $destination) {
+  $source = _drush_sql_get_spec_from_settings("./sites/$source/settings.php", 'source');
+  $destination = _drush_sql_get_spec_from_settings("./sites/$destination/settings.php", 'target');
 
   // Prompt for confirmation. This is destructive.
   if (!drush_get_context('DRUSH_SIMULATE')) {
-    drush_print(dt("You will destroy data from !target and replace with data from !source.", array('!source' => $db_url_source, '!target' => $db_url_target)));
+    $txt_source = $source['host'] . '/' . $source['database'];
+    $txt_destination = $destination['host'] . '/' . $destination['database'];
+    drush_print(dt("You will destroy data from !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
+    drush_print();
     // TODO: actually make the backup if desired.
     drush_print(dt("You might want to make a backup first, using sql_dump command.\n"));
     if (!drush_confirm(dt('Do you really want to continue?'))) {
@@ -238,13 +238,13 @@ function drush_sql_load($source, $target) {
     $file = tempnam(sys_get_temp_dir(), 'sql');
     drush_set_option('result-file', $file);
   }
-
+  
   // Get command to export from source.
-  if ($retrieve = drush_sql_dump($db_url_source)) {
-
+  if ($retrieve = drush_sql_dump($source)) {
+    
     // Build import command for target.
     $send = 'mysql' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
-    $send .= _drush_sql_get_credentials($db_url_target);
+    $send .= _drush_sql_get_credentials($destination);
     
     $exec = "$retrieve; $send < $file";
     $return = drush_shell_exec($exec);
@@ -265,12 +265,13 @@ function drush_sql_cli() {
 // SQL SERVICE HELPERS
 
 /**
- * Get a database specification for the default DB connection.
+ * Get a database specification for the active DB connection. Honors the 
+ * 'database' and 'target command' line options.
  *
  * @return
- *   A $db_url for D5/D6, or a target for D7+
+ *   An info array describing a database target.
  */
-function _drush_sql_get_db_spec_default() {
+function _drush_sql_get_db_spec() {
   $database = drush_get_option('database') ? drush_get_option('database') : 'default';
   $target = drush_get_option('target') ? drush_get_option('target') : 'default';
   
@@ -291,34 +292,33 @@ function _drush_sql_get_db_spec_default() {
       );
       
     default:
-      require_once DRUPAL_ROOT . '/includes/database/database.inc';
-      
-      $connection_info = Database::getConnectionInfo($database);
-      $target = $connection_info[$target];
-      return $target;
+      // We don't use DB API here `sql load` would have to messily addConnection.
+      return $GLOBALS['databases'][$database][$target]; 
   }
 }
 
-// This sets some globals so please beware. TOOD: UPDATE!
-function drush_sql_get_path($uri) {
-  $drupal_base_url = parse_url($uri);
-  $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
-  $_SERVER['PHP_SELF'] = $drupal_base_url['path'].'/index.php';
-  return conf_path();
+// Build a $db_spec from a given settings.php.
+function _drush_sql_get_spec_from_settings($file, $prefix) {
+  // Reset global databases to whatever is defined in $file
+  global $databases, $db_url;
+  require $file;
+  
+  // Translate the custom options for sql load into ones usually recognized (i.e. no prefix).
+  if ($database = drush_get_option($prefix . '_database')) {
+    drush_set_option('database', $value);
+  }
+  if ($target = drush_get_option($prefix . '_target')) {
+    drush_set_option('target', $target);
+  }
+  
+  return _drush_sql_get_db_spec();
 }
 
 function _drush_sql_get_scheme($db_spec = NULL) {
   if (is_null($db_spec)) {
-    $db_spec = _drush_sql_get_db_spec_default();
+    $db_spec = _drush_sql_get_db_spec();
   }
   return $db_spec['driver'];
-}
-
-function _drush_sql_get_database($db_spec = NULL) {
-  if (is_null($db_spec)) {
-    $db_spec = _drush_sql_get_db_spec_default();
-  }
-  return $db_spec['database'];
 }
 
 /**
@@ -329,7 +329,7 @@ function _drush_sql_get_database($db_spec = NULL) {
  */
 function _drush_sql_get_credentials($db_spec = NULL) {
   if (is_null($db_spec)) {
-    $db_spec = _drush_sql_get_db_spec_default();
+    $db_spec = _drush_sql_get_db_spec();
   }
     
   return ' -h' . $db_spec['host'] .
@@ -340,7 +340,7 @@ function _drush_sql_get_credentials($db_spec = NULL) {
 
 function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
   if (is_null($db_spec)) {
-    $db_spec = _drush_sql_get_db_spec_default();
+    $db_spec = _drush_sql_get_db_spec();
   }
   switch (drush_drupal_major_version()) {
     case 5:
