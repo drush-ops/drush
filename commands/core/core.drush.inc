@@ -66,6 +66,55 @@ function core_drush_command() {
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
+  $items['watchdog show'] = array(
+    'callback' => 'core_watchdog_show',
+    'description' => 'Shows recent watchdog log messages. Optionally filter for a specific type.',
+    'drupal dependencies' => drush_drupal_major_version() >= 6 ? array('dblog') : array('watchdog'),
+    'arguments' => array(
+      'type' => 'The type of messages to show. Defaults to all.',
+    ),
+    'options' => array(
+      '--limit' => 'The number of messages to show. Defaults to 10.',
+    ),
+    'examples' => array(
+      'watchdog show cron' => 'Show recent cron watchdog messages.',
+      'watchdog show --limit 50' => 'Show 50 recent watchdog messages.',
+    ),
+  );
+  $items['watchdog delete'] = array(
+    'callback' => 'core_watchdog_delete',
+    'description' => 'Delete all messages or only those of a specified type.',
+    'arguments' => array(
+      'type' => 'The type of messages to delete. Use \'all.\' to do a complete wipe.',
+    ),
+    'drupal dependencies' => drush_drupal_major_version() >= 6 ? array('dblog') : array('watchdog'),
+    'examples' => array(
+      'watchdog delete all' => 'Delete all watchdog messages.',
+      'watchdog delete cron' => 'Delete all cron watchdog messages.',
+    ),
+    
+  );
+  $items['sync'] = array(
+    'callback' => 'core_sync',
+    'description' => 'Rsync the Drupal tree to/from another server using ssh.',
+    'arguments' => array(
+      'source' => 'See rsync documentation.',
+      'destination' => 'See rsync documentation.',
+    ),
+    'examples' => array(
+      'sync dev:/var/www/files/ stage:/var/www/files/' => 'Rsync \'files\' dir from dev to stage',
+    ),
+  );
+  $items['eval'] = array(
+    'callback' => 'core_eval',
+    'description' => 'Evaluate arbitrary php code after bootstrapping Drupal.',
+    'examples' => array(
+      'drush eval \"variable_set(\'hello\', \'world\');\"' => 'Sets the hello variable using Drupal API.',
+    ),
+    'arguments' => array(
+      'code' => 'PHP code',
+    ),
+  );
   return $items;
 }
 
@@ -89,6 +138,14 @@ function core_drush_help($section) {
       return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:script':
       return dt("Runs the given php script(s) against the current Drupal site.");
+    case 'drush:watchdog show':
+      return dt("Show recent watchdog messages.");
+    case 'drush:watchdog delete':
+      return dt("Delete watchdog messages.");
+    case 'drush:sync':
+      return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
+    case 'drush:eval':
+      return dt("Run arbitrary PHP code in the context of Drupal");
     case 'drush:dl':
       return dt("Quickly download projects from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
     case 'error:DRUSH_DRUPAL_DB_ERROR' : 
@@ -107,6 +164,7 @@ function core_drush_help($section) {
   }
 }
 
+// TODO: consolidate with SQL commands?
 function _core_site_credentials() {
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', $drupal_root);
@@ -406,4 +464,112 @@ function core_dl($full_project = NULL) {
       drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
     }
   }
+}
+
+/**
+ * Push files from or to the local Drupal install using SSH and RSync
+ *
+ * @return void
+ **/
+function core_sync($source, $destination) {
+  // Local paths are relative to Drupal root
+  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+  
+  if (!strstr($source, ':')) {
+    $source = $drupal_root. "/$source";
+  }
+  if (!strstr($destination, ':')) {
+    $destination = $drupal_root . "/$destination";
+  }
+
+  // Prompt for confirmation. This is destructive.
+  if (!drush_get_context('DRUSH_SIMULATE')) {
+    drush_print(dt("You will destroy data from !target and replace with data from !source", array('!source' => $source, '!target' => $destination)));
+    if (!drush_confirm(dt('Do you really want to continue?'))) {
+      return drush_set_error('CORE_SYNC_ABORT', 'Aborting.');
+    }
+  }
+
+  $options = '-az';
+  $exec = "rsync -e ssh $options --exclude \"*.svn*\" $source $destination";
+  if (drush_get_context('DRUSH_VERBOSE')) {
+    // the drush_op() will be verbose about the command that gets executed.
+    $options .= 'v';
+  }
+
+  return drush_op('system', $exec) !== FALSE;
+}
+
+/**
+ * Displays the most recent watchdog log messages (default: 10 messages).
+ */
+function core_watchdog_show($type = NULL) {
+  $severities = array(WATCHDOG_NOTICE => dt('notice'), WATCHDOG_WARNING => dt('warning'), WATCHDOG_ERROR => dt('error'));
+  $limit = drush_get_option('limit') ? drush_get_option('limit') : 10;
+
+  $sql = 'SELECT w.*, u.name, u.uid FROM {watchdog} w INNER JOIN {users} u ON w.uid = u.uid';
+  $sort = ' ORDER BY w.wid DESC';
+  if (empty($type)) {
+    $result = db_query_range($sql, 0, (int)$limit);
+  }
+  else {
+    switch (drush_drupal_major_version()) {
+      case 5:
+      case 6:
+        $result = db_query_range($sql . " WHERE w.type = '%s'" . $sort, $type, 0, $limit);
+        break;
+      default:
+        $result = db_query_range($sql . " WHERE w.type = :type" . $sort, array(':type' => $type), 0, $limit);
+    }
+  }
+
+  $rows = array();
+  // module_load_include('inc', 'dblog', 'dblog.admin');
+  while ($watchdog = db_fetch_object($result)) {
+    $rows[] = array(
+      format_date($watchdog->timestamp, 'small'),
+      $severities[$watchdog->severity],
+      dt($watchdog->type),
+      core_watchdog_format_message($watchdog),
+      theme('username', $watchdog),
+    );
+  }
+
+  if (count($rows) == 0) {
+    return drush_set_error('CORE_WATCHDOG_SHOW_NONE', 'No log messages available.');
+  }
+  else {
+    drush_verbose(dt('Last !count watchdog log messages:', array('!count' => $limit)));
+
+    array_unshift($rows, array(dt('Date'), dt('Severity'), dt('Type'), dt('Message'), dt('User')));
+    drush_print_table($rows, 2, TRUE);
+  }
+}
+
+function core_watchdog_format_message($watchdog) {
+  $message = drush_drupal_major_version() == 5 ? $watchdog->message : strtr($watchdog->message, unserialize($watchdog->variables));
+  return truncate_utf8(decode_entities($message), 68, FALSE, FALSE);
+}
+
+/**
+ * Deletes all log messages of a certain type from the watchdog log
+ * (default: all).
+ */
+function core_watchdog_delete($type = NULL) {
+  if ($type == "all") {
+    // D7: ought to be a dynamic query.
+    drush_op('db_query', 'DELETE FROM {watchdog}'); // indiscriminately delete all
+    drush_log(dt('Deleted !n rows.', array('!n' => db_affected_rows())), 'ok');
+  }
+  elseif (!empty($type)) {
+    drush_op('db_query', 'DELETE FROM {watchdog} WHERE type = \'%s\'', $type);
+    drush_log(dt('Deleted !n rows.', array('!n' => db_affected_rows())), 'ok');
+  }
+  else {
+    drush_set_error(dt('Please specify a message type, or "all" to delete all messages.'));
+  }
+}
+
+function core_eval($command) {
+  eval($command);
 }
