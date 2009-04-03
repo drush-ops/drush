@@ -566,11 +566,16 @@ function _drush_log_drupal_messages() {
     if (array_key_exists('error', $messages)) {
       //Drupal message errors.
       foreach ((array) $messages['error'] as $error) {
-        if (preg_match('/^warning:/', $error)) {
-          drush_log(ereg_replace('/^warning: /', '', $error), 'warning');
+        $error = strip_tags($error);
+        if (preg_match('/^warning:/i', $error)) {
+          drush_log(ereg_replace('/^warning: /i', '', $error), 'warning');
         }
-        elseif (preg_match('/^user warning:/', $error)) {
-          drush_set_error('DRUSH_DRUPAL_ERROR_MESSAGE', ereg_replace('/^user warning: /', '', $error));
+        elseif (preg_match('/^notice:/i', $error)) {
+          drush_log(ereg_replace('/^notice: /i', '', $error), 'notice');
+        }
+        elseif (preg_match('/^user warning:/i', $error)) {
+          // This is a special case. PHP logs sql errors as 'User Warnings', not errors.
+          drush_set_error('DRUSH_DRUPAL_ERROR_MESSAGE', ereg_replace('/^user warning: /i', '', $error));
         }
         else {
           drush_set_error('DRUSH_DRUPAL_ERROR_MESSAGE', $error);
