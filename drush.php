@@ -88,6 +88,9 @@ function drush_main() {
  * result of drush_get_error() if it wasn't.
  */
 function drush_shutdown() {
+  // Mysteriously make $user available during sess_write(). Avoids a NOTICE.
+  global $user; 
+  
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if (drush_get_context('DRUSH_BOOTSTRAPPING')) {
     switch ($phase) {
