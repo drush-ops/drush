@@ -218,7 +218,7 @@ function drush_command_invoke_all() {
 function drush_command_implements($hook) {
   $implementations[$hook] = array();
   $list = drush_commandfile_list();
-  foreach ($list as $commandfile) {
+  foreach ($list as $commandfile => $file) {
     if (drush_command_hook($commandfile, $hook)) {
       $implementations[$hook][] = $commandfile;
     }
@@ -300,7 +300,7 @@ function _drush_find_commandfiles($phase) {
         $files = drush_scan_directory($path, '\.drush\.inc$');
         foreach ($files as $filename => $info) {
           require_once($filename);
-          $list[$filename] = basename($filename, '.drush.inc');
+          $list[basename($filename, '.drush.inc')] = $filename;
         }
       }
     }
