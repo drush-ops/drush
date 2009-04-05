@@ -277,8 +277,13 @@ function _drush_bootstrap_drupal_root() {
  * Drupal, essentially mimicking a webserver environment.
  */
 function _drush_bootstrap_drupal_site() {
+  $site_path = drush_site_path();
+  $elements = explode('/', $site_path);
+  $current = array_pop($elements);
+  $uri = 'http://'. $current;
+
   $drush_uri = drush_set_context('DRUSH_URI', 
-      drush_get_option(array('l', 'uri'), drush_site_uri()));
+      drush_get_option(array('l', 'uri'), $uri));
 
   // Fake the necessary HTTP headers that Drupal needs:
   if ($drush_uri) {
@@ -296,17 +301,16 @@ function _drush_bootstrap_drupal_site() {
   $_SERVER['REQUEST_METHOD']  = NULL;
   $_SERVER['SERVER_SOFTWARE'] = NULL;
   $_SERVER['HTTP_USER_AGENT'] = NULL;
-
+  
   $site = drush_set_context('DRUSH_DRUPAL_SITE', $_SERVER['HTTP_HOST']);
   if (($conf_path = conf_path()) && !file_exists("./$conf_path/settings.php")) {
     drush_set_error('DRUPAL_SITE_SETTINGS_NOT_FOUND');
   }
   else {
     drush_set_context('DRUSH_DRUPAL_SITE_ROOT', $conf_path);
-
-    drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
   }
 
+  drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
   drush_load_config('site');
 }
 
@@ -438,45 +442,6 @@ function drush_site_path($path = NULL) {
   }
 
   return $site_path;
-}
-
-/**
- * Attempts to determine site URI from the given path, using
- * a couple of heuristics.
- *
- * @param
- *   Starting path or current working directory.
- *
- * @return
- *   Site uri string or false if none was found.
- */
-function drush_site_uri($path = NULL) {
-  $uri = FALSE;
-
-  if ($site_path = drush_site_path($path)) {
-    // TODO: the method of including the settings.php file here is 
-    // problematic, since it may contain code that will be executed.
-    // An alternative approach would be to use a regexp for extracting
-    // a possible $base_url setting.
-
-    // Export the following settings.php variables to the global namespace.
-    global $databases, $db_url, $db_prefix, $cookie_domain, $conf, $installed_profile, $update_free_access;
-    // If the settings.php has a defined path we use the URI from that.
-    include_once($site_path . '/settings.php');
-    if (isset($base_url)) {
-      $uri = $base_url;
-    }
-    else {
-      // Alternatively we default to the name of the current directory, if it is not 'default'.
-      $elements = explode('/', $site_path);
-      $current = array_pop($elements);
-      if ($current != 'default') {
-        $uri = 'http://'. $current;
-      }
-    }
-  }
-
-  return $uri;
 }
 
 /**

@@ -105,8 +105,6 @@ function drush_shutdown() {
     }
   }
 
-
-
   if (drush_get_context('DRUSH_BACKEND')) {
     drush_backend_output();
   }
