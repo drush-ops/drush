@@ -137,26 +137,20 @@ function drush_parse_command() {
     $part = implode(" ", $args);
     if (isset($implemented[$part])) {
       $command = $implemented[$part];
-      // We found a command descriptor, now we check if it is valid.
-      if (empty($command['callback'])) {
-        $command = FALSE;
-        break;
-      }
-      else {
-        // Normalize command descriptor
-        $command += array(
-          'command' => $part,
-          'description' => NULL,
-          'arguments' => array(),
-          'options' => array(),
-          'extras' => array(),
-          'core' => array(),
-          'scope' => 'site',
-          'bootstrap' => NULL,
-          'drupal dependencies' => array(),
-          'drush dependencies' => array(),
-        );
-      }
+      // Normalize command descriptor
+      $command += array(
+        'command' => $part,
+        'callback' => 'drush_command',
+        'description' => NULL,
+        'arguments' => array(),
+        'options' => array(),
+        'extras' => array(),
+        'core' => array(),
+        'scope' => 'site',
+        'bootstrap' => NULL,
+        'drupal dependencies' => array(),
+        'drush dependencies' => array(),
+      );
     }
     else {
       $arguments[] = array_pop($args);
@@ -176,6 +170,108 @@ function drush_parse_command() {
   }
   return $command;
 }
+
+/**
+ * Invoke drush api calls. 
+ * 
+ * Call the correct hook for all the modules that implement it. 
+ * Additionally, the ability to rollback when an error has been encountered is also provided.
+ * If at any point during execution, the drush_get_error() function returns anything but 0,
+ * drush_invoke() will trigger $hook_rollback for each of the hooks that implement it, 
+ * in reverse order from how they were executed.
+ *
+ * This function will also trigger pre_$hook and post_$hook variants of the hook 
+ * and it's rollbacks automatically.
+ *
+ * @param command 
+ *   The drush command to execute.
+ * @return
+ *   A boolean specifying whether or not the command was successfully completed. 
+ * 
+ */
+function drush_invoke($command) {
+  drush_command_include($command);
+  $args = func_get_args();
+  array_shift($args);
+
+
+  $hook = str_replace(" ", "_", $command);
+  $functions = array();
+  // First we build a list of functions are about to execute
+  $variations = array($hook . "_validate", "pre_$hook", $hook, "post_$hook");
+  foreach ($variations as $var_hook) {
+    foreach (drush_command_implements($var_hook) as $name) {
+      $functions[] = $name . '_' . $var_hook;
+    }
+  }
+
+  $rollback = FALSE;
+  $completed = array();
+  foreach ($functions as $func) {
+    $completed[] = $func;
+    if (function_exists($func)) {
+      call_user_func_array($func, $args);
+      _drush_log_drupal_messages();
+      if (drush_get_error()) {
+        drush_log(dt('An error occurred at function : @func', array('@func' => $func)), 'error');
+        # As soon as an error occurs, roll back
+        $rollback = TRUE;
+        break;
+      }
+    }
+  }
+
+  // something went wrong, we need to undo 
+  if ($rollback) {
+    foreach (array_reverse($completed) as $func) {
+      $rb_func = $func . '_rollback';
+      if (function_exists($rb_func)) {
+        call_user_func_array($rb_func, $args);
+        _drush_log_drupal_messages();
+        drush_log("Changes for $func module have been rolled back.", 'rollback');
+      }
+    }
+  }
+
+  return !$rollback;
+}
+
+
+/**
+ * Entry point for commands into the drush_invoke API
+ *
+ * If a command does not have a callback specified, this function will be called.
+ *
+ * This function will trigger $hook_drush_init, then if no errors occur,
+ * it will call drush_invoke() with the command that was dispatch.
+ *
+ * If no errors have occured, it will run $hook_drush_exit.
+ */
+function drush_command() {
+  $args = func_get_args();
+  $command = drush_get_command();
+  foreach (drush_command_implements("drush_init") as $name) {
+    $func = $name . '_drush_init';
+    drush_log(dt("Initializing drush commandfile: !name", array('!name' => $name)), 'bootstrap');
+    call_user_func_array($func, $args);
+    _drush_log_drupal_messages();
+  }
+
+  if (!drush_get_error()) {
+    call_user_func_array('drush_invoke', 
+      array_merge(array($command['command']), $args));
+  }
+
+  if (!drush_get_error()) {
+    foreach (drush_command_implements('drush_exit') as $name) {
+      $func = $name . '_drush_exit';
+      call_user_func_array($func, $args);
+      _drush_log_drupal_messages();
+    }
+  }
+}
+
+
 
 /**
  * Invoke a hook in all available command files that implement it.
@@ -312,40 +408,28 @@ function _drush_find_commandfiles($phase) {
 }
 
 /**
- * Storage mechanism for the cached commandfile list.
+ * Conditionally include files based on the command used.
  *
- * This function populates an internal static variable,
- * that contains the previously found command files.
+ * Steps through each of the currently loaded commandfiles and
+ * loads an optional commandfile based on the key.
  *
- * @param mixed
- *    Possible types :
- *      null - return the previous data only.
- *      array - replace the current cache contents with the contents of the array
- *      constant - when passed the DRUSH_FLUSH_COMMANDFILE_CACHE constant, this will wipe out the previous values, so future calls
- *                 to drush_command_file will automatically regenerate the cache.
- *  @return array
- *    The current file list that has been cached.
+ * When a command such as 'pm install' is called, this
+ * function will find all 'install.pm.inc' files that
+ * are present in each of the commandfile directories.
  */
-function _drush_commandfile_cache($list = null) {
-  static $cache = array();
-  if ($list === DRUSH_FLUSH_COMMANDFILE_CACHE) {
-    $cache = array();
+function drush_command_include($command) {
+  $parts = explode(' ', $command);
+  $command = implode(".", array_reverse($parts));
+ 
+  $commandfiles = drush_commandfile_list();
+  $options = array();
+  foreach ($commandfiles as $commandfile => $file) {
+    $filename = sprintf("%s/%s.inc", dirname($file), $command);
+    if (file_exists($filename)) {
+      drush_log(dt('Including !filename', array('!filename' => $filename)), 'bootstrap');
+      include_once($filename);
+    }
   }
-  elseif (!is_null($list)) {
-    $cache = $list;
-  }
-  return $cache;
-}
-
-/**
- * Flush the commandfile list cache.
- *
- * This is needed whenever drush code changes bootstrap level,
- * to allow additional information (such as commands in enabled modules)
- * to be retrieved.
- */
-function drush_commandfile_cache_flush() {
-  _drush_commandfile_cache(DRUSH_FLUSH_COMMANDFILE_CACHE);
 }
 
 /**

@@ -350,9 +350,6 @@ function _drush_bootstrap_drupal_login() {
 }
 
 
-
-
-
 /**
  * Returns the current working directory.
  *

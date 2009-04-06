@@ -23,34 +23,28 @@ function core_drush_command() {
   $items = array();
 
   $items['help'] = array(
-    'callback' => 'drush_usage',
     'description' => 'Print this help message.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
   );
   $items['cron'] = array(
-    'callback' => 'core_cron_run',
     'description' => 'Run all cron hooks.',
   );
   $items['status'] = array(
-    'callback' => 'core_status',
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
   );
   $items['script'] = array(
-    'callback' => 'core_script',
     'description' => "Run php script(s).",
     'examples' => array(
-      'drush script update_variables.php',
+      'drush script update_variables.php' => 'Run variables.php script',
     ),
     'arguments' => array(
       'path/to/script' => 'One or more file paths. Paths may be absolute or relative to the current working dir.',
     ),
   );
   $items['cache clear'] = array(
-    'callback' => 'core_cache_clear',
     'description' => 'Clear all caches.'
   );
   $items['dl'] = array(
-    'callback' => 'core_dl',
     'description' => 'Download core Drupal and modules like Drush Extras.',
     'examples' => array(
       'drush dl drupal' => 'Download latest version of Drupal core.', 
@@ -67,7 +61,6 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
   $items['watchdog show'] = array(
-    'callback' => 'core_watchdog_show',
     'description' => 'Shows recent watchdog log messages. Optionally filter for a specific type.',
     'drupal dependencies' => drush_drupal_major_version() >= 6 ? array('dblog') : array('watchdog'),
     'arguments' => array(
@@ -82,7 +75,6 @@ function core_drush_command() {
     ),
   );
   $items['watchdog delete'] = array(
-    'callback' => 'core_watchdog_delete',
     'description' => 'Delete all messages or only those of a specified type.',
     'arguments' => array(
       'type' => 'The type of messages to delete. Use \'all.\' to do a complete wipe.',
@@ -95,7 +87,6 @@ function core_drush_command() {
     
   );
   $items['sync'] = array(
-    'callback' => 'core_sync',
     'description' => 'Rsync the Drupal tree to/from another server using ssh.',
     'arguments' => array(
       'source' => 'See rsync documentation.',
@@ -106,7 +97,6 @@ function core_drush_command() {
     ),
   );
   $items['eval'] = array(
-    'callback' => 'core_eval',
     'description' => 'Evaluate arbitrary php code after bootstrapping Drupal.',
     'examples' => array(
       'drush eval \"variable_set(\'hello\', \'world\');\"' => 'Sets the hello variable using Drupal API.',
@@ -117,6 +107,60 @@ function core_drush_command() {
   );
   return $items;
 }
+
+
+/**
+ * This is called if no command or an unknown command is entered.
+ */
+function core_help() {
+  $commands = func_get_args();
+  drush_set_context('DRUSH_SHOWING_HELP', TRUE);
+  
+  if (empty($commands)) {
+    $phases = _drush_bootstrap_phases(); 
+    drush_print(dt('Usage: drush.php [options] <command> <command> ...'));
+    drush_print();
+    drush_print('Run "drush help [command]" to view command-specific help.');
+    drush_print(dt('Options: '));
+    foreach (drush_get_option_help() as $option => $description) {
+      $rows[] = array($option, $description);
+    }
+
+    drush_print_table($rows, 2);
+    drush_print();
+    drush_print('Commands: ');
+
+    $printed_rows = array();
+    $phase_index = DRUSH_BOOTSTRAP_DRUSH;
+
+    foreach ($phases as $phase_index) {
+      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
+        drush_bootstrap($phase_index);
+      }
+      if (!drush_get_error()) {
+        $commands = drush_get_commands();
+        $rows = array();
+        foreach($commands as $key => $command) {
+          if (!array_key_exists($key, $printed_rows)) {
+            $rows[$key] = array(sprintf("%-20s", $key), $commands[$key]['description']);
+          }
+        }
+        drush_print_table($rows, 2);
+        $printed_rows = array_merge($printed_rows, $rows);
+      }
+      else {
+        break; 
+      }
+    }
+    return;
+  }
+  else {
+    return drush_show_help($commands);
+  }
+
+  drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
+}
+
 
 /**
  * Implementation of hook_drush_help().
@@ -221,7 +265,7 @@ function _core_site_credentials() {
  * To print something to the terminal window, use drush_print().
  *
  */
-function core_cron_run() {
+function core_cron() {
   drupal_cron_run();
   drush_print(dt('Cron run successfully.'));
 }
@@ -547,7 +591,13 @@ function core_watchdog_show($type = NULL) {
 }
 
 function core_watchdog_format_message($watchdog) {
-  $message = drush_drupal_major_version() == 5 ? $watchdog->message : strtr($watchdog->message, unserialize($watchdog->variables));
+  if (drush_drupal_major_version() == 5) {
+    $message = $watchdog->message;
+  }
+  else {
+    $variables = unserialize($watchdog->variables);
+    $message = is_array($variables) ? strtr($watchdog->message, $variables) : $watchdog->message;
+  }
   return truncate_utf8(decode_entities($message), 68, FALSE, FALSE);
 }
 

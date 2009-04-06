@@ -147,58 +147,6 @@ function dt($string, $args = NULL) {
 }
 
 /**
- * This is called if no command or an unknown command is entered.
- */
-function drush_usage() {
-  $commands = func_get_args();
-  drush_set_context('DRUSH_SHOWING_HELP', TRUE);
-  
-  if (empty($commands)) {
-    $phases = _drush_bootstrap_phases(); 
-    drush_print(dt('Usage: drush.php [options] <command> <command> ...'));
-    drush_print();
-    drush_print('Run "drush help [command]" to view command-specific help.');
-    drush_print(dt('Options: '));
-    foreach (drush_get_option_help() as $option => $description) {
-      $rows[] = array($option, $description);
-    }
-
-    drush_print_table($rows, 2);
-    drush_print();
-    drush_print('Commands: ');
-
-    $printed_rows = array();
-    $phase_index = DRUSH_BOOTSTRAP_DRUSH;
-
-    foreach ($phases as $phase_index) {
-      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
-        drush_bootstrap($phase_index);
-      }
-      if (!drush_get_error()) {
-        $commands = drush_get_commands();
-        $rows = array();
-        foreach($commands as $key => $command) {
-          if (!array_key_exists($key, $printed_rows)) {
-            $rows[$key] = array(sprintf("%-20s", $key), $commands[$key]['description']);
-          }
-        }
-        drush_print_table($rows, 2);
-        $printed_rows = array_merge($printed_rows, $rows);
-      }
-      else {
-        break; 
-      }
-    }
-    return;
-  }
-  else {
-    return drush_show_help($commands);
-  }
-
-  drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
-}
-
-/**
  * Get the available options for Drush for use by help page.
  *
  * @return
