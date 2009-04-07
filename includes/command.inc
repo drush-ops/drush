@@ -84,16 +84,28 @@ function drush_parse_args() {
  *
  */
 function drush_get_commands() {
-  $commands = drush_command_invoke_all('drush_command');
-
-  // Filter out commands which are invalid for this bootstrap phase.
-  $commands = drush_enforce_requirement_bootstrap_phase($commands);
-
-  // Filter out commands which are invalid for the current version of core Drupal.
-  $commands = drush_enforce_requirement_core($commands);
-  
-  // Filter out commands which are missing their dependant Drupal modules.
-  $commands = drush_enforce_requirement_drupal_dependencies($commands);
+  $commands = $available_commands = array();
+  $list = drush_commandfile_list();
+  foreach ($list as $commandfile => $path) {
+    if (drush_command_hook($commandfile, 'drush_command')) {
+      $function = $commandfile . '_drush_command';
+      $result = $function();
+      foreach ((array)$result as $key => $command) {
+        // Add some defaults
+        $command += array(
+          'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+          'commandfile' => $commandfile,
+          'path' => dirname($path),
+        );
+        // Filter out commands which are invalid for this bootstrap phase, core or have missing dependencies.
+        if (drush_enforce_requirement_bootstrap_phase($command)
+            && drush_enforce_requirement_core($command)
+            && drush_enforce_requirement_drupal_dependencies($command)) {
+          $commands[$key] = $command;
+        }
+      }
+    }
+  }
 
   return drush_set_context('DRUSH_COMMANDS', $commands);
 }
@@ -258,8 +270,7 @@ function drush_command() {
   }
 
   if (!drush_get_error()) {
-    call_user_func_array('drush_invoke', 
-      array_merge(array($command['command']), $args));
+    call_user_func_array('drush_invoke', array_merge(array($command['command']), $args));
   }
 
   if (!drush_get_error()) {
@@ -512,50 +523,57 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
   return $files;
 }
 
-// Return commands that are valid for the current bootstrap phase.
-function drush_enforce_requirement_bootstrap_phase($commands) {
+/**
+ * Check that a command is valid for the current bootstrap phase.
+ * 
+ * @param $command
+ *   Command to check
+ * 
+ * @return
+ *   TRUE if command is valid.
+ */
+function drush_enforce_requirement_bootstrap_phase($command) {
   $valid = array();
   $current_phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-  if (!empty($commands)) {
-    foreach ($commands as $key => $command) {
-      $command += array('bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL);
-      if ($command['bootstrap'] == $current_phase) {
-        $valid[$key] = $command;
+  if ($command['bootstrap'] == $current_phase) {
+    return TRUE;
+  }
+}
+
+/**
+ * Check that a command has it's declared dependencies available or have no
+ * dependencies.
+ * 
+ * @param $command
+ *   Command to check
+ * 
+ * @return
+ *   TRUE if command is valid.
+ */
+function drush_enforce_requirement_drupal_dependencies($command) {
+  if (empty($command['drupal dependencies'])) {
+    return TRUE;
+  }
+  else {
+    foreach ($command['drupal dependencies'] as $dependency) {
+      if (function_exists('module_exists') && module_exists($dependency)) {
+        return TRUE;
       }
     }
   }
-  return $valid;
 }
 
-// Return commands which have their declared dependencies or have no dependencies.
-function drush_enforce_requirement_drupal_dependencies($commands) {
-  $valid = array();
-  foreach ($commands as $key => $command) {
-    if (empty($command['drupal dependencies'])) {
-      $valid[$key] = $command;
-    }
-    else {
-      foreach ($command['drupal dependencies'] as $dependency) {
-        if (function_exists('module_exists') && module_exists($dependency)) {
-          $valid[$key] = $command;
-        }
-      }
-    }
+/**
+ * Check that a command is valid for the current major version of core.
+ * 
+ * @param $command
+ *   Command to check
+ * 
+ * @return
+ *   TRUE if command is valid.
+ */
+function drush_enforce_requirement_core($command) {
+  if (empty($command['core']) || in_array(drush_drupal_major_version(), $command['core'])) {
+    return TRUE;
   }
-  return $valid;
 }
-
-// Return commands that are valid for the current major version of core.
-function drush_enforce_requirement_core($commands) {
-  $valid = array();
-  if (!empty($commands)) {
-    foreach ($commands as $key => $command) {
-      if (empty($command['core']) || in_array(drush_drupal_major_version(), $command['core'])) {
-        $valid[$key] = $command;
-      }
-    }
-  }
-  return $valid;
-}
-
-

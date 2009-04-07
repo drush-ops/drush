@@ -441,6 +441,14 @@ function core_drush_dl_project_types() {
   return $types;
 }
 
+function core_drush_engine_handler() {
+  return array(
+    'wget' => array(
+      'path' => DRUSH_BASE_PATH . '/commands/pm/handler',
+    ),
+  );
+}
+
 /**
  * Command callback. Download drupal core.
  */
@@ -452,13 +460,8 @@ function core_dl($full_project = NULL) {
   // Try to bootstrap to config phase so we can determine destination.
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_ROOT);
 
-  $package_handler = 'drush_pm_wget_install_project';
-  if (function_exists('drush_pm_get_package_handler')) {
-    $package_handler = drush_pm_get_package_handler() .'_install_project';
-    if (!function_exists($package_handler)) {
-      return drush_set_error('DRUSH_PM_HANDLER_NON_INSTALL', dt('The !package_handler package handler does not handle installs.', array('!package_handler' => $package_handler)));
-    }
-  }
+  // TODO: Add option handling here to select the preferred handler.
+  drush_include_engine('handler', 'wget');
 
   $requestdata = drush_pm_parse_project_version(explode(' ', $full_project));
 
@@ -496,7 +499,7 @@ function core_dl($full_project = NULL) {
         }
         $destination = core_dl_destination($release['type']);
         
-        if ($package_handler($project, $release, $destination)) {
+        if (drush_handler_install_project($project, $release, $destination)) {
           drush_print(dt("Project !project (!version) successfully downloaded to !dest.",
                          array('!project' => $project, '!version' => $release['version'], '!dest' => $destination)));
           drush_command_invoke_all('drush_pm_post_install', $project, $release, $destination);

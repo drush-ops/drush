@@ -14,11 +14,12 @@ if (!drush_verify_cli()) {
   die('drush.php is designed to run via the command line.');
 }
 
-require_once dirname(__FILE__) . '/includes/environment.inc';
-require_once dirname(__FILE__) . '/includes/command.inc';
-require_once dirname(__FILE__) . '/includes/drush.inc';
-require_once dirname(__FILE__) . '/includes/backend.inc';
-require_once dirname(__FILE__) . '/includes/context.inc';
+define('DRUSH_BASE_PATH', dirname(__FILE__));
+require_once DRUSH_BASE_PATH . '/includes/environment.inc';
+require_once DRUSH_BASE_PATH . '/includes/command.inc';
+require_once DRUSH_BASE_PATH . '/includes/drush.inc';
+require_once DRUSH_BASE_PATH . '/includes/backend.inc';
+require_once DRUSH_BASE_PATH . '/includes/context.inc';
 
 drush_set_context('argc', $GLOBALS['argc']);
 drush_set_context('argv', $GLOBALS['argv']);

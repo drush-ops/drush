@@ -12,7 +12,7 @@
  * Modules can add commands by implementing hook_drush_command().
  *
  * @param
- *
+ *   Command whose callback you want to call, defaults to current command.
  */
 function drush_dispatch($command = NULL) {
   $command = ($command) ? $command : drush_get_command();
@@ -31,6 +31,135 @@ function drush_dispatch($command = NULL) {
   return $return;
 }
 
+/**
+ * Include a file, selecting a version specific file if available.
+ * 
+ * For example, if you pass the path "/var/drush" and the name
+ * "update" when bootstrapped on a Drupal 6 site it will first check for
+ * the presence of "/var/drush/update_6.inc" in include it if exists. If this
+ * file does NOT exist it will proceed and check for "/var/drush/update.inc".
+ * If neither file exists, it will return FALSE.
+ * 
+ * @param $path
+ *   The path you want to search.
+ * @param $name
+ *   The file base name you want to include (not including a version suffix
+ *   or extension). 
+ * @param $version
+ *   The version suffix you want to include (could be specific to the software
+ *   or platform your are connecting to) - defaults to the current Drupal core
+ *   major version.
+ * @param $extension
+ *   The extension - defaults to ".inc".
+ *   
+ * @return
+ *   TRUE if the file was found and included.
+ */
+function drush_include($path, $name, $version = NULL, $extension = 'inc') {
+  $version = ($version) ? $version : drush_drupal_major_version();
+  $file = sprintf("%s/%s_%s.%s", $path, $name, $version, $extension);
+  if (file_exists($file)) {
+    drush_log(dt('Including version specific file : @file', array('@file' => $file)));
+    include_once($file);
+    return TRUE;
+  }
+  $file = sprintf("%s/%s.%s", $path, $name, $extension);
+  if (file_exists($file)) {
+    drush_log(dt('Including non-version specific file : @file', array('@file' => $file)));
+    include_once($file);
+    return TRUE;
+  }
+}
+
+/**
+ * Return a structured array of engines of a specific type from commandfiles
+ * implementing hook_drush_engine_$type.
+ * 
+ * Engines are pluggable subsystems. Each engine of a specific type will
+ * implement the same set of API functions and perform the same high-level
+ * task using a different backend or approach. 
+ * 
+ * This function/hook is useful when you have a selection of several mutually
+ * exclusive options to present to a user to select from.
+ * 
+ * Other commands are able to extend this list and provide their own engines.
+ * The hook can return useful information to help users decide which engine
+ * they need, such as description or list of available engine options.
+ * 
+ * The engine path element will automatically default to a subdirectory (within
+ * the directory of the commandfile that implemented the hook) with the name of
+ * the type of engine - e.g. an engine "wget" of type "handler" provided by
+ * the "pm" commandfile would automatically be found if the file
+ * "pm/handler/wget.inc" exists and a specific path is not provided.
+ * 
+ * @param $type
+ *   The type of engine.
+ *  
+ * @return
+ *   A structured array of engines.
+ */
+function drush_get_engines($type) {
+  $engines = array();
+  $list = drush_commandfile_list();
+  foreach ($list as $commandfile => $path) {
+    if (drush_command_hook($commandfile, 'drush_engine_' . $type)) {
+      $function = $commandfile . '_drush_engine_' . $type;
+      $result = $function();
+      foreach ((array)$result as $key => $engine) {
+        // Add some defaults
+        $engine += array(
+          'commandfile' => $commandfile,
+          // Engines by default live in a subdirectory of the commandfile that
+          // declared them, named as per the type of engine they are.
+          'path' => sprintf("%s/%s", dirname($path), $type),
+        );
+        $engines[$key] = $engine;
+      }
+    }
+  }
+  return $engines;
+}
+
+/**
+ * Include the engine code for a specific named engine of a certain type.
+ *
+ * If the engine type has implemented hook_drush_engine_$type the path to the
+ * engine specified in the array will be used.
+ * 
+ * If you don't need to present any user options for selecting the engine
+ * (which is common if the selection is implied by the running environment)
+ * and you don't need to allow other modules to define their own engines you can
+ * simply pass the $path to the directory where the engines are, and the
+ * appropriate one will be included.
+ * 
+ * Unlike drush_include this function will set errors if the requested engine
+ * cannot be found.
+ *
+ * @param $type
+ *   The type of engine.
+ * @param $engine
+ *   The key for the engine to be included.
+ * @param $version
+ *   The version of the engine to be included - defaults to the current Drupal core
+ *   major version.
+ * @param $path
+ *   A path to include from, if the engine has no corresponding
+ *   hook_drush_engine_$type item path.
+ * @return unknown_type
+ */
+function drush_include_engine($type, $engine, $version = NULL, $path = NULL) {
+  $engines = drush_get_engines($type);
+  if (!$path && isset($engines[$engine])) {
+    $path = $engines[$engine]['path'];
+  }
+  if (!$path) {
+    return drush_set_error('DRUSH_ENGINE INCLUDE_NO_PATH', "No $path was set for including the $type engine $engine.");
+  }
+  if (drush_include($path, $engine, $version)) {
+    return TRUE;
+  }
+  return drush_set_error('DRUSH_ENGINE INCLUDE_FAILED', "Unable to include the $type engine $engine from $path.");
+}
 
 /**
  * Detects the version number of the current Drupal installation,
