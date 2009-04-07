@@ -685,6 +685,27 @@ function _drush_log_drupal_messages() {
 }
 
 /**
+ * Log the return value of Drupal hook_update_n functions.
+ *
+ * This is used during install and update to log the output
+ * of the update process to the logging system.
+ */
+function _drush_log_update_sql($ret) {
+  if (sizeof($ret)) {
+    foreach ($ret as $info) {
+      if (is_array($info)) {
+        if (!$info['success']) {
+          drush_set_error('DRUPAL_UPDATE_FAILED', $info['query']);
+        }
+        else {
+          drush_log($info['query'], ($info['success']) ? 'success' : 'error');
+        }
+      }
+    }
+  }
+}
+
+/**
  * @} End of "defgroup logging".
  */
 
@@ -789,6 +810,27 @@ function drush_cmp_error($error) {
   }
 
   return array_key_exists($error, $error_log);
+}
+
+/**
+ * Turn PHP error handling off.
+ *
+ * This is commonly used while bootstrapping Drupal for install
+ * or updates.
+ */
+function drush_errors_off() {
+  $errors =& drush_get_context('DRUSH_ERROR_REPORTING', 0);
+  $errors = error_reporting(0);
+  ini_set('display_errors', FALSE);
+}
+
+/**
+ * Turn PHP error handling on.
+ */
+function drush_errors_on() {
+  $errors =& drush_get_context('DRUSH_ERROR_REPORTING', E_ALL ^ E_NOTICE);
+  $errors = error_reporting($errors);
+  ini_set('display_errors', TRUE);
 }
 
 /**
