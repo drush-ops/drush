@@ -420,6 +420,15 @@ function _drush_get_table_column_widths($table) {
 /**
  * Add a log message to the log history.
  *
+ * This function calls the callback stored in the 'DRUSH_LOG_CALLBACK' context with
+ * the resulting entry at the end of execution.
+ *
+ * This allows you to replace it with custom logging implementations if needed,
+ * such as logging to a file or logging to a database (drupal or otherwise).
+ *
+ * The default callback is the _drush_print_log() function with prints the messages
+ * to the shell.
+ *
  * @param message
  *   String containing the message to be logged.
  * @param type
@@ -430,6 +439,7 @@ function _drush_get_table_column_widths($table) {
  */
 function drush_log($message, $type = 'notice', $error = null) {
   $log =& drush_get_context('DRUSH_LOG', array());
+  $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
   $entry = array(
      'type' => $type, 
      'message' => $message, 
@@ -437,7 +447,7 @@ function drush_log($message, $type = 'notice', $error = null) {
    );
   $entry['error'] = $error;
   $log[] = $entry;
-  return _drush_print_log($entry);
+  return $callback($entry);
 }
 
 /**
@@ -448,6 +458,18 @@ function drush_log($message, $type = 'notice', $error = null) {
  */
 function drush_get_log() {
   return drush_get_context('DRUSH_LOG', array());
+}
+
+/**
+ * Run print_r on a variable and log the output.
+ */
+function dlm($object) {
+  ob_start();
+  print_r($object);
+  $contents = ob_get_contents();
+  ob_end_clean();
+
+  drush_log($contents);
 }
 
 /**

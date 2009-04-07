@@ -62,6 +62,7 @@ function drush_main() {
     $command = drush_parse_command();
     if (is_array($command)) {
       if ($command['bootstrap'] == $phase) {
+        drush_log(dt("Found command: !command", array('!command' => $command['command'])), 'bootstrap');
         // Dispatch the command(s).
         // After this point the drush_shutdown function will run,
         // exiting with the correct exit code.

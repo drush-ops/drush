@@ -158,11 +158,15 @@ function drush_bootstrap($phase) {
     $current_phase = $phases[$phase_index];
     if (function_exists($current_phase) && !drush_get_error()) {
       drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
-      ob_start();
+      if ($phase_index >= DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
+        ob_start();
+      }
       $current_phase();
-      ob_end_clean();
+      if ($phase_index >= DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
+        ob_end_clean();
+      }
       
-      if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+      if ($phase_index >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
         // We have enough of the system bootstrapped now to 
         // capture and integrate and drupal messages.
         _drush_log_drupal_messages();
@@ -257,9 +261,7 @@ function _drush_bootstrap_drupal_root() {
     define('DRUPAL_ROOT', $drupal_root);
     
     drush_load_config('drupal');
-
     require_once(DRUSH_DRUPAL_BOOTSTRAP);
-
     $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
     $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
 
@@ -280,6 +282,9 @@ function _drush_bootstrap_drupal_site() {
   $site_path = drush_site_path();
   $elements = explode('/', $site_path);
   $current = array_pop($elements);
+  if (!$current) {
+    $current = 'default';
+  }
   $uri = 'http://'. $current;
 
   $drush_uri = drush_set_context('DRUSH_URI', 

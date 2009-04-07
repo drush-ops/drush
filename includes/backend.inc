@@ -127,7 +127,12 @@ function _drush_backend_integrate($data) {
   print ($data['output']);
   if (is_array($data['log'])) {
     foreach($data['log'] as $log) {
-      drush_log($log['message'], $log['type'], $log['error']); 
+      if (!is_null($log['error'])) {
+        drush_set_error($log['error'], $log['message']);
+      }
+      else {
+        drush_log($log['message'], $log['type'], $log['error']);
+      }
     }
   }
 }

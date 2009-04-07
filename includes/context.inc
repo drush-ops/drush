@@ -164,11 +164,12 @@ function drush_set_context($context, $value) {
  *   Otherwise only the requested context will be returned.
  *   If the context does not exist yet, it will be initialied to an empty array.
  */
-function &drush_get_context($context = null) {
+function &drush_get_context($context = null, $default = null) {
   static $cache = array();
   if (!is_null($context)) {
     if (!isset($cache[$context])) {
-      $cache[$context] = array();
+      $default = !is_null($default) ? $default : array();
+      $cache[$context] = $default;
     }
     return $cache[$context];
   }
