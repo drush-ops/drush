@@ -617,6 +617,8 @@ function _drush_print_log($entry) {
   $yellow = "\033[1;33m\033[1m[%s]\033[0m";
   $green = "\033[0;33m\033[1m[%s]\033[0m";
 
+  $log_level = (int) drush_get_context('DRUSH_VERBOSE', 0);
+
   $return = TRUE;
   switch ($entry['type']) {
     case 'warning' : 
@@ -632,14 +634,23 @@ function _drush_print_log($entry) {
     case 'success' :
       $type_msg = sprintf($green, $entry['type']);
       break;
+    case 'notice' : 
+    case 'message' : 
+      if ($log_level < 1) {
+        // print nothing. exit cleanly.
+        return TRUE;
+      }
+      $type_msg = sprintf("[%s]", $entry['type']);
+      break;
     default : 
-      if (!drush_get_context('DRUSH_VERBOSE')) {
+      if ($log_level < 2) {
         // print nothing. exit cleanly.
         return TRUE;
       }
       $type_msg = sprintf("[%s]", $entry['type']);
       break;
   }
+
   // When running in backend mode, log messages are not displayed, as they will
   // be returned in the JSON encoded associative array.
   if (drush_get_context('DRUSH_BACKEND') || drush_get_context('DRUSH_SHOWING_HELP')) {

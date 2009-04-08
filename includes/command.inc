@@ -20,7 +20,7 @@
 function drush_parse_args() {
   $args = drush_get_context('argv');
 
-  static $arg_opts = array('c', 'h', 'u', 'r', 'l', 'i');
+  static $arg_opts = array('c', 'h', 'u', 'r', 'l', 'i', 'v');
 
   $arguments = array();
 
