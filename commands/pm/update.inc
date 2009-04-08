@@ -115,7 +115,7 @@ function pm_update_packages($releases) {
     
     $source = $drupal_root .'/' . $release['path'];
 
-    $skip_backup = version_control_skip_backup();
+    $skip_backup = version_control_skip_backup($source);
     if (!count($skip_backup)) {
       $backup_dir = $drupal_root  . '/backup';
       drush_op('mkdir', $backup_dir, 0777);
