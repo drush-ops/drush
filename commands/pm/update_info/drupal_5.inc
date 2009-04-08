@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 function pm_update_filter(&$releases, &$updateable, &$rows) {
   foreach ($releases as $release) {
