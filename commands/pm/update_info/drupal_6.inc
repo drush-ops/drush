@@ -59,7 +59,7 @@ function pm_update_last_check() {
 /**
  * Command callback. Refresh update status information.
  */
-function pm_refresh() {
+function _pm_refresh() {
   drush_print(dt("Refreshing update status information ..."));
   update_refresh();
   drush_print(dt("Done."));

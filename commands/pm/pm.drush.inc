@@ -395,6 +395,16 @@ function pm_info() {
 }
 
 /**
+ * Command callback. Refresh update status information.
+ */
+function pm_refresh() {
+  // We don't provide for other options here, so we supply an explicit path.
+  drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
+
+  _pm_refresh();
+}
+
+/**
  * Deletes a directory, all files in it and all subdirectories in it (recursively).
  * Use with care!
  * Written by Andreas Kalsch
