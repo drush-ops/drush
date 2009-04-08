@@ -31,6 +31,7 @@ function core_drush_command() {
   );
   $items['status'] = array(
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
   );
   $items['script'] = array(
     'description' => "Run php script(s).",
@@ -283,7 +284,7 @@ function core_status() {
     else {
       drush_print(dt("No site uri was determined. Using default site path."));
     }
-    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
+    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
       switch (drush_drupal_major_version()) {
         case 5:
         case 6:
