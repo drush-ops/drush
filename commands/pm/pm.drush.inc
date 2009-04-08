@@ -63,6 +63,9 @@ Use the -y option to answer all questions with yes automatically.\n\n". $handler
       return dt("Usage: drush [options] pm info <package_1> <package_2> ...\n
 View all releases for a given project. Useful for deciding which version to install/update.
     ");
+
+    case 'drush:dl':
+      return dt("Quickly download projects from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
   }
 }
 
@@ -90,6 +93,22 @@ function pm_drush_command() {
   $items['info'] = array(
     'description' => 'Release information for a module',
     'drupal dependencies' => array('update'),
+  );
+  $items['dl'] = array(
+    'description' => 'Download core Drupal and modules like Drush Extras.',
+    'examples' => array(
+      'drush dl drupal' => 'Download latest version of Drupal core.', 
+      'drush dl drupal-5.x' => 'Download latest version of Drupal core for 5.x release', 
+      'drush dl diff-6.x-2.0' => 'Download a specfic version of diff module.',
+      'drush dl views' => 'Download latest versions of Views for my version of Drupal.',
+    ),
+    'arguments' => array(
+      'project' => '\'drupal\', or module name, with optional version.',
+    ),
+    'options' => array(
+      '--destination' => 'Path to which the project will be copied.',
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
   return $items;
 }
@@ -348,6 +367,9 @@ function pm_get_project_path($projects, $lookup) {
  *
  **/
 function pm_info() {
+  // We don't provide for other options here, so we supply an explicit path.
+  drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
+
   $projects = func_get_args();
   $projects = drupal_map_assoc($projects);
   $info = pm_get_project_info($projects);

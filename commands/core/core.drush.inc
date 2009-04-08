@@ -45,22 +45,6 @@ function core_drush_command() {
   $items['cache clear'] = array(
     'description' => 'Clear all caches.'
   );
-  $items['dl'] = array(
-    'description' => 'Download core Drupal and modules like Drush Extras.',
-    'examples' => array(
-      'drush dl drupal' => 'Download latest version of Drupal core.', 
-      'drush dl drupal-5.x' => 'Download latest version of Drupal core for 5.x release', 
-      'drush dl diff-6.x-2.0' => 'Download a specfic version of diff module.',
-      'drush dl views' => 'Download latest versions of Views for my version of Drupal.',
-    ),
-    'arguments' => array(
-      'project' => '\'drupal\', or module name, with optional version.',
-    ),
-    'options' => array(
-      '--destination' => 'Path to which the project will be copied.',
-    ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
-  );
   $items['watchdog show'] = array(
     'description' => 'Shows recent watchdog log messages. Optionally filter for a specific type.',
     'drupal dependencies' => drush_drupal_major_version() >= 6 ? array('dblog') : array('watchdog'),
@@ -191,8 +175,6 @@ function core_drush_help($section) {
       return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
     case 'drush:eval':
       return dt("Run arbitrary PHP code in the context of Drupal");
-    case 'drush:dl':
-      return dt("Quickly download projects from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
     case 'error:DRUSH_DRUPAL_DB_ERROR' : 
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
