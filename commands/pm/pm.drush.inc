@@ -79,6 +79,9 @@ function pm_drush_command() {
   $items['disable'] = array(
     'description' => 'Disable one or more modules',
   );
+  $items['uninstall'] = array(
+    'description' => 'Uninstall one or more modules',
+  );
   $items['status modules'] = array(
     'description' => 'Show module enabled/disabled status',
   );
@@ -127,6 +130,34 @@ function pm_enable () {
 function pm_disable () {
   $command = drush_get_command();
   return pm_module_manage($command['arguments'], FALSE);
+}
+
+/**
+ * Command callback. Uninstall one or more modules.
+ * // TODO: Use drupal_execute on system_modules_uninstall_confirm_form so that input is validated.
+ */
+function pm_uninstall() {
+  $command = drush_get_command();
+  $modules = $command['arguments'];
+    
+  drush_print(dt('The following modules will be uninstalled: !modules', array('!modules' => implode(', ', $modules))));
+  if(!drush_confirm(dt('Do you really want to continue?'))) {
+    drush_die('Aborting.');
+  }
+  
+  // Make sure the install API is available.
+  require_once './includes/install.inc';
+    
+  foreach ($modules as $module) {
+    // Minimalist validation.
+    if (db_result(db_query("SELECT name FROM {system} WHERE name='%s' AND type = 'module' AND status = 0 AND schema_version > %d", $module, SCHEMA_UNINSTALLED))) {
+      drupal_uninstall_module($module);
+      drush_log(dt('!module was successfully uninstalled.', array('!module' => $module)), 'ok');
+    }
+    else {
+      drush_set_error('DRUSH_PM_UNINSTALL_ACTIVE_MODULE', dt('!module is not disabled. If active, use `disable` command before `uninstall`.', array('!module' => $module)));
+    }    
+  }
 }
 
 function pm_module_manage($modules = array(), $enable = TRUE) {
