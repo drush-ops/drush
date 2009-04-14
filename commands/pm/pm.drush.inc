@@ -110,13 +110,13 @@ function pm_drush_command() {
   $items['dl'] = array(
     'description' => 'Download core Drupal and projects like CCK, Zen, etc.',
     'examples' => array(
-      'drush dl drupal' => 'Download latest version of Drupal core.', 
+      'drush dl' => 'Download latest version of Drupal core.', 
       'drush dl drupal-5.x' => 'Download latest version of Drupal core for 5.x release', 
       'drush dl diff-6.x-2.0' => 'Download a specfic version of diff module.',
-      'drush dl zen' => 'Download latest versions of Zen for my version of Drupal.',
+      'drush dl cck zen' => 'Download latest versions of Zen for my version of Drupal.',
     ),
     'arguments' => array(
-      'projects' => '\'drupal\', or project name, with optional version.',
+      'projects' => 'A space separated list of project names, with optional version. Defaults to \'drupal\'',
     ),
     'options' => array(
       '--destination' => 'Path to which the project will be copied.',
@@ -587,7 +587,7 @@ function pm_drush_engine_package_handler() {
         '  --cvsparams' => 'Add options to the `cvs` program',
       ),
       'examples' => array(
-          'drush [command] cck views --cvsparams=\"-C\"' =>  'Overwrite all local changes (Quotes are required).',
+          'drush [command] cck --cvsparams=\"-C\"' =>  'Overwrite all local changes (Quotes are required).',
       ),
     ),
   );
@@ -610,7 +610,7 @@ function pm_drush_engine_version_control() {
         '  --svncommitparams' => 'Add options to the `svn commit` command',
       ),
       'examples' => array(
-        'drush [command] cck views --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
+        'drush [command] cck --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
       ),
     ),
   );
