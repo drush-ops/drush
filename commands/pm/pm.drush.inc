@@ -80,8 +80,8 @@ function pm_drush_command() {
     'description' => 'Refresh update status information',
     'drupal dependencies' => array('update'),
   );
-  $items['update'] = array(
-    'description' => 'Update your modules',
+  $items['upgrade'] = array(
+    'description' => 'Upgrade your modules',
     'drupal dependencies' => array('update'),
   ) + $engines;
   $items['info'] = array(
