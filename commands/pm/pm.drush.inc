@@ -129,7 +129,7 @@ function pm_drush_command() {
 /**
  * Command callback. Enables one or more modules.
  */
-function pm_enable () {  
+function pm_enable() {  
   $command = drush_get_command();
   return pm_module_manage($command['arguments'], TRUE);
 }
@@ -137,7 +137,7 @@ function pm_enable () {
 /**
  * Command callback. Disable one or more modules.
  */
-function pm_disable () {
+function pm_disable() {
   $command = drush_get_command();
   return pm_module_manage($command['arguments'], FALSE);
 }
@@ -619,61 +619,69 @@ function pm_drush_engine_version_control() {
 /**
  * Command callback. Download drupal core.
  */
-function pm_dl($full_project = 'drupal') {
+function pm_dl() {
   // Bootstrap to the highest level possible.
   drush_bootstrap_max();
 
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   drush_include_engine('version_control', drush_get_option('version-control', 'svn'));
   
-  $requestdata = pm_parse_project_version(explode(' ', $full_project));
+  if (!$full_projects = func_get_args()) {
+    $full_projects = array('drupal');
+  }
+  
+  foreach ($full_projects as $full_project) {
+    $requestdata = pm_parse_project_version(explode(' ', $full_project));
 
-  $project_types = pm_project_types();
-  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
-  foreach ($requestdata as $package) {
-    $version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', 6);
-    $version_default .= '.x';
+    $project_types = pm_project_types();
+    $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
+    foreach ($requestdata as $package) {
+      $version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', 6);
+      $version_default .= '.x';
 
-    $version = empty($package['version']) ? $version_default : $package['version'];
-    $project = $package['name'];
-    $major_version = ($project == 'drupal') ? substr($version, 0, 1) .'.x' : substr($version, 0, 3);
-    // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
-    $url = 'http://updates.drupal.org/release-history' . "/$project/". $major_version;
-    if ($xml = @simplexml_load_file($url)) {
-      if ($error = $xml->xpath('/error')) {
-        drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
+      $version = empty($package['version']) ? $version_default : $package['version'];
+      $project = $package['name'];
+      $major_version = ($project == 'drupal') ? substr($version, 0, 1) .'.x' : substr($version, 0, 3);
+      // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
+      $url = 'http://updates.drupal.org/release-history' . "/$project/". $major_version;
+      if ($xml = @simplexml_load_file($url)) {
+        if ($error = $xml->xpath('/error')) {
+          drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
+        }
+        else {
+          // Try to get the specified release.
+          if ($package['version']) {
+            if ($releases = $xml->xpath("/project/releases/release[version='$version']")) {
+              $release = (array)$releases[0];
+            }
+          }
+          // If that did not work, get the first listed release.
+          if (empty($release)) {
+            $release = (array)$xml->releases->release;
+          }
+          // Determine what type of project we have, so we know where to put it.
+          $release['type'] = 'module';
+
+          if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
+            $release['type'] = array_search($types[0]->value, $project_types);
+          }
+
+          if ($destination = pm_dl_destination($release['type'])) {
+            if (package_handler_install_project($project, $release, $destination)) {
+              drush_log(dt("Project !project (!version) downloaded to !dest.",
+                             array('!project' => $project, '!version' => $release['version'], '!dest' => $destination)), 'success');
+              drush_command_invoke_all('drush_pm_post_install', $project, $release, $destination);
+              version_control_post_install($project, $release, $destination);
+            }
+          }
+        }
       }
       else {
-        // Try to get the specified release.
-        if ($package['version']) {
-          if ($releases = $xml->xpath("/project/releases/release[version='$version']")) {
-            $release = (array)$releases[0];
-          }
-        }
-        // If that did not work, get the first listed release.
-        if (empty($release)) {
-          $release = (array)$xml->releases->release;
-        }
-        // Determine what type of project we have, so we know where to put it.
-        $release['type'] = 'module';
-        
-        if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
-          $release['type'] = array_search($types[0]->value, $project_types);
-        }
-
-        if ($destination = pm_dl_destination($release['type'])) {
-          if (package_handler_install_project($project, $release, $destination)) {
-            drush_log(dt("Project !project (!version) downloaded to !dest.",
-                           array('!project' => $project, '!version' => $release['version'], '!dest' => $destination)), 'success');
-            drush_command_invoke_all('drush_pm_post_install', $project, $release, $destination);
-            version_control_post_install($project, $release, $destination);
-          }
-        }
+        // We are not getting here since drupal.org always serves an XML response.
+        drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
       }
     }
-    else {
-      // We are not getting here since drupal.org always serves an XML response.
-      drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
-    }
+    
+    unset($package, $error, $release, $types);
   }
 }
