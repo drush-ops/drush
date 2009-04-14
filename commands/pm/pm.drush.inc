@@ -7,7 +7,7 @@
  *
  * Terminology:
  * - Request: a requested package (string or keyed array), with a project name and (optionally) version.
- * - Project: a drupal.org project, such as cck or drush.
+ * - Project: a drupal.org project, such as cck or zen.
  * - Version: a requested version, such as 1.0 or 1.x-dev.
  * - Release: a specific release of a project, with associated metadata (from the drupal.org update service).
  * - Package: the collection of files that make up a release.
@@ -27,42 +27,26 @@ define('DRUSH_PM_REQUESTED_CURRENT', 102);
  * Implementation of hook_drush_help().
  */
 function pm_drush_help($section) {
-  $handlers = str_replace('pm_', '', drush_command_invoke_all('pm_package_handler'));
-  if ($handlers) {
-    $handlers[0] = $handlers[0] .' (default)';
-    $handler = '--handler - specify which package handler you would like to use.
-  Available options: '. implode(', ', $handlers) . "\n";
-  }
-  else {
-    $handler = "ERROR: You must activate a drush Package Manager handler module in order
-     to install or update packages.";
-  }
-
   switch ($section) {
-    case 'drush:install':
-      return dt("Usage: drush [options] pm install <package_1> <package_2> ...
-<package_n> is the short name of a project hosted on drupal.org,
-or the short name and the version number (Drupal major version is optional).
-e.g. project, project-5.x-1.0, project-1.0, project-1.x-dev, project-1.1-rc1
-So far, only modules are supported.\n
-The modules will be installed into a site specific modules directory if one
-exists, otherwise sites/all/modules is used.
-After installing, you still have to activate on the normal module
-administration page\n\n". $handler);
+    // Install command is reserved for the download and enable of projects including dependencies. 
+    // @see http://drupal.org/node/112692 for more information.
+    
+    // case 'drush:install':
+    //       return dt("Usage: drush [options] pm install <package_1> <package_2> ...
+    // <package_n> is the short name of a project hosted on drupal.org,
+    // or the short name and the version number (Drupal major version is optional).
+    // e.g. project, project-5.x-1.0, project-1.0, project-1.x-dev, project-1.1-rc1
+    // So far, only modules are supported.\n
+    // The modules will be installed into a site specific modules directory if one
+    // exists, otherwise sites/all/modules is used.
+    // After installing, you still have to activate on the normal module
+    // administration page\n\n");
 
     case 'drush:update':
-      return dt("Usage: drush [options] pm update\n
-Displays update status information and allows to update all installed packages
-to the specified version (or latest by default).
-If you only want to update certain projects, pass those as additional
-arguments (e.g. cck devel views ...).
-Note: The user is asked to confirm before the actual update is started.
-Use the -y option to answer all questions with yes automatically.\n\n". $handler);
+      return dt("Display available update information and allow updating of all installed projects to the specified version (or latest by default). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
 
     case 'drush:info':
-      return dt("Usage: drush [options] pm info <package_1> <package_2> ...\n
-View all releases for a given project. Useful for deciding which version to install/update.
-    ");
+      return dt("View all releases for a given project. Useful for deciding which version to install/update.");
 
     case 'drush:dl':
       return dt("Quickly download projects from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
@@ -73,6 +57,13 @@ View all releases for a given project. Useful for deciding which version to inst
  * Implementation of hook_drush_command().
  */
 function pm_drush_command() {
+  $engines = array(
+    'engines' => array(
+      'version_control' => 'Integration with VCS in order to easily commit your changes to projects.',
+      'package_handler' => 'Determine how to download/checkout new projects and acquire updates to projects.',
+    ),
+  );
+  
   $items['enable'] = array(
     'description' => 'Enable one or more modules',
   );
@@ -92,7 +83,7 @@ function pm_drush_command() {
   $items['update'] = array(
     'description' => 'Update your modules',
     'drupal dependencies' => array('update'),
-  );
+  ) + $engines;
   $items['info'] = array(
     'description' => 'Release information for a module',
     'drupal dependencies' => array('update'),
@@ -110,9 +101,9 @@ function pm_drush_command() {
     ),
     'options' => array(
       '--destination' => 'Path to which the project will be copied.',
-    ),
+    ), 
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
-  );
+  ) + $engines;
   return $items;
 }
 
@@ -571,12 +562,12 @@ function pm_drush_engine_package_handler() {
   return array(
     'wget' => array(),
     'cvs' => array(
-      'description' => 'Use CVS to checkout and update projects.',
       'options' => array(
-        '--cvsparams' => 'Add options to the cvs command',
+        '--package-handler=cvs' => 'Use CVS to checkout and update projects.',
+        '  --cvsparams' => 'Add options to the `cvs` program',
       ),
       'examples' => array(
-          '--cvsparams=\"-C\"' =>  'Overwrite all local changes (note that quotes are required)',
+          'drush [command] cck views --cvsparams=\"-C\"' =>  'Overwrite all local changes (Quotes are required).',
       ),
     ),
   );
@@ -588,18 +579,18 @@ function pm_drush_engine_package_handler() {
 function pm_drush_engine_version_control() {
   return array(
     'svn' => array(
-      'description' => 'Quickly add/remove/commit your project changes to Subversion.',
       'options' => array(
-        '--svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. CAUTION.',
-        '--svncommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
-        '--svnmessage' - 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
-        '--svnstatusparams' => "Add options to the 'svn status' command",
-        '--svnaddparams' => 'Add options to the `svn add` command',
-        '--svnremoveparams' => 'Add options to the `svn remove` command',
-        '--svncommitparams' => 'Add options to the `svn commit` command',
+        '--version-control=svn' => 'Quickly add/remove/commit your project changes to Subversion.',
+        '  --svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. Caution.',
+        '  --svncommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
+        '  --svnmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+        '  --svnstatusparams' => "Add options to the 'svn status' command",
+        '  --svnaddparams' => 'Add options to the `svn add` command',
+        '  --svnremoveparams' => 'Add options to the `svn remove` command',
+        '  --svncommitparams' => 'Add options to the `svn commit` command',
       ),
       'examples' => array(
-        'drush dl votingapi --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Note that quotes are required).'
+        'drush [command] cck views --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
       ),
     ),
   );
