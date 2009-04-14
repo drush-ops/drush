@@ -93,7 +93,7 @@ function drush_get_commands() {
       foreach ((array)$result as $key => $command) {
         // Add some defaults
         $command += array(
-          'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+          'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
           'commandfile' => $commandfile,
           'path' => dirname($path),
           'engines' => array(), // Helpful for drush_show_help(). 
