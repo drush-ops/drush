@@ -6,27 +6,6 @@
  */
 
 /**
- * Implementation of hook_drush_help().
- * TODO: Move help to an engine parameter.
- */
-function package_handler_help($section) {
-  $help = '';
-  switch ($section) {
-    case 'drush:pm update':
-      $help .= dt("--cvsmethod - force cvs updates or checkouts
-e.g. --cvsmethod=update will update the module, and try to merge changes,
-rather than overwriting them. Any conflicts will need to be resolved manually.
-The checkout method is the default for everything except SVN managed projects.\n\n");
-    case 'drush:pm install':
-      // The --cvsparams option is available on both update and install
-      $help .= dt("--cvsparams - add options to the cvs command
-e.g. --cvsparams=\"-C\" (note that quotes are required) will overwrite all
-changes when updating an SVN managed project.\n");
-      return $help;
-  }
-}
-
-/**
  * Install a project (so far, only modules are supported).
  *
  * @param $project The short name of the drupal.org project

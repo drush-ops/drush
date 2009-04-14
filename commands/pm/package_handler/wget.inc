@@ -6,19 +6,7 @@
  */
 
 /**
- * Implementation of hook_drush_help().
- * TODO: Move help to an engine parameter.
- */
-function package_handler_help($section) {
-  switch ($section) {
-    case 'drush:pm install':
-    case 'drush:pm update':
-      return dt("Note: the wget handler will use the curl command if wget is not found\n");
-  }
-}
-
-/**
- * Install a project (so far, only modules are supported).
+ * Install a project.
  *
  * @param $project The short name of the drupal.org project
  * @param $info The details (fetched from drupal.org via xml-rpc)

@@ -566,22 +566,43 @@ function pm_project_types() {
 }
 
 /**
- * TODO: Doxygen about what a package handler is.
- * Updated help for the options
+ * Used by dl and update commands to determine how to download/checkout new projects and acquire updates to projects.
  */
 function pm_drush_engine_package_handler() {
   return array(
     'wget' => array(),
-    'cvs' => array(),
+    'cvs' => array(
+      'description' => 'Use CVS to checkout and update projects.',
+      'options' => array(
+        '--cvsparams' => 'Add options to the cvs command',
+      ),
+      'examples' => array(
+          '--cvsparams=\"-C\"' =>  'Overwrite all local changes (note that quotes are required)',
+      ),
+    ),
   );
 }
 
 /**
- * TODO: Doxygen about what version control is for.
+ * Integration with VCS in order to easily commit your changes to projects.
  */
 function pm_drush_engine_version_control() {
   return array(
-    'svn' => array(),
+    'svn' => array(
+      'description' => 'Quickly add/remove/commit your project changes to Subversion.',
+      'options' => array(
+        '--svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. CAUTION.',
+        '--svncommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
+        '--svnmessage' - 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+        '--svnstatusparams' => "Add options to the 'svn status' command",
+        '--svnaddparams' => 'Add options to the `svn add` command',
+        '--svnremoveparams' => 'Add options to the `svn remove` command',
+        '--svncommitparams' => 'Add options to the `svn commit` command',
+      ),
+      'examples' => array(
+        'drush dl votingapi --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Note that quotes are required).'
+      ),
+    ),
   );
 }
 
