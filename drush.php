@@ -96,12 +96,9 @@ function drush_shutdown() {
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if (drush_get_context('DRUSH_BOOTSTRAPPING')) {
     switch ($phase) {
-      case DRUSH_BOOTSTRAP_DRUPAL_DATABASE :
-        ob_end_clean();
-        drush_set_error('DRUSH_DRUPAL_DB_ERROR');
-        break;
       case DRUSH_BOOTSTRAP_DRUPAL_FULL :
         ob_end_clean();
+        _drush_log_drupal_messages();
         drush_set_error('DRUSH_DRUPAL_BOOTSTRAP_ERROR');
         break;
     }

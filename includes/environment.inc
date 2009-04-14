@@ -158,19 +158,7 @@ function drush_bootstrap($phase) {
     $current_phase = $phases[$phase_index];
     if (function_exists($current_phase) && !drush_get_error()) {
       drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
-      if ($phase_index >= DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
-        ob_start();
-      }
       $current_phase();
-      if ($phase_index >= DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
-        ob_end_clean();
-      }
-      
-      if ($phase_index >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-        // We have enough of the system bootstrapped now to 
-        // capture and integrate and drupal messages.
-        _drush_log_drupal_messages();
-      }
     }
     unset($phases[$phase_index++]);
   }
@@ -308,8 +296,11 @@ function _drush_bootstrap_drupal_site() {
   $_SERVER['HTTP_USER_AGENT'] = NULL;
   
   $site = drush_set_context('DRUSH_DRUPAL_SITE', $_SERVER['HTTP_HOST']);
-  if (($conf_path = conf_path()) && !file_exists("./$conf_path/settings.php")) {
-    drush_set_error('DRUPAL_SITE_SETTINGS_NOT_FOUND');
+  $conf_path = conf_path();
+  $conf_file = "./$conf_path/settings.php";
+  if (!file_exists($conf_path)) {
+    drush_set_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', dt("Could not find a Drupal settings.php file at !file.",
+       array('!file' => $conf_file)));
   }
   else {
     drush_set_context('DRUSH_DRUPAL_SITE_ROOT', $conf_path);
@@ -324,24 +315,59 @@ function _drush_bootstrap_drupal_site() {
  */
 function _drush_bootstrap_drupal_configuration() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
+
+  // Populate the DRUSH_DB_CREDENTIALS with the fields loaded from the configuration.
+  $creds = array();
+  switch (drush_drupal_major_version()) {
+     case 5:
+     case 6:
+       if (isset($GLOBALS['db_url'])) {
+         $parts = parse_url($GLOBALS['db_url']);
+         $creds['driver'] = $parts['scheme'];
+         $creds['user'] = $parts['user'];
+         $creds['host'] = $parts['host'];
+         $creds['pass'] = $parts['pass'];
+         $creds['name'] = trim($parts['path'], '/');
+       }
+       break;
+     case 7:
+       if (isset($GLOBALS['databases']['default'])) {
+         $conn = $GLOBALS['databases']['default'];
+         $creds['driver'] = $conn['driver'];
+         $creds['user'] = $conn['username'];
+         $creds['host'] = $conn['host'];
+         $creds['name'] = $conn['database'];
+         $creds['pass'] = $conn['password'];
+       }
+       break;
+  }
+
+  drush_set_context('DRUSH_DB_CREDENTIALS', $creds);
 }
 
 /**
  * Attempt to load the drupal database connection.
  */
 function _drush_bootstrap_drupal_database() {
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
+  if (drush_valid_db_credentials()) {
+    drush_log(dt("Successfully connected to the Drupal database."), 'bootstrap');
+    drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
+  }
+  else {
+    drush_set_error("DRUSH_DRUPAL_DB_ERROR");
+  }
 }
 
 /**
  * Attempt to load the full Drupal system
  */
 function _drush_bootstrap_drupal_full() {
+  ob_start();
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-  
+  ob_end_clean();
+  _drush_log_drupal_messages();
   // Find any command files that are available during this bootstrap phase.
   _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_FULL);
-
 }
 
 /**
@@ -352,6 +378,7 @@ function _drush_bootstrap_drupal_login() {
   $drush_user = drush_set_context('DRUSH_USER', drush_get_option(array('u', 'user'), 0));
 
   drush_drupal_login($drush_user);
+  _drush_log_drupal_messages();
 }
 
 
@@ -486,3 +513,32 @@ function drush_locate_root($path = NULL) {
 function drush_valid_drupal_root($path) {
   return !empty($path) && is_dir($path) && file_exists($path . '/' . DRUSH_DRUPAL_BOOTSTRAP);
 }
+
+/**
+ * Tests the currently loaded database credentials to ensure a database connection can be made.
+ */
+function drush_valid_db_credentials() {
+  if (class_exists('PDO')) {
+    $creds = drush_get_context('DRUSH_DB_CREDENTIALS');
+
+    $type = ($creds['driver'] == 'mysqli') ? 'mysql' : $creds['driver'];
+    $constr = sprintf("%s:dbname=%s;host=%s", $type, $creds['name'], $creds['host']);
+
+    try {
+      $db = new PDO($constr, $creds['user'], $creds['pass']);
+      $db = null;
+      return TRUE;
+    }
+    catch (PDOException $e) {
+      // We do not use drush_set_error here , because it's up to the calling function
+      // to determine whether or not this is an error or a warning.
+      drush_log($e->getMessage(), 'warning');
+      return FALSE;
+    }
+  }
+  else {
+    drush_log(dt('PDO support not available. Could not pre-validate database credentials. Assuming success'), 'bootstrap');
+    return TRUE;
+  }
+}
+

@@ -199,37 +199,15 @@ function _core_site_credentials() {
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $credentials .= sprintf("  %-18s: %s\n", 'Site Path', $site_root);
       $credentials .= sprintf("  %-18s: %s\n", 'Site URI', drush_get_context('DRUSH_URI'));
-      $db_driver = 'not defined';
-      $db_host = 'not defined';
-      $db_user = 'not defined';
-      $db_name = 'not defined';
-      switch (drush_drupal_major_version()) {
-         case 5:
-         case 6:
-           if (isset($GLOBALS['db_url'])) {
-             $parts = parse_url($GLOBALS['db_url']);
-             $db_driver = $parts['scheme'];
-             $db_user = $parts['user'];
-             $db_host = $parts['host'];
-             $db_name = trim($parts['path'], '/');
-           }
-           break;
-         case 7:
-           if (isset($GLOBALS['databases']['default'])) {
-             $conn = $GLOBALS['databases']['default'];
-             $db_driver = $conn['driver'];
-             $db_user = $conn['username'];
-             $db_host = $conn['host'];
-             $db_name = $conn['database'];
-           }
-           break;
+      if ($creds = drush_get_context('DRUSH_DB_CREDENTIALS')) {
+        $credentials .= sprintf("  %-18s: %s\n", 'Database Driver', $creds['driver']);
+        $credentials .= sprintf("  %-18s: %s\n", 'Database Hostname', $creds['host']);
+        $credentials .= sprintf("  %-18s: %s\n", 'Database Username', $creds['user']);
+        $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $creds['name']);
+        $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $creds['pass']);
       }
-      $credentials .= sprintf("  %-18s: %s\n", 'Database Driver', $db_driver);
-      $credentials .= sprintf("  %-18s: %s\n", 'Database Hostname', $db_host);
-      $credentials .= sprintf("  %-18s: %s\n", 'Database Username', $db_user);
-      $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $db_name);
-      return $credentials;
     }
+    return $credentials;
   }
   return null;
 }
