@@ -23,8 +23,13 @@ function core_drush_command() {
   $items = array();
 
   $items['help'] = array(
-    'description' => 'Print this help message.',
+    'description' => 'Print this help message. Use --filter to limit command list to one command file (e.g. --filter=pm)',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'options' => drush_get_option_help(),
+    'examples' => array(
+      'drush dl cck zen' => 'Download CCK module and Zen theme.',
+      'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
+    ),
   );
   $items['cron'] = array(
     'description' => 'Run all cron hooks.',
@@ -119,17 +124,8 @@ function core_help() {
   $commands = func_get_args();
   
   if (empty($commands)) {
+    drush_show_help(array('help'));
     $phases = _drush_bootstrap_phases(); 
-    drush_print(dt('Usage: drush.php [options] <command> <command> ...'));
-    drush_print();
-    drush_print('Run "drush help [command]" to view command-specific help.');
-    drush_print(dt('Options: '));
-    foreach (drush_get_option_help() as $option => $description) {
-      $rows[] = array($option, $description);
-    }
-
-    drush_print_table($rows, 2);
-    drush_print();
     drush_print('Commands: ');
 
     $printed_rows = array();
@@ -140,7 +136,17 @@ function core_help() {
         if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
           drush_bootstrap($phase_index);
         }
+        
         $commands = drush_get_commands();
+        // Filter by command file if specified.
+        if ($commandfile = drush_get_option('filter')) {
+          foreach ($commands as $key => $candidate) {
+            if ($candidate['commandfile'] != $commandfile) {
+              unset($commands[$key]);
+            }
+          }
+        }
+        
         $rows = array();
         foreach($commands as $key => $command) {
           if (!array_key_exists($key, $printed_rows)) {
@@ -178,6 +184,8 @@ function core_help() {
  */
 function core_drush_help($section) {
   switch ($section) {
+    case 'drush:help':
+      return dt('Execute a drush command. Run `drush help [command]` to view command-specific help.');
     case 'drush:cron':
       return dt("Runs all cron hooks in all active modules for specified site.");
     case 'drush:status':
