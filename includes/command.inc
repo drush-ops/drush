@@ -96,6 +96,7 @@ function drush_get_commands() {
           'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
           'commandfile' => $commandfile,
           'path' => dirname($path),
+          'engines' => array(), // Helpful for drush_show_help(). 
         );
         // Filter out commands which are invalid for this bootstrap phase, core or have missing dependencies.
         if (drush_enforce_requirement_bootstrap_phase($command)

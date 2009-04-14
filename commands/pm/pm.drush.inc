@@ -28,26 +28,20 @@ define('DRUSH_PM_REQUESTED_CURRENT', 102);
  */
 function pm_drush_help($section) {
   switch ($section) {
-    // Install command is reserved for the download and enable of projects including dependencies. 
-    // @see http://drupal.org/node/112692 for more information.
-    
-    // case 'drush:install':
-    //       return dt("Usage: drush [options] pm install <package_1> <package_2> ...
-    // <package_n> is the short name of a project hosted on drupal.org,
-    // or the short name and the version number (Drupal major version is optional).
-    // e.g. project, project-5.x-1.0, project-1.0, project-1.x-dev, project-1.1-rc1
-    // So far, only modules are supported.\n
-    // The modules will be installed into a site specific modules directory if one
-    // exists, otherwise sites/all/modules is used.
-    // After installing, you still have to activate on the normal module
-    // administration page\n\n");
-
-    case 'drush:update':
+    case 'drush:enable':
+      return dt('Enable one or more modules. Enables dependant modules as well.');
+    case 'drush:disable':
+      return dt('Disable one or more modules. Disables dependant modules as well.');
+    case 'drush:uninstall':
+      return dt('Uninstall one or more modules. Modules must be disabled first.');
+    case 'drush:status modules':
+      return dt('Show module enabled/disabled status.');
+    case 'drush:refresh':
+      return dt('Refresh update status information. Run this before running update command.');
+    case 'drush:upgrade':
       return dt("Display available update information and allow updating of all installed projects to the specified version (or latest by default). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
-
     case 'drush:info':
       return dt("View all releases for a given project. Useful for deciding which version to install/update.");
-
     case 'drush:dl':
       return dt("Quickly download projects from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
   }
@@ -65,16 +59,33 @@ function pm_drush_command() {
   );
   
   $items['enable'] = array(
-    'description' => 'Enable one or more modules',
+    'description' => 'Enable one or more modules.',
+    'arguments' => array(
+      'modules' => 'A space delimited list of modules.',
+    ),
   );
   $items['disable'] = array(
-    'description' => 'Disable one or more modules',
+    'description' => 'Disable one or more modules.',
+    'arguments' => array(
+      'modules' => 'A space delimited list of modules.',
+    ),
   );
+  // Install command is reserved for the download and enable of projects including dependencies. 
+  // @see http://drupal.org/node/112692 for more information.
+  // $items['install'] = array(
+  //     'description' => 'Download and enable one or more modules',
+  //   );
   $items['uninstall'] = array(
-    'description' => 'Uninstall one or more modules',
+    'description' => 'Uninstall one or more modules.',
+    'arguments' => array(
+      'modules' => 'A space delimited list of modules.',
+    ),
   );
   $items['status modules'] = array(
     'description' => 'Show module enabled/disabled status',
+    'arguments' => array(
+      'modules' => 'A space delimited list of modules.',
+    ),
   );
   $items['refresh'] = array(
     'description' => 'Refresh update status information',
@@ -83,21 +94,30 @@ function pm_drush_command() {
   $items['upgrade'] = array(
     'description' => 'Upgrade your modules',
     'drupal dependencies' => array('update'),
+    'arguments' => array(
+      'modules' => 'Optional. A space delimited list of modules to update.',
+    ),
   ) + $engines;
   $items['info'] = array(
-    'description' => 'Release information for a module',
+    'description' => 'Release information for a project',
     'drupal dependencies' => array('update'),
+    'arguments' => array(
+      'projects' => 'A space separated list of drupal.org project names.',
+    ),
+    'examples' => array(
+      'drush info cck views' => 'View releases for cck and views projects.',
+    ),
   );
   $items['dl'] = array(
-    'description' => 'Download core Drupal and modules like Drush Extras.',
+    'description' => 'Download core Drupal and projects like CCK, Zen, etc.',
     'examples' => array(
       'drush dl drupal' => 'Download latest version of Drupal core.', 
       'drush dl drupal-5.x' => 'Download latest version of Drupal core for 5.x release', 
       'drush dl diff-6.x-2.0' => 'Download a specfic version of diff module.',
-      'drush dl views' => 'Download latest versions of Views for my version of Drupal.',
+      'drush dl zen' => 'Download latest versions of Zen for my version of Drupal.',
     ),
     'arguments' => array(
-      'project' => '\'drupal\', or module name, with optional version.',
+      'projects' => '\'drupal\', or project name, with optional version.',
     ),
     'options' => array(
       '--destination' => 'Path to which the project will be copied.',
