@@ -107,14 +107,22 @@ define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
  *
  * For commands that need to iterate through the phases, such as help
  */
-function _drush_bootstrap_phases() {
-  static $phases = array(
-    DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, 
-    DRUSH_BOOTSTRAP_DRUPAL_SITE, DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
-    DRUSH_BOOTSTRAP_DRUPAL_DATABASE, DRUSH_BOOTSTRAP_DRUPAL_FULL,
-    DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
-  );
-
+function _drush_bootstrap_phases($function_names = FALSE) {
+  static $functions = array(
+    DRUSH_BOOTSTRAP_DRUSH                  => '_drush_bootstrap_drush',
+    DRUSH_BOOTSTRAP_DRUPAL_ROOT            => '_drush_bootstrap_drupal_root', 
+    DRUSH_BOOTSTRAP_DRUPAL_SITE            => '_drush_bootstrap_drupal_site',
+    DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION   => '_drush_bootstrap_drupal_configuration',
+    DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => '_drush_bootstrap_drupal_database',
+    DRUSH_BOOTSTRAP_DRUPAL_FULL            => '_drush_bootstrap_drupal_full',
+    DRUSH_BOOTSTRAP_DRUPAL_LOGIN           => '_drush_bootstrap_drupal_login');
+  static $phases;
+  if ($function_names) {
+    return $functions;
+  }
+  if (!$phases) {
+    $phases = array_keys($functions); 
+  }
   return $phases;
 }
 
@@ -141,29 +149,115 @@ function _drush_bootstrap_phases() {
  */
 
 function drush_bootstrap($phase) {
-  static $phases = array(
-    DRUSH_BOOTSTRAP_DRUSH                  => '_drush_bootstrap_drush',
-    DRUSH_BOOTSTRAP_DRUPAL_ROOT            => '_drush_bootstrap_drupal_root', 
-    DRUSH_BOOTSTRAP_DRUPAL_SITE            => '_drush_bootstrap_drupal_site',
-    DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION   => '_drush_bootstrap_drupal_configuration',
-    DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => '_drush_bootstrap_drupal_database',
-    DRUSH_BOOTSTRAP_DRUPAL_FULL            => '_drush_bootstrap_drupal_full',
-    DRUSH_BOOTSTRAP_DRUPAL_LOGIN           => '_drush_bootstrap_drupal_login');
-
+  static $phases;
+  if (!$phases) {
+    $phases = _drush_bootstrap_phases(TRUE);
+  }
   static $phase_index = 0;
 
   drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);
   while ($phase >= $phase_index && isset($phases[$phase_index])) {
-    drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
-    $current_phase = $phases[$phase_index];
-    if (function_exists($current_phase) && !drush_get_error()) {
-      drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
-      $current_phase();
+    if (drush_bootstrap_validate($phase_index)) {
+      drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
+      $current_phase = $phases[$phase_index];
+      if (function_exists($current_phase) && !drush_get_error()) {
+        drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
+        $current_phase();
+      }
+    }
+    else {
+      $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
+      foreach ($errors as $code => $message) {
+        drush_set_error($code, $message);
+      }
     }
     unset($phases[$phase_index++]);
   }
   drush_set_context('DRUSH_BOOTSTRAPPING', FALSE);
+
+  return !drush_get_error();
 }
+
+/**
+ * Validate whether a bootstrap phases can be reached.
+ *
+ * This function will validate the settings that will be used
+ * during the actual bootstrap process, and allow commands to
+ * progressively bootstrap to the highest level that can be reached.
+ *
+ * This function will only run the validation function once, and
+ * store the result from that execution in a local static. This avoids 
+ * validating phases multiple times.
+ *
+ * @param phase
+ *   The bootstrap phase to validate to.
+ *   Any of the following constants :
+ *     DRUSH_BOOTSTRAP_DRUSH                = Only Drush.
+ *     DRUSH_BOOTSTRAP_DRUPAL_ROOT          = Find a valid Drupal root.
+ *     DRUSH_BOOTSTRAP_DRUPAL_SITE          = Find a valid Drupal site.
+ *     DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION = Load the site's settings.
+ *     DRUSH_BOOTSTRAP_DRUPAL_DATABASE      = Initialize the database.
+ *     DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.
+ *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
+ *
+ * @return
+ *   True if bootstrap is possible, False if the validation failed.
+ *   
+ */
+function drush_bootstrap_validate($phase) {
+  static $phases;
+  static $result_cache = array();
+  if (!$phases) {
+    $phases = _drush_bootstrap_phases(TRUE);
+  }
+  static $phase_index = 0;
+  if (!array_key_exists($phase, $result_cache)) {
+    drush_set_context('DRUSH_BOOTSTRAP_ERRORS', array());
+    drush_set_context('DRUSH_BOOTSTRAP_VALUES', array());
+
+    while ($phase >= $phase_index && isset($phases[$phase_index])) {
+      $current_phase = $phases[$phase_index] . '_validate';
+      if (function_exists($current_phase)) {
+        $result_cache[$phase_index] = $current_phase();
+      }
+      else {
+        $result_cache[$phase_index] = TRUE;
+      }
+      drush_set_context('DRUSH_BOOTSTRAP_VALIDATION_PHASE', $phase_index);
+      unset($phases[$phase_index++]);
+    }
+  }
+  return $result_cache[$phase];
+}
+
+/**
+ * Helper function to collect any errors that occur during the bootstrap process.
+ * Always returns FALSE, for convenience.
+ */
+function drush_bootstrap_error($code, $message = null) {
+  $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS');
+  $errors[$code] = $message;
+  drush_set_context('DRUSH_BOOTSTRAP_ERRORS', $errors);
+  return FALSE;
+}
+
+/**
+ * Helper function to store any context settings that are being validated.
+ */
+function drush_bootstrap_value($context, $value = null) {
+  $values =& drush_get_context('DRUSH_BOOTSTRAP_VALUES', array());
+
+  if (!is_null($value)) {
+    $values[$context] = $value;
+  }
+
+  if (array_key_exists($context, $values)) {
+    return $values[$context];
+  }
+
+  return null;
+}
+
 
 /**
  * Initial Drush bootstrap phase.
@@ -227,46 +321,62 @@ function _drush_bootstrap_drush() {
 }
 
 /**
+ * Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.
+ *
+ * In this function, we will check if a valid Drupal directory is available.
+ * We also determine the value that will be stored in the DRUSH_DRUPAL_ROOT
+ * context and DRUPAL_ROOT constant if it is considered a valid option.
+ */
+function _drush_bootstrap_drupal_root_validate() {
+  $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
+
+  if (empty($drupal_root)) {
+    return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
+  }
+  if (!drush_valid_drupal_root($drupal_root)) {
+    return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
+  }
+
+  drush_bootstrap_value('drupal_root', $drupal_root);
+  return TRUE;
+}
+
+/**
  * Bootstrap Drush with a valid Drupal Directory.
  *
  * In this function, the pwd will be moved to the root
  * of the Drupal installation.
+ *
+ * The DRUSH_DRUPAL_ROOT context and the DRUPAL_ROOT constant are
+ * populated from the value that we determined during the validation phase.
  *
  * We also now load the drushrc.php for this specific platform.
  * We can now include files from the Drupal Tree, and figure
  * out more context about the platform, such as the version of Drupal.
  */
 function _drush_bootstrap_drupal_root() {
-  $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
+  $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
+  define('DRUPAL_ROOT', $drupal_root);
+  chdir($drupal_root);
+  drush_load_config('drupal');
+  require_once(DRUSH_DRUPAL_BOOTSTRAP);
+  $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
+  $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
 
-  if (!drush_valid_drupal_root($drupal_root)) {
-    drush_set_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
-  }
-  else {
-    drush_set_context('DRUSH_DRUPAL_ROOT', $drupal_root);
-    chdir($drupal_root);
-    
-    define('DRUPAL_ROOT', $drupal_root);
-    
-    drush_load_config('drupal');
-    require_once(DRUSH_DRUPAL_BOOTSTRAP);
-    $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
-    $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
-
-    drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
-  }
+  drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
 }
 
 /**
- * Initialize a site on the Drupal root.
+ * VALIDATE the DRUSH_BOOTSTRAP_DRUPAL_SITE phase.
  *
- * We will now check if we have a valid site that is specified for
- * this command.
+ * In this function we determine the URL used for the command,
+ * and check for a valid settings.php file.
  *
- * Sets up various constants and $_SERVER entries used by
- * Drupal, essentially mimicking a webserver environment.
+ * To do this, we need to set up the $_SERVER environment variable,
+ * to allow us to use conf_path to determine what Drupal will load
+ * as a configuration file.
  */
-function _drush_bootstrap_drupal_site() {
+function _drush_bootstrap_drupal_site_validate() {
   $site_path = drush_site_path();
   $elements = explode('/', $site_path);
   $current = array_pop($elements);
@@ -275,8 +385,7 @@ function _drush_bootstrap_drupal_site() {
   }
   $uri = 'http://'. $current;
 
-  $drush_uri = drush_set_context('DRUSH_URI', 
-      drush_get_option(array('l', 'uri'), $uri));
+  $drush_uri = drush_bootstrap_value('drush_uri', drush_get_option(array('l', 'uri'), $uri));
 
   // Fake the necessary HTTP headers that Drupal needs:
   if ($drush_uri) {
@@ -295,16 +404,28 @@ function _drush_bootstrap_drupal_site() {
   $_SERVER['SERVER_SOFTWARE'] = NULL;
   $_SERVER['HTTP_USER_AGENT'] = NULL;
   
-  $site = drush_set_context('DRUSH_DRUPAL_SITE', $_SERVER['HTTP_HOST']);
-  $conf_path = conf_path();
+  $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
+ 
+  $conf_path = drush_bootstrap_value('conf_path', conf_path());
   $conf_file = "./$conf_path/settings.php";
   if (!file_exists($conf_path)) {
-    drush_set_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', dt("Could not find a Drupal settings.php file at !file.",
+    return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', dt("Could not find a Drupal settings.php file at !file.",
        array('!file' => $conf_file)));
   }
-  else {
-    drush_set_context('DRUSH_DRUPAL_SITE_ROOT', $conf_path);
-  }
+
+  return TRUE;
+}
+
+/**
+ * Initialize a site on the Drupal root.
+ *
+ * We now set various contexts that we determined and confirmed to be valid.
+ * Additionaly we load an optional drushrc.php file in the site directory.
+ */
+function _drush_bootstrap_drupal_site() {
+  $drush_uri = drush_set_context('DRUSH_URI', drush_bootstrap_value('drush_uri')); 
+  $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
+  $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
 
   drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
   drush_load_config('site');
@@ -312,6 +433,10 @@ function _drush_bootstrap_drupal_site() {
 
 /**
  * Initialize and load the Drupal configuration files.
+ *
+ * We process and store a normalized set of database credentials
+ * from the loaded configuration file, so we can validate them
+ * and access them easily in the future.
  */
 function _drush_bootstrap_drupal_configuration() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
@@ -346,20 +471,29 @@ function _drush_bootstrap_drupal_configuration() {
 }
 
 /**
- * Attempt to load the drupal database connection.
+ * Validate the DRUSH_BOOTSTRAP_DRUPAL_DATABASE phase
+ *
+ * Attempt to making a working database connection using the
+ * database credentials that were loaded during the previous
+ * phase. 
  */
-function _drush_bootstrap_drupal_database() {
-  if (drush_valid_db_credentials()) {
-    drush_log(dt("Successfully connected to the Drupal database."), 'bootstrap');
-    drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
+function _drush_bootstrap_drupal_database_validate() {
+  if (!drush_valid_db_credentials()) {
+    return drush_bootstrap_error("DRUSH_DRUPAL_DB_ERROR");
   }
-  else {
-    drush_set_error("DRUSH_DRUPAL_DB_ERROR");
-  }
+  return TRUE;
 }
 
 /**
- * Attempt to load the full Drupal system
+ * Boostrap the Drupal database.
+ */
+function _drush_bootstrap_drupal_database() {
+  drush_log(dt("Successfully connected to the Drupal database."), 'bootstrap');
+  drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
+}
+
+/**
+ * Attempt to load the full Drupal system.
  */
 function _drush_bootstrap_drupal_full() {
   ob_start();

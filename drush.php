@@ -58,21 +58,25 @@ function drush_main() {
   $phases = _drush_bootstrap_phases();
 
   foreach ($phases as $phase) {
-    drush_bootstrap($phase);
-
-    $command = drush_parse_command();
-    if (is_array($command)) {
-      if ($command['bootstrap'] == $phase) {
-        drush_log(dt("Found command: !command", array('!command' => $command['command'])), 'bootstrap');
-        // Dispatch the command(s).
-        // After this point the drush_shutdown function will run,
-        // exiting with the correct exit code.
-        return drush_dispatch($command);
+    if (drush_bootstrap($phase)) {
+      $command = drush_parse_command();
+      if (is_array($command)) {
+        if ($command['bootstrap'] == $phase) {
+          drush_log(dt("Found command: !command", array('!command' => $command['command'])), 'bootstrap');
+          // Dispatch the command(s).
+          // After this point the drush_shutdown function will run,
+          // exiting with the correct exit code.
+          return drush_dispatch($command);
+        }
       }
     }
+    else {
+      break;
+    }
   }
+  $args = implode(" ", drush_get_arguments());
   // If we reach this point, we have not found a valid command.
-  drush_set_error('DRUSH_COMMAND_NOT_FOUND');
+  drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The command 'drush.php !args' could not be executed.", array('!args' => $args)));
 }
 
 /**

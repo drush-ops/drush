@@ -121,7 +121,6 @@ function pm_drush_command() {
  */
 function pm_enable () {  
   $command = drush_get_command();
-  return pm_module_manage($command['arguments']);
 }
 
 /**
@@ -479,17 +478,17 @@ function pm_dl_destination($type) {
       return $destination;
     }
     else {
-      drush_set_error('DRUSH_PM_NO_DESTINATION', dt('The destination directory !destination does not appear to exist.', array('!destination' => $destination)));
-      exit();
+      return drush_set_error('DRUSH_PM_NO_DESTINATION', dt('The destination directory !destination does not appear to exist.', array('!destination' => $destination)));
     }
   }
   
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  
+  $site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT', false); 
+
   // If a URI is provided and we bootstrapped successfully then we install to
   // that specific site, otherwise we install to sites/all/modules
-  if (drush_get_context('DRUSH_URI') && function_exists('conf_path')) {
-    $sitepath = $drupal_root .'/'. conf_path() .'/';
+  if ($site_root) {
+    $sitepath = $drupal_root .'/'. $site_root .'/';
   }
   else if ($drupal_root) {
     $sitepath = $drupal_root . '/sites/all/';
@@ -614,8 +613,20 @@ function pm_dl($full_project = NULL) {
     return drush_set_error('DRUSH_DL_EMPTY_PROJECT', "Please tell me what to download. (eg. `drush dl views` or `drush dl diff-6.x-2.0`)");
   }
 
-  // Try to bootstrap to config phase so we can determine destination.
-  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_ROOT);
+  $phases = _drush_bootstrap_phases(); 
+  $phase_index = DRUSH_BOOTSTRAP_DRUSH;
+
+  // Try to bootstrap to the maximum possible level, without generating errors
+  foreach ($phases as $phase_index) {
+    if (drush_bootstrap_validate($phase_index)) {
+      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
+        drush_bootstrap($phase_index);
+      }
+    }
+    else {
+      break;
+    }
+  }
 
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   drush_include_engine('version_control', drush_get_option('version-control', 'svn'));
@@ -625,7 +636,7 @@ function pm_dl($full_project = NULL) {
   $project_types = pm_project_types();
   $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
   foreach ($requestdata as $package) {
-    $version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION') ? drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION') : 6;
+    $version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', 6);
     $version_default .= '.x';
 
     $version = empty($package['version']) ? $version_default : $package['version'];
@@ -654,13 +665,14 @@ function pm_dl($full_project = NULL) {
         if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
           $release['type'] = array_search($types[0]->value, $project_types);
         }
-        $destination = pm_dl_destination($release['type']);
-        
-        if (package_handler_install_project($project, $release, $destination)) {
-          drush_print(dt("Project !project (!version) successfully downloaded to !dest.",
-                         array('!project' => $project, '!version' => $release['version'], '!dest' => $destination)));
-          drush_command_invoke_all('drush_pm_post_install', $project, $release, $destination);
-          version_control_post_install($project, $release, $destination);
+
+        if ($destination = pm_dl_destination($release['type'])) {
+          if (package_handler_install_project($project, $release, $destination)) {
+            drush_log(dt("Project !project (!version) downloaded to !dest.",
+                           array('!project' => $project, '!version' => $release['version'], '!dest' => $destination)), 'success');
+            drush_command_invoke_all('drush_pm_post_install', $project, $release, $destination);
+            version_control_post_install($project, $release, $destination);
+          }
         }
       }
     }

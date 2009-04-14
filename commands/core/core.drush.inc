@@ -99,7 +99,6 @@ function core_drush_command() {
  */
 function core_help() {
   $commands = func_get_args();
-  drush_set_context('DRUSH_SHOWING_HELP', TRUE);
   
   if (empty($commands)) {
     $phases = _drush_bootstrap_phases(); 
@@ -119,10 +118,10 @@ function core_help() {
     $phase_index = DRUSH_BOOTSTRAP_DRUSH;
 
     foreach ($phases as $phase_index) {
-      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
-        drush_bootstrap($phase_index);
-      }
-      if (!drush_get_error()) {
+      if (drush_bootstrap_validate($phase_index)) {
+        if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
+          drush_bootstrap($phase_index);
+        }
         $commands = drush_get_commands();
         $rows = array();
         foreach($commands as $key => $command) {
