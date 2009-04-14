@@ -34,8 +34,8 @@ function pm_drush_help($section) {
       return dt('Disable one or more modules. Disables dependant modules as well.');
     case 'drush:uninstall':
       return dt('Uninstall one or more modules. Modules must be disabled first.');
-    case 'drush:status modules':
-      return dt('Show module enabled/disabled status.');
+    case 'drush:statusmodules':
+      return dt('Show enabled/disabled status for modules.');
     case 'drush:refresh':
       return dt('Refresh update status information. Run this before running update command.');
     case 'drush:upgrade':
@@ -81,8 +81,10 @@ function pm_drush_command() {
       'modules' => 'A space delimited list of modules.',
     ),
   );
-  $items['status modules'] = array(
+  $items['statusmodules'] = array(
     'description' => 'Show module enabled/disabled status',
+    'callback' => 'pm_module_manage',
+    'callback arguments' => array(array(), FALSE),
     'arguments' => array(
       'modules' => 'A space delimited list of modules.',
     ),
