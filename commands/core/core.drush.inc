@@ -414,5 +414,5 @@ function core_watchdog_delete($type = NULL) {
 }
 
 function core_eval($command) {
-  eval($command);
+  eval($command . ';');
 }
