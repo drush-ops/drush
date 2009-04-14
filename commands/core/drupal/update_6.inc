@@ -362,7 +362,7 @@ function update_main() {
         }
       }
       else {
-        drush_log(dt('No updates for module @module', array('@module' => $module)));
+        drush_log(dt('No updates for module @module', array('@module' => $module)), 'success');
       }
     }
     $batch = array(
