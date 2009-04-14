@@ -134,6 +134,7 @@ function pm_drush_command() {
  */
 function pm_enable () {  
   $command = drush_get_command();
+  return pm_module_manage($command['arguments'], TRUE);
 }
 
 /**
@@ -621,12 +622,8 @@ function pm_drush_engine_version_control() {
 /**
  * Command callback. Download drupal core.
  */
-function pm_dl($full_project = NULL) {
-  if (empty($full_project)) {
-    return drush_set_error('DRUSH_DL_EMPTY_PROJECT', "Please tell me what to download. (eg. `drush dl views` or `drush dl diff-6.x-2.0`)");
-  }
-
-  // bootstrap to the highest level possible.
+function pm_dl($full_project = 'drupal') {
+  // Bootstrap to the highest level possible.
   drush_bootstrap_max();
 
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
