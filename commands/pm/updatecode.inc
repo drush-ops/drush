@@ -8,7 +8,7 @@
  * This command prompts for confirmation before updating, so it is safe to run just to check on
  * In this case, say at the confirmation prompt.
  */
-function pm_update() {
+function pm_updatecode() {
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
   

@@ -34,7 +34,7 @@ function core_drush_command() {
   $items['cron'] = array(
     'description' => 'Run all cron hooks.',
   );
-  $items['update'] = array(
+  $items['updatedb'] = array(
     'description' => dt('Execute the update.php process from the command line'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
   );
@@ -111,7 +111,7 @@ function core_drush_engine_drupal() {
 /**
  * Command handler. Execute update.php code from drush.
  */
-function core_update() {
+function core_updatedb() {
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
   update_main();
 }

@@ -37,10 +37,12 @@ function pm_drush_help($section) {
     case 'drush:statusmodules':
       return dt('Show enabled/disabled status for modules.');
     case 'drush:refresh':
-      return dt('Refresh update status information. Run this before running update command.');
-    case 'drush:upgrade':
-      return dt("Display available update information and allow updating of all installed projects to the specified version (or latest by default). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
-    case 'drush:info':
+      return dt('Refresh update status information. Run this before running update or updatecode commands.');
+    case 'drush:updatecode':
+      return dt("Display available update information and allow updating of all installed project code to the specified version (or latest by default). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
+    case 'drush:update':
+      return dt("Display available update information and allow updating of all installed projects to the specified version (or latest by default), followed by applying any database updates required (as with running update.php). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
+      case 'drush:info':
       return dt("View all releases for a given project (modules, themes, profiles, translations). Useful for deciding which version to install/update.");
     case 'drush:dl':
       return dt("Quickly download projects (modules, themes, profiles, translations) from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
@@ -90,13 +92,20 @@ function pm_drush_command() {
     'description' => 'Refresh update status information',
     'drupal dependencies' => array('update'),
   );
-  $items['upgrade'] = array(
-    'description' => 'Upgrade your modules',
+  $items['updatecode'] = array(
+    'description' => 'Update your project code',
     'drupal dependencies' => array('update'),
     'arguments' => array(
-      'modules' => 'Optional. A space delimited list of modules to update.',
+      'modules' => 'Optional. A space delimited list of installed projects to update (currently only modules).',
     ),
   ) + $engines;
+  $items['update'] = array(
+    'description' => 'Update your project code and apply any database updates required (update.php)',
+    'drupal dependencies' => array('update'),
+    'arguments' => array(
+      'modules' => 'Optional. A space delimited list of installed projects to update (currently only modules).',
+    ),
+  );
   $items['info'] = array(
     'description' => 'Release information for a project',
     'drupal dependencies' => array('update'),
@@ -446,6 +455,15 @@ function pm_refresh() {
 }
 
 /**
+ * Command callback. Execute updatecode and updatedb commands.
+ */
+function pm_update() {
+  drush_backend_invoke("updatecode");
+  drush_backend_invoke("updatedb");
+}
+
+
+/**
  * Deletes a directory, all files in it and all subdirectories in it (recursively).
  * Use with care!
  * Written by Andreas Kalsch
@@ -576,7 +594,7 @@ function pm_project_types() {
 }
 
 /**
- * Used by dl and update commands to determine how to download/checkout new projects and acquire updates to projects.
+ * Used by dl and updatecode commands to determine how to download/checkout new projects and acquire updates to projects.
  */
 function pm_drush_engine_package_handler() {
   return array(
