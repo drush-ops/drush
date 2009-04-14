@@ -41,9 +41,9 @@ function pm_drush_help($section) {
     case 'drush:upgrade':
       return dt("Display available update information and allow updating of all installed projects to the specified version (or latest by default). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
     case 'drush:info':
-      return dt("View all releases for a given project. Useful for deciding which version to install/update.");
+      return dt("View all releases for a given project (modules, themes, profiles, translations). Useful for deciding which version to install/update.");
     case 'drush:dl':
-      return dt("Quickly download projects from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
+      return dt("Quickly download projects (modules, themes, profiles, translations) from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
   }
 }
 
@@ -85,9 +85,6 @@ function pm_drush_command() {
     'description' => 'Show module enabled/disabled status',
     'callback' => 'pm_module_manage',
     'callback arguments' => array(array(), FALSE),
-    'arguments' => array(
-      'modules' => 'A space delimited list of modules.',
-    ),
   );
   $items['refresh'] = array(
     'description' => 'Refresh update status information',
@@ -107,7 +104,7 @@ function pm_drush_command() {
       'projects' => 'A space separated list of drupal.org project names.',
     ),
     'examples' => array(
-      'drush info cck views' => 'View releases for cck and views projects.',
+      'drush info cck zen' => 'View releases for cck and Zen projects.',
     ),
   );
   $items['dl'] = array(
