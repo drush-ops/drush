@@ -31,7 +31,7 @@ function core_drush_command() {
   );
   $items['status'] = array(
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['script'] = array(
     'description' => "Run php script(s).",
@@ -192,6 +192,7 @@ function core_drush_help($section) {
 
 // TODO: consolidate with SQL commands?
 function _core_site_credentials() {
+  $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', $drupal_root);
     $credentials .= sprintf("  %-18s: %s\n", 'Drupal version', drush_drupal_major_version());
@@ -204,15 +205,23 @@ function _core_site_credentials() {
         $credentials .= sprintf("  %-18s: %s\n", 'Database Username', $creds['user']);
         $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $creds['name']);
         $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $creds['pass']);
+        if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
+          $credentials .= sprintf("  %-18s: %s\n", 'Database', dt('Connected'));
+          if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+            $credentials .= sprintf("  %-18s: %s\n", 'Drupal Bootstrap', dt('Successful'));
+            if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+              global $user;
+              $username =  ($user->uid) ? $user->name : dt('Anonymous');
+              $credentials .= sprintf("  %-18s: %s\n", 'Drupal User', $username);
+            }
+          }
+        }
       }
     }
     return $credentials;
   }
-  return null;
+  return dt("Could not find a valid Drupal installation\n");
 }
-
-
-
 
 /**
  * Command callback. Runs cron hooks.
@@ -235,39 +244,9 @@ function core_cron() {
  * installation.
  */
 function core_status() {
-  if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
-    drush_print(dt("Drupal !version is installed at !DRUSH_DRUPAL_ROOT.", array('!version' => drush_drupal_version(), '!DRUSH_DRUPAL_ROOT' => $drupal_root)));
-    if ($drush_uri = drush_get_context('DRUSH_URI')) {
-      drush_print(dt("Current site: !DRUSH_URI", array('!DRUSH_URI' => $drush_uri)));
-    }
-    else {
-      drush_print(dt("No site uri was determined. Using default site path."));
-    }
-    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
-      switch (drush_drupal_major_version()) {
-        case 5:
-        case 6:
-          drush_print(dt("Current database: !db_url", array('!db_url' => $GLOBALS['db_url'])));
-          break;
-        case 7:
-          $db_conn = Database::getConnectionInfo();
-          drush_print(dt("Current database:"));
-          foreach($db_conn['default'] as $key => $value) {
-            drush_print(dt("  !key => !value", array('!key' => $key, '!value' => $value)));
-          }
-          break;
-        default:
-          drush_print(dt("No database information available."));
-          break;
-      }
-    }
-    else {
-      drush_print(dt("Site not found or not working."));
-    }
-  }
-  else {
-    drush_print(dt("No Drupal installation was found."));
-  }
+  drush_bootstrap_max();
+  print _core_site_credentials();
+  return;
 }
 
 /**
