@@ -3,7 +3,7 @@
 
 /**
  * @file
- *   Core drush commands. See 'Drush Extras' project on drupal.org for more.
+ *   Core drush commands.
  */
 
 /**
