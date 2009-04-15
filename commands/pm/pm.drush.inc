@@ -212,7 +212,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
     if ($enable) {
       pm_dependencies($modules, $form);
       if (empty($modules)) {
-        return drush_set_error('DRUSH_PM_ENABLE_NO_MODULES', dt('There were no modules that could be enabled.'));
+        return drush_log(dt('There were no modules that could be enabled.'), 'ok');
       }
       drush_print(dt('The following modules will be enabled: !modules', array('!modules' => implode(', ', $modules))));
       if(!drush_confirm(dt('Do you really want to continue?'))) {
@@ -227,7 +227,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
     else {
       pm_reverse_dependencies($modules, $form);
       if (empty($modules)) {
-        return drush_set_error('DRUSH_PM_DISABLE_NO_MODULES', dt('There were no modules that could be disabled.'));
+        return drush_log(dt('There were no modules that could be disabled.'), 'ok');
       }
       drush_print(dt('The following modules will be disabled: !modules', array('!modules' => implode(', ', $modules))));
       if(!drush_confirm(dt('Do you really want to continue?'))) {
