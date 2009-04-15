@@ -322,9 +322,9 @@ function _drush_backend_generate_command($command, &$data, $method = 'GET', $dru
  * 
  * Use this if you don't care what the return value of the command may be.
  */
-function drush_backend_fork($command, $data) {
+function drush_backend_fork($command, $data, $drush_path = null, $hostname = null, $username = null) {
   $data['quiet'] = TRUE;
-  $cmd = "(" . _drush_backend_generate_command($command, $data) . ' &) > /dev/null';
+  $cmd = "(" . _drush_backend_generate_command($command, $data, 'GET', $drush_path, $hostname, $username) . ' &) > /dev/null';
   drush_log(dt("Forking : !cmd", array('!cmd' => $cmd)));
   system($cmd);
 }
