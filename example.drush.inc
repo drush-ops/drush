@@ -7,9 +7,10 @@
  *
  *   Shows how to make your own drush command.
  *
- *   You can copy this file either into a .drush folder in your HOME folder,
- *   along with one of your existing modules or in a folder specified with 
- *   the include option.
+ *   You can copy this file to any of the following
+ *     1. A .drush folder in your HOME folder.
+ *     2. Anywhere in a folder tree below an active module on your site.
+ *     3. In an arbitrary folder specified with the --include option.
  */
 
 /**

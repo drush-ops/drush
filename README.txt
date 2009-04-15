@@ -4,20 +4,20 @@ DESCRIPTION
 -----------
 drush is a command line shell and Unix scripting interface for Drupal, a
 veritable Swiss Army knife designed to make life easier for those of us who
-spend most of our working hours hacking away at the command prompt.
+spend many hours hacking away at the command prompt.
 
 Green text against a black background is optional. Perhaps you would like
 some alpha-channel translucency with that? ;)
 
-drush.php itself doesn't provide any actual tools or commands but the API
-for those. There are several command files that provide drush utilities
-included in this download. See Package Manager, SQL Tools, and Toolbox.
+Drush core ships with lots of useful commands for interacting with code 
+like modules/themes/profiles. Similarly, it run update.php, execute sql 
+queries and DB migrations, and misc utilities like run cron or clear cache.
 
 INSTALLATION
 ------------
 For Linux/Unix/Mac:
-  1. Untar the tarball into a convenient folder (/path/to/drush)
-  2. (optional, but recommended:) To ease the use of drush,
+  1. Untar the tarball into a folder outside of your web site (/path/to/drush)
+  2. (Optional, but recommended:) To ease the use of drush,
      - create a link to drush.php in a directory that is in your $PATH, e.g.:
        $ ln -s /path/to/drush/drush.php /usr/bin/drush
      OR
@@ -46,7 +46,7 @@ USAGE
 Once installed and setup (see above), you can use drush as follows while in
 any Drupal directory:
 
-  $ drush [options] <command> <command> ...
+  $ drush [options] <command>
 
 Use the 'help' command to get a list of available options and commands:
 
@@ -55,7 +55,7 @@ Use the 'help' command to get a list of available options and commands:
 For multisite installations, you might need to use the -l or other command line
 options just to get drush to work:
 
-  $ drush -l http://association.drupal.org/drupal help
+  $ drush -l http://example.com help
 
 Related Options:
   -r <path>, --root=<path>      Drupal root directory to use

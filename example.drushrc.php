@@ -21,20 +21,20 @@
  * Note that this preempts loading any other configuration files!
  */
 
-// enable simulation mode
+// Enable simulation mode.
 # $options['s'] = 1;
 
-// specify a particular multisite
+// Specify a particular multisite.
 # $options['l'] = 'http://example.com/subir';
 
-// specify your Drupal core base directory (useful if you use symlinks)
+// Specify your Drupal core base directory (useful if you use symlinks).
 # $options['r'] = '/home/USER/workspace/drupal-6';
 
 // Specify additional directories to search for *.drush.inc files
 // Use POSIX path separator (':')
 # $options['i'] = 'sites/default:profiles/myprofile'; 
 
-// enable verbose mode
+// Enable verbose mode.
 # $options['v'] = 1; 
 
 
@@ -48,9 +48,9 @@ $options['skip-tables'] = array(
  'common' => array('accesslog', 'cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'search_dataset', 'search_index', 'search_total', 'sessions', 'watchdog'),
 );
 
-// use cvs checkouts when installing modules
-// an example of a command specific argument being set in drushrc.php
-// $options['handler'] = 'cvs';
+// Use cvs checkouts when installing modules
+// An example of a command specific argument being set in drushrc.php
+// $options['package-handler'] = 'cvs';
 
 /**
  * Variable overrides:
