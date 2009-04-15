@@ -250,9 +250,8 @@ function drush_sql_load($source, $destination) {
   // Get command to export from source.
   if ($retrieve = drush_sql_dump($source)) {
     
-    // Build import command for target.
-    $send = 'mysql' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
-    $send .= _drush_sql_get_credentials($destination);
+    // Build import command for target. No verbose here as that emits too much SQL.
+    $send .= 'mysql' . _drush_sql_get_credentials($destination);
     
     $exec = "$retrieve; $send < $file";
     // Avoid the php memory of the $output array in drush_shell_exec().
