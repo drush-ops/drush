@@ -255,10 +255,9 @@ function drush_sql_load($source, $destination) {
     $send .= _drush_sql_get_credentials($destination);
     
     $exec = "$retrieve; $send < $file";
-    $return = drush_shell_exec($exec);
+    // Avoid the php memory of the $output array in drush_shell_exec().
+    drush_op('system', $exec);
     drush_op('unlink', $file);
-    
-    return $return;
   }
 }
 
