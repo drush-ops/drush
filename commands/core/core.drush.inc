@@ -230,12 +230,12 @@ function _core_site_credentials() {
         $credentials .= sprintf("  %-18s: %s\n", 'Database Hostname', $creds['host']);
         $credentials .= sprintf("  %-18s: %s\n", 'Database Username', $creds['user']);
         $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $creds['name']);
-        $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $creds['pass']);
-        if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
+        $credentials .= sprintf("  %-18s: %s\n", 'Database Password', $creds['pass']);
+        if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
           $credentials .= sprintf("  %-18s: %s\n", 'Database', dt('Connected'));
-          if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+          if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
             $credentials .= sprintf("  %-18s: %s\n", 'Drupal Bootstrap', dt('Successful'));
-            if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+            if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
               global $user;
               $username =  ($user->uid) ? $user->name : dt('Anonymous');
               $credentials .= sprintf("  %-18s: %s\n", 'Drupal User', $username);

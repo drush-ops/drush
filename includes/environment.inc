@@ -158,12 +158,12 @@ function drush_bootstrap($phase) {
   drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);
   while ($phase >= $phase_index && isset($phases[$phase_index])) {
     if (drush_bootstrap_validate($phase_index)) {
-      drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
       $current_phase = $phases[$phase_index];
       if (function_exists($current_phase) && !drush_get_error()) {
         drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
         $current_phase();
       }
+      drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
     }
     else {
       $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
