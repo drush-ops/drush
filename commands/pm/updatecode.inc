@@ -86,6 +86,9 @@ function pm_update_packages($releases) {
     unset($releases['drupal']);
   }
 
+  drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
+  drush_include_engine('version_control', drush_get_option('version-control', 'svn'));
+
   drush_print(dt('Updates will be made to the following projects:'));
   foreach($releases as $release) {
     $print .= $release['title'] . " [" . $release['name'] . '-' . $release['candidate_version'] . "], ";
@@ -93,16 +96,11 @@ function pm_update_packages($releases) {
   drush_print(substr($print, 0, strlen($print)-2));
   drush_print();
   drush_print(dt("Note: Updated modules can potentially break your site. It's not recommended to update production sites without prior testing."));
-  if (module_exists('pm_svn')) {
-    drush_print(dt("Note: A backup of your package will be stored to backups directory if no .svn directory is found."));
-  }
+  drush_print(dt("Note: A backup of your package will be stored to backups directory if it is not managed by a supported version control system."));
   drush_print(dt('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
   if(!drush_confirm(dt('Do you really want to continue?'))) {
     drush_die('Aborting.');
   }
-
-  drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
-  drush_include_engine('version_control', drush_get_option('version-control', 'svn'));
 
   // Save the date to be used in the backup directory's path name.
   $date = date('YmdHis');
@@ -116,8 +114,9 @@ function pm_update_packages($releases) {
     $source = $drupal_root .'/' . $release['path'];
 
     $skip_backup = version_control_skip_backup($source);
-    if (!count($skip_backup)) {
-      $backup_dir = $drupal_root  . '/backup';
+    if (!$skip_backup) {
+      $backup_dir = drush_get_option('backup-dir', $drupal_root  . '/backup');
+      $backup_dir = rtrim($backup_dir, '/');
       @drush_op('mkdir', $backup_dir, 0777);
       $backup_dir .= '/modules';
       @drush_op('mkdir', $backup_dir, 0777);
@@ -137,7 +136,7 @@ function pm_update_packages($releases) {
     array_pop($basepath);
     $project_parent_path = $drupal_root. '/' . implode('/', $basepath). '/';
     if (!package_handler_update_project($release['name'], $release['releases'][$release['candidate_version']], $project_parent_path)) {
-      if (!count($skip_backup)) {
+      if (!$skip_backup) {
         drush_set_error('DRUSH_PM_UPDATING_FAILED_BACKUP_RESTORE', dt('Updating project !project failed. Restoring previously installed version.', array('!project' => $release['name'])));
         drush_op('rename', $backup_target, $source);
       }
@@ -154,5 +153,5 @@ function pm_update_packages($releases) {
   if ($backup_dir) {
     drush_log(dt("Backups were saved into the directory !backup_dir.", array('!backup_dir' => $backup_dir)), 'ok');
   }
-  drush_print(dt("You should now run `drush updatedb`."));
+  drush_print(dt("You should now run update.php through your browser."));
 }

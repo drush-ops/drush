@@ -98,12 +98,18 @@ function pm_drush_command() {
     'arguments' => array(
       'modules' => 'Optional. A space delimited list of installed projects to update (currently only modules).',
     ),
+    'options' => array(
+      '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
+    ),
   ) + $engines;
   $items['update'] = array(
     'description' => 'Update your project code and apply any database updates required (update.php)',
     'drupal dependencies' => array('update'),
     'arguments' => array(
       'modules' => 'Optional. A space delimited list of installed projects to update (currently only modules).',
+    ),
+    'options' => array(
+      '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
     ),
   );
   $items['info'] = array(
@@ -603,9 +609,11 @@ function pm_drush_engine_package_handler() {
       'options' => array(
         '--package-handler=cvs' => 'Use CVS to checkout and update projects.',
         '  --cvsparams' => 'Add options to the `cvs` program',
+        '  --cvsmethod' => 'force cvs updates or checkouts (checkout is default unless the directory is managed by a supported version control system).'
       ),
       'examples' => array(
           'drush [command] cck --cvsparams=\"-C\"' =>  'Overwrite all local changes (Quotes are required).',
+          'drush [command] cck --cvsmethod=update' =>  'Will update the project, and try to merge changes, rather than overwriting them. Any conflicts will need to be resolved manually.',
       ),
     ),
   );
@@ -650,7 +658,6 @@ function pm_dl() {
   
   foreach ($full_projects as $full_project) {
     $requestdata = pm_parse_project_version(explode(' ', $full_project));
-
     $project_types = pm_project_types();
     $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
     foreach ($requestdata as $package) {
