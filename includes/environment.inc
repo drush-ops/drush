@@ -679,8 +679,14 @@ function drush_valid_db_credentials() {
     $creds = drush_get_context('DRUSH_DB_CREDENTIALS');
 
     $type = ($creds['driver'] == 'mysqli') ? 'mysql' : $creds['driver'];
-    $constr = sprintf("%s:dbname=%s;host=%s", $type, $creds['name'], $creds['host']);
 
+    if (!in_array($type, PDO::getAvailableDrivers())) {
+      drush_log(dt('PDO support available, but the !type driver has not been installed. Assuming success.', array('!type' => $type)), 'bootstrap');
+      return TRUE;
+    }
+
+    $constr = sprintf("%s:dbname=%s;host=%s", $type, $creds['name'], $creds['host']);
+    
     try {
       $db = new PDO($constr, $creds['user'], $creds['pass']);
       $db = null;
