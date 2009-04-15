@@ -362,7 +362,7 @@ function update_main() {
         }
       }
       else {
-        drush_log(dt('No updates for module @module', array('@module' => $module)), 'success');
+        drush_log(dt('No database updates for module @module', array('@module' => $module)), 'success');
       }
     }
     $batch = array(
@@ -378,7 +378,7 @@ function update_main() {
     batch_process();
   }
   else {
-    drush_log(dt('No outstanding updates'));
+    drush_log(dt('No outstanding database updates'));
   }
 }
 

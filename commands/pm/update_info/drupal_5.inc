@@ -1,43 +1,40 @@
 <?php
 // $Id$
 
-function pm_update_filter(&$releases, &$updateable, &$rows) {
-  foreach ($releases as $release) {
-    if (!$release['title']) {
-      continue;
-    }
-
-    switch($release['status']) {
-      case UPDATE_STATUS_CURRENT:
-        $status = dt('OK');
-        $release['candidate_version'] = $release['recommended'];
-        break;
-      case UPDATE_STATUS_NOT_CURRENT:
-        $status = dt('Update available');
-        $release['candidate_version'] = $release['recommended'];
-        $updateable[$release['name']] = $release;
-        break;
-      case UPDATE_STATUS_NOT_SECURE:
-        $status = dt('SECURITY UPDATE available');
-        $release['candidate_version'] = $release['recommended'];
-        $updateable[$release['name']] = $release;
-        break;
-      case DRUSH_PM_REQUESTED_UPDATE:
-        $status = dt('Specified version available');
-        $updateable[$release['name']] = $release;
-        break;
-      case DRUSH_PM_REQUESTED_CURRENT:
-        $status = dt('Specified version already installed');
-        break;
-      default:
-        $status = dt('Ignored: !reason', array('!reason' => $project['reason']));
-        $release['title'] = $release['name'];
-        $release['candidate_version'] = dt('Unknown');
-        break;
-    }
-
-    $rows[] = array($release['title'], $release['existing_version'], $release['candidate_version'], $status);
+function pm_update_filter(&$release) {
+  $update = FALSE;
+  switch($release['status']) {
+    case UPDATE_STATUS_CURRENT:
+      $status = dt('OK');
+      $release['candidate_version'] = $release['recommended'];
+      break;
+    case UPDATE_STATUS_NOT_CURRENT:
+      $status = dt('Update available');
+      $release['candidate_version'] = $release['recommended'];
+      $release['updatable'] = TRUE;
+      break;
+    case UPDATE_STATUS_NOT_SECURE:
+      $status = dt('SECURITY UPDATE available');
+      $release['candidate_version'] = $release['recommended'];
+      $release['updatable'] = TRUE;
+      break;
+    case UPDATE_STATUS_REVOKED:
+      $status = dt('Installed version REVOKED');
+      $release['candidate_version'] = $release['recommended'];
+      $release['updatable'] = TRUE;
+      break;
+    case UPDATE_STATUS_NOT_SUPPORTED:
+      $status = dt('Installed version not supported');
+      $release['candidate_version'] = $release['recommended'];
+      $release['updatable'] = TRUE;
+      break;
+    default:
+      $status = dt('Ignored: !reason', array('!reason' => $project['reason']));
+      $release['title'] = $release['name'];
+      $release['candidate_version'] = dt('Unknown');
+      break;
   }
+  return $status;
 }
 
 function pm_update_last_check() {
@@ -59,6 +56,10 @@ function _pm_refresh() {
  * @return An array containing remote and local versions for all installed projects
  */
 function _pm_get_update_info($projects = NULL) {
+  // We force a refresh if the cache is not available.
+  if (!cache_get('update_status_info', 'cache')) {
+    _pm_refresh();
+  }
   $info = update_status_get_available();
   $data = update_status_calculate_project_data($info);
   $data = pm_get_project_path($data, 'modules');

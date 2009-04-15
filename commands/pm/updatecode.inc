@@ -26,10 +26,22 @@ function pm_updatecode() {
   if (!empty($requests)) {
     // Force update projects where a specific version is reqested
     foreach ($requests as $project => $request) {
-      if (!empty($request['version'])) {
+      if (!isset($releases[$project])) {
+        // Catch projects with no version data (common for CVS checkouts
+        // if you don't have CVS deploy installed).
+        $releases[$project] = array(
+          'title' => $project,
+          'existing_version' => 'Unknown',
+          'status'=> DRUSH_PM_NO_VERSION,
+        );
+      }
+      else if (!empty($request['version'])) {
         // Match the requested release
         $release = pm_get_release($request, $releases[$project]);
-        if ($release['version'] == $releases[$project]['existing_version']) {
+        if (!$release) {
+          $releases[$project]['status'] = DRUSH_PM_REQUESTED_NOT_FOUND;
+        }
+        else if ($release['version'] == $releases[$project]['existing_version']) {
           $releases[$project]['status'] = DRUSH_PM_REQUESTED_CURRENT;
         }
         else {
@@ -42,11 +54,10 @@ function pm_updatecode() {
   }
 
   // Table headers.
-  $rows[] = array(dt('Name'), dt('Installed version'), dt('Recommended version'), dt('Status'));
+  $rows[] = array(dt('Name'), dt('Installed version'), dt('Proposed version'), dt('Status'));
 
   // Process releases, notifying user of status and building a list of proposed updates
-  $updateable = array();
-  pm_update_filter($releases, $updateable, $rows);
+  $updateable = pm_project_filter($releases, $rows);
 
   $last = pm_update_last_check();
   drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
@@ -64,8 +75,13 @@ function pm_updatecode() {
     }
   }
 
+  if (isset($updateable['drupal'])) {
+    drush_print("NOTE: A code update for the Drupal core is available. \nDrupal itself can't yet be updated by this tool. Please update Drupal manually.\n");
+    unset($updateable['drupal']);
+  }
+
   if (empty($updateable)) {
-    return drush_log(dt('No updates available.'), 'ok');
+    return drush_log(dt('No code updates available.'), 'ok');
   }
 
   // Offer to update to the identified releases
@@ -81,15 +97,10 @@ function pm_updatecode() {
  *   array key candidate_version that specifies the version to be installed.
  */
 function pm_update_packages($releases) {
-  if (isset($releases['drupal'])) {
-    drush_print("NOTE: An update for the Drupal core is available. \nDrupal itself can't yet be updated by this tool. Please update Drupal manually.\n");
-    unset($releases['drupal']);
-  }
-
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   drush_include_engine('version_control', drush_get_option('version-control', 'svn'));
 
-  drush_print(dt('Updates will be made to the following projects:'));
+  drush_print(dt('Code updates will be made to the following projects:'));
   foreach($releases as $release) {
     $print .= $release['title'] . " [" . $release['name'] . '-' . $release['candidate_version'] . "], ";
   }
@@ -107,7 +118,7 @@ function pm_update_packages($releases) {
 
   // Now we start the actual updating.
   foreach($releases as $release) {
-    drush_verbose(dt('Starting to update !project ...', array('!project' => $release['title'])));
+    drush_verbose(dt('Starting to update !project code ...', array('!project' => $release['title'])));
 
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
     
@@ -153,5 +164,40 @@ function pm_update_packages($releases) {
   if ($backup_dir) {
     drush_log(dt("Backups were saved into the directory !backup_dir.", array('!backup_dir' => $backup_dir)), 'ok');
   }
-  drush_print(dt("You should now run `drush updatedb` through your browser."));
+  // Clear the cache, since some modules could have moved around.
+  drush_invoke("cache clear");
+  drush_print(dt("You should now run `drush updatedb` or visit update.php through your browser."));
+}
+
+function pm_project_filter(&$releases, &$rows) {
+  $updateable = array();
+  foreach ($releases as $key => $release) {
+    if (!$release['title']) {
+      continue;
+    }
+
+    switch($release['status']) {
+      case DRUSH_PM_REQUESTED_UPDATE:
+        $status = dt('Specified version available');
+        $release['updatable'] = TRUE;
+        break;
+      case DRUSH_PM_REQUESTED_CURRENT:
+        $status = dt('Specified version already installed');
+        break;
+      case DRUSH_PM_NO_VERSION:
+        $status = dt('No version information found (if you have a CVS checkout you should install CVS Deploy module)');
+        break;
+      case DRUSH_PM_REQUESTED_NOT_FOUND:
+        $status = dt('Specified version not found');
+        break;
+      default:
+        $status = pm_update_filter($release);
+        break;
+    }
+    if ($release['updatable']) {
+      $updatable[$key] = $release;
+    }
+    $rows[] = array($release['title'], $release['existing_version'], $release['candidate_version'], $status);
+  }
+  return $updatable;
 }

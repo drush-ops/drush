@@ -1,55 +1,42 @@
 <?php
 // $Id$
 
-function pm_update_filter(&$releases, &$updateable, &$rows) {
-  foreach ($releases as $release) {
-    if (!$release['title']) {
-      continue;
-    }
-
-    switch($release['status']) {
-      case UPDATE_CURRENT:
-        $status = dt('Up to date');
-        $release['candidate_version'] = $release['recommended'];
-        break;
-      case UPDATE_NOT_CURRENT:
-        $status = dt('Update available');
-        $release['candidate_version'] = $release['recommended'];
-        $updateable[$release['name']] = $release;
-        break;
-      case UPDATE_NOT_SECURE:
-        $status = dt('SECURITY UPDATE available');
-        $release['candidate_version'] = $release['recommended'];
-        $updateable[$release['name']] = $release;
-        break;
-      case UPDATE_REVOKED:
-        $status = dt('Intalled version REVOKED');
-        $release['candidate_version'] = $release['recommended'];
-        $updateable[$project['name']] = $release;
-        break;
-      case DRUSH_PM_REQUESTED_UPDATE:
-        $status = dt('Specified version available');
-        $updateable[$release['name']] = $release;
-        break;
-      case DRUSH_PM_REQUESTED_CURRENT:
-        $status = dt('Specified version already installed');
-        break;
-      case UPDATE_NOT_SUPPORTED:
-        $status = dt('Installed version not supported');
-        $release['candidate_version'] = $release['recommended'];
-        $updateable[$project['name']] = $release;
-        break;
-      case UPDATE_NOT_CHECKED:
-        $status = dt('Unable to check status');
-        break;
-      case UPDATE_UNKNOWN:
-      default:
-        $status = dt('Unknown');
-        break;
-    }
-
-    $rows[] = array($release['title'], $release['existing_version'], $release['candidate_version'], $status);
+function pm_update_filter(&$release) {
+  $update = FALSE;
+  switch($release['status']) {
+    case UPDATE_CURRENT:
+      $status = dt('Up to date');
+      $release['candidate_version'] = $release['recommended'];
+      break;
+    case UPDATE_NOT_CURRENT:
+      $status = dt('Update available');
+      $release['candidate_version'] = $release['recommended'];
+      $release['updatable'] = TRUE;
+      break;
+    case UPDATE_NOT_SECURE:
+      $status = dt('SECURITY UPDATE available');
+      $release['candidate_version'] = $release['recommended'];
+      $release['updatable'] = TRUE;
+      break;
+    case UPDATE_REVOKED:
+      $status = dt('Installed version REVOKED');
+      $release['candidate_version'] = $release['recommended'];
+      $release['updatable'] = TRUE;
+      break;
+    case UPDATE_NOT_SUPPORTED:
+      $status = dt('Installed version not supported');
+      $release['candidate_version'] = $release['recommended'];
+      $release['updatable'] = TRUE;
+      break;
+    case UPDATE_NOT_CHECKED:
+      $status = dt('Unable to check status');
+      break;
+    case UPDATE_UNKNOWN:
+    default:
+      $status = dt('Unknown');
+      break;
   }
+  return $status;
 }
 
 function pm_update_last_check() {
@@ -71,6 +58,10 @@ function _pm_refresh() {
  * @return An array containing remote and local versions for all installed projects
  */
 function _pm_get_update_info($projects = NULL) {
+  // We force a refresh if the cache is not available.
+  if (!cache_get('update_info', 'cache_update')) {
+    _pm_refresh();
+  }
   $info = update_get_available();
   $data = update_calculate_project_data($info);
   $data = pm_get_project_path($data, 'includes');

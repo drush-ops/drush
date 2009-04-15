@@ -24,6 +24,16 @@ define('DRUSH_PM_REQUESTED_UPDATE', 101);
 define('DRUSH_PM_REQUESTED_CURRENT', 102);
 
 /**
+ * User requested version already installed.
+ */
+define('DRUSH_PM_NO_VERSION', 103);
+
+/**
+ * User requested version not found.
+ */
+define('DRUSH_PM_NO_VERSION', 104);
+
+/**
  * Implementation of hook_drush_help().
  */
 function pm_drush_help($section) {
@@ -53,6 +63,10 @@ function pm_drush_help($section) {
  * Implementation of hook_drush_command().
  */
 function pm_drush_command() {
+  $update = 'update';
+  if (drush_drupal_major_version() == 5) {
+    $update = 'update_status';
+  }
   $engines = array(
     'engines' => array(
       'version_control' => 'Integration with VCS in order to easily commit your changes to projects.',
@@ -65,12 +79,14 @@ function pm_drush_command() {
     'arguments' => array(
       'modules' => 'A space delimited list of modules.',
     ),
+    'core' => array(6),
   );
   $items['disable'] = array(
     'description' => 'Disable one or more modules.',
     'arguments' => array(
       'modules' => 'A space delimited list of modules.',
     ),
+    'core' => array(6),
   );
   // Install command is reserved for the download and enable of projects including dependencies. 
   // @see http://drupal.org/node/112692 for more information.
@@ -90,11 +106,11 @@ function pm_drush_command() {
   );
   $items['refresh'] = array(
     'description' => 'Refresh update status information',
-    'drupal dependencies' => array('update'),
+    'drupal dependencies' => array($update),
   );
   $items['updatecode'] = array(
     'description' => 'Update your project code',
-    'drupal dependencies' => array('update'),
+    'drupal dependencies' => array($update),
     'arguments' => array(
       'modules' => 'Optional. A space delimited list of installed projects to update (currently only modules).',
     ),
@@ -104,7 +120,7 @@ function pm_drush_command() {
   ) + $engines;
   $items['update'] = array(
     'description' => 'Update your project code and apply any database updates required (update.php)',
-    'drupal dependencies' => array('update'),
+    'drupal dependencies' => array($update),
     'arguments' => array(
       'modules' => 'Optional. A space delimited list of installed projects to update (currently only modules).',
     ),
@@ -114,7 +130,7 @@ function pm_drush_command() {
   );
   $items['info'] = array(
     'description' => 'Release information for a project',
-    'drupal dependencies' => array('update'),
+    'drupal dependencies' => array($update),
     'arguments' => array(
       'projects' => 'A space separated list of drupal.org project names.',
     ),
@@ -461,10 +477,16 @@ function pm_refresh() {
 }
 
 /**
- * Command callback. Execute updatecode and updatedb commands.
+ * Command callback. Execute updatecode.
  */
 function pm_update() {
-  drush_backend_invoke("updatecode");
+  drush_invoke("updatecode");
+}
+
+/**
+ * Command callback. Execute updatecode and updatedb commands.
+ */
+function pm_post_update() {
   drush_backend_invoke("updatedb");
 }
 
