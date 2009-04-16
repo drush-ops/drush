@@ -44,7 +44,7 @@
  * POST parameters will be passed to the script as a JSON encoded associative array over STDIN.
  *
  * Because of this standard interface, Drush commands can also be executed on
- * external servers through SSH pipes, simply by appending, 'ssh username@server.com'
+ * external servers through SSH pipes, simply by prepending, 'ssh username@server.com'
  * in front of the command.
  *
  * If the key-based ssh authentication has been set up between the servers, this will just
