@@ -479,8 +479,8 @@ function _drush_bootstrap_drupal_configuration() {
        }
        break;
      case 7:
-       if (isset($GLOBALS['databases']['default'])) {
-         $conn = $GLOBALS['databases']['default'];
+       if (isset($GLOBALS['databases']['default']['default'])) {
+         $conn = $GLOBALS['databases']['default']['default'];
          $creds['driver'] = $conn['driver'];
          $creds['user'] = $conn['username'];
          $creds['host'] = $conn['host'];
