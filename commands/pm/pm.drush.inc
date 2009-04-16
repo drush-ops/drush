@@ -308,7 +308,7 @@ function pm_dependencies(&$modules, $form) {
       drush_set_error('DRUSH_PM_ENABLE_MODULE_NOT FOUND', dt('Module !module was not found and will not be enabled.', array('!module' => $module)));
     }
   }
-  $modules = array_merge($modules, $dependencies);
+  $modules = array_unique(array_merge($modules, $dependencies));
 }
 
 /**
