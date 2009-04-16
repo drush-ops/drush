@@ -286,9 +286,7 @@ function _drush_backend_generate_command($command, &$data, $method = 'GET', $dru
 
   $drush_path = !is_null($drush_path) ? $drush_path : $_SERVER['argv'][0]; // Call own drush.php file.
   $data['root'] = ($data['root']) ? $data['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
-  if (!is_null($data['uri'])) {
-    $data['uri'] = ($data['uri']) ? $data['uri'] : drush_get_context('DRUSH_URI');
-  }
+  $data['uri'] = array_key_exists('uri', $data) ? $data['uri'] : drush_get_context('DRUSH_URI');
 
   $option_str = _drush_backend_argument_string($data, $method);
   $args = explode(" ", $command);
