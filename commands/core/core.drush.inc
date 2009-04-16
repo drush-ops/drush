@@ -191,7 +191,7 @@ function core_drush_help($section) {
     case 'drush:status':
       return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:script':
-      return dt("Runs the given php script(s) against the current Drupal site.");
+      return dt("Runs the given php script(s) after a full Drupal bootstrap. A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting.");
     case 'drush:watchdog show':
       return dt("Show recent watchdog messages.");
     case 'drush:watchdog delete':
