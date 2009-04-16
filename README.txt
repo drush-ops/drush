@@ -112,12 +112,6 @@ FAQ
   Q: What does "drush" stand for?
   A: The Drupal Shell.
 
-LIMITATIONS
------------
-* Due to reliance on PHP's tokenizer, drush may not work well in situations
-  where the PHP code for the Drupal code base is encrypted (refer to API.txt
-  for more information). This is unlikely to change.
-
 CREDITS
 -------
 Originally developed by Arto Bendiken <http://bendiken.net/> for Drupal 4.7.
