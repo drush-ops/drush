@@ -48,7 +48,7 @@ $options['skip-tables'] = array(
  'common' => array('accesslog', 'cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'search_dataset', 'search_index', 'search_total', 'sessions', 'watchdog'),
 );
 
-// Use cvs checkouts when installing modules
+// Use cvs checkouts when downloading and updating modules.
 // An example of a command specific argument being set in drushrc.php
 // $options['package-handler'] = 'cvs';
 
