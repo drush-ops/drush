@@ -22,7 +22,7 @@ function drush_parse_args() {
 
   static $arg_opts = array('c', 'h', 'u', 'r', 'l', 'i', 'v');
 
-  $arguments = array();
+  $arguments = $options = array();
 
   for ($i = 1; $i < count($args); $i++) {
     $opt = $args[$i];

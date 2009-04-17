@@ -90,7 +90,7 @@ function _drush_config_file($context) {
   // TODO: This really should be a proper, system-wide location.
   $configs['drush'] = dirname(__FILE__) . '/../drushrc.php';
 
-  return $configs[$context];
+  return empty($configs[$context]) ? '' : $configs[$context];
 }
 
 
@@ -112,7 +112,7 @@ function drush_load_config($context) {
      * initialized to an empty array, in the drupal bootstrap process,
      * and changes in settings.php would wipe out the drushrc.php settings.
      */
-    if (is_array($override)) {
+    if (!empty($override)) {
       $conf = array_merge($conf, $override);
     }
   }

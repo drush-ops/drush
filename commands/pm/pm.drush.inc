@@ -31,7 +31,7 @@ define('DRUSH_PM_NO_VERSION', 103);
 /**
  * User requested version not found.
  */
-define('DRUSH_PM_NO_VERSION', 104);
+define('DRUSH_PM_NOT_FOUND', 104);
 
 /**
  * Implementation of hook_drush_help().
