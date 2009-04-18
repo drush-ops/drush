@@ -175,7 +175,6 @@ function pm_project_filter(&$releases, &$rows) {
     if (!$release['title']) {
       continue;
     }
-
     switch($release['status']) {
       case DRUSH_PM_REQUESTED_UPDATE:
         $status = dt('Specified version available');
@@ -194,10 +193,86 @@ function pm_project_filter(&$releases, &$rows) {
         $status = pm_update_filter($release);
         break;
     }
+    if (!$release['candidate_version']) {
+      $release['candidate_version'] = $release['existing_version']; // Default to no change
+    }
     if ($release['updatable']) {
       $updatable[$key] = $release;
     }
     $rows[] = array($release['title'], $release['existing_version'], $release['candidate_version'], $status);
   }
   return $updatable;
+}
+
+/**
+ * Set a release to a recommended version (if available), and set as updatable.
+ */
+function pm_release_recommended(&$release) {
+  if (isset($release['recommended'])) {
+    $release['candidate_version'] = $release['recommended'];
+    $release['updatable'] = TRUE;
+  }
+}
+
+/**
+ * Get the a best release match for a requested update.
+ *
+ * @param $project A project information array for the requested project
+ * @param $info A project information array for this project, as returned by an update service from pm_get_project_info()
+ */
+function pm_get_release($project, $info) {
+  $minor = '';
+  $version_patch_changed = '';
+  if ($project['version']) {
+    // The user specified a specific version - try to find that exact version
+    foreach($info['releases'] as $version => $release) {
+      // Ignore unpublished releases.
+      if ($release['status'] != 'published') {
+        continue;
+      }
+
+      // Straight match
+      if (!isset($recommended_version) && $release['version'] == $project['version']) {
+        $recommended_version = $version;
+      }
+    }
+  }
+  else {
+    // No version specified - try to find the best version we can
+    foreach($info['releases'] as $version => $release) {
+      // Ignore unpublished releases.
+      if ($release['status'] != 'published') {
+        continue;
+      }
+
+      // If we haven't found a recommended version yet, put the dev
+      // version as recommended and hope it gets overwritten later.
+      // Look for the 'latest version' if we haven't found it yet.
+      // Latest version is defined as the most recent version for the
+      // default major version.
+      if (!isset($latest_version) && $release['version_major'] == $info['default_major']) {
+        $latest_version = $version;
+      }
+
+      if (!isset($recommended_version) && $release['version_major'] == $info['default_major']) {
+        if ($minor != $release['version_patch']) {
+          $minor = $release['version_patch'];
+          $version_patch_changed = $version;
+        }
+        if (empty($release['version_extra']) && $minor == $release['version_patch']) {
+          $recommended_version = $version_patch_changed;
+        }
+        continue;
+      }
+    }
+  }
+  if (isset($recommended_version)) {
+    return $info['releases'][$recommended_version];
+  }
+  else if (isset($latest_version)) {
+    return $info['releases'][$latest_version];
+  }
+  else {
+    return false;
+  }
 }

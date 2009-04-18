@@ -10,23 +10,19 @@ function pm_update_filter(&$release) {
       break;
     case UPDATE_STATUS_NOT_CURRENT:
       $status = dt('Update available');
-      $release['candidate_version'] = $release['recommended'];
-      $release['updatable'] = TRUE;
+      pm_release_recommended($release);
       break;
     case UPDATE_STATUS_NOT_SECURE:
       $status = dt('SECURITY UPDATE available');
-      $release['candidate_version'] = $release['recommended'];
-      $release['updatable'] = TRUE;
+      pm_release_recommended($release);
       break;
     case UPDATE_STATUS_REVOKED:
       $status = dt('Installed version REVOKED');
-      $release['candidate_version'] = $release['recommended'];
-      $release['updatable'] = TRUE;
+      pm_release_recommended($release);
       break;
     case UPDATE_STATUS_NOT_SUPPORTED:
       $status = dt('Installed version not supported');
-      $release['candidate_version'] = $release['recommended'];
-      $release['updatable'] = TRUE;
+      pm_release_recommended($release);
       break;
     default:
       $status = dt('Ignored: !reason', array('!reason' => $project['reason']));

@@ -332,77 +332,11 @@ function pm_reverse_dependencies(&$modules, $form) {
   $modules = array_intersect($form['status']['#default_value'], $modules);
 }
 
+/**
+ * Callback helper.
+ */
 function pm_true() {
   return TRUE;
-}
-
-/**
- * Get the recommended release for a certain so far uninstalled project.
- *
- * @param $project A project information array for the requested project
- * @param $info A project information array for this project, as returned by an update service from pm_get_project_info()
- */
-function pm_get_release($project, $info) {
-  $minor = '';
-  $version_patch_changed = '';
-
-  if ($project['version']) {
-    // The user specified a specific version - try to find that exact version
-    foreach($info['releases'] as $version => $release) {
-      // Ignore unpublished releases.
-      if ($release['status'] != 'published') {
-        continue;
-      }
-
-      // Straight match
-      if (!isset($recommended_version) && $release['version'] == $project['version']) {
-        $recommended_version = $version;
-      }
-      // Shortcut match with ommitted Drupal version
-      if (!isset($recommended_version) && $release['version'] == drush_drupal_major_version() . '.x-'. $project['version']) { // MW: TODO
-        $recommended_version = $version;
-      }
-    }
-  }
-  else {
-    // No version specified - try to find the best version we can
-    foreach($info['releases'] as $version => $release) {
-      // Ignore unpublished releases.
-      if ($release['status'] != 'published') {
-        continue;
-      }
-
-      // If we haven't found a recommended version yet, put the dev
-      // version as recommended and hope it gets overwritten later.
-      // Look for the 'latest version' if we haven't found it yet.
-      // Latest version is defined as the most recent version for the
-      // default major version.
-      if (!isset($latest_version) && $release['version_major'] == $info['default_major']) {
-        $latest_version = $version;
-      }
-
-      if (!isset($recommended_version) && $release['version_major'] == $info['default_major']) {
-        if ($minor != $release['version_patch']) {
-          $minor = $release['version_patch'];
-          $version_patch_changed = $version;
-        }
-        if (empty($release['version_extra']) && $minor == $release['version_patch']) {
-          $recommended_version = $version_patch_changed;
-        }
-        continue;
-      }
-    }
-  }
-
-  if (isset($recommended_version)) {
-    return $info['releases'][$recommended_version];
-  }
-  else if (isset($latest_version)) {
-    return $info['releases'][$latest_version];
-  }
-  else {
-    return false;
-  }
 }
 
 /**
@@ -583,26 +517,52 @@ function pm_dl_destination($type) {
  */
 function pm_parse_project_version($requests) {
   $requestdata = array();
+  $drupal_version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', 6) . '.x';
   foreach($requests as $request) {
+    $drupal_version = $drupal_version_default;
+    $project_version = NULL;
+    $version = NULL;
     // project-HEAD or project-5.x-1.0-beta
     // '5.x-' is optional, as is '-beta'
-    preg_match('/-(HEAD|(\d+)\.([\dx]+)(-.+)?)$/', $request, $matches);
-    if (!empty($matches[0])) {
-      // Specific version requested
-      $version = $matches[0];
-      $project = substr($request, 0, strlen($request) - strlen($version));
+    preg_match('/-+(HEAD|(?:(\d+\.x)-+)?(\d+\.[\dx]+.*))$/', $request, $matches);
+    if (isset($matches[1])) {
+      if ($matches[1] == 'HEAD') {
+        // HEAD branch (can't normally use this, but we manage it here and handle errors downstream).
+        $drupal_version = NULL;
+        $version = 'HEAD';
+        $project_version = 'HEAD';
+      }
+      else if (!empty($matches[2])) {
+        // We have a specified Drupal core version
+        $drupal_version = trim($matches[2], '-.');
+      }
+      if (!empty($matches[3])) {
+        // We have a specified project version
+        $project_version = trim($matches[3], '-.');
+        if (substr($project_version, -1, 1) == 'x') {
+          // If a dev branch was requested, we add a -dev suffix. 
+          $project_version .= '-dev';
+        }
+      }
+      // The project is whatever we have prior to the version part of the request.
+      $project = trim(substr($request, 0, strlen($request) - strlen($matches[0])), ' -');
     }
     else {
-      // Recommended stable version requested
+      // We have no version part, so we set the project directly (assumes the user wants the latest stable version).
       $project = $request;
-      $version = NULL;
     }
     if (empty($project)) {
-      drush_set_error('DRUSH_PM_MISSING_PROJECT_NAME', 'Project name not found. Run drush help pm install for more information.');
+      drush_set_error('DRUSH_PM_MISSING_PROJECT_NAME', 'Project name not found. Run drush help install for more information.');
+    }
+    if (!$version && $project_version) {
+      // Set a full version string, if it is not set already, and we have a specific version in mind.
+      $version = $drupal_version . '-' . $project_version;
     }
     $requestdata[$project] = array(
       'name' => $project,
-      'version' => trim($version, ' -'),
+      'version' => $version,
+      'drupal_version' => $drupal_version,
+      'project_version' => $project_version,
     );
   }
   return $requestdata;
@@ -683,14 +643,9 @@ function pm_dl() {
     $project_types = pm_project_types();
     $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
     foreach ($requestdata as $package) {
-      $version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', 6);
-      $version_default .= '.x';
-
-      $version = empty($package['version']) ? $version_default : $package['version'];
       $project = $package['name'];
-      $major_version = ($project == 'drupal') ? substr($version, 0, 1) .'.x' : substr($version, 0, 3);
       // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
-      $url = 'http://updates.drupal.org/release-history' . "/$project/". $major_version;
+      $url = 'http://updates.drupal.org/release-history' . "/$project/". $package['drupal_version'];
       if ($xml = @simplexml_load_file($url)) {
         if ($error = $xml->xpath('/error')) {
           drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
@@ -698,8 +653,11 @@ function pm_dl() {
         else {
           // Try to get the specified release.
           if ($package['version']) {
-            if ($releases = $xml->xpath("/project/releases/release[version='$version']")) {
+            if ($releases = $xml->xpath("/project/releases/release[version='" . $package['version'] . "']")) {
               $release = (array)$releases[0];
+            }
+            if (empty($release)) {
+              drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'notice');
             }
           }
           // If that did not work, get the first listed release.
