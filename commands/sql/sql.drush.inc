@@ -59,6 +59,7 @@ function sql_drush_command() {
     'options' => array(
       '--result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
       '--skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
+      '--structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
     ) + $options,
   );
   $items['sql query'] = array(
@@ -86,6 +87,7 @@ function sql_drush_command() {
     ),
     'options' => array(
       '--skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
+      '--structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
       '--source_database' => 'The SOURCE DB connection key if using multiple connections in settings.php.',
       '--destination_database' => 'The DESTINATION DB connection key if using multiple DB connections',
     ),
@@ -176,18 +178,39 @@ function drush_sql_dump($db_spec = NULL) {
   if ($file = drush_get_option('result-file')) {
     $exec .= ' --result-file '. $file;
   }
-  $exec .= ' --single-transaction --opt -Q' . _drush_sql_get_credentials($db_spec);
+  $extra .= ' --single-transaction --opt -Q' . _drush_sql_get_credentials($db_spec);
+  $exec .= $extra;
+  
+  $skip_tables = $ignores = array();
 
   // Skip large core tables if instructed.  Also used by 'sql load' command.
   $key = drush_get_option('skip-tables-key');
-  $all_skip_tables = drush_get_option('skip-tables');
-  if ($key && $all_skip_tables) {
+  $all_skip_tables = drush_get_option('skip-tables', array());
+  if (array_key_exists($key, $all_skip_tables)) {
     $skip_tables = $all_skip_tables[$key];
-    $database = $db_spec['database'];
-    foreach ($skip_tables as $table) {
-      $ignores[] = "--ignore-table=$database.$table";
+  }
+  
+  // Skip any structure-tables as well.
+  $key = drush_get_option('structure-tables-key');
+  $all_structure_tables = drush_get_option('structure-tables', array());
+  if (array_key_exists($key, $all_structure_tables)) {
+    $structure_tables = $all_structure_tables[$key];
+    $skip_tables += $structure_tables;
+  }
+  
+  // Append the ignore-table options.
+  $database = $db_spec['database'];
+  foreach ($skip_tables as $table) {
+    $ignores[] = "--ignore-table=$database.$table";
+  }
+  $exec .= ' '. implode(' ', $ignores);
+  
+  // Run mysqldump again and append output if we need some structure only tables.
+  if (!empty($structure_tables)) {
+    $exec .= "; mysqldump --no-data $extra " . implode(' ', $structure_tables);;
+    if ($file) {
+      $exec .= " >> $file";
     }
-    $exec .= ' '. implode(' ', $ignores);
   }
 
   return $exec;
