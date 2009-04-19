@@ -15,7 +15,7 @@
 function package_handler_install_project($project, $info, $path = '.') {
   drush_op('chdir', $path);
 
-  drush_verbose("Downloading project $project ...");
+  drush_log("Downloading project $project ...");
 
   $cvsparams = drush_get_option('cvsparams');
 
@@ -23,7 +23,7 @@ function package_handler_install_project($project, $info, $path = '.') {
   drush_pm_cvs_checkout($project, $info, $cvsparams);
 
   if (is_dir($path . $project) && !drush_get_context('DRUSH_SIMULATE')) {
-    drush_verbose("Checking out " . $project . " was successful.");
+    drush_log("Checking out " . $project . " was successful.");
     return TRUE;
   }
   else {
@@ -42,7 +42,7 @@ function package_handler_install_project($project, $info, $path = '.') {
 function package_handler_update_project($project, $info, $path = '.') {
   drush_op('chdir', $path);
 
-  drush_verbose("Updating project $project ...");
+  drush_log("Updating project $project ...");
 
   $cvsmethod = drush_get_option('cvsmethod');
   if (empty($cvsmethod) && file_exists($project. '/.svn')) {
@@ -54,8 +54,8 @@ function package_handler_update_project($project, $info, $path = '.') {
 
   $cvsparams = drush_get_option('cvsparams');
 
-  drush_verbose($cvsmethod);
-  drush_verbose(strpos(strtolower($cvsmethod), 'up'));
+  drush_log($cvsmethod);
+  drush_log(strpos(strtolower($cvsmethod), 'up'));
   if (substr($cvsmethod, 0, 2) == 'up') {
     // Update the working copy.
     drush_op('chdir', $project);
@@ -70,7 +70,7 @@ function package_handler_update_project($project, $info, $path = '.') {
   }
 
   if (is_dir($path . $project) && !drush_get_context('DRUSH_SIMULATE')) {
-    drush_verbose("Updating out " . $project . " was successful.");
+    drush_log("Updating out " . $project . " was successful.");
     return TRUE;
   }
   else {

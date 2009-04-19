@@ -443,23 +443,6 @@ function drush_print_r($array) {
   print_r($array);
 }
 
-
-/**
- * Prints a message, but only if verbose mode is activated.
- * Returns TRUE if in verbose mode, otherwise FALSE.
- */
-function drush_verbose($msg = FALSE, $indent = 0) {
-  if (!drush_get_context('DRUSH_VERBOSE')) {
-    return FALSE;
-  }
-  if (drush_get_context('DRUSH_VERBOSE') && $msg === FALSE) {
-    return TRUE;
-  }
-
-  print str_repeat(' ', $indent) . (string)$msg . "\n";
-  return TRUE;
-}
-
 /**
  * Ask the user a basic yes/no question.
  *

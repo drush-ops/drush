@@ -13,7 +13,7 @@
  * @param $path The path to install the module to.
  */
 function package_handler_install_project($project, $info, $path = '.') {
-  drush_verbose("Downloading project $project ...");
+  drush_log("Downloading project $project ...");
 
   // Get the filename...
   $filename = explode('/', $info['download_link']);
@@ -26,7 +26,7 @@ function package_handler_install_project($project, $info, $path = '.') {
   }
 
   if (file_exists($filename) || drush_get_context('DRUSH_SIMULATE')) {
-    drush_verbose("Downloading " . $filename . " was successful.");
+    drush_log("Downloading " . $filename . " was successful.");
   }
   else {
     return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', "Unable to download $filename to $path from ". $info['download_link']);
@@ -38,7 +38,7 @@ function package_handler_install_project($project, $info, $path = '.') {
     return drush_set_error('DRUSH_PM_FILE_CORRUPT', "File $filename is corrupt (wrong md5 checksum).");
   }
   else {
-    drush_verbose("Md5 checksum of $filename verified.");
+    drush_log("Md5 checksum of $filename verified.");
   }
 
   // Decompress

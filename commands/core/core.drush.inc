@@ -340,7 +340,7 @@ function core_sync($source, $destination) {
 
   $options = '-az';
   $exec = "rsync -e ssh $options --exclude \"*.svn*\" $source $destination";
-  if (drush_get_context('DRUSH_VERBOSE')) {
+  if (drush_get_context('drush_log')) {
     // the drush_op() will be verbose about the command that gets executed.
     $options .= 'v';
   }
@@ -387,7 +387,7 @@ function core_watchdog_show($type = NULL) {
     return drush_set_error('CORE_WATCHDOG_SHOW_NONE', 'No log messages available.');
   }
   else {
-    drush_verbose(dt('Last !count watchdog log messages:', array('!count' => $limit)));
+    drush_log(dt('Last !count watchdog log messages:', array('!count' => $limit)));
 
     array_unshift($rows, array(dt('Date'), dt('Severity'), dt('Type'), dt('Message'), dt('User')));
     drush_print_table($rows, 2, TRUE);
