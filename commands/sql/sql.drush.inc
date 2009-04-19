@@ -12,6 +12,8 @@ function sql_drush_help($section) {
   switch ($section) {
     case 'drush:sql conf':
       return dt('Show database connection details.');
+      case 'drush:sql connect':
+        return dt('A string which connects to the current database.');
     case 'drush:sql cli':
       return dt('Quickly enter the mysql command line.');
     case 'drush:sql dump':
@@ -35,6 +37,12 @@ function sql_drush_command() {
   $items['sql conf'] = array(
     'callback' => 'drush_sql_conf',
     'description' => 'Print database connection details.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'options' => $options,
+  );
+  $items['sql connect'] = array(
+    'callback' => 'drush_sql_connect',
+    'description' => 'A string for connecting to the DB.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
   );
@@ -113,6 +121,16 @@ function sql_drush_command() {
 function drush_sql_conf() {
   drush_print_r(_drush_sql_get_db_spec());
 }
+
+/**
+ * Command callback. Emits a connect string for mysql.
+ */
+function drush_sql_connect() {
+  $command = 'mysql ' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+  $command .= _drush_sql_get_credentials();
+  drush_print($command);
+}
+
 
 /**
  * Command callback. Displays the MySQL or PostgreSQL server version number.
