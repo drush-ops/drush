@@ -660,9 +660,12 @@ function pm_dl() {
               drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'notice');
             }
           }
-          // If that did not work, get the first listed release.
+          // If that did not work, get the first published release for the recommended major version.
           if (empty($release)) {
-            $release = (array)$xml->releases->release;
+            $recommended_major = $xml->xpath("/project/recommended_major");
+            $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
+            $releases = $xml->xpath($xpath_releases);
+            $release = (array)$releases[0];
           }
           // Determine what type of project we have, so we know where to put it.
           $release['type'] = 'module';
