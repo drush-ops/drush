@@ -178,7 +178,7 @@ function drush_sql_dump($db_spec = NULL) {
   if ($file = drush_get_option('result-file')) {
     $exec .= ' --result-file '. $file;
   }
-  $extra .= ' --single-transaction --opt -Q' . _drush_sql_get_credentials($db_spec);
+  $extra = ' --single-transaction --opt -Q' . _drush_sql_get_credentials($db_spec);
   $exec .= $extra;
   
   $skip_tables = $ignores = array();
