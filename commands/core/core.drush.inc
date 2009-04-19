@@ -114,6 +114,7 @@ function core_drush_engine_drupal() {
 function core_updatedb() {
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
   update_main();
+  drush_log(dt('Finished performing updates.'), 'ok');
 }
 
 
