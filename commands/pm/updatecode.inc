@@ -118,7 +118,7 @@ function pm_update_packages($releases) {
 
   // Now we start the actual updating.
   foreach($releases as $release) {
-    drush_verbose(dt('Starting to update !project code ...', array('!project' => $release['title'])));
+    drush_log(dt('Starting to update !project code ...', array('!project' => $release['title'])));
 
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
     
