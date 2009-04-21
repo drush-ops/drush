@@ -12,8 +12,8 @@ function sql_drush_help($section) {
   switch ($section) {
     case 'drush:sql conf':
       return dt('Show database connection details.');
-      case 'drush:sql connect':
-        return dt('A string which connects to the current database.');
+    case 'drush:sql connect':
+      return dt('A string which connects to the current database.');
     case 'drush:sql cli':
       return dt('Quickly enter the mysql command line.');
     case 'drush:sql dump':
@@ -123,13 +123,22 @@ function drush_sql_conf() {
 }
 
 /**
- * Command callback. Emits a connect string for mysql.
+ * Command callback. Emits a connect string for mysql or pgsql.
  */
 function drush_sql_connect() {
-  $command = 'mysql ' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
-  $command .= _drush_sql_get_credentials();
+  switch (_drush_sql_get_scheme()) {
+    case 'mysql':
+      $command = 'mysql ' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+      $command .= _drush_sql_get_credentials();
+      break;
+    case 'pgsql':
+      $command = 'psql -d ';
+      $command .= _drush_sql_get_credentials();
+      break;
+  }
   drush_print($command);
 }
+
 
 
 /**
@@ -188,47 +197,73 @@ function drush_sql_dump_execute() {
  *   A mysqldump statement that is ready for executing.
  */
 function drush_sql_dump($db_spec = NULL) {
-  if (is_null($db_spec)) {
-    $db_spec = _drush_sql_get_db_spec();
-  }
+  switch (_drush_sql_get_scheme()) {
+    case 'mysql':
+      if (is_null($db_spec)) {
+        $db_spec = _drush_sql_get_db_spec();
+      }
 
-  $exec = 'mysqldump' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
-  if ($file = drush_get_option('result-file')) {
-    $exec .= ' --result-file '. $file;
-  }
-  $extra = ' --single-transaction --opt -Q' . _drush_sql_get_credentials($db_spec);
-  $exec .= $extra;
-  
-  $skip_tables = $ignores = array();
+      $exec = 'mysqldump' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+      if ($file = drush_get_option('result-file')) {
+        $exec .= ' --result-file '. $file;
+      }
+      $extra = ' --single-transaction --opt -Q' . _drush_sql_get_credentials($db_spec);
+      $exec .= $extra;
 
-  // Skip large core tables if instructed.  Also used by 'sql load' command.
-  $key = drush_get_option('skip-tables-key');
-  $all_skip_tables = drush_get_option('skip-tables', array());
-  if (array_key_exists($key, $all_skip_tables)) {
-    $skip_tables = $all_skip_tables[$key];
-  }
-  
-  // Skip any structure-tables as well.
-  $key = drush_get_option('structure-tables-key');
-  $all_structure_tables = drush_get_option('structure-tables', array());
-  if (array_key_exists($key, $all_structure_tables)) {
-    $structure_tables = $all_structure_tables[$key];
-    $skip_tables += $structure_tables;
-  }
-  
-  // Append the ignore-table options.
-  $database = $db_spec['database'];
-  foreach ($skip_tables as $table) {
-    $ignores[] = "--ignore-table=$database.$table";
-  }
-  $exec .= ' '. implode(' ', $ignores);
-  
-  // Run mysqldump again and append output if we need some structure only tables.
-  if (!empty($structure_tables)) {
-    $exec .= "; mysqldump --no-data $extra " . implode(' ', $structure_tables);;
-    if ($file) {
-      $exec .= " >> $file";
-    }
+      $skip_tables = $ignores = array();
+
+      // Skip large core tables if instructed.  Also used by 'sql load' command.
+      $key = drush_get_option('skip-tables-key');
+      $all_skip_tables = drush_get_option('skip-tables', array());
+      if (array_key_exists($key, $all_skip_tables)) {
+        $skip_tables = $all_skip_tables[$key];
+      }
+
+      // Skip any structure-tables as well.
+      $key = drush_get_option('structure-tables-key');
+      $all_structure_tables = drush_get_option('structure-tables', array());
+      if (array_key_exists($key, $all_structure_tables)) {
+        $structure_tables = $all_structure_tables[$key];
+        $skip_tables += $structure_tables;
+      }
+
+      // Append the ignore-table options.
+      $database = $db_spec['database'];
+      foreach ($skip_tables as $table) {
+        $ignores[] = "--ignore-table=$database.$table";
+      }
+      $exec .= ' '. implode(' ', $ignores);
+
+      // Run mysqldump again and append output if we need some structure only tables.
+      if (!empty($structure_tables)) {
+        $exec .= "; mysqldump --no-data $extra " . implode(' ', $structure_tables);;
+        if ($file) {
+          $exec .= " >> $file";
+        }
+      }
+      break;
+    case 'pgsql':
+      if (is_null($db_spec)) {
+        $db_spec = _drush_sql_get_db_spec();
+      }
+
+      $exec = 'pg_dump --clean ' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+      if ($file = drush_get_option('result-file')) {
+        $exec .= ' --file '. $file;
+      }
+      $exec .= ' ' . _drush_sql_get_credentials($db_spec);
+      // Skip large core tables if instructed.  Also used by 'sql load' command.
+      $key = drush_get_option('skip-tables-key');
+      $all_skip_tables = drush_get_option('skip-tables');
+      if ($key && $all_skip_tables) {
+        $skip_tables = $all_skip_tables[$key];
+        $database = $db_spec['database'];
+        foreach ($skip_tables as $table) {
+          $ignores[] = "--exclude-table=$database.$table";
+        }
+        $exec .= ' '. implode(' ', $ignores);
+      }
+      break;
   }
 
   return $exec;
@@ -240,11 +275,22 @@ function drush_sql_dump($db_spec = NULL) {
 function drush_sql_query($query) {
   // Save $query to a tmp file. We will redirect it in.
   if ($file = drush_save_data_to_temp_file($query)) {
-    $exec = 'mysql' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
-    $exec .= _drush_sql_get_credentials();
-    $exec .= " < $file";
-    
-    $exec .= drush_get_option('extra');
+    switch (_drush_sql_get_scheme()) {
+      case 'mysql':
+        $exec = 'mysql' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+        $exec .= _drush_sql_get_credentials();
+        $exec .= drush_get_option('extra');
+        $exec .= " < $file";
+
+        break;
+      case 'pgsql':
+        $exec = 'psql -d ';
+        $exec .= _drush_sql_get_credentials();
+        $exec .= (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+        $exec .= ' --file -';
+        $exec .= " < $file";
+        break;
+    }
     
     $return = drush_op('system', $exec) !== FALSE;
     drush_op('unlink', $file);
@@ -281,18 +327,22 @@ function drush_sql_load($source, $destination) {
     }
   }
   
-  // Caller may specify --result-file where the dump is temporarily saved.
-  // If not specified, we just generate one.
-  if (!$file = drush_get_option('result-file')) {
-    $file = tempnam(sys_get_temp_dir(), 'sql');
-    drush_set_option('result-file', $file);
-  }
-  
+  // Ignore --result-file and always generate a temp file
+  $file = tempnam(sys_get_temp_dir(), 'sql');
+  drush_set_option('result-file', $file);
+
   // Get command to export from source.
   if ($retrieve = drush_sql_dump($source)) {
     
-    // Build import command for target. No verbose here as that emits too much SQL.
-    $send .= 'mysql' . _drush_sql_get_credentials($destination);
+    switch (_drush_sql_get_scheme()) {
+    case 'mysql':
+      // Build import command for target. No verbose here as that emits too much SQL.
+      $send = 'mysql' . _drush_sql_get_credentials($destination);
+      break;
+    case 'pgsql':
+      $send .= 'psql -d ' . _drush_sql_get_credentials($destination) . ' --file -';
+      break;
+    }
     
     $exec = "$retrieve; $send < $file";
     // Avoid the php memory of the $output array in drush_shell_exec().
@@ -302,8 +352,16 @@ function drush_sql_load($source, $destination) {
 }
 
 function drush_sql_cli() {
-  $command = 'mysql -A' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
-  $command .= _drush_sql_get_credentials();
+  switch (_drush_sql_get_scheme()) {
+    case 'mysql':
+      $command = 'mysql -A' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+      $command .= _drush_sql_get_credentials();
+      break;
+    case 'pgsql':
+      $command = ' psql -d ';
+      $command .= _drush_sql_get_credentials();
+      break;
+  }
   proc_close(proc_open($command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
 }
 
@@ -384,14 +442,34 @@ function _drush_sql_get_scheme($db_spec = NULL) {
  * @return string
  */
 function _drush_sql_get_credentials($db_spec = NULL) {
-  if (is_null($db_spec)) {
-    $db_spec = _drush_sql_get_db_spec();
+  switch (_drush_sql_get_scheme()) {
+    case 'mysql':
+      if (is_null($db_spec)) {
+        $db_spec = _drush_sql_get_db_spec();
+      }
+
+      $cred = ' -h' . $db_spec['host'] .
+         (empty($db_spec['port']) ? '' : ' -P' . $db_spec['port']) .
+         ' -u' . $db_spec['username'] .
+         (empty($db_spec['password']) ? '' : ' -p' . $db_spec['password']) . ' ' . $db_spec['database'];
+      break;
+  case 'pgsql':
+      if (is_null($db_spec)) {
+        $db_spec = _drush_sql_get_db_spec();
+      }
+
+      $cred = $db_spec['database'] . ' ' .
+         (empty($db_spec['host']) || ($db_spec['host'] == "localhost") ? '' : '-h ' . $db_spec['host']) . ' ' .
+         (empty($db_spec['port']) ? '' : '-p' . $db_spec['port']) . ' ';
+      // Adding '-U' will cause Postgres to prompt for a password, so disable this for now.
+      // Use "sudo -u postgres drush sql ..." to access the database without a password,
+      // presuming that "postgres" is the database superuser and you have
+      // "local all all ident sameuser" in your Postgres pg_hba.conf file.
+      // See: http://drupal.org/node/438828
+      // $cred .= '-U ' . $db_spec['username'] . ' ';
+      break;
   }
-    
-  return ' -h' . $db_spec['host'] .
-     (empty($db_spec['port']) ? '' : ' -P' . $db_spec['port']) .
-     ' -u' . $db_spec['username'] .
-     (empty($db_spec['password']) ? '' : ' -p' . $db_spec['password']) . ' ' . $db_spec['database'];
+  return $cred;
 }
 
 function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
