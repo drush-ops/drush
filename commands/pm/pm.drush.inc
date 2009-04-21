@@ -103,6 +103,7 @@ function pm_drush_command() {
     'description' => 'Show module enabled/disabled status',
     'callback' => 'pm_module_manage',
     'callback arguments' => array(array(), FALSE),
+    'core' => array(6),
   );
   $items['refresh'] = array(
     'description' => 'Refresh update status information',
