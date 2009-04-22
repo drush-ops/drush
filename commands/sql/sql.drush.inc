@@ -139,8 +139,6 @@ function drush_sql_connect() {
   drush_print($command);
 }
 
-
-
 /**
  * Command callback. Displays the MySQL or PostgreSQL server version number.
  */
@@ -197,6 +195,24 @@ function drush_sql_dump_execute() {
  *   A mysqldump statement that is ready for executing.
  */
 function drush_sql_dump($db_spec = NULL) {
+  $skip_tables = $structure_tables = $ignores = array();
+
+  // Skip large core tables if instructed.  Also used by 'sql load' command.
+  $key = drush_get_option('skip-tables-key');
+  $all_skip_tables = drush_get_option('skip-tables', array());
+  if (array_key_exists($key, $all_skip_tables)) {
+    $skip_tables = $all_skip_tables[$key];
+  }
+
+  // Skip any structure-tables as well.
+  $key = drush_get_option('structure-tables-key');
+  $all_structure_tables = drush_get_option('structure-tables', array());
+  if (array_key_exists($key, $all_structure_tables)) {
+    $structure_tables = $all_structure_tables[$key];
+    $skip_tables += $structure_tables;
+  }
+  $database = $db_spec['database'];
+
   switch (_drush_sql_get_scheme()) {
     case 'mysql':
       if (is_null($db_spec)) {
@@ -210,25 +226,7 @@ function drush_sql_dump($db_spec = NULL) {
       $extra = ' --single-transaction --opt -Q' . _drush_sql_get_credentials($db_spec);
       $exec .= $extra;
 
-      $skip_tables = $ignores = array();
-
-      // Skip large core tables if instructed.  Also used by 'sql load' command.
-      $key = drush_get_option('skip-tables-key');
-      $all_skip_tables = drush_get_option('skip-tables', array());
-      if (array_key_exists($key, $all_skip_tables)) {
-        $skip_tables = $all_skip_tables[$key];
-      }
-
-      // Skip any structure-tables as well.
-      $key = drush_get_option('structure-tables-key');
-      $all_structure_tables = drush_get_option('structure-tables', array());
-      if (array_key_exists($key, $all_structure_tables)) {
-        $structure_tables = $all_structure_tables[$key];
-        $skip_tables += $structure_tables;
-      }
-
       // Append the ignore-table options.
-      $database = $db_spec['database'];
       foreach ($skip_tables as $table) {
         $ignores[] = "--ignore-table=$database.$table";
       }
@@ -236,7 +234,7 @@ function drush_sql_dump($db_spec = NULL) {
 
       // Run mysqldump again and append output if we need some structure only tables.
       if (!empty($structure_tables)) {
-        $exec .= "; mysqldump --no-data $extra " . implode(' ', $structure_tables);;
+        $exec .= "; mysqldump --no-data $extra " . implode(' ', $structure_tables);
         if ($file) {
           $exec .= " >> $file";
         }
@@ -247,21 +245,26 @@ function drush_sql_dump($db_spec = NULL) {
         $db_spec = _drush_sql_get_db_spec();
       }
 
-      $exec = 'pg_dump --clean ' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+      $exec = 'pg_dump --clean ' . (drush_get_context('DRUSH_VERBOSE') ? '' : ' -q');
       if ($file = drush_get_option('result-file')) {
         $exec .= ' --file '. $file;
       }
-      $exec .= ' ' . _drush_sql_get_credentials($db_spec);
-      // Skip large core tables if instructed.  Also used by 'sql load' command.
-      $key = drush_get_option('skip-tables-key');
-      $all_skip_tables = drush_get_option('skip-tables');
-      if ($key && $all_skip_tables) {
-        $skip_tables = $all_skip_tables[$key];
-        $database = $db_spec['database'];
-        foreach ($skip_tables as $table) {
-          $ignores[] = "--exclude-table=$database.$table";
+      $extra = ' ' . _drush_sql_get_credentials($db_spec);
+      $exec .= $extra;
+      foreach ($skip_tables as $table) {
+        $ignores[] = "--exclude-table=$table";
+      }
+      $exec .= ' '. implode(' ', $ignores);
+      // Run pg_dump again and append output if we need some structure only tables.
+      if (!empty($structure_tables)) {
+        $schemaonlies = array();
+	foreach ($structure_tables as $table) {
+          $schemaonlies[] = "--table=$table";
         }
-        $exec .= ' '. implode(' ', $ignores);
+        $exec .= "; pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
+        if ($file) {
+          $exec .= " >> $file";
+        }
       }
       break;
   }
@@ -286,7 +289,7 @@ function drush_sql_query($query) {
       case 'pgsql':
         $exec = 'psql -d ';
         $exec .= _drush_sql_get_credentials();
-        $exec .= (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+        $exec .= (drush_get_context('DRUSH_VERBOSE') ? '' : ' -q');
         $exec .= ' --file -';
         $exec .= " < $file";
         break;
@@ -313,7 +316,7 @@ function drush_sql_query($query) {
 function drush_sql_load($source, $destination) {
   $source = _drush_sql_get_spec_from_settings("./sites/$source/settings.php", 'source');
   $destination = _drush_sql_get_spec_from_settings("./sites/$destination/settings.php", 'target');
-
+  
   // Prompt for confirmation. This is destructive.
   if (!drush_get_context('DRUSH_SIMULATE')) {
     $txt_source = $source['host'] . '/' . $source['database'];
