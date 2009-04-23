@@ -485,6 +485,9 @@ function pm_dl_destination($type) {
   else if ($drupal_root) {
     $sitepath = $drupal_root . '/sites/all/';
   }
+  else {
+    $sitepath = '';
+  }
 
   switch ($type) {
     case 'module':
