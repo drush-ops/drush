@@ -46,16 +46,6 @@ function sql_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
   );
-  $items['sql version server'] = array(
-    'callback' => 'drush_sql_version_server',
-    'description' => 'Print database server version number.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
-  );
-  $items['sql version client'] = array(
-    'callback' => 'drush_sql_version_client',
-    'description' => 'Print database client library version number.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
-  );
   $items['sql dump'] = array(
     'callback' => 'drush_sql_dump_execute',
     'description' => 'Exports the Drupal DB as SQL using mysqldump.',
@@ -137,43 +127,6 @@ function drush_sql_connect() {
       break;
   }
   drush_print($command);
-}
-
-/**
- * Command callback. Displays the MySQL or PostgreSQL server version number.
- */
-function drush_sql_version_server() {
-  switch (_drush_sql_get_scheme()) {
-    case 'mysql':
-      drush_print(mysql_get_server_info());
-      break;
-    case 'pgsql':
-      // NOTE: apparently the server version is only available if PHP was
-      // compiled with PostgreSQL 7.4 or later, so we'll fall back to
-      // displaying the client version if that's the case.
-      $info = pg_version();
-      drush_print(isset($info['server_version']) ? $info['server_version'] : $info['client']);
-      break;
-    default:
-      return drush_set_error('DRUSH_SQL_INVALID_URL', _drush_sql_get_invalid_url_msg());
-  }
-}
-
-/**
- * Command callback. Displays the MySQL or PostgreSQL client version number.
- */
-function drush_sql_version_client() {
-  switch (_drush_sql_get_scheme()) {
-    case 'mysql':
-      drush_print(mysql_get_client_info());
-      break;
-    case 'pgsql':
-      $info = pg_version();
-      drush_print($info['client']);
-      break;
-    default:
-      return drush_set_error('DRUSH_SQL_INVALID_URL', _drush_sql_get_invalid_url_msg());
-  }
 }
 
 /**
