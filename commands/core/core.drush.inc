@@ -223,7 +223,7 @@ function core_drush_help($section) {
 function _core_site_credentials() {
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
-    $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', $drupal_root);
+    $credentials = sprintf("  %-18s: %s\n", 'Drupal Root', $drupal_root);
     $credentials .= sprintf("  %-18s: %s\n", 'Drupal version', drush_drupal_version());
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $credentials .= sprintf("  %-18s: %s\n", 'Site Path', $site_root);
