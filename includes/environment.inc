@@ -479,7 +479,7 @@ function _drush_bootstrap_drupal_configuration() {
          if (is_array($url)) {
            $url = $url['default'];
          }
-         $parts = parse_url($url);
+         $parts = parse_url(urldecode($url));
          $creds['driver'] = $parts['scheme'];
          $creds['user'] = $parts['user'];
          $creds['host'] = $parts['host'];

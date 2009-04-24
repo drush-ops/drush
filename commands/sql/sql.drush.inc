@@ -425,7 +425,7 @@ function _drush_sql_get_credentials($db_spec = NULL) {
       // $cred .= '-U ' . $db_spec['username'] . ' ';
       break;
   }
-  return $cred;
+  return escapeshellcmd($cred);
 }
 
 function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
