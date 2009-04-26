@@ -558,8 +558,16 @@ function pm_parse_project_version($requests) {
     if (empty($project)) {
       drush_set_error('DRUSH_PM_MISSING_PROJECT_NAME', 'Project name not found. Run drush help install for more information.');
     }
-    if (!$version && $project_version) {
-      // Set a full version string, if it is not set already, and we have a specific version in mind.
+    if ($project == 'drupal') {
+      // For project Drupal, ensure the major version branch is correct, so
+      // we can locate the requested or stable release for that branch.
+      $project_version_array = explode('.', $project_version);
+      $drupal_version = $project_version_array[0] . '.x';
+      // We use the project version only, since it is core.
+      $version = $project_version;
+    }
+    else if (!$version && $project_version) {
+      // For reqular projects the version string includes the Drupal core version.
       $version = $drupal_version . '-' . $project_version;
     }
     $requestdata[$project] = array(
