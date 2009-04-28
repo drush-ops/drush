@@ -123,8 +123,16 @@ function pm_update_packages($releases) {
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
     
     $source = $drupal_root .'/' . $release['path'];
-
-    $skip_backup = version_control_skip_backup($source);
+    if (empty($release['path'])) {
+      drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('Module !project path is not available, perhaps the module is enabled but has been deleted from disk.', array('!project' => $release['name'])));
+      continue;
+    }
+    if (!is_dir($source)) {
+      drush_set_error('DRUSH_PM_UPDATING_PATH_NOT_FOUND', dt('Module !project directory could not be found at !source, perhaps the module is enabled but has been deleted from disk.', array('!project' => $release['name'], '!source' => $source)));
+      continue;
+    }
+    
+    $skip_backup = version_control_is_versioned($source);
     if (!$skip_backup) {
       $backup_dir = drush_get_option('backup-dir', $drupal_root  . '/backup');
       $backup_dir = rtrim($backup_dir, '/');

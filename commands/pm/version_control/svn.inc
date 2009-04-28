@@ -8,19 +8,20 @@
 /**
  * Implementation of hook_drush_pm_skip_backup().
  */
-function version_control_skip_backup($source) {
+function version_control_is_versioned($source) {
   if (file_exists($source. '/.svn')) {
     // Skip backup since we need all .svn  directories. Assuming admin can use svn revert if new project is bad.
     drush_log(dt('Backup skipped because .svn directory was detected. Use Subversion to revert if needed.'));
     return TRUE;
   }
+  return FALSE;
 }
 
 /**
  * Implementation of hook_drush_pm_post_update().
  */
 function version_control_post_update($project, $info, $path = '.') {
-  if (version_control_sync($project, $info, $path)) {
+  if (version_control_is_versioned($project) && version_control_sync($project, $info, $path)) {
     // Only attempt commit on a sucessful sync
     version_control_commit($project, $info, $path);
   }
@@ -30,7 +31,7 @@ function version_control_post_update($project, $info, $path = '.') {
  * Implementation of hook_drush_pm_post_install().
  */
 function version_control_post_install($project, $info, $path = '.') {
-  if (version_control_sync($project, $info, $path)) {
+  if (version_control_is_versioned($project) && version_control_sync($project, $info, $path)) {
     // Only attempt commit on a sucessful sync
     version_control_commit($project, $info, $path);
   }
