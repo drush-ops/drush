@@ -283,8 +283,7 @@ function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
  *   A text string representing a fully escaped command.
  */
 function _drush_backend_generate_command($command, &$data, $method = 'GET', $drush_path = null, $hostname = null, $username = null) {
-
-  $drush_path = !is_null($drush_path) ? $drush_path : $_SERVER['argv'][0]; // Call own drush.php file.
+  $drush_path = !is_null($drush_path) ? $drush_path : DRUSH_COMMAND; // Call own drush.php file.
   $data['root'] = ($data['root']) ? $data['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
   $data['uri'] = array_key_exists('uri', $data) ? $data['uri'] : drush_get_context('DRUSH_URI');
 

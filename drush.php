@@ -15,6 +15,8 @@ if (!drush_verify_cli()) {
 }
 
 define('DRUSH_BASE_PATH', dirname(__FILE__));
+define('DRUSH_COMMAND', $GLOBALS['argv'][0]);
+
 require_once DRUSH_BASE_PATH . '/includes/environment.inc';
 require_once DRUSH_BASE_PATH . '/includes/command.inc';
 require_once DRUSH_BASE_PATH . '/includes/drush.inc';
@@ -23,6 +25,7 @@ require_once DRUSH_BASE_PATH . '/includes/context.inc';
 
 drush_set_context('argc', $GLOBALS['argc']);
 drush_set_context('argv', $GLOBALS['argv']);
+
 exit(drush_main());
 
 /**
@@ -57,7 +60,7 @@ function drush_main() {
     if (drush_bootstrap($phase)) {
       $command = drush_parse_command();
       if (is_array($command)) {
-        if ($command['bootstrap'] == $phase) {
+        if ($command['bootstrap'] == $phase && empty($command['bootstrap_errors'])) {
           drush_log(dt("Found command: !command", array('!command' => $command['command'])), 'bootstrap');
           // Dispatch the command(s).
           // After this point the drush_shutdown function will run,
@@ -70,9 +73,18 @@ function drush_main() {
       break;
     }
   }
-  $args = implode(" ", drush_get_arguments());
-  // If we reach this point, we have not found a valid command.
-  drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The command 'drush.php !args' could not be executed.", array('!args' => $args)));
+  // If we reach this point, we have not found either a valid or matching command.
+  $args = implode(' ', drush_get_arguments());
+  $drush_command = array_pop(explode('/', DRUSH_COMMAND));
+  if ($command) {
+    foreach ($command['bootstrap_errors'] as $key => $error) {
+      drush_set_error($key, $error); 
+    }
+    drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The command '!drush_command !args' could not be executed.", array('!drush_command' => $drush_command, '!args' => $args)));
+  }
+  else {
+    drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The command '!drush_command !args' could not be found.", array('!drush_command' => $drush_command, '!args' => $args)));
+  }
 }
 
 /**

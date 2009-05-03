@@ -76,9 +76,6 @@ function drush_parse_args() {
  * Get a list of all implemented commands.
  * This invokes hook_drush_command().
  *
- * @param boolean
- *   If TRUE, the internal commands table will be rebuild.
- *
  * @return
  *   Associative array of currently active command descriptors.
  *
@@ -91,19 +88,30 @@ function drush_get_commands() {
       $function = $commandfile . '_drush_command';
       $result = $function();
       foreach ((array)$result as $key => $command) {
-        // Add some defaults
+        // Add some defaults and normalize the command descriptor
         $command += array(
+          'command' => $key,
           'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
           'commandfile' => $commandfile,
           'path' => dirname($path),
           'engines' => array(), // Helpful for drush_show_help(). 
+          'callback' => 'drush_command',
+          'description' => NULL,
+          'arguments' => array(),
+          'options' => array(),
+          'extras' => array(),
+          'core' => array(),
+          'scope' => 'site',
+          'drupal dependencies' => array(),
+          'drush dependencies' => array(),
+          'bootstrap_errors' => array(),
         );
-        // Filter out commands which are invalid for this bootstrap phase, core or have missing dependencies.
-        if (drush_enforce_requirement_bootstrap_phase($command)
-            && drush_enforce_requirement_core($command)
-            && drush_enforce_requirement_drupal_dependencies($command)) {
-          $commands[$key] = $command;
-        }
+        // Collect all the commands (without filtering) so we can match non-executable
+        // commands, and later explain why they are not executable.
+        drush_enforce_requirement_bootstrap_phase($command);
+        drush_enforce_requirement_core($command);
+        drush_enforce_requirement_drupal_dependencies($command);
+        $commands[$key] = $command;
       }
     }
   }
@@ -150,27 +158,13 @@ function drush_parse_command() {
     $part = implode(" ", $args);
     if (isset($implemented[$part])) {
       $command = $implemented[$part];
-      // Normalize command descriptor
-      $command += array(
-        'command' => $part,
-        'callback' => 'drush_command',
-        'description' => NULL,
-        'arguments' => array(),
-        'options' => array(),
-        'extras' => array(),
-        'core' => array(),
-        'scope' => 'site',
-        'bootstrap' => NULL,
-        'drupal dependencies' => array(),
-        'drush dependencies' => array(),
-      );
     }
     else {
       $arguments[] = array_pop($args);
     }
   }
 
-  // We have found a command that can be executed. Set the appropriate values.
+  // We have found a command that matches. Set the appropriate values.
   if ($command) {
     $arguments = array_reverse($arguments);
 
@@ -528,17 +522,20 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
  * Check that a command is valid for the current bootstrap phase.
  * 
  * @param $command
- *   Command to check
+ *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.  
  * 
  * @return
  *   TRUE if command is valid.
  */
-function drush_enforce_requirement_bootstrap_phase($command) {
+function drush_enforce_requirement_bootstrap_phase(&$command) {
   $valid = array();
   $current_phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if ($command['bootstrap'] == $current_phase) {
     return TRUE;
   }
+  // TODO: pprovide description text for each bootstrap level so we can give
+  // the user something more helpful and specific here.
+  $command['bootstrap_errors']['DRUSH_COMMAND_INSUFFICIENT_BOOTSTRAP'] = dt('Command !command needs a higher bootstrap level to run - you will need invoke drush from a more functional Drupal environment to run this command.', array('!command' => $command['command']));
 }
 
 /**
@@ -546,12 +543,12 @@ function drush_enforce_requirement_bootstrap_phase($command) {
  * dependencies.
  * 
  * @param $command
- *   Command to check
+ *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.
  * 
  * @return
  *   TRUE if command is valid.
  */
-function drush_enforce_requirement_drupal_dependencies($command) {
+function drush_enforce_requirement_drupal_dependencies(&$command) {
   if (empty($command['drupal dependencies'])) {
     return TRUE;
   }
@@ -562,19 +559,26 @@ function drush_enforce_requirement_drupal_dependencies($command) {
       }
     }
   }
+  $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] = dt('Command !command needs the following modules installed/enabled to run: !dependencies.', array('!command' => $command['command'], '!dependencies' => implode(', ', $command['drupal dependencies'])));
 }
 
 /**
  * Check that a command is valid for the current major version of core.
  * 
  * @param $command
- *   Command to check
+ *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.
  * 
  * @return
  *   TRUE if command is valid.
  */
-function drush_enforce_requirement_core($command) {
-  if (empty($command['core']) || in_array(drush_drupal_major_version(), $command['core'])) {
+function drush_enforce_requirement_core(&$command) {
+  $core = $command['core'];
+  if (empty($core) || in_array(drush_drupal_major_version(), $core)) {
     return TRUE;
   }
+  $versions = array_pop($core);
+  if (!empty($core)) {
+    $versions = implode(', ', $core) . dt(' or ') . $versions;
+  }
+  $command['bootstrap_errors']['DRUSH_COMMAND_CORE_VERSION_ERROR'] = dt('Command !command requires Drupal core version !versions to run.', array('!command' => $command['command'], '!versions' => $versions));
 }

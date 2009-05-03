@@ -127,7 +127,7 @@ function core_help() {
   if (empty($commands)) {
     drush_show_help(array('help'));
     $phases = _drush_bootstrap_phases(); 
-    drush_print('Commands: ');
+    drush_print(dt('Commands: '));
 
     $printed_rows = array();
     $phase_index = DRUSH_BOOTSTRAP_DRUSH;
@@ -150,7 +150,7 @@ function core_help() {
         
         $rows = array();
         foreach($commands as $key => $command) {
-          if (!array_key_exists($key, $printed_rows)) {
+          if (!array_key_exists($key, $printed_rows) && empty($commands[$key]['bootstrap_errors'])) {
             $rows[$key] = array(sprintf("%-20s", $key), $commands[$key]['description']);
           }
         }

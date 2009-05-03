@@ -480,6 +480,7 @@ function _drush_bootstrap_drupal_configuration() {
            $url = $url['default'];
          }
          $parts = parse_url($url);
+         $parts += array('pass' => '', 'port' => '');
          $creds['driver'] = $parts['scheme'];
          $creds['user'] = urldecode($parts['user']);
          $creds['host'] = $parts['host'];
