@@ -479,7 +479,7 @@ function pm_dl_destination($type) {
 
   // If a URI is provided and we bootstrapped successfully then we install to
   // that specific site, otherwise we install to sites/all/modules
-  if ($site_root) {
+  if ($site_root && $site_root !== 'sites/default') {
     $sitepath = $drupal_root .'/'. $site_root .'/';
   }
   else if ($drupal_root) {
