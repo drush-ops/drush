@@ -483,6 +483,7 @@ function _drush_bootstrap_drupal_configuration() {
          $creds['driver'] = $parts['scheme'];
          $creds['user'] = urldecode($parts['user']);
          $creds['host'] = $parts['host'];
+         $creds['port'] = $parts['port'];
          $creds['pass'] = urldecode($parts['pass']);
          $creds['name'] = trim($parts['path'], '/');
        }
@@ -493,6 +494,7 @@ function _drush_bootstrap_drupal_configuration() {
          $creds['driver'] = $conn['driver'];
          $creds['user'] = $conn['username'];
          $creds['host'] = $conn['host'];
+         $creds['port'] = $conn['port'];
          $creds['name'] = $conn['database'];
          $creds['pass'] = $conn['password'];
        }
@@ -695,7 +697,10 @@ function drush_valid_db_credentials() {
     }
 
     $constr = sprintf("%s:dbname=%s;host=%s", $type, $creds['name'], $creds['host']);
-    
+    if (isset($creds['port'])) {
+      $constr .= sprintf(";port=%d", $creds['port']);
+    }
+
     try {
       $db = new PDO($constr, $creds['user'], $creds['pass']);
       $db = null;
