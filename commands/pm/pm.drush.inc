@@ -526,15 +526,14 @@ function pm_parse_project_version($requests) {
     $drupal_version = $drupal_version_default;
     $project_version = NULL;
     $version = NULL;
+    $project = NULL;
     // project-HEAD or project-5.x-1.0-beta
     // '5.x-' is optional, as is '-beta'
     preg_match('/-+(HEAD|(?:(\d+\.x)-+)?(\d+\.[\dx]+.*))$/', $request, $matches);
     if (isset($matches[1])) {
-      if ($matches[1] == 'HEAD') {
-        // HEAD branch (can't normally use this, but we manage it here and handle errors downstream).
-        $drupal_version = NULL;
-        $version = 'HEAD';
-        $project_version = 'HEAD';
+      if ($matches[1] == 'HEAD' || $matches[2] == 'HEAD') {
+        drush_set_error('DRUSH_PM_HEAD', 'Can\'t download HEAD releases because Drupal.org project information only provides for numbered release nodes.');
+        continue;
       }
       else if (!empty($matches[2])) {
         // We have a specified Drupal core version
@@ -551,24 +550,27 @@ function pm_parse_project_version($requests) {
       // The project is whatever we have prior to the version part of the request.
       $project = trim(substr($request, 0, strlen($request) - strlen($matches[0])), ' -');
     }
-    else {
-      // We have no version part, so we set the project directly (assumes the user wants the latest stable version).
+    elseif (strpos($request, '-') === FALSE) {
+      // We have no findable version part, so we set the project directly (assumes the user wants the latest stable version).
       $project = $request;
     }
     if (empty($project)) {
       drush_set_error('DRUSH_PM_MISSING_PROJECT_NAME', 'Project name not found. Run drush help install for more information.');
+      continue;
     }
-    if ($project == 'drupal') {
-      // For project Drupal, ensure the major version branch is correct, so
-      // we can locate the requested or stable release for that branch.
-      $project_version_array = explode('.', $project_version);
-      $drupal_version = $project_version_array[0] . '.x';
-      // We use the project version only, since it is core.
-      $version = $project_version;
-    }
-    else if (!$version && $project_version) {
-      // For reqular projects the version string includes the Drupal core version.
-      $version = $drupal_version . '-' . $project_version;
+    if ($project_version) {
+      if ($project == 'drupal') {
+        // For project Drupal, ensure the major version branch is correct, so
+        // we can locate the requested or stable release for that branch.
+        $project_version_array = explode('.', $project_version);
+        $drupal_version = $project_version_array[0] . '.x';
+        // We use the project version only, since it is core.
+        $version = $project_version;
+      }
+      else {
+        // For reqular projects the version string includes the Drupal core version.
+        $version = $drupal_version . '-' . $project_version;
+      }
     }
     $requestdata[$project] = array(
       'name' => $project,
@@ -665,7 +667,7 @@ function pm_dl() {
         else {
           // Try to get the specified release.
           if ($package['version']) {
-            if ($releases = $xml->xpath("/project/releases/release[version='" . $package['version'] . "']")) {
+            if ($releases = $xml->xpath("/project/releases/release[status='published'][version='" . $package['version'] . "']")) {
               $release = (array)$releases[0];
             }
             if (empty($release)) {
