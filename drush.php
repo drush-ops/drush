@@ -16,6 +16,7 @@ if (!drush_verify_cli()) {
 
 define('DRUSH_BASE_PATH', dirname(__FILE__));
 define('DRUSH_COMMAND', $GLOBALS['argv'][0]);
+define('DRUSH_REQUEST_TIME', microtime(TRUE));
 
 require_once DRUSH_BASE_PATH . '/includes/environment.inc';
 require_once DRUSH_BASE_PATH . '/includes/command.inc';

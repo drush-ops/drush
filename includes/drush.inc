@@ -563,7 +563,7 @@ function drush_log($message, $type = 'notice', $error = null) {
   $entry = array(
      'type' => $type, 
      'message' => $message, 
-     'timestamp' => time()
+     'timestamp' => microtime(TRUE),
    );
   $entry['error'] = $error;
   $log[] = $entry;
@@ -647,6 +647,12 @@ function _drush_print_log($entry) {
   if (drush_get_context('DRUSH_BACKEND')) {
     return $return;
   }
+  
+  // Append timer value.
+  if ($log_level >= 1) {
+    $entry['message'] .= ' [' . round($entry['timestamp']-DRUSH_REQUEST_TIME, 4) . ' sec]';
+  }
+  
   // Place the status message right aligned with the top line of the error message.
   $message = wordwrap($entry['message'], 128);
   $lines = explode("\n", $message);
