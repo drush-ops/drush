@@ -454,9 +454,13 @@ function _drush_bootstrap_drupal_site() {
   $drush_uri = drush_set_context('DRUSH_URI', drush_bootstrap_value('drush_uri')); 
   $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
   $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
+  
+  // Find any command files that are available during this bootstrap phase.
+  _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
   drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
   drush_load_config('site');
+  
 }
 
 /**
