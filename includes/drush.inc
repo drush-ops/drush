@@ -27,6 +27,9 @@ function drush_dispatch($command = NULL) {
   if ($return === TRUE) {
     $return = '';
   }
+  
+  // Add a final log entry, just so a timestamp appears.
+  drush_log(dt('Command dispatch complete'), 'notice');
 
   return $return;
 }
