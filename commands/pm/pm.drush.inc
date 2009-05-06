@@ -105,7 +105,7 @@ function pm_drush_command() {
     'callback arguments' => array(array(), FALSE),
     'core' => array(6),
     'options' => array(
-      'pipe' => 'Returns a space delimited list of enabled modules.',
+      '--pipe' => 'Returns a space delimited list of enabled modules.',
     ),
   );
   $items['refresh'] = array(

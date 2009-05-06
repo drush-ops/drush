@@ -29,6 +29,7 @@ function core_drush_command() {
     'examples' => array(
       'drush dl cck zen' => 'Download CCK module and Zen theme.',
       'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
+      'drush help --pipe' => 'A space delimited list of commands',
     ),
   );
   $items['cron'] = array(
@@ -154,6 +155,7 @@ function core_help() {
         foreach($commands as $key => $command) {
           if (!array_key_exists($key, $printed_rows)) {
             $rows[$key] = array(sprintf("%-20s", $key), $commands[$key]['description']);
+            $pipe[] = "\"$key\"";
           }
         }
         drush_print_table($rows, 2);
@@ -163,6 +165,9 @@ function core_help() {
         break; 
       }
     }
+    
+    // Space delimited list for use by other scripts. Set the --pipe option.
+    drush_print_pipe(implode(' ', $pipe));
     return;
   }
   else {
