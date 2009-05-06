@@ -120,6 +120,9 @@ function drush_shutdown() {
   if (drush_get_context('DRUSH_BACKEND')) {
     drush_backend_output();
   }
+  elseif (drush_get_context('DRUSH_QUIET')) {
+    ob_end_clean();
+  }
 
   exit((drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS);
 }
