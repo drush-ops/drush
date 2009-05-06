@@ -104,6 +104,9 @@ function pm_drush_command() {
     'callback' => 'pm_module_manage',
     'callback arguments' => array(array(), FALSE),
     'core' => array(6),
+    'options' => array(
+      'pipe' => 'Returns a space delimited list of enabled modules.',
+    ),
   );
   $items['refresh'] = array(
     'description' => 'Refresh update status information',
@@ -270,11 +273,15 @@ function pm_module_status($form) {
     $enabled = dt('Disabled');
     if (array_search($module, $form['status']['#default_value']) !== FALSE) {
       $enabled = dt('Enabled');
+      $pipe[] = $module;
     }
     $info = $form['validation_modules']['#value'][$module]->info;
     $rows[] = array($info['name'] . ' (' . $module . ')', $enabled, truncate_utf8($info['description'], 60, FALSE, TRUE));
   }
   drush_print_table($rows, 2, TRUE);
+  
+  // Space delimited list for use by other scripts. Set the --pipe option.
+  drush_print_pipe(implode(' ', $pipe));
 }
 
 /**

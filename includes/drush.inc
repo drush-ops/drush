@@ -297,6 +297,7 @@ function drush_get_option_help() {
   $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
   $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
   $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
+  $options['-p, --pipe']            = dt("Emit a compact representation of the command for scripting.");
   return $options;
 }
 
@@ -435,6 +436,16 @@ function drush_die($msg = NULL, $status = NULL) {
  */
 function drush_print($message = '', $indent = 0) {
   print str_repeat(' ', $indent) . (string)$message . "\n";
+}
+
+/**
+ * Stores a message which is printed during drush_shutdown() if in compact mode.
+ * @param $message
+ *   The message to print.
+ */
+function drush_print_pipe($message = '') {
+  $buffer = &drush_get_context('DRUSH_PIPE_BUFFER' , '');
+  $buffer .= $message;
 }
 
 /**
@@ -593,6 +604,14 @@ function dlm($object) {
   ob_end_clean();
 
   drush_log($contents);
+}
+
+/*
+ * Display the pipe output for the current request.
+ */ 
+function drush_pipe_output() {
+  $pipe = drush_get_context('DRUSH_PIPE_BUFFER');
+  drush_print_r($pipe);
 }
 
 /**

@@ -327,7 +327,11 @@ function _drush_bootstrap_drush() {
       drush_set_context('stdin', $stdin_options);
     }
   }
-  $quiet = drush_set_context('DRUSH_QUIET', drush_get_option(array('q', 'quiet')));
+  
+  // Pipe implies quiet.
+  $quiet = drush_set_context('DRUSH_QUIET', drush_get_option(array('q', 'quiet', 'p', 'pipe')));
+  
+  drush_set_context('DRUSH_PIPE', drush_get_option(array('p', 'pipe')));
 
   // When running in backend mode, all output is buffered, and returned
   // as a property of a JSON encoded associative array.

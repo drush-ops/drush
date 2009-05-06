@@ -123,7 +123,12 @@ function drush_shutdown() {
   elseif (drush_get_context('DRUSH_QUIET')) {
     ob_end_clean();
   }
-
+  
+  // If we are in pipe mode, emit the compact representation of the command, if available.
+  if (drush_get_context('DRUSH_PIPE')) {
+    drush_pipe_output();
+  }
+  
   exit((drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS);
 }
 
