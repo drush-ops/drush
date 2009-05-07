@@ -112,7 +112,7 @@ function core_drush_engine_drupal() {
 /**
  * Command handler. Execute update.php code from drush.
  */
-function core_updatedb() {
+function drush_core_updatedb() {
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
   update_main();
   drush_log(dt('Finished performing updates.'), 'ok');
@@ -122,7 +122,7 @@ function core_updatedb() {
 /**
  * This is called if no command or an unknown command is entered.
  */
-function core_help() {
+function drush_core_help() {
   $commands = func_get_args();
   
   if (empty($commands)) {
@@ -270,7 +270,7 @@ function _core_site_credentials() {
  * To print something to the terminal window, use drush_print().
  *
  */
-function core_cron() {
+function drush_core_cron() {
   drupal_cron_run();
   drush_print(dt('Cron run successfully.'));
 }
@@ -279,7 +279,7 @@ function core_cron() {
  * Command callback. Provides a birds-eye view of the current Drupal
  * installation.
  */
-function core_status() {
+function drush_core_status() {
   drush_bootstrap_max();
   print _core_site_credentials();
   return;
@@ -288,7 +288,7 @@ function core_status() {
 /**
  * Command callback. Runs "naked" php scripts.
  */
-function core_script() {
+function drush_core_script() {
   $scripts = func_get_args();
   foreach ($scripts as $script) {
     $script_filename = drush_cwd() . '/' . $script;
@@ -298,7 +298,7 @@ function core_script() {
   }
 }
 
-function core_cache_clear() {
+function drush_core_cache_clear() {
   switch (drush_drupal_major_version()) {
     case 5:
       // clear preprocessor cache
@@ -326,7 +326,7 @@ function core_cache_clear() {
  *
  * @return void
  **/
-function core_sync($source, $destination) {
+function drush_core_sync($source, $destination) {
   // Local paths are relative to Drupal root
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   
@@ -358,7 +358,7 @@ function core_sync($source, $destination) {
 /**
  * Displays the most recent watchdog log messages (default: 10 messages).
  */
-function core_watchdog_show($type = NULL) {
+function drush_core_watchdog_show($type = NULL) {
   $severities = array(WATCHDOG_NOTICE => dt('notice'), WATCHDOG_WARNING => dt('warning'), WATCHDOG_ERROR => dt('error'));
   $limit = drush_get_option('limit') ? drush_get_option('limit') : 10;
 
@@ -416,7 +416,7 @@ function core_watchdog_format_message($watchdog) {
  * Deletes all log messages of a certain type from the watchdog log
  * (default: all).
  */
-function core_watchdog_delete($type = NULL) {
+function drush_core_watchdog_delete($type = NULL) {
   if ($type == "all") {
     // D7: ought to be a dynamic query.
     drush_op('db_query', 'DELETE FROM {watchdog}'); // indiscriminately delete all
@@ -431,6 +431,6 @@ function core_watchdog_delete($type = NULL) {
   }
 }
 
-function core_eval($command) {
+function drush_core_eval($command) {
   eval($command . ';');
 }

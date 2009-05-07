@@ -164,7 +164,7 @@ function pm_drush_command() {
 /**
  * Command callback. Enables one or more modules.
  */
-function pm_enable() {  
+function drush_pm_enable() {  
   $command = drush_get_command();
   return pm_module_manage($command['arguments'], TRUE);
 }
@@ -172,7 +172,7 @@ function pm_enable() {
 /**
  * Command callback. Disable one or more modules.
  */
-function pm_disable() {
+function drush_pm_disable() {
   $command = drush_get_command();
   return pm_module_manage($command['arguments'], FALSE);
 }
@@ -181,7 +181,7 @@ function pm_disable() {
  * Command callback. Uninstall one or more modules.
  * // TODO: Use drupal_execute on system_modules_uninstall_confirm_form so that input is validated.
  */
-function pm_uninstall() {
+function drush_pm_uninstall() {
   $command = drush_get_command();
   $modules = $command['arguments'];
     
@@ -386,7 +386,7 @@ function pm_get_project_path($projects, $lookup) {
  * A drush command callback. Show release info for given project(s).
  *
  **/
-function pm_info() {
+function drush_pm_info() {
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
@@ -417,7 +417,7 @@ function pm_info() {
 /**
  * Command callback. Refresh update status information.
  */
-function pm_refresh() {
+function drush_pm_refresh() {
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
@@ -427,14 +427,14 @@ function pm_refresh() {
 /**
  * Command callback. Execute updatecode.
  */
-function pm_update() {
+function drush_pm_update() {
   drush_invoke("updatecode");
 }
 
 /**
  * Command callback. Execute updatecode and updatedb commands.
  */
-function pm_post_update() {
+function drush_pm_post_update() {
   drush_backend_invoke("updatedb");
 }
 
@@ -654,7 +654,7 @@ function pm_drush_engine_version_control() {
 /**
  * Command callback. Download drupal core.
  */
-function pm_dl() {
+function drush_pm_dl() {
   // Bootstrap to the highest level possible.
   drush_bootstrap_max();
 
