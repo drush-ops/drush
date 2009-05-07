@@ -206,7 +206,13 @@ function pm_uninstall() {
 }
 
 function pm_module_manage($modules = array(), $enable = TRUE) {
-  module_load_include('inc', 'system', 'system.admin');
+  if (function_exists('module_load_include')) {
+    module_load_include('inc', 'system', 'system.admin');
+  }
+  else {
+    // Drupal5 only.
+    require_once('./'. drupal_get_path('module', 'system') .'/system.module');
+  }
   $form = system_modules();
   if (empty($modules)) {
     pm_module_status($form);
