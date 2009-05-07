@@ -28,6 +28,23 @@ function update_main() {
     $updates = drupal_get_schema_versions($module);
     if ($updates !== FALSE) {
       $updates = drupal_map_assoc($updates);
+      
+      // Record any pending updates. Used for confirmation prompt.
+      foreach (array_keys($updates) as $update) {
+        if ($update > $schema_version) {
+          if (class_exists('ReflectionFunction')) {
+            // The description for an update comes from its Doxygen.
+            $func = new ReflectionFunction($module. '_update_'. $update);
+            $description = str_replace(array("\n", '*', '/'), '', $func->getDocComment());
+          }
+          if (empty($description)) {
+            $description = dt('description not available');
+          }
+
+          $pending[] = array("$update - ". trim($description));
+        }
+      }
+
       $updates[] = 'No updates available';
       $default = drupal_get_installed_schema_version($module);
       foreach (array_keys($updates) as $update) {
@@ -37,6 +54,19 @@ function update_main() {
         }
       }
       $start[$module] = $default;
+      
+      // Print a list of pending updates for this module and get confirmation.
+      if (!empty($pending)) {
+        drush_print(dt('The following updates are pending:'));
+        drush_print();
+        array_unshift($pending, array($module . ' module'));
+        drush_print_table($pending, 0, TRUE);
+        drush_print();
+        if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
+          drush_die('Aborting.');
+        }
+      }
+      
     }
   }
 
