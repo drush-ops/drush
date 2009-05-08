@@ -365,7 +365,7 @@ function drush_core_watchdog_show($type = NULL) {
   $sql = 'SELECT w.*, u.name, u.uid FROM {watchdog} w INNER JOIN {users} u ON w.uid = u.uid';
   $sort = ' ORDER BY w.wid DESC';
   if (empty($type)) {
-    $result = db_query_range($sql, 0, (int)$limit);
+    $result = db_query_range($sql . $sort, 0, (int)$limit);
   }
   else {
     switch (drush_drupal_major_version()) {
