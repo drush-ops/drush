@@ -24,6 +24,9 @@ For Linux/Unix/Mac:
      - create an alias to drush.php:
        $ alias drush='php /path/to/drush/drush.php'
        (this goes into .profile or .bash_aliases in your home folder)
+     ALSO
+     - To allow Drush to detect the number of available columns, you need to add the
+       line 'export COLUMNS' to the the .profile file in your home folder.
 
   3. Start using drush by running "drush" from your Drupal root directory.
 
