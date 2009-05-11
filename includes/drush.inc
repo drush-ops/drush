@@ -289,7 +289,8 @@ function drush_get_option_help() {
   // TODO: Add a hook for this, to allow other modules to add their options
   $options['-r <path>, --root=<path>'] = dt("Drupal root directory to use (default: current directory)");
   $options['-l <uri> , --uri=<uri>']   = dt('URI of the drupal site to use (only needed in multisite environments)');
-  $options['-v, --verbose']            = dt('Display debug messages. Use a value of 1 to see some messages, or 2 for all.');
+  $options['-v, --verbose']            = dt('Display extra information about the command.');
+  $options['-d, --debug']              = dt('Display even more information, including internal messages.');
   $options['-q, --quiet']              = dt('Hide all output');
   $options['-y, --yes']                = dt("Assume 'yes' as answer to all prompts");
   $options['-s, --simulate']           = dt("Simulate all relevant actions (don't actually change the system)");
@@ -630,7 +631,8 @@ function _drush_print_log($entry) {
   $yellow = "\033[1;33m\033[1m[%s]\033[0m";
   $green = "\033[0;33m\033[1m[%s]\033[0m";
 
-  $log_level = (int) drush_get_context('DRUSH_VERBOSE', 0);
+  $verbose = drush_get_context('DRUSH_VERBOSE');
+  $debug = drush_get_context('DRUSH_DEBUG');
 
   $return = TRUE;
   switch ($entry['type']) {
@@ -649,14 +651,14 @@ function _drush_print_log($entry) {
       break;
     case 'notice' : 
     case 'message' : 
-      if ($log_level < 1) {
+      if (!$verbose) {
         // print nothing. exit cleanly.
         return TRUE;
       }
       $type_msg = sprintf("[%s]", $entry['type']);
       break;
     default : 
-      if ($log_level < 2) {
+      if (!$debug) {
         // print nothing. exit cleanly.
         return TRUE;
       }
@@ -674,7 +676,7 @@ function _drush_print_log($entry) {
 
   $width[1] = 11;
   // Append timer value.
-  if ($log_level >= 1) {
+  if ($debug) {
     $timer = sprintf('[%s sec]', round($entry['timestamp']-DRUSH_REQUEST_TIME, 4));
     $entry['message'] = $entry['message'] . ' ' . $timer;
   }
