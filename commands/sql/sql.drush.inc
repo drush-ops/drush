@@ -198,7 +198,7 @@ function drush_sql_dump($db_spec = NULL) {
         $db_spec = _drush_sql_get_db_spec();
       }
 
-      $exec = 'pg_dump --clean ' . (drush_get_context('DRUSH_VERBOSE') ? '' : ' -q');
+      $exec = 'pg_dump --clean ' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
       if ($file = drush_get_option('result-file')) {
         $exec .= ' --file '. $file;
       }
