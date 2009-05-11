@@ -677,7 +677,7 @@ function _drush_print_log($entry) {
   $width[1] = 11;
   // Append timer value.
   if ($debug) {
-    $timer = sprintf('[%s sec]', round($entry['timestamp']-DRUSH_REQUEST_TIME, 4));
+    $timer = sprintf('[%s sec]', round($entry['timestamp']-DRUSH_REQUEST_TIME, 3));
     $entry['message'] = $entry['message'] . ' ' . $timer;
   }
 
