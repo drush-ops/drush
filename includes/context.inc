@@ -84,7 +84,14 @@ function _drush_config_file($context) {
   }
 
   // in the user home directory
-  $configs['user'] = $_SERVER['HOME'] . '/.drushrc.php';
+  // $_SERVER['HOME'] isn't set on windows and generates a Notice.
+  if(isset($_SERVER['HOME'])){
+    $configs['user'] = $_SERVER['HOME'] . '/.drushrc.php';
+  }
+  else{
+    // home on windows
+    $configs['user'] = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'] . '/.drushrc.php';
+  }
 
   // in the drush installation folder
   // TODO: This really should be a proper, system-wide location.
