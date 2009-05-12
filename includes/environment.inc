@@ -719,7 +719,7 @@ function drush_valid_db_credentials() {
     }
 
     $constr = sprintf("%s:dbname=%s;host=%s", $type, $creds['name'], $creds['host']);
-    if (isset($creds['port'])) {
+    if (!empty($creds['port'])) {
       $constr .= sprintf(";port=%d", $creds['port']);
     }
 
