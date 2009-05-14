@@ -52,7 +52,8 @@ function package_handler_install_project($project, $info, $path = '.') {
   drush_op('unlink', $tarpath);
 
   // 'drupal' project gets tarred as drupal-6-10/foo instead of drupal/foo so must be excluded from test below.
-  if (!is_dir($path . $project) && !drush_get_context('DRUSH_SIMULATE') && $project != 'drupal') {
+  // Translations get untarred into the Drupal root, so there is no easy way to check.
+  if (!is_dir($path . $project) && !drush_get_context('DRUSH_SIMULATE') && $project != 'drupal' && $info['type'] != 'translation') {
     return drush_set_error('DRUSH_PM_FILE_UNTAR_ERROR', "Downloaded file $filename couldn't be untarred correctly");
   }
   else {

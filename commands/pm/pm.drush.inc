@@ -146,9 +146,11 @@ function pm_drush_command() {
     'description' => 'Download core Drupal and projects like CCK, Zen, etc.',
     'examples' => array(
       'drush dl' => 'Download latest version of Drupal core.', 
-      'drush dl drupal-5.x' => 'Download latest version of Drupal core for 5.x release', 
-      'drush dl diff-6.x-2.0' => 'Download a specfic version of diff module.',
-      'drush dl cck zen' => 'Download latest versions of Zen for my version of Drupal.',
+      'drush dl drupal' => 'Download latest stable version of Drupal core', 
+      'drush dl drupal-7.x' => 'Download latest 7.x development version of Drupal core', 
+      'drush dl cck zen es' => 'Download latest versions of CCK, Zen and Spanish translations for my version of Drupal.',
+      'drush dl og-1.3' => 'Download a specfic version of diff module for my version of Drupal.',
+      'drush dl diff-6.x-2.x' => 'Download a specfic development branch of diff module for a specific Drupal version.',
     ),
     'arguments' => array(
       'projects' => 'A space separated list of project names, with optional version. Defaults to \'drupal\'',
