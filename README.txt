@@ -17,23 +17,31 @@ INSTALLATION
 ------------
 For Linux/Unix/Mac:
   1. Untar the tarball into a folder outside of your web site (/path/to/drush)
-  2. (Optional, but recommended:) To ease the use of drush,
-     - create a link to drush.php in a directory that is in your $PATH, e.g.:
-       $ ln -s /path/to/drush/drush.php /usr/bin/drush
+  2. Make the 'drush' command executable:
+       $ chmod u+x /path/to/drush/drush
+  3. (Optional, but recommended:) To ease the use of drush,
+     - create a link to drush in a directory that is in your $PATH, e.g.:
+       $ ln -s /path/to/drush/drush /usr/bin/drush
      OR
-     - create an alias to drush.php:
-       $ alias drush='php /path/to/drush/drush.php'
+     - create an alias to drush:
+       $ alias drush='/path/to/drush/drush'
        (this goes into .profile or .bash_aliases in your home folder)
-     ALSO
-     - To allow Drush to detect the number of available columns, you need to add the
-       line 'export COLUMNS' to the the .profile file in your home folder.
 
-  3. Start using drush by running "drush" from your Drupal root directory.
+     NOTE FOR ADVANCED USERS
+     - If you want to run drush with a specific version of php, rather than the
+       one found by the drush command, you can instead create an alias that
+       executes the drush.php file directly:
+       $ alias drush='/path/to/php/php /path/to/drush/drush.php'
+       If you do this, to allow Drush to detect the number of available columns,
+       you need to add the line 'export COLUMNS' to the the .profile file in your
+       home folder.
 
-     (or, if you did not follow step 2, by running "/path/to/drush/drush.php"
-      or navigating to /path/to/drush and running "./drush.php" )
+  4. Start using drush by running "drush" from your Drupal root directory.
 
-    If you have troubles, try using the -l and -r flags when invoking drush.php. See below.
+     (or, if you did not follow step 3, by running "/path/to/drush/drush"
+      or navigating to /path/to/drush and running "./drush" )
+
+    If you have troubles, try using the -l and -r flags when invoking drush. See below.
 
 For Windows (experimental!):
   - Follow step 1. Use drush by navigating to /path/to/drush

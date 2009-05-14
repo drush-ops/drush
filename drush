@@ -4,8 +4,12 @@
 # This script is a simple wrapper that will run Drush with the most appropriate
 # php executable it can find.
 #
+
+# Export the columns environment variable, so it is easily accessible to drush.
+export COLUMNS
+
+# Special case for MAMP, since it is not the default php on a vanilla install.
 if [ -f /Applications/MAMP/bin/php5/bin/php ]; then
-  # Special case for MAMP, since it is not the default php on a vanilla install.
   /Applications/MAMP/bin/php5/bin/php drush.php
 else
   # We check for a command line (cli) version of php, and if found use that.
