@@ -443,6 +443,18 @@ function update_main() {
   }
   
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+  
+  // Updates only run reliably if user ID #1 is logged in. For example, node_delete() requires elevated perms in D5/6.
+  if (!drush_get_context('DRUSH_USER')) {
+    // Remove after http://drupal.org/node/439236 lands.
+    require(DRUPAL_ROOT . '/modules/field/field.crud.inc');
+    require(DRUPAL_ROOT . '/modules/field/field.autoload.inc');
+
+    drush_set_option('user', 1);
+    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
+
+  }
+
   drupal_maintenance_theme();
   drush_errors_on();
 

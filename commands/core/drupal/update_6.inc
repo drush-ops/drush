@@ -302,6 +302,13 @@ function update_main() {
 
 
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+  
+  // Updates only run reliably if user ID #1 is logged in. For example, node_delete() requires elevated perms in D5/6.
+  if (!drush_get_context('DRUSH_USER')) {
+    drush_set_option('user', 1);
+    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
+  }
+  
   drupal_maintenance_theme();
 
   // This must happen *after* drupal_bootstrap(), since it calls
