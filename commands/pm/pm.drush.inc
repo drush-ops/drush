@@ -537,6 +537,7 @@ function pm_dl_destination($type) {
 function pm_parse_project_version($requests) {
   $requestdata = array();
   $drupal_version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', 6) . '.x';
+  $drupal_bootstrap = (drush_get_context('DRUSH_BOOTSTRAP_PHASE') > 0);
   foreach($requests as $request) {
     $drupal_version = $drupal_version_default;
     $project_version = NULL;
@@ -546,24 +547,33 @@ function pm_parse_project_version($requests) {
     // '5.x-' is optional, as is '-beta'
     preg_match('/-+(HEAD|(?:(\d+\.x)-+)?(\d+\.[\dx]+.*))$/', $request, $matches);
     if (isset($matches[1])) {
+      // The project is whatever we have prior to the version part of the request.
+      $project = trim(substr($request, 0, strlen($request) - strlen($matches[0])), ' -');
+
       if ($matches[1] == 'HEAD' || $matches[2] == 'HEAD') {
         drush_set_error('DRUSH_PM_HEAD', 'Can\'t download HEAD releases because Drupal.org project information only provides for numbered release nodes.');
         continue;
       }
-      else if (!empty($matches[2])) {
-        // We have a specified Drupal core version
+      if (!empty($matches[2])) {
+        // We have a specified Drupal core version.
         $drupal_version = trim($matches[2], '-.');
       }
       if (!empty($matches[3])) {
-        // We have a specified project version
-        $project_version = trim($matches[3], '-.');
-        if (substr($project_version, -1, 1) == 'x') {
-          // If a dev branch was requested, we add a -dev suffix. 
-          $project_version .= '-dev';
+        if (!$drupal_bootstrap && empty($matches[2]) && $project != 'drupal') {
+          // We are not working on a bootstrapped site, and the project is not Drupal itself,
+          // so we assume this value is the Drupal core version and we want the stable project.
+          $drupal_version = trim($matches[3], '-.');
+        }
+        else {
+          // We are working on a bootstrapped site, or the user specified a Drupal version,
+          // so this value must be a specified project version.
+          $project_version = trim($matches[3], '-.');
+          if (substr($project_version, -1, 1) == 'x') {
+            // If a dev branch was requested, we add a -dev suffix. 
+            $project_version .= '-dev';
+          }
         }
       }
-      // The project is whatever we have prior to the version part of the request.
-      $project = trim(substr($request, 0, strlen($request) - strlen($matches[0])), ' -');
     }
     elseif (strpos($request, '-') === FALSE) {
       // We have no findable version part, so we set the project directly (assumes the user wants the latest stable version).
