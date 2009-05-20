@@ -236,7 +236,7 @@ function update_check_requirements() {
         if (isset($requirement['value']) && $requirement['value']) {
           $message .= ' (Currently using '. $requirement['title'] .' '. $requirement['value'] .')';
         }
-        drupal_log($message, 'warning');
+        drush_log($message, 'warning');
       }
     }
   }
