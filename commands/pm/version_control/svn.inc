@@ -6,7 +6,7 @@
  */
 
 /**
- * Implementation of hook_drush_pm_skip_backup().
+ * Implementation of version_control_is_versioned().
  */
 function version_control_is_versioned($source) {
   if (file_exists($source. '/.svn')) {
@@ -18,7 +18,7 @@ function version_control_is_versioned($source) {
 }
 
 /**
- * Implementation of hook_drush_pm_post_update().
+ * Implementation of version_control_post_update().
  */
 function version_control_post_update($project, $info, $path = '.') {
   if (version_control_is_versioned($project) && version_control_sync($project, $info, $path)) {
@@ -28,7 +28,7 @@ function version_control_post_update($project, $info, $path = '.') {
 }
 
 /**
- * Implementation of hook_drush_pm_post_install().
+ * Implementation of version_control_post_install().
  */
 function version_control_post_install($project, $info, $path = '.') {
   if (version_control_is_versioned($project) && version_control_sync($project, $info, $path)) {
