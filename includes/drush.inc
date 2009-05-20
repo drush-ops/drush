@@ -762,12 +762,10 @@ function _drush_log_update_sql($ret) {
 * @see drush_set_error(), drush_get_error(), drush_get_error_log(), drush_cmp_error()
 */
 
-/** The command was not successfully completed. This is the default error status. */
-define('DRUSH_NOT_COMPLETED', 0);
 /** The command completed succesfully. */
-define('DRUSH_SUCCESS', 1);
+define('DRUSH_SUCCESS', 0);
 /** The command could not be completed because the framework has specified errors that have occured. */
-define('DRUSH_FRAMEWORK_ERROR', 2);
+define('DRUSH_FRAMEWORK_ERROR', 1);
 /** The command that was executed resulted in an application error,
   The most commom causes for this is invalid PHP or a broken SSH
   pipe when using drush_backend_invoke in a distributed manner. */
@@ -803,7 +801,7 @@ define('DRUSH_APPLICATION_ERROR', 255);
  *   such as <code>return drush_set_error('DRUSH_FRAMEWORK_ERROR')</code>
  */
 function drush_set_error($error, $message = null) {
-  $error_code =& drush_get_context('DRUSH_ERROR_CODE', DRUSH_NOT_COMPLETED);
+  $error_code =& drush_get_context('DRUSH_ERROR_CODE', DRUSH_SUCCESS);
   $error_code = DRUSH_FRAMEWORK_ERROR;
 
   $error_log =& drush_get_context('DRUSH_ERROR_LOG', array());
@@ -831,7 +829,7 @@ function drush_set_error($error, $message = null) {
  *   The current aggregate error status
  */
 function drush_get_error() {
-  return drush_get_context('DRUSH_ERROR_CODE', DRUSH_NOT_COMPLETED);
+  return drush_get_context('DRUSH_ERROR_CODE', DRUSH_SUCCESS);
 }
 
 /**

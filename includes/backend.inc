@@ -123,13 +123,6 @@ function drush_backend_parse_output($string, $integrate = TRUE) {
  *    The associative array returned from the external command.
  */
 function _drush_backend_integrate($data) {
-  // Output will either be printed, or buffered to the drush_backend_output command.
-  if (drush_cmp_error('DRUSH_APPLICATION_ERROR')) {
-    drush_set_error("DRUSH_APPLICATION_ERROR", dt("Output from failed command :\n !output", array('!output' => $data['output'])));
-  }
-  else {
-    print ($data['output']);
-  }
   if (is_array($data['log'])) {
     foreach($data['log'] as $log) {
       if (!is_null($log['error'])) {
@@ -140,6 +133,14 @@ function _drush_backend_integrate($data) {
       }
     }
   }
+  // Output will either be printed, or buffered to the drush_backend_output command.
+  if (drush_cmp_error('DRUSH_APPLICATION_ERROR')) {
+    drush_set_error("DRUSH_APPLICATION_ERROR", dt("Output from failed command :\n !output", array('!output' => $data['output'])));
+  }
+  else {
+    print ($data['output']);
+  }
+
 }
 
 /**

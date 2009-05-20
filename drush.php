@@ -57,16 +57,19 @@ function drush_verify_cli() {
 function drush_main() {
   $phases = _drush_bootstrap_phases();
 
+  $return = '';
+  $command_found = FALSE;
+
   foreach ($phases as $phase) {
     if (drush_bootstrap($phase)) {
       $command = drush_parse_command();
       if (is_array($command)) {
         if ($command['bootstrap'] == $phase && empty($command['bootstrap_errors'])) {
           drush_log(dt("Found command: !command", array('!command' => $command['command'])), 'bootstrap');
+          $command_found = TRUE;
           // Dispatch the command(s).
-          // After this point the drush_shutdown function will run,
-          // exiting with the correct exit code.
-          return drush_dispatch($command);
+          $return = drush_dispatch($command);
+          break;
         }
       }
     }
@@ -74,18 +77,28 @@ function drush_main() {
       break;
     }
   }
-  // If we reach this point, we have not found either a valid or matching command.
-  $args = implode(' ', drush_get_arguments());
-  $drush_command = array_pop(explode('/', DRUSH_COMMAND));
-  if ($command) {
-    foreach ($command['bootstrap_errors'] as $key => $error) {
-      drush_set_error($key, $error); 
+
+  if (!$command_found) {
+    // If we reach this point, we have not found either a valid or matching command.
+    $args = implode(' ', drush_get_arguments());
+    $drush_command = array_pop(explode('/', DRUSH_COMMAND));
+    if ($command) {
+      foreach ($command['bootstrap_errors'] as $key => $error) {
+        drush_set_error($key, $error); 
+      }
+      drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The command '!drush_command !args' could not be executed.", array('!drush_command' => $drush_command, '!args' => $args)));
     }
-    drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The command '!drush_command !args' could not be executed.", array('!drush_command' => $drush_command, '!args' => $args)));
+    else {
+      drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The command '!drush_command !args' could not be found.", array('!drush_command' => $drush_command, '!args' => $args)));
+    }
   }
-  else {
-    drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The command '!drush_command !args' could not be found.", array('!drush_command' => $drush_command, '!args' => $args)));
-  }
+
+  // We set this context to let the shutdown function know we reached the end of drush_main();
+  drush_set_context("DRUSH_EXECUTION_COMPLETED", TRUE);
+
+  // After this point the drush_shutdown function will run,
+  // exiting with the correct exit code.
+  return $return;
 }
 
 /**
@@ -105,7 +118,15 @@ function drush_main() {
 function drush_shutdown() {
   // Mysteriously make $user available during sess_write(). Avoids a NOTICE.
   global $user; 
-  
+
+  if (!drush_get_context('DRUSH_EXECUTION_COMPLETED', FALSE)) {
+    // We did not reach the end of the drush_main function, 
+    // this generally means somewhere in the code a call to exit(),
+    // was made. We catch this, so that we can trigger an error in 
+    // those cases.
+    drush_set_error("DRUSH_NOT_COMPLETED", dt("Drush command could not be completed."));
+  }
+
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if (drush_get_context('DRUSH_BOOTSTRAPPING')) {
     switch ($phase) {
