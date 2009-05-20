@@ -180,7 +180,22 @@ function _drush_proc_open($cmd, $data = NULL) {
       ob_flush();
       flush();
     };
+
+    $info = stream_get_meta_data($pipes[2]);
+    stream_set_blocking($pipes[2], TRUE);
+    stream_set_timeout($pipes[2], 1);
+    $stream = '';
+    while (!feof($pipes[2]) && !$info['timed_out']) { 
+      $string .= fgets($pipes[2], 4096);
+      $info = stream_get_meta_data($pipes[2]);
+      ob_flush();
+      flush();
+    };
+
+
+    fclose($pipes[0]);
     fclose($pipes[1]);
+    fclose($pipes[2]);
     $code = proc_close($process);
     return array('cmd' => $cmd, 'output' => $string, 'code' => $code);
   }
@@ -315,7 +330,7 @@ function _drush_backend_generate_command($command, &$data, $method = 'GET', $dru
 
   if (!is_null($hostname)) {
     $username = (!is_null($username)) ? $username : get_current_user();
-    $cmd = sprintf("ssh %s@%s %s", escapeshellarg($username), escapeshellarg($hostname), escapeshellarg($cmd));
+    $cmd = sprintf("ssh -o PasswordAuthentication=no %s@%s %s", escapeshellarg($username), escapeshellarg($hostname), escapeshellarg($cmd));
   }
 
   return $cmd;
