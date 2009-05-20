@@ -174,7 +174,6 @@ function pm_update_packages($releases) {
   }
   // Clear the cache, since some modules could have moved around.
   drush_invoke("cache clear");
-  drush_print(dt("You should now run `drush updatedb` or visit update.php through your browser."));
 }
 
 function pm_project_filter(&$releases, &$rows) {

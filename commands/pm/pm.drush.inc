@@ -434,10 +434,34 @@ function drush_pm_update() {
 }
 
 /**
- * Command callback. Execute updatecode and updatedb commands.
+ * Post-command callback. 
+ * Execute updatedb command after an updatecode - user requested `update`.
  */
 function drush_pm_post_update() {
   drush_backend_invoke("updatedb");
+}
+
+/**
+ * Post-command callback for updatecode. Notify about any pending DB updates.
+ */
+function drush_pm_post_updatecode() {
+  // Make sure the installation API is available
+  include_once './includes/install.inc';
+  
+  // Load all .install files.
+  drupal_load_updates();
+  
+  // @see system_requirements().
+  foreach (module_list() as $module) {
+    $updates = drupal_get_schema_versions($module);
+    if ($updates !== FALSE) {
+      $default = drupal_get_installed_schema_version($module);
+      if (max($updates) > $default) {
+        drush_log(dt("You have pending database updates. Please run `drush updatedb` or visit update.php in your browser."), 'warning');
+        break;
+      }
+    }
+  }
 }
 
 
