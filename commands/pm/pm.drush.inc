@@ -79,14 +79,12 @@ function pm_drush_command() {
     'arguments' => array(
       'modules' => 'A space delimited list of modules.',
     ),
-    'core' => array(6),
   );
   $items['disable'] = array(
     'description' => 'Disable one or more modules.',
     'arguments' => array(
       'modules' => 'A space delimited list of modules.',
     ),
-    'core' => array(6),
   );
   // Install command is reserved for the download and enable of projects including dependencies. 
   // @see http://drupal.org/node/112692 for more information.
@@ -103,7 +101,6 @@ function pm_drush_command() {
     'description' => 'Show module enabled/disabled status',
     'callback' => 'pm_module_manage',
     'callback arguments' => array(array(), FALSE),
-    'core' => array(6),
     'options' => array(
       '--pipe' => 'Returns a space delimited list of enabled modules.',
     ),
@@ -216,6 +213,13 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
     require_once('./'. drupal_get_path('module', 'system') .'/system.module');
   }
   $form = system_modules();
+  // In Drupal 5, system_modules() returns NULL for the dependency list of the module if there are no dependencies. 
+  // We will override this to be an empty array instead to be compatible to Drupal 6 and 7
+  foreach ($form['validation_modules']['#value'] as $module_name => $module) {
+    if (!is_array($module->info['dependencies'])){
+       $module->info['dependencies'] = array();
+    }
+  }
   if (empty($modules)) {
     pm_module_status($form);
   }
