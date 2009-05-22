@@ -6,6 +6,7 @@
 #
 
 # Get the absolute path of this executable
+ORIGDIR=$(pwd)
 SELF_PATH=$(cd -P -- "$(dirname -- "$0")" && pwd -P) && SELF_PATH=$SELF_PATH/$(basename -- "$0")
 
 # Resolve symlinks - this is the equivalent of "readlink -f", but also works with non-standard OS X readlink.
@@ -18,6 +19,7 @@ while [ -h $SELF_PATH ]; do
     SYM=$(readlink $SELF_PATH)
     SELF_PATH=$(cd $DIR && cd $(dirname -- "$SYM") && pwd)/$(basename -- "$SYM")
 done
+cd $ORIGDIR
 
 # Build the path to drush.php.
 SCRIPT_PATH=$(dirname $SELF_PATH)/drush.php
@@ -27,14 +29,14 @@ export COLUMNS
 
 # Special case for MAMP, since it is not the default php on a vanilla install.
 if [ -f /Applications/MAMP/bin/php5/bin/php ]; then
-  /Applications/MAMP/bin/php5/bin/php $SCRIPT_PATH
+  /Applications/MAMP/bin/php5/bin/php $SCRIPT_PATH "$@"
 else
   # We check for a command line (cli) version of php, and if found use that.
   /usr/bin/env php-cli -v &> /dev/null
   if [ "$?" = 0 ] ; then
-    /usr/bin/env php-cli $SCRIPT_PATH
+    /usr/bin/env php-cli $SCRIPT_PATH "$@"
   else
     # Alternatively we run with straight php, which works on most other systems.
-    /usr/bin/env php $SCRIPT_PATH
+    /usr/bin/env php $SCRIPT_PATH "$@"
   fi
 fi
