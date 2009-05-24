@@ -47,8 +47,9 @@
  *    Specified by config files : 
  *      custom   : Loaded from the config file specified by --config or -c
  *      site     : Loaded from the drushrc.php file in the Drupal sites directory.
- *      drupal    : Loaded from the drushrc.php file in the Drupal root directory.
+ *      drupal   : Loaded from the drushrc.php file in the Drupal root directory.
  *      user     : Loaded from the drushrc.php file in the user's home directory.
+ *      system   : Loaded from the drushrc.php file in the system's $PREFIX/etc/drush directory.
  *      drush    : Loaded from the drushrc.php file in the same directory as drush.php.
  *
  *    Specified by the script, but has the lowest priority :
@@ -93,8 +94,11 @@ function _drush_config_file($context) {
     $configs['user'] = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'] . '/.drushrc.php';
   }
 
+
+  // In the system wide configuration folder.
+  $configs['system'] = drush_get_context('ETC_PREFIX', '') . '/etc/drush/drushrc.php';
+
   // in the drush installation folder
-  // TODO: This really should be a proper, system-wide location.
   $configs['drush'] = dirname(__FILE__) . '/../drushrc.php';
 
   return empty($configs[$context]) ? '' : $configs[$context];
@@ -262,7 +266,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
     // We are not checking a specific context, so check them in a predefined order of precedence.
     static $contexts = array(
       'process', 'options', 'stdin', 
-      'custom', 'site', 'drupal', 'user', 
+      'custom', 'site', 'drupal', 'user', 'system', 
       'drush', 'default');
 
     foreach ($contexts as $context) {
@@ -287,7 +291,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
 function drush_get_merged_options() {
   static $contexts = array(
       'process', 'options', 'stdin', 
-      'custom', 'site', 'drupal', 'user',
+      'custom', 'site', 'drupal', 'user', 'system',
       'drush', 'default');
   $cache = drush_get_context();
   $result = array();

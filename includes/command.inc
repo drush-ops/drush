@@ -382,6 +382,13 @@ function _drush_find_commandfiles($phase) {
         }
       }
 
+      // System commands, residing in $SHARE_PREFIX/share/drush/commands
+      $share_path = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
+
+      if (is_dir($share_path)) {
+        $searchpath[] = $share_path;
+      }
+
       // User commands, residing i ~/.drush
       if (!empty($_SERVER['HOME'])) {
         $searchpath[] = $_SERVER['HOME'] . '/.drush';
