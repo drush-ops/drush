@@ -427,6 +427,7 @@ function _drush_find_commandfiles($phase) {
 
     if (sizeof($list)) {
       $cache = array_merge($cache, $list);
+      ksort($cache);
     }
   }
 }
