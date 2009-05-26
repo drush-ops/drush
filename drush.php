@@ -82,14 +82,18 @@ function drush_main() {
     // If we reach this point, we have not found either a valid or matching command.
     $args = implode(' ', drush_get_arguments());
     $drush_command = array_pop(explode('/', DRUSH_COMMAND));
-    if ($command) {
+    if (isset($command) && is_array($command)) {
       foreach ($command['bootstrap_errors'] as $key => $error) {
         drush_set_error($key, $error); 
       }
       drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The command '!drush_command !args' could not be executed.", array('!drush_command' => $drush_command, '!args' => $args)));
     }
-    else {
+    elseif (!empty($args)) {
       drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The command '!drush_command !args' could not be found.", array('!drush_command' => $drush_command, '!args' => $args)));
+    }
+    else {
+      // This can occur if we get an error during _drush_bootstrap_drush_validate();
+      drush_set_error('DRUSH_COULD_NOT_EXECUTE', dt("Drush could not execute."));
     }
   }
 
