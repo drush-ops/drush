@@ -130,9 +130,12 @@ function update_fix_compatibility() {
   while ($result = db_fetch_object($query)) {
     if (update_check_incompatibility($result->name, $result->type)) {
       $incompatible[] = $result->name;
+      drush_log(dt("%type %name is incompatible with this release of Drupal, and will be disabled.",
+        array("%type" => $result->type, '%name' => $result->name)), "warning");
     }
   }
   if (!empty($incompatible)) {
+
     $ret[] = update_sql("UPDATE {system} SET status = 0 WHERE name IN ('". implode("','", $incompatible) ."')");
   }
   return $ret;
@@ -272,6 +275,7 @@ function update_create_batch_table() {
 
 
 function update_main() {
+  global $profile;
   // Some unavoidable errors happen because the database is not yet up-to-date.
   // Our custom error handler is not yet installed, so we just suppress them.
   drush_errors_off();
@@ -302,7 +306,7 @@ function update_main() {
 
 
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
-  
+  $profile = variable_get('install_profile', 'default');
   // Updates only run reliably if user ID #1 is logged in. For example, node_delete() requires elevated perms in D5/6.
   if (!drush_get_context('DRUSH_USER')) {
     drush_set_option('user', 1);
@@ -329,6 +333,7 @@ function update_main() {
   _drush_log_update_sql(update_fix_compatibility());
 
   $start = array();
+  $has_updates = FALSE;
   $modules = drupal_get_installed_schema_version(NULL, FALSE, TRUE);
   foreach ($modules as $module => $schema_version) {
     $updates = drupal_get_schema_versions($module);
@@ -343,7 +348,13 @@ function update_main() {
       }
 
       $updates = drupal_map_assoc($updates);
-      
+      foreach (array_keys($updates) as $update) {
+        if ($update > $schema_version) {
+          $start[$module] = $update;
+          break;
+        }
+      }
+     
       // Record any pending updates. Used for confirmation prompt.
       foreach (array_keys($updates) as $update) {
         if ($update > $schema_version) {
@@ -356,36 +367,30 @@ function update_main() {
             $description = dt('description not available');
           }
 
-          $pending[] = array("$update - ". trim($description));
+          $pending[$module][] = array("$update - ". trim($description));
+          $has_updates = TRUE;
         }
       }
 
-      $updates[] = 'No updates available';
-      $default = $schema_version;
-      foreach (array_keys($updates) as $update) {
-        if ($update > $schema_version) {
-          $default = $update;
-          break;
-        }
-      }
-      $start[$module] = $default;
     }
   }
   
+
   // Print a list of pending updates for this module and get confirmation.
-  if (!empty($pending)) {
+  if ($has_updates) {
     drush_print(dt('The following updates are pending:'));
     drush_print();
-    array_unshift($pending, array($module . ' module'));
-    drush_print_table($pending, 0, TRUE);
-    drush_print();
+    foreach ($pending as $module => $updates) {
+      if (sizeof($updates)) {
+        array_unshift($updates, array($module . ' module'));
+        drush_print_table($updates, 0, TRUE);
+        drush_print();
+      }
+    }
     if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
       drush_die('Aborting.');
     }
-  }
-
-  // Proceed with running all pending updates.
-  if (sizeof($start)) {
+    // Proceed with running all pending updates.
     $operations = array();
     foreach ($start as $module => $version) {
       drupal_set_installed_schema_version($module, $version - 1);
@@ -416,7 +421,7 @@ function update_main() {
     batch_process();
   }
   else {
-    drush_log(dt('No outstanding database updates'));
+    drush_log(dt("No database updates required"), 'success');
   }
 }
 
@@ -434,6 +439,7 @@ function _update_do_one($module, $number, &$context) {
   }
 
   $function = $module .'_update_'. $number;
+
   if (function_exists($function)) {
     $ret = $function($context['sandbox']);
     _drush_log_update_sql($ret);
