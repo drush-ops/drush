@@ -84,14 +84,10 @@ function update_main() {
     }
 
     $update_results = array();
-    dlm($start);
     foreach ($start as $module => $version) {
       drupal_set_installed_schema_version($module, $version - 1);
       $updates = drupal_get_schema_versions($module);
-      dlm($module);
-      dlm($version);
       $max_version = max($updates);
-      dlm($max_version);
       if ($version <= $max_version) {
         drush_log(dt('Updating module @module from schema version @start to schema version @max', array('@module' => $module, '@start' => $version - 1, '@max' => $max_version)));
         foreach ($updates as $update) {
