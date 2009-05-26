@@ -371,7 +371,7 @@ function _drush_find_commandfiles($phase) {
 
   $searchpath = array();
   switch ($phase) {
-    case DRUSH_BOOTSTRAP_DRUSH :
+    case DRUSH_BOOTSTRAP_DRUSH:
       // Core commands shipping with drush
       $searchpath[] = realpath(dirname(__FILE__) . '/../commands/');
 
@@ -401,12 +401,15 @@ function _drush_find_commandfiles($phase) {
       // Too early for variable_get('install_profile', 'default'); Just use default.
       $searchpath[] = "profiles/default/modules";
       break;
-    case DRUSH_BOOTSTRAP_DRUPAL_FULL :
-     // Add enabled module paths. Since we are bootstrapped,
-     // we can use the Drupal API.
-     foreach (array_keys(module_rebuild_cache()) as $module) {
-       $searchpath[] = drupal_get_path('module', $module);
-     }
+    case DRUSH_BOOTSTRAP_DRUPAL_FULL:
+      // Add enabled module paths. Since we are bootstrapped,
+      // we can use the Drupal API.
+      $files = module_rebuild_cache();
+      foreach ($files as $file) {
+        if ($file->status) {
+          $searchpath[] = dirname($file->filepath);
+        }
+      }
      break;
 
   }
@@ -552,7 +555,7 @@ function drush_enforce_requirement_bootstrap_phase(&$command) {
   if ($command['bootstrap'] == $current_phase) {
     return TRUE;
   }
-  // TODO: pprovide description text for each bootstrap level so we can give
+  // TODO: provide description text for each bootstrap level so we can give
   // the user something more helpful and specific here.
   $command['bootstrap_errors']['DRUSH_COMMAND_INSUFFICIENT_BOOTSTRAP'] = dt('Command !command needs a higher bootstrap level to run - you will need invoke drush from a more functional Drupal environment to run this command.', array('!command' => $command['command']));
 }
