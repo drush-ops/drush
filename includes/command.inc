@@ -389,7 +389,7 @@ function _drush_find_commandfiles($phase) {
         $searchpath[] = $share_path;
       }
 
-      // User commands, residing i ~/.drush
+      // User commands, residing in ~/.drush
       if (!empty($_SERVER['HOME'])) {
         $searchpath[] = $_SERVER['HOME'] . '/.drush';
       }
