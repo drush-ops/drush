@@ -28,12 +28,26 @@ function update_main() {
   update_fix_watchdog_115();
   update_fix_watchdog();
   update_fix_sessions();
+  $has_updates = FALSE;
 
   $start = array();
   foreach (module_list() as $module) {
+
     $updates = drupal_get_schema_versions($module);
     if ($updates !== FALSE) {
+
+      $pending[$module] = array();
       $updates = drupal_map_assoc($updates);
+
+      $schema_version = drupal_get_installed_schema_version($module);
+      $default = $schema_version;
+
+      foreach (array_keys($updates) as $update) {
+        if ($update > $default) {
+          $start[$module] = $update;
+          break;
+        }
+      }
       
       // Record any pending updates. Used for confirmation prompt.
       foreach (array_keys($updates) as $update) {
@@ -47,62 +61,63 @@ function update_main() {
             $description = dt('description not available');
           }
 
-          $pending[] = array("$update - ". trim($description));
+          $pending[$module][] = array("$update - ". trim($description));
+          $has_updates = TRUE;
         }
       }
-
-      $updates[] = 'No updates available';
-      $default = drupal_get_installed_schema_version($module);
-      foreach (array_keys($updates) as $update) {
-        if ($update > $default) {
-          $default = $update;
-          break;
-        }
-      }
-      $start[$module] = $default;
-      
-      // Print a list of pending updates for this module and get confirmation.
-      if (!empty($pending)) {
-        drush_print(dt('The following updates are pending:'));
-        drush_print();
-        array_unshift($pending, array($module . ' module'));
-        drush_print_table($pending, 0, TRUE);
-        drush_print();
-        if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
-          drush_die('Aborting.');
-        }
-      }
-      
     }
   }
 
-  $update_results = array();
-  foreach ($start as $module => $version) {
-    drupal_set_installed_schema_version($module, $version - 1);
-    $updates = drupal_get_schema_versions($module);
-    $max_version = max($updates);
-    if ($version <= $max_version) {
-      drush_log(dt('Updating module @module from schema version @start to schema version @max', array('@module' => $module, '@start' => $version - 1, '@max' => $max_version)));
-      foreach ($updates as $update) {
-        $finished = FALSE;
-        if ($update >= $version) {
-          while (!$finished) {
-            // do update
-            $ret = module_invoke($module, 'update_' . $update);
-            _drush_log_update_sql($ret);
-            $finished = 1;
-            if (isset($ret['#finished'])) {
-              $finished = $ret['#finished'];
-              unset($ret['#finished']);
-            }
-          }
-          drupal_set_installed_schema_version($module, $update);
-        }
+  // Print a list of pending updates for this module and get confirmation.
+  if ($has_updates) {
+    drush_print(dt('The following updates are pending:'));
+    drush_print();
+    foreach ($pending as $module => $updates) {
+      if (sizeof($updates)) {
+        array_unshift($updates, array($module . ' module'));
+        drush_print_table($updates, 0, TRUE);
+        drush_print();
       }
     }
-    else {
-      drush_log(dt('No database updates for @module module', array('@module' => $module)), 'success');
+    if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
+      drush_die('Aborting.');
     }
+
+    $update_results = array();
+    dlm($start);
+    foreach ($start as $module => $version) {
+      drupal_set_installed_schema_version($module, $version - 1);
+      $updates = drupal_get_schema_versions($module);
+      dlm($module);
+      dlm($version);
+      $max_version = max($updates);
+      dlm($max_version);
+      if ($version <= $max_version) {
+        drush_log(dt('Updating module @module from schema version @start to schema version @max', array('@module' => $module, '@start' => $version - 1, '@max' => $max_version)));
+        foreach ($updates as $update) {
+          $finished = FALSE;
+          if ($update >= $version) {
+            while (!$finished) {
+              // do update
+              $ret = module_invoke($module, 'update_' . $update);
+              _drush_log_update_sql($ret);
+              $finished = 1;
+              if (isset($ret['#finished'])) {
+                $finished = $ret['#finished'];
+                unset($ret['#finished']);
+              }
+            }
+            drupal_set_installed_schema_version($module, $update);
+          }
+        }
+      }
+      else {
+        drush_log(dt('No database updates for @module module', array('@module' => $module)), 'success');
+      }
+    }
+  }
+  else {
+    drush_log(dt("No database updates required"), 'success');
   }
 }
 
