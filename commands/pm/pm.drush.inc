@@ -212,21 +212,28 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
     // Drupal5 only.
     require_once('./'. drupal_get_path('module', 'system') .'/system.module');
   }
-  $form = system_modules();
-  // In Drupal 5, system_modules() returns NULL for the dependency list of the module if there are no dependencies. 
-  // We will override this to be an empty array instead to be compatible to Drupal 6 and 7
-  foreach ($form['validation_modules']['#value'] as $module_name => $module) {
+
+  $module_info = module_rebuild_cache();
+  $enabled = array();
+  foreach ($module_info as $module_name => $module) {
+    // In Drupal 5, system_modules() returns NULL for the dependency list of the module if there are no dependencies. 
+    // We will override this to be an empty array instead to be compatible to Drupal 6 and 7
     if (!is_array($module->info['dependencies'])){
        $module->info['dependencies'] = array();
     }
+    // Add enabled modules to an array for easy reference.
+    if ($module_info[$module_name]->status) {
+      $enabled[] = $module_name;
+    }
   }
   if (empty($modules)) {
-    pm_module_status($form);
+    pm_module_status($enabled, $module_info);
   }
+  
   else {
     $requested_modules = $modules;
     if ($enable) {
-      pm_dependencies($modules, $form);
+      pm_dependencies($modules, $enabled, $module_info);
       if (empty($modules)) {
         return drush_log(dt('There were no modules that could be enabled.'), 'ok');
       }
@@ -236,12 +243,12 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
       }
       // We enable the modules explicitly here, to pass dependency validation in the form submit.
       module_enable($modules);
-      $current = drupal_map_assoc($form['status']['#default_value'], 'pm_true');
+      $current = drupal_map_assoc($enabled, 'pm_true');
       // Add the list of enabled modules from the active modules list.
       $active_modules = array_merge($current, drupal_map_assoc($modules, 'pm_true'));
     }
     else {
-      pm_reverse_dependencies($modules, $form);
+      pm_reverse_dependencies($modules, $enabled, $module_info);
       if (empty($modules)) {
         return drush_log(dt('There were no modules that could be disabled.'), 'ok');
       }
@@ -252,43 +259,54 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
       // We disable the modules explicitly here, to pass dependency validation in the form submit.
       module_disable($modules);
       // Remove the list of disabled modules from the active modules list.
-      $active_modules = array_diff($form['status']['#default_value'], $modules);
+      $active_modules = array_diff($enabled, $modules);
       $active_modules = drupal_map_assoc($active_modules, 'pm_true');
     }
+
+    // We submit the system modules form - the modules should already be fully
+    // enabled/disabled by this stage, but this makes sure any activities
+    // triggered by the form submit (such as admin_role) are completed.
     $form_state = array('values' => array('status' => $active_modules));
-    drupal_execute('system_modules', $form_state);
-    $form = system_modules();
-    foreach (array_unique(array_merge($modules)) as $key => $module) {
+    if (function_exists('drupal_execute')) {
+      drupal_execute('system_modules', $form_state);
+    }
+    else {
+      // Drupal 7.
+      drupal_form_submit('system_modules', $form_state);
+    }
+
+    $module_info = module_rebuild_cache();
+    foreach ($modules as $module_name) {
       if ($enable) { 
-        if (array_search($module, $form['status']['#default_value']) !== FALSE) {
-          drush_log(dt('!module was enabled successfully.', array('!module' => $form['validation_modules']['#value'][$module]->info['name'])), 'ok');
+        if ($module_info[$module_name]->status) {
+          drush_log(dt('!module was enabled successfully.', array('!module' => $module_info[$module_name]->info['name'])), 'ok');
         }
         else {
-          drush_set_error('DRUSH_PM_ENABLE_MODULE_ISSUE', dt('> There was a problem enabling !module.', array('!module' => $module)));
+          drush_set_error('DRUSH_PM_ENABLE_MODULE_ISSUE', dt('> There was a problem enabling !module.', array('!module' => $module_name)));
         }
       }
       else { 
-        if (array_search($module, $form['status']['#default_value']) === FALSE) {
-          drush_log(dt('!module was disabled successfully.', array('!module' => $form['validation_modules']['#value'][$module]->info['name'])), 'ok');
+        if (!$module_info[$module_name]->status) {
+          drush_log(dt('!module was disabled successfully.', array('!module' => $module_info[$module_name]->info['name'])), 'ok');
         }
         else {
-          drush_set_error('DRUSH_PM_DISABLE_MODULE_ISSUE', dt('> There was a problem disabling !module.', array('!module' => $module)));
+          drush_set_error('DRUSH_PM_DISABLE_MODULE_ISSUE', dt('> There was a problem disabling !module.', array('!module' => $module_name)));
         }
       }
     }
   }
 }
 
-function pm_module_status($form) {
+function pm_module_status($enabled, $module_info) {
   $rows[] = array(dt('Name'), dt('Enabled/Disabled'), dt('Description'));
-  foreach ($form['status']['#options'] as $module => $value) {
+  foreach ($module_info as $module_name => $module) {
     $enabled = dt('Disabled');
-    if (array_search($module, $form['status']['#default_value']) !== FALSE) {
+    if ($module->status) {
       $enabled = dt('Enabled');
-      $pipe[] = $module;
+      $pipe[] = $module_name;
     }
-    $info = $form['validation_modules']['#value'][$module]->info;
-    $rows[] = array($info['name'] . ' (' . $module . ')', $enabled, truncate_utf8($info['description'], 60, FALSE, TRUE));
+    $info = $module_info[$module_name]->info;
+    $rows[] = array($info['name'] . ' (' . $module_name . ')', $enabled, truncate_utf8($info['description'], 60, FALSE, TRUE));
   }
   drush_print_table($rows, 2, TRUE);
   
@@ -301,18 +319,18 @@ function pm_module_status($form) {
  * are depending on and enables them progressively so as to allow the
  * system dependency checking to proceed.
  **/
-function pm_dependencies(&$modules, $form) {
+function pm_dependencies(&$modules, $enabled, $module_info) {
   $dependencies = array();
   foreach ($modules as $key => $module) {
-    if (array_search($module, $form['status']['#default_value']) !== FALSE) {
+    if (array_search($module, $enabled) !== FALSE) {
       // We find the module in the list of modules already enabled, ignore it.
       unset($modules[$key]);
-      drush_set_error('DRUSH_PM_ALREADY_ENABLED', dt('!module is already enabled.', array('!module' => $form['validation_modules']['#value'][$module]->info['name'])));
+      drush_set_error('DRUSH_PM_ALREADY_ENABLED', dt('!module is already enabled.', array('!module' => $module_info[$module]->info['name'])));
     }
-    else if (isset($form['validation_modules']['#value'][$module])) {
+    else if (isset($module_info[$module])) {
       // This module is available, check for dependencies that are not already enabled.
-      $new_dependencies = array_diff($form['validation_modules']['#value'][$module]->info['dependencies'], $form['status']['#default_value']);
-      $unmet_dependencies = array_diff($new_dependencies, array_keys($form['validation_modules']['#value']));
+      $new_dependencies = array_diff($module_info[$module]->info['dependencies'], $enabled);
+      $unmet_dependencies = array_diff($new_dependencies, array_keys($module_info));
       if (!empty($unmet_dependencies)) {
         unset($modules[$key]);
         $new_dependencies = array();
@@ -336,20 +354,20 @@ function pm_dependencies(&$modules, $form) {
  * wants to disable, and disables them progressively so as to allow the
  * system dependency checking to proceed.
  */
-function pm_reverse_dependencies(&$modules, $form) {
+function pm_reverse_dependencies(&$modules, $enabled, $module_info) {
   foreach ($modules as $key => $module) {
-    if (array_search($module, $form['status']['#default_value']) === FALSE) {
+    if (array_search($module, $enabled) === FALSE) {
       unset($modules[$key]);
-      drush_log(dt('!module is already disabled.', array('!module' => $form['validation_modules']['#value'][$module]->info['name'])), 'warning');
+      drush_log(dt('!module is already disabled.', array('!module' => $module_info[$module]->info['name'])), 'warning');
     }
-    foreach ($form['validation_modules']['#value'] as $dependent => $dependent_search) {
+    foreach ($module_info as $dependent => $dependent_search) {
       if (array_search($module, $dependent_search->info['dependencies']) !== FALSE) {
         $modules[] = $dependent;
         module_disable(array($dependent));
       }
     }
   }
-  $modules = array_intersect($form['status']['#default_value'], $modules);
+  $modules = array_intersect($enabled, $modules);
 }
 
 /**
