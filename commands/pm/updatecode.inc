@@ -63,7 +63,7 @@ function drush_pm_updatecode() {
   drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
   drush_print();
   drush_print(dt("Update status information on all installed and enabled Drupal modules:"));
-  drush_print_table($rows, 2, TRUE);
+  drush_print_table($rows, TRUE);
   drush_print();
 
   // If specific project updates were requested then remove releases for all others

@@ -107,6 +107,16 @@ define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
 define('DRUSH_MINIMUM_PHP', '5.2.0');
 
 /**
+ * Supported version of Console Table. This is displayed in the manual install help.
+ */
+define('DRUSH_TABLE_VERSION', '1.1.3');
+
+/**
+ * URL for automatic file download for supported version of Console Table.
+ */
+define('DRUSH_TABLE_URL', 'http://cvs.php.net/viewvc.cgi/pear/Console_Table/Table.php?revision=1.28&view=co');
+
+/**
  * Helper function listing phases.
  *
  * For commands that need to iterate through the phases, such as help
@@ -298,6 +308,23 @@ function _drush_bootstrap_drush_validate() {
   if (ini_get('safe_mode')) {
     return drush_bootstrap_error('DRUSH_SAFE_MODE', dt('PHP safe mode is activated. Drush requires that safe mode is disabled.'));
   }
+
+  // Attempt to download Console Table, via various methods.
+  if (!file_exists(DRUSH_BASE_PATH . '/includes/table.inc')) {
+    if ($file = @file_get_contents(DRUSH_TABLE_URL)) {
+      @file_put_contents(DRUSH_BASE_PATH . '/includes/table.inc', $file);
+    }
+    if (!file_exists(DRUSH_BASE_PATH . '/includes/table.inc')) {
+      drush_shell_exec("wget -q -O includes/table.inc " . DRUSH_TABLE_URL);
+      if (!file_exists(DRUSH_BASE_PATH . '/includes/table.inc')) {
+        drush_shell_exec("curl -s -o includes/table.inc " . DRUSH_TABLE_URL);
+        if (!file_exists(DRUSH_BASE_PATH . '/includes/table.inc')) {
+          return drush_bootstrap_error('DRUSH_TABLES_INC', dt('Drush needs a copy of the PEAR Console_Table library saved as Drush includes/table.inc. Drush attempted to download this automatically, but failed. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract, and move the file Table.php to includes/table.inc.', array('!version' => DRUSH_TABLE_VERSION)));
+        }
+      }
+    }
+  }
+  require_once DRUSH_BASE_PATH . '/includes/table.inc';
 
   return TRUE;
 }

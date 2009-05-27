@@ -154,11 +154,11 @@ function drush_core_help() {
         $rows = array();
         foreach($commands as $key => $command) {
           if (!array_key_exists($key, $printed_rows)) {
-            $rows[$key] = array(sprintf("%-20s", $key), $commands[$key]['description']);
+            $rows[$key] = array($key, $commands[$key]['description']);
             $pipe[] = "\"$key\"";
           }
         }
-        drush_print_table($rows, 2);
+        drush_print_table($rows, FALSE, array(0 => 20));
         $printed_rows = array_merge($printed_rows, $rows);
       }
       else {
@@ -397,7 +397,7 @@ function drush_core_watchdog_show($type = NULL) {
     drush_log(dt('Last !count watchdog log messages:', array('!count' => $limit)));
 
     array_unshift($rows, array(dt('Date'), dt('Severity'), dt('Type'), dt('Message'), dt('User')));
-    drush_print_table($rows, 2, TRUE);
+    drush_print_table($rows, TRUE);
   }
 }
 

@@ -345,7 +345,7 @@ function drush_show_help($commands) {
                 // '[command] is a token representing the current command. @see pm_drush_engine_version_control().
                 $rows[] = array(str_replace('[command]', $commandstring, $name), dt($description));
               }
-              drush_print_table($rows, 2);
+              drush_print_table($rows, false, array(40));
               unset($rows);
               drush_print();
             }
@@ -484,65 +484,121 @@ function drush_confirm($msg, $indent = 0) {
 
 /**
  * Print a formatted table.
+ * 
  * @param $rows
- *   The rows to print
- * @param $indent
- *   Indentation for the whole table
+ *   The rows to print.
  * @param $header
- *   If TRUE, the first line will be treated as table
- *   header and therefore be underlined.
+ *   If TRUE, the first line will be treated as table header and therefore be
+ *   underlined.
+ * @param $widths
+ *   The widths of each column (in characters) to use - if not specified this
+ *   will be determined automatically, based on a "best fit" algorithm.
  */
-function drush_print_table($rows, $indent = 0, $header = FALSE) {
-  if (count($rows) == 0) {
-    // Nothing to output.
-    return;
-  }
+function drush_print_table($rows, $header = FALSE, $widths = array()) {
+  $tbl = new Console_Table(CONSOLE_TABLE_ALIGN_LEFT , '');
 
-  $indent = str_repeat(' ', $indent);
-  $format = _drush_get_table_row_format($rows);
+  $auto_widths = drush_table_column_autowidth($rows, $widths);
 
-  $header_printed = FALSE;
-  foreach ($rows as $cols) {
-    // Print the current line.
-    print $indent . vsprintf($format, $cols) . "\n";
-    // Underline the first row if $header is set to true.
-    if (!$header_printed && $header) {
-      $headers = array();
-      foreach ($cols as $col) {
-        $headers[] = str_repeat('-', strlen($col));
+  // Do wordwrap on all cells.
+  $newrows = array();
+  foreach ($rows as $rowkey => $row) {
+    foreach ($row as $col_num => $cell) {
+      $newrows[$rowkey][$col_num] = wordwrap($cell, $auto_widths[$col_num], "\n", TRUE);
+      if (isset($widths[$col_num])) {
+        $newrows[$rowkey][$col_num] = str_pad($newrows[$rowkey][$col_num], $widths[$col_num]);
       }
-      print $indent . trim(vsprintf($format, $headers)) . "\n";
-      $header_printed = TRUE;
     }
   }
+  if ($header) {
+    $headers = array_shift($newrows);
+    $tbl->setHeaders($headers);
+  }
+
+  $tbl->addData($newrows);
+  print $tbl->getTable();
 }
 
 /**
- * Create the table row format string to be used in vsprintf().
+ * Determine the best fit for column widths.
+ * 
+ * @param $rows
+ *   The rows to use for calculations.
+ * @param $widths
+ *   Manually specified widths of each column (in characters) - these will be
+ *   left as is.
  */
-function _drush_get_table_row_format($table) {
-  $widths = _drush_get_table_column_widths($table);
-  foreach ($widths as $col_width) {
-    $col_formats[] = "%-{$col_width}s";
-  }
-  $format = implode("\t", $col_formats);
-  return $format;
-}
-
-/**
- * Calculate table column widths.
- */
-function _drush_get_table_column_widths($table) {
-  $widths = array();
-  foreach ($table as $row => $cols) {
-    foreach ($cols as $col => $value) {
-      $old_width = isset($widths[$col]) ? $widths[$col] : 0;
-      $widths[$col] = max($old_width, strlen((string)$value));
+function drush_table_column_autowidth($rows, $widths) {
+  $auto_widths = $widths;
+  
+  // First we determine the distribution of row lengths in each column.
+  // This is an array of descending character length keys (i.e. starting at
+  // the rightmost character column), with the value indicating the number
+  // of rows where that character column is present.
+  $col_dist = array();
+  foreach ($rows as $rowkey => $row) {
+    foreach ($row as $col_num => $cell) {
+      if (empty($widths[$col_num])) {
+        $length = strlen($cell);
+        while ($length > 0) {
+          if (!isset($col_dist[$col_num][$length])) {
+            $col_dist[$col_num][$length] = 0;
+          }
+          $col_dist[$col_num][$length]++;
+          $length--;
+        }
+      }
     }
   }
-  return $widths;
-}
+  foreach ($col_dist as $col_num => $count) {
+    // Sort the distribution in decending key order.
+    krsort($col_dist[$col_num]);
+    // Initially we set all columns to their "ideal" longest width
+    // - i.e. the width of their longest column.
+    $auto_widths[$col_num] = max(array_keys($col_dist[$col_num]));
+  }
 
+  // We determine what width we have available to use, and what width the
+  // above "ideal" columns take up.
+  $available_width = drush_get_context('DRUSH_COLUMNS', 80) - (count($auto_widths) * 2);
+  $auto_width_current = array_sum($auto_widths);
+  
+  // If we need to reduce a column so that we can fit the space we use this
+  // loop to figure out which column will cause the "least wrapping",
+  // (relative to the other columns) and reduce the width of that column.
+  while ($auto_width_current > $available_width) {
+    $count = 0;
+    $width = 0;
+    foreach ($col_dist as $col_num => $counts) {
+      // If we are just starting out, select the first column.
+      if ($count == 0 ||
+         // OR: if this column would cause less wrapping than the currently
+         // selected column, then select it.
+         (current($counts) < $count) ||
+         // OR: if this column would cause the same amount of wrapping, but is
+         // longer, then we choose to wrap the longer column (proportionally
+         // less wrapping, and helps avoid triple line wraps).
+         (current($counts) == $count && key($counts) > $width)) {
+        // Select the column number, and record the count and current width
+        // for later comparisons.
+        $column = $col_num;
+        $count = current($counts);
+        $width = key($counts);
+      }
+    }
+    if ($width <= 1) {
+      // If we have reached a width of 1 then give up, so wordwrap can still progress.
+      break;
+    }
+    // Reduce the width of the selected column.
+    $auto_widths[$column]--;
+    // Reduce our overall table width counter.
+    $auto_width_current--;
+    // Remove the corresponding data from the disctribution, so next time
+    // around we use the data for the row to the left.
+    unset($col_dist[$column][$width]);
+  }
+  return $auto_widths;
+}
 
 /**
  * @defgroup logging Logging information to be provided as output.

@@ -519,7 +519,7 @@ function update_main() {
     foreach ($pending as $module => $updates) {
       if (sizeof($updates)) {
         array_unshift($updates, array($module . ' module'));
-        drush_print_table($updates, 0, TRUE);
+        drush_print_table($updates, TRUE);
         drush_print();
       }
     }
