@@ -407,7 +407,7 @@ function _drush_find_commandfiles($phase) {
       $files = module_rebuild_cache();
       foreach ($files as $file) {
         if ($file->status) {
-          $searchpath[] = dirname($file->filepath);
+          $searchpath[] = dirname($file->filename);
         }
       }
      break;
