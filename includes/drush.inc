@@ -328,7 +328,7 @@ function drush_show_help($commands) {
         }
         $help = drush_command_invoke_all('drush_help', 'drush:'. $commandstring);
         if (!empty($help)) {
-          drush_print(wordwrap(implode("\n", $help), 80));
+          drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));
           drush_print();
           
           // TODO: Let commands define additional sections.
