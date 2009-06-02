@@ -45,7 +45,7 @@ function package_handler_install_project($project, $info, $path = '.') {
   drush_shell_exec("gzip -d " . $filename);
   $tarpath = substr($filename, 0, strlen($filename)-3);
   // Untar
-  drush_shell_exec("tar -xf $tarpath -C $path");
+  drush_shell_exec("tar -xf $tarpath -C \"$path\"");
   // We're not using tar -xzf because that's not working on windows...
 
   // Remove the tarball
