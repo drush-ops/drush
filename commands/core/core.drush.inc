@@ -229,7 +229,11 @@ function core_drush_help($section) {
 // TODO: consolidate with SQL commands?
 function _core_site_credentials() {
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-  $credentials = sprintf("  %-18s: %s\n", 'PHP configuration', php_ini_loaded_file());
+  if (function_exists('php_ini_loaded_file')) {
+    // Function available on PHP >= 5.2.4, but we use it if available to help
+    // users figure out their php.ini issues.
+    $credentials = sprintf("  %-18s: %s\n", 'PHP configuration', php_ini_loaded_file());
+  }
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', $drupal_root);
     $credentials .= sprintf("  %-18s: %s\n", 'Drupal version', drush_drupal_version());
