@@ -274,6 +274,39 @@ function drush_bootstrap_error($code, $message = null) {
 }
 
 /**
+ * Log PHP errors to the Drush log. This is in effect until Drupal's error 
+ * handler takes over.
+ */
+function drush_error_handler($errno, $message, $filename, $line, $context) {
+  // If the @ error suppression operator was used, error_reporting will have
+  // been temporarily set to 0.
+  if (error_reporting() == 0) {
+    return;
+  }
+
+  if ($errno & (E_ALL)) {
+    // By default we log notices.
+    $type = 'notice';
+
+    // Bitmask value that constitutes an error needing to be logged.
+    $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR;
+    if ($errno & $error) {
+      $type = 'error';
+    }
+
+    // Bitmask value that constitutes a warning being logged.
+    $warning = E_WARNING | E_CORE_WARNING | E_COMPILE_WARNING | E_USER_WARNING;
+    if ($errno & $warning) {
+      $type = 'warning';
+    }
+
+    drush_log($message, $type);
+
+    return TRUE;
+  }
+}
+
+/**
  * Helper function to store any context settings that are being validated.
  */
 function drush_bootstrap_value($context, $value = null) {
@@ -780,4 +813,3 @@ function drush_valid_db_credentials() {
     return TRUE;
   }
 }
-

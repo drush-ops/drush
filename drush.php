@@ -33,6 +33,8 @@ require_once DRUSH_BASE_PATH . '/includes/context.inc';
 drush_set_context('argc', $GLOBALS['argc']);
 drush_set_context('argv', $GLOBALS['argv']);
 
+set_error_handler('drush_error_handler');
+
 exit(drush_main());
 
 /**
