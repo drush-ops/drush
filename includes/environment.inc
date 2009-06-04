@@ -102,11 +102,6 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
 define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
 
 /**
- * Minimum supported version of PHP.
- */
-define('DRUSH_MINIMUM_PHP', '5.2.0');
-
-/**
  * Supported version of Console Table. This is displayed in the manual install help.
  */
 define('DRUSH_TABLE_VERSION', '1.1.3');
@@ -299,11 +294,6 @@ function drush_bootstrap_value($context, $value = null) {
  * Validate initial Drush bootstrap phase.
  */
 function _drush_bootstrap_drush_validate() {
-  // Test PHP version.
-  if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0) {
-    return drush_bootstrap_error('DRUSH_MINIMUM_PHP', dt('Your PHP installation is too old. Drush requires at least PHP %version.', array('%version' => DRUSH_MINIMUM_PHP)));
-  }
-
   // Test safe mode is off.
   if (ini_get('safe_mode')) {
     return drush_bootstrap_error('DRUSH_SAFE_MODE', dt('PHP safe mode is activated. Drush requires that safe mode is disabled.'));

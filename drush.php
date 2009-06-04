@@ -6,12 +6,18 @@
  * @file
  * drush is a PHP script implementing a command line shell for Drupal.
  *
- * @requires PHP CLI 4.3.0, PHP CLI 5.x, or newer.
+ * @requires PHP CLI 5.2.0, or newer.
  */
 
 // Terminate immediately unless invoked as a command line script
 if (!drush_verify_cli()) {
   die('drush.php is designed to run via the command line.');
+}
+
+// Check supported version of PHP.
+define('DRUSH_MINIMUM_PHP', '5.2.0');
+if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0) {
+  die('Your PHP installation is too old. Drush requires at least PHP ' . DRUSH_MINIMUM_PHP . "\n");
 }
 
 define('DRUSH_BASE_PATH', dirname(__FILE__));
