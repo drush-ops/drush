@@ -4,13 +4,10 @@ DESCRIPTION
 -----------
 drush is a command line shell and Unix scripting interface for Drupal, a
 veritable Swiss Army knife designed to make life easier for those of us who
-spend many hours hacking away at the command prompt.
-
-Green text against a black background is optional. Perhaps you would like
-some alpha-channel translucency with that? ;)
+spend hours hacking at the command prompt.
 
 Drush core ships with lots of useful commands for interacting with code 
-like modules/themes/profiles. Similarly, it run update.php, execute sql 
+like modules/themes/profiles. Similarly, it runs update.php, executes sql 
 queries and DB migrations, and misc utilities like run cron or clear cache.
 
 INSTALLATION
@@ -41,7 +38,7 @@ For Linux/Unix/Mac:
      (or, if you did not follow step 3, by running "/path/to/drush/drush"
       or navigating to /path/to/drush and running "./drush" )
 
-    If you have troubles, try using the -l and -r flags when invoking drush. See below.
+    If you have troubles, try using the -l and -r parameters when invoking drush. See below.
 
 For Windows (experimental!):
   - Follow step 1. Use drush by navigating to /path/to/drush
@@ -75,7 +72,7 @@ Related Options:
                                 (only needed in multisite environments)
   -v, --verbose                 Display all available output
 
-Other options:
+Some other options:
   -i <path>, --include=<path>   Path to folder(s) containing additional drush command files.
                                 Follows the POSIX convention of separating paths with a ':'
 
@@ -85,7 +82,7 @@ great flexibility for a multi-site installation, for example. See example.drushr
 
 COMMANDS
 --------
-Drush ships with a number of commands (see above), but you can easily write
+Drush ships with a number of commands, but you can easily write
 your own. In fact, writing a drush command is no harder that writing simple
 Drupal extensions, since drush command files closely follows the structure of
 ordinary Drupal modules.
@@ -107,9 +104,6 @@ that drush can find it.
 
 REQUIREMENTS
 ------------
-This version of drush is designed for Drupal 6.x running on a Unix/Linux
-platform.
-
 * To use drush from the command line, you'll need a CLI-mode capable PHP
   binary. The minimum required PHP version is 5.2.
 * drush should also run on Windows, however, drush modules might make use of
