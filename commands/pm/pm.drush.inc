@@ -522,34 +522,11 @@ function delete_dir($dir) {
   return false;
 }
 
-
-function pm_dl_destination($type) {
-  $destination = drush_get_option('destination');
-  if (!empty($destination)) {
-    $destination = rtrim($destination, '/') . '/';
-    if (is_dir($destination)) {
-      return $destination;
-    }
-    else {
-      return drush_set_error('DRUSH_PM_NO_DESTINATION', dt('The destination directory !destination does not appear to exist.', array('!destination' => $destination)));
-    }
-  }
-  
-  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  $site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT', false); 
-
-  // If a URI is provided and we bootstrapped successfully then we install to
-  // that specific site, otherwise we install to sites/all/modules
-  if ($site_root && $site_root !== 'sites/default') {
-    $sitepath = $drupal_root .'/'. $site_root .'/';
-  }
-  else if ($drupal_root) {
-    $sitepath = $drupal_root . '/sites/all/';
-  }
-  else {
-    $sitepath = '';
-  }
-
+/**
+ * Determine a candidate destination directory for a particular site path and
+ * return it if it exists, optionally attempting to create the directory.
+ */
+function pm_dl_destination_lookup($type, $drupal_root, $sitepath, $create = FALSE) {
   switch ($type) {
     case 'module':
       $destination = $sitepath . 'modules/';
@@ -567,11 +544,71 @@ function pm_dl_destination($type) {
       $destination = $drupal_root . 'profiles/';
       break;
   }
+  if ($create) {
+    drush_log(dt('Attempting to create destination directory at !dir', array('!dir' => $destination)));
+    @drush_op('mkdir', $destination, 0777, TRUE);
+  }
+  if (is_dir($destination)) {
+    drush_log(dt('Using destination directory !dir', array('!dir' => $destination)));
+    return $destination;
+  }
+  drush_log(dt('Could not find destination directory at !dir', array('!dir' => $destination)));
+  return FALSE;
+}
 
-  // By default (including for core) we always fall back to the current directory.
+/**
+ * Return the best destination for a particular download type we can find,
+ * given the drupal and site contexts.
+ */
+function pm_dl_destination($type) {
+  // Attempt 0: Use the user specified destination directory, if it exists. 
+  $destination = drush_get_option('destination');
+  if (!empty($destination)) {
+    $destination = rtrim($destination, '/') . '/';
+    if (is_dir($destination)) {
+      return $destination;
+    }
+    else {
+      return drush_set_error('DRUSH_PM_NO_DESTINATION', dt('The destination directory !destination does not appear to exist.', array('!destination' => $destination)));
+    }
+  }
+  
+  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+  $site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT', FALSE);
+  $full_site_root = $drupal_root .'/'. $site_root . '/';
+  $sites_all = $drupal_root . '/sites/all/';
+
+  $in_site_directory = FALSE;
+  // Check if we are running within the site directory.
+  if ($full_site_root == substr(drush_cwd() . '/', 0, strlen($full_site_root))) {
+    $in_site_directory = TRUE;
+  }
+
+  // Attempt 1: If we are in a specific site directory, and the destination directory already exists, then we use that.
+  if (empty($destination) && $site_root && $in_site_directory) {
+    $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root);
+  }
+  // Attempt 2: If the destination directory already exists for sites/all, then we use that.
+  if (empty($destination) && $drupal_root) {
+    $destination = pm_dl_destination_lookup($type, $drupal_root, $sites_all);
+  }
+  // Attempt 3: If a specific (non default) site directory exists and sites/all does not exist, then we create destination in the site specific directory.
+  if (empty($destination) && $site_root && $site_root !== 'sites/default' && is_dir($full_site_root) && !is_dir($sites_all)) {
+    $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root, TRUE);
+  }
+  // Attempt 4: If sites/all exists, then we create destination in the sites/all directory.
+  if (empty($destination) && is_dir($sites_all)) {
+    $destination = pm_dl_destination_lookup($type, $drupal_root, $sites_all, TRUE);
+  }
+  // Attempt 5: If site directory exists (even default), then we create destination in the this directory.
+  if (empty($destination) && $site_root && is_dir($full_site_root)) {
+    $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root, TRUE);
+  }
+  // Attempt 6: If we didn't find a valid directory yet (or we somehow found one that doesn't exist) we always fall back to the current directory.
   if (empty($destination) || !is_dir($destination)) {
     $destination = drush_cwd() . '/';
   }
+
   return $destination;
 }
 
