@@ -146,8 +146,8 @@ function pm_drush_command() {
       'drush dl drupal' => 'Download latest stable version of Drupal core', 
       'drush dl drupal-7.x' => 'Download latest 7.x development version of Drupal core', 
       'drush dl cck zen es' => 'Download latest versions of CCK, Zen and Spanish translations for my version of Drupal.',
-      'drush dl og-1.3' => 'Download a specfic version of diff module for my version of Drupal.',
-      'drush dl diff-6.x-2.x' => 'Download a specfic development branch of diff module for a specific Drupal version.',
+      'drush dl og-1.3' => 'Download a specfic version of Organic groups module for my version of Drupal.',
+      'drush dl diff-6.x-2.x' => 'Download a specific development branch of diff module for a specific Drupal version.',
     ),
     'arguments' => array(
       'projects' => 'A space separated list of project names, with optional version. Defaults to \'drupal\'',
@@ -229,7 +229,6 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
   if (empty($modules)) {
     pm_module_status($enabled, $module_info);
   }
-  
   else {
     $requested_modules = $modules;
     if ($enable) {
@@ -298,7 +297,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
 }
 
 function pm_module_status($enabled, $module_info) {
-  $rows[] = array(dt('Name'), dt('Enabled/Disabled'), dt('Description'));
+  $rows[] = array(dt('Name'), dt('Status'), dt('Description'));
   foreach ($module_info as $module_name => $module) {
     $enabled = dt('Disabled');
     if ($module->status) {
