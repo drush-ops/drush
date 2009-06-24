@@ -333,21 +333,22 @@ function _drush_bootstrap_drush_validate() {
   }
 
   // Attempt to download Console Table, via various methods.
-  if (!file_exists(DRUSH_BASE_PATH . '/includes/table.inc')) {
+  $tablefile = DRUSH_BASE_PATH . '/includes/table.inc';
+  if (!file_exists($tablefile)) {
     if ($file = @file_get_contents(DRUSH_TABLE_URL)) {
-      @file_put_contents(DRUSH_BASE_PATH . '/includes/table.inc', $file);
+      @file_put_contents($tablefile, $file);
     }
-    if (!file_exists(DRUSH_BASE_PATH . '/includes/table.inc')) {
-      drush_shell_exec("wget -q -O includes/table.inc " . DRUSH_TABLE_URL);
-      if (!file_exists(DRUSH_BASE_PATH . '/includes/table.inc')) {
-        drush_shell_exec("curl -s -o includes/table.inc " . DRUSH_TABLE_URL);
-        if (!file_exists(DRUSH_BASE_PATH . '/includes/table.inc')) {
-          return drush_bootstrap_error('DRUSH_TABLES_INC', dt('Drush needs a copy of the PEAR Console_Table library saved as Drush includes/table.inc. Drush attempted to download this automatically, but failed. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract, and move the file Table.php to includes/table.inc.', array('!version' => DRUSH_TABLE_VERSION)));
+    if (!file_exists($tablefile)) {
+      drush_shell_exec("wget -q -O $tablefile " . DRUSH_TABLE_URL);
+      if (!file_exists($tablefile)) {
+        drush_shell_exec("curl -s -o $tablefile " . DRUSH_TABLE_URL);
+        if (!file_exists($tablefile)) {
+          return drush_bootstrap_error('DRUSH_TABLES_INC', dt('Drush needs a copy of the PEAR Console_Table library saved as !tablefile. Drush attempted to download this automatically, but failed. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract, and move the file Table.php to !tablefile.', array('!version' => DRUSH_TABLE_VERSION ,'!tablefile' => $tablefile)));
         }
       }
     }
   }
-  require_once DRUSH_BASE_PATH . '/includes/table.inc';
+  require_once $tablefile;
 
   return TRUE;
 }
