@@ -162,6 +162,12 @@ function drush_shutdown() {
     drush_pipe_output();
   }
   
+  // this way drush_return_status will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
+  // and won't prevent other registered shutdown functions (IE from numerous cron methods) from running by calling exit() before they get a chance.
+  register_shutdown_function('drush_return_status');
+}
+
+function drush_return_status() {
   exit((drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS);
 }
 
