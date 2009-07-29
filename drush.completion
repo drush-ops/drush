@@ -1,9 +1,0 @@
-#!/bin/bash
-_drush_completion() {
-  oldIFS="$IFS";
-  IFS=$'\n';
-  COMPREPLY=( $(drush complete "${COMP_WORDS[@]}" < /dev/null) )
-  IFS="$oldIFS";
-}
-
-complete -F _drush_completion d dr drush drush.php
