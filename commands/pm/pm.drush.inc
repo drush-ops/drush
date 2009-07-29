@@ -540,7 +540,7 @@ function pm_dl_destination_lookup($type, $drupal_root, $sitepath, $create = FALS
       $destination = $drupal_root . '/';
       break;
     case 'profile':
-      $destination = $drupal_root . 'profiles/';
+      $destination = $drupal_root . '/profiles/';
       break;
   }
   if ($create) {
