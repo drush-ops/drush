@@ -544,7 +544,7 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
  * Check that a command is valid for the current bootstrap phase.
  * 
  * @param $command
- *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.  
+ *   Command to check. Any errors will be added to the 'bootstrap_errors' element.
  * 
  * @return
  *   TRUE if command is valid.
@@ -552,7 +552,7 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
 function drush_enforce_requirement_bootstrap_phase(&$command) {
   $valid = array();
   $current_phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-  if ($command['bootstrap'] == $current_phase) {
+  if ($command['bootstrap'] <= $current_phase) {
     return TRUE;
   }
   // TODO: provide description text for each bootstrap level so we can give
