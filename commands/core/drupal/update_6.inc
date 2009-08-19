@@ -149,8 +149,8 @@ function update_check_incompatibility($name, $type = 'module') {
 
   // Store values of expensive functions for future use.
   if (empty($themes) || empty($modules)) {
-    $themes = _system_theme_data();
-    $modules = module_rebuild_cache();
+    $themes = drush_get_themes();
+    $modules = drush_get_modules();
   }
 
   if ($type == 'module' && isset($modules[$name])) {

@@ -106,6 +106,7 @@ function core_drush_command() {
 function core_drush_engine_drupal() {
   $engines = array();
   $engines['update'] = array();
+  $engines['environment'] = array();
   return $engines;
 }
 
@@ -424,12 +425,12 @@ function core_watchdog_format_message($watchdog) {
 function drush_core_watchdog_delete($type = NULL) {
   if ($type == "all") {
     // D7: ought to be a dynamic query.
-    drush_op('db_query', 'DELETE FROM {watchdog}'); // indiscriminately delete all
-    drush_log(dt('Deleted !n rows.', array('!n' => db_affected_rows())), 'ok');
+    drush_op('db_query', 'DELETE FROM {watchdog}'); // Indiscriminately delete all
+    drush_log(dt('Deleted all rows.'), 'ok');
   }
   elseif (!empty($type)) {
     drush_op('db_query', 'DELETE FROM {watchdog} WHERE type = \'%s\'', $type);
-    drush_log(dt('Deleted !n rows.', array('!n' => db_affected_rows())), 'ok');
+    drush_log(dt('Deleted all rows.'), 'ok');
   }
   else {
     drush_set_error(dt('Please specify a message type, or "all" to delete all messages.'));

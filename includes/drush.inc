@@ -264,7 +264,7 @@ function drush_op($function) {
  *
  * @see t()
  */
-function dt($string, $args = NULL) {
+function dt($string, $args = array()) {
   if (function_exists('t')) {
     return t($string, $args);
   }

@@ -213,7 +213,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
     require_once('./'. drupal_get_path('module', 'system') .'/system.module');
   }
 
-  $module_info = module_rebuild_cache();
+  $module_info = drush_get_modules();
   $enabled = array();
   foreach ($module_info as $module_name => $module) {
     // In Drupal 5, system_modules() returns NULL for the dependency list of the module if there are no dependencies. 
@@ -274,7 +274,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
       drupal_form_submit('system_modules', $form_state);
     }
 
-    $module_info = module_rebuild_cache();
+    $module_info = drush_get_modules();
     foreach ($modules as $module_name) {
       if ($enable) { 
         if ($module_info[$module_name]->status) {

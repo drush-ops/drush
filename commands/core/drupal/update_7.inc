@@ -246,8 +246,8 @@ function update_check_incompatibility($name, $type = 'module') {
 
   // Store values of expensive functions for future use.
   if (empty($themes) || empty($modules)) {
-    $themes = _system_theme_data();
-    $modules = module_rebuild_cache();
+    $themes = drush_get_themes();
+    $modules = drush_get_modules();
   }
 
   if ($type == 'module' && isset($modules[$name])) {
@@ -418,7 +418,7 @@ function update_main() {
   drupal_load('module', 'filter');
 
   // Set up $language, since the installer components require it.
-  drupal_init_language();
+  drupal_language_initialize();
 
   // Set up theme system for the maintenance page.
   drupal_maintenance_theme();
@@ -430,7 +430,7 @@ function update_main() {
   // been created yet.
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
   include_once DRUPAL_ROOT . '/includes/install.inc';
-  drupal_install_init_database();
+  drupal_install_initialize_database();
   spl_autoload_unregister('drupal_autoload_class');
   spl_autoload_unregister('drupal_autoload_interface');
   // The new {blocked_ips} table is used in Drupal 7 to store a list of
@@ -451,13 +451,8 @@ function update_main() {
 
   // Updates only run reliably if user ID #1 is logged in. For example, node_delete() requires elevated perms in D5/6.
   if (!drush_get_context('DRUSH_USER')) {
-    // Remove after http://drupal.org/node/439236 lands.
-    require(DRUPAL_ROOT . '/modules/field/field.crud.inc');
-    require(DRUPAL_ROOT . '/modules/field/field.autoload.inc');
-
     drush_set_option('user', 1);
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
-
   }
 
   drupal_maintenance_theme();

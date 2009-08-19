@@ -404,7 +404,7 @@ function _drush_find_commandfiles($phase) {
     case DRUSH_BOOTSTRAP_DRUPAL_FULL:
       // Add enabled module paths. Since we are bootstrapped,
       // we can use the Drupal API.
-      $files = module_rebuild_cache();
+      $files = drush_get_modules();
       foreach ($files as $file) {
         if ($file->status) {
           $searchpath[] = dirname($file->filename);
