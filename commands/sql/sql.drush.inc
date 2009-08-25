@@ -164,13 +164,13 @@ function drush_sql_dump($db_spec = NULL) {
     $structure_tables = $all_structure_tables[$key];
     $skip_tables += $structure_tables;
   }
-  $database = $db_spec['database'];
 
   switch (_drush_sql_get_scheme()) {
     case 'mysql':
       if (is_null($db_spec)) {
         $db_spec = _drush_sql_get_db_spec();
       }
+      $database = $db_spec['database'];
 
       $exec = 'mysqldump' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
       if ($file = drush_get_option('result-file')) {
