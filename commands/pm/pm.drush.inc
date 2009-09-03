@@ -713,7 +713,7 @@ function pm_drush_engine_package_handler() {
         '--package-handler=cvs' => 'Use CVS to checkout and update projects.',
         '  --cvsparams' => 'Add options to the `cvs` program',
         '  --cvsmethod' => 'Force cvs updates or checkouts (checkout is default unless the directory is managed by a supported version control system).',
-        '  --cvscredentials' => 'A username and password that is sent for cvs checkout command.',
+        '  --cvscredentials' => 'A username and password that is sent for cvs checkout command. Defaults to anonymous:anonymous',
         
       ),
       'examples' => array(
