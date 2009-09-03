@@ -21,14 +21,17 @@
  * Note that this preempts loading any other configuration files!
  */
 
-// Enable simulation mode.
-# $options['s'] = 1;
-
 // Specify a particular multisite.
 # $options['l'] = 'http://example.com/subir';
 
 // Specify your Drupal core base directory (useful if you use symlinks).
 # $options['r'] = '/home/USER/workspace/drupal-6';
+
+// Specify CVS for checkouts
+# $options['package-handler'] = 'cvs';
+
+// Specify CVS credentials for checkouts (requires --package-handler=cvs)
+# $options['cvscredentials'] = 'name:password';
 
 // Specify additional directories to search for *.drush.inc files
 // Use POSIX path separator (':')

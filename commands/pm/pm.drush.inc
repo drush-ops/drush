@@ -712,9 +712,12 @@ function pm_drush_engine_package_handler() {
       'options' => array(
         '--package-handler=cvs' => 'Use CVS to checkout and update projects.',
         '  --cvsparams' => 'Add options to the `cvs` program',
-        '  --cvsmethod' => 'force cvs updates or checkouts (checkout is default unless the directory is managed by a supported version control system).'
+        '  --cvsmethod' => 'Force cvs updates or checkouts (checkout is default unless the directory is managed by a supported version control system).',
+        '  --cvscredentials' => 'A username and password that is sent for cvs checkout command.',
+        
       ),
       'examples' => array(
+          'drush [command] cck --cvscredentials=\"name:password\"' =>  'Checkout should use these credentials.',
           'drush [command] cck --cvsparams=\"-C\"' =>  'Overwrite all local changes (Quotes are required).',
           'drush [command] cck --cvsmethod=update' =>  'Will update the project, and try to merge changes, rather than overwriting them. Any conflicts will need to be resolved manually.',
       ),
