@@ -77,6 +77,8 @@ function drush_main() {
           $command_found = TRUE;
           // Dispatch the command(s).
           $return = drush_dispatch($command);
+          
+          drush_log_timers();
           break;
         }
       }

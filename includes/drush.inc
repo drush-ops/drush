@@ -750,6 +750,15 @@ function _drush_print_log($entry) {
   return $return;
 }
 
+// Log all timers for the request except standard page timer.
+// Useful for migrate commands. Lets see if others find it useful.
+// Called at end of request. @see drush.php
+function drush_log_timers() {
+  global $timers;
+  foreach ((array)$timers as $name => $timerec) {
+    drush_log("Timer '$name' is  "  . sprintf('%s sec.', round(timer_read($name)/1000, 3)), 'timer');
+  }
+}
 /**
 * Turn drupal_set_message errors into drush_log errors
 */
