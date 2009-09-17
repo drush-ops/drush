@@ -683,9 +683,9 @@ function drush_pipe_output() {
  *   False in case of an error or failed type, True in all other cases.
  */
 function _drush_print_log($entry) {
-  $red = "\033[31m\033[1m[%s]\033[0m";
-  $yellow = "\033[1;33m\033[1m[%s]\033[0m";
-  $green = "\033[0;33m\033[1m[%s]\033[0m";
+  $red = "\033[31;40m\033[1m[%s]\033[0m";
+  $yellow = "\033[1;33;40m\033[1m[%s]\033[0m";
+  $green = "\033[0;33;40m\033[1m[%s]\033[0m";
 
   $verbose = drush_get_context('DRUSH_VERBOSE');
   $debug = drush_get_context('DRUSH_DEBUG');
