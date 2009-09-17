@@ -471,7 +471,11 @@ function drush_confirm($msg, $indent = 0) {
     print "y\n";
     return TRUE;
   }
-  while ($line = trim(fgets(STDIN))) {
+  // See http://drupal.org/node/499758 before changing this.
+  $stdin = fopen("php://stdin","r");
+  
+  while ($line = fgets($stdin)) {
+  $line = trim($line);
     if ($line == 'y') {
       return TRUE;
     }
