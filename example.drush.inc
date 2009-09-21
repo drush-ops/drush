@@ -36,7 +36,7 @@ function example_drush_command() {
     // the name of the function implementing your command.
     'callback' => 'example_callback',
     // a short description of your command
-    'description' => "Drush example command. It doesn't to a lot",
+    'description' => "Drush example command. It doesn't do a lot",
   );
 
   // more commands here ...
