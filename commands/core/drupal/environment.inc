@@ -1,5 +1,5 @@
 <?php
-// $Id:
+// $Id$
 /**
  * @file
  *   Helper functions for /includes/environment.php.
