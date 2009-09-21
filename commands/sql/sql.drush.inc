@@ -98,7 +98,7 @@ function sql_drush_command() {
   }
   $items['sql cli'] = array(
     'callback' => 'drush_sql_cli',
-    'description' => 'Open a SQL command-line interface using Drupal’s credentials.',
+    'description' => "Open a SQL command-line interface using Drupal's credentials.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
   );
