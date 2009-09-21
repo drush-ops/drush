@@ -295,13 +295,15 @@ function drush_core_status() {
  * Command callback. Runs "naked" php scripts.
  */
 function drush_core_script() {
-  $scripts = func_get_args();
-  foreach ($scripts as $script) {
-    $script_filename = drush_cwd() . '/' . $script;
-    if (file_exists($script_filename)) {
-      include($script_filename);
-    }
+  global $argv;
+  $argv = func_get_args();
+  $script = $argv[0];
+
+  $script_filename = drush_cwd() . '/' . $script;
+  if (file_exists($script_filename)) {
+    include($script_filename);
   }
+
 }
 
 function drush_core_cache_clear() {
