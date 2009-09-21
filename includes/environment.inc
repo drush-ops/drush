@@ -470,6 +470,10 @@ function _drush_bootstrap_drupal_root_validate() {
 function _drush_bootstrap_drupal_root() {
   $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
   define('DRUPAL_ROOT', $drupal_root);
+  
+  // Save original working dir case some command wants it.
+  drush_set_context('DRUSH_OLDCWD', getcwd());
+  
   chdir($drupal_root);
   drush_load_config('drupal');
   require_once(DRUSH_DRUPAL_BOOTSTRAP);
