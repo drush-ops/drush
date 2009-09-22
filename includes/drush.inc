@@ -223,7 +223,6 @@ function drush_save_data_to_temp_file($data) {
   return $meta_data['uri'];
 }
 
-
 /**
  * Calls a given function, passing through all arguments unchanged.
  *
@@ -298,7 +297,8 @@ function drush_get_option_help() {
   $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
   $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
   $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
-  $options['-p, --pipe']            = dt("Emit a compact representation of the command for scripting.");
+  $options['-p, --pipe']               = dt("Emit a compact representation of the command for scripting.");
+  $options['--php']                    = dt("The absolute path to your PHP intepreter.");
   return $options;
 }
 

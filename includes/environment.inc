@@ -824,6 +824,26 @@ function drush_valid_db_credentials() {
   }
 }
 
+// Copied from run-tests.sh
+function drush_find_php() {
+  // Determine location of php command automatically, unless a command line argument is supplied.
+  if (!$php = drush_get_option('php')) {
+    if (!empty($_ENV['_'])) {
+      // '_' is an environment variable set by the shell. It contains the command that was executed.
+      $php = $_ENV['_'];
+    }
+    elseif (!empty($_ENV['SUDO_COMMAND'])) {
+      // 'SUDO_COMMAND' is an environment variable set by the sudo program.
+      // Extract only the PHP interpreter, not the rest of the command.
+      list($php, ) = explode(' ', $_ENV['SUDO_COMMAND'], 2);
+    }
+    else {
+      drush_set_error('DRUSH_PHP_PATH_NOT_FOUND', dt('Unable to automatically determine the path to the PHP interpreter. Please supply the --php argument.'));
+    }
+  }
+  return $php;
+}
+
 /**
  * Get module information for all installed modules. Wrapper for _drush_get_modules().
  *
