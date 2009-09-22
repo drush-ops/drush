@@ -109,7 +109,7 @@ function _drush_config_file($context) {
  * Load drushrc files (if available) from several possible locations.
  */
 function drush_load_config($context) {
-  global $conf;
+  global $drush_conf_override;
 
   $config = _drush_config_file($context);
   if (file_exists($config)) {
@@ -119,7 +119,9 @@ function drush_load_config($context) {
     
     // Instruct core not to queries since we are not outputting them.
     // This can be overridden by a command or a drushrc file if needed.
-    $conf['dev_query'] = FALSE;
+    if (!isset($drush_conf_override['dev_query'])) {
+      $drush_conf_override['dev_query'] = FALSE;
+    }
 
     /**
      * Allow the drushrc.php file to override $conf settings.
@@ -128,7 +130,7 @@ function drush_load_config($context) {
      * and changes in settings.php would wipe out the drushrc.php settings.
      */
     if (!empty($override)) {
-      $conf = array_merge($conf, $override);
+      $drush_conf_override = array_merge($drush_conf_override, $override);
     }
   }
 }
