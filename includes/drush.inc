@@ -421,7 +421,8 @@ function drush_shell_exec_output() {
 }
 
 /**
- * Exits with a message.
+ * Exits with a message. In general, you should use drush_set_error() instead of 
+ * this function. That lets drush proceed with other tasks.
  * TODO: Exit with a correct status code.
  */
 function drush_die($msg = NULL, $status = NULL) {
@@ -429,7 +430,11 @@ function drush_die($msg = NULL, $status = NULL) {
 }
 
 /**
- * Prints a message with optional indentation.
+ * Prints a message with optional indentation. In general, drush_log() is often
+ * a better choice that this function. That gets your confirmation message (for example)
+ * into the logs for this drush request. Consider that drush requests may be 
+ * executed remotely and non interactively.
+ * 
  * @param $message
  *   The message to print.
  * @param $indent
