@@ -164,16 +164,16 @@ function pm_drush_command() {
  * Command callback. Enables one or more modules.
  */
 function drush_pm_enable() {  
-  $command = drush_get_command();
-  return pm_module_manage($command['arguments'], TRUE);
+  $args = func_get_args();
+  return pm_module_manage($args, TRUE);
 }
 
 /**
  * Command callback. Disable one or more modules.
  */
 function drush_pm_disable() {
-  $command = drush_get_command();
-  return pm_module_manage($command['arguments'], FALSE);
+  $args = func_get_args();
+  return pm_module_manage($args, FALSE);
 }
 
 /**
@@ -181,8 +181,7 @@ function drush_pm_disable() {
  * // TODO: Use drupal_execute on system_modules_uninstall_confirm_form so that input is validated.
  */
 function drush_pm_uninstall() {
-  $command = drush_get_command();
-  $modules = $command['arguments'];
+  $modules = func_get_args();
     
   drush_print(dt('The following modules will be uninstalled: !modules', array('!modules' => implode(', ', $modules))));
   if(!drush_confirm(dt('Do you really want to continue?'))) {

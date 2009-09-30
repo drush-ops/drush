@@ -75,7 +75,7 @@ function example_drush_help($section) {
  *
  */
 function example_callback() {
-  $commands = func_get_args();
+  $args = func_get_args();
   
   // Using the Drupal API function 'format_interval()'
   // and Drush API function 'drush_print'

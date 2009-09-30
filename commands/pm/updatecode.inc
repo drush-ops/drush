@@ -16,8 +16,7 @@ function drush_pm_updatecode() {
   $releases = _pm_get_update_info();
 
   // Get specific requests
-  $command = drush_get_command();
-  $requests = $command['arguments'];
+  $requests = func_get_args();
 
   // Parse out project name and version
   $requests = pm_parse_project_version($requests);
