@@ -277,8 +277,12 @@ function _core_site_credentials() {
  *
  */
 function drush_core_cron() {
-  drupal_cron_run();
-  drush_print(dt('Cron run successfully.'));
+  if (drupal_cron_run()) {
+    drush_log(dt('Cron run successfully.'), 'success');
+  }
+  else {
+    drush_set_error('DRUSH_CRON_FAILED', dt('Cron run failed.'));
+  }
 }
 
 /**
