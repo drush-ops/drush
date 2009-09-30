@@ -479,7 +479,7 @@ function drush_pm_update() {
  * Execute updatedb command after an updatecode - user requested `update`.
  */
 function drush_pm_post_update() {
-  drush_backend_invoke("updatedb");
+  drush_invoke("updatedb");
 }
 
 /**
