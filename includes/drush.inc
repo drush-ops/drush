@@ -430,10 +430,11 @@ function drush_die($msg = NULL, $status = NULL) {
 }
 
 /**
- * Prints a message with optional indentation. In general, drush_log() is often
- * a better choice that this function. That gets your confirmation message (for example)
- * into the logs for this drush request. Consider that drush requests may be 
- * executed remotely and non interactively.
+ * Prints a message with optional indentation. In general, 
+ * drush_log($message, 'ok') is often a better choice than this function. 
+ * That gets your confirmation message (for example) into the logs for this 
+ * drush request. Consider that drush requests may be executed remotely and 
+ * non interactively.
  * 
  * @param $message
  *   The message to print.
