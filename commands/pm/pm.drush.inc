@@ -194,13 +194,16 @@ function drush_pm_uninstall() {
   foreach ($modules as $module) {
     // Minimalist validation.
     if (drush_drupal_major_version() >= 7) {
-      $valid = db_query("SELECT name FROM {system} WHERE name = :name AND type = 'module' AND status = 0 AND schema_version > :schema_version", array(':name' => $module, ':schema_version' => SCHEMA_UNINSTALLED))->fetchField();
+      if ($valid = db_query("SELECT name FROM {system} WHERE name = :name AND type = 'module' AND status = 0 AND schema_version > :schema_version", array(':name' => $module, ':schema_version' => SCHEMA_UNINSTALLED))->fetchField()) {
+        drupal_uninstall_modules(array($module));
+      }
     }
     else {
-      $valid = db_result(db_query("SELECT name FROM {system} WHERE name='%s' AND type = 'module' AND status = 0 AND schema_version > %d", $module, SCHEMA_UNINSTALLED));
+      if ($valid = db_result(db_query("SELECT name FROM {system} WHERE name='%s' AND type = 'module' AND status = 0 AND schema_version > %d", $module, SCHEMA_UNINSTALLED))) {
+        drupal_uninstall_module($module);
+      }
     }
     if ($valid) {
-      drupal_uninstall_modules(array($module));
       drush_log(dt('!module was successfully uninstalled.', array('!module' => $module)), 'ok');
     }
     else {
