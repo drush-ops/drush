@@ -110,6 +110,8 @@ function _drush_config_file($context) {
  */
 function drush_load_config($context) {
   global $drush_conf_override;
+  
+  $drush_conf_override = array();
 
   $config = _drush_config_file($context);
   if (file_exists($config)) {
