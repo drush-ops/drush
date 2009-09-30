@@ -375,7 +375,7 @@ function _drush_sql_get_spec_from_settings($file, $prefix) {
   
   // Translate the custom options for sql load into ones usually recognized (i.e. no prefix).
   if ($database = drush_get_option($prefix . '_database')) {
-    drush_set_option('database', $value);
+    drush_set_option('database', $database);
   }
   if ($target = drush_get_option($prefix . '_target')) {
     drush_set_option('target', $target);
