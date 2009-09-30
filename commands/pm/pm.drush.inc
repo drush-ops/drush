@@ -246,8 +246,23 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
       if(!drush_confirm(dt('Do you really want to continue?'))) {
         drush_die('Aborting.');
       }
-      // We enable the modules explicitly here, to pass dependency validation in the form submit.
-      module_enable($modules);
+      // Make sure the install API is available.
+      require_once './includes/install.inc';
+      // We install/enable modules explicitly here, to pass dependency validation in form submit.
+      $install_modules = array();
+      $enable_modules = array();
+      foreach ($modules as $module) {
+        // In Drupal 5, drupal_install_modules() only installs new modules,
+        // and does not enable previously installed and disabled modules.
+        if (drupal_get_installed_schema_version($module) == SCHEMA_UNINSTALLED) {
+          $install_modules[] = $module;
+        }
+        else {
+          $enable_modules[] = $module;
+        }
+      }
+      drupal_install_modules($install_modules);
+      module_enable($enable_modules);
       $current = drupal_map_assoc($enabled, 'pm_true');
       // Add the list of enabled modules from the active modules list.
       $active_modules = array_merge($current, drupal_map_assoc($modules, 'pm_true'));
