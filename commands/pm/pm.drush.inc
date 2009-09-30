@@ -218,7 +218,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
   foreach ($module_info as $module_name => $module) {
     // In Drupal 5, system_modules() returns NULL for the dependency list of the module if there are no dependencies. 
     // We will override this to be an empty array instead to be compatible to Drupal 6 and 7
-    if (!is_array($module->info['dependencies'])){
+    if (empty($module->info['dependencies'])){
        $module->info['dependencies'] = array();
     }
     // Add enabled modules to an array for easy reference.
