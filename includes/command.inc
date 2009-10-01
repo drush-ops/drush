@@ -112,6 +112,12 @@ function drush_get_commands() {
         drush_enforce_requirement_core($command);
         drush_enforce_requirement_drupal_dependencies($command);
         $commands[$key] = $command;
+        if (isset($command['aliases']) && count($command['aliases'])) {
+          foreach ($command['aliases'] as $alias) {
+            $commands[$alias] = $command;
+            $commands[$alias]['is_alias'] = TRUE;
+          }
+        }
       }
     }
   }

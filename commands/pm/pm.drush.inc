@@ -54,7 +54,7 @@ function pm_drush_help($section) {
       return dt("Display available update information and allow updating of all installed projects to the specified version (or latest by default), followed by applying any database updates required (as with running update.php). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
       case 'drush:info':
       return dt("View all releases for a given project (modules, themes, profiles, translations). Useful for deciding which version to install/update.");
-    case 'drush:dl':
+    case 'drush:download':
       return dt("Quickly download projects (modules, themes, profiles, translations) from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
   }
 }
@@ -79,12 +79,14 @@ function pm_drush_command() {
     'arguments' => array(
       'modules' => 'A space delimited list of modules.',
     ),
+    'aliases' => array('en'),
   );
   $items['disable'] = array(
     'description' => 'Disable one or more modules.',
     'arguments' => array(
       'modules' => 'A space delimited list of modules.',
     ),
+    'aliases' => array('dis'),
   );
   // Install command is reserved for the download and enable of projects including dependencies. 
   // @see http://drupal.org/node/112692 for more information.
@@ -104,10 +106,12 @@ function pm_drush_command() {
     'options' => array(
       '--pipe' => 'Returns a space delimited list of enabled modules.',
     ),
+    'aliases' => array('sm'),
   );
   $items['refresh'] = array(
     'description' => 'Refresh update status information',
     'drupal dependencies' => array($update),
+    'aliases' => array('rf'),
   );
   $items['updatecode'] = array(
     'description' => 'Update your project code',
@@ -118,6 +122,7 @@ function pm_drush_command() {
     'options' => array(
       '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
     ),
+    'aliases' => array('upc'),
   ) + $engines;
   $items['update'] = array(
     'description' => 'Update your project code and apply any database updates required (update.php)',
@@ -128,6 +133,7 @@ function pm_drush_command() {
     'options' => array(
       '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
     ),
+    'aliases' => array('up'),
   );
   $items['info'] = array(
     'description' => 'Release information for a project',
@@ -139,7 +145,7 @@ function pm_drush_command() {
       'drush info cck zen' => 'View releases for cck and Zen projects.',
     ),
   );
-  $items['dl'] = array(
+  $items['download'] = array(
     'description' => 'Download core Drupal and projects like CCK, Zen, etc.',
     'examples' => array(
       'drush dl' => 'Download latest version of Drupal core.', 
@@ -156,6 +162,7 @@ function pm_drush_command() {
       '--destination' => 'Path to which the project will be copied.',
     ), 
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+    'aliases' => array('dl')
   ) + $engines;
   return $items;
 }
@@ -774,7 +781,7 @@ function pm_drush_engine_version_control() {
 /**
  * Command callback. Download drupal core.
  */
-function drush_pm_dl() {
+function drush_pm_download() {
   // Bootstrap to the highest level possible.
   drush_bootstrap_max();
 

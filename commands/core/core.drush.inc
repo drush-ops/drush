@@ -38,10 +38,12 @@ function core_drush_command() {
   $items['updatedb'] = array(
     'description' => dt('Execute the update.php process from the command line'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
+    'aliases' => array('updb'),
   );
   $items['status'] = array(
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('st'),
   );
   $items['script'] = array(
     'description' => "Run php script(s).",
@@ -53,7 +55,8 @@ function core_drush_command() {
     ),
   );
   $items['cache clear'] = array(
-    'description' => 'Clear all caches.'
+    'description' => 'Clear all caches.',
+    'aliases' => array('cc'),
   );
   $items['watchdog show'] = array(
     'description' => 'Shows recent watchdog log messages. Optionally filter for a specific type.',
@@ -70,6 +73,7 @@ function core_drush_command() {
       'watchdog show --severity=0' => 'Show recent error messages.',
       'watchdog show --limit=50' => 'Show 50 recent watchdog messages.',
     ),
+    'aliases' => array('ws'),
   );
   $items['watchdog delete'] = array(
     'description' => 'Delete all messages or only those of a specified type.',
@@ -81,6 +85,7 @@ function core_drush_command() {
       'watchdog delete all' => 'Delete all watchdog messages.',
       'watchdog delete cron' => 'Delete all cron watchdog messages.',
     ),
+    'aliases' => array('wd'),
     
   );
   $items['sync'] = array(
@@ -131,7 +136,7 @@ function drush_core_help() {
   if (empty($commands)) {
     drush_show_help(array('help'));
     $phases = _drush_bootstrap_phases();
-    // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE.
+    // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE+1.
     $phases = array_slice($phases, 0, DRUSH_BOOTSTRAP_DRUPAL_SITE+1);
     drush_print(dt('Commands: '));
 
@@ -156,9 +161,12 @@ function drush_core_help() {
         
         $rows = array();
         foreach($commands as $key => $command) {
-          if (!array_key_exists($key, $printed_rows)) {
-            $rows[$key] = array($key, $commands[$key]['description']);
-            $pipe[] = "\"$key\"";
+          if (!$command['is_alias']) {
+            if (!array_key_exists($key, $printed_rows)) {
+              $name = $command['aliases'] ? $key . ' (' . implode(', ', $command['aliases']) . ')': $key;
+              $rows[$key] = array($name, $command['description']);
+              $pipe[] = "\"$key\"";
+            }
           }
         }
         drush_print_table($rows, FALSE, array(0 => 20));
