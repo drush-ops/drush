@@ -63,10 +63,12 @@ function core_drush_command() {
     ),
     'options' => array(
       '--limit' => 'The number of messages to show. Defaults to 10.',
+      '--severity' => 'Restrict to a given severity level. Error=0, Warning=4.',
     ),
     'examples' => array(
       'watchdog show cron' => 'Show recent cron watchdog messages.',
-      'watchdog show --limit 50' => 'Show 50 recent watchdog messages.',
+      'watchdog show --severity=0' => 'Show recent error messages.',
+      'watchdog show --limit=50' => 'Show 50 recent watchdog messages.',
     ),
   );
   $items['watchdog delete'] = array(
@@ -371,39 +373,50 @@ function drush_core_sync($source, $destination) {
  * Displays the most recent watchdog log messages (default: 10 messages).
  */
 function drush_core_watchdog_show($type = NULL) {
-  $severities = array(WATCHDOG_NOTICE => dt('notice'), WATCHDOG_WARNING => dt('warning'), WATCHDOG_ERROR => dt('error'));
   $limit = drush_get_option('limit') ? drush_get_option('limit') : 10;
-
-  $sql = 'SELECT w.*, u.name, u.uid FROM {watchdog} w INNER JOIN {users} u ON w.uid = u.uid';
-  $sort = ' ORDER BY w.wid DESC';
-  if (empty($type)) {
-    $result = db_query_range($sql . $sort, 0, (int)$limit);
+  $severity = drush_get_option('severity');
+  
+  switch (drush_drupal_major_version()) {
+    case 5:
+    case 6:
+      if ($type) {
+        $where[] = "w.type = '%s'";
+        $placeholders[] = $type;
+      }
+      if ($severity) {
+        $where[] = "w.severity = %d";
+        $placeholders[] = $severity;
+      }
+      $criteria = empty($where) ? '' : ' WHERE ' . implode(' AND ', $where);
+      $sql = 'SELECT w.*, u.name, u.uid FROM {watchdog} w INNER JOIN {users} u ON w.uid = u.uid  ';
+      $sort = ' ORDER BY w.wid DESC';
+      $result = db_query_range($sql . $criteria . $sort, $placeholders, 0, $limit);
+      while ($watchdog = db_fetch_object($result)) {
+        $rows[] = core_watchdog_format_row($watchdog);
+      }
+      break;
+    default:
+      $query = db_select('watchdog', 'w')
+                ->fields('w')
+                ->fields('u', array('name', 'uid'))
+                ->orderBy('w.wid', 'DESC')
+                ->range(0, $limit);
+      $query->join('users', 'u', 'w.uid = u.uid');
+      if ($type) {
+        $query->condition('w.type', $type);
+      }
+      if ($severity) {
+        $query->condition('w.severity', $severity);
+      }
+      $results = $query->execute();
+      $watchdogs = $results->fetchAllAssoc('wid');
+      foreach ($watchdogs as $watchdog) {
+        $rows[] = core_watchdog_format_row($watchdog);
+      }
   }
-  else {
-    switch (drush_drupal_major_version()) {
-      case 5:
-      case 6:
-        $result = db_query_range($sql . " WHERE w.type = '%s'" . $sort, $type, 0, $limit);
-        break;
-      default:
-        $result = db_query_range($sql . " WHERE w.type = :type" . $sort, array(':type' => $type), 0, $limit);
-    }
-  }
 
-  $rows = array();
-  // module_load_include('inc', 'dblog', 'dblog.admin');
-  while ($watchdog = db_fetch_object($result)) {
-    $rows[] = array(
-      format_date($watchdog->timestamp, 'small'),
-      $severities[$watchdog->severity],
-      dt($watchdog->type),
-      core_watchdog_format_message($watchdog),
-      theme('username', $watchdog),
-    );
-  }
-
-  if (count($rows) == 0) {
-    return drush_set_error('CORE_WATCHDOG_SHOW_NONE', 'No log messages available.');
+  if (empty($rows)) {
+    return drush_log('No log messages available.', 'ok');
   }
   else {
     drush_log(dt('Last !count watchdog log messages:', array('!count' => $limit)));
@@ -411,6 +424,17 @@ function drush_core_watchdog_show($type = NULL) {
     array_unshift($rows, array(dt('Date'), dt('Severity'), dt('Type'), dt('Message'), dt('User')));
     drush_print_table($rows, TRUE);
   }
+}
+
+function core_watchdog_format_row($watchdog) {
+  $severities = watchdog_severity_levels();
+  return array(
+    format_date($watchdog->timestamp, 'small'),
+    $severities[$watchdog->severity],
+    dt($watchdog->type),
+    core_watchdog_format_message($watchdog),
+    strip_tags(theme('username', $watchdog)),
+  );
 }
 
 function core_watchdog_format_message($watchdog) {
