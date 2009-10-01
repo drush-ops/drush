@@ -298,6 +298,7 @@ function drush_get_option_help() {
   $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
   $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
   $options['-p, --pipe']               = dt("Emit a compact representation of the command for scripting.");
+  $options['-n, --nocolor']            = dt("Suppress color highlighting on log messages.");
   $options['--php']                    = dt("The absolute path to your PHP intepreter.");
   return $options;
 }
@@ -700,9 +701,16 @@ function drush_pipe_output() {
  *   False in case of an error or failed type, True in all other cases.
  */
 function _drush_print_log($entry) {
-  $red = "\033[31;40m\033[1m[%s]\033[0m";
-  $yellow = "\033[1;33;40m\033[1m[%s]\033[0m";
-  $green = "\033[0;33;40m\033[1m[%s]\033[0m";
+  if (drush_get_context('DRUSH_NOCOLOR')) {
+    $red = "[%s]";
+    $yellow = "[%s]";
+    $green = "[%s]";
+  }
+  else {
+    $red = "\033[31;40m\033[1m[%s]\033[0m";
+    $yellow = "\033[1;33;40m\033[1m[%s]\033[0m";
+    $green = "\033[0;33;40m\033[1m[%s]\033[0m";
+  }
 
   $verbose = drush_get_context('DRUSH_VERBOSE');
   $debug = drush_get_context('DRUSH_DEBUG');

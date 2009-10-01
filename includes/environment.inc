@@ -429,6 +429,9 @@ function _drush_bootstrap_drush() {
   drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('y', 'yes', 'b', 'backend'), FALSE));
   drush_set_context('DRUSH_SIMULATE',    drush_get_option(array('s', 'simulate'), FALSE));
 
+  // Suppress colored logging
+  drush_set_context('DRUSH_NOCOLOR', drush_get_option(array('n', 'nocolor'), FALSE));
+
   // Find any command files that are available during this bootstrap phase.
   _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUSH);
 }
