@@ -442,6 +442,7 @@ function _update_do_one($module, $number, &$context) {
 
   if (function_exists($function)) {
     $ret = $function($context['sandbox']);
+    $context['results'][$module] = $ret;
     _drush_log_update_sql($ret);
   }
 
