@@ -173,7 +173,7 @@ function drush_parse_command() {
   // We have found a command that matches. Set the appropriate values.
   if ($command) {
     // Special case. Force help command if --help option was specified.
-    if (drush_get_option('help')) {
+    if (drush_get_option(array('h', 'help'))) {
       $arguments = array($command['command']);
       $command = $implemented['help'];
       $command['arguments'] = $arguments;
