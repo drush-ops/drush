@@ -99,6 +99,8 @@ function drush_get_commands() {
           'description' => NULL,
           'arguments' => array(),
           'options' => array(),
+          'examples' => array(),
+          'aliases' => array(),
           'extras' => array(),
           'core' => array(),
           'scope' => 'site',
