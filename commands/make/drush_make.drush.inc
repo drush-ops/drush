@@ -5,7 +5,9 @@ define('DRUSH_MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-histo
 define('DRUSH_MAKE_VERSION_BEST', 'best');
 
 include_once 'drush_make.utilities.inc';
-include_once 'drush_make.api.inc';
+include_once 'drush_make.download.inc';
+include_once 'drush_make.project.inc';
+include_once 'drush_make.queue.inc';
 
 /**
  * Implementation of hook_drush_command().
@@ -171,7 +173,6 @@ function _drush_make_update_xml_best_version($major, $releases) {
 }
 
 function drush_make_initialize_project($project) {
-  include_once 'drush_make.project.' . $project['type'] . '.inc';
   $class_name = 'DrushMakeProject_' . $project['type'];
   $class = new $class_name($project);
   return $class;
