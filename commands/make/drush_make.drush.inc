@@ -45,8 +45,9 @@ function drush_make($makefile = NULL, $base_path = NULL) {
   $queue->addItem('drush_make_add_projects', array(drush_get_option('destination', 'sites/all')), array($tmp, $base_path, $valid));
   $queue->execute();
   $tmp_dir = $queue->getReturn($tmp);
-  drush_shell_exec('mv ' . $tmp_dir .'/* .');
-  drush_shell_exec('rm -r ' . $tmp_dir);
+  // Add clean up tasks.
+  $queue->addItem('drush_make_clean_tmp', array(), array($tmp));
+  $queue->execute();
 }
 
 function drush_make_add_projects($install_path, $tmp_path, $base_path, $info, $queue) {

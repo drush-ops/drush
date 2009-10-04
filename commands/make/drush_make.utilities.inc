@@ -125,3 +125,10 @@ function drush_make_create_tmp() {
   drush_log(dt('Created directory temporary directory %tmp', array('%tmp' => $tmp)), 'notice');
   return $tmp;
 }
+
+function drush_make_clean_tmp($tmp_dir) {
+  // We don't always need to do the first, but always the second.
+  // TODO: Find out a way not to always do the first thing.
+  drush_shell_exec('mv ' . $tmp_dir .'/* .');
+  drush_shell_exec('rm -r ' . $tmp_dir);
+}
