@@ -132,3 +132,10 @@ function drush_make_clean_tmp($tmp_dir) {
   drush_shell_exec('mv ' . $tmp_dir .'/* .');
   drush_shell_exec('rm -r ' . $tmp_dir);
 }
+
+function drush_make_prepare_install($tmp_path, $base_path) {
+  $default = $tmp_path . '/' . $base_path . '/sites/default';
+  drush_shell_exec("cp $default/default.settings.php  $default/settings.php");
+  drush_shell_exec("mkdir $default/files");
+  drush_shell_exec("chmod a+w $default/settings.php $default/files");
+}
