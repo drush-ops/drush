@@ -1,0 +1,200 @@
+<?php
+// $Id$
+
+define('DRUSH_MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
+define('DRUSH_MAKE_VERSION_BEST', 'best');
+
+include_once 'drush_make.utilities.inc';
+include_once 'drush_make.api.inc';
+
+/**
+ * Implementation of hook_drush_command().
+ */
+function drush_make_drush_command() {
+  $items['make'] = array(
+    'description' => 'Turns a makefile into a working drupal install.',
+    'callback' => 'drush_make',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_drush_help().
+ */
+function drush_make_drush_help($section) {
+  switch ($section) {
+    case 'drush:make':
+      return dt("@TODO: Print information on the format of the makefile here.");
+  }
+}
+
+/**
+ * Drush callback; make based on the makefile.
+ */
+function drush_make($makefile = NULL, $base_path = NULL) {
+  $queue = new DrushMakeQueue();
+  $base_path = $queue->addItem('drush_make_base_path', array($base_path));
+  $file_exists = $queue->addItem('drush_make_base_path_validate', array(), $base_path);
+  $info  = $queue->addItem('drush_make_parse_info_file', $makefile, $file_exists);
+  $valid = $queue->addItem('drush_make_validate_info_file', array(), $info);
+  $tmp = $queue->addItem('drush_make_create_tmp', array(), $valid);
+  $queue->addItem('drush_make_add_projects', array(drush_get_option('destination', 'sites/all')), array($tmp, $base_path, $valid));
+  $queue->execute();
+  $tmp_dir = $queue->getReturn($tmp);
+  drush_shell_exec('mv ' . $tmp_dir .'/* .');
+  drush_shell_exec('rm -r ' . $tmp_dir);
+}
+
+function drush_make_add_projects($install_path, $tmp_path, $base_path, $info, $queue) {
+  foreach ($info['projects'] as $key => $project) {
+    // Cover if there is no project info, it's just a project name.
+    if (is_string($project) && is_numeric($key)) {
+      $key = $project;
+      $project = array();
+    }
+    elseif (is_string($project)) {
+      $project = array('version' => $project);
+    }
+    // Merge the known data onto the project info.
+    $project += array(
+      'name'           => $key,
+      'core'           => $info['core'],
+      'base_path'      => $base_path,
+      'install_path'   => $install_path,
+      'tmp_path'       => $tmp_path,
+      'version'        => DRUSH_MAKE_VERSION_BEST,
+      'location'       => DRUSH_MAKE_UPDATE_DEFAULT_URL,
+      'subdir'         => '',
+      'project_path'   => '',
+      'directory_name' => '',
+      'queue'          => $queue,
+    );
+    // Special case for Update XML.
+    $update = $queue->addItem('drush_make_updatexml', array($project));
+    $init = $queue->addItem('drush_make_initialize_project', array(), $update);
+    $queue->addItem('drush_make_run', array(), $init);
+  }
+}
+
+function drush_make_updatexml($project, $queue) {
+  if (isset($project['download']) && isset($project['type'])) {
+    return $project;
+  }
+  // First, get the release history.
+  @$release_history = simplexml_load_file($project['location'] . '/' . $project['name'] . '/' . $project['core']);
+  if (!$release_history) {
+    drush_set_error(dt("Could not retrieve version information for @project.", array('@project' => $project['name'])));
+    return FALSE;
+  }
+  $project['release_history'] = $release_history;
+  if (!isset($project['type'])) {
+    // Determine the project type.
+    $term_map = array('Modules' => 'module', 'Themes' => 'theme', 'Drupal project' => 'core', 'Installation profiles' => 'profile');
+    // Iterate through all terms related to this project.
+    foreach ($release_history->terms->term as $term) {
+      // If the term is eather 'Modules' or 'Themes', add it.
+      if (in_array((string) $term->value, array_keys($term_map))) {
+        $project['type'] = $term_map[(string)$term->value];
+        break;
+      }
+    }
+    if (!isset($project['type'])) {
+      return FALSE;
+    }
+  }
+  if (!isset($project['download'])) {
+    $project = drush_make_update_xml_download($project);
+  }
+  return $project;
+}
+
+function drush_make_update_xml_download($project) {
+  // Make an array of releases.
+  foreach ($project['release_history']->releases->release as $release) {
+    $version = (string) $release->version_major;
+    if ((string) $release->version_patch) {
+      $version .= '.' . (string) $release->version_patch;
+    }
+    else {
+      $version .= '.0';
+    }
+    if ($extra_version = (string) $release->version_extra) {
+      $version .= '-' . $extra_version;
+    }
+    $releases[$version] = array(
+      'file' => (string) $release->download_link,
+      'md5' => (string) $release->mdhash,
+      'version' => (string) $release->version,
+    );
+    foreach (array('major', 'patch', 'extra') as $part) {
+      $releases[$version][$part] = (string) $release->{'version_' . $part};
+    }
+  }
+
+  // Find the best release.
+  if ($project['version'] == DRUSH_MAKE_VERSION_BEST) {
+    $recommended_major = (string)$project['release_history']->recommended_major;
+    $project['version'] = _drush_make_update_xml_best_version($recommended_major, $releases);
+  }
+  else {
+    $exploded_version = explode('.', $project['version']);
+    if (count($exploded_version) == 1) {
+      list($major) = $exploded_version;
+      $project['version'] = _drush_make_update_xml_best_version($major, $releases);
+    }
+    // Otherwise we have a full version.
+  }
+
+  if (!$project['version']) {
+    return FALSE;
+  }
+
+  $release = $releases[$project['version']];
+  $project['download'] = array(
+    'type' => 'get',
+    'url'  => $release['file'],
+    'md5'  => $release['md5'],
+  );
+  return $project;
+}
+
+function _drush_make_update_xml_best_version($major, $releases) {
+  $best = NULL;
+  foreach ($releases as $version => $release_info) {
+    if ($release_info['major'] == $major && version_compare($best, $version, '<')) {
+      $best = $version;
+    }
+  }
+  return $best;
+}
+
+function drush_make_initialize_project($project) {
+  include_once 'drush_make.project.' . $project['type'] . '.inc';
+  $class_name = 'DrushMakeProject_' . $project['type'];
+  $class = new $class_name($project);
+  return $class;
+}
+
+function drush_make_run($project) {
+  $project->make();
+}
+
+function drush_make_base_path($base_path) {
+  // Determine the base of the build.
+  if (drush_get_option('tar')) {
+    $base_path = drush_get_option('tar');
+  }
+  elseif (isset($base_path) && (!empty($base_path) || $base_path == '.')) {
+    $base_path = trim($base_path, '/');
+  }
+  elseif(drush_confirm(dt("Make new site in the current directory?"))) {
+    $base_path = '.';
+  }
+  else {
+    drush_log(dt('Build aborted.'), 'ok');
+    return FALSE;
+  }
+  return $base_path;
+}
