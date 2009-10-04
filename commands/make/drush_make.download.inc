@@ -50,14 +50,14 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
 
       drush_shell_exec("mkdir {$this->path}");
       if (drush_get_option('working-copy')) {
-        drush_shell_exec("cvs -d:{$this->project->download['root']} checkout -d {$this->path} {$flags} {$this->project->download['module']}");
+        drush_shell_exec("cvs -d:{$this->project->download['root']} checkout -d {$this->project->tmp_path}/{$this->project->name} {$flags} {$this->project->download['module']}");
         drush_print("{$this->project->name} checkout from {$this->project->download['module']}.");
       }
       else {
-        drush_shell_exec("cvs -d:{$this->project->download['root']} export -d {$this->path} {$flags} {$this->project->download['module']}");
+        drush_shell_exec("cvs -d:{$this->project->download['root']} export -d {$this->project->tmp_path}/{$this->project->name} {$flags} {$this->project->download['module']}");
         drush_print("{$this->project->name} export from {$this->project->download['module']}.");
       }
-      return $this->path;
+      return "{$this->project->tmp_path}/{$this->project->name}";
     }
     return FALSE;
   }
@@ -90,7 +90,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
       $matches = array();
       preg_match('/[a-zA-Z0-9.\-_,]*.tar/', $info, $matches);
       if (isset($matches[0])) {
-        $file = $matches[0];
+        $file = $this->project->tmp_path . '/' . $matches[0];
 
         // Unzip it and then delete the tar file.
         drush_shell_exec('gzip -d ' . $filename);
@@ -122,7 +122,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
       if (isset($directory)) {
         drush_shell_exec("unzip {$filename}");
         drush_op('unlink', $filename);
-        return $directory;
+        return $this->project->tmp_path . '/' . $directory;
       }
     }
     drush_set_error(dt('Could not retrieve package information for @filename.', array('@filename' => $filename)));
@@ -138,9 +138,10 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 
   protected function downloadFile() {
     list($filename) = array_reverse(explode('/', $this->project->download['url']));
+    $filename = $this->project->tmp_path . '/' . $filename;
     // Download the project.
-    if (!drush_shell_exec("wget " . $this->project->download['url'])) {
-      drush_shell_exec("curl -O " . $this->project->download['url']);
+    if (!drush_shell_exec("wget " . $this->project->download['url'] . ' -O ' . $filename)) {
+      drush_shell_exec("curl -O " . $this->project->download['url'] . ' ' . $filename);
     }
     if (file_exists($filename) || drush_get_context('DRUSH_SIMULATE')) {
       drush_print("{$this->project->name} downloaded from {$this->project->download['url']}.");
@@ -157,9 +158,9 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
     // @TODO implement revisions, tags
     if (isset($this->project->download['url'])) {
       $this->project->download['branch'] = isset($this->project->download['branch']) ? $this->project->download['branch'] : 'master';
-      drush_shell_exec("git clone {$this->project->download['url']} {$this->path}");
+      drush_shell_exec("git clone {$this->project->download['url']} {$this->project->tmp_path}/{$this->project->name}");
       drush_print("{$this->project->name} cloned from {$this->project->download['url']}.");
-      return $this->path;
+      return "{$this->project->tmp_path}/{$this->project->name}";
     }
     return FALSE;
   }
@@ -170,14 +171,14 @@ class DrushMakeDownload_SVN extends DrushMakeDownload {
   function download() {
     if (isset($this->project->download['url'])) {
       if (drush_get_option('working-copy')) {
-        drush_shell_exec("svn --non-interactive checkout {$this->project->download['url']} {$this->path}");
+        drush_shell_exec("svn --non-interactive checkout {$this->project->download['url']} {$this->project->tmp_path}/{$this->project->name}");
         drush_print("{$this->project->name} checkout from {$this->project->download['url']}.");
       }
       else {
-        drush_shell_exec("svn --non-interactive export {$this->project->download['url']} {$this->path}");
+        drush_shell_exec("svn --non-interactive export {$this->project->download['url']} {$this->project->tmp_path}/{$this->project->name}");
         drush_print("{$this->project->name} export from {$this->project->download['url']}.");
       }
-      return $this->path;
+      return "{$this->project->tmp_path}/{$this->project->name}";
     }
     return FALSE;
   }
