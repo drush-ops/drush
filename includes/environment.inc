@@ -510,6 +510,12 @@ function _drush_bootstrap_drupal_site_validate() {
   // Fake the necessary HTTP headers that Drupal needs:
   if ($drush_uri) {
     $drupal_base_url = parse_url($drush_uri);
+    // If there's no url scheme set, add http:// and re-parse the url
+    // so the host and path values are set accurately.
+    if (!array_key_exists('scheme', $drupal_base_url)) {
+      $drush_uri = 'http://' . $drush_uri;
+      $drupal_base_url = parse_url($drush_uri);
+    }
     // Fill in defaults.
     $drupal_base_url += array(
       'path' => NULL,
