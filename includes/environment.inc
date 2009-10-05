@@ -429,8 +429,15 @@ function _drush_bootstrap_drush() {
   drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('y', 'yes', 'b', 'backend'), FALSE));
   drush_set_context('DRUSH_SIMULATE',    drush_get_option(array('s', 'simulate'), FALSE));
 
-  // Suppress colored logging
-  drush_set_context('DRUSH_NOCOLOR', drush_get_option(array('n', 'nocolor'), FALSE));
+  // Suppress colored logging if --nocolor option is explicitly given or if
+  // terminal does not support it (Windows command prompt has no TERM set).
+  $nocolor = (drush_get_option(array('n', 'nocolor'), FALSE) || (substr(PHP_OS, 0, 3) == 'WIN' && !getenv('TERM')));
+  if (!$nocolor) {
+    // Check for colorless terminal.
+    $colors = exec('tput colors 2>&1');
+    $nocolor = !($colors === FALSE || (is_numeric($colors) && $colors >= 3));
+  }
+  drush_set_context('DRUSH_NOCOLOR', $nocolor);
 
   // Find any command files that are available during this bootstrap phase.
   _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUSH);
