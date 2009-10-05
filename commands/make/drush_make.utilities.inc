@@ -1,6 +1,9 @@
 <?php
 
 function drush_make_base_path_validate($base_path) {
+  if (drush_get_option('tar')) {
+    $base_path .= '.tar.gz';
+  }
   if ($base_path != '.' && file_exists($base_path)) {
     drush_set_error(dt('Base path %path already exists', array('%path' => $base_path)));
     return FALSE;
@@ -129,8 +132,8 @@ function drush_make_create_tmp() {
 function drush_make_clean_tmp($tmp_dir) {
   // We don't always need to do the first, but always the second.
   // TODO: Find out a way not to always do the first thing.
-  drush_shell_exec('mv ' . $tmp_dir .'/* .');
-  drush_shell_exec('rm -r ' . $tmp_dir);
+  //drush_shell_exec('mv ' . $tmp_dir .'/* .');
+  //drush_shell_exec('rm -r ' . $tmp_dir);
 }
 
 function drush_make_prepare_install($tmp_path, $base_path) {
@@ -138,4 +141,9 @@ function drush_make_prepare_install($tmp_path, $base_path) {
   drush_shell_exec("cp $default/default.settings.php  $default/settings.php");
   drush_shell_exec("mkdir $default/files");
   drush_shell_exec("chmod a+w $default/settings.php $default/files");
+}
+
+function drush_make_tar($tmp_path, $base_path) {
+  $absolute = $tmp_path . '/' . $base_path;
+  drush_shell_exec("tar -C $tmp_path -Pc $base_path | gzip > $base_path.tar.gz");
 }
