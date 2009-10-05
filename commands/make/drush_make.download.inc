@@ -121,9 +121,9 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
       }
       if (isset($directory)) {
         drush_shell_exec("unzip {$filename} -d {$this->project->tmp_path}");
-        print $filename;
-        print $this->project->tmp_path;
-        drush_op('unlink', $this->project->tmp_path . '/' . $filename);
+        if (file_exists($this->project->tmp_path . '/' . $filename)) {
+          drush_op('unlink', $this->project->tmp_path . '/' . $filename);
+        }
         if (is_dir($this->project->tmp_path . '/__MACOSX')) {
           drush_shell_exec('rm -r ' . $this->project->tmp_path . '/__MACOSX');
         }

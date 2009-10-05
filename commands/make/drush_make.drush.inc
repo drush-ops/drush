@@ -43,6 +43,7 @@ function drush_make($makefile = NULL, $base_path = NULL) {
   $valid = $queue->addItem('drush_make_validate_info_file', array(), $info);
   $tmp = $queue->addItem('drush_make_create_tmp', array(), $valid);
   $queue->addItem('drush_make_add_projects', array(drush_get_option('destination', 'sites/all')), array($tmp, $base_path, $valid));
+  $queue->addItem('drush_make_add_libraries', array(drush_get_option('destination', 'sites/all')), array($tmp, $base_path, $valid));
   $queue->execute();
   $tmp_dir = $queue->getReturn($tmp);
   // Add clean up tasks.
@@ -76,7 +77,6 @@ function drush_make_add_projects($install_path, $tmp_path, $base_path, $info, $q
       'version'        => DRUSH_MAKE_VERSION_BEST,
       'location'       => DRUSH_MAKE_UPDATE_DEFAULT_URL,
       'subdir'         => '',
-      'project_path'   => '',
       'directory_name' => '',
       'queue'          => $queue,
     );
@@ -84,6 +84,33 @@ function drush_make_add_projects($install_path, $tmp_path, $base_path, $info, $q
     $update = $queue->addItem('drush_make_updatexml', array($project));
     $init = $queue->addItem('drush_make_initialize_project', array(), $update);
     $queue->addItem('drush_make_run', array(), $init);
+  }
+}
+
+function drush_make_add_libraries($install_path, $tmp_path, $base_path, $info, $queue) {
+  if (!empty($info['libraries'])) {
+    foreach ($info['libraries'] as $key => $library) {
+      if (!is_string($key) || !is_array($library)) {
+        // TODO Print a prettier message
+        continue;
+      }
+      // Merge the known data onto the library info.
+      $library += array(
+        'name'           => $key,
+        'core'           => $info['core'],
+        'base_path'      => $base_path,
+        'install_path'   => $install_path,
+        'tmp_path'       => $tmp_path,
+        'version'        => DRUSH_MAKE_VERSION_BEST,
+        'location'       => DRUSH_MAKE_UPDATE_DEFAULT_URL,
+        'subdir'         => '',
+        'directory_name' => $key,
+        'queue'          => $queue,
+        'type'           => 'library',
+      );
+      $init = $queue->addItem('drush_make_initialize_project', array($library));
+      $queue->addItem('drush_make_run', array(), $init);
+    }
   }
 }
 
@@ -97,6 +124,7 @@ function drush_make_updatexml($project, $queue) {
     drush_set_error(dt("Could not retrieve version information for @project.", array('@project' => $project['name'])));
     return FALSE;
   }
+  drush_print(dt('Project information for %project retrieved.', array('%project' => $project['name'])));
   $project['release_history'] = $release_history;
   if (!isset($project['type'])) {
     // Determine the project type.

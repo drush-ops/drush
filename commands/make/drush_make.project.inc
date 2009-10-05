@@ -70,7 +70,8 @@ class DrushMakeProject {
    */
   function move($project_directory) {
     drush_shell_exec("mv {$project_directory} {$this->path}");
-    if (!empty($this->directory_name)) {
+    if (!empty($this->directory_name)) {
+      list($project_directory) = array_reverse(explode('/', trim($project_directory, '/')));
       drush_shell_exec("mv {$this->path}/{$project_directory} {$this->path}/{$this->directory_name}");
       $project_directory = $this->directory_name;
     }
@@ -121,6 +122,7 @@ class DrushMakeProject {
         $info  = $this->queue->addItem('drush_make_parse_info_file', $file->filename);
         $valid = $this->queue->addItem('drush_make_validate_info_file', array(), $info);
         $this->queue->addItem('drush_make_add_projects', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
+        $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
       }
     }
   }
@@ -159,7 +161,7 @@ class DrushMakeProject_Library extends DrushMakeProject {
 
 class DrushMakeProject_Module extends DrushMakeProject {
   public function __construct(&$project) {
-    $project['install_path'] = $project['install_path'] .'/modules';
+    $project['install_path'] = $project['install_path'] . '/modules';
     parent::__construct($project);
   }
 }
@@ -173,7 +175,7 @@ class DrushMakeProject_Profile extends DrushMakeProject {
 
 class DrushMakeProject_Theme extends DrushMakeProject {
   public function __construct(&$project) {
-    $project['install_path'] = $project['install_path'] .'/themes';
+    $project['install_path'] = $project['install_path'] . '/themes';
     parent::__construct($project, $paths);
   }
 }
