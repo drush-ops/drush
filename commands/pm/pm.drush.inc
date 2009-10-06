@@ -481,7 +481,9 @@ function drush_pm_refresh() {
  * Command callback. Execute updatecode.
  */
 function drush_pm_update() {
-  drush_invoke("updatecode");
+  $args = func_get_args();
+  array_unshift($args, 'updatecode');
+  call_user_func_array('drush_invoke', $args);
 }
 
 /**
@@ -489,7 +491,9 @@ function drush_pm_update() {
  * Execute updatedb command after an updatecode - user requested `update`.
  */
 function drush_pm_post_update() {
-  drush_invoke("updatedb");
+  $args = func_get_args();
+  array_unshift($args, 'updatedb');
+  call_user_func_array('drush_invoke', $args);
 }
 
 /**
