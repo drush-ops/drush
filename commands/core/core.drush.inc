@@ -141,6 +141,7 @@ function core_drush_engine_drupal() {
 function drush_core_updatedb() {
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
   update_main();
+  drush_invoke('cache clear');
   drush_log(dt('Finished performing updates.'), 'ok');
 }
 
