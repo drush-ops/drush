@@ -30,9 +30,13 @@ if [ -z $COLUMNS ]; then
   export COLUMNS=$(tput cols)
 fi
 
-# Special case for MAMP, since it is not the default php on a vanilla install.
-if [ -f /Applications/MAMP/bin/php5/bin/php ]; then
+# Special case for *AMP installers, since they normally don't set themselves as the default cli php out of the box.
+if [ -f /Applications/MAMP/bin/php5/bin/php ]; then # MAMP (OS X)
   /Applications/MAMP/bin/php5/bin/php $SCRIPT_PATH "$@"
+elif [ -f /opt/lampp/bin/php ]; then # XAMPP on GNU/Linux
+  /opt/lampp/bin/php $SCRIPT_PATH "$@"
+elif [ -f /Applications/xampp/xamppfiles/bin/php ]; then # XAMPP on OS X
+  /Applications/xampp/xamppfiles/bin/php $SCRIPT_PATH "$@"
 else
   # We check for a command line (cli) version of php, and if found use that.
   /usr/bin/env php-cli -v &> /dev/null
