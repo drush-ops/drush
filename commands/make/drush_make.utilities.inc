@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 function drush_make_base_path_validate($base_path) {
   if (drush_get_option('tar')) {
@@ -133,8 +134,8 @@ function drush_make_clean_tmp($tmp_dir) {
   // We don't always need to do the first, but always the second.
   // TODO: Find out a way not to always do the first thing.
   if (!drush_get_option('no-clean', FALSE)) {
-    drush_shell_exec('mv ' . $tmp_dir .'/* .');
-    drush_shell_exec('rm -r ' . $tmp_dir);
+    drush_make_shell_exec('mv %s/* .', $tmp_dir);
+    drush_make_shell_exec('rm -r %s', $tmp_dir);
   }
   else {
     drush_print(dt('Tmp dir: %dir', array('%dir' => $tmp_dir)));
@@ -143,12 +144,26 @@ function drush_make_clean_tmp($tmp_dir) {
 
 function drush_make_prepare_install($tmp_path, $base_path) {
   $default = $tmp_path . '/' . $base_path . '/sites/default';
-  drush_shell_exec("cp $default/default.settings.php  $default/settings.php");
-  drush_shell_exec("mkdir $default/files");
-  drush_shell_exec("chmod a+w $default/settings.php $default/files");
+  drush_make_shell_exec("cp %s/default.settings.php  %s/settings.php", $default, $default);
+  drush_make_shell_exec("mkdir %s/files", $default);
+  drush_make_shell_exec("chmod a+w %s/settings.php %s/files", $default, $default);
 }
 
 function drush_make_tar($tmp_path, $base_path) {
-  $absolute = $tmp_path . '/' . $base_path;
-  drush_shell_exec("tar -C $tmp_path -Pc $base_path | gzip > $base_path.tar.gz");
+  drush_make_shell_exec("tar -C %s -Pc %s | gzip > %s.tar.gz", $tmp_path, $base_path, $base_path);
+}
+
+/*
+ * Wrapper around drush_shell_exec to provide sprintf functionality with some more safety.
+ */
+function drush_make_shell_exec() {
+  $args = func_get_args();
+
+  for ($x = 1; $x < count($args); $x++) {
+    $args[$x] = escapeshellcmd($args[$x]);
+  }
+
+  $command = call_user_func_array('sprintf', $args);
+
+  return drush_shell_exec($command);
 }

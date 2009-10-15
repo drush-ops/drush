@@ -31,7 +31,6 @@ class DrushMakeDownload {
 }
 
 class DrushMakeDownload_CVS extends DrushMakeDownload {
-
   function download() {
     if (isset($this->project->download['module'])) {
       if (drush_get_option('working-copy')) {
@@ -48,23 +47,22 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
       }
       $flags = isset($this->project->download['revision']) ? "-r {$this->project->download['revision']}" : '';
 
-      drush_shell_exec("mkdir {$this->path}");
+      drush_op('mkdir', $this->path);
       if (drush_get_option('working-copy')) {
-        drush_shell_exec("cvs -d:{$this->project->download['root']} checkout -d {$this->project->tmp_path}/{$this->project->name} {$flags} {$this->project->download['module']}");
-        drush_print("{$this->project->name} checkout from {$this->project->download['module']}.");
+        drush_make_shell_exec("cvs -d:%s checkout -d %s/%s %s %s", $this->project->download['root'], $this->project->tmp_path, $this->project->name, $flags, $this->project->download['module']);
+        drush_print($this->project->name . ' checkout from ' . $this->project->download['module'] . '.');
       }
       else {
-        drush_shell_exec("cvs -d:{$this->project->download['root']} export -d {$this->project->tmp_path}/{$this->project->name} {$flags} {$this->project->download['module']}");
+        drush_make_shell_exec("cvs -d:%s export -d %s/%s %s %s", $this->project->download['root'], $this->project->tmp_path, $this->project->name, $flags, $this->project->download['module']);
         drush_print("{$this->project->name} export from {$this->project->download['module']}.");
       }
-      return "{$this->project->tmp_path}/{$this->project->name}";
+      return $this->project->tmp_path . '/' . $this->project->name;
     }
     return FALSE;
   }
 }
 
 class DrushMakeDownload_Get extends DrushMakeDownload {
-
   protected function unpack($filename) {
     if (drush_get_context('DRUSH_SIMULATE')) {
       // Return a fake directory name so our simulation makes more sense.
@@ -83,7 +81,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 
   protected function unpack_gz($filename) {
     // Find out where contents will end up. Retrieve last column of output using awk.
-    drush_shell_exec("gzip --list {$filename} | awk '{print $4;}'");
+    drush_make_shell_exec("gzip --list %s | awk '{print $4;}'", $filename);
     $info = drush_shell_exec_output();
     if ($info) {
       $info = array_pop($info);
@@ -93,10 +91,10 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         $file = $this->project->tmp_path . '/' . $matches[0];
 
         // Unzip it and then delete the tar file.
-        drush_shell_exec('gzip -d ' . $filename);
-        drush_shell_exec('tar -tf ' . $file);
+        drush_make_shell_exec('gzip -d %s', $filename);
+        drush_make_shell_exec('tar -tf %s', $file);
         list($directory) = drush_shell_exec_output();
-        drush_shell_exec('tar -xf ' . $file);
+        drush_make_shell_exec('tar -xf %s', $file);
         drush_op('unlink', $file);
 
         return $directory;
@@ -108,7 +106,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 
   protected function unpack_zip($filename) {
     // Find out where contents will end up. Retrieve last column of output using awk.
-    drush_shell_exec("unzip -l {$filename} | awk '{print $4;}'");
+    drush_make_shell_exec("unzip -l %s | awk '{print $4;}'", $filename);
     $info = drush_shell_exec_output();
     if ($info) {
       foreach ($info as $line) {
@@ -120,12 +118,12 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         }
       }
       if (isset($directory)) {
-        drush_shell_exec("unzip {$filename} -d {$this->project->tmp_path}");
+        drush_make_shell_exec("unzip %s -d %s", $filename, $this->project->tmp_path);
         if (file_exists($this->project->tmp_path . '/' . $filename)) {
-          drush_op('unlink', $this->project->tmp_path . '/' . $filename);
+          drush_make_shell_exec('rm %s', $this->project->tmp_path . '/' . $filename);
         }
         if (is_dir($this->project->tmp_path . '/__MACOSX')) {
-          drush_shell_exec('rm -r ' . $this->project->tmp_path . '/__MACOSX');
+          drush_make_shell_exec('rm -r %s', $this->project->tmp_path . '/__MACOSX');
         }
         return $this->project->tmp_path . '/' . $directory;
       }
@@ -145,25 +143,24 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     list($filename) = array_reverse(explode('/', $this->project->download['url']));
     $filename = $this->project->tmp_path . '/' . $filename;
     // Download the project.
-    if (!drush_shell_exec("wget " . $this->project->download['url'] . ' -O ' . $filename)) {
-      drush_shell_exec("curl -O " . $this->project->download['url'] . ' ' . $filename);
+    if (!drush_make_shell_exec('wget %s -O %s', $this->project->download['url'], $filename)) {
+      drush_make_shell_exec('curl -O %s', $this->project->download['url'], $filename);
     }
     if (file_exists($filename) || drush_get_context('DRUSH_SIMULATE')) {
-      drush_print("{$this->project->name} downloaded from {$this->project->download['url']}.");
+      drush_print($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.');
       return $filename;
     }
-    drush_set_error("Unable to download {$filename} from {$this->project->download['url']}.");
+    drush_set_error('Unable to download ' . $filename . ' from ' . $this->project->download['url'] . '.');
     return FALSE;
   }
 }
 
 class DrushMakeDownload_Git extends DrushMakeDownload {
-
   function download() {
     // @TODO implement revisions, tags
     if (isset($this->project->download['url'])) {
       $this->project->download['branch'] = isset($this->project->download['branch']) ? $this->project->download['branch'] : 'master';
-      drush_shell_exec("git clone {$this->project->download['url']} {$this->project->tmp_path}/{$this->project->name}");
+      drush_make_shell_exec("git clone %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
       drush_print("{$this->project->name} cloned from {$this->project->download['url']}.");
       return "{$this->project->tmp_path}/{$this->project->name}";
     }
@@ -172,18 +169,17 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
 }
 
 class DrushMakeDownload_SVN extends DrushMakeDownload {
-
   function download() {
     if (isset($this->project->download['url'])) {
       if (drush_get_option('working-copy')) {
-        drush_shell_exec("svn --non-interactive checkout {$this->project->download['url']} {$this->project->tmp_path}/{$this->project->name}");
-        drush_print("{$this->project->name} checkout from {$this->project->download['url']}.");
+        drush_make_shell_exec("svn --non-interactive checkout %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
+        drush_print($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.');
       }
       else {
-        drush_shell_exec("svn --non-interactive export {$this->project->download['url']} {$this->project->tmp_path}/{$this->project->name}");
-        drush_print("{$this->project->name} export from {$this->project->download['url']}.");
+        drush_make_shell_exec("svn --non-interactive export %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
+        drush_print($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.');
       }
-      return "{$this->project->tmp_path}/{$this->project->name}";
+      return $this->project->tmp_path . '/' . $this->project->name;
     }
     return FALSE;
   }

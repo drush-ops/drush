@@ -37,7 +37,7 @@ class DrushMakeProject {
     $this->fillPath($this->path);
     if (is_dir($this->path . '/' . $directory)) {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
-      drush_shell_exec('rm -r ' . $directory);
+      drush_make_shell_exec('rm -r %s', $directory);
     }
     return TRUE;
   }
@@ -50,16 +50,16 @@ class DrushMakeProject {
       foreach ($this->patch as $url) {
         // Download the patch.
         list($filename) = array_reverse(explode('/', $url));
-        if (!drush_shell_exec("wget {$url}")) {
-          drush_shell_exec("curl -O {$url}");
+        if (!drush_make_shell_exec('wget %s', $url)) {
+          drush_make_shell_exec('curl -O %s', $url);
         }
         if (file_exists($filename)) {
-          drush_shell_exec("mv {$filename} {$project_directory}");
-          drush_shell_exec("patch -p0 -d {$project_directory} < {$project_directory}/{$filename}");
-          drush_print("{$this->name} patched with {$filename}.");
+          drush_make_shell_exec("mv %s %s", $filename, $project_directory);
+          drush_make_shell_exec("patch -p0 -d %s < %s/%", $project_directory, $project_directory, $filename);
+          drush_print($this->name . ' patched with ' . $filename . '.');
         }
         else {
-          drush_set_error("Unable to download $filename from $url.");
+          drush_set_error('Unable to download ' . $filename . ' from ' . $url . '.');
         }
       }
     }
@@ -69,13 +69,14 @@ class DrushMakeProject {
    * Move a project to its final resting place.
    */
   function move($project_directory) {
-    drush_shell_exec("mv {$project_directory} {$this->path}");
-    if (!empty($this->directory_name)) {
+    drush_make_shell_exec("mv %s %s", $project_directory, $this->path);
+
+    if (!empty($this->directory_name)) {
       list($project_directory) = array_reverse(explode('/', trim($project_directory, '/')));
-      drush_shell_exec("mv {$this->path}/{$project_directory} {$this->path}/{$this->directory_name}");
+      drush_make_shell_exec("mv %s/%s %s/%s", $this->path, $project_directory, $this->path, $this->directory_name);
       $project_directory = $this->directory_name;
     }
-    return "{$this->path}/{$project_directory}";
+    return $this->path . '/' . $project_directory;
   }
 
   /**
@@ -138,9 +139,9 @@ class DrushMakeProject_Core extends DrushMakeProject {
    * itself into place a little differently.
    */
   function move($project_directory) {
-    drush_shell_exec("mv {$project_directory}/* {$this->path}");
-    drush_shell_exec("mv {$project_directory}/.* {$this->path}");
-    drush_shell_exec("rmdir {$project_directory}");
+    drush_make_shell_exec("mv %s/* %s", $project_directory, $this->path);
+    drush_make_shell_exec("mv %s/.* %s", $project_directory, $this->path);
+    drush_make_shell_exec("rmdir %s", $project_directory);
   }
 }
 
