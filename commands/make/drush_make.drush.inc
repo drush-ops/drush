@@ -124,7 +124,7 @@ function drush_make_updatexml($project, $queue) {
     drush_set_error(dt("Could not retrieve version information for @project.", array('@project' => $project['name'])));
     return FALSE;
   }
-  drush_print(dt('Project information for %project retrieved.', array('%project' => $project['name'])));
+  drush_log(dt('Project information for %project retrieved.', array('%project' => $project['name'])), 'ok');
   $project['release_history'] = $release_history;
   if (!isset($project['type'])) {
     // Determine the project type.

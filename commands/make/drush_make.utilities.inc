@@ -138,7 +138,7 @@ function drush_make_clean_tmp($tmp_dir) {
     drush_make_shell_exec('rm -r %s', $tmp_dir);
   }
   else {
-    drush_print(dt('Tmp dir: %dir', array('%dir' => $tmp_dir)));
+    drush_log(dt('Tmp dir: %dir', array('%dir' => $tmp_dir)), 'ok');
   }
 }
 

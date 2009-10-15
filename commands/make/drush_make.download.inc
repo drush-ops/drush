@@ -38,7 +38,7 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
           $this->project->download['root'] = trim($_ENV['CVSROOT'], ':');
         }
         else {
-          drush_print(dt('Please set the CVSROOT variable in your shell environment when using the --working-copy option.'));
+          drush_log(dt('Please set the CVSROOT variable in your shell environment when using the --working-copy option.'), 'ok');
         }
       }
       // Fallback to anonymous @ cvs.drupal.org
@@ -50,11 +50,11 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
       drush_op('mkdir', $this->path);
       if (drush_get_option('working-copy')) {
         drush_make_shell_exec("cvs -d:%s checkout -d %s/%s %s %s", $this->project->download['root'], $this->project->tmp_path, $this->project->name, $flags, $this->project->download['module']);
-        drush_print($this->project->name . ' checkout from ' . $this->project->download['module'] . '.');
+        drush_log($this->project->name . ' checkout from ' . $this->project->download['module'] . '.', 'ok');
       }
       else {
         drush_make_shell_exec("cvs -d:%s export -d %s/%s %s %s", $this->project->download['root'], $this->project->tmp_path, $this->project->name, $flags, $this->project->download['module']);
-        drush_print("{$this->project->name} export from {$this->project->download['module']}.");
+        drush_log("{$this->project->name} export from {$this->project->download['module']}.", 'ok');
       }
       return $this->project->tmp_path . '/' . $this->project->name;
     }
@@ -147,7 +147,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
       drush_make_shell_exec('curl -O %s', $this->project->download['url'], $filename);
     }
     if (file_exists($filename) || drush_get_context('DRUSH_SIMULATE')) {
-      drush_print($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.');
+      drush_log($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.', 'ok');
       return $filename;
     }
     drush_set_error('Unable to download ' . $filename . ' from ' . $this->project->download['url'] . '.');
@@ -161,8 +161,8 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
     if (isset($this->project->download['url'])) {
       $this->project->download['branch'] = isset($this->project->download['branch']) ? $this->project->download['branch'] : 'master';
       drush_make_shell_exec("git clone %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
-      drush_print("{$this->project->name} cloned from {$this->project->download['url']}.");
-      return "{$this->project->tmp_path}/{$this->project->name}";
+      drush_log("{$this->project->name} cloned from {$this->project->download['url']}.", 'ok');
+      return $this->project->tmp_path . '/' . $this->project->name;
     }
     return FALSE;
   }
@@ -173,11 +173,11 @@ class DrushMakeDownload_SVN extends DrushMakeDownload {
     if (isset($this->project->download['url'])) {
       if (drush_get_option('working-copy')) {
         drush_make_shell_exec("svn --non-interactive checkout %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
-        drush_print($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.');
+        drush_log($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.', 'ok');
       }
       else {
         drush_make_shell_exec("svn --non-interactive export %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
-        drush_print($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.');
+        drush_log($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.', 'ok');
       }
       return $this->project->tmp_path . '/' . $this->project->name;
     }
