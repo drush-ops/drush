@@ -400,22 +400,18 @@ function _drush_sql_get_scheme($db_spec = NULL) {
  * @return string
  */
 function _drush_sql_get_credentials($db_spec = NULL) {
-  switch (_drush_sql_get_scheme()) {
+  if (is_null($db_spec)) {
+    $db_spec = _drush_sql_get_db_spec($db_spec);
+  }
+  
+  switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
-      if (is_null($db_spec)) {
-        $db_spec = _drush_sql_get_db_spec();
-      }
-
       $cred = ' -h' . $db_spec['host'] .
          (empty($db_spec['port']) ? '' : ' -P' . $db_spec['port']) .
          ' -u' . $db_spec['username'] .
          (empty($db_spec['password']) ? '' : ' -p' . $db_spec['password']) . ' ' . $db_spec['database'];
       break;
   case 'pgsql':
-      if (is_null($db_spec)) {
-        $db_spec = _drush_sql_get_db_spec();
-      }
-
       $cred = $db_spec['database'] . ' ' .
          (empty($db_spec['host']) || ($db_spec['host'] == "localhost") ? '' : '-h ' . $db_spec['host']) . ' ' .
          (empty($db_spec['port']) ? '' : '-p' . $db_spec['port']) . ' ';

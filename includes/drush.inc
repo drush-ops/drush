@@ -383,6 +383,8 @@ function drush_show_help($commands) {
  *   The command to execute.
  * @param $indent
  *   Indentation for the output (only for verbose mode).
+ * @return
+ *   0 if success.
  */
 function drush_shell_exec($cmd, $indent = 0) {
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {

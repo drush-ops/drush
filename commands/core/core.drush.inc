@@ -125,6 +125,24 @@ function core_drush_command() {
       'code' => 'PHP code',
     ),
   );
+  $items['installcore'] = array(
+    'description' => 'Install Drupal core via the specified install profile.',
+    'arguments' => array(
+      'profile' => 'the install profile you wish to run. defaults to \'default\'',
+    ),
+    'options' => array(
+      'db_driver' => 'defaults to mysql',
+      'db_host' => 'defaults to localhost',
+      'db_port' => 'defaults to 3306',
+      'db_name' => 'defaults to drupal_TIMESTAMP',
+      'db_user' => 'defaults to root',
+      'db_pass' => 'defaults to EMPTY',
+      'site_pass' => 'defaults to admin',
+      'clean_url'=> 'defaults to 1',
+    ),
+    'core' => array(7),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
+  );
   return $items;
 }
 
@@ -246,6 +264,8 @@ function core_drush_help($section) {
       return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
     case 'drush:eval':
       return dt("Run arbitrary PHP code in the context of Drupal");
+    case 'drush:installcore':
+      return dt("Install Drupal core.");
     case 'error:DRUSH_DRUPAL_DB_ERROR' : 
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
@@ -587,4 +607,94 @@ function drush_core_search_reindex() {
 
 function drush_core_eval($command) {
   eval($command . ';');
+}
+
+// Perform setup tasks for installation.
+function drush_core_pre_installcore() {
+  if (!drush_confirm(dt('You are about to overwrite settings.php and DROP an existing database if this is a re-install. Do you want to continue?'))) {
+    return drush_set_error('CORE_INSTALLCORE_ABORT', 'Aborting.');
+  }
+  
+  // Can't install without settings.php. Don't put valuable stuff in here for now.
+  if (!file_exists('sites/default/settings.php')) {
+    if (!drush_op('copy', 'sites/default/default.settings.php', 'sites/default/settings.php')) {
+      drush_set_error(dt('Failed to copy default.settings.php to sites/default/setting.php'));
+    }
+  }
+  
+  // Add a files dir if needed
+  $dir = 'sites/default/files';
+  if (!file_exists($dir)) {
+    if (drush_shell_exec('mkdir ' . $dir)) {
+      drush_set_error(dt('Failed to create directory @name', array('@name' => $dir)));
+    }
+  }
+  
+  // Drop and create DB if needed.
+  $db_spec = drush_core_installcore_db_spec();
+  // Can't use drush_sql_query() since we have no DB.
+  $exec = 'mysql -u' . _drush_sql_get_credentials($db_spec);
+  // Strip out DB name from credentiails. Soon it won't exist anymore. We do
+  // need a DB name to connect so use built in mysql name for now.
+  $replacement_db = 'test';
+  // $length = strlen($db_spec['database']);
+  // $exec .= substr($exec, 0, -$length);
+  $exec = str_replace($db_spec['database'], $replacement_db, $exec) . ' -e ';
+  if (drush_op('system', $exec . '"DROP DATABASE IF EXISTS ' . $db_spec['database'] . '"')) {
+    drush_set_error(dt('Could not drop database: @name', array('@name' => $db_spec['database'])));
+  }
+  ;
+  if (drush_op('system', $exec . '"CREATE DATABASE ' . $db_spec['database'] . '"')) {
+    drush_set_error(dt('Could not create new database: @name', array('@name' => $db_spec['database'])));
+  }
+}
+
+function drush_core_installcore($profile = 'default') {
+  require_once('install.php');
+  $db_spec = drush_core_installcore_db_spec();
+  // This form has different names for user and pass
+  // $db_spec['user'] = $db_spec['username'];
+  // $db_spec['pass'] = $db_spec['password'];
+  
+  $site_pass = drush_get_option('site_pass', 'admin');
+  $settings = array(
+    'parameters' => array(
+      'profile' => $profile,
+      'locale' => 'en',
+    ),
+    'forms' => array(
+      'install_settings_form' => $db_spec,
+      'install_configure_form' => array(
+        'site_name' => 'My Site',
+        'site_mail' => 'admin@example.com',
+        'account' => array(
+          'name' => 'admin',
+          'mail' => 'admin@example.com',
+          'pass' => array(
+            'pass1' => $site_pass,
+            'pass2' => $site_pass,
+          ),
+        ),
+        'update_status_module' => array(
+          1 => TRUE,
+          2 => TRUE,
+        ),
+        'clean_url' => drush_get_option('clean_url', TRUE),
+      ),
+    ),
+  );
+  
+  install_drupal($settings);
+}
+
+// Return a db_spec based on supplied options.
+function drush_core_installcore_db_spec() {
+  return array(
+    'driver' => drush_get_option('db_driver', 'mysql'),
+    'host' => drush_get_option('db_host', 'localhost'),
+    'port' => drush_get_option('db_port', '3306'),
+    'database' => drush_get_option('db_name', 'installcore'),
+    'username' => drush_get_option('db_user', 'root'),
+    'password' => drush_get_option('db_pass', ''),
+  );
 }
