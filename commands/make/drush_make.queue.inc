@@ -5,7 +5,7 @@ class DrushMakeQueue {
   function __construct() {
     $this->items = array();
     $this->id = 0;
-    $this->returns = array();
+    $this->returns = array(0 => FALSE);
     $this->current = -1;
   }
 
@@ -22,6 +22,15 @@ class DrushMakeQueue {
     }
     else {
       $array_function = ($this->current != -1 ? 'array_unshift' : 'array_push');
+    }
+    // Allow altering.
+    $implementations = drush_command_implements('drush_make_command');
+    foreach ($implementations as $implementation) {
+      $alter = $implementation . '_drush_make_command';
+      $result = $alter($function, $parameters, $dependencies, $id, $queue);
+      if ($result === FALSE) {
+        return 0;
+      }
     }
     $array_function($this->items, array(
       'function' => $function,
