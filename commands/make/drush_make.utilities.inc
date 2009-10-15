@@ -124,7 +124,7 @@ function drush_make_valid_url($url, $absolute = FALSE) {
 
 function drush_make_create_tmp() {
   $tmp = sys_get_temp_dir();
-  $tmp .= 'drush_make_tmp_' . time();
+  $tmp .= '/drush_make_tmp_' . time();
   drush_op('mkdir', $tmp);
   drush_log(dt('Created directory temporary directory %tmp', array('%tmp' => $tmp)), 'notice');
   return $tmp;
