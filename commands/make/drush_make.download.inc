@@ -164,7 +164,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
       drush_log("{$this->project->name} cloned from {$this->project->download['url']}.", 'ok');
       // Checkout a branch if one was asked for in the make file
       if ($this->project->download['branch'] !== 'master') {
-        drush_shell_exec("cd %s/%s && git checkout -b %s origin/%s", $this->project->tmp_path, $this->project->name, $this->project->download['branch'], $this->project->download['branch']);
+        drush_make_shell_exec("cd %s/%s && git checkout -b %s origin/%s", $this->project->tmp_path, $this->project->name, $this->project->download['branch'], $this->project->download['branch']);
         drush_log("Checked out branch " . $this->project->download['branch'] . '.', 'ok');
       }
       return $this->project->tmp_path . '/' . $this->project->name;
