@@ -89,14 +89,8 @@ function variable_drush_command() {
  */
 function drush_variable_variable_get() {
   $args = func_get_args();
-  $placeholders = array();
-  $sql = '';
-  if (isset($args[0])) {
-    $sql .= "WHERE name LIKE '%s%'";
-    $placeholders[] = $args[0];
-  }
-  $result = db_query("SELECT * FROM {variable} ". $sql ." ORDER BY name ASC", $placeholders);
-  while ($variable = db_fetch_object($result)) {
+  $result = drush_variable_like($args[0]);
+  while ($variable = drush_db_fetch_object($result)) {
     $value = unserialize($variable->value);
     if ($value === TRUE) {
       $value = 'TRUE';
@@ -123,8 +117,7 @@ function drush_variable_variable_set() {
   if (!isset($args[0])) {
     drush_set_error('DRUSH_VARIABLE_ERROR', dt('No variable specified.'));
   }
-  // Look for similar variable names.
-  $result = db_query("SELECT name FROM {variable} WHERE name LIKE '%s%'", $args[0]);
+  $result = drush_variable_like($args[0]);
   $value = $args[1];
   if (!isset($value)) {
     drush_set_error('DRUSH_VARIABLE_ERROR', dt('No value specified.'));
@@ -132,7 +125,7 @@ function drush_variable_variable_set() {
   $options = array();
   $options[] = dt('Cancel');
   $options[] = "$args[0] ". dt('(new variable)');
-  while (!$match && $name = db_result($result)) {
+  while (!$match && $name = drush_db_result($result)) {
     if ($name == $args[0]) {
       $options[1] = $name;
       $match = TRUE;
@@ -181,11 +174,12 @@ function drush_variable_variable_delete() {
     drush_set_error('DRUSH_VARIABLE_ERROR', dt('No variable specified'));
   }
   // Look for similar variable names.
-  $result = db_query("SELECT name FROM {variable} WHERE name LIKE '%s%'", $args[0]);
+  $result = drush_variable_like($args[0]);
 
   $options = array();
   $options[] = dt('Cancel');
-  while ($name = db_result($result)) {
+  while ($name = drush_db_result($result)) {
+    var_dump($name);
     $options[] = $name;
   }
   
@@ -216,5 +210,16 @@ function drush_variable_variable_delete() {
     drush_print(dt('Cancelled'));
     return '';
   }
+}
+
+// Query for similar variable names.
+function drush_variable_like($arg) {
+  if (drush_drupal_major_version() >= 7) {
+    $result = db_query("SELECT name FROM {variable} WHERE name LIKE :keyword ORDER by name ASC", array(':keyword' => $arg . '%'));
+  }
+  else {
+    $result = db_query("SELECT name FROM {variable} WHERE name LIKE '%s' ORDER BY name ASC", $arg);
+  }
+  return $result;
 }
 

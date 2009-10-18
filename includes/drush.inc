@@ -208,6 +208,26 @@ function drush_drupal_major_version() {
 }
 
 /**
+ * A db_result() that works for any version of Drupal.
+ *
+ * @param
+ *   A Database result object.
+ */ 
+function drush_db_result($result) {
+  return drush_drupal_major_version() >= 7 ? $result->fetchField() : db_result($result);
+}
+
+/**
+ * A db_fetch_object() that works for any version of Drupal.
+ *
+ * @param
+ *   A Database result object.
+ */ 
+function drush_db_fetch_object($result) {
+  return drush_drupal_major_version() >= 7 ? $result->fetchObject() : db_fetch_object($result);
+}
+
+/**
  * Save a string to a temporary file. Does not depend on Drupal's API.
  *
  * @param string $data 
