@@ -134,11 +134,15 @@ function core_drush_command() {
       'db_driver' => 'defaults to mysql',
       'db_host' => 'defaults to localhost',
       'db_port' => 'defaults to 3306',
-      'db_name' => 'defaults to drupal_TIMESTAMP',
+      'db_name' => 'defaults to installcore',
       'db_user' => 'defaults to root',
       'db_pass' => 'defaults to EMPTY',
-      'site_pass' => 'defaults to admin',
+      'account_user' => 'uid1 name. defaults to admin',
+      'account_pass' => 'uid1 pass. defaults to admin',
+      'account_mail' => 'uid1 email. defaults to admin@example.com',
       'clean_url'=> 'defaults to 1',
+      'site_name' => 'defaults to installcore',
+      'site_mail' => 'from: for system mailings. defaults to admin@example.com',
     ),
     'core' => array(7),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
@@ -611,32 +615,43 @@ function drush_core_eval($command) {
 
 // Perform setup tasks for installation.
 function drush_core_pre_installcore() {
-  if (!drush_confirm(dt('You are about to overwrite settings.php and DROP an existing database if this is a re-install. Do you want to continue?'))) {
+  
+  $db_spec = drush_core_installcore_db_spec();
+  
+  $files = 'sites/default/files';
+  $settingsfile = 'sites/default/settings.php';
+  if (!file_exists($files)) {
+    $msg[] = dt('create a $files directory');
+  }
+  if (!file_exists($settingsfile)) {
+    $msg[] = dt('create a $settingsfile file');
+  }
+  $msg[] = dt("DROP your '@db' database and then CREATE a new one.", array('@db' => $db_spec['database']));
+  
+  if (!drush_confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
     return drush_set_error('CORE_INSTALLCORE_ABORT', 'Aborting.');
   }
   
   // Can't install without settings.php. Don't put valuable stuff in here for now.
-  if (!file_exists('sites/default/settings.php')) {
-    if (!drush_op('copy', 'sites/default/default.settings.php', 'sites/default/settings.php')) {
-      drush_set_error(dt('Failed to copy default.settings.php to sites/default/setting.php'));
+  if (!file_exists($settingsfile)) {
+    if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile)) {
+      drush_set_error(dt('Failed to copy default.settings.php to ' . $settingsfile));
     }
   }
   
   // Add a files dir if needed
-  $dir = 'sites/default/files';
-  if (!file_exists($dir)) {
-    if (drush_shell_exec('mkdir ' . $dir)) {
-      drush_set_error(dt('Failed to create directory @name', array('@name' => $dir)));
+  if (!file_exists($files)) {
+    if (!drush_op('mkdir', $files)) {
+      drush_set_error(dt('Failed to create directory @name', array('@name' => $files)));
     }
   }
   
   // Drop and create DB if needed.
-  $db_spec = drush_core_installcore_db_spec();
   // Can't use drush_sql_query() since we have no DB.
   $exec = 'mysql -u' . _drush_sql_get_credentials($db_spec);
   // Strip out DB name from credentiails. Soon it won't exist anymore. We do
   // need a DB name to connect so use built in mysql name for now.
-  $replacement_db = 'test';
+  $replacement_db = 'information_schema';
   // $length = strlen($db_spec['database']);
   // $exec .= substr($exec, 0, -$length);
   $exec = str_replace($db_spec['database'], $replacement_db, $exec) . ' -e ';
@@ -656,7 +671,7 @@ function drush_core_installcore($profile = 'default') {
   // $db_spec['user'] = $db_spec['username'];
   // $db_spec['pass'] = $db_spec['password'];
   
-  $site_pass = drush_get_option('site_pass', 'admin');
+  $account_pass = drush_get_option('account_pass', 'admin');
   $settings = array(
     'parameters' => array(
       'profile' => $profile,
@@ -665,14 +680,14 @@ function drush_core_installcore($profile = 'default') {
     'forms' => array(
       'install_settings_form' => $db_spec,
       'install_configure_form' => array(
-        'site_name' => 'My Site',
-        'site_mail' => 'admin@example.com',
+        'site_name' => drush_get_option('site_name', 'Installcore'),
+        'site_mail' => drush_get_option('site_mail', 'admin@example.com'),
         'account' => array(
-          'name' => 'admin',
-          'mail' => 'admin@example.com',
+          'name' => drush_get_option('account_name', 'admin'),
+          'mail' => drush_get_option('account_mail', 'admin@example.com'),
           'pass' => array(
-            'pass1' => $site_pass,
-            'pass2' => $site_pass,
+            'pass1' => $account_pass,
+            'pass2' => $account_pass,
           ),
         ),
         'update_status_module' => array(
