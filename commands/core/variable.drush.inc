@@ -218,7 +218,7 @@ function drush_variable_like($arg) {
     $result = db_query("SELECT name FROM {variable} WHERE name LIKE :keyword ORDER by name ASC", array(':keyword' => $arg . '%'));
   }
   else {
-    $result = db_query("SELECT name FROM {variable} WHERE name LIKE '%s' ORDER BY name ASC", $arg);
+    $result = db_query("SELECT name FROM {variable} WHERE name LIKE '%s%' ORDER BY name ASC", $arg);
   }
   return $result;
 }
