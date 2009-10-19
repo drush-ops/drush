@@ -90,8 +90,8 @@ function variable_drush_command() {
 function drush_variable_variable_get() {
   $args = func_get_args();
   $result = drush_variable_like($args[0]);
-  while ($variable = drush_db_fetch_object($result)) {
-    $value = unserialize($variable->value);
+  while ($name = drush_db_result($result)) {
+    $value = variable_get($name, 'peace');
     if ($value === TRUE) {
       $value = 'TRUE';
     }
@@ -102,9 +102,9 @@ function drush_variable_variable_get() {
       $value = '"' . $value . '"';
     }
     elseif (is_array($value)) {
-      $value = $variable->value;
+      $value = print_r($value, TRUE);
     }
-    drush_print($variable->name . ': ' . $value);
+    drush_print($name . ': ' . $value);
   }
 }
 
