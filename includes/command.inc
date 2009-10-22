@@ -436,7 +436,7 @@ function _drush_find_commandfiles($phase) {
     // Scan for drush command files, load if found
     foreach (array_unique($searchpath) as $path) {
       if (is_dir($path)) {
-        $files = drush_scan_directory($path, '\.drush\.inc$');
+        $files = drush_scan_directory($path, '/\.drush\.inc$/');
         foreach ($files as $filename => $info) {
           require_once($filename);
           $list[basename($filename, '.drush.inc')] = $filename;
@@ -534,7 +534,7 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
           // Give priority to files in this folder by merging them in after any subdirectory files.
           $files = array_merge(drush_scan_directory("$dir/$file", $mask, $nomask, $callback, $recurse, $key, $min_depth, $depth + 1), $files);
         }
-        elseif ($depth >= $min_depth && ereg($mask, $file)) {
+        elseif ($depth >= $min_depth && preg_match($mask, $file)) {
           // Always use this match over anything already set in $files with the same $$key.
           $filename = "$dir/$file";
           $basename = basename($file);
