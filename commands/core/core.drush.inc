@@ -48,11 +48,16 @@ function core_drush_command() {
   $items['script'] = array(
     'description' => "Run php script(s).",
     'examples' => array(
-      'drush script update_variables.php' => 'Run variables.php script',
+      'drush script scratch.php' => 'Run scratch.php script. See commands/core directory.',
+      'drush script example.php --script-path=/path/to/scripts:/another/path' => 'Run script from specified paths',
+      'drush script' => 'List all available scripts.',
     ),
     'arguments' => array(
-      'path/to/script' => 'One or more file paths. Paths may be absolute or relative to the current working dir.',
+      'filename' => 'Optional. The file you wish to execute. If omitted, list files ending in .php in the current working directory and specified script-path. Some might not be real drush scripts. Beware.',
     ),
+    'options' => array(
+      '--script-path' => "Additional paths to search for scripts.  Use POSIX path separator (':') for multiple paths.",
+    ),    
   );
   $items['cache clear'] = array(
     'description' => 'Clear all caches.',
@@ -251,7 +256,7 @@ function core_drush_help($section) {
     case 'drush:status':
       return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:script':
-      return dt("Runs the given php script(s) after a full Drupal bootstrap. A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting.");
+      return dt("Runs the given php script(s) after a full Drupal bootstrap. A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting. if you plan to share a script with others, consider making a full drush command instead since thats more self-documenting.");
     case 'drush:watchdog show':
       return dt("Show recent watchdog messages.");
     case 'drush:watchdog delete':
@@ -358,13 +363,46 @@ function drush_core_status() {
  * Command callback. Runs "naked" php scripts.
  */
 function drush_core_script() {
-  global $argv;
-  $argv = func_get_args();
-  $script = $argv[0];
+  $args = func_get_args();
 
-  $script_filename = drush_cwd() . '/' . $script;
-  if (file_exists($script_filename)) {
-    include($script_filename);
+  // Array of paths to search for scripts
+  $searchpath['DIR'] = dirname(__FILE__);
+  $searchpath['cwd'] = drush_cwd();
+
+  // Additional script paths, specified by 'script-path' option
+  if ($script_path = drush_get_option('script-path', FALSE)) {
+    foreach (explode(":", $script_path) as $path) {
+      $searchpath[] = $path;
+    }
+  }
+  
+  
+  if (empty($args)) {
+    // List all available scripts.
+    $all = array();
+    foreach($searchpath as $key => $path) {
+      $recurse = !$key == 'cwd';
+      $all = $all + array_keys(drush_scan_directory($path, '\.php$', array('.', '..', 'CVS'), NULL, $recurse));
+    }
+    drush_print(implode("\n", $all));
+  }
+  else {
+    // Execute the specified script.
+    $script = $args[0];
+    $found = FALSE;
+    foreach($searchpath as $path) {
+      $script_filename = $path . '/' . $script;
+      if (file_exists($script_filename)) {
+        include($script_filename);
+        $found = TRUE;
+        break;
+      }
+      $all[] = $script_filename;
+    }
+    
+    if (!$found) {
+      drush_set_error('script not found', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
+    }
   }
 
 }

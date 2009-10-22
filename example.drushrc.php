@@ -65,6 +65,10 @@ $options['structure-tables'] = array(
 // An example of a command specific argument being set in drushrc.php
 // $options['package-handler'] = 'cvs';
 
+// Specify additional directories to search for scripts
+// Use POSIX path separator (':')
+# $options['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
+
 /**
  * Variable overrides:
  *
