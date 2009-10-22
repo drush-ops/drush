@@ -422,8 +422,10 @@ function _drush_find_commandfiles($phase) {
       // we can use the Drupal API.
       $files = drush_get_modules();
       foreach ($files as $file) {
-        if ($file->status) {
-          $searchpath[] = dirname($file->filename);
+        if (isset($file->status)) {
+          if ($file->status) {
+            $searchpath[] = dirname($file->filename);
+          }
         }
       }
      break;
