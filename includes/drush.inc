@@ -400,28 +400,35 @@ function drush_show_help($commands) {
  * If in simulation mode, no action is taken.
  *
  * @param $cmd
- *   The command to execute.
- * @param $indent
- *   Indentation for the output (only for verbose mode).
+ *   The command to execute. May include placeholders used for sprintf.
+ * @param ...
+ *   Values for the placeholders specified in $cmd. Each of these will be passed through escapeshellarg() to ensure they are safe to use on the command line.
  * @return
  *   0 if success.
  */
-function drush_shell_exec($cmd, $indent = 0) {
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-    drush_print('Executing: ' . $cmd, $indent);
-  }
-
+function drush_shell_exec($cmd) {
   if (drush_get_context('DRUSH_SIMULATE')) {
     return true;
   }
+  $args = func_get_args();
+ 
+  //do not change the command itself, just the parameters.
+  for ($x = 1; $x < sizeof($args); $x++) {
+    $args[$x] = escapeshellarg($args[$x]);
+  }
+  $command = call_user_func_array('sprintf', $args);
 
-  exec($cmd . ' 2>&1', $output, $result);
+  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+    drush_log('Executing: ' . $command);
+  }
+
+  exec($command . ' 2>&1', $output, $result);
   
   _drush_shell_exec_output_set($output);
 
   if (drush_get_context('DRUSH_VERBOSE')) {
     foreach ($output as $line) {
-      drush_print($line, $indent + 2);
+      drush_print($line, 2);
     }
   }
 
