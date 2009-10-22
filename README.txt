@@ -109,8 +109,6 @@ REQUIREMENTS
 * drush should also run on Windows, however, drush modules might make use of
   unix command line tools, so to use it effectively, you have to install
   some of them, e.g. from GnuWin32 (http://gnuwin32.sourceforge.net/).
-  The READMEs of the individual command files should state which binaries
-  are required.
 
 FAQ
 ---
