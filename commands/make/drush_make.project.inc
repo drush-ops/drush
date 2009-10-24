@@ -116,7 +116,7 @@ class DrushMakeProject {
   }
 
   function recurse($path, $directory) {
-    $makefiles = drush_scan_directory($path, '.make');
+    $makefiles = drush_scan_directory($path, '/\.make$/');
     if (!empty($makefiles)) {
       $build_path = $this->generatePath(FALSE) . '/' . $directory;
       foreach ($makefiles as $file) {
