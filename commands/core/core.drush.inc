@@ -152,6 +152,7 @@ function core_drush_command() {
     ),
     'core' => array(7),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
+    'aliases' => array('ic'),
   );
   return $items;
 }
