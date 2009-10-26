@@ -141,7 +141,7 @@ function core_drush_command() {
       'db-port' => 'defaults to 3306',
       'db-name' => 'defaults to installcore',
       'db-user' => 'defaults to root',
-      'db_pass' => 'defaults to EMPTY',
+      'db-pass' => 'defaults to EMPTY',
       'account-user' => 'uid1 name. defaults to admin',
       'account-pass' => 'uid1 pass. defaults to admin',
       'account-mail' => 'uid1 email. defaults to admin@example.com',
