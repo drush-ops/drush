@@ -14,7 +14,7 @@ function drush_core_pre_installcore() {
     $msg[] = dt('create a $files directory');
   }
   if (!file_exists($settingsfile)) {
-    $msg[] = dt('create a $settingsfile file');
+    $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
   }
   $msg[] = dt("DROP your '@db' database and then CREATE a new one.", array('@db' => $db_spec['database']));
   
@@ -22,17 +22,23 @@ function drush_core_pre_installcore() {
     return drush_set_error('CORE_INSTALLCORE_ABORT', 'Aborting.');
   }
   
-  // Can't install without settings.php.
+  // Can't install without sites directory and settings.php.
   if (!file_exists($conf_path)) {
     if (!drush_op('mkdir', $conf_path)) {
       drush_set_error(dt('Failed to create directory @conf_path', array('@conf_path' => $conf_path)));
       return;
     }
-    drush_op('copy', 'sites/default/default.settings.php', $settingsfile);
   }
   else {
-    drush_log(dt('Sites directory @subdir already exists - proceeding', array('@subdir' => $conf_path)));
+    drush_log(dt('Sites directory @subdir already exists - proceeding.', array('@subdir' => $conf_path)));
   }
+  if (!file_exists($settingsfile)) {
+    if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile)) {
+      drush_set_error(dt('Failed to copy sites/default/default.settings.php to  @settingsfile', array('@settingsfile' => $settingsfile)));
+      return;
+    }
+  }
+  
   
   // Add a files dir if needed
   if (!file_exists($files)) {
