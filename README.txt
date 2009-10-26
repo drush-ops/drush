@@ -113,8 +113,10 @@ FAQ
   Q: What does "drush" stand for?
   A: The Drupal Shell.
   
-  Q: How do ?
-  A: The Drupal Shell.
+  Q: How do I pronounce drush?
+  A: Some people pronounce the dru with a long u like drupal. Fidelity points goes to  
+  them, but they are in the minority. Most pronouce drush so that it rhymes with 
+  hush, rush, flush, etc. This is the preferred pronunciation.
 
 CREDITS
 -------
