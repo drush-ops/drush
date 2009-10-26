@@ -2,9 +2,7 @@
 
 DESCRIPTION
 -----------
-drush is a command line shell and Unix scripting interface for Drupal, a
-veritable Swiss Army knife designed to make life easier for those of us who
-spend hours hacking at the command prompt.
+drush is a command line shell and Unix scripting interface for Drupal.
 
 Drush core ships with lots of useful commands for interacting with code 
 like modules/themes/profiles. Similarly, it runs update.php, executes sql 
@@ -40,7 +38,7 @@ For Linux/Unix/Mac:
 
     If you have troubles, try using the -l and -r parameters when invoking drush. See below.
 
-For Windows (experimental!):
+For Windows:
   - Follow step 1. Use drush by navigating to /path/to/drush
     and running 'drush.bat'.
   - Whenever the documentation or the help text refers to
@@ -106,13 +104,16 @@ REQUIREMENTS
 ------------
 * To use drush from the command line, you'll need a CLI-mode capable PHP
   binary. The minimum required PHP version is 5.2.
-* drush should also run on Windows, however, drush modules might make use of
+* drush should also run on Windows, however, drush modules makes use of
   unix command line tools, so to use it effectively, you have to install
   some of them, e.g. from GnuWin32 (http://gnuwin32.sourceforge.net/).
 
 FAQ
 ---
   Q: What does "drush" stand for?
+  A: The Drupal Shell.
+  
+  Q: How do ?
   A: The Drupal Shell.
 
 CREDITS
