@@ -284,7 +284,7 @@ function core_drush_help($section) {
       return $message;
     case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR' :
       $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
-      $message .= dt("Hint: This error can only occur once the database connection has already been succesfully initiated, therefor this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
+      $message .= dt("Hint: This error can only occur once the database connection has already been successfully initiated, therefore this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
       $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_site_credentials()));
       $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
       return $message;

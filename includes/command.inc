@@ -204,7 +204,7 @@ function drush_parse_command() {
  * in reverse order from how they were executed.
  *
  * This function will also trigger pre_$hook and post_$hook variants of the hook 
- * and it's rollbacks automatically.
+ * and its rollbacks automatically.
  *
  * @param command 
  *   The drush command to execute.
@@ -579,7 +579,7 @@ function drush_enforce_requirement_bootstrap_phase(&$command) {
 }
 
 /**
- * Check that a command has it's declared dependencies available or have no
+ * Check that a command has its declared dependencies available or have no
  * dependencies.
  * 
  * @param $command

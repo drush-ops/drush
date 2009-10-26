@@ -125,7 +125,7 @@ function drush_main() {
  * will return a json string containing the options and log information
  * used by the script.
  * 
- * The command will exit with '1' if it was succesfully executed, and the 
+ * The command will exit with '1' if it was successfully executed, and the 
  * result of drush_get_error() if it wasn't.
  */
 function drush_shutdown() {

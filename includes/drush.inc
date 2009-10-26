@@ -881,7 +881,7 @@ function _drush_log_update_sql($ret) {
 * @see drush_set_error(), drush_get_error(), drush_get_error_log(), drush_cmp_error()
 */
 
-/** The command completed succesfully. */
+/** The command completed successfully. */
 define('DRUSH_SUCCESS', 0);
 /** The command could not be completed because the framework has specified errors that have occured. */
 define('DRUSH_FRAMEWORK_ERROR', 1);
