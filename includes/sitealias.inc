@@ -93,7 +93,7 @@ function drush_sitealias_get_record($alias, $db_settings_needed = false) {
           }
           // Cache our result so we don't need to do IPC for successive calls to this function
           drush_set_option('databases-' . $alias, $alias_record['databases'], 'sitealias-cache');
-	}
+  }
       }
     }
     // If the parameter is not an alias, then it is some form of
@@ -103,39 +103,39 @@ function drush_sitealias_get_record($alias, $db_settings_needed = false) {
       // We will check for a site specification if the alias has at least
       // two characters from the set '@', '/', '#'.
       if ((strpos($alias, '@') === FALSE ? 0 : 1) + (strpos($alias, '/') === FALSE ? 0 : 1) + (strpos($alias, '#') === FALSE ? 0 : 1) >= 2) {
-	if ((substr($alias,0,7) != 'http://') && (substr($alias,0,1) != '/')) {
+        if ((substr($alias,0,7) != 'http://') && (substr($alias,0,1) != '/')) {
           // Add on a scheme so that "user:pass@server" will always parse correctly
           $parsed = parse_url('http://' . $alias);
-	}
-	else {
+        }
+        else {
           $parsed = parse_url($alias);
-	}
-	// Copy various parts of the parsed URL into the appropriate records of the alias record
-	foreach (array('user' => 'remote-user', 'pass' => 'remote-pass', 'host' => 'remote-host', 'fragment' => 'uri', 'path' => '!root') as $url_key => $option_key) {
+        }
+        // Copy various parts of the parsed URL into the appropriate records of the alias record
+        foreach (array('user' => 'remote-user', 'pass' => 'remote-pass', 'host' => 'remote-host', 'fragment' => 'uri', 'path' => '!root') as $url_key => $option_key) {
           if (array_key_exists($url_key, $parsed)) {
             _drush_sitealias_set_record_element($alias_record, $option_key, $parsed[$url_key]);
           }
-	}
-	// If the site specification has a query, also set the query items
-	// in the alias record.  This allows passing db_url as part of the
-	// site specification, for example.
-	foreach (explode('&', $parsed['query']) as $query_arg) {
+        }
+        // If the site specification has a query, also set the query items
+        // in the alias record.  This allows passing db_url as part of the
+        // site specification, for example.
+        foreach (explode('&', $parsed['query']) as $query_arg) {
           $query_components = explode('=', $query_arg);
           _drush_sitealias_set_record_element($alias_record, urldecode($query_components[0]), urldecode($query_components[1]));
-	}
+        }
 
-	// Case 3.): If the URL contains a 'host' portion but no fragment, then set the uri to the host
-	// Note: We presume that 'server' is the best default for case 3; without this code, the default would
-	// be whatever is set in $options['l'] on the target machine's drushrc.php settings file.
-	if (array_key_exists('host', $parsed) && !array_key_exists('fragment', $parsed)) {
+        // Case 3.): If the URL contains a 'host' portion but no fragment, then set the uri to the host
+        // Note: We presume that 'server' is the best default for case 3; without this code, the default would
+        // be whatever is set in $options['l'] on the target machine's drushrc.php settings file.
+        if (array_key_exists('host', $parsed) && !array_key_exists('fragment', $parsed)) {
           $alias_record['uri'] = $parsed['host'];
-	}
+        }
       }
       else {
-	// Case 5.) and 6.):
-	// If the alias is the name of a folder in the 'sites' directory, 
-	// then use it as a local site specification.
-	$alias_record = _drush_sitealias_find_record_for_local_site($alias, $db_settings_needed);
+        // Case 5.) and 6.):
+        // If the alias is the name of a folder in the 'sites' directory, 
+        // then use it as a local site specification.
+        $alias_record = _drush_sitealias_find_record_for_local_site($alias, $db_settings_needed);
       }
     }
     _drush_sitealias_add_static_defaults($alias_record);
@@ -160,8 +160,7 @@ function drush_sitealias_get_record($alias, $db_settings_needed = false) {
  * @param alias_record
  *   An alias record with most values already filled in
  */
-function _drush_sitealias_add_static_defaults(&$alias_record)
-{
+function _drush_sitealias_add_static_defaults(&$alias_record) {
   // If there is a 'db-url' entry but not 'databases' entry, then we will
   // build 'databases' from 'db-url' so that drush commands that use aliases
   // can always count on using a uniform 'databases' array.
@@ -171,7 +170,7 @@ function _drush_sitealias_add_static_defaults(&$alias_record)
 }
 
 /**
- * Add "transiend" default values to the given alias record.  The
+ * Add "transient" default values to the given alias record.  The
  * difference between a static default and a transient default is
  * that static defaults -always- exist in the alias record,
  * whereas transient defaults are only added if the given drush 
@@ -187,8 +186,7 @@ function _drush_sitealias_add_static_defaults(&$alias_record)
  * @param alias_record
  *   An alias record with most values already filled in
  */
-function _drush_sitealias_add_transient_defaults(&$alias_record)
-{
+function _drush_sitealias_add_transient_defaults(&$alias_record) {
   if (isset($alias_record['path-aliases'])) {
     if (!array_key_exists('!drush', $alias_record['path-aliases'])) {
       $alias_record['path-aliases']['!drush'] = dirname(DRUSH_COMMAND);
