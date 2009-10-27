@@ -52,6 +52,8 @@ function drush_make($makefile = NULL, $base_path = NULL) {
   }
   if (drush_get_option('tar')) {
     $queue->addItem('drush_make_tar', array(), array($tmp, $base_path));
+  } else {
+    $queue->addItem('drush_make_move_build', array(), array($tmp, $base_path, $valid));
   }
   $queue->addItem('drush_make_clean_tmp', array(), array($tmp));
   $queue->execute();
@@ -220,10 +222,10 @@ function drush_make_run($project) {
 function drush_make_base_path($base_path) {
   // Determine the base of the build.
   if (drush_get_option('tar')) {
-    $base_path = drush_get_option('tar');
+    $base_path = dirname($base_path) . '/' . basename($base_path, '.tar.gz') . '.tar.gz';
   }
   elseif (isset($base_path) && (!empty($base_path) || $base_path == '.')) {
-    $base_path = trim($base_path, '/');
+    $base_path = rtrim($base_path, '/');
   }
   elseif (drush_confirm(dt("Make new site in the current directory?"))) {
     $base_path = '.';
@@ -233,4 +235,10 @@ function drush_make_base_path($base_path) {
     return FALSE;
   }
   return $base_path;
+}
+
+function drush_make_move_build($tmp_path, $base_path) {
+  drush_make_fill_path(dirname($base_path));
+  drush_make_shell_exec("mv %s/__build__ %s", $tmp_path, $base_path);
+  return TRUE;
 }

@@ -2,9 +2,6 @@
 // $Id$
 
 function drush_make_base_path_validate($base_path) {
-  if (drush_get_option('tar')) {
-    $base_path .= '.tar.gz';
-  }
   if ($base_path != '.' && file_exists($base_path)) {
     drush_set_error(dt('Base path %path already exists', array('%path' => $base_path)));
     return FALSE;
@@ -131,10 +128,7 @@ function drush_make_create_tmp() {
 }
 
 function drush_make_clean_tmp($tmp_dir) {
-  // We don't always need to do the first, but always the second.
-  // TODO: Find out a way not to always do the first thing.
   if (!drush_get_option('no-clean', FALSE)) {
-    drush_make_shell_exec('mv %s/* .', $tmp_dir);
     drush_make_shell_exec('rm -r %s', $tmp_dir);
   }
   else {
@@ -150,7 +144,8 @@ function drush_make_prepare_install($tmp_path, $base_path) {
 }
 
 function drush_make_tar($tmp_path, $base_path) {
-  drush_make_shell_exec("tar -C %s -Pc %s | gzip > %s.tar.gz", $tmp_path, $base_path, $base_path);
+  drush_make_fill_path(dirname($base_path));
+  drush_make_shell_exec("tar -C%s -s/__build__/%s/ -Pc __build__ | gzip > %s", $tmp_path, basename($base_path, '.tar.gz'), $base_path);
 }
 
 /*
@@ -167,3 +162,21 @@ function drush_make_shell_exec() {
 
   return drush_shell_exec($command);
 }
+
+/**
+ * Wrapper around drush_op('mkdir') to create all the directories up to and including the basename().
+ */
+function drush_make_fill_path($path) {
+  $built_path = array();
+  foreach (explode('/', $path) as $part) {
+    if ($part == '.') {
+      continue;
+    }
+    $built_path[] = $part;
+    $current_path = implode('/', $built_path);
+    if ($current_path && !is_dir($current_path)) {
+      drush_op('mkdir', $current_path);
+    }
+  }
+}
+

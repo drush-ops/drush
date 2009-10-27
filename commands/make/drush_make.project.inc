@@ -34,7 +34,7 @@ class DrushMakeProject {
 
   function makePath($directory) {
     $this->path = $this->generatePath();
-    $this->fillPath($this->path);
+    drush_make_fill_path($this->path);
     if (is_dir($this->path . '/' . $directory)) {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
       drush_make_shell_exec('rm -r %s', $directory);
@@ -69,11 +69,12 @@ class DrushMakeProject {
    * Move a project to its final resting place.
    */
   function move($project_directory) {
-    drush_make_shell_exec("mv %s/%s %s", $this->tmp_path, $project_directory, $this->path);
-
-    if (!empty($this->directory_name)) {
+    if (empty($this->directory_name)) {
+      drush_make_shell_exec("mv %s/%s %s", $this->tmp_path, $project_directory, $this->path);
+    }
+    else {
       list($project_directory) = array_reverse(explode('/', trim($project_directory, '/')));
-      drush_make_shell_exec("mv %s/%s %s/%s", $this->path, $project_directory, $this->path, $this->directory_name);
+      drush_make_shell_exec("mv %s/%s %s/%s", $this->tmp_path, $project_directory, $this->path, $this->directory_name);
       $project_directory = $this->directory_name;
     }
     return $this->path . '/' . $project_directory;
@@ -82,15 +83,15 @@ class DrushMakeProject {
   /**
    * Generate the proper path for this project type.
    *
-   * @param $base_path
-   *   Whether to include the base_path in the generated patch. Defaults to
-   *   true.
+   * @param $absolute
+   *   Whether to generate an absolute path, including the temporary directory path.
+   *   Defaults to true.
    */
   protected function generatePath($base = TRUE) {
     $path = array();
     if ($base) {
       $path[] = $this->tmp_path;
-      $path[] = $this->base_path;
+      $path[] = '__build__';
     }
     if (!empty($this->install_path)) {
       $path[] = $this->install_path;
@@ -99,20 +100,6 @@ class DrushMakeProject {
       $path[] = $this->subdir;
     }
     return implode('/', $path);
-  }
-
-  protected function fillPath($path) {
-    $built_path = array();
-    foreach (explode('/', $path) as $part) {
-      if ($part == '.') {
-        continue;
-      }
-      $built_path[] = $part;
-      $current_path = implode('/', $built_path);
-      if ($current_path && !is_dir($current_path)) {
-        drush_op('mkdir', $current_path);
-      }
-    }
   }
 
   function recurse($path, $directory) {
@@ -134,14 +121,25 @@ class DrushMakeProject_Core extends DrushMakeProject {
     $project['install_path'] = '';
     parent::__construct($project);
   }
+
+  function makePath($directory) {
+    $this->path = $this->generatePath();
+    drush_make_fill_path(dirname($this->path));
+    if (is_dir($this->path . '/' . $directory)) {
+      drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
+      drush_make_shell_exec('rm -r %s', $directory);
+    }
+    return $this->path;
+  }
+
   /**
    * The core project will always be the base of the build, so it needs to move
    * itself into place a little differently.
+   *
+   * @TODO ensure that the core project is always created first.
    */
   function move($project_directory) {
-    drush_make_shell_exec("mv %s/%s/* %s", $this->tmp_path, $project_directory, $this->path);
-    drush_make_shell_exec("mv %s/%s/.* %s", $this->tmp_path, $project_directory, $this->path);
-    drush_make_shell_exec("rmdir %s/%s", $this->tmp_path, $project_directory);
+    drush_make_shell_exec("mv %s/%s %s/__build__", $this->tmp_path, $project_directory, $this->tmp_path);
   }
 }
 
