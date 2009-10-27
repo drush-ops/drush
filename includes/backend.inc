@@ -56,12 +56,27 @@
  */
 define('DRUSH_BACKEND_OUTPUT_DELIMITER', 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END');
 
+function drush_backend_set_result($value) {
+  if (drush_get_context('DRUSH_BACKEND')) {
+    drush_set_context('BACKEND_RESULT', $value);
+  }
+}
+
+function drush_backend_get_result() {
+  return drush_get_context('BACKEND_RESULT');
+}
+
 function drush_backend_output() {
   $data = array();
 
   $data['output'] = ob_get_contents();
   ob_end_clean();
-
+  
+  $result_object = drush_backend_get_result();
+  if (isset($result_object)) {
+    $data['object'] = $result_object;
+  }
+  
   $error = drush_get_error();
   $data['error_status'] = ($error) ? $error : DRUSH_SUCCESS;
 
@@ -157,7 +172,7 @@ function _drush_backend_integrate($data) {
  *   If it executed successfully, it returns an associative array containing the command
  *   called, the output of the command, and the error code of the command.
  */
-function _drush_proc_open($cmd, $data = NULL) {
+function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
   $descriptorspec = array(
      0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
      1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
@@ -173,7 +188,7 @@ function _drush_proc_open($cmd, $data = NULL) {
     $info = stream_get_meta_data($pipes[1]);
     stream_set_blocking($pipes[1], TRUE);
     stream_set_timeout($pipes[1], 1);
-    $stream = '';
+    $string = '';
     while (!feof($pipes[1]) && !$info['timed_out']) { 
       $string .= fgets($pipes[1], 4096);
       $info = stream_get_meta_data($pipes[1]);
@@ -184,14 +199,11 @@ function _drush_proc_open($cmd, $data = NULL) {
     $info = stream_get_meta_data($pipes[2]);
     stream_set_blocking($pipes[2], TRUE);
     stream_set_timeout($pipes[2], 1);
-    $stream = '';
     while (!feof($pipes[2]) && !$info['timed_out']) { 
       $string .= fgets($pipes[2], 4096);
       $info = stream_get_meta_data($pipes[2]);
-      ob_flush();
       flush();
     };
-
 
     fclose($pipes[0]);
     fclose($pipes[1]);
@@ -221,8 +233,11 @@ function _drush_proc_open($cmd, $data = NULL) {
  *    If TRUE, any error statuses or log messages will be integrated into the current process. This might not be what you want,
  *    if you are writing a command that operates on multiple sites.
  * @param drush_path
- *    Optional. Defaults to the current drush.php file. You may also specify a different drush.php script.
- *    You will most likely need to set this when calling drush on a remote server.
+ *    Optional. Defaults to the current drush.php file on the local machine, and
+ *    to simply 'drush' (the drush script in the current PATH) on remote servers. 
+ *    You may also specify a different drush.php script explicitly.  You will need 
+ *    to set this when calling drush on a remote server if 'drush' is not in the
+ *    PATH on that machine.
  * @param hostname
  *    Optional. A remote host to execute the drush command on.
  * @param username
@@ -233,8 +248,13 @@ function _drush_proc_open($cmd, $data = NULL) {
  *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
  */
 function drush_backend_invoke($command, $data = array(), $method = 'GET', $integrate = TRUE, $drush_path = NULL, $hostname = NULL, $username = NULL) {
-  $cmd = _drush_backend_generate_command($command, $data, $method, $drush_path, $hostname, $username);
-  drush_log(dt('Running: !cmd', array('!cmd' => $cmd)), 'command');
+  $args = explode(" ", $command);
+  $command = array_shift($args);
+  return drush_backend_invoke_args($command, $args, $data, $method, $integrate, $drush_path, $hostname, $username);
+}
+
+function drush_backend_invoke_args($command, $args, $data = array(), $method = 'GET', $integrate = TRUE, $drush_path = NULL, $hostname = NULL, $username = NULL) {
+  $cmd = _drush_backend_generate_command($command, $args, $data, $method, $drush_path, $hostname, $username);
   return _drush_backend_invoke($cmd, $data, $integrate);
 }
 
@@ -260,6 +280,7 @@ function drush_backend_invoke($command, $data = array(), $method = 'GET', $integ
  *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
  */
 function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
+  drush_log(dt('Running: !cmd', array('!cmd' => $cmd)), 'command');
   $proc = _drush_proc_open($cmd, $data);
 
   if (($proc['code'] == DRUSH_APPLICATION_ERROR) && $integrate) {
@@ -280,9 +301,11 @@ function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
 
 /**
  * Generate a command to execute.
-
+ *
  * @param command
  *    A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
+ * @param args
+ *    An array or arguments for the command.
  * @param data
  *    Optional. An array containing options to pass to the remote script.
  *    Array items with a numeric key are treated as optional arguments to the command.
@@ -298,8 +321,11 @@ function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
  *    If TRUE, any error statuses or log messages will be integrated into the current process. This might not be what you want,
  *    if you are writing a command that operates on multiple sites.
  * @param drush_path
- *    Optional. Defaults to the current drush.php file. You may also specify a different drush.php script.
- *    You will most likely need to set this when calling drush on a remote server.
+ *    Optional. Defaults to the current drush.php file on the local machine, and
+ *    to simply 'drush' (the drush script in the current PATH) on remote servers. 
+ *    You may also specify a different drush.php script explicitly.  You will need 
+ *    to set this when calling drush on a remote server if 'drush' is not in the
+ *    PATH on that machine.
  * @param hostname
  *    Optional. A remote host to execute the drush command on.
  * @param username
@@ -308,25 +334,26 @@ function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
  * @return
  *   A text string representing a fully escaped command.
  */
-function _drush_backend_generate_command($command, &$data, $method = 'GET', $drush_path = null, $hostname = null, $username = null) {
-  $drush_path = !is_null($drush_path) ? $drush_path : DRUSH_COMMAND; // Call own drush.php file.
+function _drush_backend_generate_command($command, $args, &$data, $method = 'GET', $drush_path = null, $hostname = null, $username = null) {
+  $drush_path = !is_null($drush_path) ? $drush_path : (is_null($hostname) ? DRUSH_COMMAND : 'drush'); // Call own drush.php file on local machines, or 'drush' on remote machines.
   $data['root'] = ($data['root']) ? $data['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
   $data['uri'] = array_key_exists('uri', $data) ? $data['uri'] : drush_get_context('DRUSH_URI');
 
   $option_str = _drush_backend_argument_string($data, $method);
-  $args = explode(" ", $command);
   foreach ($data as $key => $arg) {
     if (is_numeric($key)) {
       $args[] = $arg;
       unset($data[$key]);
     }
   }
-  $command = '';
   foreach ($args as $arg) {
     $command .= ' ' . escapeshellarg($arg);
   }
+  $php='';
+  if (".php" == substr($drush_path, strlen($drush_path) - strlen(".php"))) {
+    $php  = drush_find_php() . ' ';
+  }
   // @TODO: Implement proper multi platform / multi server support.
-  $php  = drush_find_php();
   $cmd = $php . sprintf(escapeshellcmd(" %s %s %s --backend"), escapeshellcmd($drush_path), $option_str, $command);
 
   if (!is_null($hostname)) {
@@ -348,7 +375,9 @@ function _drush_backend_generate_command($command, &$data, $method = 'GET', $dru
  */
 function drush_backend_fork($command, $data, $drush_path = null, $hostname = null, $username = null) {
   $data['quiet'] = TRUE;
-  $cmd = "(" . _drush_backend_generate_command($command, $data, 'GET', $drush_path, $hostname, $username) . ' &) > /dev/null';
+  $args = explode(" ", $command);
+  $command = array_shift($args);
+  $cmd = "(" . _drush_backend_generate_command($command, $args, $data, 'GET', $drush_path, $hostname, $username) . ' &) > /dev/null';
   drush_log(dt("Forking : !cmd", array('!cmd' => $cmd)));
   system($cmd);
 }

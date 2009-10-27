@@ -269,7 +269,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
   else {
     // We are not checking a specific context, so check them in a predefined order of precedence.
     static $contexts = array(
-      'process', 'options', 'stdin', 
+      'process', 'options', 'stdin', 'alias',
       'custom', 'site', 'drupal', 'user', 'system', 
       'drush', 'default');
 
@@ -294,7 +294,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
  */
 function drush_get_merged_options() {
   static $contexts = array(
-      'process', 'options', 'stdin', 
+      'process', 'options', 'stdin', 'alias', 
       'custom', 'site', 'drupal', 'user', 'system',
       'drush', 'default');
   $cache = drush_get_context();

@@ -111,15 +111,27 @@ function core_drush_command() {
       '--immediate' => 'Rebuild the index immediately, instead of waiting for cron.',
     ),
   );
-  $items['sync'] = array(
-    'description' => 'Rsync the Drupal tree to/from another server using ssh.',
+  $items['rsync'] = array(
+    'description' => 'Rsync the Drupal tree to/from another server using ssh.  Relative paths start from the Drupal root folder if a site alias is used; otherwise they start from the current working directory.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'arguments' => array(
-      'source' => 'See rsync documentation.',
-      'destination' => 'See rsync documentation.',
+      'source' => 'May be rsync path or site alias.  See rsync documentation and example.drushrc.php.',
+      'destination' => 'May be rsync path or site alias.  See rsync documentation and example.drushrc.php.',
+    ),
+    'options' => array(
+      '--mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -az.',
+      '--RSYNC-FLAG' => 'Most rsync flags passed to drush sync will be passed on to rsync.  See rsync documentation.',
+      '--all-paths' => 'If <source> and <destination> are site aliases, and neither <source> nor <destination> specifies a path component, then rsync all path aliases that are defined in both the source and destination alias.',
+      '--exclude-conf' => 'Implies rsync --exclude="settings.php" --exclude="robots.txt" --exclude=".htaccess".  Default.',
+      '--include-conf' => 'Allow settings.php, robots.txt and .htaccess to be rsynced',
+      '--exclude-sites' => 'Exclude all directories in "sites/" except for "sites/all".',
     ),
     'examples' => array(
-      'sync dev:/var/www/files/ stage:/var/www/files/' => 'Rsync \'files\' dir from dev to stage',
+      'rsync dev stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
+      'rsync --all-paths --exclude-conf dev stage' => 'Rsync Drupal root and all other paths from dev to stage for every path alias defined in both dev and stage.',
+      'rsync ./ stage:!files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
     ),
+    'aliases' => array('sync'),
   );
   $items['eval'] = array(
     'description' => 'Evaluate arbitrary php code after bootstrapping Drupal.',
@@ -271,7 +283,7 @@ function core_drush_help($section) {
       return dt("Force the search index to be rebuilt.");
     case 'drush:updatedb':
       return dt("Run update.php just as a web browser would.");
-    case 'drush:sync':
+    case 'drush:rsync':
       return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
     case 'drush:eval':
       return dt("Run arbitrary PHP code in the context of Drupal");
@@ -430,40 +442,6 @@ function drush_core_cache_clear() {
       drush_print(dt('Cache cleared.'));
       break;
   }
-}
-
-/**
- * Push files from or to the local Drupal install using SSH and RSync
- *
- * @return void
- **/
-function drush_core_sync($source, $destination) {
-  // Local paths are relative to Drupal root
-  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  
-  if (!strstr($source, ':')) {
-    $source = $drupal_root. "/$source";
-  }
-  if (!strstr($destination, ':')) {
-    $destination = $drupal_root . "/$destination";
-  }
-
-  // Prompt for confirmation. This is destructive.
-  if (!drush_get_context('DRUSH_SIMULATE')) {
-    drush_print(dt("You will destroy data from !target and replace with data from !source", array('!source' => $source, '!target' => $destination)));
-    if (!drush_confirm(dt('Do you really want to continue?'))) {
-      return drush_set_error('CORE_SYNC_ABORT', 'Aborting.');
-    }
-  }
-
-  $options = '-az';
-  $exec = "rsync -e ssh $options --exclude \"*.svn*\" $source $destination";
-  if (drush_get_context('drush_log')) {
-    // the drush_op() will be verbose about the command that gets executed.
-    $options .= 'v';
-  }
-
-  return drush_op('system', $exec) !== FALSE;
 }
 
 /**

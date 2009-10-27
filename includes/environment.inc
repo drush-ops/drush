@@ -156,7 +156,6 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  *     DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.
  *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
  */
-
 function drush_bootstrap($phase) {
   static $phases;
   if (!$phases) {
@@ -399,6 +398,20 @@ function _drush_bootstrap_drush() {
   // Load a drushrc.php file in the ~/.drush directory.
   drush_load_config('user');
 
+  // Process the site alias that specifies which instance
+  // of drush (local or remote) this command will operate on.
+  // We must do this after we load our config files (so that
+  // site aliases are available), but before the rest
+  // of the drush and drupal root bootstrap phases are
+  // done, since site aliases may set option values that
+  // affect these phases.
+  // TODO: Note that this function will call drush_locate_root
+  // (from within _drush_sitealias_find_record_for_local_site),
+  // and drush_locate_root will be called again when bootstrapping
+  // the drupal root below.  Is there a good way to refactor this
+  // so that we do not need to search for the root twice?
+  drush_sitealias_check_arg();
+  
   $backend = drush_set_context('DRUSH_BACKEND', drush_get_option(array('b', 'backend')));
 
   if ($backend) {
@@ -461,6 +474,7 @@ function _drush_bootstrap_drupal_root_validate() {
   }
 
   drush_bootstrap_value('drupal_root', $drupal_root);
+  
   return TRUE;
 }
 
@@ -895,3 +909,4 @@ function drush_get_themes() {
     return drush_set_error('DRUSH_CORE', dt('Drush was unable to load theme information.'));
   }
 }
+

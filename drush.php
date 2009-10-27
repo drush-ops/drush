@@ -28,6 +28,7 @@ require_once DRUSH_BASE_PATH . '/includes/command.inc';
 require_once DRUSH_BASE_PATH . '/includes/drush.inc';
 require_once DRUSH_BASE_PATH . '/includes/backend.inc';
 require_once DRUSH_BASE_PATH . '/includes/context.inc';
+require_once DRUSH_BASE_PATH . '/includes/sitealias.inc';
 
 drush_set_context('argc', $GLOBALS['argc']);
 drush_set_context('argv', $GLOBALS['argv']);
@@ -70,6 +71,13 @@ function drush_main() {
   foreach ($phases as $phase) {
     if (drush_bootstrap($phase)) {
       $command = drush_parse_command();
+      
+      // Process a remote command if 'remote-host' option is set.
+      if (drush_remote_command()) {
+        $command_found = TRUE;
+        break;
+      }
+
       if (is_array($command)) {
         if ($command['bootstrap'] == $phase && empty($command['bootstrap_errors'])) {
           drush_log(dt("Found command: !command", array('!command' => $command['command'])), 'bootstrap');
@@ -112,6 +120,65 @@ function drush_main() {
   // After this point the drush_shutdown function will run,
   // exiting with the correct exit code.
   return $return;
+}
+
+/**
+ * Process commands that are executed on a remote drush instance.
+ *
+ * @return
+ *   TRUE if the command was handled remotely.
+ */
+function drush_remote_command() {
+  // The command will be executed remotely if the --remote-host flag
+  // is set; note that if a site alias is provided on the command line,
+  // and the site alias references a remote server, then the --remote-host
+  // option will be set when the site alias is processed.
+  // @see _drush_process_site_alias
+  $remote_host = drush_get_option('remote-host');
+  if (isset($remote_host)) {         
+
+    $args = drush_get_arguments();
+    $command = array_shift($args);
+    $data = drush_get_context('options');
+    
+    // Most command options are forwarded on to the remote 
+    // server; however, we will clear certain flags such as
+    // -v, -d and -i from the 'options' context (defaults, and
+    // options passed in on the command line).
+    foreach (array('v', 'd', 'i') as $key) {
+      unset($data[$key]);
+    }
+    
+    // After we clear out the flags we do not want from the
+    // 'options' context, we will add in the 'root' and 'uri'
+    // options from any context.  Note that these will usually
+    // come from the 'alias' context, which has a higher precidence
+    // than the 'site' context (where 'r' and 'l' from settings.php
+    // are stored).
+    foreach (array('root', 'r', 'uri', 'l') as $key) {
+      $value = drush_get_option($key);
+      if (isset($value)) {
+        $data[$key] = drush_get_option($key);
+      }
+    }
+    
+    // Finally, we call backend invoke with the
+    // specified remote host, remote user and drush path.
+    $drush_path = drush_get_option('drush-script');
+    if (!isset($drush_path)) {
+      $drush_folder = drush_get_option('drush');
+      if (isset($drush)) {
+        $drush_path = $drush_folder . '/drush';
+      }
+    }
+    $remote_user = drush_get_option('remote-user');
+    drush_log(dt('Begin drush_backend_invoke'));
+    $values = drush_backend_invoke_args($command, $args, $data, 'GET', TRUE, $drush_path, $remote_host, $remote_user);
+    drush_log(dt('drush_backend_invoke is complete'));
+
+    return TRUE;
+  }
+  return FALSE;
 }
 
 /**
