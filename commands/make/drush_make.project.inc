@@ -39,7 +39,7 @@ class DrushMakeProject {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
       drush_make_shell_exec('rm -r %s', $directory);
     }
-    return TRUE;
+    return $this->path;
   }
 
   /**
@@ -69,7 +69,7 @@ class DrushMakeProject {
    * Move a project to its final resting place.
    */
   function move($project_directory) {
-    drush_make_shell_exec("mv %s %s", $project_directory, $this->path);
+    drush_make_shell_exec("mv %s/%s %s", $this->tmp_path, $project_directory, $this->path);
 
     if (!empty($this->directory_name)) {
       list($project_directory) = array_reverse(explode('/', trim($project_directory, '/')));
@@ -116,7 +116,7 @@ class DrushMakeProject {
   }
 
   function recurse($path, $directory) {
-    $makefiles = drush_scan_directory($path, '/\.make$/');
+    $makefiles = drush_scan_directory($this->path . '/' . $directory, '/\.make$/');
     if (!empty($makefiles)) {
       $build_path = $this->generatePath(FALSE) . '/' . $directory;
       foreach ($makefiles as $file) {
@@ -139,9 +139,9 @@ class DrushMakeProject_Core extends DrushMakeProject {
    * itself into place a little differently.
    */
   function move($project_directory) {
-    drush_make_shell_exec("mv %s/* %s", $project_directory, $this->path);
-    drush_make_shell_exec("mv %s/.* %s", $project_directory, $this->path);
-    drush_make_shell_exec("rmdir %s", $project_directory);
+    drush_make_shell_exec("mv %s/%s/* %s", $this->tmp_path, $project_directory, $this->path);
+    drush_make_shell_exec("mv %s/%s/.* %s", $this->tmp_path, $project_directory, $this->path);
+    drush_make_shell_exec("rmdir %s/%s", $this->tmp_path, $project_directory);
   }
 }
 

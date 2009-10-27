@@ -45,18 +45,17 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
       if (!isset($this->project->download['root'])) {
         $this->project->download['root'] = "pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal-contrib";
       }
-      $flags = isset($this->project->download['revision']) ? "-r {$this->project->download['revision']}" : '';
+      $flags = isset($this->project->download['revision']) ? "-r{$this->project->download['revision']}" : '';
 
-      drush_op('mkdir', $this->path);
       if (drush_get_option('working-copy')) {
-        drush_make_shell_exec("cvs -d:%s checkout -d %s/%s %s %s", $this->project->download['root'], $this->project->tmp_path, $this->project->name, $flags, $this->project->download['module']);
+        drush_make_shell_exec("(cd %s; cvs -d:%s checkout -d%s %s %s)", $this->project->tmp_path, $this->project->download['root'], $this->project->name, $flags, $this->project->download['module']);
         drush_log($this->project->name . ' checkout from ' . $this->project->download['module'] . '.', 'ok');
       }
       else {
-        drush_make_shell_exec("cvs -d:%s export -d %s/%s %s %s", $this->project->download['root'], $this->project->tmp_path, $this->project->name, $flags, $this->project->download['module']);
+        drush_make_shell_exec("(cd %s; cvs -d:%s export -d%s %s %s)", $this->project->tmp_path, $this->project->download['root'], $this->project->name, $flags, $this->project->download['module']);
         drush_log("{$this->project->name} export from {$this->project->download['module']}.", 'ok');
       }
-      return $this->project->tmp_path . '/' . $this->project->name;
+      return $this->project->name;
     }
     return FALSE;
   }
@@ -94,7 +93,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         drush_make_shell_exec('gzip -d %s', $filename);
         drush_make_shell_exec('tar -tf %s', $file);
         list($directory) = drush_shell_exec_output();
-        drush_make_shell_exec('tar -xf %s', $file);
+        drush_make_shell_exec('tar -C %s -xf %s', $this->project->tmp_path, $file);
         drush_op('unlink', $file);
 
         return $directory;
@@ -125,7 +124,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         if (is_dir($this->project->tmp_path . '/__MACOSX')) {
           drush_make_shell_exec('rm -r %s', $this->project->tmp_path . '/__MACOSX');
         }
-        return $this->project->tmp_path . '/' . $directory;
+        return $directory;
       }
     }
     drush_set_error(dt('Could not retrieve package information for @filename.', array('@filename' => $filename)));
@@ -167,7 +166,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
         drush_make_shell_exec("cd %s/%s && git checkout -b %s origin/%s", $this->project->tmp_path, $this->project->name, $this->project->download['branch'], $this->project->download['branch']);
         drush_log("Checked out branch " . $this->project->download['branch'] . '.', 'ok');
       }
-      return $this->project->tmp_path . '/' . $this->project->name;
+      return $this->project->name;
     }
     return FALSE;
   }
@@ -184,7 +183,7 @@ class DrushMakeDownload_SVN extends DrushMakeDownload {
         drush_make_shell_exec("svn --non-interactive export %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
         drush_log($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.', 'ok');
       }
-      return $this->project->tmp_path . '/' . $this->project->name;
+      return $this->project->name;
     }
     return FALSE;
   }
