@@ -185,7 +185,7 @@ function _drush_sitealias_print_record($site_alias) {
   // If the user wants database information included in
   // the record, then try to fetch that info from the
   // remote site.
-  $alias_record = drush_get_sitealias_record($site_alias, isset($output_db) | isset($output_db_url));
+  $alias_record = drush_sitealias_get_record($site_alias, isset($output_db) | isset($output_db_url));
   
   // If the user specified --with-db-url, then leave the
   // 'db-url' entry in the alias record (unless it is not

@@ -119,8 +119,6 @@ function sql_drush_command() {
       '--target-dump' => '',
       '--create-db' => 'Create a new database before importing the database dump on the target machine.',
       '--db-su' => 'Remote account to use when creating a new database. Optional.', 
-      '--db-prepare-script' => 'Path to script to execute to repair the source database dump prior to import at the destination.  Repair is necessary if the source and destination have different URIs or different Drupal root paths.  The following replacements are done to the repair script arguments: !input, !output, !source-db, !target-db, !source-uri, !target-uri, !source-root, !target-root.  The script receives input on stdin, unless !input is used, and stdout is written to the target file unless !output is used.',
-      '--simple-repair' => 'Provides a simple repair script to fix URI references in the database.  Simple repair is sufficient if the source and destination have the same Drupal root path, and if modules that use serialized output with embedded paths to the sites directory are avoided (e.g. the color module).  Simple repair is more likely to be effective if source and destination systems have the same path to the "files" directory (e.g. color module works).',
     ),
   );
   if (drush_drupal_major_version() >=7) {

@@ -20,74 +20,11 @@ function drush_sql_sql_sync($source = null, $destination = null) {
   }
   
   //
-  // If there is no destination specification at all, then we
-  // will copy the default database from the source onto 
-  // all of the slave databases from the source.
+  // If there is no destination specification, then exit.
   //
   if (!isset($destination)) {
-    $source_settings = drush_sitealias_get_record($source, true);
-    
-    $slave_databases = $source_settings['databases'][$source_database];
-    unset($slave_databases['default']);
-    
-    //
-    // If there is only one slave database, then we'll call
-    // sql sync once as usual to sync from the default to
-    // the single slave database (with warning prior to sync).
-    //
-    if (count($slave_databases) == 1) {
-      $slave_keys = array_keys($slave_databases);
-      _drush_sql_sync($source, $source, TRUE);
-    }
-    //
-    // If there are multiple slave databases, then we will print
-    // one confirmation warning here, then call sql sync once for
-    // every database, passing FALSE for $show_warning to prevent
-    // the warning message from showing up in the inner loop.
-    //
-    else {
-      if (!drush_get_context('DRUSH_SIMULATE')) {
-        $txt_source = $source_settings['databases'][$source_database]['default']['database'];
-        $sep = ' ';
-        foreach(array_reverse($slave_databases) as $slave_db_name => $slave_db_value) {
-          if (empty($txt_destination)) {
-            $txt_destination = 'and ' . $slave_db_value['database'];
-          }
-          else {
-            $txt_destination = $slave_db_value['database'] . $sep . $txt_destination;
-            $sep = ', ';
-          }
-        }
-        drush_print(dt("You will copy the data from the default database !source and destroy data in all of the slave databases, !target.", array('!source' => $txt_source, '!target' => $txt_destination)));
-        drush_print();
-        if (!drush_confirm(dt('Do you really want to continue?'))) {
-          drush_die('Aborting.');
-        }
-      }
-      //
-      // Set up a source dump file if one was not already
-      // specified so that we will only dump once rather than once
-      // per iteration.
-      //
-      $source_dump = drush_get_option('source-dump');
-      $source_is_tmp = FALSE;
-      if (!isset($source_dump)) {
-        $source_dump = tempnam(sys_get_temp_dir(), $source_database . '.sql.');
-        drush_op('unlink', $source_dump); // delete the temp file so that we will sql dump on the first iteration
-        drush_set_option('source-dump', $source_dump);
-        $source_is_tmp = TRUE;
-      }
-
-      foreach($slave_databases as $slave_db_name => $slave_db_value) {
-        drush_set_option('target-target', $slave_db_name);
-        _drush_sql_sync($source, $source, FALSE);
-      }
-
-      if ($source_is_tmp) {
-        drush_op('unlink', $source_dump);
-      }
-
-    }
+    drush_print(dt("You must specify a destination target."));
+    exit(1);
   }
   //
   // Default branch:  copy 'sync' with the specified source
@@ -262,49 +199,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     // delete it for us (remove-source-files option set above).
     drush_core_call_rsync($source_remote_user . $source_at . $source_remote_host . ':' . $source_dump, $local_file, $source_rsync_options);
   }
-  
-  // After the database export, we will run the database repair command
-  // if one was specified.
-  $database_repair_script = drush_get_option('db-prepare-script');
-  if ((!isset($database_repair_script)) && (drush_get_option('simple-repair')) && ($source_settings['uri'] != $destination_settings['uri'])) {
-    $database_repair_script = 'sed -e \'s|sites/!source-uri|sites/!target-uri|g\'';
-  }
-  if (isset($database_repair_script)) {
-    $repair_input_file = $local_file;
-    $local_file = tempnam(sys_get_temp_dir(), $source_db_url['database'] . '-repaired.sql.');
-    $repair_is_tmp = $local_is_tmp;
-    $local_is_tmp = TRUE;
-    if ($repair_input_file == $target_dump) {
-      $target_dump = $local_file;
-      $local_is_tmp = !$target_is_tmp;
-    }
     
-    $script_replacement_array = array(
-      '!input' => $repair_input_file,
-      '!output' => $local_file,
-      '!source-db' => $source_db_url['database'],
-      '!target-db' => $target_db_url['database'],
-      '!source-uri' => $source_settings['uri'], 
-      '!target-uri' => $destination_settings['uri'],
-      '!source-root' => $source_root, 
-      '!target-root' => $destination_root,
-    );
-    
-    if (strstr($database_repair_script, '!input') === FALSE) {
-      $input_from_stdin = 'cat ' . $repair_input_file . ' | ';
-    }
-    if (strstr($database_repair_script, '!output') === FALSE) {
-      $redirect_to_output_file = ' > ' . $local_file;
-    }
-    
-    $repair_exec = $input_from_stdin . str_replace(array_keys($script_replacement_array), array_values($script_replacement_array), $database_repair_script) . $redirect_to_output_file;
-    drush_op('system', $repair_exec);
-    
-    if ($repair_is_tmp) {
-      drush_op('unlink', $repair_input_file);
-    }
-  }
-  
   // Prior to database import, we will generate a "create database" command
   // if the '--create-db' option was specified.  Note that typically the
   // web server user will not have permissions to create a database; to specify

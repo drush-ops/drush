@@ -152,7 +152,7 @@ function drush_remote_command() {
     // After we clear out the flags we do not want from the
     // 'options' context, we will add in the 'root' and 'uri'
     // options from any context.  Note that these will usually
-    // come from the 'alias' context, which has a higher precidence
+    // come from the 'alias' context, which has a higher precedence
     // than the 'site' context (where 'r' and 'l' from settings.php
     // are stored).
     foreach (array('root', 'r', 'uri', 'l') as $key) {
