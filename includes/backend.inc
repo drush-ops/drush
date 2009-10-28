@@ -192,7 +192,6 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
     while (!feof($pipes[1]) && !$info['timed_out']) { 
       $string .= fgets($pipes[1], 4096);
       $info = stream_get_meta_data($pipes[1]);
-      ob_flush();
       flush();
     };
 

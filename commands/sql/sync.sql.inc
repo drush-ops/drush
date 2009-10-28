@@ -36,8 +36,8 @@ function drush_sql_sql_sync($source = null, $destination = null) {
 }
 
 function _drush_sql_sync($source, $destination, $show_warning = TRUE) { 
-  $source_settings = drush_sitealias_get_record($source, true);
-  $destination_settings = drush_sitealias_get_record($destination, true);
+  $source_settings = drush_sitealias_get_record($source, TRUE);
+  $destination_settings = drush_sitealias_get_record($destination, TRUE);
 
   // Evaluate the source and destination specifications into options.
   // The options from the 'source-*' and 'target-*' aliases are set

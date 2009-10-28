@@ -144,11 +144,13 @@ $options['structure-tables'] = array(
 #      '!drush' => '/drush/path/drush',
 #      '!dump' => '/path/to/live/sql_dump.sql',
 #      '!files' => 'sites/mydrupalsite.com/files',
-#      '!custom' => '/my/custom/path',    )
+#      '!custom' => '/my/custom/path',
+#     ),
 #  );
 #$options['site-aliases']['dev'] = array(
 #    'uri' => 'dev.mydrupalsite.com',
 #    'path-aliases' => array(
-#      '!root' => '/path/to/drupal/root', )
+#      '!root' => '/path/to/drupal/root',
+#     ),
 #  );
 

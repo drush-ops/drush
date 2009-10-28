@@ -83,7 +83,7 @@ function drush_sitealias_get_record($alias, $db_settings_needed = false) {
           if (array_key_exists('remote-host', $alias_record)) {
             $data = array('root' => $alias_record['path-aliases']['!root'], 'uri' => $alias_record['uri'], 'all' => TRUE);
             $args = array();
-            $values = drush_backend_invoke_args("sql conf", $args, $data, 'GET', FALSE, $alias_record['drush'], $alias_record['remote-host'], $alias_record['remote-user']);
+            $values = drush_backend_invoke_args("sql conf", $args, $data, 'GET', FALSE, $alias_record['path-aliases']['!drush-script'], $alias_record['remote-host'], $alias_record['remote-user']);
             $alias_record['databases'] = $values['object'];
           }
           // If the alias record is for a local machine, then look up and
