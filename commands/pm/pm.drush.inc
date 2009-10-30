@@ -491,9 +491,8 @@ function drush_pm_update() {
  * Execute updatedb command after an updatecode - user requested `update`.
  */
 function drush_pm_post_update() {
-  $args = func_get_args();
-  array_unshift($args, 'updatedb');
-  call_user_func_array('drush_invoke', $args);
+  // Use drush_backend_invoke to start a subprocess. Cleaner that way.
+  drush_backend_invoke('updatedb');
 }
 
 /**
