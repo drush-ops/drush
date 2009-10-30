@@ -767,10 +767,21 @@ function drush_site_path($path = NULL) {
         }
       }
     }
-    
+
+    $site_root = drush_locate_root();
+    if (file_exists($site_root . '/sites/sites.php')) {
+      $sites = array();
+      // This will overwrite $sites with the desired mappings.
+      include($site_root . '/sites/sites.php');
+      // We do a reverse lookup here to determine the URL given the site key.
+      if ($match = array_search($site_path, $sites)) {
+        $site_path = $match;
+      } 
+    }
+
     // Last resort: try from site root
     if (!$site_path) {
-      if ($site_root = drush_locate_root()) {
+      if ($site_root) {
         if (file_exists($site_root . '/sites/default/settings.php')) {
           $site_path = $site_root . '/sites/default';
         }
