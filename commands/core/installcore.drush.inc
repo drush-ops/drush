@@ -12,7 +12,7 @@ function drush_core_pre_installcore() {
   $files = "$conf_path/files";
   $settingsfile = "$conf_path/settings.php";
   if (!file_exists($files)) {
-    $msg[] = dt('create a $files directory');
+    $msg[] = dt('create a @files directory', array('@files' => $files));
   }
   if (!file_exists($settingsfile)) {
     $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
@@ -25,7 +25,7 @@ function drush_core_pre_installcore() {
   
   // Can't install without sites directory and settings.php.
   if (!file_exists($conf_path)) {
-    if (!drush_op('mkdir', $conf_path)) {
+    if (!drush_op('mkdir', $conf_path) && !drush_get_context('DRUSH_SIMULATE')) {
       drush_set_error(dt('Failed to create directory @conf_path', array('@conf_path' => $conf_path)));
       return;
     }
@@ -34,7 +34,7 @@ function drush_core_pre_installcore() {
     drush_log(dt('Sites directory @subdir already exists - proceeding.', array('@subdir' => $conf_path)));
   }
   if (!file_exists($settingsfile)) {
-    if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile)) {
+    if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !drush_get_context('DRUSH_SIMULATE')) {
       drush_set_error(dt('Failed to copy sites/default/default.settings.php to  @settingsfile', array('@settingsfile' => $settingsfile)));
       return;
     }
@@ -43,7 +43,7 @@ function drush_core_pre_installcore() {
   
   // Add a files dir if needed
   if (!file_exists($files)) {
-    if (!drush_op('mkdir', $files)) {
+    if (!drush_op('mkdir', $files) && !drush_get_context('DRUSH_SIMULATE')) {
       drush_set_error(dt('Failed to create directory @name', array('@name' => $files)));
       return;
     }
@@ -59,12 +59,12 @@ function drush_core_pre_installcore() {
   // need a DB name to connect to so use built-in mysql DB.
   $replacement_db = 'information_schema';
   $exec = str_replace($db_spec['database'], $replacement_db, $exec) . ' -e ';
-  if (drush_op('system', $exec . ' "DROP DATABASE IF EXISTS ' . $db_spec['database'] . '"')) {
+  if (drush_op('system', $exec . ' "DROP DATABASE IF EXISTS ' . $db_spec['database'] . '"') && !drush_get_context('DRUSH_SIMULATE')) {
     drush_set_error(dt('Could not drop database: @name', array('@name' => $db_spec['database'])));
     return;
   }
   
-  if (drush_op('system', $exec . '"CREATE DATABASE ' . $db_spec['database'] . '"')) {
+  if (drush_op('system', $exec . '"CREATE DATABASE ' . $db_spec['database'] . '"') && !drush_get_context('DRUSH_SIMULATE')) {
     drush_set_error(dt('Could not create new database: @name', array('@name' => $db_spec['database'])));
     return;
   }
@@ -108,10 +108,16 @@ function drush_core_installcore($profile = 'default') {
 // Return a db_spec based on supplied db_url or existing settings.php.
 function drush_core_installcore_db_spec() {
   if ($db_url = drush_get_option('db-url')) {
-    $db_spec = drush_convert_db_from_db_url($db_url);
+    // We were passed a db_url. Usually a fresh site.
+    return drush_convert_db_from_db_url($db_url);
   }
-  elseif (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
-    $db_spec = _drush_sql_get_db_spec();
+  elseif (drush_bootstrap_max() >= DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
+    // We have an existing settings.php.
+    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+    return _drush_sql_get_db_spec();
   }
-  return $db_spec;
+  else {
+    drush_set_error(dt('Could note determine database details.'));
+    return FALSE;
+  }
 }
