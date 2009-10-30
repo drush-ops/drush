@@ -4,7 +4,10 @@
 // Perform setup tasks for installation.
 function drush_core_pre_installcore() {
   
-  $db_spec = drush_core_installcore_db_spec();
+  if (!$db_spec = drush_core_installcore_db_spec()) {
+    drush_set_error(dt('Could not determine database connection parameters.'));
+    return;
+  }
   
   // TODO: not needed?
   $sites_subdir = drush_get_option('sites-subdir', 'default');
@@ -72,6 +75,7 @@ function drush_core_pre_installcore() {
 
 function drush_core_installcore($profile = 'default') {
   require_once('install.php');
+  
   $db_spec = drush_core_installcore_db_spec();
   
   $account_pass = drush_get_option('account_pass', 'admin');
@@ -105,19 +109,22 @@ function drush_core_installcore($profile = 'default') {
   install_drupal($settings);
 }
 
-// Return a db_spec based on supplied db_url or existing settings.php.
+// Return a db_spec based on supplied db_url/db_prefix options or
+// an existing settings.php.
 function drush_core_installcore_db_spec() {
   if ($db_url = drush_get_option('db-url')) {
     // We were passed a db_url. Usually a fresh site.
-    return drush_convert_db_from_db_url($db_url);
+    $db_spec = drush_convert_db_from_db_url($db_url);
+    $db_spec['db_prefix'] = drush_get_option('db-prefix');
+    return $db_spec;
   }
-  elseif (drush_bootstrap_max() >= DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
+  elseif (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
     // We have an existing settings.php.
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-    return _drush_sql_get_db_spec();
+    $db_spec = _drush_sql_get_db_spec();
+    $db_spec['db_prefix'] = $GLOBALS['db_prefix'];
+    return $db_spec;
   }
   else {
-    drush_set_error(dt('Could note determine database details.'));
     return FALSE;
   }
 }

@@ -149,6 +149,7 @@ function core_drush_command() {
     ),
     'options' => array(
       'db-url' => 'A Drupal 5/6 style database URL. Only required for initial install - not re-install.',
+      'db-prefix' => 'An optional table prefix to use for initial install.',
       'account-user' => 'uid1 name. defaults to admin',
       'account-pass' => 'uid1 pass. defaults to admin',
       'account-mail' => 'uid1 email. defaults to admin@example.com',
