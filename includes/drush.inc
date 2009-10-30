@@ -264,7 +264,7 @@ function drush_op($function) {
   }
 
   if (drush_get_context('DRUSH_SIMULATE')) {
-    return true;
+    return TRUE;
   }
 
   return call_user_func_array($function, $args);

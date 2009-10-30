@@ -128,7 +128,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   if (!isset($no_cache)) {
     $cache = drush_get_option(array('cache', 'source-cache'));
     if (!isset($cache)) {
-      $cache = 24; // default cache is 24 hours if nothing else is specified.
+      $cache = 24; // Default cache is 24 hours if nothing else is specified.
     }
   }
   // If the 'cache' option is set, then we will set the no-dump option iff the
@@ -136,16 +136,16 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   if (isset($cache)) {
     if (file_exists($local_file) && (filesize($local_file) > 0)) {
       if ((filemtime($local_file) - time()) < ($cache * 60 * 60)) {
-        drush_log(dt('Modification time is less than !cache hours old.', array('!cache' => $cache)));
+        drush_log(dt('Modification time of local dump file is less than !cache hours old.', array('!cache' => $cache)));
         $no_dump = TRUE;
         $no_sync = TRUE;
       }
       else {
-        drush_log(dt('Cache file exists but is greater than !cache hours old.', array('!cache' => $cache)));
+        drush_log(dt('Local sql cache file exists but is greater than !cache hours old.', array('!cache' => $cache)));
       }
     }
     else {
-      drush_log('Cache file does not exist');
+      drush_log('Local sql cache file does not exist.');
     }
   }
   if (isset($source_remote_host)) {
@@ -231,10 +231,10 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   $import_command = _drush_sql_connect($target_db_url);
   switch (_drush_sql_get_scheme($target_db_url)) {
     case 'mysql':
-      $import_command .= ' ' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '--silent');
+      $import_command .= ' ' . (drush_get_context('DRUSH_DEBUG') ? ' -v' : '--silent');
       break;
     case 'pgsql':
-      $import_command .= ' ' . (drush_get_context('DRUSH_VERBOSE') ? ' ' : '-q');
+      $import_command .= ' ' . (drush_get_context('DRUSH_DEBUG') ? ' ' : '-q');
       break;
   }
   
