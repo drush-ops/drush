@@ -63,23 +63,3 @@ function _pm_get_update_info($projects = NULL) {
   $data = pm_get_project_path($data, 'includes');
   return $data;
 }
-
-/**
- * Get project information from drupal.org.
- *
- * @param $projects An array of project names
- */
-function pm_get_project_info($projects) {
-  $info = array();
-  $data = array();
-  foreach ($projects as $project_name => $project) {
-    $url = UPDATE_DEFAULT_URL. "/$project_name/". drush_drupal_major_version() . '.x';
-    $xml = drupal_http_request($url);
-    $data[] = $xml->data;
-  }
-  if ($data) {
-    include_once drupal_get_path('module', 'update') .'/update.fetch.inc';
-    $info = update_parse_xml($data);
-  }
-  return $info;
-}
