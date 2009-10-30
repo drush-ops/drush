@@ -6,6 +6,7 @@ function drush_core_pre_installcore() {
   
   $db_spec = drush_core_installcore_db_spec();
   
+  // TODO: not needed?
   $sites_subdir = drush_get_option('sites-subdir', 'default');
   $conf_path = "sites/$sites_subdir";
   $files = "$conf_path/files";
@@ -48,26 +49,21 @@ function drush_core_pre_installcore() {
     }
   }
   
-  // Now we can bootstrap up to the specified site.
-  $uri = drush_get_option(array('l', 'uri'));
-  if (empty($uri)) {
-    // TODO: is there a better way?
-    drush_set_option('uri', $conf_path);
-  }
+  // Now we can bootstrap up to the specified site if not already there.
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   
   // Drop and create DB if needed.
-  // Can't use drush_sql_query() since we have no DB.
-  $exec = 'mysql -u' . _drush_sql_get_credentials($db_spec);
-  // Strip out DB name from credentials. Soon it won't exist anymore. We do
+  // Can't use drush_sql_query() since might not have a DB.
+  $exec = 'mysql ' . _drush_sql_get_credentials($db_spec);
+  // Strip DB name from credentials. Soon it won't exist anymore. We do
   // need a DB name to connect to so use built-in mysql DB.
   $replacement_db = 'information_schema';
   $exec = str_replace($db_spec['database'], $replacement_db, $exec) . ' -e ';
-  if (drush_op('system', $exec . '"DROP DATABASE IF EXISTS ' . $db_spec['database'] . '"')) {
+  if (drush_op('system', $exec . ' "DROP DATABASE IF EXISTS ' . $db_spec['database'] . '"')) {
     drush_set_error(dt('Could not drop database: @name', array('@name' => $db_spec['database'])));
     return;
   }
-  ;
+  
   if (drush_op('system', $exec . '"CREATE DATABASE ' . $db_spec['database'] . '"')) {
     drush_set_error(dt('Could not create new database: @name', array('@name' => $db_spec['database'])));
     return;
@@ -109,14 +105,13 @@ function drush_core_installcore($profile = 'default') {
   install_drupal($settings);
 }
 
-// Return a db_spec based on supplied options.
+// Return a db_spec based on supplied db_url or existing settings.php.
 function drush_core_installcore_db_spec() {
-  return array(
-    'driver' => drush_get_option('db-driver', 'mysql'),
-    'host' => drush_get_option('db-host', 'localhost'),
-    'port' => drush_get_option('db-port', '3306'),
-    'database' => drush_get_option('db-name', 'installcore'),
-    'username' => drush_get_option('db-user', 'root'),
-    'password' => drush_get_option('db-pass', ''),
-  );
+  if ($db_url = drush_get_option('db-url')) {
+    $db_spec = drush_convert_db_from_db_url($db_url);
+  }
+  elseif (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+    $db_spec = _drush_sql_get_db_spec();
+  }
+  return $db_spec;
 }
