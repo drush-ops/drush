@@ -357,59 +357,6 @@ function _drush_sql_query($query, $db_spec = NULL) {
   }
 }
 
-/**
- * Copy an entire database to another database. For example, migrate from production to dev
- * or dev to staging.
- *
- * conf_path() uses a static var so we can't use it to figure out paths based on URIs.
- *
- * @param source
- *   The name of a subdirectory under sites. Its settings.php specifies the database which should be migrated.
- * @param target
- *    The name of a subdirectory under sites. Its settings.php specifies the database which whose tables will
- *    be replaced with the contents of `source`. *
- **/
-function drush_sql_load($source, $destination) {
-  $source = _drush_sql_get_spec_from_site_alias($source, 'source-');
-  $destination = _drush_sql_get_spec_from_site_alias($destination, 'target-');
-  
-  // Prompt for confirmation. This is destructive.
-  if (!drush_get_context('DRUSH_SIMULATE')) {
-    $txt_source = $source['host'] . '/' . $source['database'];
-    $txt_destination = $destination['host'] . '/' . $destination['database'];
-    drush_print(dt("You will destroy data from !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
-    drush_print();
-    // TODO: actually make the backup if desired.
-    drush_print(dt("You might want to make a backup first, using sql_dump command.\n"));
-    if (!drush_confirm(dt('Do you really want to continue?'))) {
-      drush_die('Aborting.');
-    }
-  }
-  
-  // Ignore --result-file and always generate a temp file
-  $file = tempnam(sys_get_temp_dir(), 'sql');
-  drush_set_option('result-file', $file);
-
-  // Get command to export from source.
-  if ($retrieve = drush_sql_dump($source)) {
-    
-    switch (_drush_sql_get_scheme($source)) {
-    case 'mysql':
-      // Build import command for target. No verbose here as that emits too much SQL.
-      $send = 'mysql' . _drush_sql_get_credentials($destination);
-      break;
-    case 'pgsql':
-      $send .= 'psql' . _drush_sql_get_credentials($destination) . ' --file -';
-      break;
-    }
-    
-    $exec = "$retrieve; $send < $file";
-    // Avoid the php memory of the $output array in drush_shell_exec().
-    drush_op('system', $exec);
-    drush_op('unlink', $file);
-  }
-}
-
 function drush_sql_cli() {
   switch (_drush_sql_get_scheme()) {
     case 'mysql':
