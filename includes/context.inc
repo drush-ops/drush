@@ -117,6 +117,23 @@ function drush_load_config($context) {
   if (file_exists($config)) {
     drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
     require_once($config);
+    
+    // If site aliases are defined in multiple drush configuration files,
+    // the normal mechanism would cause the highest priority 'site-aliases'
+    // array to mask all of the other aliases defined in different contexts.
+    // To allow all of the aliases defined in every context to be used together,
+    // we merge them all into the 'drush' context as they are encountered.
+    if (($context != 'drush') && (array_key_exists('site-aliases', $options))) {
+      $cache =& drush_get_context('drush');
+      if (array_key_exists('site-aliases', $cache)) {
+        $cache['site-aliases'] = array_merge($cache['site-aliases'], $options['site-aliases']);
+      }
+      else {
+        $cache['site-aliases'] = $options['site-aliases'];
+      }
+      unset($options['site-aliases']);
+    }
+    
     drush_set_context($context, $options);
     
     // Instruct core not to queries since we are not outputting them.
