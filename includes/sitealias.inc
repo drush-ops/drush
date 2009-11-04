@@ -16,9 +16,7 @@ function drush_sitealias_check_arg() {
   if (_drush_sitealias_set_context_by_name($args[0])) {
     array_shift($args);
     // We only need to expand the site specification
-    // once, then we are done.  (Should we set a flag indicating
-    // that we already did this?  Otherwise 'drush alias1 alias2 command'
-    // would behave strangely.)
+    // once, then we are done.
     drush_set_arguments($args);
     return TRUE;
   }
@@ -189,7 +187,12 @@ function _drush_sitealias_add_static_defaults(&$alias_record) {
 function _drush_sitealias_add_transient_defaults(&$alias_record) {
   if (isset($alias_record['path-aliases'])) {
     if (!array_key_exists('!drush', $alias_record['path-aliases'])) {
-      $alias_record['path-aliases']['!drush'] = dirname(DRUSH_COMMAND);
+      if (array_key_exists('!drush-script', $alias_record['path-aliases'])) {
+        $alias_record['path-aliases']['!drush'] = dirname($alias_record['path-aliases']['!drush-script']);
+      }
+      else {
+        $alias_record['path-aliases']['!drush'] = dirname(DRUSH_COMMAND);
+      }
     }
   }
 }

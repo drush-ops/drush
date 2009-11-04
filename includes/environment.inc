@@ -527,7 +527,7 @@ function _drush_bootstrap_drupal_site_validate() {
   $uri = 'http://'. $current;
 
   $drush_uri = drush_bootstrap_value('drush_uri', drush_get_option(array('l', 'uri'), $uri));
-
+  
   // Fake the necessary HTTP headers that Drupal needs:
   if ($drush_uri) {
     $drupal_base_url = parse_url($drush_uri);
@@ -555,26 +555,24 @@ function _drush_bootstrap_drupal_site_validate() {
   $_SERVER['REQUEST_METHOD']  = NULL;
   $_SERVER['SERVER_SOFTWARE'] = NULL;
   $_SERVER['HTTP_USER_AGENT'] = NULL;
-  
+
   $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
- 
-  $conf_path = drush_bootstrap_value('conf_path', conf_path());
+  
+  $conf_path = drush_bootstrap_value('conf_path', conf_path(TRUE, TRUE));
   $conf_file = "./$conf_path/settings.php";
   if (!file_exists($conf_file)) {
     return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', dt("Could not find a Drupal settings.php file at !file.",
        array('!file' => $conf_file)));
   }
-
+ 
   return TRUE;
 }
 
 /**
- * Initialize a site on the Drupal root.
- *
- * We now set various contexts that we determined and confirmed to be valid.
- * Additionaly we load an optional drushrc.php file in the site directory.
+ * Called by _drush_bootstrap_drupal_site to do the main work
+ * of the drush drupal site bootstrap.
  */
-function _drush_bootstrap_drupal_site() {
+function _drush_bootstrap_do_drupal_site() {
   $drush_uri = drush_set_context('DRUSH_URI', drush_bootstrap_value('drush_uri')); 
   $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
   $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
@@ -584,6 +582,53 @@ function _drush_bootstrap_drupal_site() {
 
   drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
   drush_load_config('site');
+}
+ 
+/**
+ * Initialize a site on the Drupal root.
+ *
+ * We now set various contexts that we determined and confirmed to be valid.
+ * Additionally we load an optional drushrc.php file in the site directory.
+ */
+function _drush_bootstrap_drupal_site() {
+  _drush_bootstrap_do_drupal_site();
+  _drush_bootstrap_redo_drupal_site();
+}
+
+/**
+ * Re-do the drupal site bootstrap (and possibly the
+ * drupal root bootstrap) if a site alias was processed
+ * after the site bootstrap phase completed.  This will
+ * happen when processing "drush sitealias command" for
+ * a site alias defined in a drushrc.php file in the
+ * default site's drush configuration directory.
+ */
+function _drush_bootstrap_redo_drupal_site() {
+  // If drush_load_config defined a site alias that did not
+  // exist before, then sitealias check arg might now match
+  // against one of those aliases.
+  if (drush_sitealias_check_arg() === TRUE) {
+    $remote_host = drush_get_option('remote-host');
+    if (!isset($remote_host)) {         
+      // Check to see if the drupal root changed.
+      // If it has, we will set remote-host to cause
+      // this command to be executed via the backend invoke
+      // process.
+      $sitealias_drupal_root = drush_get_option(array('r', 'root'));
+      if (($sitealias_drupal_root != null) && (DRUPAL_ROOT != $sitealias_drupal_root)) {
+	drush_set_option('remote-host', 'localhost');
+      }
+      else {
+        // If we set an alias, then we need to bootstrap the
+        // drupal site once again.  It is possible to re-bootstrap
+        // the site at this point because settings.php has not
+        // been included yet.
+        drush_log(dt("Re-bootstrap drupal site."));
+        _drush_bootstrap_drupal_site_validate();
+        _drush_bootstrap_do_drupal_site();
+      }
+    }
+  }
 }
 
 /**
@@ -920,3 +965,19 @@ function drush_get_themes() {
   }
 }
 
+/**
+ * Make a determination whether or not the given
+ * host is local or not.
+ *
+ * @param host
+ *   A hostname, 'localhost' or '127.0.0.1'.
+ * @return
+ *   True if the host is local.
+ */
+function drush_is_local_host($host) {
+  // @TODO: Check DNS against local interface settings?
+  // (Maybe not portable, maybe too slow?)
+  // @TODO: Allow user to specify host names in a configuration
+  // option (e.g. $options['local-hosts'] = array('myhostname1.com', 'myhostname2.com'); )
+  return ($host == 'localhost') || ($host == '127.0.0.1') || (file_exists(drush_get_context('DRUSH_DRUPAL_ROOT') . "/sites/$host"));
+}

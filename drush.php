@@ -64,12 +64,14 @@ function drush_verify_cli() {
  */
 function drush_main() {
   $phases = _drush_bootstrap_phases();
-
+  $completed_phases = array();
+  
   $return = '';
   $command_found = FALSE;
 
   foreach ($phases as $phase) {
     if (drush_bootstrap($phase)) {
+      $completed_phases[$phase] = TRUE;
       $command = drush_parse_command();
       
       // Process a remote command if 'remote-host' option is set.
@@ -79,7 +81,7 @@ function drush_main() {
       }
 
       if (is_array($command)) {
-        if ($command['bootstrap'] == $phase && empty($command['bootstrap_errors'])) {
+        if (array_key_exists($command['bootstrap'], $completed_phases) && empty($command['bootstrap_errors'])) {
           drush_log(dt("Found command: !command", array('!command' => $command['command'])), 'bootstrap');
           $command_found = TRUE;
           // Dispatch the command(s).
@@ -151,14 +153,11 @@ function drush_remote_command() {
     
     // After we clear out the flags we do not want from the
     // 'options' context, we will add in the 'root' and 'uri'
-    // options from any context.  Note that these will usually
-    // come from the 'alias' context, which has a higher precedence
-    // than the 'site' context (where 'r' and 'l' from settings.php
-    // are stored).
+    // options from the 'alias' context.
     foreach (array('root', 'r', 'uri', 'l') as $key) {
-      $value = drush_get_option($key);
+      $value = drush_get_option($key, null, 'alias');
       if (isset($value)) {
-        $data[$key] = drush_get_option($key);
+        $data[$key] = $value;
       }
     }
     

@@ -24,12 +24,13 @@ function sitealias_drush_command() {
       'site' => 'Site specification alias to print',
     ),
     'options' => array(
-      '--full' => 'Print the full alias record for each site',
-      '--long' => 'Print the long-form site specification for each site',
-      '--short' => 'Print only the site alias name (default)',
-      '--db' => 'Include the databases structure in the full alias record',
-      '--db-url' => 'Include the short-form db-url in the full alias record',
-      '--no-db' => 'Do not include the database record in the full alias record (default)',
+      '--full' => 'Print the full alias record for each site.',
+      '--long' => 'Print the long-form site specification for each site.',
+      '--short' => 'Print only the site alias name (default).',
+      '--with-db' => 'Include the databases structure in the full alias record.',
+      '--with-db-url' => 'Include the short-form db-url in the full alias record.',
+      '--no-db' => 'Do not include the database record in the full alias record (default).',
+      '--with-optional' => 'Include optional default items.',
     ),
     'aliases' => array('sa'),
     'examples' => array(
@@ -180,12 +181,18 @@ function drush_sitealias_get_site_specification($site_alias) {
 function _drush_sitealias_print_record($site_alias) {
   $output_db = drush_get_option('with-db');
   $output_db_url = drush_get_option('with-db-url');
-
+  $output_optional_items = drush_get_option('with-optional');
+  
   // Get the alias record for the specified site alias.
   // If the user wants database information included in
   // the record, then try to fetch that info from the
   // remote site.
   $alias_record = drush_sitealias_get_record($site_alias, isset($output_db) | isset($output_db_url));
+  
+  // Include the optional items, if requested
+  if ($output_optional_items) {
+    _drush_sitealias_add_transient_defaults($alias_record);
+  }
   
   // If the user specified --with-db-url, then leave the
   // 'db-url' entry in the alias record (unless it is not

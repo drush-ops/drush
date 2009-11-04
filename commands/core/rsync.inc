@@ -236,7 +236,7 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
   else {
     // if the path is a site alias or a local site...
     $site_alias_settings = drush_sitealias_get_record($path);
-    if (!empty($site_alias_settings) || _drush_core_is_local_machine($path)) {
+    if (!empty($site_alias_settings) || drush_is_local_host($path)) {
       $alias = $path;
       $path = '';
     }
@@ -257,7 +257,7 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
   else {
     // Strip the machine portion of the path if the
     // alias points to the local machine.
-    if (_drush_core_is_local_machine($machine)) {
+    if (drush_is_local_host($machine)) {
       $machine = '';
     }
     else {
@@ -313,27 +313,5 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
     $separator = ':';
   }
   return "$machine$separator$path";
-}
-
-/**
- * Make a determination whether or not the given
- * name is local or not.
- *
- * @param site
- *   The name of a site folder (or maybe something else)
- * @return
- *   True if the name is local
- */
-function _drush_core_is_local_machine($site) {
-  // To do:  the directory in 'sites' might contain
-  // a component for the port or local path, so it
-  // would be better to do a 'contains' test on all
-  // files in 'sites' to determine if 'alias' is local.
-  // This might give a false positive, though: a remote
-  // 'mysite.com' would look local if there was a local
-  // 'dev.mysite.com'.  For now, use site aliases to
-  // refer to local sites that have port or path components
-  // in the site folder.
-  return ($site == 'localhost') || ($site == '127.0.0.1') || (file_exists(drush_get_context('DRUSH_DRUPAL_ROOT') . "/sites/$site"));
 }
 
