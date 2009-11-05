@@ -64,8 +64,8 @@ function _drush_sitealias_alias_list() {
  */
 function _drush_sitealias_site_list() {
   $site_list = array();
-  $root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  $files = drush_scan_directory($root . '\/sites', 'settings.php', array('.', '..', 'CVS', 'all'));
+  $base_path = drush_get_context('DRUSH_DRUPAL_ROOT') . '/sites';
+  $files = drush_scan_directory($base_path, '/settings\.php/', array('.', '..', 'CVS', 'all'));
   foreach ($files as $filename => $info) {
     if ($info->basename == 'settings.php') {
       $path = explode('/', $filename);
