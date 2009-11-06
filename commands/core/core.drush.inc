@@ -509,7 +509,7 @@ function core_watchdog_format_row($watchdog) {
     $severities[$watchdog->severity],
     dt($watchdog->type),
     core_watchdog_format_message($watchdog),
-    strip_tags(theme('username', $watchdog)),
+    strip_tags(theme('username', (array)$watchdog)),
   );
 }
 
