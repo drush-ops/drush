@@ -55,7 +55,7 @@ class DrushMakeProject {
         }
         if (file_exists($filename)) {
           drush_make_shell_exec("mv %s %s", $filename, $project_directory);
-          drush_make_shell_exec("patch -p0 -d %s < %s/%", $project_directory, $project_directory, $filename);
+          drush_make_shell_exec("patch -p0 -d %s < %s/%s", $project_directory, $project_directory, $filename);
           drush_log($this->name . ' patched with ' . $filename . '.', 'ok');
         }
         else {
