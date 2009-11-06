@@ -172,6 +172,18 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
   }
 }
 
+class DrushMakeDownload_Bzr extends DrushMakeDownload {
+  function download() {
+    // @TODO implement revisions, tags
+    if (isset($this->project->download['url'])) {
+      drush_make_shell_exec("bzr branch %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
+      drush_log("{$this->project->name} branched from {$this->project->download['url']}.", 'ok');
+      return $this->project->name;
+    }
+    return FALSE;
+  }
+}
+
 class DrushMakeDownload_SVN extends DrushMakeDownload {
   function download() {
     if (isset($this->project->download['url'])) {
