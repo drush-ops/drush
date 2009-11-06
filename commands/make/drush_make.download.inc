@@ -73,9 +73,27 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
       case 'gz':
       case 'tgz':
         return $this->unpack_gz($filename);
+      case 'tar':
+        return $this->unpack_tar($filename);
       case 'zip':
         return $this->unpack_zip($filename);
     }
+  }
+
+  protected function unpack_tar($filename) {
+    // Untar it and then delete the tar file.
+    drush_make_shell_exec('tar -tf %s', $filename);
+    $info = drush_shell_exec_output();
+    if ($info) {
+      list($directory) = drush_shell_exec_output();
+      drush_make_shell_exec('tar -C %s -xf %s', $this->project->tmp_path, $filename);
+      drush_op('unlink', $filename);
+
+      return $directory;
+    }
+
+    drush_set_error(dt('Could not retrieve package information for @filename.', array('@filename' => $filename)));
+    return;
   }
 
   protected function unpack_gz($filename) {
