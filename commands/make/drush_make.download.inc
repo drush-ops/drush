@@ -143,7 +143,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     $filename = $this->project->tmp_path . '/' . $filename;
     // Download the project.
     if (!drush_make_shell_exec('wget %s -O %s', $this->project->download['url'], $filename)) {
-      drush_make_shell_exec('curl -O %s', $this->project->download['url'], $filename);
+      drush_make_shell_exec('curl -o %s %s', $filename, $this->project->download['url']);
     }
     if (file_exists($filename) || drush_get_context('DRUSH_SIMULATE')) {
       drush_log($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.', 'ok');
