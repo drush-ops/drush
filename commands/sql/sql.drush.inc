@@ -20,8 +20,6 @@ function sql_drush_help($section) {
       return dt('Prints the whole database to STDOUT or save to a file.');
     case 'drush:sql query':
       return dt("Usage: drush [options] sql query <query>...\n<query> is a SQL statement, which can alternatively be passed via STDIN. Any additional arguments are passed to the mysql command directly.");
-    case 'drush:sql load':
-      return dt("Usage: drush [options] sql load <source_dir> <target_dir>.\n <source_dir> and <target_dir> are names of directories under \'sites\'. These determine from where and to where you want your database copied. Optional: specify \'common\' for --skip if you wish to omit disposable tables like cache*, search*, etc. Your skip lists are specified in your drushrc.php file. Any additional arguments are passed to the mysqldump command directly.");
     case 'drush:sql sync':
       return dt("Usage: drush [options] sql sync <source_alias> <target_alias>.\n <source_alias> and <target_alias> are site aliases, or names of directories under \'sites\'. These determine from where and to where you want your database copied.");
   }
@@ -75,24 +73,6 @@ function sql_drush_command() {
     'options' => $options,
     'aliases' => array('sqlq'),
   );
-  $items['sql load'] = array(
-    'callback' => 'drush_sql_load',
-    'description' => 'Copy source database to target database.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
-    'examples' => array(
-      'drush sql load prod dev' => 'Copy the DB defined in sites/prod to the DB in sites/dev.',
-    ),
-    'arguments' => array(
-      'from' => 'Name of subdirectory within /sites. Its settings.php defines where to dump from.',
-      'to' => 'Name of subdirectory within /sites. Its settings.php defines the destination for the dump.',
-    ),
-    'options' => array(
-      '--skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
-      '--structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
-      '--source_database' => 'The SOURCE DB connection key if using multiple connections in settings.php.',
-      '--destination_database' => 'The DESTINATION DB connection key if using multiple DB connections',
-    ),
-  );
   $items['sql sync'] = array(
     'description' => 'Copy source database to target database using rsync.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
@@ -121,10 +101,11 @@ function sql_drush_command() {
       '--db-su' => 'Remote account to use when creating a new database. Optional.', 
     ),
   );
-  if (drush_drupal_major_version() >=7) {
-    $items['sql load']['options'] += array(
-      '--source_target' => 'The name of a target within the SOURCE database.',
-      '--destination_target' => 'The name of a target within the specified DESTINATION database.',
+  if (drush_drupal_major_version() >= 7) {
+    
+    $items['sql sync']['options'] += array(
+      '--source-target' => 'The name of a target within the SOURCE database.',
+      '--destination-target' => 'The name of a target within the specified DESTINATION database.',
     );
   }
   $items['sql cli'] = array(
