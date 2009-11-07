@@ -129,7 +129,7 @@ function drush_make_create_tmp() {
 
 function drush_make_clean_tmp($tmp_dir) {
   if (!drush_get_option('no-clean', FALSE)) {
-    drush_make_shell_exec('rm -r %s', $tmp_dir);
+    drush_shell_exec('rm -r %s', $tmp_dir);
   }
   else {
     drush_log(dt('Tmp dir: %dir', array('%dir' => $tmp_dir)), 'ok');
@@ -138,29 +138,14 @@ function drush_make_clean_tmp($tmp_dir) {
 
 function drush_make_prepare_install($tmp_path, $base_path) {
   $default = $tmp_path . '/' . $base_path . '/sites/default';
-  drush_make_shell_exec("cp %s/default.settings.php  %s/settings.php", $default, $default);
-  drush_make_shell_exec("mkdir %s/files", $default);
-  drush_make_shell_exec("chmod a+w %s/settings.php %s/files", $default, $default);
+  drush_shell_exec("cp %s/default.settings.php  %s/settings.php", $default, $default);
+  drush_shell_exec("mkdir %s/files", $default);
+  drush_shell_exec("chmod a+w %s/settings.php %s/files", $default, $default);
 }
 
 function drush_make_tar($tmp_path, $base_path) {
   drush_make_fill_path(dirname($base_path));
-  drush_make_shell_exec("tar -C%s -s/__build__/%s/ -Pc __build__ | gzip > %s", $tmp_path, basename($base_path, '.tar.gz'), $base_path);
-}
-
-/*
- * Wrapper around drush_shell_exec to provide sprintf functionality with some more safety.
- */
-function drush_make_shell_exec() {
-  $args = func_get_args();
-
-  for ($x = 1; $x < count($args); $x++) {
-    $args[$x] = escapeshellcmd($args[$x]);
-  }
-
-  $command = call_user_func_array('sprintf', $args);
-
-  return drush_shell_exec($command);
+  drush_shell_exec("tar -C%s -s/__build__/%s/ -Pc __build__ | gzip > %s", $tmp_path, basename($base_path, '.tar.gz'), $base_path);
 }
 
 /**

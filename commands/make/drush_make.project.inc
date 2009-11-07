@@ -37,7 +37,7 @@ class DrushMakeProject {
     drush_make_fill_path($this->path);
     if (is_dir($this->path . '/' . $directory)) {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
-      drush_make_shell_exec('rm -r %s', $directory);
+      drush_shell_exec('rm -r %s', $directory);
     }
     return $this->path;
   }
@@ -51,13 +51,13 @@ class DrushMakeProject {
       foreach ($this->patch as $url) {
         // Download the patch.
         list($filename) = array_reverse(explode('/', $url));
-        if (!drush_make_shell_exec('wget %s', $url)) {
-          drush_make_shell_exec('curl -O %s', $url);
+        if (!drush_shell_exec('wget %s', $url)) {
+          drush_shell_exec('curl -O %s', $url);
         }
         if (file_exists($filename)) {
           $patches_txt .= '- ' . $url . "\n";
-          drush_make_shell_exec("mv %s %s", $filename, $project_directory);
-          drush_make_shell_exec("patch -p0 -d %s < %s/%s", $project_directory, $project_directory, $filename);
+          drush_shell_exec("mv %s %s", $filename, $project_directory);
+          drush_shell_exec("patch -p0 -d %s < %s/%s", $project_directory, $project_directory, $filename);
           drush_log($this->name . ' patched with ' . $filename . '.', 'ok');
         }
         else {
@@ -79,11 +79,11 @@ class DrushMakeProject {
    */
   function move($project_directory) {
     if (empty($this->directory_name)) {
-      drush_make_shell_exec("mv %s/%s %s", $this->tmp_path, $project_directory, $this->path);
+      drush_shell_exec("mv %s/%s %s", $this->tmp_path, $project_directory, $this->path);
     }
     else {
       list($project_directory) = array_reverse(explode('/', trim($project_directory, '/')));
-      drush_make_shell_exec("mv %s/%s %s/%s", $this->tmp_path, $project_directory, $this->path, $this->directory_name);
+      drush_shell_exec("mv %s/%s %s/%s", $this->tmp_path, $project_directory, $this->path, $this->directory_name);
       $project_directory = $this->directory_name;
     }
     return $this->path . '/' . $project_directory;
@@ -136,7 +136,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
     drush_make_fill_path(dirname($this->path));
     if (is_dir($this->path . '/' . $directory)) {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
-      drush_make_shell_exec('rm -r %s', $directory);
+      drush_shell_exec('rm -r %s', $directory);
     }
     return $this->path;
   }
@@ -148,7 +148,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
    * @TODO ensure that the core project is always created first.
    */
   function move($project_directory) {
-    drush_make_shell_exec("mv %s/%s %s/__build__", $this->tmp_path, $project_directory, $this->tmp_path);
+    drush_shell_exec("mv %s/%s %s/__build__", $this->tmp_path, $project_directory, $this->tmp_path);
   }
 }
 
