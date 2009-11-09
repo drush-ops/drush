@@ -1,6 +1,15 @@
 <?php
 // $Id$
 
+function drush_make_ensure_version() {
+  // Check version 2.1 or up:
+  $options = drush_get_option_help();
+  if (isset($options['-n, --nocolor'])) {
+    return '2.1';
+  }
+  return;
+}
+
 function drush_make_base_path_validate($base_path) {
   if ($base_path != '.' && file_exists($base_path)) {
     drush_set_error(dt('Base path %path already exists', array('%path' => $base_path)));

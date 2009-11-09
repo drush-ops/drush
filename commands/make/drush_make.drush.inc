@@ -37,7 +37,8 @@ function drush_make_drush_help($section) {
  */
 function drush_make($makefile = NULL, $base_path = NULL) {
   $queue = new DrushMakeQueue();
-  $base_path = $queue->addItem('drush_make_base_path', array($base_path));
+  $drush_version = $queue->addItem('drush_make_ensure_version');
+  $base_path = $queue->addItem('drush_make_base_path', array($base_path), array($drush_version));
   $file_exists = $queue->addItem('drush_make_base_path_validate', array(), $base_path);
   $info  = $queue->addItem('drush_make_parse_info_file', $makefile, $file_exists);
   $valid = $queue->addItem('drush_make_validate_info_file', array(), $info);
