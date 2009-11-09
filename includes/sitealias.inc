@@ -91,7 +91,7 @@ function drush_sitealias_get_record($alias, $db_settings_needed = false) {
           }
           // Cache our result so we don't need to do IPC for successive calls to this function
           drush_set_option('databases-' . $alias, $alias_record['databases'], 'sitealias-cache');
-  }
+        }
       }
     }
     // If the parameter is not an alias, then it is some form of
@@ -204,6 +204,14 @@ function _drush_sitealias_add_transient_defaults(&$alias_record) {
  */
 function _drush_sitealias_find_record_for_local_site($alias, $db_settings_needed = false) {
   $alias_record = array();
+  $use_name_from_alias = false;
+  
+  // The alias "current" is a synonym for whatever site
+  // has been specified via -l or -uri
+  if ($alias == "current") {
+    $alias = drush_get_option(array('l', 'uri'));
+    $use_name_from_alias = true;
+  }
   
   // Clip off the leading '#' if it is there
   if (substr($alias,0,1) == '#') {
@@ -238,6 +246,12 @@ function _drush_sitealias_find_record_for_local_site($alias, $db_settings_needed
     $alias_record = array_merge(_drush_sitealias_build_record_from_settings($alias, $drupal_root), $alias_record);
   }
   
+  // If the alias was looked up via the name "current", then
+  // plug in the actual alias name that was used to find it.
+  if (!empty($alias_record) && $use_name_from_alias) {
+    $alias_record['name'] = $alias;
+  }
+  
   return $alias_record;
 }
 
@@ -263,27 +277,74 @@ function _drush_sitealias_build_record_from_settings($alias, $drupal_root = null
     $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
   }
   
-  // If we did not find an alias record that matches,
-  // then build one.
-  if (empty($alias_record)) {
-    $site_settings_file = $drupal_root . '/sites/' . $alias . '/settings.php';
-    if (isset($drupal_root) && file_exists($site_settings_file)) {
+  if (isset($drupal_root)) {
+    $alias_dir = drush_sitealias_uri_to_site_dir($alias);
+    $site_settings_file = $drupal_root . '/sites/' . $alias_dir . '/settings.php';
+    $alias_record = drush_sitealias_build_record_from_settings_file($site_settings_file, $alias, $drupal_root);
+  }
+  
+  return $alias_record;
+}
+
+function drush_sitealias_build_record_from_settings_file($site_settings_file, $alias = null, $drupal_root = null) {
+  $alias_record = array();
+
+  if (!isset($drupal_root)) {
+    $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
+  }
+
+  if (file_exists($site_settings_file)) {
+    global $databases, $db_url, $base_url;
+    $base_url = null;
+    require $site_settings_file;
+    if (isset($db_url)) {
+      $alias_record['db-url'] = $db_url;
+    }
+    else {
+      $alias_record['databases'] = $databases;
+    }
+    $alias_record['path-aliases'] = array(
+      '!root' => $drupal_root,
+      /*'!files' => '/path/to/file/storage', */
+      /*'!dump' => '/path/to/sql/dumpfile', */ );
+    
+    if (isset($alias)) {
       $alias_record['uri'] = $alias;
-      global $databases, $db_url;
-      require $site_settings_file;
-      if (isset($db_url)) {
-	$alias_record['db-url'] = $db_url;
-      }
-      else {
-	$alias_record['databases'] = $databases;
-      }
-      $alias_record['path-aliases'] = array(
-	'!root' => $drupal_root,
-	/*'!files' => '/path/to/file/storage', */
-	/*'!dump' => '/path/to/sql/dumpfile', */ );
+    }
+    elseif ($base_url != null) {
+      $alias_record['uri'] = $base_url;
+    }
+    else {
+      $alias_record['uri'] = _drush_sitealias_site_dir_to_uri(drush_sitealias_site_dir_from_filename($site_settings_file));
     }
   }
+
   return $alias_record;
+}
+
+/**
+ * Pull the site directory from the path to settings.php
+ *
+ * @param site_settings_file
+ *   path to settings.php
+ *
+ * @return string
+ *   the site directory component of the path to settings.php
+ */
+function drush_sitealias_site_dir_from_filename($site_settings_file) {
+  return basename(dirname($site_settings_file));
+}
+
+/**
+ * Convert from a URI to a site directory.
+ *
+ * @param uri
+ *   A uri, such as http://domain.com:8080/drupal
+ * @return string
+ *   A directory, such as domain.com.8080.drupal
+ */
+function drush_sitealias_uri_to_site_dir($uri) {
+  return str_replace(array('http://', '/', ':'), array('', '.', '.'), $uri);
 }
 
 /**
