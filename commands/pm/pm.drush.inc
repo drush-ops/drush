@@ -444,17 +444,15 @@ function drush_pm_info() {
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
   $projects = func_get_args();
-  include_once drupal_get_path('module', 'update') .'/update.fetch.inc';
-  $rows[] = array(dt('Project'), dt('Release'), dt('Date'));
   
-  foreach ($projects as $project_name) {
-    $url = UPDATE_DEFAULT_URL. "/$project_name/". drush_drupal_major_version() . '.x';
-    $xml = drupal_http_request($url);
-    $info = update_parse_xml($xml->data);
-    
-    foreach ($info['releases'] as $key => $release) {
+  $projects = drupal_map_assoc($projects);
+  $info = pm_get_project_info($projects);
+
+  $rows[] = array(dt('Project'), dt('Release'), dt('Date'));
+  foreach ($info as $key => $project) {
+    foreach ($project['releases'] as $release) {
       $rows[] = array(
-        $project_name,
+        $key,
         $release['version'],
         format_date($release['date'], 'custom', 'Y-M-d'),
       );
