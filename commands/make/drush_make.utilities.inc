@@ -7,6 +7,7 @@ function drush_make_ensure_version() {
   if (isset($options['-n, --nocolor'])) {
     return '2.1';
   }
+  drush_set_error(dt('Drush version 2.1 or higher is required for drush make to work.'));
   return;
 }
 
