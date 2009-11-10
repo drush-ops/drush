@@ -101,7 +101,7 @@ function drush_variable_variable_get() {
     elseif (is_string($value)) {
       $value = '"' . $value . '"';
     }
-    elseif (is_array($value)) {
+    elseif (is_array($value) || is_object($value)) {
       $value = print_r($value, TRUE);
     }
     drush_print($name . ': ' . $value);
