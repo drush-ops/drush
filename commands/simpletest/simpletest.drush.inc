@@ -44,6 +44,11 @@ function simpletest_drush_command() {
     'drupal dependencies' => array('simpletest'),
     'core' => array('6','7'),
   );
+  $items['test drush'] = array(
+    'callback' => 'drush_test_drush',
+    'description' => 'Run drush-specific tests',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
   return $items;
 }
 
@@ -61,10 +66,9 @@ function drush_test_mail($recipients) {
     return drush_set_error('DRUSH_SIMPLETEST_RUNTESTS_SH', dt('You must copy or symlink run-tests.sh into your /scripts directory beneath Drupal root.'));
   }
   
-  $php = drush_find_php();
   $extra = drush_get_option('extra');
   $url = escapeshellarg(url('', array('absolute' => TRUE)));
-  $exec = $php . " $run_tests --php '" . $php . '\' --url ' . $url . " $extra";
+  $exec = "$run_tests --php '" . DRUSH_COMMAND . '\' --url ' . $url . " $extra";
   drush_shell_exec($exec);
   $output =  implode("\n", drush_shell_exec_output());
   $subject = 'Simpletest results - ' . drush_simpletest_format_results($output);
@@ -86,4 +90,18 @@ function drush_simpletest_format_results($output) {
   else {
     return dt('Unknown.');
   }
+}
+
+/**
+ * Simple drush self-test procedure
+ *
+ * This only tests self-execution for now.
+ *
+ * XXX: this needs to be adapted to a testing framework, see:
+ *
+ * http://drupal.org/node/483940
+ */
+function drush_test_drush() {
+  drush_log(dt("Invoking %drush help in a subprocess", array('%drush' => DRUSH_COMMAND)));
+  drush_backend_invoke('help', array(), 'GET', FALSE);
 }

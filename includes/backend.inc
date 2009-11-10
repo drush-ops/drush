@@ -352,12 +352,8 @@ function _drush_backend_generate_command($command, $args, &$data, $method = 'GET
   foreach ($args as $arg) {
     $command .= ' ' . escapeshellarg($arg);
   }
-  $php='';
-  if (".php" == substr($drush_path, strlen($drush_path) - strlen(".php"))) {
-    $php  = drush_find_php() . ' ';
-  }
   // @TODO: Implement proper multi platform / multi server support.
-  $cmd = $php . sprintf(escapeshellcmd(" %s %s %s --backend"), escapeshellcmd($drush_path), $option_str, $command);
+  $cmd = sprintf(escapeshellcmd(" %s %s %s --backend"), escapeshellcmd($drush_path), $option_str, $command);
 
   if (!is_null($hostname)) {
     $username = (!is_null($username)) ? $username : get_current_user();

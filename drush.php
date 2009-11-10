@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 // $Id$
 
@@ -20,7 +21,8 @@ if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0) {
 }
 
 define('DRUSH_BASE_PATH', dirname(__FILE__));
-define('DRUSH_COMMAND', $GLOBALS['argv'][0]);
+
+
 define('DRUSH_REQUEST_TIME', microtime(TRUE));
 
 require_once DRUSH_BASE_PATH . '/includes/environment.inc';
