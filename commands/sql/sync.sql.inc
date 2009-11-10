@@ -77,6 +77,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   // and local files and hope for the best.
   $source_dump = drush_get_option('source-dump');
   $target_dump = drush_get_option('target-dump');
+  $use_temp_files = drush_get_option('temp');
   $source_is_tmp = FALSE;
   $target_is_tmp = FALSE;
   $local_is_tmp = FALSE;
@@ -113,6 +114,12 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     $local_file = $target_dump;
   }
 
+  // Check to see if we are using a temporary file in a situation
+  // where the user did not specify "--temp".
+  if (($source_is_tmp || $target_is_tmp) && (!isset($use_temp_files))) {
+    drush_print(dt('WARNING:  Using temporary files to store and transfer sql dump.  It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'!dump\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
+  }
+  
   // If source is remote, then use ssh to dump the database and then rsync to local machine
   // If source is local, call drush_sql_dump to dump the database to local machine
   // In either case, the '--no-dump' option will cause the sql dump step to be skipped, and

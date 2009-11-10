@@ -97,6 +97,7 @@ function sql_drush_command() {
       '--target-remote-port' => '',
       '--target-remote-host' => '',
       '--target-dump' => '',
+      '--temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
       '--create-db' => 'Create a new database before importing the database dump on the target machine.',
       '--db-su' => 'Remote account to use when creating a new database. Optional.', 
     ),
