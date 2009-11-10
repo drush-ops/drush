@@ -194,7 +194,7 @@ class DrushMakeDownload_Bzr extends DrushMakeDownload {
   function download() {
     // @TODO implement revisions, tags
     if (isset($this->project->download['url'])) {
-      drush_shell_exec("bzr branch %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
+      drush_shell_exec("bzr export %s/%s %s", $this->project->tmp_path, $this->project->name, $this->project->download['url']);
       drush_log("{$this->project->name} branched from {$this->project->download['url']}.", 'ok');
       return $this->project->name;
     }
@@ -213,6 +213,18 @@ class DrushMakeDownload_SVN extends DrushMakeDownload {
         drush_shell_exec("svn --non-interactive export %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
         drush_log($this->project->name . ' downloaded from ' . $this->project->download['url'] . '.', 'ok');
       }
+      return $this->project->name;
+    }
+    return FALSE;
+  }
+}
+
+class DrushMakeDownload_Hg extends DrushMakeDownload {
+  function download() {
+    // @TODO implement revisions, tags
+    if (isset($this->project->download['url'])) {
+      drush_shell_exec("hg clone %s %s/%s", $this->project->download['url'], $this->project->tmp_path, $this->project->name);
+      drush_log("{$this->project->name} branched from {$this->project->download['url']}.", 'ok');
       return $this->project->name;
     }
     return FALSE;

@@ -9,7 +9,7 @@ file.
 
 Among drush_make's capabilities are:
 * Downloading Drupal core, as well as contrib modules from drupal.org.
-* Checking code out from CVS, SVN, git and bzr repositories.
+* Checking code out from CVS, SVN, git, bzr, and hg repositories.
 * Getting plain .tar.gz and .zip files (particularly useful for libraries
   that can not be distributed directly with drupal core or modules).
 * Fetching and applying patches.
