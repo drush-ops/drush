@@ -9,7 +9,8 @@
  */
 
 /**
- * Get module information for all installed modules.
+ * Get module information for all modules, including disabled. Used by updatedb,
+ * among others.
  *
  * @return
  *   An array containing module info for all installed modules.
