@@ -425,7 +425,6 @@ function _drush_find_commandfiles($phase) {
         $searchpath[] = dirname($filename);
       }
       break;
-
   }
 
   if (sizeof($searchpath)) {
