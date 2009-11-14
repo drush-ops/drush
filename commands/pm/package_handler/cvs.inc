@@ -9,7 +9,7 @@
  * Install a project (so far, only modules are supported).
  *
  * @param $project The short name of the drupal.org project
- * @param $info The details (fetched from drupal.org via xml-rpc)
+ * @param $info The details (fetched from drupal.org's xml file)
  * @param $path The path to install the module to.
  */
 function package_handler_install_project($project, $info, $path = '.') {
@@ -22,13 +22,15 @@ function package_handler_install_project($project, $info, $path = '.') {
   // Check it out.
   drush_pm_cvs_checkout($project, $info, $cvsparams);
 
-  if (is_dir($path . $project) && !drush_get_context('DRUSH_SIMULATE')) {
-    drush_log("Checking out " . $project . " was successful.");
-    return TRUE;
-  }
-  else {
-    drush_set_error('DRUSH_PM_CVS_CHECKOUT_PROBLEMS', dt("Unable to check out !filename to !path from cvs.drupal.org", array('!filename' => $filename, '!path' => $path)));
-    return FALSE;
+  if (!drush_get_context('DRUSH_SIMULATE')) {
+    if (is_dir($path . $project)) {
+      drush_log("Checking out " . $project . " was successful.");
+      return TRUE;
+    }
+    else {
+      drush_set_error('DRUSH_PM_CVS_CHECKOUT_PROBLEMS', dt("Unable to check out !filename to !path from cvs.drupal.org", array('!filename' => $filename, '!path' => $path)));
+      return FALSE;
+    }
   }
 }
 
@@ -103,7 +105,8 @@ function drush_pm_cvs_checkout($project, $info, $cvsparams) {
   
   $cvscredentials = drush_get_option('cvscredentials', 'anonymous:anonymous');
 
-  if (!drush_shell_exec('cvs -z6 '. $cvsparams ." -d:pserver:$cvscredentials@cvs.drupal.org:/cvs/" . $repos . ' checkout -d '. $project .' -r '. $info['tag'] .' '. $cvsdir . $project)) {
+  // TRUE means failure in the twilight zone.
+  if (drush_shell_exec('cvs -z6 '. $cvsparams ." -d:pserver:$cvscredentials@cvs.drupal.org:/cvs/" . $repos . ' checkout -d '. $project .' -r '. $info['tag'] .' '. $cvsdir . $project)) {
     drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', "Unable to checkout $project from cvs.drupal.org.");
   }
 }

@@ -407,9 +407,6 @@ function drush_show_help($commands) {
  *   0 if success.
  */
 function drush_shell_exec($cmd) {
-  if (drush_get_context('DRUSH_SIMULATE')) {
-    return true;
-  }
   $args = func_get_args();
  
   //do not change the command itself, just the parameters.
@@ -422,18 +419,22 @@ function drush_shell_exec($cmd) {
     drush_log('Executing: ' . $command);
   }
 
-  exec($command . ' 2>&1', $output, $result);
-  
-  _drush_shell_exec_output_set($output);
+  if (!drush_get_context('DRUSH_SIMULATE')) {
+    exec($command . ' 2>&1', $output, $result);
+    _drush_shell_exec_output_set($output);
 
-  if (drush_get_context('DRUSH_VERBOSE')) {
-    foreach ($output as $line) {
-      drush_print($line, 2);
+    if (drush_get_context('DRUSH_VERBOSE')) {
+      foreach ($output as $line) {
+        drush_print($line, 2);
+      }
     }
+  
+    // Exit code 0 means success.
+    return ($result == 0);
   }
-
-  // Exit code 0 means success.
-  return ($result == 0);
+  else {
+    return 0;
+  }
 }
 
 /**
