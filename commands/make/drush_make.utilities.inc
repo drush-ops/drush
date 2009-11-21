@@ -155,7 +155,18 @@ function drush_make_prepare_install($tmp_path, $base_path) {
 
 function drush_make_tar($tmp_path, $base_path) {
   drush_make_fill_path(dirname($base_path));
-  drush_shell_exec("tar -C%s -s/__build__/%s/ -Pc __build__ | gzip > %s", $tmp_path, basename($base_path, '.tar.gz'), $base_path);
+  $filename = basename($base_path);
+  $dirname = basename($base_path, '.tar.gz');
+  // Move the build directory to a more human-friendly name, so that tar will
+  // use it instead.
+  drush_shell_exec("mv %s/__build__ %s/%s", $tmp_path, $tmp_path, $dirname);
+  // Only move the tar file to it's final location if it's been built
+  // successfully.
+  if (drush_shell_exec("tar -C %s -Pczf %s/%s %s", $tmp_path, $tmp_path, $filename, $dirname)) {
+    drush_shell_exec("mv %s/%s %s", $tmp_path, $filename, $base_path);
+  };
+  // Move the build directory back to it's original location for consistency.
+  drush_shell_exec("mv %s/%s %s/__build__", $tmp_path, $dirname, $tmp_path);
 }
 
 /**
