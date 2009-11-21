@@ -87,6 +87,13 @@ projects[mytheme][download][url] = "http://example.com/svnrepo/cool-theme/"
 projects[mytheme][download][branch] = "production"
 ====
 
+To export from Drupal CVS
+====
+projects[cck][download][type] = "cvs"
+projects[cck][download][module] = "contributions/modules/cck"
+projects[cck][download][revision] = "DRUPAL-6--1"
+====
+
 To download an external library (this will be placed in sites/all/libraries by default):
 ====
 libraries[tinymce][download][type] = "get"
