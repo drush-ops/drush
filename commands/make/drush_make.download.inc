@@ -43,18 +43,19 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
       }
       // Fallback to anonymous @ cvs.drupal.org
       if (!isset($this->project->download['root'])) {
-        $this->project->download['root'] = "pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal-contrib";
+        $this->project->download['root'] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal-contrib";
       }
       $flags = isset($this->project->download['revision']) ? "-r{$this->project->download['revision']}" : '';
 
       if (drush_get_option('working-copy')) {
-        drush_shell_exec("(cd %s; cvs -d:%s checkout -d%s %s %s)", $this->project->tmp_path, $this->project->download['root'], $this->project->name, $flags, $this->project->download['module']);
-        drush_log($this->project->name . ' checkout from ' . $this->project->download['module'] . '.', 'ok');
+        $command = 'checkout';
       }
       else {
-        drush_shell_exec("(cd %s; cvs -d:%s export -d%s %s %s)", $this->project->tmp_path, $this->project->download['root'], $this->project->name, $flags, $this->project->download['module']);
-        drush_log("{$this->project->name} export from {$this->project->download['module']}.", 'ok');
+        $command = 'export';
       }
+      # Checkout or export the module. 
+      drush_shell_exec("(cd %s; cvs -d%s %s -d%s %s %s)", $this->project->tmp_path, $this->project->download['root'], $command, $this->project->name, $flags, $this->project->download['module']);
+      drush_log("{$this->project->name} $command from {$this->project->download['module']}.", 'ok');
       return $this->project->name;
     }
     return FALSE;
