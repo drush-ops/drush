@@ -113,6 +113,7 @@ function drush_make_add_projects($recursion, $install_path, $tmp_path, $base_pat
     $queue->addItem('drush_make_run', array(), $init);
   }
   if (!$core && !$recursion) {
+    drush_set_error(dt('No core project specified.'));
     $queue->terminate();
   }
 }
