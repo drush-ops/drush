@@ -46,7 +46,7 @@
  *
  *    Specified by config files : 
  *      custom   : Loaded from the config file specified by --config or -c
- *      site     : Loaded from the drushrc.php file in the Drupal sites directory.
+ *      site     : Loaded from the drushrc.php file in the Drupal site directory.
  *      drupal   : Loaded from the drushrc.php file in the Drupal root directory.
  *      user     : Loaded from the drushrc.php file in the user's home directory.
  *      system   : Loaded from the drushrc.php file in the system's $PREFIX/etc/drush directory.

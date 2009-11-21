@@ -6,11 +6,12 @@
  * typing of options and avoid mistakes.
  *
  * Rename this file to drushrc.php and optionally copy it to one of
- * four convenient places, listed below in order of precedence:
+ * five convenient places, listed below in order of precedence:
  *
- * - Drupal site folder.
+ * - Drupal site folder (e.g sites/{default|example.com}/drushrc.php).
  * - Drupal installation root.
  * - User Home folder (i.e. ~/.drushrc.php).
+ * - System wide configuration folder (e.g. /etc/drush/drushrc/php).
  * - Drush installation folder.
  *
  * If a configuration file is found in any of the above locations, it
@@ -53,7 +54,7 @@ $options['skip-tables'] = array(
 
 /*
  * Customize this associative array with your own tables. This is the 
- * list of tables that whose *data* is skipped by the 'sql dump' and 'sql load' 
+ * list of tables whose *data* is skipped by the 'sql dump' and 'sql load' 
  * commands when a structure-tables-key is provided. You may add new tables to the existing array or add a new 
  * element.
  */
