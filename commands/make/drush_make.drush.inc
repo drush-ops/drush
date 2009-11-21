@@ -19,6 +19,12 @@ function drush_make_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
+  $items['generate makefile'] = array(
+    'description' => 'Attempts to generate a makefile from the current drupal install.',
+    'callback' => 'drush_generate_makefile',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+  );
+
   return $items;
 }
 
@@ -29,7 +35,17 @@ function drush_make_drush_help($section) {
   switch ($section) {
     case 'drush:make':
       return dt("@TODO: Print information on the format of the makefile here.");
+    case 'drush:generate makefile':
+      return dt("This command attempts to generate a makefile from the current drupal install. It is imperfect in that it cannot always find the sources of various components.");
   }
+}
+
+/**
+ * Drush callback; make a makefile from the current install.
+ */
+function drush_generate_makefile($file) {
+  include_once 'drush_make.generate.inc';
+  _drush_generate_makefile($file);
 }
 
 /**
