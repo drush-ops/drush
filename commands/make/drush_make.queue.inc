@@ -2,6 +2,8 @@
 // $Id$
 
 class DrushMakeQueue {
+  var $terminated = FALSE;
+
   function __construct() {
     $this->items = array();
     $this->id = 0;
@@ -42,6 +44,10 @@ class DrushMakeQueue {
   }
 
   function execute() {
+    if ($this->terminated) {
+      $this->terminated = FALSE;
+      return FALSE;
+    }
     while (count($this->items)) {
       $item = array_shift($this->items);
       $this->current = $item['id'];
@@ -75,6 +81,11 @@ class DrushMakeQueue {
 
   function getReturn($index) {
     return $this->returns[$index];
+  }
+
+  function terminate() {
+    $this->items = array();
+    $this->terminated = TRUE;
   }
 }
 

@@ -59,10 +59,10 @@ function drush_make($makefile = NULL, $base_path = NULL) {
   $info  = $queue->addItem('drush_make_parse_info_file', $makefile, $file_exists);
   $valid = $queue->addItem('drush_make_validate_info_file', array(), $info);
   $tmp = $queue->addItem('drush_make_create_tmp', array(), $valid);
-  $queue->addItem('drush_make_add_projects', array(drush_get_option('destination', 'sites/all')), array($tmp, $base_path, $valid));
+  $queue->addItem('drush_make_add_projects', array(FALSE, drush_get_option('destination', 'sites/all')), array($tmp, $base_path, $valid));
   $queue->addItem('drush_make_add_libraries', array(drush_get_option('destination', 'sites/all')), array($tmp, $base_path, $valid));
   $queue->execute();
-  $tmp_dir = $queue->getReturn($tmp);
+
   // Add clean up tasks.
   if (drush_get_option('prepare-install')) {
     $queue->addItem('drush_make_prepare_install', array(), array($tmp, $base_path));
@@ -76,7 +76,8 @@ function drush_make($makefile = NULL, $base_path = NULL) {
   $queue->execute();
 }
 
-function drush_make_add_projects($install_path, $tmp_path, $base_path, $info, $queue) {
+function drush_make_add_projects($recursion, $install_path, $tmp_path, $base_path, $info, $queue) {
+  $core = FALSE;
   foreach ($info['projects'] as $key => $project) {
     // Cover if there is no project info, it's just a project name.
     if (is_string($project) && is_numeric($key)) {
@@ -100,9 +101,19 @@ function drush_make_add_projects($install_path, $tmp_path, $base_path, $info, $q
       'queue'          => $queue,
     );
     // Special case for Update XML.
-    $update = $queue->addItem('drush_make_updatexml', array($project));
-    $init = $queue->addItem('drush_make_initialize_project', array(), $update);
+    $subqueue = new DrushMakeQueue;
+    $update = $subqueue->addItem('drush_make_updatexml', array($project));
+    $subqueue->execute();
+    $project = $subqueue->getReturn($update);
+    if ($project['type'] == 'core') {
+      $core = TRUE;
+    }
+
+    $init = $queue->addItem('drush_make_initialize_project', array($project));
     $queue->addItem('drush_make_run', array(), $init);
+  }
+  if (!$core && !$recursion) {
+    $queue->terminate();
   }
 }
 

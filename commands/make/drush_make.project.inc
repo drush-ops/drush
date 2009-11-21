@@ -119,7 +119,7 @@ class DrushMakeProject {
       foreach ($makefiles as $file) {
         $info  = $this->queue->addItem('drush_make_parse_info_file', $file->filename);
         $valid = $this->queue->addItem('drush_make_validate_info_file', array(), $info);
-        $this->queue->addItem('drush_make_add_projects', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
+        $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
         $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
       }
     }
