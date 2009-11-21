@@ -147,10 +147,10 @@ function drush_make_clean_tmp($tmp_dir) {
 }
 
 function drush_make_prepare_install($tmp_path, $base_path) {
-  $default = $tmp_path . '/' . $base_path . '/sites/default';
-  drush_shell_exec("cp %s/default.settings.php  %s/settings.php", $default, $default);
-  drush_shell_exec("mkdir %s/files", $default);
-  drush_shell_exec("chmod a+w %s/settings.php %s/files", $default, $default);
+  $default = $tmp_path . '/__build__/sites/default';
+  drush_shell_exec("cp %s %s", $default . '/default.settings.php', $default . '/settings.php');
+  drush_shell_exec("mkdir %s", $default . '/files');
+  drush_shell_exec("chmod a+w %s %s", $default . '/settings.php', $default . '/files');
 }
 
 function drush_make_tar($tmp_path, $base_path) {
