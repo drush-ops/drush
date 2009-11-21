@@ -28,6 +28,7 @@ class DrushMakeProject {
       $move = $this->queue->addItem(array($this, 'move'), array(), array($directory, $full_path));
       $this->queue->addItem(array($this, 'applyPatches'), array(), array($move));
       $this->queue->addItem(array($this, 'recurse'), array(), array($move, $directory));
+      $this->made = TRUE;
     }
     return FALSE;
   }
@@ -137,6 +138,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
     if (is_dir($this->path . '/' . $directory)) {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
       drush_shell_exec('rm -r %s', $directory);
+      return FALSE;
     }
     return $this->path;
   }
@@ -149,6 +151,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
    */
   function move($project_directory) {
     drush_shell_exec("mv %s/%s %s/__build__", $this->tmp_path, $project_directory, $this->tmp_path);
+    return $this->tmp_path . '/__build__';
   }
 }
 
