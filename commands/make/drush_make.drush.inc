@@ -151,8 +151,8 @@ function drush_make_updatexml($project, $queue) {
     return $project;
   }
   // First, get the release history.
-  @$release_history = simplexml_load_file($project['location'] . '/' . $project['name'] . '/' . $project['core']);
-  if (!$release_history->title) {
+  $release_history = simplexml_load_file($project['location'] . '/' . $project['name'] . '/' . $project['core']);
+  if (!is_object($release_history) || !$release_history->title) {
     drush_set_error(dt("Could not retrieve version information for @project.", array('@project' => $project['name'])));
     return FALSE;
   }
