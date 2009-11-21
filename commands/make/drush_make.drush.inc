@@ -69,7 +69,8 @@ function drush_make($makefile = NULL, $base_path = NULL) {
   }
   if (drush_get_option('tar')) {
     $queue->addItem('drush_make_tar', array(), array($tmp, $base_path));
-  } else {
+  }
+  else {
     $queue->addItem('drush_make_move_build', array(), array($tmp, $base_path, $valid));
   }
   $queue->addItem('drush_make_clean_tmp', array(), array($tmp));
