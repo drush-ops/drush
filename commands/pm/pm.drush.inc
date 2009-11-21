@@ -198,6 +198,7 @@ function drush_pm_uninstall() {
   // Make sure the install API is available.
   require_once './includes/install.inc';
     
+  $module_info = array();
   foreach ($modules as $module) {
     // Minimalist validation.
     if (drush_drupal_major_version() >= 7) {
@@ -214,8 +215,16 @@ function drush_pm_uninstall() {
       drush_log(dt('!module was successfully uninstalled.', array('!module' => $module)), 'ok');
     }
     else {
-      drush_set_error('DRUSH_PM_UNINSTALL_ACTIVE_MODULE', dt('!module is not disabled. If active, use `disable` command before `uninstall`.', array('!module' => $module)));
-    }    
+      if (empty($module_info)) {
+        $module_info = drush_get_modules();
+      }
+      if (isset($module_info[$module]) && $module_info[$module]->status) {
+        drush_set_error('DRUSH_PM_UNINSTALL_ACTIVE_MODULE', dt('!module is not disabled. Use `disable` command before `uninstall`.', array('!module' => $module)));
+      }
+      else {
+        drush_log(dt('Module !module is either already uninstalled or does not exist.', array('!module' => $module)), 'warning');
+      }
+    }
   }
 }
 
@@ -235,7 +244,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
     // We will override this to be an empty array instead to be compatible to Drupal 6 and 7
     if (empty($module->info['dependencies'])){
        $module->info['dependencies'] = array();
-    }
+    } 
     // Add enabled modules to an array for easy reference.
     if ($module_info[$module_name]->status) {
       $enabled[] = $module_name;
