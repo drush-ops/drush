@@ -15,7 +15,6 @@ include_once 'drush_make.queue.inc';
 function drush_make_drush_command() {
   $items['make'] = array(
     'description' => 'Turns a makefile into a working drupal install.',
-    'callback' => 'drush_make',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
@@ -51,7 +50,7 @@ function drush_generate_makefile($file) {
 /**
  * Drush callback; make based on the makefile.
  */
-function drush_make($makefile = NULL, $base_path = NULL) {
+function drush_drush_make_make($makefile = NULL, $base_path = NULL) {
   $queue = new DrushMakeQueue();
   $drush_version = $queue->addItem('drush_make_ensure_version');
   $base_path = $queue->addItem('drush_make_base_path', array($base_path), array($drush_version));
