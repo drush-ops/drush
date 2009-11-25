@@ -2,13 +2,13 @@
 // $Id$
 
 // Perform setup tasks for installation.
-function drush_core_pre_installcore() {
+function drush_core_pre_installsite() {
   
-  if (!$db_spec = drush_core_installcore_db_spec()) {
-    drush_set_error(dt('Could not determine database connection parameters.'));
+  if (!$db_spec = drush_core_installsite_db_spec()) {
+    drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
   }
-  
+
   // TODO: not needed?
   $sites_subdir = drush_get_option('sites-subdir', 'default');
   $conf_path = "sites/$sites_subdir";
@@ -23,7 +23,7 @@ function drush_core_pre_installcore() {
   $msg[] = dt("DROP your '@db' database and then CREATE a new one.", array('@db' => $db_spec['database']));
   
   if (!drush_confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
-    return drush_set_error('CORE_INSTALLCORE_ABORT', 'Aborting.');
+    return drush_set_error('CORE_INSTALLSITE_ABORT', 'Aborting.');
   }
   
   // Can't install without sites directory and settings.php.
@@ -73,10 +73,10 @@ function drush_core_pre_installcore() {
   }
 }
 
-function drush_core_installcore($profile = 'default') {
+function drush_core_installsite($profile = 'default') {
   require_once('install.php');
   
-  $db_spec = drush_core_installcore_db_spec();
+  $db_spec = drush_core_installsite_db_spec();
   
   $account_pass = drush_get_option('account_pass', 'admin');
   $settings = array(
@@ -87,7 +87,7 @@ function drush_core_installcore($profile = 'default') {
     'forms' => array(
       'install_settings_form' => $db_spec,
       'install_configure_form' => array(
-        'site_name' => drush_get_option('site_name', 'Installcore'),
+        'site_name' => drush_get_option('site_name', 'Installsite'),
         'site_mail' => drush_get_option('site_mail', 'admin@example.com'),
         'account' => array(
           'name' => drush_get_option('account-name', 'admin'),
@@ -105,13 +105,13 @@ function drush_core_installcore($profile = 'default') {
       ),
     ),
   );
-  drush_log(dt('Starting core Drupal installation. This takes a few seconds or more depending on your install profile ...'), 'ok');
+  drush_log(dt('Starting Drupal installation. This takes a few seconds or more depending on your install profile ...'), 'ok');
   install_drupal($settings);
 }
 
 // Return a db_spec based on supplied db_url/db_prefix options or
 // an existing settings.php.
-function drush_core_installcore_db_spec() {
+function drush_core_installsite_db_spec() {
   if ($db_url = drush_get_option('db-url')) {
     // We were passed a db_url. Usually a fresh site.
     $db_spec = drush_convert_db_from_db_url($db_url);

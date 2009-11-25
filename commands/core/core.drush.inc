@@ -142,8 +142,8 @@ function core_drush_command() {
       'code' => 'PHP code',
     ),
   );
-  $items['installcore'] = array(
-    'description' => 'Install Drupal core via the specified install profile.',
+  $items['installsite'] = array(
+    'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
     'arguments' => array(
       'profile' => 'the install profile you wish to run. defaults to \'default\'',
     ),
@@ -153,19 +153,19 @@ function core_drush_command() {
       'account-user' => 'uid1 name. defaults to admin',
       'account-pass' => 'uid1 pass. defaults to admin',
       'account-mail' => 'uid1 email. defaults to admin@example.com',
-      'clean_url'=> 'defaults to 1',
-      'site_name' => 'defaults to installcore',
-      'site_mail' => 'from: for system mailings. defaults to admin@example.com',
-      'sites-subdir' => "name of directory under 'sites' which should be created if needed. defaults to 'default'",
+      'clean_url'=> 'Defaults to 1',
+      'site_name' => 'Defaults to installsite',
+      'site_mail' => 'From: for system mailings. Defaults to admin@example.com',
+      'sites-subdir' => "Name of directory under 'sites' which should be created if needed. Defaults to 'default'",
     ),
     'examples' => array(
-      'installcore expert' => 'Re-install using the expert install profile',
-      'installcore --db-url=mysql://root:pass@localhost:port/dbname ' => 'Install using the specified DB params.',
-      'installcore --account-user=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
+      'installsite expert' => '(Re)install using the expert install profile',
+      'installsite --db-url=mysql://root:pass@localhost:port/dbname ' => 'Install using the specified DB params.',
+      'installsite --account-user=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
     ),
     'core' => array(7),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
-    'aliases' => array('ic'),
+    'aliases' => array('is'),
   );
   return $items;
 }
@@ -288,8 +288,8 @@ function core_drush_help($section) {
       return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
     case 'drush:eval':
       return dt("Run arbitrary PHP code in the context of Drupal");
-    case 'drush:installcore':
-      return dt("Install Drupal core.");
+    case 'drush:installsite':
+      return dt("Install Drupal using specified install profile.");
     case 'error:DRUSH_DRUPAL_DB_ERROR' : 
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
