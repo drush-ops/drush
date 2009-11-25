@@ -91,8 +91,51 @@ function drush_make_validate_info_file($info) {
   if (!isset($info['core'])) {
     return FALSE;
   }
-  if (!isset($info['projects']) || !is_array($info['projects']) || empty($info['projects'])) {
-    return FALSE;
+  if (isset($info['projects'])) {
+    if (!is_array($info['projects'])) {
+      drush_make_error('BUILD_ERROR', dt("Incorrect format for 'projects' attribute ."));
+      return FALSE;
+    }
+    else {
+      foreach($info['projects'] as $project => $project_data) {
+        if (is_array($project_data)) {
+          foreach($project_data as $attribute => $value) {
+            // Unset disallowed attributes.
+            if (in_array($attribute, array('install_path'))) {
+              unset($info['projects'][$project][$attribute]);
+            }
+            // Prevent malicious attempts to access other areas of the filesystem.
+            elseif (in_array($attribute, array('subdir', 'directory_name')) && !drush_make_safe_path($value)) {
+              drush_make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in project %project.", array('%path' => $value, '%attribute' => $attribute, '%project' => $project)));
+              return FALSE;
+            }
+          }
+        }
+      }
+    }
+  }
+  if (isset($info['libraries'])) {
+    if (!is_array($info['libraries'])) {
+      drush_make_error('BUILD_ERROR', dt("Incorrect format for 'libraries' attribute ."));
+      return FALSE;
+    }
+    else {
+      foreach($info['libraries'] as $library => $library_data) {
+        if (is_array($library_data)) {
+          foreach($library_data as $attribute => $value) {
+            // Unset disallowed attributes.
+            if (in_array($attribute, array('install_path'))) {
+              unset($info['libraries'][$library][$attribute]);
+            }
+            // Prevent malicious attempts to access other areas of the filesystem.
+            elseif (in_array($attribute, array('destination', 'directory_name')) && !drush_make_safe_path($value)) {
+              drush_make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in library %library.", array('%path' => $value, '%attribute' => $attribute, '%library' => $library)));
+              return FALSE;
+            }
+          }
+        }
+      }
+    }
   }
   return $info;
 }
@@ -196,5 +239,15 @@ function drush_make_error($error_code, $message) {
   else {
     drush_set_error($error_code, $message);
   }
+}
+
+/**
+ * Checks an attribute's path to ensure it's not maliciously crafted.
+ *
+ * @param $path
+ *   The path to check.
+ */
+function drush_make_safe_path($path) {
+  return !preg_match("+^/|^\.\.|/\.\./+", $path);
 }
 
