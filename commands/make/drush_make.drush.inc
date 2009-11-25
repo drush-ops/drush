@@ -152,7 +152,7 @@ function drush_make_updatexml($project, $queue) {
   // First, get the release history.
   $release_history = simplexml_load_file($project['location'] . '/' . $project['name'] . '/' . $project['core']);
   if (!is_object($release_history) || !$release_history->title) {
-    drush_set_error(dt("Could not retrieve version information for @project.", array('@project' => $project['name'])));
+    drush_make_error('XML_ERROR', dt("Could not retrieve version information for %project.", array('%project' => $project['name'])));
     return FALSE;
   }
   drush_log(dt('Project information for %project retrieved.', array('%project' => $project['name'])), 'ok');
@@ -169,6 +169,7 @@ function drush_make_updatexml($project, $queue) {
       }
     }
     if (!isset($project['type'])) {
+      drush_make_error('BUILD_ERROR', dt("Unable to determine project type for %project.", array('%project' => $project['name'])));
       return FALSE;
     }
   }
@@ -206,7 +207,8 @@ function drush_make_update_xml_download($project) {
     $recommended_major = (string)$project['release_history']->recommended_major;
     $project['version'] = _drush_make_update_xml_best_version($recommended_major, $releases);
   }
-  else {
+  // Find the best release for the specified version.
+  elseif (!empty($project['version'])) {
     $exploded_version = explode('.', $project['version']);
     if (count($exploded_version) == 1) {
       list($major) = $exploded_version;
@@ -215,11 +217,15 @@ function drush_make_update_xml_download($project) {
     // Otherwise we have a full version.
   }
 
-  if (!$project['version']) {
+  $final_version = empty($project['version']) ? '' : $project['version'];
+
+  // Uh oh, couldn't find a valid version.
+  if (empty($final_version) || empty($releases[$final_version])) {
+    drush_make_error('BUILD_ERROR', dt("Invalid version %version for %project.", array('%version' => $final_version, '%project' => $project['name'])));
     return FALSE;
   }
 
-  $release = $releases[$project['version']];
+  $release = $releases[$final_version];
   $project['download'] = array(
     'type' => 'get',
     'url'  => $release['file'],

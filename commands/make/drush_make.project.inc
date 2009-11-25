@@ -14,7 +14,7 @@ class DrushMakeProject {
     }
     $this->downloadClass = DrushMakeDownload::factory($this);
     if (!$this->downloadClass) {
-      drush_set_error(dt('Could not find download type @type', array('@type' => $this->download['type'])));
+      drush_make_error('BUILD_ERROR', dt('Could not find download type %type', array('%type' => $this->download['type'])));
     }
   }
 

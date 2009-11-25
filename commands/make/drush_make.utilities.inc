@@ -186,3 +186,15 @@ function drush_make_fill_path($path) {
   }
 }
 
+/**
+ * Logs an error unless the --force-complete command line option is specified.
+ */
+function drush_make_error($error_code, $message) {
+  if (drush_get_option('force-complete')) {
+    drush_log("$error_code: $message -- build forced", 'warning');
+  }
+  else {
+    drush_set_error($error_code, $message);
+  }
+}
+
