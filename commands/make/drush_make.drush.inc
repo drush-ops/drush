@@ -215,7 +215,7 @@ function drush_make_update_xml_download($project) {
     $project['version'] = _drush_make_update_xml_best_version($recommended_major, $releases);
   }
   // Find the best release for the specified version.
-  elseif (!empty($project['version'])) {
+  else {
     $exploded_version = explode('.', $project['version']);
     if (count($exploded_version) == 1) {
       list($major) = $exploded_version;
