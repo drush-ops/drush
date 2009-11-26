@@ -9,6 +9,7 @@ class DrushMakeProject {
    * Set attributes and retrieve project information.
    */
   function __construct($project) {
+    $project['base_install_path'] = $project['install_path'];
     foreach ($project as $key => $value) {
       $this->{$key} = $value;
     }
@@ -115,7 +116,7 @@ class DrushMakeProject {
   function recurse($path, $directory) {
     $makefiles = drush_scan_directory($this->path . '/' . $directory, '/\.make$/');
     if (!empty($makefiles)) {
-      $build_path = $this->generatePath(FALSE) . '/' . $directory;
+      $build_path = $this->base_install_path;
       foreach ($makefiles as $file) {
         $info  = $this->queue->addItem('drush_make_parse_info_file', $file->filename);
         $valid = $this->queue->addItem('drush_make_validate_info_file', array(), $info);
@@ -128,8 +129,8 @@ class DrushMakeProject {
 
 class DrushMakeProject_Core extends DrushMakeProject {
   function __construct(&$project) {
-    $project['install_path'] = '';
     parent::__construct($project);
+    $this->install_path = '';
   }
 
   function makePath($directory) {
@@ -157,6 +158,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
 
 class DrushMakeProject_Library extends DrushMakeProject {
   public function __construct(&$project) {
+    parent::__construct($project);
     // Allow libraries to specify where they should live in the build path.
     if (isset($project['destination'])) {
       $project_path = $project['destination'];
@@ -164,46 +166,60 @@ class DrushMakeProject_Library extends DrushMakeProject {
     else {
       $project_path = 'libraries';
     }
-
-    $project['install_path'] = $project['install_path'] .'/'. $project_path;
-    parent::__construct($project);
+    
+    $this->install_path = $this->base_install_path .'/'. $project_path;
   }
+  // No recursion for libraries, sorry :-(
+  function recurse() {}
 }
 
 class DrushMakeProject_Module extends DrushMakeProject {
   public function __construct(&$project) {
-    $project['install_path'] = $project['install_path'] . '/modules';
     parent::__construct($project);
+    $this->install_path = $this->base_install_path .'/modules';
   }
 }
 
 class DrushMakeProject_Profile extends DrushMakeProject {
   public function __construct(&$project) {
-    $project['install_path'] = 'profiles';
     parent::__construct($project);
+    $this->install_path = 'profiles';
+  }
+
+  function recurse($path, $directory) {
+    $makefiles = drush_scan_directory($this->path . '/' . $directory, '/\.make$/');
+    if (!empty($makefiles)) {
+      $build_path = $this->generatePath(FALSE) . '/' . $directory;
+      foreach ($makefiles as $file) {
+        $info  = $this->queue->addItem('drush_make_parse_info_file', $file->filename);
+        $valid = $this->queue->addItem('drush_make_validate_info_file', array(), $info);
+        $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
+        $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
+      }
+    }
   }
 }
 
 class DrushMakeProject_Theme extends DrushMakeProject {
   public function __construct(&$project) {
-    $project['install_path'] = $project['install_path'] . '/themes';
     parent::__construct($project);
+    $this->install_path = $this->base_install_path .'/themes';
   }
 }
 
 class DrushMakeProject_Translation extends DrushMakeProject {
   public function __construct(&$project) {
+    parent::__construct($project);
     switch($project['core']) {
       case '5.x':
         // Don't think there's an automatic place we can put 5.x translations,
         // so we'll toss them in a translations directory in the Drupal root.
-        $project['install_path'] = 'translations';
+        $this->install_path = $this->base_install_path .'/translations';
         break;
       default:
-        $project['install_path'] = '';
+        $this->install_path = '';
         break;
     }
-    parent::__construct($project);
   }
 }
 
