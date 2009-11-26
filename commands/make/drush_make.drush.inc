@@ -149,8 +149,9 @@ function drush_make_updatexml($project, $queue) {
   if (isset($project['download']) && isset($project['type'])) {
     return $project;
   }
+  $xml = file_get_contents($project['location'] . '/' . $project['name'] . '/' . $project['core']);
   // First, get the release history.
-  $release_history = simplexml_load_file($project['location'] . '/' . $project['name'] . '/' . $project['core']);
+  $release_history = simplexml_load_string($xml);
   if (!is_object($release_history) || !$release_history->title) {
     drush_make_error('XML_ERROR', dt("Could not retrieve version information for %project.", array('%project' => $project['name'])));
     return FALSE;
