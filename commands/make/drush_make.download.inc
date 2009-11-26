@@ -195,6 +195,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
     if (!empty($download['url'])) {
       $this->project->download['branch'] = $download['branch'] = isset($download['branch']) ? $download['branch'] : 'master';
       if (drush_shell_exec("git clone %s %s/%s", $download['url'], $tmp_path, $name)) {
+        drush_shell_exec("rm -rf %s/%s/.git", $tmp_path, $name);
         drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
       }
       else {
@@ -203,6 +204,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
       // Checkout a branch if one was asked for in the make file
       if ($download['branch'] !== 'master') {
         if (drush_shell_exec("cd %s/%s", $tmp_path, $name) && drush_shell_exec("git checkout -b %s origin/%s", $download['branch'], $download['branch'])) {
+          drush_shell_exec("rm -rf %s/%s/.git", $tmp_path, $name);
           drush_log(dt("Checked out branch %branch.", array('%branch' => $download['branch'])), 'ok');
         }
         else {
@@ -270,6 +272,7 @@ class DrushMakeDownload_Hg extends DrushMakeDownload {
     $download = $this->project->download;
     if (!empty($download['url'])) {
       if (drush_shell_exec("hg clone %s %s/%s", $download['url'], $tmp_path, $name)) {
+        drush_shell_exec('rm -r %s/%s/.hg', $tmp_path, $name);
         drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
         return $name;
       }
