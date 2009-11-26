@@ -91,6 +91,15 @@ function drush_make_validate_info_file($info) {
   if (!isset($info['core'])) {
     return FALSE;
   }
+  // Standardize on core.
+  $core = explode('.', $info['core']);
+  if (isset($core[1]) && $core[1] != 'x') {
+    $info['core_release'] = $info['core'];
+    $info['core'] = $core[0] . '.x';
+  }
+  elseif (!isset($core[1])) {
+    $info['core'] = $core[0] . '.x';
+  }
   if (isset($info['projects'])) {
     if (!is_array($info['projects'])) {
       drush_make_error('BUILD_ERROR', dt("Incorrect format for 'projects' attribute ."));
