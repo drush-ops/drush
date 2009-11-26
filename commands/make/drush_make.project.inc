@@ -166,7 +166,7 @@ class DrushMakeProject_Library extends DrushMakeProject {
     }
 
     $project['install_path'] = $project['install_path'] .'/'. $project_path;
-    parent::__construct($project, $paths);
+    parent::__construct($project);
   }
 }
 
@@ -187,7 +187,7 @@ class DrushMakeProject_Profile extends DrushMakeProject {
 class DrushMakeProject_Theme extends DrushMakeProject {
   public function __construct(&$project) {
     $project['install_path'] = $project['install_path'] . '/themes';
-    parent::__construct($project, $paths);
+    parent::__construct($project);
   }
 }
 
@@ -203,7 +203,7 @@ class DrushMakeProject_Translation extends DrushMakeProject {
         $project['install_path'] = '';
         break;
     }
-    parent::__construct($project, $paths);
+    parent::__construct($project);
   }
 }
 
