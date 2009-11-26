@@ -58,8 +58,8 @@ function drush_drush_make_make($makefile = NULL, $base_path = NULL) {
   $info  = $queue->addItem('drush_make_parse_info_file', $makefile, $file_exists);
   $valid = $queue->addItem('drush_make_validate_info_file', array(), $info);
   $tmp = $queue->addItem('drush_make_create_tmp', array(), $valid);
-  $queue->addItem('drush_make_add_projects', array(FALSE, drush_get_option('destination', 'sites/all')), array($tmp, $base_path, $valid));
-  $queue->addItem('drush_make_add_libraries', array(drush_get_option('destination', 'sites/all')), array($tmp, $base_path, $valid));
+  $queue->addItem('drush_make_add_projects', array(FALSE, drush_get_option('contrib-destination', 'sites/all')), array($tmp, $base_path, $valid));
+  $queue->addItem('drush_make_add_libraries', array(drush_get_option('contrib-destination', 'sites/all')), array($tmp, $base_path, $valid));
   $queue->execute();
 
   // Add clean up tasks.
