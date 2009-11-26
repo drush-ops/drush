@@ -273,7 +273,16 @@ function drush_make_base_path($base_path) {
 }
 
 function drush_make_move_build($tmp_path, $base_path) {
-  drush_make_fill_path(dirname($base_path));
-  drush_shell_exec("mv %s/__build__ %s", $tmp_path, $base_path);
+  if ($base_path == '.') {
+    drush_shell_exec('ls %s/__build__', $tmp_path);
+    $info = drush_shell_exec_output();
+    foreach ($info as $file) {
+      drush_shell_exec("mv %s/__build__/%s %s/%s", $tmp_path, $file, $base_path, $file);
+    }
+  }
+  else {
+    drush_make_fill_path(dirname($base_path));
+    drush_shell_exec("mv %s/__build__ %s", $tmp_path, $base_path);
+  }
   return TRUE;
 }
