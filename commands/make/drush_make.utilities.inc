@@ -260,3 +260,15 @@ function drush_make_safe_path($path) {
   return !preg_match("+^/|^\.\.|/\.\./+", $path);
 }
 
+/**
+ * Cd to a path, execute a command, cd back.
+ */
+function drush_make_cd() {
+  $args = func_get_args();
+  $directory = array_shift($args);
+  $cwd = getcwd();
+  chdir($directory);
+  $return = call_user_func_array('drush_shell_exec', $args);
+  chdir($cwd);
+  return $return;
+}

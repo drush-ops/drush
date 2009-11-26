@@ -57,11 +57,9 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
 
       // Checkout or export the module. CVS can't use absolute paths for named
       // directories, so change into the tmp directory before checking out. 
-      if (drush_shell_exec("cd %s", $tmp_path)) {
-        if (drush_shell_exec("cvs -d%s %s -d%s %s %s", $download['root'], $command, $name, $flags, $download['module'])) {
-          drush_log(dt('%project @command from %module.', array('%project' => $name, '@command'=> $command, '%module' => $download['module'])), 'ok');
-          return $name;
-        }
+      if (drush_make_cd($tmp_path, "cvs -d%s %s -d%s %s %s", $download['root'], $command, $name, $flags, $download['module'])) {
+        drush_log(dt('%project @command from %module.', array('%project' => $name, '@command' => $command, '%module' => $download['module'])), 'ok');
+        return $name;
       }
     }
     else {
@@ -97,7 +95,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     $info = drush_shell_exec_output();
     if ($info) {
       list($directory) = drush_shell_exec_output();
-      drush_shell_exec('tar -C %s -xf %s', $this->project->tmp_path, $filename);
+      drush_make_cd($this->project->tmp_path, 'tar -xf %s', $filename);
       drush_op('unlink', $filename);
 
       return $directory;
@@ -203,13 +201,16 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
       }
       // Checkout a branch if one was asked for in the make file
       if ($download['branch'] !== 'master') {
-        if (drush_shell_exec("cd %s/%s", $tmp_path, $name) && drush_shell_exec("git checkout -b %s origin/%s", $download['branch'], $download['branch'])) {
+        $cwd = getcwd();
+        chdir($tmp_path . '/' . $name);
+        if (drush_shell_exec("git checkout -b %s origin/%s", $download['branch'], $download['branch'])) {
           drush_shell_exec("rm -rf %s/%s/.git", $tmp_path, $name);
           drush_log(dt("Checked out branch %branch.", array('%branch' => $download['branch'])), 'ok');
         }
         else {
           drush_make_error('DOWNLOAD_ERROR', dt("Unable to check out branch %branch.", array('%branch' => $download['branch'])));
         }
+        chdir($cwd);
       }
       return $name;
     }
