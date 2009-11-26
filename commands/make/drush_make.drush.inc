@@ -159,10 +159,16 @@ function drush_make_updatexml($project, $queue) {
   $project['release_history'] = $release_history;
   if (!isset($project['type'])) {
     // Determine the project type.
-    $term_map = array('Modules' => 'module', 'Themes' => 'theme', 'Drupal project' => 'core', 'Installation profiles' => 'profile');
+    $term_map = array(
+      'Modules' => 'module',
+      'Themes' => 'theme',
+      'Drupal project' => 'core',
+      'Installation profiles' => 'profile',
+      'Translations' => 'translation'
+    );
     // Iterate through all terms related to this project.
     foreach ($release_history->terms->term as $term) {
-      // If the term is eather 'Modules' or 'Themes', add it.
+      // If we find a term from the term map, add it.
       if (in_array((string) $term->value, array_keys($term_map))) {
         $project['type'] = $term_map[(string)$term->value];
         break;

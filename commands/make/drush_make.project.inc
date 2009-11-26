@@ -190,3 +190,20 @@ class DrushMakeProject_Theme extends DrushMakeProject {
     parent::__construct($project, $paths);
   }
 }
+
+class DrushMakeProject_Translation extends DrushMakeProject {
+  public function __construct(&$project) {
+    switch($project['core']) {
+      case '5.x':
+        // Don't think there's an automatic place we can put 5.x translations,
+        // so we'll toss them in a translations directory in the Drupal root.
+        $project['install_path'] = 'translations';
+        break;
+      default:
+        $project['install_path'] = '';
+        break;
+    }
+    parent::__construct($project, $paths);
+  }
+}
+
