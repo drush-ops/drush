@@ -1,9 +1,8 @@
 <?php
 // $Id$
 
-// define('DRUSH_MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
+define('DRUSH_MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
 define('DRUSH_MAKE_VERSION_BEST', 'best');
-define('DRUSH_MAKE_UPDATE_DEFAULT_URL', 'http://localhost/drupal/drupal-6/release-history');
 
 include_once 'drush_make.utilities.inc';
 include_once 'drush_make.download.inc';
