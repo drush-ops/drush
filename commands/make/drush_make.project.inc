@@ -113,16 +113,26 @@ class DrushMakeProject {
     return implode('/', $path);
   }
 
+  /**
+   * Return the proper path for dependencies to be placed in.
+   *
+   * @return
+   *   The path that dependencies will be placed in.
+   */
+  protected function buildPath() {
+    return $this->base_install_path;
+  }
+
   function recurse($path, $directory) {
-    $makefiles = drush_scan_directory($this->path . '/' . $directory, '/\.make$/');
-    if (!empty($makefiles)) {
-      $build_path = $this->base_install_path;
-      foreach ($makefiles as $file) {
-        $info  = $this->queue->addItem('drush_make_parse_info_file', $file->filename);
-        $valid = $this->queue->addItem('drush_make_validate_info_file', array(), $info);
-        $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
-        $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
-      }
+    $makefile = $this->path . '/' . $directory . '/' . $this->name . '.make';
+
+    if (file_exists($makefile)) {
+      drush_log(dt("Found makefile: %makefile", array("%makefile" => basename($makefile))), 'ok');
+      $build_path = $this->buildPath($directory);
+      $info  = $this->queue->addItem('drush_make_parse_info_file', $makefile);
+      $valid = $this->queue->addItem('drush_make_validate_info_file', array(), $info);
+      $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
+      $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
     }
   }
 }
@@ -186,17 +196,8 @@ class DrushMakeProject_Profile extends DrushMakeProject {
     $this->install_path = 'profiles';
   }
 
-  function recurse($path, $directory) {
-    $makefiles = drush_scan_directory($this->path . '/' . $directory, '/\.make$/');
-    if (!empty($makefiles)) {
-      $build_path = $this->generatePath(FALSE) . '/' . $directory;
-      foreach ($makefiles as $file) {
-        $info  = $this->queue->addItem('drush_make_parse_info_file', $file->filename);
-        $valid = $this->queue->addItem('drush_make_validate_info_file', array(), $info);
-        $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
-        $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
-      }
-    }
+  protected function buildPath($directory) {
+    return $this->generatePath(FALSE) . '/' . $directory;
   }
 }
 
