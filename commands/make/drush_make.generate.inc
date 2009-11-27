@@ -43,7 +43,6 @@ function _drush_generate_makefile($file) {
           continue;
         }
         $updatexml = _drush_generate_makefile_updatexml($name, $type, $item->info);
-        print_r($updatexml);
         $projects[$name] = array('_type' => $type);
         if ($updatexml) {
           $projects[$name]['type'] = $type;
