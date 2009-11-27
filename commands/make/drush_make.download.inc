@@ -94,7 +94,8 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     drush_shell_exec('tar -tf %s', $filename);
     $info = drush_shell_exec_output();
     if ($info) {
-      list($directory) = drush_shell_exec_output();
+      list($first_line) = drush_shell_exec_output();
+      list($directory) = explode('/', $first_line);
       drush_make_cd($this->project->tmp_path, 'tar -xf %s', $filename);
       drush_op('unlink', $filename);
 
@@ -117,12 +118,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         $file = $this->project->tmp_path . '/' . $matches[0];
         // Unzip it and then delete the tar file.
         drush_shell_exec('gzip -d %s', $filename);
-        drush_shell_exec('tar -tf %s', $file);
-        list($directory) = drush_shell_exec_output();
-        drush_shell_exec('tar -C %s -xf %s', $this->project->tmp_path, $file);
-        drush_op('unlink', $file);
-
-        return $directory;
+        return $this->unpack_tar($file);
       }
     }
     drush_make_error('PACKAGE_ERROR', dt('Could not retrieve package information for %filename.', array('%filename' => $filename)));
