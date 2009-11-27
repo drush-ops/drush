@@ -1,8 +1,9 @@
 <?php
 // $Id$
 
-define('DRUSH_MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
+// define('DRUSH_MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
 define('DRUSH_MAKE_VERSION_BEST', 'best');
+define('DRUSH_MAKE_UPDATE_DEFAULT_URL', 'http://localhost/drupal/drupal-6/release-history');
 
 include_once 'drush_make.utilities.inc';
 include_once 'drush_make.download.inc';
@@ -95,14 +96,6 @@ function drush_drush_make_make($makefile = NULL, $base_path = NULL) {
 function drush_make_add_projects($recursion, $install_path, $tmp_path, $base_path, $info, $queue) {
   $core = FALSE;
   foreach ($info['projects'] as $key => $project) {
-    // Cover if there is no project info, it's just a project name.
-    if (is_string($project) && is_numeric($key)) {
-      $key = $project;
-      $project = array();
-    }
-    elseif (is_string($project)) {
-      $project = array('version' => $project);
-    }
     // Merge the known data onto the project info.
     $project += array(
       'name'           => $key,

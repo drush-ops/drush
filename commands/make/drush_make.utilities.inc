@@ -87,9 +87,12 @@ function drush_make_parse_info_file($filename) {
 }
 
 function drush_make_validate_info_file($info) {
-  // TODO: pretty print errors.
-  if (!isset($info['core'])) {
-    return FALSE;
+  // Assume no errors to start.
+  $errors = FALSE;
+
+  if (empty($info['core'])) {
+    drush_make_error('BUILD_ERROR', dt('No Drupal core version specified.'));
+    $errors = TRUE;
   }
   // Standardize on core.
   $core = explode('.', $info['core']);
@@ -102,12 +105,13 @@ function drush_make_validate_info_file($info) {
   }
   if (isset($info['projects'])) {
     if (!is_array($info['projects'])) {
-      drush_make_error('BUILD_ERROR', dt("Incorrect format for 'projects' attribute ."));
-      return FALSE;
+      drush_make_error('BUILD_ERROR', dt("'projects' attribute must be an array."));
+      $errors = TRUE;
     }
     else {
       foreach($info['projects'] as $project => $project_data) {
-        if (is_array($project_data)) {
+        // Project has an attributes array.
+        if (is_string($project) && is_array($project_data)) {
           foreach($project_data as $attribute => $value) {
             // Unset disallowed attributes.
             if (in_array($attribute, array('install_path'))) {
@@ -116,17 +120,30 @@ function drush_make_validate_info_file($info) {
             // Prevent malicious attempts to access other areas of the filesystem.
             elseif (in_array($attribute, array('subdir', 'directory_name')) && !drush_make_safe_path($value)) {
               drush_make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in project %project.", array('%path' => $value, '%attribute' => $attribute, '%project' => $project)));
-              return FALSE;
+              $errors = TRUE;
             }
           }
+        }
+        // Cover if there is no project info, it's just a project name.
+        elseif (is_numeric($project) && is_string($project_data)) {
+          unset($info['projects'][$project]);
+          $info['projects'][$project_data] = array();
+        }
+        // Convert shorthand project version style to array format.
+        elseif (is_string($project_data)) {
+          $info['projects'][$project] = array('version' => $project_data);
+        }
+        else {
+          drush_make_error('BUILD_ERROR', dt('Project %project incorrectly specified.', array('%project' => $project)));
+          $errors = TRUE;
         }
       }
     }
   }
   if (isset($info['libraries'])) {
     if (!is_array($info['libraries'])) {
-      drush_make_error('BUILD_ERROR', dt("Incorrect format for 'libraries' attribute ."));
-      return FALSE;
+      drush_make_error('BUILD_ERROR', dt("'libraries' attribute must be an array."));
+      $errors = TRUE;
     }
     else {
       foreach($info['libraries'] as $library => $library_data) {
@@ -137,14 +154,17 @@ function drush_make_validate_info_file($info) {
               unset($info['libraries'][$library][$attribute]);
             }
             // Prevent malicious attempts to access other areas of the filesystem.
-            elseif (in_array($attribute, array('destination', 'directory_name')) && !drush_make_safe_path($value)) {
+            elseif (in_array($attribute, array('contrib-destination', 'directory_name')) && !drush_make_safe_path($value)) {
               drush_make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in library %library.", array('%path' => $value, '%attribute' => $attribute, '%library' => $library)));
-              return FALSE;
+              $errors = TRUE;
             }
           }
         }
       }
     }
+  }
+  if ($errors) {
+    return FALSE;
   }
   return $info;
 }
