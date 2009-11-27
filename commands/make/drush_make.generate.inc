@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 include_once 'includes/install.inc';
 include_once drupal_get_path('module', 'system') . '/system.install';
