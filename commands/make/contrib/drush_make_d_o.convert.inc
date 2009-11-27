@@ -72,6 +72,11 @@ class DrushMakeDrupalorgConverter {
       }
     }
 
+    if (isset($this->new_info['projects']['drupal'])) {
+      unset($this->new_info['projects']['drupal']);
+      drush_log(dt('Removed Drupal core'), 'ok');
+    }
+
     if (isset($this->old_info['libraries'])) {
       drush_log(dt('Libraries removed.'), 'ok');
     }
