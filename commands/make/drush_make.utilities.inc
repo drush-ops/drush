@@ -26,7 +26,7 @@ function drush_make_base_path_validate($base_path) {
  *
  * @see drupal_parse_info_file
  */
-function drush_make_parse_info_file($filename, $queue) {
+function drush_make_parse_info_file($filename) {
   $data = file_get_contents($filename);
   if (!$data) {
     return FALSE;
