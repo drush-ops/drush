@@ -24,6 +24,30 @@ define('DRUSH_MAKE_DO_PACKAGE_CONTENTS_FILE', 'package_contents.txt');
 define('DRUSH_MAKE_DO_BUILD_ERRORS_FILE', 'build_errors.txt');
 
 /**
+ * Implement hook_drush_command().
+ */
+function drush_make_d_o_drush_command() {
+  $items = array();
+  $items['convert makefile'] = array(
+    'description' => 'Convert the specified makefile to a drupal.org friendly format.',
+    'callback' => 'drush_make_d_o_convert_makefile',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
+
+  return $items;
+}
+
+
+/**
+ * Drush callback; convert the makefile to a drupal.org friendly format.
+ */
+function drush_make_d_o_convert_makefile($from, $to) {
+  include_once 'drush_make_d_o.convert.inc';
+  $converter = new DrushMakeDrupalorgConverter($from, $to);
+  $converter->run();
+}
+
+/**
  * Implement EXTENSION_drush_make_init().
  */
 function drush_make_d_o_drush_init($makefile, $base_path) {

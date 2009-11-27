@@ -24,12 +24,6 @@ function drush_make_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
   );
 
-  $items['convert makefile'] = array(
-    'description' => 'Convert the specified makefile to a drupal.org friendly format.',
-    'callback' => 'drush_convert_makefile',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-  );
-
   return $items;
 }
 
@@ -52,16 +46,6 @@ function drush_generate_makefile($file) {
   include_once 'drush_make.generate.inc';
   _drush_generate_makefile($file);
 }
-
-/**
- * Drush callback; convert the makefile to a drupal.org friendly format.
- */
-function drush_convert_makefile($from, $to) {
-  include_once 'drush_make.convert.inc';
-  $converter = new DrushMakeDrupalorgConverter($from, $to);
-  $converter->run();
-}
-
 
 /**
  * Drush callback; make based on the makefile.
