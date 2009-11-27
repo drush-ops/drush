@@ -33,7 +33,7 @@ class DrushMakeDrupalorgConverter {
     if (isset($this->old_info['projects']) && is_array($this->old_info['projects'])) {
       foreach ($this->old_info['projects'] as $key => $project) {
         if (is_numeric($key)) {
-          $version = $this->latestVersion('project');
+          $version = $this->latestVersion($project);
           if ($version) {
             drush_log(dt('Setting version for @project to @version', array('@project' => $project, '@version' => $version)), 'ok');
             $this->new_info['projects'][$project] = $version;
