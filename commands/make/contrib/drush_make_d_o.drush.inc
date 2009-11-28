@@ -51,22 +51,29 @@ function drush_make_d_o_convert_makefile($from, $to) {
  * Implement EXTENSION_drush_make_init().
  */
 function drush_make_d_o_drush_init($makefile, $base_path) {
-  // Since we're building the profile contents in place, the files written by
-  // this script should go in the main build directory. This switch provides
-  // the script with it's location.
-  if ($drupal_org_build_root = drush_get_option('drupal-org-build-root')) {
-    // Create the package contents file. We always check for it's existence
-    // in the packaging script, so make sure it exists even if no package
-    // items get added.
-    if (!touch($drupal_org_build_root . '/' . DRUSH_MAKE_DO_PACKAGE_CONTENTS_FILE)) {
-      drush_make_error('FILE_ERROR', dt('Unable to write package contents file to %build_root', array('%build_root' => $drupal_org_build_root)));
-    }
-    // Remember the build path for this run.
-    drush_set_context('DRUSH_MAKE_DO_PACKAGE_BUILD_PATH', $drupal_org_build_root);
-  }
   if (drush_get_option('drupal-org')) {
-    // Set up a custom error logger.
-    drush_set_context('DRUSH_LOG_CALLBACK', 'drush_make_d_o_log_errors_to_file');
+    // The --drupal-org switch implies these defaults:
+    // Location to put our custom build files.
+    drush_set_default('drupal-org-build-root', '.');
+    // The destination of the downloaded contrib projects.
+    drush_set_default('contrib-destination', '.');
+    // Whether to allow a build without core.
+    drush_set_default('no-core', TRUE);
+
+    // Optionally set up a custom error logger.
+    if (drush_get_option('drupal-org-log-errors-to-file')) {
+      drush_set_context('DRUSH_LOG_CALLBACK', 'drush_make_d_o_log_errors_to_file');
+    }
+
+    // Optionally set up the package contents file. The packaging script
+    // expects it, so it's created as an empty file here to ensure it
+    // exists.
+    if (drush_get_option('drupal-org-log-package-items-to-file')) {
+      $drupal_org_build_root = drush_get_option('drupal-org-build-root');
+      if (!touch($drupal_org_build_root . '/' . DRUSH_MAKE_DO_PACKAGE_CONTENTS_FILE)) {
+        drush_make_error('FILE_ERROR', dt('Unable to write package contents file to %build_root', array('%build_root' => $drupal_org_build_root)));
+      }
+    }
   }
 }
 
@@ -228,9 +235,11 @@ function drush_make_d_o_updatexml($project) {
   }
   // Process the file download data, and record the item_nid for the package.
   if ($project = drush_make_update_xml_download($project)) {
-    if ($project = drush_make_d_o_write_package_item_nid($project)) {
-      return $project;
+    // Optionally log package contents to a file.
+    if (drush_get_option('drupal-org-log-package-items-to-file')) {
+      $project = drush_make_d_o_write_package_item_nid($project);
     }
+    return $project;
   }
   return FALSE;
 }
@@ -257,8 +266,7 @@ function drush_make_d_o_write_package_item_nid($project) {
   }
   // Write the item's nid to the package contents file.
   if ($project['version'] && ($item_nid = $releases[$project['version']])) {
-    $package_build_path = drush_get_context('DRUSH_MAKE_DO_PACKAGE_BUILD_PATH', NULL);
-    if (file_put_contents($package_build_path . '/' . DRUSH_MAKE_DO_PACKAGE_CONTENTS_FILE, "$item_nid\n", FILE_APPEND)) {
+    if (file_put_contents(drush_get_option('drupal-org-build-root') . '/' . DRUSH_MAKE_DO_PACKAGE_CONTENTS_FILE, "$item_nid\n", FILE_APPEND)) {
       return $project;
     }
   }
@@ -274,8 +282,7 @@ function drush_make_d_o_write_package_item_nid($project) {
  * @see drush_log() for a description of the $entry array.
  */
 function drush_make_d_o_log_errors_to_file($entry) {
-  $package_build_path = drush_get_context('DRUSH_MAKE_DO_PACKAGE_BUILD_PATH', NULL);
   if ($entry['type'] == 'error' || $entry['type'] == 'failed') {
-    file_put_contents($package_build_path . '/' . DRUSH_MAKE_DO_BUILD_ERRORS_FILE, $entry['message'] . "\n", FILE_APPEND);
+    file_put_contents(drush_get_option('drupal-org-build-root') . '/' . DRUSH_MAKE_DO_BUILD_ERRORS_FILE, $entry['message'] . "\n", FILE_APPEND);
   }
 }
