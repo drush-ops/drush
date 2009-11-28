@@ -50,7 +50,7 @@ function drush_make_d_o_convert_makefile($from, $to) {
 /**
  * Implement EXTENSION_drush_make_init().
  */
-function drush_make_d_o_drush_init($makefile, $base_path) {
+function drush_make_d_o_drush_init() {
   if (drush_get_option('drupal-org')) {
     // The --drupal-org switch implies these defaults:
     // Location to put our custom build files.
