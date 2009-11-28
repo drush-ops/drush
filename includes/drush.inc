@@ -319,7 +319,8 @@ function drush_get_option_help() {
   $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
   $options['-p, --pipe']               = dt("Emit a compact representation of the command for scripting.");
   $options['-n, --nocolor']            = dt("Suppress color highlighting on log messages.");
-  $options['-h, --help']               = dt("The absolute path to your PHP intepreter.");
+  $options['-h, --help']               = dt("This help system.");
+  $options['--php']                    = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
   return $options;
 }
 

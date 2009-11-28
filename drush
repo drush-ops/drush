@@ -31,19 +31,17 @@ if [ -z $COLUMNS ]; then
 fi
 
 # Special case for *AMP installers, since they normally don't set themselves as the default cli php out of the box.
-if [ -f /Applications/MAMP/bin/php5/bin/php ]; then # MAMP (OS X)
-  /Applications/MAMP/bin/php5/bin/php $SCRIPT_PATH "$@"
-elif [ -f /opt/lampp/bin/php ]; then # XAMPP on GNU/Linux
-  /opt/lampp/bin/php $SCRIPT_PATH "$@"
-elif [ -f /Applications/xampp/xamppfiles/bin/php ]; then # XAMPP on OS X
-  /Applications/xampp/xamppfiles/bin/php $SCRIPT_PATH "$@"
-else
-  # We check for a command line (cli) version of php, and if found use that.
-  which php-cli >/dev/null 2>&1
-  if [ "$?" = 0 ] ; then
-    php-cli $SCRIPT_PATH "$@"
-  else
-    # Alternatively we run with straight php, which works on most other systems.
-    php $SCRIPT_PATH "$@"
+for php in /Applications/MAMP/bin/php5/bin/php /opt/lampp/bin/php /Applications/xampp/xamppfiles/bin/php ; do 
+  if [ -x $php ]; then
+    exec $php $SCRIPT_PATH --php="$php" "$@"
   fi
+done
+
+# We check for a command line (cli) version of php, and if found use that.
+which php-cli >/dev/null 2>&1
+if [ "$?" = 0 ] ; then
+  exec php-cli $SCRIPT_PATH --php="php-cli" "$@"
+else
+  # Alternatively we run with straight php, which works on most other systems.
+  exec php $SCRIPT_PATH "$@"
 fi

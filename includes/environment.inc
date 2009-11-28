@@ -112,11 +112,6 @@ define('DRUSH_TABLE_VERSION', '1.1.3');
 define('DRUSH_TABLE_URL', 'http://cvs.php.net/viewvc.cgi/pear/Console_Table/Table.php?revision=1.28&view=co');
 
 /**
- * 
- */
-define('DRUSH_COMMAND', drush_find_drush());
-
-/**
  * Helper function listing phases.
  *
  * For commands that need to iterate through the phases, such as help
@@ -390,6 +385,9 @@ function _drush_bootstrap_drush() {
 
   // parse the command line arguments.
   drush_parse_args();
+
+  // statically define a way to call drush again
+  define('DRUSH_COMMAND', drush_find_drush());
 
   // Load a custom config specified with the --config option.
   drush_load_config('custom'); 
@@ -929,35 +927,18 @@ function drush_valid_db_credentials() {
  * Calling ./drush.php directly yields the following environment:
  *
  * _SERVER["argv"][0] => ./drush.php
- * _SERVER["_"] => /home/anarcat/dist/drush/./drush.php
  * 
- * Calling php ./drush.php yields the following:
+ * Calling php ./drush.php also yields the following:
  * 
- * _SERVER["argv"][0] => drush.php
- * _SERVER["_"] => /usr/bin/php
+ * _SERVER["argv"][0] => ./drush.php
  *
- * Calling env php drush.php yields the following:
+ * Note that the $_ global is defined only in bash and therefore cannot
+ * be relied upon.
  *
- * _SERVER["argv"][0] => drush.php
- * _SERVER["_"] => /usr/bin/env
- *
- * The latter is a problem as there is no way to find the PHP
- * executable then. We consider it's the job of the shell script
- * wrapper to do that fiddling around and we will therefore assume
- * that $argv[0] is a proper PHP binary.
- *
- * Calling sudo php drush.php yields the following:
- *
- * _SERVER["argv"][0] => drush.php
- * _SERVER["SUDO_COMMAND"] => /usr/bin/php drush.php [arguments]
- *
- * Notice how _ is missing when running in sudo.
- *
- * Therefore, we assume that if $_ finishes with $argv[0], we can call
- * it directly again. Otherwise, we assume that $_ is the php binary
- * and $argv[0] is the path to drush.php. We will use __FILE__,
- * however, since we do not want to rely on (potentially) relative
- * paths.
+ * We will therefore assume PHP is available in the path and is named
+ * "php" for execute ourselves. That is, the #!/usr/bin/env php is
+ * working and valid, unless a PHP constant is defined, which can be
+ * done by the shell wrapper.
  *
  * The DRUSH_COMMAND constant is initialised to the value of this
  * function when environment.inc is loaded.
@@ -965,19 +946,10 @@ function drush_valid_db_credentials() {
  * @see DRUSH_COMMAND
  */
 function drush_find_drush() {
-  if (!empty($_ENV['SUDO_COMMAND']) && empty($_SERVER['_'])) {
-    // 'SUDO_COMMAND' is an environment variable set by the sudo program.
-    // Extract only the PHP interpreter, not the rest of the command.
-    list($_SERVER['_'], ) = explode(' ', $_ENV['SUDO_COMMAND'], 2);
-  }
-  if (substr($_SERVER['_'], -strlen($_SERVER['argv'][0])) == $_SERVER['argv'][0]) {
-    // $GLOBALS['_'] and $GLOBALS['argv'][0] both finish with the same,
-    // which means we were called directly
-    $drush = realpath($_SERVER['_']);
+ if (drush_get_option(array('php'))) {
+    $drush = drush_get_option(array('php')) . " " . realpath($_SERVER['argv'][0]);
   } else {
-    // not called directly, we were called as an argument to PHP, which
-    // should be in $GLOBALS['_']
-    $drush = $_SERVER['_'] . ' ' . realpath($_SERVER['argv'][0]);
+    $drush = realpath($_SERVER['argv']['0']);
   }
   return $drush;
 }
