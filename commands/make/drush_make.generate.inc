@@ -77,7 +77,7 @@ function _drush_generate_makefile_updatexml($name, $type, $info = array()) {
   // First we set up the project information array.
   $project = array(
     'name' => $name,
-    'location' => (isset($info['location']) ? $info['location'] : DRUSH_MAKE_UPDATE_DEFAULT_URL),
+    'location' => (isset($info['location']) ? $info['location'] : drush_get_option('drush-make-update-default-url')),
     'core' => DRUPAL_CORE_COMPATIBILITY,
   );
 

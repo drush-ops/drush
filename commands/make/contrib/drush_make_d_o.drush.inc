@@ -202,7 +202,7 @@ function drush_make_d_o_check_valid_version($name, $version_string) {;
  * items are collected for the package.
  */
 function drush_make_d_o_updatexml($project) {
-  $xml = file_get_contents(DRUSH_MAKE_UPDATE_DEFAULT_URL . '/' . $project['name'] . '/' . $project['core']);
+  $xml = file_get_contents(drush_get_option('drush-make-update-default-url') . '/' . $project['name'] . '/' . $project['core']);
   // First, get the release history.
   $release_history = simplexml_load_string($xml);
   if (!is_object($release_history) || !$release_history->title) {

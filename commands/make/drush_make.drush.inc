@@ -10,6 +10,16 @@ include_once 'drush_make.project.inc';
 include_once 'drush_make.queue.inc';
 
 /**
+ * Implement EXTENSION_drush_init().
+ */
+function drush_make_drush_init() {
+    // The default URL to use for retrieving update XML files.
+    drush_set_default('drush-make-update-default-url', DRUSH_MAKE_UPDATE_DEFAULT_URL);
+    // The default method drush_make will use to find the best release.
+    drush_set_default('drush-make-version-best', DRUSH_MAKE_VERSION_BEST);
+}
+
+/**
  * Implementation of hook_drush_command().
  */
 function drush_make_drush_command() {
@@ -86,8 +96,8 @@ function drush_make_add_projects($recursion, $install_path, $tmp_path, $base_pat
       'base_path'      => $base_path,
       'install_path'   => $install_path,
       'tmp_path'       => $tmp_path,
-      'version'        => DRUSH_MAKE_VERSION_BEST,
-      'location'       => DRUSH_MAKE_UPDATE_DEFAULT_URL,
+      'version'        => drush_get_option('drush-make-version-best'),
+      'location'       => drush_get_option('drush-make-update-default-url'),
       'subdir'         => '',
       'directory_name' => '',
       'queue'          => $queue,
@@ -146,8 +156,8 @@ function drush_make_add_libraries($install_path, $tmp_path, $base_path, $info, $
         'base_path'      => $base_path,
         'install_path'   => $install_path,
         'tmp_path'       => $tmp_path,
-        'version'        => DRUSH_MAKE_VERSION_BEST,
-        'location'       => DRUSH_MAKE_UPDATE_DEFAULT_URL,
+        'version'        => drush_get_option('drush-make-version-best'),
+        'location'       => drush_get_option('drush-make-update-default-url'),
         'subdir'         => '',
         'directory_name' => $key,
         'queue'          => $queue,
@@ -224,7 +234,7 @@ function drush_make_update_xml_download($project) {
   }
 
   // Find the best release.
-  if ($project['version'] == DRUSH_MAKE_VERSION_BEST) {
+  if ($project['version'] == drush_get_option('drush-make-version-best')) {
     $recommended_major = (string)$project['release_history']->recommended_major;
     $project['version'] = _drush_make_update_xml_best_version($recommended_major, $releases);
   }
