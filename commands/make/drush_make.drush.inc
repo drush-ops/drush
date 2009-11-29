@@ -13,10 +13,10 @@ include_once 'drush_make.queue.inc';
  * Implement EXTENSION_drush_init().
  */
 function drush_make_drush_init() {
-    // The default URL to use for retrieving update XML files.
-    drush_set_default('drush-make-update-default-url', DRUSH_MAKE_UPDATE_DEFAULT_URL);
-    // The default method drush_make will use to find the best release.
-    drush_set_default('drush-make-version-best', DRUSH_MAKE_VERSION_BEST);
+  // The default URL to use for retrieving update XML files.
+  drush_set_default('drush-make-update-default-url', DRUSH_MAKE_UPDATE_DEFAULT_URL);
+  // The default method drush_make will use to find the best release.
+  drush_set_default('drush-make-version-best', DRUSH_MAKE_VERSION_BEST);
 }
 
 /**

@@ -30,7 +30,6 @@ function drush_make_d_o_drush_command() {
   $items = array();
   $items['convert makefile'] = array(
     'description' => 'Convert the specified makefile to a drupal.org friendly format, and verify the converted file.',
-    'callback' => 'drush_make_d_o_convert_makefile',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
@@ -41,7 +40,7 @@ function drush_make_d_o_drush_command() {
 /**
  * Drush callback; convert the makefile to a drupal.org friendly format.
  */
-function drush_make_d_o_convert_makefile($from, $to = NULL) {
+function drush_drush_make_d_o_convert_makefile($from, $to = NULL) {
   include_once 'drush_make_d_o.convert.inc';
   // If output is going to STDOUT, use a custom logger.
   if (empty($to)) {
