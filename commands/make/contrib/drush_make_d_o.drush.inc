@@ -29,7 +29,7 @@ define('DRUSH_MAKE_DO_BUILD_ERRORS_FILE', 'build_errors.txt');
 function drush_make_d_o_drush_command() {
   $items = array();
   $items['convert makefile'] = array(
-    'description' => 'Convert the specified makefile to a drupal.org friendly format.',
+    'description' => 'Convert the specified makefile to a drupal.org friendly format, and verify the converted file.',
     'callback' => 'drush_make_d_o_convert_makefile',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );

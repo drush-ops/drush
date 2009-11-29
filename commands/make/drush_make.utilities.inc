@@ -26,8 +26,8 @@ function drush_make_base_path_validate($base_path) {
  *
  * @see drupal_parse_info_file
  */
-function drush_make_parse_info_file($filename) {
-  $data = file_get_contents($filename);
+function drush_make_parse_info_file($data_source) {
+  $data = drush_make_get_data($data_source);
   if (!$data) {
     return FALSE;
   }
@@ -91,18 +91,25 @@ function drush_make_validate_info_file($info) {
   $errors = FALSE;
 
   if (empty($info['core'])) {
-    drush_make_error('BUILD_ERROR', dt('No Drupal core version specified.'));
+    drush_make_error('BUILD_ERROR', dt("The 'core' attribute is required"));
     $errors = TRUE;
   }
   // Standardize on core.
-  $core = explode('.', $info['core']);
-  if (isset($core[1]) && $core[1] != 'x') {
-    $info['core_release'] = $info['core'];
-    $info['core'] = $core[0] . '.x';
+  elseif (preg_match('/^(\d+)(\.(x|(\d+)))?$/', $info['core'], $matches)) {
+    // An exact version of core has been specified, so pass that to an
+    // internal variable for storage.
+    if (isset($matches[4])) {
+      $info['core_release'] = $info['core'];
+    }
+    // Format the core attribute consistently.
+    $info['core'] = $matches[1] . '.x';
   }
-  elseif (!isset($core[1])) {
-    $info['core'] = $core[0] . '.x';
+  else {
+    drush_make_error('BUILD_ERROR', dt("The 'core' attribute %core has an incorrect format.", array('%core' => $info['core'])));
+    $errors = TRUE;
   }
+
+  // Process projects.
   if (isset($info['projects'])) {
     if (!is_array($info['projects'])) {
       drush_make_error('BUILD_ERROR', dt("'projects' attribute must be an array."));
@@ -292,3 +299,51 @@ function drush_make_cd() {
   chdir($cwd);
   return $return;
 }
+
+/**
+ * Reads from STDIN.
+ *
+ * @return
+ *   The contents of STDIN as a string if anything can be read from STDIN,
+ *   FALSE otherwise.  Note that this returns the exact contents of STDIN,
+ *   including line breaks.
+ */
+function drush_make_read_stdin() {
+
+  // See http://drupal.org/node/499758 before changing this.
+  $stdin = fopen("php://stdin","r");
+  $output = '';
+  $has_input = FALSE;
+
+  while ($line = fgets($stdin)) {
+    $has_input = TRUE;
+    $output .= $line;
+  }
+
+  if ($has_input) {
+    return $output;
+  }
+  return FALSE;
+}
+
+/**
+ * Get data based on the source.
+ *
+ * This is a helper function to abstract the retrieval of data, so that it can
+ * come from files, STDIN, etc.  Currently supports filepath and STDIN.
+ *
+ * @param $data_source
+ *   The path to a file, or '-' for STDIN.
+ * @return
+ *   The raw data as a string.
+ */
+function drush_make_get_data($data_source) {
+  if ($data_source == '-') {
+    $data = drush_make_read_stdin();
+  }
+  else {
+    $data = file_get_contents($data_source);
+  }
+  return $data;
+}
+
