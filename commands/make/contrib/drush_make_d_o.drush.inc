@@ -41,8 +41,12 @@ function drush_make_d_o_drush_command() {
 /**
  * Drush callback; convert the makefile to a drupal.org friendly format.
  */
-function drush_make_d_o_convert_makefile($from, $to) {
+function drush_make_d_o_convert_makefile($from, $to = NULL) {
   include_once 'drush_make_d_o.convert.inc';
+  // If output is going to STDOUT, use a custom logger.
+  if (empty($to)) {
+    drush_set_context('DRUSH_LOG_CALLBACK', 'drush_make_d_o_convert_log_stdout_handler');
+  }
   $converter = new DrushMakeDrupalorgConverter($from, $to);
   $converter->run();
 }
