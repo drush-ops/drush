@@ -67,7 +67,12 @@ function _drush_generate_makefile($file) {
   }
 
   $contents = _drush_make_generate_makefile_contents($projects);
-  file_put_contents($file, $contents);
+  if (file_put_contents($file, $contents)) {
+    drush_log(dt("Wrote .make file %file", array('%file' => $file)), 'ok');
+  }
+  else {
+    drush_make_error('FILE_ERROR', dt("Unable to write .make file %file", array('%file' => $file)));
+  }
 }
 
 /**
@@ -84,7 +89,6 @@ function _drush_generate_makefile_updatexml($name, $type, $info = array()) {
 
   // Now we get the project information.
   $update_check = drush_make_updatexml($project, NULL);
-  var_dump($update_check);
   return $update_check === TRUE && $type == $update_check['type'];
 }
 
