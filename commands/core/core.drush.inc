@@ -397,7 +397,7 @@ function drush_core_script() {
     $all = array();
     foreach($searchpath as $key => $path) {
       $recurse = !$key == 'cwd';
-      $all = $all + array_keys(drush_scan_directory($path, '/\.php$/', array('.', '..', 'CVS'), NULL, $recurse));
+      $all = array_merge( $all , array_keys(drush_scan_directory($path, '/\.php$/', array('.', '..', 'CVS'), NULL, $recurse)) );
     }
     drush_print(implode("\n", $all));
   }
