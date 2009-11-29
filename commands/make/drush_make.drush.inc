@@ -30,7 +30,6 @@ function drush_make_drush_command() {
 
   $items['generate makefile'] = array(
     'description' => 'Attempts to generate a makefile from the current drupal install.',
-    'callback' => 'drush_generate_makefile',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
   );
 
@@ -52,7 +51,7 @@ function drush_make_drush_help($section) {
 /**
  * Drush callback; make a makefile from the current install.
  */
-function drush_generate_makefile($file) {
+function drush_drush_make_generate_makefile($file) {
   include_once 'drush_make.generate.inc';
   _drush_generate_makefile($file);
 }
