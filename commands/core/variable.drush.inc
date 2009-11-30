@@ -117,17 +117,17 @@ function drush_variable_variable_set() {
   if (!isset($args[0])) {
     drush_set_error('DRUSH_VARIABLE_ERROR', dt('No variable specified.'));
   }
-  $result = drush_variable_like($args[0]);
   $value = $args[1];
   if (!isset($value)) {
     drush_set_error('DRUSH_VARIABLE_ERROR', dt('No value specified.'));
   }
-  $options = array();
-  $options[] = dt('Cancel');
+  
+  $result = drush_variable_like($args[0]);
+  
   $options[] = "$args[0] ". dt('(new variable)');
   while (!$match && $name = drush_db_result($result)) {
     if ($name == $args[0]) {
-      $options[1] = $name;
+      $options[0] = $name;
       $match = TRUE;
     }
     else {
@@ -135,32 +135,18 @@ function drush_variable_variable_set() {
     }
   }
   
-  if ((count($options) == 2 || $match) && drush_get_context('DRUSH_AFFIRMATIVE')) {
+  if ((count($options) == 1 || $match) && drush_get_context('DRUSH_AFFIRMATIVE')) {
     variable_set($args[0], $value);
     drush_log(dt('!name was set to !value.', array('!name' => $args[0], '!value' => $value)), 'success');
     return '';
   }
   else {
-    foreach ($options as $key => $option) {
-      print "[$key] : $option \n";
+    $choice = drush_choice($options, 'Enter a number to choose which variable to set.');
+    if ($choice !== FALSE) {
+      $choice = str_replace(' ' . dt('(new variable)'), '', $choice);
+      drush_op('variable_set', $choice, $value);
+      drush_log(dt('!name was set to !value', array('!name' => $choice, '!value' => $value)), 'success');
     }
-    print dt("Enter a number to choose which variable to set.") . "\n";
-
-    while ($line = trim(fgets(STDIN))) {
-      if ($line == 1) {
-        $choice = $args[0];
-      }
-      else {
-        $choice = $options[$line];
-      } 
-      if ($choice) {
-        drush_op('variable_set', $choice, $value);
-        drush_log(dt('!name was set to !value', array('!name' => $choice, '!value' => $value)), 'success');
-        return '';
-      }
-    }
-    drush_print(dt('Cancelled'));
-    return '';
   }
 }
 
@@ -177,38 +163,26 @@ function drush_variable_variable_delete() {
   $result = drush_variable_like($args[0]);
 
   $options = array();
-  $options[] = dt('Cancel');
   while ($name = drush_db_result($result)) {
-    var_dump($name);
     $options[] = $name;
   }
   
-  if (count($options) == 1) {
+  if (count($options) == 0) {
     drush_print(dt('!name not found.', array('!name' => $args[0])));
     return '';
   }
   
-  if ((count($options) == 2) && drush_get_context('DRUSH_AFFIRMATIVE')) {
+  if ((count($options) == 1) && drush_get_context('DRUSH_AFFIRMATIVE')) {
     drush_op('variable_del', $args[0]);
     drush_log(dt('!name was deleted.', array('!name' => $args[0])), 'success');
     return '';
   }
   else {
-    foreach ($options as $key => $option) {
-      print "[$key] : $option \n";
+    $choice = drush_choice($options, 'Enter a number to choose which variable to delete.');
+    if ($choice !== FALSE) {
+      drush_op('variable_del', $choice);
+      drush_log(dt('!choice was deleted.', array('!choice' => $choice)), 'success');
     }
-    print dt("Enter a number to choose which variable to delete.") . "\n";
-
-    while ($line = trim(fgets(STDIN))) {
-      $choice = $options[$line];
-      if ($choice) {
-        drush_op('variable_del', $choice);
-        drush_log(dt('!choice was deleted.', array('!choice' => $choice)), 'success');
-        return '';
-      }
-    }
-    drush_print(dt('Cancelled'));
-    return '';
   }
 }
 

@@ -531,6 +531,22 @@ function drush_confirm($msg, $indent = 0) {
   }
 }
 
+function drush_choice($options, $prompt = 'Enter a number.') {
+  print dt($prompt) . "\n";
+  array_unshift($options, 'Cancel');
+  foreach ($options as $key => $option) {
+    print "[$key] : $option \n";
+  }
+
+  while ($line = trim(fgets(STDIN))) {
+    if ($choice = $options[$line]) {
+      return $choice;
+    }
+  }
+  drush_print(dt('Cancelled'));
+  return FALSE;
+}
+
 /**
  * Print a formatted table.
  * 
