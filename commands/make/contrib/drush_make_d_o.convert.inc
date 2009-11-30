@@ -74,7 +74,7 @@ class DrushMakeDrupalorgConverter {
       }
     }
     else {
-      $this->new_info['core'] = $this->core;
+      $this->new_info['core'] = $this->old_info['core_release'];
     }
 
     if (isset($this->old_info['projects'])) {
