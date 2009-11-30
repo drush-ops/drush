@@ -134,6 +134,10 @@ class DrushMakeDrupalorgConverter {
         if ($result) {
           $this->log(dt("Setting version for project '%project' to '%version'", array('%project' => $project, '%version' => $final_version)));
           $project_data['version'] = $final_version;
+          if (array_keys($project_data) == array('version')) {
+            $project_data = $project_data['version'];
+          }
+
           $this->new_info['projects'][$project] = $project_data;
         }
         else {
