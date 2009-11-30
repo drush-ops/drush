@@ -35,6 +35,12 @@ function core_drush_command() {
   $items['cron'] = array(
     'description' => 'Run all cron hooks.',
   );
+  $items['hook'] = array(
+    'description' => 'List implementations of a given hook and explore source of specified one.',
+    'arguments' => array(
+      'hook' => 'The name of the hook to explore.'
+    )
+  );
   $items['updatedb'] = array(
     'description' => dt('Execute the update.php process from the command line'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
@@ -193,6 +199,18 @@ function drush_core_updatedb() {
   drush_log(dt('Finished performing updates.'), 'ok');
 }
 
+/**
+ * Command handler. Show hook implementations
+ */
+function drush_core_hook($hook) {
+  if ($choice = drush_choice(module_implements($hook), 'Enter the number of the hook_implementation you wish to view.')) {
+    $func = new ReflectionFunction($choice . "_$hook");
+    // TODO: Do this in PHP for better compatibility. Help wanted.
+    $exec = sprintf('sed -n %d,%dp %s', $func->getStartLine(), $func->getEndLine(), $func->getFileName());
+    $return = drush_op('system', $exec);
+    return $return;
+  }
+}
 
 /**
  * This is called if no command or an unknown command is entered.
@@ -274,6 +292,8 @@ function core_drush_help($section) {
       return dt('Execute a drush command. Run `drush help [command]` to view command-specific help.');
     case 'drush:cron':
       return dt("Runs all cron hooks in all active modules for specified site.");
+    case 'drush:hook':
+      return dt("List hook implementations for a given hook and get more detail on a given implementation.");
     case 'drush:status':
       return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:script':
