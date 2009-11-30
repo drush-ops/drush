@@ -193,6 +193,13 @@ function drush_drupal_version() {
   return $version;
 }
 
+function drush_drupal_cache_clear_all() {
+  $prior = drush_get_context('DRUSH_AFFIRMATIVE');
+  drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
+  drush_invoke('cache clear', 'all');
+  drush_set_context('DRUSH_AFFIRMATIVE', $prior);
+}
+
 /**
  * Returns the Drupal major version number (5, 6, 7 ...)
  */

@@ -3,7 +3,7 @@
 /**
  * Command callback for drush cache clear.
  */
- function drush_core_cache_clear() {
+ function drush_core_cache_clear($type = NULL) {
   switch (drush_drupal_major_version()) {
     case 5:
       // clear preprocessor cache
@@ -20,8 +20,39 @@
     case 6:
     case 7:
     default:
-      drupal_flush_all_caches();
-      drush_print(dt('Cache cleared.'));
+      $types = drush_cache_clear_types();
+      if ($type) {
+        drush_op('call_user_func', $types[$type]);
+        drush_log(dt("'!name' cache was cleared", array('!name' => $type)), 'success');
+      }
+      else {
+        $choice = drush_choice(array_keys($types), 'Enter a number to choose which cache to clear.');
+        if ($choice !== FALSE) {
+          call_user_func($types[$choice]);
+          drush_log(dt("'!name' cache was cleared", array('!name' => $choice)), 'success');
+        }
+      }
       break;
   }
+}
+
+function drush_cache_clear_types() {
+  $types = array(
+    'all' => 'drupal_flush_all_caches',
+    'theme' => 'drush_cache_clear_theme_registry',
+    'menu' => 'menu_rebuild',
+    'css+js' => 'drush_cache_clear_css_js',
+  );
+  return $types;
+}
+
+function drush_cache_clear_theme_registry() {
+  // TODO: DBTNG
+  db_query("DELETE FROM {cache} WHERE cid LIKE 'theme_registry%'");
+}
+
+function drush_cache_clear_css_js() {
+  _drupal_flush_css_js();
+  drupal_clear_css_cache();
+  drupal_clear_js_cache();
 }

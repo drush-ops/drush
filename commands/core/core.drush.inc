@@ -60,7 +60,10 @@ function core_drush_command() {
     ),    
   );
   $items['cache clear'] = array(
-    'description' => 'Clear all caches.',
+    'description' => 'Clear a specific cache, or all drupal caches.',
+    'arguments' => array(
+      'type' => 'The particular cache to clear. Omit this argument to choose from available caches.',
+    ),
     'aliases' => array('cc'),
   );
   $items['watchdog show'] = array(
@@ -183,7 +186,10 @@ function core_drush_engine_drupal() {
 function drush_core_updatedb() {
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
   update_main();
-  drush_invoke('cache clear');
+  
+  // Clear all caches. We just performed major surgery.
+  drush_drupal_cache_clear_all();
+  
   drush_log(dt('Finished performing updates.'), 'ok');
 }
 
@@ -276,6 +282,8 @@ function core_drush_help($section) {
       return dt("Show recent watchdog messages.");
     case 'drush:watchdog delete':
       return dt("Delete watchdog messages.");
+    case 'drush:cache clear':
+      return dt("Delete a specific drupal cache, or all caches.");
     case 'drush:search status':
       return dt("Show how many items remain to be indexed for search, and the total number of items.");
     case 'drush:search index':

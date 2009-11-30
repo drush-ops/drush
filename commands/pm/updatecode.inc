@@ -172,7 +172,7 @@ function pm_update_packages($releases) {
     drush_log(dt("Backups were saved into the directory !backup_dir.", array('!backup_dir' => $backup_dir)), 'ok');
   }
   // Clear the cache, since some modules could have moved around.
-  drush_invoke("cache clear");
+  drush_drupal_cache_clear_all();
 }
 
 function pm_project_filter(&$releases, &$rows) {
