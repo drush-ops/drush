@@ -1,7 +1,38 @@
 <?php
 // $Id$
 
-class DrushMakeDrupalorgConverter {
+class DrushMakeDrupalorgVersionChecker {
+  function latestVersion($project, $version) {
+    $project = array(
+      'name'           => $project,
+      'core'           => $this->core,
+      'version'        => $version,
+      'location'       => drush_get_option('drush-make-update-default-url'),
+    );
+    $project = drush_make_updatexml($project);
+
+    // Check for bad projects and branch releases.
+    // Because the version data we get back from the XML may not be the same
+    // data we passed, and because we can fail even if version data is
+    // returned, track both the success/failure of the request, and  the
+    // version data.
+    if (empty($project)) {
+      $final_version = $version;
+      $result = FALSE;
+    }
+    elseif (preg_match('/.*-dev$/', $project['version'])) {
+      $final_version = $project['version'];
+      $result = FALSE;
+    }
+    else {
+      $final_version = $project['version'];
+      $result = TRUE;
+    }
+    return array($result, $final_version);
+  }
+}
+
+class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
   function __construct($from, $to = NULL) {
     $this->from = $from;
     $this->to = $to;
@@ -218,40 +249,78 @@ class DrushMakeDrupalorgConverter {
     return $output;
   }
 
-  function latestVersion($project, $version) {
-    $project = array(
-      'name'           => $project,
-      'core'           => $this->core,
-      'version'        => $version,
-      'location'       => drush_get_option('drush-make-update-default-url'),
-    );
-    $project = drush_make_updatexml($project);
+}
 
-    // Check for bad projects and branch releases.
-    // Because the version data we get back from the XML may not be the same
-    // data we passed, and because we can fail even if version data is
-    // returned, track both the success/failure of the request, and  the
-    // version data.
-    if (empty($project)) {
-      $final_version = $version;
-      $result = FALSE;
+class DrushMakeDrupalorgVerifier extends DrushMakeDrupalorgVersionChecker {
+  function __construct($makefile) {
+    $this->makefile = $makefile;
+  }
+
+  function run() {
+    if ($makefile = $this->read($this->makefile)) {
+      $this->verify($makefile);
     }
-    elseif (preg_match('/.*-dev$/', $project['version'])) {
-      $final_version = $project['version'];
-      $result = FALSE;
+  }
+
+  function read($makefile) {
+    if (!($makefile = drush_make_parse_info_file($makefile))) {
+      drush_make_error('FILE_ERROR', dt("Unable to parse file %file", array('%file' => $makefile)));
+      return FALSE;
+    }
+    return $makefile;
+  }
+
+  function verify($makefile) {
+    // Run the regular validation first.  This performs basic syntax
+    // validation, and also pre-converts special syntax into a standard
+    // format. Since the info file validation doesn't return any data if
+    // validation fails, we have to bail here.
+    if (!($makefile = drush_make_validate_info_file($makefile))) {
+      return FALSE;
+    }
+
+    // Now run drupal.org specific validation on the file.
+    if (!($makefile = drush_make_d_o_validate_info_file($makefile))) {
+      return FALSE;
+    }
+    
+    $this->core = $makefile['core'];
+    // Check for a stable release on the branch.
+    list($result, $final_version) = $this->latestVersion('drupal', $makefile['core_release']);
+    if (!$result) {
+      $errors = TRUE;
+      var_dump($final_version);
+      if (!$final_version) {
+        // No need testing projects, results will be useless.
+        unset($makefile['projects']);
+      }
+    }
+  
+    if (isset($makefile['projects'])) {
+      foreach ($makefile['projects'] as $project => $project_data) {
+        // Use the update XML to verify this project actually has this 
+        // release.
+        list($result, $final_version) = $this->latestVersion($project, $project_data['version']);
+        if (!$result) {
+          drush_make_error('BUILD_ERROR', dt("Project '%project' does not have an official release for version '%version'.", array('%project' => $project, '%version' => $final_version)));
+          $errors = TRUE;
+        }
+      }
+    }
+    if (!$errors) {
+      drush_log(dt('No errors were found.'), 'ok');
     }
     else {
-      $final_version = $project['version'];
-      $result = TRUE;
+      drush_make_error('BUILD_ERROR', dt('Errors were found.'));
     }
-    return array($result, $final_version);
   }
 }
+
 
 /**
  * Custom logging function for conversions going to STDOUT.
  *
- * Drush doesn't output drush_set_error() messages to STDERR, lamo...  :(
+ * Drush doesn't output drush_set_error() messages to STDERR, lame-o...  :(
  *
  * This helper function overcomes that deficiency by manually writing error
  * messages to STDERR in the case where output is going to STDOUT.

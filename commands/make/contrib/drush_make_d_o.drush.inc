@@ -32,8 +32,22 @@ function drush_make_d_o_drush_command() {
     'description' => 'Convert the specified makefile to a drupal.org friendly format, and verify the converted file.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
+  $items['verify makefile'] = array(
+    'description' => 'Verify the specified makefile is in a drupal.org-friendly format.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
 
   return $items;
+}
+
+
+/**
+ * Drush callback; verify a .make file is in a drupal.org friendly format.
+ */
+function drush_drush_make_d_o_verify_makefile($makefile) {
+  include_once 'drush_make_d_o.convert.inc';
+  $verifier = new DrushMakeDrupalorgVerifier($makefile);
+  $verifier->run();
 }
 
 
