@@ -172,7 +172,7 @@ function drush_make_updatexml($project) {
   if (isset($project['download']) && isset($project['type'])) {
     return $project;
   }
-  $xml = file_get_contents($project['location'] . '/' . $project['name'] . '/' . $project['core']);
+  $xml = drush_make_get_remote_file($project['location'] . '/' . $project['name'] . '/' . $project['core']);
   // First, get the release history.
   $release_history = simplexml_load_string($xml);
   if (!is_object($release_history) || !$release_history->title) {

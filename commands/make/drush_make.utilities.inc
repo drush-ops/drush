@@ -347,3 +347,16 @@ function drush_make_get_data($data_source) {
   return $data;
 }
 
+/**
+ * Helper to get file contents via cURL.
+ */
+function drush_make_get_remote_file($url) {
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+  $file_contents = curl_exec($ch);
+  curl_close($ch);
+  return $file_contents;
+}
+
