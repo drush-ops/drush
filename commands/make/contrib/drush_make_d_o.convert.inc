@@ -289,11 +289,6 @@ class DrushMakeDrupalorgVerifier extends DrushMakeDrupalorgVersionChecker {
     list($result, $final_version) = $this->latestVersion('drupal', $makefile['core_release']);
     if (!$result) {
       $errors = TRUE;
-      var_dump($final_version);
-      if (!$final_version) {
-        // No need testing projects, results will be useless.
-        unset($makefile['projects']);
-      }
     }
   
     if (isset($makefile['projects'])) {
