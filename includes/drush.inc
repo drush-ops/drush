@@ -312,7 +312,7 @@ function dt($string, $args = array()) {
  *   for each of the available options.
  */
 function drush_get_option_help() {
-  // TODO: Add a hook for this, to allow other modules to add their options
+  // TODO: Add a hook for this, to allow other modules to add their global options
   $options['-r <path>, --root=<path>'] = dt("Drupal root directory to use (default: current directory)");
   $options['-l <uri>, --uri=http://example.com']   = dt('URI of the drupal site to use (only needed in multisite environments)');
   $options['-v, --verbose']            = dt('Display extra information about the command.');

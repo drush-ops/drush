@@ -58,6 +58,7 @@ function sql_drush_command() {
       '--result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
       '--skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
       '--structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
+      '--ordered-dump' => 'Use this option to output ordered INSERT statements in the sql dump. Useful when backups are managed in a Version Control System. Optional.',
     ) + $options,
   );
   $items['sql query'] = array(
@@ -188,6 +189,10 @@ function drush_sql_dump($db_spec = NULL) {
   $tables = _drush_sql_get_table_list('tables');
   $clean = drush_get_option('clean');
   $data_only = drush_get_option('data-only');
+  // The ordered-dump option is only supported by MySQL for now.
+  // @todo add documention once a hook for drush_get_option_help() is available.
+  // @see drush_get_option_help() in drush.inc
+  $ordered_dump = drush_get_option('ordered-dump');
 
   if (is_null($db_spec)) {
     $db_spec = _drush_sql_get_db_spec();
@@ -203,6 +208,9 @@ function drush_sql_dump($db_spec = NULL) {
       $extra = ' --single-transaction --opt -Q' . _drush_sql_get_credentials($db_spec);
       if (isset($data_only)) {
         $extra .= ' --no-create-info';
+      }
+      if (isset($ordered_dump)) {
+       $extra .= ' --skip-extended-insert --order-by-primary';
       }
       $exec .= $extra;
       
