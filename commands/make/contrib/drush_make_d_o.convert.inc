@@ -2,25 +2,48 @@
 // $Id$
 
 class DrushMakeDrupalorgVersionChecker {
-  function latestVersion($project, $version) {
+  function latestVersion($project_name, $version) {
+
+    // Project types that are valid for the version checker.
+    $allowed_project_types = array(
+      'core',
+      'module',
+      'theme',
+    );
+
     $project = array(
-      'name'           => $project,
+      'name'           => $project_name,
       'core'           => $this->core,
       'version'        => $version,
       'location'       => drush_get_option('drush-make-update-default-url'),
     );
     $project = drush_make_updatexml($project);
 
-    // Check for bad projects and branch releases.
     // Because the version data we get back from the XML may not be the same
     // data we passed, and because we can fail even if version data is
     // returned, track both the success/failure of the request, and  the
     // version data.
-    if (empty($project)) {
-      $final_version = $version;
+
+    // Check for bad projects and branch releases.
+    if (empty($project) || preg_match('/.*-dev$/', $project['version'])) {
+      // Use the passed version if no version was returned.
+      if (empty($project)) {
+        $final_version = $version;
+      }
+      else {
+        $final_version = $project['version'];
+      }
+      if ($project_name == 'drupal') {
+        drush_make_error('BUILD_ERROR', dt("Drupal core does not have an official release for version '%version' yet.", array('%version' => $final_version)));
+      }
+      else {
+        drush_make_error('BUILD_ERROR', dt("Project '%project' does not have an official release for version '%version'.", array('%project' => $project_name, '%version' => $final_version)));
+      }
       $result = FALSE;
     }
-    elseif (preg_match('/.*-dev$/', $project['version'])) {
+    // Make sure the project is an allowed project type.
+    elseif (!in_array($project['type'], $allowed_project_types)) {
+      drush_make_error('BUILD_ERROR', dt("Project %project of type '%type' is not permitted.", array('%project' => $project_name, '%type' => $project['type'])));
       $final_version = $project['version'];
       $result = FALSE;
     }
@@ -89,23 +112,18 @@ class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
     $errors = FALSE;
 
     // First order of business: convert core version.
-    $this->core = $this->old_info['core'];
-    if (empty($this->old_info['core_release'])) {
-      $parts = explode('.', $this->core);
-      $core_major = $parts[0];
-      // Check for a stable release on the branch.
-      list($result, $final_version) = $this->latestVersion('drupal', $core_major);
-      if ($result) {
-        $this->new_info['core'] = $final_version;
-        $this->log(dt('Setting the core version to %version.', array('%version' => $final_version)));
-      }
-      else {
-        drush_make_error('BUILD_ERROR', dt("Drupal core does not have an official release for version '%version' yet.", array('%version' => $final_version)));
-        $errors = TRUE;
-      }
+    $parts = explode('.', $this->old_info['core']);
+    $core_major = $parts[0];
+    $this->core = $core_major . '.x';
+
+    // Check for a stable release on the branch.
+    list($result, $final_version) = $this->latestVersion('drupal', $core_major);
+    if ($result) {
+      $this->new_info['core'] = $final_version;
+      $this->log(dt('Setting the Drupal core version to %version.', array('%version' => $final_version)));
     }
     else {
-      $this->new_info['core'] = $this->old_info['core_release'];
+      $errors = TRUE;
     }
 
     if (isset($this->old_info['projects'])) {
@@ -114,7 +132,7 @@ class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
         // Skip conversion for disallowed projects.
         if (in_array($project, $project_disallowed_list)) {
           if ($project == 'drupal') {
-            $this->log(dt("It is not permitted to include Drupal core as a project in an install profile -- it has been removed", 'warning'));
+            $this->log(dt("It is not permitted to include Drupal core as a project in an install profile -- it has been removed"), 'warning');
           }
           else {
             $this->log(dt("Removed disallowed project '%project'", array('%project' => $project)), 'warning');
@@ -172,7 +190,6 @@ class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
           $this->new_info['projects'][$project] = $project_data;
         }
         else {
-          drush_make_error('BUILD_ERROR', dt("Project '%project' does not have an official release for version '%version' yet.", array('%project' => $project, '%version' => $final_version)));
           $errors = TRUE;
         }
       }
@@ -292,13 +309,27 @@ class DrushMakeDrupalorgVerifier extends DrushMakeDrupalorgVersionChecker {
     }
   
     if (isset($makefile['projects'])) {
+
+      // The list of currently disallowed projects.
+      $project_disallowed_list = array('drupal');
       foreach ($makefile['projects'] as $project => $project_data) {
-        // Use the update XML to verify this project actually has this 
-        // release.
-        list($result, $final_version) = $this->latestVersion($project, $project_data['version']);
-        if (!$result) {
-          drush_make_error('BUILD_ERROR', dt("Project '%project' does not have an official release for version '%version'.", array('%project' => $project, '%version' => $final_version)));
+        // Error out on disallowed projects.
+        if (in_array($project, $project_disallowed_list)) {
+          if ($project == 'drupal') {
+            drush_make_error('BUILD_ERROR', dt("It is not permitted to include Drupal core as a project in an install profile."));
+          }
+          else {
+            drush_make_error('BUILD_ERROR', dt("Project '%project' is not permitted in an install profile.", array('%project' => $project)));
+          }
           $errors = TRUE;
+        }
+        else {
+          // Use the update XML to verify this project actually has this 
+          // release.
+          list($result, $final_version) = $this->latestVersion($project, $project_data['version']);
+          if (!$result) {
+            $errors = TRUE;
+          }
         }
       }
     }
