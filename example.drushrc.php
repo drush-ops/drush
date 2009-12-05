@@ -28,6 +28,9 @@
 // Specify your Drupal core base directory (useful if you use symlinks).
 # $options['r'] = '/home/USER/workspace/drupal-6';
 
+// Load a drushrc.php configuration file from the current working directory.
+# $options['c'] = '.';
+
 // Specify CVS for checkouts
 # $options['package-handler'] = 'cvs';
 

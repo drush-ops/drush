@@ -389,9 +389,6 @@ function _drush_bootstrap_drush() {
   // statically define a way to call drush again
   define('DRUSH_COMMAND', drush_find_drush());
 
-  // Load a custom config specified with the --config option.
-  drush_load_config('custom'); 
-
   // Load a drushrc.php file in the drush.php's directory.
   drush_load_config('drush');
 
@@ -400,6 +397,9 @@ function _drush_bootstrap_drush() {
 
   // Load a drushrc.php file in the ~/.drush directory.
   drush_load_config('user');
+
+  // Load a custom config specified with the --config option.
+  drush_load_config('custom'); 
 
   // Process the site alias that specifies which instance
   // of drush (local or remote) this command will operate on.

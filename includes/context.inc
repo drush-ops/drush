@@ -73,6 +73,9 @@ function _drush_config_file($context) {
 
   // Did the user explicitly specify a config file?
   if ($config = drush_get_option(array('c', 'config'))) {
+    if (is_dir($config)) {
+      $config = $config . '/drushrc.php';
+    }
     $configs['custom'] = $config;
   }
 
@@ -116,6 +119,7 @@ function drush_load_config($context) {
   $config = _drush_config_file($context);
   if (file_exists($config)) {
     drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
+    $options['context-path'][$context] = $config;
     require_once($config);
     
     // If site aliases are defined in multiple drush configuration files,
@@ -123,7 +127,7 @@ function drush_load_config($context) {
     // array to mask all of the other aliases defined in different contexts.
     // To allow all of the aliases defined in every context to be used together,
     // we merge them all into the 'drush' context as they are encountered.
-    if (($context != 'drush') && (array_key_exists('site-aliases', $options))) {
+    if ((isset($options)) && (array_key_exists('site-aliases', $options))) {
       $cache =& drush_get_context('drush');
       if (array_key_exists('site-aliases', $cache)) {
         $cache['site-aliases'] = array_merge($cache['site-aliases'], $options['site-aliases']);
