@@ -340,7 +340,7 @@ function _drush_bootstrap_drush_validate() {
     if (!file_exists($tablefile)) {
       drush_shell_exec("wget -q --timeout=30 -O $tablefile " . DRUSH_TABLE_URL);
       if (!file_exists($tablefile)) {
-        drush_shell_exec("curl -s  --connect-timeout=30 -o $tablefile " . DRUSH_TABLE_URL);
+        drush_shell_exec("curl -s  --connect-timeout 30 -o $tablefile " . DRUSH_TABLE_URL);
         if (!file_exists($tablefile)) {
           return drush_bootstrap_error('DRUSH_TABLES_INC', dt("Drush needs a copy of the PEAR Console_Table library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract it, and copy the Table.php file into Drush's directory as !tablefile.", array('!version' => DRUSH_TABLE_VERSION ,'!tablefile' => $tablefile)));
         }
