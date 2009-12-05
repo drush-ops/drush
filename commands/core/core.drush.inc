@@ -192,10 +192,6 @@ function core_drush_engine_drupal() {
 function drush_core_updatedb() {
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
   update_main();
-  
-  // Clear all caches. We just performed major surgery.
-  drush_drupal_cache_clear_all();
-  
   drush_log(dt('Finished performing updates.'), 'ok');
 }
 

@@ -123,21 +123,21 @@ function drush_update_do_one($module, $number, &$context) {
  * Check update requirements and report any errors.
  */
 function update_check_requirements() {
-   // Check the system module and update.php requirements only.
-  $requirements = module_invoke('system', 'requirements', 'update');
+  $warnings = FALSE;
+  
+  // Check the system module and update.php requirements only.
+  $requirements = system_requirements('update');
   $requirements += update_extra_requirements();
 
   // If there are issues, report them.
-  if ($severity != REQUIREMENT_OK) {
-    foreach ($requirements as $requirement) {
-      if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
-        $message = isset($requirement['description']) ? $requirement['description'] : '';
-        if (isset($requirement['value']) && $requirement['value']) {
-          $message .= ' (Currently using ' . $requirement['title'] . ' ' . $requirement['value'] . ')';
-        }
-        $warnings = TRUE;
-        drupal_set_message($message, 'warning');
+  foreach ($requirements as $requirement) {
+    if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
+      $message = isset($requirement['description']) ? $requirement['description'] : '';
+      if (isset($requirement['value']) && $requirement['value']) {
+        $message .= ' (Currently using ' . $requirement['title'] . ' ' . $requirement['value'] . ')';
       }
+      $warnings = TRUE;
+      drupal_set_message($message, 'warning');
     }
   }
   return $warnings;
@@ -145,7 +145,6 @@ function update_check_requirements() {
 
 
 function update_main() {
-  global $profile;
   // Some unavoidable errors happen because the database is not yet up-to-date.
   // Our custom error handler is not yet installed, so we just suppress them.
   drush_errors_off();
@@ -158,7 +157,6 @@ function update_main() {
   require_once DRUPAL_ROOT . '/includes/common.inc';
   require_once DRUPAL_ROOT . '/includes/entity.inc';
 
-  drush_log(drush_drupal_major_version());
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
 
   update_prepare_d7_bootstrap();
@@ -166,22 +164,15 @@ function update_main() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
 
 
-  /**
-   * This code occurs only if a specific OP on update.php is accessed.
-   */
   require_once DRUPAL_ROOT . '/includes/install.inc';
   require_once DRUPAL_ROOT . '/includes/file.inc';
-  require_once DRUPAL_ROOT . '/includes/registry.inc';
   require_once DRUPAL_ROOT . '/modules/system/system.install';
-
 
   // Load module basics.
   include_once DRUPAL_ROOT . '/includes/module.inc';
   $module_list['system']['filename'] = 'modules/system/system.module';
-  $module_list['filter']['filename'] = 'modules/filter/filter.module';
   module_list(TRUE, FALSE, FALSE, $module_list);
   drupal_load('module', 'system');
-  drupal_load('module', 'filter');
 
   // Reset the module_implements() cache so that any new hook implementations
   // in updated code are picked up.
@@ -195,9 +186,20 @@ function update_main() {
 
   // Check the update requirements for Drupal.
   update_check_requirements();
+
+  // update_fix_d7_requirements() needs to run before bootstrapping beyond path.  
+  // So bootstrap to DRUPAL_BOOTSTRAP_LANGUAGE then include unicode.inc.
+  drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
+  include_once DRUPAL_ROOT . '/includes/unicode.inc';
+  
+  update_fix_d7_requirements();
+  
+  // Now proceed with a full bootstrap.
+  
+  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  drupal_maintenance_theme();
   
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
-  $profile = variable_get('install_profile', 'default');
 /*
   // Updates only run reliably if user ID #1 is logged in. For example, node_delete() requires elevated perms in D5/6.
   if (!drush_get_context('DRUSH_USER')) {
@@ -334,7 +336,7 @@ function _update_do_one($module, $number, &$context) {
 
 
 function drush_update_finished($success, $results, $operations) {
-  // clear the caches in case the data has been updated.
+  // Clear the caches in case the data has been updated.
   drupal_flush_all_caches();
   variable_set('site_offline', FALSE);
 }
