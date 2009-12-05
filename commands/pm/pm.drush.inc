@@ -160,6 +160,7 @@ function pm_drush_command() {
     ),
     'options' => array(
       '--destination' => 'Path to which the project will be copied.',
+      '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
     ), 
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
     'aliases' => array('dl')
@@ -811,7 +812,7 @@ function drush_pm_download() {
     foreach ($requestdata as $package) {
       $project = $package['name'];
       // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
-      $url = 'http://updates.drupal.org/release-history' . "/$project/". $package['drupal_version'];
+      $url = drush_get_option('source', 'http://updates.drupal.org/release-history') . "/$project/". $package['drupal_version'];
       
       // A simple download, which is never available via CVS. 
       // Some hosts have allow_url_fopen disabled.
