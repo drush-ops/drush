@@ -19,7 +19,7 @@ function sitealias_drush_command() {
   $items['site alias'] = array(
     'callback' => 'drush_sitealias_print',
     'description' => 'Print site alias records for all known site aliases and local sites.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
     'arguments' => array(
       'site' => 'Site specification alias to print',
     ),
