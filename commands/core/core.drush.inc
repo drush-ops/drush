@@ -10,10 +10,10 @@
  * Implementation of hook_drush_command().
  *
  * In this hook, you specify which commands your
- * drush module makes available, what it does and 
+ * drush module makes available, what it does and
  * description.
  *
- * Notice how this structure closely resembles how 
+ * Notice how this structure closely resembles how
  * you define menu hooks.
  *
  * @return
@@ -63,7 +63,7 @@ function core_drush_command() {
     ),
     'options' => array(
       '--script-path' => "Additional paths to search for scripts.  Use POSIX path separator (':') for multiple paths.",
-    ),    
+    ),
   );
   $items['cache clear'] = array(
     'description' => 'Clear a specific cache, or all drupal caches.',
@@ -100,7 +100,7 @@ function core_drush_command() {
       'watchdog delete cron' => 'Delete all cron watchdog messages.',
     ),
     'aliases' => array('wd'),
-    
+
   );
   $items['search status'] = array(
     'description' => 'Show how many items remain to be indexed out of the total.',
@@ -213,7 +213,7 @@ function drush_core_hook($hook) {
  */
 function drush_core_help() {
   $commands = func_get_args();
-  
+
   if (empty($commands)) {
     drush_show_help(array('help'));
     $phases = _drush_bootstrap_phases();
@@ -229,7 +229,7 @@ function drush_core_help() {
         if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
           drush_bootstrap($phase_index);
         }
-        
+
         $commands = drush_get_commands();
         // Filter by command file if specified.
         if ($commandfile = drush_get_option('filter')) {
@@ -239,7 +239,7 @@ function drush_core_help() {
             }
           }
         }
-        
+
         $rows = array();
         foreach($commands as $key => $command) {
           if (!$command['is_alias']) {
@@ -254,10 +254,10 @@ function drush_core_help() {
         $printed_rows = array_merge($printed_rows, $rows);
       }
       else {
-        break; 
+        break;
       }
     }
-    
+
     // Space delimited list for use by other scripts. Set the --pipe option.
     drush_print_pipe(implode(' ', $pipe));
     return;
@@ -414,8 +414,8 @@ function drush_core_script() {
       $searchpath[] = $path;
     }
   }
-  
-  
+
+
   if (empty($args)) {
     // List all available scripts.
     $all = array();
@@ -438,7 +438,7 @@ function drush_core_script() {
       }
       $all[] = $script_filename;
     }
-    
+
     if (!$found) {
       drush_set_error('script not found', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
     }
@@ -451,7 +451,7 @@ function drush_core_script() {
 function drush_core_watchdog_show($type = NULL) {
   $limit = drush_get_option('limit') ? drush_get_option('limit') : 10;
   $severity = drush_get_option('severity');
-  
+
   switch (drush_drupal_major_version()) {
     case 5:
     case 6:

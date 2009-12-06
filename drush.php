@@ -67,7 +67,7 @@ function drush_verify_cli() {
 function drush_main() {
   $phases = _drush_bootstrap_phases();
   $completed_phases = array();
-  
+
   $return = '';
   $command_found = FALSE;
 
@@ -75,7 +75,7 @@ function drush_main() {
     if (drush_bootstrap($phase)) {
       $completed_phases[$phase] = TRUE;
       $command = drush_parse_command();
-      
+
       // Process a remote command if 'remote-host' option is set.
       if (drush_remote_command()) {
         $command_found = TRUE;
@@ -88,7 +88,7 @@ function drush_main() {
           $command_found = TRUE;
           // Dispatch the command(s).
           $return = drush_dispatch($command);
-          
+
           drush_log_timers();
           break;
         }
@@ -105,7 +105,7 @@ function drush_main() {
     $drush_command = array_pop(explode('/', DRUSH_COMMAND));
     if (isset($command) && is_array($command)) {
       foreach ($command['bootstrap_errors'] as $key => $error) {
-        drush_set_error($key, $error); 
+        drush_set_error($key, $error);
       }
       drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The command '!drush_command !args' could not be executed.", array('!drush_command' => $drush_command, '!args' => $args)));
     }
@@ -139,20 +139,20 @@ function drush_remote_command() {
   // option will be set when the site alias is processed.
   // @see _drush_process_site_alias
   $remote_host = drush_get_option('remote-host');
-  if (isset($remote_host)) {         
+  if (isset($remote_host)) {
 
     $args = drush_get_arguments();
     $command = array_shift($args);
     $data = drush_get_context('options');
-    
-    // Most command options are forwarded on to the remote 
+
+    // Most command options are forwarded on to the remote
     // server; however, we will clear certain flags such as
     // -v, -d and -i from the 'options' context (defaults, and
     // options passed in on the command line).
     foreach (array('v', 'd', 'i') as $key) {
       unset($data[$key]);
     }
-    
+
     // After we clear out the flags we do not want from the
     // 'options' context, we will add in the 'root' and 'uri'
     // options from the 'alias' context.
@@ -162,7 +162,7 @@ function drush_remote_command() {
         $data[$key] = $value;
       }
     }
-    
+
     // Finally, we call backend invoke with the
     // specified remote host, remote user and drush path.
     $drush_path = drush_get_option('drush-script');
@@ -192,18 +192,18 @@ function drush_remote_command() {
  * If the command is being executed with the --backend option, the script
  * will return a json string containing the options and log information
  * used by the script.
- * 
- * The command will exit with '1' if it was successfully executed, and the 
+ *
+ * The command will exit with '1' if it was successfully executed, and the
  * result of drush_get_error() if it wasn't.
  */
 function drush_shutdown() {
   // Mysteriously make $user available during sess_write(). Avoids a NOTICE.
-  global $user; 
+  global $user;
 
   if (!drush_get_context('DRUSH_EXECUTION_COMPLETED', FALSE)) {
-    // We did not reach the end of the drush_main function, 
+    // We did not reach the end of the drush_main function,
     // this generally means somewhere in the code a call to exit(),
-    // was made. We catch this, so that we can trigger an error in 
+    // was made. We catch this, so that we can trigger an error in
     // those cases.
     drush_set_error("DRUSH_NOT_COMPLETED", dt("Drush command could not be completed."));
   }
@@ -225,12 +225,12 @@ function drush_shutdown() {
   elseif (drush_get_context('DRUSH_QUIET')) {
     ob_end_clean();
   }
-  
+
   // If we are in pipe mode, emit the compact representation of the command, if available.
   if (drush_get_context('DRUSH_PIPE')) {
     drush_pipe_output();
   }
-  
+
   // this way drush_return_status will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
   // and won't prevent other registered shutdown functions (IE from numerous cron methods) from running by calling exit() before they get a chance.
   register_shutdown_function('drush_return_status');

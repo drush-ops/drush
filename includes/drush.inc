@@ -22,12 +22,12 @@ function drush_dispatch($command = NULL) {
     // Call the callback function of the active command.
     $return = call_user_func_array($command['callback'], $command['arguments']);
   }
-  
+
   // prevent a '1' at the end of the output
   if ($return === TRUE) {
     $return = '';
   }
-  
+
   // Add a final log entry, just so a timestamp appears.
   drush_log(dt('Command dispatch complete'), 'notice');
 
@@ -36,25 +36,25 @@ function drush_dispatch($command = NULL) {
 
 /**
  * Include a file, selecting a version specific file if available.
- * 
+ *
  * For example, if you pass the path "/var/drush" and the name
  * "update" when bootstrapped on a Drupal 6 site it will first check for
  * the presence of "/var/drush/update_6.inc" in include it if exists. If this
  * file does NOT exist it will proceed and check for "/var/drush/update.inc".
  * If neither file exists, it will return FALSE.
- * 
+ *
  * @param $path
  *   The path you want to search.
  * @param $name
  *   The file base name you want to include (not including a version suffix
- *   or extension). 
+ *   or extension).
  * @param $version
  *   The version suffix you want to include (could be specific to the software
  *   or platform your are connecting to) - defaults to the current Drupal core
  *   major version.
  * @param $extension
  *   The extension - defaults to ".inc".
- *   
+ *
  * @return
  *   TRUE if the file was found and included.
  */
@@ -77,27 +77,27 @@ function drush_include($path, $name, $version = NULL, $extension = 'inc') {
 /**
  * Return a structured array of engines of a specific type from commandfiles
  * implementing hook_drush_engine_$type.
- * 
+ *
  * Engines are pluggable subsystems. Each engine of a specific type will
  * implement the same set of API functions and perform the same high-level
- * task using a different backend or approach. 
- * 
+ * task using a different backend or approach.
+ *
  * This function/hook is useful when you have a selection of several mutually
  * exclusive options to present to a user to select from.
- * 
+ *
  * Other commands are able to extend this list and provide their own engines.
  * The hook can return useful information to help users decide which engine
  * they need, such as description or list of available engine options.
- * 
+ *
  * The engine path element will automatically default to a subdirectory (within
  * the directory of the commandfile that implemented the hook) with the name of
  * the type of engine - e.g. an engine "wget" of type "handler" provided by
  * the "pm" commandfile would automatically be found if the file
  * "pm/handler/wget.inc" exists and a specific path is not provided.
- * 
+ *
  * @param $type
  *   The type of engine.
- *  
+ *
  * @return
  *   A structured array of engines.
  */
@@ -128,13 +128,13 @@ function drush_get_engines($type) {
  *
  * If the engine type has implemented hook_drush_engine_$type the path to the
  * engine specified in the array will be used.
- * 
+ *
  * If you don't need to present any user options for selecting the engine
  * (which is common if the selection is implied by the running environment)
  * and you don't need to allow other modules to define their own engines you can
  * simply pass the $path to the directory where the engines are, and the
  * appropriate one will be included.
- * 
+ *
  * Unlike drush_include this function will set errors if the requested engine
  * cannot be found.
  *
@@ -219,7 +219,7 @@ function drush_drupal_major_version() {
  *
  * @param
  *   A Database result object.
- */ 
+ */
 function drush_db_result($result) {
   return drush_drupal_major_version() >= 7 ? $result->fetchField() : db_result($result);
 }
@@ -229,7 +229,7 @@ function drush_db_result($result) {
  *
  * @param
  *   A Database result object.
- */ 
+ */
 function drush_db_fetch_object($result) {
   return drush_drupal_major_version() >= 7 ? $result->fetchObject() : db_fetch_object($result);
 }
@@ -237,7 +237,7 @@ function drush_db_fetch_object($result) {
 /**
  * Save a string to a temporary file. Does not depend on Drupal's API.
  *
- * @param string $data 
+ * @param string $data
  * @return string
  *   A path to the file.
  */
@@ -347,7 +347,7 @@ function drush_show_help($commands) {
       $commands = drush_get_commands();
       if (array_key_exists($commandstring, $commands)) {
         $command = $commands[$commandstring];
-        
+
         // Merge in engine specific help.
         foreach ($command['engines'] as $type => $description) {
           $all_engines = drush_get_engines($type);
@@ -355,19 +355,19 @@ function drush_show_help($commands) {
             $command = array_merge_recursive($command, $engine);
           }
         }
-        
+
         $help = drush_command_invoke_all('drush_help', 'drush:'. $command['command']);
         if (!empty($help)) {
           drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));
           drush_print();
-          
+
           // TODO: Let commands define additional sections.
           $sections = array(
             'examples' => 'Examples',
             'arguments' => 'Arguments',
             'options' => 'Options',
           );
-          
+
           foreach ($sections as $key => $value) {
             if (!empty($command[$key])) {
               drush_print(dt($value) . ':');
@@ -385,7 +385,7 @@ function drush_show_help($commands) {
           if ($command['aliases']) {
             drush_print(dt("Aliases: ") . implode(', ', $command['aliases']));
           }
-          
+
           return TRUE;
         }
         else {
@@ -416,7 +416,7 @@ function drush_show_help($commands) {
  */
 function drush_shell_exec($cmd) {
   $args = func_get_args();
- 
+
   //do not change the command itself, just the parameters.
   for ($x = 1; $x < sizeof($args); $x++) {
     $args[$x] = escapeshellarg($args[$x]);
@@ -436,7 +436,7 @@ function drush_shell_exec($cmd) {
         drush_print($line, 2);
       }
     }
-  
+
     // Exit code 0 means success.
     return ($result == 0);
   }
@@ -467,7 +467,7 @@ function drush_shell_exec_output() {
 }
 
 /**
- * Exits with a message. In general, you should use drush_set_error() instead of 
+ * Exits with a message. In general, you should use drush_set_error() instead of
  * this function. That lets drush proceed with other tasks.
  * TODO: Exit with a correct status code.
  */
@@ -476,12 +476,12 @@ function drush_die($msg = NULL, $status = NULL) {
 }
 
 /**
- * Prints a message with optional indentation. In general, 
- * drush_log($message, 'ok') is often a better choice than this function. 
- * That gets your confirmation message (for example) into the logs for this 
- * drush request. Consider that drush requests may be executed remotely and 
+ * Prints a message with optional indentation. In general,
+ * drush_log($message, 'ok') is often a better choice than this function.
+ * That gets your confirmation message (for example) into the logs for this
+ * drush request. Consider that drush requests may be executed remotely and
  * non interactively.
- * 
+ *
  * @param $message
  *   The message to print.
  * @param $indent
@@ -525,7 +525,7 @@ function drush_confirm($msg, $indent = 0) {
   }
   // See http://drupal.org/node/499758 before changing this.
   $stdin = fopen("php://stdin","r");
-  
+
   while ($line = fgets($stdin)) {
   $line = trim($line);
     if ($line == 'y') {
@@ -556,7 +556,7 @@ function drush_choice($options, $prompt = 'Enter a number.') {
 
 /**
  * Print a formatted table.
- * 
+ *
  * @param $rows
  *   The rows to print.
  * @param $header
@@ -592,7 +592,7 @@ function drush_print_table($rows, $header = FALSE, $widths = array()) {
 
 /**
  * Determine the best fit for column widths.
- * 
+ *
  * @param $rows
  *   The rows to use for calculations.
  * @param $widths
@@ -601,7 +601,7 @@ function drush_print_table($rows, $header = FALSE, $widths = array()) {
  */
 function drush_table_column_autowidth($rows, $widths) {
   $auto_widths = $widths;
-  
+
   // First we determine the distribution of row lengths in each column.
   // This is an array of descending character length keys (i.e. starting at
   // the rightmost character column), with the value indicating the number
@@ -633,7 +633,7 @@ function drush_table_column_autowidth($rows, $widths) {
   // above "ideal" columns take up.
   $available_width = drush_get_context('DRUSH_COLUMNS', 80) - (count($auto_widths) * 2);
   $auto_width_current = array_sum($auto_widths);
-  
+
   // If we need to reduce a column so that we can fit the space we use this
   // loop to figure out which column will cause the "least wrapping",
   // (relative to the other columns) and reduce the width of that column.
@@ -704,8 +704,8 @@ function drush_log($message, $type = 'notice', $error = null) {
   $log =& drush_get_context('DRUSH_LOG', array());
   $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
   $entry = array(
-     'type' => $type, 
-     'message' => $message, 
+     'type' => $type,
+     'message' => $message,
      'timestamp' => microtime(TRUE),
    );
   $entry['error'] = $error;
@@ -737,7 +737,7 @@ function dlm($object) {
 
 /*
  * Display the pipe output for the current request.
- */ 
+ */
 function drush_pipe_output() {
   $pipe = drush_get_context('DRUSH_PIPE_BUFFER');
   drush_print_r($pipe);
@@ -771,11 +771,11 @@ function _drush_print_log($entry) {
 
   $return = TRUE;
   switch ($entry['type']) {
-    case 'warning' : 
+    case 'warning' :
       $type_msg = sprintf($yellow, $entry['type']);
       break;
-    case 'failed' : 
-    case 'error' : 
+    case 'failed' :
+    case 'error' :
       $type_msg = sprintf($red, $entry['type']);
       $return = FALSE;
       break;
@@ -784,15 +784,15 @@ function _drush_print_log($entry) {
     case 'success' :
       $type_msg = sprintf($green, $entry['type']);
       break;
-    case 'notice' : 
-    case 'message' : 
+    case 'notice' :
+    case 'message' :
       if (!$verbose) {
         // print nothing. exit cleanly.
         return TRUE;
       }
       $type_msg = sprintf("[%s]", $entry['type']);
       break;
-    default : 
+    default :
       if (!$debug) {
         // print nothing. exit cleanly.
         return TRUE;
@@ -818,7 +818,7 @@ function _drush_print_log($entry) {
 
   $width[0] = ($columns - 11);
 
-  $format = sprintf("%%-%ds%%%ds", $width[0], $width[1]); 
+  $format = sprintf("%%-%ds%%%ds", $width[0], $width[1]);
 
   // Place the status message right aligned with the top line of the error message.
   $message = wordwrap($entry['message'], $width[0]);
@@ -845,7 +845,7 @@ function _drush_log_drupal_messages() {
   if (function_exists('drupal_get_messages')) {
 
     $messages = drupal_get_messages();
-    
+
     if (array_key_exists('error', $messages)) {
       //Drupal message errors.
       foreach ((array) $messages['error'] as $error) {
@@ -937,7 +937,7 @@ define('DRUSH_APPLICATION_ERROR', 255);
  *   A text string identifying the type of error.
  *
  * @param message
- *   Optional. Error message to be logged. If no message is specified, hook_drush_help will be consulted, 
+ *   Optional. Error message to be logged. If no message is specified, hook_drush_help will be consulted,
  *   using a key of 'error:MY_ERROR_STRING'.
  *
  * @return
@@ -992,11 +992,11 @@ function drush_get_error_log() {
  * @param error
  *   A text string identifying the error that has occurred.
  * @return
- *   TRUE if the specified error has been set, FALSE if not 
+ *   TRUE if the specified error has been set, FALSE if not
  */
 function drush_cmp_error($error) {
   $error_log = drush_get_error_log();
-  
+
   if (is_numeric($error)) {
     $error = 'DRUSH_FRAMEWORK_ERROR';
   }

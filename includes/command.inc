@@ -9,7 +9,7 @@
  * installation and commands may operate across sites, a distinct
  * command engine is needed.
  *
- * It mimics the Drupal module engine in order to economize on 
+ * It mimics the Drupal module engine in order to economize on
  * concepts and to make developing commands as familiar as possible
  * to traditional Drupal module developers.
  */
@@ -94,7 +94,7 @@ function drush_get_commands() {
           'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
           'commandfile' => $commandfile,
           'path' => dirname($path),
-          'engines' => array(), // Helpful for drush_show_help(). 
+          'engines' => array(), // Helpful for drush_show_help().
           'callback' => 'drush_command',
           'description' => NULL,
           'arguments' => array(),
@@ -195,22 +195,22 @@ function drush_parse_command() {
 }
 
 /**
- * Invoke drush api calls. 
- * 
- * Call the correct hook for all the modules that implement it. 
+ * Invoke drush api calls.
+ *
+ * Call the correct hook for all the modules that implement it.
  * Additionally, the ability to rollback when an error has been encountered is also provided.
  * If at any point during execution, the drush_get_error() function returns anything but 0,
- * drush_invoke() will trigger $hook_rollback for each of the hooks that implement it, 
+ * drush_invoke() will trigger $hook_rollback for each of the hooks that implement it,
  * in reverse order from how they were executed.
  *
- * This function will also trigger pre_$hook and post_$hook variants of the hook 
+ * This function will also trigger pre_$hook and post_$hook variants of the hook
  * and its rollbacks automatically.
  *
- * @param command 
+ * @param command
  *   The drush command to execute.
  * @return
- *   A boolean specifying whether or not the command was successfully completed. 
- * 
+ *   A boolean specifying whether or not the command was successfully completed.
+ *
  */
 function drush_invoke($command) {
   drush_command_include($command);
@@ -248,7 +248,7 @@ function drush_invoke($command) {
     }
   }
 
-  // something went wrong, we need to undo 
+  // something went wrong, we need to undo
   if ($rollback) {
     foreach (array_reverse($completed) as $func) {
       $rb_func = $func . '_rollback';
@@ -362,7 +362,7 @@ function drush_is_command($command) {
 
 /**
  * Collect a list of all available drush command files.
- * 
+ *
  * Scans the following paths for drush command files:
  *
  * - The ".drush" folder in the users HOME folder.
@@ -371,7 +371,7 @@ function drush_is_command($command) {
  * - Active modules in the current Drupal installation (if any).
  *
  * A drush command file is a file that matches "*.drush.inc".
- * 
+ *
  * @see drush_scan_directory
  *
  * @return
@@ -461,7 +461,7 @@ function _drush_find_commandfiles($phase) {
 function drush_command_include($command) {
   $parts = explode(' ', $command);
   $command = implode(".", array_reverse($parts));
- 
+
   $commandfiles = drush_commandfile_list();
   $options = array();
   foreach ($commandfiles as $commandfile => $file) {
@@ -555,10 +555,10 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
 
 /**
  * Check that a command is valid for the current bootstrap phase.
- * 
+ *
  * @param $command
  *   Command to check. Any errors will be added to the 'bootstrap_errors' element.
- * 
+ *
  * @return
  *   TRUE if command is valid.
  */
@@ -576,10 +576,10 @@ function drush_enforce_requirement_bootstrap_phase(&$command) {
 /**
  * Check that a command has its declared dependencies available or have no
  * dependencies.
- * 
+ *
  * @param $command
  *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.
- * 
+ *
  * @return
  *   TRUE if command is valid.
  */
@@ -599,10 +599,10 @@ function drush_enforce_requirement_drupal_dependencies(&$command) {
 
 /**
  * Check that a command is valid for the current major version of core.
- * 
+ *
  * @param $command
  *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.
- * 
+ *
  * @return
  *   TRUE if command is valid.
  */

@@ -39,12 +39,12 @@
  *   is returned by default from drush_get_option. This allows scripts to check whether
  *   an option was different before the current execution.
  *
- *    Specified by the script itself : 
+ *    Specified by the script itself :
  *      process  : Generated in the current process.
  *      options  : Passed as --option=value to the command line.
  *      stdin    : Passed as a JSON encoded string through stdin.
  *
- *    Specified by config files : 
+ *    Specified by config files :
  *      custom   : Loaded from the config file specified by --config or -c
  *      site     : Loaded from the drushrc.php file in the Drupal site directory.
  *      drupal   : Loaded from the drushrc.php file in the Drupal root directory.
@@ -137,9 +137,9 @@ function drush_load_config($context) {
       }
       unset($options['site-aliases']);
     }
-    
+
     drush_set_context($context, $options);
-    
+
     // Instruct core not to queries since we are not outputting them.
     // This can be overridden by a command or a drushrc file if needed.
     if (!isset($drush_conf_override['dev_query'])) {
@@ -163,9 +163,9 @@ function drush_load_config($context) {
  *
  * @param context
  *   Any of the default defined contexts.
- * @param value 
+ * @param value
  *   The value to store in the context
- * 
+ *
  * @return
  *   An associative array of the settings specified in the request context.
  */
@@ -188,18 +188,18 @@ function drush_set_context($context, $value) {
  * to the context cache using :
  *     $cache = &drush_get_context($context);
  *
- * This is a private function, because it is meant as an internal 
+ * This is a private function, because it is meant as an internal
  * generalized API for writing static cache functions, not as a general
  * purpose function to be used inside commands.
- * 
+ *
  * Code that modifies the reference directly might have unexpected consequences,
  * such as modifying the arguments after they have already been parsed and dispatched
  * to the callbacks.
  *
  * @param context
- *   Optional. Any of the default defined contexts. 
+ *   Optional. Any of the default defined contexts.
  @
- * @return 
+ * @return
  *   If context is not supplied, the entire context cache will be returned.
  *   Otherwise only the requested context will be returned.
  *   If the context does not exist yet, it will be initialied to an empty array.
@@ -226,7 +226,7 @@ function &drush_get_context($context = null, $default = null) {
  * arguments to the command.
  *
  * @param arguments
- *   Command line arguments, as an array. 
+ *   Command line arguments, as an array.
  */
 function drush_set_arguments($arguments) {
   drush_set_context('arguments', $arguments);
@@ -235,7 +235,7 @@ function drush_set_arguments($arguments) {
 /**
  * Get the arguments passed to the drush.php script.
  *
- * When drush_set_arguments is initially called by drush_parse_options, 
+ * When drush_set_arguments is initially called by drush_parse_options,
  * the entire list of arguments will be populated.
  * Once the command has been dispatched, this will be return only the remaining
  * arguments to the command.
@@ -261,7 +261,7 @@ function drush_set_command($command) {
 /**
  * Return the command being executed.
  *
- * 
+ *
  */
 function drush_get_command() {
   return drush_get_context('command');
@@ -291,7 +291,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
     // We are not checking a specific context, so check them in a predefined order of precedence.
     static $contexts = array(
       'process', 'options', 'stdin', 'alias',
-      'custom', 'site', 'drupal', 'user', 'system', 
+      'custom', 'site', 'drupal', 'user', 'system',
       'drush', 'default');
 
     foreach ($contexts as $context) {
@@ -315,7 +315,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
  */
 function drush_get_merged_options() {
   static $contexts = array(
-      'process', 'options', 'stdin', 'alias', 
+      'process', 'options', 'stdin', 'alias',
       'custom', 'site', 'drupal', 'user', 'system',
       'drush', 'default');
   $cache = drush_get_context();
@@ -349,7 +349,7 @@ function _drush_get_option($option, $context) {
 
 /**
  * Set an option in one of the option contexts.
- * 
+ *
  * @param option
  *   The option to set.
  * @param value
@@ -357,7 +357,7 @@ function _drush_get_option($option, $context) {
  * @param context
  *   Optional. Which context to set it in.
  * @return
- *   The value parameter. This allows for neater code such as 
+ *   The value parameter. This allows for neater code such as
  *     $myvalue = drush_set_option('http_host', $_SERVER['HTTP_HOST']);
  *   Without having to constantly type out the value parameter.
  */
@@ -411,7 +411,7 @@ function drush_save_config($context) {
       $timestamp = mktime();
       foreach ($cache as $key => $value) {
         $line = "\n\$options['$key'] = ". var_export($value, TRUE) .';';
-        fwrite($fp, $line);  
+        fwrite($fp, $line);
       }
       fwrite($fp, "\n");
       fclose($fp);

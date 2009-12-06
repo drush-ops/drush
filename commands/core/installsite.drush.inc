@@ -42,8 +42,8 @@ function drush_core_pre_installsite() {
       return;
     }
   }
-  
-  
+
+
   // Add a files dir if needed
   if (!file_exists($files)) {
     if (!drush_op('mkdir', $files) && !drush_get_context('DRUSH_SIMULATE')) {
@@ -51,10 +51,10 @@ function drush_core_pre_installsite() {
       return;
     }
   }
-  
+
   // Now we can bootstrap up to the specified site if not already there.
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
-  
+
   // Drop and create DB if needed.
   // Can't use drush_sql_query() since might not have a DB.
   $exec = 'mysql ' . _drush_sql_get_credentials($db_spec);
@@ -66,7 +66,7 @@ function drush_core_pre_installsite() {
     drush_set_error(dt('Could not drop database: @name', array('@name' => $db_spec['database'])));
     return;
   }
-  
+
   if (drush_op('system', $exec . '"CREATE DATABASE ' . $db_spec['database'] . '"') && !drush_get_context('DRUSH_SIMULATE')) {
     drush_set_error(dt('Could not create new database: @name', array('@name' => $db_spec['database'])));
     return;

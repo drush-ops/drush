@@ -119,7 +119,7 @@ define('DRUSH_TABLE_URL', 'http://cvs.php.net/viewvc.cgi/pear/Console_Table/Tabl
 function _drush_bootstrap_phases($function_names = FALSE) {
   static $functions = array(
     DRUSH_BOOTSTRAP_DRUSH                  => '_drush_bootstrap_drush',
-    DRUSH_BOOTSTRAP_DRUPAL_ROOT            => '_drush_bootstrap_drupal_root', 
+    DRUSH_BOOTSTRAP_DRUPAL_ROOT            => '_drush_bootstrap_drupal_root',
     DRUSH_BOOTSTRAP_DRUPAL_SITE            => '_drush_bootstrap_drupal_site',
     DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION   => '_drush_bootstrap_drupal_configuration',
     DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => '_drush_bootstrap_drupal_database',
@@ -130,7 +130,7 @@ function _drush_bootstrap_phases($function_names = FALSE) {
     return $functions;
   }
   if (!$phases) {
-    $phases = array_keys($functions); 
+    $phases = array_keys($functions);
   }
   return $phases;
 }
@@ -194,7 +194,7 @@ function drush_bootstrap($phase) {
  * progressively bootstrap to the highest level that can be reached.
  *
  * This function will only run the validation function once, and
- * store the result from that execution in a local static. This avoids 
+ * store the result from that execution in a local static. This avoids
  * validating phases multiple times.
  *
  * @param phase
@@ -210,7 +210,7 @@ function drush_bootstrap($phase) {
  *
  * @return
  *   True if bootstrap is possible, False if the validation failed.
- *   
+ *
  */
 function drush_bootstrap_validate($phase) {
   static $phases;
@@ -242,7 +242,7 @@ function drush_bootstrap_validate($phase) {
  * Bootstrap to the highest level possible, without triggering any errors.
  */
 function drush_bootstrap_max() {
-  $phases = _drush_bootstrap_phases(); 
+  $phases = _drush_bootstrap_phases();
   $phase_index = DRUSH_BOOTSTRAP_DRUSH;
 
   // Try to bootstrap to the maximum possible level, without generating errors
@@ -273,7 +273,7 @@ function drush_bootstrap_error($code, $message = null) {
 }
 
 /**
- * Log PHP errors to the Drush log. This is in effect until Drupal's error 
+ * Log PHP errors to the Drush log. This is in effect until Drupal's error
  * handler takes over.
  */
 function drush_error_handler($errno, $message, $filename, $line, $context) {
@@ -363,15 +363,15 @@ function _drush_bootstrap_drush_validate() {
  * parse the command line arguments and store them in their
  * related contexts.
  *
- * Configuration files (drushrc.php) that are 
+ * Configuration files (drushrc.php) that are
  *   a) Specified on the command line
  *   b) Stored in the root directory of drush.php
  *   c) Stored in the home directory of the system user.
- * 
+ *
  * Additionally the DRUSH_QUIET and DRUSH_BACKEND contexts,
  * will be evaluated now, as they need to be set very early in
  * the execution flow to be able to take affect/
- */ 
+ */
 function _drush_bootstrap_drush() {
   // The bootstrap can fail silently, so we catch that in a shutdown function.
   register_shutdown_function('drush_shutdown');
@@ -399,7 +399,7 @@ function _drush_bootstrap_drush() {
   drush_load_config('user');
 
   // Load a custom config specified with the --config option.
-  drush_load_config('custom'); 
+  drush_load_config('custom');
 
   // Process the site alias that specifies which instance
   // of drush (local or remote) this command will operate on.
@@ -414,7 +414,7 @@ function _drush_bootstrap_drush() {
   // the drupal root below.  Is there a good way to refactor this
   // so that we do not need to search for the root twice?
   drush_sitealias_check_arg();
-  
+
   $backend = drush_set_context('DRUSH_BACKEND', drush_get_option(array('b', 'backend')));
 
   if ($backend) {
@@ -424,10 +424,10 @@ function _drush_bootstrap_drush() {
       drush_set_context('stdin', $stdin_options);
     }
   }
-  
+
   // Pipe implies quiet.
   $quiet = drush_set_context('DRUSH_QUIET', drush_get_option(array('q', 'quiet', 'p', 'pipe')));
-  
+
   drush_set_context('DRUSH_PIPE', drush_get_option(array('p', 'pipe')));
 
   // When running in backend mode, all output is buffered, and returned
@@ -439,7 +439,7 @@ function _drush_bootstrap_drush() {
   // Debug implies verbose
   drush_set_context('DRUSH_VERBOSE',     drush_get_option(array('v', 'verbose', 'd', 'debug'), FALSE));
   drush_set_context('DRUSH_DEBUG', drush_get_option(array('d', 'debug')));
-  
+
 
   // Backend implies affirmative
   drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('y', 'yes', 'b', 'backend'), FALSE));
@@ -477,7 +477,7 @@ function _drush_bootstrap_drupal_root_validate() {
   }
 
   drush_bootstrap_value('drupal_root', $drupal_root);
-  
+
   return TRUE;
 }
 
@@ -497,10 +497,10 @@ function _drush_bootstrap_drupal_root_validate() {
 function _drush_bootstrap_drupal_root() {
   $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
   define('DRUPAL_ROOT', $drupal_root);
-  
+
   // Save original working dir case some command wants it.
   drush_set_context('DRUSH_OLDCWD', getcwd());
-  
+
   chdir($drupal_root);
   drush_load_config('drupal');
   require_once(DRUSH_DRUPAL_BOOTSTRAP);
@@ -530,7 +530,7 @@ function _drush_bootstrap_drupal_site_validate() {
   $uri = 'http://'. $current;
 
   $drush_uri = drush_bootstrap_value('drush_uri', drush_get_option(array('l', 'uri'), $uri));
-  
+
   // Fake the necessary HTTP headers that Drupal needs:
   if ($drush_uri) {
     $drupal_base_url = parse_url($drush_uri);
@@ -560,14 +560,14 @@ function _drush_bootstrap_drupal_site_validate() {
   $_SERVER['HTTP_USER_AGENT'] = NULL;
 
   $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
-  
+
   $conf_path = drush_bootstrap_value('conf_path', conf_path(TRUE, TRUE));
   $conf_file = "./$conf_path/settings.php";
   if (!file_exists($conf_file)) {
     return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', dt("Could not find a Drupal settings.php file at !file.",
        array('!file' => $conf_file)));
   }
- 
+
   return TRUE;
 }
 
@@ -576,17 +576,17 @@ function _drush_bootstrap_drupal_site_validate() {
  * of the drush drupal site bootstrap.
  */
 function _drush_bootstrap_do_drupal_site() {
-  $drush_uri = drush_set_context('DRUSH_URI', drush_bootstrap_value('drush_uri')); 
+  $drush_uri = drush_set_context('DRUSH_URI', drush_bootstrap_value('drush_uri'));
   $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
   $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
-  
+
   // Find any command files that are available during this bootstrap phase.
   _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
   drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
   drush_load_config('site');
 }
- 
+
 /**
  * Initialize a site on the Drupal root.
  *
@@ -612,7 +612,7 @@ function _drush_bootstrap_redo_drupal_site() {
   // against one of those aliases.
   if (drush_sitealias_check_arg() === TRUE) {
     $remote_host = drush_get_option('remote-host');
-    if (!isset($remote_host)) {         
+    if (!isset($remote_host)) {
       // Check to see if the drupal root changed.
       // If it has, we will set remote-host to cause
       // this command to be executed via the backend invoke
@@ -643,7 +643,7 @@ function _drush_bootstrap_redo_drupal_site() {
  */
 function _drush_bootstrap_drupal_configuration() {
   global $conf, $drush_conf_override;
-  
+
   drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
 
   // Overriding the $conf array from drupal CONFIGURATION bootstrap with the
@@ -691,7 +691,7 @@ function _drush_bootstrap_drupal_configuration() {
  *
  * Attempt to making a working database connection using the
  * database credentials that were loaded during the previous
- * phase. 
+ * phase.
  */
 function _drush_bootstrap_drupal_database_validate() {
   if (!drush_valid_db_credentials()) {
@@ -797,7 +797,7 @@ function _drush_shift_path_up($path) {
  */
 function drush_site_path($path = NULL) {
   static $site_path;
-  
+
   if (!isset($site_path)) {
     $site_path = FALSE;
 
@@ -824,7 +824,7 @@ function drush_site_path($path = NULL) {
       // We do a reverse lookup here to determine the URL given the site key.
       if ($match = array_search($site_path, $sites)) {
         $site_path = $match;
-      } 
+      }
     }
 
     // Last resort: try from site root

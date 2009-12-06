@@ -4,8 +4,8 @@ DESCRIPTION
 -----------
 drush is a command line shell and Unix scripting interface for Drupal.
 
-Drush core ships with lots of useful commands for interacting with code 
-like modules/themes/profiles. Similarly, it runs update.php, executes sql 
+Drush core ships with lots of useful commands for interacting with code
+like modules/themes/profiles. Similarly, it runs update.php, executes sql
 queries and DB migrations, and misc utilities like run cron or clear cache.
 
 INSTALLATION
@@ -112,15 +112,15 @@ FAQ
 ---
   Q: What does "drush" stand for?
   A: The Drupal Shell.
-  
+
   Q: How do I pronounce drush?
-  A: Some people pronounce the dru with a long u like drupal. Fidelity points goes to  
-  them, but they are in the minority. Most pronouce drush so that it rhymes with 
+  A: Some people pronounce the dru with a long u like drupal. Fidelity points goes to
+  them, but they are in the minority. Most pronouce drush so that it rhymes with
   hush, rush, flush, etc. This is the preferred pronunciation.
 
 CREDITS
 -------
 Originally developed by Arto Bendiken <http://bendiken.net/> for Drupal 4.7.
 Redesigned by Franz Heinzmann (frando) <http://unbiskant.org/> in May 2007 for Drupal 5.
-Maintained by Moshe Weitzman <http://drupal.org/moshe> with much help from 
+Maintained by Moshe Weitzman <http://drupal.org/moshe> with much help from
 Grugnog2, Adrian Rossouw, and Vingborg.

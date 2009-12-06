@@ -29,10 +29,10 @@ function variable_drush_help($section) {
  * Implementation of hook_drush_command().
  *
  * In this hook, you specify which commands your
- * drush module makes available, what it does and 
+ * drush module makes available, what it does and
  * description.
  *
- * Notice how this structure closely resembles how 
+ * Notice how this structure closely resembles how
  * you define menu hooks.
  *
  * @return
@@ -79,7 +79,7 @@ function variable_drush_command() {
     ),
     'aliases' => array('vdel'),
   );
-  
+
   return $items;
 }
 

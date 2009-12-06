@@ -17,12 +17,12 @@
  * Implementation of hook_drush_command().
  *
  * In this hook, you specify which commands your
- * drush module makes available, what it does and 
+ * drush module makes available, what it does and
  * description.
  *
- * Notice how this structure closely resembles how 
+ * Notice how this structure closely resembles how
  * you define menu hooks.
- * 
+ *
  * @See drush_parse_command() for a list of recognized keys.
  *
  * @return
@@ -76,7 +76,7 @@ function example_drush_help($section) {
  */
 function example_callback() {
   $args = func_get_args();
-  
+
   // Using the Drupal API function 'format_interval()'
   // and Drush API function 'drush_print'
   drush_print(format_interval(time()));

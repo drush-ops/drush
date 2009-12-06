@@ -73,7 +73,7 @@ function pm_drush_command() {
       'package_handler' => 'Determine how to download/checkout new projects and acquire updates to projects.',
     ),
   );
-  
+
   $items['enable'] = array(
     'description' => 'Enable one or more modules.',
     'arguments' => array(
@@ -88,7 +88,7 @@ function pm_drush_command() {
     ),
     'aliases' => array('dis'),
   );
-  // Install command is reserved for the download and enable of projects including dependencies. 
+  // Install command is reserved for the download and enable of projects including dependencies.
   // @see http://drupal.org/node/112692 for more information.
   // $items['install'] = array(
   //     'description' => 'Download and enable one or more modules',
@@ -148,9 +148,9 @@ function pm_drush_command() {
   $items['download'] = array(
     'description' => 'Download core Drupal and projects like CCK, Zen, etc.',
     'examples' => array(
-      'drush dl' => 'Download latest version of Drupal core.', 
-      'drush dl drupal' => 'Download latest stable version of Drupal core', 
-      'drush dl drupal-7.x' => 'Download latest 7.x development version of Drupal core', 
+      'drush dl' => 'Download latest version of Drupal core.',
+      'drush dl drupal' => 'Download latest stable version of Drupal core',
+      'drush dl drupal-7.x' => 'Download latest 7.x development version of Drupal core',
       'drush dl cck zen es' => 'Download latest versions of CCK, Zen and Spanish translations for my version of Drupal.',
       'drush dl og-1.3' => 'Download a specfic version of Organic groups module for my version of Drupal.',
       'drush dl diff-6.x-2.x' => 'Download a specific development branch of diff module for a specific Drupal version.',
@@ -171,7 +171,7 @@ function pm_drush_command() {
 /**
  * Command callback. Enables one or more modules.
  */
-function drush_pm_enable() {  
+function drush_pm_enable() {
   $args = func_get_args();
   return pm_module_manage($args, TRUE);
 }
@@ -241,7 +241,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
   $module_info = drush_get_modules();
   $enabled = array();
   foreach ($module_info as $module_name => $module) {
-    // In Drupal 5, system_modules() returns NULL for the dependency list of the module if there are no dependencies. 
+    // In Drupal 5, system_modules() returns NULL for the dependency list of the module if there are no dependencies.
     // We will override this to be an empty array instead to be compatible to Drupal 6 and 7
     if (empty($module->info['dependencies'])){
        $module->info['dependencies'] = array();
@@ -316,7 +316,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
 
     $module_info = drush_get_modules();
     foreach ($modules as $module_name) {
-      if ($enable) { 
+      if ($enable) {
         if ($module_info[$module_name]->status) {
           drush_log(dt('!module was enabled successfully.', array('!module' => $module_info[$module_name]->info['name'])), 'ok');
         }
@@ -324,7 +324,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
           drush_set_error('DRUSH_PM_ENABLE_MODULE_ISSUE', dt('> There was a problem enabling !module.', array('!module' => $module_name)));
         }
       }
-      else { 
+      else {
         if (!$module_info[$module_name]->status) {
           drush_log(dt('!module was disabled successfully.', array('!module' => $module_info[$module_name]->info['name'])), 'ok');
         }
@@ -348,7 +348,7 @@ function pm_module_status($enabled, $module_info) {
     $rows[] = array($info['name'] . ' (' . $module_name . ')', $enabled, truncate_utf8($info['description'], 60, FALSE, TRUE));
   }
   drush_print_table($rows, TRUE);
-  
+
   // Space delimited list for use by other scripts. Set the --pipe option.
   drush_print_pipe(implode(' ', $pipe));
 }
@@ -454,7 +454,7 @@ function drush_pm_info() {
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
   $projects = func_get_args();
-  
+
   $projects = drupal_map_assoc($projects);
   $info = pm_get_project_info($projects);
 
@@ -468,7 +468,7 @@ function drush_pm_info() {
       );
     }
   }
-  
+
   if (count($rows) == 1) {
     return drush_set_error('DRUSH_PM_PROJECT_NOT_FOUND', dt('No information available.'));
   }
@@ -497,7 +497,7 @@ function drush_pm_update() {
 }
 
 /**
- * Post-command callback. 
+ * Post-command callback.
  * Execute updatedb command after an updatecode - user requested `update`.
  */
 function drush_pm_post_update() {
@@ -511,10 +511,10 @@ function drush_pm_post_update() {
 function drush_pm_post_updatecode() {
   // Make sure the installation API is available
   include_once './includes/install.inc';
-  
+
   // Load all .install files.
   drupal_load_updates();
-  
+
   // @see system_requirements().
   foreach (module_list() as $module) {
     $updates = drupal_get_schema_versions($module);
@@ -603,7 +603,7 @@ function pm_dl_destination_lookup($type, $drupal_root, $sitepath, $create = FALS
  * given the drupal and site contexts.
  */
 function pm_dl_destination($type) {
-  // Attempt 0: Use the user specified destination directory, if it exists. 
+  // Attempt 0: Use the user specified destination directory, if it exists.
   $destination = drush_get_option('destination');
   if (!empty($destination)) {
     $destination = rtrim($destination, '/') . '/';
@@ -614,7 +614,7 @@ function pm_dl_destination($type) {
       return drush_set_error('DRUSH_PM_NO_DESTINATION', dt('The destination directory !destination does not appear to exist.', array('!destination' => $destination)));
     }
   }
-  
+
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   $site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT', FALSE);
   $full_site_root = $drupal_root .'/'. $site_root . '/';
@@ -694,7 +694,7 @@ function pm_parse_project_version($requests) {
           // so this value must be a specified project version.
           $project_version = trim($matches[3], '-.');
           if (substr($project_version, -1, 1) == 'x') {
-            // If a dev branch was requested, we add a -dev suffix. 
+            // If a dev branch was requested, we add a -dev suffix.
             $project_version .= '-dev';
           }
         }
@@ -757,7 +757,7 @@ function pm_drush_engine_package_handler() {
         '  --cvsparams' => 'Add options to the `cvs` program',
         '  --cvsmethod' => 'Force cvs updates or checkouts (checkout is default unless the directory is managed by a supported version control system).',
         '  --cvscredentials' => 'A username and password that is sent for cvs checkout command. Defaults to anonymous:anonymous',
-        
+
       ),
       'examples' => array(
           'drush [command] cck --cvscredentials=\"name:password\"' =>  'Checkout should use these credentials.',
@@ -800,11 +800,11 @@ function drush_pm_download() {
 
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   drush_include_engine('version_control', drush_get_option('version-control', 'svn'));
-  
+
   if (!$full_projects = func_get_args()) {
     $full_projects = array('drupal');
   }
-  
+
   foreach ($full_projects as $full_project) {
     $requestdata = pm_parse_project_version(explode(' ', $full_project));
     $project_types = pm_project_types();
@@ -826,7 +826,7 @@ function drush_pm_download() {
         $xml = simplexml_load_file($filename);
         drush_op('unlink', $filename);
       }
-      
+
       if ($xml) {
         if ($error = $xml->xpath('/error')) {
           drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
@@ -870,7 +870,7 @@ function drush_pm_download() {
         drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
       }
     }
-    
+
     unset($package, $error, $release, $types);
   }
 }

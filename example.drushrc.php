@@ -39,16 +39,16 @@
 
 // Specify additional directories to search for *.drush.inc files
 // Use POSIX path separator (':')
-# $options['i'] = 'sites/default:profiles/myprofile'; 
+# $options['i'] = 'sites/default:profiles/myprofile';
 
 // Enable verbose mode.
-# $options['v'] = 1; 
+# $options['v'] = 1;
 
 
 /*
- * Customize this associative array with your own tables. This is the 
- * list of tables that are entirely omitted by the 'sql dump' and 'sql load' 
- * commands when a skip-tables-key is provided. You may add new tables to the existing array or add a new 
+ * Customize this associative array with your own tables. This is the
+ * list of tables that are entirely omitted by the 'sql dump' and 'sql load'
+ * commands when a skip-tables-key is provided. You may add new tables to the existing array or add a new
  * element.
  */
 $options['skip-tables'] = array(

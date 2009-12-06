@@ -312,7 +312,7 @@ function update_main() {
     drush_set_option('user', 1);
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
   }
-  
+
   drupal_maintenance_theme();
 
   // This must happen *after* drupal_bootstrap(), since it calls
@@ -354,7 +354,7 @@ function update_main() {
           break;
         }
       }
-     
+
       // Record any pending updates. Used for confirmation prompt.
       foreach (array_keys($updates) as $update) {
         if ($update > $schema_version) {
@@ -374,7 +374,7 @@ function update_main() {
 
     }
   }
-  
+
 
   // Print a list of pending updates for this module and get confirmation.
   if ($has_updates) {
@@ -427,7 +427,7 @@ function update_main() {
 
 /**
  * A simplified version of the batch_do_one function from update.php
- * 
+ *
  * This does not mess with sessions and the like, as it will be used
  * from the command line
  */

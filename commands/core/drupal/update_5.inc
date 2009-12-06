@@ -20,7 +20,7 @@ function update_main() {
     drush_set_option('user', 1);
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
   }
-  
+
   include_once './includes/install.inc';
   drupal_load_updates();
 
@@ -48,7 +48,7 @@ function update_main() {
           break;
         }
       }
-      
+
       // Record any pending updates. Used for confirmation prompt.
       foreach (array_keys($updates) as $update) {
         if ($update > $schema_version) {

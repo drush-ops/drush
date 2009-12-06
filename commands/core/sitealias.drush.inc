@@ -87,8 +87,8 @@ function _drush_sitealias_user_specified_list($db_settings_needed = false) {
   $command = drush_get_command();
   $specifications = $command['arguments'];
   $site_list = array();
-  
-  // Iterate over the arguments and convert them to alias records 
+
+  // Iterate over the arguments and convert them to alias records
   if (!empty($specifications)) {
     foreach ($specifications as $site) {
       $alias_record = drush_sitealias_get_record($site, $db_settings_needed);
@@ -103,11 +103,11 @@ function _drush_sitealias_user_specified_list($db_settings_needed = false) {
       }
     }
   }
-  // If the user provided no args, then we will return everything. 
+  // If the user provided no args, then we will return everything.
   else {
     $site_list = _drush_sitealias_all_list();
   }
-  
+
   return $site_list;
 }
 
@@ -120,7 +120,7 @@ function drush_sitealias_print() {
   $long_output = drush_get_option('long');
   $with_db = (drush_get_option('with-db') != null) || (drush_get_option('with-db-url') != null);
   $site_list = _drush_sitealias_user_specified_list($with_db);
-    
+
   foreach ($site_list as $site => $alias_record) {
     if (isset($full_output)) {
       _drush_sitealias_print_record($alias_record, $site);
@@ -161,12 +161,12 @@ function drush_sitealias_alias_record_to_spec($alias_record, $with_db = false) {
     if (array_key_exists('remote-host', $alias_record)) {
       $result = $alias_record['remote-host'] . $result;
     }
-    
+
     // add the database info to the specification if desired
     if ($with_db) {
       $result = $result . '?db-url=' . urlencode($alias_record['db-url']);
     }
-    
+
     return $result;
 }
 
@@ -181,12 +181,12 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
   $output_db = drush_get_option('with-db');
   $output_db_url = drush_get_option('with-db-url');
   $output_optional_items = drush_get_option('with-optional');
-    
+
   // Include the optional items, if requested
   if ($output_optional_items) {
     _drush_sitealias_add_transient_defaults($alias_record);
   }
-  
+
   // If the user specified --with-db-url, then leave the
   // 'db-url' entry in the alias record (unless it is not
   // set, in which case we will leave the 'databases' record instead).
@@ -206,7 +206,7 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
     unset($alias_record['db-url']);
     unset($alias_record['databases']);
   }
-  
+
   // The alias name will be the same as the site alias name,
   // unless the user specified some other name on the command line.
   $alias_name = drush_get_option('alias-name');
@@ -216,7 +216,7 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
       $alias_name = drush_sitealias_uri_to_site_dir($alias_record['uri']);
     }
   }
-  
+
   // We don't want the name to go into the output
   unset($alias_record['name']);
 
@@ -243,7 +243,7 @@ function _drush_sitealias_site_dir_to_uri($site_dir) {
   $uri = preg_replace("/\.([0-9]+)$/", ":$1", $uri);
   // Convert .(com|net|org|info). into .(com|net|org|info)/
   $uri = str_replace(array('.com.', '.net.', '.org.', '.info.'), array('.com/', '.net/', '.org/', '.info/'), $uri);
-  
+
   // If there is a / then convert every . after the / to /
   // Then again, if we did this we would break if the path contained a "."
   // I hope that the path would never contain a "."...
@@ -251,12 +251,12 @@ function _drush_sitealias_site_dir_to_uri($site_dir) {
   if ($pos !== false) {
     $uri = substr($uri, 0, $pos + 1) . str_replace('.', '/', substr($uri, $pos + 1));
   }
-  
+
   // n.b. this heuristic works all the time if there is a port,
   // it also works all the time if there is a port and no path,
   // but it does not work for domains such as .co.jp with no path,
   // and it can fail horribly if someone makes a domain like "info.org".
   // Still, I think this is the best we can do short of consulting DNS.
-  
+
   return 'http://' . $uri;
 }

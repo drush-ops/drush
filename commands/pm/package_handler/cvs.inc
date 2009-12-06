@@ -102,7 +102,7 @@ function drush_pm_cvs_checkout($project, $info, $cvsparams) {
       $cvsdir = '';
       $repos = 'drupal';
   }
-  
+
   $cvscredentials = drush_get_option('cvscredentials', 'anonymous:anonymous');
 
   // TRUE means failure in the twilight zone.

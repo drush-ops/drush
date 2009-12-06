@@ -16,10 +16,10 @@
  * 2. drush_hook_pre_COMMAND()
  * 3. drush_hook_COMMAND()
  * 4. drush_hook_post_COMMAND()
- * 
- * For example, here are the hook opportunities for a mysite.drush.inc file 
+ *
+ * For example, here are the hook opportunities for a mysite.drush.inc file
  * that wants to hook into the `dl` command.
- * 
+ *
  * 1. drush_mysite_dl_validate()
  * 2. drush_mysite_pre_dl()
  * 3. drush_mysite_dl()
@@ -62,8 +62,8 @@ function drush_hook_init() {
 }
 
 /**
- * Run before a specific command executes. 
- * 
+ * Run before a specific command executes.
+ *
  * Logging an error stops command execution, and the rollback function (if any)
  * for each hook implementation is invoked.
  *
@@ -106,7 +106,7 @@ function drush_hook_COMMAND() {
 
 /**
  * Run after a specific command executes. Logging an error stops command execution.
- * 
+ *
  * Logging an error stops command execution, and the rollback function (if any)
  * for each hook implementation is invoked, in addition to pre, normal
  * and validate rollbacks.

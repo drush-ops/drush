@@ -67,7 +67,7 @@ function _pm_get_update_info($projects = NULL) {
 function pm_get_project_info($projects) {
   $data = array();
   include_once drupal_get_path('module', 'update') .'/update.fetch.inc';
-  
+
   foreach ($projects as $project_name => $project) {
     $url = UPDATE_DEFAULT_URL. "/$project_name/". drush_drupal_major_version() . '.x';
     $xml = drupal_http_request($url);

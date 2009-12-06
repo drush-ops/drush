@@ -8,7 +8,7 @@ function drush_sql_sql_sync($source = null, $destination = null) {
   $source_target = drush_get_option('source-target');
   $target_database = drush_get_option('target-database', 'default');
   $target_target = drush_get_option('target-target');
-  
+
   //
   // If the destination was not explicitly set, but a particular
   // target database was specified on the command line, then we
@@ -18,7 +18,7 @@ function drush_sql_sql_sync($source = null, $destination = null) {
   if (!isset($destination) && (isset($target_database) || (isset($target_target)))) {
     $destination = $source;
   }
-  
+
   //
   // If there is no destination specification, then exit.
   //
@@ -31,11 +31,11 @@ function drush_sql_sql_sync($source = null, $destination = null) {
   // and destination.
   //
   else {
-    _drush_sql_sync($source, $destination, TRUE); 
+    _drush_sql_sync($source, $destination, TRUE);
   }
 }
 
-function _drush_sql_sync($source, $destination, $show_warning = TRUE) { 
+function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   $source_settings = drush_sitealias_get_record($source, TRUE);
   $destination_settings = drush_sitealias_get_record($destination, TRUE);
 
@@ -52,12 +52,12 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   $source_remote_host = drush_get_option('source-remote-host');
   $source_remote_port = drush_get_option('source-remote-port');
   $source_rsync_options = array();
-  
+
   $target_db_url = _drush_sql_get_spec_from_options('target-');
   $target_remote_host = drush_get_option('target-remote-host');
   $target_remote_port = drush_get_option('target-remote-port');
   $target_rsync_options = array();
-  
+
   // Prompt for confirmation. This is destructive.
   if (!drush_get_context('DRUSH_SIMULATE') && $show_warning) {
     $txt_source = (isset($source_remote_host) ? $source_remote_host . '/' : '') . $source_db_url['database'];
@@ -102,7 +102,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     $source_is_tmp = TRUE;
     $source_rsync_options['remove-source-files'] = TRUE;
   }
-  
+
   if (isset($source_remote_host) && isset($target_remote_host)) {
     $local_file = tempnam(sys_get_temp_dir(), $source_db_url['database'] . ($source_db_url['database'] == $target_db_url['database'] ? '' : '-to-' . $target_db_url['database']) . '.sql.');
     $local_is_tmp = TRUE;
@@ -119,12 +119,12 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   if (($source_is_tmp || $target_is_tmp) && (!isset($use_temp_files))) {
     drush_print(dt('WARNING:  Using temporary files to store and transfer sql dump.  It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'!dump\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
   }
-  
+
   // If source is remote, then use ssh to dump the database and then rsync to local machine
   // If source is local, call drush_sql_dump to dump the database to local machine
   // In either case, the '--no-dump' option will cause the sql dump step to be skipped, and
   // we will import from the existing local file (first using rsync to fetch it if it does not exist)
-  //  
+  //
   // No dump affects both local and remote sql dumps; it prevents drush sql sync
   // from calling sql dump when the local cache file is newer than the cache threshhold
   // No sync affects the remote sql dump; it will prevent drush sql sync from
@@ -159,18 +159,18 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     if (isset($source_remote_port)) {
       $source_db_url['port'] = $source_remote_port;
     }
-    $source_remote_user = drush_get_option('source-remote-user'); 
+    $source_remote_user = drush_get_option('source-remote-user');
     if (isset($source_remote_user)) {
       $source_at ='@';
       $source_remote_pass = drush_get_option('source-remote-pass') ? ':' . drush_get_option('source-remote-pass') : '';
     }
-    
+
     if (!isset($no_dump)) {
       $source_intermediate = $source_dump;
       $mv_intermediate = '';
       // If we are doing a remote dump and the source is not a temporary file,
-      // then first dump to a temporary file and move it to the specified file after 
-      // the dump is complete.  This will reduce contention during simultaneous dumps 
+      // then first dump to a temporary file and move it to the specified file after
+      // the dump is complete.  This will reduce contention during simultaneous dumps
       // from different users sharing the same dump file.
       if (!isset($source_is_tmp)) {
         $source_intermediate = $source_dump . '-' . date("U");
@@ -193,26 +193,26 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     }
     $no_sync = TRUE;
   }
-  
+
   // Call sql dump, either on the local machine or remotely via ssh, as appropriate.
   if (!empty($dump_exec)) {
     drush_op('system', $dump_exec);
     // TODO: IF FAILURE THEN ABORT
   }
 
-  // If the sql dump was remote, then rsync the file over to the local machine. 
+  // If the sql dump was remote, then rsync the file over to the local machine.
   if (!isset($no_sync)) {
     // If the source file is a temporary file, then we will have rsync
     // delete it for us (remove-source-files option set above).
     drush_core_call_rsync($source_remote_user . $source_at . $source_remote_host . ':' . $source_dump, $local_file, $source_rsync_options);
   }
-    
+
   // Prior to database import, we will generate a "create database" command
   // if the '--create-db' option was specified.  Note that typically the
   // web server user will not have permissions to create a database; to specify
   // a different user to use with the create db command, the '--db-su' option
   // may be used.
-  // Under postgres, "alter role username with createdb;" will give create database 
+  // Under postgres, "alter role username with createdb;" will give create database
   // permissions to the specified user if said user was not created with this right.
   $pre_import_commands = '';
   $create_db = drush_get_option('create-db');
@@ -226,14 +226,14 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     $db_su_connect = _drush_sql_connect($create_db_target);
     switch (_drush_sql_get_scheme($target_db_url)) {
       case 'mysql':
-        $pre_import_commands = 'mysqladmin --password=\'' . $target_db_url['password'] . '\' create ' . $target_db_url['database'] . '; echo "GRANT ALL PRIVILEGES ON ' . $target_db_url['database'] . '.* TO \'' . $target_db_url['username'] . '\'@\'localhost\' IDENTIFIED BY \'' . $target_db_url['password'] . '\';" | mysql --password=\'' . $target_db_url['password'] . '\'; ';
+        $pre_import_commands = 'echo "CREATE DATABASE ' . $target_db_url['database'] . '; GRANT ALL PRIVILEGES ON ' . $target_db_url['database'] . '.* TO \'' . $target_db_url['username'] . '\'@\'localhost\' IDENTIFIED BY \'' . $target_db_url['password'] . '\';" | mysql --password=\'' . $target_db_url['password'] . '\'; ';
         break;
       case 'pgsql':
         $pre_import_commands = 'echo "create database ' . $target_db_url['database'] . ';" | ' . $db_su_connect . '; ';
         break;
     }
   }
-  
+
   // Generate the import command
   $import_command = _drush_sql_connect($target_db_url);
   switch (_drush_sql_get_scheme($target_db_url)) {
@@ -244,21 +244,21 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
       $import_command .= ' ' . (drush_get_context('DRUSH_DEBUG') ? ' ' : '-q');
       break;
   }
-  
+
   // If destination is remote, then use rsync to push the database, then use ssh to import the database
   // If destination is local, then just import the database locally
   if (isset($target_remote_host)) {
     if (isset($target_remote_port)) {
       $target_db_url['port'] = $target_remote_port;
     }
-    $target_remote_user = drush_get_option('target-remote-user'); 
+    $target_remote_user = drush_get_option('target-remote-user');
     if (isset($target_remote_user)) {
       $target_at ='@';
       $target_remote_pass = drush_get_option('target-remote-pass') ? ':' . drush_get_option('target-remote-pass') : '';
     }
-    
+
     drush_core_call_rsync($local_file, $target_remote_user . $target_at . $target_remote_host . ':' . $target_dump);
-    
+
     $connect_exec = $pre_import_commands . $import_command . ' < ' . $target_dump;
     $import_exec = 'ssh ' . $target_remote_user . $target_at . $target_remote_host . ' ' . escapeshellarg($connect_exec);
     // delete the remote target file if it is a temporary file
@@ -269,7 +269,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   else {
     $import_exec = $pre_import_commands . $import_command . ' < ' . $local_file;
   }
-  
+
   drush_op('system', $import_exec);
   // delete local temporary files
   if (($source_is_tmp) && (!isset($source_remote_host))) {

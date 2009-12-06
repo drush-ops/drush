@@ -65,7 +65,7 @@ function drush_test_mail($recipients) {
   if (!file_exists($run_tests)) {
     return drush_set_error('DRUSH_SIMPLETEST_RUNTESTS_SH', dt('You must copy or symlink run-tests.sh into your /scripts directory beneath Drupal root.'));
   }
-  
+
   $extra = drush_get_option('extra');
   $url = escapeshellarg(url('', array('absolute' => TRUE)));
   $exec = "$run_tests --php '" . DRUSH_COMMAND . '\' --url ' . $url . " $extra";

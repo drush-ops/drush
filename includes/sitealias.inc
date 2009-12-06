@@ -3,7 +3,7 @@
 
 /**
  * Check to see if the first command-line arg or the
- * -l option is a site alias; if it is, copy its record 
+ * -l option is a site alias; if it is, copy its record
  * values to the 'alias' context.
  *
  * @return boolean
@@ -11,7 +11,7 @@
  */
 function drush_sitealias_check_arg() {
   $args = drush_get_arguments();
-  
+
   // Test to see if the first arg is a site specification
   if (_drush_sitealias_set_context_by_name($args[0])) {
     array_shift($args);
@@ -20,7 +20,7 @@ function drush_sitealias_check_arg() {
     drush_set_arguments($args);
     return TRUE;
   }
-  
+
   // Return false to indicate that no site alias was specified.
   return FALSE;
 }
@@ -36,15 +36,15 @@ function drush_sitealias_check_arg() {
  *
  * If it is a site specification, construct an alias record from the
  * values in the specification.
- * 
+ *
  * Site specifications come in several forms:
  *
  * 1.) /path/to/drupal#sitename
  * 2.) user@server/path/to/drupal#sitename
  * 3.) user@server/path/to/drupal            (sitename == server)
  * 4.) user@server#sitename                  (only if $option['r'] set in some drushrc file on server)
- * 5.) #sitename                             (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)      
- * 6.) sitename                              (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)      
+ * 5.) #sitename                             (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
+ * 6.) sitename                              (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
  *
  * Note that in the case of the first four forms, it is also possible
  * to add additional site variable to the specification using uri query
@@ -131,7 +131,7 @@ function drush_sitealias_get_record($alias, $db_settings_needed = false) {
       }
       else {
         // Case 5.) and 6.):
-        // If the alias is the name of a folder in the 'sites' directory, 
+        // If the alias is the name of a folder in the 'sites' directory,
         // then use it as a local site specification.
         $alias_record = _drush_sitealias_find_record_for_local_site($alias, $db_settings_needed);
       }
@@ -171,14 +171,14 @@ function _drush_sitealias_add_static_defaults(&$alias_record) {
  * Add "transient" default values to the given alias record.  The
  * difference between a static default and a transient default is
  * that static defaults -always- exist in the alias record,
- * whereas transient defaults are only added if the given drush 
+ * whereas transient defaults are only added if the given drush
  * command explicitly calls this function.  The other advantage
  * of transient defaults is that it is possible to differentiate
  * between a default value and an unspecified value, since the
- * transient defaults are not added until requested. 
+ * transient defaults are not added until requested.
  *
- * Since transient defaults are not cached, you should avoid doing 
- * expensive operations here.  To be safe, drush commands should 
+ * Since transient defaults are not cached, you should avoid doing
+ * expensive operations here.  To be safe, drush commands should
  * avoid calling this function more than once.
  *
  * @param alias_record
@@ -205,25 +205,25 @@ function _drush_sitealias_add_transient_defaults(&$alias_record) {
 function _drush_sitealias_find_record_for_local_site($alias, $db_settings_needed = false) {
   $alias_record = array();
   $use_name_from_alias = false;
-  
+
   // The alias "current" is a synonym for whatever site
   // has been specified via -l or -uri
   if ($alias == "current") {
     $alias = drush_get_option(array('l', 'uri'));
     $use_name_from_alias = true;
   }
-  
+
   // Clip off the leading '#' if it is there
   if (substr($alias,0,1) == '#') {
     $alias = substr($alias,1);
   }
-  
+
   // This function may be called during the drush bootstrap
   // (i.e., from drush_sitealias_check_arg()), when 'DRUSH_DRUPAL_ROOT'
   // has not been set.  It may also be called after bootstraping
   // has finished (e.g. to process an argument from sync or sql sync)
   // when it would be wasteful to call drush_locate_root again.
-  // If we find an alias or site specification during drush_sitealias_check_arg(), 
+  // If we find an alias or site specification during drush_sitealias_check_arg(),
   // then we will set the 'root' option.  If we do not, though,
   // we will end up calling drush_locate_root every time this
   // function is called.
@@ -234,24 +234,24 @@ function _drush_sitealias_find_record_for_local_site($alias, $db_settings_needed
   //$drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   //$drupal_root = drush_bootstrap_value('drupal_root');
   $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
-  
+
   $all_site_aliases = drush_get_option('site-aliases', array());
   foreach ($all_site_aliases as $one_alias_name => $one_alias_record) {
     if (!isset($one_alias_record['remote-host']) && isset($one_alias_record['path-aliases']) && isset($one_alias_record['path-aliases']['!root']) && ($one_alias_record['uri'] == $alias) && ($one_alias_record['path-aliases']['!root'] == $drupal_root)) {
       $alias_record = $one_alias_record;
     }
   }
-  
+
   if (empty($alias_record) || ($db_settings_needed && !isset($alias_record['db-url']) && !isset($alias_record['databases'])              )) {
     $alias_record = array_merge(_drush_sitealias_build_record_from_settings($alias, $drupal_root), $alias_record);
   }
-  
+
   // If the alias was looked up via the name "current", then
   // plug in the actual alias name that was used to find it.
   if (!empty($alias_record) && $use_name_from_alias) {
     $alias_record['name'] = $alias;
   }
-  
+
   return $alias_record;
 }
 
@@ -266,23 +266,23 @@ function _drush_sitealias_find_record_for_local_site($alias, $db_settings_needed
  */
 function _drush_sitealias_build_record_from_settings($alias, $drupal_root = null) {
   $alias_record = array();
-  
+
   // Clip off the leading '#' if it is there
   if (substr($alias,0,1) == '#') {
     $alias = substr($alias,1);
   }
-  
+
   if (!isset($drupal_root)) {
     //$drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
     $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
   }
-  
+
   if (isset($drupal_root)) {
     $alias_dir = drush_sitealias_uri_to_site_dir($alias);
     $site_settings_file = $drupal_root . '/sites/' . $alias_dir . '/settings.php';
     $alias_record = drush_sitealias_build_record_from_settings_file($site_settings_file, $alias, $drupal_root);
   }
-  
+
   return $alias_record;
 }
 
@@ -307,7 +307,7 @@ function drush_sitealias_build_record_from_settings_file($site_settings_file, $a
       '!root' => $drupal_root,
       /*'!files' => '/path/to/file/storage', */
       /*'!dump' => '/path/to/sql/dumpfile', */ );
-    
+
     if (isset($alias)) {
       $alias_record['uri'] = $alias;
     }
@@ -404,7 +404,7 @@ function _drush_sitealias_set_record_element(&$alias_record, $key, $value) {
 function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
   $site_alias_settings = drush_sitealias_get_record($alias);
   if (!empty($site_alias_settings)) {
-    drush_sitealias_set_alias_context($site_alias_settings, $prefix);  
+    drush_sitealias_set_alias_context($site_alias_settings, $prefix);
     return TRUE;
   }
   return FALSE;
@@ -413,7 +413,7 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
 /**
  * Given a site alias record, copy selected fields from it
  * into the drush 'alias' context.  The 'alias' context has
- * lower precedence than the 'options' context, so values 
+ * lower precedence than the 'options' context, so values
  * set by an alias record can be overridden by command-line
  * parameters.
  *
@@ -423,8 +423,8 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
  *   The prefix value to afix to the beginning of every
  *   key set.  For example, if this function is called once with
  *   'source-' and again with 'destination-' prefixes, then the
- *   source database records will be stored in 'source-databases', 
- *   and the destination database records will be in 
+ *   source database records will be stored in 'source-databases',
+ *   and the destination database records will be in
  *   'destination-databases'.
  */
 function drush_sitealias_set_alias_context($site_alias_settings, $prefix) {

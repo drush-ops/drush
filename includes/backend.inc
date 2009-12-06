@@ -19,7 +19,7 @@
  *
  * A simple example is if there exists an 'update' command for running
  * update.php on a specific site. The original command might download
- * a newer version of a module for installation on a site, and then 
+ * a newer version of a module for installation on a site, and then
  * run the update script in a separate process, so that in the case
  * of an error running a hook_update_n function, the module can revert
  * to a previously made database backup, and the previously installed code.
@@ -49,7 +49,7 @@
  *
  * If the key-based ssh authentication has been set up between the servers, this will just
  * work, otherwise the user will be asked to enter a password.
- */ 
+ */
 
 /**
  * Identify the JSON encoded output from a command.
@@ -71,12 +71,12 @@ function drush_backend_output() {
 
   $data['output'] = ob_get_contents();
   ob_end_clean();
-  
+
   $result_object = drush_backend_get_result();
   if (isset($result_object)) {
     $data['object'] = $result_object;
   }
-  
+
   $error = drush_get_error();
   $data['error_status'] = ($error) ? $error : DRUSH_SUCCESS;
 
@@ -189,7 +189,7 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
     stream_set_blocking($pipes[1], TRUE);
     stream_set_timeout($pipes[1], 1);
     $string = '';
-    while (!feof($pipes[1]) && !$info['timed_out']) { 
+    while (!feof($pipes[1]) && !$info['timed_out']) {
       $string .= fgets($pipes[1], 4096);
       $info = stream_get_meta_data($pipes[1]);
       flush();
@@ -198,7 +198,7 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
     $info = stream_get_meta_data($pipes[2]);
     stream_set_blocking($pipes[2], TRUE);
     stream_set_timeout($pipes[2], 1);
-    while (!feof($pipes[2]) && !$info['timed_out']) { 
+    while (!feof($pipes[2]) && !$info['timed_out']) {
       $string .= fgets($pipes[2], 4096);
       $info = stream_get_meta_data($pipes[2]);
       flush();
@@ -233,8 +233,8 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
  *    if you are writing a command that operates on multiple sites.
  * @param drush_path
  *    Optional. Defaults to the current drush.php file on the local machine, and
- *    to simply 'drush' (the drush script in the current PATH) on remote servers. 
- *    You may also specify a different drush.php script explicitly.  You will need 
+ *    to simply 'drush' (the drush script in the current PATH) on remote servers.
+ *    You may also specify a different drush.php script explicitly.  You will need
  *    to set this when calling drush on a remote server if 'drush' is not in the
  *    PATH on that machine.
  * @param hostname
@@ -321,8 +321,8 @@ function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
  *    if you are writing a command that operates on multiple sites.
  * @param drush_path
  *    Optional. Defaults to the current drush.php file on the local machine, and
- *    to simply 'drush' (the drush script in the current PATH) on remote servers. 
- *    You may also specify a different drush.php script explicitly.  You will need 
+ *    to simply 'drush' (the drush script in the current PATH) on remote servers.
+ *    You may also specify a different drush.php script explicitly.  You will need
  *    to set this when calling drush on a remote server if 'drush' is not in the
  *    PATH on that machine.
  * @param hostname
@@ -337,7 +337,7 @@ function _drush_backend_generate_command($command, $args, &$data, $method = 'GET
   if (drush_is_local_host($hostname)) {
     $hostname = null;
   }
-  
+
   $drush_path = !is_null($drush_path) ? $drush_path : (is_null($hostname) ? DRUSH_COMMAND : 'drush'); // Call own drush.php file on local machines, or 'drush' on remote machines.
   $data['root'] = ($data['root']) ? $data['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
   $data['uri'] = array_key_exists('uri', $data) ? $data['uri'] : drush_get_context('DRUSH_URI');
@@ -369,7 +369,7 @@ function _drush_backend_generate_command($command, $args, &$data, $method = 'GET
  * Takes the same parameters as drush_backend_invoke, but forks a new
  * process by calling the command using system() and adding a '&' at the
  * end of the command.
- * 
+ *
  * Use this if you don't care what the return value of the command may be.
  */
 function drush_backend_fork($command, $data, $drush_path = null, $hostname = null, $username = null) {
@@ -435,7 +435,7 @@ function _drush_backend_argument_string(&$data, $method = 'GET') {
  *   The name of the option.
  * @param value
  *   The value of the option.
- * 
+ *
  * @return
  *   If the value is set to TRUE, this function will return " --key"
  *   In other cases it will return " --key='value'"
@@ -453,7 +453,7 @@ function _drush_escape_option($key, $value = TRUE) {
 /**
  * Read options fron STDIN during POST requests.
  *
- * This function will read any text from the STDIN pipe, 
+ * This function will read any text from the STDIN pipe,
  * and attempts to generate an associative array if valid
  * JSON was received.
  *

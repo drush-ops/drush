@@ -211,7 +211,7 @@ function update_main() {
 
   $pending = update_get_update_list();
 
- 
+
   $start = array();
   // Print a list of pending updates for this module and get confirmation.
   if (sizeof($pending)) {
@@ -222,7 +222,7 @@ function update_main() {
         drush_print($module . ' module : ');
         if (isset($updates['start'])) {
           $start[$module] = $updates['start'];
-        } 
+        }
         foreach ($updates['pending'] as $update) {
           drush_print($update, 2);
         }
@@ -293,7 +293,7 @@ function drush_update_batch($start) {
 
 /**
  * A simplified version of the batch_do_one function from update.php
- * 
+ *
  * This does not mess with sessions and the like, as it will be used
  * from the command line
  */

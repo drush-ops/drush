@@ -5,9 +5,9 @@
  * Entrypoint for drush rsync.
  *
  * If --all-paths is specified, and 'source' and 'destination'
- * are alias names without a path component, then this function will 
- * call _drush_core_sync for every path in the source and destination 
- * alias that exist in both aliases.  Otherwise, _drush_core_sync 
+ * are alias names without a path component, then this function will
+ * call _drush_core_sync for every path in the source and destination
+ * alias that exist in both aliases.  Otherwise, _drush_core_sync
  * will be called once, and 'source' and 'destination' will be
  * interpreted as either alias names or 'machine:/path' specifications.
  *
@@ -36,14 +36,14 @@ function drush_core_rsync($source, $destination) {
       // After sync-ing with 'exclude-sites', go back and sync the
       // site directory for this installation.
       if ($result !== FALSE) {
-        $result = _drush_core_sync($source . ':!root/sites/' . $source_settings['uri'] . '/', $destination . ':!root/sites/' . $destination_settings['uri'] . '/');  
+        $result = _drush_core_sync($source . ':!root/sites/' . $source_settings['uri'] . '/', $destination . ':!root/sites/' . $destination_settings['uri'] . '/');
       }
       // Iterate over all of the other path aliases
       foreach ($source_path_aliases as $key => $value) {
         // Skip this entry if its value is a path that is somewhere inside of the root,
         // which we already rsync'ed at the top of this function.  (This also skips '!root').
         if (($result !== FALSE) && (strncmp($source_root, $value, strlen($value)) != 0) && array_key_exists($key, $destination_path_aliases)) {
-          $result = _drush_core_sync($source . ':' . $key, $destination . ':' . $key);  
+          $result = _drush_core_sync($source . ':' . $key, $destination . ':' . $key);
         }
       }
     }
@@ -72,7 +72,7 @@ function _drush_core_sync($source, $destination, $parametric_options = array()) 
       return drush_set_error('CORE_SYNC_ABORT', 'Aborting.');
     }
   }
-  
+
   return drush_core_call_rsync($source, $destination, $parametric_options);
 }
 
@@ -160,22 +160,22 @@ function drush_core_call_rsync($source, $destination, $parametric_options = arra
     'block-size',
     'backup-dir',
     'suffix',
-    'chmod', 
-    'rsync-path', 
-    'modify-window', 
-    'compare-dest', 
-    'copy-dest', 
-    'link-dest', 
-    'skip-compress', 
-    'filter', 
-    'exclude', 
-    'include', 
-    'address', 
-    'port', 
-    'sockopts', 
-    'out-format', 
-    'bwlimit', 
-    'iconv', 
+    'chmod',
+    'rsync-path',
+    'modify-window',
+    'compare-dest',
+    'copy-dest',
+    'link-dest',
+    'skip-compress',
+    'filter',
+    'exclude',
+    'include',
+    'address',
+    'port',
+    'sockopts',
+    'out-format',
+    'bwlimit',
+    'iconv',
     'checksum-seed',
     'max-delete',
     'max-size',
@@ -185,23 +185,23 @@ function drush_core_call_rsync($source, $destination, $parametric_options = arra
     'temp-dir',
     'compress-level',
     'out-format',
-    'protocol', 
+    'protocol',
     );
   foreach ($rsync_available_options as $test_option) {
     if (array_key_exists($test_option, $all_specified_options)) {
       $value = $all_specified_options[$test_option];
       if ($value === TRUE) {
         $options .= " --$test_option";
-      } 
+      }
       elseif (isset($value)) {
         $options .= " --$test_option=" . escapeshellarg($value);
       }
     }
   }
   $exec = "rsync -e ssh $mode$options $source $destination";
- 
+
   $exec_result = drush_op('system', $exec) !== FALSE;
-  
+
   return $exec_result;
 }
 
@@ -241,9 +241,9 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
       $path = '';
     }
   }
-    
+
   if (!empty($site_alias_settings)) {
-    // Use 'remote-host' from settings if available; otherwise site is local 
+    // Use 'remote-host' from settings if available; otherwise site is local
     if (array_key_exists('remote-host', $site_alias_settings)) {
       if (array_key_exists('remote-user', $site_alias_settings)) {
         $remote_user = $site_alias_settings['remote-user'] . '@';
@@ -263,10 +263,10 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
     else {
       $machine = "$remote_user$machine";
     }
-  }  
-  
+  }
+
   // If there was no site specification given, and the
-  // machine is local, then try to look 
+  // machine is local, then try to look
   // up an alias record for the default drush site.
   if (empty($site_alias_settings) && empty($machine)) {
     $drush_uri = drush_bootstrap_value('drush_uri', drush_get_option(array('l', 'uri'), 'default'));
@@ -278,7 +278,7 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
   if (array_key_exists('path-aliases', $site_alias_settings)) {
     $path_aliases = $site_alias_settings['path-aliases'];
   }
-  
+
   // If path aliases does not contain an alias for '!root',
   // then assume that the remote Drupal root is the same
   // as the local Drupal root.
@@ -300,11 +300,11 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
       $path_aliases[$key] = $path_aliases[$key] . '/';
     }
   }
-  
+
   // Fill in path aliases in the path.
   $path = str_replace(array_keys($path_aliases), array_values($path_aliases), $path);
-  
-  // If the path is empty or if it does not exist, then 
+
+  // If the path is empty or if it does not exist, then
   // make it relative to the Drupal root.
   if (empty($path) || ($path[0] != '/')) {
       $path = $path_aliases['!root'] . $path;

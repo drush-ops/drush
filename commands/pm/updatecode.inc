@@ -11,7 +11,7 @@
 function drush_pm_updatecode() {
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
-  
+
   // Get update status information.
   $releases = _pm_get_update_info();
 
@@ -120,7 +120,7 @@ function pm_update_packages($releases) {
     drush_log(dt('Starting to update !project code ...', array('!project' => $release['title'])));
 
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-    
+
     $source = $drupal_root .'/' . $release['path'];
     if (empty($release['path'])) {
       drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('Module !project path is not available, perhaps the module is enabled but has been deleted from disk.', array('!project' => $release['name'])));
@@ -130,7 +130,7 @@ function pm_update_packages($releases) {
       drush_set_error('DRUSH_PM_UPDATING_PATH_NOT_FOUND', dt('Module !project directory could not be found at !source, perhaps the module is enabled but has been deleted from disk.', array('!project' => $release['name'], '!source' => $source)));
       continue;
     }
-    
+
     $skip_backup = version_control_is_versioned($source);
     if (!$skip_backup) {
       $backup_dir = drush_get_option('backup-dir', $drupal_root  . '/backup');
