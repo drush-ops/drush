@@ -157,12 +157,8 @@ function update_main() {
   require_once DRUPAL_ROOT . '/includes/common.inc';
   require_once DRUPAL_ROOT . '/includes/entity.inc';
 
-  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-
   update_prepare_d7_bootstrap();
-  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
   drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
-
 
   require_once DRUPAL_ROOT . '/includes/install.inc';
   require_once DRUPAL_ROOT . '/includes/file.inc';
@@ -199,7 +195,6 @@ function update_main() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   drupal_maintenance_theme();
   
-  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
 /*
   // Updates only run reliably if user ID #1 is logged in. For example, node_delete() requires elevated perms in D5/6.
   if (!drush_get_context('DRUSH_USER')) {
@@ -212,7 +207,6 @@ function update_main() {
   include_once DRUPAL_ROOT . '/includes/batch.inc';
   drupal_load_updates();
 
-  _drush_log_update_sql(update_fix_d7_requirements());
   _drush_log_update_sql(update_fix_compatibility());
 
   $pending = update_get_update_list();
