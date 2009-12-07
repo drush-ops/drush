@@ -161,7 +161,7 @@ function pm_drush_command() {
     'options' => array(
       '--destination' => 'Path to which the project will be copied.',
       '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
-      '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.
+      '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.",
     ), 
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
     'aliases' => array('dl')
