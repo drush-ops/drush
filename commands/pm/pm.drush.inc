@@ -161,6 +161,7 @@ function pm_drush_command() {
     'options' => array(
       '--destination' => 'Path to which the project will be copied.',
       '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
+      '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.
     ), 
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
     'aliases' => array('dl')
@@ -834,20 +835,25 @@ function drush_pm_download() {
         else {
           // Try to get the specified release.
           if ($package['version']) {
-            if ($releases = $xml->xpath("/project/releases/release[status='published'][version='" . $package['version'] . "']")) {
-              $release = (array)$releases[0];
-            }
-            if (empty($release)) {
+            $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $package['version'] . "']");
+            if (empty($releases)) {
               drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'notice');
             }
           }
           // If that did not work, get the first published release for the recommended major version.
-          if (empty($release)) {
+          if (empty($releases)) {
             $recommended_major = $xml->xpath("/project/recommended_major");
             $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
             $releases = $xml->xpath($xpath_releases);
-            $release = (array)$releases[0];
           }
+          
+          // Profiles have 3 variants for a given real relase. Admin can specify using option.
+          // Depends on a fixed order of variations in releases list.
+          // Usually,  the first release is chosen.
+          $variations = array('core', 'no-core', 'make');
+          $variant = drush_get_option('variant', 'core');
+          $release = (array)$releases[array_search($variant, $variations)];
+          
           // Determine what type of project we have, so we know where to put it.
           $release['type'] = 'module';
 
