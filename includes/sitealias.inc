@@ -191,7 +191,7 @@ function _drush_sitealias_add_transient_defaults(&$alias_record) {
         $alias_record['path-aliases']['!drush'] = dirname($alias_record['path-aliases']['!drush-script']);
       }
       else {
-        $alias_record['path-aliases']['!drush'] = dirname(DRUSH_COMMAND);
+        $alias_record['path-aliases']['!drush'] = dirname($GLOBALS['argv'][0]);
       }
     }
   }
