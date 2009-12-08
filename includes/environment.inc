@@ -851,6 +851,9 @@ function drush_locate_root($path = NULL) {
   $drupal_root = FALSE;
 
   $path = empty($path) ? drush_cwd() : $path;
+  if (is_link($path)) {
+    $path = readlink($path);
+  }
   // Check the start path.
   if (drush_valid_drupal_root($path)) {
     $drupal_root = $path;
@@ -858,6 +861,9 @@ function drush_locate_root($path = NULL) {
   else {
     // Move up dir by dir and check each.
     while ($path = _drush_shift_path_up($path)) {
+      if (is_link($path)) {
+        $path = readlink($path);
+      }
       if (drush_valid_drupal_root($path)) {
         $drupal_root = $path;
         break;
