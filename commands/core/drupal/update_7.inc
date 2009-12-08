@@ -156,6 +156,7 @@ function update_main() {
   require_once DRUPAL_ROOT . '/includes/update.inc';
   require_once DRUPAL_ROOT . '/includes/common.inc';
   require_once DRUPAL_ROOT . '/includes/entity.inc';
+  include_once DRUPAL_ROOT . '/includes/unicode.inc';
 
   update_prepare_d7_bootstrap();
   drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
@@ -186,7 +187,6 @@ function update_main() {
   // update_fix_d7_requirements() needs to run before bootstrapping beyond path.  
   // So bootstrap to DRUPAL_BOOTSTRAP_LANGUAGE then include unicode.inc.
   drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
-  include_once DRUPAL_ROOT . '/includes/unicode.inc';
   
   update_fix_d7_requirements();
   
