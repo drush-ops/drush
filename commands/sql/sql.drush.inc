@@ -66,7 +66,7 @@ function sql_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'description' => 'Execute a query against the site database.',
     'examples' => array(
-      'drush sql query "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record',
+      'drush sql query "SELECT * FROM users WHERE uid=1"' => 'Browse user record',
     ),
     'arguments' => array(
        'query' => 'A SQL query. Mandatory.',
