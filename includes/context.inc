@@ -113,8 +113,11 @@ function _drush_config_file($context) {
  */
 function drush_load_config($context) {
   global $drush_conf_override;
-  
-  $drush_conf_override = array();
+
+  // Only reset $drush_conf_override if the array is not set, otherwise keep old values and append new values to it.
+  if (!isset($drush_conf_override)) {
+    $drush_conf_override = array();
+  }
 
   $config = _drush_config_file($context);
   if (file_exists($config)) {
