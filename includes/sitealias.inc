@@ -165,6 +165,16 @@ function _drush_sitealias_add_static_defaults(&$alias_record) {
   if (isset($alias_record['db-url']) && !isset($alias_record['databases'])) {
     $alias_record['databases'] = array('default' => array('default' => drush_convert_db_from_db_url($alias_record['db-url'])));
   }
+  // If there is a 'root' entry, then copy it to the '!root'
+  // path alias
+  if (array_key_exists('root', $alias_record) && (!array_key_exists('path-aliases', $alias_record) || !array_key_exists('!root', $alias_record['path-aliases']))) {
+    $alias_record['path-aliases']['!root'] = $alias_record['root'];
+  }
+  // If there is a '!root' entry in the path aliases but no
+  // 'root' entry, then copy the path alias to 'root'
+  if (!array_key_exists('root', $alias_record) && array_key_exists('path-aliases', $alias_record) && array_key_exists('!root', $alias_record['path-aliases'])) {
+    $alias_record['root'] = $alias_record['path-aliases']['!root'];
+  }
 }
 
 /**
