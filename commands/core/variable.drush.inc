@@ -48,6 +48,9 @@ function variable_drush_command() {
       'drush vget' => 'List all variables and values.',
       'drush vget user' => 'List all variables beginning with the string "user".',
     ),
+    'options' => array(
+      '--pipe' => 'Use var_export() to emit executable PHP. Useful for pasting into code.',
+    ),
     'aliases' => array('vget'),
   );
   $items['variable set'] = array(
@@ -92,6 +95,7 @@ function drush_variable_variable_get() {
   $result = drush_variable_like($args[0]);
   while ($name = drush_db_result($result)) {
     $value = variable_get($name, 'peace');
+    drush_print_pipe("\$variables['$name'] = ". var_export($value, TRUE). ";\n");
     if ($value === TRUE) {
       $value = 'TRUE';
     }
