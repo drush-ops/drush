@@ -58,8 +58,8 @@ function _drush_core_search_index() {
     else {
       $eval = "module_invoke_all('update_index');";
     }
+    $eval .= "register_shutdown_function('search_update_totals');";
     drush_backend_invoke('eval', array($eval));
-    search_update_totals();
     list($remaining, ) = _drush_core_search_status();
   }
 }
