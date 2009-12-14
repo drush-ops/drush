@@ -63,10 +63,10 @@ function sql_drush_command() {
   );
   $items['sql query'] = array(
     'callback' => 'drush_sql_query',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
     'description' => 'Execute a query against the site database.',
     'examples' => array(
-      'drush sql query "SELECT * FROM users WHERE uid=1"' => 'Browse user record',
+      'drush sql query "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record',
     ),
     'arguments' => array(
        'query' => 'A SQL query. Mandatory.',
@@ -316,6 +316,14 @@ function drush_sql_query($query) {
 
 function _drush_sql_query($query, $db_spec = NULL) {
   $scheme = _drush_sql_get_scheme($db_spec);
+  
+  // Inject table prefixes as needed.
+  if (drush_drupal_major_version() >= 7) {
+    $query = Database::getConnection()->prefixTables($query);
+  }
+  else {
+    $query = db_prefix_tables($query);
+  }
 
   // Convert mysql 'show tables;' query into something pgsql understands
   if (($scheme == 'pgsql') && ($query == 'show tables;')) {
