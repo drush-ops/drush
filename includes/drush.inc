@@ -319,13 +319,14 @@ function drush_get_option_help() {
   $options['-d, --debug']              = dt('Display even more information, including internal messages.');
   $options['-q, --quiet']              = dt('Hide all output');
   $options['-y, --yes']                = dt("Assume 'yes' as answer to all prompts");
+  $options['-n, --no']                = dt("Assume 'no' as answer to all prompts");
   $options['-s, --simulate']           = dt("Simulate all relevant actions (don't actually change the system)");
   $options['-i, --include']            = dt("A list of paths to search for drush commands");
   $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
   $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
   $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
   $options['-p, --pipe']               = dt("Emit a compact representation of the command for scripting.");
-  $options['-n, --nocolor']            = dt("Suppress color highlighting on log messages.");
+  $options['--nocolor']                = dt("Suppress color highlighting on log messages.");
   $options['-h, --help']               = dt("This help system.");
   $options['--php']                    = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
   return $options;
@@ -519,9 +520,15 @@ function drush_print_r($array) {
 function drush_confirm($msg, $indent = 0) {
   print str_repeat(' ', $indent) . (string)$msg . " (y/n): ";
 
+  // Automatically accept confirmations if the --yes argument was supplied.
   if (drush_get_context('DRUSH_AFFIRMATIVE')) {
     print "y\n";
     return TRUE;
+  }
+  // Automatically cancel confirmations if the --no argument was supplied.
+  elseif (drush_get_context('DRUSH_NEGATIVE')) {
+    print "n\n";
+    return FALSE;
   }
   // See http://drupal.org/node/499758 before changing this.
   $stdin = fopen("php://stdin","r");

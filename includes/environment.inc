@@ -443,11 +443,12 @@ function _drush_bootstrap_drush() {
 
   // Backend implies affirmative
   drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('y', 'yes', 'b', 'backend'), FALSE));
+  drush_set_context('DRUSH_NEGATIVE',    drush_get_option(array('n', 'no'), FALSE));
   drush_set_context('DRUSH_SIMULATE',    drush_get_option(array('s', 'simulate'), FALSE));
 
   // Suppress colored logging if --nocolor option is explicitly given or if
   // terminal does not support it.
-  $nocolor = (drush_get_option(array('n', 'nocolor'), FALSE) || !getenv('TERM'));
+  $nocolor = (drush_get_option(array('nocolor'), FALSE) || !getenv('TERM'));
   if (!$nocolor) {
     // Check for colorless terminal.
     $colors = exec('tput colors 2>&1');
