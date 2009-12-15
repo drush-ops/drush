@@ -39,7 +39,7 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
     if (!empty($download['module'])) {
       if (drush_get_option('working-copy')) {
         if (isset($_ENV['CVSROOT'])) {
-          $this->project->download['root'] = $download['root'] = trim($_ENV['CVSROOT'], ':');
+          $this->project->download['root'] = $download['root'] = trim($_ENV['CVSROOT']);
         }
         else {
           drush_log(dt('Please set the CVSROOT variable in your shell environment when using the --working-copy option.'), 'ok');
