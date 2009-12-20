@@ -248,7 +248,13 @@ class DrushMakeDownload_SVN extends DrushMakeDownload {
         $command = 'checkout';
       }
 
-      if (drush_shell_exec("svn --non-interactive %s %s %s/%s", $command, $download['url'], $tmp_path, $name)) {
+      if (!empty($download['username'])) {
+        $result = drush_shell_exec("svn --non-interactive %s %s %s/%s --username %s --password %s", $command, $download['url'], $tmp_path, $name, $download['username'], $download['password']);
+      }
+      else {
+        $result = drush_shell_exec("svn --non-interactive %s %s %s/%s", $command, $download['url'], $tmp_path, $name);
+      }
+      if ($result) {
         drush_log(dt('%project @command from %url.', array('%project' => $name, '@command' => $command, '%url' => $download['url'])), 'ok');
         return $this->project->name;
       }
