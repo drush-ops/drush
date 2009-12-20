@@ -213,11 +213,15 @@ function drush_make_update_xml_download($project) {
   // Make an array of releases.
   foreach ($project['release_history']->releases->release as $release) {
     $version = (string) $release->version_major;
-    if ((string) $release->version_patch) {
+    // there should be version_patch attribute for every stable release
+    // so checking whether the attribute exists should be enough
+    if (isset($release->version_patch)) {
       $version .= '.' . (string) $release->version_patch;
     }
+    // if version_patch attribute does not exist, then it should be a dev release
+    // and the version string should be in format MAJOR_VERSION.x-dev
     else {
-      $version .= '.0';
+      $version .= '.x';
     }
     if ($extra_version = (string) $release->version_extra) {
       $version .= '-' . $extra_version;
