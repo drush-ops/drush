@@ -189,7 +189,6 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
     if (!empty($download['url'])) {
       $this->project->download['branch'] = $download['branch'] = isset($download['branch']) ? $download['branch'] : 'master';
       if (drush_shell_exec("git clone %s %s/%s", $download['url'], $tmp_path, $name)) {
-        drush_shell_exec("rm -rf %s/%s/.git", $tmp_path, $name);
         drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
       }
       else {
@@ -200,13 +199,15 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
         $cwd = getcwd();
         chdir($tmp_path . '/' . $name);
         if (drush_shell_exec("git checkout -b %s origin/%s", $download['branch'], $download['branch'])) {
-          drush_shell_exec("rm -rf %s/%s/.git", $tmp_path, $name);
           drush_log(dt("Checked out branch %branch.", array('%branch' => $download['branch'])), 'ok');
         }
         else {
           drush_make_error('DOWNLOAD_ERROR', dt("Unable to check out branch %branch.", array('%branch' => $download['branch'])));
         }
         chdir($cwd);
+      }
+      if (file_exists($tmp_path . '/' . $name . '/.git')) {
+        drush_shell_exec("rm -rf %s/%s/.git", $tmp_path, $name);
       }
       return $name;
     }
