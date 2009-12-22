@@ -456,7 +456,7 @@ function drush_shell_exec($cmd) {
  */
 function _drush_shell_exec_output_set($output = FALSE) {
   static $stored_output;
-  if (!$output) return $stored_output;
+  if ($output === FALSE) return $stored_output;
   $stored_output = $output;
 }
 
