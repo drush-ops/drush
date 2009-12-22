@@ -50,6 +50,10 @@ projects[cck] = 2.6
 projects[views] = 2.7
 ====
 
+NOTE: The first and second form of specifying projects are mutually exclusive.
+If you use the second (including the variations described below) form with the
+project name in []'s, DO NOT specify the same project as projects[] = <project>
+
 You can also specify more instructions about what to do with the module. For
 example, use the following syntax to apply a patch to a module:
 ====
