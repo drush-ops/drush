@@ -212,7 +212,7 @@ function drush_core_help() {
 
         $rows = array();
         foreach($commands as $key => $command) {
-          if (!$command['is_alias']) {
+          if (!array_key_exists('is_alias', $command) || !$command['is_alias']) {
             if (!array_key_exists($key, $printed_rows)) {
               $name = $command['aliases'] ? $key . ' (' . implode(', ', $command['aliases']) . ')': $key;
               $rows[$key] = array($name, $command['description']);
