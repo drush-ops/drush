@@ -198,7 +198,7 @@ function drush_pm_uninstall() {
   }
   
   // Make sure the install API is available.
-  require_once $site_root . './includes/install.inc';
+  require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
     
   $module_info = array();
   foreach ($modules as $module) {
@@ -267,7 +267,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
         drush_die('Aborting.');
       }
       // Make sure the install API is available.
-      require_once $site_root . './includes/install.inc';
+      require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
       // We install/enable modules explicitly here, to pass dependency validation in form submit.
       $install_modules = array();
       $enable_modules = array();
@@ -518,7 +518,7 @@ function drush_pm_post_update() {
  */
 function drush_pm_post_updatecode() {
   // Make sure the installation API is available
-  require_once $site_root . './includes/install.inc';
+  require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
 
   // Load all .install files.
   drupal_load_updates();
