@@ -62,10 +62,11 @@ function drush_update_do_one($module, $number, &$context) {
       if ($context['log']) {
         Database::startLog($function);
       }
+
+      drush_log("Executing " . $function);
       $ret['results']['query'] = $function($context['sandbox']);
       $ret['results']['success'] = TRUE;
 
-      drush_log("Executing " . $function);
       // @TODO Remove this block after all updates have been converted to
       // return only strings.
       if (is_array($ret['results']['query'])) {
@@ -195,19 +196,21 @@ function update_main() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   drupal_maintenance_theme();
   
-/*
-  // Updates only run reliably if user ID #1 is logged in. For example, node_delete() requires elevated perms in D5/6.
-  if (!drush_get_context('DRUSH_USER')) {
-    drush_set_option('user', 1);
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
-  }
- */
   drush_errors_on();
 
   include_once DRUPAL_ROOT . '/includes/batch.inc';
   drupal_load_updates();
 
-  _drush_log_update_sql(update_fix_compatibility());
+  update_fix_compatibility();
+
+   // Change query-strings on css/js files to enforce reload for all users.
+  _drupal_flush_css_js();
+  // Flush the cache of all data for the update status module.
+  if (db_table_exists('cache_update')) {
+    cache_clear_all('*', 'cache_update', TRUE);
+  }
+
+  module_list(TRUE, FALSE, TRUE);
 
   $pending = update_get_update_list();
 
@@ -325,7 +328,6 @@ function _update_do_one($module, $number, &$context) {
   if ($context['finished'] == 1 && empty($context['results'][$module]['#abort'])) {
     drupal_set_installed_schema_version($module, $number);
   }
-
 }
 
 
