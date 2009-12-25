@@ -2,7 +2,10 @@
 
 DESCRIPTION
 -----------
-drush is a command line shell and Unix scripting interface for Drupal.
+Drush is a command line shell and Unix scripting interface for Drupal.
+If you are unfamiliar with shell scripting, reviewing the documentation 
+for your shell (e.g. man bash) or reading an online tutorial (e.g. search 
+for "bash tutorial") will help you get the most out of Drush.
 
 Drush core ships with lots of useful commands for interacting with code
 like modules/themes/profiles. Similarly, it runs update.php, executes sql
@@ -12,6 +15,7 @@ INSTALLATION
 ------------
 For Linux/Unix/Mac:
   1. Untar the tarball into a folder outside of your web site (/path/to/drush)
+     (e.g. if drush is in your home directory, ~/drush can be used for /path/to/drush)
   2. Make the 'drush' command executable:
        $ chmod u+x /path/to/drush/drush
   3. (Optional, but recommended:) To ease the use of drush,
@@ -20,7 +24,12 @@ For Linux/Unix/Mac:
      OR
      - create an alias to drush:
        $ alias drush='/path/to/drush/drush'
-       (this goes into .profile or .bash_aliases in your home folder)
+       For example, if drush is in your home directory:
+       $ alias drush='~/drush/drush'
+       This goes into .profile, .bash_aliases or .bashrc in your home folder.
+       NOTE:  You must log out and then log back in again or re-load your bash 
+       configuration file to apply your changes to your current session:
+       $ source .bashrc
 
      NOTE FOR ADVANCED USERS
      - If you want to run drush with a specific version of php, rather than the
