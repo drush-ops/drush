@@ -163,7 +163,7 @@ function _drush_sitealias_add_static_defaults(&$alias_record) {
   // build 'databases' from 'db-url' so that drush commands that use aliases
   // can always count on using a uniform 'databases' array.
   if (isset($alias_record['db-url']) && !isset($alias_record['databases'])) {
-    $alias_record['databases'] = array('default' => array('default' => drush_convert_db_from_db_url($alias_record['db-url'])));
+    $alias_record['databases'] = drush_sitealias_convert_db_from_db_url($alias_record['db-url']);
   }
   // If there is a 'root' entry, then copy it to the '!root'
   // path alias
@@ -366,7 +366,12 @@ function drush_sitealias_uri_to_site_dir($uri) {
  *   An array of database values.
  */
 function drush_convert_db_from_db_url($db_url) {
-  $url = parse_url($db_url);
+  if (is_array($db_url)) {
+    $url = parse_url($db_url['default']);
+  }
+  else {
+    $url = parse_url($db_url);
+  }
   // Fill in defaults to prevent notices.
   $url += array(
     'driver' => NULL,
@@ -384,6 +389,25 @@ function drush_convert_db_from_db_url($db_url) {
     'host' => urldecode($url->host),
     'database' => substr(urldecode($url->path), 1), // skip leading '/' character
   );
+}
+
+function drush_sitealias_convert_db_from_db_url($db_url) {
+  $result = array();
+  
+  if (is_array($db_url)) {
+    $default_db = array();
+    
+    foreach ($db_url as $db_name => $db_urlstr) {
+      $default_db[$db_name] = drush_convert_db_from_db_url($db_urlstr);
+    }
+    
+    $result['default'] = $default_db;
+  }
+  else {
+    $result = array('default' => array('default' => drush_convert_db_from_db_url($alias_record['db-url'])));
+  }
+  
+  return $result;
 }
 
 /**
