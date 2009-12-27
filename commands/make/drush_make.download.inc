@@ -86,6 +86,8 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         return $this->unpack_tar($filename);
       case 'zip':
         return $this->unpack_zip($filename);
+      default:
+        drush_make_error('DOWNLOAD_ERROR', dt('Unable to unpack %file', array('%file' => $filename)));
     }
   }
 
