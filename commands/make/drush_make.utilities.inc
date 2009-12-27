@@ -113,6 +113,7 @@ function drush_make_validate_info_file($info) {
     drush_make_error('BUILD_ERROR', dt("The 'core' attribute %core has an incorrect format.", array('%core' => $info['core'])));
     $errors = TRUE;
   }
+  $names = array();
 
   // Process projects.
   if (isset($info['projects'])) {
@@ -121,10 +122,15 @@ function drush_make_validate_info_file($info) {
       $errors = TRUE;
     }
     else {
-      foreach($info['projects'] as $project => $project_data) {
+      foreach ($info['projects'] as $project => $project_data) {
         // Project has an attributes array.
         if (is_string($project) && is_array($project_data)) {
-          foreach($project_data as $attribute => $value) {
+          if (in_array($project, $names)) {
+            drush_make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project)));
+            $errors = TRUE;
+          }
+          $names[] = $project;
+          foreach ($project_data as $attribute => $value) {
             // Unset disallowed attributes.
             if (in_array($attribute, array('install_path'))) {
               unset($info['projects'][$project][$attribute]);
@@ -138,11 +144,21 @@ function drush_make_validate_info_file($info) {
         }
         // Cover if there is no project info, it's just a project name.
         elseif (is_numeric($project) && is_string($project_data)) {
+          if (in_array($project_data, $names)) {
+            drush_make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project_data)));
+            $errors = TRUE;
+          }
+          $names[] = $project_data;
           unset($info['projects'][$project]);
           $info['projects'][$project_data] = array();
         }
         // Convert shorthand project version style to array format.
         elseif (is_string($project_data)) {
+          if (in_array($project, $names)) {
+            drush_make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project)));
+            $errors = TRUE;
+          }
+          $names[] = $project;
           $info['projects'][$project] = array('version' => $project_data);
         }
         else {
