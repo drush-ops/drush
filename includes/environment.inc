@@ -848,26 +848,29 @@ function drush_site_path($path = NULL) {
  * @param
  *   Search start path. Defaults to current working directory.
  */
-function drush_locate_root($path = NULL) {
+function drush_locate_root($start_path = NULL) {
   $drupal_root = FALSE;
 
-  $path = empty($path) ? drush_cwd() : $path;
-  if (is_link($path)) {
-    $path = readlink($path);
-  }
-  // Check the start path.
-  if (drush_valid_drupal_root($path)) {
-    $drupal_root = $path;
-  }
-  else {
-    // Move up dir by dir and check each.
-    while ($path = _drush_shift_path_up($path)) {
-      if (is_link($path)) {
-        $path = readlink($path);
-      }
-      if (drush_valid_drupal_root($path)) {
-        $drupal_root = $path;
-        break;
+  $start_path = empty($start_path) ? drush_cwd() : $start_path;
+  foreach (array(FALSE, TRUE) as $follow_symlinks) {
+    $path = $start_path;
+    if ($follow_symlinks && is_link($path)) {
+      $path = realpath($path);
+    }
+    // Check the start path.
+    if (drush_valid_drupal_root($path)) {
+      $drupal_root = $path;
+    }
+    else {
+      // Move up dir by dir and check each.
+      while ($path = _drush_shift_path_up($path)) {
+        if ($follow_symlinks && is_link($path)) {
+          $path = realpath($path);
+        }
+        if (drush_valid_drupal_root($path)) {
+          $drupal_root = $path;
+          break;
+        }
       }
     }
   }
