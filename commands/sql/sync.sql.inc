@@ -116,7 +116,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
 
   // Check to see if we are using a temporary file in a situation
   // where the user did not specify "--temp".
-  if (($source_is_tmp || $target_is_tmp) && (!isset($use_temp_files))) {
+  if (($source_is_tmp || $target_is_tmp) && (!isset($use_temp_files)) && (isset($source_remote_host)  || isset($target_remote_host))) {
     drush_print(dt('WARNING:  Using temporary files to store and transfer sql dump.  It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'!dump\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
   }
 
