@@ -8,6 +8,6 @@ Here's the relevant section.
 
 You can put this folder in a number of places:
 - In a .drush folder in your HOME folder. Note, that you have to make the
-.drush folder yourself. (so you end up with ~/.drush/drush_make/INSTALL.txt)
+  .drush folder yourself (so you end up with ~/.drush/drush_make/INSTALL.txt).
 - In a folder specified with the include option (see above).
 - In /path/to/drush/commands (not a Smart Thing, but it would work).
