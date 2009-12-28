@@ -131,7 +131,7 @@ function drush_load_config($context) {
     // To allow all of the aliases defined in every context to be used together,
     // we merge them all into the 'drush' context as they are encountered.
     if ((isset($options)) && (array_key_exists('site-aliases', $options))) {
-      $cache =& drush_get_context('drush');
+      $cache =& drush_get_context('alias');
       if (array_key_exists('site-aliases', $cache)) {
         $cache['site-aliases'] = array_merge($cache['site-aliases'], $options['site-aliases']);
       }
