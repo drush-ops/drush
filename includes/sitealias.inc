@@ -404,7 +404,7 @@ function drush_sitealias_convert_db_from_db_url($db_url) {
     $result['default'] = $default_db;
   }
   else {
-    $result = array('default' => array('default' => drush_convert_db_from_db_url($alias_record['db-url'])));
+    $result = array('default' => array('default' => drush_convert_db_from_db_url($db_url)));
   }
   
   return $result;
