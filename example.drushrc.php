@@ -11,7 +11,7 @@
  * - Drupal site folder (e.g sites/{default|example.com}/drushrc.php).
  * - Drupal installation root.
  * - User Home folder (i.e. ~/.drushrc.php).
- * - System wide configuration folder (e.g. /etc/drush/drushrc/php).
+ * - System wide configuration folder (e.g. /etc/drush/drushrc.php).
  * - Drush installation folder.
  *
  * If a configuration file is found in any of the above locations, it
