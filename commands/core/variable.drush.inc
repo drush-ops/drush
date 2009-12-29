@@ -61,9 +61,11 @@ function variable_drush_command() {
     ),
     'options' => array(
       '--yes' => 'Skip confirmation if only one variable name matches.',
+      '--always-set' => 'Always skip confirmation.',
     ),
     'examples' => array(
-      'drush vset --yes preprocess_css 1' => 'Set the preprocess_css variable to true. Skip confirmation.',
+      'drush vset --yes preprocess_css 1' => 'Set the preprocess_css variable to true. Skip confirmation if variable already exists.',
+      'drush vset --always-set site_offline 1' => 'Take the site offline; Skips confirmation even if site_offline variable does not exist.',
       'drush vset pr 1' => 'Choose from a list of variables beginning with "pr" to set to true.',
     ),
     'aliases' => array('vset'),
@@ -139,7 +141,7 @@ function drush_variable_variable_set() {
     }
   }
   
-  if ((count($options) == 1 || $match) && drush_get_context('DRUSH_AFFIRMATIVE')) {
+  if ((drush_get_option('always-set', FALSE)) || ((count($options) == 1 || $match) && drush_get_context('DRUSH_AFFIRMATIVE'))) {
     variable_set($args[0], $value);
     drush_log(dt('!name was set to !value.', array('!name' => $args[0], '!value' => $value)), 'success');
     return '';
