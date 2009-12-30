@@ -108,32 +108,33 @@ $options['structure-tables'] = array(
  * The following settings are stored in the site alias record:
  *
  * - 'uri': This should always be the same as the site's folder name
- *   in the 'sites' folder.
+ *     in the 'sites' folder.
  * - 'root': The Drupal root; must not be specified as a relative path.
  * - 'db-url': The Drupal 6 database connection string from settings.php.
- *   For remote databases accessed via an ssh tunnel, set the port
- *   number to the tunneled port as it is accessed on the local machine.
- *   If 'db-url' is not provided, then drush will automatically look it
- *   up, either from settings.php on the local machine, or via backend invoke
- *   if the target alias specifies a remote server.
+ *     For remote databases accessed via an ssh tunnel, set the port
+ *     number to the tunneled port as it is accessed on the local machine.
+ *     If 'db-url' is not provided, then drush will automatically look it
+ *     up, either from settings.php on the local machine, or via backend invoke
+ *     if the target alias specifies a remote server.
  * - 'databases': Like 'db-url', but contains the full Drupal 7 databases
- *   record.  Drush will look up the 'databases' record if it is not specified.
+ *     record.  Drush will look up the 'databases' record if it is not specified.
  * - 'remote-port': If the database is remote and 'db-url' contains
- *   a tunneled port number, put the actual database port number
- *   used on the remote machine in the 'remote-port' setting.
+ *     a tunneled port number, put the actual database port number
+ *     used on the remote machine in the 'remote-port' setting.
  * - 'remote-host': The fully-qualified domain name of the remote system
- *   hosting the Drupal instance.  The remote-host option must be
- *   omitted for local sites, as this option controls whether or not
- *   rsync parameters are for local or remote machines.
+ *     hosting the Drupal instance.  The remote-host option must be
+ *     omitted for local sites, as this option controls whether or not
+ *     rsync parameters are for local or remote machines.
  * - 'remote-user': The username to log in as when using ssh or rsync.
  * - 'path-aliases': An array of aliases for common rsync targets.
  *   Relative aliases are always taken from the Drupal root.
  *     '!drush': The path to the folder where drush is stored.  Optional;
- *     defaults to the folder containing the running script.  Always be sure
- *     to set '!drush' if the path to drush is different on the remote server.
+ *       defaults to the folder containing the running script.  Always be sure
+ *       to set '!drush' if the path to drush is different on the remote server.
  *     '!drush-script': The path to the 'drush' script (used by backend invoke);
- *     default is 'drush' on remote machines, or the full path to drush.php on
- *     the local machine.
+ *       default is 'drush' on remote machines, or the full path to drush.php on
+ *       the local machine.  Note that you only need to define one of '!drush' 
+ *       or '!drush-script', as drush can infer one from the other.
  *     '!dump': Path to the file that "drush sql sync" should use to store sql dump file.
  *     '!files': Path to 'files' directory.
  *
@@ -146,7 +147,8 @@ $options['structure-tables'] = array(
 #    'remote-host' => 'mystagingserver.myisp.com',
 #    'remote-user' => 'publisher',
 #    'path-aliases' => array(
-#      '!drush' => '/drush/path/drush',
+#      '!drush' => '/drush/path/to/drush',
+#      '!drush-script' => '/drush/path/to/drush/drush',
 #      '!dump' => '/path/to/live/sql_dump.sql',
 #      '!files' => 'sites/mydrupalsite.com/files',
 #      '!custom' => '/my/custom/path',
