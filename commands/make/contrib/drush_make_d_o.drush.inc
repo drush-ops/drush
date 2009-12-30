@@ -179,7 +179,7 @@ function drush_make_d_o_validate_info_file($info) {
   }
   // Abort if any errors were found.
   if ($errors) {
-    drush_make_error('BUILD_ERROR', dt('A .make file in your profile failed the <a href="@doc_link">drupal.org validation checks</a>.', array('@doc_link' => DRUSH_MAKE_DO_DOCUMENTATION_LINK)));
+    drush_make_error('BUILD_ERROR', dt('The drupal.org validation check failed -- see @doc_link for more information.', array('@doc_link' => DRUSH_MAKE_DO_DOCUMENTATION_LINK)));
     return FALSE;
   }
   return $info;
