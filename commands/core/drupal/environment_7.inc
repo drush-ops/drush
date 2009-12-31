@@ -18,7 +18,14 @@ function _drush_get_modules() {
   $module_info = drupal_system_listing('/\.module$/', 'modules', 'name', 0);
   system_get_files_database($module_info, 'module');
   foreach ($module_info as $module_name => $module){
-    $module_info[$module_name]->info = drupal_parse_info_file(dirname($module->filename) .'/'. $module->name .'.info');
+    $info = drupal_parse_info_file(dirname($module->uri) .'/'. $module->name .'.info');
+    if (empty($info['hidden'])) {
+      $module_info[$module_name]->info = $info;
+    }
+    else {
+      // Hide this module by not returning it in the list.
+      unset($module_info[$module_name]);
+    }
   }
   return $module_info;
 }
