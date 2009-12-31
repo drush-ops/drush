@@ -852,7 +852,7 @@ function drush_locate_root($start_path = NULL) {
   $drupal_root = FALSE;
 
   $start_path = empty($start_path) ? drush_cwd() : $start_path;
-  foreach (array(FALSE, TRUE) as $follow_symlinks) {
+  foreach (array(TRUE, FALSE) as $follow_symlinks) {
     $path = $start_path;
     if ($follow_symlinks && is_link($path)) {
       $path = realpath($path);
@@ -860,6 +860,7 @@ function drush_locate_root($start_path = NULL) {
     // Check the start path.
     if (drush_valid_drupal_root($path)) {
       $drupal_root = $path;
+      break;
     }
     else {
       // Move up dir by dir and check each.
@@ -869,7 +870,7 @@ function drush_locate_root($start_path = NULL) {
         }
         if (drush_valid_drupal_root($path)) {
           $drupal_root = $path;
-          break;
+          break 2;
         }
       }
     }
