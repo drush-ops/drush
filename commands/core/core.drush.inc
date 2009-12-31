@@ -129,7 +129,7 @@ function core_drush_command() {
     'options' => array(
       'db-url' => 'A Drupal 5/6 style database URL. Only required for initial install - not re-install.',
       'db-prefix' => 'An optional table prefix to use for initial install.',
-      'account-user' => 'uid1 name. defaults to admin',
+      'account-name' => 'uid1 name. defaults to admin',
       'account-pass' => 'uid1 pass. defaults to admin',
       'account-mail' => 'uid1 email. defaults to admin@example.com',
       'clean_url'=> 'Defaults to 1',
@@ -280,7 +280,7 @@ function core_drush_help($section) {
       return dt("Run arbitrary PHP code in the context of Drupal");
     case 'drush:installsite':
       return dt("Install Drupal using specified install profile.");
-    case 'error:DRUSH_DRUPAL_DB_ERROR' : 
+    case 'error:DRUSH_DRUPAL_DB_ERROR' :
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
       $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_site_credentials()));
