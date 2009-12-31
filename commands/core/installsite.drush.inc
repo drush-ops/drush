@@ -3,7 +3,7 @@
 
 // Perform setup tasks for installation.
 function drush_core_pre_installsite() {
-  
+
   if (!$db_spec = drush_core_installsite_db_spec()) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
@@ -21,11 +21,11 @@ function drush_core_pre_installsite() {
     $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
   }
   $msg[] = dt("DROP your '@db' database and then CREATE a new one.", array('@db' => $db_spec['database']));
-  
+
   if (!drush_confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
     return drush_set_error('CORE_INSTALLSITE_ABORT', 'Aborting.');
   }
-  
+
   // Can't install without sites directory and settings.php.
   if (!file_exists($conf_path)) {
     if (!drush_op('mkdir', $conf_path) && !drush_get_context('DRUSH_SIMULATE')) {
@@ -75,14 +75,14 @@ function drush_core_pre_installsite() {
 
 function drush_core_installsite($profile = 'default') {
   require_once('install.php');
-  
+
   $db_spec = drush_core_installsite_db_spec();
-  
+
   $account_pass = drush_get_option('account_pass', 'admin');
   $settings = array(
     'parameters' => array(
       'profile' => $profile,
-      'locale' => 'en',
+      'locale' => drush_get_option('locale', 'en'),
     ),
     'forms' => array(
       'install_settings_form' => $db_spec,
@@ -105,7 +105,7 @@ function drush_core_installsite($profile = 'default') {
       ),
     ),
   );
-  drush_log(dt('Starting Drupal installation. This takes a few seconds or more depending on your install profile ...'), 'ok');
+  drush_log(dt('Starting Drupal installation. This takes 30 seconds or so ...'), 'ok');
   install_drupal($settings);
 }
 
