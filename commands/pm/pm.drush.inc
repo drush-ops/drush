@@ -162,7 +162,7 @@ function pm_drush_command() {
       '--destination' => 'Path to which the project will be copied.',
       '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
       '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.",
-    ), 
+    ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
     'aliases' => array('dl')
   ) + $engines;
@@ -191,15 +191,15 @@ function drush_pm_disable() {
  */
 function drush_pm_uninstall() {
   $modules = func_get_args();
-    
+
   drush_print(dt('The following modules will be uninstalled: !modules', array('!modules' => implode(', ', $modules))));
   if(!drush_confirm(dt('Do you really want to continue?'))) {
     drush_die('Aborting.');
   }
-  
+
   // Make sure the install API is available.
   require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
-    
+
   $module_info = array();
   foreach ($modules as $module) {
     // Minimalist validation.
@@ -246,7 +246,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
     // We will override this to be an empty array instead to be compatible to Drupal 6 and 7
     if (empty($module->info['dependencies'])){
        $module->info['dependencies'] = array();
-    } 
+    }
     // Add enabled modules to an array for easy reference.
     if ($module_info[$module_name]->status) {
       $enabled[] = $module_name;
@@ -277,7 +277,7 @@ function pm_module_manage($modules = array(), $enable = TRUE) {
         if (!drupal_check_module($module)) {
           continue;
         }
-        
+
         // In Drupal 5, drupal_install_modules() only installs new modules,
         // and does not enable previously installed and disabled modules.
         if (drupal_get_installed_schema_version($module) == SCHEMA_UNINSTALLED) {
@@ -713,7 +713,7 @@ function pm_parse_project_version($requests) {
       $project = $request;
     }
     if (empty($project)) {
-      drush_set_error('DRUSH_PM_MISSING_PROJECT_NAME', 'Project name not found. Run drush help install for more information.');
+      drush_set_error('DRUSH_PM_MISSING_PROJECT_NAME', 'Project name not found. Run drush help dl for more information.');
       continue;
     }
     if ($project_version) {
@@ -821,8 +821,8 @@ function drush_pm_download() {
       $project = $package['name'];
       // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
       $url = drush_get_option('source', 'http://updates.drupal.org/release-history') . "/$project/". $package['drupal_version'];
-      
-      // A simple download, which is never available via CVS. 
+
+      // A simple download, which is never available via CVS.
       // Some hosts have allow_url_fopen disabled.
       if (!$xml = @simplexml_load_file($url)) {
         if (!drush_shell_exec("wget $url")) {
@@ -853,14 +853,14 @@ function drush_pm_download() {
             $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
             $releases = $xml->xpath($xpath_releases);
           }
-          
+
           // Profiles have 3 variants for a given real relase. Admin can specify using option.
           // Depends on a fixed order of variations in releases list.
           // Usually,  the first release is chosen.
           $variations = array('core', 'no-core', 'make');
           $variant = drush_get_option('variant', 'core');
           $release = (array)$releases[array_search($variant, $variations)];
-          
+
           // Determine what type of project we have, so we know where to put it.
           $release['type'] = 'module';
 
