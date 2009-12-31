@@ -620,7 +620,7 @@ function _drush_bootstrap_redo_drupal_site() {
       // process.
       $sitealias_drupal_root = drush_get_option(array('r', 'root'));
       if (($sitealias_drupal_root != null) && (DRUPAL_ROOT != $sitealias_drupal_root)) {
-	drush_set_option('remote-host', 'localhost');
+        drush_set_option('remote-host', 'localhost');
       }
       else {
         // If we set an alias, then we need to bootstrap the
@@ -937,9 +937,9 @@ function drush_valid_db_credentials() {
  * Calling ./drush.php directly yields the following environment:
  *
  * _SERVER["argv"][0] => ./drush.php
- * 
+ *
  * Calling php ./drush.php also yields the following:
- * 
+ *
  * _SERVER["argv"][0] => ./drush.php
  *
  * Note that the $_ global is defined only in bash and therefore cannot
