@@ -793,6 +793,7 @@ function _drush_print_log($entry) {
       break;
     case 'notice' :
     case 'message' :
+    case 'info' :
       if (!$verbose) {
         // print nothing. exit cleanly.
         return TRUE;
@@ -890,6 +891,51 @@ function _drush_log_drupal_messages() {
       }
     }
   }
+}
+
+/**
+ * Log Drupal watchdog() calls.
+ *
+ * A sneaky implementation of hook_watchdog().
+ */
+function system_watchdog($log_entry) {
+  $levels = drush_watchdog_severity_levels();
+  drush_log('WD '. $log_entry['type'] . ': ' . drush_watchdog_format_message((object)$log_entry), $levels[$log_entry['severity']]);
+}
+
+/**
+ * Copy of watchdog_severity_levels() without t() and tuned for _drush_print_log.
+ *
+ * Severity levels, as defined in RFC 3164: http://www.ietf.org/rfc/rfc3164.txt.
+ *
+ * @return
+ *   Array of the possible severity levels for log messages.
+ *
+ * @see watchdog()
+ */
+function drush_watchdog_severity_levels() {
+  return array(
+    WATCHDOG_EMERG    => 'error', // emergency
+    WATCHDOG_ALERT    => 'error', // alert
+    WATCHDOG_CRITICAL => 'error', // critical
+    WATCHDOG_ERROR    => 'error',
+    WATCHDOG_WARNING  => 'warning',
+    WATCHDOG_NOTICE   => 'notice',
+    WATCHDOG_INFO     => 'info',
+    WATCHDOG_DEBUG    => 'debug',
+  );
+}
+
+function drush_watchdog_format_message($watchdog) {
+  if (drush_drupal_major_version() == 5) {
+    $message = $watchdog->message;
+  }
+  else {
+    // variables is an array during logging but is a string when retrieving from DB.
+    $variables = is_string($watchdog->variables) ? unserialize($watchdog->variables) : $watchdog->variables;
+    $message = is_array($variables) ? strtr($watchdog->message, $variables) : $watchdog->message;
+  }
+  return decode_entities($message);
 }
 
 /**

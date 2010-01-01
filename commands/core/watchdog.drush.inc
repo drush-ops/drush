@@ -105,20 +105,9 @@ function core_watchdog_format_row($watchdog) {
     format_date($watchdog->timestamp, 'small'),
     $severities[$watchdog->severity],
     dt($watchdog->type),
-    core_watchdog_format_message($watchdog),
+    truncate_utf8(drush_watchdog_format_message($watchdog), 68, FALSE, FALSE),
     strip_tags(theme('username', (array)$watchdog)),
   );
-}
-
-function core_watchdog_format_message($watchdog) {
-  if (drush_drupal_major_version() == 5) {
-    $message = $watchdog->message;
-  }
-  else {
-    $variables = unserialize($watchdog->variables);
-    $message = is_array($variables) ? strtr($watchdog->message, $variables) : $watchdog->message;
-  }
-  return truncate_utf8(decode_entities($message), 68, FALSE, FALSE);
 }
 
 /**
