@@ -73,6 +73,24 @@ $options['structure-tables'] = array(
 // Use POSIX path separator (':')
 # $options['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
 
+/*
+ * Command-specific options
+ *
+ * To define options that are only applicable to certain commands,
+ * make an entry in the 'command-specific' structures as shown below.
+ * The name of the command may be either the command's full name
+ * or any of the command's aliases.
+ *
+ * Options defined here will be overridden by options of the same
+ * name on the command line.  Unary flags such as "--verbose" are overridden
+ * via special "--no-xxx" options (e.g. "--no-verbose").
+ *
+ * Limitation: If 'verbose' is set in a command-specific option,
+ * it must be cleared by '--no-verbose', not '--no-v', and visa-versa.
+ */
+# $options['command-specific']['rsync'] = array('verbose' => TRUE);
+# $options['command-specific']['dl'] = array('cvscredentials' => 'user:pass');
+
 /**
  * Variable overrides:
  *

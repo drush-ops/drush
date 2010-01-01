@@ -91,7 +91,7 @@ function drush_core_call_rsync($source, $destination, $parametric_options = arra
   if (array_key_exists('mode', $all_specified_options)) {
     $mode = "-" . $all_specified_options['mode'];
   }
-  if (drush_get_context('DRUSH_VERBOSE') || array_key_exists('show-progress', $all_specified_options)) {
+  if (drush_get_context('DRUSH_VERBOSE')) {
     // the drush_op() will be verbose about the command that gets executed.
     $mode .= 'v';
     $options .= ' --stats --progress';

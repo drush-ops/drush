@@ -33,32 +33,52 @@
  *   encoded string passed through the STDIN pipe.
  *
  *   These contexts are accessible through the @drush_get_option and @drush_set_option
- *   functions.
- *
- *   These contexts are evaluated in a certain order, and the highest priority value
- *   is returned by default from drush_get_option. This allows scripts to check whether
- *   an option was different before the current execution.
- *
- *    Specified by the script itself :
- *      process  : Generated in the current process.
- *      options  : Passed as --option=value to the command line.
- *      stdin    : Passed as a JSON encoded string through stdin.
- *
- *    Specified by config files :
- *      custom   : Loaded from the config file specified by --config or -c
- *      site     : Loaded from the drushrc.php file in the Drupal site directory.
- *      drupal   : Loaded from the drushrc.php file in the Drupal root directory.
- *      user     : Loaded from the drushrc.php file in the user's home directory.
- *      system   : Loaded from the drushrc.php file in the system's $PREFIX/etc/drush directory.
- *      drush    : Loaded from the drushrc.php file in the same directory as drush.php.
- *
- *    Specified by the script, but has the lowest priority :
- *      default  : The script might provide some sensible defaults during init.
+ *   functions.  See @drush_context_names for a description of all of
+ *   the contexts.
  *
  *   Drush commands may also choose to save settings for a specific context to the matching configuration
  *   file through the drush_save_config() function.
  */
 
+
+/**
+ * Return a list of the valid drush context names.
+ *
+ * These context names are carefully ordered from
+ * highest to lowest priority.
+ *
+ * These contexts are evaluated in a certain order, and the highest priority value
+ * is returned by default from drush_get_option. This allows scripts to check whether
+ * an option was different before the current execution.
+ *
+ *   Specified by the script itself :
+ *     process  : Generated in the current process.
+ *     options  : Passed as --option=value to the command line.
+ *     stdin    : Passed as a JSON encoded string through stdin.
+ *     alias    : Defined in an alias record, and set in the
+ *                alias context whenever that alias is used.
+ *     specific : Defined in a command-specific option record, and
+ *                set in the command context whenever that command is used.
+ *
+ *   Specified by config files :
+ *     custom   : Loaded from the config file specified by --config or -c
+ *     site     : Loaded from the drushrc.php file in the Drupal site directory.
+ *     drupal   : Loaded from the drushrc.php file in the Drupal root directory.
+ *     user     : Loaded from the drushrc.php file in the user's home directory.
+ *     system   : Loaded from the drushrc.php file in the system's $PREFIX/etc/drush directory.
+ *     drush    : Loaded from the drushrc.php file in the same directory as drush.php.
+ *
+ *   Specified by the script, but has the lowest priority :
+ *     default  : The script might provide some sensible defaults during init.
+ */
+function drush_context_names() {
+  static $contexts = array(
+    'process', 'options', 'stdin', 'alias', 'specific',
+    'custom', 'site', 'drupal', 'user', 'system',
+    'drush', 'default');
+  
+  return $contexts;
+}
 
 /**
  * Return a list of possible drushrc file locations.
@@ -125,22 +145,27 @@ function drush_load_config($context) {
     $options['context-path'][$context] = $config;
     require_once($config);
     
-    // If site aliases are defined in multiple drush configuration files,
-    // the normal mechanism would cause the highest priority 'site-aliases'
-    // array to mask all of the other aliases defined in different contexts.
-    // To allow all of the aliases defined in every context to be used together,
-    // we merge them all into the 'drush' context as they are encountered.
-    if ((isset($options)) && (array_key_exists('site-aliases', $options))) {
-      $cache =& drush_get_context('alias');
-      if (array_key_exists('site-aliases', $cache)) {
-        $cache['site-aliases'] = array_merge($cache['site-aliases'], $options['site-aliases']);
+    // There are certain options such as 'site-aliases' and 'command-specific'
+    // that must be merged together if defined in multiple drush configuration
+    // files.  If we did not do this merge, then the last configuration file
+    // that defined any of these properties would overwrite all of the options
+    // that came before in previously-loaded configuration files.  We place
+    // all of them into the 'default' context so that this does not happen.
+    if (isset($options)) {
+      foreach (array('site-aliases', 'command-specific') as $option_name) {
+        if ((isset($options)) && (array_key_exists($option_name, $options))) {
+          $cache =& drush_get_context('default');
+          if (array_key_exists($option_name, $cache)) {
+            $cache[$option_name] = array_merge($cache[$option_name], $options[$option_name]);
+          }
+          else {
+            $cache[$option_name] = $options[$option_name];
+          }
+          unset($options[$option_name]);
+        }
       }
-      else {
-        $cache['site-aliases'] = $options['site-aliases'];
-      }
-      unset($options['site-aliases']);
     }
-
+    
     drush_set_context($context, $options);
 
     // Instruct core not to queries since we are not outputting them.
@@ -292,10 +317,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
   }
   else {
     // We are not checking a specific context, so check them in a predefined order of precedence.
-    static $contexts = array(
-      'process', 'options', 'stdin', 'alias',
-      'custom', 'site', 'drupal', 'user', 'system',
-      'drush', 'default');
+    $contexts = drush_context_names();
 
     foreach ($contexts as $context) {
       $value = _drush_get_option($option, drush_get_context($context));
@@ -317,10 +339,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
  * Retrieves a collapsed list of all options
  */
 function drush_get_merged_options() {
-  static $contexts = array(
-      'process', 'options', 'stdin', 'alias',
-      'custom', 'site', 'drupal', 'user', 'system',
-      'drush', 'default');
+  $contexts = drush_context_names();
   $cache = drush_get_context();
   $result = array();
   foreach (array_reverse($contexts) as $context) {
@@ -385,10 +404,19 @@ function drush_set_default($option, $value) {
  * @param
  *   Context in which to unset the value in.
  */
-function drush_unset_option($option, $context) {
-  $cache =& drush_get_context($context);
-  if (array_key_exists($option, $cache)) {
-    unset($cache[$option]);
+function drush_unset_option($option, $context = NULL) {
+  if ($context != NULL) {
+    $cache =& drush_get_context($context);
+    if (array_key_exists($option, $cache)) {
+      unset($cache[$option]);
+    }
+  }
+  else {
+    $contexts = drush_context_names();
+
+    foreach ($contexts as $context) {
+      drush_unset_option($option, $context);
+    }
   }
 }
 

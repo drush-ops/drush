@@ -435,7 +435,14 @@ function _drush_bootstrap_drush() {
   if ($backend || $quiet) {
     ob_start();
   }
+  
+  _drush_bootstrap_global_options();
 
+  // Find any command files that are available during this bootstrap phase.
+  _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUSH);
+}
+
+function _drush_bootstrap_global_options() {
   // Debug implies verbose
   drush_set_context('DRUSH_VERBOSE',     drush_get_option(array('v', 'verbose', 'd', 'debug'), FALSE));
   drush_set_context('DRUSH_DEBUG', drush_get_option(array('d', 'debug')));
@@ -455,9 +462,6 @@ function _drush_bootstrap_drush() {
     $nocolor = !($colors === FALSE || (is_numeric($colors) && $colors >= 3));
   }
   drush_set_context('DRUSH_NOCOLOR', $nocolor);
-
-  // Find any command files that are available during this bootstrap phase.
-  _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUSH);
 }
 
 /**
