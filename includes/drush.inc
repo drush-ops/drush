@@ -881,6 +881,14 @@ function _drush_log_drupal_messages() {
         }
       }
     }
+    unset($messages['error']);
+
+    // Log non-error messages.
+    foreach ($messages as $type => $items) {
+      foreach ($items as $item) {
+        drush_log(strip_tags($item), $type);
+      }
+    }
   }
 }
 
