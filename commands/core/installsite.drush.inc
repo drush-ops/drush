@@ -87,8 +87,8 @@ function drush_core_installsite($profile = 'default') {
     'forms' => array(
       'install_settings_form' => $db_spec,
       'install_configure_form' => array(
-        'site_name' => drush_get_option('site_name', 'Installsite'),
-        'site_mail' => drush_get_option('site_mail', 'admin@example.com'),
+        'site_name' => drush_get_option('site-name', 'Installsite'),
+        'site_mail' => drush_get_option('site-mail', 'admin@example.com'),
         'account' => array(
           'name' => drush_get_option('account-name', 'admin'),
           'mail' => drush_get_option('account-mail', 'admin@example.com'),
@@ -101,7 +101,7 @@ function drush_core_installsite($profile = 'default') {
           1 => TRUE,
           2 => TRUE,
         ),
-        'clean_url' => drush_get_option('clean_url', TRUE),
+        'clean_url' => drush_get_option('clean-url', TRUE),
       ),
     ),
   );

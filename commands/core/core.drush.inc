@@ -133,9 +133,9 @@ function core_drush_command() {
       'account-pass' => 'uid1 pass. defaults to admin',
       'account-mail' => 'uid1 email. defaults to admin@example.com',
       'locale' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',
-      'clean_url'=> 'Defaults to 1',
-      'site_name' => 'Defaults to installsite',
-      'site_mail' => 'From: for system mailings. Defaults to admin@example.com',
+      'clean-url'=> 'Defaults to 1',
+      'site-name' => 'Defaults to installsite',
+      'site-mail' => 'From: for system mailings. Defaults to admin@example.com',
       'sites-subdir' => "Name of directory under 'sites' which should be created if needed. Defaults to 'default'",
     ),
     'examples' => array(
