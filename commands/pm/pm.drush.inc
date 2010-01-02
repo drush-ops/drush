@@ -579,7 +579,12 @@ function delete_dir($dir) {
 function pm_dl_destination_lookup($type, $drupal_root, $sitepath, $create = FALSE) {
   switch ($type) {
     case 'module':
+      // Prefer sites/all/modules/contrib if it exists. 
       $destination = $sitepath . 'modules/';
+      $contrib = $destination . 'contrib/';
+      if (is_dir($contrib)) {
+        $destination = $contrib;
+      }
       break;
     case 'theme':
       $destination = $sitepath . 'themes/';
@@ -621,7 +626,7 @@ function pm_dl_destination($type) {
 	if (drush_confirm(dt('Would you like to create it?'))) {
           @drush_op('mkdir', $destination, 0777, TRUE);
         }
-      }      
+      }
     }
     if (is_dir($destination)) {
       return $destination;
