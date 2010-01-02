@@ -43,6 +43,9 @@ function drush_cache_clear_types() {
     'menu' => 'menu_rebuild',
     'css+js' => 'drush_cache_clear_css_js',
   );
+  if (count(module_implements('node_grants'))) {
+    $types['nodeaccess'] = 'node_access_rebuild';
+  }
   return $types;
 }
 
