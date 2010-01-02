@@ -115,7 +115,7 @@ function core_drush_command() {
   $items['eval'] = array(
     'description' => 'Evaluate arbitrary php code after bootstrapping Drupal.',
     'examples' => array(
-      'drush eval \"variable_set(\'hello\', \'world\');\"' => 'Sets the hello variable using Drupal API.',
+      'drush eval "variable_set(\'hello\', \'world\');"' => 'Sets the hello variable using Drupal API.',
     ),
     'arguments' => array(
       'code' => 'PHP code',
