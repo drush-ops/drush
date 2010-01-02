@@ -398,8 +398,7 @@ function pm_dependencies(&$modules, $enabled, $module_info) {
 
 /**
  * This calculates any modules that are depending on the modules the user
- * wants to disable, and disables them progressively so as to allow the
- * system dependency checking to proceed.
+ * wants to disable.
  */
 function pm_reverse_dependencies(&$modules, $enabled, $module_info) {
   foreach ($modules as $key => $module) {
@@ -410,7 +409,6 @@ function pm_reverse_dependencies(&$modules, $enabled, $module_info) {
     foreach ($module_info as $dependent => $dependent_search) {
       if (array_search($module, $dependent_search->info['dependencies']) !== FALSE) {
         $modules[] = $dependent;
-        module_disable(array($dependent));
       }
     }
   }
