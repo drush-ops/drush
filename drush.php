@@ -90,6 +90,7 @@ function drush_main() {
           $return = drush_dispatch($command);
 
           drush_log_timers();
+          drush_log(dt('Peak memory usage was !peak', array('!peak' => drush_format_size(memory_get_peak_usage()))), 'memory');
           break;
         }
       }
@@ -270,4 +271,3 @@ function drush_drupal_login($drush_user) {
 
   return TRUE;
 }
-

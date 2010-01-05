@@ -820,7 +820,7 @@ function _drush_print_log($entry) {
   $width[1] = 11;
   // Append timer value.
   if ($debug) {
-    $timer = sprintf('[%s sec]', round($entry['timestamp']-DRUSH_REQUEST_TIME, 3));
+    $timer = sprintf('[%s sec]', round($entry['timestamp']-DRUSH_REQUEST_TIME, 2));
     $entry['message'] = $entry['message'] . ' ' . $timer;
   }
 
@@ -837,13 +837,13 @@ function _drush_print_log($entry) {
   return $return;
 }
 
-// Log all timers for the request except standard page timer.
+// Log all timers for the request.
 // Useful for migrate commands. Lets see if others find it useful.
 // Called at end of request. @see drush.php
 function drush_log_timers() {
   global $timers;
   foreach ((array)$timers as $name => $timerec) {
-    drush_log("Timer '$name' is  "  . sprintf('%s sec.', round(timer_read($name)/1000, 3)), 'timer');
+    drush_log("Timer '$name' is  "  . sprintf('%s sec.', round(timer_read($name)/1000, 2)), 'timer');
   }
 }
 /**
@@ -890,6 +890,35 @@ function _drush_log_drupal_messages() {
         drush_log(strip_tags($item), $type);
       }
     }
+  }
+}
+
+// Copy of format_size() in Drupal.
+function drush_format_size($size, $langcode = NULL) {
+  if ($size < DRUPAL_KILOBYTE) {
+    return format_plural($size, '1 byte', '@count bytes', array(), array('langcode' => $langcode));
+  }
+  else {
+    $size = $size / DRUPAL_KILOBYTE; // Convert bytes to kilobytes.
+    $units = array(
+      t('@size KB', array(), array('langcode' => $langcode)),
+      t('@size MB', array(), array('langcode' => $langcode)),
+      t('@size GB', array(), array('langcode' => $langcode)),
+      t('@size TB', array(), array('langcode' => $langcode)),
+      t('@size PB', array(), array('langcode' => $langcode)),
+      t('@size EB', array(), array('langcode' => $langcode)),
+      t('@size ZB', array(), array('langcode' => $langcode)),
+      t('@size YB', array(), array('langcode' => $langcode)),
+    );
+    foreach ($units as $unit) {
+      if (round($size, 2) >= DRUPAL_KILOBYTE) {
+        $size = $size / DRUPAL_KILOBYTE;
+      }
+      else {
+        break;
+      }
+    }
+    return str_replace('@size', round($size, 2), $unit);
   }
 }
 
