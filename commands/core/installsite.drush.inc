@@ -73,7 +73,7 @@ function drush_core_pre_installsite() {
   }
 }
 
-function drush_core_installsite($profile = 'default') {
+function drush_core_installsite($profile = 'standard') {
   require_once('install.php');
 
   $db_spec = drush_core_installsite_db_spec();
