@@ -901,14 +901,14 @@ function drush_format_size($size, $langcode = NULL) {
   else {
     $size = $size / DRUPAL_KILOBYTE; // Convert bytes to kilobytes.
     $units = array(
-      t('@size KB', array(), array('langcode' => $langcode)),
-      t('@size MB', array(), array('langcode' => $langcode)),
-      t('@size GB', array(), array('langcode' => $langcode)),
-      t('@size TB', array(), array('langcode' => $langcode)),
-      t('@size PB', array(), array('langcode' => $langcode)),
-      t('@size EB', array(), array('langcode' => $langcode)),
-      t('@size ZB', array(), array('langcode' => $langcode)),
-      t('@size YB', array(), array('langcode' => $langcode)),
+      dt('@size KB', array(), array('langcode' => $langcode)),
+      dt('@size MB', array(), array('langcode' => $langcode)),
+      dt('@size GB', array(), array('langcode' => $langcode)),
+      dt('@size TB', array(), array('langcode' => $langcode)),
+      dt('@size PB', array(), array('langcode' => $langcode)),
+      dt('@size EB', array(), array('langcode' => $langcode)),
+      dt('@size ZB', array(), array('langcode' => $langcode)),
+      dt('@size YB', array(), array('langcode' => $langcode)),
     );
     foreach ($units as $unit) {
       if (round($size, 2) >= DRUPAL_KILOBYTE) {
