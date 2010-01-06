@@ -436,7 +436,7 @@ function _drush_find_commandfiles($phase) {
       if (is_dir($path)) {
         $files = drush_scan_directory($path, '/\.drush\.inc$/');
         foreach ($files as $filename => $info) {
-          require_once($filename);
+          require_once(realpath($filename));
           $list[basename($filename, '.drush.inc')] = $filename;
         }
       }
