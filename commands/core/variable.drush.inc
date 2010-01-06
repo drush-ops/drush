@@ -127,10 +127,11 @@ function drush_variable_variable_set() {
   if (!isset($value)) {
     drush_set_error('DRUSH_VARIABLE_ERROR', dt('No value specified.'));
   }
-  
+
   $result = drush_variable_like($args[0]);
-  
+
   $options[] = "$args[0] ". dt('(new variable)');
+  $match = FALSE;
   while (!$match && $name = drush_db_result($result)) {
     if ($name == $args[0]) {
       $options[0] = $name;
@@ -140,7 +141,7 @@ function drush_variable_variable_set() {
       $options[] = $name;
     }
   }
-  
+
   if ((drush_get_option('always-set', FALSE)) || ((count($options) == 1 || $match) && drush_get_context('DRUSH_AFFIRMATIVE'))) {
     variable_set($args[0], $value);
     drush_log(dt('!name was set to !value.', array('!name' => $args[0], '!value' => $value)), 'success');
@@ -172,12 +173,12 @@ function drush_variable_variable_delete() {
   while ($name = drush_db_result($result)) {
     $options[] = $name;
   }
-  
+
   if (count($options) == 0) {
     drush_print(dt('!name not found.', array('!name' => $args[0])));
     return '';
   }
-  
+
   if ((count($options) == 1) && drush_get_context('DRUSH_AFFIRMATIVE')) {
     drush_op('variable_del', $args[0]);
     drush_log(dt('!name was deleted.', array('!name' => $args[0])), 'success');
@@ -202,4 +203,3 @@ function drush_variable_like($arg) {
   }
   return $result;
 }
-
