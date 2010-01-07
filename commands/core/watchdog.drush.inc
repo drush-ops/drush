@@ -2,15 +2,15 @@
 
 function watchdog_drush_help($section) {
   switch ($section)  {
-    case 'drush:watchdog show':
+    case 'drush:watchdog-show':
       return dt("Show recent watchdog messages.");
-    case 'drush:watchdog delete':
+    case 'drush:watchdog-delete':
       return dt("Delete watchdog messages.");
   }
 }
 
 function watchdog_drush_command() {
-  $items['watchdog show'] = array(
+  $items['watchdog-show'] = array(
     'description' => 'Shows recent watchdog log messages. Optionally filter for a specific type.',
     'drupal dependencies' => drush_drupal_major_version() >= 6 ? array('dblog') : array('watchdog'),
     'arguments' => array(
@@ -21,21 +21,21 @@ function watchdog_drush_command() {
       '--severity' => 'Restrict to a given severity level. Error=0, Warning=4.',
     ),
     'examples' => array(
-      'watchdog show cron' => 'Show recent cron watchdog messages.',
-      'watchdog show --severity=0' => 'Show recent error messages.',
-      'watchdog show --limit=50' => 'Show 50 recent watchdog messages.',
+      'watchdog-show cron' => 'Show recent cron watchdog messages.',
+      'watchdog-show --severity=0' => 'Show recent error messages.',
+      'watchdog-show --limit=50' => 'Show 50 recent watchdog messages.',
     ),
     'aliases' => array('ws'),
   );
-  $items['watchdog delete'] = array(
+  $items['watchdog-delete'] = array(
     'description' => 'Delete all messages or only those of a specified type.',
     'arguments' => array(
       'type' => 'The type of messages to delete. Use \'all.\' to do a complete wipe.',
     ),
     'drupal dependencies' => drush_drupal_major_version() >= 6 ? array('dblog') : array('watchdog'),
     'examples' => array(
-      'watchdog delete all' => 'Delete all watchdog messages.',
-      'watchdog delete cron' => 'Delete all cron watchdog messages.',
+      'watchdog-delete all' => 'Delete all watchdog messages.',
+      'watchdog-delete cron' => 'Delete all cron watchdog messages.',
     ),
     'aliases' => array('wd'),
   );

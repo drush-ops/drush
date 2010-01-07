@@ -10,18 +10,18 @@
  */
 function sql_drush_help($section) {
   switch ($section) {
-    case 'drush:sql conf':
+    case 'drush:sql-conf':
       return dt('Show database connection details.');
-    case 'drush:sql connect':
+    case 'drush:sql-connect':
       return dt('A string which connects to the current database.');
-    case 'drush:sql cli':
+    case 'drush:sql-cli':
       return dt('Quickly enter the mysql command line.');
-    case 'drush:sql dump':
+    case 'drush:sql-dump':
       return dt('Prints the whole database to STDOUT or save to a file.');
-    case 'drush:sql query':
-      return dt("Usage: drush [options] sql query <query>...\n<query> is a SQL statement, which can alternatively be passed via STDIN. Any additional arguments are passed to the mysql command directly.");
-    case 'drush:sql sync':
-      return dt("Usage: drush [options] sql sync <source_alias> <target_alias>.\n <source_alias> and <target_alias> are site aliases, or names of directories under \'sites\'. These determine from where and to where you want your database copied.");
+    case 'drush:sql-query':
+      return dt("Usage: drush [options] sql-query <query>...\n<query> is a SQL statement, which can alternatively be passed via STDIN. Any additional arguments are passed to the mysql command directly.");
+    case 'drush:sql-sync':
+      return dt("Usage: drush [options] sql-sync <source_alias> <target_alias>.\n <source_alias> and <target_alias> are site-aliases, or names of directories under \'sites\'. These determine from where and to where you want your database copied.");
   }
 }
 
@@ -34,39 +34,39 @@ function sql_drush_command() {
     $options['--target'] = 'The name of a target within the specified database.';
   }
 
-  $items['sql conf'] = array(
+  $items['sql-conf'] = array(
     'callback' => 'drush_sql_conf',
     'description' => 'Print database connection details.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
   );
-  $items['sql connect'] = array(
+  $items['sql-connect'] = array(
     'callback' => 'drush_sql_connect',
     'description' => 'A string for connecting to the DB.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
   );
-  $items['sql dump'] = array(
+  $items['sql-dump'] = array(
     'callback' => 'drush_sql_dump_execute',
     'description' => 'Exports the Drupal DB as SQL using mysqldump.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'examples' => array(
-      'drush sql dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
-      'drush sql dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.com',
+      'drush sql-dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
+      'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.com',
     ),
     'options' => array(
       '--result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
       '--skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
       '--structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
-      '--ordered-dump' => 'Use this option to output ordered INSERT statements in the sql dump. Useful when backups are managed in a Version Control System. Optional.',
+      '--ordered-dump' => 'Use this option to output ordered INSERT statements in the sql-dump.Useful when backups are managed in a Version Control System. Optional.',
     ) + $options,
   );
-  $items['sql query'] = array(
+  $items['sql-query'] = array(
     'callback' => 'drush_sql_query',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
     'description' => 'Execute a query against the site database.',
     'examples' => array(
-      'drush sql query "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record',
+      'drush sql-query "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record',
     ),
     'arguments' => array(
        'query' => 'A SQL query. Mandatory.',
@@ -74,25 +74,25 @@ function sql_drush_command() {
     'options' => $options,
     'aliases' => array('sqlq'),
   );
-  $items['sql sync'] = array(
+  $items['sql-sync'] = array(
     'description' => 'Copy source database to target database using rsync.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'examples' => array(
-      'drush sql sync prod dev' => 'Copy the DB defined in sites/prod to the DB in sites/dev.',
+      'drush sql-sync prod dev' => 'Copy the DB defined in sites/prod to the DB in sites/dev.',
     ),
     'arguments' => array(
-      'from' => 'Name of subdirectory within /sites or a site alias.',
-      'to' => 'Name of subdirectory within /sites or a site alias.',
+      'from' => 'Name of subdirectory within /sites or a site-alias.',
+      'to' => 'Name of subdirectory within /sites or a site-alias.',
     ),
     'options' => array(
       '--skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
       '--structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
       '--cache' => 'Skip dump if result file exists and is less than "cache" hours old. Optional; default is 24 hours.',
-      '--no-cache' => 'Do not cache the sql dump file.',
+      '--no-cache' => 'Do not cache the sql-dump file.',
       '--no-dump' => 'Do not dump the sql database; always use an existing dump file.',
       '--source-db-url' => 'Database specification for source system to dump from.',
       '--source-remote-port' => 'Override sql database port number in source-db-url. Optional.',
-      '--source-remote-host' => 'Remote machine to run sql dump file on. Optional; default is local machine.',
+      '--source-remote-host' => 'Remote machine to run sql-dump file on. Optional; default is local machine.',
       '--source-dump' => 'Path to dump file. Optional; default is to create a temporary file.',
       '--target-db-url' => '',
       '--target-remote-port' => '',
@@ -105,12 +105,12 @@ function sql_drush_command() {
   );
   if (drush_drupal_major_version() >= 7) {
 
-    $items['sql sync']['options'] += array(
+    $items['sql-sync']['options'] += array(
       '--source-target' => 'The name of a target within the SOURCE database.',
       '--destination-target' => 'The name of a target within the specified DESTINATION database.',
     );
   }
-  $items['sql cli'] = array(
+  $items['sql-cli'] = array(
     'callback' => 'drush_sql_cli',
     'description' => "Open a SQL command-line interface using Drupal's credentials.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
@@ -180,7 +180,7 @@ function drush_sql_dump_execute() {
 function drush_sql_dump($db_spec = NULL) {
   $ignores = array();
 
-  // Skip large core tables if instructed.  Also used by 'sql load' command.
+  // Skip large core tables if instructed.  Also used by 'sql-sync' command.
   $skip_tables = _drush_sql_get_table_list('skip-tables');
   // Skip any structure-tables as well.
   $structure_tables = _drush_sql_get_table_list('structure-tables');
@@ -393,13 +393,13 @@ function _drush_sql_get_db_spec() {
       return drush_convert_db_from_db_url($url);
 
     default:
-      // We don't use DB API here `sql load` would have to messily addConnection.
+      // We don't use DB API here `sql-sync` would have to messily addConnection.
       return $GLOBALS['databases'][$database][$target];
   }
 }
 
 
-// Build a $db_spec from a given site alias
+// Build a $db_spec from a given site-alias
 function _drush_sql_get_spec_from_site_alias($alias, $prefix) {
   global $db_url;
   $all_site_aliases = drush_get_option('site-aliases', array());
@@ -418,7 +418,7 @@ function _drush_sql_get_spec_from_settings($file, $prefix) {
   global $databases, $db_url;
   require $file;
 
-  // Translate the custom options for sql load into ones usually recognized (i.e. no prefix).
+  // Translate the custom options for sql-sync into ones usually recognized (i.e. no prefix).
   if ($database = drush_get_option($prefix . 'database')) {
     drush_set_option('database', $database);
   }
@@ -458,7 +458,7 @@ function _drush_sql_get_scheme($db_spec = NULL) {
 }
 
 /**
- * Build a fragment containing credentials and mysql connection parameters.
+ * Build a fragment containing credentials and mysql-connection parameters.
  *
  * @param $db_spec
  * @return string

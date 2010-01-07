@@ -47,7 +47,7 @@
 
 /*
  * Customize this associative array with your own tables. This is the
- * list of tables that are entirely omitted by the 'sql dump' and 'sql load'
+ * list of tables that are entirely omitted by the 'sql-dump' and 'sql-sync'
  * commands when a skip-tables-key is provided. You may add new tables to the existing array or add a new
  * element.
  */
@@ -57,7 +57,7 @@ $options['skip-tables'] = array(
 
 /*
  * Customize this associative array with your own tables. This is the 
- * list of tables whose *data* is skipped by the 'sql dump' and 'sql load' 
+ * list of tables whose *data* is skipped by the 'sql-dump' and 'sql-sync' 
  * commands when a structure-tables-key is provided. You may add new tables to the existing array or add a new 
  * element.
  */
@@ -112,16 +112,16 @@ $options['structure-tables'] = array(
  * Site aliases:
  *
  * To create aliases to remote Drupal installations, add entries
- * to the site-aliases option array here.  These settings can be
+ * to the site aliases option array here.  These settings can be
  * used in place of a site specification on the command line, and
  * may also be used in arguments to certain commands such as
- * "drush sync", "drush sql sync".
+ * "drush rsync" and "drush sql-sync".
  *
  * Each entry in the 'site-aliases' array is accessed by its
  * site alias (e.g. 'stage' or 'dev').  Only the 'uri' and 'root'
  * items are required, and most alias records use only a few of
  * the optional keys, if any.  A simple alias record can be generated
- * using the "drush --full site alias" command.
+ * using the "drush --full site-alias" command.
  *
  * The following settings are stored in the site alias record:
  *
@@ -153,7 +153,7 @@ $options['structure-tables'] = array(
  *       default is 'drush' on remote machines, or the full path to drush.php on
  *       the local machine.  Note that you only need to define one of '!drush' 
  *       or '!drush-script', as drush can infer one from the other.
- *     '!dump': Path to the file that "drush sql sync" should use to store sql dump file.
+ *     '!dump': Path to the file that "drush sql-sync" should use to store sql-dump file.
  *     '!files': Path to 'files' directory.
  *
  * Remove the leading hash signs to enable.

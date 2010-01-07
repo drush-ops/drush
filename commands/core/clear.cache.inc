@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Command callback for drush cache clear.
+ * Command callback for drush cache-clear.
  */
  function drush_core_cache_clear($type = NULL) {
   switch (drush_drupal_major_version()) {

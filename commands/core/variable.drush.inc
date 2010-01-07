@@ -15,11 +15,11 @@
  */
 function variable_drush_help($section) {
   switch ($section) {
-    case 'drush:variable get':
+    case 'drush:variable-get':
       return dt("Lists the variables for your site");
-    case 'drush:variable set':
+    case 'drush:variable-set':
       return dt("Set a variable");
-    case 'drush:variable delete':
+    case 'drush:variable-delete':
       return dt("Delete a variable.");
   }
 }
@@ -39,7 +39,7 @@ function variable_drush_help($section) {
  *   An associative array describing your command(s).
  */
 function variable_drush_command() {
-  $items['variable get'] = array(
+  $items['variable-get'] = array(
     'description' => 'Get a list of some or all site variables and values.',
     'arguments' => array(
       'name' => 'A string to filter the variables by.  Only variables beginning with the string will be listed.',
@@ -53,7 +53,7 @@ function variable_drush_command() {
     ),
     'aliases' => array('vget'),
   );
-  $items['variable set'] = array(
+  $items['variable-set'] = array(
     'description' => "Set a variable.",
     'arguments' => array(
       'name' => 'The name of a variable or the first few letters of its name.',
@@ -70,7 +70,7 @@ function variable_drush_command() {
     ),
     'aliases' => array('vset'),
   );
-  $items['variable delete'] = array(
+  $items['variable-delete'] = array(
     'description' => "Delete a variable.",
     'arguments' => array(
       'name' => 'The name of a variable or the first few letters of its name.',

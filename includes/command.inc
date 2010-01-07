@@ -101,6 +101,7 @@ function drush_get_commands() {
           'options' => array(),
           'examples' => array(),
           'aliases' => array(),
+          'deprecated-aliases' => array(),
           'extras' => array(),
           'core' => array(),
           'scope' => 'site',
@@ -108,18 +109,40 @@ function drush_get_commands() {
           'drush dependencies' => array(),
           'bootstrap_errors' => array(),
         );
+        // Enforce the no-spaces in command names rule
+        if (strpos($key, ' ') !== FALSE) {
+          $command['must-replace-spaces'] = TRUE;
+        }
+        // Temporary:  if there is a dash in the command name,
+        // then make a deprecated alias that has a space in the name.
+        if (strpos($key, '-') !== FALSE) {
+          $command['deprecated-aliases'][] = str_replace('-', ' ', $key);
+        }
+        
         // Collect all the commands (without filtering) so we can match non-executable
         // commands, and later explain why they are not executable.
         drush_enforce_requirement_bootstrap_phase($command);
         drush_enforce_requirement_core($command);
         drush_enforce_requirement_drupal_dependencies($command);
         $commands[$key] = $command;
+        // For every alias, make a copy of the command and store it in the command list
+        // using the alias as a key
         if (isset($command['aliases']) && count($command['aliases'])) {
           foreach ($command['aliases'] as $alias) {
             $commands[$alias] = $command;
             $commands[$alias]['is_alias'] = TRUE;
           }
         }
+        // Do the same operation on the deprecated aliases.
+        if (isset($command['deprecated-aliases']) && count($command['deprecated-aliases'])) {
+          foreach ($command['deprecated-aliases'] as $alias) {
+            $commands[$alias] = $command;
+            $commands[$alias]['is_alias'] = TRUE;
+            $commands[$alias]['deprecated'] = TRUE;
+            $commands[$alias]['deprecated-name'] = $alias;
+          }
+        }
+        
       }
     }
   }
@@ -218,7 +241,7 @@ function drush_invoke($command) {
   array_shift($args);
 
 
-  $hook = str_replace(" ", "_", $command);
+  $hook = str_replace("-", "_", $command);
   $list = drush_commandfile_list();
 
   $functions = array();
@@ -277,7 +300,7 @@ function drush_invoke($command) {
 function drush_command() {
   $args = func_get_args();
   $command = drush_get_command();
-  drush_command_default_options($command);
+
   foreach (drush_command_implements("drush_init") as $name) {
     $func = $name . '_drush_init';
     drush_log(dt("Initializing drush commandfile: !name", array('!name' => $name)), 'bootstrap');

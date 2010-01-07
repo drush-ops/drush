@@ -81,7 +81,7 @@ function drush_sitealias_get_record($alias, $db_settings_needed = false) {
           if (array_key_exists('remote-host', $alias_record)) {
             $data = array('root' => $alias_record['path-aliases']['!root'], 'uri' => $alias_record['uri'], 'all' => TRUE);
             $args = array();
-            $values = drush_backend_invoke_args("sql conf", $args, $data, 'GET', FALSE, $alias_record['path-aliases']['!drush-script'], $alias_record['remote-host'], $alias_record['remote-user']);
+            $values = drush_backend_invoke_args("sql-conf", $args, $data, 'GET', FALSE, $alias_record['path-aliases']['!drush-script'], $alias_record['remote-host'], $alias_record['remote-user']);
             $alias_record['databases'] = $values['object'];
           }
           // If the alias record is for a local machine, then look up and
@@ -231,7 +231,7 @@ function _drush_sitealias_find_record_for_local_site($alias, $db_settings_needed
   // This function may be called during the drush bootstrap
   // (i.e., from drush_sitealias_check_arg()), when 'DRUSH_DRUPAL_ROOT'
   // has not been set.  It may also be called after bootstraping
-  // has finished (e.g. to process an argument from sync or sql sync)
+  // has finished (e.g. to process an argument from rsync or sql-sync)
   // when it would be wasteful to call drush_locate_root again.
   // If we find an alias or site specification during drush_sitealias_check_arg(),
   // then we will set the 'root' option.  If we do not, though,
@@ -393,20 +393,20 @@ function drush_convert_db_from_db_url($db_url) {
 
 function drush_sitealias_convert_db_from_db_url($db_url) {
   $result = array();
-  
+
   if (is_array($db_url)) {
     $default_db = array();
-    
+
     foreach ($db_url as $db_name => $db_urlstr) {
       $default_db[$db_name] = drush_convert_db_from_db_url($db_urlstr);
     }
-    
+
     $result['default'] = $default_db;
   }
   else {
     $result = array('default' => array('default' => drush_convert_db_from_db_url($db_url)));
   }
-  
+
   return $result;
 }
 

@@ -8,7 +8,7 @@
 
 function sitealias_drush_help($section) {
   switch ($section) {
-    case 'drush:site alias':
+    case 'drush:site-alias':
       return dt('Print an alias record.');
   }
 }
@@ -16,7 +16,7 @@ function sitealias_drush_help($section) {
 function sitealias_drush_command() {
   $items = array();
 
-  $items['site alias'] = array(
+  $items['site-alias'] = array(
     'callback' => 'drush_sitealias_print',
     'description' => 'Print site alias records for all known site aliases and local sites.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
@@ -34,8 +34,8 @@ function sitealias_drush_command() {
     ),
     'aliases' => array('sa'),
     'examples' => array(
-      'drush site alias' => 'Print an alias record for the default site.',
-      'drush site alias dev' => 'Print an alias record for the alias \'dev\'.',
+      'drush site-alias' => 'Print an alias record for the default site.',
+      'drush site-alias dev' => 'Print an alias record for the alias \'dev\'.',
     ),
   );
   return $items;

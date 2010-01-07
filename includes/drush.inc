@@ -24,6 +24,18 @@ function drush_dispatch($command = NULL) {
   $return = FALSE;
 
   if ($command) {
+    // Add command-specific options, if applicable
+    drush_command_default_options($command);
+
+    if (isset($command['must-replace-spaces'])) {
+      $required_name = str_replace(' ', '-', $command['command']);
+      drush_set_error(dt('Notice: "!name" must be renamed to "!requiredname" in order to work with this version of drush.', array('!name' => $command['command'], '!requiredname' => $required_name)));
+      return FALSE;
+    }
+    // Print a warning if someone tries to use a deprecated alias.
+    if (isset($command['deprecated'])) {
+      drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
+    }
     // Call the callback function of the active command.
     $return = call_user_func_array($command['callback'], $command['arguments']);
   }
@@ -201,7 +213,7 @@ function drush_drupal_version() {
 function drush_drupal_cache_clear_all() {
   $prior = drush_get_context('DRUSH_AFFIRMATIVE');
   drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
-  drush_invoke('cache clear', 'all');
+  drush_invoke('cache-clear', 'all');
   drush_set_context('DRUSH_AFFIRMATIVE', $prior);
 }
 

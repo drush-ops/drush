@@ -65,25 +65,25 @@ function core_drush_command() {
       '--script-path' => "Additional paths to search for scripts.  Use POSIX path separator (':') for multiple paths.",
     ),
   );
-  $items['cache clear'] = array(
+  $items['cache-clear'] = array(
     'description' => 'Clear a specific cache, or all drupal caches.',
     'arguments' => array(
       'type' => 'The particular cache to clear. Omit this argument to choose from available caches.',
     ),
     'aliases' => array('cc'),
   );
-  $items['search status'] = array(
+  $items['search-status'] = array(
     'description' => 'Show how many items remain to be indexed out of the total.',
     'drupal dependencies' => array('search'),
     'options' => array(
       '--pipe' => 'Display in the format remaining/total for processing by scripts.',
     ),
   );
-  $items['search index'] = array(
+  $items['search-index'] = array(
     'description' => 'Index the remaining search items without wiping the index.',
     'drupal dependencies' => array('search'),
   );
-  $items['search reindex'] = array(
+  $items['search-reindex'] = array(
     'description' => 'Force the search index to be rebuilt.',
     'drupal dependencies' => array('search'),
     'options' => array(
@@ -94,8 +94,8 @@ function core_drush_command() {
     'description' => 'Rsync the Drupal tree to/from another server using ssh.  Relative paths start from the Drupal root folder if a site alias is used; otherwise they start from the current working directory.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'arguments' => array(
-      'source' => 'May be rsync path or site alias.  See rsync documentation and example.drushrc.php.',
-      'destination' => 'May be rsync path or site alias.  See rsync documentation and example.drushrc.php.',
+      'source' => 'May be rsync path or site alias. See rsync documentation and example.drushrc.php.',
+      'destination' => 'May be rsync path or site alias. See rsync documentation and example.drushrc.php.',
     ),
     'options' => array(
       '--mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -az.',
@@ -110,7 +110,7 @@ function core_drush_command() {
       'rsync --all-paths --exclude-conf dev stage' => 'Rsync Drupal root and all other paths from dev to stage for every path alias defined in both dev and stage.',
       'rsync ./ stage:!files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
     ),
-    'aliases' => array('sync'),
+    'deprecated-aliases' => array('sync'),
   );
   $items['eval'] = array(
     'description' => 'Evaluate arbitrary php code after bootstrapping Drupal.',
@@ -267,13 +267,13 @@ function core_drush_help($section) {
       return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:script':
       return dt("Runs the given php script(s) after a full Drupal bootstrap. A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting. if you plan to share a script with others, consider making a full drush command instead since thats more self-documenting.");
-    case 'drush:cache clear':
+    case 'drush:cache-clear':
       return dt("Delete a specific drupal cache, or all caches.");
-    case 'drush:search status':
+    case 'drush:search-status':
       return dt("Show how many items remain to be indexed for search, and the total number of items.");
-    case 'drush:search index':
+    case 'drush:search-index':
       return dt("Index the remaining search items.");
-    case 'drush:search reindex':
+    case 'drush:search-reindex':
       return dt("Force the search index to be rebuilt.");
     case 'drush:updatedb':
       return dt("Run update.php just as a web browser would.");

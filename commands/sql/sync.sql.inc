@@ -43,7 +43,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   // The options from the 'source-*' and 'target-*' aliases are set
   // in a drush context that has a lower priority than the command-line
   // options; this allows command-line options to override the default
-  // values specified in a site alias.
+  // values specified in a site-alias.
   drush_sitealias_set_alias_context($source_settings, 'source-');
   drush_sitealias_set_alias_context($destination_settings, 'target-');
 
@@ -104,7 +104,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   // Check to see if we are using a temporary file in a situation
   // where the user did not specify "--temp".
   if (($source_is_tmp || $target_is_tmp) && (!isset($use_temp_files)) && (isset($source_remote_host)  || isset($target_remote_host))) {
-    drush_print(dt('WARNING:  Using temporary files to store and transfer sql dump.  It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'!dump\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
+    drush_print(dt('WARNING:  Using temporary files to store and transfer sql-dump. It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'!dump\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
   }
 
   // Prompt for confirmation. This is destructive.
@@ -131,13 +131,13 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
 
   // If source is remote, then use ssh to dump the database and then rsync to local machine
   // If source is local, call drush_sql_dump to dump the database to local machine
-  // In either case, the '--no-dump' option will cause the sql dump step to be skipped, and
+  // In either case, the '--no-dump' option will cause the sql-dump step to be skipped, and
   // we will import from the existing local file (first using rsync to fetch it if it does not exist)
   //
-  // No dump affects both local and remote sql dumps; it prevents drush sql sync
-  // from calling sql dump when the local cache file is newer than the cache threshhold
-  // No sync affects the remote sql dump; it will prevent drush sql sync from
-  // rsyncing the local sql dump file with the remote sql dump file.
+  // No dump affects both local and remote sql-dumps; it prevents drush sql-sync
+  // from calling sql-dump when the local cache file is newer than the cache threshhold
+  // No sync affects the remote sql-dump;it will prevent drush sql-sync from
+  // rsyncing the local sql-dump file with the remote sql-dump file.
   $no_sync = drush_get_option(array('no-sync', 'source-no-sync'));
   $no_dump = drush_get_option(array('no-dump', 'source-no-dump'));
   $no_cache = drush_get_option(array('no-cache', 'source-no-cache'));
@@ -203,13 +203,13 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     $no_sync = TRUE;
   }
 
-  // Call sql dump, either on the local machine or remotely via ssh, as appropriate.
+  // Call sql-dump,either on the local machine or remotely via ssh, as appropriate.
   if (!empty($dump_exec)) {
     drush_op('system', $dump_exec);
     // TODO: IF FAILURE THEN ABORT
   }
 
-  // If the sql dump was remote, then rsync the file over to the local machine.
+  // If the sql-dump was remote, then rsync the file over to the local machine.
   if (!isset($no_sync)) {
     // If the source file is a temporary file, then we will have rsync
     // delete it for us (remove-source-files option set above).

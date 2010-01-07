@@ -10,9 +10,9 @@
  */
 function simpletest_drush_help($section) {
   switch ($section) {
-    case 'drush:test mail':
+    case 'drush:test-mail':
       return dt("Run tests and email the results. See the docs for run-tests.sh to understand --extra.");
-  case 'drush:test clean':
+  case 'drush:test-clean':
     return dt("Clean leftover tables and file directories from prior test runs.");
   }
 }
@@ -21,12 +21,12 @@ function simpletest_drush_help($section) {
  * Implementation of hook_drush_command().
  */
 function simpletest_drush_command() {
-  $items['test mail'] = array(
+  $items['test-mail'] = array(
     'callback' => 'drush_test_mail',
     'description' => 'Run all tests and mail the results to your team.',
     'examples' => array(
-       "drush test mail me@example.com --extra=\"--class BlockTestCase\"" => "Run block tests & email to me.",
-       "drush test mail me@example.com --extra=\"--all\"" => "Run all tests & email to me.",
+       "drush test-mail me@example.com --extra=\"--class BlockTestCase\"" => "Run block tests & email to me.",
+       "drush test-mail me@example.com --extra=\"--all\"" => "Run all tests & email to me.",
     ),
     'arguments' => array(
       'recipients' => 'A comma delimited list of email addrresses.',
@@ -38,13 +38,13 @@ function simpletest_drush_command() {
     'drupal dependencies' => array('simpletest'),
     'core' => array('6','7'),
   );
-  $items['test clean'] = array(
+  $items['test-clean'] = array(
     'callback' => 'drush_test_clean',
     'description' => 'Delete leftover tables and files from prior test runs.',
     'drupal dependencies' => array('simpletest'),
     'core' => array('6','7'),
   );
-  $items['test drush'] = array(
+  $items['test-drush'] = array(
     'callback' => 'drush_test_drush',
     'description' => 'Run drush-specific tests',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
