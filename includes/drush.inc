@@ -6,6 +6,11 @@
  * The drush API implementation and helpers.
  */
 
+/**
+ * The number of bytes in a kilobyte. Copied from Drupal.
+ */
+define('DRUSH_DRUPAL_KILOBYTE', 1024);
+
 
 /**
  * Dispatch a given set of commands.
@@ -895,11 +900,12 @@ function _drush_log_drupal_messages() {
 
 // Copy of format_size() in Drupal.
 function drush_format_size($size, $langcode = NULL) {
-  if ($size < DRUPAL_KILOBYTE) {
-    return format_plural($size, '1 byte', '@count bytes', array(), array('langcode' => $langcode));
+  if ($size < DRUSH_DRUPAL_KILOBYTE) {
+    // format_plural() not always available.
+    return dt('@count bytes', array('@count' => $size));
   }
   else {
-    $size = $size / DRUPAL_KILOBYTE; // Convert bytes to kilobytes.
+    $size = $size / DRUSH_DRUPAL_KILOBYTE; // Convert bytes to kilobytes.
     $units = array(
       dt('@size KB', array(), array('langcode' => $langcode)),
       dt('@size MB', array(), array('langcode' => $langcode)),
@@ -911,8 +917,8 @@ function drush_format_size($size, $langcode = NULL) {
       dt('@size YB', array(), array('langcode' => $langcode)),
     );
     foreach ($units as $unit) {
-      if (round($size, 2) >= DRUPAL_KILOBYTE) {
-        $size = $size / DRUPAL_KILOBYTE;
+      if (round($size, 2) >= DRUSH_DRUPAL_KILOBYTE) {
+        $size = $size / DRUSH_DRUPAL_KILOBYTE;
       }
       else {
         break;
