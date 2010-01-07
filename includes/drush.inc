@@ -29,12 +29,16 @@ function drush_dispatch($command = NULL) {
 
     if (isset($command['must-replace-spaces'])) {
       $required_name = str_replace(' ', '-', $command['command']);
-      drush_set_error(dt('Notice: "!name" must be renamed to "!requiredname" in order to work with this version of drush.', array('!name' => $command['command'], '!requiredname' => $required_name)));
+      drush_set_error(dt('Notice: "!name" must be renamed to "!requiredname" in order to work with this version of drush.  If you are the maintainer for the module that defines this command, please rename it immediately.  If you are a user of this command, you may enable spaces in commands for a while by setting "allow-spaces-in-commands" in your drush configuration file.  See example.drushrc.php.', array('!name' => $command['command'], '!requiredname' => $required_name)));
       return FALSE;
     }
     // Print a warning if someone tries to use a deprecated alias.
     if (isset($command['deprecated'])) {
       drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
+      if (isset($command['must-not-use-spaces'])) {
+        drush_set_error(dt('You may enable spaces in commands for a while by setting "allow-spaces-in-commands" in your drush configuration file.  See example.drushrc.php.', array('!name' => $command['command'], '!requiredname' => $required_name)));
+        return FALSE;    
+      }
     }
     // Call the callback function of the active command.
     $return = call_user_func_array($command['callback'], $command['arguments']);

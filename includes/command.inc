@@ -110,7 +110,7 @@ function drush_get_commands() {
           'bootstrap_errors' => array(),
         );
         // Enforce the no-spaces in command names rule
-        if (strpos($key, ' ') !== FALSE) {
+        if ((!drush_get_option('allow-spaces-in-commands', FALSE)) && (strpos($key, ' ') !== FALSE)) {
           $command['must-replace-spaces'] = TRUE;
         }
         // Temporary:  if there is a dash in the command name,
@@ -140,6 +140,9 @@ function drush_get_commands() {
             $commands[$alias]['is_alias'] = TRUE;
             $commands[$alias]['deprecated'] = TRUE;
             $commands[$alias]['deprecated-name'] = $alias;
+            if ((!drush_get_option('allow-spaces-in-commands', FALSE)) && (strpos($alias, ' ') !== FALSE)) {
+              $commands[$alias]['must-not-use-spaces'] = TRUE;
+            }
           }
         }
 
@@ -240,8 +243,7 @@ function drush_invoke($command) {
   $args = func_get_args();
   array_shift($args);
 
-
-  $hook = str_replace("-", "_", $command);
+  $hook = strtr($command, "- ", "__");
   $list = drush_commandfile_list();
 
   $functions = array();

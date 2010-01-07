@@ -22,6 +22,14 @@
  * Note that this preempts loading any other configuration files!
  */
 
+// DEPRECATED:  Allow command names to contain spaces.
+// This feature will be removed shortly; drush-3 will
+// require commands to be named with dashes instead of
+// spaces (e.g. "cache-clear" instead of "cache clear").
+// During the transition period, uncomment the line below
+// to allow commands with spaces to be used.
+# $options['allow-spaces-in-commands' = 1;
+
 // Specify a particular multisite.
 # $options['l'] = 'http://example.com/subir';
 
