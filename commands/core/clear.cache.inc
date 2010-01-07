@@ -26,7 +26,7 @@
         drush_log(dt("'!name' cache was cleared", array('!name' => $type)), 'success');
       }
       else {
-        $choice = drush_choice(array_keys($types), 'Enter a number to choose which cache to clear.');
+        $choice = drush_choice($types, 'Enter a number to choose which cache to clear.', '!key');
         if ($choice !== FALSE) {
           call_user_func($types[$choice]);
           drush_log(dt("'!name' cache was cleared", array('!name' => $choice)), 'success');

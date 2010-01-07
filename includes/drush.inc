@@ -550,16 +550,45 @@ function drush_confirm($msg, $indent = 0) {
   }
 }
 
-function drush_choice($options, $prompt = 'Enter a number.') {
+/**
+ * Ask the user to select an item from a list.
+ * From a provided associative array, drush_choice will
+ * display all of the questions, numbered from 1 to N,
+ * and return the item the user selected.  "0" is always
+ * cancel; entering a blank line is also interpreted
+ * as cancelling.
+ *
+ * @param $options
+ *   A list of questions to display to the user.  The
+ *   KEYS of the array are the result codes to return to the
+ *   caller; the VALUES are the messages to display on
+ *   each line.
+ * @param $prompt
+ *   The message to display to the user prompting for input.
+ * @param $label
+ *   Controls the display of each line.  Defaults to
+ *   '!value', which displays the value of each item
+ *   in the $options array to the user.  Use '!key' to
+ *   display the key instead.  In some instances, it may
+ *   be useful to display both the key and the value; for
+ *   example, if the key is a user id and the value is the
+ *   user name, use '!value (uid=!key)'.
+ */
+function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') {
   print dt($prompt) . "\n";
-  array_unshift($options, 'Cancel');
+
+  drush_print('[0] : Cancel');
+  $selection_number = 0;
   foreach ($options as $key => $option) {
-    print "[$key] : $option \n";
+    $selection_number++;
+    $message = dt($label, array('!number' => $selection_number, '!key' => $key, '!value' => $option));
+    drush_print(dt("[!number] : !message", array('!number' => $selection_number, '!message' => $message)));
+    $selection_list[$selection_number] = $key;
   }
 
   while ($line = trim(fgets(STDIN))) {
-    if ($choice = $options[$line]) {
-      return $choice;
+    if (array_key_exists($line, $selection_list)) {
+      return $selection_list[$line];
     }
   }
   drush_print(dt('Cancelled'));

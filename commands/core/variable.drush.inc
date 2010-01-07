@@ -150,6 +150,7 @@ function drush_variable_variable_set() {
   else {
     $choice = drush_choice($options, 'Enter a number to choose which variable to set.');
     if ($choice !== FALSE) {
+      $choice = $options[$choice];
       $choice = str_replace(' ' . dt('(new variable)'), '', $choice);
       drush_op('variable_set', $choice, $value);
       drush_log(dt('!name was set to !value', array('!name' => $choice, '!value' => $value)), 'success');
@@ -187,6 +188,7 @@ function drush_variable_variable_delete() {
   else {
     $choice = drush_choice($options, 'Enter a number to choose which variable to delete.');
     if ($choice !== FALSE) {
+      $choice = $options[$choice];
       drush_op('variable_del', $choice);
       drush_log(dt('!choice was deleted.', array('!choice' => $choice)), 'success');
     }

@@ -170,8 +170,10 @@ function drush_core_updatedb() {
  * Command handler. Show hook implementations
  */
 function drush_core_hook($hook) {
-  if ($choice = drush_choice(module_implements($hook), 'Enter the number of the hook_implementation you wish to view.')) {
+  $hook_implementations = module_implements($hook);
+  if ($choice = drush_choice(array_combine($hook_implementations, $hook_implementations), 'Enter the number of the hook implementation you wish to view.')) {
     $func = new ReflectionFunction($choice . "_$hook");
+    drush_print(dt("// file: !file, lines !startline-!endline", array('!file' => $func->getFileName(), '!startline' => $func->getStartLine(), '!endline' => $func->getEndLine())));
     // TODO: Do this in PHP for better compatibility. Help wanted.
     $exec = sprintf('sed -n %d,%dp %s', $func->getStartLine(), $func->getEndLine(), $func->getFileName());
     $return = drush_op('system', $exec);
