@@ -435,7 +435,7 @@ function _drush_bootstrap_drush() {
   if ($backend || $quiet) {
     ob_start();
   }
-  
+
   _drush_bootstrap_global_options();
 
   // Find any command files that are available during this bootstrap phase.

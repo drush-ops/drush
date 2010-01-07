@@ -719,6 +719,7 @@ function drush_log($message, $type = 'notice', $error = null) {
      'type' => $type,
      'message' => $message,
      'timestamp' => microtime(TRUE),
+     'memory' => memory_get_usage(),
    );
   $entry['error'] = $error;
   $log[] = $entry;
@@ -823,9 +824,9 @@ function _drush_print_log($entry) {
   $columns = drush_get_context('DRUSH_COLUMNS', 80);
 
   $width[1] = 11;
-  // Append timer value.
+  // Append timer and memory values.
   if ($debug) {
-    $timer = sprintf('[%s sec]', round($entry['timestamp']-DRUSH_REQUEST_TIME, 2));
+    $timer = sprintf('[%s sec, %s]', round($entry['timestamp']-DRUSH_REQUEST_TIME, 2), drush_format_size($entry['memory']));
     $entry['message'] = $entry['message'] . ' ' . $timer;
   }
 
