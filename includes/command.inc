@@ -118,7 +118,7 @@ function drush_get_commands() {
         if (strpos($key, '-') !== FALSE) {
           $command['deprecated-aliases'][] = str_replace('-', ' ', $key);
         }
-        
+
         // Collect all the commands (without filtering) so we can match non-executable
         // commands, and later explain why they are not executable.
         drush_enforce_requirement_bootstrap_phase($command);
@@ -142,7 +142,7 @@ function drush_get_commands() {
             $commands[$alias]['deprecated-name'] = $alias;
           }
         }
-        
+
       }
     }
   }

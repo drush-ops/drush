@@ -34,11 +34,12 @@
  * 3. drush_mysite_pre_dl_rollback()
  * 4. drush_mysite_dl_validate_rollback()
  *
- * Before any command is called, drush_hook_init() is also called.
+ * Before any command is called, hook_drush_init() is also called.
+ * hook_drush_exit() is called at the very end of command invocation.
  *
  * @see includes/command.inc
  *
- * @see drush_hook_init()
+ * @see hook_drush_init()
  * @see drush_hook_COMMAND_validate()
  * @see drush_hook_pre_COMMAND()
  * @see drush_hook_COMMAND()
@@ -47,6 +48,7 @@
  * @see drush_hook_COMMAND_rollback()
  * @see drush_hook_pre_COMMAND_rollback()
  * @see drush_hook_COMMAND_validate_rollback()
+ * @see hook_drush_exit()
  */
 
 /**
@@ -57,7 +59,7 @@
 /**
  * Take action before any command is run. Logging an error stops command execution.
  */
-function drush_hook_init() {
+function hook_drush_init() {
 
 }
 
