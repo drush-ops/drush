@@ -38,23 +38,23 @@ define('DRUSH_PM_NOT_FOUND', 104);
  */
 function pm_drush_help($section) {
   switch ($section) {
-    case 'drush:enable':
+    case 'drush:pm-enable':
       return dt('Enable one or more modules. Enables dependant modules as well.');
-    case 'drush:disable':
+    case 'drush:pm-disable':
       return dt('Disable one or more modules. Disables dependant modules as well.');
-    case 'drush:uninstall':
+    case 'drush:pm-uninstall':
       return dt('Uninstall one or more modules. Modules must be disabled first.');
-    case 'drush:statusmodules':
+    case 'drush:pm-list':
       return dt('Show enabled/disabled status for modules.');
-    case 'drush:refresh':
+    case 'drush:pm-refresh':
       return dt('Refresh update status information. Run this before running update or updatecode commands.');
-    case 'drush:updatecode':
+    case 'drush:pm-updatecode':
       return dt("Display available update information and allow updating of all installed project code to the specified version (or latest by default). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
-    case 'drush:update':
+    case 'drush:pm-update':
       return dt("Display available update information and allow updating of all installed projects to the specified version (or latest by default), followed by applying any database updates required (as with running update.php). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
-      case 'drush:info':
+      case 'drush:pm-releases':
       return dt("View all releases for a given project (modules, themes, profiles, translations). Useful for deciding which version to install/update.");
-    case 'drush:download':
+    case 'drush:pm-download':
       return dt("Quickly download projects (modules, themes, profiles, translations) from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
   }
 }
@@ -74,32 +74,35 @@ function pm_drush_command() {
     ),
   );
 
-  $items['enable'] = array(
+  $items['pm-enable'] = array(
     'description' => 'Enable one or more modules.',
     'arguments' => array(
       'modules' => 'A space delimited list of modules.',
     ),
     'aliases' => array('en'),
+    'deprecated-aliases' => array('enable'),
   );
-  $items['disable'] = array(
+  $items['pm-disable'] = array(
     'description' => 'Disable one or more modules.',
     'arguments' => array(
       'modules' => 'A space delimited list of modules.',
     ),
     'aliases' => array('dis'),
+    'deprecated-aliases' => array('disable'),
   );
   // Install command is reserved for the download and enable of projects including dependencies.
   // @see http://drupal.org/node/112692 for more information.
   // $items['install'] = array(
   //     'description' => 'Download and enable one or more modules',
   //   );
-  $items['uninstall'] = array(
+  $items['pm-uninstall'] = array(
     'description' => 'Uninstall one or more modules.',
     'arguments' => array(
       'modules' => 'A space delimited list of modules.',
     ),
+    'deprecated-aliases' => array('uninstall'),
   );
-  $items['statusmodules'] = array(
+  $items['pm-list'] = array(
     'description' => 'Show module enabled/disabled status',
     'callback' => 'pm_module_manage',
     'callback arguments' => array(array(), FALSE),
@@ -107,13 +110,15 @@ function pm_drush_command() {
       '--pipe' => 'Returns a space delimited list of enabled modules.',
     ),
     'aliases' => array('sm'),
+    'deprecated-aliases' => array('statusmodules'),
   );
-  $items['refresh'] = array(
+  $items['pm-refresh'] = array(
     'description' => 'Refresh update status information',
     'drupal dependencies' => array($update),
     'aliases' => array('rf'),
+    'deprecated-aliases' => array('refresh'),
   );
-  $items['updatecode'] = array(
+  $items['pm-updatecode'] = array(
     'description' => 'Update your project code',
     'drupal dependencies' => array($update),
     'arguments' => array(
@@ -123,8 +128,9 @@ function pm_drush_command() {
       '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
     ),
     'aliases' => array('upc'),
+    'deprecated-aliases' => array('updatecode'),
   ) + $engines;
-  $items['update'] = array(
+  $items['pm-update'] = array(
     'description' => 'Update your project code and apply any database updates required (update.php)',
     'drupal dependencies' => array($update),
     'arguments' => array(
@@ -134,18 +140,20 @@ function pm_drush_command() {
       '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
     ),
     'aliases' => array('up'),
+    'deprecated-aliases' => array('update'),
   );
-  $items['info'] = array(
+  $items['pm-releases'] = array(
     'description' => 'Release information for a project',
     'drupal dependencies' => array($update),
     'arguments' => array(
       'projects' => 'A space separated list of drupal.org project names.',
     ),
     'examples' => array(
-      'drush info cck zen' => 'View releases for cck and Zen projects.',
+      'drush pm-releases cck zen' => 'View releases for cck and Zen projects.',
     ),
+    'deprecated-aliases' => array('info'),
   );
-  $items['download'] = array(
+  $items['pm-download'] = array(
     'description' => 'Download core Drupal and projects like CCK, Zen, etc.',
     'examples' => array(
       'drush dl' => 'Download latest version of Drupal core.',
@@ -164,7 +172,8 @@ function pm_drush_command() {
       '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.",
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
-    'aliases' => array('dl')
+    'aliases' => array('dl'),
+    'deprecated-aliases' => array('download'),
   ) + $engines;
   return $items;
 }
@@ -455,7 +464,7 @@ function pm_get_project_path($projects, $lookup) {
  * A drush command callback. Show release info for given project(s).
  *
  **/
-function drush_pm_info() {
+function drush_pm_releases() {
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
@@ -498,7 +507,7 @@ function drush_pm_refresh() {
  */
 function drush_pm_update() {
   $args = func_get_args();
-  array_unshift($args, 'updatecode');
+  array_unshift($args, 'pm-updatecode');
   call_user_func_array('drush_invoke', $args);
 }
 
@@ -506,7 +515,7 @@ function drush_pm_update() {
  * Post-command callback.
  * Execute updatedb command after an updatecode - user requested `update`.
  */
-function drush_pm_post_update() {
+function drush_pm_post_pm_update() {
   // Use drush_backend_invoke to start a subprocess. Cleaner that way.
   drush_backend_invoke('updatedb');
 }
@@ -514,7 +523,7 @@ function drush_pm_post_update() {
 /**
  * Post-command callback for updatecode. Notify about any pending DB updates.
  */
-function drush_pm_post_updatecode() {
+function drush_pm_post_pm_updatecode() {
   // Make sure the installation API is available
   require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
 
@@ -883,7 +892,7 @@ function drush_pm_download() {
             if (package_handler_install_project($project, $release, $destination)) {
               drush_log(dt("Project !project (!version) downloaded to !dest.",
                              array('!project' => $project, '!version' => $release['version'], '!dest' => $destination)), 'success');
-              drush_command_invoke_all('drush_pm_post_install', $project, $release, $destination);
+              drush_command_invoke_all('drush_pm_post_pm_install', $project, $release, $destination);
               version_control_post_install($project, $release, $destination);
             }
           }

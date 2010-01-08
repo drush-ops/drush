@@ -232,6 +232,23 @@ function drush_parse_command() {
  * This function will also trigger pre_$hook and post_$hook variants of the hook
  * and its rollbacks automatically.
  *
+ * HOW DRUSH HOOK FUNCTIONS ARE NAMED:
+ *
+ * The name of the hook is composed from the name of the command and the name of
+ * the command file that the command definition is declared in.  The general
+ * form for the hook filename is:
+ *
+ *	drush_COMMANDFILE_COMMANDNAME
+ *
+ * In many cases, drush commands that are functionally part of a common collection
+ * of similar commands will all be declared in the same file, and every command
+ * defined in that file will start with the same command prefix.  For example, the
+ * command file "pm.drush.inc" defines commands such as "pm-enable" and "pm-disable".
+ * In the case of "pm-enable", the command file is "pm", and and command name is
+ * "pm-enable".  When the command name starts with the same sequence of characters
+ * as the command file, then the repeated sequence is dropped; thus, the command
+ * hook for "pm-enable" is "drush_pm_enable", not "drush_pm_pm_enable".
+ *
  * @param command
  *   The drush command to execute.
  * @return
@@ -247,11 +264,17 @@ function drush_invoke($command) {
   $list = drush_commandfile_list();
 
   $functions = array();
-  // First we build a list of functions are about to execute
+  // First we build a list of functions that are about to be executed
   $variations = array($hook . "_validate", "pre_$hook", $hook, "post_$hook");
   foreach ($variations as $var_hook) {
     foreach ($list as $commandfile => $filename) {
-      $func = sprintf("drush_%s_%s", $commandfile, $var_hook);
+      $oldfunc = sprintf("drush_%s_%s", $commandfile, $var_hook);
+      $func = str_replace('drush_' . $commandfile . '_' . $commandfile, 'drush_' . $commandfile, $oldfunc);
+      if (($oldfunc != $func) && (function_exists($oldfunc))) {
+        drush_log(dt("The drush command hook naming conventions have changed; the function !oldfunc must be renamed to !func.  The old function will be called, but this will be removed shortly.", array('!oldfunc' => $oldfunc, '!func' => $func)), "error");
+        // TEMPORARY:  Allow the function to be called by its old name.
+	$functions[] = $oldfunc;
+      }
       if (function_exists($func)) {
         $functions[] = $func;
       }
@@ -485,7 +508,7 @@ function _drush_find_commandfiles($phase) {
  * are present in each of the commandfile directories.
  */
 function drush_command_include($command) {
-  $parts = explode(' ', $command);
+  $parts = explode('-', $command);
   $command = implode(".", array_reverse($parts));
 
   $commandfiles = drush_commandfile_list();
