@@ -816,6 +816,14 @@ function pm_drush_engine_version_control() {
         'drush [command] cck --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
       ),
     ),
+    'bzr' => array(
+      'options' => array(
+        '--version-control=bzr' => 'Quickly add/remove/commit your project changes to Bazaar.',
+        '  --bzrsync' => 'Automatically add new files to the BZR repository and remove deleted files. Caution.',
+        '  --bzrcommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
+        '  --bzrmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+      ),
+    ),
   );
 }
 
