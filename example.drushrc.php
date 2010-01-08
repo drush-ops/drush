@@ -52,6 +52,8 @@
 // Enable verbose mode.
 # $options['v'] = 1;
 
+// Specify options to pass to ssh in backend invoke. (Default is to prohibit password authentication; uncomment to change)
+# $options['ssh-options'] = '-o PasswordAuthentication=no';
 
 /*
  * Customize this associative array with your own tables. This is the

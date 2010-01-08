@@ -360,7 +360,8 @@ function _drush_backend_generate_command($command, $args, &$data, $method = 'GET
 
   if (!is_null($hostname)) {
     $username = (!is_null($username)) ? $username : get_current_user();
-    $cmd = sprintf("ssh -o PasswordAuthentication=no %s@%s %s", escapeshellarg($username), escapeshellarg($hostname), escapeshellarg($cmd));
+    $ssh_options = drush_get_option('ssh-options', "-o PasswordAuthentication=no");
+    $cmd = sprintf("ssh %s %s@%s %s", $ssh_options, escapeshellarg($username), escapeshellarg($hostname), escapeshellarg($cmd));
   }
 
   return $cmd;
