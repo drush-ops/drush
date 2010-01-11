@@ -37,7 +37,7 @@ function drush_dispatch($command = NULL) {
       drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
       if (isset($command['must-not-use-spaces'])) {
         drush_set_error(dt('You may enable spaces in commands for a while by setting "allow-spaces-in-commands" in your drush configuration file.  See example.drushrc.php.', array('!name' => $command['command'], '!requiredname' => $required_name)));
-        return FALSE;    
+        return FALSE;
       }
     }
     // Call the callback function of the active command.
@@ -453,7 +453,7 @@ function drush_shell_exec($cmd) {
     exec($command . ' 2>&1', $output, $result);
     _drush_shell_exec_output_set($output);
 
-    if (drush_get_context('DRUSH_VERBOSE')) {
+    if (drush_get_context('DRUSH_DEBUG')) {
       foreach ($output as $line) {
         drush_print($line, 2);
       }
