@@ -170,6 +170,7 @@ function pm_drush_command() {
       '--destination' => 'Path to which the project will be copied.',
       '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
       '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.",
+      '--project-drupal-rename' => 'Alternate name for "drupal" directory when downloading drupal project.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
     'aliases' => array('dl'),
@@ -586,7 +587,7 @@ function delete_dir($dir) {
 function pm_dl_destination_lookup($type, $drupal_root, $sitepath, $create = FALSE) {
   switch ($type) {
     case 'module':
-      // Prefer sites/all/modules/contrib if it exists. 
+      // Prefer sites/all/modules/contrib if it exists.
       $destination = $sitepath . 'modules/';
       $contrib = $destination . 'contrib/';
       if (is_dir($contrib)) {
@@ -690,7 +691,10 @@ function pm_dl_destination($type) {
 function pm_parse_project_version($requests) {
   $requestdata = array();
   $drupal_version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', 6) . '.x';
-  $drupal_bootstrap = (drush_get_context('DRUSH_BOOTSTRAP_PHASE') > 0);
+  // ignore-bootstrap is a temporary hack. You can't currently download a 7.x
+  // module after bootstrapping a 6.x site. This is needed by core-upgrade.
+  // Related to http://drupal.org/node/463110.
+  $drupal_bootstrap = drush_get_option('bootstrap_cancel') ? !drush_get_option('bootstrap_cancel') : drush_get_context('DRUSH_BOOTSTRAP_PHASE') > 0;
   foreach($requests as $request) {
     $drupal_version = $drupal_version_default;
     $project_version = NULL;
@@ -746,7 +750,7 @@ function pm_parse_project_version($requests) {
         $version = $project_version;
       }
       else {
-        // For reqular projects the version string includes the Drupal core version.
+        // For regular projects the version string includes the Drupal core version.
         $version = $drupal_version . '-' . $project_version;
       }
     }

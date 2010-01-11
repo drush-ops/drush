@@ -55,9 +55,17 @@ function package_handler_install_project($project, $info, $path = '.') {
   drush_shell_exec("tar -xf $tarpath");
   // We're not using tar -xzf because that's not working on windows...
 
+  // If specified, rename the dodgy directory used by the drupal project' packaging script.
+  if ($project == 'drupal' && $rename = drush_get_option('drupal-project-rename')) {
+    drush_shell_exec("tar -tf $tarpath");
+    $output = drush_shell_exec_output();
+    // The dodge directory name is always the first line of output.
+    drush_op('rename', $path . $output[0], $path . '/' . trim($rename, '/'));
+  }
+
   // Remove the tarball
   drush_op('unlink', $tarpath);
-  
+
   // Set working directory back to the previous working directory.
   chdir($olddir);
 
