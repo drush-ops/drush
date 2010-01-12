@@ -2,10 +2,7 @@
 // $Id$
 
 /* TODO
- * - upgrade to non dev snapshots
- * - D7 => D8 compatibility (re: $db_url)
- * - --simulate support in updatedb command
- * - languages
+ * - upgrade to specific releases.
 /*
 
 /**

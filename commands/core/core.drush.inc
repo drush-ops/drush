@@ -161,6 +161,10 @@ function core_drush_engine_drupal() {
  * Command handler. Execute update.php code from drush.
  */
 function drush_core_updatedb() {
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    return drush_set_error(dt('updatedb command does not support --simulate option.'));
+  }
+
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
   update_main();
   drush_log(dt('Finished performing updates.'), 'ok');
