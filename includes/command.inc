@@ -260,7 +260,13 @@ function drush_invoke($command) {
   $args = func_get_args();
   array_shift($args);
 
-  $hook = strtr($command, "- ", "__");
+  // Generate the base name for the hook by using the
+  // php string translation function to convert all
+  // dashes and spaces in the command name to underscores.
+  // TODO:  put this back to $hook = str_replace("-", "_", $command);
+  // for better readability after the allow-spaces-in-commands
+  // backwards-compatibility feature is removed.
+  $hook = strtr($command, "- ", "__"); // n.b. str tr, not str str.
   $list = drush_commandfile_list();
 
   $functions = array();
