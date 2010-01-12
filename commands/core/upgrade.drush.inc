@@ -136,6 +136,14 @@ function drush_upgrade_fix_db_url($target_alias, $settings_destination) {
   }
   $new_url = substr($old_url, 0, strrpos(trim($old_url), '/')) . '/'. $target_alias['databases']['default']['default']['database'];
 
-  // TODO: don't append if our line is already last. Or look for a marker comment.
-  drush_op('file_put_contents', $settings_destination, "\n" . '$db_url = \'' . $new_url . '\';', FILE_APPEND);
+  $append = "\n\\ Added by drush core-upgrade.";
+  if (drush_drupal_major_version() <= 6) {
+    $append .= "\n" . '$db_url = \'' . $new_url . '\';';
+  }
+  else {
+    $databases = $GLOBALS['databases'];
+    $databases['default']['default']['database'] = $target_alias['databases']['default']['default']['database'];
+    $append .= "\n" . '$databases = ' . var_export($databases, TRUE) . ';';
+  }
+  drush_op('file_put_contents', $settings_destination, $append, FILE_APPEND);
 }
