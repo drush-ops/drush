@@ -56,6 +56,7 @@ function drush_core_pre_installsite() {
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
   // Drop and create DB if needed.
+  // TODO: support db-su like sql sync.
   // Can't use drush_sql_query() since might not have a DB.
   $exec = 'mysql ' . _drush_sql_get_credentials($db_spec);
   // Strip DB name from credentials. Soon it won't exist anymore. We do

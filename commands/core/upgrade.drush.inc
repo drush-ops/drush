@@ -24,6 +24,7 @@ function upgrade_drush_command() {
     'options' => array(
       'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Defaults to \'common\'.',
       'source-dump' => 'Path to dump file. Medium or large sized sites should set this. Optional; default is to create a temporary file.',
+      'db-su' => 'Account to use when dropping and creating the target database. Optional.',
     ),
     'aliases' => array('cup'),
   );
@@ -119,6 +120,8 @@ function drush_core_upgrade($target_key) {
   if (!drush_get_option('structure-tables-key')) {
     drush_set_option('structure_tables-key', 'common');
   }
+  // Always blow away the target database so we start fresh.
+  drush_set_option('create-db', TRUE);
   drush_include(DRUSH_BASE_PATH . '/commands/sql', 'sync.sql');
   drush_sql_sync('default', $target_key);
   if (drush_get_error()) return -1; // Early exit if we see an error.
