@@ -64,7 +64,7 @@ function drush_core_upgrade($target_key) {
   // Fetch target core and place as per target alias root.
   if (!file_exists($destination_core)) {
     drush_set_option('destination', dirname($destination_core));
-    $new_name = trim(basename($destination_core), array('/'));
+    $new_name = trim($destination_core, '/');
     drush_set_option('drupal-project-rename', $new_name);
     // TODO: get releases other than dev snapshot.
     drush_pm_download('drupal-'. $target_version . '.x');
@@ -82,6 +82,9 @@ function drush_core_upgrade($target_key) {
   // TODO: Fix pm-download so this cancel hack is not needed.
   drush_set_option('bootstrap_cancel', TRUE);
   foreach ($projects as $key => $project) {
+    if (empty($project['path'])) {
+      $project['path'] = 'sites/all/modules';
+    }
     $destination_module = $destination_core . '/' . $project['path'];
     if (!file_exists($destination_module) && $key != 'drupal') {
       drush_set_option('destination', dirname($destination_module));
@@ -121,8 +124,11 @@ function drush_core_upgrade($target_key) {
   if (drush_get_error()) return -1; // Early exit if we see an error.
 
   // Run update.php in a subshell for better isolation in case of failure.
+  // TODO: leverage redispatch code once that materializes.
   // Possibly add code to spawn new subshell when memory gets 90% consumed. @see migrate module.
-  drush_backend_invoke('updatedb', array('root' => $destination_core), 'GET', 'TRUE', $target_alias['!drush_script'], $target_alias['remote-host'], $target_alias['root']);
+  $drush_script = isset($target_alias['!drush_script']) ? $target_alias['!drush_script'] : NULL;
+  $remote_host = isset($target_alias['remote-host']) ? $target_alias['remote-host'] : NULL;
+  drush_backend_invoke('updatedb', array('root' => $destination_core), 'GET', 'TRUE', $drush_script, $remote_host, $target_alias['root']);
 }
 
 // Replace db_url with DB name from target. updatedb will later append a DBTNG compatible version.
@@ -133,7 +139,7 @@ function drush_upgrade_fix_db_url($target_alias, $settings_destination) {
   }
   $new_url = substr($old_url, 0, strrpos(trim($old_url), '/')) . '/'. $target_alias['databases']['default']['default']['database'];
 
-  $append = "\n\\ Added by drush core-upgrade.";
+  $append = "\n# Added by drush core-upgrade.";
   if (drush_drupal_major_version() <= 6) {
     $append .= "\n" . '$db_url = \'' . $new_url . '\';';
   }
