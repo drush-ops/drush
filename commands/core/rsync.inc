@@ -19,9 +19,13 @@
  */
 function drush_core_rsync($source, $destination) {
   $sync_all_paths = drush_get_option('all-paths');
-  $source_settings = drush_sitealias_get_record($source);
-  $destination_settings = drush_sitealias_get_record($destination);
-  if ((isset($sync_all_paths)) && ($result !== FALSE)) {
+  
+  // TODO:  this implementation of --all-paths does not work well 
+  // with multiple sync targets; needs rewriting
+  if ((isset($sync_all_paths)) && (strpos($source, ':') === FALSE) && (strpos($destination, ':') === FALSE)) {
+    $source_settings = drush_sitealias_get_record($source);
+    $destination_settings = drush_sitealias_get_record($destination);
+    
     // If the source and destination paths are both aliases that contain
     // no path component (that is, 'alias', not 'alias:/path'), then we will
     // iterate over all of the path aliases of both, and sync all that are
@@ -62,18 +66,26 @@ function drush_core_rsync($source, $destination) {
  **/
 function _drush_core_sync($source, $destination, $parametric_options = array()) {
   // evaluate file paths
-  $source = _drush_core_evaluate_path($source);
-  $destination = _drush_core_evaluate_path($destination);
+  $source_settings = _drush_core_evaluate_path($source);
+  $destination_settings = _drush_core_evaluate_path($destination);
+  $source_path = $source_settings['rsync-path'];
+  $destination_path = $destination_settings['rsync-path'];
+  
+  // Check to see if this is an rsync multiple command (multiple sources and multiple destinations)
+  $is_multiple = drush_do_multiple_command('rsync', $source_settings, $destination_settings, TRUE);
 
-  // Prompt for confirmation. This is destructive.
-  if (!drush_get_context('DRUSH_SIMULATE')) {
-    drush_print(dt("You will destroy data from !target and replace with data from !source", array('!source' => $source, '!target' => $destination)));
-    if (!drush_confirm(dt('Do you really want to continue?'))) {
-      return drush_set_error('CORE_SYNC_ABORT', 'Aborting.');
+  if ($is_multiple === FALSE) {
+    // Prompt for confirmation. This is destructive.
+    if (!drush_get_context('DRUSH_SIMULATE')) {
+      drush_print(dt("You will destroy data from !target and replace with data from !source", array('!source' => $source_path, '!target' => $destination_path)));
+      if (!drush_confirm(dt('Do you really want to continue?'))) {
+        // was: return drush_set_error('CORE_SYNC_ABORT', 'Aborting.');
+        drush_die('Aborting.');
+      }
     }
-  }
 
-  return drush_core_call_rsync($source, $destination, $parametric_options);
+    drush_core_call_rsync($source_path, $destination_path, $parametric_options);
+  }
 }
 
 function drush_core_call_rsync($source, $destination, $parametric_options = array()) {
@@ -221,13 +233,15 @@ function drush_core_call_rsync($source, $destination, $parametric_options = arra
  * @param remote_user
  *   The remote user, as specified in the remote alias or on the command line.
  * @return
- *   The evaluated path
+ *   The site record for the machine specified in the path, if any,
+ *   with the path to pass to rsync (including the machine specifier)
+ *   in the 'rsync-path' item.
  */
 function _drush_core_evaluate_path($path, $remote_user = '') {
   $path_aliases = array();
   // Parse site aliases if there is a colon in the path
   $colon_pos = strpos($path, ':');
-  if ($colon_pos != FALSE) {
+  if ($colon_pos !== FALSE) {
     $alias = substr($path, 0, $colon_pos);
     $path = substr($path, $colon_pos + 1);
     $site_alias_settings = drush_sitealias_get_record($alias);
@@ -304,14 +318,26 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
   // Fill in path aliases in the path.
   $path = str_replace(array_keys($path_aliases), array_values($path_aliases), $path);
 
-  // If the path is empty or if it does not exist, then
-  // make it relative to the Drupal root.
+  // The path component is just the path part of the full
+  // machine:path specification (including the colon).
+  $path_component = (!empty($path) ? ':' . $path : '');
+  
+  // Next make the rsync path, which includes the machine
+  // and path components together.
+  // First make empty paths or relative paths start from the drupal root.
   if (empty($path) || ($path[0] != '/')) {
       $path = $path_aliases['!root'] . $path;
   }
+
+  // If there is a $machine component, to the path, then
+  // add it to the beginning
   if (!empty($machine)) {
-    $separator = ':';
+    $path = $machine . ':' . $path;
   }
-  return "$machine$separator$path";
+  
+  $site_alias_settings['rsync-path'] = $path;
+  $site_alias_settings['path-component'] = $path_component;
+  
+  return $site_alias_settings;
 }
 

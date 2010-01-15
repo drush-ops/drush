@@ -128,62 +128,6 @@ function drush_main() {
 }
 
 /**
- * Process commands that are executed on a remote drush instance.
- *
- * @return
- *   TRUE if the command was handled remotely.
- */
-function drush_remote_command() {
-  // The command will be executed remotely if the --remote-host flag
-  // is set; note that if a site alias is provided on the command line,
-  // and the site alias references a remote server, then the --remote-host
-  // option will be set when the site alias is processed.
-  // @see _drush_process_site_alias
-  $remote_host = drush_get_option('remote-host');
-  if (isset($remote_host)) {
-
-    $args = drush_get_arguments();
-    $command = array_shift($args);
-    $data = drush_get_context('options');
-
-    // Most command options are forwarded on to the remote
-    // server; however, we will clear certain flags such as
-    // -v, -d and -i from the 'options' context (defaults, and
-    // options passed in on the command line).
-    foreach (array('v', 'd', 'i') as $key) {
-      unset($data[$key]);
-    }
-
-    // After we clear out the flags we do not want from the
-    // 'options' context, we will add in the 'root' and 'uri'
-    // options from the 'alias' context.
-    foreach (array('root', 'r', 'uri', 'l') as $key) {
-      $value = drush_get_option($key, null, 'alias');
-      if (isset($value)) {
-        $data[$key] = $value;
-      }
-    }
-
-    // Finally, we call backend invoke with the
-    // specified remote host, remote user and drush path.
-    $drush_path = drush_get_option('drush-script');
-    if (!isset($drush_path)) {
-      $drush_folder = drush_get_option('drush');
-      if (isset($drush)) {
-        $drush_path = $drush_folder . '/drush';
-      }
-    }
-    $remote_user = drush_get_option('remote-user');
-    drush_log(dt('Begin drush_backend_invoke'));
-    $values = drush_backend_invoke_args($command, $args, $data, 'GET', TRUE, $drush_path, $remote_host, $remote_user);
-    drush_log(dt('drush_backend_invoke is complete'));
-
-    return TRUE;
-  }
-  return FALSE;
-}
-
-/**
  * Shutdown function for use while Drupal is bootstrapping and to return any
  * registered errors.
  *

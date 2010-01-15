@@ -90,18 +90,7 @@ function _drush_sitealias_user_specified_list($db_settings_needed = false) {
 
   // Iterate over the arguments and convert them to alias records
   if (!empty($specifications)) {
-    foreach ($specifications as $site) {
-      $alias_record = drush_sitealias_get_record($site, $db_settings_needed);
-      if (!empty($alias_record)) {
-        // If the alias record has a better name for itself than the
-	// one that was used to search for it, then it will put it
-	// into the 'name' element.
-        if (array_key_exists('name', $alias_record)) {
-          $site = $alias_record['name'];
-	}
-        $site_list[drush_sitealias_uri_to_site_dir($site)] = $alias_record;
-      }
-    }
+    $site_list = drush_sitealias_resolve_sitespecs($specifications, $db_settings_needed);
   }
   // If the user provided no args, then we will return everything.
   else {
@@ -126,6 +115,7 @@ function drush_sitealias_print() {
       _drush_sitealias_print_record($alias_record, $site);
     }
     elseif (isset($long_output)) {
+      _drush_sitealias_check_sitelist_fields($alias_record);
       $site_spec = drush_sitealias_alias_record_to_spec($alias_record, $with_db);
       drush_print($site_spec);
     }
@@ -133,41 +123,6 @@ function drush_sitealias_print() {
       drush_print($site);
     }
   }
-}
-
-/**
- * Convert from an alias record to a site specification
- *
- * @param alias_record
- *   The full alias record to convert
- *
- * @param with_db
- *   True if the site specification should include a ?db-url term
- *
- * @return string
- *   The site specification
- */
-function drush_sitealias_alias_record_to_spec($alias_record, $with_db = false) {
-    $result = '';
-    if (array_key_exists('uri', $alias_record)) {
-      $result = '#' . str_replace('http://', '', $alias_record['uri']);
-    }
-    if (array_key_exists('path-aliases', $alias_record)) {
-      $path_aliases = $alias_record['path-aliases'];
-      if (array_key_exists('!root', $path_aliases)) {
-        $result = $path_aliases['!root'] . $result;
-      }
-    }
-    if (array_key_exists('remote-host', $alias_record)) {
-      $result = $alias_record['remote-host'] . $result;
-    }
-
-    // add the database info to the specification if desired
-    if ($with_db) {
-      $result = $result . '?db-url=' . urlencode($alias_record['db-url']);
-    }
-
-    return $result;
 }
 
 /**
@@ -215,14 +170,14 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
   $alias_name = drush_get_option('alias-name');
   if (!isset($alias_name)) {
     $alias_name = $site_alias;
-    if (empty($alias_name)) {
+    if (empty($alias_name) || is_numeric($alias_name)) {
       $alias_name = drush_sitealias_uri_to_site_dir($alias_record['uri']);
     }
   }
 
   // We don't want the name to go into the output
   unset($alias_record['name']);
-
+    
   // We only want to output the 'root' item; don't output the '!root' path alias
   if (array_key_exists('path-aliases', $alias_record) && array_key_exists('!root', $alias_record['path-aliases'])) {
     unset($alias_record['path-aliases']['!root']);

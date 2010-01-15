@@ -730,6 +730,229 @@ function drush_table_column_autowidth($rows, $widths) {
 }
 
 /**
+ * @defgroup dispatching Command dispatching functions.
+ * @{
+ *
+ * These functions manage parameter and option manipulation
+ * for calls to drush backend invoke.
+ */
+
+/**
+ * Process commands that are executed on a remote drush instance.
+ *
+ * @return
+ *   TRUE if the command was handled remotely.
+ */
+function drush_remote_command() {
+  // The command will be executed remotely if the --remote-host flag
+  // is set; note that if a site alias is provided on the command line,
+  // and the site alias references a remote server, then the --remote-host
+  // option will be set when the site alias is processed.
+  // @see _drush_process_site_alias
+  $remote_host = drush_get_option('remote-host');
+  if (isset($remote_host)) {
+
+    $args = drush_get_arguments();
+    $command = array_shift($args);
+    $remote_user = drush_get_option('remote-user');
+
+    drush_do_command_redispatch($command, $args, $remote_host, $remote_user);
+    return TRUE;
+  }
+  // If the --site-list flag is set, then we will execute the specified
+  // command once for every site listed in the site list.
+  $site_list = drush_get_option('site-list');
+  if (isset($site_list)) {
+    if (!is_array($site_list)) {
+      $site_list = explode(',', $site_list);
+    }
+    $args = drush_get_arguments();
+    
+    if (!drush_get_context('DRUSH_SIMULATE')) {
+      drush_print(dt('You are about to use the experimental MULTIPLE-TARGET drush command feature.'));
+      drush_print(dt('This code is new; please be careful (make backups), and use at your own risk!'));
+      
+      drush_print(dt("You are about to execute '!command' on all of the following targets:", array('!command' => implode(" ", $args))));
+      foreach ($site_list as $one_destination) {
+        drush_print(dt('  !target', array('!target' => $one_destination)));
+      }
+      
+      // Temporary: ask what the user wants to do
+      // Once this code works, we'll replace this with a
+      // simple 'drush_confirm', so -y will work.
+      // You must manually confirm every time until this
+      // code is tested.  Help out at issue #628996
+      // if this is annoying to you.
+      
+      $options['s'] = 'Run simulation first (add -s flag)  WARNING: ignored by some commands!';
+      $options['g'] = 'Go!';
+      $choice = drush_choice($options, 'Enter a number to choose which action to take.');
+      
+      if ($choice === FALSE) {
+         drush_die('Aborting.');
+      }
+      if ($choice != 'g') {
+        drush_set_option('s', TRUE, 'options');
+        drush_set_context('DRUSH_SIMULATE', TRUE);
+      }
+    }
+    $command = array_shift($args);
+
+    foreach ($site_list as $site_spec) {
+      $site_record = _drush_sitealias_get_record($site_spec);
+      if (!empty($site_record)) {
+        // Pass only the root and uri parameters from the site alias;
+        // put them in the 'options' context where they are sure to
+        // be picked up by the command redispatch helper.
+        drush_set_option('root', $site_record['root'], 'options');
+        drush_set_option('uri', $site_record['uri'], 'options');
+        drush_unset_option('r');
+        drush_unset_option('l');
+        drush_do_command_redispatch($command, $args, $site_record['remote-host'], $site_record['remote-user']);
+      }
+    }
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Used by functions that operate on lists of sites, moving
+ * information from the source to the destination.  Currenlty
+ * this includes 'drush rsync' and 'drush sql sync'.
+ */
+function drush_do_multiple_command($command, $source_record, $destination_record, $allow_single_source = FALSE) {
+  $is_multiple_command = FALSE;
+  
+  if ((($allow_single_source == TRUE) || array_key_exists('site-list', $source_record)) && array_key_exists('site-list', $destination_record)) {
+    $is_multiple_command = TRUE;
+    $source_path = array_key_exists('path-component', $source_record) ? $source_record['path-component'] : '';
+    $destination_path = array_key_exists('path-component', $destination_record) ? $destination_record['path-component'] : '';
+    
+    $target_list = drush_sitealias_resolve_sitelist($destination_record);
+    if (array_key_exists('site-list', $source_record)) {
+      $source_list = drush_sitealias_resolve_sitelist($source_record);
+
+      if (drush_sitealias_check_lists_alignment($source_list, $target_list) === FALSE) {
+        if (array_key_exists('unordered-list', $source_record) || array_key_exists('unordered-list', $destination_record)) {
+          drush_sitelist_align_lists($source_list, $target_list, $aligned_source, $aligned_target);
+          $source_list = $aligned_source;
+          $target_list = $aligned_target;
+        }
+      }
+    }
+    else {
+      $source_list = array_fill(0, count($target_list), $source_record);
+    }
+    
+    drush_print($source_path);
+    drush_print($destination_path);
+    
+    if (!drush_get_context('DRUSH_SIMULATE')) {
+      drush_print(dt('You are about to use the experimental MULTIPLE-SYNCHRONIZED-TARGET drush !command feature.', array('!command' => $command)));
+      drush_print(dt('This code is new; please be careful (make backups), and use at your own risk!'));
+
+      drush_print(dt('You are about to rsync between all of the following targets:'));
+      $i = 0;
+      foreach ($source_list as $one_source) {
+        $one_target = $target_list[$i];
+        ++$i;
+        drush_print(dt('  !source will overwrite !target', array('!source' => drush_sitealias_alias_record_to_spec($one_source) . $source_path, '!target' => drush_sitealias_alias_record_to_spec($one_target) . $destination_path)));
+      }
+
+      // Temporary: ask what the user wants to do
+      // Once this code works, we'll replace this with a
+      // simple 'drush_confirm', so -y will work.
+      // You must manually confirm every time until this
+      // code is tested.  Help out at issue #628996
+      // if this is annoying to you.
+
+      $options['s'] = 'Run simulation first (add -s flag)';
+      $options['g'] = 'Go!';
+      $choice = drush_choice($options, 'Enter a number to choose which action to take.');
+
+      if ($choice === FALSE) {
+         drush_die('Aborting.');
+      }
+      if ($choice != 'g') {
+        drush_set_option('s', TRUE, 'options');
+        drush_set_context('DRUSH_SIMULATE', TRUE);
+      }
+    }
+    
+    $data = drush_redispatch_get_options();
+    $i = 0;
+    foreach ($source_list as $one_source) {
+      $one_target = $target_list[$i];
+      ++$i;
+      
+      $source_spec = drush_sitealias_alias_record_to_spec($one_source);
+      $target_spec = drush_sitealias_alias_record_to_spec($one_target);
+      
+      drush_log(dt('Begin do_multiple !command via backend invoke', array('!command' => $command)));
+      $values = drush_backend_invoke_args($command, array($source_spec . $source_path, $target_spec . $destination_path), $data, 'GET', TRUE);
+      drush_log(dt('Backend invoke is complete'));
+    }
+  }
+  
+  return $is_multiple_command;
+}
+
+/**
+ * Redispatch the specified command using the same
+ * options that were passed to this invocation of drush.
+ */
+function drush_do_command_redispatch($command, $args, $remote_host = NULL, $remote_user = NULL) {
+  $data = drush_redispatch_get_options();
+
+  // If the path to drush was supplied, then pass it to backend invoke.
+  // (Perhaps this should be added to the default handling of backend invoke.)
+  $drush_path = drush_get_option('drush-script');
+  if (!isset($drush_path)) {
+    $drush_folder = drush_get_option('drush');
+    if (isset($drush)) {
+      $drush_path = $drush_folder . '/drush';
+    }
+  }
+  // Call through to backend invoke.
+  drush_log(dt('Begin redispatch via backend invoke'));
+  $values = drush_backend_invoke_args($command, $args, $data, 'GET', TRUE, $drush_path, $remote_host, $remote_user);
+  drush_log(dt('Backend invoke is complete'));
+}
+
+/**
+ * Get the options for this command.
+ *
+ * This function returns an array that contains all of the options
+ * that are appropriate for forwarding along to backend invoke.
+ * Pass the result from this function to backend invoke in the $data
+ * parameter when doing a redispatch.
+ */
+function drush_redispatch_get_options() {
+  // Start off by taking everything from the command line ('options' context)
+  $options = drush_get_context('options');
+  // If we can parse the current command, then examine all contexts
+  // in order for any option that is directly related to the current command
+  $command = drush_parse_command();
+  if (is_array($command)) {
+    foreach ($command['options'] as $key => $value) {
+      // Strip leading --
+      $key = ltrim($key, '-');
+      $value = drush_get_option($key);
+      if (isset($value)) {
+        $options[$key] = $value;
+      }
+    }
+  }
+  return $options;
+}
+
+
+/**
+ * @} End of "defgroup dispatching".
+ */
+
+/**
  * @defgroup logging Logging information to be provided as output.
  * @{
  *
