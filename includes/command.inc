@@ -238,7 +238,7 @@ function drush_parse_command() {
  * the command file that the command definition is declared in.  The general
  * form for the hook filename is:
  *
- *	drush_COMMANDFILE_COMMANDNAME
+ *      drush_COMMANDFILE_COMMANDNAME
  *
  * In many cases, drush commands that are functionally part of a common collection
  * of similar commands will all be declared in the same file, and every command
@@ -279,7 +279,7 @@ function drush_invoke($command) {
       if (($oldfunc != $func) && (function_exists($oldfunc))) {
         drush_log(dt("The drush command hook naming conventions have changed; the function !oldfunc must be renamed to !func.  The old function will be called, but this will be removed shortly.", array('!oldfunc' => $oldfunc, '!func' => $func)), "error");
         // TEMPORARY:  Allow the function to be called by its old name.
-	$functions[] = $oldfunc;
+        $functions[] = $oldfunc;
       }
       if (function_exists($func)) {
         $functions[] = $func;

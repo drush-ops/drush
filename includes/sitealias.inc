@@ -191,10 +191,10 @@ function drush_sitealias_resolve_sitelist($alias_record) {
       $db_settings_needed = array_key_exists('db-settings-needed', $alias_record);
       foreach ($alias_record['site-list'] as $sitespec) {
         $one_result = drush_sitealias_get_record($sitespec, $db_settings_needed);
-	if ($db_settings_needed) {
+        if ($db_settings_needed) {
           $one_result['db-settings-needed'] = TRUE;
         }
-	$result_list = array_merge($result_list, drush_sitealias_resolve_sitelist($one_result));
+        $result_list = array_merge($result_list, drush_sitealias_resolve_sitelist($one_result));
       }
     }
     else {

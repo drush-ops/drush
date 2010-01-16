@@ -631,7 +631,7 @@ function pm_dl_destination($type) {
     if (!is_dir($destination)) {
       drush_print(dt("The directory !destination does not exist.", array('!destination' => $destination)));
       if (!drush_get_context('DRUSH_SIMULATE')) {
-	if (drush_confirm(dt('Would you like to create it?'))) {
+        if (drush_confirm(dt('Would you like to create it?'))) {
           @drush_op('mkdir', $destination, 0777, TRUE);
         }
       }
