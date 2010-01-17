@@ -806,6 +806,7 @@ function pm_drush_engine_package_handler() {
 function pm_drush_engine_version_control() {
   return array(
     'svn' => array(
+      'signature' => 'svn info %s',
       'options' => array(
         '--version-control=svn' => 'Quickly add/remove/commit your project changes to Subversion.',
         '  --svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. Caution.',
@@ -814,13 +815,21 @@ function pm_drush_engine_version_control() {
         '  --svnstatusparams' => "Add options to the 'svn status' command",
         '  --svnaddparams' => 'Add options to the `svn add` command',
         '  --svnremoveparams' => 'Add options to the `svn remove` command',
+        '  --svnrevertparams' => 'Add options to the `svn revert` command',
         '  --svncommitparams' => 'Add options to the `svn commit` command',
       ),
       'examples' => array(
         'drush [command] cck --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
       ),
     ),
+    'backup' => array(
+      'options' => array(
+        '--version-control=backup' => 'Backup all project files before updates.',
+        '  --backup-dir' => 'Backup destination directory. Defaults to a "/backup" subdirectory inside your Drupal root.',
+      ),
+    ),
     'bzr' => array(
+      'signature' => 'bzr root %s',
       'options' => array(
         '--version-control=bzr' => 'Quickly add/remove/commit your project changes to Bazaar.',
         '  --bzrsync' => 'Automatically add new files to the BZR repository and remove deleted files. Caution.',
@@ -832,6 +841,52 @@ function pm_drush_engine_version_control() {
 }
 
 /**
+ * Interface for version control systems.
+ * We use a simple object layer because we conceivably need more than one
+ * loaded at a time.
+ */
+interface drush_pm_version_control {
+  function pre_update(&$release);
+  function rollback($release);
+  function post_update($release);
+  function post_install($release);
+}
+
+/**
+ * A simple factory function that tests for version control systems, in a user
+ * specified order, and return the one that appears to be appropriate for a
+ * specific directory.
+ */
+function drush_pm_include_version_control($directory = '.') {
+  $version_controls = explode(',', drush_get_option('version-control', 'svn,backup'));
+  $version_control_engines = drush_get_engines('version_control');
+
+  // Find the first valid engine in the list, checking signatures if needed.
+  $engine = FALSE;
+  while (!$engine && count($version_controls)) {
+    $version_control = array_shift($version_controls);
+    if (isset($version_control_engines[$version_control])) {
+      if ($version_control_engines[$version_control]['signature']) {
+        if (drush_shell_exec($version_control_engines[$version_control]['signature'], $directory)) {
+          $engine = $version_control;
+        }
+      }
+      else {
+        $engine = $version_control;
+      }
+    }
+  }
+  if (!$engine) {
+    return drush_set_error('DRUSH_PM_NO_VERSION_CONTROL', dt('No valid version control or backup engine found (the --version-control option was set to "!version-control").', array('!version-control' => $version_control)));
+  }
+  if (!drush_include_engine('version_control', $engine)) {
+    return FALSE;
+  }
+  $engine = 'drush_pm_version_control_' . $engine;
+  return new $engine();
+}
+
+/**
  * Command callback. Download drupal core.
  */
 function drush_pm_download() {
@@ -839,7 +894,6 @@ function drush_pm_download() {
   drush_bootstrap_max();
 
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
-  drush_include_engine('version_control', drush_get_option('version-control', 'svn'));
 
   if (!$full_projects = func_get_args()) {
     $full_projects = array('drupal');
@@ -901,11 +955,15 @@ function drush_pm_download() {
           }
 
           if ($destination = pm_dl_destination($release['type'])) {
+            if (!$version_control = drush_pm_include_version_control($destination)) {
+              return FALSE;
+            }
             if (package_handler_install_project($project, $release, $destination)) {
+              $release['full_project_path'] = $destination .  $project;
               drush_log(dt("Project !project (!version) downloaded to !dest.",
                              array('!project' => $project, '!version' => $release['version'], '!dest' => $destination)), 'success');
-              drush_command_invoke_all('drush_pm_post_pm_install', $project, $release, $destination);
-              version_control_post_install($project, $release, $destination);
+              drush_command_invoke_all('drush_pm_post_install', $project, $release, $destination);
+              $version_control->post_install($release);
             }
           }
         }

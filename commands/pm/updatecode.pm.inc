@@ -84,7 +84,7 @@ function drush_pm_updatecode() {
   }
 
   // Offer to update to the identified releases
-  pm_update_packages($updateable);
+  return pm_update_packages($updateable);
 }
 
 /**
@@ -97,7 +97,7 @@ function drush_pm_updatecode() {
  */
 function pm_update_packages($releases) {
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
-  drush_include_engine('version_control', drush_get_option('version-control', 'svn'));
+  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
   drush_print(dt('Code updates will be made to the following projects:'));
   foreach($releases as $release) {
@@ -112,67 +112,54 @@ function pm_update_packages($releases) {
     drush_die('Aborting.');
   }
 
-  // Save the date to be used in the backup directory's path name.
-  $date = date('YmdHis');
-
   // Now we start the actual updating.
+  $updated = array();
   foreach($releases as $release) {
-    drush_log(dt('Starting to update !project code ...', array('!project' => $release['title'])));
-
-    $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-
-    $source = $drupal_root .'/' . $release['path'];
+    drush_log(dt('Starting to update !project code at !dir...', array('!project' => $release['title'], '!dir' => $release['path'])));
     if (empty($release['path'])) {
-      drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('Module !project path is not available, perhaps the module is enabled but has been deleted from disk.', array('!project' => $release['name'])));
-      continue;
+      return drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('The !project project path is not available, perhaps the !type is enabled but has been deleted from disk.', array('!project' => $release['name'], '!type' => $release['project_type'])));
     }
-    if (!is_dir($source)) {
-      drush_set_error('DRUSH_PM_UPDATING_PATH_NOT_FOUND', dt('Module !project directory could not be found at !source, perhaps the module is enabled but has been deleted from disk.', array('!project' => $release['name'], '!source' => $source)));
-      continue;
-    }
-
-    $skip_backup = version_control_is_versioned($source);
-    if (!$skip_backup) {
-      $backup_dir = drush_get_option('backup-dir', $drupal_root  . '/backup');
-      $backup_dir = rtrim($backup_dir, '/');
-      @drush_op('mkdir', $backup_dir, 0777);
-      $backup_dir .= '/modules';
-      @drush_op('mkdir', $backup_dir, 0777);
-      $backup_dir .= "/$date";
-      @drush_op('mkdir', $backup_dir, 0777);
-      $backup_target = $backup_dir . '/'. $release['name'];
-      if (!drush_op('rename', $source, $backup_target)) {
-        drush_die(dt('Failed to backup project directory !source to !backup_target', array('!source' => $source, '!backup_target' => $backup_target)));
-      }
+    $release['full_project_path'] = $drupal_root . '/' . $release['path'];
+    // Check that the directory exists, and is where we expect it to be.
+    if (stripos($release['path'], $release['project_type']) === FALSE || !is_dir($release['full_project_path'])) {
+      return drush_set_error('DRUSH_PM_UPDATING_PATH_NOT_FOUND', dt('The !project directory could not be found within the !types directory at !full_project_path, perhaps the project is enabled but has been deleted from disk.', array('!project' => $release['name'], '!type' => $release['project_type'], '!full_project_path' => $release['full_project_path'])));
     }
 
-    // Install the new version.
-    // $basepath is the dir where the current module is installed. It's one dir up from the
-    // place of the project's info files.
-    $basepath = explode('/', $release['path']);
-    // move a directory up, so we can copy updated dir to parent
-    array_pop($basepath);
-    $project_parent_path = $drupal_root. '/' . implode('/', $basepath). '/';
-    if (!package_handler_update_project($release['name'], $release['releases'][$release['candidate_version']], $project_parent_path)) {
-      if (!$skip_backup) {
-        drush_set_error('DRUSH_PM_UPDATING_FAILED_BACKUP_RESTORE', dt('Updating project !project failed. Restoring previously installed version.', array('!project' => $release['name'])));
-        drush_op('rename', $backup_target, $source);
-      }
-      else {
-        drush_set_error('DRUSH_PM_UPDATING_FAILED_NO_BACKUP', dt('Updating project !project failed. Please revert to the previously installed version.', array('!project' => $release['name'])));
-      }
+    // Check we have a version control system, and it clears it's pre-flight.
+    if (!$version_control = drush_pm_include_version_control($release['full_project_path'])) {
+      return FALSE;
+    }
+    if (!$version_control->pre_update($release)) {
+      return FALSE;
+    }
+    // Add the project to a context so we can roll back if needed.
+    $updated[] = $release;
+    drush_set_context('DRUSH_PM_UPDATED', $updated);
+
+    if (!package_handler_update_project($release['name'], $release['releases'][$release['candidate_version']], $release['full_project_path'])) {
+      return drush_set_error('DRUSH_PM_UPDATING_FAILED', dt('Updating project !project failed. Attempting to roll back to previously installed version.', array('!project' => $release['name'])));
     }
     else {
       drush_print(dt('Project !project was updated successfully. Installed version is now !version.', array('!project' => $release['name'], '!version' => $release['candidate_version'])));
-      drush_command_invoke_all('pm_post_update', $release['name'], $release['releases'][$release['candidate_version']], $project_parent_path);
-      version_control_post_update($release['name'], $release['releases'][$release['candidate_version']], $project_parent_path);
+      drush_command_invoke_all('pm_post_update', $release['name'], $release['releases'][$release['candidate_version']]);
+      $version_control->post_update($release);
     }
-  }
-  if ($backup_dir) {
-    drush_log(dt("Backups were saved into the directory !backup_dir.", array('!backup_dir' => $backup_dir)), 'ok');
   }
   // Clear the cache, since some modules could have moved around.
   drush_drupal_cache_clear_all();
+}
+
+function drush_pm_updatecode_rollback() {
+  $releases = array_reverse(drush_get_context('DRUSH_PM_UPDATED', array()));
+  foreach($releases as $release) {
+    drush_log(dt('Rolling back update of !project code ...', array('!project' => $release['title'])));
+
+    // Check we have a version control system, and it clears it's pre-flight.
+    if (!$version_control = drush_pm_include_version_control($release['path'])) {
+      return FALSE;
+    }
+    $version_control->rollback($release);
+  }
 }
 
 function pm_project_filter(&$releases, &$rows) {

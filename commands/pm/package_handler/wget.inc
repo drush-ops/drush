@@ -18,7 +18,6 @@ function package_handler_install_project($project, $info, $path = '.') {
   // Get the filename...
   $filename = explode('/', $info['download_link']);
   $filename = array_pop($filename);
-  $fullpath = $path . $filename;
 
   // Set our directory to the download location.
   $olddir = getcwd();
@@ -71,8 +70,8 @@ function package_handler_install_project($project, $info, $path = '.') {
 
   // 'drupal' project and profiles get untarred as drupal-6-10/foo instead of drupal/foo so must be excluded from test below.
   // Translations get untarred into the Drupal root, so there is no easy way to check.
-  if (!is_dir($path . $project) && !drush_get_context('DRUSH_SIMULATE') && $project != 'drupal' && !in_array($info['type'], array('translation', 'profile'))) {
-    return drush_set_error('DRUSH_PM_FILE_UNTAR_ERROR', "Downloaded file $filename couldn't be untarred correctly");
+  if (!is_dir($path . '/' . $project) && !drush_get_context('DRUSH_SIMULATE') && $project != 'drupal' && !in_array($info['type'], array('translation', 'profile'))) {
+    return drush_set_error('DRUSH_PM_FILE_UNTAR_ERROR', "Downloaded file $filename couldn't be untarred to $path/$project correctly");
   }
   else {
     return TRUE;
@@ -83,5 +82,9 @@ function package_handler_install_project($project, $info, $path = '.') {
  * This is an alias of the install function, since they are identical
  */
 function package_handler_update_project($project, $info, $path = '.') {
-  return package_handler_install_project($project, $info, $path);
+  // Updates are passed the current project directory
+  // so we move up a directory so that the untar lands in the right place.
+  $path = explode('/', $path);
+  array_pop($path);
+  return package_handler_install_project($project, $info, implode('/', $path));
 }
