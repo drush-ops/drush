@@ -376,10 +376,14 @@ function _drush_bootstrap_drush() {
   // The bootstrap can fail silently, so we catch that in a shutdown function.
   register_shutdown_function('drush_shutdown');
 
-  // Attempt to set the screen width to the current screen width.
-  // This will only work if the user has exported COLUMNS in his session.
+  // Set the terminal width, used for wrapping table output.
+  // Normally this is exported using tput in the drush script.
+  // If this is not present we do an additional check using stty here.
   if (!($columns = getenv('COLUMNS'))) {
-    $columns = 80;
+    exec('stty size 2>&1', $stty_output, $stty_status);
+    if (!$stty_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $stty_output[0], -1, $stty_count);
+    // If stty failed, or we couldn't parse it's output, we assume 80 columns.
+    if ($stty_status || !$stty_count) $columns = 80;
   }
   drush_set_context('DRUSH_COLUMNS', $columns);
 
