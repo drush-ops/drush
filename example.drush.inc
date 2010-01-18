@@ -32,11 +32,9 @@ function example_drush_command() {
   $items = array();
 
   // the key in the $items array is the name of the command.
-  $items['example'] = array(
-    // the name of the function implementing your command.
-    'callback' => 'example_callback',
+  $items['example-foo'] = array(
     // a short description of your command
-    'description' => "Drush example command. It doesn't do a lot",
+    'description' => "Drush example command. It doesn't do a lot.",
   );
 
   // more commands here ...
@@ -59,22 +57,21 @@ function example_drush_command() {
 function example_drush_help($section) {
   switch ($section) {
     case 'drush:example':
-      return dt("Prints the amount of time since january 1st, 1970, in years and weeks.");
+      return dt("Prints the amount of time since January 1st, 1970, in years and weeks.");
   }
 }
 
 /**
- * Example drush command callback.
+ * Example drush command callback. This is where the action takes place.
  *
- * This is where the action takes place.
+ * The function name should be same as command name but with dashes turned to
+ * slashes and 'drush_' prepended.
  *
  * In this function, all of Drupals API is (usually) available, including
  * any functions you have added in your own modules/themes.
  *
- * To print something to the terminal window, use drush_print().
- *
  */
-function example_callback() {
+function drush_example_foo() {
   $args = func_get_args();
 
   // Using the Drupal API function 'format_interval()'
