@@ -699,7 +699,7 @@ function pm_parse_project_version($requests) {
     $drupal_version = $drupal_version_default;
     $project_version = NULL;
     $version = NULL;
-    $project = NULL;
+    $project = $request;
     // project-HEAD or project-5.x-1.0-beta
     // '5.x-' is optional, as is '-beta'
     preg_match('/-+(HEAD|(?:(\d+\.x)-+)?(\d+\.[\dx]+.*))$/', $request, $matches);
@@ -731,14 +731,6 @@ function pm_parse_project_version($requests) {
           }
         }
       }
-    }
-    elseif (strpos($request, '-') === FALSE) {
-      // We have no findable version part, so we set the project directly (assumes the user wants the latest stable version).
-      $project = $request;
-    }
-    if (empty($project)) {
-      drush_set_error('DRUSH_PM_MISSING_PROJECT_NAME', 'Project name not found. Run drush help dl for more information.');
-      continue;
     }
     if ($project_version) {
       if ($project == 'drupal') {
