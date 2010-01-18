@@ -37,5 +37,5 @@ function _drush_get_modules() {
  *   An array containing theme info for all installed themes.
  */
 function _drush_get_themes() {
-  return _system_get_theme_data();
+  return system_rebuild_theme_data();
 }

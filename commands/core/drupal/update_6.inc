@@ -323,7 +323,10 @@ function update_main() {
   // not passed through the error handler) will cause a message to be printed.
   drush_errors_on();
 
-
+  // Rescan and repopulate the system table to ensure we have a full picture
+  // of the platform.
+  drush_get_themes();
+  drush_get_modules();
 
   include_once './includes/install.inc';
   include_once './includes/batch.inc';

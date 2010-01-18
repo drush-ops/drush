@@ -198,6 +198,11 @@ function update_main() {
   
   drush_errors_on();
 
+  // Rescan and repopulate the system table to ensure we have a full picture
+  // of the platform.
+  drush_get_themes();
+  drush_get_modules();
+
   include_once DRUPAL_ROOT . '/includes/batch.inc';
   drupal_load_updates();
 
