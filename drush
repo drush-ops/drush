@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # $Id$
 #
 # This script is a simple wrapper that will run Drush with the most appropriate
@@ -23,7 +23,10 @@ cd "$ORIGDIR"
 
 # Build the path to drush.php.
 SCRIPT_PATH=$(dirname $SELF_PATH)/drush.php
-[[ $(uname -a) == CYGWIN* ]] && SCRIPT_PATH=$(cygpath -w -a -- "$SCRIPT_PATH")
+case $(uname -a) in
+  CYGWIN*)
+    SCRIPT_PATH=$(cygpath -w -a -- "$SCRIPT_PATH") ;;
+esac
 
 # If it is not exported determine and export the number of columns.
 if [ -z $COLUMNS ]; then
