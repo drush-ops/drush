@@ -30,7 +30,7 @@ esac
 
 # If it is not exported determine and export the number of columns.
 if [ -z $COLUMNS ]; then
-  export COLUMNS=$(tput cols 2> /dev/null)
+  export COLUMNS=$(tput cols)
 fi
 
 # Special case for *AMP installers, since they normally don't set themselves as the default cli php out of the box.
