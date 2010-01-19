@@ -93,24 +93,27 @@ function variable_drush_command() {
  * List your site's variables.
  */
 function drush_variable_get() {
+  global $conf;
   $args = func_get_args();
-  $result = drush_variable_like($args[0]);
-  while ($name = drush_db_result($result)) {
-    $value = variable_get($name, 'peace');
-    drush_print_pipe("\$variables['$name'] = ". var_export($value, TRUE). ";\n");
-    if ($value === TRUE) {
-      $value = 'TRUE';
+  foreach(array_keys($conf) as $name) {
+    if (strstr($name, $args[0])) {
+      $value = $conf[$name];
+      drush_print_pipe("\$variables['$name'] = ". var_export($value, TRUE). ";\n");
+
+      if ($value === TRUE) {
+        $value = 'TRUE';
+      }
+      elseif ($value === FALSE) {
+        $value = 'FALSE';
+      }
+      elseif (is_string($value)) {
+        $value = '"' . $value . '"';
+      }
+      elseif (is_array($value) || is_object($value)) {
+        $value = print_r($value, TRUE);
+      }
+      drush_print($name . ': ' . $value);
     }
-    elseif ($value === FALSE) {
-      $value = 'FALSE';
-    }
-    elseif (is_string($value)) {
-      $value = '"' . $value . '"';
-    }
-    elseif (is_array($value) || is_object($value)) {
-      $value = print_r($value, TRUE);
-    }
-    drush_print($name . ': ' . $value);
   }
 }
 
