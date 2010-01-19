@@ -36,7 +36,10 @@ function sql_drush_command() {
 
   $items['sql-conf'] = array(
     'callback' => 'drush_sql_conf',
-    'description' => 'Print database connection details.',
+    'description' => 'Print database connection details using print_r().',
+    'arguments' => array(
+      'all' => 'Show all database connections, instead of just one.',
+    ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
   );
@@ -45,6 +48,9 @@ function sql_drush_command() {
     'description' => 'A string for connecting to the DB.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
+    'examples' => array(
+      '`drush sql connect` < example.sql' => 'Import sql statements from a file into the current database.',
+    ),
   );
   $items['sql-dump'] = array(
     'callback' => 'drush_sql_dump_execute',
@@ -58,7 +64,11 @@ function sql_drush_command() {
       '--result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
       '--skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
       '--structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
+      '--tables' => 'An explcit list of tables to dump, in comma delimited format',
       '--ordered-dump' => 'Use this option to output ordered INSERT statements in the sql-dump.Useful when backups are managed in a Version Control System. Optional.',
+      '--create-db' => 'Wipe existing tables (i.e. --clean). Postgres only.',
+      '--data-only' => 'Omit CREATE TABLE statements. Postgres only.',
+      '--ordered-dump' => 'Order by primary key and add line breaks for efficient diff in revision control. Also, faster rsync. Slows down the dump. Mysql only.',
     ) + $options,
   );
   $items['sql-query'] = array(
@@ -66,12 +76,14 @@ function sql_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
     'description' => 'Execute a query against the site database.',
     'examples' => array(
-      'drush sql-query "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record',
+      'drush sql-query "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record. Table prefixes are honored.',
     ),
     'arguments' => array(
        'query' => 'A SQL query. Mandatory.',
     ),
-    'options' => $options,
+    'options' => array(
+      '--extra' => 'Add custom options to the mysql command.',
+    ) + $options,
     'aliases' => array('sqlq'),
   );
   $items['sql-sync'] = array(
@@ -187,7 +199,6 @@ function drush_sql_dump($db_spec = NULL) {
   $skip_tables += $structure_tables;
   // Dump only the specified tables.  Takes precedence over skip-tables and structure-tables.
   $tables = _drush_sql_get_table_list('tables');
-  $clean = drush_get_option('clean');
   $data_only = drush_get_option('data-only');
   // The ordered-dump option is only supported by MySQL for now.
   // @todo add documention once a hook for drush_get_option_help() is available.
@@ -316,7 +327,7 @@ function drush_sql_query($query) {
 
 function _drush_sql_query($query, $db_spec = NULL) {
   $scheme = _drush_sql_get_scheme($db_spec);
-  
+
   // Inject table prefixes as needed.
   if (drush_drupal_major_version() >= 7) {
     $query = Database::getConnection()->prefixTables($query);
