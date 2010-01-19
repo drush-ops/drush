@@ -841,7 +841,7 @@ interface drush_pm_version_control {
   function pre_update(&$release);
   function rollback($release);
   function post_update($release);
-  function post_install($release);
+  function post_download($release);
 }
 
 /**
@@ -954,8 +954,8 @@ function drush_pm_download() {
               $release['full_project_path'] = $destination .  $project;
               drush_log(dt("Project !project (!version) downloaded to !dest.",
                              array('!project' => $project, '!version' => $release['version'], '!dest' => $destination)), 'success');
-              drush_command_invoke_all('drush_pm_post_install', $project, $release, $destination);
-              $version_control->post_install($release);
+              drush_command_invoke_all('drush_pm_post_download', $project, $release, $destination);
+              $version_control->post_download($release);
             }
           }
         }

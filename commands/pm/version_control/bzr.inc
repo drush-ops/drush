@@ -40,9 +40,9 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
   }
   
   /**
-   * Implementation of post_install().
+   * Implementation of post_download().
    */
-  public function post_install($release) {
+  public function post_download($release) {
     if (is_versioned($release['full_project_path']) && sync($release)) {
       // Only attempt commit on a sucessful sync
       commit($release);

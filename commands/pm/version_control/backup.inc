@@ -43,7 +43,7 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
   }
 
   /**
-   * Implementation of hook_drush_pm_post_update().
+   * Implementation of post_update().
    */
   public function post_update($release) {
     if ($release['backup_target']) {
@@ -52,9 +52,9 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
   }
 
   /**
-   * Implementation of hook_drush_pm_post_install().
+   * Implementation of post_download().
    */
-  public function post_install($release) {
+  public function post_download($release) {
    // NOOP
   }
 }

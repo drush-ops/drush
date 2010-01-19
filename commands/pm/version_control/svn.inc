@@ -60,9 +60,9 @@ class drush_pm_version_control_svn implements drush_pm_version_control {
   }
   
   /**
-   * Implementation of post_install().
+   * Implementation of post_download().
    */
-  public function post_install($release) {
+  public function post_download($release) {
     if ($this->sync($release)) {
       // Only attempt commit on a sucessful sync
       $this->commit($release);
