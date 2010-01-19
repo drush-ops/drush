@@ -2,7 +2,7 @@
 // $Id$
 
 /**
- * Command callback. Displays update status info and allows to update installed modules.
+ * Command callback. Displays update status info and allows to update installed projects.
  * Pass specific projects as arguments, otherwise we update all that have candidate releases.
  *
  * This command prompts for confirmation before updating, so it is safe to run just to check on
@@ -61,7 +61,7 @@ function drush_pm_updatecode() {
   $last = pm_update_last_check();
   drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
   drush_print();
-  drush_print(dt("Update status information on all installed and enabled Drupal modules:"));
+  drush_print(dt("Update status information on all installed and enabled Drupal projects:"));
   drush_print_table($rows, TRUE);
   drush_print();
 
@@ -105,7 +105,7 @@ function pm_update_packages($releases) {
   }
   drush_print(substr($print, 0, strlen($print)-2));
   drush_print();
-  drush_print(dt("Note: Updated modules can potentially break your site. It's not recommended to update production sites without prior testing."));
+  drush_print(dt("Note: Updated projects can potentially break your site. It is NOT recommended to update production sites without prior testing."));
   drush_print(dt("Note: A backup of your package will be stored to backups directory if it is not managed by a supported version control system."));
   drush_print(dt('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
   if(!drush_confirm(dt('Do you really want to continue?'))) {
@@ -115,10 +115,14 @@ function pm_update_packages($releases) {
   // Now we start the actual updating.
   $updated = array();
   foreach($releases as $release) {
-    drush_log(dt('Starting to update !project code at !dir...', array('!project' => $release['title'], '!dir' => $release['path'])));
     if (empty($release['path'])) {
-      return drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('The !project project path is not available, perhaps the !type is enabled but has been deleted from disk.', array('!project' => $release['name'], '!type' => $release['project_type'])));
+      // For themes no path is added to the release array, so we find it here.
+      $release['path'] = drupal_get_path($release['project_type'], $release['name']);
+      if (empty($release['path'])) {
+        return drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('The !project project path is not available, perhaps the !type is enabled but has been deleted from disk.', array('!project' => $release['name'], '!type' => $release['project_type'])));
+      }
     }
+    drush_log(dt('Starting to update !project code at !dir...', array('!project' => $release['title'], '!dir' => $release['path'])));
     $release['full_project_path'] = $drupal_root . '/' . $release['path'];
     // Check that the directory exists, and is where we expect it to be.
     if (stripos($release['path'], $release['project_type']) === FALSE || !is_dir($release['full_project_path'])) {
@@ -145,7 +149,7 @@ function pm_update_packages($releases) {
       $version_control->post_update($release);
     }
   }
-  // Clear the cache, since some modules could have moved around.
+  // Clear the cache, since some projects could have moved around.
   drush_drupal_cache_clear_all();
 }
 

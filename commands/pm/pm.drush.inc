@@ -122,7 +122,7 @@ function pm_drush_command() {
     'description' => 'Update your project code',
     'drupal dependencies' => array($update),
     'arguments' => array(
-      'modules' => 'Optional. A space delimited list of installed projects to update (currently only modules).',
+      'projects' => 'Optional. A space delimited list of installed projects (modules or themes) to update.',
     ),
     'options' => array(
       '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
@@ -134,7 +134,7 @@ function pm_drush_command() {
     'description' => 'Update your project code and apply any database updates required (update.php)',
     'drupal dependencies' => array($update),
     'arguments' => array(
-      'modules' => 'Optional. A space delimited list of installed projects to update (currently only modules).',
+      'projects' => 'Optional. A space delimited list of installed projects (modules or themes) to update.',
     ),
     'options' => array(
       '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
