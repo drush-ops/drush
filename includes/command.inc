@@ -272,10 +272,12 @@ function drush_invoke($command) {
   $functions = array();
   // First we build a list of functions that are about to be executed
   $variations = array($hook . "_validate", "pre_$hook", $hook, "post_$hook");
+  $all_available_hooks = array();
   foreach ($variations as $var_hook) {
     foreach ($list as $commandfile => $filename) {
       $oldfunc = sprintf("drush_%s_%s", $commandfile, $var_hook);
       $func = str_replace('drush_' . $commandfile . '_' . $commandfile, 'drush_' . $commandfile, $oldfunc);
+      $all_available_hooks[] = $func;
       if (($oldfunc != $func) && (function_exists($oldfunc))) {
         drush_log(dt("The drush command hook naming conventions have changed; the function !oldfunc must be renamed to !func.  The old function will be called, but this will be removed shortly.", array('!oldfunc' => $oldfunc, '!func' => $func)), "error");
         // TEMPORARY:  Allow the function to be called by its old name.
@@ -286,21 +288,25 @@ function drush_invoke($command) {
       }
     }
   }
+  drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'debug');
   $rollback = FALSE;
   $completed = array();
+  $available_rollbacks = array();
   foreach ($functions as $func) {
-    $completed[] = $func;
-    if (function_exists($func)) {
-      call_user_func_array($func, $args);
-      _drush_log_drupal_messages();
-      if (drush_get_error()) {
-        drush_log(dt('An error occurred at function : @func', array('@func' => $func)), 'error');
-        # As soon as an error occurs, roll back
-        $rollback = TRUE;
-        break;
+    $available_rollbacks[] = $func . '_rollback';
+    if ($rollback === FALSE) {
+      $completed[] = $func;
+      if (function_exists($func)) {
+	call_user_func_array($func, $args);
+	_drush_log_drupal_messages();
+	if (drush_get_error()) {
+          drush_log(dt('An error occurred at function : @func', array('@func' => $func)), 'error');
+          $rollback = TRUE;
+	}
       }
     }
   }
+  drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command, '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'debug');
 
   // something went wrong, we need to undo
   if ($rollback) {
