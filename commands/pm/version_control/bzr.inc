@@ -25,27 +25,27 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
   /**
    * Implementation of pre_update().
    */
-  public function pre_update(&$release) {
+  public function pre_update(&$project) {
     // TODO: Add similar checks to SVN?
   }
 
   /**
    * Implementation of post_update().
    */
-  public function post_update($release) {
-    if (is_versioned($release['full_project_path']) && sync($release)) {
+  public function post_update($project) {
+    if (is_versioned($project['full_project_path']) && sync($project)) {
       // Only attempt commit on a sucessful sync
-      commit($release);
+      commit($project);
     }
   }
   
   /**
    * Implementation of post_download().
    */
-  public function post_download($release) {
-    if (is_versioned($release['full_project_path']) && sync($release)) {
+  public function post_download($project) {
+    if (is_versioned($project['full_project_path']) && sync($project)) {
       // Only attempt commit on a sucessful sync
-      commit($release);
+      commit($project);
     }
   }
   
@@ -53,14 +53,14 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
    * Automatically add any unversioned files to Bzr and remove any files
    * that have been deleted on the file system
    */
-  private function sync($release) {
+  private function sync($project) {
     if (drush_get_option('bzrsync')) {
       $errors = '';
   
       // All paths returned by bzr status are relative to the repository root.
-      $root = bzr_get_repository_root($release['full_project_path']);
+      $root = bzr_get_repository_root($project['full_project_path']);
   
-      if (drush_shell_exec('bzr status -S %s', $release['full_project_path'])) {
+      if (drush_shell_exec('bzr status -S %s', $project['full_project_path'])) {
         $output = drush_shell_exec_output();
   
         // Parse the output of bzr status to get the list of added and removed
@@ -106,13 +106,13 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
   /**
    * Automatically commit changes to the repository
    */
-  private function commit($release) {
+  private function commit($project) {
     if (drush_get_option('bzrcommit')) {
       $message = drush_get_option('bzrmessage');
       if (empty($message)) {
         $message = dt("Drush automatic commit: \n") . implode(' ', $_SERVER['argv']);
       }
-      if (drush_shell_exec('bzr commit -m %s %s', $message, $release['full_project_path'])) {
+      if (drush_shell_exec('bzr commit -m %s %s', $message, $project['full_project_path'])) {
         drush_log(dt('Project committed to Bazaar successfully'), 'ok');
       }
       else {
@@ -123,5 +123,4 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
       drush_print(dt("You should consider committing the new code to your Bazaar repository.\nIf this version becomes undesireable, use Bazaar to roll back."));
     }
   }
-
 }

@@ -838,10 +838,10 @@ function pm_drush_engine_version_control() {
  * loaded at a time.
  */
 interface drush_pm_version_control {
-  function pre_update(&$release);
-  function rollback($release);
-  function post_update($release);
-  function post_download($release);
+  function pre_update(&$project);
+  function rollback($project);
+  function post_update($project);
+  function post_download($project);
 }
 
 /**
