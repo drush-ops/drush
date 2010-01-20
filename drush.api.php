@@ -18,21 +18,21 @@
  * 4. drush_hook_post_COMMAND()
  *
  * For example, here are the hook opportunities for a mysite.drush.inc file
- * that wants to hook into the `dl` command.
+ * that wants to hook into the `pm-download` command.
  *
- * 1. drush_mysite_dl_validate()
- * 2. drush_mysite_pre_dl()
- * 3. drush_mysite_dl()
- * 4. drush_mysite_post_dl()
+ * 1. drush_mysite_pm_download_validate()
+ * 2. drush_mysite_pre_pm_download()
+ * 3. drush_mysite_pm_download()
+ * 4. drush_mysite_post_pm_download()
  *
  * If any of those fails, the rollback mechanism is called. It will
  * call, in reverse, all _rollback hooks. The mysite command file can implement
  * the following rollback hooks:
  *
- * 1. drush_mysite_post_dl_rollback()
- * 2. drush_mysite_dl_rollback()
- * 3. drush_mysite_pre_dl_rollback()
- * 4. drush_mysite_dl_validate_rollback()
+ * 1. drush_mysite_post_pm_download_rollback()
+ * 2. drush_mysite_pm_download_rollback()
+ * 3. drush_mysite_pre_pm_download_rollback()
+ * 4. drush_mysite_pm_download_validate_rollback()
  *
  * Before any command is called, hook_drush_init() is also called.
  * hook_drush_exit() is called at the very end of command invocation.
@@ -132,14 +132,14 @@ function hook_drush_exit() {
 /**
  * Take action after a project has been downloaded.
  */
-function hook_drush_pm_post_install($project, $release, $destination) {
+function hook_drush_pm_post_pm_download($project, $release, $destination) {
 
 }
 
 /**
  * Take action after a project has been updated.
  */
-function hook_pm_post_update($release_name, $release_candidate_version, $project_parent_path) {
+function hook_pm_post_updatedb($release_name, $release_candidate_version, $project_parent_path) {
 
 }
 

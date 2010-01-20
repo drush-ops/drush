@@ -22,7 +22,6 @@ function simpletest_drush_help($section) {
  */
 function simpletest_drush_command() {
   $items['test-mail'] = array(
-    'callback' => 'drush_test_mail',
     'description' => 'Run all tests and mail the results to your team.',
     'examples' => array(
        "drush test-mail me@example.com --extra=\"--class BlockTestCase\"" => "Run block tests & email to me.",
@@ -39,13 +38,11 @@ function simpletest_drush_command() {
     'core' => array('6','7'),
   );
   $items['test-clean'] = array(
-    'callback' => 'drush_test_clean',
     'description' => 'Delete leftover tables and files from prior test runs.',
     'drupal dependencies' => array('simpletest'),
     'core' => array('6','7'),
   );
   $items['test-drush'] = array(
-    'callback' => 'drush_test_drush',
     'description' => 'Run drush-specific tests',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
@@ -53,14 +50,14 @@ function simpletest_drush_command() {
 }
 
 // A drush command callback.
-function drush_test_clean() {
+function drush_simpletest_test_clean() {
   simpletest_clean_environment();
   drush_print("Simpletest environment successfully cleaned.");
 }
 
 
 // A Drush command callback.
-function drush_test_mail($recipients) {
+function drush_simpletest_test_mail($recipients) {
   $run_tests = './scripts/run-tests.sh';
   if (!file_exists($run_tests)) {
     return drush_set_error('DRUSH_SIMPLETEST_RUNTESTS_SH', dt('You must copy or symlink run-tests.sh into your /scripts directory beneath Drupal root.'));
@@ -101,7 +98,7 @@ function drush_simpletest_format_results($output) {
  *
  * http://drupal.org/node/483940
  */
-function drush_test_drush() {
+function drush_simpletest_test_drush() {
   drush_log(dt("Invoking %drush help in a subprocess", array('%drush' => DRUSH_COMMAND)));
   drush_backend_invoke('help', array(), 'GET', FALSE);
 }

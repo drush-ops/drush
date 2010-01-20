@@ -56,7 +56,7 @@ function example_drush_command() {
  */
 function example_drush_help($section) {
   switch ($section) {
-    case 'drush:example':
+    case 'drush:example-foo':
       return dt("Prints the amount of time since January 1st, 1970, in years and weeks.");
   }
 }
@@ -65,9 +65,24 @@ function example_drush_help($section) {
  * Example drush command callback. This is where the action takes place.
  *
  * The function name should be same as command name but with dashes turned to
- * slashes and 'drush_' prepended.
+ * underscores and 'drush_commandfile_' prepended, where 'commandfile' is
+ * taken from the file 'commandfile.drush.inc', which in this case is 'example'.
+ * Note also that a simplification step is also done in instances where
+ * the commandfile name is the same as the beginning of the command name,
+ * "drush_example_example_foo" is simplified to just "drush_example_foo".
+ * To also implement a hook that is called before your command, implement
+ * "drush_hook_pre_example_foo".  For a list of all available hooks for a
+ * given command, run drush in --debug mode.
  *
- * In this function, all of Drupals API is (usually) available, including
+ * If for some reason you do not want your hook function to be named
+ * after your command, you may define a 'callback' item in your command
+ * object that specifies the exact name of the function that should be
+ * called.  However, the specified callback function must still begin
+ * with "drush_commandfile_" (e.g. 'callback' => "drush_example_foo_execute").
+ * All hook functions are still called (e.g. drush_example_pre_foo_execute,
+ * and so on.)
+ *
+ * In this function, all of Drupal's API is (usually) available, including
  * any functions you have added in your own modules/themes.
  *
  */

@@ -91,6 +91,7 @@ function drush_get_commands() {
         // Add some defaults and normalize the command descriptor
         $command += array(
           'command' => $key,
+          'command-hook' => $key,
           'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
           'commandfile' => $commandfile,
           'path' => dirname($path),
@@ -109,6 +110,19 @@ function drush_get_commands() {
           'drush dependencies' => array(),
           'bootstrap_errors' => array(),
         );
+        // If command callback is correctly named, then fix
+        // up the command entry so that drush_invoke will be
+        // called.
+        if ($command['callback'] != 'drush_command') {
+          $required_command_prefix = 'drush_' . $commandfile . '_';
+          if ((substr($command['callback'], 0, strlen($required_command_prefix)) == $required_command_prefix)) {
+            $command['command-hook'] = substr($command['callback'], strlen($required_command_prefix));
+            $command['callback'] = 'drush_command';
+          }
+          else {
+            $command['callback-required-prefix'] = $required_command_prefix;
+          }
+        }
         // Enforce the no-spaces in command names rule
         if ((!drush_get_option('allow-spaces-in-commands', FALSE)) && (strpos($key, ' ') !== FALSE)) {
           $command['must-replace-spaces'] = TRUE;
@@ -163,7 +177,12 @@ function drush_get_commands() {
  *
  * drush_parse_command returns a normalized command descriptor, which
  * is an associative array with the following entries:
- * - callback: name of function to invoke for this command.
+ * - callback: name of function to invoke for this command.  The callback
+ *     function name _must_ begin with "drush_commandfile_", where commandfile
+ *     is from the file "commandfile.drush.inc", which contains the
+ *     commandfile_drush_command() function that returned this command.
+ *     Note that the callback entry is optional; it is preferable to
+ *     omit it, in which case drush_invoke() will generate the hook function name.
  * - callback arguments: an array of arguments to pass to the calback.
  * - description: description of the command.
  * - arguments: an array of arguments that are understood by the command. for help texts.
@@ -288,7 +307,12 @@ function drush_invoke($command) {
       }
     }
   }
-  drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'debug');
+  // If no hook functions were found, print a warning.
+  if (empty($functions)) {
+    drush_log(dt("No hook functions were found for !command.", array('!command' => $command)), 'warning');
+  }
+  // In debug mode, we will also print all available function names.
+  drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), empty($functions) ? 'warning' : 'debug');
   $rollback = FALSE;
   $completed = array();
   $available_rollbacks = array();
@@ -346,7 +370,7 @@ function drush_command() {
   }
 
   if (!drush_get_error()) {
-    call_user_func_array('drush_invoke', array_merge(array($command['command']), $args));
+    call_user_func_array('drush_invoke', array_merge(array($command['command-hook']), $args));
   }
 
   if (!drush_get_error()) {

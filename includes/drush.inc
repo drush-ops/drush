@@ -40,7 +40,14 @@ function drush_dispatch($command = NULL) {
         return FALSE;
       }
     }
+    // Print a warning if a command callback function is misnamed
+    if (isset($command['callback-required-prefix'])) {
+      drush_log(dt('Warning: The command callback function !callback has a deprecated name.  It must begin with !requiredprefix.  Skipping hook functions.', array('!callback' => $command['callback'], '!requiredprefix' => $command['callback-required-prefix'])));
+    }
     // Call the callback function of the active command.
+    // TODO:  If we make the required prefix actually required rather than just emitting a
+    // warning, then this could become a direct call to drush_command (all commands with
+    // the required prefix will now go through drush_command + drush_invoke).
     $return = call_user_func_array($command['callback'], $command['arguments']);
   }
 
