@@ -887,85 +887,84 @@ function drush_pm_download() {
 
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
 
-  if (!$full_projects = func_get_args()) {
-    $full_projects = array('drupal');
+  if (!$requests = func_get_args()) {
+    $requests = array('drupal');
   }
+  
+  // Parse out project name and version
+  $requests = pm_parse_project_version($requests);
 
-  foreach ($full_projects as $full_project) {
-    $requestdata = pm_parse_project_version(explode(' ', $full_project));
-    $project_types = pm_project_types();
-    $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
-    foreach ($requestdata as $package) {
-      $project = $package['name'];
-      // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
-      $url = drush_get_option('source', 'http://updates.drupal.org/release-history') . "/$project/". $package['drupal_version'];
-      drush_log('Downloading release history from ' . $url);
-      // A simple download, which is never available via CVS.
-      // Some hosts have allow_url_fopen disabled.
-      if (!$xml = @simplexml_load_file($url)) {
-        if (!drush_shell_exec("wget $url")) {
-          drush_shell_exec("curl -O $url");
-        }
-        // Get the filename...
-        $filename = explode('/', $url);
-        $filename = array_pop($filename);
-        $xml = simplexml_load_file($filename);
-        drush_op('unlink', $filename);
+  $project_types = pm_project_types();
+  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
+  foreach ($requests as $name => $request) {
+    // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
+    $url = drush_get_option('source', 'http://updates.drupal.org/release-history') . '/' . $request['name'] . '/' . $request['drupal_version'];
+    drush_log('Downloading release history from ' . $url);
+    // A simple download, which is never available via CVS.
+    // Some hosts have allow_url_fopen disabled.
+    if (!$xml = @simplexml_load_file($url)) {
+      if (!drush_shell_exec("wget $url")) {
+        drush_shell_exec("curl -O $url");
       }
-
-      if ($xml) {
-        if ($error = $xml->xpath('/error')) {
-          drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
-        }
-        else {
-          // Try to get the specified release.
-          if ($package['version']) {
-            $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $package['version'] . "']");
-            if (empty($releases)) {
-              drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'notice');
-            }
-          }
-          // If that did not work, get the first published release for the recommended major version.
-          if (empty($releases)) {
-            $recommended_major = $xml->xpath("/project/recommended_major");
-            $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
-            $releases = $xml->xpath($xpath_releases);
-          }
-
-          // Profiles have 3 variants for a given real relase. Admin can specify using option.
-          // Depends on a fixed order of variations in releases list.
-          // Usually,  the first release is chosen.
-          $variations = array('core', 'no-core', 'make');
-          $variant = drush_get_option('variant', 'core');
-          $release = (array)$releases[array_search($variant, $variations)];
-
-          // Determine what type of project we have, so we know where to put it.
-          $release['type'] = 'module';
-
-          if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
-            $release['type'] = array_search($types[0]->value, $project_types);
-          }
-
-          if ($destination = pm_dl_destination($release['type'])) {
-            if (!$version_control = drush_pm_include_version_control($destination)) {
-              return FALSE;
-            }
-            if (package_handler_install_project($project, $release, $destination)) {
-              $release['full_project_path'] = $destination .  $project;
-              drush_log(dt("Project !project (!version) downloaded to !dest.",
-                             array('!project' => $project, '!version' => $release['version'], '!dest' => $destination)), 'success');
-              drush_command_invoke_all('drush_pm_post_download', $project, $release, $destination);
-              $version_control->post_download($release);
-            }
-          }
-        }
-      }
-      else {
-        // We are not getting here since drupal.org always serves an XML response.
-        drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
-      }
+      // Get the filename...
+      $filename = explode('/', $url);
+      $filename = array_pop($filename);
+      $xml = simplexml_load_file($filename);
+      drush_op('unlink', $filename);
     }
 
-    unset($package, $error, $release, $releases, $types);
+    if ($xml) {
+      if ($error = $xml->xpath('/error')) {
+        drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
+      }
+      else {
+        // Try to get the specified release.
+        if ($request['version']) {
+          $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
+          if (empty($releases)) {
+            drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'notice');
+          }
+        }
+        // If that did not work, get the first published release for the recommended major version.
+        if (empty($releases)) {
+          $recommended_major = $xml->xpath("/project/recommended_major");
+          $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
+          $releases = $xml->xpath($xpath_releases);
+        }
+
+        // Profiles have 3 variants for a given real relase. Admin can specify using option.
+        // Depends on a fixed order of variations in releases list.
+        // Usually,  the first release is chosen.
+        $variations = array('core', 'no-core', 'make');
+        $variant = drush_get_option('variant', 'core');
+        $release = (array)$releases[array_search($variant, $variations)];
+
+        // Determine what type of project we have, so we know where to put it.
+        $release['type'] = 'module';
+
+        if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
+          $release['type'] = array_search($types[0]->value, $project_types);
+        }
+
+        if ($destination = pm_dl_destination($release['type'])) {
+          if (!$version_control = drush_pm_include_version_control($destination)) {
+            return FALSE;
+          }
+          if (package_handler_install_project($request['name'], $release, $destination)) {
+            $release['full_project_path'] = $destination .  $request['name'];
+            drush_log(dt("Project !project (!version) downloaded to !dest.",
+                           array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $destination)), 'success');
+            drush_command_invoke_all('drush_pm_post_download', $request['name'], $release, $destination);
+            $version_control->post_download($release);
+          }
+        }
+      }
+    }
+    else {
+      // We are not getting here since drupal.org always serves an XML response.
+      drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
+    }
+
+    unset($error, $release, $releases, $types);
   }
 }
