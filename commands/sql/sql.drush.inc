@@ -35,7 +35,6 @@ function sql_drush_command() {
   }
 
   $items['sql-conf'] = array(
-    'callback' => 'drush_sql_conf',
     'description' => 'Print database connection details using print_r().',
     'arguments' => array(
       'all' => 'Show all database connections, instead of just one.',
@@ -44,7 +43,6 @@ function sql_drush_command() {
     'options' => $options,
   );
   $items['sql-connect'] = array(
-    'callback' => 'drush_sql_connect',
     'description' => 'A string for connecting to the DB.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
@@ -72,7 +70,6 @@ function sql_drush_command() {
     ) + $options,
   );
   $items['sql-query'] = array(
-    'callback' => 'drush_sql_query',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
     'description' => 'Execute a query against the site database.',
     'examples' => array(
@@ -123,7 +120,6 @@ function sql_drush_command() {
     );
   }
   $items['sql-cli'] = array(
-    'callback' => 'drush_sql_cli',
     'description' => "Open a SQL command-line interface using Drupal's credentials.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
