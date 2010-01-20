@@ -52,10 +52,11 @@ function core_drush_command() {
     'aliases' => array('st'),
     'examples' => array(
       'drush status version' => 'Show all status lines that contain version information.',
-      'drush status --pipe' => 'A space delimited list of status values with no labels.',
+      'drush status --pipe' => 'A list key=value items separated by line breaks.',
+      'drush status drush-version --pipe' => 'Emit just the drush version with no label.',
     ),
     'arguments' => array(
-      'item' => 'Optional.  The status item line to display.',
+      'item' => 'Optional.  The status item line(s) to display.  Any matching line is shown; if only one line matches, then only the value is displayed.  Otherwise, key=value is output.',
     ),
   );
   $items['script'] = array(
