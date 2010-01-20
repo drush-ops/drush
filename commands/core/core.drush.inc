@@ -50,6 +50,13 @@ function core_drush_command() {
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'aliases' => array('st'),
+    'examples' => array(
+      'drush status version' => 'Show all status lines that contain version information.',
+      'drush status --pipe' => 'A space delimited list of status values with no labels.',
+    ),
+    'arguments' => array(
+      'item' => 'Optional.  The status item line to display.',
+    ),
   );
   $items['script'] = array(
     'description' => "Run php script(s).",
@@ -305,40 +312,61 @@ function core_drush_help($section) {
 
 // TODO: consolidate with SQL commands?
 function _core_site_credentials() {
-  $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-  if (function_exists('php_ini_loaded_file')) {
-    // Function available on PHP >= 5.2.4, but we use it if available to help
-    // users figure out their php.ini issues.
-    $credentials = sprintf("  %-18s: %s\n", 'PHP configuration', php_ini_loaded_file());
+  $status_table = _core_site_status_table();
+  return _core_site_credential_table($status_table);
+}
+
+function _core_site_credential_table($status_table) {
+  $credentials = '';
+  foreach ($status_table as $key => $value) {
+      $credentials .= sprintf("  %-18s: %s\n", $key, $value);
   }
+  return $credentials;
+}
+
+function _core_site_credential_list($status_table) {
+  $credentials = '';
+  foreach ($status_table as $key => $value) {
+    $credentials .= sprintf("%s=%s\n", strtolower(str_replace(' ', '_', $key)), $value);
+  }
+  return $credentials;
+}
+
+function _core_site_status_table() {
+  $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
-    $credentials .= sprintf("  %-18s: %s\n", 'Drupal Root', $drupal_root);
-    $credentials .= sprintf("  %-18s: %s\n", 'Drupal version', drush_drupal_version());
+    $status_table['Drupal Root'] = $drupal_root;
+    $status_table['Drupal Version'] = drush_drupal_version();
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-      $credentials .= sprintf("  %-18s: %s\n", 'Site Path', $site_root);
-      $credentials .= sprintf("  %-18s: %s\n", 'Site URI', drush_get_context('DRUSH_URI'));
+      $status_table['Site Path'] = $site_root;
+      $status_table['Site URI'] = drush_get_context('DRUSH_URI');
       if ($creds = drush_get_context('DRUSH_DB_CREDENTIALS')) {
-        $credentials .= sprintf("  %-18s: %s\n", 'Database Driver', $creds['driver']);
-        $credentials .= sprintf("  %-18s: %s\n", 'Database Hostname', $creds['host']);
-        $credentials .= sprintf("  %-18s: %s\n", 'Database Username', $creds['user']);
-        $credentials .= sprintf("  %-18s: %s\n", 'Database Name', $creds['name']);
-        $credentials .= sprintf("  %-18s: %s\n", 'Database Password', $creds['pass']);
+        $status_table['Database Driver'] = $creds['driver'];
+        $status_table['Database Hostname'] = $creds['host'];
+        $status_table['Database Username'] = $creds['user'];
+        $status_table['Database Name'] = $creds['name'];
+        $status_table['Database Password'] = $creds['pass'];
         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
-          $credentials .= sprintf("  %-18s: %s\n", 'Database', dt('Connected'));
+          $status_table['Database'] = dt('Connected');
           if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-            $credentials .= sprintf("  %-18s: %s\n", 'Drupal Bootstrap', dt('Successful'));
+            $status_table['Drupal Bootstrap'] = dt('Successful');
             if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
               global $user;
               $username =  ($user->uid) ? $user->name : dt('Anonymous');
-              $credentials .= sprintf("  %-18s: %s\n", 'Drupal User', $username);
+              $status_table['Drupal User'] = $username;
             }
           }
         }
       }
     }
-    return $credentials;
   }
-  return dt("Could not find a valid Drupal installation\n");
+  if (function_exists('php_ini_loaded_file')) {
+    // Function available on PHP >= 5.2.4, but we use it if available to help
+    // users figure out their php.ini issues.
+    $status_table['PHP configuration'] = php_ini_loaded_file();
+  }
+  $status_table['Drush Version'] = DRUSH_VERSION;
+  return $status_table;
 }
 
 /**
@@ -367,8 +395,46 @@ function drush_core_cron() {
  */
 function drush_core_status() {
   drush_bootstrap_max();
-  print _core_site_credentials();
+  $status_table = _core_site_status_table();
+  // If args are specified, filter out any entry that is not named
+  // (in other words, only show lines named by one of the arg values)
+  $args = func_get_args();
+  if (!empty($args)) {
+    foreach ($status_table as $key => $value) {
+      if (!_drush_core_is_named_in_array($key, $args)) {
+        unset($status_table[$key]);
+      }
+    }
+  }
+  // Print either an ini-format list or a formatted ASCII table
+  if (drush_get_option('pipe')) {
+    if (count($status_table) == 1) {
+      $first_value = array_shift($status_table);
+      drush_print_pipe($first_value);
+    }
+    else {
+      drush_print_pipe(_core_site_credential_list($status_table));
+    }
+  }
+  else {
+    // print _core_site_credential_table($status_table);
+    drush_print_table(drush_key_value_to_array_table($status_table));
+  }
   return;
+}
+
+function _drush_core_is_named_in_array($key, $the_array) {
+  $is_named = FALSE;
+  
+  $simplified_key = str_replace(array(' ', '_', '-'), array('', '', ''), $key);
+  
+  foreach ($the_array as $name) {
+    if (stristr($simplified_key, str_replace(array(' ', '_', '-'), array('', '', ''), $name))) {
+      $is_named = TRUE;
+    }
+  }
+  
+  return $is_named;
 }
 
 /**

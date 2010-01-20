@@ -392,7 +392,10 @@ function _drush_bootstrap_drush() {
 
   // statically define a way to call drush again
   define('DRUSH_COMMAND', drush_find_drush());
-
+  
+  $drush_info = drush_read_drush_info();
+  define('DRUSH_VERSION', $drush_info['version']);
+  
   // Load a drushrc.php file in the drush.php's directory.
   drush_load_config('drush');
 
@@ -971,6 +974,15 @@ function drush_find_drush() {
     $drush = realpath($_SERVER['argv']['0']);
   }
   return $drush;
+}
+
+/**
+ * Read the drush info file.
+ */
+function drush_read_drush_info() {
+  $drush_info_file = dirname(__FILE__) . '/../drush.info';
+  
+  return parse_ini_file($drush_info_file);
 }
 
 /**

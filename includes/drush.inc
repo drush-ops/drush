@@ -655,6 +655,26 @@ function drush_print_table($rows, $header = FALSE, $widths = array()) {
 }
 
 /**
+ * Convert an associative array of key : value pairs into
+ * a table suitable for processing by drush_print_table.
+ *
+ * @param $keyvalue_table
+ *    An associative array of key : value pairs.
+ * @return
+ *    An array of arrays, where the keys from the input
+ *    array are stored in the first column, and the values
+ *    are stored in the third.  A second colum is created
+ *    specifically to hold the ':' separator.
+ */
+function drush_key_value_to_array_table($keyvalue_table) {
+  $table = array();
+  foreach ($keyvalue_table as $key => $value) {
+    $table[] = array($key, ' :', $value);
+  }
+  return $table;
+}
+
+/**
  * Determine the best fit for column widths.
  *
  * @param $rows
