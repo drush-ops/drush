@@ -417,7 +417,6 @@ function drush_core_status() {
     }
   }
   else {
-    // print _core_site_credential_table($status_table);
     drush_print_table(drush_key_value_to_array_table($status_table));
   }
   return;
@@ -425,15 +424,15 @@ function drush_core_status() {
 
 function _drush_core_is_named_in_array($key, $the_array) {
   $is_named = FALSE;
-  
+
   $simplified_key = str_replace(array(' ', '_', '-'), array('', '', ''), $key);
-  
+
   foreach ($the_array as $name) {
     if (stristr($simplified_key, str_replace(array(' ', '_', '-'), array('', '', ''), $name))) {
       $is_named = TRUE;
     }
   }
-  
+
   return $is_named;
 }
 
