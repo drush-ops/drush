@@ -104,7 +104,6 @@ function pm_drush_command() {
   );
   $items['pm-list'] = array(
     'description' => 'Show module enabled/disabled status',
-    'callback' => 'pm_module_manage',
     'callback arguments' => array(array(), FALSE),
     'options' => array(
       '--pipe' => 'Returns a space delimited list of enabled modules.',
@@ -180,19 +179,122 @@ function pm_drush_command() {
 }
 
 /**
+ * Command callback. Show a list of modules and status.
+ *
+ */
+function drush_pm_list() {
+  $modules = drush_get_modules();
+  $rows[] = array(dt('Name'), dt('Status'), dt('Description'));
+  foreach ($modules as $module) {
+    $enabled = dt('Disabled');
+    if ($module->status) {
+      $enabled = dt('Enabled');
+      $pipe[] = $module->name;
+    }
+    $info = $module->info;
+    $rows[] = array($info['name'] . ' (' . $module->name . ')', $enabled, truncate_utf8($info['description'], 60, FALSE, TRUE));
+  }
+  drush_print_table($rows, TRUE);
+
+  // Space delimited list for use by other scripts. Set the --pipe option.
+  drush_print_pipe(implode(' ', $pipe));
+}
+
+/**
  * Command callback. Enables one or more modules.
  */
 function drush_pm_enable() {
-  $args = func_get_args();
-  return pm_module_manage($args, TRUE);
+  $modules = func_get_args();
+  if (empty($modules)) {
+    return drush_log(dt('There were no modules that could be enabled.'), 'ok');
+  }
+
+  $module_info = drush_get_modules();
+  $enabled = array_keys(array_filter($module_info, 'pm_is_enabled'));
+  $requested_modules = $modules;
+
+  pm_dependencies($modules, $enabled, $module_info);
+  drush_print(dt('The following modules will be enabled: !modules', array('!modules' => implode(', ', $modules))));
+  if(!drush_confirm(dt('Do you really want to continue?'))) {
+    drush_die('Aborting.');
+  }
+
+  // Make sure the install API is available.
+  require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
+  // We install/enable modules explicitly here, to pass dependency validation in form submit.
+  $install_modules = array();
+  $enable_modules = array();
+  foreach ($modules as $module) {
+    // Check to see if the module can be installed/enabled (hook_requirements)
+    // See @system_modules_submit
+    if (!drupal_check_module($module)) {
+      continue;
+    }
+
+    // In Drupal 5, drupal_install_modules() only installs new modules,
+    // and does not enable previously installed and disabled modules.
+    if (drupal_get_installed_schema_version($module) == SCHEMA_UNINSTALLED) {
+      $install_modules[] = $module;
+    }
+    else {
+      $enable_modules[] = $module;
+    }
+  }
+#  drupal_install_modules($install_modules);
+  module_enable($enable_modules);
+  $current = drupal_map_assoc($enabled, 'pm_true');
+  // Add the list of processed modules from the active modules list.
+  $processed_modules = array_merge($install_modules, $enable_modules);
+  $active_modules = array_merge($current, drupal_map_assoc($processed_modules, 'pm_true'));
+  
+  pm_system_modules_form_submit($active_modules);
+
+  $module_info = drush_get_modules();
+  foreach ($modules as $module_name) {
+    if ($module_info[$module_name]->status) {
+      drush_log(dt('!module was enabled successfully.', array('!module' => $module_info[$module_name]->info['name'])), 'ok');
+    }
+    else {
+      drush_set_error('DRUSH_PM_ENABLE_MODULE_ISSUE', dt('> There was a problem enabling !module.', array('!module' => $module_name)));
+    }
+  }
 }
 
 /**
  * Command callback. Disable one or more modules.
  */
 function drush_pm_disable() {
-  $args = func_get_args();
-  return pm_module_manage($args, FALSE);
+  $modules = func_get_args();
+  if (empty($modules)) {
+    return drush_log(dt('There were no modules that could be disabled.'), 'ok');
+  }
+
+  $module_info = drush_get_modules();
+  $enabled = array_keys(array_filter($module_info, 'pm_is_enabled'));
+  pm_reverse_dependencies($modules, $enabled, $module_info);
+
+  drush_print(dt('The following modules will be disabled: !modules', array('!modules' => implode(', ', $modules))));
+  if(!drush_confirm(dt('Do you really want to continue?'))) {
+    drush_die('Aborting.');
+  }
+
+  // We disable the modules explicitly here, to pass dependency validation in the form submit.
+  module_disable($modules);
+  // Remove the list of disabled modules from the active modules list.
+  $active_modules = array_diff($enabled, $modules);
+  $active_modules = drupal_map_assoc($active_modules, 'pm_true');
+
+  pm_system_modules_form_submit($active_modules);
+
+  $module_info = drush_get_modules();
+  foreach ($modules as $module_name) {
+    if (!$module_info[$module_name]->status) {
+      drush_log(dt('!module was disabled successfully.', array('!module' => $module_info[$module_name]->info['name'])), 'ok');
+    }
+    else {
+      drush_set_error('DRUSH_PM_DISABLE_MODULE_ISSUE', dt('> There was a problem disabling !module.', array('!module' => $module_name)));
+    }
+  }
 }
 
 /**
@@ -238,137 +340,6 @@ function drush_pm_uninstall() {
       }
     }
   }
-}
-
-function pm_module_manage($modules = array(), $enable = TRUE) {
-  if (function_exists('module_load_include')) {
-    module_load_include('inc', 'system', 'system.admin');
-  }
-  else {
-    // Drupal5 only.
-    require_once('./'. drupal_get_path('module', 'system') .'/system.module');
-  }
-
-  $module_info = drush_get_modules();
-  $enabled = array();
-  foreach ($module_info as $module_name => $module) {
-    // In Drupal 5, system_modules() returns NULL for the dependency list of the module if there are no dependencies.
-    // We will override this to be an empty array instead to be compatible to Drupal 6 and 7
-    if (empty($module->info['dependencies'])){
-       $module->info['dependencies'] = array();
-    }
-    // Add enabled modules to an array for easy reference.
-    if ($module_info[$module_name]->status) {
-      $enabled[] = $module_name;
-    }
-  }
-  if (empty($modules)) {
-    pm_module_status($enabled, $module_info);
-  }
-  else {
-    $requested_modules = $modules;
-    if ($enable) {
-      pm_dependencies($modules, $enabled, $module_info);
-      if (empty($modules)) {
-        return drush_log(dt('There were no modules that could be enabled.'), 'ok');
-      }
-      drush_print(dt('The following modules will be enabled: !modules', array('!modules' => implode(', ', $modules))));
-      if(!drush_confirm(dt('Do you really want to continue?'))) {
-        drush_die('Aborting.');
-      }
-      // Make sure the install API is available.
-      require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
-      // We install/enable modules explicitly here, to pass dependency validation in form submit.
-      $install_modules = array();
-      $enable_modules = array();
-      foreach ($modules as $module) {
-        // Check to see if the module can be installed/enabled (hook_requirements)
-        // See @system_modules_submit
-        if (!drupal_check_module($module)) {
-          continue;
-        }
-
-        // In Drupal 5, drupal_install_modules() only installs new modules,
-        // and does not enable previously installed and disabled modules.
-        if (drupal_get_installed_schema_version($module) == SCHEMA_UNINSTALLED) {
-          $install_modules[] = $module;
-        }
-        else {
-          $enable_modules[] = $module;
-        }
-      }
-      drupal_install_modules($install_modules);
-      module_enable($enable_modules);
-      $current = drupal_map_assoc($enabled, 'pm_true');
-      // Add the list of processed modules from the active modules list.
-      $processed_modules = array_merge($install_modules, $enable_modules);
-      $active_modules = array_merge($current, drupal_map_assoc($processed_modules, 'pm_true'));
-    }
-    else {
-      pm_reverse_dependencies($modules, $enabled, $module_info);
-      if (empty($modules)) {
-        return drush_log(dt('There were no modules that could be disabled.'), 'ok');
-      }
-      drush_print(dt('The following modules will be disabled: !modules', array('!modules' => implode(', ', $modules))));
-      if(!drush_confirm(dt('Do you really want to continue?'))) {
-        drush_die('Aborting.');
-      }
-      // We disable the modules explicitly here, to pass dependency validation in the form submit.
-      module_disable($modules);
-      // Remove the list of disabled modules from the active modules list.
-      $active_modules = array_diff($enabled, $modules);
-      $active_modules = drupal_map_assoc($active_modules, 'pm_true');
-    }
-
-    // We submit the system modules form - the modules should already be fully
-    // enabled/disabled by this stage, but this makes sure any activities
-    // triggered by the form submit (such as admin_role) are completed.
-    $form_state = array('values' => array('status' => $active_modules));
-    if (function_exists('drupal_execute')) {
-      drupal_execute('system_modules', $form_state);
-    }
-    else {
-      // Drupal 7.
-      drupal_form_submit('system_modules', $form_state);
-    }
-
-    $module_info = drush_get_modules();
-    foreach ($modules as $module_name) {
-      if ($enable) {
-        if ($module_info[$module_name]->status) {
-          drush_log(dt('!module was enabled successfully.', array('!module' => $module_info[$module_name]->info['name'])), 'ok');
-        }
-        else {
-          drush_set_error('DRUSH_PM_ENABLE_MODULE_ISSUE', dt('> There was a problem enabling !module.', array('!module' => $module_name)));
-        }
-      }
-      else {
-        if (!$module_info[$module_name]->status) {
-          drush_log(dt('!module was disabled successfully.', array('!module' => $module_info[$module_name]->info['name'])), 'ok');
-        }
-        else {
-          drush_set_error('DRUSH_PM_DISABLE_MODULE_ISSUE', dt('> There was a problem disabling !module.', array('!module' => $module_name)));
-        }
-      }
-    }
-  }
-}
-
-function pm_module_status($enabled, $module_info) {
-  $rows[] = array(dt('Name'), dt('Status'), dt('Description'));
-  foreach ($module_info as $module_name => $module) {
-    $enabled = dt('Disabled');
-    if ($module->status) {
-      $enabled = dt('Enabled');
-      $pipe[] = $module_name;
-    }
-    $info = $module_info[$module_name]->info;
-    $rows[] = array($info['name'] . ' (' . $module_name . ')', $enabled, truncate_utf8($info['description'], 60, FALSE, TRUE));
-  }
-  drush_print_table($rows, TRUE);
-
-  // Space delimited list for use by other scripts. Set the --pipe option.
-  drush_print_pipe(implode(' ', $pipe));
 }
 
 /**
@@ -423,6 +394,42 @@ function pm_reverse_dependencies(&$modules, $enabled, $module_info) {
     }
   }
   $modules = array_intersect($enabled, $modules);
+}
+
+/**
+ * Submit the system modules form.
+ *
+ * The modules should already be fully enabled/disabled before calling this 
+ * function. Calling this function just makes sure any activities triggered by
+ * the form submit (such as admin_role) are completed.
+ */
+function pm_system_modules_form_submit($active_modules) {
+  if (function_exists('module_load_include')) {
+    module_load_include('inc', 'system', 'system.admin');
+  }
+  else {
+    // Drupal5 only.
+    require_once('./'. drupal_get_path('module', 'system') .'/system.module');
+  }
+  
+  $form_state = array('values' => array('status' => $active_modules));
+  if (function_exists('drupal_execute')) {
+    drupal_execute('system_modules', $form_state);
+  }
+  else {
+    // Drupal 7.
+    drupal_form_submit('system_modules', $form_state);
+  }
+}
+
+/**
+ * Array filter callback to return enabled modules.
+ *
+ * @param $module
+ *  A module object as returned by pm_get_module_info().
+ */
+function pm_is_enabled($module) {
+  return $module->status;
 }
 
 /**
