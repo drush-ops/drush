@@ -129,7 +129,7 @@ function core_drush_command() {
       'code' => 'PHP code',
     ),
   );
-  $items['installsite'] = array(
+  $items['site-install'] = array(
     'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
     'arguments' => array(
       'profile' => 'the install profile you wish to run. defaults to \'default\'',
@@ -142,18 +142,19 @@ function core_drush_command() {
       'account-mail' => 'uid1 email. defaults to admin@example.com',
       'locale' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',
       'clean-url'=> 'Defaults to 1',
-      'site-name' => 'Defaults to installsite',
+      'site-name' => 'Defaults to Site-Install',
       'site-mail' => 'From: for system mailings. Defaults to admin@example.com',
       'sites-subdir' => "Name of directory under 'sites' which should be created if needed. Defaults to 'default'",
     ),
     'examples' => array(
-      'installsite expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukranian.',
-      'installsite --db-url=mysql://root:pass@localhost:port/dbname ' => 'Install using the specified DB params.',
-      'installsite --account-user=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
+      'site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukranian.',
+      'site-install --db-url=mysql://root:pass@localhost:port/dbname ' => 'Install using the specified DB params.',
+      'site-install --account-user=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
     ),
     'core' => array(7),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
-    'aliases' => array('is'),
+    'aliases' => array('si'),
+    'deprecated-aliases' => array('installsite', 'is'),
   );
   return $items;
 }
@@ -293,7 +294,7 @@ function core_drush_help($section) {
       return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
     case 'drush:eval':
       return dt("Run arbitrary PHP code in the context of Drupal");
-    case 'drush:installsite':
+    case 'drush:site-install':
       return dt("Install Drupal using specified install profile.");
     case 'error:DRUSH_DRUPAL_DB_ERROR' :
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
