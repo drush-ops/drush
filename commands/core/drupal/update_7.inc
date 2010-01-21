@@ -311,6 +311,6 @@ function drush_update_batch($start) {
 function drush_update_finished($success, $results, $operations) {
   // Clear the caches in case the data has been updated.
   drupal_flush_all_caches();
-  variable_set('site_offline', FALSE);
+  variable_del('maintenance_mode');
 }
 
