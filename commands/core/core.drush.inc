@@ -227,6 +227,7 @@ function drush_core_help() {
         }
 
         $rows = array();
+        ksort($commands);
         foreach($commands as $key => $command) {
           if (!array_key_exists('is_alias', $command) || !$command['is_alias']) {
             if (!array_key_exists($key, $printed_rows)) {
