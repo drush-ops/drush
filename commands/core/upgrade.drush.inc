@@ -16,7 +16,7 @@
 function upgrade_drush_command() {
   $items = array();
 
-  $items['core-upgrade'] = array(
+  $items['site-upgrade'] = array(
     'description' => "Run a major version upgrade for Drupal core and contrib modules.",
     'drupal dependencies' => array('update'),
     'arguments' => array(
@@ -26,7 +26,7 @@ function upgrade_drush_command() {
       'source-dump' => 'Path to dump file. Medium or large sized sites should set this. Optional; default is to create a temporary file.',
       'db-su' => 'Account to use when dropping and creating the target database. Optional.',
     ),
-    'aliases' => array('cup'),
+    'aliases' => array('sup'),
   );
   return $items;
 }
@@ -36,12 +36,16 @@ function upgrade_drush_command() {
  */
 function upgrade_drush_help($section) {
   switch ($section) {
-    case 'drush:core-upgrade':
+    case 'drush:site-upgrade':
       return dt("Execute a major version upgrade for Drupal core and enabled contrib modules. Command will download next version of Drupal and all available contrib modules that are available. It prepares a settings.php for the target site, and copies the prior version's database to the target site. Finally, updatedb is run. The intent is for developers to keep re-running this command until they are satisfied with the resulting site.");
   }
 }
 
-function drush_upgrade_core_upgrade_validate($target_key) {
+function drush_upgrade_site_upgrade_validate($target_key = NULL) {
+  if (empty($target_key)) {
+    return drush_set_error(dt('Missing argument: target'));
+  }
+
   if (!$target_alias = drush_sitealias_get_record($target_key, TRUE)) {
     return drush_set_error('Site alias not found: @target-key. See example.drushrc.inc.', array('@target-key' => $target_key));
   }
@@ -54,9 +58,7 @@ function drush_upgrade_core_upgrade_validate($target_key) {
 /**
  * A drush command callback.
  */
-function drush_core_upgrade($target_key) {
-  // $args = func_get_args();
-
+function drush_upgrade_site_upgrade($target_key) {
   $source_version = drush_drupal_major_version();
   $target_version = $source_version + 1;
   $target_alias = drush_sitealias_get_record($target_key, TRUE);
@@ -142,7 +144,7 @@ function drush_upgrade_fix_db_url($target_alias, $settings_destination) {
   }
   $new_url = substr($old_url, 0, strrpos(trim($old_url), '/')) . '/'. $target_alias['databases']['default']['default']['database'];
 
-  $append = "\n# Added by drush core-upgrade.";
+  $append = "\n# Added by drush site-upgrade.";
   if (drush_drupal_major_version() <= 6) {
     $append .= "\n" . '$db_url = \'' . $new_url . '\';';
   }
