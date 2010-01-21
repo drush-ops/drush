@@ -273,9 +273,8 @@ function update_create_batch_table() {
   return $ret;
 }
 
-
-function update_main() {
-  global $profile;
+function update_main_prepare() {
+ global $profile;
   // Some unavoidable errors happen because the database is not yet up-to-date.
   // Our custom error handler is not yet installed, so we just suppress them.
   drush_errors_off();
@@ -334,6 +333,12 @@ function update_main() {
 
   _drush_log_update_sql(update_fix_d6_requirements());
   _drush_log_update_sql(update_fix_compatibility());
+
+
+}
+
+function update_main() {
+  update_main_prepare();
 
   $start = array();
   $has_updates = FALSE;
@@ -421,7 +426,7 @@ function update_main() {
     batch_set($batch);
     $batch =& batch_get();
     $batch['progressive'] = FALSE;
-    batch_process();
+    drush_backend_batch_process('updatedb-batch-process');
   }
   else {
     drush_log(dt("No database updates required"), 'success');
@@ -442,6 +447,7 @@ function _update_do_one($module, $number, &$context) {
   }
 
   $function = $module .'_update_'. $number;
+  drush_log("Executing $function", 'success');
 
   if (function_exists($function)) {
     $ret = $function($context['sandbox']);
@@ -458,5 +464,10 @@ function _update_do_one($module, $number, &$context) {
     drupal_set_installed_schema_version($module, $number);
   }
 
+}
+
+function _update_batch_command($id) {
+  update_main_prepare();
+  drush_batch_command($id);
 }
 

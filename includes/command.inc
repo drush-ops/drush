@@ -109,6 +109,7 @@ function drush_get_commands() {
           'drupal dependencies' => array(),
           'drush dependencies' => array(),
           'bootstrap_errors' => array(),
+          'hidden' => FALSE,
         );
         // If command callback is correctly named, then fix
         // up the command entry so that drush_invoke will be

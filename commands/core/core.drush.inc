@@ -156,11 +156,31 @@ function core_drush_command() {
     'aliases' => array('si'),
     'deprecated-aliases' => array('installsite', 'is'),
   );
+
+  $items['batch-process'] = array(
+    'description' => dt('Process operations in the specified batch set'),
+    'hidden' => TRUE,
+      'arguments' => array(
+        'batch-id' => 'The batch id that will be processed',
+      ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
+  );
+
+  $items['updatedb-batch-process'] = array(
+    'description' => dt('Perform update functions'),
+    'hidden' => TRUE,
+    'arguments' => array(
+      'batch-id' => 'The batch id that will be processed',
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
+  );
+
   return $items;
 }
 
 function core_drush_engine_drupal() {
   $engines = array();
+  $engines['batch'] = array();
   $engines['update'] = array();
   $engines['environment'] = array();
   return $engines;
@@ -229,11 +249,13 @@ function drush_core_help() {
         $rows = array();
         ksort($commands);
         foreach($commands as $key => $command) {
-          if (!array_key_exists('is_alias', $command) || !$command['is_alias']) {
-            if (!array_key_exists($key, $printed_rows)) {
-              $name = $command['aliases'] ? $key . ' (' . implode(', ', $command['aliases']) . ')': $key;
-              $rows[$key] = array($name, $command['description']);
-              $pipe[] = "\"$key\"";
+          if (!$command['hidden']) {
+            if (!array_key_exists('is_alias', $command) || !$command['is_alias']) {
+              if (!array_key_exists($key, $printed_rows)) {
+                $name = $command['aliases'] ? $key . ' (' . implode(', ', $command['aliases']) . ')': $key;
+                $rows[$key] = array($name, $command['description']);
+                $pipe[] = "\"$key\"";
+              }
             }
           }
         }
@@ -489,3 +511,30 @@ function drush_core_script() {
 function drush_core_eval($command) {
   eval($command . ';');
 }
+
+/**
+ * Process sets from the specified batch.
+ *
+ * This is the default batch processor that will be used if the $command parameter
+ * to drush_backend_batch_process() has not been specified.
+ */
+function drush_core_batch_process($id) {
+  drush_batch_command($id);
+}
+
+/**
+ * Process outstanding updates during updatedb.
+ *
+ * This is a batch processing command that makes use of the drush_backend_invoke
+ * api.
+ *
+ * This command includes the version specific update engine, which correctly
+ * initialises the environment to be able to successfully handle minor and major
+ * upgrades.
+ */
+function drush_core_updatedb_batch_process($id) {
+  drush_include_engine('drupal', 'update', drush_drupal_major_version());
+  _update_batch_command($id);
+}
+
+

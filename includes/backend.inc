@@ -474,3 +474,5 @@ function _drush_backend_get_stdin() {
   }
   return FALSE;
 }
+
+

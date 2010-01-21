@@ -145,7 +145,7 @@ function update_check_requirements() {
 }
 
 
-function update_main() {
+function update_main_prepare() {
   // Some unavoidable errors happen because the database is not yet up-to-date.
   // Our custom error handler is not yet installed, so we just suppress them.
   drush_errors_off();
@@ -216,6 +216,12 @@ function update_main() {
   }
 
   module_list(TRUE, FALSE, TRUE);
+}
+
+
+
+function update_main() {
+  update_main_prepare();
 
   $pending = update_get_update_list();
 
@@ -249,6 +255,10 @@ function update_main() {
 
 }
 
+function _update_batch_command($id) {
+  update_main_prepare();
+  drush_batch_command($id);
+}
 
 /**
  * Start the database update batch process.
@@ -285,7 +295,6 @@ function drush_update_batch($start) {
   }
   $batch =& batch_get();
   $batch['operations'] = $operations;
-  $batch['progressive'] = FALSE;
   $batch += array(
     'title' => 'Updating',
     'init_message' => 'Starting updates',
@@ -294,46 +303,9 @@ function drush_update_batch($start) {
     'file' => 'includes/update.inc',
   );
   batch_set($batch);
-  batch_process(NULL, NULL, NULL);
+  drush_backend_batch_process('updatedb-batch-process');
 }
 
-
-
-/**
- * A simplified version of the batch_do_one function from update.php
- *
- * This does not mess with sessions and the like, as it will be used
- * from the command line
- */
-function _update_do_one($module, $number, &$context) {
-  // If updates for this module have been aborted
-  // in a previous step, go no further.
-  if (!empty($context['results'][$module]['#abort'])) {
-    return;
-  }
-
-  try {
-    $function = $module .'_update_'. $number;
-    if (function_exists($function)) {
-      drush_log("Running $function");
-      $ret = $function($context['sandbox']);
-      $context['results'][$module] = $ret;
-    }
-    _drush_log_update_sql($ret);
-  }
-  catch (Exception $e) {
-    drush_log(var_dump($e, TRUE));
-  }
-
-  if (isset($ret['#finished'])) {
-    $context['finished'] = $ret['#finished'];
-    unset($ret['#finished']);
-  }
-
-  if ($context['finished'] == 1 && empty($context['results'][$module]['#abort'])) {
-    drupal_set_installed_schema_version($module, $number);
-  }
-}
 
 
 function drush_update_finished($success, $results, $operations) {

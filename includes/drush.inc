@@ -1423,3 +1423,22 @@ function drush_errors_on() {
 /**
  * @} End of "defgroup errorhandling".
  */
+
+ /**
+ * Get the PHP memory_limit value in bytes.
+ */
+function drush_memory_limit() {
+  $value = trim(ini_get('memory_limit'));
+  $last = strtolower($value[strlen($value)-1]);
+  switch ($last) {
+    case 'g':
+      $value *= 1024;
+    case 'm':
+      $value *= 1024;
+    case 'k':
+      $value *= 1024;
+  }
+
+  return $value;
+}
+

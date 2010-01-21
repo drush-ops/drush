@@ -29,6 +29,7 @@ require_once DRUSH_BASE_PATH . '/includes/environment.inc';
 require_once DRUSH_BASE_PATH . '/includes/command.inc';
 require_once DRUSH_BASE_PATH . '/includes/drush.inc';
 require_once DRUSH_BASE_PATH . '/includes/backend.inc';
+require_once DRUSH_BASE_PATH . '/includes/batch.inc';
 require_once DRUSH_BASE_PATH . '/includes/context.inc';
 require_once DRUSH_BASE_PATH . '/includes/sitealias.inc';
 
