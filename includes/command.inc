@@ -496,11 +496,11 @@ function _drush_find_commandfiles($phase) {
       }
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_SITE:
-      // Add all module paths, even disabled modules. Prefer speed over accuracy.
-      $searchpath[] = 'sites/all/modules';
       $searchpath[] = conf_path() . '/modules';
       // Too early for variable_get('install_profile', 'default'); Just use default.
       $searchpath[] = "profiles/default/modules";
+      // Add all module paths, even disabled modules. Prefer speed over accuracy.
+      $searchpath[] = 'sites/all/modules';
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_FULL:
       // Add enabled module paths. Since we are bootstrapped,
@@ -515,13 +515,17 @@ function _drush_find_commandfiles($phase) {
   if (sizeof($searchpath)) {
     $list = array();
 
-    // Scan for drush command files, load if found
+    // Scan for drush command files; load if found.
     foreach (array_unique($searchpath) as $path) {
       if (is_dir($path)) {
         $files = drush_scan_directory($path, '/\.drush\.inc$/');
         foreach ($files as $filename => $info) {
-          require_once(realpath($filename));
-          $list[basename($filename, '.drush.inc')] = $filename;
+          $module = basename($filename, '.drush.inc');
+          // We check both arrays because we may be called multiple times with different bootstrap levels
+          if (!array_key_exists($module, $cache) && !array_key_exists($module, $list)) {
+            require_once(realpath($filename));
+            $list[$module] = $filename;
+          }
         }
       }
     }
