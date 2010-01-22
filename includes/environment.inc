@@ -986,36 +986,6 @@ function drush_read_drush_info() {
 }
 
 /**
- * Get module information for all installed modules. Wrapper for _drush_get_modules().
- *
- * @return
- *   An array containing module info for all installed modules or FALSE on error.
- */
-function drush_get_modules() {
-  if(drush_include_engine('drupal', 'environment')){
-    return _drush_get_modules();
-  }
-  else {
-    return drush_set_error('DRUSH_CORE', dt('Drush was unable to load module information.'));
-  }
-}
-
-/**
- * Get theme information for all installed themes. Wrapper for _drush_get_themes().
- *
- * @return
- *   An array containing theme info for all installed themes or FALSE on error.
- */
-function drush_get_themes() {
-  if(drush_include_engine('drupal', 'environment')){
-    return _drush_get_themes();
-  }
-  else {
-    return drush_set_error('DRUSH_CORE', dt('Drush was unable to load theme information.'));
-  }
-}
-
-/**
  * Make a determination whether or not the given
  * host is local or not.
  *
