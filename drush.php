@@ -85,7 +85,7 @@ function drush_main() {
 
       if (is_array($command)) {
         if (array_key_exists($command['bootstrap'], $completed_phases) && empty($command['bootstrap_errors'])) {
-          drush_log(dt("Found command: !command", array('!command' => $command['command'])), 'bootstrap');
+          drush_log(dt("Found command: !command (commandfile=!commandfile)", array('!command' => $command['command'], '!commandfile' => $command['commandfile'])), 'bootstrap');
           $command_found = TRUE;
           // Dispatch the command(s).
           $return = drush_dispatch($command);
