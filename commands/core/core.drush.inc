@@ -59,12 +59,12 @@ function core_drush_command() {
       'item' => 'Optional.  The status item line(s) to display.  Any matching line is shown; if only one line matches, then only the value is displayed.  Otherwise, key=value is output.',
     ),
   );
-  $items['script'] = array(
+  $items['php-script'] = array(
     'description' => "Run php script(s).",
     'examples' => array(
-      'drush script scratch.php' => 'Run scratch.php script. See commands/core directory.',
-      'drush script example.php --script-path=/path/to/scripts:/another/path' => 'Run script from specified paths',
-      'drush script' => 'List all available scripts.',
+      'drush php-script scratch.php' => 'Run scratch.php script. See commands/core directory.',
+      'drush php-script example.php --script-path=/path/to/scripts:/another/path' => 'Run script from specified paths',
+      'drush php-script' => 'List all available scripts.',
     ),
     'arguments' => array(
       'filename' => 'Optional. The file you wish to execute. If omitted, list files ending in .php in the current working directory and specified script-path. Some might not be real drush scripts. Beware.',
@@ -72,6 +72,8 @@ function core_drush_command() {
     'options' => array(
       '--script-path' => "Additional paths to search for scripts.  Use POSIX path separator (':') for multiple paths.",
     ),
+    'aliases' => array('scr'),
+    'deprecated-aliases' => array('script'),
   );
   $items['cache-clear'] = array(
     'description' => 'Clear a specific cache, or all drupal caches.',
@@ -120,14 +122,15 @@ function core_drush_command() {
     ),
     'deprecated-aliases' => array('sync'),
   );
-  $items['eval'] = array(
+  $items['php-eval'] = array(
     'description' => 'Evaluate arbitrary php code after bootstrapping Drupal.',
     'examples' => array(
-      'drush eval "variable_set(\'hello\', \'world\');"' => 'Sets the hello variable using Drupal API.',
+      'drush php-eval "variable_set(\'hello\', \'world\');"' => 'Sets the hello variable using Drupal API.',
     ),
     'arguments' => array(
       'code' => 'PHP code',
     ),
+    'deprecated-aliases' => array('eval'),
   );
   $items['site-install'] = array(
     'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
@@ -301,7 +304,7 @@ function core_drush_help($section) {
       return dt("List hook implementations for a given hook and get more detail on a given implementation.");
     case 'drush:status':
       return dt("View the Drupal version and DB credentials for the current site.");
-    case 'drush:script':
+    case 'drush:php-script':
       return dt("Runs the given php script(s) after a full Drupal bootstrap. A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting. if you plan to share a script with others, consider making a full drush command instead since thats more self-documenting.");
     case 'drush:cache-clear':
       return dt("Delete a specific drupal cache, or all caches.");
@@ -315,7 +318,7 @@ function core_drush_help($section) {
       return dt("Run update.php just as a web browser would.");
     case 'drush:rsync':
       return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
-    case 'drush:eval':
+    case 'drush:php-eval':
       return dt("Run arbitrary PHP code in the context of Drupal");
     case 'drush:site-install':
       return dt("Install Drupal using specified install profile.");
@@ -464,7 +467,7 @@ function _drush_core_is_named_in_array($key, $the_array) {
 /**
  * Command callback. Runs "naked" php scripts.
  */
-function drush_core_script() {
+function drush_core_php_script() {
   $args = func_get_args();
 
   // Array of paths to search for scripts
@@ -508,7 +511,7 @@ function drush_core_script() {
   }
 }
 
-function drush_core_eval($command) {
+function drush_core_php_eval($command) {
   eval($command . ';');
 }
 
@@ -536,5 +539,3 @@ function drush_core_updatedb_batch_process($id) {
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
   _update_batch_command($id);
 }
-
-
