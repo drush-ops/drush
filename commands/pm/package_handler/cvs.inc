@@ -96,8 +96,9 @@ function drush_pm_cvs($project, $info, $path) {
     $cvsmethod = 'checkout';
   }
 
-  // CVS does not accept absolute paths, so generate a relative path.
-  $path = '.' . ltrim(str_replace(getcwd(), '', $path), '.');
+  // Normalize to forward slashes.
+  $cwd = str_replace('\\','/',getcwd());
+  $path = '.' . ltrim(str_replace($cwd, '', $path), '.');
 
   $cvsparts = array();
   $cvsparts[] = '-z6';
