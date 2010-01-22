@@ -42,6 +42,8 @@ function pm_drush_help($section) {
       return dt('Enable one or more modules. Enables dependant modules as well.');
     case 'drush:pm-disable':
       return dt('Disable one or more modules. Disables dependant modules as well.');
+    case 'drush:pm-info':
+      return dt('Show detailed info for one or more projects.');
     case 'drush:pm-uninstall':
       return dt('Uninstall one or more modules. Modules must be disabled first.');
     case 'drush:pm-list':
@@ -89,6 +91,12 @@ function pm_drush_command() {
     ),
     'aliases' => array('dis'),
     'deprecated-aliases' => array('disable'),
+  );
+  $items['pm-info'] = array(
+    'description' => 'Show info for one or more projects.',
+    'arguments' => array(
+      'projects' => 'A space delimited list of projects.',
+    ),
   );
   // Install command is reserved for the download and enable of projects including dependencies.
   // @see http://drupal.org/node/112692 for more information.
@@ -293,7 +301,7 @@ function drush_pm_disable() {
   drush_include_engine('drupal', 'environment');
   $module_info = drush_get_modules();
   $enabled = array_keys(array_filter($module_info, 'pm_is_enabled'));
-  
+
   // Discards modules which are unavailable or already enabled.
   foreach ($modules as $key => $module) {
     if (!isset($module_info[$module])) {
@@ -327,7 +335,7 @@ function drush_pm_disable() {
 
   // Disable the modules.
   drush_module_disable($modules);
-  
+
   // Pass dependency validation in form submit.
   $active_modules = array_diff($enabled, $modules);
   $active_modules = drupal_map_assoc($active_modules, 'pm_true');
@@ -344,6 +352,142 @@ function drush_pm_disable() {
     }
   }
 }
+
+/**
+ * Command callback. Show detailed info for one or more projects.
+ */
+function drush_pm_info() {
+  $projects = func_get_args();
+
+  drush_include_engine('drupal', 'environment');
+  $theme_info = drush_get_themes();
+  $module_info = drush_get_modules();
+  $project_info = array_merge($theme_info, $module_info);
+
+  foreach ($projects as $project) {
+    if (isset($project_info[$project])) {
+      $info = $project_info[$project];
+    }
+    else {
+      drush_log(dt("Project !project is not a module or theme in your system.", array('!project' => $project_name)), 'error');
+      continue;
+    }
+    if ($info->type == 'module') {
+      $data = _drush_pm_info_module($info);
+    }
+    else {
+      $data = _drush_pm_info_theme($info);
+    }
+
+    drush_print_table(drush_key_value_to_array_table($data));
+    print "\n";
+  }
+}
+
+/**
+ * Return a string with general info of a project (module or theme).
+ */
+function _drush_pm_info_project($info) {
+  $major_version = drush_drupal_major_version();
+
+  $data['Project'] = $info->name;
+  $data['Type'] = $info->type;
+  if (($info->type == 'module')||($major_version >= 6)) {
+    $data['Title'] = $info->info['name'];
+    $data['Description'] = $info->info['description'];
+    $data['Version'] = $info->info['version'];
+  }
+  if ($major_version >= 6) {
+    $data['Core'] = $info->info['core'];
+  }
+  if ($major_version == 6) {
+    $data['PHP'] = $info->info['php'];
+  }
+  $data['Status'] = ($info->status == 1)?'enabled':'disabled';
+  $path = (($info->type == 'module')&&($major_version == 7))?$info->uri:$info->filename;
+  $path = substr($path, 0, strrpos($path, '/'));
+  $data['Path'] = $path;
+
+  return $data;
+}
+
+/**
+ * Return a string with info of a module.
+ */
+function _drush_pm_info_module($info) {
+  $major_version = drush_drupal_major_version();
+
+  $data = _drush_pm_info_project($info);
+  $package = (isset($info->info['package']))?$info->info['package']:"none";
+  $data['Package'] = $package;
+  if ($info->schema_version > 0) {
+    $schema_version = $info->schema_version;
+  }
+  elseif ($info->schema_version == -1) {
+    $schema_version = "no schema installed";
+  }
+  else {
+      $schema_version = "module has no schema";
+  }
+  $data['Schema version'] = $schema_version;
+  if ($major_version == 7) {
+    $data['Files'] = implode(', ', $info->info['files']);
+  }
+  if (count($info->info['dependencies']) > 0) {
+    $requires = implode(', ', $info->info['dependencies']);
+  }
+  else {
+    $requires = "none";
+  }
+  $data['Requires'] = $requires;
+
+  if ($major_version == 6) {
+    if (count($info->info['dependents']) > 0) {
+      $requiredby = implode(', ', $info->info['dependents']);
+    }
+    else {
+      $requiredby = "none";
+    }
+    $data['Required by'] = $requiredby;
+  }
+
+  return $data;
+}
+
+/**
+ * Return a string with info of a module.
+ */
+function _drush_pm_info_theme($info) {
+  $major_version = drush_drupal_major_version();
+
+  $data = _drush_pm_info_project($info);
+  if ($major_version == 5) {
+    $data['Engine'] = $info->description;
+  }
+  else {
+    $data['Core'] = $info->info['core'];
+    $data['PHP'] = $info->info['php'];
+    $data['Engine'] = $info->info['engine'];
+    $regions = implode(', ', $info->info['regions']);
+    $data['Regions'] = $regions;
+    $features = implode(', ', $info->info['features']);
+    $data['Features'] = $features;
+    if (count($info->info['stylesheets']) > 0) {
+      $data['Stylesheets'] = '';
+      foreach ($info->info['stylesheets'] as $media => $files) {
+        $files = implode(', ', array_keys($files));
+        $data['Media '.$media] = $files;
+      }
+    }
+    if (count($info->info['scripts']) > 0) {
+      $scripts = implode(', ', array_keys($info->info['scripts']));
+      $data['Scripts'] = $scripts;
+    }
+  }
+
+  return $data;
+}
+
 
 /**
  * Command callback. Uninstall one or more modules.
@@ -869,7 +1013,7 @@ function drush_pm_download() {
   if (!$requests = func_get_args()) {
     $requests = array('drupal');
   }
-  
+
   // Parse out project name and version
   $requests = pm_parse_project_version($requests);
 

@@ -25,7 +25,7 @@ function drush_get_modules() {
  *   An array containing theme info for all available themes.
  */
 function drush_get_themes() {
-  return system_rebuild_theme_data();
+  return list_themes();
 }
 
 /**
