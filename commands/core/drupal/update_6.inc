@@ -149,6 +149,7 @@ function update_check_incompatibility($name, $type = 'module') {
 
   // Store values of expensive functions for future use.
   if (empty($themes) || empty($modules)) {
+    drush_include_engine('drupal', 'environment');
     $themes = drush_get_themes();
     $modules = drush_get_modules();
   }
@@ -324,6 +325,7 @@ function update_main_prepare() {
 
   // Rescan and repopulate the system table to ensure we have a full picture
   // of the platform.
+  drush_include_engine('drupal', 'environment');
   drush_get_themes();
   drush_get_modules();
 
