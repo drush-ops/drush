@@ -47,7 +47,7 @@ function pm_drush_help($section) {
     case 'drush:pm-uninstall':
       return dt('Uninstall one or more modules. Modules must be disabled first.');
     case 'drush:pm-list':
-      return dt('Show enabled/disabled status for modules.');
+      return dt('Show a list of available modules and themes.');
     case 'drush:pm-refresh':
       return dt('Refresh update status information. Run this before running update or updatecode commands.');
     case 'drush:pm-updatecode':
@@ -111,10 +111,12 @@ function pm_drush_command() {
     'deprecated-aliases' => array('uninstall'),
   );
   $items['pm-list'] = array(
-    'description' => 'Show module enabled/disabled status',
+    'description' => 'Show a list of available modules and themes',
     'callback arguments' => array(array(), FALSE),
     'options' => array(
-      '--pipe' => 'Returns a space delimited list of enabled modules.',
+      '--type' => 'Filter by project type. Choices: module, theme.',
+      '--status' => 'Filter by project status. Choices: enabled|disabled|uninstalled (uninstalled not applicable for themes).',
+      '--pipe' => 'Returns a space delimited list of the names of the resulting projects.',
     ),
     'aliases' => array('sm'),
     'deprecated-aliases' => array('statusmodules'),
@@ -191,23 +193,77 @@ function pm_drush_command() {
  *
  */
 function drush_pm_list() {
-  drush_include_engine('drupal', 'environment');
-  $modules = drush_get_modules();
+  // get the command options to filter the listing and compound the table header
+  $header[] = dt('Name');
 
-  $rows[] = array(dt('Name'), dt('Status'), dt('Description'));
-  foreach ($modules as $module) {
-    $enabled = dt('Disabled');
-    if ($module->status) {
-      $enabled = dt('Enabled');
-      $pipe[] = $module->name;
+  //--type
+  $type = drush_get_option('type');
+  if (empty($type)) {
+    $projects = drush_get_projects();
+    $header[] = dt('Type');
+  }
+  else if (in_array($type, array('module', 'theme'))) { //TODO: this kind of chck can be implemented drush-wide
+    drush_include_engine('drupal', 'environment');
+    $func = 'drush_get_'.$type.'s';
+    $projects = call_user_func($func);
+  }
+  else {
+    drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!type is not a valid project type.', array('!type' => $type)));
+    drush_die('Aborting.');
+  }
+  
+  //--status
+  $all_status = array('enabled', 'disabled', 'uninstalled');
+  $status_filter = drush_get_option('status');
+  if (empty($status_filter)) {
+    $status_filter = $all_status;
+    $header[] = dt('Status');
+  }
+  else if (in_array($status_filter, $all_status)) { //TODO: this kind of chck can be implemented drush-wide
+    $status_filter = array($status_filter);
+  }
+  else {
+    drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status_filter)));
+    drush_die('Aborting.');
+  }
+  
+  $header[] = dt('Version');
+  $rows[] = $header;
+  $major_version = drush_drupal_major_version();
+  foreach ($projects as $project) {
+    $status = drush_get_project_status($project);
+    if (!in_array($status, $status_filter)) {
+      continue;
     }
-    $info = $module->info;
-    $rows[] = array($info['name'] . ' (' . $module->name . ')', $enabled, truncate_utf8($info['description'], 60, FALSE, TRUE));
+    if (($major_version >= 7) and (isset($module->info['hidden']))) {
+      continue;
+    }
+    if (($major_version >= 6)||($project->type == 'module')) {
+      $row[] = $project->info['name'].' ('.$project->name.')';    
+    }
+    else {
+      $row[] = $project->name;
+    }
+    if (empty($type)) {
+      $row[] = ucfirst($project->type);
+    }
+    if (count($status_filter) > 1) {
+      $row[] = ucfirst($status);
+    }
+    if (($major_version >= 6)||($project->type == 'module')) {
+      $row[] = $project->info['version'];
+    }
+
+    $rows[] = $row;
+    $pipe[] = $project->name;
+    unset($row);
   }
   drush_print_table($rows, TRUE);
-
-  // Space delimited list for use by other scripts. Set the --pipe option.
-  drush_print_pipe(implode(' ', $pipe));
+  
+  if (isset($pipe)) {
+    // Space delimited list for use by other scripts. Set the --pipe option.
+    drush_print_pipe(implode(' ', $pipe)."\n");
+  }
 }
 
 /**
@@ -358,18 +414,14 @@ function drush_pm_disable() {
  */
 function drush_pm_info() {
   $projects = func_get_args();
-
-  drush_include_engine('drupal', 'environment');
-  $theme_info = drush_get_themes();
-  $module_info = drush_get_modules();
-  $project_info = array_merge($theme_info, $module_info);
+  $project_info = drush_get_projects();
 
   foreach ($projects as $project) {
     if (isset($project_info[$project])) {
       $info = $project_info[$project];
     }
     else {
-      drush_log(dt("Project !project is not a module or theme in your system.", array('!project' => $project_name)), 'error');
+      drush_log(dt("Project !project is not a module or theme in your system.", array('!project' => $project)), 'error');
       continue;
     }
     if ($info->type == 'module') {
@@ -403,7 +455,7 @@ function _drush_pm_info_project($info) {
   if ($major_version == 6) {
     $data['PHP'] = $info->info['php'];
   }
-  $data['Status'] = ($info->status == 1)?'enabled':'disabled';
+  $data['Status'] = drush_get_project_status($info);
   $path = (($info->type == 'module')&&($major_version == 7))?$info->uri:$info->filename;
   $path = substr($path, 0, strrpos($path, '/'));
   $data['Path'] = $path;
@@ -468,6 +520,7 @@ function _drush_pm_info_theme($info) {
     $data['Core'] = $info->info['core'];
     $data['PHP'] = $info->info['php'];
     $data['Engine'] = $info->info['engine'];
+    $data['Base theme'] = isset($info->base_theme)?$info->base_theme:'';
     $regions = implode(', ', $info->info['regions']);
     $data['Regions'] = $regions;
     $features = implode(', ', $info->info['features']);

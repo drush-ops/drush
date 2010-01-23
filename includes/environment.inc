@@ -1001,3 +1001,31 @@ function drush_is_local_host($host) {
   // option (e.g. $options['local-hosts'] = array('myhostname1.com', 'myhostname2.com'); )
   return ($host == 'localhost') || ($host == '127.0.0.1') || (file_exists(drush_get_context('DRUSH_DRUPAL_ROOT') . "/sites/$host"));
 }
+
+/**
+ * Get complete information for all available modules and themes.
+ *
+ * @return
+ *   An array containing complete info for all available modules and themes.
+ */
+function drush_get_projects() {
+  drush_include_engine('drupal', 'environment');
+  $theme_info = drush_get_themes();
+  $module_info = drush_get_modules();
+  return array_merge($theme_info, $module_info);
+}
+
+/**
+ *
+ */
+function drush_get_project_status($project) {
+  if (($project->type == 'module')&&($project->schema_version == -1)) {
+    $status = "not installed";
+  }
+  else {
+    $status = ($project->status == 1)?'enabled':'disabled';
+  }
+
+  return $status;
+}
+
