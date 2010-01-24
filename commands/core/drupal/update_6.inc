@@ -323,6 +323,9 @@ function update_main_prepare() {
   // not passed through the error handler) will cause a message to be printed.
   drush_errors_on();
 
+  // Perform Drupal 5.x to 6.x updates that are required for update.php to function properly.
+  _drush_log_update_sql(update_fix_d6_requirements());
+
   // Rescan and repopulate the system table to ensure we have a full picture
   // of the platform.
   drush_include_engine('drupal', 'environment');
@@ -333,10 +336,8 @@ function update_main_prepare() {
   include_once './includes/batch.inc';
   drupal_load_updates();
 
-  _drush_log_update_sql(update_fix_d6_requirements());
+  // Disable anything in the {system} table that is not compatible with the current version of Drupal core.
   _drush_log_update_sql(update_fix_compatibility());
-
-
 }
 
 function update_main() {
