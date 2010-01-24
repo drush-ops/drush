@@ -311,9 +311,11 @@ function drush_invoke($command) {
   // If no hook functions were found, print a warning.
   if (empty($functions)) {
     drush_log(dt("No hook functions were found for !command.", array('!command' => $command)), 'warning');
+    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'warning');
   }
-  // In debug mode, we will also print all available function names.
-  drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), empty($functions) ? 'warning' : 'debug');
+  elseif (drush_get_option('show-invoke')) {
+    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'internals');
+  }
   $rollback = FALSE;
   $completed = array();
   $available_rollbacks = array();
@@ -331,7 +333,9 @@ function drush_invoke($command) {
       }
     }
   }
-  drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command, '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'debug');
+  if (drush_get_option('show-invoke')) {
+    drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command, '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'internals');
+  }
 
   // something went wrong, we need to undo
   if ($rollback) {
