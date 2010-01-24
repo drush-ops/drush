@@ -240,8 +240,13 @@ class DrushMakeDownload_Bzr extends DrushMakeDownload {
     $name = $this->project->name;
     $tmp_path = $this->project->tmp_path;
     $download = $this->project->download;
+    $command = 'export';
     if (!empty($download['url'])) {
-      if (drush_shell_exec("bzr export %s/%s %s", $tmp_path, $name, $download['url'])) {
+      if (drush_get_option('working-copy')) {
+        $command = 'checkout';
+      }
+
+      if (drush_shell_exec("bzr %s %s/%s %s", $command, $tmp_path, $name, $download['url'])) {
         drush_log(dt('%project branched from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
         return $name;
       }
@@ -292,7 +297,9 @@ class DrushMakeDownload_Hg extends DrushMakeDownload {
     $download = $this->project->download;
     if (!empty($download['url'])) {
       if (drush_shell_exec("hg clone %s %s/%s", $download['url'], $tmp_path, $name)) {
-        drush_shell_exec('rm -r %s/%s/.hg', $tmp_path, $name);
+        if (!drush_get_option('working-copy')) {
+          drush_shell_exec('rm -r %s/%s/.hg', $tmp_path, $name);
+        }
         drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
         return $name;
       }
