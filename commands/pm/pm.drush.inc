@@ -39,9 +39,9 @@ define('DRUSH_PM_NOT_FOUND', 104);
 function pm_drush_help($section) {
   switch ($section) {
     case 'drush:pm-enable':
-      return dt('Enable one or more modules. Enables dependant modules as well.');
+      return dt('Enable one or more modules or themes. Enable dependant modules as well.');
     case 'drush:pm-disable':
-      return dt('Disable one or more modules. Disables dependant modules as well.');
+      return dt('Disable one or more modules or themes. Disable dependant modules as well.');
     case 'drush:pm-info':
       return dt('Show detailed info for one or more projects.');
     case 'drush:pm-uninstall':
@@ -77,17 +77,17 @@ function pm_drush_command() {
   );
 
   $items['pm-enable'] = array(
-    'description' => 'Enable one or more modules.',
+    'description' => 'Enable one or more modules or themes.',
     'arguments' => array(
-      'modules' => 'A space delimited list of modules.',
+      'modules' => 'A space delimited list of modules or themes.',
     ),
     'aliases' => array('en'),
     'deprecated-aliases' => array('enable'),
   );
   $items['pm-disable'] = array(
-    'description' => 'Disable one or more modules.',
+    'description' => 'Disable one or more modules or themes.',
     'arguments' => array(
-      'modules' => 'A space delimited list of modules.',
+      'modules' => 'A space delimited list of modules or themes.',
     ),
     'aliases' => array('dis'),
     'deprecated-aliases' => array('disable'),
@@ -209,11 +209,11 @@ function drush_pm_list() {
   }
   else {
     drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!type is not a valid project type.', array('!type' => $type)));
-    drush_die('Aborting.');
+    return drush_log(dt('Aborting.'));
   }
-  
+  drush_log("pm-list loaded");  
   //--status
-  $all_status = array('enabled', 'disabled', 'uninstalled');
+  $all_status = array('enabled', 'disabled', 'not installed');
   $status_filter = drush_get_option('status');
   if (empty($status_filter)) {
     $status_filter = $all_status;
@@ -224,7 +224,7 @@ function drush_pm_list() {
   }
   else {
     drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status_filter)));
-    drush_die('Aborting.');
+    return drush_log(dt('Aborting.'));
   }
   
   $header[] = dt('Version');
@@ -235,7 +235,7 @@ function drush_pm_list() {
     if (!in_array($status, $status_filter)) {
       continue;
     }
-    if (($major_version >= 7) and (isset($module->info['hidden']))) {
+    if (($major_version >= 7) and (isset($project->info['hidden']))) {
       continue;
     }
     if (($major_version >= 6)||($project->type == 'module')) {
@@ -270,80 +270,100 @@ function drush_pm_list() {
  * Command callback. Enables one or more modules.
  */
 function drush_pm_enable() {
-  $modules = func_get_args();
+  $args = func_get_args();
 
-  drush_include_engine('drupal', 'environment');
-  $module_info = drush_get_modules();
+  $project_info = drush_get_projects();
 
-  // Discards modules which are unavailable or already enabled.
-  foreach ($modules as $key => $module) {
-    if (!isset($module_info[$module])) {
-      // The module is not available to be activated, ignore it.
-      unset($modules[$key]);
-      drush_set_error('DRUSH_PM_ENABLE_MODULE_NOT_FOUND', dt('Module !module was not found and will not be enabled.', array('!module' => $module)));
-    }
-    else if ($module_info[$module]->status) {
-      // We find the module in the list of modules already enabled, ignore it.
-      unset($modules[$key]);
-      drush_log(dt('!module is already enabled.', array('!module' => $module), 'ok'));
+  // classify $args in themes, modules or unknown
+  $modules = array();
+  $themes = array();
+  drush_pm_classify_projects($args, $modules, $themes, $project_info);
+  $projects = array_merge($modules, $themes);
+  $unknown = array_diff($args, $projects);
+
+  // Discard and set an error for each unknown project.
+  foreach ($unknown as $project) {
+    drush_set_error('DRUSH_PM_ENABLE_PROJECT_NOT_FOUND', dt('!project was not found and will not be enabled.', array('!project' => $project)));
+  }
+
+  // Discard already enabled projects.
+  foreach ($projects as $project) {
+    if ($project_info[$project]->status) {
+      if ($project_info[$project]->type == 'module') {
+        unset($modules[$project]);
+      }
+      else {
+        unset($themes[$project]);
+      }
+      drush_log(dt('!project is already enabled.', array('!project' => $project)), 'ok');
     }
   }
 
-  // Check dependencies.
-  $dependencies = drush_check_module_dependencies($modules, $module_info);
-  $all_dependencies = array();
-  foreach ($dependencies as $key => $info) {
-    if (isset($info['error'])) {
-      unset($modules[$key]);
-      drush_set_error($info['error']['code'], $info['error']['message']);
+  if (!empty($modules)) {
+    // Check module dependencies.
+    $dependencies = drush_check_module_dependencies($modules, $project_info);
+    $all_dependencies = array();
+    foreach ($dependencies as $key => $info) {
+      if (isset($info['error'])) {
+        unset($modules[$key]);
+        drush_set_error($info['error']['code'], $info['error']['message']);
+      }
+      else {
+        $all_dependencies = array_merge($all_dependencies, $info['dependencies']);
+      }
     }
-    else {
-      $all_dependencies = array_merge($all_dependencies, $info['dependencies']);
+    $all_dependencies = array_unique($all_dependencies);
+    $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
+    $modules = array_unique(array_merge($modules, array_diff($all_dependencies, $enabled)));
+  
+    // Discard modules which don't meet requirements.
+    require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
+    foreach ($modules as $key => $module) {
+      // Check to see if the module can be installed/enabled (hook_requirements)
+      // See @system_modules_submit
+      if (!drupal_check_module($module)) {
+        unset($modules[$key]);
+        drush_set_error('DRUSH_PM_ENABLE_MODULE_UNMEET_REQUIREMENTS', dt('Module !module don\'t meet the requirements to be enabled.', array('!module' => $module)));
+      }
     }
   }
-  $all_dependencies = array_unique($all_dependencies);
-  $enabled = array_keys(array_filter($module_info, 'pm_is_enabled'));
-  $modules = array_unique(array_merge($modules, array_diff($all_dependencies, $enabled)));
-
-  // Discard modules which don't meet requirements.
-  require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
-  foreach ($modules as $key => $module) {
-    // Check to see if the module can be installed/enabled (hook_requirements)
-    // See @system_modules_submit
-    if (!drupal_check_module($module)) {
-      unset($modules[$key]);
-      drush_set_error('DRUSH_PM_ENABLE_MODULE_UNMEET_REQUIREMENTS', dt('Module !module don\'t meet the requirements to be enabled.', array('!module' => $module)));
-    }
-  }
-
-  // Inform the user which modules will finally be enabled.
-  if (empty($modules)) {
-    return drush_log(dt('There were no modules that could be enabled.'), 'ok');
+  
+  // Inform the user which projects will finally be enabled.
+  $projects = array_merge($modules, $themes);
+  if (empty($projects)) {
+    return drush_log(dt('There were no projects that could be enabled.'), 'ok');
   }
   else {
-    drush_print(dt('The following modules will be enabled: !modules', array('!modules' => implode(', ', $modules))));
+    drush_print(dt('The following projects will be enabled: !projects', array('!projects' => implode(', ', $projects))));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
-      drush_die('Aborting.');
+      return drush_log(dt('Aborting.'));
     }
   }
 
-  // Enable the modules.
-  drush_module_enable($modules);
+  // Enable themes.
+  if (!empty($themes)) {
+    drush_theme_enable($themes);
+  }
 
-  // Pass dependency validation in form submit.
-  $current = drupal_map_assoc($enabled, 'pm_true');
-  $processed = drupal_map_assoc($modules, 'pm_true');
-  $active_modules = array_merge($current, $processed);
-  drush_system_modules_form_submit($active_modules);
+  // Disable modules and pass dependency validation in form submit.  
+  if (!empty($modules)) {
+    drush_module_enable($modules);
+    $current = drupal_map_assoc($enabled, 'pm_true');
+    $processed = drupal_map_assoc($modules, 'pm_true');
+    $active_modules = array_merge($current, $processed);
+    drush_system_modules_form_submit($active_modules);
+  }
+
+  // Refresh project's info.
+  $project_info = drush_get_projects();
 
   // Inform the user of final status.
-  $module_info = drush_get_modules();
-  foreach ($modules as $module_name) {
-    if ($module_info[$module_name]->status) {
-      drush_log(dt('!module was enabled successfully.', array('!module' => $module_info[$module_name]->info['name'])), 'ok');
+  foreach ($projects as $project) {
+    if ($project_info[$project]->status) {
+      drush_log(dt('!project was enabled successfully.', array('!project' => $project)), 'ok');
     }
     else {
-      drush_set_error('DRUSH_PM_ENABLE_MODULE_ISSUE', dt('> There was a problem enabling !module.', array('!module' => $module_name)));
+      drush_set_error('DRUSH_PM_ENABLE_PROJECT_ISSUE', dt('There was a problem enabling !project.', array('!project' => $project)));
     }
   }
 }
@@ -352,59 +372,112 @@ function drush_pm_enable() {
  * Command callback. Disable one or more modules.
  */
 function drush_pm_disable() {
-  $modules = func_get_args();
+  $args = func_get_args();
 
-  drush_include_engine('drupal', 'environment');
-  $module_info = drush_get_modules();
-  $enabled = array_keys(array_filter($module_info, 'pm_is_enabled'));
+  $project_info = drush_get_projects();
 
-  // Discards modules which are unavailable or already enabled.
-  foreach ($modules as $key => $module) {
-    if (!isset($module_info[$module])) {
-      // The module is not available to be disabled, ignore it.
-      unset($modules[$key]);
-      drush_set_error('DRUSH_PM_ENABLE_MODULE_NOT_FOUND', dt('Module !module was not found and will not be disabled.', array('!module' => $module)));
-    }
-    else if (!$module_info[$module]->status) {
-      // We find the module in the list of modules already disabled, ignore it.
-      unset($modules[$key]);
-      drush_log(dt('!module is already disabled.', array('!module' => $module), 'ok'));
+  // classify $args in themes, modules or unknown
+  $modules = array();
+  $themes = array();
+  drush_pm_classify_projects($args, $modules, $themes, $project_info);
+  $projects = array_merge($modules, $themes);
+  $unknown = array_diff($args, $projects);
+
+  // Discard and set an error for each unknown project.
+  foreach ($unknown as $project) {
+    drush_set_error('DRUSH_PM_ENABLE_PROJECT_NOT_FOUND', dt('!project was not found and will not be disabled.', array('!project' => $project)));
+  }
+
+  // Discard already disabled projects.
+  foreach ($projects as $project) {
+    if (!$project_info[$project]->status) {
+      if ($project_info[$project]->type == 'module') {
+        unset($modules[$project]);
+      }
+      else {
+        unset($themes[$project]);
+      }
+      drush_log(dt('!project is already disabled.', array('!project' => $project)), 'ok');
     }
   }
 
+  // Discard default theme.
+  if (!empty($themes)) {
+    $default_theme = drush_theme_get_default();
+    if (in_array($default_theme, $themes)) {
+      unset($themes[$default_theme]);
+      drush_log(dt('!theme is the default theme and can\'t be disabled.', array('!theme' => $default_theme)), 'ok');
+    }
+  }
+  
   // Add enabled dependents to list of modules to disable.
-  $dependents = drush_module_dependents($modules, $module_info);
-  $dependents = array_unique($dependents);
-  $dependents = array_intersect($dependents, $enabled);
-  $modules = array_merge($modules, $dependents);
+  if (!empty($modules)) {
+    $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
+    $dependents = drush_module_dependents($modules, $project_info);
+    $dependents = array_unique($dependents);
+    $dependents = array_intersect($dependents, $enabled);
+    $modules = array_merge($modules, $dependents);
+  }
 
-  // Inform the user which modules will finally be disabled.
-  if (empty($modules)) {
-    return drush_log(dt('There were no modules that could be disabled.'), 'ok');
+  // Inform the user which projects will finally be disabled.
+  $projects = array_merge($modules, $themes);
+  if (empty($projects)) {
+    return drush_log(dt('There were no projects that could be disabled.'), 'ok');
   }
   else {
-    drush_print(dt('The following modules will be disabled: !modules', array('!modules' => implode(', ', $modules))));
+    drush_print(dt('The following projects will be disabled: !projects', array('!projects' => implode(', ', $projects))));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
-      drush_die('Aborting.');
+      return drush_log(dt('Aborting.'));
     }
   }
 
-  // Disable the modules.
-  drush_module_disable($modules);
+  // Disable themes.
+  if (!empty($themes)) {
+    drush_theme_disable($themes);
+  }
+  
+  // Disable modules and pass dependency validation in form submit.
+  if (!empty($modules)) {
+    drush_module_disable($modules);
+    $active_modules = array_diff($enabled, $modules);
+    $active_modules = drupal_map_assoc($active_modules, 'pm_true');
+    drush_system_modules_form_submit($active_modules);
+  }
 
-  // Pass dependency validation in form submit.
-  $active_modules = array_diff($enabled, $modules);
-  $active_modules = drupal_map_assoc($active_modules, 'pm_true');
-  drush_system_modules_form_submit($active_modules);
+  // Refresh project's info.
+  $project_info = drush_get_projects();
 
   // Inform the user of final status.
-  $module_info = drush_get_modules();
-  foreach ($modules as $module_name) {
-    if (!$module_info[$module_name]->status) {
-      drush_log(dt('!module was disabled successfully.', array('!module' => $module_info[$module_name]->info['name'])), 'ok');
+  foreach ($projects as $project) {
+    if (!$project_info[$project]->status) {
+      drush_log(dt('!project was disabled successfully.', array('!project' => $project)), 'ok');
     }
     else {
-      drush_set_error('DRUSH_PM_DISABLE_MODULE_ISSUE', dt('> There was a problem disabling !module.', array('!module' => $module_name)));
+      drush_set_error('DRUSH_PM_DISABLE_PROJECT_ISSUE', dt('There was a problem disabling !project.', array('!project' => $project)));
+    }
+  }
+}
+
+/**
+ * Classify projects in modules, themes or unknown ones.
+ *
+ * @param $projects
+ *   Array of project names
+ * @param $modules
+ *   Empty array to be filled with modules in $projects.
+ * @param $themes
+ *   Empty array to be filled with themes in $projects.
+ */
+function drush_pm_classify_projects($projects, &$modules, &$themes, $project_info) {
+  foreach ($projects as $project) {
+    if (!isset($project_info[$project])) {
+      continue;
+    }
+    if ($project_info[$project]->type == 'module') {
+      $modules[$project] = $project;
+    }
+    else if ($project_info[$project]->type == 'theme') {
+      $themes[$project] = $project;
     }
   }
 }
@@ -413,15 +486,16 @@ function drush_pm_disable() {
  * Command callback. Show detailed info for one or more projects.
  */
 function drush_pm_info() {
-  $projects = func_get_args();
+  $args = func_get_args();
+
   $project_info = drush_get_projects();
 
-  foreach ($projects as $project) {
+  foreach ($args as $project) {
     if (isset($project_info[$project])) {
       $info = $project_info[$project];
     }
     else {
-      drush_log(dt("Project !project is not a module or theme in your system.", array('!project' => $project)), 'error');
+      drush_set_error('DRUSH_PM_INFO_PROJECT_NOT_FOUND', dt('!project was not found.', array('!project' => $project)));
       continue;
     }
     if ($info->type == 'module') {
@@ -567,7 +641,7 @@ function drush_pm_uninstall() {
     else if ($module_info[$module]->schema_version == -1) { // SCHEMA_UNINSTALLED
       // The module is uninstalled.
       unset($modules[$key]);
-      drush_log(dt('!module is already uninstalled.', array('!module' => $module), 'ok'));
+      drush_log(dt('!module is already uninstalled.', array('!module' => $module)), 'ok');
     }
   }
 
@@ -578,7 +652,7 @@ function drush_pm_uninstall() {
   else {
     drush_print(dt('The following modules will be uninstalled: !modules', array('!modules' => implode(', ', $modules))));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
-      drush_die('Aborting.');
+      return drush_log(dt('Aborting.'));
     }
   }
 
@@ -595,7 +669,7 @@ function drush_pm_uninstall() {
  * Array filter callback to return enabled modules.
  *
  * @param $module
- *  A module object as returned by pm_get_module_info().
+ *  A module object as returned by drush_get_modules().
  */
 function pm_is_enabled($module) {
   return $module->status;

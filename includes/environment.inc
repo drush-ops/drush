@@ -1006,17 +1006,21 @@ function drush_is_local_host($host) {
  * Get complete information for all available modules and themes.
  *
  * @return
- *   An array containing complete info for all available modules and themes.
+ *   An array containing info for all available modules and themes.
  */
 function drush_get_projects() {
   drush_include_engine('drupal', 'environment');
-  $theme_info = drush_get_themes();
-  $module_info = drush_get_modules();
-  return array_merge($theme_info, $module_info);
+  return array_merge(drush_get_modules(), drush_get_themes());
 }
 
 /**
+ * Calculate a project status based on current status and schema version.
  *
+ * @param $project
+ *   Array of a single project info.
+ *
+ * @return 
+ *   String describing project status. Values: enabled|disabled|not installed
  */
 function drush_get_project_status($project) {
   if (($project->type == 'module')&&($project->schema_version == -1)) {
@@ -1027,5 +1031,25 @@ function drush_get_project_status($project) {
   }
 
   return $status;
+}
+
+/**
+ * Return the default theme.
+ * 
+ * @return
+ *  Machine name of the default theme.
+ */
+function drush_theme_get_default() {
+  return variable_get('theme_default', 'garland');
+}
+
+/**
+ * Return the administration theme.
+ * 
+ * @return
+ *  Machine name of the administration theme.
+ */
+function drush_theme_get_admin() {
+  return variable_get('admin_theme', drush_theme_get_default());
 }
 

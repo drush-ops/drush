@@ -394,6 +394,8 @@ function _core_site_status_table() {
     $status_table['PHP configuration'] = php_ini_loaded_file();
   }
   $status_table['Drush Version'] = DRUSH_VERSION;
+  $status_table['Default theme'] = drush_theme_get_default();
+  $status_table['Administration theme'] = drush_theme_get_admin();
   return $status_table;
 }
 
@@ -480,7 +482,6 @@ function drush_core_php_script() {
       $searchpath[] = $path;
     }
   }
-
 
   if (empty($args)) {
     // List all available scripts.

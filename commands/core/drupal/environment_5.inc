@@ -30,16 +30,6 @@ function drush_get_modules() {
 }
 
 /**
- * Get complete information for all available themes.
- *
- * @return
- *   An array containing theme info for all available themes.
- */
-function drush_get_themes() {
-  return list_themes();
-}
-
-/**
  * Return dependencies and its status for modules.
  *
  * @param $modules
@@ -145,5 +135,37 @@ function drush_system_modules_form_submit($active_modules) {
   require_once('./'. drupal_get_path('module', 'system') .'/system.module');
   $form_state = array('values' => array('status' => $active_modules));
   drupal_execute('system_modules', $form_state);
+}
+
+/**
+ * Get complete information for all available themes.
+ *
+ * @return
+ *   An array containing theme info for all available themes.
+ */
+function drush_get_themes() {
+  return system_theme_data();
+}
+
+/**
+ * Enable a list of themes.
+ * 
+ * @param $themes
+ *  Array of theme names.
+ */
+function drush_theme_enable($themes) {
+  $placeholder = implode(',', array_fill(0, count($themes), "'%s'"));
+  db_query("UPDATE {system} SET status = 1 WHERE type = 'theme' AND name IN (".$placeholder.")", $themes);
+}
+
+/**
+ * Disable a list of themes.
+ * 
+ * @param $themes
+ *  Array of theme names.
+ */
+function drush_theme_disable($themes) {
+  $placeholder = implode(',', array_fill(0, count($themes), "'%s'"));
+  db_query("UPDATE {system} SET status = 0 WHERE type = 'theme' AND name IN (".$placeholder.")", $themes);
 }
 

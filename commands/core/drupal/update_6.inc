@@ -328,9 +328,7 @@ function update_main_prepare() {
 
   // Rescan and repopulate the system table to ensure we have a full picture
   // of the platform.
-  drush_include_engine('drupal', 'environment');
-  drush_get_themes();
-  drush_get_modules();
+  drush_get_projects();
 
   include_once './includes/install.inc';
   include_once './includes/batch.inc';
