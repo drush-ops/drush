@@ -77,7 +77,7 @@ Related Options:
                                 (default: current directory or anywhere in a Drupal directory tree)
   -l <uri> , --uri=<uri>        URI of the drupal site to use
                                 (only needed in multisite environments)
-  -v, --verbose                 Display all available output
+  -v, --verbose                 Display verbose output.
 
 Some other options:
   -i <path>, --include=<path>   Path to folder(s) containing additional drush command files.
@@ -124,7 +124,7 @@ FAQ
 
   Q: How do I pronounce drush?
   A: Some people pronounce the dru with a long u like drupal. Fidelity points go to
-  them, but they are in the minority. Most pronouce drush so that it rhymes with
+  them, but they are in the minority. Most pronounce drush so that it rhymes with
   hush, rush, flush, etc. This is the preferred pronunciation.
 
 CREDITS
@@ -132,4 +132,4 @@ CREDITS
 Originally developed by Arto Bendiken <http://bendiken.net/> for Drupal 4.7.
 Redesigned by Franz Heinzmann (frando) <http://unbiskant.org/> in May 2007 for Drupal 5.
 Maintained by Moshe Weitzman <http://drupal.org/moshe> with much help from
-Grugnog2, Adrian Rossouw, greg.1.anderson, and Vingborg.
+Grugnog2, Adrian Rossouw, greg.1.anderson.
