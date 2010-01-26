@@ -28,7 +28,7 @@ function drush_make_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
-  $items['generate makefile'] = array(
+  $items['generate-makefile'] = array(
     'description' => 'Attempts to generate a makefile from the current drupal install.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
   );
