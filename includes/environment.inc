@@ -392,10 +392,10 @@ function _drush_bootstrap_drush() {
 
   // statically define a way to call drush again
   define('DRUSH_COMMAND', drush_find_drush());
-  
+
   $drush_info = drush_read_drush_info();
   define('DRUSH_VERSION', $drush_info['version']);
-  
+
   // Load a drushrc.php file in the drush.php's directory.
   drush_load_config('drush');
 
@@ -981,7 +981,7 @@ function drush_find_drush() {
  */
 function drush_read_drush_info() {
   $drush_info_file = dirname(__FILE__) . '/../drush.info';
-  
+
   return parse_ini_file($drush_info_file);
 }
 
@@ -1019,7 +1019,7 @@ function drush_get_projects() {
  * @param $project
  *   Array of a single project info.
  *
- * @return 
+ * @return
  *   String describing project status. Values: enabled|disabled|not installed
  */
 function drush_get_project_status($project) {
@@ -1035,7 +1035,7 @@ function drush_get_project_status($project) {
 
 /**
  * Return the default theme.
- * 
+ *
  * @return
  *  Machine name of the default theme.
  */
@@ -1045,7 +1045,7 @@ function drush_theme_get_default() {
 
 /**
  * Return the administration theme.
- * 
+ *
  * @return
  *  Machine name of the administration theme.
  */

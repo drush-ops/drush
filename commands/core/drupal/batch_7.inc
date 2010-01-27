@@ -7,7 +7,7 @@
 /**
  * Main loop for the Drush batch API.
  *
- * Saves a record of the batch into the database, and progressively call $command to 
+ * Saves a record of the batch into the database, and progressively call $command to
  * process the operations.
  *
  * @param command
@@ -53,7 +53,7 @@ function _drush_backend_batch_process($command = 'batch-process') {
     while (!$finished) {
       $data = drush_backend_invoke($command, array($batch['id']));
       $finished = drush_get_error() || !$data || ($data['context']['drush_batch_process_finished'] == TRUE);
-    } 
+    }
   }
 }
 
@@ -64,7 +64,7 @@ function _drush_backend_batch_process($command = 'batch-process') {
  * Loads the batch record from the database and sets up the requirements
  * for the worker, such as registering the shutdown function.
  *
- * @param id 
+ * @param id
  *   The batch id of the batch being processed.
  */
 function _drush_batch_command($id) {

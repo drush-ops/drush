@@ -76,7 +76,7 @@ function drush_context_names() {
     'process', 'options', 'stdin', 'alias', 'specific',
     'custom', 'site', 'drupal', 'user', 'system',
     'drush', 'default');
-  
+
   return $contexts;
 }
 
@@ -144,7 +144,7 @@ function drush_load_config($context) {
     drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
     $options['context-path'][$context] = $config;
     require_once($config);
-    
+
     // There are certain options such as 'site-aliases' and 'command-specific'
     // that must be merged together if defined in multiple drush configuration
     // files.  If we did not do this merge, then the last configuration file
@@ -165,7 +165,7 @@ function drush_load_config($context) {
         }
       }
     }
-    
+
     drush_set_context($context, $options);
 
     // Instruct core not to queries since we are not outputting them.

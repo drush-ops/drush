@@ -19,13 +19,13 @@
  */
 function drush_core_rsync($source, $destination) {
   $sync_all_paths = drush_get_option('all-paths');
-  
-  // TODO:  this implementation of --all-paths does not work well 
+
+  // TODO:  this implementation of --all-paths does not work well
   // with multiple sync targets; needs rewriting
   if ((isset($sync_all_paths)) && (strpos($source, ':') === FALSE) && (strpos($destination, ':') === FALSE)) {
     $source_settings = drush_sitealias_get_record($source);
     $destination_settings = drush_sitealias_get_record($destination);
-    
+
     // If the source and destination paths are both aliases that contain
     // no path component (that is, 'alias', not 'alias:/path'), then we will
     // iterate over all of the path aliases of both, and sync all that are
@@ -70,7 +70,7 @@ function _drush_core_sync($source, $destination, $parametric_options = array()) 
   $destination_settings = _drush_core_evaluate_path($destination);
   $source_path = $source_settings['rsync-path'];
   $destination_path = $destination_settings['rsync-path'];
-  
+
   // Check to see if this is an rsync multiple command (multiple sources and multiple destinations)
   $is_multiple = drush_do_multiple_command('rsync', $source_settings, $destination_settings, TRUE);
 
@@ -321,7 +321,7 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
   // The path component is just the path part of the full
   // machine:path specification (including the colon).
   $path_component = (!empty($path) ? ':' . $path : '');
-  
+
   // Next make the rsync path, which includes the machine
   // and path components together.
   // First make empty paths or relative paths start from the drupal root.
@@ -334,10 +334,10 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
   if (!empty($machine)) {
     $path = $machine . ':' . $path;
   }
-  
+
   $site_alias_settings['rsync-path'] = $path;
   $site_alias_settings['path-component'] = $path_component;
-  
+
   return $site_alias_settings;
 }
 

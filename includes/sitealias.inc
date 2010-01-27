@@ -129,7 +129,7 @@ function _drush_sitealias_get_record($alias, $db_settings_needed = false) {
               _drush_sitealias_set_record_element($alias_record, urldecode($query_components[0]), urldecode($query_components[1]));
             }
           }
-          
+
           // Case 3.): If the URL contains a 'host' portion but no fragment, then set the uri to the host
           // Note: We presume that 'server' is the best default for case 3; without this code, the default would
           // be whatever is set in $options['l'] on the target machine's drushrc.php settings file.
@@ -177,7 +177,7 @@ function _drush_sitealias_get_record($alias, $db_settings_needed = false) {
       drush_print("Error: could not get database spec when it was required for " . $alias);
       exit(1);
     }
-    
+
     // Cache the result
     drush_set_option('sitealias-' . $alias, $alias_record, 'sitealias-cache');
   }
@@ -203,7 +203,7 @@ function drush_sitealias_resolve_sitelist($alias_record) {
       $result_list[] = $alias_record;
     }
   }
-  
+
   return $result_list;
 }
 
@@ -214,7 +214,7 @@ function drush_sitealias_check_lists_alignment($source, $target) {
   // be the same, because the site folder name == the uri, and if
   // the uris match, then it is easier to rsync between remote machines.
   $is_aligned = TRUE;
-  
+
   $i = 0;
   foreach ($source as $one_source) {
     if ((!isset($target[$i])) || (!_drush_sitelist_check_site_records($one_source, $target[$i]))) {
@@ -223,14 +223,14 @@ function drush_sitealias_check_lists_alignment($source, $target) {
     }
     ++$i;
   }
-  
+
   return $is_aligned;
 }
 
 function drush_sitelist_align_lists(&$source, &$target, &$source_result, &$target_result) {
   $source_result = array();
   $target_result = array();
-  
+
   foreach ($source as $key => $one_source) {
     $one_target = _drush_sitelist_find_in_list($one_source, $target);
     if ($one_target !== FALSE) {
@@ -239,21 +239,21 @@ function drush_sitelist_align_lists(&$source, &$target, &$source_result, &$targe
       unset($source[$key]);
     }
   }
-  
+
   $source = $source_result;
   $target = $target_result;
 }
 
 function _drush_sitelist_find_in_list($one_source, &$target) {
   $result = FALSE;
-  
+
   foreach ($target as $key => $one_target) {
     if(_drush_sitelist_check_site_records($one_source, $one_target)) {
       $result = $one_target;
       unset($target[$key]);
     }
   }
-  
+
   return $result;
 }
 
@@ -287,7 +287,7 @@ function _drush_sitealias_check_sitelist_fields(&$alias_record) {
       $derived_record = _drush_sitealias_derive_record($one_record, $alias_record);
       $derived_list[] = drush_sitealias_alias_record_to_spec($derived_record);
     }
-    
+
     $alias_record = array();
     if (!empty($derived_list)) {
       $alias_record['site-list'] = $derived_list;
@@ -348,7 +348,7 @@ function _drush_sitealias_add_static_defaults(&$alias_record) {
 
 function _drush_sitealias_derive_record($from_record, $modifying_record) {
   $result = $from_record;
-  
+
   // If there is a 'remote-user' in the modifying record, copy it.
   if (array_key_exists('remote-user', $modifying_record)) {
     $result['remote-user'] = $from_record['remote_user'];
@@ -372,7 +372,7 @@ function _drush_sitealias_derive_record($from_record, $modifying_record) {
   }
   // If there is a 'root', then:
   //   If it begins with '/', copy it to the result record
-  //   Otherwise, append it to the result record 
+  //   Otherwise, append it to the result record
   if (array_key_exists('root', $modifying_record)) {
     $root_modifier = $modifying_record['root'];
     if($root_modifier[0] == '/') {
@@ -387,11 +387,11 @@ function _drush_sitealias_derive_record($from_record, $modifying_record) {
   while(strpos($result['root'], '/../') !== FALSE) {
     $result['root'] = preg_replace('/\w+\/\.\.\//', '', $result['root']);
   }
-  
+
   // TODO:  Should we allow the uri to be transformed?
   // I think that if the uri does not match, then you should
   // always build the list by hand, and not rely on '_drush_sitealias_derive_record'.
-  
+
   return $result;
 }
 
@@ -409,7 +409,7 @@ function _drush_sitealias_derive_record($from_record, $modifying_record) {
  */
 function drush_sitealias_alias_record_to_spec($alias_record, $with_db = false) {
     $result = '';
-    
+
     // TODO:  we should handle 'site-list' records too.
     if (array_key_exists('site-list', $alias_record)) {
       // TODO:  we should actually expand the site list and recompose it
@@ -436,7 +436,7 @@ function drush_sitealias_alias_record_to_spec($alias_record, $with_db = false) {
         $result = $result . '?db-url=' . urlencode($alias_record['db-url']);
       }
     }
-    
+
     return $result;
 }
 
@@ -454,7 +454,7 @@ function _drush_sitealias_find_local_sites($search_path) {
   foreach ($search_path as $a_drupal_root) {
     $result = array_merge($result, _drush_find_local_sites_at_root($a_drupal_root));
   }
-  return $result;  
+  return $result;
 }
 
 /**
@@ -466,11 +466,11 @@ function _drush_find_local_sites_at_root($a_drupal_root = '') {
   if (drush_valid_drupal_root($base_path)) {
     $base_path .= '/sites';
   }
-  
+
   // TODO:  build a cache keyed off of $base_path (realpath($base_path)?),
   // so that it is guarenteed that the lists returned will definitely be
   // exactly the same should this routine be called twice with the same path.
-  
+
   $files = drush_scan_directory($base_path, '/settings\.php/', array('.', '..', 'CVS', 'all'));
   foreach ($files as $filename => $info) {
     if ($info->basename == 'settings.php') {

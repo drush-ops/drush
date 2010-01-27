@@ -52,7 +52,7 @@
 // Enable verbose mode.
 # $options['v'] = 1;
 
-// Default logging level for php notices.  Defaults to "notice"; set to "warning" 
+// Default logging level for php notices.  Defaults to "notice"; set to "warning"
 // if doing drush development.  Also make sure that error_reporting is set to E_ALL
 // in your php configuration file.  See 'drush status' for the path to your php.ini file.
 # $options['php-notices'] = 'warning';
@@ -71,9 +71,9 @@ $options['skip-tables'] = array(
 );
 
 /*
- * Customize this associative array with your own tables. This is the 
- * list of tables whose *data* is skipped by the 'sql-dump' and 'sql-sync' 
- * commands when a structure-tables-key is provided. You may add new tables to the existing array or add a new 
+ * Customize this associative array with your own tables. This is the
+ * list of tables whose *data* is skipped by the 'sql-dump' and 'sql-sync'
+ * commands when a structure-tables-key is provided. You may add new tables to the existing array or add a new
  * element.
  */
 $options['structure-tables'] = array(
@@ -166,7 +166,7 @@ $options['structure-tables'] = array(
  *       to set '!drush' if the path to drush is different on the remote server.
  *     '!drush-script': The path to the 'drush' script (used by backend invoke);
  *       default is 'drush' on remote machines, or the full path to drush.php on
- *       the local machine.  Note that you only need to define one of '!drush' 
+ *       the local machine.  Note that you only need to define one of '!drush'
  *       or '!drush-script', as drush can infer one from the other.
  *     '!dump': Path to the file that "drush sql-sync" should use to store sql-dump file.
  *     '!files': Path to 'files' directory.

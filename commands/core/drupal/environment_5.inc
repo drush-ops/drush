@@ -47,7 +47,7 @@ function drush_check_module_dependencies($modules, $module_info) {
     if (!empty($unmet_dependencies)) {
       $status[$key]['error'] = array(
           'code' => 'DRUSH_PM_ENABLE_DEPENDENCY_NOT_FOUND',
-          'message' => dt('Module !module cannot be enabled because it depends on the following modules which could not be found: !unmet_dependencies', array('!module' => $module, '!unmet_dependencies' => implode(',', $unmet_dependencies))) 
+          'message' => dt('Module !module cannot be enabled because it depends on the following modules which could not be found: !unmet_dependencies', array('!module' => $module, '!unmet_dependencies' => implode(',', $unmet_dependencies)))
       );
     }
     else {
@@ -79,7 +79,7 @@ function drush_module_dependents($modules, $module_info) {
 
 /**
  * Enable a list of modules. It is assumed the list contains all the dependencies not already enabled.
- * 
+ *
  * @param $modules
  *   Array of module names
  */
@@ -127,7 +127,7 @@ function drush_module_uninstall($modules) {
 /**
  * Submit the system modules form.
  *
- * The modules should already be fully enabled/disabled before calling this 
+ * The modules should already be fully enabled/disabled before calling this
  * function. Calling this function just makes sure any activities triggered by
  * the form submit (such as admin_role) are completed.
  */
@@ -149,7 +149,7 @@ function drush_get_themes() {
 
 /**
  * Enable a list of themes.
- * 
+ *
  * @param $themes
  *  Array of theme names.
  */
@@ -160,7 +160,7 @@ function drush_theme_enable($themes) {
 
 /**
  * Disable a list of themes.
- * 
+ *
  * @param $themes
  *  Array of theme names.
  */

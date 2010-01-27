@@ -794,27 +794,27 @@ function drush_remote_command() {
       $site_list = explode(',', $site_list);
     }
     $args = drush_get_arguments();
-    
+
     if (!drush_get_context('DRUSH_SIMULATE')) {
       drush_print(dt('You are about to use the experimental MULTIPLE-TARGET drush command feature.'));
       drush_print(dt('This code is new; please be careful (make backups), and use at your own risk!'));
-      
+
       drush_print(dt("You are about to execute '!command' on all of the following targets:", array('!command' => implode(" ", $args))));
       foreach ($site_list as $one_destination) {
         drush_print(dt('  !target', array('!target' => $one_destination)));
       }
-      
+
       // Temporary: ask what the user wants to do
       // Once this code works, we'll replace this with a
       // simple 'drush_confirm', so -y will work.
       // You must manually confirm every time until this
       // code is tested.  Help out at issue #628996
       // if this is annoying to you.
-      
+
       $options['s'] = 'Run simulation first (add -s flag)  WARNING: ignored by some commands!';
       $options['g'] = 'Go!';
       $choice = drush_choice($options, 'Enter a number to choose which action to take.');
-      
+
       if ($choice === FALSE) {
          drush_die('Aborting.');
       }
@@ -850,12 +850,12 @@ function drush_remote_command() {
  */
 function drush_do_multiple_command($command, $source_record, $destination_record, $allow_single_source = FALSE) {
   $is_multiple_command = FALSE;
-  
+
   if ((($allow_single_source == TRUE) || array_key_exists('site-list', $source_record)) && array_key_exists('site-list', $destination_record)) {
     $is_multiple_command = TRUE;
     $source_path = array_key_exists('path-component', $source_record) ? $source_record['path-component'] : '';
     $destination_path = array_key_exists('path-component', $destination_record) ? $destination_record['path-component'] : '';
-    
+
     $target_list = drush_sitealias_resolve_sitelist($destination_record);
     if (array_key_exists('site-list', $source_record)) {
       $source_list = drush_sitealias_resolve_sitelist($source_record);
@@ -871,10 +871,10 @@ function drush_do_multiple_command($command, $source_record, $destination_record
     else {
       $source_list = array_fill(0, count($target_list), $source_record);
     }
-    
+
     drush_print($source_path);
     drush_print($destination_path);
-    
+
     if (!drush_get_context('DRUSH_SIMULATE')) {
       drush_print(dt('You are about to use the experimental MULTIPLE-SYNCHRONIZED-TARGET drush !command feature.', array('!command' => $command)));
       drush_print(dt('This code is new; please be careful (make backups), and use at your own risk!'));
@@ -906,22 +906,22 @@ function drush_do_multiple_command($command, $source_record, $destination_record
         drush_set_context('DRUSH_SIMULATE', TRUE);
       }
     }
-    
+
     $data = drush_redispatch_get_options();
     $i = 0;
     foreach ($source_list as $one_source) {
       $one_target = $target_list[$i];
       ++$i;
-      
+
       $source_spec = drush_sitealias_alias_record_to_spec($one_source);
       $target_spec = drush_sitealias_alias_record_to_spec($one_target);
-      
+
       drush_log(dt('Begin do_multiple !command via backend invoke', array('!command' => $command)));
       $values = drush_backend_invoke_args($command, array($source_spec . $source_path, $target_spec . $destination_path), $data, 'GET', TRUE);
       drush_log(dt('Backend invoke is complete'));
     }
   }
-  
+
   return $is_multiple_command;
 }
 

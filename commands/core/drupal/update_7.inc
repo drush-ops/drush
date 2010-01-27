@@ -125,7 +125,7 @@ function drush_update_do_one($module, $number, &$context) {
  */
 function update_check_requirements() {
   $warnings = FALSE;
-  
+
   // Check the system module and update.php requirements only.
   $requirements = system_requirements('update');
   $requirements += update_extra_requirements();
@@ -185,17 +185,17 @@ function update_main_prepare() {
   // Check the update requirements for Drupal.
   update_check_requirements();
 
-  // update_fix_d7_requirements() needs to run before bootstrapping beyond path.  
+  // update_fix_d7_requirements() needs to run before bootstrapping beyond path.
   // So bootstrap to DRUPAL_BOOTSTRAP_LANGUAGE then include unicode.inc.
   drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
-  
+
   update_fix_d7_requirements();
-  
+
   // Now proceed with a full bootstrap.
-  
+
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   drupal_maintenance_theme();
-  
+
   drush_errors_on();
 
   // Rescan and repopulate the system table to ensure we have a full picture

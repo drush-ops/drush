@@ -24,7 +24,7 @@
  * implementations.
  *
  */
- 
+
 
 /**
  * Process a Drupal batch by spawning multiple Drush processes.

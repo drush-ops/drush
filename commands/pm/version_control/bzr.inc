@@ -6,7 +6,7 @@
  */
 
 class drush_pm_version_control_bzr implements drush_pm_version_control {
-  
+
   /**
    * Helper function: get the root of a repository path.
    *
@@ -38,7 +38,7 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
       commit($project);
     }
   }
-  
+
   /**
    * Implementation of post_download().
    */
@@ -48,7 +48,7 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
       commit($project);
     }
   }
-  
+
   /**
    * Automatically add any unversioned files to Bzr and remove any files
    * that have been deleted on the file system
@@ -56,13 +56,13 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
   private function sync($project) {
     if (drush_get_option('bzrsync')) {
       $errors = '';
-  
+
       // All paths returned by bzr status are relative to the repository root.
       $root = bzr_get_repository_root($project['full_project_path']);
-  
+
       if (drush_shell_exec('bzr status -S %s', $project['full_project_path'])) {
         $output = drush_shell_exec_output();
-  
+
         // Parse the output of bzr status to get the list of added and removed
         // files.
         $new_files = array();
@@ -75,7 +75,7 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
             $removed_files[] = $root . '/' . $matches[1];
           }
         }
-  
+
         // Proceed adding new files.
         foreach (array_chunk($new_files, 100) as $chunk) {
           $chunk = array_map('escapeshellarg', $chunk);
@@ -83,7 +83,7 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
             $errors .= implode("\n", drush_shell_exec_output());
           }
         }
-  
+
         // Proceed removing old files.
         foreach (array_chunk($removed_files, 100) as $chunk) {
           $chunk = array_map('escapeshellarg', $chunk);
@@ -91,7 +91,7 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
             $errors .= implode("\n", drush_shell_exec_output());
           }
         }
-  
+
         if (!empty($errors)) {
           return drush_set_error('DRUSH_PM_BZR_SYNC_PROBLEMS', dt("Problems were encountered adding or removing files to/from Bazaar.\nThe specific errors are below:\n!errors", array('!errors' => $errors)));
         }
@@ -102,7 +102,7 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
       return TRUE;
     }
   }
-  
+
   /**
    * Automatically commit changes to the repository
    */

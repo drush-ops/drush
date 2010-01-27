@@ -136,7 +136,7 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
   $output_db = drush_get_option('with-db');
   $output_db_url = drush_get_option('with-db-url');
   $output_optional_items = drush_get_option('with-optional');
-  
+
   // Make sure that the default items have been added for all aliases
   _drush_sitealias_add_static_defaults($alias_record);
 
@@ -177,7 +177,7 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
 
   // We don't want the name to go into the output
   unset($alias_record['name']);
-    
+
   // We only want to output the 'root' item; don't output the '!root' path alias
   if (array_key_exists('path-aliases', $alias_record) && array_key_exists('!root', $alias_record['path-aliases'])) {
     unset($alias_record['path-aliases']['!root']);
@@ -186,7 +186,7 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
       unset($alias_record['path-aliases']);
     }
   }
-  
+
   $exported_alias = var_export($alias_record, TRUE);
   drush_print('$options[\'site-aliases\'][\'' . $alias_name . '\'] = ' . $exported_alias . ';');
 }

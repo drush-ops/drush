@@ -211,7 +211,7 @@ function drush_pm_list() {
     drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!type is not a valid project type.', array('!type' => $type)));
     return drush_log(dt('Aborting.'));
   }
-  drush_log("pm-list loaded");  
+  drush_log("pm-list loaded");
   //--status
   $all_status = array('enabled', 'disabled', 'not installed');
   $status_filter = drush_get_option('status');
@@ -226,7 +226,7 @@ function drush_pm_list() {
     drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status_filter)));
     return drush_log(dt('Aborting.'));
   }
-  
+
   $header[] = dt('Version');
   $rows[] = $header;
   $major_version = drush_drupal_major_version();
@@ -239,7 +239,7 @@ function drush_pm_list() {
       continue;
     }
     if (($major_version >= 6)||($project->type == 'module')) {
-      $row[] = $project->info['name'].' ('.$project->name.')';    
+      $row[] = $project->info['name'].' ('.$project->name.')';
     }
     else {
       $row[] = $project->name;
@@ -259,7 +259,7 @@ function drush_pm_list() {
     unset($row);
   }
   drush_print_table($rows, TRUE);
-  
+
   if (isset($pipe)) {
     // Space delimited list for use by other scripts. Set the --pipe option.
     drush_print_pipe(implode(' ', $pipe)."\n");
@@ -315,7 +315,7 @@ function drush_pm_enable() {
     $all_dependencies = array_unique($all_dependencies);
     $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
     $modules = array_unique(array_merge($modules, array_diff($all_dependencies, $enabled)));
-  
+
     // Discard modules which don't meet requirements.
     require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
     foreach ($modules as $key => $module) {
@@ -327,7 +327,7 @@ function drush_pm_enable() {
       }
     }
   }
-  
+
   // Inform the user which projects will finally be enabled.
   $projects = array_merge($modules, $themes);
   if (empty($projects)) {
@@ -345,7 +345,7 @@ function drush_pm_enable() {
     drush_theme_enable($themes);
   }
 
-  // Disable modules and pass dependency validation in form submit.  
+  // Disable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_enable($modules);
     $current = drupal_map_assoc($enabled, 'pm_true');
@@ -409,7 +409,7 @@ function drush_pm_disable() {
       drush_log(dt('!theme is the default theme and can\'t be disabled.', array('!theme' => $default_theme)), 'ok');
     }
   }
-  
+
   // Add enabled dependents to list of modules to disable.
   if (!empty($modules)) {
     $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
@@ -435,7 +435,7 @@ function drush_pm_disable() {
   if (!empty($themes)) {
     drush_theme_disable($themes);
   }
-  
+
   // Disable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_disable($modules);
