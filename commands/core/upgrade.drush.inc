@@ -120,7 +120,7 @@ function drush_upgrade_site_upgrade($target_key) {
   // Copy source database to target database. The source DB is not changed.
   // Always set 'common' at minimum. Sites that want other can create other key in drushrc.php.
   if (!drush_get_option('structure-tables-key')) {
-    drush_set_option('structure_tables-key', 'common');
+    drush_set_option('structure-tables-key', 'common');
   }
   // Always blow away the target database so we start fresh.
   drush_set_option('create-db', TRUE);
