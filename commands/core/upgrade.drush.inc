@@ -129,11 +129,8 @@ function drush_upgrade_site_upgrade($target_key) {
   if (drush_get_error()) return -1; // Early exit if we see an error.
 
   // Run update.php in a subshell for better isolation in case of failure.
-  // TODO: leverage redispatch code once that materializes.
-  // Possibly add code to spawn new subshell when memory gets 90% consumed. @see migrate module.
-  $drush_script = isset($target_alias['!drush_script']) ? $target_alias['!drush_script'] : NULL;
-  $remote_host = isset($target_alias['remote-host']) ? $target_alias['remote-host'] : NULL;
-  drush_backend_invoke('updatedb', array('root' => $destination_core), 'GET', 'TRUE', $drush_script, $remote_host, $target_alias['root']);
+  // TODO: Possibly add code to spawn new subshell when memory gets 90% consumed. @see migrate module.
+  drush_do_site_command($target_alias, 'updatedb');
 }
 
 // Replace db_url with DB name from target. updatedb will later append a DBTNG compatible version.

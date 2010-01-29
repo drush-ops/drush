@@ -139,12 +139,17 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
 
   // Make sure that the default items have been added for all aliases
   _drush_sitealias_add_static_defaults($alias_record);
-
+  
+  drush_sitealias_resolve_path_references($alias_record);
+  
   // Include the optional items, if requested
   if ($output_optional_items) {
     _drush_sitealias_add_transient_defaults($alias_record);
   }
 
+  if (isset($output_db_url) || isset($output_db)) {
+    drush_sitealias_add_db_settings($alias_record);
+  }
   // If the user specified --with-db-url, then leave the
   // 'db-url' entry in the alias record (unless it is not
   // set, in which case we will leave the 'databases' record instead).
@@ -178,9 +183,9 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
   // We don't want the name to go into the output
   unset($alias_record['name']);
 
-  // We only want to output the 'root' item; don't output the '!root' path alias
-  if (array_key_exists('path-aliases', $alias_record) && array_key_exists('!root', $alias_record['path-aliases'])) {
-    unset($alias_record['path-aliases']['!root']);
+  // We only want to output the 'root' item; don't output the '%root' path alias
+  if (array_key_exists('path-aliases', $alias_record) && array_key_exists('%root', $alias_record['path-aliases'])) {
+    unset($alias_record['path-aliases']['%root']);
     // If there is nothing left in path-aliases, then clear it out
     if (count($alias_record['path-aliases']) == 0) {
       unset($alias_record['path-aliases']);

@@ -162,15 +162,17 @@ $options['skip-tables'] = array(
  * - 'remote-user': The username to log in as when using ssh or rsync.
  * - 'path-aliases': An array of aliases for common rsync targets.
  *   Relative aliases are always taken from the Drupal root.
- *     '!drush': The path to the folder where drush is stored.  Optional;
+ *     '%drush': The path to the folder where drush is stored.  Optional;
  *       defaults to the folder containing the running script.  Always be sure
- *       to set '!drush' if the path to drush is different on the remote server.
- *     '!drush-script': The path to the 'drush' script (used by backend invoke);
+ *       to set '%drush' if the path to drush is different on the remote server.
+ *     '%drush-script': The path to the 'drush' script (used by backend invoke);
  *       default is 'drush' on remote machines, or the full path to drush.php on
- *       the local machine.  Note that you only need to define one of '!drush'
- *       or '!drush-script', as drush can infer one from the other.
- *     '!dump': Path to the file that "drush sql-sync" should use to store sql-dump file.
- *     '!files': Path to 'files' directory.
+ *       the local machine.  Note that you only need to define one of '%drush'
+ *       or '%drush-script', as drush can infer one from the other.
+ *     '%dump': Path to the file that "drush sql-sync" should use to store sql-dump file.
+ *     '%files': Path to 'files' directory.  This will be looked up if not specified.
+ *     '%root': A reference to the Drupal root defined in the 'root' item
+ *       in the site alias record.
  *
  * Remove the leading hash signs to enable.
  */
@@ -181,11 +183,11 @@ $options['skip-tables'] = array(
 #    'remote-host' => 'mystagingserver.myisp.com',
 #    'remote-user' => 'publisher',
 #    'path-aliases' => array(
-#      '!drush' => '/drush/path/to/drush',
-#      '!drush-script' => '/drush/path/to/drush/drush',
-#      '!dump' => '/path/to/live/sql_dump.sql',
-#      '!files' => 'sites/mydrupalsite.com/files',
-#      '!custom' => '/my/custom/path',
+#      '%drush' => '/path/to/drush',
+#      '%drush-script' => '/path/to/drush/drush',
+#      '%dump' => '/path/to/live/sql_dump.sql',
+#      '%files' => 'sites/mydrupalsite.com/files',
+#      '%custom' => '/my/custom/path',
 #     ),
 #  );
 #$options['site-aliases']['dev'] = array(

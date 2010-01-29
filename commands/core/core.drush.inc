@@ -368,6 +368,7 @@ function _core_site_status_table() {
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $status_table['Site Path'] = $site_root;
       $status_table['Site URI'] = drush_get_context('DRUSH_URI');
+      $status_table['File Directory Path'] = file_directory_path();
       if ($creds = drush_get_context('DRUSH_DB_CREDENTIALS')) {
         $status_table['Database Driver'] = $creds['driver'];
         $status_table['Database Hostname'] = $creds['host'];
@@ -387,6 +388,8 @@ function _core_site_status_table() {
         }
       }
     }
+    $status_table['Default theme'] = drush_theme_get_default();
+    $status_table['Administration theme'] = drush_theme_get_admin();
   }
   if (function_exists('php_ini_loaded_file')) {
     // Function available on PHP >= 5.2.4, but we use it if available to help
@@ -394,8 +397,6 @@ function _core_site_status_table() {
     $status_table['PHP configuration'] = php_ini_loaded_file();
   }
   $status_table['Drush Version'] = DRUSH_VERSION;
-  $status_table['Default theme'] = drush_theme_get_default();
-  $status_table['Administration theme'] = drush_theme_get_admin();
   return $status_table;
 }
 
@@ -436,6 +437,7 @@ function drush_core_status() {
       }
     }
   }
+  drush_backend_set_result($status_table);
   // Print either an ini-format list or a formatted ASCII table
   if (drush_get_option('pipe')) {
     if (count($status_table) == 1) {

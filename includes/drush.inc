@@ -826,17 +826,7 @@ function drush_remote_command() {
     $command = array_shift($args);
 
     foreach ($site_list as $site_spec) {
-      $site_record = _drush_sitealias_get_record($site_spec);
-      if (!empty($site_record)) {
-        // Pass only the root and uri parameters from the site alias;
-        // put them in the 'options' context where they are sure to
-        // be picked up by the command redispatch helper.
-        drush_set_option('root', $site_record['root'], 'options');
-        drush_set_option('uri', $site_record['uri'], 'options');
-        drush_unset_option('r');
-        drush_unset_option('l');
-        drush_do_command_redispatch($command, $args, $site_record['remote-host'], $site_record['remote-user']);
-      }
+      drush_do_site_command(_drush_sitealias_get_record($site_spec), $command, $args);
     }
     return TRUE;
   }
@@ -925,26 +915,51 @@ function drush_do_multiple_command($command, $source_record, $destination_record
   return $is_multiple_command;
 }
 
+function drush_do_site_command($site_record, $command, $args = array(), $data = array()) {
+  $values = NULL;
+  if (!empty($site_record)) {
+    // Pass the root and uri parameters from the site alias
+    $data['root'] = $site_record['root'];
+    $data['uri'] = $site_record['uri'];
+    
+    $drush_path = NULL;
+    if (array_key_exists('path-aliases', $site_record) && !array_key_exists('remote-host', $site_record)) {
+      if (array_key_exists('%drush-script', $site_record['path-aliases'])) {
+        $drush_path = $site_record['path-aliases']['%drush-script'];
+      }
+      if (array_key_exists('%drush', $site_record['path-aliases'])) {
+        $drush_path = $site_record['path-aliases']['%drush'] . '/drush';
+      }
+    }
+    
+    $values = drush_backend_invoke_args($command, $args, $data, 'GET', FALSE, $drush_path, array_key_exists('remote-host', $site_record) ? $site_record['remote-host'] : NULL, array_key_exists('remote-user', $site_record) ? $site_record['remote-user'] : NULL);
+  }
+  return $values;
+}
+
 /**
  * Redispatch the specified command using the same
  * options that were passed to this invocation of drush.
  */
-function drush_do_command_redispatch($command, $args, $remote_host = NULL, $remote_user = NULL) {
+function drush_do_command_redispatch($command, $args = array(), $remote_host = NULL, $remote_user = NULL, $drush_path = NULL) {
   $data = drush_redispatch_get_options();
 
   // If the path to drush was supplied, then pass it to backend invoke.
-  // (Perhaps this should be added to the default handling of backend invoke.)
-  $drush_path = drush_get_option('drush-script');
-  if (!isset($drush_path)) {
-    $drush_folder = drush_get_option('drush');
-    if (isset($drush)) {
-      $drush_path = $drush_folder . '/drush';
+  if ($drush_path == NULL) {
+    $drush_path = drush_get_option('drush-script');
+    if (!isset($drush_path)) {
+      $drush_folder = drush_get_option('drush');
+      if (isset($drush)) {
+        $drush_path = $drush_folder . '/drush';
+      }
     }
   }
   // Call through to backend invoke.
   drush_log(dt('Begin redispatch via backend invoke'));
   $values = drush_backend_invoke_args($command, $args, $data, 'GET', TRUE, $drush_path, $remote_host, $remote_user);
   drush_log(dt('Backend invoke is complete'));
+  
+  return $values;
 }
 
 /**

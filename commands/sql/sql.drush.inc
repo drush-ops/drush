@@ -85,7 +85,7 @@ function sql_drush_command() {
   );
   $items['sql-sync'] = array(
     'description' => 'Copy source database to target database using rsync.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'examples' => array(
       'drush sql-sync prod dev' => 'Copy the DB defined in sites/prod to the DB in sites/dev.',
     ),
