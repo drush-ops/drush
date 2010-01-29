@@ -153,7 +153,7 @@ function _drush_sitealias_get_record($alias, $db_settings_needed = false) {
     // If the alias record does not have a defined 'databases' entry,
     // then we'll need to look one up
     if ($db_settings_needed) {
-      drush_sitealias_add_db_settings(&$alias_record);
+      drush_sitealias_add_db_settings($alias_record);
     }
 
     // Add the static defaults
@@ -204,7 +204,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
       }
     }
   }
-  
+
   if ($resolution_needed) {
     $values = drush_do_site_command($alias_record, "status");
     $status_values = $values['object'];
