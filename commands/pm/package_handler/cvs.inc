@@ -26,7 +26,7 @@ function package_handler_install_project($project, $info, $path = '.') {
       return TRUE;
     }
     else {
-      drush_set_error('DRUSH_PM_CVS_CHECKOUT_PROBLEMS', dt("Unable to check out !project to !destination from cvs.drupal.org", array('!filename' => $project, '!destination' => $destination)));
+      drush_set_error('DRUSH_PM_CVS_CHECKOUT_PROBLEMS', dt("Unable to check out !project to !destination from cvs.drupal.org", array('!project' => $project, '!destination' => $destination)));
       return FALSE;
     }
   }
