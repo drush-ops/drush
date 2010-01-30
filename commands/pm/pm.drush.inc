@@ -684,13 +684,16 @@ function pm_true() {
 
 /**
  * We need to set the project path by looking at the module location. Ideally, update.module would do this for us.
+ * 
+ * TODO: Improve logic so this works even if your project directory is not
+ * named the same as the project name.
  */
 function pm_get_project_path($projects, $lookup) {
-  foreach ($projects as $project => $info) {
-    if (!isset($info['path'])  && $project != 'drupal') {
+  foreach ($projects as $name => $project) {
+    if (!isset($project['path'])  && $name != 'drupal') {
       // looks for an enabled module.
-      foreach ($info[$lookup] as $module => $name) {
-        if ($path = drupal_get_path('module', $module)) {
+      foreach ($project[$lookup] as $filename => $title) {
+        if ($path = drupal_get_path($project['project_type'], $filename)) {
           continue;
         }
       }
@@ -700,12 +703,12 @@ function pm_get_project_path($projects, $lookup) {
       // project's name.
       $parts = explode('/', $path);
       $i = count($parts) - 1;
-      $stop = array_search($project, $parts);
+      $stop = array_search($name, $parts);
       while ($i > $stop) {
         unset($parts[$i]);
         $i--;
       }
-      $projects[$project]['path'] = implode('/', $parts);
+      $projects[$name]['path'] = implode('/', $parts);
     }
   }
   return $projects;
@@ -1196,16 +1199,18 @@ function drush_pm_download() {
           $release['type'] = array_search($types[0]->value, $project_types);
         }
 
-        if ($destination = pm_dl_destination($release['type'])) {
-          if (!$version_control = drush_pm_include_version_control($destination)) {
+        // Create basic project array.
+        $project = $request;
+        if ($project['base_project_path'] = pm_dl_destination($release['type'])) {
+          $project['full_project_path'] = $project['base_project_path'] .  $request['name'];
+          $project['project_type'] = $release['type'];
+          if (!$version_control = drush_pm_include_version_control($project['base_project_path'])) {
             return FALSE;
           }
-          if (package_handler_install_project($request['name'], $release, $destination)) {
-            $release['full_project_path'] = $destination .  $request['name'];
-            drush_log(dt("Project !project (!version) downloaded to !dest.",
-                           array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $destination)), 'success');
-            drush_command_invoke_all('drush_pm_post_download', $request['name'], $release, $destination);
-            $version_control->post_download($release);
+          if (package_handler_install_project($project, $release)) {
+            drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $project['full_project_path'])), 'success');
+            drush_command_invoke_all('drush_pm_post_download', $project, $release);
+            $version_control->post_download($project);
           }
         }
       }

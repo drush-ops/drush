@@ -116,14 +116,12 @@ function pm_update_packages($projects) {
   $updated = array();
   foreach($projects as $project) {
     if (empty($project['path'])) {
-      // For themes no path is added to the release array, so we find it here.
-      $project['path'] = drupal_get_path($project['project_type'], $project['name']);
-      if (empty($project['path'])) {
-        return drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('The !project project path is not available, perhaps the !type is enabled but has been deleted from disk.', array('!project' => $project['name'], '!type' => $project['project_type'])));
-      }
+      return drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('The !project project path is not available, perhaps the !type is enabled but has been deleted from disk.', array('!project' => $project['name'], '!type' => $project['project_type'])));
     }
     drush_log(dt('Starting to update !project code at !dir...', array('!project' => $project['title'], '!dir' => $project['path'])));
+    // Create the projects directory and base (parent) directory.
     $project['full_project_path'] = $drupal_root . '/' . $project['path'];
+    $project['base_project_path'] = dirname($project['full_project_path']);
     // Check that the directory exists, and is where we expect it to be.
     if (stripos($project['path'], $project['project_type']) === FALSE || !is_dir($project['full_project_path'])) {
       return drush_set_error('DRUSH_PM_UPDATING_PATH_NOT_FOUND', dt('The !project directory could not be found within the !types directory at !full_project_path, perhaps the project is enabled but has been deleted from disk.', array('!project' => $project['name'], '!type' => $project['project_type'], '!full_project_path' => $project['full_project_path'])));
@@ -140,7 +138,7 @@ function pm_update_packages($projects) {
     $updated[] = $project;
     drush_set_context('DRUSH_PM_UPDATED', $updated);
 
-    if (!package_handler_update_project($project['name'], $project['releases'][$project['candidate_version']], $project['full_project_path'])) {
+    if (!package_handler_update_project($project, $project['releases'][$project['candidate_version']])) {
       return drush_set_error('DRUSH_PM_UPDATING_FAILED', dt('Updating project !project failed. Attempting to roll back to previously installed version.', array('!project' => $project['name'])));
     }
     else {
