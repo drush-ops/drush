@@ -125,6 +125,9 @@ class DrushMakeProject {
   }
 
   function recurse($path, $directory) {
+    if (!empty($this->directory_name)) {
+      $directory = $this->directory_name;
+    }
     $makefile = $this->path . '/' . $directory . '/' . $this->name . '.make';
 
     if (file_exists($makefile)) {
