@@ -1132,7 +1132,7 @@ function drush_pm_include_version_control($directory = '.') {
 }
 
 /**
- * Command callback. Download drupal core.
+ * Command callback. Download Drupal core or any project.
  */
 function drush_pm_download() {
   // Bootstrap to the highest level possible.
