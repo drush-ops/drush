@@ -968,8 +968,9 @@ function drush_valid_db_credentials() {
  * @see DRUSH_COMMAND
  */
 function drush_find_drush() {
- if (drush_get_option(array('php'))) {
-    $drush = drush_get_option(array('php')) . " " . realpath($_SERVER['argv'][0]);
+ $php = drush_get_option('php');
+ if (isset($php)) {
+    $drush = $php . " " . realpath($_SERVER['argv'][0]) . " --php=$php";
   } else {
     $drush = realpath($_SERVER['argv']['0']);
   }

@@ -927,9 +927,6 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
       if (array_key_exists('%drush-script', $site_record['path-aliases'])) {
         $drush_path = $site_record['path-aliases']['%drush-script'];
       }
-      if (array_key_exists('%drush', $site_record['path-aliases'])) {
-        $drush_path = $site_record['path-aliases']['%drush'] . '/drush';
-      }
     }
     
     $values = drush_backend_invoke_args($command, $args, $data, 'GET', FALSE, $drush_path, array_key_exists('remote-host', $site_record) ? $site_record['remote-host'] : NULL, array_key_exists('remote-user', $site_record) ? $site_record['remote-user'] : NULL);

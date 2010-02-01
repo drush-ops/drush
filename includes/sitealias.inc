@@ -837,7 +837,7 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix) {
   }
   // Transfer selected path aliases to the drush options.
   if (array_key_exists('path-aliases', $site_alias_settings)) {
-    foreach (array('%drush', '%drush-script', '%dump', '%include') as $key) {
+    foreach (array('%drush-script', '%dump', '%include') as $key) {
       if (array_key_exists($key, $site_alias_settings['path-aliases'])) {
         drush_set_option($prefix . substr($key, 1), $site_alias_settings['path-aliases'][$key], 'alias');
       }
