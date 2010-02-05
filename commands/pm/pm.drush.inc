@@ -684,7 +684,7 @@ function pm_true() {
 
 /**
  * We need to set the project path by looking at the module location. Ideally, update.module would do this for us.
- * 
+ *
  * TODO: Improve logic so this works even if your project directory is not
  * named the same as the project name.
  */
@@ -1172,7 +1172,7 @@ function drush_pm_download() {
       }
       else {
         // Try to get the specified release.
-        if ($request['version']) {
+        if (!empty($request['version'])) {
           $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
           if (empty($releases)) {
             drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'notice');
@@ -1182,7 +1182,7 @@ function drush_pm_download() {
         if (empty($releases)) {
           $recommended_major = $xml->xpath("/project/recommended_major");
           $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
-          $releases = $xml->xpath($xpath_releases);
+          $releases = @$xml->xpath($xpath_releases);
         }
 
         // Profiles have 3 variants for a given real relase. Admin can specify using option.
