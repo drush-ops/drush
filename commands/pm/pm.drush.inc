@@ -1180,9 +1180,14 @@ function drush_pm_download() {
         }
         // If that did not work, get the first published release for the recommended major version.
         if (empty($releases)) {
-          $recommended_major = $xml->xpath("/project/recommended_major");
-          $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
-          $releases = @$xml->xpath($xpath_releases);
+          if ($recommended_major = $xml->xpath("/project/recommended_major")) {
+            $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
+            $releases = @$xml->xpath($xpath_releases);
+          }
+        }
+
+        if (empty($releases)) {
+          return drush_set_error(dt('There is no recommended release for project !project on Drupal !drupal_version. Ask the maintainer to create a release in order to be compatible with drush and the drupal.org security broadcast system. A development snapshot release is sufficient.', array('!drupal_version' => $request['drupal_version'], '!project' => $request['name'])));
         }
 
         // Profiles have 3 variants for a given real relase. Admin can specify using option.
