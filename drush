@@ -46,5 +46,6 @@ if [ "$?" = 0 ] ; then
   exec php-cli $SCRIPT_PATH --php="php-cli" "$@"
 else
   # Alternatively we run with straight php, which works on most other systems.
-  exec php $SCRIPT_PATH "$@"
+  # The --php=`which php` is for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
+  exec php $SCRIPT_PATH --php=`which php` "$@"
 fi

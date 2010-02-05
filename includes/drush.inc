@@ -983,6 +983,10 @@ function drush_redispatch_get_options() {
       }
     }
   }
+  // 'php', if needed, will be included in DRUSH_COMMAND.  If DRUSH_COMMAND
+  // is not used (e.g. when calling a remote instance of drush), then --php
+  // should not be passed along.
+  unset($options['php']);
   return $options;
 }
 
