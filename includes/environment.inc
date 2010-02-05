@@ -331,18 +331,29 @@ function _drush_bootstrap_drush_validate() {
     return drush_bootstrap_error('DRUSH_SAFE_MODE', dt('PHP safe mode is activated. Drush requires that safe mode is disabled.'));
   }
 
-  // Attempt to download Console Table, via various methods.
-  $tablefile = DRUSH_BASE_PATH . '/includes/table.inc';
-  if (!file_exists($tablefile)) {
-    if ($file = @file_get_contents(DRUSH_TABLE_URL)) {
-      @file_put_contents($tablefile, $file);
-    }
+  // try using the PEAR installed version of Console_Table
+  $tablefile = 'Console/Table.php';
+  if (@file_get_contents($tablefile, FILE_USE_INCLUDE_PATH) === FALSE) {
+    $tablefile = DRUSH_BASE_PATH . '/includes/table.inc';
+
+    // Attempt to download Console Table, via various methods.
     if (!file_exists($tablefile)) {
-      drush_shell_exec("wget -q --timeout=30 -O $tablefile " . DRUSH_TABLE_URL);
+      $targetpath = dirname($tablefile);
+      // not point continuing if we can't write to the target path
+      if (!is_writable($targetpath)) {
+        return drush_bootstrap_error('DRUSH_TABLES_INC', dt("Drush needs a copy of the PEAR Console_Table library in order to function, and the attempt to download this file automatically failed because you do not have permission to write files in !path. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract it, and copy the Table.php file into Drush's directory as !tablefile.", array('!path' => $targetpath, '!version' => DRUSH_TABLE_VERSION ,'!tablefile' => $tablefile)));
+      }
+
+      if ($file = @file_get_contents(DRUSH_TABLE_URL)) {
+        @file_put_contents($tablefile, $file);
+      }
       if (!file_exists($tablefile)) {
-        drush_shell_exec("curl -s  --connect-timeout 30 -o $tablefile " . DRUSH_TABLE_URL);
+        drush_shell_exec("wget -q --timeout=30 -O $tablefile " . DRUSH_TABLE_URL);
         if (!file_exists($tablefile)) {
-          return drush_bootstrap_error('DRUSH_TABLES_INC', dt("Drush needs a copy of the PEAR Console_Table library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract it, and copy the Table.php file into Drush's directory as !tablefile.", array('!version' => DRUSH_TABLE_VERSION ,'!tablefile' => $tablefile)));
+          drush_shell_exec("curl -s  --connect-timeout 30 -o $tablefile " . DRUSH_TABLE_URL);
+          if (!file_exists($tablefile)) {
+            return drush_bootstrap_error('DRUSH_TABLES_INC', dt("Drush needs a copy of the PEAR Console_Table library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract it, and copy the Table.php file into Drush's directory as !tablefile.", array('!version' => DRUSH_TABLE_VERSION ,'!tablefile' => $tablefile)));
+          }
         }
       }
     }
