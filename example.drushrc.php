@@ -85,10 +85,6 @@ $options['skip-tables'] = array(
 // An example of a command specific argument being set in drushrc.php
 // $options['package-handler'] = 'cvs';
 
-// Specify additional directories to search for scripts
-// Use POSIX path separator (':')
-# $options['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
-
 /*
  * Command-specific options
  *
@@ -106,6 +102,10 @@ $options['skip-tables'] = array(
  */
 # $options['command-specific']['rsync'] = array('verbose' => TRUE);
 # $options['command-specific']['dl'] = array('cvscredentials' => 'user:pass');
+
+// Specify additional directories to search for scripts
+// Use POSIX path separator (':')
+# $options['script']['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
 
 /**
  * Variable overrides:
@@ -194,4 +194,3 @@ $options['skip-tables'] = array(
 #    'uri' => 'dev.mydrupalsite.com',
 #    'root' => '/path/to/drupal/root',
 #  );
-
