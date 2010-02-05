@@ -67,7 +67,7 @@ function core_drush_command() {
       'drush php-script' => 'List all available scripts.',
     ),
     'arguments' => array(
-      'filename' => 'Optional. The file you wish to execute. If omitted, list files ending in .php in the current working directory and specified script-path. Some might not be real drush scripts. Beware.',
+      'filename' => 'Optional. The file you wish to execute (without extension). If omitted, list files ending in .php in the current working directory and specified script-path. Some might not be real drush scripts. Beware.',
     ),
     'options' => array(
       '--script-path' => "Additional paths to search for scripts.  Use POSIX path separator (':') for multiple paths.",
