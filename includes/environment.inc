@@ -299,7 +299,7 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
       $type = 'warning';
     }
 
-    drush_log($message, $type);
+    drush_log($message . ' ' . basename($filename) . ':' . $line, $type);
 
     return TRUE;
   }
@@ -1053,4 +1053,3 @@ function drush_theme_get_default() {
 function drush_theme_get_admin() {
   return variable_get('admin_theme', drush_theme_get_default());
 }
-
