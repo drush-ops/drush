@@ -62,8 +62,8 @@ function core_drush_command() {
   $items['php-script'] = array(
     'description' => "Run php script(s).",
     'examples' => array(
-      'drush php-script scratch.php' => 'Run scratch.php script. See commands/core directory.',
-      'drush php-script example.php --script-path=/path/to/scripts:/another/path' => 'Run script from specified paths',
+      'drush php-script scratch' => 'Run scratch.php script. See commands/core directory.',
+      'drush php-script example --script-path=/path/to/scripts:/another/path' => 'Run script from specified paths',
       'drush php-script' => 'List all available scripts.',
     ),
     'arguments' => array(
@@ -499,7 +499,7 @@ function drush_core_php_script() {
     $script = $args[0];
     $found = FALSE;
     foreach($searchpath as $path) {
-      $script_filename = $path . '/' . $script;
+      $script_filename = $path . '/' . $script . '.php';
       if (file_exists($script_filename)) {
         include($script_filename);
         $found = TRUE;
@@ -509,7 +509,7 @@ function drush_core_php_script() {
     }
 
     if (!$found) {
-      drush_set_error('script not found', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
+      drush_set_error('Script not found.', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
     }
   }
 }
