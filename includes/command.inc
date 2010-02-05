@@ -502,20 +502,17 @@ function _drush_find_commandfiles($phase) {
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_SITE:
       $searchpath[] = conf_path() . '/modules';
-      $searchpath[] = conf_path() . '/themes';
       // Too early for variable_get('install_profile', 'default'); Just use default.
       $searchpath[] = "profiles/default/modules";
-      // Add all module and theme paths, even disabled ones. Prefer speed over accuracy.
+      // Add all module paths, even disabled modules. Prefer speed over accuracy.
       $searchpath[] = 'sites/all/modules';
-      $searchpath[] = 'sites/all/themes';
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_FULL:
-      // Add enabled modules and themes paths.
-      foreach (drush_get_projects() as $project) {
-        if ($project->status) {
-          $filename = drupal_get_filename($project->type, $project->name);
-          $searchpath[] = dirname($filename);
-        }
+      // Add enabled module paths. Since we are bootstrapped,
+      // we can use the Drupal API.
+      foreach (module_list() as $module) {
+        $filename = drupal_get_filename('module', $module);
+        $searchpath[] = dirname($filename);
       }
       break;
   }
