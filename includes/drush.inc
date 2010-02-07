@@ -921,14 +921,14 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
     // Pass the root and uri parameters from the site alias
     $data['root'] = $site_record['root'];
     $data['uri'] = $site_record['uri'];
-    
+
     $drush_path = NULL;
     if (array_key_exists('path-aliases', $site_record) && !array_key_exists('remote-host', $site_record)) {
       if (array_key_exists('%drush-script', $site_record['path-aliases'])) {
         $drush_path = $site_record['path-aliases']['%drush-script'];
       }
     }
-    
+
     $values = drush_backend_invoke_args($command, $args, $data, 'GET', FALSE, $drush_path, array_key_exists('remote-host', $site_record) ? $site_record['remote-host'] : NULL, array_key_exists('remote-user', $site_record) ? $site_record['remote-user'] : NULL);
   }
   return $values;
@@ -955,7 +955,7 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
   drush_log(dt('Begin redispatch via backend invoke'));
   $values = drush_backend_invoke_args($command, $args, $data, 'GET', TRUE, $drush_path, $remote_host, $remote_user);
   drush_log(dt('Backend invoke is complete'));
-  
+
   return $values;
 }
 
@@ -1282,7 +1282,7 @@ function drush_watchdog_format_message($watchdog) {
     $variables = is_string($watchdog->variables) ? unserialize($watchdog->variables) : $watchdog->variables;
     $message = is_array($variables) ? strtr($watchdog->message, $variables) : $watchdog->message;
   }
-  return decode_entities($message);
+  return strip_tags(decode_entities($message));
 }
 
 /**
@@ -1457,4 +1457,3 @@ function drush_memory_limit() {
 
   return $value;
 }
-
