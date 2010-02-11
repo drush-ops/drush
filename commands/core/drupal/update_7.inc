@@ -46,17 +46,19 @@ function update_extra_requirements($requirements = NULL) {
  * @param $context
  *   The batch context array
  */
-function drush_update_do_one($module, $number, &$context) {
-  // If updates for this module have been aborted
-  // in a previous step, go no further.
-  if (!empty($context['results'][$module]['#abort'])) {
+function drush_update_do_one($module, $number, $dependency_map,  &$context) {
+  $function = $module . '_update_' . $number;
+
+  // If this update was aborted in a previous step, or has a dependency that
+  // was aborted in a previous step, go no further.
+  if (!empty($context['results']['#abort']) && array_intersect($context['results']['#abort'], array_merge($dependency_map, array($function)))) {
     return;
   }
+
 
   $context['log'] = FALSE;
 
   $ret = array();
-  $function = $module . '_update_' . $number;
   if (function_exists($function)) {
     try {
       if ($context['log']) {
@@ -66,12 +68,6 @@ function drush_update_do_one($module, $number, &$context) {
       drush_log("Executing " . $function);
       $ret['results']['query'] = $function($context['sandbox']);
       $ret['results']['success'] = TRUE;
-
-      // @TODO Remove this block after all updates have been converted to
-      // return only strings.
-      if (is_array($ret['results']['query'])) {
-        $ret = $ret['results']['query'];
-      }
     }
     // @TODO We may want to do different error handling for different exception
     // types, but for now we'll just print the message.
@@ -82,15 +78,7 @@ function drush_update_do_one($module, $number, &$context) {
 
     if ($context['log']) {
       $ret['queries'] = Database::getLog($function);
-#      _drush_log_update_sql($ret);
     }
-  }
-
-  // @TODO Remove this block after all updates have been converted to return
-  // only strings.
-  if (isset($ret['#finished'])) {
-    $context['finished'] = $ret['#finished'];
-    unset($ret['#finished']);
   }
 
   if (isset($context['sandbox']['#finished'])) {
@@ -107,11 +95,12 @@ function drush_update_do_one($module, $number, &$context) {
   $context['results'][$module][$number] = array_merge($context['results'][$module][$number], $ret);
 
   if (!empty($ret['#abort'])) {
-    $context['results'][$module]['#abort'] = TRUE;
+    // Record this function in the list of updates that were aborted.
+    $context['results']['#abort'][] = $function;
   }
 
   // Record the schema update if it was completed successfully.
-  if ($context['finished'] == 1 && empty($context['results'][$module]['#abort'])) {
+  if ($context['finished'] == 1 && empty($ret['#abort'])) {
     drupal_set_installed_schema_version($module, $number);
   }
 
@@ -226,22 +215,28 @@ function update_main() {
 
 
   $start = array();
+
+  // Ensure system module's updates run first 
+  $start['system'] = array();
+
+
   // Print a list of pending updates for this module and get confirmation.
   if (sizeof($pending)) {
     drush_print(dt('The following updates are pending:'));
     drush_print();
     foreach ($pending as $module => $updates) {
-      if (sizeof($updates)) {
+      if (isset($updates['start']))  {
         drush_print($module . ' module : ');
         if (isset($updates['start'])) {
           $start[$module] = $updates['start'];
-        }
-        foreach ($updates['pending'] as $update) {
-          drush_print($update, 2);
+          foreach ($updates['pending'] as $update) {
+            drush_print($update, 2);
+          }
         }
         drush_print();
       }
     }
+
     if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
       drush_die('Aborting.');
     }
@@ -278,21 +273,36 @@ function _update_batch_command($id) {
 function drush_update_batch($start) {
   variable_set('maintenance_mode', TRUE);
 
+  // Resolve any update dependencies to determine the actual updates that will
+  // be run and the order they will be run in.
+  $updates = update_resolve_dependencies($start);
+
+  // Store the dependencies for each update function in an array which the
+  // batch API can pass in to the batch operation each time it is called. (We
+  // do not store the entire update dependency array here because it is
+  // potentially very large.)
+  $dependency_map = array();
+  foreach ($updates as $function => $update) {
+    $dependency_map[$function] = !empty($update['reverse_paths']) ? array_keys($update['reverse_paths']) : array();
+  }
+
   $operations = array();
-  // Set the installed version so updates start at the correct place.
-  foreach ($start as $module => $version) {
-    drupal_set_installed_schema_version($module, $version - 1);
-    $updates = drupal_get_schema_versions($module);
-    $max_version = max($updates);
-    if ($version <= $max_version) {
-      foreach ($updates as $update) {
-        if ($update >= $version) {
-          $operations[] = array('drush_update_do_one', array($module, $update));
-        }
+  foreach ($updates as $update) {
+    if ($update['allowed']) {
+      // Set the installed version of each module so updates will start at the
+      // correct place. (The updates are already sorted, so we can simply base
+      // this on the first one we come across in the above foreach loop.)
+      if (isset($start[$update['module']])) {
+        drupal_set_installed_schema_version($update['module'], $update['number'] - 1);
+        unset($start[$update['module']]);
       }
+      // Add this update function to the batch.
+
+      $function = $update['module'] . '_update_' . $update['number'];
+      $operations[] = array('drush_update_do_one', array($update['module'], $update['number'], $dependency_map[$function]));
     }
   }
-  $batch =& batch_get();
+
   $batch['operations'] = $operations;
   $batch += array(
     'title' => 'Updating',
