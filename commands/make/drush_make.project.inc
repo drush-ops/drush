@@ -60,6 +60,12 @@ class DrushMakeProject {
           $patches_txt .= '- ' . $url . "\n";
           drush_shell_exec("mv %s %s", $filename, $project_directory);
           drush_shell_exec("patch -p0 -d %s < %s/%s", $project_directory, $project_directory, $filename);
+          if (drush_shell_exec("patch -p0 -d %s < %s/%s", $project_directory, $project_directory, $filename)) {
+            drush_log($this->name . ' patched with ' . $filename . '.', 'ok');
+          }
+          else {
+            drush_set_error($this->name . ' patched with ' . $filename . '.', 'FAILED');
+          }
           drush_op('unlink', $project_directory . '/' . $filename);
           drush_log($this->name . ' patched with ' . $filename . '.', 'ok');
         }
