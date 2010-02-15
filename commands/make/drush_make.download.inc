@@ -185,7 +185,6 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 
 class DrushMakeDownload_Git extends DrushMakeDownload {
   function download() {
-    // @TODO implement revisions, tags
     $name = $this->project->name;
     $tmp_path = $this->project->tmp_path;
     $download = $this->project->download;
@@ -215,6 +214,17 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
         }
         else {
           drush_make_error('DOWNLOAD_ERROR', dt("Unable to check out branch %branch.", array('%branch' => $download['branch'])));
+        }
+        chdir($cwd);
+      }
+      elseif ($download['revision']) {
+        $cwd = getcwd();
+        chdir($tmp_path . '/' . $name);
+        if (drush_shell_exec("git checkout %s", $download['revision'])) {
+          drush_log(dt("Checked out revision %revision.", array('%revision' => $download['revision'])), 'ok');
+        }
+        else {
+          drush_make_error('DOWNLOAD_ERROR', dt("Unable to check out revision %revision.", array('%revision' => $download['revision'])));
         }
         chdir($cwd);
       }
