@@ -165,6 +165,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   protected function downloadFile() {
     $name = $this->project->name;
     $tmp_path = $this->project->tmp_path;
+    $filename = dt('file');
     if (!empty($this->project->download['url'])) {
       $url = $this->project->download['url'];
       $filename = "$tmp_path/" . basename($url);
