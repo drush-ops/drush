@@ -191,24 +191,20 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
     $download = $this->project->download;
     if (!empty($download['url'])) {
       // Parse the git repo URL into pieces that we can work with.
-      // Working copy URLs are of the format git@[domain]:[repo] while
-      // Export URLs are of the format git://[domain]/[repo]
-      $url = strtr($download['url'], array('git@' => '', 'git://' => ''));
-      $url_ar = strpos($url, ':') !== FALSE ? explode(':', $url, 2) : explode('/', $url, 2);
-      $wc = drush_get_option('working-copy');
-      $url = $wc ? "git@{$url_ar[0]}:{$url_ar[1]}" : "git://{$url_ar[0]}/{$url_ar[1]}";
+      $alt_url = strtr($download['url'], array('git@' => '', 'git://' => ''));
+      $alt_url = strpos($alt_url, ':') !== FALSE ? explode(':', $alt_url, 2) : explode('/', $alt_url, 2);
+      $alt_url = strpos($download['url'], 'git://') !== FALSE ? "git@{$alt_url[0]}:{$alt_url[1]}" : "git://{$alt_url[0]}/{$alt_url[1]}";
 
       $this->project->download['branch'] = $download['branch'] = isset($download['branch']) ? $download['branch'] : 'master';
-      if (drush_shell_exec("git clone %s %s/%s", $url, $tmp_path, $name)) {
-        drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $url)), 'ok');
+      if (drush_shell_exec("git clone %s %s/%s", $download['url'], $tmp_path, $name)) {
+        drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
       }
-      else if ($wc && drush_shell_exec("git clone %s %s/%s", "git://{$url_ar[0]}/{$url_ar[1]}", $tmp_path, $name)) {
-        drush_log(dt("%project private url failed, using public.", array('%project' => $name)), 'ok');
-        $wc = FALSE;
-        drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => "git://{$url_ar[0]}/{$url_ar[1]}")), 'ok');
+      else if (drush_shell_exec("git clone %s %s/%s", $alt_url, $tmp_path, $name)) {
+        drush_log(dt("%project url %orig_url failed, using alternative url %alt_url.", array('%project' => $name, '%orig_url' => $download['url'], '%alt_url' => $alt_url)), 'ok');
+        drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $alt_url)), 'ok');
       }
       else {
-        drush_make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $name, '%url' => $url)));
+        drush_make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $name, '%url' => $download['url'])));
       }
       // Checkout a branch if one was asked for in the make file
       if ($download['branch'] !== 'master') {
@@ -223,7 +219,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
         chdir($cwd);
       }
       // Remove .git/ directory if working-copy flag was not specified.
-      if (!$wc && file_exists($tmp_path . '/' . $name . '/.git')) {
+      if (!drush_get_option('working-copy') && file_exists($tmp_path . '/' . $name . '/.git')) {
         drush_shell_exec("rm -rf %s/%s/.git", $tmp_path, $name);
       }
       return $name;
