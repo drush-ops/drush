@@ -102,11 +102,11 @@ function drush_core_watchdog_show($type = NULL) {
 function core_watchdog_format_row($watchdog) {
   $severities = watchdog_severity_levels();
   return array(
-    format_date($watchdog->timestamp, 'small'),
+    format_date($watchdog->timestamp, 'custom', 'Y.n.j G.i.s'),
     $severities[$watchdog->severity],
     dt($watchdog->type),
-    truncate_utf8(drush_watchdog_format_message($watchdog), 68, FALSE, FALSE),
-    strip_tags(theme('username', (array)$watchdog)),
+    truncate_utf8(drush_watchdog_format_message($watchdog), 188, FALSE, FALSE),
+    $watchdog->uid ? strip_tags(theme('username', (array)$watchdog)) : dt('Anon'),
   );
 }
 
