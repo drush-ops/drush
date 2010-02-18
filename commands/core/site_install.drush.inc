@@ -75,7 +75,8 @@ function drush_core_pre_site_install() {
 }
 
 function drush_core_site_install($profile = 'standard') {
-  require_once('install.php');
+  define('MAINTENANCE_MODE', 'install');
+  require_once DRUPAL_ROOT . '/includes/install.core.inc';
 
   $db_spec = drush_core_site_install_db_spec();
 

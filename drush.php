@@ -8,7 +8,6 @@
  *
  * @requires PHP CLI 5.2.0, or newer.
  */
-
 // Terminate immediately unless invoked as a command line script
 if (!drush_verify_cli()) {
   die('drush.php is designed to run via the command line.');
