@@ -182,7 +182,7 @@ function update_main_prepare() {
 
   // Now proceed with a full bootstrap.
 
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
   drupal_maintenance_theme();
 
   drush_errors_on();
