@@ -124,11 +124,11 @@ function drush_variable_get() {
 function drush_variable_set() {
   $args = func_get_args();
   if (!isset($args[0])) {
-    drush_set_error('DRUSH_VARIABLE_ERROR', dt('No variable specified.'));
+    return drush_set_error('DRUSH_VARIABLE_ERROR', dt('No variable specified.'));
   }
   $value = $args[1];
   if (!isset($value)) {
-    drush_set_error('DRUSH_VARIABLE_ERROR', dt('No value specified.'));
+    return drush_set_error('DRUSH_VARIABLE_ERROR', dt('No value specified.'));
   }
 
   $result = drush_variable_like($args[0]);
