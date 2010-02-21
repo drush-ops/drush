@@ -20,7 +20,7 @@ For Linux/Unix/Mac:
        $ chmod u+x /path/to/drush/drush
   3. (Optional, but recommended:) To ease the use of drush,
      - create a link to drush in a directory that is in your $PATH, e.g.:
-       $ ln -s /path/to/drush/drush /usr/bin/drush
+       $ ln -s /path/to/drush/drush /usr/local/bin/drush
      OR
      - create an alias to drush:
        $ alias drush='/path/to/drush/drush'
