@@ -89,7 +89,7 @@ function drush_main() {
           // Dispatch the command(s).
           $return = drush_dispatch($command);
 
-          if (drush_get_context('DRUSH_DEBUG'))
+          if (drush_get_context('DRUSH_DEBUG')) {
             drush_print_timers();
           }
           drush_log(dt('Peak memory usage was !peak', array('!peak' => drush_format_size(memory_get_peak_usage()))), 'memory');
