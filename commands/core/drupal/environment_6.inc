@@ -11,12 +11,22 @@
 /**
  * Get complete information for all available modules.
  *
+ * We need to set the type for those modules that are not already in the system table.
+ *
  * @return
- *   An array containing module info for all installed modules.
+ *   An array containing module info for all available modules.
  */
 function drush_get_modules() {
-  return module_rebuild_cache();
+  $modules = module_rebuild_cache();
+  foreach ($modules as $module) {
+    if (!isset($module->type)) {
+      $module->type = 'module';
+    }
+  }
+
+  return $modules;
 }
+
 
 /**
  * Return dependencies and its status for modules.
@@ -115,11 +125,20 @@ function drush_system_modules_form_submit($active_modules) {
 /**
  * Get complete information for all available themes.
  *
+ * We need to set the type for those themes that are not already in the system table.
+ *
  * @return
  *   An array containing theme info for all available themes.
  */
 function drush_get_themes() {
-  return list_themes(TRUE);
+  $themes = system_theme_data();
+  foreach ($themes as $theme) {
+    if (!isset($theme->type)) {
+      $theme->type = 'theme';
+    }
+  }
+
+  return $themes;
 }
 
 /**

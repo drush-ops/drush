@@ -11,14 +11,19 @@
 /**
  * Get complete information for all available modules.
  *
+ * We need to set the type for those modules that are not already in the system table.
+ * Also In Drupal 5, system_modules() returns NULL for the dependency list of the module if there are no dependencies.
+ * We will override this to be an empty array instead to be compatible to Drupal 6 and 7.
+ *
  * @return
  *   An array containing module info for all available modules.
  */
 function drush_get_modules() {
   $modules = module_rebuild_cache();
-  // In Drupal 5, system_modules() returns NULL for the dependency list of the module if there are no dependencies.
-  // We will override this to be an empty array instead to be compatible to Drupal 6 and 7
   foreach ($modules as $module) {
+    if (!isset($module->type)) {
+      $module->type = 'module';
+    }
     if (empty($module->info['dependencies'])) {
       $module->info['dependencies'] = array();
     }
@@ -26,6 +31,7 @@ function drush_get_modules() {
       $module->info['dependents'] = array();
     }
   }
+
   return $modules;
 }
 
@@ -140,11 +146,20 @@ function drush_system_modules_form_submit($active_modules) {
 /**
  * Get complete information for all available themes.
  *
+ * We need to set the type for those themes that are not already in the system table.
+ *
  * @return
  *   An array containing theme info for all available themes.
  */
 function drush_get_themes() {
-  return system_theme_data();
+  $themes = system_theme_data();
+  foreach ($themes as $theme) {
+    if (!isset($theme->type)) {
+      $theme->type = 'theme';
+    }
+  }
+
+  return $themes;
 }
 
 /**

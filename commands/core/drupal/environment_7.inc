@@ -128,7 +128,7 @@ function drush_system_modules_form_submit($active_modules) {
  *   An array containing theme info for all available themes.
  */
 function drush_get_themes() {
-  return list_themes(TRUE);
+  return system_rebuild_theme_data();
 }
 
 /**
