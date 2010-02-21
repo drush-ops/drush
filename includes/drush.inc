@@ -1154,15 +1154,40 @@ function _drush_print_log($entry) {
   return $return;
 }
 
-// Log all timers for the request.
-// Useful for migrate commands. Lets see if others find it useful.
-// Called at end of request. @see drush.php
-function drush_log_timers() {
+// Print all timers for the request.
+function drush_print_timers() {
   global $timers;
+  $temparray = array();
   foreach ((array)$timers as $name => $timerec) {
-    drush_log("Timer '$name' is  "  . sprintf('%s sec.', round(timer_read($name)/1000, 2)), 'timer');
+    // We have to use timer_read() for active timers, and check the record for others
+    if (isset($timerec['start'])) {
+      $temparray[$name] = timer_read($name);
+    }
+    else {
+      $temparray[$name] = $timerec['time'];
+    }
+  }
+  // Go no farther if there were no timers
+  if (count($temparray) > 0) {
+    // Put the highest cumulative times first
+    arsort($temparray);
+    $table = array();
+    $table[] = array('Timer', 'Cum (sec)', 'Count', 'Avg (msec)');
+    foreach ($temparray as $name => $time) {
+      $cum = round($time/1000, 3);
+      $count = $timers[$name]['count'];
+      if ($count > 0) {
+        $avg = round($time/$count, 3);
+      }
+      else {
+        $avg = 'N/A';
+      }
+      $table[] = array($name, $cum, $count, $avg);
+    }
+    drush_print_table($table, TRUE);
   }
 }
+
 /**
 * Turn drupal_set_message errors into drush_log errors
 */
