@@ -177,17 +177,8 @@ function drush_sitealias_add_db_settings(&$alias_record)
   // If the alias record does not have a defined 'databases' entry,
   // then we'll need to look one up
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
-    // If the alias record is remote, then we'll use backend_invoke to fetch the
-    // database settings from the remote machine
-    if (array_key_exists('remote-host', $alias_record)) {
-      $values = drush_do_site_command($alias_record, "sql-conf", array(), array('all' => TRUE));
-      $alias_record['databases'] = $values['object'];
-    }
-    // If the alias record is for a local machine, then look up and
-    // use the database settings from the appropriate settings.php file.
-    else {
-      $alias_record = array_merge(_drush_sitealias_build_record_from_settings($alias_record['uri'], $alias_record['root']), $alias_record);
-    }
+    $values = drush_do_site_command($alias_record, "sql-conf", array(), array('all' => TRUE));
+    $alias_record['databases'] = $values['object'];
   }
 }
 
@@ -673,13 +664,6 @@ function drush_sitealias_build_record_from_settings_file($site_settings_file, $a
     global $databases, $db_url, $base_url;
     $base_url = null;
     require $site_settings_file;
-    if (isset($db_url)) {
-      $alias_record['db-url'] = $db_url;
-    }
-    else {
-      $alias_record['databases'] = $databases;
-    }
-
     $alias_record['root'] = $drupal_root;
     if (isset($alias)) {
       $alias_record['uri'] = $alias;
