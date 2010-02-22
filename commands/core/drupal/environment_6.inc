@@ -83,7 +83,11 @@ function drush_module_dependents($modules, $module_info) {
  *   Array of module names
  */
 function drush_module_enable($modules) {
-  module_enable($modules, FALSE);
+  // Try to install modules previous to enabling.
+  foreach ($modules as $module) {
+    _drupal_install_module($module);
+  }
+  module_enable($modules);
 }
 
 /**
