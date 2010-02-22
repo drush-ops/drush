@@ -284,7 +284,7 @@ function _drush_replace_query_placeholders($where, $args) {
  * @param $table
  *   String. The table to operate on.
  * @param $fields
- *   Array or '*'. Fields affected in this operation.
+ *   Array or string. Fields affected in this operation. Valid string values are '*' or a single column name.
  * @param $where
  *   String. WHERE snippet for the operation. It uses named placeholders. see @_drush_replace_query_placeholders()
  * @param $args
@@ -302,8 +302,13 @@ function _drush_replace_query_placeholders($where, $args) {
  */
 function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $start = NULL, $length = NULL, $order_by_field = NULL, $order_by_direction = 'ASC') {
   if (drush_drupal_major_version() >= 7) {
-    if ($fields == '*') {
-      $fields = array();
+    if (!is_array($fields)) {
+      if ($fields == '*') {
+        $fields = array();
+      }
+      else {
+        $fields = array($fields);
+      }
     }
     $query = db_select($table, $table)
       ->fields($table, $fields);
@@ -319,7 +324,7 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
     return $query->execute();
   }
   else {
-    if ($fields != '*') {
+    if (is_array($fields)) {
       $fields = implode('","', $fields);
     }
     $query = "SELECT $fields FROM {$table}";

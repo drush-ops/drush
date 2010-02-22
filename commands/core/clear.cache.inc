@@ -50,8 +50,7 @@ function drush_cache_clear_types() {
 }
 
 function drush_cache_clear_theme_registry() {
-  // TODO: DBTNG
-  db_query("DELETE FROM {cache} WHERE cid LIKE 'theme_registry%'");
+  drush_db_delete('cache', 'cid LIKE :theme_registry', array(':theme_registry' => 'theme_registry%'));
 }
 
 function drush_cache_clear_css_js() {

@@ -200,11 +200,6 @@ function drush_variable_delete() {
 
 // Query for similar variable names.
 function drush_variable_like($arg) {
-  if (drush_drupal_major_version() >= 7) {
-    $result = db_query("SELECT name FROM {variable} WHERE name LIKE :keyword ORDER by name ASC", array(':keyword' => $arg . '%'));
-  }
-  else {
-    $result = db_query("SELECT name FROM {variable} WHERE name LIKE '%s%' ORDER BY name ASC", $arg);
-  }
-  return $result;
+  return drush_db_select('variable', 'name', 'name LIKE :keyword', array(':keyword' => $arg . '%'), NULL, NULL, 'name');
 }
+
