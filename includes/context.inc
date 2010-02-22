@@ -127,6 +127,10 @@ function _drush_config_file($context) {
  * Load drushrc files (if available) from several possible locations.
  */
 function drush_load_config($context) {
+  drush_load_config_file($context, _drush_config_file($context));
+}
+
+function drush_load_config_file($context, $config) {
   global $drush_conf_override;
 
   // Only reset $drush_conf_override if the array is not set, otherwise keep old values and append new values to it.
@@ -134,7 +138,6 @@ function drush_load_config($context) {
     $drush_conf_override = array();
   }
 
-  $config = _drush_config_file($context);
   if (file_exists($config)) {
     drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
     $options['context-path'][$context] = $config;

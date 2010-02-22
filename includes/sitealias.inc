@@ -150,30 +150,36 @@ function _drush_sitealias_get_record($alias, $db_settings_needed = false) {
     // Process site list related fields
     _drush_sitealias_check_sitelist_fields($alias_record);
 
-    // If the alias record does not have a defined 'databases' entry,
-    // then we'll need to look one up
-    if ($db_settings_needed) {
-      drush_sitealias_add_db_settings($alias_record);
-    }
-
-    // Add the static defaults
-    _drush_sitealias_add_static_defaults($alias_record);
-
-    // Fail fast if database settings are not available and the caller
-    // said that they are required (but give site lists a pass)
-    if ($db_settings_needed && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
-      if (empty($alias_record)) {
-        drush_print(dt("Error: could not find required definition for site !site", array('!site' => $alias)));
-      }
-      else {
-        drush_print(dt("Error: could not get database spec when it was required for !site", array('!site' => $alias)));
-      }
-      exit(1);
-    }
-
     // Cache the result
     drush_set_option('sitealias-' . $alias, $alias_record, 'sitealias-cache');
+    
+    // Load the drush config file if there is one in the site folder just found
+    if (!isset($alias_record['remote']) && isset($alias_record['uri']) && isset($alias_record['root'])) {
+      drush_load_config_file('site', $alias_record['root'] . '/sites/' . drush_sitealias_uri_to_site_dir($alias_record['uri']) . '/drushrc.php');
+    }
   }
+
+  // If the alias record does not have a defined 'databases' entry,
+  // then we'll need to look one up
+  if ($db_settings_needed) {
+    drush_sitealias_add_db_settings($alias_record);
+  }
+
+  // Add the static defaults
+  _drush_sitealias_add_static_defaults($alias_record);
+
+  // Fail fast if database settings are not available and the caller
+  // said that they are required (but give site lists a pass)
+  if ($db_settings_needed && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
+    if (empty($alias_record)) {
+      drush_print(dt("Error: could not find required definition for site !site", array('!site' => $alias)));
+    }
+    else {
+      drush_print(dt("Error: could not get database spec when it was required for !site", array('!site' => $alias)));
+    }
+    exit(1);
+  }
+
   return $alias_record;
 }
 
