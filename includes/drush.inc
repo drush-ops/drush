@@ -243,6 +243,141 @@ function drush_drupal_major_version() {
 }
 
 /**
+ * Replace named placeholders in a WHERE snippet. 
+ *
+ * Helper function to allow the usage of Drupal 7 WHERE snippets
+ * with named placeholders in code for Drupal 5 and 6.
+ *
+ * @param $where
+ *   Stringwith a WHERE snippet using named placeholders.
+ * @param $args
+ *   Array of placeholder values.
+ * @return
+ *   String. $where filled with literals from $args.
+ */
+function _drush_replace_query_placeholders($where, $args) {
+  foreach ($args as $key => $data) {
+    if (!is_numeric($data)) {
+      $args[$key] = '"'.$data.'"';
+    }
+    else if (is_array($data)) {
+      $new_keys = array();
+      foreach ($data as $i => $value) {
+        $new_keys[$key . '_' . $i] = $value;
+      }
+      $where = preg_replace('#' . $key . '\b#', implode(', ', array_keys($new_keys)), $query);
+      unset($args[$key]);
+      $args += $new_keys;
+    }
+  }
+
+  foreach ($args as $key => $data) {
+    $where = str_replace($key, $data, $where);
+  }
+
+  return $where;
+}
+
+/**
+ * A db_select() that works for any version of Drupal.
+ *
+ * @param $table
+ *   String. The table to operate on.
+ * @param $fields
+ *   Array or '*'. Fields affected in this operation.
+ * @param $where
+ *   String. WHERE snippet for the operation. It uses named placeholders. see @_drush_replace_query_placeholders()
+ * @param $args
+ *   Array. Arguments for the WHERE snippet.
+ * @param $start
+ *   Int. Value for OFFSET.
+ * @param $length
+ *   Int. Value for LIMIT.
+ * @param $order_by_field
+ *   String. Database column to order by.
+ * @param $order_by_direction
+ *   ('ASC', 'DESC'). Ordering direction.
+ * @return
+ *   A database resource.
+ */
+function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $start = NULL, $length = NULL, $order_by_field = NULL, $order_by_direction = 'ASC') {
+  if (drush_drupal_major_version() >= 7) {
+    if ($fields == '*') {
+      $fields = array();
+    }
+    $query = db_select($table, $table)
+      ->fields($table, $fields);
+    if (!empty($where)) {
+      $query = $query->where($where, $args);
+    }
+    if (!is_null($order_by_field)) {
+      $query = $query->orderBy($order_by_field, $order_by_direction);
+    }
+    if (!is_null($length)) {
+      $query = $query->range($start, $length);
+    }
+    return $query->execute();
+  }
+  else {
+    if ($fields != '*') {
+      $fields = implode('","', $fields);
+    }
+    $query = "SELECT $fields FROM {$table}";
+    if (!empty($where)) {
+      $where = _drush_replace_query_placeholders($where, $args);
+      $query .= " WHERE ".$where;
+    }
+    if (!is_null($order_by_field)) {
+      $query .= " ORDER BY $order_by_field $order_by_direction";
+    }
+    if (!is_null($length)) {
+      $limit = " LIMIT $length";
+      if (!is_null($start)) {
+        $limit .= " OFFSET $start";
+      }
+      $query .= $limit;
+    }
+
+    return db_query($query, $args);
+  }
+}
+
+/**
+ * A db_delete() that works for any version of Drupal.
+ *
+ * @param $table
+ *   String. The table to operate on.
+ * @param $where
+ *   String. WHERE snippet for the operation. It uses named placeholders. see @_drush_replace_query_placeholders()
+ * @param $args
+ *   Array. Arguments for the WHERE snippet.
+ * @return
+ *   Affected rows or FALSE.
+ */
+function drush_db_delete($table, $where = NULL, $args = NULL) {
+  if (drush_drupal_major_version() >= 7) {
+    if (!empty($where)) {
+      $query = db_delete($table)->where($where, $args);
+      return $query->execute();
+    }
+    else {
+      return db_truncate($table)->execute();
+    }
+  }
+  else {
+    $query = "DELETE FROM {$table}";
+    if (!empty($where)) {
+      $where = _drush_replace_query_placeholders($where, $args);
+      $query .= ' WHERE '.$where;
+    }
+    if (!db_query($query, $args)) {
+      return FALSE;
+    }
+    return db_affected_rows();
+  }
+}
+
+/**
  * A db_result() that works for any version of Drupal.
  *
  * @param
