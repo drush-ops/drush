@@ -162,7 +162,12 @@ function _drush_sitealias_get_record($alias, $db_settings_needed = false) {
     // Fail fast if database settings are not available and the caller
     // said that they are required (but give site lists a pass)
     if ($db_settings_needed && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
-      drush_print("Error: could not get database spec when it was required for " . $alias);
+      if (empty($alias_record)) {
+        drush_print(dt("Error: could not find required definition for site !site", array('!site' => $alias)));
+      }
+      else {
+        drush_print(dt("Error: could not get database spec when it was required for !site", array('!site' => $alias)));
+      }
       exit(1);
     }
 
@@ -178,7 +183,9 @@ function drush_sitealias_add_db_settings(&$alias_record)
   // then we'll need to look one up
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
     $values = drush_do_site_command($alias_record, "sql-conf", array(), array('all' => TRUE));
-    $alias_record['databases'] = $values['object'];
+    if (isset($values['object'])) {
+      $alias_record['databases'] = $values['object'];
+    }
   }
 }
 
