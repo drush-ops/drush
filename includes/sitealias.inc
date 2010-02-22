@@ -656,14 +656,11 @@ function _drush_sitealias_build_record_from_settings($alias, $drupal_root = null
 function drush_sitealias_build_record_from_settings_file($site_settings_file, $alias = null, $drupal_root = null) {
   $alias_record = array();
 
-  if (!isset($drupal_root)) {
-    $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
-  }
-
   if (file_exists($site_settings_file)) {
-    global $databases, $db_url, $base_url;
-    $base_url = null;
-    require $site_settings_file;
+    if (!isset($drupal_root)) {
+      $drupal_root = drush_locate_root($site_settings_file);
+    }
+
     $alias_record['root'] = $drupal_root;
     if (isset($alias)) {
       $alias_record['uri'] = $alias;
