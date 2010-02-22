@@ -738,6 +738,8 @@ function _drush_bootstrap_drupal_full() {
   ob_start();
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   ob_end_clean();
+  // Poke Drupal with a cluestick so it recognizes our system_watchdog() implementation.
+  module_implements('watchdog', FALSE, TRUE);
   _drush_log_drupal_messages();
   // Find any command files that are available during this bootstrap phase.
   _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_FULL);
