@@ -108,13 +108,8 @@ function _drush_config_file($context) {
   }
 
   // in the user home directory
-  // $_SERVER['HOME'] isn't set on windows and generates a Notice.
-  if(isset($_SERVER['HOME'])){
-    $configs['user'] = $_SERVER['HOME'] . '/.drushrc.php';
-  }
-  else{
-    // home on windows
-    $configs['user'] = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'] . '/.drushrc.php';
+  if (!is_null(drush_server_home())) {
+    $configs['user'] = drush_server_home() . '/.drushrc.php';
   }
 
 

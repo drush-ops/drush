@@ -1066,3 +1066,20 @@ function drush_theme_get_default() {
 function drush_theme_get_admin() {
   return variable_get('admin_theme', drush_theme_get_default());
 }
+
+/**
+ * Return the user's home directory.
+ */
+
+function drush_server_home() {
+  $home = NULL;
+  // $_SERVER['HOME'] isn't set on windows and generates a Notice.
+  if (!empty($_SERVER['HOME'])) {
+    $home = $_SERVER['HOME'];
+  }
+  elseif (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
+    // home on windows
+    $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
+  }
+  return $home;
+}

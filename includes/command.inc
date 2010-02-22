@@ -499,8 +499,8 @@ function _drush_find_commandfiles($phase) {
       }
 
       // User commands, residing in ~/.drush
-      if (!empty($_SERVER['HOME'])) {
-        $searchpath[] = $_SERVER['HOME'] . '/.drush';
+      if (!is_null(drush_server_home())) {
+        $searchpath[] = drush_server_home() . '/.drush';
       }
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_SITE:
