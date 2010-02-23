@@ -55,12 +55,18 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     $source_db_url = _drush_sql_get_spec_from_options('source-');
     $source_remote_host = drush_get_option('source-remote-host');
     $source_remote_port = drush_get_option('source-remote-port');
-    $source_rsync_options = array();
+    // The host may have special ssh requirements
+    $source_remote_ssh_options = drush_get_option('source-ssh-options');
+    // rsync later will also have to know this option
+    $source_rsync_options = array('ssh-options' => $source_remote_ssh_options);
 
     $target_db_url = _drush_sql_get_spec_from_options('target-');
     $target_remote_host = drush_get_option('target-remote-host');
     $target_remote_port = drush_get_option('target-remote-port');
-    $target_rsync_options = array();
+    // The host may have special ssh requirements
+    $target_remote_ssh_options = drush_get_option('target-ssh-options');
+    // rsync later will also have to know this option
+    $target_rsync_options = array('ssh-options' => $target_remote_ssh_options);
 
     // Set up the result file and the remote file.
     // If the result file is not set, then create a temporary file.
@@ -180,7 +186,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     if (isset($cache)) {
       if (file_exists($local_file) && (filesize($local_file) > 0)) {
         if ((filemtime($local_file) - time()) < ($cache * 60 * 60)) {
-          drush_log(dt('Modification time of local dump file is less than !cache hours old.', array('!cache' => $cache)));
+          drush_log(dt('Modification time of local dump file is less than !cache hours old. Use the --no-cache option to force a refresh.', array('!cache' => $cache)));
           $no_dump = TRUE;
           $no_sync = TRUE;
         }
@@ -220,7 +226,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
           // if the cache option is set.
           $dump_exec = 'if [ ! -s ' . $source_dump . '] || [ $((`date "+%s"`-`stat --format="%Y" ' . $source_dump . '`)) -gt ' . ($cache * 60 *  60) . ' ] ; then ' . $dump_exec . '; fi';
         }
-        $dump_exec = 'ssh ' . $source_remote_user . $source_at . $source_remote_host . ' ' . escapeshellarg($dump_exec);
+        $dump_exec = "ssh $source_remote_ssh_options $source_remote_user$source_at$source_remote_host ". escapeshellarg($dump_exec);
       }
     }
     else {
@@ -310,10 +316,10 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
           $target_remote_pass = drush_get_option('target-remote-pass') ? ':' . drush_get_option('target-remote-pass') : '';
         }
 
-        drush_core_call_rsync($local_file, $target_remote_user . $target_at . $target_remote_host . ':' . $target_dump);
+        drush_core_call_rsync($local_file, $target_remote_user . $target_at . $target_remote_host . ':' . $target_dump, $target_rsync_options);
 
         $connect_exec = $pre_import_commands . $import_command . ' < ' . $target_dump;
-        $import_exec = 'ssh ' . $target_remote_user . $target_at . $target_remote_host . ' ' . escapeshellarg($connect_exec);
+        $import_exec = "ssh $target_remote_ssh_options $target_remote_user$target_at$target_remote_host  ". escapeshellarg($connect_exec);
         // delete the remote target file if it is a temporary file
         if ($target_is_tmp) {
           $import_exec .= '; rm -f ' . escapeshellarg($target_dump);

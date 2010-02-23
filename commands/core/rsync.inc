@@ -212,7 +212,9 @@ function drush_core_call_rsync($source, $destination, $parametric_options = arra
       }
     }
   }
-  $exec = "rsync -e ssh $mode$options $source $destination";
+
+  $ssh_options = @$all_specified_options['ssh-options'];
+  $exec = "rsync -e 'ssh $ssh_options' $mode$options $source $destination";
 
   $exec_result = drush_op('system', $exec) !== FALSE;
 
@@ -294,8 +296,10 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
   _drush_sitealias_add_transient_defaults($site_alias_settings);
 
   // Resolve path aliases such as %files, if any exist in the path
-  drush_sitealias_resolve_path_references($site_alias_settings, $path);
-
+  if (!empty($path)) {
+    drush_sitealias_resolve_path_references($site_alias_settings, $path);
+  }
+  
   if (array_key_exists('path-aliases', $site_alias_settings)) {
     $path_aliases = $site_alias_settings['path-aliases'];
   }

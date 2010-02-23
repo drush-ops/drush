@@ -160,6 +160,10 @@ $options['skip-tables'] = array(
  *     omitted for local sites, as this option controls whether or not
  *     rsync parameters are for local or remote machines.
  * - 'remote-user': The username to log in as when using ssh or rsync.
+ * - 'ssh-options': If the target requires special options, such as a non-
+ *     standard port, alternative identity file, or alternative
+ *     authentication method, ssh- options can contain a string of extra
+ *     options  that are used with the ssh command, eg "-p 100"
  * - 'path-aliases': An array of aliases for common rsync targets.
  *   Relative aliases are always taken from the Drupal root.
  *     '%drush': The path to the folder where drush is stored.  Optional;
