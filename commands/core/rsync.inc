@@ -304,10 +304,14 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
   // then assume that the remote Drupal root is the same
   // as the local Drupal root.
   $drupal_root = array_key_exists('root', $site_alias_settings) ? $site_alias_settings['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
+  // Add a slash to the end of the drupal root, as below.
+  if ($drupal_root[strlen($drupal_root)-1] != '/') {
+    $drupal_root = $drupal_root . '/';
+  }
   foreach ($path_aliases as $key => $value) {
     // Expand all relative path aliases to be based off of the Drupal root
     if (($value[0] != '/') && ($key != '%root')) {
-      $path_aliases[$key] = $drupal_root . '/' . $value;
+      $path_aliases[$key] = $drupal_root . $value;
     }
     // Rsync is very particular about the meaning of paths that
     // end with a '/' compared to those that do not.  In order to
@@ -331,7 +335,7 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
   // and path components together.
   // First make empty paths or relative paths start from the drupal root.
   if (empty($path) || ($path[0] != '/')) {
-      $path = $drupal_root . $path;
+    $path = $drupal_root . $path;
   }
 
   // If there is a $machine component, to the path, then
