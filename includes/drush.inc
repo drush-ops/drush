@@ -725,9 +725,9 @@ function drush_confirm($msg, $indent = 0) {
  *   A list of questions to display to the user.  The
  *   KEYS of the array are the result codes to return to the
  *   caller; the VALUES are the messages to display on
- *   each line. Special keys starting with '-' can be provided
- *   as separator between choices groups. Separator keys don't alter
- *   the numbering.
+ *   each line. Special keys of the form '-- something --' can be 
+ *   provided as separator between choices groups. Separator keys 
+ *    don't alter the numbering.
  * @param $prompt
  *   The message to display to the user prompting for input.
  * @param $label
@@ -745,7 +745,7 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
   drush_print('  [0] : Cancel');
   $selection_number = 0;
   foreach ($options as $key => $option) {
-    if (strpos($key, '-') === 0) {
+    if ((substr($key, 0, 3) == '-- ') && (substr($key, -3) == ' --')) {
       drush_print("  ".$option);
       continue;
     }

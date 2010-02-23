@@ -68,12 +68,12 @@ function watchdog_drush_command() {
  * Command callback.
  */
 function drush_core_watchdog_list() {
-  $options['-'] = dt('== message types ==');
+  $options['-- types --'] = dt('== message types ==');
   $types = core_watchdog_message_types();
   foreach ($types as $type) {
     $options[] = $type;
   }
-  $options['--'] = dt('== severity levels ==');
+  $options['-- levels --'] = dt('== severity levels ==');
   $severities = core_watchdog_severity_levels();
   foreach ($severities as $key => $value) {
     $options[] = "$value($key)";
