@@ -717,7 +717,7 @@ function drush_confirm($msg, $indent = 0) {
  * Ask the user to select an item from a list.
  * From a provided associative array, drush_choice will
  * display all of the questions, numbered from 1 to N,
- * and return the item the user selected.  "0" is always
+ * and return the item the user selected. "0" is always
  * cancel; entering a blank line is also interpreted
  * as cancelling.
  *
@@ -725,7 +725,9 @@ function drush_confirm($msg, $indent = 0) {
  *   A list of questions to display to the user.  The
  *   KEYS of the array are the result codes to return to the
  *   caller; the VALUES are the messages to display on
- *   each line.
+ *   each line. Special keys starting with '-' can be provided
+ *   as separator between choices groups. Separator keys don't alter
+ *   the numbering.
  * @param $prompt
  *   The message to display to the user prompting for input.
  * @param $label
@@ -740,12 +742,16 @@ function drush_confirm($msg, $indent = 0) {
 function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') {
   print dt($prompt) . "\n";
 
-  drush_print('[0] : Cancel');
+  drush_print('  [0] : Cancel');
   $selection_number = 0;
   foreach ($options as $key => $option) {
+    if (strpos($key, '-') === 0) {
+      drush_print("  ".$option);
+      continue;
+    }
     $selection_number++;
     $message = dt($label, array('!number' => $selection_number, '!key' => $key, '!value' => $option));
-    drush_print(dt("[!number] : !message", array('!number' => $selection_number, '!message' => $message)));
+    drush_print(dt("  [!number] : !message", array('!number' => $selection_number, '!message' => $message)));
     $selection_list[$selection_number] = $key;
   }
 
@@ -1411,43 +1417,32 @@ function drush_format_size($size, $langcode = NULL) {
  * A sneaky implementation of hook_watchdog().
  */
 function system_watchdog($log_entry) {
-  $levels = drush_watchdog_severity_levels();
-  drush_log('WD '. $log_entry['type'] . ': ' . drush_watchdog_format_message((object)$log_entry), $levels[$log_entry['severity']]);
-}
-
-/**
- * Copy of watchdog_severity_levels() without t() and tuned for _drush_print_log.
- *
- * Severity levels, as defined in RFC 3164: http://www.ietf.org/rfc/rfc3164.txt.
- *
- * @return
- *   Array of the possible severity levels for log messages.
- *
- * @see watchdog()
- */
-function drush_watchdog_severity_levels() {
-  return array(
-    WATCHDOG_EMERG    => 'error', // emergency
-    WATCHDOG_ALERT    => 'error', // alert
-    WATCHDOG_CRITICAL => 'error', // critical
-    WATCHDOG_ERROR    => 'error',
-    WATCHDOG_WARNING  => 'warning',
-    WATCHDOG_NOTICE   => 'notice',
-    WATCHDOG_INFO     => 'info',
-    WATCHDOG_DEBUG    => 'debug',
+  static $errors = array(
+    WATCHDOG_EMERG, 
+    WATCHDOG_ALERT, 
+    WATCHDOG_CRITICAL,
+    WATCHDOG_ERROR
   );
-}
 
-function drush_watchdog_format_message($watchdog) {
-  if (drush_drupal_major_version() == 5) {
-    $message = $watchdog->message;
+  // Transform non informative severity levels to 'error' for compatibility with _drush_print_log.
+  // Other severity levels are coincident with the ones we use in drush.  
+  if (in_array($log_entry['severity'], $errors)) {
+    $severity = 'error';
   }
   else {
-    // variables is an array during logging but is a string when retrieving from DB.
-    $variables = is_string($watchdog->variables) ? unserialize($watchdog->variables) : $watchdog->variables;
-    $message = is_array($variables) ? strtr($watchdog->message, $variables) : $watchdog->message;
+    $levels = core_watchdog_severity_levels();
+    $severity = $levels[$log_entry['severity']];
   }
-  return strip_tags(decode_entities($message));
+  // Format the message.
+  if (is_array($log_entry['variables'])) {
+    $message = strtr($log_entry['message'], $log_entry['variables']);
+  }
+  else {
+    $message = $log_entry['message'];
+  }
+  $message = strip_tags(decode_entities($message));
+  // Log it.
+  drush_log('WD '. $log_entry['type'] . ': '.$message, $severity);
 }
 
 /**
