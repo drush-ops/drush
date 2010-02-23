@@ -79,10 +79,9 @@ Related Options:
                                 (only needed in multisite environments)
   -v, --verbose                 Display verbose output.
 
-Some other options:
-  -i <path>, --include=<path>   Path to folder(s) containing additional drush command files.
-                                Follows the POSIX convention of separating paths with a ':'
 
+DRUSHRC.PHP
+--------
 If you get tired of typing options all the time, you can add them to your drush.php alias or
 create a drushrc.php file. These provide additional options for your drush call. They provide
 great flexibility for a multi-site installation, for example. See example.drushrc.php.
@@ -113,9 +112,10 @@ REQUIREMENTS
 ------------
 * To use drush from the command line, you'll need a CLI-mode capable PHP
   binary. The minimum PHP version is 5.2.
-* drush also runs on Windows; however, drush modules makes use of
+* drush also runs on Windows; however, drush commands make use of
   unix command line tools, so to use it effectively, you have to install
-  some of them, e.g. from GnuWin32 (http://gnuwin32.sourceforge.net/).
+  some of them, e.g. from GnuWin32 (http://gnuwin32.sourceforge.net/). More info
+  about Drush on Windows available at http://drupal.org/node/594744.
 
 FAQ
 ---
@@ -132,4 +132,4 @@ CREDITS
 Originally developed by Arto Bendiken <http://bendiken.net/> for Drupal 4.7.
 Redesigned by Franz Heinzmann (frando) <http://unbiskant.org/> in May 2007 for Drupal 5.
 Maintained by Moshe Weitzman <http://drupal.org/moshe> with much help from
-Grugnog2, Adrian Rossouw, greg.1.anderson.
+Owen Barton, Adrian Rossouw, greg.1.anderson.
