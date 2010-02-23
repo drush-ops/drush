@@ -942,37 +942,20 @@ function drush_remote_command() {
     $args = drush_get_arguments();
 
     if (!drush_get_context('DRUSH_SIMULATE')) {
-      drush_print(dt('You are about to use the experimental MULTIPLE-TARGET drush command feature.'));
-      drush_print(dt('This code is new; please be careful (make backups), and use at your own risk!'));
-
       drush_print(dt("You are about to execute '!command' on all of the following targets:", array('!command' => implode(" ", $args))));
       foreach ($site_list as $one_destination) {
         drush_print(dt('  !target', array('!target' => $one_destination)));
       }
 
-      // Temporary: ask what the user wants to do
-      // Once this code works, we'll replace this with a
-      // simple 'drush_confirm', so -y will work.
-      // You must manually confirm every time until this
-      // code is tested.  Help out at issue #628996
-      // if this is annoying to you.
-
-      $options['s'] = 'Run simulation first (add -s flag)  WARNING: ignored by some commands!';
-      $options['g'] = 'Go!';
-      $choice = drush_choice($options, 'Enter a number to choose which action to take.');
-
-      if ($choice === FALSE) {
+      if (drush_confirm('Continue? ') === FALSE) {
          drush_die('Aborting.');
-      }
-      if ($choice != 'g') {
-        drush_set_option('s', TRUE, 'options');
-        drush_set_context('DRUSH_SIMULATE', TRUE);
       }
     }
     $command = array_shift($args);
 
     foreach ($site_list as $site_spec) {
-      drush_do_site_command(_drush_sitealias_get_record($site_spec), $command, $args);
+      $values = drush_do_site_command(_drush_sitealias_get_record($site_spec), $command, $args);
+      drush_print($values['output']);
     }
     return TRUE;
   }
@@ -1012,10 +995,7 @@ function drush_do_multiple_command($command, $source_record, $destination_record
     drush_print($destination_path);
 
     if (!drush_get_context('DRUSH_SIMULATE')) {
-      drush_print(dt('You are about to use the experimental MULTIPLE-SYNCHRONIZED-TARGET drush !command feature.', array('!command' => $command)));
-      drush_print(dt('This code is new; please be careful (make backups), and use at your own risk!'));
-
-      drush_print(dt('You are about to rsync between all of the following targets:'));
+      drush_print(dt('You are about to !command between all of the following targets:', array('!command' => $command)));
       $i = 0;
       foreach ($source_list as $one_source) {
         $one_target = $target_list[$i];
@@ -1023,23 +1003,8 @@ function drush_do_multiple_command($command, $source_record, $destination_record
         drush_print(dt('  !source will overwrite !target', array('!source' => drush_sitealias_alias_record_to_spec($one_source) . $source_path, '!target' => drush_sitealias_alias_record_to_spec($one_target) . $destination_path)));
       }
 
-      // Temporary: ask what the user wants to do
-      // Once this code works, we'll replace this with a
-      // simple 'drush_confirm', so -y will work.
-      // You must manually confirm every time until this
-      // code is tested.  Help out at issue #628996
-      // if this is annoying to you.
-
-      $options['s'] = 'Run simulation first (add -s flag)';
-      $options['g'] = 'Go!';
-      $choice = drush_choice($options, 'Enter a number to choose which action to take.');
-
-      if ($choice === FALSE) {
+      if (drush_confirm('Continue? ') === FALSE) {
          drush_die('Aborting.');
-      }
-      if ($choice != 'g') {
-        drush_set_option('s', TRUE, 'options');
-        drush_set_context('DRUSH_SIMULATE', TRUE);
       }
     }
 

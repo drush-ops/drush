@@ -114,27 +114,12 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
       // and the normal confirmation below.
       if (array_key_exists('site-list', $destination_settings)) {
 
-        drush_print(dt('You are about to use the experimental MULTIPLE-TARGET drush sql-sync feature.'));
-        drush_print(dt('This code is new; please be careful (make backups), and use at your own risk!'));
-
         drush_print(dt('You are about to sync the database from !source, overwriting all of the following targets:', array('!source' => $source)));
         foreach ($destination_settings['site-list'] as $one_destination) {
           drush_print(dt('  !target', array('!target' => $one_destination)));
         }
 
-        // Temporary: ask what the user wants to do
-        // Once this code works, we'll replace this with a
-        // simple 'drush_confirm', so -y will work.
-        // You must manually confirm every time until this
-        // code is tested.  Help out at issue #628996
-        // if this is annoying to you.
-
-        $options['s'] = 'Run simulation first (add -s flag)';
-        $options['g'] = 'Go!';
-        $choice = drush_choice($options, 'Enter a number to choose which action to take.');
-
-        if ($choice === FALSE) {
-           // TODO:  When this is just drush_confirm, merge in with the code below.
+        if (drush_confirm('Continue? ') === FALSE) {
            drush_die('Aborting.');
         }
         if ($choice != 'g') {
