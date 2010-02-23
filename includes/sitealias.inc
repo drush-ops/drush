@@ -203,7 +203,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
     foreach ($alias_record['path-aliases'] as $key => $value) {
       if (substr($value,0,1) == '@') {
         if (empty($test_string) || (strstr($test_string, $key) !== FALSE)) {
-          $resolution_needed = TRUE;
+	  $resolution_needed = TRUE;
         }
       }
     }
@@ -212,12 +212,14 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
   if ($resolution_needed) {
     $values = drush_do_site_command($alias_record, "status");
     $status_values = $values['object'];
-    foreach ($alias_record['path-aliases'] as $key => $value) {
-      if (substr($value,0,1) == '@') {
-        $status_key = strtr(substr($value,1), '-_', '  ');
-        if (array_key_exists($status_key, $status_values)) {
-          $alias_record['path-aliases'][$key] = $status_values[$status_key];
-        }
+    if (isset($status_values)) {
+      foreach ($alias_record['path-aliases'] as $key => $value) {
+	if (substr($value,0,1) == '@') {
+          $status_key = strtr(substr($value,1), '-_', '  ');
+          if (array_key_exists($status_key, $status_values)) {
+            $alias_record['path-aliases'][$key] = $status_values[$status_key];
+          }
+	}
       }
     }
   }
