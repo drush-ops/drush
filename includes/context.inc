@@ -140,7 +140,7 @@ function drush_load_config_file($context, $config) {
 
   if (file_exists($config)) {
     drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
-    $options['context-path'][$context] = $config;
+    $options['context-path'] = realpath($config);
     require_once($config);
 
     // There are certain options such as 'site-aliases' and 'command-specific'
@@ -224,7 +224,7 @@ function drush_set_context($context, $value) {
  *
  * @param context
  *   Optional. Any of the default defined contexts.
- @
+ *
  * @return
  *   If context is not supplied, the entire context cache will be returned.
  *   Otherwise only the requested context will be returned.
@@ -331,6 +331,30 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
   }
 
   return $default;
+}
+
+/**
+ * Get all of the values for an option in every context.
+ *
+ * @param option
+ *   The name of the option to get
+ * @return
+ *   An array whose key is the context name and value is
+ *   the specific value for the option in that context.
+ */
+function drush_get_context_options($option) {
+  $result = array();
+  
+  $contexts = drush_context_names();
+  foreach ($contexts as $context) {
+    $value = _drush_get_option($option, drush_get_context($context));
+
+    if ($value !== null) {
+      $result[$context] = $value;
+    }
+  }
+  
+  return $result;
 }
 
 /**

@@ -368,7 +368,9 @@ function _core_site_status_table() {
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $status_table['Site Path'] = $site_root;
       $status_table['Site URI'] = drush_get_context('DRUSH_URI');
-      $status_table['File Directory Path'] = file_directory_path();
+      if (function_exists('file_directory_path')) {
+        $status_table['File Directory Path'] = file_directory_path();
+      }
       if ($creds = drush_get_context('DRUSH_DB_CREDENTIALS')) {
         $status_table['Database Driver'] = $creds['driver'];
         $status_table['Database Hostname'] = $creds['host'];
@@ -397,6 +399,7 @@ function _core_site_status_table() {
     $status_table['PHP configuration'] = php_ini_loaded_file();
   }
   $status_table['Drush Version'] = DRUSH_VERSION;
+  $status_table['Drush configuration'] = implode(' ', drush_get_context_options('context-path'));
   return $status_table;
 }
 
