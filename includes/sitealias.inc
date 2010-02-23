@@ -678,9 +678,6 @@ function drush_sitealias_build_record_from_settings_file($site_settings_file, $a
     if (isset($alias)) {
       $alias_record['uri'] = $alias;
     }
-    elseif ($base_url != null) {
-      $alias_record['uri'] = $base_url;
-    }
     else {
       $alias_record['uri'] = _drush_sitealias_site_dir_to_uri(drush_sitealias_site_dir_from_filename($site_settings_file));
     }
