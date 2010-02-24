@@ -86,6 +86,11 @@ If you get tired of typing options all the time, you can add them to your drush.
 create a drushrc.php file. These provide additional options for your drush call. They provide
 great flexibility for a multi-site installation, for example. See example.drushrc.php.
 
+SITE ALIASES
+--------
+Drush lets you run commands on a remote server, or even on a set of remote
+servers. See http://drupal.org/node/670460 for more information.
+
 COMMANDS
 --------
 Drush ships with a number of commands, but you can easily write
