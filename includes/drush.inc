@@ -404,6 +404,7 @@ function drush_db_fetch_object($result) {
 
 /**
  * Save a string to a temporary file. Does not depend on Drupal's API.
+ * The temporary file will be automatically deleted when drush exits.
  *
  * @param string $data
  * @return string
@@ -415,7 +416,59 @@ function drush_save_data_to_temp_file($data) {
   $fp = tmpfile();
   fwrite($fp, $data);
   $meta_data = stream_get_meta_data($fp);
-  return $meta_data['uri'];
+  $file = $meta_data['uri'];
+  drush_register_file_for_deletion($file);
+  
+  return $file;
+}
+
+/**
+ * Creates a temporary file, and registers it so that
+ * it will be deleted when drush exits.  Whenever possible,
+ * drush_save_data_to_temp_file() should be used instead
+ * of this function.
+ */
+function drush_tempnam($pattern, $tmp_dir = NULL) {
+  if ($tmp_dir == NULL) {
+    $tmp_dir = sys_get_temp_dir();
+  }
+  $tmp_file = tempnam($tmp_dir, $pattern);
+  drush_register_file_for_deletion($tmp_file);
+  
+  return $tmp_file;
+}
+
+/**
+ * Any file passed in to this function will be deleted
+ * when drush exits.
+ */
+function drush_register_file_for_deletion($file = NULL) {
+  static $registered_files = array();
+  
+  if (isset($file)) {
+    if (empty($registered_files)) {
+      register_shutdown_function('_drush_delete_registered_files');
+    }
+    $registered_files[] = $file;
+  }
+  
+  return $registered_files;
+}
+
+/**
+ * Delete all of the registered temporary files.
+ */
+function _drush_delete_registered_files() {
+  $files_to_delete = drush_register_file_for_deletion();
+  
+  foreach ($files_to_delete as $file) {
+    // We'll make sure that the file still exists, just
+    // in case someone came along and deleted it, even
+    // though they did not need to.
+    if (file_exists($file)) {
+      unlink($file);
+    }
+  }
 }
 
 /**

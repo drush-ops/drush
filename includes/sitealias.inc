@@ -183,6 +183,15 @@ function _drush_sitealias_get_record($alias, $db_settings_needed = false) {
   return $alias_record;
 }
 
+function drush_sitealias_add_db_url(&$alias_record) {
+  if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
+    $values = drush_do_site_command($alias_record, "sql-conf", array(), array('db-url' => TRUE));
+    if (isset($values['object']['db-url'])) {
+      $alias_record['db-url'] = $values['object']['db-url'];
+    }
+  }
+}
+
 function drush_sitealias_add_db_settings(&$alias_record)
 {
   // If the alias record does not have a defined 'databases' entry,
@@ -383,12 +392,6 @@ function _drush_sitealias_add_static_defaults(&$alias_record) {
     }
     // If there is a 'root' entry, then copy it to the '%root' path alias
     $alias_record['path-aliases']['%root'] = $alias_record['root'];
-    // Add %files if it does not exist
-    if (!array_key_exists('%files', $alias_record['path-aliases'])) {
-      // Path values that start with '@' will call 'drush status'
-      // to get the actual value to be substituted.
-      $alias_record['path-aliases']['%files'] = '@File_Directory_Path';
-    }
   }
 }
 
@@ -464,7 +467,7 @@ function drush_sitealias_alias_record_to_spec($alias_record, $with_db = false) {
     else {
       // There should always be a uri
       if (array_key_exists('uri', $alias_record)) {
-        $result = '#' . str_replace('http://', '', $alias_record['uri']);
+        $result = '#' . drush_sitealias_uri_to_site_dir($alias_record['uri']);
       }
       // There should always be a root
       if (array_key_exists('root', $alias_record)) {
@@ -572,7 +575,13 @@ function _drush_sitealias_add_transient_defaults(&$alias_record) {
     }
     // Add the path to the site folder to the path aliases as !site
     if (!array_key_exists('%site', $alias_record['path-aliases']) && array_key_exists('uri', $alias_record)) {
-      $alias_record['path-aliases']['%site'] = 'sites/' . $alias_record['uri'] . '/';
+      $alias_record['path-aliases']['%site'] = 'sites/' . drush_sitealias_uri_to_site_dir($alias_record['uri']) . '/';
+    }
+    // Add %files if it does not exist
+    if (!array_key_exists('%files', $alias_record['path-aliases'])) {
+      // Path values that start with '@' will call 'drush status'
+      // to get the actual value to be substituted.
+      $alias_record['path-aliases']['%files'] = '@File_Directory_Path';
     }
   }
 }

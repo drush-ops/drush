@@ -132,8 +132,10 @@ function sql_drush_command() {
  * Command callback. Displays the Drupal site's database connection string.
  */
 function drush_sql_conf() {
-  $all = drush_get_option('all');
-  if (isset($all)) {
+  if (drush_get_option('db-url', FALSE)) {
+    $db_spec['db-url'] = $GLOBALS['db_url'];    
+  }
+  elseif (drush_get_option('all', FALSE)) {
     $db_spec = $GLOBALS['databases'];
     if (!isset($db_spec)) {
       $db_spec = array('default' => array('default' => _drush_sql_get_db_spec()));
@@ -357,7 +359,6 @@ function _drush_sql_query($query, $db_spec = NULL) {
     }
 
     $return = drush_op('system', $exec) !== FALSE;
-    drush_op('unlink', $file);
     return $return;
   }
 }
@@ -444,17 +445,34 @@ function _drush_sql_get_spec_from_settings($file, $prefix) {
 }
 
 function _drush_sql_get_spec_from_options($prefix) {
+  $db_spec = NULL;
   $databases = drush_get_option($prefix . 'databases');
   if (isset($databases)) {
     $database = drush_get_option($prefix . 'database', 'default');
     $target = drush_get_option($prefix . 'target', 'default');
-    return $databases[$database][$target];
+    $db_spec = $databases[$database][$target];
   }
-  $db_url = drush_get_option($prefix . 'db-url');
-  if (isset($db_url)) {
-    return drush_convert_db_from_db_url($db_url);
+  else {
+    $db_url = drush_get_option($prefix . 'db-url');
+    if (isset($db_url)) {
+      $db_spec = drush_convert_db_from_db_url($db_url);
+    }
+    else {
+      $db_spec = _drush_sql_get_db_spec();
+    }
   }
-  return _drush_sql_get_db_spec();
+
+  $db_spec['remote-host'] = drush_get_option($prefix . 'remote-host');
+  $db_spec['port'] = drush_get_option($prefix . 'remote-port', $db_spec['port']);
+  
+  return $db_spec;
+}
+
+function drush_sql_dump_file($db_spec) {
+  $dump_file = drush_tempnam($db_spec['database'] . '.sql.');
+  $db_spec['dump-is-temp'] = TRUE;
+  
+  return $dump_file;
 }
 
 function _drush_sql_get_scheme($db_spec = NULL) {

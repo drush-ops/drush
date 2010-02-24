@@ -64,8 +64,9 @@ function _drush_sitealias_site_list() {
   foreach ($files as $filename => $info) {
     if ($info->basename == 'settings.php') {
       $alias_record = drush_sitealias_build_record_from_settings_file($filename);
-      $uri = drush_sitealias_site_dir_from_filename($filename);
-      $site_list[$uri] = $alias_record;
+      if (!empty($alias_record)) {
+        $site_list[$alias_record['uri']] = $alias_record;
+      }
     }
   }
   return $site_list;
@@ -139,14 +140,17 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
 
   // Make sure that the default items have been added for all aliases
   _drush_sitealias_add_static_defaults($alias_record);
-  
-  drush_sitealias_resolve_path_references($alias_record);
-  
+    
   // Include the optional items, if requested
   if ($output_optional_items) {
     _drush_sitealias_add_transient_defaults($alias_record);
   }
 
+  drush_sitealias_resolve_path_references($alias_record);
+
+  if (isset($output_db_url)) {
+    drush_sitealias_add_db_url($alias_record);
+  }
   if (isset($output_db_url) || isset($output_db)) {
     drush_sitealias_add_db_settings($alias_record);
   }
@@ -208,9 +212,11 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
  *   A uri, such as http://domain.com:8080/drupal
  */
 function _drush_sitealias_site_dir_to_uri($site_dir) {
-
+  // Protect IP addresses NN.NN.NN.NN by converting them
+  // temporarily to NN_NN_NN_NN for now.
+  $uri = preg_replace("/([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)/", "$1_$2_$3_$4", $site_dir);
   // Convert .[0-9]+. into :[0-9]+/
-  $uri = preg_replace("/\.([0-9]+)\./", ":$1/", $site_dir);
+  $uri = preg_replace("/\.([0-9]+)\./", ":$1/", $uri);
   // Convert .[0-9]$ into :[0-9]
   $uri = preg_replace("/\.([0-9]+)$/", ":$1", $uri);
   // Convert .(com|net|org|info). into .(com|net|org|info)/
@@ -229,6 +235,9 @@ function _drush_sitealias_site_dir_to_uri($site_dir) {
   // but it does not work for domains such as .co.jp with no path,
   // and it can fail horribly if someone makes a domain like "info.org".
   // Still, I think this is the best we can do short of consulting DNS.
+
+  // Convert from NN_NN_NN_NN back to NN.NN.NN.NN
+  $uri = preg_replace("/([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)/", "$1.$2.$3.$4", $site_dir);
 
   return 'http://' . $uri;
 }
