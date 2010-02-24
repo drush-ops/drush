@@ -102,7 +102,7 @@ function drush_pm_cvs($project, $release) {
   }
 
   // CVS only accepts relative paths.
-  $cwd = drush_cwd();
+  $cwd = drush_get_context('DRUSH_DRUPAL_ROOT') ? drush_get_context('DRUSH_DRUPAL_ROOT') : drush_cwd();
   $path = '.' . ltrim(str_replace($cwd, '', $project['full_project_path']), '.');
 
   $cvsparts = array();
