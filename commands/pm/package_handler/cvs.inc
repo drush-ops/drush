@@ -8,7 +8,7 @@
 /**
  * Install a project.
  *
- * @param $project The project array with name, base and full (final) paths. 
+ * @param $project The project array with name, base and full (final) paths.
  * @param $release The release details array from drupal.org
  */
 function package_handler_install_project($project, $release) {
@@ -32,7 +32,7 @@ function package_handler_install_project($project, $release) {
 /**
  * Update a project (so far, only modules are supported).
  *
- * @param $project The project array with name, base and full (final) paths. 
+ * @param $project The project array with name, base and full (final) paths.
  * @param $release The release details array from drupal.org
  */
 function package_handler_update_project($project, $release) {
@@ -53,7 +53,7 @@ function package_handler_update_project($project, $release) {
 
 /**
  * General CVS helper function
- * @param $project The project array with name, base and full (final) paths. 
+ * @param $project The project array with name, base and full (final) paths.
  * @param $release The release details array from drupal.org
  */
 function drush_pm_cvs($project, $release) {
@@ -102,7 +102,7 @@ function drush_pm_cvs($project, $release) {
   }
 
   // CVS only accepts relative paths.
-  $cwd = drush_get_context('DRUSH_DRUPAL_ROOT');
+  $cwd = drush_cwd();
   $path = '.' . ltrim(str_replace($cwd, '', $project['full_project_path']), '.');
 
   $cvsparts = array();
