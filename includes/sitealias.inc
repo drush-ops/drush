@@ -248,9 +248,7 @@ function drush_sitealias_resolve_sitelist($alias_record) {
       }
     }
     else {
-      // Q: drush_sitealias_uri_to_site_dir?
-      // $result_list[$alias_record['name']] = $alias_record;
-      $result_list[] = $alias_record;
+      $result_list[$alias_record['name']] = $alias_record;
     }
   }
 
