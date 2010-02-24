@@ -2,6 +2,15 @@
 // $Id$
 
 /**
+ * @file
+ * The site alias API.
+ *
+ * Run commands on remote server(s).
+ * @see example.drushrc.php
+ * @see http://drupal.org/node/670460
+ */
+
+/**
  * Check to see if the first command-line arg or the
  * -l option is a site alias; if it is, copy its record
  * values to the 'alias' context.
@@ -152,7 +161,7 @@ function _drush_sitealias_get_record($alias, $db_settings_needed = false) {
 
     // Cache the result
     drush_set_option('sitealias-' . $alias, $alias_record, 'sitealias-cache');
-    
+
     // Load the drush config file if there is one in the site folder just found
     if (!isset($alias_record['remote']) && isset($alias_record['uri']) && isset($alias_record['root'])) {
       drush_load_config_file('site', $alias_record['root'] . '/sites/' . drush_sitealias_uri_to_site_dir($alias_record['uri']) . '/drushrc.php');
