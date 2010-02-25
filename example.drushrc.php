@@ -8,18 +8,42 @@
  * Rename this file to drushrc.php and optionally copy it to one of
  * five convenient places, listed below in order of precedence:
  *
- * - Drupal site folder (e.g sites/{default|example.com}/drushrc.php).
- * - Drupal installation root.
- * - User Home folder (i.e. ~/.drushrc.php).
- * - System wide configuration folder (e.g. /etc/drush/drushrc.php).
- * - Drush installation folder.
+ * 1. Drupal site folder (e.g sites/{default|example.com}/drushrc.php).
+ * 2. Drupal installation root.
+ * 3. In any location, as specified by the --config (-c) option.
+ * 4. User Home folder (i.e. ~/.drushrc.php).
+ * 5. System wide configuration folder (e.g. /etc/drush/drushrc.php).
+ * 6. Drush installation folder.
  *
  * If a configuration file is found in any of the above locations, it
  * will be loaded and merged with other configuration files in the
  * search list.
  *
- * Alternately, copy it to any location and load it with the --config (-c) option.
- * Note that this preempts loading any other configuration files!
+ * IMPORTANT NOTE on configuration file loading:
+ *
+ * At its core, drush works by "bootstrapping" the Drupal environment
+ * in very much the same way that is done during a normal page request
+ * from the web server, so most drush commands run in the context
+ * of a fully-initialized website.
+ *
+ * Configuration files are loaded in the reverse order they are
+ * shown above.  Configuration files #6 through #3 are loaded immediately;
+ * the configuration file stored in the Drupal root is loaded
+ * when Drupal is initialized, and the configuration file stored
+ * in the site folder is loaded when the site is initialized.
+ *
+ * This load order means that in a multi-site environment, the
+ * configuration file stored in the site folder will only be
+ * available for commands that operate on that one particular
+ * site.  Additionally, there are some drush commands such as
+ * pm-download do not bootstrap a drupal environment at all,
+ * and therefore only have access to configuration files #6 - #3.
+ * The drush commands 'rsync' and 'sql-sync' are special cases.
+ * These commands will load the configuration file for the site 
+ * specified by the source parameter; however, they do not
+ * load the configuration file for the site specified by the
+ * destination parameter, nor do they load configuration files
+ * for remote sites.
  */
 
 // DEPRECATED:  Allow command names to contain spaces.
