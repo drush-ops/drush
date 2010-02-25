@@ -24,13 +24,30 @@ function drush_make_drush_init() {
  */
 function drush_make_drush_command() {
   $items['make'] = array(
-    'description' => 'Turns a makefile into a working drupal install.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'description' => 'Turns a makefile into a working drupal install.',
+    'arguments' => array(
+      'makefile' => 'Filename of the makefile to use for this build.',
+      'build path' => 'The path at which to build the makefile.',
+    ),
+    'examples' => array(
+      'drush make example.make example' => 'Build the example.make makefile in the example directory.',
+    ),
+    'options' => array(
+      '--contrib-destination=path' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
+      '--force-complete' => 'Force a complete build even if errors occur.',
+      '--no-clean' => 'Leave temporary build directories in place instead of cleaning up after completion.',
+      '--no-core' => 'Do not require a Drupal core project to be specified.',
+      '--no-patch-txt' => 'Do not write a PATCHES.txt file in the directory of each patched project.',
+      '--prepare-install' => 'Prepare the built site for installation. Generate a properly permissioned settings.php and files directory.',
+      '--tar' => 'Generate a tar archive of the build. The output filename will be [build path].tar.gz.',
+      '--working-copy' => 'Where possible, retrieve a working copy of projects from their respective repositories.',
+    ),
   );
 
   $items['generate-makefile'] = array(
-    'description' => 'Attempts to generate a makefile from the current drupal install.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'description' => 'Attempts to generate a makefile from the current drupal install.',
   );
 
   return $items;
@@ -42,9 +59,9 @@ function drush_make_drush_command() {
 function drush_make_drush_help($section) {
   switch ($section) {
     case 'drush:make':
-      return dt("@TODO: Print information on the format of the makefile here.");
+      return dt('Turns a makefile into a working drupal install. For a full description of options and makefile syntax, see the README.txt included with drush make.');
     case 'drush:generate makefile':
-      return dt("This command attempts to generate a makefile from the current drupal install. It is imperfect in that it cannot always find the sources of various components.");
+      return dt('Attempts to generate a makefile from the current drupal install.');
   }
 }
 
