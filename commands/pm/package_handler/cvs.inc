@@ -101,9 +101,9 @@ function drush_pm_cvs($project, $release) {
     $cvsparams = '-dP';
   }
 
-  // CVS only accepts relative paths.
-  $cwd = drush_get_context('DRUSH_DRUPAL_ROOT') ? drush_get_context('DRUSH_DRUPAL_ROOT') : drush_cwd();
-  $path = '.' . ltrim(str_replace($cwd, '', $project['full_project_path']), '.');
+  // CVS only accepts relative paths. We will cd in the checkout path right
+  // before running the cvs command.
+  $checkout_path = $project['base_project_path'];
 
   $cvsparts = array();
   $cvsparts[] = '-z6';
@@ -112,14 +112,14 @@ function drush_pm_cvs($project, $release) {
   $cvsparts[] = $cvsmethod;
   $cvsparts[] = '-r '. $release['tag'];
   if ($cvsmethod == 'checkout') {
-    $cvsparts[] = '-d ' . $path;
+    $cvsparts[] = '-d ' . $project['name'];
     $cvsparts[] = $cvsdir . $project['name'];
   }
   else {
-    $cvsparts[] = $path;
+    $cvsparts[] = $project['name'];
   }
 
-  if (!drush_shell_exec('cvs ' . implode(' ', $cvsparts))) {
+  if (!drush_shell_exec('cd ' . $checkout_path . ' ; cvs ' . implode(' ', $cvsparts))) {
     drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to checkout ' . $project['name'] . ' from cvs.drupal.org.');
   }
 }
