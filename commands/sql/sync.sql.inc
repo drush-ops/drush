@@ -122,10 +122,6 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
         if (drush_confirm('Continue? ') === FALSE) {
            drush_die('Aborting.');
         }
-        if ($choice != 'g') {
-          drush_set_option('s', TRUE, 'options');
-          drush_set_context('DRUSH_SIMULATE', TRUE);
-        }
       }
       else {
 
