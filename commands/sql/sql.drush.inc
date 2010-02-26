@@ -62,9 +62,10 @@ function sql_drush_command() {
       '--result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
       '--skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
       '--structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
-      '--tables' => 'An explcit list of tables to dump, in comma delimited format',
+      '--tables-key' => 'A key in the $tables array. Optional.',
+      '--tables-list' => 'A comma-separated list of tables to transfer. Optional.',
       '--ordered-dump' => 'Use this option to output ordered INSERT statements in the sql-dump.Useful when backups are managed in a Version Control System. Optional.',
-      '--create-db' => 'Wipe existing tables (i.e. --clean). Postgres only.',
+      '--create-db' => 'Wipe existing tables.',
       '--data-only' => 'Omit CREATE TABLE statements. Postgres only.',
       '--ordered-dump' => 'Order by primary key and add line breaks for efficient diff in revision control. Also, faster rsync. Slows down the dump. Mysql only.',
     ) + $options,
@@ -87,7 +88,7 @@ function sql_drush_command() {
     'description' => 'Copy source database to target database using rsync.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'examples' => array(
-      'drush sql-sync prod dev' => 'Copy the DB defined in sites/prod to the DB in sites/dev.',
+      'drush sql-sync dev prod' => 'Copy the DB defined in sites/dev to the DB in sites/prod.',
     ),
     'arguments' => array(
       'from' => 'Name of subdirectory within /sites or a site-alias.',
@@ -96,6 +97,8 @@ function sql_drush_command() {
     'options' => array(
       '--skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
       '--structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
+      '--tables-key' => 'A key in the $tables array. Optional.',
+      '--tables-list' => 'A comma-separated list of tables to transfer. Optional.',
       '--cache' => 'Skip dump if result file exists and is less than "cache" hours old. Optional; default is 24 hours.',
       '--no-cache' => 'Do not cache the sql-dump file.',
       '--no-dump' => 'Do not dump the sql database; always use an existing dump file.',
@@ -109,7 +112,8 @@ function sql_drush_command() {
       '--target-dump' => '',
       '--temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
       '--create-db' => 'Create a new database before importing the database dump on the target machine.',
-      '--db-su' => 'Remote account to use when creating a new database. Optional.',
+      '--db-su' => 'Account to use when creating a new database. Optional.',
+      '--db-su-pw' => 'Password for the "db-su" account. Optional.',
     ),
   );
   if (drush_drupal_major_version() >= 7) {
