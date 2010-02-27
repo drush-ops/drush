@@ -410,20 +410,6 @@ function _drush_sql_get_db_spec() {
   }
 }
 
-
-// Build a $db_spec from a given site-alias
-function _drush_sql_get_spec_from_site_alias($alias, $prefix) {
-  global $db_url;
-  $all_site_aliases = drush_get_option('site-aliases', array());
-  if (array_key_exists($alias, $all_site_aliases)) {
-    $site_alias_settings = drush_sitealias_get_record($alias, TRUE);
-    $database = drush_get_option($prefix . 'database', 'default');
-    $target = drush_get_option($prefix . 'target', 'default');
-    return $site_alias_settings['databases'][$database][$target];
-  }
-  return _drush_sql_get_spec_from_settings("./sites/$alias/settings.php", $prefix);
-}
-
 // Build a $db_spec from a given settings.php.
 function _drush_sql_get_spec_from_settings($file, $prefix) {
   // Reset global databases to whatever is defined in $file
