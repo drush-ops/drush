@@ -345,7 +345,7 @@ function drush_pm_enable() {
     drush_theme_enable($themes);
   }
 
-  // Disable modules and pass dependency validation in form submit.
+  // Enable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_enable($modules);
     $current = drupal_map_assoc($enabled, 'pm_true');
