@@ -52,7 +52,7 @@
 // spaces (e.g. "cache-clear" instead of "cache clear").
 // During the transition period, uncomment the line below
 // to allow commands with spaces to be used.
-# $options['allow-spaces-in-commands' = 1;
+# $options['allow-spaces-in-commands'] = 1;
 
 // Specify a particular multisite.
 # $options['l'] = 'http://example.com/subir';
