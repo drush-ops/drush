@@ -178,7 +178,9 @@ function core_watchdog_format_result($result) {
   // message
   if (drush_drupal_major_version() > 5) {
     $variables = unserialize($result->variables);
-    $result->message = strtr($result->message, $variables);
+    if (is_array($variables)) {
+      $result->message = strtr($result->message, $variables);  
+    }
     unset($result->variables);
   }
   $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), 188, FALSE, FALSE);
