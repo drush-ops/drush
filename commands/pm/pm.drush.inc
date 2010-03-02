@@ -115,7 +115,7 @@ function pm_drush_command() {
     'callback arguments' => array(array(), FALSE),
     'options' => array(
       '--type' => 'Filter by project type. Choices: module, theme.',
-      '--status' => 'Filter by project status. Choices: enabled|disabled|uninstalled (uninstalled not applicable for themes).',
+      '--status' => 'Filter by project status. Choices: enabled|disabled|not installed.',
       '--pipe' => 'Returns a space delimited list of the names of the resulting projects.',
     ),
     'aliases' => array('sm'),
