@@ -818,6 +818,42 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
 }
 
 /**
+ * Prompt the user for input
+ *
+ * The input can be anything that fits on a single line (not only y/n),
+ * so we can't use drush_confirm()
+ *
+ * @see drush_confirm()
+ */
+function drush_prompt($prompt, $default = NULL) {
+  if (!is_null($default)) {
+    $prompt .= " [" . $default . "]";
+  }
+  $prompt .= ": ";
+
+  print $prompt;
+
+  if (drush_get_context('DRUSH_AFFIRMATIVE')) {
+    return $default;
+  }
+
+  $stdin = fopen('php://stdin', 'r');
+  stream_set_blocking($stdin, TRUE);
+  while (($line = fgets($stdin)) !== FALSE) {
+    $line = trim($line);
+    if ($line === "") {
+      $line = $default;
+    }
+    if ($line) {
+      break;
+    }
+    print $prompt;
+  }
+  fclose($stdin);
+  return $line;
+}
+
+/**
  * Print a formatted table.
  *
  * @param $rows
