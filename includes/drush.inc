@@ -243,7 +243,7 @@ function drush_drupal_major_version() {
 }
 
 /**
- * Replace named placeholders in a WHERE snippet. 
+ * Replace named placeholders in a WHERE snippet.
  *
  * Helper function to allow the usage of Drupal 7 WHERE snippets
  * with named placeholders in code for Drupal 5 and 6.
@@ -327,7 +327,7 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
     if (is_array($fields)) {
       $fields = implode('","', $fields);
     }
-    $query = "SELECT $fields FROM {$table}";
+    $query = "SELECT $fields FROM {{$table}}";
     if (!empty($where)) {
       $where = _drush_replace_query_placeholders($where, $args);
       $query .= " WHERE ".$where;
@@ -418,7 +418,7 @@ function drush_save_data_to_temp_file($data) {
   $meta_data = stream_get_meta_data($fp);
   $file = $meta_data['uri'];
   drush_register_file_for_deletion($file);
-  
+
   return $file;
 }
 
@@ -434,7 +434,7 @@ function drush_tempnam($pattern, $tmp_dir = NULL) {
   }
   $tmp_file = tempnam($tmp_dir, $pattern);
   drush_register_file_for_deletion($tmp_file);
-  
+
   return $tmp_file;
 }
 
@@ -444,14 +444,14 @@ function drush_tempnam($pattern, $tmp_dir = NULL) {
  */
 function drush_register_file_for_deletion($file = NULL) {
   static $registered_files = array();
-  
+
   if (isset($file)) {
     if (empty($registered_files)) {
       register_shutdown_function('_drush_delete_registered_files');
     }
     $registered_files[] = $file;
   }
-  
+
   return $registered_files;
 }
 
@@ -460,7 +460,7 @@ function drush_register_file_for_deletion($file = NULL) {
  */
 function _drush_delete_registered_files() {
   $files_to_delete = drush_register_file_for_deletion();
-  
+
   foreach ($files_to_delete as $file) {
     // We'll make sure that the file still exists, just
     // in case someone came along and deleted it, even
@@ -778,8 +778,8 @@ function drush_confirm($msg, $indent = 0) {
  *   A list of questions to display to the user.  The
  *   KEYS of the array are the result codes to return to the
  *   caller; the VALUES are the messages to display on
- *   each line. Special keys of the form '-- something --' can be 
- *   provided as separator between choices groups. Separator keys 
+ *   each line. Special keys of the form '-- something --' can be
+ *   provided as separator between choices groups. Separator keys
  *    don't alter the numbering.
  * @param $prompt
  *   The message to display to the user prompting for input.
@@ -1436,14 +1436,14 @@ function drush_format_size($size, $langcode = NULL) {
  */
 function system_watchdog($log_entry) {
   static $errors = array(
-    WATCHDOG_EMERG, 
-    WATCHDOG_ALERT, 
+    WATCHDOG_EMERG,
+    WATCHDOG_ALERT,
     WATCHDOG_CRITICAL,
     WATCHDOG_ERROR
   );
 
   // Transform non informative severity levels to 'error' for compatibility with _drush_print_log.
-  // Other severity levels are coincident with the ones we use in drush.  
+  // Other severity levels are coincident with the ones we use in drush.
   if (in_array($log_entry['severity'], $errors)) {
     $severity = 'error';
   }
