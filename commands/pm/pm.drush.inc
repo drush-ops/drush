@@ -31,7 +31,7 @@ define('DRUSH_PM_NO_VERSION', 103);
 /**
  * User requested version not found.
  */
-define('DRUSH_PM_NOT_FOUND', 104);
+define('DRUSH_PM_REQUESTED_NOT_FOUND', 104);
 
 /**
  * Implementation of hook_drush_help().
@@ -135,6 +135,7 @@ function pm_drush_command() {
     ),
     'options' => array(
       '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
+      '--pipe' => 'Returns a space delimited list of enabled modules and their respective version and update information, one module per line. Order: module name, current version, recommended version, update status.',
     ),
     'aliases' => array('upc'),
     'deprecated-aliases' => array('updatecode'),

@@ -58,6 +58,20 @@ function drush_pm_updatecode() {
   // Process releases, notifying user of status and building a list of proposed updates
   $updateable = pm_project_filter($projects, $rows);
 
+  // Pipe preparation
+  if (drush_get_context('DRUSH_PIPE')) {
+    $pipe = "";
+    foreach($projects as $project){
+      $pipe .= $project['name']. " ";
+      $pipe .= $project['existing_version']. " ";
+      $pipe .= $project['candidate_version']. " ";
+      $pipe .= str_replace(' ', '-', pm_update_filter($project)). "\n";
+    }
+    drush_print_pipe($pipe);
+    // Automatically curtail update process if in pipe mode
+    $updateable = FALSE;
+  }
+
   $last = pm_update_last_check();
   drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
   drush_print();
@@ -173,7 +187,7 @@ function pm_project_filter(&$projects, &$rows) {
     switch($project['status']) {
       case DRUSH_PM_REQUESTED_UPDATE:
         $status = dt('Specified version available');
-        $project['updatable'] = TRUE;
+        $project['updateable'] = TRUE;
         break;
       case DRUSH_PM_REQUESTED_CURRENT:
         $status = dt('Specified version already installed');
@@ -188,24 +202,29 @@ function pm_project_filter(&$projects, &$rows) {
         $status = pm_update_filter($project);
         break;
     }
-    if (!$project['candidate_version']) {
-      $project['candidate_version'] = $project['existing_version']; // Default to no change
+
+    // Persist candidate_version in $projects (plural).
+    if (empty($project['candidate_version'])) {
+      $projects[$key]['candidate_version'] = $project['existing_version']; // Default to no change
     }
-    if ($project['updatable']) {
-      $updatable[$key] = $project;
+    else {
+      $projects[$key]['candidate_version'] = $project['candidate_version'];
     }
-    $rows[] = array($project['title'], $project['existing_version'], $project['candidate_version'], $status);
+    if (!empty($project['updateable'])) {
+      $updateable[$key] = $project;
+    }
+    $rows[] = array($project['title'], $project['existing_version'], $projects[$key]['candidate_version'], $status);
   }
-  return $updatable;
+  return $updateable;
 }
 
 /**
- * Set a release to a recommended version (if available), and set as updatable.
+ * Set a release to a recommended version (if available), and set as updateable.
  */
 function pm_release_recommended(&$project) {
   if (isset($project['recommended'])) {
     $project['candidate_version'] = $project['recommended'];
-    $project['updatable'] = TRUE;
+    $project['updateable'] = TRUE;
   }
 }
 
