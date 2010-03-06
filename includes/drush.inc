@@ -887,6 +887,7 @@ function drush_print_table($rows, $header = FALSE, $widths = array()) {
 
   $tbl->addData($newrows);
   print $tbl->getTable();
+  return $tbl;
 }
 
 /**
