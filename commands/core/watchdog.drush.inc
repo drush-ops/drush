@@ -120,7 +120,7 @@ function drush_core_watchdog_show_one($wid) {
   if (!$result) {
     return drush_set_error(dt('Watchdog message #!wid not found.', array('!wid' => $wid)));
   }
-  $result = core_watchdog_format_result($result);
+  $result = core_watchdog_format_result($result, TRUE);
   foreach ($result as $key => $value) {
     $uc = ucfirst($key);
     $upper->$uc = $value;
@@ -210,14 +210,16 @@ function drush_core_watchdog_show_many($filter = NULL) {
  * @return
  *   Array. The result object with some attributes themed.
  */
-function core_watchdog_format_result($result) {
-  // severity
+function core_watchdog_format_result($result, $full = FALSE) {
+  // Severity.
   $severities = core_watchdog_severity_levels();
   $result->severity = $severities[$result->severity];
-  // date
+
+  // Date.
   $result->date = format_date($result->timestamp, 'custom', 'd/M H:i');
   unset($result->timestamp);
-  // message
+
+  // Message.
   if (drush_drupal_major_version() > 5) {
     $variables = unserialize($result->variables);
     if (is_array($variables)) {
@@ -226,14 +228,24 @@ function core_watchdog_format_result($result) {
     unset($result->variables);
   }
   $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), 188, FALSE, FALSE);
-  // user
-  $result->uid = $result->uid ? strip_tags(theme('username', (array)$result)) : dt('Anonymous');
-  // possible empty values
-  if (empty($result->link)) {
-    unset($result->link);
-  }
-  if (empty($result->referer)) {
-    unset($result->referer);
+
+  // This data is only used in a detailed view.
+  if ($full) {
+    // Possible empty values.
+    if (empty($result->link)) {
+      unset($result->link);
+    }
+    if (empty($result->referer)) {
+      unset($result->referer);
+    }
+    // Username.
+    if ($account = user_load($result->uid)) {
+      $result->username = $account->name;
+    }
+    else {
+      $result->username = dt('Anonymous');
+    }
+    unset($result->uid);
   }
 
   return $result;
