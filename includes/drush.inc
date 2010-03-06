@@ -370,7 +370,7 @@ function drush_db_delete($table, $where = NULL, $args = NULL) {
     }
   }
   else {
-    $query = "DELETE FROM {$table}";
+    $query = "DELETE FROM {{$table}}";
     if (!empty($where)) {
       $where = _drush_replace_query_placeholders($where, $args);
       $query .= ' WHERE '.$where;
