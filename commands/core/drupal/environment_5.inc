@@ -90,8 +90,21 @@ function drush_module_dependents($modules, $module_info) {
  *   Array of module names
  */
 function drush_module_enable($modules) {
-  // drupal_install_modules() will call hook_install() if necessary and afterwards module_enable().
-  drupal_install_modules($modules);
+  // In Drupal 5, drupal_install_modules() only installs new modules,
+  // and does not enable previously installed and disabled modules.
+  $install_modules = array();
+  $enable_modules = array();
+
+  foreach ($modules as $module) {
+    if (drupal_get_installed_schema_version($module) == SCHEMA_UNINSTALLED) {
+      $install_modules[] = $module;
+    }
+    else {
+      $enable_modules[] = $module;
+    }
+  }
+  drupal_install_modules($install_modules);
+  module_enable($enable_modules);
 }
 
 /**
