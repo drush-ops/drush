@@ -1112,7 +1112,7 @@ function drush_pm_include_version_control($directory = '.') {
   while (!$engine && count($version_controls)) {
     $version_control = array_shift($version_controls);
     if (isset($version_control_engines[$version_control])) {
-      if ($version_control_engines[$version_control]['signature']) {
+      if (!empty($version_control_engines[$version_control]['signature'])) {
         if (drush_shell_exec($version_control_engines[$version_control]['signature'], $directory)) {
           $engine = $version_control;
         }
@@ -1188,7 +1188,8 @@ function drush_pm_download() {
         }
 
         if (empty($releases)) {
-          return drush_set_error(dt('There is no *recommended* release for project !project on Drupal !drupal_version. Ask the maintainer to review http://drupal.org/node/197584 and create/recommend a release in order to be compatible with drush and the drupal.org security broadcast system. A recommended development snapshot release is sufficient. Alternatively, run pm-releases command and explicity pm-download any non-recommended release that might be available.', array('!drupal_version' => $request['drupal_version'], '!project' => $request['name'])));
+          drush_log(dt('There is no *recommended* release for project !project on Drupal !drupal_version. Ask the maintainer to review http://drupal.org/node/197584 and create/recommend a release in order to be compatible with drush and the drupal.org security broadcast system. A recommended development snapshot release is sufficient. Alternatively, run pm-releases command and explicity pm-download any non-recommended release that might be available.', array('!drupal_version' => $request['drupal_version'], '!project' => $request['name'])), 'notice');
+          continue;
         }
 
         // Profiles have 3 variants for a given real relase. Admin can specify using option.

@@ -24,7 +24,8 @@ function upgrade_drush_command() {
     'options' => array(
       'structure-tables-key' => 'A key in the structure-tables array. @see example.drushrc.php. Defaults to \'common\'.',
       'source-dump' => 'Path to dump file. Medium or large sized sites should set this. Optional; default is to create a temporary file.',
-      'db-su' => 'Account to use when dropping and creating the target database. Optional.',
+      'db-su' => 'DB username to use when dropping and creating the target database. Optional.',
+      'db-su-pw' => 'DB password to use when dropping and creating the target database. Optional.',
     ),
     'aliases' => array('sup'),
   );
@@ -37,7 +38,7 @@ function upgrade_drush_command() {
 function upgrade_drush_help($section) {
   switch ($section) {
     case 'drush:site-upgrade':
-      return dt("Execute a major version upgrade for Drupal core and enabled contrib modules. Command will download next version of Drupal and all available contrib modules that are available. It prepares a settings.php for the target site, and copies the prior version's database to the target site. Finally, updatedb is run. The intent is for developers to keep re-running this command until they are satisfied with the resulting site.");
+      return dt("Execute a major version upgrade for Drupal core and enabled contrib modules. Command will download next version of Drupal and all available contrib modules that have releases (if not already downloaded). It prepares a settings.php for the target site, and copies the prior version's database to the target site. Finally, updatedb is run. The intent is for developers to keep re-running this command until they are satisfied with the resulting site.");
   }
 }
 
@@ -67,8 +68,11 @@ function drush_upgrade_site_upgrade($target_key) {
   // Fetch target core and place as per target alias root.
   if (!file_exists($destination_core)) {
     drush_set_option('destination', dirname($destination_core));
-    $new_name = trim($destination_core, '/');
-    drush_set_option('drupal-project-rename', $new_name);
+    drush_set_option('drupal-project-rename', basename($destination_core));
+
+    // No need for version control in this command.
+    drush_set_option('version-control', 'backup');
+
     // TODO: get releases other than dev snapshot.
     drush_pm_download('drupal-'. $target_version . '.x');
     if (drush_get_error()) return -1; // Early exit if we see an error.
@@ -76,8 +80,11 @@ function drush_upgrade_site_upgrade($target_key) {
 
   // Get enabled projects and their paths.
   // TODO: D5 compatibility.
+  _update_cache_clear();
   module_load_include('inc', 'update', 'update.compare');
   $projects = update_get_projects();
+  // We already downloaded Drupal project.
+  unset($projects['drupal']);
   $projects = pm_get_project_path($projects, 'includes');
 
   // Fetch and place each project into target.
@@ -89,7 +96,7 @@ function drush_upgrade_site_upgrade($target_key) {
       $project['path'] = 'sites/all/modules';
     }
     $destination_module = $destination_core . '/' . $project['path'];
-    if (!file_exists($destination_module) && $key != 'drupal') {
+    if (!file_exists($destination_module)) {
       drush_set_option('destination', dirname($destination_module));
       drush_pm_download($key . '-'. $target_version . '.x');
     }

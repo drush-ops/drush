@@ -8,7 +8,7 @@
 /**
  * Install a project.
  *
- * @param $project The project array with name, base and full (final) paths. 
+ * @param $project The project array with name, base and full (final) paths.
  * @param $release The release details array from drupal.org
  */
 function package_handler_install_project($project, $release) {
@@ -57,8 +57,8 @@ function package_handler_install_project($project, $release) {
   if ($project['name'] == 'drupal' && $rename = drush_get_option('drupal-project-rename')) {
     drush_shell_exec("tar -tf $tarpath");
     $output = drush_shell_exec_output();
-    // The dodge directory name is always the first line of output.
-    drush_op('rename', $project['base_project_path'] . $output[0], $project['base_project_path'] . '/' . trim($rename, '/'));
+    // The dodgy directory name is always the first line of output.
+    drush_op('rename', $project['base_project_path'] . $output[0], $project['base_project_path'] .'/' . trim($rename, '/'));
   }
 
   // Remove the tarball

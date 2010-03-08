@@ -267,7 +267,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
         $db_su_connect = _drush_sql_connect($create_db_target);
         switch (_drush_sql_get_scheme($target_db_url)) {
           case 'mysql':
-            $pre_import_commands = 'echo "DROP DATABASE IF EXISTS ' . $target_db_url['database'] . '; CREATE DATABASE ' . $target_db_url['database'] . '; GRANT ALL PRIVILEGES ON ' . $target_db_url['database'] . '.* TO \'' . $target_db_url['username'] . '\'@\'localhost\' IDENTIFIED BY \'' . $target_db_url['password'] . '\';" | ' . $db_su_connect . '; ';
+            $pre_import_commands = 'echo "DROP DATABASE IF EXISTS ' . $target_db_url['database'] . '; CREATE DATABASE ' . $target_db_url['database'] . '; GRANT ALL PRIVILEGES ON ' . $target_db_url['database'] . '.* TO \'' . $target_db_url['username'] . '\'@\'' . $target_db_url['host'] . '\' IDENTIFIED BY \'' . $target_db_url['password'] . '\';" | ' . $db_su_connect . '; ';
             break;
           case 'pgsql':
             $pre_import_commands = 'echo "drop database if exists ' . $target_db_url['database'] . '; create database ' . $target_db_url['database'] . ';" | ' . $db_su_connect . '; ';
@@ -279,7 +279,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
       $import_command = _drush_sql_connect($target_db_url);
       switch (_drush_sql_get_scheme($target_db_url)) {
         case 'mysql':
-          $import_command .= ' ' . (drush_get_context('DRUSH_DEBUG') ? ' -v' : '--silent');
+          $import_command .= ' ' . (drush_get_context('DRUSH_DEBUG') ? ' ' : '--silent');
           break;
         case 'pgsql':
           $import_command .= ' ' . (drush_get_context('DRUSH_DEBUG') ? ' ' : '-q');
