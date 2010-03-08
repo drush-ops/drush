@@ -34,6 +34,26 @@ define('DRUSH_PM_NO_VERSION', 103);
 define('DRUSH_PM_REQUESTED_NOT_FOUND', 104);
 
 /**
+ * Sort callback function for sorting projects
+ * First by type, second by package and third by name
+ *
+ * Special handling for 'Package' on modules and themes.
+ */
+function _drush_pm_sort_projects($a, $b) {
+  if ($a->type == 'module' && $b->type == 'theme') {
+    return -1;
+  }
+  if ($a->type == 'theme' && $b->type == 'module') {
+    return 1;
+  }
+  $cmp = strcasecmp($a->info['package'], $b->info['package']);
+  if ($cmp == 0) {
+    $cmp = strcasecmp($a->info['name'], $b->info['name']);
+  }
+  return $cmp;
+}
+
+/**
  * Implementation of hook_drush_help().
  */
 function pm_drush_help($section) {
@@ -116,6 +136,7 @@ function pm_drush_command() {
     'options' => array(
       '--type' => 'Filter by project type. Choices: module, theme.',
       '--status' => 'Filter by project status. Choices: enabled|disabled|not installed.',
+      '--package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other"). This filter is case-sensitive.',
       '--pipe' => 'Returns a space delimited list of the names of the resulting projects.',
     ),
     'aliases' => array('sm'),
@@ -194,25 +215,32 @@ function pm_drush_command() {
  *
  */
 function drush_pm_list() {
-  // get the command options to filter the listing and compound the table header
+  //--package
+  $package_filter = array();
+  $package = drush_get_option('package');
+  if (!empty($package)) {
+    $package_filter = explode(',', $package);
+  }
+  if (empty($package_filter) || count($package_filter) > 1) {
+    $header[] = dt('Package');
+  }
+  
   $header[] = dt('Name');
 
   //--type
-  $type = drush_get_option('type');
-  if (empty($type)) {
-    $projects = drush_get_projects();
+  $all_types = array('module', 'theme');
+  $type_filter = drush_get_option('type');
+  if (empty($type_filter)) {
+    $type_filter = $all_types;
     $header[] = dt('Type');
   }
-  else if (in_array($type, array('module', 'theme'))) { //TODO: this kind of chck can be implemented drush-wide
-    drush_include_engine('drupal', 'environment');
-    $func = 'drush_get_'.$type.'s';
-    $projects = call_user_func($func);
+  else if (in_array($type_filter, $all_types)) { //TODO: this kind of chck can be implemented drush-wide
+    $type_filter = array($type_filter);
   }
   else {
-    drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!type is not a valid project type.', array('!type' => $type)));
-    return drush_log(dt('Aborting.'));
+    return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!type is not a valid project type.', array('!type' => $type_filter)));
   }
-  drush_log("pm-list loaded");
+
   //--status
   $all_status = array('enabled', 'disabled', 'not installed');
   $status_filter = drush_get_option('status');
@@ -224,14 +252,20 @@ function drush_pm_list() {
     $status_filter = array($status_filter);
   }
   else {
-    drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status_filter)));
-    return drush_log(dt('Aborting.'));
+    return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status_filter)));
   }
 
   $header[] = dt('Version');
   $rows[] = $header;
+
+  $projects = drush_pm_get_projects();
+  uasort($projects, '_drush_pm_sort_projects');
+
   $major_version = drush_drupal_major_version();
   foreach ($projects as $project) {
+    if (!in_array($project->type, $type_filter)) {
+      continue;
+    }
     $status = drush_get_project_status($project);
     if (!in_array($status, $status_filter)) {
       continue;
@@ -239,13 +273,25 @@ function drush_pm_list() {
     if (($major_version >= 7) and (isset($project->info['hidden']))) {
       continue;
     }
+    
+    // filter by package
+    if (!empty($package_filter)) {
+      if (!in_array($project->info['package'], $package_filter)) {
+        continue;
+      }
+    }
+    
+    if (empty($package_filter) || count($package_filter) > 1) {
+      $row[] = $project->info['package'];
+    }
+    
     if (($major_version >= 6)||($project->type == 'module')) {
       $row[] = $project->info['name'].' ('.$project->name.')';
     }
     else {
       $row[] = $project->name;
     }
-    if (empty($type)) {
+    if (empty($type_filter)) {
       $row[] = ucfirst($project->type);
     }
     if (count($status_filter) > 1) {
@@ -460,6 +506,24 @@ function drush_pm_disable() {
 }
 
 /**
+ * Wrapper of drupal_get_projects() with additional information used by
+ * pm- commands.
+ *
+ * @return
+ *   An array containing info for all available modules and themes w/additional
+ *   info.
+ */
+function drush_pm_get_projects() {
+  $projects = drush_get_projects();
+  foreach ($projects as $key => $project) {
+    if (empty($project->info['package'])) {
+      $projects[$key]->info['package'] = dt('Other');
+    }
+  }
+  return $projects;
+}
+
+/**
  * Classify projects in modules, themes or unknown ones.
  *
  * @param $projects
@@ -489,7 +553,7 @@ function drush_pm_classify_projects($projects, &$modules, &$themes, $project_inf
 function drush_pm_info() {
   $args = func_get_args();
 
-  $project_info = drush_get_projects();
+  $project_info = drush_pm_get_projects();
 
   foreach ($args as $project) {
     if (isset($project_info[$project])) {
@@ -505,7 +569,6 @@ function drush_pm_info() {
     else {
       $data = _drush_pm_info_theme($info);
     }
-
     drush_print_table(drush_key_value_to_array_table($data));
     print "\n";
   }
@@ -524,6 +587,7 @@ function _drush_pm_info_project($info) {
     $data['Description'] = $info->info['description'];
     $data['Version'] = $info->info['version'];
   }
+  $data['Package'] = $info->info['package'];
   if ($major_version >= 6) {
     $data['Core'] = $info->info['core'];
   }
@@ -545,8 +609,6 @@ function _drush_pm_info_module($info) {
   $major_version = drush_drupal_major_version();
 
   $data = _drush_pm_info_project($info);
-  $package = (isset($info->info['package']))?$info->info['package']:"none";
-  $data['Package'] = $package;
   if ($info->schema_version > 0) {
     $schema_version = $info->schema_version;
   }
@@ -595,7 +657,7 @@ function _drush_pm_info_theme($info) {
     $data['Core'] = $info->info['core'];
     $data['PHP'] = $info->info['php'];
     $data['Engine'] = $info->info['engine'];
-    $data['Base theme'] = isset($info->base_theme)?$info->base_theme:'';
+    $data['Base theme'] = isset($info->base_themes) ? implode($info->base_themes, ', ') : '';
     $regions = implode(', ', $info->info['regions']);
     $data['Regions'] = $regions;
     $features = implode(', ', $info->info['features']);
