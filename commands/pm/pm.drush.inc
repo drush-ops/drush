@@ -135,8 +135,8 @@ function pm_drush_command() {
     'callback arguments' => array(array(), FALSE),
     'options' => array(
       '--type' => 'Filter by project type. Choices: module, theme.',
-      '--status' => 'Filter by project status. Choices: enabled|disabled|not installed.',
-      '--package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other"). This filter is case-sensitive.',
+      '--status' => 'Filter by project status. Choices: enabled,disable and/or \'not installed\'. You can use multiple comma separated values. (i.e. --status="disabled,not installed").',
+      '--package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other").',
       '--pipe' => 'Returns a space delimited list of the names of the resulting projects.',
     ),
     'aliases' => array('sm'),
@@ -217,7 +217,7 @@ function pm_drush_command() {
 function drush_pm_list() {
   //--package
   $package_filter = array();
-  $package = drush_get_option('package');
+  $package = strtolower(drush_get_option('package'));
   if (!empty($package)) {
     $package_filter = explode(',', $package);
   }
@@ -229,30 +229,40 @@ function drush_pm_list() {
 
   //--type
   $all_types = array('module', 'theme');
-  $type_filter = drush_get_option('type');
-  if (empty($type_filter)) {
-    $type_filter = $all_types;
-    $header[] = dt('Type');
-  }
-  else if (in_array($type_filter, $all_types)) { //TODO: this kind of chck can be implemented drush-wide
-    $type_filter = array($type_filter);
+  $type_filter = strtolower(drush_get_option('type'));
+  if (!empty($type_filter)) {
+    $type_filter = explode(',', $type_filter);
   }
   else {
-    return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!type is not a valid project type.', array('!type' => $type_filter)));
+    $type_filter = $all_types;
+  }
+
+  if (count($type_filter) > 1) {
+    $header[] = dt('Type');
+  }
+  foreach ($type_filter as $type) {
+    if (!in_array($type, $all_types)) { //TODO: this kind of chck can be implemented drush-wide
+      return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!type is not a valid project type.', array('!type' => $type)));
+  }
   }
 
   //--status
   $all_status = array('enabled', 'disabled', 'not installed');
-  $status_filter = drush_get_option('status');
-  if (empty($status_filter)) {
-    $status_filter = $all_status;
-    $header[] = dt('Status');
-  }
-  else if (in_array($status_filter, $all_status)) { //TODO: this kind of chck can be implemented drush-wide
-    $status_filter = array($status_filter);
+  $status_filter = strtolower(drush_get_option('status'));
+  if (!empty($status_filter)) {
+    $status_filter = explode(',', $status_filter);
   }
   else {
-    return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status_filter)));
+    $status_filter = $all_status;
+  }
+  if (count($status_filter) > 1) {
+    $header[] = dt('Status');
+  }
+  
+  foreach ($status_filter as $status) {
+    if (!in_array($status, $status_filter)) { //TODO: this kind of chck can be implemented drush-wide
+      return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status)));
+  }
   }
 
   $header[] = dt('Version');
@@ -276,7 +286,7 @@ function drush_pm_list() {
     
     // filter by package
     if (!empty($package_filter)) {
-      if (!in_array($project->info['package'], $package_filter)) {
+      if (!in_array(strtolower($project->info['package']), $package_filter)) {
         continue;
       }
     }
@@ -291,7 +301,7 @@ function drush_pm_list() {
     else {
       $row[] = $project->name;
     }
-    if (empty($type_filter)) {
+    if (count($type_filter) > 1) {
       $row[] = ucfirst($project->type);
     }
     if (count($status_filter) > 1) {
