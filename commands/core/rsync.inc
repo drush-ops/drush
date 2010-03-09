@@ -67,7 +67,9 @@ function drush_core_rsync($source, $destination) {
  * @return void
  **/
 function _drush_core_sync($source, $destination, $parametric_options = array()) {
-  // evaluate file paths
+  // Preflight destination in case it defines aliases used by the source
+  _drush_core_evaluate_path($destination);
+  // After preflight, evaluate file paths
   $source_settings = _drush_core_evaluate_path($source);
   $destination_settings = _drush_core_evaluate_path($destination);
   $source_path = $source_settings['rsync-path'];
@@ -250,9 +252,13 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
     $alias = substr($path, 0, $colon_pos);
     $path = substr($path, $colon_pos + 1);
     $site_alias_settings = drush_sitealias_get_record($alias);
+    if (empty($site_alias_settings)) {
+      return NULL;
+    }
     $machine = $alias;
   }
   else {
+    $machine = '';
     // if the path is a site alias or a local site...
     $site_alias_settings = drush_sitealias_get_record($path);
     if (!empty($site_alias_settings) || drush_is_local_host($path)) {
@@ -260,7 +266,7 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
       $path = '';
     }
   }
-
+  
   if (!empty($site_alias_settings)) {
     // Use 'remote-host' from settings if available; otherwise site is local
     if (array_key_exists('remote-host', $site_alias_settings)) {
@@ -304,12 +310,20 @@ function _drush_core_evaluate_path($path, $remote_user = '') {
     $path_aliases = $site_alias_settings['path-aliases'];
   }
 
-  // If site alias does not contain a 'root',
-  // then assume that the remote Drupal root is the same
-  // as the local Drupal root.
-  $drupal_root = array_key_exists('root', $site_alias_settings) ? $site_alias_settings['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
+  // Get the 'root' setting from the alias; if it does not
+  // exist, then get the root from the bootstrapped site.
+  if (array_key_exists('root', $site_alias_settings)) {
+    $drupal_root = $site_alias_settings['root'];
+  }
+  else {
+    drush_bootstrap_max();
+    $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+  }
+  if (empty($drupal_root)) {
+    $drupal_root = '';
+  }
   // Add a slash to the end of the drupal root, as below.
-  if ($drupal_root[strlen($drupal_root)-1] != '/') {
+  elseif ($drupal_root[strlen($drupal_root)-1] != '/') {
     $drupal_root = $drupal_root . '/';
   }
   foreach ($path_aliases as $key => $value) {

@@ -48,7 +48,7 @@ function sitealias_drush_command() {
  * is the site specification for the given alias.
  */
 function _drush_sitealias_alias_list() {
-  return drush_get_option('site-aliases', array());
+  return drush_get_context('site-aliases');
 }
 
 /**
@@ -65,7 +65,7 @@ function _drush_sitealias_site_list() {
     if ($info->basename == 'settings.php') {
       $alias_record = drush_sitealias_build_record_from_settings_file($filename);
       if (!empty($alias_record)) {
-        $site_list[$alias_record['uri']] = $alias_record;
+        $site_list[drush_sitealias_uri_to_site_dir($alias_record['uri'])] = $alias_record;
       }
     }
   }
@@ -76,6 +76,7 @@ function _drush_sitealias_site_list() {
  * Return the list of all site aliases and all local sites.
  */
 function _drush_sitealias_all_list() {
+  drush_sitealias_load_all();
   return array_merge(_drush_sitealias_alias_list(), _drush_sitealias_site_list());
 }
 
@@ -195,9 +196,15 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
       unset($alias_record['path-aliases']);
     }
   }
+  
+  // Alias names contain an '@' when referenced, but do
+  // not contain an '@' when defined.
+  if (substr($alias_name,0,1) == '@') {
+    $alias_name = substr($alias_name,1);
+  }
 
   $exported_alias = var_export($alias_record, TRUE);
-  drush_print('$options[\'site-aliases\'][\'' . $alias_name . '\'] = ' . $exported_alias . ';');
+  drush_print('$aliases[\'' . $alias_name . '\'] = ' . $exported_alias . ';');
 }
 
 /**

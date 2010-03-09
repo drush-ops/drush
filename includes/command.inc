@@ -634,7 +634,7 @@ function drush_command_default_options($command) {
 
 function _drush_command_set_default_options($command) {
   $options_were_set = FALSE;
-  $command_default_options = drush_get_option('command-specific', array());
+  $command_default_options = drush_get_context('command-specific');
   if (array_key_exists($command, $command_default_options)) {
     foreach ($command_default_options[$command] as $key => $value) {
       // We set command-specific options in their own context

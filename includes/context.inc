@@ -131,55 +131,89 @@ function drush_load_config($context) {
 }
 
 function drush_load_config_file($context, $config) {
-  global $drush_conf_override;
+  if (file_exists($config)) {
+    $options = $aliases = $command_specific = $override = array();
+    drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
+    require_once($config);
+    if (!empty($options) || !empty($aliases) || !empty($command_specific)) {
+      $options = array_merge(drush_get_context($context), $options);
+      $options['config-file'] = realpath($config);
+    
+      //$options['site-aliases'] = array_merge(isset($aliases) ? $aliases : array(), isset($options['site-aliases']) ? $options['site-aliases'] : array());
+      unset($options['site-aliases']);
+      $options['command-specific'] = array_merge(isset($command_specific) ? $command_specific : array(), isset($options['command-specific']) ? $options['command-specific'] : array());
 
+      drush_set_config_options($context, $options, $override);
+    }
+  }
+}
+
+function drush_set_config_options($context, $options, $override = array()) {
+  global $drush_conf_override;
+  
   // Only reset $drush_conf_override if the array is not set, otherwise keep old values and append new values to it.
   if (!isset($drush_conf_override)) {
     $drush_conf_override = array();
   }
+  
+  // Copy 'config-file' into 'context-path', converting to an array to hold multiple values if necessary
+  if (isset($options['config-file'])) {
+    if (isset($options['context-path'])) {
+      $options['context-path'] = array_merge(array($options['config-file']), is_array($options['context-path']) ? $options['context-path'] : array($options['context-path']));
+    }
+    else {
+      $options['context-path'] = $options['config-file'];
+    }
+  }
+  
+  // Change the keys of the site aliases from 'alias' to '@alias'
+  if (array_key_exists('site-aliases', $options)) {
+    $user_aliases = $options['site-aliases'];
+    $options['site-aliases'] = array();
+    foreach ($user_aliases as $alias_name => $alias_value) {
+      $options['site-aliases']["@$alias_name"] = $alias_value;
+    }
+  }
+  
+  // Take out $aliases and $command_specific options
+  drush_set_config_special_contexts($options);
 
-  if (file_exists($config)) {
-    drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
-    $options['context-path'] = realpath($config);
-    require_once($config);
+  drush_set_context($context, $options);
 
-    // There are certain options such as 'site-aliases' and 'command-specific'
-    // that must be merged together if defined in multiple drush configuration
-    // files.  If we did not do this merge, then the last configuration file
-    // that defined any of these properties would overwrite all of the options
-    // that came before in previously-loaded configuration files.  We place
-    // all of them into the 'default' context so that this does not happen.
-    if (isset($options)) {
-      foreach (array('site-aliases', 'command-specific') as $option_name) {
-        if ((isset($options)) && (array_key_exists($option_name, $options))) {
-          $cache =& drush_get_context('default');
-          if (array_key_exists($option_name, $cache)) {
-            $cache[$option_name] = array_merge($cache[$option_name], $options[$option_name]);
-          }
-          else {
-            $cache[$option_name] = $options[$option_name];
-          }
-          unset($options[$option_name]);
-        }
+  // Instruct core not to queries since we are not outputting them.
+  // This can be overridden by a command or a drushrc file if needed.
+  if (!isset($drush_conf_override['dev_query'])) {
+    $drush_conf_override['dev_query'] = FALSE;
+  }
+
+  /**
+   * Allow the drushrc.php file to override $conf settings.
+   * This is a separate variable because the $conf array gets
+   * initialized to an empty array, in the drupal bootstrap process,
+   * and changes in settings.php would wipe out the drushrc.php settings.
+   */
+  if (!empty($override)) {
+    $drush_conf_override = array_merge($drush_conf_override, $override);
+  }
+}
+
+
+/**
+ * There are certain options such as 'site-aliases' and 'command-specific'
+ * that must be merged together if defined in multiple drush configuration
+ * files.  If we did not do this merge, then the last configuration file
+ * that defined any of these properties would overwrite all of the options
+ * that came before in previously-loaded configuration files.  We place
+ * all of them into their own context so that this does not happen.
+ */
+function drush_set_config_special_contexts(&$options) {  
+  if (isset($options)) {
+    foreach (array('site-aliases', 'command-specific') as $option_name) {
+      if ((isset($options)) && (array_key_exists($option_name, $options))) {
+        $cache =& drush_get_context($option_name);
+        $cache = array_merge($cache, $options[$option_name]);
+        unset($options[$option_name]);
       }
-    }
-
-    drush_set_context($context, $options);
-
-    // Instruct core not to queries since we are not outputting them.
-    // This can be overridden by a command or a drushrc file if needed.
-    if (!isset($drush_conf_override['dev_query'])) {
-      $drush_conf_override['dev_query'] = FALSE;
-    }
-
-    /**
-     * Allow the drushrc.php file to override $conf settings.
-     * This is a separate variable because the $conf array gets
-     * initialized to an empty array, in the drupal bootstrap process,
-     * and changes in settings.php would wipe out the drushrc.php settings.
-     */
-    if (!empty($override)) {
-      $drush_conf_override = array_merge($drush_conf_override, $override);
     }
   }
 }
@@ -342,15 +376,20 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
  *   An array whose key is the context name and value is
  *   the specific value for the option in that context.
  */
-function drush_get_context_options($option) {
+function drush_get_context_options($option, $flatten = FALSE) {
   $result = array();
   
   $contexts = drush_context_names();
   foreach ($contexts as $context) {
     $value = _drush_get_option($option, drush_get_context($context));
-
+    
     if ($value !== null) {
-      $result[$context] = $value;
+      if ($flatten && is_array($value)) {
+        $result = array_merge($value, $result);
+      }
+      else {
+        $result[$context] = $value;
+      }
     }
   }
   

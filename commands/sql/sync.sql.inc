@@ -36,6 +36,9 @@ function drush_sql_sync($source = null, $destination = null) {
 }
 
 function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
+  // Preflight destination in case it defines the alias used by the source
+  drush_sitealias_get_record($destination);
+  // After preflight, get source and destination settings
   $source_settings = drush_sitealias_get_record($source, TRUE);
   $destination_settings = drush_sitealias_get_record($destination, TRUE);
 

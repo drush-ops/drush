@@ -102,7 +102,7 @@ function core_drush_command() {
   );
   $items['rsync'] = array(
     'description' => 'Rsync the Drupal tree to/from another server using ssh.  Relative paths start from the Drupal root folder if a site alias is used; otherwise they start from the current working directory.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'arguments' => array(
       'source' => 'May be rsync path or site alias. See rsync documentation and example.drushrc.php.',
       'destination' => 'May be rsync path or site alias. See rsync documentation and example.drushrc.php.',
@@ -399,7 +399,7 @@ function _core_site_status_table() {
     $status_table['PHP configuration'] = php_ini_loaded_file();
   }
   $status_table['Drush Version'] = DRUSH_VERSION;
-  $status_table['Drush configuration'] = implode(' ', drush_get_context_options('context-path'));
+  $status_table['Drush configuration'] = implode(' ', drush_get_context_options('context-path', TRUE));
   return $status_table;
 }
 
