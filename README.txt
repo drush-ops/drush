@@ -88,8 +88,8 @@ great flexibility for a multi-site installation, for example. See example.drushr
 
 SITE ALIASES
 --------
-Drush lets you run commands on a remote server, or even on a set of remote
-servers. See http://drupal.org/node/670460 for more information.
+Drush lets you run commands on a remote server, or even on a set of remote servers. 
+See http://drupal.org/node/670460 and example.aliases.drushrc.php for more information.
 
 COMMANDS
 --------
