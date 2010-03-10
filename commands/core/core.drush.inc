@@ -104,8 +104,8 @@ function core_drush_command() {
     'description' => 'Rsync the Drupal tree to/from another server using ssh.  Relative paths start from the Drupal root folder if a site alias is used; otherwise they start from the current working directory.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'arguments' => array(
-      'source' => 'May be rsync path or site alias. See rsync documentation and example.drushrc.php.',
-      'destination' => 'May be rsync path or site alias. See rsync documentation and example.drushrc.php.',
+      'source' => 'May be rsync path or site alias. See rsync documentation and example.aliases.drushrc.php.',
+      'destination' => 'May be rsync path or site alias. See rsync documentation and example.aliases.drushrc.php.',
     ),
     'options' => array(
       '--mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -az.',
