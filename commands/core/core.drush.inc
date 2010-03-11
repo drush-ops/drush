@@ -500,9 +500,12 @@ function drush_core_php_script() {
   else {
     // Execute the specified script.
     $script = $args[0];
+    if (!preg_match('/\.php$/i', $script)) {
+      $script .= '.php';
+    }
     $found = FALSE;
     foreach($searchpath as $path) {
-      $script_filename = $path . '/' . $script . '.php';
+      $script_filename = $path . '/' . $script;
       if (file_exists($script_filename)) {
         include($script_filename);
         $found = TRUE;
