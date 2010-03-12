@@ -671,7 +671,7 @@ function _drush_bootstrap_drupal_configuration() {
 
   // Overriding the $conf array from drupal CONFIGURATION bootstrap with the
   // overrides we collected on the loaded config files on DRUSH_BOOTSTRAP_DRUSH
-  $conf = is_array($conf) ? array_merge($conf, $drush_conf_override) : $drush_conf_override;
+  $conf = is_array($conf) && is_array($drush_conf_override) ? array_merge($conf, $drush_conf_override) : $drush_conf_override;
 
   // Populate the DRUSH_DB_CREDENTIALS with the fields loaded from the configuration.
   $creds = array();
