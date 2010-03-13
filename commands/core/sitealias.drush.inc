@@ -19,7 +19,7 @@ function sitealias_drush_command() {
   $items['site-alias'] = array(
     'callback' => 'drush_sitealias_print',
     'description' => 'Print site alias records for all known site aliases and local sites.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'arguments' => array(
       'site' => 'Site specification alias to print',
     ),
@@ -107,6 +107,8 @@ function _drush_sitealias_user_specified_list($db_settings_needed = false) {
  * specified.
  */
 function drush_sitealias_print() {
+  drush_bootstrap_max();
+  
   $full_output = drush_get_option('full');
   $long_output = drush_get_option('long');
   $with_db = (drush_get_option('with-db') != null) || (drush_get_option('with-db-url') != null);
