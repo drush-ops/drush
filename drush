@@ -28,8 +28,8 @@ case $(uname -a) in
     SCRIPT_PATH=$(cygpath -w -a -- "$SCRIPT_PATH") ;;
 esac
 
-# If it is not exported determine and export the number of columns.
-if [ -z $COLUMNS ]; then
+# If not exported and term is set determine and export the number of columns.
+if [ -z $COLUMNS ] && [ -n "$TERM" ]; then
   export COLUMNS=$(tput cols)
 fi
 
