@@ -151,3 +151,25 @@ function drush_theme_disable($themes) {
   theme_disable($themes);
 }
 
+/**
+ * Helper function to obtain the severity levels based on Drupal version.
+ *
+ * This is a copy of watchdog_severity_levels() without t().
+ *
+ * Severity levels, as defined in RFC 3164: http://www.ietf.org/rfc/rfc3164.txt.
+ *
+ * @return
+ *   Array of watchdog severity levels.
+ */
+function core_watchdog_severity_levels() {
+  return array(
+    WATCHDOG_EMERGENCY=> 'emergency',
+    WATCHDOG_ALERT    => 'alert',
+    WATCHDOG_CRITICAL => 'critical',
+    WATCHDOG_ERROR    => 'error',
+    WATCHDOG_WARNING  => 'warning',
+    WATCHDOG_NOTICE   => 'notice',
+    WATCHDOG_INFO     => 'info',
+    WATCHDOG_DEBUG    => 'debug',
+  );
+}

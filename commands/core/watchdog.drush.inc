@@ -78,6 +78,7 @@ function drush_core_watchdog_list() {
     $options[] = $type;
   }
   $options['-- levels --'] = dt('== severity levels ==');
+  drush_include_engine('drupal', 'environment');
   $severities = core_watchdog_severity_levels();
   foreach ($severities as $key => $value) {
     $options[] = "$value($key)";
@@ -212,6 +213,7 @@ function drush_core_watchdog_show_many($filter = NULL) {
  */
 function core_watchdog_format_result($result, $full = FALSE) {
   // Severity.
+  drush_include_engine('drupal', 'environment');
   $severities = core_watchdog_severity_levels();
   $result->severity = $severities[$result->severity];
 
@@ -325,6 +327,7 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
     $args[':type'] = $type;
   }
   if (!is_null($severity)) {
+    drush_include_engine('drupal', 'environment');
     $severities = core_watchdog_severity_levels();
     if (isset($severities[$severity])) {
       $level = $severity;
@@ -353,38 +356,6 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
   $where = implode(" $criteria ", $conditions);
 
   return array('where' => $where, 'args' => $args);
-}
-
-/**
- * Helper function to obtain the severity levels based on drupal version.
- *
- * This is a copy of watchdog_severity_levels() without t().
- *
- * Severity levels, as defined in RFC 3164: http://www.ietf.org/rfc/rfc3164.txt.
- *
- * @return
- *   Array of watchdog severity levels.
- */
-function core_watchdog_severity_levels() {
-  if (drush_drupal_major_version() == 5) {
-    return array(
-      WATCHDOG_NOTICE => 'notice',
-      WATCHDOG_WARNING => 'warning',
-      WATCHDOG_ERROR => 'error'
-    );
-  }
-  else {
-    return array(
-      WATCHDOG_EMERG    => 'emergency',
-      WATCHDOG_ALERT    => 'alert',
-      WATCHDOG_CRITICAL => 'critical',
-      WATCHDOG_ERROR    => 'error',
-      WATCHDOG_WARNING  => 'warning',
-      WATCHDOG_NOTICE   => 'notice',
-      WATCHDOG_INFO     => 'info',
-      WATCHDOG_DEBUG    => 'debug',
-    );
-  }
 }
 
 /**

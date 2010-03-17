@@ -1485,6 +1485,7 @@ function system_watchdog($log_entry) {
     $severity = 'error';
   }
   else {
+    drush_include_engine('drupal', 'environment');
     $levels = core_watchdog_severity_levels();
     $severity = $levels[$log_entry['severity']];
   }
