@@ -163,6 +163,7 @@ function drush_theme_disable($themes) {
  */
 function core_watchdog_severity_levels() {
   return array(
+    WATCHDOG_EMERG    => 'emergency', // this one is here for backwards compat.
     WATCHDOG_EMERGENCY=> 'emergency',
     WATCHDOG_ALERT    => 'alert',
     WATCHDOG_CRITICAL => 'critical',
