@@ -79,6 +79,10 @@ Related Options:
                                 (only needed in multisite environments)
   -v, --verbose                 Display verbose output.
 
+NOTE: If you do not specify a URI with -l and drush falls back to the default
+site configuration, Drupal's $GLOBAL['base_url'] will be set to http://default.
+This may cause some functionality to not work as expected.
+
 
 DRUSHRC.PHP
 --------
