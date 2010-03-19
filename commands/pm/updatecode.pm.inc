@@ -89,8 +89,34 @@ function drush_pm_updatecode() {
   }
 
   if (isset($updateable['drupal'])) {
-    drush_print("NOTE: A code update for the Drupal core is available. \nDrupal itself can't yet be updated by this tool. Please update Drupal manually.\n");
+    $drupal_project = $updateable['drupal'];
+    unset($projects['drupal']);
     unset($updateable['drupal']);
+    $module_list = array_keys($projects);      
+    
+    // We can only upgrade drupal core if there are no non-core
+    // modules enabled.  _pm_update_core will disable the
+    // modules passed in, and insure that they are enabled again
+    // when we're done.  However, each run of pm-updatecode will
+    // update -either- core, or the non-core modules; never both.
+    // This simplifies rollbacks.
+    if (empty($updateable)) {
+      return _pm_update_core($drupal_project, $module_list);
+    }
+    // If there are modules other than drupal core enabled, then go
+    // ahead and print instructions on how to upgrade core.  We will
+    // also continue, allowing the user to upgrade any upgradable
+    // modules if desired.
+    else {
+      drush_print(dt("NOTE: A code update for the Drupal core is available."));
+      if (drush_get_context('DRUSH_PM_UPDATE_ALL', FALSE)) {
+        drush_print(dt("Drupal core will be updated after all of the non-core modules are updated.\n"));
+      }
+      else {
+        drush_print(dt("Drupal core cannot be updated at the same time that non-core modules are updated.  In order to update Drupal core with this tool, first allow the update of the modules listed above to complet, and then run pm-updatecode again.\n"));
+      }
+      drush_set_context('DRUSH_PM_CORE_UPDATE_AVAILABLE', TRUE);
+    }
   }
 
   if (empty($updateable)) {
@@ -99,6 +125,80 @@ function drush_pm_updatecode() {
 
   // Offer to update to the identified releases
   return pm_update_packages($updateable);
+}
+
+/**
+ * Update drupal core, following interactive confirmation from the user.
+ *
+ * @param $project
+ *   The drupal project information from the drupal.org update service,
+ *   copied from $projects['drupal'].  @see drush_pm_updatecode.
+ * @param $module_list
+ *   A list of the non-core modules that are enabled.  These must be disabled
+ *   before core can be updated.
+ */
+function _pm_update_core($project, $module_list = array()) {
+  drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
+  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+  
+  drush_print(dt('Code updates will be made to drupal core.'));
+  drush_print(dt("WARNING:  Updating core will discard any modifications made to Drupal core files, most noteworthy among these are .htaccess and robots.txt.  If you have made any modifications to these files, please back them up before updating so that you can re-create your modifications in the updated version of the file."));
+  drush_print(dt("Note: Updating core can potentially break your site. It is NOT recommended to update production sites without prior testing."));
+  if(!drush_confirm(dt('Do you really want to continue?'))) {
+    drush_die('Aborting.');
+  }
+  
+  // Create a directory 'core' if it does not already exist
+  $project['path'] = 'drupal-' . $project['candidate_version'];
+  $project['full_project_path'] = $drupal_root . '/' . $project['path'];
+  mkdir($project['full_project_path']);
+  
+  // Create a list of files and folders that are user-customized or otherwise
+  // not part of the update process
+  $project['skip_list'] = array('backup', 'sites', $project['path']);
+  
+  // Move all files and folders in $drupal_root to the new 'core' directory
+  // except for the items in the skip list
+  _pm_update_move_files($drupal_root, $project['full_project_path'], $project['skip_list']);
+  
+  // Update core. 
+  $version_control = pm_update_project($project);
+  if ($version_control === FALSE) {
+    return FALSE;
+  }
+  
+  // Take the updated files in the 'core' directory that have been updated,
+  // and move all except for the items in the skip list back to
+  // the drupal root
+  _pm_update_move_files($project['full_project_path'], $drupal_root, $project['skip_list']);
+  drush_delete_dir($project['full_project_path']);
+  
+  // If there is a backup target, then find items
+  // in the backup target that do not exist at the
+  // drupal root.  These are to be moved back.
+  if (array_key_exists('backup_target', $project)) {
+    _pm_update_move_files($project['backup_target'], $drupal_root, $project['skip_list'], FALSE);
+  }  
+  
+  pm_update_complete($project, $version_control);
+  
+  return TRUE;
+}
+
+/**
+ * Move some files from one location to another
+ */
+function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflicts = TRUE) {
+  $items_to_move = drush_scan_directory($src_dir, '/.*/', array_merge(array('.', '..', 'CVS'), $skip_list), 0, FALSE);
+  foreach ($items_to_move as $filename => $info) {
+    if ($remove_conflicts) {
+      drush_delete_dir($dest_dir . '/' . basename($filename));
+    }
+    if (!file_exists($dest_dir . '/' . basename($filename))) {
+      $move_result = rename($filename,  $dest_dir . '/' . basename($filename));
+    }
+  }
+  return TRUE;
 }
 
 /**
@@ -127,7 +227,6 @@ function pm_update_packages($projects) {
   }
 
   // Now we start the actual updating.
-  $updated = array();
   foreach($projects as $project) {
     if (empty($project['path'])) {
       return drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('The !project project path is not available, perhaps the !type is enabled but has been deleted from disk.', array('!project' => $project['name'], '!type' => $project['project_type'])));
@@ -135,34 +234,56 @@ function pm_update_packages($projects) {
     drush_log(dt('Starting to update !project code at !dir...', array('!project' => $project['title'], '!dir' => $project['path'])));
     // Create the projects directory and base (parent) directory.
     $project['full_project_path'] = $drupal_root . '/' . $project['path'];
-    $project['base_project_path'] = dirname($project['full_project_path']);
     // Check that the directory exists, and is where we expect it to be.
     if (stripos($project['path'], $project['project_type']) === FALSE || !is_dir($project['full_project_path'])) {
       return drush_set_error('DRUSH_PM_UPDATING_PATH_NOT_FOUND', dt('The !project directory could not be found within the !types directory at !full_project_path, perhaps the project is enabled but has been deleted from disk.', array('!project' => $project['name'], '!type' => $project['project_type'], '!full_project_path' => $project['full_project_path'])));
     }
-
-    // Check we have a version control system, and it clears it's pre-flight.
-    if (!$version_control = drush_pm_include_version_control($project['full_project_path'])) {
+    // Run update on one project
+    $version_control = pm_update_project($project);
+    if ($update_status === FALSE) {
       return FALSE;
     }
-    if (!$version_control->pre_update($project)) {
-      return FALSE;
-    }
-    // Add the project to a context so we can roll back if needed.
-    $updated[] = $project;
-    drush_set_context('DRUSH_PM_UPDATED', $updated);
-
-    if (!package_handler_update_project($project, $project['releases'][$project['candidate_version']])) {
-      return drush_set_error('DRUSH_PM_UPDATING_FAILED', dt('Updating project !project failed. Attempting to roll back to previously installed version.', array('!project' => $project['name'])));
-    }
-    else {
-      drush_print(dt('Project !project was updated successfully. Installed version is now !version.', array('!project' => $project['name'], '!version' => $project['candidate_version'])));
-      drush_command_invoke_all('pm_post_update', $project['name'], $project['releases'][$project['candidate_version']]);
-      $version_control->post_update($project);
-    }
+    pm_update_complete($project, $version_control);
   }
   // Clear the cache, since some projects could have moved around.
   drush_drupal_cache_clear_all();
+}
+
+/**
+ * Update one project -- a module, theme or Drupal core
+ *
+ * @param $project
+ *   The project to upgrade.  $project['full_project_path'] must be set
+ *   to the location where this project is stored.
+ */
+function pm_update_project($project) {
+  $project['base_project_path'] = dirname($project['full_project_path']);
+  // Check we have a version control system, and it clears it's pre-flight.
+  if (!$version_control = drush_pm_include_version_control($project['full_project_path'])) {
+    return FALSE;
+  }
+  if (!$version_control->pre_update($project)) {
+    return FALSE;
+  }
+  // Add the project to a context so we can roll back if needed.
+  $updated = drush_get_context('DRUSH_PM_UPDATED');
+  $updated[] = $project;
+  drush_set_context('DRUSH_PM_UPDATED', $updated);
+
+  if (!package_handler_update_project($project, $project['releases'][$project['candidate_version']])) {
+    return drush_set_error('DRUSH_PM_UPDATING_FAILED', dt('Updating project !project failed. Attempting to roll back to previously installed version.', array('!project' => $project['name'])));
+  }
+  
+  return $version_control;
+}
+
+/**
+ * Run the post-update hooks after updatecode is complete for one project.
+ */
+function pm_update_complete($project, $version_control) {
+  drush_print(dt('Project !project was updated successfully. Installed version is now !version.', array('!project' => $project['name'], '!version' => $project['candidate_version'])));
+  drush_command_invoke_all('pm_post_update', $project['name'], $project['releases'][$project['candidate_version']]);
+  $version_control->post_update($project);
 }
 
 function drush_pm_updatecode_rollback() {
@@ -175,6 +296,13 @@ function drush_pm_updatecode_rollback() {
       return FALSE;
     }
     $version_control->rollback($project);
+    
+    // Post rollback, we will do additional repair if the project is drupal core.
+    if ($project['name'] == 'drupal') {
+      $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+      _pm_update_move_files($project['full_project_path'], $drupal_root, $project['skip_list']);
+      drush_delete_dir($project['full_project_path']);
+    }
   }
 }
 

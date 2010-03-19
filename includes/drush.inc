@@ -472,6 +472,28 @@ function _drush_delete_registered_files() {
 }
 
 /**
+ * Deletes the provided file or folder and
+ * everything inside it.
+ */
+function drush_delete_dir($dir) {
+  if (!file_exists($dir)) {
+    return TRUE;
+  }
+  if (!is_dir($dir)) {
+    return unlink($dir);
+  }
+  foreach (scandir($dir) as $item) {
+    if ($item == '.' || $item == '..') {
+      continue;
+    }
+    if (!drush_delete_dir($dir.DIRECTORY_SEPARATOR.$item)) {
+      return FALSE;
+    }
+  }
+  return rmdir($dir);
+}
+
+/**
  * Calls a given function, passing through all arguments unchanged.
  *
  * This should be used when calling possibly mutative or destructive functions
