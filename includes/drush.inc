@@ -258,7 +258,7 @@ function drush_drupal_major_version() {
 function _drush_replace_query_placeholders($where, $args) {
   foreach ($args as $key => $data) {
     if (!is_numeric($data)) {
-      $args[$key] = '"'.$data.'"';
+      $args[$key] = "'".$data."'";
     }
     else if (is_array($data)) {
       $new_keys = array();
