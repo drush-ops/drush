@@ -94,26 +94,30 @@ function variable_drush_command() {
  */
 function drush_variable_get() {
   global $conf;
-  $args = func_get_args();
-  foreach(array_keys($conf) as $name) {
-    if (strstr($name, $args[0])) {
-      $value = $conf[$name];
-      drush_print_pipe("\$variables['$name'] = ". var_export($value, TRUE). ";\n");
+  if ($args = func_get_args()) {
+    foreach(array_keys($conf) as $name) {
+      if (strstr($name, $args[0])) {
+        $value = $conf[$name];
+        drush_print_pipe("\$variables['$name'] = ". var_export($value, TRUE). ";\n");
 
-      if ($value === TRUE) {
-        $value = 'TRUE';
+        if ($value === TRUE) {
+          $value = 'TRUE';
+        }
+        elseif ($value === FALSE) {
+          $value = 'FALSE';
+        }
+        elseif (is_string($value)) {
+          $value = '"' . $value . '"';
+        }
+        elseif (is_array($value) || is_object($value)) {
+          $value = print_r($value, TRUE);
+        }
+        drush_print($name . ': ' . $value);
       }
-      elseif ($value === FALSE) {
-        $value = 'FALSE';
-      }
-      elseif (is_string($value)) {
-        $value = '"' . $value . '"';
-      }
-      elseif (is_array($value) || is_object($value)) {
-        $value = print_r($value, TRUE);
-      }
-      drush_print($name . ': ' . $value);
     }
+  }
+  else {
+    drush_set_error(dt('No argument found.'));
   }
 }
 
@@ -202,4 +206,3 @@ function drush_variable_delete() {
 function drush_variable_like($arg) {
   return drush_db_select('variable', 'name', 'name LIKE :keyword', array(':keyword' => $arg . '%'), NULL, NULL, 'name');
 }
-
