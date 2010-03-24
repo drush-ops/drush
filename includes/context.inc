@@ -166,15 +166,6 @@ function drush_set_config_options($context, $options, $override = array()) {
     }
   }
   
-  // Change the keys of the site aliases from 'alias' to '@alias'
-  if (array_key_exists('site-aliases', $options)) {
-    $user_aliases = $options['site-aliases'];
-    $options['site-aliases'] = array();
-    foreach ($user_aliases as $alias_name => $alias_value) {
-      $options['site-aliases']["@$alias_name"] = $alias_value;
-    }
-  }
-  
   // Take out $aliases and $command_specific options
   drush_set_config_special_contexts($options);
 
@@ -197,7 +188,6 @@ function drush_set_config_options($context, $options, $override = array()) {
   }
 }
 
-
 /**
  * There are certain options such as 'site-aliases' and 'command-specific'
  * that must be merged together if defined in multiple drush configuration
@@ -208,6 +198,20 @@ function drush_set_config_options($context, $options, $override = array()) {
  */
 function drush_set_config_special_contexts(&$options) {  
   if (isset($options)) {
+    // Change the keys of the site aliases from 'alias' to '@alias'
+    if (array_key_exists('site-aliases', $options)) {
+      $user_aliases = $options['site-aliases'];
+      $options['site-aliases'] = array();
+      foreach ($user_aliases as $alias_name => $alias_value) {
+	if (substr($alias_name,0,1) != '@') {
+          $alias_name = "@$alias_name";
+	}
+	$options['site-aliases'][$alias_name] = $alias_value;
+      }
+    }
+    
+    // Copy site aliases and command-specific options into their
+    // appropriate caches.
     foreach (array('site-aliases', 'command-specific') as $option_name) {
       if ((isset($options)) && (array_key_exists($option_name, $options))) {
         $cache =& drush_get_context($option_name);

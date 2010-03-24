@@ -123,3 +123,11 @@
 #    'uri' => 'dev.mydrupalsite.com',
 #    'root' => '/path/to/drupal/root',
 #  );
+#$aliases['server'] = array(
+#    'remote-host' => 'mystagingserver.myisp.com',
+#    'remote-user' => 'publisher',
+#  );
+#$aliases['live'] = array(
+#    'parent' => '@server,@dev',
+#    'uri' => 'mydrupalsite.com',
+#  );
