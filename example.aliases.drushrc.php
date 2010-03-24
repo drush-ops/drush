@@ -28,7 +28,7 @@
  *      a parameter to a command
  *
  * Files stored in these locations can be used to create aliases
- * to local and remote Drupal installations.  These aliases can beTo create aliases to remote Drupal installations, add entries
+ * to local and remote Drupal installations.  These aliases can be
  * used in place of a site specification on the command line, and
  * may also be used in arguments to certain commands such as
  * "drush rsync" and "drush sql-sync".
