@@ -94,30 +94,27 @@ function variable_drush_command() {
  */
 function drush_variable_get() {
   global $conf;
+  $keys = array_keys($conf);
   if ($args = func_get_args()) {
-    foreach(array_keys($conf) as $name) {
-      if (strstr($name, $args[0])) {
-        $value = $conf[$name];
-        drush_print_pipe("\$variables['$name'] = ". var_export($value, TRUE). ";\n");
-
-        if ($value === TRUE) {
-          $value = 'TRUE';
-        }
-        elseif ($value === FALSE) {
-          $value = 'FALSE';
-        }
-        elseif (is_string($value)) {
-          $value = '"' . $value . '"';
-        }
-        elseif (is_array($value) || is_object($value)) {
-          $value = print_r($value, TRUE);
-        }
-        drush_print($name . ': ' . $value);
-      }
-    }
+    $keys = preg_grep("/{$args[0]}/", $keys);
   }
-  else {
-    drush_set_error(dt('No argument found.'));
+  foreach ($keys as $name) {
+    $value = $conf[$name];
+    drush_print_pipe("\$variables['$name'] = ". var_export($value, TRUE). ";\n");
+
+    if ($value === TRUE) {
+      $value = 'TRUE';
+    }
+    elseif ($value === FALSE) {
+      $value = 'FALSE';
+    }
+    elseif (is_string($value)) {
+      $value = '"' . $value . '"';
+    }
+    elseif (is_array($value) || is_object($value)) {
+      $value = print_r($value, TRUE);
+    }
+    drush_print($name . ': ' . $value);
   }
 }
 
