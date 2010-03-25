@@ -455,14 +455,17 @@ function drush_is_command($command) {
  *
  * Scans the following paths for drush command files:
  *
- * - The ".drush" folder in the users HOME folder.
- * - The "/path/to/drush/includes" folder.
+ * - The "/path/to/drush/commands" folder.
  * - Folders listed in the 'include' option (see example.drushrc.php).
- * - Active modules in the current Drupal installation (if any).
+ * - The system-wide drush commands folder, e.g. /usr/share/drush/commands
+ * - The ".drush" folder in the user's HOME folder.
+ * - All modules in the current Drupal installation whether they are enabled or
+ *   not. Commands implementing hook_drush_load() in MODULE.drush.load.inc with
+ *   a return value FALSE will not be loaded.
  *
  * A drush command file is a file that matches "*.drush.inc".
  *
- * @see drush_scan_directory
+ * @see drush_scan_directory()
  *
  * @return
  *   An associative array whose keys and values are the names of all available
@@ -560,7 +563,7 @@ function _drush_find_commandfiles($phase) {
       }
       else {
         unset($list[$module]);
-        // Signal that we should try again on 
+        // Signal that we should try again on
         // the next bootstrap phase.  We set
         // the flag to the filename of the first
         // module we find so that only that one
@@ -568,7 +571,7 @@ function _drush_find_commandfiles($phase) {
         $deferred[$module] = $filename;
       }
     }
-    
+
     if (sizeof($list)) {
       $cache = array_merge($cache, $list);
       ksort($cache);

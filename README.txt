@@ -92,7 +92,7 @@ great flexibility for a multi-site installation, for example. See example.drushr
 
 SITE ALIASES
 --------
-Drush lets you run commands on a remote server, or even on a set of remote servers. 
+Drush lets you run commands on a remote server, or even on a set of remote servers.
 See http://drupal.org/node/670460 and example.aliases.drushrc.php for more information.
 
 COMMANDS
@@ -102,17 +102,16 @@ your own. In fact, writing a drush command is no harder that writing simple
 Drupal extensions, since drush command files closely follow the structure of
 ordinary Drupal modules.
 
-See example.drush.inc for details on the internals of a drush command
-file.
+See example.drush.inc for details on the internals of a drush command file.
 
 You can put your drush command file in a number of places:
 
-  - In a .drush folder in your HOME folder. Note, that you have
-    to make the .drush folder yourself.
-  - Along with one of your existing modules. If your command is
-    related to an existing module, this is the preferred option.
   - In a folder specified with the include option (see above).
-  - In /path/to/drush/commands (not a Smart Thing, but it would work).
+  - Along with one of your existing modules. If your command is related to an
+    existing module, this is the preferred option.
+  - In a .drush folder in your HOME folder. Note, that you have to make the
+    .drush folder yourself.
+  - In the system-wide drush commands folder, e.g. /usr/share/drush/commands
 
 In any case, it is important that you append it with ".drush.inc", so
 that drush can find it.
