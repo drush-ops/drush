@@ -39,8 +39,16 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   // Preflight destination in case it defines the alias used by the source
   drush_sitealias_get_record($destination);
   // After preflight, get source and destination settings
-  $source_settings = drush_sitealias_get_record($source, TRUE);
-  $destination_settings = drush_sitealias_get_record($destination, TRUE);
+  $source_settings = drush_sitealias_get_record($source);
+  $destination_settings = drush_sitealias_get_record($destination);
+  
+  // Insure that we have database records for the source and destination
+  // alias records.  sitealias_get_databases_from_record will cache the
+  // database info inside the alias records, and drush_sitealias_set_alias_context
+  // will copy the database record into the 'alias' context.  We do not
+  // actually use the databases record at this time.
+  sitealias_get_databases_from_record($source_settings);
+  sitealias_get_databases_from_record($destination_settings);
 
   // Check to see if this is an sql-sync multiple command (multiple sources and multiple destinations)
   $is_multiple = drush_do_multiple_command('sql-sync', $source_settings, $destination_settings);
@@ -55,17 +63,24 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     drush_sitealias_set_alias_context($destination_settings, 'target-');
 
     // Get the options for the source and target databases
-    $source_db_url = _drush_sql_get_spec_from_options('source-');
+    $source_db_url = _drush_sql_get_spec_from_options('source-', FALSE);
     // The host may have special ssh requirements
     $source_remote_ssh_options = drush_get_option('source-ssh-options');
     // rsync later will also have to know this option
     $source_rsync_options = array('ssh-options' => $source_remote_ssh_options);
 
-    $target_db_url = _drush_sql_get_spec_from_options('target-');
+    $target_db_url = _drush_sql_get_spec_from_options('target-', FALSE);
     // The host may have special ssh requirements
     $target_remote_ssh_options = drush_get_option('target-ssh-options');
     // rsync later will also have to know this option
     $target_rsync_options = array('ssh-options' => $target_remote_ssh_options);
+        
+    if (empty($source_db_url)) {
+      return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for !source', array('!source' => $source)));
+    }
+    if (empty($target_db_url)) {
+      return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for !destination', array('!destination' => $destination)));
+    }
 
     // Set up the result file and the remote file.
     // If the result file is not set, then create a temporary file.

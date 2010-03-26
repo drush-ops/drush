@@ -47,7 +47,7 @@ function drush_upgrade_site_upgrade_validate($target_key = NULL) {
     return drush_set_error(dt('Missing argument: target'));
   }
 
-  if (!$target_alias = drush_sitealias_get_record($target_key, TRUE)) {
+  if (!$target_alias = drush_sitealias_get_record($target_key)) {
     return drush_set_error('Site alias not found: @target-key. See example.drushrc.inc.', array('@target-key' => $target_key));
   }
 
@@ -62,7 +62,7 @@ function drush_upgrade_site_upgrade_validate($target_key = NULL) {
 function drush_upgrade_site_upgrade($target_key) {
   $source_version = drush_drupal_major_version();
   $target_version = $source_version + 1;
-  $target_alias = drush_sitealias_get_record($target_key, TRUE);
+  $target_alias = drush_sitealias_get_record($target_key);
   $destination_core = $target_alias['root'];
 
   // Fetch target core and place as per target alias root.
@@ -146,7 +146,8 @@ function drush_upgrade_fix_db_url($target_alias, $settings_destination) {
   if (is_array($old_url)) {
     $old_url = $old_url['default'];
   }
-  $new_url = substr($old_url, 0, strrpos(trim($old_url), '/')) . '/'. $target_alias['databases']['default']['default']['database'];
+  $target_alias_databases = sitealias_get_databases_from_record($target_alias);
+  $new_url = substr($old_url, 0, strrpos(trim($old_url), '/')) . '/'. $target_alias_databases['default']['default']['database'];
 
   $append = "\n# Added by drush site-upgrade.";
   if (drush_drupal_major_version() <= 6) {
@@ -154,7 +155,7 @@ function drush_upgrade_fix_db_url($target_alias, $settings_destination) {
   }
   else {
     $databases = $GLOBALS['databases'];
-    $databases['default']['default']['database'] = $target_alias['databases']['default']['default']['database'];
+    $databases['default']['default']['database'] = $target_alias_databases['default']['default']['database'];
     $append .= "\n" . '$databases = ' . var_export($databases, TRUE) . ';';
   }
   drush_op('file_put_contents', $settings_destination, $append, FILE_APPEND);

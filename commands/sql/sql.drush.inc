@@ -406,6 +406,9 @@ function _drush_sql_get_db_spec() {
 
     default:
       // We don't use DB API here `sql-sync` would have to messily addConnection.
+      if (!isset($GLOBALS['databases']) || !array_key_exists($database, $GLOBALS['databases']) || !array_key_exists($target, $GLOBALS['databases'][$database])) {
+        return NULL;
+      }
       return $GLOBALS['databases'][$database][$target];
   }
 }
@@ -434,26 +437,30 @@ function _drush_sql_get_spec_from_settings($file, $prefix) {
   return _drush_sql_get_db_spec();
 }
 
-function _drush_sql_get_spec_from_options($prefix) {
+function _drush_sql_get_spec_from_options($prefix, $default_to_self = TRUE) {
   $db_spec = NULL;
   $databases = drush_get_option($prefix . 'databases');
-  if (isset($databases)) {
+  if (isset($databases) && !empty($databases)) {
     $database = drush_get_option($prefix . 'database', 'default');
     $target = drush_get_option($prefix . 'target', 'default');
-    $db_spec = $databases[$database][$target];
+    if (array_key_exists($database, $databases) && array_key_exists($target, $databases[$database])) {
+      $db_spec = $databases[$database][$target];
+    }
   }
   else {
     $db_url = drush_get_option($prefix . 'db-url');
     if (isset($db_url)) {
       $db_spec = drush_convert_db_from_db_url($db_url);
     }
-    else {
+    elseif ($default_to_self) {
       $db_spec = _drush_sql_get_db_spec();
     }
   }
-
-  $db_spec['remote-host'] = drush_get_option($prefix . 'remote-host');
-  $db_spec['port'] = drush_get_option($prefix . 'remote-port', $db_spec['port']);
+  
+  if (isset($db_spec)) {
+    $db_spec['remote-host'] = drush_get_option($prefix . 'remote-host');
+    $db_spec['port'] = drush_get_option($prefix . 'remote-port', $db_spec['port']);
+  }
   
   return $db_spec;
 }
