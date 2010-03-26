@@ -83,6 +83,12 @@ NOTE: If you do not specify a URI with -l and drush falls back to the default
 site configuration, Drupal's $GLOBAL['base_url'] will be set to http://default.
 This may cause some functionality to not work as expected.
 
+EXAMPLES
+--------
+Inside the "examples" folder you will find some example files to help you
+get started with your drush configuration file (example.drushrc.php),
+site alias definitions (example.aliases.drushrc.php) and drush commands
+(example.drush.inc).
 
 DRUSHRC.PHP
 --------
