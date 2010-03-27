@@ -729,7 +729,7 @@ function _drush_sitealias_check_sitelist_fields(&$alias_record) {
   }
   if (array_key_exists('site-list', $alias_record)) {
     if (!is_array($alias_record['site-list'])) {
-      $alias_record['site_list'] = explode(',', $alias_record['site-list']);
+      $alias_record['site-list'] = explode(',', $alias_record['site-list']);
     }
   }
 }
