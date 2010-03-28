@@ -20,7 +20,7 @@ function upgrade_drush_command() {
     'description' => "Run a major version upgrade for Drupal core and contrib modules.",
     'drupal dependencies' => array('update'),
     'arguments' => array(
-      'target' => 'The name of a sitealias which points to the destination site. root, uri, and db-url keys are required. See example.drushrc.php for more information.'),
+      'target' => 'The name of a sitealias, without leading \'@\', which points to the destination site. root, uri, and db-url keys are required. See examples/aliases.drushrc.php for more information.'),
     'options' => array(
       'structure-tables-key' => 'A key in the structure-tables array. @see example.drushrc.php. Defaults to \'common\'.',
       'source-dump' => 'Path to dump file. Medium or large sized sites should set this. Optional; default is to create a temporary file.',
