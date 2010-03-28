@@ -45,6 +45,7 @@ function simpletest_drush_command() {
   $items['test-drush'] = array(
     'description' => 'Run drush-specific tests',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'hidden' => TRUE,
   );
   return $items;
 }
