@@ -201,7 +201,7 @@ function pm_drush_command() {
       '--destination' => 'Path to which the project will be copied.',
       '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
       '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.",
-      '--project-drupal-rename' => 'Alternate name for "drupal" directory when downloading drupal project.',
+      '--drupal-project-rename' => 'Alternate name for "drupal" directory when downloading drupal project.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
     'aliases' => array('dl'),
@@ -224,7 +224,7 @@ function drush_pm_list() {
   if (empty($package_filter) || count($package_filter) > 1) {
     $header[] = dt('Package');
   }
-  
+
   $header[] = dt('Name');
 
   //--type
@@ -258,7 +258,7 @@ function drush_pm_list() {
   if (count($status_filter) > 1) {
     $header[] = dt('Status');
   }
-  
+
   foreach ($status_filter as $status) {
     if (!in_array($status, $status_filter)) { //TODO: this kind of chck can be implemented drush-wide
       return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status)));
@@ -283,18 +283,18 @@ function drush_pm_list() {
     if (($major_version >= 7) and (isset($project->info['hidden']))) {
       continue;
     }
-    
+
     // filter by package
     if (!empty($package_filter)) {
       if (!in_array(strtolower($project->info['package']), $package_filter)) {
         continue;
       }
     }
-    
+
     if (empty($package_filter) || count($package_filter) > 1) {
       $row[] = $project->info['package'];
     }
-    
+
     if (($major_version >= 6)||($project->type == 'module')) {
       $row[] = $project->info['name'].' ('.$project->name.')';
     }
@@ -836,12 +836,12 @@ function drush_pm_update() {
   // Signal that we will update drush core after the drush modules
   // are updated, if an update to core is available.
   drush_set_context('DRUSH_PM_UPDATE_ALL', TRUE);
-  
+
   // Call pm-updatecode.  updatedb will be called in the post-update process.
   $args = func_get_args();
   array_unshift($args, 'pm-updatecode');
   call_user_func_array('drush_invoke', $args);
-  
+
   // pm-updatecode will not do a core update of Drupal
   // on the same invocation where non-core modules are
   // updated.  If there is a core update available, then
