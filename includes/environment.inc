@@ -871,6 +871,8 @@ function drush_site_path($path = NULL) {
  *
  * @param
  *   Search start path. Defaults to current working directory.
+ * @return
+ *   A path to drupal root, or FALSE if not found.
  */
 function drush_locate_root($start_path = NULL) {
   $drupal_root = FALSE;
@@ -910,7 +912,7 @@ function drush_locate_root($start_path = NULL) {
  *   Path to check.
  *
  * @return boolean
- *   True if given path seems to be a Drupal root, otherwise false.
+ *   True if given path seems to be a Drupal root, otherwise FALSE.
  */
 function drush_valid_drupal_root($path) {
   return !empty($path) && is_dir($path) && file_exists($path . '/' . DRUSH_DRUPAL_BOOTSTRAP);
