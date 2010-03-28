@@ -39,7 +39,7 @@
  * pm-download do not bootstrap a drupal environment at all,
  * and therefore only have access to configuration files #6 - #3.
  * The drush commands 'rsync' and 'sql-sync' are special cases.
- * These commands will load the configuration file for the site 
+ * These commands will load the configuration file for the site
  * specified by the source parameter; however, they do not
  * load the configuration file for the site specified by the
  * destination parameter, nor do they load configuration files
@@ -95,7 +95,7 @@
  * array or add a new element.
  */
 $options['structure-tables'] = array(
- 'common' => array('accesslog', 'cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'search_dataset', 'search_index', 'search_total', 'sessions', 'watchdog'),
+ 'common' => array('cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'sessions', 'watchdog'),
 );
 
 /*
