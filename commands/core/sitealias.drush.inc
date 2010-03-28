@@ -85,14 +85,14 @@ function _drush_sitealias_all_list() {
  * user specified on the command line.  If none were specified,
  * then all are returned.
  */
-function _drush_sitealias_user_specified_list($db_settings_needed = false) {
+function _drush_sitealias_user_specified_list() {
   $command = drush_get_command();
   $specifications = $command['arguments'];
   $site_list = array();
 
   // Iterate over the arguments and convert them to alias records
   if (!empty($specifications)) {
-    $site_list = drush_sitealias_resolve_sitespecs($specifications, $db_settings_needed);
+    $site_list = drush_sitealias_resolve_sitespecs($specifications);
   }
   // If the user provided no args, then we will return everything.
   else {
@@ -115,11 +115,11 @@ function drush_sitealias_print() {
   $site_list = _drush_sitealias_user_specified_list($with_db);
 
   foreach ($site_list as $site => $alias_record) {
+    _drush_sitealias_check_sitelist_fields($alias_record);
     if (isset($full_output)) {
       _drush_sitealias_print_record($alias_record, $site);
     }
     elseif (isset($long_output)) {
-      _drush_sitealias_check_sitelist_fields($alias_record);
       $site_spec = drush_sitealias_alias_record_to_spec($alias_record, $with_db);
       drush_print($site_spec);
     }

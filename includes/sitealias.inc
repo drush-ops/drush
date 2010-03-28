@@ -583,8 +583,10 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
           $status_key = strtr(substr($value,1), '-_', '  ');
           if (array_key_exists($status_key, $status_values)) {
             $alias_record['path-aliases'][$key] = $status_values[$status_key];
+	    drush_log(dt('Resolved path !key to !value', array('!key' => $status_key, '!value' => $status_values[$status_key])));
           }
           else {
+	    unset($alias_record['path-aliases'][$key]);
           }
 	}
       }
@@ -1133,7 +1135,7 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
  *   and the destination database records will be in
  *   'destination-databases'.
  */
-function drush_sitealias_set_alias_context($site_alias_settings, $prefix) {
+function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   $options = drush_get_context('alias');
 
   // backend invoke needs 'root' and 'uri' on the command line, so we will

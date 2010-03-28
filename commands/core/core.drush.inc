@@ -104,15 +104,17 @@ function core_drush_command() {
     'options' => array(
       '--mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -az.',
       '--RSYNC-FLAG' => 'Most rsync flags passed to drush sync will be passed on to rsync.  See rsync documentation.',
-      '--all-paths' => 'If <source> and <destination> are site aliases, and neither <source> nor <destination> specifies a path component, then rsync all path aliases that are defined in both the source and destination alias.',
-      '--exclude-conf' => 'Implies rsync --exclude="settings.php" --exclude="robots.txt" --exclude=".htaccess".  Default.',
-      '--include-conf' => 'Allow settings.php, robots.txt and .htaccess to be rsynced',
+      '--exclude-conf' => 'Excludes settings.php from being rsynced.  Default.',
+      '--include-conf' => 'Allow settings.php to be rsynced',
+      '--exclude-files' => 'Exclude the files directory.',
       '--exclude-sites' => 'Exclude all directories in "sites/" except for "sites/all".',
+      '--exclude-other-sites' => 'Exclude all directories in "sites/" except for "sites/all" and the site directory for the site being synced.  Note: if the site directory is different between the source and destination, use --exclude-sites followed by "drush rsync @from:%site @to:%site"',
+      '--exclude-paths' => 'Coma-separated list of paths to exclude.',
+      '--include-paths' => 'Coma-separated list of paths to include.',
     ),
     'examples' => array(
-      'rsync dev stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
-      'rsync --all-paths --exclude-conf dev stage' => 'Rsync Drupal root and all other paths from dev to stage for every path alias defined in both dev and stage.',
-      'rsync ./ stage:!files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
+      'rsync @dev @stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
+      'rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
     ),
     'deprecated-aliases' => array('sync'),
   );
