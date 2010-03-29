@@ -324,12 +324,12 @@ function drush_invoke($command) {
     if ($rollback === FALSE) {
       $completed[] = $func;
       if (function_exists($func)) {
-  call_user_func_array($func, $args);
-  _drush_log_drupal_messages();
-  if (drush_get_error()) {
-    drush_log(dt('An error occurred at function : @func', array('@func' => $func)), 'error');
-    $rollback = TRUE;
-  }
+        call_user_func_array($func, $args);
+        _drush_log_drupal_messages();
+        if (drush_get_error()) {
+          drush_log(dt('An error occurred at function : @func', array('@func' => $func)), 'error');
+          $rollback = TRUE;
+        }
       }
     }
   }
