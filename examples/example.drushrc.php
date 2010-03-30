@@ -77,6 +77,12 @@
 // and *.aliases.drushrc.php files
 # $options['alias-path'] = '/path/to/aliases:/path2/to/more/aliases';
 
+// Specify directory where sql-sync will store persistent dump files.
+// Keeping the dump files around will improve the performance of rsync
+// when the database is rsync'ed to a remote system.  If a dump directory
+// is not specified, then sql-sync will store dumps in temporary files.
+# $options['dump-dir'] = '/path/to/dumpdir';
+
 // Enable verbose mode.
 # $options['v'] = 1;
 

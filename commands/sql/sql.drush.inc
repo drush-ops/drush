@@ -111,6 +111,7 @@ function sql_drush_command() {
       '--target-remote-host' => '',
       '--target-dump' => '',
       '--temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
+      '--dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.  Takes precedence over --temp.',
       '--create-db' => 'Create a new database before importing the database dump on the target machine.',
       '--db-su' => 'Account to use when creating a new database. Optional.',
       '--db-su-pw' => 'Password for the "db-su" account. Optional.',
@@ -465,9 +466,35 @@ function _drush_sql_get_spec_from_options($prefix, $default_to_self = TRUE) {
   return $db_spec;
 }
 
-function drush_sql_dump_file($db_spec) {
-  $dump_file = drush_tempnam($db_spec['database'] . '.sql.');
-  $db_spec['dump-is-temp'] = TRUE;
+/**
+ * Determine where to store an sql dump file.  This
+ * function is called by sql-sync if the caller did
+ * not explicitly specify a dump file to use.
+ *
+ * @param db_spec
+ *   Information about the database being dumped; used
+ *   to generate the filename.
+ * @return string
+ *   The path to the dump file
+ */
+function drush_sql_dump_file(&$db_spec) {
+  // Make a base filename pattern to use to name the dump file
+  $filename_pattern = $db_spec['database'];
+  if (isset($db_spec['remote-host'])) {
+    $filename_pattern = $db_spec['remote-host'] . '_' . $filename_pattern;
+  }
+  // If the user has set the --dump-dir option, then
+  // store persistant sql dump files there.
+  $dump_dir = drush_get_option(array('source-dump-dir', 'dump-dir'));
+  if (isset($dump_dir)) {
+    $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
+  }
+  // If the --dump-dir option is not set, then store
+  // the sql dump in a temporary file.
+  else {
+    $dump_file = drush_tempnam($filename_pattern . '.sql.');
+    $db_spec['dump-is-temp'] = TRUE;
+  }
   
   return $dump_file;
 }
