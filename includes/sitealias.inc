@@ -454,7 +454,7 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
   foreach ($aliases as $alias_name => $alias_value) {
     if (array_key_exists('parent', $alias_value)) {
       // Prevent circular references from causing an infinite loop
-      _drush_sitealias_cache_empty_alias($alias_name);
+      _drush_sitealias_cache_alias($alias_name, array());
       // Fetch and merge in each parent
       foreach (explode(',', $alias_value['parent']) as $parent) {
         $parent_record = drush_sitealias_get_record($parent);
@@ -474,9 +474,9 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
  * @param $alias_name
  *   The name of the alias, without the leading "@"
  */
-function _drush_sitealias_cache_empty_alias($alias_name) {
-  $empty_alias['site-aliases']["@$alias_name"] = array();
-  drush_set_config_special_contexts($empty_alias);
+function _drush_sitealias_cache_alias($alias_name, $alias_record) {
+  $alias_options['site-aliases']["@$alias_name"] = $alias_record;
+  drush_set_config_special_contexts($alias_options);
 }
 
 /**
@@ -1120,7 +1120,9 @@ function _drush_sitealias_set_record_element(&$alias_record, $key, $value) {
  */
 function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
   $site_alias_settings = drush_sitealias_get_record($alias);
-  if (!empty($site_alias_settings)) {
+  if (!empty($site_alias_settings)) {  
+    // Create an alias '@self'
+    _drush_sitealias_cache_alias('self', $site_alias_settings);
     drush_sitealias_set_alias_context($site_alias_settings, $prefix);
     return TRUE;
   }
