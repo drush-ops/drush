@@ -176,9 +176,6 @@ function _drush_sitealias_get_record($alias) {
   }
 
   if (!empty($alias_record)) {
-    // Process site list related fields
-    _drush_sitealias_check_sitelist_fields($alias_record);
-
     // Load the drush config file if there is one associated with this alias
     if (!isset($alias_record['remote']) && !isset($alias_record['loaded-config'])) {
       $alias_site_dir = drush_sitealias_local_site_path($alias_record);
@@ -423,7 +420,11 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
               }
               $options = array();
             }
-            $alias_options['site-aliases'] = $aliases;
+            
+            foreach ($aliases as $name => $value) {
+              _drush_sitealias_initialize_alias_record($aliases[$name]);
+            }
+            
             $result = array_merge($result, $aliases);
           }
         }
@@ -432,7 +433,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
         elseif ((isset($aliases)) && array_key_exists($aliasname, $aliases)) {
           drush_set_config_special_contexts($options); // maybe unnecessary
           $result = array_merge($options, $aliases[$aliasname]);
-          $alias_options['site-aliases'][$aliasname] = $result;
+          _drush_sitealias_initialize_alias_record($result);
         }
       }
     }
@@ -694,7 +695,15 @@ function _drush_sitelist_check_site_records($source, $target) {
   return FALSE;
 }
 
-function _drush_sitealias_check_sitelist_fields(&$alias_record) {
+/**
+ * Initialize an alias record; called as soon as the alias
+ * record is loaded from its alias file, before it is stored
+ * in the cache.
+ *
+ * @param alias_record
+ *   The alias record to be initialized; paramter is modified in place.
+ */
+function _drush_sitealias_initialize_alias_record(&$alias_record) {
   // If there is a 'from-list' entry, then build a derived
   // list based on the site list with the given name.
   if (array_key_exists('from-list', $alias_record)) {

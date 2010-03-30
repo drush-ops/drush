@@ -1087,9 +1087,9 @@ function drush_do_multiple_command($command, $source_record, $destination_record
     $source_path = array_key_exists('path-component', $source_record) ? $source_record['path-component'] : '';
     $destination_path = array_key_exists('path-component', $destination_record) ? $destination_record['path-component'] : '';
 
-    $target_list = drush_sitealias_resolve_sitelist($destination_record);
+    $target_list = array_values(drush_sitealias_resolve_sitelist($destination_record));
     if (array_key_exists('site-list', $source_record)) {
-      $source_list = drush_sitealias_resolve_sitelist($source_record);
+      $source_list = array_values(drush_sitealias_resolve_sitelist($source_record));
 
       if (drush_sitealias_check_lists_alignment($source_list, $target_list) === FALSE) {
         if (array_key_exists('unordered-list', $source_record) || array_key_exists('unordered-list', $destination_record)) {
@@ -1102,9 +1102,6 @@ function drush_do_multiple_command($command, $source_record, $destination_record
     else {
       $source_list = array_fill(0, count($target_list), $source_record);
     }
-
-    drush_print($source_path);
-    drush_print($destination_path);
 
     if (!drush_get_context('DRUSH_SIMULATE')) {
       drush_print(dt('You are about to !command between all of the following targets:', array('!command' => $command)));

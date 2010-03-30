@@ -122,7 +122,6 @@ function drush_sitealias_print() {
 
   $site_specs = array();
   foreach ($site_list as $site => $alias_record) {
-    _drush_sitealias_check_sitelist_fields($alias_record);
     $site_specs[] = drush_sitealias_alias_record_to_spec($alias_record, $with_db);
     if (isset($full_output)) {
       _drush_sitealias_print_record($alias_record, $site);
