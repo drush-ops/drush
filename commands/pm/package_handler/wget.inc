@@ -47,7 +47,9 @@ function package_handler_install_project($project, $release) {
 
   // Decompress
   drush_shell_exec("gzip -d " . $filename);
-  $tarpath = substr($filename, 0, strlen($filename)-3);
+  $tarpath = basename($filename, '.tar.gz');
+  $tarpath = basename($tarpath, '.tgz');
+  $tarpath .= '.tar';
 
   // Untar
   drush_shell_exec("tar -xf $tarpath");
