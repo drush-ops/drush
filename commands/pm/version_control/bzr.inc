@@ -25,7 +25,7 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
   /**
    * Implementation of pre_update().
    */
-  public function pre_update(&$project) {
+  public function pre_update(&$project, $items_to_test = array()) {
     // TODO: Add similar checks to SVN?
   }
 

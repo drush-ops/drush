@@ -10,7 +10,7 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
   /**
    * Implementation of pre_update().
    */
-  public function pre_update(&$project) {
+  public function pre_update(&$project, $items_to_test = array()) {
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
     // Save the date to be used in the backup directory's path name.

@@ -137,7 +137,7 @@ function drush_pm_updatecode() {
  *   A list of the non-core modules that are enabled.  These must be disabled
  *   before core can be updated.
  */
-function _pm_update_core($project, $module_list = array()) {
+function _pm_update_core(&$project, $module_list = array()) {
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   
@@ -151,7 +151,9 @@ function _pm_update_core($project, $module_list = array()) {
   // Create a directory 'core' if it does not already exist
   $project['path'] = 'drupal-' . $project['candidate_version'];
   $project['full_project_path'] = $drupal_root . '/' . $project['path'];
-  mkdir($project['full_project_path']);
+  if (!is_dir($project['full_project_path'])) {
+    mkdir($project['full_project_path']);
+  }
   
   // Create a list of files and folders that are user-customized or otherwise
   // not part of the update process
@@ -161,9 +163,25 @@ function _pm_update_core($project, $module_list = array()) {
   // except for the items in the skip list
   _pm_update_move_files($drupal_root, $project['full_project_path'], $project['skip_list']);
   
+  // Set a context variable to indicate that rollback should reverse
+  // the _pm_update_move_files above.
+  drush_set_context('DRUSH_PM_DRUPAL_CORE', $project);
+
+  if (!$version_control = drush_pm_include_version_control($project['full_project_path'])) {
+    return FALSE;
+  }
+  
+  // Make a list of every item at the root of core except 'sites'
+  $items_to_test = drush_scan_directory($project['full_project_path'], '/.*/', array('.', '..', 'sites', '.svn'), 0, FALSE, 'basename', 0, 0, TRUE);
+
+  $project['base_project_path'] = dirname($project['full_project_path']);
+  // Check we have a version control system, and it clears its pre-flight.
+  if (!$version_control->pre_update($project, $items_to_test)) {
+    return FALSE;
+  }
+  
   // Update core. 
-  $version_control = pm_update_project($project);
-  if ($version_control === FALSE) {
+  if (pm_update_project($project, $version_control) === FALSE) {
     return FALSE;
   }
   
@@ -189,7 +207,7 @@ function _pm_update_core($project, $module_list = array()) {
  * Move some files from one location to another
  */
 function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflicts = TRUE) {
-  $items_to_move = drush_scan_directory($src_dir, '/.*/', array_merge(array('.', '..', 'CVS'), $skip_list), 0, FALSE);
+  $items_to_move = drush_scan_directory($src_dir, '/.*/', array_merge(array('.', '..'), $skip_list), 0, FALSE, 'filename', 0, 0, TRUE);
   foreach ($items_to_move as $filename => $info) {
     if ($remove_conflicts) {
       drush_delete_dir($dest_dir . '/' . basename($filename));
@@ -238,9 +256,16 @@ function pm_update_packages($projects) {
     if (stripos($project['path'], $project['project_type']) === FALSE || !is_dir($project['full_project_path'])) {
       return drush_set_error('DRUSH_PM_UPDATING_PATH_NOT_FOUND', dt('The !project directory could not be found within the !types directory at !full_project_path, perhaps the project is enabled but has been deleted from disk.', array('!project' => $project['name'], '!type' => $project['project_type'], '!full_project_path' => $project['full_project_path'])));
     }
+    if (!$version_control = drush_pm_include_version_control($project['full_project_path'])) {
+      return FALSE;
+    }
+    $project['base_project_path'] = dirname($project['full_project_path']);
+    // Check we have a version control system, and it clears its pre-flight.
+    if (!$version_control->pre_update($project)) {
+      return FALSE;
+    }
     // Run update on one project
-    $version_control = pm_update_project($project);
-    if ($update_status === FALSE) {
+    if (pm_update_project($project, $version_control) === FALSE) {
       return FALSE;
     }
     pm_update_complete($project, $version_control);
@@ -256,15 +281,7 @@ function pm_update_packages($projects) {
  *   The project to upgrade.  $project['full_project_path'] must be set
  *   to the location where this project is stored.
  */
-function pm_update_project($project) {
-  $project['base_project_path'] = dirname($project['full_project_path']);
-  // Check we have a version control system, and it clears it's pre-flight.
-  if (!$version_control = drush_pm_include_version_control($project['full_project_path'])) {
-    return FALSE;
-  }
-  if (!$version_control->pre_update($project)) {
-    return FALSE;
-  }
+function pm_update_project($project, $version_control) {
   // Add the project to a context so we can roll back if needed.
   $updated = drush_get_context('DRUSH_PM_UPDATED');
   $updated[] = $project;
@@ -274,7 +291,7 @@ function pm_update_project($project) {
     return drush_set_error('DRUSH_PM_UPDATING_FAILED', dt('Updating project !project failed. Attempting to roll back to previously installed version.', array('!project' => $project['name'])));
   }
   
-  return $version_control;
+  return TRUE;
 }
 
 /**
@@ -296,13 +313,14 @@ function drush_pm_updatecode_rollback() {
       return FALSE;
     }
     $version_control->rollback($project);
-    
-    // Post rollback, we will do additional repair if the project is drupal core.
-    if ($project['name'] == 'drupal') {
-      $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-      _pm_update_move_files($project['full_project_path'], $drupal_root, $project['skip_list']);
-      drush_delete_dir($project['full_project_path']);
-    }
+  }
+
+  // Post rollback, we will do additional repair if the project is drupal core.
+  $drupal_core = drush_get_context('DRUSH_PM_DRUPAL_CORE');
+  if (isset($drupal_core)) {
+    $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+    _pm_update_move_files($drupal_core['full_project_path'], $drupal_root, $drupal_core['skip_list']);
+    drush_delete_dir($drupal_core['full_project_path']);
   }
 }
 

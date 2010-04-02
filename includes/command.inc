@@ -697,13 +697,13 @@ function drush_command_hook($commandfile, $hook) {
  *   "path", "basename", and "name" members corresponding to the
  *   matching files.
  */
-function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $callback = 0, $recurse = TRUE, $key = 'filename', $min_depth = 0, $depth = 0) {
+function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $callback = 0, $recurse = TRUE, $key = 'filename', $min_depth = 0, $depth = 0, $include_dot_files = FALSE) {
   $key = (in_array($key, array('filename', 'basename', 'name')) ? $key : 'filename');
   $files = array();
 
   if (is_dir($dir) && $handle = opendir($dir)) {
     while (FALSE !== ($file = readdir($handle))) {
-      if (!in_array($file, $nomask) && $file[0] != '.') {
+      if (!in_array($file, $nomask) && (($include_dot_files && (!preg_match("/\.\+/",$file))) || ($file[0] != '.'))) {
         if (is_dir("$dir/$file") && $recurse) {
           // Give priority to files in this folder by merging them in after any subdirectory files.
           $files = array_merge(drush_scan_directory("$dir/$file", $mask, $nomask, $callback, $recurse, $key, $min_depth, $depth + 1), $files);
