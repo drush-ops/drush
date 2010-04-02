@@ -59,7 +59,7 @@ function _drush_core_search_index() {
     else {
       $eval .= " module_invoke_all('update_index');";
     }
-    drush_backend_invoke('eval', array($eval));
+    drush_backend_invoke('php-eval', array($eval));
     list($remaining, ) = _drush_core_search_status();
   }
 }
