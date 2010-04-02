@@ -11,7 +11,7 @@
  * @param $project The project array with name, base and full (final) paths.
  * @param $release The release details array from drupal.org
  */
-function package_handler_install_project($project, $release) {
+function package_handler_install_project(&$project, $release) {
   drush_log('Downloading project ' . $project['name'] . ' ...');
 
   // Get the filename...
@@ -55,12 +55,28 @@ function package_handler_install_project($project, $release) {
   drush_shell_exec("tar -xf $tarpath");
   // We're not using tar -xzf because that's not working on windows...
 
-  // If specified, rename the dodgy directory used by the drupal project' packaging script.
-  if ($project['name'] == 'drupal' && $rename = drush_get_option('drupal-project-rename')) {
+  // Handle the dodgy directory used by the drupal project' packaging script.
+  if ($project['name'] == 'drupal') {
+    // The dodgy directory name is always the first line of output.
     drush_shell_exec("tar -tf $tarpath");
     $output = drush_shell_exec_output();
-    // The dodgy directory name is always the first line of output.
-    drush_op('rename', $project['base_project_path'] . $output[0], $project['base_project_path'] .'/' . trim($rename, '/'));
+    $project_destination_name = $output[0];
+
+    if ($rename = drush_get_option($project['name'] . '-project-rename')) {
+      // If someone specifies --drupal-project-rename, but does not
+      // provide a name, then default to 'drupal'.
+      if ($rename === TRUE) {
+        $rename = $project['name'];
+      }
+      $rename = trim($rename, '/');
+      $renamed_destination = $project['base_project_path'] . (substr($project['base_project_path'], -1) != '/' ? '/' : '') . $rename;
+
+      $rename_result = drush_op('rename', $project['base_project_path'] . $project_destination_name, $renamed_destination);
+      if ($rename_result) {
+        $project_destination_name = $rename;
+      }
+    }
+    $project['full_project_path'] = $project['base_project_path'] . (substr($project['base_project_path'], -1) != '/' ? '/' : '') . $project_destination_name;
   }
 
   // Remove the tarball
@@ -82,6 +98,6 @@ function package_handler_install_project($project, $release) {
 /**
  * This is an alias of the install function, since they are identical
  */
-function package_handler_update_project($project, $release) {
+function package_handler_update_project(&$project, $release) {
   return package_handler_install_project($project, $release);
 }
