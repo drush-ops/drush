@@ -113,8 +113,8 @@ function core_drush_command() {
       '--include-paths' => 'Coma-separated list of paths to include.',
     ),
     'examples' => array(
-      'rsync @dev @stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
-      'rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
+      'drush rsync @dev @stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
+      'drush rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
     ),
     'deprecated-aliases' => array('sync'),
   );
@@ -146,9 +146,9 @@ function core_drush_command() {
       'sites-subdir' => "Name of directory under 'sites' which should be created if needed. Defaults to 'default'",
     ),
     'examples' => array(
-      'site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukranian.',
-      'site-install --db-url=mysql://root:pass@localhost:port/dbname ' => 'Install using the specified DB params.',
-      'site-install --account-user=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
+      'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukranian.',
+      'drush site-install --db-url=mysql://root:pass@localhost:port/dbname ' => 'Install using the specified DB params.',
+      'drush site-install --account-user=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
     ),
     'core' => array(7),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
