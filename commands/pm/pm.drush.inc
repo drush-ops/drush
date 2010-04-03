@@ -324,14 +324,14 @@ function drush_pm_list() {
 }
 
 /**
- * Command callback. Enables one or more modules.
+ * Command callback. Enable one or more projects.
  */
 function drush_pm_enable() {
   $args = func_get_args();
 
   $project_info = drush_get_projects();
 
-  // classify $args in themes, modules or unknown
+  // Classify $args in themes, modules or unknown.
   $modules = array();
   $themes = array();
   drush_pm_classify_projects($args, $modules, $themes, $project_info);
@@ -376,7 +376,7 @@ function drush_pm_enable() {
     // Discard modules which don't meet requirements.
     require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
     foreach ($modules as $key => $module) {
-      // Check to see if the module can be installed/enabled (hook_requirements)
+      // Check to see if the module can be installed/enabled (hook_requirements).
       // See @system_modules_submit
       if (!drupal_check_module($module)) {
         unset($modules[$key]);
@@ -411,22 +411,20 @@ function drush_pm_enable() {
     drush_system_modules_form_submit($active_modules);
   }
 
-  // Refresh project's info.
-  $project_info = drush_get_projects();
-
   // Inform the user of final status.
-  foreach ($projects as $project) {
-    if ($project_info[$project]->status) {
-      drush_log(dt('!project was enabled successfully.', array('!project' => $project)), 'ok');
+  $rsc = drush_db_select('system', array('name', 'status'), 'name IN (:projects)', array(':projects' => $projects));
+  while ($project = drush_db_fetch_object($rsc)) {
+    if ($project->status) {
+      drush_log(dt('!project was enabled successfully.', array('!project' => $project->name)), 'ok');
     }
     else {
-      drush_set_error('DRUSH_PM_ENABLE_PROJECT_ISSUE', dt('There was a problem enabling !project.', array('!project' => $project)));
+      drush_set_error('DRUSH_PM_ENABLE_PROJECT_ISSUE', dt('There was a problem enabling !project.', array('!project' => $project->name)));
     }
   }
 }
 
 /**
- * Command callback. Disable one or more modules.
+ * Command callback. Disable one or more projects.
  */
 function drush_pm_disable() {
   $args = func_get_args();
@@ -501,16 +499,14 @@ function drush_pm_disable() {
     drush_system_modules_form_submit($active_modules);
   }
 
-  // Refresh project's info.
-  $project_info = drush_get_projects();
-
   // Inform the user of final status.
-  foreach ($projects as $project) {
-    if (!$project_info[$project]->status) {
-      drush_log(dt('!project was disabled successfully.', array('!project' => $project)), 'ok');
+  $rsc = drush_db_select('system', array('name', 'status'), 'name IN (:projects)', array(':projects' => $projects));
+  while ($project = drush_db_fetch_object($rsc)) {
+    if (!$project->status) {
+      drush_log(dt('!project was disabled successfully.', array('!project' => $project->name)), 'ok');
     }
     else {
-      drush_set_error('DRUSH_PM_DISABLE_PROJECT_ISSUE', dt('There was a problem disabling !project.', array('!project' => $project)));
+      drush_set_error('DRUSH_PM_DISABLE_PROJECT_ISSUE', dt('There was a problem disabling !project.', array('!project' => $project->name)));
     }
   }
 }
@@ -654,7 +650,7 @@ function _drush_pm_info_module($info) {
 }
 
 /**
- * Return a string with info of a module.
+ * Return a string with info of a theme.
  */
 function _drush_pm_info_theme($info) {
   $major_version = drush_drupal_major_version();

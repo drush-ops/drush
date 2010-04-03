@@ -257,18 +257,21 @@ function drush_drupal_major_version() {
  */
 function _drush_replace_query_placeholders($where, $args) {
   foreach ($args as $key => $data) {
-    if (!is_numeric($data)) {
-      $args[$key] = "'".$data."'";
-    }
-    else if (is_array($data)) {
+    if (is_array($data)) {
       $new_keys = array();
       foreach ($data as $i => $value) {
+        if (!is_numeric($value)) {
+          $value = "'".$value."'";
+        }
         $new_keys[$key . '_' . $i] = $value;
       }
-      $where = preg_replace('#' . $key . '\b#', implode(', ', array_keys($new_keys)), $query);
+      $where = preg_replace('#' . $key . '\b#', implode(', ', array_keys($new_keys)), $where);
       unset($args[$key]);
       $args += $new_keys;
     }
+    else if (!is_numeric($data)) {
+      $args[$key] = "'".$data."'";
+    } 
   }
 
   foreach ($args as $key => $data) {
@@ -325,7 +328,7 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
   }
   else {
     if (is_array($fields)) {
-      $fields = implode('","', $fields);
+      $fields = implode(', ', $fields);
     }
     $query = "SELECT $fields FROM {{$table}}";
     if (!empty($where)) {
