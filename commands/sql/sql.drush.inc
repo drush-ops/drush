@@ -414,30 +414,6 @@ function _drush_sql_get_db_spec() {
   }
 }
 
-// Build a $db_spec from a given settings.php.
-function _drush_sql_get_spec_from_settings($file, $prefix) {
-  // Reset global databases to whatever is defined in $file
-  global $databases, $db_url;
-  require $file;
-
-  // Translate the custom options for sql-sync into ones usually recognized (i.e. no prefix).
-  if ($database = drush_get_option($prefix . 'database')) {
-    drush_set_option('database', $database);
-  }
-  if ($target = drush_get_option($prefix . 'target')) {
-    drush_set_option('target', $target);
-  }
-  // Backwards-compatible for sql load:  accept 'source_database' in addition to the more standard 'source-database'
-  if ($database = drush_get_option(str_replace('-', '_', $prefix . 'database'))) {
-    drush_set_option('database', $value);
-  }
-  if ($target = drush_get_option(str_replace('-', '_', $prefix . 'target'))) {
-    drush_set_option('target', $target);
-  }
-
-  return _drush_sql_get_db_spec();
-}
-
 function _drush_sql_get_spec_from_options($prefix, $default_to_self = TRUE) {
   $db_spec = NULL;
   $databases = drush_get_option($prefix . 'databases');
