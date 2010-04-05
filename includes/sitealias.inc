@@ -110,9 +110,9 @@ function drush_sitealias_get_record($alias) {
  * This is a continuation of drush_sitealias_get_record, above.  It is
  * not intended to be called directly.
  */
-function _drush_sitealias_get_record($alias) {
+function _drush_sitealias_get_record($alias, $alias_context = NULL) {
   // Before we do anything else, load $alias if it needs to be loaded
-  _drush_sitealias_load_alias($alias);
+  _drush_sitealias_load_alias($alias, $alias_context);
 
   // Check to see if the provided parameter is in fact a defined alias.
   $all_site_aliases =& drush_get_context('site-aliases');
@@ -134,35 +134,32 @@ function _drush_sitealias_get_record($alias) {
         else {
           $parsed = parse_url($alias);
         }
-        // Special checking:  /path/to/root#all means all of the
-        // sites at the given drupal root.  Convert to a 'site-search-path'
-        // record, which will be converted to a 'site-list' later.
-        if (array_key_exists('fragment', $parsed) && /*!array_key_exists('host', $parsed) &&*/ ($parsed['fragment'] == 'all')) {
-          $alias_record['site-search-path'] = $parsed['path'];
+        // Copy various parts of the parsed URL into the appropriate records of the alias record
+        foreach (array('user' => 'remote-user', 'pass' => 'remote-pass', 'host' => 'remote-host', 'fragment' => 'uri', 'path' => 'root') as $url_key => $option_key) {
+          if (array_key_exists($url_key, $parsed)) {
+            _drush_sitealias_set_record_element($alias_record, $option_key, $parsed[$url_key]);
+          }
         }
-        else {
-          // Copy various parts of the parsed URL into the appropriate records of the alias record
-          foreach (array('user' => 'remote-user', 'pass' => 'remote-pass', 'host' => 'remote-host', 'fragment' => 'uri', 'path' => 'root') as $url_key => $option_key) {
-            if (array_key_exists($url_key, $parsed)) {
-              _drush_sitealias_set_record_element($alias_record, $option_key, $parsed[$url_key]);
-            }
+        // If the site specification has a query, also set the query items
+        // in the alias record.  This allows passing db_url as part of the
+        // site specification, for example.
+        if (array_key_exists('query', $parsed)) {
+          foreach (explode('&', $parsed['query']) as $query_arg) {
+            $query_components = explode('=', $query_arg);
+            _drush_sitealias_set_record_element($alias_record, urldecode($query_components[0]), urldecode($query_components[1]));
           }
-          // If the site specification has a query, also set the query items
-          // in the alias record.  This allows passing db_url as part of the
-          // site specification, for example.
-          if (array_key_exists('query', $parsed)) {
-            foreach (explode('&', $parsed['query']) as $query_arg) {
-              $query_components = explode('=', $query_arg);
-              _drush_sitealias_set_record_element($alias_record, urldecode($query_components[0]), urldecode($query_components[1]));
-            }
-          }
+        }
 
-          // Case 3.): If the URL contains a 'host' portion but no fragment, then set the uri to the host
-          // Note: We presume that 'server' is the best default for case 3; without this code, the default would
-          // be whatever is set in $options['l'] on the target machine's drushrc.php settings file.
-          if (array_key_exists('host', $parsed) && !array_key_exists('fragment', $parsed)) {
-            $alias_record['uri'] = $parsed['host'];
-          }
+        // Case 3.): If the URL contains a 'host' portion but no fragment, then set the uri to the host
+        // Note: We presume that 'server' is the best default for case 3; without this code, the default would
+        // be whatever is set in $options['l'] on the target machine's drushrc.php settings file.
+        if (array_key_exists('host', $parsed) && !array_key_exists('fragment', $parsed)) {
+          $alias_record['uri'] = $parsed['host'];
+        }
+        
+        // Sanity checking:  clear invalid records
+        if (strpos($alias_record['root'], '@') !== FALSE) {
+          $alias_record = array();
         }
       }
       else {
@@ -299,7 +296,7 @@ function drush_sitealias_local_site_path($alias_record) {
  *   the primary alias that we will start our search from.
  */
 function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
-  $all_site_aliases =& drush_get_context('site-aliases');
+  $all_site_aliases = drush_get_context('site-aliases');
   $result = array();
 
   // Check to see if this is a relative alias ('@site/@peer')
@@ -308,13 +305,18 @@ function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
     $primary_alias = substr($alias,0,$relative_alias_pos);
     $relative_alias = substr($alias,$relative_alias_pos + 1);
     $primary_record = drush_sitealias_get_record($primary_alias);
-    unset($all_site_aliases[$relative_alias]);
-    $result = _drush_sitealias_load_alias($relative_alias, $primary_record);
-    if (array_key_exists('inherited', $result)) {
-      $result = array_merge($primary_record, $result);
+    if (array_key_exists('root', $primary_record) && !array_key_exists('remote-host', $primary_record)) {
+      drush_sitealias_create_sites_alias($primary_record['root']);
     }
-    $result['name'] = $relative_alias;
-    $all_site_aliases[$alias] = $result;
+    _drush_sitealias_find_and_load_alias($relative_alias, $primary_record);
+    $result = drush_sitealias_get_record($relative_alias);
+    if (!empty($result)) {
+      if (array_key_exists('inherited', $result)) {
+        $result = array_merge($primary_record, $result);
+      }
+      $result['name'] = $relative_alias;
+      _drush_sitealias_cache_alias(substr($alias, 1), $result);
+    }
   }
   else {
     // Only aliases--those named entities that begin with '@'--can be loaded this way.
@@ -322,7 +324,7 @@ function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
     if ((substr($alias,0,1) == '@') && !array_key_exists($alias,$all_site_aliases)) {
       drush_log(dt('Load alias !alias', array('!alias' => $alias)));
       $aliasname = substr($alias,1);
-      $result = _drush_sitealias_find_and_load_alias($aliasname);
+      $result = _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context);
       if (!empty($result)) {
         $alias_options = array('site-aliases' => array($aliasname => $result));
         _drush_sitealias_add_inherited_values($alias_options['site-aliases']);
@@ -475,8 +477,8 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
  *   The name of the alias, without the leading "@"
  */
 function _drush_sitealias_cache_alias($alias_name, $alias_record) {
-  $alias_options['site-aliases']["@$alias_name"] = $alias_record;
-  drush_set_config_special_contexts($alias_options);
+  $cache =& drush_get_context('site-aliases');
+  $cache["@$alias_name"] = $alias_record;
 }
 
 /**
@@ -921,6 +923,11 @@ function _drush_find_local_sites_at_root($a_drupal_root = '') {
     }
   }
   return $site_list;
+}
+
+function drush_sitealias_create_sites_alias($a_drupal_root = '') {
+  $sites_list = _drush_find_local_sites_at_root($a_drupal_root);
+  _drush_sitealias_cache_alias('sites', array('site-list' => $sites_list));
 }
 
 /**

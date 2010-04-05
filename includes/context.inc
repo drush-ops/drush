@@ -204,10 +204,10 @@ function drush_set_config_special_contexts(&$options) {
       $user_aliases = $options['site-aliases'];
       $options['site-aliases'] = array();
       foreach ($user_aliases as $alias_name => $alias_value) {
-	if (substr($alias_name,0,1) != '@') {
+        if (substr($alias_name,0,1) != '@') {
           $alias_name = "@$alias_name";
-	}
-	$options['site-aliases'][$alias_name] = $alias_value;
+        }
+        $options['site-aliases'][$alias_name] = $alias_value;
       }
     }
     

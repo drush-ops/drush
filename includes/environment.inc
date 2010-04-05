@@ -530,6 +530,9 @@ function _drush_bootstrap_drupal_root() {
   $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
   $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
 
+  // Create an alias '@sites'
+  drush_sitealias_create_sites_alias($drupal_root);
+  
   drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
 }
 
