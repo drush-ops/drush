@@ -198,6 +198,7 @@ function drush_set_config_options($context, $options, $override = array()) {
  */
 function drush_set_config_special_contexts(&$options) {  
   if (isset($options)) {
+    $has_command_specific = array_key_exists('command-specific', $options);
     // Change the keys of the site aliases from 'alias' to '@alias'
     if (array_key_exists('site-aliases', $options)) {
       $user_aliases = $options['site-aliases'];
@@ -218,6 +219,11 @@ function drush_set_config_special_contexts(&$options) {
         $cache = array_merge($cache, $options[$option_name]);
         unset($options[$option_name]);
       }
+    }
+    // If command-specific options were set and if we already have
+    // a command, then apply the command-specific options immediately.
+    if ($has_command_specific) {
+      drush_command_default_options();
     }
   }
 }

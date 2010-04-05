@@ -607,31 +607,36 @@ function drush_command_include($command) {
 /**
  * Conditionally include default options based on the command used.
  */
-function drush_command_default_options($command) {
-  // Look for command-specific options for this command
-  // keyed both on the command's primary name, and on each
-  // of its aliases.
-  $options_were_set = _drush_command_set_default_options($command['command']);
-  if (isset($command['aliases']) && count($command['aliases'])) {
-    foreach ($command['aliases'] as $alias) {
-      if (_drush_command_set_default_options($alias) === TRUE) {
+function drush_command_default_options($command = NULL) {
+  if (!$command) {
+    $command = drush_get_command();
+  }
+  if ($command) {
+    // Look for command-specific options for this command
+    // keyed both on the command's primary name, and on each
+    // of its aliases.
+    $options_were_set = _drush_command_set_default_options($command['command']);
+    if (isset($command['aliases']) && count($command['aliases'])) {
+      foreach ($command['aliases'] as $alias) {
+        if (_drush_command_set_default_options($alias) === TRUE) {
+          $options_were_set = TRUE;
+        }
+      }
+    }
+    // Take the time here to clear out any options that may
+    // have "--no-xxx" overrides on the command line.
+    $commandline_options = drush_get_context('options');
+    foreach ($commandline_options as $key => $value) {
+      if (substr($key, 0, strlen("no-") ) == "no-") {
+        drush_unset_option(substr($key, strlen("no-")));
         $options_were_set = TRUE;
       }
     }
-  }
-  // Take the time here to clear out any options that may
-  // have "--no-xxx" overrides on the command line.
-  $commandline_options = drush_get_context('options');
-  foreach ($commandline_options as $key => $value) {
-    if (substr($key, 0, strlen("no-") ) == "no-") {
-      drush_unset_option(substr($key, strlen("no-")));
-      $options_were_set = TRUE;
+    // If we set or cleared any options, go back and re-bootstrap any global
+    // options such as -y and -v.
+    if ($options_were_set) {
+      _drush_bootstrap_global_options();
     }
-  }
-  // If we set or cleared any options, go back and re-bootstrap any global
-  // options such as -y and -v.
-  if ($options_were_set) {
-    _drush_bootstrap_global_options();
   }
 }
 
