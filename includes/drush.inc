@@ -573,6 +573,7 @@ function drush_get_option_help() {
   $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
   $options['-p, --pipe']               = dt("Emit a compact representation of the command for scripting.");
   $options['--nocolor']                = dt("Suppress color highlighting on log messages.");
+  $options['--show-passwords']         = dt("Show database passwords in commands that display connection information.");
   $options['-h, --help']               = dt("This help system.");
   $options['--php']                    = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
   return $options;
@@ -1688,4 +1689,17 @@ function drush_memory_limit() {
   }
 
   return $value;
+}
+
+/**
+ * Unset the named key anywhere in the provided
+ * data structure.
+ */
+function drush_unset_recursive(&$data, $unset_key) {
+  unset($data[$unset_key]);
+  foreach ($data as $key => $value) {
+    if (is_array($value)) {
+      drush_unset_recursive($data[$key], $unset_key);
+    }
+  }
 }

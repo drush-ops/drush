@@ -355,7 +355,9 @@ function _core_site_status_table() {
         $status_table['Database Hostname'] = $creds['host'];
         $status_table['Database Username'] = $creds['user'];
         $status_table['Database Name'] = $creds['name'];
-        $status_table['Database Password'] = $creds['pass'];
+        if (drush_get_option('show-passwords', FALSE)) {
+          $status_table['Database Password'] = $creds['pass'];
+        }
         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
           $status_table['Database'] = dt('Connected');
           if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {

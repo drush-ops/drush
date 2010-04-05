@@ -209,6 +209,10 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
     $alias_name = substr($alias_name,1);
   }
 
+  if (!drush_get_option('show-passwords', FALSE)) {
+    drush_unset_recursive($alias_record, 'password');
+  }
+
   $exported_alias = var_export($alias_record, TRUE);
   drush_print('$aliases[\'' . $alias_name . '\'] = ' . $exported_alias . ';');
 }

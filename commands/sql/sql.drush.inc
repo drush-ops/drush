@@ -150,6 +150,9 @@ function drush_sql_conf() {
     $db_spec = _drush_sql_get_db_spec();
   }
   drush_backend_set_result($db_spec);
+  if (!drush_get_option('show-passwords', FALSE)) {
+    drush_unset_recursive($db_spec, 'password');
+  }
   drush_print_r($db_spec);
 }
 
