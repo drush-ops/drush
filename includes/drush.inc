@@ -90,13 +90,13 @@ function drush_include($path, $name, $version = NULL, $extension = 'inc') {
   $version = ($version) ? $version : drush_drupal_major_version();
   $file = sprintf("%s/%s_%s.%s", $path, $name, $version, $extension);
   if (file_exists($file)) {
-    drush_log(dt('Including version specific file : @file', array('@file' => $file)));
+    // drush_log(dt('Including version specific file : @file', array('@file' => $file)));
     include_once($file);
     return TRUE;
   }
   $file = sprintf("%s/%s.%s", $path, $name, $extension);
   if (file_exists($file)) {
-    drush_log(dt('Including non-version specific file : @file', array('@file' => $file)));
+    // drush_log(dt('Including non-version specific file : @file', array('@file' => $file)));
     include_once($file);
     return TRUE;
   }
@@ -271,7 +271,7 @@ function _drush_replace_query_placeholders($where, $args) {
     }
     else if (!is_numeric($data)) {
       $args[$key] = "'".$data."'";
-    } 
+    }
   }
 
   foreach ($args as $key => $data) {
