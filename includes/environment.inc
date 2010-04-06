@@ -572,7 +572,12 @@ function _drush_bootstrap_drupal_site_validate() {
       'host' => NULL,
     );
     $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
-    $_SERVER['PHP_SELF'] = $drupal_base_url['path'] . '/index.php';
+    if (array_key_exists('path', $drupal_base_url)) {
+      $_SERVER['PHP_SELF'] = $drupal_base_url['path'] . '/index.php';
+    }
+    else {
+      $_SERVER['PHP_SELF'] = '/index.php';
+    }
   }
   else {
     $_SERVER['HTTP_HOST'] = 'default';
