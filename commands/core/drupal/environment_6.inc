@@ -148,21 +148,39 @@ function drush_get_themes() {
 /**
  * Enable a list of themes.
  *
+ * This function is based on system_themes_form_submit().
+ *
+ * @see system_themes_form_submit()
  * @param $themes
  *  Array of theme names.
  */
 function drush_theme_enable($themes) {
+  drupal_clear_css_cache();
+  foreach ($themes as $theme) {
+    system_initialize_theme_blocks($theme);
+  }
   db_query("UPDATE {system} SET status = 1 WHERE type = 'theme' AND name IN (".db_placeholders($themes, 'text').")", $themes);
+  list_themes(TRUE);
+  menu_rebuild();
+  module_invoke('locale', 'system_update', $themes);
 }
 
 /**
  * Disable a list of themes.
  *
+ * This function is based on system_themes_form_submit().
+ *
+ * @see system_themes_form_submit()
  * @param $themes
  *  Array of theme names.
  */
 function drush_theme_disable($themes) {
+  drupal_clear_css_cache();
   db_query("UPDATE {system} SET status = 0 WHERE type = 'theme' AND name IN (".db_placeholders($themes, 'text').")", $themes);
+  list_themes(TRUE);
+  menu_rebuild();
+  drupal_rebuild_theme_registry();
+  module_invoke('locale', 'system_update', $themes);
 }
 
 /**

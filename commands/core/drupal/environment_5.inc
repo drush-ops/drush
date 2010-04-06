@@ -165,23 +165,34 @@ function drush_get_themes() {
 /**
  * Enable a list of themes.
  *
+ * This function is based on system_themes_submit().
+ *
+ * @see system_themes_submit()
  * @param $themes
  *  Array of theme names.
  */
 function drush_theme_enable($themes) {
+  foreach ($themes as $theme) {
+    system_initialize_theme_blocks($theme);
+  }
   $placeholder = implode(',', array_fill(0, count($themes), "'%s'"));
   db_query("UPDATE {system} SET status = 1 WHERE type = 'theme' AND name IN (".$placeholder.")", $themes);
+  menu_rebuild();
 }
 
 /**
  * Disable a list of themes.
  *
+ * This function is based on system_themes_submit().
+ *
+ * @see system_themes_submit()
  * @param $themes
  *  Array of theme names.
  */
 function drush_theme_disable($themes) {
   $placeholder = implode(',', array_fill(0, count($themes), "'%s'"));
   db_query("UPDATE {system} SET status = 0 WHERE type = 'theme' AND name IN (".$placeholder.")", $themes);
+  menu_rebuild();
 }
 
 /**
