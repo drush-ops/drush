@@ -172,7 +172,7 @@ function _pm_update_core(&$project, $module_list = array()) {
   }
   
   // Make a list of every item at the root of core except 'sites'
-  $items_to_test = drush_scan_directory($project['full_project_path'], '/.*/', array('.', '..', 'sites', '.svn'), 0, FALSE, 'basename', 0, 0, TRUE);
+  $items_to_test = drush_scan_directory($project['full_project_path'], '/.*/', array('.', '..', 'sites', '.svn'), 0, FALSE, 'basename', 0, TRUE);
 
   $project['base_project_path'] = dirname($project['full_project_path']);
   // Check we have a version control system, and it clears its pre-flight.
@@ -207,7 +207,7 @@ function _pm_update_core(&$project, $module_list = array()) {
  * Move some files from one location to another
  */
 function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflicts = TRUE) {
-  $items_to_move = drush_scan_directory($src_dir, '/.*/', array_merge(array('.', '..'), $skip_list), 0, FALSE, 'filename', 0, 0, TRUE);
+  $items_to_move = drush_scan_directory($src_dir, '/.*/', array_merge(array('.', '..'), $skip_list), 0, FALSE, 'filename', 0, TRUE);
   foreach ($items_to_move as $filename => $info) {
     if ($remove_conflicts) {
       drush_delete_dir($dest_dir . '/' . basename($filename));

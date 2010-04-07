@@ -684,9 +684,13 @@ function drush_command_hook($commandfile, $hook) {
  *   An array of files/directories to ignore.
  * @param $callback
  *   The callback function to call for each match.
- * @param $recurse
+ * @param $recurse_max_depth
  *   When TRUE, the directory scan will recurse the entire tree
- *   starting at the provided directory.
+ *   starting at the provided directory.  When FALSE, only files
+ *   in the provided directory are returned.  Integer values
+ *   limit the depth of the traversal, with zero being treated
+ *   identically to FALSE, and 1 limiting the traversal to the
+ *   provided directory and its immediate children only, and so on.
  * @param $key
  *   The key to be used for the returned array of files. Possible
  *   values are "filename", for the path starting with $dir,
@@ -694,6 +698,10 @@ function drush_command_hook($commandfile, $hook) {
  *   of the file without an extension.
  * @param $min_depth
  *   Minimum depth of directories to return files from.
+ * @param $include_dot_files
+ *   If TRUE, files that begin with a '.' will be returned if they
+ *   match the provided mask.  If FALSE, files that begin with a '.'
+ *   will not be returned, even if they match the provided mask.
  * @param $depth
  *   Current depth of recursion. This parameter is only used internally and should not be passed.
  *
@@ -702,16 +710,16 @@ function drush_command_hook($commandfile, $hook) {
  *   "path", "basename", and "name" members corresponding to the
  *   matching files.
  */
-function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $callback = 0, $recurse = TRUE, $key = 'filename', $min_depth = 0, $depth = 0, $include_dot_files = FALSE) {
+function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $callback = 0, $recurse_max_depth = TRUE, $key = 'filename', $min_depth = 0, $include_dot_files = FALSE, $depth = 0) {
   $key = (in_array($key, array('filename', 'basename', 'name')) ? $key : 'filename');
   $files = array();
 
   if (is_dir($dir) && $handle = opendir($dir)) {
     while (FALSE !== ($file = readdir($handle))) {
       if (!in_array($file, $nomask) && (($include_dot_files && (!preg_match("/\.\+/",$file))) || ($file[0] != '.'))) {
-        if (is_dir("$dir/$file") && $recurse) {
+        if (is_dir("$dir/$file") && (($recurse_max_depth === TRUE) || ($depth < $recurse_max_depth))) {
           // Give priority to files in this folder by merging them in after any subdirectory files.
-          $files = array_merge(drush_scan_directory("$dir/$file", $mask, $nomask, $callback, $recurse, $key, $min_depth, $depth + 1), $files);
+          $files = array_merge(drush_scan_directory("$dir/$file", $mask, $nomask, $callback, $recurse_max_depth, $key, $min_depth, $include_dot_files, $depth + 1), $files);
         }
         elseif ($depth >= $min_depth && preg_match($mask, $file)) {
           // Always use this match over anything already set in $files with the same $$key.

@@ -889,18 +889,39 @@ function _drush_sitealias_find_local_sites($search_path) {
 /**
  * Return a list of all of the local sites at the specified drupal root.
  */
-function _drush_find_local_sites_at_root($a_drupal_root = '') {
+function _drush_find_local_sites_at_root($a_drupal_root = '', $search_depth = 1) {
   $site_list = array();
   $base_path = (empty($a_drupal_root) ? drush_get_context('DRUSH_DRUPAL_ROOT') : $a_drupal_root );
   if (drush_valid_drupal_root($base_path)) {
-    $base_path .= '/sites';
+    // If $a_drupal_root is in fact a valid drupal root, then return
+    // all of the sites found inside the 'sites' folder of this drupal instance.
+    $site_list = _drush_find_local_sites_in_sites_folder($base_path . '/sites');
   }
+  else {
+    $bootstrap_files = drush_scan_directory($base_path, '/' . basename(DRUSH_DRUPAL_BOOTSTRAP) . '/' , array('.', '..', 'CVS'), 0, drush_get_option('search-depth', $search_depth) + 1, 'filename', 1);
+    foreach ($bootstrap_files as $one_bootstrap => $info) {
+      $includes_dir = dirname($one_bootstrap);
+      if (basename($includes_dir) == basename(dirname(DRUSH_DRUPAL_BOOTSTRAP))) {
+        $drupal_root = dirname($includes_dir);
+        $site_list = array_merge(_drush_find_local_sites_in_sites_folder($drupal_root . '/sites'), $site_list);
+      }
+    }
+  }
+  
+  return $site_list;
+}
+
+/**
+ * Return a list of all of the local sites at the specified 'sites' folder.
+ */
+function _drush_find_local_sites_in_sites_folder($base_path) {
+  $site_list = array();
 
   // TODO:  build a cache keyed off of $base_path (realpath($base_path)?),
   // so that it is guarenteed that the lists returned will definitely be
   // exactly the same should this routine be called twice with the same path.
 
-  $files = drush_scan_directory($base_path, '/settings\.php/', array('.', '..', 'CVS', 'all'));
+  $files = drush_scan_directory($base_path, '/settings\.php/', array('.', '..', 'CVS', 'all'), 0, 1, 'filename', 1);
   foreach ($files as $filename => $info) {
     if ($info->basename == 'settings.php') {
       // First we'll resolve the realpath of the settings.php file,
