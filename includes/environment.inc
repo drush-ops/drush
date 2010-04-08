@@ -413,8 +413,11 @@ function _drush_bootstrap_drush() {
   // Load a drushrc.php file in the $ETC_PREFIX/etc/drush directory.
   drush_load_config('system');
 
-  // Load a drushrc.php file in the ~/.drush directory.
+  // Load a drushrc.php file at ~/.drushrc.php
   drush_load_config('user');
+
+  // Load a drushrc.php file in the ~/.drush directory.
+  drush_load_config('home.drush');
 
   // Load a custom config specified with the --config option.
   drush_load_config('custom');
@@ -532,7 +535,7 @@ function _drush_bootstrap_drupal_root() {
 
   // Create an alias '@sites'
   drush_sitealias_create_sites_alias($drupal_root);
-  
+
   drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
 }
 
@@ -610,10 +613,10 @@ function _drush_bootstrap_do_drupal_site() {
   $drush_uri = drush_set_context('DRUSH_URI', drush_bootstrap_value('drush_uri'));
   $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
   $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
-  
+
   // Create an alias '@self'
   _drush_sitealias_cache_alias('self', array('root' => drush_get_context('DRUSH_DRUPAL_ROOT'), 'uri' => $drush_uri));
-  
+
   // Find any command files that are available during this bootstrap phase.
   _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
