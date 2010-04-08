@@ -259,7 +259,10 @@ function _drush_replace_query_placeholders($where, $args) {
   foreach ($args as $key => $data) {
     if (is_array($data)) {
       $new_keys = array();
-      foreach ($data as $i => $value) {
+      // $data can't have keys that are a prefix of other keys to
+      // prevent a corrupted result in the below calls to str_replace().
+      // To avoid this we will use an indexed array of the values of $data.
+      foreach (array_values($data) as $i => $value) {
         if (!is_numeric($value)) {
           $value = "'".$value."'";
         }
