@@ -300,7 +300,7 @@ function _drush_core_evaluate_path($path, &$additional_options) {
   // machine is local, then try to look
   // up an alias record for the default drush site.
   if (empty($site_alias_settings) && empty($machine)) {
-    $drush_uri = drush_bootstrap_value('drush_uri', _drush_rsync_get_option($additional_options, array('l', 'uri'), 'default'));
+    $drush_uri = drush_bootstrap_value('drush_uri', drush_get_option(array('l', 'uri'), 'default'));
     $site_alias_settings = drush_sitealias_get_record($drush_uri);
   }
 
