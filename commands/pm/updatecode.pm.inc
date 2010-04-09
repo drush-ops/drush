@@ -92,8 +92,8 @@ function drush_pm_updatecode() {
     $drupal_project = $updateable['drupal'];
     unset($projects['drupal']);
     unset($updateable['drupal']);
-    $module_list = array_keys($projects);      
-    
+    $module_list = array_keys($projects);
+
     // We can only upgrade drupal core if there are no non-core
     // modules enabled.  _pm_update_core will disable the
     // modules passed in, and insure that they are enabled again
@@ -140,29 +140,29 @@ function drush_pm_updatecode() {
 function _pm_update_core(&$project, $module_list = array()) {
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  
+
   drush_print(dt('Code updates will be made to drupal core.'));
   drush_print(dt("WARNING:  Updating core will discard any modifications made to Drupal core files, most noteworthy among these are .htaccess and robots.txt.  If you have made any modifications to these files, please back them up before updating so that you can re-create your modifications in the updated version of the file."));
   drush_print(dt("Note: Updating core can potentially break your site. It is NOT recommended to update production sites without prior testing."));
   if(!drush_confirm(dt('Do you really want to continue?'))) {
     drush_die('Aborting.');
   }
-  
+
   // Create a directory 'core' if it does not already exist
   $project['path'] = 'drupal-' . $project['candidate_version'];
   $project['full_project_path'] = $drupal_root . '/' . $project['path'];
   if (!is_dir($project['full_project_path'])) {
     mkdir($project['full_project_path']);
   }
-  
+
   // Create a list of files and folders that are user-customized or otherwise
   // not part of the update process
   $project['skip_list'] = array('backup', 'sites', $project['path']);
-  
+
   // Move all files and folders in $drupal_root to the new 'core' directory
   // except for the items in the skip list
   _pm_update_move_files($drupal_root, $project['full_project_path'], $project['skip_list']);
-  
+
   // Set a context variable to indicate that rollback should reverse
   // the _pm_update_move_files above.
   drush_set_context('DRUSH_PM_DRUPAL_CORE', $project);
@@ -170,7 +170,7 @@ function _pm_update_core(&$project, $module_list = array()) {
   if (!$version_control = drush_pm_include_version_control($project['full_project_path'])) {
     return FALSE;
   }
-  
+
   // Make a list of every item at the root of core except 'sites'
   $items_to_test = drush_scan_directory($project['full_project_path'], '/.*/', array('.', '..', 'sites', '.svn'), 0, FALSE, 'basename', 0, TRUE);
 
@@ -179,27 +179,27 @@ function _pm_update_core(&$project, $module_list = array()) {
   if (!$version_control->pre_update($project, $items_to_test)) {
     return FALSE;
   }
-  
-  // Update core. 
+
+  // Update core.
   if (pm_update_project($project, $version_control) === FALSE) {
     return FALSE;
   }
-  
+
   // Take the updated files in the 'core' directory that have been updated,
   // and move all except for the items in the skip list back to
   // the drupal root
   _pm_update_move_files($project['full_project_path'], $drupal_root, $project['skip_list']);
   drush_delete_dir($project['full_project_path']);
-  
+
   // If there is a backup target, then find items
   // in the backup target that do not exist at the
   // drupal root.  These are to be moved back.
   if (array_key_exists('backup_target', $project)) {
     _pm_update_move_files($project['backup_target'], $drupal_root, $project['skip_list'], FALSE);
-  }  
-  
+  }
+
   pm_update_complete($project, $version_control);
-  
+
   return TRUE;
 }
 
@@ -290,7 +290,7 @@ function pm_update_project($project, $version_control) {
   if (!package_handler_update_project($project, $project['releases'][$project['candidate_version']])) {
     return drush_set_error('DRUSH_PM_UPDATING_FAILED', dt('Updating project !project failed. Attempting to roll back to previously installed version.', array('!project' => $project['name'])));
   }
-  
+
   return TRUE;
 }
 
@@ -327,7 +327,7 @@ function drush_pm_updatecode_rollback() {
 function pm_project_filter(&$projects, &$rows) {
   $updateable = array();
   foreach ($projects as $key => $project) {
-    if (!$project['title']) {
+    if (empty($project['title'])) {
       continue;
     }
     switch($project['status']) {
