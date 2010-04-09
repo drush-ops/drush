@@ -156,6 +156,22 @@ function core_drush_command() {
     'deprecated-aliases' => array('installsite', 'is'),
   );
 
+  $items['core-directory'] = array(
+    'description' => dt('Return path to a given module/theme directory. See --help for more details.'),
+    'arguments' => array(
+      'target' => 'A module/theme name, or special names like root, files, private. Defaults to root.',
+    ),
+    'examples' => array(
+      'cd `drush cd devel`' => 'Navigate into the devel module directory',
+      'cd `drush cd` ' => 'Navigate to the root of your Drupal site',
+      'cd `drush cd files`' => 'Navigate to the files directory.',
+      'edit `drush cd devel`' => "Open devel directory in your editor (customize 'edit' for your editor)",
+      'cdd devel' => 'Navigate to devel directory. See required function above,',
+    ),
+    'aliases' => array('cd'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
+  );
+
   $items['batch-process'] = array(
     'description' => dt('Process operations in the specified batch set'),
     'hidden' => TRUE,
@@ -301,6 +317,21 @@ function core_drush_help($section) {
       return dt("Run arbitrary PHP code in the context of Drupal");
     case 'drush:site-install':
       return dt("Install Drupal using specified install profile.");
+    case 'drush:core-directory':
+      $prefix = dt("Return the filesystem path for projects/themes and other key folders. Unlike most drush commands, you usually want to prefix the command with cd and enclose the command invocation in backticks. See Examples below. For even more convenient usage (Unix/OSX only), add the following code to your .profile, .bash_profile, or .bashrc file.");
+      $suffix = <<<EOD
+
+
+function cdd() {
+  DEST=`drush core-directory $1`
+  if [ -z "$DEST" ]
+  then
+    echo $1 "was not found."
+  else
+    cd $DEST;
+  fi
+}
+EOD;
     case 'error:DRUSH_DRUPAL_DB_ERROR' :
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
@@ -528,4 +559,45 @@ function drush_core_batch_process($id) {
 function drush_core_updatedb_batch_process($id) {
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
   _update_batch_command($id);
+}
+
+function drush_core_directory($target = 'root') {
+  include_once DRUPAL_ROOT . '/includes/file.inc';
+
+  $special['root'] = drush_get_context('DRUSH_DRUPAL_ROOT');
+  if (drush_drupal_major_version() >= 7) {
+    $special['files'] = DrupalPublicStreamWrapper::getDirectoryPath();
+    $special['private'] = DrupalPrivateStreamWrapper::getDirectoryPath();
+  }
+  else {
+    $special['files'] = $special['private'] = file_directory_path();
+  }
+
+  // You may add targets using your own array in drushrc.php
+  if ($targets = drush_get_option('targets', array())) {
+    $special += $targets;
+  }
+
+  if (isset($special[$target])) {
+    // Hurray, we found the destination very quickly.
+    drush_print($special[$target]);
+    return;
+  }
+
+  $masks = array(
+    conf_path() . '/themes' => "/$target.theme/",
+    conf_path() . '/modules' => "/$target.module/",
+    'profiles/default/modules' => "/$target.module/", // Too early for variable_get('install_profile', 'default'); Just use default.
+    'sites/all/modules' => "/$target.module/", // Add all module paths, even disabled modules.
+    'sites/all/themes' => "/$target.theme/",
+  );
+  $files = array();
+  foreach ($masks as $key => $mask) {
+    if ($files = drush_scan_directory("$key", $mask, array('..', '.', 'CVS', '.svn', '.bzr'), 0, TRUE, 'name')) {
+      // Just use the first match.
+      $file = reset($files);
+      drush_print(drush_get_context('DRUSH_DRUPAL_ROOT') . '/' . dirname($file->filename));
+      return;
+    }
+  }
 }

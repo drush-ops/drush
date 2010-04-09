@@ -138,7 +138,7 @@ function sql_drush_command() {
  */
 function drush_sql_conf() {
   if (drush_get_option('db-url', FALSE)) {
-    $db_spec['db-url'] = $GLOBALS['db_url'];    
+    $db_spec['db-url'] = $GLOBALS['db_url'];
   }
   elseif (drush_get_option('all', FALSE)) {
     $db_spec = $GLOBALS['databases'];
@@ -436,12 +436,12 @@ function _drush_sql_get_spec_from_options($prefix, $default_to_self = TRUE) {
       $db_spec = _drush_sql_get_db_spec();
     }
   }
-  
+
   if (isset($db_spec)) {
     $db_spec['remote-host'] = drush_get_option($prefix . 'remote-host');
     $db_spec['port'] = drush_get_option($prefix . 'remote-port', $db_spec['port']);
   }
-  
+
   return $db_spec;
 }
 
@@ -474,7 +474,7 @@ function drush_sql_dump_file(&$db_spec) {
     $dump_file = drush_tempnam($filename_pattern . '.sql.');
     $db_spec['dump-is-temp'] = TRUE;
   }
-  
+
   return $dump_file;
 }
 
