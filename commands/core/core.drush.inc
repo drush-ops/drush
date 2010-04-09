@@ -584,13 +584,15 @@ function drush_core_directory($target = 'root') {
     return;
   }
 
+  $theme_suffix = drush_drupal_major_version() >= 6 ? '.info' : '/style.css';
   $masks = array(
-    conf_path() . '/themes' => "/$target.theme/",
     conf_path() . '/modules' => "/$target.module/",
     'profiles/default/modules' => "/$target.module/", // Too early for variable_get('install_profile', 'default'); Just use default.
     'sites/all/modules' => "/$target.module/", // Add all module paths, even disabled modules.
-    'sites/all/themes' => "/$target.theme/",
+    conf_path() . '/themes' => "/$target" . "$theme_suffix/",
+    'sites/all/themes' => "/$target" . "$theme_suffix/",
   );
+
   $files = array();
   foreach ($masks as $key => $mask) {
     if ($files = drush_scan_directory("$key", $mask, array('..', '.', 'CVS', '.svn', '.bzr'), 0, TRUE, 'name')) {
