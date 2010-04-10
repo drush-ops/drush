@@ -1297,6 +1297,12 @@ function drush_pm_download() {
             return FALSE;
           }
           if (package_handler_install_project($project, $release)) {
+            // If the --destination option was not specified, then
+            // allow commandfiles that implement the adjust-download-destination
+            // hook to pick a new default location for the project.
+            if (drush_get_option('destination', FALSE) === FALSE) {
+              drush_pm_relocate_project($project, $release);
+            }
             drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $project['full_project_path'])), 'success');
             drush_command_invoke_all('drush_pm_post_download', $project, $release);
             $version_control->post_download($project);
@@ -1310,5 +1316,65 @@ function drush_pm_download() {
     }
 
     unset($error, $release, $releases, $types);
+  }
+}
+
+/**
+ * drush_pm_relocate_project moves projects that should be relocated to a different 
+ * installation directory to the location they belong in.  For example,
+ * modules that are only collections of drush commands will be installed 
+ * to $HOME/.drush.
+ *
+ * This function is called after the project is downloaded so that its
+ * contents can be examined to determine its optimal installation location.
+ * Every drush commandfile is given a chance to examine the project contents
+ * and decide where the project should be located.
+ */
+function drush_pm_relocate_project(&$project, $release) {
+  // Call the get-install-location hook to see if any drush commandfiles
+  // would like to adjust the install location for this project.
+  // drush_command_invoke_all() allows the first parameter to be passed by reference.
+  drush_command_invoke_all_ref('drush_pm_adjust_download_destination', $project, $release);
+
+  if (isset($project['project_install_location']) && ($project['full_project_path'] != $project['project_install_location'])) {
+    if (rename($project['full_project_path'], $project['project_install_location'])) {
+      $project['full_project_path'] = $project['project_install_location'];
+    }
+    else {
+      return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt("Project !project (!version) could not be installed at !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $project['project_install_location'])));
+    }
+  }
+  return TRUE;
+}
+
+/**
+ * Built-in adjust-download-destination hook.  This particular version of
+ * the hook will move modules that contain only drush commands to
+ * /etc/drush if it exists, or $HOME/.drush if /etc/drush does not
+ * exist.
+ */
+function pm_drush_pm_adjust_download_destination(&$project, $release) {
+  // If this project is a module, but it has no .module file, then
+  // check to see if it contains drush commands.  If that is all
+  // that it contains, then install it to $HOME/.drush.
+  if ($release['type'] == 'module') {
+    $module_files = drush_scan_directory($project['full_project_path'], '/.*\.module/');
+    if (empty($module_files)) {
+      $drush_command_files = drush_scan_directory($project['full_project_path'], '/.*\.drush.inc/');
+      if (!empty($drush_command_files)) {
+        $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands/';
+	if (!is_dir($install_dir)) {
+          $install_dir = drush_server_home() . '/.drush/';
+        }
+	// Make the .drush dir if it does not already exist
+	if (!is_dir($install_dir)) {
+	  mkdir($install_dir);
+	}
+	// Change the location if the mkdir worked
+	if (is_dir($install_dir)) {
+	  $project['project_install_location'] = $install_dir . basename($project['full_project_path']);
+	}
+      }
+    }
   }
 }

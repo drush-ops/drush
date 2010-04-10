@@ -132,15 +132,24 @@ function hook_drush_exit() {
 /**
  * Take action after a project has been downloaded.
  */
-function hook_drush_pm_post_pm_download($project, $release, $destination) {
+function hook_drush_pm_post_download($project, $release, $destination) {
 
 }
 
 /**
  * Take action after a project has been updated.
  */
-function hook_pm_post_updatedb($release_name, $release_candidate_version, $project_parent_path) {
+function hook_pm_post_update($release_name, $release_candidate_version, $project_parent_path) {
 
+}
+
+/**
+ * Adjust the location that a project should be downloaded to.
+ */
+function hook_drush_pm_adjust_download_destination(&$project, $release) {
+  if (...) {
+    $project['project_install_location'] = '/path/to/install/to/' . basename($project['full_project_path']);
+  }
 }
 
 /**

@@ -402,8 +402,14 @@ function drush_command() {
  */
 function drush_command_invoke_all() {
   $args = func_get_args();
-  $hook = $args[0];
-  unset($args[0]);
+  return call_user_func_array('drush_command_invoke_all_ref', $args);
+}
+
+function drush_command_invoke_all_ref($hook, &$reference_parameter) {
+  $args = func_get_args();
+  array_shift($args);
+  // Insure that call_user_func_array can alter first parameter
+  $args[0] = &$reference_parameter;
   $return = array();
   foreach (drush_command_implements($hook) as $module) {
     $function = $module .'_'. $hook;
