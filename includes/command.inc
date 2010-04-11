@@ -402,6 +402,12 @@ function drush_command() {
  */
 function drush_command_invoke_all() {
   $args = func_get_args();
+  if (count($args) == 1) {
+    $args[] = NULL;
+  }
+  $reference_value = $args[1];
+  $args[1] = &$reference_value;
+  
   return call_user_func_array('drush_command_invoke_all_ref', $args);
 }
 
