@@ -135,7 +135,7 @@ REQUIREMENTS
   recent changes to the most recent version of Drupal can introduce issues
   with drush.  On Drupal 5, drush requires update_status v5.x-2.5 or later
   in order to use pm-updatecode.  If you have an earlier version of update_status,
-  upgrade it by hand before using any of drush's package manager commands.
+  upgrade it via "drush dl update_status" before using pm-updatecode.
   
 FAQ
 ---
