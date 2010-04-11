@@ -131,7 +131,12 @@ REQUIREMENTS
   unix command line tools, so to use it effectively, you have to install
   some of them, e.g. from GnuWin32 (http://gnuwin32.sourceforge.net/). More info
   about Drush on Windows available at http://drupal.org/node/594744.
-
+* Drush works with Drupal 5, Drupal 6 and Drupal 7.  However, occasionally
+  recent changes to the most recent version of Drupal can introduce issues
+  with drush.  On Drupal 5, drush requires update_status v5.x-2.5 or later
+  in order to use pm-updatecode.  If you have an earlier version of update_status,
+  upgrade it by hand before using any of drush's package manager commands.
+  
 FAQ
 ---
   Q: What does "drush" stand for?
