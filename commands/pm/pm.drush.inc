@@ -792,17 +792,62 @@ function drush_pm_releases() {
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
   $projects = func_get_args();
-
   $projects = drupal_map_assoc($projects);
   $info = pm_get_project_info($projects);
+  $project_info = drush_get_projects();
 
-  $rows[] = array(dt('Project'), dt('Release'), dt('Date'));
+  $rows[] = array(dt('Project'), dt('Release'), dt('Date'), dt('Status'));
   foreach ($info as $key => $project) {
+    $recommended = isset($project['recommended_major'])?$project['recommended_major']:NULL;
+    $supported = isset($project['supported_majors'])?explode(',', $project['supported_majors']):array();
+    $default = $project['default_major'];
+    $recommended_version = NULL;
+    $latest_version = NULL;
     foreach ($project['releases'] as $release) {
+      if ($release['version_major'] == $recommended) {
+        if (!isset($latest_version)) {
+          $latest_version = $release['version'];
+        }
+        if (empty($release['version_extra'])) {
+          if (!isset($recommended_version)) {
+            $recommended_version = $release['version'];
+          }
+        }
+      }
+    }
+    if (!isset($recommended_version)) {
+      $recommended_version = $latest_version;
+    }
+    foreach ($project['releases'] as $release) {
+      $status = array();
+      $type = array();
+      if (($k = array_search($release['version_major'], $supported)) !== FALSE) {
+        $status[] = dt('Supported');
+        unset($supported[$k]);
+      }
+      if ((isset($recommended_version)) && ($release['version'] == $recommended_version)) {
+        $status[] = dt('Recommended');
+      }
+      if ($release['version_extra'] == 'dev') {
+        $status[] = dt('Development');
+      }
+      if (isset($project_info[$key])) {
+        if ($project_info[$key]->info['version'] == $release['version']) {
+          $status[] = dt('Installed');
+        }
+      }
+      if (isset($release['terms'])) {
+        foreach ($release['terms']['Release type'] as $one_type) {
+          if ($one_type == 'Security update') {
+            $status[] = dt('Security');
+          }
+        }
+      }
       $rows[] = array(
         $key,
         $release['version'],
         format_date($release['date'], 'custom', 'Y-M-d'),
+        implode(', ', $status)
       );
     }
   }
@@ -909,7 +954,6 @@ function delete_dir($dir) {
     closedir($handle);
 
     if (!@rmdir($dir)) {
-      return false;
     }
     return true;
   }
