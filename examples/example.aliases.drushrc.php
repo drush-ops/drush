@@ -7,7 +7,7 @@
  * Aliases are commonly used to define short names for
  * local or remote Drupal installations; however, an alias
  * is really nothing more than a collection of option sets.
- * A cononical alias named "dev" that points to a local
+ * A canonical alias named "dev" that points to a local
  * Drupal site named "dev.mydrupalsite.com" looks like this: 
  *
  *   $aliases['dev'] = array(
@@ -54,7 +54,7 @@
  * "drush rsync" and "drush sql-sync".
  *
  * Alias files that are named after the single alias they contain
- * may use the syntax for the cononcial alias shown at the top of
+ * may use the syntax for the canoncial alias shown at the top of
  * this file, or they may set values in $options, just
  * like a drushrc.php configuration file:
  *
