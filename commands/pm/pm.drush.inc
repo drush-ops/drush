@@ -1337,7 +1337,7 @@ function drush_pm_relocate_project(&$project, $release) {
   drush_command_invoke_all_ref('drush_pm_adjust_download_destination', $project, $release);
 
   if (isset($project['project_install_location']) && ($project['full_project_path'] != $project['project_install_location'])) {
-    if (rename($project['full_project_path'], $project['project_install_location'])) {
+    if (drush_move_dir($project['full_project_path'], $project['project_install_location'], TRUE)) {
       $project['full_project_path'] = $project['project_install_location'];
     }
     else {

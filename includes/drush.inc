@@ -480,6 +480,11 @@ function _drush_delete_registered_files() {
 /**
  * Deletes the provided file or folder and
  * everything inside it.
+ *
+ * @param $dir
+ *   The directory to delete
+ * @return
+ *   FALSE on failure, TRUE if everything was deleted
  */
 function drush_delete_dir($dir) {
   if (!file_exists($dir)) {
@@ -497,6 +502,56 @@ function drush_delete_dir($dir) {
     }
   }
   return rmdir($dir);
+}
+
+/**
+ * Move $src to $dest.  If the php 'rename' function
+ * doesn't work, then we'll try rsync.
+ *
+ * @param $src
+ *   The directory to move.
+ * @param $dest
+ *   The destination to move the source to, including
+ *   the new name of the folder.  To move folder "a"
+ *   from "/b" to "/c", then $src = "/b/a" and $dest = "/c/a".
+ *   To move "a" to "/c" and rename it to "d", then
+ *   $dest = "/c/d" (just like php rename function).
+ * @param $overwrite
+ *   If TRUE, the destination will be deleted if it
+ *   exists.  Defaults to FALSE.
+ * @return
+ *   TRUE on success, FALSE on failure
+ */
+function drush_move_dir($src, $dest, $overwrite = FALSE) {
+  // Preflight based on $overwrite if $dest exists.
+  if (is_dir($dest)) {
+    if ($overwrite) {
+      drush_op('drush_delete_dir', $dest);
+    }
+    else {
+      return drush_set_error('DRUSH_DESTINATION_EXISTS', dt('Destination directory !dest already exists.', array('!dest' => $dest)));
+    }
+  }
+
+  // If rename works, then we're done.
+  if (@drush_op('rename', $src, $dest)) {
+    return TRUE;
+  }
+  // Bail if we can't make a directory at the
+  // destination (e.g. permissions)
+  if (!is_dir($dest) && (drush_op('mkdir', $dest) === FALSE)) {
+    return FALSE;
+  }
+  // If rename doesn't work, then try rsync.
+  $exec = 'rsync -raz --remove-source-files ' . $src . DIRECTORY_SEPARATOR . ' ' . $dest;
+  $rsync_result = drush_op('system', $exec);
+  if($rsync_result !== FALSE) {
+    // --remove-source-files deletes all of the files, but
+    // we still need to get rid of the directories.
+    drush_op('drush_delete_dir', $src);
+    return TRUE;
+  }
+  return FALSE;
 }
 
 /**
