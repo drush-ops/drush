@@ -157,9 +157,19 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
           $alias_record['uri'] = $parsed['host'];
         }
         
-        // Sanity checking:  clear invalid records
-        if (strpos($alias_record['root'], '@') !== FALSE) {
-          $alias_record = array();
+        // Special checking:  relative aliases embedded in a path
+        $relative_alias_pos = strpos($alias_record['root'], '/@');
+        if ($relative_alias_pos !== FALSE) {
+          // Special checking: /path/@sites
+          $base = substr($alias_record['root'], 0, $relative_alias_pos);
+          $relative_alias = substr($alias_record['root'], $relative_alias_pos + 1);
+          if (drush_valid_drupal_root($base) || ($relative_alias == '@sites')) {
+            drush_sitealias_create_sites_alias($base);
+            $alias_record = drush_sitealias_get_record($relative_alias);
+          }
+          else {
+            $alias_record = array();
+          }
         }
       }
       else {
@@ -479,6 +489,18 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
 function _drush_sitealias_cache_alias($alias_name, $alias_record) {
   $cache =& drush_get_context('site-aliases');
   $cache["@$alias_name"] = $alias_record;
+  
+  // If the alias record points at a local site, make sure
+  // that both the drupal root and the site folder for that site
+  // are added to the alias path, so that other alias files
+  // stored in those locations become searchable.
+  if (!array_key_exists('remote-host', $alias_record) && array_key_exists('root', $alias_record)) {
+    drush_sitealias_add_to_alias_path($alias_record['root']);
+    $site_dir = drush_sitealias_local_site_path($alias_record);
+    if (isset($site_dir)) {
+      drush_sitealias_add_to_alias_path($site_dir);
+    }
+  }
 }
 
 /**
@@ -895,7 +917,7 @@ function _drush_find_local_sites_at_root($a_drupal_root = '', $search_depth = 1)
   if (drush_valid_drupal_root($base_path)) {
     // If $a_drupal_root is in fact a valid drupal root, then return
     // all of the sites found inside the 'sites' folder of this drupal instance.
-    $site_list = _drush_find_local_sites_in_sites_folder($base_path . '/sites');
+    $site_list = _drush_find_local_sites_in_sites_folder($base_path);
   }
   else {
     $bootstrap_files = drush_scan_directory($base_path, '/' . basename(DRUSH_DRUPAL_BOOTSTRAP) . '/' , array('.', '..', 'CVS'), 0, drush_get_option('search-depth', $search_depth) + 1, 'filename', 1);
@@ -903,7 +925,7 @@ function _drush_find_local_sites_at_root($a_drupal_root = '', $search_depth = 1)
       $includes_dir = dirname($one_bootstrap);
       if (basename($includes_dir) == basename(dirname(DRUSH_DRUPAL_BOOTSTRAP))) {
         $drupal_root = dirname($includes_dir);
-        $site_list = array_merge(_drush_find_local_sites_in_sites_folder($drupal_root . '/sites'), $site_list);
+        $site_list = array_merge(_drush_find_local_sites_in_sites_folder($drupal_root), $site_list);
       }
     }
   }
@@ -914,9 +936,16 @@ function _drush_find_local_sites_at_root($a_drupal_root = '', $search_depth = 1)
 /**
  * Return a list of all of the local sites at the specified 'sites' folder.
  */
-function _drush_find_local_sites_in_sites_folder($base_path) {
+function _drush_find_local_sites_in_sites_folder($a_drupal_root) {
   $site_list = array();
-
+  
+  // If anyone searches for sites at a given root, then
+  // make sure that alias files stored at this root
+  // directory are included in the alias search path
+  drush_sitealias_add_to_alias_path($a_drupal_root);
+  
+  $base_path = $a_drupal_root . '/sites';
+  
   // TODO:  build a cache keyed off of $base_path (realpath($base_path)?),
   // so that it is guarenteed that the lists returned will definitely be
   // exactly the same should this routine be called twice with the same path.
