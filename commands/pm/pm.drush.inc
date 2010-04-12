@@ -836,7 +836,7 @@ function drush_pm_releases() {
           $status[] = dt('Installed');
         }
       }
-      if (isset($release['terms'])) {
+      if (isset($release['terms']) && array_key_exists('Release type', $release['terms'])) {
         foreach ($release['terms']['Release type'] as $one_type) {
           if ($one_type == 'Security update') {
             $status[] = dt('Security');
