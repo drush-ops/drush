@@ -150,8 +150,8 @@ function update_check_incompatibility($name, $type = 'module') {
   // Store values of expensive functions for future use.
   if (empty($themes) || empty($modules)) {
     drush_include_engine('drupal', 'environment');
-    $themes = drush_get_themes();
-    $modules = drush_get_modules();
+    $themes = _system_theme_data();
+    $modules = module_rebuild_cache();
   }
 
   if ($type == 'module' && isset($modules[$name])) {
@@ -275,7 +275,7 @@ function update_create_batch_table() {
 }
 
 function update_main_prepare() {
- global $profile;
+  global $profile;
   // Some unavoidable errors happen because the database is not yet up-to-date.
   // Our custom error handler is not yet installed, so we just suppress them.
   drush_errors_off();
@@ -304,7 +304,6 @@ function update_main_prepare() {
   // Check the update requirements for Drupal.
   update_check_requirements();
 
-
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
   $profile = variable_get('install_profile', 'default');
   // Updates only run reliably if user ID #1 is logged in. For example, node_delete() requires elevated perms in D5/6.
@@ -312,8 +311,6 @@ function update_main_prepare() {
     drush_set_option('user', 1);
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
   }
-
-  drupal_maintenance_theme();
 
   // This must happen *after* drupal_bootstrap(), since it calls
   // variable_(get|set), which only works after a full bootstrap.
@@ -326,11 +323,20 @@ function update_main_prepare() {
   // Perform Drupal 5.x to 6.x updates that are required for update.php to function properly.
   _drush_log_update_sql(update_fix_d6_requirements());
 
-  // Rescan and repopulate the system table to ensure we have a full picture
-  // of the platform.
+  // Must unset $theme->status in order to safely rescan and repopulate
+  // the system table to ensure we have a full picture of the platform.
+  // This is needed because $theme->status is set to 0 in a call to 
+  // list_themes() done by drupal_maintenance_theme().
+  // It is a issue with _system_theme_data() that returns its own cache 
+  // variable and can be modififed by others. When this is fixed in 
+  // drupal core we can remove this unset.
+  // For reference see: http://drupal.org/node/762754
+  $themes = _system_theme_data();
+  foreach ($themes as $theme) {
+    unset($theme->status);
+  }
   drush_get_projects();
 
-  include_once './includes/install.inc';
   include_once './includes/batch.inc';
   drupal_load_updates();
 
