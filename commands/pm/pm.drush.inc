@@ -1350,8 +1350,8 @@ function drush_pm_relocate_project(&$project, $release) {
 /**
  * Built-in adjust-download-destination hook.  This particular version of
  * the hook will move modules that contain only drush commands to
- * /etc/drush if it exists, or $HOME/.drush if /etc/drush does not
- * exist.
+ * /usr/share/drush/commands if it exists, or $HOME/.drush if the
+ * site-wide location does not exist.
  */
 function pm_drush_pm_adjust_download_destination(&$project, $release) {
   // If this project is a module, but it has no .module file, then
