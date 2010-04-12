@@ -356,7 +356,7 @@ function _drush_backend_generate_command($command, $args, &$data, $method = 'GET
     $command .= ' ' . escapeshellarg($arg);
   }
   // @TODO: Implement proper multi platform / multi server support.
-  $cmd = escapeshellcmd(" " . escapeshellcmd($drush_path) . " " . $option_str . " " . $command . " --backend");
+  $cmd = escapeshellcmd($drush_path) . " " . $option_str . " " . $command . " --backend";
 
   if (!is_null($hostname)) {
     $username = (!is_null($username)) ? $username : get_current_user();
