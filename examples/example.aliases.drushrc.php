@@ -4,6 +4,26 @@
  * Example of valid statements for an alias file.  Use this
  * file as a guide to creating your own aliases.
  *
+ * Aliases are commonly used to define short names for
+ * local or remote Drupal installations; however, an alias
+ * is really nothing more than a collection of option sets.
+ * A cononical alias named "dev" that points to a local
+ * Drupal site named "dev.mydrupalsite.com" looks like this: 
+ *
+ *   $aliases['dev'] = array(
+ *     'root' => '/path/to/drupal',
+ *     'uri' => 'dev.mydrupalsite.com',
+ *   );
+ *
+ * With this alias definition, then the following commands
+ * are equivalent:
+ *
+ *   $ drush @dev status
+ *   $ drush --root=/path/to/drupal --uri=dev.mydrupalsite.com status
+ *
+ * Any option that can be placed on the drush commandline
+ * can also appear in an alias definition.
+ *
  * There are several ways to create alias files.
  *
  *   + Put each alias in a separate file called ALIASNAME.alias.drushrc.php
@@ -33,13 +53,32 @@
  * may also be used in arguments to certain commands such as
  * "drush rsync" and "drush sql-sync".
  *
- * Each entry in the aliases array is accessed by its
- * site alias (e.g. '@stage' or '@dev').  Only the 'uri' and 'root'
- * items are required, and most alias records use only a few of
- * the optional keys, if any.  A simple alias record can be generated
- * using the "drush --full site-alias" command.
+ * Alias files that are named after the single alias they contain
+ * may use the syntax for the cononcial alias shown at the top of
+ * this file, or they may set values in $options, just
+ * like a drushrc.php configuration file:
  *
- * The following settings are stored in the site alias record:
+ *   $options['uri'] = 'dev.mydrupalsite.com',
+ *   $options['root'] = '/path/to/drupal';
+ *
+ * When alias files use this form, then the name of the alias
+ * is taken from the first part of the alias filename.
+ *
+ * To see an example alias definition for the current bootstrapped
+ * site, use the "site-alias" command with the built-in alias "@self":
+ *
+ *   $ drush site-alias @self
+ *
+ * If you would like to see all of the Drupal sites at a specified
+ * root directory, use the built-in alias "@sites":
+ *
+ *   $ drush -r /path/to/drupal site-alias @sites
+ *
+ * See 'drush help site-alias' for more options for displaying site
+ * aliases.
+ *
+ * Although most aliases will contain only a few options, a number
+ * of settings that are commonly used appear below:
  *
  * - 'uri': This should always be the same as the site's folder name
  *     in the 'sites' folder.
@@ -83,27 +122,7 @@
  *     '%root': A reference to the Drupal root defined in the 'root' item
  *       in the site alias record.
  *
- * Alias files can be expressed in either of two syntactic variants.
- * Alias files that contain multiple aliases can specify each alias
- * as a separate named item of the $aliases array, like so:
- *
- *   $aliases['dev'] = array(
- *     'uri' => 'dev.mydrupalsite.com',
- *     'root' => '/path/to/drupal',
- *   );
- *
- * Alias files that are named after the single alias they contain
- * may use the syntax above, or they may set values in $options, just
- * like a drushrc.php configuration file:
- *
- *   $options['uri'] = 'dev.mydrupalsite.com',
- *   $options['root'] = '/path/to/drupal';
- *
- * In the later case, the alias file must be named using the
- * ALIASNAME.alias.drushrc.php variant, and the name of the alias
- * is taken from the first part of the alias filename.
- *
- * Remove the leading hash signs to enable.
+ * Some examples appear below.  Remove the leading hash signs to enable.
  */
 #$aliases['stage'] = array(
 #    'uri' => 'stage.mydrupalsite.com',
