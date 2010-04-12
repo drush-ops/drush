@@ -1341,7 +1341,7 @@ function drush_pm_relocate_project(&$project, $release) {
       $project['full_project_path'] = $project['project_install_location'];
     }
     else {
-      return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt("Project !project (!version) could not be installed at !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $project['project_install_location'])));
+      drush_log(dt("Project !project (!version) could not be relocated to !dest.", array('!project' => $project['name'], '!version' => $release['version'], '!dest' => $project['project_install_location'])), 'warning');
     }
   }
   return TRUE;
