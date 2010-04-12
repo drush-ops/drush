@@ -1269,6 +1269,20 @@ function drush_pm_download() {
           }
         }
 
+        // If there are recommended releases (no 'version_extra' elements),
+        // then use only recommended releases.  Otherwise, use all; in
+        // this case, the recommended release defaults to the latest published
+        // release with the right recommended major version number.
+        $recommended_releases = array();
+        foreach ($releases as $one_release) {
+          if (!array_key_exists('version_extra', $one_release)) {
+            $recommended_releases[] = $one_release;
+          }
+        }
+        if (!empty($recommended_releases)) {
+          $releases = $recommended_releases;
+        }
+
         if (empty($releases)) {
           drush_log(dt('There is no *recommended* release for project !project on Drupal !drupal_version. Ask the maintainer to review http://drupal.org/node/197584 and create/recommend a release in order to be compatible with drush and the drupal.org security broadcast system. A recommended development snapshot release is sufficient. Alternatively, run pm-releases command and explicity pm-download any non-recommended release that might be available.', array('!drupal_version' => $request['drupal_version'], '!project' => $request['name'])), 'notice');
           continue;
