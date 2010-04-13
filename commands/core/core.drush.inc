@@ -324,14 +324,15 @@ function core_drush_help($section) {
 
 function cdd() {
   DEST=`drush $2 core-directory $1`
-  if [ -z "$DEST" ]
+  if [ -z "\$DEST" ]
   then
     echo $1 "was not found."
   else
-    cd $DEST;
+    cd \$DEST;
   fi
 }
 EOD;
+      return $prefix . $suffix;
     case 'error:DRUSH_DRUPAL_DB_ERROR' :
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
