@@ -169,7 +169,7 @@ function core_drush_command() {
       'cdd devel' => 'Navigate to devel directory. See required function above,',
     ),
     'aliases' => array('cd'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
   $items['batch-process'] = array(
@@ -323,7 +323,7 @@ function core_drush_help($section) {
 
 
 function cdd() {
-  DEST=`drush core-directory $1`
+  DEST=`drush $2 core-directory $1`
   if [ -z "$DEST" ]
   then
     echo $1 "was not found."
@@ -562,26 +562,27 @@ function drush_core_updatedb_batch_process($id) {
 }
 
 function drush_core_directory($target = 'root') {
-  include_once DRUPAL_ROOT . '/includes/file.inc';
-
-  $special['root'] = drush_get_context('DRUSH_DRUPAL_ROOT');
-  if (drush_drupal_major_version() >= 7) {
-    $special['files'] = DrupalPublicStreamWrapper::getDirectoryPath();
-    $special['private'] = DrupalPrivateStreamWrapper::getDirectoryPath();
-  }
-  else {
-    $special['files'] = $special['private'] = file_directory_path();
-  }
-
-  // You may add targets using your own array in drushrc.php
-  if ($targets = drush_get_option('targets', array())) {
-    $special += $targets;
+  // Normalize to a sitealias in the target.
+  if (substr($target, 0, 1) != '/' && substr($target, 0, 1) != '@') {
+    // @self makes no sense before 'site' level.
+    if (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
+      $additional_options = array();
+      $path = drush_sitealias_evaluate_path('@self:%' . $target, $additional_options);
+    }
+    else {
+      return drush_set_error(dt('!target not found.', array('!target' => $target)));
+    }
   }
 
-  if (isset($special[$target])) {
-    // Hurray, we found the destination very quickly.
-    drush_print($special[$target]);
+  if (isset($path['path-aliases']['%' . $target])) {
+    // Hurray, we found the destination quickly.
+    drush_print($path['rsync-path']);
     return;
+  }
+
+  // We need to know which site is active in order to add its masks.
+  if (!drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
+    return drush_set_error(dt('!target not found.', array('!target' => $target)));
   }
 
   $theme_suffix = drush_drupal_major_version() >= 6 ? '.info' : '/style.css';
