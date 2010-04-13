@@ -44,7 +44,7 @@ function pm_update_last_check() {
  */
 function _pm_refresh() {
   drush_print(dt("Refreshing update status information ..."));
-  update_refresh();
+  update_get_available(TRUE);
   drush_print(dt("Done."));
 }
 
