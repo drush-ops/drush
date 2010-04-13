@@ -17,7 +17,7 @@ class drush_pm_version_control_svn implements drush_pm_version_control {
     
     // Check the project directory looks clean
     if (drush_shell_exec('cd ' . $project['full_project_path'] . ' && svn status '. drush_get_option('svnstatusparams') .' '. $status_files)) {
-      $output = drush_shell_exec_output();
+      $output = preg_grep('/^[ ACDIMRX?!~][ CM][ L][ +][ SX][ K]/', drush_shell_exec_output());
       if (!empty($output)) {
         return drush_set_error('DRUSH_PM_SVN_LOCAL_CHANGES', dt("The SVN working copy at !path appears to have uncommmitted changes (see below). Please commit or revert these changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
       }
@@ -28,7 +28,7 @@ class drush_pm_version_control_svn implements drush_pm_version_control {
     
     // Check for incoming updates
     if (drush_shell_exec('cd ' . $project['full_project_path'] . ' && svn status -u '. drush_get_option('svnstatusparams') .' '. $status_files)) {
-      $output = preg_grep('/^Status against revision:\s*[0-9]*$/', drush_shell_exec_output(), PREG_GREP_INVERT);
+      $output = preg_grep('/\*/', drush_shell_exec_output());
       if (!empty($output)) {
         return drush_set_error('DRUSH_PM_SVN_REMOTE_CHANGES', dt("The SVN working copy at !path appears to be out of date with the repository (see below). Please run 'svn update' to pull down changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
       }
