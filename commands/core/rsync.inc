@@ -17,13 +17,20 @@
  */
 function drush_core_rsync($source, $destination, $additional_options = array()) {
   // Preflight destination in case it defines aliases used by the source
-  drush_sitealias_evaluate_path($destination, $additional_options);
+  _drush_sitealias_preflight_path($destination);
   // After preflight, evaluate file paths
   $source_settings = drush_sitealias_evaluate_path($source, $additional_options);
   $destination_settings = drush_sitealias_evaluate_path($destination, $additional_options);
   $source_path = $source_settings['rsync-path'];
   $destination_path = $destination_settings['rsync-path'];
 
+  if (!isset($source_settings)) {
+    return drush_set_error('DRUSH_BAD_PATH', dt('Could not evaluate source path !path.', array('!path' => $source)));
+  }
+  if (!isset($destination_settings)) {
+    return drush_set_error('DRUSH_BAD_PATH', dt('Could not evaluate destination path !path.', array('!path' => $destination)));
+  }
+    
   // Check to see if this is an rsync multiple command (multiple sources and multiple destinations)
   $is_multiple = drush_do_multiple_command('rsync', $source_settings, $destination_settings, TRUE);
 

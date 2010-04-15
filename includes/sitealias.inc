@@ -100,8 +100,13 @@ function drush_sitealias_get_record($alias) {
   else {
     $alias_record = _drush_sitealias_get_record($alias);
   }
-  if (!empty($alias_record) && !array_key_exists('name', $alias_record)) {
-    $alias_record['name'] = drush_sitealias_uri_to_site_dir($alias);
+  if (!empty($alias_record)) {
+    if (!array_key_exists('name', $alias_record)) {
+      $alias_record['name'] = drush_sitealias_uri_to_site_dir($alias);
+    }
+    
+    // Handle nested alias definitions and command-specific options.
+    drush_set_config_special_contexts($alias_record);
   }
   return $alias_record;
 }
@@ -200,9 +205,6 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
         $alias_record['loaded-config'] = TRUE;
       }
       unset($alias_record['config']);
-
-      // Handle nested alias definitions and command-specific options.
-      drush_set_config_special_contexts($alias_record);
     }
 
     // Add the static defaults
@@ -1232,6 +1234,41 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   drush_set_config_options('alias', $options);
 }
 
+/*
+ * Call prior to drush_sitealias_evaluate_path to insure
+ * that any site-specific aliases associated with any
+ * local site in $path are defined.
+ */
+function _drush_sitealias_preflight_path($path) {
+  $alias = NULL;
+  // Parse site aliases if there is a colon in the path
+  $colon_pos = strpos($path, ':');
+  if ($colon_pos !== FALSE) {
+    $alias = substr($path, 0, $colon_pos);
+    $path = substr($path, $colon_pos + 1);
+    $site_alias_settings = _drush_sitealias_get_record($alias);
+    if (empty($site_alias_settings)) {
+      return NULL;
+    }
+    $machine = $alias;
+  }
+  else {
+    $machine = '';
+    // if the path is a site alias or a local site...
+    $site_alias_settings = _drush_sitealias_get_record($path);
+    if (empty($site_alias_settings) && (substr($path,0,1) == '@')) {
+      return NULL;
+    }
+    if (!empty($site_alias_settings) || drush_is_local_host($path)) {
+      $alias = $path;
+      $path = '';
+    }
+  }
+  return array('alias' => $alias, 'path' => $path, 'machine' => $machine);
+}
+
+
+
 /**
  * Evaluate a path from its shorthand form to a literal path
  * usable by rsync.
@@ -1258,27 +1295,21 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
   $site_alias_settings = array();
   $path_aliases = array();
   $remote_user = '';
-  // Parse site aliases if there is a colon in the path
-  $colon_pos = strpos($path, ':');
-  if ($colon_pos !== FALSE) {
-    $alias = substr($path, 0, $colon_pos);
-    $path = substr($path, $colon_pos + 1);
-    $site_alias_settings = drush_sitealias_get_record($alias);
-    if (empty($site_alias_settings)) {
-      return NULL;
-    }
-    $machine = $alias;
-  }
-  else {
-    $machine = '';
-    // if the path is a site alias or a local site...
-    $site_alias_settings = drush_sitealias_get_record($path);
-    if (!empty($site_alias_settings) || drush_is_local_host($path)) {
-      $alias = $path;
-      $path = '';
-    }
-  }
 
+  $preflight = _drush_sitealias_preflight_path($path);
+  if (!isset($preflight)) {
+    return NULL;
+  }
+  
+  $alias = $preflight['alias'];
+  $path = $preflight['path'];
+  $machine = $preflight['machine'];
+  
+  
+  if (isset($alias)) {
+    $site_alias_settings = drush_sitealias_get_record($alias);
+  }
+  
   if (!empty($site_alias_settings)) {
     // Apply any options from this alias that might affect our rsync
     drush_sitealias_set_alias_context($site_alias_settings);

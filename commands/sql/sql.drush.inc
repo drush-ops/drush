@@ -297,31 +297,43 @@ function drush_sql_dump($db_spec = NULL) {
   return $exec;
 }
 
-// Given an option name (skip-tables, structure-tables or tables),
-// look up the appropriate list of tables in the given category.
+/**
+ * Consult the specified options and return the list of tables
+ * specified.
+ *
+ * @param option_name
+ *   The option name to check: skip-tables, structure-tables 
+ *   or tables.  This funciton will check both *-key and *-list,
+ *   and, in the case of sql-sync, will also check target-*
+ *   and source-*, to see if an alias set one of these options.
+ * @returns array
+ *   Returns an array of tables based on the first option
+ *   found, or an empty array if there were no matches.
+ */
 function _drush_sql_get_table_list($option_name) {
-  $tables = array();
-  foreach(array('', 'source-', 'target-') as $prefix) {
-    $key_list = drush_get_option($prefix . $option_name . '-key');
-    foreach(explode(',', $key_list) as $key) {
-      $all_tables = drush_get_option($option_name, array());
-      if (array_key_exists($key, $all_tables)) {
-        $tables += $all_tables[$key];
-      }
-      if ($option_name != 'tables') {
-        $all_tables = drush_get_option('tables', array());
+  foreach(array('' => 'options', 'target-,,source-' => NULL) as $prefix_list => $context) {
+    foreach(explode(',',$prefix_list) as $prefix) {
+      $key_list = drush_get_option($prefix . $option_name . '-key', NULL, $context);
+      foreach(explode(',', $key_list) as $key) {
+        $all_tables = drush_get_option($option_name, array());
         if (array_key_exists($key, $all_tables)) {
-          $tables += $all_tables[$key];
+          return $all_tables[$key];
+        }
+        if ($option_name != 'tables') {
+          $all_tables = drush_get_option('tables', array());
+          if (array_key_exists($key, $all_tables)) {
+            return $all_tables[$key];
+          }
         }
       }
-    }
-    $table_list = drush_get_option($prefix . $option_name . '-list');
-    if (isset($table_list)) {
-      $tables += explode(',', $table_list);
+      $table_list = drush_get_option($prefix . $option_name . '-list', NULL, $context);
+      if (isset($table_list)) {
+        return empty($table_list) ? array() : explode(',', $table_list);
+      }
     }
   }
-
-  return $tables;
+  
+  return array();
 }
 
 /**
