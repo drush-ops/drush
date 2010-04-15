@@ -21,8 +21,8 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
   // After preflight, evaluate file paths
   $source_settings = drush_sitealias_evaluate_path($source, $additional_options);
   $destination_settings = drush_sitealias_evaluate_path($destination, $additional_options);
-  $source_path = $source_settings['rsync-path'];
-  $destination_path = $destination_settings['rsync-path'];
+  $source_path = $source_settings['evaluated-path'];
+  $destination_path = $destination_settings['evaluated-path'];
 
   if (!isset($source_settings)) {
     return drush_set_error('DRUSH_BAD_PATH', dt('Could not evaluate source path !path.', array('!path' => $source)));
@@ -33,8 +33,15 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
     
   // Check to see if this is an rsync multiple command (multiple sources and multiple destinations)
   $is_multiple = drush_do_multiple_command('rsync', $source_settings, $destination_settings, TRUE);
-
+  
   if ($is_multiple === FALSE) {
+    // If the user path is the same for the source and the destination, then
+    // always add a slash to the end of the source.  If the user path is not
+    // the same in the source and the destinaiton, then you need to know how
+    // rsync paths work, and put on the trailing '/' if you want it.
+    if ($source_settings['user-path'] == $destination_settings['user-path']) {
+      $source_path .= '/';
+    }
     // Prompt for confirmation. This is destructive.
     if (!drush_get_context('DRUSH_SIMULATE')) {
       drush_print(dt("You will destroy data from !target and replace with data from !source", array('!source' => $source_path, '!target' => $destination_path)));
@@ -98,7 +105,7 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
     $options .= ' --include="sites/all" --exclude="sites/*"';
   }
   if (_drush_rsync_option_exists('mode', $additional_options)) {
-    $mode = "-" . _drush_rsync_get_option($additional_options, 'mode');
+    $mode = "-" . drush_get_option_override($additional_options, 'mode');
   }
   if (drush_get_context('DRUSH_VERBOSE')) {
     // the drush_op() will be verbose about the command that gets executed.
@@ -197,7 +204,7 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
     'protocol',
     );
   foreach ($rsync_available_options as $test_option) {
-    $value = _drush_rsync_get_option($additional_options, $test_option);
+    $value = drush_get_option_override($additional_options, $test_option);
     if (isset($value)) {
       if ($value === TRUE) {
         $options .= " --$test_option";
@@ -208,7 +215,7 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
     }
   }
 
-  $ssh_options = _drush_rsync_get_option($additional_options, 'ssh-options', '');
+  $ssh_options = drush_get_option_override($additional_options, 'ssh-options', '');
   $exec = "rsync -e 'ssh $ssh_options' $mode$options $source $destination";
 
   $exec_result = drush_op('system', $exec) !== FALSE;

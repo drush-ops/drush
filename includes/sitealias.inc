@@ -570,52 +570,78 @@ function drush_sitealias_add_db_settings(&$alias_record)
 }
 
 /**
- * Walk through the path aliases and find any paths that begin with a '@'.
- * If found, query the 'status' function for the local or remote
- * site and use the result returned to populate the value of the
- * path entry.
- *
- * For example, if the path aliases contain an entry
- * '%files' => '@File_Directory_Path', this function will call
- * 'drush status' and will use the value of the line labeled
- * 'File Directory Path:' to populate the '%files' entry in
- * the path aliases.
+ * Check to see if we have already bootstrapped to a site.
+ */
+function drush_sitealias_is_bootstrapped_site($alias_record) {
+  if (!isset($alias_record['remote-host'])) {
+    $self_record = drush_sitealias_get_record("@self");
+    if (empty($self_record)) {
+      // TODO:  If we have not bootstrapped to a site yet, we could
+      // perhaps bootstrap to $alias_record here.
+      return FALSE;
+    }
+    elseif(($alias_record['root'] == $self_record['root']) && ($alias_record['uri'] == $self_record['uri'])) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * If there are any path aliases (items beginning with "%") in the test
+ * string, then resolve them as path aliases and add them to the provided
+ * alias record.
  *
  * @param $alias_record
  *   The full alias record to use in path alias expansion
  * @param $test_string
- *   If not empty, only path alias items contained in the test
- *   string will be resolved.
+ *   A slash-separated list of path aliases to resolve
+ *   e.g. "%files/%special".
  */
 function drush_sitealias_resolve_path_references(&$alias_record, $test_string = '') {
-  $resolution_needed = FALSE;
-  // Check to see if we have any path values that begin with '@'
-  // that also exist in the test string
+  // Convert the test string into an array of items, and
+  // from this make a comma-separated list of projects
+  // that we can pass to 'drush status'.
+  $test_array = explode('/', $test_string);
+  $project_array = array();
+  foreach($test_array as $one_item) {
+    if (substr($one_item,0,1) == '%') {
+      $project_array[] = substr($one_item,1);
+    }    
+  }
+  
+  // If we already have a path in the path aliases, then
+  // there is no need to search for it remotely; we can remove
+  // it from the project array.
   if (array_key_exists('path-aliases', $alias_record)) {
     foreach ($alias_record['path-aliases'] as $key => $value) {
-      if (substr($value,0,1) == '@') {
-        if (empty($test_string) || (strstr($test_string, $key) !== FALSE)) {
-          $resolution_needed = TRUE;
-        }
+      if (substr($key,0,1) == '%') {
+        unset($project_array['%' . substr($key,1)]);
       }
     }
   }
-
-  if ($resolution_needed) {
-    $values = drush_do_site_command($alias_record, "status");
-    $status_values = $values['object'];
-    if (isset($status_values)) {
-      foreach ($alias_record['path-aliases'] as $key => $value) {
-        if (substr($value,0,1) == '@') {
-          $status_key = strtr(substr($value,1), '-_', '  ');
-          if (array_key_exists($status_key, $status_values)) {
-            $alias_record['path-aliases'][$key] = $status_values[$status_key];
-            drush_log(dt('Resolved path !key to !value', array('!key' => $status_key, '!value' => $status_values[$status_key])));
-          }
-          else {
-            unset($alias_record['path-aliases'][$key]);
-          }
-        }
+  $project_list = implode(',', $project_array);
+  
+  if (!empty($project_array)) {
+    // Optimization:  if we're already bootstrapped to the
+    // site specified by $alias_record, then we can just
+    // call _core_site_status_table() rather than use backend invoke.
+    if (drush_sitealias_is_bootstrapped_site($alias_record)) {
+      // Make sure that we are bootstrapped at least to the 'site'
+      // level, and include file.inc to insure that we have access
+      // to the %file path.
+      if (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
+        include_once DRUPAL_ROOT . '/includes/file.inc';
+      }
+      $status_values = _core_site_status_table($project_list);
+    }
+    else {
+      $values = drush_do_site_command($alias_record, "status", array(), empty($project_list) ? array() : array('project' => $project_list));
+      $status_values = $values['object'];
+    }
+    if (isset($status_values['%paths'])) {
+      foreach ($status_values['%paths'] as $key => $path) {
+        $alias_record['path-aliases'][$key] = $path;
       }
     }
   }
@@ -1014,12 +1040,6 @@ function _drush_sitealias_add_transient_defaults(&$alias_record) {
     if (!array_key_exists('%site', $alias_record['path-aliases']) && array_key_exists('uri', $alias_record)) {
       $alias_record['path-aliases']['%site'] = 'sites/' . drush_sitealias_uri_to_site_dir($alias_record['uri']) . '/';
     }
-    // Add %files if it does not exist
-    if (!array_key_exists('%files', $alias_record['path-aliases'])) {
-      // Path values that start with '@' will call 'drush status'
-      // to get the actual value to be substituted.
-      $alias_record['path-aliases']['%files'] = '@File_Directory_Path';
-    }
   }
 }
 
@@ -1289,7 +1309,7 @@ function _drush_sitealias_preflight_path($path) {
  * @return
  *   The site record for the machine specified in the path, if any,
  *   with the path to pass to rsync (including the machine specifier)
- *   in the 'rsync-path' item.
+ *   in the 'evaluated-path' item.
  */
 function drush_sitealias_evaluate_path($path, &$additional_options) {
   $site_alias_settings = array();
@@ -1304,7 +1324,6 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
   $alias = $preflight['alias'];
   $path = $preflight['path'];
   $machine = $preflight['machine'];
-  
   
   if (isset($alias)) {
     $site_alias_settings = drush_sitealias_get_record($alias);
@@ -1338,15 +1357,15 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
 
   // If the --exclude-other-sites option is specified, then
   // convert that into --include-path='%site' and --exclude-sites.
-  if (_drush_rsync_get_option($additional_options, 'exclude-other-sites', FALSE) && !_drush_rsync_get_option($additional_options, 'exclude-other-sites-processed', FALSE, 'process')) {
-    $additional_options['include-path'] = '%site,' . _drush_rsync_get_option($additional_options, 'include-path', '');
+  if (drush_get_option_override($additional_options, 'exclude-other-sites', FALSE) && !drush_get_option_override($additional_options, 'exclude-other-sites-processed', FALSE, 'process')) {
+    $additional_options['include-path'] = '%site,' . drush_get_option_override($additional_options, 'include-path', '');
     $additional_options['exclude-sites'] = TRUE;
     $additional_options['exclude-other-sites-processed'] = TRUE;
   }
   // If the --exclude-files option is specified, then
   // convert that into --exclude-path='%files'.
-  if (_drush_rsync_get_option($additional_options, 'exclude-files', FALSE) && !_drush_rsync_get_option($additional_options, 'exclude-files-processed', FALSE, 'process')) {
-    $additional_options['exclude-path'] = '%files,' . _drush_rsync_get_option($additional_options, 'exclude-path', '');
+  if (drush_get_option_override($additional_options, 'exclude-files', FALSE) && !drush_get_option_override($additional_options, 'exclude-files-processed', FALSE, 'process')) {
+    $additional_options['exclude-path'] = '%files,' . drush_get_option_override($additional_options, 'exclude-path', '');
     $additional_options['exclude-files-processed'] = TRUE;
   }
 
@@ -1366,8 +1385,8 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
   // in it, so that resolution is only done if the path alias is referenced.
   // Therefore, we can concatenate without worrying too much about the structure of
   // this variable's contents.
-  $include_path = _drush_rsync_get_option($additional_options, 'include-path', '');
-  $exclude_path = _drush_rsync_get_option($additional_options, 'exclude-path', '');
+  $include_path = drush_get_option_override($additional_options, 'include-path', '');
+  $exclude_path = drush_get_option_override($additional_options, 'exclude-path', '');
   $resolve_path = $path . $include_path . $exclude_path;
   // Resolve path aliases such as %files, if any exist in the path
   if (!empty($resolve_path)) {
@@ -1400,14 +1419,9 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
     if (($value[0] != '/') && ($key != '%root')) {
       $full_path_aliases[$key] = $drupal_root . $value;
     }
-    // Rsync is very particular about the meaning of paths that
-    // end with a '/' compared to those that do not.  In order to
-    // copy from !path to !path without creating an extra spurrious
-    // directory, the path alias must end with a '/'.  Therefore
-    // we will add a slash to the end of any alias that does not
-    // already have one.
-    if ($value[strlen($value)-1] != '/') {
-      $full_path_aliases[$key] = $full_path_aliases[$key] . '/';
+    // We do not want slashes on the end of our path aliases.
+    if ($value[strlen($value)-1] == '/') {
+      $full_path_aliases[$key] = substr($full_path_aliases[$key], -1);
     }
   }
 
@@ -1433,22 +1447,28 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
 
   // If there is a $machine component, to the path, then
   // add it to the beginning
+  $evaluated_path = $path;
   if (!empty($machine)) {
-    $path = $machine . ':' . $path;
+    $evaluated_path = $machine . ':' . $path;
   }
 
-  // TODO: Rename this key.
-  $site_alias_settings['rsync-path'] = $path;
+  //
+  // Add our result paths:
+  //
+  //    evaluated-path:         machine:/path
+  //    server-component:       machine
+  //    path-component:         :/path
+  //    path:                   /path
+  //    user-path:              path (as specified in input parameter)
+  //
+  $site_alias_settings['evaluated-path'] = $evaluated_path;
+  if (!empty($machine)) {
+    $site_alias_settings['server-component'] = $machine;
+  }
   $site_alias_settings['path-component'] = $path_component;
-
+  $site_alias_settings['path'] = $path;
+  $site_alias_settings['user-path'] = $preflight['path'];
+  
   return $site_alias_settings;
 }
 
-function _drush_rsync_get_option($additional_options, $option, $value = NULL, $context = NULL) {
-  if (array_key_exists($option, $additional_options)) {
-    return $additional_options[$option];
-  }
-  else {
-    return drush_get_option($option, $value, $context);
-  }
-}

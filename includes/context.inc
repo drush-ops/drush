@@ -383,6 +383,31 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
 }
 
 /**
+ * Get the value for an option, but first checks the provided option overrides.
+ *
+ * The feature of drush_get_option that allows a list of option names
+ * to be passed in an array is NOT supported.
+ *
+ * @param option_overrides
+ *   An array to check for values before calling drush_get_option.
+ * @param option
+ *   The name of the option to get.
+ * @param default
+ *   Optional. The value to return if the option has not been set.
+ * @param context
+ *   Optional. The context to check for the option. If this is set, only this context will be searched.
+ * 
+ */
+function drush_get_option_override($option_overrides, $option, $value = NULL, $context = NULL) {
+  if (array_key_exists($option, $option_overrides)) {
+    return $option_overrides[$option];
+  }
+  else {
+    return drush_get_option($option, $value, $context);
+  }
+}
+
+/**
  * Get all of the values for an option in every context.
  *
  * @param option

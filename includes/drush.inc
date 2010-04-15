@@ -989,7 +989,12 @@ function drush_print_table($rows, $header = FALSE, $widths = array()) {
 function drush_key_value_to_array_table($keyvalue_table) {
   $table = array();
   foreach ($keyvalue_table as $key => $value) {
-    $table[] = array($key, ' :', $value);
+    if (isset($value)) {
+      $table[] = array($key, ' :', $value);
+    }
+    else {
+      $table[] = array($key . ':', '', '');
+    }
   }
   return $table;
 }
