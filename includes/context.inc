@@ -4,40 +4,40 @@
  * @file
  * The Drush context API implementation.
  *
- * This API acts as a storage mechanism for all options,
- * arguments and configuration settings that are loaded into drush.
+ * This API acts as a storage mechanism for all options, arguments and
+ * configuration settings that are loaded into drush.
  *
- * This API also acts as an IPC mechanism between the different drush
- * commands, and provides protection from accidentally overriding
- * settings that are needed by other parts of the system.
+ * This API also acts as an IPC mechanism between the different drush commands,
+ * and provides protection from accidentally overriding settings that are
+ * needed by other parts of the system.
  *
- * It also avoids the necessity to pass references through
- * the command chain and allows the scripts to keep track
- * of whether any settings have changed since the previous
- * execution.
+ * It also avoids the necessity to pass references through the command chain
+ * and allows the scripts to keep track of whether any settings have changed
+ * since the previous execution.
  *
  * This API defines several contexts that are used by default.
  *
  * Argument contexts :
  *   These contexts are used by Drush to store information on the command.
- *   They have their own access functions in the forms of @drush_set_arguments,
- *   @drush_get_arguments, @drush_set_command, @drush_get_command.
+ *   They have their own access functions in the forms of
+ *   drush_set_arguments(), drush_get_arguments(), drush_set_command(),
+ *   drush_get_command().
  *
  *     command : The drush command being executed.
  *     arguments : Any additional arguments that were specified.
  *
  * Setting contexts :
  *   These contexts store options that have been passed to the drush.php
- *   script, either through the use of any of the config files, directly
- *   from the command line through --option='value' or through a JSON
- *   encoded string passed through the STDIN pipe.
+ *   script, either through the use of any of the config files, directly from
+ *   the command line through --option='value' or through a JSON encoded string
+ *   passed through the STDIN pipe.
  *
- *   These contexts are accessible through the @drush_get_option and @drush_set_option
- *   functions.  See @drush_context_names for a description of all of
- *   the contexts.
+ *   These contexts are accessible through the drush_get_option() and
+ *   drush_set_option() functions.  See drush_context_names() for a description
+ *   of all of the contexts.
  *
- *   Drush commands may also choose to save settings for a specific context to the matching configuration
- *   file through the drush_save_config() function.
+ *   Drush commands may also choose to save settings for a specific context to
+ *   the matching configuration file through the drush_save_config() function.
  */
 
 
