@@ -173,11 +173,12 @@ function core_drush_command() {
   );
 
   $items['core-cli'] = array(
-    'description' => dt('Enter a new shell optimized for drush use.  See the examples below for command usage from within the drush cli.'),
+    'description' => dt('Enter a new shell optimized for drush use.'),
     'examples' => array(
       'help' => 'Print available drush commands',
       'cdd' => 'Navigate to the root of your Drupal site',
       'cdd files' => 'Navigate to the files directory.',
+      'lsd files' => 'List all files in the Drupal files directory.',
       'on @alias status' => 'Run the command "status" on the site indicated by @alias',
     ),
     'aliases' => array('cli'),
