@@ -526,8 +526,8 @@ function drush_core_status() {
     }
   }
   else {
-    unset($status_table['Modules Path']);
-    unset($status_table['Themes Path']);
+    unset($status_table['Modules path']);
+    unset($status_table['Themes path']);
     drush_print_table(drush_key_value_to_array_table($status_table));
   }
   return;
