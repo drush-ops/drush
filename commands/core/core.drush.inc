@@ -705,6 +705,32 @@ function drush_core_cli() {
   // Make sure that we call drush the same way that we were called.
   $drush_command = DRUSH_COMMAND.' --in-cli';
 
+  $bashrc_data = implode("/n/n", drush_command_invoke_all('cli_bashrc', $drush_command));
+
+  // Before entering the new bash script, cd to the current site root,
+  // if any.  This will make our default site for drush match the
+  // currently bootstrapped site (at least until the user cd's away).
+  if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+    chdir($site_root);
+  }
+
+  // Print our entire bashrc file in verbose mode
+  if (drush_get_context('DRUSH_VERBOSE')) {
+    drush_print($bashrc_data);
+  }
+
+  drush_print("Entering the drush cli.  Use CONTROL-D to exit.");
+  drush_print("Type 'help' for help.");
+
+  // Save out bashrc in a temporary file and launch bash.
+  // control-d to exit.  The temp file will be deleted after
+  // we exit.
+  $bashrc = drush_save_data_to_temp_file($bashrc_data);
+  drush_op('system', 'bash --rcfile ' . $bashrc . ' > `tty`');
+}
+
+// Implement our own hook_cli_bashrc()
+function core_cli_bashrc($drush_command) {
   // Set up our default bashrc file for the drush cli
   $bashrc_data = <<<EOD
 
@@ -760,24 +786,5 @@ EOD;
     }
   }
 
-  // Before entering the new bash script, cd to the current site root,
-  // if any.  This will make our default site for drush match the
-  // currently bootstrapped site (at least until the user cd's away).
-  if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    chdir($site_root);
-  }
-
-  // Print our entire bashrc file in verbose mode
-  if (drush_get_context('DRUSH_VERBOSE')) {
-    drush_print($bashrc_data);
-  }
-
-  drush_print("Entering the drush cli.  Use CONTROL-D to exit.");
-  drush_print("Type 'help' for help.");
-
-  // Save out bashrc in a temporary file and launch bash.
-  // control-d to exit.  The temp file will be deleted after
-  // we exit.
-  $bashrc = drush_save_data_to_temp_file($bashrc_data);
-  drush_op('system', 'bash --rcfile ' . $bashrc . ' > `tty`');
+  return $bashrc_data;
 }
