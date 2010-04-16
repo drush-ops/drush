@@ -58,7 +58,7 @@ For Windows:
 
 USAGE
 -----
-Once installed and setup (see above), you can use drush as follows while in
+Once installed and setup, you can use drush as follows while in
 any Drupal directory:
 
   $ drush [options] <command> [argument1] [argument2]
@@ -82,6 +82,9 @@ Related Options:
 NOTE: If you do not specify a URI with -l and drush falls back to the default
 site configuration, Drupal's $GLOBAL['base_url'] will be set to http://default.
 This may cause some functionality to not work as expected.
+
+The drush cli command provide a customized bash shell with support for handy new
+functions like cdd which whisks you to any directory in your drupal site.
 
 EXAMPLES
 --------
@@ -136,7 +139,7 @@ REQUIREMENTS
   with drush.  On Drupal 5, drush requires update_status v5.x-2.5 or later
   in order to use pm-updatecode.  If you have an earlier version of update_status,
   upgrade it via "drush dl update_status" before using pm-updatecode.
-  
+
 FAQ
 ---
   Q: What does "drush" stand for?

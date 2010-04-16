@@ -171,7 +171,7 @@ function core_drush_command() {
     'aliases' => array('dd'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
-  
+
   $items['core-cli'] = array(
     'description' => dt('Enter a new shell optimized for drush use.  See the examples below for command usage from within the drush cli.'),
     'examples' => array(
@@ -183,7 +183,7 @@ function core_drush_command() {
     'aliases' => array('cli'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
-  
+
   $items['batch-process'] = array(
     'description' => dt('Process operations in the specified batch set'),
     'hidden' => TRUE,
@@ -404,32 +404,32 @@ function _core_path_aliases($project = '') {
 
   // Add in all of the global paths from $options['path-aliases']
   $paths = array_merge($paths, drush_get_option('path-aliases', array()));
-  
+
   return $paths;
 }
 
 function _core_site_status_table($project = '') {
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
-    $status_table['Drupal Version'] = drush_drupal_version();
+    $status_table['Drupal version'] = drush_drupal_version();
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $status_table['Site URI'] = drush_get_context('DRUSH_URI');
       if ($creds = drush_get_context('DRUSH_DB_CREDENTIALS')) {
-        $status_table['Database Driver'] = $creds['driver'];
-        $status_table['Database Hostname'] = $creds['host'];
-        $status_table['Database Username'] = $creds['user'];
-        $status_table['Database Name'] = $creds['name'];
+        $status_table['Database driver'] = $creds['driver'];
+        $status_table['Database hostname'] = $creds['host'];
+        $status_table['Database username'] = $creds['user'];
+        $status_table['Database name'] = $creds['name'];
         if (drush_get_option('show-passwords', FALSE)) {
           $status_table['Database Password'] = $creds['pass'];
         }
         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
           $status_table['Database'] = dt('Connected');
           if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-            $status_table['Drupal Bootstrap'] = dt('Successful');
+            $status_table['Drupal bootstrap'] = dt('Successful');
             if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
               global $user;
               $username =  ($user->uid) ? $user->name : dt('Anonymous');
-              $status_table['Drupal User'] = $username;
+              $status_table['Drupal user'] = $username;
             }
           }
         }
@@ -443,17 +443,17 @@ function _core_site_status_table($project = '') {
     // users figure out their php.ini issues.
     $status_table['PHP configuration'] = php_ini_loaded_file();
   }
-  $status_table['Drush Version'] = DRUSH_VERSION;
+  $status_table['Drush version'] = DRUSH_VERSION;
   $status_table['Drush configuration'] = implode(' ', drush_get_context_options('context-path', TRUE));
-  
+
   // None of the Status keys are in dt(); this helps with machine-parsing of status?
-  $path_names['root'] = 'Drupal Root';
-  $path_names['site'] = 'Site Path';
-  $path_names['modules'] = 'Modules Path';
-  $path_names['themes'] = 'Themes Path';
-  $path_names['files'] = 'File Directory Path';
-  $path_names['private'] = 'Private File Directory Path';
-  
+  $path_names['root'] = 'Drupal root';
+  $path_names['site'] = 'Site path';
+  $path_names['modules'] = 'Modules path';
+  $path_names['themes'] = 'Themes path';
+  $path_names['files'] = 'File directory path';
+  $path_names['private'] = 'Private file directory path';
+
   $paths = _core_path_aliases($project);
   if (!empty($paths)) {
     foreach ($paths as $target => $one_path) {
@@ -467,12 +467,12 @@ function _core_site_status_table($project = '') {
       $status_table[$name] = $one_path;
     }
   }
-    
+
   // Store the paths into the '%paths' index; this will be
   // used by other code, but will not be included in the output
   // of the drush status command.
   $status_table['%paths'] = $paths;
-  
+
   return $status_table;
 }
 
@@ -664,7 +664,7 @@ function drush_core_drupal_directory($target = 'root') {
   else {
     return drush_set_error(dt('Core directory path !target not found.', array('!target' => $target)));
   }
-   
+
   return TRUE;
 }
 
@@ -686,13 +686,13 @@ function drush_core_find_project_path($target) {
       return drush_get_context('DRUSH_DRUPAL_ROOT') . '/' . dirname($file->filename);
     }
   }
-  
+
   return NULL;
 }
 
 function drush_core_cli() {
   drush_bootstrap_max();
-  
+
   // Do not allow cli to start recursively, or from backend invoke.
   if (drush_get_option('in-cli',FALSE)) {
     return drush_set_error(dt('Already in drush core-cli; press control-d to exit.'));
@@ -700,10 +700,10 @@ function drush_core_cli() {
   if (drush_get_context('DRUSH_BACKEND')) {
     return drush_set_error(dt('Cannot run drush core-cli from non-interactive mode; aborting.'));
   }
-  
+
   // Make sure that we call drush the same way that we were called.
   $drush_command = DRUSH_COMMAND.' --in-cli';
-  
+
   // Set up our default bashrc file for the drush cli
   $bashrc_data = <<<EOD
 
@@ -749,7 +749,7 @@ function lsd() {
 }
 
 EOD;
-  
+
   // Add aliases for all of our commands
   $commands = drush_get_commands();
   foreach ($commands as $key => $command) {
@@ -758,26 +758,25 @@ EOD;
       $bashrc_data .= "function $key() {\n  $drush_command $key \$@\n}\n";
     }
   }
-  
+
   // Before entering the new bash script, cd to the current site root,
   // if any.  This will make our default site for drush match the
   // currently bootstrapped site (at least until the user cd's away).
   if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
     chdir($site_root);
   }
-  
+
   // Print our entire bashrc file in verbose mode
   if (drush_get_context('DRUSH_VERBOSE')) {
     drush_print($bashrc_data);
   }
-    
+
   drush_print("Entering the drush cli.  Use CONTROL-D to exit.");
   drush_print("Type 'help' for help.");
-  
+
   // Save out bashrc in a temporary file and launch bash.
   // control-d to exit.  The temp file will be deleted after
   // we exit.
   $bashrc = drush_save_data_to_temp_file($bashrc_data);
   drush_op('system', 'bash --rcfile ' . $bashrc . ' > `tty`');
 }
-
