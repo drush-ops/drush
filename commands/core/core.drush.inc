@@ -331,7 +331,7 @@ function core_drush_help($section) {
     case 'drush:site-install':
       return dt("Install Drupal using specified install profile.");
     case 'drush:drupal-directory':
-      return dt("Return the filesystem path for projects/themes and other key folders. Unlike most drush commands, you usually want to prefix the command with cd and enclose the command invocation in backticks. See Examples below.");
+      return dt("Return the filesystem path for projects/themes and other key folders. Used by `cli` command for handy commands `cdd` and `lsd`. If you want to use this command directly, you usually want to prefix the command with cd and enclose the command invocation in backticks. See Examples below.");
     case 'drush:core-cli':
       return dt("Enter a new shell optimized for drush use.  See help for more details.");
     case 'error:DRUSH_DRUPAL_DB_ERROR' :
