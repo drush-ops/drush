@@ -187,6 +187,17 @@ function drush_sql_dump_execute() {
   return $return;
 }
 
+function drush_sql_get_table_selection() {
+  // Skip large core tables if instructed.  Also used by 'sql-sync' command.
+  $skip_tables = _drush_sql_get_table_list('skip-tables');
+  // Skip any structure-tables as well.
+  $structure_tables = _drush_sql_get_table_list('structure-tables');
+  // Dump only the specified tables.  Takes precedence over skip-tables and structure-tables.
+  $tables = _drush_sql_get_table_list('tables');
+
+  return array('skip' => $skip_tables, 'structure' => $structure_tables, 'tables' => $tables);
+}
+
 /**
  * Build a mysqldump statement.
  *
@@ -196,15 +207,16 @@ function drush_sql_dump_execute() {
  *   A mysqldump statement that is ready for executing.
  */
 function drush_sql_dump($db_spec = NULL) {
-  $ignores = array();
+  return drush_sql_build_dump_command(drush_sql_get_table_selection(), $db_spec);
+}
 
-  // Skip large core tables if instructed.  Also used by 'sql-sync' command.
-  $skip_tables = _drush_sql_get_table_list('skip-tables');
-  // Skip any structure-tables as well.
-  $structure_tables = _drush_sql_get_table_list('structure-tables');
+function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
+  $skip_tables = $tabel_selection['skip'];
+  $structure_tables = $tabel_selection['structure'];
+  $tables = $tabel_selection['tables'];
+  
+  $ignores = array();
   $skip_tables += $structure_tables;
-  // Dump only the specified tables.  Takes precedence over skip-tables and structure-tables.
-  $tables = _drush_sql_get_table_list('tables');
   $data_only = drush_get_option('data-only');
   // The ordered-dump option is only supported by MySQL for now.
   // @todo add documention once a hook for drush_get_option_help() is available.

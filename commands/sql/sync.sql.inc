@@ -123,45 +123,6 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
       $local_file = $target_dump;
     }
 
-
-    // Prompt for confirmation. This is destructive.
-    if (!drush_get_context('DRUSH_SIMULATE') && $show_warning) {
-
-      // If there are multiple destinations, then
-      // prompt once here and suppress the warning message
-      // and the normal confirmation below.
-      if (array_key_exists('site-list', $destination_settings)) {
-
-        drush_print(dt('You are about to sync the database from !source, overwriting all of the following targets:', array('!source' => $source)));
-        foreach ($destination_settings['site-list'] as $one_destination) {
-          drush_print(dt('  !target', array('!target' => $one_destination)));
-        }
-
-        if (drush_confirm('Continue? ') === FALSE) {
-           drush_die('Aborting.');
-        }
-      }
-      else {
-
-
-        // Check to see if we are using a temporary file in a situation
-        // where the user did not specify "--temp".
-        if (($source_is_tmp || $target_is_tmp) && (!isset($use_temp_files)) && (isset($source_db_url['remote-host'])  || isset($target_db_url['remote-host']))) {
-          drush_print(dt('WARNING:  Using temporary files to store and transfer sql-dump.  It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'%dump\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
-        }
-
-        $txt_source = (isset($source_db_url['remote-host']) ? $source_db_url['remote-host'] . '/' : '') . $source_db_url['database'];
-        $txt_destination = (isset($target_db_url['remote-host']) ? $target_db_url['remote-host'] . '/' : '') . $target_db_url['database'];
-        drush_print(dt("You will destroy data from !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
-        drush_print();
-        // TODO: actually make the backup if desired.
-        drush_print(dt("You might want to make a backup first, using sql_dump command.\n"));
-        if (!drush_confirm(dt('Do you really want to continue?'))) {
-          drush_die('Aborting.');
-        }
-      }
-    }
-
     // If source is remote, then use ssh to dump the database and then rsync to local machine
     // If source is local, call drush_sql_dump to dump the database to local machine
     // In either case, the '--no-dump' option will cause the sql-dump step to be skipped, and
@@ -197,6 +158,59 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
         drush_log('Local sql cache file does not exist.');
       }
     }
+    
+    $table_selection = array();
+    if (!isset($no_dump)) {
+      drush_set_option('result-file', $local_file);
+      $table_selection = drush_sql_get_table_selection();
+      $dump_exec = drush_sql_build_dump_command($table_selection, $source_db_url);
+    }
+
+    // Prompt for confirmation. This is destructive.
+    if (!drush_get_context('DRUSH_SIMULATE') && $show_warning) {
+
+      // If there are multiple destinations, then
+      // prompt once here and suppress the warning message
+      // and the normal confirmation below.
+      if (array_key_exists('site-list', $destination_settings)) {
+        drush_print(dt('You are about to sync the database from !source, overwriting all of the following targets:', array('!source' => $source)));
+        foreach ($destination_settings['site-list'] as $one_destination) {
+          drush_print(dt('  !target', array('!target' => $one_destination)));
+        }
+        drush_print();
+      }
+      else {
+        // Check to see if we are using a temporary file in a situation
+        // where the user did not specify "--temp".
+        if (($source_is_tmp || $target_is_tmp) && (!isset($use_temp_files)) && (isset($source_db_url['remote-host'])  || isset($target_db_url['remote-host']))) {
+          drush_print(dt('WARNING:  Using temporary files to store and transfer sql-dump.  It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'%dump\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
+        }
+
+        $txt_source = (isset($source_db_url['remote-host']) ? $source_db_url['remote-host'] . '/' : '') . $source_db_url['database'];
+        $txt_destination = (isset($target_db_url['remote-host']) ? $target_db_url['remote-host'] . '/' : '') . $target_db_url['database'];
+        drush_print(dt("You will destroy data from !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
+        drush_print();
+      }
+        
+      if (array_key_exists('tables', $table_selection) && (count($table_selection['tables']) > 0)) {
+        drush_print(dt('  Only the following tables will be transferred: !list', array('!list' => implode(',', $table_selection['tables']))));
+        drush_print();
+      }
+      elseif (!empty($table_selection)) {
+        $skip_tables_list = implode(',', $table_selection['skip'] + $table_selection['structure']);
+        if(!empty($skip_tables_list)) {
+          drush_print(dt('  The following tables will be skipped: !list', array('!list' => $skip_tables_list)));
+          drush_print();
+        }
+      }
+
+      // TODO: actually make the backup if desired.
+      drush_print(dt("You might want to make a backup first, using sql_dump command.\n"));
+      if (!drush_confirm(dt('Do you really want to continue?'))) {
+        drush_die('Aborting.');
+      }
+    }
+
     if (isset($source_db_url['remote-host'])) {
       $source_remote_user = drush_get_option('source-remote-user');
       if (isset($source_remote_user)) {
@@ -206,17 +220,15 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
 
       if (!isset($no_dump)) {
         $source_intermediate = $source_dump;
-        $mv_intermediate = '';
         // If we are doing a remote dump and the source is not a temporary file,
         // then first dump to a temporary file and move it to the specified file after
         // the dump is complete.  This will reduce contention during simultaneous dumps
         // from different users sharing the same dump file.
         if (!isset($source_is_tmp)) {
           $source_intermediate = $source_dump . '-' . date("U");
-          $mv_intermediate = '; mv -f ' . $source_intermediate . ' ' . $source_dump;
+          $dump_exec .= '; mv -f ' . $source_intermediate . ' ' . $source_dump;
         }
         drush_set_option('result-file', $source_intermediate);
-        $dump_exec = drush_sql_dump($source_db_url) . $mv_intermediate;
         if (isset($cache) && !isset($source_is_tmp)) {
           // Inject some bash commands to remotely test the modification date of the target file
           // if the cache option is set.
@@ -226,10 +238,6 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
       }
     }
     else {
-      if (!isset($no_dump)) {
-        drush_set_option('result-file', $local_file);
-        $dump_exec = drush_sql_dump($source_db_url);
-      }
       $no_sync = TRUE;
     }
 
