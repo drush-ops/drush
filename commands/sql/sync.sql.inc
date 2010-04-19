@@ -161,9 +161,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     
     $table_selection = array();
     if (!isset($no_dump)) {
-      drush_set_option('result-file', $local_file);
       $table_selection = drush_sql_get_table_selection();
-      $dump_exec = drush_sql_build_dump_command($table_selection, $source_db_url);
     }
 
     // Prompt for confirmation. This is destructive.
@@ -220,15 +218,17 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
 
       if (!isset($no_dump)) {
         $source_intermediate = $source_dump;
+        $mv_intermediate = '';
         // If we are doing a remote dump and the source is not a temporary file,
         // then first dump to a temporary file and move it to the specified file after
         // the dump is complete.  This will reduce contention during simultaneous dumps
         // from different users sharing the same dump file.
         if (!isset($source_is_tmp)) {
           $source_intermediate = $source_dump . '-' . date("U");
-          $dump_exec .= '; mv -f ' . $source_intermediate . ' ' . $source_dump;
+          $mv_intermediate = '; mv -f ' . $source_intermediate . ' ' . $source_dump;
         }
         drush_set_option('result-file', $source_intermediate);
+        $dump_exec = drush_sql_build_dump_command($table_selection, $source_db_url) . $mv_intermediate;
         if (isset($cache) && !isset($source_is_tmp)) {
           // Inject some bash commands to remotely test the modification date of the target file
           // if the cache option is set.
@@ -238,6 +238,10 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
       }
     }
     else {
+      if (!isset($no_dump)) {
+        drush_set_option('result-file', $local_file);
+        $dump_exec = drush_sql_build_dump_command($table_selection, $source_db_url);
+      }
       $no_sync = TRUE;
     }
 
