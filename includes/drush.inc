@@ -662,42 +662,39 @@ function drush_show_help($commands) {
           }
         }
 
-        $help = drush_command_invoke_all('drush_help', 'drush:'. $command['command']);
-        if (!empty($help)) {
-          drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));
-          drush_print();
+        if (!$help = drush_command_invoke_all('drush_help', 'drush:'. $command['command'])) {
+          $help = array($command['description']);
+        }
+        drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));
+        drush_print();
 
-          // TODO: Let commands define additional sections.
-          $sections = array(
-            'examples' => 'Examples',
-            'arguments' => 'Arguments',
-            'options' => 'Options',
-          );
+        // TODO: Let commands define additional sections.
+        $sections = array(
+          'examples' => 'Examples',
+          'arguments' => 'Arguments',
+          'options' => 'Options',
+        );
 
-          foreach ($sections as $key => $value) {
-            if (!empty($command[$key])) {
-              drush_print(dt($value) . ':');
-              foreach ($command[$key] as $name => $description) {
-                // '[command] is a token representing the current command. @see pm_drush_engine_version_control().
-                $rows[] = array(str_replace('[command]', $commandstring, $name), dt($description));
-              }
-              drush_print_table($rows, false, array(40));
-              unset($rows);
-              drush_print();
+        foreach ($sections as $key => $value) {
+          if (!empty($command[$key])) {
+            drush_print(dt($value) . ':');
+            foreach ($command[$key] as $name => $description) {
+              // '[command] is a token representing the current command. @see pm_drush_engine_version_control().
+              $rows[] = array(str_replace('[command]', $commandstring, $name), dt($description));
             }
+            drush_print_table($rows, false, array(40));
+            unset($rows);
+            drush_print();
           }
-
-          // Append aliases if any.
-          if ($command['aliases']) {
-            drush_print(dt("Aliases: ") . implode(', ', $command['aliases']));
-          }
-
-          return TRUE;
         }
-        else {
-          drush_print("No help available for command '$commandstring'.");
-          return TRUE;
+
+        // Append aliases if any.
+        if ($command['aliases']) {
+          drush_print(dt("Aliases: ") . implode(', ', $command['aliases']));
         }
+
+        return TRUE;
+
       }
     }
     else {
