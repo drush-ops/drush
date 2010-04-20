@@ -1267,7 +1267,7 @@ function _drush_sitealias_preflight_path($path) {
     $alias = substr($path, 0, $colon_pos);
     $path = substr($path, $colon_pos + 1);
     $site_alias_settings = _drush_sitealias_get_record($alias);
-    if (empty($site_alias_settings)) {
+    if (empty($site_alias_settings) && (substr($path,0,1) == '@')) {
       return NULL;
     }
     $machine = $alias;
