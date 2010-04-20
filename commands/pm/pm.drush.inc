@@ -1318,17 +1318,20 @@ function drush_pm_download() {
         // this case, the recommended release defaults to the latest published
         // release with the right recommended major version number.
         $recommended_releases = array();
-        foreach ($releases as $one_release) {
-          if (!array_key_exists('version_extra', $one_release)) {
-            $recommended_releases[] = $one_release;
+        if (!empty($releases)) {
+          foreach ($releases as $one_release) {
+            if (!array_key_exists('version_extra', $one_release)) {
+              $recommended_releases[] = $one_release;
+            }
           }
         }
+
         if (!empty($recommended_releases)) {
           $releases = $recommended_releases;
         }
 
         if (empty($releases)) {
-          drush_log(dt('There is no *recommended* release for project !project on Drupal !drupal_version. Ask the maintainer to review http://drupal.org/node/197584 and create/recommend a release in order to be compatible with drush and the drupal.org security broadcast system. A recommended development snapshot release is sufficient. Alternatively, run pm-releases command and explicity pm-download any non-recommended release that might be available.', array('!drupal_version' => $request['drupal_version'], '!project' => $request['name'])), 'notice');
+          drush_log(dt('There is no *recommended* release for project !project on Drupal !drupal_version. Ask the maintainer to review http://drupal.org/node/197584 and create/recommend a release in order to be compatible with drush and the drupal.org security broadcast system. A recommended development snapshot release is sufficient. Alternatively, run pm-releases command and explicity pm-download any non-recommended release that might be available.', array('!drupal_version' => $request['drupal_version'], '!project' => $request['name'])), 'ok');
           continue;
         }
 
@@ -1378,9 +1381,9 @@ function drush_pm_download() {
 }
 
 /**
- * drush_pm_relocate_project moves projects that should be relocated to a different 
+ * drush_pm_relocate_project moves projects that should be relocated to a different
  * installation directory to the location they belong in.  For example,
- * modules that are only collections of drush commands will be installed 
+ * modules that are only collections of drush commands will be installed
  * to $HOME/.drush.
  *
  * This function is called after the project is downloaded so that its
