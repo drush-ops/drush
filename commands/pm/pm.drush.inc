@@ -366,12 +366,13 @@ function drush_pm_enable() {
         drush_set_error($info['error']['code'], $info['error']['message']);
       }
       else {
-        $all_dependencies = array_merge($all_dependencies, $info['dependencies']);
+        $all_dependencies = array_merge($all_dependencies, drupal_map_assoc($info['dependencies']));
       }
     }
     $all_dependencies = array_unique($all_dependencies);
     $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
-    $modules = array_unique(array_merge($modules, array_diff($all_dependencies, $enabled)));
+    $needed = array_diff($all_dependencies, $enabled);
+    $modules = $needed + $modules;
 
     // Discard modules which don't meet requirements.
     require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
