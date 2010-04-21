@@ -16,6 +16,5 @@
  */
 
 // Just some ideas to get the juices flowing.
-drush_print_r(menu_get_item());
 drush_print_r(user_roles());
 drush_print_r($GLOBALS['user']);
