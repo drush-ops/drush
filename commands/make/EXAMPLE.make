@@ -4,6 +4,9 @@
 ; syntax and options available to drush_make. For a full description of all
 ; options available, see README.txt.
 
+; This make file is a working makefile - try it! Any line starting with a `;`
+; is a comment.
+
 ; Core version
 ; ------------
 ; Each makefile should begin by declaring the core version of Drupal that all
@@ -42,7 +45,7 @@ projects[] = views
 
 projects[cck] = 2.6
 
-; Or an alternative syntax:
+; Or an alternative, extended syntax:
 
 projects[ctools][version] = 1.3
 
@@ -60,3 +63,8 @@ projects[data][download][revision] = DRUPAL-6--1
 projects[tao][type] = theme
 projects[tao][download][type] = git
 projects[tao][download][url] = git://github.com/developmentseed/tao.git
+
+; If you want to install a module into a sub-directory, you can use the
+; `subdir` attribute.
+
+projects[admin_menu][subdir] = custom
