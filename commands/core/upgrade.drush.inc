@@ -19,6 +19,7 @@ function upgrade_drush_command() {
   $items['site-upgrade'] = array(
     'description' => "Run a major version upgrade for Drupal core and contrib modules.",
     'drupal dependencies' => array('update'),
+    'core' => array(6), // Remove once 3.0 is released.
     'arguments' => array(
       'target' => 'The name of a sitealias, which points to the destination site. root, uri, and db-url keys are required. See examples/aliases.drushrc.php for more information.'),
     'examples' => array(
