@@ -80,7 +80,7 @@ function drush_core_site_install($profile = 'standard') {
 
   $db_spec = drush_core_site_install_db_spec();
 
-  $account_pass = drush_get_option('account_pass', 'admin');
+  $account_pass = drush_get_option('account-pass', 'admin');
   $settings = array(
     'parameters' => array(
       'profile' => $profile,
