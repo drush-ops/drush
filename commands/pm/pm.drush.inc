@@ -1425,17 +1425,17 @@ function pm_drush_pm_adjust_download_destination(&$project, $release) {
       $drush_command_files = drush_scan_directory($project['full_project_path'], '/.*\.drush.inc/');
       if (!empty($drush_command_files)) {
         $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands/';
-	if (!is_dir($install_dir)) {
+        if (!is_dir($install_dir)) {
           $install_dir = drush_server_home() . '/.drush/';
         }
-	// Make the .drush dir if it does not already exist
-	if (!is_dir($install_dir)) {
-	  mkdir($install_dir);
-	}
-	// Change the location if the mkdir worked
-	if (is_dir($install_dir)) {
-	  $project['project_install_location'] = $install_dir . basename($project['full_project_path']);
-	}
+        // Make the .drush dir if it does not already exist
+        if (!is_dir($install_dir)) {
+          mkdir($install_dir);
+        }
+        // Change the location if the mkdir worked
+        if (is_dir($install_dir)) {
+          $project['project_install_location'] = $install_dir . basename($project['full_project_path']);
+        }
       }
     }
   }
