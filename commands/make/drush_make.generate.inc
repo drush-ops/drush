@@ -28,28 +28,22 @@ function _drush_generate_makefile($file) {
     }
   }
 
-  // Re-build theme data to be sure we have the most current information.
-  if (function_exists('system_theme_data')) {
-    system_theme_data();
-  }
-  $modules = drush_get_modules();
-  $themes = _system_theme_data();
-  foreach (array('module', 'theme') as $type) {
-    $variable = $type . 's';
-    foreach ($$variable as $item) {
-      $name = $item->name;
-      if ($item->info['project'] != 'drupal' && $item->info['project'] == $name) {
-        if ($type == 'module' && !$item->status) {
-          continue;
-        }
-        $updatexml = _drush_generate_makefile_updatexml($name, $type, $item->info);
-        $projects[$name] = array('_type' => $type);
-        if ($updatexml) {
-          $projects[$name]['type'] = $type;
-          $projects[$name]['custom_download'] = TRUE;
-        }
-        $projects[$name] += _drush_generate_makefile_check_location($name, $type);
+  // Re-build theme and module data to be sure we have the most current information.
+  $project_info = drush_get_projects();
+  foreach ($project_info as $item) {
+    $name = $item->name;
+    $type = $item->type;
+    if ($item->info['project'] != 'drupal' && $item->info['project'] == $name) {
+      if (($item->type == 'module') && (!$item->status)) {
+        continue;
       }
+      $updatexml = _drush_generate_makefile_updatexml($name, $type, $item->info);
+      $projects[$name] = array('_type' => $type);
+      if ($updatexml) {
+        $projects[$name]['type'] = $type;
+        $projects[$name]['custom_download'] = TRUE;
+      }
+      $projects[$name] += _drush_generate_makefile_check_location($name, $type);
     }
   }
 
