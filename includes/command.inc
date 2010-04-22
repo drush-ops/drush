@@ -297,7 +297,6 @@ function drush_invoke($command) {
     foreach ($list as $commandfile => $filename) {
       $oldfunc = sprintf("drush_%s_%s", $commandfile, $var_hook);
       $func = str_replace('drush_' . $commandfile . '_' . $commandfile, 'drush_' . $commandfile, $oldfunc);
-      $all_available_hooks[] = $func;
       if (($oldfunc != $func) && (function_exists($oldfunc))) {
         drush_log(dt("The drush command hook naming conventions have changed; the function !oldfunc must be renamed to !func.  The old function will be called, but this will be removed shortly.", array('!oldfunc' => $oldfunc, '!func' => $func)), "error");
         // TEMPORARY:  Allow the function to be called by its old name.
@@ -305,6 +304,10 @@ function drush_invoke($command) {
       }
       if (function_exists($func)) {
         $functions[] = $func;
+        $all_available_hooks[] = $func . ' [*]';
+      }
+      else {
+        $all_available_hooks[] = $func;
       }
     }
   }

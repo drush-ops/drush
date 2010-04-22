@@ -32,18 +32,19 @@ function core_drush_command() {
       'drush help --pipe' => 'A space delimited list of commands',
     ),
   );
-  $items['cron'] = array(
+  $items['core-cron'] = array(
     'description' => 'Run all cron hooks.',
+    'aliases' => array('cron'),
   );
   $items['updatedb'] = array(
     'description' => dt('Execute the update.php process from the command line'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
     'aliases' => array('updb'),
   );
-  $items['status'] = array(
+  $items['core-status'] = array(
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'aliases' => array('st'),
+    'aliases' => array('status', 'st'),
     'examples' => array(
       'drush status version' => 'Show all status lines that contain version information.',
       'drush status --pipe' => 'A list key=value items separated by line breaks.',
@@ -94,7 +95,7 @@ function core_drush_command() {
       '--immediate' => 'Rebuild the index immediately, instead of waiting for cron.',
     ),
   );
-  $items['rsync'] = array(
+  $items['core-rsync'] = array(
     'description' => 'Rsync the Drupal tree to/from another server using ssh.  Relative paths start from the Drupal root folder if a site alias is used; otherwise they start from the current working directory.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'arguments' => array(
@@ -116,6 +117,7 @@ function core_drush_command() {
       'drush rsync @dev @stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
       'drush rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
     ),
+    'aliases' => array('rsync'),
     'deprecated-aliases' => array('sync'),
   );
   $items['php-eval'] = array(
