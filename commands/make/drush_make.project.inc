@@ -54,7 +54,7 @@ class DrushMakeProject {
         // Download the patch.
         list($filename) = array_reverse(explode('/', $url));
         if (!drush_shell_exec('wget %s', $url)) {
-          drush_shell_exec('curl -O %s', $url);
+          drush_shell_exec('curl -L -O %s', $url);
         }
         if (file_exists($filename)) {
           $patches_txt .= '- ' . $url . "\n";

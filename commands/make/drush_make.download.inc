@@ -170,7 +170,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
       $url = $this->project->download['url'];
       $filename = "$tmp_path/" . basename($url);
       // Download the project -- try wget, fall back to curl.
-      if (drush_get_context('DRUSH_SIMULATE') || drush_shell_exec('wget %s -O %s', $url, $filename) || drush_shell_exec('curl -o %s %s', $filename, $url)) {
+      if (drush_get_context('DRUSH_SIMULATE') || drush_shell_exec('wget %s -O %s', $url, $filename) || drush_shell_exec('curl -L -o %s %s', $filename, $url)) {
         drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $url)), 'ok');
         return $filename;
       }

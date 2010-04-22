@@ -384,13 +384,11 @@ function drush_make_get_remote_file($url) {
   elseif (ini_get('allow_url_fopen')) {
     return file_get_contents($url);
   }
-  elseif (drush_shell_exec('wget -qO- %s', $url) || drush_shell_exec('curl --silent %s', $url)) {
+  elseif (drush_shell_exec('wget -qO- %s', $url) || drush_shell_exec('curl -L --silent %s', $url)) {
     return implode("\n", drush_shell_exec_output());
   }
   // drush, we have an error.
   else {
     return drush_set_error('drush_make_download_error', 'Unable to download remote file. No download services supported.');
   }
-  
 }
-
