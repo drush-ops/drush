@@ -86,6 +86,9 @@ This may cause some functionality to not work as expected.
 The drush cli command provide a customized bash shell with support for handy new
 functions like cdd which whisks you to any directory in your drupal site.
 
+Many commands support a --pipe option which returns machine readable output. See
+`drush pm-list --status=enabled --pipe` as an example
+
 EXAMPLES
 --------
 Inside the "examples" folder you will find some example files to help you
