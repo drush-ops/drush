@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-require_once DRUSH_BASE_PATH . '/commands/core/rsync.inc';
+require_once DRUSH_BASE_PATH . '/commands/core/rsync.core.inc';
 
 function drush_sql_sync($source = null, $destination = null) {
   $source_database = drush_get_option('source-database', 'default');
@@ -41,7 +41,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   // After preflight, get source and destination settings
   $source_settings = drush_sitealias_get_record($source);
   $destination_settings = drush_sitealias_get_record($destination);
-  
+
   // Insure that we have database records for the source and destination
   // alias records.  sitealias_get_databases_from_record will cache the
   // database info inside the alias records, and drush_sitealias_set_alias_context
@@ -74,7 +74,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     $target_remote_ssh_options = drush_get_option('target-ssh-options');
     // rsync later will also have to know this option
     $target_rsync_options = array('ssh-options' => $target_remote_ssh_options);
-        
+
     if (empty($source_db_url)) {
       return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for !source', array('!source' => $source)));
     }
@@ -158,7 +158,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
         drush_log('Local sql cache file does not exist.');
       }
     }
-    
+
     $table_selection = array();
     if (!isset($no_dump)) {
       $table_selection = drush_sql_get_table_selection();
@@ -189,7 +189,7 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
         drush_print(dt("You will destroy data from !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
         drush_print();
       }
-        
+
       if (array_key_exists('tables', $table_selection) && (count($table_selection['tables']) > 0)) {
         drush_print(dt('  Only the following tables will be transferred: !list', array('!list' => implode(',', $table_selection['tables']))));
         drush_print();
