@@ -277,7 +277,7 @@ function drush_set_context($context, $value) {
  * @return
  *   If context is not supplied, the entire context cache will be returned.
  *   Otherwise only the requested context will be returned.
- *   If the context does not exist yet, it will be initialied to an empty array.
+ *   If the context does not exist yet, it will be initialized to an empty array.
  */
 function &drush_get_context($context = null, $default = null) {
   static $cache = array();
@@ -396,7 +396,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
  *   Optional. The value to return if the option has not been set.
  * @param context
  *   Optional. The context to check for the option. If this is set, only this context will be searched.
- * 
+ *
  */
 function drush_get_option_override($option_overrides, $option, $value = NULL, $context = NULL) {
   if (array_key_exists($option, $option_overrides)) {

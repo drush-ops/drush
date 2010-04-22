@@ -307,7 +307,7 @@ function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
  * @param command
  *    A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
  * @param args
- *    An array or arguments for the command.
+ *    An array of arguments for the command.
  * @param data
  *    Optional. An array containing options to pass to the remote script.
  *    Array items with a numeric key are treated as optional arguments to the command.
@@ -474,5 +474,3 @@ function _drush_backend_get_stdin() {
   }
   return FALSE;
 }
-
-
