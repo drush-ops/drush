@@ -410,7 +410,7 @@ function drush_command_invoke_all() {
   }
   $reference_value = $args[1];
   $args[1] = &$reference_value;
-  
+
   return call_user_func_array('drush_command_invoke_all_ref', $args);
 }
 
@@ -600,8 +600,8 @@ function _drush_find_commandfiles($phase) {
  * Steps through each of the currently loaded commandfiles and
  * loads an optional commandfile based on the key.
  *
- * When a command such as 'pm install' is called, this
- * function will find all 'install.pm.inc' files that
+ * When a command such as 'pm-enable' is called, this
+ * function will find all 'enable.pm.inc' files that
  * are present in each of the commandfile directories.
  */
 function drush_command_include($command) {
