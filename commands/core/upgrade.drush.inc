@@ -140,7 +140,7 @@ function drush_upgrade_site_upgrade($target_key) {
   if (drush_get_error()) return -1; // Early exit if we see an error.
 
   // Run update.php in a subshell. It is run on @target site whereas this request was on @self.
-  drush_do_site_command($target_alias, 'updatedb', array(), array('debug' => TRUE));
+  drush_do_site_command($target_alias, 'updatedb', array(), array(), TRUE);
 }
 
 // Replace db_url with DB name from target. updatedb will later append a DBTNG compatible version.

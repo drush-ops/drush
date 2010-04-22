@@ -1199,7 +1199,7 @@ function drush_do_multiple_command($command, $source_record, $destination_record
   return $is_multiple_command;
 }
 
-function drush_do_site_command($site_record, $command, $args = array(), $data = array()) {
+function drush_do_site_command($site_record, $command, $args = array(), $data = array(), $integrate = FALSE) {
   $values = NULL;
   if (!empty($site_record)) {
     // Pass the root and uri parameters from the site alias
@@ -1213,7 +1213,7 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
       }
     }
 
-    $values = drush_backend_invoke_args($command, $args, $data, 'GET', FALSE, $drush_path, array_key_exists('remote-host', $site_record) ? $site_record['remote-host'] : NULL, array_key_exists('remote-user', $site_record) ? $site_record['remote-user'] : NULL);
+    $values = drush_backend_invoke_args($command, $args, $data, 'GET', $integrate, $drush_path, array_key_exists('remote-host', $site_record) ? $site_record['remote-host'] : NULL, array_key_exists('remote-user', $site_record) ? $site_record['remote-user'] : NULL);
   }
   return $values;
 }
