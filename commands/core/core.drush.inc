@@ -282,8 +282,8 @@ function drush_core_help() {
       }
     }
 
-    // Space delimited list for use by other scripts. Set the --pipe option.
-    drush_print_pipe(implode(' ', $pipe));
+    // Newline-delimited list for use by other scripts. Set the --pipe option.
+    drush_print_pipe($pipe);
     return;
   }
   else {

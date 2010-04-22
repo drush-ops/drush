@@ -318,8 +318,8 @@ function drush_pm_list() {
   drush_print_table($rows, TRUE);
 
   if (isset($pipe)) {
-    // Space delimited list for use by other scripts. Set the --pipe option.
-    drush_print_pipe(implode(' ', $pipe)."\n");
+    // Newline-delimited list for use by other scripts. Set the --pipe option.
+    drush_print_pipe($pipe);
   }
 }
 

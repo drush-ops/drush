@@ -132,7 +132,7 @@ function drush_sitealias_print() {
       drush_print($site);
     }
   }
-  drush_print_pipe(implode(' ', array_unique($site_specs)));
+  drush_print_pipe(array_unique($site_specs));
 }
 
 /**
