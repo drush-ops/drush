@@ -100,7 +100,7 @@ function drush_make_validate_info_file($info) {
     $errors = TRUE;
   }
   // Standardize on core.
-  elseif (preg_match('/^(\d+)(\.(x|(\d+)))?(-[a-z0-9]+)?$/', $info['core'], $matches)) {
+  elseif (preg_match('/^(\d+)(\.(x|(\d+)(-[a-z0-9]+)?))?$/', $info['core'], $matches)) {
     // An exact version of core has been specified, so pass that to an
     // internal variable for storage.
     if (isset($matches[4])) {
