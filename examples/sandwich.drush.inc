@@ -5,12 +5,16 @@
  * @file
  *   Example drush command.
  *
+ *   To run this *fun* command, execute `sudo drush --include=./examples mmas`
+ *   from within your drush directory.
+ *
  *   Shows how to make your own drush command.
  *
  *   You can copy this file to any of the following
  *     1. A .drush folder in your HOME folder.
  *     2. Anywhere in a folder tree below an active module on your site.
- *     3. In an arbitrary folder specified with the --include option.
+ *     3. /usr/share/drush/commands (configurable)
+ *     4. In an arbitrary folder specified with the --include option.
  */
 
 /**
@@ -28,16 +32,23 @@
  * @return
  *   An associative array describing your command(s).
  */
-function example_drush_command() {
+function sandwich_drush_command() {
   $items = array();
 
-  // the key in the $items array is the name of the command.
-  $items['example-foo'] = array(
-    // a short description of your command
-    'description' => "Drush example command. It doesn't do a lot.",
+  $items['make-me-a-sandwich'] = array(
+    'description' => "Makes a delicious sandwich.",
+    'arguments' => array(
+      'filling' => 'The type of the sandwich (turkey, cheese, etc.)',
+    ),
+    'options' => array(
+      'spreads' => 'Comma delimited list of spreads (e.g. mayonnaise, mustard)',
+    ),
+    'examples' => array(
+      'drush make-me-a-sandwich turkey --spreads=ketchup,mustard',
+    ),
+    'aliases' => array('mmas'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
-
-  // more commands here ...
 
   return $items;
 }
@@ -54,10 +65,20 @@ function example_drush_command() {
  * @return
  *   A string with the help text for your command.
  */
-function example_drush_help($section) {
+function sandwich_drush_help($section) {
   switch ($section) {
-    case 'drush:example-foo':
-      return dt("Prints the amount of time since January 1st, 1970, in years and weeks.");
+    case 'drush:make-me-a-sandwich':
+      return dt("This command will make you a delicious sandwich, just how you like it.");
+  }
+}
+
+/*
+ * Implementation of drush_hook_COMMAND_validate().
+ */
+function drush_sandwich_make_me_a_sandwich_validate() {
+  $name = posix_getpwuid(posix_geteuid());
+  if ($name['name'] !== 'root') {
+    return drush_set_error('MAKE_IT_YOUSELF', dt('What? Make your own sandwich.'));
   }
 }
 
@@ -66,7 +87,7 @@ function example_drush_help($section) {
  *
  * The function name should be same as command name but with dashes turned to
  * underscores and 'drush_commandfile_' prepended, where 'commandfile' is
- * taken from the file 'commandfile.drush.inc', which in this case is 'example'.
+ * taken from the file 'commandfile.drush.inc', which in this case is 'sandwich'.
  * Note also that a simplification step is also done in instances where
  * the commandfile name is the same as the beginning of the command name,
  * "drush_example_example_foo" is simplified to just "drush_example_foo".
@@ -86,10 +107,15 @@ function example_drush_help($section) {
  * any functions you have added in your own modules/themes.
  *
  */
-function drush_example_foo() {
-  $args = func_get_args();
-
-  // Using the Drupal API function 'format_interval()'
-  // and Drush API function 'drush_print'
-  drush_print(format_interval(time()));
+function drush_sandwich_make_me_a_sandwich($filling = 'ascii') {
+  $str_spreads = '';
+  if ($spreads = drush_get_option('spreads')) {
+    $list = implode(' and ', explode(',', $spreads));
+    $str_spreads = ' with just a dash of ' . $list;
+  }
+  $msg = dt('Okay. Enjoy this !filling sandwich!str_spreads.',
+            array('!filling' => $filling, '!str_spreads' => $str_spreads)
+         );
+  drush_print("\n" . $msg . "\n");
+  drush_print(file_get_contents(dirname(__FILE__) . '/sandwich.txt'));
 }
