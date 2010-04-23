@@ -88,7 +88,7 @@ function sql_drush_command() {
     'description' => 'Copy source database to target database using rsync.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'examples' => array(
-      'drush sql-sync dev prod' => 'Copy the DB defined in sites/dev to the DB in sites/prod.',
+      'drush sql-sync @dev @prod' => 'Copy the DB defined in sites/dev to the DB in sites/prod.',
     ),
     'arguments' => array(
       'from' => 'Name of subdirectory within /sites or a site-alias.',
