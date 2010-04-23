@@ -365,8 +365,10 @@ function drush_pm_enable() {
         unset($modules[$key]);
         drush_set_error($info['error']['code'], $info['error']['message']);
       }
-      else {
-        $all_dependencies = array_merge($all_dependencies, drupal_map_assoc($info['dependencies']));
+      elseif (!empty($info['dependencies'])) {
+        // Make sure we have an assoc array.
+        $assoc = drupal_map_assoc($info['dependencies']);
+        $all_dependencies = array_merge($all_dependencies, $assoc);
       }
     }
     $all_dependencies = array_unique($all_dependencies);
