@@ -784,7 +784,7 @@ EOD;
   foreach ($commands as $key => $command) {
     // Filter out old commands that still have spaces
     if (strpos($key, ' ') === FALSE) {
-      $bashrc_data .= "function $key() {\n  $drush_command $key \$@\n}\n";
+      $bashrc_data .= "function $key() {\n  $drush_command $key \"\$@\"\n}\n";
     }
   }
 
