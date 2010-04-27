@@ -23,7 +23,7 @@ function package_handler_install_project(&$project, $release) {
   chdir($project['base_project_path']);
 
   // Download it.
-  if (!drush_shell_exec("wget " . $release['download_link'])) {
+  if (!drush_shell_exec("wget -P . " . $release['download_link'])) {
     drush_shell_exec("curl -O " . $release['download_link']);
   }
 
