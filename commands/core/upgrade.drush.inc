@@ -136,7 +136,7 @@ function drush_upgrade_site_upgrade($target_key) {
   // Always blow away the target database so we start fresh.
   drush_set_option('create-db', TRUE);
   drush_include(DRUSH_BASE_PATH . '/commands/sql', 'sync.sql');
-  drush_sql_sync('default', $target_key);
+  drush_sql_sync('@self', $target_key);
   if (drush_get_error()) return -1; // Early exit if we see an error.
 
   // Run update.php in a subshell. It is run on @target site whereas this request was on @self.
