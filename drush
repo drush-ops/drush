@@ -34,7 +34,7 @@ if [ -z $COLUMNS ] && [ -n "$TERM" ]; then
 fi
 
 # Special case for *AMP installers, since they normally don't set themselves as the default cli php out of the box.
-for php in /Applications/MAMP/bin/php5/bin/php /opt/lampp/bin/php /Applications/xampp/xamppfiles/bin/php /Applications/acquia-drupal/php/bin/php; do 
+for php in /Applications/MAMP/bin/php5/bin/php /Applications/MAMP/bin/php52/bin/php /Applications/MAMP/bin/php53/bin/php /opt/lampp/bin/php /Applications/xampp/xamppfiles/bin/php /Applications/acquia-drupal/php/bin/php; do 
   if [ -x $php ]; then
     exec $php $SCRIPT_PATH --php="$php" "$@"
   fi
