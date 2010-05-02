@@ -1207,8 +1207,8 @@ function pm_drush_engine_version_control() {
       'signature' => 'bzr root %s',
       'options' => array(
         '--version-control=bzr' => 'Quickly add/remove/commit your project changes to Bazaar.',
-        '  --bzrsync' => 'Automatically add new files to the BZR repository and remove deleted files. Caution.',
-        '  --bzrcommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
+        '  --bzrsync' => 'Automatically add new files to the Bazaar repository and remove deleted files. Caution.',
+        '  --bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also using the --bzrsync option.',
         '  --bzrmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
       ),
     ),
