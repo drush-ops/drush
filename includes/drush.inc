@@ -1212,7 +1212,7 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
     $data['uri'] = $site_record['uri'];
 
     $drush_path = NULL;
-    if (array_key_exists('path-aliases', $site_record) && !array_key_exists('remote-host', $site_record)) {
+    if (array_key_exists('path-aliases', $site_record)) {
       if (array_key_exists('%drush-script', $site_record['path-aliases'])) {
         $drush_path = $site_record['path-aliases']['%drush-script'];
       }
