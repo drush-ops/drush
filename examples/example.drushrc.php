@@ -138,7 +138,7 @@ $options['skip-tables'] = array(
 
 // Specify additional directories to search for scripts
 // Use POSIX path separator (':')
-# $options['script']['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
+# $command_specific['script']['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
 
 /**
  * Variable overrides:
