@@ -53,6 +53,9 @@ function core_drush_command() {
     'arguments' => array(
       'item' => 'Optional.  The status item line(s) to display.  Any matching line is shown; if only one line matches, then only the value is displayed.  Otherwise, key=value is output.',
     ),
+    'options' => array(
+      'show-passwords' => 'Show database password.',
+    )
   );
   $items['php-script'] = array(
     'description' => "Run php script(s).",
@@ -423,7 +426,7 @@ function _core_site_status_table($project = '') {
         $status_table['Database username'] = $creds['user'];
         $status_table['Database name'] = $creds['name'];
         if (drush_get_option('show-passwords', FALSE)) {
-          $status_table['Database Password'] = $creds['pass'];
+          $status_table['Database password'] = $creds['pass'];
         }
         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
           $status_table['Database'] = dt('Connected');
