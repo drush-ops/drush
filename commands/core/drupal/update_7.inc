@@ -145,6 +145,7 @@ function update_main_prepare() {
   require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
   require_once DRUPAL_ROOT . '/includes/update.inc';
   require_once DRUPAL_ROOT . '/includes/common.inc';
+  require_once DRUPAL_ROOT . '/includes/file.inc';
   require_once DRUPAL_ROOT . '/includes/entity.inc';
   include_once DRUPAL_ROOT . '/includes/unicode.inc';
 
@@ -152,7 +153,6 @@ function update_main_prepare() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
 
   require_once DRUPAL_ROOT . '/includes/install.inc';
-  require_once DRUPAL_ROOT . '/includes/file.inc';
   require_once DRUPAL_ROOT . '/modules/system/system.install';
 
   // Load module basics.
