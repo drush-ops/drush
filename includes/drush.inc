@@ -791,7 +791,11 @@ function drush_die($msg = NULL, $status = NULL) {
  *    The indentation (space chars)
  */
 function drush_print($message = '', $indent = 0) {
-  print str_repeat(' ', $indent) . (string)$message . "\n";
+  $msg = str_repeat(' ', $indent) . (string)$message . "\n";
+  if ($charset = drush_get_option('output_charset') && function_exists('iconv')) {
+    $msg = iconv('UTF-8', $charset, $msg);
+  }
+  print $msg;
 }
 
 /**
@@ -972,7 +976,7 @@ function drush_print_table($rows, $header = FALSE, $widths = array()) {
   }
 
   $tbl->addData($newrows);
-  print $tbl->getTable();
+  drush_print($tbl->getTable());
   return $tbl;
 }
 
