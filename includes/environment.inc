@@ -1025,11 +1025,12 @@ function drush_read_drush_info() {
  *   True if the host is local.
  */
 function drush_is_local_host($host) {
-  // @TODO: Check DNS against local interface settings?
-  // (Maybe not portable, maybe too slow?)
-  // @TODO: Allow user to specify host names in a configuration
-  // option (e.g. $options['local-hosts'] = array('myhostname1.com', 'myhostname2.com'); )
-  return ($host == 'localhost') || ($host == '127.0.0.1') || (file_exists(drush_get_context('DRUSH_DRUPAL_ROOT') . "/sites/$host"));
+  // In order for this to work right, you must use 'localhost' or '127.0.0.1'
+  // or the machine returned by 'uname -n' for your 'remote-host' entry in
+  // your site alias.  Note that sometimes 'uname -n' does not return the
+  // correct value.  To fix it, put the correct hostname in /etc/hostname
+  // and then run 'hostname -F /etc/hostname'.
+  return ($host == 'localhost') || ($host == '127.0.0.1') || ($host == php_uname('n'));
 }
 
 /**
