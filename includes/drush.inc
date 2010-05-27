@@ -389,13 +389,26 @@ function drush_db_delete($table, $where = NULL, $args = NULL) {
 }
 
 /**
- * A db_result() that works for any version of Drupal.
+ * A db_result() that works consistently for any version of Drupal.
  *
  * @param
  *   A Database result object.
  */
 function drush_db_result($result) {
-  return drush_drupal_major_version() >= 7 ? $result->fetchField() : db_result($result);
+  switch (drush_drupal_major_version()) {
+    case 5:
+      // In versions of Drupal <= 5, db_result only returns the first row no matter how
+      //  many times you call it. So instead of calling it here, we use db_fetch_array which
+      //  does increment the pointer to the next row (as db_result does on Drupal 6)
+      if ($array = db_fetch_array($result)) {
+        return array_shift($array); // return first element in array.
+      }
+    case 6:
+      return db_result($result);
+    case 7:
+    default:
+      return $result->fetchField();
+  }
 }
 
 /**
