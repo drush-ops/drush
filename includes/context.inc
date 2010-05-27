@@ -139,7 +139,11 @@ function drush_load_config_file($context, $config) {
   if (file_exists($config)) {
     $options = $aliases = $command_specific = $override = array();
     drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
-    require_once($config);
+    $ret = @include_once($config);
+    if ($ret === FALSE) {
+      drush_log(dt('Cannot open drushrc "!config", ignoring.', array('!config' => realpath($config))), 'warning');
+      return FALSE;
+    }
     if (!empty($options) || !empty($aliases) || !empty($command_specific)) {
       $options = array_merge(drush_get_context($context), $options);
       $options['config-file'] = realpath($config);
