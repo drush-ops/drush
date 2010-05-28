@@ -1224,10 +1224,15 @@ function drush_do_multiple_command($command, $source_record, $destination_record
 function drush_do_site_command($site_record, $command, $args = array(), $data = array(), $integrate = FALSE) {
   $values = NULL;
   if (!empty($site_record)) {
+    foreach ($site_record as $key => $value) {
+      if (!isset($data[$key]) && !in_array($key, drush_sitealias_site_selection_keys())) {
+        $data[$key] = $site_record[$key];
+      }
+    }
     // Pass the root and uri parameters from the site alias
     $data['root'] = $site_record['root'];
     $data['uri'] = $site_record['uri'];
-
+    
     $drush_path = NULL;
     if (array_key_exists('path-aliases', $site_record)) {
       if (array_key_exists('%drush-script', $site_record['path-aliases'])) {
@@ -1274,8 +1279,12 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
  * parameter when doing a redispatch.
  */
 function drush_redispatch_get_options() {
-  // Start off by taking everything from the command line ('options' context)
-  $options = drush_get_context('options');
+  // Start off by taking everything from the site alias and command line
+  // ('options' context)
+  $alias_context = array_diff_key(drush_get_context('alias'), array_flip(drush_sitealias_site_selection_keys()));
+  $options = array_merge($alias_context, drush_get_context('options'));
+  unset($options['command-specific']);
+  unset($options['path-aliases']);
   // If we can parse the current command, then examine all contexts
   // in order for any option that is directly related to the current command
   $command = drush_parse_command();
@@ -1295,7 +1304,6 @@ function drush_redispatch_get_options() {
   unset($options['php']);
   return $options;
 }
-
 
 /**
  * @} End of "defgroup dispatching".

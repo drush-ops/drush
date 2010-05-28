@@ -1472,3 +1472,9 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
   return $site_alias_settings;
 }
 
+/**
+ * Option keys used for site selection.
+ */
+function drush_sitealias_site_selection_keys() {
+  return array('remote-host', 'remote-user', 'uri', 'root', 'name');
+}
