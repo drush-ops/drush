@@ -99,7 +99,7 @@ function pm_drush_command() {
   $items['pm-enable'] = array(
     'description' => 'Enable one or more modules or themes.',
     'arguments' => array(
-      'modules' => 'A space delimited list of modules or themes.',
+      'modules' => 'A space delimited list of modules or themes. You can use the * wildcard at the end of module and theme names to enable the modules and all its submodules.',
     ),
     'aliases' => array('en'),
     'deprecated-aliases' => array('enable'),
@@ -107,7 +107,7 @@ function pm_drush_command() {
   $items['pm-disable'] = array(
     'description' => 'Disable one or more modules or themes.',
     'arguments' => array(
-      'modules' => 'A space delimited list of modules or themes.',
+      'modules' => 'A space delimited list of modules or themes. You can use the * wildcard at the end of module and theme names to disable the modules and all its submodules.',
     ),
     'aliases' => array('dis'),
     'deprecated-aliases' => array('disable'),
@@ -115,7 +115,7 @@ function pm_drush_command() {
   $items['pm-info'] = array(
     'description' => 'Show info for one or more projects.',
     'arguments' => array(
-      'projects' => 'A space delimited list of projects.',
+      'projects' => 'A space delimited list of projects. You can use the * wildcard at the end of module names to get info for the project and all its sub projects.',
     ),
   );
   // Install command is reserved for the download and enable of projects including dependencies.
@@ -536,13 +536,14 @@ function drush_pm_get_projects() {
  * Classify projects in modules, themes or unknown ones.
  *
  * @param $projects
- *   Array of project names
+ *   Array of project names, by reference.
  * @param $modules
  *   Empty array to be filled with modules in $projects.
  * @param $themes
  *   Empty array to be filled with themes in $projects.
  */
-function drush_pm_classify_projects($projects, &$modules, &$themes, $project_info) {
+function drush_pm_classify_projects(&$projects, &$modules, &$themes, $project_info) {
+  _drush_pm_expand_projects($projects, $project_info);
   foreach ($projects as $project) {
     if (!isset($project_info[$project])) {
       continue;
@@ -563,6 +564,7 @@ function drush_pm_info() {
   $args = func_get_args();
 
   $project_info = drush_pm_get_projects();
+  _drush_pm_expand_projects($args, $project_info);
 
   foreach ($args as $project) {
     if (isset($project_info[$project])) {
@@ -687,6 +689,34 @@ function _drush_pm_info_theme($info) {
   return $data;
 }
 
+/**
+ * Add sub projects that match project_name*.
+ *
+ * A helper function for commands that take a space separated list of project
+ * names. It will identify project names that have been passed in with a
+ * trailing * and add all matching projects to the array that is returned.
+ *
+ * @param $projects
+ *   An array of projects, by reference.
+ * @param $project_info
+ *   Optional. An array of project info as returned by drush_get_projects().
+ */
+function _drush_pm_expand_projects(&$projects, $project_info = array()) {
+  if (empty($project_info)) {
+    $project_info = drush_get_projects();
+  }
+  foreach ($projects as $key => $project) {
+    if (($wildcard = rtrim($project, '*')) !== $project) {
+      foreach (array_keys($project_info) as $project_name) {
+        if (strpos($project_name, $wildcard) !== FALSE) {
+          $projects[] = $project_name;
+        }
+      }
+      unset($projects[$key]);
+      continue;
+    }
+  }
+}
 
 /**
  * Command callback. Uninstall one or more modules.
