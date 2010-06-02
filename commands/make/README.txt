@@ -210,7 +210,7 @@ Do not use both types of declarations for a single project in your makefile.
   `revision` - a specific revision to check out. Optional.
 
      projects[mytheme][download][type] = "git"
-     projects[mytheme][download][url] = "git://gihub.com/jane_doe/mytheme.git"
+     projects[mytheme][download][url] = "git://github.com/jane_doe/mytheme.git"
 
 - `download[type][hg]`
 
