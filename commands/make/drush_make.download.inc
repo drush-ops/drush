@@ -128,15 +128,15 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   }
 
   protected function unpack_zip($filename) {
-    // Find out where contents will end up. Retrieve last column of output using awk.
-    drush_shell_exec("unzip -l %s | awk '{print $4;}'", $filename);
+    // Find out where contents will end up.
+    drush_shell_exec("unzip -l %s", $filename);
     $info = drush_shell_exec_output();
     if ($info) {
       foreach ($info as $line) {
         $matches = array();
-        preg_match('/[a-zA-Z0-9.\-_,]*\//', $line, $matches);
-        if (isset($matches[0])) {
-          $directory = $matches[0];
+        preg_match('/^\s+[0-9]+\s+[0-9-]+\s+[0-9:]+\s+(.*)$/', $line, $matches);
+        if (isset($matches[1])) {
+          $directory = $matches[1];
           break;
         }
       }
