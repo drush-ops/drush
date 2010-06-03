@@ -17,7 +17,7 @@ class drush_pm_version_control_svn implements drush_pm_version_control {
     
     // Check the project directory looks clean
     if (drush_shell_exec('cd ' . $project['full_project_path'] . ' && svn status '. drush_get_option('svnstatusparams') .' '. $status_files)) {
-      $output = preg_grep('/^[ ACDIMRX?!~][ CM][ L][ +][ SX][ K]/', drush_shell_exec_output());
+      $output = preg_grep('/^[ ACDMRX?!~][ CM][ L][ +][ SX][ K]/', drush_shell_exec_output());
       if (!empty($output)) {
         return drush_set_error('DRUSH_PM_SVN_LOCAL_CHANGES', dt("The SVN working copy at !path appears to have uncommmitted changes (see below). Please commit or revert these changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
       }
