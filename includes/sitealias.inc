@@ -317,10 +317,7 @@ function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
     $primary_alias = substr($alias,0,$relative_alias_pos);
     $relative_alias = substr($alias,$relative_alias_pos + 1);
     $primary_record = drush_sitealias_get_record($primary_alias);
-    if (array_key_exists('root', $primary_record) && !array_key_exists('remote-host', $primary_record)) {
-      drush_sitealias_create_sites_alias($primary_record['root']);
-    }
-    _drush_sitealias_find_and_load_alias($relative_alias, $primary_record);
+    _drush_sitealias_find_and_load_alias(substr($relative_alias,1), $primary_record);
     $result = drush_sitealias_get_record($relative_alias);
     if (!empty($result)) {
       if (array_key_exists('inherited', $result)) {
@@ -384,7 +381,23 @@ function drush_sitealias_load_all($resolve_parent = TRUE) {
  */
 function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = NULL) {
   $result = array();
-
+  
+  // Special checking for '@sites' alias
+  if ($aliasname == 'sites') {
+    $drupal_root = NULL;
+    if ($alias_path_context != null) {
+      if (array_key_exists('root', $alias_path_context) && !array_key_exists('remote-host', $alias_path_context)) {
+        $drupal_root = $alias_path_context['root'];
+      }
+    }
+    else {
+      $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+    }
+    if (isset($drupal_root) && !is_array($drupal_root)) {
+      drush_sitealias_create_sites_alias($drupal_root);
+    }
+  }
+  
   // The alias path is a list of folders to search for alias settings files
   $alias_path = drush_sitealias_alias_path($alias_path_context);
 
