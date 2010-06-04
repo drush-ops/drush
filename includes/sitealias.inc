@@ -437,6 +437,19 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
           $aliases[$this_alias_name] = $options;
           $options = array();
         }
+        // If this is a group alias file, then make an
+        // implicit alias from the group name that contains
+        // a site-list of all of the aliases in the file
+        if (substr($filename, -20) == ".aliases.drushrc.php") {
+          $group_name = basename($filename,".aliases.drushrc.php");
+          if (!array_key_exists($group_name, $aliases)) {
+            $alias_names = array();
+            foreach (array_keys($aliases) as $one_alias) {
+              $alias_names[] = "@$one_alias";
+            }
+            $aliases[$group_name] = array('site-list' => implode(',', $alias_names));
+          }
+        }
         // If aliasname is NULL, then we will store
         // all $aliases into the alias cache
         if ($aliasname == NULL) {
