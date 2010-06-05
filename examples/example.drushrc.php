@@ -98,6 +98,16 @@
 # $options['ssh-options'] = '-o PasswordAuthentication=no';
 
 /*
+* The output charset suitable to pass to iconv PHP function as out_charset
+* parameter. Drush will convert its output from UTF-8 to the charset specified
+* here. It is possible to use //TRANSLIT and //IGNORE charset name suffixes
+* (see iconv documentation). If not defined conversion will not be performed.
+*/
+# $options['output_charset'] = 'ISO-8859-1';
+# $options['output_charset'] = 'KOI8-R//IGNORE';
+# $options['output_charset'] = 'ISO-8859-1//TRANSLIT';
+
+/*
  * Customize this associative array with your own tables. This is the list of
  * tables whose *data* is skipped by the 'sql-dump' and 'sql-sync' commands when
  * a structure-tables-key is provided. You may add new tables to the existing
