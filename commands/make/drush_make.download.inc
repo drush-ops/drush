@@ -250,10 +250,14 @@ class DrushMakeDownload_Bzr extends DrushMakeDownload {
     $command = 'export';
     if (!empty($download['url'])) {
       if (drush_get_option('working-copy')) {
-        $command = 'checkout';
+        $command = 'branch';
+        if (drush_shell_exec("bzr %s %s %s/%s", $command, $download['url'], $tmp_path, $name)) {
+          drush_log(dt('%project branched from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
+          return $name;
+        }
       }
-
-      if (drush_shell_exec("bzr %s %s/%s %s", $command, $tmp_path, $name, $download['url'])) {
+      // Export has reversed desintation & source syntax
+      elseif (drush_shell_exec("bzr %s %s/%s %s", $command, $tmp_path, $name, $download['url'])) {
         drush_log(dt('%project branched from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
         return $name;
       }
