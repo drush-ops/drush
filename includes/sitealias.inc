@@ -1254,9 +1254,6 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
 function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   $options = drush_get_context('alias');
 
-  // backend invoke needs 'root' and 'uri' on the command line, so we will
-  // handle these two specially
-  $options_context = empty($prefix) ? array('root', 'uri') : array();
   // There are some items that we should just skip
   $skip_list = array('site-aliases', 'command-specific');
   // Also skip 'remote-host' and 'remote-user' if 'remote-host' is actually
@@ -1275,9 +1272,6 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
           $options[$prefix . substr($path_key, 1)] = $value[$path_key];
         }
       }
-    }
-    elseif (in_array($key, $options_context)) {
-      drush_set_option($prefix . $key, $value, 'options');
     }
     elseif (!in_array($key, $skip_list)) {
       $options[$prefix . $key] = $value;
@@ -1508,5 +1502,5 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
  * Option keys used for site selection.
  */
 function drush_sitealias_site_selection_keys() {
-  return array('remote-host', 'remote-user', 'uri', 'root', 'name');
+  return array('remote-host', 'remote-user', 'name');
 }

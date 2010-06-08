@@ -1229,9 +1229,6 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
         $data[$key] = $site_record[$key];
       }
     }
-    // Pass the root and uri parameters from the site alias
-    $data['root'] = $site_record['root'];
-    $data['uri'] = $site_record['uri'];
     
     $drush_path = NULL;
     if (array_key_exists('path-aliases', $site_record)) {
@@ -1302,6 +1299,7 @@ function drush_redispatch_get_options() {
   // is not used (e.g. when calling a remote instance of drush), then --php
   // should not be passed along.
   unset($options['php']);
+
   return $options;
 }
 
