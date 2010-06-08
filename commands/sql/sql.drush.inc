@@ -462,8 +462,11 @@ function _drush_sql_get_spec_from_options($prefix, $default_to_self = TRUE) {
   }
 
   if (isset($db_spec)) {
-    $db_spec['remote-host'] = drush_get_option($prefix . 'remote-host');
-    $db_spec['port'] = drush_get_option($prefix . 'remote-port', $db_spec['port']);
+    $remote_host = drush_get_option($prefix . 'remote-host');
+    if (!drush_is_local_host($remote_host)) {
+      $db_spec['remote-host'] = $remote_host;
+      $db_spec['port'] = drush_get_option($prefix . 'remote-port', $db_spec['port']);
+    }
   }
 
   return $db_spec;

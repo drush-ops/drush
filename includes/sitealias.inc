@@ -1259,6 +1259,12 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   $options_context = empty($prefix) ? array('root', 'uri') : array();
   // There are some items that we should just skip
   $skip_list = array('site-aliases', 'command-specific');
+  // Also skip 'remote-host' and 'remote-user' if 'remote-host' is actually
+  // the local machine
+  if (array_key_exists('remote-host', $site_alias_settings) && drush_is_local_host($site_alias_settings['remote-host'])) {
+    $skip_list[] = 'remote-host';
+    $skip_list[] = 'remote-user';
+  }
   // Transfer all options from the site alias to the drush options
   // in the 'alias' context.
   foreach ($site_alias_settings as $key => $value) {
@@ -1360,7 +1366,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
     drush_sitealias_set_alias_context($site_alias_settings);
 
     // Use 'remote-host' from settings if available; otherwise site is local
-    if (array_key_exists('remote-host', $site_alias_settings)) {
+    if (array_key_exists('remote-host', $site_alias_settings) && !drush_is_local_host($site_alias_settings['remote-host'])) {
       if (array_key_exists('remote-user', $site_alias_settings)) {
         $remote_user = $site_alias_settings['remote-user'] . '@';
       }
