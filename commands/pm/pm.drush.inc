@@ -99,7 +99,7 @@ function pm_drush_command() {
   $items['pm-enable'] = array(
     'description' => 'Enable one or more modules or themes.',
     'arguments' => array(
-      'modules' => 'A space delimited list of modules or themes. You can use the * wildcard at the end of module and theme names to enable the modules and all its submodules.',
+      'modules' => 'A space delimited list of modules or themes. You can use the * wildcard at the end of module and theme names to to enable all matches.',
     ),
     'aliases' => array('en'),
     'deprecated-aliases' => array('enable'),
@@ -107,7 +107,7 @@ function pm_drush_command() {
   $items['pm-disable'] = array(
     'description' => 'Disable one or more modules or themes.',
     'arguments' => array(
-      'modules' => 'A space delimited list of modules or themes. You can use the * wildcard at the end of module and theme names to disable the modules and all its submodules.',
+      'modules' => 'A space delimited list of modules or themes. You can use the * wildcard at the end of module and theme names to disable multiple matches.',
     ),
     'aliases' => array('dis'),
     'deprecated-aliases' => array('disable'),
