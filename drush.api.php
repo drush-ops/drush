@@ -147,7 +147,7 @@ function hook_pm_post_update($release_name, $release_candidate_version, $project
  * Adjust the location that a project should be downloaded to.
  */
 function hook_drush_pm_adjust_download_destination(&$project, $release) {
-  if (...) {
+  if ($some_condition) {
     $project['project_install_location'] = '/path/to/install/to/' . basename($project['full_project_path']);
   }
 }
