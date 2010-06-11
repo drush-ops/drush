@@ -66,21 +66,27 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
  * Make a direct call to rsync after the source and destination paths
  * have been evaluated.
  *
- * @param source
+ * @param $source
  *   Any path that can be passed to rsync.
- * @param destination
+ * @param $destination
  *   Any path that can be passed to rsync.
- * @param additional_options
- *   An array of options that overrides whatever was passed in on
- *   the command line (like the 'process' context, but only for
- *   the scope of this one call).
- * @param include_settings_is_default
- *   If TRUE, then settings.php will be transferred as part of the
- *   rsync unless --exclude-conf is specified.  If FALSE, then
- *   settings.php will be excluded from the transfer unless
- *   --include-conf is specified.
+ * @param $additional_options
+ *   An array of options that overrides whatever was passed in on the command
+ *   line (like the 'process' context, but only for the scope of this one
+ *   call).
+ * @param $include_settings_is_default
+ *   If TRUE, then settings.php will be transferred as part of the rsync unless
+ *   --exclude-conf is specified.  If FALSE, then settings.php will be excluded
+ *   from the transfer unless --include-conf is specified.
+ * @param $live_output
+ *   If TRUE, output goes directly to the terminal using system(). If FALSE,
+ *   rsync is executed with drush_shell_exec() with output in
+ *   drush_shell_exec_output().
+ *
+ * @return
+ *   TRUE on success, FALSE on failure.
  */
-function drush_core_call_rsync($source, $destination, $additional_options = array(), $include_settings_is_default = TRUE) {
+function drush_core_call_rsync($source, $destination, $additional_options = array(), $include_settings_is_default = TRUE, $live_output = TRUE) {
   $options = ' --exclude="*.svn*"';
   $mode = '-az';
   // Process --include-path and --exclude-path options the same way
@@ -218,7 +224,12 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
   $ssh_options = drush_get_option_override($additional_options, 'ssh-options', '');
   $exec = "rsync -e 'ssh $ssh_options' $mode$options $source $destination";
 
-  $exec_result = drush_op('system', $exec) !== FALSE;
+  if ($live_output) {
+    $exec_result = drush_op('system', $exec) !== FALSE;
+  }
+  else {
+    $exec_result = drush_shell_exec($exec);
+  }
 
   return $exec_result;
 }
