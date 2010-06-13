@@ -73,10 +73,10 @@ function drush_make_test_run_test($id) {
     foreach ($options as $k => $v) {
       $debug_command .= _drush_escape_option($k, $v);
     }
-    $debug_command .= " {$makefile} test";
+    $debug_command .= " {$makefile}";
     drush_log(dt('Test command: @debug.', array('@debug' => $debug_command)), 'ok');
 
-    if ($data = drush_backend_invoke('make '. $makefile .' test', $options)) {
+    if ($data = drush_backend_invoke('make '. $makefile, $options)) {
       foreach ($data['log'] as $item) {
         if ($item['message'] === "Build hash: {$test['md5']}") {
           drush_log(dt('Drush make test @testname passed.', array('@testname' => $test['name'])), 'ok');

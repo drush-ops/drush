@@ -344,7 +344,8 @@ function drush_make_base_path($base_path) {
   elseif (isset($base_path) && (!empty($base_path) || $base_path == '.')) {
     $base_path = rtrim($base_path, '/');
   }
-  elseif (drush_confirm(dt("Make new site in the current directory?"))) {
+  // Allow tests to run without a specified base path.
+  elseif (drush_get_option('test') || drush_confirm(dt("Make new site in the current directory?"))) {
     $base_path = '.';
   }
   else {
