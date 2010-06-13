@@ -36,12 +36,25 @@ function drush_make_drush_command() {
     'options' => array(
       '--contrib-destination=path' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
       '--force-complete' => 'Force a complete build even if errors occur.',
+      '--md5' => 'Output an md5 hash of the current build after completion.',
       '--no-clean' => 'Leave temporary build directories in place instead of cleaning up after completion.',
       '--no-core' => 'Do not require a Drupal core project to be specified.',
       '--no-patch-txt' => 'Do not write a PATCHES.txt file in the directory of each patched project.',
       '--prepare-install' => 'Prepare the built site for installation. Generate a properly permissioned settings.php and files directory.',
       '--tar' => 'Generate a tar archive of the build. The output filename will be [build path].tar.gz.',
+      '--test' => 'Run a temporary test build and clean up.',
       '--working-copy' => 'Where possible, retrieve a working copy of projects from their respective repositories.',
+    ),
+  );
+
+  $items['make-test'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'description' => 'Run a drush make test.',
+    'arguments' => array(
+      'test' => 'Name of the test to run or ALL to run all tests.',
+    ),
+    'examples' => array(
+      'drush make-test svn' => 'Run tests for SVN integration.',
     ),
   );
 
@@ -60,7 +73,9 @@ function drush_make_drush_help($section) {
   switch ($section) {
     case 'drush:make':
       return dt('Turns a makefile into a working drupal install. For a full description of options and makefile syntax, see the README.txt included with drush make.');
-    case 'drush:generate makefile':
+    case 'drush:make-test':
+      return dt('Run a drush make test.');
+    case 'drush:generate-makefile':
       return dt('Attempts to generate a makefile from the current drupal install.');
   }
 }
@@ -71,6 +86,14 @@ function drush_make_drush_help($section) {
 function drush_drush_make_generate_makefile($file) {
   include_once 'drush_make.generate.inc';
   _drush_generate_makefile($file);
+}
+
+/**
+ * Drush callback; run a drush make test.
+ */
+function drush_drush_make_make_test($test = NULL) {
+  include_once 'drush_make.test.inc';
+  drush_make_test($test);
 }
 
 /**
@@ -92,12 +115,20 @@ function drush_drush_make_make($makefile = NULL, $base_path = NULL) {
   if (drush_get_option('prepare-install')) {
     $queue->addItem('drush_make_prepare_install', array(), array($tmp, $base_path));
   }
-  if (drush_get_option('tar')) {
-    $queue->addItem('drush_make_tar', array(), array($tmp, $base_path));
+  if (drush_get_option('md5')) {
+    $queue->addItem('drush_make_md5', array(), array($tmp));
   }
-  else {
-    $queue->addItem('drush_make_move_build', array(), array($tmp, $base_path, $valid));
+
+  // Only take final build steps if not in testing mode.
+  if (!drush_get_option('test')) {
+    if (drush_get_option('tar')) {
+      $queue->addItem('drush_make_tar', array(), array($tmp, $base_path));
+    }
+    else {
+      $queue->addItem('drush_make_move_build', array(), array($tmp, $base_path, $valid));
+    }
   }
+
   $queue->addItem('drush_make_clean_tmp', array(), array($tmp));
   $queue->execute();
 }

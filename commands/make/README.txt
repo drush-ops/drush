@@ -37,6 +37,10 @@ where `drush make` can be used within an existing Drupal site.
 
       Force a complete build even if errors occur.
 
+    --md5
+
+      Output an md5 hash of the current build after completion.
+
     --no-clean
 
       Leave temporary build directories in place instead of
@@ -60,6 +64,10 @@ where `drush make` can be used within an existing Drupal site.
 
       Generate a tar archive of the build. The output filename
       will be [build path].tar.gz.
+
+    --test
+
+      Run a temporary test build and clean up.
 
     --working-copy
 

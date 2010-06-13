@@ -253,6 +253,23 @@ function drush_make_prepare_install($tmp_path, $base_path) {
   drush_shell_exec("chmod a+w %s %s", $default . '/settings.php', $default . '/files');
 }
 
+function drush_make_md5($tmp_path) {
+  if (drush_shell_exec("( find %s -type f -exec cksum {} \; )", $tmp_path)) {
+    $hashes = array();
+    foreach (drush_shell_exec_output() as $line) {
+      // Remove the temporary build path which includes a (relatively)
+      // unique timestamp.
+      $line = str_replace($tmp_path, '', $line);
+      // Trim to sanitize.
+      $line = trim($line);
+      $hashes[] = $line;
+    }
+    sort($hashes);
+    $output = implode("\n", $hashes);
+    drush_log(dt('Build hash: %md5', array('%md5' => md5($output))), 'ok');
+  }
+}
+
 function drush_make_tar($tmp_path, $base_path) {
   drush_make_fill_path(dirname($base_path));
   $filename = basename($base_path);
