@@ -8,7 +8,6 @@ class DrushMakeDownload {
   function __construct($project) {
     $this->project = $project;
     $this->path = !empty($this->project->directory_name) ? $this->project->directory_name : $this->project->name;
-    $this->preDownload();
   }
 
   function factory($project) {
@@ -19,10 +18,6 @@ class DrushMakeDownload {
     else {
       return FALSE;
     }
-  }
-
-  function preDownload() {
-    return FALSE;
   }
 
   function download() {
