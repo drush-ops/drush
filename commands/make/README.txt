@@ -314,6 +314,26 @@ a given module, or bundle a set of module and its dependencies together.
     projects[] = drupal
     projects[] = managingnews
 
+Testing
+-------
+Drush make also comes with testing capabilities, designed to test drush make
+itself. Writing a new test is extremely simple. The process is as follows:
+
+1. Figure out what you want to test. Write a makefile that will test this out.
+   You can refer to existing test makefiles for examples.
+2. Drush make your makefile, and use the --md5 option. You may also use other
+   options, but be sure to take note of which ones for step 4.
+3. Verify that the result you got was in fact what you expected. If so,
+   continue. If not, tweak it and re-run step 2 until it's what you expected.
+4. Using the md5 hash that was spit out from step 2, make a new entry in the
+   tests array in drush_make.test.inc, following the example below.
+    'machine-readable-name' => array(
+      'name'     => 'Human readable name',
+      'makefile' => 'tests/yourtest.make',
+      'md5'      => 'f68e6510-your-hash-e04fbb4ed',
+      'options'  => array('any' => TRUE, 'other' => TRUE, 'options' => TRUE),
+    ),
+5. Test! Run drush make-test machine-readable-name to see if the test passes.
 
 Maintainer
 ----------
