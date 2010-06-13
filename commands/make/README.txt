@@ -186,6 +186,21 @@ Do not use both types of declarations for a single project in your makefile.
 
   `url` - the URL of the file. Required.
 
+- `download[type][post]`
+
+  Retrieve a project as a direct download using an HTTP POST request. Options:
+
+  `url` - the URL of the file. Required.
+
+  `post_data` - The post data to be submitted with the request. Should be a
+  valid URL query string. Required.
+
+  `file_type` - A file type extension to use for the retrieved file. Optional.
+
+     projects[mytheme][download][type] = "post"
+     projects[mytheme][download][url] = "http://example.com/download/mytheme"
+     projects[mytheme][download][post_data] = "format=zip&version=1.0"
+
 - `download[type][bzr]`
 
   Use a bazaar repository as the source for this project. Options:

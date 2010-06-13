@@ -34,6 +34,12 @@ function drush_make_test_get_tests($id = NULL) {
       'md5'      => 'f69d29c7ed065b42290bafb7ab9439f1',
       'options'  => array(),
     ),
+    'get-post' => array(
+      'name'     => 'Test GET and POST retrieval of projects',
+      'makefile' => 'tests/getpost.make',
+      'md5'      => 'fdc1d0892317fb8aa6c16d7684e366cc',
+      'options'  => array('no-core' => TRUE),
+    ),
     'no-patch-txt' => array(
       'name'     => 'Test --no-patch-txt option',
       'makefile' => 'tests/patches.make',

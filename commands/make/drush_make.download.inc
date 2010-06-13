@@ -183,6 +183,30 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   }
 }
 
+class DrushMakeDownload_Post extends DrushMakeDownload_Get {
+  protected function downloadFile() {
+    $name = $this->project->name;
+    $tmp_path = $this->project->tmp_path;
+    $filename = dt('file');
+    if (!empty($this->project->download['url'])) {
+      $url = $this->project->download['url'];
+      $post_data = $this->project->download['post_data'];
+      $file_type = $this->project->download['file_type'];
+      $filename = (empty($file_type)) ? "$tmp_path/" . basename($url) : "$tmp_path/" . basename($url) . ".$file_type";
+      // Download the project -- try wget, fall back to curl.
+      if (drush_get_context('DRUSH_SIMULATE') || drush_shell_exec('wget --post-data=%s %s -O %s', $post_data, $url, $filename) || drush_shell_exec('curl -d %s -o %s %s', $post_data, $filename, $url)) {
+        drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $url)), 'ok');
+        return $filename;
+      }
+    }
+    else {
+      $url = dt("unspecified location");
+    }
+    drush_make_error('DOWNLOAD_ERROR', dt('Unable to download %filename from %url.', array('%filename' => $filename, '%url' => $url)));
+    return FALSE;
+  }
+}
+
 class DrushMakeDownload_Git extends DrushMakeDownload {
   function download() {
     $name = $this->project->name;
