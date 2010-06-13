@@ -67,6 +67,15 @@ function drush_make_test_run_test($id) {
     $success = FALSE;
     $makefile = dirname(__FILE__) .'/'. $test['makefile'];
     $options = $test['options'] + array('test' => TRUE, 'md5' => TRUE);
+
+    // Log the test command.
+    $debug_command = 'drush make';
+    foreach ($options as $k => $v) {
+      $debug_command .= _drush_escape_option($k, $v);
+    }
+    $debug_command .= " {$makefile} test";
+    drush_log(dt('Test command: @debug.', array('@debug' => $debug_command)), 'ok');
+
     if ($data = drush_backend_invoke('make '. $makefile .' test', $options)) {
       foreach ($data['log'] as $item) {
         if ($item['message'] === "Build hash: {$test['md5']}") {
