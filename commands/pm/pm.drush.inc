@@ -169,6 +169,7 @@ function pm_drush_command() {
     ),
     'options' => array(
       '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
+      '--php' => 'Specify absolute path to you php binary. Use this if you see errors.'
     ),
     'aliases' => array('up'),
     'deprecated-aliases' => array('update'),

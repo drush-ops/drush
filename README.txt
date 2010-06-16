@@ -45,7 +45,7 @@ For Linux/Unix/Mac:
      (or, if you did not follow step 3, by running "/path/to/drush/drush"
       or navigating to /path/to/drush and running "./drush" )
 
-    If you have troubles, try using the -l and -r parameters when invoking drush. See below.
+    If you have troubles, try using the -l and -r options when invoking drush. See below.
 
 For Windows:
   - Follow step 1. Use drush by navigating to /path/to/drush
@@ -78,6 +78,7 @@ Related Options:
   -l <uri> , --uri=<uri>        URI of the drupal site to use
                                 (only needed in multisite environments)
   -v, --verbose                 Display verbose output.
+  --php                         The absolute path to your php binary.
 
 NOTE: If you do not specify a URI with -l and drush falls back to the default
 site configuration, Drupal's $GLOBAL['base_url'] will be set to http://default.
