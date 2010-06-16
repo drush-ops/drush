@@ -405,7 +405,7 @@ function _drush_bootstrap_drush() {
   define('DRUSH_COMMAND', drush_find_drush());
 
   $drush_info = drush_read_drush_info();
-  define('DRUSH_VERSION', $drush_info['version']);
+  define('DRUSH_VERSION', $drush_info['drush_version']);
 
   // Load a drushrc.php file in the drush.php's directory.
   drush_load_config('drush');
