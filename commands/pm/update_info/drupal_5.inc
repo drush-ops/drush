@@ -58,7 +58,15 @@ function _pm_get_update_info($projects = NULL) {
   }
   $info = update_status_get_available();
   $data = update_status_calculate_project_data($info);
+
+  // update_status for drupal 5 can only process modules,
+  // so we need to add this here for backwards compatibility
+  // or pm_get_project_path() will fail
+  foreach ($data as $project_name => $project_data) {
+    $data[$project_name]['project_type'] = 'module';
+  }
   $data = pm_get_project_path($data, 'modules');
+
   return $data;
 }
 
