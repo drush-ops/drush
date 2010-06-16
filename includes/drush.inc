@@ -261,12 +261,13 @@ function _drush_replace_query_placeholders($where, $args) {
       $new_keys = array();
       // $data can't have keys that are a prefix of other keys to
       // prevent a corrupted result in the below calls to str_replace().
-      // To avoid this we will use an indexed array of the values of $data.
+      // To avoid this we will use a zero padded indexed array of the values of $data.
+      $pad_length = strlen((string)count(array_values($data)));
       foreach (array_values($data) as $i => $value) {
         if (!is_numeric($value)) {
           $value = "'".$value."'";
         }
-        $new_keys[$key . '_' . $i] = $value;
+        $new_keys[$key . '_' . str_pad($i, $pad_length, '0', STR_PAD_LEFT)] = $value;
       }
       $where = preg_replace('#' . $key . '\b#', implode(', ', array_keys($new_keys)), $where);
       unset($args[$key]);
