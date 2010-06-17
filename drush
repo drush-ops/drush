@@ -30,6 +30,8 @@ esac
 
 # If not exported and term is set determine and export the number of columns.
 if [ -z $COLUMNS ] && [ -n "$TERM" ]; then
+  # Note to cygwin users: if you are getting "tput: command not found", 
+  # install the ncurses package to get it.
   export COLUMNS=$(tput cols)
 fi
 
