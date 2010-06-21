@@ -62,7 +62,9 @@ function drush_core_pre_site_install() {
   // Strip DB name from credentials. Soon it won't exist anymore. We do
   // need a DB name to connect to so use built-in mysql DB.
   $replacement_db = 'information_schema';
-  $exec = str_replace($db_spec['database'], $replacement_db, $exec) . ' -e ';
+  // Make sure we are only replacing the database name,
+  // and not a username or password that is the same as the database name.
+  $exec = str_replace(" {$db_spec['database']}", " {$replacement_db}", $exec) . ' -e ';
   if (drush_op('system', $exec . ' "DROP DATABASE IF EXISTS ' . $db_spec['database'] . '"') && !drush_get_context('DRUSH_SIMULATE')) {
     drush_set_error(dt('Could not drop database: @name', array('@name' => $db_spec['database'])));
     return;
