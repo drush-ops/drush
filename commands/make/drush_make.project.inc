@@ -36,7 +36,7 @@ class DrushMakeProject {
 
   function makePath($directory) {
     $this->path = $this->generatePath();
-    drush_make_fill_path($this->path);
+    drush_shell_exec('mkdir -p %s', $this->path);
     if (is_dir($this->path . '/' . $directory)) {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
       drush_shell_exec('rm -r %s', $directory);
@@ -149,7 +149,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
 
   function makePath($directory) {
     $this->path = $this->generatePath();
-    drush_make_fill_path(dirname($this->path));
+    drush_shell_exec('mkdir -p %s', dirname($this->path));
     if (is_dir($this->path . '/' . $directory)) {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
       drush_shell_exec('rm -r %s', $directory);

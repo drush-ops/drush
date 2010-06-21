@@ -271,7 +271,7 @@ function drush_make_md5($tmp_path) {
 }
 
 function drush_make_tar($tmp_path, $base_path) {
-  drush_make_fill_path(dirname($base_path));
+  drush_shell_exec('mkdir -p %s', dirname($base_path));
   $filename = basename($base_path);
   $dirname = basename($base_path, '.tar.gz');
   // Move the build directory to a more human-friendly name, so that tar will
@@ -284,23 +284,6 @@ function drush_make_tar($tmp_path, $base_path) {
   };
   // Move the build directory back to it's original location for consistency.
   drush_shell_exec("mv %s/%s %s/__build__", $tmp_path, $dirname, $tmp_path);
-}
-
-/**
- * Wrapper around drush_op('mkdir') to create all the directories up to and including the basename().
- */
-function drush_make_fill_path($path) {
-  $built_path = array();
-  foreach (explode('/', $path) as $part) {
-    if ($part == '.') {
-      continue;
-    }
-    $built_path[] = $part;
-    $current_path = implode('/', $built_path);
-    if ($current_path && !is_dir($current_path)) {
-      drush_op('mkdir', $current_path);
-    }
-  }
 }
 
 /**
