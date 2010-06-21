@@ -104,8 +104,10 @@ function drush_drush_make_make($makefile = NULL, $base_path = NULL) {
   $drush_version = $queue->addItem('drush_make_ensure_version');
   $base_path = $queue->addItem('drush_make_base_path', array($base_path), array($drush_version));
   $file_exists = $queue->addItem('drush_make_base_path_validate', array(), $base_path);
-  $info  = $queue->addItem('drush_make_parse_info_file', $makefile, $file_exists);
-  $valid = $queue->addItem('drush_make_validate_info_file', array(), $info);
+  $data    = $queue->addItem('drush_make_get_data', $makefile, $file_exists);
+  $info    = $queue->addItem('drush_make_parse_info_file', array(), $data);
+  $include = $queue->addItem('drush_make_include_info_files', array(dirname($makefile)), array($info, $data));
+  $valid   = $queue->addItem('drush_make_validate_info_file', array(), $include);
   $tmp = $queue->addItem('drush_make_create_tmp', array(), $valid);
   $queue->addItem('drush_make_add_projects', array(FALSE, drush_get_option('contrib-destination', 'sites/all')), array($tmp, $base_path, $valid));
   $queue->addItem('drush_make_add_libraries', array(drush_get_option('contrib-destination', 'sites/all')), array($tmp, $base_path, $valid));

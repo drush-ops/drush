@@ -283,6 +283,19 @@ projects. Additionally, they may specify a destination:
         libraries[jquery_ui][destination] = "modules/contrib/jquery_ui
 
 
+### Includes
+
+An array of makefiles to include. Each include may be a local path or a direct
+URL to the makefile. Includes are appended in order with the source makefile
+appended last, allowing latter makefiles to override the keys/values of former
+makefiles.
+
+**Example:**
+
+    includes[example] = "example.make"
+    includes[remote] = "http://www.example.com/remote.make"
+
+
 Recursion
 ---------
 If a project that is part of a build contains a `.make` itself, drush make will

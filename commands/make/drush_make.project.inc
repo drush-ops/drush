@@ -133,8 +133,10 @@ class DrushMakeProject {
     if (file_exists($makefile)) {
       drush_log(dt("Found makefile: %makefile", array("%makefile" => basename($makefile))), 'ok');
       $build_path = $this->buildPath($directory);
-      $info  = $this->queue->addItem('drush_make_parse_info_file', $makefile);
-      $valid = $this->queue->addItem('drush_make_validate_info_file', array(), $info);
+      $data    = $this->queue->addItem('drush_make_get_data', $makefile);
+      $info    = $this->queue->addItem('drush_make_parse_info_file', array(), $data);
+      $include = $this->queue->addItem('drush_make_include_info_files', array(dirname($makefile)), array($info, $data));
+      $valid   = $this->queue->addItem('drush_make_validate_info_file', array(), $include);
       $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
       $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
     }

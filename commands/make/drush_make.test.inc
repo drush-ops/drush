@@ -52,6 +52,12 @@ function drush_make_test_get_tests($id = NULL) {
       'md5'      => '173ae5e2120463e31ff2e2a9cc02491b',
       'options'  => array('no-core' => TRUE),
     ),
+    'include' => array(
+      'name'     => 'Including files',
+      'makefile' => 'tests/include.make',
+      'md5'      => 'f68e6516be32e7dd3f6f422e04fbb4ed',
+      'options'  => array(),
+    ),
   );
   if (isset($id)) {
     return isset($tests[$id]) ? $tests[$id] : FALSE;

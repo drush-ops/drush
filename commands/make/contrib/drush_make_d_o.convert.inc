@@ -71,7 +71,7 @@ class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
   }
 
   function read() {
-    if (!($this->old_info = drush_make_parse_info_file($this->from))) {
+    if (!($this->old_info = drush_make_parse_info_file(drush_make_get_data($this->from)))) {
       drush_make_error('FILE_ERROR', dt("Unable to parse file %file", array('%file' => $this->from)));
       return FALSE;
     }
@@ -280,7 +280,7 @@ class DrushMakeDrupalorgVerifier extends DrushMakeDrupalorgVersionChecker {
   }
 
   function read($makefile) {
-    if (!($makefile = drush_make_parse_info_file($makefile))) {
+    if (!($makefile = drush_make_parse_info_file(drush_make_get_data($makefile)))) {
       drush_make_error('FILE_ERROR', dt("Unable to parse file %file", array('%file' => $makefile)));
       return FALSE;
     }
