@@ -271,8 +271,6 @@ function _update_batch_command($id) {
  *   processing page.
  */
 function drush_update_batch($start) {
-  variable_set('maintenance_mode', TRUE);
-
   // Resolve any update dependencies to determine the actual updates that will
   // be run and the order they will be run in.
   $updates = update_resolve_dependencies($start);
@@ -320,6 +318,5 @@ function drush_update_batch($start) {
 function drush_update_finished($success, $results, $operations) {
   // Clear the caches in case the data has been updated.
   drupal_flush_all_caches();
-  variable_del('maintenance_mode');
 }
 
