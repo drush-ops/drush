@@ -240,13 +240,21 @@ function drush_bootstrap_validate($phase) {
 
 /**
  * Bootstrap to the highest level possible, without triggering any errors.
+ *
+ * @param $max_phase_index
+ *   Only attempt bootstrap to the specified level.
  */
-function drush_bootstrap_max() {
+function drush_bootstrap_max($max_phase_index = NULL) {
   $phases = _drush_bootstrap_phases();
   $phase_index = DRUSH_BOOTSTRAP_DRUSH;
 
   // Try to bootstrap to the maximum possible level, without generating errors
   foreach ($phases as $phase_index) {
+    if (isset($max_phase_index) && $phase_index > $max_phase_index) {
+      // Stop trying, since we achieved what was specified.
+      break;
+    }
+
     if (drush_bootstrap_validate($phase_index)) {
       if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
         drush_bootstrap($phase_index);
