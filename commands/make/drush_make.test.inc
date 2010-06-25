@@ -40,6 +40,12 @@ function drush_make_test_get_tests($id = NULL) {
       'md5'      => 'fdc1d0892317fb8aa6c16d7684e366cc',
       'options'  => array('no-core' => TRUE),
     ),
+    'git' => array(
+      'name'     => 'GIT integration',
+      'makefile' => 'tests/git.make',
+      'md5'      => 'e5210b009b52d60d64ce5effd7e6cf83',
+      'options'  => array('no-core' => TRUE),
+    ),
     'no-patch-txt' => array(
       'name'     => 'Test --no-patch-txt option',
       'makefile' => 'tests/patches.make',

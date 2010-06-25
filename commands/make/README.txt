@@ -230,7 +230,9 @@ Do not use both types of declarations for a single project in your makefile.
 
   `branch` - the branch to be checked out. Optional.
 
-  `revision` - a specific revision to check out. Optional.
+  `revision` - a specific revision identified by commit to check out. Optional.
+
+  `tag` - the tag to be checked out. Optional.
 
      projects[mytheme][download][type] = "git"
      projects[mytheme][download][url] = "git://github.com/jane_doe/mytheme.git"
