@@ -168,7 +168,7 @@ function user_drush_command() {
     $items['user-cancel']['options'] = array(
       'delete-content' => 'Delete all content created by the user',
     );
-    $items['user-cancel']['examples']['drush user-cancel --delete-content=true username'] = 
+    $items['user-cancel']['examples']['drush user-cancel --delete-content username'] = 
       'Cancel the user account with the name username and delete all content created by that user.';
   }
   return $items;
