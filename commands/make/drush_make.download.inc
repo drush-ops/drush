@@ -335,6 +335,8 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
 
       $tmp_location = $this->project->tmp_path . '/__git__/' . basename($this->project->download_location);
 
+      drush_shell_exec('mkdir -p %s', $this->project->tmp_path . '/__git__/');
+
       // clone the given repository
       if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
         drush_log(dt('%project cloned from %url.', array('%project' => $this->project->name, '%url' => $url)), 'ok');
