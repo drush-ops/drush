@@ -390,6 +390,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
           drush_shell_exec("rm -rf %s", $tmp_location . '/.git');
         }
         drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($this->project->download_location));
+        drush_shell_exec("rm -rf %s", dirname($tmp_location));
         return $name;
       }
       else {
