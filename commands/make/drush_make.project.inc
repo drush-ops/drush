@@ -24,24 +24,28 @@ class DrushMakeProject {
    */
   function make() {
     if (empty($this->made)) {
-      $directory = $this->queue->addItem(array($this->downloadClass, 'download'));
-      $full_path = $this->queue->addItem(array($this, 'makePath'), array(), $directory);
-      $move = $this->queue->addItem(array($this, 'move'), array(), array($directory, $full_path));
-      $this->queue->addItem(array($this, 'applyPatches'), array(), array($move));
-      $this->queue->addItem(array($this, 'recurse'), array(), array($move, $directory));
+      $download_location = $this->queue->addItem(array($this, 'findDownloadLocation'));
+      $this->queue->addItem(array($this->downloadClass, 'download'), array(), array($download_location));
+      $this->queue->addItem(array($this, 'applyPatches'), array(), array($download_location));
+      $this->queue->addItem(array($this, 'recurse'), array(), array($download_location));
       $this->made = TRUE;
     }
     return FALSE;
   }
 
-  function makePath($directory) {
+  function findDownloadLocation($directory) {
     $this->path = $this->generatePath();
-    drush_shell_exec('mkdir -p %s', $this->path);
-    if (is_dir($this->path . '/' . $directory)) {
-      drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
-      drush_shell_exec('rm -r %s', $directory);
+    $this->project_directory = !empty($this->directory_name) ? $this->directory_name : $this->name;
+    $this->download_location = $this->path . '/' . $this->project_directory;
+    // This directory shouldn't exist yet -- if it does, stop.
+    if (is_dir($this->download_location)) {
+      drush_set_error(dt('Directory not empty: %directory', array('%directory' => $this->download_location)));
+      $this->queue->terminate();
     }
-    return $this->path;
+    else {
+      drush_shell_exec("mkdir -p %s", $this->download_location);
+    }
+    return $this->download_location;
   }
 
   /**
@@ -78,26 +82,10 @@ class DrushMakeProject {
   }
 
   /**
-   * Move a project to its final resting place.
-   */
-  function move($project_directory) {
-    if (empty($this->directory_name)) {
-      drush_shell_exec("mv %s/%s %s", $this->tmp_path, $project_directory, $this->path);
-    }
-    else {
-      list($project_directory) = array_reverse(explode('/', trim($project_directory, '/')));
-      drush_shell_exec("mv %s/%s %s/%s", $this->tmp_path, $project_directory, $this->path, $this->directory_name);
-      $project_directory = $this->directory_name;
-    }
-    return $this->path . '/' . $project_directory;
-  }
-
-  /**
    * Generate the proper path for this project type.
    *
-   * @param $absolute
-   *   Whether to generate an absolute path, including the temporary directory path.
-   *   Defaults to true.
+   * @param $base
+   *   Whether include the base part (tmp dir). Defaults to TRUE.
    */
   protected function generatePath($base = TRUE) {
     $path = array();
@@ -124,22 +112,25 @@ class DrushMakeProject {
     return $this->base_install_path;
   }
 
-  function recurse($path, $directory) {
+  function recurse($path) {
     if (!empty($this->directory_name)) {
       $directory = $this->directory_name;
     }
-    $makefile = $this->path . '/' . $directory . '/' . $this->name . '.make';
-
-    if (file_exists($makefile)) {
-      drush_log(dt("Found makefile: %makefile", array("%makefile" => basename($makefile))), 'ok');
-      $build_path = $this->buildPath($directory);
-      $data    = $this->queue->addItem('drush_make_get_data', $makefile);
-      $info    = $this->queue->addItem('drush_make_parse_info_file', array(), $data);
-      $include = $this->queue->addItem('drush_make_include_info_files', array(dirname($makefile)), array($info, $data));
-      $valid   = $this->queue->addItem('drush_make_validate_info_file', array(), $include);
-      $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
-      $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
+    $makefile = $this->download_location . '/' . $this->name . '.make';
+    if (!file_exists($makefile)) {
+      $makefile = $this->download_location . '/drupal-org.make';
+      if (!file_exists($makefile)) {
+        return;
+      }
     }
+    drush_log(dt("Found makefile: %makefile", array("%makefile" => basename($makefile))), 'ok');
+    $build_path = $this->buildPath($this->name);
+    $data    = $this->queue->addItem('drush_make_get_data', $makefile);
+    $info    = $this->queue->addItem('drush_make_parse_info_file', array(), $data);
+    $include = $this->queue->addItem('drush_make_include_info_files', array(dirname($makefile)), array($info, $data));
+    $valid   = $this->queue->addItem('drush_make_validate_info_file', array(), $include);
+    $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
+    $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
   }
 }
 
@@ -149,26 +140,17 @@ class DrushMakeProject_Core extends DrushMakeProject {
     $this->install_path = '';
   }
 
-  function makePath($directory) {
-    $this->path = $this->generatePath();
-    drush_shell_exec('mkdir -p %s', dirname($this->path));
-    if (is_dir($this->path . '/' . $directory)) {
-      drush_set_error(dt('Directory not empty: %directory', array('%directory' => $directory)));
-      drush_shell_exec('rm -r %s', $directory);
-      return FALSE;
+  function findDownloadLocation() {
+    $this->path = $this->download_location = $this->generatePath();
+    $this->project_directory = '';
+    if (is_dir($this->download_location)) {
+      drush_set_error(dt('Directory not empty: %directory', array('%directory' => $this->download_location)));
+      $this->queue->terminate();
     }
-    return $this->path;
-  }
-
-  /**
-   * The core project will always be the base of the build, so it needs to move
-   * itself into place a little differently.
-   *
-   * @TODO ensure that the core project is always created first.
-   */
-  function move($project_directory) {
-    drush_shell_exec("mv %s/%s %s/__build__", $this->tmp_path, $project_directory, $this->tmp_path);
-    return $this->tmp_path . '/__build__';
+    else {
+      drush_shell_exec("mkdir -p %s", $this->download_location);
+    }
+    return $this->download_location;
   }
 }
 
