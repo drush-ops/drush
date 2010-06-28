@@ -115,7 +115,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         $file = $this->project->tmp_path . '/' . $matches[0];
         // Unzip it and then delete the tar file.
         drush_shell_exec('gzip -d %s', $filename);
-        return $this->unpack_tar($file);
+        return $this->unpackTar($file);
       }
     }
     drush_make_error('PACKAGE_ERROR', dt('Could not retrieve package information for %filename.', array('%filename' => $filename)));
