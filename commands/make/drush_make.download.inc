@@ -88,15 +88,42 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   protected function downloadFile() {
     $name = $this->project->name;
     $tmp_path = $this->project->tmp_path;
-    $filename = dt('file');
+    $filename = FALSE;
     if (!empty($this->project->download['url'])) {
       $url = $this->project->download['url'];
-      $filename = "$tmp_path/" . basename($url);
       // Download the project -- try wget, fall back to curl.
-      if (drush_get_context('DRUSH_SIMULATE') || drush_shell_exec('wget %s -O %s', $url, $filename) || drush_shell_exec('curl -L -o %s %s', $filename, $url)) {
-        drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $url)), 'ok');
-        return $filename;
+      if (drush_get_context('DRUSH_SIMULATE')) {
+        $filename = t('file');
       }
+      else {
+        drush_shell_exec("ls %s", $tmp_path);
+        $files = drush_shell_exec_output();
+        if (drush_make_cd($tmp_path, 'wget %s', $url)) {
+          drush_shell_exec("ls %s", $tmp_path);
+          $files_new = drush_shell_exec_output();
+          $diff = array_diff($files_new, $files);
+          $filename = array_shift($diff);
+        }
+        elseif (drush_shell_exec('curl -I -L %s', $url)) {
+          $headers = drush_shell_exec_output();
+          foreach ($headers as $header) {
+            if (preg_match('/Location:(.*)/', $header, $matches)) {
+              $filename = basename($matches[1]);
+            }
+          }
+          if (!$filename) {
+            $filename = basename($url);
+          }
+          if (!drush_shell_exec('curl -L -o %s %s', $tmp_path . '/' . $filename, $url)) {
+            $filename = FALSE;
+          }
+        }
+      }
+      if ($filename) {
+        drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $url)), 'ok');
+        return $tmp_path . '/' . $filename;
+      }
+      $filename = dt('file');
     }
     else {
       $url = dt("unspecified location");
