@@ -364,12 +364,12 @@ function drush_make_move_build($tmp_path, $base_path) {
     drush_shell_exec('ls -A %s/__build__', $tmp_path);
     $info = drush_shell_exec_output();
     foreach ($info as $file) {
-      drush_shell_exec("mv %s/__build__/%s %s/%s", $tmp_path, $file, $base_path, $file);
+      drush_shell_exec("cp -Rf %s/__build__/%s %s/%s", $tmp_path, $file, $base_path, $file);
     }
   }
   else {
     drush_shell_exec('mkdir -p %s', dirname($base_path));
-    drush_shell_exec("mv %s/__build__ %s", $tmp_path, $base_path);
+    drush_shell_exec("cp -Rf %s/__build__ %s", $tmp_path, $base_path);
   }
   return TRUE;
 }
