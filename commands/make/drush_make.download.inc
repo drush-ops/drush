@@ -151,13 +151,13 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   }
 
   function download() {
-    if ($filename = $this->downloadFile()) {
+    if ($filename = $this->download_file()) {
       return $this->unpack($filename);
     }
     return FALSE;
   }
 
-  protected function downloadFile() {
+  protected function download_file() {
     $name = $this->project->name;
     $tmp_path = $this->project->tmp_path;
     $filename = dt('file');
@@ -179,7 +179,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 }
 
 class DrushMakeDownload_Post extends DrushMakeDownload_Get {
-  protected function downloadFile() {
+  protected function download_file() {
     $name = $this->project->name;
     $tmp_path = $this->project->tmp_path;
     $filename = dt('file');
@@ -219,7 +219,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
     // only progress if we have a download url...
     if (!empty($download['url'])) {
       // split the given download url into pices
-      $url_array = $this->getUrlParts($download['url']);
+      $url_array = $this->get_url_parts($download['url']);
 
       // build url for git clone to support different protocols
       // currently all protocols seems to use the same url schema
@@ -318,7 +318,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
    * private helper function to split the given url into parts
    * protocol / port / site / resource
    */
-  protected function getUrlParts($url) {
+  protected function get_url_parts($url) {
     $result = array();
 
     // Get the protocol, site and resource parts of the URL
