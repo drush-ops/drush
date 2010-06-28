@@ -1,28 +1,25 @@
 <?php
 // $Id$
 
-class DrushMakeDownload {
+function drush_make_download_factory($project) {
+  $class = 'DrushMakeDownload_' . $project->download['type'];
+  if (class_exists($class)) {
+    return new $class($project);
+  }
+  else {
+    return FALSE;
+  }
+}
+
+abstract class DrushMakeDownload {
   var $project;
   var $path;
 
   function __construct($project) {
     $this->project = $project;
-    $this->path = !empty($this->project->directory_name) ? $this->project->directory_name : $this->project->name;
   }
 
-  function factory($project) {
-    $class = 'DrushMakeDownload_' . $project->download['type'];
-    if (class_exists($class)) {
-      return new $class($project);
-    }
-    else {
-      return FALSE;
-    }
-  }
-
-  function download() {
-    return FALSE;
-  }
+  abstract function download();
 }
 
 class DrushMakeDownload_CVS extends DrushMakeDownload {
