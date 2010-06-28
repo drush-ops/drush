@@ -278,7 +278,7 @@ function drush_make_create_tmp() {
 
 function drush_make_clean_tmp($tmp_dir) {
   if (!drush_get_option('no-clean', FALSE)) {
-    drush_shell_exec('rm -r %s', $tmp_dir);
+    drush_shell_exec('rm -rf %s', $tmp_dir);
   }
   else {
     drush_log(dt('Tmp dir: %dir', array('%dir' => $tmp_dir)), 'ok');
