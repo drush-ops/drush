@@ -64,6 +64,12 @@ function drush_make_test_get_tests($id = NULL) {
       'md5'      => 'f68e6516be32e7dd3f6f422e04fbb4ed',
       'options'  => array(),
     ),
+    'recursion' => array(
+      'name'     => 'Recursion',
+      'makefile' => 'tests/recursion.make',
+      'md5'      => 'b4d0599c7c44566a7e3dc9086b870723',
+      'options'  => array('no-core' => TRUE),
+    ),
   );
   if (isset($id)) {
     return isset($tests[$id]) ? $tests[$id] : FALSE;
