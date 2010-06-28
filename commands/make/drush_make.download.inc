@@ -76,17 +76,17 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     switch ($extension) {
       case 'gz':
       case 'tgz':
-        return $this->unpack_gz($filename);
+        return $this->unpackGz($filename);
       case 'tar':
-        return $this->unpack_tar($filename);
+        return $this->unpackTar($filename);
       case 'zip':
-        return $this->unpack_zip($filename);
+        return $this->unpackZip($filename);
       default:
         drush_make_error('DOWNLOAD_ERROR', dt('Unable to unpack %file', array('%file' => $filename)));
     }
   }
 
-  protected function unpack_tar($filename) {
+  protected function unpackTar($filename) {
     // Untar it and then delete the tar file.
     drush_shell_exec('tar -tf %s', $filename);
     $info = drush_shell_exec_output();
@@ -103,7 +103,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     return;
   }
 
-  protected function unpack_gz($filename) {
+  protected function unpackGz($filename) {
     // Find out where contents will end up. Retrieve last column of output using awk.
     drush_shell_exec("gzip --list %s | awk '{print $4;}'", $filename);
     $info = drush_shell_exec_output();
@@ -122,7 +122,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     return;
   }
 
-  protected function unpack_zip($filename) {
+  protected function unpackZip($filename) {
     // Find out where contents will end up.
     drush_shell_exec("unzip -l %s", $filename);
     $info = drush_shell_exec_output();
@@ -151,13 +151,13 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   }
 
   function download() {
-    if ($filename = $this->download_file()) {
+    if ($filename = $this->downloadFile()) {
       return $this->unpack($filename);
     }
     return FALSE;
   }
 
-  protected function download_file() {
+  protected function downloadFile() {
     $name = $this->project->name;
     $tmp_path = $this->project->tmp_path;
     $filename = dt('file');
@@ -179,7 +179,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 }
 
 class DrushMakeDownload_Post extends DrushMakeDownload_Get {
-  protected function download_file() {
+  protected function downloadFile() {
     $name = $this->project->name;
     $tmp_path = $this->project->tmp_path;
     $filename = dt('file');
@@ -219,7 +219,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
     // only progress if we have a download url...
     if (!empty($download['url'])) {
       // split the given download url into pices
-      $url_array = $this->get_url_parts($download['url']);
+      $url_array = $this->getUrlParts($download['url']);
 
       // build url for git clone to support different protocols
       // currently all protocols seems to use the same url schema
@@ -318,7 +318,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
    * private helper function to split the given url into parts
    * protocol / port / site / resource
    */
-  protected function get_url_parts($url) {
+  protected function getUrlParts($url) {
     $result = array();
 
     // Get the protocol, site and resource parts of the URL
