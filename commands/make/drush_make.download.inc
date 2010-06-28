@@ -204,19 +204,6 @@ class DrushMakeDownload_Post extends DrushMakeDownload_Get {
 
 class DrushMakeDownload_Git extends DrushMakeDownload {
   function download() {
-
-    $name     = $this->project->name;
-    $tmp_path = $this->project->tmp_path;
-    $download = $this->project->download;
-    $wc       = drush_get_option('working-copy');
-
-    // check if branch option is set in info file, otherwise set default to master branch
-    $this->project->download['branch'] = $download['branch'] = isset($download['branch']) ? $download['branch'] : 'master';
-    // check if tag option is set in info file, otherwise we set it to false
-    $this->project->download['tag'] = $download['tag'] = isset($download['tag']) ? $download['tag'] : FALSE;
-    // check if specific revision is set in info file
-    $this->project->download['revision'] = $download['revision'] = isset($download['revision']) ? $download['revision'] : FALSE;
-
     $name     = $this->project->name;
     $tmp_path = $this->project->tmp_path;
     $download = $this->project->download;
