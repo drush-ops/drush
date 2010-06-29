@@ -528,17 +528,42 @@ class DrushMakeDownload_SVN extends DrushMakeDownload {
 
 class DrushMakeDownload_Hg extends DrushMakeDownload {
   function download() {
-    // @TODO implement revisions, tags
+    // @TODO implement tags
     $name = $this->project->name;
     $tmp_path = $this->project->tmp_path;
     $download = $this->project->download;
     if (!empty($download['url'])) {
-      if (drush_shell_exec("hg clone %s %s", $download['url'], $this->project->download_location)) {
-        if (!drush_get_option('working-copy')) {
-          drush_shell_exec('rm -rf %s/.hg', $this->project->download_location);
+      $tmp_location = $this->project->tmp_path . '/__hg__/' . basename($this->project->download_location);
+      drush_shell_exec('mkdir -p %s', $this->project->tmp_path . '/__hg__/');
+
+      // clone the given repository
+      if (drush_shell_exec("hg clone %s %s", $download['url'], $tmp_location)) {
+        drush_log(dt('%project cloned from %url.', array('%project' => $this->project->name, '%url' => $download['url'])), 'ok');
+
+        // Perform operations against the repo
+        $cwd = getcwd();
+        chdir($tmp_location);
+
+        // Check out a specific revision
+        if ($download['revision']) {
+          if (drush_shell_exec("hg update -r%s", $download['revision'])) {
+            drush_log(dt("Checked out revision %revision.", array('%revision' => $download['revision'])), 'ok');
+          }
+          else {
+            drush_make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision %revision", array('%revision' => $download['revision'])));
+          }
         }
-        drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
-        return $this->project->download_location;
+
+        // Move back to last current directory
+        chdir($cwd);
+
+        // Clean up
+        if (!drush_get_option('working-copy') && file_exists($tmp_location . '/.hg')) {
+          drush_shell_exec('rm -rf %s', $tmp_location . '/.hg');
+        }
+        drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($this->project->download_location));
+        drush_shell_exec("rm -rf %s", dirname($tmp_location));
+        return $name;
       }
     }
     else {

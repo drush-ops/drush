@@ -246,6 +246,8 @@ Do not use both types of declarations for a single project in your makefile.
 
   `url` - the URL of the repository. Required.
 
+  `revision` - a specific revision identified by commit to check out. Optional.
+
 - `download[type][svn]`
 
   Use an SVN repository as the source for this project. Options:
