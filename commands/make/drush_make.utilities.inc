@@ -259,38 +259,39 @@ function drush_make_valid_url($url, $absolute = FALSE) {
   }
 }
 
-
-function drush_make_create_tmp() {
-  $tmp = sys_get_temp_dir();
-  $tmp .= '/drush_make_tmp_' . time();
-  drush_op('mkdir', $tmp);
-  drush_log(dt('Created directory temporary directory %tmp', array('%tmp' => $tmp)), 'notice');
-  return $tmp;
+function drush_make_tmp() {
+  static $tmp_dir;
+  if (!isset($tmp_dir)) {
+    $tmp_dir = sys_get_temp_dir();
+    $tmp_dir .= '/drush_make_tmp_' . time();
+    drush_op('mkdir', $tmp_dir);
+  }
+  return $tmp_dir;
 }
 
-function drush_make_clean_tmp($tmp_dir) {
+function drush_make_clean_tmp() {
   if (!drush_get_option('no-clean', FALSE)) {
-    drush_shell_exec('rm -rf %s', $tmp_dir);
+    drush_shell_exec('rm -rf %s', drush_make_tmp());
   }
   else {
-    drush_log(dt('Tmp dir: %dir', array('%dir' => $tmp_dir)), 'ok');
+    drush_log(dt('Temporary directory: %dir', array('%dir' => drush_make_tmp())), 'ok');
   }
 }
 
-function drush_make_prepare_install($tmp_path, $base_path) {
-  $default = $tmp_path . '/__build__/sites/default';
+function drush_make_prepare_install($base_path) {
+  $default = drush_make_tmp() . '/__build__/sites/default';
   drush_shell_exec("cp %s %s", $default . '/default.settings.php', $default . '/settings.php');
   drush_shell_exec("mkdir %s", $default . '/files');
   drush_shell_exec("chmod a+w %s %s", $default . '/settings.php', $default . '/files');
 }
 
-function drush_make_md5($tmp_path) {
-  if (drush_shell_exec("( find %s -type f -exec cksum {} \; )", $tmp_path)) {
+function drush_make_md5() {
+  if (drush_shell_exec("( find %s -type f -exec cksum {} \; )", drush_make_tmp())) {
     $hashes = array();
     foreach (drush_shell_exec_output() as $line) {
       // Remove the temporary build path which includes a (relatively)
       // unique timestamp.
-      $line = str_replace($tmp_path, '', $line);
+      $line = str_replace(drush_make_tmp(), '', $line);
       // Trim to sanitize.
       $line = trim($line);
       $hashes[] = $line;
@@ -301,7 +302,9 @@ function drush_make_md5($tmp_path) {
   }
 }
 
-function drush_make_tar($tmp_path, $base_path) {
+function drush_make_tar($base_path) {
+  $tmp_path = drush_make_tmp();
+
   drush_shell_exec('mkdir -p %s', dirname($base_path));
   $filename = basename($base_path);
   $dirname = basename($base_path, '.tar.gz');
