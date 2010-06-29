@@ -82,6 +82,12 @@ function drush_make_test_get_tests($id = NULL) {
       'md5'      => '0cb28a15958d7fc4bbf8bf6b00bc6514',
       'options'  => array('no-core' => TRUE),
     ),
+    'bzr' => array(
+      'name'     => 'Bzr',
+      'makefile' => 'tests/bzr.make',
+      'md5'      => '0a41771bec49b00205330c0b656d2117',
+      'options'  => array(),
+    ),
   );
   if (isset($id)) {
     return isset($tests[$id]) ? $tests[$id] : FALSE;
