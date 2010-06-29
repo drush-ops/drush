@@ -466,7 +466,6 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
 
 class DrushMakeDownload_Bzr extends DrushMakeDownload {
   function download() {
-    // @TODO implement revisions, tags
     $name = $this->project->name;
     $download = $this->project->download;
     $tmp_location = $this->project->tmp_path . '/__bzr__/' . basename($this->project->download_location);
@@ -540,53 +539,5 @@ class DrushMakeDownload_SVN extends DrushMakeDownload {
       drush_make_error('DOWNLOAD_ERROR', dt('Unable to @command %project from %url.', array('%project' => $name, '@command' => $command, '%url' => $download['url'])));
       return FALSE;
     }
-  }
-}
-
-class DrushMakeDownload_Hg extends DrushMakeDownload {
-  function download() {
-    // @TODO implement tags
-    $name = $this->project->name;
-    $tmp_path = $this->project->tmp_path;
-    $download = $this->project->download;
-    if (!empty($download['url'])) {
-      $tmp_location = $this->project->tmp_path . '/__hg__/' . basename($this->project->download_location);
-      drush_shell_exec('mkdir -p %s', $this->project->tmp_path . '/__hg__/');
-
-      // clone the given repository
-      if (drush_shell_exec("hg clone %s %s", $download['url'], $tmp_location)) {
-        drush_log(dt('%project cloned from %url.', array('%project' => $this->project->name, '%url' => $download['url'])), 'ok');
-
-        // Perform operations against the repo
-        $cwd = getcwd();
-        chdir($tmp_location);
-
-        // Check out a specific revision
-        if ($download['revision']) {
-          if (drush_shell_exec("hg update -r%s", $download['revision'])) {
-            drush_log(dt("Checked out revision %revision.", array('%revision' => $download['revision'])), 'ok');
-          }
-          else {
-            drush_make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision %revision", array('%revision' => $download['revision'])));
-          }
-        }
-
-        // Move back to last current directory
-        chdir($cwd);
-
-        // Clean up
-        if (!drush_get_option('working-copy') && file_exists($tmp_location . '/.hg')) {
-          drush_shell_exec('rm -rf %s', $tmp_location . '/.hg');
-        }
-        drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($this->project->download_location));
-        drush_shell_exec("rm -rf %s", dirname($tmp_location));
-        return $name;
-      }
-    }
-    else {
-      $download['url'] = dt("unspecified location");
-    }
-    drush_make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $name, '%url' => $download['url'])));
-    return FALSE;
   }
 }
