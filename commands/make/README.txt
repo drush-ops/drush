@@ -211,6 +211,9 @@ Do not use both types of declarations for a single project in your makefile.
 
   Use a CVS repository as the source for this project. Options:
 
+  `date` - use the latest revision no later than specified date. See the CVS
+  man page for more about how to use the date flag.
+
   `root` - the CVS repository to use for this project. Optional. If unspecified,
   the `CVSROOT` environment value will first be used and finally Drupal contrib
   CVS is used as a last resort fallback.
