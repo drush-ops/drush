@@ -145,22 +145,22 @@ function drush_drush_make_make($makefile = NULL, $base_path = NULL) {
   drush_make_clean_tmp();
 }
 
-function drush_make_add_projects($recursion, $install_path, $info, $base_path, $queue) {
+function drush_make_add_projects($recursion, $contrib_destination, $info, $base_path, $queue) {
   $projects = array();
   if (!empty($info['projects'])) {
     foreach ($info['projects'] as $key => $project) {
       // Merge the known data onto the project info.
       $project += array(
-        'name'           => $key,
-        'core'           => $info['core'],
-        'base_path'      => $base_path,
-        'install_path'   => $install_path,
-        'tmp_path'       => drush_make_tmp(),
-        'version'        => drush_get_option('drush-make-version-best'),
-        'location'       => drush_get_option('drush-make-update-default-url'),
-        'subdir'         => '',
-        'directory_name' => '',
-        'queue'          => $queue,
+        'name'                => $key,
+        'core'                => $info['core'],
+        'base_path'           => $base_path,
+        'contrib_destination' => $contrib_destination,
+        'tmp_path'            => drush_make_tmp(),
+        'version'             => drush_get_option('drush-make-version-best'),
+        'location'            => drush_get_option('drush-make-update-default-url'),
+        'subdir'              => '',
+        'directory_name'      => '',
+        'queue'               => $queue,
       );
       // Special case for Update XML.
       $subqueue = new DrushMakeQueue;
@@ -208,7 +208,7 @@ function drush_make_add_projects($recursion, $install_path, $info, $base_path, $
   }
 }
 
-function drush_make_add_libraries($install_path, $info, $base_path, $queue) {
+function drush_make_add_libraries($contrib_destination, $info, $base_path, $queue) {
   if (!empty($info['libraries'])) {
     foreach ($info['libraries'] as $key => $library) {
       if (!is_string($key) || !is_array($library)) {
@@ -217,17 +217,17 @@ function drush_make_add_libraries($install_path, $info, $base_path, $queue) {
       }
       // Merge the known data onto the library info.
       $library += array(
-        'name'           => $key,
-        'core'           => $info['core'],
-        'base_path'      => $base_path,
-        'install_path'   => $install_path,
-        'tmp_path'       => drush_make_tmp(),
-        'version'        => drush_get_option('drush-make-version-best'),
-        'location'       => drush_get_option('drush-make-update-default-url'),
-        'subdir'         => '',
-        'directory_name' => $key,
-        'queue'          => $queue,
-        'type'           => 'library',
+        'name'                => $key,
+        'core'                => $info['core'],
+        'base_path'           => $base_path,
+        'contrib_destination' => $contrib_destination,
+        'tmp_path'            => drush_make_tmp(),
+        'version'             => drush_get_option('drush-make-version-best'),
+        'location'            => drush_get_option('drush-make-update-default-url'),
+        'subdir'              => '',
+        'directory_name'      => $key,
+        'queue'               => $queue,
+        'type'                => 'library',
       );
       $init = $queue->addItem('drush_make_initialize_project', array($library));
       $queue->addItem('drush_make_run', array(), $init);

@@ -163,7 +163,7 @@ function drush_make_validate_info_file($info) {
           $names[] = $project;
           foreach ($project_data as $attribute => $value) {
             // Unset disallowed attributes.
-            if (in_array($attribute, array('install_path'))) {
+            if (in_array($attribute, array('contrib_destination'))) {
               unset($info['projects'][$project][$attribute]);
             }
             // Prevent malicious attempts to access other areas of the filesystem.
@@ -209,7 +209,7 @@ function drush_make_validate_info_file($info) {
         if (is_array($library_data)) {
           foreach($library_data as $attribute => $value) {
             // Unset disallowed attributes.
-            if (in_array($attribute, array('install_path'))) {
+            if (in_array($attribute, array('contrib_destination'))) {
               unset($info['libraries'][$library][$attribute]);
             }
             // Prevent malicious attempts to access other areas of the filesystem.

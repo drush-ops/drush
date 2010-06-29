@@ -96,7 +96,7 @@ function _drush_generate_makefile_check_location($name, $type) {
   $info = array();
   if ($path != $default_location . '/' . $name) {
     if (substr($path, 0, strlen($default_location)) != $default_location) {
-      $info['install_path'] = $path;
+      $info['contrib_destination'] = $path;
     }
     else {
       // If it's in a subdir of sites/all/modules, set the subdir.
