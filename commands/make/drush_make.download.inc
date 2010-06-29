@@ -469,26 +469,43 @@ class DrushMakeDownload_Bzr extends DrushMakeDownload {
     // @TODO implement revisions, tags
     $name = $this->project->name;
     $download = $this->project->download;
-    $command = 'export';
-    $tmp_location = $this->project->tmp_path . '/' . basename($this->project->download_location);
+    $tmp_location = $this->project->tmp_path . '/__bzr__/' . basename($this->project->download_location);
+    drush_shell_exec('mkdir -p %s', dirname($tmp_location));
     if (!empty($download['url'])) {
+      $args = array();
+      $command = 'bzr';
       if (drush_get_option('working-copy')) {
-        $command = 'branch';
-        if (drush_shell_exec("bzr %s --use-existing-dir %s %s", $command, $download['url'], $tmp_location)) {
-          drush_log(dt('%project @command from %url.', array('%project' => $name, '@command' => $command, '%url' => $download['url'])), 'ok');
-          return $name;
-        }
+        $command .= ' branch  --use-existing-dir';
       }
-      // Export has reversed desintation & source syntax
-      elseif (drush_shell_exec("bzr %s %s %s", $command, $tmp_location, $download['url'])) {
-        drush_log(dt('%project @command from %url.', array('%project' => $name, '@command' => $command, '%url' => $download['url'])), 'ok');
+      else {
+        $command .= ' export';
+      }
+      if (isset($download['revision'])) {
+        $command .= ' -r %s';
+        $args[] = $download['revision'];
+      }
+      $command .= ' %s %s';
+      if (drush_get_option('working-copy')) {
+        $args[] = $download['url'];
+        $args[] = $tmp_location;
+      }
+      else {
+        $args[] = $tmp_location;
+        $args[] = $download['url'];
+      }
+      array_unshift($args, $command);
+      if (call_user_func_array('drush_shell_exec', $args)) {
+        drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
+        drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($this->project->download_location));
+        drush_shell_exec('rm -rf %s', dirname($tmp_location));
         return $name;
       }
     }
     else {
       $download['url'] = dt("unspecified location");
     }
-    drush_make_error('DOWNLOAD_ERROR', dt('Unable to @command %project from %url.', array('@command' => $command, '%project' => $name, '%url' => $download['url'])));
+    drush_make_error('DOWNLOAD_ERROR', dt('Unable to download %project from %url.', array('%project' => $name, '%url' => $download['url'])));
+    drush_shell_exec('rm -rf %s', dirname($tmp_location));
     return FALSE;
   }
 }
