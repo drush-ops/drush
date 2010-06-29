@@ -46,12 +46,6 @@ function drush_make_test_get_tests($id = NULL) {
       'md5'      => 'e5210b009b52d60d64ce5effd7e6cf83',
       'options'  => array('no-core' => TRUE),
     ),
-    'hg' => array(
-      'name'     => 'Mercurial',
-      'makefile' => 'tests/hg.make',
-      'md5'      => '361d7ea8713b5465288682fba49662d8',
-      'options'  => array('no-core' => TRUE),
-    ),
     'no-patch-txt' => array(
       'name'     => 'Test --no-patch-txt option',
       'makefile' => 'tests/patches.make',
