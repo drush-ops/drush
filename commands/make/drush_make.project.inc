@@ -130,7 +130,7 @@ class DrushMakeProject {
       return;
     }
     $build_path = $this->buildPath($this->name);
-    $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $info, $this->build_path));
+    drush_make_add_projects(TRUE, trim($build_path, '/'), $info, $this->build_path);
     $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $info, $this->build_path));
   }
 }

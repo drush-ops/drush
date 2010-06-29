@@ -110,8 +110,8 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
     return;
   }
 
+  drush_make_add_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
   $queue = new DrushMakeQueue();
-  $queue->addItem('drush_make_add_projects', array(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path));
   $queue->addItem('drush_make_add_libraries', array(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path));
   $queue->execute();
 
@@ -136,65 +136,62 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
   drush_make_clean_tmp();
 }
 
-function drush_make_add_projects($recursion, $contrib_destination, $info, $build_path, $queue) {
+function drush_make_add_projects($recursion, $contrib_destination, $info, $build_path) {
   $projects = array();
-  if (!empty($info['projects'])) {
-    foreach ($info['projects'] as $key => $project) {
-      // Merge the known data onto the project info.
-      $project += array(
-        'name'                => $key,
-        'core'                => $info['core'],
-        'build_path'           => $build_path,
-        'contrib_destination' => $contrib_destination,
-        'tmp_path'            => drush_make_tmp(),
-        'version'             => drush_get_option('drush-make-version-best'),
-        'location'            => drush_get_option('drush-make-update-default-url'),
-        'subdir'              => '',
-        'directory_name'      => '',
-        'queue'               => $queue,
-      );
-      // Special case for Update XML.
-      $subqueue = new DrushMakeQueue;
-      $update = $subqueue->addItem('drush_make_updatexml', array($project));
-      $subqueue->execute();
-      $project = $subqueue->getReturn($update);
+  if (empty($info['projects'])) {
+    return;
+  }
+  foreach ($info['projects'] as $key => $project) {
+    $project_queue = new DrushMakeQueue;
+    // Merge the known data onto the project info.
+    $project += array(
+      'name'                => $key,
+      'core'                => $info['core'],
+      'build_path'           => $build_path,
+      'contrib_destination' => $contrib_destination,
+      'tmp_path'            => drush_make_tmp(),
+      'version'             => drush_get_option('drush-make-version-best'),
+      'location'            => drush_get_option('drush-make-update-default-url'),
+      'subdir'              => '',
+      'directory_name'      => '',
+      'queue'               => $project_queue,
+    );
+    $project = drush_make_updatexml($project);
+    $init = $project_queue->addItem('drush_make_initialize_project', array($project));
+    $project_queue->addItem('drush_make_run', array(), $init);
+    $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = $project_queue;
+  }
 
-      $project_queue = new DrushMakeQueue;
-      $init = $project_queue->addItem('drush_make_initialize_project', array($project));
-      $project_queue->addItem('drush_make_run', array(), $init);
-      $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = $project_queue;
+  if (!empty($projects['core'])) {
+    $cores = count($projects['core']);
+  }
+  else {
+    $cores = 0;
+  }
+
+  if (drush_get_option('no-core')) {
+    unset($projects['core']);
+  }
+  elseif ($cores == 0 && !$recursion) {
+    drush_set_error(dt('No core project specified.'));
+    return FALSE;
+  }
+  elseif ($cores == 1 && $recursion) {
+    unset($projects['core']);
+  }
+  elseif ($cores > 1) {
+    drush_set_error(dt('More than one core project specified.'));
+    return FALSE;
+  }
+  if (isset($projects['core'])) {
+    foreach ($projects['core'] as $project) {
+      $project->execute();
     }
-    if (!empty($projects['core'])) {
-      $cores = count($projects['core']);
-    }
-    else {
-      $cores = 0;
-    }
-    if (drush_get_option('no-core')) {
-      unset($projects['core']);
-    }
-    elseif ($cores == 0 && !$recursion) {
-      drush_set_error(dt('No core project specified.'));
-      $queue->terminate();
-      return FALSE;
-    }
-    elseif ($cores == 1 && $recursion) {
-      unset($projects['core']);
-    }
-    elseif ($cores > 1) {
-      drush_set_error(dt('More than one core project specified.'));
-      $queue->terminate();
-      return FALSE;
-    }
-    if (isset($projects['core'])) {
-      foreach ($projects['core'] as $project) {
-        $project->execute();
-      }
-    }
-    if (isset($projects['contrib'])) {
-      foreach ($projects['contrib'] as $project) {
-        $project->execute();
-      }
+  }
+
+  if (isset($projects['contrib'])) {
+    foreach ($projects['contrib'] as $project) {
+      $project->execute();
     }
   }
 }
