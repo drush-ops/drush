@@ -9,7 +9,7 @@ Drupal distribution as a single text file.
 Among drush make's capabilities are:
 
 - Downloading Drupal core, as well as contrib modules from drupal.org.
-- Checking code out from CVS, SVN, git, bzr, and hg repositories.
+- Checking code out from CVS, SVN, git, and bzr repositories.
 - Getting plain `.tar.gz` and `.zip` files (particularly useful for libraries
   that can not be distributed directly with drupal core or modules).
 - Fetching and applying patches.
@@ -239,14 +239,6 @@ Do not use both types of declarations for a single project in your makefile.
 
      projects[mytheme][download][type] = "git"
      projects[mytheme][download][url] = "git://github.com/jane_doe/mytheme.git"
-
-- `download[type][hg]`
-
-  Use a mercurial repository as the source for this project. Options:
-
-  `url` - the URL of the repository. Required.
-
-  `revision` - a specific revision identified by commit to check out. Optional.
 
 - `download[type][svn]`
 
