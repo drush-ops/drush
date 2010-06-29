@@ -16,14 +16,6 @@ function drush_make_ensure_version() {
   return;
 }
 
-function drush_make_base_path_validate($base_path) {
-  if ($base_path != '.' && file_exists($base_path)) {
-    drush_set_error(dt('Base path %path already exists', array('%path' => $base_path)));
-    return FALSE;
-  }
-  return TRUE;
-}
-
 /**
  * Parse Drupal info file format.
  *
@@ -361,32 +353,6 @@ function drush_make_cd() {
 }
 
 /**
- * Reads from STDIN.
- *
- * @return
- *   The contents of STDIN as a string if anything can be read from STDIN,
- *   FALSE otherwise.  Note that this returns the exact contents of STDIN,
- *   including line breaks.
- */
-function drush_make_read_stdin() {
-
-  // See http://drupal.org/node/499758 before changing this.
-  $stdin = fopen("php://stdin","r");
-  $output = '';
-  $has_input = FALSE;
-
-  while ($line = fgets($stdin)) {
-    $has_input = TRUE;
-    $output .= $line;
-  }
-
-  if ($has_input) {
-    return $output;
-  }
-  return FALSE;
-}
-
-/**
  * Get data based on the source.
  *
  * This is a helper function to abstract the retrieval of data, so that it can
@@ -399,7 +365,20 @@ function drush_make_read_stdin() {
  */
 function drush_make_get_data($data_source) {
   if ($data_source == '-') {
-    $data = drush_make_read_stdin();
+    // See http://drupal.org/node/499758 before changing this.
+    $stdin = fopen("php://stdin","r");
+    $data = '';
+    $has_input = FALSE;
+  
+    while ($line = fgets($stdin)) {
+      $has_input = TRUE;
+      $data .= $line;
+    }
+  
+    if ($has_input) {
+      return $data;
+    }
+    return FALSE;
   }
   else {
     $data = file_get_contents($data_source);

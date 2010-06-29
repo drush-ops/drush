@@ -124,13 +124,16 @@ class DrushMakeProject {
       }
     }
     drush_log(dt("Found makefile: %makefile", array("%makefile" => basename($makefile))), 'ok');
+
+    $file = drush_make_get_data($makefile);
+    $info = drush_make_parse_info_file($file);
+    $info = drush_make_include_info_files(dirname($makefile), $info, $file);
+    if (!($info = drush_make_validate_info_file($info))) {
+      return;
+    }
     $build_path = $this->buildPath($this->name);
-    $data    = $this->queue->addItem('drush_make_get_data', $makefile);
-    $info    = $this->queue->addItem('drush_make_parse_info_file', array(), $data);
-    $include = $this->queue->addItem('drush_make_include_info_files', array(dirname($makefile)), array($info, $data));
-    $valid   = $this->queue->addItem('drush_make_validate_info_file', array(), $include);
-    $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
-    $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $this->tmp_path, $this->base_path), array($valid));
+    $this->queue->addItem('drush_make_add_projects', array(TRUE, trim($build_path, '/'), $info, $this->tmp_path, $this->base_path));
+    $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $info, $this->tmp_path, $this->base_path));
   }
 }
 

@@ -100,42 +100,53 @@ function drush_drush_make_make_test($test = NULL) {
  * Drush callback; make based on the makefile.
  */
 function drush_drush_make_make($makefile = NULL, $base_path = NULL) {
+  if (!drush_make_ensure_version()) {
+    return;
+  }
+  if (!($base_path = drush_make_base_path($base_path))) {
+    return;
+  }
+  if (!($file = drush_make_get_data($makefile))) {
+    return;
+  }
+  if (!($info = drush_make_parse_info_file($file))) {
+    return;
+  }
+  if (!($info = drush_make_include_info_files(dirname($makefile), $info, $file))) {
+    return;
+  }
+  if (!($info = drush_make_validate_info_file($info))) {
+    return;
+  }
+  $tmp = drush_make_create_tmp();
+
   $queue = new DrushMakeQueue();
-  $drush_version = $queue->addItem('drush_make_ensure_version');
-  $base_path = $queue->addItem('drush_make_base_path', array($base_path), array($drush_version));
-  $file_exists = $queue->addItem('drush_make_base_path_validate', array(), $base_path);
-  $data    = $queue->addItem('drush_make_get_data', $makefile, $file_exists);
-  $info    = $queue->addItem('drush_make_parse_info_file', array(), $data);
-  $include = $queue->addItem('drush_make_include_info_files', array(dirname($makefile)), array($info, $data));
-  $valid   = $queue->addItem('drush_make_validate_info_file', array(), $include);
-  $tmp = $queue->addItem('drush_make_create_tmp', array(), $valid);
-  $queue->addItem('drush_make_add_projects', array(FALSE, drush_get_option('contrib-destination', 'sites/all')), array($tmp, $base_path, $valid));
-  $queue->addItem('drush_make_add_libraries', array(drush_get_option('contrib-destination', 'sites/all')), array($tmp, $base_path, $valid));
+  $queue->addItem('drush_make_add_projects', array(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $tmp, $base_path));
+  $queue->addItem('drush_make_add_libraries', array(drush_get_option('contrib-destination', 'sites/all'), $info, $tmp, $base_path));
   $queue->execute();
 
   // Add clean up tasks.
   if (drush_get_option('prepare-install')) {
-    $queue->addItem('drush_make_prepare_install', array(), array($tmp, $base_path));
+    drush_make_prepare_install($tmp, $base_path);
   }
   if (drush_get_option('md5')) {
-    $queue->addItem('drush_make_md5', array(), array($tmp));
+    drush_make_md5($tmp);
   }
 
   // Only take final build steps if not in testing mode.
   if (!drush_get_option('test')) {
     if (drush_get_option('tar')) {
-      $queue->addItem('drush_make_tar', array(), array($tmp, $base_path));
+      drush_make_tar($tmp, $base_path);
     }
     else {
-      $queue->addItem('drush_make_move_build', array(), array($tmp, $base_path, $valid));
+      drush_make_move_build($tmp, $base_path);
     }
   }
 
-  $queue->addItem('drush_make_clean_tmp', array(), array($tmp));
-  $queue->execute();
+  drush_make_clean_tmp($tmp);
 }
 
-function drush_make_add_projects($recursion, $install_path, $tmp_path, $base_path, $info, $queue) {
+function drush_make_add_projects($recursion, $install_path, $info, $tmp_path, $base_path, $queue) {
   $projects = array();
   if (!empty($info['projects'])) {
     foreach ($info['projects'] as $key => $project) {
@@ -193,7 +204,7 @@ function drush_make_add_projects($recursion, $install_path, $tmp_path, $base_pat
   }
 }
 
-function drush_make_add_libraries($install_path, $tmp_path, $base_path, $info, $queue) {
+function drush_make_add_libraries($install_path, $info, $tmp_path, $base_path, $queue) {
   if (!empty($info['libraries'])) {
     foreach ($info['libraries'] as $key => $library) {
       if (!is_string($key) || !is_array($library)) {
@@ -354,6 +365,10 @@ function drush_make_base_path($base_path) {
   }
   else {
     drush_log(dt('Build aborted.'), 'ok');
+    return FALSE;
+  }
+  if ($base_path != '.' && file_exists($base_path)) {
+    drush_set_error(dt('Base path %path already exists', array('%path' => $base_path)));
     return FALSE;
   }
   return $base_path;
