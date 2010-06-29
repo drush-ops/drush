@@ -99,11 +99,11 @@ function drush_drush_make_make_test($test = NULL) {
 /**
  * Drush callback; make based on the makefile.
  */
-function drush_drush_make_make($makefile = NULL, $base_path = NULL) {
+function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
   if (!drush_make_ensure_version()) {
     return;
   }
-  if (!($base_path = drush_make_base_path($base_path))) {
+  if (!($build_path = drush_make_build_path($build_path))) {
     return;
   }
   if (!($file = drush_make_get_data($makefile))) {
@@ -120,13 +120,13 @@ function drush_drush_make_make($makefile = NULL, $base_path = NULL) {
   }
 
   $queue = new DrushMakeQueue();
-  $queue->addItem('drush_make_add_projects', array(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $base_path));
-  $queue->addItem('drush_make_add_libraries', array(drush_get_option('contrib-destination', 'sites/all'), $info, $base_path));
+  $queue->addItem('drush_make_add_projects', array(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path));
+  $queue->addItem('drush_make_add_libraries', array(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path));
   $queue->execute();
 
   // Add clean up tasks.
   if (drush_get_option('prepare-install')) {
-    drush_make_prepare_install($base_path);
+    drush_make_prepare_install($build_path);
   }
   if (drush_get_option('md5')) {
     drush_make_md5();
@@ -135,17 +135,17 @@ function drush_drush_make_make($makefile = NULL, $base_path = NULL) {
   // Only take final build steps if not in testing mode.
   if (!drush_get_option('test')) {
     if (drush_get_option('tar')) {
-      drush_make_tar($base_path);
+      drush_make_tar($build_path);
     }
     else {
-      drush_make_move_build($base_path);
+      drush_make_move_build($build_path);
     }
   }
 
   drush_make_clean_tmp();
 }
 
-function drush_make_add_projects($recursion, $contrib_destination, $info, $base_path, $queue) {
+function drush_make_add_projects($recursion, $contrib_destination, $info, $build_path, $queue) {
   $projects = array();
   if (!empty($info['projects'])) {
     foreach ($info['projects'] as $key => $project) {
@@ -153,7 +153,7 @@ function drush_make_add_projects($recursion, $contrib_destination, $info, $base_
       $project += array(
         'name'                => $key,
         'core'                => $info['core'],
-        'base_path'           => $base_path,
+        'build_path'           => $build_path,
         'contrib_destination' => $contrib_destination,
         'tmp_path'            => drush_make_tmp(),
         'version'             => drush_get_option('drush-make-version-best'),
@@ -208,7 +208,7 @@ function drush_make_add_projects($recursion, $contrib_destination, $info, $base_
   }
 }
 
-function drush_make_add_libraries($contrib_destination, $info, $base_path, $queue) {
+function drush_make_add_libraries($contrib_destination, $info, $build_path, $queue) {
   if (!empty($info['libraries'])) {
     foreach ($info['libraries'] as $key => $library) {
       if (!is_string($key) || !is_array($library)) {
@@ -219,7 +219,7 @@ function drush_make_add_libraries($contrib_destination, $info, $base_path, $queu
       $library += array(
         'name'                => $key,
         'core'                => $info['core'],
-        'base_path'           => $base_path,
+        'build_path'           => $build_path,
         'contrib_destination' => $contrib_destination,
         'tmp_path'            => drush_make_tmp(),
         'version'             => drush_get_option('drush-make-version-best'),
@@ -355,42 +355,42 @@ function drush_make_run($project) {
   $project->make();
 }
 
-function drush_make_base_path($base_path) {
+function drush_make_build_path($build_path) {
   // Determine the base of the build.
   if (drush_get_option('tar')) {
-    $base_path = dirname($base_path) . '/' . basename($base_path, '.tar.gz') . '.tar.gz';
+    $build_path = dirname($build_path) . '/' . basename($build_path, '.tar.gz') . '.tar.gz';
   }
-  elseif (isset($base_path) && (!empty($base_path) || $base_path == '.')) {
-    $base_path = rtrim($base_path, '/');
+  elseif (isset($build_path) && (!empty($build_path) || $build_path == '.')) {
+    $build_path = rtrim($build_path, '/');
   }
   // Allow tests to run without a specified base path.
   elseif (drush_get_option('test') || drush_confirm(dt("Make new site in the current directory?"))) {
-    $base_path = '.';
+    $build_path = '.';
   }
   else {
     drush_log(dt('Build aborted.'), 'ok');
     return FALSE;
   }
-  if ($base_path != '.' && file_exists($base_path)) {
-    drush_set_error(dt('Base path %path already exists', array('%path' => $base_path)));
+  if ($build_path != '.' && file_exists($build_path)) {
+    drush_set_error(dt('Base path %path already exists', array('%path' => $build_path)));
     return FALSE;
   }
-  return $base_path;
+  return $build_path;
 }
 
-function drush_make_move_build($base_path) {
+function drush_make_move_build($build_path) {
   $tmp_path = drush_make_tmp();
-  if ($base_path == '.') {
+  if ($build_path == '.') {
     drush_shell_exec('ls -A %s/__build__', $tmp_path);
     $info = drush_shell_exec_output();
     foreach ($info as $file) {
-      drush_shell_exec("cp -Rf %s/__build__/%s %s", $tmp_path, $file, $base_path);
+      drush_shell_exec("cp -Rf %s/__build__/%s %s", $tmp_path, $file, $build_path);
     }
   }
   else {
-    drush_shell_exec('mkdir -p %s', dirname($base_path));
-    drush_shell_exec("mv %s/__build__ %s/%s", $tmp_path, $tmp_path, basename($base_path));
-    drush_shell_exec("cp -Rf %s/%s %s", $tmp_path, basename($base_path), dirname($base_path));
+    drush_shell_exec('mkdir -p %s', dirname($build_path));
+    drush_shell_exec("mv %s/__build__ %s/%s", $tmp_path, $tmp_path, basename($build_path));
+    drush_shell_exec("cp -Rf %s/%s %s", $tmp_path, basename($build_path), dirname($build_path));
   }
   return TRUE;
 }

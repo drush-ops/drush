@@ -278,7 +278,7 @@ function drush_make_clean_tmp() {
   }
 }
 
-function drush_make_prepare_install($base_path) {
+function drush_make_prepare_install($build_path) {
   $default = drush_make_tmp() . '/__build__/sites/default';
   drush_shell_exec("cp %s %s", $default . '/default.settings.php', $default . '/settings.php');
   drush_shell_exec("mkdir %s", $default . '/files');
@@ -302,19 +302,19 @@ function drush_make_md5() {
   }
 }
 
-function drush_make_tar($base_path) {
+function drush_make_tar($build_path) {
   $tmp_path = drush_make_tmp();
 
-  drush_shell_exec('mkdir -p %s', dirname($base_path));
-  $filename = basename($base_path);
-  $dirname = basename($base_path, '.tar.gz');
+  drush_shell_exec('mkdir -p %s', dirname($build_path));
+  $filename = basename($build_path);
+  $dirname = basename($build_path, '.tar.gz');
   // Move the build directory to a more human-friendly name, so that tar will
   // use it instead.
   drush_shell_exec("mv %s/__build__ %s/%s", $tmp_path, $tmp_path, $dirname);
   // Only move the tar file to it's final location if it's been built
   // successfully.
   if (drush_shell_exec("tar -C %s -Pczf %s/%s %s", $tmp_path, $tmp_path, $filename, $dirname)) {
-    drush_shell_exec("mv %s/%s %s", $tmp_path, $filename, $base_path);
+    drush_shell_exec("mv %s/%s %s", $tmp_path, $filename, $build_path);
   };
   // Move the build directory back to it's original location for consistency.
   drush_shell_exec("mv %s/%s %s/__build__", $tmp_path, $dirname, $tmp_path);
