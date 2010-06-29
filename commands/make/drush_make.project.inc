@@ -125,9 +125,7 @@ class DrushMakeProject {
     }
     drush_log(dt("Found makefile: %makefile", array("%makefile" => basename($makefile))), 'ok');
 
-    $file = drush_make_get_data($makefile);
-    $info = drush_make_parse_info_file($file);
-    $info = drush_make_include_info_files(dirname($makefile), $info, $file);
+    $info = drush_make_parse_info_file($makefile);
     if (!($info = drush_make_validate_info_file($info))) {
       return;
     }

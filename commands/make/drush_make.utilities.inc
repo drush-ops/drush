@@ -23,7 +23,44 @@ function drush_make_ensure_version() {
  *
  * @see drupal_parse_info_file
  */
-function drush_make_parse_info_file($data) {
+function drush_make_parse_info_file($makefile, $parsed = TRUE) {
+  if (!($data = drush_make_get_data($makefile))) {
+    return FALSE;
+  }
+  if (!($info = _drush_make_parse_info_file($data))) {
+    return FALSE;
+  }
+  if (!empty($info['includes'])) {
+    $include_path = dirname($makefile);
+    $includes = array();
+    if (!empty($info['includes']) && is_array($info['includes'])) {
+      foreach ($info['includes'] as $include) {
+        if (is_string($include)) {
+          if (drush_make_valid_url($include, TRUE) && ($file = drush_make_parse_info_file($include, FALSE))) {
+            $includes[] = $file;
+          }
+          else if (file_exists($include_path .'/'. $include) && ($file = drush_make_parse_info_file($include_path .'/'. $include, FALSE))) {
+            $includes[] = $file;
+          }
+          else {
+            drush_make_error('BUILD_ERROR', dt("Include file missing: %include", array('%include' => $include)));
+          }
+        }
+      }
+    }
+    $includes[] = $data;
+    $data = implode("\n", $includes);
+    $info = _drush_make_parse_info_file($data);
+  }
+  if ($parsed) {
+    return $info;
+  }
+  else {
+    return $data;
+  }
+}
+
+function _drush_make_parse_info_file($data) {
   if (!$data) {
     return FALSE;
   }
@@ -80,46 +117,6 @@ function drush_make_parse_info_file($data) {
     return $info;
   }
   return FALSE;
-}
-
-/**
- * Include any additional info files and merge them into the current file.
- *
- * Files are included in listed order with the source info file appended
- * last. This allows the source info file to override keys of all other
- * included files.
- *
- * @param string $include_path
- *   The path to which include paths are relative.
- * @param array $info
- *   A parsed info file array. Need not be validated.
- * @param string $source
- *   The unparsed source data that provided the original info file array.
- *
- * @return array
- *   A parsed info file array of the combined includes.  
- */
-function drush_make_include_info_files($include_path, $info, $source) {
-  $includes = array();
-  if (!empty($info['includes']) && is_array($info['includes'])) {
-    foreach ($info['includes'] as $key => $include) {
-      if (is_string($include)) {
-        $data = FALSE;
-        if (drush_make_valid_url($include, TRUE) && ($data = drush_make_get_data($include))) {
-          $includes[$key] = $data;
-        }
-        else if (file_exists($include_path .'/'. $include) && ($data = drush_make_get_data($include_path .'/'. $include))) {
-          $includes[$key] = $data;
-        }
-        else {
-          drush_make_error('BUILD_ERROR', dt("Include file missing: %include", array('%include' => $include)));
-        }
-      }
-    }
-  }
-  $includes[] = $source;
-  $merged = implode("\n", $includes);
-  return drush_make_parse_info_file($merged);
 }
 
 function drush_make_validate_info_file($info) {

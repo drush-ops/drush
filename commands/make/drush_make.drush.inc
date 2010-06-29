@@ -106,16 +106,7 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
   if (!($build_path = drush_make_build_path($build_path))) {
     return;
   }
-  if (!($file = drush_make_get_data($makefile))) {
-    return;
-  }
-  if (!($info = drush_make_parse_info_file($file))) {
-    return;
-  }
-  if (!($info = drush_make_include_info_files(dirname($makefile), $info, $file))) {
-    return;
-  }
-  if (!($info = drush_make_validate_info_file($info))) {
+  if (!($info = drush_make_validate_info_file(drush_make_parse_info_file($makefile)))) {
     return;
   }
 

@@ -61,7 +61,7 @@ function drush_make_test_get_tests($id = NULL) {
     'include' => array(
       'name'     => 'Including files',
       'makefile' => 'tests/include.make',
-      'md5'      => 'f68e6516be32e7dd3f6f422e04fbb4ed',
+      'md5'      => 'a20c3f4f4167c6577156fa616f542120',
       'options'  => array(),
     ),
     'recursion' => array(
