@@ -470,24 +470,25 @@ class DrushMakeDownload_Bzr extends DrushMakeDownload {
     $name = $this->project->name;
     $download = $this->project->download;
     $command = 'export';
+    $tmp_location = $this->project->tmp_path . '/' . basename($this->project->download_location);
     if (!empty($download['url'])) {
       if (drush_get_option('working-copy')) {
         $command = 'branch';
-        if (drush_shell_exec("bzr %s %s %s/%s", $command, $download['url'], $tmp_path, $name)) {
-          drush_log(dt('%project branched from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
+        if (drush_shell_exec("bzr %s --use-existing-dir %s %s", $command, $download['url'], $tmp_location)) {
+          drush_log(dt('%project @command from %url.', array('%project' => $name, '@command' => $command, '%url' => $download['url'])), 'ok');
           return $name;
         }
       }
       // Export has reversed desintation & source syntax
-      elseif (drush_shell_exec("bzr %s %s/%s %s", $command, $tmp_path, $name, $download['url'])) {
-        drush_log(dt('%project branched from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
+      elseif (drush_shell_exec("bzr %s %s %s", $command, $tmp_location, $download['url'])) {
+        drush_log(dt('%project @command from %url.', array('%project' => $name, '@command' => $command, '%url' => $download['url'])), 'ok');
         return $name;
       }
     }
     else {
       $download['url'] = dt("unspecified location");
     }
-    drush_make_error('DOWNLOAD_ERROR', dt('Unable to branch %project from %url.', array('%project' => $name, '%url' => $download['url'])));
+    drush_make_error('DOWNLOAD_ERROR', dt('Unable to @command %project from %url.', array('@command' => $command, '%project' => $name, '%url' => $download['url'])));
     return FALSE;
   }
 }
