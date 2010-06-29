@@ -63,14 +63,14 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
       array_unshift($args, $command);
       array_unshift($args, dirname($this->project->download_location));
       if (call_user_func_array('drush_make_cd', $args)) {
-         drush_log(dt('%project @command from %module.', array('%project' => $name, '@command' => $command, '%module' => $download['module'])), 'ok');
+         drush_log(dt('%project downloaded from %module.', array('%project' => $name, '%module' => $download['module'])), 'ok');
         return $this->project->download_location;
       }
     }
     else {
       $download['module'] = dt("unspecified module");
     }
-    drush_make_error('DOWNLOAD_ERROR', dt('Unable to @command %project from %root %module.', array('%project' => $name, '@command'=> $command, '%root' => $download['root'], '%module' => $download['module'])));
+    drush_make_error('DOWNLOAD_ERROR', dt('Unable to download %project from %root %module.', array('%project' => $name, '%root' => $download['root'], '%module' => $download['module'])));
     return FALSE;
   }
 }
