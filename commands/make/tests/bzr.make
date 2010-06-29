@@ -1,6 +1,6 @@
 core = 6.x
 
-projects[pressflow][type] = "core"
-projects[pressflow][download][type] = "bzr"
-projects[pressflow][download][url] = "lp:pressflow"
-projects[pressflow][download][revision] = 83
+projects[mv][type] = "core"
+projects[mv][download][type] = "bzr"
+projects[mv][download][url] = "lp:mv"
+projects[mv][download][revision] = 30

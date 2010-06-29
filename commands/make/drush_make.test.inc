@@ -79,7 +79,7 @@ function drush_make_test_get_tests($id = NULL) {
     'bzr' => array(
       'name'     => 'Bzr',
       'makefile' => 'tests/bzr.make',
-      'md5'      => '0a41771bec49b00205330c0b656d2117',
+      'md5'      => '272e2b9bb27794c54396f2f03c159725',
       'options'  => array(),
     ),
   );
