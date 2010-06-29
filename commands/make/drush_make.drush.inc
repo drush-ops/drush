@@ -111,9 +111,7 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
   }
 
   drush_make_add_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
-  $queue = new DrushMakeQueue();
-  $queue->addItem('drush_make_add_libraries', array(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path));
-  $queue->execute();
+  drush_make_add_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
 
   // Add clean up tasks.
   if (drush_get_option('prepare-install')) {
@@ -196,9 +194,10 @@ function drush_make_add_projects($recursion, $contrib_destination, $info, $build
   }
 }
 
-function drush_make_add_libraries($contrib_destination, $info, $build_path, $queue) {
+function drush_make_add_libraries($contrib_destination, $info, $build_path) {
   if (!empty($info['libraries'])) {
     foreach ($info['libraries'] as $key => $library) {
+      $queue = new DrushMakeQueue;
       if (!is_string($key) || !is_array($library)) {
         // TODO Print a prettier message
         continue;
@@ -207,7 +206,7 @@ function drush_make_add_libraries($contrib_destination, $info, $build_path, $que
       $library += array(
         'name'                => $key,
         'core'                => $info['core'],
-        'build_path'           => $build_path,
+        'build_path'          => $build_path,
         'contrib_destination' => $contrib_destination,
         'tmp_path'            => drush_make_tmp(),
         'version'             => drush_get_option('drush-make-version-best'),
@@ -219,6 +218,7 @@ function drush_make_add_libraries($contrib_destination, $info, $build_path, $que
       );
       $init = $queue->addItem('drush_make_initialize_project', array($library));
       $queue->addItem('drush_make_run', array(), $init);
+      $queue->execute();
     }
   }
 }
