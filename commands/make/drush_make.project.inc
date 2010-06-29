@@ -23,11 +23,13 @@ class DrushMakeProject {
    * Build a project.
    */
   function make() {
+    $this->queue = new DrushMakeQueue;
     if (empty($this->made)) {
       $download_location = $this->queue->addItem(array($this, 'findDownloadLocation'));
       $this->queue->addItem(array($this->downloadClass, 'download'), array(), array($download_location));
       $this->queue->addItem(array($this, 'applyPatches'), array(), array($download_location));
       $this->queue->addItem(array($this, 'recurse'), array(), array($download_location));
+      $this->queue->execute();
       $this->made = TRUE;
     }
     return FALSE;

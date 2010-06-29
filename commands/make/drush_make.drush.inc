@@ -140,7 +140,6 @@ function drush_make_add_projects($recursion, $contrib_destination, $info, $build
     return;
   }
   foreach ($info['projects'] as $key => $project) {
-    $project_queue = new DrushMakeQueue;
     // Merge the known data onto the project info.
     $project += array(
       'name'                => $key,
@@ -152,12 +151,10 @@ function drush_make_add_projects($recursion, $contrib_destination, $info, $build
       'location'            => drush_get_option('drush-make-update-default-url'),
       'subdir'              => '',
       'directory_name'      => '',
-      'queue'               => $project_queue,
     );
     $project = drush_make_updatexml($project);
-    $init = $project_queue->addItem('drush_make_initialize_project', array($project));
-    $project_queue->addItem('drush_make_run', array(), $init);
-    $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = $project_queue;
+    $class_name = 'DrushMakeProject_' . $project['type'];
+    $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = new $class_name($project);
   }
 
   if (!empty($projects['core'])) {
@@ -183,13 +180,13 @@ function drush_make_add_projects($recursion, $contrib_destination, $info, $build
   }
   if (isset($projects['core'])) {
     foreach ($projects['core'] as $project) {
-      $project->execute();
+      $project->make();
     }
   }
 
   if (isset($projects['contrib'])) {
     foreach ($projects['contrib'] as $project) {
-      $project->execute();
+      $project->make();
     }
   }
 }
@@ -197,7 +194,6 @@ function drush_make_add_projects($recursion, $contrib_destination, $info, $build
 function drush_make_add_libraries($contrib_destination, $info, $build_path) {
   if (!empty($info['libraries'])) {
     foreach ($info['libraries'] as $key => $library) {
-      $queue = new DrushMakeQueue;
       if (!is_string($key) || !is_array($library)) {
         // TODO Print a prettier message
         continue;
@@ -213,12 +209,9 @@ function drush_make_add_libraries($contrib_destination, $info, $build_path) {
         'location'            => drush_get_option('drush-make-update-default-url'),
         'subdir'              => '',
         'directory_name'      => $key,
-        'queue'               => $queue,
-        'type'                => 'library',
       );
-      $init = $queue->addItem('drush_make_initialize_project', array($library));
-      $queue->addItem('drush_make_run', array(), $init);
-      $queue->execute();
+      $class = new DrushMakeProject_Library($library);
+      $class->make();
     }
   }
 }
@@ -331,12 +324,6 @@ function _drush_make_update_xml_best_version($major, $releases) {
     }
   }
   return $best;
-}
-
-function drush_make_initialize_project($project) {
-  $class_name = 'DrushMakeProject_' . $project['type'];
-  $class = new $class_name($project);
-  return $class;
 }
 
 function drush_make_run($project) {
