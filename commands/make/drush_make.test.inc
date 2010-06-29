@@ -70,6 +70,12 @@ function drush_make_test_get_tests($id = NULL) {
       'md5'      => 'b4d0599c7c44566a7e3dc9086b870723',
       'options'  => array('no-core' => TRUE),
     ),
+    'svn' => array(
+      'name'     => 'SVN',
+      'makefile' => 'tests/svn.make',
+      'md5'      => '0cb28a15958d7fc4bbf8bf6b00bc6514',
+      'options'  => array('no-core' => TRUE),
+    ),
   );
   if (isset($id)) {
     return isset($tests[$id]) ? $tests[$id] : FALSE;
