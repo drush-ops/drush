@@ -509,20 +509,29 @@ class DrushMakeDownload_SVN extends DrushMakeDownload {
   function download() {
     $name = $this->project->name;
     $download = $this->project->download;
-    $command = 'export';
+    $command = 'svn  --force --non-interactive export';
     if (!empty($download['url'])) {
       if (drush_get_option('working-copy')) {
-        $command = 'checkout';
+        $command = 'svn  --force --non-interactive checkout';
+      }
+      $args = array();
+
+      if (isset($download['revision'])) {
+        $command .= ' -r%s';
+        $args[] = $download['revision'];
       }
 
-      $flags = isset($download['revision']) ? "-r{$download['revision']}" : '';
+      $command .= ' %s %s';
+      $args[] = $download['url'];
+      $args[] = $this->project->download_location;
 
       if (!empty($download['username'])) {
-        $result = drush_shell_exec("svn --force --non-interactive %s %s %s %s --username %s --password %s", $command, $flags, $download['url'], $this->project->download_location, $download['username'], $download['password']);
+        $command .= '--username %s --password %s';
+        $args[] = $download['username'];
+        $args[] = $download['password'];
       }
-      else {
-        $result = drush_shell_exec("svn --force --non-interactive %s %s %s %s", $command, $flags, $download['url'], $this->project->download_location);
-      }
+      array_unshift($args, $command);
+      $result = call_user_func_array('drush_shell_exec', $args);
       if ($result) {
         drush_log(dt('%project @command from %url.', array('%project' => $name, '@command' => $command, '%url' => $download['url'])), 'ok');
         return $this->project->download_location;
@@ -532,7 +541,7 @@ class DrushMakeDownload_SVN extends DrushMakeDownload {
       }
     }
     else {
-      drush_make_error('DOWNLOAD_ERROR', dt('Unable to @command %project from %url.', array('%project' => $name, '@command' => $command, '%url' => $download['url'])));
+      drush_make_error('DOWNLOAD_ERROR', dt('Unable to download %project from %url.', array('%project' => $name, '%url' => $download['url'])));
       return FALSE;
     }
   }
