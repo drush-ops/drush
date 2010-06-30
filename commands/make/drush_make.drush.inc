@@ -143,7 +143,7 @@ function drush_make_add_projects($recursion, $contrib_destination, $info, $build
     $project += array(
       'name'                => $key,
       'core'                => $info['core'],
-      'build_path'           => $build_path,
+      'build_path'          => $build_path,
       'contrib_destination' => $contrib_destination,
       'version'             => drush_get_option('drush-make-version-best'),
       'location'            => drush_get_option('drush-make-update-default-url'),
@@ -202,8 +202,6 @@ function drush_make_add_libraries($contrib_destination, $info, $build_path) {
         'core'                => $info['core'],
         'build_path'          => $build_path,
         'contrib_destination' => $contrib_destination,
-        'version'             => drush_get_option('drush-make-version-best'),
-        'location'            => drush_get_option('drush-make-update-default-url'),
         'subdir'              => '',
         'directory_name'      => $key,
       );
@@ -321,10 +319,6 @@ function _drush_make_update_xml_best_version($major, $releases) {
     }
   }
   return $best;
-}
-
-function drush_make_run($project) {
-  $project->make();
 }
 
 function drush_make_build_path($build_path) {
