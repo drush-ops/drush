@@ -33,6 +33,7 @@ function drush_make_drush_command() {
       'drush make example.make example' => 'Build the example.make makefile in the example directory.',
     ),
     'options' => array(
+      '--version' => 'Print the version and exit.',
       '--contrib-destination=path' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
       '--force-complete' => 'Force a complete build even if errors occur.',
       '--md5' => 'Output an md5 hash of the current build after completion.',
@@ -100,6 +101,10 @@ function drush_drush_make_make_test($test = NULL) {
  */
 function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
   if (!drush_make_ensure_version()) {
+    return;
+  }
+  if (drush_get_option('version', FALSE)) {
+    drush_print(drush_make_version());
     return;
   }
   if (!($build_path = drush_make_build_path($build_path))) {
@@ -359,4 +364,8 @@ function drush_make_move_build($build_path) {
     drush_shell_exec("cp -Rf %s/%s %s", $tmp_path, basename($build_path), dirname($build_path));
   }
   return TRUE;
+}
+
+function drush_make_version() {
+  return '2.x-dev';
 }
