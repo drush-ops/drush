@@ -23,26 +23,31 @@ class DrushMakeProject {
    * Build a project.
    */
   function make() {
-    $this->queue = new DrushMakeQueue;
-    if (empty($this->made)) {
-      $download_location = $this->queue->addItem(array($this, 'findDownloadLocation'));
-      $this->queue->addItem(array($this->downloadClass, 'download'), array(), array($download_location));
-      $this->queue->addItem(array($this, 'applyPatches'), array(), array($download_location));
-      $this->queue->addItem(array($this, 'recurse'), array(), array($download_location));
-      $this->queue->execute();
-      $this->made = TRUE;
+    if (!empty($this->made)) {
+      return FALSE;
     }
-    return FALSE;
+    $download_location = $this->findDownloadLocation();
+    if ($this->downloadClass->download($download_location) === FALSE) {
+      return FALSE;
+    }
+    if (!$this->applyPatches($download_location)) {
+      return FALSE;
+    }
+    if (!$this->recurse($download_location)) {
+      return FALSE;
+    }
+    $this->made = TRUE;
+    return TRUE;
   }
 
-  function findDownloadLocation($directory) {
+  function findDownloadLocation() {
     $this->path = $this->generatePath();
     $this->project_directory = !empty($this->directory_name) ? $this->directory_name : $this->name;
     $this->download_location = $this->path . '/' . $this->project_directory;
     // This directory shouldn't exist yet -- if it does, stop.
     if (is_dir($this->download_location)) {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $this->download_location)));
-      $this->queue->terminate();
+      return FALSE;
     }
     else {
       drush_shell_exec("mkdir -p %s", $this->download_location);
@@ -70,7 +75,8 @@ class DrushMakeProject {
           drush_op('unlink', $project_directory . '/' . $filename);
         }
         else {
-          drush_set_error('Unable to download ' . $filename . ' from ' . $url . '.');
+          drush_make_error('Unable to download ' . $filename . ' from ' . $url . '.');
+          return FALSE;
         }
       }
       if (!empty($patches_txt) && !drush_get_option('no-patch-txt') && !file_exists($project_directory . '/PATCHES.txt')) {
@@ -81,6 +87,7 @@ class DrushMakeProject {
         drush_log('Generated PATCHES.txt file for ' . $this->name, 'ok');
       }
     }
+    return TRUE;
   }
 
   /**
@@ -129,11 +136,11 @@ class DrushMakeProject {
 
     $info = drush_make_parse_info_file($makefile);
     if (!($info = drush_make_validate_info_file($info))) {
-      return;
+      return FALSE;
     }
     $build_path = $this->buildPath($this->name);
     drush_make_add_projects(TRUE, trim($build_path, '/'), $info, $this->build_path);
-    $this->queue->addItem('drush_make_add_libraries', array(trim($build_path, '/'), $info, $this->build_path));
+    drush_make_add_libraries(trim($build_path, '/'), $info, $this->build_path);
   }
 }
 
@@ -148,7 +155,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
     $this->project_directory = '';
     if (is_dir($this->download_location)) {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $this->download_location)));
-      $this->queue->terminate();
+      return FALSE;
     }
     else {
       drush_shell_exec("mkdir -p %s", $this->download_location);
