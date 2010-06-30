@@ -99,7 +99,7 @@ class DrushMakeProject {
   protected function generatePath($base = TRUE) {
     $path = array();
     if ($base) {
-      $path[] = $this->tmp_path;
+      $path[] = drush_make_tmp();
       $path[] = '__build__';
     }
     if (!empty($this->contrib_destination)) {
