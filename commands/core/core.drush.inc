@@ -29,7 +29,7 @@ function core_drush_command() {
     'examples' => array(
       'drush dl cck zen' => 'Download CCK module and Zen theme.',
       'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
-      'drush help --pipe' => 'A space delimited list of commands',
+      'drush help --pipe' => 'A list of available commands, one per line.',
     ),
   );
   $items['core-cron'] = array(
