@@ -7,7 +7,6 @@ define('DRUSH_MAKE_VERSION_BEST', 'best');
 include_once 'drush_make.utilities.inc';
 include_once 'drush_make.download.inc';
 include_once 'drush_make.project.inc';
-include_once 'drush_make.queue.inc';
 
 /**
  * Implement EXTENSION_drush_init().
