@@ -239,10 +239,10 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
           if (file_exists($this->filename)) {
             drush_shell_exec('rm %s', $this->filename);
           }
-          if (is_dir($this->project->tmp_path . '/__unzip__' . $directory . '/__MACOSX')) {
+          if (is_dir($this->tmp_path . '/__unzip__' . $directory . '/__MACOSX')) {
             drush_shell_exec('rm -rf %s', $this->tmp_path . '/__unzip__' . $directory . '/__MACOSX');
           }
-          drush_shell_exec('mv %s %s', $this->tmp_path . '/__unzip__/' . $directory, $this->project->tmp_path . '/__unzip__/' . $main_directory);
+          drush_shell_exec('mv %s %s', $this->tmp_path . '/__unzip__/' . $directory, $this->tmp_path . '/__unzip__/' . $main_directory);
           drush_shell_exec('cp -Rf %s %s', $this->tmp_path . '/__unzip__/' . $main_directory, dirname($this->project->download_location));
           drush_shell_exec('rm -rf %s', $this->tmp_path . '/__unzip__');
         }
@@ -295,10 +295,9 @@ class DrushMakeDownload_Post extends DrushMakeDownload_Get {
     if (!empty($this->project->download['url'])) {
       $url = $this->project->download['url'];
       $post_data = $this->project->download['post_data'];
-      $file_type = $this->project->download['file_type'];
       $filename = $this->tmp_path . "/" . basename($url);
       // Download the project -- try wget, fall back to curl.
-      $filename = (empty($file_type)) ? $this->path . "/" . basename($url) : $this->path . basename($url) . '.' . $file_type;
+      $filename = (empty($this->project->download['file_type'])) ? $this->path . "/" . basename($url) : $this->path . basename($url) . '.' . trim($this->project->download['file_type'], '.');
       // Download the project -- try wget, fall back to curl.
       if (drush_get_context('DRUSH_SIMULATE') || drush_shell_exec('wget --post-data=%s %s -O %s', $post_data, $url, $filename) || drush_shell_exec('curl -d %s -o %s %s', $post_data, $filename, $url)) {
         drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $url)), 'ok');
