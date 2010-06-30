@@ -30,6 +30,7 @@ function core_drush_command() {
       'drush dl cck zen' => 'Download CCK module and Zen theme.',
       'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
       'drush help --pipe' => 'A list of available commands, one per line.',
+      'drush help --html' => 'Print help for all commands in HTML format.',
     ),
   );
   $items['core-cron'] = array(
@@ -242,7 +243,10 @@ function drush_core_updatedb() {
 function drush_core_help() {
   $commands = func_get_args();
 
-  if (empty($commands)) {
+  if (drush_get_option('html')) {
+    return drush_print(drush_help_html());
+  }
+  elseif (empty($commands)) {
     drush_show_help(array('help'));
     $phases = _drush_bootstrap_phases();
     // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE+1.
@@ -300,6 +304,50 @@ function drush_core_help() {
   drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
 }
 
+
+/**
+ * Return an HTML page documenting all available commands and global options.
+ */
+function drush_help_html() {
+  foreach (drush_get_commands() as $key => $command) {
+    // Get rid of aliases in command list.
+    if (empty($command['is_alias'])) {
+      $commands[$key] = $command;
+    }
+  }
+  unset($commands['help']);
+
+  $output =  "<html><head><title>drush help</head><body>\n";
+
+  // Command table
+  $output .=  '<h3>Command list</h3><table>';
+  foreach ($commands as $key => $command) {
+    $output .=  "<tr><td><a href=\"#$key\">$key</a></td><td>" . $command['description'] . "</td></tr>\n";
+  }
+  $output .=  "</table>\n";
+
+  // Global options
+  $options = drush_get_option_help();
+  $output .=  '<h3>Global Options</h3><table>';
+  foreach ($options as $key => $value) {
+    $output .=  "<tr><td>$key</td><td>" . $value . "</td></tr>\n";
+  }
+  $output .=  "</table>\n";
+
+  // Command details
+  $output .=  '<h3>Command detail</h3><dl>';
+  foreach ($commands as $key => $command) {
+    $output .=  "\n<a name=\"$key\"></a><dt>$key</dt><dd><pre>\n";
+    ob_start();
+    drush_show_help(array($key));
+    $output .= ob_get_contents();
+    $output .=  "</pre></dd>\n";
+  }
+
+  $output .=  "</body></html>\n";
+
+  return $output;
+}
 
 /**
  * Implementation of hook_drush_help().
