@@ -311,7 +311,7 @@ function drush_core_help() {
 function drush_help_html() {
   foreach (drush_get_commands() as $key => $command) {
     // Get rid of aliases in command list.
-    if (empty($command['is_alias'])) {
+    if (empty($command['is_alias']) && !$command['hidden']) {
       $commands[$key] = $command;
     }
   }
