@@ -340,7 +340,7 @@ function drush_help_html() {
     $output .=  "\n<a name=\"$key\"></a><dt>$key</dt><dd><pre>\n";
     ob_start();
     drush_show_help(array($key));
-    $output .= ob_get_contents();
+    $output .= ob_get_clean();
     $output .=  "</pre></dd>\n";
   }
 
