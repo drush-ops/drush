@@ -317,7 +317,7 @@ function drush_help_html() {
   }
   unset($commands['help']);
 
-  $output =  "<html><head><title>drush help</head><body>\n";
+  $output =  "<html><head><title>drush help</title><style>dt {font-size: 110%; font-weight: bold}</style></head><body>\n";
 
   // Command table
   $output .=  '<h3>Command list</h3><table>';
