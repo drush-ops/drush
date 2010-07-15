@@ -3,7 +3,7 @@
 
 require_once DRUSH_BASE_PATH . '/commands/core/rsync.core.inc';
 
-function drush_sql_sync($source = null, $destination = null) {
+function drush_sql_sync($source = NULL, $destination = NULL) {
   $source_database = drush_get_option('source-database', 'default');
   $source_target = drush_get_option('source-target');
   $target_database = drush_get_option('target-database', 'default');
