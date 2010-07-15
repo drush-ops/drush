@@ -163,27 +163,12 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
       drush_shell_exec('tar -x -C %s -f %s', $this->project->download_location, $this->filename);
     }
     else {
-      // Detect whether the user uses --strip-path or --strip-components
-      $strip_option = drush_get_option('strip-option', FALSE);
-      if (!$strip_option) {
-        drush_shell_exec("man tar | grep strip-component");
-        $info = drush_shell_exec_output();
-        if ($info) {
-          $strip_option = 'component';
-        }
-        else {
-          drush_shell_exec("tar --help | grep strip-path");
-          $info = drush_shell_exec_output();
-          if ($info) {
-            $strip_option = 'path';
-          }
-          else {
-            drush_make_error('CONFIGURATION_ERROR', dt('Unable to find a strip option in your version of tar'));
-          }
-        }
-        drush_set_option('strip-option', $strip_option);
-      }
-      drush_shell_exec('tar -x --strip-' . $strip_option . ' 1 -C %s -f %s', $this->project->download_location, $this->filename);
+      list($main_directory) = array_reverse(explode('/', $this->project->download_location));
+      drush_shell_exec('mkdir -p %s', $this->tmp_path . '/__unzip__');
+      drush_shell_exec('tar -x -C %s -f %s', $this->tmp_path . '/__unzip__', $this->filename);
+      drush_shell_exec('mv %s %s', $this->tmp_path . '/__unzip__/' . $directory, $this->tmp_path . '/__unzip__/' . $main_directory);
+      drush_shell_exec('cp -Rf %s %s', $this->tmp_path . '/__unzip__/' . $main_directory, dirname($this->project->download_location));
+      drush_shell_exec('rm -rf %s', $this->tmp_path . '/__unzip__');
     }
 
     // Remove the tarball.
