@@ -526,7 +526,7 @@ class DrushMakeDownload_SVN extends DrushMakeDownload {
       $args[] = $this->project->download_location;
 
       if (!empty($download['username'])) {
-        $command .= '--username %s --password %s';
+        $command .= ' --username %s --password %s';
         $args[] = $download['username'];
         $args[] = $download['password'];
       }
