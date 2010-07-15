@@ -347,10 +347,22 @@ itself. Writing a new test is extremely simple. The process is as follows:
     ),
 5. Test! Run drush make-test machine-readable-name to see if the test passes.
 
+Generate
+--------
+
+Drush make has a primitive makefile generation capability. To use it, simply
+change your directory to the Drupal installation from which you would like to
+generate the file, and run the following command: 
+
+`drush generate makefile /path/to/make-file.make`
+
+This will generate a basic makefile. If you have code from other repositories,
+the makefile will not complete - you'll have to fill in some information before
+it is fully functional.
+
 Maintainer
 ----------
 - Dmitri Gaskin (dmitrig01)
-
 
 Contributors
 ------------
