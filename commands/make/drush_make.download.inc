@@ -155,8 +155,12 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     // Tarbomb detection.
     drush_shell_exec('tar -tf %s', $this->filename);
     $lines = drush_shell_exec_output();
-    if ($lines && !$this->protectBomb($lines)) {
-      $strip = '';
+    if (!$lines) {
+      return FALSE;
+    }
+    $directory = $this->protectBomb($lines);
+    if (!$directory) {
+      drush_shell_exec('tar -x -C %s -f %s', $this->project->download_location, $this->filename);
     }
     else {
       // Detect whether the user uses --strip-path or --strip-components
@@ -179,13 +183,8 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         }
         drush_set_option('strip-option', $strip_option);
       }
-      $strip = '--strip-' . $strip_option . ' 1';
+      drush_shell_exec('tar -x --strip-' . $strip_option . ' 1 -C %s -f %s', $this->project->download_location, $this->filename);
     }
-
-
-    // Untar directly to final resting place -- allows tarballs to be
-    // unpacked directly over an existing structure.
-    drush_shell_exec('tar -x ' . $strip . ' -C %s -f %s', $this->project->download_location, $this->filename);
 
     // Remove the tarball.
     if (file_exists($this->filename)) {
