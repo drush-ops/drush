@@ -248,8 +248,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         }
       }
       else {
-        // It's a bomb, so we can just unpack it right at its destination
-        // (warning: don't ever do this in real life).
+        // It's a bomb, so we can just unpack it right at its destination.
         drush_shell_exec("unzip %s -d %s", $this->filename, $this->project->download_location);
       }
       if (file_exists($this->filename)) {
