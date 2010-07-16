@@ -95,7 +95,9 @@ EXAMPLES
 Inside the "examples" folder you will find some example files to help you
 get started with your drush configuration file (example.drushrc.php),
 site alias definitions (example.aliases.drushrc.php) and drush commands
-(example.drush.inc).
+(example.drush.inc). You will also see an example 'policy' file which 
+can be customized to block certain commands or arguments as your organization
+needs.
 
 DRUSHRC.PHP
 --------
