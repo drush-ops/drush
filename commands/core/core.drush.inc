@@ -190,6 +190,10 @@ function core_drush_command() {
     'aliases' => array('cli'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
+  $items['core-token'] = array(
+    'description' => dt('List available tokens'),
+    'aliases' => array('token'),
+  );
 
   $items['batch-process'] = array(
     'description' => dt('Process operations in the specified batch set'),
@@ -391,6 +395,8 @@ function core_drush_help($section) {
       return dt("Return the filesystem path for projects/themes and other key folders. Used by `cli` command for handy commands `cdd` and `lsd`. If you want to use this command directly, you usually want to prefix the command with cd and enclose the command invocation in backticks. See Examples below.");
     case 'drush:core-cli':
       return dt("Enter a new shell optimized for drush use.  See help for more details.");
+    case 'drush:core-token':
+      return dt("List available tokens.");
     case 'error:DRUSH_DRUPAL_DB_ERROR' :
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
@@ -844,4 +850,18 @@ EOD;
   }
 
   return $bashrc_data;
+}
+
+/**
+ * Command callback. List available tokens.
+ */
+function drush_core_token() {
+  $rows[] = array(dt('Group'), dt('Token'), dt('Name'));
+  $all = token_info();
+  foreach ($all['tokens'] as $group => $tokens) {
+    foreach ($tokens as $key => $token) {
+      $rows[] = array($group, $key, $token['name']);
+    }
+  }
+  drush_print_table($rows, TRUE);
 }
