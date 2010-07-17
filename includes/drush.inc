@@ -971,8 +971,7 @@ function drush_prompt($prompt, $default = NULL) {
  * @param $rows
  *   The rows to print.
  * @param $header
- *   If TRUE, the first line will be treated as table header and therefore be
- *   underlined.
+ *   If TRUE, the first line will be treated as table header.
  * @param $widths
  *   The widths of each column (in characters) to use - if not specified this
  *   will be determined automatically, based on a "best fit" algorithm.
