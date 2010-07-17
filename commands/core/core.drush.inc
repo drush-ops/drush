@@ -154,7 +154,7 @@ function core_drush_command() {
     'examples' => array(
       'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukranian.',
       'drush site-install --db-url=mysql://root:pass@localhost:port/dbname ' => 'Install using the specified DB params.',
-      'drush site-install --account-user=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
+      'drush site-install --account-name=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
     ),
     'core' => array(7),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
