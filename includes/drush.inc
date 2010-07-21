@@ -1431,6 +1431,7 @@ function _drush_print_log($entry) {
     case 'notice' :
     case 'message' :
     case 'info' :
+    case 'status':
       if (!$verbose) {
         // print nothing. exit cleanly.
         return TRUE;
