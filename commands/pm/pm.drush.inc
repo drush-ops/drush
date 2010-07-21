@@ -959,41 +959,6 @@ function drush_pm_post_pm_updatecode() {
   }
 }
 
-
-/**
- * Deletes a directory, all files in it and all subdirectories in it (recursively).
- * Use with care!
- * Written by Andreas Kalsch
- */
-function delete_dir($dir) {
-  if (substr($dir, strlen($dir)-1, 1) != '/')
-    $dir .= '/';
-
-  if ($handle = opendir($dir)) {
-    while ($obj = readdir($handle)) {
-      if ($obj != '.' && $obj != '..') {
-        if (is_dir($dir.$obj)) {
-          if (!delete_dir($dir.$obj)) {
-            return false;
-          }
-        }
-        elseif (is_file($dir.$obj)) {
-          if (!unlink($dir.$obj)) {
-            return false;
-          }
-        }
-      }
-    }
-
-    closedir($handle);
-
-    if (!@rmdir($dir)) {
-    }
-    return true;
-  }
-  return false;
-}
-
 /**
  * Determine a candidate destination directory for a particular site path and
  * return it if it exists, optionally attempting to create the directory.
