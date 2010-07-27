@@ -697,7 +697,7 @@ function _drush_bootstrap_drupal_configuration() {
   switch (drush_drupal_major_version()) {
      case 5:
      case 6:
-       if (isset($GLOBALS['db_url'])) {
+       if (!empty($GLOBALS['db_url'])) {
          $url = $GLOBALS['db_url'];
          if (is_array($url)) {
            $url = $url['default'];
@@ -713,7 +713,7 @@ function _drush_bootstrap_drupal_configuration() {
        }
        break;
      case 7:
-       if (isset($GLOBALS['databases']['default']['default'])) {
+       if (!empty($GLOBALS['databases']['default']['default'])) {
          $conn = $GLOBALS['databases']['default']['default'];
          $creds['driver'] = $conn['driver'];
          $creds['user'] = $conn['username'];
@@ -943,6 +943,11 @@ function drush_valid_drupal_root($path) {
 function drush_valid_db_credentials() {
   if (class_exists('PDO')) {
     $creds = drush_get_context('DRUSH_DB_CREDENTIALS');
+
+    // Do minimal checking that we have the necessary information.
+    if (count($creds) == 0) {
+      return FALSE;
+    }
 
     $type = ($creds['driver'] == 'mysqli') ? 'mysql' : $creds['driver'];
 
