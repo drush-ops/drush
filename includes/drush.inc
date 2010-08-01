@@ -1384,7 +1384,9 @@ function dlm($object) {
  */
 function drush_pipe_output() {
   $pipe = drush_get_context('DRUSH_PIPE_BUFFER');
-  drush_print_r($pipe);
+  if (!empty($pipe)) {
+    drush_print_r($pipe);
+  }
 }
 
 /**
