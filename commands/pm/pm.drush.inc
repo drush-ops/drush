@@ -203,6 +203,7 @@ function pm_drush_command() {
       '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
       '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.",
       '--drupal-project-rename' => 'Alternate name for "drupal" directory when downloading drupal project.',
+      '--pipe' => 'Returns a list of the names of the modules and themes contained in the downloaded projects.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
     'aliases' => array('dl'),
@@ -1366,6 +1367,24 @@ function drush_pm_download() {
             drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $project['full_project_path'])), 'success');
             drush_command_invoke_all('drush_pm_post_download', $project, $release);
             $version_control->post_download($project);
+            // Find all of the .info files in the destination directory
+            $modules_in_project = array();
+            foreach(drush_scan_directory($project['full_project_path'], "/.*\.info$/", array('.', '..', 'CVS'), 0, TRUE, 'filename') as $filename => $info) {
+              $modules_in_project[] = basename($filename, ".info");
+            }
+            if (count($modules_in_project) > 0) {
+              drush_print_pipe($modules_in_project);
+
+              // If there is only one module / theme in the project, only print out
+              // the message if the module / theme name is different than the project name.
+              if ((count($modules_in_project) == 1) && ($modules_in_project[0] != $request['name'])) {
+                drush_log(dt("Project !project contains a !type named !module.", array('!project' => $request['name'], '!type' => $project['project_type'], '!module' => $modules_in_project[0])), 'success');
+              }
+              // If there are mulitple modules or themes in the project, list them all.
+              else {
+                drush_log(dt("Project !project contains !count !type: !modules.", array('!project' => $request['name'], '!count' => count($modules_in_project), '!type' => $project['project_type'] . 's',  '!modules' => implode(', ', $modules_in_project))), 'success');
+              }
+            }
           }
         }
       }
