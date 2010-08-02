@@ -1244,8 +1244,7 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
         $drush_path = $site_record['path-aliases']['%drush-script'];
       }
     }
-
-    $values = drush_backend_invoke_args($command, $args, $data, 'GET', $integrate, $drush_path, array_key_exists('remote-host', $site_record) ? $site_record['remote-host'] : NULL, array_key_exists('remote-user', $site_record) ? $site_record['remote-user'] : NULL);
+    $values = drush_backend_invoke_args($command, $args, $data, 'GET', $integrate, $drush_path, array_key_exists('remote-host', $site_record) ? $site_record['remote-host'] : NULL, array_key_exists('remote-user', $site_record) ? $site_record['remote-user'] : NULL, array_key_exists('ssh-options', $site_record) ? $site_record['ssh-options'] : NULL);
   }
   return $values;
 }
