@@ -95,7 +95,13 @@ function pm_drush_command() {
       'package_handler' => 'Determine how to download/checkout new projects and acquire updates to projects.',
     ),
   );
-
+  $update_options = array(
+    '--lock' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the module as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.',
+    '--lock-message' => 'A brief message explaining why a project is being locked; displayed during pm-updatecode.  Optional.',
+    '--unlock' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
+    '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
+  );
+  
   $items['pm-enable'] = array(
     'description' => 'Enable one or more modules or themes.',
     'arguments' => array(
@@ -155,9 +161,8 @@ function pm_drush_command() {
       'projects' => 'Optional. A space delimited list of installed projects (modules or themes) to update.',
     ),
     'options' => array(
-      '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
       '--pipe' => 'Returns a space delimited list of enabled modules and their respective version and update information, one module per line. Order: module name, current version, recommended version, update status.',
-    ),
+    ) + $update_options,
     'aliases' => array('upc'),
     'deprecated-aliases' => array('updatecode'),
   ) + $engines;
@@ -168,9 +173,8 @@ function pm_drush_command() {
       'projects' => 'Optional. A space delimited list of installed projects (modules or themes) to update.',
     ),
     'options' => array(
-      '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
       '--php' => 'Specify absolute path to you php binary. Use this if you see errors.'
-    ),
+    ) + $update_options,
     'aliases' => array('up'),
     'deprecated-aliases' => array('update'),
   );
@@ -1457,3 +1461,78 @@ function pm_drush_pm_adjust_download_destination(&$project, $release) {
     }
   }
 }
+
+/**
+ * Update the locked status of all of the candidate projects
+ * to be updated.
+ *
+ * @param array &$projects
+ *   The projects array from pm_updatecode.  $project['locked'] will
+ *   be set for every file where a persistent lockfile can be found.
+ *   The 'lock' and 'unlock' operations are processed first.
+ * @param array $projects_to_lock
+ *   A list of projects to create peristent lock files for
+ * @param array $projects_to_unlock
+ *   A list of projects to clear the persistent lock on
+ * @param string $lock_message
+ *   The reason the project is being locked; stored in the lockfile.
+ *
+ * @return array
+ *   A list of projects that are locked.
+ */
+function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock, $lock_message = NULL) {
+  $locked_result = array();
+  
+  // Warn about ambiguous lock / unlock values
+  if ($projects_to_lock == array('1')) {
+    $projects_to_lock = array();
+    drush_log(dt('Ignoring --lock with no value.'), 'warning');
+  }
+  if ($projects_to_unlock == array('1')) {
+    $projects_to_unlock = array();
+    drush_log(dt('Ignoring --unlock with no value.'), 'warning');
+  }
+  
+  // Log if we are going to lock or unlock anything
+  if (!empty($projects_to_unlock)) {
+    drush_log(dt('Unlocking !projects', array('!projects' => implode(',', $projects_to_unlock))), 'ok');
+  }
+  if (!empty($projects_to_lock)) {
+    drush_log(dt('Locking !projects', array('!projects' => implode(',', $projects_to_lock))), 'ok');
+  }
+  
+  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+  foreach ($projects as $name => $project) {
+    $message = NULL;
+    $lockfile = $drupal_root . '/' . $project['path'] . '/.drush-lock-update';
+    
+    // Remove the lock file if the --unlock option was specified
+    if (((in_array($name, $projects_to_unlock)) || (in_array('all', $projects_to_unlock))) && (file_exists($lockfile))) {
+      drush_op('unlink', $lockfile);
+    }
+    
+    // Create the lock file if the --lock option was specified
+    if ((in_array($name, $projects_to_lock)) || (in_array('all', $projects_to_lock))) {
+      drush_op('file_put_contents', $lockfile, $lock_message != NULL ? $lock_message : "Locked via drush.");
+      // Note that the project is locked.  This will work even if we are simulated,
+      // or if we get permission denied from the file_put_contents.
+      // If the lock is -not- simulated or transient, then the lock message will be
+      // read from the lock file below.
+      $message = drush_get_context('DRUSH_SIMULATE') ? 'Simulated lock.' : 'Transient lock.';
+    }
+    
+    // If the persistent lock file exists, then mark the project as locked.
+    if (file_exists($lockfile)) {
+      $message = trim(file_get_contents($lockfile));
+    }
+    
+    // If there is a message set, then mark the project as locked.
+    if (isset($message)) {
+      $projects[$name]['locked'] = !empty($message) ? $message : "Locked.";
+      $locked_result[$name] = $project;
+    }
+  }
+  
+  return $locked_result;
+}
+

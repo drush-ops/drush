@@ -387,6 +387,30 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
 }
 
 /**
+ * Get the value for an option and return it as a list.  If the 
+ * option in question is passed on the command line, its value should
+ * be a comma-separated list (e.g. --flag=1,2,3).  If the option
+ * was set in a drushrc.php file, then its value may be either a
+ * comma-separated list or an array of values (e.g. $option['flag'] = array('1', '2', '3')).
+ *
+ * @param option
+ *   The name of the option to get
+ * @param default
+ *   Optional. The value to return if the option has not been set
+ * @param context
+ *   Optional. The context to check for the option. If this is set, only this context will be searched.
+ */
+function drush_get_option_list($option, $default = array(), $context = NULL) {
+  $result = drush_get_option($option, $default, $context);
+  
+  if (!is_array($result)) {
+    $result = explode(',', $result);
+  }
+  
+  return $result;
+}
+
+/**
  * Get the value for an option, but first checks the provided option overrides.
  *
  * The feature of drush_get_option that allows a list of option names

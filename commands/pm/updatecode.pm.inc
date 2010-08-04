@@ -14,13 +14,16 @@ function drush_pm_updatecode() {
 
   // Get update status information.
   $projects = _pm_get_update_info();
+  
+  // Process locks specified on the command line
+  $locked_list = drush_pm_update_lock($projects, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
   // Get specific requests
   $requests = func_get_args();
 
   // Parse out project name and version
   $requests = pm_parse_project_version($requests);
-
+  
   // Preprocess releases
   if (!empty($requests)) {
     // Force update projects where a specific version is reqested
@@ -87,7 +90,22 @@ function drush_pm_updatecode() {
       }
     }
   }
+  
+  // If there are any locked projects that were not requested, then remove them
+  if (!empty($locked_list)) {
+    foreach ($updateable as $name => $project) {
+      if ((isset($locked_list[$name])) && (!isset($requests[$name]))) {
+        unset($updateable[$name]);
+      }
+    }
+  }
 
+  // Do no updates in simulated mode
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    return drush_log(dt('No action taken in simulated mode.'), 'ok');
+    return TRUE;
+  }
+  
   if (isset($updateable['drupal'])) {
     $drupal_project = $updateable['drupal'];
     unset($projects['drupal']);
@@ -348,6 +366,10 @@ function pm_project_filter(&$projects, &$rows) {
       default:
         $status = pm_update_filter($project);
         break;
+    }
+    
+    if (isset($project['locked'])) {
+      $status = $project['locked'] . " ($status)";
     }
 
     // Persist candidate_version in $projects (plural).
