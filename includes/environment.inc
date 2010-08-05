@@ -109,7 +109,7 @@ define('DRUSH_TABLE_VERSION', '1.1.3');
 /**
  * URL for automatic file download for supported version of Console Table.
  */
-define('DRUSH_TABLE_URL', 'http://cvs.php.net/viewvc.cgi/pear/Console_Table/Table.php?revision=1.28&view=co');
+define('DRUSH_TABLE_URL', 'http://svn.php.net/viewvc/pear/packages/Console_Table/trunk/Table.php?revision=267580&view=co');
 
 /**
  * Helper function listing phases.
