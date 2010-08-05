@@ -181,9 +181,16 @@ function drush_set_config_options($context, $options, $override = array()) {
   drush_set_context($context, $options);
 
   // Instruct core not to store queries since we are not outputting them.
-  // This can be overridden by a command or a drushrc file if needed.
-  if (!isset($drush_conf_override['dev_query'])) {
-    $drush_conf_override['dev_query'] = FALSE;
+  // Don't run poormanscron during drush request (D7+).
+  $defaults = array(
+    'dev_query' => FALSE,
+    'cron_safe_threshold' => 0,
+  );
+  foreach ($defaults as $key => $value) {
+    // This can be overridden by a command or a drushrc file if needed.
+    if (!isset($drush_conf_override[$key])) {
+      $drush_conf_override[$key] = $value;
+    }
   }
 
   /**
