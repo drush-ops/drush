@@ -394,7 +394,7 @@ function core_drush_help($section) {
     case 'drush:drupal-directory':
       return dt("Return the filesystem path for projects/themes and other key folders. Used by `cli` command for handy commands `cdd` and `lsd`. If you want to use this command directly, you usually want to prefix the command with cd and enclose the command invocation in backticks. See Examples below.");
     case 'drush:core-cli':
-      return dt("Enter a new shell optimized for drush use.  See help for more details.");
+      return dt("Enter a new shell optimized for drush use.  All .bashrc customizations are still available. See help for more details.");
     case 'drush:core-token':
       return dt("List available tokens.");
     case 'error:DRUSH_DRUPAL_DB_ERROR' :
