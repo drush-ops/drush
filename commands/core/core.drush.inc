@@ -797,6 +797,13 @@ function core_cli_bashrc($drush_command) {
   // Set up our default bashrc file for the drush cli
   $bashrc_data = <<<EOD
 
+# source the user's .bashrc file
+[ -r ~/.bashrc ] && {
+  pushd ~ > /dev/null
+  . .bashrc
+  popd > /dev/null
+}
+    
 PS1="drush> "
 
 alias on="$drush_command"
