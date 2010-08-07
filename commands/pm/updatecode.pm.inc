@@ -196,6 +196,7 @@ function _pm_update_core(&$project, $module_list = array()) {
   // drupal root.  These are to be moved back.
   if (array_key_exists('backup_target', $project)) {
     _pm_update_move_files($project['backup_target'], $drupal_root, $project['skip_list'], FALSE);
+    _pm_update_move_files($project['backup_target'] . '/profiles', $drupal_root . '/profiles', array('default'), FALSE);
   }
 
   pm_update_complete($project, $version_control);
