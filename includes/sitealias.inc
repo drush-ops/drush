@@ -392,6 +392,9 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
     }
     else {
       $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+      if ($drupal_root == NULL) {
+        $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
+      }
     }
     if (isset($drupal_root) && !is_array($drupal_root)) {
       drush_sitealias_create_sites_alias($drupal_root);
