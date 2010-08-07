@@ -207,15 +207,23 @@ function drush_drupal_version() {
   static $version = FALSE;
 
   if (!$version) {
-    if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
-      if (file_exists($drupal_root . '/modules/system/system.module')) {
-        // We can safely include system.module as it contains defines and functions only.
-        require_once($drupal_root . '/modules/system/system.module');
-        // We just might be dealing with an early Drupal version (pre 4.7)
-        if (defined('VERSION')) {
-          $version = VERSION;
-        }
+    // Attempt to bootstrap to ROOT if needed.
+    if (!$drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+      $phase_index = drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_ROOT);
+      if ($phase_index < DRUSH_BOOTSTRAP_DRUPAL_ROOT+1) {
+        return FALSE;
       }
+      else {
+        $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+      }
+    }
+    // We can safely include system.module as it contains defines and functions only.
+    require_once($drupal_root . '/modules/system/system.module');
+    // Drupal 7+ puts its version info into bootstrap.inc
+    require_once($drupal_root . '/includes/bootstrap.inc');
+    // We just might be dealing with an early Drupal version (pre 4.7)
+    if (defined('VERSION')) {
+      $version = VERSION;
     }
   }
   return $version;
