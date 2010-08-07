@@ -1505,5 +1505,5 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
  * Option keys used for site selection.
  */
 function drush_sitealias_site_selection_keys() {
-  return array('remote-host', 'remote-user', 'name');
+  return array('remote-host', 'remote-user', 'ssh-options', 'name');
 }
