@@ -937,7 +937,7 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
  *
  * @see drush_confirm()
  */
-function drush_prompt($prompt, $default = NULL) {
+function drush_prompt($prompt, $default = NULL, $optional = FALSE) {
   if (!is_null($default)) {
     $prompt .= " [" . $default . "]";
   }
@@ -956,7 +956,7 @@ function drush_prompt($prompt, $default = NULL) {
     if ($line === "") {
       $line = $default;
     }
-    if ($line) {
+    if ($line || $optional) {
       break;
     }
     print $prompt;
