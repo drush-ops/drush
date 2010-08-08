@@ -935,6 +935,13 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
  * The input can be anything that fits on a single line (not only y/n),
  * so we can't use drush_confirm()
  *
+ * @param $prompt
+ *   The text which is displayed to the user.
+ * @param $default
+ *   The default value of the input.
+ * @param $optional
+ *   If TRUE, user may continue even when no value is in the input.
+ *
  * @see drush_confirm()
  */
 function drush_prompt($prompt, $default = NULL, $optional = FALSE) {
