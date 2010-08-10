@@ -662,13 +662,19 @@ function drush_show_help($commands) {
   $commandstring = implode(" ", $commands);
 
   foreach ($phases as $phase_index) {
-    if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
-      drush_bootstrap($phase_index);
+    if (drush_bootstrap_validate($phase_index)) {
+      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
+        drush_bootstrap($phase_index);
+      }
     }
     if (!drush_get_error()) {
       $commands = drush_get_commands();
       if (array_key_exists($commandstring, $commands)) {
         $command = $commands[$commandstring];
+
+        if ($command['bootstrap'] > $phase_index) {
+          continue;
+        }
 
         // Merge in engine specific help.
         foreach ($command['engines'] as $type => $description) {
