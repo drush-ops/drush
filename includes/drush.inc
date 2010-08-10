@@ -194,40 +194,34 @@ function drush_include_engine($type, $engine, $version = NULL, $path = NULL) {
 
 /**
  * Detects the version number of the current Drupal installation,
- * if any. Returns false if there is no current Drupal installation,
+ * if any. Returns FALSE if there is no current Drupal installation,
  * or it is somehow broken.
- *
- * This function relies on the presence of DRUPAL_ROOT/modules/system/system.module
  *
  * @return
  *   A string containing the version number of the current
- *   Drupal installation, if any. Otherwise, return false.
+ *   Drupal installation, if any. Otherwise, return FALSE.
  */
 function drush_drupal_version() {
   static $version = FALSE;
 
   if (!$version) {
-    // Attempt to bootstrap to ROOT if needed.
-    if (!$drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
-      $phase_index = drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_ROOT);
-      if ($phase_index < DRUSH_BOOTSTRAP_DRUPAL_ROOT+1) {
-        return FALSE;
+    if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+      // D7 stores VERSION in bootstrap.inc
+      $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc');
+      foreach ($version_constant_paths as $path) {
+        if (file_exists($drupal_root . $path)) {
+          require_once($drupal_root . $path);
+        }
       }
-      else {
-        $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+      // We just might be dealing with an early Drupal version (pre 4.7)
+      if (defined('VERSION')) {
+        $version = VERSION;
       }
-    }
-    // We can safely include system.module as it contains defines and functions only.
-    require_once($drupal_root . '/modules/system/system.module');
-    // Drupal 7+ puts its version info into bootstrap.inc
-    require_once($drupal_root . '/includes/bootstrap.inc');
-    // We just might be dealing with an early Drupal version (pre 4.7)
-    if (defined('VERSION')) {
-      $version = VERSION;
     }
   }
   return $version;
 }
+
 
 function drush_drupal_cache_clear_all() {
   $prior = drush_get_context('DRUSH_AFFIRMATIVE');
