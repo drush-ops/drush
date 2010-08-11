@@ -50,12 +50,22 @@ function field_drush_command() {
     'arguments' => array(
       'field_name' => 'Name of field that needs updating.',
     ),
-    'options' => array(
-      'entity_type' => 'Type of entity (e.g. node, user, comment). Optional',
-      'bundle' => 'Content type (for nodes). Name of bundle for specified field. Optional',
-    ),
     'examples' => array(
       'field-update comment_body' => 'Quickly navigate to a field edit web page.',
+    ),
+  );
+  $items['field-delete'] = array(
+    'description' => 'Delete a field and its instances.',
+    'core' => array(7),
+    'arguments' => array(
+      'field_name' => 'Name of field to delete.',
+    ),
+    'options' => array(
+      'bundle' => 'Only delete the instance attached to this bundle. If omitted, admin can choose to delete one instance or whole field.',
+    ),
+    'examples' => array(
+      'field-delete city' => 'Delete the city field and any instances it might have.',
+      'field-delete city --bundle=article' => 'Delete the city instance on the article bundle',
     ),
   );
   $items['field-clone'] = array(
@@ -125,14 +135,55 @@ function drush_field_create($bundle) {
 
 function drush_field_update($field_name) {
    $info = field_info_field($field_name);
-   if (!$entity_type = drush_get_option('entity_type')) {
-     // For lack of better idea, use the first bundle in the list.
-     $bundles = $info['bundles'];
-     $entity_type = key($bundles);
-     $bundle = current($bundles[$entity_type]);
+   foreach ($info['bundles'] as $entity_type => $bundles) {
+     foreach ($bundles as $bundle) {
+       $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $field_name, array('absolute' => TRUE));
+     }
    }
-  $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $field_name, array('absolute' => TRUE));
   drush_print(implode(' ', $urls));
+}
+
+function drush_field_delete($field_name) {
+  $info = field_info_field($field_name);
+  $confirm = TRUE;
+  
+  if (!$bundle = drush_get_option('bundle')) {
+    foreach ($info['bundles'] as $entity_type => $bundles) {
+      foreach ($bundles as $bundle) {
+        $all_bundles[] = $bundle;
+      }
+    }
+    if (count($bundles) > 1) {
+      $options = array_merge(array('all' => dt('All bundles')), drupal_map_assoc($bundles));
+      $bundle = drush_choice($options, dt("Choose a particular bundle or 'All bundles'"));
+      $confirm = FALSE;
+    }
+    else {
+      if (!drush_confirm(dt('Do you want to delete the %field_name field?', array('%field_name' => $field_name)))) {
+        return drush_log(dt('Aborting.'));
+      }
+    }
+  }
+  
+  if ($bundle == 'all') {
+    foreach ($info['bundles'] as $entity_type => $bundles) {
+       foreach ($bundles as $bundle) {
+         $instance = field_info_instance($entity_type, $field_name, $bundle);
+         drush_op('field_delete_instance', $instance);
+       }
+     }
+  }
+  else {
+    $entity_type = drush_field_get_entity_from_bundle($bundle);
+    $instance = field_info_instance($entity_type, $field_name, $bundle);
+    drush_op('field_delete_instance', $instance);
+  }
+  
+  // If there are no more bundles, delete the field.
+  $info = field_info_field($field_name);
+  if (empty($info['bundles'])) {
+    drush_op('field_delete_field', $field_name);
+  }
 }
 
 function drush_field_clone($source_field_name, $target_field_name) {
@@ -221,4 +272,18 @@ function drush_field_create_wizard() {
   $widgets = field_ui_widget_type_options($field_type);
   $specs[] = drush_choice($widgets, dt('Choose a widget'));
   return implode(',', $specs);
+}
+
+function drush_field_get_entity_from_bundle($bundle) {
+  if (drush_get_option('entity_type')) {
+    return drush_get_option('entity_type');
+  }
+  else {
+    $info = field_info_bundles();
+    foreach ($info as $entity_type => $bundles) {
+      if (isset($bundles[$bundle])) {
+        return $entity_type;
+      }
+    }
+  }
 }
