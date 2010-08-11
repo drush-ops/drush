@@ -5,7 +5,6 @@
 // TODO: take file from STDIN
 // TODO: error handling
 // TODO: review args/options
-// TODO: Manage displays?
 // TODO: info command. Use wizard for now.
 // TODO: clone command
 // TODO: field-delete
@@ -72,13 +71,20 @@ function drush_field_create($bundle) {
     $args[] = drush_field_create_wizard();
   }
   
+  // Iterate over each field spec.
   foreach ($args as $string) {
     list($name, $type, $widget) = explode(',', $string);
-    $field = array(
-      'field_name' => $name,
-      'type' => $type,
-    );
-    field_create_field($field);
+    $info = field_info_field($field_name);
+    if (empty($info)) {
+      // Field does not exist already. Create it.
+      $field = array(
+        'field_name' => $name,
+        'type' => $type,
+      );
+      field_create_field($field);
+    }
+    
+    // Create the instance.
     $instance = array(
       'field_name' => $name,
       'entity_type' => $entity_type,
@@ -86,6 +92,7 @@ function drush_field_create($bundle) {
       'widget' => array('type' => $widget),
     );
     field_create_instance($instance);
+    
     $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $name, array('absolute' => TRUE));
   }
   drush_print(implode(' ', $urls));
@@ -116,7 +123,6 @@ function drush_field_create_wizard() {
   $field_type = drush_choice($types, dt('Choose a field type'));
   $specs[] = $field_type;
   $widgets = field_ui_widget_type_options($field_type);
-  print_r($widgets);
   $specs[] = drush_choice($widgets, dt('Choose a widget'));
   return implode(',', $specs);
 }
