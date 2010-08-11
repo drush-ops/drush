@@ -201,11 +201,11 @@ function drush_include_engine($type, $engine, $version = NULL, $path = NULL) {
  *   A string containing the version number of the current
  *   Drupal installation, if any. Otherwise, return FALSE.
  */
-function drush_drupal_version() {
+function drush_drupal_version($drupal_root = NULL) {
   static $version = FALSE;
 
   if (!$version) {
-    if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+    if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
       // D7 stores VERSION in bootstrap.inc
       $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc');
       foreach ($version_constant_paths as $path) {
@@ -233,14 +233,36 @@ function drush_drupal_cache_clear_all() {
 /**
  * Returns the Drupal major version number (5, 6, 7 ...)
  */
-function drush_drupal_major_version() {
+function drush_drupal_major_version($drupal_root = NULL) {
   $major_version = FALSE;
-  if ($version = drush_drupal_version()) {
+  if ($version = drush_drupal_version($drupal_root)) {
     $version_parts = explode('.', $version);
     if (is_numeric($version_parts[0])) {
       $major_version = (integer)$version_parts[0];
     }
   }
+  return $major_version;
+}
+
+/**
+ * Return the major version of one of the local sites in
+ * a list.  Usually there will only be two sites: a source
+ * and a destination, one of which might be remote.  Both
+ * of these should always be the same version, because they
+ * should be variants of the same site (e.g. dev and live).
+ *
+ * @param $site_list
+ *   Array of site alias records
+ * @return
+ *   Drush major version.
+ */
+function drush_drupal_major_version_of_site($site_list) {
+  $major_version = FALSE;
+  $drupal_root = sitealias_find_local_drupal_root($site_list);
+  if (isset($drupal_root)) {
+    $major_version = drush_drupal_major_version($drupal_root);
+  }
+  
   return $major_version;
 }
 
@@ -251,7 +273,7 @@ function drush_drupal_major_version() {
  * with named placeholders in code for Drupal 5 and 6.
  *
  * @param $where
- *   Stringwith a WHERE snippet using named placeholders.
+ *   String with a WHERE snippet using named placeholders.
  * @param $args
  *   Array of placeholder values.
  * @return

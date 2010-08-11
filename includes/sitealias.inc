@@ -1507,3 +1507,16 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
 function drush_sitealias_site_selection_keys() {
   return array('remote-host', 'remote-user', 'ssh-options', 'name');
 }
+
+
+function sitealias_find_local_drupal_root($site_list) {
+  $drupal_root = NULL;
+  
+  foreach ($site_list as $site) {
+    if (($drupal_root == NULL) && (array_key_exists('root', $site) && !array_key_exists('remote-host', $site))) {
+      $drupal_root = $site['root'];
+    }
+  }
+  
+  return $drupal_root;
+}

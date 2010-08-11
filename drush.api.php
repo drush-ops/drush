@@ -153,5 +153,26 @@ function hook_drush_pm_adjust_download_destination(&$project, $release) {
 }
 
 /**
+ * Post-sync sanitization example.  This is equivalent to
+ * the built-in --sanitize option of sql-sync, but simplified
+ * to only work with default values on Drupal 6 + mysql.
+ *
+ * We test for both 'my-sanitize' and 'destination-my-sanitize'
+ * options because we want to allow options set in a site-alias
+ * to control the post-sync operations.  The options from the
+ * destination alias are applied to the drush options context
+ * with the prefix 'destination-'.
+ *
+ * @see drush_sql_pre_sql_sync().
+ */
+function drush_hook_pre_sql_sync($source = NULL, $destination = NULL) {
+  if (drush_get_option(array('my-sanitize', 'destination-my-sanitize'), FALSE)) {
+    drush_sql_register_post_sync_op('my-sanitize-id', 
+      dt('Reset passwords and email addresses in user table', 
+      "update users set pass = MD5('password'), mail = concat('user+', uid, '@localhost') where uid > 0;");
+  }
+}
+
+/**
  * @} End of "addtogroup hooks".
  */

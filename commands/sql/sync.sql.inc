@@ -3,41 +3,16 @@
 
 require_once DRUSH_BASE_PATH . '/commands/core/rsync.core.inc';
 
-function drush_sql_sync($source = NULL, $destination = NULL) {
-  $source_database = drush_get_option('source-database', 'default');
-  $source_target = drush_get_option('source-target');
-  $target_database = drush_get_option('target-database', 'default');
-  $target_target = drush_get_option('target-target');
-
-  //
-  // If the destination was not explicitly set, but a particular
-  // target database was specified on the command line, then we
-  // will implicitly assume that the destination alias is the
-  // same as the source alias.
-  //
-  if (!isset($destination) && (isset($target_database) || (isset($target_target)))) {
-    $destination = $source;
-  }
-
-  //
-  // If there is no destination specification, then exit.
-  //
-  if (!isset($destination)) {
-    drush_print(dt("You must specify a destination target."));
-    exit(1);
-  }
-  //
-  // Default branch:  copy 'sync' with the specified source
-  // and destination.
-  //
-  else {
-    _drush_sql_sync($source, $destination, TRUE);
-  }
-}
-
-function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
+/**
+ * Sql sync validate function.  Look up the version of the
+ * Drupal site being sync'ed.  At least one of the sites
+ * must be local for this to work; if both sites are remote,
+ * then $major_version will be FALSE.
+ */
+function drush_sql_sync_validate($source = NULL, $destination = NULL) {
   // Preflight destination in case it defines the alias used by the source
   _drush_sitealias_get_record($destination);
+
   // After preflight, get source and destination settings
   $source_settings = drush_sitealias_get_record($source);
   $destination_settings = drush_sitealias_get_record($destination);
@@ -49,6 +24,98 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
   // actually use the databases record at this time.
   sitealias_get_databases_from_record($source_settings);
   sitealias_get_databases_from_record($destination_settings);
+
+  // Cache what version of Drupal we're syncing.
+  // Note that the version is cached in drush.inc; just
+  // call drush_drupal_version or drush_drupal_major_version
+  // to retrieve it later.
+  $major_version = drush_drupal_major_version_of_site(array($source_settings, $destination_settings));
+
+  return TRUE;
+}
+
+/**
+ * Pre sql sync function.  This hook function will sanitize usernames and
+ * passwords in the user table when the --sanitize option is used.  It is
+ * also an example of how to write a database sanitizer for sql sync.
+ *
+ * To write your own sync hook function, define drush_mymodule_pre_sql_sync()
+ * and follow the form of this function to add your own database
+ * sanitization operations via the register post-sync op function;
+ * @see drush_sql_register_post_sync_op().  This is the only thing that the
+ * sync hook function needs to do; sql-sync takes care of the rest.
+ *
+ * The function below has a lot of logic to process user preferences and
+ * generate the correct SQL regardless of whether Postgres, Mysql,
+ * Drupal 6 or Drupal 7 is in use.  A simpler sanitize function that
+ * always used default values and only worked with Drupal 6 + mysql
+ * appears in the drush.api.php.  @see drush_hook_pre_sql_sync().
+ */
+function drush_sql_pre_sql_sync($source = NULL, $destination = NULL) {
+  $source_settings = drush_sitealias_get_record($source);
+  $destination_settings = drush_sitealias_get_record($destination);
+  $user_table_updates = array();
+  $message_list = array();
+
+  // Test to see if 'sanitize' option was specified.
+  if (drush_get_option(array('sanitize', 'destination-sanitize'), FALSE)) {
+    // Sanitize email addresses
+    $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
+    if ($newpassword != 'no') {
+      $major_version = drush_drupal_major_version();
+      $pw_op = "";
+
+      // In Drupal 6, passwords are hashed via the MD5 algorithm.
+      if ($major_version == 6) {
+        $pw_op = "MD5('$newpassword')";
+      }
+      // In Drupal 7, passwords are hashed via a more complex algorithm,
+      // available via the user_hash_password function.
+      elseif ($major_version >= 7) {
+        $drupal_root = sitealias_find_local_drupal_root(array($source_settings, $destination_settings));
+        if (isset($drupal_root)) {
+          include_once $drupal_root . '/includes/password.inc';
+          include_once $drupal_root . '/includes/bootstrap.inc';
+          $hash = user_hash_password($newpassword);
+          $pw_op = "'$hash'";
+        }
+      }
+      if (!empty($pw_op)) {
+        $user_table_updates[] = "pass = $pw_op";
+        $message_list[] =  "passwords";
+      }
+    }
+
+    // Sanitize passwords
+    $newemail = drush_get_option(array('sanitize-email', 'destination-sanitize-email'), 'user+%uid@localhost');
+    if ($newemail != 'no') {
+      if (strpos($newemail, '%') !== FALSE) {
+        // We need a different sanitization query for Postgres and Mysql
+        $db_driver = $destination_settings['databases']['default']['default']['driver'];
+        if ($db_driver == 'pgsql') {
+          $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%login' => "' || replace(login, ' ', '_') || '");
+          $newmail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "'";
+        }
+        else {
+          $email_map = array('%uid' => "', uid, '", '%mail' => "', replace(mail, '@', '_'), '", '%login' => "', replace(login, ' ', '_'), '");
+          $newmail =  "concat('" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "')";
+        }
+      }
+      $user_table_updates[] = "mail = $newmail";
+      $message_list[] = 'email addresses';
+    }
+
+    if (!empty($user_table_updates)) {
+      $sanitize_query = "update users set " . implode(', ', $user_table_updates) . " where uid > 0;";
+      drush_sql_register_post_sync_op('user-email', dt('Reset !message in user table', array('!message' => implode(' and ', $message_list))), $sanitize_query);
+    }
+  }
+}
+
+
+function drush_sql_sync($source = NULL, $destination = NULL) {
+  $source_settings = drush_sitealias_get_record($source);
+  $destination_settings = drush_sitealias_get_record($destination);
 
   // Check to see if this is an sql-sync multiple command (multiple sources and multiple destinations)
   $is_multiple = drush_do_multiple_command('sql-sync', $source_settings, $destination_settings);
@@ -165,44 +232,53 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
     }
 
     // Prompt for confirmation. This is destructive.
-    if (!drush_get_context('DRUSH_SIMULATE') && $show_warning) {
+    if (!drush_get_context('DRUSH_SIMULATE')) {
+      // Check to see if we are using a temporary file in a situation
+      // where the user did not specify "--temp".
+      if (($source_is_tmp || $target_is_tmp) && (!isset($use_temp_files)) && (isset($source_db_url['remote-host'])  || isset($target_db_url['remote-host']))) {
+        drush_print(dt('WARNING:  Using temporary files to store and transfer sql-dump.  It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'%dump\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
+      }
+
+
+      if (array_key_exists('tables', $table_selection) && (count($table_selection['tables']) > 0)) {
+        drush_print();
+        drush_print(dt('  Only the following tables will be transferred: !list', array('!list' => implode(',', $table_selection['tables']))));
+      }
+      elseif (!empty($table_selection)) {
+        $skip_tables_list = implode(',', $table_selection['skip'] + $table_selection['structure']);
+        if(!empty($skip_tables_list)) {
+          drush_print();
+          drush_print(dt('  The following tables will be skipped: !list', array('!list' => $skip_tables_list)));
+        }
+      }
+
+      // If any sanitization operations are to be done, then get the
+      // sanitization messages and print them as part of the confirmation.
+      $messages = _drush_sql_get_post_sync_messages();
+      if ($messages) {
+        drush_print();
+        drush_print($messages);
+      }
 
       // If there are multiple destinations, then
       // prompt once here and suppress the warning message
       // and the normal confirmation below.
       if (array_key_exists('site-list', $destination_settings)) {
+        drush_print();
         drush_print(dt('You are about to sync the database from !source, overwriting all of the following targets:', array('!source' => $source)));
         foreach ($destination_settings['site-list'] as $one_destination) {
           drush_print(dt('  !target', array('!target' => $one_destination)));
         }
-        drush_print();
       }
       else {
-        // Check to see if we are using a temporary file in a situation
-        // where the user did not specify "--temp".
-        if (($source_is_tmp || $target_is_tmp) && (!isset($use_temp_files)) && (isset($source_db_url['remote-host'])  || isset($target_db_url['remote-host']))) {
-          drush_print(dt('WARNING:  Using temporary files to store and transfer sql-dump.  It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'%dump\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
-        }
-
+        drush_print();
         $txt_source = (isset($source_db_url['remote-host']) ? $source_db_url['remote-host'] . '/' : '') . $source_db_url['database'];
         $txt_destination = (isset($target_db_url['remote-host']) ? $target_db_url['remote-host'] . '/' : '') . $target_db_url['database'];
         drush_print(dt("You will destroy data from !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
-        drush_print();
-      }
-
-      if (array_key_exists('tables', $table_selection) && (count($table_selection['tables']) > 0)) {
-        drush_print(dt('  Only the following tables will be transferred: !list', array('!list' => implode(',', $table_selection['tables']))));
-        drush_print();
-      }
-      elseif (!empty($table_selection)) {
-        $skip_tables_list = implode(',', $table_selection['skip'] + $table_selection['structure']);
-        if(!empty($skip_tables_list)) {
-          drush_print(dt('  The following tables will be skipped: !list', array('!list' => $skip_tables_list)));
-          drush_print();
-        }
       }
 
       // TODO: actually make the backup if desired.
+      drush_print();
       drush_print(dt("You might want to make a backup first, using sql_dump command.\n"));
       if (!drush_confirm(dt('Do you really want to continue?'))) {
         drush_die('Aborting.');
@@ -339,6 +415,31 @@ function _drush_sql_sync($source, $destination, $show_warning = TRUE) {
       }
 
       drush_op('system', $import_exec);
+    }
+  }
+}
+
+/**
+ * Apply all post-sync operations that were registered in any pre-sync hook.
+ * Follow the pattern of this function to make your own post-sync hook.
+ * If changing the database, be sure to also include a pre-sync hook to
+ * notify the user of the change that will be made.  @see drush_sql_pre_sql_sync().
+ */
+function drush_sql_post_sql_sync($source = NULL, $destination = NULL) {
+  $options = drush_get_context('post-sync-ops');
+  if (!empty($options)) {
+    $destination_settings = drush_sitealias_get_record($destination);
+    $sanitize_query = '';
+    foreach($options as $id => $data) {
+      $sanitize_query .= $data['query'] . " ";
+    }
+    if ($sanitize_query) {
+      if (!drush_get_context('DRUSH_SIMULATE')) {
+        $result = drush_do_site_command($destination_settings, "sql-query", array($sanitize_query));
+      }
+      else {
+        drush_print("Executing on $destination: $sanitize_query");
+      }
     }
   }
 }

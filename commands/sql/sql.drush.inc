@@ -115,6 +115,9 @@ function sql_drush_command() {
       '--create-db' => 'Create a new database before importing the database dump on the target machine.',
       '--db-su' => 'Account to use when creating a new database. Optional.',
       '--db-su-pw' => 'Password for the "db-su" account. Optional.',
+      '--sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync. Optional.',
+      '  --sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
+      '  --sanitize-email' => 'The username for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %login.  Default is "user+%uid@localhost".',
     ),
   );
   if (drush_drupal_major_version() >= 7) {
@@ -214,7 +217,7 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
   $skip_tables = $tabel_selection['skip'];
   $structure_tables = $tabel_selection['structure'];
   $tables = $tabel_selection['tables'];
-  
+
   $ignores = array();
   $skip_tables += $structure_tables;
   $data_only = drush_get_option('data-only');
@@ -314,7 +317,7 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
  * specified.
  *
  * @param option_name
- *   The option name to check: skip-tables, structure-tables 
+ *   The option name to check: skip-tables, structure-tables
  *   or tables.  This funciton will check both *-key and *-list,
  *   and, in the case of sql-sync, will also check target-*
  *   and source-*, to see if an alias set one of these options.
@@ -344,7 +347,7 @@ function _drush_sql_get_table_list($option_name) {
       }
     }
   }
-  
+
   return array();
 }
 
@@ -385,11 +388,16 @@ function _drush_sql_query($query, $db_spec = NULL) {
         $exec = 'psql';
         $exec .= _drush_sql_get_credentials($db_spec);
         $exec .= (drush_get_context('DRUSH_VERBOSE') ? '' : ' -q');
-        $exec .= ' ' . (drush_get_option('extra') ? drush_get_option('extra') : "--no-align --field-separator=$'\t' --pset footer=off");
+        $exec .= ' ' . (drush_get_option('extra') ? drush_get_option('extra') : "--no-align --field-separator='\t' --pset footer=off");
         $exec .= " --file $file";
         break;
     }
-
+    // In --simulate mode, drush_op will show the call to mysql or psql,
+    // but the sql query itself is stored in a temp file and not displayed.
+    // We will therefore show the query explicitly in the interest of full disclosure.
+    if (drush_get_context('DRUSH_SIMULATE')) {
+      drush_print('sql-query: ' . $query);
+    }
     $return = drush_op('system', $exec) !== FALSE;
     return $return;
   }
@@ -556,4 +564,58 @@ function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
    default:
      return dt('Unable to parse DB connection array');
   }
+}
+
+/**
+ * Call from a pre-sql-sync hook to register an sql
+ * query to be executed in the post-sql-sync hook.
+ * @see drush_sql_pre_sql_sync() and @see drush_sql_post_sql_sync().
+ *
+ * @param $id
+ *   String containing an identifier representing this
+ *   operation.  This id is not actually used at the
+ *   moment, it is just used to fufill the contract
+ *   of drush contexts.
+ * @param $message
+ *   String with the confirmation message that describes
+ *   to the user what the post-sync operation is going
+ *   to do.  This confirmation message is printed out
+ *   just before the user is asked whether or not the
+ *   sql-sync operation should be continued.
+ * @param $query
+ *   String containing the sql query to execute.  If no
+ *   query is provided, then the confirmation message will
+ *   be displayed to the user, but no action will be taken
+ *   in the post-sync hook.  This is useful for drush modules
+ *   that wish to provide their own post-sync hooks to fix
+ *   up the target database in other ways (e.g. through
+ *   Drupal APIs).
+ */
+function drush_sql_register_post_sync_op($id, $message, $query = NULL) {
+  $options = drush_get_context('post-sync-ops');
+
+  $options[$id] = array('message' => $message, 'query' => $query);
+
+  drush_set_context('post-sync-ops', $options);
+}
+
+/**
+ * Builds a confirmation message for all post-sync operations.
+ *
+ * @return string
+ *   All post-sync operation messages concatenated together.
+ */
+function _drush_sql_get_post_sync_messages() {
+  $messages = FALSE;
+
+  $options = drush_get_context('post-sync-ops');
+  if (!empty($options)) {
+    $messages = dt('The following post-sync operations will be done on the destination:') . "\n";
+
+    foreach($options as $id => $data) {
+      $messages .= "  * " . $data['message'] . "\n";
+    }
+  }
+
+  return $messages;
 }
