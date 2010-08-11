@@ -1,11 +1,9 @@
 <?php
 // $Id$
 
-// TODO: simulate
 // TODO: take file from STDIN
 // TODO: error handling
 // TODO: review args/options
-// TODO: info command. Use wizard for now.
 // TODO: field-delete. Use drush_choice for bundle selection?
 
 /**
@@ -32,7 +30,6 @@ function field_drush_command() {
     'description' => 'Create fields and instances. Returns urls for field editing.',
     'core' => array(7),
     'drupal_dependencies' => array('field_ui'),
-    'aliases' => array(),
     'arguments' => array(
       'bundle' => 'Content type (for nodes). Name of bundle to attach fields to. Required.',
       'field_spec' => 'Comma delimited triple in the form: field_name,field_type,widget_name. If widget_name is omitted, the default widget will be used. Separate multiple fields by space. If omitted, a wizard will prompt you.'
@@ -50,7 +47,6 @@ function field_drush_command() {
     'description' => 'Return URL for field editing web page.',
     'core' => array(7),
     'drupal_dependencies' => array('field_ui'),
-    'aliases' => array(),
     'arguments' => array(
       'field_name' => 'Name of field that needs updating.',
     ),
@@ -65,7 +61,6 @@ function field_drush_command() {
   $items['field-clone'] = array(
     'description' => 'Clone a field and all its instances.',
     'core' => array(7),
-    'aliases' => array(),
     'arguments' => array(
       'source_field_name' => 'Name of field that will be cloned',
       'target_field_name' => 'Name of new, cloned field.',
@@ -77,10 +72,10 @@ function field_drush_command() {
   );
   $items['field-info'] = array(
     'description' => 'View information about fields, field_types, and widgets.',
+    'drupal_dependencies' => array('field_ui'),
     'core' => array(7),
-    'aliases' => array(),
     'arguments' => array(
-      'type' => 'Recognized values: fields, instances, types. If omitted, a choice list appears.',
+      'type' => 'Recognized values: fields, types. If omitted, a choice list appears.',
     ),
     'examples' => array(
       'field-info types' => 'Show a table which lists all field types and their available widgets',
@@ -109,7 +104,7 @@ function drush_field_create($bundle) {
         'field_name' => $name,
         'type' => $type,
       );
-      field_create_field($field);
+      drush_op('field_create_field', $field);
     }
     
     // Create the instance.
@@ -121,7 +116,7 @@ function drush_field_create($bundle) {
     if ($widget) {
       $instance['widget'] = array('type' => $widget);
     }
-    field_create_instance($instance);
+    drush_op('field_create_instance', $instance);
     
     $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $name, array('absolute' => TRUE));
   }
@@ -147,7 +142,7 @@ function drush_field_clone($source_field_name, $target_field_name) {
    
    unset($info['id']);
    $info['field_name'] = $target_field_name;
-   $target = field_create_field($info);
+   $target = drush_op('field_create_field', $info);
    
    foreach ($info['bundles'] as $entity_type => $bundles) {
      foreach ($bundles as $bundle) {
@@ -155,7 +150,7 @@ function drush_field_clone($source_field_name, $target_field_name) {
        $instance['field_name'] = $target_field_name;
        unset($instance['id']);
        $instance['field_id'] = $target['id'];
-       field_create_instance($instance);
+       drush_op('field_create_instance', $instance);
        $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $target_field_name, array('absolute' => TRUE));
      }
    }
@@ -165,7 +160,7 @@ function drush_field_clone($source_field_name, $target_field_name) {
 
 function drush_field_info($type = NULL) {
   if (is_null($type)) {
-    $type = drush_choice($options, dt('Which information do you wish to see?'));
+    $type = drush_choice(drupal_map_assoc(array('types', 'fields')), dt('Which information do you wish to see?'));
   }
   
   switch ($type) {
@@ -187,9 +182,6 @@ function drush_field_info($type = NULL) {
           implode(' ', $bundle_strs),
         );
       }
-      break;
-    case 'instances':
-      
       break;
     case 'types':
       $rows[] = array(
