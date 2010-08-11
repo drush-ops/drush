@@ -18,6 +18,8 @@ function field_drush_help($section) {
       return dt('Quickly create fields and instances for a given bundle.');
     case 'drush:field-update':
       return dt('Return URL for editing field.');
+    case 'drush:field-clone':
+      return dt('Clone a field and all of its instances.');
   }
 }
 
@@ -38,8 +40,9 @@ function field_drush_command() {
       'entity_type' => 'Type of entity (e.g. node, user, comment). Defaults to node.',
     ),
     'examples' => array(
-      'open `drush field-create article`' => 'Define new article fields via interactive prompts. Then open field editing admin page for refinement.',
-      'open `drush field-create article city,text,text_textfield subtitle,text,text_textfield`' => 'Attach two new fields and instances to articles. Then open field editing admin page for refinement.'
+      'drush field-create article' => 'Define new article fields via interactive prompts.',
+      'open `drush field-create article`' => 'Define new article fields and then open field edit form for refinement.',
+      'drush field-create article city,text,text_textfield subtitle,text,text_textfield' => 'Create two new fields.'
     ),
   );
   $items['field-update'] = array(
@@ -56,6 +59,19 @@ function field_drush_command() {
     ),
     'examples' => array(
       'field-update comment_body' => 'Quickly navigate to a field edit web page.',
+    ),
+  );
+  $items['field-clone'] = array(
+    'description' => 'Clone a field and all its instances.',
+    'core' => array(7),
+    'aliases' => array(),
+    'arguments' => array(
+      'source_field_name' => 'Name of field that will be cloned',
+      'target_field_name' => 'Name of new, cloned field.',
+    ),
+    'examples' => array(
+      'field-clone tags labels' => 'Copy \'tags\' field into a new field \'labels\' field which has same instances.',
+      'open `field-clone tags labels`' => 'Clone field and then open field edit forms for refinement.',
     ),
   ); 
   return $items;
@@ -107,6 +123,29 @@ function drush_field_update($field_name) {
      $bundle = current($bundles[$entity_type]);
    }
   $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $field_name, array('absolute' => TRUE));
+  drush_print(implode(' ', $urls));
+}
+
+function drush_field_clone($source_field_name, $target_field_name) {
+   if (!$info = field_info_field($source_field_name)) {
+     return drush_set_error(dt('%source not found in field list.', array('%source' => $source_field_name)));
+   }
+   
+   unset($info['id']);
+   $info['field_name'] = $target_field_name;
+   $target = field_create_field($info);
+   
+   foreach ($info['bundles'] as $entity_type => $bundles) {
+     foreach ($bundles as $bundle) {
+       $instance = field_info_instance($entity_type, $source_field_name, $bundle);
+       $instance['field_name'] = $target_field_name;
+       unset($instance['id']);
+       $instance['field_id'] = $target['id'];
+       field_create_instance($instance);
+       $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $target_field_name, array('absolute' => TRUE));
+     }
+   }
+   
   drush_print(implode(' ', $urls));
 }
 
