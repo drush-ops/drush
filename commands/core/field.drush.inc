@@ -6,8 +6,7 @@
 // TODO: error handling
 // TODO: review args/options
 // TODO: info command. Use wizard for now.
-// TODO: clone command
-// TODO: field-delete
+// TODO: field-delete. Use drush_choice for bundle selection?
 
 /**
  * Implementation of hook_drush_help().
@@ -20,6 +19,8 @@ function field_drush_help($section) {
       return dt('Return URL for editing field.');
     case 'drush:field-clone':
       return dt('Clone a field and all of its instances.');
+    case 'drush:field-info':
+      return dt('View information about fields, field_types, widgets, etc.');
   }
 }
 
@@ -34,7 +35,7 @@ function field_drush_command() {
     'aliases' => array(),
     'arguments' => array(
       'bundle' => 'Content type (for nodes). Name of bundle to attach fields to. Required.',
-      'field_spec' => 'Comma delimited triple in the form field_name,field_type,widget_name. Separate multiple fields by space. If omitted, a wizard will prompt you.'
+      'field_spec' => 'Comma delimited triple in the form: field_name,field_type,widget_name. If widget_name is omitted, the default widget will be used. Separate multiple fields by space. If omitted, a wizard will prompt you.'
     ),
     'options' => array(
       'entity_type' => 'Type of entity (e.g. node, user, comment). Defaults to node.',
@@ -73,6 +74,17 @@ function field_drush_command() {
       'field-clone tags labels' => 'Copy \'tags\' field into a new field \'labels\' field which has same instances.',
       'open `field-clone tags labels`' => 'Clone field and then open field edit forms for refinement.',
     ),
+  );
+  $items['field-info'] = array(
+    'description' => 'View information about fields, field_types, and widgets.',
+    'core' => array(7),
+    'aliases' => array(),
+    'arguments' => array(
+      'type' => 'Recognized values: fields, instances, types. If omitted, a choice list appears.',
+    ),
+    'examples' => array(
+      'field-info types' => 'Show a table which lists all field types and their available widgets',
+    ),
   ); 
   return $items;
 }
@@ -105,8 +117,10 @@ function drush_field_create($bundle) {
       'field_name' => $name,
       'entity_type' => $entity_type,
       'bundle' => $bundle,
-      'widget' => array('type' => $widget),
     );
+    if ($widget) {
+      $instance['widget'] = array('type' => $widget);
+    }
     field_create_instance($instance);
     
     $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $name, array('absolute' => TRUE));
@@ -147,6 +161,57 @@ function drush_field_clone($source_field_name, $target_field_name) {
    }
    
   drush_print(implode(' ', $urls));
+}
+
+function drush_field_info($type = NULL) {
+  if (is_null($type)) {
+    $type = drush_choice($options, dt('Which information do you wish to see?'));
+  }
+  
+  switch ($type) {
+    case 'fields':
+      $rows[] = array(
+        dt('Field name'),
+        dt('Field type'),
+        dt('Bundles'),
+      );
+      $info = field_info_fields();
+      foreach ($info as $field_name => $field) {
+        $bundle_strs = array();
+        foreach ($field['bundles'] as $entity_type => $bundles) {
+          $bundle_strs[] = implode(',', $bundles);
+        }
+        $rows[] = array(
+          $field_name,
+          $field['type'],
+          implode(' ', $bundle_strs),
+        );
+      }
+      break;
+    case 'instances':
+      
+      break;
+    case 'types':
+      $rows[] = array(
+        dt('Field type'),
+        dt('Default widget'),
+        dt('Widgets'),
+      );
+      $info = field_info_field_types();
+      module_load_include('inc', 'field_ui', 'field_ui.admin');
+      $widgets = field_info_widget_types();
+      foreach ($info as $type_name => $type) {
+        $widgets = field_ui_widget_type_options($type_name);
+        $rows[] = array(
+          $type_name,
+          $type['default_widget'],
+          implode(', ', array_keys($widgets)),
+        );
+      }
+      break;
+  }
+  
+  drush_print_table($rows, TRUE);
 }
 
 /**
