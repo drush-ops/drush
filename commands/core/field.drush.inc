@@ -1,10 +1,10 @@
 <?php
 // $Id$
 
-// TODO: take file from STDIN
-// TODO: error handling
-// TODO: review args/options
-// TODO: field-delete. Use drush_choice for bundle selection?
+/**
+ * @file
+ *  Field API's drush integration
+ */
 
 /**
  * Implementation of hook_drush_help().
@@ -62,6 +62,7 @@ function field_drush_command() {
     ),
     'options' => array(
       'bundle' => 'Only delete the instance attached to this bundle. If omitted, admin can choose to delete one instance or whole field.',
+      'entity_type' => 'Disambiguate a particular bundle from identically named bundles. Usually not needed.'
     ),
     'examples' => array(
       'field-delete city' => 'Delete the city field and any instances it might have.',
