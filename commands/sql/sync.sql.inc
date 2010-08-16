@@ -4,12 +4,13 @@
 require_once DRUSH_BASE_PATH . '/commands/core/rsync.core.inc';
 
 /**
- * Sql sync validate function.  Look up the version of the
- * Drupal site being sync'ed.  At least one of the sites
+ * Sql sync init function.  Bootstrap either the source or the
+ * destination site.  At least one of the sites
  * must be local for this to work; if both sites are remote,
- * then $major_version will be FALSE.
+ * then it clearly will not be possible to bootstrap to
+ * either of them.  If both are local, the source site is preferred.
  */
-function drush_sql_sync_validate($source = NULL, $destination = NULL) {
+function drush_sql_sync_init($source = NULL, $destination = NULL) {
   // Preflight destination in case it defines the alias used by the source
   _drush_sitealias_get_record($destination);
 
@@ -24,13 +25,12 @@ function drush_sql_sync_validate($source = NULL, $destination = NULL) {
   // actually use the databases record at this time.
   sitealias_get_databases_from_record($source_settings);
   sitealias_get_databases_from_record($destination_settings);
-
-  // Cache what version of Drupal we're syncing.
-  // Note that the version is cached in drush.inc; just
-  // call drush_drupal_version or drush_drupal_major_version
-  // to retrieve it later.
-  $major_version = drush_drupal_major_version_of_site(array($source_settings, $destination_settings));
-
+  
+  // Bootstrap to one of the sites being sync'ed.  This allows modules
+  // enabled in the site to participate in the sql-sync hook functions
+  // (e.g. to add sanitization operations, etc.)
+  drush_bootstrap_max_to_local_sitealias(array($source_settings, $destination_settings));
+  
   return TRUE;
 }
 

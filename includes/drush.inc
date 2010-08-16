@@ -27,18 +27,9 @@ function drush_dispatch($command = NULL) {
     // Add command-specific options, if applicable
     drush_command_default_options($command);
 
-    if (isset($command['must-replace-spaces'])) {
-      $required_name = str_replace(' ', '-', $command['command']);
-      drush_set_error(dt('Notice: "!name" must be renamed to "!requiredname" in order to work with this version of drush.  If you are the maintainer for the module that defines this command, please rename it immediately.  If you are a user of this command, you may enable spaces in commands for a while by setting "allow-spaces-in-commands" in your drush configuration file.  See example.drushrc.php.', array('!name' => $command['command'], '!requiredname' => $required_name)));
-      return FALSE;
-    }
     // Print a warning if someone tries to use a deprecated alias.
     if (isset($command['deprecated'])) {
       drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
-      if (isset($command['must-not-use-spaces'])) {
-        drush_set_error(dt('You may enable spaces in commands for a while by setting "allow-spaces-in-commands" in your drush configuration file.  See example.drushrc.php.', array('!name' => $command['command'], '!requiredname' => $required_name)));
-        return FALSE;
-      }
     }
     // Print a warning if a command callback function is misnamed
     if (isset($command['callback-required-prefix'])) {
@@ -241,28 +232,6 @@ function drush_drupal_major_version($drupal_root = NULL) {
       $major_version = (integer)$version_parts[0];
     }
   }
-  return $major_version;
-}
-
-/**
- * Return the major version of one of the local sites in
- * a list.  Usually there will only be two sites: a source
- * and a destination, one of which might be remote.  Both
- * of these should always be the same version, because they
- * should be variants of the same site (e.g. dev and live).
- *
- * @param $site_list
- *   Array of site alias records
- * @return
- *   Drush major version.
- */
-function drush_drupal_major_version_of_site($site_list) {
-  $major_version = FALSE;
-  $drupal_root = sitealias_find_local_drupal_root($site_list);
-  if (isset($drupal_root)) {
-    $major_version = drush_drupal_major_version($drupal_root);
-  }
-  
   return $major_version;
 }
 

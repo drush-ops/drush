@@ -65,15 +65,14 @@ function drush_verify_cli() {
  *   Whatever the given command returns.
  */
 function drush_main() {
-  $phases = _drush_bootstrap_phases();
-  $completed_phases = array();
-
+  $phases = _drush_bootstrap_phases(FALSE, TRUE);
+  drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
+  
   $return = '';
   $command_found = FALSE;
 
   foreach ($phases as $phase) {
-    if (drush_bootstrap($phase)) {
-      $completed_phases[$phase] = TRUE;
+    if (drush_bootstrap_to_phase($phase)) {
       $command = drush_parse_command();
 
       // Process a remote command if 'remote-host' option is set.
@@ -83,8 +82,14 @@ function drush_main() {
       }
 
       if (is_array($command)) {
-        if (array_key_exists($command['bootstrap'], $completed_phases) && empty($command['bootstrap_errors'])) {
+        $bootstrap_result = drush_bootstrap_to_phase($command['bootstrap']);
+        drush_enforce_requirement_bootstrap_phase($command);
+        drush_enforce_requirement_core($command);
+        drush_enforce_requirement_drupal_dependencies($command);
+
+        if ($bootstrap_result && empty($command['bootstrap_errors'])) {
           drush_log(dt("Found command: !command (commandfile=!commandfile)", array('!command' => $command['command'], '!commandfile' => $command['commandfile'])), 'bootstrap');
+
           $command_found = TRUE;
           // Dispatch the command(s).
           $return = drush_dispatch($command);

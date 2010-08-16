@@ -9,14 +9,15 @@
  * drush-made hooks, very similar to the Drupal hook system. See drush_invoke()
  * for the actual implementation.
  *
- * For any command named "hook", the following hooks are called, in
- * order:
+ * For any commandfile named "hook", the following hooks are called, in
+ * order, for the command "COMMAND":
  *
+ * 0. drush_COMMAND_init()
  * 1. drush_hook_COMMAND_validate()
  * 2. drush_hook_pre_COMMAND()
  * 3. drush_hook_COMMAND()
  * 4. drush_hook_post_COMMAND()
- *
+ * 
  * For example, here are the hook opportunities for a mysite.drush.inc file
  * that wants to hook into the `pm-download` command.
  *
@@ -25,7 +26,10 @@
  * 3. drush_mysite_pm_download()
  * 4. drush_mysite_post_pm_download()
  *
- * If any of those fails, the rollback mechanism is called. It will
+ * Note that the drush_COMMAND_init() hook is only for use by the
+ * commandfile that defines the command.
+ *
+ * If any of hook function fails, the rollback mechanism is called. It will
  * call, in reverse, all _rollback hooks. The mysite command file can implement
  * the following rollback hooks:
  *
@@ -40,6 +44,7 @@
  * @see includes/command.inc
  *
  * @see hook_drush_init()
+ * @see drush_COMMAND_init()
  * @see drush_hook_COMMAND_validate()
  * @see drush_hook_pre_COMMAND()
  * @see drush_hook_COMMAND()
@@ -61,6 +66,22 @@
  */
 function hook_drush_init() {
 
+}
+
+/**
+ * Initialize a command prior to validation.  If a command
+ * needs to bootstrap to a higher level, this is best done in
+ * the command init hook.  It is permisible to bootstrap in
+ * any hook, but note that if bootstrapping adds more commandfiles
+ * (*.drush.inc) to the commandfile list, the newly-added
+ * commandfiles will not have any hooks called until the next
+ * phase.  For example, a command that calls drush_bootstrap_max()
+ * in drush_hook_COMMAND() would only permit commandfiles from
+ * modules enabled in the site to participate in drush_hook_post_COMMAND()
+ * hooks.
+ */
+function drush_COMMAND_init() {
+  drush_bootstrap_max();
 }
 
 /**
@@ -157,7 +178,7 @@ function hook_drush_pm_adjust_download_destination(&$project, $release) {
  * the built-in --sanitize option of sql-sync, but simplified
  * to only work with default values on Drupal 6 + mysql.
  *
- * We test for both 'my-sanitize' and 'destination-my-sanitize'
+ * We test for both 'sanitize' and 'destination-sanitize'
  * options because we want to allow options set in a site-alias
  * to control the post-sync operations.  The options from the
  * destination alias are applied to the drush options context
@@ -166,9 +187,9 @@ function hook_drush_pm_adjust_download_destination(&$project, $release) {
  * @see drush_sql_pre_sql_sync().
  */
 function drush_hook_pre_sql_sync($source = NULL, $destination = NULL) {
-  if (drush_get_option(array('my-sanitize', 'destination-my-sanitize'), FALSE)) {
+  if (drush_get_option(array('sanitize', 'destination-sanitize'), FALSE)) {
     drush_sql_register_post_sync_op('my-sanitize-id', 
-      dt('Reset passwords and email addresses in user table', 
+      dt('Reset passwords and email addresses in user table'), 
       "update users set pass = MD5('password'), mail = concat('user+', uid, '@localhost') where uid > 0;");
   }
 }

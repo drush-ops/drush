@@ -17,6 +17,14 @@ define('DRUSH_DRUPAL_BOOTSTRAP', 'includes/bootstrap.inc');
  * @{
  * Sequential Drush bootstrapping phases.
  */
+ 
+/**
+ * No bootstrap.
+ *
+ * This constant is only used to indicate that the bootstrap process has
+ * not started yet.  It is not possible to have no bootstrap.
+ */
+define('DRUSH_BOOTSTRAP_NONE', -1);
 
 /**
  * Only bootstrap Drush, without any Drupal specific code.
@@ -116,7 +124,7 @@ define('DRUSH_TABLE_URL', 'http://svn.php.net/viewvc/pear/packages/Console_Table
  *
  * For commands that need to iterate through the phases, such as help
  */
-function _drush_bootstrap_phases($function_names = FALSE) {
+function _drush_bootstrap_phases($function_names = FALSE, $init_phases_only = FALSE) {
   static $functions = array(
     DRUSH_BOOTSTRAP_DRUSH                  => '_drush_bootstrap_drush',
     DRUSH_BOOTSTRAP_DRUPAL_ROOT            => '_drush_bootstrap_drupal_root',
@@ -125,14 +133,20 @@ function _drush_bootstrap_phases($function_names = FALSE) {
     DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => '_drush_bootstrap_drupal_database',
     DRUSH_BOOTSTRAP_DRUPAL_FULL            => '_drush_bootstrap_drupal_full',
     DRUSH_BOOTSTRAP_DRUPAL_LOGIN           => '_drush_bootstrap_drupal_login');
-  static $phases;
-  if ($function_names) {
-    return $functions;
+
+  $result = array();
+  if ($init_phases_only) {
+    foreach (array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_FULL) as $phase) {
+      $result[$phase] = $functions[$phase];
+    }
   }
-  if (!$phases) {
-    $phases = array_keys($functions);
+  else {
+    $result = $functions;
   }
-  return $phases;
+  if (!$function_names) {
+    $result = array_keys($result);
+  }
+  return $result;
 }
 
 /**
@@ -156,7 +170,7 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  *     DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.
  *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
  */
-function drush_bootstrap($phase) {
+function drush_bootstrap($phase, $phase_max = FALSE) {
   static $phases;
   if (!$phases) {
     $phases = _drush_bootstrap_phases(TRUE);
@@ -170,6 +184,9 @@ function drush_bootstrap($phase) {
       if (function_exists($current_phase) && !drush_get_error()) {
         drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
         $current_phase();
+
+        // Find any command files that are available during this bootstrap phase.
+        _drush_find_commandfiles($phase_index, $phase_max);
       }
       drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
     }
@@ -239,25 +256,26 @@ function drush_bootstrap_validate($phase) {
 }
 
 /**
- * Bootstrap to the highest level possible, without triggering any errors.
+ * Bootstrap to the specified phase.
  *
  * @param $max_phase_index
  *   Only attempt bootstrap to the specified level.
  */
-function drush_bootstrap_max($max_phase_index = NULL) {
+function drush_bootstrap_to_phase($max_phase_index) {
+  drush_log(dt("Bootstrap to phase !phase.", array('!phase' => $max_phase_index)), 'bootstrap');
   $phases = _drush_bootstrap_phases();
-  $phase_index = DRUSH_BOOTSTRAP_DRUSH;
-
+  $result = TRUE;
+  
   // Try to bootstrap to the maximum possible level, without generating errors
   foreach ($phases as $phase_index) {
-    if (isset($max_phase_index) && $phase_index > $max_phase_index) {
+    if ($phase_index > $max_phase_index) {
       // Stop trying, since we achieved what was specified.
       break;
     }
 
     if (drush_bootstrap_validate($phase_index)) {
       if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
-        drush_bootstrap($phase_index);
+        $result = drush_bootstrap($phase_index, $max_phase_index);
       }
     }
     else {
@@ -265,9 +283,82 @@ function drush_bootstrap_max($max_phase_index = NULL) {
     }
   }
 
-  return $phase_index;
+  return $result;
 }
 
+/**
+ * Bootstrap to the highest level possible, without triggering any errors.
+ *
+ * @param $max_phase_index
+ *   Only attempt bootstrap to the specified level.
+ */
+function drush_bootstrap_max($max_phase_index = FALSE) {
+  $phases = _drush_bootstrap_phases();
+  $phase_index = DRUSH_BOOTSTRAP_DRUSH;
+  if (!$max_phase_index) {
+    $max_phase_index = count($phases);
+  }
+  
+  // Try to bootstrap to the maximum possible level, without generating errors
+  foreach ($phases as $phase_index) {
+    if ($phase_index > $max_phase_index) {
+      // Stop trying, since we achieved what was specified.
+      break;
+    }
+
+    if (drush_bootstrap_validate($phase_index)) {
+      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
+        drush_bootstrap($phase_index, $max_phase_index);
+      }
+    }
+    else {
+      break;
+    }
+  }
+
+  return drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+}
+
+/**
+ * Bootstrap the specified site alias.
+ *
+ * @param $site_record
+ *   The alias record for the given site alias.
+ *   @see drush_sitealias_get_record().
+ * @param $max_phase_index
+ *   Only attempt bootstrap to the specified level.
+ */
+function drush_bootstrap_max_to_sitealias($site_record, $max_phase_index = NULL) {
+  drush_sitealias_set_alias_context($site_record);
+  drush_bootstrap_max($max_phase_index);
+}
+
+/**
+ * Bootstrap the first site alias in the provided list 
+ * that is local.  This is used, for example, by sql-sync,
+ * which passes the source and destination targets so that
+ * the local site is bootstrapped.
+ *
+ * @param $site_record
+ *   The alias record for the given site alias.
+ *   @see drush_sitealias_get_record().
+ * @param $max_phase_index
+ *   Only attempt bootstrap to the specified level.
+ * @returns array
+ *   The alias record for the site that was bootstrapped
+ */
+function drush_bootstrap_max_to_local_sitealias($site_list, $max_phase_index = NULL) {
+  $bootstrapped_site = NULL;
+  
+  foreach ($site_list as $site) {
+    if (($bootstrapped_site == NULL) && (array_key_exists('root', $site) && !array_key_exists('remote-host', $site))) {
+      $bootstrapped_site = $site;
+      drush_bootstrap_max_to_sitealias($site, $max_phase_index);
+    }
+  }
+  
+  return $bootstrapped_site;
+}
 
 /**
  * Helper function to collect any errors that occur during the bootstrap process.
@@ -466,9 +557,6 @@ function _drush_bootstrap_drush() {
   }
 
   _drush_bootstrap_global_options();
-
-  // Find any command files that are available during this bootstrap phase.
-  _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUSH);
 }
 
 function _drush_bootstrap_global_options() {
@@ -622,9 +710,6 @@ function _drush_bootstrap_do_drupal_site() {
   // Create an alias '@self'
   _drush_sitealias_cache_alias('self', array('root' => drush_get_context('DRUSH_DRUPAL_ROOT'), 'uri' => $drush_uri));
 
-  // Find any command files that are available during this bootstrap phase.
-  _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE);
-
   drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
   drush_load_config('site');
 }
@@ -760,8 +845,6 @@ function _drush_bootstrap_drupal_full() {
   // Poke Drupal with a cluestick so it recognizes our system_watchdog() implementation.
   module_implements('watchdog', FALSE, TRUE);
   _drush_log_drupal_messages();
-  // Find any command files that are available during this bootstrap phase.
-  _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_FULL);
 }
 
 /**
