@@ -161,19 +161,14 @@ function pm_drush_command() {
     'aliases' => array('upc'),
     'deprecated-aliases' => array('updatecode'),
   ) + $engines;
-  $items['pm-update'] = array(
+  
+  // Merge help from above.
+  $items['pm-update'] = array_merge($items['pm-updatecode'], array(
     'description' => 'Update your project code and apply any database updates required (update.php)',
-    'drupal dependencies' => array($update),
-    'arguments' => array(
-      'projects' => 'Optional. A space delimited list of installed projects (modules or themes) to update.',
-    ),
-    'options' => array(
-      '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
-      '--php' => 'Specify absolute path to you php binary. Use this if you see errors.'
-    ),
     'aliases' => array('up'),
     'deprecated-aliases' => array('update'),
-  );
+  ));
+  
   $items['pm-releases'] = array(
     'description' => 'Release information for a project',
     'drupal dependencies' => array($update),
