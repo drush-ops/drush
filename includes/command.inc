@@ -98,6 +98,11 @@ function drush_get_commands() {
           'engines' => array(), // Helpful for drush_show_help().
           'callback' => 'drush_command',
           'description' => NULL,
+          'sections' => array(
+            'examples' => 'Examples',
+            'arguments' => 'Arguments',
+            'options' => 'Options',
+          ),
           'arguments' => array(),
           'options' => array(),
           'examples' => array(),

@@ -647,10 +647,8 @@ function drush_get_option_help() {
 /**
  * Prints out help for a given command.
  */
-function drush_show_help($commands) {
+function drush_show_help($commandstring) {
   $phases = _drush_bootstrap_phases();
-
-  $commandstring = implode(" ", $commands);
 
   foreach ($phases as $phase_index) {
     if ($validated = drush_bootstrap_validate($phase_index)) {
@@ -678,17 +676,15 @@ function drush_show_help($commands) {
         if (!$help = drush_command_invoke_all('drush_help', 'drush:'. $command['command'])) {
           $help = array($command['description']);
         }
+
+        // Give commandfiles an opportunity to add examples and options to the command.
+        drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+        drush_command_invoke_all_ref('drush_help_alter', $command);
+
         drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));
         drush_print();
 
-        // TODO: Let commands define additional sections.
-        $sections = array(
-          'examples' => 'Examples',
-          'arguments' => 'Arguments',
-          'options' => 'Options',
-        );
-
-        foreach ($sections as $key => $value) {
+        foreach ($command['sections'] as $key => $value) {
           if (!empty($command[$key])) {
             drush_print(dt($value) . ':');
             foreach ($command[$key] as $name => $description) {

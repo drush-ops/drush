@@ -251,7 +251,7 @@ function drush_core_help() {
     return drush_print(drush_help_html());
   }
   elseif (empty($commands)) {
-    drush_show_help(array('help'));
+    drush_show_help('help');
     $phases = _drush_bootstrap_phases();
     // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE+1.
     $phases = array_slice($phases, 0, DRUSH_BOOTSTRAP_DRUPAL_SITE+1);
@@ -302,7 +302,11 @@ function drush_core_help() {
     return;
   }
   else {
-    return drush_show_help($commands);
+    $result = TRUE;
+    while ((count($commands) > 0) && !drush_get_error()) {
+      $result =  drush_show_help(array_shift($commands));
+    }
+    return $result;
   }
 
   drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
@@ -343,7 +347,7 @@ function drush_help_html() {
   foreach ($commands as $key => $command) {
     $output .=  "\n<a name=\"$key\"></a><dt>$key</dt><dd><pre>\n";
     ob_start();
-    drush_show_help(array($key));
+    drush_show_help($key);
     $output .= ob_get_clean();
     $output .=  "</pre></dd>\n";
   }

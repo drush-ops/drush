@@ -195,5 +195,14 @@ function drush_hook_pre_sql_sync($source = NULL, $destination = NULL) {
 }
 
 /**
+ * Add help components to a command
+ */
+function hook_drush_help_alter(&$command) {
+  if ($command['command'] == 'sql-sync') {
+    $command['options']['--myoption'] = "Description of modification of sql-sync done by hook";
+  }
+}
+
+/**
  * @} End of "addtogroup hooks".
  */
