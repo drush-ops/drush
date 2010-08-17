@@ -718,6 +718,30 @@ function drush_show_help($commands) {
 }
 
 /**
+ * Executes a shell command at a new working directory.
+ * The old cwd is restored on exit.
+ *
+ * @param $effective_wd
+ *   The new working directory to execute the shell command at.
+ * @param $cmd
+ *   The command to execute. May include placeholders used for sprintf.
+ * @param ...
+ *   Values for the placeholders specified in $cmd. Each of these will be passed through escapeshellarg() to ensure they are safe to use on the command line.
+ * @return
+ *   0 if success.
+ */
+function drush_shell_cd_and_exec($effective_wd, $cmd) {
+  $args = func_get_args();
+  
+  $effective_wd = array_shift($args);
+  $cwd = getcwd();
+  drush_op('chdir', $effective_wd);
+  $result = call_user_func_array('drush_shell_exec', $args);
+  drush_op('chdir', $cwd);
+  return $result;
+}
+
+/**
  * Executes a shell command.
  * Output is only printed if in verbose mode.
  * Output is stored and can be retrieved using drush_shell_exec_output().

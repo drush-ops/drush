@@ -119,7 +119,7 @@ function drush_pm_cvs($project, $release) {
     $cvsparts[] = $project['name'];
   }
 
-  if (!drush_shell_exec('cd ' . $checkout_path . ' ; cvs ' . implode(' ', $cvsparts))) {
+  if (!drush_shell_cd_and_exec($checkout_path, 'cvs ' . implode(' ', $cvsparts))) {
     drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to checkout ' . $project['name'] . ' from cvs.drupal.org.');
   }
 }
