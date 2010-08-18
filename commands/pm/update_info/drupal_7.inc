@@ -55,7 +55,7 @@ function _pm_refresh() {
  */
 function _pm_get_update_info($projects = NULL) {
   // We force a refresh if the cache is not available.
-  if (!cache_get('update_info', 'cache_update')) {
+  if (!cache_get('update_available_releases', 'cache_update')) {
     _pm_refresh();
   }
   $info = update_get_available();
