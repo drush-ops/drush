@@ -690,6 +690,13 @@ function drush_show_help($commandstring) {
             foreach ($command[$key] as $name => $description) {
               // '[command] is a token representing the current command. @see pm_drush_engine_version_control().
               $rows[] = array(str_replace('[command]', $commandstring, $name), dt($description));
+              
+              // Process the subsections too, if any
+              if (!empty($command['sub-' . $key]) && array_key_exists($name, $command['sub-' . $key])) {
+                foreach ($command['sub-' . $key][$name] as $name => $description) {
+                  $rows[] = array('  ' . str_replace('[command]', $commandstring, $name), dt($description));
+                }
+              }
             }
             drush_print_table($rows, false, array(40));
             unset($rows);
@@ -712,6 +719,7 @@ function drush_show_help($commandstring) {
   }
   return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => $commandstring)));
 }
+
 
 /**
  * Executes a shell command at a new working directory.

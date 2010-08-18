@@ -188,8 +188,8 @@ function hook_drush_pm_adjust_download_destination(&$project, $release) {
  */
 function drush_hook_pre_sql_sync($source = NULL, $destination = NULL) {
   if (drush_get_option(array('sanitize', 'destination-sanitize'), FALSE)) {
-    drush_sql_register_post_sync_op('my-sanitize-id', 
-      dt('Reset passwords and email addresses in user table'), 
+    drush_sql_register_post_sync_op('my-sanitize-id',
+      dt('Reset passwords and email addresses in user table'),
       "update users set pass = MD5('password'), mail = concat('user+', uid, '@localhost') where uid > 0;");
   }
 }
@@ -200,6 +200,7 @@ function drush_hook_pre_sql_sync($source = NULL, $destination = NULL) {
 function hook_drush_help_alter(&$command) {
   if ($command['command'] == 'sql-sync') {
     $command['options']['--myoption'] = "Description of modification of sql-sync done by hook";
+    $command['sub-options']['--sanitize']['--my-sanitize-option'] = "Description of sanitization option added by hook (grouped with --sanitize option)";
   }
 }
 

@@ -97,9 +97,13 @@ function pm_drush_command() {
   );
   $update_options = array(
     '--lock' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the module as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.',
-    '--lock-message' => 'A brief message explaining why a project is being locked; displayed during pm-updatecode.  Optional.',
-    '--unlock' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
     '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
+  );
+  $update_suboptions = array(
+    '--lock' => array(
+      '--lock-message' => 'A brief message explaining why a project is being locked; displayed during pm-updatecode.  Optional.',
+      '--unlock' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
+    ),
   );
   
   $items['pm-enable'] = array(
@@ -163,6 +167,7 @@ function pm_drush_command() {
     'options' => array(
       '--pipe' => 'Returns a space delimited list of enabled modules and their respective version and update information, one module per line. Order: module name, current version, recommended version, update status.',
     ) + $update_options,
+    'sub-options' => $update_suboptions,
     'aliases' => array('upc'),
     'deprecated-aliases' => array('updatecode'),
   ) + $engines;
@@ -1158,10 +1163,13 @@ function pm_drush_engine_package_handler() {
     'cvs' => array(
       'options' => array(
         '--package-handler=cvs' => 'Use CVS to checkout and update projects.',
-        '  --cvsparams' => 'Add options to the `cvs` program',
-        '  --cvsmethod' => 'Force cvs updates or checkouts (checkout is default unless the directory is managed by a supported version control system).',
-        '  --cvscredentials' => 'A username and password that is sent for cvs checkout command. Defaults to anonymous:anonymous',
-
+      ),
+      'sub-options' => array(
+        '--package-handler=cvs' => array(
+          '--cvsparams' => 'Add options to the `cvs` program',
+          '--cvsmethod' => 'Force cvs updates or checkouts (checkout is default unless the directory is managed by a supported version control system).',
+          '--cvscredentials' => 'A username and password that is sent for cvs checkout command. Defaults to anonymous:anonymous',
+        ),
       ),
       'examples' => array(
           'drush [command] cck --cvscredentials=\"name:password\"' =>  'Checkout should use these credentials.',
@@ -1181,14 +1189,18 @@ function pm_drush_engine_version_control() {
       'signature' => 'svn info %s',
       'options' => array(
         '--version-control=svn' => 'Quickly add/remove/commit your project changes to Subversion.',
-        '  --svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. Caution.',
-        '  --svncommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
-        '  --svnmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
-        '  --svnstatusparams' => "Add options to the 'svn status' command",
-        '  --svnaddparams' => 'Add options to the `svn add` command',
-        '  --svnremoveparams' => 'Add options to the `svn remove` command',
-        '  --svnrevertparams' => 'Add options to the `svn revert` command',
-        '  --svncommitparams' => 'Add options to the `svn commit` command',
+      ),
+      'sub-options' => array(
+        '--version-control=svn' => array(
+          '--svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. Caution.',
+          '--svncommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
+          '--svnmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+          '--svnstatusparams' => "Add options to the 'svn status' command",
+          '--svnaddparams' => 'Add options to the `svn add` command',
+          '--svnremoveparams' => 'Add options to the `svn remove` command',
+          '--svnrevertparams' => 'Add options to the `svn revert` command',
+          '--svncommitparams' => 'Add options to the `svn commit` command',
+        ),
       ),
       'examples' => array(
         'drush [command] cck --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
@@ -1197,16 +1209,24 @@ function pm_drush_engine_version_control() {
     'backup' => array(
       'options' => array(
         '--version-control=backup' => 'Backup all project files before updates.',
-        '  --backup-dir' => 'Backup destination directory. Defaults to a "/backup" subdirectory inside your Drupal root.',
+      ),
+      'sub-options' => array(
+        '--version-control=backup' => array(
+          '--backup-dir' => 'Backup destination directory. Defaults to a "/backup" subdirectory inside your Drupal root.',
+        ),
       ),
     ),
     'bzr' => array(
       'signature' => 'bzr root %s',
       'options' => array(
         '--version-control=bzr' => 'Quickly add/remove/commit your project changes to Bazaar.',
-        '  --bzrsync' => 'Automatically add new files to the Bazaar repository and remove deleted files. Caution.',
-        '  --bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also using the --bzrsync option.',
-        '  --bzrmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+      ),
+      'sub-options' => array(
+        '--version-control=bzr' => array(
+          '--bzrsync' => 'Automatically add new files to the Bazaar repository and remove deleted files. Caution.',
+          '--bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also using the --bzrsync option.',
+          '--bzrmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+        ),
       ),
     ),
   );

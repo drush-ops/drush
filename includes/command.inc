@@ -189,6 +189,7 @@ function drush_get_commands() {
  */
 function drush_parse_command() {
   $args = drush_get_arguments();
+  $command = FALSE;
   
   // Get a list of all implemented commands.
   $implemented = drush_get_commands();

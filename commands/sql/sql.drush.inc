@@ -116,8 +116,12 @@ function sql_drush_command() {
       '--db-su' => 'Account to use when creating a new database. Optional.',
       '--db-su-pw' => 'Password for the "db-su" account. Optional.',
       '--sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync. Optional.',
-      '  --sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
-      '  --sanitize-email' => 'The username for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %login.  Default is "user+%uid@localhost".',
+    ),
+    'sub-options' => array(
+      '--sanitize' => array(
+        '--sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
+        '--sanitize-email' => 'The username for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %login.  Default is "user+%uid@localhost".',
+      ),
     ),
   );
   if (drush_drupal_major_version() >= 7) {
