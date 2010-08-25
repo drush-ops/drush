@@ -364,7 +364,7 @@ Maintainer
 ----------
 - Dmitri Gaskin (dmitrig01)
 
-Contributors
+Co-maintainers
 ------------
 - Adrian Rossouw (adrian)
 - Antoine Beaupré (anarcat)
