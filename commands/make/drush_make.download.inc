@@ -312,31 +312,37 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
       // split the given download url into pices
       $url_array = $this->getUrlParts($download['url']);
 
-      // build url for git clone to support different protocols
-      // currently all protocols seems to use the same url schema
-      switch ($url_array['protocol']) {
-        case 'git':
-          // github uses two different urls, working copy urls using scp format
-          // git@domain:repo export url format are git://domain/repo
-          if ($wc) {
-            // working copy is set
-            $url = 'git@'. $url_array['host'] .':'. $url_array['resource'];
+      if (empty($url_array['protocol'])) {
+        // If protocol is not given, assume an SSH URL.
+        $url = $download['url'];
+      }
+      else {
+        // build url for git clone to support different protocols
+        // currently all protocols seems to use the same url schema
+        switch ($url_array['protocol']) {
+          case 'git':
+            // github uses two different urls, working copy urls using scp format
+            // git@domain:repo export url format are git://domain/repo
+            if ($wc) {
+              // working copy is set
+              $url = 'git@'. $url_array['host'] .':'. $url_array['resource'];
+              break;
+            }
+          case 'ssh':
+          case 'http':
+          case 'https':
+          case 'ftp':
+          case 'ftps':
+          case 'rsync':
+          case 'file':
+            // @TODO: implement port & user options
+            $url = $url_array['protocol'] .'://'. $url_array['host'] .'/'. $url_array['resource'];
             break;
-          }
-        case 'ssh':
-        case 'http':
-        case 'https':
-        case 'ftp':
-        case 'ftps':
-        case 'rsync':
-        case 'file':
-          // @TODO: implement port & user options
-          $url = $url_array['protocol'] .'://'. $url_array['host'] .'/'. $url_array['resource'];
-          break;
-
-        default:
-          drush_make_error('DOWNLOAD_ERROR', dt('unknown protocol @protocol in %project', array('@protocol' => $url_array['protocol'], '%project' => $name)));
-          return false;
+  
+          default:
+            drush_make_error('DOWNLOAD_ERROR', dt('unknown protocol @protocol in %project', array('@protocol' => $url_array['protocol'], '%project' => $name)));
+            return false;
+        }
       }
 
       $tmp_location = $this->tmp_path . '/__git__/' . basename($this->project->download_location);
