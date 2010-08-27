@@ -68,9 +68,11 @@ class DrushMakeProject {
           drush_shell_exec('curl -L -O %s', $url);
         }
         if (file_exists($filename)) {
-          $patches_txt .= '- ' . $url . "\n";
           drush_shell_exec("mv %s %s", $filename, $project_directory);
           $patched = drush_shell_exec("patch -p0 -d %s < %s/%s", $project_directory, $project_directory, $filename);
+          if ($patched) {
+            $patches_txt .= '- ' . $url . "\n";
+          }
           drush_log($this->name . ' patched with ' . $filename . '.', $patched ? 'ok' : 'error');
           drush_op('unlink', $project_directory . '/' . $filename);
         }
