@@ -354,7 +354,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
         drush_log(dt('%project cloned from %url.', array('%project' => $this->project->name, '%url' => $url)), 'ok');
 
         // GIT Checkout only work on a ready cloned repo. So we switch to branch or to tag (only if we have no branch) after cloneing.
-        if ($download['branch'] !== 'master' || $download['tag'] || $download['revision']) {
+        if ($download['branch'] !== 'master' || $download['tag'] || $download['revision'] || !empty($download['submodule'])) {
 
           // get current directory (for move back later)
           $cwd = getcwd();
@@ -391,9 +391,21 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
             }
           }
           // more than one option is set so we throw a error message
-          else {
+          elseif ($download['branch'] !== 'master' || $download['tag'] || $download['revision']) {
             drush_make_error('DOWNLOAD_ERROR', dt("You can only specific branch or tag or revision but not combined in make file."));
             return false;
+          }
+          if (!empty($download['submodule'])) {
+            $command = 'git submodule update';
+            foreach ($download['submodule'] as $option) {
+              $command .= ' --%s';
+            }
+            if (call_user_func_array('drush_shell_exec', array_merge(array($command), $download['submodule']))) {
+              drush_log(dt('Initialized registered submodules.'), 'ok');
+            }
+            else {
+              drush_make_error('DOWNLOAD_ERROR', dt('Unable to initialize submodules.'));
+            }
           }
           // move back to last current directory (first line)
           chdir($cwd);
