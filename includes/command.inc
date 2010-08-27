@@ -108,12 +108,12 @@ function drush_get_commands() {
           'examples' => array(),
           'aliases' => array(),
           'deprecated-aliases' => array(),
-          'extras' => array(),
           'core' => array(),
           'scope' => 'site',
           'drupal dependencies' => array(),
           'drush dependencies' => array(),
           'bootstrap_errors' => array(),
+          'topics' => array(),
           'hidden' => FALSE,
         );
         // If command callback is correctly named, then fix

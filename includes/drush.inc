@@ -840,6 +840,16 @@ function drush_print($message = '', $indent = 0) {
 }
 
 /**
+ * Print the contents of a file.
+ *
+ * @param string $file 
+ *   Full path to a file.
+ */
+function drush_print_file($file) {
+  drush_print(file_get_contents($file));
+}
+
+/**
  * Stores a message which is printed during drush_shutdown() if in compact mode.
  * @param $message
  *   The message to print.  If $message is an array,
