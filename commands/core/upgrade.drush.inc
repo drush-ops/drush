@@ -110,9 +110,10 @@ function drush_upgrade_site_upgrade($target_key) {
   // Create sites subdirectory in target if needed.
   $settings_source = conf_path() . '/settings.php';
   $settings_destination = $destination_core . '/' . $settings_source;
-  if (!file_exists(dirname($settings_destination))) {
-    if (!drush_op('mkdir', $settings_destination) && !drush_get_context('DRUSH_SIMULATE')) {
-      drush_set_error(dt('Failed to create directory @settings_destination', array('@settings_destination' => $settings_destination)));
+  $settings_destination_folder = dirname($settings_destination);
+  if (!file_exists($settings_destination_folder)) {
+    if (!drush_op('mkdir', $settings_destination_folder) && !drush_get_context('DRUSH_SIMULATE')) {
+      drush_set_error(dt('Failed to create directory @settings_destination', array('@settings_destination' => $settings_destination_folder)));
       return;
     }
   }
