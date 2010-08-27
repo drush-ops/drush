@@ -29,7 +29,10 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
     $download = $this->project->download;
     if (!empty($download['module'])) {
       if (drush_get_option('working-copy')) {
-        if (isset($_ENV['CVSROOT'])) {
+        if ($download['module'] == 'drupal') {
+          $this->project->download['root'] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal";
+        }
+        elseif (isset($_ENV['CVSROOT'])) {
           $this->project->download['root'] = $download['root'] = trim($_ENV['CVSROOT']);
         }
         else {
