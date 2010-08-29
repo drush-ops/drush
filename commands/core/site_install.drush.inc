@@ -43,7 +43,6 @@ function drush_core_pre_site_install() {
     }
   }
 
-
   // Add a files dir if needed
   if (!file_exists($files)) {
     if (!drush_op('mkdir', $files) && !drush_get_context('DRUSH_SIMULATE')) {

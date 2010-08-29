@@ -89,33 +89,7 @@ function drush_get_commands() {
       $result = $function();
       foreach ((array)$result as $key => $command) {
         // Add some defaults and normalize the command descriptor
-        $command += array(
-          'command' => $key,
-          'command-hook' => $key,
-          'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
-          'commandfile' => $commandfile,
-          'path' => dirname($path),
-          'engines' => array(), // Helpful for drush_show_help().
-          'callback' => 'drush_command',
-          'description' => NULL,
-          'sections' => array(
-            'examples' => 'Examples',
-            'arguments' => 'Arguments',
-            'options' => 'Options',
-          ),
-          'arguments' => array(),
-          'options' => array(),
-          'examples' => array(),
-          'aliases' => array(),
-          'deprecated-aliases' => array(),
-          'core' => array(),
-          'scope' => 'site',
-          'drupal dependencies' => array(),
-          'drush dependencies' => array(),
-          'bootstrap_errors' => array(),
-          'topics' => array(),
-          'hidden' => FALSE,
-        );
+        $command += drush_command_defaults($key, $commandfile, $path);
         // If command callback is correctly named, then fix
         // up the command entry so that drush_invoke will be
         // called.
@@ -154,6 +128,36 @@ function drush_get_commands() {
   }
 
   return drush_set_context('DRUSH_COMMANDS', $commands);
+}
+
+function drush_command_defaults($key, $commandfile, $path) {
+  return array(
+    'command' => $key,
+    'command-hook' => $key,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
+    'commandfile' => $commandfile,
+    'path' => dirname($path),
+    'engines' => array(), // Helpful for drush_show_help().
+    'callback' => 'drush_command',
+    'description' => NULL,
+    'sections' => array(
+      'examples' => 'Examples',
+      'arguments' => 'Arguments',
+      'options' => 'Options',
+    ),
+    'arguments' => array(),
+    'options' => array(),
+    'examples' => array(),
+    'aliases' => array(),
+    'deprecated-aliases' => array(),
+    'core' => array(),
+    'scope' => 'site',
+    'drupal dependencies' => array(),
+    'drush dependencies' => array(),
+    'bootstrap_errors' => array(),
+    'topics' => array(),
+    'hidden' => FALSE,
+  );
 }
 
 /**

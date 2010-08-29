@@ -13,7 +13,7 @@
  *   An associative array describing your command(s).
  */
 function topic_drush_command() {
-  $items['topic'] = array(
+  $items['core-topic'] = array(
     'description' => 'Read detailed documentation on a given topic.',
     'arguments' => array(
       'topic name' => 'The name of the topic you wish to view. If omitted, list all topic descriptions (and names in parenthesis).',
@@ -23,6 +23,7 @@ function topic_drush_command() {
       'drush topic core-context' => 'Show documentation for the drush context API',
       'drush core-context' => 'Show documentation for the drush context API',
     ),
+    'aliases' => array('topic'),
   );
   return $items;
 }

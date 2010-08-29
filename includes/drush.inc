@@ -616,13 +616,13 @@ function dt($string, $args = array()) {
 }
 
 /**
- * Get the available options for Drush for use by help page.
+ * Get the available global options. Used by help command.
  *
  * @return
  *   An associative array containing the option definition as the key, and the description as the value,
  *   for each of the available options.
  */
-function drush_get_option_help() {
+function drush_get_global_options() {
   // TODO: Add a hook for this, to allow other modules to add their global options
   $options['-r <path>, --root=<path>'] = dt("Drupal root directory to use (default: current directory)");
   $options['-l <uri>, --uri=http://example.com']   = dt('URI of the drupal site to use (only needed in multisite environments)');
@@ -665,49 +665,7 @@ function drush_show_help($commandstring) {
           continue;
         }
 
-        // Merge in engine specific help.
-        foreach ($command['engines'] as $type => $description) {
-          $all_engines = drush_get_engines($type);
-          foreach ($all_engines as $name => $engine) {
-            $command = array_merge_recursive($command, $engine);
-          }
-        }
-
-        if (!$help = drush_command_invoke_all('drush_help', 'drush:'. $command['command'])) {
-          $help = array($command['description']);
-        }
-
-        // Give commandfiles an opportunity to add examples and options to the command.
-        drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
-        drush_command_invoke_all_ref('drush_help_alter', $command);
-
-        drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));
-        drush_print();
-
-        foreach ($command['sections'] as $key => $value) {
-          if (!empty($command[$key])) {
-            drush_print(dt($value) . ':');
-            foreach ($command[$key] as $name => $description) {
-              // '[command] is a token representing the current command. @see pm_drush_engine_version_control().
-              $rows[] = array(str_replace('[command]', $commandstring, $name), dt($description));
-              
-              // Process the subsections too, if any
-              if (!empty($command['sub-' . $key]) && array_key_exists($name, $command['sub-' . $key])) {
-                foreach ($command['sub-' . $key][$name] as $name => $description) {
-                  $rows[] = array('  ' . str_replace('[command]', $commandstring, $name), dt($description));
-                }
-              }
-            }
-            drush_print_table($rows, false, array(40));
-            unset($rows);
-            drush_print();
-          }
-        }
-
-        // Append aliases if any.
-        if ($command['aliases']) {
-          drush_print(dt("Aliases: ") . implode(', ', $command['aliases']));
-        }
+        drush_print_help($command);
 
         return TRUE;
 
@@ -718,6 +676,58 @@ function drush_show_help($commandstring) {
     }
   }
   return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => $commandstring)));
+}
+
+/**
+ * Print the help for a single command to the screen.
+ *
+ * @param array $command 
+ *   A fully loaded $command array.
+ */
+function drush_print_help($command) {
+  // Merge in engine specific help.
+  foreach ($command['engines'] as $type => $description) {
+    $all_engines = drush_get_engines($type);
+    foreach ($all_engines as $name => $engine) {
+      $command = array_merge_recursive($command, $engine);
+    }
+  }
+
+  if (!$help = drush_command_invoke_all('drush_help', 'drush:'. $command['command'])) {
+    $help = array($command['description']);
+  }
+
+  // Give commandfiles an opportunity to add examples and options to the command.
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+  drush_command_invoke_all_ref('drush_help_alter', $command);
+
+  drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));
+  drush_print();
+
+  foreach ($command['sections'] as $key => $value) {
+    if (!empty($command[$key])) {
+      drush_print(dt($value) . ':');
+      foreach ($command[$key] as $name => $description) {
+        // '[command] is a token representing the current command. @see pm_drush_engine_version_control().
+        $rows[] = array(str_replace('[command]', $command['command'], $name), dt($description));
+        
+        // Process the subsections too, if any
+        if (!empty($command['sub-' . $key]) && array_key_exists($name, $command['sub-' . $key])) {
+          foreach ($command['sub-' . $key][$name] as $name => $description) {
+            $rows[] = array('  ' . str_replace('[command]', $command['command'], $name), dt($description));
+          }
+        }
+      }
+      drush_print_table($rows, FALSE, array(40));
+      unset($rows);
+      drush_print();
+    }
+  }
+
+  // Append aliases if any.
+  if ($command['aliases']) {
+    drush_print(dt("Aliases: ") . implode(', ', $command['aliases']));
+  }
 }
 
 

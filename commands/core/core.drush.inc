@@ -23,15 +23,19 @@ function core_drush_command() {
   $items = array();
 
   $items['help'] = array(
-    'description' => 'Print this help message. Use --filter to limit command list to one command file (e.g. --filter=pm)',
+    'description' => 'Print this help message. See `drush help help` for more options.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
-    'options' => drush_get_option_help(),
-    'examples' => array(
-      'drush dl cck zen' => 'Download CCK module and Zen theme.',
-      'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
-      'drush help --pipe' => 'A list of available commands, one per line.',
-      'drush help --html' => 'Print help for all commands in HTML format.',
+    'options' => array(
+      '--sort' => 'Sort commands in alphabetical order. drush waits for full bootstrap before printing any commands when this option is used.',
+      '--html' => 'Print help for all commands in HTML format.',
+      '--pipe' => 'A list of available commands, one per line.',
     ),
+    'examples' => array(
+      'drush' => 'List all commands.',
+      'drush help pm-download' => 'Show help for one command.',
+      'drush help dl' => 'Show help for one command using an alias.',
+    ),
+    'topics' => array('core-readme'),
   );
   $items['core-cron'] = array(
     'description' => 'Run all cron hooks.',
@@ -258,13 +262,24 @@ function drush_core_help() {
     return drush_print(drush_help_html());
   }
   elseif (empty($commands)) {
-    drush_show_help('help');
+    // Build a fake command for the purposes of showing examples and options.
+    $fake = array(
+      'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.',
+      'options' => drush_get_global_options(),
+      'examples' => array(
+        'drush dl cck zen' => 'Download CCK module and Zen theme.',
+        'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
+      ),  
+    );
+    $fake += drush_command_defaults('fake', 'fake', __FILE__);
+    drush_print_help($fake);
+    
     $phases = _drush_bootstrap_phases();
     // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE+1.
     $phases = array_slice($phases, 0, DRUSH_BOOTSTRAP_DRUPAL_SITE+1);
     drush_print(dt('Commands: '));
 
-    $printed_rows = array();
+    $printed_rows = $all_rows = array();
     $phase_index = DRUSH_BOOTSTRAP_DRUSH;
 
     foreach ($phases as $phase_index) {
@@ -291,17 +306,26 @@ function drush_core_help() {
               if (!array_key_exists($key, $printed_rows)) {
                 $name = $command['aliases'] ? $key . ' (' . implode(', ', $command['aliases']) . ')': $key;
                 $rows[$key] = array($name, $command['description']);
+                $all_rows[$key] = array($name, $command['description']);
                 $pipe[] = "\"$key\"";
               }
             }
           }
         }
-        drush_print_table($rows, FALSE, array(0 => 20));
+        if (!drush_get_option('sort')) {
+          drush_print_table($rows, FALSE, array(0 => 20));
+        }
         $printed_rows = array_merge($printed_rows, $rows);
       }
       else {
         break;
       }
+    }
+    
+    // We delayed printing until now. Sort then print.
+    if (drush_get_option('sort')) {
+      ksort($all_rows);
+      drush_print_table($all_rows, FALSE, array(0 => 20));
     }
 
     // Newline-delimited list for use by other scripts. Set the --pipe option.
@@ -330,19 +354,22 @@ function drush_help_html() {
       $commands[$key] = $command;
     }
   }
-  unset($commands['help']);
+  
+  if (drush_get_option('sort')) {
+    ksort($commands);
+  }
 
   $output =  "<html><head><title>drush help</title><style>dt {font-size: 110%; font-weight: bold}</style></head><body>\n";
 
   // Command table
-  $output .=  '<h3>Command list</h3><table>';
+  $output .=  "<h3>Command list</h3>\n<table>\n";
   foreach ($commands as $key => $command) {
-    $output .=  "<tr><td><a href=\"#$key\">$key</a></td><td>" . $command['description'] . "</td></tr>\n";
+    $output .=  "  <tr><td><a href=\"#$key\">$key</a></td><td>" . $command['description'] . "</td></tr>\n";
   }
   $output .=  "</table>\n";
 
   // Global options
-  $options = drush_get_option_help();
+  $options = drush_get_global_options();
   $output .=  '<h3>Global Options</h3><table>';
   foreach ($options as $key => $value) {
     $output .=  "<tr><td>$key</td><td>" . $value . "</td></tr>\n";
@@ -378,8 +405,6 @@ function drush_help_html() {
  */
 function core_drush_help($section) {
   switch ($section) {
-    case 'drush:help':
-      return dt('Execute a drush command. Run `drush help [command]` to view command-specific help.');
     case 'drush:cron':
       return dt("Runs all cron hooks in all active modules for specified site.");
     case 'drush:status':
