@@ -22,7 +22,7 @@
  */
 function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
   if ($destination == '@prod') {
-    return drush_set_error(dt('WTF. Don\'t overwrite the production database.'));
+    return drush_set_error(dt('Per examples/policy.drush.inc, you may never overwrite the production database.'));
   }
 }
 
@@ -37,6 +37,7 @@ function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
 function drush_policy_updatedb_validate() {
   // Check for a token in the request. In this case, we require --token=secret.
   if (!drush_get_option('token') == 'secret') {
+    drush_log('Per site policy, you must add a secret --token complete this command.', 'examples/policy.drush.inc');
     drush_set_context('DRUSH_AFFIRMATIVE', FALSE);
     drush_set_context('DRUSH_NEGATIVE', TRUE);
   }
