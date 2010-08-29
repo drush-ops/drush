@@ -1278,13 +1278,16 @@ function drush_pm_include_version_control($directory = '.') {
   return new $engine();
 }
 
+// Implement drush_COMMAND_init().
+function drush_pm_download_init() {
+  // Bootstrap to the highest level possible.
+  drush_bootstrap_max();
+}
+
 /**
  * Command callback. Download Drupal core or any project.
  */
 function drush_pm_download() {
-  // Bootstrap to the highest level possible.
-  drush_bootstrap_max();
-
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
 
   if (!$requests = func_get_args()) {
