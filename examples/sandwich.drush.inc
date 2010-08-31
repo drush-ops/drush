@@ -44,7 +44,7 @@ function sandwich_drush_command() {
       'spreads' => 'Comma delimited list of spreads (e.g. mayonnaise, mustard)',
     ),
     'examples' => array(
-      'drush make-me-a-sandwich turkey --spreads=ketchup,mustard',
+      'drush mmas turkey --spreads=ketchup,mustard' => 'Make a terrible-tasting sandwich that is lacking in pickles.',
     ),
     'aliases' => array('mmas'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
