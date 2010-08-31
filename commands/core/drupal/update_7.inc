@@ -312,7 +312,6 @@ function drush_update_batch($start) {
 
 
 function drush_update_finished($success, $results, $operations) {
-  // Clear the caches in case the data has been updated.
-  drupal_flush_all_caches();
+  // Nothing to do here. All caches already cleared. Kept as documentation of 'finished' callback.
 }
 
