@@ -11,6 +11,21 @@ Drush core ships with lots of useful commands for interacting with code
 like modules/themes/profiles/translations. Similarly, it runs update.php, executes sql
 queries and DB migrations, and misc utilities like run cron or clear cache.
 
+REQUIREMENTS
+------------
+* To use drush from the command line, you'll need a CLI-mode capable PHP
+  binary. The minimum PHP version is 5.2.
+* drush also runs on Windows; however, drush commands make use of
+  unix command line tools, so to use it effectively, you have to install
+  some of them, e.g. from GnuWin32 (http://gnuwin32.sourceforge.net/). More info
+  about Drush on Windows available at http://drupal.org/node/594744.
+* Drush works with Drupal 5, Drupal 6 and Drupal 7.  However, occasionally
+  recent changes to the most recent version of Drupal can introduce issues
+  with drush.  On Drupal 5, drush requires update_status v5.x-2.5 or later
+  in order to use pm-updatecode.  If you have an earlier version of update_status,
+  upgrade it via "drush dl update_status" before using pm-updatecode.
+
+
 INSTALLATION
 ------------
 For Linux/Unix/Mac:
@@ -94,6 +109,11 @@ functions like cdd which whisks you to any directory in your drupal site.
 Many commands support a --pipe option which returns machine readable output. See
 `drush pm-list --status=enabled --pipe` as an example
 
+Very intensive scripts can exhaust your available PHP memory. One remedy is to 
+just restart automatically using bash. For example:
+
+    while true; do drush search-index; sleep 5; done
+
 EXAMPLES
 --------
 Inside the "examples" folder you will find some example files to help you
@@ -135,20 +155,6 @@ You can put your drush command file in a number of places:
 
 In any case, it is important that you end the filename with ".drush.inc", so
 that drush can find it.
-
-REQUIREMENTS
-------------
-* To use drush from the command line, you'll need a CLI-mode capable PHP
-  binary. The minimum PHP version is 5.2.
-* drush also runs on Windows; however, drush commands make use of
-  unix command line tools, so to use it effectively, you have to install
-  some of them, e.g. from GnuWin32 (http://gnuwin32.sourceforge.net/). More info
-  about Drush on Windows available at http://drupal.org/node/594744.
-* Drush works with Drupal 5, Drupal 6 and Drupal 7.  However, occasionally
-  recent changes to the most recent version of Drupal can introduce issues
-  with drush.  On Drupal 5, drush requires update_status v5.x-2.5 or later
-  in order to use pm-updatecode.  If you have an earlier version of update_status,
-  upgrade it via "drush dl update_status" before using pm-updatecode.
 
 FAQ
 ---
