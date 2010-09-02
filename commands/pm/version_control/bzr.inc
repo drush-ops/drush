@@ -2,40 +2,54 @@
 // $Id$
 
 /**
- * @file Drush pm BZR extension
+ * @file Drush pm Bazaar extension
  */
 
 class drush_pm_version_control_bzr implements drush_pm_version_control {
 
   /**
-   * Helper function: get the root of a repository path.
-   *
-   * @param $path
-   *   The path to check.
-   * @return
-   *   An absolute path to the repository root.
-   */
-  public function bzr_get_repository_root($path) {
-    if (drush_shell_exec('bzr root %s', $path)) {
-      $output = drush_shell_exec_output();
-      return reset($output);
-    }
-  }
-
-  /**
    * Implementation of pre_update().
    */
   public function pre_update(&$project, $items_to_test = array()) {
-    // TODO: Add similar checks to SVN?
+    // If items to test is empty, test everything; otherwise, pass just
+    // the list of files to test to Bazaar status.
+    $status_files = implode(' ', array_keys($items_to_test));
+
+    // Check the project directory looks clean
+    if (drush_shell_exec('cd %s && bzr status --short %s', $project['full_project_path'], $status_files)) {
+      $output = preg_grep('/^[\sRCP][\sNDKM][\s\*]/', drush_shell_exec_output());
+      if (!empty($output)) {
+        return drush_set_error('DRUSH_PM_BZR_LOCAL_CHANGES', dt("The Bazaar working copy at !path appears to have uncommmitted changes (see below). Please commit or revert these changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
+      }
+    }
+    else {
+      return drush_set_error('DRUSH_PM_BZR_NOT_FOUND', dt("Drush was unable to get the bzr status on !path. Check that you have Bazaar \ninstalled and that this directory is a Bazaar working copy.\nThe specific errors are below:\n!errors", array('!path' => $project['full_project_path'], '!errors' => implode("\n", drush_shell_exec_output()))));
+    }
+    return TRUE;
+  }
+
+  /**
+   * Implementation of rollback().
+   */
+  public function rollback($project) {
+    if (drush_shell_exec('bzr revert %s', $project['full_project_path'])) {
+      $output = drush_shell_exec_output();
+      if (!empty($output)) {
+        return drush_set_error('DRUSH_PM_BZR_LOCAL_CHANGES', dt("The Bazaar working copy at !path appears to have uncommmitted changes (see below). Please commit or revert these changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
+      }
+    }
+    else {
+      return drush_set_error('DRUSH_PM_BZR_NOT_FOUND', dt("Drush was unable to get the Bazaar status on !path. Check that you have Bazaar \ninstalled and that this directory is a Bazaar working copy.\nThe specific errors are below:\n!errors", array('!path' => $project['full_project_path'], '!errors' => implode("\n", drush_shell_exec_output()))));
+    }
   }
 
   /**
    * Implementation of post_update().
    */
   public function post_update($project) {
-    if (is_versioned($project['full_project_path']) && sync($project)) {
+    if ($this->sync($project)) {
       // Only attempt commit on a sucessful sync
-      commit($project);
+      $this->commit($project);
     }
   }
 
@@ -43,55 +57,41 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
    * Implementation of post_download().
    */
   public function post_download($project) {
-    if (is_versioned($project['full_project_path']) && sync($project)) {
+    if ($this->sync($project)) {
       // Only attempt commit on a sucessful sync
-      commit($project);
+      $this->commit($project);
     }
   }
 
   /**
-   * Automatically add any unversioned files to Bzr and remove any files
+   * Automatically add any unversioned files to Bazaar and remove any files
    * that have been deleted on the file system
    */
   private function sync($project) {
     if (drush_get_option('bzrsync')) {
       $errors = '';
-
-      // All paths returned by bzr status are relative to the repository root.
-      $root = bzr_get_repository_root($project['full_project_path']);
-
-      if (drush_shell_exec('bzr status -S %s', $project['full_project_path'])) {
+      $root = array();
+      if (drush_shell_exec('bzr status --short %s', $project['full_project_path'])) {
         $output = drush_shell_exec_output();
-
-        // Parse the output of bzr status to get the list of added and removed
-        // files.
-        $new_files = array();
-        $removed_files = array();
+        // All paths returned by bzr status are relative to the repository root.
+        if (drush_shell_exec('bzr root %s', $project['full_project_path'])) {
+          $root = drush_shell_exec_output();
+        }
         foreach ($output as $line) {
-          if (preg_match('/^\? *(.*)/', $line, $matches)) {
-            $new_files[] = $root . '/' . $matches[1];
+          if (preg_match('/^\?\s+(.*)/', $line, $matches)) {
+            $path = $root[0] .'/'. $matches[1];
+            // Bazaar add is by default recursive so only run on "full_project_path".
+            if (($path == $project['full_project_path'] .'/') && !drush_shell_exec('bzr add %s', $path)) {
+              $errors .= implode("\n", drush_shell_exec_output());
+            }
           }
-          if (preg_match('/^\ D *(.*)/', $line, $matches)) {
-            $removed_files[] = $root . '/' . $matches[1];
-          }
-        }
-
-        // Proceed adding new files.
-        foreach (array_chunk($new_files, 100) as $chunk) {
-          $chunk = array_map('escapeshellarg', $chunk);
-          if (!drush_shell_exec('bzr add ' . implode(' ', $chunk))) {
-            $errors .= implode("\n", drush_shell_exec_output());
-          }
-        }
-
-        // Proceed removing old files.
-        foreach (array_chunk($removed_files, 100) as $chunk) {
-          $chunk = array_map('escapeshellarg', $chunk);
-          if (!drush_shell_exec('bzr remove ' . implode(' ', $chunk))) {
-            $errors .= implode("\n", drush_shell_exec_output());
+          else if (preg_match('/^\s+D\s+(.*)/', $line, $matches)) {
+            $path = $root[0] .'/'. $matches[1];
+            if (!drush_shell_exec('bzr remove %s', $path)) {
+              $errors .= implode("\n", drush_shell_exec_output());
+            }
           }
         }
-
         if (!empty($errors)) {
           return drush_set_error('DRUSH_PM_BZR_SYNC_PROBLEMS', dt("Problems were encountered adding or removing files to/from Bazaar.\nThe specific errors are below:\n!errors", array('!errors' => $errors)));
         }
@@ -110,9 +110,9 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
     if (drush_get_option('bzrcommit')) {
       $message = drush_get_option('bzrmessage');
       if (empty($message)) {
-        $message = dt("Drush automatic commit: \n") . implode(' ', $_SERVER['argv']);
+        $message = dt("Drush automatic commit.\nProject: @name @type\nCommand: @arguments", array('@name' => $project['name'], '@type' => $project['project_type'], '@arguments' => implode(' ', $_SERVER['argv'])));
       }
-      if (drush_shell_exec('bzr commit -m %s %s', $message, $project['full_project_path'])) {
+      if (drush_shell_exec('bzr commit --message=%s %s', $message, $project['full_project_path'])) {
         drush_log(dt('Project committed to Bazaar successfully'), 'ok');
       }
       else {

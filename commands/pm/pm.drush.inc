@@ -1225,8 +1225,11 @@ function pm_drush_engine_version_control() {
         '--version-control=bzr' => array(
           '--bzrsync' => 'Automatically add new files to the Bazaar repository and remove deleted files. Caution.',
           '--bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also using the --bzrsync option.',
-          '--bzrmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+          '  --bzrmessage' => 'Override default commit message which is: Drush automatic commit. Project <name> <type> Command: <the drush command line used>',
         ),
+      ),
+      'examples' => array(
+        'drush dl cck --version-control=bzr --bzrsync --bzrcommit' =>  'Download the cck module and then add it and commit it to Bazaar.'
       ),
     ),
   );
@@ -1250,7 +1253,7 @@ interface drush_pm_version_control {
  * specific directory.
  */
 function drush_pm_include_version_control($directory = '.') {
-  $version_controls = explode(',', drush_get_option('version-control', 'svn,backup'));
+  $version_controls = explode(',', drush_get_option('version-control', 'svn,backup,bzr'));
   $version_control_engines = drush_get_engines('version_control');
 
   // Find the first valid engine in the list, checking signatures if needed.
