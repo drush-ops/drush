@@ -2,6 +2,10 @@
 // $Id$
 
 function drush_make_ensure_version() {
+  // Check version 4:
+  if (function_exists('drush_get_global_options')) {
+    return '4.0';
+  }
   // Check version 2.1 or up:
   $options = drush_get_option_help();
   if (isset($options['-n, --nocolor'])) {
