@@ -423,7 +423,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
         return $name;
       }
       else {
-        drush_make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $name, '%url' => $url)));
+        drush_make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $this->project->name, '%url' => $url)));
       }
     }
     else {
