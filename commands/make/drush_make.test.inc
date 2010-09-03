@@ -34,10 +34,16 @@ function drush_make_test_get_tests($id = NULL) {
       'md5'      => 'f69d29c7ed065b42290bafb7ab9439f1',
       'options'  => array(),
     ),
-    'get-post' => array(
-      'name'     => 'Test GET and POST retrieval of projects',
-      'makefile' => 'tests/getpost.make',
-      'md5'      => 'fdc1d0892317fb8aa6c16d7684e366cc',
+    'get' => array(
+      'name'     => 'Test GET retrieval of projects',
+      'makefile' => 'tests/get.make',
+      'md5'      => 'de88b6acfca95f19ae5ae852bc6bbbe4',
+      'options'  => array('no-core' => TRUE),
+    ),
+    'post' => array(
+      'name'     => 'Test POST retrieval of projects',
+      'makefile' => 'tests/post.make',
+      'md5'      => '175b3ba2031a30b31775a70e4c23522e',
       'options'  => array('no-core' => TRUE),
     ),
     'git' => array(
