@@ -219,8 +219,8 @@ class DrushMakeProject {
       return FALSE;
     }
     $build_path = $this->buildPath($this->name);
-    drush_make_add_projects(TRUE, trim($build_path, '/'), $info, $this->build_path);
-    drush_make_add_libraries(trim($build_path, '/'), $info, $this->build_path);
+    drush_make_projects(TRUE, trim($build_path, '/'), $info, $this->build_path);
+    drush_make_libraries(trim($build_path, '/'), $info, $this->build_path);
   }
 }
 
