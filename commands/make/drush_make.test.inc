@@ -82,6 +82,12 @@ function drush_make_test_get_tests($id = NULL) {
       'md5'      => '272e2b9bb27794c54396f2f03c159725',
       'options'  => array(),
     ),
+    'translations' => array(
+      'name'     => 'Translation downloads',
+      'makefile' => 'tests/translations.make',
+      'md5'      => '0167ae21faf52235177a243783f89fb3',
+      'options'  => array('translations' => 'es,pt-br'),
+    ),
   );
   if (isset($id)) {
     return isset($tests[$id]) ? $tests[$id] : FALSE;

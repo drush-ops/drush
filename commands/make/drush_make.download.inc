@@ -1,8 +1,8 @@
 <?php
 // $Id$
 
-function drush_make_download_factory($project) {
-  $class = 'DrushMakeDownload_' . $project->download['type'];
+function drush_make_download_factory($type, $project) {
+  $class = 'DrushMakeDownload_' . $type;
   if (class_exists($class)) {
     return new $class($project);
   }
@@ -12,7 +12,6 @@ function drush_make_download_factory($project) {
 }
 
 abstract class DrushMakeDownload {
-  var $project;
   var $path;
 
   function __construct($project) {
@@ -30,10 +29,10 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
     if (!empty($download['module'])) {
       if (drush_get_option('working-copy')) {
         if ($download['module'] == 'drupal') {
-          $this->project->download['root'] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal";
+          $download['root'] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal";
         }
         elseif (isset($_ENV['CVSROOT'])) {
-          $this->project->download['root'] = $download['root'] = trim($_ENV['CVSROOT']);
+          $download['root'] = trim($_ENV['CVSROOT']);
         }
         else {
           drush_log(dt('Please set the CVSROOT variable in your shell environment when using the --working-copy option.'), 'ok');
@@ -41,7 +40,7 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
       }
       // Fallback to anonymous @ cvs.drupal.org
       if (!isset($download['root'])) {
-        $this->project->download['root'] = $download['root'] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal-contrib";
+        $download['root'] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal-contrib";
       }
 
       // Checkout or export the module. CVS can't use absolute paths for named
@@ -93,9 +92,10 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 
   protected function downloadFile() {
     $name = $this->project->name;
+    $download = $this->project->download;
     $filename = FALSE;
-    if (!empty($this->project->download['url'])) {
-      $url = $this->project->download['url'];
+    if (!empty($download['url'])) {
+      $url = $download['url'];
       // Download the project -- try wget, fall back to curl.
       if (drush_get_context('DRUSH_SIMULATE')) {
         $filename = t('file');
@@ -290,13 +290,14 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 class DrushMakeDownload_Post extends DrushMakeDownload_Get {
   protected function downloadFile() {
     $name = $this->project->name;
+    $download = $download;
     $filename = dt('file');
-    if (!empty($this->project->download['url'])) {
-      $url = $this->project->download['url'];
-      $post_data = $this->project->download['post_data'];
+    if (!empty($download['url'])) {
+      $url = $download['url'];
+      $post_data = $download['post_data'];
       $filename = $this->tmp_path . "/" . basename($url);
       // Download the project -- try wget, fall back to curl.
-      $filename = (empty($this->project->download['file_type'])) ? $this->path . "/" . basename($url) : $this->path . basename($url) . '.' . trim($this->project->download['file_type'], '.');
+      $filename = (empty($download['file_type'])) ? $this->path . "/" . basename($url) : $this->path . basename($url) . '.' . trim($download['file_type'], '.');
       // Download the project -- try wget, fall back to curl.
       if (drush_get_context('DRUSH_SIMULATE') || drush_shell_exec('wget --post-data=%s %s -O %s', $post_data, $url, $filename) || drush_shell_exec('curl -d %s -o %s %s', $post_data, $filename, $url)) {
         drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $url)), 'ok');
@@ -317,11 +318,11 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
     $wc       = drush_get_option('working-copy');
 
     // check if branch option is set in info file, otherwise set default to master branch
-    $this->project->download['branch'] = $download['branch'] = isset($download['branch']) ? $download['branch'] : 'master';
+    $download['branch'] = isset($download['branch']) ? $download['branch'] : 'master';
     // check if tag option is set in info file, otherwise we set it to false
-    $this->project->download['tag'] = $download['tag'] = isset($download['tag']) ? $download['tag'] : FALSE;
+    $download['tag'] = isset($download['tag']) ? $download['tag'] : FALSE;
     // check if specific revision is set in info file
-    $this->project->download['revision'] = $download['revision'] = isset($download['revision']) ? $download['revision'] : FALSE;
+    $download['revision'] = isset($download['revision']) ? $download['revision'] : FALSE;
 
     // only progress if we have a download url...
     if (!empty($download['url'])) {

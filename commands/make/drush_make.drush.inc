@@ -41,6 +41,7 @@ function drush_make_drush_command() {
       '--prepare-install' => 'Prepare the built site for installation. Generate a properly permissioned settings.php and files directory.',
       '--tar' => 'Generate a tar archive of the build. The output filename will be [build path].tar.gz.',
       '--test' => 'Run a temporary test build and clean up.',
+      '--translations=languages' => 'Retrieve translations for the specified comma-separated list of language(s) if available for all projects.',
       '--working-copy' => 'Where possible, retrieve a working copy of projects from their respective repositories.',
     ),
   );

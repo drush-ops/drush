@@ -69,6 +69,11 @@ where `drush make` can be used within an existing Drupal site.
 
       Run a temporary test build and clean up.
 
+    --translations=languages
+
+      Retrieve translations for the specified comma-separated list
+      of language(s) if available for all projects.
+
     --working-copy
 
       Where possible, retrieve a working copy of projects from
@@ -173,6 +178,20 @@ Do not use both types of declarations for a single project in your makefile.
   project name is used.
 
         projects[mytheme][directory_name] = "yourtheme"
+
+- `l10n_path`
+
+  Specific URL (can include tokens) to a translation. Allows translations to be
+  retrieved from l10n servers other than `localize.drupal.org`.
+
+        projects[mytheme][l10n_path] = "http://myl10nserver.com/files/translations/%project-%core-%version-%language.po"
+
+- `l10n_url`
+
+  URL to an l10n server XML info file. Allows translations to be retrieved from
+  l10n servers other than `localize.drupal.org`.
+
+        projects[mytheme][l10n_url] = "http://myl10nserver.com/l10n_server.xml"
 
 
 ### Project download options
