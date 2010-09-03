@@ -87,7 +87,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     return FALSE;
   }
 
-  protected function downloadFile($name, $download, $download_location) {
+  function downloadFile($name, $download, $download_location) {
     $filename = FALSE;
     if (!empty($download['url'])) {
       $url = $download['url'];
@@ -283,7 +283,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 }
 
 class DrushMakeDownload_Post extends DrushMakeDownload_Get {
-  protected function downloadFile($name, $download, $download_location) {
+  function downloadFile($name, $download, $download_location) {
     $filename = dt('file');
     if (!empty($download['url'])) {
       $url = $download['url'];

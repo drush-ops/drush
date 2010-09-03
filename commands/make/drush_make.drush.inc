@@ -203,9 +203,12 @@ function drush_make_updatexml($project) {
   if (isset($project['download']) && isset($project['type'])) {
     return $project;
   }
-  $xml = drush_make_get_remote_file($project['location'] . '/' . $project['name'] . '/' . $project['core']);
+  $download = drush_make_download_factory('get');
+  if ($filename = $download->downloadFile('Project information', array('url' => $project['location'] . '/' . $project['name'] . '/' . $project['core']), '')) {
+    $release_history = simplexml_load_string(file_get_contents($filename));
+    drush_op('unlink', $filename);
+  }
   // First, get the release history.
-  $release_history = simplexml_load_string($xml);
   if (!is_object($release_history) || !$release_history->title) {
     drush_make_error('XML_ERROR', dt("Could not retrieve version information for %project.", array('%project' => $project['name'])));
     return FALSE;

@@ -391,31 +391,6 @@ function drush_make_get_data($data_source) {
 }
 
 /**
- * Helper to get file contents.
- */
-function drush_make_get_remote_file($url) {
-  if (function_exists('curl_init')) {
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 50);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-    $file_contents = curl_exec($ch);
-    curl_close($ch);
-    return $file_contents;
-  }
-  elseif (ini_get('allow_url_fopen')) {
-    return file_get_contents($url);
-  }
-  elseif (drush_shell_exec('wget -qO- %s', $url) || drush_shell_exec('curl -L --silent %s', $url)) {
-    return implode("\n", drush_shell_exec_output());
-  }
-  // drush, we have an error.
-  else {
-    return drush_set_error('drush_make_download_error', 'Unable to download remote file. No download services supported.');
-  }
-}
-
-/**
  * Helper to provide sys_get_temp_dir if on php < 5.2.1
  */
 if (!function_exists('sys_get_temp_dir')) {

@@ -66,21 +66,17 @@ class DrushMakeProject {
       $patches_txt = '';
       foreach ($this->patch as $url) {
         // Download the patch.
-        list($filename) = array_reverse(explode('/', $url));
-        if (!drush_shell_exec('wget %s', $url)) {
-          drush_shell_exec('curl -L -O %s', $url);
-        }
-        if (file_exists($filename)) {
-          drush_shell_exec("mv %s %s", $filename, $project_directory);
-          $patched = drush_shell_exec("patch -p0 -d %s < %s/%s", $project_directory, $project_directory, $filename);
+        $download = drush_make_download_factory('get');
+        if ($filename = $download->downloadFile('Patch', array('url' => $url), $project_directory)) {
+          $patched = drush_shell_exec("patch -p0 -d %s < %s", $project_directory, $filename);
           if ($patched) {
             $patches_txt .= '- ' . $url . "\n";
           }
-          drush_log($this->name . ' patched with ' . $filename . '.', $patched ? 'ok' : 'error');
-          drush_op('unlink', $project_directory . '/' . $filename);
+          drush_log($this->name . ' patched with ' . basename($filename) . '.', $patched ? 'ok' : 'error');
+          drush_op('unlink', $filename);
         }
         else {
-          drush_make_error('Unable to download ' . $filename . ' from ' . $url . '.');
+          drush_make_error('Unable to download ' . $url . '.');
           return FALSE;
         }
       }
@@ -119,8 +115,12 @@ class DrushMakeProject {
         }
         if ($l10n_server) {
           if (!isset($cache[$l10n_server])) {
-            $server_info = simplexml_load_string(drush_make_get_remote_file($l10n_server));
-            $cache[$l10n_server] = !empty($server_info->update_url) ? $server_info->update_url : FALSE;
+            $download = drush_make_download_factory('get');
+            if ($filename = $download->downloadFile('Server info', array('url' => $l10n_server), '')) {
+              $server_info = simplexml_load_string(file_get_contents($filename));
+              $cache[$l10n_server] = !empty($server_info->update_url) ? $server_info->update_url : FALSE;
+              drush_op('unlink', $filename);
+            }
           }
           if ($cache[$l10n_server]) {
             $update_url = $cache[$l10n_server];
@@ -145,17 +145,12 @@ class DrushMakeProject {
           $url = strtr($update_url, $variables);
 
           // Download the translation file.
-          list($filename) = array_reverse(explode('/', $url));
-          $success = drush_shell_exec('wget %s', $url);
-          $success = !$success ? drush_shell_exec('curl -f -L -O %s', $url) : $success;
-          if (file_exists($filename) && $success) {
+          $download = drush_make_download_factory('get');
+          if ($filename = $download->downloadFile('Patch', array('url' => $url), $project_directory)) {
             drush_shell_exec('mkdir -p %s/translations', $project_directory);
             drush_shell_exec("mv %s %s/translations", $filename, $project_directory);
           }
           else {
-            if (file_exists($filename)) {
-              drush_op('unlink', $filename);
-            }
             $failed[] = $langcode;
           }
         }
