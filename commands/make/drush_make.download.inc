@@ -87,8 +87,11 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     return FALSE;
   }
 
-  function downloadFile($name, $download, $download_location) {
+  function downloadFile($name, $download, $download_location = '') {
     $filename = FALSE;
+    if (is_string($download)) {
+      $download = array('url' => $download);
+    }
     if (!empty($download['url'])) {
       $url = $download['url'];
       // Download the project -- try wget, fall back to curl.
