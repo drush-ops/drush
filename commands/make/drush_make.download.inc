@@ -274,7 +274,7 @@ class DrushMakeDownload_Get {
   }
 }
 
-class DrushMakeDownload_Post_Get {
+class DrushMakeDownload_Post extends DrushMakeDownload_Get {
   function downloadFile($download) {
     $tmp_path = drush_make_tmp();
     $filename = dt('file');
