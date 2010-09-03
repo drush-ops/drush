@@ -260,9 +260,9 @@ function drush_make_valid_url($url, $absolute = FALSE) {
   }
 }
 
-function drush_make_tmp() {
+function drush_make_tmp($set = TRUE) {
   static $tmp_dir;
-  if (!isset($tmp_dir)) {
+  if (!isset($tmp_dir) && $set) {
     $tmp_dir = sys_get_temp_dir();
     $tmp_dir .= '/drush_make_tmp_' . time();
     drush_op('mkdir', $tmp_dir);
@@ -271,11 +271,14 @@ function drush_make_tmp() {
 }
 
 function drush_make_clean_tmp() {
+  if (!($tmp_dir = drush_make_tmp(FALSE))) {
+    return;
+  }
   if (!drush_get_option('no-clean', FALSE)) {
-    drush_shell_exec('rm -rf %s', drush_make_tmp());
+    drush_shell_exec('rm -rf %s', $tmp_dir);
   }
   else {
-    drush_log(dt('Temporary directory: %dir', array('%dir' => drush_make_tmp())), 'ok');
+    drush_log(dt('Temporary directory: %dir', array('%dir' => $tmp_dir)), 'ok');
   }
 }
 
