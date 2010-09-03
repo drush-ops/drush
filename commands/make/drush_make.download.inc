@@ -1,10 +1,10 @@
 <?php
 // $Id$
 
-function drush_make_download_factory($type, $project) {
+function drush_make_download_factory($type) {
   $class = 'DrushMakeDownload_' . $type;
   if (class_exists($class)) {
-    return new $class($project);
+    return new $class();
   }
   else {
     return FALSE;
@@ -14,19 +14,15 @@ function drush_make_download_factory($type, $project) {
 abstract class DrushMakeDownload {
   var $path;
 
-  function __construct($project) {
-    $this->project = $project;
+  function __construct() {
     $this->tmp_path = drush_make_tmp();
   }
 
-  abstract function download();
+  abstract function download($name, $download, $download_location);
 }
 
 class DrushMakeDownload_CVS extends DrushMakeDownload {
-  function download() {
-    $name = $this->project->name;
-    $download = $this->project->download;
-    $download_location = $this->project->download_location;
+  function download($name, $download, $download_location) {
     if (!empty($download['module'])) {
       if (drush_get_option('working-copy')) {
         if ($download['module'] == 'drupal') {
@@ -83,18 +79,15 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   // Static variable to keep track of whether to use curl or wget.
   static $useWget;
 
-  function download() {
-    if ($filename = $this->downloadFile()) {
+  function download($name, $download, $download_location) {
+    if ($filename = $this->downloadFile($name, $download, $download_location)) {
       $this->filename = $filename;
-      return $this->unpack();
+      return $this->unpack($download_location);
     }
     return FALSE;
   }
 
-  protected function downloadFile() {
-    $name = $this->project->name;
-    $download = $this->project->download;
-    $download_location = $this->project->download_location;
+  protected function downloadFile($name, $download, $download_location) {
     $filename = FALSE;
     if (!empty($download['url'])) {
       $url = $download['url'];
@@ -149,28 +142,27 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     return FALSE;
   }
 
-  function unpack() {
+  function unpack($download_location) {
     $extension = array_pop(explode('.', $this->filename));
     $gzip = FALSE;
     switch ($extension) {
       case 'gz':
       case 'tgz':
         // I'd like to just use tar -z, but apparently it breaks on windoze. Why do they always have to ruin everything?
-        $this->unpackGzip();
+        $this->unpackGzip($download_location);
         break;
       case 'tar':
-        $this->unpackTar();
+        $this->unpackTar($download_location);
         break;
       case 'zip':
-        $this->unpackZip();
+        $this->unpackZip($download_location);
         break;
       default:
         drush_make_error('DOWNLOAD_ERROR', dt('Unable to unpack %file', array('%file' => $this->filename)));
     }
   }
 
-  protected function unpackTar() {
-    $download_location = $this->project->download_location;
+  protected function unpackTar($download_location) {
     // Tarbomb detection.
     drush_shell_exec('tar -tf %s', $this->filename);
     $lines = drush_shell_exec_output();
@@ -196,7 +188,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     }
   }
 
-  protected function unpackGzip() {
+  protected function unpackGzip($download_location) {
     // Find out where contents will end up. Retrieve last column of output using awk.
     drush_shell_exec("gzip --list %s | awk '{print $4;}'", $this->filename);
     $info = drush_shell_exec_output();
@@ -209,15 +201,14 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         // Unzip it and then delete the tar file.
         drush_shell_exec('gzip -d %s', $this->filename);
         $this->filename = $file;
-        return $this->unpackTar();
+        return $this->unpackTar($download_location);
       }
     }
     drush_make_error('PACKAGE_ERROR', dt('Could not retrieve package information for %filename.', array('%filename' => $this->filename)));
     return;
   }
 
-  protected function unpackZip() {
-    $download_location = $this->project->download_location;
+  protected function unpackZip($download_location) {
     // Find the main directory in the zip file.
     drush_shell_exec("unzip -l %s", $this->filename);
     $info = drush_shell_exec_output();
@@ -292,10 +283,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 }
 
 class DrushMakeDownload_Post extends DrushMakeDownload_Get {
-  protected function downloadFile() {
-    $name = $this->project->name;
-    $download_location = $this->project->download_location;
-    $download = $this->project->download;
+  protected function downloadFile($name, $download, $download_location) {
     $filename = dt('file');
     if (!empty($download['url'])) {
       $url = $download['url'];
@@ -318,10 +306,8 @@ class DrushMakeDownload_Post extends DrushMakeDownload_Get {
 }
 
 class DrushMakeDownload_Git extends DrushMakeDownload {
-  function download() {
-    $download = $this->project->download;
-    $download_location = $this->project->download_location;
-    $wc       = drush_get_option('working-copy');
+  function download($name, $download, $download_location) {
+    $wc = drush_get_option('working-copy');
 
     // check if branch option is set in info file, otherwise set default to master branch
     $download['branch'] = isset($download['branch']) ? $download['branch'] : 'master';
@@ -374,7 +360,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
 
       // clone the given repository
       if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
-        drush_log(dt('%project cloned from %url.', array('%project' => $this->project->name, '%url' => $url)), 'ok');
+        drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $url)), 'ok');
 
         // GIT Checkout only work on a ready cloned repo. So we switch to branch or to tag (only if we have no branch) after cloneing.
         if ($download['branch'] !== 'master' || $download['tag'] || $download['revision'] || !empty($download['submodule'])) {
@@ -443,7 +429,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
         return $name;
       }
       else {
-        drush_make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $this->project->name, '%url' => $url)));
+        drush_make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $name, '%url' => $url)));
       }
     }
     else {
@@ -485,10 +471,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
 }
 
 class DrushMakeDownload_Bzr extends DrushMakeDownload {
-  function download() {
-    $name = $this->project->name;
-    $download = $this->project->download;
-    $download_location = $this->project->download_location;
+  function download($name, $download, $download_location) {
     $tmp_location = $this->tmp_path . '/__bzr__/' . basename($download_location);
     drush_shell_exec('mkdir -p %s', dirname($tmp_location));
     if (!empty($download['url'])) {
@@ -531,10 +514,7 @@ class DrushMakeDownload_Bzr extends DrushMakeDownload {
 }
 
 class DrushMakeDownload_SVN extends DrushMakeDownload {
-  function download() {
-    $name = $this->project->name;
-    $download = $this->project->download;
-    $download_location = $this->project->download_location;
+  function download($name, $download, $download_location) {
     $command = 'svn  --force --non-interactive export';
     if (!empty($download['url'])) {
       if (drush_get_option('working-copy')) {
