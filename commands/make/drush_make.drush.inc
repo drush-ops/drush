@@ -80,22 +80,6 @@ function drush_make_drush_help($section) {
 }
 
 /**
- * Drush callback; make a makefile from the current install.
- */
-function drush_drush_make_generate_makefile($file) {
-  include_once 'drush_make.generate.inc';
-  _drush_generate_makefile($file);
-}
-
-/**
- * Drush callback; run a drush make test.
- */
-function drush_drush_make_make_test($test = NULL) {
-  include_once 'drush_make.test.inc';
-  drush_make_test($test);
-}
-
-/**
  * Drush callback; make based on the makefile.
  */
 function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
@@ -113,8 +97,8 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
     return;
   }
 
-  drush_make_add_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
-  drush_make_add_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
+  drush_make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
+  drush_make_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
 
   // Add clean up tasks.
   if (drush_get_option('prepare-install')) {
@@ -137,7 +121,7 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
   drush_make_clean_tmp();
 }
 
-function drush_make_add_projects($recursion, $contrib_destination, $info, $build_path) {
+function drush_make_projects($recursion, $contrib_destination, $info, $build_path) {
   $projects = array();
   if (empty($info['projects'])) {
     return;
@@ -193,7 +177,7 @@ function drush_make_add_projects($recursion, $contrib_destination, $info, $build
   }
 }
 
-function drush_make_add_libraries($contrib_destination, $info, $build_path) {
+function drush_make_libraries($contrib_destination, $info, $build_path) {
   if (!empty($info['libraries'])) {
     foreach ($info['libraries'] as $key => $library) {
       if (!is_string($key) || !is_array($library)) {
@@ -367,4 +351,20 @@ function drush_make_move_build($build_path) {
 
 function drush_make_version() {
   return '2.0-beta8';
+}
+
+/**
+ * Drush callback; make a makefile from the current install.
+ */
+function drush_drush_make_generate_makefile($file) {
+  include_once 'drush_make.generate.inc';
+  _drush_generate_makefile($file);
+}
+
+/**
+ * Drush callback; run a drush make test.
+ */
+function drush_drush_make_make_test($test = NULL) {
+  include_once 'drush_make.test.inc';
+  drush_make_test($test);
 }
