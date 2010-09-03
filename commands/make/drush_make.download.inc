@@ -423,7 +423,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
         }
         drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
         drush_shell_exec("rm -rf %s", dirname($tmp_location));
-        return $name;
+        return dirname($tmp_location);
       }
       else {
         drush_make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $name, '%url' => $url)));
@@ -498,7 +498,7 @@ class DrushMakeDownload_Bzr extends DrushMakeDownload {
         drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
         drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
         drush_shell_exec('rm -rf %s', dirname($tmp_location));
-        return $name;
+        return dirname($download_location);
       }
     }
     else {
