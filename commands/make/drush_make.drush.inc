@@ -100,7 +100,6 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
   drush_make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
   drush_make_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
 
-  // Add clean up tasks.
   if (drush_get_option('prepare-install')) {
     drush_make_prepare_install($build_path);
   }

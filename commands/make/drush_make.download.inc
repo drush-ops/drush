@@ -61,7 +61,7 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
 
       array_unshift($args, $command);
       array_unshift($args, dirname($download_location));
-      if (call_user_func_array('drush_make_cd', $args)) {
+      if (call_user_func_array('drush_shell_cd_and_exec', $args)) {
          drush_log(dt('%project downloaded from %module.', array('%project' => $name, '%module' => $download['module'])), 'ok');
         return $download_location;
       }
@@ -101,7 +101,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         if (!isset(DrushMakeDownload_Get::$useWget) || DrushMakeDownload_Get::$useWget) {
           drush_shell_exec("ls %s", $this->tmp_path);
           $files = drush_shell_exec_output();
-          if (drush_make_cd($this->tmp_path, 'wget %s', $url)) {
+          if (drush_shell_cd_and_exec($this->tmp_path, 'wget %s', $url)) {
             drush_shell_exec("ls %s", $this->tmp_path);
             $files_new = drush_shell_exec_output();
             $diff = array_diff($files_new, $files);

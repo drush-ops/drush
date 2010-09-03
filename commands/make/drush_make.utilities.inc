@@ -343,17 +343,17 @@ function drush_make_safe_path($path) {
   return !preg_match("+^/|^\.\.|/\.\./+", $path);
 }
 
-/**
- * Cd to a path, execute a command, cd back.
- */
-function drush_make_cd() {
-  $args = func_get_args();
-  $directory = array_shift($args);
-  $cwd = getcwd();
-  chdir($directory);
-  $return = call_user_func_array('drush_shell_exec', $args);
-  chdir($cwd);
-  return $return;
+if (!function_exists('drush_shell_cd_and_exec')) {
+  function drush_shell_cd_and_exec($effective_wd, $cmd) {
+    $args = func_get_args();
+
+    $effective_wd = array_shift($args);
+    $cwd = getcwd();
+    drush_op('chdir', $effective_wd);
+    $result = call_user_func_array('drush_shell_exec', $args);
+    drush_op('chdir', $cwd);
+    return $result;
+  }
 }
 
 /**
