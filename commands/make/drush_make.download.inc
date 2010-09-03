@@ -11,11 +11,7 @@ function drush_make_download_factory($type) {
   }
 }
 
-abstract class DrushMakeDownload {
-  abstract function download($name, $download, $download_location);
-}
-
-class DrushMakeDownload_CVS extends DrushMakeDownload {
+class DrushMakeDownload_CVS {
   function download($name, $download, $download_location) {
     if (!empty($download['module'])) {
       if (drush_get_option('working-copy')) {
@@ -69,7 +65,7 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
 }
 
 
-class DrushMakeDownload_Get extends DrushMakeDownload {
+class DrushMakeDownload_Get {
   // Static variable to keep track of whether to use curl or wget.
   static $useWget;
 
@@ -278,7 +274,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   }
 }
 
-class DrushMakeDownload_Post extends DrushMakeDownload_Get {
+class DrushMakeDownload_Post_Get {
   function downloadFile($download) {
     $tmp_path = drush_make_tmp();
     $filename = dt('file');
@@ -300,7 +296,7 @@ class DrushMakeDownload_Post extends DrushMakeDownload_Get {
   }
 }
 
-class DrushMakeDownload_Git extends DrushMakeDownload {
+class DrushMakeDownload_Git {
   function download($name, $download, $download_location) {
     $tmp_path = drush_make_tmp();
     $wc = drush_get_option('working-copy');
@@ -466,7 +462,7 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
   }
 }
 
-class DrushMakeDownload_Bzr extends DrushMakeDownload {
+class DrushMakeDownload_Bzr {
   function download($name, $download, $download_location) {
     $tmp_path = drush_make_tmp();
     $tmp_location = $tmp_path . '/__bzr__/' . basename($download_location);
@@ -510,7 +506,7 @@ class DrushMakeDownload_Bzr extends DrushMakeDownload {
   }
 }
 
-class DrushMakeDownload_SVN extends DrushMakeDownload {
+class DrushMakeDownload_SVN {
   function download($name, $download, $download_location) {
     $command = 'svn  --force --non-interactive export';
     if (!empty($download['url'])) {
