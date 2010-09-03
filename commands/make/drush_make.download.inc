@@ -12,12 +12,6 @@ function drush_make_download_factory($type) {
 }
 
 abstract class DrushMakeDownload {
-  var $path;
-
-  function __construct() {
-    $this->tmp_path = drush_make_tmp();
-  }
-
   abstract function download($name, $download, $download_location);
 }
 
@@ -90,6 +84,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   }
 
   function downloadFile($download) {
+    $tmp_path = drush_make_tmp();
     $filename = FALSE;
     if (is_string($download)) {
       $download = array('url' => $download);
@@ -104,10 +99,10 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         // For first try or if wget was detected already, try using wget 
         // for downloading.
         if (!isset(DrushMakeDownload_Get::$useWget) || DrushMakeDownload_Get::$useWget) {
-          drush_shell_exec("ls %s", $this->tmp_path);
+          drush_shell_exec("ls %s", $tmp_path);
           $files = drush_shell_exec_output();
-          if (drush_shell_cd_and_exec($this->tmp_path, 'wget %s', $url)) {
-            drush_shell_exec("ls %s", $this->tmp_path);
+          if (drush_shell_cd_and_exec($tmp_path, 'wget %s', $url)) {
+            drush_shell_exec("ls %s", $tmp_path);
             $files_new = drush_shell_exec_output();
             $diff = array_diff($files_new, $files);
             $filename = array_shift($diff);
@@ -129,13 +124,13 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
           if (!$filename) {
             $filename = basename($url);
           }
-          if (!drush_shell_exec('curl -L -o %s %s', $this->tmp_path . '/' . $filename, $url)) {
+          if (!drush_shell_exec('curl -L -o %s %s', $tmp_path . '/' . $filename, $url)) {
             $filename = FALSE;
           }
         }
       }
       if ($filename) {
-        return $this->tmp_path . '/' . $filename;
+        return $tmp_path . '/' . $filename;
       }
     }
     return FALSE;
@@ -162,6 +157,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   }
 
   protected function unpackTar($download_location) {
+    $tmp_path = drush_make_tmp();
     // Tarbomb detection.
     drush_shell_exec('tar -tf %s', $this->filename);
     $lines = drush_shell_exec_output();
@@ -174,11 +170,11 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
     }
     else {
       list($main_directory) = array_reverse(explode('/', $download_location));
-      drush_shell_exec('mkdir -p %s', $this->tmp_path . '/__unzip__');
-      drush_shell_exec('tar -x -C %s -f %s', $this->tmp_path . '/__unzip__', $this->filename);
-      drush_shell_exec('mv %s %s', $this->tmp_path . '/__unzip__/' . $directory, $this->tmp_path . '/__unzip__/' . $main_directory);
-      drush_shell_exec('cp -Rf %s %s', $this->tmp_path . '/__unzip__/' . $main_directory, dirname($download_location));
-      drush_shell_exec('rm -rf %s', $this->tmp_path . '/__unzip__');
+      drush_shell_exec('mkdir -p %s', $tmp_path . '/__unzip__');
+      drush_shell_exec('tar -x -C %s -f %s', $tmp_path . '/__unzip__', $this->filename);
+      drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__/' . $directory, $tmp_path . '/__unzip__/' . $main_directory);
+      drush_shell_exec('cp -Rf %s %s', $tmp_path . '/__unzip__/' . $main_directory, dirname($download_location));
+      drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__');
     }
 
     // Remove the tarball.
@@ -208,6 +204,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   }
 
   protected function unpackZip($download_location) {
+    $tmp_path = drush_make_tmp();
     // Find the main directory in the zip file.
     drush_shell_exec("unzip -l %s", $this->filename);
     $info = drush_shell_exec_output();
@@ -228,17 +225,17 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         }
         else {
           // Directories don't match up. Use cp.
-          drush_shell_exec('mkdir -p %s', $this->tmp_path . '/__unzip__');
-          drush_shell_exec('unzip %s -d %s', $this->filename, $this->tmp_path . '/__unzip__');
+          drush_shell_exec('mkdir -p %s', $tmp_path . '/__unzip__');
+          drush_shell_exec('unzip %s -d %s', $this->filename, $tmp_path . '/__unzip__');
           if (file_exists($this->filename)) {
             drush_shell_exec('rm %s', $this->filename);
           }
-          if (is_dir($this->tmp_path . '/__unzip__' . $directory . '/__MACOSX')) {
-            drush_shell_exec('rm -rf %s', $this->tmp_path . '/__unzip__' . $directory . '/__MACOSX');
+          if (is_dir($tmp_path . '/__unzip__' . $directory . '/__MACOSX')) {
+            drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__' . $directory . '/__MACOSX');
           }
-          drush_shell_exec('mv %s %s', $this->tmp_path . '/__unzip__/' . $directory, $this->tmp_path . '/__unzip__/' . $main_directory);
-          drush_shell_exec('cp -Rf %s %s', $this->tmp_path . '/__unzip__/' . $main_directory, dirname($download_location));
-          drush_shell_exec('rm -rf %s', $this->tmp_path . '/__unzip__');
+          drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__/' . $directory, $tmp_path . '/__unzip__/' . $main_directory);
+          drush_shell_exec('cp -Rf %s %s', $tmp_path . '/__unzip__/' . $main_directory, dirname($download_location));
+          drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__');
         }
       }
       else {
@@ -283,6 +280,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
 
 class DrushMakeDownload_Post extends DrushMakeDownload_Get {
   function downloadFile($download) {
+    $tmp_path = drush_make_tmp();
     $filename = dt('file');
     if (is_string($download)) {
       $download = array('url' => $download);
@@ -290,7 +288,7 @@ class DrushMakeDownload_Post extends DrushMakeDownload_Get {
     if (!empty($download['url'])) {
       $url = $download['url'];
       $post_data = $download['post_data'];
-      $filename = $this->tmp_path . "/" . basename($url);
+      $filename = $tmp_path . "/" . basename($url);
       // Download the project -- try wget, fall back to curl.
       $filename = (empty($download['file_type'])) ? $this->path . "/" . basename($url) : $this->path . basename($url) . '.' . trim($download['file_type'], '.');
       // Download the project -- try wget, fall back to curl.
@@ -304,6 +302,7 @@ class DrushMakeDownload_Post extends DrushMakeDownload_Get {
 
 class DrushMakeDownload_Git extends DrushMakeDownload {
   function download($name, $download, $download_location) {
+    $tmp_path = drush_make_tmp();
     $wc = drush_get_option('working-copy');
 
     // check if branch option is set in info file, otherwise set default to master branch
@@ -351,9 +350,9 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
         }
       }
 
-      $tmp_location = $this->tmp_path . '/__git__/' . basename($download_location);
+      $tmp_location = $tmp_path . '/__git__/' . basename($download_location);
 
-      drush_shell_exec('mkdir -p %s', $this->tmp_path . '/__git__/');
+      drush_shell_exec('mkdir -p %s', $tmp_path . '/__git__/');
 
       // clone the given repository
       if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
@@ -469,7 +468,8 @@ class DrushMakeDownload_Git extends DrushMakeDownload {
 
 class DrushMakeDownload_Bzr extends DrushMakeDownload {
   function download($name, $download, $download_location) {
-    $tmp_location = $this->tmp_path . '/__bzr__/' . basename($download_location);
+    $tmp_path = drush_make_tmp();
+    $tmp_location = $tmp_path . '/__bzr__/' . basename($download_location);
     drush_shell_exec('mkdir -p %s', dirname($tmp_location));
     if (!empty($download['url'])) {
       $args = array();
