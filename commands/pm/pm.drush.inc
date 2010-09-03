@@ -378,7 +378,6 @@ function drush_pm_enable() {
         $all_dependencies = array_merge($all_dependencies, $assoc);
       }
     }
-    $all_dependencies = array_unique($all_dependencies);
     $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
     $needed = array_diff($all_dependencies, $enabled);
     $modules = $needed + $modules;
