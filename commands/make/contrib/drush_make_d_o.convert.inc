@@ -280,7 +280,7 @@ class DrushMakeDrupalorgVerifier extends DrushMakeDrupalorgVersionChecker {
   }
 
   function read($makefile) {
-    if (!($makefile = drush_make_parse_info_file(drush_make_get_data($makefile)))) {
+    if (!($makefile = drush_make_parse_info_file($makefile))) {
       drush_make_error('FILE_ERROR', dt("Unable to parse file %file", array('%file' => $makefile)));
       return FALSE;
     }
