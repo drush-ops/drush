@@ -14,8 +14,6 @@ include_once 'drush_make.project.inc';
 function drush_make_drush_init() {
   // The default URL to use for retrieving update XML files.
   drush_set_default('drush-make-update-default-url', DRUSH_MAKE_UPDATE_DEFAULT_URL);
-  // The default method drush_make will use to find the best release.
-  drush_set_default('drush-make-version-best', DRUSH_MAKE_VERSION_BEST);
 }
 
 /**
@@ -150,7 +148,7 @@ function drush_make_add_projects($recursion, $contrib_destination, $info, $build
       'core'                => $info['core'],
       'build_path'          => $build_path,
       'contrib_destination' => $contrib_destination,
-      'version'             => drush_get_option('drush-make-version-best'),
+      'version'             => DRUSH_MAKE_VERSION_BEST,
       'location'            => drush_get_option('drush-make-update-default-url'),
       'subdir'              => '',
       'directory_name'      => '',
@@ -285,7 +283,7 @@ function drush_make_update_xml_download($project) {
   }
 
   // Find the best release.
-  if ($project['version'] == drush_get_option('drush-make-version-best')) {
+  if ($project['version'] == DRUSH_MAKE_VERSION_BEST) {
     $recommended_major = (string)$project['release_history']->recommended_major;
     $project['version'] = _drush_make_update_xml_best_version($recommended_major, $releases);
   }

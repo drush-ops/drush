@@ -155,7 +155,7 @@ class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
 
         // Figure out the basic version string.
         if (empty($project_data['version'])) {
-          $version = drush_get_option('drush-make-version-best');
+          $version = DRUSH_MAKE_VERSION_BEST;
         }
         elseif (preg_match('/^(\d+)((\.\d+)(-[a-z0-9]+)?)?$/', $project_data['version'], $matches)) {
           // Branch version only.

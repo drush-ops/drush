@@ -78,7 +78,7 @@ function _drush_generate_makefile_updatexml($name, $type, $info = array()) {
     'name' => $name,
     'location' => (isset($info['location']) ? $info['location'] : drush_get_option('drush-make-update-default-url')),
     'core' => DRUPAL_CORE_COMPATIBILITY,
-    'version' => drush_get_option('drush-make-version-best'),
+    'version' => DRUSH_MAKE_VERSION_BEST,
   );
 
   // Now we get the project information.
