@@ -23,7 +23,7 @@ class DrushMakeProject {
       return FALSE;
     }
     $download_location = $this->findDownloadLocation();
-    $this->downloadClass = drush_make_download_factory($this->download['type'], $project);
+    $this->downloadClass = drush_make_download_factory($this->download['type'], $this);
     if (!$this->downloadClass) {
       drush_make_error('BUILD_ERROR', dt('Could not find download type %type', array('%type' => $this->download['type'])));
     }
