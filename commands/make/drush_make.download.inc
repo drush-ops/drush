@@ -80,6 +80,9 @@ class DrushMakeDownload_CVS extends DrushMakeDownload {
 
 
 class DrushMakeDownload_Get extends DrushMakeDownload {
+  // Static variable to keep track of whether to use curl or wget.
+  static $useWget;
+
   function download() {
     if ($filename = $this->downloadFile()) {
       $this->filename = $filename;
@@ -98,15 +101,25 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
         $filename = t('file');
       }
       else {
-        drush_shell_exec("ls %s", $this->tmp_path);
-        $files = drush_shell_exec_output();
-        if (drush_make_cd($this->tmp_path, 'wget %s', $url)) {
+        // For first try or if wget was detected already, try using wget 
+        // for downloading.
+        if (!isset(DrushMakeDownload_Get::$useWget) || DrushMakeDownload_Get::$useWget) {
           drush_shell_exec("ls %s", $this->tmp_path);
-          $files_new = drush_shell_exec_output();
-          $diff = array_diff($files_new, $files);
-          $filename = array_shift($diff);
+          $files = drush_shell_exec_output();
+          if (drush_make_cd($this->tmp_path, 'wget %s', $url)) {
+            drush_shell_exec("ls %s", $this->tmp_path);
+            $files_new = drush_shell_exec_output();
+            $diff = array_diff($files_new, $files);
+            $filename = array_shift($diff);
+            DrushMakeDownload_Get::$useWget = TRUE;
+          }
+          elseif (!isset(DrushMakeDownload_Get::$useWget)) {
+            DrushMakeDownload_Get::$useWget = FALSE;
+          }
         }
-        elseif (drush_shell_exec('curl -I -L %s', $url)) {
+
+        // If wget was not found, try using curl for downloading.
+        if (!DrushMakeDownload_Get::$useWget && drush_shell_exec('curl -I -L %s', $url)) {
           $headers = drush_shell_exec_output();
           foreach ($headers as $header) {
             if (preg_match('/Location:(.*)/', $header, $matches)) {
