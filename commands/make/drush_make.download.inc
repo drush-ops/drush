@@ -170,6 +170,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   }
 
   protected function unpackTar() {
+    $download_location = $this->project->download_location;
     // Tarbomb detection.
     drush_shell_exec('tar -tf %s', $this->filename);
     $lines = drush_shell_exec_output();
@@ -216,6 +217,7 @@ class DrushMakeDownload_Get extends DrushMakeDownload {
   }
 
   protected function unpackZip() {
+    $download_location = $this->project->download_location;
     // Find the main directory in the zip file.
     drush_shell_exec("unzip -l %s", $this->filename);
     $info = drush_shell_exec_output();
