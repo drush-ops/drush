@@ -221,7 +221,7 @@ function drush_make_d_o_check_valid_version($name, $version_string) {;
  */
 function drush_make_d_o_updatexml($project) {
   $download = drush_make_download_factory('get');
-  if ($filename = $download->downloadFile('Project information', drush_get_option('drush-make-update-default-url') . '/' . $project['name'] . '/' . $project['core'])) {
+  if ($filename = $download->downloadFile(drush_get_option('drush-make-update-default-url') . '/' . $project['name'] . '/' . $project['core'])) {
     $release_history = simplexml_load_string(file_get_contents($filename));
     drush_op('unlink', $filename);
   }

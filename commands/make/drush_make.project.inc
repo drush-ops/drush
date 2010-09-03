@@ -67,7 +67,7 @@ class DrushMakeProject {
       foreach ($this->patch as $url) {
         // Download the patch.
         $download = drush_make_download_factory('get');
-        if ($filename = $download->downloadFile('Patch', $url, $project_directory)) {
+        if ($filename = $download->downloadFile($url)) {
           $patched = drush_shell_exec("patch -p0 -d %s < %s", $project_directory, $filename);
           if ($patched) {
             $patches_txt .= '- ' . $url . "\n";
@@ -116,7 +116,7 @@ class DrushMakeProject {
         if ($l10n_server) {
           if (!isset($cache[$l10n_server])) {
             $download = drush_make_download_factory('get');
-            if ($filename = $download->downloadFile('Server info', $l10n_server)) {
+            if ($filename = $download->downloadFile($l10n_server)) {
               $server_info = simplexml_load_string(file_get_contents($filename));
               $cache[$l10n_server] = !empty($server_info->update_url) ? $server_info->update_url : FALSE;
               drush_op('unlink', $filename);
@@ -146,7 +146,7 @@ class DrushMakeProject {
 
           // Download the translation file.
           $download = drush_make_download_factory('get');
-          if ($filename = $download->downloadFile('Patch', $url, $project_directory)) {
+          if ($filename = $download->downloadFile($url)) {
             drush_shell_exec('mkdir -p %s/translations', $project_directory);
             drush_shell_exec("mv %s %s/translations", $filename, $project_directory);
           }
