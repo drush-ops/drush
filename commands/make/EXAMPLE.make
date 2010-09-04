@@ -1,3 +1,5 @@
+; $Id$
+;
 ; Example makefile
 ; ----------------
 ; This is an example makefile to introduce new users of drush_make to the

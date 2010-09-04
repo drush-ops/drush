@@ -1,3 +1,5 @@
+$Id$
+
 Drush make
 ----------
 Drush make is an extension to drush that can create a ready-to-use drupal site,
