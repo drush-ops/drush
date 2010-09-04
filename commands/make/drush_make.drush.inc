@@ -344,7 +344,7 @@ function drush_make_move_build($build_path) {
     }
   }
   else {
-    drush_shell_exec('mkdir -p %s', dirname($build_path));
+    drush_make_mkdir(dirname($build_path));
     drush_shell_exec("mv %s/__build__ %s/%s", $tmp_path, $tmp_path, basename($build_path));
     drush_shell_exec("cp -Rf %s/%s %s", $tmp_path, basename($build_path), dirname($build_path));
   }

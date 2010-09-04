@@ -53,7 +53,7 @@ class DrushMakeProject {
       return FALSE;
     }
     else {
-      drush_shell_exec("mkdir -p %s", $this->download_location);
+      drush_make_mkdir($this->download_location);
     }
     return $this->download_location;
   }
@@ -147,8 +147,8 @@ class DrushMakeProject {
           // Download the translation file.
           $download = drush_make_download_factory('get');
           if ($filename = $download->downloadFile($url)) {
-            drush_shell_exec('mkdir -p %s/translations', $project_directory);
-            drush_shell_exec("mv %s %s/translations", $filename, $project_directory);
+            drush_make_mkdir($project_directory . '/translations');
+            drush_shell_exec("mv %s %s", $filename, $project_directory . '/translations');
           }
           else {
             $failed[] = $langcode;
@@ -233,7 +233,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
       return FALSE;
     }
     else {
-      drush_shell_exec("mkdir -p %s", $this->download_location);
+      drush_make_mkdir($this->download_location);
     }
     return $this->download_location;
   }

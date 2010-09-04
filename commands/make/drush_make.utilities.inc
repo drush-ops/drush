@@ -265,7 +265,7 @@ function drush_make_tmp($set = TRUE) {
   if (!isset($tmp_dir) && $set) {
     $tmp_dir = sys_get_temp_dir();
     $tmp_dir .= '/drush_make_tmp_' . time();
-    drush_op('mkdir', $tmp_dir);
+    drush_make_mkdir($tmp_dir);
   }
   return $tmp_dir;
 }
@@ -285,7 +285,7 @@ function drush_make_clean_tmp() {
 function drush_make_prepare_install($build_path) {
   $default = drush_make_tmp() . '/__build__/sites/default';
   drush_shell_exec("cp %s %s", $default . '/default.settings.php', $default . '/settings.php');
-  drush_shell_exec("mkdir %s", $default . '/files');
+  drush_make_mkdir($default . '/files');
   drush_shell_exec("chmod a+w %s %s", $default . '/settings.php', $default . '/files');
 }
 
@@ -309,7 +309,7 @@ function drush_make_md5() {
 function drush_make_tar($build_path) {
   $tmp_path = drush_make_tmp();
 
-  drush_shell_exec('mkdir -p %s', dirname($build_path));
+  drush_make_mkdir(dirname($build_path));
   $filename = basename($build_path);
   $dirname = basename($build_path, '.tar.gz');
   // Move the build directory to a more human-friendly name, so that tar will
@@ -425,4 +425,12 @@ if (!function_exists('sys_get_temp_dir')) {
       }
     }
   }
+}
+
+/**
+ * Cross-platform compatible helper function to recursively create a directory tree.
+ * @see http://theserverpages.com/php/manual/en/function.mkdir.php#50383
+ */
+function drush_make_mkdir($path) {
+  return is_dir($path) || (drush_make_mkdir(dirname($path)) && drush_shell_exec('mkdir %s', $path));
 }

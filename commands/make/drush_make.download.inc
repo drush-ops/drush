@@ -97,7 +97,7 @@ class DrushMakeDownload_File {
         // for downloading.
         $download_path = $tmp_path . '/__download__';
         $header_file = $tmp_path . '/__header__';
-        drush_op('mkdir', $download_path);
+        drush_make_mkdir($download_path);
         drush_shell_exec("ls %s", $download_path);
         $files = drush_shell_exec_output();
         $success = FALSE;
@@ -237,7 +237,7 @@ class DrushMakeDownload_File {
     }
     else {
       list($main_directory) = array_reverse(explode('/', $download_location));
-      drush_shell_exec('mkdir -p %s', $tmp_path . '/__unzip__');
+      drush_make_mkdir($tmp_path . '/__unzip__');
       drush_shell_exec('tar -x -C %s -f %s', $tmp_path . '/__unzip__', $this->filename);
       drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__/' . $directory, $tmp_path . '/__unzip__/' . $main_directory);
       drush_shell_exec('cp -Rf %s %s', $tmp_path . '/__unzip__/' . $main_directory, dirname($download_location));
@@ -292,7 +292,7 @@ class DrushMakeDownload_File {
         }
         else {
           // Directories don't match up. Use cp.
-          drush_shell_exec('mkdir -p %s', $tmp_path . '/__unzip__');
+          drush_make_mkdir($tmp_path . '/__unzip__');
           drush_shell_exec('unzip %s -d %s', $this->filename, $tmp_path . '/__unzip__');
           if (file_exists($this->filename)) {
             drush_shell_exec('rm %s', $this->filename);
@@ -429,7 +429,7 @@ class DrushMakeDownload_Git {
 
       $tmp_location = $tmp_path . '/__git__/' . basename($download_location);
 
-      drush_shell_exec('mkdir -p %s', $tmp_path . '/__git__/');
+      drush_make_mkdir($tmp_path . '/__git__/');
 
       // clone the given repository
       if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
@@ -516,7 +516,7 @@ class DrushMakeDownload_Bzr {
   function download($name, $download, $download_location) {
     $tmp_path = drush_make_tmp();
     $tmp_location = $tmp_path . '/__bzr__/' . basename($download_location);
-    drush_shell_exec('mkdir -p %s', dirname($tmp_location));
+    drush_make_mkdir(dirname($tmp_location));
     if (!empty($download['url'])) {
       $args = array();
       $command = 'bzr';
