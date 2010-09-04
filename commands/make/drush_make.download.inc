@@ -370,8 +370,29 @@ class DrushMakeDownload_Git {
 
     // only progress if we have a download url...
     if (!empty($download['url'])) {
-      // split the given download url into pices
-      $url_array = $this->getUrlParts($download['url']);
+      // split the given download url into pieces
+      $url_array = array();
+
+      // Get the protocol, site and resource parts of the URL
+      // original url = http://example.com/blog/index?name=foo
+      // protocol = http://
+      // site = example.com/
+      // resource = blog/index?name=foo
+      $regex = '#^(.*?//)*([\w\.\d]*)(:(\d+))*(/*)(.*)$#';
+      $matches = array();
+      preg_match($regex, $download['url'], $matches);
+
+      // Assign the matched parts of url to the result array
+      $url_array['protocol'] = $matches[1];
+      $url_array['port']     = $matches[4];
+      $url_array['host']     = $matches[2];
+      $url_array['resource'] = $matches[6];
+
+      // clean up the site portion by removing the trailing /
+      $url_array['host'] = preg_replace('#/$#', '', $result['host']);
+
+      // clean up the protocol portion by removing the trailing ://
+      $url_array['protocol'] = preg_replace('#://$#', '', $result['protocol']);
 
       if (empty($url_array['protocol'])) {
         // If protocol is not given, assume an SSH URL.
@@ -488,37 +509,6 @@ class DrushMakeDownload_Git {
       $download['url'] = dt("unspecified location");
     }
     return FALSE;
-  }
-
-  /**
-   * private helper function to split the given url into parts
-   * protocol / port / site / resource
-   */
-  protected function getUrlParts($url) {
-    $result = array();
-
-    // Get the protocol, site and resource parts of the URL
-    // original url = http://example.com/blog/index?name=foo
-    // protocol = http://
-    // site = example.com/
-    // resource = blog/index?name=foo
-    $regex = '#^(.*?//)*([\w\.\d]*)(:(\d+))*(/*)(.*)$#';
-    $matches = array();
-    preg_match($regex, $url, $matches);
-
-    // Assign the matched parts of url to the result array
-    $result['protocol'] = $matches[1];
-    $result['port']     = $matches[4];
-    $result['host']     = $matches[2];
-    $result['resource'] = $matches[6];
-
-    // clean up the site portion by removing the trailing /
-    $result['host'] = preg_replace('#/$#', '', $result['host']);
-
-    // clean up the protocol portion by removing the trailing ://
-    $result['protocol'] = preg_replace('#://$#', '', $result['protocol']);
-
-    return $result;
   }
 }
 
