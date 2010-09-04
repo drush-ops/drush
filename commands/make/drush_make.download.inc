@@ -64,10 +64,9 @@ class DrushMakeDownload_CVS {
   }
 }
 
-
-class DrushMakeDownload_Get {
+class DrushMakeDownload_File {
   // Static variable to keep track of whether to use curl or wget.
-  static $useWget;
+  static $download_mechanism;
 
   function download($name, $download, $download_location) {
     if ($filename = $this->downloadFile($download)) {
@@ -85,48 +84,120 @@ class DrushMakeDownload_Get {
     if (is_string($download)) {
       $download = array('url' => $download);
     }
+    if (!isset($download['request_type'])) {
+      $download['request_type'] = 'get';
+    }
     if (!empty($download['url'])) {
       $url = $download['url'];
-      // Download the project -- try wget, fall back to curl.
       if (drush_get_context('DRUSH_SIMULATE')) {
         $filename = t('file');
       }
       else {
         // For first try or if wget was detected already, try using wget 
         // for downloading.
-        if (!isset(DrushMakeDownload_Get::$useWget) || DrushMakeDownload_Get::$useWget) {
-          drush_shell_exec("ls %s", $tmp_path);
-          $files = drush_shell_exec_output();
-          if (drush_shell_cd_and_exec($tmp_path, 'wget %s', $url)) {
-            drush_shell_exec("ls %s", $tmp_path);
-            $files_new = drush_shell_exec_output();
-            $diff = array_diff($files_new, $files);
-            $filename = array_shift($diff);
-            DrushMakeDownload_Get::$useWget = TRUE;
+        $download_path = $tmp_path . '/__download__';
+        $header_file = $tmp_path . '/__header__';
+        drush_op('mkdir', $download_path);
+        drush_shell_exec("ls %s", $download_path);
+        $files = drush_shell_exec_output();
+        $success = FALSE;
+/*
+        if (!isset(DrushMakeDownload_Get::$download_mechanism) || DrushMakeDownload_Get::$download_mechanism == 'wget') {
+          if ($download['request_type'] == 'get' && drush_shell_cd_and_exec($tmp_path, 'wget %s', $url)) {
+            DrushMakeDownload_Get::$download_mechanism = 'wget';
           }
-          elseif (!isset(DrushMakeDownload_Get::$useWget)) {
-            DrushMakeDownload_Get::$useWget = FALSE;
+          elseif ($download['request_type'] == 'post' && drush_shell_cd_and_exec($tmp_path, 'wget --post-data=%s %s', $download['data'], $url)) {
+            DrushMakeDownload_Get::$download_mechanism = 'wget';
+          }
+        }
+*/
+        if (!isset(DrushMakeDownload_Get::$download_mechanism) || DrushMakeDownload_Get::$download_mechanism == 'curl') {
+          if ($download['request_type'] == 'get' && drush_shell_cd_and_exec($download_path, 'curl -LOD %s %s', $header_file, $url)) {
+            DrushMakeDownload_Get::$download_mechanism = 'curl';
+            $success = TRUE;
+          }
+          elseif ($download['request_type'] == 'post' && drush_shell_cd_and_exec($download_path, 'curl -d %s -LOD %s %s', $download['data'], $header_file, $url)) {
+            DrushMakeDownload_Get::$download_mechanism = 'curl';
+            $success = TRUE;
           }
         }
 
-        // If wget was not found, try using curl for downloading.
-        if (!DrushMakeDownload_Get::$useWget && drush_shell_exec('curl -I -L %s', $url)) {
-          $headers = drush_shell_exec_output();
-          foreach ($headers as $header) {
-            if (preg_match('/Location:(.*)/', $header, $matches)) {
-              $filename = basename($matches[1]);
-            }
+        if (!isset(DrushMakeDownload_Get::$download_mechanism)) {
+          DrushMakeDownload_Get::$download_mechanism = 'fail';
+        }
+
+        if (!$success) {
+          return;
+        }
+        drush_shell_exec("ls %s", $download_path);
+        $files_new = drush_shell_exec_output();
+        // Can't use list beacuse it's not guarenteed to be at offset 0.
+        $diff = array_diff($files_new, $files);
+        $filename = $tmp_path . '/__download__/' . array_shift($diff);
+        // Determine the proper filename, or at least, the extension.
+        $header = explode("\n", trim(str_replace("\r", '', file_get_contents($header_file))));
+        $current_header = array();
+        $headers = array();
+        foreach ($header as $h) {
+          if ($h == '') {
+            $headers[] = $current_header;
+            $current_header = array();
           }
-          if (!$filename) {
-            $filename = basename($url);
-          }
-          if (!drush_shell_exec('curl -L -o %s %s', $tmp_path . '/' . $filename, $url)) {
-            $filename = FALSE;
+          else {
+            $parts = explode(': ', $h);
+            $name = array_shift($parts);
+            $value = implode(': ', $parts);
+            $current_header[$name] = $value;
           }
         }
-      }
-      if ($filename) {
-        return $tmp_path . '/' . $filename;
+        if (!empty($current_header)) {
+          $headers[] = $current_header;
+        }
+        // Much more useful in reverse order.
+        $headers = array_reverse($headers);
+        $content_type = '';
+        $file = '';
+        foreach ($headers as $header) {
+          if (isset($header['Location'])) {
+            $file = basename($header['Location']);
+            break;
+          }
+        }
+        if (isset($headers[0]['Content-Disposition'])) {
+          $parts = explode(';', $headers[0]['Content-Disposition']);
+          foreach ($parts as $part) {
+            $inner_parts = explode('=', $part);
+            if ($inner_parts[0] == 'filename') {
+              array_shift($inner_parts);
+              $file = implode('=', $inner_parts);
+              break;
+            }
+          }
+        }
+        if (isset($headers[0]['Content-Type'])) {
+          // These still need finalizing.
+          switch ($headers[0]['Content-Type']) {
+            case 'application/zip':
+              $content_type = 'zip';
+              break;
+            case 'application/x-gzip':
+              $content_type = 'tar.gz';
+              break;
+            case 'application/x-tar':
+              $content_type = 'tar';
+              break;
+          }
+        }
+        if (!$file) {
+          $file = basename($url);
+        }
+        if ($content_type) {
+          $file .= '.' . $content_type;
+        }
+        drush_shell_exec('mv %s %s', $filename, $tmp_path . '/' . $file);
+        drush_shell_exec('rm -f %s', $tmp_path . '/__header__');
+        drush_shell_exec('rm -rf %s', $tmp_path . '/__download__');
+        return $tmp_path . '/' . $file;
       }
     }
     return FALSE;
@@ -274,25 +345,14 @@ class DrushMakeDownload_Get {
   }
 }
 
-class DrushMakeDownload_Post extends DrushMakeDownload_Get {
-  function downloadFile($download) {
-    $tmp_path = drush_make_tmp();
-    $filename = dt('file');
-    if (is_string($download)) {
-      $download = array('url' => $download);
-    }
-    if (!empty($download['url'])) {
-      $url = $download['url'];
-      $post_data = $download['post_data'];
-      $filename = $tmp_path . "/" . basename($url);
-      // Download the project -- try wget, fall back to curl.
-      $filename = (empty($download['file_type'])) ? $this->path . "/" . basename($url) : $this->path . basename($url) . '.' . trim($download['file_type'], '.');
-      // Download the project -- try wget, fall back to curl.
-      if (drush_get_context('DRUSH_SIMULATE') || drush_shell_exec('wget --post-data=%s %s -O %s', $post_data, $url, $filename) || drush_shell_exec('curl -d %s -o %s %s', $post_data, $filename, $url)) {
-        return $filename;
-      }
-    }
-    return FALSE;
+// Backwards compatibility.
+class DrushMakeDownload_Get extends DrushMakeDownload_File {}
+
+class DrushMakeDownload_Post extends DrushMakeDownload_File {
+  function download($name, $download, $download_location) {
+    $download['request_type'] = 'post';
+    $download['data'] = $download['post_data'];
+    return parent::download($name, $download, $download_location);
   }
 }
 
