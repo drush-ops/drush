@@ -202,8 +202,7 @@ function drush_make_updatexml($project) {
   if (isset($project['download']) && isset($project['type'])) {
     return $project;
   }
-  $download = drush_make_download_factory('get');
-  if ($filename = $download->downloadFile($project['location'] . '/' . $project['name'] . '/' . $project['core'])) {
+  if ($filename = _drush_make_download_file($project['location'] . '/' . $project['name'] . '/' . $project['core'])) {
     $release_history = simplexml_load_string(file_get_contents($filename));
     drush_op('unlink', $filename);
   }

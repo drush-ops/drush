@@ -23,11 +23,7 @@ class DrushMakeProject {
       return FALSE;
     }
     $download_location = $this->findDownloadLocation();
-    $this->downloadClass = drush_make_download_factory($this->download['type']);
-    if (!$this->downloadClass) {
-      drush_make_error('BUILD_ERROR', dt('Could not find download type %type', array('%type' => $this->download['type'])));
-    }
-    if ($this->downloadClass->download($this->name, $this->download, $download_location) === FALSE) {
+    if (drush_make_download_factory($this->download['type'], $this->name, $this->download, $download_location) === FALSE) {
       return FALSE;
     }
     if (!$this->applyPatches($download_location)) {
@@ -66,8 +62,7 @@ class DrushMakeProject {
       $patches_txt = '';
       foreach ($this->patch as $url) {
         // Download the patch.
-        $download = drush_make_download_factory('get');
-        if ($filename = $download->downloadFile($url)) {
+        if ($filename = _drush_make_download_file($url)) {
           $patched = drush_shell_exec("patch -p0 -d %s < %s", $project_directory, $filename);
           if ($patched) {
             $patches_txt .= '- ' . $url . "\n";
@@ -115,8 +110,7 @@ class DrushMakeProject {
         }
         if ($l10n_server) {
           if (!isset($cache[$l10n_server])) {
-            $download = drush_make_download_factory('get');
-            if ($filename = $download->downloadFile($l10n_server)) {
+            if ($filename = _drush_make_download_file($l10n_server)) {
               $server_info = simplexml_load_string(file_get_contents($filename));
               $cache[$l10n_server] = !empty($server_info->update_url) ? $server_info->update_url : FALSE;
               drush_op('unlink', $filename);
@@ -145,8 +139,7 @@ class DrushMakeProject {
           $url = strtr($update_url, $variables);
 
           // Download the translation file.
-          $download = drush_make_download_factory('get');
-          if ($filename = $download->downloadFile($url)) {
+          if ($filename = _drush_make_download_file($url)) {
             drush_make_mkdir($project_directory . '/translations');
             drush_shell_exec("mv %s %s", $filename, $project_directory . '/translations');
           }
