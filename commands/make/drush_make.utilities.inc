@@ -314,14 +314,14 @@ function drush_make_tar($build_path) {
   $dirname = basename($build_path, '.tar.gz');
   // Move the build directory to a more human-friendly name, so that tar will
   // use it instead.
-  drush_shell_exec("mv %s/__build__ %s/%s", $tmp_path, $tmp_path, $dirname);
+  drush_shell_exec("mv %s %s", $tmp_path . '/__build__', $tmp_path . '/' . $dirname);
   // Only move the tar file to it's final location if it's been built
   // successfully.
-  if (drush_shell_exec("tar -C %s -Pczf %s/%s %s", $tmp_path, $tmp_path, $filename, $dirname)) {
-    drush_shell_exec("mv %s/%s %s", $tmp_path, $filename, $build_path);
+  if (drush_shell_exec("tar -C %s -Pczf %s %s", $tmp_path, $tmp_path . '/' . $filename, $dirname)) {
+    drush_shell_exec("mv %s %s", $tmp_path . '/' . $filename, $build_path);
   };
   // Move the build directory back to it's original location for consistency.
-  drush_shell_exec("mv %s/%s %s/__build__", $tmp_path, $dirname, $tmp_path);
+  drush_shell_exec("mv %s %s", $tmp_path . '/' . $dirname, $tmp_path . '/__build__');
 }
 
 /**

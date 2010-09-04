@@ -336,16 +336,16 @@ function drush_make_build_path($build_path) {
 function drush_make_move_build($build_path) {
   $tmp_path = drush_make_tmp();
   if ($build_path == '.') {
-    drush_shell_exec('ls -A %s/__build__', $tmp_path);
+    drush_shell_exec('ls -A %s', $tmp_path . '/__build__');
     $info = drush_shell_exec_output();
     foreach ($info as $file) {
-      drush_shell_exec("cp -Rf %s/__build__/%s %s", $tmp_path, $file, $build_path);
+      drush_shell_exec("cp -Rf %s %s", $tmp_path . '/__build__/' . $file, $build_path);
     }
   }
   else {
     drush_make_mkdir(dirname($build_path));
-    drush_shell_exec("mv %s/__build__ %s/%s", $tmp_path, $tmp_path, basename($build_path));
-    drush_shell_exec("cp -Rf %s/%s %s", $tmp_path, basename($build_path), dirname($build_path));
+    drush_shell_exec("mv %s %s", $tmp_path . '/__build__', $tmp_path . '/' . basename($build_path));
+    drush_shell_exec("cp -Rf %s %s", $tmp_path . '/' . basename($build_path), dirname($build_path));
   }
   return TRUE;
 }

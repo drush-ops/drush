@@ -441,7 +441,7 @@ function drush_make_download_git($name, $download, $download_location) {
         // Progress branch / tag / revision download. Ensure that only one option ist set (branch OR tag OR revision)
         // check if branch a other than master
         if ($download['branch'] !== 'master' && !$download['tag'] && !$download['revision']) {
-          if (drush_shell_exec("git checkout -b %s origin/%s", $download['branch'], $download['branch'])) {
+          if (drush_shell_exec("git checkout -b %s %s", $download['branch'], 'origin/' . $download['branch'])) {
             drush_log(dt("Checked out branch %branch.", array('%branch' => $download['branch'])), 'ok');
           }
           else {
@@ -451,7 +451,7 @@ function drush_make_download_git($name, $download, $download_location) {
         // progress if: tag is set but not the others
         elseif ($download['branch'] == 'master' && $download['tag'] && !$download['revision']) {
           // @TODO: change checkout to refs path
-          if (drush_shell_exec("git checkout refs/tags/%s", $download['tag'])) {
+          if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
             drush_log(dt("Checked out tag %tag.", array('%tag' => $download['tag'])), 'ok');
           }
           else {
