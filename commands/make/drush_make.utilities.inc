@@ -264,7 +264,12 @@ function drush_make_tmp($set = TRUE) {
   static $tmp_dir;
   if (!isset($tmp_dir) && $set) {
     $tmp_dir = sys_get_temp_dir();
-    $tmp_dir .= '/drush_make_tmp_' . time();
+    if (strrpos($tmp_dir, '/') == strlen($tmp_dir) - 1) {
+      $tmp_dir .= 'drush_make_tmp_' . time();
+    }
+    else {
+      $tmp_dir .= '/drush_make_tmp_' . time();
+    }
     drush_make_mkdir($tmp_dir);
   }
   return $tmp_dir;
