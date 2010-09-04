@@ -101,16 +101,16 @@ class DrushMakeDownload_File {
         drush_shell_exec("ls %s", $download_path);
         $files = drush_shell_exec_output();
         $success = FALSE;
-/*
+
         if (!isset(DrushMakeDownload_Get::$download_mechanism) || DrushMakeDownload_Get::$download_mechanism == 'wget') {
-          if ($download['request_type'] == 'get' && drush_shell_cd_and_exec($tmp_path, 'wget %s', $url)) {
+          if ($download['request_type'] == 'get' && drush_shell_cd_and_exec($tmp_path, 'wget --save-headers=%s %s', $header_file, $url)) {
             DrushMakeDownload_Get::$download_mechanism = 'wget';
           }
-          elseif ($download['request_type'] == 'post' && drush_shell_cd_and_exec($tmp_path, 'wget --post-data=%s %s', $download['data'], $url)) {
+          elseif ($download['request_type'] == 'post' && drush_shell_cd_and_exec($tmp_path, 'wget --save-headers=%s --post-data=%s %s', $header_file, $download['data'], $url)) {
             DrushMakeDownload_Get::$download_mechanism = 'wget';
           }
         }
-*/
+
         if (!isset(DrushMakeDownload_Get::$download_mechanism) || DrushMakeDownload_Get::$download_mechanism == 'curl') {
           if ($download['request_type'] == 'get' && drush_shell_cd_and_exec($download_path, 'curl -LOD %s %s', $header_file, $url)) {
             DrushMakeDownload_Get::$download_mechanism = 'curl';
