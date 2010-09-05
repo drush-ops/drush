@@ -92,7 +92,7 @@ function drush_make_test_get_tests($id = NULL) {
     'translations' => array(
       'name'     => 'Translation downloads',
       'makefile' => 'tests/translations.make',
-      'md5'      => '0167ae21faf52235177a243783f89fb3',
+      'md5'      => '93272917b39388289075c4a6e2f5dd58',
       'options'  => array('translations' => 'es,pt-br'),
     ),
   );

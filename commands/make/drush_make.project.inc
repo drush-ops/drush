@@ -140,8 +140,22 @@ class DrushMakeProject {
 
           // Download the translation file.
           if ($filename = _drush_make_download_file($url)) {
-            drush_make_mkdir($project_directory . '/translations');
-            drush_shell_exec("mv %s %s", $filename, $project_directory . '/translations');
+            // If this is the core project type, download the translation file
+            // and create two copies:
+            // 1. To profiles/default/translations. It must be named
+            //    langcode.po to be used properly by the installer.
+            // 2. To modules/system/translations where it can be detected for
+            //    import by other non-default install profiles.
+            if ($this->type === 'core') {
+              drush_make_mkdir($project_directory . '/profiles/default/translations');
+              drush_make_mkdir($project_directory . '/modules/system/translations');
+              drush_shell_exec("cp %s %s", $filename, $project_directory . '/profiles/default/translations/' . $langcode . '.po');
+              drush_shell_exec("mv %s %s", $filename, $project_directory . '/modules/system/translations');
+            }
+            else {
+              drush_make_mkdir($project_directory . '/translations');
+              drush_shell_exec("mv %s %s", $filename, $project_directory . '/translations');
+            }
           }
           else {
             $failed[] = $langcode;
