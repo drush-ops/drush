@@ -145,6 +145,17 @@ function drush_make_validate_info_file($info) {
     drush_make_error('BUILD_ERROR', dt("The 'core' attribute %core has an incorrect format.", array('%core' => $info['core'])));
     $errors = TRUE;
   }
+
+  if (!isset($info['api'])) {
+    $info['api'] = 2;
+    drush_log(dt("You need to specify an API version of two in your makefile:\napi = 2"), 'warning');
+  }
+  elseif ($info['api'] != 2) {
+    drush_make_error('BUILD_ERROR', dt("The specified API attribute is incompatible with this version of Drush Make.");
+    $errors = TRUE;
+  }
+  
+
   $names = array();
 
   // Process projects.
