@@ -256,7 +256,7 @@ class DrushMakeProject_Library extends DrushMakeProject {
     else {
       $project_path = 'libraries';
     }
-    
+
     $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . $project_path;
   }
   // No recursion for libraries, sorry :-(
@@ -295,7 +295,7 @@ class DrushMakeProject_Translation extends DrushMakeProject {
       case '5.x':
         // Don't think there's an automatic place we can put 5.x translations,
         // so we'll toss them in a translations directory in the Drupal root.
-        $this->contrib_destination = $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') .'translations';
+        $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . 'translations';
         break;
       default:
         $this->contrib_destination = '';
