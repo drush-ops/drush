@@ -263,7 +263,9 @@ function drush_make_download_file_unpack_tar($filename, $download_location) {
     list($main_directory) = array_reverse(explode('/', $download_location));
     drush_make_mkdir($tmp_path . '/__unzip__');
     drush_shell_exec('tar -x -C %s -f %s', $tmp_path . '/__unzip__', $filename);
-    drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__/' . $directory, $tmp_path . '/__unzip__/' . $main_directory);
+    if ($directory != $main_directory) {
+      drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__/' . $directory, $tmp_path . '/__unzip__/' . $main_directory);
+    }
     drush_shell_exec('cp -Rf %s %s', $tmp_path . '/__unzip__/' . $main_directory, dirname($download_location));
     drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__');
   }

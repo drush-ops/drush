@@ -95,6 +95,12 @@ function drush_make_test_get_tests($id = NULL) {
       'md5'      => '93272917b39388289075c4a6e2f5dd58',
       'options'  => array('translations' => 'es,pt-br'),
     ),
+    'contrib-destination' => array(
+      'name'     => 'Contrib-destination attribute',
+      'makefile' => 'tests/contrib-destination.make',
+      'md5'      => 'd615d004adfa8ebfe44e91119b88389c',
+      'options'  => array('no-core' => TRUE, 'contrib-destination' => '.'),
+    ),
   );
   if (isset($id)) {
     return isset($tests[$id]) ? $tests[$id] : FALSE;
