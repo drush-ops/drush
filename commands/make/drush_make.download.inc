@@ -91,14 +91,14 @@ function _drush_make_download_file($download) {
     else {
       // For first try or if wget was detected already, try using wget 
       // for downloading.
-      $download_path = $tmp_path . '/__download__';
-      $header_file = $tmp_path . '/__header__';
-      drush_make_mkdir($download_path);
-      drush_shell_exec("ls %s", $download_path);
-      $files = drush_shell_exec_output();
       $success = FALSE;
+      $download_path = $tmp_path . '/__download__';
+      drush_make_mkdir($download_path);
 
       if (!isset($download_mechanism) || $download_mechanism == 'curl') {
+        $header_file = $tmp_path . '/__header__';
+        drush_shell_exec("ls %s", $download_path);
+        $files = drush_shell_exec_output();
         if ($download['request_type'] == 'get' && drush_shell_cd_and_exec($download_path, 'curl -LOD %s %s', $header_file, $url)) {
           $download_mechanism = 'curl';
           $success = TRUE;
@@ -107,32 +107,69 @@ function _drush_make_download_file($download) {
           $download_mechanism = 'curl';
           $success = TRUE;
         }
+
+        drush_shell_exec("ls %s", $download_path);
+        $files_new = drush_shell_exec_output();
+        // Can't use list beacuse it's not guarenteed to be at offset 0.
+        $diff = array_diff($files_new, $files);
+        $filename = $tmp_path . '/__download__/' . array_shift($diff);
+        // Determine the proper filename, or at least, the extension.
+        $header = explode("\n", trim(str_replace("\r", '', file_get_contents($header_file))));
+        $current_header = array();
+        $headers = array();
+        foreach ($header as $h) {
+          if ($h == '') {
+            $headers[] = $current_header;
+            $current_header = array();
+          }
+          else {
+            list($name, $value) = explode(': ', $h, 2);
+            $current_header[$name] = $value;
+          }
+        }
+        if (!empty($current_header)) {
+          $headers[] = $current_header;
+        }
+      }
+
+      if (!isset($download_mechanism) || $download_mechanism == 'drush_make') {
+        $retry = 5;
+        $url = $download['url'];
+        $filename = $download_path . '/__destination__';
+        $request_type = strtoupper($download['request_type']);
+        $data = (isset($download['data']) ? $download['data'] : '');
+        $headers = array();
+        while ($retry) {
+          $result = drush_make_http_request($url, $filename, array(), $request_type, $data);
+          switch ($result->code) {
+            case 200: // OK
+            case 304: // Not modified
+              $retry = FALSE;
+              break;
+            case 301: // Moved permanently
+            case 302: // Moved temporarily
+            case 307: // Moved temporarily
+              $retry--;
+
+              if ($retry) {
+                $url = $result->headers['Location'];
+                $request_type = 'GET';
+                $data = NULL;
+              }
+              break;
+            default:
+              // Oops, error.
+              drush_make_error('BUILD_ERROR', $result->message);
+              return;
+          }
+          $download_mechanism = 'drush_make';
+          $headers[] = $result->headers;
+          $success = TRUE;
+        }
       }
 
       if (!$success) {
         return;
-      }
-      drush_shell_exec("ls %s", $download_path);
-      $files_new = drush_shell_exec_output();
-      // Can't use list beacuse it's not guarenteed to be at offset 0.
-      $diff = array_diff($files_new, $files);
-      $filename = $tmp_path . '/__download__/' . array_shift($diff);
-      // Determine the proper filename, or at least, the extension.
-      $header = explode("\n", trim(str_replace("\r", '', file_get_contents($header_file))));
-      $current_header = array();
-      $headers = array();
-      foreach ($header as $h) {
-        if ($h == '') {
-          $headers[] = $current_header;
-          $current_header = array();
-        }
-        else {
-          list($name, $value) = explode(': ', $h, 2);
-          $current_header[$name] = $value;
-        }
-      }
-      if (!empty($current_header)) {
-        $headers[] = $current_header;
       }
       // Much more useful in reverse order.
       $headers = array_reverse($headers);
