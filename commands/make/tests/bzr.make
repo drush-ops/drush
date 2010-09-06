@@ -1,4 +1,5 @@
 core = 6.x
+api = 2
 
 projects[mv][type] = "core"
 projects[mv][download][type] = "bzr"

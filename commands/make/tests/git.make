@@ -1,4 +1,5 @@
 core = 6.x
+api = 2
 
 ; Test that a specific tag can be pulled.
 projects[tao][type] = theme

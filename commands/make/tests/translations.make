@@ -1,4 +1,5 @@
 core = 6.x
+api = 2
 
 projects[drupal] = 6.19
 projects[token] = 1.14

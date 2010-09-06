@@ -1,4 +1,5 @@
 core = 6.x
+api = 2
 
 projects[buildkit][type] = "profile"
 projects[buildkit][download][type] = "cvs"

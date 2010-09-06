@@ -1,4 +1,5 @@
 core = 6.x
+api = 2
 
 ; Test that patches work
 projects[token][version] = 1.13

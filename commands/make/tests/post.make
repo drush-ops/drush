@@ -1,4 +1,5 @@
 core = 6.x
+api = 2
 
 libraries[shadowbox][download][type] = post
 libraries[shadowbox][download][post_data] = format=tar&adapter=jquery&players[]=img&players[]=iframe&players[]=html&players[]=swf&players[]=flv&players[]=qt&players[]=wmp&language=en&css_support=on
