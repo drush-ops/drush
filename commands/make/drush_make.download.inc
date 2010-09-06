@@ -117,14 +117,21 @@ function _drush_make_download_file($download) {
         $header = explode("\n", trim(str_replace("\r", '', file_get_contents($header_file))));
         $current_header = array();
         $headers = array();
+        $first = TRUE;
         foreach ($header as $h) {
           if ($h == '') {
             $headers[] = $current_header;
             $current_header = array();
+            $first = TRUE;
           }
           else {
-            list($name, $value) = explode(': ', $h, 2);
-            $current_header[$name] = $value;
+            if (!$first) {
+              list($name, $value) = explode(': ', $h, 2);
+              $current_header[$name] = $value;
+            }
+            else {
+              $first = FALSE;
+            }
           }
         }
         if (!empty($current_header)) {
