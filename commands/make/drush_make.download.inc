@@ -140,9 +140,7 @@ function _drush_make_download_file($download) {
           $current_header = array();
         }
         else {
-          $parts = explode(': ', $h);
-          $name = array_shift($parts);
-          $value = implode(': ', $parts);
+          list($name, $value) = explode(': ', $h, 2);
           $current_header[$name] = $value;
         }
       }
@@ -162,10 +160,9 @@ function _drush_make_download_file($download) {
       if (isset($headers[0]['Content-Disposition'])) {
         $parts = explode(';', $headers[0]['Content-Disposition']);
         foreach ($parts as $part) {
-          $inner_parts = explode('=', $part);
+          list($name, $value) = explode('=', $part, 2);
           if ($inner_parts[0] == 'filename') {
-            array_shift($inner_parts);
-            $file = implode('=', $inner_parts);
+            $file = $value;
             break;
           }
         }
