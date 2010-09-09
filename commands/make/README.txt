@@ -363,10 +363,15 @@ itself. Writing a new test is extremely simple. The process is as follows:
     'machine-readable-name' => array(
       'name'     => 'Human readable name',
       'makefile' => 'tests/yourtest.make',
-      'md5'      => 'f68e6510-your-hash-e04fbb4ed',
+      'messages' => array(
+          'Build hash: f68e6510-your-hash-e04fbb4ed',
+      ),
       'options'  => array('any' => TRUE, 'other' => TRUE, 'options' => TRUE),
     ),
 5. Test! Run drush make-test machine-readable-name to see if the test passes.
+
+You can check for any messages you want in the message array, but the most
+basic tests would just check the build hash.
 
 Generate
 --------
