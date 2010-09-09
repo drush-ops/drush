@@ -103,7 +103,7 @@ class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
     $top_level_attribute_whitelist = array('core', 'core_release', 'projects');
 
     // The list of currently allowed project-level attributes.
-    $project_attribute_whitelist = array('version', 'subdir');
+    $project_attribute_whitelist = array('version', 'subdir', 'patch');
 
     // The list of currently disallowed projects.
     $project_disallowed_list = array('drupal');
@@ -145,6 +145,16 @@ class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
           if (!in_array($attribute, $project_attribute_whitelist)) {
             $this->log(dt("The '%attribute' attribute is not allowed for the '%project' project, removing.", array('%attribute' => $attribute, '%project' => $project)), 'warning');
             unset($project_data[$attribute]);
+          }
+        }
+        
+        // Check that patches do in fact come from drupal.org.
+        if (isset($project_data['patch'])) {
+          foreach ($project_data['patch'] as $key => $patch) {
+            if (strpos($patch, 'http://drupal.org/files/issues') !== 0) {
+              $this->log(dt("The patch '%patch' is not hosted on drupal.org -- it has been removed.", array('%patch' => $patch)), 'warning');
+              unset($project_data['patches'][$key]);
+            }
           }
         }
 

@@ -132,7 +132,7 @@ function drush_make_d_o_validate_info_file($info) {
   $top_level_attribute_whitelist = array('core', 'core_release', 'projects');
 
   // The list of currently allowed project-level attributes.
-  $project_attribute_whitelist = array('version', 'subdir');
+  $project_attribute_whitelist = array('version', 'subdir', 'patch');
 
   // Assume no errors to start.
   $errors = FALSE;
@@ -168,6 +168,15 @@ function drush_make_d_o_validate_info_file($info) {
           if (!in_array($attribute, $project_attribute_whitelist)) {
             drush_make_error('BUILD_ERROR', dt("The project-level attribute '%attribute' is not allowed in drupal.org .make files", array('%attribute' => $attribute)));
             $errors = TRUE;
+          }
+        }
+        // Check that patches do in fact come from drupal.org.
+        if (isset($project_data['patch'])) {
+          foreach ($project_data['patch'] as $patch) {
+            if (strpos($patch, 'http://drupal.org/files/issues') !== 0) {
+              drush_make_error('BUILD_ERROR', dt("The patch '%patch' is not hosted on drupal.org", array('%patch' => $patch)));
+              $errors = TRUE;
+            }
           }
         }
         // Check for bad project version.
