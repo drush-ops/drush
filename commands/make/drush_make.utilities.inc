@@ -154,7 +154,6 @@ function drush_make_validate_info_file($info) {
     drush_make_error('BUILD_ERROR', dt("The specified API attribute is incompatible with this version of Drush Make."));
     $errors = TRUE;
   }
-  
 
   $names = array();
 
@@ -234,6 +233,18 @@ function drush_make_validate_info_file($info) {
       }
     }
   }
+
+  foreach (drush_command_implements('drush_make_validate_info') as $module) {
+    $function = $module .'_drush_make_validate_info';
+    $return = $function($info);
+    if ($return) {
+      $info = $return;
+    }
+    else {
+      $errors = TRUE;
+    }
+  }
+
   if ($errors) {
     return FALSE;
   }

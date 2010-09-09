@@ -100,7 +100,7 @@ class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
     }
 
     // The list of currently allowed top-leval attributes.
-    $top_level_attribute_whitelist = array('core', 'core_release', 'projects');
+    $top_level_attribute_whitelist = array('core', 'api', 'core_release', 'projects');
 
     // The list of currently allowed project-level attributes.
     $project_attribute_whitelist = array('version', 'subdir', 'patch');
@@ -125,6 +125,7 @@ class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
     else {
       $errors = TRUE;
     }
+    $this->new_info['api'] = 2;
 
     if (isset($this->old_info['projects'])) {
       foreach ($this->old_info['projects'] as $project => $project_data) {
