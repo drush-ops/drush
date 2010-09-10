@@ -48,7 +48,7 @@ function drush_get_modules() {
 function drush_check_module_dependencies($modules, $module_info) {
   $status = array();
   foreach ($modules as $key => $module) {
-    $dependencies = $module_info[$module]->info['dependencies'];
+    $dependencies = array_reverse($module_info[$module]->info['dependencies']);
     $unmet_dependencies = array_diff($dependencies, array_keys($module_info));
     if (!empty($unmet_dependencies)) {
       $status[$key]['error'] = array(
