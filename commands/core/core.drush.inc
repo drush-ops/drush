@@ -478,8 +478,18 @@ function _core_path_aliases($project = '') {
     $paths['%root'] = $drupal_root;
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $paths['%site'] = $site_root;
-      $paths['%modules'] = 'sites'.DIRECTORY_SEPARATOR.'all'.DIRECTORY_SEPARATOR.'modules';
-      $paths['%themes'] = 'sites'.DIRECTORY_SEPARATOR.'all'.DIRECTORY_SEPARATOR.'themes';
+      if (is_dir($modules_path = conf_path() . '/modules')) {
+        $paths['%modules'] = $modules_path;
+      }
+      else {
+        $paths['%modules'] = 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'modules';
+      }
+      if (is_dir($themes_path = conf_path() . '/themes')) {
+        $paths['%themes'] = $themes_path;
+      }
+      else {
+        $paths['%themes'] = 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'themes';
+      }
       if (drush_drupal_major_version() >= 7) {
         $paths['%files'] = DrupalPublicStreamWrapper::getDirectoryPath();
         $paths['%private'] = DrupalPrivateStreamWrapper::getDirectoryPath();
