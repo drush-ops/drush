@@ -28,6 +28,11 @@ case $(uname -a) in
     SCRIPT_PATH=$(cygpath -w -a -- "$SCRIPT_PATH") ;;
 esac
 
+# prepend "--nocolor" to the argument list if stdout is not a terminal
+if [ ! -t 1 ]; then
+  set -- "--nocolor" ${1+"$@"}
+fi
+
 # If not exported and term is set determine and export the number of columns.
 if [ -z $COLUMNS ] && [ -n "$TERM" ]; then
   # Note to cygwin users: if you are getting "tput: command not found", 
