@@ -107,9 +107,9 @@ function drush_pm_cvs($project, $release) {
 
   $cvsparts = array();
   $cvsparts[] = '-z6';
-  $cvsparts[] = $cvsparams;
   $cvsparts[] = '-d:pserver:' . drush_get_option('cvscredentials', 'anonymous:anonymous') . '@cvs.drupal.org:/cvs/' . $repos;
   $cvsparts[] = $cvsmethod;
+  $cvsparts[] = $cvsparams;
   $cvsparts[] = '-r '. $release['tag'];
   if ($cvsmethod == 'checkout') {
     $cvsparts[] = '-d ' . $project['name'];
