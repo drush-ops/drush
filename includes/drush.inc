@@ -1331,8 +1331,8 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
 function drush_redispatch_get_options() {
   // Start off by taking everything from the site alias and command line
   // ('options' context)
-  $alias_context = array_diff_key(drush_get_context('alias'), array_flip(drush_sitealias_site_selection_keys()));
-  $options = array_merge($alias_context, drush_get_context('options'));
+  $options = array_merge(drush_get_context('alias'), drush_get_context('options'));
+  $options = array_diff_key($options, array_flip(drush_sitealias_site_selection_keys()));
   unset($options['command-specific']);
   unset($options['path-aliases']);
   // If we can parse the current command, then examine all contexts
