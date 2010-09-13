@@ -9,6 +9,15 @@
  */
 
 /**
+ * Return the list of modules required by drupal.
+ *
+ * We use that function name for onward compatibility with drupal 6 and 7.
+ */
+function drupal_required_modules() {
+  return array('block', 'filter', 'node', 'system', 'user', 'watchdog');
+}
+
+/**
  * Get complete information for all available modules.
  *
  * We need to set the type for those modules that are not already in the system table.

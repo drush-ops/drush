@@ -12,7 +12,7 @@
  * Get complete information for all available modules.
  *
  * @return
- *   An array containing module info for all installed modules.
+ *   An array containing module info for all available modules.
  */
 function drush_get_modules() {
   return system_rebuild_module_data();
@@ -71,7 +71,7 @@ function drush_check_module_dependencies($modules, $module_info) {
 function drush_module_dependents($modules, $module_info) {
   $dependents = array();
   foreach ($modules as $module) {
-    $dependents = array_merge($dependents, array_keys($module_info[$module]->required_by));
+    $dependents = array_merge($dependents, drupal_map_assoc(array_keys($module_info[$module]->required_by)));
   }
 
   return array_unique($dependents);

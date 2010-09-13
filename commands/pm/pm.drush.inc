@@ -287,7 +287,7 @@ function drush_pm_list() {
     if (!in_array($status, $status_filter)) {
       continue;
     }
-    if (($major_version >= 7) and (isset($project->info['hidden']))) {
+    if (($major_version >= 6) and (isset($project->info['hidden']))) {
       continue;
     }
 
@@ -474,13 +474,25 @@ function drush_pm_disable() {
     }
   }
 
-  // Add enabled dependents to list of modules to disable.
   if (!empty($modules)) {
+    // Add enabled dependents to the list of modules to disable.
     $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
     $dependents = drush_module_dependents($modules, $project_info);
     $dependents = array_unique($dependents);
     $dependents = array_intersect($dependents, $enabled);
     $modules = array_merge($modules, $dependents);
+
+    // Discard required modules.
+    $required = drupal_required_modules();
+    foreach ($required as $module) {
+      if (isset($modules[$module])) {
+        unset($modules[$module]);
+        // No message for hidden modules.
+        if (!isset($project_info[$module]->info['hidden'])) {
+          drush_log(dt('!module is a required module and can\'t be disabled.', array('!module' => $module)), 'ok'); 
+        }
+      }
+    }
   }
 
   // Inform the user which projects will finally be disabled.
