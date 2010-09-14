@@ -357,7 +357,7 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
  * @param $args
  *   Array. Arguments for the WHERE snippet.
  * @return
- *   Affected rows or FALSE.
+ *   Affected rows (except on D7+mysql without a WHERE clause - returns TRUE) or FALSE.
  */
 function drush_db_delete($table, $where = NULL, $args = NULL) {
   if (drush_drupal_major_version() >= 7) {

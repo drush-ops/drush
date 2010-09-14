@@ -265,8 +265,8 @@ function drush_core_watchdog_delete($arg = NULL) {
     if (!drush_confirm(dt('Do you really want to continue?'))) {
       return drush_log(dt('Aborting.'));
     }
-    $affected_rows = drush_db_delete('watchdog');
-    drush_log(dt('!affected watchdog messages have been deleted.', array('!affected' => $affected_rows)), 'ok');
+    drush_db_delete('watchdog');
+    drush_log(dt('All watchdog messages have been deleted.'), 'ok');
   }
   else if (is_numeric($arg)) {
     drush_print(dt('Watchdog message #!wid will be deleted.', array('!wid' => $arg)));
