@@ -15,7 +15,7 @@ function drush_make_download_cvs($name, $download, $download_location) {
   if (!empty($download['module'])) {
     if (drush_get_option('working-copy')) {
       if ($download['module'] == 'drupal') {
-        $download['root'] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal";
+        $download['root'] = ":pserver:anonymous:anonymous@drupalcode.org:/cvs/drupal";
       }
       elseif (isset($_ENV['CVSROOT'])) {
         $download['root'] = trim($_ENV['CVSROOT']);
@@ -26,7 +26,7 @@ function drush_make_download_cvs($name, $download, $download_location) {
     }
     // Fallback to anonymous @ cvs.drupal.org
     if (!isset($download['root'])) {
-      $download['root'] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal-contrib";
+      $download['root'] = ":pserver:anonymous:anonymous@drupalcode.org:/cvs/drupal-contrib";
     }
   
     // Checkout or export the module. CVS can't use absolute paths for named
