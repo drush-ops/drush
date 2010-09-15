@@ -382,14 +382,14 @@ function drush_pm_enable() {
     $needed = array_diff($all_dependencies, $enabled);
     $modules = $needed + $modules;
 
-    // Discard modules which don't meet requirements.
+    // Discard modules which doesn't meet requirements.
     require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
     foreach ($modules as $key => $module) {
       // Check to see if the module can be installed/enabled (hook_requirements).
       // See @system_modules_submit
       if (!drupal_check_module($module)) {
         unset($modules[$key]);
-        drush_set_error('DRUSH_PM_ENABLE_MODULE_UNMEET_REQUIREMENTS', dt('Module !module don\'t meet the requirements to be enabled.', array('!module' => $module)));
+        drush_set_error('DRUSH_PM_ENABLE_MODULE_UNMEET_REQUIREMENTS', dt('Module !module doesn\'t meet the requirements to be enabled.', array('!module' => $module)));
       }
     }
   }
