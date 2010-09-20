@@ -414,10 +414,10 @@ function drush_make_download_git($name, $download, $download_location) {
     $url_array['resource'] = $matches[6];
 
     // clean up the site portion by removing the trailing /
-    $url_array['host'] = preg_replace('#/$#', '', $result['host']);
+    $url_array['host'] = preg_replace('#/$#', '', $url_array['host']);
 
     // clean up the protocol portion by removing the trailing ://
-    $url_array['protocol'] = preg_replace('#://$#', '', $result['protocol']);
+    $url_array['protocol'] = preg_replace('#://$#', '', $url_array['protocol']);
 
     if (empty($url_array['protocol'])) {
       // If protocol is not given, assume an SSH URL.
