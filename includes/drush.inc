@@ -397,6 +397,7 @@ function drush_db_result($result) {
       if ($array = db_fetch_array($result)) {
         return array_shift($array); // return first element in array.
       }
+      return FALSE;
     case 6:
       return db_result($result);
     case 7:
