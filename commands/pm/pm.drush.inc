@@ -315,7 +315,8 @@ function drush_pm_list() {
       $row[] = ucfirst($status);
     }
     if (($major_version >= 6)||($project->type == 'module')) {
-      $row[] = $project->info['version'];
+      // Suppress notice when version is not present.
+      $row[] = @$project->info['version'];
     }
 
     $rows[] = $row;
