@@ -770,8 +770,29 @@ function drush_shell_cd_and_exec($effective_wd, $cmd) {
  *   0 if success.
  */
 function drush_shell_exec($cmd) {
-  $args = func_get_args();
+  return _drush_shell_exec(func_get_args());
+}
 
+/**
+ * Executes a command in interactive mode.
+ *
+ * @see drush_shell_exec.
+ */
+function drush_shell_exec_interactive($cmd) {
+  return _drush_shell_exec(func_get_args(), TRUE);
+}
+
+/**
+ * Internal function: executes a shell command:
+ *
+ * @param $args
+ *   The command and its arguments.
+ * @param $interactive
+ *   Whether to run in 
+ *
+ * @see drush_shell_exec.
+ */
+function _drush_shell_exec($args, $interactive = FALSE) {
   //do not change the command itself, just the parameters.
   for ($x = 1; $x < sizeof($args); $x++) {
     $args[$x] = escapeshellarg($args[$x]);
@@ -783,7 +804,7 @@ function drush_shell_exec($cmd) {
   }
 
   if (!drush_get_context('DRUSH_SIMULATE')) {
-    exec($command . ' 2>&1', $output, $result);
+    exec($command . ($interactive ? '' : ' 2>&1'), $output, $result);
     _drush_shell_exec_output_set($output);
 
     if (drush_get_context('DRUSH_DEBUG')) {
