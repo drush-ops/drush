@@ -545,9 +545,6 @@ function _core_site_status_table($project = '') {
     }
     $status_table['Default theme'] = drush_theme_get_default();
     $status_table['Administration theme'] = drush_theme_get_admin();
-    
-    include_once $drupal_root . '/includes/install.inc';
-    $status_table['Distribution'] = drush_drupal_major_version() >= 7 ? drupal_install_profile_distribution_name() : drupal_install_profile_name();
   }
   if (function_exists('php_ini_loaded_file')) {
     // Function available on PHP >= 5.2.4, but we use it if available to help
