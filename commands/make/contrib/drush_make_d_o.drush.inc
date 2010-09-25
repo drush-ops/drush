@@ -100,9 +100,18 @@ function drush_make_d_o_drush_init() {
  */
 function drush_make_d_o_drush_make_validate_info($info) {
   if (drush_get_option('drupal-org')) {
+    $transformers = array(
+      'top' => array('DrushMakeDo_TopWhitelist', 'DrushMakeDo_CoreVersion'),
+      'project' => array(
+        'DrushMakeDo_ProjectWhitelist',
+        'DrushMakeDo_ProjectVersion',
+        'DrushMakeDo_ProjectPatch',
+        'DrushMakeDo_ProjectUpdateXML',
+      ),
+    );
     // The list of currently allowed top-leval attributes.
     $top_level_attribute_whitelist = array('core', 'api', 'core_release', 'projects');
-    
+
     // The list of currently allowed project-level attributes.
     $project_attribute_whitelist = array('version', 'subdir', 'patch');
     
@@ -167,6 +176,59 @@ function drush_make_d_o_drush_make_validate_info($info) {
     }
   }
   return $info;
+}
+
+abstract class DrushMakeDo_Transformer {
+  abstract function verify($makefile);
+  abstract function convert($makefile);
+}
+class DrushMakeDo_TopWhitelist extends DrushMakeDo_Transformer {
+  function verify($makefile) {
+    
+  }
+  function convert($makefile) {
+    
+  }
+}
+class DrushMakeDo_CoreVersion extends DrushMakeDo_Transformer {
+  function verify($makefile) {
+    
+  }
+  function convert($makefile) {
+    
+  }
+}
+class DrushMakeDo_ProjectWhitelist extends DrushMakeDo_Transformer {
+  function verify($makefile) {
+    
+  }
+  function convert($makefile) {
+    
+  }
+}
+class DrushMakeDo_ProjectVersion extends DrushMakeDo_Transformer {
+  function verify($makefile) {
+    
+  }
+  function convert($makefile) {
+    
+  }
+}
+class DrushMakeDo_ProjectPatch extends DrushMakeDo_Transformer {
+  function verify($makefile) {
+    
+  }
+  function convert($makefile) {
+    
+  }
+}
+class DrushMakeDo_ProjectUpdateXML extends DrushMakeDo_Transformer {
+  function verify($makefile) {
+    
+  }
+  function convert($makefile) {
+    
+  }
 }
 
 /**
