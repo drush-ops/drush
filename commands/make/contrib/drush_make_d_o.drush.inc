@@ -46,9 +46,13 @@ function drush_make_d_o_drush_command() {
  * Drush callback; verify a .make file is in a drupal.org friendly format.
  */
 function drush_drush_make_d_o_verify_makefile($makefile) {
-  include_once 'drush_make_d_o.convert.inc';
-  $verifier = new DrushMakeDrupalorgVerifier($makefile);
-  $verifier->run();
+  if (!drush_make_ensure_version()) {
+    return;
+  }
+  $info = drush_make_validate_info_file(drush_make_parse_info_file($makefile));
+  if (isset($info['projects']['drupal'])) {
+    drush_make_error('BUILD_ERROR', dt("It is not permitted to include Drupal core as a project in an install profile."));
+  }
 }
 
 
@@ -103,8 +107,8 @@ function drush_make_d_o_drush_make_validate_info($info) {
     $transformers = array(
       'top' => array('DrushMakeDo_TopWhitelist', 'DrushMakeDo_CoreVersion'),
       'project' => array(
-        'DrushMakeDo_ProjectWhitelist',
         'DrushMakeDo_ProjectVersion',
+        'DrushMakeDo_ProjectWhitelist',
         'DrushMakeDo_ProjectPatch',
         'DrushMakeDo_ProjectUpdateXML',
       ),
@@ -114,23 +118,14 @@ function drush_make_d_o_drush_make_validate_info($info) {
       $object = new $transformer('make');
       $pass = $pass && $object->verify($info);
     }
-    /*
-    // The list of currently allowed project-level attributes.
-    $project_attribute_whitelist = array('version', 'subdir', 'patch');
-    
-    // Assume no errors to start.
-    $errors = FALSE;
+
     if (!empty($info['projects'])) {
       foreach ($info['projects'] as $project => $project_data) {
-        // No specifying just project name.
-        if (!is_array($project_data)) {
-          $project_data = $info['projects'][$project] = array('version' => $project_data);
+        foreach ($transformers['project'] as $transformer) {
+          $object = new $transformer('make');
+          $pass = $pass && $object->verify($info);
         }
-        // Version must be set.
-        if (!isset($project_data['version'])) {
-          drush_make_error('BUILD_ERROR', dt('No version specified for project %project -- version is required.', array('%project' => $project)));
-          $errors = TRUE;
-        }
+        /*
         // Check for disallowed project-level attributes.
         foreach ($project_data as $attribute => $attribute_data) {
           if (!in_array($attribute, $project_attribute_whitelist)) {
@@ -147,18 +142,15 @@ function drush_make_d_o_drush_make_validate_info($info) {
             }
           }
         }
-        // Check for bad project version.
-        if (!drush_make_d_o_check_valid_version($project, $project_data['version'])) {
-          $errors = TRUE;
-        }
         $info['projects'][$project] += array(
           'name' => $project,
           'core' => $info['core'],
         );
         $info['projects'][$project] = drush_make_d_o_updatexml($info['projects'][$project]);
+        */
       }
-      */
     }
+
     // Abort if any errors were found.
     if (!$pass) {
       drush_make_error('BUILD_ERROR', dt('The drupal.org validation check failed -- see @doc_link for more information.', array('@doc_link' => DRUSH_MAKE_DO_DOCUMENTATION_LINK)));
@@ -296,15 +288,24 @@ class DrushMakeDo_CoreVersion extends DrushMakeDo_Transformer {
     return FALSE;
   }
 }
-class DrushMakeDo_ProjectWhitelist extends DrushMakeDo_Transformer {
-  function verify($makefile) {
-    
+class DrushMakeDo_ProjectVersion extends DrushMakeDo_Transformer {
+  function verify($project_data) {
+    // Version must be set.
+    if (!isset($project_data['version'])) {
+      drush_make_error('BUILD_ERROR', dt('No version specified for project %project -- version is required.', array('%project' => $project)));
+      $errors = TRUE;
+    }
+    // Check for bad project version.
+    if (!drush_make_d_o_check_valid_version($project, $project_data['version'])) {
+      $errors = TRUE;
+    }
+    return $project_data;
   }
   function convert($makefile) {
     
   }
 }
-class DrushMakeDo_ProjectVersion extends DrushMakeDo_Transformer {
+class DrushMakeDo_ProjectWhitelist extends DrushMakeDo_Transformer {
   function verify($makefile) {
     
   }
