@@ -109,28 +109,17 @@ function drush_make_d_o_drush_make_validate_info($info) {
         'DrushMakeDo_ProjectUpdateXML',
       ),
     );
-    // The list of currently allowed top-leval attributes.
-    $top_level_attribute_whitelist = array('core', 'api', 'core_release', 'projects');
-
+    $pass = TRUE;
+    foreach ($transformers['top'] as $transformer) {
+      $object = new $transformer('make');
+      $pass = $pass && $object->verify($info);
+    }
+    /*
     // The list of currently allowed project-level attributes.
     $project_attribute_whitelist = array('version', 'subdir', 'patch');
     
     // Assume no errors to start.
     $errors = FALSE;
-    
-    // Check for disallowed top-level attributes.
-    foreach ($info as $attribute => $attribute_data) {
-      if (!in_array($attribute, $top_level_attribute_whitelist)) {
-        drush_make_error('BUILD_ERROR', dt("The top-level attribute '%attribute' is not allowed in drupal.org .make files", array('%attribute' => $attribute)));
-        $errors = TRUE;
-      }
-    }
-    
-    // Check for a valid core value.
-    // This is just a basic sanity check for a properly formatted value.
-    if (!drush_make_d_o_check_valid_version(dt('Drupal core'), $info['core_release'])) {
-      $errors = TRUE;
-    }
     if (!empty($info['projects'])) {
       foreach ($info['projects'] as $project => $project_data) {
         // No specifying just project name.
@@ -168,9 +157,10 @@ function drush_make_d_o_drush_make_validate_info($info) {
         );
         $info['projects'][$project] = drush_make_d_o_updatexml($info['projects'][$project]);
       }
+      */
     }
     // Abort if any errors were found.
-    if ($errors) {
+    if (!$pass) {
       drush_make_error('BUILD_ERROR', dt('The drupal.org validation check failed -- see @doc_link for more information.', array('@doc_link' => DRUSH_MAKE_DO_DOCUMENTATION_LINK)));
       return FALSE;
     }
@@ -181,21 +171,129 @@ function drush_make_d_o_drush_make_validate_info($info) {
 abstract class DrushMakeDo_Transformer {
   abstract function verify($makefile);
   abstract function convert($makefile);
+  protected function log($message) {
+    drush_make_error('BUILD_ERROR', $message);
+  }
+  protected function latestVersion($project_name, $version, $core) {
+    // Project types that are valid for the version checker.
+    $allowed_project_types = array(
+      'core',
+      'module',
+      'theme',
+    );
+    $project = array(
+      'name'           => $project_name,
+      'core'           => $core,
+      'version'        => $version,
+      'location'       => drush_get_option('drush-make-update-default-url'),
+    );
+    $project = drush_make_updatexml($project);
+
+    // Because the version data we get back from the XML may not be the same
+    // data we passed, and because we can fail even if version data is
+    // returned, track both the success/failure of the request, and  the
+    // version data.
+
+    // Check for bad projects and branch releases.
+    if (empty($project) || preg_match('/.*-dev$/', $project['version'])) {
+      // Use the passed version if no version was returned.
+      if (empty($project)) {
+        $final_version = $version;
+      }
+      else {
+        $final_version = $project['version'];
+      }
+      if ($project_name == 'drupal') {
+        drush_make_error('BUILD_ERROR', dt("Drupal core does not have an official release for version '%version' yet.", array('%version' => $final_version)));
+      }
+      else {
+        drush_make_error('BUILD_ERROR', dt("Project '%project' does not have an official release for version '%version'.", array('%project' => $project_name, '%version' => $final_version)));
+      }
+      $result = FALSE;
+    }
+    // Make sure the project is an allowed project type.
+    elseif (!in_array($project['type'], $allowed_project_types)) {
+      drush_make_error('BUILD_ERROR', dt("Project %project of type '%type' is not permitted.", array('%project' => $project_name, '%type' => $project['type'])));
+      $final_version = $project['version'];
+      $result = FALSE;
+    }
+    else {
+      $final_version = $project['version'];
+      $result = TRUE;
+    }
+    return $result ? $final_version : FALSE;
+  }
+
+  /**
+   * Validate release versions.
+   *
+   * @param $name
+   *   The display name of the project.
+   * @param $version_string
+   *   The version string to test.
+   * @return
+   * TRUE if the version string is bad, FALSE otherwise.
+   */
+  protected function validVersion($name, $version_string) {
+    // Development snapshots not allowed.
+    if (preg_match('/.*-dev$/', $version_string)) {
+      drush_make_error('BUILD_ERROR', dt('%project branch releases not allowed.', array('%project' => $name)));
+      return FALSE;
+    }
+    // Basic sanity checking on release version strings. We need this because
+    // drush_make supports projects[foo][version] = 1, which downloads the latest
+    // stable release on the major version 1 branch. We require a specific
+    // release.
+    elseif (!preg_match('/^\d+\.\d+(-[a-z0-9]+)?$/', $version_string)) {
+      drush_make_error('BUILD_ERROR', dt('%project version format incorrect -- specifying an official release version is required.', array('%project' => $name)));
+      return FALSE;
+    }
+    return TRUE;
+  }
 }
+
 class DrushMakeDo_TopWhitelist extends DrushMakeDo_Transformer {
+  // The list of currently allowed top-leval attributes.
+  protected $top_level_attribute_whitelist = array('core', 'api', 'core_release', 'projects');
+
   function verify($makefile) {
-    
+    $pass = TRUE;
+    // Check for disallowed top-level attributes.
+    foreach ($makefile as $attribute => $attribute_data) {
+      if (!in_array($attribute, $this->top_level_attribute_whitelist)) {
+        $this->log(dt("The top-level attribute '%attribute' is not allowed.", array('%attribute' => $attribute)));
+        $pass = FALSE;
+      }
+    }
+    return $pass;
   }
   function convert($makefile) {
-    
+    // Check for disallowed top-level attributes.
+    foreach ($makefile as $attribute => $attribute_data) {
+      if (!in_array($attribute, $this->top_level_attribute_whitelist)) {
+        unset($makefile[$attribute]);
+      }
+    }
+    return $makefile;
   }
 }
 class DrushMakeDo_CoreVersion extends DrushMakeDo_Transformer {
   function verify($makefile) {
-    
+    return $this->validVersion(dt('Drupal core'), $makefile['core_release']);
   }
   function convert($makefile) {
-    
+    // First order of business: convert core version.
+    $parts = explode('.', $makefile['core']);
+    $core_major = $parts[0];
+    $core = $core_major . '.x';
+
+    // Check for a stable release on the branch.
+    $final_version = $this->latestVersion('drupal', $core_major, $core);
+    if ($final_version) {
+      $makefile['core'] = $final_version;
+      return $makefile;
+    }
+    return FALSE;
   }
 }
 class DrushMakeDo_ProjectWhitelist extends DrushMakeDo_Transformer {
@@ -229,33 +327,6 @@ class DrushMakeDo_ProjectUpdateXML extends DrushMakeDo_Transformer {
   function convert($makefile) {
     
   }
-}
-
-/**
- * Validate release versions.
- *
- * @param $name
- *   The display name of the project.
- * @param $version_string
- *   The version string to test.
- * @return
- * TRUE if the version string is bad, FALSE otherwise.
- */
-function drush_make_d_o_check_valid_version($name, $version_string) {
-  // Development snapshots not allowed.
-  if (preg_match('/.*-dev$/', $version_string)) {
-    drush_make_error('BUILD_ERROR', dt('%project branch releases not allowed.', array('%project' => $name)));
-    return FALSE;
-  }
-  // Basic sanity checking on release version strings. We need this because
-  // drush_make supports projects[foo][version] = 1, which downloads the latest
-  // stable release on the major version 1 branch. We require a specific
-  // release.
-  elseif (!preg_match('/^\d+\.\d+(-[a-z0-9]+)?$/', $version_string)) {
-    drush_make_error('BUILD_ERROR', dt('%project version format incorrect -- specifying an official release version is required.', array('%project' => $name)));
-    return FALSE;
-  }
-  return TRUE;
 }
 
 /**
