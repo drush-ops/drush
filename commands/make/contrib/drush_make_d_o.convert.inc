@@ -278,19 +278,3 @@ class DrushMakeDrupalorgConverter extends DrushMakeDrupalorgVersionChecker {
   }
 
 }
-
-
-/**
- * Custom logging function for conversions going to STDOUT.
- *
- * Drush doesn't output drush_set_error() messages to STDERR, lame-o...  :(
- *
- * This helper function overcomes that deficiency by manually writing error
- * messages to STDERR in the case where output is going to STDOUT.
- */
-function drush_make_d_o_convert_log_stdout_handler($entry) {
-  if ($entry['type'] == 'error' || $entry['type'] == 'failed') {
-    fwrite(STDERR, dt("ERROR") . ": " .  $entry['message'] . "\n");
-  }
-}
-

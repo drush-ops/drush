@@ -125,29 +125,6 @@ function drush_make_d_o_drush_make_validate_info($info) {
           $object = new $transformer('make');
           $pass = $pass && $object->verify($info);
         }
-        /*
-        // Check for disallowed project-level attributes.
-        foreach ($project_data as $attribute => $attribute_data) {
-          if (!in_array($attribute, $project_attribute_whitelist)) {
-            drush_make_error('BUILD_ERROR', dt("The project-level attribute '%attribute' is not allowed in drupal.org .make files", array('%attribute' => $attribute)));
-            $errors = TRUE;
-          }
-        }
-        // Check that patches do in fact come from drupal.org.
-        if (isset($project_data['patch'])) {
-          foreach ($project_data['patch'] as $patch) {
-            if (strpos($patch, 'http://drupal.org/files/issues') !== 0) {
-              drush_make_error('BUILD_ERROR', dt("The patch '%patch' is not hosted on drupal.org", array('%patch' => $patch)));
-              $errors = TRUE;
-            }
-          }
-        }
-        $info['projects'][$project] += array(
-          'name' => $project,
-          'core' => $info['core'],
-        );
-        $info['projects'][$project] = drush_make_d_o_updatexml($info['projects'][$project]);
-        */
       }
     }
 
@@ -307,7 +284,13 @@ class DrushMakeDo_ProjectVersion extends DrushMakeDo_Transformer {
 }
 class DrushMakeDo_ProjectWhitelist extends DrushMakeDo_Transformer {
   function verify($makefile) {
-    
+    // Check for disallowed project-level attributes.
+    foreach ($project_data as $attribute => $attribute_data) {
+      if (!in_array($attribute, $project_attribute_whitelist)) {
+        drush_make_error('BUILD_ERROR', dt("The project-level attribute '%attribute' is not allowed in drupal.org .make files", array('%attribute' => $attribute)));
+        $errors = TRUE;
+      }
+    }
   }
   function convert($makefile) {
     
@@ -315,7 +298,17 @@ class DrushMakeDo_ProjectWhitelist extends DrushMakeDo_Transformer {
 }
 class DrushMakeDo_ProjectPatch extends DrushMakeDo_Transformer {
   function verify($makefile) {
-    
+    /*
+    // Check that patches do in fact come from drupal.org.
+    if (isset($project_data['patch'])) {
+      foreach ($project_data['patch'] as $patch) {
+        if (strpos($patch, 'http://drupal.org/files/issues') !== 0) {
+          drush_make_error('BUILD_ERROR', dt("The patch '%patch' is not hosted on drupal.org", array('%patch' => $patch)));
+          $errors = TRUE;
+        }
+      }
+    }
+    */
   }
   function convert($makefile) {
     
@@ -323,7 +316,11 @@ class DrushMakeDo_ProjectPatch extends DrushMakeDo_Transformer {
 }
 class DrushMakeDo_ProjectUpdateXML extends DrushMakeDo_Transformer {
   function verify($makefile) {
-    
+    $info['projects'][$project] += array(
+      'name' => $project,
+      'core' => $info['core'],
+    );
+    $info['projects'][$project] = drush_make_d_o_updatexml($info['projects'][$project]);
   }
   function convert($makefile) {
     
@@ -422,5 +419,19 @@ function drush_make_d_o_write_package_item_nid($project) {
 function drush_make_d_o_log_errors_to_file($entry) {
   if ($entry['type'] == 'error' || $entry['type'] == 'failed') {
     file_put_contents(drush_get_option('drupal-org-build-root') . '/' . DRUSH_MAKE_DO_BUILD_ERRORS_FILE, $entry['message'] . "\n", FILE_APPEND);
+  }
+}
+
+/**
+ * Custom logging function for conversions going to STDOUT.
+ *
+ * Drush doesn't output drush_set_error() messages to STDERR, lame-o...  :(
+ *
+ * This helper function overcomes that deficiency by manually writing error
+ * messages to STDERR in the case where output is going to STDOUT.
+ */
+function drush_make_d_o_convert_log_stdout_handler($entry) {
+  if ($entry['type'] == 'error' || $entry['type'] == 'failed') {
+    fwrite(STDERR, dt("ERROR") . ": " .  $entry['message'] . "\n");
   }
 }
