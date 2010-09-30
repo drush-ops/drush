@@ -27,11 +27,13 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'options' => array(
       '--sort' => 'Sort commands in alphabetical order. drush waits for full bootstrap before printing any commands when this option is used.',
+      '--filter' => 'Restrict command list to those commands defined in the specified file.',
       '--html' => 'Print help for all commands in HTML format.',
       '--pipe' => 'A list of available commands, one per line.',
     ),
     'examples' => array(
       'drush' => 'List all commands.',
+      'drush --filter=devel_generate' => 'Show only commands defined in devel_generate.drush.inc',
       'drush help pm-download' => 'Show help for one command.',
       'drush help dl' => 'Show help for one command using an alias.',
     ),
@@ -213,7 +215,7 @@ function core_drush_command() {
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
   );
-  
+
   // Topic commands
   $items['core-readme'] = array(
     'description' => dt('README.txt'),
@@ -269,11 +271,11 @@ function drush_core_help() {
       'examples' => array(
         'drush dl cck zen' => 'Download CCK module and Zen theme.',
         'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
-      ),  
+      ),
     );
     $fake += drush_command_defaults('fake', 'fake', __FILE__);
     drush_print_help($fake);
-    
+
     $phases = _drush_bootstrap_phases();
     // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE+1.
     $phases = array_slice($phases, 0, DRUSH_BOOTSTRAP_DRUPAL_SITE+1);
@@ -321,7 +323,7 @@ function drush_core_help() {
         break;
       }
     }
-    
+
     // We delayed printing until now. Sort then print.
     if (drush_get_option('sort')) {
       ksort($all_rows);
@@ -329,7 +331,9 @@ function drush_core_help() {
     }
 
     // Newline-delimited list for use by other scripts. Set the --pipe option.
-    drush_print_pipe($pipe);
+    if (drush_get_option('pipe') && isset($pipe)) {
+      drush_print_pipe($pipe);
+    }
     return;
   }
   else {
@@ -354,7 +358,7 @@ function drush_help_html() {
       $commands[$key] = $command;
     }
   }
-  
+
   if (drush_get_option('sort')) {
     ksort($commands);
   }
@@ -847,7 +851,7 @@ function core_cli_bashrc($drush_command) {
   . .bashrc
   popd > /dev/null
 }
-    
+
 PS1="drush> "
 
 alias on="$drush_command"
