@@ -164,6 +164,9 @@ function drush_make_validate_info_file($info) {
       $errors = TRUE;
     }
     else {
+      // Filter out entries that have been forcibly removed via [foo] = FALSE
+      $info['projects'] = array_filter($info['projects']);
+
       foreach ($info['projects'] as $project => $project_data) {
         // Project has an attributes array.
         if (is_string($project) && is_array($project_data)) {
@@ -216,6 +219,9 @@ function drush_make_validate_info_file($info) {
       $errors = TRUE;
     }
     else {
+      // Filter out entries that have been forcibly removed via [foo] = FALSE
+      $info['libraries'] = array_filter($info['libraries']);
+
       foreach($info['libraries'] as $library => $library_data) {
         if (is_array($library_data)) {
           foreach($library_data as $attribute => $value) {

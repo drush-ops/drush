@@ -316,6 +316,40 @@ makefiles.
     includes[remote] = "http://www.example.com/remote.make"
 
 
+### Overriding properties
+
+Makefiles which include others may override the included makefiles properties.
+Properties in the includer takes precedence over the includee.
+
+**Example:**
+
+`base.make`
+
+    core = "6.x"
+    projects[views][subdir] = "contrib"
+    projects[cck][subdir] = "contrib"
+
+`extender.make`
+
+    includes[base] = "base.make"
+
+    ; This line overrides the included makefile's 'subdir' option
+    projects[views][subdir] = "patched"
+
+    ; This line overrides the included makefile, switching the download type
+    ; to a CVS checkout
+    projects[views][type] = "module"
+    projects[views][download][type] = "cvs"
+    projects[views][download][module] = "contributions/modules/views"
+    projects[views][download][revision] = "DRUPAL-6--2"
+
+A project or library entry of an included makefile can be removed entirely by
+setting the corresponding key to FALSE:
+
+    ; This line removes CCK entirely which was defined in base.make
+    projects[cck] = FALSE
+
+
 Recursion
 ---------
 If a project that is part of a build contains a `.make` itself, drush make will

@@ -84,11 +84,11 @@ function drush_make_test_get_tests($id = NULL) {
       'options'  => array('no-core' => TRUE),
     ),
     'include' => array(
-      'name'     => 'Including files',
+      'name'     => 'Including files and property overrides',
       'makefile' => 'tests/include.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: a20c3f4f4167c6577156fa616f542120',
+        'Build hash: e2e230ec5eccaf5618050559ab11510d',
       ),
       'options'  => array(),
     ),
