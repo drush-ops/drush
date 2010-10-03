@@ -17,7 +17,7 @@ define('DRUSH_DRUPAL_BOOTSTRAP', 'includes/bootstrap.inc');
  * @{
  * Sequential Drush bootstrapping phases.
  */
- 
+
 /**
  * No bootstrap.
  *
@@ -265,7 +265,7 @@ function drush_bootstrap_to_phase($max_phase_index) {
   drush_log(dt("Bootstrap to phase !phase.", array('!phase' => $max_phase_index)), 'bootstrap');
   $phases = _drush_bootstrap_phases();
   $result = TRUE;
-  
+
   // Try to bootstrap to the maximum possible level, without generating errors
   foreach ($phases as $phase_index) {
     if ($phase_index > $max_phase_index) {
@@ -298,7 +298,7 @@ function drush_bootstrap_max($max_phase_index = FALSE) {
   if (!$max_phase_index) {
     $max_phase_index = count($phases);
   }
-  
+
   // Try to bootstrap to the maximum possible level, without generating errors
   foreach ($phases as $phase_index) {
     if ($phase_index > $max_phase_index) {
@@ -334,7 +334,7 @@ function drush_bootstrap_max_to_sitealias($site_record, $max_phase_index = NULL)
 }
 
 /**
- * Bootstrap the first site alias in the provided list 
+ * Bootstrap the first site alias in the provided list
  * that is local.  This is used, for example, by sql-sync,
  * which passes the source and destination targets so that
  * the local site is bootstrapped.
@@ -349,14 +349,14 @@ function drush_bootstrap_max_to_sitealias($site_record, $max_phase_index = NULL)
  */
 function drush_bootstrap_max_to_local_sitealias($site_list, $max_phase_index = NULL) {
   $bootstrapped_site = NULL;
-  
+
   foreach ($site_list as $site) {
     if (($bootstrapped_site == NULL) && (array_key_exists('root', $site) && !array_key_exists('remote-host', $site))) {
       $bootstrapped_site = $site;
       drush_bootstrap_max_to_sitealias($site, $max_phase_index);
     }
   }
-  
+
   return $bootstrapped_site;
 }
 
@@ -683,6 +683,7 @@ function _drush_bootstrap_drupal_site_validate() {
   $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
   $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
   $_SERVER['REQUEST_METHOD']  = NULL;
+
   $_SERVER['SERVER_SOFTWARE'] = NULL;
   $_SERVER['HTTP_USER_AGENT'] = NULL;
 
@@ -842,8 +843,14 @@ function _drush_bootstrap_drupal_full() {
   ob_start();
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   ob_end_clean();
-  // Poke Drupal with a cluestick so it recognizes our system_watchdog() implementation.
-  module_implements('watchdog', FALSE, TRUE);
+
+  // If needed, prod module_implements() to recognize our system_watchdog() implementation.
+  $dogs = module_implements('watchdog');
+  if (!in_array('system', $dogs)) {
+    // Note that this resets module_implements cache.
+    module_implements('watchdog', FALSE, TRUE);
+  }
+
   _drush_log_drupal_messages();
 }
 

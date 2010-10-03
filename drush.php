@@ -67,7 +67,7 @@ function drush_verify_cli() {
 function drush_main() {
   $phases = _drush_bootstrap_phases(FALSE, TRUE);
   drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
-  
+
   $return = '';
   $command_found = FALSE;
 
@@ -181,6 +181,14 @@ function drush_shutdown() {
   if (drush_get_context('DRUSH_PIPE')) {
     drush_pipe_output();
   }
+
+  /**
+   * For now, drush skips end of page processing on D7. Doing so could write
+   * cache entries to module_implements and lookup_cache that don't match web requests.
+   */
+  // if (drush_drupal_major_version() >= 7 && function_exists('drupal_page_footer')) {
+    // drupal_page_footer();
+  // }
 
   // this way drush_return_status will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
   // and won't prevent other registered shutdown functions (IE from numerous cron methods) from running by calling exit() before they get a chance.
