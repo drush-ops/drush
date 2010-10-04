@@ -1177,6 +1177,14 @@ function drush_table_column_autowidth($rows, $widths) {
 }
 
 /**
+ * Cross-platform compatible helper function to recursively create a directory tree.
+ * @see http://theserverpages.com/php/manual/en/function.mkdir.php#50383
+ */
+function drush_mkdir($path) {
+  return is_dir($path) || (drush_mkdir(dirname($path)) && drush_shell_exec('mkdir %s', $path));
+}
+
+/**
  * @defgroup dispatching Command dispatching functions.
  * @{
  *
