@@ -97,7 +97,6 @@ function pm_drush_command() {
   );
   $update_options = array(
     '--lock' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the module as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.',
-    '--backup-dir' => 'Specify a directory to backup packages into, defaults to a backup directory within your Drupal root.',
   );
   $update_suboptions = array(
     '--lock' => array(
@@ -955,6 +954,16 @@ function drush_pm_post_pm_update() {
 }
 
 /**
+ * Validate callback for updatecode command. Abort if 'backup' folder exists.
+ */
+function drush_pm_updatecode_validate() {
+  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+  if (is_dir($drupal_root . DIRECTORY_SEPARATOR . 'backup')) {
+    return drush_set_error('DRUSH_PM_BACKUP_DIR_FORBIDDEN', dt('It\'s a security risk to have a backup folder in your Drupal root. You must move it elsewhere before proceeding.'));
+  }
+}
+
+/**
  * Post-command callback for updatecode. Notify about any pending DB updates.
  */
 function drush_pm_post_pm_updatecode() {
@@ -1197,6 +1206,16 @@ function pm_drush_engine_package_handler() {
  */
 function pm_drush_engine_version_control() {
   return array(
+    'backup' => array(
+      'options' => array(
+        '--version-control=backup' => 'Default engine. Backup all project files before updates.',
+      ),
+      'sub-options' => array(
+        '--version-control=backup' => array(
+          '--backup-dir' => 'Specify a directory to backup packages into. Defaults to .drush-backups within the home directory of the user running the command. It is forbidden to specify a directory inside your drupal root.',
+        ),
+      ),
+    ),
     'svn' => array(
       'signature' => 'svn info %s',
       'options' => array(
@@ -1216,16 +1235,6 @@ function pm_drush_engine_version_control() {
       ),
       'examples' => array(
         'drush [command] cck --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
-      ),
-    ),
-    'backup' => array(
-      'options' => array(
-        '--version-control=backup' => 'Backup all project files before updates.',
-      ),
-      'sub-options' => array(
-        '--version-control=backup' => array(
-          '--backup-dir' => 'Backup destination directory. Defaults to a "/backup" subdirectory inside your Drupal root.',
-        ),
       ),
     ),
     'bzr' => array(
