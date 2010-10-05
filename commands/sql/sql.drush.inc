@@ -38,6 +38,7 @@ function sql_drush_command() {
     'description' => 'Print database connection details using print_r().',
     'arguments' => array(
       'all' => 'Show all database connections, instead of just one.',
+      'show-passwords' => 'Show database password.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
