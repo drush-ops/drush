@@ -279,7 +279,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
 
       // TODO: actually make the backup if desired.
       drush_print();
-      drush_print(dt("You might want to make a backup first, using sql_dump command.\n"));
+      drush_print(dt("You might want to make a backup first, using the sql-dump command.\n"));
       if (!drush_confirm(dt('Do you really want to continue?'))) {
         drush_die('Aborting.');
       }

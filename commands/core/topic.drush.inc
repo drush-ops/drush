@@ -41,7 +41,7 @@ function topic_drush_help_alter($command) {
 }
 /**
  * A command callback.
- * 
+ *
  * Show a choice list of available topics and then dispatch to the respective command.
  *
  * @param string $topic_name
@@ -61,6 +61,9 @@ function drush_topic($topic_name = NULL) {
   return drush_do_command_redispatch($topic_name);
 }
 
+/**
+ * Retrieve all defined topics
+ */
 function drush_get_topics() {
   $commands = drush_get_commands();
   foreach ($commands as $key => $command) {
