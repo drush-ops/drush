@@ -1454,7 +1454,7 @@ function dlm($object) {
   drush_log($contents);
 }
 
-/*
+/**
  * Display the pipe output for the current request.
  */
 function drush_pipe_output() {

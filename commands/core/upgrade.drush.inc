@@ -1,13 +1,11 @@
 <?php
 // $Id$
 
-/* TODO
- * - upgrade to specific releases.
-/*
-
 /**
  * @file
  *   Refine your Drupal major version upgrade.
+ *
+ * @todo Upgrade to specific releases.
  */
 
 /**

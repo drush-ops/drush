@@ -43,7 +43,7 @@ function drush_policy_updatedb_validate() {
   }
 }
 
-/*
+/**
  * Implementation of drush_hook_COMMAND_validate().
  * 
  * Only sudo tells me to make a sandwich: http://xkcd.com/149/

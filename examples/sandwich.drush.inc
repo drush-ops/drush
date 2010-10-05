@@ -72,7 +72,7 @@ function sandwich_drush_help($section) {
   }
 }
 
-/*
+/**
  * Implementation of drush_hook_COMMAND_validate().
  */
 function drush_sandwich_make_me_a_sandwich_validate() {

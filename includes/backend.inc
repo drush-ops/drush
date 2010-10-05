@@ -252,7 +252,7 @@ function drush_backend_invoke($command, $data = array(), $method = 'GET', $integ
   return drush_backend_invoke_args($command, $args, $data, $method, $integrate, $drush_path, $hostname, $username);
 }
 
-/*
+/**
  * A variant of drush_backend_invoke() which specifies command and arguments separately.
  */
 function drush_backend_invoke_args($command, $args, $data = array(), $method = 'GET', $integrate = TRUE, $drush_path = NULL, $hostname = NULL, $username = NULL, $ssh_options = NULL) {

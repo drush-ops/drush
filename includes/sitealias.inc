@@ -111,7 +111,7 @@ function drush_sitealias_get_record($alias) {
   return $alias_record;
 }
 
-/*
+/**
  * This is a continuation of drush_sitealias_get_record, above.  It is
  * not intended to be called directly.
  */
@@ -1283,7 +1283,7 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   drush_set_config_options('alias', $options);
 }
 
-/*
+/**
  * Call prior to drush_sitealias_evaluate_path to insure
  * that any site-specific aliases associated with any
  * local site in $path are defined.
