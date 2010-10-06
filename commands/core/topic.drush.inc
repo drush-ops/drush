@@ -47,7 +47,7 @@ function topic_drush_help_alter($command) {
  * @param string $topic_name
  *   A command name.
  */
-function drush_topic($topic_name = NULL) {
+function drush_core_topic($topic_name = NULL) {
   $commands = drush_get_commands();
   if (is_null($topic_name)) {
     // Show choice list.
