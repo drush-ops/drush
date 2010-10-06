@@ -21,6 +21,11 @@
     case 7:
     default:
       $types = drush_cache_clear_types();
+      // Check if the provided type ($type) is a valid cache type.
+      if ($type && !key_exists($type, $types)) {
+        return drush_set_error(dt("'!type' cache is not a valid cache type", array('!type' => $type)));
+      }
+
       if ($type) {
         drush_op('call_user_func', $types[$type]);
         drush_log(dt("'!name' cache was cleared", array('!name' => $type)), 'success');
