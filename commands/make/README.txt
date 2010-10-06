@@ -112,6 +112,14 @@ The make file always begins by specifying the core version of Drupal for which
     core = 6.x
 
 
+### API version
+
+The make file must specify which Drush Make API version it uses. This version
+of Drush Make uses API version `2`
+
+    api = 2
+
+
 ### Projects
 
 An array of the projects to be retrieved. Each project name can be specified as

@@ -16,6 +16,13 @@
 
 core = 6.x
 
+; API version
+; ------------
+; Every makefile needs to declare it's Drush Make API version. This version of
+; drush make uses API version `2`.
+
+api = 2
+
 ; Core project
 ; ------------
 ; In order for your makefile to generate a full Drupal site, you must include
