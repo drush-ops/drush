@@ -335,11 +335,12 @@ function drush_make_build_path($build_path) {
 
 function drush_make_move_build($build_path) {
   $tmp_path = drush_make_tmp();
+  $ret = TRUE;
   if ($build_path == '.') {
     drush_shell_exec('ls -A %s', $tmp_path . '/__build__');
     $info = drush_shell_exec_output();
     foreach ($info as $file) {
-      drush_shell_exec("cp -Rf %s %s", $tmp_path . '/__build__/' . $file, $build_path);
+      $ret = $ret && drush_shell_exec("cp -Rf %s %s", $tmp_path . '/__build__/' . $file, $build_path);
     }
   }
   else {
@@ -347,7 +348,10 @@ function drush_make_move_build($build_path) {
     drush_shell_exec("mv %s %s", $tmp_path . '/__build__', $tmp_path . '/' . basename($build_path));
     drush_shell_exec("cp -Rf %s %s", $tmp_path . '/' . basename($build_path), dirname($build_path));
   }
-  return TRUE;
+  if (!$ret) {
+    drush_set_error(dt("Cannot move build into place"));
+  }
+  return $ret;
 }
 
 function drush_make_version() {
