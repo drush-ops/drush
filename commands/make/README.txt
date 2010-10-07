@@ -209,26 +209,18 @@ Do not use both types of declarations for a single project in your makefile.
   Use an alternative download method instead of retrieval through update XML.
   The following methods are available:
 
-- `download[type][get]`
+- `download[type][file]`
 
   Retrieve a project as a direct download. Options:
 
   `url` - the URL of the file. Required.
 
-- `download[type][post]`
+  `request_type` - the request type - get or post. Defaults to get. Optional.
 
-  Retrieve a project as a direct download using an HTTP POST request. Options:
-
-  `url` - the URL of the file. Required.
-
-  `post_data` - The post data to be submitted with the request. Should be a
+  `data` - The post data to be submitted with the request. Should be a
   valid URL query string. Required.
 
-  `file_type` - A file type extension to use for the retrieved file. Optional.
-
-     projects[mytheme][download][type] = "post"
-     projects[mytheme][download][url] = "http://example.com/download/mytheme"
-     projects[mytheme][download][post_data] = "format=zip&version=1.0"
+  `filename` - What to name the file, if it's not an archive. Optional.
 
 - `download[type][bzr]`
 
