@@ -26,6 +26,9 @@ class DrushMakeProject {
     if (drush_make_download_factory($this->download['type'], $this->name, $this->download, $download_location) === FALSE) {
       return FALSE;
     }
+    if (!$this->addLockfile($download_location)) {
+      return FALSE;
+    }
     if (!$this->applyPatches($download_location)) {
       return FALSE;
     }
@@ -84,6 +87,15 @@ class DrushMakeProject {
       }
     }
     return TRUE;
+  }
+
+  /**
+   * Add a lock file.
+   */
+  function addLockfile($project_directory) {
+    if (!empty($this->lock)) {
+      file_put_contents($project_directory . '/.drush-lock-update', $this->lock);
+    }
   }
 
   /**
