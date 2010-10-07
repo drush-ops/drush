@@ -289,7 +289,7 @@ array of options in the libraries array.
 
 **Example:**
 
-    libraries[jquery_ui][download][type] = "get"
+    libraries[jquery_ui][download][type] = "file"
     libraries[jquery_ui][download][url] = "http://jquery- ui.googlecode.com/files/jquery.ui-1.6.zip"
 
 

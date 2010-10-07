@@ -32,7 +32,7 @@ api = 2
 
 ; Use pressflow instead of Drupal core:
 ; projects[pressflow][type] = "core"
-; projects[pressflow][download][type] = "get"
+; projects[pressflow][download][type] = "file"
 ; projects[pressflow][download][url] = "http://launchpad.net/pressflow/6.x/6.15.73/+download/pressflow-6.15.73.tar.gz"
 
 ; CVS checkout of Drupal 6.x core:
