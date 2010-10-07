@@ -209,7 +209,7 @@ Do not use both types of declarations for a single project in your makefile.
   Use an alternative download method instead of retrieval through update XML.
   The following methods are available:
 
-- `download[type][file]`
+- `download[type] = file`
 
   Retrieve a project as a direct download. Options:
 
@@ -222,13 +222,13 @@ Do not use both types of declarations for a single project in your makefile.
 
   `filename` - What to name the file, if it's not an archive. Optional.
 
-- `download[type][bzr]`
+- `download[type] = bzr`
 
   Use a bazaar repository as the source for this project. Options:
 
   `url` - the URL of the repository. Required.
 
-- `download[type][cvs]`
+- `download[type] = cvs`
 
   Use a CVS repository as the source for this project. Options:
 
@@ -246,7 +246,7 @@ Do not use both types of declarations for a single project in your makefile.
      projects[mytheme][download][type] = "cvs"
      projects[mytheme][download][module] = "mytheme"
 
-- `download[type][git]`
+- `download[type] = git`
 
   Use a git repository as the source for this project. Options:
 
@@ -261,7 +261,7 @@ Do not use both types of declarations for a single project in your makefile.
      projects[mytheme][download][type] = "git"
      projects[mytheme][download][url] = "git://github.com/jane_doe/mytheme.git"
 
-- `download[type][svn]`
+- `download[type] = svn`
 
   Use an SVN repository as the source for this project. Options:
 
