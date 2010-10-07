@@ -23,7 +23,7 @@ class DrushMakeProject {
       return FALSE;
     }
     $download_location = $this->findDownloadLocation();
-    if (drush_make_download_factory($this->download['type'], $this->name, $this->download, $download_location) === FALSE) {
+    if (drush_make_download_factory($this->name, $this->download, $download_location) === FALSE) {
       return FALSE;
     }
     if (!$this->addLockfile($download_location)) {

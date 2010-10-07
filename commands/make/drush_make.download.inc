@@ -1,8 +1,8 @@
 <?php
 // $Id$
 
-function drush_make_download_factory($type, $name, $download, $download_location) {
-  $function = 'drush_make_download_' . $type;
+function drush_make_download_factory($name, $download, $download_location) {
+  $function = 'drush_make_download_' . $download['type'];
   if (function_exists($function)) {
     return $function($name, $download, $download_location);
   }
