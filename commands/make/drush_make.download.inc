@@ -585,11 +585,22 @@ function drush_make_download_bzr($name, $download, $download_location) {
 
 
 function drush_make_download_svn($name, $download, $download_location) {
-  $command = 'svn  --force --non-interactive export';
   if (!empty($download['url'])) {
-    if (drush_get_option('working-copy')) {
-      $command = 'svn  --force --non-interactive checkout';
+    if (!empty($download['interactive'])) {
+      $options = '--force';
+      $function = 'drush_shell_exec_interactive';
     }
+    else {
+      $options = '--force --non-interactive';
+      $function = 'drush_shell_exec';
+    }
+    if (drush_get_option('working-copy')) {
+      $command = 'svn ' . $options . ' checkout';
+    }
+    else {
+      $command = 'svn ' . $options . ' export';
+    }
+
     $args = array();
 
     if (isset($download['revision'])) {
@@ -602,12 +613,15 @@ function drush_make_download_svn($name, $download, $download_location) {
     $args[] = $download_location;
 
     if (!empty($download['username'])) {
-      $command .= ' --username %s --password %s';
+      $command .= ' --username %s';
       $args[] = $download['username'];
-      $args[] = $download['password'];
+      if (!empty($download['password'])) {
+        $command .= ' --password %s';
+        $args[] = $download['password'];
+      }
     }
     array_unshift($args, $command);
-    $result = call_user_func_array('drush_shell_exec', $args);
+    $result = call_user_func_array($function, $args);
     if ($result) {
       drush_log(dt('%project @command from %url.', array('%project' => $name, '@command' => $command, '%url' => $download['url'])), 'ok');
       return $download_location;
@@ -621,4 +635,3 @@ function drush_make_download_svn($name, $download, $download_location) {
     return FALSE;
   }
 }
-

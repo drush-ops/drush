@@ -392,6 +392,41 @@ if (!function_exists('drush_shell_cd_and_exec')) {
   }
 }
 
+if (!function_exists('drush_shell_exec_interactive')) {
+  /**
+   * Copy of drush_shell_exec() that allows for interactive commands.
+   */
+  function drush_shell_exec_interactive($cmd) {
+    $args = func_get_args();
+  
+    //do not change the command itself, just the parameters.
+    for ($x = 1; $x < sizeof($args); $x++) {
+      $args[$x] = escapeshellarg($args[$x]);
+    }
+    $command = call_user_func_array('sprintf', $args);
+  
+    if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+      drush_log('Executing: ' . $command);
+    }
+  
+    if (!drush_get_context('DRUSH_SIMULATE')) {
+      exec($command, $output, $result);
+  
+      if (drush_get_context('DRUSH_DEBUG')) {
+        foreach ($output as $line) {
+          drush_print($line, 2);
+        }
+      }
+  
+      // Exit code 0 means success.
+      return ($result == 0);
+    }
+    else {
+      return 0;
+    }
+  }
+}
+
 /**
  * Get data based on the source.
  *

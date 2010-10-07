@@ -275,6 +275,10 @@ Do not use both types of declarations for a single project in your makefile.
 
   `url` - the URL of the repository. Required.
 
+  `interactive` - whether to prompt the user for authentication credentials
+  when using a private repository. Allows username and/or password options to
+  be omitted. Optional.
+
   `username` - the username to use when retrieving an SVN project as a working
   copy or from a private repository. Optional.
 
