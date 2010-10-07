@@ -65,7 +65,7 @@ function drush_make_download_cvs($name, $download, $download_location) {
 function drush_make_download_file($name, $download, $download_location) {
   if ($filename = _drush_make_download_file($download)) {
     drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
-    return drush_make_download_file_unpack($filename, $download_location);
+    return drush_make_download_file_unpack($filename, $download_location, (isset($download['filename']) ? $download['filename'] : ''));
   }
   drush_make_error('DOWNLOAD_ERROR', dt('Unable to download %project from %url.', array('%project' => $name, '%url' => $download['url'])));
   return FALSE;
@@ -227,9 +227,8 @@ function _drush_make_download_file($download) {
   return FALSE;
 }
 
-function drush_make_download_file_unpack($filename, $download_location) {
+function drush_make_download_file_unpack($filename, $download_location, $name) {
   $extension = array_pop(explode('.', $filename));
-  $gzip = FALSE;
   switch ($extension) {
     case 'gz':
     case 'tgz':
@@ -243,7 +242,7 @@ function drush_make_download_file_unpack($filename, $download_location) {
       drush_make_download_file_unpack_zip($filename, $download_location);
       break;
     default:
-      drush_make_error('DOWNLOAD_ERROR', dt('Unable to unpack %file', array('%file' => $filename)));
+      drush_shell_exec('mv %s %s', $filename, $download_location . ($name ? '/' . $name : ''));
   }
 }
 

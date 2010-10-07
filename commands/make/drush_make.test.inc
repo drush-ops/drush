@@ -137,6 +137,15 @@ function drush_make_test_get_tests($id = NULL) {
       ),
       'options'  => array('no-core' => TRUE, 'contrib-destination' => '.'),
     ),
+    'file' => array(
+      'name'     => 'File extraction',
+      'makefile' => 'tests/file.make',
+      'build'    => TRUE,
+      'messages' => array(
+        'Build hash: ab8cb79508e9c992dace2e40c6435e5b',
+      ),
+      'options'  => array('no-core' => TRUE),
+    ),
   );
   if (isset($id)) {
     return isset($tests[$id]) ? $tests[$id] : FALSE;
