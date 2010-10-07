@@ -278,18 +278,21 @@ function drush_make_download_file_unpack_tar($filename, $download_location) {
 
 function drush_make_download_file_unpack_gzip($filename, $download_location) {
   // Find out where contents will end up. Retrieve last column of output using awk.
-  drush_shell_exec("gzip --list %s | awk '{print $4;}'", $filename);
+  drush_shell_exec("gzip --list %s", $filename);
   $info = drush_shell_exec_output();
   if ($info) {
-    $info = array_pop($info);
-    $matches = array();
-    preg_match('/[a-zA-Z0-9.\-_,]*.tar/', $info, $matches);
-    if (isset($matches[0])) {
-      $file = dirname($filename) . '/' . $matches[0];
+    foreach ($info as $line) {
+      $matches = array();
+      preg_match('/^\s+[0-9]+\s+[0-9-]+\s+[0-9\.%]+\s+(.*)$/', $line, $matches);
+      if (isset($matches[1])) {
+        $file = $matches[1];
+        break;
+      }
+    }
+    if (isset($file)) {
       // Unzip it and then delete the tar file.
       drush_shell_exec('gzip -d %s', $filename);
-      $filename = $file;
-      return drush_make_download_file_unpack_tar($filename, $download_location);
+      return drush_make_download_file_unpack_tar($file, $download_location);
     }
   }
   drush_make_error('PACKAGE_ERROR', dt('Could not retrieve package information for %filename.', array('%filename' => $filename)));
