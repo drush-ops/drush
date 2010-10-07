@@ -139,7 +139,12 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
     );
     $project = drush_make_updatexml($project);
     $class_name = 'DrushMakeProject_' . $project['type'];
-    $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = new $class_name($project);
+    if (class_exists($class_name)) {
+      $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = new $class_name($project);
+    }
+    else {
+      drush_make_error(dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $key)));
+    }
   }
 
   if (!empty($projects['core'])) {
