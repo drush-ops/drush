@@ -8,7 +8,7 @@ function drush_make_test($test) {
   if (empty($test)) {
     $rows = array();
     $rows[] = array(dt('Command'), dt('Description'));
-    $rows[] = array('-------', '-----------');
+    $rows[] = array(   '-------',     '-----------');
     foreach (drush_make_test_get_tests() as $id => $info) {
       $rows[] = array($id, $info['name']);
     }
