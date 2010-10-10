@@ -2,22 +2,15 @@
 // $Id$
 
 function drush_make_ensure_version() {
-  // Check version 4:
   if (function_exists('drush_get_global_options')) {
-    return '4.0';
+    return TRUE;
   }
-  // Check version 2.1 or up:
   $options = drush_get_option_help();
-  if (isset($options['-n, --nocolor'])) {
-    return '2.1';
-  }
-
-  if (isset($options['--nocolor'])) {
-    return '2.2';
+  if (isset($options['-n, --nocolor']) || isset($options['--nocolor'])) {
+    return TRUE;
   }
 
   drush_set_error(dt('Drush version 2.1 or higher is required for drush make to work.'));
-  return;
 }
 
 /**
