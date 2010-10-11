@@ -1349,7 +1349,7 @@ function drush_pm_download() {
         if (!empty($request['version'])) {
           $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
           if (empty($releases)) {
-            drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'notice');
+            drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'warning');
           }
         }
         // If that did not work, get the first published release for the recommended major version.
