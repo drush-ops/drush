@@ -64,12 +64,14 @@ function drush_core_pre_site_install() {
   // Make sure we are only replacing the database name,
   // and not a username or password that is the same as the database name.
   $exec = str_replace(" {$db_spec['database']}", " {$replacement_db}", $exec) . ' -e ';
-  if (drush_op('system', $exec . ' "DROP DATABASE IF EXISTS ' . $db_spec['database'] . '"') && !drush_get_context('DRUSH_SIMULATE')) {
+  // Quote database name with backticks, and add escaping for the shell.
+  $database_name = "\`{$db_spec['database']}\`";
+  if (drush_op('system', $exec . ' "DROP DATABASE IF EXISTS ' . $database_name . '"') && !drush_get_context('DRUSH_SIMULATE')) {
     drush_set_error(dt('Could not drop database: @name', array('@name' => $db_spec['database'])));
     return;
   }
 
-  if (drush_op('system', $exec . '"CREATE DATABASE ' . $db_spec['database'] . '"') && !drush_get_context('DRUSH_SIMULATE')) {
+  if (drush_op('system', $exec . '"CREATE DATABASE ' . $database_name . '"') && !drush_get_context('DRUSH_SIMULATE')) {
     drush_set_error(dt('Could not create new database: @name', array('@name' => $db_spec['database'])));
     return;
   }
