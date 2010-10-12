@@ -254,6 +254,7 @@ function pm_update_packages($projects) {
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
   drush_print(dt('Code updates will be made to the following projects:'));
+  $print = '';
   foreach($projects as $project) {
     $print .= $project['title'] . " [" . $project['name'] . '-' . $project['candidate_version'] . "], ";
   }
