@@ -14,7 +14,7 @@ function drush_pm_updatecode() {
 
   // Get update status information.
   $projects = _pm_get_update_info();
-  
+
   // Process locks specified on the command line
   $locked_list = drush_pm_update_lock($projects, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
@@ -105,7 +105,7 @@ function drush_pm_updatecode() {
     return drush_log(dt('No action taken in simulated mode.'), 'ok');
     return TRUE;
   }
-  
+
   if (isset($updateable['drupal'])) {
     $drupal_project = $updateable['drupal'];
     unset($projects['drupal']);
@@ -198,6 +198,9 @@ function _pm_update_core(&$project, $module_list = array()) {
     return FALSE;
   }
 
+  // Package handlers want the project directory in project_dir.
+  $project['project_dir'] = $project['path'];
+
   // Update core.
   if (pm_update_project($project, $version_control) === FALSE) {
     return FALSE;
@@ -283,7 +286,13 @@ function pm_update_packages($projects) {
     if (!$version_control->pre_update($project)) {
       return FALSE;
     }
-    // Run update on one project
+
+    // Package handlers want the name of the directory in project_dir.
+    // It may be different to the project name for pm-download.
+    // Perhaps we want here filename($project['full_project_path']).
+    $project['project_dir'] = $project['name'];
+
+    // Run update on one project.
     if (pm_update_project($project, $version_control) === FALSE) {
       return FALSE;
     }
@@ -294,7 +303,7 @@ function pm_update_packages($projects) {
 }
 
 /**
- * Update one project -- a module, theme or Drupal core
+ * Update one project -- a module, theme or Drupal core.
  *
  * @param $project
  *   The project to upgrade.  $project['full_project_path'] must be set

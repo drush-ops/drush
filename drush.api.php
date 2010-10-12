@@ -153,7 +153,7 @@ function hook_drush_exit() {
 /**
  * Take action after a project has been downloaded.
  */
-function hook_drush_pm_post_download($project, $release, $destination) {
+function hook_drush_pm_post_download($project, $release) {
 
 }
 
@@ -165,11 +165,13 @@ function hook_pm_post_update($release_name, $release_candidate_version, $project
 }
 
 /**
- * Adjust the location that a project should be downloaded to.
+ * Adjust the location that a project should be copied to after being downloaded.
+ *
+ * See @pm_drush_pm_download_destination_alter().
  */
-function hook_drush_pm_adjust_download_destination(&$project, $release) {
+function hook_drush_pm_download_destination_alter(&$project, $release) {
   if ($some_condition) {
-    $project['project_install_location'] = '/path/to/install/to/' . basename($project['full_project_path']);
+    $project['project_install_location'] = '/path/to/install/to/' . $project['project_dir'];
   }
 }
 

@@ -77,7 +77,14 @@ function pm_drush_help($section) {
       case 'drush:pm-releases':
       return dt("View all releases for a given project (modules, themes, profiles, translations). Useful for deciding which version to install/update.");
     case 'drush:pm-download':
-      return dt("Quickly download projects (modules, themes, profiles, translations) from drupal.org. Automatically figures out which module version you want based on its latest release, or you may specify a particular version. Downloads drupal core as well.  If no destination is provided, defaults to a site specific modules directory if available, then to sites/all/modules if available, then to the current working directory.");
+      return dt("Download Drupal core or projects (modules, themes, profiles, translations) from drupal.org and other sources. It will automatically figure out which project version you want based on its latest release, or you may specify a particular version.
+
+If no destination is provided, then it depends on the project type:
+  - Profiles will be downloaded to profiles/ in your Drupal root.
+  - Translations will be decompressed from your Drupal root.
+  - Modules and themes will be downloaded to the site specific directory (sites/example.com/modules|themes if available) or to sites/all/modules|themes.
+  - If you're downloading drupal core or you are not running the command within a bootstrapped drupal site, the default location is the current directory.
+  - Drush commands will be relocated to /usr/share/drush/commands (if available) or ~/.drush. Relocation is determined once the project is downloaded by examining its content. Note you can provide your own function in a commandfile to determine the relocation of any project.");
   }
 }
 
@@ -192,10 +199,10 @@ function pm_drush_command() {
   $items['pm-download'] = array(
     'description' => 'Download core Drupal and projects like CCK, Zen, etc.',
     'examples' => array(
-      'drush dl' => 'Download latest version of Drupal core.',
-      'drush dl drupal' => 'Download latest stable version of Drupal core',
-      'drush dl drupal-7.x' => 'Download latest 7.x development version of Drupal core',
-      'drush dl cck zen es' => 'Download latest versions of CCK, Zen and Spanish translations for my version of Drupal.',
+      'drush dl' => 'Download latest recommended release of Drupal core.',
+      'drush dl drupal' => 'Same as `drush dl`.',
+      'drush dl drupal-7.x' => 'Download latest 7.x development version of Drupal core.',
+      'drush dl cck zen es' => 'Download latest versions of CCK, Zen and Spanish translations for your Drupal version.',
       'drush dl og-1.3' => 'Download a specfic version of Organic groups module for my version of Drupal.',
       'drush dl diff-6.x-2.x' => 'Download a specific development branch of diff module for a specific Drupal version.',
     ),
@@ -203,13 +210,13 @@ function pm_drush_command() {
       'projects' => 'A space separated list of project names, with optional version. Defaults to \'drupal\'',
     ),
     'options' => array(
-      '--destination' => 'Path to which the project will be copied.',
+      '--destination' => 'Path to which the project will be copied. If you\'re providing a relative path, note it is relative to the drupal root (if bootstrapped).',
       '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
       '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.",
-      '--drupal-project-rename' => 'Alternate name for "drupal" directory when downloading drupal project.',
+      '--drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. If empty, will defaults to "drupal".',
       '--pipe' => 'Returns a list of the names of the modules and themes contained in the downloaded projects.',
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap required.
     'aliases' => array('dl'),
     'deprecated-aliases' => array('download'),
   ) + $engines;
@@ -994,28 +1001,26 @@ function pm_dl_destination_lookup($type, $drupal_root, $sitepath, $create = FALS
   switch ($type) {
     case 'module':
       // Prefer sites/all/modules/contrib if it exists.
-      $destination = $sitepath . 'modules/';
-      $contrib = $destination . 'contrib/';
+      $destination = $sitepath . '/modules';
+      $contrib = $destination . '/contrib';
       if (is_dir($contrib)) {
         $destination = $contrib;
       }
       break;
     case 'theme':
-      $destination = $sitepath . 'themes/';
+      $destination = $sitepath . '/themes';
       break;
     case 'theme engine':
-      $destination = $sitepath . 'themes/engines/';
+      $destination = $sitepath . '/themes/engines';
       break;
-    case 'translation':
-      $destination = $drupal_root . '/';
-      break;
+    //case 'translation': We never hit this case.
     case 'profile':
-      $destination = $drupal_root . '/profiles/';
+      $destination = $drupal_root . '/profiles';
       break;
   }
   if ($create) {
     drush_log(dt('Attempting to create destination directory at !dir', array('!dir' => $destination)));
-    @drush_op('mkdir', $destination, 0777, TRUE);
+    drush_mkdir($destination);
   }
   if (is_dir($destination)) {
     drush_log(dt('Using destination directory !dir', array('!dir' => $destination)));
@@ -1026,64 +1031,55 @@ function pm_dl_destination_lookup($type, $drupal_root, $sitepath, $create = FALS
 }
 
 /**
- * Return the best destination for a particular download type we can find,
- * given the drupal and site contexts.
+ * Returns the best destination for a particular download type we can find.
+ *
+ * It is based on the project type and drupal and site contexts.
  */
 function pm_dl_destination($type) {
-  // Attempt 0: Use the user specified destination directory, if it exists.
-  $destination = drush_get_option('destination');
-  if (!empty($destination)) {
-    $destination = rtrim($destination, '/') . '/';
-    if (!is_dir($destination)) {
-      drush_print(dt("The directory !destination does not exist.", array('!destination' => $destination)));
-      if (!drush_get_context('DRUSH_SIMULATE')) {
-        if (drush_confirm(dt('Would you like to create it?'))) {
-          @drush_op('mkdir', $destination, 0777, TRUE);
-        }
-      }
-    }
-    if (is_dir($destination)) {
-      return $destination;
-    }
-    else {
-      return drush_set_error('DRUSH_PM_NO_DESTINATION', dt('The destination directory !destination does not appear to exist.', array('!destination' => $destination)));
-    }
-  }
-
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   $site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT', FALSE);
-  $full_site_root = $drupal_root .'/'. $site_root . '/';
-  $sites_all = $drupal_root . '/sites/all/';
+  $full_site_root = $drupal_root .'/'. $site_root;
+  $sites_all = $drupal_root . '/sites/all';
 
   $in_site_directory = FALSE;
   // Check if we are running within the site directory.
-  if ($full_site_root == substr(drush_cwd() . '/', 0, strlen($full_site_root))) {
+  if ($full_site_root == substr(drush_cwd(), 0, strlen($full_site_root))) {
     $in_site_directory = TRUE;
   }
 
-  // Attempt 1: If we are in a specific site directory, and the destination directory already exists, then we use that.
-  if (empty($destination) && $site_root && $in_site_directory) {
-    $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root);
+  $destination = '';
+  if ($type != 'core') {
+    // Attempt 1: If we are in a specific site directory, and the destination
+    // directory already exists, then we use that.
+    if (empty($destination) && $site_root && $in_site_directory) {
+      $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root);
+    }
+    // Attempt 2: If the destination directory already exists for sites/all,
+    // then we use that.
+    if (empty($destination) && $drupal_root) {
+      $destination = pm_dl_destination_lookup($type, $drupal_root, $sites_all);
+    }
+    // Attempt 3: If a specific (non default) site directory exists and
+    // sites/all does not exist, then we create destination in the site
+    // specific directory.
+    if (empty($destination) && $site_root && $site_root !== 'sites/default' && is_dir($full_site_root) && !is_dir($sites_all)) {
+      $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root, TRUE);
+    }
+    // Attempt 4: If sites/all exists, then we create destination in the
+    // sites/all directory.
+    if (empty($destination) && is_dir($sites_all)) {
+      $destination = pm_dl_destination_lookup($type, $drupal_root, $sites_all, TRUE);
+    }
+    // Attempt 5: If site directory exists (even default), then we create
+    // destination in the this directory.
+    if (empty($destination) && $site_root && is_dir($full_site_root)) {
+      $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root, TRUE);
+    }
   }
-  // Attempt 2: If the destination directory already exists for sites/all, then we use that.
-  if (empty($destination) && $drupal_root) {
-    $destination = pm_dl_destination_lookup($type, $drupal_root, $sites_all);
-  }
-  // Attempt 3: If a specific (non default) site directory exists and sites/all does not exist, then we create destination in the site specific directory.
-  if (empty($destination) && $site_root && $site_root !== 'sites/default' && is_dir($full_site_root) && !is_dir($sites_all)) {
-    $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root, TRUE);
-  }
-  // Attempt 4: If sites/all exists, then we create destination in the sites/all directory.
-  if (empty($destination) && is_dir($sites_all)) {
-    $destination = pm_dl_destination_lookup($type, $drupal_root, $sites_all, TRUE);
-  }
-  // Attempt 5: If site directory exists (even default), then we create destination in the this directory.
-  if (empty($destination) && $site_root && is_dir($full_site_root)) {
-    $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root, TRUE);
-  }
-  // Attempt 6: If we didn't find a valid directory yet (or we somehow found one that doesn't exist) we always fall back to the current directory.
+  // Attempt 6: If we didn't find a valid directory yet (or we somehow found
+  // one that doesn't exist) we always fall back to the current directory.
   if (empty($destination) || !is_dir($destination)) {
-    $destination = drush_cwd() . '/';
+    $destination = drush_cwd();
   }
 
   return $destination;
@@ -1302,203 +1298,313 @@ function drush_pm_include_version_control($directory = '.') {
   return new $engine();
 }
 
-// Implement drush_COMMAND_init().
+/**
+ * Implementation of drush_COMMAND_init().
+ *
+ * pm-download doesn't require any bootstrap level to operate but it needs to
+ * know if running on a drupal directory in order to select the best location
+ * for projects to download.
+ */
 function drush_pm_download_init() {
-  // Bootstrap to the highest level possible.
   drush_bootstrap_max();
+}
+
+/**
+ * Implementation of drush_COMMAND_validate().
+ */
+function drush_pm_download_validate() {
+  // Validate the user specified destination directory.
+  $destination = drush_get_option('destination');
+  if (!empty($destination)) {
+    $destination = rtrim($destination, DIRECTORY_SEPARATOR);
+    if (!is_dir($destination)) {
+      drush_print(dt("The directory !destination does not exist.", array('!destination' => $destination)));
+      if (!drush_get_context('DRUSH_SIMULATE')) {
+        if (drush_confirm(dt('Would you like to create it?'))) {
+          drush_mkdir($destination);
+        }
+        if (!is_dir($destination)) {
+          return drush_set_error('DRUSH_PM_NO_DESTINATION', dt('Unable to create destination directory !destination.', array('!destination' => $destination)));
+        }
+      }
+    }
+    if (!is_writable($destination)) {
+      return drush_set_error('DRUSH_PM_NO_DESTINATION', dt('Destination directory !destination is not writable.', array('!destination' => $destination)));
+    }
+  }
+
+  // Validate --variant or enforce a sane default.
+  $variant = drush_get_option('variant', FALSE);
+  if ($variant) {
+    if (!in_array($variant, array('core', 'no-core', 'make'))) {
+      drush_log(dt('Unknown variant !variant. Valid values: !variations', array('!variant' => $variant, '!variations' => implode(', ', $variations))), 'error');
+    }
+  }
+  // core and no-core variants are only valid for wget package handler.
+  $package_handler = drush_get_option('package-handler', 'wget');
+  if (($package_handler != 'wget') && ($variant != 'make')) {
+    $new_variant = 'make';
+    if ($variant) {
+      drush_log(dt('Variant !variant is incompatible with !ph package-handler.', array('!variant' => $variant, '!ph' => $package_handler)), 'warning');
+    }
+  }
+  // If we are working on a drupal root, core variant is not an option.
+  else if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
+    if ((!$variant) || (($variant == 'core') && (!isset($new_variant)))) {
+      $new_variant = 'no-core';
+    }
+    if ($variant == 'core') {
+      drush_log(dt('Variant core is not a valid option within a Drupal root.'), 'warning');
+    }
+  }
+
+  if (isset($new_variant)) {
+    drush_set_option('variant', $new_variant);
+    if ($variant) {
+      drush_log(dt('Switching to --variant=!variant.', array('!variant' => $new_variant)), 'ok');
+    }
+  }
 }
 
 /**
  * Command callback. Download Drupal core or any project.
  */
 function drush_pm_download() {
-  drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
+  $package_handler = drush_get_option('package-handler', 'wget');
+  drush_include_engine('package_handler', $package_handler);
 
   if (!$requests = func_get_args()) {
     $requests = array('drupal');
   }
 
-  // Parse out project name and version
+  // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
 
+  // Get release history for each request and download the project.
   $project_types = pm_project_types();
   $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
   foreach ($requests as $name => $request) {
-    // Don't rely on UPDATE_DEFAULT_URL since we are not fully bootstrapped.
+    // Cleanup. We need to unset those variables to avoid using garbage from
+    // previous iteration.
+    unset($error, $release, $releases, $types);
+
+    // Don't rely on UPDATE_DEFAULT_URL since perhaps we are not fully
+    // bootstrapped.
     $url = drush_get_option('source', 'http://updates.drupal.org/release-history') . '/' . $request['name'] . '/' . $request['drupal_version'];
     drush_log('Downloading release history from ' . $url);
-    // A simple download, which is never available via CVS.
     // Some hosts have allow_url_fopen disabled.
     if (!$xml = @simplexml_load_file($url)) {
       if (!drush_shell_exec("wget $url")) {
         drush_shell_exec("curl -O $url");
       }
-      // Get the filename...
       $filename = explode('/', $url);
       $filename = array_pop($filename);
       $xml = simplexml_load_file($filename);
       drush_op('unlink', $filename);
     }
-
-    if ($xml) {
-      if ($error = $xml->xpath('/error')) {
-        drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
-      }
-      else {
-        // Try to get the specified release.
-        if (!empty($request['version'])) {
-          $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
-          if (empty($releases)) {
-            drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'warning');
-          }
-        }
-        // If that did not work, get the first published release for the recommended major version.
-        if (empty($releases)) {
-          if ($recommended_major = $xml->xpath("/project/recommended_major")) {
-            $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
-            $releases = @$xml->xpath($xpath_releases);
-          }
-        }
-
-        // If there are recommended releases (no 'version_extra' elements),
-        // then use only recommended releases.  Otherwise, use all; in
-        // this case, the recommended release defaults to the latest published
-        // release with the right recommended major version number.
-        $recommended_releases = array();
-        if (!empty($releases)) {
-          foreach ($releases as $one_release) {
-            if (!array_key_exists('version_extra', $one_release)) {
-              $recommended_releases[] = $one_release;
-            }
-          }
-        }
-
-        if (!empty($recommended_releases)) {
-          $releases = $recommended_releases;
-        }
-
-        if (empty($releases)) {
-          drush_log(dt('There is no *recommended* release for project !project on Drupal !drupal_version. Ask the maintainer to review http://drupal.org/node/197584 and create/recommend a release in order to be compatible with drush and the drupal.org security broadcast system. A recommended development snapshot release is sufficient. Alternatively, run pm-releases command and explicity pm-download any non-recommended release that might be available.', array('!drupal_version' => $request['drupal_version'], '!project' => $request['name'])), 'ok');
-          continue;
-        }
-
-        // Profiles have 3 variants for a given real relase. Admin can specify using option.
-        // Depends on a fixed order of variations in releases list.
-        // Usually,  the first release is chosen.
-        $variations = array('core', 'no-core', 'make');
-        $variant = drush_get_option('variant', 'core');
-        $release = (array)$releases[array_search($variant, $variations)];
-
-        // Determine what type of project we have, so we know where to put it.
-        $release['type'] = 'module';
-
-        if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
-          $release['type'] = array_search($types[0]->value, $project_types);
-        }
-
-        // Create basic project array.
-        $project = $request;
-        if ($project['base_project_path'] = pm_dl_destination($release['type'])) {
-          $project['full_project_path'] = $project['base_project_path'] .  $request['name'];
-          $project['project_type'] = $release['type'];
-          if (!$version_control = drush_pm_include_version_control($project['base_project_path'])) {
-            return FALSE;
-          }
-          if (package_handler_install_project($project, $release)) {
-            // If the --destination option was not specified, then
-            // allow commandfiles that implement the adjust-download-destination
-            // hook to pick a new default location for the project.
-            if (drush_get_option('destination', FALSE) === FALSE) {
-              drush_pm_relocate_project($project, $release);
-            }
-            drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $project['full_project_path'])), 'success');
-            drush_command_invoke_all('drush_pm_post_download', $project, $release);
-            $version_control->post_download($project);
-            // Find all of the .info files in the destination directory
-            $modules_in_project = array();
-            foreach(drush_scan_directory($project['full_project_path'], "/.*\.info$/", array('.', '..', 'CVS'), 0, TRUE, 'filename') as $filename => $info) {
-              $modules_in_project[] = basename($filename, ".info");
-            }
-            if (count($modules_in_project) > 0) {
-              drush_print_pipe($modules_in_project);
-
-              // If there is only one module / theme in the project, only print out
-              // the message if the module / theme name is different than the project name.
-              if ((count($modules_in_project) == 1) && ($modules_in_project[0] != $request['name'])) {
-                drush_log(dt("Project !project contains a !type named !module.", array('!project' => $request['name'], '!type' => $project['project_type'], '!module' => $modules_in_project[0])), 'success');
-              }
-              // If there are mulitple modules or themes in the project, list them all.
-              else {
-                drush_log(dt("Project !project contains !count !type: !modules.", array('!project' => $request['name'], '!count' => count($modules_in_project), '!type' => $project['project_type'] . 's',  '!modules' => implode(', ', $modules_in_project))), 'success');
-              }
-            }
-          }
-        }
-      }
-    }
-    else {
+    if (!$xml) {
       // We are not getting here since drupal.org always serves an XML response.
       drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
+      continue;
+    }
+    if ($error = $xml->xpath('/error')) {
+      drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
+      continue;
     }
 
-    unset($error, $release, $releases, $types);
-  }
-}
+    // Try to get the specified release.
+    if (!empty($request['version'])) {
+      $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
+      if (empty($releases)) {
+        drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'warning');
+      }
+    }
+    // If that did not work, we will get the first published release for the
+    // recommended major version.
+    if (empty($releases)) {
+      if ($recommended_major = $xml->xpath("/project/recommended_major")) {
+        $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
+        $releases = @$xml->xpath($xpath_releases);
+      }
+    }
+    // If there are recommended releases (no 'version_extra' elements), then use
+    // only recommended releases.  Otherwise, use all; in this case, the
+    // recommended release defaults to the latest published release with the
+    // right recommended major version number.
+    $recommended_releases = array();
+    if (!empty($releases)) {
+      foreach ($releases as $one_release) {
+        if (!array_key_exists('version_extra', $one_release)) {
+          $recommended_releases[] = $one_release;
+        }
+      }
+    }
+    if (!empty($recommended_releases)) {
+      $releases = $recommended_releases;
+    }
+    if (empty($releases)) {
+      drush_log(dt('There is no *recommended* release for project !project on Drupal !drupal_version. Ask the maintainer to review http://drupal.org/node/197584 and create/recommend a release in order to be compatible with drush and the drupal.org security broadcast system. A recommended development snapshot release is sufficient. Alternatively, run pm-releases command and explicity pm-download any non-recommended release that might be available.', array('!drupal_version' => $request['drupal_version'], '!project' => $request['name'])), 'ok');
+      continue;
+    }
 
-/**
- * drush_pm_relocate_project moves projects that should be relocated to a different
- * installation directory to the location they belong in.  For example,
- * modules that are only collections of drush commands will be installed
- * to $HOME/.drush.
- *
- * This function is called after the project is downloaded so that its
- * contents can be examined to determine its optimal installation location.
- * Every drush commandfile is given a chance to examine the project contents
- * and decide where the project should be located.
- */
-function drush_pm_relocate_project(&$project, $release) {
-  // Call the get-install-location hook to see if any drush commandfiles
-  // would like to adjust the install location for this project.
-  // drush_command_invoke_all() allows the first parameter to be passed by reference.
-  drush_command_invoke_all_ref('drush_pm_adjust_download_destination', $project, $release);
+    // Determine what type of project we are to download.
+    $request['project_type'] = 'module';
+    if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
+      $request['project_type'] = array_search($types[0]->value, $project_types);
+    }
 
-  if (isset($project['project_install_location']) && ($project['full_project_path'] != $project['project_install_location'])) {
-    if (drush_move_dir($project['full_project_path'], $project['project_install_location'], TRUE)) {
-      $project['full_project_path'] = $project['project_install_location'];
+    // First published release for the recommended major version is just the
+    // first value in $releases.  Special case for profiles, that have 3
+    // variants(releases) for a given real release.
+    if ($request['project_type'] == 'profile') {
+      // Variants always come in a fixed order in releases list.
+      $variations = array('core', 'no-core', 'make');
+      $variant = drush_get_option('variant', 'core');
+      $release = (array)$releases[array_search($variant, $variations)];
+    }
+    // Translations can't be obtained from cvs.
+    else if (($request['project_type'] == 'translation') && ($package_handler != 'wget')) {
+      drush_log(dt('Requested project !request is a translation package and can\'t be obtained from !ph.', array('!request' => $request['name'], '!ph' => $package_handler)), 'error');
+      continue;
     }
     else {
-      drush_log(dt("Project !project (!version) could not be relocated to !dest.", array('!project' => $project['name'], '!version' => $release['version'], '!dest' => $project['project_install_location'])), 'warning');
+      $release = (array)$releases[0];
     }
+
+    // Determine the name of the directory that will contain the project.
+    // We face here all the asymetries to make it smooth for package handlers.
+    // For Drupal core: --drupal-project-rename or drupal-x.y
+    if ($request['project_type'] == 'core') {
+      if ($rename = drush_get_option('drupal-project-rename', FALSE)) {
+        if ($rename === TRUE) {
+          $request['project_dir'] = 'drupal';
+        }
+        else {
+          $request['project_dir'] = $rename;
+        }
+      }
+      else {
+        // Set to drupal-x.y, the expected name for .tar.gz contents.
+        // Explicitly needed for cvs package handler.
+        $request['project_dir'] = strtolower(strtr($release['name'], ' ', '-'));
+      }
+    }
+    // For the other project types we want the project name. Including core
+    // variant for profiles.  Note those come with drupal-x.y in the .tar.gz.
+    else {
+      $request['project_dir'] = $request['name'];
+    }
+
+    // Download the project to a temporary location.
+    $request['base_project_path'] = drush_tempdir();
+    $request['full_project_path'] = $request['base_project_path'] .'/'. $request['project_dir'];
+    drush_log(dt('Downloading project !name to !dir ...', array('!name' => $request['name'], '!dir' => $request['base_project_path'])));
+    if (!package_handler_install_project($request, $release)) {
+      drush_log('Error downloading '.$request['name']);
+      continue;
+    }
+
+    // Special case: translation projects. Content of .tar.gz is not within a
+    // common directory.
+    if ($request['project_type'] == 'translation') {
+      // If bootstrapped, copy the translation files over the drupal root and
+      // we are done.
+      if (defined('DRUPAL_ROOT')) {
+        drush_shell_exec('cp -r ' . $request['base_project_path'] . '/* ' . DRUPAL_ROOT);
+        drush_log(dt("Translation !project (!version) decompressed over !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => DRUPAL_ROOT)), 'success');
+        continue;
+      }
+      else {
+        // Move to its own directory, as any other project.
+        $olddir = drush_cwd();
+        chdir($request['base_project_path']);
+        drush_shell_exec('mkdir ' . $request['project_dir']);
+        drush_shell_exec('mv * ' . $request['project_dir']);
+        chdir($olddir);
+      }
+    }
+
+    // Determine the install location for the project.  User provided
+    // --destination has preference.
+    $destination = drush_get_option('destination');
+    if (!empty($destination)) {
+      $request['project_install_location'] = $destination;
+    }
+    else {
+      $request['project_install_location'] = pm_dl_destination($request['project_type']);
+    }
+
+    // If user did not provide --destination, then call the
+    // download-destination-alter hook to give the chance to any commandfiles
+    // to adjust the install location.
+    if (empty($destination)) {
+      drush_command_invoke_all_ref('drush_pm_download_destination_alter', $request, $release);
+    }
+
+    // Load version control engine and detect if (the parent directory of) the
+    // project install location is under a vcs.
+    if (!$version_control = drush_pm_include_version_control($request['project_install_location'])) {
+      continue;
+    }
+
+    // Final project install location.
+    $request['project_install_location'] .= '/' . $request['project_dir'];
+
+    // Check if install location already exists.
+    if (is_dir($request['project_install_location'])) {
+      if (!drush_confirm(dt('Install location !location already exists. Do you want to overwrite it?', array('!location' => $request['project_install_location'])))) {
+        drush_log(dt("Abort installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), 'warning');
+        continue;
+      }
+    }
+
+    // Move the project to the install location.
+    if (drush_move_dir($request['full_project_path'], $request['project_install_location'], TRUE)) {
+      drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'success');
+      $request['base_project_path'] = basename($request['project_install_location']);
+      $request['full_project_path'] = $request['project_install_location'];
+    }
+    else {
+      drush_log(dt("Project !project (!version) could not be downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'error');
+      continue;
+    }
+
+    // Post download actions.
+    drush_command_invoke_all('drush_pm_post_download', $request, $release);
+    $version_control->post_download($request);
+
+    // Inform the user about available modules a/o themes in the downloaded package.
+    drush_pm_projects_in_project($request);
   }
-  return TRUE;
 }
 
 /**
- * Built-in adjust-download-destination hook.  This particular version of
+ * Implementation of hook_drush_pm_download_destination_alter().
+ *
+ * Built-in download-destination-alter hook.  This particular version of
  * the hook will move modules that contain only drush commands to
  * /usr/share/drush/commands if it exists, or $HOME/.drush if the
  * site-wide location does not exist.
  */
-function pm_drush_pm_adjust_download_destination(&$project, $release) {
-  // If this project is a module, but it has no .module file, then
-  // check to see if it contains drush commands.  If that is all
-  // that it contains, then install it to $HOME/.drush.
-  if ($release['type'] == 'module') {
+function pm_drush_pm_download_destination_alter(&$project, $release) {
+  // A module is a pure drush command if it has no .module and contain
+  // .drush.inc files.
+  if ($project['project_type'] == 'module') {
     $module_files = drush_scan_directory($project['full_project_path'], '/.*\.module/');
     if (empty($module_files)) {
       $drush_command_files = drush_scan_directory($project['full_project_path'], '/.*\.drush.inc/');
       if (!empty($drush_command_files)) {
-        $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands/';
+        $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
         if (!is_dir($install_dir)) {
-          $install_dir = drush_server_home() . '/.drush/';
+          $install_dir = drush_server_home() . '/.drush';
         }
-        // Make the .drush dir if it does not already exist
+        // Make the .drush dir if it does not already exist.
         if (!is_dir($install_dir)) {
           mkdir($install_dir);
         }
-        // Change the location if the mkdir worked
+        // Change the location if the mkdir worked.
         if (is_dir($install_dir)) {
-          $project['project_install_location'] = $install_dir . basename($project['full_project_path']);
+          $project['project_install_location'] = $install_dir;
         }
       }
     }
@@ -1525,7 +1631,7 @@ function pm_drush_pm_adjust_download_destination(&$project, $release) {
  */
 function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock, $lock_message = NULL) {
   $locked_result = array();
-  
+
   // Warn about ambiguous lock / unlock values
   if ($projects_to_lock == array('1')) {
     $projects_to_lock = array();
@@ -1579,3 +1685,76 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
   return $locked_result;
 }
 
+/**
+ * Print out all modules/themes/profiles found in specified project.
+ *
+ * Find .info files in the project path and identify modules, themes and
+ * profiles. It handles two kind of projects: drupal core/profiles and
+ * modules/themes.
+ * It does nothing with translation or theme engine projects.
+ */
+function drush_pm_projects_in_project($project) {
+  // Drupal core and profiles can contain modules, themes and profiles.
+  if (in_array($project['project_type'], array('core', 'profile'))) {
+    $found = array('profile' => array(), 'theme' => array(), 'module' => array());
+    // Find all of the .info files
+    foreach (drush_scan_directory($project['project_install_location'], "/.*\.info$/") as $filename => $info) {
+      // Find the project type corresponding the .info file.
+     // (Only drupal >=7.x has .info for .profile)
+      $base = dirname($filename) . '/' . $info->name;
+      if (is_file($base . '.module')) {
+        $found['module'][] = $info->name;
+      }
+      else if (is_file($base . '.profile')) {
+        $found['profile'][] = $info->name;
+      }
+      else {
+        $found['theme'][] = $info->name;
+      }
+    }
+    // Special case: find profiles for drupal < 7.x (no .info)
+    if ($project['drupal_version'][0] < 7) {
+      foreach (drush_scan_directory($project['project_install_location'], "/.*\.profile$/") as $filename => $info) {
+        $found['profile'][] = $info->name;
+      }
+    }
+    // Log results.
+    $msg = "Project !project contains:\n";
+    $args = array('!project' => $project['name']);
+    foreach (array_keys($found) as $type) {
+      if ($count = count($found[$type])) {
+        $msg .= " - !count_$type !type_$type: !found_$type\n";
+        $args += array("!count_$type" => $count, "!type_$type" => $type, "!found_$type" => implode(', ', $found[$type]));
+        if ($count > 1) {
+          $args["!type_$type"] = $type.'s';
+        }
+      }
+    }
+    drush_log(dt($msg, $args), 'success');
+    drush_print_pipe(call_user_func_array('array_merge', array_values($found)));
+  }
+  // Modules and themes can only contain other projects of the same type.
+  elseif (in_array($project['project_type'], array('module', 'theme'))) {
+    // Find all of the .info files
+    $found = array();
+    foreach (drush_scan_directory($project['project_install_location'], "/.*\.info$/") as $filename => $info) {
+      $found[] = $info->name;
+    }
+    // Log results.
+    // If there is only one module / theme in the project, only print out
+    // the message if is different than the project name.
+    if (count($found) == 1) {
+      if ($found[0] != $project['name']) {
+        $msg = "Project !project contains a !type named !found.";
+      }
+    }
+    // If there are multiple modules or themes in the project, list them all.
+    else {
+      $msg = "Project !project contains !count !types: !found.";
+    }
+    if (isset($msg)) {
+      drush_print(dt($msg, array('!project' => $project['name'], '!count' => count($found), '!type' => $project['project_type'], '!found' => implode(', ', $found))));
+    }
+    drush_print_pipe($found);
+  }
+}

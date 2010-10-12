@@ -453,6 +453,19 @@ function drush_tempnam($pattern, $tmp_dir = NULL) {
 }
 
 /**
+ * Creates a temporary directory and return its path.
+ */
+function drush_tempdir() {
+  $tmp_dir = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR);
+  $tmp_dir .= '/' . 'drush_tmp_' . time();
+
+  drush_mkdir($tmp_dir);
+  drush_register_file_for_deletion($tmp_dir);
+
+  return $tmp_dir;
+}
+
+/**
  * Any file passed in to this function will be deleted
  * when drush exits.
  */
@@ -480,14 +493,18 @@ function _drush_delete_registered_files() {
     // in case someone came along and deleted it, even
     // though they did not need to.
     if (file_exists($file)) {
-      unlink($file);
+      if (is_dir($file)) {
+        drush_delete_dir($file);
+      }
+      else {
+        unlink($file);
+      }
     }
   }
 }
 
 /**
- * Deletes the provided file or folder and
- * everything inside it.
+ * Deletes the provided file or folder and everything inside it.
  *
  * @param $dir
  *   The directory to delete
@@ -505,7 +522,7 @@ function drush_delete_dir($dir) {
     if ($item == '.' || $item == '..') {
       continue;
     }
-    if (!drush_delete_dir($dir.DIRECTORY_SEPARATOR.$item)) {
+    if (!drush_delete_dir($dir.'/'.$item)) {
       return FALSE;
     }
   }

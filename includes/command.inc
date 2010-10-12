@@ -403,6 +403,8 @@ function drush_command() {
 /**
  * Invoke a hook in all available command files that implement it.
  *
+ * @see drush_command_invoke_all_ref()
+ *
  * @param $hook
  *   The name of the hook to invoke.
  * @param ...
@@ -422,6 +424,11 @@ function drush_command_invoke_all() {
   return call_user_func_array('drush_command_invoke_all_ref', $args);
 }
 
+/**
+ * A drush_command_invoke_all() that wants the first parameter to be passed by reference.
+ *
+ * @see drush_command_invoke_all()
+ */
 function drush_command_invoke_all_ref($hook, &$reference_parameter) {
   $args = func_get_args();
   array_shift($args);

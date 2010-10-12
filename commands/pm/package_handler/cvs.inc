@@ -12,8 +12,6 @@
  * @param $release The release details array from drupal.org
  */
 function package_handler_install_project($project, $release) {
-  drush_log('Downloading project ' . $project['name'] . ' ...');
-
   // Check it out.
   drush_pm_cvs($project, $release);
 
@@ -38,7 +36,6 @@ function package_handler_install_project($project, $release) {
 function package_handler_update_project($project, $release) {
   drush_log('Updating project ' . $project['name'] . ' ...');
 
-
   // Check out a fresh copy, or update an existing one.
   drush_pm_cvs($project, $release);
 
@@ -52,36 +49,26 @@ function package_handler_update_project($project, $release) {
 }
 
 /**
- * General CVS helper function
+ * General CVS helper function.
+ *
  * @param $project The project array with name, base and full (final) paths.
  * @param $release The release details array from drupal.org
  */
 function drush_pm_cvs($project, $release) {
-  // By default we assume a module
-  $repos = 'drupal-contrib';
-  $cvsdir = 'contributions/modules/';
-
-  switch ($project['project_type']) {
-    case 'theme':
-      $cvsdir = 'contributions/themes/';
-      break;
-    case 'theme engine':
-      $cvsdir = 'contributions/theme-engines/';
-      break;
-    case 'translation':
-      drush_set_error('DRUSH_PM_CVS_NO_TRANSLATIONS', 'You cannot install translations with CVS, because they require processing (normally done on drupal.org to produce the tar.gz files).');
-      exit();
-    case 'profile':
-      $cvsdir = 'contributions/profiles/';
-      break;
-    case 'core':
-      $cvsdir = '';
-      $repos = 'drupal';
+  // Determine repository and cvs root, based on project type.
+  if ($project['project_type'] == 'core') {
+    $repos = 'drupal';
+    $cvsdir = $project['name'];
+  }
+  else {
+    $repos = 'drupal-contrib';
+    // strtr for 'theme engine' type.
+    $cvsdir = 'contributions/' . strtr($project['project_type'], ' ' ,'-') . 's/' . $project['name'];
   }
 
+  // Determine reasonable defaults, based on context.
   $cvsmethod = drush_get_option('cvsmethod', FALSE);
   $cvsparams = drush_get_option('cvsparams', FALSE);
-  // Determine reasonable defaults, based on context.
   if (empty($cvsmethod)) {
     $cvsmethod = 'checkout';
     // If we have an existing working copy we update.
@@ -101,10 +88,7 @@ function drush_pm_cvs($project, $release) {
     $cvsparams = '-dP';
   }
 
-  // CVS only accepts relative paths. We will cd in the checkout path right
-  // before running the cvs command.
-  $checkout_path = $project['base_project_path'];
-
+  // Build the parts for the cvs command to execute.
   $cvsparts = array();
   $cvsparts[] = '-z6';
   $cvsparts[] = $cvsparams;
@@ -112,14 +96,16 @@ function drush_pm_cvs($project, $release) {
   $cvsparts[] = $cvsmethod;
   $cvsparts[] = '-r '. $release['tag'];
   if ($cvsmethod == 'checkout') {
-    $cvsparts[] = '-d ' . $project['name'];
-    $cvsparts[] = $cvsdir . $project['name'];
+    $cvsparts[] = '-d ' . $project['project_dir'];
+    $cvsparts[] = $cvsdir;
   }
   else {
-    $cvsparts[] = $project['name'];
+    $cvsparts[] = $project['project_dir'];
   }
 
-  if (!drush_shell_cd_and_exec($checkout_path, 'cvs ' . implode(' ', $cvsparts))) {
+  // CVS only accepts relative paths. We will cd in the checkout path right
+  // before running the cvs command.
+  if (!drush_shell_cd_and_exec($project['base_project_path'], 'cvs ' . implode(' ', $cvsparts))) {
     drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to checkout ' . $project['name'] . ' from cvs.drupal.org.');
   }
 }
