@@ -100,7 +100,7 @@ function drush_pm_cvs($project, $release) {
       // default is to update in place, which will attempt to merge changes
       // but we assume anyone using SVN is competent enough to deal with this!
       // TODO: Make this work with BZR etc.
-      if (!file_exists($path . '/.svn')) {
+      if (!file_exists($project['full_project_path'] . '/.svn')) {
         $command[] = '-dPC';
       }
       else {
