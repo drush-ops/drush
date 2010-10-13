@@ -442,16 +442,14 @@ function drush_user_password($name) {
     return drush_set_error("You must specify a password!");
   }
   if (drush_drupal_major_version() >= 7) {
-    $result = db_query("SELECT uid, name FROM {users} WHERE name = :name", array(':name' => $name));
-    $userinfo = drush_db_fetch_object($result);
-    if ($userinfo->name != $name) return drush_set_error("Could not find a user with the name '" . $name . "'!");
-    $user = user_load(drush_db_result($result));
+    $user = user_load_by_name($name);
   }
   else {
     $user = user_load(array('name' => $name));
   }
   if ($user !== FALSE) {
     if (!drush_get_context('DRUSH_SIMULATE')) {
+
       $user_object = user_save($user, array('pass' => $pass));
       if ($user_object === FALSE) {
         drush_set_error("Could not change the password for the user account with the name " . $name . "!");
