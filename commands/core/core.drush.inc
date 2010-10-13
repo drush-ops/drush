@@ -255,15 +255,13 @@ function drush_core_updatedb() {
 }
 
 /**
- * This is called if no command or an unknown command is entered.
+ * This is called for help command, or no command.
  */
 function drush_core_help() {
   $commands = func_get_args();
 
-  if (drush_get_option('html')) {
-    return drush_print(drush_help_html());
-  }
-  elseif (empty($commands)) {
+
+  if (empty($commands)) {
     // Build a fake command for the purposes of showing examples and options.
     $fake = array(
       'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.',
@@ -274,7 +272,9 @@ function drush_core_help() {
       ),
     );
     $fake += drush_command_defaults('fake', 'fake', __FILE__);
-    drush_print_help($fake);
+    if (!drush_get_option('html')) {
+      drush_print_help($fake);
+    }
 
     $phases = _drush_bootstrap_phases();
     // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE+1.
@@ -314,7 +314,9 @@ function drush_core_help() {
             }
           }
         }
-        if (!drush_get_option('sort')) {
+
+        // These two options require delayed printing.
+        if (!drush_get_option('sort') && !drush_get_option('html')) {
           drush_print_table($rows, FALSE, array(0 => 20));
         }
         $printed_rows = array_merge($printed_rows, $rows);
@@ -324,10 +326,13 @@ function drush_core_help() {
       }
     }
 
-    // We delayed printing until now. Sort then print.
+    // We delayed printing until now.
+    ksort($all_rows);
     if (drush_get_option('sort')) {
-      ksort($all_rows);
       drush_print_table($all_rows, FALSE, array(0 => 20));
+    }
+    elseif (drush_get_option('html')) {
+      return drush_print(drush_help_html($commands));
     }
 
     // Newline-delimited list for use by other scripts. Set the --pipe option.
@@ -351,18 +356,7 @@ function drush_core_help() {
 /**
  * Return an HTML page documenting all available commands and global options.
  */
-function drush_help_html() {
-  foreach (drush_get_commands() as $key => $command) {
-    // Get rid of aliases in command list.
-    if (empty($command['is_alias']) && !$command['hidden']) {
-      $commands[$key] = $command;
-    }
-  }
-
-  if (drush_get_option('sort')) {
-    ksort($commands);
-  }
-
+function drush_help_html($commands) {
   $output =  "<html><head><title>drush help</title><style>dt {font-size: 110%; font-weight: bold}</style></head><body>\n";
 
   // Command table
