@@ -20,7 +20,8 @@
 function drush_parse_args() {
   $args = drush_get_context('argv');
 
-  static $arg_opts = array('c', 'h', 'u', 'r', 'l', 'i');
+  // TODO: commandfiles should be able to extend this list.
+  static $arg_opts = array('c', 'u', 'r', 'l', 'i');
 
   $arguments = $options = array();
 
@@ -199,7 +200,7 @@ function drush_command_defaults($key, $commandfile, $path) {
 function drush_parse_command() {
   $args = drush_get_arguments();
   $command = FALSE;
-  
+
   // Get a list of all implemented commands.
   $implemented = drush_get_commands();
   if (isset($implemented[$args[0]])) {
@@ -304,7 +305,7 @@ function drush_invoke($command) {
     $list = drush_commandfile_list();
 
     $functions = array();
-    
+
     // Run all of the functions available for this variation
     foreach ($list as $commandfile => $filename) {
       $oldfunc = sprintf("drush_%s_%s", $commandfile, $var_hook);
@@ -507,11 +508,11 @@ function drush_commandfile_list() {
 
 function _drush_find_commandfiles($phase, $phase_max = FALSE) {
   $cache =& drush_get_context('DRUSH_COMMAND_FILES', array());
-  
+
   if (!$phase_max) {
     $phase_max = $phase;
   }
-  
+
   static $evaluated = array();
   static $deferred = array();
 
