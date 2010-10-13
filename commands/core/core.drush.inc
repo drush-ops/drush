@@ -276,10 +276,13 @@ function drush_core_help() {
       drush_print_help($fake);
     }
 
+    if (!drush_get_option('html')) {
+      drush_print(dt('Commands: '));
+    }
+
     $phases = _drush_bootstrap_phases();
     // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE+1.
     $phases = array_slice($phases, 0, DRUSH_BOOTSTRAP_DRUPAL_SITE+1);
-    drush_print(dt('Commands: '));
 
     $printed_rows = $all_rows = array();
     $phase_index = DRUSH_BOOTSTRAP_DRUSH;
