@@ -55,57 +55,65 @@ function package_handler_update_project($project, $release) {
  * @param $release The release details array from drupal.org
  */
 function drush_pm_cvs($project, $release) {
-  // Determine repository and cvs root, based on project type.
-  if ($project['project_type'] == 'core') {
-    $repos = 'drupal';
-    $cvsdir = $project['name'];
-  }
-  else {
-    $repos = 'drupal-contrib';
-    // strtr for 'theme engine' type.
-    $cvsdir = 'contributions/' . strtr($project['project_type'], ' ' ,'-') . 's/' . $project['name'];
-  }
+  // Build the cvs command to execute.
+  $command = array('cvs');
 
-  // Determine reasonable defaults, based on context.
+  // Global options.
+  $command[] = '-z6';
+  // cvs root.
+  $cvsroot = '-d:pserver:' . drush_get_option('cvscredentials', 'anonymous:anonymous') . '@cvs.drupal.org:/cvs/';
+  $cvsroot .= ($project['project_type'] == 'core')?'drupal':'drupal-contrib';
+  $command[] = $cvsroot;
+
+  // CVS command ("cvs method").
   $cvsmethod = drush_get_option('cvsmethod', FALSE);
-  $cvsparams = drush_get_option('cvsparams', FALSE);
   if (empty($cvsmethod)) {
     $cvsmethod = 'checkout';
-    // If we have an existing working copy we update.
+     // If we have an existing working copy we update.
     if (is_dir($project['full_project_path'] . '/CVS')) {
       $cvsmethod = 'update';
+    }
+  }
+  $command[] = $cvsmethod;
+
+  // CVS command options.
+  $cvsparams = drush_get_option('cvsparams', FALSE);
+  // common options for any command.
+  $command[] = '-r '. $release['tag'];
+  // command specific options.
+  if ($cvsmethod == 'checkout') {
+    // checkout dir.
+    $command[] = '-d ' . $project['project_dir'];
+    // path to cvs 'module' to check out.
+    if ($project['project_type'] == 'core') {
+      $command[] = $project['name']; // drupal
+    }
+    else {
+      // strtr for 'theme engine' type.
+      $command[] = 'contributions/' . strtr($project['project_type'], ' ' ,'-') . 's/' . $project['name'];
+    }
+  }
+  else {
+    if ($cvsparams === FALSE) {
       // By default we update overwriting changes, however if we have
       // an existing CVS checkout that is version controlled then the
       // default is to update in place, which will attempt to merge changes
       // but we assume anyone using SVN is competent enough to deal with this!
       // TODO: Make this work with BZR etc.
-      if (!file_exists($path . '/.svn') && $cvsparams === FALSE) {
-        $cvsparams = '-dPC';
+      if (!file_exists($path . '/.svn')) {
+        $command[] = '-dPC';
+      }
+      else {
+        $command[] = '-dP';
       }
     }
-  }
-  if ($cvsparams === FALSE) {
-    $cvsparams = '-dP';
-  }
-
-  // Build the parts for the cvs command to execute.
-  $cvsparts = array();
-  $cvsparts[] = '-z6';
-  $cvsparts[] = $cvsparams;
-  $cvsparts[] = '-d:pserver:' . drush_get_option('cvscredentials', 'anonymous:anonymous') . '@cvs.drupal.org:/cvs/' . $repos;
-  $cvsparts[] = $cvsmethod;
-  $cvsparts[] = '-r '. $release['tag'];
-  if ($cvsmethod == 'checkout') {
-    $cvsparts[] = '-d ' . $project['project_dir'];
-    $cvsparts[] = $cvsdir;
-  }
-  else {
-    $cvsparts[] = $project['project_dir'];
+    // Directory to work on.
+    $command[] = $project['project_dir'];
   }
 
   // CVS only accepts relative paths. We will cd in the checkout path right
   // before running the cvs command.
-  if (!drush_shell_cd_and_exec($project['base_project_path'], 'cvs ' . implode(' ', $cvsparts))) {
+  if (!drush_shell_cd_and_exec($project['base_project_path'], implode(' ', $command))) {
     drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to checkout ' . $project['name'] . ' from cvs.drupal.org.');
   }
 }
