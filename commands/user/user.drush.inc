@@ -449,7 +449,6 @@ function drush_user_password($name) {
   }
   if ($user !== FALSE) {
     if (!drush_get_context('DRUSH_SIMULATE')) {
-
       $user_object = user_save($user, array('pass' => $pass));
       if ($user_object === FALSE) {
         drush_set_error("Could not change the password for the user account with the name " . $name . "!");
