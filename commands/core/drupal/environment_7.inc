@@ -119,6 +119,10 @@ function drush_system_modules_form_submit($active_modules) {
   module_load_include('inc', 'system', 'system.admin');
   $form_state = array('values' => array('status' => $active_modules));
   drupal_form_submit('system_modules', $form_state);
+  // Because normally system_modules_submit would call this function if modules
+  // had been changed, in this case we are submitting the module form without
+  // any changes, so we need to clear caches manually.
+  drupal_flush_all_caches();
 }
 
 /**
