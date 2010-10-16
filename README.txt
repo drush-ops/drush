@@ -119,7 +119,7 @@ EXAMPLES
 Inside the "examples" folder you will find some example files to help you
 get started with your drush configuration file (example.drushrc.php),
 site alias definitions (example.aliases.drushrc.php) and drush commands
-(example.drush.inc). You will also see an example 'policy' file which 
+(sandwich.drush.inc). You will also see an example 'policy' file which 
 can be customized to block certain commands or arguments as your organization
 needs.
 
@@ -141,7 +141,7 @@ your own. In fact, writing a drush command is no harder than writing simple
 Drupal modules, since drush command files closely follow the structure of
 ordinary Drupal modules.
 
-See example.drush.inc for light details on the internals of a drush command file.
+See sandwich.drush.inc for light details on the internals of a drush command file.
 Otherwise, the core commands in drush are good models for your own commands.
 
 You can put your drush command file in a number of places:
