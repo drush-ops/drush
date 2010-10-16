@@ -15,6 +15,7 @@
  *
  */
 function _drush_backend_batch_process($command = 'batch-process') {
+  global $user;
   $batch =& batch_get();
 
   if (isset($batch)) {
@@ -51,7 +52,12 @@ function _drush_backend_batch_process($command = 'batch-process') {
     $finished = FALSE;
 
     while (!$finished) {
-      $data = drush_backend_invoke($command, array($batch['id']));
+      if ($user->uid) {
+        $data = drush_backend_invoke($command, array($batch['id'], '-u', $user->uid));
+      }
+      else {
+        $data = drush_backend_invoke($command, array($batch['id']));
+      }
       $finished = drush_get_error() || !$data || ($data['context']['drush_batch_process_finished'] == TRUE);
     }
   }
