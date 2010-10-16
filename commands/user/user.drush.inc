@@ -26,6 +26,8 @@ function user_drush_help($section) {
       return dt("Cancel a user account.");
     case 'drush:user-password':
       return dt("(Re)Set the password for the given user account.");
+    case 'drush:user-login':
+      return dt("Display a one time login link for the given user account (defaults to uid 1).");
   }
 }
 
@@ -160,6 +162,18 @@ function user_drush_command() {
     'examples' => array(
       'drush user-password someuser --password="gr3@tP@$s"' => 
         'Set the password for the username someuser to gr3@tP@$s.',
+    ),
+  );
+  $items['user-login'] = array(
+    'callback' => 'drush_user_login',
+    'description' => 'Display a one time login link for the given user account (defaults to uid 1).',
+    'aliases' => array('uli'),
+    'arguments' => array(
+      'name' => 'The name of the account to log in as. Leave it empty to log in as uid 1.'
+    ),
+    'examples' => array(
+      'drush user-login ryan' => 'Displays a one-time login link for the user ryan.',
+      'open `drush user-login ryan`' => 'Open web browser and login as user ryan.',
     ),
   );
 
@@ -454,6 +468,29 @@ function drush_user_password($name) {
         drush_set_error("Could not change the password for the user account with the name " . $name . "!");
       }
     }
+  }
+  else {
+    drush_set_error("The user account with the name " . $name . " could not be loaded!");
+  }
+}
+
+/**
+ * Displays a one time login link for the given user.
+ */
+function drush_user_login($name = NULL) {
+  if (empty($name)) {
+    $user = user_load(1);
+    $name = '[uid 1]';
+  }
+  elseif (drush_drupal_major_version() >= 7) {
+    $user = user_load_by_name($name);
+  }
+  else {
+    $user = user_load(array('name' => $name));
+  }
+
+  if ($user !== FALSE) {
+    drush_print(user_pass_reset_url($user));
   }
   else {
     drush_set_error("The user account with the name " . $name . " could not be loaded!");
