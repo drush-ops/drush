@@ -97,12 +97,7 @@ function drush_get_commands() {
         if ($command['callback'] != 'drush_command') {
           $required_command_prefix = 'drush_' . $commandfile . '_';
           if ((substr($command['callback'], 0, strlen($required_command_prefix)) == $required_command_prefix)) {
-            if ($commandfile = substr($command['callback'], 6, strlen($commandfile))) {
-              $command['command-hook'] = substr($command['callback'], 6);
-            }
-            else {
-              $command['command-hook'] = substr($command['callback'], strlen($required_command_prefix));
-            }
+            $command['command-hook'] = substr($command['callback'], strlen('drush_'));
             $command['callback'] = 'drush_command';
           }
           else {
