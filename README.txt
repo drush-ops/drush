@@ -49,8 +49,8 @@ For Linux/Unix/Mac:
      NOTE FOR ADVANCED USERS
      - If you want to run drush with a specific version of php, rather than the
        one found by the drush command, you can instead create an alias that
-       executes the drush.php file directly:
-       $ alias drush='/path/to/php/php5 /path/to/drush/drush.php'
+       executes the drush.php file directly and passes that path to drush:
+       $ alias drush='/path/to/php/php5 /path/to/drush/drush.php --php=/path/to/php/php5'
        If you do this, to allow Drush to detect the number of available columns,
        you need to add the line 'export COLUMNS' to the .profile file in your
        home folder.
