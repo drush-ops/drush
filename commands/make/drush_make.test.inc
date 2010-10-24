@@ -52,7 +52,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/post.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: 175b3ba2031a30b31775a70e4c23522e',
+        'Build hash: df331bdead0bfa3a040279e3dbfc1c3f',
       ),
       'options'  => array('no-core' => TRUE),
     ),

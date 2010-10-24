@@ -96,6 +96,7 @@ class DrushMakeProject {
     if (!empty($this->lock)) {
       file_put_contents($project_directory . '/.drush-lock-update', $this->lock);
     }
+    return TRUE;
   }
 
   /**
