@@ -225,8 +225,8 @@ function drush_make_updatexml($project) {
     $term_map = array(
       'Modules' => 'module',
       'Themes' => 'theme',
-      'Drupal project' => 'core',
-      'Installation profiles' => 'profile',
+      'Drupal Project' => 'core',
+      'Installation Profiles' => 'profile',
       'Translations' => 'translation'
     );
     // Iterate through all terms related to this project.
