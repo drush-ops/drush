@@ -22,7 +22,7 @@ function drush_make_ensure_version() {
  */
 function drush_make_parse_info_file($makefile, $parsed = TRUE) {
   if (!($data = drush_make_get_data($makefile))) {
-    return FALSE;
+    return drush_set_error(dt('Invalid or empty make file: %makefile', array('%makefile' => $makefile)));
   }
   if (!($info = _drush_make_parse_info_file($data))) {
     return FALSE;

@@ -39,6 +39,10 @@ where `drush make` can be used within an existing Drupal site.
 
       Force a complete build even if errors occur.
 
+    --ignore-checksums
+
+      Do not verify md5 checksums for downloaded files.
+
     --md5
 
       Output an md5 hash of the current build after completion.
@@ -154,9 +158,13 @@ Do not use both types of declarations for a single project in your makefile.
 
 - `patch`
 
-  One ore more patches to apply to this project. An array of URLs from which
+  One or more patches to apply to this project. An array of URLs from which
   each patch should be retrieved.
 
+        projects[calendar][patch][rfc-fixes][url] = "http://drupal.org/files/issues/cal-760316-rfc-fixes-2.diff"
+        projects[calendar][patch][rfc-fixes][md5] = "e4876228f449cb0c37ffa0f2142"
+
+        ; shorthand syntax if no md5 checksum is specified
         projects[adminrole][patch][] = "http://drupal.org/files/issues/adminrole_exceptions.patch"
 
 - `subdir`
@@ -214,6 +222,8 @@ Do not use both types of declarations for a single project in your makefile.
   Retrieve a project as a direct download. Options:
 
   `url` - the URL of the file. Required.
+
+  `md5` - the md5 checksum for the file. Optional.
 
   `request_type` - the request type - get or post. Defaults to get. Optional.
 
@@ -291,6 +301,7 @@ array of options in the libraries array.
 
     libraries[jquery_ui][download][type] = "file"
     libraries[jquery_ui][download][url] = "http://jquery- ui.googlecode.com/files/jquery.ui-1.6.zip"
+    libraries[jquery_ui][download][md5] = "c177d38bc7af59d696b2efd7dda5c605"
 
 
 ### Library options
@@ -435,3 +446,4 @@ Co-maintainers
 - Chad Phillips (hunmonk)
 - Jeff Miccolis (jmiccolis)
 - Young Hahn (yhahn)
+

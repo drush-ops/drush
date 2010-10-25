@@ -146,6 +146,33 @@ function drush_make_test_get_tests($id = NULL) {
       ),
       'options'  => array('no-core' => TRUE),
     ),
+    'md5-succeed' => array(
+      'name'     => 'MD5 validation',
+      'makefile' => 'tests/md5-succeed.make',
+      'build'    => TRUE,
+      'messages' => array(
+        'Build hash: ab8cb79508e9c992dace2e40c6435e5b',
+      ),
+      'options'  => array('no-core' => TRUE),
+    ),
+    'md5-fail' => array(
+      'name'     => 'Failed MD5 validation test',
+      'makefile' => 'tests/md5-fail.make',
+      'build'    => FALSE,
+      'messages' => array(
+        'Checksum verification failed for README.txt?revision=1.1.2.22&view=co&pathrev=DRUPAL-6--2. Expected - fail -, received 6ac9eb759bc6834c50cc646caea00ea7.'
+      ),
+      'options'  => array('no-core' => TRUE),
+    ),
+    'ignore-checksums' => array(
+      'name'     => 'Ignore invalid checksum/s',
+      'makefile' => 'tests/md5-fail.make',
+      'build'    => TRUE,
+      'messages' => array(
+        'Build hash: ab8cb79508e9c992dace2e40c6435e5b',
+      ),
+      'options'  => array('no-core' => TRUE, 'ignore-checksums' => TRUE),
+    ),
   );
   if (isset($id)) {
     return isset($tests[$id]) ? $tests[$id] : FALSE;

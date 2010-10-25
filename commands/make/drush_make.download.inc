@@ -64,6 +64,11 @@ function drush_make_download_cvs($name, $download, $download_location) {
 
 function drush_make_download_file($name, $download, $download_location) {
   if ($filename = _drush_make_download_file($download)) {
+    if (isset($download['md5'])) {
+      if (_drush_make_verify_checksum($filename, $download['md5']) === FALSE) {
+        return FALSE;
+      }
+    }
     drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
     return drush_make_download_file_unpack($filename, $download_location, (isset($download['filename']) ? $download['filename'] : ''));
   }
@@ -97,6 +102,7 @@ function _drush_make_download_file($download) {
 
       if (!isset($download_mechanism) || $download_mechanism == 'curl') {
         $header_file = $tmp_path . '/__header__';
+        touch($header_file);
         drush_shell_exec("ls %s", $download_path);
         $files = drush_shell_exec_output();
         if ($download['request_type'] == 'get' && drush_shell_cd_and_exec($download_path, 'curl -LOD %s %s', $header_file, $url)) {
@@ -633,4 +639,18 @@ function drush_make_download_svn($name, $download, $download_location) {
     drush_make_error('DOWNLOAD_ERROR', dt('Unable to download %project from %url.', array('%project' => $name, '%url' => $download['url'])));
     return FALSE;
   }
+}
+
+function _drush_make_verify_checksum($path_to_file, $checksum) {
+  // return early if there is nothing to verify
+  if (empty($checksum)) {
+    return TRUE;
+  }
+
+  $md5 = md5(file_get_contents($path_to_file));
+  if ($md5 !== $checksum) {
+    drush_make_error('DOWNLOAD_ERROR', dt('Checksum verification failed for %file. Expected %checksum, received %md5.', array('%file' => basename($path_to_file), '%checksum' => $checksum, '%md5' => $md5)));
+    return FALSE;
+  }
+  return TRUE;
 }

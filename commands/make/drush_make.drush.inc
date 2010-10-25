@@ -34,6 +34,7 @@ function drush_make_drush_command() {
       '--version' => 'Print the version and exit.',
       '--contrib-destination=path' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
       '--force-complete' => 'Force a complete build even if errors occur.',
+      '--ignore-checksums' => 'Ignore md5 checksums for downloads.',
       '--md5' => 'Output an md5 hash of the current build after completion.',
       '--no-clean' => 'Leave temporary build directories in place instead of cleaning up after completion.',
       '--no-core' => 'Do not require a Drupal core project to be specified.',
@@ -95,8 +96,9 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
   if (!($build_path = drush_make_build_path($build_path))) {
     return;
   }
-  if (!($info = drush_make_validate_info_file(drush_make_parse_info_file($makefile)))) {
-    return;
+  $info = drush_make_parse_info_file($makefile);
+  if ( $info === FALSE || ($info = drush_make_validate_info_file($info)) === FALSE) {
+    return FALSE;
   }
 
   drush_make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
@@ -127,7 +129,12 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
   if (empty($info['projects'])) {
     return;
   }
+  $ignore_checksums = drush_get_option('ignore-checksums');
   foreach ($info['projects'] as $key => $project) {
+    $md5 = '';
+    if (isset($project['md5'])) {
+      $md5 = $project['md5'];
+    }
     // Merge the known data onto the project info.
     $project += array(
       'name'                => $key,
@@ -140,6 +147,12 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
       'directory_name'      => '',
     );
     $project = drush_make_updatexml($project);
+    if (!empty($md5)) {
+      $project['download']['md5'] = $md5;
+    }
+    if ($ignore_checksums) {
+      unset($project['download']['md5']);
+    }
     $class_name = 'DrushMakeProject_' . $project['type'];
     if (class_exists($class_name)) {
       $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = new $class_name($project);
@@ -184,24 +197,29 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
 }
 
 function drush_make_libraries($contrib_destination, $info, $build_path) {
-  if (!empty($info['libraries'])) {
-    foreach ($info['libraries'] as $key => $library) {
-      if (!is_string($key) || !is_array($library)) {
-        // TODO Print a prettier message
-        continue;
-      }
-      // Merge the known data onto the library info.
-      $library += array(
-        'name'                => $key,
-        'core'                => $info['core'],
-        'build_path'          => $build_path,
-        'contrib_destination' => $contrib_destination,
-        'subdir'              => '',
-        'directory_name'      => $key,
-      );
-      $class = new DrushMakeProject_Library($library);
-      $class->make();
+  if (empty($info['libraries'])) {
+    return;
+  }
+  $ignore_checksums = drush_get_option('ignore-checksums');
+  foreach ($info['libraries'] as $key => $library) {
+    if (!is_string($key) || !is_array($library)) {
+      // TODO Print a prettier message
+      continue;
     }
+    // Merge the known data onto the library info.
+    $library += array(
+      'name'                => $key,
+      'core'                => $info['core'],
+      'build_path'          => $build_path,
+      'contrib_destination' => $contrib_destination,
+      'subdir'              => '',
+      'directory_name'      => $key,
+    );
+    if ($ignore_checksums) {
+      unset($library['download']['md5']);
+    }
+    $class = new DrushMakeProject_Library($library);
+    $class->make();
   }
 }
 
