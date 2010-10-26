@@ -437,6 +437,54 @@ function drush_save_data_to_temp_file($data) {
 }
 
 /**
+ * Returns the path to a temporary directory.
+ *
+ * This is a custom version of file_directory_path().
+ * We can't directly rely on sys_get_temp_dir() as this
+ * path is not valid in some setups for Mac.
+ */
+function drush_find_tmp() {
+  static $temporary_directory = NULL;
+
+  if (is_null($temporary_directory)) {
+    $directories = array();
+
+    // Operating system specific dirs.
+    if (substr(PHP_OS, 0, 3) == 'WIN') {
+      $directories[] = 'c:\\windows\\temp';
+      $directories[] = 'c:\\winnt\\temp';
+    }
+    else {
+      $directories[] = '/tmp';
+    }
+    // This function exists in PHP 5 >= 5.2.1, but drush
+    // requires PHP 5 >= 5.2.0, so we check for it.
+    if (function_exists('sys_get_temp_dir')) {
+      $directories[] = sys_get_temp_dir();
+    }
+
+    foreach ($directories as $directory) {
+      if (is_dir($directory) && is_writable($directory)) {
+        $temporary_directory = $directory;
+        break;
+      }
+    }
+
+    if (empty($temporary_directory)) {
+      // If no directory has been found, create one in cwd.
+      $temporary_directory = drush_cwd() . '/tmp';
+      drush_mkdir($temporary_directory);
+      if (!is_dir($directory)) {
+        return drush_set_error('DRUSH_UNABLE_TO_CREATE_TMP_DIR', dt("Unable to create a temporary directory."));
+      }
+      drush_register_file_for_deletion($temporary_directory);
+    }
+  }
+
+  return $temporary_directory;
+}
+
+/**
  * Creates a temporary file, and registers it so that
  * it will be deleted when drush exits.  Whenever possible,
  * drush_save_data_to_temp_file() should be used instead
@@ -444,7 +492,7 @@ function drush_save_data_to_temp_file($data) {
  */
 function drush_tempnam($pattern, $tmp_dir = NULL) {
   if ($tmp_dir == NULL) {
-    $tmp_dir = sys_get_temp_dir();
+    $tmp_dir = drush_find_tmp();
   }
   $tmp_file = tempnam($tmp_dir, $pattern);
   drush_register_file_for_deletion($tmp_file);
@@ -456,7 +504,7 @@ function drush_tempnam($pattern, $tmp_dir = NULL) {
  * Creates a temporary directory and return its path.
  */
 function drush_tempdir() {
-  $tmp_dir = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR);
+  $tmp_dir = rtrim(drush_find_tmp(), DIRECTORY_SEPARATOR);
   $tmp_dir .= '/' . 'drush_tmp_' . time();
 
   drush_mkdir($tmp_dir);

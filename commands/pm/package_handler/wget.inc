@@ -47,22 +47,25 @@ function package_handler_install_project(&$request, $release) {
   $tarpath = basename($filename, '.tar.gz');
   $tarpath = basename($tarpath, '.tgz');
   $tarpath .= '.tar';
-  drush_shell_exec("tar -xvf $tarpath");
-  $output = drush_shell_exec_output();
-
-  // Cleanup. Remove the tar file and set previous working directory.
-  drush_op('unlink', $tarpath);
-  chdir($olddir);
+  drush_shell_exec("tar -xf $tarpath");
 
   // Move untarred directory to project_dir, if distinct.
   if (($request['project_type'] == 'core') || (($request['project_type'] == 'profile') && (drush_get_option('variant', 'core') == 'core'))) {
-    // Obtain the dodgy project_dir from previous tar output.
+    // Obtain the dodgy project_dir for drupal core.
+    // We use a separate tar -tf instead of -xvf above because
+    // the output is not the same in Mac.
+    drush_shell_exec("tar -tf $tarpath");
+    $output = drush_shell_exec_output();
     $project_dir = rtrim($output[0], DIRECTORY_SEPARATOR);
     if ($request['project_dir'] != $project_dir) {
       $path = $request['base_project_path'];
       drush_op('rename', $path . '/'. $project_dir, $path . '/' . $request['project_dir']);
     }
   }
+
+  // Cleanup. Remove the tar file and set previous working directory.
+  drush_op('unlink', $tarpath);
+  chdir($olddir);
 
   return TRUE;
 }
