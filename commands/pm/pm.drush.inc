@@ -1694,11 +1694,14 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
  * It does nothing with translation or theme engine projects.
  */
 function drush_pm_projects_in_project($project) {
+  // Mask for drush_scan_directory, to  avoid tests directories.
+  $nomask = array('.', '..', 'CVS', 'tests');
+
   // Drupal core and profiles can contain modules, themes and profiles.
   if (in_array($project['project_type'], array('core', 'profile'))) {
     $found = array('profile' => array(), 'theme' => array(), 'module' => array());
     // Find all of the .info files
-    foreach (drush_scan_directory($project['project_install_location'], "/.*\.info$/") as $filename => $info) {
+    foreach (drush_scan_directory($project['project_install_location'], "/.*\.info$/", $nomask) as $filename => $info) {
       // Find the project type corresponding the .info file.
      // (Only drupal >=7.x has .info for .profile)
       $base = dirname($filename) . '/' . $info->name;
@@ -1714,7 +1717,7 @@ function drush_pm_projects_in_project($project) {
     }
     // Special case: find profiles for drupal < 7.x (no .info)
     if ($project['drupal_version'][0] < 7) {
-      foreach (drush_scan_directory($project['project_install_location'], "/.*\.profile$/") as $filename => $info) {
+      foreach (drush_scan_directory($project['project_install_location'], "/.*\.profile$/", $nomask) as $filename => $info) {
         $found['profile'][] = $info->name;
       }
     }
@@ -1737,7 +1740,7 @@ function drush_pm_projects_in_project($project) {
   elseif (in_array($project['project_type'], array('module', 'theme'))) {
     // Find all of the .info files
     $found = array();
-    foreach (drush_scan_directory($project['project_install_location'], "/.*\.info$/") as $filename => $info) {
+    foreach (drush_scan_directory($project['project_install_location'], "/.*\.info$/", $nomask) as $filename => $info) {
       $found[] = $info->name;
     }
     // Log results.
