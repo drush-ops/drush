@@ -99,13 +99,15 @@ function drush_sandwich_make_me_a_sandwich_validate() {
  * after your command, you may define a 'callback' item in your command
  * object that specifies the exact name of the function that should be
  * called.  However, the specified callback function must still begin
- * with "drush_commandfile_" (e.g. 'callback' => "drush_example_foo_execute").
- * All hook functions are still called (e.g. drush_example_pre_foo_execute,
- * and so on.)
+ * with "drush_commandfile_" (e.g. 'callback' => "drush_example_foo_execute")
+ * if you want that all hook functions are still called (e.g.
+ * drush_example_pre_foo_execute, and so on).
  *
  * In this function, all of Drupal's API is (usually) available, including
  * any functions you have added in your own modules/themes.
  *
+ * @see drush_invoke()
+ * @see drush.api.php
  */
 function drush_sandwich_make_me_a_sandwich($filling = 'ascii') {
   $str_spreads = '';
