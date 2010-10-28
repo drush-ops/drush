@@ -33,11 +33,12 @@ if [ ! -t 1 ]; then
   set -- "--nocolor" ${1+"$@"}
 fi
 
-# If not exported and term is set determine and export the number of columns.
-if [ -z $COLUMNS ] && [ -n "$TERM" ]; then
-  # Note to cygwin users: if you are getting "tput: command not found", 
-  # install the ncurses package to get it.
-  export COLUMNS=$(tput cols)
+# If not exported, try to determine and export the number of columns.
+if [ -z $COLUMNS ]; then
+  # Note to cygwin users: install the ncurses package to get tput command.
+  if COLUMNS=$(tput cols 2>/dev/null); then
+    export COLUMNS
+  fi
 fi
 
 # Special case for *AMP installers, since they normally don't set themselves as the default cli php out of the box.
