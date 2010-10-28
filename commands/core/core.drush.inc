@@ -76,7 +76,7 @@ function core_drush_command() {
       'filename' => 'Optional. The file you wish to execute (without extension). If omitted, list files ending in .php in the current working directory and specified script-path. Some might not be real drush scripts. Beware.',
     ),
     'options' => array(
-      '--script-path' => "Additional paths to search for scripts.  Use POSIX path separator (':') for multiple paths.",
+      '--script-path' => "Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).",
     ),
     'aliases' => array('scr'),
     'deprecated-aliases' => array('script'),
@@ -121,8 +121,8 @@ function core_drush_command() {
       '--exclude-files' => 'Exclude the files directory.',
       '--exclude-sites' => 'Exclude all directories in "sites/" except for "sites/all".',
       '--exclude-other-sites' => 'Exclude all directories in "sites/" except for "sites/all" and the site directory for the site being synced.  Note: if the site directory is different between the source and destination, use --exclude-sites followed by "drush rsync @from:%site @to:%site"',
-      '--exclude-paths' => 'Coma-separated list of paths to exclude.',
-      '--include-paths' => 'Coma-separated list of paths to include.',
+      '--exclude-paths' => 'List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).',
+      '--include-paths' => 'List of paths to include, seperated by : (Unix-based systems) or ; (Windows).',
     ),
     'examples' => array(
       'drush rsync @dev @stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
@@ -668,7 +668,7 @@ function drush_core_php_script() {
 
   // Additional script paths, specified by 'script-path' option
   if ($script_path = drush_get_option('script-path', FALSE)) {
-    foreach (explode(":", $script_path) as $path) {
+    foreach (explode(PATH_SEPARATOR, $script_path) as $path) {
       $searchpath[] = $path;
     }
   }

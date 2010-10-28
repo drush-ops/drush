@@ -62,7 +62,7 @@
 # $options['cvscredentials'] = 'name:password';
 
 // Specify additional directories to search for *.drush.inc files
-// Use POSIX path separator (':')
+// Separate by : (Unix-based systems) or ; (Windows).
 # $options['i'] = 'sites/default:profiles/myprofile';
 
 // Specify additional directories to search for *.alias.drushrc.php
@@ -139,7 +139,7 @@ $options['skip-tables'] = array(
 # $command_specific['dl'] = array('cvscredentials' => 'user:pass');
 
 // Specify additional directories to search for scripts
-// Use POSIX path separator (':')
+// Separate by : (Unix-based systems) or ; (Windows).
 # $command_specific['script']['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
 
 /**

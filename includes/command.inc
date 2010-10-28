@@ -519,7 +519,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
 
       // User commands, specified by 'include' option
       if ($include = drush_get_option(array('i', 'include'), FALSE)) {
-        foreach (explode(":", $include) as $path) {
+        foreach (explode(PATH_SEPARATOR, $include) as $path) {
           $searchpath[] = $path;
         }
       }
