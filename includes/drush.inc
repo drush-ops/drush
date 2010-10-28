@@ -1130,7 +1130,11 @@ function drush_print_table($rows, $header = FALSE, $widths = array()) {
   }
 
   $tbl->addData($newrows);
-  drush_print($tbl->getTable());
+  $output = $tbl->getTable();
+  if (!stristr(PHP_OS, 'WIN')) {
+    $output = str_replace("\r\n", PHP_EOL, $output);
+  }
+  drush_print($output);
   return $tbl;
 }
 
