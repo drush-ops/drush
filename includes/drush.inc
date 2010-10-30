@@ -916,6 +916,33 @@ function drush_die($msg = NULL, $status = NULL) {
   die($msg ? "drush: $msg\n" : '');
 }
 
+/*
+ * Check to see if the provided line is a "#!/usr/bin/env drush"
+ * "shebang" script line.
+ */
+function _drush_is_drush_shebang_line($line) {
+   return ((substr($line,0,2) == '#!') && (strstr($line, 'drush') !== FALSE));
+}
+
+/*
+ * Check to see if the provided script file is a "#!/usr/bin/env drush"
+ * "shebang" script line.
+ */
+function _drush_is_drush_shebang_script($script_filename) {
+  $result = FALSE;
+  
+  if (file_exists($script_filename)) {
+    $fp = fopen($script_filename, "r");
+    if ($fp !== FALSE) {
+      $line = fgets($fp);
+      $result = _drush_is_drush_shebang_line($line);
+      fclose($fp);
+    }
+  }
+  
+  return $result;
+}
+
 /**
  * Prints a message with optional indentation. In general,
  * drush_log($message, 'ok') is often a better choice than this function.
@@ -1451,7 +1478,10 @@ function drush_redispatch_get_options() {
   // is not used (e.g. when calling a remote instance of drush), then --php
   // should not be passed along.
   unset($options['php']);
-
+  // If --bootstrap-to-first-arg is specified, do not
+  // pass it along to remote commands.
+  unset($options['bootstrap-to-first-arg']);
+  
   return $options;
 }
 

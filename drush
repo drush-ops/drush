@@ -10,7 +10,7 @@ ORIGDIR=$(pwd)
 SELF_PATH=$(cd -P -- "$(dirname -- "$0")" && pwd -P) && SELF_PATH=$SELF_PATH/$(basename -- "$0")
 
 # Resolve symlinks - this is the equivalent of "readlink -f", but also works with non-standard OS X readlink.
-while [ -h $SELF_PATH ]; do
+while [ -h "$SELF_PATH" ]; do
     # 1) cd to directory of the symlink
     # 2) cd to the directory of where the symlink points
     # 3) Get the pwd
@@ -22,7 +22,7 @@ done
 cd "$ORIGDIR"
 
 # Build the path to drush.php.
-SCRIPT_PATH=$(dirname $SELF_PATH)/drush.php
+SCRIPT_PATH=$(dirname "$SELF_PATH")/drush.php
 case $(uname -a) in
   CYGWIN*)
     SCRIPT_PATH=$(cygpath -w -a -- "$SCRIPT_PATH") ;;
@@ -41,19 +41,31 @@ if [ -z $COLUMNS ]; then
   fi
 fi
 
-# Special case for *AMP installers, since they normally don't set themselves as the default cli php out of the box.
-for php in /Applications/MAMP/bin/php5/bin/php /Applications/MAMP/bin/php5.2/bin/php /Applications/MAMP/bin/php5.3/bin/php /opt/lampp/bin/php /Applications/xampp/xamppfiles/bin/php /Applications/acquia-drupal/php/bin/php; do
-  if [ -x $php ]; then
-    exec $php $SCRIPT_PATH --php="$php" "$@"
-  fi
-done
+# Default to using the php that we find on the PATH.
+# Note that we need the full path to php here for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
+php=`which php`
 
 # We check for a command line (cli) version of php, and if found use that.
 which php-cli >/dev/null 2>&1
 if [ "$?" = 0 ] ; then
-  exec php-cli $SCRIPT_PATH --php="php-cli" "$@"
-else
-  # Alternatively we run with straight php, which works on most other systems.
-  # The --php=`which php` is for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
-  exec php $SCRIPT_PATH --php=`which php` "$@"
+  php=`which php-cli`
 fi
+
+# Special case for *AMP installers, since they normally don't set themselves as the default cli php out of the box.
+for amp_php in /Applications/MAMP/bin/php5/bin/php /Applications/MAMP/bin/php5.2/bin/php /Applications/MAMP/bin/php5.3/bin/php /opt/lampp/bin/php /Applications/xampp/xamppfiles/bin/php /Applications/acquia-drupal/php/bin/php; do
+  if [ -x $amp_php ]; then
+    php=$amp_php
+  fi
+done
+
+# Check to see if the user has provided a php.ini file particularly for drush
+if [ -f $HOME/.drush/php.ini ] ; then
+  php="$php --php-ini $HOME/.drush/php.ini"
+elif [ -f /etc/drush/php.ini ] ; then
+  php="$php --php-ini /etc/drush/php.ini"
+fi
+
+# Pass in the path to php so that drush knows which one
+# to use if it re-launches itself to run subcommands
+exec $php "$SCRIPT_PATH" "$@" --php="$php"
+

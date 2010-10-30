@@ -71,6 +71,8 @@ function core_drush_command() {
       'drush php-script scratch' => 'Run scratch.php script. See commands/core directory.',
       'drush php-script example --script-path=/path/to/scripts:/another/path' => 'Run script from specified paths',
       'drush php-script' => 'List all available scripts.',
+      '' => '',
+      "#!/usr/bin/env drush\n<?php\nvariable_set('key', drush_shift());" => "Execute php code with a full Drupal bootstrap directly from a shell script.",
     ),
     'arguments' => array(
       'filename' => 'Optional. The file you wish to execute (without extension). If omitted, list files ending in .php in the current working directory and specified script-path. Some might not be real drush scripts. Beware.',
@@ -78,6 +80,7 @@ function core_drush_command() {
     'options' => array(
       '--script-path' => "Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).",
     ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'aliases' => array('scr'),
     'deprecated-aliases' => array('script'),
   );
@@ -411,7 +414,7 @@ function core_drush_help($section) {
     case 'drush:status':
       return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:php-script':
-      return dt("Runs the given php script(s) after a full Drupal bootstrap. A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting. if you plan to share a script with others, consider making a full drush command instead since thats more self-documenting.");
+      return dt("Runs the given php script(s) after a full Drupal bootstrap. A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting. If you plan to share a script with others, consider making a full drush command instead, since that's more self-documenting.  Drush provides commandline options to the script via drush_get_option('option-name'), and commandline arguments can be accessed either via drush_get_arguments(), which returns all arguments in an array, or drush_shift(), which removes the next argument from the list and returns it.");
     case 'drush:cache-clear':
       return dt("Delete a specific drupal cache, or all caches.");
     case 'drush:search-status':
@@ -606,11 +609,19 @@ function drush_core_cron() {
 }
 
 /**
+ * Bootstrap 'status' command during the init phase.
+ * Always use bootstrap_max from _init() so that command
+ * hooks have a chance to be initialized.
+ */
+function drush_core_status_init() {
+  drush_bootstrap_max();
+}
+
+/**
  * Command callback. Provides a birds-eye view of the current Drupal
  * installation.
  */
 function drush_core_status() {
-  drush_bootstrap_max();
   $status_table = _core_site_status_table(drush_get_option('project',''));
   // If args are specified, filter out any entry that is not named
   // (in other words, only show lines named by one of the arg values)
@@ -657,50 +668,76 @@ function _drush_core_is_named_in_array($key, $the_array) {
 }
 
 /**
- * Command callback. Runs "naked" php scripts.
+ * Bootstrap 'php-script' command during the init phase.
+ * Always use bootstrap_max from _init() so that command
+ * hooks have a chance to be initialized.
+ */
+function drush_core_php_script_init() {
+  drush_bootstrap_max();
+}
+
+/**
+ * Command callback. Runs "naked" php scripts
+ * and drush "shebang" scripts ("#!/usr/bin/env drush").
  */
 function drush_core_php_script() {
   $args = func_get_args();
-
-  // Array of paths to search for scripts
-  $searchpath['DIR'] = dirname(__FILE__);
-  $searchpath['cwd'] = drush_cwd();
-
-  // Additional script paths, specified by 'script-path' option
-  if ($script_path = drush_get_option('script-path', FALSE)) {
-    foreach (explode(PATH_SEPARATOR, $script_path) as $path) {
-      $searchpath[] = $path;
-    }
-  }
-
-  if (empty($args)) {
-    // List all available scripts.
-    $all = array();
-    foreach($searchpath as $key => $path) {
-      $recurse = !$key == 'cwd';
-      $all = array_merge( $all , array_keys(drush_scan_directory($path, '/\.php$/', array('.', '..', 'CVS'), NULL, $recurse)) );
-    }
-    drush_print(implode("\n", $all));
+  $script = $args[0];
+  $found = FALSE;
+  
+  if (file_exists($script)) {
+    $found = $script;
   }
   else {
-    // Execute the specified script.
-    $script = $args[0];
-    if (!preg_match('/\.php$/i', $script)) {
-      $script .= '.php';
-    }
-    $found = FALSE;
-    foreach($searchpath as $path) {
-      $script_filename = $path . '/' . $script;
-      if (file_exists($script_filename)) {
-        include($script_filename);
-        $found = TRUE;
-        break;
+    // Array of paths to search for scripts
+    $searchpath['DIR'] = dirname(__FILE__);
+    $searchpath['cwd'] = drush_cwd();
+
+    // Additional script paths, specified by 'script-path' option
+    if ($script_path = drush_get_option('script-path', FALSE)) {
+      foreach (explode(PATH_SEPARATOR, $script_path) as $path) {
+	$searchpath[] = $path;
       }
-      $all[] = $script_filename;
     }
 
-    if (!$found) {
-      drush_set_error('Script not found.', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
+    if (!isset($script)) {
+      // List all available scripts.
+      $all = array();
+      foreach($searchpath as $key => $path) {
+	$recurse = !(($key == 'cwd') || ($path == '/'));
+	$all = array_merge( $all , array_keys(drush_scan_directory($path, '/\.php$/', array('.', '..', 'CVS'), NULL, $recurse)) );
+      }
+      drush_print(implode("\n", $all));
+    }
+    else {
+      // Execute the specified script.
+      foreach($searchpath as $path) {
+	$script_filename = $path . '/' . $script;
+	if (file_exists($script_filename . ".php")) {
+          $script_filename .= ".php";
+	}
+	if (file_exists($script_filename)) {
+          $found = $script_filename;
+          break;
+	}
+	$all[] = $script_filename;
+      }
+      if (!$found) {
+	drush_set_error('Script not found.', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
+      }
+    }
+  }
+  
+  if ($found) {
+    // Set the DRUSH_SHIFT_SKIP to two; this will cause
+    // drush_shift to skip the next two arguments the next
+    // time it is called.  This allows scripts to get all
+    // arguments, including the 'php-script' and script
+    // pathname, via drush_get_arguments(), or it can process
+    // just the arguments that are relevant using drush_shift().
+    drush_set_context('DRUSH_SHIFT_SKIP', 2);
+    if (_drush_core_eval_shebang_script($found) === FALSE) {
+      include($found);
     }
   }
 }
@@ -708,6 +745,41 @@ function drush_core_php_script() {
 function drush_core_php_eval($command) {
   eval($command . ';');
 }
+
+/*
+ * Evaluate a script that begins with #!drush php-script
+ */
+function _drush_core_eval_shebang_script($script_filename) {
+  $found = FALSE;
+  $fp = fopen($script_filename, "r");
+  if ($fp !== FALSE) {
+    $line = fgets($fp);
+    if (_drush_is_drush_shebang_line($line)) {
+      $first_script_line = '';
+      while ($line = fgets($fp)) {
+	$line = trim($line);
+	if ($line == '<?php') {
+	  $found = TRUE;
+	  break;
+	}
+	elseif (!empty($line)) {
+	  $first_script_line = $line . "\n";
+	  break;
+	}
+      }
+      $script = stream_get_contents($fp);
+      // Pop off the first two arguments, the
+      // command (php-script) and the path to
+      // the script to execute, as a service
+      // to the script.
+      eval($first_script_line . $script);
+      $found = TRUE;
+    }
+    fclose($fp);
+  }
+  return $found;
+}
+
 
 /**
  * Process sets from the specified batch.
@@ -799,9 +871,16 @@ function drush_core_find_project_path($target) {
   return NULL;
 }
 
-function drush_core_cli() {
+/**
+ * Bootstrap 'cli' command during the init phase.
+ * Always use bootstrap_max from _init() so that command
+ * hooks have a chance to be initialized.
+ */
+function drush_core_cli_init() {
   drush_bootstrap_max();
+}
 
+function drush_core_cli() {
   // Do not allow cli to start recursively, or from backend invoke.
   if (drush_get_option('in-cli',FALSE)) {
     return drush_set_error(dt('Already in drush core-cli; press control-d to exit.'));

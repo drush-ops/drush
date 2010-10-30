@@ -19,10 +19,14 @@
  */
 function drush_parse_args() {
   $args = drush_get_context('argv');
-
   // TODO: commandfiles should be able to extend this list.
   static $arg_opts = array('c', 'u', 'r', 'l', 'i');
-
+  
+  // Check to see if we were executed via a "#!/usr/bin/env drush" script
+  drush_adjust_args_if_shebang_script($args);
+    
+  // Now process the command line arguments.  We will divide them
+  // into options (starting with a '-') and arguments.
   $arguments = $options = array();
 
   for ($i = 1; $i < count($args); $i++) {
@@ -65,13 +69,137 @@ function drush_parse_args() {
       $arguments[] = $opt;
     }
   }
-  // If arguments are specified, print the help screen.
+  // If no arguments are specified, print the help screen.
   $arguments = sizeof($arguments) ? $arguments : array('help');
-
+  
+  // Handle the "@shift" alias, if present
+  drush_process_bootstrap_to_first_arg($arguments);
+  
   drush_set_arguments($arguments);
   drush_set_context('options', $options);
 }
 
+/**
+ * Pop an argument off of drush's argument list
+ */
+function drush_shift() {
+  $arguments = drush_get_arguments();
+  $result = NULL;
+  if (!empty($arguments)) {
+    // The php-script command uses the DRUSH_SHIFT_SKIP
+    // context to cause drush_shift to skip the 'php-script'
+    // command and the script path argument when it is
+    // called from the user script.
+    $skip_count = drush_get_context('DRUSH_SHIFT_SKIP');
+    if (is_numeric($skip_count)) {
+      for ($i = 0; $i < $skip_count; $i++) {
+        array_shift($arguments);
+      }
+      $skip_count = drush_set_context('DRUSH_SHIFT_SKIP', 0);
+    }
+    $result = array_shift($arguments);
+    drush_set_arguments($arguments);
+  }
+  return $result;
+}
+
+/**
+ * Special checking for "shebang" script handling.
+ *
+ * If there is a file 'script.php' that begins like so:
+ *   #!/path/to/drush
+ * Then $args will be:
+ *   /path/to/drush /path/to/script userArg1 userArg2 ...
+ * If it instead starts like this:
+ *   #!/path/to/drush --flag php-script
+ * Then $args will be:
+ *   /path/to/drush "--flag php-script" /path/to/script userArg1 userArg2 ...
+ * (Note that execve does not split the parameters from
+ * the shebang line on whitespace; see http://en.wikipedia.org/wiki/Shebang_%28Unix%29)
+ * When drush is called via one of the "shebang" lines above, 
+ * the first or second parameter will be the full path
+ * to the "shebang" script file -- and if the path to the
+ * script is in the second position, then we will expect that
+ * the argument in the first position must begin with a
+ * '@' (alias) or '-' (flag).  Under ordinary circumstances,
+ * we do not expect that the drush command must come before
+ * any argument that is the full path to a file.  We use
+ * this assumption to detect "shebang" script execution.
+ */
+function drush_adjust_args_if_shebang_script(&$args) {
+  if (_drush_is_drush_shebang_script($args[1])) {
+    // If $args[1] is a drush "shebang" script, we will insert
+    // the option "--bootstrap-to-first-arg" and the command
+    // "php-script" at the beginning of  @args, so the command 
+    // line args become:
+    //   /path/to/drush --bootstrap-to-first-arg php-script /path/to/script userArg1 userArg2 ...
+    drush_set_option('bootstrap-to-first-arg', TRUE);
+    array_splice($args, 1, 0, array('php-script'));
+    drush_set_context('DRUSH_SHEBANG_SCRIPT', TRUE);
+  }
+  elseif (((strpos($args[1], ' ') !== FALSE) || (!ctype_alnum($args[1][0]))) && (_drush_is_drush_shebang_script($args[2]))) {
+    // If $args[2] is a drush "shebang" script, we will insert
+    // the space-exploded $arg[1] in place of $arg[1], so the 
+    // command line args become:
+    //   /path/to/drush scriptArg1 scriptArg2 ... /path/to/script userArg1 userArg2 ...
+    // If none of the script arguments look like a drush command,
+    // then we will insert "php-script" as the default command to
+    // execute.
+    $script_args = explode(' ', $args[1]);
+    $has_command = FALSE;
+    foreach ($script_args as $script_arg) {
+      if (preg_match("/^[a-z][a-z0-9-]*$/",$script_arg)) {
+        $has_command = TRUE;
+      }
+    }
+    if (!$has_command) {
+      $script_args[] = 'php-script';
+    }
+    array_splice($args, 1, 1, $script_args);
+    drush_set_context('DRUSH_SHEBANG_SCRIPT', TRUE);
+  }
+}
+
+/**
+ * Process the --bootstrap-to-first-arg option, if it is present. 
+ *
+ * This option checks to see if the first user-provided argument is an alias
+ * or site specification; if it is, it will be shifted into the first arguement
+ * position, where it will specify the site to bootstrap. The result of this
+ * is that if your shebang line looks like this:
+ *
+ * #!/path/to/drush --bootstrap-to-first-arg php-script
+ *
+ * Then when you run that script, you can optionally provide an alias such
+ * as @dev as the first argument (e.g. $ ./mydrushscript.php @dev scriptarg1
+ * scriptarg2). Since this is the behavior that one would usually want,
+ * it is default behavior for a canonical script. That is, a script
+ * with a simple shebang line, like so:
+ *
+ * #!/path/to/drush
+ *
+ * will implicitly have "--bootstrap-to-first-arg" and "php-script" prepended, and will therefore
+ * behave exactly like the first example. To write a script that does not
+ * use --bootstrap-to-first-arg, then the drush command or at least one flag must be explicitly
+ * included, like so:
+ *
+ * #!/path/to/drush php-script
+ */
+function drush_process_bootstrap_to_first_arg(&$arguments) {
+  if (drush_get_option('bootstrap-to-first-arg', FALSE)) {
+    $shift_alias_pos = 1 + (drush_get_context('DRUSH_SHEBANG_SCRIPT') === TRUE);
+    if (sizeof($arguments) >= $shift_alias_pos) {
+      $shifted_alias = $arguments[$shift_alias_pos];
+      $alias_record = drush_sitealias_get_record($shifted_alias);
+      if (!empty($alias_record)) {
+	// Move the alias we shifted from its current position
+	// in the argument list to the front of the list
+	array_splice($arguments, $shift_alias_pos, 1);
+	array_unshift($arguments, $shifted_alias);
+      }
+    }
+  }
+}
 
 /**
  * Get a list of all implemented commands.

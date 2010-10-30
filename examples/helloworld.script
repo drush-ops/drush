@@ -1,0 +1,77 @@
+#!/usr/bin/env drush
+
+//
+// This example demonstrates how to write a drush
+// "shebang" script.  These scripts start with the
+// line "#!/usr/bin/env drush", or perhaps just "!drush"
+// (although the latter is not supported on all flavors
+// of *nix).
+//
+// These scripts do not need to be named "*.script";
+// they can be named anything at all.  To run them,
+// make sure they are executable (chmod +x helloworld.script)
+// and then run them from the shell like any other
+// script.
+//
+// There are two big advantages to drush scripts over
+// bash scripts.
+//
+//  1. They are written in php
+//
+//  2. drush can bootstrap your Drupal site before
+//     running your script.
+// 
+// To bootstrap a Drupal site, provide an alias to
+// the site to bootstrap as the first commandline
+// argument.
+//
+// For example:
+//
+// $ helloworld.script @dev a b c
+//
+// If the first argument is a valid site alias, drush
+// will remove it from the arument list and bootstrap
+// that site.
+//
+
+drush_print("Hello world!");
+drush_print();
+drush_print("The arguments to this command were:");
+
+//
+// If called with --everything, use drush_get_arguments
+// to print the commandline arguments.  Note that this
+// call will include 'php-script' (the drush command)
+// and the path to this script.
+//
+if (drush_get_option('everything')) {
+  drush_print("  " . implode("\n  ", drush_get_arguments()));
+}
+//
+// If --everything is not included, then use
+// drush_shift to pull off the arguments one at
+// a time.  drush_shift only returns the user
+// commandline arguments, and does not include
+// the drush command or the path to this script.
+//
+else {
+  while ($arg = drush_shift()) {
+    drush_print('  ' . $arg);
+  }
+}
+
+drush_print();
+
+//
+// We can check which site was bootstrapped via
+// the '@self' alias, which is defined only if
+// there is a bootstrapped site.
+//
+$self_record = drush_sitealias_get_record('@self');
+if (empty($self_record)) {
+  drush_print('No bootstrapped site.');
+}
+else {
+  drush_print('The following site is bootstrapped:');
+  _drush_sitealias_print_record($self_record);
+}
