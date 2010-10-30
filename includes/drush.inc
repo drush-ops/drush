@@ -1738,7 +1738,6 @@ function drush_format_size($size, $langcode = NULL) {
  * A sneaky implementation of hook_watchdog().
  */
 function system_watchdog($log_entry) {
-
   // Transform non informative severity levels to 'error' for compatibility with _drush_print_log.
   // Other severity levels are coincident with the ones we use in drush.
   if (drush_drupal_major_version() >= 6 && $log_entry['severity'] <= 2) {
