@@ -11,7 +11,7 @@ function drush_core_pre_site_install() {
 
   
   if ($sites_subdir = drush_get_option('sites-subdir')) {
-    // Needed iso that we later bootstrap into the right site.
+    // Needed so that we later bootstrap into the right site.
     drush_set_option('uri', $sites_subdir);
   }
  else {
