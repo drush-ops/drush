@@ -72,6 +72,8 @@ function pm_drush_help($section) {
       return dt('Refresh update status information. Run this before running update or updatecode commands.');
     case 'drush:pm-updatecode':
       return dt("Display available update information and allow updating of all installed project code to the specified version (or latest by default). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
+    case 'drush:pm-updatecode-notify-pending-db-updates':
+      return dt("This is a helper command needed by updatecode. It is used to check for db updates in a backend process after code updated have been performed. We need to run this task in a separate process to not conflict with old code already in memory.");
     case 'drush:pm-update':
       return dt("Display available update information and allow updating of all installed projects to the specified version (or latest by default), followed by applying any database updates required (as with running update.php). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
       case 'drush:pm-releases':
@@ -177,14 +179,16 @@ function pm_drush_command() {
     'aliases' => array('upc'),
     'deprecated-aliases' => array('updatecode'),
   ) + $engines;
-  
   // Merge all items from above.
   $items['pm-update'] = array_merge($items['pm-updatecode'], array(
     'description' => 'Update your project code and apply any database updates required (update.php)',
     'aliases' => array('up'),
     'deprecated-aliases' => array('update'),
   ));
-  
+  $items['pm-updatecode-notify-pending-db-updates'] = array(
+    'description' => 'Notify of pending db updates.',
+    'hidden' => TRUE
+  );
   $items['pm-releases'] = array(
     'description' => 'Release information for a project',
     'drupal dependencies' => array($update),
@@ -929,7 +933,7 @@ function drush_pm_refresh() {
 }
 
 /**
- * Command callback. Execute updatecode.
+ * Command callback. Execute pm-update.
  */
 function drush_pm_update() {
   // Signal that we will update drush core after the drush modules
@@ -971,9 +975,24 @@ function drush_pm_updatecode_validate() {
 }
 
 /**
- * Post-command callback for updatecode. Notify about any pending DB updates.
+ * Post-command callback for updatecode.
+ *
+ * Execute pm-updatecode-notify-pending-db-updates in a backend process to not
+ * conflict with old code already in memory.
  */
 function drush_pm_post_pm_updatecode() {
+  // Skip if updatecode was invoked by pm-update.
+  // This way we avoid being noisy, as updatedb is to be executed.
+  $command = drush_get_command();
+  if ($command['command'] != 'pm-update') {
+    drush_backend_invoke('pm-updatecode-notify-pending-db-updates');
+  }
+}
+
+/**
+ * Command callback. Execute updatecode-notify-pending-db-updates.
+ */
+function drush_pm_updatecode_notify_pending_db_updates() {
   // Make sure the installation API is available
   require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
 
