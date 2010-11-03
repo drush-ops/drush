@@ -1127,10 +1127,21 @@ function drush_read_drush_info() {
 function drush_is_local_host($host) {
   // In order for this to work right, you must use 'localhost' or '127.0.0.1'
   // or the machine returned by 'uname -n' for your 'remote-host' entry in
-  // your site alias.  Note that sometimes 'uname -n' does not return the
-  // correct value.  To fix it, put the correct hostname in /etc/hostname
-  // and then run 'hostname -F /etc/hostname'.
-  return ($host == 'localhost') || ($host == '127.0.0.1') || ($host == php_uname('n'));
+  // your site alias.
+  if (($host == 'localhost') || ($host == '127.0.0.1')) {
+    return TRUE;
+  }
+
+  // If uname -n returns an fqdn (that is, uname -n == hostname -f),
+  // then we will require that it exactly match the host in order
+  // to be considered local.  However, the usual convention is for
+  // uname -n to return only the node name (that is, uname -n == hostname -a).
+  // When this is the case, we will consider $host to be local if the
+  // machine portion of it (everything up to the first dot) matches the
+  // current value of uname -n.  We prefer uname -n to hostname as
+  // the output of uname is more regular than hostname.
+  $uname = php_uname('n');
+  return (strpos($uname,'.') !== FALSE) ? ($host == $uname) : substr($host . '.',0,strlen($uname)+1) == $uname . '.';
 }
 
 /**
