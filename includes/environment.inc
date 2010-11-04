@@ -1099,7 +1099,7 @@ function drush_valid_db_credentials() {
 function drush_find_drush() {
  $php = drush_get_option('php');
  if (isset($php)) {
-    $drush = $php . " " . realpath($_SERVER['argv'][0]) . " --php=$php";
+    $drush = $php . " " . realpath($_SERVER['argv'][0]) . " --php='$php'";
   } else {
     $drush = realpath($_SERVER['argv']['0']);
   }
