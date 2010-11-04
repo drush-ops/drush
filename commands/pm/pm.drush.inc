@@ -814,35 +814,54 @@ function pm_true() {
 }
 
 /**
- * We need to set the project path by looking at the module location. Ideally, update.module would do this for us.
+ * Completes projects' update data with the path to install location on disk.
  *
- * TODO: Improve logic so this works even if your project directory is not
- * named the same as the project name.
+ * Given an array of release info for available projects, find the path to the install location.
  */
-function pm_get_project_path($projects, $lookup) {
-  foreach ($projects as $name => $project) {
-    if (!isset($project['path'])  && $name != 'drupal') {
-      // looks for an enabled module.
-      foreach ($project[$lookup] as $filename => $title) {
-        if ($path = drupal_get_path($project['project_type'], $filename)) {
+function _pm_get_project_path($data, $lookup) {
+  foreach ($data as $name => $release) {
+    if ($name == 'drupal') {
+      continue;
+    }
+    // Array of modules/themes within the project.
+    $projects = array_keys($release[$lookup]);
+    // Select the first path as the candidate to be the common prefix.
+    $path = drupal_get_path($release['project_type'], array_pop($projects));
+    // If there's only a module/theme we are done. Otherwise, we need to find
+    // the common prefix for all of them.
+    if (count($projects) > 0) {
+      // Iterate over the other projects.
+      while($project = array_pop($projects)) {
+        $path2 = drupal_get_path($release['project_type'], $project);
+        // Option 1: same path.
+        if ($path == $path2) {
           continue;
         }
+        // Option 2: $path is a prefix of $path2.
+        if (strpos($path2, $path) === 0) {
+          continue;
+        }
+        // Option 3: $path2 is a prefix of $path.
+        if (strpos($path, $path2) === 0) {
+          $path = $path2;
+          continue;
+        }
+        // Option 4: no one is a prefix of the other. Find the common
+        // prefix by iteratively strip the rigthtmost piece of $path.
+        // We will iterate until a prefix is found or path = '.', that on the
+        // other hand is a condition theorically impossible to reach.
+        do {
+          $path = dirname($path);
+          if (strpos($path2, $path) === 0) {
+            break;
+          }
+        } while ($path != '.');
       }
-      // As some modules are not located in their project's root directory
-      // but in a subdirectory (e.g. all the ecommerce modules), we take the module's
-      // info file's path, and then move up until we are at a directory with the
-      // project's name.
-      $parts = explode('/', $path);
-      $i = count($parts) - 1;
-      $stop = array_search($name, $parts);
-      while ($i > $stop) {
-        unset($parts[$i]);
-        $i--;
-      }
-      $projects[$name]['path'] = implode('/', $parts);
     }
+    $data[$name]['path'] = $path;
   }
-  return $projects;
+
+  return $data;
 }
 
 /**

@@ -60,7 +60,7 @@ function _pm_get_update_info($projects = NULL) {
   }
   $info = update_get_available();
   $data = update_calculate_project_data($info);
-  $data = pm_get_project_path($data, 'includes');
+  $data = _pm_get_project_path($data, 'includes');
   return $data;
 }
 

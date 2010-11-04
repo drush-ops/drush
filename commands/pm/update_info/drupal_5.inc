@@ -65,7 +65,7 @@ function _pm_get_update_info($projects = NULL) {
   foreach ($data as $project_name => $project_data) {
     $data[$project_name]['project_type'] = 'module';
   }
-  $data = pm_get_project_path($data, 'modules');
+  $data = _pm_get_project_path($data, 'modules');
 
   return $data;
 }
