@@ -445,7 +445,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
         // a site-list of all of the aliases in the file
         if (substr($filename, -20) == ".aliases.drushrc.php") {
           $group_name = basename($filename,".aliases.drushrc.php");
-          if (!array_key_exists($group_name, $aliases)) {
+          if (!empty($aliases) && !array_key_exists($group_name, $aliases)) {
             $alias_names = array();
             foreach (array_keys($aliases) as $one_alias) {
               $alias_names[] = "@$one_alias";
@@ -495,16 +495,20 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
  */
 function _drush_sitealias_add_inherited_values(&$aliases) {
   foreach ($aliases as $alias_name => $alias_value) {
-    if (array_key_exists('parent', $alias_value)) {
+    if (isset($alias_value['parent'])) {
       // Prevent circular references from causing an infinite loop
       _drush_sitealias_cache_alias($alias_name, array());
       // Fetch and merge in each parent
       foreach (explode(',', $alias_value['parent']) as $parent) {
         $parent_record = drush_sitealias_get_record($parent);
-        if ($parent_record != NULL) {
-          unset($parent_record['name']);
-          $aliases[$alias_name] = array_merge($parent_record, $aliases[$alias_name]);
+        unset($parent_record['name']);
+        $array_based_keys = array_merge(drush_get_special_keys(), array('path-aliases'));
+        foreach ($array_based_keys as $array_based_key) {
+          if (isset($aliases[$alias_name][$array_based_key]) && isset($parent_record[$array_based_key])) {
+            $aliases[$alias_name][$array_based_key] = array_merge($parent_record[$array_based_key], $aliases[$alias_name][$array_based_key]);
+          }
         }
+        $aliases[$alias_name] = array_merge($parent_record, $aliases[$alias_name]);
       }
       unset($aliases[$alias_name]['parent']);
     }
@@ -1258,7 +1262,7 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   $options = drush_get_context('alias');
 
   // There are some items that we should just skip
-  $skip_list = array('site-aliases', 'command-specific');
+  $skip_list = drush_get_special_keys();
   // Also skip 'remote-host' and 'remote-user' if 'remote-host' is actually
   // the local machine
   if (array_key_exists('remote-host', $site_alias_settings) && drush_is_local_host($site_alias_settings['remote-host'])) {
@@ -1519,4 +1523,19 @@ function sitealias_find_local_drupal_root($site_list) {
   }
   
   return $drupal_root;
+}
+
+
+/**
+ * Helper function to obtain the keys' names that need special handling in certain
+ * cases.
+ * @return
+ *   A non-associative array containing the needed keys' names.
+ */
+function drush_get_special_keys() {
+  $special_keys = array(
+    'command-specific',
+    'site-aliases',
+  );
+  return $special_keys;
 }

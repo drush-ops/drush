@@ -229,8 +229,9 @@ function drush_set_config_special_contexts(&$options) {
 
     // Copy site aliases and command-specific options into their
     // appropriate caches.
-    foreach (array('site-aliases', 'command-specific') as $option_name) {
-      if ((isset($options)) && (array_key_exists($option_name, $options))) {
+    $special_contexts = drush_get_special_keys();
+    foreach ($special_contexts as $option_name) {
+      if (isset($options[$option_name])) {
         $cache =& drush_get_context($option_name);
         $cache = array_merge($cache, $options[$option_name]);
         unset($options[$option_name]);
