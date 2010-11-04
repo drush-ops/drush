@@ -19,7 +19,7 @@ function upgrade_drush_command() {
     'drupal dependencies' => array('update'),
     'core' => array(6), // Remove once 3.0 is released.
     'arguments' => array(
-      'target' => 'The name of a sitealias, which points to the destination site. root, uri, and db-url keys are required. See examples/aliases.drushrc.php for more information.'),
+      'target' => 'The name of a sitealias, which points to the destination site. root, uri, and db-url keys are required. See examples/aliases.drushrc.php for more information about creating a site alias.'),
     'examples' => array(
       'drush site-upgrade @onward' => 'Upgrade from the current site to the site specified by @onward alias.'
     ),
@@ -40,7 +40,7 @@ function upgrade_drush_command() {
 function upgrade_drush_help($section) {
   switch ($section) {
     case 'drush:site-upgrade':
-      return dt("Execute a major version upgrade for Drupal core and enabled contrib modules. Command will download next version of Drupal and all available contrib modules that have releases (if not already downloaded). It prepares a settings.php for the target site, and copies the prior version's database to the target site. Finally, updatedb is run. The intent is for developers to keep re-running this command until they are satisfied with the resulting site.");
+      return dt("Execute a major version upgrade for Drupal core and enabled contrib modules. Command will download next version of Drupal and all available contrib modules that have releases (if not already downloaded). It prepares a settings.php for the target site, and copies the prior version's database to the target site. Finally, updatedb is run. The intent is for developers to keep re-running this command until they are satisfied with the resulting site. Run this command from within your source site (D6).");
   }
 }
 
