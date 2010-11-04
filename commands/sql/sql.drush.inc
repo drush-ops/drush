@@ -48,7 +48,7 @@ function sql_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => $options,
     'examples' => array(
-      '`drush sql connect` < example.sql' => 'Import sql statements from a file into the current database.',
+      '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
     ),
   );
   $items['sql-dump'] = array(
