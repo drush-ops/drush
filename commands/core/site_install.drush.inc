@@ -62,24 +62,40 @@ function drush_core_pre_site_install() {
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
   // Drop and create DB if needed.
-  // TODO: support db-su like sql sync.
+  // @TODO: support db-su like sql sync.
+
   // Can't use drush_sql_query() since might not have a DB.
-  $exec = 'mysql ' . _drush_sql_get_credentials($db_spec);
-  // Strip DB name from credentials. Soon it won't exist anymore. We do
-  // need a DB name to connect to so use built-in mysql DB.
-  $replacement_db = 'information_schema';
-  // Make sure we are only replacing the database name,
-  // and not a username or password that is the same as the database name.
-  $exec = str_replace(" {$db_spec['database']}", " {$replacement_db}", $exec) . ' -e ';
-  // Quote database name with backticks, and add escaping for the shell.
-  $database_name = "\`{$db_spec['database']}\`";
-  if (drush_op('system', $exec . ' "DROP DATABASE IF EXISTS ' . $database_name . '"') && !drush_get_context('DRUSH_SIMULATE')) {
-    drush_set_error(dt('Could not drop database: @name', array('@name' => $db_spec['database'])));
+  // Get credentials to connect to the server, but not the database which we
+  // are about to DROP.
+
+  // Save the database name before we unset() it.
+  $db_name = $db_spec['database'];
+  $scheme = _drush_sql_get_scheme($db_spec);
+
+  // _drush_sql_get_credentials() will set a default database according to
+  // the scheme if one is not set.
+  unset($db_spec['database']);
+  $credentials = _drush_sql_get_credentials($db_spec);
+
+  switch ($scheme) {
+    case 'mysql':
+      $command_parameter_name = 'execute';
+      break;
+    case 'pgsql':
+      $command_parameter_name = 'command';
+      break;
+  }
+  $execute = "$scheme $credentials --$command_parameter_name";
+
+  $simulate = drush_get_context('DRUSH_SIMULATE');
+
+  if (drush_op('system', "$execute='DROP DATABASE IF EXISTS `$db_name`'") && !$simulate) {
+    drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));
     return;
   }
 
-  if (drush_op('system', $exec . '"CREATE DATABASE ' . $database_name . '"') && !drush_get_context('DRUSH_SIMULATE')) {
-    drush_set_error(dt('Could not create new database: @name', array('@name' => $db_spec['database'])));
+  if (drush_op('system', "$execute='CREATE DATABASE `$db_name`'") && !$simulate) {
+    drush_set_error(dt('Could not create new database: @name', array('@name' => $db_name)));
     return;
   }
 }

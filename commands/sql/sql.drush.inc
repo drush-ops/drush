@@ -242,7 +242,8 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
       if ($file = drush_get_option('result-file')) {
         $exec .= ' --result-file '. $file;
       }
-      $extra = ' --single-transaction --opt -Q' . _drush_sql_get_credentials($db_spec);
+      // mysqldump wants 'databases ' instead of 'database=' for no good reason.
+      $extra = ' --single-transaction --opt -Q' . str_replace('--database=', '--databases ', _drush_sql_get_credentials($db_spec));
       if (isset($data_only)) {
         $extra .= ' --no-create-info';
       }
@@ -536,26 +537,60 @@ function _drush_sql_get_credentials($db_spec = NULL) {
     $db_spec = _drush_sql_get_db_spec();
   }
 
+  // Build an array of key-value pairs for the parameters.
+  $parameters = array();
+
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
-      $cred = ' -h' . $db_spec['host'] .
-         (empty($db_spec['port']) ? '' : ' -P' . $db_spec['port']) .
-         ' -u' . $db_spec['username'] .
-         (empty($db_spec['password']) ? '' : ' -p' . $db_spec['password']) . ' ' . $db_spec['database'];
+      // Some drush commands (e.g. site-install) want to connect to the
+      // server, but not the database.  Connect to the built-in database.
+      $parameters['database'] = empty($db_spec['database']) ? 'information_schema' : $db_spec['database'];
+
+      // Host is required.
+      $parameters['host'] = $db_spec['host'];
+
+      // An empty port is invalid.
+      if (!empty($db_spec['port'])) {
+        $parameters['port'] = $db_spec['port'];
+      }
+
+      // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
+      $parameters['user'] = $db_spec['username'];
+
+      // EMPTY password is not the same as NO password, and is valid.
+      if (isset($db_spec['password'])) {
+        $parameters['password'] = $db_spec['password'];
+      }
       break;
-  case 'pgsql':
-      $cred = (isset($db_spec['database']) ? ' -d ' . (empty($db_spec['database']) ? 'template1' :  $db_spec['database']) : '') .
-         (empty($db_spec['host'])  ? ' -h localhost ' : ' -h ' . $db_spec['host']) .
-         (empty($db_spec['port']) ? ' -p 5432 ' : ' -p ' . $db_spec['port']);
-      // Adding '-U' will cause Postgres to prompt for a password, so disable this for now.
-      // Use "sudo -u postgres drush sql ..." to access the database without a password,
-      // presuming that "postgres" is the database superuser and you have
-      // "local all all ident sameuser" in your Postgres pg_hba.conf file.
-      // See: http://drupal.org/node/438828
-      $cred .= ' -U ' . $db_spec['username'] . ' ';
+
+    case 'pgsql':
+      // Database is optional in Postgres.
+      if (isset($db_spec['database'])) {
+        $parameters['dbname'] = empty($db_spec['database']) ? 'template1' : $db_spec['database'];
+      }
+
+      // Host and port are optional but have defaults.
+      $parameters['host'] = empty($db_spec['host']) ? 'localhost' : $db_spec['host'];
+      $parameters['port'] = empty($db_spec['port']) ? '5432' : $db_spec['port'];
+
+      // Username is required.
+      $parameters['username'] = $db_spec['username'];
+
+      // Don't set the password.
+      // @see http://drupal.org/node/438828
       break;
   }
-  return escapeshellcmd($cred);
+
+  // Turn each parameter into a valid parameter string.
+  $parameter_strings = array();
+  foreach ($parameters as $key => $value) {
+    // Only escape the values, not the keys or the rest of the string.
+    $value = escapeshellcmd($value);
+    $parameter_strings[] = "--$key=$value";
+  }
+
+  // Join the parameters and return.
+  return ' ' . implode(' ', $parameter_strings);
 }
 
 function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
