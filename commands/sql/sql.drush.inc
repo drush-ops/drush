@@ -34,6 +34,14 @@ function sql_drush_command() {
     $options['--target'] = 'The name of a target within the specified database.';
   }
 
+  $items['sql-drop'] = array(
+    'description' => 'Drop all tables in a given database.',
+    'arguments' => array(
+      // 'all' => 'Show all database connections, instead of just one.',
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'options' => $options,
+  );
   $items['sql-conf'] = array(
     'description' => 'Print database connection details using print_r().',
     'arguments' => array(
@@ -377,27 +385,12 @@ function _drush_sql_query($query, $db_spec = NULL) {
 
   // Convert mysql 'show tables;' query into something pgsql understands
   if (($scheme == 'pgsql') && ($query == 'show tables;')) {
-    $query = "select tablename from pg_tables where schemaname='public';";
+    $query = drush_sql_show_tables_pgsql();
   }
 
   // Save $query to a tmp file. We will redirect it in.
-  if ($file = drush_save_data_to_temp_file($query)) {
-    switch ($scheme) {
-      case 'mysql':
-        $exec = 'mysql' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
-        $exec .= _drush_sql_get_credentials($db_spec);
-        $exec .= ' ' . drush_get_option('extra');
-        $exec .= " < $file";
-
-        break;
-      case 'pgsql':
-        $exec = 'psql';
-        $exec .= _drush_sql_get_credentials($db_spec);
-        $exec .= (drush_get_context('DRUSH_VERBOSE') ? '' : ' -q');
-        $exec .= ' ' . (drush_get_option('extra') ? drush_get_option('extra') : "--no-align --field-separator='\t' --pset footer=off");
-        $exec .= " --file $file";
-        break;
-    }
+  if ($filename = drush_save_data_to_temp_file($query)) {
+    $exec = drush_sql_build_exec($db_spec, $filename);
     // In --simulate mode, drush_op will show the call to mysql or psql,
     // but the sql query itself is stored in a temp file and not displayed.
     // We will therefore show the query explicitly in the interest of full disclosure.
@@ -407,6 +400,32 @@ function _drush_sql_query($query, $db_spec = NULL) {
     $return = drush_op('system', $exec) !== FALSE;
     return $return;
   }
+}
+
+function drush_sql_drop() {
+  if (!drush_confirm(dt('Do you really want to drop all tables?'))) {
+    drush_die('Aborting.');
+  }
+  
+  // TODO: integrate with _drush_sql_get_table_list?
+  
+  $query = 'show tables';
+  if (_drush_sql_get_scheme() == 'pgsql') {
+    $query = drush_sql_show_tables_pgsql();    
+  }
+  
+  $filename = drush_save_data_to_temp_file($query);
+  $exec = drush_sql_build_exec($db_spec, $filename);
+  
+  // Actually run this prep query no matter if in simulate.
+  $old = drush_get_context('DRUSH_SIMULATE');
+  drush_set_context('DRUSH_SIMULATE', TRUE);
+  drush_shell_exec($exec);
+  drush_set_context('DRUSH_SIMULATE', $old);
+  $tables = drush_shell_exec_output();
+  array_shift($tables);
+  $sql = 'DROP TABLE '. implode(', ', $tables);
+  return drush_op('db_query', $sql);
 }
 
 function drush_sql_cli() {
@@ -665,4 +684,30 @@ function _drush_sql_get_post_sync_messages() {
   }
 
   return $messages;
+}
+
+// Convert mysql 'show tables;' query into something pgsql understands.
+function drush_sql_show_tables_pgsql() {
+  return "select tablename from pg_tables where schemaname='public';";
+}
+
+function drush_sql_build_exec($db_spec, $filepath) {
+  $scheme = _drush_sql_get_scheme($db_spec);
+  switch ($scheme) {
+    case 'mysql':
+      $exec = 'mysql' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+      $exec .= _drush_sql_get_credentials($db_spec);
+      $exec .= ' ' . drush_get_option('extra');
+      $exec .= " < $filepath";
+
+      break;
+    case 'pgsql':
+      $exec = 'psql';
+      $exec .= _drush_sql_get_credentials($db_spec);
+      $exec .= (drush_get_context('DRUSH_VERBOSE') ? '' : ' -q');
+      $exec .= ' ' . (drush_get_option('extra') ? drush_get_option('extra') : "--no-align --field-separator='\t' --pset footer=off");
+      $exec .= " --file $filepath";
+      break;
+  }
+  return $exec;
 }
