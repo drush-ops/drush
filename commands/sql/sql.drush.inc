@@ -37,10 +37,12 @@ function sql_drush_command() {
   $items['sql-drop'] = array(
     'description' => 'Drop all tables in a given database.',
     'arguments' => array(
-      // 'all' => 'Show all database connections, instead of just one.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
-    'options' => $options,
+    'options' => array(
+      '--yes' => 'Skip confirmation and proceed.',
+      '--result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
+    ) + $options,
   );
   $items['sql-conf'] = array(
     'description' => 'Print database connection details using print_r().',
@@ -417,9 +419,9 @@ function drush_sql_drop() {
   $filename = drush_save_data_to_temp_file($query);
   $exec = drush_sql_build_exec($db_spec, $filename);
   
-  // Actually run this prep query no matter if in simulate.
+  // Actually run this prep query no matter if in SIMULATE.
   $old = drush_get_context('DRUSH_SIMULATE');
-  drush_set_context('DRUSH_SIMULATE', TRUE);
+  drush_set_context('DRUSH_SIMULATE', FALSE);
   drush_shell_exec($exec);
   drush_set_context('DRUSH_SIMULATE', $old);
   $tables = drush_shell_exec_output();
