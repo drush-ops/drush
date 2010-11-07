@@ -60,7 +60,18 @@ function drush_make_drush_command() {
 
   $items['generate-makefile'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-    'description' => 'Attempts to generate a makefile from the current drupal install.',
+    'description' => 'Attempts to generate a makefile from a Drupal directory or installation.',
+    'arguments' => array(
+      'target_file' => 'The target makefile to generate. If no directory is specified, the makefile will be created in the Drupal docroot.',
+    ),
+    'examples' => array(
+      'drush @dev generate-makefile example.make' => 'Generate a makefile from the @dev site.',
+      'drush generate-makefile example.make --exclude-versions' => 'Exclude all version information.',
+      'drush generate-makefile example.make --exclude-versions="admin_menu,og,ctools"' => 'Exclude version information for Admin Menu, Organic Groups and CTools.',
+    ),
+    'options' => array(
+      '--exclude-versions' => 'Exclude version information for all projects, or optionally specify a comma separated list of projects to exclude version information for.',
+    ),
   );
 
   return $items;

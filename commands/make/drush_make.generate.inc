@@ -8,6 +8,11 @@ include_once drupal_get_path('module', 'system') . '/system.install';
  * Drush callback; generate makefile from the current build.
  */
 function _drush_generate_makefile($file) {
+  // Check to see if project versions are exluded.
+  $exclude_versions = drush_get_option('exclude-versions', FALSE);
+  $exclude_all = ($exclude_versions === TRUE);
+  $exclude_versions = is_string($exclude_versions) ? explode(",", $exclude_versions) : array();
+
   $projects = array();
 
   $system_requirements = system_requirements('runtime');
@@ -16,6 +21,12 @@ function _drush_generate_makefile($file) {
   if ($core_project != 'drupal') {
     $projects[$core_project]['custom_download'] = TRUE;
     $projects[$core_project]['type'] = 'core';
+  }
+  else {
+    // Get the Drupal core version if it hasn't been excluded.
+    if (!($exclude_all || in_array('drupal', $exclude_versions))) {
+      $projects[$core_project]['version'] = $system_requirements['drupal']['value'];
+    }
   }
 
   // Non-default profiles section.
@@ -44,6 +55,11 @@ function _drush_generate_makefile($file) {
         $projects[$name]['custom_download'] = TRUE;
       }
       $projects[$name] += _drush_generate_makefile_check_location($name, $type);
+      // Add version number if this project's version is not excluded and we
+      // have version information.
+      if (!($exclude_all || in_array($name, $exclude_versions)) && $item->info['version']) {
+        $projects[$name]['version'] = preg_replace('/^'. DRUPAL_CORE_COMPATIBILITY .'-/', '', $item->info['version']);
+      }
     }
   }
 
