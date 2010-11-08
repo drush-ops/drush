@@ -495,8 +495,10 @@ function _core_path_aliases($project = '') {
         $paths['%themes'] = 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'themes';
       }
       if (drush_drupal_major_version() >= 7) {
-        $paths['%files'] = DrupalPublicStreamWrapper::getDirectoryPath();
-        $paths['%private'] = DrupalPrivateStreamWrapper::getDirectoryPath();
+        if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+          $paths['%files'] = DrupalPublicStreamWrapper::getDirectoryPath();
+          $paths['%private'] = DrupalPrivateStreamWrapper::getDirectoryPath();
+        }
       }
       elseif (function_exists('file_directory_path')) {
         $paths['%files'] = file_directory_path();
