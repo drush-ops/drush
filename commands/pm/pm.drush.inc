@@ -155,6 +155,8 @@ function pm_drush_command() {
       '--type' => 'Filter by project type. Choices: module, theme.',
       '--status' => 'Filter by project status. Choices: enabled,disable and/or \'not installed\'. You can use multiple comma separated values. (i.e. --status="disabled,not installed").',
       '--package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other").',
+      '--core' => 'Filter out projects that are not in core.',
+      '--no-core' => 'Filter out core packages.',
       '--pipe' => 'Returns a space delimited list of the names of the resulting projects.',
     ),
     'aliases' => array('sm'),
@@ -299,6 +301,20 @@ function drush_pm_list() {
     }
     if (($major_version >= 6) and (isset($project->info['hidden']))) {
       continue;
+    }
+    
+    // filter out core if --no-core specified
+    if (drush_get_option('no-core', FALSE)) {
+      if (strcasecmp("Core ", substr($project->info['package'], 0, 5)) == 0) {
+        continue;
+      }
+    }
+    
+    // filter out non-core if --core specified
+    if (drush_get_option('core', FALSE)) {
+      if (strcasecmp("Core ", substr($project->info['package'], 0, 5)) != 0) {
+        continue;
+      }
     }
 
     // filter by package
