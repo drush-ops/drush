@@ -68,6 +68,10 @@ function drush_main() {
   $phases = _drush_bootstrap_phases(FALSE, TRUE);
   drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
 
+  // We need some global options processed at this early stage. Namely --debug.
+  drush_parse_args();
+  _drush_bootstrap_global_options();
+
   $return = '';
   $command_found = FALSE;
 
@@ -119,9 +123,10 @@ function drush_main() {
     elseif (!empty($args)) {
       drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!args' could not be found.", array('!args' => $args)));
     }
-    else {
-      // This can occur if we get an error during _drush_bootstrap_drush_validate();
-      drush_set_error('DRUSH_COULD_NOT_EXECUTE', dt("Drush could not execute."));
+    // Set errors that ocurred in the bootstrap phases.
+    $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
+    foreach ($errors as $code => $message) {
+      drush_set_error($code, $message);
     }
   }
 

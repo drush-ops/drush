@@ -492,9 +492,6 @@ function _drush_bootstrap_drush() {
   }
   drush_set_context('DRUSH_COLUMNS', $columns);
 
-  // parse the command line arguments.
-  drush_parse_args();
-
   // statically define a way to call drush again
   define('DRUSH_COMMAND', drush_find_drush());
 

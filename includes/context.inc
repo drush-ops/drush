@@ -308,7 +308,7 @@ function &drush_get_context($context = null, $default = null) {
  *
  * This function will set the 'arguments' context of the current running script.
  *
- * When initially called by drush_parse_options, the entire list of arguments will
+ * When initially called by drush_parse_args, the entire list of arguments will
  * be populated, once the command is dispatched, this will be set to only the remaining
  * arguments to the command.
  *
@@ -322,7 +322,7 @@ function drush_set_arguments($arguments) {
 /**
  * Get the arguments passed to the drush.php script.
  *
- * When drush_set_arguments is initially called by drush_parse_options,
+ * When drush_set_arguments is initially called by drush_parse_args,
  * the entire list of arguments will be populated.
  * Once the command has been dispatched, this will be return only the remaining
  * arguments to the command.
