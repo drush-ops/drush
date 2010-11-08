@@ -41,28 +41,46 @@ if [ -z $COLUMNS ]; then
   fi
 fi
 
-# Default to using the php that we find on the PATH.
-# Note that we need the full path to php here for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
-php=`which php`
+if [ ! -z "$DRUSH_PHP" ] ; then
+  # Use the DRUSH_PHP environment variable if it is available.
+  php="$DRUSH_PHP"
+else
+  # Default to using the php that we find on the PATH.
+  # Note that we need the full path to php here for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
+  php=`which php`
 
-# We check for a command line (cli) version of php, and if found use that.
-which php-cli >/dev/null 2>&1
-if [ "$?" = 0 ] ; then
-  php=`which php-cli`
+  # We check for a command line (cli) version of php, and if found use that.
+  which php-cli >/dev/null 2>&1
+  if [ "$?" = 0 ] ; then
+    php=`which php-cli`
+  fi
+
+  # Special case for *AMP installers, since they normally don't set themselves as the default cli php out of the box.
+  for amp_php in /Applications/MAMP/bin/php5/bin/php /Applications/MAMP/bin/php5.2/bin/php /Applications/MAMP/bin/php5.3/bin/php /opt/lampp/bin/php /Applications/xampp/xamppfiles/bin/php /Applications/acquia-drupal/php/bin/php; do
+    if [ -x $amp_php ]; then
+      php=$amp_php
+    fi
+  done
 fi
 
-# Special case for *AMP installers, since they normally don't set themselves as the default cli php out of the box.
-for amp_php in /Applications/MAMP/bin/php5/bin/php /Applications/MAMP/bin/php5.2/bin/php /Applications/MAMP/bin/php5.3/bin/php /opt/lampp/bin/php /Applications/xampp/xamppfiles/bin/php /Applications/acquia-drupal/php/bin/php; do
-  if [ -x $amp_php ]; then
-    php=$amp_php
+# Check to see if the user has provided a php.ini file or drush.ini file in any conf dir
+# Last found wins, so search in reverse priority order
+for conf_dir in /etc/drush $HOME/.drush ; do
+  if [ -f $conf_dir/php.ini ] ; then
+    drush_php_ini=$conf_dir/php.ini
+  fi
+  if [ -f $conf_dir/drush.ini ] ; then
+    drush_php_override=$conf_dir/drush.ini
   fi
 done
 
-# Check to see if the user has provided a php.ini file particularly for drush
-if [ -f $HOME/.drush/php.ini ] ; then
-  php="$php --php-ini $HOME/.drush/php.ini"
-elif [ -f /etc/drush/php.ini ] ; then
-  php="$php --php-ini /etc/drush/php.ini"
+# Add in the php file location and/or the php override variables as appropriate
+if [ "x$drush_php_ini" != "x" ] ; then
+  php="$php --php-ini $drush_php_ini"
+fi
+if [ "x$drush_php_override" != "x" ] ; then
+  drush_override_vars=`grep '^[a-z_A-Z0-9]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
+  php="$php $drush_override_vars"
 fi
 
 # Pass in the path to php so that drush knows which one

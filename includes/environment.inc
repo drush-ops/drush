@@ -420,9 +420,15 @@ function drush_bootstrap_value($context, $value = null) {
  * Validate initial Drush bootstrap phase.
  */
 function _drush_bootstrap_drush_validate() {
-  // Test safe mode is off.
-  if (ini_get('safe_mode')) {
-    return drush_bootstrap_error('DRUSH_SAFE_MODE', dt('PHP safe mode is activated. Drush requires that safe mode is disabled.'));
+  // Test to insure that certain php ini restrictions have not been enabled
+  $prohibited_list = array();
+  foreach (array('safe_mode', 'open_basedir', 'disable_functions', 'disable_classes') as $prohibited_mode) {
+    if (ini_get($prohibited_mode)) {
+      $prohibited_list[] = $prohibited_mode;
+    }
+  }
+  if (!empty($prohibited_list)) {
+    return drush_bootstrap_error('DRUSH_SAFE_MODE', dt('The following restricted PHP modes have non-empty values: !prohibited_list. This configuration is incompatible with drush; see examples/example.drush.ini for details.', array('!prohibited_list' => implode(' and ', $prohibited_list))));
   }
 
   // try using the PEAR installed version of Console_Table

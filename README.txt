@@ -34,13 +34,12 @@ For Linux/Unix/Mac:
   2. Make the 'drush' command executable:
        $ chmod u+x /path/to/drush/drush
   3. (Optional, but recommended:) To ease the use of drush,
-     - create a link to drush in a directory that is in your $PATH, e.g.:
+     - create a link to drush in a directory that is in your PATH, e.g.:
        $ ln -s /path/to/drush/drush /usr/local/bin/drush
      OR
-     - create an alias to drush:
-       $ alias drush='/path/to/drush/drush'
-       For example, if drush is in your home directory:
-       $ alias drush='~/drush/drush'
+     - add the folder that contains drush to your PATH
+       PATH=$PATH:/path/to/drush
+
        This goes into .profile, .bash_aliases or .bashrc in your home folder.
        NOTE:  You must log out and then log back in again or re-load your bash
        configuration file to apply your changes to your current session:
@@ -48,13 +47,39 @@ For Linux/Unix/Mac:
 
      NOTE FOR ADVANCED USERS
      - If you want to run drush with a specific version of php, rather than the
-       one found by the drush command, you can instead create an alias that
-       executes the drush.php file directly and passes that path to drush:
-       $ alias drush='/path/to/php/php5 /path/to/drush/drush.php --php=/path/to/php/php5'
-       If you do this, to allow Drush to detect the number of available columns,
+       one found by the drush command, you can define an environment variable
+       DRUSH_PHP that points to the php to execute:
+       export DRUSH_PHP=/usr/bin/php5
+     OR
+     - If you want to exactly control how drush is called, you may define an alias
+       that executes the drush.php file directly and passes that path to drush:
+       $ alias drush='/path/to/php/php5 -d memory_limit=128M /path/to/drush/drush.php --php="/path/to/php/php5 -d memory_limit=128M"'
+       Note that it is necessary to pass the '--php' option to drush to define
+       how drush should call php if it needs to do so.
+       If you define an alias, to allow Drush to detect the number of available columns,
        you need to add the line 'export COLUMNS' to the .profile file in your
        home folder.
 
+     NOTE ON PHP.INI FILES
+     - Usually, php is configured to use separate php.ini files for the web server
+       and the command line.  To see which php.ini file drush is using, run:
+       $ drush status
+     - Compare the php.ini that drush is using with the php.ini that the webserver is
+       using.  Make sure that drush's php.ini is given as much memory to work with as
+       the web server is; otherwise, Drupal might run out of memory when drush
+       bootstraps it.
+     - Drush requires a fairly unrestricted php environment to run in.  In particular,
+       you should insure that safe_mode, open_basedir, disable_functions and
+       disable_classes are empty.
+     - If drush is using the same php.ini file as the web server, you can create
+       a php.ini file exclusively for drush by copying your web server's php.ini
+       file to the folder $HOME/.drush or the folder /etc/drush.  Then you may edit
+       this file and change the settings described above without affecting the
+       php enviornment of your web server.  Alternately, if you only want to
+       override a few values, copy example.drush.ini from the "examples" folder
+       into $HOME/.drush or the folder /etc/drush and edit to suit.  See comments
+       in example.drush.ini for more details.
+       
   4. Start using drush by running "drush" from your Drupal root directory.
 
      (or, if you did not follow step 3, by running "/path/to/drush/drush"
