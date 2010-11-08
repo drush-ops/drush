@@ -226,6 +226,10 @@ function drush_drupal_login($drush_user) {
     }
     return drush_set_error('DRUPAL_USER_LOGIN_FAILED', $message);
   }
+  else {
+    $name = $user->name ? $user->name : variable_get('anonymous', t('Anonymous'));
+    drush_log(dt('Successfully logged into Drupal as !name', array('!name' => $name . " (uid=$user->uid)")), 'bootstrap');
+  }
 
   return TRUE;
 }
