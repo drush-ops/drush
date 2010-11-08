@@ -235,7 +235,7 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
   $tables = $tabel_selection['tables'];
 
   $ignores = array();
-  $skip_tables += $structure_tables;
+  $skip_tables  = array_merge($structure_tables, $skip_tables);
   $data_only = drush_get_option('data-only');
   // The ordered-dump option is only supported by MySQL for now.
   // @todo add documention once a hook for drush_get_option_help() is available.
