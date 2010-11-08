@@ -394,10 +394,10 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       $import_command = _drush_sql_connect($target_db_url);
       switch (_drush_sql_get_scheme($target_db_url)) {
         case 'mysql':
-          $import_command .= ' ' . (drush_get_context('DRUSH_DEBUG') ? ' ' : '--silent');
+          $import_command .= ' --silent';
           break;
         case 'pgsql':
-          $import_command .= ' ' . (drush_get_context('DRUSH_DEBUG') ? ' ' : '-q');
+          $import_command .= ' -q';
           break;
       }
 

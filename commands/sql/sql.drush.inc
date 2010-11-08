@@ -249,7 +249,7 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
 
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
-      $exec = 'mysqldump' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+      $exec = 'mysqldump';
       if ($file = drush_get_option('result-file')) {
         $exec .= ' --result-file '. $file;
       }
@@ -284,7 +284,7 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
       break;
     case 'pgsql':
       $create_db = drush_get_option('create-db');
-      $exec = 'pg_dump ' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+      $exec = 'pg_dump ';
       if ($file = drush_get_option('result-file')) {
         $exec .= ' --file '. $file;
       }
