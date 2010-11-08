@@ -204,6 +204,21 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
 }
 
 /**
+ * Determine whether a given bootstrap phase has been completed
+ *
+ * @param phase
+ *   The bootstrap phase to test
+ *
+ * @returns
+ *   TRUE if the specified bootstrap phase has completed.
+ */
+function drush_has_boostrapped($phase) {
+  $phase_index = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+  
+  return isset($phase_index) && ($phase_index >= $phase);
+}
+
+/**
  * Validate whether a bootstrap phases can be reached.
  *
  * This function will validate the settings that will be used
@@ -320,44 +335,24 @@ function drush_bootstrap_max($max_phase_index = FALSE) {
 }
 
 /**
- * Bootstrap the specified site alias.
+ * Bootstrap the specified site alias.  The site alias must
+ * be a valid alias to a local site.
  *
  * @param $site_record
  *   The alias record for the given site alias.
  *   @see drush_sitealias_get_record().
  * @param $max_phase_index
  *   Only attempt bootstrap to the specified level.
+ * @returns TRUE if attempted to bootstrap, or FALSE
+ *   if no bootstrap attempt was made.
  */
 function drush_bootstrap_max_to_sitealias($site_record, $max_phase_index = NULL) {
-  drush_sitealias_set_alias_context($site_record);
-  drush_bootstrap_max($max_phase_index);
-}
-
-/**
- * Bootstrap the first site alias in the provided list
- * that is local.  This is used, for example, by sql-sync,
- * which passes the source and destination targets so that
- * the local site is bootstrapped.
- *
- * @param $site_record
- *   The alias record for the given site alias.
- *   @see drush_sitealias_get_record().
- * @param $max_phase_index
- *   Only attempt bootstrap to the specified level.
- * @returns array
- *   The alias record for the site that was bootstrapped
- */
-function drush_bootstrap_max_to_local_sitealias($site_list, $max_phase_index = NULL) {
-  $bootstrapped_site = NULL;
-
-  foreach ($site_list as $site) {
-    if (($bootstrapped_site == NULL) && (array_key_exists('root', $site) && !array_key_exists('remote-host', $site))) {
-      $bootstrapped_site = $site;
-      drush_bootstrap_max_to_sitealias($site, $max_phase_index);
-    }
+  if ((array_key_exists('root', $site_record) && !array_key_exists('remote-host', $site_record))) {
+    drush_sitealias_set_alias_context($site_record);
+    drush_bootstrap_max($max_phase_index);
+    return TRUE;
   }
-
-  return $bootstrapped_site;
+  return FALSE;
 }
 
 /**

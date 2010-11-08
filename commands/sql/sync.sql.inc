@@ -26,20 +26,31 @@ function drush_sql_sync_init($source = NULL, $destination = NULL) {
   sitealias_get_databases_from_record($source_settings);
   sitealias_get_databases_from_record($destination_settings);
   
-  // Bootstrap to one of the sites being sync'ed.  This allows modules
-  // enabled in the site to participate in the sql-sync hook functions
-  // (e.g. to add sanitization operations, etc.)
-  drush_bootstrap_max_to_local_sitealias(array($source_settings, $destination_settings));
+  // Bootstrap to the source sites being sync'ed if it is local.  
+  // This allows modules enabled in the site to participate in the 
+  // sql-sync hook functions (e.g. to add sanitization operations, etc.).
+  // If the source is remote and the destination is local, then we
+  // will determine the sanitization operations after the database
+  // has been copied.
+  if (!drush_get_option('deferred-sanitization', FALSE) && drush_get_option(array('sanitize', 'destination-sanitize'), FALSE)) {
+    $bootstrapped = drush_bootstrap_max_to_sitealias($source_settings);
+    if ($bootstrapped) {
+      drush_command_invoke_all('drush_sql_sync_sanitize', $source);
+    }
+    else {
+      drush_set_option('deferred-sanitization', TRUE);
+    }
+  }
   
   return TRUE;
 }
 
 /**
- * Pre sql sync function.  This hook function will sanitize usernames and
+ * Sql sync sanitization function.  This hook function will sanitize usernames and
  * passwords in the user table when the --sanitize option is used.  It is
  * also an example of how to write a database sanitizer for sql sync.
  *
- * To write your own sync hook function, define drush_mymodule_pre_sql_sync()
+ * To write your own sync hook function, define mymodule_drush_sql_sync_sanitize()
  * and follow the form of this function to add your own database
  * sanitization operations via the register post-sync op function;
  * @see drush_sql_register_post_sync_op().  This is the only thing that the
@@ -49,67 +60,61 @@ function drush_sql_sync_init($source = NULL, $destination = NULL) {
  * generate the correct SQL regardless of whether Postgres, Mysql,
  * Drupal 6 or Drupal 7 is in use.  A simpler sanitize function that
  * always used default values and only worked with Drupal 6 + mysql
- * appears in the drush.api.php.  @see drush_hook_pre_sql_sync().
+ * appears in the drush.api.php.  @see hook_drush_sql_sync_sanitize().
  */
-function drush_sql_pre_sql_sync($source = NULL, $destination = NULL) {
-  $source_settings = drush_sitealias_get_record($source);
-  $destination_settings = drush_sitealias_get_record($destination);
+function sql_drush_sql_sync_sanitize($site) {
+  $site_settings = drush_sitealias_get_record($site);
   $user_table_updates = array();
   $message_list = array();
 
-  // Test to see if 'sanitize' option was specified.
-  if (drush_get_option(array('sanitize', 'destination-sanitize'), FALSE)) {
-    // Sanitize email addresses
-    $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
-    if ($newpassword != 'no') {
-      $major_version = drush_drupal_major_version();
-      $pw_op = "";
+  // Sanitize email addresses
+  $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
+  if ($newpassword != 'no') {
+    $major_version = drush_drupal_major_version();
+    $pw_op = "";
 
-      // In Drupal 6, passwords are hashed via the MD5 algorithm.
-      if ($major_version == 6) {
-        $pw_op = "MD5('$newpassword')";
-      }
-      // In Drupal 7, passwords are hashed via a more complex algorithm,
-      // available via the user_hash_password function.
-      elseif ($major_version >= 7) {
-        $drupal_root = sitealias_find_local_drupal_root(array($source_settings, $destination_settings));
-        if (isset($drupal_root)) {
-          include_once $drupal_root . '/includes/password.inc';
-          include_once $drupal_root . '/includes/bootstrap.inc';
-          $hash = user_hash_password($newpassword);
-          $pw_op = "'$hash'";
-        }
-      }
-      if (!empty($pw_op)) {
-        $user_table_updates[] = "pass = $pw_op";
-        $message_list[] =  "passwords";
-      }
+    // In Drupal 6, passwords are hashed via the MD5 algorithm.
+    if ($major_version == 6) {
+      $pw_op = "MD5('$newpassword')";
     }
-
-    // Sanitize passwords
-    $newemail = drush_get_option(array('sanitize-email', 'destination-sanitize-email'), 'user+%uid@localhost');
-    if ($newemail != 'no') {
-      if (strpos($newemail, '%') !== FALSE) {
-        // We need a different sanitization query for Postgres and Mysql
-        $db_driver = $destination_settings['databases']['default']['default']['driver'];
-        if ($db_driver == 'pgsql') {
-          $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%login' => "' || replace(login, ' ', '_') || '");
-          $newmail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "'";
-        }
-        else {
-          $email_map = array('%uid' => "', uid, '", '%mail' => "', replace(mail, '@', '_'), '", '%login' => "', replace(login, ' ', '_'), '");
-          $newmail =  "concat('" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "')";
-        }
-      }
-      $user_table_updates[] = "mail = $newmail";
-      $message_list[] = 'email addresses';
+    // In Drupal 7, passwords are hashed via a more complex algorithm,
+    // available via the user_hash_password function.
+    elseif ($major_version >= 7) {
+      include_once DRUPAL_ROOT . '/includes/password.inc';
+      include_once DRUPAL_ROOT . '/includes/bootstrap.inc';
+      $hash = user_hash_password($newpassword);
+      $pw_op = "'$hash'";
     }
-
-    if (!empty($user_table_updates)) {
-      $sanitize_query = "update users set " . implode(', ', $user_table_updates) . " where uid > 0;";
-      drush_sql_register_post_sync_op('user-email', dt('Reset !message in user table', array('!message' => implode(' and ', $message_list))), $sanitize_query);
+    if (!empty($pw_op)) {
+      $user_table_updates[] = "pass = $pw_op";
+      $message_list[] =  "passwords";
     }
   }
+
+  // Sanitize passwords
+  $newemail = drush_get_option(array('sanitize-email', 'destination-sanitize-email'), 'user+%uid@localhost');
+  if ($newemail != 'no') {
+    if (strpos($newemail, '%') !== FALSE) {
+      // We need a different sanitization query for Postgres and Mysql
+      $db_driver = $site_settings['databases']['default']['default']['driver'];
+      if ($db_driver == 'pgsql') {
+        $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%login' => "' || replace(login, ' ', '_') || '");
+        $newmail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "'";
+      }
+      else {
+        $email_map = array('%uid' => "', uid, '", '%mail' => "', replace(mail, '@', '_'), '", '%login' => "', replace(login, ' ', '_'), '");
+        $newmail =  "concat('" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "')";
+      }
+    }
+    $user_table_updates[] = "mail = $newmail";
+    $message_list[] = 'email addresses';
+  }
+
+  if (!empty($user_table_updates)) {
+    $sanitize_query = "update users set " . implode(', ', $user_table_updates) . " where uid > 0;";
+    drush_sql_register_post_sync_op('user-email', dt('Reset !message in user table', array('!message' => implode(' and ', $message_list))), $sanitize_query);
+  }
+  
 }
 
 
@@ -249,14 +254,6 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         }
       }
 
-      // If any sanitization operations are to be done, then get the
-      // sanitization messages and print them as part of the confirmation.
-      $messages = _drush_sql_get_post_sync_messages();
-      if ($messages) {
-        drush_print();
-        drush_print($messages);
-      }
-
       // If there are multiple destinations, then
       // prompt once here and suppress the warning message
       // and the normal confirmation below.
@@ -272,6 +269,21 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         $txt_source = (isset($source_db_url['remote-host']) ? $source_db_url['remote-host'] . '/' : '') . $source_db_url['database'];
         $txt_destination = (isset($target_db_url['remote-host']) ? $target_db_url['remote-host'] . '/' : '') . $target_db_url['database'];
         drush_print(dt("You will destroy data from !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
+      }
+
+      // If any sanitization operations are to be done, then get the
+      // sanitization messages and print them as part of the confirmation.
+      // If --sanitize was specified but there were no sanitize messages,
+      // then warn that sanitization operations will be accumulated and
+      // processed after the sync completes.
+      $messages = _drush_sql_get_post_sync_messages();
+      if ($messages) {
+        drush_print();
+        drush_print($messages);
+      }
+      else if (drush_get_option('deferred-sanitization', FALSE) && !drush_get_option('confirm-sanitizations', FALSE)) {
+        drush_print();
+	drush_print("WARNING: --sanitize was specified, but deferred (e.g. the source site is remote).  The sanitization operations will be determined after the database is copied to the local system and will be run without further confirmation.  Run with --confirm-sanitizations to force confirmation after the sync.");
       }
 
       // TODO: actually make the backup if desired.
@@ -412,6 +424,20 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       }
 
       drush_op('system', $import_exec);
+      
+      // After the database is imported into the destination, we
+      // will check and see if we did not collect sanitization
+      // operations in drush_sql_sync_init (i.e. because the source
+      // site was remote), and if the destination site is local,
+      // then we will call the sanitization hooks now.
+      // This presumes an important precondition, that the code
+      // files were sync'ed before the database was sync'ed.
+      if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_SITE) == FALSE) {
+	$bootstrapped = drush_bootstrap_max_to_sitealias($destination_settings);
+	if ($bootstrapped) {
+	  drush_command_invoke_all('drush_sql_sync_sanitize', $destination);
+	}
+      }
     }
   }
 }
@@ -425,6 +451,26 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
 function drush_sql_post_sql_sync($source = NULL, $destination = NULL) {
   $options = drush_get_context('post-sync-ops');
   if (!empty($options)) {
+    // If 'deferred-sanitization' is set, then we collected the
+    // sanitization operations -after- the database sync, which
+    // means they were not confirmed up-front.  We will show the
+    // operations here, but we will not offer an opportunity to
+    // confirm unless --confirm-sanitizations is specified.
+    if (drush_get_option('deferred-sanitization', FALSE) || drush_get_option('confirm-sanitizations', FALSE)) {
+      if (!drush_get_context('DRUSH_SIMULATE')) {
+	$messages = _drush_sql_get_post_sync_messages();
+	if ($messages) {
+          drush_print();
+          drush_print($messages);
+          if (drush_get_option('confirm-sanitizations', FALSE)) {
+            if (!drush_confirm(dt('Do you really want to sanitize?'))) {
+              drush_die('Aborting; sql-sync completed, but sanitizations skipped.');
+	    }
+	  }
+	}
+      }
+    }
+    
     $destination_settings = drush_sitealias_get_record($destination);
     $sanitize_query = '';
     foreach($options as $id => $data) {
