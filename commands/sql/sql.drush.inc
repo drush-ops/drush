@@ -181,7 +181,7 @@ function drush_sql_conf() {
 function _drush_sql_connect($db_spec = NULL) {
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
-      $command = 'mysql ' . (drush_get_context('DRUSH_DEBUG') ? ' -v' : '');
+      $command = 'mysql ';
       $command .= _drush_sql_get_credentials($db_spec);
       break;
     case 'pgsql':
