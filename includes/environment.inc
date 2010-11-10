@@ -606,9 +606,11 @@ function _drush_bootstrap_global_options() {
 
   // Suppress colored logging if --nocolor option is explicitly given or if
   // terminal does not support it.
-  $nocolor = (drush_get_option(array('nocolor'), FALSE) || !getenv('TERM'));
+  $nocolor = (drush_get_option(array('nocolor'), FALSE));
   if (!$nocolor) {
-    // Check for colorless terminal.
+    // Check for colorless terminal.  If there is no terminal, then
+    // 'tput colors 2>&1' will return "tput: No value for $TERM and no -T specified",
+    // which is not numeric and therefore will put us in no-color mode.
     $colors = exec('tput colors 2>&1');
     $nocolor = !($colors === FALSE || (is_numeric($colors) && $colors >= 3));
   }
