@@ -418,7 +418,7 @@ function drush_sql_drop() {
   }
   
   $filename = drush_save_data_to_temp_file($query);
-  $exec = drush_sql_build_exec($db_spec, $filename);
+  $exec = drush_sql_build_exec(NULL, $filename);
   
   // Actually run this prep query no matter if in SIMULATE.
   $old = drush_get_context('DRUSH_SIMULATE');
