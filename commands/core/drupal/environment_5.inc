@@ -147,7 +147,7 @@ function drush_module_uninstall($modules) {
  * the form submit (such as admin_role) are completed.
  */
 function drush_system_modules_form_submit($active_modules) {
-  require_once('./'. drupal_get_path('module', 'system') .'/system.module');
+  require_once './'. drupal_get_path('module', 'system') .'/system.module';
   $form_state = array('values' => array('status' => $active_modules));
   drupal_execute('system_modules', $form_state);
 }

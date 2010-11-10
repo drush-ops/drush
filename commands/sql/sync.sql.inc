@@ -290,7 +290,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       drush_print();
       drush_print(dt("You might want to make a backup first, using the sql-dump command.\n"));
       if (!drush_confirm(dt('Do you really want to continue?'))) {
-        drush_die('Aborting.');
+        drush_user_abort();
       }
     }
 
@@ -464,7 +464,7 @@ function drush_sql_post_sql_sync($source = NULL, $destination = NULL) {
           drush_print($messages);
           if (drush_get_option('confirm-sanitizations', FALSE)) {
             if (!drush_confirm(dt('Do you really want to sanitize?'))) {
-              drush_die('Aborting; sql-sync completed, but sanitizations skipped.');
+              drush_user_abort('Aborting; sql-sync completed, but sanitizations skipped.');
 	    }
 	  }
 	}

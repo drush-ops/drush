@@ -416,10 +416,39 @@ function drush_bootstrap_value($context, $value = null) {
   return null;
 }
 
-/**
- * Validate initial Drush bootstrap phase.
+/*
+ * Returns a localizable message about php.ini that
+ * varies depending on whether the php_ini_loaded_file()
+ * is available or not.
  */
-function _drush_bootstrap_drush_validate() {
+function _drush_php_ini_loaded_file_message() {
+  if (function_exists('php_ini_loaded_file')) {
+    return dt('Please check your configuration settings in !phpini or in your drush.ini file; see examples/example.drush.ini for details.', array('!phpini' => php_ini_loaded_file()));
+  }
+  else {
+    return dt('Please check your configuration settings in your php.ini file or in your drush.ini file; see examples/example.drush.ini for details.');
+  }
+}
+
+/**
+ * Evalute the environment after an abnormal termination and
+ * see if we can determine any configuration settings that the user might
+ * want to adjust.
+ */
+function _drush_postmortem() {
+  // Make sure that the memory limit has been bumped up from the minimum default value of 32M.
+  $php_memory_limit = drush_memory_limit();
+  if (($php_memory_limit > 0) && ($php_memory_limit <= 32*DRUSH_DRUPAL_KILOBYTE*DRUSH_DRUPAL_KILOBYTE)) {
+    drush_set_error('DRUSH_MEMORY_LIMIT', dt('Your memory limit is set to !memory_limit; drush needs as much memory to run as Drupal.  !php_ini_msg', array('!memory_limit' => $php_memory_limit / (DRUSH_DRUPAL_KILOBYTE*DRUSH_DRUPAL_KILOBYTE) . 'M', '!php_ini_msg' => _drush_php_ini_loaded_file_message())));
+  }
+}
+
+/**
+ * Evaluate the environment before command bootstrapping
+ * begins.  If the php environment is too restrictive, then
+ * notify the user that a setting change is needed and abort.
+ */
+function _drush_environment_preflight_checks() {
   // Test to insure that certain php ini restrictions have not been enabled
   $prohibited_list = array();
   foreach (array('safe_mode', 'open_basedir', 'disable_functions', 'disable_classes') as $prohibited_mode) {
@@ -428,16 +457,27 @@ function _drush_bootstrap_drush_validate() {
     }
   }
   if (!empty($prohibited_list)) {
-    return drush_bootstrap_error('DRUSH_SAFE_MODE', dt('The following restricted PHP modes have non-empty values: !prohibited_list. This configuration is incompatible with drush; see examples/example.drush.ini for details.', array('!prohibited_list' => implode(' and ', $prohibited_list))));
+    return drush_bootstrap_error('DRUSH_PHP_INI_RESTRICTIONS', dt('The following restricted PHP modes have non-empty values: !prohibited_list. This configuration is incompatible with drush.  !php_ini_msg', array('!prohibited_list' => implode(' and ', $prohibited_list), '!php_ini_msg' => _drush_php_ini_loaded_file_message())));
   }
+  
+  return TRUE;
+}
 
+/**
+ * Validate initial Drush bootstrap phase.
+ */
+function _drush_bootstrap_drush_validate() {
+  if (($preflight_result = _drush_environment_preflight_checks()) !== TRUE) {
+    return $preflight_result;
+  }
+  
   // try using the PEAR installed version of Console_Table
   $tablefile = 'Console/Table.php';
   if (@file_get_contents($tablefile, FILE_USE_INCLUDE_PATH) === FALSE) {
     $tablefile = DRUSH_BASE_PATH . '/includes/table.inc';
 
     // Attempt to download Console Table, via various methods.
-    if (!file_exists($tablefile)) {
+    if (!drush_file_not_empty($tablefile)) {
       $targetpath = dirname($tablefile);
       // not point continuing if we can't write to the target path
       if (!is_writable($targetpath)) {
@@ -459,7 +499,7 @@ function _drush_bootstrap_drush_validate() {
     }
   }
   require_once $tablefile;
-
+  
   return TRUE;
 }
 
@@ -484,9 +524,6 @@ function _drush_bootstrap_drush_validate() {
  * the execution flow to be able to take affect/
  */
 function _drush_bootstrap_drush() {
-  // The bootstrap can fail silently, so we catch that in a shutdown function.
-  register_shutdown_function('drush_shutdown');
-
   // Set the terminal width, used for wrapping table output.
   // Normally this is exported using tput in the drush script.
   // If this is not present we do an additional check using stty here.
@@ -622,7 +659,7 @@ function _drush_bootstrap_drupal_root() {
 
   chdir($drupal_root);
   drush_load_config('drupal');
-  require_once(DRUPAL_ROOT . '/' . DRUSH_DRUPAL_BOOTSTRAP);
+  require_once DRUPAL_ROOT . '/' . DRUSH_DRUPAL_BOOTSTRAP;
   $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
   $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
 

@@ -163,7 +163,7 @@ function _pm_update_core(&$project, $module_list = array()) {
   drush_print(dt("WARNING:  Updating core will discard any modifications made to Drupal core files, most noteworthy among these are .htaccess and robots.txt.  If you have made any modifications to these files, please back them up before updating so that you can re-create your modifications in the updated version of the file."));
   drush_print(dt("Note: Updating core can potentially break your site. It is NOT recommended to update production sites without prior testing."));
   if(!drush_confirm(dt('Do you really want to continue?'))) {
-    drush_die('Aborting.');
+    drush_user_abort();
   }
 
   // Create a directory 'core' if it does not already exist
@@ -264,7 +264,7 @@ function pm_update_packages($projects) {
   drush_print(dt("Note: A backup of your package will be stored to backups directory if it is not managed by a supported version control system."));
   drush_print(dt('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
   if(!drush_confirm(dt('Do you really want to continue?'))) {
-    drush_die('Aborting.');
+    drush_user_abort();
   }
 
   // Now we start the actual updating.

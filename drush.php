@@ -35,7 +35,9 @@ require_once DRUSH_BASE_PATH . '/includes/sitealias.inc';
 drush_set_context('argc', $GLOBALS['argc']);
 drush_set_context('argv', $GLOBALS['argv']);
 
+// Set an error handler and a shutdown function
 set_error_handler('drush_error_handler');
+register_shutdown_function('drush_shutdown');
 
 exit(drush_main());
 
@@ -156,12 +158,18 @@ function drush_shutdown() {
   // Mysteriously make $user available during sess_write(). Avoids a NOTICE.
   global $user;
 
-  if (!drush_get_context('DRUSH_EXECUTION_COMPLETED', FALSE)) {
+  if (!drush_get_context('DRUSH_EXECUTION_COMPLETED', FALSE) && !drush_get_context('DRUSH_USER_ABORT', FALSE)) {
+    $php_error_message = '';
+    if ($error = error_get_last()) {
+      $php_error_message = "\n" . dt('Error: !message in !file, line !line', array('!message' => $error['message'], '!file' => $error['file'], '!line' => $error['line']));
+    }
     // We did not reach the end of the drush_main function,
     // this generally means somewhere in the code a call to exit(),
     // was made. We catch this, so that we can trigger an error in
     // those cases.
-    drush_set_error("DRUSH_NOT_COMPLETED", dt("Drush command could not be completed."));
+    drush_set_error("DRUSH_NOT_COMPLETED", dt("Drush command terminated abnormally due to an unrecoverable error.!message", array('!message' => $php_error_message)));
+    // Attempt to give the user some advice about how to fix the problem
+    _drush_postmortem();
   }
 
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');

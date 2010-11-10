@@ -719,14 +719,14 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       $load_command = TRUE;
       $load_test_inc = dirname($filename) . "/" . $module . ".drush.load.inc";
       if (file_exists($load_test_inc)) {
-        require_once($load_test_inc);
+        include_once($load_test_inc);
         $load_test_func = $module . "_drush_load";
         if (function_exists($load_test_func)) {
           $load_command = $load_test_func($phase);
         }
       }
       if ($load_command) {
-        require_once(realpath($filename));
+        require_once realpath($filename);
         unset($deferred[$module]);
       }
       else {

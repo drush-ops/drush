@@ -80,7 +80,7 @@ function update_main() {
       }
     }
     if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
-      drush_die('Aborting.');
+      drush_user_abort();
     }
 
     $update_results = array();

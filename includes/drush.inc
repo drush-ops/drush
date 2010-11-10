@@ -201,7 +201,7 @@ function drush_drupal_version($drupal_root = NULL) {
       $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc');
       foreach ($version_constant_paths as $path) {
         if (file_exists($drupal_root . $path)) {
-          require_once($drupal_root . $path);
+          require_once $drupal_root . $path;
         }
       }
       // We just might be dealing with an early Drupal version (pre 4.7)
@@ -916,6 +916,14 @@ function drush_die($msg = NULL, $status = NULL) {
   die($msg ? "drush: $msg\n" : '');
 }
 
+/**
+ * Exit due to user declining a confirmation prompt.
+ */
+function drush_user_abort($msg = NULL, $status = NULL) {
+  drush_set_context('DRUSH_USER_ABORT', TRUE);
+  drush_die($msg ? $msg : 'Aborting.', $status);
+}
+
 /*
  * Check to see if the provided line is a "#!/usr/bin/env drush"
  * "shebang" script line.
@@ -1326,7 +1334,7 @@ function drush_remote_command() {
       }
 
       if (drush_confirm('Continue? ') === FALSE) {
-         drush_die('Aborting.');
+         drush_user_abort();
       }
     }
     $command = array_shift($args);
@@ -1379,7 +1387,7 @@ function drush_do_multiple_command($command, $source_record, $destination_record
       }
 
       if (drush_confirm('Continue? ') === FALSE) {
-         drush_die('Aborting.');
+         drush_user_abort();
       }
     }
 
@@ -1945,7 +1953,20 @@ function drush_errors_on() {
  * @} End of "defgroup errorhandling".
  */
 
- /**
+/**
+ * Test to see if a file exists and is not empty
+ */
+function drush_file_not_empty($file_to_test) {
+  if (file_exists($file_to_test)) {
+    $stat = stat($file_to_test);
+    if ($stat['size'] > 0) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
  * Get the PHP memory_limit value in bytes.
  */
 function drush_memory_limit() {
@@ -1953,11 +1974,11 @@ function drush_memory_limit() {
   $last = strtolower($value[strlen($value)-1]);
   switch ($last) {
     case 'g':
-      $value *= 1024;
+      $value *= DRUSH_DRUPAL_KILOBYTE;
     case 'm':
-      $value *= 1024;
+      $value *= DRUSH_DRUPAL_KILOBYTE;
     case 'k':
-      $value *= 1024;
+      $value *= DRUSH_DRUPAL_KILOBYTE;
   }
 
   return $value;
