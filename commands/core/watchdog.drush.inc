@@ -320,7 +320,7 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
   if ($type) {
     $types = core_watchdog_message_types();
     if (array_search($type, $types) === FALSE) {
-      $msg = "Unknown message type: !type.\nValid types are: !types.";
+      $msg = "Unrecognized message type: !type.\nRecognized types are: !types.";
       return drush_set_error(dt($msg, array('!type' => $type, '!types' => implode(', ', $types))));
     }
     $conditions[] = "type = :type";
