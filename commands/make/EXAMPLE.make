@@ -57,7 +57,13 @@ projects[] = drupal
 ; declared under the `projects` key. The simplest declaration of a project
 ; looks like this:
 
-projects[] = views
+; To include the most recent views module:
+
+projects[] = views	
+
+; To include the most recent Dutch translation:
+
+projects[] = nl	
 
 ; This will, by default, retrieve the latest recommended version of the project
 ; using its update XML feed on Drupal.org. If any of those defaults are not
