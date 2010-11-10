@@ -387,8 +387,11 @@ For example, a full build tree may look something like this:
         - etc.
 
 Recursion can be used to nest an install profile build in a Drupal site, easily
-build multiple install profiles on the same site, fetch library dependencies for
-a given module, or bundle a set of module and its dependencies together.
+build multiple install profiles on the same site, fetch library dependencies
+for a given module, or bundle a set of module and its dependencies together.
+For Drush Make to recognize a makefile embedded within a project, the makefile
+itself must have the same name as the project. For instance, the makefile
+embedded within the managingnews profile must be called "managingnews.make".
 
 **Build a full Drupal site with the Managing News install profile:**
 
