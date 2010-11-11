@@ -77,15 +77,17 @@ function drush_core_pre_site_install() {
   unset($db_spec['database']);
   $credentials = _drush_sql_get_credentials($db_spec);
 
+  $scheme_command = $scheme;
   switch ($scheme) {
     case 'mysql':
       $command_parameter_name = 'execute';
       break;
     case 'pgsql':
+      $scheme_command = 'psql';
       $command_parameter_name = 'command';
       break;
   }
-  $execute = "$scheme $credentials --$command_parameter_name";
+  $execute = "$scheme_command $credentials --$command_parameter_name";
 
   $simulate = drush_get_context('DRUSH_SIMULATE');
 
