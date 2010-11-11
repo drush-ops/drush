@@ -432,7 +432,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       // then we will call the sanitization hooks now.
       // This presumes an important precondition, that the code
       // files were sync'ed before the database was sync'ed.
-      if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_SITE) == FALSE) {
+      if (drush_get_option('deferred-sanitization', FALSE) && (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_SITE) == FALSE)) {
 	$bootstrapped = drush_bootstrap_max_to_sitealias($destination_settings);
 	if ($bootstrapped) {
 	  drush_command_invoke_all('drush_sql_sync_sanitize', $destination);
