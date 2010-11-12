@@ -126,7 +126,7 @@ of Drush Make uses API version `2`
 
 ### Projects
 
-An array of the projects(e.g. modules, themes, translations and drupal) to be
+An array of the projects (e.g. modules, themes, libraries, and drupal) to be
 retrieved. Each project name can be specified as a single string value. If
 further options need to be provided for a project, the project should be
 specified as the key.

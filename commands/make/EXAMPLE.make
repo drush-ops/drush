@@ -61,10 +61,6 @@ projects[] = drupal
 
 projects[] = views	
 
-; To include the most recent Dutch translation:
-
-projects[] = nl	
-
 ; This will, by default, retrieve the latest recommended version of the project
 ; using its update XML feed on Drupal.org. If any of those defaults are not
 ; desirable for a project, you will want to use the keyed syntax combined with
