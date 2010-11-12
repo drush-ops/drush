@@ -434,7 +434,7 @@ if (!function_exists('drush_shell_exec_interactive')) {
 function drush_make_get_data($data_source) {
   if ($data_source == '-') {
     // See http://drupal.org/node/499758 before changing this.
-    $stdin = fopen("php://stdin","r");
+    $stdin = fopen('php://stdin', 'r');
     $data = '';
     $has_input = FALSE;
   
@@ -448,8 +448,15 @@ function drush_make_get_data($data_source) {
     }
     return FALSE;
   }
-  else {
+  // Local file.
+  elseif (!strpos($data_source, '://')) {
     $data = file_get_contents($data_source);
+  }
+  // Remote file.
+  else {
+    $file = _drush_make_download_file(array('url' => $datasource));
+    $data = file_get_contents($file);
+    drush_op('unlink', $file);
   }
   return $data;
 }
