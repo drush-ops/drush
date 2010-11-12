@@ -298,7 +298,7 @@ class DrushMakeProject_Module extends DrushMakeProject {
 class DrushMakeProject_Profile extends DrushMakeProject {
   public function __construct(&$project) {
     parent::__construct($project);
-    $this->contrib_destination = 'profiles';
+    $this->contrib_destination = ($this->destination ? $this->destination : 'profiles');
   }
 
   protected function buildPath($directory) {
