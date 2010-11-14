@@ -260,24 +260,7 @@ function drush_make_download_file_unpack_tar($filename, $download_location) {
   drush_make_mkdir($tmp_path . '/__unzip__');
   drush_shell_exec('tar -x -C %s -f %s', $tmp_path . '/__unzip__', $filename);
 
-  drush_shell_exec('ls %s', $tmp_path . '/__unzip__');
-  $lines = drush_shell_exec_output();
-  if (count($lines) == 1) {
-    $directory = array_shift($lines);
-    if ($directory != $main_directory) {
-      drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__/' . $directory, $tmp_path . '/__unzip__/' . $main_directory);
-    }
-    drush_shell_exec('cp -Rf %s %s', $tmp_path . '/__unzip__/' . $main_directory, dirname($download_location));
-    drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__');
-  }
-  elseif (count($lines) > 1) {
-    drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__', $download_location);
-  }
-
-  // Remove the tarball.
-  if (file_exists($filename)) {
-    drush_shell_exec('rm %s', $filename);
-  }
+  _drush_make_download_file_move($tmp_path, $filename, $download_location);
 }
 
 function drush_make_download_file_unpack_gzip($filename, $download_location) {
@@ -305,76 +288,39 @@ function drush_make_download_file_unpack_gzip($filename, $download_location) {
 
 function drush_make_download_file_unpack_zip($filename, $download_location) {
   $tmp_path = drush_make_tmp();
-  // Find the main directory in the zip file.
-  drush_shell_exec("unzip -l %s", $filename);
-  $info = drush_shell_exec_output();
-  if ($info) {
-    foreach ($info as $line) {
-      $matches = array();
-      preg_match('/^\s+[0-9]+\s+[0-9-]+\s+[0-9:]+\s+(.*)$/', $line, $matches);
-      if (isset($matches[1])) {
-        $lines[] = $matches[1];
-      }
-    }
-    $directory = drush_make_download_file_protect_bomb($lines);
-    if ($directory) {
-      list($main_directory) = array_reverse(explode('/', $download_location));
-      if ($main_directory == $directory) {
-        // Directory names match up.
-        drush_shell_exec("unzip %s -d %s", $filename, dirname($download_location));
-      }
-      else {
-        // Directories don't match up. Use cp.
-        drush_make_mkdir($tmp_path . '/__unzip__');
-        drush_shell_exec('unzip %s -d %s', $filename, $tmp_path . '/__unzip__');
-        if (file_exists($filename)) {
-          drush_shell_exec('rm %s', $filename);
-        }
-        if (is_dir($tmp_path . '/__unzip__' . $directory . '/__MACOSX')) {
-          drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__' . $directory . '/__MACOSX');
-        }
-        drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__/' . $directory, $tmp_path . '/__unzip__/' . $main_directory);
-        drush_shell_exec('cp -Rf %s %s', $tmp_path . '/__unzip__/' . $main_directory, dirname($download_location));
-        drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__');
-      }
-    }
-    else {
-      // It's a bomb, so we can just unpack it right at its destination.
-      drush_shell_exec("unzip %s -d %s", $filename, $download_location);
-    }
-    if (file_exists($filename)) {
-      drush_shell_exec('rm %s', $filename);
-    }
-    if (is_dir($download_location . '/__MACOSX')) {
-      drush_shell_exec('rm -rf %s', $download_location . '/__MACOSX');
-    }
-  }
-  else {
-    drush_make_error('PACKAGE_ERROR', dt('Could not retrieve package information for %filename.', array('%filename' => $filename)));
-  }
-  return;
+
+  list($main_directory) = array_reverse(explode('/', $download_location));
+
+  drush_make_mkdir($tmp_path . '/__unzip__');
+  drush_shell_exec("unzip %s -d %s", $filename, $tmp_path . '/__unzip__');
+
+  _drush_make_download_file_move($tmp_path, $filename, $download_location);
 }
 
-function drush_make_download_file_protect_bomb($lines) {
-  $directory = FALSE;
-  foreach ($lines as $line) {
-    if (strpos($line, '/') !== FALSE) {
-      list($dir) = explode('/', $line);
-      if (!$directory) {
-        $directory = $dir;
-      }
-      elseif ($dir != $directory) {
-        // More than one root-level item detected. We're not safe - BOMB!
-        return FALSE;
-      }
+function _drush_make_download_file_move($tmp_path, $filename, $download_location) {
+  drush_shell_exec('ls %s', $tmp_path . '/__unzip__');
+  $lines = drush_shell_exec_output();
+  if (count($lines) == 1) {
+    $directory = array_shift($lines);
+    if ($directory != $main_directory) {
+      drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__/' . $directory, $tmp_path . '/__unzip__/' . $main_directory);
     }
+    drush_shell_exec('cp -Rf %s %s', $tmp_path . '/__unzip__/' . $main_directory, dirname($download_location));
+    drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__');
   }
-  if (!$directory) {
-    // If we didn't come upon anything, that is to say, they were only
-    // root-level files, it's a bomb.
-    return FALSE;
+  elseif (count($lines) > 1) {
+    drush_shell_exec('rm -rf %s', $download_location);
+    drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__', $download_location);
   }
-  return $directory;
+
+  // Remove the tarball.
+  if (file_exists($filename)) {
+    drush_shell_exec('rm %s', $filename);
+  }
+
+  if (file_exists($tmp_path . '/__unzip__')) {
+    drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__');
+  }
 }
 
 
