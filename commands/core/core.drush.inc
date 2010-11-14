@@ -687,7 +687,10 @@ function drush_core_php_script() {
   $script = $args[0];
   $found = FALSE;
   
-  if (file_exists($script)) {
+  if ($script == '-') {
+    eval(stream_get_contents(STDIN));
+  }
+  elseif (file_exists($script)) {
     $found = $script;
   }
   else {
