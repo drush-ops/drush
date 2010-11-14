@@ -73,6 +73,7 @@ function drush_make_drush_command() {
     'options' => array(
       '--exclude-versions' => 'Exclude version information for all projects, or optionally specify a comma separated list of projects to exclude version information for.',
     ),
+    'aliases' => array('generate-makefile'),
   );
 
   return $items;
