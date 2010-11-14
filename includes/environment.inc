@@ -1138,9 +1138,14 @@ function drush_valid_db_credentials() {
         return FALSE;
       }
       // Build the connection string.
-      $constr = sprintf("%s:dbname=%s;host=%s", $type, $creds['name'], $creds['host']);
-      if (!empty($creds['port'])) {
-        $constr .= sprintf(";port=%d", $creds['port']);
+      if ($type === 'sqlite') {
+        $constr = 'sqlite:' . $creds['name'];
+      }
+      else {
+        $constr = sprintf("%s:dbname=%s;host=%s", $type, $creds['name'], $creds['host']);
+        if (!empty($creds['port'])) {
+          $constr .= sprintf(";port=%d", $creds['port']);
+        }
       }
       try {
         $db = new PDO($constr, $creds['user'], $creds['pass']);
