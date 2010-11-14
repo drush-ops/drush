@@ -7,7 +7,7 @@ include_once drupal_get_path('module', 'system') . '/system.install';
 /**
  * Drush callback; generate makefile from the current build.
  */
-function _drush_generate_makefile($file) {
+function _drush_make_generate($file) {
   // Check to see if project versions are exluded.
   $exclude_versions = drush_get_option('exclude-versions', FALSE);
   $exclude_all = ($exclude_versions === TRUE);

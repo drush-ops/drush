@@ -59,16 +59,16 @@ function drush_make_drush_command() {
     ),
   );
 
-  $items['generate-makefile'] = array(
+  $items['make-generate'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
     'description' => 'Attempts to generate a makefile from a Drupal directory or installation.',
     'arguments' => array(
       'target_file' => 'The target makefile to generate. If no directory is specified, the makefile will be created in the Drupal docroot.',
     ),
     'examples' => array(
-      'drush @dev generate-makefile example.make' => 'Generate a makefile from the @dev site.',
-      'drush generate-makefile example.make --exclude-versions' => 'Exclude all version information.',
-      'drush generate-makefile example.make --exclude-versions="admin_menu,og,ctools"' => 'Exclude version information for Admin Menu, Organic Groups and CTools.',
+      'drush @dev make-generate example.make' => 'Generate a makefile from the @dev site.',
+      'drush make-generate example.make --exclude-versions' => 'Exclude all version information.',
+      'drush make-generate example.make --exclude-versions="admin_menu,og,ctools"' => 'Exclude version information for Admin Menu, Organic Groups and CTools.',
     ),
     'options' => array(
       '--exclude-versions' => 'Exclude version information for all projects, or optionally specify a comma separated list of projects to exclude version information for.',
@@ -87,7 +87,7 @@ function drush_make_drush_help($section) {
       return dt('Turns a makefile into a working drupal install. For a full description of options and makefile syntax, see the README.txt included with drush make.');
     case 'drush:make-test':
       return dt('Run a drush make test.');
-    case 'drush:generate-makefile':
+    case 'drush:make-generate':
       return dt('Attempts to generate a makefile from the current drupal install.');
   }
 }
@@ -398,9 +398,9 @@ function drush_make_version() {
 /**
  * Drush callback; make a makefile from the current install.
  */
-function drush_drush_make_generate_makefile($file) {
+function drush_drush_make_make_generate($file) {
   include_once 'drush_make.generate.inc';
-  _drush_generate_makefile($file);
+  _drush_make_generate($file);
 }
 
 /**
