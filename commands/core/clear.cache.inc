@@ -49,6 +49,9 @@ function drush_cache_clear_types() {
     'css+js' => 'drush_cache_clear_css_js',
     'block' => 'drush_cache_clear_block',
   );
+  if (drush_drupal_major_version() >= 7) {
+    $types['registry'] = 'registry_update';
+  }
   if (count(module_implements('node_grants'))) {
     $types['nodeaccess'] = 'node_access_rebuild';
   }
