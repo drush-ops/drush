@@ -635,7 +635,7 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
  * if the simulation mode is enabled.
  *
  * @param $function
- *   The name of the function.
+ *   The name of the function. Any additional arguments are passed along.
  * @return
  *   The return value of the function, or TRUE if simulation mode is enabled.
  */

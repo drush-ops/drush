@@ -27,7 +27,7 @@
       }
 
       if ($type) {
-        drush_op('call_user_func', $types[$type]);
+        drush_op($types[$type]);
         drush_log(dt("'!name' cache was cleared", array('!name' => $type)), 'success');
       }
       else {
@@ -51,6 +51,9 @@ function drush_cache_clear_types() {
   if (count(module_implements('node_grants'))) {
     $types['nodeaccess'] = 'node_access_rebuild';
   }
+  
+  // Command files may customize $types as desired.
+  drush_command_invoke_all_ref('cache_clear', $types);
   return $types;
 }
 
