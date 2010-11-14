@@ -47,6 +47,7 @@ function drush_cache_clear_types() {
     'theme' => 'drush_cache_clear_theme_registry',
     'menu' => 'menu_rebuild',
     'css+js' => 'drush_cache_clear_css_js',
+    'block' => 'drush_cache_clear_block',
   );
   if (count(module_implements('node_grants'))) {
     $types['nodeaccess'] = 'node_access_rebuild';
@@ -66,3 +67,11 @@ function drush_cache_clear_css_js() {
   drupal_clear_css_cache();
   drupal_clear_js_cache();
 }
+
+/**
+ * Clear the cache of the block output.
+ */
+function drush_cache_clear_block() {
+  cache_clear_all(NULL, 'cache_block');
+}
+
