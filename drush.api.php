@@ -199,5 +199,12 @@ function hook_drush_help_alter(&$command) {
 }
 
 /**
+ * Add/edit options to cache-clear command
+ */
+function hook_drush_cache_clear(&$types) {
+  $types['views'] = 'views_invalidate_cache';
+}
+
+/**
  * @} End of "addtogroup hooks".
  */

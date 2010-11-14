@@ -57,7 +57,7 @@ function drush_cache_clear_types() {
   }
   
   // Command files may customize $types as desired.
-  drush_command_invoke_all_ref('cache_clear', $types);
+  drush_command_invoke_all_ref('drush_cache_clear', $types);
   return $types;
 }
 
