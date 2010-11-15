@@ -188,6 +188,10 @@ function _drush_sql_connect($db_spec = NULL) {
       $command = 'psql';
       $command .= _drush_sql_get_credentials($db_spec);
       break;
+    case 'sqlite':
+      $command = 'sqlite3 ';
+      $command .= _drush_sql_get_credentials($db_spec);
+      break;
   }
   return $command;
 }
@@ -324,6 +328,20 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
         }
       }
       break;
+    case 'sqlite':
+      // Dumping is usually not necessary in SQLite, since all database data
+      // is stored in a single file on the filesystem which can be copied just
+      // like any other file. But it still has a use in migration purposes and
+      // building human-readable diffs and such, so let's do it anyway.
+      $exec = _drush_sql_connect();
+      // SQLite's dump command doesn't support many of the features of its
+      // Postgres or MySQL equivalents. We may be able to fake some in the
+      // future, but for now, let's just support simple dumps.
+      $exec .= ' ".dump"';
+      if ($file = drush_get_option('result-file')) {
+        $exec .= ' > '. $file;
+      }
+      break;
   }
 
   return $exec;
@@ -409,12 +427,19 @@ function drush_sql_drop() {
   if (!drush_confirm(dt('Do you really want to drop all tables?'))) {
     drush_user_abort();
   }
-  
+
   // TODO: integrate with _drush_sql_get_table_list?
-  
-  $query = 'show tables';
-  if (_drush_sql_get_scheme() == 'pgsql') {
-    $query = drush_sql_show_tables_pgsql();    
+
+  $scheme = _drush_sql_get_scheme();
+  switch ($scheme) {
+    case 'pgsql':
+      $query = drush_sql_show_tables_pgsql();
+      break;
+    case 'sqlite':
+      $query = '.tables';
+      break;
+    default:
+      $query = 'SHOW TABLES;';
   }
   
   $filename = drush_save_data_to_temp_file($query);
@@ -426,9 +451,38 @@ function drush_sql_drop() {
   drush_shell_exec($exec);
   drush_set_context('DRUSH_SIMULATE', $old);
   $tables = drush_shell_exec_output();
-  array_shift($tables);
-  $sql = 'DROP TABLE '. implode(', ', $tables);
-  return drush_op('db_query', $sql);
+  if ($scheme === 'sqlite') {
+    // SQLite's '.tables' command always outputs the table names in a column
+    // format, like this:
+    // table_alpha    table_charlie    table_echo
+    // table_bravo    table_delta      table_foxtrot
+    // …and there doesn't seem to be a way to fix that. So we need to do some
+    // clean-up.
+    // Since we're already doing iteration here, might as well build the SQL
+    // too, since SQLite only wants one table per DROP TABLE command (so we have
+    // to do "DROP TABLE foo; DROP TABLE bar;" instead of
+    // "DROP TABLE foo, bar;").
+    $sql = '';
+    foreach ($tables as $line) {
+      preg_match_all('/[^\s]+/', $line, $matches);
+      if (!empty($matches[0])) {
+        foreach ($matches[0] as $match) {
+          $sql .= "DROP TABLE {$match};";
+        }
+      }
+    }
+    // We can't use drush_op('db_query', $sql) because it will only perform one
+    // SQL command and we're technically performing several.
+    $exec = _drush_sql_connect();
+    $exec .= " '{$sql}'";
+    return drush_op('system', $exec);
+  }
+  else {
+    // Shift off the header of the column of data returned.
+    array_shift($tables);
+    $sql = 'DROP TABLE '. implode(', ', $tables);
+    return drush_op('db_query', $sql);
+  }
 }
 
 function drush_sql_cli() {
@@ -438,7 +492,11 @@ function drush_sql_cli() {
       $command .= _drush_sql_get_credentials();
       break;
     case 'pgsql':
-      $command = ' psql';
+      $command = 'psql ';
+      $command .= _drush_sql_get_credentials();
+      break;
+    case 'sqlite':
+      $command = 'sqlite3 ';
       $command .= _drush_sql_get_credentials();
       break;
   }
@@ -608,6 +666,13 @@ function _drush_sql_get_credentials($db_spec = NULL) {
       // Don't set the password.
       // @see http://drupal.org/node/438828
       break;
+
+    case 'sqlite':
+      // SQLite doesn't do user management, instead relying on the filesystem
+      // for that. So the only info we really need is the path to the database
+      // file, and not as a "--key=value" parameter.
+      return ' ' . $db_spec['database'];
+      break;
   }
 
   // Turn each parameter into a valid parameter string.
@@ -710,6 +775,12 @@ function drush_sql_build_exec($db_spec, $filepath) {
       $exec .= (drush_get_context('DRUSH_VERBOSE') ? '' : ' -q');
       $exec .= ' ' . (drush_get_option('extra') ? drush_get_option('extra') : "--no-align --field-separator='\t' --pset footer=off");
       $exec .= " --file $filepath";
+      break;
+    case 'sqlite':
+      $exec = 'sqlite3';
+      $exec .= ' ' . drush_get_option('extra');
+      $exec .= _drush_sql_get_credentials($db_spec);
+      $exec .= " < $filepath";
       break;
   }
   return $exec;
