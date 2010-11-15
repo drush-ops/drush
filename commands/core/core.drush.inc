@@ -764,15 +764,15 @@ function _drush_core_eval_shebang_script($script_filename) {
     if (_drush_is_drush_shebang_line($line)) {
       $first_script_line = '';
       while ($line = fgets($fp)) {
-	$line = trim($line);
-	if ($line == '<?php') {
-	  $found = TRUE;
-	  break;
-	}
-	elseif (!empty($line)) {
-	  $first_script_line = $line . "\n";
-	  break;
-	}
+        $line = trim($line);
+        if ($line == '<?php') {
+          $found = TRUE;
+          break;
+        }
+        elseif (!empty($line)) {
+          $first_script_line = $line . "\n";
+          break;
+        }
       }
       $script = stream_get_contents($fp);
       // Pop off the first two arguments, the
