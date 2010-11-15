@@ -683,9 +683,11 @@ function drush_php_script_init() {
  * and drush "shebang" scripts ("#!/usr/bin/env drush").
  */
 function drush_core_php_script() {
-  $args = func_get_args();
-  $script = $args[0];
   $found = FALSE;
+  $script = NULL;
+  if ($args = func_get_args()) {
+    $script = $args[0];
+  }
   
   if ($script == '-') {
     eval(stream_get_contents(STDIN));
@@ -701,7 +703,7 @@ function drush_core_php_script() {
     // Additional script paths, specified by 'script-path' option
     if ($script_path = drush_get_option('script-path', FALSE)) {
       foreach (explode(PATH_SEPARATOR, $script_path) as $path) {
-	$searchpath[] = $path;
+        $searchpath[] = $path;
       }
     }
 
@@ -709,26 +711,26 @@ function drush_core_php_script() {
       // List all available scripts.
       $all = array();
       foreach($searchpath as $key => $path) {
-	$recurse = !(($key == 'cwd') || ($path == '/'));
-	$all = array_merge( $all , array_keys(drush_scan_directory($path, '/\.php$/', array('.', '..', 'CVS'), NULL, $recurse)) );
+        $recurse = !(($key == 'cwd') || ($path == '/'));
+        $all = array_merge( $all , array_keys(drush_scan_directory($path, '/\.php$/', array('.', '..', 'CVS'), NULL, $recurse)) );
       }
       drush_print(implode("\n", $all));
     }
     else {
       // Execute the specified script.
       foreach($searchpath as $path) {
-	$script_filename = $path . '/' . $script;
-	if (file_exists($script_filename . ".php")) {
-          $script_filename .= ".php";
-	}
-	if (file_exists($script_filename)) {
+        $script_filename = $path . '/' . $script;
+        if (file_exists($script_filename . '.php')) {
+          $script_filename .= '.php';
+        }
+        if (file_exists($script_filename)) {
           $found = $script_filename;
           break;
-	}
-	$all[] = $script_filename;
+        }
+        $all[] = $script_filename;
       }
       if (!$found) {
-	drush_set_error('Script not found.', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
+        return drush_set_error('Script not found.', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
       }
     }
   }
