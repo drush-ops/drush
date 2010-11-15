@@ -674,7 +674,7 @@ function _drush_core_is_named_in_array($key, $the_array) {
  * Always use bootstrap_max from _init() so that command
  * hooks have a chance to be initialized.
  */
-function drush_core_php_script_init() {
+function drush_php_script_init() {
   drush_bootstrap_max();
 }
 
