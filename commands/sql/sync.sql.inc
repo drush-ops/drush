@@ -296,6 +296,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
 
     if (isset($source_db_url['remote-host'])) {
       $source_remote_user = drush_get_option('source-remote-user');
+      $source_at = '';
       if (isset($source_remote_user)) {
         $source_at ='@';
         $source_remote_pass = drush_get_option('source-remote-pass') ? ':' . drush_get_option('source-remote-pass') : '';
@@ -405,6 +406,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       // If destination is local, then just import the database locally
       if (isset($target_db_url['remote-host'])) {
         $target_remote_user = drush_get_option('target-remote-user');
+        $target_at = '';
         if (isset($target_remote_user)) {
           $target_at ='@';
           $target_remote_pass = drush_get_option('target-remote-pass') ? ':' . drush_get_option('target-remote-pass') : '';
