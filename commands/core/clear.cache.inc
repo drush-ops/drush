@@ -52,6 +52,10 @@ function drush_cache_clear_types() {
   if (drush_drupal_major_version() >= 7) {
     $types['registry'] = 'registry_update';
   }
+  elseif (drush_drupal_major_version() == 6 && module_exists('autoload')) {
+    // TODO: move this to autoload module. 
+    $types['registry'] = 'autoload_registry_update';
+  }
   if (count(module_implements('node_grants'))) {
     $types['nodeaccess'] = 'node_access_rebuild';
   }
