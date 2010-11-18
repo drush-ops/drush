@@ -557,8 +557,10 @@ function _core_site_status_table($project = '') {
     // users figure out their php.ini issues.
     $status_table['PHP configuration'] = php_ini_loaded_file();
   }
+  drush_sitealias_load_all();
   $status_table['Drush version'] = DRUSH_VERSION;
   $status_table['Drush configuration'] = implode(' ', drush_get_context_options('context-path', TRUE));
+  $status_table['Drush alias files'] = implode(' ', drush_get_context('drush-alias-files'));
 
   // None of the Status keys are in dt(); this helps with machine-parsing of status?
   $path_names['root'] = 'Drupal root';

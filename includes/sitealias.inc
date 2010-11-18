@@ -455,6 +455,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
         }
         // If aliasname is NULL, then we will store
         // all $aliases into the alias cache
+        $alias_recorded = FALSE;
         if ($aliasname == NULL) {
           if (!empty($aliases)) {
             if (!empty($options)) {
@@ -469,6 +470,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
             }
 
             $result = array_merge($result, $aliases);
+            $alias_recorded = TRUE;
           }
         }
         // If aliasname is not NULL, then we will store
@@ -477,6 +479,14 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
           drush_set_config_special_contexts($options); // maybe unnecessary
           $result = array_merge($options, $aliases[$aliasname]);
           _drush_sitealias_initialize_alias_record($result);
+          $alias_recorded = TRUE;
+        }
+        // If we found at least one alias from this file
+        // then record it in the drush-alias-files context.
+        if ($alias_recorded) {
+          $drush_alias_files = drush_get_context('drush-alias-files');
+          $drush_alias_files[] = $filename;
+          drush_set_context('drush-alias-files', $drush_alias_files);
         }
       }
     }
