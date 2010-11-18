@@ -955,6 +955,11 @@ function drush_sitealias_alias_record_to_spec($alias_record, $with_db = false) {
 
       // add the database info to the specification if desired
       if ($with_db) {
+        // If db-url is not supplied, look it up from the remote
+	// or local site and add it to the site alias
+	if (!isset($alias_record['db-url'])) {
+		drush_sitealias_add_db_url($alias_record);
+	}
         $result = $result . '?db-url=' . urlencode($alias_record['db-url']);
       }
     }
