@@ -486,13 +486,13 @@ function _core_path_aliases($project = '') {
         $paths['%modules'] = $modules_path;
       }
       else {
-        $paths['%modules'] = 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'modules';
+        $paths['%modules'] = 'sites/all/modules';
       }
       if (is_dir($themes_path = conf_path() . '/themes')) {
         $paths['%themes'] = $themes_path;
       }
       else {
-        $paths['%themes'] = 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'themes';
+        $paths['%themes'] = 'sites/all/themes';
       }
       if (drush_drupal_major_version() >= 7) {
         if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {

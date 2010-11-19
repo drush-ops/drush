@@ -1004,7 +1004,7 @@ function drush_pm_post_pm_update() {
  */
 function drush_pm_updatecode_validate() {
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  if (is_dir($drupal_root . DIRECTORY_SEPARATOR . 'backup')) {
+  if (is_dir($drupal_root . '/' . 'backup')) {
     return drush_set_error('DRUSH_PM_BACKUP_DIR_FORBIDDEN', dt('It\'s a security risk to have a backup folder in your Drupal root. You must move it elsewhere before proceeding.'));
   }
 }
