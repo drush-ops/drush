@@ -168,16 +168,30 @@ function _pm_update_core(&$project, $module_list = array()) {
     drush_user_abort();
   }
 
-  // Create a directory 'core' if it does not already exist
+  // We need write permission on $drupal_root.
+  if (!is_writable($drupal_root)) {
+    return drush_set_error('DRUSH_PATH_NO_WRITABLE', dt('Drupal root path is not writable.'));
+  }
+
+  // Create a directory 'core' if it does not already exist.
   $project['path'] = 'drupal-' . $project['candidate_version'];
   $project['full_project_path'] = $drupal_root . '/' . $project['path'];
   if (!is_dir($project['full_project_path'])) {
-    mkdir($project['full_project_path']);
+    drush_op('mkdir', $project['full_project_path']);
   }
 
-  // Create a list of files and folders that are user-customized or otherwise
-  // not part of the update process
-  $project['skip_list'] = array('backup', 'sites', $project['path']);
+  // Create a list of directories to exclude from the update process.
+  $skip_list = array('sites', $project['path'], '.svn');
+  // Add non-writable directories: we can't move them around.
+  // We will also use $items_to_test later for $version_control check.
+  $items_to_test = drush_scan_directory($drupal_root, '/.*/', array_merge(array('.', '..'), $skip_list), 0, FALSE, 'basename', 0, TRUE);
+  foreach (array_keys($items_to_test) as $item) {
+    if (is_dir($item) && !is_writable($item)) {
+      $skip_list[] = $item;
+      unset($items_to_test[$item]);
+    }
+  }
+  $project['skip_list'] = $skip_list;
 
   // Move all files and folders in $drupal_root to the new 'core' directory
   // except for the items in the skip list
@@ -190,9 +204,6 @@ function _pm_update_core(&$project, $module_list = array()) {
   if (!$version_control = drush_pm_include_version_control($project['full_project_path'])) {
     return FALSE;
   }
-
-  // Make a list of every item at the root of core except 'sites'
-  $items_to_test = drush_scan_directory($project['full_project_path'], '/.*/', array('.', '..', 'sites', '.svn'), 0, FALSE, 'basename', 0, TRUE);
 
   $project['base_project_path'] = dirname($project['full_project_path']);
   // Check we have a version control system, and it clears its pre-flight.
