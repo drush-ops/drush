@@ -578,26 +578,26 @@ function drush_delete_dir($dir) {
 }
 
 /**
- * Move $src to $dest.  If the php 'rename' function
- * doesn't work, then we'll try rsync.
+ * Move $src to $dest.
+ *
+ * If the php 'rename' function doesn't work, then we'll try mv and if
+ * it also fails, rsync.
  *
  * @param $src
  *   The directory to move.
  * @param $dest
- *   The destination to move the source to, including
- *   the new name of the folder.  To move folder "a"
- *   from "/b" to "/c", then $src = "/b/a" and $dest = "/c/a".
- *   To move "a" to "/c" and rename it to "d", then
- *   $dest = "/c/d" (just like php rename function).
+ *   The destination to move the source to, including the new name of
+ *   the directory.  To move directory "a" from "/b" to "/c", then
+ *   $src = "/b/a" and $dest = "/c/a".  To move "a" to "/c" and rename
+ *   it to "d", then $dest = "/c/d" (just like php rename function).
  * @param $overwrite
- *   If TRUE, the destination will be deleted if it
- *   exists.  Defaults to FALSE.
+ *   If TRUE, the destination will be deleted if it exists.
  * @return
- *   TRUE on success, FALSE on failure
+ *   TRUE on success, FALSE on failure.
  */
 function drush_move_dir($src, $dest, $overwrite = FALSE) {
   // Preflight based on $overwrite if $dest exists.
-  if (is_dir($dest)) {
+  if (file_exists($dest)) {
     if ($overwrite) {
       drush_op('drush_delete_dir', $dest);
     }
@@ -605,26 +605,40 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
       return drush_set_error('DRUSH_DESTINATION_EXISTS', dt('Destination directory !dest already exists.', array('!dest' => $dest)));
     }
   }
-
-  // If rename works, then we're done.
+  // $src readable?
+  if (!is_readable($src)) {
+    return drush_set_error('DRUSH_SOURCE_NOT_EXISTS', dt('Source directory !dest is not readable or does not exist.', array('!src' => $src)));
+  }
+  // $dest writable?
+  if (!is_writable(dirname($dest))) {
+    return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Destination directory !dest is not writable.', array('!dest' => dirname($dest))));
+  }
+  // Try rename. It will fail if $src and $dest are not in the same partition.
   if (@drush_op('rename', $src, $dest)) {
     return TRUE;
   }
-  // Bail if we can't make a directory at the
-  // destination (e.g. permissions)
-  if (!is_dir($dest) && (drush_op('mkdir', $dest) === FALSE)) {
-    return FALSE;
+  // Eventually it will create an empty file in $dest. See
+  // http://www.php.net/manual/es/function.rename.php#90025
+  elseif (is_file($dest)) {
+    drush_op('unlink', $dest);
   }
-  // If rename doesn't work, then try rsync.
-  $exec = 'rsync -raz --remove-source-files ' . $src . DIRECTORY_SEPARATOR . ' ' . $dest;
-  $rsync_result = drush_op('system', $exec);
-  if($rsync_result !== FALSE) {
+
+  // Do it with mv.
+  if (drush_shell_exec('mv %s %s', $src, $dest)) {
+    return TRUE;
+  }
+
+  // Lastly try rsync.
+  drush_op('mkdir', $dest);
+  $exec = 'rsync -raz --remove-source-files ' . $src . '/ ' . $dest;
+  if (drush_shell_exec($exec)) {
     // --remove-source-files deletes all of the files, but
     // we still need to get rid of the directories.
     drush_op('drush_delete_dir', $src);
     return TRUE;
   }
-  return FALSE;
+
+  return drush_set_error('DRUSH_MOVE_DIR_FAILURE', dt('Unable to move !src to !dest.', array('src' => $src, 'dest' => $dest)));
 }
 
 /**
