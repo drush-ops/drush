@@ -191,11 +191,24 @@ function pm_drush_command() {
     'description' => 'Notify of pending db updates.',
     'hidden' => TRUE
   );
+  $items['pm-releasenotes'] = array(
+    'description' => 'Print release notes for drupal.org project(s)',
+    'drupal dependencies' => array($update),
+    'arguments' => array(
+      'project' => 'A space separated list of drupal.org project names, with optional version. Defaults to \'drupal\'',
+    ),
+    'examples' => array(
+      'drush rln cck' => 'Prints the release notes for the recommended version of CCK package.',
+      'drush rln token-1.13' => 'View release notes of a specfic version of the Token project for my version of Drupal.',
+      'drush rln pathauto zen' => 'View release notes for the recommended version of Pathauto and Zen projects.',
+    ),
+    'aliases' => array('rln'),
+  );
   $items['pm-releases'] = array(
     'description' => 'Release information for a project',
     'drupal dependencies' => array($update),
     'arguments' => array(
-      'projects' => 'A space separated list of drupal.org project names.',
+      'projects' => 'A space separated list of drupal.org project names. Defaults to \'drupal\'',
     ),
     'examples' => array(
       'drush pm-releases cck zen' => 'View releases for cck and Zen projects.',
@@ -218,6 +231,7 @@ function pm_drush_command() {
     'options' => array(
       '--destination' => 'Path to which the project will be copied. If you\'re providing a relative path, note it is relative to the drupal root (if bootstrapped).',
       '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
+      '--notes' => 'Show release notes after each project is downloaded.',
       '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.",
       '--drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. If empty, will defaults to "drupal".',
       '--pipe' => 'Returns a list of the names of the modules and themes contained in the downloaded projects.',
@@ -881,30 +895,75 @@ function _pm_get_project_path($data, $lookup) {
 }
 
 /**
- * A drush command callback. Show release info for given project(s).
- *
- **/
+ * Command callback. Show available releases for given project(s).
+ */
 function drush_pm_releases() {
+  if (!$requests = func_get_args()) {
+    $requests = array('drupal');
+  }
+
+  $info = _drush_pm_get_releases($requests);
+  if (!$info) {
+    return drush_log(dt('No valid projects given.'), 'ok');
+  }
+
+  foreach ($info as $name => $project) {
+    $header = dt('------- RELEASES FOR \'!name\' PROJECT -------', array('!name' => strtoupper($name)));
+    $rows = array();
+    $rows[] = array(dt('Release'), dt('Date'), dt('Status'));
+    foreach ($project['releases'] as $release) {
+      $rows[] = array(
+        $release['version'],
+        format_date($release['date'], 'custom', 'Y-M-d'),
+        implode(', ', $release['status_msg'])
+      );
+    }
+    drush_print($header);
+    drush_print_table($rows, TRUE, array(0 => 14));
+  }
+}
+
+/**
+ * Get releases for given projects and fill in status information.
+ *
+ * @param $projects
+ *   An array of drupal.org projects.
+ *
+ * @see drush_pm_releases()
+ * @see _drush_pm_releasenotes()
+ */
+function _drush_pm_get_releases($projects) {
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
-  $projects = func_get_args();
   $projects = drupal_map_assoc($projects);
   $info = pm_get_project_info($projects);
+  foreach ($projects as $project) {
+    if (!isset($info[$project])) {
+      drush_set_error('DRUSH_PM_PROJECT_NOT_FOUND', dt("No release history was found for the requested project (!project).", array('!project' => $project)));
+      continue;
+    }
+  }
+
+  // Info on projects present in the bootstrapped site will be used to
+  // identify if any release is installed.
   $project_info = drush_get_projects();
 
-  $rows[] = array(dt('Project'), dt('Release'), dt('Date'), dt('Status'));
+  // Iterate the projects to collect relevant information.
   foreach ($info as $key => $project) {
+    // Find latest and recommended versions based on the recommended
+    // major version.
     $recommended = isset($project['recommended_major'])?$project['recommended_major']:NULL;
-    $supported = isset($project['supported_majors'])?explode(',', $project['supported_majors']):array();
-    $default = $project['default_major'];
     $recommended_version = NULL;
     $latest_version = NULL;
     foreach ($project['releases'] as $release) {
+      //Only consider releases of recommended major version.
       if ($release['version_major'] == $recommended) {
+        // First release is the latest version.
         if (!isset($latest_version)) {
           $latest_version = $release['version'];
         }
+        // First stable release is the recommended version.
         if (empty($release['version_extra'])) {
           if (!isset($recommended_version)) {
             $recommended_version = $release['version'];
@@ -912,25 +971,37 @@ function drush_pm_releases() {
         }
       }
     }
+    // If no stable release of  recomended major version found, set
+    // latest version as the recommended one.
     if (!isset($recommended_version)) {
       $recommended_version = $latest_version;
     }
-    foreach ($project['releases'] as $release) {
+
+    // Iterate the releases to fill in status data.
+    $supported = isset($project['supported_majors'])?explode(',', $project['supported_majors']):array();
+    foreach ($project['releases'] as $version => $release) {
       $status = array();
-      $type = array();
       if (($k = array_search($release['version_major'], $supported)) !== FALSE) {
         $status[] = dt('Supported');
+        $info[$key]['minor_supported'] = $version;
         unset($supported[$k]);
       }
-      if ((isset($recommended_version)) && ($release['version'] == $recommended_version)) {
+      if ((isset($recommended_version)) && ($version == $recommended_version)) {
         $status[] = dt('Recommended');
+        $info[$key]['recommended'] = $version;
       }
       if ($release['version_extra'] == 'dev') {
         $status[] = dt('Development');
       }
+      // #TODO# Note here we suffer the project<->package-name problem:
+      // Following only works for modules/themes with name with
+      // drupal.org's project name (zen->zen but not for cck->content).
+      // See _drush_pm_releasenotes() for an option to get that info
+      // from update's project data.
       if (isset($project_info[$key])) {
-        if ($project_info[$key]->info['version'] == $release['version']) {
+        if ($project_info[$key]->info['version'] == $version) {
           $status[] = dt('Installed');
+          $info[$key]['installed'] = $version;
         }
       }
       if (isset($release['terms']) && array_key_exists('Release type', $release['terms'])) {
@@ -940,20 +1011,202 @@ function drush_pm_releases() {
           }
         }
       }
-      $rows[] = array(
-        $key,
-        $release['version'],
-        format_date($release['date'], 'custom', 'Y-M-d'),
-        implode(', ', $status)
-      );
+      $info[$key]['releases'][$version]['status_msg'] = $status;
     }
   }
 
-  if (count($rows) == 1) {
-    return drush_set_error('DRUSH_PM_PROJECT_NOT_FOUND', dt('No information available.'));
+  return $info;
+}
+
+/**
+ * Command callback. Show release notes for given project(s).
+ */
+function drush_pm_releasenotes() {
+  if (!$requests = func_get_args()) {
+    $requests = array('drupal');
   }
-  else {
-    return drush_print_table($rows, TRUE);
+
+  return _drush_pm_releasenotes($requests);
+}
+
+/**
+ * Internal function: prints release notes for given drupal projects.
+ *
+ * @param $requests
+ *   An array of drupal.org project names optionally with a version.
+ * @param $print_note
+ *   Boolean. Used by pm-download to not print a informative note.
+ *
+ * @see drush_pm_releasenotes()
+ */
+function _drush_pm_releasenotes($requests, $print_note = TRUE) {
+  // Parse requests to strip versions.
+  $requests = pm_parse_project_version($requests);
+  // Get the releases.
+  $info = _drush_pm_get_releases(array_keys($requests));
+  if (!$info) {
+    return drush_log(dt('No valid projects given.'), 'ok');
+  }
+
+  foreach ($info as $key => $project) {
+    $selected_versions = array();
+    // #TODO# project<->package-name problem. See _drush_pm_get_releases().
+    if (!isset($project['installed'])) {
+      // Installed package's version (e.g. cck) is detected by
+      // _drush_pm_get_releases(). Attempted to obtain information
+      // about it from update_cache.
+      $cache_project_info = _update_cache_get('update_project_projects');
+      if (isset($cache_project_info->data[$key])) {
+        $project['installed'] = $cache_project_info->data[$key]['info']['version'];
+      }
+    }
+    // If the request included version, only show its release notes.
+    if (isset($requests[$projectname]['version'])) {
+      $selected_versions[] = $requests[$projectname]['version'];
+    }
+    else {
+      $reco_version = $project['recommended'];
+      $inst_version = $project['installed'];
+      $inst_patch_version = $project['releases'][$inst_version]['version_patch'];
+      $reco_patch_version = $project['releases'][$reco_version]['version_patch'];
+
+      if (isset($reco_version, $inst_version)) {
+        if (isset($project['releases'][$inst_version]['version_extra']) || $key == 'drupal') {
+          // Special handling if there are some extra version
+          // (e.g. beta4 or rc3) in the installed release.
+          $versions = array();
+          $releases = array_reverse($project['releases']);
+          $vsn=0;
+          foreach($releases as $version => $release) {
+            // We get all versions of the project.
+            $versions[] = $version;
+            if ($version == $reco_version) {
+              // Position of the recommended version.
+              $key_reco_version = $vsn;
+              if (is_null($key_inst_version)) {
+                $key_inst_version = $key_reco_version;
+              }
+              break;
+            }
+            if ($version == $inst_version) {
+              // Position of the installed version.
+              $key_inst_version = $vsn;
+            }
+            ++$vsn;
+          }
+          $i = $key_inst_version;
+          $supremo = $key_reco_version;
+          $version_extra = TRUE;
+        }
+        else {
+          // No extra version, we skip the foreach loop.
+          $i = $inst_patch_version;
+          $supremo = $reco_patch_version;
+          $version_extra = FALSE;
+        }
+        for ($i; $supremo >= $i; ++$i) {
+          if ($version_extra) {
+            $selected_versions[] = $versions[$i];
+          }
+          else {
+            $selected_versions[] = $project['api_version'] . '-' . $project['releases'][$reco_version]['version_major'] . '.' . $i;
+          }
+        }
+      }
+      else {
+        // Project is not installed so we will show the release notes
+        // for the recommended version, as the user did not specify one.
+        $selected_versions[] = $project['recommended'];
+      }
+    }
+    
+    foreach ($selected_versions as $version) {
+      // Stage of parsing.
+      if (!isset($project['releases'][$version]['release_link'])) {
+        // We avoid the cases where the URL of the release notes does not exist.
+        drush_log(dt("Project !project does not have release notes for version !version.", array('!project' => $key, '!version' => $version)), 'warning');
+        continue;
+      }
+      else {
+        $release_page_url = $project['releases'][$version]['release_link'];
+      }
+      $release_page_url_parsed = parse_url($release_page_url);
+      $release_url_path = $release_page_url_parsed['path'];
+      if (!empty($release_url_path)) {
+        if ($release_page_url_parsed['host'] == 'drupal.org') {
+          $release_page_id = substr($release_url_path, strlen('/node/'));
+          drush_log(dt("Release link for !project (!version) project was found.", array('!project' => $key, '!version' => $version)), 'notice');
+        }
+        else {
+          drush_log(dt("Release notes' page for !project project is not hosted on drupal.org. See !url.", array('!project' => $key, '!url' => $release_page_url)), 'warning');
+          continue;
+        }
+      }
+      $data = drupal_http_request($release_page_url);
+      if (isset($data->error)) {
+        drush_log(dt("Error (!error) while requesting the release notes' page for !project project.", array('!error' => $data->error, '!project' => $key)), 'error');
+        continue;
+      }
+      @$dom = DOMDocument::loadHTML($data->data);
+      if ($dom) {
+        drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $key, '!version' => $version)), 'notice');
+      }
+      $xml = simplexml_import_dom($dom);
+      $xpath_expression = '//*[@id="node-' . $release_page_id .  '"]/div[@class="node-content"]';
+      $node_content = $xml->xpath($xpath_expression);
+
+      // We create the print format.
+      $notes_last_update = $node_content[0]->div[1]->div[0]->asXML();
+      unset($node_content[0]->div);
+      $project_notes = $node_content[0]->asXML();
+      // ?
+      if ($project['recommended'] != $project['minor_supported']) {
+        $status_msg = dt("Note: Unwanted versions management. Run 'drush pm-releases !project' for more information.", array('!project' => $key));
+      }
+      elseif (isset($project['installed'])) {
+        if (isset($request['version'])) {
+          $status_msg = 'Note: type in only the project name to see the release notes for all newer versions.';
+        }
+        else {
+          if ($version == $project['installed']) {
+            $status_msg = 'Note: this is the installed version.';
+            if ($version == $project['recommended']) {
+              $status_msg = 'Note: this is the installed & recommended version.';
+            }
+          }
+          elseif ($version == $project['recommended']) {
+            $status_msg = 'Note: this is the recommended version.';
+          }
+          else {
+            $status_msg = dt('Note: the installed version is !version.', array('!version' => $project['installed']));
+          }
+        }
+      }
+      else {
+        $status_msg = 'Note: specific non-installed version.';
+        if (!isset($request['version'])) {
+          $status_msg = 'Note: recommended non-installed version.';
+        }
+      }
+      // #TODO# d5 compatibility && try a cleaner way to do this.
+      if (drush_drupal_major_version() < 7) {
+        $break = '<br>';
+        $status_msg = '> ' . $status_msg;
+      }
+      else {
+        $break = ' -<hr>';
+        $status_msg = '> ' . $status_msg . ' -<hr>';
+      }
+      $notes_header = dt("<hr>
+        > RELEASE NOTES FOR '!name' PROJECT, VERSION !version:!break
+        > !time.!break
+        !status
+        <hr>", array('!status' => $print_status ? $status_msg : '', '!name' => strtoupper($key), '!break' => $break, '!version' => $version, '!time' => $notes_last_update));
+      // Finally we print the release notes for the requested project.
+      $print = drupal_html_to_text($notes_header . $project_notes, array('br', 'p', 'ul', 'ol', 'li', 'hr'));
+      drush_print($print);
+      if (drush_drupal_major_version() < 7) {drush_print();}
+    }
   }
 }
 
@@ -1626,6 +1879,11 @@ function drush_pm_download() {
     // Post download actions.
     drush_command_invoke_all('drush_pm_post_download', $request, $release);
     $version_control->post_download($request);
+
+    // Print release notes if --notes option is set.
+    if (drush_get_option('notes') && !drush_get_context('DRUSH_PIPE')) {
+      _drush_pm_releasenotes(array($name . '-' . $release['version']), FALSE);
+    }
 
     // Inform the user about available modules a/o themes in the downloaded package.
     drush_pm_projects_in_project($request);

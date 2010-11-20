@@ -162,6 +162,8 @@ function _pm_update_core(&$project, $module_list = array()) {
   drush_print(dt('Code updates will be made to drupal core.'));
   drush_print(dt("WARNING:  Updating core will discard any modifications made to Drupal core files, most noteworthy among these are .htaccess and robots.txt.  If you have made any modifications to these files, please back them up before updating so that you can re-create your modifications in the updated version of the file."));
   drush_print(dt("Note: Updating core can potentially break your site. It is NOT recommended to update production sites without prior testing."));
+  drush_print();
+  drush_pm_releasenotes();
   if(!drush_confirm(dt('Do you really want to continue?'))) {
     drush_user_abort();
   }
@@ -242,8 +244,8 @@ function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflict
 }
 
 /**
- * Update packages according to an array of releases, following interactive
- * confirmation from the user.
+ * Update packages according to an array of releases and print the release notes
+ * for each project, following interactive confirmation from the user.
  *
  * @param $projects
  *   An array of projects from the drupal.org update service, with an additional
@@ -253,17 +255,32 @@ function pm_update_packages($projects) {
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
-  drush_print(dt('Code updates will be made to the following projects:'));
   $print = '';
   foreach($projects as $project) {
     $print .= $project['title'] . " [" . $project['name'] . '-' . $project['candidate_version'] . "], ";
   }
+  // We print the list of the projects that need to be updated.
+  drush_print(dt('Code updates will be made to the following projects:'));
   drush_print(substr($print, 0, strlen($print)-2));
+
+  // Print the release notes for projects to be updated. Ask before if
+  // there is more than one project.
+  $keys = array_keys($projects);
+  if (count($keys) == 1) {
+    if (!drush_get_context('DRUSH_NEGATIVE')) {
+      _drush_pm_releasenotes($keys);
+    }
+  }
+  elseif (drush_confirm(dt('Do you want to see the release notes of the above exposed versions?'))) {
+    _drush_pm_releasenotes($keys);
+  }
+
+  // We print some warnings before the user confirms the update.
   drush_print();
   drush_print(dt("Note: Updated projects can potentially break your site. It is NOT recommended to update production sites without prior testing."));
   drush_print(dt("Note: A backup of your package will be stored to backups directory if it is not managed by a supported version control system."));
   drush_print(dt('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
-  if(!drush_confirm(dt('Do you really want to continue?'))) {
+  if(!drush_confirm(dt('Do you really want to continue with the update process?'))) {
     drush_user_abort();
   }
 
