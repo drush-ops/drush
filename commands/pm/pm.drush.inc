@@ -117,7 +117,7 @@ function pm_drush_command() {
   $items['pm-enable'] = array(
     'description' => 'Enable one or more modules or themes.',
     'arguments' => array(
-      'modules' => 'A space delimited list of modules or themes. You can use the * wildcard at the end of module and theme names to to enable all matches.',
+      'projects' => 'A list of modules or themes. You can use the * wildcard at the end of module and theme names to enable all matches.',
     ),
     'aliases' => array('en'),
     'deprecated-aliases' => array('enable'),
@@ -125,15 +125,15 @@ function pm_drush_command() {
   $items['pm-disable'] = array(
     'description' => 'Disable one or more modules or themes.',
     'arguments' => array(
-      'modules' => 'A space delimited list of modules or themes. You can use the * wildcard at the end of module and theme names to disable multiple matches.',
+      'projects' => 'A list of modules or themes. You can use the * wildcard at the end of module and theme names to disable multiple matches.',
     ),
     'aliases' => array('dis'),
     'deprecated-aliases' => array('disable'),
   );
   $items['pm-info'] = array(
-    'description' => 'Show info for one or more projects.',
+    'description' => 'Show info for one or more modules or themes.',
     'arguments' => array(
-      'projects' => 'A space delimited list of projects. You can use the * wildcard at the end of module names to get info for the project and all its sub projects.',
+      'projects' => 'A list of modules or themes. You can use the * wildcard at the end of module and theme names to show info for multiple matches.',
     ),
   );
   // Install command is reserved for the download and enable of projects including dependencies.
@@ -144,7 +144,7 @@ function pm_drush_command() {
   $items['pm-uninstall'] = array(
     'description' => 'Uninstall one or more modules.',
     'arguments' => array(
-      'modules' => 'A space delimited list of modules.',
+      'modules' => 'A list of modules.',
     ),
     'deprecated-aliases' => array('uninstall'),
   );
@@ -172,7 +172,7 @@ function pm_drush_command() {
     'description' => 'Update your project code',
     'drupal dependencies' => array($update),
     'arguments' => array(
-      'projects' => 'Optional. A space delimited list of installed projects (modules or themes) to update.',
+      'projects' => 'Optional. A list of installed modules or themes to update.',
     ),
     'options' => array(
       '--pipe' => 'Returns a space delimited list of enabled modules and their respective version and update information, one module per line. Order: module name, current version, recommended version, update status.',
@@ -195,7 +195,7 @@ function pm_drush_command() {
     'description' => 'Print release notes for drupal.org project(s)',
     'drupal dependencies' => array($update),
     'arguments' => array(
-      'project' => 'A space separated list of drupal.org project names, with optional version. Defaults to \'drupal\'',
+      'projects' => 'A list of drupal.org project names, with optional version. Defaults to \'drupal\'',
     ),
     'examples' => array(
       'drush rln cck' => 'Prints the release notes for the recommended version of CCK package.',
@@ -208,7 +208,7 @@ function pm_drush_command() {
     'description' => 'Release information for a project',
     'drupal dependencies' => array($update),
     'arguments' => array(
-      'projects' => 'A space separated list of drupal.org project names. Defaults to \'drupal\'',
+      'projects' => 'A list of drupal.org project names. Defaults to \'drupal\'',
     ),
     'examples' => array(
       'drush pm-releases cck zen' => 'View releases for cck and Zen projects.',
@@ -226,7 +226,7 @@ function pm_drush_command() {
       'drush dl diff-6.x-2.x' => 'Download a specific development branch of diff module for a specific Drupal version.',
     ),
     'arguments' => array(
-      'projects' => 'A space separated list of project names, with optional version. Defaults to \'drupal\'',
+      'projects' => 'A list of drpal.org project names, with optional version. Defaults to \'drupal\'',
     ),
     'options' => array(
       '--destination' => 'Path to which the project will be copied. If you\'re providing a relative path, note it is relative to the drupal root (if bootstrapped).',
