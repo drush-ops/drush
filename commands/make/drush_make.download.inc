@@ -197,9 +197,9 @@ function _drush_make_download_file($download) {
       if (isset($headers[0]['Content-Disposition'])) {
         $parts = explode(';', $headers[0]['Content-Disposition']);
         foreach ($parts as $part) {
-          list($name, $value) = explode('=', $part, 2);
+          $inner_parts = explode('=', $part, 2);
           if ($inner_parts[0] == 'filename') {
-            $file = $value;
+            $file = $inner_parts[1];
             break;
           }
         }
@@ -300,6 +300,7 @@ function drush_make_download_file_unpack_zip($filename, $download_location) {
 function _drush_make_download_file_move($tmp_path, $filename, $download_location) {
   drush_shell_exec('ls %s', $tmp_path . '/__unzip__');
   $lines = drush_shell_exec_output();
+  $main_directory = basename($download_location);
   if (count($lines) == 1) {
     $directory = array_shift($lines);
     if ($directory != $main_directory) {
