@@ -15,19 +15,29 @@ function drush_pm_updatecode() {
   // Get update status information.
   $projects = _pm_get_update_info();
 
-  // Process locks specified on the command line
+  // Process locks specified on the command line.
   $locked_list = drush_pm_update_lock($projects, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
-  // Get specific requests
+  // Get specific requests.
   $requests = _convert_csv_to_array(func_get_args());
 
-  // Parse out project name and version
+  // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
   
-  // Preprocess releases
+  // Preprocess releases.
   if (!empty($requests)) {
-    // Force update projects where a specific version is reqested
+    $project_info = drush_get_projects();
+    // Check requests are installed and enabled projects and force
+    // update projects where a specific version is requested.
     foreach ($requests as $name => $request) {
+      print_r($project_info[$name]);
+      if (!isset($project_info[$name])) {
+        drush_set_error('DRUSH_PM_UNKNOWN_PROJECT', dt('!project was not found and will not be updated.', array('!project' => $name)));
+      }
+      elseif (!$project_info[$name]->status) {
+        drush_set_error('DRUSH_PM_DISABLED_PROJECT', dt('!project is not enabled and will not be updated.', array('!project' => $name)));
+      }
+      
       if (!isset($projects[$name])) {
         // Catch projects with no version data (common for CVS checkouts
         // if you don't have CVS deploy installed).
