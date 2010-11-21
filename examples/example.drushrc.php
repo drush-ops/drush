@@ -89,6 +89,19 @@
 // Specify options to pass to ssh in backend invoke. (Default is to prohibit password authentication; uncomment to change)
 # $options['ssh-options'] = '-o PasswordAuthentication=no';
 
+// rsync version 2.6.8 or earlier will give an error message:
+// "--remove-source-files: unknown option".  To fix this, set
+// $options['rsync-version'] = '2.6.8'; (replace with the lowest
+// version of rsync installed on any system you are using with
+// drush).  Note that drush requires at least rsync version 2.6.4
+// for some functions to work correctly.
+// 
+// Note that this option can also be set in a site alias.  This
+// is preferable if newer versions of rsync are available on some
+// of the systems you use.
+// See: http://drupal.org/node/955092
+# $options['rsync-version'] = '2.6.9';
+
 /*
 * The output charset suitable to pass to iconv PHP function as out_charset
 * parameter. Drush will convert its output from UTF-8 to the charset specified

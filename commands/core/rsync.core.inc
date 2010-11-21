@@ -212,9 +212,22 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
     'out-format',
     'protocol',
     );
+  // Check if the user has set $options['rsync-version'] to enable rsync legacy version support.
+  // Drush was written for rsync 2.6.9 or later, so assume that version if nothing was explicitly set.
+  $rsync_version = drush_get_option(array('rsync-version','source-rsync-version','target-rsync-version'), '2.6.9');
   foreach ($rsync_available_options as $test_option) {
     $value = drush_get_option_override($additional_options, $test_option);
-    if (isset($value)) {
+    // Downgrade some options for older versions of rsync
+    if ($test_option == 'remove-source-files') {
+      if (version_compare($rsync_version, '2.6.4', '<')) {
+        $test_option = NULL;
+        drush_log('Rsync does not support --remove-sent-files prior to version 2.6.4; some temporary files may remain undeleted.', 'warning');
+      }
+      elseif (version_compare($rsync_version, '2.6.9', '<')) {
+        $test_option = 'remove-sent-files';
+      }
+    }
+    if ((isset($test_option)) && (isset($value))) {
       if ($value === TRUE) {
         $options .= " --$test_option";
       }
