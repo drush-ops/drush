@@ -915,7 +915,7 @@ function drush_pm_releases() {
       $rows[] = array(
         $release['version'],
         format_date($release['date'], 'custom', 'Y-M-d'),
-        implode(', ', $release['status_msg'])
+        implode(', ', $release['release_status'])
       );
     }
     drush_print($header);
@@ -941,6 +941,11 @@ function _drush_pm_get_releases($projects) {
   foreach ($projects as $project) {
     if (!isset($info[$project])) {
       drush_set_error('DRUSH_PM_PROJECT_NOT_FOUND', dt("No release history was found for the requested project (!project).", array('!project' => $project)));
+      continue;
+    }
+    if ($info[$project]['project_status'] == 'unpublished') {
+      drush_set_error('DRUSH_PM_PROJECT_UNPUBLISHED', dt("Project !project is unpublished ans has no releases available.", array('!project' => $key)), 'warning');
+      unset($info[$key]);
       continue;
     }
   }
@@ -1011,7 +1016,7 @@ function _drush_pm_get_releases($projects) {
           }
         }
       }
-      $info[$key]['releases'][$version]['status_msg'] = $status;
+      $info[$key]['releases'][$version]['release_status'] = $status;
     }
   }
 
@@ -1039,7 +1044,7 @@ function drush_pm_releasenotes() {
  *
  * @see drush_pm_releasenotes()
  */
-function _drush_pm_releasenotes($requests, $print_note = TRUE) {
+function _drush_pm_releasenotes($requests, $print_status = TRUE) {
   // Parse requests to strip versions.
   $requests = pm_parse_project_version($requests);
   // Get the releases.
@@ -1061,8 +1066,8 @@ function _drush_pm_releasenotes($requests, $print_note = TRUE) {
       }
     }
     // If the request included version, only show its release notes.
-    if (isset($requests[$projectname]['version'])) {
-      $selected_versions[] = $requests[$projectname]['version'];
+    if (isset($requests[$key]['version'])) {
+      $selected_versions[] = $requests[$key]['version'];
     }
     else {
       $reco_version = $project['recommended'];
@@ -1159,9 +1164,11 @@ function _drush_pm_releasenotes($requests, $print_note = TRUE) {
       $notes_last_update = $node_content[0]->div[1]->div[0]->asXML();
       unset($node_content[0]->div);
       $project_notes = $node_content[0]->asXML();
-      // ?
+      // A release with version-extra can be published after a stable
+      // release with same major_version is out (see #843740 and
+      // eightball module).
       if ($project['recommended'] != $project['minor_supported']) {
-        $status_msg = dt("Note: Unwanted versions management. Run 'drush pm-releases !project' for more information.", array('!project' => $key));
+        $status_msg = dt("Note: Unwanted versions management. Run 'drush pm-releases !project' for details.", array('!project' => $key));
       }
       elseif (isset($project['installed'])) {
         if (isset($request['version'])) {
@@ -1669,6 +1676,27 @@ function drush_pm_download_validate() {
     drush_set_option('variant', $new_variant);
     if ($variant) {
       drush_log(dt('Switching to --variant=!variant.', array('!variant' => $new_variant)), 'ok');
+    }
+  }
+  
+  // At present we depend on update module to show release notes.
+  $notes = TRUE;
+  if (drush_get_option('notes', FALSE)) {
+    $update = 'update';
+    if (drush_drupal_major_version() == 5) {
+      $update = 'update_status';
+    }  
+    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+      $msg = dt('A higher bootstrap level is needed to show release notes.');
+      $notes = FALSE;
+    }
+    elseif (!module_exists($update)) {
+      $msg = dt('!module is required to show release notes.', array('!module' => $update));
+      $notes = FALSE;
+    }
+    if (!$notes) {
+      drush_log($msg . ' ' . dt('Disabling --notes option.'), 'warning');
+      drush_set_option('notes', FALSE);
     }
   }
 }
