@@ -8,10 +8,14 @@ include_once drupal_get_path('module', 'system') . '/system.install';
  * Drush callback; generate makefile from the current build.
  */
 function _drush_make_generate($file) {
-  // Check to see if project versions are exluded.
-  $exclude_versions = drush_get_option('exclude-versions', FALSE);
-  $exclude_all = ($exclude_versions === TRUE);
-  $exclude_versions = is_string($exclude_versions) ? explode(",", $exclude_versions) : array();
+  // What projects should we pin the versions for?
+  // Check the command-line options for details
+  foreach(array("include", "exclude") as $option) {
+    $version_options[$option] = drush_get_option("$option-versions");
+    if ($version_options[$option] !== TRUE) {
+      $version_options[$option] = array_filter(split(",", $version_options[$option]));
+    }
+  }
 
   $projects = array();
 
@@ -23,9 +27,9 @@ function _drush_make_generate($file) {
     $projects[$core_project]['type'] = 'core';
   }
   else {
-    // Get the Drupal core version if it hasn't been excluded.
-    if (!($exclude_all || in_array('drupal', $exclude_versions))) {
-      $projects[$core_project]['version'] = $system_requirements['drupal']['value'];
+    // Drupal core - we can determine the version if required
+    if (_drush_generate_track_version("drupal", $version_options)) {
+      $projects[$core_project]["version"] = $system_requirements['drupal']['value'];
     }
   }
 
@@ -55,10 +59,10 @@ function _drush_make_generate($file) {
         $projects[$name]['custom_download'] = TRUE;
       }
       $projects[$name] += _drush_generate_makefile_check_location($name, $type);
-      // Add version number if this project's version is not excluded and we
-      // have version information.
-      if (!($exclude_all || in_array($name, $exclude_versions)) && $item->info['version']) {
-        $projects[$name]['version'] = preg_replace('/^'. DRUPAL_CORE_COMPATIBILITY .'-/', '', $item->info['version']);
+      // Add version number if this project's version is to be tracked
+      // and if we have the information in its ->info to determine it
+      if (_drush_generate_track_version($name, $version_options) && $item->info["version"]) {
+        $projects[$name]['version'] = preg_replace("/^". DRUPAL_CORE_COMPATIBILITY . "-/", "", $item->info["version"]);
       }
     }
   }
@@ -83,6 +87,37 @@ function _drush_make_generate($file) {
   else {
     drush_make_error('FILE_ERROR', dt("Unable to write .make file %file", array('%file' => $file)));
   }
+}
+
+/**
+ * Helper function to determine if a given project is to have its version tracked
+ */
+function _drush_generate_track_version($project, $version_options) {
+  // A. If --exclude-versions has been specified:
+  //  A.a. if it's a boolean, check the --include-versions option
+  if ($version_options["exclude"] === TRUE) {
+    // A.a.1 if --include-versions has been specified, ensure it's an array
+    // 
+    if (is_array($version_options["include"])) {
+      return in_array($project, $version_options["include"]);
+    }
+    // A.a.2 If no include array, then we're excluding versions for ALL projects
+    return FALSE;
+  }
+  //  A.b. if --exclude-versions is an array with items, check this project is in it: if so,
+  //    then return FALSE.
+  elseif (is_array($version_options["exclude"]) && count($version_options["exclude"])) {
+    return !in_array($project, $version_options["exclude"]);
+  }
+
+  // B. If by now no --exclude-versions, but --include-versions is an array,
+  // examine it for this project
+  if (is_array($version_options["include"]) && count($version_options["include"])) {
+    return in_array($project, $version_options["include"]);
+  }
+
+  // If none of the above conditions match, include version number by default
+  return TRUE;
 }
 
 /**

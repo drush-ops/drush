@@ -58,24 +58,21 @@ function drush_make_drush_command() {
       'drush make-test svn' => 'Run tests for SVN integration.',
     ),
   );
-
   $items['make-generate'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-    'description' => 'Attempts to generate a makefile from a Drupal directory or installation.',
-    'arguments' => array(
-      'target_file' => 'The target makefile to generate. If no directory is specified, the makefile will be created in the Drupal docroot.',
-    ),
+    'description' => 'Attempts to generate a makefile from the current Drupal install, specifying project version numbers unless not known or otherwise specified. Unversioned projects will be interpreted later by drush make as "most recent stable release"',
     'examples' => array(
-      'drush @dev make-generate example.make' => 'Generate a makefile from the @dev site.',
-      'drush make-generate example.make --exclude-versions' => 'Exclude all version information.',
-      'drush make-generate example.make --exclude-versions="admin_menu,og,ctools"' => 'Exclude version information for Admin Menu, Organic Groups and CTools.',
+      'drush generate-makefile example.make' => 'Generate a makefile with ALL projects versioned (should a project have a known version number)',
+      'drush generate-makefile example.make --exclude-versions' => 'Generate a makefile with NO projects versioned',
+      'drush generate-makefile example.make --exclude-versions=drupal,views,cck' => 'Generate a makefile with ALL projects versioned EXCEPT core, Views and CCK',
+      'drush generate-makefile example.make --include-versions=admin_menu,og,ctools (--exclude-versions)' => 'Generate a makefile with NO projects versioned EXCEPT Admin Menu, OG and CTools.',
     ),
     'options' => array(
-      '--exclude-versions' => 'Exclude version information for all projects, or optionally specify a comma separated list of projects to exclude version information for.',
+      '--exclude-versions(="list")' => 'Exclude all version numbers (default is include all version numbers) or optionally specify a list of projects to exclude from versioning',
+      '--include-versions="list"' => 'Include a specific list of projects, while all other projects remain unversioned in the makefile (so implies --exclude-versions)',
     ),
     'aliases' => array('generate-makefile'),
   );
-
   return $items;
 }
 
