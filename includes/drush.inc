@@ -696,6 +696,27 @@ function dt($string, $args = array()) {
 }
 
 /**
+ * Convert a csv string, or an array of items which
+ * may contain csv strings, into an array of items.
+ *
+ * @param $args
+ *   A simple csv string; e.g. 'a,b,c'
+ *   or a simple list of items; e.g. array('a','b','c')
+ *   or some combination; e.g. array('a,b','c') or array('a,','b,','c,')
+ *   
+ * @returns array
+ *   A simple list of items (e.g. array('a','b','c')
+ */
+function _convert_csv_to_array($args) {
+  //
+  // Step 1: implode(',',$args) converts from, say, array('a,','b,','c,') to 'a,,b,,c,'
+  // Step 2: explode(',', ...) converts to array('a','','b','','c','')
+  // Step 3: array_filter(...) removes the empty items
+  //
+  return array_filter(explode(',', is_array($args) ? implode(',',$args) : $args));
+}
+
+/**
  * Get the available global options. Used by help command.
  *
  * @return

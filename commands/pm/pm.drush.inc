@@ -375,7 +375,7 @@ function drush_pm_list() {
  * Command callback. Enable one or more projects.
  */
 function drush_pm_enable() {
-  $args = func_get_args();
+  $args = _convert_csv_to_array(func_get_args());
 
   $project_info = drush_get_projects();
 
@@ -477,7 +477,7 @@ function drush_pm_enable() {
  * Command callback. Disable one or more projects.
  */
 function drush_pm_disable() {
-  $args = func_get_args();
+  $args = _convert_csv_to_array(func_get_args());
 
   $project_info = drush_get_projects();
 
@@ -620,7 +620,7 @@ function drush_pm_classify_projects(&$projects, &$modules, &$themes, $project_in
  * Command callback. Show detailed info for one or more projects.
  */
 function drush_pm_info() {
-  $args = func_get_args();
+  $args = _convert_csv_to_array(func_get_args());
 
   $project_info = drush_pm_get_projects();
   _drush_pm_expand_projects($args, $project_info);
@@ -782,7 +782,7 @@ function _drush_pm_expand_projects(&$projects, $project_info = array()) {
  * // TODO: Use drupal_execute on system_modules_uninstall_confirm_form so that input is validated.
  */
 function drush_pm_uninstall() {
-  $modules = func_get_args();
+  $modules = _convert_csv_to_array(func_get_args());
 
   drush_include_engine('drupal', 'environment');
   $module_info = drush_get_modules();
@@ -898,7 +898,7 @@ function _pm_get_project_path($data, $lookup) {
  * Command callback. Show available releases for given project(s).
  */
 function drush_pm_releases() {
-  if (!$requests = func_get_args()) {
+  if (!$requests = _convert_csv_to_array(func_get_args())) {
     $requests = array('drupal');
   }
 
@@ -1027,7 +1027,7 @@ function _drush_pm_get_releases($projects) {
  * Command callback. Show release notes for given project(s).
  */
 function drush_pm_releasenotes() {
-  if (!$requests = func_get_args()) {
+  if (!$requests = _convert_csv_to_array(func_get_args())) {
     $requests = array('drupal');
   }
 
@@ -1236,7 +1236,7 @@ function drush_pm_update() {
   drush_set_context('DRUSH_PM_UPDATE_ALL', TRUE);
 
   // Call pm-updatecode.  updatedb will be called in the post-update process.
-  $args = func_get_args();
+  $args = _convert_csv_to_array(func_get_args());
   array_unshift($args, 'pm-updatecode');
   call_user_func_array('drush_invoke', $args);
 
@@ -1708,7 +1708,7 @@ function drush_pm_download() {
   $package_handler = drush_get_option('package-handler', 'wget');
   drush_include_engine('package_handler', $package_handler);
 
-  if (!$requests = func_get_args()) {
+  if (!$requests = _convert_csv_to_array(func_get_args())) {
     $requests = array('drupal');
   }
 

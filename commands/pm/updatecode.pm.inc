@@ -19,7 +19,7 @@ function drush_pm_updatecode() {
   $locked_list = drush_pm_update_lock($projects, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
   // Get specific requests
-  $requests = func_get_args();
+  $requests = _convert_csv_to_array(func_get_args());
 
   // Parse out project name and version
   $requests = pm_parse_project_version($requests);
