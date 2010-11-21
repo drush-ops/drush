@@ -356,15 +356,15 @@ function drush_make_download_git($name, $download, $download_location) {
     // protocol = http://
     // site = example.com/
     // resource = blog/index?name=foo
-    $regex = '#^(.*?//)*([\w\.\d]*)(:(\d+))*(/*)(.*)$#';
+    $regex = '#^(.*?//)*(.*@)*([\w\.\d]*)(:(\d+))*(/*)(.*)$#';
     $matches = array();
     preg_match($regex, $download['url'], $matches);
 
     // Assign the matched parts of url to the result array
-    $url_array['protocol'] = $matches[1];
-    $url_array['port']     = $matches[4];
-    $url_array['host']     = $matches[2];
-    $url_array['resource'] = $matches[6];
+    $result['user']     = $matches[2];
+    $result['port']     = $matches[5];
+    $result['host']     = $matches[3];
+    $result['resource'] = $matches[7];
 
     // clean up the site portion by removing the trailing /
     $url_array['host'] = preg_replace('#/$#', '', $url_array['host']);
@@ -396,7 +396,7 @@ function drush_make_download_git($name, $download, $download_location) {
         case 'rsync':
         case 'file':
           // @TODO: implement port & user options
-          $url = $url_array['protocol'] .'://'. $url_array['host'] .'/'. $url_array['resource'];
+          $url_array['protocol'] .'://'. $url_array['user'] . $url_array['host'] .'/'. $url_array['resource'];
           break;
 
         default:
