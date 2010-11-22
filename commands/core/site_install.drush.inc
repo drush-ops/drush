@@ -71,7 +71,20 @@ function drush_core_pre_site_install() {
   // Save the database name before we unset() it.
   $db_name = $db_spec['database'];
   $scheme = _drush_sql_get_scheme($db_spec);
+  $simulate = drush_get_context('DRUSH_SIMULATE');
 
+  if ($scheme === 'sqlite') {
+    // With SQLite, we don't DROP DATABASEs. Each database is in a single file,
+    // so we just remove the file. We also don't CREATE DATABASEs; it is created
+    // when SQLite attempts to open a database file which doesn't exist.
+    if (file_exists($db_spec['database']) && !$simulate) {
+      if (!unlink($db_spec['database'])) {
+        drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));
+      }
+    }
+    // Nothing else to do for SQLite installations, so return.
+    return;
+  }
   // _drush_sql_get_credentials() will set a default database according to
   // the scheme if one is not set.
   unset($db_spec['database']);
@@ -88,8 +101,6 @@ function drush_core_pre_site_install() {
       break;
   }
   $execute = "$scheme_command $credentials --$command_parameter_name";
-
-  $simulate = drush_get_context('DRUSH_SIMULATE');
 
   if (drush_op('system', "$execute='DROP DATABASE IF EXISTS `$db_name`'") && !$simulate) {
     drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));

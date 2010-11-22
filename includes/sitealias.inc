@@ -1190,14 +1190,16 @@ function drush_convert_db_from_db_url($db_url) {
     'port' => NULL,
     'database' => NULL,
   );
-  $url = (object)$url;
+  $url = (object)array_map('urldecode', $url);
   return array(
     'driver' => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
-    'username' => urldecode($url->user),
-    'password' => urldecode($url->pass),
-    'port' => urldecode($url->port),
-    'host' => urldecode($url->host),
-    'database' => substr(urldecode($url->path), 1), // skip leading '/' character
+    'username' => $url->user,
+    'password' => $url->pass,
+    'port' => $url->port,
+    'host' => $url->host,
+    // Remove leading / character from database names, unless we're installing
+    // to SQLite (which won't have a slash there unless it's part of a path).
+    'database' => $url->scheme === 'sqlite' ? $url->path : substr($url->path, 1)
   );
 }
 
