@@ -30,7 +30,6 @@ function drush_pm_updatecode() {
     // Check requests are installed and enabled projects and force
     // update projects where a specific version is requested.
     foreach ($requests as $name => $request) {
-      print_r($project_info[$name]);
       if (!isset($project_info[$name])) {
         drush_set_error('DRUSH_PM_UNKNOWN_PROJECT', dt('!project was not found and will not be updated.', array('!project' => $name)));
       }
