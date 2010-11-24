@@ -454,7 +454,7 @@ function drush_make_get_data($data_source) {
   }
   // Remote file.
   else {
-    $file = _drush_make_download_file(array('url' => $datasource));
+    $file = _drush_make_download_file(array('url' => $data_source));
     $data = file_get_contents($file);
     drush_op('unlink', $file);
   }
