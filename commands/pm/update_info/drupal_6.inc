@@ -58,9 +58,17 @@ function _pm_get_update_info($projects = NULL) {
   if (!cache_get('update_available_releases', 'cache_update')) {
     _pm_refresh();
   }
-  $info = update_get_available();
+
+  $info = update_get_available(TRUE);
+
+  // Force to invalidate some update_status caches that are only cleared
+  // when visiting update status report page.
+  _update_cache_clear('update_project_data');
+  _update_cache_clear('update_project_projects');
+
   $data = update_calculate_project_data($info);
   $data = _pm_get_project_path($data, 'includes');
+
   return $data;
 }
 

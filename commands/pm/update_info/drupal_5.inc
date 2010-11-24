@@ -56,9 +56,15 @@ function _pm_get_update_info($projects = NULL) {
   if (!cache_get('update_status_info', 'cache')) {
     _pm_refresh();
   }
-  $info = update_status_get_available();
-  $data = update_status_calculate_project_data($info);
 
+  $info = update_status_get_available(TRUE);
+
+  // Force to invalidate some update_status caches that are only cleared
+  // when visiting update status report page.
+  _update_status_cache_clear('update_status_project_data');
+  _update_status_cache_clear('update_status_project_projects');
+
+  $data = update_status_calculate_project_data($info);
   // update_status for drupal 5 can only process modules,
   // so we need to add this here for backwards compatibility
   // or pm_get_project_path() will fail
