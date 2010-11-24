@@ -287,11 +287,11 @@ function drush_core_watchdog_delete($arg = NULL) {
     if ((is_null($arg))&&(is_null($type))&&(is_null($severity))) {
       return drush_set_error(dt('No options provided.'));
     }
-    $where = core_watchdog_query($type, $severity, $filter, 'OR');
+    $where = core_watchdog_query($type, $severity, $arg, 'OR');
     if ($where === FALSE) {
       return drush_log(dt('Aborting.'), 'error');
     }
-    drush_print(dt('All messages matching "!where" will be deleted.', array('!where' => strtr($where['where'], $where['args']))));
+    drush_print(dt('All messages with !where will be deleted.', array('!where' => preg_replace("/message LIKE %$arg%/", "message body containing '$arg'" , strtr($where['where'], $where['args'])))));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
       return drush_log(dt('Aborting.'));
     }
