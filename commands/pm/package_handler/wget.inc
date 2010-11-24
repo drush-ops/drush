@@ -34,9 +34,10 @@ function package_handler_install_project(&$request, $release) {
 
   // Check Md5 hash.
   if (md5_file($filename) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
+    drush_set_error('DRUSH_PM_FILE_CORRUPT', "File $filename is corrupt (wrong md5 checksum).");
     drush_op('unlink', $filename);
     chdir($olddir);
-    return drush_set_error('DRUSH_PM_FILE_CORRUPT', "File $filename is corrupt (wrong md5 checksum).");
+    return FALSE;
   }
   else {
     drush_log("Md5 checksum of $filename verified.");
