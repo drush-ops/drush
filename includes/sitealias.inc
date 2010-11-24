@@ -485,7 +485,9 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
         // then record it in the drush-alias-files context.
         if ($alias_recorded) {
           $drush_alias_files = drush_get_context('drush-alias-files');
-          $drush_alias_files[] = $filename;
+          if (!in_array($filename, $drush_alias_files)) {
+            $drush_alias_files[] = $filename;
+          }
           drush_set_context('drush-alias-files', $drush_alias_files);
         }
       }
