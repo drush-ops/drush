@@ -15,6 +15,9 @@ function drush_pm_updatecode() {
   // Get update status information.
   $projects = _pm_get_update_info();
 
+  // Find only security updates?
+  $security_only = drush_get_option('security-only');
+
   // Process locks specified on the command line.
   $locked_list = drush_pm_update_lock($projects, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
@@ -68,12 +71,12 @@ function drush_pm_updatecode() {
   $rows[] = array(dt('Name'), dt('Installed version'), dt('Proposed version'), dt('Status'));
 
   // Process releases, notifying user of status and building a list of proposed updates
-  $updateable = pm_project_filter($projects, $rows);
+  $updateable = pm_project_filter($projects, $rows, $security_only);
 
-  // Pipe preparation
+  // Pipe preparation.
   if (drush_get_context('DRUSH_PIPE')) {
     $pipe = "";
-    foreach($projects as $project){
+    foreach($updateable as $project) {
       $pipe .= $project['name']. " ";
       $pipe .= $project['existing_version']. " ";
       $pipe .= $project['candidate_version']. " ";
@@ -135,7 +138,12 @@ function drush_pm_updatecode() {
     // also continue, allowing the user to upgrade any upgradable
     // modules if desired.
     else {
-      drush_print(dt("NOTE: A code update for the Drupal core is available."));
+      if ($drupal_project['status'] == UPDATE_NOT_SECURE) {
+        drush_print(dt("NOTE: A security update for the Drupal core is available."));
+      }
+      else {
+        drush_print(dt("NOTE: A code update for the Drupal core is available."));
+      }
       if (drush_get_context('DRUSH_PM_UPDATE_ALL', FALSE)) {
         drush_print(dt("Drupal core will be updated after all of the non-core modules are updated.\n"));
       }
@@ -147,7 +155,12 @@ function drush_pm_updatecode() {
   }
 
   if (empty($updateable)) {
-    return drush_log(dt('No code updates available.'), 'ok');
+    if ($security_only) {
+      return drush_log(dt('No security updates available.'), 'ok');
+    }
+    else {
+      return drush_log(dt('No code updates available.'), 'ok');
+    }
   }
 
   // Offer to update to the identified releases
@@ -276,11 +289,23 @@ function pm_update_packages($projects) {
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
   $print = '';
+  $status = array();
   foreach($projects as $project) {
     $print .= $project['title'] . " [" . $project['name'] . '-' . $project['candidate_version'] . "], ";
+    $status[$project['status']] = $project['status'];
   }
   // We print the list of the projects that need to be updated.
-  drush_print(dt('Code updates will be made to the following projects:'));
+  if (isset($status[UPDATE_NOT_SECURE])) {
+    if (isset($status[UPDATE_NOT_CURRENT])) {
+      drush_print(dt('Security and code updates will be made to the following projects:'));
+    }
+    else {
+      drush_print(dt('Security updates will be made to the following projects:'));
+    }
+  }
+  else {
+    drush_print(dt('Code updates will be made to the following projects:'));
+  }
   drush_print(substr($print, 0, strlen($print)-2));
 
   // Print the release notes for projects to be updated. Ask before if
@@ -390,7 +415,7 @@ function drush_pm_updatecode_rollback() {
   }
 }
 
-function pm_project_filter(&$projects, &$rows) {
+function pm_project_filter(&$projects, &$rows, $security_only) {
   $updateable = array();
   foreach ($projects as $key => $project) {
     if (empty($project['title'])) {
@@ -435,6 +460,10 @@ function pm_project_filter(&$projects, &$rows) {
     }
     if (!empty($project['updateable'])) {
       $updateable[$key] = $project;
+      // Find only security updates
+      if ($security_only && ($project['status'] != UPDATE_NOT_SECURE)) {
+        unset($updateable[$key]);
+      }
     }
     $rows[] = array($project['title'], $project['existing_version'], $projects[$key]['candidate_version'], $status);
   }
