@@ -63,7 +63,16 @@ function drush_test_run($specs = NULL) {
   // Retrieve all tests and groups.
   list($groups, $all_tests) = drush_test_get_all_tests();
   
-  if (empty($specs)) {
+  if (drush_get_option('all')) {
+    // Run all tests.
+    foreach (array_keys($groups) as $group) {
+      foreach (array_keys($groups[$group]) as $class) {
+        drush_backend_invoke_args('test-run', array($class), array('--no-all'));
+      }
+    }
+    return;
+  }
+  elseif (empty($specs)) {
     return drush_test_list($groups);
   }
 
@@ -79,15 +88,6 @@ function drush_test_run($specs = NULL) {
     else if (isset($groups[$spec])) {
       foreach (array_keys($groups[$spec]) as $class) {
         drush_do_command_redispatch('test-run', array($class));
-      }
-      return;
-    }
-    // Run all tests.
-    else if (drush_get_option('all')) {
-      foreach (array_keys($groups) as $group) {
-        foreach (array_keys($groups[$group]) as $class) {
-          drush_do_command_redispatch('test-run', array($class));
-        }
       }
       return;
     }
