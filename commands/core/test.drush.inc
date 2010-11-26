@@ -28,6 +28,8 @@ function test_drush_command() {
       'all' => 'Run all available tests',
     ),
     'drupal dependencies' => array('simpletest'),
+    // If you login, you fall victim to http://drupal.org/node/974768.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
   );
   $items['test-clean'] = array(
     'description' => "Clean temporary tables and files.",
