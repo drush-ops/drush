@@ -708,6 +708,7 @@ function drush_core_php_script() {
         $searchpath[] = $path;
       }
     }
+    drush_log(dt('Searching for scripts in ') . implode(',', $searchpath), 'debug');
 
     if (!isset($script)) {
       // List all available scripts.
