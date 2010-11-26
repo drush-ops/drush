@@ -106,8 +106,14 @@ function simpletest_drush_run_test($class) {
     $test_id = db_last_insert_id('simpletest_test_id', 'test_id');
   }
 
+  // Depends on http://drupal.org/node/916570
+  $methods = array();
+  foreach (explode(',', drush_get_option('methods')) as $method) {
+    $methods[] = trim($method);
+  }
+  
   $test = new $class($test_id);
-  $test->run();
+  $test->run($methods);
 
   $info = $test->getInfo();
   $status = ((isset($test->results['#fail']) && $test->results['#fail'] > 0)
