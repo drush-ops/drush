@@ -30,7 +30,6 @@ function test_drush_command() {
     'drupal dependencies' => array('simpletest'),
   );
   $items['test-clean'] = array(
-    'callback' => 'simpletest_clean_environment',
     'description' => "Clean temporary tables and files.",
     'drupal dependencies' => array('simpletest'),
   );
@@ -38,6 +37,12 @@ function test_drush_command() {
   return $items;
 }
 
+// Command callback
+function drush_test_clean() {
+  return simpletest_clean_environment();
+}
+
+// Validate hook
 function drush_test_run_validate($targets = NULL) {
   if (!drush_get_option('uri')) {
     return drush_set_error(dt("You must specify this site's URL using the --uri parameter."));
@@ -45,7 +50,10 @@ function drush_test_run_validate($targets = NULL) {
 }
 
 /**
- * Test command callback.
+ * Test-run command callback.
+ *
+ * @specs
+ *   A comman delimited string of test classes or group names.
  */
 function drush_test_run($specs = NULL) {
   cache_clear_all('simpletest', 'cache');
@@ -137,6 +145,7 @@ function simpletest_drush_test_groups($tests) {
   return $groups;
 }
 
+// Print a listing of all available tests
 function drush_test_list($groups) {
   $rows[] = array(dt('Command'), dt('Description'));
   $rows[] = array('-------', '-----------');
