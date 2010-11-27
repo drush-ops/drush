@@ -28,7 +28,7 @@ function test_drush_command() {
     'options' => array(
       'all' => 'Run all available tests',
       'methods' => 'A comma delimited list of methods that should be run within the test class. Defaults to all methods.',
-      'dirty' => 'Skip cleanup of temporary tables and files. Helpful for forensics.'
+      'dirty' => 'Skip cleanup of temporary tables and files. Helpful for reading debug() messages and other post-mortem forensics.'
     ),
     'drupal dependencies' => array('simpletest'),
     // If you login, you fall victim to http://drupal.org/node/974768. We use a low
