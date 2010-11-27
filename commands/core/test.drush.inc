@@ -28,6 +28,7 @@ function test_drush_command() {
     'options' => array(
       'all' => 'Run all available tests',
       'methods' => 'A comma delimited list of methods that should be run within the test class. Defaults to all methods.',
+      'dirty' => 'Skip cleanup of temporary tables and files. Helpful for forensics.'
     ),
     'drupal dependencies' => array('simpletest'),
     // If you login, you fall victim to http://drupal.org/node/974768. We use a low
@@ -85,7 +86,9 @@ function drush_test_run($specs = NULL) {
     // Specific test class specified.
     if (in_array($spec, $all_tests)) {
       simpletest_drush_run_test($spec);
-      simpletest_clean_environment();
+      if (!drush_get_option('dirty')) {
+        simpletest_clean_environment();
+      }
       return;
     }
     // Specific group specified.
