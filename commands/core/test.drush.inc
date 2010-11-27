@@ -19,7 +19,7 @@ function test_drush_command() {
     ),
     'examples' => array(
       'test-run' => 'List all available classes and groups.',
-      'test-run --all' => 'Run all available tests.',
+      'sudo -u apache test-run --all' => 'Run all available tests. Avoid permission related failures by running as web server user.',
       'test-run XMLRPCBasicTestCase' => 'Run one test class.',
       'test-run XML-RPC' => 'Run all classes in a XML-RPC group.',
       'test-run XML-RPC,Filter' => 'Run all tests from multiple groups/classes.',
@@ -50,7 +50,7 @@ function drush_test_clean() {
 }
 
 // Validate hook
-function drush_test_run_validate($targets = NULL) {
+function drush_test_run_validate($specs = NULL) {
   if (!drush_get_option('uri')) {
     return drush_set_error(dt("You must specify this site's URL using the --uri parameter."));
   }
