@@ -149,7 +149,7 @@ function _drush_backend_integrate($data) {
     }
   }
   // Output will either be printed, or buffered to the drush_backend_output command.
-  if (drush_cmp_error('DRUSH_APPLICATION_ERROR')) {
+  if (drush_cmp_error('DRUSH_APPLICATION_ERROR') && !empty($data['output'])) {
     drush_set_error("DRUSH_APPLICATION_ERROR", dt("Output from failed command :\n !output", array('!output' => $data['output'])));
   }
   else {
