@@ -21,15 +21,18 @@ function test_drush_command() {
       'test-run' => 'List all available classes and groups.',
       'test-run --all' => 'Run all available tests.',
       'test-run XMLRPCBasicTestCase' => 'Run one test class.',
-      'test-run XML-RPC' => 'Run all classes in a group.',
-      'test-run XML-RPC,Filter' => 'Run all tests from multiple targets.',
+      'test-run XML-RPC' => 'Run all classes in a XML-RPC group.',
+      'test-run XML-RPC,Filter' => 'Run all tests from multiple groups/classes.',
+      'test-run XMLRPCBasicTestCase --methods="testListMethods, testInvalidMessageParsing"' => 'Run particular methods in the specified class or group.',
     ),
     'options' => array(
       'all' => 'Run all available tests',
       'methods' => 'A comma delimited list of methods that should be run within the test class. Defaults to all methods.',
     ),
     'drupal dependencies' => array('simpletest'),
-    // If you login, you fall victim to http://drupal.org/node/974768.
+    // If you login, you fall victim to http://drupal.org/node/974768. We use a low
+    // bootstrap level here to avoid confusing the testing versus tested side. Causes some
+    // poorly written core drupal simpletests to fail.
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
   );
   $items['test-clean'] = array(
