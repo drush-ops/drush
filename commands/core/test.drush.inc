@@ -26,6 +26,7 @@ function test_drush_command() {
     ),
     'options' => array(
       'all' => 'Run all available tests',
+      'methods' => 'A comma delimited list of methods that should be run within the test class. Defaults to all methods.',
     ),
     'drupal dependencies' => array('simpletest'),
     // If you login, you fall victim to http://drupal.org/node/974768.
@@ -79,7 +80,7 @@ function drush_test_run($specs = NULL) {
   foreach (explode(',', $specs) as $spec) {
     $spec = trim($spec);
     // Specific test class specified.
-    if (in_array($spec, $all_tests, TRUE)) {
+    if (in_array($spec, $all_tests)) {
       simpletest_drush_run_test($spec);
       simpletest_clean_environment();
       return;
@@ -107,15 +108,17 @@ function simpletest_drush_run_test($class) {
     db_query('INSERT INTO {simpletest_test_id} (test_id) VALUES (default)');
     $test_id = db_last_insert_id('simpletest_test_id', 'test_id');
   }
-
-  // Depends on http://drupal.org/node/916570
-  $methods = array();
-  foreach (explode(',', drush_get_option('methods')) as $method) {
-    $methods[] = trim($method);
-  }
-  
   $test = new $class($test_id);
-  $test->run($methods);
+
+  if ($methods_string = drush_get_option('methods')) {
+    foreach (explode(',', $methods_string) as $method) {
+      $methods[] = trim($method);
+    }
+    $test->run($methods);
+  }
+  else {
+    $test->run();
+  }
 
   $info = $test->getInfo();
   $status = ((isset($test->results['#fail']) && $test->results['#fail'] > 0)
