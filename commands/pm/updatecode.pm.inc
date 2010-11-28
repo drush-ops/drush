@@ -33,13 +33,14 @@ function drush_pm_updatecode() {
     // Check requests are installed and enabled projects and force
     // update projects where a specific version is requested.
     foreach ($requests as $name => $request) {
-      if (!isset($project_info[$name])) {
-        drush_set_error('DRUSH_PM_UNKNOWN_PROJECT', dt('!project was not found and will not be updated.', array('!project' => $name)));
+      if ($name != 'drupal') {
+        if (!isset($project_info[$name])) {
+          return drush_set_error('DRUSH_PM_UNKNOWN_PROJECT', dt('!project was not found and will not be updated.', array('!project' => $name)));
+        }
+        elseif (!$project_info[$name]->status) {
+          return drush_set_error('DRUSH_PM_DISABLED_PROJECT', dt('!project is not enabled and will not be updated.', array('!project' => $name)));
+        }
       }
-      elseif (!$project_info[$name]->status) {
-        drush_set_error('DRUSH_PM_DISABLED_PROJECT', dt('!project is not enabled and will not be updated.', array('!project' => $name)));
-      }
-      
       if (!isset($projects[$name])) {
         // Catch projects with no version data (common for CVS checkouts
         // if you don't have CVS deploy installed).
