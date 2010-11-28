@@ -1509,6 +1509,12 @@ function pm_drush_engine_package_handler() {
           'drush [command] cck --cvsmethod=update' =>  'Will update the project, and try to merge changes, rather than overwriting them. Any conflicts will need to be resolved manually.',
       ),
     ),
+    'git_drupalorg' => array(
+      'options' => array(
+        '--package-handler=git_drupalorg' => 'Use git.drupal.org to checkout and update projects.',
+        '--gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
+      ),
+    ),
   );
 }
 
