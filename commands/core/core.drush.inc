@@ -166,7 +166,7 @@ function core_drush_command() {
       'drush site-install --db-url=mysql://root:pass@localhost:port/dbname ' => 'Install using the specified DB params.',
       'drush site-install --account-name=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
     ),
-    'core' => array(7),
+    'core' => array(6,7),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
     'aliases' => array('si'),
     'deprecated-aliases' => array('installsite', 'is'),
@@ -237,6 +237,7 @@ function core_drush_engine_drupal() {
   $engines['batch'] = array();
   $engines['update'] = array();
   $engines['environment'] = array();
+  $engines['site_install'] = array();
   return $engines;
 }
 

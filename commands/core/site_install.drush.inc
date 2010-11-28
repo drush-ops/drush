@@ -48,6 +48,10 @@ function drush_core_pre_site_install() {
       drush_set_error(dt('Failed to copy sites/default/default.settings.php to  @settingsfile', array('@settingsfile' => $settingsfile)));
       return;
     }
+    elseif (drush_drupal_major_version() == 6) {
+      // On D6, we have to write $db_url ourselves. On D7+, the installer does it.
+      file_put_contents($settingsfile, "\n" . '$db_url = \'' . drush_get_option('db-url') . "';\n", FILE_APPEND);
+    }
   }
 
   // Add a files dir if needed
@@ -113,41 +117,10 @@ function drush_core_pre_site_install() {
   }
 }
 
-function drush_core_site_install($profile = 'standard') {
-  define('MAINTENANCE_MODE', 'install');
-  require_once DRUPAL_ROOT . '/includes/install.core.inc';
-
-  $db_spec = drush_core_site_install_db_spec();
-
-  $account_pass = drush_get_option('account-pass', 'admin');
-  $settings = array(
-    'parameters' => array(
-      'profile' => $profile,
-      'locale' => drush_get_option('locale', 'en'),
-    ),
-    'forms' => array(
-      'install_settings_form' => $db_spec,
-      'install_configure_form' => array(
-        'site_name' => drush_get_option('site-name', 'Site-Install'),
-        'site_mail' => drush_get_option('site-mail', 'admin@example.com'),
-        'account' => array(
-          'name' => drush_get_option('account-name', 'admin'),
-          'mail' => drush_get_option('account-mail', 'admin@example.com'),
-          'pass' => array(
-            'pass1' => $account_pass,
-            'pass2' => $account_pass,
-          ),
-        ),
-        'update_status_module' => array(
-          1 => TRUE,
-          2 => TRUE,
-        ),
-        'clean_url' => drush_get_option('clean-url', TRUE),
-      ),
-    ),
-  );
-  drush_log(dt('Starting Drupal installation. This takes 30 seconds or so ...'), 'ok');
-  install_drupal($settings);
+// Command callback.
+function drush_core_site_install($profile = NULL) {
+  drush_include_engine('drupal', 'site_install', drush_drupal_major_version());
+  drush_core_site_install_version($profile);
 }
 
 // Return a db_spec based on supplied db_url/db_prefix options or
