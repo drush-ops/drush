@@ -103,6 +103,13 @@ function _drush_sitealias_user_specified_list() {
   // If the user provided no args, then we will return everything.
   else {
     $site_list = _drush_sitealias_all_list();
+    
+    // Filter out the hidden items
+    foreach ($site_list as $site_name => $one_site) {
+      if (array_key_exists('#hidden', $one_site)) {
+        unset($site_list[$site_name]); 
+      }
+    }
   }
 
   return $site_list;

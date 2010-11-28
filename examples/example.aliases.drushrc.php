@@ -64,6 +64,37 @@
  * When alias files use this form, then the name of the alias
  * is taken from the first part of the alias filename.
  *
+ * Alias groups (aliases stored together in files called 
+ * GROUPNAME.aliases.drushrc.php, as mentioned above) also
+ * create an implicit namespace that is named after the group
+ * name.  
+ *
+ * For example:
+ *
+ *   # File: mysite.aliases.drushrc.php
+ *   $aliases['dev'] = array(
+ *     'root' => '/path/to/drupal',
+ *     'uri' => 'dev.mydrupalsite.com',
+ *   );
+ *   $aliases['live'] = array(
+ *     'root' => '/other/path/to/drupal',
+ *     'uri' => 'mydrupalsite.com',
+ *   );
+ *
+ * Then the following special aliases are defined:
+ *
+ *   @mysite            An alias named after the groupname
+ *                      may be used to reference all of the
+ *                      aliases in the group (e.g. drush @mydrupalsite status)
+ *
+ *   @mysite.dev        A copy of @dev
+ *
+ *   @mysite.live       A copy of @live
+ *
+ * Thus, aliases defined in an alias group file may be referred to
+ * either by their simple (short) name, or by thier full namespace-qualified
+ * name.
+ *
  * To see an example alias definition for the current bootstrapped
  * site, use the "site-alias" command with the built-in alias "@self":
  *

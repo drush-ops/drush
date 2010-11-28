@@ -448,7 +448,9 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
           if (!empty($aliases) && !array_key_exists($group_name, $aliases)) {
             $alias_names = array();
             foreach (array_keys($aliases) as $one_alias) {
-              $alias_names[] = "@$one_alias";
+              $alias_names[] = "@$group_name.$one_alias";
+              $aliases["$group_name.$one_alias"] = $aliases[$one_alias];
+              $aliases[$one_alias]["#hidden"] = TRUE;
             }
             $aliases[$group_name] = array('site-list' => implode(',', $alias_names));
           }
