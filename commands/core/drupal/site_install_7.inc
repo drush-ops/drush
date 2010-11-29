@@ -21,7 +21,9 @@ function drush_core_site_install_version($profile) {
       'locale' => drush_get_option('locale', 'en'),
     ),
     'forms' => array(
-      'install_settings_form' => $db_spec,
+      'install_settings_form' => array(
+        $db_spec['driver'] => $db_spec,
+      ),
       'install_configure_form' => array(
         'site_name' => drush_get_option('site-name', 'Site-Install'),
         'site_mail' => drush_get_option('site-mail', 'admin@example.com'),
