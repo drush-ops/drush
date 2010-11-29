@@ -45,8 +45,7 @@ function package_handler_install_project_gitdo_normal($project, $repository, $ta
   $commands[] = 'git checkout ' . escapeshellarg($tag);
 
   if (!drush_shell_exec(implode(' && ', $commands))) {
-    drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $project['name'] . ' from git.drupal.org.');
-    return FALSE;
+    return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $project['name'] . ' from git.drupal.org.');
   }
   else {
     return TRUE;
@@ -80,8 +79,7 @@ function package_handler_install_project_gitdo_submodule($project, $repository, 
   $commands[] = 'git checkout ' . escapeshellarg($tag);
 
   if (!drush_shell_exec(implode(' && ', $commands))) {
-    drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $project['name'] . ' from git.drupal.org.');
-    return FALSE;
+    return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $project['name'] . ' from git.drupal.org.');
   }
   else {
     return TRUE;
@@ -111,8 +109,7 @@ function package_handler_update_project($project, $release) {
   }
 
   if (!drush_shell_exec(implode(' ; ', $commands))) {
-    drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to update ' . $project['name'] . ' from git.drupal.org.');
-    return FALSE;
+    return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to update ' . $project['name'] . ' from git.drupal.org.');
   }
   else {
     return TRUE;
