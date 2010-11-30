@@ -11,26 +11,18 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
    * Implementation of pre_update().
    */
   public function pre_update(&$project, $items_to_test = array()) {
-    $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-
-    // Save the date to be used in the backup directory's path name.
-    $date = date('YmdHis', $_SERVER['REQUEST_TIME']);
-
-    $backup_dir = drush_get_option('backup-dir', $_SERVER['HOME'] . '/' . '.drush-backups');
-    if (strpos($backup_dir, $drupal_root) === 0) {
-      return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('It\'s not allowed to store backups inside the Drupal root directory.'));
+    if ($backup_dir = $this->prepare_back_dir()) {
+      $backup_target = $backup_dir . '/' . $project['name'];
+      // Save for rollback or notifications.
+      $project['backup_target'] = $backup_target;
+      if (!drush_move_dir($project['full_project_path'], $backup_target)) {
+        return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Failed to backup project directory !project to !backup_target', array('!project' => $project['full_project_path'], '!backup_target' => $backup_target)));
+      }
+      return TRUE;  
     }
-    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR);
-    $backup_dir .= '/' . $date . '/' . 'modules';
-    drush_mkdir($backup_dir);
-
-    $backup_target = $backup_dir . '/' . $project['name'];
-    // Save for rollback or notifications.
-    $project['backup_target'] = $backup_target;
-    if (!drush_move_dir($project['full_project_path'], $backup_target)) {
-      return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Failed to backup project directory !project to !backup_target', array('!project' => $project['full_project_path'], '!backup_target' => $backup_target)));
+    else {
+      return FALSE;
     }
-    return TRUE;
   }
 
   /**
@@ -57,5 +49,23 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
    */
   public function post_download($project) {
    // NOOP
+  }
+  
+  // Helper for pre_update.
+  public function prepare_backup_dir() {  
+    $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+
+    // Save the date to be used in the backup directory's path name.
+    $date = date('YmdHis', $_SERVER['REQUEST_TIME']);
+
+    $backup_dir = drush_get_option('backup-dir', $_SERVER['HOME'] . '/' . '.drush-backups');
+    if (strpos($backup_dir, $drupal_root) === 0) {
+      return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('It\'s not allowed to store backups inside the Drupal root directory.'));
+    }
+    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR);
+    
+    if (drush_mkdir($backup_dir)) {
+      return $backup_dir .= '/' . $date . '/' . 'modules';
+    }
   }
 }
