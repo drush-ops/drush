@@ -989,7 +989,6 @@ function _drush_pm_get_releases($projects) {
       $status = array();
       if (($k = array_search($release['version_major'], $supported)) !== FALSE) {
         $status[] = dt('Supported');
-        $info[$key]['minor_supported'] = $version;
         unset($supported[$k]);
       }
       if ((isset($recommended_version)) && ($version == $recommended_version)) {
@@ -1165,13 +1164,7 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE) {
       $notes_last_update = $node_content[0]->div[1]->div[0]->asXML();
       unset($node_content[0]->div);
       $project_notes = $node_content[0]->asXML();
-      // A release with version-extra can be published after a stable
-      // release with same major_version is out (see #843740 and
-      // eightball module).
-      if ($project['recommended'] != $project['minor_supported']) {
-        $status_msg = dt("Note: Unwanted versions management. Run 'drush pm-releases !project' for details.", array('!project' => $key));
-      }
-      elseif (isset($project['installed'])) {
+      if (isset($project['installed'])) {
         if (isset($request['version'])) {
           $status_msg = 'Note: type in only the project name to see the release notes for all newer versions.';
         }
