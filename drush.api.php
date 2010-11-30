@@ -205,6 +205,22 @@ function hook_drush_cache_clear(&$types) {
   $types['views'] = 'views_invalidate_cache';
 }
 
+/*
+ * Make shell aliases and other .bashrc code available during core-cli command.
+ *
+ * @return
+ *   Bash code typically found in a .bashrc file.
+ *
+ * @see core_cli_bashrc() for an example implementation.
+ */ 
+function hook_cli_bashrc() {
+  $string = "
+    alias siwef='drush site-install wef --account-name=super --account-mail=me@wef'
+    alias dump='drush sql-dump --structure-tables-key=wef --ordered-dump'
+  ";
+  return $string;
+}
+
 /**
  * @} End of "addtogroup hooks".
  */
