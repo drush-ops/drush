@@ -1070,51 +1070,15 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE) {
       $selected_versions[] = $requests[$key]['version'];
     }
     else {
-      $reco_version = $project['recommended'];
-      $inst_version = $project['installed'];
-      $inst_patch_version = $project['releases'][$inst_version]['version_patch'];
-      $reco_patch_version = $project['releases'][$reco_version]['version_patch'];
-
-      if (isset($reco_version, $inst_version)) {
-        if (isset($project['releases'][$inst_version]['version_extra']) || $key == 'drupal') {
-          // Special handling if there are some extra version
-          // (e.g. beta4 or rc3) in the installed release.
-          $versions = array();
-          $releases = array_reverse($project['releases']);
-          $vsn=0;
-          foreach($releases as $version => $release) {
-            // We get all versions of the project.
-            $versions[] = $version;
-            if ($version == $reco_version) {
-              // Position of the recommended version.
-              $key_reco_version = $vsn;
-              if (is_null($key_inst_version)) {
-                $key_inst_version = $key_reco_version;
-              }
-              break;
+      // Special handling if the project is installed. 
+      if (isset($project['recommended'], $project['installed'])) {
+        $releases = array_reverse($project['releases']);
+        foreach($releases as $version => $release) {
+          if ($release['date'] >= $project['releases'][$project['installed']]['date']) {
+            if ($release['version_extra'] == 'dev' && $project['releases'][$project['installed']]['version_extra'] != 'dev') {
+              continue;
             }
-            if ($version == $inst_version) {
-              // Position of the installed version.
-              $key_inst_version = $vsn;
-            }
-            ++$vsn;
-          }
-          $i = $key_inst_version;
-          $supremo = $key_reco_version;
-          $version_extra = TRUE;
-        }
-        else {
-          // No extra version, we skip the foreach loop.
-          $i = $inst_patch_version;
-          $supremo = $reco_patch_version;
-          $version_extra = FALSE;
-        }
-        for ($i; $supremo >= $i; ++$i) {
-          if ($version_extra) {
-            $selected_versions[] = $versions[$i];
-          }
-          else {
-            $selected_versions[] = $project['api_version'] . '-' . $project['releases'][$reco_version]['version_major'] . '.' . $i;
+            $selected_versions[] = $version;
           }
         }
       }
