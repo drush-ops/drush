@@ -893,7 +893,7 @@ function drush_core_cli_init() {
 
 function drush_core_cli() {
   // Do not allow cli to start recursively, or from backend invoke.
-  if (drush_get_option('in-cli',FALSE)) {
+  if (drush_get_option('in-cli', FALSE)) {
     return drush_set_error(dt('Already in drush core-cli; press control-d to exit.'));
   }
   if (drush_get_context('DRUSH_BACKEND')) {
