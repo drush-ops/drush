@@ -148,6 +148,8 @@
  *       default is 'drush' on remote machines, or the full path to drush.php on
  *       the local machine.  Note that you only need to define one of '%drush'
  *       or '%drush-script', as drush can infer one from the other.
+ *     '%dump-dir': Path to directory that "drush sql-sync" should use to store
+ *       sql-dump files. Helpful filenames are auto-generated.
  *     '%dump': Path to the file that "drush sql-sync" should use to store sql-dump file.
  *     '%files': Path to 'files' directory.  This will be looked up if not specified.
  *     '%root': A reference to the Drupal root defined in the 'root' item
@@ -164,7 +166,7 @@
 #    'path-aliases' => array(
 #      '%drush' => '/path/to/drush',
 #      '%drush-script' => '/path/to/drush/drush',
-#      '%dump' => '/path/to/live/sql_dump.sql',
+#      '%dump-dir' => '/path/to/dumps/',
 #      '%files' => 'sites/mydrupalsite.com/files',
 #      '%custom' => '/my/custom/path',
 #     ),
