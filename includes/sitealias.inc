@@ -6,7 +6,7 @@
  * The site alias API.
  *
  * Run commands on remote server(s).
- * @see example.drushrc.php
+ * @see example.aliases.drushrc.php
  * @see http://drupal.org/node/670460
  */
 
