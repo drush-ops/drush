@@ -230,6 +230,7 @@ function pm_drush_command() {
     ),
     'options' => array(
       '--destination' => 'Path to which the project will be copied. If you\'re providing a relative path, note it is relative to the drupal root (if bootstrapped).',
+      '--use-site-dir' => 'Force to use the site specific directory. It will create the directory if it doesn\'t exist. If --destination is also present this option will be ignored.',
       '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
       '--notes' => 'Show release notes after each project is downloaded.',
       '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.",
@@ -1313,7 +1314,7 @@ function pm_dl_destination($type) {
 
   $in_site_directory = FALSE;
   // Check if we are running within the site directory.
-  if ($full_site_root == substr(drush_cwd(), 0, strlen($full_site_root))) {
+  if ($full_site_root == substr(drush_cwd(), 0, strlen($full_site_root)) || (drush_get_option('use-site-dir', FALSE))) {
     $in_site_directory = TRUE;
   }
 
@@ -1322,7 +1323,8 @@ function pm_dl_destination($type) {
     // Attempt 1: If we are in a specific site directory, and the destination
     // directory already exists, then we use that.
     if (empty($destination) && $site_root && $in_site_directory) {
-      $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root);
+      $create_dir = drush_get_option('use-site-dir', FALSE);
+      $destination = pm_dl_destination_lookup($type, $drupal_root, $full_site_root, $create_dir);
     }
     // Attempt 2: If the destination directory already exists for sites/all,
     // then we use that.
@@ -1606,6 +1608,10 @@ function drush_pm_download_validate() {
     }
     if (!is_writable($destination)) {
       return drush_set_error('DRUSH_PM_NO_DESTINATION', dt('Destination directory !destination is not writable.', array('!destination' => $destination)));
+    }
+    // Ignore --use-site-dir, if given.
+    if (drush_get_option('use-site-dir', FALSE)) {
+      drush_set_option('use-site-dir', FALSE);
     }
   }
 
