@@ -63,7 +63,7 @@ function sql_drush_command() {
   );
   $items['sql-dump'] = array(
     'callback' => 'drush_sql_dump_execute',
-    'description' => 'Exports the Drupal DB as SQL using mysqldump.',
+    'description' => 'Exports the Drupal DB as SQL using mysqldump or equivalent.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'examples' => array(
       'drush sql-dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
@@ -254,11 +254,29 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
     $db_spec = _drush_sql_get_db_spec();
   }
   $database = $db_spec['database'];
+  
+  // Get the setting of --result-file.  If the user
+  // has set $options['result-file'] = TRUE, then we
+  // will generate an SQL dump file in the same backup
+  // directory that pm-updatecode uses.
+  if ($file = drush_get_option('result-file', FALSE)) {
+    if ($file === TRUE) {
+      // User did not pass a specific value for --result-file. Make one.
+      drush_include_engine('version_control', 'backup');
+      $backup = new drush_pm_version_control_backup();
+      $backup_dir = $backup->prepare_backup_dir();
+      if (empty($backup_dir)) {
+        $backup_dir = "/tmp";
+      }
+      $file = $backup_dir . '/@DATABASE_@DATE.sql';
+    }
+    $file = str_replace(array('@DATABASE', '@DATE'), array($database, date('Ymd_his')), $file);
+  }
 
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
       $exec = 'mysqldump';
-      if ($file = drush_get_option('result-file')) {
+      if ($file) {
         $exec .= ' --result-file '. $file;
       }
       // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
@@ -293,7 +311,7 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
     case 'pgsql':
       $create_db = drush_get_option('create-db');
       $exec = 'pg_dump ';
-      if ($file = drush_get_option('result-file')) {
+      if ($file) {
         $exec .= ' --file '. $file;
       }
       // Unlike psql, pg_dump does not take a '-d' flag before the database name.

@@ -75,6 +75,18 @@
 // is not specified, then sql-sync will store dumps in temporary files.
 # $options['dump-dir'] = '/path/to/dumpdir';
 
+// Specify directory where sql-dump should store backups of database
+// dumps.  @DATABASE is replaced with the name of the database being
+// dumped, and @DATE is replaced with the current time and date of the
+// dump.  TRUE will cause sql-dump to use the same backup directory that
+// pm-updatecode does.
+//
+// If set, this can be explicitly overridden by specifying --result-file
+// on the commandline.  The default behavior of dumping to
+// STDOUT can be achieved via --result-file=0
+# $options['result-file'] = '/path/to/backup/dir/@DATABASE_@DATE.sql';
+# $options['result-file'] = TRUE;
+
 // Enable verbose mode.
 # $options['v'] = 1;
 
