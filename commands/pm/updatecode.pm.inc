@@ -2,11 +2,13 @@
 // $Id$
 
 /**
- * Command callback. Displays update status info and allows to update installed projects.
- * Pass specific projects as arguments, otherwise we update all that have candidate releases.
+ * Command callback. Displays update status info and allows to update installed
+ * projects.
+ * Pass specific projects as arguments, otherwise we update all that have
+ * candidate releases.
  *
- * This command prompts for confirmation before updating, so it is safe to run just to check on
- * In this case, say at the confirmation prompt.
+ * This command prompts for confirmation before updating, so it is safe to run
+ * just to check on. In this case, say at the confirmation prompt.
  */
 function drush_pm_updatecode() {
   // We don't provide for other options here, so we supply an explicit path.
@@ -26,21 +28,12 @@ function drush_pm_updatecode() {
 
   // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
-  
+
   // Preprocess releases.
   if (!empty($requests)) {
-    $project_info = drush_get_projects();
     // Check requests are installed and enabled projects and force
     // update projects where a specific version is requested.
     foreach ($requests as $name => $request) {
-      if ($name != 'drupal') {
-        if (!isset($project_info[$name])) {
-          return drush_set_error('DRUSH_PM_UNKNOWN_PROJECT', dt('!project was not found and will not be updated.', array('!project' => $name)));
-        }
-        elseif (!$project_info[$name]->status) {
-          return drush_set_error('DRUSH_PM_DISABLED_PROJECT', dt('!project is not enabled and will not be updated.', array('!project' => $name)));
-        }
-      }
       if (!isset($projects[$name])) {
         // Catch projects with no version data (common for CVS checkouts
         // if you don't have CVS deploy installed).
@@ -485,7 +478,7 @@ function pm_release_recommended(&$project) {
  * Get the a best release match for a requested update.
  *
  * @param $request A information array for the requested project
- * @param $project A project information array for this project, as returned by an update service from pm_get_project_info()
+ * @param $project A project information array for this project, as returned by an update service from pm_get_extensions()
  */
 function pm_get_release($request, $project) {
   $minor = '';

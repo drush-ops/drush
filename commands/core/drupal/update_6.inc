@@ -335,7 +335,7 @@ function update_main_prepare() {
   foreach ($themes as $theme) {
     unset($theme->status);
   }
-  drush_get_projects();
+  drush_get_extensions();
 
   include_once './includes/batch.inc';
   drupal_load_updates();

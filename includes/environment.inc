@@ -1240,31 +1240,32 @@ function drush_is_local_host($host) {
 }
 
 /**
- * Get complete information for all available modules and themes.
+ * Get complete information for all available extensions (modules and
+ * themes).
  *
  * @return
- *   An array containing info for all available modules and themes.
+ *   An array containing info for all available extensions.
  */
-function drush_get_projects() {
+function drush_get_extensions() {
   drush_include_engine('drupal', 'environment');
   return array_merge(drush_get_modules(), drush_get_themes());
 }
 
 /**
- * Calculate a project status based on current status and schema version.
+ * Calculate a extension status based on current status and schema version.
  *
- * @param $project
- *   Array of a single project info.
+ * @param $extension
+ *   Object of a single extension info.
  *
  * @return
- *   String describing project status. Values: enabled|disabled|not installed
+ *   String describing extension status. Values: enabled|disabled|not installed
  */
-function drush_get_project_status($project) {
-  if (($project->type == 'module')&&($project->schema_version == -1)) {
+function drush_get_extension_status($extension) {
+  if (($extension->type == 'module')&&($extension->schema_version == -1)) {
     $status = "not installed";
   }
   else {
-    $status = ($project->status == 1)?'enabled':'disabled';
+    $status = ($extension->status == 1)?'enabled':'disabled';
   }
 
   return $status;
