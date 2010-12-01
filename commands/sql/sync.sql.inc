@@ -239,7 +239,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       // Check to see if we are using a temporary file in a situation
       // where the user did not specify "--temp".
       if (($source_db_url['dump-is-temp'] || $target_db_url['dump-is-temp']) && (!isset($use_temp_files)) && (isset($source_db_url['remote-host'])  || isset($target_db_url['remote-host']))) {
-        drush_print(dt('WARNING:  Using temporary files to store and transfer sql-dump.  It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'%dump\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
+        drush_print(dt('WARNING:  Using temporary files to store and transfer sql-dump.  It is recommended that you specify --source-dump and --target-dump options on the command line, or set \'%dump\' or \'%dump-dir\' in the path-aliases section of your site alias records. This facilitates fast file transfer via rsync.'));
       }
 
       if (array_key_exists('tables', $table_selection) && (count($table_selection['tables']) > 0)) {
