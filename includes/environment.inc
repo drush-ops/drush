@@ -665,6 +665,8 @@ function _drush_bootstrap_drupal_root() {
   $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
   $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
 
+  _drush_bootstrap_global_options();
+
   drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
 }
 
@@ -749,6 +751,7 @@ function _drush_bootstrap_do_drupal_site() {
 
   drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
   drush_load_config('site');
+  _drush_bootstrap_global_options();
 }
 
 /**
