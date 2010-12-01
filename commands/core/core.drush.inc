@@ -863,9 +863,9 @@ function drush_core_drupal_directory($target = 'root') {
 function drush_core_find_project_path($target) {
   $theme_suffix = drush_drupal_major_version() >= 6 ? '.info' : '/style.css';
   $masks = array(
-    conf_path() . '/modules' => "/^$target.module/",
-    'profiles/default/modules' => "/^$target.module/", // Too early for variable_get('install_profile', 'default'); Just use default.
-    'sites/all/modules' => "/^$target.module/", // Add all module paths, even disabled modules.
+    conf_path() . '/modules' => "/^$target\.module$/",
+    'profiles/default/modules' => "/^$target\.module$/", // Too early for variable_get('install_profile', 'default'); Just use default.
+    'sites/all/modules' => "/^$target\.module$/", // Add all module paths, even disabled modules.
     conf_path() . '/themes' => "/^$target" . "$theme_suffix/",
     'sites/all/themes' => "/^$target" . "$theme_suffix/",
   );
