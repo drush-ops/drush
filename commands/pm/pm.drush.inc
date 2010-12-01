@@ -432,6 +432,7 @@ function drush_pm_enable() {
       if (!drupal_check_module($module)) {
         unset($modules[$key]);
         drush_set_error('DRUSH_PM_ENABLE_MODULE_UNMEET_REQUIREMENTS', dt('Module !module doesn\'t meet the requirements to be enabled.', array('!module' => $module)));
+        _drush_log_drupal_messages();
       }
     }
   }

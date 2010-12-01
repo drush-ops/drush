@@ -1734,7 +1734,7 @@ function drush_print_timers() {
 function _drush_log_drupal_messages() {
   if (function_exists('drupal_get_messages')) {
 
-    $messages = drupal_get_messages();
+    $messages = drupal_get_messages(NULL, TRUE);
 
     if (array_key_exists('error', $messages)) {
       //Drupal message errors.
