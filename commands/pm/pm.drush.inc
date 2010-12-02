@@ -1214,7 +1214,9 @@ function drush_pm_update() {
  */
 function drush_pm_post_pm_update() {
   // Use drush_backend_invoke to start a subprocess. Cleaner that way.
-  drush_backend_invoke('updatedb');
+  if (drush_get_context('DRUSH_PM_UPDATED', FALSE) !== FALSE) {
+    drush_backend_invoke('updatedb');
+  }
 }
 
 /**
@@ -1238,7 +1240,9 @@ function drush_pm_post_pm_updatecode() {
   // This way we avoid being noisy, as updatedb is to be executed.
   $command = drush_get_command();
   if ($command['command'] != 'pm-update') {
-    drush_backend_invoke('pm-updatecode-notify-pending-db-updates');
+    if (drush_get_context('DRUSH_PM_UPDATED', FALSE) !== FALSE) {
+      drush_backend_invoke('pm-updatecode-notify-pending-db-updates');
+    }
   }
 }
 
