@@ -52,7 +52,8 @@ function drush_test_clean() {
 // Validate hook
 function drush_test_run_validate($specs = NULL) {
   if (!drush_get_option('uri')) {
-    return drush_set_error(dt("You must specify this site's URL using the --uri parameter."));
+    // No longer needed?
+    // return drush_set_error(dt("You must specify this site's URL using the --uri parameter."));
   }
 }
 
