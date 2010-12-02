@@ -1175,9 +1175,10 @@ function drush_sitealias_uri_to_site_dir($uri) {
  * Convert from an old-style database URL to an array of database settings
  *
  * @param db_url
- *   A Drupal 6 db-url string to convert.
+ *   A Drupal 6 db-url string to convert, or an array with a 'default' element.
  * @return array
- *   An array of database values.
+ *   An array of database values containing only the 'default' element of
+ *   the db_url.
  */
 function drush_convert_db_from_db_url($db_url) {
   if (is_array($db_url)) {
@@ -1207,22 +1208,26 @@ function drush_convert_db_from_db_url($db_url) {
   );
 }
 
+/**
+ * Convert from an old-style database URL to an array of database settings
+ *
+ * @param db_url
+ *   A Drupal 6 db-url string to convert, or an array with multiple db-urls.
+ * @return array
+ *   An array of database values.
+ */
 function drush_sitealias_convert_db_from_db_url($db_url) {
   $result = array();
-
-  if (is_array($db_url)) {
-    $default_db = array();
-
-    foreach ($db_url as $db_name => $db_urlstr) {
-      $default_db[$db_name] = drush_convert_db_from_db_url($db_urlstr);
-    }
-
-    $result['default'] = $default_db;
-  }
-  else {
+  
+  if (!is_array($db_url)) {
     $result = array('default' => array('default' => drush_convert_db_from_db_url($db_url)));
   }
-
+  else {
+    foreach ($db_url as $one_name => $one_db_url) {
+      $result[$one_name] = array('default' => drush_convert_db_from_db_url($one_db_url));
+    }    
+  }
+  
   return $result;
 }
 

@@ -164,10 +164,7 @@ function drush_sql_conf() {
     $db_spec['db-url'] = $GLOBALS['db_url'];
   }
   elseif (drush_get_option('all', FALSE)) {
-    $db_spec = $GLOBALS['databases'];
-    if (!isset($db_spec)) {
-      $db_spec = array('default' => array('default' => _drush_sql_get_db_spec()));
-    }
+    $db_spec = _drush_sql_get_all_db_specs();
   }
   if (!isset($db_spec)) {
     $db_spec = _drush_sql_get_db_spec();
@@ -554,6 +551,20 @@ function _drush_sql_get_db_spec() {
         return NULL;
       }
       return $GLOBALS['databases'][$database][$target];
+  }
+}
+
+function _drush_sql_get_all_db_specs() {
+  switch (drush_drupal_major_version()) {
+    case 5:
+    case 6:
+      return drush_sitealias_convert_db_from_db_url($GLOBALS['db_url']);
+
+    default:
+      if (!isset($GLOBALS['databases'])) {
+        return NULL;
+      }
+      return $GLOBALS['databases'];
   }
 }
 
