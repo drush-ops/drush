@@ -11,8 +11,12 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
    * Implementation of pre_update().
    */
   public function pre_update(&$project, $items_to_test = array()) {
-    if ($backup_dir = $this->prepare_back_dir()) {
-      $backup_target = $backup_dir . '/' . $project['name'];
+    if ($backup_dir = $this->prepare_backup_dir()) {
+      if ($project['project_type'] != 'core') {
+        $backup_target = $backup_dir . '/' . $project['project_type'] . 's';
+        drush_mkdir($backup_target);
+      }
+      $backup_target = $backup_target . '/'. $project['name'];
       // Save for rollback or notifications.
       $project['backup_target'] = $backup_target;
       if (!drush_move_dir($project['full_project_path'], $backup_target)) {
@@ -62,10 +66,9 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
     if (strpos($backup_dir, $drupal_root) === 0) {
       return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('It\'s not allowed to store backups inside the Drupal root directory.'));
     }
-    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR);
-    
+    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR) . '/' . $date;
     if (drush_mkdir($backup_dir)) {
-      return $backup_dir .= '/' . $date . '/' . 'modules';
+      return $backup_dir;
     }
   }
 }
