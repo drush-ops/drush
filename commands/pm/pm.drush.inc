@@ -768,7 +768,7 @@ function _drush_pm_expand_extensions(&$extensions, $extension_info = array()) {
   foreach ($extensions as $key => $extension) {
     if (($wildcard = rtrim($extension, '*')) !== $extension) {
       foreach (array_keys($extension_info) as $extension_name) {
-        if (strpos($extension_name, $wildcard) !== FALSE) {
+        if (substr($extension_name, 0, strlen($wildcard)) == $wildcard) {
           $extensions[] = $extension_name;
         }
       }
