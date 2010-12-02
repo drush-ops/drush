@@ -31,10 +31,11 @@ function test_drush_command() {
       'dirty' => 'Skip cleanup of temporary tables and files. Helpful for reading debug() messages and other post-mortem forensics.'
     ),
     'drupal dependencies' => array('simpletest'),
-    // If you login, you fall victim to http://drupal.org/node/974768. We use a low
-    // bootstrap level here to avoid confusing the testing versus tested side. Causes some
-    // poorly written core drupal simpletests to fail.
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    // If you DRUSH_BOOTSTRAP_DRUPAL_LOGIN, you fall victim to http://drupal.org/node/974768. We'd like
+    // to not bootstrap at all but simpletest uses Drupal to discover test classes,
+    // cache the lists of tests, file_prepare_directory(), variable lookup like
+    // httpauth creds, copy pre-built registry table from testing side, etc.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
   );
   $items['test-clean'] = array(
     'description' => "Clean temporary tables and files.",
