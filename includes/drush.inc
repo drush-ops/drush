@@ -578,10 +578,74 @@ function drush_delete_dir($dir) {
 }
 
 /**
+ * Copy $src to $dest.
+ *
+ * @param $src
+ *   The directory to copy.
+ * @param $dest
+ *   The destination to copy the source to, including the new name of
+ *   the directory.  To copy directory "a" from "/b" to "/c", then
+ *   $src = "/b/a" and $dest = "/c/a".  To copy "a" to "/c" and rename
+ *   it to "d", then $dest = "/c/d".
+ * @param $overwrite
+ *   If TRUE, the destination will be deleted if it exists.
+ * @return
+ *   TRUE on success, FALSE on failure.
+ */
+function drush_copy_dir($src, $dest, $overwrite = FALSE) {
+  // Preflight based on $overwrite if $dest exists.
+  if (file_exists($dest)) {
+    if ($overwrite) {
+      drush_op('drush_delete_dir', $dest);
+    }
+    else {
+      return drush_set_error('DRUSH_DESTINATION_EXISTS', dt('Destination directory !dest already exists.', array('!dest' => $dest)));
+    }
+  }
+  // $src readable?
+  if (!is_readable($src)) {
+    return drush_set_error('DRUSH_SOURCE_NOT_EXISTS', dt('Source directory !src is not readable or does not exist.', array('!src' => $src)));
+  }
+  // $dest writable?
+  if (!is_writable(dirname($dest))) {
+    return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Destination directory !dest is not writable.', array('!dest' => dirname($dest))));
+  }
+  // Try to do a recursive copy.
+  if (@drush_op('_drush_recursive_copy', $src, $dest)) {
+    return TRUE;
+  }
+
+  return drush_set_error('DRUSH_COPY_DIR_FAILURE', dt('Unable to copy !src to !dest.', array('src' => $src, 'dest' => $dest)));
+}
+
+/**
+ * Internal function called by drush_copy_dir; do not use directly.
+ */
+function _drush_recursive_copy($src, $dest) {
+  // all subdirectories and contents:
+  if(is_dir($src)) {
+    mkdir($dest);
+    $dir_handle = opendir($src);
+    while($file = readdir($dir_handle)) {
+      if ($file != "." && $file != "..") {
+        if (_drush_recursive_copy("$src/$file", "$dest/$file") !== TRUE) {
+          return FALSE;
+        }
+      }
+    }
+    closedir($dir_handle);
+  }
+  elseif (copy($src, $dest) !== TRUE) {
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+/**
  * Move $src to $dest.
  *
- * If the php 'rename' function doesn't work, then we'll try mv and if
- * it also fails, rsync.
+ * If the php 'rename' function doesn't work, then we'll do copy & delete.
  *
  * @param $src
  *   The directory to move.
@@ -623,17 +687,9 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
     drush_op('unlink', $dest);
   }
 
-  // Do it with mv.
-  if (drush_shell_exec('mv %s %s', $src, $dest)) {
-    return TRUE;
-  }
-
-  // Lastly try rsync.
-  drush_op('mkdir', $dest);
-  $exec = 'rsync -raz --remove-source-files ' . $src . '/ ' . $dest;
-  if (drush_shell_exec($exec)) {
-    // --remove-source-files deletes all of the files, but
-    // we still need to get rid of the directories.
+  // If 'rename' fails, then we will use copy followed
+  // by a delete of the source.
+  if (drush_copy_dir($src, $dest)) {
     drush_op('drush_delete_dir', $src);
     return TRUE;
   }
