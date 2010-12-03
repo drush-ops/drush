@@ -15,13 +15,13 @@ function drush_pm_updatecode() {
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
   // Get update status information.
-  $projects = _pm_get_update_info();
+  $update_info = _pm_get_update_info();
 
   // Find only security updates?
   $security_only = drush_get_option('security-only');
 
   // Process locks specified on the command line.
-  $locked_list = drush_pm_update_lock($projects, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
+  $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
   // Get specific requests.
   $requests = _convert_csv_to_array(func_get_args());
@@ -29,15 +29,15 @@ function drush_pm_updatecode() {
   // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
 
-  // Preprocess releases.
+  // Preprocess requested projects.
   if (!empty($requests)) {
     // Check requests are installed and enabled projects and force
     // update projects where a specific version is requested.
     foreach ($requests as $name => $request) {
-      if (!isset($projects[$name])) {
+      if (!isset($update_info[$name])) {
         // Catch projects with no version data (common for CVS checkouts
         // if you don't have CVS deploy installed).
-        $projects[$name] = array(
+        $update_info[$name] = array(
           'title' => $name,
           'existing_version' => 'Unknown',
           'status'=> DRUSH_PM_NO_VERSION,
@@ -45,18 +45,18 @@ function drush_pm_updatecode() {
       }
       else if (!empty($request['version'])) {
         // Match the requested release
-        $release = pm_get_release($request, $projects[$name]);
+        $release = pm_get_release($request, $update_info[$name]);
         if (!$release) {
-          $projects[$name]['status'] = DRUSH_PM_REQUESTED_NOT_FOUND;
+          $update_info[$name]['status'] = DRUSH_PM_REQUESTED_NOT_FOUND;
         }
-        else if ($release['version'] == $projects[$name]['existing_version']) {
-          $projects[$name]['status'] = DRUSH_PM_REQUESTED_CURRENT;
+        else if ($release['version'] == $update_info[$name]['existing_version']) {
+          $update_info[$name]['status'] = DRUSH_PM_REQUESTED_CURRENT;
         }
         else {
-          $projects[$name]['status'] = DRUSH_PM_REQUESTED_UPDATE;
+          $update_info[$name]['status'] = DRUSH_PM_REQUESTED_UPDATE;
         }
         // Set the candidate version to the requested release
-        $projects[$name]['candidate_version'] = $release['version'];
+        $update_info[$name]['candidate_version'] = $release['version'];
       }
     }
   }
@@ -65,7 +65,7 @@ function drush_pm_updatecode() {
   $rows[] = array(dt('Name'), dt('Installed version'), dt('Proposed version'), dt('Status'));
 
   // Process releases, notifying user of status and building a list of proposed updates
-  $updateable = pm_project_filter($projects, $rows, $security_only);
+  $updateable = pm_project_filter($update_info, $rows, $security_only);
 
   // Pipe preparation.
   if (drush_get_context('DRUSH_PIPE')) {
@@ -96,7 +96,7 @@ function drush_pm_updatecode() {
       }
     }
   }
-  
+
   // If there are any locked projects that were not requested, then remove them
   if (!empty($locked_list)) {
     foreach ($updateable as $name => $project) {
@@ -114,9 +114,9 @@ function drush_pm_updatecode() {
 
   if (isset($updateable['drupal'])) {
     $drupal_project = $updateable['drupal'];
-    unset($projects['drupal']);
+    unset($update_info['drupal']);
     unset($updateable['drupal']);
-    $module_list = array_keys($projects);
+    $module_list = array_keys($update_info);
 
     // We can only upgrade drupal core if there are no non-core
     // modules enabled.  _pm_update_core will disable the
@@ -166,7 +166,7 @@ function drush_pm_updatecode() {
  *
  * @param $project
  *   The drupal project information from the drupal.org update service,
- *   copied from $projects['drupal'].  @see drush_pm_updatecode.
+ *   copied from $update_info['drupal'].  @see drush_pm_updatecode.
  * @param $module_list
  *   A list of the non-core modules that are enabled.  These must be disabled
  *   before core can be updated.
@@ -274,17 +274,17 @@ function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflict
  * Update packages according to an array of releases and print the release notes
  * for each project, following interactive confirmation from the user.
  *
- * @param $projects
+ * @param $update_info
  *   An array of projects from the drupal.org update service, with an additional
  *   array key candidate_version that specifies the version to be installed.
  */
-function pm_update_packages($projects) {
+function pm_update_packages($update_info) {
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
   $print = '';
   $status = array();
-  foreach($projects as $project) {
+  foreach($update_info as $project) {
     $print .= $project['title'] . " [" . $project['name'] . '-' . $project['candidate_version'] . "], ";
     $status[$project['status']] = $project['status'];
   }
@@ -304,7 +304,7 @@ function pm_update_packages($projects) {
 
   // Print the release notes for projects to be updated. Ask before if
   // there is more than one project.
-  $keys = array_keys($projects);
+  $keys = array_keys($update_info);
   if (count($keys) == 1) {
     if (!drush_get_context('DRUSH_NEGATIVE')) {
       _drush_pm_releasenotes($keys);
@@ -324,7 +324,7 @@ function pm_update_packages($projects) {
   }
 
   // Now we start the actual updating.
-  foreach($projects as $project) {
+  foreach($update_info as $project) {
     if (empty($project['path'])) {
       return drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('The !project project path is not available, perhaps the !type is enabled but has been deleted from disk.', array('!project' => $project['name'], '!type' => $project['project_type'])));
     }
@@ -401,17 +401,23 @@ function drush_pm_updatecode_rollback() {
   }
 
   // Post rollback, we will do additional repair if the project is drupal core.
-  $drupal_core = drush_get_context('DRUSH_PM_DRUPAL_CORE');
-  if (isset($drupal_core)) {
+  $drupal_core = drush_get_context('DRUSH_PM_DRUPAL_CORE', FALSE);
+  if ($drupal_core) {
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
     _pm_update_move_files($drupal_core['full_project_path'], $drupal_root, $drupal_core['skip_list']);
     drush_delete_dir($drupal_core['full_project_path']);
   }
 }
 
-function pm_project_filter(&$projects, &$rows, $security_only) {
+/**
+ * Return an array of updateable projects and fill $rows.
+ *
+ * Array of updateable projects is obtained from calculated project update
+ * status and $security_only flag. 
+ */
+function pm_project_filter(&$update_info, &$rows, $security_only) {
   $updateable = array();
-  foreach ($projects as $key => $project) {
+  foreach ($update_info as $key => $project) {
     if (empty($project['title'])) {
       continue;
     }
@@ -445,12 +451,12 @@ function pm_project_filter(&$projects, &$rows, $security_only) {
       $status = $project['locked'] . " ($status)";
     }
 
-    // Persist candidate_version in $projects (plural).
+    // Persist candidate_version in $update_info (plural).
     if (empty($project['candidate_version'])) {
-      $projects[$key]['candidate_version'] = $project['existing_version']; // Default to no change
+      $update_info[$key]['candidate_version'] = $project['existing_version']; // Default to no change
     }
     else {
-      $projects[$key]['candidate_version'] = $project['candidate_version'];
+      $update_info[$key]['candidate_version'] = $project['candidate_version'];
     }
     if (!empty($project['updateable'])) {
       $updateable[$key] = $project;
@@ -459,7 +465,7 @@ function pm_project_filter(&$projects, &$rows, $security_only) {
         unset($updateable[$key]);
       }
     }
-    $rows[] = array($project['title'], $project['existing_version'], $projects[$key]['candidate_version'], $status);
+    $rows[] = array($project['title'], $project['existing_version'], $update_info[$key]['candidate_version'], $status);
   }
   return $updateable;
 }

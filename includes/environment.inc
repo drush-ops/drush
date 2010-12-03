@@ -1240,8 +1240,23 @@ function drush_is_local_host($host) {
 }
 
 /**
- * Get complete information for all available extensions (modules and
- * themes).
+ * Return the user's home directory.
+ */
+function drush_server_home() {
+  $home = NULL;
+  // $_SERVER['HOME'] isn't set on windows and generates a Notice.
+  if (!empty($_SERVER['HOME'])) {
+    $home = $_SERVER['HOME'];
+  }
+  elseif (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
+    // home on windows
+    $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
+  }
+  return $home;
+}
+
+/**
+ * Get complete information for all available extensions (modules and themes).
  *
  * @return
  *   An array containing info for all available extensions.
@@ -1249,26 +1264,6 @@ function drush_is_local_host($host) {
 function drush_get_extensions() {
   drush_include_engine('drupal', 'environment');
   return array_merge(drush_get_modules(), drush_get_themes());
-}
-
-/**
- * Calculate a extension status based on current status and schema version.
- *
- * @param $extension
- *   Object of a single extension info.
- *
- * @return
- *   String describing extension status. Values: enabled|disabled|not installed
- */
-function drush_get_extension_status($extension) {
-  if (($extension->type == 'module')&&($extension->schema_version == -1)) {
-    $status = "not installed";
-  }
-  else {
-    $status = ($extension->status == 1)?'enabled':'disabled';
-  }
-
-  return $status;
 }
 
 /**
@@ -1291,19 +1286,3 @@ function drush_theme_get_admin() {
   return variable_get('admin_theme', drush_theme_get_default());
 }
 
-/**
- * Return the user's home directory.
- */
-
-function drush_server_home() {
-  $home = NULL;
-  // $_SERVER['HOME'] isn't set on windows and generates a Notice.
-  if (!empty($_SERVER['HOME'])) {
-    $home = $_SERVER['HOME'];
-  }
-  elseif (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
-    // home on windows
-    $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
-  }
-  return $home;
-}

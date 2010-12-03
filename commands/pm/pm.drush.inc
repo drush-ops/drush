@@ -8,7 +8,7 @@
  * Terminology:
  * - Request: a requested project (string or keyed array), with a name and (optionally) version.
  * - Project: a drupal.org project (i.e drupal.org/project/*), such as cck or zen.
- * - Extension: a drupal.org module or theme.
+ * - Extension: a drupal.org module, theme or profile.
  * - Version: a requested version, such as 1.0 or 1.x-dev.
  * - Release: a specific release of a project, with associated metadata (from the drupal.org update service).
  */
@@ -32,25 +32,6 @@ define('DRUSH_PM_NO_VERSION', 103);
  * User requested version not found.
  */
 define('DRUSH_PM_REQUESTED_NOT_FOUND', 104);
-
-/**
- * Sort callback function for sorting extensions.
- *
- * It will sort first by type, second by package and third by name.
- */
-function _drush_pm_sort_extensions($a, $b) {
-  if ($a->type == 'module' && $b->type == 'theme') {
-    return -1;
-  }
-  if ($a->type == 'theme' && $b->type == 'module') {
-    return 1;
-  }
-  $cmp = strcasecmp($a->info['package'], $b->info['package']);
-  if ($cmp == 0) {
-    $cmp = strcasecmp($a->info['name'], $b->info['name']);
-  }
-  return $cmp;
-}
 
 /**
  * Implementation of hook_drush_help().
@@ -245,8 +226,98 @@ function pm_drush_command() {
 }
 
 /**
- * Command callback. Show a list of extensions with type and status.
+ * @defgroup extensions Extensions management.
+ * @{
+ * Functions to manage extensions.
+ */
+
+/**
+ * Sort callback function for sorting extensions.
  *
+ * It will sort first by type, second by package and third by name.
+ */
+function _drush_pm_sort_extensions($a, $b) {
+  if ($a->type == 'module' && $b->type == 'theme') {
+    return -1;
+  }
+  if ($a->type == 'theme' && $b->type == 'module') {
+    return 1;
+  }
+  $cmp = strcasecmp($a->info['package'], $b->info['package']);
+  if ($cmp == 0) {
+    $cmp = strcasecmp($a->info['name'], $b->info['name']);
+  }
+  return $cmp;
+}
+
+/**
+ * Calculate a extension status based on current status and schema version.
+ *
+ * @param $extension
+ *   Object of a single extension info.
+ *
+ * @return
+ *   String describing extension status. Values: enabled|disabled|not installed
+ */
+function drush_get_extension_status($extension) {
+  if (($extension->type == 'module')&&($extension->schema_version == -1)) {
+    $status = "not installed";
+  }
+  else {
+    $status = ($extension->status == 1)?'enabled':'disabled';
+  }
+
+  return $status;
+}
+
+/**
+ * Wrapper of drupal_get_extensions() with additional information used by
+ * pm- commands.
+ *
+ * @return
+ *   An array containing info for all available extensions w/additional info.
+ */
+function drush_pm_get_extensions() {
+  $extensions = drush_get_extensions();
+  foreach ($extensions as $key => $extension) {
+    if (empty($extension->info['package'])) {
+      $extensions[$key]->info['package'] = dt('Other');
+    }
+  }
+  return $extensions;
+}
+
+/**
+ * Classify extensions as modules, themes or unknown.
+ *
+ * @param $extensions
+ *   Array of extension names, by reference.
+ * @param $modules
+ *   Empty array to be filled with modules in the provided extension list.
+ * @param $themes
+ *   Empty array to be filled with themes in the provided extension list.
+ */
+function drush_pm_classify_extensions(&$extensions, &$modules, &$themes, $extension_info) {
+  _drush_pm_expand_extensions($extensions, $extension_info);
+  foreach ($extensions as $extension) {
+    if (!isset($extension_info[$extension])) {
+      continue;
+    }
+    if ($extension_info[$extension]->type == 'module') {
+      $modules[$extension] = $extension;
+    }
+    else if ($extension_info[$extension]->type == 'theme') {
+      $themes[$extension] = $extension;
+    }
+  }
+}
+
+/**
+ * @} End of "defgroup extensions".
+ */
+
+/**
+ * Command callback. Show a list of extensions with type and status.
  */
 function drush_pm_list() {
   //--package
@@ -491,7 +562,7 @@ function drush_pm_disable() {
   $unknown = array_diff($args, $extensions);
 
   // Discard and set an error for each unknown extension.
-  foreach ($unknown as $namew) {
+  foreach ($unknown as $name) {
     drush_set_error('DRUSH_PM_ENABLE_EXTENSION_NOT_FOUND', dt('!extension was not found and will not be disabled.', array('!extension' => $name)));
   }
 
@@ -571,48 +642,6 @@ function drush_pm_disable() {
     }
     else {
       drush_set_error('DRUSH_PM_DISABLE_EXTENSION_ISSUE', dt('There was a problem disabling !extension.', array('!extension' => $extension->name)));
-    }
-  }
-}
-
-/**
- * Wrapper of drupal_get_extensions() with additional information used by
- * pm- commands.
- *
- * @return
- *   An array containing info for all available extensions w/additional info.
- */
-function drush_pm_get_extensions() {
-  $extensions = drush_get_extensions();
-  foreach ($extensions as $key => $extension) {
-    if (empty($extension->info['package'])) {
-      $extensions[$key]->info['package'] = dt('Other');
-    }
-  }
-  return $extensions;
-}
-
-/**
- * Classify extensions as modules, themes or unknown.
- *
- * @param $extensions
- *   Array of extension names, by reference.
- * @param $modules
- *   Empty array to be filled with modules in the provided extension list.
- * @param $themes
- *   Empty array to be filled with themes in the provided extension list.
- */
-function drush_pm_classify_extensions(&$extensions, &$modules, &$themes, $extension_info) {
-  _drush_pm_expand_extensions($extensions, $extension_info);
-  foreach ($extensions as $extension) {
-    if (!isset($extension_info[$extension])) {
-      continue;
-    }
-    if ($extension_info[$extension]->type == 'module') {
-      $modules[$extension] = $extension;
-    }
-    else if ($extension_info[$extension]->type == 'theme') {
-      $themes[$extension] = $extension;
     }
   }
 }
@@ -856,43 +885,55 @@ function _pm_get_project_path($data, $lookup) {
     }
     // Array of extensions (modules/themes) within the project.
     $extensions = array_keys($release[$lookup]);
-    // Select the first path as the candidate to be the common prefix.
-    $path = drupal_get_path($release['project_type'], array_pop($extensions));
-    // If there's only one extension we are done. Otherwise, we need to find
-    // the common prefix for all of them.
-    if (count($extensions) > 0) {
-      // Iterate over the other projects.
-      while($project = array_pop($extensions)) {
-        $path2 = drupal_get_path($release['project_type'], $project);
-        // Option 1: same path.
-        if ($path == $path2) {
-          continue;
-        }
-        // Option 2: $path is a prefix of $path2.
-        if (strpos($path2, $path) === 0) {
-          continue;
-        }
-        // Option 3: $path2 is a prefix of $path.
-        if (strpos($path, $path2) === 0) {
-          $path = $path2;
-          continue;
-        }
-        // Option 4: no one is a prefix of the other. Find the common
-        // prefix by iteratively strip the rigthtmost piece of $path.
-        // We will iterate until a prefix is found or path = '.', that on the
-        // other hand is a condition theorically impossible to reach.
-        do {
-          $path = dirname($path);
-          if (strpos($path2, $path) === 0) {
-            break;
-          }
-        } while ($path != '.');
-      }
-    }
+    $path = _pm_find_common_path($release['project_type'], $extensions);
     $data[$name]['path'] = $path;
   }
 
   return $data;
+}
+
+/**
+ * Helper function to find the common path for a list of extensions in the aim to obtain the project name.
+ *
+ * @param $project_type
+ *  Type of project we're trying to find. Valid values: module, theme.
+ * @param $extensions
+ *  Array of extension names.
+ */
+function _pm_find_common_path($project_type, $extensions) {
+  // Select the first path as the candidate to be the common prefix.
+  $path = drupal_get_path($project_type, array_pop($extensions));
+  // If there's only one extension we are done. Otherwise, we need to find
+  // the common prefix for all of them.
+  if (count($extensions) > 0) {
+    // Iterate over the other projects.
+    while($project = array_pop($extensions)) {
+      $path2 = drupal_get_path($project_type, $project);
+      // Option 1: same path.
+      if ($path == $path2) {
+        continue;
+      }
+      // Option 2: $path is a prefix of $path2.
+      if (strpos($path2, $path) === 0) {
+        continue;
+      }
+      // Option 3: $path2 is a prefix of $path.
+      if (strpos($path, $path2) === 0) {
+        $path = $path2;
+        continue;
+      }
+      // Option 4: no one is a prefix of the other. Find the common
+      // prefix by iteratively strip the rigthtmost piece of $path.
+      // We will iterate until a prefix is found or path = '.', that on the
+      // other hand is a condition theorically impossible to reach.
+      do {
+        $path = dirname($path);
+        if (strpos($path2, $path) === 0) {
+          break;
+        }
+      } while ($path != '.');
+    }
+  }
 }
 
 /**
