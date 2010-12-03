@@ -1097,7 +1097,8 @@ function drush_valid_db_credentials() {
       switch ($type) {
         case 'mysql':
         case 'mysqli':
-          $connection = @mysql_connect($creds['host'], $creds['user'], $creds['pass']);
+          $hostspec = $creds['port'] ? $creds['host'] . ':' . $creds['port'] : $creds['host'];
+          $connection = @mysql_connect($hostspec, $creds['user'], $creds['pass']);
           if (!$connection || !mysql_select_db($creds['name'])) {
             drush_log(mysql_error(), 'bootstrap');
             return FALSE;
