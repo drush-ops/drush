@@ -883,7 +883,12 @@ function drush_shell_exec_interactive($cmd) {
 }
 
 /**
- * Internal function: executes a shell command:
+ * Internal function: executes a shell command on the
+ * local machine.  This function should not be used
+ * in instances where ssh is utilized to execute a
+ * command remotely; otherwise, remote operations would
+ * fail if executed from a Windows machine to a remote
+ * Linux server.
  *
  * @param $args
  *   The command and its arguments.
@@ -895,7 +900,7 @@ function drush_shell_exec_interactive($cmd) {
 function _drush_shell_exec($args, $interactive = FALSE) {
   //do not change the command itself, just the parameters.
   for ($x = 1; $x < sizeof($args); $x++) {
-    $args[$x] = escapeshellarg($args[$x]);
+    $args[$x] = drush_escapeshellarg($args[$x]);
   }
   $command = call_user_func_array('sprintf', $args);
 
@@ -919,6 +924,57 @@ function _drush_shell_exec($args, $interactive = FALSE) {
   else {
     return 0;
   }
+}
+
+/**
+ * Platform-independent version of escapeshellarg().
+ */
+function drush_escapeshellarg($arg) {
+  if (drush_is_windows()) {
+    return drush_escapeshellarg_windows($arg);
+  }
+  else {
+    return escapeshellarg($arg);
+  }
+}
+
+/**
+ * Check if the operating system is Windows.
+ */
+function drush_is_windows() {
+  if (substr(php_uname(), 0, 7) == 'Windows') {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Windows version of escapeshellarg().
+ */
+function drush_escapeshellarg_windows($arg) {
+  // Double the backslashes before any double quotes. Escape the double quotes.
+  // (\" => \\\") && (" => \") =
+  // (\" => \\") +
+  $arg = preg_replace('/\\\"/', '\\\\\\"', $arg);
+  // + (" => \")
+  $arg = preg_replace('/"/', '\\"', $arg);
+
+  // The same with single quotes.
+  // (\' => \\\') && (' => \') =
+  // (\' => \\') +
+  $arg = preg_replace('/\\\'/', '\\\\\\\'', $arg);
+  // + (' => \')
+  $arg = preg_replace('/\'/', '\\\'', $arg);
+
+  // Replace "\t", "\n", "\r", "\0", "\x0B" with a whitespace.
+  $arg = str_replace(array("\t", "\n", "\r", "\0", "\x0B"), ' ', $arg);
+
+  // Add surrounding quotes.
+  $arg = '"' . $arg . '"';
+
+  return $arg;
 }
 
 /**

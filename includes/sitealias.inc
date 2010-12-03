@@ -1300,9 +1300,14 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   foreach ($site_alias_settings as $key => $value) {
     // Special handling for path aliases:
     if ($key == "path-aliases") {
+      $path_aliases = $value;
       foreach (array('%drush-script', '%dump', '%dump-dir', '%include') as $path_key) {
-        if (array_key_exists($path_key, $value)) {
-          $options[$prefix . substr($path_key, 1)] = $value[$path_key];
+        if (array_key_exists($path_key, $path_aliases)) {
+          // Evaluate the path value, and substitute any path references found.
+          // ex: '%dump-dir' => '%root/dumps' will store sql-dumps in the folder
+          // 'dumps' in the Drupal root folder for the site.
+          $evaluated_path = str_replace(array_keys($path_aliases), array_values($path_aliases), $path_aliases[$path_key]);
+          $options[$prefix . substr($path_key, 1)] = $evaluated_path;
         }
       }
     }
