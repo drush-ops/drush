@@ -19,7 +19,8 @@ function package_handler_install_project($project, $release) {
   if (isset($release['version_extra']) && $release['version_extra'] == 'dev') {
     // Use the development repository, not supported yet.
     $repository = 'git://git.drupal.org/project/' . $project_name . '.git';
-    $tag = $release['tag'];
+    // Strip -dev off the end.
+    $tag = substr($release['version'], 0, -4);
   }
   else {
     // Use a stable repository.
