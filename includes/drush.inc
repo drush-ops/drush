@@ -11,6 +11,14 @@
  */
 define('DRUSH_DRUPAL_KILOBYTE', 1024);
 
+/**
+ * Given a command record, dispatch it as if it were
+ * the original command.  @see drush_core_topic.
+ */
+function drush_redispatch($command, $arguments = array()) {
+  _drush_prepare_command($command, $arguments);
+  drush_dispatch($command);
+}
 
 /**
  * Dispatch a given set of commands.
@@ -965,20 +973,27 @@ function _drush_shell_exec($args, $interactive = FALSE) {
   }
 
   if (!drush_get_context('DRUSH_SIMULATE')) {
-    exec($command . ($interactive ? '' : ' 2>&1'), $output, $result);
-    _drush_shell_exec_output_set($output);
-
-    if (drush_get_context('DRUSH_DEBUG')) {
-      foreach ($output as $line) {
-        drush_print($line, 2);
-      }
+    if ($interactive) {
+      $result = proc_open($command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+      proc_close($result);
+      return ($result !== FALSE);
     }
+    else {
+      exec($command . ($interactive ? '' : ' 2>&1'), $output, $result);
+      _drush_shell_exec_output_set($output);
 
-    // Exit code 0 means success.
-    return ($result == 0);
+      if (drush_get_context('DRUSH_DEBUG')) {
+	foreach ($output as $line) {
+          drush_print($line, 2);
+	}
+      }
+
+      // Exit code 0 means success.
+      return ($result == 0);
+    }
   }
   else {
-    return 0;
+    return TRUE;
   }
 }
 
@@ -1125,7 +1140,15 @@ function drush_print($message = '', $indent = 0) {
  *   Full path to a file.
  */
 function drush_print_file($file) {
-  drush_print(file_get_contents($file));
+  if (drush_shell_exec_interactive("less %s", $file)) {
+    return;
+  }
+  elseif (drush_shell_exec_interactive("more %s", $file)) {
+    return;
+  }
+  else {
+    drush_print(file_get_contents($file));
+  }
 }
 
 /**

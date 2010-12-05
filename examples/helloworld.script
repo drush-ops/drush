@@ -3,37 +3,10 @@
 //
 // This example demonstrates how to write a drush
 // "shebang" script.  These scripts start with the
-// line "#!/usr/bin/env drush", or perhaps just "!drush"
-// (although the latter is not supported on all flavors
-// of *nix).
+// line "#!/usr/bin/env drush" or "#!/full/path/to/drush".
 //
-// These scripts do not need to be named "*.script";
-// they can be named anything at all.  To run them,
-// make sure they are executable (chmod +x helloworld.script)
-// and then run them from the shell like any other
-// script.
+// See `drush topic docs-scripts` for more information.
 //
-// There are two big advantages to drush scripts over
-// bash scripts.
-//
-//  1. They are written in php
-//
-//  2. drush can bootstrap your Drupal site before
-//     running your script.
-// 
-// To bootstrap a Drupal site, provide an alias to
-// the site to bootstrap as the first commandline
-// argument.
-//
-// For example:
-//
-// $ helloworld.script @dev a b c
-//
-// If the first argument is a valid site alias, drush
-// will remove it from the arument list and bootstrap
-// that site.
-//
-
 drush_print("Hello world!");
 drush_print();
 drush_print("The arguments to this command were:");

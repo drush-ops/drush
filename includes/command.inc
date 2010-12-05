@@ -340,15 +340,22 @@ function drush_parse_command() {
       $command['arguments'] = $arguments;
     }
     else {
-      // Merge specified callback arguments, which precede the arguments passed on the command line.
-      if (isset($command['callback arguments']) && is_array($command['callback arguments'])) {
-        $arguments = array_merge($command['callback arguments'], $arguments);
-      }
+      _drush_prepare_command($command, $arguments);
     }
-    $command['arguments'] = $arguments;
     drush_set_command($command);
   }
   return $command;
+}
+
+/*
+ * Called by drush_parse_command and drush_redispatch
+ */
+function _drush_prepare_command(&$command, $arguments = array()) {
+  // Merge specified callback arguments, which precede the arguments passed on the command line.
+  if (isset($command['callback arguments']) && is_array($command['callback arguments'])) {
+    $arguments = array_merge($command['callback arguments'], $arguments);
+  }
+  $command['arguments'] = $arguments;
 }
 
 /**

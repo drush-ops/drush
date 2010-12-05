@@ -37,7 +37,7 @@ function core_drush_command() {
       'drush help pm-download' => 'Show help for one command.',
       'drush help dl' => 'Show help for one command using an alias.',
     ),
-    'topics' => array('core-readme'),
+    'topics' => array('docs-readme'),
   );
   $items['core-cron'] = array(
     'description' => 'Run all cron hooks.',
@@ -63,7 +63,7 @@ function core_drush_command() {
     'options' => array(
       'show-passwords' => 'Show database password.',
     ),
-    'topics' => array('core-readme'),
+    'topics' => array('docs-readme'),
   );
   $items['php-script'] = array(
     'description' => "Run php script(s).",
@@ -219,16 +219,6 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
   );
 
-  // Topic commands
-  $items['core-readme'] = array(
-    'description' => dt('README.txt'),
-    'hidden' => TRUE,
-    'topic' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/README.txt'),
-  );
-
   return $items;
 }
 
@@ -268,7 +258,7 @@ function drush_core_help() {
   if (empty($commands)) {
     // Build a fake command for the purposes of showing examples and options.
     $fake = array(
-      'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.',
+      'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.',
       'options' => drush_get_global_options(),
       'examples' => array(
         'drush dl cck zen' => 'Download CCK module and Zen theme.',

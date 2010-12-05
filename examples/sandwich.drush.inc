@@ -27,7 +27,7 @@
  * Notice how this structure closely resembles how
  * you define menu hooks.
  *
- * @See drush_parse_command() for a list of recognized keys.
+ * See `drush topic docs-commands` for a list of recognized keys.
  *
  * @return
  *   An associative array describing your command(s).
@@ -35,6 +35,7 @@
 function sandwich_drush_command() {
   $items = array();
 
+  // The 'make-me-a-sandwich' command
   $items['make-me-a-sandwich'] = array(
     'description' => "Makes a delicious sandwich.",
     'arguments' => array(
@@ -48,6 +49,18 @@ function sandwich_drush_command() {
     ),
     'aliases' => array('mmas'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+  );
+  
+  // Commandfiles may also add topics.  These will appear in
+  // the list of topics when `drush topic` is executed.
+  // To view this topic, run `drush --include=/full/path/to/examples topic`
+  $items['sandwich-exposition'] = array(
+    'description' => dt('Ruminations on the true meaning and philosophy of sandwiches.'),
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array(dirname(__FILE__) . '/sandwich-topic.txt'),
   );
 
   return $items;

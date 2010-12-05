@@ -44,6 +44,9 @@
  * load the configuration file for the site specified by the
  * destination parameter, nor do they load configuration files
  * for remote sites.
+ *
+ * See `drush topic docs-bootstrap` for more information on how
+ * bootstrapping affects the loading of drush configuration files.
  */
 
 // Specify a particular multisite.

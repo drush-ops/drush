@@ -13,18 +13,21 @@
  *   An associative array describing your command(s).
  */
 function topic_drush_command() {
-  $items['core-topic'] = array(
+  $items['docs-topic'] = array(
     'description' => 'Read detailed documentation on a given topic.',
     'arguments' => array(
       'topic name' => 'The name of the topic you wish to view. If omitted, list all topic descriptions (and names in parenthesis).',
     ),
     'examples' => array(
       'drush topic' => 'Show all available topics.',
-      'drush topic core-context' => 'Show documentation for the drush context API',
-      'drush core-context' => 'Show documentation for the drush context API',
+      'drush topic docs-context' => 'Show documentation for the drush context API',
+      'drush docs-context' => 'Show documentation for the drush context API',
     ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'aliases' => array('topic'),
+    'topics' => array('docs-readme'),
   );
+
   return $items;
 }
 
@@ -39,6 +42,7 @@ function topic_drush_help_alter($command) {
     $command['topic_section'][$topic_name] = dt($implemented[$topic_name]['description']);
   }
 }
+
 /**
  * A command callback.
  *
@@ -47,7 +51,7 @@ function topic_drush_help_alter($command) {
  * @param string $topic_name
  *   A command name.
  */
-function drush_core_topic($topic_name = NULL) {
+function drush_topic_docs_topic($topic_name = NULL) {
   $commands = drush_get_commands();
   if (is_null($topic_name)) {
     // Show choice list.
@@ -58,7 +62,13 @@ function drush_core_topic($topic_name = NULL) {
       return;
     }
   }
-  return drush_do_command_redispatch($topic_name);
+  // If the topic name is not found, check for
+  // "docs-$topic_name".  This allows users to be
+  // just a bit lazy when selecting core topics by name.
+  if (!isset($commands[$topic_name]) && isset($commands["docs-$topic_name"])) {
+    $topic_name = "docs-$topic_name";
+  }
+  return drush_redispatch($commands[$topic_name]);
 }
 
 /**
