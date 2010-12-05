@@ -314,7 +314,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
           $mv_intermediate = '; mv -f ' . $source_intermediate . ' ' . $source_dump;
         }
         drush_set_option('result-file', $source_intermediate);
-        $dump_exec = drush_sql_build_dump_command($table_selection, $source_db_url) . $mv_intermediate;
+        list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $source_db_url) . $mv_intermediate;
         if (isset($cache) && !$source_db_url['dump-is-temp']) {
           // Inject some bash commands to remotely test the modification date of the target file
           // if the cache option is set.
@@ -326,7 +326,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
     else {
       if (!isset($no_dump)) {
         drush_set_option('result-file', $local_file);
-        $dump_exec = drush_sql_build_dump_command($table_selection, $source_db_url);
+        list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $source_db_url);
       }
       $no_sync = TRUE;
     }

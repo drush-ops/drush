@@ -205,9 +205,11 @@ function drush_sql_connect() {
  * Command callback. Outputs the entire Drupal database in SQL format using mysqldump.
  */
 function drush_sql_dump_execute() {
-  $exec = drush_sql_dump();
+  list($exec, $file) = drush_sql_dump();
   // Avoid the php memory of the $output array in drush_shell_exec().
-  $return = drush_op('system', $exec);
+  if (!$return = drush_op('system', $exec)) {
+    drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
+  }
   return $return;
 }
 
@@ -223,17 +225,29 @@ function drush_sql_get_table_selection() {
 }
 
 /**
- * Build a mysqldump statement.
+ * Build a mysqldump/pg_dump/sqlite statement.
  *
  * @param db_spec
  *   For D5/D6, a $db_url. For D7, a target in the default DB connection.
- * @return string
- *   A mysqldump statement that is ready for executing.
+ * @return array
+ *   An array with items.
+ *     1. A mysqldump/pg_dump/sqlite statement that is ready for executing.
+ *     2. The filepath where the dump will be saved.
  */
 function drush_sql_dump($db_spec = NULL) {
   return drush_sql_build_dump_command(drush_sql_get_table_selection(), $db_spec);
 }
 
+/**
+ * Build a mysqldump/pg_dump/sqlite statement.
+ *
+ * @param db_spec
+ *   For D5/D6, a $db_url. For D7, a target in the default DB connection.
+ * @return array
+ *   An array with items.
+ *     1. A mysqldump/pg_dump/sqlite statement that is ready for executing.
+ *     2. The filepath where the dump will be saved.
+ */
 function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
   $skip_tables = $tabel_selection['skip'];
   $structure_tables = $tabel_selection['structure'];
@@ -256,6 +270,7 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
   // has set $options['result-file'] = TRUE, then we
   // will generate an SQL dump file in the same backup
   // directory that pm-updatecode uses.
+  $file = NULL;
   if ($file = drush_get_option('result-file', FALSE)) {
     if ($file === TRUE) {
       // User did not pass a specific value for --result-file. Make one.
@@ -363,7 +378,7 @@ function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
       break;
   }
 
-  return $exec;
+  return array($exec, $file);
 }
 
 /**
