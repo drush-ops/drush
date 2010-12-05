@@ -7,14 +7,14 @@ four simple steps.
 
  1. Create a command file called COMMANDFILE.drush.inc
  
- 2. Implement the function COMMANDFILE_drush_help()
+ 2. Implement the function COMMANDFILE_drush_help(). Optional.
 
  3. Implement the function COMMANDFILE_drush_command()
 
  4. Implement the functions that your commands will call.
     These will usually be named drush_COMMANDFILE_COMMANDNAME().
 
-For an example drush command, see examples/sandwitch.drush.inc.
+For an example drush command, see examples/sandwich.drush.inc.
 The steps for implementing your command are explained in more
 detail below.
 
@@ -56,14 +56,15 @@ more information on bootstrapping.
 
 Additionally, drush commandfiles may optionally define a function 
 COMMANDFILE_drush_load() in the file COMMANDFILE.drush.load.inc.  
-If this function returns FALSE, then the module will not be loaded.
+If this function returns FALSE, then the commandfile will not be loaded.
 
 Implement COMMANDFILE_drush_help()
 ----------------------------------
 
-The drush_help hook defines the list of commands
-supported by this commandfile.  The drush_help hook
-for the 'sandwich' commandfile looks like this:
+The drush_help hook is an optional place to describe a command in long form. If
+the command only requires a brief description, use the description key in
+COMMANDFILE_drush_command(). The drush_help hook for the 'sandwich' commandfile looks
+like this:
 
         function sandwich_drush_help($section) {
           switch ($section) {
