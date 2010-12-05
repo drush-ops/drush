@@ -13,7 +13,14 @@ define('DRUSH_DRUPAL_KILOBYTE', 1024);
 
 /**
  * Given a command record, dispatch it as if it were
- * the original command.  @see drush_core_topic.
+ * the original command.
+ *
+ * @param command
+ *   A full $command such as returned by drush_get_commands().
+ * @param arguments
+ *   An array of argument values.
+ *
+ * @see drush_topic_docs_topic().
  */
 function drush_redispatch($command, $arguments = array()) {
   _drush_prepare_command($command, $arguments);
