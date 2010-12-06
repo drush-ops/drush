@@ -1515,7 +1515,11 @@ function pm_drush_engine_package_handler() {
     'git_drupalorg' => array(
       'options' => array(
         '--package-handler=git_drupalorg' => 'Use git.drupal.org to checkout and update projects.',
-        '--gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
+      ),
+      'sub-options' => array(
+        '--package-handler=git_drupalorg' => array(
+          '--gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
+        ),
       ),
     ),
   );
