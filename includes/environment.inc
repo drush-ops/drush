@@ -27,6 +27,15 @@ define('DRUSH_DRUPAL_BOOTSTRAP', 'includes/bootstrap.inc');
 define('DRUSH_BOOTSTRAP_NONE', -1);
 
 /**
+ * Use drush_bootstrap_max instead of drush_bootstrap_to_phase
+ *
+ * This constant is only usable as the value of the 'bootstrap'
+ * item of a command object, or as the parameter to
+ * drush_bootstrap_to_phase.  It is not a real bootstrap state.
+ */
+define('DRUSH_BOOTSTRAP_MAX', -2);
+
+/**
  * Only bootstrap Drush, without any Drupal specific code.
  *
  * Any code that operates on the Drush installation, and not specifically
@@ -277,6 +286,15 @@ function drush_bootstrap_validate($phase) {
  *   Only attempt bootstrap to the specified level.
  */
 function drush_bootstrap_to_phase($max_phase_index) {
+  // If $max_phase_index is DRUSH_BOOTSTRAP_MAX, then
+  // we will bootstrap as far as we can.  drush_bootstrap_max
+  // is different than drush_bootstrap_to_phase in that
+  // it is not an error if DRUSH_BOOTSTRAP_LOGIN is not reached.
+  if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
+    drush_bootstrap_max();
+    return TRUE;
+  }
+
   drush_log(dt("Bootstrap to phase !phase.", array('!phase' => $max_phase_index)), 'bootstrap');
   $phases = _drush_bootstrap_phases();
   $result = TRUE;

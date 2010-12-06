@@ -767,6 +767,50 @@ function dt($string, $args = array()) {
 }
 
 /**
+ * Convert html to readable text.  Calls through
+ * to drupal_html_to_text if it is available, or
+ * reverts to a simpler algorithm when it is not.
+ *
+ * @param string $html
+ *   The html text to convert.
+ *
+ * @return string
+ *   The plain-text representation of the input.
+ */
+function drush_html_to_text($html, $allowed_tags = NULL) {
+  if (function_exists('drupal_html_to_text')) {
+    return drupal_html_to_text($html, $allowed_tags);
+  }
+  else {
+    $replacements = array(
+      '<hr>' => '------------------------------------------------------------------------------',
+      '<li>' => ' * ',
+    );
+    $text = str_replace(array_keys($replacements), array_values($replacements), $html);
+    return preg_replace('/ *<[^>]*> */', ' ', $text);
+  }
+}
+
+/**
+ * Download a file using wget or curl.
+ *
+ * @param string $url
+ *   The path to the file to download
+ *
+ * @return string
+ *   The filename that was downloaded
+ */
+function _drush_download_file($url) {
+  if (!drush_shell_exec("wget $url")) {
+    drush_shell_exec("curl -O $url");
+  }
+  $filename = explode('/', $url);
+  $filename = array_pop($filename);
+
+  return $filename;
+}
+
+/**
  * Convert a csv string, or an array of items which
  * may contain csv strings, into an array of items.
  *
@@ -1245,19 +1289,27 @@ function drush_confirm($msg, $indent = 0) {
 function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') {
   print dt($prompt) . "\n";
 
-  drush_print('  [0] : Cancel');
+  $rows[] = array('[0]', ':', 'Cancel');
   $selection_number = 0;
   foreach ($options as $key => $option) {
     if ((substr($key, 0, 3) == '-- ') && (substr($key, -3) == ' --')) {
-      drush_print("  ".$option);
-      continue;
+      $rows[] = array('', '', $option);
     }
-    $selection_number++;
-    $message = dt($label, array('!number' => $selection_number, '!key' => $key, '!value' => $option));
-    drush_print(dt("  [!number] : !message", array('!number' => $selection_number, '!message' => $message)));
-    $selection_list[$selection_number] = $key;
+    else {
+      $selection_number++;
+      $row = array("[$selection_number]", ':');
+      if (is_array($option)) {
+        $row = array_merge($row, $option);
+      }
+      else {
+        $row[] = dt($label, array('!number' => $selection_number, '!key' => $key, '!value' => $option));
+      }
+      $rows[] = $row;
+      $selection_list[$selection_number] = $key;
+    }
   }
-
+  drush_print_table($rows);
+  
   while ($line = trim(fgets(STDIN))) {
     if (array_key_exists($line, $selection_list)) {
       return $selection_list[$line];

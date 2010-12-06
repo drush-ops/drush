@@ -949,17 +949,28 @@ function drush_enforce_requirement_bootstrap_phase(&$command) {
  *   TRUE if command is valid.
  */
 function drush_enforce_requirement_drupal_dependencies(&$command) {
-  if (empty($command['drupal dependencies'])) {
-    return TRUE;
+  // If the command bootstrap is DRUSH_BOOTSTRAP_MAX, then we will
+  // allow the requirements to pass if we have not successfully
+  // bootstrapped Drupal.  The combination of DRUSH_BOOTSTRAP_MAX
+  // and 'drupal dependencies' indicates that the drush command
+  // will use the dependent modules only if they are available.
+  if ($command['bootstrap'] == DRUSH_BOOTSTRAP_MAX) {
+    // If we have not bootstrapped, then let the dependencies pass;
+    // if we have bootstrapped, then enforce them.
+    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+      return TRUE;
+    }
   }
-  else {
+  // If there are no drupal dependencies, then do nothing
+  if (!empty($command['drupal dependencies'])) {
     foreach ($command['drupal dependencies'] as $dependency) {
-      if (function_exists('module_exists') && module_exists($dependency)) {
-        return TRUE;
+      if(!function_exists('module_exists') || !module_exists($dependency)) {
+        $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] = dt('Command !command needs the following modules installed/enabled to run: !dependencies.', array('!command' => $command['command'], '!dependencies' => implode(', ', $command['drupal dependencies'])));
+        return FALSE;
       }
     }
   }
-  $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] = dt('Command !command needs the following modules installed/enabled to run: !dependencies.', array('!command' => $command['command'], '!dependencies' => implode(', ', $command['drupal dependencies'])));
+  return TRUE;
 }
 
 /**

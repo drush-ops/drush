@@ -50,7 +50,7 @@ function core_drush_command() {
   );
   $items['core-status'] = array(
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('status', 'st'),
     'examples' => array(
       'drush status version' => 'Show all status lines that contain version information.',
@@ -80,7 +80,7 @@ function core_drush_command() {
     'options' => array(
       '--script-path' => "Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).",
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('scr'),
     'deprecated-aliases' => array('script'),
   );
@@ -198,7 +198,7 @@ function core_drush_command() {
       'on @alias status' => 'Run the command "status" on the site indicated by @alias',
     ),
     'aliases' => array('cli'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
   );
 
   $items['batch-process'] = array(
@@ -604,15 +604,6 @@ function drush_core_cron() {
 }
 
 /**
- * Bootstrap 'status' command during the init phase.
- * Always use bootstrap_max from _init() so that command
- * hooks have a chance to be initialized.
- */
-function drush_core_status_init() {
-  drush_bootstrap_max();
-}
-
-/**
  * Command callback. Provides a birds-eye view of the current Drupal
  * installation.
  */
@@ -660,15 +651,6 @@ function _drush_core_is_named_in_array($key, $the_array) {
   }
 
   return $is_named;
-}
-
-/**
- * Bootstrap 'php-script' command during the init phase.
- * Always use bootstrap_max from _init() so that command
- * hooks have a chance to be initialized.
- */
-function drush_php_script_init() {
-  drush_bootstrap_max();
 }
 
 /**
@@ -870,15 +852,6 @@ function drush_core_find_project_path($target) {
   }
 
   return NULL;
-}
-
-/**
- * Bootstrap 'cli' command during the init phase.
- * Always use bootstrap_max from _init() so that command
- * hooks have a chance to be initialized.
- */
-function drush_core_cli_init() {
-  drush_bootstrap_max();
 }
 
 function drush_core_cli() {
