@@ -409,12 +409,12 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
   // any folder in the alias path.  The directory scan
   // is not deep, though; only files immediately in the
   // search path are considered.
-  $alias_files = array('/.*aliases\.drushrc\.php/');
+  $alias_files = array('/.*aliases\.drushrc\.php$/');
   if ($aliasname == NULL) {
-    $alias_files[] = '/.*\.alias\.drushrc\.php/';
+    $alias_files[] = '/.*\.alias\.drushrc\.php$/';
   }
   else {
-    $alias_files[] = '/' . preg_quote($aliasname) . '\.alias\.drushrc\.php/';
+    $alias_files[] = '/' . preg_quote($aliasname) . '\.alias\.drushrc\.php$/';
   }
 
   // Search each path in turn
