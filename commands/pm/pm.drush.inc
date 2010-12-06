@@ -179,7 +179,7 @@ function pm_drush_command() {
       'projects' => 'A list of drupal.org project names, with optional version. Defaults to \'drupal\'',
     ),
     'examples' => array(
-      'drush rln cck' => 'Prints the release notes for the recommended version of CCK package.',
+      'drush rln cck' => 'Prints the release notes for the recommended version of CCK project.',
       'drush rln token-1.13' => 'View release notes of a specfic version of the Token project for my version of Drupal.',
       'drush rln pathauto zen' => 'View release notes for the recommended version of Pathauto and Zen projects.',
     ),
@@ -1538,7 +1538,7 @@ function pm_drush_engine_version_control() {
       ),
       'sub-options' => array(
         '--version-control=backup' => array(
-          '--backup-dir' => 'Specify a directory to backup packages into. Defaults to .drush-backups within the home directory of the user running the command. It is forbidden to specify a directory inside your drupal root.',
+          '--backup-dir' => 'Specify a directory to backup projects into. Defaults to .drush-backups within the home directory of the user running the command. It is forbidden to specify a directory inside your drupal root.',
         ),
       ),
     ),
@@ -1819,7 +1819,7 @@ function drush_pm_download() {
     }
     // Translations can't be obtained from cvs.
     else if (($request['project_type'] == 'translation') && ($package_handler != 'wget')) {
-      drush_log(dt('Requested project !request is a translation package and can\'t be obtained from !ph.', array('!request' => $request['name'], '!ph' => $package_handler)), 'error');
+      drush_log(dt('Requested project !request is a translation and can\'t be obtained from !ph.', array('!request' => $request['name'], '!ph' => $package_handler)), 'error');
       continue;
     }
     else {
@@ -1933,7 +1933,7 @@ function drush_pm_download() {
       _drush_pm_releasenotes(array($name . '-' . $release['version']), FALSE);
     }
 
-    // Inform the user about available modules a/o themes in the downloaded package.
+    // Inform the user about available modules a/o themes in the downloaded project.
     drush_pm_extensions_in_project($request);
   }
 }

@@ -271,7 +271,7 @@ function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflict
 }
 
 /**
- * Update packages according to an array of releases and print the release notes
+ * Update projects according to an array of releases and print the release notes
  * for each project, following interactive confirmation from the user.
  *
  * @param $update_info
@@ -317,7 +317,7 @@ function pm_update_packages($update_info) {
   // We print some warnings before the user confirms the update.
   drush_print();
   drush_print(dt("Note: Updated projects can potentially break your site. It is NOT recommended to update production sites without prior testing."));
-  drush_print(dt("Note: A backup of your package will be stored to backups directory if it is not managed by a supported version control system."));
+  drush_print(dt("Note: A backup of your project will be stored to backups directory if it is not managed by a supported version control system."));
   drush_print(dt('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
   if(!drush_confirm(dt('Do you really want to continue with the update process?'))) {
     drush_user_abort();
