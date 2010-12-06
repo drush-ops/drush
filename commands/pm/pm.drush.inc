@@ -934,6 +934,8 @@ function _pm_find_common_path($project_type, $extensions) {
       } while ($path != '.');
     }
   }
+
+  return $path;
 }
 
 /**
