@@ -111,6 +111,10 @@ Use the 'help' command to get a list of available options and commands:
 
   $ drush help
 
+For even more documentation, use the 'topic' command:
+
+  $ drush topic
+
 For multisite installations, you might need to use the -l or other command line
 options just to get drush to work:
 

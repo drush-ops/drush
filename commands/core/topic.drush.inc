@@ -13,7 +13,7 @@
  *   An associative array describing your command(s).
  */
 function topic_drush_command() {
-  $items['docs-topic'] = array(
+  $items['core-topic'] = array(
     'description' => 'Read detailed documentation on a given topic.',
     'arguments' => array(
       'topic name' => 'The name of the topic you wish to view. If omitted, list all topic descriptions (and names in parenthesis).',
@@ -51,7 +51,7 @@ function topic_drush_help_alter($command) {
  * @param string $topic_name
  *   A command name.
  */
-function drush_topic_docs_topic($topic_name = NULL) {
+function drush_topic_core_topic($topic_name = NULL) {
   $commands = drush_get_commands();
   if (is_null($topic_name)) {
     // Show choice list.

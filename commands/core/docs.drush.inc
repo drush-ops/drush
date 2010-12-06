@@ -50,7 +50,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/commands/docs/bootstrap.txt'),
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/bootstrap.txt'),
   );
   $items['docs-scripts'] = array(
     'description' => dt('Overview on how to write drush shell scripts.'),
@@ -58,7 +58,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/commands/docs/shellscripts.txt'),
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/shellscripts.txt'),
   );
   $items['docs-commands'] = array(
     'description' => dt('Overview on how to write drush commands.'),
@@ -66,7 +66,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/commands/docs/commands.txt'),
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/commands.txt'),
   );
   $items['docs-api'] = array(
     'description' => dt('Drush API'),
@@ -74,7 +74,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/drush.api.php'),
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/drush.api.php'),
   );
   $items['docs-context'] = array(
     'description' => dt('Drush Contexts'),
@@ -82,7 +82,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/commands/docs/context.txt'),
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/context.txt'),
   );
   $items['docs-examplescript'] = array(
     'description' => dt('Example drush script'),
