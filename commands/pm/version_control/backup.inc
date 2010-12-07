@@ -76,4 +76,8 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
       return $backup_dir;
     }
   }
+
+  public static function reserved_files() {
+    return array();
+  }
 }

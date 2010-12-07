@@ -1768,6 +1768,7 @@ interface drush_pm_version_control {
   function rollback($project);
   function post_update($project);
   function post_download($project);
+  static function reserved_files();
 }
 
 /**
@@ -1776,8 +1777,10 @@ interface drush_pm_version_control {
  * specific directory.
  */
 function drush_pm_include_version_control($directory = '.') {
-  $version_controls = explode(',', drush_get_option('version-control', 'svn,backup,bzr'));
   $version_control_engines = drush_get_engines('version_control');
+  // Backup engine is the last option.
+  $defaults = array_reverse(array_keys($version_control_engines));
+  $version_controls = explode(',', drush_get_option('version-control', $defaults));
 
   // Find the first valid engine in the list, checking signatures if needed.
   $engine = FALSE;
@@ -1802,6 +1805,28 @@ function drush_pm_include_version_control($directory = '.') {
   }
   $engine = 'drush_pm_version_control_' . $engine;
   return new $engine();
+}
+
+/**
+ * Return a list of all supported vcs reserved files and directories.
+ */
+function drush_version_control_reserved_files() {
+  static $files = FALSE;
+
+  if (!$files) {
+    $files = array();
+    $vcs = array_keys(pm_drush_engine_version_control());
+    foreach ($vcs as $name) {
+      drush_include_engine('version_control', $name);
+      $class = 'drush_pm_version_control_' . $name;
+      // For php < 5.3 we can't access a static method by referencing the class
+      // using a variable.
+      $version_control = new $class();
+      $files = array_merge($files, $version_control->reserved_files());
+    }
+  }
+
+  return $files;
 }
 
 /**

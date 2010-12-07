@@ -126,4 +126,8 @@ class drush_pm_version_control_svn implements drush_pm_version_control {
       drush_print(dt("You should consider committing the new code to your Subversion repository.\nIf this version becomes undesireable, use Subversion to roll back."));
     }
   }
+
+  public static function reserved_files() {
+    return array('.svn');
+  }
 }

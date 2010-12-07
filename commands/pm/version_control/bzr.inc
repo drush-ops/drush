@@ -123,4 +123,8 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
       drush_print(dt("You should consider committing the new code to your Bazaar repository.\nIf this version becomes undesireable, use Bazaar to roll back."));
     }
   }
+
+  public static function reserved_files() {
+    return array('.bzr', '.bzrignore', '.bzrtags');
+  }
 }
