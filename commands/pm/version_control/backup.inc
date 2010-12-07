@@ -11,6 +11,9 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
    * Implementation of pre_update().
    */
   public function pre_update(&$project, $items_to_test = array()) {
+    if (drush_get_option('no-backup', FALSE)) {
+      return;
+    }
     if ($backup_dir = $this->prepare_backup_dir()) {
       if ($project['project_type'] != 'core') {
         $backup_target = $backup_dir . '/' . $project['project_type'] . 's';
@@ -38,6 +41,9 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
    * Implementation of rollback().
    */
   public function rollback($project) {
+    if (drush_get_option('no-backup', FALSE)) {
+      return;
+    }
     if (drush_op('rename', $project['backup_target'], $project['full_project_path']) && is_dir($project['full_project_path'])) {
       return drush_log(dt("Backups were restored successfully."), 'ok');
     }
@@ -48,6 +54,9 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
    * Implementation of post_update().
    */
   public function post_update($project) {
+    if (drush_get_option('no-backup', FALSE)) {
+      return;
+    }
     if ($project['backup_target']) {
       drush_log(dt("Backups were saved into the directory !backup_target.", array('!backup_target' => $project['backup_target'])), 'ok');
     }

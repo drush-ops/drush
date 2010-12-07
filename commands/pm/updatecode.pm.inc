@@ -318,8 +318,13 @@ function pm_update_packages($update_info) {
   // We print some warnings before the user confirms the update.
   drush_print();
   drush_print(dt("Note: Updated projects can potentially break your site. It is NOT recommended to update production sites without prior testing."));
-  drush_print(dt("Note: A backup of your project will be stored to backups directory if it is not managed by a supported version control system."));
-  drush_print(dt('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
+  if (drush_get_option('no-backup', FALSE)) {
+    drush_print(dt("Note: You have selected to not store backups."));
+  }
+  else {
+    drush_print(dt("Note: A backup of your project will be stored to backups directory if it is not managed by a supported version control system."));
+    drush_print(dt('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
+  }
   if(!drush_confirm(dt('Do you really want to continue with the update process?'))) {
     drush_user_abort();
   }

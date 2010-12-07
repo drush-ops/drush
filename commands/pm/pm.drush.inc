@@ -1716,6 +1716,7 @@ function pm_drush_engine_version_control() {
       ),
       'sub-options' => array(
         '--version-control=backup' => array(
+          '--no-backup' => 'Do not perform backups.',
           '--backup-dir' => 'Specify a directory to backup projects into. Defaults to .drush-backups within the home directory of the user running the command. It is forbidden to specify a directory inside your drupal root.',
         ),
       ),
