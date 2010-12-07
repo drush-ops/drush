@@ -44,6 +44,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array(DRUSH_BASE_PATH . '/examples/example.aliases.drushrc.php'),
   );
+  $items['docs-ini-files'] = array(
+    'description' => dt('Configuring php.ini or drush.ini for use with drush'),
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array(DRUSH_BASE_PATH . '/examples/example.drush.ini'),
+  );
   $items['docs-bootstrap'] = array(
     'description' => dt('Information about the drush bootstrap process.'),
     'hidden' => TRUE,
