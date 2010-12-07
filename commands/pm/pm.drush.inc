@@ -1221,7 +1221,7 @@ function _drush_pm_get_releases_from_update_status($projects) {
         $status[] = dt('Recommended');
         $info[$key]['recommended'] = $version;
       }
-      if ($release['version_extra'] == 'dev') {
+      if (isset($release['version_extra']) && ($release['version_extra'] == 'dev')) {
         $status[] = dt('Development');
       }
       // #TODO# Note here we suffer the project<->package-name problem:
@@ -1302,6 +1302,8 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE) {
         $releases = array_reverse($project['releases']);
         foreach($releases as $version => $release) {
           if ($release['date'] >= $project['releases'][$project['installed']]['date']) {
+            $release += array('version_extra' => '');
+            $project['releases'][$project['installed']] += array('version_extra' => '');
             if ($release['version_extra'] == 'dev' && $project['releases'][$project['installed']]['version_extra'] != 'dev') {
               continue;
             }
@@ -2224,6 +2226,9 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
   
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   foreach ($projects as $name => $project) {
+    if ($name == 'drupal') {
+      continue;
+    }
     $message = NULL;
     $lockfile = $drupal_root . '/' . $project['path'] . '/.drush-lock-update';
     
