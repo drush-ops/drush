@@ -65,6 +65,17 @@ function core_drush_command() {
     ),
     'topics' => array('docs-readme'),
   );
+  $items['php-eval'] = array(
+    'description' => 'Evaluate arbitrary php code after bootstrapping Drupal.',
+    'examples' => array(
+      'drush php-eval "variable_set(\'hello\', \'world\');"' => 'Sets the hello variable using Drupal API.',
+    ),
+    'arguments' => array(
+      'code' => 'PHP code',
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
+    'deprecated-aliases' => array('eval'),
+  );
   $items['php-script'] = array(
     'description' => "Run php script(s).",
     'examples' => array(
@@ -133,16 +144,6 @@ function core_drush_command() {
     ),
     'aliases' => array('rsync'),
     'deprecated-aliases' => array('sync'),
-  );
-  $items['php-eval'] = array(
-    'description' => 'Evaluate arbitrary php code after bootstrapping Drupal.',
-    'examples' => array(
-      'drush php-eval "variable_set(\'hello\', \'world\');"' => 'Sets the hello variable using Drupal API.',
-    ),
-    'arguments' => array(
-      'code' => 'PHP code',
-    ),
-    'deprecated-aliases' => array('eval'),
   );
   $items['site-install'] = array(
     'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
