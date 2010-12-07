@@ -67,7 +67,7 @@ function sql_drush_sql_sync_sanitize($site) {
   $user_table_updates = array();
   $message_list = array();
 
-  // Sanitize email addresses
+  // Sanitize passwords.
   $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
   if ($newpassword != 'no') {
     $major_version = drush_drupal_major_version();
@@ -91,11 +91,11 @@ function sql_drush_sql_sync_sanitize($site) {
     }
   }
 
-  // Sanitize passwords
+  // Sanitize email addresses.
   $newemail = drush_get_option(array('sanitize-email', 'destination-sanitize-email'), 'user+%uid@localhost');
   if ($newemail != 'no') {
     if (strpos($newemail, '%') !== FALSE) {
-      // We need a different sanitization query for Postgres and Mysql
+      // We need a different sanitization query for Postgres and Mysql.
       $db_driver = $site_settings['databases']['default']['default']['driver'];
       if ($db_driver == 'pgsql') {
         $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%login' => "' || replace(login, ' ', '_') || '");
