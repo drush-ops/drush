@@ -368,6 +368,21 @@ function pm_update_packages($update_info) {
  *   to the location where this project is stored.
  */
 function pm_update_project($project, $version_control) {
+  // 1. If the version control engine is a proper vcs we need to remove project
+  // files in order to not have orphan files after update.
+  // 2. If the package-handler is cvs or git, it will remove upstream removed
+  // files and no orphans will exist after update.
+  // So, we must remove all files previous update if the directory is not a
+  // working copy of cvs or git but we don't need to remove them if the version
+  // control engine is backup, as it did already move the project out to the
+  // backup directory.
+  if (($version_control->engine != 'backup') && (drush_get_option('package-handler', 'wget') == 'wget')) {
+    // Find and unlink all files but the ones in the vcs control directories.
+    $skip_list = array('.', '..');
+    $skip_list = array_merge($skip_list, drush_version_control_reserved_files());
+    drush_scan_directory($project['full_project_path'], '/.*/', $skip_list, 'unlink', TRUE, 'filename', 0, TRUE);
+  }
+
   // Add the project to a context so we can roll back if needed.
   $updated = drush_get_context('DRUSH_PM_UPDATED');
   $updated[] = $project;
@@ -375,6 +390,13 @@ function pm_update_project($project, $version_control) {
 
   if (!package_handler_update_project($project, $project['releases'][$project['candidate_version']])) {
     return drush_set_error('DRUSH_PM_UPDATING_FAILED', dt('Updating project !project failed. Attempting to roll back to previously installed version.', array('!project' => $project['name'])));
+  }
+
+  // If the version control engine is a proper vcs we also need to remove
+  // orphan directories.
+  if (($version_control->engine != 'backup') && (drush_get_option('package-handler', 'wget') == 'wget')) {
+    $files = drush_find_empty_directories($project['full_project_path'], $version_control->reserved_files());
+    array_map('drush_delete_dir', $files);
   }
 
   return TRUE;

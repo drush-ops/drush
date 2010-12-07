@@ -1811,8 +1811,10 @@ function drush_pm_include_version_control($directory = '.') {
   if (!drush_include_engine('version_control', $engine)) {
     return FALSE;
   }
-  $engine = 'drush_pm_version_control_' . $engine;
-  return new $engine();
+  $class = 'drush_pm_version_control_' . $engine;
+  $instance = new $class();
+  $instance->engine = $engine;
+  return $instance;
 }
 
 /**
@@ -2337,4 +2339,58 @@ function drush_pm_extensions_in_project($project) {
     }
     drush_print_pipe($found);
   }
+}
+
+/**
+ * Return an array of empty directories.
+ *
+ * Walk a directory and return an array of subdirectories that are empty. Will
+ * return the given directory if it's empty.
+ * If a list of items to exclude is provided, subdirectories will be condidered
+ * empty even if they include any of the items in the list.
+ *
+ * @param string $dir
+ *   Path to the directory to work in.
+ * @param array $exclude
+ *   Array of files or directory to exclude in the check.
+ */
+function drush_find_empty_directories($dir, $exclude = array()) {
+  $to_exclude = array_merge(array('.', '..'), $exclude);
+  $empty = array();
+  $dir_is_empty = TRUE;
+  if ($dh = opendir($dir)) {
+    while (($file = readdir($dh)) !== FALSE) {
+      if (in_array($file, $to_exclude)) {
+        continue;
+      }
+      if (is_dir($dir .'/'. $file)) {
+        $subdir = $dir .'/'. $file;
+        $subdir_is_empty = TRUE;
+        if ($dh2 = opendir($subdir)) {
+          while (($file2 = readdir($dh2)) !== FALSE) {
+            if (in_array($file2, $to_exclude)) {
+              continue;
+            }
+            $subdir_is_empty = FALSE;
+            if (is_dir($subdir . '/'. $file2)) {
+              $empty2 = drush_find_empty_directories($subdir . '/'. $file2, $exclude);
+              $empty = array_merge($empty, $empty2);
+            }
+          }
+          if ($subdir_is_empty) {
+            $empty[] = $subdir . '/'. $file2;
+          }
+        }
+        closedir($dh2);
+      }
+      $dir_is_empty = FALSE;
+    }
+  }
+  closedir($dh);
+
+  if ($dir_is_empty) {
+    return array($dir);
+  }
+
+  return $empty;
 }
