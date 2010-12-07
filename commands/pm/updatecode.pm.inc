@@ -197,7 +197,8 @@ function _pm_update_core(&$project, $module_list = array()) {
   }
 
   // Create a list of directories to exclude from the update process.
-  $skip_list = array('sites', $project['path'], '.svn');
+  $skip_list = array('sites', $project['path']);
+  $skip_list = array_merge($skip_list, drush_version_control_reserved_files());
   // Add non-writable directories: we can't move them around.
   // We will also use $items_to_test later for $version_control check.
   $items_to_test = drush_scan_directory($drupal_root, '/.*/', array_merge(array('.', '..'), $skip_list), 0, FALSE, 'basename', 0, TRUE);

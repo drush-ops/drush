@@ -95,17 +95,19 @@ function drush_pm_cvs($project, $release) {
   }
   else {
     if ($cvsparams === FALSE) {
-      // By default we update overwriting changes, however if we have
-      // an existing CVS checkout that is version controlled then the
-      // default is to update in place, which will attempt to merge changes
-      // but we assume anyone using SVN is competent enough to deal with this!
-      // TODO: Make this work with BZR etc.
-      if (!file_exists($project['full_project_path'] . '/.svn')) {
-        $command[] = '-dPC';
+      // By default we update overwriting changes, however if we have an
+      // existing CVS checkout that is version controlled then the default is
+      // to update in place, which will attempt to merge changes but we assume
+      // anyone using a VCS is competent enough to deal with this!
+      $reserved_files = drush_version_control_reserved_files();
+      $overwrite = TRUE;
+      foreach ($reserved_files as $file) {
+        if (file_exists($project['full_project_path'] . '/' . $file)) {
+          $overwrite = FALSE;
+          break;
+        }
       }
-      else {
-        $command[] = '-dP';
-      }
+      $command[] = $overwrite?'-dPC':'-dP';
     }
     // Directory to work on.
     $command[] = $project['project_dir'];

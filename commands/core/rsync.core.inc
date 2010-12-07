@@ -87,11 +87,17 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
  *   TRUE on success, FALSE on failure.
  */
 function drush_core_call_rsync($source, $destination, $additional_options = array(), $include_settings_is_default = TRUE, $live_output = TRUE) {
-  $options = ' --exclude="*.svn*"';
+  // Exclude vcs reserved files.
+  $options = '';
+  $vcs_files = drush_version_control_reserved_files();
+  foreach ($vcs_files as $file) {
+    $options .= ' --exclude="'.$file.'"';
+  }
+
   $mode = '-az';
   // Process --include-path and --exclude-path options the same way
   foreach (array('include', 'exclude') as $include_exclude) {
-    // Get the option --include-path or --exclude path and explode to an array of paths
+    // Get the option --include-path or --exclude-path and explode to an array of paths
     // that we will translate into an --include or --exclude option to pass to rsync
     $inc_ex_path = explode(PATH_SEPARATOR, drush_get_option(array($include_exclude . '-path', $include_exclude . '-paths'), ''));
     foreach ($inc_ex_path as $one_path_to_inc_ex) {

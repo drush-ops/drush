@@ -1814,28 +1814,6 @@ function drush_pm_include_version_control($directory = '.') {
 }
 
 /**
- * Return a list of all supported vcs reserved files and directories.
- */
-function drush_version_control_reserved_files() {
-  static $files = FALSE;
-
-  if (!$files) {
-    $files = array();
-    $vcs = array_keys(pm_drush_engine_version_control());
-    foreach ($vcs as $name) {
-      drush_include_engine('version_control', $name);
-      $class = 'drush_pm_version_control_' . $name;
-      // For php < 5.3 we can't access a static method by referencing the class
-      // using a variable.
-      $version_control = new $class();
-      $files = array_merge($files, $version_control->reserved_files());
-    }
-  }
-
-  return $files;
-}
-
-/**
  * Implementation of drush_COMMAND_validate().
  */
 function drush_pm_download_validate() {

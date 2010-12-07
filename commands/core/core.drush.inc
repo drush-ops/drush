@@ -417,7 +417,7 @@ function core_drush_help($section) {
     case 'drush:updatedb':
       return dt("Run update.php just as a web browser would.");
     case 'drush:rsync':
-      return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes .svn directories. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
+      return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes reserved files and directories for supported VCSs. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
     case 'drush:php-eval':
       return dt("Run arbitrary PHP code in the context of Drupal");
     case 'drush:site-install':
@@ -844,7 +844,9 @@ function drush_core_find_project_path($target) {
 
   $files = array();
   foreach ($masks as $key => $mask) {
-    if ($files = drush_scan_directory("$key", $mask, array('..', '.', 'CVS', '.svn', '.bzr'), 0, TRUE, 'name')) {
+    $skip_list = array('.', '..', 'CVS');
+    $skip_list = array_merge($skip_list, drush_version_control_reserved_files());
+    if ($files = drush_scan_directory("$key", $mask, $skip_list, 0, TRUE, 'name')) {
       // Just use the first match.
       $file = reset($files);
       return drush_get_context('DRUSH_DRUPAL_ROOT') . '/' . dirname($file->filename);
