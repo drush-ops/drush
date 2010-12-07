@@ -1778,9 +1778,15 @@ interface drush_pm_version_control {
  */
 function drush_pm_include_version_control($directory = '.') {
   $version_control_engines = drush_get_engines('version_control');
-  // Backup engine is the last option.
-  $defaults = array_reverse(array_keys($version_control_engines));
-  $version_controls = explode(',', drush_get_option('version-control', $defaults));
+  $version_controls = drush_get_option('version-control', FALSE);
+  // If no version control was given, use a list of defaults.
+  if (!$version_controls) {
+    // Backup engine is the last option.
+    $version_controls = array_reverse(array_keys($version_control_engines));
+  }
+  else {
+    $version_controls = array($version_controls);
+  }
 
   // Find the first valid engine in the list, checking signatures if needed.
   $engine = FALSE;
