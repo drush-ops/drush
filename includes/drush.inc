@@ -1288,12 +1288,20 @@ function drush_confirm($msg, $indent = 0) {
  */
 function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') {
   print dt($prompt) . "\n";
-
-  $rows[] = array('[0]', ':', 'Cancel');
+  
+  // Preflight so that all rows will be padded out to the same number of columns
+  $array_pad = 0;
+  foreach ($options as $key => $option) {
+    if (is_array($option) && (count($option) > $array_pad)) {
+      $array_pad = count($option);
+    }
+  }
+  
+  $rows[] = array_pad(array('[0]', ':', 'Cancel'), $array_pad + 2, '');
   $selection_number = 0;
   foreach ($options as $key => $option) {
     if ((substr($key, 0, 3) == '-- ') && (substr($key, -3) == ' --')) {
-      $rows[] = array('', '', $option);
+      $rows[] = array_pad(array('', '', $option), $array_pad + 2, '');
     }
     else {
       $selection_number++;
