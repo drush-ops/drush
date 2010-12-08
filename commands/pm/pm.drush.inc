@@ -323,6 +323,59 @@ function drush_pm_classify_extensions(&$extensions, &$modules, &$themes, $extens
 }
 
 /**
+ * Obtain an array of installed projects off the extensions available.
+ *
+ * A project is considered to be 'enabled' when any of its extensions is
+ * enabled.
+ *
+ * @return
+ *   Array of installed projects with info of version, status and provided
+* extensions.
+ */
+function drush_get_projects() {
+  $projects = array('drupal' => array('version' => VERSION));
+  $extensions = drush_get_extensions();
+  foreach ($extensions as $extension) {
+    // The project name is not available in this cases:
+    // 1. the extension is part of drupal core.
+    // 2. the project was checked out from CVS/git and cvs_deploy/git_deploy
+    // is not installed.
+    // 3. it is not a project hosted in drupal.org.
+    if (!isset($extension->info['project'])) {
+      if ($extension->info['version'] == VERSION) {
+        $project = 'drupal';
+      }
+      else {
+        if (is_dir(dirname($extension->filename) . '/CVS') && (!module_exists('cvs_deploy'))) {
+          drush_log(dt('Extension !extension is fetched from cvs. Ignoring.', array('!extension' => $extension->name)), 'debug');
+       }
+        elseif (is_dir(dirname($extension->filename) . '/.git') && (!module_exists('git_deploy'))) {
+          drush_log(dt('Extension !extension is fetched from git. Ignoring.', array('!extension' => $extension->name)), 'debug');
+        }
+        continue;
+      }
+    }
+    else {
+        $project = $extension->info['project'];
+    }
+    // Create/update the project in $projects with the project data.
+    if (!isset($projects[$project])) {
+      $projects[$project] = array(
+        'version' => $extension->info['version'],
+        'status' => $extension->status,
+        'extensions' => array(),
+      );
+    }
+    elseif ($extension->status != 0) {
+      $projects[$project]['status'] = $extension->status;
+    }
+    $projects[$project]['extensions'][] = $extension->name;
+  }
+
+  return $projects;
+}
+
+/**
  * @} End of "defgroup extensions".
  */
 
@@ -981,7 +1034,18 @@ function drush_pm_releases() {
 /**
  * Obtain releases for a project's xml as returned by the update service.
  */
-function _drush_pm_get_releases_from_xml($xml) {
+function _drush_pm_get_releases_from_xml($xml, $project) {
+  // If bootstraped, we can obtain which is the installed release of a project.
+  static $installed_projects = FALSE;
+  if (!$installed_projects) {
+    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+      $installed_projects = drush_get_projects();
+    }
+    else {
+      $installed_projects = array();
+    }
+  }
+
   foreach (array('title', 'short_name', 'dc:creator', 'api_version', 'recommended_major', 'supported_majors', 'default_major', 'project_status', 'link') as $item) {
     if (array_key_exists($item, $xml)) {
       $value = $xml->xpath($item);
@@ -1032,6 +1096,12 @@ function _drush_pm_get_releases_from_xml($xml) {
         $statuses[] = "Security";
       }
     }
+    if (isset($installed_projects[$project])) {
+      if ($installed_projects[$project]['version'] == $release_info['version']) {
+         $statuses[] = dt('Installed');
+         $project_info['installed'] = $release_info['version'];
+       }
+    }
     $release_info['release_status'] = $statuses;
     $releases[$release_info['version']] = $release_info;
   }
@@ -1066,7 +1136,7 @@ function _drush_pm_releases_from_xml($xml, $project) {
   // If we are not bootstrapped, then we will extract the release info from
   // the release-history xml.
   else {
-    $project_info = _drush_pm_get_releases_from_xml($xml);
+    $project_info = _drush_pm_get_releases_from_xml($xml, $project);
     $releases = $project_info['releases'];
   }
   return $releases;
@@ -1177,11 +1247,8 @@ function _drush_pm_get_releases_from_update_status($projects) {
     }
   }
 
-  // Info on extensions present in the bootstrapped site will be used to
-  // identify if any project release is installed.
-  $extension_info = drush_get_extensions();
-
   // Iterate the projects to collect relevant information.
+  $installed_projects = drush_get_projects();
   foreach ($info as $key => $project) {
     // Find latest and recommended versions based on the recommended
     // major version.
@@ -1224,13 +1291,8 @@ function _drush_pm_get_releases_from_update_status($projects) {
       if (isset($release['version_extra']) && ($release['version_extra'] == 'dev')) {
         $status[] = dt('Development');
       }
-      // #TODO# Note here we suffer the project<->package-name problem:
-      // Following only works for modules/themes with name with
-      // drupal.org's project name (zen->zen but not for cck->content).
-      // See _drush_pm_releasenotes() for an option to get that info
-      // from update's project data.
-      if (isset($extension_info[$key])) {
-        if ($extension_info[$key]->info['version'] == $version) {
+      if (isset($installed_projects[$key])) {
+        if ($installed_projects[$key]['version'] == $version) {
           $status[] = dt('Installed');
           $info[$key]['installed'] = $version;
         }
@@ -1282,16 +1344,6 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE) {
 
   foreach ($info as $key => $project) {
     $selected_versions = array();
-    // #TODO# project<->package-name problem. See _drush_pm_get_releases().
-    if (!isset($project['installed']) && (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-      // Installed package's version (e.g. cck) is detected by
-      // _drush_pm_get_releases(). Attempted to obtain information
-      // about it from update_cache.
-      $cache_project_info = _update_cache_get('update_project_projects');
-      if (isset($cache_project_info->data[$key])) {
-        $project['installed'] = $cache_project_info->data[$key]['info']['version'];
-      }
-    }
     // If the request included version, only show its release notes.
     if (isset($requests[$key]['version'])) {
       $selected_versions[] = $requests[$key]['version'];
@@ -1920,7 +1972,7 @@ function _drush_pm_get_releases_from_release_history($requests) {
       continue;
     }
 
-    $project_info = _drush_pm_get_releases_from_xml($xml);
+    $project_info = _drush_pm_get_releases_from_xml($xml, $name);
     $info[$name] = $project_info;
   }
   return $info;
