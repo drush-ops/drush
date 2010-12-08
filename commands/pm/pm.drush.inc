@@ -327,14 +327,22 @@ function drush_pm_classify_extensions(&$extensions, &$modules, &$themes, $extens
  *
  * A project is considered to be 'enabled' when any of its extensions is
  * enabled.
+ * If any extension lacks project information and it is found that the
+ * extension was obtained from drupal.org's cvs or git repositories, a new
+ * 'vcs' attribute will be set on the extension. Example:
+ *   $extensions[name]->vcs = 'cvs';
  *
+ * @param array $extensions.
+ *   Array of extensions as returned by drush_get_extensions().
  * @return
  *   Array of installed projects with info of version, status and provided
 * extensions.
  */
-function drush_get_projects() {
+function drush_get_projects(&$extensions = NULL) {
+  if (is_null($extensions)) {
+    $extensions = drush_get_extensions();
+  }
   $projects = array('drupal' => array('version' => VERSION));
-  $extensions = drush_get_extensions();
   foreach ($extensions as $extension) {
     // The project name is not available in this cases:
     // 1. the extension is part of drupal core.
@@ -347,9 +355,11 @@ function drush_get_projects() {
       }
       else {
         if (is_dir(dirname($extension->filename) . '/CVS') && (!module_exists('cvs_deploy'))) {
+          $extension->vcs = 'cvs';
           drush_log(dt('Extension !extension is fetched from cvs. Ignoring.', array('!extension' => $extension->name)), 'debug');
        }
         elseif (is_dir(dirname($extension->filename) . '/.git') && (!module_exists('git_deploy'))) {
+          $extension->vcs = 'git';
           drush_log(dt('Extension !extension is fetched from git. Ignoring.', array('!extension' => $extension->name)), 'debug');
         }
         continue;
@@ -1096,6 +1106,7 @@ function _drush_pm_get_releases_from_xml($xml, $project) {
         $statuses[] = "Security";
       }
     }
+    // Add to status whether the project is installed.
     if (isset($installed_projects[$project])) {
       if ($installed_projects[$project]['version'] == $release_info['version']) {
          $statuses[] = dt('Installed');
