@@ -9,8 +9,12 @@ function drush_core_site_install_version($profile) {
     $profile = 'default';
   }
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  
-  $phpcode = _drush_site_install6_cookies($profile). ' include("'. $drupal_root .'/install.php");';
+
+  // We need to disable reporting of E_NOTICE if we want to read the command's output
+  // on Windows, because of how Windows is handling output order when using 2>&1
+  // redirect added to the command in drush_shell_exec(). We will actually take out
+  // all but fatal errors.  See http://drupal.org/node/985716 for more information.
+  $phpcode = 'error_reporting(E_ERROR);' . _drush_site_install6_cookies($profile). ' include("'. $drupal_root .'/install.php");';
   drush_shell_exec('php -r %s', $phpcode);
   $cli_output = drush_shell_exec_output();
   $cli_cookie = end($cli_output);
