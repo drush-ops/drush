@@ -890,7 +890,7 @@ function drush_core_cli() {
   // control-d to exit.  The temp file will be deleted after
   // we exit.
   $bashrc = drush_save_data_to_temp_file($bashrc_data);
-  drush_op('system', 'bash --rcfile ' . $bashrc . ' > `tty`');
+  drush_op_system('bash --rcfile ' . $bashrc . ' > `tty`');
 }
 
 // Implement our own hook_cli_bashrc()

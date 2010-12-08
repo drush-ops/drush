@@ -719,14 +719,24 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
  * (e.g. unlink() and other file system functions) so that can be suppressed
  * if the simulation mode is enabled.
  *
+ * Important:  Call @see drush_op_system() to execute a shell command,
+ * or @see drush_shell_exec() to execute a shell command and capture the
+ * shell output.
+ *
  * @param $function
  *   The name of the function. Any additional arguments are passed along.
  * @return
  *   The return value of the function, or TRUE if simulation mode is enabled.
+ *
  */
 function drush_op($function) {
   $args = func_get_args();
   array_shift($args); // Skip function name
+  
+  // Special checking for drush_op('system')
+  if ($function == 'system') {
+    drush_log(dt("Do not call drush_op('system'); use drush_op_system instead"), 'debug');
+  }
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
      drush_print("Calling $function(". implode(", ", $args) .')');
@@ -737,6 +747,35 @@ function drush_op($function) {
   }
 
   return call_user_func_array($function, $args);
+}
+
+/**
+ * Calls 'system()' function, passing through all arguments unchanged.
+ *
+ * This should be used when calling possibly mutative or destructive functions
+ * (e.g. unlink() and other file system functions) so that can be suppressed
+ * if the simulation mode is enabled.
+ *
+ * @param $exec
+ *   The shell command to execute.  Parameters should already be escaped.
+ * @return
+ *   The result code from system():  0 == success.
+ *
+ * @see drush_shell_exec()
+ */
+function drush_op_system($exec) {
+  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+     drush_print("Calling system($exec);");
+  }
+
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    return 0;
+  }
+  
+  // Throw away output.  Use drush_shell_exec() to capture output.
+  system($exec, $result_code);
+  
+  return $result_code;
 }
 
 /**
@@ -1010,6 +1049,9 @@ function drush_shell_exec_interactive($cmd) {
  * @param $interactive
  *   Whether to run in 
  *
+ * @return
+ *   0 if success.
+ *
  * @see drush_shell_exec.
  */
 function _drush_shell_exec($args, $interactive = FALSE) {
@@ -1027,10 +1069,12 @@ function _drush_shell_exec($args, $interactive = FALSE) {
     if ($interactive) {
       $result = proc_open($command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
       proc_close($result);
-      return ($result !== FALSE);
+      // proc_open returns FALSE on failure, or a resource on success.
+      // drush_shell_exec returns 0 on success and 1 on failure.
+      return ($result === FALSE) ? 1 : 0;
     }
     else {
-      exec($command . ($interactive ? '' : ' 2>&1'), $output, $result);
+      exec($command . ' 2>&1', $output, $result);
       _drush_shell_exec_output_set($output);
 
       if (drush_get_context('DRUSH_DEBUG')) {
@@ -1040,16 +1084,19 @@ function _drush_shell_exec($args, $interactive = FALSE) {
       }
 
       // Exit code 0 means success.
-      return ($result == 0);
+      return $result;
     }
   }
   else {
-    return TRUE;
+    return 0;
   }
 }
 
 /**
  * Platform-independent version of escapeshellarg().
+ * This only works for local commands.
+ * TODO: Make a unified drush_escapeshellarg
+ * that works on Linux and Windows.
  */
 function drush_escapeshellarg($arg) {
   if (drush_is_windows()) {

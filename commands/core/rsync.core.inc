@@ -247,13 +247,13 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
   $exec = "rsync -e 'ssh $ssh_options' $mode$options $source $destination";
 
   if ($live_output) {
-    $exec_result = drush_op('system', $exec) !== FALSE;
+    $exec_result = drush_op_system($exec);
   }
   else {
     $exec_result = drush_shell_exec($exec);
   }
 
-  return $exec_result;
+  return $exec_result == 0;
 }
 
 function _drush_rsync_option_exists($option, $additional_options) {

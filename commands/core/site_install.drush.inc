@@ -94,24 +94,25 @@ function drush_core_pre_site_install() {
   unset($db_spec['database']);
   $credentials = _drush_sql_get_credentials($db_spec);
 
+  $db_quoted_name = "\"$db_name\"";
   $scheme_command = $scheme;
   switch ($scheme) {
     case 'mysql':
       $command_parameter_name = 'execute';
+      $db_quoted_name = "`$db_name`";
       break;
     case 'pgsql':
-      $scheme_command = 'psql';
+      $scheme_command = 'psql --dbname=template1';
       $command_parameter_name = 'command';
       break;
   }
   $execute = "$scheme_command $credentials --$command_parameter_name";
-
-  if (drush_op('system', "$execute='DROP DATABASE IF EXISTS `$db_name`'") && !$simulate) {
+  
+  if (drush_op_system("$execute='DROP DATABASE IF EXISTS $db_quoted_name'")) {
     drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));
     return;
   }
-
-  if (drush_op('system', "$execute='CREATE DATABASE `$db_name`'") && !$simulate) {
+  if (drush_op_system("$execute='CREATE DATABASE $db_quoted_name'")) {
     drush_set_error(dt('Could not create new database: @name', array('@name' => $db_name)));
     return;
   }

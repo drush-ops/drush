@@ -207,7 +207,7 @@ function drush_sql_connect() {
 function drush_sql_dump_execute() {
   list($exec, $file) = drush_sql_dump();
   // Avoid the php memory of the $output array in drush_shell_exec().
-  if (!$return = drush_op('system', $exec)) {
+  if (!$return = drush_op_system($exec)) {
     drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
   }
   return $return;
@@ -452,7 +452,7 @@ function _drush_sql_query($query, $db_spec = NULL) {
     if (drush_get_context('DRUSH_SIMULATE')) {
       drush_print('sql-query: ' . $query);
     }
-    $return = drush_op('system', $exec) !== FALSE;
+    $return = drush_op_system($exec) == 0;
     return $return;
   }
 }
@@ -509,7 +509,7 @@ function drush_sql_drop() {
     // SQL command and we're technically performing several.
     $exec = _drush_sql_connect();
     $exec .= " '{$sql}'";
-    return drush_op('system', $exec);
+    return drush_op_system($exec) == 0;
   }
   else {
     // Shift off the header of the column of data returned.

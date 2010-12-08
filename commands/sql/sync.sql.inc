@@ -334,7 +334,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
 
     // Call sql-dump, either on the local machine or remotely via ssh, as appropriate.
     if (!empty($dump_exec)) {
-      drush_op('system', $dump_exec);
+      drush_op_system($dump_exec);
       // TODO: IF FAILURE THEN ABORT
     }
 
@@ -426,7 +426,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         $import_exec = $pre_import_commands . $import_command . ' < ' . $local_file;
       }
 
-      drush_op('system', $import_exec);
+      drush_op_system($import_exec);
       
       // After the database is imported into the destination, we
       // will check and see if we did not collect sanitization
