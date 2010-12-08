@@ -837,14 +837,19 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
  *   The path to the file to download
  *
  * @return string
- *   The filename that was downloaded
+ *   The filename that was downloaded,
+ *   or NULL if the file could not be
+ *   downloaded.
  */
 function _drush_download_file($url) {
-  if (!drush_shell_exec("wget $url")) {
-    drush_shell_exec("curl -O $url");
-  }
   $filename = explode('/', $url);
   $filename = array_pop($filename);
+
+  if (!drush_shell_exec("wget %s", $url)) {
+    if(!drush_shell_exec("curl -O %s", $url)) {
+      return NULL;
+    }
+  }
 
   return $filename;
 }
@@ -997,7 +1002,7 @@ function drush_print_help($command) {
  * @param ...
  *   Values for the placeholders specified in $cmd. Each of these will be passed through escapeshellarg() to ensure they are safe to use on the command line.
  * @return
- *   0 if success.
+ *   TRUE on success, FALSE on failure
  */
 function drush_shell_cd_and_exec($effective_wd, $cmd) {
   $args = func_get_args();
@@ -1021,7 +1026,7 @@ function drush_shell_cd_and_exec($effective_wd, $cmd) {
  * @param ...
  *   Values for the placeholders specified in $cmd. Each of these will be passed through escapeshellarg() to ensure they are safe to use on the command line.
  * @return
- *   0 if success.
+ *   TRUE on success, FALSE on failure
  */
 function drush_shell_exec($cmd) {
   return _drush_shell_exec(func_get_args());
@@ -1050,7 +1055,7 @@ function drush_shell_exec_interactive($cmd) {
  *   Whether to run in 
  *
  * @return
- *   0 if success.
+ *   TRUE on success, FALSE on failure
  *
  * @see drush_shell_exec.
  */
@@ -1070,8 +1075,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
       $result = proc_open($command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
       proc_close($result);
       // proc_open returns FALSE on failure, or a resource on success.
-      // drush_shell_exec returns 0 on success and 1 on failure.
-      return ($result === FALSE) ? 1 : 0;
+      return ($result === FALSE) ? FALSE : TRUE;
     }
     else {
       exec($command . ' 2>&1', $output, $result);
@@ -1084,11 +1088,11 @@ function _drush_shell_exec($args, $interactive = FALSE) {
       }
 
       // Exit code 0 means success.
-      return $result;
+      return ($result == 0);
     }
   }
   else {
-    return 0;
+    return TRUE;
   }
 }
 
