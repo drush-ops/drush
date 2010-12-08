@@ -6,6 +6,23 @@
  */
 
 /**
+ * Validate this package handler can run.
+ */
+function package_handler_validate() {
+  // Check wget or curl command exists. Disable possible output.
+  $debug = drush_get_context('DRUSH_DEBUG');
+  drush_set_context('DRUSH_DEBUG', FALSE);
+  $success = drush_shell_exec('wget --version');
+  if (!$success) {
+    $success = drush_shell_exec('curl --version');
+  }
+  drush_set_context('DRUSH_DEBUG', $debug);
+  if (!$success) {
+    return drush_set_error('DRUSH_SHELL_COMMAND_NOT_FOUND', dt('wget nor curl executables found.'));
+  }
+}
+
+/**
  * Download a project.
  *
  * @param $request Array with information on the request to download.

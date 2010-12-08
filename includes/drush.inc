@@ -1034,9 +1034,9 @@ function _drush_shell_exec($args, $interactive = FALSE) {
       _drush_shell_exec_output_set($output);
 
       if (drush_get_context('DRUSH_DEBUG')) {
-	foreach ($output as $line) {
+        foreach ($output as $line) {
           drush_print($line, 2);
-	}
+        }
       }
 
       // Exit code 0 means success.

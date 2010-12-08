@@ -1448,6 +1448,13 @@ function drush_pm_updatecode_validate() {
   if (is_dir($drupal_root . '/' . 'backup')) {
     return drush_set_error('DRUSH_PM_BACKUP_DIR_FORBIDDEN', dt('It\'s a security risk to have a backup folder in your Drupal root. You must move it elsewhere before proceeding.'));
   }
+
+  // Validate package-handler.
+  $package_handler = drush_get_option('package-handler', 'wget');
+  drush_include_engine('package_handler', $package_handler);
+  if (!package_handler_validate()) {
+    return FALSE;
+  }
 }
 
 /**
@@ -1876,6 +1883,13 @@ function drush_pm_download_validate() {
     if ($variant) {
       drush_log(dt('Switching to --variant=!variant.', array('!variant' => $new_variant)), 'ok');
     }
+  }
+  
+  // Validate package-handler.
+  $package_handler = drush_get_option('package-handler', 'wget');
+  drush_include_engine('package_handler', $package_handler);
+  if (!package_handler_validate()) {
+    return FALSE;
   }
 }
 

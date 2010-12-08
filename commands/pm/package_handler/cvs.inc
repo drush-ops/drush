@@ -6,6 +6,26 @@
  */
 
 /**
+ * Validate this package handler can run.
+ */
+function package_handler_validate() {
+  // Check cvs command exists. Disable possible output.
+  $debug = drush_get_context('DRUSH_DEBUG');
+  drush_set_context('DRUSH_DEBUG', FALSE);
+  $success = drush_shell_exec('cvs --version');
+  drush_set_context('DRUSH_DEBUG', $debug);
+  if (!$success) {
+    return drush_set_error('DRUSH_SHELL_COMMAND_NOT_FOUND', dt('cvs executable not found.'));
+  }
+  // Check cvs_deploy is enabled. Only for bootstrapped sites.
+  if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+    if (!module_exists('cvs_deploy')) {
+      drush_log(dt('cvs package handler needs cvs_deploy module enabled to work properly.'), 'warning');
+    }
+  }
+}
+
+/**
  * Install a project.
  *
  * @param $project The project array with name, base and full (final) paths.
