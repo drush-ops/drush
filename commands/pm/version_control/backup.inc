@@ -14,12 +14,12 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
     if (drush_get_option('no-backup', FALSE)) {
       return;
     }
-    if ($backup_dir = $this->prepare_backup_dir()) {
+    if ($backup_target = $this->prepare_backup_dir()) {
       if ($project['project_type'] != 'core') {
-        $backup_target = $backup_dir . '/' . $project['project_type'] . 's';
+        $backup_target .= '/' . $project['project_type'] . 's';
         drush_mkdir($backup_target);
       }
-      $backup_target = $backup_target . '/'. $project['name'];
+      $backup_target .= '/'. $project['name'];
       // Save for rollback or notifications.
       $project['backup_target'] = $backup_target;
 
