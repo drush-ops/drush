@@ -516,7 +516,7 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $output_fi
     drush_print($output);
   }
   else {
-    file_put_contents($output_file, $output, FILE_APPEND);    
+    file_put_contents($output_file, $output, FILE_APPEND);
   }
   return $tbl;
 }

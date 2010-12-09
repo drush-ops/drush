@@ -170,6 +170,10 @@ $options['skip-tables'] = array(
 // Separate by : (Unix-based systems) or ; (Windows).
 # $command_specific['script']['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
 
+// Always show release notes when running pm-update or pm-updatecode
+# $command_specific['pm-update'] = array('notes' => TRUE);
+# $command_specific['pm-updatecode'] = array('notes' => TRUE);
+
 /**
  * Variable overrides:
  *

@@ -168,6 +168,7 @@ function pm_drush_command() {
     ),
     'options' => array(
       '--pipe' => 'Returns a space delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
+      '--notes' => 'Show release notes for each project to be updated.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'aliases' => array('upc'),

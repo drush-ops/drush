@@ -171,7 +171,7 @@ function drush_pm_updatecode() {
     // update -either- core, or the non-core modules; never both.
     // This simplifies rollbacks.
     if (empty($updateable)) {
-      return _pm_update_core($drupal_project, $module_list);
+      return _pm_update_core($drupal_project, $module_list, $tmpfile);
     }
     // If there are modules other than drupal core enabled, then go
     // ahead and print instructions on how to upgrade core.  We will
@@ -217,7 +217,7 @@ function drush_pm_updatecode() {
  *   A list of the non-core modules that are enabled.  These must be disabled
  *   before core can be updated.
  */
-function _pm_update_core(&$project, $module_list = array()) {
+function _pm_update_core(&$project, $module_list = array(), $tmpfile) {
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
@@ -225,7 +225,10 @@ function _pm_update_core(&$project, $module_list = array()) {
   drush_print(dt("WARNING:  Updating core will discard any modifications made to Drupal core files, most noteworthy among these are .htaccess and robots.txt.  If you have made any modifications to these files, please back them up before updating so that you can re-create your modifications in the updated version of the file."));
   drush_print(dt("Note: Updating core can potentially break your site. It is NOT recommended to update production sites without prior testing."));
   drush_print();
-  drush_pm_releasenotes();
+  if (drush_get_option('notes', FALSE)) {
+    drush_print('Obtaining release notes for above projects...');
+    _drush_pm_releasenotes(array('drupal'), TRUE, $tmpfile);
+  }
   if(!drush_confirm(dt('Do you really want to continue?'))) {
     drush_user_abort();
   }
@@ -350,20 +353,13 @@ function pm_update_packages($update_info, $tmpfile) {
   $print = "$title " . (substr($print, 0, strlen($print)-2));
   drush_print($print);
   file_put_contents($tmpfile, "\n\n$print\n\n", FILE_APPEND);
-  
-  // Print the release notes for projects to be updated. Ask before if
-  // there is more than one project.  TODO: if 'less' is not available,
-  // then we should set $tmpfile to NULL here.
-  $keys = array_keys($update_info);
-  if (count($keys) == 1) {
-    if (!drush_get_context('DRUSH_NEGATIVE')) {
-      _drush_pm_releasenotes($keys, TRUE, $tmpfile);
-    }
+
+  // Print the release notes for projects to be updated.
+  if (drush_get_option('notes', FALSE)) {
+    drush_print('Obtaining release notes for above projects...');
+    _drush_pm_releasenotes(array_keys($update_info), TRUE, $tmpfile);
   }
-  elseif (drush_confirm(dt('Do you want to see the release notes of the above exposed versions?'))) {
-    _drush_pm_releasenotes($keys, TRUE, $tmpfile);
-  }
-  
+
   // We print some warnings before the user confirms the update.
   drush_print();
   drush_print(dt("Note: Updated projects can potentially break your site. It is NOT recommended to update production sites without prior testing."));
