@@ -484,8 +484,10 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
  * @param $widths
  *   The widths of each column (in characters) to use - if not specified this
  *   will be determined automatically, based on a "best fit" algorithm.
+ * @param $output_file
+ *   File to write output to.  STDOUT used if not specified.
  */
-function drush_print_table($rows, $header = FALSE, $widths = array()) {
+function drush_print_table($rows, $header = FALSE, $widths = array(), $output_file = NULL) {
   $tbl = new Console_Table(CONSOLE_TABLE_ALIGN_LEFT , '');
 
   $auto_widths = drush_table_column_autowidth($rows, $widths);
@@ -510,7 +512,12 @@ function drush_print_table($rows, $header = FALSE, $widths = array()) {
   if (!stristr(PHP_OS, 'WIN')) {
     $output = str_replace("\r\n", PHP_EOL, $output);
   }
-  drush_print($output);
+  if ($output_file == NULL) {
+    drush_print($output);
+  }
+  else {
+    file_put_contents($output_file, $output, FILE_APPEND);    
+  }
   return $tbl;
 }
 

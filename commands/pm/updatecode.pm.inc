@@ -123,11 +123,15 @@ function drush_pm_updatecode() {
     $updateable = FALSE;
   }
 
+  $tmpfile = drush_tempnam('pm-updatecode.');
+
   $last = pm_update_last_check();
   drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
   drush_print();
   drush_print(dt("Update status information on all installed and enabled Drupal projects:"));
-  drush_print_table($rows, TRUE, array(3 => 40));
+  drush_print_table($rows, TRUE, array(3 => 40), $tmpfile);
+  $contents = file_get_contents($tmpfile);
+  drush_print($contents);
   drush_print();
 
   // If specific project updates were requested then remove releases for all others
@@ -200,7 +204,7 @@ function drush_pm_updatecode() {
   }
 
   // Offer to update to the identified releases
-  return pm_update_packages($updateable);
+  return pm_update_packages($updateable, $tmpfile);
 }
 
 /**
@@ -321,7 +325,7 @@ function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflict
  *   An array of projects from the drupal.org update service, with an additional
  *   array key candidate_version that specifies the version to be installed.
  */
-function pm_update_packages($update_info) {
+function pm_update_packages($update_info, $tmpfile) {
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
@@ -334,29 +338,32 @@ function pm_update_packages($update_info) {
   // We print the list of the projects that need to be updated.
   if (isset($status[UPDATE_NOT_SECURE])) {
     if (isset($status[UPDATE_NOT_CURRENT])) {
-      drush_print(dt('Security and code updates will be made to the following projects:'));
+      $title = (dt('Security and code updates will be made to the following projects:'));
     }
     else {
-      drush_print(dt('Security updates will be made to the following projects:'));
+      $title = (dt('Security updates will be made to the following projects:'));
     }
   }
   else {
-    drush_print(dt('Code updates will be made to the following projects:'));
+    $title = (dt('Code updates will be made to the following projects:'));
   }
-  drush_print(substr($print, 0, strlen($print)-2));
-
+  $print = "$title " . (substr($print, 0, strlen($print)-2));
+  drush_print($print);
+  file_put_contents($tmpfile, "\n\n$print\n\n", FILE_APPEND);
+  
   // Print the release notes for projects to be updated. Ask before if
-  // there is more than one project.
+  // there is more than one project.  TODO: if 'less' is not available,
+  // then we should set $tmpfile to NULL here.
   $keys = array_keys($update_info);
   if (count($keys) == 1) {
     if (!drush_get_context('DRUSH_NEGATIVE')) {
-      _drush_pm_releasenotes($keys);
+      _drush_pm_releasenotes($keys, TRUE, $tmpfile);
     }
   }
   elseif (drush_confirm(dt('Do you want to see the release notes of the above exposed versions?'))) {
-    _drush_pm_releasenotes($keys);
+    _drush_pm_releasenotes($keys, TRUE, $tmpfile);
   }
-
+  
   // We print some warnings before the user confirms the update.
   drush_print();
   drush_print(dt("Note: Updated projects can potentially break your site. It is NOT recommended to update production sites without prior testing."));

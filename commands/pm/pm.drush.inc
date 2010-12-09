@@ -1380,7 +1380,6 @@ function drush_pm_releasenotes() {
   return _drush_pm_releasenotes($requests);
 }
 
-
 /**
  * Internal function: prints release notes for given drupal projects.
  *
@@ -1388,10 +1387,16 @@ function drush_pm_releasenotes() {
  *   An array of drupal.org project names optionally with a version.
  * @param $print_status
  *   Boolean. Used by pm-download to not print a informative note.
+ * @param $tmpfile
+ *   If provided, a file that contains contents to show before the
+ *   release notes.
  *
  * @see drush_pm_releasenotes()
  */
-function _drush_pm_releasenotes($requests, $print_status = TRUE) {
+function _drush_pm_releasenotes($requests, $print_status = TRUE, $tmpfile = NULL) {
+  if ($tmpfile == NULL) {
+    $tmpfile = drush_tempnam('rln-' . implode('-', $requests) . '.');
+  }
   // Parse requests to strip versions.
   $requests = pm_parse_project_version($requests);
   // Get the releases.
@@ -1500,10 +1505,11 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE) {
 ", array('!status' => $print_status ? $status_msg : '', '!name' => strtoupper($key), '!break' => $break, '!version' => $version, '!time' => $notes_last_update));
       // Finally we print the release notes for the requested project.
       $print = drush_html_to_text($notes_header . $project_notes, array('br', 'p', 'ul', 'ol', 'li', 'hr'));
-      drush_print($print);
-      if (drush_drupal_major_version() < 7) {drush_print();}
+      if (drush_drupal_major_version() < 7) { $print .= "\n"; }
+      file_put_contents($tmpfile, $print, FILE_APPEND);
     }
   }
+  drush_print_file($tmpfile);
 }
 
 /**
