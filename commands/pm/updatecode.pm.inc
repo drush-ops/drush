@@ -14,14 +14,8 @@ function drush_pm_updatecode() {
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
-  // Get update status information.
-  $update_info = _pm_get_update_info();
-
   // Find only security updates?
   $security_only = drush_get_option('security-only');
-
-  // Process locks specified on the command line.
-  $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
   // Get specific requests.
   $requests = _convert_csv_to_array(func_get_args());
@@ -29,35 +23,83 @@ function drush_pm_updatecode() {
   // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
 
-  // Preprocess requested projects.
-  if (!empty($requests)) {
-    // Check requests are installed and enabled projects and force
-    // update projects where a specific version is requested.
-    foreach ($requests as $name => $request) {
-      if (!isset($update_info[$name])) {
-        // Catch projects with no version data (common for CVS checkouts
-        // if you don't have CVS deploy installed).
+  // Get update status information.
+  $update_info = _pm_get_update_info();
+
+  // Process locks specified on the command line.
+  $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
+
+  // Get installed extensions and projects.
+  $extensions = drush_get_extensions();
+  $projects = drush_get_projects($extensions);
+
+  foreach ($extensions as $name => $extension) {
+    // Add an item to $update_info for each enabled extension which was obtained
+    // from cvs or git and its project is unknown (because of cvs_deploy or
+    // git_deploy is not enabled).
+    if (!isset($extension->info['project'])) {
+      if ((isset($extension->vcs)) && ($extension->status)) {
+        $update_info[$name] = array(
+          'title' => $extension->info['name'],
+          'existing_version' => 'Unknown',
+          'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_PACKAGED,
+          'status_msg' => dt('Project was not packaged by drupal.org but obtained from !vcs. You need to enable !vcs_deploy module', array('!vcs' => $extension->vcs))
+        );
+        // The user may have requested to update a project matching this
+        // extension. If it was by coincidence or error we don't mind as we've
+        // already added an item to $update_info. Just clean up $requests.
+        if (isset($requests[$name])) {
+          unset($requests[$name]);
+        }
+      }
+    }
+    // Aditionally if the extension name is distinct to the project name and
+    // the user asked to update the extension, fix the request.
+    elseif ((isset($requests[$name])) && ($extension->name != $extension->info['project'])) {
+      $requests[$extension->info['project']] = $requests[$name];
+      unset($requests[$name]);
+    }
+  }
+
+  // Add an item to $update_info for each request not present in $update_info.
+  foreach ($requests as $name => $request) {
+    if (!isset($update_info[$name])) {
+      // Disabled projects.
+      if ((isset($projects[$name])) && ($projects[$name]['status'] == 0)) {
+        $update_info[$name] = array(
+          'title' => $name,
+          'existing_version' => $projects[$name]['version'],
+          'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE
+        );
+        unset($requests[$name]);
+      }
+      // At this point we are unable to find matching installed project.
+      // It does not exist at all or it is mispelled,...
+      else {
         $update_info[$name] = array(
           'title' => $name,
           'existing_version' => 'Unknown',
-          'status'=> DRUSH_PM_NO_VERSION,
+          'status'=> DRUSH_PM_REQUESTED_PROJECT_NOT_FOUND,
         );
       }
-      else if (!empty($request['version'])) {
-        // Match the requested release
-        $release = pm_get_release($request, $update_info[$name]);
-        if (!$release) {
-          $update_info[$name]['status'] = DRUSH_PM_REQUESTED_NOT_FOUND;
-        }
-        else if ($release['version'] == $update_info[$name]['existing_version']) {
-          $update_info[$name]['status'] = DRUSH_PM_REQUESTED_CURRENT;
-        }
-        else {
-          $update_info[$name]['status'] = DRUSH_PM_REQUESTED_UPDATE;
-        }
-        // Set the candidate version to the requested release
-        $update_info[$name]['candidate_version'] = $release['version'];
+    }
+  }
+
+  // If specific versions were requested, match the requested release.
+  foreach ($requests as $name => $request) {
+    if (!empty($request['version'])) {
+      $release = pm_get_release($request, $update_info[$name]);
+      if (!$release) {
+        $update_info[$name]['status'] = DRUSH_PM_REQUESTED_VERSION_NOT_FOUND;
       }
+      else if ($release['version'] == $update_info[$name]['existing_version']) {
+        $update_info[$name]['status'] = DRUSH_PM_REQUESTED_CURRENT;
+      }
+      else {
+        $update_info[$name]['status'] = DRUSH_PM_REQUESTED_UPDATE;
+      }
+      // Set the candidate version to the requested release
+      $update_info[$name]['candidate_version'] = $release['version'];
     }
   }
 
@@ -85,7 +127,7 @@ function drush_pm_updatecode() {
   drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
   drush_print();
   drush_print(dt("Update status information on all installed and enabled Drupal projects:"));
-  drush_print_table($rows, TRUE);
+  drush_print_table($rows, TRUE, array(3 => 40));
   drush_print();
 
   // If specific project updates were requested then remove releases for all others
@@ -457,11 +499,17 @@ function pm_project_filter(&$update_info, &$rows, $security_only) {
       case DRUSH_PM_REQUESTED_CURRENT:
         $status = dt('Specified version already installed');
         break;
-      case DRUSH_PM_NO_VERSION:
-        $status = dt('No version information found (if you have a CVS checkout you should install CVS Deploy module)');
+      case DRUSH_PM_REQUESTED_PROJECT_NOT_PACKAGED:
+        $status = $project['status_msg'];
         break;
-      case DRUSH_PM_REQUESTED_NOT_FOUND:
+      case DRUSH_PM_REQUESTED_VERSION_NOT_FOUND:
         $status = dt('Specified version not found');
+        break;
+      case DRUSH_PM_REQUESTED_PROJECT_NOT_FOUND:
+        $status = dt('Specified project not found');
+        break;
+      case DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE:
+        $status = dt('Project has no enabled extensions and can\'t be updated');
         break;
       default:
         $status = pm_update_filter($project);

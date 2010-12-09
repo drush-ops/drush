@@ -24,14 +24,25 @@ define('DRUSH_PM_REQUESTED_UPDATE', 101);
 define('DRUSH_PM_REQUESTED_CURRENT', 102);
 
 /**
- * User requested version already installed.
+ * User requested project was not packaged by drupal.org.
  */
-define('DRUSH_PM_NO_VERSION', 103);
+define('DRUSH_PM_REQUESTED_PROJECT_NOT_PACKAGED', 103);
 
 /**
  * User requested version not found.
  */
-define('DRUSH_PM_REQUESTED_NOT_FOUND', 104);
+define('DRUSH_PM_REQUESTED_VERSION_NOT_FOUND', 104);
+
+/**
+ * User requested project not found.
+ */
+define('DRUSH_PM_REQUESTED_PROJECT_NOT_FOUND', 105);
+
+/**
+ * User requested project not updateable.
+ */
+define('DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE', 106);
+
 
 /**
  * Implementation of hook_drush_help().
