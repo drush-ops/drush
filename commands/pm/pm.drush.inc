@@ -1154,9 +1154,44 @@ function _drush_pm_releases_from_xml($xml, $project) {
 }
 
 /**
+ * Helper function for _drush_pm_filter_releases().
+ */
+function _drush_pm_compare_date($a, $b) {
+    if ($a['date'] == $b['date']) {
+        return 0;
+    }
+    if ($a['version_major'] == $b['version_major']) {
+      return ($a['date'] > $b['date']) ? -1 : 1;
+    }
+    return ($a['version_major'] > $b['version_major']) ? -1 : 1;
+}
+
+/**
  * Filter a list of releases.
+ *
+ * @param $releases
+ *   Array of release information
+ * @param $all
+ *   Show all releases. If FALSE, shows only the first release that is
+ *   Recommended or Supported or Security or Installed.
+ * @param $dev
+ *   Show only development release.
+ * @param $show_all_until_installed
+ *   If TRUE, then all releases will be shown until the INSTALLED release is found,
+ *   at which point the algorithm will stop.
  */
 function _drush_pm_filter_releases($releases, $all = FALSE, $dev = FALSE, $show_all_until_installed = TRUE) {
+  // Start off by sorting releases by release date.
+  uasort($releases, '_drush_pm_compare_date');
+  // Find version_major for the installed release
+  $installed_version_major = FALSE;
+  foreach ($releases as $version => $release_info) {
+    if (in_array("Installed", $release_info['release_status'])) {
+      $installed_version_major = $release_info['version_major'];
+    }
+  }
+  // Now iterate through and filter out the releases we're
+  // interested in.
   $options = array();
   $limits_list = array();
   foreach ($releases as $version => $release_info) {
@@ -1177,10 +1212,11 @@ function _drush_pm_filter_releases($releases, $all = FALSE, $dev = FALSE, $show_
           // showing all releases
           if ($one_status == "Installed") {
             $show_all_until_installed = FALSE;
+            $installed_release_date = $release_info['date'];
           }
         }
       }
-      if ($all || $show_all_until_installed || $saw_unique_status) {
+      if ($all || ($show_all_until_installed && ($installed_version_major == $release_info['version_major'])) || $saw_unique_status) {
         $options[$release_info['version']] = $release_info;
       }
     }
@@ -1195,8 +1231,8 @@ function _drush_pm_filter_releases($releases, $all = FALSE, $dev = FALSE, $show_
   // that there were no supported or recommented or security or development
   // releases found.  If this is the case, then we will force ALL to TRUE
   // and show everything on the second iteration.
-  if ($show_all_until_installed === TRUE) {
-    $options = _drush_pm_filter_releases($releases, empty($options) ? TRUE : $all, $dev, FALSE);
+  if (($all === FALSE) && ($show_all_until_installed === TRUE)) {
+    $options = _drush_pm_filter_releases($releases, empty($options), $dev, FALSE);
   }
   return $options;
 }
@@ -2039,6 +2075,9 @@ function drush_pm_download() {
     unset($release, $releases, $types);
 
     $xml = _drush_pm_get_release_history_xml($request);
+    if (!$xml) {
+      continue;
+    }
 
     // Unpublished project?
     $project_status = $xml->xpath('/project/project_status');
