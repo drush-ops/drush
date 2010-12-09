@@ -271,6 +271,47 @@ function drush_invoke_sitealais_args($site_alias_record, $command_name, $command
 }
 
 /**
+ * Get the options that were passed to the current command.
+ *
+ * This function returns an array that contains all of the options
+ * that are appropriate for forwarding along to one of the drush_invoke_*_args
+ * functions.
+ *
+ * @return
+ *   An associative array of option key => value pairs.
+ */
+function drush_redispatch_get_options() {
+  // Start off by taking everything from the site alias and command line
+  // ('options' context)
+  $options = array_merge(drush_get_context('alias'), drush_get_context('options'));
+  $options = array_diff_key($options, array_flip(drush_sitealias_site_selection_keys()));
+  unset($options['command-specific']);
+  unset($options['path-aliases']);
+  // If we can parse the current command, then examine all contexts
+  // in order for any option that is directly related to the current command
+  $command = drush_parse_command();
+  if (is_array($command)) {
+    foreach ($command['options'] as $key => $value) {
+      // Strip leading --
+      $key = ltrim($key, '-');
+      $value = drush_get_option($key);
+      if (isset($value)) {
+        $options[$key] = $value;
+      }
+    }
+  }
+  // 'php', if needed, will be included in DRUSH_COMMAND.  If DRUSH_COMMAND
+  // is not used (e.g. when calling a remote instance of drush), then --php
+  // should not be passed along.
+  unset($options['php']);
+  // If --bootstrap-to-first-arg is specified, do not
+  // pass it along to remote commands.
+  unset($options['bootstrap-to-first-arg']);
+  
+  return $options;
+}
+
+/**
  * @} End of "defgroup dispatching".
  */
 
