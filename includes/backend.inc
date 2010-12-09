@@ -242,6 +242,9 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
  * @param username
  *    Optional. Defaults to the current user. If you specify this, you can choose which module to send.
  *
+ * @deprecated Command name includes arguments, and these are not quote-escaped in any way.
+ * @see drush_backend_invoke_args and @see drush_invoke_process for better options.
+ *
  * @return
  *   If the command could not be completed successfully, FALSE.
  *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
