@@ -74,8 +74,8 @@
  */
 function drush_context_names() {
   static $contexts = array(
-    'process', 'options', 'stdin', 'alias', 'specific',
-    'custom', 'site', 'drupal', 'user', 'home.drush', 'system',
+    'process', 'options', 'stdin', 'specific',
+    'custom', 'site', 'drupal', 'alias', 'user', 'home.drush', 'system',
     'drush', 'default');
 
   return $contexts;
