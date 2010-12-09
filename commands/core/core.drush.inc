@@ -164,7 +164,8 @@ function core_drush_command() {
     ),
     'examples' => array(
       'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukranian.',
-      'drush site-install --db-url=mysql://root:pass@localhost:port/dbname ' => 'Install using the specified DB params.',
+      'drush site-install --db-url=mysql://root:pass@localhost:port/dbname' => 'Install using the specified DB params.',
+      'drush site-install --db-url=sqlite://sites/default/files/.ht.sqlite' => 'Install using SQLite (D7 only).',
       'drush site-install --account-name=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
     ),
     'core' => array(6,7),
