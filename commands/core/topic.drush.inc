@@ -68,7 +68,7 @@ function drush_topic_core_topic($topic_name = NULL) {
   if (!isset($commands[$topic_name]) && isset($commands["docs-$topic_name"])) {
     $topic_name = "docs-$topic_name";
   }
-  return drush_redispatch($commands[$topic_name]);
+  return drush_dispatch($commands[$topic_name]);
 }
 
 /**

@@ -12,63 +12,6 @@
 define('DRUSH_DRUPAL_KILOBYTE', 1024);
 
 /**
- * Given a command record, dispatch it as if it were
- * the original command.
- *
- * @param command
- *   A full $command such as returned by drush_get_commands().
- * @param arguments
- *   An array of argument values.
- *
- * @see drush_topic_docs_topic().
- */
-function drush_redispatch($command, $arguments = array()) {
-  _drush_prepare_command($command, $arguments);
-  drush_dispatch($command);
-}
-
-/**
- * Dispatch a given set of commands.
- * Modules can add commands by implementing hook_drush_command().
- *
- * @param
- *   Command whose callback you want to call, defaults to current command.
- */
-function drush_dispatch($command = NULL) {
-  $command = ($command) ? $command : drush_get_command();
-  $return = FALSE;
-
-  if ($command) {
-    // Add command-specific options, if applicable
-    drush_command_default_options($command);
-
-    // Print a warning if someone tries to use a deprecated alias.
-    if (isset($command['deprecated'])) {
-      drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
-    }
-    // Print a warning if a command callback function is misnamed
-    if (isset($command['callback-required-prefix'])) {
-      drush_log(dt('Warning: The command callback function !callback has a deprecated name.  It must begin with !requiredprefix.  Skipping hook functions.', array('!callback' => $command['callback'], '!requiredprefix' => $command['callback-required-prefix'])));
-    }
-    // Call the callback function of the active command.
-    // TODO:  If we make the required prefix actually required rather than just emitting a
-    // warning, then this could become a direct call to drush_command (all commands with
-    // the required prefix will now go through drush_command + drush_invoke).
-    $return = call_user_func_array($command['callback'], $command['arguments']);
-  }
-
-  // prevent a '1' at the end of the output
-  if ($return === TRUE) {
-    $return = '';
-  }
-
-  // Add a final log entry, just so a timestamp appears.
-  drush_log(dt('Command dispatch complete'), 'notice');
-
-  return $return;
-}
-
-/**
  * Include a file, selecting a version specific file if available.
  *
  * For example, if you pass the path "/var/drush" and the name
@@ -1577,11 +1520,11 @@ function drush_mkdir($path) {
 }
 
 /**
- * @defgroup dispatching Command dispatching functions.
+ * @defgroup commandprocessing Command processing functions.
  * @{
  *
- * These functions manage parameter and option manipulation
- * for calls to drush backend invoke.
+ * These functions manage command processing by the
+ * main function in drush.php.
  */
 
 /**
@@ -1697,6 +1640,13 @@ function drush_do_multiple_command($command, $source_record, $destination_record
   return $is_multiple_command;
 }
 
+/**
+ * Run a command on the site specified by the provided command record.
+ *
+ * The standard function that provides this service is called 
+ * drush_invoke_sitealais_args.  Please call the standard function
+ * unless you need to set $integrate = TRUE.
+ */
 function drush_do_site_command($site_record, $command, $args = array(), $data = array(), $integrate = FALSE) {
   $values = NULL;
   if (!empty($site_record)) {
@@ -1782,7 +1732,7 @@ function drush_redispatch_get_options() {
 }
 
 /**
- * @} End of "defgroup dispatching".
+ * @} End of "defgroup commandprocessing".
  */
 
 /**

@@ -100,6 +100,11 @@ function drush_main() {
           // Dispatch the command(s).
           $return = drush_dispatch($command);
 
+	  // prevent a '1' at the end of the output
+	  if ($return === TRUE) {
+	    $return = '';
+	  }
+
           if (drush_get_context('DRUSH_DEBUG')) {
             drush_print_timers();
           }

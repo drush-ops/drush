@@ -2,6 +2,279 @@
 // $Id$
 
 /**
+ * @defgroup dispatching Command dispatching functions.
+ * @{
+ *
+ * These functions handle command dispatching, and can
+ * be used to programatically invoke drush commands in
+ * different ways.
+ */
+
+/**
+ * Invoke drush api calls.
+ *
+ * Executes the specified command with the specified arguments on the
+ * currently bootstrapped site using the current option contexts.
+ * Note that drush_invoke will not bootstrap any further than the
+ * current command has already bootstrapped; therefore, you should only invoke
+ * commands that have the same (or lower) bootstrap requirements.
+ *
+ * Call the correct hook for all the modules that implement it.
+ * Additionally, the ability to rollback when an error has been encountered is also provided.
+ * If at any point during execution, the drush_get_error() function returns anything but 0,
+ * drush_invoke() will trigger $hook_rollback for each of the hooks that implement it,
+ * in reverse order from how they were executed.
+ *
+ * This function will also trigger pre_$hook and post_$hook variants of the hook
+ * and its rollbacks automatically.
+ *
+ * HOW DRUSH HOOK FUNCTIONS ARE NAMED:
+ *
+ * The name of the hook is composed from the name of the command and the name of
+ * the command file that the command definition is declared in.  The general
+ * form for the hook filename is:
+ *
+ *      drush_COMMANDFILE_COMMANDNAME
+ *
+ * In many cases, drush commands that are functionally part of a common collection
+ * of similar commands will all be declared in the same file, and every command
+ * defined in that file will start with the same command prefix.  For example, the
+ * command file "pm.drush.inc" defines commands such as "pm-enable" and "pm-disable".
+ * In the case of "pm-enable", the command file is "pm", and and command name is
+ * "pm-enable".  When the command name starts with the same sequence of characters
+ * as the command file, then the repeated sequence is dropped; thus, the command
+ * hook for "pm-enable" is "drush_pm_enable", not "drush_pm_pm_enable".
+ *
+ * @param command
+ *   The drush command to execute.
+ * @return
+ *   A boolean specifying whether or not the command was successfully completed.
+ */
+function drush_invoke($command) {
+  drush_command_include($command);
+  $args = func_get_args();
+  array_shift($args);
+
+  // Generate the base name for the hook by converting all
+  // dashes in the command name to underscores.
+  $hook = str_replace("-", "_", $command);
+
+  // Call the hook init function, if it exists.
+  // If a command needs to bootstrap, it is advisable
+  // to do so in _init; otherwise, new commandfiles
+  // will miss out on participating in any stage that
+  // has passed or started at the time it was discovered.
+  $func = 'drush_' . $hook . '_init';
+  if (function_exists($func)) {
+    drush_log(dt("Calling drush command init function: !func", array('!func' => $func)), 'bootstrap');
+    call_user_func_array($func, $args);
+    _drush_log_drupal_messages();
+    if (drush_get_error()) {
+      drush_log(dt('The command @command could not be initialized.', array('@command' => $command)), 'error');
+      return FALSE;
+    }
+  }
+
+  $rollback = FALSE;
+  $completed = array();
+  $available_rollbacks = array();
+  $all_available_hooks = array();
+
+  // Iterate through the different hook variations
+  $variations = array($hook . "_validate", "pre_$hook", $hook, "post_$hook");
+  foreach ($variations as $var_hook) {
+    // Get the list of command files.
+    // We re-fetch the list every time through
+    // the loop in case one of the hook function
+    // does something that will add additional
+    // commandfiles to the list (i.e. bootstrapping
+    // to a higher phase will do this).
+    $list = drush_commandfile_list();
+
+    $functions = array();
+
+    // Run all of the functions available for this variation
+    foreach ($list as $commandfile => $filename) {
+      $oldfunc = sprintf("drush_%s_%s", $commandfile, $var_hook);
+      $func = str_replace('drush_' . $commandfile . '_' . $commandfile, 'drush_' . $commandfile, $oldfunc);
+      if (($oldfunc != $func) && (function_exists($oldfunc))) {
+        drush_log(dt("The drush command hook naming conventions have changed; the function !oldfunc must be renamed to !func.  The old function will be called, but this will be removed shortly.", array('!oldfunc' => $oldfunc, '!func' => $func)), "error");
+        // TEMPORARY:  Allow the function to be called by its old name.
+        $functions[] = $oldfunc;
+      }
+      if (function_exists($func)) {
+        $functions[] = $func;
+        $all_available_hooks[] = $func . ' [*]';
+        $available_rollbacks[] = $func . '_rollback';
+        $completed[] = $func;
+        call_user_func_array($func, $args);
+        _drush_log_drupal_messages();
+        if (drush_get_error()) {
+          drush_log(dt('An error occurred at function : @func', array('@func' => $func)), 'error');
+          $rollback = TRUE;
+
+          // break out of the foreach variations and foreach list
+          break 2;
+        }
+      }
+      else {
+        $all_available_hooks[] = $func;
+      }
+    }
+  }
+
+  // If no hook functions were found, print a warning.
+  if (empty($all_available_hooks)) {
+    drush_log(dt("No hook functions were found for !command.", array('!command' => $command)), 'warning');
+    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'warning');
+  }
+  elseif (drush_get_option('show-invoke')) {
+    // We show all available hooks up to and including the one that failed (or all, if there were no failures)
+    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'internals');
+  }
+  if (drush_get_option('show-invoke')) {
+    drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command, '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'internals');
+  }
+
+  // something went wrong, we need to undo
+  if ($rollback) {
+    foreach (array_reverse($completed) as $func) {
+      $rb_func = $func . '_rollback';
+      if (function_exists($rb_func)) {
+        call_user_func_array($rb_func, $args);
+        _drush_log_drupal_messages();
+        drush_log("Changes for $func module have been rolled back.", 'rollback');
+      }
+    }
+  }
+
+  return !$rollback;
+}
+
+/**
+ * Given a command record, dispatch it as if it were
+ * the original command.  Executes in the currently 
+ * bootstrapped site using the current option contexts.
+ * Note that drush_dispatch will not bootstrap any further than the
+ * current command has already bootstrapped; therefore, you should only invoke
+ * commands that have the same (or lower) bootstrap requirements.
+ *
+ * @param command
+ *   A full $command such as returned by drush_get_commands().
+ * @param arguments
+ *   An array of argument values.
+ *
+ * @see drush_topic_docs_topic().
+ */
+function drush_dispatch($command = NULL, $arguments = array()) {
+  $command = ($command) ? $command : drush_get_command();
+  $return = FALSE;
+
+  if ($command) {
+    // Add arguments, if this has not already been done.
+    // (If the command was fetched from drush_parse_command,
+    // then you cannot provide arguments to drush_dispatch.)
+    if (empty($command['arguments'])) {
+      _drush_prepare_command($command, $arguments);
+    }
+
+    // Add command-specific options, if applicable
+    drush_command_default_options($command);
+
+    // Print a warning if someone tries to use a deprecated alias.
+    if (isset($command['deprecated'])) {
+      drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
+    }
+    // Print a warning if a command callback function is misnamed
+    if (isset($command['callback-required-prefix'])) {
+      drush_log(dt('Warning: The command callback function !callback has a deprecated name.  It must begin with !requiredprefix.  Skipping hook functions.', array('!callback' => $command['callback'], '!requiredprefix' => $command['callback-required-prefix'])));
+    }
+    // Call the callback function of the active command.
+    // TODO:  If we make the required prefix actually required rather than just emitting a
+    // warning, then this could become a direct call to drush_command (all commands with
+    // the required prefix will now go through drush_command + drush_invoke).
+    $return = call_user_func_array($command['callback'], $command['arguments']);
+  }
+
+  // Add a final log entry, just so a timestamp appears.
+  drush_log(dt('Command dispatch complete'), 'notice');
+
+  return $return;
+}
+
+/**
+ * Invoke a command in a new process.
+ *
+ * @param command_name
+ *   The drush command to execute.
+ * @return
+ *   If the command could not be completed successfully, FALSE.
+ *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
+ */
+function drush_invoke_process($command_name) {
+  $args = func_get_args();
+  array_shift($args);
+  return drush_invoke_process_args($command_name, $args);
+}
+
+/**
+ * Invoke a command in a new process.
+ *
+ * @param command_name
+ *   The drush command to execute.
+ * @return
+ *   If the command could not be completed successfully, FALSE.
+ *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
+ */
+function drush_invoke_process_args($command_name, $commandline_args, $commandline_options = array()) {
+  return drush_backend_invoke_args($command_name, $commandline_args, $commandline_options);
+}
+
+/**
+ * Invoke a command in a new process, targeting the site specified by
+ * the provided site alias record.
+ *
+ * @param array $site_alias_record
+ *  The site record to execute the command on.
+ * @param string $command_name
+ *  The command to invoke.
+ * @return
+ *   If the command could not be completed successfully, FALSE.
+ *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
+ */
+function drush_invoke_sitealais($site_alias_record, $command_name) {
+  $args = func_get_args();
+  array_shift($args);
+  array_shift($args);
+  
+  return drush_invoke_sitealais_args($site_alias_record, $command_name, $args);
+}
+
+/**
+ * Invoke a command in a new process, targeting the site specified by
+ * the provided site alias record.
+ *
+ * @param array $site_alias_record
+ *  The site record to execute the command on.
+ * @param string $command_name
+ *  The command to invoke.
+ * @param array $commandline_args
+ *  The arguments to pass to the command.
+ * @param array $commandline_options
+ *  The options (e.g. --select) to provide to the command.
+ * @return
+ *   If the command could not be completed successfully, FALSE.
+ *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
+ */
+function drush_invoke_sitealais_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array()) {
+  return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options);
+}
+
+/**
+ * @} End of "defgroup dispatching".
+ */
+
+/**
  * @file
  * The drush command engine.
  *
@@ -348,7 +621,9 @@ function drush_parse_command() {
 }
 
 /*
- * Called by drush_parse_command and drush_redispatch
+ * Called by drush_parse_command.  If a command is dispatched
+ * directly by drush_dispatch, then drush_dispatch will call
+ * this function.
  */
 function _drush_prepare_command(&$command, $arguments = array()) {
   // Merge specified callback arguments, which precede the arguments passed on the command line.
@@ -357,143 +632,6 @@ function _drush_prepare_command(&$command, $arguments = array()) {
   }
   $command['arguments'] = $arguments;
 }
-
-/**
- * Invoke drush api calls.
- *
- * Call the correct hook for all the modules that implement it.
- * Additionally, the ability to rollback when an error has been encountered is also provided.
- * If at any point during execution, the drush_get_error() function returns anything but 0,
- * drush_invoke() will trigger $hook_rollback for each of the hooks that implement it,
- * in reverse order from how they were executed.
- *
- * This function will also trigger pre_$hook and post_$hook variants of the hook
- * and its rollbacks automatically.
- *
- * HOW DRUSH HOOK FUNCTIONS ARE NAMED:
- *
- * The name of the hook is composed from the name of the command and the name of
- * the command file that the command definition is declared in.  The general
- * form for the hook filename is:
- *
- *      drush_COMMANDFILE_COMMANDNAME
- *
- * In many cases, drush commands that are functionally part of a common collection
- * of similar commands will all be declared in the same file, and every command
- * defined in that file will start with the same command prefix.  For example, the
- * command file "pm.drush.inc" defines commands such as "pm-enable" and "pm-disable".
- * In the case of "pm-enable", the command file is "pm", and and command name is
- * "pm-enable".  When the command name starts with the same sequence of characters
- * as the command file, then the repeated sequence is dropped; thus, the command
- * hook for "pm-enable" is "drush_pm_enable", not "drush_pm_pm_enable".
- *
- * @param command
- *   The drush command to execute.
- * @return
- *   A boolean specifying whether or not the command was successfully completed.
- *
- */
-function drush_invoke($command) {
-  drush_command_include($command);
-  $args = func_get_args();
-  array_shift($args);
-
-  // Generate the base name for the hook by converting all
-  // dashes in the command name to underscores.
-  $hook = str_replace("-", "_", $command);
-
-  // Call the hook init function, if it exists.
-  // If a command needs to bootstrap, it is advisable
-  // to do so in _init; otherwise, new commandfiles
-  // will miss out on participating in any stage that
-  // has passed or started at the time it was discovered.
-  $func = 'drush_' . $hook . '_init';
-  if (function_exists($func)) {
-    drush_log(dt("Calling drush command init function: !func", array('!func' => $func)), 'bootstrap');
-    call_user_func_array($func, $args);
-    _drush_log_drupal_messages();
-    if (drush_get_error()) {
-      drush_log(dt('The command @command could not be initialized.', array('@command' => $command)), 'error');
-      return FALSE;
-    }
-  }
-
-  $rollback = FALSE;
-  $completed = array();
-  $available_rollbacks = array();
-  $all_available_hooks = array();
-
-  // Iterate through the different hook variations
-  $variations = array($hook . "_validate", "pre_$hook", $hook, "post_$hook");
-  foreach ($variations as $var_hook) {
-    // Get the list of command files.
-    // We re-fetch the list every time through
-    // the loop in case one of the hook function
-    // does something that will add additional
-    // commandfiles to the list (i.e. bootstrapping
-    // to a higher phase will do this).
-    $list = drush_commandfile_list();
-
-    $functions = array();
-
-    // Run all of the functions available for this variation
-    foreach ($list as $commandfile => $filename) {
-      $oldfunc = sprintf("drush_%s_%s", $commandfile, $var_hook);
-      $func = str_replace('drush_' . $commandfile . '_' . $commandfile, 'drush_' . $commandfile, $oldfunc);
-      if (($oldfunc != $func) && (function_exists($oldfunc))) {
-        drush_log(dt("The drush command hook naming conventions have changed; the function !oldfunc must be renamed to !func.  The old function will be called, but this will be removed shortly.", array('!oldfunc' => $oldfunc, '!func' => $func)), "error");
-        // TEMPORARY:  Allow the function to be called by its old name.
-        $functions[] = $oldfunc;
-      }
-      if (function_exists($func)) {
-        $functions[] = $func;
-        $all_available_hooks[] = $func . ' [*]';
-        $available_rollbacks[] = $func . '_rollback';
-        $completed[] = $func;
-        call_user_func_array($func, $args);
-        _drush_log_drupal_messages();
-        if (drush_get_error()) {
-          drush_log(dt('An error occurred at function : @func', array('@func' => $func)), 'error');
-          $rollback = TRUE;
-
-          // break out of the foreach variations and foreach list
-          break 2;
-        }
-      }
-      else {
-        $all_available_hooks[] = $func;
-      }
-    }
-  }
-
-  // If no hook functions were found, print a warning.
-  if (empty($all_available_hooks)) {
-    drush_log(dt("No hook functions were found for !command.", array('!command' => $command)), 'warning');
-    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'warning');
-  }
-  elseif (drush_get_option('show-invoke')) {
-    // We show all available hooks up to and including the one that failed (or all, if there were no failures)
-    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'internals');
-  }
-  if (drush_get_option('show-invoke')) {
-    drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command, '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'internals');
-  }
-
-  // something went wrong, we need to undo
-  if ($rollback) {
-    foreach (array_reverse($completed) as $func) {
-      $rb_func = $func . '_rollback';
-      if (function_exists($rb_func)) {
-        call_user_func_array($rb_func, $args);
-        _drush_log_drupal_messages();
-        drush_log("Changes for $func module have been rolled back.", 'rollback');
-      }
-    }
-  }
-
-  return !$rollback;
-}
-
 
 /**
  * Entry point for commands into the drush_invoke API
