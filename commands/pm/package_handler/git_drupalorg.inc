@@ -44,7 +44,7 @@ function package_handler_install_project($project, $release) {
   }
   else {
     // Use a stable repository.
-    $repository = 'git://git.drupal.org/contributions-stable/' . $project_name . '.git';
+    $repository = 'git://git.drupal.org/project-stable/' . $project_name . '.git';
     $tag = $release['version'];
   }
 
