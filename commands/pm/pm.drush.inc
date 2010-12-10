@@ -1823,6 +1823,11 @@ function pm_drush_engine_package_handler() {
       'sub-options' => array(
         '--package-handler=git_drupalorg' => array(
           '--gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
+          '--gitcheckoutparams' => 'Add options to the `git checkout` command.',
+          '--gitcloneparams' => 'Add options to the `git clone` command.',
+          '--gitfetchparams' => 'Add options to the `git fetch` command.',
+          '--gitpullparams' => 'Add options to the `git pull` command.',
+          '--gitsubmoduleaddparams' => 'Add options to the `git submodule add` command.',
         ),
       ),
     ),
@@ -1854,7 +1859,7 @@ function pm_drush_engine_version_control() {
         '--version-control=svn' => array(
           '--svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. Caution.',
           '--svncommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
-          '--svnmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+          '  --svnmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
           '--svnstatusparams' => "Add options to the 'svn status' command",
           '--svnaddparams' => 'Add options to the `svn add` command',
           '--svnremoveparams' => 'Add options to the `svn remove` command',
@@ -1874,7 +1879,7 @@ function pm_drush_engine_version_control() {
       'sub-options' => array(
         '--version-control=bzr' => array(
           '--bzrsync' => 'Automatically add new files to the Bazaar repository and remove deleted files. Caution.',
-          '--bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also using the --bzrsync option.',
+          '--bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also usw the --bzrsync option.',
           '  --bzrmessage' => 'Override default commit message which is: Drush automatic commit. Project <name> <type> Command: <the drush command line used>',
         ),
       ),

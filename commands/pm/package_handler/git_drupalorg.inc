@@ -60,10 +60,10 @@ function package_handler_install_project($project, $release) {
 function package_handler_install_project_gitdo_normal($project, $repository, $tag) {
   // Clone the repo into its appropriate target location.
   $commands = array();
-  $commands[] = 'git clone ' . escapeshellarg($repository) . ' ' . escapeshellarg($project['full_project_path']);
+  $commands[] = 'git clone ' . drush_get_option('gitcloneparams') . ' ' . escapeshellarg($repository) . ' ' . escapeshellarg($project['full_project_path']);
   // Check out the appropriate branch.
   $commands[] = 'cd ' . escapeshellarg($project['full_project_path']);
-  $commands[] = 'git checkout ' . escapeshellarg($tag);
+  $commands[] = 'git checkout ' . drush_get_option('gitcheckoutparams') . ' ' . escapeshellarg($tag);
 
   if (!drush_shell_exec(implode(' && ', $commands))) {
     return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $project['name'] . ' from git.drupal.org.');
@@ -95,9 +95,9 @@ function package_handler_install_project_gitdo_submodule($project, $repository, 
   // superproject.
   $commands = array();
   $commands[] = 'cd ' . escapeshellarg($git_dir . '/..');
-  $commands[] = 'git submodule add ' . escapeshellarg($repository) . ' ' . escapeshellarg($full_project_path);
+  $commands[] = 'git submodule add ' . drush_get_option('gitsubmoduleaddparams') . ' ' . escapeshellarg($repository) . ' ' . escapeshellarg($full_project_path);
   $commands[] = 'cd ' . escapeshellarg($project['full_project_path']);
-  $commands[] = 'git checkout ' . escapeshellarg($tag);
+  $commands[] = 'git checkout ' . drush_get_option('gitcheckoutparams') . ' ' . escapeshellarg($tag);
 
   if (!drush_shell_exec(implode(' && ', $commands))) {
     return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $project['name'] . ' from git.drupal.org.');
@@ -121,12 +121,12 @@ function package_handler_update_project($project, $release) {
 
   if ($release['version_extra'] == 'dev') {
     // Update the branch of the development repository.
-    $commands[] = 'git pull';
+    $commands[] = 'git pull ' . drush_get_option('gitpullparams') . ' ';
   }
   else {
     // Use a stable repository.
-    $commands[] = 'git fetch';
-    $commands[] = 'git checkout ' . escapeshellarg($release['version']);
+    $commands[] = 'git fetch ' . drush_get_option('gitfetchparams');
+    $commands[] = 'git checkout ' . drush_get_option('gitcheckoutparams') . ' ' . escapeshellarg($release['version']);
   }
 
   if (!drush_shell_exec(implode(' ; ', $commands))) {
