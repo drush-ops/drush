@@ -200,4 +200,4 @@ CREDITS
 Originally developed by Arto Bendiken <http://bendiken.net/> for Drupal 4.7.
 Redesigned by Franz Heinzmann (frando) <http://unbiskant.org/> in May 2007 for Drupal 5.
 Maintained by Moshe Weitzman <http://drupal.org/moshe> with much help from
-Owen Barton, Adrian Rossouw, greg.1.anderson.
+Owen Barton, Adrian Rossouw, greg.1.anderson, jonhattan.
