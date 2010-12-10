@@ -70,12 +70,12 @@ function pm_drush_help($section) {
       case 'drush:pm-releases':
       return dt("View all releases for a given drupal.org project. Useful for deciding which version to install/update.");
     case 'drush:pm-download':
-      return dt("Download Drupal core or projects from drupal.org (Drupal core, modules, themes, profiles or translations) and other sources. It will automatically figure out which project version you want based on its latest release, or you may specify a particular version.
+      return dt("Download Drupal core or projects from drupal.org (Drupal core, modules, themes, profiles or translations) and other sources. It will automatically figure out which project version you want based on its recommended release, or you may specify a particular version.
 
-If no destination is provided, then it depends on the project type:
+If no --destination is provided, then it depends on the project type:
   - Profiles will be downloaded to profiles/ in your Drupal root.
   - Translations will be decompressed from your Drupal root.
-  - Modules and themes will be downloaded to the site specific directory (sites/example.com/modules|themes if available) or to sites/all/modules|themes.
+  - Modules and themes will be downloaded to the site specific directory (sites/example.com/modules|themes) if available, or to sites/all/modules|themes.
   - If you're downloading drupal core or you are not running the command within a bootstrapped drupal site, the default location is the current directory.
   - Drush commands will be relocated to /usr/share/drush/commands (if available) or ~/.drush. Relocation is determined once the project is downloaded by examining its content. Note you can provide your own function in a commandfile to determine the relocation of any project.");
   }
