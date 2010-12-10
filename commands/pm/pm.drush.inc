@@ -237,7 +237,7 @@ function pm_drush_command() {
       '--dev' => "Download a development release.",
       '--select' => "Select the version to download interactively from a list of available releases.",
       '--all' => "Useful only with --select; shows all available releases instead of a short list of recent releases.",
-      '--drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. If empty, will defaults to "drupal".',
+      '--drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. Defaults to "drupal".',
       '--pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
