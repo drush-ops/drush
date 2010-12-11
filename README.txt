@@ -90,7 +90,7 @@ For Linux/Unix/Mac:
 For Windows:
   - Follow step 1. Use drush by navigating to /path/to/drush
     and running 'drush.bat'.
-  - You have to install gzip, libarchive, tar and wget executables. Go to
+  - You have to install gzip, libarchive, tar, wget, and less executables. Go to
     http://gnuwin32.sourceforge.net/packages.html and install the packages.
     Add the folder %ProgramFiles%\GnuWin32\bin to your PATH.
     Documentation can be found at http://drupal.org/node/594744
