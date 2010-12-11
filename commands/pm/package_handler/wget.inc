@@ -77,7 +77,7 @@ function package_handler_install_project(&$request, $release) {
     $project_dir = rtrim($output[0], DIRECTORY_SEPARATOR);
     if ($request['project_dir'] != $project_dir) {
       $path = $request['base_project_path'];
-      drush_op('rename', $path . '/'. $project_dir, $path . '/' . $request['project_dir']);
+      drush_move_dir($path . '/'. $project_dir, $path . '/' . $request['project_dir']);
     }
   }
 

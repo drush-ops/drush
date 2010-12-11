@@ -314,7 +314,7 @@ function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflict
       drush_delete_dir($dest_dir . '/' . basename($filename));
     }
     if (!file_exists($dest_dir . '/' . basename($filename))) {
-      $move_result = rename($filename,  $dest_dir . '/' . basename($filename));
+      $move_result = drush_move_dir($filename,  $dest_dir . '/' . basename($filename));
     }
   }
   return TRUE;

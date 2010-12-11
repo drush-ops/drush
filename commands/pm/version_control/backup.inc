@@ -44,7 +44,7 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
     if (drush_get_option('no-backup', FALSE)) {
       return;
     }
-    if (drush_op('rename', $project['backup_target'], $project['full_project_path']) && is_dir($project['full_project_path'])) {
+    if (drush_move_dir($project['backup_target'], $project['full_project_path'])) {
       return drush_log(dt("Backups were restored successfully."), 'ok');
     }
     return drush_set_error('DRUSH_PM_BACKUP_ROLLBACK_FAILED', dt('Could not restore backup and rollback from failed upgrade. You will need to resolve manually.'));
