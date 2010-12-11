@@ -1044,7 +1044,7 @@ function drush_pm_releases() {
     foreach ($releases as $release) {
       $rows[] = array(
         $release['version'],
-        date('Y-M-d', $release['date']),
+        gmdate('Y-M-d', $release['date']),
         implode(', ', $release['release_status'])
       );
     }
@@ -1259,7 +1259,7 @@ function _drush_pm_download_releases_choice($xml, $project, $all = FALSE, $dev =
 
   $options = array();
   foreach($releases as $version => $release) {
-    $options[$version] = array($version, '-', date('Y-M-d', $release['date']), '-', implode(', ', $release['release_status']));
+    $options[$version] = array($version, '-', gmdate('Y-M-d', $release['date']), '-', implode(', ', $release['release_status']));
   }
   return $options;
 }

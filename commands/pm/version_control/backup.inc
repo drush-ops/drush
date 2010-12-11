@@ -74,7 +74,7 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
     // Save the date to be used in the backup directory's path name.
-    $date = date('YmdHis', $_SERVER['REQUEST_TIME']);
+    $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
 
     $backup_dir = drush_get_option('backup-dir', $_SERVER['HOME'] . '/' . '.drush-backups');
     if (strpos($backup_dir, $drupal_root) === 0) {
