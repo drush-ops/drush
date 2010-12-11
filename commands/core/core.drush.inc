@@ -823,12 +823,17 @@ function _drush_core_directory($target = 'root') {
 
 function drush_core_drupal_directory($target = 'root') {
   $path = _drush_core_directory($target);
-
-  if (isset($path)) {
+  
+  // If _drush_core_directory is working right, it will turn
+  // %blah into the path to the item referred to by the key 'blah'.
+  // If there is no such key, then no replacement is done.  In the
+  // case of the dd command, we will consider it an error if
+  // any keys are -not- replaced in _drush_core_directory.
+  if ((isset($path)) && (strpos($path, '%') === FALSE)) {
     drush_print($path);
   }
   else {
-    return drush_set_error(dt('Core directory path !target not found.', array('!target' => $target)));
+    return drush_set_error(dt("Target '!target' not found.", array('!target' => $target)));
   }
 
   return TRUE;
