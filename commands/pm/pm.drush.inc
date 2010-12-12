@@ -186,7 +186,6 @@ function pm_drush_command() {
   );
   $items['pm-releasenotes'] = array(
     'description' => 'Print release notes for given projects.',
-    'drupal dependencies' => array($update),
     'arguments' => array(
       'projects' => 'A list of drupal.org project names, with optional version. Defaults to \'drupal\'',
     ),
@@ -200,7 +199,6 @@ function pm_drush_command() {
   );
   $items['pm-releases'] = array(
     'description' => 'Print release information for given projects.',
-    'drupal dependencies' => array($update),
     'arguments' => array(
       'projects' => 'A list of drupal.org project names. Defaults to \'drupal\'',
     ),
@@ -1143,29 +1141,6 @@ function _drush_pm_get_releases_from_xml($xml, $project) {
 }
 
 /**
- * Return an array of available releases for given project(s).
- *
- * Generates content equivalent to the 'releases' array returned by
- * _drush_pm_get_releases().
- */
-function _drush_pm_releases_from_xml($xml, $project) {
-  // If we are bootstrapped, we will get the release info from _drush_pm_get_releases,
-  // so that we can include information about the installed release.
-  $releases = array();
-  if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-    $info = _drush_pm_get_releases_from_update_status(array($project));
-    $releases = $info[$project]['releases'];
-  }
-  // If we are not bootstrapped, then we will extract the release info from
-  // the release-history xml.
-  else {
-    $project_info = _drush_pm_get_releases_from_xml($xml, $project);
-    $releases = $project_info['releases'];
-  }
-  return $releases;
-}
-
-/**
  * Helper function for _drush_pm_filter_releases().
  */
 function _drush_pm_compare_date($a, $b) {
@@ -1255,7 +1230,8 @@ function _drush_pm_filter_releases($releases, $all = FALSE, $dev = FALSE, $show_
  * Helper function for pm-download.
  */
 function _drush_pm_download_releases_choice($xml, $project, $all = FALSE, $dev = FALSE) {
-  $releases = _drush_pm_filter_releases(_drush_pm_releases_from_xml($xml, $project), $all, $dev);
+  $project_info = _drush_pm_get_releases_from_xml($xml, $project);
+  $releases = _drush_pm_filter_releases($project_info['releases'], $all, $dev);
 
   $options = array();
   foreach($releases as $version => $release) {
@@ -1265,108 +1241,35 @@ function _drush_pm_download_releases_choice($xml, $project, $all = FALSE, $dev =
 }
 
 /**
- * Get releases for given projects and fill in status information.
+ * Obtain releases info for given projects and fill in status information.
  *
- * @param $projects
- *   An array of drupal.org projects.
+ * It does connect directly to the update service and does not depend on
+ * a bootstraped site.
+ *
+ * @param $requests
+ *   An array of drupal.org project names optionally with a version.
  *
  * @see drush_pm_releases()
  * @see _drush_pm_releasenotes()
  */
-function _drush_pm_get_releases($projects) {
-  if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-    return _drush_pm_get_releases_from_update_status($projects);
-  }
-  else {
-    return _drush_pm_get_releases_from_release_history($projects);
-  }
-}
+function _drush_pm_get_releases($requests) {
+  $info = array();
 
-/**
- * Obtain releases info for given projects.
- *
- * It does use the update_info engine and depends on a bootstraped site with
- * update.module enabled.
- */
-function _drush_pm_get_releases_from_update_status($projects) {
-  // We don't provide for other options here, so we supply an explicit path.
-  drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
+  // Parse out project name and version.
+  $requests = pm_parse_project_version($requests);
 
-  $projects = drupal_map_assoc($projects);
-  $info = pm_get_project_info($projects);
-  foreach ($projects as $project) {
-    if (!isset($info[$project])) {
-      drush_set_error('DRUSH_PM_PROJECT_NOT_FOUND', dt("No release history was found for the requested project (!project).", array('!project' => $project)));
+  // Get release history for each request and download the project.
+  $project_types = pm_project_types();
+  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
+  foreach ($requests as $name => $request) {
+    $xml = _drush_pm_get_release_history_xml($request);
+    if (!$xml) {
       continue;
     }
-    if ($info[$project]['project_status'] == 'unpublished') {
-      drush_set_error('DRUSH_PM_PROJECT_UNPUBLISHED', dt("Project !project is unpublished and has no releases available.", array('!project' => $project)), 'warning');
-      unset($info[$project]);
-      continue;
-    }
+
+    $project_info = _drush_pm_get_releases_from_xml($xml, $name);
+    $info[$name] = $project_info;
   }
-
-  // Iterate the projects to collect relevant information.
-  $installed_projects = drush_get_projects();
-  foreach ($info as $key => $project) {
-    // Find latest and recommended versions based on the recommended
-    // major version.
-    $recommended = isset($project['recommended_major'])?$project['recommended_major']:NULL;
-    $recommended_version = NULL;
-    $latest_version = NULL;
-    foreach ($project['releases'] as $release) {
-      //Only consider releases of recommended major version.
-      if ($release['version_major'] == $recommended) {
-        // First release is the latest version.
-        if (!isset($latest_version)) {
-          $latest_version = $release['version'];
-        }
-        // First stable release is the recommended version.
-        if (empty($release['version_extra'])) {
-          if (!isset($recommended_version)) {
-            $recommended_version = $release['version'];
-          }
-        }
-      }
-    }
-    // If no stable release of  recomended major version found, set
-    // latest version as the recommended one.
-    if (!isset($recommended_version)) {
-      $recommended_version = $latest_version;
-    }
-
-    // Iterate the releases to fill in status data.
-    $supported = isset($project['supported_majors'])?explode(',', $project['supported_majors']):array();
-    foreach ($project['releases'] as $version => $release) {
-      $status = array();
-      if (($k = array_search($release['version_major'], $supported)) !== FALSE) {
-        $status[] = dt('Supported');
-        unset($supported[$k]);
-      }
-      if ((isset($recommended_version)) && ($version == $recommended_version)) {
-        $status[] = dt('Recommended');
-        $info[$key]['recommended'] = $version;
-      }
-      if (isset($release['version_extra']) && ($release['version_extra'] == 'dev')) {
-        $status[] = dt('Development');
-      }
-      if (isset($installed_projects[$key])) {
-        if ($installed_projects[$key]['version'] == $version) {
-          $status[] = dt('Installed');
-          $info[$key]['installed'] = $version;
-        }
-      }
-      if (isset($release['terms']) && array_key_exists('Release type', $release['terms'])) {
-        foreach ($release['terms']['Release type'] as $one_type) {
-          if ($one_type == 'Security update') {
-            $status[] = dt('Security');
-          }
-        }
-      }
-      $info[$key]['releases'][$version]['release_status'] = $status;
-    }
-  }
-
   return $info;
 }
 
@@ -2016,39 +1919,6 @@ function drush_pm_download_validate() {
 }
 
 /**
- * Obtain releases info for given projects.
- *
- * It does connect directly to the update service and does not depend on
- * a bootstraped site.
- */
-function _drush_pm_get_releases_from_release_history($requests) {
-  $info = array();
-
-  // Parse out project name and version.
-  $requests = pm_parse_project_version($requests);
-
-  // Get release history for each request and download the project.
-  $project_types = pm_project_types();
-  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
-  foreach ($requests as $name => $request) {
-    $xml = _drush_pm_get_release_history_xml($request);
-    if (!$xml) {
-      continue;
-    }
-    // Unpublished project?
-    $project_status = $xml->xpath('/project/project_status');
-    if ($project_status[0][0] == 'unpublished') {
-      drush_set_error('DRUSH_PM_PROJECT_UNPUBLISHED', dt("Project !project is unpublished and has no releases available.", array('!project' => $name)), 'warning');
-      continue;
-    }
-
-    $project_info = _drush_pm_get_releases_from_xml($xml, $name);
-    $info[$name] = $project_info;
-  }
-  return $info;
-}
-
-/**
  * Download the release history xml for the specified request.
  */
 function _drush_pm_get_release_history_xml($request) {
@@ -2064,12 +1934,15 @@ function _drush_pm_get_release_history_xml($request) {
   }
   if (!$xml) {
     // We are not getting here since drupal.org always serves an XML response.
-    drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
-    return FALSE;
+    return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
   }
   if ($error = $xml->xpath('/error')) {
-    drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
-    return FALSE;
+    return drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
+  }
+  // Unpublished project?
+  $project_status = $xml->xpath('/project/project_status');
+  if ($project_status[0][0] == 'unpublished') {
+    return drush_set_error('DRUSH_PM_PROJECT_UNPUBLISHED', dt("Project !project is unpublished and has no releases available.", array('!project' => $request['name'])), 'warning');
   }
 
   return $xml;
@@ -2099,13 +1972,6 @@ function drush_pm_download() {
 
     $xml = _drush_pm_get_release_history_xml($request);
     if (!$xml) {
-      continue;
-    }
-
-    // Unpublished project?
-    $project_status = $xml->xpath('/project/project_status');
-    if ($project_status[0][0] == 'unpublished') {
-      drush_set_error('DRUSH_PM_PROJECT_UNPUBLISHED', dt("Project !project is unpublished and has no releases available.", array('!project' => $name)), 'warning');
       continue;
     }
 
