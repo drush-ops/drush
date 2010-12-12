@@ -58,7 +58,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/bootstrap.txt'),
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/bootstrap.html'),
   );
   $items['docs-scripts'] = array(
     'description' => dt('Overview on how to write drush shell scripts.'),
@@ -66,7 +66,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/shellscripts.txt'),
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/shellscripts.html'),
   );
   $items['docs-commands'] = array(
     'description' => dt('Overview on how to write drush commands.'),
@@ -74,7 +74,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/commands.txt'),
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/commands.html'),
   );
   $items['docs-api'] = array(
     'description' => dt('Drush API'),
@@ -90,7 +90,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/context.txt'),
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/context.html'),
   );
   $items['docs-examplescript'] = array(
     'description' => dt('Example drush script'),

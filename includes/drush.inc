@@ -466,7 +466,13 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
   else {
     $replacements = array(
       '<hr>' => '------------------------------------------------------------------------------',
-      '<li>' => ' * ',
+      '<li>' => '  * ',
+      '<h1>' => '===== ',
+      '</h1>' => ' =====',
+      '<h2>' => '---- ',
+      '</h2>' => ' ----',
+      '<h3>' => '::: ',
+      '</h3>' => ' :::',
     );
     $text = str_replace(array_keys($replacements), array_values($replacements), $html);
     return preg_replace('/ *<[^>]*> */', ' ', $text);
@@ -635,6 +641,11 @@ function drush_table_column_autowidth($rows, $widths) {
  *   Full path to a file.
  */
 function drush_print_file($file) {
+  if ((substr($file,-4) == ".htm") || (substr($file,-5) == ".html")) {
+    $tmp_file = drush_tempnam(basename($file));
+    file_put_contents($tmp_file, drush_html_to_text(file_get_contents($file)));
+    $file = $tmp_file;
+  }
   if (drush_shell_exec_interactive("less %s", $file)) {
     return;
   }
