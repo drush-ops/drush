@@ -70,7 +70,7 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
   }
   
   // Helper for pre_update.
-  public function prepare_backup_dir() {  
+  public function prepare_backup_dir($date_prefix = '') {  
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
     // Save the date to be used in the backup directory's path name.
@@ -80,7 +80,7 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
     if (strpos($backup_dir, $drupal_root) === 0) {
       return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('It\'s not allowed to store backups inside the Drupal root directory.'));
     }
-    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR) . '/' . $date;
+    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR) . '/' . $date_prefix . $date;
     if (drush_mkdir($backup_dir)) {
       return $backup_dir;
     }
