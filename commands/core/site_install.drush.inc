@@ -106,14 +106,34 @@ function drush_core_pre_site_install() {
       $command_parameter_name = 'command';
       break;
   }
-  $execute = "$scheme_command $credentials --$command_parameter_name";
+  $execute = "$scheme_command $credentials ";
   
-  if (drush_op_system("$execute='DROP DATABASE IF EXISTS $db_quoted_name'")) {
-    drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));
-    return;
+  // Save $query to a tmp file. We will redirect it in. Fewer shell scaping issues that way.
+  $query = "DROP DATABASE IF EXISTS $db_quoted_name";
+  if ($filename = drush_save_data_to_temp_file($query)) {
+    // In --simulate mode, drush_op will show the call to mysql or psql,
+    // but the sql query itself is stored in a temp file and not displayed.
+    // We will therefore show the query explicitly in the interest of full disclosure.
+    if (drush_get_context('DRUSH_SIMULATE')) {
+      drush_print('sql-query: ' . $query);
+    }
+    if (drush_op_system("$execute < $filename")) {
+      drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));
+      return;  
+    }
   }
-  if (drush_op_system("$execute='CREATE DATABASE $db_quoted_name'")) {
-    drush_set_error(dt('Could not create new database: @name', array('@name' => $db_name)));
+  
+  $query = "CREATE DATABASE $db_quoted_name";
+  if ($filename = drush_save_data_to_temp_file($query)) {
+    // In --simulate mode, drush_op will show the call to mysql or psql,
+    // but the sql query itself is stored in a temp file and not displayed.
+    // We will therefore show the query explicitly in the interest of full disclosure.
+    if (drush_get_context('DRUSH_SIMULATE')) {
+      drush_print('sql-query: ' . $query);
+    }
+    if (drush_op_system("$execute < $filename")) {
+      drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));  
+    }
     return;
   }
 }
