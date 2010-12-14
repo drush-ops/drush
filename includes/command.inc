@@ -578,6 +578,7 @@ function drush_command_defaults($key, $commandfile, $path) {
     'command' => $key,
     'command-hook' => $key,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
+    'callback arguments' => array(),
     'commandfile' => $commandfile,
     'path' => dirname($path),
     'engines' => array(), // Helpful for drush_show_help().
@@ -612,13 +613,7 @@ function drush_command_defaults($key, $commandfile, $path) {
  * not available until after bootstrapping.
  *
  * drush_parse_command returns a normalized command descriptor, which
- * is an associative array with the following entries:
- * - callback: name of function to invoke for this command.  The callback
- *     function name _must_ begin with "drush_commandfile_", where commandfile
- *     is from the file "commandfile.drush.inc", which contains the
- *     commandfile_drush_command() function that returned this command.
- *     Note that the callback entry is optional; it is preferable to
- *     omit it, in which case drush_invoke() will generate the hook function name.
+ * is an associative array. Some of its entries are:
  * - callback arguments: an array of arguments to pass to the calback.
  * - description: description of the command.
  * - arguments: an array of arguments that are understood by the command. for help texts.
