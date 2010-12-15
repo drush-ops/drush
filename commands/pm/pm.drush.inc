@@ -1258,9 +1258,7 @@ function _drush_pm_get_releases($requests) {
   // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
 
-  // Get release history for each request and download the project.
-  $project_types = pm_project_types();
-  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
+  // Get release history for each request.
   foreach ($requests as $name => $request) {
     $xml = _drush_pm_get_release_history_xml($request);
     if (!$xml) {
