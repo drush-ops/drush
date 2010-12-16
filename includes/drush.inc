@@ -2060,8 +2060,22 @@ function system_watchdog($log_entry) {
     $message = $log_entry['message'];
   }
   $message = strip_tags(decode_entities($message));
-  // Log it.
-  drush_log('WD '. $log_entry['type'] . ': '.$message, $severity);
+  
+  // Log or print or ignore. Just printing saves memory but thats rarely needed.
+  switch (drush_get_option('watchdog', 'log')) {
+    case 'log':
+      drush_log('WD '. $log_entry['type'] . ': ' . $message, $severity);
+      break;
+    case 'print':
+      // Disable in backend mode since it logs output and the goal is to conserve memory.
+      // @see _drush_bootstrap_drush().
+      if (ob_get_length() === FALSE) {
+        drush_print('WD '. $severity . ' ' . $log_entry['type'] . ': ' . $message);
+      }
+      break;
+    default:
+      // Do nothing.
+  }
 }
 
 /**
