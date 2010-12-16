@@ -237,10 +237,10 @@ function drush_drupal_login($drush_user) {
 
   if (empty($user)) {
     if (is_numeric($drush_user)) {
-      $message = dt('Could not login with user ID #%user.', array('%user' => $drush_user));
+      $message = dt('Could not login with user ID #!user.', array('!user' => $drush_user));
     }
     else {
-      $message = dt('Could not login with user account `%user\'.', array('%user' => $drush_user));
+      $message = dt('Could not login with user account `!user\'.', array('!user' => $drush_user));
     }
     return drush_set_error('DRUPAL_USER_LOGIN_FAILED', $message);
   }
