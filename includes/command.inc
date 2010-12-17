@@ -623,7 +623,7 @@ function drush_command_defaults($key, $commandfile, $path) {
  * - bootstrap: drupal bootstrap level (depends on Drupal major version). -1=no_bootstrap.
  * - core: Drupal major version required.
  * - drupal dependencies: drupal modules required for this command.
- * - drush dependencies: other drush command files required for this command (not yet implemented)
+ * - drush dependencies: other drush command files required for this command.
  *
  * @example
  *   drush_parse_command();
@@ -1140,6 +1140,34 @@ function drush_enforce_requirement_drupal_dependencies(&$command) {
     foreach ($command['drupal dependencies'] as $dependency) {
       if(!function_exists('module_exists') || !module_exists($dependency)) {
         $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] = dt('Command !command needs the following modules installed/enabled to run: !dependencies.', array('!command' => $command['command'], '!dependencies' => implode(', ', $command['drupal dependencies'])));
+        return FALSE;
+      }
+    }
+  }
+  return TRUE;
+}
+
+/**
+ * Check that a command has its declared drush dependencies available or have no
+ * dependencies. Drush dependencies are helpful when a command is invoking
+ * another command, or implementing its API.
+ *
+ * @param $command
+ *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.
+ * @return
+ *   TRUE if dependencies are met.
+ */
+function drush_enforce_requirement_drush_dependencies(&$command) {
+  // If there are no drush dependencies, then do nothing.
+  if (!empty($command['drush dependencies'])) {
+    $commandfiles = drush_commandfile_list();
+    foreach ($command['drush dependencies'] as $dependency) {
+      if (!isset($commandfiles[$dependency])) {
+        $dt_args = array(
+          '!command' => $command['command'],
+          '!dependency' => "$dependency.drush.inc",
+        );
+        $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] = dt('Command !command needs the following drush command file to run: !dependency.', $dt_args);
         return FALSE;
       }
     }

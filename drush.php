@@ -92,6 +92,7 @@ function drush_main() {
         drush_enforce_requirement_bootstrap_phase($command);
         drush_enforce_requirement_core($command);
         drush_enforce_requirement_drupal_dependencies($command);
+        drush_enforce_requirement_drush_dependencies($command);
 
         if ($bootstrap_result && empty($command['bootstrap_errors'])) {
           drush_log(dt("Found command: !command (commandfile=!commandfile)", array('!command' => $command['command'], '!commandfile' => $command['commandfile'])), 'bootstrap');
