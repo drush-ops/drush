@@ -1826,25 +1826,46 @@ function drush_pm_include_version_control($directory = '.') {
   while (!$engine && count($version_controls)) {
     $version_control = array_shift($version_controls);
     if (isset($version_control_engines[$version_control])) {
-      if (!empty($version_control_engines[$version_control]['signature'])) {
-        if (drush_shell_exec($version_control_engines[$version_control]['signature'], $directory)) {
-          $engine = $version_control;
-        }
+      // Instance the engine and check if $directory contain any of the
+      // reserved files.
+      drush_include_engine('version_control', $version_control);
+      $class = 'drush_pm_version_control_' . $version_control;
+      $instance = new $class();
+      $instance->engine = $version_control;
+      $files = $instance->reserved_files();
+      if (empty($files)) {
+        $found = TRUE;
       }
       else {
-        $engine = $version_control;
+        $found = FALSE;
+        foreach ($files as $file) {
+          if (file_exists($directory . '/' . $file)) {
+            $found = TRUE;
+            break;
+          }
+        }
+      }
+      if (!$found) {
+        drush_log(dt('No reserved files found for !vcs version control engine. Discarding.', array('!vcs' => $version_control)), 'debug');
+        continue;
+      }
+      else {
+        if (!empty($version_control_engines[$version_control]['signature'])) {
+          drush_log(dt('Verifying signature for !vcs version control engine.', array('!vcs' => $version_control)), 'debug');
+          if (drush_shell_exec($version_control_engines[$version_control]['signature'], $directory)) {
+            $engine = $version_control;
+          }
+        }
+        else {
+          $engine = $version_control;
+        }
       }
     }
   }
   if (!$engine) {
     return drush_set_error('DRUSH_PM_NO_VERSION_CONTROL', dt('No valid version control or backup engine found (the --version-control option was set to "!version-control").', array('!version-control' => $version_control)));
   }
-  if (!drush_include_engine('version_control', $engine)) {
-    return FALSE;
-  }
-  $class = 'drush_pm_version_control_' . $engine;
-  $instance = new $class();
-  $instance->engine = $engine;
+
   return $instance;
 }
 
