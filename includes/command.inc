@@ -1080,7 +1080,7 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
           $files[$$key]->basename = $basename;
           $files[$$key]->name = $name;
           if ($callback) {
-            $callback($filename);
+            drush_op($callback, $filename);
           }
         }
       }
