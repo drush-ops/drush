@@ -31,7 +31,7 @@ function package_handler_validate() {
  * @param $project The project array with name, base and full (final) paths.
  * @param $release The release details array from drupal.org
  */
-function package_handler_install_project(&$project, $release) {
+function package_handler_download_project(&$project, $release) {
   // Check it out.
   drush_pm_cvs($project, $release);
 
@@ -139,3 +139,12 @@ function drush_pm_cvs(&$project, $release) {
     drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to checkout ' . $project['name'] . ' from cvs.drupal.org.');
   }
 }
+
+/**
+ * Post download action.
+ *
+ * This action take place once the project is placed in its final location.
+ */
+function package_handler_post_download($project) {
+}
+

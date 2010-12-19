@@ -28,7 +28,7 @@ function package_handler_validate() {
  * @param $request Array with information on the request to download.
  * @param $release The release details array from drupal.org.
  */
-function package_handler_install_project(&$request, $release) {
+function package_handler_download_project(&$request, $release) {
   // Get the filename.
   $filename = explode('/', $release['download_link']);
   $filename = array_pop($filename);
@@ -89,8 +89,17 @@ function package_handler_install_project(&$request, $release) {
 }
 
 /**
- * This is an alias of the install function, since they are identical
+ * This is an alias of the download function, since they are identical
  */
 function package_handler_update_project(&$request, $release) {
-  return package_handler_install_project($request, $release);
+  return package_handler_download_project($request, $release);
 }
+
+/**
+ * Post download action.
+ *
+ * This action take place once the project is placed in its final location.
+ */
+function package_handler_post_download($project) {
+}
+

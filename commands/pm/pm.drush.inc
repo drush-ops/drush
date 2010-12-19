@@ -2095,7 +2095,7 @@ function drush_pm_download() {
     $request['base_project_path'] = drush_tempdir();
     $request['full_project_path'] = $request['base_project_path'] .'/'. $request['project_dir'];
     drush_log(dt('Downloading project !name to !dir ...', array('!name' => $request['name'], '!dir' => $request['base_project_path'])));
-    if (!package_handler_install_project($request, $release)) {
+    if (!package_handler_download_project($request, $release)) {
       drush_log('Error downloading '.$request['name']);
       continue;
     }
@@ -2166,6 +2166,7 @@ function drush_pm_download() {
     }
 
     // Post download actions.
+    package_handler_post_download($request);
     drush_command_invoke_all('drush_pm_post_download', $request, $release);
     $version_control->post_download($request);
 
@@ -2208,39 +2209,6 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
           $project['project_install_location'] = $install_dir;
         }
       }
-    }
-  }
-}
-
-/**
- * Implementation of hook_drush_pm_post_download().
- *
- * Built-in post-download hook. This particular version of the hook is to
- * implement the special case for --gitsubmodule when the specified
- * package-handler is git_drupalorg.
- */
-function pm_drush_pm_post_download(&$project, $release) {
-  if ((drush_get_option('package-handler') == 'git_drupalorg') && (drush_get_option('gitsubmodule', FALSE))) {
-    // Obtain the superproject path.
-    if (drush_shell_cd_and_exec(dirname($project['full_project_path']), 'git rev-parse --git-dir')) {
-      $output = drush_shell_exec_output();
-      if (isset($output[0])) {
-        $superproject = dirname($output[0]);
-      }
-      else {
-        return drush_set_error('DRUSH_PM_GIT_SUBMODULE_PROBLEMS', dt('Unable to create !project as a git submodule: !dir is not in a Git repository.', array('!project' => $project['name'], '!dir' => dirname($project['full_project_path']))));
-      }
-    }
-
-    // Add the downloaded project as a submodule of its git superproject.
-    $command = array();
-    $command[] = 'git submodule add';
-    $command[] = drush_get_option('gitsubmoduleaddparams');
-    $command[] = $project['repository'];
-    // We need the submodule relative path.
-    $command[] = substr($project['full_project_path'], strlen($superproject) + 1);
-    if (!drush_shell_cd_and_exec($superproject, implode(' ', $command))) {
-      return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to add !name as a git submodule of !super.', array('!name' => $project['name'], '!super' => $superproject)));
     }
   }
 }
