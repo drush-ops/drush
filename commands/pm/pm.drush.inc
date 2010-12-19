@@ -127,6 +127,7 @@ function pm_drush_command() {
     'arguments' => array(
       'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to show info for multiple matches.',
     ),
+    'aliases' => array('pmi'),
   );
   // Install command is reserved for the download and enable of projects including dependencies.
   // @see http://drupal.org/node/112692 for more information.
@@ -151,8 +152,8 @@ function pm_drush_command() {
       '--no-core' => 'Filter out extensions that are provided by core projects.',
       '--pipe' => 'Returns a space delimited list of the names of the resulting extensions.',
     ),
-    'aliases' => array('sm'),
-    'deprecated-aliases' => array('statusmodules'),
+    'aliases' => array('pml'),
+    'deprecated-aliases' => array('sm'),
   );
   $items['pm-refresh'] = array(
     'description' => 'Refresh update status information.',
@@ -209,7 +210,7 @@ function pm_drush_command() {
     'examples' => array(
       'drush pm-releases cck zen' => 'View releases for cck and Zen projects.',
     ),
-    'deprecated-aliases' => array('info'),
+    'aliases' => array('rl'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
   );
   $items['pm-download'] = array(

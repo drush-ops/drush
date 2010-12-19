@@ -74,7 +74,7 @@ function core_drush_command() {
       'code' => 'PHP code',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
-    'deprecated-aliases' => array('eval'),
+    'aliases' => array('eval', 'ev'),
   );
   $items['php-script'] = array(
     'description' => "Run php script(s).",
