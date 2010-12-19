@@ -382,14 +382,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
           $create_db_target['password'] = $db_su_pw;
         }
         $db_su_connect = _drush_sql_connect($create_db_target);
-        switch (_drush_sql_get_scheme($target_db_url)) {
-          case 'mysql':
-            $pre_import_commands = 'echo "DROP DATABASE IF EXISTS ' . $target_db_url['database'] . '; CREATE DATABASE ' . $target_db_url['database'] . '; GRANT ALL PRIVILEGES ON ' . $target_db_url['database'] . '.* TO \'' . $target_db_url['username'] . '\'@\'' . $target_db_url['host'] . '\' IDENTIFIED BY \'' . $target_db_url['password'] . '\';" | ' . $db_su_connect . '; ';
-            break;
-          case 'pgsql':
-            $pre_import_commands = 'echo "drop database if exists ' . $target_db_url['database'] . '; create database ' . $target_db_url['database'] . ';" | ' . $db_su_connect . '; ';
-            break;
-        }
+        $pre_import_commands = drush_sql_create_database($target_db_url, $db_su_connect);
       }
 
       // Generate the import command
