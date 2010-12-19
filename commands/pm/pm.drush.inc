@@ -2182,7 +2182,7 @@ function drush_pm_download() {
 /**
  * Implementation of hook_drush_pm_download_destination_alter().
  *
- * Built-in download-destination-alter hook.  This particular version of
+ * Built-in download-destination-alter hook. This particular version of
  * the hook will move modules that contain only drush commands to
  * /usr/share/drush/commands if it exists, or $HOME/.drush if the
  * site-wide location does not exist.
@@ -2208,6 +2208,39 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
           $project['project_install_location'] = $install_dir;
         }
       }
+    }
+  }
+}
+
+/**
+ * Implementation of hook_drush_pm_post_download().
+ *
+ * Built-in post-download hook. This particular version of the hook is to
+ * implement the special case for --gitsubmodule when the specified
+ * package-handler is git_drupalorg.
+ */
+function pm_drush_pm_post_download(&$project, $release) {
+  if ((drush_get_option('package-handler') == 'git_drupalorg') && (drush_get_option('gitsubmodule', FALSE))) {
+    // Obtain the superproject path.
+    if (drush_shell_cd_and_exec(dirname($project['full_project_path']), 'git rev-parse --git-dir')) {
+      $output = drush_shell_exec_output();
+      if (isset($output[0])) {
+        $superproject = dirname($output[0]);
+      }
+      else {
+        return drush_set_error('DRUSH_PM_GIT_SUBMODULE_PROBLEMS', dt('Unable to create !project as a git submodule: !dir is not in a Git repository.', array('!project' => $project['name'], '!dir' => dirname($project['full_project_path']))));
+      }
+    }
+
+    // Add the downloaded project as a submodule of its git superproject.
+    $command = array();
+    $command[] = 'git submodule add';
+    $command[] = drush_get_option('gitsubmoduleaddparams');
+    $command[] = $project['repository'];
+    // We need the submodule relative path.
+    $command[] = substr($project['full_project_path'], strlen($superproject) + 1);
+    if (!drush_shell_cd_and_exec($superproject, implode(' ', $command))) {
+      return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to add !name as a git submodule of !super.', array('!name' => $project['name'], '!super' => $superproject)));
     }
   }
 }

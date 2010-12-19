@@ -31,7 +31,7 @@ function package_handler_validate() {
  * @param $project The project array with name, base and full (final) paths.
  * @param $release The release details array from drupal.org
  */
-function package_handler_install_project($project, $release) {
+function package_handler_install_project(&$project, $release) {
   // Check it out.
   drush_pm_cvs($project, $release);
 
@@ -53,7 +53,7 @@ function package_handler_install_project($project, $release) {
  * @param $project The project array with name, base and full (final) paths.
  * @param $release The release details array from drupal.org
  */
-function package_handler_update_project($project, $release) {
+function package_handler_update_project(&$project, $release) {
   drush_log('Updating project ' . $project['name'] . ' ...');
 
   // Check out a fresh copy, or update an existing one.
@@ -74,7 +74,7 @@ function package_handler_update_project($project, $release) {
  * @param $project The project array with name, base and full (final) paths.
  * @param $release The release details array from drupal.org
  */
-function drush_pm_cvs($project, $release) {
+function drush_pm_cvs(&$project, $release) {
   // Build the cvs command to execute.
   $command = array('cvs');
 
