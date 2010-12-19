@@ -76,14 +76,22 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
     // Save the date to be used in the backup directory's path name.
     $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
 
-    $backup_dir = drush_get_option('backup-dir', $_SERVER['HOME'] . '/' . '.drush-backups');
+    $backup_dir = drush_get_option('backup-dir', drush_server_home() . '/' . '.drush-backups');
     if (strpos($backup_dir, $drupal_root) === 0) {
       return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('It\'s not allowed to store backups inside the Drupal root directory.'));
     }
-    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR) . '/' . $date_prefix . $date;
-    if (drush_mkdir($backup_dir)) {
-      return $backup_dir;
+    if (!file_exists($backup_dir)) {
+      if (!drush_mkdir($backup_dir)) {
+        return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Unable to create backup directory !dir.', array('!dir' => $backup_dir)));
+      }
     }
+    if (!is_writable($backup_dir)) {
+      return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Backup directory !dir is not writable.', array('!dir' => $backup_dir)));
+    }
+
+    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR) . '/' . $date_prefix . $date;
+    drush_mkdir($backup_dir);
+    return $backup_dir;
   }
 
   public static function reserved_files() {
