@@ -382,7 +382,8 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
           $create_db_target['password'] = $db_su_pw;
         }
         $db_su_connect = _drush_sql_connect($create_db_target);
-        $pre_import_commands = drush_sql_create_database($target_db_url, $db_su_connect);
+        $pre_import_sql = drush_sql_build_createdb_sql($target_db_url, $db_su_connect);
+        $pre_import_commands = sprintf('echo "%s" | %s; ', $pre_import_sql, $db_su_connect);
       }
 
       // Generate the import command

@@ -807,13 +807,13 @@ function drush_sql_show_tables_pgsql() {
   return "select tablename from pg_tables where schemaname='public';";
 }
 
-function drush_sql_create_database($target_db_url, $db_su_connect) {
+function drush_sql_build_createdb_sql($target_db_url) {
   switch (_drush_sql_get_scheme($target_db_url)) {
     case 'mysql':
-      $command = 'echo "DROP DATABASE IF EXISTS ' . $target_db_url['database'] . '; CREATE DATABASE ' . $target_db_url['database'] . '/*!40100 DEFAULT CHARACTER SET utf8 */' . '; GRANT ALL PRIVILEGES ON ' . $target_db_url['database'] . '.* TO \'' . $target_db_url['username'] . '\'@\'' . $target_db_url['host'] . '\' IDENTIFIED BY \'' . $target_db_url['password'] . '\';FLUSH PRIVILEGES;" | ' . $db_su_connect . '; ';
+      $command = 'DROP DATABASE IF EXISTS ' . $target_db_url['database'] . '; CREATE DATABASE ' . $target_db_url['database'] . '/*!40100 DEFAULT CHARACTER SET utf8 */' . '; GRANT ALL PRIVILEGES ON ' . $target_db_url['database'] . '.* TO \'' . $target_db_url['username'] . '\'@\'' . $target_db_url['host'] . '\' IDENTIFIED BY \'' . $target_db_url['password'] . '\';FLUSH PRIVILEGES;';
       break;
     case 'pgsql':
-      $command = 'echo "drop database if exists ' . $target_db_url['database'] . '; create database ' . $target_db_url['database'] . " ENCODING 'UTF8'" . ';" | ' . $db_su_connect . '; ';
+      $command = 'drop database if exists ' . $target_db_url['database'] . '; create database ' . $target_db_url['database'] . " ENCODING 'UTF8';";
       break;
   }
   return $command;
