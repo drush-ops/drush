@@ -247,32 +247,19 @@ function drush_get_global_options() {
  * Prints out help for a given command.
  */
 function drush_show_help($commandstring) {
-  $phases = _drush_bootstrap_phases();
-
-  foreach ($phases as $phase_index) {
-    if ($validated = drush_bootstrap_validate($phase_index)) {
-      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
-        drush_bootstrap($phase_index);
-      }
-    }
-    if (!drush_get_error()) {
-      $commands = drush_get_commands();
-      if (array_key_exists($commandstring, $commands)) {
-        $command = $commands[$commandstring];
-
-        if ($validated && $command['bootstrap'] > $phase_index) {
-          continue;
-        }
-
-        drush_print_help($command);
-
-        return TRUE;
-
-      }
-    }
-    else {
-      break;
-    }
+  // First check and see if the command can already be found.
+  $commands = drush_get_commands();
+  if (!array_key_exists($commandstring, $commands)) {
+    // If the command cannot be found, then bootstrap so that
+    // additional commands will be brought in.
+    // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE.
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+    $commands = drush_get_commands();
+  }
+  if (array_key_exists($commandstring, $commands)) {
+    $command = $commands[$commandstring];
+    drush_print_help($command);
+    return TRUE;
   }
   return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => $commandstring)));
 }
