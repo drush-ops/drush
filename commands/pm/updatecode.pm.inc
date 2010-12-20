@@ -242,7 +242,7 @@ function _pm_update_core(&$project, $module_list = array(), $tmpfile) {
   $project['path'] = 'drupal-' . $project['candidate_version'];
   $project['full_project_path'] = $drupal_root . '/' . $project['path'];
   if (!is_dir($project['full_project_path'])) {
-    drush_op('mkdir', $project['full_project_path']);
+    drush_mkdir($project['full_project_path']);
   }
 
   // Create a list of directories to exclude from the update process.

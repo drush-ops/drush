@@ -947,7 +947,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
   $command = call_user_func_array('sprintf', $args);
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-    drush_log('Executing: ' . $command);
+    drush_print('Executing: ' . $command);
   }
 
   if (!drush_get_context('DRUSH_SIMULATE')) {
@@ -1141,11 +1141,11 @@ function drush_copy_dir($src, $dest, $overwrite = FALSE) {
     }
   }
   // $src readable?
-  if (!is_readable($src)) {
+  if (!drush_op('is_readable', $src)) {
     return drush_set_error('DRUSH_SOURCE_NOT_EXISTS', dt('Source directory !src is not readable or does not exist.', array('!src' => $src)));
   }
   // $dest writable?
-  if (!is_writable(dirname($dest))) {
+  if (!drush_op('is_writable', dirname($dest))) {
     return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Destination directory !dest is not writable.', array('!dest' => dirname($dest))));
   }
   // Try to do a recursive copy.
@@ -1162,7 +1162,7 @@ function drush_copy_dir($src, $dest, $overwrite = FALSE) {
 function _drush_recursive_copy($src, $dest) {
   // all subdirectories and contents:
   if(is_dir($src)) {
-    mkdir($dest);
+    drush_mkdir($dest);
     $dir_handle = opendir($src);
     while($file = readdir($dir_handle)) {
       if ($file != "." && $file != "..") {
@@ -1173,7 +1173,7 @@ function _drush_recursive_copy($src, $dest) {
     }
     closedir($dir_handle);
   }
-  elseif (copy($src, $dest) !== TRUE) {
+  elseif (drush_op('copy', $src, $dest) !== TRUE) {
     return FALSE;
   }
 
@@ -1208,11 +1208,11 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
     }
   }
   // $src readable?
-  if (!is_readable($src)) {
-    return drush_set_error('DRUSH_SOURCE_NOT_EXISTS', dt('Source directory !dest is not readable or does not exist.', array('!src' => $src)));
+  if (!drush_op('is_readable', $src)) {
+    return drush_set_error('DRUSH_SOURCE_NOT_EXISTS', dt('Source directory !src is not readable or does not exist.', array('!src' => $src)));
   }
   // $dest writable?
-  if (!is_writable(dirname($dest))) {
+  if (!drush_op('is_writable', dirname($dest))) {
     return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Destination directory !dest is not writable.', array('!dest' => dirname($dest))));
   }
   // Try rename. It will fail if $src and $dest are not in the same partition.

@@ -2114,10 +2114,10 @@ function drush_pm_download() {
       else {
         // Move to its own directory, as any other project.
         $olddir = drush_cwd();
-        chdir($request['base_project_path']);
+        drush_op('chdir', $request['base_project_path']);
         drush_shell_exec('mkdir ' . $request['project_dir']);
         drush_shell_exec('mv * ' . $request['project_dir']);
-        chdir($olddir);
+        drush_op('chdir', $olddir);
       }
     }
 
@@ -2203,7 +2203,7 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
         }
         // Make the .drush dir if it does not already exist.
         if (!is_dir($install_dir)) {
-          mkdir($install_dir);
+          drush_mkdir($install_dir);
         }
         // Change the location if the mkdir worked.
         if (is_dir($install_dir)) {

@@ -881,7 +881,7 @@ function drush_core_cli() {
   // if any.  This will make our default site for drush match the
   // currently bootstrapped site (at least until the user cd's away).
   if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    chdir($site_root);
+    drush_op('chdir', $site_root);
   }
 
   // Print our entire bashrc file in verbose mode

@@ -40,7 +40,7 @@ function package_handler_download_project(&$request, $release) {
 
   // Chdir to the download location.
   $olddir = getcwd();
-  chdir($request['base_project_path']);
+  drush_op('chdir', $request['base_project_path']);
 
   // Download the project.
   if (!drush_shell_exec("wget -P . " . $release['download_link'])) {
@@ -50,15 +50,15 @@ function package_handler_download_project(&$request, $release) {
     drush_log("Downloading " . $filename . " was successful.");
   }
   else {
-    chdir($olddir);
+    drush_op('chdir', $olddir);
     return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', 'Unable to download ' . $filename . ' to ' . $request['base_project_path'] . ' from '. $release['download_link']);
   }
 
   // Check Md5 hash.
-  if (md5_file($filename) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
+  if (drush_op('md5_file', $filename) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
     drush_set_error('DRUSH_PM_FILE_CORRUPT', "File $filename is corrupt (wrong md5 checksum).");
     drush_op('unlink', $filename);
-    chdir($olddir);
+    drush_op('chdir', $olddir);
     return FALSE;
   }
   else {
@@ -88,7 +88,7 @@ function package_handler_download_project(&$request, $release) {
 
   // Cleanup. Remove the tar file and set previous working directory.
   drush_op('unlink', $tarpath);
-  chdir($olddir);
+  drush_op('chdir', $olddir);
 
   return TRUE;
 }
