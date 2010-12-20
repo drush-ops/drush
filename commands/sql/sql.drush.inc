@@ -431,11 +431,13 @@ function _drush_sql_query($query, $db_spec = NULL) {
   $scheme = _drush_sql_get_scheme($db_spec);
 
   // Inject table prefixes as needed.
-  if (drush_drupal_major_version() >= 7) {
-    $query = Database::getConnection()->prefixTables($query);
-  }
-  else {
-    $query = db_prefix_tables($query);
+  if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+    if (drush_drupal_major_version() >= 7) {
+      $query = Database::getConnection()->prefixTables($query);
+    }
+    else {
+      $query = db_prefix_tables($query);
+    }
   }
 
   // Convert mysql 'show tables;' query into something pgsql understands
@@ -807,16 +809,33 @@ function drush_sql_show_tables_pgsql() {
   return "select tablename from pg_tables where schemaname='public';";
 }
 
-function drush_sql_build_createdb_sql($target_db_url) {
-  switch (_drush_sql_get_scheme($target_db_url)) {
+/*
+ * Build a SQL string for dropping and creating a database.
+ *
+ * @param array $db_spec
+ *   A database specification array.
+ *
+ * @param boolean $quoted
+ *   Quote the database name. Mysql uses backticks to quote which can cause problems
+ *   in a Windows shell. Set TRUE of the CREATE is not running on the bash command line.
+ */
+function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
+  switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
-      $command = 'DROP DATABASE IF EXISTS ' . $target_db_url['database'] . '; CREATE DATABASE ' . $target_db_url['database'] . '/*!40100 DEFAULT CHARACTER SET utf8 */' . '; GRANT ALL PRIVILEGES ON ' . $target_db_url['database'] . '.* TO \'' . $target_db_url['username'] . '\'@\'' . $target_db_url['host'] . '\' IDENTIFIED BY \'' . $target_db_url['password'] . '\';FLUSH PRIVILEGES;';
+      $dbname = $quoted ? '`' . $db_spec['database'] . '`' : $db_spec['database'];
+      $commands[] = sprintf('DROP DATABASE IF EXISTS %s; ', $dbname);
+      $commands[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
+      $commands[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO %s@%s', $dbname, $db_spec['username'], $db_spec['host']);
+      $commands[] = sprintf("IDENTIFIED BY '%s';", $db_spec['password']);
+      $commands[] = 'FLUSH PRIVILEGES;';
       break;
     case 'pgsql':
-      $command = 'drop database if exists ' . $target_db_url['database'] . '; create database ' . $target_db_url['database'] . " ENCODING 'UTF8';";
+      $dbname = $quoted ? '"' . $db_spec['database'] . '"' : $db_spec['database'];
+      $commands[] = sprintf('drop database if exists %dname;', $dbname);
+      $commands[] = sprintf("create database %dbname ENCODING 'UTF8';", $dbname);
       break;
   }
-  return $command;
+  return implode(' ', $commands);
 }
 
 function drush_sql_build_exec($db_spec, $filepath) {

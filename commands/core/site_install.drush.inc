@@ -66,13 +66,6 @@ function drush_core_pre_site_install() {
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
   // Drop and create DB if needed.
-  // @TODO: support db-su like sql sync.
-
-  // Can't use drush_sql_query() since might not have a DB.
-  // Get credentials to connect to the server, but not the database which we
-  // are about to DROP.
-
-  // Save the database name before we unset() it.
   $db_name = $db_spec['database'];
   $scheme = _drush_sql_get_scheme($db_spec);
   $simulate = drush_get_context('DRUSH_SIMULATE');
@@ -86,55 +79,15 @@ function drush_core_pre_site_install() {
         drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));
       }
     }
-    // Nothing else to do for SQLite installations, so return.
-    return;
   }
-  // _drush_sql_get_credentials() will set a default database according to
-  // the scheme if one is not set.
-  unset($db_spec['database']);
-  $credentials = _drush_sql_get_credentials($db_spec);
-
-  $db_quoted_name = "\"$db_name\"";
-  $scheme_command = $scheme;
-  switch ($scheme) {
-    case 'mysql':
-      $command_parameter_name = 'execute';
-      $db_quoted_name = "`$db_name`";
-      break;
-    case 'pgsql':
-      $scheme_command = 'psql --dbname=template1';
-      $command_parameter_name = 'command';
-      break;
-  }
-  $execute = "$scheme_command $credentials ";
-  
-  // Save $query to a tmp file. We will redirect it in. Fewer shell scaping issues that way.
-  $query = "DROP DATABASE IF EXISTS $db_quoted_name";
-  if ($filename = drush_save_data_to_temp_file($query)) {
-    // In --simulate mode, drush_op will show the call to mysql or psql,
-    // but the sql query itself is stored in a temp file and not displayed.
-    // We will therefore show the query explicitly in the interest of full disclosure.
-    if (drush_get_context('DRUSH_SIMULATE')) {
-      drush_print('sql-query: ' . $query);
+  else {
+    $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
+    // Get credentials to connect to the server, but not the database which we
+    // are about to DROP. @see _drush_sql_get_credentials().
+    unset($db_spec['database']);
+    if (!_drush_sql_query($sql, $db_spec)) {
+      return drush_set_error(dt('Could not drop and create database: @name', array('@name' => $db_name)));
     }
-    if (drush_op_system("$execute < $filename")) {
-      drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));
-      return;  
-    }
-  }
-  
-  $query = "CREATE DATABASE $db_quoted_name";
-  if ($filename = drush_save_data_to_temp_file($query)) {
-    // In --simulate mode, drush_op will show the call to mysql or psql,
-    // but the sql query itself is stored in a temp file and not displayed.
-    // We will therefore show the query explicitly in the interest of full disclosure.
-    if (drush_get_context('DRUSH_SIMULATE')) {
-      drush_print('sql-query: ' . $query);
-    }
-    if (drush_op_system("$execute < $filename")) {
-      drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));  
-    }
-    return;
   }
 }
 
