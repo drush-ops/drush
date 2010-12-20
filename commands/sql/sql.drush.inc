@@ -79,6 +79,7 @@ function sql_drush_command() {
       '--create-db' => 'Wipe existing tables.',
       '--data-only' => 'Omit CREATE TABLE statements. Postgres only.',
       '--ordered-dump' => 'Order by primary key and add line breaks for efficient diff in revision control. Also, faster rsync. Slows down the dump. Mysql only.',
+      '--gzip' => 'Compress the dump using the gzip program which must be in your $PATH.',
     ) + $options,
   );
   $items['sql-query'] = array(
@@ -208,7 +209,9 @@ function drush_sql_dump_execute() {
   list($exec, $file) = drush_sql_dump();
   // Avoid the php memory of the $output array in drush_shell_exec().
   if (!$return = drush_op_system($exec)) {
-    drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
+    if ($file) {
+      drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
+    }
   }
   return $return;
 }
@@ -378,6 +381,18 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
         $exec .= ' > '. $file;
       }
       break;
+  }
+  
+  if (drush_get_option('gzip')) {
+    if ($file) {
+      // Gzip the result-file
+      $exec .= "; gzip $file";
+      $file .= '.gz';
+    }
+    else {
+      // gzip via pipe since user has not specified a file.
+      $exec .= "| gzip";
+    }
   }
 
   return array($exec, $file);
