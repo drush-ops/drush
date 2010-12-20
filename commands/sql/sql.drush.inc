@@ -825,19 +825,19 @@ function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
       $dbname = $quoted ? '`' . $db_spec['database'] . '`' : $db_spec['database'];
-      $commands[] = sprintf('DROP DATABASE IF EXISTS %s; ', $dbname);
-      $commands[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
-      $commands[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO %s@%s', $dbname, $db_spec['username'], $db_spec['host']);
-      $commands[] = sprintf("IDENTIFIED BY '%s';", $db_spec['password']);
-      $commands[] = 'FLUSH PRIVILEGES;';
+      $sql[] = sprintf('DROP DATABASE IF EXISTS %s; ', $dbname);
+      $sql[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
+      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO %s@%s', $dbname, $db_spec['username'], $db_spec['host']);
+      $sql[] = sprintf("IDENTIFIED BY '%s';", $db_spec['password']);
+      $sql[] = 'FLUSH PRIVILEGES;';
       break;
     case 'pgsql':
       $dbname = $quoted ? '"' . $db_spec['database'] . '"' : $db_spec['database'];
-      $commands[] = sprintf('drop database if exists %dname;', $dbname);
-      $commands[] = sprintf("create database %dbname ENCODING 'UTF8';", $dbname);
+      $sql[] = sprintf('drop database if exists %dname;', $dbname);
+      $sql[] = sprintf("create database %dbname ENCODING 'UTF8';", $dbname);
       break;
   }
-  return implode(' ', $commands);
+  return implode(' ', $sql);
 }
 
 function drush_sql_build_exec($db_spec, $filepath) {
