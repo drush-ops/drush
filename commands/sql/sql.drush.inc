@@ -241,6 +241,8 @@ function drush_sql_dump($db_spec = NULL) {
 /**
  * Build a mysqldump/pg_dump/sqlite statement.
  *
+ * @param array $table_selection
+ *   Supported keys: 'skip', 'structure', 'tables'.
  * @param db_spec
  *   For D5/D6, a $db_url. For D7, a target in the default DB connection.
  * @return array
@@ -248,10 +250,10 @@ function drush_sql_dump($db_spec = NULL) {
  *     1. A mysqldump/pg_dump/sqlite statement that is ready for executing.
  *     2. The filepath where the dump will be saved.
  */
-function drush_sql_build_dump_command($tabel_selection, $db_spec = NULL) {
-  $skip_tables = $tabel_selection['skip'];
-  $structure_tables = $tabel_selection['structure'];
-  $tables = $tabel_selection['tables'];
+function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
+  $skip_tables = $table_selection['skip'];
+  $structure_tables = $table_selection['structure'];
+  $tables = $table_selection['tables'];
 
   $ignores = array();
   $skip_tables  = array_merge($structure_tables, $skip_tables);
