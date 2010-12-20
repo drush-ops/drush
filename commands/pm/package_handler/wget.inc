@@ -15,6 +15,11 @@ function package_handler_validate() {
   $success = drush_shell_exec('wget --version');
   if (!$success) {
     $success = drush_shell_exec('curl --version');
+    // Old version of curl shipped in darwin returns error status for --version
+    // and --help. Give the chance to use it.
+    if (!$success) {
+      $success = drus_shell_exec('which curl');
+    }
   }
   drush_set_context('DRUSH_DEBUG', $debug);
   if (!$success) {
