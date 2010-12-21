@@ -125,7 +125,7 @@ function pm_drush_command() {
   $items['pm-info'] = array(
     'description' => 'Show info for one or more modules or themes.',
     'arguments' => array(
-      'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to show info for multiple matches.',
+      'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to show info for multiple matches. If no argument is provided it will show info for all available extensions.',
     ),
     'aliases' => array('pmi'),
   );
@@ -738,6 +738,15 @@ function drush_pm_info() {
 
   $extension_info = drush_pm_get_extensions();
   _drush_pm_expand_extensions($args, $extension_info);
+  // If no extensions are provided, select all but the hidden ones.
+  if (count($args) == 0) {
+    foreach ($extension_info as $key => $extension) {
+      if (isset($extension->info['hidden'])) {
+        unset($extension_info[$key]);
+      }
+    }
+    $args = array_keys($extension_info);
+  }
 
   foreach ($args as $project) {
     if (isset($extension_info[$project])) {
