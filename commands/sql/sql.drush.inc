@@ -848,8 +848,8 @@ function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
       break;
     case 'pgsql':
       $dbname = $quoted ? '"' . $db_spec['database'] . '"' : $db_spec['database'];
-      $sql[] = sprintf('drop database if exists %dname;', $dbname);
-      $sql[] = sprintf("create database %dbname ENCODING 'UTF8';", $dbname);
+      $sql[] = sprintf('drop database if exists %s;', $dbname);
+      $sql[] = sprintf("create database %s ENCODING 'UTF8';", $dbname);
       break;
   }
   return implode(' ', $sql);
