@@ -4,7 +4,7 @@
 /**
  * Install Drupal 6.x
  */
-function drush_core_site_install_version($profile) {  
+function drush_core_site_install_version($profile) {
   if (is_null($profile)) {
     $profile = 'default';
   }
@@ -18,7 +18,6 @@ function drush_core_site_install_version($profile) {
   drush_shell_exec('php -r %s', $phpcode);
   $cli_output = drush_shell_exec_output();
   $cli_cookie = end($cli_output);
-  
   $phpcode = _drush_site_install6_cookies($profile, $cli_cookie). ' $_GET["op"]="start"; include("'. $drupal_root .'/install.php");';
   drush_shell_exec('php -r %s', $phpcode);
 
@@ -58,7 +57,10 @@ function drush_core_site_install_version($profile) {
 function _drush_site_install6_cookies($profile, $cookie = NULL) {
   $output = '$_GET=array("profile"=>"' . $profile . '", "locale"=>"' . drush_get_option('locale', 'en') . '", "id"=>"1"); $_REQUEST=&$_GET;';
   $output .= 'define("DRUSH_SITE_INSTALL6", TRUE);$_SERVER["SERVER_SOFTWARE"] = NULL;';
-  
+  $output .= '$_SERVER["SCRIPT_NAME"] = "/install.php";';
+  $output .= '$_SERVER["HTTP_HOST"] = "'.drush_get_option('uri', 'default').'";';
+  $output .= '$_SERVER["REMOTE_ADDR"] = "127.0.0.1";';
+
   if ($cookie) {
     $output .= sprintf('$_COOKIE=unserialize("%s");', str_replace('"', '\"', $cookie));
   }
@@ -66,6 +68,6 @@ function _drush_site_install6_cookies($profile, $cookie = NULL) {
     $output .= 'function _cli_cookie_print(){print(serialize(array(session_name()=>session_id())));}
 register_shutdown_function("_cli_cookie_print");';
   }
-  
+
   return $output;
 }

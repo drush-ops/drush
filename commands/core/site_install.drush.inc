@@ -3,18 +3,15 @@
 
 // Perform setup tasks for installation.
 function drush_core_pre_site_install() {
-
   if (!$db_spec = drush_core_site_install_db_spec()) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
   }
-
-  
   if ($sites_subdir = drush_get_option('sites-subdir')) {
     // Needed so that we later bootstrap into the right site.
     drush_set_option('uri', $sites_subdir);
   }
- else {
+  else {
     $sites_subdir = 'default';
   }
 
