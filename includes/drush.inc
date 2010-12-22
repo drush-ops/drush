@@ -235,6 +235,7 @@ function drush_get_global_options() {
   $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
   $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
   $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
+  $options['--no-label']               = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
   $options['-p, --pipe']               = dt("Emit a compact representation of the command for scripting.");
   $options['--nocolor']                = dt("Suppress color highlighting on log messages.");
   $options['--show-passwords']         = dt("Show database passwords in commands that display connection information.");
@@ -1609,11 +1610,13 @@ function drush_remote_command() {
     if (!is_array($site_list)) {
       $site_list = explode(',', $site_list);
     }
+    $site_list = drush_sitealias_resolve_sitespecs($site_list);
+    $site_list = drush_sitealias_simplify_names($site_list);
     $args = drush_get_arguments();
 
     if (!drush_get_context('DRUSH_SIMULATE')) {
       drush_print(dt("You are about to execute '!command' on all of the following targets:", array('!command' => implode(" ", $args))));
-      foreach ($site_list as $one_destination) {
+      foreach ($site_list as $one_destination => $one_record) {
         drush_print(dt('  !target', array('!target' => $one_destination)));
       }
 
@@ -1622,10 +1625,34 @@ function drush_remote_command() {
       }
     }
     $command = array_shift($args);
-
-    foreach ($site_list as $site_spec) {
-      $values = drush_do_site_command(_drush_sitealias_get_record($site_spec), $command, $args);
-      drush_print($values['output']);
+    $multi_options = drush_get_context('options');
+    
+    if (!drush_get_option('no-label', FALSE)) {
+      $label_separator = ' >> ';
+      $max_name_length = 0;
+      foreach ($site_list as $alias_name => $alias_record) {
+	if (strlen($alias_name) > $max_name_length) {
+	  $max_name_length = strlen($alias_name);
+	}
+      }
+      $multi_options['reserve-margin'] = $max_name_length + strlen($label_separator);
+      foreach ($site_list as $alias_name => $alias_record) {
+        $values = drush_do_site_command($alias_record, $command, $args, $multi_options);
+        foreach (explode("\n", $values['output']) as $line) {
+	  if (empty($line)) {
+	    drush_print();
+	  }
+	  else {
+            drush_print(str_pad($alias_name, $max_name_length, " ") . $label_separator . $line);
+	  }
+	}
+      }
+    }
+    else {
+      foreach ($site_list as $alias_name => $alias_record) {
+        $values = drush_do_site_command($alias_record, $command, $args, $multi_options);
+        drush_print($values['output']);
+      }
     }
     return TRUE;
   }

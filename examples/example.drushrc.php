@@ -128,6 +128,15 @@
 # $options['output_charset'] = 'ISO-8859-1//TRANSLIT';
 
 /*
+ * Multiple command execution options
+ */
+// By default, drush will prepend the name of the
+// site to the output of any multiple-site command 
+// execution.  To disable vthis behavior, set the
+// --no-label option
+# $options['no-label'] = TRUE;
+
+/*
  * Customize this associative array with your own tables. This is the list of
  * tables whose *data* is skipped by the 'sql-dump' and 'sql-sync' commands when
  * a structure-tables-key is provided. You may add new tables to the existing

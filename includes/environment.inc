@@ -551,6 +551,12 @@ function _drush_bootstrap_drush() {
     // If stty failed, or we couldn't parse it's output, we assume 80 columns.
     if ($stty_status || !$stty_count) $columns = 80;
   }
+  // If a caller wants to reserve some room to add additional
+  // information to the drush output via post-processing, the
+  // --reserve-margin flag can be used to declare how much
+  // space to leave out.  This only affects drush functions
+  // such as drush_print_table that wrap the output.
+  $columns -= drush_get_option('reserve-margin', 0);
   drush_set_context('DRUSH_COLUMNS', $columns);
 
   // statically define a way to call drush again

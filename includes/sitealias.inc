@@ -35,6 +35,27 @@ function drush_sitealias_check_arg() {
 }
 
 /**
+ * Given a list of alias records, shorten the name used if possible
+ */
+function drush_sitealias_simplify_names($site_list) {
+//  foreach ($site_list as $original_name => $alias_record) {
+//  }
+  $result = array();
+  foreach ($site_list as $original_name => $alias_record) {
+    $adjusted_name = $alias_record['name'];
+    $hashpos = strpos($original_name, '#');
+    if ($hashpos !== FALSE) {
+      $adjusted_name = substr($original_name, $hashpos);
+      if (array_key_exists('remote-host', $alias_record)) {
+        $adjusted_name = $alias_record['remote-host'] . $adjusted_name;
+      }
+    }
+    $result[$adjusted_name] = $alias_record;
+  }
+  return $result;
+}
+
+/**
  * Given an array of site specifications, resolve each one in turn and
  * return an array of alias records.  If you only want a single record,
  * it is preferable to simply call drush_sitealias_get_record directly.
@@ -289,7 +310,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
 function drush_sitealias_local_site_path($alias_record) {
   $result = NULL;
 
-  if (isset($alias_record['uri']) && isset($alias_record['root']) && !isset($alias_record['remote_host'])) {
+  if (isset($alias_record['uri']) && isset($alias_record['root']) && !isset($alias_record['remote-host'])) {
     $result = realpath($alias_record['root'] . '/sites/' . drush_sitealias_uri_to_site_dir($alias_record['uri']));
   }
 
@@ -994,22 +1015,23 @@ function _drush_sitealias_find_local_sites($search_path) {
 function _drush_find_local_sites_at_root($a_drupal_root = '', $search_depth = 1) {
   $site_list = array();
   $base_path = (empty($a_drupal_root) ? drush_get_context('DRUSH_DRUPAL_ROOT') : $a_drupal_root );
-  if (drush_valid_drupal_root($base_path)) {
-    // If $a_drupal_root is in fact a valid drupal root, then return
-    // all of the sites found inside the 'sites' folder of this drupal instance.
-    $site_list = _drush_find_local_sites_in_sites_folder($base_path);
-  }
-  else {
-    $bootstrap_files = drush_scan_directory($base_path, '/' . basename(DRUSH_DRUPAL_BOOTSTRAP) . '/' , array('.', '..', 'CVS'), 0, drush_get_option('search-depth', $search_depth) + 1, 'filename', 1);
-    foreach ($bootstrap_files as $one_bootstrap => $info) {
-      $includes_dir = dirname($one_bootstrap);
-      if (basename($includes_dir) == basename(dirname(DRUSH_DRUPAL_BOOTSTRAP))) {
-        $drupal_root = dirname($includes_dir);
-        $site_list = array_merge(_drush_find_local_sites_in_sites_folder($drupal_root), $site_list);
+  if (!empty($base_path)) {
+    if (drush_valid_drupal_root($base_path)) {
+      // If $a_drupal_root is in fact a valid drupal root, then return
+      // all of the sites found inside the 'sites' folder of this drupal instance.
+      $site_list = _drush_find_local_sites_in_sites_folder($base_path);
+    }
+    else {
+      $bootstrap_files = drush_scan_directory($base_path, '/' . basename(DRUSH_DRUPAL_BOOTSTRAP) . '/' , array('.', '..', 'CVS'), 0, drush_get_option('search-depth', $search_depth) + 1, 'filename', 1);
+      foreach ($bootstrap_files as $one_bootstrap => $info) {
+	$includes_dir = dirname($one_bootstrap);
+	if (basename($includes_dir) == basename(dirname(DRUSH_DRUPAL_BOOTSTRAP))) {
+          $drupal_root = dirname($includes_dir);
+          $site_list = array_merge(_drush_find_local_sites_in_sites_folder($drupal_root), $site_list);
+	}
       }
     }
   }
-
   return $site_list;
 }
 
