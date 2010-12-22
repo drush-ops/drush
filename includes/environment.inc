@@ -1114,11 +1114,18 @@ function drush_valid_db_credentials() {
       // Verify connection settings.
       switch ($type) {
         case 'mysql':
-        case 'mysqli':
           $hostspec = $creds['port'] ? $creds['host'] . ':' . $creds['port'] : $creds['host'];
           $connection = @mysql_connect($hostspec, $creds['user'], $creds['pass']);
           if (!$connection || !mysql_select_db($creds['name'])) {
             drush_log(mysql_error(), 'bootstrap');
+            return FALSE;
+          }
+          break;
+        case 'mysqli':
+          $connection = mysqli_init();
+          @mysqli_real_connect($connection, $creds['host'], $creds['user'], $creds['pass'], $creds['name'], (int)$creds['port']);
+          if (mysqli_connect_errno() > 0) {
+            drush_log(mysqli_connect_error(), 'bootstrap');
             return FALSE;
           }
           break;
