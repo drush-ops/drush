@@ -331,13 +331,8 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
       if ($file) {
         $exec .= ' --file '. $file;
       }
-      // Unlike psql, pg_dump does not take a '-d' flag before the database name.
-      // We'll put the database name in 'by hand' and then clear the name from
-      // the record to prevent _drush_sql_get_credentials from inserting a -d term
-      // that pg_dump does not understand.
-      $extra = ' ' . $db_spec['database'];
-      $db_spec['database'] = null;
-      $extra .= _drush_sql_get_credentials($db_spec);
+      // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
+      $extra = str_replace('--dbname=', ' ', _drush_sql_get_credentials($db_spec));
       if (isset($data_only)) {
         $extra .= ' --data-only';
       }
@@ -722,10 +717,9 @@ function _drush_sql_get_credentials($db_spec = NULL) {
       break;
 
     case 'pgsql':
-      // Database is optional in Postgres.
-      if (isset($db_spec['database'])) {
-        $parameters['dbname'] = empty($db_spec['database']) ? 'template1' : $db_spec['database'];
-      }
+      // Some drush commands (e.g. site-install) want to connect to the
+      // server, but not the database.  Connect to the built-in database.
+      $parameters['dbname'] = empty($db_spec['database']) ? 'template1' : $db_spec['database'];
 
       // Host and port are optional but have defaults.
       $parameters['host'] = empty($db_spec['host']) ? 'localhost' : $db_spec['host'];
