@@ -1438,23 +1438,10 @@ function drush_pm_refresh() {
  * Command callback. Execute pm-update.
  */
 function drush_pm_update() {
-  // Signal that we will update drush core after the drush modules
-  // are updated, if an update to core is available.
-  drush_set_context('DRUSH_PM_UPDATE_ALL', TRUE);
-
   // Call pm-updatecode.  updatedb will be called in the post-update process.
   $args = _convert_csv_to_array(func_get_args());
   array_unshift($args, 'pm-updatecode');
   call_user_func_array('drush_invoke', $args);
-
-  // pm-updatecode will not do a core update of Drupal
-  // on the same invocation where non-core modules are
-  // updated.  If there is a core update available, then
-  // call pm-updatecode a second time to update core
-  // (but only if the first run finished successfully).
-  if (drush_get_context('DRUSH_PM_CORE_UPDATE_AVAILABLE', FALSE) && (drush_get_error() == DRUSH_SUCCESS)) {
-    call_user_func_array('drush_invoke', array('pm-updatecode', 'drupal'));
-  }
 }
 
 /**

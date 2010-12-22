@@ -158,39 +158,28 @@ function drush_pm_updatecode() {
     return TRUE;
   }
 
+  $core_update_available = FALSE;
   if (isset($updateable['drupal'])) {
     $drupal_project = $updateable['drupal'];
     unset($update_info['drupal']);
     unset($updateable['drupal']);
-    $module_list = array_keys($update_info);
 
-    // We can only upgrade drupal core if there are no non-core
-    // modules enabled.  _pm_update_core will disable the
-    // modules passed in, and insure that they are enabled again
-    // when we're done.  However, each run of pm-updatecode will
-    // update -either- core, or the non-core modules; never both.
-    // This simplifies rollbacks.
+    // At present we need to update drupal core after non-core projects
+    // are updated.
     if (empty($updateable)) {
-      return _pm_update_core($drupal_project, $module_list, $tmpfile);
+      return _pm_update_core($drupal_project, $tmpfile);
     }
-    // If there are modules other than drupal core enabled, then go
-    // ahead and print instructions on how to upgrade core.  We will
-    // also continue, allowing the user to upgrade any upgradable
-    // modules if desired.
+    // If there are modules other than drupal core enabled, then update them
+    // first.
     else {
+      $core_update_available = TRUE;
       if ($drupal_project['status'] == UPDATE_NOT_SECURE) {
         drush_print(dt("NOTE: A security update for the Drupal core is available."));
       }
       else {
         drush_print(dt("NOTE: A code update for the Drupal core is available."));
       }
-      if (drush_get_context('DRUSH_PM_UPDATE_ALL', FALSE)) {
-        drush_print(dt("Drupal core will be updated after all of the non-core modules are updated.\n"));
-      }
-      else {
-        drush_print(dt("Drupal core cannot be updated at the same time that non-core modules are updated.  In order to update Drupal core with this tool, first allow the update of the modules listed above to complet, and then run pm-updatecode again.\n"));
-      }
-      drush_set_context('DRUSH_PM_CORE_UPDATE_AVAILABLE', TRUE);
+      drush_print(dt("Drupal core will be updated after all of the non-core modules are updated.\n"));
     }
   }
 
@@ -203,8 +192,16 @@ function drush_pm_updatecode() {
     }
   }
 
-  // Offer to update to the identified releases
-  return pm_update_packages($updateable, $tmpfile);
+  // Offer to update to the identified releases.
+  if (!pm_update_packages($updateable, $tmpfile)) {
+    return FALSE;
+  }
+
+  // After projects are updated we can update core.
+  if ($core_update_available) {
+    drush_print();
+    return _pm_update_core($drupal_project, $tmpfile);
+  }
 }
 
 /**
@@ -213,11 +210,8 @@ function drush_pm_updatecode() {
  * @param $project
  *   The drupal project information from the drupal.org update service,
  *   copied from $update_info['drupal'].  @see drush_pm_updatecode.
- * @param $module_list
- *   A list of the non-core modules that are enabled.  These must be disabled
- *   before core can be updated.
  */
-function _pm_update_core(&$project, $module_list = array(), $tmpfile) {
+function _pm_update_core(&$project, $tmpfile) {
   drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
@@ -407,6 +401,8 @@ function pm_update_packages($update_info, $tmpfile) {
   }
   // Clear the cache, since some projects could have moved around.
   drush_drupal_cache_clear_all();
+
+  return TRUE;
 }
 
 /**
