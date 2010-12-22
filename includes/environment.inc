@@ -467,15 +467,29 @@ function _drush_postmortem() {
  * notify the user that a setting change is needed and abort.
  */
 function _drush_environment_preflight_checks() {
+  $ini_checks = array('safe_mode' => '', 'open_basedir' => '', 'disable_functions' => array('exec', 'system'), 'disable_classes' => '');
+
   // Test to insure that certain php ini restrictions have not been enabled
   $prohibited_list = array();
-  foreach (array('safe_mode', 'open_basedir', 'disable_functions', 'disable_classes') as $prohibited_mode) {
-    if (ini_get($prohibited_mode)) {
+  foreach ($ini_checks as $prohibited_mode => $disallowed_value) {
+    $ini_value = ini_get($prohibited_mode);
+    $invalid_value = FALSE;
+    if (empty($disallowed_value)) {
+      $invalid_value = !empty($ini_value);
+    }
+    else {
+      foreach ($disallowed_value as $test_value) {
+        if (strstr($ini_value, $test_value) !== FALSE) {
+          $invalid_value = TRUE;
+        }
+      }
+    }
+    if ($invalid_value) {
       $prohibited_list[] = $prohibited_mode;
     }
   }
   if (!empty($prohibited_list)) {
-    return drush_bootstrap_error('DRUSH_PHP_INI_RESTRICTIONS', dt('The following restricted PHP modes have non-empty values: !prohibited_list. This configuration is incompatible with drush.  !php_ini_msg', array('!prohibited_list' => implode(' and ', $prohibited_list), '!php_ini_msg' => _drush_php_ini_loaded_file_message())));
+    drush_log(dt('The following restricted PHP modes have non-empty values: !prohibited_list. This configuration is incompatible with drush.  !php_ini_msg', array('!prohibited_list' => implode(' and ', $prohibited_list), '!php_ini_msg' => _drush_php_ini_loaded_file_message())), 'error');
   }
   
   return TRUE;
