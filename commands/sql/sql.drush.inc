@@ -503,38 +503,42 @@ function drush_sql_drop() {
   drush_set_context('DRUSH_SIMULATE', FALSE);
   drush_shell_exec($exec);
   drush_set_context('DRUSH_SIMULATE', $old);
-  $tables = drush_shell_exec_output();
-  if ($scheme === 'sqlite') {
-    // SQLite's '.tables' command always outputs the table names in a column
-    // format, like this:
-    // table_alpha    table_charlie    table_echo
-    // table_bravo    table_delta      table_foxtrot
-    // …and there doesn't seem to be a way to fix that. So we need to do some
-    // clean-up.
-    // Since we're already doing iteration here, might as well build the SQL
-    // too, since SQLite only wants one table per DROP TABLE command (so we have
-    // to do "DROP TABLE foo; DROP TABLE bar;" instead of
-    // "DROP TABLE foo, bar;").
-    $sql = '';
-    foreach ($tables as $line) {
-      preg_match_all('/[^\s]+/', $line, $matches);
-      if (!empty($matches[0])) {
-        foreach ($matches[0] as $match) {
-          $sql .= "DROP TABLE {$match};";
+  if ($tables = drush_shell_exec_output()) {
+    if ($scheme === 'sqlite') {
+      // SQLite's '.tables' command always outputs the table names in a column
+      // format, like this:
+      // table_alpha    table_charlie    table_echo
+      // table_bravo    table_delta      table_foxtrot
+      // …and there doesn't seem to be a way to fix that. So we need to do some
+      // clean-up.
+      // Since we're already doing iteration here, might as well build the SQL
+      // too, since SQLite only wants one table per DROP TABLE command (so we have
+      // to do "DROP TABLE foo; DROP TABLE bar;" instead of
+      // "DROP TABLE foo, bar;").
+      $sql = '';
+      foreach ($tables as $line) {
+        preg_match_all('/[^\s]+/', $line, $matches);
+        if (!empty($matches[0])) {
+          foreach ($matches[0] as $match) {
+            $sql .= "DROP TABLE {$match};";
+          }
         }
       }
+      // We can't use drush_op('db_query', $sql) because it will only perform one
+      // SQL command and we're technically performing several.
+      $exec = _drush_sql_connect();
+      $exec .= " '{$sql}'";
+      return drush_op_system($exec) == 0;
     }
-    // We can't use drush_op('db_query', $sql) because it will only perform one
-    // SQL command and we're technically performing several.
-    $exec = _drush_sql_connect();
-    $exec .= " '{$sql}'";
-    return drush_op_system($exec) == 0;
+    else {
+      // Shift off the header of the column of data returned.
+      array_shift($tables);
+      $sql = 'DROP TABLE '. implode(', ', $tables);
+      return drush_op('db_query', $sql);
+    }
   }
   else {
-    // Shift off the header of the column of data returned.
-    array_shift($tables);
-    $sql = 'DROP TABLE '. implode(', ', $tables);
-    return drush_op('db_query', $sql);
+    drush_log(dt('No tables to drop.'), 'ok');
   }
 }
 
