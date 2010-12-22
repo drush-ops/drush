@@ -376,13 +376,22 @@ function _drush_is_drush_shebang_script($script_filename) {
  *   The message to print.
  * @param $indent
  *    The indentation (space chars)
+ * @param $handle
+ *    File handle to write to.  NULL will write
+ *    to standard output, STDERR will write to the standard
+ *    error.  See http://php.net/manual/en/features.commandline.io-streams.php
  */
-function drush_print($message = '', $indent = 0) {
+function drush_print($message = '', $indent = 0, $handle = NULL) {
   $msg = str_repeat(' ', $indent) . (string)$message . "\n";
   if ($charset = drush_get_option('output_charset') && function_exists('iconv')) {
     $msg = iconv('UTF-8', $charset, $msg);
   }
-  print $msg;
+  if (isset($handle)) {
+    fwrite($handle, $msg);
+  }
+  else {
+    print $msg;
+  }
 }
 
 /**
@@ -1871,7 +1880,7 @@ function _drush_print_log($entry) {
   else {
     $red = "\033[31;40m\033[1m[%s]\033[0m";
     $yellow = "\033[1;33;40m\033[1m[%s]\033[0m";
-    $green = "\033[0;33;40m\033[1m[%s]\033[0m";
+    $green = "\033[1;32;40m\033[1m[%s]\033[0m";
   }
 
   $verbose = drush_get_context('DRUSH_VERBOSE');
@@ -1935,7 +1944,7 @@ function _drush_print_log($entry) {
   $lines = explode("\n", $message);
   $lines[0] = sprintf($format, $lines[0], $type_msg);
   $message = implode("\n", $lines);
-  drush_print($message);
+  drush_print($message, 0, STDERR);
   return $return;
 }
 
