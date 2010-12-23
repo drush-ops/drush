@@ -475,10 +475,17 @@ function drush_sql_drop() {
   if (!drush_confirm(dt('Do you really want to drop all tables?'))) {
     drush_user_abort();
   }
+  _drush_sql_drop();
+}
 
+// n.b. site-install uses _drush_sql_drop as a fallback technique if
+// drop database; create database fails.  If _drush_sql_drop
+// is rewritten to also use that technique, it should maintain
+// the drop tables code here as a fallback.
+function _drush_sql_drop($db_spec = NULL) {
   // TODO: integrate with _drush_sql_get_table_list?
 
-  $scheme = _drush_sql_get_scheme();
+  $scheme = _drush_sql_get_scheme($db_spec);
   switch ($scheme) {
     case 'pgsql':
       $query = drush_sql_show_tables_pgsql();
@@ -491,7 +498,7 @@ function drush_sql_drop() {
   }
   
   $filename = drush_save_data_to_temp_file($query);
-  $exec = drush_sql_build_exec(NULL, $filename);
+  $exec = drush_sql_build_exec($db_spec, $filename);
   
   // Actually run this prep query no matter if in SIMULATE.
   $old = drush_get_context('DRUSH_SIMULATE');
@@ -521,7 +528,7 @@ function drush_sql_drop() {
       }
       // We can't use drush_op('db_query', $sql) because it will only perform one
       // SQL command and we're technically performing several.
-      $exec = _drush_sql_connect();
+      $exec = _drush_sql_connect($db_spec);
       $exec .= " '{$sql}'";
       return drush_op_system($exec) == 0;
     }
@@ -535,6 +542,7 @@ function drush_sql_drop() {
   else {
     drush_log(dt('No tables to drop.'), 'ok');
   }
+  return TRUE;
 }
 
 function drush_sql_cli() {
