@@ -46,6 +46,7 @@ function sql_drush_command() {
   );
   $items['sql-conf'] = array(
     'description' => 'Print database connection details using print_r().',
+    'hidden' => TRUE,
     'arguments' => array(
       'all' => 'Show all database connections, instead of just one.',
       'show-passwords' => 'Show database password.',
