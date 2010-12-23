@@ -414,8 +414,8 @@ function drush_print_pipe($message = '') {
  * @param $array
  *   The array to print.
  */
-function drush_print_r($array) {
-  print_r($array);
+function drush_print_r($array, $handle = NULL) {
+  drush_print(print_r($array, TRUE), 0, $handle);
 }
 
 /**
