@@ -24,7 +24,6 @@ function drush_core_site_install_version($profile) {
       'install_settings_form' => array(
         'driver' => $db_spec['driver'],
         $db_spec['driver'] => $db_spec,
-        'op' => dt('Save and continue'),
       ),
       'install_configure_form' => array(
         'site_name' => drush_get_option('site-name', 'Site-Install'),
@@ -42,7 +41,6 @@ function drush_core_site_install_version($profile) {
           2 => TRUE,
         ),
         'clean_url' => drush_get_option('clean-url', TRUE),
-        'op' => dt('Save and continue'),
       ),
     ),
   );
