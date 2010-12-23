@@ -132,7 +132,7 @@
  */
 // By default, drush will prepend the name of the
 // site to the output of any multiple-site command 
-// execution.  To disable vthis behavior, set the
+// execution.  To disable this behavior, set the
 // --no-label option
 # $options['no-label'] = TRUE;
 
