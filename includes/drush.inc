@@ -1899,12 +1899,12 @@ function _drush_print_log($entry) {
     case 'ok' :
     case 'completed' :
     case 'success' :
+    case 'status':
       $type_msg = sprintf($green, $entry['type']);
       break;
     case 'notice' :
     case 'message' :
     case 'info' :
-    case 'status':
       if (!$verbose) {
         // print nothing. exit cleanly.
         return TRUE;
