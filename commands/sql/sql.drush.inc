@@ -183,18 +183,16 @@ function drush_sql_conf() {
 function _drush_sql_connect($db_spec = NULL) {
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
-      $command = 'mysql ';
-      $command .= _drush_sql_get_credentials($db_spec);
+      $command = 'mysql';
       break;
     case 'pgsql':
       $command = 'psql';
-      $command .= _drush_sql_get_credentials($db_spec);
       break;
     case 'sqlite':
-      $command = 'sqlite3 ';
-      $command .= _drush_sql_get_credentials($db_spec);
+      $command = 'sqlite3';
       break;
   }
+  $command .= _drush_sql_get_credentials($db_spec);
   return $command;
 }
 
@@ -546,21 +544,7 @@ function _drush_sql_drop($db_spec = NULL) {
 }
 
 function drush_sql_cli() {
-  switch (_drush_sql_get_scheme()) {
-    case 'mysql':
-      $command = 'mysql ' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
-      $command .= _drush_sql_get_credentials();
-      break;
-    case 'pgsql':
-      $command = 'psql ';
-      $command .= _drush_sql_get_credentials();
-      break;
-    case 'sqlite':
-      $command = 'sqlite3 ';
-      $command .= _drush_sql_get_credentials();
-      break;
-  }
-  proc_close(proc_open($command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
+  proc_close(proc_open(_drush_sql_connect(), array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
 }
 
 
