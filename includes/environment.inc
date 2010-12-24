@@ -466,7 +466,7 @@ function _drush_postmortem() {
  * begins.  If the php environment is too restrictive, then
  * notify the user that a setting change is needed and abort.
  */
-function _drush_environment_preflight_checks() {
+function _drush_environment_php_ini_checks() {
   $ini_checks = array('safe_mode' => '', 'open_basedir' => '', 'disable_functions' => array('exec', 'system'), 'disable_classes' => '');
 
   // Test to insure that certain php ini restrictions have not been enabled
@@ -496,13 +496,24 @@ function _drush_environment_preflight_checks() {
 }
 
 /**
- * Validate initial Drush bootstrap phase.
+ * Validate that Drush is running in a suitable environment.
  */
 function _drush_bootstrap_drush_validate() {
-  if (($preflight_result = _drush_environment_preflight_checks()) !== TRUE) {
-    return $preflight_result;
+  // @todo _drush_environment_php_ini_checks() always returns TRUE.
+  $return = _drush_environment_php_ini_checks();
+  if ($return !== TRUE) {
+    return $return;
   }
   
+  $return = drush_environment_table_inc();
+  if ($return === FALSE) {
+    return FALSE;
+  }
+  
+  return TRUE;
+}
+
+function drush_environment_table_inc() {
   // try using the PEAR installed version of Console_Table
   $tablefile = 'Console/Table.php';
   if (@file_get_contents($tablefile, FILE_USE_INCLUDE_PATH) === FALSE) {
@@ -531,8 +542,6 @@ function _drush_bootstrap_drush_validate() {
     }
   }
   require_once $tablefile;
-  
-  return TRUE;
 }
 
 /**
