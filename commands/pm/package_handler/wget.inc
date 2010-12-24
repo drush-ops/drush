@@ -55,8 +55,8 @@ function package_handler_download_project(&$request, $release) {
   drush_op('chdir', $request['base_project_path']);
 
   // Download the project.
-  if (!drush_shell_exec("wget -P . " . $release['download_link'])) {
-    drush_shell_exec("curl -O " . $release['download_link']);
+  if (!drush_shell_exec("wget -P . %s", $release['download_link'])) {
+    drush_shell_exec("curl -O %s", $release['download_link']);
   }
   if (file_exists($filename) || drush_get_context('DRUSH_SIMULATE')) {
     drush_log("Downloading " . $filename . " was successful.");
@@ -78,18 +78,18 @@ function package_handler_download_project(&$request, $release) {
   }
 
   // Decompress and untar in two steps as tar -xzf does not work on windows.
-  drush_shell_exec("gzip -d " . $filename);
+  drush_shell_exec("gzip -d %s", $filename);
   $tarpath = basename($filename, '.tar.gz');
   $tarpath = basename($tarpath, '.tgz');
   $tarpath .= '.tar';
-  drush_shell_exec("tar -xf $tarpath");
+  drush_shell_exec("tar -xf %s", $tarpath);
 
   // Move untarred directory to project_dir, if distinct.
   if (($request['project_type'] == 'core') || (($request['project_type'] == 'profile') && (drush_get_option('variant', 'core') == 'core'))) {
     // Obtain the dodgy project_dir for drupal core.
     // We use a separate tar -tf instead of -xvf above because
     // the output is not the same in Mac.
-    drush_shell_exec("tar -tf $tarpath");
+    drush_shell_exec("tar -tf %s", $tarpath);
     $output = drush_shell_exec_output();
     $project_dir = rtrim($output[0], DIRECTORY_SEPARATOR);
     if ($request['project_dir'] != $project_dir) {
