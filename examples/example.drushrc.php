@@ -58,6 +58,10 @@
 // Load a drushrc.php configuration file from the current working directory.
 # $options['c'] = '.';
 
+// Disable the nag warning for Windows.
+// Consider improving Windows support: http://drupal.org/node/1000124,  http://drupal.org/node/766080. 
+# $options['check_os'] = FALSE;
+
 // Specify CVS for checkouts
 # $options['package-handler'] = 'cvs';
 

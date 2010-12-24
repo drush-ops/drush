@@ -466,7 +466,7 @@ function _drush_postmortem() {
  * begins.  If the php environment is too restrictive, then
  * notify the user that a setting change is needed and abort.
  */
-function _drush_environment_php_ini_checks() {
+function _drush_environment_check_php_ini() {
   $ini_checks = array('safe_mode' => '', 'open_basedir' => '', 'disable_functions' => array('exec', 'system'), 'disable_classes' => '');
 
   // Test to insure that certain php ini restrictions have not been enabled
@@ -500,17 +500,26 @@ function _drush_environment_php_ini_checks() {
  */
 function _drush_bootstrap_drush_validate() {
   // @todo _drush_environment_php_ini_checks() always returns TRUE.
-  $return = _drush_environment_php_ini_checks();
+  $return = _drush_environment_check_php_ini();
   if ($return !== TRUE) {
     return $return;
   }
   
-  $return = drush_environment_table_inc();
-  if ($return === FALSE) {
+  if (drush_environment_table_inc() === FALSE) {
     return FALSE;
   }
   
+  // Set a warning for Windows users.
+  drush_environment_check_os();
+  
   return TRUE;
+}
+
+function drush_environment_check_os() {
+  if (substr(PHP_OS, 0, 3) == 'WIN' && drush_get_option('check_os', TRUE)) {
+    $msg = 'Drush has significant limitations on Windows. We seek a co-maintainer to remedy them. See http://drupal.org/project/drush for more information, and for instructions on disabling this warning.';
+    drush_log(dt($msg), 'warning');
+  }
 }
 
 function drush_environment_table_inc() {

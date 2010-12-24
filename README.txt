@@ -15,9 +15,9 @@ REQUIREMENTS
 ------------
 * To use drush from the command line, you'll need a CLI-mode capable PHP
   binary. The minimum PHP version is 5.2.
-* drush also runs on Windows; however, drush commands make use of
-  unix command line tools, so to use it effectively, you have to install
-  some of them, e.g. from GnuWin32 (http://gnuwin32.sourceforge.net/). More info
+* Some drush commands run on Windows. We recommend you use a Unix-like OS (e.g Linux, OSX).
+  If you must run Drush on Windows, you have to install Unix Tools from
+  GnuWin32 (http://gnuwin32.sourceforge.net/). More info
   about Drush on Windows available at http://drupal.org/node/594744.
 * Drush works with Drupal 5, Drupal 6 and Drupal 7.  However, occasionally
   recent changes to the most recent version of Drupal can introduce issues
