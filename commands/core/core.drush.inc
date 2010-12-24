@@ -238,7 +238,7 @@ function core_drush_engine_drupal() {
  */
 function drush_core_updatedb() {
   if (drush_get_context('DRUSH_SIMULATE')) {
-    return drush_set_error(dt('updatedb command does not support --simulate option.'));
+    return drush_set_error('DRUSH_SIMULATE_UNSUPPORTED', dt('updatedb command does not support --simulate option.'));
   }
 
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
@@ -348,7 +348,7 @@ function drush_core_help() {
     return $result;
   }
 
-  drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
+  return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
 }
 
 
@@ -601,7 +601,7 @@ function drush_core_cron() {
     drush_log(dt('Cron run successfully.'), 'success');
   }
   else {
-    drush_set_error('DRUSH_CRON_FAILED', dt('Cron run failed.'));
+    return drush_set_error('DRUSH_CRON_FAILED', dt('Cron run failed.'));
   }
 }
 
@@ -708,7 +708,7 @@ function drush_core_php_script() {
         $all[] = $script_filename;
       }
       if (!$found) {
-        return drush_set_error('Script not found.', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
+        return drush_set_error('DRUSH_TARGET_NOT_FOUND.', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
       }
     }
   }
@@ -833,7 +833,7 @@ function drush_core_drupal_directory($target = 'root') {
     drush_print($path);
   }
   else {
-    return drush_set_error(dt("Target '!target' not found.", array('!target' => $target)));
+    return drush_set_error('DRUSH_TARGET_NOT_FOUND', dt("Target '!target' not found.", array('!target' => $target)));
   }
 
   return TRUE;
@@ -866,10 +866,10 @@ function drush_core_find_project_path($target) {
 function drush_core_cli() {
   // Do not allow cli to start recursively, or from backend invoke.
   if (drush_get_option('in-cli', FALSE)) {
-    return drush_set_error(dt('Already in drush core-cli; press control-d to exit.'));
+    return drush_set_error('DRUSH_CLI_NOT_REENTRANT', dt('Already in drush core-cli; press control-d to exit.'));
   }
   if (drush_get_context('DRUSH_BACKEND')) {
-    return drush_set_error(dt('Cannot run drush core-cli from non-interactive mode; aborting.'));
+    return drush_set_error('DRUSH_CLI_INTERACTIVE_ERROR', dt('Cannot run drush core-cli from non-interactive mode; aborting.'));
   }
 
   // Make sure that we call drush the same way that we were called.

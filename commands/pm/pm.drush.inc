@@ -544,7 +544,7 @@ function drush_pm_enable() {
 
   // Discard and set an error for each unknown extension.
   foreach ($unknown as $name) {
-    drush_set_error('DRUSH_PM_ENABLE_EXTENSION_NOT_FOUND', dt('!extension was not found and will not be enabled.', array('!extension' => $name)));
+    drush_log(dt('!extension was not found and will not be enabled.', array('!extension' => $name)), 'warning');
   }
 
   // Discard already enabled extensions.
@@ -564,16 +564,20 @@ function drush_pm_enable() {
     // Check module dependencies.
     $dependencies = drush_check_module_dependencies($modules, $extension_info);
     $all_dependencies = array();
+    $dependencies_ok = TRUE;
     foreach ($dependencies as $key => $info) {
       if (isset($info['error'])) {
         unset($modules[$key]);
-        drush_set_error($info['error']['code'], $info['error']['message']);
+        $dependencies_ok = drush_set_error($info['error']['code'], $info['error']['message']);
       }
       elseif (!empty($info['dependencies'])) {
         // Make sure we have an assoc array.
         $assoc = drupal_map_assoc($info['dependencies']);
         $all_dependencies = array_merge($all_dependencies, $assoc);
       }
+    }
+    if (!$dependencies_ok) {
+      return FALSE;
     }
     $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
     $needed = array_diff($all_dependencies, $enabled);
@@ -588,6 +592,7 @@ function drush_pm_enable() {
         unset($modules[$key]);
         drush_set_error('DRUSH_PM_ENABLE_MODULE_UNMEET_REQUIREMENTS', dt('Module !module doesn\'t meet the requirements to be enabled.', array('!module' => $module)));
         _drush_log_drupal_messages();
+	return FALSE;
       }
     }
   }
@@ -620,13 +625,17 @@ function drush_pm_enable() {
 
   // Inform the user of final status.
   $rsc = drush_db_select('system', array('name', 'status'), 'name IN (:extensions)', array(':extensions' => $extensions));
+  $problem_extensions = array();
   while ($extension = drush_db_fetch_object($rsc)) {
     if ($extension->status) {
       drush_log(dt('!extension was enabled successfully.', array('!extension' => $extension->name)), 'ok');
     }
     else {
-      drush_set_error('DRUSH_PM_ENABLE_EXTENSION_ISSUE', dt('There was a problem enabling !extension.', array('!extension' => $extension->name)));
+      $problem_extensions[] = $extension->name;
     }
+  }
+  if (!empty($problem_extensions)) {
+    return drush_set_error('DRUSH_PM_ENABLE_EXTENSION_ISSUE', dt('There was a problem enabling !extension.', array('!extension' => implode(',', $problem_extensions))));
   }
 }
 
@@ -647,7 +656,7 @@ function drush_pm_disable() {
 
   // Discard and set an error for each unknown extension.
   foreach ($unknown as $name) {
-    drush_set_error('DRUSH_PM_ENABLE_EXTENSION_NOT_FOUND', dt('!extension was not found and will not be disabled.', array('!extension' => $name)));
+    drush_log('DRUSH_PM_ENABLE_EXTENSION_NOT_FOUND', dt('!extension was not found and will not be disabled.', array('!extension' => $name)), 'warning');
   }
 
   // Discard already disabled extensions.
@@ -720,13 +729,17 @@ function drush_pm_disable() {
 
   // Inform the user of final status.
   $rsc = drush_db_select('system', array('name', 'status'), 'name IN (:extensions)', array(':extensions' => $extensions));
+  $problem_extensions = array();
   while ($extension = drush_db_fetch_object($rsc)) {
     if (!$extension->status) {
       drush_log(dt('!extension was disabled successfully.', array('!extension' => $extension->name)), 'ok');
     }
     else {
-      drush_set_error('DRUSH_PM_DISABLE_EXTENSION_ISSUE', dt('There was a problem disabling !extension.', array('!extension' => $extension->name)));
+      $problem_extensions[] = $extension->name;
     }
+  }
+  if (!empty($problem_extensions)) {
+    return drush_set_error('DRUSH_PM_DISABLE_EXTENSION_ISSUE', dt('There was a problem disabling !extension.', array('!extension' => implode(',', $problem_extensions))));
   }
 }
 
