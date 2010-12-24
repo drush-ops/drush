@@ -1733,7 +1733,7 @@ function drush_do_multiple_command($command, $source_record, $destination_record
  * Run a command on the site specified by the provided command record.
  *
  * The standard function that provides this service is called 
- * drush_invoke_sitealais_args.  Please call the standard function
+ * drush_invoke_sitealias_args.  Please call the standard function
  * unless you need to set $integrate = TRUE.
  */
 function drush_do_site_command($site_record, $command, $args = array(), $data = array(), $integrate = FALSE) {

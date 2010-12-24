@@ -475,7 +475,7 @@ function drush_sql_post_sql_sync($source = NULL, $destination = NULL) {
     }
     if ($sanitize_query) {
       if (!drush_get_context('DRUSH_SIMULATE')) {
-        $result = drush_invoke_sitealais_args($destination_settings, "sql-query", array($sanitize_query));
+        $result = drush_invoke_sitealias_args($destination_settings, "sql-query", array($sanitize_query));
       }
       else {
         drush_print("Executing on $destination: $sanitize_query");

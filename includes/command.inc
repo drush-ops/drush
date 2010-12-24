@@ -242,12 +242,12 @@ function drush_invoke_process_args($command_name, $commandline_args, $commandlin
  *   If the command could not be completed successfully, FALSE.
  *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
  */
-function drush_invoke_sitealais($site_alias_record, $command_name) {
+function drush_invoke_sitealias($site_alias_record, $command_name) {
   $args = func_get_args();
   array_shift($args);
   array_shift($args);
   
-  return drush_invoke_sitealais_args($site_alias_record, $command_name, $args);
+  return drush_invoke_sitealias_args($site_alias_record, $command_name, $args);
 }
 
 /**
@@ -266,7 +266,7 @@ function drush_invoke_sitealais($site_alias_record, $command_name) {
  *   If the command could not be completed successfully, FALSE.
  *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
  */
-function drush_invoke_sitealais_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array()) {
+function drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array()) {
   return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options);
 }
 
