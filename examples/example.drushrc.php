@@ -59,7 +59,7 @@
 # $options['c'] = '.';
 
 // Disable the nag warning for Windows.
-// Consider improving Windows support: http://drupal.org/node/1000124,  http://drupal.org/node/766080. 
+// Consider improving Windows support: http://drupal.org/node/766080. 
 # $options['check_os'] = FALSE;
 
 // Specify CVS for checkouts

@@ -88,6 +88,7 @@ For Linux/Unix/Mac:
     If you have troubles, try using the -l and -r options when invoking drush. See below.
 
 For Windows:
+  - Consider using on Linux/Unix/OSX using Virtualbox or other VM. Windows support is lacking.
   - Follow step 1. Use drush by navigating to /path/to/drush
     and running 'drush.bat'.
   - You have to install gzip, libarchive, tar, wget, ncurses, and less executables. Go to
@@ -99,6 +100,8 @@ For Windows:
     by 'drush.bat'.
   - If drush.bat is not working for you, either add the directory in which your
     php.exe resides to your PATH or edit drush.bat to point to your php.exe.
+  - To disable the warning about Windows support, set $options['check_os'] = FALSE
+    in drushrc.php. See examples/example.drushrc.php.
 
 USAGE
 -----
