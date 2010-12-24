@@ -232,7 +232,7 @@ function pm_drush_command() {
       '--use-site-dir' => 'Force to use the site specific directory. It will create the directory if it doesn\'t exist. If --destination is also present this option will be ignored.',
       '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
       '--notes' => 'Show release notes after each project is downloaded.',
-      '--variant' => "Only useful for install profiles. Possible values: 'core', 'no-core', 'make'.",
+      '--variant' => "Only useful for install profiles. Possible values: 'full', 'projects', 'profile-only'.",
       '--dev' => "Download a development release.",
       '--select' => "Select the version to download interactively from a list of available releases.",
       '--all' => "Useful only with --select; shows all available releases instead of a short list of recent releases.",
@@ -1942,9 +1942,8 @@ function drush_pm_download_validate() {
   // Validate package-handler.
   $package_handler = drush_get_option('package-handler', 'wget');
   drush_include_engine('package_handler', $package_handler);
-  if (!package_handler_validate()) {
-    return FALSE;
-  }
+  // Return value not currently used.
+  return package_handler_validate();
 }
 
 /**
@@ -2059,21 +2058,14 @@ function drush_pm_download() {
       $request['project_type'] = array_search($types[0]->value, $project_types);
     }
 
-    // First published release for the recommended major version is just the
-    // first value in $releases.  Special case for profiles, that have 3
-    // variants(releases) for a given real release.
-    if ($request['project_type'] == 'profile') {
-      // Variants always come in a fixed order in releases list.
-      $variations = array('core', 'no-core', 'make');
-      $variant = drush_get_option('variant', 'core');
-      $release = (array)$releases[array_search($variant, $variations)];
-    }
-    // Translations can't be obtained from cvs.
-    else if (($request['project_type'] == 'translation') && ($package_handler != 'wget')) {
+    // Translations can't be obtained from cvs/git.
+    if (($request['project_type'] == 'translation') && ($package_handler != 'wget')) {
       drush_log(dt('Requested project !request is a translation and can\'t be obtained from !ph.', array('!request' => $request['name'], '!ph' => $package_handler)), 'error');
       continue;
     }
     else {
+      // First published release for the recommended major version is just the
+      // first value in $releases.
       $release = (array)$releases[0];
     }
 
