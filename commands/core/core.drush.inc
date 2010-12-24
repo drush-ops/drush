@@ -708,7 +708,7 @@ function drush_core_php_script() {
         $all[] = $script_filename;
       }
       if (!$found) {
-        return drush_set_error('DRUSH_TARGET_NOT_FOUND.', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
+        return drush_set_error('DRUSH_TARGET_NOT_FOUND', dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
       }
     }
   }
