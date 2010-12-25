@@ -6,26 +6,6 @@
  */
 
 /**
- * Implementation of hook_drush_help().
- */
-function sql_drush_help($section) {
-  switch ($section) {
-    case 'drush:sql-conf':
-      return dt('Show database connection details.');
-    case 'drush:sql-connect':
-      return dt('A string which connects to the current database.');
-    case 'drush:sql-cli':
-      return dt('Quickly enter the mysql command line.');
-    case 'drush:sql-dump':
-      return dt('Prints the whole database to STDOUT or save to a file.');
-    case 'drush:sql-query':
-      return dt("Usage: drush [options] sql-query <query>...\n<query> is a SQL statement, which can alternatively be passed via STDIN. Any additional arguments are passed to the mysql command directly.");
-    case 'drush:sql-sync':
-      return dt("Usage: drush [options] sql-sync <source_alias> <target_alias>.\n <source_alias> and <target_alias> are site-aliases, or names of directories under \'sites\'. These determine from where and to where you want your database copied.");
-  }
-}
-
-/**
  * Implementation of hook_drush_command().
  */
 function sql_drush_command() {
@@ -91,7 +71,7 @@ function sql_drush_command() {
       'drush sql-query "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record. Table prefixes are honored.',
     ),
     'arguments' => array(
-       'query' => 'A SQL query. Mandatory.',
+       'query' => 'An SQL query.',
     ),
     'options' => array(
       '--extra' => 'Add custom options to the mysql command.',
@@ -99,7 +79,7 @@ function sql_drush_command() {
     'aliases' => array('sqlq'),
   );
   $items['sql-sync'] = array(
-    'description' => 'Copy source database to target database using rsync.',
+    'description' => 'Copy and import source database to target database. Transfers via rsync.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'examples' => array(
       'drush sql-sync @dev @prod' => 'Copy the DB defined in sites/dev to the DB in sites/prod.',
