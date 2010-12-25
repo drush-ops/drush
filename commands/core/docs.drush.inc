@@ -91,7 +91,7 @@ function docs_drush_command() {
     'callback arguments' => array(DRUSH_BASE_PATH . '/docs/drush.api.php'),
   );
   $items['docs-context'] = array(
-    'description' => dt('Drush Contexts'),
+    'description' => dt('Drush contexts'),
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
