@@ -220,7 +220,12 @@ function core_drush_command() {
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
   );
-
+  $items['core-global-options'] = array(
+    'description' => dt('All global options'),
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
   return $items;
 }
 
@@ -501,6 +506,16 @@ function drush_core_status() {
     drush_print_table(drush_key_value_to_array_table($status_table));
   }
   return;
+}
+
+// Command callback. Show all global options. Exposed via topic command. 
+function drush_core_global_options() {
+  drush_print(dt('These options are applicable to most drush commands.'));
+  drush_print();
+  foreach (drush_get_global_options() as $key => $value) {
+    $rows[] = array($key, $value);
+  }
+  drush_print_table($rows);
 }
 
 function _drush_core_is_named_in_array($key, $the_array) {

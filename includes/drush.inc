@@ -215,32 +215,38 @@ function _convert_csv_to_array($args) {
 }
 
 /**
- * Get the available global options. Used by help command.
+ * Get the available global options. Used by help command. Command files may
+ * modify this list using hook_drush_help_alter().
+ *
+ * @param boolean $brief
+ *   Return a reduced set of important options. Used by help command.
  *
  * @return
  *   An associative array containing the option definition as the key, and the description as the value,
  *   for each of the available options.
  */
-function drush_get_global_options() {
-  // TODO: Add a hook for this, to allow other modules to add their global options
+function drush_get_global_options($brief = FALSE) {
   $options['-r <path>, --root=<path>'] = dt("Drupal root directory to use (default: current directory)");
   $options['-l <uri>, --uri=http://example.com']   = dt('URI of the drupal site to use (only needed in multisite environments)');
   $options['-v, --verbose']            = dt('Display extra information about the command.');
   $options['-d, --debug']              = dt('Display even more information, including internal messages.');
-  $options['-q, --quiet']              = dt('Hide all output');
   $options['-y, --yes']                = dt("Assume 'yes' as answer to all prompts");
   $options['-n, --no']                = dt("Assume 'no' as answer to all prompts");
   $options['-s, --simulate']           = dt("Simulate all relevant actions (don't actually change the system)");
-  $options['-i, --include']            = dt("A list of paths to search for drush commands");
-  $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
-  $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
-  $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
-  $options['--no-label']               = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
   $options['-p, --pipe']               = dt("Emit a compact representation of the command for scripting.");
-  $options['--nocolor']                = dt("Suppress color highlighting on log messages.");
-  $options['--show-passwords']         = dt("Show database passwords in commands that display connection information.");
   $options['-h, --help']               = dt("This help system.");
   $options['--php']                    = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
+  
+  if (!$brief) {
+    $options['-q, --quiet']              = dt('Hide all output');
+    $options['-i, --include']            = dt("A list of paths to search for drush commands");
+    $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
+    $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
+    $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
+    $options['--no-label']               = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
+    $options['--nocolor']                = dt("Suppress color highlighting on log messages.");
+    $options['--show-passwords']         = dt("Show database passwords in commands that display connection information.");  
+  }
   return $options;
 }
 

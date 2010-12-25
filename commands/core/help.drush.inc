@@ -12,7 +12,8 @@ function drush_core_help() {
     // Build a fake command for the purposes of showing examples and options.
     $fake = array(
       'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.',
-      'options' => drush_get_global_options(),
+      'sections' => array('options' => dt('Global options (see `drush topic` for the full list)')),
+      'options' => drush_get_global_options(TRUE),
       'examples' => array(
         'drush dl cck zen' => 'Download CCK module and Zen theme.',
         'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
@@ -62,6 +63,10 @@ function drush_core_help() {
                 $pipe[] = "\"$key\"";
               }
             }
+          }
+          else {
+            // Remove hidden command.
+            unset($commands[$key]);
           }
         }
 
@@ -117,8 +122,8 @@ function drush_help_html($commands) {
   $output .=  "</table>\n";
 
   // Global options
-  $options = drush_get_global_options();
-  $output .=  '<h3>Global Options</h3><table>';
+  $options = drush_get_global_options(TRUE);
+  $output .=  '<h3>Global Options (see `drush topic` for the full list)</h3><table>';
   foreach ($options as $key => $value) {
     $output .=  "<tr><td>$key</td><td>" . $value . "</td></tr>\n";
   }
