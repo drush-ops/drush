@@ -231,7 +231,7 @@ function drush_get_global_options($brief = FALSE) {
   $options['-v, --verbose']            = dt('Display extra information about the command.');
   $options['-d, --debug']              = dt('Display even more information, including internal messages.');
   $options['-y, --yes']                = dt("Assume 'yes' as answer to all prompts");
-  $options['-n, --no']                = dt("Assume 'no' as answer to all prompts");
+  $options['-n, --no']                 = dt("Assume 'no' as answer to all prompts");
   $options['-s, --simulate']           = dt("Simulate all relevant actions (don't actually change the system)");
   $options['-p, --pipe']               = dt("Emit a compact representation of the command for scripting.");
   $options['-h, --help']               = dt("This help system.");
@@ -243,6 +243,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
     $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
     $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
+    $options['--choice']                 = dt("Provide an answer to a multiple-choice prompt.");
     $options['--no-label']               = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
     $options['--nocolor']                = dt("Suppress color highlighting on log messages.");
     $options['--show-passwords']         = dt("Show database passwords in commands that display connection information.");
@@ -645,12 +646,23 @@ function drush_table_column_autowidth($rows, $widths) {
  *   Full path to a file.
  */
 function drush_print_file($file) {
+  // Don't even bother to print the file in --no mode
+  if (drush_get_context('DRUSH_NEGATIVE')) {
+    return;
+  }
   if ((substr($file,-4) == ".htm") || (substr($file,-5) == ".html")) {
     $tmp_file = drush_tempnam(basename($file));
     file_put_contents($tmp_file, drush_html_to_text(file_get_contents($file)));
     $file = $tmp_file;
   }
-  if (drush_shell_exec_interactive("less %s", $file)) {
+  // Do not wait for user input in --yes or --pipe modes
+  if (drush_get_context('DRUSH_PIPE')) {
+    drush_print_pipe(file_get_contents($file));
+  }
+  elseif (drush_get_context('DRUSH_AFFIRMATIVE')) {
+    drush_print(file_get_contents($file));
+  }
+  elseif (drush_shell_exec_interactive("less %s", $file)) {
     return;
   }
   elseif (drush_shell_exec_interactive("more %s", $file)) {
@@ -760,11 +772,38 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
     }
   }
   drush_print_table($rows);
+  drush_print_pipe(array_keys($options));
   
-  while ($line = trim(fgets(STDIN))) {
-    if (array_key_exists($line, $selection_list)) {
-      return $selection_list[$line];
+  // If the user specified --choice, then make an
+  // automatic selection.  Cancel if the choice is
+  // not an available option.
+  if (($choice = drush_get_option('choice', FALSE)) !== FALSE) {
+    // First check to see if $choice is one of the symbolic options
+    if (array_key_exists($choice, $options)) {
+      return $choice;
     }
+    // Next handle numeric selections
+    elseif (array_key_exists($choice, $selection_list)) {
+      return $selection_list[$choice];
+    }
+    return FALSE;
+  }
+  
+  // If the user specified --no, then cancel; also avoid
+  // getting hung up waiting for user input in --pipe and
+  // backend modes.  If none of these apply, then wait,
+  // for user input and return the selected result.
+  if (!drush_get_context('DRUSH_NEGATIVE') && !drush_get_context('DRUSH_AFFIRMATIVE') && !drush_get_context('DRUSH_PIPE')) {
+    while ($line = trim(fgets(STDIN))) {
+      if (array_key_exists($line, $selection_list)) {
+	return $selection_list[$line];
+      }
+    }
+  }
+  // We will allow --yes to confirm input if there is only
+  // one choice; otherwise, --yes will cancel to avoid ambiguity
+  if (drush_get_context('DRUSH_AFFIRMATIVE')  && (count($options) == 1)) {
+    return $selection_list[1];
   }
   drush_print(dt('Cancelled'));
   return FALSE;
