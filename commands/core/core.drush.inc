@@ -94,6 +94,7 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('scr'),
     'deprecated-aliases' => array('script'),
+    'topics' => array('docs-examplescript', 'docs-scripts'),
   );
   $items['cache-clear'] = array(
     'description' => 'Clear a specific cache, or all drupal caches.',
@@ -144,6 +145,7 @@ function core_drush_command() {
     ),
     'aliases' => array('rsync'),
     'deprecated-aliases' => array('sync'),
+    'topics' => array('docs-aliases'),
   );
   $items['site-install'] = array(
     'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',

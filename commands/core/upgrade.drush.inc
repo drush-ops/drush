@@ -30,6 +30,7 @@ function upgrade_drush_command() {
       'db-su-pw' => 'DB password to use when dropping and creating the target database. Optional.',
     ),
     'aliases' => array('sup'),
+    'topics' => array('docs-aliases'),
   );
   return $items;
 }

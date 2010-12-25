@@ -174,6 +174,7 @@ function pm_drush_command() {
     'sub-options' => $update_suboptions,
     'aliases' => array('upc'),
     'deprecated-aliases' => array('updatecode'),
+    'topics' => array('docs-policy'),
   ) + $engines;
   // Merge all items from above.
   $items['pm-update'] = array_merge($items['pm-updatecode'], array(

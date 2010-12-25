@@ -43,6 +43,7 @@ function sql_drush_command() {
       '--yes' => 'Skip confirmation and proceed.',
       '--result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
     ) + $options,
+    'topics' => array('docs-policy'),
   );
   $items['sql-conf'] = array(
     'description' => 'Print database connection details using print_r().',
@@ -141,6 +142,7 @@ function sql_drush_command() {
         '--confirm-sanitizations' => 'Prompt yes/no after importing the database, but before running the sanitizations',
       ),
     ),
+    'topics' => array('docs-aliases', 'docs-policy'),
   );
   if (drush_drupal_major_version() >= 7) {
 
