@@ -37,6 +37,7 @@ function sitealias_drush_command() {
       'drush site-alias' => 'List all alias records known to drush.',
       'drush site-alias @dev' => 'Print an alias record for the alias \'dev\'.',
     ),
+    'topics' => array('docs-aliases'),
   );
   return $items;
 }
