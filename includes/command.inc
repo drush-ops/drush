@@ -166,8 +166,8 @@ function drush_invoke($command) {
  *
  * @see drush_topic_docs_topic().
  */
-function drush_dispatch($command = NULL, $arguments = array()) {
-  $command = ($command) ? $command : drush_get_command();
+function drush_dispatch($command, $arguments = array()) {
+  drush_set_command($command);
   $return = FALSE;
 
   if ($command) {
@@ -939,6 +939,15 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
  * are present in each of the commandfile directories.
  */
 function drush_command_include($command) {
+  $include_files = drush_command_get_includes($command);
+  foreach($include_files as $commandfile => $filename) {
+    drush_log(dt('Including !filename', array('!filename' => $filename)), 'bootstrap');
+    include_once($filename);
+  }
+}
+
+function drush_command_get_includes($command) {
+  $include_files = array();
   $parts = explode('-', $command);
   $command = implode(".", array_reverse($parts));
 
@@ -947,10 +956,10 @@ function drush_command_include($command) {
   foreach ($commandfiles as $commandfile => $file) {
     $filename = sprintf("%s/%s.inc", dirname($file), $command);
     if (file_exists($filename)) {
-      drush_log(dt('Including !filename', array('!filename' => $filename)), 'bootstrap');
-      include_once($filename);
+      $include_files[$filename] = $commandfile;
     }
   }
+  return $include_files;
 }
 
 /**
