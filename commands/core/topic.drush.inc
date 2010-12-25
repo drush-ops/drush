@@ -58,6 +58,7 @@ function drush_topic_core_topic($topic_name = NULL) {
     foreach (drush_get_topics() as $key => $topic) {
       $choices[$key] = $topic['description'];
     }
+    natcasesort($choices);
     if (!$topic_name = drush_choice($choices, dt('Choose a topic'), '!value (!key)')) {
       return;
     }
