@@ -245,7 +245,8 @@ function drush_get_global_options($brief = FALSE) {
     $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
     $options['--no-label']               = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
     $options['--nocolor']                = dt("Suppress color highlighting on log messages.");
-    $options['--show-passwords']         = dt("Show database passwords in commands that display connection information.");  
+    $options['--show-passwords']         = dt("Show database passwords in commands that display connection information.");
+    $options['--watchdog']               = dt("Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log.");  
   }
   return $options;
 }
