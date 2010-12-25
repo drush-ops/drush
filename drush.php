@@ -10,7 +10,7 @@
  */
 // Terminate immediately unless invoked as a command line script
 if (!drush_verify_cli()) {
-  die('drush.php is designed to run via the command line.');
+  die('drush is designed to run via the command line.');
 }
 
 // Check supported version of PHP.
