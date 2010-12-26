@@ -940,7 +940,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
  */
 function drush_command_include($command) {
   $include_files = drush_command_get_includes($command);
-  foreach($include_files as $commandfile => $filename) {
+  foreach($include_files as $filename => $commandfile) {
     drush_log(dt('Including !filename', array('!filename' => $filename)), 'bootstrap');
     include_once($filename);
   }
