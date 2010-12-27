@@ -627,13 +627,22 @@ function drush_pm_enable() {
   // Inform the user of final status.
   $rsc = drush_db_select('system', array('name', 'status'), 'name IN (:extensions)', array(':extensions' => $extensions));
   $problem_extensions = array();
+  $searchpath = array();
   while ($extension = drush_db_fetch_object($rsc)) {
     if ($extension->status) {
       drush_log(dt('!extension was enabled successfully.', array('!extension' => $extension->name)), 'ok');
+      $searchpath[] = dirname($extension_info[$extension->name]->filename);
     }
     else {
       $problem_extensions[] = $extension->name;
     }
+  }
+  // Add all modules that were enabled to the drush
+  // list of commandfiles (if they have any).  This
+  // will allow these newly-enabled modules to participate
+  // in the post_pm_enable hook.
+  if (!empty($searchpath)) {
+    _drush_add_commandfiles($searchpath);
   }
   if (!empty($problem_extensions)) {
     return drush_set_error('DRUSH_PM_ENABLE_EXTENSION_ISSUE', dt('There was a problem enabling !extension.', array('!extension' => implode(',', $problem_extensions))));

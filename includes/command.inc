@@ -811,14 +811,9 @@ function drush_commandfile_list() {
 }
 
 function _drush_find_commandfiles($phase, $phase_max = FALSE) {
-  $cache =& drush_get_context('DRUSH_COMMAND_FILES', array());
-
   if (!$phase_max) {
     $phase_max = $phase;
   }
-
-  static $evaluated = array();
-  static $deferred = array();
 
   $searchpath = array();
   switch ($phase) {
@@ -871,6 +866,15 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       }
       break;
   }
+  
+  _drush_add_commandfiles($searchpath, $phase);
+}
+
+function _drush_add_commandfiles($searchpath, $phase = NULL) {
+  $cache =& drush_get_context('DRUSH_COMMAND_FILES', array());
+
+  static $evaluated = array();
+  static $deferred = array();
 
   if (sizeof($searchpath)) {
     // Build a list of all of the modules to attempt to load.
