@@ -28,6 +28,8 @@ function upgrade_drush_command() {
       'source-dump' => 'Path to dump file. Medium or large sized sites should set this. Optional; default is to create a temporary file.',
       'db-su' => 'DB username to use when dropping and creating the target database. Optional.',
       'db-su-pw' => 'DB password to use when dropping and creating the target database. Optional.',
+      'no-cache' => 'Transfer a fresh database from source site. Otherwise, DB dump is re-used for 24 hours.',
+      'no-updatedb' => 'Don\'t updatedb on the target site. Can be useful while debugging to run this separately.',
     ),
     'aliases' => array('sup'),
     'topics' => array('docs-aliases'),
@@ -41,7 +43,7 @@ function upgrade_drush_command() {
 function upgrade_drush_help($section) {
   switch ($section) {
     case 'drush:site-upgrade':
-      return dt("Execute a major version upgrade for Drupal core and enabled contrib modules. Command will download next version of Drupal and all available contrib modules that have releases (if not already downloaded). It prepares a settings.php for the target site, and copies the prior version's database to the target site. Finally, updatedb is run. The intent is for developers to keep re-running this command until they are satisfied with the resulting site. Run this command from within your source site (D6).");
+      return dt("Execute a major version upgrade for Drupal core and enabled contrib modules. Command will download next version of Drupal and all available contrib modules that have releases (if not already downloaded). It prepares a settings.php for the target site, and copies the prior version's database to the target site. Finally, updatedb is run. The intent is for developers to keep re-running this command until they are satisfied with the resulting site. Run this command from within your source site (D6). Note that this command uses pm-download and sql-sync internally so most options for those commands are valid here too.");
   }
 }
 
@@ -88,7 +90,7 @@ function drush_upgrade_site_upgrade($target_key) {
   $projects = update_get_projects();
   // We already downloaded Drupal project.
   unset($projects['drupal']);
-  $projects = pm_get_project_path($projects, 'includes');
+  $projects = _pm_get_project_path($projects, 'includes');
 
   // Fetch and place each project into target.
   // TODO: use non dev snapshot releases.
@@ -139,8 +141,14 @@ function drush_upgrade_site_upgrade($target_key) {
   drush_invoke('sql_sync', '@self', $target_key);
   if (drush_get_error()) return -1; // Early exit if we see an error.
 
-  // Run update.php in a subshell. It is run on @target site whereas this request was on @self.
-  drush_do_site_command($target_alias, 'updatedb', array(), array(), TRUE);
+  if (drush_get_context('DRUSH_SIMULATE') || drush_get_option('no-updatedb')) {
+    // Updatedb does not support simulate so we don't call it.
+    drush_log(dt('About to perform updatedb on !target', array('!target' => $target_key)), 'ok');
+  }
+  else {
+    // Run update.php in a subshell. It is run on @target site whereas this request was on @self.
+    drush_do_site_command($target_alias, 'updatedb', array(), array(), TRUE);
+  }
 }
 
 // Replace db_url with DB name from target. updatedb will later append a DBTNG compatible version.

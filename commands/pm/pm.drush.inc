@@ -1967,7 +1967,9 @@ function _drush_pm_get_release_history_xml($request) {
     return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
   }
   if ($error = $xml->xpath('/error')) {
-    return drush_set_error('DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE', $error[0]);
+    // Don't set an error here since it stops processing during site-upgrade.
+    drush_log($error[0], 'warning'); // 'DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE',
+    return FALSE;
   }
   // Unpublished project?
   $project_status = $xml->xpath('/project/project_status');
