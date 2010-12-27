@@ -365,8 +365,8 @@ function _core_path_aliases($project = '') {
       }
       if (drush_drupal_major_version() >= 7) {
         if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_SITE) {
-          $paths['%files'] = DrupalPublicStreamWrapper::getDirectoryPath();
-          $paths['%private'] = DrupalPrivateStreamWrapper::getDirectoryPath();
+          $paths['%files'] = variable_get('file_public_path', conf_path() . '/files');
+          $paths['%private'] = variable_get('file_private_path', conf_path() . '/files');
         }
       }
       elseif (function_exists('file_directory_path')) {
