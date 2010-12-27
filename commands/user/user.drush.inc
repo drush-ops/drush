@@ -6,32 +6,6 @@
  */
 
 /**
- * Implementation of hook_drush_help().
- */
-function user_drush_help($section) {
-  switch ($section) {
-    case 'drush:user-information':
-      return dt("Display information about a user identified by username, uid or email address.");
-    case 'drush:user-block':
-      return dt("Block the specified user(s).");
-    case 'drush:user-unblock':
-      return dt("Unblock the specified user(s).");
-    case 'drush:user-add-role':
-      return dt("Add a role to the specified user accounts.");
-    case 'drush:user-remove-role':
-      return dt("Remove a role from the specified user accounts.");
-    case 'drush:user-create':
-      return dt("Create a user account.");
-    case 'drush:user-cancel':
-      return dt("Cancel a user account.");
-    case 'drush:user-password':
-      return dt("(Re)Set the password for the given user account.");
-    case 'drush:user-login':
-      return dt("Display a one time login link for the given user account (defaults to uid 1).");
-  }
-}
-
-/**
  * Implementation of hook_drush_command().
  */
 function user_drush_command() {
