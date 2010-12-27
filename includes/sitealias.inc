@@ -1512,7 +1512,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
     $drupal_root = $site_alias_settings['root'];
   }
   else {
-    drush_bootstrap_max();
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   }
   if (empty($drupal_root)) {
