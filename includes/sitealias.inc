@@ -1502,11 +1502,11 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
   $full_path_aliases = $path_aliases;
   foreach ($full_path_aliases as $key => $value) {
     // Expand all relative path aliases to be based off of the Drupal root
-    if (($value[0] != '/') && ($key != '%root')) {
+    if ((substr($value, 0, 1) != '/') && ($key != '%root')) {
       $full_path_aliases[$key] = $drupal_root . $value;
     }
     // We do not want slashes on the end of our path aliases.
-    if ($value[strlen($value)-1] == '/') {
+    if (substr($value, 0, -1) == '/') {
       $full_path_aliases[$key] = substr($full_path_aliases[$key], -1);
     }
   }
