@@ -187,6 +187,19 @@ $options['skip-tables'] = array(
 # $command_specific['pm-update'] = array('notes' => TRUE);
 # $command_specific['pm-updatecode'] = array('notes' => TRUE);
 
+// List of drush commands or aliases that should override built-in 
+// shell functions and commands; otherwise, built-ins override drush 
+// commands. Default is help,dd,sa.
+// Warning:  bad things can happen if you put the wrong thing here
+// (e.g. eval, grep), so be cautious.
+// If a drush command overrides a built-in command (e.g. bash help),
+// then you can use the `builtin` operator to run the built-in version
+// (e.g. `builtin help` to show bash help instead of drush help.)
+// If a drush command overrides a shell command (e.g. grep), then
+// you can use the regular shell command by typing in the full path
+// to the command (e.g. /bin/grep).
+# $command_specific['core-cli'] = array('override' => 'help,dd,sa');
+
 /**
  * Variable overrides:
  *

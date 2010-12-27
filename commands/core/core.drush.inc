@@ -181,6 +181,10 @@ function core_drush_command() {
     'arguments' => array(
       'target' => 'A module/theme name, or special names like root, files, private, or an alias : path alias string such as @alias:%files. Defaults to root.',
     ),
+    'options' => array(
+      'component' => "The portion of the evaluated path to return.  Defaults to 'path'; 'name' returns the site alias of the target.",
+      'local' => "Reject any target that specifies a remote site.",
+    ),
     'examples' => array(
       'cd `drush dd devel`' => 'Navigate into the devel module directory',
       'cd `drush dd` ' => 'Navigate to the root of your Drupal site',
@@ -194,12 +198,17 @@ function core_drush_command() {
 
   $items['core-cli'] = array(
     'description' => dt('Enter a new shell optimized for drush use.'),
+    'options' => array(
+      'override' => 'List of drush commands or aliases that should override built-in shell functions and commands; otherwise, built-ins override drush commands. Default is help,dd,sa',
+      'pipe' => 'Print the generated .bashrc file and exit.',
+    ),
     'examples' => array(
       'help' => 'Print available drush commands',
-      'cdd' => 'Navigate to the root of your Drupal site',
-      'cdd files' => 'Navigate to the files directory.',
+      'cd @alias' => 'Navigate to the root of the site indicated by @alias; subsequent commands will target that site.',
+      'cd %files' => 'Navigate to the files directory.',
       'lsd files' => 'List all files in the Drupal files directory.',
-      'on @alias status' => 'Run the command "status" on the site indicated by @alias',
+      'on @alias core-status' => 'Run the command "core-status" on the site indicated by @alias',
+      'use @alias' => 'Run subsequent commands on the site indicated by @alias',
     ),
     'aliases' => array('cli'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
@@ -674,7 +683,22 @@ function drush_core_updatedb_batch_process($id) {
   _update_batch_command($id);
 }
 
-function _drush_core_directory($target = 'root') {
+/**
+ * Given a target (e.g. @site:%modules), return the evaluated
+ * directory path
+ *
+ * @param $target
+ *   The target to evaluate.  Can be @site or /path or @site:path
+ *   or @site:%pathalais, etc. (just like rsync parameters)
+ * @param $component
+ *   The portion of the evaluated path to return.  Possible values:
+ *   'path' - the full path to the target (default)
+ *   'name' - the name of the site from the path (e.g. @site1)
+ *   'user-path' - the part after the ':' (e.g. %modules)
+ *   'root' & 'uri' - the Drupal root and URI of the site from the path
+ *   'path-component' - The ':' and the path
+ */
+function _drush_core_directory($target = 'root', $component = 'path', $local_only = FALSE) {
   // Normalize to a sitealias in the target.
   $normalized_target = $target;
   if (strpos($target, ':') === FALSE) {
@@ -695,17 +719,16 @@ function _drush_core_directory($target = 'root') {
   }
 
   $additional_options = array();
-  $values = drush_sitealias_evaluate_path($normalized_target, $additional_options);
-
-  if (isset($values['path'])) {
+  $values = drush_sitealias_evaluate_path($normalized_target, $additional_options, $local_only);
+  if (isset($values[$component])) {
     // Hurray, we found the destination
-    return $values['path'];
+    return $values[$component];
   }
   return NULL;
 }
 
 function drush_core_drupal_directory($target = 'root') {
-  $path = _drush_core_directory($target);
+  $path = _drush_core_directory($target, drush_get_option('component', 'path'), drush_get_option('local', FALSE));
   
   // If _drush_core_directory is working right, it will turn
   // %blah into the path to the item referred to by the key 'blah'.
@@ -751,7 +774,7 @@ function drush_core_cli() {
   if (drush_get_option('in-cli', FALSE)) {
     return drush_set_error('DRUSH_CLI_NOT_REENTRANT', dt('Already in drush core-cli; press control-d to exit.'));
   }
-  if (drush_get_context('DRUSH_BACKEND')) {
+  if (drush_get_context('DRUSH_BACKEND') || drush_get_context('DRUSH_AFFIRMATIVE') || drush_get_context('DRUSH_NEGATIVE')) {
     return drush_set_error('DRUSH_CLI_INTERACTIVE_ERROR', dt('Cannot run drush core-cli from non-interactive mode; aborting.'));
   }
 
@@ -760,16 +783,10 @@ function drush_core_cli() {
 
   $bashrc_data = implode("/n/n", drush_command_invoke_all('cli_bashrc', $drush_command));
 
-  // Before entering the new bash script, cd to the current site root,
-  // if any.  This will make our default site for drush match the
-  // currently bootstrapped site (at least until the user cd's away).
-  if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    drush_op('chdir', $site_root);
-  }
-
-  // Print our entire bashrc file in verbose mode
-  if (drush_get_context('DRUSH_VERBOSE')) {
-    drush_print($bashrc_data);
+  // Print our bashrc file and exit in --pipe mode
+  if (drush_get_context('DRUSH_PIPE')) {
+    drush_print_pipe($bashrc_data);
+    return TRUE;
   }
 
   drush_print("Entering the drush cli.  Use CONTROL-D to exit.");
@@ -779,71 +796,150 @@ function drush_core_cli() {
   // control-d to exit.  The temp file will be deleted after
   // we exit.
   $bashrc = drush_save_data_to_temp_file($bashrc_data);
-  drush_op_system('bash --rcfile ' . $bashrc . ' > `tty`');
+  return drush_op_system('bash --rcfile ' . $bashrc . ' > `tty`');
 }
 
 // Implement our own hook_cli_bashrc()
 function core_cli_bashrc($drush_command) {
+  $initial_site = '';
+  $site_list = drush_sitealias_resolve_sitespecs(array('@self'));
+  if (!empty($site_list)) {
+    $site_list = array_keys($site_list);
+    if ($site_list[0] != "@self") {
+      $initial_site = $site_list[0];
+    }
+  }
+  if (empty($initial_site)) {
+    drush_sitealias_load_all(TRUE);
+    $initial_site = _drush_sitealias_find_local_alias_name(drush_get_context('DRUSH_DRUPAL_ROOT'), str_replace('http://','',drush_get_context('DRUSH_URI')));
+  }
+  
   // Set up our default bashrc file for the drush cli
-  $bashrc_data = <<<EOD
+  $bashrc_data = "# Set our initial site\nDRUPAL_SITE=$initial_site\n" . <<<EOD
 
-# source the user's .bashrc file
+# Set the DRUSH_CLI variable; it may also be of use 
+# in the user's .bashrc, or elsewhere.
+DRUSH_CLI=true
+
+# Source the user's .bashrc file.
 [ -r ~/.bashrc ] && {
   pushd ~ > /dev/null
   . .bashrc
   popd > /dev/null
 }
 
-PS1="drush> "
+# Display our initial site in the bash prompt.
+PS1="\$DRUPAL_SITE> "
 
+# When using the drush shell, all commands will
+# by default target the site specified by the
+# shell variable \$DRUPAL_SITE.  To run a command
+# on some other site, use either:
+#   drush @site command
+# or
+#   on @site command
 alias on="$drush_command"
 alias drush="$drush_command"
-DRUSH_CLI=true
 
-
-function cdd() {
-  TARGET=
-  PARAM=\$1
-  if [ \$# -gt 1 ] ; then
-    TARGET=\$1
-    PARAM=\$2
-  fi
-  DEST=`drush \$TARGET drupal-directory \$PARAM`
-  if [ \$? != 0 ] || [ -z "\$DEST" ]
+# To specify a new DRUPAL_SITE without changing
+# your current directory:
+#   use @site
+function use() {
+  if [ ! -z $1 ] && [ "x$1" != "x@self" ]
   then
-    echo "Target \$1 was not found."
-  else
-    echo "cd \$DEST"
-    cd \$DEST;
+    SITE=`drush site-alias $1 --short`
+    if [ \$? != 0 ] || [ -z "\$SITE" ]
+    then
+      echo "Alias $1 not found."
+    else
+      DRUPAL_SITE=$1
+      PS1="$1> "
+    fi
   fi
 }
 
-function lsd() {
-  TARGET=
-  PARAM=\$1
-  if [ \$# -gt 1 ] ; then
-    TARGET=\$1
-    PARAM=\$2
-  fi
-  DEST=`drush \$TARGET drupal-directory \$PARAM`
-  if [ \$? != 0 ] || [ -z "\$DEST" ]
+# We override the cd command to allow convenient
+# shorthand notations, such as:
+#   cd @site1
+#   cd %modules
+#   cd %devel
+#   cd @site2:%files
+# When changing the cwd to a new site, the DRUPAL_SITE
+# variable is also changed, so the new site becomes
+# the default drush target.
+function cd() {
+  # First special-case the no-parameter cd
+  if [ "x\$1" == "x" ]
   then
-    echo "Target \$1 was not found."
+    cd %root
+  # Next test and see if this should be an 'ordinary' cd
+  elif [ "x\$1" == "x-" ] || [ -d \$1 ]
+  then
+    builtin cd \$1;
   else
-    echo "ls \$DEST"
-    ls \$DEST;
+    # Do a special drush core-cli cd, handling
+    # shorthand notation directory names -- anything
+    # understood by drupal-directory
+    DEST=`drupal-directory \$1 --local`
+    if [ \$? == 0 ]
+    then
+      SITE=`drupal-directory \$1 --component=name`
+      if [ ! -z "\$SITE" ]
+      then
+        use \$SITE;
+      fi
+      echo "cd \$DEST";
+      builtin cd \$DEST;
+    fi
+  fi
+}
+
+# In drush-3, it was necessary to use cdd instead of
+# cd to be able to target special directories.  Continue
+# to accept cdd as an alias for cd.
+alias cdd=cd
+
+# The command lsd will quickly do an 'ls' on the
+# specified special drush directory, e.g.:
+#   lsd %modules
+function lsd() {
+  # First special-case the no-parameter cd
+  if [ "x\$1" == "x" ]
+  then
+    lsd %root
+  else
+    # Do a special drush core-cli cd, handling
+    # shorthand notation directory names -- anything
+    # understood by drupal-directory
+    DEST=`drupal-directory \$1 --local`
+    if [ \$? == 0 ]
+    then
+      echo "ls \$DEST";
+      ls \$DEST;
+    fi
   fi
 }
 
 EOD;
 
-  // Add aliases for all of our commands
+  // Add aliases for all drush commands
+  $bashrc_data .= "# Add aliases for all drush commands\n";
   $commands = drush_get_commands();
+  $cli_overrides = _convert_csv_to_array(drush_get_option('override', 'help,dd,sa'));
   foreach ($commands as $key => $command) {
-    // Filter out old commands that still have spaces
-    if (strpos($key, ' ') === FALSE) {
-      $bashrc_data .= "function $key() {\n  $drush_command $key \"\$@\"\n}\n";
+    // Filter out old commands that still have spaces;
+    // do not mask any existing bash command (e.g. 'grep')
+    // or builtin (e.g. 'eval') with drush aliases.
+    if ((strpos($key, ' ') === FALSE) && ((in_array($key, $cli_overrides)) || (!drush_shell_exec("which $key")) && (drush_shell_exec("builtin $key") != "1"))) {
+      $bashrc_data .= "function $key() {\n  $drush_command \$DRUPAL_SITE $key \"\$@\"\n}\n";
     }
+  }
+  // Before entering the new bash script, cd to the current site root,
+  // if any.  This will make our default site for drush match the
+  // currently bootstrapped site (at least until the user cd's away).
+  if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+    $site_root = drush_get_context('DRUSH_DRUPAL_ROOT') . '/' . $site_root;
+    $bashrc_data .= "builtin cd $site_root\n";
   }
 
   return $bashrc_data;

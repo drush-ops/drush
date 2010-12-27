@@ -38,8 +38,6 @@ function drush_sitealias_check_arg() {
  * Given a list of alias records, shorten the name used if possible
  */
 function drush_sitealias_simplify_names($site_list) {
-//  foreach ($site_list as $original_name => $alias_record) {
-//  }
   $result = array();
   foreach ($site_list as $original_name => $alias_record) {
     $adjusted_name = $alias_record['name'];
@@ -204,7 +202,6 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
         // then use it as a local site specification.
         $alias_record = _drush_sitealias_find_record_for_local_site($alias);
       }
-
     }
   }
 
@@ -558,6 +555,9 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
  */
 function _drush_sitealias_cache_alias($alias_name, $alias_record) {
   $cache =& drush_get_context('site-aliases');
+  if (array_key_exists("@$alias_name", $cache)) {
+    $alias_record = array_merge($cache["@$alias_name"], $alias_record);
+  }
   $cache["@$alias_name"] = $alias_record;
 
   // If the alias record points at a local site, make sure
@@ -1118,6 +1118,25 @@ function _drush_sitealias_add_transient_defaults(&$alias_record) {
 }
 
 /**
+ * Find the name of a local alias record that has the specified
+ * root and uri.
+ */
+function _drush_sitealias_find_local_alias_name($root, $uri) {
+  $result = '';
+  $all_site_aliases =& drush_get_context('site-aliases');
+  
+  foreach ($all_site_aliases as $alias_name => $alias_values) {
+    if (!array_key_exists('remote-host', $alias_values) && array_key_exists('root', $alias_values) && array_key_exists('uri', $alias_values) && ($alias_name != '@self')) {
+      if (($root == $alias_values['root']) && ($uri == $alias_values['uri'])) {
+        $result = $alias_name;
+      }
+    }
+  }
+  
+  return $result;
+}
+
+/**
  * If '$alias' is the name of a folder in the sites folder of the given drupal
  * root, then build an alias record for it
  *
@@ -1397,7 +1416,7 @@ function _drush_sitealias_preflight_path($path) {
  *   with the path to pass to rsync (including the machine specifier)
  *   in the 'evaluated-path' item.
  */
-function drush_sitealias_evaluate_path($path, &$additional_options) {
+function drush_sitealias_evaluate_path($path, &$additional_options, $local_only = FALSE) {
   $site_alias_settings = array();
   $path_aliases = array();
   $remote_user = '';
@@ -1416,6 +1435,10 @@ function drush_sitealias_evaluate_path($path, &$additional_options) {
   }
   
   if (!empty($site_alias_settings)) {
+    if ($local_only && array_key_exists('remote-host', $site_alias_settings)) {
+      return drush_set_error('DRUSH_REMOTE_SITE_IN_LOCAL_CONTEXT', dt("A remote site alias was used in a context where only a local alias is appropriate."));
+    }
+    
     // Apply any options from this alias that might affect our rsync
     drush_sitealias_set_alias_context($site_alias_settings);
 
