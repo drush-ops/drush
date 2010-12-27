@@ -53,26 +53,18 @@ function pm_drush_help($section) {
       return dt('Enable one or more extensions (modules or themes). Enable dependant extensions as well.');
     case 'drush:pm-disable':
       return dt('Disable one or more extensions. Disable dependant extensions as well.');
-    case 'drush:pm-info':
-      return dt('Show detailed info for one or more extensions.');
-    case 'drush:pm-uninstall':
-      return dt('Uninstall one or more modules. Modules must be disabled first.');
-    case 'drush:pm-list':
-      return dt('Show a list of available extensions.');
-    case 'drush:pm-refresh':
-      return dt('Refresh update status information. Run this before running pm-update or pm-updatecode commands.');
     case 'drush:pm-updatecode':
-      return dt("Display available update information and allow updating of all installed project code to the specified version (or latest by default). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
+      return dt("Display available update information and allow updating of all enabled projects latest recommended release. Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically. Backups are performed unless diectory is already under version control.");
     case 'drush:pm-updatecode-notify-pending-db-updates':
       return dt("This is a helper command needed by updatecode. It is used to check for db updates in a backend process after code updated have been performed. We need to run this task in a separate process to not conflict with old code already in memory.");
     case 'drush:pm-update':
-      return dt("Display available update information and allow updating of all installed projects to the specified version (or latest by default), followed by applying any database updates required (as with running update.php). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
+      return dt("Display available update information and aallow updating of all enabled projects latest recommended release, followed by applying any database updates required (as with running update.php). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
       case 'drush:pm-releases':
       return dt("View all releases for a given drupal.org project. Useful for deciding which version to install/update.");
     case 'drush:pm-download':
       return dt("Download Drupal core or projects from drupal.org (Drupal core, modules, themes, profiles or translations) and other sources. It will automatically figure out which project version you want based on its recommended release, or you may specify a particular version.
 
-If no --destination is provided, then it depends on the project type:
+If no --destination is provided, then destination depends on the project type:
   - Profiles will be downloaded to profiles/ in your Drupal root.
   - Translations will be decompressed from your Drupal root.
   - Modules and themes will be downloaded to the site specific directory (sites/example.com/modules|themes) if available, or to sites/all/modules|themes.
@@ -123,7 +115,7 @@ function pm_drush_command() {
     'deprecated-aliases' => array('disable'),
   );
   $items['pm-info'] = array(
-    'description' => 'Show info for one or more modules or themes.',
+    'description' => 'Show detailed info for one or more extensions (modules or themes).',
     'arguments' => array(
       'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to show info for multiple matches. If no argument is provided it will show info for all available extensions.',
     ),
@@ -148,8 +140,8 @@ function pm_drush_command() {
       '--type' => 'Filter by extension type. Choices: module, theme.',
       '--status' => 'Filter by extension status. Choices: enabled, disable and/or \'not installed\'. You can use multiple comma separated values. (i.e. --status="disabled,not installed").',
       '--package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other").',
-      '--core' => 'Filter out extensions that are not in core.',
-      '--no-core' => 'Filter out extensions that are provided by core projects.',
+      '--core' => 'Filter out extensions that are not in drupal core.',
+      '--no-core' => 'Filter out extensions that are provided by drupal core.',
       '--pipe' => 'Returns a space delimited list of the names of the resulting extensions.',
     ),
     'aliases' => array('pml'),
@@ -162,7 +154,7 @@ function pm_drush_command() {
     'deprecated-aliases' => array('refresh'),
   );
   $items['pm-updatecode'] = array(
-    'description' => 'Update your project code',
+    'description' => 'Update your projects to latest recommended release.',
     'drupal dependencies' => array($update),
     'arguments' => array(
       'projects' => 'Optional. A list of installed projects to update.',
@@ -178,7 +170,7 @@ function pm_drush_command() {
   ) + $engines;
   // Merge all items from above.
   $items['pm-update'] = array_merge($items['pm-updatecode'], array(
-    'description' => 'Update your project code and apply any database updates required (update.php).',
+    'description' => 'Update your project code and apply any pending database updates (equivalent to update.php).',
     'aliases' => array('up'),
     'deprecated-aliases' => array('update'),
   ));
