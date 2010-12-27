@@ -364,7 +364,7 @@ function _core_path_aliases($project = '') {
         $paths['%themes'] = 'sites/all/themes';
       }
       if (drush_drupal_major_version() >= 7) {
-        if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+        if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_SITE) {
           $paths['%files'] = DrupalPublicStreamWrapper::getDirectoryPath();
           $paths['%private'] = DrupalPrivateStreamWrapper::getDirectoryPath();
         }
