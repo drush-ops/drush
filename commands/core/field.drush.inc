@@ -7,22 +7,6 @@
  */
 
 /**
- * Implementation of hook_drush_help().
- */
-function field_drush_help($section) {
-  switch ($section)  {
-    case 'drush:field-create':
-      return dt('Quickly create fields and instances for a given bundle.');
-    case 'drush:field-update':
-      return dt('Return URL for editing field.');
-    case 'drush:field-clone':
-      return dt('Clone a field and all of its instances.');
-    case 'drush:field-info':
-      return dt('View information about fields, field_types, widgets, etc.');
-  }
-}
-
-/**
  * Implementation of hook_drush_command().
  */
 function field_drush_command() {
