@@ -198,7 +198,7 @@ function _drush_make_download_file($download) {
         $parts = explode(';', $headers[0]['Content-Disposition']);
         foreach ($parts as $part) {
           $inner_parts = explode('=', $part, 2);
-          if ($inner_parts[0] == 'filename') {
+          if (trim($inner_parts[0]) == 'filename') {
             $file = $inner_parts[1];
             break;
           }
