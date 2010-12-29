@@ -71,10 +71,12 @@ function drush_core_help() {
         }
 
         // These two options require delayed printing.
-        if (!drush_get_option('sort') && !drush_get_option('html')) {
-          drush_print_table($rows, FALSE, array(0 => 20));
+        if (!empty($rows)) {
+          if (!drush_get_option('sort') && !drush_get_option('html')) {
+            drush_print_table($rows, FALSE, array(0 => 20));
+          }
+          $printed_rows = array_merge($printed_rows, $rows);
         }
-        $printed_rows = array_merge($printed_rows, $rows);
       }
       else {
         break;
