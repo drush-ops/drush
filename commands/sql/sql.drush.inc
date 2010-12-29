@@ -69,6 +69,7 @@ function sql_drush_command() {
     'description' => 'Execute a query against the site database.',
     'examples' => array(
       'drush sql-query "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record. Table prefixes are honored.',
+      '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
     ),
     'arguments' => array(
        'query' => 'An SQL query.',
