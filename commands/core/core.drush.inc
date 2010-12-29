@@ -209,6 +209,7 @@ function core_drush_command() {
       'lsd files' => 'List all files in the Drupal files directory.',
       'on @alias core-status' => 'Run the command "core-status" on the site indicated by @alias',
       'use @alias' => 'Run subsequent commands on the site indicated by @alias',
+      'drush core-cli --pipe > ~/.bash_customizations' => 'Convert your default shell into drush core-cli.  Make sure that your .bashrc file includes .bash_customizations (e.g. "source ~/.bash_customizations" or ". ~/.bash_customizations").',
     ),
     'aliases' => array('cli'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
@@ -814,22 +815,41 @@ function core_cli_bashrc($drush_command) {
     $initial_site = _drush_sitealias_find_local_alias_name(drush_get_context('DRUSH_DRUPAL_ROOT'), str_replace('http://','',drush_get_context('DRUSH_URI')));
   }
   
+  $searchpath[] = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
+  $searchpath[] = drush_get_context('ETC_PREFIX', '') . '/etc/drush';
+  $searchpath[] = realpath(dirname(__FILE__) . '/../../');
+  $bashrc_searchpath = implode(' ', $searchpath);
+  
   // Set up our default bashrc file for the drush cli
-  $bashrc_data = "# Set our initial site\nDRUPAL_SITE=$initial_site\n" . <<<EOD
+  $bashrc_data = <<<EOD
+# Drush .bashrc file.  Copy selected portions of this
+# into your own bash resource file to add features of the
+# drush core-cli command to your default shell.
+
+# Where we will search for .bashrc files
+BASHRC_PATH="~/.drush $bashrc_searchpath"
 
 # Set the DRUSH_CLI variable; it may also be of use 
-# in the user's .bashrc, or elsewhere.
+# in the user's .bashrc, or elsewhere.  If we have not
+# already set DRUSH_CLI, add ~ to our BASHRC_PATH.
+# This allows us to source ~/.bashrc when we are running
+# `drush core-cli` without causing problems with reentrancy
+# if someone sources this file from ~/.bashrc.
+[ -z \$DRUSH_CLI ] && BASHRC_PATH="~ \$BASHRC_PATH"
 DRUSH_CLI=true
 
+# Set our initial site
+DRUPAL_SITE=$initial_site 
+
 # Source the user's .bashrc file.
-[ -r ~/.bashrc ] && {
-  pushd ~ > /dev/null
-  . .bashrc
-  popd > /dev/null
-}
+for d in \$BASHRC_PATH ; do
+  [ -r \$d/.bashrc ] && {
+    . \$d/.bashrc
+  }
+done
 
 # Display our initial site in the bash prompt.
-PS1="\$DRUPAL_SITE> "
+PS1="\${DRUPAL_SITE:-drush}> "
 
 # When using the drush shell, all commands will
 # by default target the site specified by the
@@ -845,15 +865,15 @@ alias drush="$drush_command"
 # your current directory:
 #   use @site
 function use() {
-  if [ ! -z $1 ] && [ "x$1" != "x@self" ]
+  if [ ! -z \$1 ] && [ "x\$1" != "x@self" ]
   then
     SITE=`drush site-alias $1 --short`
     if [ \$? != 0 ] || [ -z "\$SITE" ]
     then
-      echo "Alias $1 not found."
+      echo "Alias \$1 not found."
     else
       DRUPAL_SITE=$1
-      PS1="$1> "
+      PS1="\${1:-drush}> "
     fi
   fi
 }
