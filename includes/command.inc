@@ -110,9 +110,7 @@ function drush_invoke($command) {
         call_user_func_array($func, $args);
         _drush_log_drupal_messages();
         if (drush_get_error()) {
-          drush_log(dt('An error occurred at function : @func', array('@func' => $func)), 'error');
           $rollback = TRUE;
-
           // break out of the foreach variations and foreach list
           break 2;
         }
