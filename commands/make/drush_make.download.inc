@@ -539,18 +539,20 @@ function drush_make_download_bzr($name, $download, $download_location) {
 function drush_make_download_svn($name, $download, $download_location) {
   if (!empty($download['url'])) {
     if (!empty($download['interactive'])) {
-      $options = '--force';
       $function = 'drush_shell_exec_interactive';
     }
     else {
-      $options = '--force --non-interactive';
+      $options = ' --non-interactive';
       $function = 'drush_shell_exec';
     }
+    if (!isset($download['force']) || $download['force']) {
+      $options = ' --force';
+    }
     if (drush_get_option('working-copy')) {
-      $command = 'svn ' . $options . ' checkout';
+      $command = 'svn' . $options . ' checkout';
     }
     else {
-      $command = 'svn ' . $options . ' export';
+      $command = 'svn' . $options . ' export';
     }
 
     $args = array();
