@@ -168,7 +168,7 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
       $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = new $class_name($project);
     }
     else {
-      drush_make_error(dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $key)));
+      drush_make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $key)));
     }
   }
 
@@ -306,6 +306,9 @@ function drush_make_update_xml_download($project) {
   // Find the best release.
   if ($project['version'] == DRUSH_MAKE_VERSION_BEST) {
     $recommended_major = (string)$project['release_history']->recommended_major;
+    if (!$recommended_major && $project['type'] == 'core') {
+      $recommended_major = strtok($project['core'], '.');
+    }
     $project['version'] = _drush_make_update_xml_best_version($recommended_major, $releases);
   }
   // Find the best release for the specified version.
