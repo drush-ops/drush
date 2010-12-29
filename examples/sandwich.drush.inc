@@ -70,7 +70,8 @@ function sandwich_drush_command() {
  * Implementation of hook_drush_help().
  *
  * This function is called whenever a drush user calls
- * 'drush help <name-of-your-command>'
+ * 'drush help <name-of-your-command>'. This hook is optional. If a command
+ * does not implement this hook, the command's description is used instead.
  *
  * @param
  *   A string with the help section (prepend with 'drush:')
