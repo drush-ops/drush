@@ -23,7 +23,8 @@
  * Additionally, the ability to rollback when an error has been encountered is also provided.
  * If at any point during execution, the drush_get_error() function returns anything but 0,
  * drush_invoke() will trigger $hook_rollback for each of the hooks that implement it,
- * in reverse order from how they were executed.
+ * in reverse order from how they were executed.  Rollbacks are also triggered any
+ * time a hook function returns FALSE.
  *
  * This function will also trigger pre_$hook and post_$hook variants of the hook
  * and its rollbacks automatically.
@@ -107,9 +108,9 @@ function drush_invoke($command) {
         $all_available_hooks[] = $func . ' [*]';
         $available_rollbacks[] = $func . '_rollback';
         $completed[] = $func;
-        call_user_func_array($func, $args);
+        $result = call_user_func_array($func, $args);
         _drush_log_drupal_messages();
-        if (drush_get_error()) {
+        if (drush_get_error() || ($result === FALSE)) {
           $rollback = TRUE;
           // break out of the foreach variations and foreach list
           break 2;
@@ -141,7 +142,7 @@ function drush_invoke($command) {
       if (function_exists($rb_func)) {
         call_user_func_array($rb_func, $args);
         _drush_log_drupal_messages();
-        drush_log("Changes for $func module have been rolled back.", 'rollback');
+        drush_log(dt("Changes made in !func have been rolled back.", array('!func' => $func)), 'rollback');
       }
     }
   }
@@ -504,10 +505,10 @@ function drush_process_bootstrap_to_first_arg(&$arguments) {
       $shifted_alias = $arguments[$shift_alias_pos];
       $alias_record = drush_sitealias_get_record($shifted_alias);
       if (!empty($alias_record)) {
-	// Move the alias we shifted from its current position
-	// in the argument list to the front of the list
-	array_splice($arguments, $shift_alias_pos, 1);
-	array_unshift($arguments, $shifted_alias);
+        // Move the alias we shifted from its current position
+        // in the argument list to the front of the list
+        array_splice($arguments, $shift_alias_pos, 1);
+        array_unshift($arguments, $shifted_alias);
       }
     }
   }

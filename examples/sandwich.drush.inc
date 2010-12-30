@@ -88,6 +88,12 @@ function sandwich_drush_help($section) {
 
 /**
  * Implementation of drush_hook_COMMAND_validate().
+ *
+ * The validate command should exit with
+ * `return drush_set_error(...)` to stop execution of
+ * the command.  In practice, calling drush_set_error
+ * OR returning FALSE is sufficient.  See drush.api.php
+ * for more details.
  */
 function drush_sandwich_make_me_a_sandwich_validate() {
   $name = posix_getpwuid(posix_geteuid());

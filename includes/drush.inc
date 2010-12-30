@@ -335,14 +335,6 @@ function drush_die($msg = NULL, $status = NULL) {
   die($msg ? "drush: $msg\n" : '');
 }
 
-/**
- * Exit due to user declining a confirmation prompt.
- */
-function drush_user_abort($msg = NULL, $status = NULL) {
-  drush_set_context('DRUSH_USER_ABORT', TRUE);
-  drush_die($msg ? $msg : 'Aborting.', $status);
-}
-
 /*
  * Check to see if the provided line is a "#!/usr/bin/env drush"
  * "shebang" script line.
@@ -1677,7 +1669,7 @@ function drush_remote_command() {
       }
 
       if (drush_confirm('Continue? ') === FALSE) {
-         drush_user_abort();
+        return drush_user_abort();
       }
     }
     $command = array_shift($args);
@@ -1754,7 +1746,7 @@ function drush_do_multiple_command($command, $source_record, $destination_record
       }
 
       if (drush_confirm('Continue? ') === FALSE) {
-         drush_user_abort();
+         return drush_user_abort();
       }
     }
 
@@ -1936,6 +1928,7 @@ function _drush_print_log($entry) {
   $return = TRUE;
   switch ($entry['type']) {
     case 'warning' :
+    case 'cancel' :
       $type_msg = sprintf($yellow, $entry['type']);
       break;
     case 'failed' :
@@ -2276,6 +2269,17 @@ function drush_cmp_error($error) {
   }
 
   return array_key_exists($error, $error_log);
+}
+
+/**
+ * Exit due to user declining a confirmation prompt.
+ *
+ * Usage:  return drush_user_abort();
+ */
+function drush_user_abort($msg = NULL) {
+  drush_set_context('DRUSH_USER_ABORT', TRUE);
+  drush_log($msg ? $msg : dt('Aborting.'), 'cancel');
+  return FALSE;
 }
 
 /**

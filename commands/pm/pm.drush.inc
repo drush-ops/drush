@@ -602,7 +602,7 @@ function drush_pm_enable() {
   else {
     drush_print(dt('The following extensions will be enabled: !extensions', array('!extensions' => implode(', ', $extensions))));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
-      return drush_log(dt('Aborting.'));
+      return drush_user_abort();
     }
   }
 
@@ -716,7 +716,7 @@ function drush_pm_disable() {
   else {
     drush_print(dt('The following extensions will be disabled: !extensions', array('!extensions' => implode(', ', $extensions))));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
-      return drush_log(dt('Aborting.'));
+      return drush_user_abort();
     }
   }
 
@@ -955,7 +955,7 @@ function drush_pm_uninstall() {
   else {
     drush_print(dt('The following modules will be uninstalled: !modules', array('!modules' => implode(', ', $modules))));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
-      return drush_log(dt('Aborting.'));
+      return drush_user_abort();
     }
   }
 
@@ -2138,7 +2138,7 @@ function drush_pm_download() {
     // Check if install location already exists.
     if (is_dir($request['project_install_location'])) {
       if (!drush_confirm(dt('Install location !location already exists. Do you want to overwrite it?', array('!location' => $request['project_install_location'])))) {
-        drush_log(dt("Abort installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), 'warning');
+        drush_log(dt("Skip installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), 'warning');
         continue;
       }
     }

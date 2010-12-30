@@ -85,7 +85,7 @@ function drush_core_watchdog_list() {
   }
   $option = drush_choice($options, dt('Select a message type or severity level.'));
   if ($option === FALSE) {
-    return drush_log(dt('Aborting.'));
+    return drush_user_abort();
   }
   $ntypes = count($types);
   if ($option < $ntypes) {
@@ -263,7 +263,7 @@ function drush_core_watchdog_delete($arg = NULL) {
   if ($arg == 'all') {
     drush_print(dt('All watchdog messages will be deleted.'));
     if (!drush_confirm(dt('Do you really want to continue?'))) {
-      return drush_log(dt('Aborting.'));
+      return drush_user_abort();
     }
     drush_db_delete('watchdog');
     drush_log(dt('All watchdog messages have been deleted.'), 'ok');
@@ -271,7 +271,7 @@ function drush_core_watchdog_delete($arg = NULL) {
   else if (is_numeric($arg)) {
     drush_print(dt('Watchdog message #!wid will be deleted.', array('!wid' => $arg)));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
-      return drush_log(dt('Aborting.'));
+      return drush_user_abort();
     }
     $affected_rows = drush_db_delete('watchdog', 'wid=:wid', array(':wid' => $arg));
     if ($affected_rows == 1) {
@@ -289,11 +289,12 @@ function drush_core_watchdog_delete($arg = NULL) {
     }
     $where = core_watchdog_query($type, $severity, $arg, 'OR');
     if ($where === FALSE) {
-      return drush_log(dt('Aborting.'), 'error');
+      // Drush set error was already called by core_watchdog_query
+      return FALSE;
     }
     drush_print(dt('All messages with !where will be deleted.', array('!where' => preg_replace("/message LIKE %$arg%/", "message body containing '$arg'" , strtr($where['where'], $where['args'])))));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
-      return drush_log(dt('Aborting.'));
+      return drush_user_abort();
     }
     $affected_rows = drush_db_delete('watchdog', $where['where'], $where['args']);
     drush_log(dt('!affected_rows watchdog messages have been deleted.', array('!affected_rows' => $affected_rows)), 'ok');
@@ -321,7 +322,7 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
     $types = core_watchdog_message_types();
     if (array_search($type, $types) === FALSE) {
       $msg = "Unrecognized message type: !type.\nRecognized types are: !types.";
-      return drush_set_error(dt($msg, array('!type' => $type, '!types' => implode(', ', $types))));
+      return drush_set_error('WATCHDOG_UNRECOGNIZED_TYPE', dt($msg, array('!type' => $type, '!types' => implode(', ', $types))));
     }
     $conditions[] = "type = :type";
     $args[':type'] = $type;

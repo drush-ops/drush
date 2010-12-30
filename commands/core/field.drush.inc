@@ -145,7 +145,7 @@ function drush_field_delete($field_name) {
     }
     else {
       if (!drush_confirm(dt('Do you want to delete the %field_name field?', array('%field_name' => $field_name)))) {
-        return drush_log(dt('Aborting.'));
+        return drush_user_abort();
       }
     }
   }

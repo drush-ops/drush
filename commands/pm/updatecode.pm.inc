@@ -224,7 +224,7 @@ function _pm_update_core(&$project, $tmpfile) {
     _drush_pm_releasenotes(array('drupal'), TRUE, $tmpfile);
   }
   if(!drush_confirm(dt('Do you really want to continue?'))) {
-    drush_user_abort();
+    return drush_user_abort();
   }
 
   // We need write permission on $drupal_root.
@@ -364,7 +364,7 @@ function pm_update_packages($update_info, $tmpfile) {
     drush_print(dt('Note: If you have made any modifications to any file that belongs to one of these projects, you will have to migrate those modifications after updating.'));
   }
   if(!drush_confirm(dt('Do you really want to continue with the update process?'))) {
-    drush_user_abort();
+    return drush_user_abort();
   }
 
   // Now we start the actual updating.

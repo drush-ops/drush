@@ -259,7 +259,9 @@ function drush_core_updatedb() {
   }
 
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
-  update_main();
+  if (update_main() === FALSE) {
+    return FALSE;
+  }
 
   if (drush_drupal_major_version() <= 6) {
     // Clear all caches. We just performed major surgery.

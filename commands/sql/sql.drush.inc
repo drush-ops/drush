@@ -455,7 +455,7 @@ function _drush_sql_query($query, $db_spec = NULL) {
 
 function drush_sql_drop() {
   if (!drush_confirm(dt('Do you really want to drop all tables?'))) {
-    drush_user_abort();
+    return drush_user_abort();
   }
   _drush_sql_drop();
 }

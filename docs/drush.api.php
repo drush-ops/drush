@@ -29,9 +29,21 @@
  * Note that the drush_COMMAND_init() hook is only for use by the
  * commandfile that defines the command.
  *
- * If any of hook function fails, the rollback mechanism is called. It will
- * call, in reverse, all _rollback hooks. The mysite command file can implement
- * the following rollback hooks:
+ * If any of hook function fails, either by calling drush_set_error
+ * or by returning FALSE as its function result, then the rollback 
+ * mechanism is called.  To fail with an error, call drush_set_error:
+ *
+ *   return drush_set_error('MY_ERROR_CODE', dt('Error message.'));
+ *
+ * To allow the user to confirm or cancel a command, use drush_choice
+ * and drush_user_abort:
+ *
+ *   if (!drush_confirm(dt('Are you sure?'))) {
+ *     return drush_user_abort();
+ *   }
+ *
+ * The rollback mechanism will call, in reverse, all _rollback hooks. 
+ * The mysite command file can implement the following rollback hooks:
  *
  * 1. drush_mysite_post_pm_download_rollback()
  * 2. drush_mysite_pm_download_rollback()
