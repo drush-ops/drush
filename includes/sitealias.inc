@@ -1336,6 +1336,19 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
     $skip_list[] = 'remote-host';
     $skip_list[] = 'remote-user';
   }
+  // If prefix is set, then copy from the 'prefix-' version
+  // of the drush special keys ('command-specific', 'path-aliases')
+  // into the ordinary version.  This will allow us to set
+  // 'source-command-specific' options that will only apply when
+  // the alias is used as the source option for rsync or sql-sync.
+  if (!empty($prefix)) {
+    $special_contexts = drush_get_special_keys();
+    foreach ($special_contexts as $option_name) {
+      if (array_key_exists($prefix . $option_name, $site_alias_settings)) {
+        $site_alias_settings[$option_name] = array_key_exists($option_name, $site_alias_settings) ? array_merge($site_alias_settings[$option_name], $site_alias_settings[$prefix . $option_name]) : $site_alias_settings[$prefix . $option_name];
+      }
+    }
+  }
   // Transfer all options from the site alias to the drush options
   // in the 'alias' context.
   foreach ($site_alias_settings as $key => $value) {
@@ -1351,6 +1364,10 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
           $options[$prefix . substr($path_key, 1)] = $evaluated_path;
         }
       }
+    }
+    // Special handling for command-specific
+    elseif ($key == "command-specific") {
+      $options[$key] = $value;
     }
     elseif (!in_array($key, $skip_list)) {
       $options[$prefix . $key] = $value;

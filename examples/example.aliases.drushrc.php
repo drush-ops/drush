@@ -156,7 +156,7 @@
  *       in the site alias record.
  * - 'command-specific': These options will only be set if the alias
  *   is used with the specified command.  In the example below, the option
- *   `--skip-tables-list=comments` will be selected whenever the @stage alias
+ *   `--no-cache` will be selected whenever the @stage alias
  *   is used in any of the following ways:
  *      drush @stage sql-sync @self @live
  *      drush sql-sync @stage @live
@@ -165,6 +165,12 @@
  *   (source and destination) take precedence over command-specific options
  *   in the bootstrapped site, and command-specific options in a destination
  *   alias will take precedence over those in a source alias.
+ * - 'source-command-specific' and 'target-command-specific': Behaves exactly
+ *   like the 'command-specific' option, but is applied only if the alias
+ *   is used as the source or target, respectively, of an rsync or sql-sync
+ *   command.  In the example below, `--skip-tables-list=comments` whenever
+ *   the alias @live is the target of an sql-sync command, but comments will
+ *   be included if @live is the source for the sql-sync command.
  * Some examples appear below.  Remove the leading hash signs to enable.
  */
 #$aliases['stage'] = array(
@@ -182,7 +188,7 @@
 #     ),
 #     'command-specific' => array (
 #       'sql-sync' => array (
-#         'skip-tables-list' => 'comments',
+#         'no-cache' => TRUE,
 #       ),
 #     ),
 #  );
@@ -197,4 +203,9 @@
 #$aliases['live'] = array(
 #    'parent' => '@server,@dev',
 #    'uri' => 'mydrupalsite.com',
+#     'target-command-specific' => array (
+#       'sql-sync' => array (
+#         'skip-tables-list' => 'comments',
+#       ),
+#     ),
 #  );
