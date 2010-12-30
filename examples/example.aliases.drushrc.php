@@ -154,7 +154,17 @@
  *     '%files': Path to 'files' directory.  This will be looked up if not specified.
  *     '%root': A reference to the Drupal root defined in the 'root' item
  *       in the site alias record.
- *
+ * - 'command-specific': These options will only be set if the alias
+ *   is used with the specified command.  In the example below, the option
+ *   `--skip-tables-list=comments` will be selected whenever the @stage alias
+ *   is used in any of the following ways:
+ *      drush @stage sql-sync @self @live
+ *      drush sql-sync @stage @live
+ *      drush sql-sync @live @stage
+ *   In case of conflicting options, command-specific options in targets
+ *   (source and destination) take precedence over command-specific options
+ *   in the bootstrapped site, and command-specific options in a destination
+ *   alias will take precedence over those in a source alias.
  * Some examples appear below.  Remove the leading hash signs to enable.
  */
 #$aliases['stage'] = array(
@@ -169,6 +179,11 @@
 #      '%dump-dir' => '/path/to/dumps/',
 #      '%files' => 'sites/mydrupalsite.com/files',
 #      '%custom' => '/my/custom/path',
+#     ),
+#     'command-specific' => array (
+#       'sql-sync' => array (
+#         'skip-tables-list' => 'comments',
+#       ),
 #     ),
 #  );
 #$aliases['dev'] = array(
