@@ -58,7 +58,7 @@ function core_drush_command() {
       'drush status drush-version --pipe' => 'Emit just the drush version with no label.',
     ),
     'arguments' => array(
-      'item' => 'Optional.  The status item line(s) to display.  Any matching line is shown; if only one line matches, then only the value is displayed.  Otherwise, key=value is output.',
+      'item' => 'Optional.  The status item line(s) to display.',
     ),
     'options' => array(
       'show-passwords' => 'Show database password.',
