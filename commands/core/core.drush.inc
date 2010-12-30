@@ -40,11 +40,11 @@ function core_drush_command() {
     'topics' => array('docs-readme'),
   );
   $items['core-cron'] = array(
-    'description' => 'Run all cron hooks.',
+    'description' => 'Run all cron hooks in all active modules for specified site.',
     'aliases' => array('cron'),
   );
   $items['updatedb'] = array(
-    'description' => dt('Execute the update.php process from the command line'),
+    'description' => 'Apply any database updates required (as with running update.php).',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
     'aliases' => array('updb'),
   );
@@ -66,7 +66,7 @@ function core_drush_command() {
     'topics' => array('docs-readme'),
   );
   $items['php-eval'] = array(
-    'description' => 'Evaluate arbitrary php code after bootstrapping Drupal.',
+    'description' => 'Evaluate arbitrary php code after bootstrapping Drupal (if available).',
     'examples' => array(
       'drush php-eval "variable_set(\'hello\', \'world\');"' => 'Sets the hello variable using Drupal API.',
     ),
@@ -122,7 +122,7 @@ function core_drush_command() {
     ),
   );
   $items['core-rsync'] = array(
-    'description' => 'Rsync the Drupal tree to/from another server using ssh.  Relative paths start from the Drupal root folder if a site alias is used; otherwise they start from the current working directory.',
+    'description' => 'Rsync the Drupal tree to/from another server using ssh.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'arguments' => array(
       'source' => 'May be rsync path or site alias. See rsync documentation and example.aliases.drushrc.php.',
@@ -177,7 +177,7 @@ function core_drush_command() {
   );
 
   $items['drupal-directory'] = array(
-    'description' => dt('Return path to a given module/theme directory. See --help for more details.'),
+    'description' => dt('Return path to a given module/theme directory.'),
     'arguments' => array(
       'target' => 'A module/theme name, or special names like root, files, private, or an alias : path alias string such as @alias:%files. Defaults to root.',
     ),
@@ -288,39 +288,21 @@ function drush_core_updatedb() {
  */
 function core_drush_help($section) {
   switch ($section) {
-    case 'drush:cron':
-      return dt("Runs all cron hooks in all active modules for specified site.");
-    case 'drush:status':
-      return dt("View the Drupal version and DB credentials for the current site.");
     case 'drush:php-script':
       return dt("Runs the given php script(s) after a full Drupal bootstrap. A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting. If you plan to share a script with others, consider making a full drush command instead, since that's more self-documenting.  Drush provides commandline options to the script via drush_get_option('option-name'), and commandline arguments can be accessed either via drush_get_arguments(), which returns all arguments in an array, or drush_shift(), which removes the next argument from the list and returns it.");
-    case 'drush:cache-clear':
-      return dt("Delete a specific drupal cache, or all caches.");
-    case 'drush:search-status':
-      return dt("Show how many items remain to be indexed for search, and the total number of items.");
-    case 'drush:search-index':
-      return dt("Index the remaining search items.");
-    case 'drush:search-reindex':
-      return dt("Force the search index to be rebuilt.");
-    case 'drush:updatedb':
-      return dt("Run update.php just as a web browser would.");
     case 'drush:rsync':
-      return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes reserved files and directories for supported VCSs. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Local paths should be specified relative to Drupal root.");
-    case 'drush:php-eval':
-      return dt("Run arbitrary PHP code in the context of Drupal");
-    case 'drush:site-install':
-      return dt("Install Drupal using specified install profile.");
+      return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes reserved files and directories for supported VCSs. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Relative paths start from the Drupal root directory if a site alias is used; otherwise they start from the current working directory.");
     case 'drush:drupal-directory':
-      return dt("Return the filesystem path for projects/themes and other key folders. Used by `cli` command for handy commands `cdd` and `lsd`. If you want to use this command directly, you usually want to prefix the command with cd and enclose the command invocation in backticks. See Examples below.");
+      return dt("Return the filesystem path for modules/themes and other key folders. Used by `cli` command for handy commands `cdd` and `lsd`. If you want to use this command directly, you usually want to prefix the command with cd and enclose the command invocation in backticks. See Examples below.");
     case 'drush:core-cli':
-      return dt("Enter a new shell optimized for drush use.  All .bashrc customizations are still available. See help for more details.");
-    case 'error:DRUSH_DRUPAL_DB_ERROR' :
+      return dt("Enter a new shell optimized for drush use. All .bashrc customizations are still available.");
+    case 'error:DRUSH_DRUPAL_DB_ERROR':
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
       $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_site_credentials()));
       $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
       return $message;
-    case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR' :
+    case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR':
       $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
       $message .= dt("Hint: This error can only occur once the database connection has already been successfully initiated, therefore this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
       $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_site_credentials()));

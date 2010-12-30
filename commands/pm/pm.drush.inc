@@ -52,13 +52,17 @@ function pm_drush_help($section) {
     case 'drush:pm-enable':
       return dt('Enable one or more extensions (modules or themes). Enable dependant extensions as well.');
     case 'drush:pm-disable':
-      return dt('Disable one or more extensions. Disable dependant extensions as well.');
+      return dt('Disable one or more extensions (modules or themes). Disable dependant extensions as well.');
     case 'drush:pm-updatecode':
-      return dt("Display available update information and allow updating of all enabled projects latest recommended release. Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically. Backups are performed unless diectory is already under version control.");
+    case 'drush:pm-update':
+      $message = dt("Display available update information for Drupal core and all enabled projects and allow updating to latest recommended releases.");
+      if ($section == 'drush:pm-update') {
+        $message .= ' '.dt("Also apply any database updates required (same as pm-updatecode + updatedb).");
+      }
+      $message .= ' '.dt("Note: The user is asked to confirm before the actual update. Backups are performed unless directory is already under version control.");
+      return $message;
     case 'drush:pm-updatecode-notify-pending-db-updates':
       return dt("This is a helper command needed by updatecode. It is used to check for db updates in a backend process after code updated have been performed. We need to run this task in a separate process to not conflict with old code already in memory.");
-    case 'drush:pm-update':
-      return dt("Display available update information and aallow updating of all enabled projects latest recommended release, followed by applying any database updates required (as with running update.php). Note: The user is asked to confirm before the actual update. Use the --yes option to answer yes automatically.");
       case 'drush:pm-releases':
       return dt("View all releases for a given drupal.org project. Useful for deciding which version to install/update.");
     case 'drush:pm-download':
@@ -154,7 +158,7 @@ function pm_drush_command() {
     'deprecated-aliases' => array('refresh'),
   );
   $items['pm-updatecode'] = array(
-    'description' => 'Update your projects to latest recommended release.',
+    'description' => 'Update Drupal core and contrib projects to latest recommended releases.',
     'drupal dependencies' => array($update),
     'arguments' => array(
       'projects' => 'Optional. A list of installed projects to update.',
@@ -170,7 +174,7 @@ function pm_drush_command() {
   ) + $engines;
   // Merge all items from above.
   $items['pm-update'] = array_merge($items['pm-updatecode'], array(
-    'description' => 'Update your project code and apply any pending database updates (equivalent to update.php).',
+    'description' => 'Update Drupal core and contrib projects and apply any pending database updates (Same as pm-updatecode + updatedb).',
     'aliases' => array('up'),
     'deprecated-aliases' => array('update'),
   ));
