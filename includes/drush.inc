@@ -1961,8 +1961,9 @@ function _drush_print_log($entry) {
   }
 
   // When running in backend mode, log messages are not displayed, as they will
-  // be returned in the JSON encoded associative array.
-  if (drush_get_context('DRUSH_BACKEND')) {
+  // be returned in the JSON encoded associative array.  In quiet mode, we
+  // just drop log messages.
+  if (drush_get_context('DRUSH_BACKEND') || drush_get_context('DRUSH_QUIET')) {
     return $return;
   }
 
