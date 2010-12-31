@@ -37,7 +37,7 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
   if ($is_multiple === FALSE) {
     // If the user path is the same for the source and the destination, then
     // always add a slash to the end of the source.  If the user path is not
-    // the same in the source and the destinaiton, then you need to know how
+    // the same in the source and the destination, then you need to know how
     // rsync paths work, and put on the trailing '/' if you want it.
     if ($source_settings['user-path'] == $destination_settings['user-path']) {
       $source_path .= '/';
