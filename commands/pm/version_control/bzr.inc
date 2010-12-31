@@ -9,14 +9,16 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
 
   /**
    * Implementation of pre_update().
+   *
+   * Check that the project or druapl core directory looks clean
    */
   public function pre_update(&$project, $items_to_test = array()) {
     // If items to test is empty, test everything; otherwise, pass just
     // the list of files to test to Bazaar status.
-    $status_files = implode(' ', array_keys($items_to_test));
-
-    // Check the project directory looks clean
-    if (drush_shell_exec('cd %s && bzr status --short %s', $project['full_project_path'], $status_files)) {
+    $args = array_keys($items_to_test);
+    array_unshift($args, 'bzr status --short ' . str_repeat('%s ', count($items_to_test)));
+    array_unshift($args, $project['full_project_path']);
+    if (call_user_func_array('drush_shell_cd_and_exec', $args)) {
       $output = preg_grep('/^[\sRCP][\sNDKM][\s\*]/', drush_shell_exec_output());
       if (!empty($output)) {
         return drush_set_error('DRUSH_PM_BZR_LOCAL_CHANGES', dt("The Bazaar working copy at !path appears to have uncommitted changes (see below). Please commit or revert these changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
