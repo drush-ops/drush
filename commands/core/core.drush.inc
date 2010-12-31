@@ -199,16 +199,21 @@ function core_drush_command() {
   $items['core-cli'] = array(
     'description' => dt('Enter a new shell optimized for drush use.'),
     'options' => array(
-      'override' => 'List of drush commands or aliases that should override built-in shell functions and commands; otherwise, built-ins override drush commands. Default is help,dd,sa',
+      'override' => 'List of drush commands or aliases that should override built-in shell functions and commands; otherwise, built-ins override drush commands. Defaults to help,rsync,dd,sa',
+      'contextual' => 'Additional drush overrides that function ONLY when the prompt is "@alias>".  Defaults to cron,updatedb,sync,cc',
       'pipe' => 'Print the generated .bashrc file and exit.',
     ),
     'examples' => array(
       'help' => 'Print available drush commands',
       'cd @alias' => 'Navigate to the root of the site indicated by @alias; subsequent commands will target that site.',
       'cd %files' => 'Navigate to the files directory.',
+      'cd ~' => 'Navigate back to your $HOME directory.',
       'lsd files' => 'List all files in the Drupal files directory.',
       'on @alias core-status' => 'Run the command "core-status" on the site indicated by @alias',
       'use @alias' => 'Run subsequent commands on the site indicated by @alias',
+      'use -' => 'Switch back to the last alias "used".',
+      'use ~' => 'Use the default alias.',
+      'use' => 'Revert to an ordinary prompt; do not use an alias.',
       'drush core-cli --pipe > ~/.bash_customizations' => 'Convert your default shell into drush core-cli.  Make sure that your .bashrc file includes .bash_customizations (e.g. "source ~/.bash_customizations" or ". ~/.bash_customizations").',
     ),
     'aliases' => array('cli'),
@@ -762,16 +767,27 @@ function drush_core_cli() {
   if (drush_get_context('DRUSH_BACKEND') || drush_get_context('DRUSH_AFFIRMATIVE') || drush_get_context('DRUSH_NEGATIVE')) {
     return drush_set_error('DRUSH_CLI_INTERACTIVE_ERROR', dt('Cannot run drush core-cli from non-interactive mode; aborting.'));
   }
-
+  
+  // We set interactive mode if we are about to run a bash subshell.
+  // The purpose of doing this is that some options are set differently
+  // in --pipe mode.  To see everything with --pipe, use --pipe --verbose.
+  $interactive_mode = !drush_get_context('DRUSH_PIPE') || drush_get_context('DRUSH_VERBOSE');
+  
   // Make sure that we call drush the same way that we were called.
-  $drush_command = DRUSH_COMMAND.' --in-cli';
+  // In --pipe mode, just use 'drush'.
+  $drush_command = $interactive_mode ? DRUSH_COMMAND.' --in-cli' : 'drush';
 
-  $bashrc_data = implode("/n/n", drush_command_invoke_all('cli_bashrc', $drush_command));
-
+  $bashrc_data = implode("/n/n", drush_command_invoke_all('cli_bashrc', $drush_command, $interactive_mode));
+  
   // Print our bashrc file and exit in --pipe mode
   if (drush_get_context('DRUSH_PIPE')) {
     drush_print_pipe($bashrc_data);
     return TRUE;
+  }
+  
+  // If there were any errors, then exit.
+  if (drush_get_error()) {
+    return FALSE;
   }
 
   drush_print("Entering the drush cli.  Use CONTROL-D to exit.");
@@ -785,7 +801,9 @@ function drush_core_cli() {
 }
 
 // Implement our own hook_cli_bashrc()
-function core_cli_bashrc($drush_command) {
+function core_cli_bashrc($drush_command, $interactive_mode) {
+  $bashrc_data = '';
+  
   $initial_site = '';
   $site_list = drush_sitealias_resolve_sitespecs(array('@self'));
   if (!empty($site_list)) {
@@ -804,8 +822,13 @@ function core_cli_bashrc($drush_command) {
   $searchpath[] = realpath(dirname(__FILE__) . '/../../');
   $bashrc_searchpath = implode(' ', $searchpath);
   
+  // Set the prompt to 'drush> ' in interactive mode.
+  if ($interactive_mode) {
+    $bashrc_data .= "# Set our prompt to 'drush> '\nPS1='drush> '\n\n";
+  }
+  
   // Set up our default bashrc file for the drush cli
-  $bashrc_data = <<<EOD
+  $bashrc_data .= <<<EOD
 # Drush .bashrc file.  Copy selected portions of this
 # into your own bash resource file to add features of the
 # drush core-cli command to your default shell.
@@ -822,8 +845,8 @@ BASHRC_PATH="~/.drush $bashrc_searchpath"
 [ -z \$DRUSH_CLI ] && BASHRC_PATH="~ \$BASHRC_PATH"
 DRUSH_CLI=true
 
-# Set our initial site
-DRUPAL_SITE=$initial_site 
+# Cache our initial site
+INITIAL_SITE=$initial_site 
 
 # Source the user's .bashrc file.
 for d in \$BASHRC_PATH ; do
@@ -833,7 +856,7 @@ for d in \$BASHRC_PATH ; do
 done
 
 # Display our initial site in the bash prompt.
-PS1="\${DRUPAL_SITE:-drush}> "
+INITIAL_PS1="\$PS1"
 
 # When using the drush shell, all commands will
 # by default target the site specified by the
@@ -843,22 +866,40 @@ PS1="\${DRUPAL_SITE:-drush}> "
 # or
 #   on @site command
 alias on="$drush_command"
-alias drush="$drush_command"
 
 # To specify a new DRUPAL_SITE without changing
 # your current directory:
 #   use @site
+# To use the previous site (like `cd -`):
+#   use -
+# To use the initial site set when the shell was
+# first entered:
+#   use ~
 function use() {
-  if [ ! -z \$1 ] && [ "x\$1" != "x@self" ]
+  if [ "x\$1" == "x-" ]
+  then
+    use \$PREVIOUS_SITE
+  # `use ~1` will go back to our initial site.  Note, however,
+  # that the shell will convert ~ to \$HOME before we get here,
+  # so we will simply test for either ~ or \$HOME for this feature. 
+  elif [ "x\$1" == "x~" ] || [ "x\$1" == "x\$HOME" ]
+  then
+    use \$INITIAL_SITE
+  elif [ ! -z \$1 ] && [ "x\$1" != "x@self" ]
   then
     SITE=`drush site-alias $1 --short`
     if [ \$? != 0 ] || [ -z "\$SITE" ]
     then
       echo "Alias \$1 not found."
     else
+      PREVIOUS_SITE=\$DRUPAL_SITE
       DRUPAL_SITE=$1
       PS1="\${1:-drush}> "
     fi
+  else
+    PREVIOUS_SITE=\$DRUPAL_SITE
+    DRUPAL_SITE=
+    PS1="\$INITIAL_PS1"
   fi
 }
 
@@ -929,21 +970,72 @@ EOD;
   // Add aliases for all drush commands
   $bashrc_data .= "# Add aliases for all drush commands\n";
   $commands = drush_get_commands();
-  $cli_overrides = _convert_csv_to_array(drush_get_option('override', 'help,dd,sa'));
+  $cli_overrides = _convert_csv_to_array(drush_get_option('override', 'help,rsync,dd,sa'));
+  $cli_contextual_commands = _convert_csv_to_array(drush_get_option('contextual', 'cron,updatedb,sync,cc'));
   foreach ($commands as $key => $command) {
     // Filter out old commands that still have spaces;
     // do not mask any existing bash command (e.g. 'grep')
     // or builtin (e.g. 'eval') with drush aliases.
-    if ((strpos($key, ' ') === FALSE) && ((in_array($key, $cli_overrides)) || (!drush_shell_exec("which $key")) && (drush_shell_exec("builtin $key") != "1"))) {
-      $bashrc_data .= "function $key() {\n  $drush_command \$DRUPAL_SITE $key \"\$@\"\n}\n";
+    if (strpos($key, ' ') === FALSE) {
+      $conflict = FALSE;
+      $is_shell_builtin = (drush_shell_exec("builtin $key") == "1");
+      if (!in_array($key, $cli_overrides)) {
+        $status = drush_shell_exec("which $key 2>&1");
+	if ($status !== FALSE) {
+	  $output_lines = drush_shell_exec_output();
+	  $conflict = $output_lines[0];
+	}
+	elseif ($is_shell_builtin) {
+	  $conflict = "builtin $key";
+	}
+      }
+      elseif ($is_shell_builtin && ($key != "help")) {
+        drush_set_error('DRUSH_OVERRIDE_BUILTIN', dt("Cannot override shell builtin function !builtin", array('!builtin' => $key)));
+      }
+      if (!$conflict) {
+	$bashrc_data .= "function $key() {\n  $drush_command \$DRUPAL_SITE $key \"\$@\"\n}\n";
+      }
+      elseif (in_array($key, $cli_contextual_commands)) {
+        if ($is_shell_builtin) {
+	  $warning = dt("Warning: overriding shell built-in command !builtin.  This could cause unpredictable results with shell scripts.", array('!builtin' => $key));
+	  drush_log($warning, 'warning');
+	  $bashrc_data .= "# $warning\n";
+	}
+	$bashrc_data .= "function $key() {\n  if [ -z \$DRUPAL_SITE ]\n  then \n    $conflict\n  else\n    $drush_command \$DRUPAL_SITE $key \"\$@\"\n  fi\n}\n";
+      }
+      else {
+        $bashrc_data .= "# drush $key skipped; conflicts with $conflict\n";
+      }
     }
   }
-  // Before entering the new bash script, cd to the current site root,
-  // if any.  This will make our default site for drush match the
-  // currently bootstrapped site (at least until the user cd's away).
-  if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    $site_root = drush_get_context('DRUSH_DRUPAL_ROOT') . '/' . $site_root;
-    $bashrc_data .= "builtin cd $site_root\n";
+
+  // Add some additional statements to the bashrc data that
+  // should not go into --pipe mode.
+  if ($interactive_mode) {
+    // If there is an initial site, then cd to it.  This will set the prompt.
+    if (!empty($initial_site)) {
+      $bashrc_data .= "cd $initial_site\n";
+    }
+    // Before entering the new bash script, cd to the current site root,
+    // if any.  This will make our default site for drush match the
+    // currently bootstrapped site (at least until the user cd's away).
+    // We do this -after- the drush_print_pipe($bashrc_data) because
+    // we DO NOT want to change the working directory if this bashrc
+    // is being used by a login shell.
+    elseif ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+      $site_root = drush_get_context('DRUSH_DRUPAL_ROOT') . '/' . $site_root;
+      $bashrc_data .= "builtin cd $site_root\n";
+    }
+    if ($drush_command != 'drush') {
+      $bashrc_data .= "alias drush=\"$drush_command\"\n";
+    }
+  }
+  // Add some additional statements that should only appear in non-interactive mode.
+  else {
+    // If there is an initial site, then use.  This will set the prompt.
+    if (!empty($initial_site)) {
+      $bashrc_data .= "use $initial_site\n";
+    }
   }
 
   return $bashrc_data;

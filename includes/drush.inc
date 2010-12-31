@@ -490,6 +490,8 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
  *   will be determined automatically, based on a "best fit" algorithm.
  * @param $output_file
  *   File to write output to.  STDOUT used if not specified.
+ * @return $tbl
+ *   Use $tbl->getTable() to get the output from the return value.
  */
 function drush_print_table($rows, $header = FALSE, $widths = array(), $output_file = NULL) {
   $tbl = new Console_Table(CONSOLE_TABLE_ALIGN_LEFT , '');
