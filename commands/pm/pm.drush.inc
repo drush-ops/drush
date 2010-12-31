@@ -1486,9 +1486,7 @@ function drush_pm_updatecode_validate() {
   // Validate package-handler.
   $package_handler = drush_get_option('package-handler', 'wget');
   drush_include_engine('package_handler', $package_handler);
-  if (!package_handler_validate()) {
-    return FALSE;
-  }
+  return package_handler_validate();
 }
 
 /**
@@ -1780,7 +1778,7 @@ function pm_drush_engine_version_control() {
         ),
       ),
       'examples' => array(
-        'drush dl cck --version-control=bzr --bzrsync --bzrcommit' =>  'Download the cck module and then add it and commit it to Bazaar.'
+        'drush dl cck --version-control=bzr --bzrsync --bzrcommit' =>  'Download the cck project and then add it and commit it to Bazaar.'
       ),
     ),
     'svn' => array(
