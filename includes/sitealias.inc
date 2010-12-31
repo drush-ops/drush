@@ -208,6 +208,9 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
   if (!empty($alias_record)) {
     // Load the drush config file if there is one associated with this alias
     if (!isset($alias_record['remote']) && !isset($alias_record['loaded-config'])) {
+      if (array_key_exists('root', $alias_record)) {
+        drush_sitealias_add_to_alias_path($alias_record['root']);
+      }
       $alias_site_dir = drush_sitealias_local_site_path($alias_record);
 
       if (isset($alias_site_dir)) {
@@ -247,7 +250,7 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
  */
 function drush_sitealias_add_to_alias_path($add_path) {
   static $site_paths = array();
-
+  
   if ($add_path != NULL) {
     if (!is_array($add_path)) {
       $add_path = explode(':', $add_path);
@@ -279,7 +282,16 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
     // We get the current list of site paths by adding NULL
     // (nothing) to the path list, which is a no-op
     $site_paths = drush_sitealias_add_to_alias_path(NULL);
-
+    
+    // If the user defined the root of a drupal site, then also
+    // look for alias files there.
+    $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+    if (empty($drupal_root)) {
+      $drupal_root = drush_get_option(array('root', 'r'), NULL);
+    }
+    if (isset($drupal_root)) {
+      $site_paths[] = $drupal_root;
+    }
     $alias_path = (array) drush_get_option('alias-path', array());
     if (empty($alias_path)) {
       $alias_path[] = drush_get_context('ETC_PREFIX', '') . '/etc/drush';
@@ -290,7 +302,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
       }
     }
 
-    return array_merge($alias_path, $site_paths);
+    return array_unique(array_merge($alias_path, $site_paths));
   }
 }
 
@@ -555,6 +567,8 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
  */
 function _drush_sitealias_cache_alias($alias_name, $alias_record) {
   $cache =& drush_get_context('site-aliases');
+  // If the alias already exists in the cache, then merge
+  // the new alias with the existing alias
   if (array_key_exists("@$alias_name", $cache)) {
     $alias_record = array_merge($cache["@$alias_name"], $alias_record);
   }
