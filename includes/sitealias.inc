@@ -1233,6 +1233,7 @@ function drush_convert_db_from_db_url($db_url) {
     'driver' => NULL,
     'user' => NULL,
     'pass' => NULL,
+    'host' => NULL,
     'port' => NULL,
     'database' => NULL,
   );
