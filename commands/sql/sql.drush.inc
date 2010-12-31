@@ -389,7 +389,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
  *   found, or an empty array if there were no matches.
  */
 function _drush_sql_get_table_list($option_name) {
-  foreach(array('' => 'options', 'target-,,source-' => NULL) as $prefix_list => $context) {
+  foreach(array('' => 'cli', 'target-,,source-' => NULL) as $prefix_list => $context) {
     foreach(explode(',',$prefix_list) as $prefix) {
       $key_list = drush_get_option($prefix . $option_name . '-key', NULL, $context);
       foreach(explode(',', $key_list) as $key) {

@@ -1673,7 +1673,7 @@ function drush_remote_command() {
       }
     }
     $command = array_shift($args);
-    $multi_options = drush_get_context('options');
+    $multi_options = drush_get_context('cli');
     
     if (!drush_get_option('no-label', FALSE)) {
       $label_separator = ' >> ';

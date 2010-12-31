@@ -1312,7 +1312,7 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
 /**
  * Given a site alias record, copy selected fields from it
  * into the drush 'alias' context.  The 'alias' context has
- * lower precedence than the 'options' context, so values
+ * lower precedence than the 'cli' context, so values
  * set by an alias record can be overridden by command-line
  * parameters.
  *

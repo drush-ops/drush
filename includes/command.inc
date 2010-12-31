@@ -281,8 +281,8 @@ function drush_invoke_sitealias_args($site_alias_record, $command_name, $command
  */
 function drush_redispatch_get_options() {
   // Start off by taking everything from the site alias and command line
-  // ('options' context)
-  $options = array_merge(drush_get_context('alias'), drush_get_context('options'));
+  // ('cli' context)
+  $options = array_merge(drush_get_context('alias'), drush_get_context('cli'));
   $options = array_diff_key($options, array_flip(drush_sitealias_site_selection_keys()));
   unset($options['command-specific']);
   unset($options['path-aliases']);
@@ -389,7 +389,7 @@ function drush_parse_args() {
   drush_process_bootstrap_to_first_arg($arguments);
   
   drush_set_arguments($arguments);
-  drush_set_context('options', $options);
+  drush_set_context('cli', $options);
 }
 
 /**
@@ -984,15 +984,6 @@ function drush_command_default_options($command = NULL) {
         }
       }
     }
-    // Take the time here to clear out any options that may
-    // have "--no-xxx" overrides on the command line.
-    $commandline_options = drush_get_context('options');
-    foreach ($commandline_options as $key => $value) {
-      if (substr($key, 0, strlen("no-") ) == "no-") {
-        drush_unset_option(substr($key, strlen("no-")));
-        $options_were_set = TRUE;
-      }
-    }
     // If we set or cleared any options, go back and re-bootstrap any global
     // options such as -y and -v.
     if ($options_were_set) {
@@ -1009,8 +1000,10 @@ function _drush_command_set_default_options($command) {
       // We set command-specific options in their own context
       // that is higher precidence than the various config file
       // context, but lower than command-line options.
-      drush_set_option($key, $value, 'specific');
-      $options_were_set = TRUE;
+      if (!drush_get_option('no-' . $key, FALSE)) {
+        drush_set_option($key, $value, 'specific');
+        $options_were_set = TRUE;
+      }
     }
   }
   return $options_were_set;

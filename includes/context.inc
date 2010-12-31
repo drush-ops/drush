@@ -53,7 +53,7 @@
  *
  *   Specified by the script itself :
  *     process  : Generated in the current process.
- *     options  : Passed as --option=value to the command line.
+ *     cli      : Passed as --option=value to the command line.
  *     stdin    : Passed as a JSON encoded string through stdin.
  *     alias    : Defined in an alias record, and set in the
  *                alias context whenever that alias is used.
@@ -74,7 +74,7 @@
  */
 function drush_context_names() {
   static $contexts = array(
-    'process', 'options', 'stdin', 'specific',
+    'process', 'cli', 'stdin', 'specific',
     'custom', 'site', 'drupal', 'alias', 'user', 'home.drush', 'system',
     'drush', 'default');
 
