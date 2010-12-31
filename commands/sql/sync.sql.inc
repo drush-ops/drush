@@ -42,6 +42,12 @@ function drush_sql_sync_init($source = NULL, $destination = NULL) {
     }
   }
   
+  // By default, sql-sync will do an ordered dump.
+  // Set --no-ordered-dump to override.
+  if (!drush_get_option('no-ordered-dump', FALSE)) {
+    drush_set_option('ordered-dump', TRUE);
+  }
+  
   return TRUE;
 }
 

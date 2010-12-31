@@ -114,6 +114,7 @@ function sql_drush_command() {
       '--create-db' => 'Create a new database before importing the database dump on the target machine.',
       '--db-su' => 'Account to use when creating a new database. Optional.',
       '--db-su-pw' => 'Password for the "db-su" account. Optional.',
+      '--no-ordered-dump' => 'Do not pass --ordered-dump to sql-dump.  sql-sync orders the dumpfile by default in order to increase the efficiency of rsync.',
       '--sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync. Optional.',
     ),
     'sub-options' => array(
