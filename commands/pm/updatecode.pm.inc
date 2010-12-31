@@ -355,7 +355,6 @@ function pm_update_packages($update_info, $tmpfile) {
 
   // We print some warnings before the user confirms the update.
   drush_print();
-  drush_print(dt("Note: Updated projects can potentially break your site. It is NOT recommended to update production sites without prior testing."));
   if (drush_get_option('no-backup', FALSE)) {
     drush_print(dt("Note: You have selected to not store backups."));
   }

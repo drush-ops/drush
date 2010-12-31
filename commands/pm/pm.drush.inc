@@ -59,7 +59,7 @@ function pm_drush_help($section) {
       if ($section == 'drush:pm-update') {
         $message .= ' '.dt("Also apply any database updates required (same as pm-updatecode + updatedb).");
       }
-      $message .= ' '.dt("Note: The user is asked to confirm before the actual update. Backups are performed unless directory is already under version control.");
+      $message .= ' '.dt("Note: The user is asked to confirm before the actual update. Backups are performed unless directory is already under version control. Updated projects can potentially break your site. It is NOT recommended to update production sites without prior testing.");
       return $message;
     case 'drush:pm-updatecode-notify-pending-db-updates':
       return dt("This is a helper command needed by updatecode. It is used to check for db updates in a backend process after code updated have been performed. We need to run this task in a separate process to not conflict with old code already in memory.");
