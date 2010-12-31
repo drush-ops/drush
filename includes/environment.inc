@@ -901,6 +901,14 @@ function _drush_bootstrap_drupal_configuration() {
      default:
        if (!empty($GLOBALS['databases']['default']['default'])) {
          $conn = $GLOBALS['databases']['default']['default'];
+         // Fill in defaults to prevent notices.
+         $conn += array(
+           'username' => NULL,
+           'host' => NULL,
+           'port' => NULL,
+           'password' => NULL,
+           'database' => NULL,
+         );
          $creds['driver'] = $conn['driver'];
          $creds['user'] = $conn['username'];
          $creds['host'] = $conn['host'];
