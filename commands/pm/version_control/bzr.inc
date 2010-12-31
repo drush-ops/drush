@@ -10,7 +10,7 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
   /**
    * Implementation of pre_update().
    *
-   * Check that the project or druapl core directory looks clean
+   * Check that the project or drupal core directory looks clean
    */
   public function pre_update(&$project, $items_to_test = array()) {
     // If items to test is empty, test everything; otherwise, pass just

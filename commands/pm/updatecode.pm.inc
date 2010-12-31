@@ -283,6 +283,9 @@ function _pm_update_core(&$project, $tmpfile) {
   // the drupal root
   _pm_update_move_files($project['full_project_path'], $drupal_root, $project['skip_list']);
   drush_delete_dir($project['full_project_path']);
+  
+  // Version control engines expect full_project_path to exist and be accurate.
+  $project['full_project_path'] = $project['base_project_path'];
 
   // If there is a backup target, then find items
   // in the backup target that do not exist at the
