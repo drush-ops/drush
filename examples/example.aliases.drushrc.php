@@ -6,7 +6,7 @@
  *
  * Aliases are commonly used to define short names for
  * local or remote Drupal installations; however, an alias
- * is really nothing more than a collection of option sets.
+ * is really nothing more than a collection of options.
  * A canonical alias named "dev" that points to a local
  * Drupal site named "dev.mydrupalsite.com" looks like this: 
  *
