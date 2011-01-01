@@ -519,7 +519,7 @@ function pm_project_filter(&$update_info, &$rows, $security_only) {
     // Special checking:  if drush decides that the candidate version is older
     // than the installed version, then we will set the candidate version to
     // the installed version.
-    if ((isset($project['releases'][$project['candidate_version']], $project['releases'][$project['existing_version']])) {
+    if (isset($project['releases'][$project['candidate_version']], $project['releases'][$project['existing_version']])) {
       if ($project['releases'][$project['candidate_version']]['date'] < $project['releases'][$project['existing_version']]['date']) {
         $project['candidate_version'] = $project['existing_version'];
       }
