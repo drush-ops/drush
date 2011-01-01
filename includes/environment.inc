@@ -1211,6 +1211,13 @@ function drush_valid_db_credentials() {
         drush_log(dt('PDO support is required.'), 'bootstrap');
         return FALSE;
       }
+
+      if (file_exists("./includes/database/$type/database.inc")) {
+        include_once "./includes/database/database.inc";
+        include_once "./includes/database/$type/database.inc";
+        $type = call_user_func(array("DatabaseConnection_$type", 'databaseType'));
+      }
+
       // Check the database specific driver is available.
       if (!in_array($type, PDO::getAvailableDrivers())) {
         drush_log(dt('!type extension for PHP PDO is not installed. Check your php.ini to see how you can enable it.', array('!type' => $type)), 'bootstrap');

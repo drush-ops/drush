@@ -653,7 +653,10 @@ function _drush_sql_get_scheme($db_spec = NULL) {
   if (is_null($db_spec)) {
     $db_spec = _drush_sql_get_db_spec();
   }
-  return $db_spec['driver'];
+  $type = $db_spec['driver'];
+  include_once "./includes/database/database.inc";
+  include_once "./includes/database/$type/database.inc";
+  return call_user_func(array("DatabaseConnection_$type", 'databaseType'));
 }
 
 /**
