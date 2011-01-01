@@ -472,14 +472,14 @@ function drush_pm_list() {
     
     // filter out core if --no-core specified
     if (drush_get_option('no-core', FALSE)) {
-      if (strcasecmp("Core ", substr($extension->info['package'], 0, 5)) == 0) {
+      if ($extension->info['version'] == VERSION) {
         continue;
       }
     }
-    
+ 
     // filter out non-core if --core specified
     if (drush_get_option('core', FALSE)) {
-      if (strcasecmp("Core ", substr($extension->info['package'], 0, 5)) != 0) {
+      if ($extension->info['version'] != VERSION) {
         continue;
       }
     }
