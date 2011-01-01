@@ -199,8 +199,9 @@ function core_drush_command() {
   $items['core-cli'] = array(
     'description' => dt('Enter a new shell optimized for drush use.'),
     'options' => array(
-      'override' => 'List of drush commands or aliases that should override built-in shell functions and commands; otherwise, built-ins override drush commands. Defaults to help,rsync,dd,sa',
-      'contextual' => 'Additional drush overrides that function ONLY when the prompt is "@alias>".  Defaults to cron,updatedb,sync,cc',
+      'override' => 'List of drush commands or aliases that should override built-in shell functions and commands; otherwise, built-ins override drush commands. Defaults to help,rsync,dd,sa.',
+      'contextual' => 'Additional drush overrides that function ONLY when the prompt is "@alias>".  Defaults to cron,updatedb,sync,cc.',
+      'ignore' => 'Drush commands or aliases that should not be usable from core-cli. Takes precedence over override and contextual options. Defaults to core-cli,cli.',
       'pipe' => 'Print the generated .bashrc file and exit.',
     ),
     'examples' => array(
@@ -848,7 +849,9 @@ DRUSH_CLI=true
 # Cache our initial site
 INITIAL_SITE=$initial_site 
 
-# Source the user's .bashrc file.
+# Look for drush-specific bashrc files and
+# source any that are found.  Will also source
+# \$HOME/.bashrc if run via `drush core-cli`
 for d in \$BASHRC_PATH ; do
   [ -r \$d/.bashrc ] && {
     . \$d/.bashrc
@@ -885,16 +888,22 @@ function use() {
   elif [ "x\$1" == "x~" ] || [ "x\$1" == "x\$HOME" ]
   then
     use \$INITIAL_SITE
-  elif [ ! -z \$1 ] && [ "x\$1" != "x@self" ]
+  elif [ "x\$1" != "x" ] && [ "x\$1" != "x@self" ]
   then
-    SITE=`drush site-alias $1 --short`
+    SITE=`drush site-alias \$1 --short 2>/dev/null`
     if [ \$? != 0 ] || [ -z "\$SITE" ]
     then
       echo "Alias \$1 not found."
     else
+      REMOTE_DRUPAL=`drush site-alias \$1 --component='remote-host' 2>/dev/null`
       PREVIOUS_SITE=\$DRUPAL_SITE
       DRUPAL_SITE=$1
-      PS1="\${1:-drush}> "
+      if [ -n "\$REMOTE_DRUPAL" ]
+      then
+        PS1="\$REMOTE_DRUPAL:\${1:-drush}> "
+      else
+        PS1="\${1:-drush}> "
+      fi
     fi
   else
     PREVIOUS_SITE=\$DRUPAL_SITE
@@ -913,36 +922,52 @@ function use() {
 # variable is also changed, so the new site becomes
 # the default drush target.
 function cd() {
-  # First special-case the no-parameter cd
-  if [ "x\$1" == "x" ]
+  d=\$1;
+  # If we do not have a \$DRUPAL_SITE from `use @alias`,
+  # then 'cd @alias' will still cd to @alias, but all other
+  # patterns will be passed to builtin cd.  The same behavior
+  # will be used if \$DRUPAL_SITE points to a remote alias.
+  if [ -z \$DRUPAL_SITE ] || [ -n "\$REMOTE_DRUPAL" ]
   then
-    cd %root
-  # Next test and see if this should be an 'ordinary' cd
-  elif [ "x\$1" == "x-" ] || [ -d \$1 ]
-  then
-    builtin cd \$1;
-  else
-    # Do a special drush core-cli cd, handling
-    # shorthand notation directory names -- anything
-    # understood by drupal-directory
-    DEST=`drupal-directory \$1 --local`
-    if [ \$? == 0 ]
+    if [ -n "\$d" ] && [ \${d:0:1} == "@" ]
     then
-      SITE=`drupal-directory \$1 --component=name`
-      if [ ! -z "\$SITE" ]
-      then
-        use \$SITE;
-      fi
-      echo "cd \$DEST";
-      builtin cd \$DEST;
+      cdd \$@;
+    else
+      builtin cd \$@;
+    fi
+  else
+    # First special-case the no-parameter cd
+    if [ -z \$d ]
+    then
+      cdd %root;
+    # Next test and see if this should be an 'ordinary' cd
+    elif [ "\$1" == "-" ] || [ -d "\$d" ]
+    then
+      builtin cd \$@;
+    else
+      cdd \$@
     fi
   fi
 }
 
-# In drush-3, it was necessary to use cdd instead of
-# cd to be able to target special directories.  Continue
-# to accept cdd as an alias for cd.
-alias cdd=cd
+# Do a special drush core-cli cd, handling
+# shorthand notation directory names -- anything
+# understood by drupal-directory
+function cdd() {
+  DEST=`drupal-directory \$1 --local 2>/dev/null`
+  if [ \$? == 0 ]
+  then
+    SITE=`drupal-directory \$1 --component=name 2>/dev/null`
+    if [ -n "\$SITE" ]
+    then
+      use \$SITE;
+    fi
+    echo "cd \$DEST";
+    builtin cd \$DEST;
+  else
+    builtin cd \$@
+  fi
+}
 
 # The command lsd will quickly do an 'ls' on the
 # specified special drush directory, e.g.:
@@ -972,36 +997,37 @@ EOD;
   $commands = drush_get_commands();
   $cli_overrides = _convert_csv_to_array(drush_get_option('override', 'help,rsync,dd,sa'));
   $cli_contextual_commands = _convert_csv_to_array(drush_get_option('contextual', 'cron,updatedb,sync,cc'));
+  $cli_ignore = _convert_csv_to_array(drush_get_option('ignore','core-cli,cli'));
   foreach ($commands as $key => $command) {
     // Filter out old commands that still have spaces;
     // do not mask any existing bash command (e.g. 'grep')
     // or builtin (e.g. 'eval') with drush aliases.
-    if (strpos($key, ' ') === FALSE) {
+    if ((strpos($key, ' ') === FALSE) && (!in_array($key, $cli_ignore))) {
       $conflict = FALSE;
       $is_shell_builtin = (drush_shell_exec("builtin $key") == "1");
       if (!in_array($key, $cli_overrides)) {
         $status = drush_shell_exec("which $key 2>&1");
-	if ($status !== FALSE) {
-	  $output_lines = drush_shell_exec_output();
-	  $conflict = $output_lines[0];
-	}
-	elseif ($is_shell_builtin) {
-	  $conflict = "builtin $key";
-	}
+        if ($status !== FALSE) {
+          $output_lines = drush_shell_exec_output();
+          $conflict = $output_lines[0];
+        }
+        elseif ($is_shell_builtin) {
+          $conflict = "builtin $key";
+        }
       }
       elseif ($is_shell_builtin && ($key != "help")) {
         drush_set_error('DRUSH_OVERRIDE_BUILTIN', dt("Cannot override shell builtin function !builtin", array('!builtin' => $key)));
       }
       if (!$conflict) {
-	$bashrc_data .= "function $key() {\n  $drush_command \$DRUPAL_SITE $key \"\$@\"\n}\n";
+        $bashrc_data .= "function $key() {\n  $drush_command \$DRUPAL_SITE $key \"\$@\"\n}\n";
       }
       elseif (in_array($key, $cli_contextual_commands)) {
         if ($is_shell_builtin) {
-	  $warning = dt("Warning: overriding shell built-in command !builtin.  This could cause unpredictable results with shell scripts.", array('!builtin' => $key));
-	  drush_log($warning, 'warning');
-	  $bashrc_data .= "# $warning\n";
-	}
-	$bashrc_data .= "function $key() {\n  if [ -z \$DRUPAL_SITE ]\n  then \n    $conflict\n  else\n    $drush_command \$DRUPAL_SITE $key \"\$@\"\n  fi\n}\n";
+          $warning = dt("Warning: overriding shell built-in command !builtin.  This could cause unpredictable results with shell scripts.", array('!builtin' => $key));
+          drush_log($warning, 'warning');
+          $bashrc_data .= "# $warning\n";
+        }
+        $bashrc_data .= "function $key() {\n  if [ -z \$DRUPAL_SITE ]\n  then \n    $conflict\n  else\n    $drush_command \$DRUPAL_SITE $key \"\$@\"\n  fi\n}\n";
       }
       else {
         $bashrc_data .= "# drush $key skipped; conflicts with $conflict\n";
