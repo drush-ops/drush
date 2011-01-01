@@ -84,7 +84,17 @@ function drush_backend_output() {
   // The error log is a more specific version of the log, and may be used by calling
   // scripts to check for specific errors that have occurred.
   $data['error_log'] = drush_get_error_log();
-
+  // If there is a @self record, then include it in the result
+  $self_record = drush_sitealias_get_record('@self');
+  if (!empty($self_record)) {
+    $site_context = drush_get_context('site', array());
+    unset($site_context['config-file']);
+    unset($site_context['context-path']);
+    unset($self_record['loaded-config']);
+    unset($self_record['name']);
+    $data['self'] = array_merge($site_context, $self_record);
+  }
+  
   // Return the options that were set at the end of the process.
   $data['context']  = drush_get_merged_options();
   if (!drush_get_context('DRUSH_QUIET')) {

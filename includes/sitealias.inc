@@ -640,6 +640,11 @@ function drush_sitealias_add_db_settings(&$alias_record)
     if (isset($values['object'])) {
       $alias_record['databases'] = $values['object'];
       $altered_record = TRUE;
+      // If there are any special settings in the '@self' record returned by drush_invoke_sitealias_args,
+      // then add those into our altered record as well
+      if (array_key_exists('self', $values)) {
+        $alias_record = array_merge($values['self'], $alias_record);
+      }
       // If the name is set, then re-cache the record after we fetch the databases
       if (array_key_exists('name', $alias_record)) {
         $all_site_aliases =& drush_get_context('site-aliases');

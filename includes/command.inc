@@ -266,6 +266,12 @@ function drush_invoke_sitealias($site_alias_record, $command_name) {
  *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
  */
 function drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array()) {
+  // If the first parameter is not a site alias record,
+  // then presume it is an alias name, and try to look up
+  // the alias record.
+  if (!is_array($site_alias_record)) {
+    $site_alias_record = drush_sitealias_get_record($site_alias_record);
+  }
   return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options);
 }
 
@@ -1068,7 +1074,7 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
   $key = (in_array($key, array('filename', 'basename', 'name')) ? $key : 'filename');
   $files = array();
 
-  if (is_dir($dir) && $handle = opendir($dir)) {
+  if (is_string($dir) && is_dir($dir) && $handle = opendir($dir)) {
     while (FALSE !== ($file = readdir($handle))) {
       if (!in_array($file, $nomask) && (($include_dot_files && (!preg_match("/\.\+/",$file))) || ($file[0] != '.'))) {
         if (is_dir("$dir/$file") && (($recurse_max_depth === TRUE) || ($depth < $recurse_max_depth))) {
