@@ -805,6 +805,95 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
 }
 
 /**
+ * Ask the user to select multiple items from a list.
+ * This is a wrapper around drush_choice, that repeats the selection process,
+ * allowing users to toggle a number of items in a list. The number of values
+ * that can be constrained by both min and max: the user will only be allowed
+ * finalize selection once the minimum number has been selected, and the oldest
+ * selected value will "drop off" the list, if they exceed the maximum number.
+ *
+ * @param $options
+ *   Same as drush_choice() (see above).
+ * @param $defaults
+ *   This can take 3 forms:
+ *   - FALSE: (Default) All options are unselected by default.
+ *   - TRUE: All options are selected by default.
+ *   - Array of $options keys to be selected by default.
+ * @param $prompt
+ *   Same as drush_choice() (see above).
+ * @param $label
+ *   Same as drush_choice() (see above).
+ * @param $mark
+ *   Controls how selected values are marked.  Defaults to '!value (selected)'.
+ * @param $min
+ *   Constraint on minimum number of selections. Defaults to zero. When fewer
+ *   options than this are selected, no final options will be available.
+ * @param $max
+ *   Constraint on minimum number of selections. Defaults to NULL (unlimited).
+ *   If the a new selection causes this value to be exceeded, the oldest
+ *   previously selected value is automatically unselected.
+ * @param $final_options
+ *   An array of additional options in the same format as $options.
+ *   When the minimum number of selections is met, this array is merged into the
+ *   array of options. If the user selects one of these values and the
+ *   selection process will complete (the key for the final option is included
+ *   in the return value). If this is an empty array (default), then a built in
+ *   final option of "Done" will be added to the available options (in this case
+ *   no additional keys are added to the return value).
+ */
+function drush_choice_multiple($options, $defaults = FALSE, $prompt = 'Select some numbers.', $label = '!value', $mark = '!value (selected)', $min = 0, $max = NULL, $final_options = array()) {
+  $selections = array();
+  // Load default selections.
+  if (is_array($defaults)) {
+    $selections = $defaults;
+  }
+  elseif ($defaults === TRUE) {
+    $selections = array_keys($options);
+  }
+  $complete = FALSE;
+  $final_builtin = array();
+  if (empty($final_options)) {
+    $final_builtin['done'] = dt('Done');
+  }
+  $final_options_keys = array_keys($final_options);
+  while (TRUE) {
+    $current_options = $options;
+    // Mark selections.
+    foreach ($selections as $selection) {
+      $current_options[$selection] = dt($mark, array('!key' => $selection, '!value' => $options[$selection]));
+    }
+    // Add final options, if the minimum number of selections has been reached.
+    if (count($selections) >= $min) {
+      $current_options = array_merge($current_options, $final_options, $final_builtin);
+    }
+    $toggle = drush_choice($current_options, $prompt, $label);
+    if ($toggle === FALSE) {
+      return FALSE;
+    }
+    // Don't include the built in final option in the return value.
+    if (count($selections) >= $min && empty($final_options) && $toggle == 'done') {
+      return $selections;
+    }
+    // Toggle the selected value.
+    $item = array_search($toggle, $selections);
+    if ($item === FALSE) {
+      array_unshift($selections, $toggle);
+    }
+    else {
+      unset($selections[$item]);
+    }
+    // If the user selected one of the final options, return.
+    if (count($selections) >= $min && in_array($toggle, $final_options_keys)) {
+      return $selections;
+    }
+    // If the user selected too many options, drop the oldest selection.
+    if (count($selections) > $max) {
+      array_pop($selections);
+    }
+  }
+}
+
+/**
  * Prompt the user for input
  *
  * The input can be anything that fits on a single line (not only y/n),
