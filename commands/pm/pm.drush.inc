@@ -998,7 +998,14 @@ function _pm_get_project_path($data, $lookup) {
     // Array of extensions (modules/themes) within the project.
     $extensions = array_keys($release[$lookup]);
     $path = _pm_find_common_path($release['project_type'], $extensions);
-    $data[$name]['path'] = $path;
+    $reserved = array('modules', 'sites', 'themes');
+    if ((in_array(basename($path), $reserved)) && (!in_array($name, $reserved))) {
+      drush_log(dt('Error while trying to find the common path for enabled extensions of project !project. Extensions are: !extensions.', array('!project' => $name, '!extensions' => implode(', ', $extensions))), 'error');
+      unset($data[$name]);
+    }
+    else {
+      $data[$name]['path'] = $path;
+    }
   }
 
   return $data;
