@@ -92,13 +92,13 @@ function pm_drush_command() {
     ),
   );
   $update_options = array(
-    '--security-only' => 'Only update modules that have security updates available. However, if there were other releases of a module between the installed version the security update, other changes to features or functionality may occur.',
-    '--lock' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the project as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.  See also the update-advanced project for similar and improved functionality.',
+    'security-only' => 'Only update modules that have security updates available. However, if there were other releases of a module between the installed version the security update, other changes to features or functionality may occur.',
+    'lock' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the project as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.  See also the update-advanced project for similar and improved functionality.',
   );
   $update_suboptions = array(
-    '--lock' => array(
-      '--lock-message' => 'A brief message explaining why a project is being locked; displayed during pm-updatecode.  Optional.',
-      '--unlock' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
+    'lock' => array(
+      'lock-message' => 'A brief message explaining why a project is being locked; displayed during pm-updatecode.  Optional.',
+      'unlock' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
     ),
   );
   
@@ -141,12 +141,12 @@ function pm_drush_command() {
     'description' => 'Show a list of available extensions (modules and themes).',
     'callback arguments' => array(array(), FALSE),
     'options' => array(
-      '--type' => 'Filter by extension type. Choices: module, theme.',
-      '--status' => 'Filter by extension status. Choices: enabled, disable and/or \'not installed\'. You can use multiple comma separated values. (i.e. --status="disabled,not installed").',
-      '--package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other").',
-      '--core' => 'Filter out extensions that are not in drupal core.',
-      '--no-core' => 'Filter out extensions that are provided by drupal core.',
-      '--pipe' => 'Returns a space delimited list of the names of the resulting extensions.',
+      'type' => 'Filter by extension type. Choices: module, theme.',
+      'status' => 'Filter by extension status. Choices: enabled, disable and/or \'not installed\'. You can use multiple comma separated values. (i.e. --status="disabled,not installed").',
+      'package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other").',
+      'core' => 'Filter out extensions that are not in drupal core.',
+      'no-core' => 'Filter out extensions that are provided by drupal core.',
+      'pipe' => 'Returns a space delimited list of the names of the resulting extensions.',
     ),
     'aliases' => array('pml'),
     'deprecated-aliases' => array('sm'),
@@ -164,8 +164,8 @@ function pm_drush_command() {
       'projects' => 'Optional. A list of installed projects to update.',
     ),
     'options' => array(
-      '--pipe' => 'Returns a space delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
-      '--notes' => 'Show release notes for each project to be updated.',
+      'pipe' => 'Returns a space delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
+      'notes' => 'Show release notes for each project to be updated.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'aliases' => array('upc'),
@@ -201,8 +201,8 @@ function pm_drush_command() {
       'projects' => 'A list of drupal.org project names. Defaults to \'drupal\'',
     ),
     'options' => array(
-      '--dev' => "Show only development releases.",
-      '--all' => "Shows all available releases instead of the default short list of recent releases.",
+      'dev' => "Show only development releases.",
+      'all' => "Shows all available releases instead of the default short list of recent releases.",
     ),
     'examples' => array(
       'drush pm-releases cck zen' => 'View releases for cck and Zen projects.',
@@ -225,16 +225,16 @@ function pm_drush_command() {
       'projects' => 'A list of drpal.org project names, with optional version. Defaults to \'drupal\'',
     ),
     'options' => array(
-      '--destination' => 'Path to which the project will be copied. If you\'re providing a relative path, note it is relative to the drupal root (if bootstrapped).',
-      '--use-site-dir' => 'Force to use the site specific directory. It will create the directory if it doesn\'t exist. If --destination is also present this option will be ignored.',
-      '--source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
-      '--notes' => 'Show release notes after each project is downloaded.',
-      '--variant' => "Only useful for install profiles. Possible values: 'full', 'projects', 'profile-only'.",
-      '--dev' => "Download a development release.",
-      '--select' => "Select the version to download interactively from a list of available releases.",
-      '--all' => "Useful only with --select; shows all available releases instead of a short list of recent releases.",
-      '--drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. Defaults to "drupal".',
-      '--pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
+      'destination' => 'Path to which the project will be copied. If you\'re providing a relative path, note it is relative to the drupal root (if bootstrapped).',
+      'use-site-dir' => 'Force to use the site specific directory. It will create the directory if it doesn\'t exist. If --destination is also present this option will be ignored.',
+      'source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
+      'notes' => 'Show release notes after each project is downloaded.',
+      'variant' => "Only useful for install profiles. Possible values: 'full', 'projects', 'profile-only'.",
+      'dev' => "Download a development release.",
+      'select' => "Select the version to download interactively from a list of available releases.",
+      'all' => "Useful only with --select; shows all available releases instead of a short list of recent releases.",
+      'drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. Defaults to "drupal".',
+      'pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('dl'),
@@ -1723,13 +1723,13 @@ function pm_drush_engine_package_handler() {
     'wget' => array(),
     'cvs' => array(
       'options' => array(
-        '--package-handler=cvs' => 'Use CVS to checkout and update projects.',
+        'package-handler=cvs' => 'Use CVS to checkout and update projects.',
       ),
       'sub-options' => array(
-        '--package-handler=cvs' => array(
-          '--cvsparams' => 'Add options to the `cvs` program',
-          '--cvsmethod' => 'Force cvs updates or checkouts (checkout is default unless the directory is managed by a supported version control system).',
-          '--cvscredentials' => 'A username and password that is sent for cvs checkout command. Defaults to anonymous:anonymous',
+        'package-handler=cvs' => array(
+          'cvsparams' => 'Add options to the `cvs` program',
+          'cvsmethod' => 'Force cvs updates or checkouts (checkout is default unless the directory is managed by a supported version control system).',
+          'cvscredentials' => 'A username and password that is sent for cvs checkout command. Defaults to anonymous:anonymous',
         ),
       ),
       'examples' => array(
@@ -1740,16 +1740,16 @@ function pm_drush_engine_package_handler() {
     ),
     'git_drupalorg' => array(
       'options' => array(
-        '--package-handler=git_drupalorg' => 'Use git.drupal.org to checkout and update projects.',
+        'package-handler=git_drupalorg' => 'Use git.drupal.org to checkout and update projects.',
       ),
       'sub-options' => array(
-        '--package-handler=git_drupalorg' => array(
-          '--gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
-          '--gitcheckoutparams' => 'Add options to the `git checkout` command.',
-          '--gitcloneparams' => 'Add options to the `git clone` command.',
-          '--gitfetchparams' => 'Add options to the `git fetch` command.',
-          '--gitpullparams' => 'Add options to the `git pull` command.',
-          '--gitsubmoduleaddparams' => 'Add options to the `git submodule add` command.',
+        'package-handler=git_drupalorg' => array(
+          'gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
+          'gitcheckoutparams' => 'Add options to the `git checkout` command.',
+          'gitcloneparams' => 'Add options to the `git clone` command.',
+          'gitfetchparams' => 'Add options to the `git fetch` command.',
+          'gitpullparams' => 'Add options to the `git pull` command.',
+          'gitsubmoduleaddparams' => 'Add options to the `git submodule add` command.',
         ),
       ),
     ),
@@ -1763,26 +1763,28 @@ function pm_drush_engine_version_control() {
   return array(
     'backup' => array(
       'options' => array(
-        '--version-control=backup' => 'Default engine. Backup all project files before updates.',
+        'version-control=backup' => 'Default engine. Backup all project files before updates.',
       ),
       'sub-options' => array(
-        '--version-control=backup' => array(
-          '--no-backup' => 'Do not perform backups.',
-          '--backup-dir' => 'Specify a directory to backup projects into. Defaults to .drush-backups within the home directory of the user running the command. It is forbidden to specify a directory inside your drupal root.',
+        'version-control=backup' => array(
+          'no-backup' => 'Do not perform backups.',
+          'backup-dir' => 'Specify a directory to backup projects into. Defaults to .drush-backups within the home directory of the user running the command. It is forbidden to specify a directory inside your drupal root.',
         ),
       ),
     ),
     'bzr' => array(
       'signature' => 'bzr root %s',
       'options' => array(
-        '--version-control=bzr' => 'Quickly add/remove/commit your project changes to Bazaar.',
+        'version-control=bzr' => 'Quickly add/remove/commit your project changes to Bazaar.',
       ),
       'sub-options' => array(
-        '--version-control=bzr' => array(
-          '--bzrsync' => 'Automatically add new files to the Bazaar repository and remove deleted files. Caution.',
-          '--bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also usw the --bzrsync option.',
-          '  --bzrmessage' => 'Override default commit message which is: Drush automatic commit. Project <name> <type> Command: <the drush command line used>',
+        'version-control=bzr' => array(
+          'bzrsync' => 'Automatically add new files to the Bazaar repository and remove deleted files. Caution.',
+          'bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also usw the --bzrsync option.',
         ),
+	'bzrcommit' => array(
+          'bzrmessage' => 'Override default commit message which is: Drush automatic commit. Project <name> <type> Command: <the drush command line used>',
+	)
       ),
       'examples' => array(
         'drush dl cck --version-control=bzr --bzrsync --bzrcommit' =>  'Download the cck project and then add it and commit it to Bazaar.'
@@ -1791,19 +1793,21 @@ function pm_drush_engine_version_control() {
     'svn' => array(
       'signature' => 'svn info %s',
       'options' => array(
-        '--version-control=svn' => 'Quickly add/remove/commit your project changes to Subversion.',
+        'version-control=svn' => 'Quickly add/remove/commit your project changes to Subversion.',
       ),
       'sub-options' => array(
-        '--version-control=svn' => array(
-          '--svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. Caution.',
-          '--svncommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
-          '  --svnmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
-          '--svnstatusparams' => "Add options to the 'svn status' command",
-          '--svnaddparams' => 'Add options to the `svn add` command',
-          '--svnremoveparams' => 'Add options to the `svn remove` command',
-          '--svnrevertparams' => 'Add options to the `svn revert` command',
-          '--svncommitparams' => 'Add options to the `svn commit` command',
+        'version-control=svn' => array(
+          'svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. Caution.',
+          'svncommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
+          'svnstatusparams' => "Add options to the 'svn status' command",
+          'svnaddparams' => 'Add options to the `svn add` command',
+          'svnremoveparams' => 'Add options to the `svn remove` command',
+          'svnrevertparams' => 'Add options to the `svn revert` command',
+          'svncommitparams' => 'Add options to the `svn commit` command',
         ),
+	'svncommit' => array(
+          'svnmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+	)
       ),
       'examples' => array(
         'drush [command] cck --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'

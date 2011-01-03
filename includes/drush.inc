@@ -226,29 +226,29 @@ function _convert_csv_to_array($args) {
  *   for each of the available options.
  */
 function drush_get_global_options($brief = FALSE) {
-  $options['-r <path>, --root=<path>'] = dt("Drupal root directory to use (default: current directory)");
-  $options['-l <uri>, --uri=http://example.com']   = dt('URI of the drupal site to use (only needed in multisite environments)');
-  $options['-v, --verbose']            = dt('Display extra information about the command.');
-  $options['-d, --debug']              = dt('Display even more information, including internal messages.');
-  $options['-y, --yes']                = dt("Assume 'yes' as answer to all prompts");
-  $options['-n, --no']                 = dt("Assume 'no' as answer to all prompts");
-  $options['-s, --simulate']           = dt("Simulate all relevant actions (don't actually change the system)");
-  $options['-p, --pipe']               = dt("Emit a compact representation of the command for scripting.");
-  $options['-h, --help']               = dt("This help system.");
-  $options['--php']                    = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
+  $options['root']               = array('short-form' => 'r', 'description' => dt("Drupal root directory to use (default: current directory)"), 'example-value' => '<path>');
+  $options['uri']                = array('short-form' => 'l', 'description' => dt('URI of the drupal site to use (only needed in multisite environments)'), 'example-value' => 'http://example.com');
+  $options['verbose']            = array('short-form' => 'v', 'description' => dt('Display extra information about the command.'));
+  $options['debug']              = array('short-form' => 'd', 'description' => dt('Display even more information, including internal messages.'));
+  $options['yes']                = array('short-form' => 'y', 'description' => dt("Assume 'yes' as answer to all prompts"));
+  $options['no']                 = array('short-form' => 'n', 'description' => dt("Assume 'no' as answer to all prompts"));
+  $options['simulate']           = array('short-form' => 's', 'description' => dt("Simulate all relevant actions (don't actually change the system)"));
+  $options['pipe']               = array('short-form' => 'p', 'description' => dt("Emit a compact representation of the command for scripting."));
+  $options['help']               = array('short-form' => 'h', 'description' => dt("This help system."));
+  $options['php']                = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
   
   if (!$brief) {
-    $options['-q, --quiet']              = dt('Hide all output');
-    $options['-i, --include']            = dt("A list of paths to search for drush commands");
-    $options['-c, --config']             = dt("Specify a config file to use. See example.drushrc.php");
-    $options['-u, --user']               = dt("Specify a user to login with. May be a name or a number.");
-    $options['-b, --backend']            = dt("Hide all output and return structured data (internal use only).");
-    $options['--choice']                 = dt("Provide an answer to a multiple-choice prompt.");
-    $options['--no-label']               = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
-    $options['--nocolor']                = dt("Suppress color highlighting on log messages.");
-    $options['--show-passwords']         = dt("Show database passwords in commands that display connection information.");
-    $options['--show-invoke']            = dt("Show all function names which could have been called for the current command. See drush_invoke().");
-    $options['--watchdog']               = dt("Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log.");  
+    $options['quiet']            = array('short-form' => 'q', 'description' => dt('Hide all output'));
+    $options['include']          = array('short-form' => 'i', 'description' => dt("A list of paths to search for drush commands"));
+    $options['config']           = array('short-form' => 'c', 'description' => dt("Specify a config file to use. See example.drushrc.php"));
+    $options['user']             = array('short-form' => 'u', 'description' => dt("Specify a user to login with. May be a name or a number."));
+    $options['backend']          = array('short-form' => 'b', 'description' => dt("Hide all output and return structured data (internal use only)."));
+    $options['choice']           = dt("Provide an answer to a multiple-choice prompt.");
+    $options['no-label']         = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
+    $options['nocolor']          = dt("Suppress color highlighting on log messages.");
+    $options['show-passwords']   = dt("Show database passwords in commands that display connection information.");
+    $options['show-invoke']      = dt("Show all function names which could have been called for the current command. See drush_invoke().");
+    $options['watchdog']         = dt("Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log.");  
   }
   return $options;
 }
@@ -303,17 +303,7 @@ function drush_print_help($command) {
   foreach ($command['sections'] as $key => $value) {
     if (!empty($command[$key])) {
       drush_print(dt($value) . ':');
-      foreach ($command[$key] as $name => $description) {
-        // '[command] is a token representing the current command. @see pm_drush_engine_version_control().
-        $rows[] = array(str_replace('[command]', $command['command'], $name), dt($description));
-        
-        // Process the subsections too, if any
-        if (!empty($command['sub-' . $key]) && array_key_exists($name, $command['sub-' . $key])) {
-          foreach ($command['sub-' . $key][$name] as $name => $description) {
-            $rows[] = array('  ' . str_replace('[command]', $command['command'], $name), dt($description));
-          }
-        }
-      }
+      $rows = drush_format_help_section($command, $key);
       drush_print_table($rows, FALSE, array(40));
       unset($rows);
       drush_print();
@@ -324,6 +314,103 @@ function drush_print_help($command) {
   if ($command['aliases']) {
     drush_print(dt("Aliases: ") . implode(', ', $command['aliases']));
   }
+}
+
+/**
+ * Format one named help section from a command record
+ *
+ * @param $command
+ *   A command record with help information
+ * @param $section
+ *   The name of the section to format ('options', 'topic', etc.)
+ * @returns array
+ *   Formatted rows, suitable for printing via drush_print_table.
+ */
+function drush_format_help_section($command, $section) {
+  $formatter = (function_exists('drush_help_section_formatter_' . $section)) ? 'drush_help_section_formatter_' . $section : 'drush_help_section_default_formatter';
+  foreach ($command[$section] as $name => $help_attributes) {
+    if (!is_array($help_attributes)) {
+      $help_attributes = array('description' => $help_attributes);
+    }
+    $help_attributes['label'] = $name;
+    call_user_func_array($formatter, array($command, &$help_attributes));
+    $rows[] = array($help_attributes['label'], $help_attributes['description']);
+
+    // Process the subsections too, if any
+    if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
+      $rows = array_merge($rows, _drush_format_help_subsection($command, $section, $name, $formatter));
+    }
+  }
+  return $rows;
+}
+
+/**
+ * Format one named portion of a subsection from a command record.  
+ * Subsections allow related parts of a help record to be grouped
+ * together.  For example, in the 'options' section, sub-options that
+ * are related to a particular primary option are stored in a 'sub-options'
+ * section whose name == the name of the primary option.
+ *
+ * @param $command
+ *   A command record with help information
+ * @param $section
+ *   The name of the section to format ('options', 'topic', etc.)
+ * @param $subsection
+ *   The name of the subsection (e.g. the name of the primary option)
+ * @param $formatter
+ *   The name of a function to use to format the rows of the subsection
+ * @param $prefix
+ *   Characters to prefix to the front of the label (for indentation)
+ * @returns array
+ *   Formatted rows, suitable for printing via drush_print_table.
+ */
+function _drush_format_help_subsection($command, $section, $subsection, $formatter, $prefix = '  ') {
+  foreach ($command['sub-' . $section][$subsection] as $name => $help_attributes) {
+    if (!is_array($help_attributes)) {
+      $help_attributes = array('description' => $help_attributes);
+    }
+    $help_attributes['label'] = $name;
+    call_user_func_array($formatter, array($command, &$help_attributes));
+    $rows[] = array($prefix . $help_attributes['label'], $help_attributes['description']);
+    // Process the subsections too, if any
+    if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
+      $rows = array_merge($rows, _drush_format_help_subsection($command, $section, $name, $formatter, $prefix . '  '));
+    }
+  }
+  return $rows;
+}
+
+/**
+ * The options section formatter.  Adds a "--" in front of each
+ * item label.  Also handles short-form and example-value
+ * components in the help attributes.
+ */
+function drush_help_section_formatter_options($command, &$help_attributes) {
+  if ($help_attributes['label'][0] == '-') {
+    drush_log(dt("Option '%option' of command %command should instead be declared as '%fixed'", array('%option' => $help_attributes['label'], '%command' => $command['command'], '%fixed' => preg_replace('/^--*/', '', $help_attributes['label']))), 'debug');
+  }
+  else {
+    $help_attributes['label'] = '--' . $help_attributes['label'];
+  }
+  if (array_key_exists('example-value', $help_attributes)) {
+    $help_attributes['label'] .= '=' . $help_attributes['example-value'];
+    if (array_key_exists('short-form', $help_attributes)) {
+      $help_attributes['short-form'] .= ' ' . $help_attributes['example-value'];
+    }
+  }
+  if (array_key_exists('short-form', $help_attributes)) {
+    $help_attributes['label'] = '-' . $help_attributes['short-form'] . ', ' . $help_attributes['label'];
+  }
+  drush_help_section_default_formatter($command, $help_attributes);
+}
+
+/**
+ * The default section formatter.  Replaces '[command]' with the
+ * command name.
+ */
+function drush_help_section_default_formatter($command, &$help_attributes) {
+  // '[command]' is a token representing the current command. @see pm_drush_engine_version_control().
+  $help_attributes['label'] = str_replace('[command]', $command['command'], $help_attributes['label']);
 }
 
 /**

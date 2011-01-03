@@ -49,7 +49,7 @@ function variable_drush_command() {
       'drush vget user' => 'List all variables beginning with the string "user".',
     ),
     'options' => array(
-      '--pipe' => 'Use var_export() to emit executable PHP. Useful for pasting into code.',
+      'pipe' => 'Use var_export() to emit executable PHP. Useful for pasting into code.',
     ),
     'aliases' => array('vget'),
   );
@@ -60,8 +60,8 @@ function variable_drush_command() {
       'value' => 'The value to assign to the variable.',
     ),
     'options' => array(
-      '--yes' => 'Skip confirmation if only one variable name matches.',
-      '--always-set' => 'Always skip confirmation.',
+      'yes' => 'Skip confirmation if only one variable name matches.',
+      'always-set' => 'Always skip confirmation.',
     ),
     'examples' => array(
       'drush vset --yes preprocess_css 1' => 'Set the preprocess_css variable to true. Skip confirmation if variable already exists.',
@@ -76,7 +76,7 @@ function variable_drush_command() {
       'name' => 'The name of a variable or the first few letters of its name.',
     ),
     'options' => array(
-      '--yes' => 'Skip confirmation if only one variable name matches.',
+      'yes' => 'Skip confirmation if only one variable name matches.',
     ),
     'examples' => array(
       'drush vdel user_pictures' => 'Delete the user_pictures variable.',

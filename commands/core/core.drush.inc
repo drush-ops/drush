@@ -26,10 +26,10 @@ function core_drush_command() {
     'description' => 'Print this help message. See `drush help help` for more options.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'options' => array(
-      '--sort' => 'Sort commands in alphabetical order. drush waits for full bootstrap before printing any commands when this option is used.',
-      '--filter' => 'Restrict command list to those commands defined in the specified file.',
-      '--html' => 'Print help for all commands in HTML format.',
-      '--pipe' => 'A list of available commands, one per line.',
+      'sort' => 'Sort commands in alphabetical order. drush waits for full bootstrap before printing any commands when this option is used.',
+      'filter' => 'Restrict command list to those commands defined in the specified file.',
+      'html' => 'Print help for all commands in HTML format.',
+      'pipe' => 'A list of available commands, one per line.',
     ),
     'examples' => array(
       'drush' => 'List all commands.',
@@ -89,7 +89,7 @@ function core_drush_command() {
       'filename' => 'Optional. The file you wish to execute (without extension). If omitted, list files ending in .php in the current working directory and specified script-path. Some might not be real drush scripts. Beware.',
     ),
     'options' => array(
-      '--script-path' => "Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).",
+      'script-path' => "Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).",
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('scr'),
@@ -107,7 +107,7 @@ function core_drush_command() {
     'description' => 'Show how many items remain to be indexed out of the total.',
     'drupal dependencies' => array('search'),
     'options' => array(
-      '--pipe' => 'Display in the format remaining/total for processing by scripts.',
+      'pipe' => 'Display in the format remaining/total for processing by scripts.',
     ),
   );
   $items['search-index'] = array(
@@ -118,7 +118,7 @@ function core_drush_command() {
     'description' => 'Force the search index to be rebuilt.',
     'drupal dependencies' => array('search'),
     'options' => array(
-      '--immediate' => 'Rebuild the index immediately, instead of waiting for cron.',
+      'immediate' => 'Rebuild the index immediately, instead of waiting for cron.',
     ),
   );
   $items['core-rsync'] = array(
@@ -129,15 +129,15 @@ function core_drush_command() {
       'destination' => 'May be rsync path or site alias. See rsync documentation and example.aliases.drushrc.php.',
     ),
     'options' => array(
-      '--mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -az.',
-      '--RSYNC-FLAG' => 'Most rsync flags passed to drush sync will be passed on to rsync.  See rsync documentation.',
-      '--exclude-conf' => 'Excludes settings.php from being rsynced.  Default.',
-      '--include-conf' => 'Allow settings.php to be rsynced',
-      '--exclude-files' => 'Exclude the files directory.',
-      '--exclude-sites' => 'Exclude all directories in "sites/" except for "sites/all".',
-      '--exclude-other-sites' => 'Exclude all directories in "sites/" except for "sites/all" and the site directory for the site being synced.  Note: if the site directory is different between the source and destination, use --exclude-sites followed by "drush rsync @from:%site @to:%site"',
-      '--exclude-paths' => 'List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).',
-      '--include-paths' => 'List of paths to include, seperated by : (Unix-based systems) or ; (Windows).',
+      'mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -az.',
+      'RSYNC-FLAG' => 'Most rsync flags passed to drush sync will be passed on to rsync.  See rsync documentation.',
+      'exclude-conf' => 'Excludes settings.php from being rsynced.  Default.',
+      'include-conf' => 'Allow settings.php to be rsynced',
+      'exclude-files' => 'Exclude the files directory.',
+      'exclude-sites' => 'Exclude all directories in "sites/" except for "sites/all".',
+      'exclude-other-sites' => 'Exclude all directories in "sites/" except for "sites/all" and the site directory for the site being synced.  Note: if the site directory is different between the source and destination, use --exclude-sites followed by "drush rsync @from:%site @to:%site"',
+      'exclude-paths' => 'List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).',
+      'include-paths' => 'List of paths to include, seperated by : (Unix-based systems) or ; (Windows).',
     ),
     'examples' => array(
       'drush rsync @dev @stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
@@ -521,7 +521,9 @@ function drush_core_status() {
 function drush_core_global_options() {
   drush_print(dt('These options are applicable to most drush commands.'));
   drush_print();
-  drush_print_table(drush_key_value_to_array_table(drush_get_global_options()));
+  $fake = drush_global_options_command(FALSE);
+  $global_option_rows = drush_format_help_section($fake, 'options');
+  drush_print_table($global_option_rows);
 }
 
 function _drush_core_is_named_in_array($key, $the_array) {

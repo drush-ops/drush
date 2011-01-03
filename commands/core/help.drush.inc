@@ -1,25 +1,32 @@
 <?php
 
 /**
+ * Build a fake command for the purposes of showing examples and options.
+ */
+function drush_global_options_command($brief = FALSE) {
+  $fake = array(
+    'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.',
+    'sections' => array('options' => dt('Global options (see `drush topic` for the full list)')),
+    'options' => drush_get_global_options($brief),
+    'examples' => array(
+      'drush dl cck zen' => 'Download CCK module and Zen theme.',
+      'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
+    ),
+  );
+  $fake += drush_command_defaults('global-options', 'global_options', __FILE__);
+
+  return $fake;
+}
+
+/**
  * Command callback for help command. This is the default command, when none
  * other has been specified.
  */
 function drush_core_help() {
   $commands = func_get_args();
 
-
   if (empty($commands)) {
-    // Build a fake command for the purposes of showing examples and options.
-    $fake = array(
-      'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.',
-      'sections' => array('options' => dt('Global options (see `drush topic` for the full list)')),
-      'options' => drush_get_global_options(TRUE),
-      'examples' => array(
-        'drush dl cck zen' => 'Download CCK module and Zen theme.',
-        'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
-      ),
-    );
-    $fake += drush_command_defaults('fake', 'fake', __FILE__);
+    $fake = drush_global_options_command(TRUE);
     if (!drush_get_option('html')) {
       drush_print_help($fake);
     }
@@ -124,10 +131,15 @@ function drush_help_html($commands) {
   $output .=  "</table>\n";
 
   // Global options
-  $options = drush_get_global_options(TRUE);
+  $fake = drush_global_options_command(TRUE);
+  $global_option_rows = drush_format_help_section($fake, 'options');
   $output .=  '<h3>Global Options (see `drush topic` for the full list)</h3><table>';
-  foreach ($options as $key => $value) {
-    $output .=  "<tr><td>$key</td><td>" . $value . "</td></tr>\n";
+  foreach ($global_option_rows as $row) {
+    $output .= "<tr>";
+    foreach ($row as $value) {
+      $output .=  "<td>" . htmlspecialchars($value) . "</td>\n";
+    }
+    $output .= "</tr>";
   }
   $output .=  "</table>\n";
 

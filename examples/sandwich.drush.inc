@@ -42,7 +42,7 @@ function sandwich_drush_command() {
       'filling' => 'The type of the sandwich (turkey, cheese, etc.)',
     ),
     'options' => array(
-      '--spreads' => 'Comma delimited list of spreads (e.g. mayonnaise, mustard)',
+      'spreads' => 'Comma delimited list of spreads (e.g. mayonnaise, mustard)',
     ),
     'examples' => array(
       'drush mmas turkey --spreads=ketchup,mustard' => 'Make a terrible-tasting sandwich that is lacking in pickles.',

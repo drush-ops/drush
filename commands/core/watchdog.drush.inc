@@ -30,11 +30,11 @@ function watchdog_drush_command() {
       'wid' => 'Optional id of a watchdog message to show in detail. If not provided, a listing of most recent 10 messages will be displayed. Alternatively if a string is provided, watchdog messages will be filtered by it.',
     ),
     'options' => array(
-      '--count' => 'The number of messages to show. Defaults to 10.',
-      '--severity' => 'Restrict to messages of a given severity level.',
-      '--type' => 'Restrict to messages of a given type.',
-      '--tail' => 'Continuously show new watchdog messages until interrupted.',
-      '--sleep-delay' => 'To be used in conjunction with --tail. This is the number of seconds to wait between each poll to the database. Delay is 1 second by default.'
+      'count' => 'The number of messages to show. Defaults to 10.',
+      'severity' => 'Restrict to messages of a given severity level.',
+      'type' => 'Restrict to messages of a given type.',
+      'tail' => 'Continuously show new watchdog messages until interrupted.',
+      'sleep-delay' => 'To be used in conjunction with --tail. This is the number of seconds to wait between each poll to the database. Delay is 1 second by default.'
     ),
     'examples' => array(
       'drush watchdog-show' => 'Show a listing of most recent 10 messages.',
@@ -52,8 +52,8 @@ function watchdog_drush_command() {
     'description' => 'Delete watchdog messages.',
     'drupal dependencies' => drush_drupal_major_version() >= 6 ? array('dblog') : array('watchdog'),
     'arguments' => array(
-      '--severity' => 'Delete messages of a given severity level.',
-      '--type' => 'Delete messages of a given type.',
+      'severity' => 'Delete messages of a given severity level.',
+      'type' => 'Delete messages of a given type.',
     ),
     'examples' => array(
       'drush watchdog-delete all' => 'Delete all messages.',
