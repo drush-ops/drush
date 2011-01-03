@@ -26,8 +26,25 @@ function drush_core_help() {
   $commands = func_get_args();
 
   if (empty($commands)) {
+    // If the user specified --filter w/out a value, then
+    // present a list of help options.
+    if (drush_get_option('filter', FALSE) === TRUE) {
+      $help_categories = array();
+      drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE+1);
+      $commands = drush_get_commands();
+      foreach ($commands as $key => $candidate) {
+	$category = $candidate['commandfile'];
+	$help_categories[$category] = $category;
+      }
+      $result = drush_choice($help_categories, 'Select a help category:');
+      if (!$result) {
+	return drush_user_abort();
+      }
+      drush_set_option('filter', $result);
+    }
+
     $fake = drush_global_options_command(TRUE);
-    if (!drush_get_option('html')) {
+    if (!drush_get_option('html') && !drush_get_option('filter')) {
       drush_print_help($fake);
     }
 
