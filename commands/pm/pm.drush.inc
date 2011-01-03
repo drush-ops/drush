@@ -1482,12 +1482,12 @@ function drush_pm_post_pm_update() {
 }
 
 /**
- * Validate callback for updatecode command. Abort if 'backup' folder exists.
+ * Validate callback for updatecode command. Abort if 'backup' directory exists.
  */
 function drush_pm_updatecode_validate() {
-  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  if (is_dir($drupal_root . '/' . 'backup')) {
-    return drush_set_error('DRUSH_PM_BACKUP_DIR_FORBIDDEN', dt('It\'s a security risk to have a backup folder in your Drupal root. You must move it elsewhere before proceeding.'));
+  $path = drush_get_context('DRUSH_DRUPAL_ROOT') . '/backup';
+  if (is_dir($path) && (realpath(drush_get_option('backup-dir', FALSE)) != $path)) {
+    return drush_set_error('', dt('Backup directory !path found. It\'s a security risk to store backups inside the Drupal tree. Drush now uses by default ~/.drush-backups. You need to move !path out of the Drupal tree to proceed. Note: if you know what you\'re doing you can explicitly set --backup-dir to !path and continue.', array('!path' => $path)));
   }
 
   // Validate package-handler.
