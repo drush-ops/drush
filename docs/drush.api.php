@@ -35,7 +35,7 @@
  *
  *   return drush_set_error('MY_ERROR_CODE', dt('Error message.'));
  *
- * To allow the user to confirm or cancel a command, use drush_choice
+ * To allow the user to confirm or cancel a command, use drush_confirm
  * and drush_user_abort:
  *
  *   if (!drush_confirm(dt('Are you sure?'))) {
