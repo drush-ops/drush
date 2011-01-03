@@ -1467,7 +1467,7 @@ function drush_pm_update() {
   // Call pm-updatecode.  updatedb will be called in the post-update process.
   $args = _convert_csv_to_array(func_get_args());
   array_unshift($args, 'pm-updatecode');
-  call_user_func_array('drush_invoke', $args);
+  return call_user_func_array('drush_invoke', $args);
 }
 
 /**
