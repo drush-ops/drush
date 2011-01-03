@@ -534,9 +534,10 @@ function dt($string, $args = array()) {
 }
 
 /**
- * Convert html to readable text.  Calls through
- * to drupal_html_to_text if it is available, or
- * reverts to a simpler algorithm when it is not.
+ * Convert html to readable text.  Compatible API to
+ * drupal_html_to_text, but less functional.  Caller
+ * might prefer to call drupal_html_to_text if there
+ * is a bootstrapped Drupal site available.
  *
  * @param string $html
  *   The html text to convert.
@@ -545,23 +546,19 @@ function dt($string, $args = array()) {
  *   The plain-text representation of the input.
  */
 function drush_html_to_text($html, $allowed_tags = NULL) {
-  if (function_exists('drupal_html_to_text')) {
-    return drupal_html_to_text($html, $allowed_tags);
-  }
-  else {
-    $replacements = array(
-      '<hr>' => '------------------------------------------------------------------------------',
-      '<li>' => '  * ',
-      '<h1>' => '===== ',
-      '</h1>' => ' =====',
-      '<h2>' => '---- ',
-      '</h2>' => ' ----',
-      '<h3>' => '::: ',
-      '</h3>' => ' :::',
-    );
-    $text = str_replace(array_keys($replacements), array_values($replacements), $html);
-    return preg_replace('/ *<[^>]*> */', ' ', $text);
-  }
+  $replacements = array(
+    '<hr>' => '------------------------------------------------------------------------------',
+    '<li>' => '  * ',
+    '<h1>' => '===== ',
+    '</h1>' => ' =====',
+    '<h2>' => '---- ',
+    '</h2>' => ' ----',
+    '<h3>' => '::: ',
+    '</h3>' => ' :::',
+    '<br/>' => "\n",
+  );
+  $text = str_replace(array_keys($replacements), array_values($replacements), $html);
+  return html_entity_decode(preg_replace('/ *<[^>]*> */', ' ', $text));
 }
 
 

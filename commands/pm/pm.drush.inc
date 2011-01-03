@@ -187,6 +187,9 @@ function pm_drush_command() {
     'arguments' => array(
       'projects' => 'A list of drupal.org project names, with optional version. Defaults to \'drupal\'',
     ),
+    'options' => array(
+      'html' => dt('Display releasenotes in HTML rather than plain text.'),
+    ),
     'examples' => array(
       'drush rln cck' => 'Prints the release notes for the recommended version of CCK project.',
       'drush rln token-1.13' => 'View release notes of a specfic version of the Token project for my version of Drupal.',
@@ -1424,17 +1427,8 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE, $tmpfile = NULL
       $project_notes = $node_content[0]->asXML();
 
       // Build the status message from the info from _drush_pm_get_releases
-      $status_msg = implode(', ', $project['releases'][$version]['release_status']);
-
-      // #TODO# d5 compatibility && try a cleaner way to do this.
-      if (drush_drupal_major_version() < 7) {
-        $break = '<br>';
-        $status_msg = '> ' . $status_msg;
-      }
-      else {
-        $break = ' -<hr>';
-        $status_msg = '> ' . $status_msg . ' -<hr>';
-      }
+      $status_msg = '> ' . implode(', ', $project['releases'][$version]['release_status']);
+      $break = '<br>';
       $notes_header = dt("<hr>
  > RELEASE NOTES FOR '!name' PROJECT, VERSION !version:!break
  > !time.!break
@@ -1442,8 +1436,13 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE, $tmpfile = NULL
 <hr>
 ", array('!status' => $print_status ? $status_msg : '', '!name' => strtoupper($key), '!break' => $break, '!version' => $version, '!time' => $notes_last_update));
       // Finally we print the release notes for the requested project.
-      $print = drush_html_to_text($notes_header . $project_notes, array('br', 'p', 'ul', 'ol', 'li', 'hr'));
-      if (drush_drupal_major_version() < 7) { $print .= "\n"; }
+      if (drush_get_option('html', FALSE)) {
+        $print = $notes_header . $project_notes;
+      }
+      else {
+        $print = drush_html_to_text($notes_header . $project_notes . "\n", array('br', 'p', 'ul', 'ol', 'li', 'hr'));
+        if (drush_drupal_major_version() < 7) { $print .= "\n"; }
+      }
       file_put_contents($tmpfile, $print, FILE_APPEND);
     }
   }
