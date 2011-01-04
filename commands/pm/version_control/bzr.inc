@@ -82,8 +82,7 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
         foreach ($output as $line) {
           if (preg_match('/^\?\s+(.*)/', $line, $matches)) {
             $path = $root[0] .'/'. $matches[1];
-            // Bazaar add is by default recursive so only run on "full_project_path".
-            if (($path == $project['full_project_path'] .'/') && !drush_shell_exec('bzr add %s', $path)) {
+            if (!drush_shell_exec('bzr add --no-recurse %s', $path)) {
               $errors .= implode("\n", drush_shell_exec_output());
             }
           }
