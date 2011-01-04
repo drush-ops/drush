@@ -546,29 +546,6 @@ function dt($string, $args = array()) {
  *   The plain-text representation of the input.
  */
 function drush_html_to_text($html, $allowed_tags = NULL) {
-<<<<<<< drush.inc
-  if (function_exists('drupal_html_to_text')) {
-    if (drush_drupal_major_version() == 7) {
-      $html = str_replace('<br/>', "\n", $html);
-    }
-    return drupal_html_to_text($html, $allowed_tags);
-  }
-  else {
-    $replacements = array(
-      '<hr>' => '------------------------------------------------------------------------------',
-      '<li>' => '  * ',
-      '<h1>' => '===== ',
-      '</h1>' => ' =====',
-      '<h2>' => '---- ',
-      '</h2>' => ' ----',
-      '<h3>' => '::: ',
-      '</h3>' => ' :::',
-      '<br/>' => "\n",
-    );
-    $text = str_replace(array_keys($replacements), array_values($replacements), $html);
-    return preg_replace('/ *<[^>]*> */', ' ', $text);
-  }
-=======
   $replacements = array(
     '<hr>' => '------------------------------------------------------------------------------',
     '<li>' => '  * ',
@@ -582,7 +559,6 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
   );
   $text = str_replace(array_keys($replacements), array_values($replacements), $html);
   return html_entity_decode(preg_replace('/ *<[^>]*> */', ' ', $text));
->>>>>>> 1.186
 }
 
 
