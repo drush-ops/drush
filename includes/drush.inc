@@ -987,12 +987,12 @@ function drush_choice_multiple($options, $defaults = FALSE, $prompt = 'Select so
  *   The text which is displayed to the user.
  * @param $default
  *   The default value of the input.
- * @param $optional
+ * @param $required
  *   If TRUE, user may continue even when no value is in the input.
  *
  * @see drush_confirm()
  */
-function drush_prompt($prompt, $default = NULL, $optional = FALSE) {
+function drush_prompt($prompt, $default = NULL, $required = TRUE) {
   if (!is_null($default)) {
     $prompt .= " [" . $default . "]";
   }
@@ -1011,7 +1011,7 @@ function drush_prompt($prompt, $default = NULL, $optional = FALSE) {
     if ($line === "") {
       $line = $default;
     }
-    if ($line || $optional) {
+    if ($line || !$required) {
       break;
     }
     print $prompt;
