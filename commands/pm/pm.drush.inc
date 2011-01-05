@@ -1636,7 +1636,7 @@ function pm_dl_destination($type) {
  */
 function pm_parse_project_version($requests) {
   $requestdata = array();
-  $drupal_version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', 6) . '.x';
+  $drupal_version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', 7) . '.x';
   // ignore-bootstrap is a temporary hack. You can't currently download a 7.x
   // module after bootstrapping a 6.x site. This is needed by core-upgrade.
   // Related to http://drupal.org/node/463110.
