@@ -222,7 +222,8 @@ function pm_drush_command() {
       'drush dl cck zen es' => 'Download latest versions of CCK, Zen and Spanish translations for your Drupal version.',
       'drush dl og-1.3' => 'Download a specfic version of Organic groups module for my version of Drupal.',
       'drush dl diff-6.x-2.x' => 'Download a specific development branch of diff module for a specific Drupal version.',
-      'drush dl views --dev' => 'Download the most recent development branch of the views module.',
+      'drush dl views --select' => 'Show a list of recent releases of the views project, prompt for which one to download.',
+      'drush dl webform --dev' => 'Download the latest dev release of webform.',
     ),
     'arguments' => array(
       'projects' => 'A list of drpal.org project names, with optional version. Defaults to \'drupal\'',
@@ -592,7 +593,7 @@ function drush_pm_enable() {
         unset($modules[$key]);
         drush_set_error('DRUSH_PM_ENABLE_MODULE_UNMEET_REQUIREMENTS', dt('Module !module doesn\'t meet the requirements to be enabled.', array('!module' => $module)));
         _drush_log_drupal_messages();
-	return FALSE;
+        return FALSE;
       }
     }
   }
@@ -1781,9 +1782,9 @@ function pm_drush_engine_version_control() {
           'bzrsync' => 'Automatically add new files to the Bazaar repository and remove deleted files. Caution.',
           'bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also usw the --bzrsync option.',
         ),
-	'bzrcommit' => array(
+        'bzrcommit' => array(
           'bzrmessage' => 'Override default commit message which is: Drush automatic commit. Project <name> <type> Command: <the drush command line used>',
-	)
+        )
       ),
       'examples' => array(
         'drush dl cck --version-control=bzr --bzrsync --bzrcommit' =>  'Download the cck project and then add it and commit it to Bazaar.'
@@ -1804,9 +1805,9 @@ function pm_drush_engine_version_control() {
           'svnrevertparams' => 'Add options to the `svn revert` command',
           'svncommitparams' => 'Add options to the `svn commit` command',
         ),
-	'svncommit' => array(
+        'svncommit' => array(
           'svnmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
-	)
+        )
       ),
       'examples' => array(
         'drush [command] cck --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
@@ -2131,7 +2132,10 @@ function drush_pm_download() {
     // download-destination-alter hook to give the chance to any commandfiles
     // to adjust the install location.
     if (empty($destination)) {
-      drush_command_invoke_all_ref('drush_pm_download_destination_alter', $request, $release);
+      $result = drush_command_invoke_all_ref('drush_pm_download_destination_alter', $request, $release);
+      if ($result === FALSE) {
+        return FALSE;
+      }
     }
 
     // Load version control engine and detect if (the parent directory of) the
@@ -2139,10 +2143,26 @@ function drush_pm_download() {
     if (!$version_control = drush_pm_include_version_control($request['project_install_location'])) {
       continue;
     }
-
-    // Final project install location.
-    $request['project_install_location'] .= '/' . $request['project_dir'];
-
+    
+    // Check for drush self update
+    if ($request['project_install_location'] == DRUSH_BASE_PATH) {
+      if (($backup_dir = drush_prepare_backup_dir()) === FALSE) {
+        return FALSE;
+      }
+      // Move the running drush out of the way
+      $drush_backup = $backup_dir . "/drush";
+      if (drush_move_dir(DRUSH_BASE_PATH, $drush_backup, TRUE) == FALSE) {
+        return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Failed to move drush directory !drush to !backup_target', array('!drush' => DRUSH_BASE_PATH, '!backup_target' => $drush_backup)));
+      }
+      else {
+        drush_log(dt("drush backed up to !targetdir", array('!targetdir' => $drush_backup)), "ok");
+      }
+    }
+    else {
+      // For all other projects, the final project install location will go in the project_dir.
+      $request['project_install_location'] .= '/' . $request['project_dir'];
+    }
+    
     // Check if install location already exists.
     if (is_dir($request['project_install_location'])) {
       if (!drush_confirm(dt('Install location !location already exists. Do you want to overwrite it?', array('!location' => $request['project_install_location'])))) {
@@ -2156,6 +2176,9 @@ function drush_pm_download() {
       drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'success');
       $request['base_project_path'] = basename($request['project_install_location']);
       $request['full_project_path'] = $request['project_install_location'];
+      if ($request['project_install_location'] == DRUSH_BASE_PATH) {
+        drush_log(dt("Drush successfully updated to version !version.", array('!version' => $release['version'])), 'success');
+      }
     }
     else {
       drush_log(dt("Project !project (!version) could not be downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'error');
@@ -2191,19 +2214,38 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
   if ($project['project_type'] == 'module') {
     $module_files = drush_scan_directory($project['full_project_path'], '/.*\.module/');
     if (empty($module_files)) {
-      $drush_command_files = drush_scan_directory($project['full_project_path'], '/.*\.drush.inc/');
-      if (!empty($drush_command_files)) {
-        $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
-        if (!is_dir($install_dir)) {
-          $install_dir = drush_server_home() . '/.drush';
+      if ($project['name'] == 'drush') {
+        // $project['version'] is empty here, so compose the version from the $release structure.
+        $drush_release_version = $release['version_major'] . "." . $release['version_patch'] . (empty($release['version_extra']) ? '' : ('-' . $release['version_extra']));
+        if(($project['project_install_location'] != DRUSH_BASE_PATH) && ($release['version_major'] >= '4')) {
+          $backup_dir = drush_preflight_backup_dir();
+          if (drush_confirm(dt('Would you like to back up your current drush version !currentversion to !backup and replace it with drush !version?', array('!version' => $drush_release_version, '!backup' => $backup_dir, '!currentversion' => DRUSH_VERSION)))) {
+            $project['project_install_location'] = DRUSH_BASE_PATH;
+          }
+          else {
+            // If we are called via 'drush self-update', then "no" means "do nothing".
+            // If we are called via 'drush dl drush', then "no" means "download to cwd".
+            if (drush_get_option('self-update', FALSE)) {
+              return drush_user_cancel();
+            }
+          }
         }
-        // Make the .drush dir if it does not already exist.
-        if (!is_dir($install_dir)) {
-          drush_mkdir($install_dir);
-        }
-        // Change the location if the mkdir worked.
-        if (is_dir($install_dir)) {
-          $project['project_install_location'] = $install_dir;
+      }
+      else {
+        $drush_command_files = drush_scan_directory($project['full_project_path'], '/.*\.drush.inc/');
+        if (!empty($drush_command_files)) {
+          $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
+          if (!is_dir($install_dir)) {
+            $install_dir = drush_server_home() . '/.drush';
+          }
+          // Make the .drush dir if it does not already exist.
+          if (!is_dir($install_dir)) {
+            drush_mkdir($install_dir);
+          }
+          // Change the location if the mkdir worked.
+          if (is_dir($install_dir)) {
+            $project['project_install_location'] = $install_dir;
+          }
         }
       }
     }

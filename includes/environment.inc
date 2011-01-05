@@ -1283,8 +1283,13 @@ function drush_find_drush() {
  */
 function drush_read_drush_info() {
   $drush_info_file = dirname(__FILE__) . '/../drush.info';
+  
+  $drush_info = parse_ini_file($drush_info_file);
+  if (($drush_info !== FALSE) && (!array_key_exists('datestamp', $drush_info))) {
+    $drush_info = array_merge($drush_info, array('drush_install_date' => filemtime($drush_info_file)));
+  }
 
-  return parse_ini_file($drush_info_file);
+  return $drush_info;
 }
 
 /**

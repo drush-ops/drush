@@ -11,6 +11,14 @@
  * just to check on. In this case, say at the confirmation prompt.
  */
 function drush_pm_updatecode() {
+  // First check to see if there is a newer drush.
+  if (drush_get_option('self-update', TRUE)) {
+    if (drush_self_update(FALSE) === TRUE) {
+      drush_log(dt('Installed new version of drush; exiting.'), 'ok');
+      return TRUE;
+    }
+  }
+  
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 

@@ -388,8 +388,16 @@ function drush_parse_args() {
       $arguments[] = $opt;
     }
   }
-  // If no arguments are specified, print the help screen.
-  $arguments = sizeof($arguments) ? $arguments : array('help');
+  // If no arguments are specified, then the command will
+  // be either 'help' or 'version' (the later if --version is specified)
+  if (!sizeof($arguments)) {
+    if (array_key_exists('version', $options)) {
+      $arguments = array('version');
+    }
+    else {
+      $arguments = array('help');
+    }
+  }
   
   // Handle the "@shift" alias, if present
   drush_process_bootstrap_to_first_arg($arguments);

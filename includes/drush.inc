@@ -171,6 +171,87 @@ function drush_drupal_version($drupal_root = NULL) {
   return $version;
 }
 
+/**
+ * Install a newer version of drush, if available
+ *
+ * @param $explicit
+ *   TRUE if called explicitly via the 'drush self-update'
+ *   command; FALSE if called implicitly via 'drush --version'
+ *   or 'drush pm-updatecode'.  When called via the self-update
+ *   command, errors are reported via drush_set_error, and a dev
+ *   release can be upgraded to a newer dev release.  If FALSE,
+ *   then errors cause self-update to exit silently, and only
+ *   stable releases are considered (unless the --dev flag is
+ *   specified).  We do not want to nag users to upgrade to
+ *   every single available dev release unless they explicitly
+ *   ask.
+ *
+ * @return
+ *   TRUE - installed new version of drush
+ *   FALSE - user cancelled, or error
+ *   NULL - no action taken (e.g. no release available)
+ */
+function drush_self_update($explicit = TRUE) {  
+  $error = "";
+  
+  // Do nothing unless we can write to the drush install location
+  if (!is_writable(DRUSH_BASE_PATH)) {
+    $error = dt('Drush folder at !loc is not writable', array('!loc' => DRUSH_BASE_PATH));
+  }
+  // Don't check unless we have a datestamp in drush.info
+  $drush_info = drush_read_drush_info();
+  if (($drush_info === FALSE) || (!array_key_exists('datestamp', $drush_info) && !array_key_exists('drush_install_date', $drush_info))) {
+    $error = dt('Cannot determine release date for drush');
+  }
+  
+  // Fail with 'return FALSE' or 'drush_set_error', as appropriate.
+  if (!empty($error)) {
+    if ($explicit) {
+      return drush_set_error('DRUSH_CANNOT_SELF_UPDATE', $error, 'error');
+    }
+    else {
+      return FALSE;
+    }
+  }
+  
+  // Allow updates to the latest HEAD release if --self-update=head is specified.
+  // If we are called from `drush self-update`, then --dev will set --self-update=head.
+  $dev_ok = (drush_get_option('self-update') == 'head');
+  $is_dev = FALSE;
+  
+  // Get release info for drush
+  $info = _drush_pm_get_releases(array('drush'));
+  // Check for newer releases based on the datestamp if it is available, or based
+  // on the install date if it is not.  The install date is maintained in drush_read_drush_info().
+  $version_date = array_key_exists('datestamp', $drush_info) ? $drush_info['datestamp'] : $drush_info['drush_install_date'];
+  $newer_version = FALSE;
+  foreach ($info['drush']['releases'] as $version => $release_info) {
+    // We deliberately skip any dev releases unless the current release is a dev release.
+    if ($dev_ok || ((strpos(DRUSH_VERSION, "-dev") !== FALSE) && $explicit) || (!array_key_exists('version_extra', $release_info) || ($release_info['version_extra'] != 'dev'))) {
+      if ($release_info['date'] > $version_date) {
+        $newer_version = $release_info['version'];
+        $version_date = $release_info['date'];
+        $is_dev = ($release_info['version_extra'] == 'dev');
+        if ($is_dev) {
+          $newer_version .= " (" . date('Y-M-d', $version_date) . ")";
+        }
+      }
+    }
+  }
+  
+  if ($newer_version) {
+    $backup_dir = drush_preflight_backup_dir();
+    if(drush_confirm(dt('A newer version of drush, !version, is available.  Would you like to back up your current drush, version !currentversion, to !backup and replace it with the newer release?', array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION, '!backup' => $backup_dir,)))) {
+      // pm-download will select the most recent stable release, which is what we want.
+      return drush_invoke_process_args("pm-download", array("drush"), array("destination" => DRUSH_BASE_PATH, "backup-location" => $backup_dir, "dev" => $is_dev));
+    }    
+  }
+  else {
+    drush_log(dt("drush self-update check: drush !version is up-to-date.", array('!version' => DRUSH_VERSION)), $explicit ? 'ok' : 'notice');
+  }
+  
+  return NULL;
+}
 
 function drush_drupal_cache_clear_all() {
   $prior = drush_get_context('DRUSH_AFFIRMATIVE');
@@ -235,6 +316,7 @@ function drush_get_global_options($brief = FALSE) {
   $options['simulate']           = array('short-form' => 's', 'description' => dt("Simulate all relevant actions (don't actually change the system)"));
   $options['pipe']               = array('short-form' => 'p', 'description' => dt("Emit a compact representation of the command for scripting."));
   $options['help']               = array('short-form' => 'h', 'description' => dt("This help system."));
+  $options['version']            = dt("Show drush version.");
   $options['php']                = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
   
   if (!$brief) {
@@ -875,7 +957,7 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
   if (!drush_get_context('DRUSH_NEGATIVE') && !drush_get_context('DRUSH_AFFIRMATIVE') && !drush_get_context('DRUSH_PIPE')) {
     while ($line = trim(fgets(STDIN))) {
       if (array_key_exists($line, $selection_list)) {
-	return $selection_list[$line];
+        return $selection_list[$line];
       }
     }
   }
@@ -1603,6 +1685,48 @@ function _drush_delete_registered_files() {
 }
 
 /**
+ * Decide where our backup directory should go
+ */
+function drush_preflight_backup_dir($date_prefix = '') {
+  $backup_dir = drush_get_context('DRUSH_BACKUP_DIR', drush_get_option('backup-location'));
+  
+  if (empty($backup_dir)) {
+    // Save the date to be used in the backup directory's path name.
+    $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
+
+    $backup_dir = drush_get_option('backup-dir', drush_server_home() . '/' . '.drush-backups');
+    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR) . '/' . $date_prefix . $date;
+    drush_set_context('DRUSH_BACKUP_DIR', $backup_dir);
+  }
+  return $backup_dir;
+}
+
+/**
+ * Prepare a backup directory
+ */
+function drush_prepare_backup_dir($date_prefix = '') {
+  $backup_dir = drush_preflight_backup_dir($date_prefix);
+  $backup_parent = dirname($backup_dir);
+  
+  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+
+  if ((!empty($drupal_root)) && (strpos($backup_parent, $drupal_root) === 0)) {
+    return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('It\'s not allowed to store backups inside the Drupal root directory.'));
+  }
+  if (!file_exists($backup_parent)) {
+    if (!drush_mkdir($backup_parent)) {
+      return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Unable to create backup directory !dir.', array('!dir' => $backup_parent)));
+    }
+  }
+  if (!is_writable($backup_parent)) {
+    return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Backup directory !dir is not writable.', array('!dir' => $backup_parent)));
+  }
+
+  drush_mkdir($backup_dir);
+  return $backup_dir;
+}
+
+/**
  * @} End of "defgroup filesystemfunctions".
  */
 
@@ -1854,21 +1978,21 @@ function drush_remote_command() {
       $label_separator = ' >> ';
       $max_name_length = 0;
       foreach ($site_list as $alias_name => $alias_record) {
-	if (strlen($alias_name) > $max_name_length) {
-	  $max_name_length = strlen($alias_name);
-	}
+        if (strlen($alias_name) > $max_name_length) {
+          $max_name_length = strlen($alias_name);
+        }
       }
       $multi_options['reserve-margin'] = $max_name_length + strlen($label_separator);
       foreach ($site_list as $alias_name => $alias_record) {
         $values = drush_do_site_command($alias_record, $command, $args, $multi_options);
         foreach (explode("\n", $values['output']) as $line) {
-	  if (empty($line)) {
-	    drush_print();
-	  }
-	  else {
+          if (empty($line)) {
+            drush_print();
+          }
+          else {
             drush_print(str_pad($alias_name, $max_name_length, " ") . $label_separator . $line);
-	  }
-	}
+          }
+        }
       }
     }
     else {

@@ -62,6 +62,11 @@
 // Consider improving Windows support: http://drupal.org/node/766080. 
 # $options['check_os'] = FALSE;
 
+// Control automatically check for updates in pm-updatecode and drush version.
+// FALSE = never check for updates.  'head' = allow updates to drush-HEAD.
+// TRUE (default) = allow updates to latest stable release.
+# $options['self-update'] = FALSE;
+
 // Specify CVS for checkouts
 # $options['package-handler'] = 'cvs';
 

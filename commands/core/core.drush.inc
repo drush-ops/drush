@@ -39,6 +39,21 @@ function core_drush_command() {
     ),
     'topics' => array('docs-readme'),
   );
+  $items['version'] = array(
+    'description' => 'Show drush version.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'options' => array(
+      'pipe' => 'Print just the version number, and nothing else.'
+    ),
+  );
+  $items['self-update'] = array(
+    'description' => 'Update drush to the latest version, if available.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'options' => array(
+      '--dev' => 'Allow updates to latest dev release.',
+    ),
+    'aliases' => array('selfupdate'),
+  );
   $items['core-cron'] = array(
     'description' => 'Run all cron hooks in all active modules for specified site.',
     'aliases' => array('cron'),
@@ -738,6 +753,28 @@ function drush_core_drupal_directory($target = 'root') {
   }
 
   return TRUE;
+}
+
+/**
+ * Called for `drush version` or `drush --version`
+ */
+function drush_core_version() {
+  drush_print(dt("drush version !version", array('!version' => DRUSH_VERSION)));
+  drush_print_pipe(DRUSH_VERSION);
+  // Next check to see if there is a newer drush.
+  if (drush_get_option('self-update', TRUE)) {
+    drush_self_update(FALSE);
+  }
+}
+
+function drush_core_self_update() {
+  if (drush_get_option(array('dev', 'head'), FALSE)) {
+    drush_set_option('self-update', 'head');
+  }
+  
+  if (drush_self_update(TRUE) === FALSE) {
+    drush_log(dt("drush !version is already up-to-date.", array('!version' => DRUSH_VERSION)), 'ok');
+  }
 }
 
 function drush_core_find_project_path($target) {
