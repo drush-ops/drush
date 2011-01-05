@@ -44,10 +44,12 @@
 function drush_cache_clear_types() {
   $types = array(
     'all' => 'drupal_flush_all_caches',
-    'theme' => 'drush_cache_clear_theme_registry',
+    'theme registry' => 'drush_cache_clear_theme_registry',
     'menu' => 'menu_rebuild',
     'css+js' => 'drush_cache_clear_css_js',
     'block' => 'drush_cache_clear_block',
+    'module list' => 'drush_get_modules',
+    'theme list' => 'drush_get_themes',
   );
   if (drush_drupal_major_version() >= 7) {
     $types['registry'] = 'registry_update';
@@ -59,7 +61,11 @@ function drush_cache_clear_types() {
   if (count(module_implements('node_grants'))) {
     $types['nodeaccess'] = 'node_access_rebuild';
   }
-  
+
+  // Include the appropriate environment engine, so callbacks can use core
+  // version specific cache clearing functions directly.
+  drush_include_engine('drupal', 'environment');
+
   // Command files may customize $types as desired.
   drush_command_invoke_all_ref('drush_cache_clear', $types);
   return $types;
