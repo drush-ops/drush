@@ -32,8 +32,6 @@ function package_handler_validate() {
  * @param $release The release details array from drupal.org
  */
 function package_handler_download_project(&$request, $release) {
-  drush_log(dt('Downloading project !name ...', array('!name' => $request['name'])));
-
   if (isset($release['version_extra']) && $release['version_extra'] == 'dev') {
     // Use the development repository, not supported yet.
     $repository = 'git://git.drupal.org/project/' . $request['name'] . '.git';
