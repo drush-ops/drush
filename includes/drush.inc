@@ -186,12 +186,17 @@ function drush_drupal_version($drupal_root = NULL) {
  *   every single available dev release unless they explicitly
  *   ask.
  *
+ * @param $update
+ *   TRUE if this function is allowed to update drush; if FALSE,
+ *   it will inform the user of available updates, but will take
+ *   no action.
+ *
  * @return
- *   TRUE - installed new version of drush
+ *   TRUE - installed new version of drush (or new version is available, if $update === FALSE)
  *   FALSE - user cancelled, or error
  *   NULL - no action taken (e.g. no release available)
  */
-function drush_self_update($explicit = TRUE) {  
+function drush_self_update($explicit = TRUE, $update = TRUE) {  
   $error = "";
   
   // Do nothing unless we can write to the drush install location
@@ -240,11 +245,17 @@ function drush_self_update($explicit = TRUE) {
   }
   
   if ($newer_version) {
-    $backup_dir = drush_preflight_backup_dir();
-    if(drush_confirm(dt('A newer version of drush, !version, is available.  Would you like to back up your current drush, version !currentversion, to !backup and replace it with the newer release?', array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION, '!backup' => $backup_dir,)))) {
-      // pm-download will select the most recent stable release, which is what we want.
-      return drush_invoke_process_args("pm-download", array("drush"), array("destination" => DRUSH_BASE_PATH, "backup-location" => $backup_dir, "dev" => $is_dev));
-    }    
+    if ($update) {
+      $backup_dir = drush_preflight_backup_dir();
+      if(drush_confirm(dt('A newer version of drush, !version, is available.  Would you like to back up your current drush, version !currentversion, to !backup and replace it with the newer release?', array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION, '!backup' => $backup_dir)))) {
+	// pm-download will select the most recent stable release, which is what we want.
+	return (drush_invoke_process_args("pm-download", array("drush"), array("destination" => DRUSH_BASE_PATH, "backup-location" => $backup_dir, "dev" => $is_dev)) !== FALSE);
+      }
+    }
+    else {
+      drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion; to update, run `drush self-update`.  To disable this check, put "$options[\'self-update\'] = FALSE;" in your drushrc.php configuration file.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
+      return TRUE;
+    }
   }
   else {
     drush_log(dt("drush self-update check: drush !version is up-to-date.", array('!version' => DRUSH_VERSION)), $explicit ? 'ok' : 'notice');

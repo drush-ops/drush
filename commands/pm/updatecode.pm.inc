@@ -11,14 +11,6 @@
  * just to check on. In this case, say at the confirmation prompt.
  */
 function drush_pm_updatecode() {
-  // First check to see if there is a newer drush.
-  if (drush_get_option('self-update', TRUE)) {
-    if (drush_self_update(FALSE) === TRUE) {
-      drush_log(dt('Installed new version of drush; exiting.'), 'ok');
-      return TRUE;
-    }
-  }
-  
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
@@ -160,6 +152,11 @@ function drush_pm_updatecode() {
     }
   }
 
+  // First check to see if there is a newer drush.
+  if (drush_get_option('self-update', TRUE)) {
+    $drush_update_available = drush_self_update(FALSE, FALSE);
+  }
+  
   // Do no updates in simulated mode
   if (drush_get_context('DRUSH_SIMULATE')) {
     return drush_log(dt('No action taken in simulated mode.'), 'ok');
@@ -191,7 +188,13 @@ function drush_pm_updatecode() {
     }
   }
 
+  // If there are no releases to update, then print a final
+  // exit message.  Supress the message if we already printed
+  // a message about a drush update being available.
   if (empty($updateable)) {
+    if ($drush_update_available === TRUE) {
+      return FALSE;
+    }
     if ($security_only) {
       return drush_log(dt('No security updates available.'), 'ok');
     }
