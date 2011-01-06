@@ -49,6 +49,10 @@ define('DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE', 106);
  */
 function pm_drush_help($section) {
   switch ($section) {
+    case 'meta:pm:title':
+      return dt('Project manager commands');
+    case 'meta:pm:summary':
+      return dt('Download, enable, examine and update your modules and themes.');
     case 'drush:pm-enable':
       return dt('Enable one or more extensions (modules or themes). Enable dependant extensions as well.');
     case 'drush:pm-disable':

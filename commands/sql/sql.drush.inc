@@ -6,6 +6,18 @@
  */
 
 /**
+ * Implementation of hook_drush_help().
+ */
+function sql_drush_help($section) {
+  switch ($section) {
+    case 'meta:sql:title':
+      return dt('SQL commands');
+    case 'meta:sql:summary':
+      return dt('Examine and modify your Drupal database.');
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  */
 function sql_drush_command() {

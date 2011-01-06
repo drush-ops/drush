@@ -7,6 +7,18 @@
  */
 
 /**
+ * Implementation of hook_drush_help().
+ */
+function field_drush_help($section) {
+  switch ($section) {
+    case 'meta:field:title':
+      return dt('Field commands');
+    case 'meta:field:summary':
+      return dt('Manipulate Drupal 7+ fields.');
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  */
 function field_drush_command() {

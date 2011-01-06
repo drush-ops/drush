@@ -311,6 +311,8 @@ function drush_core_updatedb() {
  */
 function core_drush_help($section) {
   switch ($section) {
+    case 'meta:core:title':
+      return dt("Core drush commands");
     case 'drush:help':
       return dt("Drush provides an extensive help system that describes both drush commands and topics of general interest.  Use `drush help --filter` to present a list of command categories to view, and `drush topic` for a list of topics that go more in-depth on how to use and extend drush.");
     case 'drush:php-script':

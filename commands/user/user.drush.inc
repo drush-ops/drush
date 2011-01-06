@@ -5,6 +5,15 @@
  * @file Drush User Management commands
  */
 
+function user_drush_help($section) {
+  switch ($section) {
+    case 'meta:user:title':
+      return dt('User commands');
+    case 'meta:user:summary':
+      return dt('Add, modify and delete users.');
+  }
+}
+
 /**
  * Implementation of hook_drush_command().
  */

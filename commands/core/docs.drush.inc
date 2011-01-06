@@ -7,6 +7,18 @@
  */
 
 /**
+ * Implementation of hook_drush_help().
+ */
+function docs_drush_help($section) {
+  switch ($section) {
+    case 'meta:docs:title':
+      return dt('Documentation commands');
+    case 'meta:docs:summary':
+      return dt('Show information on various drush topics.');
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  *
  * @return
