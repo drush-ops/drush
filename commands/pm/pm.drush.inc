@@ -61,7 +61,7 @@ function pm_drush_help($section) {
       }
       $message .= ' '.dt("Note: The user is asked to confirm before the actual update. Backups are performed unless directory is already under version control. Updated projects can potentially break your site. It is NOT recommended to update production sites without prior testing.");
       return $message;
-    case 'drush:pm-updatecode-notify-pending-db-updates':
+    case 'drush:pm-updatecode-postupdate':
       return dt("This is a helper command needed by updatecode. It is used to check for db updates in a backend process after code updated have been performed. We need to run this task in a separate process to not conflict with old code already in memory.");
       case 'drush:pm-releases':
       return dt("View all releases for a given drupal.org project. Useful for deciding which version to install/update.");
@@ -178,7 +178,7 @@ function pm_drush_command() {
     'aliases' => array('up'),
     'deprecated-aliases' => array('update'),
   ));
-  $items['pm-updatecode-notify-pending-db-updates'] = array(
+  $items['pm-updatecode-postupdate'] = array(
     'description' => 'Notify of pending db updates.',
     'hidden' => TRUE
   );
@@ -1499,8 +1499,8 @@ function drush_pm_updatecode_validate() {
 /**
  * Post-command callback for updatecode.
  *
- * Execute pm-updatecode-notify-pending-db-updates in a backend process to not
- * conflict with old code already in memory.
+ * Execute pm-updatecode-postupdate in a backend process to not conflict with
+ * old code already in memory.
  */
 function drush_pm_post_pm_updatecode() {
   // Skip if updatecode was invoked by pm-update.
@@ -1508,15 +1508,19 @@ function drush_pm_post_pm_updatecode() {
   $command = drush_get_command();
   if ($command['command'] != 'pm-update') {
     if (drush_get_context('DRUSH_PM_UPDATED', FALSE) !== FALSE) {
-      drush_backend_invoke('pm-updatecode-notify-pending-db-updates');
+      drush_backend_invoke('pm-updatecode-postupdate');
     }
   }
 }
 
 /**
- * Command callback. Execute updatecode-notify-pending-db-updates.
+ * Command callback. Execute updatecode-postupdate.
  */
-function drush_pm_updatecode_notify_pending_db_updates() {
+function drush_pm_updatecode_postupdate() {
+  // Clear the cache, since some projects could have moved around.
+  drush_drupal_cache_clear_all();
+
+  // Notify of pending database updates.
   // Make sure the installation API is available
   require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
 
@@ -1529,7 +1533,7 @@ function drush_pm_updatecode_notify_pending_db_updates() {
     if ($updates !== FALSE) {
       $default = drupal_get_installed_schema_version($module);
       if (max($updates) > $default) {
-        drush_log(dt("You have pending database updates. Please run `drush updatedb` or visit update.php in your browser."), 'warning');
+        drush_log(dt("You have pending database updates. Run `drush updatedb` or visit update.php in your browser."), 'warning');
         break;
       }
     }

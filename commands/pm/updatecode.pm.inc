@@ -409,8 +409,6 @@ function pm_update_packages($update_info, $tmpfile) {
     }
     pm_update_complete($project, $version_control);
   }
-  // Clear the cache, since some projects could have moved around.
-  drush_drupal_cache_clear_all();
 
   return TRUE;
 }
