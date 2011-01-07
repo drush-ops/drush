@@ -134,7 +134,7 @@ function drush_core_help() {
       if (!array_key_exists($filter_category, $command_categories)) {
         return drush_set_error('DRUSH_NO_CATEGORY', dt("The specified command category !filter does not exist.", array('!filter' => $filter_category)));
       }
-      $command_categories = array($command_categories[$filter_category]);
+      $command_categories = array($filter_category => $command_categories[$filter_category]);
     }
 
     // If the user specified --sort, then merge all of the remaining
