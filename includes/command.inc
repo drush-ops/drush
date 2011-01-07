@@ -208,7 +208,9 @@ function drush_dispatch($command, $arguments = array()) {
  *   The drush command to execute.
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
+ *   If the command was completed, this will return an associative 
+ *   array containing the results of the API call. 
+ *   @see drush_backend_get_result()
  */
 function drush_invoke_process($command_name) {
   $args = func_get_args();
@@ -223,7 +225,9 @@ function drush_invoke_process($command_name) {
  *   The drush command to execute.
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
+ *   If the command was completed, this will return an associative 
+ *   array containing the results of the API call. 
+ *   @see drush_backend_get_result()
  */
 function drush_invoke_process_args($command_name, $commandline_args, $commandline_options = array()) {
   return drush_backend_invoke_args($command_name, $commandline_args, $commandline_options);
@@ -239,7 +243,9 @@ function drush_invoke_process_args($command_name, $commandline_args, $commandlin
  *  The command to invoke.
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
+ *   If the command was completed, this will return an associative 
+ *   array containing the results of the API call. 
+ *   @see drush_backend_get_result()
  */
 function drush_invoke_sitealias($site_alias_record, $command_name) {
   $args = func_get_args();
@@ -263,7 +269,9 @@ function drush_invoke_sitealias($site_alias_record, $command_name) {
  *  The options (e.g. --select) to provide to the command.
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
+ *   If the command was completed, this will return an associative 
+ *   array containing the results of the API call. 
+ *   @see drush_backend_get_result()
  */
 function drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array()) {
   // If the first parameter is not a site alias record,

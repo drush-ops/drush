@@ -47,8 +47,14 @@
  * external servers through SSH pipes, simply by prepending, 'ssh username@server.com'
  * in front of the command.
  *
- * If the key-based ssh authentication has been set up between the servers, this will just
- * work, otherwise the user will be asked to enter a password.
+ * If the key-based ssh authentication has been set up between the servers, 
+ * this will just work.  By default, drush is configured to disallow password
+ * authentication; if you would like to enter a password for every connection,
+ * then in your drushrc.php file, set $options['ssh-options'] so that it does NOT 
+ * include '-o PasswordAuthentication=no'.  See examples/example.drushrc.php.
+ *
+ * The results from backend API calls can be fetched via a call to backend get results.
+ * @see drush_backend_get_result().
  */
 
 /**
@@ -61,7 +67,43 @@ function drush_backend_set_result($value) {
     drush_set_context('BACKEND_RESULT', $value);
   }
 }
-
+/**
+ * Retrieves the results from the last call to backend_invoke.
+ *
+ * @returns array
+ *   An associative array containing information from the last
+ *   backend invoke.  The keys in the array include:
+ *
+ *     - output: This item contains the textual output of 
+ *       the command that was executed.
+ *     - object: Contains the PHP object representation of the 
+ *       result of the command.  
+ *     - self: The self object contains the alias record that was 
+ *       used to select the bootstrapped site when the command was 
+ *       executed.
+ *     - error_status: This item returns the error status for the 
+ *       command.  Zero means "no error".
+ *     - log: The log item contains an array of log messages from 
+ *       the command execution ordered chronologically.  Each log 
+ *       entery is an associative array.  A log entry contains 
+ *       following items:
+ *         o  type: The type of log entry, such as 'notice' or 'warning'
+ *         o  message: The log message
+ *         o  timestamp: The time that the message was logged
+ *         o  memory: Available memory at the time that the message was logged
+ *         o  error: The error code associated with the log message 
+ *            (only for log entries whose type is 'error')
+ *     - error_log: The error_log item contains another representation 
+ *       of entries from the log.  Only log entries whose 'error' item 
+ *       is set will appear in the error log.  The error log is an 
+ *       associative array whose key is the error code, and whose value 
+ *       is an array of messages--one message for every log entry with 
+ *       the same error code.
+ *     - context: The context item contains a representation of all option 
+ *       values that affected the operation of the command, including both 
+ *       the command line options, options set in a drushrc.php configuration 
+ *       files, and options set from the alias record used with the command.  
+ */
 function drush_backend_get_result() {
   return drush_get_context('BACKEND_RESULT');
 }
