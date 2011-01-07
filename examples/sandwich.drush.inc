@@ -73,6 +73,9 @@ function sandwich_drush_command() {
  * 'drush help <name-of-your-command>'. This hook is optional. If a command
  * does not implement this hook, the command's description is used instead.
  *
+ * This hook is also used to look up help metadata, such as help
+ * category title and summary.  See the comments below for a description.
+ *
  * @param
  *   A string with the help section (prepend with 'drush:')
  *
@@ -83,6 +86,22 @@ function sandwich_drush_help($section) {
   switch ($section) {
     case 'drush:make-me-a-sandwich':
       return dt("This command will make you a delicious sandwich, just how you like it.");
+    // The 'title' meta item is used to name a group of
+    // commands in `drush help`.  If a title is not defined,
+    // the default is "All commands in ___", with the
+    // specific name of the commandfile (e.g. sandwich).
+    // Command files with less than four commands will 
+    // be placed in the "Other commands" section, _unless_
+    // they define a title.  It is therefore preferable
+    // to not define a title unless the file defines a lot
+    // of commands.
+    case 'meta:sandwich:title':
+      return dt("Sandwich commands");
+    // The 'summary' meta item is displayed in `drush help --filter`,
+    // and is used to give a general idea what the commands in this
+    // command file do, and what they have in common.
+    case 'meta:sandwich:summary':
+      return dt("Automates your sandwich-making business workflows.");
   }
 }
 
