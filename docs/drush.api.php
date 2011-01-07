@@ -205,8 +205,8 @@ function hook_drush_sql_sync_sanitize($source) {
  */
 function hook_drush_help_alter(&$command) {
   if ($command['command'] == 'sql-sync') {
-    $command['options']['--myoption'] = "Description of modification of sql-sync done by hook";
-    $command['sub-options']['--sanitize']['--my-sanitize-option'] = "Description of sanitization option added by hook (grouped with --sanitize option)";
+    $command['options']['myoption'] = "Description of modification of sql-sync done by hook";
+    $command['sub-options']['sanitize']['my-sanitize-option'] = "Description of sanitization option added by hook (grouped with --sanitize option)";
   }
 }
 
