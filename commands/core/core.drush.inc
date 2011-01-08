@@ -764,8 +764,8 @@ function drush_core_version() {
   drush_print(dt("drush version !version", array('!version' => DRUSH_VERSION)));
   drush_print_pipe(DRUSH_VERSION);
   // Next check to see if there is a newer drush.
-  if (drush_get_option('self-update', TRUE)) {
-    drush_self_update(FALSE);
+  if (!drush_get_context('DRUSH_PIPE') && !drush_get_option('self-update', TRUE)) {
+    drush_self_update(FALSE, FALSE);
   }
 }
 

@@ -228,7 +228,8 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
   $info = _drush_pm_get_releases(array('drush'));
   // Check for newer releases based on the datestamp if it is available, or based
   // on the install date if it is not.  The install date is maintained in drush_read_drush_info().
-  $version_date = array_key_exists('datestamp', $drush_info) ? $drush_info['datestamp'] : $drush_info['drush_install_date'];
+  // We add 60 seconds to the drush.info date because of a drupal.org WTF. See http://drupal.org/node/1019356.
+  $version_date = array_key_exists('datestamp', $drush_info) ? $drush_info['datestamp'] + 60 : $drush_info['drush_install_date'];
   $newer_version = FALSE;
   foreach ($info['drush']['releases'] as $version => $release_info) {
     // We deliberately skip any dev releases unless the current release is a dev release.
@@ -236,7 +237,7 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
       if ($release_info['date'] > $version_date) {
         $newer_version = $release_info['version'];
         $version_date = $release_info['date'];
-        $is_dev = ($release_info['version_extra'] == 'dev');
+        $is_dev = isset($release_info['version_extra']) && $release_info['version_extra'] == 'dev';
         if ($is_dev) {
           $newer_version .= " (" . date('Y-M-d', $version_date) . ")";
         }
