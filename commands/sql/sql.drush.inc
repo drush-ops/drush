@@ -846,16 +846,15 @@ function drush_sql_build_exec($db_spec, $filepath) {
   $scheme = _drush_sql_get_scheme($db_spec);
   switch ($scheme) {
     case 'mysql':
-      $exec = 'mysql' . (drush_get_context('DRUSH_VERBOSE') ? ' -v' : '');
+      $exec = 'mysql';
       $exec .= _drush_sql_get_credentials($db_spec);
       $exec .= ' ' . drush_get_option('extra');
       $exec .= " < $filepath";
 
       break;
     case 'pgsql':
-      $exec = 'psql';
+      $exec = 'psql -q ';
       $exec .= _drush_sql_get_credentials($db_spec);
-      $exec .= (drush_get_context('DRUSH_VERBOSE') ? '' : ' -q');
       $exec .= ' ' . (drush_get_option('extra') ? drush_get_option('extra') : "--no-align --field-separator='\t' --pset footer=off");
       $exec .= " --file $filepath";
       break;
