@@ -117,6 +117,16 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
   if (drush_get_option('prepare-install')) {
     drush_make_prepare_install($build_path);
   }
+}
+
+/**
+ * Implementation of drush_hook_post_COMMAND() for the make command.
+ */
+function drush_drush_make_post_make($makefile = NULL, $build_path = NULL) {
+  if (!($build_path = drush_make_build_path($build_path))) {
+    return;
+  }
+
   if (drush_get_option('md5')) {
     drush_make_md5();
   }
