@@ -30,7 +30,7 @@ function sql_drush_command() {
     'description' => 'Drop all tables in a given database.',
     'arguments' => array(
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'options' => array(
       'yes' => 'Skip confirmation and proceed.',
       'result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
@@ -531,7 +531,7 @@ function _drush_sql_drop($db_spec = NULL) {
       // Shift off the header of the column of data returned.
       array_shift($tables);
       $sql = 'DROP TABLE '. implode(', ', $tables);
-      return drush_op('db_query', $sql);
+      return _drush_sql_query($sql, $db_spec);
     }
   }
   else {

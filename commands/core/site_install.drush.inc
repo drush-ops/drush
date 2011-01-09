@@ -59,8 +59,8 @@ function drush_core_pre_site_install() {
     }
   }
 
-  // Now we can bootstrap up to the specified site if not already there.
-  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+  // Now we can bootstrap up to the specified site.
+  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
 
   // Drop and create DB if needed.
   $db_name = $db_spec['database'];
