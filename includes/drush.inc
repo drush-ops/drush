@@ -247,7 +247,7 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
   
   if ($newer_version) {
     if ($update) {
-      $backup_dir = drush_preflight_backup_dir();
+      $backup_dir = drush_preflight_backup_dir('drush');
       if(drush_confirm(dt('A newer version of drush, !version, is available.  Would you like to back up your current drush, version !currentversion, to !backup and replace it with the newer release?', array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION, '!backup' => $backup_dir)))) {
 	// pm-download will select the most recent stable release, which is what we want.
 	return (drush_invoke_process_args("pm-download", array("drush"), array("destination" => DRUSH_BASE_PATH, "backup-location" => $backup_dir, "dev" => $is_dev)) !== FALSE);
@@ -1698,16 +1698,29 @@ function _drush_delete_registered_files() {
 
 /**
  * Decide where our backup directory should go
+ *
+ * @param string $subdir
+ *   The name of the desired subdirectory(s) under drush-backups.
+ *   Usually a database name.
  */
-function drush_preflight_backup_dir($date_prefix = '') {
+function drush_preflight_backup_dir($subdir = NULL) {
   $backup_dir = drush_get_context('DRUSH_BACKUP_DIR', drush_get_option('backup-location'));
   
   if (empty($backup_dir)) {
+    
+    // Try to use db name as subdir if none was provided.
+    if (empty($subdir)) {
+      $subdir = 'unknown';
+      if ($creds = drush_get_context('DRUSH_DB_CREDENTIALS')) {
+        $subdir = $creds['name'];
+      }
+    }
+    
     // Save the date to be used in the backup directory's path name.
     $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
 
     $backup_dir = drush_get_option('backup-dir', drush_server_home() . '/' . 'drush-backups');
-    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR) . '/' . $date_prefix . $date;
+    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR) . '/' . $subdir . '/' . $date;
     drush_set_context('DRUSH_BACKUP_DIR', $backup_dir);
   }
   return $backup_dir;
@@ -1716,8 +1729,8 @@ function drush_preflight_backup_dir($date_prefix = '') {
 /**
  * Prepare a backup directory
  */
-function drush_prepare_backup_dir($date_prefix = '') {
-  $backup_dir = drush_preflight_backup_dir($date_prefix);
+function drush_prepare_backup_dir($subdir = NULL) {
+  $backup_dir = drush_preflight_backup_dir($subdir);
   $backup_parent = dirname($backup_dir);
   
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
