@@ -58,7 +58,7 @@ function _drush_site_install6_cookies($profile, $cookie = NULL) {
   $output = '$_GET=array("profile"=>"' . $profile . '", "locale"=>"' . drush_get_option('locale', 'en') . '", "id"=>"1"); $_REQUEST=&$_GET;';
   $output .= 'define("DRUSH_SITE_INSTALL6", TRUE);$_SERVER["SERVER_SOFTWARE"] = NULL;';
   $output .= '$_SERVER["SCRIPT_NAME"] = "/install.php";';
-  $output .= '$_SERVER["HTTP_HOST"] = "'.drush_get_option('uri', 'default').'";';
+  $output .= '$_SERVER["HTTP_HOST"] = "'.$_SERVER["HTTP_HOST"].'";';
   $output .= '$_SERVER["REMOTE_ADDR"] = "127.0.0.1";';
 
   if ($cookie) {
