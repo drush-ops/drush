@@ -153,6 +153,7 @@ function drush_pm_updatecode() {
   }
 
   // First check to see if there is a newer drush.
+  $drush_update_available = NULL;
   if (drush_get_option('self-update', TRUE)) {
     $drush_update_available = drush_self_update(FALSE, FALSE);
   }
