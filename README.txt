@@ -135,11 +135,11 @@ NOTE: If you do not specify a URI with -l and drush falls back to the default
 site configuration, Drupal's $GLOBAL['base_url'] will be set to http://default.
 This may cause some functionality to not work as expected.
 
-The drush cli command provide a customized bash shell with support for handy new
-functions like cdd which whisks you to any directory in your drupal site.
+The drush core-cli command provide a customized bash shell or lets you enhance
+your usual shell with its --pipe option.
 
 Many commands support a --pipe option which returns machine readable output. See
-`drush pm-list --status=enabled --pipe` as an example
+`drush pm-list --status=enabled --pipe` as an example.
 
 Very intensive scripts can exhaust your available PHP memory. One remedy is to 
 just restart automatically using bash. For example:
