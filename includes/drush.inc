@@ -1706,7 +1706,7 @@ function drush_preflight_backup_dir($date_prefix = '') {
     // Save the date to be used in the backup directory's path name.
     $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
 
-    $backup_dir = drush_get_option('backup-dir', drush_server_home() . '/' . '.drush-backups');
+    $backup_dir = drush_get_option('backup-dir', drush_server_home() . '/' . 'drush-backups');
     $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR) . '/' . $date_prefix . $date;
     drush_set_context('DRUSH_BACKUP_DIR', $backup_dir);
   }

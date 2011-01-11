@@ -1491,7 +1491,7 @@ function drush_pm_post_pm_update() {
 function drush_pm_updatecode_validate() {
   $path = drush_get_context('DRUSH_DRUPAL_ROOT') . '/backup';
   if (is_dir($path) && (realpath(drush_get_option('backup-dir', FALSE)) != $path)) {
-    return drush_set_error('', dt('Backup directory !path found. It\'s a security risk to store backups inside the Drupal tree. Drush now uses by default ~/.drush-backups. You need to move !path out of the Drupal tree to proceed. Note: if you know what you\'re doing you can explicitly set --backup-dir to !path and continue.', array('!path' => $path)));
+    return drush_set_error('', dt('Backup directory !path found. It\'s a security risk to store backups inside the Drupal tree. Drush now uses by default ~/drush-backups. You need to move !path out of the Drupal tree to proceed. Note: if you know what you\'re doing you can explicitly set --backup-dir to !path and continue.', array('!path' => $path)));
   }
 
   // Validate package-handler.
@@ -1776,7 +1776,7 @@ function pm_drush_engine_version_control() {
       'sub-options' => array(
         'version-control=backup' => array(
           'no-backup' => 'Do not perform backups.',
-          'backup-dir' => 'Specify a directory to backup projects into. Defaults to .drush-backups within the home directory of the user running the command. It is forbidden to specify a directory inside your drupal root.',
+          'backup-dir' => 'Specify a directory to backup projects into. Defaults to drush-backups within the home directory of the user running the command. It is forbidden to specify a directory inside your drupal root.',
         ),
       ),
     ),
