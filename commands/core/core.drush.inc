@@ -230,7 +230,7 @@ function core_drush_command() {
       'use -' => 'Switch back to the last alias "used".',
       'use ~' => 'Use the default alias.',
       'use' => 'Revert to an ordinary prompt; do not use an alias.',
-      'drush core-cli --pipe > ~/.bash_customizations' => 'Convert your default shell into drush core-cli.  Make sure that your .bashrc file includes .bash_customizations (e.g. "source ~/.bash_customizations" or ". ~/.bash_customizations").',
+      'drush core-cli --pipe > ~/.bash_aliases' => 'Convert your default shell into drush core-cli.  Make sure that your .bashrc file includes .bash_aliases (e.g. "source ~/.bash_aliases" or ". ~/.bash_aliases").',
     ),
     'aliases' => array('cli'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,

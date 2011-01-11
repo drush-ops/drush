@@ -17,4 +17,4 @@
 
 alias siwef='site-install wef --account-name=super --account-mail=me@wef'
 alias dump='sql-dump --structure-tables-key=wef --ordered-dump'
-alias cli-update='(drush core-cli --pipe > $HOME/.bash_customizations) && source $HOME/.bash_customizations'
+alias cli-update='(drush core-cli --pipe > $HOME/.bash_aliases) && source $HOME/.bash_aliases'
