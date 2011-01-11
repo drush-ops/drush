@@ -774,9 +774,7 @@ function drush_core_self_update() {
     drush_set_option('self-update', 'head');
   }
   
-  if (drush_self_update(TRUE) === FALSE) {
-    drush_log(dt("drush !version is already up-to-date.", array('!version' => DRUSH_VERSION)), 'ok');
-  }
+  return drush_self_update(TRUE);
 }
 
 function drush_core_find_project_path($target) {

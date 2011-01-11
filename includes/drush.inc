@@ -203,18 +203,24 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
   if (!is_writable(DRUSH_BASE_PATH)) {
     $error = dt('Drush folder at !loc is not writable', array('!loc' => DRUSH_BASE_PATH));
   }
-  // Don't check unless we have a datestamp in drush.info
-  $drush_info = drush_read_drush_info();
-  if (($drush_info === FALSE) || (!array_key_exists('datestamp', $drush_info) && !array_key_exists('drush_install_date', $drush_info))) {
-    $error = dt('Cannot determine release date for drush');
+  elseif (is_dir(DRUSH_BASE_PATH . "/CVS")) {
+    $error = dt('Drush was checked out from CVS; cannot self-update.');
   }
-  
+  else {
+    // Don't check unless we have a datestamp in drush.info
+    $drush_info = drush_read_drush_info();
+    if (($drush_info === FALSE) || (!array_key_exists('datestamp', $drush_info))) {
+      $error = dt('Cannot determine release date for drush');
+    }
+  }
+ 
   // Fail with 'return FALSE' or 'drush_set_error', as appropriate.
   if (!empty($error)) {
     if ($explicit) {
       return drush_set_error('DRUSH_CANNOT_SELF_UPDATE', $error, 'error');
     }
     else {
+      drush_log($error, 'notice');
       return FALSE;
     }
   }
@@ -226,10 +232,9 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
   
   // Get release info for drush
   $info = _drush_pm_get_releases(array('drush'));
-  // Check for newer releases based on the datestamp if it is available, or based
-  // on the install date if it is not.  The install date is maintained in drush_read_drush_info().
+  // Check for newer releases based on the datestamp.
   // We add 60 seconds to the drush.info date because of a drupal.org WTF. See http://drupal.org/node/1019356.
-  $version_date = array_key_exists('datestamp', $drush_info) ? $drush_info['datestamp'] + 60 : $drush_info['drush_install_date'];
+  $version_date = $drush_info['datestamp'] + 60;
   $newer_version = FALSE;
   foreach ($info['drush']['releases'] as $version => $release_info) {
     // We deliberately skip any dev releases unless the current release is a dev release.
