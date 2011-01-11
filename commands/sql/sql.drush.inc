@@ -64,7 +64,7 @@ function sql_drush_command() {
       'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.com',
     ),
     'options' => array(
-      'result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
+      'result-file' => 'Save to a file. The file should be relative to Drupal root. If --result-file is provided with no value, then date based filename will be created under ~/drush-backups directory.',
       'skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
       'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
       'tables-key' => 'A key in the $tables array. Optional.',
