@@ -70,8 +70,8 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
   }
   
   // Helper for pre_update.
-  public function prepare_backup_dir($date_prefix = '') {
-    return drush_prepare_backup_dir($date_prefix);
+  public function prepare_backup_dir($subdir = NULL) {
+    return drush_prepare_backup_dir($subdir);
   }
 
   public static function reserved_files() {
