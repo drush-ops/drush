@@ -1045,7 +1045,7 @@ EOD;
     // or builtin (e.g. 'eval') with drush aliases.
     if ((strpos($key, ' ') === FALSE) && (!in_array($key, $cli_ignore))) {
       $conflict = FALSE;
-      $is_shell_builtin = (drush_shell_exec("builtin $key") == "1");
+      $is_shell_builtin = (drush_shell_exec("bash -c \"builtin $key\"") == "1");
       if (!in_array($key, $cli_overrides)) {
         $status = drush_shell_exec("which $key 2>&1");
         if ($status !== FALSE) {
