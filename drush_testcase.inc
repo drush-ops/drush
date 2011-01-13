@@ -3,21 +3,18 @@
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   
   function __construct() {
-    $this->sandbox = sys_get_temp_dir() . '/drush-sandbox';
     $this->_output = false;
-    // Assumes drush is on user's $PATH. Use absolute path as needed.
-    $this->drush = 'drush';
   }
   
   /**
    * Assure that each case starts with an empty sandbox directory.
    */
   function setUp() {
-    if (file_exists($this->sandbox)) {
-      $this->file_delete_recursive($this->sandbox);
+    if (file_exists(UNISH_SANDBOX)) {
+      $this->file_delete_recursive(UNISH_SANDBOX);
     }
     else {
-      mkdir($this->sandbox);
+      mkdir(UNISH_SANDBOX);
     }
   }
   
@@ -25,8 +22,8 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    * Runs after each test case. Remove sandbox directory.
    */
   function tearDown() {
-    if (file_exists($this->sandbox)) {
-      $this->file_delete_recursive($this->sandbox);
+    if (file_exists(UNISH_SANDBOX)) {
+      $this->file_delete_recursive(UNISH_SANDBOX);
     }
   }
 
@@ -40,9 +37,38 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    */
   function execute($command, $expected_return = 0) {
     $this->_output = false;
+    // todo check verbose level from phpunit.
+    if (1) {
+      print "\nExecuting: $command \n";
+    }
     exec($command, $this->_output, $return);
     $this->assertEquals($expected_return, $return, 'Unexpected return code: ' .  $command);
     return $return;
+  }
+  
+  /**
+   * Invoke drush in via execute().
+   *
+   * @param command
+    *    A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
+    * @param args
+    *   Command arguments
+    * @param $options
+    *    Optional. An associative array containing options.
+    */
+  function drush($command, $args = array(), $options = array()) {
+    $cmd = UNISH_DRUSH . ' ' . $command . ' ' . implode(' ', $args) . ' ';
+    $pairs = array();
+    foreach ($options as $key => $value) {
+      if (is_null($value)) {
+        $pairs[] = "--$key";
+      }
+      else {
+        $pairs[] = "--$key=$value";
+      }
+    }
+    $cmd .= implode(' ', $pairs);
+    return $this->execute($cmd);
   }
 
   /**
@@ -87,5 +113,43 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       return rmdir($path);
     }
     return unlink($path);
+  }
+}
+
+abstract class Drush_DrupalTestCase extends Drush_TestCase {
+  function setUp() {
+    parent::setUp();
+    $this->setUpDrupal();
+  }
+  
+  function setUpDrupal($env = 'dev') {
+    $root = UNISH_SANDBOX . '/web';
+
+    // Download Drupal if not already present.
+    if (!file_exists($root)) {
+      $options = array(
+        'destination' => UNISH_SANDBOX,
+        'drupal-project-rename' => 'web',
+        'yes' => NULL,
+      );
+      $this->drush('pm-download', array('drupal-7.x'), $options);
+    }
+
+    // Install Drupal as a multi-site.
+    $options = array(
+      'root' => $root,
+      'db-url' => UNISH_DB_URL . '/unish_' . $env,
+      'sites-subdir' => $env,
+      'yes' => NULL,
+    );
+    $this->drush('site-install', array(), $options);
+    // Give us our write perms back.
+    $ret = chmod("$root/sites/$env", 0777);
+
+    // Stash details about this site.
+    $this->sites[$env] = array(
+      'root' => $root,
+      'db_url' => UNISH_DB_URL . '/unish_' . $env,
+    );
   }
 }
