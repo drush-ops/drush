@@ -208,6 +208,10 @@ function drush_make_test_run_test($id) {
           $fail = TRUE;
           drush_log(dt('@testname: build completed.', array('@testname' => $test['name'])), 'error');
         }
+        elseif (!$test['build']) {
+          $error_code =& drush_get_context('DRUSH_ERROR_CODE', DRUSH_SUCCESS);
+          $error_code = DRUSH_SUCCESS;
+        }
       }
       // Test for messages.
       if (isset($test['messages'])) {
