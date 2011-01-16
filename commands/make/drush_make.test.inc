@@ -52,7 +52,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/post.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: df331bdead0bfa3a040279e3dbfc1c3f',
+        'Build hash: 58f9bf68b1a2aefca87a151c06cc0e29',
       ),
       'options'  => array('no-core' => TRUE),
     ),
@@ -124,7 +124,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/translations.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: de43204a48b68e36cc63740551385d4b',
+        'Build hash: 6eff534700a33eac2abf2ad503c86d1b',
       ),
       'options'  => array('translations' => 'es,pt-br'),
     ),
