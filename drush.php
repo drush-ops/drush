@@ -239,6 +239,9 @@ function drush_drupal_login($drush_user) {
   if (empty($user)) {
     if (is_numeric($drush_user)) {
       $message = dt('Could not login with user ID #!user.', array('!user' => $drush_user));
+      if ($drush_user === 0) {
+        $message .= ' ' . dt('This is typically caused by importing a MySQL database dump from a faulty tool which re-numbered the anonymous user ID in the users table. See !link for help recovering from this situation.', array('!link' => 'http://drupal.org/node/1029506'));
+      }
     }
     else {
       $message = dt('Could not login with user account `!user\'.', array('!user' => $drush_user));
