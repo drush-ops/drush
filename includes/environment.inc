@@ -542,6 +542,10 @@ function drush_environment_table_inc() {
       }
       if (!file_exists($tablefile)) {
         drush_shell_exec("wget -q --timeout=30 -O $tablefile " . DRUSH_TABLE_URL);
+        // wget creates an empty file on timeout. We remove it here.
+        if (file_exists($tablefile) && !drush_file_not_empty($tablefile)) {
+          unlink($tablefile);
+        }
         if (!file_exists($tablefile)) {
           drush_shell_exec("curl -s  --connect-timeout 30 -o $tablefile " . DRUSH_TABLE_URL);
           if (!file_exists($tablefile)) {
