@@ -214,8 +214,8 @@ function core_drush_command() {
   $items['core-cli'] = array(
     'description' => dt('Enter a new shell optimized for drush use.'),
     'options' => array(
-      'override' => 'List of drush commands or aliases that should override built-in shell functions and commands; otherwise, built-ins override drush commands. Defaults to dd,help,rsync,sa.',
-      'contextual' => 'Additional drush overrides that function ONLY when the prompt is "@alias>".  Defaults to cc,cron,status,sync,updatedb.',
+      'override' => 'List of drush commands or aliases that should override built-in shell functions and commands; otherwise, built-ins override drush commands. Defaults to dd,help,sa.',
+      'contextual' => 'Additional drush overrides that function ONLY when the prompt is "@alias>".  Defaults to cc,cron,rsync,status,sync,updatedb.',
       'ignore' => 'Drush commands or aliases that should not be usable from core-cli. Takes precedence over override and contextual options. Defaults to core-cli,cli.',
       'pipe' => 'Print the generated .bashrc file and exit.',
     ),
@@ -1036,8 +1036,8 @@ EOD;
   // Add aliases for all drush commands
   $bashrc_data .= "# Add aliases for all drush commands\n";
   $commands = drush_get_commands();
-  $cli_overrides = _convert_csv_to_array(drush_get_option('override', 'dd,help,rsync,sa'));
-  $cli_contextual_commands = _convert_csv_to_array(drush_get_option('contextual', 'cc,cron,status,sync,updatedb'));
+  $cli_overrides = _convert_csv_to_array(drush_get_option('override', 'dd,help,sa'));
+  $cli_contextual_commands = _convert_csv_to_array(drush_get_option('contextual', 'cc,cron,rsync,status,sync,updatedb'));
   $cli_ignore = _convert_csv_to_array(drush_get_option('ignore','core-cli,cli'));
   foreach ($commands as $key => $command) {
     // Filter out old commands that still have spaces;
@@ -1068,7 +1068,12 @@ EOD;
           drush_log($warning, 'warning');
           $bashrc_data .= "# $warning\n";
         }
-        $bashrc_data .= "function $key() {\n  if [ -z \$DRUPAL_SITE ]\n  then \n    $conflict\n  else\n    $drush_command \$DRUPAL_SITE $key \"\$@\"\n  fi\n}\n";
+	if ($key == 'rsync') {
+          $bashrc_data .= "function $key() { \n  HAS_SITE_PARAMS=\n  for p in \"\$@\" ; do\n    if [ \"x\${p:0:1}\" == \"x@\" ] || [ \"x\${p:0:1}\" == \"x%\" ]\n    then\n      HAS_SITE_PARAMS=true\n    fi\n  done\n  if [ -z \$HAS_SITE_PARAMS ]\n  then \n      $conflict \"\$@\"\n  else\n      $drush_command \$DRUPAL_SITE $key \"\$@\"\n  fi\n}\n";
+	}
+	else {
+          $bashrc_data .= "function $key() {\n  if [ -z \$DRUPAL_SITE ]\n  then \n    $conflict \"\$@\"\n  else\n    $drush_command \$DRUPAL_SITE $key \"\$@\"\n  fi\n}\n";
+        }
       }
       else {
         $bashrc_data .= "# drush $key skipped; conflicts with $conflict\n";
