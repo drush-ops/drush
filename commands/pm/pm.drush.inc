@@ -211,7 +211,7 @@ function pm_drush_command() {
       'all' => "Shows all available releases instead of the default short list of recent releases.",
     ),
     'examples' => array(
-      'drush pm-releases cck zen' => 'View releases for cck and Zen projects.',
+      'drush pm-releases cck zen' => 'View releases for cck and Zen projects for your Drupal version.',
     ),
     'aliases' => array('rl'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
