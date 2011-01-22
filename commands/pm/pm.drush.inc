@@ -70,11 +70,10 @@ function pm_drush_help($section) {
       case 'drush:pm-releases':
       return dt("View all releases for a given drupal.org project. Useful for deciding which version to install/update.");
     case 'drush:pm-download':
-      return dt("Download Drupal core or projects from drupal.org (Drupal core, modules, themes, profiles or translations) and other sources. It will automatically figure out which project version you want based on its recommended release, or you may specify a particular version.
+      return dt("Download Drupal core or projects from drupal.org (Drupal core, modules, themes or profiles) and other sources. It will automatically figure out which project version you want based on its recommended release, or you may specify a particular version.
 
 If no --destination is provided, then destination depends on the project type:
   - Profiles will be downloaded to profiles/ in your Drupal root.
-  - Translations will be decompressed from your Drupal root.
   - Modules and themes will be downloaded to the site specific directory (sites/example.com/modules|themes) if available, or to sites/all/modules|themes.
   - If you're downloading drupal core or you are not running the command within a bootstrapped drupal site, the default location is the current directory.
   - Drush commands will be relocated to /usr/share/drush/commands (if available) or ~/.drush. Relocation is determined once the project is downloaded by examining its content. Note you can provide your own function in a commandfile to determine the relocation of any project.");
@@ -223,7 +222,7 @@ function pm_drush_command() {
       'drush dl' => 'Download latest recommended release of Drupal core.',
       'drush dl drupal' => 'Same as `drush dl`.',
       'drush dl drupal-7.x' => 'Download latest 7.x development version of Drupal core.',
-      'drush dl cck zen es' => 'Download latest versions of CCK, Zen and Spanish translations for your Drupal version.',
+      'drush dl cck zen' => 'Download latest versions of CCK and Zen projects.',
       'drush dl og-1.3' => 'Download a specfic version of Organic groups module for my version of Drupal.',
       'drush dl diff-6.x-2.x' => 'Download a specific development branch of diff module for a specific Drupal version.',
       'drush dl views --select' => 'Show a list of recent releases of the views project, prompt for which one to download.',
@@ -1564,7 +1563,6 @@ function pm_dl_destination_lookup($type, $drupal_root, $sitepath, $create = FALS
     case 'theme engine':
       $destination = $sitepath . '/themes/engines';
       break;
-    //case 'translation': We never hit this case.
     case 'profile':
       $destination = $drupal_root . '/profiles';
       break;
@@ -1718,7 +1716,6 @@ function pm_project_types() {
     'module' => 'Modules',
     'theme' => 'Themes',
     'theme engine' => 'Theme engines',
-    'translation' => 'Translations',
   );
   return $types;
 }
@@ -2062,16 +2059,9 @@ function drush_pm_download() {
       $request['project_type'] = array_search($types[0]->value, $project_types);
     }
 
-    // Translations can't be obtained from cvs/git.
-    if (($request['project_type'] == 'translation') && ($package_handler != 'wget')) {
-      drush_log(dt('Requested project !request is a translation and can\'t be obtained from !ph.', array('!request' => $request['name'], '!ph' => $package_handler)), 'error');
-      continue;
-    }
-    else {
-      // First published release for the recommended major version is just the
-      // first value in $releases.
-      $release = (array)$releases[0];
-    }
+    // First published release for the recommended major version is just the
+    // first value in $releases.
+    $release = (array)$releases[0];
 
     // Determine the name of the directory that will contain the project.
     // We face here all the asymetries to make it smooth for package handlers.
@@ -2104,26 +2094,6 @@ function drush_pm_download() {
     if (!package_handler_download_project($request, $release)) {
       drush_log('Error downloading '.$request['name']);
       continue;
-    }
-
-    // Special case: translation projects. Content of .tar.gz is not within a
-    // common directory.
-    if ($request['project_type'] == 'translation') {
-      // If bootstrapped, copy the translation files over the drupal root and
-      // we are done.
-      if (defined('DRUPAL_ROOT')) {
-        drush_shell_exec('cp -r ' . $request['base_project_path'] . '/* ' . DRUPAL_ROOT);
-        drush_log(dt("Translation !project (!version) decompressed over !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => DRUPAL_ROOT)), 'success');
-        continue;
-      }
-      else {
-        // Move to its own directory, as any other project.
-        $olddir = drush_cwd();
-        drush_op('chdir', $request['base_project_path']);
-        drush_shell_exec('mkdir ' . $request['project_dir']);
-        drush_shell_exec('mv * ' . $request['project_dir']);
-        drush_op('chdir', $olddir);
-      }
     }
 
     // Determine the install location for the project.  User provided
@@ -2343,7 +2313,7 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
  * Find .info files in the project path and identify modules, themes and
  * profiles. It handles two kind of projects: drupal core/profiles and
  * modules/themes.
- * It does nothing with translation or theme engine projects.
+ * It does nothing with theme engine projects.
  */
 function drush_pm_extensions_in_project($project) {
   // Mask for drush_scan_directory, to  avoid tests directories.

@@ -8,7 +8,7 @@ for your shell (e.g. man bash) or reading an online tutorial (e.g. search
 for "bash tutorial") will help you get the most out of Drush.
 
 Drush core ships with lots of useful commands for interacting with code
-like modules/themes/profiles/translations. Similarly, it runs update.php, executes sql
+like modules/themes/profiles. Similarly, it runs update.php, executes sql
 queries and DB migrations, and misc utilities like run cron or clear cache.
 
 REQUIREMENTS
