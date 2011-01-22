@@ -385,7 +385,10 @@ function _core_path_aliases($project = '') {
       if (drush_drupal_major_version() >= 7) {
         if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_SITE) {
           $paths['%files'] = variable_get('file_public_path', conf_path() . '/files');
-          $paths['%private'] = variable_get('file_private_path', conf_path() . '/files');
+          $private_path = variable_get('file_private_path', FALSE);
+          if ($private_path !== FALSE) {
+            $paths['%private'] = $private_path;
+          }
         }
       }
       elseif (function_exists('file_directory_path')) {
