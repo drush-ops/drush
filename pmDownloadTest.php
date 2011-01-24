@@ -10,12 +10,27 @@ class pmDownload_TestCase extends Drush_TestCase {
     $this->assertFileExists($destination . '/devel/README.txt');
   }
 
+  /*
+   * Parse Drupal version and release from command argument.
+   *
+   * --dev option bypasses the logic tested here.
+   * 
+   * @see pm_parse_project_version().
+   */ 
   public function testVersionString() {
-
+    $eval = 'print json_encode(pm_parse_project_version(array("devel-6.x-1.18")));';
+    $this->drush('php-eval', array($eval));
+    $request_data = json_decode($this->getOutput());
+    $this->assertObjectHasAttribute('devel', $request_data);
+    $this->assertEquals($request_data->devel->drupal_version, '6.x');
+    $this->assertEquals($request_data->devel->project_version, '1.18');
   }
 
+  /*
+   * Pick right release from the XML (dev, latest recommended, ...).
+   */ 
   public function testReleaseXML() {
-
+    
   }
 }
 

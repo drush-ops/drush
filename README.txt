@@ -7,6 +7,11 @@ Usage
 - Copy phpunit.xml.dist to phpunit.xml and customize.
 - From the root of this package: `phpunit .` or `runner.php .`
 
+Advanced usage
+---------
+- Run only tests matching a regex: phpunit --filter=testVersionString .
+- XML results: phpunit --filter=testVersionString --log-junit results.xml .
+
 Notes
 ----------
 - I have run tests within Netbeans and it works.

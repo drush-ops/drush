@@ -28,12 +28,13 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   *    Actually runs the command. Does not trap the
-   *    error stream output as this need PHP 4.3+.
-   *    @param string $command    The actual command line
-   *                              to run.
-   *    @return integer           Exit code.
-   *    @access public
+   * Actually runs the command. Does not trap the error stream output as this
+   * need PHP 4.3+.
+   *
+   * @param string $command
+   *   The actual command line to run.
+   * @return integer
+   *   Exit code.
    */
   function execute($command, $expected_return = 0) {
     $this->_output = false;
@@ -52,12 +53,17 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    * @param command
     *    A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
     * @param args
-    *   Command arguments
+    *   Command arguments.
     * @param $options
     *    Optional. An associative array containing options.
+    * @return integer
+    *   An exit code.
     */
   function drush($command, $args = array(), $options = array()) {
-    $cmd = UNISH_DRUSH . ' ' . $command . ' ' . implode(' ', $args) . ' ';
+    $cmd = UNISH_DRUSH . ' ' . $command . ' ';
+    foreach ($args as $arg) {
+      $cmd .= escapeshellarg($arg);
+    }
     $pairs = array();
     foreach ($options as $key => $value) {
       if (is_null($value)) {
@@ -67,7 +73,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
         $pairs[] = "--$key=$value";
       }
     }
-    $cmd .= implode(' ', $pairs);
+    $cmd .= ' ' . implode(' ', $pairs);
     return $this->execute($cmd);
   }
 
