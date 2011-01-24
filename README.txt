@@ -4,6 +4,7 @@ phpunit (http://www.phpunit.de/). The intent is to commit this to core Drush.
 Usage
 --------
 - Install PHPUnit
+- Copy phpunit.xml.dist to phpunit.xml and customize.
 - From the root of this package: `phpunit .` or `runner.php .`
 
 Notes
@@ -12,7 +13,7 @@ Notes
 
 Feedback
 ----------
-Post comments to http://drupal.org/node/483940
+Post comments to http://drupal.org/node/483940. Feel free to fork on Github.
 
 Author
 ----------
