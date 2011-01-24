@@ -1,5 +1,5 @@
-<!-- Copy and rename to phpunit.xml as customize as needed. -->
-<phpunit>
+<!-- Copy and rename to phpunit.xml. Customize as needed. -->
+<phpunit bootstrap="drush_testcase.inc">
   <php>
     <const name="UNISH_DRUSH" value="/Users/mw/c/h/drush/drush"/>
     <const name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/>

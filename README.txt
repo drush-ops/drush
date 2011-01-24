@@ -4,7 +4,7 @@ phpunit (http://www.phpunit.de/). The intent is to commit this to core Drush.
 Usage
 --------
 - Install PHPUnit
-- From drush root: `phpunit tests` or `cd tests; ./runner.php .`
+- From the root of this package: `phpunit .` or `runner.php .`
 
 Notes
 ----------
