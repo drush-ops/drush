@@ -4,9 +4,10 @@
 <short_name>devel</short_name>
 <dc:creator>moshe weitzman</dc:creator>
 <api_version>6.x</api_version>
-<recommended_major>1</recommended_major>
-<supported_majors>1</supported_majors>
-<default_major>1</default_major>
+<!--MW: Changed to 2 for testing.-->
+<recommended_major>2</recommended_major> 
+<supported_majors>1,2</supported_majors>
+<default_major>2</default_major>
 <project_status>published</project_status>
 
 <link>http://drupal.org/project/devel</link>
@@ -19,7 +20,129 @@
    <term><name>Projects</name><value>Drush</value></term>
    <term><name>Maintenance status</name><value>Actively maintained</value></term>
   </terms>
-<releases>
+  
+ <releases>
+  
+  <!-- Start 3 releases added by MW-->
+ <release>
+  <name>devel 6.x-2.2</name>
+  <version>6.x-2.2</version>
+
+  <tag>DRUPAL-6--2-2</tag>
+  <version_major>2</version_major>
+  <version_patch>2</version_patch>
+  <status>unpublished</status>
+  <release_link>http://drupal.org/node/990464</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-2.2.tar.gz</download_link>
+
+  <date>1291650063</date>
+  <mdhash>07251c1cd56daf7d402fb5aea7dcfe48</mdhash>
+  <filesize>172845</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.2.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+
+    <md5>07251c1cd56daf7d402fb5aea7dcfe48</md5>
+    <size>172845</size>
+    <filedate>1291650063</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.2.zip</url>
+    <archive_type>zip</archive_type>
+
+    <md5>086412aa4c02ced793455486b48261e9</md5>
+    <size>219993</size>
+    <filedate>1293230730</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ 
+ <release>
+  <name>devel 6.x-2.2-rc1</name>
+  <version>6.x-2.2-rc1</version>
+
+  <tag>DRUPAL-6--2-2-RC1</tag>
+  <version_major>2</version_major>
+  <version_extra>rc1</version_extra>
+  <version_patch>2</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/990464</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-2.2-rc1.tar.gz</download_link>
+
+  <date>1291650063</date>
+  <mdhash>07251c1cd56daf7d402fb5aea7dcfe48</mdhash>
+  <filesize>172845</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.2-rc1.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+
+    <md5>07251c1cd56daf7d402fb5aea7dcfe48</md5>
+    <size>172845</size>
+    <filedate>1291650063</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.2-rc1.zip</url>
+    <archive_type>zip</archive_type>
+
+    <md5>086412aa4c02ced793455486b48261e9</md5>
+    <size>219993</size>
+    <filedate>1293230730</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ 
+ <release>
+  <name>devel 6.x-2.1</name>
+  <version>6.x-2.1</version>
+
+  <tag>DRUPAL-6--2-1</tag>
+  <version_major>2</version_major>
+  <version_patch>1</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/990464</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-2.1.tar.gz</download_link>
+
+  <date>1291650063</date>
+  <mdhash>07251c1cd56daf7d402fb5aea7dcfe48</mdhash>
+  <filesize>172845</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.1.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+
+    <md5>07251c1cd56daf7d402fb5aea7dcfe48</md5>
+    <size>172845</size>
+    <filedate>1291650063</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.1.zip</url>
+    <archive_type>zip</archive_type>
+
+    <md5>086412aa4c02ced793455486b48261e9</md5>
+    <size>219993</size>
+    <filedate>1293230730</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <!--End added by MW-->
+ 
  <release>
   <name>devel 6.x-1.23</name>
   <version>6.x-1.23</version>
@@ -58,6 +181,8 @@
    <term><name>Release type</name><value>Bug fixes</value></term>
   </terms>
  </release>
+ 
+ 
  <release>
   <name>devel 6.x-1.22</name>
   <version>6.x-1.22</version>

@@ -27,9 +27,7 @@ class pmDownload_TestCase extends Drush_TestCase {
   }
 
   /*
-   * Pick right release from the XML (dev, latest recommended, ...).
-   *
-   * @todo Consider unpublished and non recommended releases.
+   * Pick right release from the XML (dev, latest published+recommended, ...).
    */ 
   public function testReleaseXML() {
     if (version_compare(PHP_VERSION, '5.3.0') == -1) {
@@ -56,12 +54,14 @@ EOD;
     $release = json_decode($this->getOutput());
     $this->assertEquals($release->version, '6.x-1.18');
     
-    // Pick latest recommended with no further specification.
+    // Pick latest recommended+published with no further specification.
+    // 6.x-2.2 is skipped because it is unpublished.
+    // 6.x-2.2-rc1 is skipped because it is not a stable release.
     // Remove unwanted $request_data items.
     $eval = str_replace(array("'project_version' => '1.18',\n", "'version' => '6.x-1.18',\n"), NULL, $eval);
     $this->drush('php-eval', array($eval));
     $release = json_decode($this->getOutput());
-    $this->assertEquals($release->version, '6.x-1.23');
+    $this->assertEquals($release->version, '6.x-2.1');
   }
 }
 
