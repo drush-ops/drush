@@ -2112,14 +2112,7 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
         $data[$key] = $site_record[$key];
       }
     }
-    
-    $drush_path = NULL;
-    if (array_key_exists('path-aliases', $site_record)) {
-      if (array_key_exists('%drush-script', $site_record['path-aliases'])) {
-        $drush_path = $site_record['path-aliases']['%drush-script'];
-      }
-    }
-    $values = drush_backend_invoke_args($command, $args, $data, 'GET', $integrate, $drush_path, array_key_exists('remote-host', $site_record) ? $site_record['remote-host'] : NULL, array_key_exists('remote-user', $site_record) ? $site_record['remote-user'] : NULL, array_key_exists('ssh-options', $site_record) ? $site_record['ssh-options'] : NULL);
+    $values = drush_backend_invoke_sitealias($site_record, $command, $args, $data, 'GET', $integrate);
   }
   return $values;
 }
