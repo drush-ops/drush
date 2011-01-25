@@ -37,7 +37,7 @@ class pmDownload_TestCase extends Drush_TestCase {
     }
     
     // Use a local, static XML file because live files change over time.
-    $xml = dirname(UNISH_DRUSH). '/tests/devel.xml';
+    $xml = dirname(__FILE__). '/devel.xml';
     
     // Pick specific release.
     $eval = <<<'EOD'
