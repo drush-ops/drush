@@ -218,6 +218,7 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
 
   // We don't want the name to go into the output
   unset($alias_record['name']);
+  unset($alias_record['#hidden']);
 
   // We only want to output the 'root' item; don't output the '%root' path alias
   if (array_key_exists('path-aliases', $alias_record) && array_key_exists('%root', $alias_record['path-aliases'])) {
