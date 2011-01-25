@@ -136,6 +136,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
         'destination' => UNISH_SANDBOX,
         'drupal-project-rename' => 'web',
         'yes' => NULL,
+        'quiet' => NULL,
       );
       $this->drush('pm-download', array('drupal-7.x'), $options);
     }
@@ -147,6 +148,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
         'db-url' => UNISH_DB_URL . '/unish_' . $env,
         'sites-subdir' => $env,
         'yes' => NULL,
+        'quiet' => NULL,
       );
       $this->drush('site-install', array(), $options);
       // Give us our write perms back.
