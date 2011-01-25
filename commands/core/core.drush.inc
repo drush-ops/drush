@@ -977,17 +977,17 @@ function cd() {
     then
       cdd \$@;
     else
-      builtin cd \$@;
+      builtin cd "\$d";
     fi
   else
     # First special-case the no-parameter cd
-    if [ -z \$d ]
+    if [ -z "\$d" ]
     then
       cdd %root;
     # Next test and see if this should be an 'ordinary' cd
     elif [ "\$1" == "-" ] || [ -d "\$d" ]
     then
-      builtin cd \$@;
+      builtin cd "\$d";
     else
       cdd \$@
     fi
@@ -1007,9 +1007,9 @@ function cdd() {
       use \$SITE;
     fi
     echo "cd \$DEST";
-    builtin cd \$DEST;
+    builtin cd "\$DEST";
   else
-    builtin cd \$@
+    builtin cd "\$1"
   fi
 }
 
