@@ -546,6 +546,7 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
       foreach (explode(',', $alias_value['parent']) as $parent) {
         $parent_record = drush_sitealias_get_record($parent);
         unset($parent_record['name']);
+        unset($parent_record['#hidden']);
         $array_based_keys = array_merge(drush_get_special_keys(), array('path-aliases'));
         foreach ($array_based_keys as $array_based_key) {
           if (isset($aliases[$alias_name][$array_based_key]) && isset($parent_record[$array_based_key])) {
