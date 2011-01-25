@@ -15,6 +15,7 @@ Advanced usage
 Notes
 ----------
 - I have run tests within Netbeans and it works.
+- Speedup downloads with Squid as forward proxy - http://reluctanthacker.rollett.org/node/114.
 
 Feedback
 ----------
