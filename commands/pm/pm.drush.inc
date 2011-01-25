@@ -2057,9 +2057,6 @@ function drush_pm_download() {
   $project_types = pm_project_types();
   $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
   foreach ($requests as $name => $request) {
-    // Cleanup. We need to unset to avoid using garbage from previous iteration.
-    unset($release);
-
     $xml = _drush_pm_get_release_history_xml($request);
     if (!$xml) {
       continue;
