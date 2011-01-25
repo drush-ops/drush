@@ -1635,6 +1635,68 @@ function pm_dl_destination($type) {
   return $destination;
 }
 
+/*
+ * Pick most appropriate release from XML list.
+ *
+ * @param array $request
+ *   An array of version specifications as returned by pm_parse_project_version().
+ * @param resource $xml
+ *   A handle to the XML document.
+ */ 
+function pm_parse_release($request, $xml) {
+  if (!empty($request['version'])) {
+    $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
+    if (empty($releases)) {
+      drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'warning');
+    }
+  }
+  // If that did not work, we will get the first published release for the
+  // recommended major version.
+  if (empty($releases)) {
+    if ($recommended_major = $xml->xpath("/project/recommended_major")) {
+      $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
+      $releases = @$xml->xpath($xpath_releases);
+    }
+  }
+  // If there are recommended releases (no 'version_extra' elements), then use
+  // only recommended releases.  Otherwise, use all; in this case, the
+  // recommended release defaults to the latest published release with the
+  // right recommended major version number.
+  $recommended_releases = array();
+  if (!empty($releases)) {
+    foreach ($releases as $one_release) {
+      if (!array_key_exists('version_extra', $one_release)) {
+        $recommended_releases[] = $one_release;
+      }
+    }
+  }
+  if (!empty($recommended_releases)) {
+    $releases = $recommended_releases;
+  }
+  $release_type = 'recommended';
+  if (drush_get_option('dev', FALSE)) {
+    $releases = @$xml->xpath("/project/releases/release[status='published'][version_extra='dev']");
+    $release_type = 'development';
+  }
+  if (drush_get_option('select', FALSE) || empty($releases)) {
+    if (empty($releases)) {
+      drush_print(dt('There is no !type release for project !project.', array('!type' => $release_type, '!project' => $request['name'])));
+    }
+    $options = _drush_pm_download_releases_choice($xml, $request['name'], drush_get_option('all', FALSE), drush_get_option('dev', FALSE));
+    $choice = drush_choice($options, dt('Choose one of the available releases:'));
+    if ($choice) {
+      $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $choice . "']");
+    }
+    else {
+      continue;
+    }
+  }
+
+  // First published release for the recommended major version is just the
+  // first value in $releases.
+  return (array)$releases[0];
+}
+
 /**
  * Parse out the project name and version and return as a structured array
  *
@@ -1995,73 +2057,22 @@ function drush_pm_download() {
   $project_types = pm_project_types();
   $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
   foreach ($requests as $name => $request) {
-    // Cleanup. We need to unset those variables to avoid using garbage from
-    // previous iteration.
-    unset($release, $releases, $types);
+    // Cleanup. We need to unset to avoid using garbage from previous iteration.
+    unset($release);
 
     $xml = _drush_pm_get_release_history_xml($request);
     if (!$xml) {
       continue;
     }
 
-    // Try to get the specified release.
-    if (!empty($request['version'])) {
-      $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
-      if (empty($releases)) {
-        drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'warning');
-      }
-    }
-    // If that did not work, we will get the first published release for the
-    // recommended major version.
-    if (empty($releases)) {
-      if ($recommended_major = $xml->xpath("/project/recommended_major")) {
-        $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
-        $releases = @$xml->xpath($xpath_releases);
-      }
-    }
-    // If there are recommended releases (no 'version_extra' elements), then use
-    // only recommended releases.  Otherwise, use all; in this case, the
-    // recommended release defaults to the latest published release with the
-    // right recommended major version number.
-    $recommended_releases = array();
-    if (!empty($releases)) {
-      foreach ($releases as $one_release) {
-        if (!array_key_exists('version_extra', $one_release)) {
-          $recommended_releases[] = $one_release;
-        }
-      }
-    }
-    if (!empty($recommended_releases)) {
-      $releases = $recommended_releases;
-    }
-    $release_type = 'recommended';
-    if (drush_get_option('dev', FALSE)) {
-      $releases = @$xml->xpath("/project/releases/release[status='published'][version_extra='dev']");
-      $release_type = 'development';
-    }
-    if (drush_get_option('select', FALSE) || empty($releases)) {
-      if (empty($releases)) {
-        drush_print(dt('There is no !type release for project !project.', array('!type' => $release_type, '!project' => $request['name'])));
-      }
-      $options = _drush_pm_download_releases_choice($xml, $request['name'], drush_get_option('all', FALSE), drush_get_option('dev', FALSE));
-      $choice = drush_choice($options, dt('Choose one of the available releases:'));
-      if ($choice) {
-        $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $choice . "']");
-      }
-      else {
-        continue;
-      }
-    }
-
+    // Identify the most appropriate release.
+    $release = pm_parse_release($request, $xml);
+    
     // Determine what type of project we are to download.
     $request['project_type'] = 'module';
     if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
       $request['project_type'] = array_search($types[0]->value, $project_types);
     }
-
-    // First published release for the recommended major version is just the
-    // first value in $releases.
-    $release = (array)$releases[0];
 
     // Determine the name of the directory that will contain the project.
     // We face here all the asymetries to make it smooth for package handlers.
