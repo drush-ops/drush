@@ -2,6 +2,11 @@
 
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   
+  /*
+   * An array of Drupal sites that aer setup in the drush-sandbox.
+   */ 
+  var $sites;
+  
   function __construct() {
     $this->_output = false;
   }
@@ -120,16 +125,10 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     }
     return unlink($path);
   }
-}
-
-abstract class Drush_DrupalTestCase extends Drush_TestCase {
-  function setUp() {
-    parent::setUp();
-    $this->setUpDrupal();
-  }
   
-  function setUpDrupal($env = 'dev') {
+  function setUpDrupal($env = 'dev', $install = TRUE) {
     $root = UNISH_SANDBOX . '/web';
+    $this->sites[$env]['root'] = $root;
 
     // Download Drupal if not already present.
     if (!file_exists($root)) {
@@ -141,21 +140,21 @@ abstract class Drush_DrupalTestCase extends Drush_TestCase {
       $this->drush('pm-download', array('drupal-7.x'), $options);
     }
 
-    // Install Drupal as a multi-site.
-    $options = array(
-      'root' => $root,
-      'db-url' => UNISH_DB_URL . '/unish_' . $env,
-      'sites-subdir' => $env,
-      'yes' => NULL,
-    );
-    $this->drush('site-install', array(), $options);
-    // Give us our write perms back.
-    $ret = chmod("$root/sites/$env", 0777);
-
-    // Stash details about this site.
-    $this->sites[$env] = array(
-      'root' => $root,
-      'db_url' => UNISH_DB_URL . '/unish_' . $env,
-    );
+    // If specified, install Drupal as a multi-site.
+    if ($install) {
+      $options = array(
+        'root' => $root,
+        'db-url' => UNISH_DB_URL . '/unish_' . $env,
+        'sites-subdir' => $env,
+        'yes' => NULL,
+      );
+      $this->drush('site-install', array(), $options);
+      // Give us our write perms back.
+      $ret = chmod("$root/sites/$env", 0777);
+  
+      // Stash the db_url for this site.
+      $this->sites[$env]['db_url'] = UNISH_DB_URL . '/unish_' . $env;
+    }
   }
+
 }

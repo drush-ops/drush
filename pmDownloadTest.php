@@ -1,7 +1,7 @@
 <?php
 
 /**
-  * pm-download testing without any Drupal.
+  * pm-download testing
   */  
 class pmDownload_TestCase extends Drush_TestCase {
   public function testPmDownload() {
@@ -63,13 +63,11 @@ EOD;
     $release = json_decode($this->getOutput());
     $this->assertEquals($release->version, '6.x-2.1');
   }
-}
-
-/**
-  * pm-download testing with Drupal.
-  */
-class pmDownload_DrupalTestCase extends Drush_DrupalTestCase {
+  
+  // @todo Test pure drush commandfile projects. They get special destination.
   public function testDestination() {
+    // Setup first Drupal site. Skip install for speed.
+    $this->setUpDrupal('dev', FALSE);
     $root = $this->sites['dev']['root'];
 
     // Default to sites/all
@@ -77,16 +75,16 @@ class pmDownload_DrupalTestCase extends Drush_DrupalTestCase {
     $this->assertFileExists($root . '/sites/all/modules/devel/README.txt');
 
     // If we are in site specific dir, then download belongs there.
-    $this->setUpDrupal('stage'); // Install a second site.
+    // Setup a second site. Skip install for speed.
+    $this->setUpDrupal('stage', FALSE);
     $orig = getcwd();
     $path_stage = "$root/sites/stage";
-    mkdir($path_stage . '/modules');
+    mkdir($path_stage . '/modules', 0777, TRUE);
+    touch("$path_stage/settings.php");
     // Perhaps enhance $this->drush() so it can internally chdir() if directed.
     chdir($path_stage);
     $this->drush('pm-download', array('devel'), array('root' => $root));
     $this->assertFileExists($path_stage . '/modules/devel/README.txt');
     chdir($orig);
-
-    // @todo Pure drush commandfiles are special.
   }
 }
