@@ -226,6 +226,7 @@ function core_drush_command() {
       'cd ~' => 'Navigate back to your $HOME directory.',
       'lsd files' => 'List all files in the Drupal files directory.',
       'on @alias core-status' => 'Run the command "core-status" on the site indicated by @alias',
+      '@alias core-status' => 'An even shorter form that also runs "core-status" on the site @alias',
       'use @alias' => 'Run subsequent commands on the site indicated by @alias',
       'use -' => 'Switch back to the last alias "used".',
       'use ~' => 'Use the default alias.',
@@ -1084,6 +1085,15 @@ EOD;
     }
   }
 
+  // Make bash aliases for all drush site aliases.
+  // @sitealias becomes an alias for "drush @sitealias".
+  // This allows:
+  //   $ @sitealias status
+  drush_sitealias_load_all();
+  foreach (drush_get_context('site-aliases') as $site_name => $site_record) {
+    $bashrc_data .= "alias $site_name='drush $site_name'\n";
+  }
+  
   // Add some additional statements to the bashrc data that
   // should not go into --pipe mode.
   if ($interactive_mode) {
