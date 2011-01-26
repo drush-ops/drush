@@ -1,6 +1,6 @@
 <?php
 
-class Core_BatchCase extends Drush_TestCase {
+class CommandCase extends Drush_TestCase {
   public function testInvoke() {
     $expected = array(
       'unit_drush_init',
@@ -40,5 +40,17 @@ class Core_BatchCase extends Drush_TestCase {
     $this->assertEquals('drush_command', $command->callback);
     $this->assertObjectHasAttribute('examples', $command->sections);
     $this->assertTrue($command->is_alias);
+  }
+  
+  /*
+   * Assert that Drupal dependencies are honored.
+   *
+   * Not testing dependency on a module since that requires an installed Drupal.
+   * Too slow for little benefit.
+   */ 
+  public function testDrupalDependencies() {
+    // Assure that core-cron fails when run outside of a Drupal site.
+    $return = $this->execute(UNISH_DRUSH . ' core-cron --quiet', 1);
+    $this->assertEquals($return, 1);
   }
 }
