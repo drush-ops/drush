@@ -1,6 +1,6 @@
 <?php
 
-class CommandCase extends Drush_TestCase {
+class commandCase extends Drush_TestCase {
   public function testInvoke() {
     $expected = array(
       'unit_drush_init',

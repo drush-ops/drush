@@ -30,26 +30,20 @@ class pmDownloadCase extends Drush_TestCase {
    * Pick right release from the XML (dev, latest published+recommended, ...).
    */ 
   public function testReleaseXML() {
-    if (version_compare(PHP_VERSION, '5.3.0') == -1) {
-      $this->markTestSkipped('PHP 5.3 required for this test. Uses nowdoc.');
-    }
-    
     // Use a local, static XML file because live files change over time.
     $xml = dirname(__FILE__). '/devel.xml';
     
     // Pick specific release.
-    $eval = <<<'EOD'
     $request_data = array(
       'name' => 'devel',
       'drupal_version' => '6.x',
       'project_version' => '1.18',
       'version' => '6.x-1.18',
     );
-    $release = pm_parse_release($request_data, simplexml_load_file('[XML]'));
-    print json_encode($release);
-EOD;
-    $eval = str_replace('[XML]', $xml, $eval);
-    
+    // Build an $eval string for use with php-eval in a subprocess.
+    $eval = '$request_data = ' . var_export($request_data, TRUE) . ";\n";
+    $eval .= '$release = pm_parse_release($request_data, simplexml_load_file(\'' . $xml . "'));\n";
+    $eval .= 'print json_encode($release);';
     $this->drush('php-eval', array($eval));
     $release = json_decode($this->getOutput());
     $this->assertEquals($release->version, '6.x-1.18');
