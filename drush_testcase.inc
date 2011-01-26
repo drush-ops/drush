@@ -64,7 +64,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     * @return integer
     *   An exit code.
     */
-  function drush($command, $args = array(), $options = array()) {
+  function drush($command, array $args = array(), array $options = array()) {
     $cmd = UNISH_DRUSH . ' ' . $command;
     foreach ($args as $arg) {
       $cmd .= ' ' . escapeshellarg($arg);

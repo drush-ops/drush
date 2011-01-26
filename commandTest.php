@@ -18,4 +18,26 @@ class Core_BatchCase extends Drush_TestCase {
     $called = json_decode($this->getOutput());
     $this->assertSame($expected, $called);
   }
+  
+  
+  /*
+   * Assert that $command has interesting properties. Reference command by
+   * it's alias (dl) to assure that those aliases are built as expected.
+   */ 
+  public function testGetCommands() {
+    $eval = '$commands = drush_get_commands();';
+    $eval .= 'print json_encode($commands[\'dl\'])';
+    $this->drush('php-eval', array($eval));
+    $command = json_decode($this->getOutput());
+    
+    $this->assertEquals('dl', current($command->aliases));
+    $this->assertEquals('download', current($command->{'deprecated-aliases'}));
+    $this->assertObjectHasAttribute('version_control', $command->engines);
+    $this->assertObjectHasAttribute('package_handler', $command->engines);
+    $this->assertEquals('pm-download', $command->command);
+    $this->assertEquals('pm', $command->commandfile);
+    $this->assertEquals('drush_command', $command->callback);
+    $this->assertObjectHasAttribute('examples', $command->sections);
+    $this->assertTrue($command->is_alias);
+  }
 }
