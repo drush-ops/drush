@@ -17,6 +17,7 @@ function upgrade_drush_command() {
   $items['site-upgrade'] = array(
     'description' => "Run a major version upgrade for Drupal (e.g. Drupal 6 to Drupal 7).",
     'drupal dependencies' => array('update'),
+    'drush dependencies' => array('sql', 'pm', 'core'),
     'core' => array(6), // Add 7 once drush4 is released.
     'arguments' => array(
       'target' => 'The name of a sitealias, which points to the destination site. root, uri, and db-url keys are required. See examples/aliases.drushrc.php for more information about creating a site alias.'),
