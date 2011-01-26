@@ -53,8 +53,8 @@
  * then in your drushrc.php file, set $options['ssh-options'] so that it does NOT 
  * include '-o PasswordAuthentication=no'.  See examples/example.drushrc.php.
  *
- * The results from backend API calls can be fetched via a call to backend get results.
- * @see drush_backend_get_result().
+ * The results from backend API calls can be fetched via a call to
+ * drush_backend_get_result().
  */
 
 /**

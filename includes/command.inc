@@ -499,7 +499,7 @@ function drush_adjust_args_if_shebang_script(&$args) {
  * Process the --bootstrap-to-first-arg option, if it is present. 
  *
  * This option checks to see if the first user-provided argument is an alias
- * or site specification; if it is, it will be shifted into the first arguement
+ * or site specification; if it is, it will be shifted into the first argument
  * position, where it will specify the site to bootstrap. The result of this
  * is that if your shebang line looks like this:
  *
