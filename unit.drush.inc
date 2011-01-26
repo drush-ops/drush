@@ -22,7 +22,8 @@ function unit_drush_command() {
 function drush_unit_invoke_init() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_invoke_validate() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_pre_unit_invoke() {unit_invoke_log(__FUNCTION__);}
-function drush_unit_invoke_validate_rollback() {unit_invoke_log(__FUNCTION__);}
+function drush_unit_invoke() {unit_invoke_log(__FUNCTION__);}
+function drush_unit_pre_unit_invoke_rollback() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_post_unit_invoke_rollback() {unit_invoke_log(__FUNCTION__);}
 
 function drush_unit_post_unit_invoke() {
@@ -37,7 +38,7 @@ function drush_unit_post_unit_invoke() {
  * The final invoke hook. Emit the call history.
  * Cannot use 'exit' as it does not fire in rollback scenario.
  */ 
-function drush_unit_pre_unit_invoke_rollback() {
+function drush_unit_invoke_validate_rollback() {
   unit_invoke_log(__FUNCTION__);
   print json_encode(unit_invoke_log());
 }
