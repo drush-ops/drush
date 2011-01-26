@@ -41,8 +41,7 @@ function package_handler_download_project(&$project, $release) {
       return TRUE;
     }
     else {
-      drush_set_error('DRUSH_PM_CVS_CHECKOUT_PROBLEMS', dt("Unable to check out !project to !destination from cvs.drupal.org", array('!project' => $project['name'], '!destination' => $project['full_project_path'])));
-      return FALSE;
+      return drush_set_error('DRUSH_PM_CVS_CHECKOUT_PROBLEMS', dt("Unable to check out !project to !destination from cvs.drupal.org", array('!project' => $project['name'], '!destination' => $project['full_project_path'])));
     }
   }
 }
@@ -136,7 +135,7 @@ function drush_pm_cvs(&$project, $release) {
   // CVS only accepts relative paths. We will cd in the checkout path right
   // before running the cvs command.
   if (!drush_shell_cd_and_exec($project['base_project_path'], implode(' ', $command))) {
-    drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to checkout ' . $project['name'] . ' from cvs.drupal.org.');
+    return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', dt('Unable to !op !project from cvs.drupal.org.', array('!op' => $cvsmethod, '!project' => $project['name'])));
   }
 }
 

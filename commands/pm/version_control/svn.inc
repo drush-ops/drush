@@ -13,10 +13,10 @@ class drush_pm_version_control_svn implements drush_pm_version_control {
   public function pre_update(&$project, $items_to_test = array()) {
     // If items to test is empty, test everything; otherwise, pass just
     // the list of files to test to svn status.
-    $status_files = implode(' ', array_keys($items_to_test));
-
-    // Check the project directory looks clean
-    if (drush_shell_cd_and_exec($project['full_project_path'], 'svn status '. drush_get_option('svnstatusparams') .' '. $status_files)) {
+    $args = array_keys($items_to_test);
+    array_unshift($args, 'svn status '. drush_get_option('svnstatusparams') . str_repeat('%s ', count($args)));
+    array_unshift($args, $project['full_project_path']);
+    if (call_user_func_array('drush_shell_cd_and_exec', $args)) {
       $output = preg_grep('/^[ ACDMRX?!~][ CM][ L][ +][ SX][ K]/', drush_shell_exec_output());
       if (!empty($output)) {
         return drush_set_error('DRUSH_PM_SVN_LOCAL_CHANGES', dt("The SVN working copy at !path appears to have uncommitted changes (see below). Please commit or revert these changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
@@ -27,7 +27,10 @@ class drush_pm_version_control_svn implements drush_pm_version_control {
     }
 
     // Check for incoming updates
-    if (drush_shell_cd_and_exec($project['full_project_path'], 'svn status -u '. drush_get_option('svnstatusparams') .' '. $status_files)) {
+    $args = array_keys($items_to_test);
+    array_unshift($args, 'svn status -u '. drush_get_option('svnstatusparams') . str_repeat('%s ', count($args)));
+    array_unshift($args, $project['full_project_path']);
+    if (call_user_func_array('drush_shell_cd_and_exec', $args)) {
       $output = preg_grep('/\*/', drush_shell_exec_output());
       if (!empty($output)) {
         return drush_set_error('DRUSH_PM_SVN_REMOTE_CHANGES', dt("The SVN working copy at !path appears to be out of date with the repository (see below). Please run 'svn update' to pull down changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));

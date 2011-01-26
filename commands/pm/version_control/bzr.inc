@@ -16,7 +16,7 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
     // If items to test is empty, test everything; otherwise, pass just
     // the list of files to test to Bazaar status.
     $args = array_keys($items_to_test);
-    array_unshift($args, 'bzr status --short ' . str_repeat('%s ', count($items_to_test)));
+    array_unshift($args, 'bzr status --short ' . str_repeat('%s ', count($args)));
     array_unshift($args, $project['full_project_path']);
     if (call_user_func_array('drush_shell_cd_and_exec', $args)) {
       $output = preg_grep('/^[\sRCP][\sNDKM][\s\*]/', drush_shell_exec_output());
