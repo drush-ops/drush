@@ -3,6 +3,7 @@
 class Core_BatchCase extends Drush_TestCase {
   public function testInvoke() {
     $expected = array(
+      'unit_drush_init',
       'drush_unit_invoke_init',
       'drush_unit_invoke_validate',
       'drush_unit_pre_unit_invoke',

@@ -26,6 +26,14 @@ function drush_unit_invoke() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_pre_unit_invoke_rollback() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_post_unit_invoke_rollback() {unit_invoke_log(__FUNCTION__);}
 
+// Record that hook_drush_init() fired.
+function unit_drush_init() {
+  $command = drush_get_command();
+  if ($command['command'] == 'unit-invoke') {
+    unit_invoke_log(__FUNCTION__);
+  }
+}
+
 function drush_unit_post_unit_invoke() {
   // Record that this hook was called.
   unit_invoke_log(__FUNCTION__);
