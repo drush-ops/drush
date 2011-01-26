@@ -43,12 +43,12 @@ class CommandCase extends Drush_TestCase {
   }
   
   /*
-   * Assert that Drupal dependencies are honored.
+   * Assert that minimum bootstrap phase is honored.
    *
    * Not testing dependency on a module since that requires an installed Drupal.
    * Too slow for little benefit.
    */ 
-  public function testDrupalDependencies() {
+  public function testRequirementBootstrapPhase() {
     // Assure that core-cron fails when run outside of a Drupal site.
     $return = $this->execute(UNISH_DRUSH . ' core-cron --quiet', 1);
     $this->assertEquals($return, 1);
