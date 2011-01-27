@@ -262,7 +262,7 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
     $code = proc_close($process);
     return array('cmd' => $cmd, 'output' => $string, 'code' => $code);
   }
-  return false;
+  return FALSE;
 }
 
 /**
