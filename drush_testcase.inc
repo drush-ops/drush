@@ -42,16 +42,16 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    * @param string $command
    *   The actual command line to run.
    * @return integer
-   *   Exit code.
+   *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
    */
-  function execute($command, $expected_return = 0) {
-    $this->_output = false;
+  function execute($command, $expected_return = self::EXIT_SUCCESS) {
+    $this->_output = FALSE;
     // todo check verbose level from phpunit.
-    if (1) {
+    if (TRUE) {
       print "\nExecuting: $command \n";
     }
     exec($command, $this->_output, $return);
-    $this->assertEquals($expected_return, $return, 'Unexpected return code: ' .  $command);
+    $this->assertEquals($expected_return, $return, 'Unexpected exit code: ' .  $command);
     return $return;
   }
   
