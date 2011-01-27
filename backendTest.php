@@ -48,14 +48,14 @@ class targetCase extends Drush_TestCase {
     $this->assertArrayHasKey('log', $parsed);
     $this->assertArrayHasKey('output', $parsed);
     $this->assertArrayHasKey('object', $parsed);
-    $this->assertEquals(0, $parsed['error_status']);
+    $this->assertEquals(self::EXIT_SUCCESS, $parsed['error_status']);
     // This assertion shows that `help` was called and that stdin options were respected.
     $this->assertStringStartsWith('SQL commands', $parsed['output']);
     $this->assertEquals('Bootstrap to phase 0.', $parsed['log'][0]['message']);
     
     // Check error propogation by requesting an invalid command (missing Drupal site).
     $exec = sprintf('%s core-cron --backend', escapeshellcmd(UNISH_DRUSH));
-    $this->execute($exec, 1);
+    $this->execute($exec, self::EXIT_ERROR);
     $parsed = $this->parse($this->getOutput());
     $this->assertEquals(1, $parsed['error_status']);
     $this->assertArrayHasKey('DRUSH_NO_DRUPAL_ROOT', $parsed['error_log']);

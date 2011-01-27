@@ -15,7 +15,7 @@ class commandCase extends Drush_TestCase {
     );
     
     // We expect a return code of 1 so just call execute() directly.
-    $this->execute(UNISH_DRUSH . ' unit-invoke --include=' . escapeshellarg(dirname(__FILE__)), 1);
+    $this->execute(UNISH_DRUSH . ' unit-invoke --include=' . escapeshellarg(dirname(__FILE__)), self::EXIT_ERROR);
     $called = json_decode($this->getOutput());
     $this->assertSame($expected, $called);
   }
@@ -50,7 +50,6 @@ class commandCase extends Drush_TestCase {
    */ 
   public function testRequirementBootstrapPhase() {
     // Assure that core-cron fails when run outside of a Drupal site.
-    $return = $this->execute(UNISH_DRUSH . ' core-cron --quiet', 1);
-    $this->assertEquals($return, 1);
+    $return = $this->execute(UNISH_DRUSH . ' core-cron --quiet', self::EXIT_ERROR);
   }
 }

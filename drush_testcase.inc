@@ -2,6 +2,9 @@
 
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   
+  // Unix exit codes.
+  const EXIT_SUCCESS  = 0;
+  const EXIT_ERROR = 1;
   /*
    * An array of Drupal sites that aer setup in the drush-sandbox.
    */ 
