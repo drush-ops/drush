@@ -6,7 +6,7 @@
 function drush_global_options_command($brief = FALSE) {
   $global_options_help = array(
     'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.',
-    'sections' => array('options' => dt('Global options (see `drush topic` for the full list)')),
+    'sections' => array('options' => dt('Global options (see `drush topic core-global-options` for the full list)')),
     'options' => drush_get_global_options($brief),
     'examples' => array(
       'drush dl cck zen' => 'Download CCK module and Zen theme.',
@@ -215,7 +215,7 @@ function drush_help_html_header() {
 function drush_help_html_global_options($global_options_help) {
   // Global options
   $global_option_rows = drush_format_help_section($global_options_help, 'options');
-  $output =  '<h3>Global Options (see `drush topic` for the full list)</h3><table>';
+  $output =  '<h3>Global Options (see `drush topic core-global-options` for the full list)</h3><table>';
   foreach ($global_option_rows as $row) {
     $output .= "<tr>";
     foreach ($row as $value) {
