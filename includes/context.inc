@@ -291,7 +291,7 @@ function drush_set_context($context, $value) {
  *   Otherwise only the requested context will be returned.
  *   If the context does not exist yet, it will be initialized to an empty array.
  */
-function &drush_get_context($context = null, $default = null) {
+function &drush_get_context($context = NULL, $default = NULL) {
   static $cache = array();
   if (!is_null($context)) {
     if (!isset($cache[$context])) {
@@ -368,7 +368,7 @@ function drush_get_command() {
  *   Optional. The context to check for the option. If this is set, only this context will be searched.
  */
 function drush_get_option($option, $default = NULL, $context = NULL) {
-  $value = null;
+  $value = NULL;
 
   if ($context) {
     // We have a definite context to check for the presence of an option.
@@ -381,13 +381,13 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
     foreach ($contexts as $context) {
       $value = _drush_get_option($option, drush_get_context($context));
 
-      if ($value !== null) {
+      if ($value !== NULL) {
         return $value;
       }
     }
   }
 
-  if ($value !== null) {
+  if ($value !== NULL) {
     return $value;
   }
 
@@ -459,7 +459,7 @@ function drush_get_context_options($option, $flatten = FALSE) {
   foreach ($contexts as $context) {
     $value = _drush_get_option($option, drush_get_context($context));
 
-    if ($value !== null) {
+    if ($value !== NULL) {
       if ($flatten && is_array($value)) {
         $result = array_merge($value, $result);
       }
@@ -503,7 +503,7 @@ function _drush_get_option($option, $context) {
     return $context[$option];
   }
 
-  return null;
+  return NULL;
 }
 
 /**
@@ -584,9 +584,9 @@ function drush_save_config($context) {
       fwrite($fp, "\n");
       fclose($fp);
       drush_log(dt('Drushrc file (!filename) was written successfully', array('!filename' => $filename)));
-      return true;
+      return TRUE;
     }
 
   }
-  return false;
+  return FALSE;
 }
