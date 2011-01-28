@@ -1,0 +1,74 @@
+COMMANDS (perhaps keep these notes in $command definition?)
+------------
+pm-download: GOOD
+pm-updatecode
+pm-update
+pm-updatecode-postupdate
+pm-releasenotes
+pm-releases
+pm-enable
+pm-disable
+pm-uninstall
+pm-refresh
+version-control: to be deprecated all git workflow after git.drupal.org?
+package-hander: 
+
+sql-cli
+sql-connect
+sql-query
+sql-dump
+sql-sync
+sql-drop
+
+
+updatedb
+help
+version
+self-update
+php-eval: GOOD. Implicitly tested all over.
+php-script
+drupal-directory
+core-cli
+cache-clear
+core-cron
+core-status: FAIR: Implicit test by contextTest.
+docs
+image
+core-rsync
+search-*
+site-install
+test-
+topic
+variable-*
+watchdog-*
+
+user-add
+user-password
+user-information
+user-block/unblock
+user-add-role/remove
+user-create
+user-cancel
+user-login
+
+field-create
+field-delete
+field-update
+field-clone
+field-info
+
+INCLUDES
+------------
+backend: GOOD
+batch
+command: FAIR
+context: FAIR
+drush: NONE. Oy. Probably needs to be broken up into multiple files.
+environment
+sitealias
+
+ROOT
+-------------
+drush
+drush.php
+drush.bat
