@@ -10,6 +10,11 @@
  * Implementation of hook_drush_command().
  */
 function unit_drush_command() {
+  $items['unit-eval'] = array(
+    'description' => 'Works like php-eval. Used for testing $command_specific context.',
+    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
+    'callback' => 'drush_core_php_eval', // Note - no invoke hooks.
+  );
   $items['unit-invoke'] = array(
     'description' => 'Return an array indicating which invoke hooks got called.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,

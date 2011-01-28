@@ -15,7 +15,8 @@ class commandCase extends Drush_TestCase {
     );
     
     // We expect a return code of 1 so just call execute() directly.
-    $this->execute(UNISH_DRUSH . ' unit-invoke --include=' . escapeshellarg(dirname(__FILE__)), self::EXIT_ERROR);
+    $exec = sprintf('%s unit-invoke --include=%s', UNISH_DRUSH, escapeshellarg(dirname(__FILE__)));
+    $this->execute($exec, self::EXIT_ERROR);
     $called = json_decode($this->getOutput());
     $this->assertSame($expected, $called);
   }

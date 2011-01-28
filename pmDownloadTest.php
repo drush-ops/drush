@@ -71,14 +71,9 @@ class pmDownloadCase extends Drush_TestCase {
     // If we are in site specific dir, then download belongs there.
     // Setup a second site. Skip install for speed.
     $this->setUpDrupal('stage', FALSE);
-    $orig = getcwd();
     $path_stage = "$root/sites/stage";
-    mkdir($path_stage . '/modules', 0777, TRUE);
-    touch("$path_stage/settings.php");
-    // Perhaps enhance $this->drush() so it can internally chdir() if directed.
-    chdir($path_stage);
-    $this->drush('pm-download', array('devel'), array('root' => $root));
+    mkdir("$path_stage/modules");
+    $this->drush('pm-download', array('devel'), array(), NULL, $path_stage);
     $this->assertFileExists($path_stage . '/modules/devel/README.txt');
-    chdir($orig);
   }
 }
