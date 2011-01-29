@@ -69,7 +69,7 @@ class contextCase extends Drush_TestCase {
     
     // Also write a site alias so we can test its supremacy in context hierarchy.
     $path = $this->site . '/aliases.drushrc.php';
-    $alias = array(
+    $aliases['contextAlias'] = array(
       'contextConfig' => 'alias1',
       'command-specific' => array (
         'unit-eval' => array (
@@ -77,7 +77,7 @@ class contextCase extends Drush_TestCase {
         ),
       ),
     );
-    $contents = "<?php\n\$aliases['contextAlias'] = " . var_export($alias, TRUE) . ';';
+    $contents = $this->file_aliases($aliases);
     $return = file_put_contents($path, $contents);
     register_shutdown_function(array($this, 'file_delete_recursive'), $path);
   }

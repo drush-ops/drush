@@ -1,6 +1,6 @@
 COMMANDS (perhaps keep these notes in $command definition?)
 ------------
-pm-download: GOOD
+pm-download: GOOD.
 pm-updatecode
 pm-update
 pm-updatecode-postupdate
@@ -17,15 +17,15 @@ sql-cli
 sql-connect
 sql-query
 sql-dump
-sql-sync
+sql-sync: FAIR. Implicitly tested by siteUpgradeTest.
 sql-drop
 
 
-updatedb
+updatedb: GOOD. Implicitly tested siteUpgradeTest.
 help
 version
 self-update
-php-eval: GOOD. Implicitly tested all over.
+php-eval: GOOD. Implicitly tested by many tests (e.g. siteUpgradeTest).
 php-script
 drupal-directory
 core-cli
@@ -36,8 +36,9 @@ docs
 image
 core-rsync
 search-*
-site-install
-test-
+site-install: FAIR. Implicit test by setUpDrupal().
+site-upgrade: GOOD.
+test-*
 topic
 variable-*
 watchdog-*
@@ -47,7 +48,7 @@ user-password
 user-information
 user-block/unblock
 user-add-role/remove
-user-create
+user-create GOOD. Implicit by siteUpgradeTest
 user-cancel
 user-login
 
@@ -60,7 +61,7 @@ field-info
 INCLUDES
 ------------
 backend: GOOD
-batch
+batch: FAIR. Implicit by siteUpgradeTest.
 command: FAIR
 context: FAIR
 drush: NONE. Oy. Probably needs to be broken up into multiple files.

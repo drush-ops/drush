@@ -21,9 +21,8 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     if (file_exists(UNISH_SANDBOX)) {
       self::file_delete_recursive(UNISH_SANDBOX);
     }
-    else {
-      mkdir(UNISH_SANDBOX);
-    }
+    mkdir(UNISH_SANDBOX);
+    chdir(UNISH_SANDBOX);
   }
   
   /**
@@ -65,7 +64,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     * @param $options
     *   An associative array containing options.
     * @param $site_specification
-    *   A site alias or site specification.
+    *   A site alias or site specification. Include the '@' at start of a site alias.
     * @param $cd
     *   A directory to change into before executing. 
     * @return integer
@@ -137,7 +136,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     }
   }
   
-  function setUpDrupal($env = 'dev', $install = FALSE) {
+  function setUpDrupal($env = 'dev', $install = FALSE, $version_string = '7.x') {
     $root = UNISH_SANDBOX . '/web';
     $this->sites[$env]['root'] = $root;
     $site = "$root/sites/$env";
@@ -150,7 +149,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
         'yes' => NULL,
         'quiet' => NULL,
       );
-      $this->drush('pm-download', array('drupal-7.x'), $options);
+      $this->drush('pm-download', array("drupal-$version_string"), $options);
     }
 
     // If specified, install Drupal as a multi-site.
@@ -173,5 +172,16 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       mkdir($site);
       touch("$site/settings.php");
     }
+  }
+  
+  /*
+   * Prepare the contents of an aliases file.
+   */ 
+  function file_aliases($aliases) {
+    foreach ($aliases as $name => $alias) {
+      $records[] = sprintf('$aliases[\'%s\'] = %s;', $name, var_export($alias, TRUE));
+    }
+    $contents = "<?php\n\n" . implode("\n\n", $records);
+    return $contents;
   }
 }

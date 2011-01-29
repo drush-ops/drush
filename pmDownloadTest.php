@@ -5,9 +5,8 @@
   */  
 class pmDownloadCase extends Drush_TestCase {
   public function testPmDownload() {
-    $destination = UNISH_SANDBOX;
-    $this->drush('pm-download', array('devel'), array('destination' => $destination));
-    $this->assertFileExists($destination . '/devel/README.txt');
+    $this->drush('pm-download', array('devel'));
+    $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');
   }
 
   /*
