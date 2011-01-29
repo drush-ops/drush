@@ -196,9 +196,9 @@ function drush_drupal_version($drupal_root = NULL) {
  *   FALSE - user cancelled, or error
  *   NULL - no action taken (e.g. no release available)
  */
-function drush_self_update($explicit = TRUE, $update = TRUE) {  
+function drush_self_update($explicit = TRUE, $update = TRUE) {
   $error = "";
-  
+
   // Do nothing unless we can write to the drush install location
   if (!is_writable(DRUSH_BASE_PATH)) {
     $error = dt('Drush folder at !loc is not writable', array('!loc' => DRUSH_BASE_PATH));
@@ -213,7 +213,7 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
       $error = dt('Cannot determine release date for drush');
     }
   }
- 
+
   // Fail with 'return FALSE' or 'drush_set_error', as appropriate.
   if (!empty($error)) {
     if ($explicit) {
@@ -224,12 +224,12 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
       return FALSE;
     }
   }
-  
+
   // Allow updates to the latest HEAD release if --self-update=head is specified.
   // If we are called from `drush self-update`, then --dev will set --self-update=head.
   $dev_ok = (drush_get_option('self-update') == 'head');
   $is_dev = FALSE;
-  
+
   // Get release info for drush
   $info = _drush_pm_get_releases(array('drush'));
   // Check for newer releases based on the datestamp.
@@ -249,7 +249,7 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
       }
     }
   }
-  
+
   if ($newer_version) {
     if ($update) {
       $backup_dir = drush_preflight_backup_dir('drush');
@@ -266,7 +266,7 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
   else {
     drush_log(dt("drush self-update check: drush !version is up-to-date.", array('!version' => DRUSH_VERSION)), $explicit ? 'ok' : 'notice');
   }
-  
+
   return NULL;
 }
 
@@ -299,7 +299,7 @@ function drush_drupal_major_version($drupal_root = NULL) {
  *   A simple csv string; e.g. 'a,b,c'
  *   or a simple list of items; e.g. array('a','b','c')
  *   or some combination; e.g. array('a,b','c') or array('a,','b,','c,')
- *   
+ *
  * @returns array
  *   A simple list of items (e.g. array('a','b','c')
  */
@@ -335,7 +335,7 @@ function drush_get_global_options($brief = FALSE) {
   $options['help']               = array('short-form' => 'h', 'description' => dt("This help system."));
   $options['version']            = dt("Show drush version.");
   $options['php']                = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
-  
+
   if (!$brief) {
     $options['quiet']            = array('short-form' => 'q', 'description' => dt('Hide all output'));
     $options['include']          = array('short-form' => 'i', 'description' => dt("A list of paths to search for drush commands"));
@@ -347,7 +347,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['nocolor']          = dt("Suppress color highlighting on log messages.");
     $options['show-passwords']   = dt("Show database passwords in commands that display connection information.");
     $options['show-invoke']      = dt("Show all function names which could have been called for the current command. See drush_invoke().");
-    $options['watchdog']         = dt("Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log.");  
+    $options['watchdog']         = dt("Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log.");
   }
   return $options;
 }
@@ -376,7 +376,7 @@ function drush_show_help($commandstring) {
 /**
  * Print the help for a single command to the screen.
  *
- * @param array $command 
+ * @param array $command
  *   A fully loaded $command array.
  */
 function drush_print_help($command) {
@@ -444,7 +444,7 @@ function drush_format_help_section($command, $section) {
 }
 
 /**
- * Format one named portion of a subsection from a command record.  
+ * Format one named portion of a subsection from a command record.
  * Subsections allow related parts of a help record to be grouped
  * together.  For example, in the 'options' section, sub-options that
  * are related to a particular primary option are stored in a 'sub-options'
@@ -535,7 +535,7 @@ function _drush_is_drush_shebang_line($line) {
  */
 function _drush_is_drush_shebang_script($script_filename) {
   $result = FALSE;
-  
+
   if (file_exists($script_filename)) {
     $fp = fopen($script_filename, "r");
     if ($fp !== FALSE) {
@@ -544,7 +544,7 @@ function _drush_is_drush_shebang_script($script_filename) {
       fclose($fp);
     }
   }
-  
+
   return $result;
 }
 
@@ -820,7 +820,7 @@ function drush_table_column_autowidth($rows, $widths) {
 /**
  * Print the contents of a file.
  *
- * @param string $file 
+ * @param string $file
  *   Full path to a file.
  */
 function drush_print_file($file) {
@@ -921,7 +921,7 @@ function drush_confirm($msg, $indent = 0) {
  */
 function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') {
   print dt($prompt) . "\n";
-  
+
   // Preflight so that all rows will be padded out to the same number of columns
   $array_pad = 0;
   foreach ($options as $key => $option) {
@@ -929,7 +929,7 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
       $array_pad = count($option);
     }
   }
-  
+
   $rows[] = array_pad(array('[0]', ':', 'Cancel'), $array_pad + 2, '');
   $selection_number = 0;
   foreach ($options as $key => $option) {
@@ -951,7 +951,7 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
   }
   drush_print_table($rows);
   drush_print_pipe(array_keys($options));
-  
+
   // If the user specified --choice, then make an
   // automatic selection.  Cancel if the choice is
   // not an available option.
@@ -966,7 +966,7 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
     }
     return FALSE;
   }
-  
+
   // If the user specified --no, then cancel; also avoid
   // getting hung up waiting for user input in --pipe and
   // backend modes.  If none of these apply, then wait,
@@ -1148,14 +1148,14 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE) {
 function drush_op($function) {
   $args = func_get_args();
   array_shift($args); // Skip function name
-  
+
   // Special checking for drush_op('system')
   if ($function == 'system') {
     drush_log(dt("Do not call drush_op('system'); use drush_op_system instead"), 'debug');
   }
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-     drush_print("Calling $function(". implode(", ", $args) .')');
+     drush_print(sprintf("Calling %s(%s)", $function, implode(", ", $args)));
   }
 
   if (drush_get_context('DRUSH_SIMULATE')) {
@@ -1187,10 +1187,10 @@ function drush_op_system($exec) {
   if (drush_get_context('DRUSH_SIMULATE')) {
     return 0;
   }
-  
+
   // Throw away output.  Use drush_shell_exec() to capture output.
   system($exec, $result_code);
-  
+
   return $result_code;
 }
 
@@ -1209,7 +1209,7 @@ function drush_op_system($exec) {
  */
 function drush_shell_cd_and_exec($effective_wd, $cmd) {
   $args = func_get_args();
-  
+
   $effective_wd = array_shift($args);
   $cwd = getcwd();
   drush_op('chdir', $effective_wd);
@@ -1255,7 +1255,7 @@ function drush_shell_exec_interactive($cmd) {
  * @param $args
  *   The command and its arguments.
  * @param $interactive
- *   Whether to run in 
+ *   Whether to run in
  *
  * @return
  *   TRUE on success, FALSE on failure
@@ -1710,9 +1710,9 @@ function _drush_delete_registered_files() {
  */
 function drush_preflight_backup_dir($subdir = NULL) {
   $backup_dir = drush_get_context('DRUSH_BACKUP_DIR', drush_get_option('backup-location'));
-  
+
   if (empty($backup_dir)) {
-    
+
     // Try to use db name as subdir if none was provided.
     if (empty($subdir)) {
       $subdir = 'unknown';
@@ -1720,7 +1720,7 @@ function drush_preflight_backup_dir($subdir = NULL) {
         $subdir = $creds['name'];
       }
     }
-    
+
     // Save the date to be used in the backup directory's path name.
     $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
 
@@ -1737,7 +1737,7 @@ function drush_preflight_backup_dir($subdir = NULL) {
 function drush_prepare_backup_dir($subdir = NULL) {
   $backup_dir = drush_preflight_backup_dir($subdir);
   $backup_parent = dirname($backup_dir);
-  
+
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
   if ((!empty($drupal_root)) && (strpos($backup_parent, $drupal_root) === 0)) {
@@ -2003,7 +2003,7 @@ function drush_remote_command() {
     }
     $command = array_shift($args);
     $multi_options = drush_get_context('cli');
-    
+
     if (!drush_get_option('no-label', FALSE)) {
       $label_separator = ' >> ';
       $max_name_length = 0;
@@ -2100,7 +2100,7 @@ function drush_do_multiple_command($command, $source_record, $destination_record
 /**
  * Run a command on the site specified by the provided command record.
  *
- * The standard function that provides this service is called 
+ * The standard function that provides this service is called
  * drush_invoke_sitealias_args.  Please call the standard function
  * unless you need to set $integrate = TRUE.
  */
@@ -2447,7 +2447,7 @@ function system_watchdog($log_entry) {
   }
 
   $message = strip_tags(decode_entities($message));
-  
+
   // Log or print or ignore. Just printing saves memory but thats rarely needed.
   switch (drush_get_option('watchdog', 'log')) {
     case 'log':

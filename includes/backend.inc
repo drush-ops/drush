@@ -230,7 +230,10 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
      1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
      2 => array("pipe", "w")   // stderr is a pipe the child will write to
   );
-
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    drush_print('proc_open: ' . $cmd);
+    return FALSE;
+  }
   $process = proc_open($cmd, $descriptorspec, $pipes, null, null, array('context' => $context));
   if (is_resource($process)) {
     if ($data) {
@@ -388,6 +391,7 @@ function drush_backend_invoke_sitealias($site_record, $command, $args, $data = a
  */
 function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
   drush_log(dt('Running: !cmd', array('!cmd' => $cmd)), 'command');
+
   $proc = _drush_proc_open($cmd, $data);
 
   if (($proc['code'] == DRUSH_APPLICATION_ERROR) && $integrate) {
@@ -546,8 +550,7 @@ function drush_backend_fork($command, $data, $drush_path = null, $hostname = nul
   $args = explode(" ", $command);
   $command = array_shift($args);
   $cmd = "(" . _drush_backend_generate_command($command, $args, $data, 'GET', $drush_path, $hostname, $username) . ' &) > /dev/null';
-  drush_log(dt("Forking : !cmd", array('!cmd' => $cmd)));
-  system($cmd);
+  drush_op_system($cmd);
 }
 
 /**

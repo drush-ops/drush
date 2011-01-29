@@ -223,7 +223,7 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
  */
 function drush_has_boostrapped($phase) {
   $phase_index = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-  
+
   return isset($phase_index) && ($phase_index >= $phase);
 }
 
@@ -491,7 +491,7 @@ function _drush_environment_check_php_ini() {
   if (!empty($prohibited_list)) {
     drush_log(dt('The following restricted PHP modes have non-empty values: !prohibited_list. This configuration is incompatible with drush.  !php_ini_msg', array('!prohibited_list' => implode(' and ', $prohibited_list), '!php_ini_msg' => _drush_php_ini_loaded_file_message())), 'error');
   }
-  
+
   return TRUE;
 }
 
@@ -504,11 +504,11 @@ function _drush_bootstrap_drush_validate() {
   if ($return !== TRUE) {
     return $return;
   }
-  
+
   if (drush_environment_table_inc() === FALSE) {
     return FALSE;
   }
-  
+
   return TRUE;
 }
 
@@ -596,7 +596,7 @@ function _drush_bootstrap_drush() {
   $columns -= drush_get_option('reserve-margin', 0);
   drush_set_context('DRUSH_COLUMNS', $columns);
 
-  // statically define a way to call drush again
+  // Statically define a way to call drush again.
   define('DRUSH_COMMAND', drush_find_drush());
 
   $drush_info = drush_read_drush_info();
@@ -608,7 +608,7 @@ function _drush_bootstrap_drush() {
   // Load a drushrc.php file in the $ETC_PREFIX/etc/drush directory.
   drush_load_config('system');
 
-  // Load a drushrc.php file at ~/.drushrc.php
+  // Load a drushrc.php file at ~/.drushrc.php.
   drush_load_config('user');
 
   // Load a drushrc.php file in the ~/.drush directory.
@@ -812,7 +812,7 @@ function _drush_bootstrap_do_drupal_site() {
 
   drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
   drush_load_config('site');
-  
+
   _drush_bootstrap_global_options();
 }
 
@@ -825,7 +825,7 @@ function _drush_bootstrap_do_drupal_site() {
 function _drush_bootstrap_drupal_site() {
   _drush_bootstrap_do_drupal_site();
   _drush_bootstrap_redo_drupal_site();
-  
+
   // Set warning for Windows users. We have already loaded site-specific drushrc.
   drush_environment_check_os();
 }
@@ -1287,7 +1287,7 @@ function drush_find_drush() {
  */
 function drush_read_drush_info() {
   $drush_info_file = dirname(__FILE__) . '/../drush.info';
-  
+
   return parse_ini_file($drush_info_file);
 }
 
@@ -1366,4 +1366,3 @@ function drush_theme_get_default() {
 function drush_theme_get_admin() {
   return variable_get('admin_theme', drush_theme_get_default());
 }
-
