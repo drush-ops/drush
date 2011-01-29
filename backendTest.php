@@ -7,31 +7,31 @@
 *        when a backend invoke is needed.
 *    - Target. These tests assure that drush generates a delimited JSON array
 *        when called with --backend option.
-*  
+*
 *  Advantages of this approach:
 *    - No network calls and thus more robust.
 *    - No network calls and thus faster.
 */
 
-class originCase extends Drush_TestCase {
+class backendCase extends Drush_TestCase {
+  const DRUSH_BACKEND_OUTPUT_DELIMITER = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
+
   /*
    * Covers the following origin responsibilities.
    *   - A remote host is recognized in site specification.
    *   - Generates expected ssh command.
    *
    * General handling of site aliases will be in sitealiasTest.php.
-   */ 
+   */
   function testOrigin() {
-    $this->markTestSkipped('Depends on http://drupal.org/node/1041376');
-    $exec = sprintf('%s /path/to/drupal#mysite.com help --simulate --ssh-options=%s | grep ssh', UNISH_DRUSH, '-i mysite_dsa');
+    $exec = sprintf('%s %s version --simulate --ssh-options=%s | grep ssh', escapeshellcmd(UNISH_DRUSH), escapeshellarg('user@server/path/to/drupal#sitename'), escapeshellarg('-i mysite_dsa'));
     $this->execute($exec);
-    $expected = 'Executing: ssh @todo';
-    $this->assertStringStartsWith($expected, $this->getOutput(), 'Expected ssh command was built');
+    // $expected might be different on non unix platforms. We shall see.
+    $expected = "proc_open: ssh -i mysite_dsa 'user'@'server' 'drush  --uri='\''sitename'\'' --root='\''/path/to/drupal'\'' --simulate version --backend'";
+    $output = $this->getOutput();
+    $this->assertEquals($expected, $output, 'Expected ssh command was built');
   }
-}
 
-class targetCase extends Drush_TestCase {
-  const DRUSH_BACKEND_OUTPUT_DELIMITER = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
   /*
    * Covers the following target responsibilities.
    *   - Interpret stdin as options as per REST API.
@@ -52,7 +52,7 @@ class targetCase extends Drush_TestCase {
     // This assertion shows that `help` was called and that stdin options were respected.
     $this->assertStringStartsWith('SQL commands', $parsed['output']);
     $this->assertEquals('Bootstrap to phase 0.', $parsed['log'][0]['message']);
-    
+
     // Check error propogation by requesting an invalid command (missing Drupal site).
     $exec = sprintf('%s core-cron --backend', escapeshellcmd(UNISH_DRUSH));
     $this->execute($exec, self::EXIT_ERROR);
@@ -60,10 +60,10 @@ class targetCase extends Drush_TestCase {
     $this->assertEquals(1, $parsed['error_status']);
     $this->assertArrayHasKey('DRUSH_NO_DRUPAL_ROOT', $parsed['error_log']);
   }
-  
+
   /*
    * A slightly less functional copy of drush_backend_parse_output().
-   */ 
+   */
   function parse($string) {
     $regex = sprintf(self::DRUSH_BACKEND_OUTPUT_DELIMITER, '(.*)');
     preg_match("/$regex/s", $string, $match);
@@ -73,7 +73,7 @@ class targetCase extends Drush_TestCase {
       // remove the match we just made and any non printing characters
       $string = trim(str_replace(sprintf(self::DRUSH_BACKEND_OUTPUT_DELIMITER, $match[1]), '', $string));
     }
-  
+
     if ($output) {
       $data = json_decode($output, TRUE);
       if (is_array($data)) {
