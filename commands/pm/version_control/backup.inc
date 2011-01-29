@@ -12,7 +12,7 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
    */
   public function pre_update(&$project, $items_to_test = array()) {
     if (drush_get_option('no-backup', FALSE)) {
-      return;
+      return TRUE;
     }
     if ($backup_target = $this->prepare_backup_dir()) {
       if ($project['project_type'] != 'core') {
@@ -68,7 +68,7 @@ class drush_pm_version_control_backup implements drush_pm_version_control {
   public function post_download($project) {
    // NOOP
   }
-  
+
   // Helper for pre_update.
   public function prepare_backup_dir($subdir = NULL) {
     return drush_prepare_backup_dir($subdir);
