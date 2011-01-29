@@ -17,7 +17,7 @@ class siteUpgradeCase extends Drush_TestCase {
     $env = 'testUpgrade';
     $this->setUpDrupal($env, TRUE, '6.x');
     $root = $this->sites[$env]['root'];
-    
+
     // Create the alias for D7 site.
     $aliases['testUpgrade'] = array(
       'root' => UNISH_SANDBOX . '/target',
@@ -27,7 +27,7 @@ class siteUpgradeCase extends Drush_TestCase {
     $contents = $this->file_aliases($aliases);
     $alias_path = "$root/aliases.drushrc.php";
     file_put_contents($alias_path, $contents);
-    
+
     // Create a user in D6.
     $name = "example";
     $options = array(
@@ -37,7 +37,7 @@ class siteUpgradeCase extends Drush_TestCase {
       'uri' => $env,
     );
     $this->drush('user-create', array($name), $options);
-    
+
     // Perform the upgrade.
     $options = array(
       'yes' => NULL,
@@ -45,7 +45,7 @@ class siteUpgradeCase extends Drush_TestCase {
       'uri' => $env,
     );
     $this->drush('site-upgrade', array('@testUpgrade'), $options);
-    
+
     // Assert that the D7 site bootstraps.
     $options = array(
       'pipe' => NULL,
@@ -54,7 +54,7 @@ class siteUpgradeCase extends Drush_TestCase {
     );
     $return = $this->drush('core-status', array('drupal_bootstrap'), $options);
     $this->assertEquals('Successful', $this->getOutput(), 'The target site bootstraps successfully');
-    
+
     // Assures that a updatedb and batch updates work properly. See user_update_7001().
     $options = array(
       'root' => $aliases['testUpgrade']['root'],
@@ -65,6 +65,6 @@ class siteUpgradeCase extends Drush_TestCase {
     $eval .= "print (string) user_check_password('password', \$account)";
     $this->drush('php-eval', array($eval), $options);
     $output = $this->getOutput();
-    $this->assertEquals(1, $output, 'User was updated to new password format.');
+    $this->assertSame('1', $output, 'User was updated to new password format.');
   }
 }

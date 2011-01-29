@@ -9,7 +9,7 @@
 */
 
 class contextCase extends Drush_TestCase {
-  
+
   function __construct() {
     $this->env = 'dev';
     // $this->sites[$this->env]['root']
@@ -25,21 +25,24 @@ class contextCase extends Drush_TestCase {
       'system' => '/etc/drush',
       'drush' => dirname(UNISH_DRUSH),
     );
+    $this->paths_delete_candidates = array('user', 'home.drush', 'system', 'drush');
   }
-  
+
   /*
    * Try to write a tiny drushrc.php to each place that drush checks. Also
    * write a sites/dev/aliases.drushrc.php file to the sandbox.
-   * 
+   *
    * @todo Weight benefit of vfsStream versus adding another dependency. See
    * http://www.phpunit.de/manual/3.5/en/test-doubles.html#test-doubles.mocking-the-filesystem
    */
   function setup() {
     parent::setUp();
-    
-    $this->setUpDrupal('dev', FALSE);
-    
-  
+
+    $this->setUpDrupal($this->env, FALSE);
+    $root = $this->sites[$this->env]['root'];
+    $site = "$root/sites/$this->env";
+
+
     foreach ($this->paths as $key => $path) {
       // Only declare harmless options as these files hang around until shutdown.
       $contents = "<?php
@@ -48,25 +51,26 @@ class contextCase extends Drush_TestCase {
 \$options['contextConfig'] = $key;
 \$command_specific['unit-eval']['contextConfig'] = $key . '-specific';
 ";
-      $md5 = md5($contents);
       $path .= $key == 'user' ? '/.drushrc.php' : '/drushrc.php';
       if (file_exists($path)) {
         $this->exists[$key] = $path;
-        if (md5(file_get_contents($path)) == $md5) {
-          register_shutdown_function(array($this, 'file_delete_recursive'), $path);
+        if ($this->should_delete($path, $contents, $key)) {
+          register_shutdown_function('unlink', $path);
         }
       }
       elseif (is_writable(dirname($path))) {
         if (file_put_contents($path, $contents)) {
           $this->exists[$key] = $path;
-          register_shutdown_function(array($this, 'file_delete_recursive'), $path);
+          if ($this->should_delete($path, $contents, $key)) {
+            register_shutdown_function('unlink', $path);
+          }
         }
       }
       else {
-        // @todo Warn that some locations are not getting tested.
+        // @todo Unwritable. Warn that some locations are not getting tested.
       }
     }
-    
+
     // Also write a site alias so we can test its supremacy in context hierarchy.
     $path = $this->site . '/aliases.drushrc.php';
     $aliases['contextAlias'] = array(
@@ -78,22 +82,22 @@ class contextCase extends Drush_TestCase {
       ),
     );
     $contents = $this->file_aliases($aliases);
+    // This file is in the sandbox so gets deleted at end/start of a test run.
     $return = file_put_contents($path, $contents);
-    register_shutdown_function(array($this, 'file_delete_recursive'), $path);
   }
-  
+
   /*
    * These should be two different tests but I could not work out how to do that
    * without calling setup() twice. setupBeforeClass() did not work out (for MW).
-   */ 
+   */
   function testContext() {
     $this->ConfigFile();
     $this->ContextHierarchy();
   }
-  
+
   /*
    * Assure that all possible config files get loaded.
-   */ 
+   */
   function ConfigFile() {
     $options = array(
       'pipe' => NULL,
@@ -112,7 +116,7 @@ class contextCase extends Drush_TestCase {
    * respected by drush_get_option().
    *
    * Stdin context not exercised here. See targetCase::testTarget().
-   */ 
+   */
   function ContextHierarchy() {
     // The 'custom' config file has higher priority than cli and config files.
     $eval =  '$contextConfig = drush_get_option("contextConfig", "n/a");';
@@ -134,7 +138,7 @@ class contextCase extends Drush_TestCase {
     $actuals = json_decode(trim($output));
     $this->assertEquals('custom', $actuals->contextConfig);
     $this->assertTrue($actuals->cli1);
-    
+
     // Site alias trumps 'custom'.
     $eval =  '$contextConfig = drush_get_option("contextConfig", "n/a");';
     $eval .= 'print json_encode(get_defined_vars());';
@@ -147,7 +151,7 @@ class contextCase extends Drush_TestCase {
     $output = $this->getOutput();
     $actuals = json_decode(trim($output));
     $this->assertEquals('alias1', $actuals->contextConfig);
-    
+
     // Command specific wins over non-specific. Note we call unit-eval command
     // in order not to purturb php-eval with options in config file.
     $eval =  '$contextConfig = drush_get_option("contextConfig", "n/a");';
@@ -164,7 +168,7 @@ class contextCase extends Drush_TestCase {
     // @todo: why is custom-specific not winning here. bug?
     $this->assertEquals('site-specific', $actuals->contextConfig);
   }
-  
+
   /**
    * Return the user's home directory.
    *
@@ -181,5 +185,9 @@ class contextCase extends Drush_TestCase {
       $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
     }
     return $home;
+  }
+
+  function should_delete($path, $contents, $key) {
+    return in_array($key, $this->paths_delete_candidates) && file_get_contents($path) == $contents;
   }
 }

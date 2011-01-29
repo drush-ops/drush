@@ -1,19 +1,19 @@
 <?php
 
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
-  
+
   // Unix exit codes.
   const EXIT_SUCCESS  = 0;
   const EXIT_ERROR = 1;
   /*
    * An array of Drupal sites that aer setup in the drush-sandbox.
-   */ 
+   */
   var $sites;
-  
+
   function __construct() {
     $this->_output = false;
   }
-  
+
   /**
    * Assure that each class starts with an empty sandbox directory.
    */
@@ -24,7 +24,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     mkdir(UNISH_SANDBOX);
     chdir(UNISH_SANDBOX);
   }
-  
+
   /**
    * Runs after each test case. Remove sandbox directory.
    */
@@ -53,7 +53,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_return, $return, 'Unexpected exit code: ' .  $command);
     return $return;
   }
-  
+
   /**
    * Invoke drush in via execute().
    *
@@ -66,7 +66,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     * @param $site_specification
     *   A site alias or site specification. Include the '@' at start of a site alias.
     * @param $cd
-    *   A directory to change into before executing. 
+    *   A directory to change into before executing.
     * @return integer
     *   An exit code.
     */
@@ -107,35 +107,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   function getOutputAsList() {
     return $this->_output;
   }
-  
-  /**
-   * Delete all files and directories under a path.
-   * 
-   * @param string $path
-   *   An absolute filesystem path.
-   * 
-   * @return boolean   
-   *   True is success.
-   */
-  function file_delete_recursive($path) {
-    if (is_dir($path)) {
-      $dir = dir($path);
-      while (($entry = $dir->read()) !== FALSE) {
-        if ($entry == '.' || $entry == '..') {
-          continue;
-        }
-        $entry_path = $path . '/' . $entry;
-        self::file_delete_recursive($entry_path);
-      }
-      $dir->close();
-  
-      return rmdir($path);
-    }
-    if (file_exists($path)) {
-      return unlink($path);
-    }
-  }
-  
+
   function setUpDrupal($env = 'dev', $install = FALSE, $version_string = '7.x') {
     $root = UNISH_SANDBOX . '/web';
     $this->sites[$env]['root'] = $root;
@@ -164,7 +136,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       $this->drush('site-install', array(), $options);
       // Give us our write perms back.
       $ret = chmod($site, 0777);
-  
+
       // Stash the db_url for this site.
       $this->sites[$env]['db_url'] = UNISH_DB_URL . '/unish_' . $env;
     }
@@ -173,15 +145,19 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       touch("$site/settings.php");
     }
   }
-  
+
   /*
    * Prepare the contents of an aliases file.
-   */ 
+   */
   function file_aliases($aliases) {
     foreach ($aliases as $name => $alias) {
       $records[] = sprintf('$aliases[\'%s\'] = %s;', $name, var_export($alias, TRUE));
     }
     $contents = "<?php\n\n" . implode("\n\n", $records);
     return $contents;
+  }
+
+  function file_delete_recursive($path) {
+    return exec('rm -rf ' . escapeshellarg($path));
   }
 }
