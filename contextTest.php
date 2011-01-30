@@ -121,14 +121,10 @@ class contextCase extends Drush_TestCase {
     // The 'custom' config file has higher priority than cli and config files.
     $eval =  '$contextConfig = drush_get_option("contextConfig", "n/a");';
     $eval .= '$cli1 = drush_get_option("cli1");';
-    // $eval .= '$cli2 = drush_get_option("cli2");';
     $eval .= 'print json_encode(get_defined_vars());';
     $config = UNISH_SANDBOX . '/drushrc.php';
     $options = array(
       'cli1' => NULL,
-      // Negation work working. Perhaps can't create and negate on same cli.
-      // 'no-cli2' => NULL,
-      // 'cli2' => NULL,
       'config' => $config,
       'root' => $this->root,
       'uri' => $this->env,
