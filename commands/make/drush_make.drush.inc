@@ -45,6 +45,7 @@ function drush_make_drush_command() {
       '--test' => 'Run a temporary test build and clean up.',
       '--translations=languages' => 'Retrieve translations for the specified comma-separated list of language(s) if available for all projects.',
       '--working-copy' => 'Where possible, retrieve a working copy of projects from their respective repositories.',
+      '--download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "drush_make" (a native download method).',
     ),
   );
 

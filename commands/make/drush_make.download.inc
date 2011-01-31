@@ -80,6 +80,10 @@ function _drush_make_download_file($download) {
   // Static variable to keep track of whether to use curl or wget.
   static $download_mechanism;
 
+  if (!isset($download_mechanism) && drush_get_option('download-mechanism')) {
+    $download_mechanism = drush_get_option('download-mechanism');
+  }
+
   $tmp_path = drush_make_tmp();
   $filename = FALSE;
   if (is_string($download)) {
@@ -94,8 +98,6 @@ function _drush_make_download_file($download) {
       $filename = t('file');
     }
     else {
-      // For first try or if wget was detected already, try using wget 
-      // for downloading.
       $success = FALSE;
       $download_path = $tmp_path . '/__download__';
       drush_make_mkdir($download_path);
