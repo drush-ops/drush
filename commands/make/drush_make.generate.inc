@@ -53,16 +53,16 @@ function _drush_make_generate($file) {
         continue;
       }
       $updatexml = _drush_generate_makefile_updatexml($name, $type, $item->info);
-      $projects[$name] = array('_type' => $type);
+      $projects[$project_name] = array('_type' => $type);
       if ($updatexml) {
-        $projects[$name]['type'] = $type;
-        $projects[$name]['custom_download'] = TRUE;
+        $projects[$project_name]['type'] = $type;
+        $projects[$project_name]['custom_download'] = TRUE;
       }
-      $projects[$name] += _drush_generate_makefile_check_location($name, $type);
+      $projects[$project_name] += _drush_generate_makefile_check_location($name, $type);
       // Add version number if this project's version is to be tracked
       // and if we have the information in its ->info to determine it
       if (_drush_generate_track_version($name, $version_options) && $item->info["version"]) {
-        $projects[$name]['version'] = preg_replace("/^". DRUPAL_CORE_COMPATIBILITY . "-/", "", $item->info["version"]);
+        $projects[$project_name]['version'] = preg_replace("/^". DRUPAL_CORE_COMPATIBILITY . "-/", "", $item->info["version"]);
       }
     }
   }
