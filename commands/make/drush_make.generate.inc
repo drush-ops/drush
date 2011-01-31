@@ -180,9 +180,10 @@ function _drush_make_generate_makefile_contents($projects) {
     $base = $type . '[' . $name . ']';
     if (isset($project['custom_download'])) {
       $custom = TRUE;
-      $output[] = '; Please fill the following out.';
-      $output[$base . '[download][type]'] = '""; One of get, cvs, git, bzr or svn';
-      $output[$base . '[download][url]'] = '""; The url of the download';
+      $output[] = '; Please fill the following out. Type may be one of get, cvs, git, bzr or svn,';
+      $output[] = '; and url is the url of the download.';
+      $output[$base . '[download][type]'] = '""';
+      $output[$base . '[download][url]'] = '""';
       unset($project['custom_download']);
     }
     foreach ($project as $key => $value) {
