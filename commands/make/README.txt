@@ -307,7 +307,7 @@ array of options in the libraries array.
 
 ### Library options
 
-Libraries share the `download`, `destination` and `directory_name` options with
+Libraries share the `download`, `subdir`, and `directory_name` options with
 projects. Additionally, they may specify a destination:
 
 - `destination`
