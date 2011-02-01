@@ -65,7 +65,7 @@ fi
 
 # Check to see if the user has provided a php.ini file or drush.ini file in any conf dir
 # Last found wins, so search in reverse priority order
-for conf_dir in /etc/drush $HOME/.drush ; do
+for conf_dir in $(dirname "$SELF_PATH") /etc/drush $HOME/.drush ; do
   if [ -f $conf_dir/php.ini ] ; then
     drush_php_ini=$conf_dir/php.ini
   fi
