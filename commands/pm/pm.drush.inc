@@ -104,7 +104,7 @@ function pm_drush_command() {
       'unlock' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
     ),
   );
-  
+
   $items['pm-enable'] = array(
     'description' => 'Enable one or more extensions (modules or themes).',
     'arguments' => array(
@@ -476,14 +476,14 @@ function drush_pm_list() {
     if (($major_version >= 6) and (isset($extension->info['hidden']))) {
       continue;
     }
-    
+
     // filter out core if --no-core specified
     if (drush_get_option('no-core', FALSE)) {
       if ($extension->info['version'] == VERSION) {
         continue;
       }
     }
- 
+
     // filter out non-core if --core specified
     if (drush_get_option('core', FALSE)) {
       if ($extension->info['version'] != VERSION) {
@@ -709,7 +709,7 @@ function drush_pm_disable() {
         unset($modules[$module]);
         // No message for hidden modules.
         if (!isset($extension_info[$module]->info['hidden'])) {
-          drush_log(dt('!module is a required module and can\'t be disabled.', array('!module' => $module)), 'ok'); 
+          drush_log(dt('!module is a required module and can\'t be disabled.', array('!module' => $module)), 'ok');
         }
       }
     }
@@ -1254,7 +1254,7 @@ function _drush_pm_filter_releases($releases, $all = FALSE, $dev = FALSE, $show_
   // If "show all until installed" is still true, that means that
   // we never encountered the installed release anywhere in releases,
   // and therefore we did not filter out any releases at all.  If this
-  // is the case, then call ourselves again, this time with 
+  // is the case, then call ourselves again, this time with
   // $show_all_until_installed set to FALSE from the beginning.
   // The other situation we might encounter is when we do not encounter
   // the installed release, and $options is still empty.  This means
@@ -1357,7 +1357,7 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE, $tmpfile = NULL
       $selected_versions[] = $requests[$key]['version'];
     }
     else {
-      // Special handling if the project is installed. 
+      // Special handling if the project is installed.
       if (isset($project['recommended'], $project['installed'])) {
         $releases = array_reverse($project['releases']);
         foreach($releases as $version => $release) {
@@ -1377,7 +1377,7 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE, $tmpfile = NULL
         $selected_versions[] = $project['recommended'];
       }
     }
-    
+
     foreach ($selected_versions as $version) {
       // Stage of parsing.
       if (!isset($project['releases'][$version]['release_link'])) {
@@ -1642,7 +1642,7 @@ function pm_dl_destination($type) {
  *   An array of version specifications as returned by pm_parse_project_version().
  * @param resource $xml
  *   A handle to the XML document.
- */ 
+ */
 function pm_parse_release($request, $xml) {
   if (!empty($request['version'])) {
     $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
@@ -1999,7 +1999,7 @@ function drush_pm_download_validate() {
       drush_log(dt('Switching to --variant=!variant.', array('!variant' => $new_variant)), 'ok');
     }
   }
-  
+
   // Validate package-handler.
   $package_handler = drush_get_option('package-handler', 'wget');
   drush_include_engine('package_handler', $package_handler);
@@ -2064,7 +2064,7 @@ function drush_pm_download() {
 
     // Identify the most appropriate release.
     $release = pm_parse_release($request, $xml);
-    
+
     // Determine what type of project we are to download.
     $request['project_type'] = 'module';
     if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
@@ -2129,9 +2129,9 @@ function drush_pm_download() {
     if (!$version_control = drush_pm_include_version_control($request['project_install_location'])) {
       continue;
     }
-    
+
     // Check for drush self update
-    if ($request['project_install_location'] == DRUSH_BASE_PATH) {
+    if ($request['project_install_location'] == DRUSH_BASE_PATH && $request['name'] == 'drush') {
       if (($backup_dir = drush_prepare_backup_dir()) === FALSE) {
         return FALSE;
       }
@@ -2148,7 +2148,7 @@ function drush_pm_download() {
       // For all other projects, the final project install location will go in the project_dir.
       $request['project_install_location'] .= '/' . $request['project_dir'];
     }
-    
+
     // Check if install location already exists.
     if (is_dir($request['project_install_location'])) {
       if (!drush_confirm(dt('Install location !location already exists. Do you want to overwrite it?', array('!location' => $request['project_install_location'])))) {
@@ -2268,7 +2268,7 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
     $projects_to_unlock = array();
     drush_log(dt('Ignoring --unlock with no value.'), 'warning');
   }
-  
+
   // Log if we are going to lock or unlock anything
   if (!empty($projects_to_unlock)) {
     drush_log(dt('Unlocking !projects', array('!projects' => implode(',', $projects_to_unlock))), 'ok');
@@ -2276,7 +2276,7 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
   if (!empty($projects_to_lock)) {
     drush_log(dt('Locking !projects', array('!projects' => implode(',', $projects_to_lock))), 'ok');
   }
-  
+
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   foreach ($projects as $name => $project) {
     if ($name == 'drupal') {
@@ -2284,12 +2284,12 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
     }
     $message = NULL;
     $lockfile = $drupal_root . '/' . $project['path'] . '/.drush-lock-update';
-    
+
     // Remove the lock file if the --unlock option was specified
     if (((in_array($name, $projects_to_unlock)) || (in_array('all', $projects_to_unlock))) && (file_exists($lockfile))) {
       drush_op('unlink', $lockfile);
     }
-    
+
     // Create the lock file if the --lock option was specified
     if ((in_array($name, $projects_to_lock)) || (in_array('all', $projects_to_lock))) {
       drush_op('file_put_contents', $lockfile, $lock_message != NULL ? $lock_message : "Locked via drush.");
@@ -2299,19 +2299,19 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
       // read from the lock file below.
       $message = drush_get_context('DRUSH_SIMULATE') ? 'Simulated lock.' : 'Transient lock.';
     }
-    
+
     // If the persistent lock file exists, then mark the project as locked.
     if (file_exists($lockfile)) {
       $message = trim(file_get_contents($lockfile));
     }
-    
+
     // If there is a message set, then mark the project as locked.
     if (isset($message)) {
       $projects[$name]['locked'] = !empty($message) ? $message : "Locked.";
       $locked_result[$name] = $project;
     }
   }
-  
+
   return $locked_result;
 }
 
