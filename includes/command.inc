@@ -152,7 +152,7 @@ function drush_invoke($command) {
 
 /**
  * Given a command record, dispatch it as if it were
- * the original command.  Executes in the currently 
+ * the original command.  Executes in the currently
  * bootstrapped site using the current option contexts.
  * Note that drush_dispatch will not bootstrap any further than the
  * current command has already bootstrapped; therefore, you should only invoke
@@ -208,8 +208,8 @@ function drush_dispatch($command, $arguments = array()) {
  *   The drush command to execute.
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative 
- *   array containing the results of the API call. 
+ *   If the command was completed, this will return an associative
+ *   array containing the results of the API call.
  *   @see drush_backend_get_result()
  */
 function drush_invoke_process($command_name) {
@@ -225,8 +225,8 @@ function drush_invoke_process($command_name) {
  *   The drush command to execute.
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative 
- *   array containing the results of the API call. 
+ *   If the command was completed, this will return an associative
+ *   array containing the results of the API call.
  *   @see drush_backend_get_result()
  */
 function drush_invoke_process_args($command_name, $commandline_args, $commandline_options = array()) {
@@ -243,15 +243,15 @@ function drush_invoke_process_args($command_name, $commandline_args, $commandlin
  *  The command to invoke.
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative 
- *   array containing the results of the API call. 
+ *   If the command was completed, this will return an associative
+ *   array containing the results of the API call.
  *   @see drush_backend_get_result()
  */
 function drush_invoke_sitealias($site_alias_record, $command_name) {
   $args = func_get_args();
   array_shift($args);
   array_shift($args);
-  
+
   return drush_invoke_sitealias_args($site_alias_record, $command_name, $args);
 }
 
@@ -269,8 +269,8 @@ function drush_invoke_sitealias($site_alias_record, $command_name) {
  *  The options (e.g. --select) to provide to the command.
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative 
- *   array containing the results of the API call. 
+ *   If the command was completed, this will return an associative
+ *   array containing the results of the API call.
  *   @see drush_backend_get_result()
  */
 function drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array()) {
@@ -320,7 +320,7 @@ function drush_redispatch_get_options() {
   // If --bootstrap-to-first-arg is specified, do not
   // pass it along to remote commands.
   unset($options['bootstrap-to-first-arg']);
-  
+
   return $options;
 }
 
@@ -348,10 +348,10 @@ function drush_parse_args() {
   $args = drush_get_context('argv');
   // TODO: commandfiles should be able to extend this list.
   static $arg_opts = array('c', 'u', 'r', 'l', 'i');
-  
+
   // Check to see if we were executed via a "#!/usr/bin/env drush" script
   drush_adjust_args_if_shebang_script($args);
-    
+
   // Now process the command line arguments.  We will divide them
   // into options (starting with a '-') and arguments.
   $arguments = $options = array();
@@ -406,10 +406,10 @@ function drush_parse_args() {
       $arguments = array('help');
     }
   }
-  
+
   // Handle the "@shift" alias, if present
   drush_process_bootstrap_to_first_arg($arguments);
-  
+
   drush_set_arguments($arguments);
   drush_set_context('cli', $options);
 }
@@ -451,7 +451,7 @@ function drush_shift() {
  *   /path/to/drush "--flag php-script" /path/to/script userArg1 userArg2 ...
  * (Note that execve does not split the parameters from
  * the shebang line on whitespace; see http://en.wikipedia.org/wiki/Shebang_%28Unix%29)
- * When drush is called via one of the "shebang" lines above, 
+ * When drush is called via one of the "shebang" lines above,
  * the first or second parameter will be the full path
  * to the "shebang" script file -- and if the path to the
  * script is in the second position, then we will expect that
@@ -465,7 +465,7 @@ function drush_adjust_args_if_shebang_script(&$args) {
   if (_drush_is_drush_shebang_script($args[1])) {
     // If $args[1] is a drush "shebang" script, we will insert
     // the option "--bootstrap-to-first-arg" and the command
-    // "php-script" at the beginning of  @args, so the command 
+    // "php-script" at the beginning of  @args, so the command
     // line args become:
     //   /path/to/drush --bootstrap-to-first-arg php-script /path/to/script userArg1 userArg2 ...
     drush_set_option('bootstrap-to-first-arg', TRUE);
@@ -474,7 +474,7 @@ function drush_adjust_args_if_shebang_script(&$args) {
   }
   elseif (((strpos($args[1], ' ') !== FALSE) || (!ctype_alnum($args[1][0]))) && (_drush_is_drush_shebang_script($args[2]))) {
     // If $args[2] is a drush "shebang" script, we will insert
-    // the space-exploded $arg[1] in place of $arg[1], so the 
+    // the space-exploded $arg[1] in place of $arg[1], so the
     // command line args become:
     //   /path/to/drush scriptArg1 scriptArg2 ... /path/to/script userArg1 userArg2 ...
     // If none of the script arguments look like a drush command,
@@ -496,7 +496,7 @@ function drush_adjust_args_if_shebang_script(&$args) {
 }
 
 /**
- * Process the --bootstrap-to-first-arg option, if it is present. 
+ * Process the --bootstrap-to-first-arg option, if it is present.
  *
  * This option checks to see if the first user-provided argument is an alias
  * or site specification; if it is, it will be shifted into the first argument
@@ -645,9 +645,6 @@ function drush_command_defaults($key, $commandfile, $path) {
  * - core: Drupal major version required.
  * - drupal dependencies: drupal modules required for this command.
  * - drush dependencies: other drush command files required for this command.
- *
- * @example
- *   drush_parse_command();
  *
  */
 function drush_parse_command() {
@@ -887,7 +884,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       }
       break;
   }
-  
+
   _drush_add_commandfiles($searchpath, $phase);
 }
 
@@ -1020,7 +1017,7 @@ function _drush_command_set_default_options($command) {
   if (array_key_exists($command, $command_default_options)) {
     foreach ($command_default_options[$command] as $key => $value) {
       // We set command-specific options in their own context
-      // that is higher precidence than the various config file
+      // that is higher precedence than the various config file
       // context, but lower than command-line options.
       if (!drush_get_option('no-' . $key, FALSE)) {
         drush_set_option($key, $value, 'specific');
