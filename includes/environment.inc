@@ -1193,18 +1193,22 @@ function drush_valid_db_credentials() {
           // pg_last_error() does not return a useful error message for database
           // connection errors. We must turn on error tracking to get at a good error
           // message, which will be stored in $php_errormsg.
-          $track_errors_previous = ini_get('track_errors');
+          $php_errormsg = '';
+	  $track_errors_previous = ini_get('track_errors');
           ini_set('track_errors', 1);
           $connection = @pg_connect($conn_string);
-          if (!$connection) {
-            require_once './includes/unicode.inc';
-            drush_log(decode_entities($php_errormsg), 'bootstrap');
-            // Restore error tracking setting
-            ini_set('track_errors', $track_errors_previous);
-            return FALSE;
-          }
           // Restore error tracking setting
           ini_set('track_errors', $track_errors_previous);
+          if (!$connection) {
+	    if (empty($php_errormsg)) {
+              drush_log(dt("Unknown error connecting to pgsql database via !constr", array('!constr' => $conn_string)), 'bootstrap');
+	    }
+	    else {
+              require_once './includes/unicode.inc';
+              drush_log(decode_entities($php_errormsg), 'bootstrap');
+	    }
+            return FALSE;
+          }
           break;
       }
       break;
