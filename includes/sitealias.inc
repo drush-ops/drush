@@ -123,7 +123,7 @@ function drush_sitealias_get_record($alias) {
     if (!array_key_exists('name', $alias_record)) {
       $alias_record['name'] = drush_sitealias_uri_to_site_dir($alias);
     }
-    
+
     // Handle nested alias definitions and command-specific options.
     drush_set_config_special_contexts($alias_record);
   }
@@ -250,7 +250,7 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
  */
 function drush_sitealias_add_to_alias_path($add_path) {
   static $site_paths = array();
-  
+
   if ($add_path != NULL) {
     if (!is_array($add_path)) {
       $add_path = explode(':', $add_path);
@@ -282,7 +282,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
     // We get the current list of site paths by adding NULL
     // (nothing) to the path list, which is a no-op
     $site_paths = drush_sitealias_add_to_alias_path(NULL);
-    
+
     // If the user defined the root of a drupal site, then also
     // look for alias files there.
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
@@ -411,7 +411,7 @@ function drush_sitealias_load_all($resolve_parent = TRUE) {
  */
 function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = NULL) {
   $result = array();
-  
+
   // Special checking for '@sites' alias
   if ($aliasname == 'sites') {
     $drupal_root = NULL;
@@ -430,7 +430,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
       drush_sitealias_create_sites_alias($drupal_root);
     }
   }
-  
+
   // The alias path is a list of folders to search for alias settings files
   $alias_path = drush_sitealias_alias_path($alias_path_context);
 
@@ -638,27 +638,34 @@ function drush_sitealias_add_db_settings(&$alias_record)
   // then we'll need to look one up
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
     $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('all' => TRUE));
-    if (isset($values['object'])) {
-      $alias_record['databases'] = $values['object'];
+    if (isset($values) && ($values['error_status'] == 0)) {
       $altered_record = TRUE;
       // If there are any special settings in the '@self' record returned by drush_invoke_sitealias_args,
       // then add those into our altered record as well
       if (array_key_exists('self', $values)) {
         $alias_record = array_merge($values['self'], $alias_record);
       }
-      // If the name is set, then re-cache the record after we fetch the databases
-      if (array_key_exists('name', $alias_record)) {
-        $all_site_aliases =& drush_get_context('site-aliases');
-        $all_site_aliases[$alias_record['name']] = $alias_record;
-	// Check and see if this record is a copy of 'self'
-	if (($alias_record['name'] != 'self') && array_key_exists('@self', $all_site_aliases) && ($all_site_aliases['@self']['name'] == $alias_record['name'])) {
-          $all_site_aliases['@self'] = $alias_record;
-	}
-      }
+      drush_sitealias_cache_db_settings($alias_record, $values['object']);
     }
   }
 
   return $altered_record;
+}
+
+function drush_sitealias_cache_db_settings(&$alias_record, $databases) {
+  if (!empty($databases)) {
+    $alias_record['databases'] = $databases;
+  }
+
+  // If the name is set, then re-cache the record after we fetch the databases
+  if (array_key_exists('name', $alias_record)) {
+    $all_site_aliases =& drush_get_context('site-aliases');
+    $all_site_aliases[$alias_record['name']] = $alias_record;
+    // Check and see if this record is a copy of 'self'
+    if (($alias_record['name'] != 'self') && array_key_exists('@self', $all_site_aliases) && ($all_site_aliases['@self']['name'] == $alias_record['name'])) {
+      $all_site_aliases['@self'] = $alias_record;
+    }
+  }
 }
 
 /**
@@ -699,9 +706,9 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
   foreach($test_array as $one_item) {
     if (substr($one_item,0,1) == '%') {
       $project_array[] = substr($one_item,1);
-    }    
+    }
   }
-  
+
   // If we already have a path in the path aliases, then
   // there is no need to search for it remotely; we can remove
   // it from the project array.
@@ -713,7 +720,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
     }
   }
   $project_list = implode(',', $project_array);
-  
+
   if (!empty($project_array)) {
     // Optimization:  if we're already bootstrapped to the
     // site specified by $alias_record, then we can just
@@ -1048,11 +1055,11 @@ function _drush_find_local_sites_at_root($a_drupal_root = '', $search_depth = 1)
     else {
       $bootstrap_files = drush_scan_directory($base_path, '/' . basename(DRUSH_DRUPAL_BOOTSTRAP) . '/' , array('.', '..', 'CVS'), 0, drush_get_option('search-depth', $search_depth) + 1, 'filename', 1);
       foreach ($bootstrap_files as $one_bootstrap => $info) {
-	$includes_dir = dirname($one_bootstrap);
-	if (basename($includes_dir) == basename(dirname(DRUSH_DRUPAL_BOOTSTRAP))) {
+        $includes_dir = dirname($one_bootstrap);
+        if (basename($includes_dir) == basename(dirname(DRUSH_DRUPAL_BOOTSTRAP))) {
           $drupal_root = dirname($includes_dir);
           $site_list = array_merge(_drush_find_local_sites_in_sites_folder($drupal_root), $site_list);
-	}
+        }
       }
     }
   }
@@ -1148,7 +1155,7 @@ function _drush_sitealias_add_transient_defaults(&$alias_record) {
 function _drush_sitealias_find_local_alias_name($root, $uri) {
   $result = '';
   $all_site_aliases =& drush_get_context('site-aliases');
-  
+
   foreach ($all_site_aliases as $alias_name => $alias_values) {
     if (!array_key_exists('remote-host', $alias_values) && array_key_exists('root', $alias_values) && array_key_exists('uri', $alias_values) && ($alias_name != '@self')) {
       if (($root == $alias_values['root']) && ($uri == $alias_values['uri'])) {
@@ -1156,7 +1163,7 @@ function _drush_sitealias_find_local_alias_name($root, $uri) {
       }
     }
   }
-  
+
   return $result;
 }
 
@@ -1284,16 +1291,16 @@ function drush_convert_db_from_db_url($db_url) {
  */
 function drush_sitealias_convert_db_from_db_url($db_url) {
   $result = array();
-  
+
   if (!is_array($db_url)) {
     $result = array('default' => array('default' => drush_convert_db_from_db_url($db_url)));
   }
   else {
     foreach ($db_url as $one_name => $one_db_url) {
       $result[$one_name] = array('default' => drush_convert_db_from_db_url($one_db_url));
-    }    
+    }
   }
-  
+
   return $result;
 }
 
@@ -1467,20 +1474,20 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   if (!isset($preflight)) {
     return NULL;
   }
-  
+
   $alias = $preflight['alias'];
   $path = $preflight['path'];
   $machine = $preflight['machine'];
-  
+
   if (isset($alias)) {
     $site_alias_settings = drush_sitealias_get_record($alias);
   }
-  
+
   if (!empty($site_alias_settings)) {
     if ($local_only && array_key_exists('remote-host', $site_alias_settings)) {
       return drush_set_error('DRUSH_REMOTE_SITE_IN_LOCAL_CONTEXT', dt("A remote site alias was used in a context where only a local alias is appropriate."));
     }
-    
+
     // Apply any options from this alias that might affect our rsync
     drush_sitealias_set_alias_context($site_alias_settings);
 
@@ -1619,7 +1626,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   $site_alias_settings['path-component'] = $path_component;
   $site_alias_settings['path'] = $path;
   $site_alias_settings['user-path'] = $preflight['path'];
-  
+
   return $site_alias_settings;
 }
 
@@ -1633,13 +1640,13 @@ function drush_sitealias_site_selection_keys() {
 
 function sitealias_find_local_drupal_root($site_list) {
   $drupal_root = NULL;
-  
+
   foreach ($site_list as $site) {
     if (($drupal_root == NULL) && (array_key_exists('root', $site) && !array_key_exists('remote-host', $site))) {
       $drupal_root = $site['root'];
     }
   }
-  
+
   return $drupal_root;
 }
 

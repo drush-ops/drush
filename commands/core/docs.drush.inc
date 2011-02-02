@@ -134,6 +134,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array(DRUSH_BASE_PATH . '/examples/policy.drush.inc'),
   );
+  $items['docs-upgrading'] = array(
+    'description' => dt('Upgrading Drupal using the drush site-upgrade command.'),
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/upgrade.html'),
+  );
   return $items;
 }
 
@@ -160,7 +168,7 @@ Some of the available drush error codes are listed in the table below.
 
 
 EOD;
-  
+
   // Find all of the files that we will search for error messages.
   // Start with all of the commandfiles.
   $commandfiles = drush_commandfile_list();
@@ -178,7 +186,7 @@ EOD;
   foreach ($drush_include_files as $filename => $info) {
     $files[$filename] = 'include';
   }
-  
+
   // Extract error messages from all command files
   $error_list = array();
   foreach ($files as $file => $commandfile) {
@@ -191,7 +199,7 @@ EOD;
   foreach ($error_list as $error_code => $error_messages) {
     $data[] = array($error_code, '-', implode("\n", $error_messages));
   }
-  
+
   $tmpfile = drush_tempnam('drush-errorcodes.');
   file_put_contents($tmpfile, $header);
   drush_print_table($data, FALSE, array(0 => 35), $tmpfile);

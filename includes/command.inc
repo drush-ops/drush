@@ -56,6 +56,16 @@ function drush_invoke($command) {
   $args = func_get_args();
   array_shift($args);
 
+  return drush_invoke_args($command, $args);
+}
+
+/**
+ * As drush_invoke, but args are passed in as an array
+ * rather than as individual function parameters.
+ *
+ * @see drush_invoke()
+ */
+function drush_invoke_args($command, $args) {
   // Generate the base name for the hook by converting all
   // dashes in the command name to underscores.
   $hook = str_replace("-", "_", $command);

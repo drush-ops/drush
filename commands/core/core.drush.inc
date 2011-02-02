@@ -277,7 +277,8 @@ function core_drush_engine_drupal() {
  */
 function drush_core_updatedb() {
   if (drush_get_context('DRUSH_SIMULATE')) {
-    return drush_set_error('DRUSH_SIMULATE_UNSUPPORTED', dt('updatedb command does not support --simulate option.'));
+    drush_log(dt('updatedb command does not support --simulate option.'), 'ok');
+    return TRUE;
   }
 
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
@@ -540,7 +541,7 @@ function drush_core_status() {
   return;
 }
 
-// Command callback. Show all global options. Exposed via topic command. 
+// Command callback. Show all global options. Exposed via topic command.
 function drush_core_global_options() {
   drush_print(dt('These options are applicable to most drush commands.'));
   drush_print();
@@ -573,7 +574,7 @@ function drush_core_php_script() {
   if ($args = func_get_args()) {
     $script = $args[0];
   }
-  
+
   if ($script == '-') {
     eval(stream_get_contents(STDIN));
   }
@@ -620,7 +621,7 @@ function drush_core_php_script() {
       }
     }
   }
-  
+
   if ($found) {
     // Set the DRUSH_SHIFT_SKIP to two; this will cause
     // drush_shift to skip the next two arguments the next
@@ -745,7 +746,7 @@ function _drush_core_directory($target = 'root', $component = 'path', $local_onl
 
 function drush_core_drupal_directory($target = 'root') {
   $path = _drush_core_directory($target, drush_get_option('component', 'path'), drush_get_option('local', FALSE));
-  
+
   // If _drush_core_directory is working right, it will turn
   // %blah into the path to the item referred to by the key 'blah'.
   // If there is no such key, then no replacement is done.  In the
@@ -777,7 +778,7 @@ function drush_core_self_update() {
   if (drush_get_option(array('dev', 'head'), FALSE)) {
     drush_set_option('self-update', 'head');
   }
-  
+
   return drush_self_update(TRUE);
 }
 
@@ -813,24 +814,24 @@ function drush_core_cli() {
   if (drush_get_context('DRUSH_BACKEND') || drush_get_context('DRUSH_AFFIRMATIVE') || drush_get_context('DRUSH_NEGATIVE')) {
     return drush_set_error('DRUSH_CLI_INTERACTIVE_ERROR', dt('Cannot run drush core-cli from non-interactive mode; aborting.'));
   }
-  
+
   // We set interactive mode if we are about to run a bash subshell.
   // The purpose of doing this is that some options are set differently
   // in --pipe mode.  To see everything with --pipe, use --pipe --verbose.
   $interactive_mode = !drush_get_context('DRUSH_PIPE') || drush_get_context('DRUSH_VERBOSE');
-  
+
   // Make sure that we call drush the same way that we were called.
   // In --pipe mode, just use 'drush'.
   $drush_command = $interactive_mode ? DRUSH_COMMAND.' --in-cli' : 'drush';
 
   $bashrc_data = implode("/n/n", drush_command_invoke_all('cli_bashrc', $drush_command, $interactive_mode));
-  
+
   // Print our bashrc file and exit in --pipe mode
   if (drush_get_context('DRUSH_PIPE')) {
     drush_print_pipe($bashrc_data);
     return TRUE;
   }
-  
+
   // If there were any errors, then exit.
   if (drush_get_error()) {
     return FALSE;
@@ -849,7 +850,7 @@ function drush_core_cli() {
 // Implement our own hook_cli_bashrc()
 function core_cli_bashrc($drush_command, $interactive_mode) {
   $bashrc_data = '';
-  
+
   $initial_site = '';
   $site_list = drush_sitealias_resolve_sitespecs(array('@self'));
   if (!empty($site_list)) {
@@ -862,17 +863,17 @@ function core_cli_bashrc($drush_command, $interactive_mode) {
     drush_sitealias_load_all(TRUE);
     $initial_site = _drush_sitealias_find_local_alias_name(drush_get_context('DRUSH_DRUPAL_ROOT'), str_replace('http://','',drush_get_context('DRUSH_URI')));
   }
-  
+
   $searchpath[] = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
   $searchpath[] = drush_get_context('ETC_PREFIX', '') . '/etc/drush';
   $searchpath[] = realpath(dirname(__FILE__) . '/../../');
   $bashrc_searchpath = implode(' ', $searchpath);
-  
+
   // Set the prompt to 'drush> ' in interactive mode.
   if ($interactive_mode) {
     $bashrc_data .= "# Set our prompt to 'drush> '\nPS1='drush> '\n\n";
   }
-  
+
   // Set up our default bashrc file for the drush cli
   $bashrc_data .= <<<EOD
 # Drush .bashrc file.  Copy selected portions of this
@@ -882,7 +883,7 @@ function core_cli_bashrc($drush_command, $interactive_mode) {
 # Where we will search for .bashrc files
 BASHRC_PATH="~/.drush $bashrc_searchpath"
 
-# Set the DRUSH_CLI variable; it may also be of use 
+# Set the DRUSH_CLI variable; it may also be of use
 # in the user's .bashrc, or elsewhere.  If we have not
 # already set DRUSH_CLI, add ~ to our BASHRC_PATH.
 # This allows us to source ~/.bashrc when we are running
@@ -892,7 +893,7 @@ BASHRC_PATH="~/.drush $bashrc_searchpath"
 DRUSH_CLI=true
 
 # Cache our initial site
-INITIAL_SITE=$initial_site 
+INITIAL_SITE=$initial_site
 
 # Look for drush-specific bashrc files and
 # source any that are found.  Will also source
@@ -929,7 +930,7 @@ function use() {
     use \$PREVIOUS_SITE
   # `use ~1` will go back to our initial site.  Note, however,
   # that the shell will convert ~ to \$HOME before we get here,
-  # so we will simply test for either ~ or \$HOME for this feature. 
+  # so we will simply test for either ~ or \$HOME for this feature.
   elif [ "x\$1" == "x~" ] || [ "x\$1" == "x\$HOME" ]
   then
     use \$INITIAL_SITE
@@ -1093,7 +1094,7 @@ EOD;
   foreach (drush_get_context('site-aliases') as $site_name => $site_record) {
     $bashrc_data .= "alias $site_name='drush $site_name'\n";
   }
-  
+
   // Add some additional statements to the bashrc data that
   // should not go into --pipe mode.
   if ($interactive_mode) {

@@ -192,11 +192,12 @@ function drush_backend_parse_output($string, $integrate = TRUE) {
 function _drush_backend_integrate($data) {
   if (is_array($data['log'])) {
     foreach($data['log'] as $log) {
+      $message = is_array($log['message']) ? implode("\n", $log['message']) : $log['message'];
       if (!is_null($log['error'])) {
-        drush_set_error($log['error'], $log['message']);
+        drush_set_error($log['error'], $message);
       }
       else {
-        drush_log($log['message'], $log['type'], $log['error']);
+        drush_log($message, $log['type']);
       }
     }
   }
@@ -319,7 +320,7 @@ function drush_backend_invoke($command, $data = array(), $method = 'GET', $integ
  */
 function drush_backend_invoke_args($command, $args, $data = array(), $method = 'GET', $integrate = TRUE, $drush_path = NULL, $hostname = NULL, $username = NULL, $ssh_options = NULL) {
   $cmd = _drush_backend_generate_command($command, $args, $data, $method, $drush_path, $hostname, $username, $ssh_options);
-  return _drush_backend_invoke($cmd, $data, $integrate);
+  return _drush_backend_invoke($cmd, $data, array_key_exists('#integrate', $data) ? $data['#integrate'] : $integrate);
 }
 
 /**
@@ -365,7 +366,7 @@ function drush_backend_invoke_args($command, $args, $data = array(), $method = '
  */
 function drush_backend_invoke_sitealias($site_record, $command, $args, $data = array(), $method = 'GET', $integrate = TRUE) {
   $cmd = _drush_backend_generate_command_sitealias($site_record, $command, $args, $data, $method);
-  return _drush_backend_invoke($cmd, $data, $integrate);
+  return _drush_backend_invoke($cmd, $data, array_key_exists('#integrate', $data) ? $data['#integrate'] : $integrate);
 }
 
 /**
@@ -391,20 +392,25 @@ function drush_backend_invoke_sitealias($site_record, $command, $args, $data = a
  */
 function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
   drush_log(dt('Running: !cmd', array('!cmd' => $cmd)), 'command');
-
-  $proc = _drush_proc_open($cmd, $data);
-
-  if (($proc['code'] == DRUSH_APPLICATION_ERROR) && $integrate) {
-    drush_set_error('DRUSH_APPLICATION_ERROR', dt("The external command could not be executed due to an application error."));
+  if (array_key_exists('#interactive', $data)) {
+    drush_log(dt("executing !cmd", array('!cmd', $cmd)));
+    drush_op_system($cmd);
   }
+  else {
+    $proc = _drush_proc_open($cmd, $data);
 
-  if ($proc['output']) {
-    $values = drush_backend_parse_output($proc['output'], $integrate);
-    if (is_array($values)) {
-      return $values;
+    if (($proc['code'] == DRUSH_APPLICATION_ERROR) && $integrate) {
+      drush_set_error('DRUSH_APPLICATION_ERROR', dt("The external command could not be executed due to an application error."));
     }
-    else {
-      return drush_set_error('DRUSH_FRAMEWORK_ERROR', dt("The command could not be executed successfully (returned: !return, code: %code)", array("!return" => $proc['output'], "%code" =>  $proc['code'])));
+
+    if ($proc['output']) {
+      $values = drush_backend_parse_output($proc['output'], $integrate);
+      if (is_array($values)) {
+        return $values;
+      }
+      else {
+        return drush_set_error('DRUSH_FRAMEWORK_ERROR', dt("The command could not be executed successfully (returned: !return, code: %code)", array("!return" => $proc['output'], "%code" =>  $proc['code'])));
+      }
     }
   }
   return FALSE;
@@ -524,13 +530,17 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
   foreach ($args as $arg) {
     $command .= ' ' . escapeshellarg($arg);
   }
+  $interactive = ' ' . (empty($data['#interactive']) ? '' : ' > `tty`') . ' 2>&1';
   // @TODO: Implement proper multi platform / multi server support.
-  $cmd = escapeshellcmd($drush_path) . " " . $option_str . " " . $command . " --backend";
+  $cmd = escapeshellcmd($drush_path) . " " . $option_str . " " . $command . (empty($data['#interactive']) ? " --backend" : "");
 
   if (!is_null($hostname)) {
     $username = (!is_null($username)) ? $username : get_current_user();
     $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
-    $cmd = "ssh " . $ssh_options . " " . escapeshellarg($username) . "@" . escapeshellarg($hostname) . " " . escapeshellarg($cmd);
+    $cmd = "ssh " . $ssh_options . " " . escapeshellarg($username) . "@" . escapeshellarg($hostname) . " " . escapeshellarg($cmd . ' 2>&1') . $interactive;
+  }
+  else {
+    $cmd .= $interactive;
   }
 
   return $cmd;
@@ -579,7 +589,7 @@ function _drush_backend_argument_string(&$data, $method = 'GET') {
       if (is_numeric($key)) {
         $args[$key] = $value;
       }
-      else {
+      elseif (substr($key,0,1) != '#') {
         $options[$key] = $value;
       }
     }
