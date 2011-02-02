@@ -1969,7 +1969,7 @@ function drush_remote_command() {
   // is set; note that if a site alias is provided on the command line,
   // and the site alias references a remote server, then the --remote-host
   // option will be set when the site alias is processed.
-  // @see _drush_process_site_alias
+  // @see drush_sitealias_check_arg
   $remote_host = drush_get_option('remote-host');
   if (isset($remote_host)) {
 
