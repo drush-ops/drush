@@ -51,6 +51,7 @@ function drush_check_module_dependencies($modules, $module_info) {
         }
       }
     }
+    $status[$key]['unmet-dependencies'] = $unmet_dependencies;
     $status[$key]['dependencies'] = array_keys($dependencies);
   }
 
