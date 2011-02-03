@@ -190,7 +190,6 @@ function core_drush_command() {
     'aliases' => array('si'),
     'deprecated-aliases' => array('installsite', 'is'),
   );
-
   $items['drupal-directory'] = array(
     'description' => dt('Return path to a given module/theme directory.'),
     'arguments' => array(
