@@ -23,15 +23,15 @@ function drush_pm_updatecode() {
   // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
 
-  // Get update status information.
-  $update_info = _pm_get_update_info();
-
-  // Process locks specified on the command line.
-  $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
-
   // Get installed extensions and projects.
   $extensions = drush_get_extensions();
   $projects = drush_get_projects($extensions);
+
+  // Get update status information.
+  $update_info = _pm_get_update_info($projects);
+
+  // Process locks specified on the command line.
+  $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
   foreach ($extensions as $name => $extension) {
     // Add an item to $update_info for each enabled extension which was obtained

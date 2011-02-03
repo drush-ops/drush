@@ -51,7 +51,7 @@ function _pm_refresh() {
  *
  * @return An array containing remote and local versions for all installed projects
  */
-function _pm_get_update_info($projects = NULL) {
+function _pm_get_update_info($projects) {
   // We force a refresh if the cache is not available.
   if (!cache_get('update_status_info', 'cache')) {
     _pm_refresh();
@@ -70,6 +70,7 @@ function _pm_get_update_info($projects = NULL) {
   // or pm_get_project_path() will fail
   foreach ($data as $project_name => $project_data) {
     $data[$project_name]['project_type'] = 'module';
+    $data[$project_name]['modules'] = drupal_map_assoc($projects[$project_name]['extensions']);
   }
   $data = _pm_get_project_path($data, 'modules');
 
