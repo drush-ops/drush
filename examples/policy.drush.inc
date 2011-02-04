@@ -38,7 +38,7 @@ function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
 function drush_policy_updatedb_validate() {
   // Check for a token in the request. In this case, we require --token=secret.
   if (!drush_get_option('token') == 'secret') {
-    drush_log(dt('Per site policy, you must add a secret --token complete this command. See examples/policy.drush.inc'), 'warning');
+    drush_log(dt('Per site policy, you must add a secret --token complete this command. See examples/policy.drush.inc.  If you are running a version of drush prior to 4.3 and are not sure why you are seeing this message, please see http://drupal.org/node/1024824.'), 'warning');
     drush_set_context('DRUSH_AFFIRMATIVE', FALSE);
     drush_set_context('DRUSH_NEGATIVE', TRUE);
   }
