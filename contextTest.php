@@ -23,7 +23,7 @@ class contextCase extends Drush_TestCase {
       'user' => $this->home,
       'home.drush' => $this->home . '/.drush',
       'system' => '/etc/drush',
-      'drush' => dirname(UNISH_DRUSH),
+      'drush' => dirname(realpath(UNISH_DRUSH)),
     );
     $this->paths_delete_candidates = array('user', 'home.drush', 'system', 'drush');
   }
