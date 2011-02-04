@@ -231,10 +231,6 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
      1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
      2 => array("pipe", "w")   // stderr is a pipe the child will write to
   );
-  if (drush_get_context('DRUSH_SIMULATE')) {
-    drush_print('proc_open: ' . $cmd);
-    return FALSE;
-  }
   $process = proc_open($cmd, $descriptorspec, $pipes, null, null, array('context' => $context));
   if (is_resource($process)) {
     if ($data) {
@@ -351,6 +347,26 @@ function drush_backend_invoke_args($command, $args, $data = array(), $method = '
  *    Array items with a numeric key are treated as optional arguments to the command.
  *    This parameter is a reference, as any options that have been represented as either an option, or an argument will be removed.
  *    This allows you to pass the left over options as a JSON encoded string, without duplicating data.
+ *    Parameters that begin with a '#' are not passed on, but are used to affect
+ *    the operation of backend invoke.  Available options include:
+ *      '#integrate'
+ *        Print the output and merge the logs and error codes into
+ *        the data structures for the running drush command.  This causes
+ *        the command to act as if it were called directly, without using
+ *        backend invoke, while still running it in a separate process.
+ *        Function results are still available.
+ *      '#interactive'
+ *        The output is displayed immediately, as it is produced, and it is
+ *        possible for the user to send keyboard input to the command being
+ *        executed.  If interactive mode is used, then the command output,
+ *        logs, etc. are NOT returned to the caller.
+ *      '#override-simulated'
+ *        Backend invoke will run the command even if DRUSH_SIMULATE is set.
+ *        This is useful to run backend commands that fetch data that will
+ *        be used by the simulated command.  For example, sql-sync looks up
+ *        the database options via backend invoke of sql-conf with override
+ *        simulated set so that the sql-sync operation can be simulated using
+ *        actual database setting values.
  * @param method
  *    Optional. Defaults to 'GET'.
  *    If this parameter is set to 'POST', the $data array will be passed to the script being called as a JSON encoded string over
@@ -391,7 +407,11 @@ function drush_backend_invoke_sitealias($site_record, $command, $args, $data = a
  *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
  */
 function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
-  drush_log(dt('Running: !cmd', array('!cmd' => $cmd)), 'command');
+  if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('#override-simulated', $data)) {
+    drush_print(dt('Simulating backend invoke: !cmd', array('!cmd' => $cmd)), 'notice');
+    return FALSE;
+  }
+  drush_log(dt('Backend invoke: !cmd', array('!cmd' => $cmd)), 'command');
   if (array_key_exists('#interactive', $data)) {
     drush_log(dt("executing !cmd", array('!cmd', $cmd)));
     drush_op_system($cmd);
