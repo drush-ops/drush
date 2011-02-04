@@ -59,7 +59,7 @@ function drush_sitealias_simplify_names($site_list) {
  * it is preferable to simply call drush_sitealias_get_record directly.
  *
  * @param $site_specifications
- *   An array of site specificatins.  @see drush_sitealias_get_record
+ *   An array of site specifications.  @see drush_sitealias_get_record().
  * @return
  *   An array of alias records
  */

@@ -1,6 +1,166 @@
 <?php
 
 /**
+ * Prints out help for a given command.
+ */
+function drush_show_help($commandstring) {
+  // First check and see if the command can already be found.
+  $commands = drush_get_commands();
+  if (!array_key_exists($commandstring, $commands)) {
+    // If the command cannot be found, then bootstrap so that
+    // additional commands will be brought in.
+    // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE.
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+    $commands = drush_get_commands();
+  }
+  if (array_key_exists($commandstring, $commands)) {
+    $command = $commands[$commandstring];
+    drush_print_help($command);
+    return TRUE;
+  }
+  return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => $commandstring)));
+}
+
+/**
+ * Print the help for a single command to the screen.
+ *
+ * @param array $command
+ *   A fully loaded $command array.
+ */
+function drush_print_help($command) {
+  // Merge in engine specific help.
+  foreach ($command['engines'] as $type => $description) {
+    $all_engines = drush_get_engines($type);
+    foreach ($all_engines as $name => $engine) {
+      $command = array_merge_recursive($command, $engine);
+    }
+  }
+
+  if (!$help = drush_command_invoke_all('drush_help', 'drush:'. $command['command'])) {
+    $help = array($command['description']);
+  }
+
+  // Give commandfiles an opportunity to add examples and options to the command.
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+  drush_command_invoke_all_ref('drush_help_alter', $command);
+
+  drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));
+  drush_print();
+
+  foreach ($command['sections'] as $key => $value) {
+    if (!empty($command[$key])) {
+      drush_print(dt($value) . ':');
+      $rows = drush_format_help_section($command, $key);
+      drush_print_table($rows, FALSE, array(40));
+      unset($rows);
+      drush_print();
+    }
+  }
+
+  // Append aliases if any.
+  if ($command['aliases']) {
+    drush_print(dt("Aliases: ") . implode(', ', $command['aliases']));
+  }
+}
+
+/**
+ * Format one named help section from a command record
+ *
+ * @param $command
+ *   A command record with help information
+ * @param $section
+ *   The name of the section to format ('options', 'topic', etc.)
+ * @returns array
+ *   Formatted rows, suitable for printing via drush_print_table.
+ */
+function drush_format_help_section($command, $section) {
+  $formatter = (function_exists('drush_help_section_formatter_' . $section)) ? 'drush_help_section_formatter_' . $section : 'drush_help_section_default_formatter';
+  foreach ($command[$section] as $name => $help_attributes) {
+    if (!is_array($help_attributes)) {
+      $help_attributes = array('description' => $help_attributes);
+    }
+    $help_attributes['label'] = $name;
+    call_user_func_array($formatter, array($command, &$help_attributes));
+    $rows[] = array($help_attributes['label'], $help_attributes['description']);
+
+    // Process the subsections too, if any
+    if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
+      $rows = array_merge($rows, _drush_format_help_subsection($command, $section, $name, $formatter));
+    }
+  }
+  return $rows;
+}
+
+/**
+ * Format one named portion of a subsection from a command record.
+ * Subsections allow related parts of a help record to be grouped
+ * together.  For example, in the 'options' section, sub-options that
+ * are related to a particular primary option are stored in a 'sub-options'
+ * section whose name == the name of the primary option.
+ *
+ * @param $command
+ *   A command record with help information
+ * @param $section
+ *   The name of the section to format ('options', 'topic', etc.)
+ * @param $subsection
+ *   The name of the subsection (e.g. the name of the primary option)
+ * @param $formatter
+ *   The name of a function to use to format the rows of the subsection
+ * @param $prefix
+ *   Characters to prefix to the front of the label (for indentation)
+ * @returns array
+ *   Formatted rows, suitable for printing via drush_print_table.
+ */
+function _drush_format_help_subsection($command, $section, $subsection, $formatter, $prefix = '  ') {
+  foreach ($command['sub-' . $section][$subsection] as $name => $help_attributes) {
+    if (!is_array($help_attributes)) {
+      $help_attributes = array('description' => $help_attributes);
+    }
+    $help_attributes['label'] = $name;
+    call_user_func_array($formatter, array($command, &$help_attributes));
+    $rows[] = array($prefix . $help_attributes['label'], $help_attributes['description']);
+    // Process the subsections too, if any
+    if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
+      $rows = array_merge($rows, _drush_format_help_subsection($command, $section, $name, $formatter, $prefix . '  '));
+    }
+  }
+  return $rows;
+}
+
+/**
+ * The options section formatter.  Adds a "--" in front of each
+ * item label.  Also handles short-form and example-value
+ * components in the help attributes.
+ */
+function drush_help_section_formatter_options($command, &$help_attributes) {
+  if ($help_attributes['label'][0] == '-') {
+    drush_log(dt("Option '%option' of command %command should instead be declared as '%fixed'", array('%option' => $help_attributes['label'], '%command' => $command['command'], '%fixed' => preg_replace('/^--*/', '', $help_attributes['label']))), 'debug');
+  }
+  else {
+    $help_attributes['label'] = '--' . $help_attributes['label'];
+  }
+  if (array_key_exists('example-value', $help_attributes)) {
+    $help_attributes['label'] .= '=' . $help_attributes['example-value'];
+    if (array_key_exists('short-form', $help_attributes)) {
+      $help_attributes['short-form'] .= ' ' . $help_attributes['example-value'];
+    }
+  }
+  if (array_key_exists('short-form', $help_attributes)) {
+    $help_attributes['label'] = '-' . $help_attributes['short-form'] . ', ' . $help_attributes['label'];
+  }
+  drush_help_section_default_formatter($command, $help_attributes);
+}
+
+/**
+ * The default section formatter.  Replaces '[command]' with the
+ * command name.
+ */
+function drush_help_section_default_formatter($command, &$help_attributes) {
+  // '[command]' is a token representing the current command. @see pm_drush_engine_version_control().
+  $help_attributes['label'] = str_replace('[command]', $command['command'], $help_attributes['label']);
+}
+
+/**
  * Build a fake command for the purposes of showing examples and options.
  */
 function drush_global_options_command($brief = FALSE) {
@@ -29,7 +189,7 @@ function drush_core_help() {
     // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE+1.
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE+1);
     $implemented = drush_get_commands();
-    
+
     // Organize all commands into categories
     $command_categories = array();
     $category_map = array();
@@ -65,7 +225,7 @@ function drush_core_help() {
 	$command_categories[$category]['commands'][] = $key;
       }
     }
-    
+
     // Sort the command categories; make sure that 'core' is
     // always first in the list
     $core_category = array('core' => $command_categories['core']);
@@ -100,7 +260,7 @@ function drush_core_help() {
     asort($processed_categories);
     asort($misc_categories);
     $command_categories = array_merge($core_category, $processed_categories, $misc_categories, $other_category);
-    
+
     // If the user specified --filter w/out a value, then
     // present a list of help options.
     if (drush_get_option('filter', FALSE) === TRUE) {
@@ -118,17 +278,17 @@ function drush_core_help() {
       }
       drush_set_option('filter', $result);
     }
-    
+
     if (drush_get_option('html')) {
       drush_print(drush_help_html_header());
     }
-    
+
     // Make a fake command section to hold the global options, then print it.
     $global_options_help = drush_global_options_command(TRUE);
     if ((!drush_get_option('html')) && (!drush_get_option('filter'))) {
       drush_print_help($global_options_help);
     }
-    
+
     // Filter out categories that the user does not want to see
     if ($filter_category = drush_get_option('filter')) {
       if (!array_key_exists($filter_category, $command_categories)) {
@@ -146,14 +306,14 @@ function drush_core_help() {
       }
       $command_categories = array('all' => array('commands' => $combined_commands, 'title' => dt("Commands:")));
     }
-    
+
     // Next, print out the table of commands by category.
     $all_commands = array();
     foreach ($command_categories as $key => $info) {
       // Get the commands in this category and sort them
       $commands = $info['commands'];
       sort($commands);
-      
+
       // Remove hidden commands and build output for drush_print_table.
       $rows = array();
       foreach($commands as $cmd) {
@@ -163,29 +323,29 @@ function drush_core_help() {
         $rows[$cmd] = array($name, $command['description']);
         $pipe[] = $cmd;
       }
-      
+
       // Vary the output by mode: text or html
       if (drush_get_option('html')) {
         $sorted_commands = array();
         foreach($commands as $cmd) {
           $sorted_commands[$cmd] = $implemented[$cmd];
 	}
-	
+
         drush_print("<h3>" . $info['title'] . "</h3>");
         drush_print(drush_help_html_command_list($sorted_commands));
       }
-      else {      
+      else {
         drush_print($info['title'] . ": (" . $key . ")");
 	drush_print_table($rows, FALSE, array(0 => 20));
       }
     }
-    
+
     // Print out the long-form help for all commands
     if (drush_get_option('html')) {
       drush_print(drush_help_html_global_options($global_options_help));
       drush_print(drush_help_html($all_commands));
     }
-    
+
     // Newline-delimited list for use by other scripts. Set the --pipe option.
     if (drush_get_option('pipe') && isset($pipe)) {
     sort($pipe);
@@ -224,7 +384,7 @@ function drush_help_html_global_options($global_options_help) {
     $output .= "</tr>";
   }
   $output .=  "</table>\n";
-  
+
   return $output;
 }
 
@@ -235,7 +395,7 @@ function drush_help_html_command_list($commands) {
     $output .=  "  <tr><td><a href=\"#$key\">$key</a></td><td>" . $command['description'] . "</td></tr>\n";
   }
   $output .=  "</table>\n";
-  
+
   return $output;
 }
 

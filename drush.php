@@ -31,6 +31,11 @@ require_once DRUSH_BASE_PATH . '/includes/backend.inc';
 require_once DRUSH_BASE_PATH . '/includes/batch.inc';
 require_once DRUSH_BASE_PATH . '/includes/context.inc';
 require_once DRUSH_BASE_PATH . '/includes/sitealias.inc';
+require_once DRUSH_BASE_PATH . '/includes/exec.inc';
+require_once DRUSH_BASE_PATH . '/includes/drupal.inc';
+require_once DRUSH_BASE_PATH . '/includes/output.inc';
+require_once DRUSH_BASE_PATH . '/includes/filesystem.inc';
+require_once DRUSH_BASE_PATH . '/includes/dbtng.inc';
 
 drush_set_context('argc', $GLOBALS['argc']);
 drush_set_context('argv', $GLOBALS['argv']);
