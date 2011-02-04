@@ -25,6 +25,10 @@ class contextCase extends Drush_TestCase {
       'system' => '/etc/drush',
       'drush' => dirname(realpath(UNISH_DRUSH)),
     );
+    // Run each path through realpath() since the paths we'll compare against 
+    // will have already run through drush_load_config_file().
+    foreach ($this->paths as $key => $path) $this->paths[$key] = realpath($path);
+    
     $this->paths_delete_candidates = array('user', 'home.drush', 'system', 'drush');
   }
 
