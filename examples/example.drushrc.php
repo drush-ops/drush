@@ -113,6 +113,10 @@
 // Specify options to pass to ssh in backend invoke. (Default is to prohibit password authentication; uncomment to change)
 # $options['ssh-options'] = '-o PasswordAuthentication=no';
 
+// Set 'remote-os' to 'Windows' to make drush use Windows shell escape
+// rules for remote sites that do not have an 'os' item set.
+# $options['remote-os'] = 'Linux';
+
 // rsync version 2.6.8 or earlier will give an error message:
 // "--remove-source-files: unknown option".  To fix this, set
 // $options['rsync-version'] = '2.6.8'; (replace with the lowest

@@ -701,8 +701,11 @@ function drush_op($function) {
 /**
  * Check if the operating system is Windows.
  */
-function drush_is_windows() {
-  if (substr(php_uname(), 0, 7) == 'Windows') {
+function drush_is_windows($os = NULL) {
+  if (!isset($os)) {
+    $os = PHP_OS;
+  }
+  if (strtoupper(substr($os, 0, 3)) == 'WIN') {
     return TRUE;
   }
   else {

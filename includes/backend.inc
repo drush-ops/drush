@@ -408,7 +408,7 @@ function drush_backend_invoke_sitealias($site_record, $command, $args, $data = a
  */
 function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
   if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('#override-simulated', $data)) {
-    drush_print(dt('Simulating backend invoke: !cmd', array('!cmd' => $cmd)), 'notice');
+    drush_print(dt('Simulating backend invoke: !cmd', array('!cmd' => $cmd)));
     return FALSE;
   }
   drush_log(dt('Backend invoke: !cmd', array('!cmd' => $cmd)), 'command');
@@ -540,7 +540,8 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
   $data['root'] = array_key_exists('root', $data) ? $data['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
   $data['uri'] = array_key_exists('uri', $data) ? $data['uri'] : drush_get_context('DRUSH_URI');
 
-  $option_str = _drush_backend_argument_string($data, $method);
+  $os = drush_os($site_record);
+  $option_str = _drush_backend_argument_string($data, $method, $os);
   foreach ($data as $key => $arg) {
     if (is_numeric($key)) {
       $args[] = $arg;
@@ -548,7 +549,7 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
     }
   }
   foreach ($args as $arg) {
-    $command .= ' ' . escapeshellarg($arg);
+    $command .= ' ' . drush_escapeshellarg($arg, $os);
   }
   $interactive = ' ' . (empty($data['#interactive']) ? '' : ' > `tty`') . ' 2>&1';
   // @TODO: Implement proper multi platform / multi server support.
@@ -557,7 +558,7 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
   if (!is_null($hostname)) {
     $username = (!is_null($username)) ? $username : get_current_user();
     $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
-    $cmd = "ssh " . $ssh_options . " " . escapeshellarg($username) . "@" . escapeshellarg($hostname) . " " . escapeshellarg($cmd . ' 2>&1') . $interactive;
+    $cmd = "ssh " . $ssh_options . " " . drush_escapeshellarg($username, $os) . "@" . drush_escapeshellarg($hostname, $os) . " " . drush_escapeshellarg($cmd . ' 2>&1', $os) . $interactive;
   }
   else {
     $cmd .= $interactive;
@@ -599,7 +600,7 @@ function drush_backend_fork($command, $data, $drush_path = null, $hostname = nul
  * @return
  *    A properly formatted and escaped set of arguments and options to append to the drush.php shell command.
  */
-function _drush_backend_argument_string(&$data, $method = 'GET') {
+function _drush_backend_argument_string(&$data, $method = 'GET', $os = NULL) {
   // Named keys are options, numerically indexed keys are optional arguments.
   $args = array();
   $options = array();
@@ -622,7 +623,7 @@ function _drush_backend_argument_string(&$data, $method = 'GET') {
   $option_str = '';
   foreach ($options as $key => $value) {
     if (($method != 'POST') || (($method == 'POST') && in_array($key, $special))) {
-      $option_str .= _drush_escape_option($key, $value);
+      $option_str .= _drush_escape_option($key, $value, $os);
       unset($data[$key]); // Remove items in the data array.
     }
   }
@@ -642,9 +643,9 @@ function _drush_backend_argument_string(&$data, $method = 'GET') {
  *   If the value is set to TRUE, this function will return " --key"
  *   In other cases it will return " --key='value'"
  */
-function _drush_escape_option($key, $value = TRUE) {
+function _drush_escape_option($key, $value = TRUE, $os = NULL) {
   if ($value !== TRUE) {
-    $option_str = " --$key=" . escapeshellarg($value);
+    $option_str = " --$key=" . drush_escapeshellarg($value, $os);
   }
   else {
     $option_str = " --$key";

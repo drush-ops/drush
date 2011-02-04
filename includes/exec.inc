@@ -146,13 +146,35 @@ function _drush_shell_exec($args, $interactive = FALSE) {
 }
 
 /**
+ * Determine the appropriate os value for the
+ * specified site record
+ *
+ * @returns
+ *   NULL for 'same as local machine', 'Windows' or 'Linux'.
+ */
+function drush_os($site_record = NULL) {
+  // Default to $os = NULL, meaning 'same as local machine'
+  $os = NULL;
+  // If the site record has an 'os' element, use it
+  if (isset($site_record) && array_key_exists('os', $site_record)) {
+    $os = $site_record['os'];
+  }
+  // Otherwise, we will assume that all remote machines are Linux
+  elseif (isset($site_record) && array_key_exists('remote-host', $site_record)) {
+    $os = drush_get_option('remote-os', 'Linux');
+  }
+  
+  return $os;
+}
+
+/**
  * Platform-independent version of escapeshellarg().
  * This only works for local commands.
  * TODO: Make a unified drush_escapeshellarg
  * that works on Linux and Windows.
  */
-function drush_escapeshellarg($arg) {
-  if (drush_is_windows()) {
+function drush_escapeshellarg($arg, $os = NULL) {
+  if (drush_is_windows($os)) {
     return _drush_escapeshellarg_windows($arg);
   }
   else {

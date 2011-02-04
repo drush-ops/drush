@@ -122,6 +122,9 @@
  *     omitted for local sites, as this option controls whether or not
  *     rsync parameters are for local or remote machines.
  * - 'remote-user': The username to log in as when using ssh or rsync.
+ * - 'os': The operating system of the remote server.  Valid values
+ *     are 'Windows' and 'Linux'.  Default value is PHP_OS if 'remote-host'
+ *     is not set, and 'Linux' (or $options['remote-os']) if it is.
  * - 'ssh-options': If the target requires special options, such as a non-
  *     standard port, alternative identity file, or alternative
  *     authentication method, ssh- options can contain a string of extra

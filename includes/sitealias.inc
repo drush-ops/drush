@@ -1471,6 +1471,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   $site_alias_settings = array();
   $path_aliases = array();
   $remote_user = '';
+  $os = NULL;
 
   $preflight = _drush_sitealias_preflight_path($path);
   if (!isset($preflight)) {
@@ -1483,6 +1484,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
 
   if (isset($alias)) {
     $site_alias_settings = drush_sitealias_get_record($alias);
+    $os = drush_os($site_alias_settings);
   }
 
   if (!empty($site_alias_settings)) {
@@ -1604,6 +1606,8 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   if (empty($path) || ($path[0] != '/')) {
     $path = $drupal_root . $path;
   }
+  // Escape the path
+  $path = drush_escapeshellarg($path, $os);
 
   // If there is a $machine component, to the path, then
   // add it to the beginning

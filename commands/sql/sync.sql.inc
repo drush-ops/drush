@@ -127,7 +127,9 @@ function sql_drush_sql_sync_sanitize($site) {
 function drush_sql_sync($source = NULL, $destination = NULL) {
   $source_settings = drush_sitealias_get_record($source);
   $destination_settings = drush_sitealias_get_record($destination);
-
+  $source_os = drush_os($source_settings);
+  $target_os = drush_os($destination_settings);
+  
   // Check to see if this is an sql-sync multiple command (multiple sources and multiple destinations)
   $is_multiple = drush_do_multiple_command('sql-sync', $source_settings, $destination_settings);
 
@@ -327,7 +329,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
           // if the cache option is set.
           $dump_exec = 'if [ ! -s ' . $source_dump . ' ] || [ $((`date "+%s"`-`stat --format="%Y" ' . $source_dump . '`)) -gt ' . ($cache * 60 *  60) . ' ] ; then ' . $dump_exec . '; fi';
         }
-        $dump_exec = "ssh $source_remote_ssh_options $source_remote_user$source_at" . $source_db_url['remote-host'] . " " . escapeshellarg($dump_exec);
+        $dump_exec = "ssh $source_remote_ssh_options $source_remote_user$source_at" . $source_db_url['remote-host'] . " " . drush_escapeshellarg($dump_exec, $source_os);
       }
     }
     else {
@@ -420,10 +422,10 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         }
 
         $connect_exec = $pre_import_commands . $import_command . ' < ' . $target_dump;
-        $import_exec = "ssh $target_remote_ssh_options $target_remote_user$target_at" . $target_db_url['remote-host'] . ' ' . escapeshellarg($connect_exec);
+        $import_exec = "ssh $target_remote_ssh_options $target_remote_user$target_at" . $target_db_url['remote-host'] . ' ' . drush_escapeshellarg($connect_exec, $source_os);
         // delete the remote target file if it is a temporary file
         if ($target_db_url['dump-is-temp']) {
-          $import_exec .= '; rm -f ' . escapeshellarg($target_dump);
+          $import_exec .= '; rm -f ' . drush_escapeshellarg($target_dump, $target_os);
         }
       }
       else {
