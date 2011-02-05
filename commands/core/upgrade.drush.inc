@@ -262,10 +262,7 @@ function drush_upgrade_fix_db_url(&$target_alias, $settings_destination) {
   if (is_array($old_url)) {
     $old_url = $old_url['default'];
   }
-  $old_databases = $GLOBALS['databases'];
-  if (empty($old_databases)) {
-    $old_databases = drush_sitealias_convert_db_from_db_url($old_url);
-  }
+  $old_databases = empty($GLOBALS['databases']) ? drush_sitealias_convert_db_from_db_url($old_url) : $GLOBALS['databases'];
 
   $target_alias_databases = sitealias_get_databases_from_record($target_alias);
   $database_name = $target_alias_databases['default']['default']['database'];
