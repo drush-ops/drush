@@ -45,24 +45,26 @@ function _drush_make_generate($file) {
 
   // Re-build theme and module data to be sure we have the most current information.
   $project_info = drush_get_projects();
+  $used_projects = array();
   foreach ($project_info as $item) {
-    $name = $item->name;
+    $name = $item->info['project'];
     $type = $item->type;
-    if ($item->info['project'] != 'drupal' && $item->info['project'] == $name) {
+    if ($item->info['project'] != 'drupal' && !in_array($item->info['project'], $used_projects)) {
       if (($item->type == 'module') && (!$item->status)) {
         continue;
       }
+      $used_projects[] = $name;
       $updatexml = _drush_generate_makefile_updatexml($name, $type, $item->info);
-      $projects[$project_name] = array('_type' => $type);
+      $projects[$name] = array('_type' => $type);
       if ($updatexml) {
-        $projects[$project_name]['type'] = $type;
-        $projects[$project_name]['custom_download'] = TRUE;
+        $projects[$name]['type'] = $type;
+        $projects[$name]['custom_download'] = TRUE;
       }
-      $projects[$project_name] += _drush_generate_makefile_check_location($name, $type);
+      $projects[$name] += _drush_generate_makefile_check_location($item->name, $name, $type);
       // Add version number if this project's version is to be tracked
       // and if we have the information in its ->info to determine it
       if (_drush_generate_track_version($name, $version_options) && $item->info["version"]) {
-        $projects[$project_name]['version'] = preg_replace("/^". DRUPAL_CORE_COMPATIBILITY . "-/", "", $item->info["version"]);
+        $projects[$name]['version'] = preg_replace("/^". DRUPAL_CORE_COMPATIBILITY . "-/", "", $item->info["version"]);
       }
     }
   }
@@ -140,20 +142,15 @@ function _drush_generate_makefile_updatexml($name, $type, $info = array()) {
 /**
  * Helper function to check for a non-default installation location.
  */
-function _drush_generate_makefile_check_location($name, $type) {
+function _drush_generate_makefile_check_location($module_name, $project_name, $type) {
   // Check for non-default installation location.
-  $path = drupal_get_path($type, $name);
+  $path = drupal_get_path($type, $module_name);
   $default_location = 'sites/all/' . $type . 's';
   $info = array();
-  if ($path != $default_location . '/' . $name) {
-    if (substr($path, 0, strlen($default_location)) != $default_location) {
-      $info['contrib_destination'] = $path;
-    }
-    else {
-      // If it's in a subdir of sites/all/modules, set the subdir.
-      $subdir = preg_replace(array('@^sites/all/' . $type . 's/@', "@/$name" . '$@'), '', $path);
-      $info['subdir'] = $subdir;
-    }
+  if ($path != $default_location . '/' . $project_name) {
+    // If it's in a subdir of sites/all/modules, set the subdir.
+    $subdir = preg_replace(array('@^sites/all/' . $type . 's/@', "@/$name" . '$@'), '', $path);
+    $info['subdir'] = $subdir;
   }
   return $info;
 }
