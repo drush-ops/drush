@@ -112,11 +112,12 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
     return FALSE;
   }
 
-  drush_make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
-  drush_make_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
+  if (drush_make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path)) {
+    drush_make_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
 
-  if (drush_get_option('prepare-install')) {
-    drush_make_prepare_install($build_path);
+    if (drush_get_option('prepare-install')) {
+      drush_make_prepare_install($build_path);
+    }
   }
 }
 
@@ -148,7 +149,13 @@ function drush_drush_make_post_make($makefile = NULL, $build_path = NULL) {
 function drush_make_projects($recursion, $contrib_destination, $info, $build_path) {
   $projects = array();
   if (empty($info['projects'])) {
-    return;
+    if (drush_get_option('no-core')) {
+      return TRUE;
+    }
+    else {
+      drush_set_error(dt('No core project specified.'));
+      return FALSE;
+    }
   }
   $ignore_checksums = drush_get_option('ignore-checksums');
   foreach ($info['projects'] as $key => $project) {
@@ -167,28 +174,17 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
       'subdir'              => '',
       'directory_name'      => '',
     );
-    $project = drush_make_updatexml($project);
-    if (!empty($md5)) {
-      $project['download']['md5'] = $md5;
-    }
-    if ($ignore_checksums) {
-      unset($project['download']['md5']);
-    }
-    $class_name = 'DrushMakeProject_' . $project['type'];
-    if (class_exists($class_name)) {
-      $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = new $class_name($project);
+    if ($project['location'] != 'http://updates.drupal.org/release-history') {
+      $project = drush_make_updatexml($project);
+      $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
     }
     else {
-      drush_make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $key)));
+      $project['download_type'] = ($project['name'] == 'drupal' ? 'core' : 'contrib');
     }
+    $projects[$project['download_type']][$project['name']] = $project;
   }
 
-  if (!empty($projects['core'])) {
-    $cores = count($projects['core']);
-  }
-  else {
-    $cores = 0;
-  }
+  $cores = !empty($projects['core']) ? count($projects['core']) : 0;
 
   if (drush_get_option('no-core')) {
     unset($projects['core']);
@@ -204,6 +200,28 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
     drush_set_error(dt('More than one core project specified.'));
     return FALSE;
   }
+
+  foreach ($projects as $type => $type_projects) {
+    foreach ($type_projects as $project) {
+      if ($project['location'] == 'http://updates.drupal.org/release-history') {
+        $project = drush_make_updatexml($project);
+      }
+      if (!empty($md5)) {
+        $project['download']['md5'] = $md5;
+      }
+      if ($ignore_checksums) {
+        unset($project['download']['md5']);
+      }
+      $class_name = 'DrushMakeProject_' . $project['type'];
+      if (class_exists($class_name)) {
+        $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = new $class_name($project);
+      }
+      else {
+        drush_make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $key)));
+      }
+    }
+  }
+
   if (isset($projects['core'])) {
     foreach ($projects['core'] as $project) {
       $project->make();
@@ -215,6 +233,7 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
       $project->make();
     }
   }
+  return TRUE;
 }
 
 function drush_make_libraries($contrib_destination, $info, $build_path) {
