@@ -27,7 +27,7 @@ class backendCase extends Drush_TestCase {
     $exec = sprintf('%s %s version --simulate --ssh-options=%s | grep ssh', escapeshellcmd(UNISH_DRUSH), escapeshellarg('user@server/path/to/drupal#sitename'), escapeshellarg('-i mysite_dsa'));
     $this->execute($exec);
     // $expected might be different on non unix platforms. We shall see.
-    $expected = "proc_open: ssh -i mysite_dsa 'user'@'server' 'drush  --uri='\''sitename'\'' --root='\''/path/to/drupal'\'' --simulate version --backend 2>&1'  2>&1";
+    $expected = "Simulating backend invoke: ssh -i mysite_dsa 'user'@'server' 'drush  --uri='\''sitename'\'' --root='\''/path/to/drupal'\'' --simulate version --backend 2>&1'  2>&1";
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected ssh command was built');
   }
