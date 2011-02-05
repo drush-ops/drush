@@ -14,14 +14,14 @@
 
 class siteUpgradeCase extends Drush_TestCase {
   function testUpgrade() {
-    $env = 'testUpgrade';
+    $env = 'testupgrade';
     $this->setUpDrupal($env, TRUE, '6.x');
     $root = $this->sites[$env]['root'];
 
     // Create the alias for D7 site.
-    $aliases['testUpgrade'] = array(
+    $aliases['target'] = array(
       'root' => UNISH_SANDBOX . '/target',
-      'uri' => 'testUpgrade',
+      'uri' => $env,
       'db-url' => UNISH_DB_URL . '/unish_target',
     );
     $contents = $this->file_aliases($aliases);
@@ -44,21 +44,22 @@ class siteUpgradeCase extends Drush_TestCase {
       'root' => $root,
       'uri' => $env,
     );
-    $this->drush('site-upgrade', array('@testUpgrade'), $options);
+    $this->drush('site-upgrade', array('@target'), $options);
 
     // Assert that the D7 site bootstraps.
+    // We don't specify @target alias since that file is in the root of the *source* site.
     $options = array(
       'pipe' => NULL,
-      'root' => $aliases['testUpgrade']['root'],
-      'uri' => $aliases['testUpgrade']['uri'],
+      'root' => $aliases['target']['root'],
+      'uri' => $aliases['target']['uri'],
     );
     $return = $this->drush('core-status', array('drupal_bootstrap'), $options);
     $this->assertEquals('Successful', $this->getOutput(), 'The target site bootstraps successfully');
 
     // Assures that a updatedb and batch updates work properly. See user_update_7001().
     $options = array(
-      'root' => $aliases['testUpgrade']['root'],
-      'uri' => $aliases['testUpgrade']['uri'],
+      'root' => $aliases['target']['root'],
+      'uri' => $aliases['target']['uri'],
     );
     $eval = "require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');";
     $eval .= "\$account = user_load_by_name('example');";
