@@ -49,12 +49,14 @@ class contextCase extends Drush_TestCase {
 
     foreach ($this->paths as $key => $path) {
       // Only declare harmless options as these files hang around until shutdown.
-      $contents = "<?php
+      $contents = <<<EOD
+<?php
 // Written by Drush's contextCase::setup(). This file is safe to delete.
 
-\$options['contextConfig'] = $key;
-\$command_specific['unit-eval']['contextConfig'] = $key . '-specific';
-";
+\$options['contextConfig'] = '$key';
+\$command_specific['unit-eval']['contextConfig'] = '$key-specific';
+
+EOD;
       $path .= $key == 'user' ? '/.drushrc.php' : '/drushrc.php';
       if (file_exists($path)) {
         $this->exists[$key] = $path;
