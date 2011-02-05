@@ -321,14 +321,15 @@ projects. Additionally, they may specify a destination:
 
 ### Includes
 
-An array of makefiles to include. Each include may be a local path or a direct
-URL to the makefile. Includes are appended in order with the source makefile
-appended last, allowing latter makefiles to override the keys/values of former
-makefiles.
+An array of makefiles to include. Each include may be a local relative path
+to the includer makefile directory or a direct URL to the makefile. Includes
+are appended in order with the source makefile appended last, allowing latter
+makefiles to override the keys/values of former makefiles.
 
 **Example:**
 
     includes[example] = "example.make"
+    includes[example_relative] = "../example_relative/example_relative.make"
     includes[remote] = "http://www.example.com/remote.make"
 
 
