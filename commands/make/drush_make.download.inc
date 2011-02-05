@@ -190,14 +190,16 @@ function _drush_make_download_file($download) {
       $headers = array_reverse($headers);
       $content_type = '';
       $file = '';
-      foreach ($headers as $header) {
-        if (isset($header['Location'])) {
-          $file = basename($header['Location']);
-          break;
+      foreach ($headers as $key => $header) {
+        // Normalize header key casing.
+        $headers[$key] = $header = array_change_key_case($header, CASE_LOWER);
+        // Check for location header.
+        if (isset($header['location'])) {
+          $file = basename($header['location']);
         }
       }
-      if (isset($headers[0]['Content-Disposition'])) {
-        $parts = explode(';', $headers[0]['Content-Disposition']);
+      if (isset($headers[0]['content-disposition'])) {
+        $parts = explode(';', $headers[0]['content-disposition']);
         foreach ($parts as $part) {
           $inner_parts = explode('=', $part, 2);
           if (trim($inner_parts[0]) == 'filename') {
@@ -206,9 +208,9 @@ function _drush_make_download_file($download) {
           }
         }
       }
-      if (isset($headers[0]['Content-Type'])) {
+      if (isset($headers[0]['content-type'])) {
         // These still need finalizing.
-        switch ($headers[0]['Content-Type']) {
+        switch ($headers[0]['content-type']) {
           case 'application/zip':
             $content_type = 'zip';
             break;
