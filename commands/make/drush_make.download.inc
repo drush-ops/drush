@@ -349,149 +349,148 @@ function drush_make_download_git($name, $download, $download_location) {
   // check if specific revision is set in info file
   $download['revision'] = isset($download['revision']) ? $download['revision'] : FALSE;
 
-  // only progress if we have a download url...
-  if (!empty($download['url'])) {
-    // split the given download url into pieces
-    $url_array = array();
+  if (!isset($download['url'])) {
+    // If no download URL specified, assume anonymous clone from git.drupal.org.
+    $download['url'] = "git://git.drupal.org/project/$name.git";
+  }
 
-    // Get the protocol, site and resource parts of the URL
-    // original url = http://example.com/blog/index?name=foo
-    // protocol = http://
-    // site = example.com/
-    // resource = blog/index?name=foo
-    $regex = '#^(.*?//)*(.*@)*([\w\.\d]*)(:(\d+))*(/*)(.*)$#';
-    $matches = array();
-    preg_match($regex, $download['url'], $matches);
-
-    // Assign the matched parts of url to the result array
-    $result['user']     = $matches[2];
-    $result['port']     = $matches[5];
-    $result['host']     = $matches[3];
-    $result['resource'] = $matches[7];
-
-    // clean up the site portion by removing the trailing /
-    $url_array['host'] = preg_replace('#/$#', '', $url_array['host']);
-
-    // clean up the protocol portion by removing the trailing ://
-    $url_array['protocol'] = preg_replace('#://$#', '', $url_array['protocol']);
-
-    if (empty($url_array['protocol'])) {
-      // If protocol is not given, assume an SSH URL.
-      $url = $download['url'];
-    }
-    else {
-      // build url for git clone to support different protocols
-      // currently all protocols seems to use the same url schema
-      switch ($url_array['protocol']) {
-        case 'git':
-          // github uses two different urls, working copy urls using scp format
-          // git@domain:repo export url format are git://domain/repo
-          if ($wc) {
-            // working copy is set
-            $url = 'git@'. $url_array['host'] .':'. $url_array['resource'];
-            break;
-          }
-        case 'ssh':
-        case 'http':
-        case 'https':
-        case 'ftp':
-        case 'ftps':
-        case 'rsync':
-        case 'file':
-          // @TODO: implement port & user options
-          $url_array['protocol'] .'://'. $url_array['user'] . $url_array['host'] .'/'. $url_array['resource'];
-          break;
-
-        default:
-          drush_make_error('DOWNLOAD_ERROR', dt('unknown protocol @protocol in %project', array('@protocol' => $url_array['protocol'], '%project' => $name)));
-          return false;
-      }
-    }
-
-    $tmp_location = $tmp_path . '/__git__/' . basename($download_location);
-
-    drush_make_mkdir($tmp_path . '/__git__/');
-
-    // clone the given repository
-    if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
-      drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $url)), 'ok');
-
-      // GIT Checkout only work on a ready cloned repo. So we switch to branch or to tag (only if we have no branch) after cloneing.
-      if ($download['branch'] !== 'master' || $download['tag'] || $download['revision'] || !empty($download['submodule'])) {
-
-        // get current directory (for move back later)
-        $cwd = getcwd();
-        // change path to working copy of cloned repo
-        chdir($tmp_location);
-
-        // Progress branch / tag / revision download. Ensure that only one option ist set (branch OR tag OR revision)
-        // check if branch a other than master
-        if ($download['branch'] !== 'master' && !$download['tag'] && !$download['revision']) {
-          if (drush_shell_exec("git checkout %s", $download['branch'])) {
-            drush_log(dt("Checked out branch %branch.", array('%branch' => $download['branch'])), 'ok');
-          }
-          elseif (drush_shell_exec("git checkout -b %s %s", $download['branch'], 'origin/' . $download['branch'])) {
-            drush_log(dt("Checked out branch %branch.", array('%branch' => $download['branch'])), 'ok');
-          }
-          else {
-            drush_make_error('DOWNLOAD_ERROR', dt("Unable to check out branch %branch.", array('%branch' => $download['branch'])));
-          }
-        }
-        // progress if: tag is set but not the others
-        elseif ($download['branch'] == 'master' && $download['tag'] && !$download['revision']) {
-          // @TODO: change checkout to refs path
-          if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
-            drush_log(dt("Checked out tag %tag.", array('%tag' => $download['tag'])), 'ok');
-          }
-          else {
-            drush_make_error('DOWNLOAD_ERROR', dt("Unable to check out tag %tag.", array('%tag' => $download['tag'])));
-          }
-        }
-        // progress if: revision is set but not the others
-        elseif ($download['branch'] == 'master' && !$download['tag'] && $download['revision']) {
-          if (drush_shell_exec("git checkout %s", $download['revision'])) {
-            drush_log(dt("Checked out revision %revision.", array('%revision' => $download['revision'])), 'ok');
-          }
-          else {
-            drush_make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision %revision", array('%revision' => $download['revision'])));
-          }
-        }
-        // more than one option is set so we throw a error message
-        elseif ($download['branch'] !== 'master' || $download['tag'] || $download['revision']) {
-          drush_make_error('DOWNLOAD_ERROR', dt("You can only specific branch or tag or revision but not combined in make file."));
-          return false;
-        }
-        if (!empty($download['submodule'])) {
-          $command = 'git submodule update';
-          foreach ($download['submodule'] as $option) {
-            $command .= ' --%s';
-          }
-          if (call_user_func_array('drush_shell_exec', array_merge(array($command), $download['submodule']))) {
-            drush_log(dt('Initialized registered submodules.'), 'ok');
-          }
-          else {
-            drush_make_error('DOWNLOAD_ERROR', dt('Unable to initialize submodules.'));
-          }
-        }
-        // move back to last current directory (first line)
-        chdir($cwd);
-      }
-
-      // Remove .git/ directory if working-copy flag was not specified.
-      if (!$wc && file_exists($tmp_location . '/.git')) {
-        drush_shell_exec("rm -rf %s", $tmp_location . '/.git');
-      }
-      drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
-      drush_shell_exec("rm -rf %s", dirname($tmp_location));
-      return dirname($tmp_location);
-    }
-    else {
-      drush_make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $name, '%url' => $url)));
-    }
+  // split the given download url into pieces
+  $url_array = array();
+  
+  // Get the protocol, site and resource parts of the URL
+  // original url = http://example.com/blog/index?name=foo
+  // protocol = http://
+  // site = example.com/
+  // resource = blog/index?name=foo
+  $regex = '#^(.*?//)*(.*@)*([\w\.\d]*)(:(\d+))*(/*)(.*)$#';
+  $matches = array();
+  preg_match($regex, $download['url'], $matches);
+  // Assign the matched parts of url to the result array
+  $url_array['user']     = $matches[2];
+  $url_array['port']     = $matches[5];
+  $url_array['host']     = $matches[3];
+  $url_array['resource'] = $matches[7];
+  
+  // clean up the site portion by removing the trailing /
+  $url_array['host'] = preg_replace('#/$#', '', $url_array['host']);
+  
+  // clean up the protocol portion by removing the trailing ://
+  $url_array['protocol'] = preg_replace('#://$#', '', $url_array['protocol']);
+  
+  if (empty($url_array['protocol'])) {
+    // If protocol is not given, assume an SSH URL.
+    $url = $download['url'];
   }
   else {
-    $download['url'] = dt("unspecified location");
+    // build url for git clone to support different protocols
+    // currently all protocols seems to use the same url schema
+    switch ($url_array['protocol']) {
+      case 'git':
+        // github uses two different urls, working copy urls using scp format
+        // git@domain:repo export url format are git://domain/repo
+        if ($wc) {
+          // working copy is set
+          $url = 'git@'. $url_array['host'] .':'. $url_array['resource'];
+          break;
+        }
+      case 'ssh':
+      case 'http':
+      case 'https':
+      case 'ftp':
+      case 'ftps':
+      case 'rsync':
+      case 'file':
+        // @TODO: implement port & user options
+        $url_array['protocol'] .'://'. $url_array['user'] . $url_array['host'] .'/'. $url_array['resource'];
+        break;
+  
+      default:
+        drush_make_error('DOWNLOAD_ERROR', dt('unknown protocol @protocol in %project', array('@protocol' => $url_array['protocol'], '%project' => $name)));
+        return false;
+    }
   }
+  
+  $tmp_location = $tmp_path . '/__git__/' . basename($download_location);
+  
+  drush_make_mkdir($tmp_path . '/__git__/');
+  
+  // clone the given repository
+  if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
+    drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $url)), 'ok');
+  
+    // GIT Checkout only work on a ready cloned repo. So we switch to branch or to tag (only if we have no branch) after cloneing.
+    if ($download['branch'] !== 'master' || $download['tag'] || $download['revision'] || !empty($download['submodule'])) {
+  
+      // get current directory (for move back later)
+      $cwd = getcwd();
+      // change path to working copy of cloned repo
+      chdir($tmp_location);
+  
+      // Progress branch / tag / revision download. Ensure that only one option ist set (branch OR tag OR revision)
+      // check if branch a other than master
+      if ($download['branch'] !== 'master' && !$download['tag'] && !$download['revision']) {
+        if (drush_shell_exec("git checkout %s", $download['branch'])) {
+          drush_log(dt("Checked out branch %branch.", array('%branch' => $download['branch'])), 'ok');
+        }
+        elseif (drush_shell_exec("git checkout -b %s %s", $download['branch'], 'origin/' . $download['branch'])) {
+          drush_log(dt("Checked out branch %branch.", array('%branch' => $download['branch'])), 'ok');
+        }
+        else {
+          drush_make_error('DOWNLOAD_ERROR', dt("Unable to check out branch %branch.", array('%branch' => $download['branch'])));
+        }
+      }
+      // progress if: tag is set but not the others
+      elseif ($download['branch'] == 'master' && $download['tag'] && !$download['revision']) {
+        // @TODO: change checkout to refs path
+        if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
+          drush_log(dt("Checked out tag %tag.", array('%tag' => $download['tag'])), 'ok');
+        }
+        else {
+          drush_make_error('DOWNLOAD_ERROR', dt("Unable to check out tag %tag.", array('%tag' => $download['tag'])));
+        }
+      }
+      // progress if: revision is set but not the others
+      elseif ($download['branch'] == 'master' && !$download['tag'] && $download['revision']) {
+        if (drush_shell_exec("git checkout %s", $download['revision'])) {
+          drush_log(dt("Checked out revision %revision.", array('%revision' => $download['revision'])), 'ok');
+        }
+        else {
+          drush_make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision %revision", array('%revision' => $download['revision'])));
+        }
+      }
+      // more than one option is set so we throw a error message
+      elseif ($download['branch'] !== 'master' || $download['tag'] || $download['revision']) {
+        drush_make_error('DOWNLOAD_ERROR', dt("You can only specific branch or tag or revision but not combined in make file."));
+        return false;
+      }
+      if (!empty($download['submodule'])) {
+        $command = 'git submodule update';
+        foreach ($download['submodule'] as $option) {
+          $command .= ' --%s';
+        }
+        if (call_user_func_array('drush_shell_exec', array_merge(array($command), $download['submodule']))) {
+          drush_log(dt('Initialized registered submodules.'), 'ok');
+        }
+        else {
+          drush_make_error('DOWNLOAD_ERROR', dt('Unable to initialize submodules.'));
+        }
+      }
+      // move back to last current directory (first line)
+      chdir($cwd);
+    }
+  
+    // Remove .git/ directory if working-copy flag was not specified.
+    if (!$wc && file_exists($tmp_location . '/.git')) {
+      drush_shell_exec("rm -rf %s", $tmp_location . '/.git');
+    }
+    drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
+    drush_shell_exec("rm -rf %s", dirname($tmp_location));
+    return dirname($tmp_location);
+  }
+  else {
+    drush_make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $name, '%url' => $url)));
+  }
+
   return FALSE;
 }
 
