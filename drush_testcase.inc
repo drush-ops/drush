@@ -32,7 +32,9 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     }
     $ret = mkdir($sandbox);
     // Path must exist before we call realpath().
-    define('UNISH_SANDBOX', realpath($sandbox));
+    if (!defined('UNISH_SANDBOX')) {
+      define('UNISH_SANDBOX', realpath($sandbox));
+    }
     chdir(UNISH_SANDBOX);
   }
 
