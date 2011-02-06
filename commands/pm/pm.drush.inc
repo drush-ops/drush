@@ -2178,10 +2178,10 @@ function drush_pm_download() {
 
     // If user did not provide --destination, then call the
     // download-destination-alter hook to give the chance to any commandfiles
-    // to adjust the install location.
+    // to adjust the install location or abort it.
     if (empty($destination)) {
       $result = drush_command_invoke_all_ref('drush_pm_download_destination_alter', $request, $release);
-      if ($result === FALSE) {
+      if (array_search(FALSE, $result, TRUE) !== FALSE) {
         return FALSE;
       }
     }
