@@ -1,12 +1,15 @@
 <?php
 
+define('UNISH_DRUSH', $_ENV['UNISH_DRUSH']);
+define('UNISH_DB_URL', $_ENV['UNISH_DB_URL']);
+
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
 
   // Unix exit codes.
   const EXIT_SUCCESS  = 0;
   const EXIT_ERROR = 1;
   /*
-   * An array of Drupal sites that aer setup in the drush-sandbox.
+   * An array of Drupal sites that are setup in the drush-sandbox.
    */
   var $sites;
 
@@ -18,10 +21,13 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    * Assure that each class starts with an empty sandbox directory.
    */
   public static function setUpBeforeClass() {
-    if (file_exists(UNISH_SANDBOX)) {
-      self::file_delete_recursive(UNISH_SANDBOX);
+    $sandbox = $_ENV['UNISH_SANDBOX'];
+    if (file_exists($sandbox)) {
+      self::file_delete_recursive($sandbox);
     }
-    mkdir(UNISH_SANDBOX);
+    $ret = mkdir($sandbox);
+    // Path must exist before we call realpath().
+    define('UNISH_SANDBOX', realpath($sandbox));
     chdir(UNISH_SANDBOX);
   }
 

@@ -10,7 +10,7 @@
 
 class contextCase extends Drush_TestCase {
 
-  function __construct() {
+  function setUpPaths() {
     $this->env = 'dev';
     // $this->sites[$this->env]['root']
     $this->root = UNISH_SANDBOX . '/web';
@@ -25,10 +25,10 @@ class contextCase extends Drush_TestCase {
       'system' => '/etc/drush',
       'drush' => dirname(realpath(UNISH_DRUSH)),
     );
-    // Run each path through realpath() since the paths we'll compare against 
+    // Run each path through realpath() since the paths we'll compare against
     // will have already run through drush_load_config_file().
     foreach ($this->paths as $key => $path) $this->paths[$key] = realpath($path);
-    
+
     $this->paths_delete_candidates = array('user', 'home.drush', 'system', 'drush');
   }
 
@@ -42,6 +42,7 @@ class contextCase extends Drush_TestCase {
   function setup() {
     parent::setUp();
 
+    $this->setUpPaths();
     $this->setUpDrupal($this->env, FALSE);
     $root = $this->sites[$this->env]['root'];
     $site = "$root/sites/$this->env";
@@ -167,8 +168,7 @@ EOD;
     $this->drush('unit-eval', array($eval), $options);
     $output = $this->getOutput();
     $actuals = json_decode(trim($output));
-    // @todo: why is custom-specific not winning here. bug?
-    $this->assertEquals('site-specific', $actuals->contextConfig);
+    $this->assertEquals('custom-specific', $actuals->contextConfig);
   }
 
   /**
