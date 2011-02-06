@@ -4,8 +4,8 @@
     syntaxCheck="false"
     bootstrap="drush_testcase.inc">
   <php>
-    <env name="UNISH_DRUSH" value="/Users/mw/bin/drush"/>
-    <env name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/>
-    <env name="UNISH_SANDBOX" value="/tmp/drush-sandbox"/>
+    <var name="UNISH_DRUSH" value="/Users/mw/bin/drush"/>
+    <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/>
+    <var name="UNISH_SANDBOX" value="/tmp/drush-sandbox"/>
   </php>
 </phpunit>

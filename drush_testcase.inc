@@ -1,7 +1,8 @@
 <?php
 
-define('UNISH_DRUSH', $_ENV['UNISH_DRUSH']);
-define('UNISH_DB_URL', $_ENV['UNISH_DB_URL']);
+// We read from globals here because env can be empty and ini did not work in quick test.
+define('UNISH_DRUSH', $GLOBALS['UNISH_DRUSH']);
+define('UNISH_DB_URL', $GLOBALS['UNISH_DB_URL']);
 
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
 
@@ -21,7 +22,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    * Assure that each class starts with an empty sandbox directory.
    */
   public static function setUpBeforeClass() {
-    $sandbox = $_ENV['UNISH_SANDBOX'];
+    $sandbox = $GLOBALS['UNISH_SANDBOX'];
     if (file_exists($sandbox)) {
       self::file_delete_recursive($sandbox);
     }
