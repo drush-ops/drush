@@ -3,9 +3,9 @@
 // We read from globals here because env can be empty and ini did not work in quick test.
 define('UNISH_DB_URL', $GLOBALS['UNISH_DB_URL']);
 
-// Value can come from phpunit.xml or `which drush`.
+// UNISH_DRUSH value can come from phpunit.xml or `which drush`.
 if (!defined('UNISH_DRUSH')) {
-  define('UNISH_DRUSH', empty($GLOBALS['UNISH_DRUSH']) ? `which drush` : $GLOBALS['UNISH_DRUSH']);
+  define('UNISH_DRUSH', empty($GLOBALS['UNISH_DRUSH']) ? trim(`which drush`) : $GLOBALS['UNISH_DRUSH']);
 }
 
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
