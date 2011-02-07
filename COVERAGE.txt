@@ -6,9 +6,11 @@ pm-update
 pm-updatecode-postupdate
 pm-releasenotes
 pm-releases
-pm-enable
-pm-disable
-pm-uninstall
+pm-enable: GOOD. testEnDisUnListVar().
+pm-disable: GOOD. testEnDisUnListVar().
+pm-uninstall: GOOD. testEnDisUnListVar().
+pm-list: GOOD. testEnDisUnListVar().
+pm-info:
 pm-refresh
 version-control: to be deprecated all git workflow after git.drupal.org?
 package-hander:
@@ -18,7 +20,7 @@ sql-connect:
 sql-query:
 sql-dump: FAIR. Implicitly tested by siteUpgradeTest.
 sql-sync: FAIR. Implicitly tested by siteUpgradeTest.
-sql-drop: 
+sql-drop:
 
 
 updatedb: GOOD. Implicitly tested siteUpgradeTest.
@@ -41,7 +43,7 @@ site-install: FAIR. Implicit test by setUpDrupal().
 site-upgrade: GOOD.
 test-*
 topic
-variable-*
+variable-*: GOOD. testEnDisUnListVar().
 watchdog-*
 
 user-add
@@ -68,7 +70,7 @@ context: FAIR
 drush: NONE.
 environment
 sitealias. FAIR. Explicit test for alias lists. Single aliases implicitly tested by contextTest.
-dbtng
+dbtng: Good. Implicit by variable-*.
 drupal
 exec: GOOD: Implicitly tested all over.
 filesystem

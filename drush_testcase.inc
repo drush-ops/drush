@@ -96,7 +96,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
         $cmd[] = "--$key";
       }
       else {
-        $cmd[] = "--$key=$value";
+        $cmd[] = "--$key=" . escapeshellarg($value);
       }
     }
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs
