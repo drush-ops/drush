@@ -24,10 +24,10 @@ sql-drop
 updatedb: GOOD. Implicitly tested siteUpgradeTest.
 archive-dump
 help
-version
+version: Good. Implicit by testStandaloneScript()
 self-update
 php-eval: GOOD. Implicitly tested by many tests (e.g. siteUpgradeTest).
-php-script
+php-script: GOOD.
 drupal-directory
 core-cli
 cache-clear
@@ -68,6 +68,12 @@ context: FAIR
 drush: NONE. Oy. Probably needs to be broken up into multiple files.
 environment
 sitealias. FAIR. Explicit test for alias lists. Single aliases implicitly tested by contextTest.
+dbtng
+drupal
+exec: GOOD: Implicitly tested all over.
+filesystem
+output
+
 
 ROOT
 -------------
