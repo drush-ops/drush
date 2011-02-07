@@ -11,7 +11,7 @@ pm-disable
 pm-uninstall
 pm-refresh
 version-control: to be deprecated all git workflow after git.drupal.org?
-package-hander: 
+package-hander:
 
 sql-cli
 sql-connect
@@ -22,6 +22,7 @@ sql-drop
 
 
 updatedb: GOOD. Implicitly tested siteUpgradeTest.
+archive-dump
 help
 version
 self-update
@@ -66,7 +67,7 @@ command: FAIR
 context: FAIR
 drush: NONE. Oy. Probably needs to be broken up into multiple files.
 environment
-sitealias
+sitealias. FAIR. Explicit test for alias lists. Single aliases implicitly tested by contextTest.
 
 ROOT
 -------------

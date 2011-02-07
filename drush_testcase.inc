@@ -86,7 +86,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL) {
     $cmd[] = $cd ? sprintf('cd %s;', escapeshellarg($cd)) : NULL;
     $cmd[] = UNISH_DRUSH;
-    $cmd[] = $site_specification;
+    $cmd[] = empty($site_specification) ? NULL : escapeshellarg($site_specification);
     $cmd[] = $command;
     foreach ($args as $arg) {
       $cmd[] = escapeshellarg($arg);
