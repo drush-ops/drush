@@ -131,6 +131,10 @@ function drush_hook_pre_COMMAND() {
  * for each hook implementation is invoked, in addition to pre and
  * validate rollbacks.
  *
+ * @return
+ *   The return value will be passed along to the caller if --backend option is
+ *   present. A boolean FALSE indicates failure and rollback will be intitated.
+ *
  * @see drush_hook_COMMAND_rollback()
  * @see drush_hook_pre_COMMAND_rollback()
  * @see drush_hook_COMMAND_validate_rollback()

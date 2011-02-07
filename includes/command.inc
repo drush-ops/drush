@@ -49,7 +49,8 @@
  * @param command
  *   The drush command to execute.
  * @return
- *   A boolean specifying whether or not the command was successfully completed.
+ *   The return value will be passed along to the caller if --backend option is
+ *   present. A boolean FALSE indicates failure and rollback will be intitated.
  */
 function drush_invoke($command) {
   drush_command_include($command);
@@ -119,6 +120,10 @@ function drush_invoke_args($command, $args) {
         $available_rollbacks[] = $func . '_rollback';
         $completed[] = $func;
         $result = call_user_func_array($func, $args);
+        // Only the 'main' callback can send data to backend.
+        if ($var_hook == $hook) {
+          drush_backend_set_result($result);
+        }
         _drush_log_drupal_messages();
         if (drush_get_error() || ($result === FALSE)) {
           $rollback = TRUE;

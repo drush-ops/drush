@@ -68,9 +68,9 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('status', 'st'),
     'examples' => array(
-      'drush status version' => 'Show all status lines that contain version information.',
-      'drush status --pipe' => 'A list key=value items separated by line breaks.',
-      'drush status drush-version --pipe' => 'Emit just the drush version with no label.',
+      'drush core-status version' => 'Show all status lines that contain version information.',
+      'drush core-status --pipe' => 'A list key=value items separated by line breaks.',
+      'drush core-status drush-version --pipe' => 'Emit just the drush version with no label.',
     ),
     'arguments' => array(
       'item' => 'Optional.  The status item line(s) to display.',
@@ -520,7 +520,7 @@ function drush_core_status() {
       }
     }
   }
-  drush_backend_set_result($status_table);
+  $return = $status_table;
   unset($status_table['%paths']);
   // Print either an ini-format list or a formatted ASCII table
   if (drush_get_option('pipe')) {
@@ -537,7 +537,7 @@ function drush_core_status() {
     unset($status_table['Themes path']);
     drush_print_table(drush_key_value_to_array_table($status_table));
   }
-  return;
+  return $return;
 }
 
 // Command callback. Show all global options. Exposed via topic command.
@@ -636,7 +636,7 @@ function drush_core_php_script() {
 }
 
 function drush_core_php_eval($command) {
-  eval($command . ';');
+  return eval($command . ';');
 }
 
 /*
