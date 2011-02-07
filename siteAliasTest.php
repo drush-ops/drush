@@ -1,6 +1,15 @@
 <?php
 
+/*
+ * @file
+ *   Tests for sitealias.inc
+ */   
 class saCase extends Drush_TestCase {
+
+  /*
+   * Assure that site lists work as expected.
+   * @todo Use --backend for structured return data. Depends on http://drupal.org/node/1043922
+   */
   public function testSAList() {
     $this->setUpDrupal('dev');
     $this->setUpDrupal('stage');
