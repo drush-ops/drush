@@ -121,10 +121,13 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return $this->_output;
   }
 
-  function setUpDrupal($env = 'dev', $install = FALSE, $version_string = '7.x') {
+  function setUpDrupal($env = 'dev', $install = FALSE, $version_string = '7.x', $profile = NULL) {
     $root = UNISH_SANDBOX . '/web';
     $this->sites[$env]['root'] = $root;
     $site = "$root/sites/$env";
+    if (is_null($profile)) {
+      $profile = substr($version_string, 0, 1) >= 7 ? 'testing' : 'default';
+    }
 
     // Download Drupal if not already present.
     if (!file_exists($root)) {
@@ -146,7 +149,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
         'yes' => NULL,
         'quiet' => NULL,
       );
-      $this->drush('site-install', array(), $options);
+      $this->drush('site-install', array($profile), $options);
       // Give us our write perms back.
       $ret = chmod($site, 0777);
 

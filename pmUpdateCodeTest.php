@@ -1,13 +1,16 @@
 <?php
 
 /**
-  * pm-updatecode testing
+  * @file
+  *   Prepare a codebase and upgrade it in several stages, exercising
+  *   updatecode's filters.
+  *   @todo test security-only once one of these modules or core gets a security release.
   */
+
 class pmUpdateCode extends Drush_TestCase {
 
   /*
-   * Prepare a codebase and upgrade it in several stages, exercising updatecode's filters.
-   * @todo test security-only once one of these modules or core gets a security release.
+   * Download old core and older contrib releases which will always need updating.
    */
   public function setUp() {
     $this->setUpDrupal('dev', TRUE, '7.0-rc3');
@@ -20,11 +23,6 @@ class pmUpdateCode extends Drush_TestCase {
     $this->drush('pm-download', array('devel-7.x-1.0-rc1'), $options);
     $this->drush('pm-download', array('webform-7.x-3.4-beta1'), $options);
     $this->drush('pm-enable', array('devel', 'webform'), $options);
-
-    unset($options['quiet'], $options['yes']);
-    $this->drush('pm-updatecode', array(), $options + array('pipe' => NULL));
-    $list = $this->getOutputAsList();
-    // array_filter($list);
   }
 
   function testUpdateCode() {
@@ -59,17 +57,16 @@ class pmUpdateCode extends Drush_TestCase {
     $this->assertNotContains('webform', $all, 'Webform was updated');
 
     // Verify that we keep backups as instructed.
-    $pattern = 'cd %s; find -iname %s';
-    $backup_dir = UNISH_DRUSH . '/backups';
-    $cmd = sprintf($pattern, escapeshellarg($backup_dir), 'devel.module');
+    $pattern = 'find %s -iname %s';
+    $backup_dir = UNISH_SANDBOX . '/backups';
+    $cmd = sprintf($pattern, escapeshellarg($backup_dir), escapeshellarg('devel.module'));
     $this->execute($cmd);
     $output = $this->getOutput();
+    $this->assertNotEmpty($output);
 
-    $cmd = sprintf($pattern, escapeshellarg($backup_dir), 'webform.module');
+    $cmd = sprintf($pattern, escapeshellarg($backup_dir), escapeshellarg('webform.module'));
     $this->execute($cmd);
     $output = $this->getOutput();
-
+    $this->assertEmpty($output);
   }
-
-
 }

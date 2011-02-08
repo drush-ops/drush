@@ -1,9 +1,8 @@
 COMMANDS (perhaps keep these notes in $command definition?)
 ------------
 pm-download: GOOD.
-pm-updatecode
+pm-updatecode: GOOD.
 pm-update
-pm-updatecode-postupdate
 pm-releasenotes
 pm-releases
 pm-enable: GOOD. testEnDisUnListVar().
@@ -12,7 +11,7 @@ pm-uninstall: GOOD. testEnDisUnListVar().
 pm-list: GOOD. testEnDisUnListVar().
 pm-info:
 pm-refresh
-version-control: to be deprecated all git workflow after git.drupal.org?
+version-control: FAIR. See updatecode. To be deprecated all git workflow after git.drupal.org?
 package-hander:
 
 sql-cli:
@@ -30,7 +29,7 @@ version: Good. Implicit by testStandaloneScript()
 self-update
 php-eval: GOOD. Implicitly tested by many tests (e.g. siteUpgradeTest).
 php-script: GOOD.
-drupal-directory
+drupal-directory: GOOD
 core-cli
 cache-clear
 core-cron
