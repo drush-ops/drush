@@ -535,8 +535,8 @@ function drush_pm_list() {
     // Newline-delimited list for use by other scripts. Set the --pipe option.
     drush_print_pipe($pipe);
   }
-  // Set the result for backend invoke
-  drush_backend_set_result($extension_info);
+  // Return the result for backend invoke
+  return $extension_info;
 }
 
 function drush_pm_find_project_from_extension($extension) {

@@ -126,7 +126,7 @@ function drush_upgrade_site_upgrade($target_key) {
     drush_set_option('version-control', 'backup');
 
     // TODO: get releases other than dev snapshot.
-    drush_pm_download('drupal-'. $target_version . '.x');
+    drush_pm_download('drupal-'. $target_version . '.0'); // .x
     if (drush_get_error()) return FALSE; // Early exit if we see an error.
 
     // Check and see if there is a Drupal site at the target
