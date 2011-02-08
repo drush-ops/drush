@@ -95,7 +95,7 @@ function variable_drush_command() {
 function drush_variable_get() {
   global $conf;
   $found = FALSE;
-  
+
   $keys = array_keys($conf);
   if ($args = func_get_args()) {
     $keys = preg_grep("/{$args[0]}/", $keys);
@@ -119,7 +119,7 @@ function drush_variable_get() {
     drush_print($name . ': ' . $value);
     $found = TRUE;
   }
-  
+
   if (!$found) {
     return drush_set_error('No matching variable found.');
   }

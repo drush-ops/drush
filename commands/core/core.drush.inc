@@ -705,7 +705,7 @@ function drush_core_updatedb_batch_process($id) {
  *
  * @param $target
  *   The target to evaluate.  Can be @site or /path or @site:path
- *   or @site:%pathalais, etc. (just like rsync parameters)
+ *   or @site:%pathalias, etc. (just like rsync parameters)
  * @param $component
  *   The portion of the evaluated path to return.  Possible values:
  *   'path' - the full path to the target (default)
