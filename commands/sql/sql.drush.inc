@@ -190,6 +190,9 @@ function _drush_sql_connect($db_spec = NULL) {
     case 'sqlite':
       $command = 'sqlite3';
       break;
+    case 'sqlsrv':
+      $command = 'sqlcmd';
+      break;
   }
   $command .= _drush_sql_get_credentials($db_spec);
   return $command;
@@ -490,6 +493,9 @@ function _drush_sql_drop($db_spec = NULL) {
     case 'sqlite':
       $query = '.tables';
       break;
+    case 'sqlsrv':
+      $query = 'SELECT TABLE_NAME FROM information_schema.tables';
+      break;
     default:
       $query = 'SHOW TABLES;';
   }
@@ -528,6 +534,13 @@ function _drush_sql_drop($db_spec = NULL) {
       $exec = _drush_sql_connect($db_spec);
       $exec .= " '{$sql}'";
       return drush_op_system($exec) == 0;
+    }
+    elseif ($scheme === 'sqlsrv') {
+      // Shift off the header of the column of data returned.
+      array_pop($tables);
+      array_pop($tables);
+      $sql = 'DROP TABLE '. implode(', ', $tables);
+      return _drush_sql_query($sql, $db_spec);
     }
     else {
       // Shift off the header of the column of data returned.
@@ -729,6 +742,15 @@ function _drush_sql_get_credentials($db_spec = NULL) {
       // file, and not as a "--key=value" parameter.
       return ' ' . $db_spec['database'];
       break;
+
+    case 'sqlsrv':
+      // Some drush commands (e.g. site-install) want to connect to the
+      // server, but not the database.  Connect to the built-in database.
+      $database = empty($db_spec['database']) ? 'master' : $db_spec['database'];
+      // Host and port are optional but have defaults.
+      $host = empty($db_spec['server']) ? '.\SQLEXPRESS' : $db_spec['server'];
+      return ' -S ' . $host . ' -d ' . $database . ' -U ' . $db_spec['username'] . ' -P ' . $db_spec['password'];
+      break;
   }
 
   // Turn each parameter into a valid parameter string.
@@ -865,6 +887,12 @@ function drush_sql_build_exec($db_spec, $filepath) {
       $exec .= ' ' . drush_get_option('extra');
       $exec .= _drush_sql_get_credentials($db_spec);
       $exec .= " < $filepath";
+      break;
+    case 'sqlsrv':
+      $exec = 'sqlcmd';
+      $exec .= ' ' . drush_get_option('extra');
+      $exec .= _drush_sql_get_credentials($db_spec);
+      $exec .= ' -h -1 -i "' . $filepath . '"';
       break;
   }
   return $exec;

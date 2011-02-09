@@ -171,11 +171,12 @@ function drush_mkdir($path) {
 function drush_save_data_to_temp_file($data) {
   static $fp;
 
-  $fp = tmpfile();
+  $file = drush_tempnam('drush_');
+  $fp = fopen($file, "w");
   fwrite($fp, $data);
   $meta_data = stream_get_meta_data($fp);
   $file = $meta_data['uri'];
-  drush_register_file_for_deletion($file);
+  fclose($fp);
 
   return $file;
 }

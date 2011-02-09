@@ -1229,6 +1229,13 @@ function drush_valid_db_credentials() {
       if ($type === 'sqlite') {
         $constr = 'sqlite:' . $creds['name'];
       }
+      elseif ($type === 'sqlsrv') {
+        $server = $creds['host'];
+        if (!empty($creds['port'])) {
+          $server .= ", " . $creds['port'];
+        }
+        $constr = sprintf("%s:database=%s;server=%s", $type, $creds['name'], $server);
+      }
       else {
         $constr = sprintf("%s:dbname=%s;host=%s", $type, $creds['name'], $creds['host']);
         if (!empty($creds['port'])) {
