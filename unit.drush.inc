@@ -22,6 +22,15 @@ function unit_drush_command() {
   return $items;
 }
 
+/*
+ * Dynamically append custom bash code to the generated .bashrc.
+ *
+ * @see coreCase::testCoreCLI().
+ */
+function unit_cli_bashrc($drush_command, $interactive_mode) {
+  return drush_get_option('unit-extra');
+}
+
 // Implement each invoke hook with the same single line of code.
 // That line records that the hook was called.
 function drush_unit_invoke_init() {unit_invoke_log(__FUNCTION__);}
@@ -42,7 +51,7 @@ function unit_drush_init() {
 function drush_unit_post_unit_invoke() {
   // Record that this hook was called.
   unit_invoke_log(__FUNCTION__);
-  
+
   // Make sure we enter into rollback.
   drush_set_error('');
 }
@@ -50,7 +59,7 @@ function drush_unit_post_unit_invoke() {
 /*
  * The final invoke hook. Emit the call history.
  * Cannot use 'exit' as it does not fire in rollback scenario.
- */ 
+ */
 function drush_unit_invoke_validate_rollback() {
   unit_invoke_log(__FUNCTION__);
   print json_encode(unit_invoke_log());
