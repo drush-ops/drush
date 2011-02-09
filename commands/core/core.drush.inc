@@ -211,7 +211,7 @@ function core_drush_command() {
   );
 
   $items['core-cli'] = array(
-    'description' => dt('Enter a new shell optimized for drush use.'),
+    'description' => dt('Enter a new shell optimized for drush use. Returns the exit code of the last command executed in the shell.'),
     'options' => array(
       'override' => 'List of drush commands or aliases that should override built-in shell functions and commands; otherwise, built-ins override drush commands. Defaults to dd,help,sa.',
       'contextual' => 'Additional drush overrides that function ONLY when the prompt is "@alias>".  Defaults to cc,cron,rsync,status,sync,updatedb.',
@@ -234,6 +234,7 @@ function core_drush_command() {
     ),
     'aliases' => array('cli'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
+    'topics' => array('docs-bashrc'),
   );
 
   $items['batch-process'] = array(
@@ -823,7 +824,7 @@ function drush_core_cli() {
   // In --pipe mode, just use 'drush'.
   $drush_command = $interactive_mode ? DRUSH_COMMAND.' --in-cli' : 'drush';
 
-  $bashrc_data = implode("/n/n", drush_command_invoke_all('cli_bashrc', $drush_command, $interactive_mode));
+  $bashrc_data = implode("\n\n", drush_command_invoke_all('cli_bashrc', $drush_command, $interactive_mode));
 
   // Print our bashrc file and exit in --pipe mode
   if (drush_get_context('DRUSH_PIPE')) {
