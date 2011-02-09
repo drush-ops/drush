@@ -1095,8 +1095,8 @@ function _pm_find_common_path($project_type, $extensions) {
   // the common prefix for all of them.
   if (count($extensions) > 0) {
     // Iterate over the other projects.
-    while($project = array_pop($extensions)) {
-      $path2 = drupal_get_path($project_type, $project);
+    while($extension = array_pop($extensions)) {
+      $path2 = drupal_get_path($project_type, $extension);
       // Option 1: same path.
       if ($path == $path2) {
         continue;
