@@ -978,6 +978,9 @@ function cd() {
     if [ -n "\$d" ] && [ \${d:0:1} == "@" ]
     then
       cdd \$@;
+    elif [ "x\$1" == "x" ]
+    then
+      builtin cd;
     else
       builtin cd "\$d";
     fi
