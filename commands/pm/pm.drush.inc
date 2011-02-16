@@ -560,7 +560,9 @@ function drush_pm_find_project_from_extension($extension) {
 function drush_pm_enable() {
   // Include update engine so we can use update_check_incompatibility().
   drush_include_engine('drupal', 'update');
+
   $args = _convert_csv_to_array(func_get_args());
+  $args = pm_parse_arguments(func_get_args());
 
   $recheck = TRUE;
   while ($recheck) {
@@ -729,7 +731,7 @@ function drush_pm_enable() {
  * Command callback. Disable one or more extensions.
  */
 function drush_pm_disable() {
-  $args = _convert_csv_to_array(func_get_args());
+  $args = pm_parse_arguments(func_get_args());
 
   $extension_info = drush_get_extensions();
 
@@ -833,7 +835,7 @@ function drush_pm_disable() {
  * Command callback. Show detailed info for one or more extension.
  */
 function drush_pm_info() {
-  $args = _convert_csv_to_array(func_get_args());
+  $args = pm_parse_arguments(func_get_args());
 
   $extension_info = drush_pm_get_extensions();
   _drush_pm_expand_extensions($args, $extension_info);
@@ -1004,7 +1006,7 @@ function _drush_pm_expand_extensions(&$extensions, $extension_info = array()) {
  * // TODO: Use drupal_execute on system_modules_uninstall_confirm_form so that input is validated.
  */
 function drush_pm_uninstall() {
-  $modules = _convert_csv_to_array(func_get_args());
+  $modules = pm_parse_arguments(func_get_args());
 
   drush_include_engine('drupal', 'environment');
   $module_info = drush_get_modules();
@@ -1141,7 +1143,7 @@ function _pm_find_common_path($project_type, $extensions) {
  * Command callback. Show available releases for given project(s).
  */
 function drush_pm_releases() {
-  if (!$requests = _convert_csv_to_array(func_get_args())) {
+  if (!$requests = pm_parse_arguments(func_get_args())) {
     $requests = array('drupal');
   }
 
@@ -1391,7 +1393,7 @@ function _drush_pm_get_releases($requests) {
  * Command callback. Show release notes for given project(s).
  */
 function drush_pm_releasenotes() {
-  if (!$requests = _convert_csv_to_array(func_get_args())) {
+  if (!$requests = pm_parse_arguments(func_get_args())) {
     $requests = array('drupal');
   }
 
@@ -1541,7 +1543,7 @@ function drush_pm_refresh() {
  */
 function drush_pm_update() {
   // Call pm-updatecode.  updatedb will be called in the post-update process.
-  $args = _convert_csv_to_array(func_get_args());
+  $args = pm_parse_arguments(func_get_args());
   array_unshift($args, 'pm-updatecode');
   return call_user_func_array('drush_invoke', $args);
 }
@@ -1768,6 +1770,20 @@ function pm_parse_release($request, $xml) {
   // First published release for the recommended major version is just the
   // first value in $releases.
   return (array)$releases[0];
+}
+
+/**
+ * Sanitize user provided arguments to several pm commands.
+ *
+ * Return an array of arguments off a space and/or comma separated values. It also
+ * lowercase arguments and replace - by _
+ */
+function  pm_parse_arguments($args) {
+  $arguments = _convert_csv_to_array($args);
+  foreach ($arguments as $key => $argument) {
+    $arguments[$key] = strtolower(strtr($argument, '-', '_'));
+  }
+  return $arguments;
 }
 
 /**
@@ -2119,7 +2135,7 @@ function drush_pm_download() {
   $package_handler = drush_get_option('package-handler', 'wget');
   drush_include_engine('package_handler', $package_handler);
 
-  if (!$requests = _convert_csv_to_array(func_get_args())) {
+  if (!$requests = pm_parse_arguments(func_get_args())) {
     $requests = array('drupal');
   }
 
