@@ -561,7 +561,6 @@ function drush_pm_enable() {
   // Include update engine so we can use update_check_incompatibility().
   drush_include_engine('drupal', 'update');
 
-  $args = _convert_csv_to_array(func_get_args());
   $args = pm_parse_arguments(func_get_args());
 
   $recheck = TRUE;
@@ -1143,7 +1142,7 @@ function _pm_find_common_path($project_type, $extensions) {
  * Command callback. Show available releases for given project(s).
  */
 function drush_pm_releases() {
-  if (!$requests = pm_parse_arguments(func_get_args())) {
+  if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
 
@@ -1393,7 +1392,7 @@ function _drush_pm_get_releases($requests) {
  * Command callback. Show release notes for given project(s).
  */
 function drush_pm_releasenotes() {
-  if (!$requests = pm_parse_arguments(func_get_args())) {
+  if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
 
@@ -1543,7 +1542,7 @@ function drush_pm_refresh() {
  */
 function drush_pm_update() {
   // Call pm-updatecode.  updatedb will be called in the post-update process.
-  $args = pm_parse_arguments(func_get_args());
+  $args = pm_parse_arguments(func_get_args(), FALSE);
   array_unshift($args, 'pm-updatecode');
   return call_user_func_array('drush_invoke', $args);
 }
@@ -1776,12 +1775,13 @@ function pm_parse_release($request, $xml) {
  * Sanitize user provided arguments to several pm commands.
  *
  * Return an array of arguments off a space and/or comma separated values. It also
- * lowercase arguments and replace - by _
+ * lowercase arguments and optionally convert dashes to underscores.
  */
-function  pm_parse_arguments($args) {
+function pm_parse_arguments($args, $dashes_to_underscores = TRUE) {
   $arguments = _convert_csv_to_array($args);
   foreach ($arguments as $key => $argument) {
-    $arguments[$key] = strtolower(strtr($argument, '-', '_'));
+    $argument = ($dashes_to_underscores)?strtr($argument, '-', '_'):$argument;
+    $arguments[$key] = strtolower($argument);
   }
   return $arguments;
 }
@@ -1808,7 +1808,7 @@ function pm_parse_project_version($requests) {
     preg_match('/-+(HEAD|(?:(\d+\.x)-+)?(\d+\.[\dx]+.*))$/', $request, $matches);
     if (isset($matches[1])) {
       // The project is whatever we have prior to the version part of the request.
-      $project = trim(substr($request, 0, strlen($request) - strlen($matches[0])), ' -');
+      $project = strtolower(trim(substr($request, 0, strlen($request) - strlen($matches[0])), ' -'));
 
       if ($matches[1] == 'HEAD' || $matches[2] == 'HEAD') {
         drush_log('DRUSH_PM_HEAD', 'Can\'t download HEAD releases because Drupal.org project information only provides for numbered release nodes.', 'warning');
@@ -2135,10 +2135,10 @@ function drush_pm_download() {
   $package_handler = drush_get_option('package-handler', 'wget');
   drush_include_engine('package_handler', $package_handler);
 
-  if (!$requests = pm_parse_arguments(func_get_args())) {
+  if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
-
+ 
   // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
 
