@@ -348,7 +348,9 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
     if (!isset($no_sync)) {
       // If the source file is a temporary file, then we will have rsync
       // delete it for us (remove-source-files option set above).
-      drush_core_call_rsync($source_remote_user . $source_at . $source_db_url['remote-host'] . ':' . $source_dump, $local_file, $source_rsync_options);
+      if (!drush_core_call_rsync($source_remote_user . $source_at . $source_db_url['remote-host'] . ':' . $source_dump, $local_file, $source_rsync_options)) {
+        return FALSE;
+      }
     }
 
     // We will handle lists of destination sites differently from
@@ -413,7 +415,9 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
           $target_remote_pass = drush_get_option('target-remote-pass') ? ':' . drush_get_option('target-remote-pass') : '';
         }
 
-        drush_core_call_rsync($local_file, $target_remote_user . $target_at . $target_db_url['remote-host'] . ':' . $target_dump, $target_rsync_options);
+        if (!drush_core_call_rsync($local_file, $target_remote_user . $target_at . $target_db_url['remote-host'] . ':' . $target_dump, $target_rsync_options)) {
+          return FALSE;
+        }
 
         $connect_exec = $pre_import_commands . $import_command . ' < ' . $target_dump;
         $import_exec = "ssh $target_remote_ssh_options $target_remote_user$target_at" . $target_db_url['remote-host'] . ' ' . escapeshellarg($connect_exec);

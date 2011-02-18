@@ -58,7 +58,7 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
     $include_settings_is_default = (strpos($source . $destination, ':') !== FALSE) || (strpos($source . $destination, '/') !== FALSE);
 
     // Go ahead and call rsync with the paths we determined
-    drush_core_call_rsync($source_path, $destination_path, $additional_options, $include_settings_is_default);
+    return drush_core_call_rsync($source_path, $destination_path, $additional_options, $include_settings_is_default);
   }
 }
 
@@ -248,12 +248,17 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
 
   if ($live_output) {
     $exec_result = drush_op_system($exec);
+    $result = ($exec_result == 0);
   }
   else {
-    $exec_result = drush_shell_exec($exec);
+    $result = drush_shell_exec($exec);
+  }
+  
+  if (!$result) {
+    drush_set_error('DRUSH_RSYNC_FAILED', dt("Could not rsync from !source to !dest", array('!source' => $source, '!dest' => $destination)));
   }
 
-  return $exec_result == 0;
+  return $result;
 }
 
 function _drush_rsync_option_exists($option, $additional_options) {
