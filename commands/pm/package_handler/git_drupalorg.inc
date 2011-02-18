@@ -109,9 +109,9 @@ function package_handler_update_project($request, $release) {
 function package_handler_post_download($project) {
   if (drush_get_option('gitsubmodule', FALSE)) {
     // Obtain the superproject path, then add as submodule.
-    if (drush_shell_cd_and_exec(dirname($project['full_project_path']), 'git rev-parse --git-dir')) {
+    if (drush_shell_cd_and_exec(dirname($project['full_project_path']), 'git rev-parse --show-toplevel')) {
       $output = drush_shell_exec_output();
-      $superproject = dirname($output[0]);
+      $superproject = $output[0];
       // Add the downloaded project as a submodule of its git superproject.
       $command = array();
       $command[] = 'git submodule add';
