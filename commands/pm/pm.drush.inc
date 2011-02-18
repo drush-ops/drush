@@ -1688,7 +1688,7 @@ function pm_parse_release($request, $xml) {
       $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $choice . "']");
     }
     else {
-      continue;
+      return FALSE;
     }
   }
 
@@ -2064,6 +2064,10 @@ function drush_pm_download() {
 
     // Identify the most appropriate release.
     $release = pm_parse_release($request, $xml);
+
+    if (!$release) {
+      continue;
+    }
 
     // Determine what type of project we are to download.
     $request['project_type'] = 'module';
