@@ -30,7 +30,7 @@ self-update
 php-eval: GOOD. Implicitly tested by many tests (e.g. siteUpgradeTest).
 php-script: GOOD.
 drupal-directory: GOOD
-core-cli
+core-cli: FAIR
 cache-clear
 core-cron
 core-status: FAIR: Implicit test by contextTest.
@@ -45,14 +45,7 @@ topic
 variable-*: GOOD. testEnDisUnListVar().
 watchdog-*
 
-user-add
-user-password
-user-information
-user-block/unblock
-user-add-role/remove
-user-create GOOD. Implicit by siteUpgradeTest
-user-cancel
-user-login
+user-*: GOOD.
 
 field-create
 field-delete
