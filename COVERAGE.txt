@@ -47,11 +47,7 @@ watchdog-*
 
 user-*: GOOD.
 
-field-create
-field-delete
-field-update
-field-clone
-field-info
+field-*: GOOD.
 
 INCLUDES
 ------------
