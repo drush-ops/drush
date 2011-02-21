@@ -664,7 +664,7 @@ function drush_sitealias_cache_db_settings(&$alias_record, $databases) {
     $all_site_aliases =& drush_get_context('site-aliases');
     $all_site_aliases[$alias_record['name']] = $alias_record;
     // Check and see if this record is a copy of 'self'
-    if (($alias_record['name'] != 'self') && array_key_exists('@self', $all_site_aliases) && ($all_site_aliases['@self']['name'] == $alias_record['name'])) {
+    if (($alias_record['name'] != 'self') && array_key_exists('@self', $all_site_aliases) && array_key_exists('name', $all_site_aliases['@self']) && ($all_site_aliases['@self']['name'] == $alias_record['name'])) {
       $all_site_aliases['@self'] = $alias_record;
     }
   }
