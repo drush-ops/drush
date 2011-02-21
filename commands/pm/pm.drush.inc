@@ -592,35 +592,32 @@ function drush_pm_enable() {
     if (!empty($modules)) {
       // Check module dependencies.
       $dependencies = drush_check_module_dependencies($modules, $extension_info);
-      $still_unmet = array();
-      $resolved_projects = array();
-      foreach ($dependencies as $key => $info) {
+      $unmet_dependencies = array();
+      foreach ($dependencies as $module => $info) {
         if (!empty($info['unmet-dependencies'])) {
-          foreach ($info['unmet-dependencies'] as $unmet) {
-            if (TRUE) {
-              $project = drush_pm_find_project_from_extension($unmet);
-              if (!empty($project)) {
-                $resolved_projects[$project][] = $unmet;
-              }
-              else {
-                $stil_unmet[$unmet] = $unmet;
-              }
+          foreach ($info['unmet-dependencies'] as $unmet_module) {
+            $unmet_project = drush_pm_find_project_from_extension($unmet_module);
+            if (!empty($unmet_project)) {
+              $unmet_dependencies[$module][$unmet_project] = $unmet_project;
             }
           }
         }
       }
-      if (!empty($resolved_projects)) {
+      if (!empty($unmet_dependencies)) {
         $msgs = array();
-        foreach ($resolved_projects as $project => $unmet) {
-          $msgs[] = dt("!project for !unmet", array('!project' => $project, '!unmet' => implode(',', $unmet)));
+        $unmet_project_list = array();
+        foreach ($unmet_dependencies as $module => $unmet_projects) {
+          $unmet_project_list = array_merge($unmet_project_list, $unmet_projects);
+          $msgs[] = dt("!module requires !unmet-projects", array('!unmet-projects' => implode(', ', $unmet_projects), '!module' => $module));
         }
-        if (drush_get_option('resolve-dependencies') || drush_confirm(dt("Would you like to download the following projects to resolve unmet dependencies: !list", array('!list' => implode(';', $msgs))))) {
+        if (drush_get_option('resolve-dependencies') || drush_confirm(dt("The following projects have unmet dependencies:\n!list\nWould you like to download them?", array('!list' => implode("\n", $msgs))))) {
           // If we did not already print a log message via drush_confirm, then print one now.
           if (drush_get_option('resolve-dependencies')) {
-            drush_log(dt("The following projects are being downloaded to resolve unmet dependencies: !list", array('!list' => implode(';', $msgs))));
+            drush_log(dt("The following projects have unmet dependencies:\n@list\nThey are being downloaded.", array('@list' => implode("\n", $msgs))));
           }
-          $result = drush_invoke_process_args('pm-download', array_keys($resolved_projects), array('y' => TRUE));
-          // After downloading, refresh our info
+          $result = drush_invoke_process_args('pm-download', $unmet_project_list, array('y' => TRUE));
+          // Refresh module cache after downloading the new modules.
+          $extension_info = drush_get_extensions();
           $recheck = TRUE;
         }
       }
