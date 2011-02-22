@@ -165,7 +165,7 @@ function core_drush_command() {
   $items['site-install'] = array(
     'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
     'arguments' => array(
-      'profile' => 'the install profile you wish to run. defaults to \'default\'',
+      'profile' => 'the install profile you wish to run. defaults to \'default\' in D6, \'standard\' in D7',
     ),
     'options' => array(
       'db-url' => 'A Drupal 5/6 style database URL. Only required for initial install - not re-install.',
