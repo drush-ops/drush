@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file Drush pm BZR extension

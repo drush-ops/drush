@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 // Perform setup tasks for installation.
 function drush_core_pre_site_install() {

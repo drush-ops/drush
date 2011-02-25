@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function pm_update_filter(&$project) {
   $update = FALSE;

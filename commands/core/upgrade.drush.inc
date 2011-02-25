@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /* TODO
  * - upgrade to specific releases.

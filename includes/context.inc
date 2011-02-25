@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * The Drush context API implementation.

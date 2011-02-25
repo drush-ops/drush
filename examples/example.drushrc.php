@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /*
  * Examples of valid statements for a drushrc.php file. Use this file to cut down on

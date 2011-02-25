@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function drush_core_search_status() {
   list($remaining, $total) = _drush_core_search_status();
