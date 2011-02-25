@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  *   Specific functions for a drupal 6 environment.

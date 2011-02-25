@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Command callback. Displays update status info and allows to update installed

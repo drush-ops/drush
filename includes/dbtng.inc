@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @defgroup dbfunctions Database convenience functions.

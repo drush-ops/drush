@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @defgroup outputfunctions Process output text.

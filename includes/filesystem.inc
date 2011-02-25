@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @defgroup filesystemfunctions Filesystem convenience functions.

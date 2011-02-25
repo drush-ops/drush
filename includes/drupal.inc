@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Detects the version number of the current Drupal installation,
