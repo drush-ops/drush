@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 require_once DRUSH_BASE_PATH . '/commands/core/rsync.core.inc';
 

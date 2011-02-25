@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Install Drupal 6.x

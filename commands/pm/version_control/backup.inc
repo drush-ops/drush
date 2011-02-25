@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file Drush pm directory copy backup extension

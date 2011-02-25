@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @defgroup dispatching Command dispatching functions.

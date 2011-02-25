@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file Drush PM drupal.org Git extension.

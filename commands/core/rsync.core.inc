@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Entrypoint for drush rsync.
