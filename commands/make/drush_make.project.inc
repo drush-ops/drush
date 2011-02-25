@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * The base project class.

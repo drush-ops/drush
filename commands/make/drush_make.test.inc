@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Main drush make-test callback.

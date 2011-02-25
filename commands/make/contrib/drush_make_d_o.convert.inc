@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 class DrushMakeDrupalorgVersionChecker {
   function latestVersion($project_name, $version) {

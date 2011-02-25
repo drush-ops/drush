@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 define('DRUSH_MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
 define('DRUSH_MAKE_VERSION_BEST', 'best');

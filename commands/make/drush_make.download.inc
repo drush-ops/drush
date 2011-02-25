@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function drush_make_download_factory($name, $download, $download_location) {
   $function = 'drush_make_download_' . $download['type'];

@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function drush_make_ensure_version() {
   if (function_exists('drush_get_global_options')) {
