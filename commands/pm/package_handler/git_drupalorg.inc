@@ -31,36 +31,52 @@ function package_handler_validate() {
  * @param $release The release details array from drupal.org
  */
 function package_handler_download_project(&$request, $release) {
-  if (isset($release['version_extra']) && $release['version_extra'] == 'dev') {
-    // Use the development repository, not supported yet.
-    $repository = 'git://git.drupal.org/project/' . $request['name'] . '.git';
-    // Strip -dev off the end.
-    $tag = substr($release['version'], 0, -4);
-  }
-  else {
-    // Use a stable repository.
-    $repository = 'git://git.drupal.org/project-stable/' . $request['name'] . '.git';
-    $tag = $release['version'];
-  }
-  $request['repository'] = $repository;
+  $repository = 'git://git.drupal.org/project/' . $request['name'] . '.git';
+  $tag = $release['tag'];
 
   // Clone the repo into its appropriate target location.
-  $command = array();
-  $command[] = 'git clone';
-  $command[] = drush_get_option('gitcloneparams');
-  $command[] = $repository;
-  $command[] = $request['full_project_path'];
-  if (!drush_shell_exec(implode(' ', $command))) {
+  $command  = 'git clone';
+  $command .= ' ' . drush_get_option('gitcloneparams');
+  $command .= ' ' . drush_escapeshellarg($repository);
+  $command .= ' ' . drush_escapeshellarg($request['full_project_path']);
+  if (!drush_shell_exec($command)) {
     return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to clone project !name from git.drupal.org.', array('!name' => $request['name'])));
   }
 
-  // Check out the appropriate branch.
-  $command = array();
-  $command[] = 'git checkout';
-  $command[] = drush_get_option('gitcheckoutparams');
-  $command[] = $tag;
-  if (!drush_shell_cd_and_exec($request['full_project_path'], implode(' ', $command))) {
-    return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupal.org.');
+  // Check if the 'tag' from the release feed is a tag or a branch.
+  // If the tag exists, git will return it
+  if (!drush_shell_cd_and_exec($request['full_project_path'], 'git tag -l ' . drush_escapeshellarg($tag))) {
+    return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to clone project !name from git.drupal.org.', array('!name' => $request['name'])));
+  }
+  $output = drush_shell_exec_output();
+
+  if (isset($output[0]) && ($output[0] == $tag)) {
+    // If we want a tag, simply checkout it. The checkout will end up in
+    // "detached head" state.
+    $command  = 'git checkout ' . drush_get_option('gitcheckoutparams');
+    $command .= ' ' . drush_escapeshellarg($tag);
+    if (!drush_shell_cd_and_exec($request['full_project_path'], $command)) {
+      return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupal.org.');
+    }
+  }
+  else {
+    // Else, we want to checkout a branch.
+    // First check if we are not already in the correct branch.
+    if (!drush_shell_cd_and_exec($request['full_project_path'], 'git symbolic-ref HEAD')) {
+      return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupal.org.');
+    }
+    $output = drush_shell_exec_output();
+    $current_branch = preg_replace('@^refs/heads/@', '', $output[0]);
+
+    // If we are not on the correct branch already, switch to the correct one.
+    if ($current_branch != $tag) {
+      $command  = 'git checkout';
+      $command .= ' ' . drush_get_option('gitcheckoutparams');
+      $command .= ' --track ' . drush_escapeshellarg('origin/' . $tag) . ' -b ' . drush_escapeshellarg($tag);
+      if (!drush_shell_cd_and_exec($request['full_project_path'], $command)) {
+        return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupal.org.');
+      }
+    }
   }
 
   return TRUE;
