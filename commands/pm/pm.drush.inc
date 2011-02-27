@@ -1904,6 +1904,7 @@ function pm_drush_engine_package_handler() {
           'gitfetchparams' => 'Add options to the `git fetch` command.',
           'gitpullparams' => 'Add options to the `git pull` command.',
           'gitsubmoduleaddparams' => 'Add options to the `git submodule add` command.',
+          'cache' => 'Use a local git cache and clone projects using --reference.',
         ),
       ),
     ),
@@ -2136,7 +2137,7 @@ function drush_pm_download() {
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
- 
+
   // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
 
