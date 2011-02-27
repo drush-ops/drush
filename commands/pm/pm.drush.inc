@@ -1877,6 +1877,7 @@ function pm_drush_engine_package_handler() {
           'gitfetchparams' => 'Add options to the `git fetch` command.',
           'gitpullparams' => 'Add options to the `git pull` command.',
           'gitsubmoduleaddparams' => 'Add options to the `git submodule add` command.',
+          'cache' => 'Use a local git cache and clone projects using --reference.',
         ),
       ),
     ),

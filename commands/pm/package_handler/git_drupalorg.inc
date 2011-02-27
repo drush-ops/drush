@@ -27,16 +27,36 @@ function package_handler_validate() {
 /**
  * Download a project.
  *
- * @param $request The project array with name, base and full (final) paths.
- * @param $release The release details array from drupal.org
+ * @param $request
+ *   The project array with name, base and full (final) paths.
+ * @param $release
+ *   The release details array from drupal.org.
  */
 function package_handler_download_project(&$request, $release) {
   $repository = 'git://git.drupal.org/project/' . $request['name'] . '.git';
   $tag = $release['tag'];
 
+  if (drush_get_option('cache')) {
+    $gitcache = drush_server_home() . '/.drush/gitcache';
+    drush_gitcache_check($gitcache);
+
+    drush_shell_cd_and_exec($gitcache, 'git remote show');
+    $cached_modules = drush_shell_exec_output();
+
+    if (!in_array($request['name'], $cached_modules)) {
+      drush_gitcache_add_project($gitcache, $request, $repository);
+    }
+  }
+
   // Clone the repo into its appropriate target location.
   $command  = 'git clone';
   $command .= ' ' . drush_get_option('gitcloneparams');
+  if (drush_get_option('cache')) {
+    $command .= ' --reference ' . drush_escapeshellarg($gitcache);
+  }
+  if (drush_get_context('DRUSH_VERBOSE')) {
+    $command .= ' --verbose --progress';
+  }
   $command .= ' ' . drush_escapeshellarg($repository);
   $command .= ' ' . drush_escapeshellarg($request['full_project_path']);
   if (!drush_shell_exec($command)) {
@@ -85,8 +105,10 @@ function package_handler_download_project(&$request, $release) {
 /**
  * Update a project (so far, only modules are supported).
  *
- * @param $request The project array with name, base and full (final) paths.
- * @param $release The release details array from drupal.org
+ * @param $request
+ *   The project array with name, base and full (final) paths.
+ * @param $release
+ *   The release details array from drupal.org.
  */
 function package_handler_update_project($request, $release) {
   drush_log('Updating project ' . $request['name'] . ' ...');
@@ -144,3 +166,46 @@ function package_handler_post_download($project) {
   }
 }
 
+/**
+ * Check for gitcache directory or create it.
+ *
+ * @param $gitcache
+ *   The location of the gitcache directory.
+ */
+function drush_gitcache_check($gitcache) {
+  if (is_dir(drush_server_home() . '/.drush')) {
+    drush_mkdir($gitcache);
+    if (!drush_shell_cd_and_exec($gitcache, 'test $(git rev-parse --is-bare-repository) == "true"')) {
+      drush_shell_cd_and_exec($gitcache, 'git init --bare');
+      drush_shell_cd_and_exec($gitcache, 'git config core.compression 1');
+    }
+  }
+}
+
+/**
+ * Add a project to the cache.
+ *
+ * @param $gitcache
+ *   The location of the gitcache directory.
+ * @param $request
+ *   The project array with name, base and full (final) paths.
+ * @param $release
+ *   The release details array from drupal.org.
+ */
+function drush_gitcache_add_project($gitcache, $request, $repository) {
+  // On the first fetch, git will check for common commits with the remote
+  // repository, so to speed this up we initially fetch from a local clone.
+  $tmpdir = drush_tempdir();
+  $command = 'git clone --bare ';
+  if (drush_get_context('DRUSH_VERBOSE')) {
+    $command .= ' --verbose --progress ';
+  }
+  $command .= '%s';
+  if (drush_shell_cd_and_exec($tmpdir, $command, $repository)) {
+    // Temporarily set the remote url to our temporary clone and fetch from there.
+    drush_shell_cd_and_exec($gitcache, 'git remote add %s %s && git fetch %s --tags', $request['name'], $tmpdir, $request['name']);
+
+    // Change the remote URL and fetch normally.
+    drush_shell_cd_and_exec($gitcache, 'git remote set-url %s %s && git fetch %s --tags', $request['name'], $repository, $request['name']);
+  }
+}
