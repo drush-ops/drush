@@ -989,12 +989,7 @@ function drush_get_log() {
  * Run print_r on a variable and log the output.
  */
 function dlm($object) {
-  ob_start();
-  print_r($object);
-  $contents = ob_get_contents();
-  ob_end_clean();
-
-  drush_log($contents);
+  drush_log(print_r($object, TRUE));
 }
 
 /**
