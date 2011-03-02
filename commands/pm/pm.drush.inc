@@ -1831,7 +1831,7 @@ function pm_parse_project_version($requests) {
 function pm_project_types() {
   // Lookup the 'Project type' vocabulary to some standard strings.
   $types = array(
-    'core' => 'Drupal project',
+    'core' => 'Drupal core',
     'profile' => 'Installation profiles',
     'module' => 'Modules',
     'theme' => 'Themes',
