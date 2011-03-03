@@ -1864,6 +1864,7 @@ function pm_project_types() {
     'module' => 'Modules',
     'theme' => 'Themes',
     'theme engine' => 'Theme engines',
+    'translation' => 'Translations'
   );
   return $types;
 }
@@ -2158,6 +2159,11 @@ function drush_pm_download() {
     $request['project_type'] = 'module';
     if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
       $request['project_type'] = array_search($types[0]->value, $project_types);
+    }
+
+    if ($request['project_type'] == 'translation') {
+      drush_set_error('DRUSH_PM_DOWNLOAD_TRANSLATIONS_FORBIDDEN', dt('Drush has dropped support for downloading translation projects. See l10n_update and l10n_install projects.'));
+      continue;
     }
 
     // Determine the name of the directory that will contain the project.
