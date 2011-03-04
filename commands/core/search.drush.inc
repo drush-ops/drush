@@ -35,10 +35,6 @@ function _drush_core_search_status() {
 }
 
 function drush_core_search_index() {
-  drush_print(dt("Building the index may take a long time."));
-  if (!drush_confirm(dt('Do you really want to continue?'))) {
-    return drush_user_abort();
-  }
   drush_op('_drush_core_search_index');
   drush_log(dt('The search index has been built.'), 'ok');
 }
