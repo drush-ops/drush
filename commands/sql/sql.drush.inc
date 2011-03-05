@@ -435,12 +435,6 @@ function drush_sql_query($query) {
 }
 
 function _drush_sql_query($query, $db_spec = NULL) {
-  $return = _drush_sql_query_execute($query, $db_spec);
-  drush_print(implode(PHP_EOL, drush_shell_exec_output()));
-  return $return;
-}
-
-function _drush_sql_query_execute($query, $db_spec = NULL) {
   $scheme = _drush_sql_get_scheme($db_spec);
 
   // Inject table prefixes as needed.
@@ -467,7 +461,7 @@ function _drush_sql_query_execute($query, $db_spec = NULL) {
     if (drush_get_context('DRUSH_SIMULATE')) {
       drush_print('sql-query: ' . $query);
     }
-    $return = drush_shell_exec($exec) === TRUE;
+    $return = drush_op_system($exec) == 0;
     return $return;
   }
 }

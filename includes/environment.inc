@@ -948,22 +948,6 @@ function _drush_bootstrap_drupal_database() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
 }
 
-
-
-/**
- * Validate the DRUSH_BOOTSTRAP_DRUPAL_FULL phase
- *
- * Check to see if the database contains any tables.
- */
-function _drush_bootstrap_drupal_full_validate() {
-  $result = _drush_sql_query_execute('show tables;');
-  $lines = drush_shell_exec_output();
-  if (count($lines) <= 0) {
-    return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
-  }
-  return TRUE;
-}
-
 /**
  * Attempt to load the full Drupal system.
  */
