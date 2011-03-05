@@ -75,7 +75,11 @@ function system_watchdog($log_entry) {
     $message = $log_entry['message'];
   }
 
-  $message = strip_tags(decode_entities($message));
+  // decode_entities() only loaded after FULL bootstrap.
+  if (function_exists('decode_entities')) {
+    $message = decode_entities($message);
+  }
+  $message = strip_tags($message);
 
   // Log or print or ignore. Just printing saves memory but thats rarely needed.
   switch (drush_get_option('watchdog', 'log')) {
