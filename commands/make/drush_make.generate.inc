@@ -43,7 +43,8 @@ function _drush_make_generate($file) {
   }
 
   // Re-build theme and module data to be sure we have the most current information.
-  $project_info = drush_get_projects();
+  drush_include_engine('drupal', 'environment');
+  $project_info = array_merge(drush_get_modules(), drush_get_themes());
   $used_projects = array();
   foreach ($project_info as $item) {
     $name = $item->info['project'];
@@ -53,11 +54,15 @@ function _drush_make_generate($file) {
         continue;
       }
       $used_projects[] = $name;
-      $updatexml = _drush_generate_makefile_updatexml($name, $type, $item->info);
+      $status_url = isset($item->info['project status url'])?$item->info['project status url']:'';
+      $updatexml = _drush_generate_makefile_check_updatexml($name, $type, $status_url);
       $projects[$name] = array('_type' => $type);
-      if ($updatexml) {
+      if (!$updatexml) {
         $projects[$name]['type'] = $type;
         $projects[$name]['custom_download'] = TRUE;
+      }
+      elseif ($status_url != '') {
+          $projects[$name]['location'] = $status_url;
       }
       $projects[$name] += _drush_generate_makefile_check_location($item->name, $name, $type);
       // Add version number if this project's version is to be tracked
@@ -122,20 +127,30 @@ function _drush_generate_track_version($project, $version_options) {
 }
 
 /**
- * Helper function to check if a detected project lives on drupal.org or not.
+ * Check if a project is available in a update service.
+ *
+ * Default update service is obviously updates.drupal.org. We can receive here
+ * an alternative url corresponding to the 'project status url' property in
+ * project's .info file.
+ *
+ * It also checks for consistency by comparing given project type with to the
+ * type obtained from the update service.
  */
-function _drush_generate_makefile_updatexml($name, $type, $info = array()) {
+function _drush_generate_makefile_check_updatexml($name, $type, $status_url = '') {
+  if ($status_url == '') {
+    $status_url = drush_get_option('drush-make-update-default-url');
+  }
   // First we set up the project information array.
   $project = array(
     'name' => $name,
-    'location' => (isset($info['location']) ? $info['location'] : drush_get_option('drush-make-update-default-url')),
+    'location' => $status_url,
     'core' => DRUPAL_CORE_COMPATIBILITY,
     'version' => DRUSH_MAKE_VERSION_BEST,
   );
 
   // Now we get the project information.
-  $update_check = drush_make_updatexml($project, NULL);
-  return $update_check === TRUE && $type == $update_check['type'];
+  $update_check = drush_make_updatexml($project);
+  return $update_check !== FALSE && $type == $update_check['type'];
 }
 
 /**
