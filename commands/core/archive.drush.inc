@@ -126,4 +126,5 @@ function drush_archive_dump($sites_subdirs = '@self') {
 
   drush_log(dt('Archive saved to !dest', array('!dest' => $destination)), 'ok');
   drush_print_pipe($destination);
+  return $destination;
 }
