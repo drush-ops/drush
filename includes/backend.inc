@@ -392,8 +392,8 @@ function drush_backend_invoke_sitealias($site_record, $command, $args, $data = a
 function _drush_backend_invoke($cmd, $data = null, $integrate = TRUE) {
   drush_log(dt('Running: !cmd', array('!cmd' => $cmd)), 'command');
   if (array_key_exists('#interactive', $data)) {
-    drush_log(dt("executing !cmd", array('!cmd', $cmd)));
-    drush_op_system($cmd);
+    drush_log(dt("executing !cmd", array('!cmd' => $cmd)));
+    return drush_op_system($cmd);
   }
   else {
     $proc = _drush_proc_open($cmd, $data);
