@@ -37,42 +37,58 @@ function _drush_make_generate($file) {
   if ($install_profile != 'default' && $install_profile != '') {
     $projects[$install_profile]['type'] =
     $projects[$install_profile]['_type'] = 'profile';
-    if (_drush_generate_makefile_updatexml($install_profile, 'profile')) {
+    if (!_drush_generate_makefile_check_updatexml($install_profile, 'profile')) {
       $projects[$install_profile]['custom_download'] = TRUE;
     }
   }
 
-  // Re-build theme and module data to be sure we have the most current information.
-  drush_include_engine('drupal', 'environment');
-  $project_info = array_merge(drush_get_modules(), drush_get_themes());
-  $used_projects = array();
-  foreach ($project_info as $item) {
-    $name = $item->info['project'];
-    $type = $item->type;
-    if ($item->info['project'] != 'drupal' && !in_array($item->info['project'], $used_projects)) {
-      if (($item->type == 'module') && (!$item->status)) {
-        continue;
-      }
-      $used_projects[] = $name;
-      $status_url = isset($item->info['project status url'])?$item->info['project status url']:'';
-      $updatexml = _drush_generate_makefile_check_updatexml($name, $type, $status_url);
-      $projects[$name] = array('_type' => $type);
-      if (!$updatexml) {
-        $projects[$name]['type'] = $type;
-        $projects[$name]['custom_download'] = TRUE;
-      }
-      elseif ($status_url != '') {
-          $projects[$name]['location'] = $status_url;
-      }
-      $projects[$name] += _drush_generate_makefile_check_location($item->name, $name, $type);
-      // Add version number if this project's version is to be tracked
-      // and if we have the information in its ->info to determine it
-      if (_drush_generate_track_version($name, $version_options) && $item->info["version"]) {
-        $projects[$name]['version'] = preg_replace("/^". DRUPAL_CORE_COMPATIBILITY . "-/", "", $item->info["version"]);
-      }
+  // Iterate installed projects to build $projects array.
+  $extensions = drush_get_extensions();
+  $project_info = drush_get_projects($extensions);
+  foreach ($project_info as $name => $project) {
+    // Discard the extensions within this project. At the end $extensions will
+    // contain only extensions part of custom projects (not from drupal.org or
+    // other update service).
+    foreach ($project['extensions'] as $ext) {
+      unset($extensions[$ext]);
+    }
+    if ($name == 'drupal') {
+      continue;
+    }
+    $type = $project['type'];
+    // Discard projects with all modules disabled.
+    if (($type == 'module') && (!$project['status'])) {
+      continue;
+    }
+    // Check the project is on drupal.org or its own update service.
+    $status_url = isset($project['status url'])?$project['status url']:'';
+    $updatexml = _drush_generate_makefile_check_updatexml($name, $type, $status_url);
+    $projects[$name] = array('_type' => $type);
+    if (!$updatexml) {
+      // It is not a project on drupal.org neither an external update service.
+      $projects[$name]['type'] = $type;
+      $projects[$name]['custom_download'] = TRUE;
+    }
+    elseif ($status_url != '') {
+      // Project is hosted in an external update service. Ex: a features server.
+      $projects[$name]['location'] = $status_url;
+    }
+    // Add 'subdir' if the project is installed in a non-default location.
+    $projects[$name] += _drush_generate_makefile_check_path($project);
+    // Add version number if this project's version is to be tracked.
+    if (_drush_generate_track_version($name, $version_options) && $project["version"]) {
+      $projects[$name]['version'] = preg_replace("/^". DRUPAL_CORE_COMPATIBILITY . "-/", "", $project["version"]);
     }
   }
 
+  // Add a project for each unknown extension.
+  foreach ($extensions as $name => $extension) {
+    $projects[$name] = array('_type' => $extension->type);
+    $projects[$name]['type'] = $extension->type;
+    $projects[$name]['custom_download'] = TRUE;
+  }
+
+  // Add libraries.
   if (function_exists('libraries_get_libraries')) {
     $libraries = libraries_get_libraries();
     foreach ($libraries as $library_name => $library_path) {
@@ -156,12 +172,10 @@ function _drush_generate_makefile_check_updatexml($name, $type, $status_url = ''
 /**
  * Helper function to check for a non-default installation location.
  */
-function _drush_generate_makefile_check_location($module_name, $project_name, $type) {
-  // Check for non-default installation location.
-  $path = drupal_get_path($type, $module_name);
-  $default_location = 'sites/all/' . $type . 's';
+function _drush_generate_makefile_check_path($project) {
   $info = array();
-  if ($path != $default_location . '/' . $project_name) {
+  $path = _pm_find_common_path($project['type'], $project['extensions']);
+  if (dirname($path) != 'sites/all/'.$project['type'].'s') {
     // If it's in a subdir of sites/all/modules, set the subdir.
     $subdir = preg_replace(array('@^sites/all/' . $type . 's/@', "@/$name" . '$@'), '', $path);
     $info['subdir'] = $subdir;
