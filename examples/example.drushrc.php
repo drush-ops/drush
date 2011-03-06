@@ -66,6 +66,12 @@
 // TRUE (default) = allow updates to latest stable release.
 # $options['self-update'] = FALSE;
 
+// By default, drush will download projects compatibile with the
+// current version of Drupal, or, if no Drupal site is specified,
+// then the Drupal-7 version of the project is downloaded.  Set
+// default-major to select a different default version.
+# $options['default-major'] = 6;
+
 // Specify CVS for checkouts
 # $options['package-handler'] = 'cvs';
 
