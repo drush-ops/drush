@@ -3,8 +3,6 @@
 /**
  * @file
  *   Refine your Drupal major version upgrade.
- *
- * @todo Upgrade to specific releases.
  */
 
 /**
