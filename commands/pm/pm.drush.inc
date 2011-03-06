@@ -363,7 +363,7 @@ function drush_get_projects(&$extensions = NULL) {
     // 2. the project was checked out from CVS/git and cvs_deploy/git_deploy
     // is not installed.
     // 3. it is not a project hosted in drupal.org.
-    if (!isset($extension->info['project'])) {
+    if (empty($extension->info['project'])) {
       if (isset($extension->info['version']) && ($extension->info['version'] == VERSION)) {
         $project = 'drupal';
       }
@@ -371,7 +371,7 @@ function drush_get_projects(&$extensions = NULL) {
         if (is_dir(dirname($extension->filename) . '/CVS') && (!module_exists('cvs_deploy'))) {
           $extension->vcs = 'cvs';
           drush_log(dt('Extension !extension is fetched from cvs. Ignoring.', array('!extension' => $extension->name)), 'debug');
-       }
+        }
         elseif (is_dir(dirname($extension->filename) . '/.git') && (!module_exists('git_deploy'))) {
           $extension->vcs = 'git';
           drush_log(dt('Extension !extension is fetched from git. Ignoring.', array('!extension' => $extension->name)), 'debug');
@@ -390,6 +390,9 @@ function drush_get_projects(&$extensions = NULL) {
         'status' => $extension->status,
         'extensions' => array(),
       );
+      if (isset($extension->info['project status url'])) {
+        $projects[$project]['status url'] = $extension->info['project status url'];
+      }
     }
     elseif ($extension->status != 0) {
       $projects[$project]['status'] = $extension->status;
