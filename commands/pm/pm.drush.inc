@@ -221,6 +221,7 @@ function pm_drush_command() {
       'drush dl' => 'Download latest recommended release of Drupal core.',
       'drush dl drupal' => 'Same as `drush dl`.',
       'drush dl drupal-7.x' => 'Download latest 7.x development version of Drupal core.',
+      'drush dl drupal-6' => 'Download latest recommended release of Drupal 6.x.',
       'drush dl cck zen' => 'Download latest versions of CCK and Zen projects.',
       'drush dl og-1.3' => 'Download a specfic version of Organic groups module for my version of Drupal.',
       'drush dl diff-6.x-2.x' => 'Download a specific development branch of diff module for a specific Drupal version.',
@@ -240,6 +241,7 @@ function pm_drush_command() {
       'select' => "Select the version to download interactively from a list of available releases.",
       'all' => "Useful only with --select; shows all available releases instead of a short list of recent releases.",
       'drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. Defaults to "drupal".',
+      'default-major' => 'Specify the default major version of modules to download when there is no bootstrapped Drupal site.  Defaults to "7".',
       'pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
@@ -1166,6 +1168,8 @@ function drush_pm_releases() {
     drush_print($header);
     drush_print_table($rows, TRUE, array(0 => 14));
   }
+  
+  return $info;
 }
 
 /**
@@ -1793,11 +1797,8 @@ function pm_parse_arguments($args, $dashes_to_underscores = TRUE) {
  */
 function pm_parse_project_version($requests) {
   $requestdata = array();
-  $drupal_version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', 7) . '.x';
-  // bootstrap_bootstrap is a temporary hack. You can't currently download a 7.x
-  // module after bootstrapping a 6.x site. This is needed by site-upgrade.
-  // Related to http://drupal.org/node/463110.
-  $drupal_bootstrap = drush_get_option('bootstrap_cancel') ? !drush_get_option('bootstrap_cancel') : drush_get_context('DRUSH_BOOTSTRAP_PHASE') > 0;
+  $drupal_version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_get_option('default-major',7)) . '.x';
+  $drupal_bootstrap = drush_get_context('DRUSH_BOOTSTRAP_PHASE') > 0;
   foreach($requests as $request) {
     $drupal_version = $drupal_version_default;
     $project_version = NULL;
@@ -1834,6 +1835,12 @@ function pm_parse_project_version($requests) {
           }
         }
       }
+    }
+    // special checking for 'drupal-VERSION', == drupal latest stable release
+    elseif ((substr($request,0,7) == 'drupal-') && (is_numeric(substr($request,7)))) {
+      $project = 'drupal';
+      $drupal_version = substr($request,7) . '.x';
+      $project_version = $version;
     }
     if ($project_version) {
       if ($project == 'drupal') {
