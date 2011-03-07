@@ -33,8 +33,8 @@ class pmUpdateCode extends Drush_TestCase {
       'backup-dir' => UNISH_SANDBOX . '/backups',
     );
 
-    // Try to upgrade a specific module to a specific version
-    $this->drush('pm-updatecode', array('devel-7.x-1.0'), $options + array());
+    // Try to upgrade a specific module.
+    $this->drush('pm-updatecode', array('devel'), $options + array());
     // Assure that devel was upgraded and webform was not.
     $this->drush('pm-updatecode', array(), $options + array('pipe' => NULL));
     $all = $this->getOutput();
