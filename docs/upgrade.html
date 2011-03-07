@@ -58,6 +58,23 @@ target Drupal site available.</li>
 <li>All of the non-core modules will be enabled again.</li>
 </ol>
 <p>
+Before drush begins this process, it will first print out a list
+of warnings for any modules that may not be ready to upgrade yet.
+Please read all of these messages carefully before proceding.
+Here are some of the situations you may encounter.
+<ul>
+<li>If a module has no <i>recommended</i> release, then drush
+will continue, downloading an available release for the upgrade.</li>
+<li>If a module has no release at all, then drush will skip it.
+The module's data will remain in the database.</li>
+<li>You may discover that some modules, such as date_api, might
+cause the Drupal core updatedb to fail.  In this instance, you
+may use the --uninstall option to list the modules to uninstall
+prior to upgrade.  Modules uninstalled in this manner will have
+all of their data removed from the target database; the database
+of the source site is not affected.</li>
+</ul>
+<p>
 When drush is enabling the modules in the upgraded site, if there
 are any new dependencies, they will also be identified and downloaded
 if possible.  For example, views-7.x depends on the ctools module
@@ -72,6 +89,12 @@ contrib modules may require additional work to update their configuration
 settings.  Using site-upgrade will all the same save you a considerable
 amount of time.  There is no risk in trying it; if it does not work,
 you can always start over, or run it at a later date when more contrib
-modules have been updated.
+modules have been updated.  If you do run site-upgrade a second time
+on the same site, drush will ask you if you want to replace the existing
+target site, effectively starting over from the beginning, or re-use
+the site that is already present.  In the later case, drush will use
+the existing code, but will re-copy the source database and run updatedb
+on it again.  This will all you to attempt to fix any non-working contrib
+modules yourself to get your site-upgrade working.
 <p>
 Enjoy!
