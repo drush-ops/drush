@@ -54,5 +54,3 @@ function drush_policy_make_me_a_sandwich_validate() {
     return drush_set_error('MAKE_IT_YOUSELF', dt('What? Make your own sandwich.'));
   }
 }
-
-

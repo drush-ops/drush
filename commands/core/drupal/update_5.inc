@@ -115,5 +115,3 @@ function update_main() {
     drush_log(dt("No database updates required"), 'success');
   }
 }
-
-

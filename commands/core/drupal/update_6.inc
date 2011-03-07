@@ -501,4 +501,3 @@ function _update_batch_command($id) {
   update_main_prepare();
   drush_batch_command($id);
 }
-

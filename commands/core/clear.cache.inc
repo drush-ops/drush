@@ -87,4 +87,3 @@ function drush_cache_clear_css_js() {
 function drush_cache_clear_block() {
   cache_clear_all(NULL, 'cache_block');
 }
-

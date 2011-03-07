@@ -318,4 +318,3 @@ function drush_update_batch($start) {
 function drush_update_finished($success, $results, $operations) {
   // Nothing to do here. All caches already cleared. Kept as documentation of 'finished' callback.
 }
-

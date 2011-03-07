@@ -1,5 +1,5 @@
 <?php
-// $Id: 
+// $Id:
 
 /**
  * @file Drush User Management commands
@@ -23,7 +23,7 @@ function user_drush_command() {
     'description' => 'Print information about the specified user(s).',
     'aliases' => array('uinf'),
     'examples' => array(
-      'drush user-information 2,3,someguy,somegal,billgates@microsoft.com' => 
+      'drush user-information 2,3,someguy,somegal,billgates@microsoft.com' =>
         'Display information about any users with uids, names, or mail addresses matching the strings between commas.',
     ),
     'arguments' => array(
@@ -42,7 +42,7 @@ function user_drush_command() {
       'users' => 'A comma delimited list of uids, user names, or email addresses.',
     ),
     'examples' => array(
-      'drush user-block 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' => 
+      'drush user-block 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Block the users with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
     ),
     'options' => array(
@@ -59,7 +59,7 @@ function user_drush_command() {
       'users' => 'A comma delimited list of uids, user names, or email addresses.',
     ),
     'examples' => array(
-      'drush user-unblock 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' => 
+      'drush user-unblock 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Unblock the users with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
     ),
     'options' => array(
@@ -77,7 +77,7 @@ function user_drush_command() {
       'users' => '(optional) A comma delimited list of uids, user names, or email addresses.',
     ),
     'examples' => array(
-      'drush user-add-role "power user" 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' => 
+      'drush user-add-role "power user" 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Add the "power user" role to the accounts with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
     ),
     'options' => array(
@@ -95,7 +95,7 @@ function user_drush_command() {
       'users' => '(optional) A comma delimited list of uids, user names, or email addresses.',
     ),
     'examples' => array(
-      'drush user-remove-role "power user" 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' => 
+      'drush user-remove-role "power user" 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Remove the "power user" role from the accounts with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
     ),
     'options' => array(
@@ -112,7 +112,7 @@ function user_drush_command() {
       'name' => 'The name of the account to add'
     ),
     'examples' => array(
-      'drush user-create newuser --mail="person@example.com" --password="letmein"' => 
+      'drush user-create newuser --mail="person@example.com" --password="letmein"' =>
         'Create a new user account with the name newuser, the email address person@example.com, and the password letmein',
     ),
     'options' => array(
@@ -128,7 +128,7 @@ function user_drush_command() {
       'name' => 'The name of the account to cancel',
     ),
     'examples' => array(
-      'drush user-cancel username' => 
+      'drush user-cancel username' =>
         'Cancel the user account with the name username and anonymize all content created by that user.',
     ),
   );
@@ -143,7 +143,7 @@ function user_drush_command() {
       'password' => '(required) The new password for the account',
     ),
     'examples' => array(
-      'drush user-password someuser --password="gr3@tP@$s"' => 
+      'drush user-password someuser --password="gr3@tP@$s"' =>
         'Set the password for the username someuser to gr3@tP@$s.',
     ),
   );
@@ -165,7 +165,7 @@ function user_drush_command() {
     $items['user-cancel']['options'] = array(
       'delete-content' => 'Delete all content created by the user',
     );
-    $items['user-cancel']['examples']['drush user-cancel --delete-content username'] = 
+    $items['user-cancel']['examples']['drush user-cancel --delete-content username'] =
       'Cancel the user account with the name username and delete all content created by that user.';
   }
   return $items;
@@ -232,7 +232,7 @@ function user_drush_init() {
 function drush_user_information($users) {
   $users = explode(',', $users);
   foreach($users as $user) {
-    $uid = _drush_user_get_uid($user);  
+    $uid = _drush_user_get_uid($user);
     if ($uid !== FALSE) {
         _drush_user_print_info($uid);
     }
@@ -247,7 +247,7 @@ function drush_user_block($users = '') {
   if ($users !== '') {
     $users = explode(',', $users);
     foreach($users as $user) {
-      $uid = _drush_user_get_uid($user);  
+      $uid = _drush_user_get_uid($user);
       if ($uid !== FALSE) {
         $uids[] = $uid;
       }
@@ -269,7 +269,7 @@ function drush_user_unblock($users = '') {
   if ($users !== '') {
     $users = explode(',', $users);
     foreach($users as $user) {
-      $uid = _drush_user_get_uid($user);  
+      $uid = _drush_user_get_uid($user);
       if ($uid !== FALSE) {
         $uids[] = $uid;
       }
@@ -291,7 +291,7 @@ function drush_user_add_role($role, $users = '') {
   if ($users !== '') {
     $users = explode(',', $users);
     foreach($users as $user) {
-      $uid = _drush_user_get_uid($user);  
+      $uid = _drush_user_get_uid($user);
       if ($uid !== FALSE) {
         $uids[] = $uid;
       }
@@ -327,7 +327,7 @@ function drush_user_remove_role($role, $users = '') {
   if ($users !== '') {
     $users = explode(',', $users);
     foreach($users as $user) {
-      $uid = _drush_user_get_uid($user);  
+      $uid = _drush_user_get_uid($user);
       if ($uid !== FALSE) {
         $uids[] = $uid;
       }

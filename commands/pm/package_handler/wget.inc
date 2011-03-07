@@ -118,4 +118,3 @@ function package_handler_update_project(&$request, $release) {
  */
 function package_handler_post_download($project) {
 }
-

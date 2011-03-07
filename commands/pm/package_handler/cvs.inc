@@ -145,4 +145,3 @@ function drush_pm_cvs(&$project, $release) {
  */
 function package_handler_post_download($project) {
 }
-

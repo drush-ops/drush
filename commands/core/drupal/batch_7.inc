@@ -253,5 +253,3 @@ function _drush_batch_shutdown() {
       ->execute();
   }
 }
-
-
