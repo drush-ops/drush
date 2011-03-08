@@ -348,7 +348,7 @@ function drush_make_d_o_updatexml($project) {
     $term_map = array(
       'Modules' => 'module',
       'Themes' => 'theme',
-      'Drupal project' => 'core',
+      'Drupal core' => 'core',
       'Installation profiles' => 'profile',
       'Translations' => 'translation'
     );
