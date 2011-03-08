@@ -2255,21 +2255,35 @@ function drush_pm_download() {
       $request['project_install_location'] .= '/' . $request['project_dir'];
     }
 
-    // Check if install location already exists.
-    if (is_dir($request['project_install_location'])) {
-      if (!drush_confirm(dt('Install location !location already exists. Do you want to overwrite it?', array('!location' => $request['project_install_location'])))) {
-        drush_log(dt("Skip installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), 'warning');
-        continue;
+    if ($version_control->engine == 'backup') {
+      // Check if install location already exists.
+      if (is_dir($request['project_install_location'])) {
+        if (!drush_confirm(dt('Install location !location already exists. Do you want to overwrite it?', array('!location' => $request['project_install_location'])))) {
+          drush_log(dt("Skip installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), 'warning');
+          continue;
+        }
       }
     }
+    else {
+      // Find and unlink all files but the ones in the vcs control directories.
+      $skip_list = array('.', '..');
+      $skip_list = array_merge($skip_list, drush_version_control_reserved_files());
+      drush_scan_directory($request['project_install_location'], '/.*/', $skip_list, 'unlink', TRUE, 'filename', 0, TRUE);
+    }
 
-    // Move the project to the install location.
-    if (drush_move_dir($request['full_project_path'], $request['project_install_location'], TRUE)) {
+    // Copy the project to the install location.
+    if (_drush_recursive_copy($request['full_project_path'], $request['project_install_location'])) {
       drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'success');
       $request['base_project_path'] = basename($request['project_install_location']);
       $request['full_project_path'] = $request['project_install_location'];
       if ($request['project_install_location'] == DRUSH_BASE_PATH) {
         drush_log(dt("Drush successfully updated to version !version.", array('!version' => $release['version'])), 'success');
+      }
+      // If the version control engine is a proper vcs we also need to remove
+      // orphan directories.
+      if ($version_control->engine != 'backup') {
+        $files = drush_find_empty_directories($request['full_project_path'], $version_control->reserved_files());
+        array_map('drush_delete_dir', $files);
       }
     }
     else {
@@ -2574,8 +2588,8 @@ function drush_find_empty_directories($dir, $exclude = array()) {
           if ($subdir_is_empty) {
             $empty[] = $subdir . '/'. $file2;
           }
-        }
         closedir($dh2);
+        }
       }
       $dir_is_empty = FALSE;
     }
