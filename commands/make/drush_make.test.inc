@@ -159,7 +159,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/md5-fail.make',
       'build'    => FALSE,
       'messages' => array(
-        'Checksum verification failed for README.txt?revision=1.1.2.22&view=co&pathrev=DRUPAL-6--2. Expected - fail -, received 6ac9eb759bc6834c50cc646caea00ea7.'
+        'Checksum verification failed for README.txt. Expected - fail -, received c8968d801a953b9ea735364d6f3dfabc.'
       ),
       'options'  => array('no-core' => TRUE),
     ),
@@ -168,7 +168,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/md5-fail.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: ab8cb79508e9c992dace2e40c6435e5b',
+        'Build hash: f76ec174a775ce67f8e9edcb02336ef2',
       ),
       'options'  => array('no-core' => TRUE, 'ignore-checksums' => TRUE),
     ),
