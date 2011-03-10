@@ -101,9 +101,11 @@ function drush_make_d_o_drush_init() {
 function drush_make_d_o_drush_make_validate_info($info) {
   if (drush_get_option('drupal-org')) {
     $transformers = array(
-      'top' => array('DrushMakeDo_TopWhitelist', 'DrushMakeDo_CoreVersion'),
+      'top' => array(
+        'DrushMakeDo_TopWhitelist',
+        'DrushMakeDo_CoreVersion',
+      ),
       'project' => array(
-        'DrushMakeDo_ProjectDrupal',
         'DrushMakeDo_ProjectVersion',
         'DrushMakeDo_ProjectWhitelist',
         'DrushMakeDo_ProjectPatch',
@@ -289,12 +291,11 @@ class DrushMakeDo_ProjectVersion extends DrushMakeDo_Transformer {
   }
 }
 class DrushMakeDo_ProjectWhitelist extends DrushMakeDo_TopWhitelist {
-  protected $attribute_whitelist = array('version', 'subdir'/*, 'patch' */);
+  protected $attribute_whitelist = array('version', 'subdir', 'patch');
   protected $level = 'project';
 }
 class DrushMakeDo_ProjectPatch extends DrushMakeDo_Transformer {
-  function verify(&$makefile, $name) {
-    /*
+  function verify(&$project_data, $project) {
     // Check that patches do in fact come from drupal.org.
     if (isset($project_data['patch'])) {
       foreach ($project_data['patch'] as $patch) {
@@ -304,7 +305,6 @@ class DrushMakeDo_ProjectPatch extends DrushMakeDo_Transformer {
         }
       }
     }
-    */
     return TRUE;
   }
   function convert($makefile) {

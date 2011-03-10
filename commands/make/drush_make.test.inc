@@ -172,6 +172,45 @@ function drush_make_test_get_tests($id = NULL) {
       ),
       'options'  => array('no-core' => TRUE, 'ignore-checksums' => TRUE),
     ),
+    'do-fail-attribute' => array(
+      'name'     => 'D.o: Fail attributes',
+      'makefile' => 'tests/do-fail-attribute.make',
+      'build'    => FALSE,
+      'options'  => array('drupal-org' => TRUE),
+    ),
+    'do-fail-dev' => array(
+      'name'     => 'D.o: Fail dev',
+      'makefile' => 'tests/do-fail-dev.make',
+      'build'    => FALSE,
+      'options'  => array('drupal-org' => TRUE),
+    ),
+    'do-fail-library' => array(
+      'name'     => 'D.o: Fail library',
+      'makefile' => 'tests/do-fail-library.make',
+      'build'    => FALSE,
+      'options'  => array('drupal-org' => TRUE),
+    ),
+    'do-fail-patch' => array(
+      'name'     => 'D.o: Fail patch',
+      'makefile' => 'tests/do-fail-patch.make',
+      'build'    => FALSE,
+      'options'  => array('drupal-org' => TRUE),
+    ),
+    'do-fail-version' => array(
+      'name'     => 'D.o: Fail version',
+      'makefile' => 'tests/do-fail-version.make',
+      'build'    => FALSE,
+      'options'  => array('drupal-org' => TRUE),
+    ),
+    'do-succeed' => array(
+      'name'     => 'D.o: Success',
+      'makefile' => 'tests/do-succeed.make',
+      'build'    => TRUE,
+      'messages' => array(
+        'Build hash: fc3cedb0f656a4d9bc071815e4ca2e07',
+      ),
+      'options'  => array('drupal-org' => TRUE),
+    ),
   );
   if (isset($id)) {
     return isset($tests[$id]) ? $tests[$id] : FALSE;
