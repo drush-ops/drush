@@ -63,10 +63,8 @@ function drush_make_download_cvs($name, $download, $download_location) {
 
 function drush_make_download_file($name, $download, $download_location) {
   if ($filename = _drush_make_download_file($download)) {
-    if (isset($download['md5'])) {
-      if (_drush_make_verify_checksum($filename, $download['md5']) === FALSE) {
-        return FALSE;
-      }
+    if (!drush_get_option('ignore-checksums') && !_drush_make_verify_checksums($download, $filename)) {
+      return FALSE;
     }
     drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
     return drush_make_download_file_unpack($filename, $download_location, (isset($download['filename']) ? $download['filename'] : ''));
@@ -592,16 +590,40 @@ function drush_make_download_svn($name, $download, $download_location) {
   }
 }
 
-function _drush_make_verify_checksum($path_to_file, $checksum) {
-  // return early if there is nothing to verify
-  if (empty($checksum)) {
-    return TRUE;
-  }
-
-  $md5 = md5(file_get_contents($path_to_file));
-  if ($md5 !== $checksum) {
-    drush_make_error('DOWNLOAD_ERROR', dt('Checksum verification failed for %file. Expected %checksum, received %md5.', array('%file' => basename($path_to_file), '%checksum' => $checksum, '%md5' => $md5)));
-    return FALSE;
+/**
+ * Test that any supplied hash values match the hash of the file content.
+ *
+ * Unsupported hash algorithms are reported as failure.
+ */
+function _drush_make_verify_checksums($info, $filename) {
+  $hash_algos = array('md5', 'sha1', 'sha256', 'sha512');
+  // We only have something to do if a key is an
+  // available function.
+  if (array_intersect(array_keys($info), $hash_algos)) {
+    $content = file_get_contents($filename);
+    foreach ($hash_algos as $algo) {
+      if (!empty($info[$algo])) {
+        $hash = _drush_make_hash($algo, $content);
+        if ($hash !== $info[$algo]) {
+           drush_make_error('DOWNLOAD_ERROR', dt('Checksum %algo verification failed for %file. Expected %expected, received %hash.', array('%algo' => $algo, '%file' => basename($filename), '%expected' => $info[$algo], '%hash' => $hash)));
+          return FALSE;
+        }
+      }
+    }
   }
   return TRUE;
+}
+
+/**
+ * Calculate the hash of a string for a given algorithm.
+ */
+function _drush_make_hash($algo, $string) {
+  switch ($algo) {
+    case 'md5':
+      return md5($string);
+    case 'sha1':
+      return sha1($string);
+    default:
+      return function_exists('hash') ? hash($algo, $string) : '';
+  }
 }

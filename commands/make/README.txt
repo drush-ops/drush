@@ -223,7 +223,7 @@ Do not use both types of declarations for a single project in your makefile.
 
   `url` - the URL of the file. Required.
 
-  `md5` - the md5 checksum for the file. Optional.
+  `md5`, `sha1`, `sha256`, or `sha512` - one or more checksums for the file. Optional.
 
   `request_type` - the request type - get or post. Defaults to get. Optional.
 

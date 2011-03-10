@@ -74,11 +74,8 @@ class DrushMakeProject {
       if ($filename = _drush_make_download_file($info)) {
         $patched = drush_shell_exec("patch -p0 -d %s < %s", $project_directory, $filename);
         if ($patched) {
-          if (!$ignore_checksums) {
-            if (isset($info['md5']) && md5(file_get_contents($filename)) !== $info['md5']) {
-              drush_set_error(dt('Checksum failed to validate for %filename.', array('%filename' => $filename)));
-              return FALSE;
-            }
+          if (!$ignore_checksums && !_drush_make_verify_checksums($info, $filename)) {
+             return FALSE;
           }
           $patches_txt .= '- ' . $info['url'] . "\n";
         }
