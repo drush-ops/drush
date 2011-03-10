@@ -51,7 +51,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/post.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: 58f9bf68b1a2aefca87a151c06cc0e29',
+        'Build hash: 9a5e2476d858ff182053257a688e32f0',
       ),
       'options'  => array('no-core' => TRUE),
     ),
@@ -60,7 +60,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/git.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: 8321693b7560f04b25d079911ba96823',
+        'Build hash: 374b448ab58cb329585ff75337bf5374',
       ),
       'options'  => array('no-core' => TRUE),
     ),

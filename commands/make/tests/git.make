@@ -22,5 +22,5 @@ projects[provision][download][url] = git://git.aegirproject.org/provision.git
 projects[provision][download][revision] = 017345defebaa6214a8962522e0e9a94889d0020
 
 ; Test projects git defaulting to drupal.org.
-projects[project][download][type] = git
-projects[project][download][revision] = 2e6a45b6bfd73a916be243773c9afc4eeed59b1b
+projects[drush_make][download][type] = git
+projects[drush_make][download][revision] = bc5cd3da42200a23015b1727f2729b70480c91b3
