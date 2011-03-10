@@ -150,7 +150,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/md5-succeed.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: ab8cb79508e9c992dace2e40c6435e5b',
+        'Build hash: f76ec174a775ce67f8e9edcb02336ef2',
       ),
       'options'  => array('no-core' => TRUE),
     ),
