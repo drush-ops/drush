@@ -177,7 +177,7 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
       $project = drush_make_updatexml($project);
       $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
     }
-    elseif ($project['type']) {
+    elseif (!empty($project['type'])) {
       $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
     }
     else {
