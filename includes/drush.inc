@@ -1499,6 +1499,11 @@ function _drush_recursive_copy($src, $dest) {
     return FALSE;
   }
 
+  // Preserve permissions
+  if (!drush_is_windows()) {
+    chmod($dest, intval(fileperms($src), 8));
+  }
+
   return TRUE;
 }
 
