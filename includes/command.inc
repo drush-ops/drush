@@ -108,7 +108,9 @@ function drush_invoke_args($command, $args) {
       $oldfunc = sprintf("drush_%s_%s", $commandfile, $var_hook);
       $func = str_replace('drush_' . $commandfile . '_' . $commandfile, 'drush_' . $commandfile, $oldfunc);
       if (($oldfunc != $func) && (function_exists($oldfunc))) {
-        drush_log(dt("The drush command hook naming conventions have changed; the function !oldfunc must be renamed to !func.", array('!oldfunc' => $oldfunc, '!func' => $func)), "error");
+        drush_log(dt("The drush command hook naming conventions have changed; the function !oldfunc must be renamed to !func.  The old function will be called, but this will be removed shortly.", array('!oldfunc' => $oldfunc, '!func' => $func)), "error");
+        // TEMPORARY:  Allow the function to be called by its old name.
+        $functions[] = $oldfunc;
       }
       if (function_exists($func)) {
         $functions[] = $func;
