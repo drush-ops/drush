@@ -159,7 +159,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/md5-fail.make',
       'build'    => FALSE,
       'messages' => array(
-        'Checksum verification failed for README.txt. Expected - fail -, received c8968d801a953b9ea735364d6f3dfabc.'
+        'Checksum md5 verification failed for README.txt. Expected - fail -, received c8968d801a953b9ea735364d6f3dfabc.'
       ),
       'options'  => array('no-core' => TRUE),
     ),
