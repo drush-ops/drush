@@ -7,13 +7,14 @@ function drush_core_site_install_version($profile) {
   if (is_null($profile)) {
     $profile = 'standard';
   }
-  
+
   define('MAINTENANCE_MODE', 'install');
   require_once DRUPAL_ROOT . '/includes/install.core.inc';
 
   $db_spec = drush_core_site_install_db_spec();
 
-  $account_pass = drush_get_option('account-pass', 'admin');
+  $account_pass = drush_get_option('account-pass', drush_generate_password());
+  $account_name = drush_get_option('account-name', 'admin');
   $settings = array(
     'parameters' => array(
       'profile' => $profile,
@@ -29,7 +30,7 @@ function drush_core_site_install_version($profile) {
         'site_name' => drush_get_option('site-name', 'Site-Install'),
         'site_mail' => drush_get_option('site-mail', 'admin@example.com'),
         'account' => array(
-          'name' => drush_get_option('account-name', 'admin'),
+          'name' => $account_name,
           'mail' => drush_get_option('account-mail', 'admin@example.com'),
           'pass' => array(
             'pass1' => $account_pass,
@@ -47,4 +48,5 @@ function drush_core_site_install_version($profile) {
   );
   drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), 'ok');
   install_drupal($settings);
+  drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
 }

@@ -201,6 +201,9 @@ $options['skip-tables'] = array(
 # $command_specific['pm-update'] = array('notes' => TRUE);
 # $command_specific['pm-updatecode'] = array('notes' => TRUE);
 
+// Set a predetermined username and password when using site-install.
+# $command_specific['site-install'] = array('account-name' => 'alice', 'account-pass' => 'secret');
+
 // List of drush commands or aliases that should override built-in 
 // shell functions and commands; otherwise, built-ins override drush 
 // commands. Default is help,dd,sa.

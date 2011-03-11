@@ -4,6 +4,7 @@
  * Install Drupal 6.x
  */
 function drush_core_site_install_version($profile) {
+  drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), 'ok');
   if (is_null($profile)) {
     $profile = 'default';
   }
@@ -26,32 +27,34 @@ function drush_core_site_install_version($profile) {
   $phpcode = _drush_site_install6_cookies($profile, $cli_cookie). ' $_GET["op"]="finished"; include("'. $drupal_root .'/install.php");';
   drush_shell_exec('php -r %s', $phpcode);
 
-  $account_pass = drush_get_option('account-pass', 'admin');
+  $account_pass = drush_get_option('account-pass', drush_generate_password());
+  $account_name = drush_get_option('account-name', 'admin');
   $phpcode = _drush_site_install6_cookies($profile, $cli_cookie);
   $phpcode .= '
   $_POST = array (
-    "site_name" => "'. drush_get_option('site-name', 'Site-Install') .'", 
-    "site_mail" => "'. drush_get_option('site-mail', 'admin@example.com') .'", 
+    "site_name" => "'. drush_get_option('site-name', 'Site-Install') .'",
+    "site_mail" => "'. drush_get_option('site-mail', 'admin@example.com') .'",
     "account" => array (
-      "name" => "'. drush_get_option('account-name', 'admin') .'",
+      "name" => "'. $account_name .'",
       "mail" => "'. drush_get_option('account-mail', 'admin@example.com') .'",
       "pass" => array (
         "pass1" => "'. $account_pass .'",
         "pass2" => "'. $account_pass .'"
       )
     ),
-    "date_default_timezone"=>"0", 
+    "date_default_timezone"=>"0",
     "clean_url"=>'. drush_get_option('clean-url', TRUE) .',
-    "form_id"=>"install_configure_form", 
+    "form_id"=>"install_configure_form",
     "update_status_module" => array("1"=>"1")
   );
   include("'. $drupal_root .'/install.php");';
   drush_shell_exec('php -r %s', $phpcode);
+  drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
 }
 
 /**
  * Utility function to grab/set current "cli cookie".
- * 
+ *
  */
 function _drush_site_install6_cookies($profile, $cookie = NULL) {
   $drupal_base_url = parse_url(drush_get_option('uri', 'http://default'));
