@@ -32,15 +32,15 @@ class coreCase extends Drush_TestCase {
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();
-    $this->assertEquals(escapeshellarg($root . '/sites/all/modules/devel'), $output);
+    $this->assertEquals($root . '/sites/all/modules/devel', $output);
 
     $this->drush('drupal-directory', array('%files'), $options);
     $output = $this->getOutput();
-    $this->assertEquals(escapeshellarg($root . '/sites/dev/files'), $output);
+    $this->assertEquals($root . '/sites/dev/files', $output);
 
     $this->drush('drupal-directory', array('%modules'), $options);
     $output = $this->getOutput();
-    $this->assertEquals(escapeshellarg($root . '/sites/all/modules'), $output);
+    $this->assertEquals($root . '/sites/all/modules', $output);
   }
 
   function testCoreCLI() {
