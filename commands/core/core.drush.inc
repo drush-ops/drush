@@ -823,7 +823,7 @@ function drush_core_cli() {
   // In --pipe mode, just use 'drush'.
   $drush_command = $interactive_mode ? DRUSH_COMMAND.' --in-cli' : 'drush';
 
-  $bashrc_data = implode("/n/n", drush_command_invoke_all('cli_bashrc', $drush_command, $interactive_mode));
+  $bashrc_data = implode("\n\n", drush_command_invoke_all('cli_bashrc', $drush_command, $interactive_mode));
 
   // Print our bashrc file and exit in --pipe mode
   if (drush_get_context('DRUSH_PIPE')) {
