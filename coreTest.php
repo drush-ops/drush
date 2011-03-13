@@ -13,7 +13,19 @@ class coreCase extends Drush_TestCase {
     $this->drush('version', array('drush_version'), array('pipe' => NULL));
     $standard = $this->getOutput();
 
-    $this->execute(dirname(__FILE__) . '/hellounish.script drush_version --pipe');
+    // Write out a hellounish.script into the sandbox. The correct /path/to/drush
+    // is in the shebang line.
+    $filename = 'hellounish.script';
+    $data = '#!/usr/bin/env [PATH-TO-DRUSH]
+
+$arg = drush_shift();
+drush_invoke("version", $arg);
+';
+    $data = str_replace('[PATH-TO-DRUSH]', UNISH_DRUSH, $data);
+    $script = UNISH_SANDBOX . '/' . $filename;
+    file_put_contents($script, $data);
+    chmod($script, 0755);
+    $this->execute("$script drush_version --pipe");
     $standalone = $this->getOutput();
     $this->assertEquals($standard, $standalone);
   }
