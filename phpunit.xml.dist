@@ -10,7 +10,7 @@
     <!--User must have write permissions to this directory.-->
     <var name="UNISH_SANDBOX" value="/tmp/drush-sandbox"/>
 
-    <!--Uncomment the line below if your path to drush differs from `which drush`-->
+    <!--Uncomment the line below if your path to drush differs from `which drush`. Use absolute path.-->
     <!--<var name="UNISH_DRUSH" value="/Users/mw/bin/drush"/>-->
 
     <includePath>.</includePath>
