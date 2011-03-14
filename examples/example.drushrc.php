@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /*
  * Examples of valid statements for a drushrc.php file. Use this file to cut down on
@@ -66,6 +65,12 @@
 // FALSE = never check for updates.  'head' = allow updates to drush-HEAD.
 // TRUE (default) = allow updates to latest stable release.
 # $options['self-update'] = FALSE;
+
+// By default, drush will download projects compatibile with the
+// current version of Drupal, or, if no Drupal site is specified,
+// then the Drupal-7 version of the project is downloaded.  Set
+// default-major to select a different default version.
+# $options['default-major'] = 6;
 
 // Specify CVS for checkouts
 # $options['package-handler'] = 'cvs';

@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  *   Update.php for provisioned sites.

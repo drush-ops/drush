@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @defgroup dispatching Command dispatching functions.
@@ -56,6 +55,16 @@ function drush_invoke($command) {
   $args = func_get_args();
   array_shift($args);
 
+  return drush_invoke_args($command, $args);
+}
+
+/**
+ * As drush_invoke, but args are passed in as an array
+ * rather than as individual function parameters.
+ *
+ * @see drush_invoke()
+ */
+function drush_invoke_args($command, $args) {
   // Generate the base name for the hook by converting all
   // dashes in the command name to underscores.
   $hook = str_replace("-", "_", $command);
@@ -902,7 +911,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL) {
     // Scan for drush command files; add to list for consideration if found.
     foreach (array_unique($searchpath) as $path) {
       if (is_dir($path)) {
-        $files = drush_scan_directory($path, '/\.drush\.inc$/');
+        $files = drush_scan_directory($path, '/\.drush\.inc$/', array('.', '..', 'examples'));
         foreach ($files as $filename => $info) {
           $module = basename($filename, '.drush.inc');
           // Only try to bootstrap modules that we have never seen before, or that we

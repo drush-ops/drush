@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file
@@ -1500,6 +1499,11 @@ function _drush_recursive_copy($src, $dest) {
     return FALSE;
   }
 
+  // Preserve permissions
+  if (!drush_is_windows()) {
+    chmod($dest, intval(fileperms($src), 8));
+  }
+
   return TRUE;
 }
 
@@ -2446,7 +2450,11 @@ function system_watchdog($log_entry) {
     $message = $log_entry['message'];
   }
 
-  $message = strip_tags(decode_entities($message));
+  // decode_entities() only loaded after FULL bootstrap.
+  if (function_exists('decode_entities')) {
+    $message = decode_entities($message);
+  }
+  $message = strip_tags($message);
 
   // Log or print or ignore. Just printing saves memory but thats rarely needed.
   switch (drush_get_option('watchdog', 'log')) {

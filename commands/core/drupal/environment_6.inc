@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  *   Specific functions for a drupal 6 environment.
@@ -49,9 +48,8 @@ function drush_check_module_dependencies($modules, $module_info) {
           'message' => dt('Module !module cannot be enabled because it depends on the following modules which could not be found: !unmet_dependencies', array('!module' => $module, '!unmet_dependencies' => implode(',', $unmet_dependencies)))
       );
     }
-    else {
-      $status[$key]['dependencies'] = $dependencies;
-    }
+    $status[$key]['unmet-dependencies'] = $unmet_dependencies;
+    $status[$key]['dependencies'] = $dependencies;
   }
 
   return $status;

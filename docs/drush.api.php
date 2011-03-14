@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file
@@ -188,6 +187,17 @@ function hook_drush_pm_download_destination_alter(&$project, $release) {
 }
 
 /**
+ * Add information to the upgrade project map; this information
+ * will be shown to the user when upgrading Drupal to the next
+ * major version if the module containing this hook is enabled.
+ *
+ * @see drush_upgrade_project_map().
+ */
+function hook_drush_upgrade_project_map_alter(&$project_map) {
+  $project_map['warning']['hook'] = dt("You need to take special action before upgrading this module. See http://mysite.com/mypage for more information.");
+}
+
+/**
  * Sql-sync sanitization example.  This is equivalent to
  * the built-in --sanitize option of sql-sync, but simplified
  * to only work with default values on Drupal 6 + mysql.
@@ -199,6 +209,19 @@ function hook_drush_sql_sync_sanitize($source) {
     dt('Reset passwords and email addresses in user table'),
     "update users set pass = MD5('password'), mail = concat('user+', uid, '@localhost') where uid > 0;");
 }
+
+/**
+ * Take action before modules are disabled in a major upgrade.
+ * Note that when this hook fires, it will be operating on a
+ * copy of the database.
+ */
+function drush_hook_pre_site_upgrade_prepare() {
+  // site upgrade prepare will disable contrib_extensions and
+  // uninstall the uninstall_extension
+  $contrib_extensions = func_get_args();
+  $uninstall_extensions = explode(',', drush_get_option('uninstall', ''));  
+}
+
 
 /**
  * Add help components to a command

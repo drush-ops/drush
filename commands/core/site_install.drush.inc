@@ -1,7 +1,21 @@
 <?php
-// $Id$
 
-// Perform setup tasks for installation.
+/**
+ * Command validate.
+ */
+function drush_core_site_install_validate() {
+  if ($sites_subdir = drush_get_option('sites-subdir')) {
+    $lower = strtolower($sites_subdir);
+    if ($sites_subdir != $lower) {
+      drush_log(dt('Only lowercase sites-subdir are valid. Switching to !lower.', array('!lower' => $lower)), 'warning');
+      drush_set_option('sites-subdir', $lower);
+    }
+  }
+}
+
+/**
+ * Perform setup tasks for installation.
+ */
 function drush_core_pre_site_install() {
   if (!$db_spec = drush_core_site_install_db_spec()) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
@@ -9,7 +23,7 @@ function drush_core_pre_site_install() {
   }
   if ($sites_subdir = drush_get_option('sites-subdir')) {
     // Needed so that we later bootstrap into the right site.
-    drush_set_option('uri', $sites_subdir);
+    drush_set_option('uri', 'http://'.$sites_subdir);
   }
   else {
     $sites_subdir = 'default';
@@ -95,14 +109,17 @@ function drush_core_pre_site_install() {
   return TRUE;
 }
 
-// Command callback.
+/**
+ * Command callback.
+ */
 function drush_core_site_install($profile = NULL) {
   drush_include_engine('drupal', 'site_install', drush_drupal_major_version());
   drush_core_site_install_version($profile);
 }
 
-// Return a db_spec based on supplied db_url/db_prefix options or
-// an existing settings.php.
+/**
+ * Return a db_spec based on supplied db_url/db_prefix options or an existing settings.php.
+ */
 function drush_core_site_install_db_spec() {
   if ($db_url = drush_get_option('db-url')) {
     // We were passed a db_url. Usually a fresh site.
