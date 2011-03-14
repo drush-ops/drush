@@ -6,8 +6,8 @@ DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7)
 Standards-Version: 3.9.1
 Homepage: http://drupal.org/project/drush
-Vcs-git: git://git.koumbit.net/drupal/drush
-Vcs-browser: http://git.koumbit.net/?p=drupal/drush
+Vcs-git: http://git.drupal.org/project/drush.git
+Vcs-browser: http://drupalcode.org/project/drush.git
 
 Package: drush
 Architecture: all

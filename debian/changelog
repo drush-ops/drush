@@ -1,3 +1,12 @@
+drush (4.3-1) unstable; urgency=low
+
+  * New upstream release, see http://drupal.org/node/1091572
+  * Changed git repos to be the upstream repos, which have accepted that
+    the Debian branch live upstream. Upstream (msonnabaum) has also
+    manifested interest in maintaining the Debian/Ubuntu packages.
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Mon, 14 Mar 2011 17:11:53 -0400
+
 drush (4.2-1) unstable; urgency=low
 
   * New upstream release
