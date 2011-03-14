@@ -1,0 +1,4 @@
+examples/example.aliases.drushrc.php
+examples/example.drushrc.php
+examples/sandwich.drush.inc
+examples/sandwich.txt

@@ -1,0 +1,128 @@
+drush (4.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Updated manpage (Closes: #595908)
+  * Forgot to mention that the upstream release fixed the vget bug
+    (Closes: #595772)
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Thu, 20 Jan 2011 22:34:57 -0500
+
+drush (4.1-1) unstable; urgency=low
+
+  * New upstream release (Closes: #609362)
+    This branch (4.x) is likely to live only in sid considering upstream
+    is already considering a 5.x release. In general, the release cycle of
+    Debian and Drush are incompatible, the latter being roughly every 6
+    months. I will try to keep sid (and therefore testing) up to date with
+    the upstream stable and people will be free to use 3.3 (in squeeze or
+    lenny-backports) or whatever the latest stable upstream is (in sid or
+    testing).
+
+  * standards upgrade to 3.9.1 - no change
+  * update table.inc to follow upstream
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Thu, 20 Jan 2011 21:06:50 -0500
+
+drush (3.3-1) unstable; urgency=low
+
+  * New upstream version (Closes: #594020)
+    This is the last "unclean" version of Drush 3. Further version will
+    contain only security upgrades and critical bugfixes that can be
+    targeted at Debian stable. As the maintainer of the Drush stable
+    branch, I can commit to such a policy.
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Fri, 27 Aug 2010 20:43:25 +0200
+
+drush (3.1-2) unstable; urgency=low
+
+  * fix version control urls
+  * fix the drush.info issue (Closes: #588639)
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Sun, 22 Aug 2010 19:20:02 +0200
+
+drush (3.1-1) unstable; urgency=low
+
+  * new upstream release, see http://drupal.org/node/833938
+  * last upload mistakenly included a .diff.gz against head, this upload
+    should correct that.
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Wed, 23 Jun 2010 20:13:58 -0400
+
+drush (3.0-1) unstable; urgency=low
+
+  * new upstream release, see http://drupal.org/node/779448 
+    (Closes: #575880).
+  * removed all local patches integrated upstream
+  * update to standards 3.8.4, no change required
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Wed, 23 Jun 2010 19:53:13 -0400
+
+drush (2.0-6) unstable; urgency=low
+
+  * put this back to GPL2+ after discussions with Drupal.org people
+  * update to standards 3.8.3: no change required
+  * fix subversion dependencies, push php depends up to Recommends
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Fri, 11 Sep 2009 22:47:11 +0200
+
+drush (2.0-5) unstable; urgency=low
+
+  * fix copyright notice to claim GPL-2 (and not GPL-2+)
+  * update to standards 3.8.2: put in php section
+  * backport a few fixes that have been committed to CVS after the 2.0
+    release
+    - #500324 dman - fails to download install profile in proper
+      location. Incorrect path.
+    - #493456 by guidot. three tiny errors in drush help dl Examples
+      ... Also a text improvement.
+    - #503328 - fix drush cron due to drush shutdown exiting. register
+      exit helper in drush_shutdown. Thanks david goode
+    - #533496 ZoFreX - Drush does not like being invoked from a path that
+      contains spaces
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Wed, 29 Jul 2009 17:52:18 -0400
+
+drush (2.0-5~koumbit50+1) stable; urgency=low
+
+  * backport to lenny
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Wed, 29 Jul 2009 17:48:18 -0400
+
+drush (2.0-4) unstable; urgency=low
+
+  * fix paths in VCS fields
+  * add DM-Upload-Allowed field since I am a Debian Maintainer
+  * add VCS-* fields to debian/control file
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Tue, 14 Jul 2009 21:21:00 -0400
+
+drush (2.0-4~koumbit50+1) stable; urgency=low
+
+  * backport to lenny
+  * add VCS-* fields to debian/control file
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Wed, 17 Jun 2009 21:07:18 -0400
+
+drush (2.0-3) unstable; urgency=low
+
+  * use dh_prep instead of dh_clean to silence warnings on sid. this will
+    now fail to build on lenny.
+  * cleanup comments in watch and rules files
+  * update to standards 3.8.1
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Sun, 14 Jun 2009 17:10:59 -0400
+
+drush (2.0-2) unstable; urgency=medium
+
+  * don't use the bash wrapper because it breaks in cron
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Sun, 14 Jun 2009 16:47:43 -0400
+
+drush (2.0-1) unstable; urgency=low
+
+  * Initial release (Closes: #532723)
+  * Write a manpage
+  * Includes the table.inc file from PEAR's Console_Table
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Thu, 11 Jun 2009 21:56:06 -0400
+
