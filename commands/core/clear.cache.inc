@@ -44,12 +44,12 @@
 function drush_cache_clear_types() {
   $types = array(
     'all' => 'drupal_flush_all_caches',
-    'theme registry' => 'drush_cache_clear_theme_registry',
+    'theme-registry' => 'drush_cache_clear_theme_registry',
     'menu' => 'menu_rebuild',
     'css+js' => 'drush_cache_clear_css_js',
     'block' => 'drush_cache_clear_block',
-    'module list' => 'drush_get_modules',
-    'theme list' => 'drush_get_themes',
+    'module-list' => 'drush_get_modules',
+    'theme-list' => 'drush_get_themes',
   );
   if (drush_drupal_major_version() >= 7) {
     $types['registry'] = 'registry_update';
