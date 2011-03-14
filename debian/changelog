@@ -1,3 +1,9 @@
+drush (4.4-1) unstable; urgency=low
+
+  * New upstream minor release to fix .info file.
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Mon, 14 Mar 2011 19:22:40 -0400
+
 drush (4.3-1) unstable; urgency=low
 
   * New upstream release, see http://drupal.org/node/1091572
