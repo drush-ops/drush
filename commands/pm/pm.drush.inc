@@ -1156,7 +1156,7 @@ function drush_pm_releases() {
     drush_print($header);
     drush_print_table($rows, TRUE, array(0 => 14));
   }
-  
+
   return $info;
 }
 
@@ -1881,6 +1881,7 @@ function pm_drush_engine_package_handler() {
       ),
       'sub-options' => array(
         'package-handler=git_drupalorg' => array(
+          'gitusername' => 'Your git username as shown on user/[uid]/edit/git. Typically, this is set this in drushrc.php. Omitting this prevents users from pushing changes back to git.drupal.org.',
           'gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
           'gitcheckoutparams' => 'Add options to the `git checkout` command.',
           'gitcloneparams' => 'Add options to the `git clone` command.',
