@@ -46,7 +46,7 @@ function drush_cache_clear_types() {
     'all' => 'drupal_flush_all_caches',
     'theme-registry' => 'drush_cache_clear_theme_registry',
     'menu' => 'menu_rebuild',
-    'css+js' => 'drush_cache_clear_css_js',
+    'css-js' => 'drush_cache_clear_css_js',
     'block' => 'drush_cache_clear_block',
     'module-list' => 'drush_get_modules',
     'theme-list' => 'drush_get_themes',
