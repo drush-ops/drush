@@ -1,0 +1,1101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns:dc="http://purl.org/dc/elements/1.1/">
+<title>Devel</title>
+<short_name>devel</short_name>
+<dc:creator>moshe weitzman</dc:creator>
+<api_version>6.x</api_version>
+<!--MW: Changed to 2 for testing.-->
+<recommended_major>2</recommended_major> 
+<supported_majors>1,2</supported_majors>
+<default_major>2</default_major>
+<project_status>published</project_status>
+
+<link>http://drupal.org/project/devel</link>
+  <terms>
+   <term><name>Projects</name><value>Modules</value></term>
+   <term><name>Projects</name><value>Administration</value></term>
+   <term><name>Projects</name><value>Developer</value></term>
+   <term><name>Projects</name><value>Utility</value></term>
+
+   <term><name>Projects</name><value>Drush</value></term>
+   <term><name>Maintenance status</name><value>Actively maintained</value></term>
+  </terms>
+  
+ <releases>
+  
+  <!-- Start 3 releases added by MW-->
+ <release>
+  <name>devel 6.x-2.2</name>
+  <version>6.x-2.2</version>
+
+  <tag>DRUPAL-6--2-2</tag>
+  <version_major>2</version_major>
+  <version_patch>2</version_patch>
+  <status>unpublished</status>
+  <release_link>http://drupal.org/node/990464</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-2.2.tar.gz</download_link>
+
+  <date>1291650063</date>
+  <mdhash>07251c1cd56daf7d402fb5aea7dcfe48</mdhash>
+  <filesize>172845</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.2.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+
+    <md5>07251c1cd56daf7d402fb5aea7dcfe48</md5>
+    <size>172845</size>
+    <filedate>1291650063</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.2.zip</url>
+    <archive_type>zip</archive_type>
+
+    <md5>086412aa4c02ced793455486b48261e9</md5>
+    <size>219993</size>
+    <filedate>1293230730</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ 
+ <release>
+  <name>devel 6.x-2.2-rc1</name>
+  <version>6.x-2.2-rc1</version>
+
+  <tag>DRUPAL-6--2-2-RC1</tag>
+  <version_major>2</version_major>
+  <version_extra>rc1</version_extra>
+  <version_patch>2</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/990464</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-2.2-rc1.tar.gz</download_link>
+
+  <date>1291650063</date>
+  <mdhash>07251c1cd56daf7d402fb5aea7dcfe48</mdhash>
+  <filesize>172845</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.2-rc1.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+
+    <md5>07251c1cd56daf7d402fb5aea7dcfe48</md5>
+    <size>172845</size>
+    <filedate>1291650063</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.2-rc1.zip</url>
+    <archive_type>zip</archive_type>
+
+    <md5>086412aa4c02ced793455486b48261e9</md5>
+    <size>219993</size>
+    <filedate>1293230730</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ 
+ <release>
+  <name>devel 6.x-2.1</name>
+  <version>6.x-2.1</version>
+
+  <tag>DRUPAL-6--2-1</tag>
+  <version_major>2</version_major>
+  <version_patch>1</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/990464</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-2.1.tar.gz</download_link>
+
+  <date>1291650063</date>
+  <mdhash>07251c1cd56daf7d402fb5aea7dcfe48</mdhash>
+  <filesize>172845</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.1.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+
+    <md5>07251c1cd56daf7d402fb5aea7dcfe48</md5>
+    <size>172845</size>
+    <filedate>1291650063</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-2.1.zip</url>
+    <archive_type>zip</archive_type>
+
+    <md5>086412aa4c02ced793455486b48261e9</md5>
+    <size>219993</size>
+    <filedate>1293230730</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <!--End added by MW-->
+ 
+ <release>
+  <name>devel 6.x-1.23</name>
+  <version>6.x-1.23</version>
+
+  <tag>DRUPAL-6--1-23</tag>
+  <version_major>1</version_major>
+  <version_patch>23</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/990464</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.23.tar.gz</download_link>
+
+  <date>1291650063</date>
+  <mdhash>07251c1cd56daf7d402fb5aea7dcfe48</mdhash>
+  <filesize>172845</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.23.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+
+    <md5>07251c1cd56daf7d402fb5aea7dcfe48</md5>
+    <size>172845</size>
+    <filedate>1291650063</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.23.zip</url>
+    <archive_type>zip</archive_type>
+
+    <md5>086412aa4c02ced793455486b48261e9</md5>
+    <size>219993</size>
+    <filedate>1293230730</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ 
+ 
+ <release>
+  <name>devel 6.x-1.22</name>
+  <version>6.x-1.22</version>
+  <tag>DRUPAL-6--1-22</tag>
+
+  <version_major>1</version_major>
+  <version_patch>22</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/882460</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.22.tar.gz</download_link>
+  <date>1281718291</date>
+
+  <mdhash>a8a87cae8f101c4aad46688524ab7583</mdhash>
+  <filesize>175140</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.22.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>a8a87cae8f101c4aad46688524ab7583</md5>
+
+    <size>175140</size>
+    <filedate>1281718291</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.22.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>cc207ab34421975216e6ee424c595001</md5>
+
+    <size>222352</size>
+    <filedate>1293230727</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+
+ </release>
+ <release>
+  <name>devel 6.x-1.21</name>
+  <version>6.x-1.21</version>
+  <tag>DRUPAL-6--1-21</tag>
+  <version_major>1</version_major>
+  <version_patch>21</version_patch>
+
+  <status>published</status>
+  <release_link>http://drupal.org/node/874116</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.21.tar.gz</download_link>
+  <date>1280961079</date>
+  <mdhash>15bf95b8c3fbe3f570f3f7b590f52ded</mdhash>
+  <filesize>175008</filesize>
+
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.21.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>15bf95b8c3fbe3f570f3f7b590f52ded</md5>
+    <size>175008</size>
+    <filedate>1280961079</filedate>
+
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.21.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>f19fe1188a2774b383f146aee228a083</md5>
+    <size>222217</size>
+    <filedate>1293230734</filedate>
+
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>Security update</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.20</name>
+
+  <version>6.x-1.20</version>
+  <tag>DRUPAL-6--1-20</tag>
+  <version_major>1</version_major>
+  <version_patch>20</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/777998</release_link>
+
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.20.tar.gz</download_link>
+  <date>1271886306</date>
+  <mdhash>b605d6a42e430660ef3418541d711c1c</mdhash>
+  <filesize>174042</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.20.tar.gz</url>
+
+    <archive_type>tar.gz</archive_type>
+    <md5>b605d6a42e430660ef3418541d711c1c</md5>
+    <size>174042</size>
+    <filedate>1271886306</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.20.zip</url>
+
+    <archive_type>zip</archive_type>
+    <md5>ff11ac877bdbbb29fa9dba024871e3bc</md5>
+    <size>221132</size>
+    <filedate>1293230727</filedate>
+   </file>
+  </files>
+  <terms>
+
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.19</name>
+  <version>6.x-1.19</version>
+  <tag>DRUPAL-6--1-19</tag>
+
+  <version_major>1</version_major>
+  <version_patch>19</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/746888</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.19.tar.gz</download_link>
+  <date>1268976904</date>
+
+  <mdhash>375c3b79e9e74fb636bf8a6d2fde87d6</mdhash>
+  <filesize>173570</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.19.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>375c3b79e9e74fb636bf8a6d2fde87d6</md5>
+
+    <size>173570</size>
+    <filedate>1268976904</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.19.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>b9da9992305f2aa8e26bd9550c119189</md5>
+
+    <size>220677</size>
+    <filedate>1293230724</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.18</name>
+  <version>6.x-1.18</version>
+  <tag>DRUPAL-6--1-18</tag>
+  <version_major>1</version_major>
+
+  <version_patch>18</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/585982</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.18.tar.gz</download_link>
+  <date>1253731829</date>
+  <mdhash>5f2b9e5f4b74beec35a1d1cff379ab5c</mdhash>
+
+  <filesize>165785</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.18.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>5f2b9e5f4b74beec35a1d1cff379ab5c</md5>
+    <size>165785</size>
+
+    <filedate>1253731829</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.18.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>2e2808ec65aaa44d23f2a96c6af8bfbb</md5>
+
+    <size>216330</size>
+    <filedate>1293230728</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+   <term><name>Release type</name><value>Security update</value></term>
+
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.17</name>
+  <version>6.x-1.17</version>
+  <tag>DRUPAL-6--1-17</tag>
+  <version_major>1</version_major>
+
+  <version_patch>17</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/554032</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.17.tar.gz</download_link>
+  <date>1250713853</date>
+  <mdhash>31b2cbea82226a729b11bbc91920a7cd</mdhash>
+
+  <filesize>163024</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.17.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>31b2cbea82226a729b11bbc91920a7cd</md5>
+    <size>163024</size>
+
+    <filedate>1250713853</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.17.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>5e2a367f2e43c90de1e676e3037e1570</md5>
+    <size>213291</size>
+
+    <filedate>1293230731</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.16</name>
+  <version>6.x-1.16</version>
+  <tag>DRUPAL-6--1-16</tag>
+  <version_major>1</version_major>
+
+  <version_patch>16</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/430072</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.16.tar.gz</download_link>
+  <date>1239375932</date>
+  <mdhash>6dc83de5de101460f8eee2db3ea4b7d9</mdhash>
+
+  <filesize>163998</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.16.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>6dc83de5de101460f8eee2db3ea4b7d9</md5>
+    <size>163998</size>
+
+    <filedate>1239375932</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.16.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>65ad91bc0308b10a9d11107f2d35bc2f</md5>
+    <size>215213</size>
+
+    <filedate>1293230728</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+
+ <release>
+  <name>devel 6.x-1.15</name>
+  <version>6.x-1.15</version>
+  <tag>DRUPAL-6--1-15</tag>
+  <version_major>1</version_major>
+  <version_patch>15</version_patch>
+
+  <status>published</status>
+  <release_link>http://drupal.org/node/419014</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.15.tar.gz</download_link>
+  <date>1238471715</date>
+  <mdhash>e7cd175671ed62a95bab7093c636e663</mdhash>
+  <filesize>163945</filesize>
+
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.15.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>e7cd175671ed62a95bab7093c636e663</md5>
+    <size>163945</size>
+    <filedate>1238471715</filedate>
+
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.15.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>f0719bb64bdeb1d3c2f327457351b9d1</md5>
+    <size>215342</size>
+    <filedate>1293230731</filedate>
+
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+
+ <release>
+  <name>devel 6.x-1.14</name>
+  <version>6.x-1.14</version>
+  <tag>DRUPAL-6--1-14</tag>
+  <version_major>1</version_major>
+  <version_patch>14</version_patch>
+
+  <status>published</status>
+  <release_link>http://drupal.org/node/368174</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.14.tar.gz</download_link>
+  <date>1233610814</date>
+  <mdhash>11af2d7fa3050febfe3def770683f173</mdhash>
+  <filesize>162780</filesize>
+
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.14.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>11af2d7fa3050febfe3def770683f173</md5>
+    <size>162780</size>
+    <filedate>1233610814</filedate>
+
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.14.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>c691c6d03d1f605493807cf7dad7dce1</md5>
+    <size>214014</size>
+    <filedate>1293230725</filedate>
+
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.13</name>
+
+  <version>6.x-1.13</version>
+  <tag>DRUPAL-6--1-13</tag>
+  <version_major>1</version_major>
+  <version_patch>13</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/353382</release_link>
+
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.13.tar.gz</download_link>
+  <date>1230872109</date>
+  <mdhash>669870433908fccd31e7de9b57434c64</mdhash>
+  <filesize>161893</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.13.tar.gz</url>
+
+    <archive_type>tar.gz</archive_type>
+    <md5>669870433908fccd31e7de9b57434c64</md5>
+    <size>161893</size>
+    <filedate>1230872109</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.13.zip</url>
+
+    <archive_type>zip</archive_type>
+    <md5>06ed93306fe8476af6aa62aac763afa4</md5>
+    <size>212645</size>
+    <filedate>1293230728</filedate>
+   </file>
+  </files>
+  <terms>
+
+   <term><name>Release type</name><value>New features</value></term>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.12</name>
+
+  <version>6.x-1.12</version>
+  <tag>DRUPAL-6--1-12</tag>
+  <version_major>1</version_major>
+  <version_patch>12</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/319216</release_link>
+
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.12.tar.gz</download_link>
+  <date>1223583012</date>
+  <mdhash>69b345c09ece34812b04e7ccbc2cdf23</mdhash>
+  <filesize>146188</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.12.tar.gz</url>
+
+    <archive_type>tar.gz</archive_type>
+    <md5>69b345c09ece34812b04e7ccbc2cdf23</md5>
+    <size>146188</size>
+    <filedate>1223583012</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.12.zip</url>
+
+    <archive_type>zip</archive_type>
+    <md5>8c66e91fc8c64388facf8e7e7054e58a</md5>
+    <size>197116</size>
+    <filedate>1293230726</filedate>
+   </file>
+  </files>
+  <terms>
+
+   <term><name>Release type</name><value>New features</value></term>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.11</name>
+
+  <version>6.x-1.11</version>
+  <tag>DRUPAL-6--1-11</tag>
+  <version_major>1</version_major>
+  <version_patch>11</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/310335</release_link>
+
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.11.tar.gz</download_link>
+  <date>1221759046</date>
+  <mdhash>93bc2cc8da26d759e46b24f1b9d4e3e2</mdhash>
+  <filesize>145693</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.11.tar.gz</url>
+
+    <archive_type>tar.gz</archive_type>
+    <md5>93bc2cc8da26d759e46b24f1b9d4e3e2</md5>
+    <size>145693</size>
+    <filedate>1221759046</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.11.zip</url>
+
+    <archive_type>zip</archive_type>
+    <md5>3c1063443d81927e3b90e129bc169a24</md5>
+    <size>196477</size>
+    <filedate>1293230729</filedate>
+   </file>
+  </files>
+  <terms>
+
+   <term><name>Release type</name><value>New features</value></term>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.10</name>
+
+  <version>6.x-1.10</version>
+  <tag>DRUPAL-6--1-10</tag>
+  <version_major>1</version_major>
+  <version_patch>10</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/283183</release_link>
+
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.10.tar.gz</download_link>
+  <date>1216171206</date>
+  <mdhash>688ed33b3a2a63bc1bce9da3c2d104de</mdhash>
+  <filesize>145188</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.10.tar.gz</url>
+
+    <archive_type>tar.gz</archive_type>
+    <md5>688ed33b3a2a63bc1bce9da3c2d104de</md5>
+    <size>145188</size>
+    <filedate>1216171206</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.10.zip</url>
+
+    <archive_type>zip</archive_type>
+    <md5>c9e85aac38d3c2f18015c820ec325206</md5>
+    <size>195931</size>
+    <filedate>1293230732</filedate>
+   </file>
+  </files>
+  <terms>
+
+   <term><name>Release type</name><value>New features</value></term>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.9</name>
+
+  <version>6.x-1.9</version>
+  <tag>DRUPAL-6--1-9</tag>
+  <version_major>1</version_major>
+  <version_patch>9</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/270064</release_link>
+
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.9.tar.gz</download_link>
+  <date>1213331113</date>
+  <mdhash>8b88659f45e31d8c05fd6990c491ea2a</mdhash>
+  <filesize>145153</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.9.tar.gz</url>
+
+    <archive_type>tar.gz</archive_type>
+    <md5>8b88659f45e31d8c05fd6990c491ea2a</md5>
+    <size>145153</size>
+    <filedate>1213331113</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.9.zip</url>
+
+    <archive_type>zip</archive_type>
+    <md5>0d934dafa2cedd0d1bc5ec450cc9570f</md5>
+    <size>195856</size>
+    <filedate>1293230729</filedate>
+   </file>
+  </files>
+  <terms>
+
+   <term><name>Release type</name><value>New features</value></term>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.8</name>
+
+  <version>6.x-1.8</version>
+  <tag>DRUPAL-6--1-8</tag>
+  <version_major>1</version_major>
+  <version_patch>8</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/259615</release_link>
+
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.8.tar.gz</download_link>
+  <date>1211039106</date>
+  <mdhash>d8d8f4ee8dd61ccad625443ebafbe421</mdhash>
+  <filesize>76796</filesize>
+  <files>
+   <file>
+
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.8.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>d8d8f4ee8dd61ccad625443ebafbe421</md5>
+    <size>76796</size>
+    <filedate>1211039106</filedate>
+   </file>
+
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.8.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>72b3468d765e1f9e827d9399f2d7218c</md5>
+    <size>92505</size>
+    <filedate>1293230732</filedate>
+
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>New features</value></term>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+
+ <release>
+  <name>devel 6.x-1.7</name>
+  <version>6.x-1.7</version>
+  <tag>DRUPAL-6--1-7</tag>
+  <version_major>1</version_major>
+  <version_patch>7</version_patch>
+
+  <status>published</status>
+  <release_link>http://drupal.org/node/237840</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.7.tar.gz</download_link>
+  <date>1206300306</date>
+  <mdhash>b63eba9e1588baa2f8031589897eb376</mdhash>
+  <filesize>72504</filesize>
+
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.7.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>b63eba9e1588baa2f8031589897eb376</md5>
+    <size>72504</size>
+    <filedate>1206300306</filedate>
+
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.7.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>9e4711ebace4e7cf0d7dc4e4a1386be3</md5>
+    <size>87847</size>
+    <filedate>1293230726</filedate>
+
+   </file>
+  </files>
+ </release>
+ <release>
+  <name>devel 6.x-1.6</name>
+  <version>6.x-1.6</version>
+  <tag>DRUPAL-6--1-6</tag>
+
+  <version_major>1</version_major>
+  <version_patch>6</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/229249</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.6.tar.gz</download_link>
+  <date>1204515005</date>
+
+  <mdhash>dc2fd4030922e17258a0fa886557aa9f</mdhash>
+  <filesize>72109</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.6.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>dc2fd4030922e17258a0fa886557aa9f</md5>
+
+    <size>72109</size>
+    <filedate>1204515005</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.6.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>65cf489c56834571eaf43a30e87a25ef</md5>
+
+    <size>87441</size>
+    <filedate>1293230732</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+
+ </release>
+ <release>
+  <name>devel 6.x-1.5</name>
+  <version>6.x-1.5</version>
+  <tag>DRUPAL-6--1-5</tag>
+  <version_major>1</version_major>
+  <version_patch>5</version_patch>
+
+  <status>published</status>
+  <release_link>http://drupal.org/node/227742</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.5.tar.gz</download_link>
+  <date>1204163705</date>
+  <mdhash>4755dc85712f86c24a7615c83bf2d587</mdhash>
+  <filesize>72424</filesize>
+
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.5.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>4755dc85712f86c24a7615c83bf2d587</md5>
+    <size>72424</size>
+    <filedate>1204163705</filedate>
+
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.5.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>3def5895dcd04439f2e7c69e33ae3ef7</md5>
+    <size>87108</size>
+    <filedate>1293230729</filedate>
+
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.4</name>
+
+  <version>6.x-1.4</version>
+  <tag>DRUPAL-6--1-4</tag>
+  <version_major>1</version_major>
+  <version_patch>4</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/224889</release_link>
+
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.4.tar.gz</download_link>
+  <date>1203609008</date>
+  <mdhash>9361284333474368c49b807943e7eb09</mdhash>
+  <filesize>72289</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.4.tar.gz</url>
+
+    <archive_type>tar.gz</archive_type>
+    <md5>9361284333474368c49b807943e7eb09</md5>
+    <size>72289</size>
+    <filedate>1203609008</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.4.zip</url>
+
+    <archive_type>zip</archive_type>
+    <md5>0ee1899e32edcdb56ac13b067c8bb2aa</md5>
+    <size>86956</size>
+    <filedate>1293230733</filedate>
+   </file>
+  </files>
+  <terms>
+
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.3</name>
+  <version>6.x-1.3</version>
+  <tag>DRUPAL-6--1-3</tag>
+
+  <version_major>1</version_major>
+  <version_patch>3</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/223052</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.3.tar.gz</download_link>
+  <date>1203291304</date>
+
+  <mdhash>5dbb78276404810a219395d790bb349d</mdhash>
+  <filesize>72231</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.3.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>5dbb78276404810a219395d790bb349d</md5>
+
+    <size>72231</size>
+    <filedate>1203291304</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.3.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>293c305a758cd84b1a5b1e0f56c6883f</md5>
+
+    <size>86893</size>
+    <filedate>1293230727</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+
+ </release>
+ <release>
+  <name>devel 6.x-1.2</name>
+  <version>6.x-1.2</version>
+  <tag>DRUPAL-6--1-2</tag>
+  <version_major>1</version_major>
+  <version_patch>2</version_patch>
+
+  <status>published</status>
+  <release_link>http://drupal.org/node/223032</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.2.tar.gz</download_link>
+  <date>1203288005</date>
+  <mdhash>ec2d609a553289636f2388c54fc69e8b</mdhash>
+  <filesize>72232</filesize>
+
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.2.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>ec2d609a553289636f2388c54fc69e8b</md5>
+    <size>72232</size>
+    <filedate>1203288005</filedate>
+
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.2.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>5855930a3427fdc2c3449aebf8ad68f9</md5>
+    <size>86895</size>
+    <filedate>1293230730</filedate>
+
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.1</name>
+
+  <version>6.x-1.1</version>
+  <tag>DRUPAL-6--1-1</tag>
+  <version_major>1</version_major>
+  <version_patch>1</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/222919</release_link>
+
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.1.tar.gz</download_link>
+  <date>1203267606</date>
+  <mdhash>2d1065298518decda8eb0d0473851ed1</mdhash>
+  <filesize>72225</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.1.tar.gz</url>
+
+    <archive_type>tar.gz</archive_type>
+    <md5>2d1065298518decda8eb0d0473851ed1</md5>
+    <size>72225</size>
+    <filedate>1203267606</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.1.zip</url>
+
+    <archive_type>zip</archive_type>
+    <md5>f72a6870d67d929970c78151f7737ebc</md5>
+    <size>86896</size>
+    <filedate>1293230733</filedate>
+   </file>
+  </files>
+  <terms>
+
+   <term><name>Release type</name><value>New features</value></term>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.0</name>
+
+  <version>6.x-1.0</version>
+  <tag>DRUPAL-6--1-0</tag>
+  <version_major>1</version_major>
+  <version_patch>0</version_patch>
+  <status>published</status>
+  <release_link>http://drupal.org/node/208665</release_link>
+
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.0.tar.gz</download_link>
+  <date>1200012604</date>
+  <mdhash>3dbd3cd4c15f001c1ac7067ca58c74ff</mdhash>
+  <filesize>53802</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.0.tar.gz</url>
+
+    <archive_type>tar.gz</archive_type>
+    <md5>3dbd3cd4c15f001c1ac7067ca58c74ff</md5>
+    <size>53802</size>
+    <filedate>1200012604</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.0.zip</url>
+
+    <archive_type>zip</archive_type>
+    <md5>10600179cfa8a301784839983fb49397</md5>
+    <size>64756</size>
+    <filedate>1293230727</filedate>
+   </file>
+  </files>
+  <terms>
+
+   <term><name>Release type</name><value>Security update</value></term>
+  </terms>
+ </release>
+ <release>
+  <name>devel 6.x-1.x-dev</name>
+  <version>6.x-1.x-dev</version>
+  <tag>DRUPAL-6--1</tag>
+
+  <version_major>1</version_major>
+  <version_extra>dev</version_extra>
+  <status>published</status>
+  <release_link>http://drupal.org/node/224617</release_link>
+  <download_link>http://ftp.drupal.org/files/projects/devel-6.x-1.x-dev.tar.gz</download_link>
+  <date>1295179817</date>
+
+  <mdhash>fec92fdc9dd40f34b2e7f9876fd44014</mdhash>
+  <filesize>126254</filesize>
+  <files>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.x-dev.tar.gz</url>
+    <archive_type>tar.gz</archive_type>
+    <md5>fec92fdc9dd40f34b2e7f9876fd44014</md5>
+
+    <size>126254</size>
+    <filedate>1295179817</filedate>
+   </file>
+   <file>
+    <url>http://ftp.drupal.org/files/projects/devel-6.x-1.x-dev.zip</url>
+    <archive_type>zip</archive_type>
+    <md5>91255187be4c5cd7bacf7112e6b0189b</md5>
+
+    <size>171436</size>
+    <filedate>1295179818</filedate>
+   </file>
+  </files>
+ </release>
+ <release>
+  <name>devel 6.x-0.2</name>
+
+  <version>6.x-0.2</version>
+  <tag>DRUPAL-6--0-2</tag>
+  <version_major>0</version_major>
+  <version_patch>2</version_patch>
+  <status>unpublished</status>
+  <date>1203287704</date>
+
+  <mdhash>a071278bf76df5acf5320086f80ff4f5</mdhash>
+  <filesize>72235</filesize>
+  <files>
+   <file>
+    <archive_type>tar.gz</archive_type>
+    <md5>a071278bf76df5acf5320086f80ff4f5</md5>
+    <size>72235</size>
+
+    <filedate>1203287704</filedate>
+   </file>
+  </files>
+  <terms>
+   <term><name>Release type</name><value>Bug fixes</value></term>
+  </terms>
+ </release>
+
+</releases>
+</project>
