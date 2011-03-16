@@ -11,10 +11,18 @@ function package_handler_validate() {
   // Check git command exists. Disable possible output.
   $debug = drush_get_context('DRUSH_DEBUG');
   drush_set_context('DRUSH_DEBUG', FALSE);
+
+  // We need to check for a git executable and then make sure version is >=1.7
   $success = drush_shell_exec('git --version');
+  $git = drush_shell_exec_output();
+  $git_version_array = explode(" ", $git[0]);
+  $git_version = $git_version_array[2];
+
   drush_set_context('DRUSH_DEBUG', $debug);
   if (!$success) {
     return drush_set_error('DRUSH_SHELL_COMMAND_NOT_FOUND', dt('git executable not found.'));
+  } elseif ($git_version < '1.7') {
+    return drush_set_error('GIT_VERSION_UNSUPPORTED', dt('Your git version !git_version is not supported; please upgrade to git 1.7 or later.', array('!git_version' => $git_version)));
   }
   // Check git_deploy is enabled. Only for bootstrapped sites.
   if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
