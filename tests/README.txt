@@ -1,11 +1,10 @@
-An experimental test suite for Drush (http://drush.ws) based on
-phpunit (http://www.phpunit.de/). The intent is to commit this to core Drush.
+Drush's test suite based on phpunit (http://www.phpunit.de/).
 
 Usage
 --------
 - Install PHPUnit
-- Copy phpunit.xml.dist to phpunit.xml and customize.
-- From the root of this package: `phpunit .` or `runner.php .`
+- Optional. Copy phpunit.xml.dist to phpunit.xml and customize if needed.
+- From the /tests subdirectory, run `phpunit .` or `runner.php .`
 
 Advanced usage
 ---------
@@ -16,11 +15,3 @@ Notes
 ----------
 - I have run tests within Netbeans and it works.
 - Speedup downloads with Squid as forward proxy - http://reluctanthacker.rollett.org/node/114.
-
-Feedback
-----------
-Post comments to http://drupal.org/node/483940. Feel free to fork on Github.
-
-Author
-----------
-Moshe Weitzman

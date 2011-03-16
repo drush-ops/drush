@@ -78,7 +78,7 @@ For Linux/Unix/Mac:
        override a few values, copy example.drush.ini from the "examples" folder
        into $HOME/.drush or the folder /etc/drush and edit to suit.  See comments
        in example.drush.ini for more details.
-       
+
   4. Start using drush by running "drush" from your Drupal root directory.
 
      (or, if you did not follow step 3, by running "/path/to/drush/drush"
@@ -140,7 +140,7 @@ your usual shell with its --pipe option.
 Many commands support a --pipe option which returns machine readable output. See
 `drush pm-list --status=enabled --pipe` as an example.
 
-Very intensive scripts can exhaust your available PHP memory. One remedy is to 
+Very intensive scripts can exhaust your available PHP memory. One remedy is to
 just restart automatically using bash. For example:
 
     while true; do drush search-index; sleep 5; done
@@ -150,7 +150,7 @@ EXAMPLES
 Inside the "examples" folder you will find some example files to help you
 get started with your drush configuration file (example.drushrc.php),
 site alias definitions (example.aliases.drushrc.php) and drush commands
-(sandwich.drush.inc). You will also see an example 'policy' file which 
+(sandwich.drush.inc). You will also see an example 'policy' file which
 can be customized to block certain commands or arguments as your organization
 needs.
 
@@ -186,6 +186,11 @@ You can put your drush command file in a number of places:
 
 In any case, it is important that you end the filename with ".drush.inc", so
 that drush can find it.
+
+UNIT TESTS
+-----------
+The /tests subdirectory contains the unit test suite for Drush. See the README.txt
+there for more information.
 
 FAQ
 ---
