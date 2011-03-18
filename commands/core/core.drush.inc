@@ -62,6 +62,20 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
     'aliases' => array('updb'),
   );
+  $items['core-config'] = array(
+    'description' => 'Edit drushrc and alias files.',
+    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
+    'arguments' => array(
+      'filter' => 'A substring for filtering the list of files. Omit this argument to choose from loaded files.',
+    ),
+    'examples' => array(
+      'drush core-config' => 'Pick from a list of config/alias files. Open selected in editor.',
+      'drush core-config etc' => 'Edit the global configuration file.',
+      'drush core-config demo.alia' => 'Edit a particular alias file.',
+      'drush core-config --choice=2' => 'Edit the second config file in the list.',
+    ),
+    'aliases' => array('conf', 'config'),
+  );
   $items['core-status'] = array(
     'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
@@ -501,6 +515,40 @@ function drush_core_cron() {
   }
   else {
     return drush_set_error('DRUSH_CRON_FAILED', dt('Cron run failed.'));
+  }
+}
+
+/**
+ * Command callback. Edit drushrc and alias files.
+ */
+function drush_core_config($filter = NULL) {
+  drush_sitealias_load_all();
+  if ($rcs = drush_get_context_options('context-path', TRUE)) {
+    $rcs = array_merge(array('drushrc' => '-- Drushrc --'), $rcs);
+  }
+  if ($aliases = drush_get_context('drush-alias-files')) {
+    $aliases = array_merge(array('aliases' => '-- Aliases --'), $aliases);
+  }
+  $all = array_merge($rcs, $aliases);
+
+  // Apply any filter that was supplied.
+  if ($filter) {
+    foreach ($all as $key => $file) {
+      if (strpos($file, $filter) === FALSE) {
+        unset($all[$key]);
+      }
+    }
+  }
+  $all = drush_map_assoc(array_values($all));
+
+  if (count($all) == 1) {
+    return drush_shell_exec_interactive('$EDITOR %s', current($all));
+  }
+  else {
+    $choice = drush_choice($all, 'Enter a number to choose which file to edit.', '!key');
+    if ($choice !== FALSE) {
+      return drush_shell_exec_interactive('$EDITOR %s', $all[$choice]);
+    }
   }
 }
 
