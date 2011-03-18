@@ -269,7 +269,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
     $db_spec = _drush_sql_get_db_spec();
   }
   $database = $db_spec['database'];
-  
+
   // Get the setting of --result-file.  If the user
   // has set $options['result-file'] = TRUE, then we
   // will generate an SQL dump file in the same backup
@@ -376,7 +376,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
       }
       break;
   }
-  
+
   if (drush_get_option('gzip')) {
     if ($file) {
       // Gzip the result-file
@@ -498,10 +498,10 @@ function _drush_sql_drop($db_spec = NULL) {
     default:
       $query = 'SHOW TABLES;';
   }
-  
+
   $filename = drush_save_data_to_temp_file($query);
   $exec = drush_sql_build_exec($db_spec, $filename);
-  
+
   // Actually run this prep query no matter if in SIMULATE.
   $old = drush_get_context('DRUSH_SIMULATE');
   drush_set_context('DRUSH_SIMULATE', FALSE);
@@ -577,7 +577,6 @@ function _drush_sql_get_db_spec() {
     case 5:
     case 6:
       $url = $GLOBALS['db_url'];
-      // TODO: array version not working?
       $url =  is_array($url) ? $url[$database] : $url;
       return drush_convert_db_from_db_url($url);
 
