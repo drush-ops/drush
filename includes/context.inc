@@ -308,8 +308,8 @@ function &drush_get_context($context = NULL, $default = NULL) {
  * This function will set the 'arguments' context of the current running script.
  *
  * When initially called by drush_parse_args, the entire list of arguments will
- * be populated, once the command is dispatched, this will be set to only the remaining
- * arguments to the command.
+ * be populated. Once the command is dispatched, this will be set to only the remaining
+ * arguments to the command (i.e. the command name is removed).
  *
  * @param arguments
  *   Command line arguments, as an array.
@@ -394,7 +394,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
 }
 
 /**
- * Get the value for an option and return it as a list.  If the 
+ * Get the value for an option and return it as a list.  If the
  * option in question is passed on the command line, its value should
  * be a comma-separated list (e.g. --flag=1,2,3).  If the option
  * was set in a drushrc.php file, then its value may be either a
@@ -409,11 +409,11 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
  */
 function drush_get_option_list($option, $default = array(), $context = NULL) {
   $result = drush_get_option($option, $default, $context);
-  
+
   if (!is_array($result)) {
     $result = explode(',', $result);
   }
-  
+
   return $result;
 }
 
