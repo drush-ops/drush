@@ -16,7 +16,7 @@
  * 2. drush_hook_pre_COMMAND()
  * 3. drush_hook_COMMAND()
  * 4. drush_hook_post_COMMAND()
- * 
+ *
  * For example, here are the hook opportunities for a mysite.drush.inc file
  * that wants to hook into the `pm-download` command.
  *
@@ -29,7 +29,7 @@
  * commandfile that defines the command.
  *
  * If any of hook function fails, either by calling drush_set_error
- * or by returning FALSE as its function result, then the rollback 
+ * or by returning FALSE as its function result, then the rollback
  * mechanism is called.  To fail with an error, call drush_set_error:
  *
  *   return drush_set_error('MY_ERROR_CODE', dt('Error message.'));
@@ -41,7 +41,7 @@
  *     return drush_user_abort();
  *   }
  *
- * The rollback mechanism will call, in reverse, all _rollback hooks. 
+ * The rollback mechanism will call, in reverse, all _rollback hooks.
  * The mysite command file can implement the following rollback hooks:
  *
  * 1. drush_mysite_post_pm_download_rollback()
@@ -161,6 +161,15 @@ function hook_drush_exit() {
 
 }
 
+/*
+ * A commandfile may choose to decline to load for the current bootstrap
+ * level by returning FALSE. This hook must be placed in MODULE.drush.load.inc.
+ * @see drush_commandfile_list().
+ */
+function hook_drush_load() {
+
+}
+
 /**
  * Take action after a project has been downloaded.
  */
@@ -219,7 +228,7 @@ function drush_hook_pre_site_upgrade_prepare() {
   // site upgrade prepare will disable contrib_extensions and
   // uninstall the uninstall_extension
   $contrib_extensions = func_get_args();
-  $uninstall_extensions = explode(',', drush_get_option('uninstall', ''));  
+  $uninstall_extensions = explode(',', drush_get_option('uninstall', ''));
 }
 
 
@@ -247,7 +256,7 @@ function hook_drush_cache_clear(&$types) {
  *   Bash code typically found in a .bashrc file.
  *
  * @see core_cli_bashrc() for an example implementation.
- */ 
+ */
 function hook_cli_bashrc() {
   $string = "
     alias siwef='drush site-install wef --account-name=super --account-mail=me@wef'
