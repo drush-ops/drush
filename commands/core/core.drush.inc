@@ -542,12 +542,12 @@ function drush_core_config($filter = NULL) {
   $all = drush_map_assoc(array_values($all));
 
   if (count($all) == 1) {
-    return drush_shell_exec_interactive('$EDITOR %s', current($all));
+    return drush_shell_exec_interactive('$EDITOR %s &', current($all));
   }
   else {
     $choice = drush_choice($all, 'Enter a number to choose which file to edit.', '!key');
     if ($choice !== FALSE) {
-      return drush_shell_exec_interactive('$EDITOR %s', $all[$choice]);
+      return drush_shell_exec_interactive('$EDITOR %s &', $all[$choice]);
     }
   }
 }
