@@ -55,12 +55,6 @@ else
     php=`which php-cli`
   fi
 
-  # Special case for *AMP installers, since they normally don't set themselves as the default cli php out of the box.
-  for amp_php in /Applications/MAMP/bin/php5/bin/php /Applications/MAMP/bin/php5.2/bin/php /Applications/MAMP/bin/php5.3/bin/php /opt/lampp/bin/php /Applications/xampp/xamppfiles/bin/php /Applications/acquia-drupal/php/bin/php; do
-    if [ -x $amp_php ]; then
-      php=$amp_php
-    fi
-  done
 fi
 
 # Check to see if the user has provided a php.ini file or drush.ini file in any conf dir
