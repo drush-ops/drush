@@ -149,6 +149,18 @@ function core_drush_command() {
       'immediate' => 'Rebuild the index immediately, instead of waiting for cron.',
     ),
   );
+  $items['core-execute'] = array(
+    'description' => 'Execute a shell command. Usually used with a site alias.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'arguments' => array(
+      'command', 'The shell command to be executed',
+    ),
+    'examples' => array(
+      'drush exec \'git pull\'' => 'Retrieve latest code from git',
+    ),
+    'aliases' => array('exec', 'execute'),
+    'topics' => array('docs-aliases'),
+  );
   $items['core-rsync'] = array(
     'description' => 'Rsync the Drupal tree to/from another server using ssh.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
@@ -851,6 +863,14 @@ function drush_core_find_project_path($target) {
   }
 
   return NULL;
+}
+
+/*
+ * Command callback. Execute specified shell code. Often used by shell aliases
+ * that start with !.
+ */
+function drush_core_execute($script) {
+  return drush_op_system($script);
 }
 
 function drush_core_cli() {

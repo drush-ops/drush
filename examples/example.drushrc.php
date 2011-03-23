@@ -54,11 +54,19 @@
 // Specify your Drupal core base directory (useful if you use symlinks).
 # $options['r'] = '/home/USER/workspace/drupal-6';
 
+// Drush shell aliases act similar to git aliases.
+// See https://git.wiki.kernel.org/index.php/Aliases#Advanced.
+# $options['shell-aliases'] = array(
+#   'pull' => '!git pull && drush updatedb',
+#   'noncore' => 'pm-list --no-core',
+#   'wipe' => 'cache-clear all --verbose',
+# );
+
 // Load a drushrc.php configuration file from the current working directory.
 # $options['c'] = '.';
 
 // Disable the nag warning for Windows.
-// Consider improving Windows support: http://drupal.org/node/766080. 
+// Consider improving Windows support: http://drupal.org/node/766080.
 # $options['check_os'] = FALSE;
 
 // Control automatically check for updates in pm-updatecode and drush version.
@@ -128,7 +136,7 @@
 // version of rsync installed on any system you are using with
 // drush).  Note that drush requires at least rsync version 2.6.4
 // for some functions to work correctly.
-// 
+//
 // Note that this option can also be set in a site alias.  This
 // is preferable if newer versions of rsync are available on some
 // of the systems you use.
@@ -149,7 +157,7 @@
  * Multiple command execution options
  */
 // By default, drush will prepend the name of the
-// site to the output of any multiple-site command 
+// site to the output of any multiple-site command
 // execution.  To disable this behavior, set the
 // --no-label option
 # $options['no-label'] = TRUE;
@@ -204,8 +212,8 @@ $options['skip-tables'] = array(
 // Set a predetermined username and password when using site-install.
 # $command_specific['site-install'] = array('account-name' => 'alice', 'account-pass' => 'secret');
 
-// List of drush commands or aliases that should override built-in 
-// shell functions and commands; otherwise, built-ins override drush 
+// List of drush commands or aliases that should override built-in
+// shell functions and commands; otherwise, built-ins override drush
 // commands. Default is help,dd,sa.
 // Warning:  bad things can happen if you put the wrong thing here
 // (e.g. eval, grep), so be cautious.
