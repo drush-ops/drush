@@ -459,7 +459,11 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
     foreach ($alias_files_to_consider as $filename) {
       if (file_exists($filename)) {
         $aliases = $options = array();
-        include $filename;
+        // silently ignore files we can't include
+        if ((@include $filename) === FALSE) {
+          drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), 'bootstrap');
+          continue;
+        }
         unset($options['site-aliases']); // maybe unnecessary
 
         // If $aliases are not set, but $options are, then define one alias named
