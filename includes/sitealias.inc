@@ -736,7 +736,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
       $status_values = _core_site_status_table($project_list);
     }
     else {
-      $values = drush_invoke_sitealias_args($alias_record, "status", array(), empty($project_list) ? array() : array('project' => $project_list));
+      $values = drush_invoke_sitealias_args($alias_record, "status", array(), empty($project_list) ? array() : array('project' => $project_list, '#override-simulated' => TRUE));
       $status_values = $values['object'];
     }
     if (isset($status_values['%paths'])) {
@@ -1595,24 +1595,18 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
     drush_set_option('exclude-path', str_replace(array_keys($path_aliases), array_values($path_aliases), $exclude_path));
   }
 
-  // The path component is just the path part of the full
-  // machine:path specification (including the colon).
-  $path_component = (!empty($path) ? ':' . $path : '');
-
   // Next make the rsync path, which includes the machine
   // and path components together.
   // First make empty paths or relative paths start from the drupal root.
   if (empty($path) || ($path[0] != '/')) {
     $path = $drupal_root . $path;
   }
-  // Escape the path
-  $path = drush_escapeshellarg($path, $os);
 
   // If there is a $machine component, to the path, then
   // add it to the beginning
-  $evaluated_path = $path;
+  $evaluated_path = drush_escapeshellarg($path, $os);
   if (!empty($machine)) {
-    $evaluated_path = $machine . ':' . $path;
+    $evaluated_path = $machine . ':' . $evaluated_path;
   }
 
   //
@@ -1628,7 +1622,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   if (!empty($machine)) {
     $site_alias_settings['server-component'] = $machine;
   }
-  $site_alias_settings['path-component'] = $path_component;
+  $site_alias_settings['path-component'] = (!empty($path) ? ':' . $path : '');
   $site_alias_settings['path'] = $path;
   $site_alias_settings['user-path'] = $preflight['path'];
 
