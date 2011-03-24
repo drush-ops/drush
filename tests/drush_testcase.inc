@@ -36,6 +36,17 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       define('UNISH_SANDBOX', realpath($sandbox));
     }
     chdir(UNISH_SANDBOX);
+
+    // Assure a clean environment - http://drupal.org/node/1103568
+    $home = UNISH_SANDBOX . '/home';
+    mkdir("$home/.drush", 0777, TRUE);
+    putenv("HOME=$home");
+    putenv("HOMEDRIVE=$home");
+    $sandbox = UNISH_SANDBOX;
+    mkdir($sandbox . '/etc/drush', 0777, TRUE);
+    mkdir($sandbox . '/share/drush/commands', 0777, TRUE);
+    putenv("ETC_PREFIX=$sandbox");
+    putenv("SHARE_PREFIX=$sandbox");
   }
 
   /**
