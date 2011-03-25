@@ -342,9 +342,9 @@ function drush_get_global_options($brief = FALSE) {
 
   if (!$brief) {
     $options['quiet']            = array('short-form' => 'q', 'description' => dt('Hide all output'));
-    $options['include']          = array('short-form' => 'i', 'description' => dt("A list of paths to search for drush commands"));
-    $options['config']           = array('short-form' => 'c', 'description' => dt("Specify a config file to use. See example.drushrc.php"));
-    $options['user']             = array('short-form' => 'u', 'description' => dt("Specify a user to login with. May be a name or a number."));
+    $options['include']          = array('short-form' => 'i', 'description' => dt("A list of additional directory paths to search for drush commands."));
+    $options['config']           = array('short-form' => 'c', 'description' => dt("Specify an additional config file to load. See example.drushrc.php"));
+    $options['user']             = array('short-form' => 'u', 'description' => dt("Specify a Drupal user to login with. May be a name or a number."));
     $options['backend']          = array('short-form' => 'b', 'description' => dt("Hide all output and return structured data (internal use only)."));
     $options['choice']           = dt("Provide an answer to a multiple-choice prompt.");
     $options['no-label']         = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
