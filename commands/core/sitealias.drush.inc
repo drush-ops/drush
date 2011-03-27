@@ -140,11 +140,11 @@ function drush_sitealias_print() {
       $component = drush_get_option('component');
       if ($component) {
         if (array_key_exists($component, $alias_record)) {
-	  drush_print($alias_record[$component]);
-	}
-	else {
-	  drush_set_error('DRUSH_NO_SUCH_ELEMENT', dt('The element @component was not found in the alias record for @site.', array('@component' => $component, '@site' => $site)));
-	}
+          drush_print($alias_record[$component]);
+        }
+        else {
+          drush_set_error('DRUSH_NO_SUCH_ELEMENT', dt('The element @component was not found in the alias record for @site.', array('@component' => $component, '@site' => $site)));
+        }
       }
       else {
         _drush_sitealias_print_record($alias_record, $site);
