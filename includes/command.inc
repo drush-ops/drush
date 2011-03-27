@@ -1235,8 +1235,8 @@ function drush_enforce_requirement_core(&$command) {
 }
 
 /*
- * Check if a shell alias exists for current request. If so, pretend like the
- * alias value was requested, along with any additional arguments.
+ * Check if a shell alias exists for current request. If so, re-route to
+ * core-execute like the and pass alias value along with rest of CLI arguments.
  */
 function drush_shell_alias_replace() {
   $args = drush_get_arguments();

@@ -57,9 +57,9 @@
 // Drush shell aliases act similar to git aliases.
 // See https://git.wiki.kernel.org/index.php/Aliases#Advanced.
 # $options['shell-aliases'] = array(
-#   'pull' => '!git pull && drush updatedb',
+#   'pulldb' => '!git pull && drush updatedb',
 #   'noncore' => 'pm-list --no-core',
-#   'wipe' => 'cache-clear all --verbose',
+#   'wipe' => 'cache-clear all',
 # );
 
 // Load a drushrc.php configuration file from the current working directory.

@@ -84,11 +84,7 @@ function drush_main() {
   foreach ($phases as $phase) {
     if (drush_bootstrap_to_phase($phase)) {
       // If applicable swaps in shell alias value (or executes it).
-      $return = drush_shell_alias_replace();
-      if (isset($return)) {
-        $command_found = TRUE;
-        break;
-      }
+      drush_shell_alias_replace();
 
       $command = drush_parse_command();
 
