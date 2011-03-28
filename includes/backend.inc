@@ -555,7 +555,7 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
   $cmd = escapeshellcmd($drush_path) . " " . $option_str . " " . $command . (empty($data['#interactive']) ? " --backend" : "");
 
   if (!is_null($hostname)) {
-    $username = (!is_null($username)) ? drupal_escapeshellarg($username, $os) . "@" : '';
+    $username = (!is_null($username)) ? drush_escapeshellarg($username, $os) . "@" : '';
     $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
     $cmd = "ssh " . $ssh_options . " " . $username . drush_escapeshellarg($hostname, $os) . " " . drush_escapeshellarg($cmd . ' 2>&1', $os) . $interactive;
   }

@@ -339,7 +339,7 @@ function drush_get_global_options($brief = FALSE) {
   $options['help']               = array('short-form' => 'h', 'description' => dt("This help system."));
   $options['version']            = dt("Show drush version.");
   $options['php']                = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
-  $options['ia']                = dt("Force interactive mode even for command executed on remote hosts.");
+  $options['ia']                 = dt("Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc -ia`).");
 
   if (!$brief) {
     $options['quiet']            = array('short-form' => 'q', 'description' => dt('Hide all output'));
@@ -752,7 +752,7 @@ function _drush_download_file($url) {
  *   TRUE if the command was handled remotely.
  */
 function drush_remote_command() {
-  $intreactive = drush_get_option('interactive', FALSE);
+  $intreactive = drush_get_option(array('interactive','ia'), FALSE);
   
   // The command will be executed remotely if the --remote-host flag
   // is set; note that if a site alias is provided on the command line,
