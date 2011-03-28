@@ -243,8 +243,8 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
     if ($update) {
       $backup_dir = drush_preflight_backup_dir('drush');
       if(drush_confirm(dt('A newer version of drush, !version, is available.  Would you like to back up your current drush, version !currentversion, to !backup and replace it with the newer release?', array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION, '!backup' => $backup_dir)))) {
-	// pm-download will select the most recent stable release, which is what we want.
-	return (drush_invoke_process_args("pm-download", array("drush"), array("destination" => DRUSH_BASE_PATH, "backup-location" => $backup_dir, "dev" => $is_dev)) !== FALSE);
+        // pm-download will select the most recent stable release, which is what we want.
+        return (drush_invoke_process_args("pm-download", array("drush"), array("destination" => DRUSH_BASE_PATH, "backup-location" => $backup_dir, "dev" => $is_dev)) !== FALSE);
       }
     }
     else {
@@ -339,7 +339,7 @@ function drush_get_global_options($brief = FALSE) {
   $options['help']               = array('short-form' => 'h', 'description' => dt("This help system."));
   $options['version']            = dt("Show drush version.");
   $options['php']                = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
-  $options['ia']                 = dt("Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc -ia`).");
+  $options['ia']                 = dt("Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).");
 
   if (!$brief) {
     $options['quiet']            = array('short-form' => 'q', 'description' => dt('Hide all output'));
@@ -752,8 +752,8 @@ function _drush_download_file($url) {
  *   TRUE if the command was handled remotely.
  */
 function drush_remote_command() {
-  $intreactive = drush_get_option(array('interactive','ia'), FALSE);
-  
+  $interactive = drush_get_option(array('interactive','ia'), FALSE);
+
   // The command will be executed remotely if the --remote-host flag
   // is set; note that if a site alias is provided on the command line,
   // and the site alias references a remote server, then the --remote-host
@@ -782,7 +782,7 @@ function drush_remote_command() {
     $site_list = drush_sitealias_simplify_names($site_list);
     $args = drush_get_arguments();
 
-    if (!drush_get_context('DRUSH_SIMULATE') && !$intreactive) {
+    if (!drush_get_context('DRUSH_SIMULATE') && !$interactive) {
       drush_print(dt("You are about to execute '!command' non-interactively (--yes forced) on all of the following targets:", array('!command' => implode(" ", $args))));
       foreach ($site_list as $one_destination => $one_record) {
         drush_print(dt('  !target', array('!target' => $one_destination)));
@@ -795,7 +795,7 @@ function drush_remote_command() {
     $command = array_shift($args);
     $multi_options = drush_get_context('cli');
 
-    if (!drush_get_option('no-label', FALSE) && !$intreactive) {
+    if (!drush_get_option('no-label', FALSE) && !$interactive) {
       $label_separator = ' >> ';
       $max_name_length = 0;
       foreach ($site_list as $alias_name => $alias_record) {
@@ -817,7 +817,7 @@ function drush_remote_command() {
       }
     }
     else {
-      if ($intreactive) {
+      if ($interactive) {
         $multi_options['#interactive'] = TRUE;
       }
       foreach ($site_list as $alias_name => $alias_record) {
