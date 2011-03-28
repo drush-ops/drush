@@ -339,6 +339,7 @@ function drush_get_global_options($brief = FALSE) {
   $options['help']               = array('short-form' => 'h', 'description' => dt("This help system."));
   $options['version']            = dt("Show drush version.");
   $options['php']                = dt("The absolute path to your PHP intepreter, if not 'php' in the path.");
+  $options['ia']                = dt("Force interactive mode even for command executed on remote hosts.");
 
   if (!$brief) {
     $options['quiet']            = array('short-form' => 'q', 'description' => dt('Hide all output'));
@@ -751,6 +752,8 @@ function _drush_download_file($url) {
  *   TRUE if the command was handled remotely.
  */
 function drush_remote_command() {
+  $intreactive = drush_get_option('interactive', FALSE);
+  
   // The command will be executed remotely if the --remote-host flag
   // is set; note that if a site alias is provided on the command line,
   // and the site alias references a remote server, then the --remote-host
@@ -763,6 +766,8 @@ function drush_remote_command() {
     $command = array_shift($args);
     $remote_user = drush_get_option('remote-user');
 
+    // Force interactive mode if there is a single remote target.  #interactive is added by drush_do_command_redispatch
+    drush_set_option('interactive', TRUE);
     drush_do_command_redispatch($command, $args, $remote_host, $remote_user);
     return TRUE;
   }
@@ -777,8 +782,8 @@ function drush_remote_command() {
     $site_list = drush_sitealias_simplify_names($site_list);
     $args = drush_get_arguments();
 
-    if (!drush_get_context('DRUSH_SIMULATE')) {
-      drush_print(dt("You are about to execute '!command' on all of the following targets:", array('!command' => implode(" ", $args))));
+    if (!drush_get_context('DRUSH_SIMULATE') && !$intreactive) {
+      drush_print(dt("You are about to execute '!command' non-interactively (--yes forced) on all of the following targets:", array('!command' => implode(" ", $args))));
       foreach ($site_list as $one_destination => $one_record) {
         drush_print(dt('  !target', array('!target' => $one_destination)));
       }
@@ -790,7 +795,7 @@ function drush_remote_command() {
     $command = array_shift($args);
     $multi_options = drush_get_context('cli');
 
-    if (!drush_get_option('no-label', FALSE)) {
+    if (!drush_get_option('no-label', FALSE) && !$intreactive) {
       $label_separator = ' >> ';
       $max_name_length = 0;
       foreach ($site_list as $alias_name => $alias_record) {
@@ -812,7 +817,11 @@ function drush_remote_command() {
       }
     }
     else {
+      if ($intreactive) {
+        $multi_options['#interactive'] = TRUE;
+      }
       foreach ($site_list as $alias_name => $alias_record) {
+        drush_print(dt("!site >> !command", array('!command' => $command . ' ' . implode(" ", $args), '!site' => $alias_name)));
         $values = drush_do_site_command($alias_record, $command, $args, $multi_options);
         drush_print($values['output']);
       }
@@ -909,6 +918,12 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
  */
 function drush_do_command_redispatch($command, $args = array(), $remote_host = NULL, $remote_user = NULL, $drush_path = NULL) {
   $data = drush_redispatch_get_options();
+
+  // The option allows ad hoc usage of #interactive.
+  // @see _drush_backend_invoke().
+  if (drush_get_option(array('interactive', 'ia'))) {
+    $data['#interactive'] = TRUE;
+  }
 
   // If the path to drush was supplied, then pass it to backend invoke.
   if ($drush_path == NULL) {
