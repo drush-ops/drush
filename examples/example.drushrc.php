@@ -82,11 +82,8 @@
 // default-major to select a different default version.
 # $options['default-major'] = 6;
 
-// Specify CVS for checkouts
-# $options['package-handler'] = 'cvs';
-
-// Specify CVS credentials for checkouts (requires --package-handler=cvs)
-# $options['cvscredentials'] = 'name:password';
+// Specify Git clones for drupal.org extensions.
+# $options['package-handler'] = 'git_drupalorg';
 
 // Specify additional directories to search for *.drush.inc files
 // Separate by : (Unix-based systems) or ; (Windows).
