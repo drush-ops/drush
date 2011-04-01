@@ -48,6 +48,7 @@ function package_handler_download_project(&$request, $release) {
   else {
     $repository = 'git://git.drupal.org/project/' . $request['name'] . '.git';
   }
+  $request['repository'] = $repository;
   $tag = $release['tag'];
 
   if (drush_get_option('cache')) {

@@ -459,7 +459,11 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
     foreach ($alias_files_to_consider as $filename) {
       if (file_exists($filename)) {
         $aliases = $options = array();
-        include $filename;
+        // silently ignore files we can't include
+        if ((@include $filename) === FALSE) {
+          drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), 'bootstrap');
+          continue;
+        }
         unset($options['site-aliases']); // maybe unnecessary
 
         // If $aliases are not set, but $options are, then define one alias named
@@ -599,7 +603,7 @@ function _drush_sitealias_cache_alias($alias_name, $alias_record) {
 function drush_sitealias_add_db_url(&$alias_record) {
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
     // We use sql-conf to fetch our database info.  We set #override-simulated so that
-    // we will fetch the database values even in --simulte mode
+    // we will fetch the database values even in --simulate mode.
     $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('db-url' => TRUE, '#override-simulated' => TRUE));
     if (isset($values['object']['db-url'])) {
       $alias_record['db-url'] = $values['object']['db-url'];

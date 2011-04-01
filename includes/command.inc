@@ -1233,3 +1233,31 @@ function drush_enforce_requirement_core(&$command) {
   }
   $command['bootstrap_errors']['DRUSH_COMMAND_CORE_VERSION_ERROR'] = dt('Command !command requires Drupal core version !versions to run.', array('!command' => $command['command'], '!versions' => $versions));
 }
+
+/*
+ * Check if a shell alias exists for current request. If so, re-route to
+ * core-execute like the and pass alias value along with rest of CLI arguments.
+ */
+function drush_shell_alias_replace() {
+  $args = drush_get_arguments();
+  $argv = drush_get_context('argv');
+  $first = current($args);
+  // @todo drush_get_option is awkward here.
+  $shell_aliases = drush_get_option('shell-aliases', array());
+  if (isset($shell_aliases[$first])) {
+    // Shell alias found for first argument in the request.
+    $alias_value = $shell_aliases[$first];
+    drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => $alias_value)), 'debug');
+    if (substr($alias_value, 0, 1) == '!') {
+      $replacement = array('core-execute', ltrim($alias_value, '!'));
+    }
+    else {
+      $replacement = explode(' ', $alias_value);
+    }
+    $pos = array_search($first, $argv);
+    array_splice($argv, $pos, 1, $replacement);
+    drush_set_context('argv', $argv);
+    drush_parse_args();
+    _drush_bootstrap_global_options();
+  }
+}
