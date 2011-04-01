@@ -152,7 +152,7 @@ function drush_include_engine($type, $engine, $version = NULL, $path = NULL) {
     $path = $engines[$engine]['path'];
   }
   if (!$path) {
-    return drush_set_error('DRUSH_ENGINE INCLUDE_NO_PATH', dt('No !path was set for including the !type engine !engine.', array('!path' => $path, '!type' => $type, '!engine' => $engine)));
+    return drush_set_error('DRUSH_ENGINE INCLUDE_NO_PATH', dt('No path was set for including the !type engine !engine.', array('!type' => $type, '!engine' => $engine)));
   }
   if (drush_include($path, $engine, $version)) {
     return TRUE;
