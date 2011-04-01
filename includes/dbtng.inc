@@ -8,8 +8,8 @@
 /**
  * Replace named placeholders in a WHERE snippet.
  *
- * Helper function to allow the usage of Drupal 7 WHERE snippets
- * with named placeholders in code for Drupal 5 and 6.
+ * Helper function to allow the usage of Drupal 7+ WHERE snippets
+ * with named placeholders in code for Drupal 6.
  *
  * @param $where
  *   String with a WHERE snippet using named placeholders.
@@ -160,14 +160,6 @@ function drush_db_delete($table, $where = NULL, $args = NULL) {
  */
 function drush_db_result($result) {
   switch (drush_drupal_major_version()) {
-    case 5:
-      // In versions of Drupal <= 5, db_result only returns the first row no matter how
-      //  many times you call it. So instead of calling it here, we use db_fetch_array which
-      //  does increment the pointer to the next row (as db_result does on Drupal 6)
-      if ($array = db_fetch_array($result)) {
-        return array_shift($array); // return first element in array.
-      }
-      return FALSE;
     case 6:
       return db_result($result);
     case 7:

@@ -222,7 +222,7 @@ function core_watchdog_format_result($result, $full = FALSE) {
   unset($result->timestamp);
 
   // Message.
-  if (drush_drupal_major_version() > 5) {
+  if (drush_drupal_major_version() >= 6) {
     $variables = unserialize($result->variables);
     if (is_array($variables)) {
       $result->message = strtr($result->message, $variables);
@@ -366,10 +366,5 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
  *   Array of watchdog message types.
  */
 function core_watchdog_message_types() {
-  if (drush_drupal_major_version() == 5) {
-    return _watchdog_get_message_types();
-  }
-  else {
-    return _dblog_get_message_types();
-  }
+  return _dblog_get_message_types();
 }

@@ -84,9 +84,6 @@ If no --destination is provided, then destination depends on the project type:
  */
 function pm_drush_command() {
   $update = 'update';
-  if (drush_drupal_major_version() == 5) {
-    $update = 'update_status';
-  }
   $engines = array(
     'engines' => array(
       'version_control' => 'Integration with VCS in order to easily commit your changes to projects.',
@@ -945,31 +942,26 @@ function _drush_pm_info_theme($info) {
   $major_version = drush_drupal_major_version();
 
   $data = _drush_pm_info_extension($info);
-  if ($major_version == 5) {
-    $data['Engine'] = $info->description;
-  }
-  else {
-    $data['Core'] = $info->info['core'];
-    $data['PHP'] = $info->info['php'];
-    $data['Engine'] = $info->info['engine'];
-    $data['Base theme'] = isset($info->base_themes) ? implode($info->base_themes, ', ') : '';
-    $regions = implode(', ', $info->info['regions']);
-    $data['Regions'] = $regions;
-    $features = implode(', ', $info->info['features']);
-    $data['Features'] = $features;
-    if (count($info->info['stylesheets']) > 0) {
-      $data['Stylesheets'] = '';
-      foreach ($info->info['stylesheets'] as $media => $files) {
-        $files = implode(', ', array_keys($files));
-        $data['Media '.$media] = $files;
-      }
-    }
-    if (count($info->info['scripts']) > 0) {
-      $scripts = implode(', ', array_keys($info->info['scripts']));
-      $data['Scripts'] = $scripts;
-    }
-  }
 
+  $data['Core'] = $info->info['core'];
+  $data['PHP'] = $info->info['php'];
+  $data['Engine'] = $info->info['engine'];
+  $data['Base theme'] = isset($info->base_themes) ? implode($info->base_themes, ', ') : '';
+  $regions = implode(', ', $info->info['regions']);
+  $data['Regions'] = $regions;
+  $features = implode(', ', $info->info['features']);
+  $data['Features'] = $features;
+  if (count($info->info['stylesheets']) > 0) {
+    $data['Stylesheets'] = '';
+    foreach ($info->info['stylesheets'] as $media => $files) {
+      $files = implode(', ', array_keys($files));
+      $data['Media '.$media] = $files;
+    }
+  }
+  if (count($info->info['scripts']) > 0) {
+    $scripts = implode(', ', array_keys($info->info['scripts']));
+    $data['Scripts'] = $scripts;
+  }
   return $data;
 }
 

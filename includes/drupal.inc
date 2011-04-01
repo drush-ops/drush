@@ -38,7 +38,7 @@ function drush_drupal_cache_clear_all() {
 }
 
 /**
- * Returns the Drupal major version number (5, 6, 7 ...)
+ * Returns the Drupal major version number (6, 7, 8 ...)
  */
 function drush_drupal_major_version($drupal_root = NULL) {
   $major_version = FALSE;
