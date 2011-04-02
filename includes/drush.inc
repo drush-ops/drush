@@ -324,7 +324,7 @@ function _convert_csv_to_array($args) {
  */
 function drush_get_global_options($brief = FALSE) {
   $options['root']               = array('short-form' => 'r', 'description' => dt("Drupal root directory to use (default: current directory)"), 'example-value' => '<path>');
-  $options['uri']                = array('short-form' => 'l', 'description' => dt('URI of the drupal site to use (only needed in multisite environments)'), 'example-value' => 'http://example.com');
+  $options['uri']                = array('short-form' => 'l', 'description' => dt('URI of the drupal site to use (only needed in multisite environments or when running on an alternate port)'), 'example-value' => 'http://example.com:8888');
   $options['verbose']            = array('short-form' => 'v', 'description' => dt('Display extra information about the command.'));
   $options['debug']              = array('short-form' => 'd', 'description' => dt('Display even more information, including internal messages.'));
   $options['yes']                = array('short-form' => 'y', 'description' => dt("Assume 'yes' as answer to all prompts"));
