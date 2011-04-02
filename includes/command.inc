@@ -1211,7 +1211,8 @@ function drush_enforce_requirement_drush_dependencies(&$command) {
 }
 
 /**
- * Check that a command is valid for the current major version of core.
+ * Check that a command is valid for the current major version of core. Handles
+ * explicit version numbers and 'plus' numbers like 6+ (compatible with 6, 7 ...).
  *
  * @param $command
  *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.
@@ -1220,9 +1221,17 @@ function drush_enforce_requirement_drush_dependencies(&$command) {
  *   TRUE if command is valid.
  */
 function drush_enforce_requirement_core(&$command) {
-  $core = $command['core'];
-  if (empty($core) || in_array(drush_drupal_major_version(), $core)) {
+  $major = drush_drupal_major_version();
+  if (!$core = $command['core']) {
     return TRUE;
+  }
+  foreach ($core as $compat) {
+    if ($compat == $major) {
+      return TRUE;
+    }
+    elseif (substr($compat, -1) == '+' && $major >= substr($compat, 0, strlen($compat)-1)) {
+      return TRUE;
+    }
   }
   $versions = array_pop($core);
   if (!empty($core)) {
