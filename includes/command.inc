@@ -883,6 +883,8 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
         // Add all module paths, even disabled modules. Prefer speed over accuracy.
         $searchpath[] = 'sites/all/modules';
       }
+      $searchpath[] = 'sites/all/themes';
+      $searchpath[] = conf_path() . '/themes';
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_FULL:
       // Add enabled module paths. Since we are bootstrapped,
