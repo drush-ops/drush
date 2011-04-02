@@ -23,7 +23,7 @@ function field_drush_help($section) {
 function field_drush_command() {
   $items['field-create'] = array(
     'description' => 'Create fields and instances. Returns urls for field editing.',
-    'core' => array(7),
+    'core' => array('7+'),
     'drupal_dependencies' => array('field_ui'),
     'arguments' => array(
       'bundle' => 'Content type (for nodes). Name of bundle to attach fields to. Required.',
@@ -40,7 +40,7 @@ function field_drush_command() {
   );
   $items['field-update'] = array(
     'description' => 'Return URL for field editing web page.',
-    'core' => array(7),
+    'core' => array('7+'),
     'drupal_dependencies' => array('field_ui'),
     'arguments' => array(
       'field_name' => 'Name of field that needs updating.',
@@ -51,7 +51,7 @@ function field_drush_command() {
   );
   $items['field-delete'] = array(
     'description' => 'Delete a field and its instances.',
-    'core' => array(7),
+    'core' => array('7+'),
     'arguments' => array(
       'field_name' => 'Name of field to delete.',
     ),
@@ -66,7 +66,7 @@ function field_drush_command() {
   );
   $items['field-clone'] = array(
     'description' => 'Clone a field and all its instances.',
-    'core' => array(7),
+    'core' => array('7+'),
     'arguments' => array(
       'source_field_name' => 'Name of field that will be cloned',
       'target_field_name' => 'Name of new, cloned field.',
@@ -79,7 +79,7 @@ function field_drush_command() {
   $items['field-info'] = array(
     'description' => 'View information about fields, field_types, and widgets.',
     'drupal_dependencies' => array('field_ui'),
-    'core' => array(7),
+    'core' => array('7+'),
     'arguments' => array(
       'type' => 'Recognized values: fields, types. If omitted, a choice list appears.',
     ),
