@@ -3,7 +3,7 @@
 /*
  * @file
  *   Tests for sitealias.inc
- */   
+ */
 class saCase extends Drush_TestCase {
 
   /*
@@ -20,7 +20,7 @@ class saCase extends Drush_TestCase {
     );
     $this->drush('php-eval', array($eval), $options, "#dev,#stage");
     $output = $this->getOutput();
-    $expected = "You are about to execute 'php-eval print bon;' on all of the following targets:
+    $expected = "You are about to execute 'php-eval print bon;' non-interactively (--yes forced) on all of the following targets:
   #dev
   #stage
 Continue?  (y/n): y
