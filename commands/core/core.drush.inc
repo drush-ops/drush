@@ -110,13 +110,6 @@ function core_drush_command() {
     'deprecated-aliases' => array('script'),
     'topics' => array('docs-examplescript', 'docs-scripts'),
   );
-  $items['cache-clear'] = array(
-    'description' => 'Clear a specific cache, or all drupal caches.',
-    'arguments' => array(
-      'type' => 'The particular cache to clear. Omit this argument to choose from available caches.',
-    ),
-    'aliases' => array('cc'),
-  );
   $items['search-status'] = array(
     'description' => 'Show how many items remain to be indexed out of the total.',
     'drupal dependencies' => array('search'),
