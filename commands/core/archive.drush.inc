@@ -23,7 +23,7 @@ function archive_drush_command() {
       'drush archive-dump @sites' => 'Save archive containing all sites in a multi-site.',
       'drush archive-dump default --destination=/backups/mysite.tar' => 'Save archive to custom location.',
     ),
-    'core' => array(6, '7+'),
+    'core' => array('6+'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
   );
   return $items;
