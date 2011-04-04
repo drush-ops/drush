@@ -2,7 +2,7 @@ COMMANDS (perhaps keep these notes in $command definition?)
 ------------
 pm-download: GOOD.
 pm-updatecode: GOOD.
-pm-update
+pm-update: GOOD. Implicitly tested by pm-updatecode and updatedb.
 pm-releasenotes
 pm-releases
 pm-enable: GOOD. testEnDisUnListVar().
@@ -10,7 +10,7 @@ pm-disable: GOOD. testEnDisUnListVar().
 pm-uninstall: GOOD. testEnDisUnListVar().
 pm-list: GOOD. testEnDisUnListVar().
 pm-info:
-pm-refresh
+pm-refresh: 
 version-control: FAIR. See updatecode. To be deprecated all git workflow after git.drupal.org?
 package-hander:
 
