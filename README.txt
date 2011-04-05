@@ -25,11 +25,9 @@ REQUIREMENTS
   GnuWin32 (http://gnuwin32.sourceforge.net/). More info
   about Drush on Windows available at http://drupal.org/node/594744.
 
-* Drush works with Drupal 5, Drupal 6 and Drupal 7.  However, occasionally
+* Drush works with Drupal 6, Drupal 7, and Drupal 8.  However, occasionally
   recent changes to the most recent version of Drupal can introduce issues
-  with Drush.  On Drupal 5, Drush requires update_status v5.x-2.5 or later
-  in order to use pm-updatecode.  If you have an earlier version of update_status,
-  upgrade it via "drush dl update_status" before using pm-updatecode.
+  with Drush.
 
 
 INSTALLATION

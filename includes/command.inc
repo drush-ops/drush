@@ -1215,7 +1215,7 @@ function drush_enforce_requirement_drush_dependencies(&$command) {
 
 /**
  * Check that a command is valid for the current major version of core. Handles
- * explicit version numbers and 'plus' numbers like 6+ (compatible with 6, 7 ...).
+ * explicit version numbers and 'plus' numbers like 7+ (compatible with 7,8 ...).
  *
  * @param $command
  *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.

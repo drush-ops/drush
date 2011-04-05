@@ -898,7 +898,6 @@ function _drush_bootstrap_drupal_configuration() {
   // Populate the DRUSH_DB_CREDENTIALS with the fields loaded from the configuration.
   $creds = array();
   switch (drush_drupal_major_version()) {
-     case 5:
      case 6:
        if (!empty($GLOBALS['db_url'])) {
          $url = $GLOBALS['db_url'];
@@ -1164,7 +1163,6 @@ function drush_valid_db_credentials() {
   }
   $type = $creds['driver'];
   switch (drush_drupal_major_version()) {
-    case 5:
     case 6:
       // Check availability of db extension in PHP and also Drupal support.
       if (file_exists('./includes/install.'. $type .'.inc')) {

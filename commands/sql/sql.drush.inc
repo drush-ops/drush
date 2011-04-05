@@ -230,7 +230,7 @@ function drush_sql_get_table_selection() {
  * Build a mysqldump/pg_dump/sqlite statement.
  *
  * @param db_spec
- *   For D5/D6, a $db_url. For D7, a target in the default DB connection.
+ *   For /D6, a $db_url. For D7+, a target in the default DB connection.
  * @return array
  *   An array with items.
  *     1. A mysqldump/pg_dump/sqlite statement that is ready for executing.
@@ -574,7 +574,6 @@ function _drush_sql_get_db_spec() {
   $target = drush_get_option('target', 'default');
 
   switch (drush_drupal_major_version()) {
-    case 5:
     case 6:
       $url = $GLOBALS['db_url'];
       $url =  is_array($url) ? $url[$database] : $url;
@@ -591,7 +590,6 @@ function _drush_sql_get_db_spec() {
 
 function _drush_sql_get_all_db_specs() {
   switch (drush_drupal_major_version()) {
-    case 5:
     case 6:
       return drush_sitealias_convert_db_from_db_url($GLOBALS['db_url']);
 
@@ -768,7 +766,6 @@ function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
     $db_spec = _drush_sql_get_db_spec();
   }
   switch (drush_drupal_major_version()) {
-    case 5:
     case 6:
       return dt('Unable to parse DB connection string');
    default:

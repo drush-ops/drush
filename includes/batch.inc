@@ -12,7 +12,7 @@
  *
  * While the original API does offer a 'non progressive' mode which simply
  * calls each operation in sequence within the current process, in most
- * implementations (Drupal 5 and 6), it would still attempt to redirect
+ * implementations (D6), it would still attempt to redirect
  * unless very specific conditions were met.
  *
  * When operating in 'non progressive' mode, Drush would experience the problems

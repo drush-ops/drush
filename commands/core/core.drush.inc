@@ -186,7 +186,7 @@ function core_drush_command() {
       'profile' => 'the install profile you wish to run. defaults to \'default\' in D6, \'standard\' in D7',
     ),
     'options' => array(
-      'db-url' => 'A Drupal 5/6 style database URL. Only required for initial install - not re-install.',
+      'db-url' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',
       'db-prefix' => 'An optional table prefix to use for initial install.',
       'account-name' => 'uid1 name. Defaults to admin',
       'account-pass' => 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',
@@ -203,7 +203,6 @@ function core_drush_command() {
       'drush site-install --db-url=sqlite:/full/path/to/database.sqlite' => 'Install using SQLite (D7 only).',
       'drush site-install --account-name=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
     ),
-    'core' => array('6+'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
     'aliases' => array('si'),
     'deprecated-aliases' => array('installsite', 'is'),
