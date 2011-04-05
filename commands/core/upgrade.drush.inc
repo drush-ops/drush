@@ -101,7 +101,7 @@ function drush_upgrade_site_upgrade($target_key) {
   // Presume we are ready to go (n.b. some checks already performed in 'validate')
   $ready_to_upgrade = TRUE;
   $result = TRUE;
-  
+
   // PREPARE:  Find the target version and determine the contrib projects and enabled modules installed.
 
   $source_version = drush_drupal_major_version();
@@ -132,7 +132,7 @@ function drush_upgrade_site_upgrade($target_key) {
   // version of Drupal, either because they have not been ported yet, or because
   // they have been rolled into core.
   $unavailable_extensions = array();
-  
+
   // Get the list of modules the user would like to uninstall (if any).
   $uninstall_extensions = drush_get_option('uninstall', '');
   if ($uninstall_extensions == "all") {
@@ -141,7 +141,7 @@ function drush_upgrade_site_upgrade($target_key) {
   else {
     $uninstall_extensions = explode(',', $uninstall_extensions);
   }
-  
+
   // WARN:  Tell the user about any special situations that might exist with contrib modules.
 
   $project_download_list = array();
@@ -172,7 +172,7 @@ function drush_upgrade_site_upgrade($target_key) {
         elseif (($extension_info[$extension_name]->type == 'module') && !is_dir($destination_core . '/sites/all/modules/' . $project) && !is_dir($destination_core . '/' . $destination_conf_path . '/modules/' . $project)) {
           $project_download_list[$project][] = $extension_name;
         }
-        // If there is a special warning about a project, then add it 
+        // If there is a special warning about a project, then add it
         // to the warning list for later reporting.
         if (array_key_exists($project . ':' . $extension_name, $special_projects['warning'])) {
           $special_warning[$project] = $special_projects['warning'][$project . ':' . $extension_name];
@@ -182,10 +182,10 @@ function drush_upgrade_site_upgrade($target_key) {
         }
       }
     }
-    
+
     // Consider each project from the contrib extensions and check with PM to see if there is
     // a recommended release available to download.  If there is NO release available, then
-    // we are not ready to upgrade (but still can, without that project); if there is no RECOMMENDED 
+    // we are not ready to upgrade (but still can, without that project); if there is no RECOMMENDED
     // release, then we might not be ready to upgrade (but still can, with a non-recommended release).
     if (!empty($project_download_list)) {
       $result = drush_invoke_sitealias_args(array('root' => '', 'uri' => ''), 'pm-releases', array_keys($project_download_list), array('default-major' => $target_version, '#integrate' => FALSE, '#override-simulated' => TRUE));
@@ -204,7 +204,7 @@ function drush_upgrade_site_upgrade($target_key) {
         }
       }
     }
-    
+
     // Print out some messages about projects that migrated  to core, or modules that will require special processing.
     if (!empty($in_core)) {
       drush_log(dt('The following contrib modules were enabled in your Drupal site, but are now standard in core: !in_core.  These modules may need to be reconfigured after the upgrade is complete.', array('!in_core' => implode(', ', $in_core))), 'ok');
@@ -252,12 +252,12 @@ function drush_upgrade_site_upgrade($target_key) {
 
   // User has already been prompted; skip further confirms.
   drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
-  
+
   // We need to know where our destination settings file is regardless of which
   // code path we take; therefore, we will precompute it here.
-  
+
   $settings_destination = $destination_core . '/' . $destination_conf_path . '/settings.php';
-  
+
   // STEP 1:  Download the next major version of Drupal.
 
   if (($selection == 'replace') || (!is_dir($destination_core))) {
@@ -297,7 +297,7 @@ function drush_upgrade_site_upgrade($target_key) {
       'root' => DRUPAL_ROOT,
       'uri' => $target_alias_databases['default']['default']['database'],
     );
-    
+
     if (!drush_get_context('DRUSH_SIMULATE')) {
       // In theory, if the sql-sync worked, this should never be empty.
       if (empty($modify_site['uri'])) {
@@ -305,7 +305,7 @@ function drush_upgrade_site_upgrade($target_key) {
       }
       $modify_site_conf_path = dirname(conf_path()) . '/' . $modify_site['uri'];
       $modify_site_settings = $modify_site_conf_path . '/settings.php';
-      drush_log('set up a fake site by copying ' . $settings_destination . ' to ' . $modify_site_settings);
+      drush_log('Set up a transient site by copying ' . $settings_destination . ' to ' . $modify_site_settings, 'debug');
       if (!file_exists($modify_site_settings)) {
         if ((drush_mkdir($modify_site_conf_path) === FALSE) || drush_op('copy', $settings_destination, $modify_site_settings) !== TRUE) {
           return drush_set_error('DRUSH_UPGRADE_COULD_NOT_DISABLE', dt("Could not create a temporary multisite "));
@@ -350,12 +350,12 @@ function drush_upgrade_site_upgrade($target_key) {
         $contrib_extensions[] = $special_projects['module-remap'][$extension_name];
       }
     }
-    
+
     // Redispatch to site-upgrade-modules command, so that we will be
     // bootstrapped to the target site.
     $result = (drush_invoke_sitealias_args($target_alias, 'site-upgrade-modules', array_merge($core_extensions, array_diff($contrib_extensions, $unavailable_extensions, $uninstall_extensions)), $options) == 0);
   }
-  
+
   return $result;
 }
 
@@ -364,7 +364,7 @@ function drush_upgrade_site_upgrade($target_key) {
  * core; it also has a list of projects that require special handling.
  * Keep a record here too.
  *
- * @param $target_version 
+ * @param $target_version
  * The version of Drupal being upgraded to.
  * @return @array
  *   - source              URL to the page where more information about this upgrade can be found.
@@ -529,7 +529,7 @@ function drush_upgrade_site_upgrade_prepare() {
 function drush_upgrade_site_upgrade_modules() {
   $extensions_to_enable = func_get_args();
   $project_download_list = drush_get_option('projects', '');
-  
+
   if (!empty($project_download_list)) {
     // Download our contrib extensions.
     drush_log(dt('Download projects: !projects', array('!projects' => $project_download_list)), 'ok');
@@ -539,7 +539,7 @@ function drush_upgrade_site_upgrade_modules() {
     drush_set_option('choice', '1');
     call_user_func_array('drush_pm_download', explode(',', $project_download_list));
   }
-  
+
   // Run updatedb to update all of the contrib extensions.
   drush_log(dt('About to perform updatedb for extensions'), 'ok');
   $result = drush_invoke_process_args('updatedb', array(), array('yes' => TRUE, '#interactive' => TRUE));
@@ -556,7 +556,7 @@ function drush_upgrade_site_upgrade_modules() {
   drush_set_option('resolve-dependencies', TRUE);
   drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
   $result = drush_invoke_args('pm-enable', $extensions_to_enable);
-  
+
   return $result;
 }
 
@@ -661,12 +661,12 @@ function drush_upgrade_site_upgrade_rollback($target_key) {
 function _drush_upgrade_preserve_modules($destination_core) {
   $modules_preserve['root'] = $destination_core;
   $modules_preserve['list'] = array();
-  
+
   $moduledir_list = array(
     'sites_all_modules' => $destination_core . '/sites/all/modules',
     'sites_conf_path_modules' => $destination_core . conf_path() . '/modules',
   );
-  
+
   foreach ($moduledir_list as $moduledir_name => $moduledir) {
     if (is_dir($moduledir)) {
       $preserved_moduledir = drush_tempnam($moduledir_name, dirname($moduledir));
@@ -680,7 +680,7 @@ function _drush_upgrade_preserve_modules($destination_core) {
       }
     }
   }
-  
+
   drush_set_context('DRUSH_MODULES_PRESERVE', $modules_preserve);
   return TRUE;
 }
@@ -690,7 +690,7 @@ function _drush_upgrade_preserve_modules($destination_core) {
  */
 function _drush_upgrade_restore_preserved_modules() {
   $modules_preserve = drush_get_context('DRUSH_MODULES_PRESERVE', array());
-  
+
   if (!empty($modules_preserve) && array_key_exists('list', $modules_preserve)) {
     foreach ($modules_preserve['list'] as $moduledir => $preserved_moduledir) {
       drush_move_dir($preserved_moduledir, $moduledir, TRUE);
