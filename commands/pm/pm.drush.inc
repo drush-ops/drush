@@ -585,19 +585,14 @@ function drush_pm_enable() {
       drush_log(dt('!extension was not found and will not be enabled.', array('!extension' => $name)), 'warning');
     }
 
-    // Discard already enabled extensions.
+    // Discard already enabled and incompatible extensions.
     foreach ($extensions as $name) {
-      $remove = FALSE;
       if ($extension_info[$name]->status) {
-        $remove = TRUE;
         drush_log(dt('!extension is already enabled.', array('!extension' => $name)), 'ok');
       }
       // Check if is compatible with Drupal core.
       if (update_check_incompatibility($name, $extension_info[$name]->type)) {
-        $remove = TRUE;
         drush_set_error('DRUSH_PM_ENABLE_MODULE_INCOMPATIBLE', dt('!name is incompatible with the Drupal version.', array('!name' => $name)));
-      }
-      if ($remove) {
         if ($extension_info[$name]->type == 'module') {
           unset($modules[$name]);
         }
@@ -660,8 +655,7 @@ function drush_pm_enable() {
       return FALSE;
     }
     $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
-    $needed = array_diff($all_dependencies, $enabled);
-    $modules = $needed + $modules;
+    $modules = array_diff(array_merge($modules, $all_dependencies), $enabled);
 
     // Discard modules which doesn't meet requirements.
     require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
