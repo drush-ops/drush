@@ -235,6 +235,7 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
     if ($data) {
       fwrite($pipes[0], json_encode($data)); // pass the data array in a JSON encoded string
     }
+    fclose($pipes[0]);
 
     $info = stream_get_meta_data($pipes[1]);
     stream_set_blocking($pipes[1], TRUE);
@@ -255,7 +256,6 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
       flush();
     };
 
-    fclose($pipes[0]);
     fclose($pipes[1]);
     fclose($pipes[2]);
     $code = proc_close($process);
