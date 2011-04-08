@@ -22,7 +22,7 @@ class pmUpdateCode extends Drush_TestCase {
     );
     $this->drush('pm-download', array('devel-7.x-1.0-rc1'), $options);
     $this->drush('pm-download', array('webform-7.x-3.4-beta1'), $options);
-    $this->drush('pm-enable', array('devel', 'webform'), $options);
+    $this->drush('pm-enable', array('menu', 'devel', 'webform'), $options);
   }
 
   function testUpdateCode() {

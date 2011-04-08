@@ -14,12 +14,12 @@ class EnDisUnListVarCase extends Drush_TestCase {
       'root' => $this->sites['dev']['root'],
       'uri' => 'dev',
     );
-    $this->drush('pm-download', array('devel'), $options);
+    $this->drush('pm-download', array('devel-7.x-1.0'), $options);
     $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'not installed'));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));
 
-    $this->drush('pm-enable', array('devel'), $options);
+    $this->drush('pm-enable', array('menu', 'devel'), $options);
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));
