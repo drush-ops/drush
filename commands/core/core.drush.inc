@@ -515,7 +515,7 @@ function _core_site_status_table($project = '') {
  */
 function drush_core_cron() {
   if (drupal_cron_run()) {
-    drush_log(dt('Cron run successfully.'), 'success');
+    drush_log(dt('Cron run successful.'), 'success');
   }
   else {
     return drush_set_error('DRUSH_CRON_FAILED', dt('Cron run failed.'));

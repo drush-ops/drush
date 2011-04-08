@@ -328,13 +328,13 @@ function _convert_csv_to_array($args) {
  *   for each of the available options.
  */
 function drush_get_global_options($brief = FALSE) {
-  $options['root']               = array('short-form' => 'r', 'description' => dt("Drupal root directory to use (default: current directory)"), 'example-value' => '<path>');
-  $options['uri']                = array('short-form' => 'l', 'description' => dt('URI of the drupal site to use (only needed in multisite environments or when running on an alternate port)'), 'example-value' => 'http://example.com:8888');
+  $options['root']               = array('short-form' => 'r', 'description' => dt("Drupal root directory to use (default: current directory)."), 'example-value' => '<path>');
+  $options['uri']                = array('short-form' => 'l', 'description' => dt('URI of the drupal site to use (only needed in multisite environments or when running on an alternate port).'), 'example-value' => 'http://example.com:8888');
   $options['verbose']            = array('short-form' => 'v', 'description' => dt('Display extra information about the command.'));
   $options['debug']              = array('short-form' => 'd', 'description' => dt('Display even more information, including internal messages.'));
-  $options['yes']                = array('short-form' => 'y', 'description' => dt("Assume 'yes' as answer to all prompts"));
-  $options['no']                 = array('short-form' => 'n', 'description' => dt("Assume 'no' as answer to all prompts"));
-  $options['simulate']           = array('short-form' => 's', 'description' => dt("Simulate all relevant actions (don't actually change the system)"));
+  $options['yes']                = array('short-form' => 'y', 'description' => dt("Assume 'yes' as answer to all prompts."));
+  $options['no']                 = array('short-form' => 'n', 'description' => dt("Assume 'no' as answer to all prompts."));
+  $options['simulate']           = array('short-form' => 's', 'description' => dt("Simulate all relevant actions (don't actually change the system)."));
   $options['pipe']               = array('short-form' => 'p', 'description' => dt("Emit a compact representation of the command for scripting."));
   $options['help']               = array('short-form' => 'h', 'description' => dt("This help system."));
   $options['version']            = dt("Show drush version.");
@@ -342,9 +342,9 @@ function drush_get_global_options($brief = FALSE) {
   $options['ia']                 = dt("Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).");
 
   if (!$brief) {
-    $options['quiet']            = array('short-form' => 'q', 'description' => dt('Hide all output'));
+    $options['quiet']            = array('short-form' => 'q', 'description' => dt('Suppress non-error messages.'));
     $options['include']          = array('short-form' => 'i', 'description' => dt("A list of additional directory paths to search for drush commands."));
-    $options['config']           = array('short-form' => 'c', 'description' => dt("Specify an additional config file to load. See example.drushrc.php"));
+    $options['config']           = array('short-form' => 'c', 'description' => dt("Specify an additional config file to load. See example.drushrc.php."));
     $options['user']             = array('short-form' => 'u', 'description' => dt("Specify a Drupal user to login with. May be a name or a number."));
     $options['backend']          = array('short-form' => 'b', 'description' => dt("Hide all output and return structured data (internal use only)."));
     $options['choice']           = dt("Provide an answer to a multiple-choice prompt.");
@@ -1058,6 +1058,10 @@ function _drush_print_log($entry) {
     case 'completed' :
     case 'success' :
     case 'status':
+      // In quiet mode, suppress progress messages
+      if (drush_get_context('DRUSH_QUIET')) {
+        return TRUE;
+      }
       $type_msg = sprintf($green, $entry['type']);
       break;
     case 'notice' :
@@ -1079,9 +1083,8 @@ function _drush_print_log($entry) {
   }
 
   // When running in backend mode, log messages are not displayed, as they will
-  // be returned in the JSON encoded associative array.  In quiet mode, we
-  // just drop log messages.
-  if (drush_get_context('DRUSH_BACKEND') || drush_get_context('DRUSH_QUIET')) {
+  // be returned in the JSON encoded associative array.
+  if (drush_get_context('DRUSH_BACKEND')) {
     return $return;
   }
 

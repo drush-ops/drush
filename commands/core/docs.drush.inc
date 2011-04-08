@@ -79,6 +79,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array(DRUSH_BASE_PATH . '/docs/bootstrap.html'),
   );
+  $items['docs-cron'] = array(
+    'description' => dt('Instructions on setting up your crontab to run your Drupal cron tasks via `drush cron`.'),
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/cron.html'),
+  );
   $items['docs-scripts'] = array(
     'description' => dt('Overview on how to write drush shell scripts.'),
     'hidden' => TRUE,
