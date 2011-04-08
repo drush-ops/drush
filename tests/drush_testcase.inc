@@ -102,6 +102,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     foreach ($args as $arg) {
       $cmd[] = escapeshellarg($arg);
     }
+    $options['nocolor'] = NULL;
     foreach ($options as $key => $value) {
       if (is_null($value)) {
         $cmd[] = "--$key";
