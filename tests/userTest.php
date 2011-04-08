@@ -24,6 +24,7 @@ class userCase extends Drush_TestCase {
     $this->drush('user-information', array($name), $options + array('pipe' => NULL));
     $output = $this->getOutput();
     $row  = str_getcsv($output);
+    $uid = $row[1];
     $this->assertEquals('example@example.com', $row[2]);
     $this->assertEquals($name, $row[0]);
     $this->assertEquals(1, $row[3], 'Newly created user is Active.');
@@ -74,7 +75,7 @@ class userCase extends Drush_TestCase {
     $this->drush('user-login', array($name), $options);
     $output = $this->getOutput();
     $url = parse_url($output);
-    $this->assertStringStartsWith('/user/reset/2/', $url['path'], 'Login returned a valid reset URL');
+    $this->assertStringStartsWith('/user/reset/' . $uid, $url['path'], 'Login returned a valid reset URL');
 
     // user-cancel
     // create content
