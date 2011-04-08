@@ -39,8 +39,8 @@ drush_invoke("version", $arg);
       'verbose' => NULL,
       'yes' => NULL,
     );
-    $this->drush('pm-download', array('devel'), $options);
-    $this->drush('pm-enable', array('devel'), $options);
+    $this->drush('pm-download', array('devel-7.x-1.0'), $options);
+    $this->drush('pm-enable', array('menu', 'devel'), $options);
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();
