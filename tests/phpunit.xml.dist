@@ -5,7 +5,7 @@
     bootstrap="drush_testcase.inc">
   <php>
     <!--Uncomment and edit one of the lines below depending on DB platform.-->
-    <!--DB User must have create/drop permissons-->
+    <!--DB User must have create/drop permissions-->
     <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/>
     <!--<var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
 
