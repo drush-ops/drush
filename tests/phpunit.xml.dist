@@ -4,8 +4,10 @@
     syntaxCheck="false"
     bootstrap="drush_testcase.inc">
   <php>
+    <!--Uncomment and edit one of the lines below depending on DB platform.-->
     <!--DB User must have create/drop permissons-->
     <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/>
+    <!--<var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
 
     <!--User must have write permissions to this directory.-->
     <var name="UNISH_SANDBOX" value="/tmp/drush-sandbox"/>
