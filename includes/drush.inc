@@ -1311,19 +1311,24 @@ function drush_user_abort($msg = NULL) {
  *
  * This is commonly used while bootstrapping Drupal for install
  * or updates.
+ *
+ * This also records the previous error_reporting setting, in
+ * case it wasn't recorded previously.
  */
 function drush_errors_off() {
-  $errors =& drush_get_context('DRUSH_ERROR_REPORTING', 0);
-  $errors = error_reporting(0);
+  drush_get_context('DRUSH_ERROR_REPORTING', error_reporting(0));
   ini_set('display_errors', FALSE);
 }
 
 /**
  * Turn PHP error handling on.
+ *
+ * We default to error_reporting() here just in
+ * case drush_errors_on() is called before drush_errors_off() and
+ * the context is not yet set.
  */
 function drush_errors_on() {
-  $errors =& drush_get_context('DRUSH_ERROR_REPORTING', E_ALL ^ E_NOTICE);
-  $errors = error_reporting($errors);
+  error_reporting(drush_get_context('DRUSH_ERROR_REPORTING', error_reporting()));
   ini_set('display_errors', TRUE);
 }
 
