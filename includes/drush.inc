@@ -2850,6 +2850,8 @@ function drush_user_abort($msg = NULL) {
  *
  * This also records the previous error_reporting setting, in
  * case it wasn't recorded previously.
+ *
+ * @see drush_errors_off()
  */
 function drush_errors_off() {
   drush_get_context('DRUSH_ERROR_REPORTING', error_reporting(0));
@@ -2862,9 +2864,23 @@ function drush_errors_off() {
  * We default to error_reporting() here just in
  * case drush_errors_on() is called before drush_errors_off() and
  * the context is not yet set.
+ *
+ * @arg $errors string
+ *   The default error level to set in drush. This error level will be
+ *   carried through further drush_errors_on()/off() calls even if not
+ *   provided in later calls.
+ *
+ * @see error_reporting()
+ * @see drush_errors_off()
  */
-function drush_errors_on() {
-  error_reporting(drush_get_context('DRUSH_ERROR_REPORTING', error_reporting()));
+function drush_errors_on($errors = null) {
+  if (is_null($errors)) {
+    $errors = error_reporting();
+  }
+  else {
+    drush_set_context('DRUSH_ERROR_REPORTING', $errors);
+  }
+  error_reporting(drush_get_context('DRUSH_ERROR_REPORTING', $errors));
   ini_set('display_errors', TRUE);
 }
 
