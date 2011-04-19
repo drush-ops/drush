@@ -26,7 +26,8 @@ drush to compose the names of the functions it will call, so
 choose wisely.
 <p>
 The example drush command, 'make-me-a-sandwich', is stored
-in the 'sandwich' commandfile, 'sandwich.drush.inc'.
+in the 'sandwich' commandfile, 'sandwich.drush.inc'.  You can
+find this file in the 'examples' directory in the drush distribution.
 <p>
 Drush searches for commandfiles in the following locations:
 <ul>
@@ -233,6 +234,16 @@ a variable number of command line arguments can use the standard
 php function func_get_args() to get them all in an array for easy
 processing.
 <p>
+It is also very easy to query the command options using the
+function drush_get_option().  For example, in the drush_sandwich_make_me_a_sandwich()
+function, the --spreads option is retrieved as follows:
+<pre>
+        $str_spreads = '';
+        if ($spreads = drush_get_option('spreads')) {
+          $list = implode(' and ', explode(',', $spreads));
+          $str_spreads = ' with just a dash of ' . $list;
+        }
+</pre><p>
 Note that drush will actually call a sequence of functions before
 and after your drush command function.  One of these hooks is the
 "validate" hook.  The 'sandwich' commandfile provides a validate
@@ -252,3 +263,6 @@ policy functions with validate hooks, and `drush topic docs-api`
 for information on how the command hook process works.  Also,
 the list of defined drush error codes can be found in
 `drush topic docs-errorcodes`.
+<p>
+To see the full implementation of the sample 'make-me-a-sandwich'
+command, see `drush topic docs-examplecommand`.
