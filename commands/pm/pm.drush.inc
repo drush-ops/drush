@@ -2396,12 +2396,19 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
   return $locked_result;
 }
 
+function _drush_pm_extension_cache_file() {
+  return drush_server_home() . "/.drush/drush-extension-cache.inc";
+}
+
 function _drush_pm_get_extension_cache() {
   $extension_cache = array();
-  $cache_file = "/tmp/cache.inc";
+  $cache_file = _drush_pm_extension_cache_file();
 
   if (file_exists($cache_file)) {
-    include "/tmp/cache.inc";
+    include $cache_file;
+  }
+  if (!array_key_exists('extension-map', $extension_cache)) {
+    $extension_cache['extension-map'] = array();
   }
   return $extension_cache;
 }
@@ -2416,8 +2423,6 @@ function drush_pm_lookup_extension_in_cache($extension) {
 }
 
 function drush_pm_put_extension_cache($extension_cache) {
-  $output = var_export($extension_cache, TRUE);
-  file_put_contents("/tmp/cache.inc", '<?php $extension_cache = ' . $output . ';');
 }
 
 function drush_pm_cache_project_extensions($project, $found) {
