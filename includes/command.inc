@@ -107,13 +107,13 @@ function drush_invoke_args($command, $args) {
     // Run all of the functions available for this variation
     foreach ($list as $commandfile => $filename) {
       $oldfunc = sprintf("drush_%s_%s", $commandfile, $var_hook);
-      $func = str_replace('drush_' . $commandfile . '_' . $commandfile, 'drush_' . $commandfile, $oldfunc);
+      $func = str_replace('drush_' . $commandfile . '_' . $commandfile . '_', 'drush_' . $commandfile . '_', $oldfunc);
       if (($oldfunc != $func) && (function_exists($oldfunc))) {
         drush_log(dt("The drush command hook naming conventions have changed; the function !oldfunc must be renamed to !func.", array('!oldfunc' => $oldfunc, '!func' => $func)), "error");
       }
-      if (function_exists($func)) {
+      if (function_exists($func) && !in_array($func, $functions)) {
         $functions[] = $func;
-        $all_available_hooks[] = $func . ' [*]';
+        $all_available_hooks[] = $func . ' [* Defined in ' . $filename . ']';
         $available_rollbacks[] = $func . '_rollback';
         $completed[] = $func;
         $result = call_user_func_array($func, $args);
