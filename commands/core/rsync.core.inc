@@ -88,9 +88,11 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
 function drush_core_call_rsync($source, $destination, $additional_options = array(), $include_settings_is_default = TRUE, $live_output = TRUE) {
   // Exclude vcs reserved files.
   $options = '';
-  $vcs_files = drush_version_control_reserved_files();
-  foreach ($vcs_files as $file) {
-    $options .= ' --exclude="'.$file.'"';
+  if (!_drush_rsync_option_exists('include-vcs', $additional_options)) {
+    $vcs_files = drush_version_control_reserved_files();
+    foreach ($vcs_files as $file) {
+      $options .= ' --exclude="'.$file.'"';
+    }
   }
 
   $mode = '-az';
