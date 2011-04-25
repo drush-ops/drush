@@ -69,6 +69,7 @@ function drush_invoke_args($command, $args) {
   // Generate the base name for the hook by converting all
   // dashes in the command name to underscores.
   $hook = str_replace("-", "_", $command);
+  $defined_in_commandfile = drush_get_commandfile_for_command($command);
 
   // Call the hook init function, if it exists.
   // If a command needs to bootstrap, it is advisable
@@ -106,12 +107,11 @@ function drush_invoke_args($command, $args) {
 
     // Run all of the functions available for this variation
     foreach ($list as $commandfile => $filename) {
-      $oldfunc = sprintf("drush_%s_%s", $commandfile, $var_hook);
-      $func = str_replace('drush_' . $commandfile . '_' . $commandfile . '_', 'drush_' . $commandfile . '_', $oldfunc);
-      if (($oldfunc != $func) && (function_exists($oldfunc))) {
-        drush_log(dt("The drush command hook naming conventions have changed; the function !oldfunc must be renamed to !func.", array('!oldfunc' => $oldfunc, '!func' => $func)), "error");
+      $func = sprintf("drush_%s_%s", $commandfile, $var_hook);
+      if ($defined_in_commandfile == $commandfile) {
+        $func = str_replace('drush_' . $commandfile . '_' . $commandfile . '_', 'drush_' . $commandfile . '_', $func);
       }
-      if (function_exists($func) && !in_array($func, $functions)) {
+      if (function_exists($func)) {
         $functions[] = $func;
         $all_available_hooks[] = $func . ' [* Defined in ' . $filename . ']';
         $available_rollbacks[] = $func . '_rollback';
@@ -546,6 +546,27 @@ function drush_process_bootstrap_to_first_arg(&$arguments) {
       }
     }
   }
+}
+
+/**
+ * Get the short commandfile name that matches the
+ * command.
+ *
+ * @param $command
+ *   The name of the command (e.g. search-index)
+ * @return String
+ *   The short commandfile name where that command was
+ *   defined (e.g. search, not search.drush.inc)
+ */
+function drush_get_commandfile_for_command($command) {
+  $commandfile = FALSE;
+
+  $commands = drush_get_commands();
+  if (array_key_exists($command, $commands)) {
+    $commandfile = $commands[$command]['commandfile'];
+  }
+
+  return $commandfile;
 }
 
 /**
