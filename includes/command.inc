@@ -52,7 +52,6 @@
  *   present. A boolean FALSE indicates failure and rollback will be intitated.
  */
 function drush_invoke($command) {
-  drush_command_include($command);
   $args = func_get_args();
   array_shift($args);
 
@@ -66,10 +65,23 @@ function drush_invoke($command) {
  * @see drush_invoke()
  */
 function drush_invoke_args($command, $args) {
+  $defined_in_commandfile = drush_get_commandfile_for_command($command);
+}
+
+/**
+ * Variant of _drush_invoke_args that allows the
+ * commandfile to be specified correctly; this allows
+ * the hook functions to be correctly determined for
+ * commands that provide a 'callback' function.
+ *
+ * This function should not be called directly; use
+ * @see drush_dispatch() and @see drush_invoke_args()
+ */
+function _drush_invoke_args($command, $args, $defined_in_commandfile) {
+  drush_command_include($command);
   // Generate the base name for the hook by converting all
   // dashes in the command name to underscores.
   $hook = str_replace("-", "_", $command);
-  $defined_in_commandfile = drush_get_commandfile_for_command($command);
 
   // Call the hook init function, if it exists.
   // If a command needs to bootstrap, it is advisable
@@ -196,14 +208,7 @@ function drush_dispatch($command, $arguments = array()) {
     if (isset($command['deprecated'])) {
       drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
     }
-    // Print a warning if a command callback function is misnamed
-    if (isset($command['callback-required-prefix'])) {
-      drush_log(dt('Warning: The command callback function !callback has a deprecated name.  It must begin with !requiredprefix.  Skipping hook functions.', array('!callback' => $command['callback'], '!requiredprefix' => $command['callback-required-prefix'])));
-    }
     // Call the callback function of the active command.
-    // TODO:  If we make the required prefix actually required rather than just emitting a
-    // warning, then this could become a direct call to drush_command (all commands with
-    // the required prefix will now go through drush_command + drush_invoke).
     $return = call_user_func_array($command['callback'], $command['arguments']);
   }
 
@@ -587,17 +592,19 @@ function drush_get_commands() {
       foreach ((array)$result as $key => $command) {
         // Add some defaults and normalize the command descriptor
         $command += drush_command_defaults($key, $commandfile, $path);
-        // If command callback is correctly named, then fix
-        // up the command entry so that drush_invoke will be
-        // called.
+        // If command callback function name begins with "drush_$commandfile_",
+        // then fix up the command entry so that drush_invoke will be
+        // called by way of drush_command.  This will cause all
+        // of the applicable hook functions to be called for the
+        // command when it is invoked.  If the callback function does
+        // -not- begin with its commandfile name, then it will be
+        // called directly by drush_dispatch, and no hook functions
+        // will be called (e.g. you cannot hook drush_print_file).
         if ($command['callback'] != 'drush_command') {
           $required_command_prefix = 'drush_' . $commandfile . '_';
           if ((substr($command['callback'], 0, strlen($required_command_prefix)) == $required_command_prefix)) {
             $command['command-hook'] = substr($command['callback'], strlen('drush_'));
             $command['callback'] = 'drush_command';
-          }
-          else {
-            $command['callback-required-prefix'] = $required_command_prefix;
           }
         }
 
@@ -742,7 +749,7 @@ function drush_command() {
   }
 
   if (!drush_get_error()) {
-    call_user_func_array('drush_invoke', array_merge(array($command['command-hook']), $args));
+    _drush_invoke_args($command['command-hook'], $args, $command['commandfile']);
   }
 
   if (!drush_get_error()) {
