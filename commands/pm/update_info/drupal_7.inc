@@ -26,7 +26,6 @@ function pm_update_filter(&$project) {
     case UPDATE_NOT_CHECKED:
       $status = dt('Unable to check status');
       break;
-    case UPDATE_UNKNOWN:
     default:
       $status = dt('Unknown');
       break;
@@ -66,6 +65,11 @@ function _pm_get_update_info($projects = NULL) {
   _update_cache_clear('update_project_projects'); 
   $data = update_calculate_project_data($info);
   foreach ($data as $project_name => $project) {
+    // Discard custom projects.
+    if ($project['status'] == UPDATE_UNKNOWN) {
+      unset($data[$project_name]);
+      continue;
+    }
     if (in_array($project['project_type'], array('module-disabled', 'theme-disabled'))) {
       $data[$project_name]['project_type'] = substr($project['project_type'], 0, strpos($project['project_type'], '-'));
     }
