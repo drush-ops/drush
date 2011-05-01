@@ -7,7 +7,7 @@
  *   To run this *fun* command, execute `drush --include=./examples xkcd`
  *   from within your drush directory.
  *
- *   See `drush topic docs-commands` for more information about command authoring. 
+ *   See `drush topic docs-commands` for more information about command authoring.
  *
  *   You can copy this file to any of the following
  *     1. A .drush folder in your HOME folder.
@@ -131,7 +131,7 @@ function drush_xkcd_fetch($search = '') {
     }
   }
   else {
-    // This uses an API key with a limited number of searches per 
+    // This uses an API key with a limited number of searches per
     $search_response = @json_decode(file_get_contents('https://www.googleapis.com/customsearch/v1?key=' . drush_get_option('google-custom-search-api-key', 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek') . '&cx=012652707207066138651:zudjtuwe28q&q=' . $search));
     if (!empty($search_response->items)) {
       foreach ($search_response->items as $item) {

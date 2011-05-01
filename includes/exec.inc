@@ -162,7 +162,7 @@ function drush_os($site_record = NULL) {
   elseif (isset($site_record) && array_key_exists('remote-host', $site_record)) {
     $os = drush_get_option('remote-os', 'Linux');
   }
-  
+
   return $os;
 }
 

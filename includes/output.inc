@@ -307,7 +307,7 @@ function drush_print_file($file) {
 /**
  * Converts a PHP variable into its Javascript equivalent.
  *
- * We provide a copy of D7's drupal_json_encode since this function is 
+ * We provide a copy of D7's drupal_json_encode since this function is
  * unavailable on earlier versions of Drupal.
  *
  * @see drupal_json_decode()
@@ -321,7 +321,7 @@ function drush_json_encode($var) {
 /**
  * Converts an HTML-safe JSON string into its PHP equivalent.
  *
- * We provide a copy of D7's drupal_json_decode since this function is 
+ * We provide a copy of D7's drupal_json_decode since this function is
  * unavailable on earlier versions of Drupal.
  *
  * @see drupal_json_encode()

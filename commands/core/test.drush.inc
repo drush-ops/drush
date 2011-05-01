@@ -68,7 +68,7 @@ function drush_test_run($specs = NULL) {
 
   // Retrieve all tests and groups.
   list($groups, $all_tests) = drush_test_get_all_tests();
-  
+
   if (drush_get_option('all')) {
     // Run all tests.
     foreach (array_keys($groups) as $group) {

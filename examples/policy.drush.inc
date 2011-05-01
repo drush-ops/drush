@@ -4,7 +4,7 @@
  * @file
  *   Example policy commandfile. Modify as desired.
  *
- *   Validates commands as they are issued and returns an error 
+ *   Validates commands as they are issued and returns an error
  *   or changes options when policy is violated.
  *
  *   You can copy this file to any of the following
@@ -16,7 +16,7 @@
 
 /**
  * Implement of drush_hook_COMMAND_validate().
- * 
+ *
  * Prevent catastrophic braino. Note that this file has to be local to the machine
  * that intitiates sql-sync command.
  */
@@ -31,7 +31,7 @@ function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
  *
  * To test this example without copying, execute `drush --include=./examples updatedb`
  * from within your drush directory.
- * 
+ *
  * Unauthorized users may view pending updates but not execute them.
  */
 function drush_policy_updatedb_validate() {
@@ -45,7 +45,7 @@ function drush_policy_updatedb_validate() {
 
 /**
  * Implementation of drush_hook_COMMAND_validate().
- * 
+ *
  * Only sudo tells me to make a sandwich: http://xkcd.com/149/
  */
 function drush_policy_make_me_a_sandwich_validate() {

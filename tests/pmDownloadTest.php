@@ -2,7 +2,7 @@
 
 /**
   * pm-download testing
-  */  
+  */
 class pmDownloadCase extends Drush_TestCase {
   public function testPmDownload() {
     $this->drush('pm-download', array('devel'));
@@ -13,9 +13,9 @@ class pmDownloadCase extends Drush_TestCase {
    * Parse Drupal version and release from command argument.
    *
    * --dev option bypasses the logic tested here.
-   * 
+   *
    * @see pm_parse_project_version().
-   */ 
+   */
   public function testVersionString() {
     $eval = 'print json_encode(pm_parse_project_version(array("devel-6.x-1.18")));';
     $this->drush('php-eval', array($eval));
@@ -27,11 +27,11 @@ class pmDownloadCase extends Drush_TestCase {
 
   /*
    * Pick right release from the XML (dev, latest published+recommended, ...).
-   */ 
+   */
   public function testReleaseXML() {
     // Use a local, static XML file because live files change over time.
     $xml = dirname(__FILE__). '/devel.xml';
-    
+
     // Pick specific release.
     $request_data = array(
       'name' => 'devel',
@@ -46,7 +46,7 @@ class pmDownloadCase extends Drush_TestCase {
     $this->drush('php-eval', array($eval));
     $release = json_decode($this->getOutput());
     $this->assertEquals($release->version, '6.x-1.18');
-    
+
     // Pick latest recommended+published with no further specification.
     // 6.x-2.2 is skipped because it is unpublished.
     // 6.x-2.2-rc1 is skipped because it is not a stable release.
@@ -56,7 +56,7 @@ class pmDownloadCase extends Drush_TestCase {
     $release = json_decode($this->getOutput());
     $this->assertEquals($release->version, '6.x-2.1');
   }
-  
+
   // @todo Test pure drush commandfile projects. They get special destination.
   public function testDestination() {
     // Setup first Drupal site. Skip install for speed.

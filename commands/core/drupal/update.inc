@@ -216,7 +216,7 @@ function update_main() {
 
   $start = array();
 
-  // Ensure system module's updates run first 
+  // Ensure system module's updates run first
   $start['system'] = array();
 
 

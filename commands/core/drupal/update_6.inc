@@ -218,7 +218,7 @@ function update_fix_d6_requirements() {
       'primary key' => array('cid'),
     );
     db_create_table($ret, 'cache_block', $schema['cache_block']);
-    
+
     // Create the semaphore table now -- the menu system after 6.15 depends on
     // this table, and menu code runs in updates prior to the table being
     // created in its original update function, system_update_6054().
@@ -349,10 +349,10 @@ function update_main_prepare() {
 
   // Must unset $theme->status in order to safely rescan and repopulate
   // the system table to ensure we have a full picture of the platform.
-  // This is needed because $theme->status is set to 0 in a call to 
+  // This is needed because $theme->status is set to 0 in a call to
   // list_themes() done by drupal_maintenance_theme().
-  // It is a issue with _system_theme_data() that returns its own cache 
-  // variable and can be modififed by others. When this is fixed in 
+  // It is a issue with _system_theme_data() that returns its own cache
+  // variable and can be modififed by others. When this is fixed in
   // drupal core we can remove this unset.
   // For reference see: http://drupal.org/node/762754
   $themes = _system_theme_data();

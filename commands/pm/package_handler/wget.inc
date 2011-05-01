@@ -45,7 +45,7 @@ function package_handler_download_project(&$request, $release) {
       }
     }
   }
-  
+
   $filename = explode('/', $release['download_link']);
   $filename = array_pop($filename);
 

@@ -8,7 +8,7 @@
  * local or remote Drupal installations; however, an alias
  * is really nothing more than a collection of options.
  * A canonical alias named "dev" that points to a local
- * Drupal site named "dev.mydrupalsite.com" looks like this: 
+ * Drupal site named "dev.mydrupalsite.com" looks like this:
  *
  *   $aliases['dev'] = array(
  *     'root' => '/path/to/drupal',
@@ -64,10 +64,10 @@
  * When alias files use this form, then the name of the alias
  * is taken from the first part of the alias filename.
  *
- * Alias groups (aliases stored together in files called 
+ * Alias groups (aliases stored together in files called
  * GROUPNAME.aliases.drushrc.php, as mentioned above) also
  * create an implicit namespace that is named after the group
- * name.  
+ * name.
  *
  * For example:
  *

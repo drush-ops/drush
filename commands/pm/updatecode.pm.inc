@@ -156,7 +156,7 @@ function drush_pm_updatecode() {
   if (drush_get_option('self-update', TRUE)) {
     $drush_update_available = drush_self_update(FALSE, FALSE);
   }
-  
+
   // Do no updates in simulated mode
   if (drush_get_context('DRUSH_SIMULATE')) {
     return drush_log(dt('No action taken in simulated mode.'), 'ok');
@@ -294,7 +294,7 @@ function _pm_update_core(&$project, $tmpfile) {
   // the drupal root
   _pm_update_move_files($project['full_project_path'], $drupal_root, $project['skip_list']);
   drush_delete_dir($project['full_project_path']);
-  
+
   // Version control engines expect full_project_path to exist and be accurate.
   $project['full_project_path'] = $project['base_project_path'];
 
@@ -491,7 +491,7 @@ function drush_pm_updatecode_rollback() {
  * Return an array of updateable projects and fill $rows.
  *
  * Array of updateable projects is obtained from calculated project update
- * status and $security_only flag. 
+ * status and $security_only flag.
  */
 function pm_project_filter(&$update_info, &$rows, $security_only) {
   $updateable = array();
@@ -523,7 +523,7 @@ function pm_project_filter(&$update_info, &$rows, $security_only) {
         $status = pm_update_filter($project);
         break;
     }
-    
+
     // Special checking:  if drush decides that the candidate version is older
     // than the installed version, then we will set the candidate version to
     // the installed version.

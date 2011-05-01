@@ -7,7 +7,7 @@
  *   To run this *fun* command, execute `sudo drush --include=./examples mmas`
  *   from within your drush directory.
  *
- *   See `drush topic docs-commands` for more information about command authoring. 
+ *   See `drush topic docs-commands` for more information about command authoring.
  *
  *   You can copy this file to any of the following
  *     1. A .drush folder in your HOME folder.
@@ -49,7 +49,7 @@ function sandwich_drush_command() {
     'aliases' => array('mmas'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
-  
+
   // Commandfiles may also add topics.  These will appear in
   // the list of topics when `drush topic` is executed.
   // To view this topic, run `drush --include=/full/path/to/examples topic`
@@ -89,7 +89,7 @@ function sandwich_drush_help($section) {
     // commands in `drush help`.  If a title is not defined,
     // the default is "All commands in ___", with the
     // specific name of the commandfile (e.g. sandwich).
-    // Command files with less than four commands will 
+    // Command files with less than four commands will
     // be placed in the "Other commands" section, _unless_
     // they define a title.  It is therefore preferable
     // to not define a title unless the file defines a lot

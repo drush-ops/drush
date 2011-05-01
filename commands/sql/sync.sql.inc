@@ -24,9 +24,9 @@ function drush_sql_sync_init($source = NULL, $destination = NULL) {
   // actually use the databases record at this time.
   sitealias_get_databases_from_record($source_settings);
   sitealias_get_databases_from_record($destination_settings);
-  
-  // Bootstrap to the source sites being sync'ed if it is local.  
-  // This allows modules enabled in the site to participate in the 
+
+  // Bootstrap to the source sites being sync'ed if it is local.
+  // This allows modules enabled in the site to participate in the
   // sql-sync hook functions (e.g. to add sanitization operations, etc.).
   // If the source is remote and the destination is local, then we
   // will determine the sanitization operations after the database
@@ -40,13 +40,13 @@ function drush_sql_sync_init($source = NULL, $destination = NULL) {
       drush_set_option('deferred-sanitization', TRUE);
     }
   }
-  
+
   // By default, sql-sync will do an ordered dump.
   // Set --no-ordered-dump to override.
   if (!drush_get_option('no-ordered-dump', FALSE)) {
     drush_set_option('ordered-dump', TRUE);
   }
-  
+
   return TRUE;
 }
 
@@ -119,7 +119,7 @@ function sql_drush_sql_sync_sanitize($site) {
     $sanitize_query = "update users set " . implode(', ', $user_table_updates) . " where uid > 0;";
     drush_sql_register_post_sync_op('user-email', dt('Reset !message in user table', array('!message' => implode(' and ', $message_list))), $sanitize_query);
   }
-  
+
 }
 
 
@@ -128,7 +128,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
   $destination_settings = drush_sitealias_get_record($destination);
   $source_os = drush_os($source_settings);
   $target_os = drush_os($destination_settings);
-  
+
   // Check to see if this is an sql-sync multiple command (multiple sources and multiple destinations)
   $is_multiple = drush_do_multiple_command('sql-sync', $source_settings, $destination_settings);
 
@@ -432,7 +432,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       }
 
       drush_op_system($import_exec);
-      
+
       // After the database is imported into the destination, we
       // will check and see if we did not collect sanitization
       // operations in drush_sql_sync_init (i.e. because the source
@@ -481,7 +481,7 @@ function drush_sql_post_sql_sync($source = NULL, $destination = NULL) {
         }
       }
     }
-    
+
     $destination_settings = drush_sitealias_get_record($destination);
     $sanitize_query = '';
     foreach($options as $id => $data) {
