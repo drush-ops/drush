@@ -160,14 +160,14 @@ function drush_backend_parse_output($string, $integrate = TRUE) {
 
   preg_match("/$regex/s", $string, $match);
 
-  if ($match[1]) {
+  if (!empty($match) && $match[1]) {
     // we have our JSON encoded string
     $output = $match[1];
     // remove the match we just made and any non printing characters
     $string = trim(str_replace(sprintf(DRUSH_BACKEND_OUTPUT_DELIMITER, $match[1]), '', $string));
   }
 
-  if ($output) {
+  if (!empty($output)) {
     $data = json_decode($output, TRUE);
     if (is_array($data)) {
       if ($integrate) {
