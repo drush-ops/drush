@@ -65,7 +65,7 @@ function drush_invoke($command) {
  * @see drush_invoke()
  */
 function drush_invoke_args($command, $args) {
-  $defined_in_commandfile = drush_get_commandfile_for_command($command);
+  return _drush_invoke_args($command, $args, drush_get_commandfile_for_command($command));
 }
 
 /**
