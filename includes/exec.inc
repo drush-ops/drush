@@ -178,7 +178,7 @@ function drush_escapeshellarg($arg, $os = NULL) {
     return $arg;
   }
   elseif (drush_is_windows($os)) {
-    return _drush_escapeshellarg_windows($arg);
+    return _drush_escapeshellarg_windows(drush_correct_absolute_path_for_exec($arg));
   }
   else {
     $escaped = _drush_escapeshellarg_linux($arg);
@@ -189,8 +189,8 @@ function drush_escapeshellarg($arg, $os = NULL) {
     if (!drush_is_windows()) {
       $compare_escaped = escapeshellarg($arg);
       if ($compare_escaped != $escaped) {
-	drush_log(dt("Error in _drush_escapeshellarg_linux;\nReturned: !escaped\nExpected: !expected", array('!escaped' => $escaped, '!expected' => $compare_escaped)), 'debug');
-	$escaped = $compare_escaped;
+        drush_log(dt("Error in _drush_escapeshellarg_linux;\nReturned: !escaped\nExpected: !expected", array('!escaped' => $escaped, '!expected' => $compare_escaped)), 'debug');
+        $escaped = $compare_escaped;
       }
     }
     return $escaped;

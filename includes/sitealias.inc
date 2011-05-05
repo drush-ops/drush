@@ -1421,9 +1421,9 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
 function _drush_sitealias_preflight_path($path) {
   // Special handling of absolute paths on Windows:  if
   // we are on Windows, then we must be using cwRsync.
-  // Convert absolute paths from "C:\path" to "/cygdrive/C/path".
-  // We only do this for cwRsync, as all other commands we
-  // exec expect regular Windows paths.
+  // Convert absolute paths from "C:\path" to "/cygdrive/C/path",
+  // because cwRsync expects this, even when running under
+  // DOS or Powershell.
   if (drush_is_windows() && drush_is_absolute_path($path)) {
     $path = preg_replace('/(\w):/', '/cygdrive/${1}', str_replace('\\', '/', $path));
   }

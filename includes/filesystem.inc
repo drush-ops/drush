@@ -23,6 +23,29 @@ function drush_is_absolute_path($path, $os = NULL) {
 }
 
 /**
+ * If we are going to pass a path to exec or proc_open,
+ * then we need to fix it up under CYGWIN or MINGW.  In
+ * both of these environments, PHP works with absolute paths
+ * such as "C:\path".  CYGWIN expects these to be converted
+ * to "/cygdrive/c/path" and MINGW expects these to be converted
+ * to "/c/path"; otherwise, the exec will not work.
+ *
+ * This call does nothing if the parameter is not an absolute
+ * path, or we are not running under CYGWIN / MINGW.
+ */
+function drush_correct_absolute_path_for_exec($path, $os = NULL) {
+  if (drush_is_windows() && drush_is_absolute_path($path, "WINNT")) {
+    if (drush_is_mingw($os)) {
+      $path = preg_replace('/(\w):/', '/${1}', str_replace('\\', '/', $path));
+    }
+    elseif (drush_is_cygwin($os)) {
+      $path = preg_replace('/(\w):/', '/cygdrive/${1}', str_replace('\\', '/', $path));
+    }
+  }
+  return $path;
+}
+
+/**
  * Remove the trailing DIRECTORY_SEPARATOR from a path.
  * Will actually remove either / or \ on Windows.
  */
