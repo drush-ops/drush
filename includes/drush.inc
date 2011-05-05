@@ -702,10 +702,18 @@ function drush_op($function) {
  * Check if the operating system is Windows.
  */
 function drush_is_windows($os = NULL) {
+  return _drush_test_os($os, "WINDOWS");
+}
+
+function drush_is_cygwin($os = NULL) {
+  return _drush_test_os($os, "CYGWIN");
+}
+
+function _drush_test_os($os, $test) {
   if (!isset($os)) {
     $os = PHP_OS;
   }
-  if (strtoupper(substr($os, 0, 3)) == 'WIN') {
+  if (strtoupper(substr($os, 0, 3)) == strtoupper(substr($test, 0, 3))) {
     return TRUE;
   }
   else {

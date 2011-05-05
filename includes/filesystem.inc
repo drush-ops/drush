@@ -5,6 +5,36 @@
  * @{
  */
 
+ /**
+  * Determines whether the provided path is absolute or not
+  * on the specified O.S. -- starts with "/" on *nix, or starts
+  * with "[A-Z]:\" or "[A-Z]:/" on Windows.
+  */
+function drush_is_absolute_path($path, $os = NULL) {
+  if (drush_is_cygwin($os)) {
+    return preg_match('@/cygdrive/@', $path) || drush_is_absolute_path($path, "WINDOWS");
+  }
+  elseif (drush_is_windows($os)) {
+    return preg_match('@^[a-zA-Z]:[\\\/]@', $path);
+  }
+  else {
+    return $path[0] == '/';
+  }
+}
+
+/**
+ * Remove the trailing DIRECTORY_SEPARATOR from a path.
+ * Will actually remove either / or \ on Windows.
+ */
+function drush_trim_path($path, $os = NULL) {
+  if (drush_is_windows($os)) {
+    return rtrim($path, '/\\');
+  }
+  else {
+    return rtrim($path, '/');
+  }
+}
+
 /**
  * Deletes the provided file or folder and everything inside it.
  *
@@ -253,7 +283,7 @@ function drush_tempnam($pattern, $tmp_dir = NULL) {
  * Creates a temporary directory and return its path.
  */
 function drush_tempdir() {
-  $tmp_dir = rtrim(drush_find_tmp(), DIRECTORY_SEPARATOR);
+  $tmp_dir = drush_trim_path(drush_find_tmp());
   $tmp_dir .= '/' . 'drush_tmp_' . time();
 
   drush_mkdir($tmp_dir);
@@ -324,7 +354,7 @@ function drush_preflight_backup_dir($subdir = NULL) {
     $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
 
     $backup_dir = drush_get_option('backup-dir', drush_server_home() . '/' . 'drush-backups');
-    $backup_dir = rtrim($backup_dir, DIRECTORY_SEPARATOR) . '/' . $subdir . '/' . $date;
+    $backup_dir = drush_trim_path($backup_dir) . '/' . $subdir . '/' . $date;
     drush_set_context('DRUSH_BACKUP_DIR', $backup_dir);
   }
   return $backup_dir;

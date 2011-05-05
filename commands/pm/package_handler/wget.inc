@@ -90,7 +90,7 @@ function package_handler_download_project(&$request, $release) {
     // the output is not the same in Mac.
     drush_shell_exec("tar -tf %s", $tarpath);
     $output = drush_shell_exec_output();
-    $project_dir = rtrim($output[0], DIRECTORY_SEPARATOR);
+    $project_dir = drush_trim_path($output[0]);
     if ($request['project_dir'] != $project_dir) {
       $path = $request['base_project_path'];
       drush_move_dir($path . '/'. $project_dir, $path . '/' . $request['project_dir']);

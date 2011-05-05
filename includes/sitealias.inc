@@ -1419,8 +1419,23 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
  * local site in $path are defined.
  */
 function _drush_sitealias_preflight_path($path) {
+  // Special handling of absolute paths on Windows:  if
+  // we are on Windows, then we must be using cwRsync.
+  // Convert absolute paths from "C:\path" to "/cygdrive/C/path".
+  // We only do this for cwRsync, as all other commands we
+  // exec expect regular Windows paths.
+  if (drush_is_windows() && drush_is_absolute_path($path)) {
+    $path = preg_replace('/(\w):/', '/cygdrive/${1}', str_replace('\\', '/', $path));
+  }
   $alias = NULL;
   // Parse site aliases if there is a colon in the path
+  // We allow:
+  //   @alias:/path
+  //   machine.domain.com:/path
+  //   machine:/path
+  // However, we assume that
+  //   c:/path
+  // is a Windows full path (no single-letter machine names allowed)
   $colon_pos = strpos($path, ':');
   if ($colon_pos !== FALSE) {
     $alias = substr($path, 0, $colon_pos);
@@ -1574,20 +1589,18 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   if (empty($drupal_root)) {
     $drupal_root = '';
   }
-  // Add a slash to the end of the drupal root, as below.
-  elseif ($drupal_root[strlen($drupal_root)-1] != '/') {
-    $drupal_root = $drupal_root . '/';
+  else {
+    // Add a slash to the end of the drupal root, as below.
+    $drupal_root = drush_trim_path($drupal_root) . "/";
   }
   $full_path_aliases = $path_aliases;
   foreach ($full_path_aliases as $key => $value) {
     // Expand all relative path aliases to be based off of the Drupal root
-    if ((substr($value, 0, 1) != '/') && ($key != '%root')) {
+    if (!drush_is_absolute_path($value, $os) && ($key != '%root')) {
       $full_path_aliases[$key] = $drupal_root . $value;
     }
     // We do not want slashes on the end of our path aliases.
-    if (substr($value, 0, -1) == '/') {
-      $full_path_aliases[$key] = substr($full_path_aliases[$key], -1);
-    }
+    $full_path_aliases[$key] = drush_trim_path($full_path_aliases[$key]);
   }
 
   // Fill in path aliases in the path, the include path and the exclude path.
@@ -1602,7 +1615,9 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   // Next make the rsync path, which includes the machine
   // and path components together.
   // First make empty paths or relative paths start from the drupal root.
-  if (empty($path) || ($path[0] != '/')) {
+  // running on cygwin because we might have converted a Windows C:/path
+  // into a /cygdrive path.  @see _drush_sitealias_preflight_path.
+  if (empty($path) || (!drush_is_absolute_path($path, $os) && (!drush_is_absolute_path($path, "cygwin")))) {
     $path = $drupal_root . $path;
   }
 
