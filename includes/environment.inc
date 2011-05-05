@@ -1284,23 +1284,17 @@ function drush_valid_db_credentials() {
  * Note that the $_ global is defined only in bash and therefore cannot
  * be relied upon.
  *
- * We will therefore assume PHP is available in the path and is named
- * "php" for execute ourselves. That is, the #!/usr/bin/env php is
- * working and valid, unless a PHP constant is defined, which can be
- * done by the shell wrapper.
- *
  * The DRUSH_COMMAND constant is initialised to the value of this
  * function when environment.inc is loaded.
  *
  * @see DRUSH_COMMAND
  */
 function drush_find_drush() {
- $php = drush_get_option('php');
- if (isset($php)) {
-    $drush = $php . " " . realpath($_SERVER['argv'][0]) . " --php='$php'";
-  } else {
-    $drush = realpath($_SERVER['argv']['0']);
-  }
+  $drush = realpath($_SERVER['argv']['0']);
+  // TODO: On Windows, if we leave $drush as-is, then callbacks will
+  // be done just as we were called by the batch file:  php.exe C:\path\drush.php
+  // We could also convert drush.php to drush.bat to run the batch file; is this better?
+  // I had problems with this technique, whereas 'php.exe ...' worked (at least partially).
   return $drush;
 }
 

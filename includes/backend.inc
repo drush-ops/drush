@@ -519,10 +519,12 @@ function _drush_backend_generate_command($command, $args, &$data, $method = 'GET
  */
 function _drush_backend_generate_command_sitealias($site_record, $command, $args, &$data, $method = 'GET') {
   $drush_path = null;
+  $php = '';
 
   $hostname = array_key_exists('remote-host', $site_record) ? $site_record['remote-host'] : null;
   $username = array_key_exists('remote-user', $site_record) ? $site_record['remote-user'] : null;
   $ssh_options = array_key_exists('ssh-options', $site_record) ? $site_record['ssh-options'] : null;
+  $os = drush_os($site_record);
 
   $drush_path = NULL;
   if (array_key_exists('path-aliases', $site_record)) {
@@ -535,11 +537,47 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
     $hostname = null;
   }
 
-  $drush_path = !is_null($drush_path) ? $drush_path : (is_null($hostname) ? DRUSH_COMMAND : 'drush'); // Call own drush.php file on local machines, or 'drush' on remote machines.
+  // If the caller did not pass in a specific path to drush, then we will
+  // use a default value.  For commands that are being executed on the same
+  // machine, we will use DRUSH_COMMAND, which is the path to the drush.php
+  // that is running right now.  For remote commands, we will run a wrapper
+  // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
+  if (is_null($drush_path)) {
+    if (is_null($hostname)) {
+      $drush_path = DRUSH_COMMAND;
+    }
+    else {
+      $drush_path = drush_is_windows($os) ? 'drush.bat' : 'drush';
+    }
+  }
+  // If the path to drush points to drush.php, then we will need to
+  // run it via php rather than direct execution.  By default, we
+  // will use 'php' unless something more specific was passed in
+  // via the --php flag.
+  if (substr($drush_path, -4) == ".php") {
+    if (array_key_exists('php', $data)) {
+      $php = $data['php'];
+    }
+    else {
+      $php = drush_get_option('php');
+      if (isset($php)) {
+        $data['php'] = $php;
+      }
+      else {
+        $php = 'php';
+      }
+    }
+    // We will also add in the php options from --php-options
+    $php = drush_escapeshellarg($php, $os) . ' ';
+    $php_options = drush_get_option('php-options','');
+    if (!empty($php_options)) {
+      $php .= $php_options . ' ';
+      $data['php-options'] = $php_options;
+    }
+  }
   $data['root'] = array_key_exists('root', $data) ? $data['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
   $data['uri'] = array_key_exists('uri', $data) ? $data['uri'] : drush_get_context('DRUSH_URI');
 
-  $os = drush_os($site_record);
   $option_str = _drush_backend_argument_string($data, $method, $os);
   foreach ($data as $key => $arg) {
     if (is_numeric($key)) {
@@ -550,16 +588,14 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
   foreach ($args as $arg) {
     $command .= ' ' . drush_escapeshellarg($arg, $os);
   }
-  $interactive = ' ' . (empty($data['#interactive']) ? '' : ' > `tty`') . ' 2>&1';
-  // @TODO: Implement proper multi platform / multi server support.
-  $cmd = escapeshellcmd($drush_path) . " " . $option_str . " " . $command . (empty($data['#interactive']) ? " --backend" : "");
-
+  $cmd = $php . drush_escapeshellarg($drush_path, $os) . " " . $option_str . " " . $command . (empty($data['#interactive']) ? " --backend" : "");
   if (!is_null($hostname)) {
     $username = (!is_null($username)) ? drush_escapeshellarg($username, $os) . "@" : '';
     $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
-    $cmd = "ssh " . $ssh_options . " " . $username . drush_escapeshellarg($hostname, $os) . " " . drush_escapeshellarg($cmd . ' 2>&1', $os) . $interactive;
+    $cmd = "ssh " . $ssh_options . " " . $username . drush_escapeshellarg($hostname, $os) . " " . drush_escapeshellarg($cmd . ' 2>&1', $os) . ' 2>&1';
   }
   else {
+    $interactive = ' ' . ((drush_is_windows() || empty($data['#interactive'])) ? '' : ' > `tty`') . ' 2>&1';
     $cmd .= $interactive;
   }
 

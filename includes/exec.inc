@@ -167,29 +167,40 @@ function drush_os($site_record = NULL) {
 }
 
 /**
- * Platform-independent version of escapeshellarg().
- * This only works for local commands.
- * TODO: Make a unified drush_escapeshellarg
- * that works on Linux and Windows.
+ * Platform-dependent version of escapeshellarg().
+ * Given the target platform, return an appropriately-escaped
+ * string.  The target platform may be omitted for args that
+ * are /known/ to be for the local machine.
  */
 function drush_escapeshellarg($arg, $os = NULL) {
-  if (drush_is_windows($os)) {
+  // Short-circuit escaping for simple params (keep stuff readable)
+  if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
+    return $arg;
+  }
+  elseif (drush_is_windows($os)) {
     return _drush_escapeshellarg_windows($arg);
   }
   else {
-    return escapeshellarg($arg);
+    $escaped = _drush_escapeshellarg_linux($arg);
+    // We expect that our escapeshellarg should return exactly the
+    // same thing that escapeshellarg does on Linux; to be conservative,
+    // though, we will compare and correct against the reference implementation,
+    // and remove this check once everything works perfectly.
+    if (!drush_is_windows()) {
+      $compare_escaped = escapeshellarg($arg);
+      if ($compare_escaped != $escaped) {
+	drush_log(dt("Error in _drush_escapeshellarg_linux;\nReturned: !escaped\nExpected: !expected", array('!escaped' => $escaped, '!expected' => $compare_escaped)), 'debug');
+	$escaped = $compare_escaped;
+      }
+    }
+    return $escaped;
   }
 }
 
 /**
  * Windows version of escapeshellarg().
- *
- * @deprecated escapeshellarg needs to be cross-platform,
- * because drush does not always know in advance whether an
- * escaped arg will be used locally or on a remote system.
- * See http://drupal.org/node/766080
  */
-function _drush_escapeshellarg_windows($arg) {
+function _drush_escapeshellarg_windows_complex($arg) {
   // Double the backslashes before any double quotes. Escape the double quotes.
   // (\" => \\\") && (" => \") =
   // (\" => \\") +
@@ -209,6 +220,42 @@ function _drush_escapeshellarg_windows($arg) {
 
   // Add surrounding quotes.
   $arg = '"' . $arg . '"';
+
+  return $arg;
+}
+function _drush_escapeshellarg_windows($arg) {
+  // Escape double quotes.
+  $arg = preg_replace('/"/', '\\"', $arg);
+
+  // Escape single quotes.
+  $arg = preg_replace('/\'/', '\\\'', $arg);
+
+  // Add surrounding quotes.
+  $arg = '"' . $arg . '"';
+
+  return $arg;
+}
+
+/**
+ * Linux version of escapeshellarg().
+ *
+ * This is intended to work the same way that escapeshellarg() does on
+ * Linux.  If we need to escape a string that will be used remotely on
+ * a Linux system, then we need our own implementation of escapeshellarg,
+ * because the Windows version behaves differently.
+ */
+function _drush_escapeshellarg_linux($arg) {
+  // For single quotes existing in the string, we will "exit"
+  // single-quote mode, add a \' and then "re-enter"
+  // single-quote mode.  The result of this is that
+  // 'quote' becomes '\''quote'\''
+  $arg = preg_replace('/\'/', '\'\\\'\'', $arg);
+
+  // Replace "\t", "\n", "\r", "\0", "\x0B" with a whitespace.
+  $arg = str_replace(array("\t", "\n", "\r", "\0", "\x0B"), ' ', $arg);
+
+  // Add surrounding quotes.
+  $arg = "'" . $arg . "'";
 
   return $arg;
 }

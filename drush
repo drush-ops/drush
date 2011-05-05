@@ -70,13 +70,17 @@ done
 
 # Add in the php file location and/or the php override variables as appropriate
 if [ "x$drush_php_ini" != "x" ] ; then
-  php="$php --php-ini $drush_php_ini"
+  php_options="--php-ini $drush_php_ini"
 fi
 if [ "x$drush_php_override" != "x" ] ; then
-  drush_override_vars=`grep '^[a-z_A-Z0-9]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
-  php="$php $drush_override_vars"
+  php_options=`grep '^[a-z_A-Z0-9]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
 fi
 
 # Pass in the path to php so that drush knows which one
-# to use if it re-launches itself to run subcommands
-exec $php "$SCRIPT_PATH" "$@" --php="$php"
+# to use if it re-launches itself to run subcommands.  We
+# will also pass php options if any are defined.
+if [ -z "$php_options" ] ; then
+  exec $php $php_options "$SCRIPT_PATH" "$@" --php="$php"
+else
+  exec $php $php_options "$SCRIPT_PATH" "$@" --php="$php" --php-options="$php_options"
+fi
