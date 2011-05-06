@@ -14,7 +14,7 @@
  *    The command to call to process the batch.
  *
  */
-function _drush_backend_batch_process($command = 'batch-process') {
+function _drush_backend_batch_process($command = 'batch-process', $args) {
   global $user;
   $batch =& batch_get();
 
@@ -36,10 +36,10 @@ function _drush_backend_batch_process($command = 'batch-process') {
 
     while (!$finished) {
       if ($user->uid) {
-        $data = drush_backend_invoke($command, array($batch['id'], '-u', $user->uid));
+        $data = drush_invoke_process_args($command, $args, array($batch['id'], '-u', $user->uid));
       }
       else {
-        $data = drush_backend_invoke($command, array($batch['id']));
+        $data = drush_invoke_process_args($command, $args, array($batch['id']));
       }
 
       $finished = drush_get_error() || !$data || (isset($data['context']['drush_batch_process_finished']) && $data['context']['drush_batch_process_finished'] == TRUE);

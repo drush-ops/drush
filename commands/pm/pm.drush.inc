@@ -1542,9 +1542,9 @@ function drush_pm_update() {
  * Execute updatedb command after an updatecode - user requested `update`.
  */
 function drush_pm_post_pm_update() {
-  // Use drush_backend_invoke to start a subprocess. Cleaner that way.
+  // Use drush_invoke_process_args to start a subprocess. Cleaner that way.
   if (drush_get_context('DRUSH_PM_UPDATED', FALSE) !== FALSE) {
-    drush_backend_invoke('updatedb');
+    drush_invoke_process('updatedb');
   }
 }
 
@@ -1575,7 +1575,7 @@ function drush_pm_post_pm_updatecode() {
   $command = drush_get_command();
   if ($command['command'] != 'pm-update') {
     if (drush_get_context('DRUSH_PM_UPDATED', FALSE) !== FALSE) {
-      drush_backend_invoke('pm-updatecode-postupdate');
+      drush_invoke_process('pm-updatecode-postupdate');
     }
   }
 }

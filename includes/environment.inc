@@ -1293,9 +1293,111 @@ function drush_find_drush() {
   $drush = realpath($_SERVER['argv']['0']);
   // TODO: On Windows, if we leave $drush as-is, then callbacks will
   // be done just as we were called by the batch file:  php.exe C:\path\drush.php
-  // We could also convert drush.php to drush.bat to run the batch file; is this better?
-  // I had problems with this technique, whereas 'php.exe ...' worked (at least partially).
+  // We could also convert drush.php to drush.bat to run the batch file again,
+  // but this works just as well.
   return $drush;
+}
+
+/**
+ * Build a drush command suitable for use for drush to call itself
+ * e.g. in backend_invoke.
+ */
+function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $remote_command = FALSE) {
+  $os = _drush_get_os($os);
+  $additional_options = '';
+  if (is_null($drush_path)) {
+    if (!$remote_command) {
+      $drush_path = DRUSH_COMMAND;
+    }
+    else {
+      $drush_path = drush_is_windows($os) ? 'drush.bat' : 'drush';
+    }
+  }
+  // If the path to drush points to drush.php, then we will need to
+  // run it via php rather than direct execution.  By default, we
+  // will use 'php' unless something more specific was passed in
+  // via the --php flag.
+  if (substr($drush_path, -4) == ".php") {
+    if (!isset($php)) {
+      $php = drush_get_option('php');
+      if (!isset($php)) {
+        $php = 'php';
+      }
+    }
+    if (isset($php) && ($php != "php")) {
+      $additional_options .= ' --php=' . drush_escapeshellarg($php, $os);
+    }
+    // We will also add in the php options from --php-options
+    $php = drush_escapeshellarg($php, $os) . ' ';
+    $php_options = drush_get_option('php-options','');
+    if (!empty($php_options)) {
+      $php .= $php_options . ' ';
+      $additional_options .= ' --php-options=' . drush_escapeshellarg($php_options, $os);
+    }
+  }
+  else {
+    $php = '';
+  }
+  return $php . drush_escapeshellarg($drush_path, $os) . $additional_options;
+}
+
+/**
+ * Check if the operating system is Windows.
+ * This will return TRUE under DOS, Powershell
+ * Cygwin and MSYSGIT shells, so test for the
+ * Windows variant FIRST if you care.
+ */
+function drush_is_windows($os = NULL) {
+  return _drush_test_os($os, array("WIN","CYGWIN","MINGW"));
+}
+
+/**
+ * Check if the operating system is Winodws
+ * running some variant of cygwin -- either
+ * Cygwin or the MSYSGIT shell.  If you care
+ * which is which, test mingw first.
+ */
+function drush_is_cygwin($os = NULL) {
+  return _drush_test_os($os, array("CYGWIN","MINGW"));
+}
+
+function drush_is_mingw($os = NULL) {
+  return _drush_test_os($os, array("MINGW"));
+}
+
+/**
+ * Return the OS we are running under.
+ *
+ * @return string
+ *   Linux
+ *   WIN* (e.g. WINNT)
+ *   CYGWIN
+ *   MINGW* (e.g. MINGW32)
+ */
+function _drush_get_os($os = NULL) {
+  // We allow "LOCAL" to document, in instances where some parameters are being escaped
+  // for use on a remote machine, that one particular parameter will always be used on
+  // the local machine (c.f. drush_backend_invoke).
+  if (isset($os) && ($os != "LOCAL")) {
+    return $os;
+  }
+  if (_drush_test_os(getenv("MSYSTEM"), array("MINGW"))) {
+    return getenv("MSYSTEM");
+  }
+  // QUESTION: Can we differentiate between DOS and POWERSHELL? They appear to have the same environment.
+  // At the moment, it does not seem to matter; they behave the same from PHP.
+  // At this point we will just return PHP_OS.
+  return PHP_OS;
+}
+
+function _drush_test_os($os, $os_list_to_check) {
+  $os = _drush_get_os($os);
+  foreach ($os_list_to_check as $test) {
+    if (strtoupper(substr($os, 0, strlen($test))) == strtoupper($test)) {
+      return TRUE;
+    }
+  }
+  return FALSE;
 }
 
 /**

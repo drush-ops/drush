@@ -375,6 +375,9 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
         $exec .= ' > '. $file;
       }
       break;
+    case 'sqlsrv':
+      $exec = "echo 'sqlsrv sql-dump not yet supported'";
+      break;
   }
 
   if (drush_get_option('gzip')) {
@@ -625,7 +628,7 @@ function _drush_sql_get_spec_from_options($prefix, $default_to_self = TRUE) {
     $remote_host = drush_get_option($prefix . 'remote-host');
     if (!drush_is_local_host($remote_host)) {
       $db_spec['remote-host'] = $remote_host;
-      $db_spec['port'] = drush_get_option($prefix . 'remote-port', $db_spec['port']);
+      $db_spec['port'] = drush_get_option($prefix . 'remote-port', (isset($db_spec['port']) ? $db_spec['port'] : NULL));
     }
   }
 

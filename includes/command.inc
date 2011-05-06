@@ -220,6 +220,7 @@ function drush_dispatch($command, $arguments = array()) {
 
 /**
  * Invoke a command in a new process.
+ * Prefer this to drush_backend_invoke("command") [n.b. drush_backend_invoke is obsolete]
  *
  * @param command_name
  *   The drush command to execute.
@@ -237,6 +238,7 @@ function drush_invoke_process($command_name) {
 
 /**
  * Invoke a command in a new process.
+ * Prefer this to drush_backend_invoke_args(...);
  *
  * @param command_name
  *   The drush command to execute.

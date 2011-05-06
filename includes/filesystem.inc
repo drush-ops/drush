@@ -32,6 +32,10 @@ function drush_is_absolute_path($path, $os = NULL) {
  *
  * This call does nothing if the parameter is not an absolute
  * path, or we are not running under CYGWIN / MINGW.
+ *
+ * UPDATE:  It seems I was mistaken; this is only necessary if we
+ * are using cwRsync.  We do not need to correct every path to
+ * exec or proc_open (thank god).
  */
 function drush_correct_absolute_path_for_exec($path, $os = NULL) {
   if (drush_is_windows() && drush_is_absolute_path($path, "WINNT")) {

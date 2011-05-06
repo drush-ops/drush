@@ -48,9 +48,9 @@
  *   use their own command.
  *
  */
-function drush_backend_batch_process($command = 'batch-process') {
+function drush_backend_batch_process($command = 'batch-process', $args = array()) {
   drush_include_engine('drupal', 'batch', drush_drupal_major_version());
-  _drush_backend_batch_process($command);
+  _drush_backend_batch_process($command, $args);
 }
 
 /**

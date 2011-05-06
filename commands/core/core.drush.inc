@@ -882,7 +882,7 @@ function drush_core_cli() {
 
   // Make sure that we call drush the same way that we were called.
   // In --pipe mode, just use 'drush'.
-  $drush_command = $interactive_mode ? DRUSH_COMMAND.' --in-cli' : 'drush';
+  $drush_command = $interactive_mode ? drush_build_drush_command() . ' --in-cli' : 'drush';
 
   $bashrc_data = implode("\n\n", drush_command_invoke_all('cli_bashrc', $drush_command, $interactive_mode));
 
@@ -904,7 +904,7 @@ function drush_core_cli() {
   // control-d to exit.  The temp file will be deleted after
   // we exit.
   $bashrc = drush_save_data_to_temp_file($bashrc_data);
-  return drush_op_system('bash --rcfile ' . $bashrc . ' > `tty`');
+  return drush_shell_exec_interactive('bash --rcfile %s', $bashrc);
 }
 
 // Implement our own hook_cli_bashrc()
@@ -1176,7 +1176,7 @@ EOD;
       $bashrc_data .= "builtin cd $site_root\n";
     }
     if ($drush_command != 'drush') {
-      $bashrc_data .= "alias drush=\"$drush_command\"\n";
+      $bashrc_data .= "alias drush=" . drush_wrap_with_quotes($drush_command) . "\n";
     }
   }
   // Add some additional statements that should only appear in non-interactive mode.

@@ -268,7 +268,9 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
  * Invoke a drush backend command.
  *
  * @param command
- *    A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
+ *    A defined drush command such as 'cron', 'status' or so on.
+ * @param args
+ *    An array of command arguments.
  * @param data
  *    Optional. An array containing options to pass to the call. Common options would be 'uri' if you want to call a command
  *    on a different site, or 'root', if you want to call a command using a different Drupal installation.
@@ -293,27 +295,14 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
  * @param username
  *    Optional. Defaults to the current user. If you specify this, you can choose which module to send.
  *
- * @deprecated Command name includes arguments, and these are not quote-escaped in any way.
- * @see drush_backend_invoke_args and @see drush_invoke_process for better options.
+ * @deprecated Prefer wrapper function @see drush_invoke_process when possible.
+ * n.b. the function drush_backend_invoke is now obsolete.
  *
  * @return
  *   If the command could not be completed successfully, FALSE.
  *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
  */
-function drush_backend_invoke($command, $data = array(), $method = 'GET', $integrate = TRUE, $drush_path = NULL, $hostname = NULL, $username = NULL) {
-  $args = explode(" ", $command);
-  $command = array_shift($args);
-  return drush_backend_invoke_args($command, $args, $data, $method, $integrate, $drush_path, $hostname, $username);
-}
-
-/**
- * A variant of drush_backend_invoke() which specifies command and arguments separately.
- *
- * @deprecated Is not as extensible as drush_backend_invoke_sitealias; @see http://drupal.org/node/766080
- * @see drush_invoke_sitealias_args() and @see drush_invoke_process and
- * @see drush_backend_invoke_sitealias() for better options.
- */
-function drush_backend_invoke_args($command, $args, $data = array(), $method = 'GET', $integrate = TRUE, $drush_path = NULL, $hostname = NULL, $username = NULL, $ssh_options = NULL) {
+function drush_backend_invoke_args($command, $args = array(), $data = array(), $method = 'GET', $integrate = TRUE, $drush_path = NULL, $hostname = NULL, $username = NULL, $ssh_options = NULL) {
   $cmd = _drush_backend_generate_command($command, $args, $data, $method, $drush_path, $hostname, $username, $ssh_options);
   return _drush_backend_invoke($cmd, $data, array_key_exists('#integrate', $data) ? $data['#integrate'] : $integrate);
 }
@@ -542,39 +531,8 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
   // machine, we will use DRUSH_COMMAND, which is the path to the drush.php
   // that is running right now.  For remote commands, we will run a wrapper
   // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
-  if (is_null($drush_path)) {
-    if (is_null($hostname)) {
-      $drush_path = DRUSH_COMMAND;
-    }
-    else {
-      $drush_path = drush_is_windows($os) ? 'drush.bat' : 'drush';
-    }
-  }
-  // If the path to drush points to drush.php, then we will need to
-  // run it via php rather than direct execution.  By default, we
-  // will use 'php' unless something more specific was passed in
-  // via the --php flag.
-  if (substr($drush_path, -4) == ".php") {
-    if (array_key_exists('php', $data)) {
-      $php = $data['php'];
-    }
-    else {
-      $php = drush_get_option('php');
-      if (isset($php)) {
-        $data['php'] = $php;
-      }
-      else {
-        $php = 'php';
-      }
-    }
-    // We will also add in the php options from --php-options
-    $php = drush_escapeshellarg($php, $os) . ' ';
-    $php_options = drush_get_option('php-options','');
-    if (!empty($php_options)) {
-      $php .= $php_options . ' ';
-      $data['php-options'] = $php_options;
-    }
-  }
+  $drush_command = drush_build_drush_command($drush_path, array_key_exists('php', $data) ? $data['php'] : NULL, $os, !empty($hostname));
+
   $data['root'] = array_key_exists('root', $data) ? $data['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
   $data['uri'] = array_key_exists('uri', $data) ? $data['uri'] : drush_get_context('DRUSH_URI');
 
@@ -588,13 +546,14 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
   foreach ($args as $arg) {
     $command .= ' ' . drush_escapeshellarg($arg, $os);
   }
-  $cmd = $php . drush_escapeshellarg($drush_path, $os) . " " . $option_str . " " . $command . (empty($data['#interactive']) ? " --backend" : "");
+  $cmd = $drush_command . " " . $option_str . " " . $command . (empty($data['#interactive']) ? " --backend" : "");
   if (!is_null($hostname)) {
-    $username = (!is_null($username)) ? drush_escapeshellarg($username, $os) . "@" : '';
+    $username = (!is_null($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
     $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
-    $cmd = "ssh " . $ssh_options . " " . $username . drush_escapeshellarg($hostname, $os) . " " . drush_escapeshellarg($cmd . ' 2>&1', $os) . ' 2>&1';
+    $cmd = "ssh " . $ssh_options . " " . $username . drush_escapeshellarg($hostname, "LOCAL") . " " . drush_escapeshellarg($cmd . ' 2>&1', "LOCAL") . ' 2>&1';
   }
   else {
+    // TODO: `tty` is not usable on Windows.  Is this necessary at all, and if so, is there a better way to do it?
     $interactive = ' ' . ((drush_is_windows() || empty($data['#interactive'])) ? '' : ' > `tty`') . ' 2>&1';
     $cmd .= $interactive;
   }

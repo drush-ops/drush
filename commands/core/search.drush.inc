@@ -44,7 +44,7 @@ function _drush_core_search_index() {
   register_shutdown_function('search_update_totals');
   while ($remaining > 0) {
     drush_log(dt('Remaining items to be indexed: ' . $remaining), 'ok');
-    // Use drush_backend_invoke() to start subshell. Avoids out of memory issue.
+    // Use drush_invoke_process_args() to start subshell. Avoids out of memory issue.
     $eval = "register_shutdown_function('search_update_totals');";
     if (drush_drupal_major_version() >= 7) {
       foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {
@@ -54,7 +54,7 @@ function _drush_core_search_index() {
     else {
       $eval .= " module_invoke_all('update_index');";
     }
-    drush_backend_invoke('php-eval', array($eval));
+    drush_invoke_process_args('php-eval', array($eval));
     list($remaining, ) = _drush_core_search_status();
   }
 }

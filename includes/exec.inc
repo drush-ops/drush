@@ -159,11 +159,39 @@ function drush_os($site_record = NULL) {
     $os = $site_record['os'];
   }
   // Otherwise, we will assume that all remote machines are Linux
-  elseif (isset($site_record) && array_key_exists('remote-host', $site_record)) {
+  // (or whatever value 'remote-os' is set to in drushrc.php).
+  elseif (isset($site_record) && array_key_exists('remote-host', $site_record) && !empty($site_record['remote-host'])) {
     $os = drush_get_option('remote-os', 'Linux');
   }
 
   return $os;
+}
+
+/**
+ * Make an attempt to simply wrap the arg with the
+ * kind of quote characters it does not already contain.
+ * If it contains both kinds, or if it contains no quote
+ * characters, then this function reverts to drush_escapeshellarg.
+ *
+ * Note that this routine is only useful in certain very
+ * specific circumstances (e.g. core-cli), as in general,
+ * Windows -must- use double-quotes to escape a shell arg.
+ */
+function drush_wrap_with_quotes($arg) {
+  $has_double = strpos($arg, '"') !== FALSE;
+  $has_single = strpos($arg, "'") !== FALSE;
+  // If there are both kinds of quotes ($has_double == TRUE && $has_single == TRUE)
+  // or there are neither kind of quotes ($has_double == FALSE && $has_single == FALSE)
+  // then we call drush_escapeshellarg.  The relations above logically reduce to:
+  if ($has_double == $has_single) {
+    return drush_escapeshellarg($arg);
+  }
+  elseif ($has_double) {
+    return "'" . $arg . "'";
+  }
+  else {
+    return '"' . $arg . '"';
+  }
 }
 
 /**
@@ -178,7 +206,7 @@ function drush_escapeshellarg($arg, $os = NULL) {
     return $arg;
   }
   elseif (drush_is_windows($os)) {
-    return _drush_escapeshellarg_windows(drush_correct_absolute_path_for_exec($arg));
+    return _drush_escapeshellarg_windows($arg);
   }
   else {
     $escaped = _drush_escapeshellarg_linux($arg);
@@ -200,30 +228,10 @@ function drush_escapeshellarg($arg, $os = NULL) {
 /**
  * Windows version of escapeshellarg().
  */
-function _drush_escapeshellarg_windows_complex($arg) {
-  // Double the backslashes before any double quotes. Escape the double quotes.
-  // (\" => \\\") && (" => \") =
-  // (\" => \\") +
-  $arg = preg_replace('/\\\"/', '\\\\\\"', $arg);
-  // + (" => \")
-  $arg = preg_replace('/"/', '\\"', $arg);
-
-  // The same with single quotes.
-  // (\' => \\\') && (' => \') =
-  // (\' => \\') +
-  $arg = preg_replace('/\\\'/', '\\\\\\\'', $arg);
-  // + (' => \')
-  $arg = preg_replace('/\'/', '\\\'', $arg);
-
-  // Replace "\t", "\n", "\r", "\0", "\x0B" with a whitespace.
-  $arg = str_replace(array("\t", "\n", "\r", "\0", "\x0B"), ' ', $arg);
-
-  // Add surrounding quotes.
-  $arg = '"' . $arg . '"';
-
-  return $arg;
-}
 function _drush_escapeshellarg_windows($arg) {
+  // Double up existing backslashes
+  $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
+
   // Escape double quotes.
   $arg = preg_replace('/"/', '\\"', $arg);
 

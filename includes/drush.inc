@@ -699,61 +699,6 @@ function drush_op($function) {
 }
 
 /**
- * Check if the operating system is Windows.
- * This will return TRUE under DOS, Powershell
- * Cygwin and MSYSGIT shells, so test for the
- * Windows variant FIRST if you care.
- */
-function drush_is_windows($os = NULL) {
-  return _drush_test_os($os, array("WIN","CYGWIN","MINGW"));
-}
-
-/**
- * Check if the operating system is Winodws
- * running some variant of cygwin -- either
- * Cygwin or the MSYSGIT shell.  If you care
- * which is which, test mingw first.
- */
-function drush_is_cygwin($os = NULL) {
-  return _drush_test_os($os, array("CYGWIN","MINGW"));
-}
-
-function drush_is_mingw($os = NULL) {
-  return _drush_test_os($os, array("MINGW"));
-}
-
-/**
- * Return the OS we are running under.
- *
- * @return string
- *   Linux
- *   WIN* (e.g. WINNT)
- *   CYGWIN
- *   MINGW* (e.g. MINGW32)
- */
-function _drush_get_os() {
-  if (_drush_test_os(getenv("MSYSTEM"), array("MINGW"))) {
-    return getenv("MSYSTEM");
-  }
-  // QUESTION: Can we differentiate between DOS and POWERSHELL? They appear to have the same environment.
-  // At the moment, it does not seem to matter; they behave the same from PHP.
-  // At this point we will just return PHP_OS.
-  return PHP_OS;
-}
-
-function _drush_test_os($os, $os_list_to_check) {
-  if (!isset($os)) {
-    $os = _drush_get_os($os);
-  }
-  foreach ($os_list_to_check as $test) {
-    if (strtoupper(substr($os, 0, strlen($test))) == strtoupper($test)) {
-      return TRUE;
-    }
-  }
-  return FALSE;
-}
-
-/**
  * Download a file using wget or curl.
  *
  * @param string $url
