@@ -56,7 +56,7 @@ else
   fi
 
   # On MSYSGIT, we need to use "php", not the full path to php
-  if [ "x${MSYSTEM:0:5}" = "xMINGW" ] ; then
+  if [ ! -z "$MSYSTEM" ] && [ "x${MSYSTEM:0:5}" = "xMINGW" ] ; then
     php="php"
   fi
 fi
