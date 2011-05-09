@@ -269,6 +269,42 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
   return NULL;
 }
 
+/**
+ * Generate code friendly to the Drupal .info format from a structured array.
+ * Mostly copied from http://drupalcode.org/viewvc/drupal/contributions/modules/features/features.export.inc.
+ *
+ * @param $info
+ *   An array or single value to put in a module's .info file.
+ *
+ * @param boolean $integer_keys
+ *   Use integer in keys. See archive-dump command.
+ *
+ * @param $parents
+ *   Array of parent keys (internal use only).
+ *
+ * @return
+ *   A code string ready to be written to a module's .info file.
+ */
+function drush_export_info($info, $integer_keys = FALSE, $parents = array()) {
+  $output = '';
+  if (is_array($info)) {
+    foreach ($info as $k => $v) {
+      $child = $parents;
+      $child[] = $k;
+      $output .= drush_export_info($v, $integer_keys, $child);
+    }
+  }
+  else if (!empty($info) && count($parents)) {
+    $line = array_shift($parents);
+    foreach ($parents as $key) {
+      $line .= (!$integer_keys && is_numeric($key)) ? "[]" : "[{$key}]";
+    }
+    $line .=  " = \"{$info}\"\n";
+    return $line;
+  }
+  return $output;
+}
+
 function drush_drupal_cache_clear_all() {
   $prior = drush_get_context('DRUSH_AFFIRMATIVE');
   drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
