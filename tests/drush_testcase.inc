@@ -1,11 +1,25 @@
 <?php
 
 // We read from globals here because env can be empty and ini did not work in quick test.
-define('UNISH_DB_URL', $GLOBALS['UNISH_DB_URL']);
+define('UNISH_DB_URL', ((!empty($GLOBALS['UNISH_DB_URL'])) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1'));
 
 // UNISH_DRUSH value can come from phpunit.xml or `which drush`.
 if (!defined('UNISH_DRUSH')) {
-  define('UNISH_DRUSH', empty($GLOBALS['UNISH_DRUSH']) ? trim(`which drush`) : $GLOBALS['UNISH_DRUSH']);
+  if (empty($GLOBALS['UNISH_DRUSH'])) {
+    if (stristr(strtoupper(PHP_OS), 'WIN')) {
+      define('UNISH_DRUSH', exec('for %i in (drush) do @echo.   %~$PATH:i'));
+    }
+    else {
+      define('UNISH_DRUSH', trim(`which drush`));
+    }
+  }
+  else {
+    define('UNISH_DRUSH', $GLOBALS['UNISH_DRUSH']);
+  }
+}
+
+if (empty($GLOBALS['UNISH_SANDBOX'])) {
+  $GLOBALS['UNISH_SANDBOX'] = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'drush-sandbox';
 }
 
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
@@ -255,7 +269,29 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return $contents;
   }
 
-  function file_delete_recursive($path) {
-    return exec('rm -rf ' . escapeshellarg($path));
+  /**
+   * Same code as drush_delete_dir().
+   * @see drush_delete_dir()
+   *
+   * @param string $dir
+   * @return boolean
+   */
+  function file_delete_recursive($dir) {
+    if (!file_exists($dir)) {
+      return TRUE;
+    }
+    if (!is_dir($dir)) {
+      @chmod($dir, 0777); // Make file writeable
+      return unlink($dir);
+    }
+    foreach (scandir($dir) as $item) {
+      if ($item == '.' || $item == '..') {
+        continue;
+      }
+      if (!self::file_delete_recursive($dir.'/'.$item)) {
+        return FALSE;
+      }
+    }
+    return rmdir($dir);
   }
 }
