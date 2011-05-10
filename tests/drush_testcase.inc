@@ -22,6 +22,40 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     $this->_output = false;
   }
 
+  public static function is_windows() {
+    return (strtoupper(substr(PHP_OS, 0, 3)) == "WIN");
+  }
+
+  public static function unish_escapeshellarg($arg) {
+    // Short-circuit escaping for simple params (keep stuff readable)
+    if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
+      return $arg;
+    }
+    elseif (Drush_TestCase::is_windows()) {
+      return Drush_TestCase::_unish_escapeshellarg_windows($arg);
+    }
+    else {
+      return escapeshellarg($arg);
+    }
+  }
+
+  public static function _unish_escapeshellarg_windows($arg) {
+    // Double up existing backslashes
+    $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
+
+    // Escape double quotes.
+    $arg = preg_replace('/"/', '\\"', $arg);
+
+    // Escape single quotes.
+    $arg = preg_replace('/\'/', '\\\'', $arg);
+
+    // Add surrounding quotes.
+    $arg = '"' . $arg . '"';
+
+    return $arg;
+  }
+
+
   /**
    * Assure that each class starts with an empty sandbox directory.
    */
