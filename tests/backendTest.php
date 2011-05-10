@@ -24,7 +24,7 @@ class backendCase extends Drush_TestCase {
    * General handling of site aliases will be in sitealiasTest.php.
    */
   function testOrigin() {
-    $exec = sprintf('%s %s version --simulate --ssh-options=%s | grep ssh', Drush_TestCase::unish_escapeshellarg(UNISH_DRUSH), Drush_TestCase::unish_escapeshellarg('user@server/path/to/drupal#sitename'), Drush_TestCase::unish_escapeshellarg('-i mysite_dsa'));
+    $exec = sprintf('%s %s version --simulate --ssh-options=%s | grep ssh', self::unish_escapeshellarg(UNISH_DRUSH), self::unish_escapeshellarg('user@server/path/to/drupal#sitename'), self::unish_escapeshellarg('-i mysite_dsa'));
     $this->execute($exec);
     // $expected might be different on non unix platforms. We shall see.
     $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server 'drush  --uri=sitename --root=/path/to/drupal --simulate version 2>&1' 2>&1";
@@ -41,7 +41,7 @@ class backendCase extends Drush_TestCase {
   */
   function testTarget() {
     $stdin = json_encode(array('filter'=>'sql'));
-    $exec = sprintf('echo %s | %s help --backend', Drush_TestCase::unish_escapeshellarg($stdin), Drush_TestCase::unish_escapeshellarg(UNISH_DRUSH));
+    $exec = sprintf('echo %s | %s help --backend', self::unish_escapeshellarg($stdin), self::unish_escapeshellarg(UNISH_DRUSH));
     $this->execute($exec);
     $parsed = $this->parse($this->getOutput());
     $this->assertTrue((bool) $parsed, 'Successfully parsed backend output');
@@ -54,7 +54,7 @@ class backendCase extends Drush_TestCase {
     $this->assertEquals('Bootstrap to phase 0.', $parsed['log'][0]['message']);
 
     // Check error propogation by requesting an invalid command (missing Drupal site).
-    $exec = sprintf('%s core-cron --backend', Drush_TestCase::unish_escapeshellarg(UNISH_DRUSH));
+    $exec = sprintf('%s core-cron --backend', self::unish_escapeshellarg(UNISH_DRUSH));
     $this->execute($exec, self::EXIT_ERROR);
     $parsed = $this->parse($this->getOutput());
     $this->assertEquals(1, $parsed['error_status']);
