@@ -1118,7 +1118,7 @@ function drush_choice_multiple($options, $defaults = FALSE, $prompt = 'Select so
       return $selections;
     }
     // If the user selected too many options, drop the oldest selection.
-    if (count($selections) > $max) {
+    if (isset($max) && count($selections) > $max) {
       array_pop($selections);
     }
   }
