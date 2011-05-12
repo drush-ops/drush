@@ -3,7 +3,8 @@
 
 /**
  * @file
- *   An early implementation of Site Archive dump/restore. See http://groups.drupal.org/site-archive-format.
+ *   An early implementation of Site Archive dump/restore. See
+ *   http://groups.drupal.org/site-archive-format.
  */
 
 function archive_drush_command() {
@@ -14,8 +15,10 @@ function archive_drush_command() {
     ),
     'options' => array(
       'description' => 'Describe the archive contents.',
-      'tags' => 'Add tags to the archive manifest. Delimit multiple by commas. TODO',
+      'tags' => 'Add tags to the archive manifest. Delimit multiple by commas.',
       'destination' => 'Specify where the archive should be stored. Include filename but omit the .gz suffix.',
+      'generator' => 'The generator name to store in the MANIFEST file. The default is "Drush archive-dump".',
+      'generatorversion' => 'The generator version number to store in the MANIFEST file. The default is ' . DRUSH_VERSION . '.',
       'pipe' => 'Only print the destination of the archive. Useful for scripts that don\'t pass --destination.',
     ),
     'examples' => array(
@@ -43,7 +46,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
     $date = gmdate('Ymd_his');
     $first = current($full);
     $prefix = count($sites_subdirs) > 1 ? 'multiple_sites' : $first['default']['default']['database'];
-    $file = "$prefix.$date.tar.gz";
+    $file = "$prefix.$date.tar";
     //
     drush_include_engine('version_control', 'backup');
     $backup = new drush_pm_version_control_backup();
@@ -54,13 +57,17 @@ function drush_archive_dump($sites_subdirs = '@self') {
     }
     $destination = "$backup_dir/$file";
   }
+  else {
+    $destination = realpath($destination);
+  }
+
   $docroot_path = realpath(drush_get_context('DRUSH_DRUPAL_ROOT'));
   $docroot = basename($docroot_path);
   $workdir = dirname($docroot_path);
   // Archive Drupal core, excluding sites dir.
-  drush_shell_cd_and_exec($workdir, "tar --exclude '{$docroot}/sites/*' -cf %s %s", $destination, $docroot);
+  drush_shell_cd_and_exec($workdir, "tar --exclude '{$docroot}/sites' --dereference -cf %s %s", $destination, $docroot);
   // Add sites/all to the same archive.
-  drush_shell_cd_and_exec($workdir, "tar -rf %s %s", $destination, "{$docroot}/sites/all");
+  drush_shell_cd_and_exec($workdir, "tar --dereference -rf %s %s", $destination, "{$docroot}/sites/all");
 
   // Dump the database(s) for each site and add to the archive.
   foreach ($full as $key => $alias) {
@@ -68,12 +75,12 @@ function drush_archive_dump($sites_subdirs = '@self') {
       $tmp = drush_tempdir();
       // Use a subdirectory name matching the docroot name.
       drush_mkdir("{$tmp}/{$docroot}");
-      $result_file = "{$tmp}/{$docroot}/{$target['default']['database']}.sql";
+      $result_file = "{$tmp}/{$target['default']['database']}.sql";
       drush_set_option('result-file', $result_file);
       $table_selection = drush_sql_get_table_selection();
       list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $target['default']);
       drush_shell_exec($dump_exec);
-      drush_shell_cd_and_exec($tmp, 'tar -rf %s %s', $destination, "{$docroot}/" . basename($result_file));
+      drush_shell_cd_and_exec($tmp, 'tar --dereference -rf %s %s', $destination, basename($result_file));
     }
   }
 
@@ -81,9 +88,10 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $platform = array(
     'datestamp' => time(),
     'formatversion' => '.1',
-    'generator' => 'Drush archive-dump',
-    'generatorversion' => DRUSH_VERSION,
+    'generator' => drush_get_option('generator', 'Drush archive-dump'),
+    'generatorversion' => drush_get_option('generatorversion', DRUSH_VERSION),
     'description' => drush_get_option('description', ''),
+    'tags' => explode(',', drush_get_option('tags', '')),
   );
   $contents = drush_export_info($platform);
 
@@ -96,12 +104,14 @@ function drush_archive_dump($sites_subdirs = '@self') {
     $status = drush_invoke_sitealias_args($alias, 'core-status', array(), array());
 
     // Add the site specific directory to archive.
-    drush_shell_exec("tar -rf %s %s", $destination,  "{$docroot}/sites/" . basename($status['object']['%paths']['%site']));
+    if (!empty($status['object']['%paths']['%site'])) {
+      drush_shell_cd_and_exec($workdir, "tar --dereference -rf %s %s", $destination,  "{$docroot}/sites/" . basename($status['object']['%paths']['%site']));
+    }
 
     $site = array(
       'name' => str_replace(array('"', "\n"), '', $name),
       'docroot' => DRUPAL_ROOT,
-      'sitedir' => $status['object']['%paths']['%site'],
+      'sitedir' => @$status['object']['%paths']['%site'],
       'files' => array(
         'public' => @$status['object']['%paths']['%files'],
         'private' => @$status['object']['%paths']['%private'],
@@ -117,15 +127,15 @@ function drush_archive_dump($sites_subdirs = '@self') {
     unset($info);
     $i++;
   }
-  file_put_contents("{$tmp}/{$docroot}/MANIFEST.INFO", $contents);
+  file_put_contents("{$tmp}/MANIFEST.info", $contents);
 
   // Add manifest to archive.
-  drush_shell_cd_and_exec($tmp, 'tar -rf %s %s', $destination, "{$docroot}/MANIFEST.INFO");
+  drush_shell_cd_and_exec($tmp, 'tar --dereference -rf %s %s', $destination, "MANIFEST.info");
 
   // Compress the archive
   drush_shell_exec("gzip -f %s", $destination);
 
-  drush_log(dt('Archive saved to !dest', array('!dest' => $destination)), 'ok');
+  drush_log(dt('Archive saved to !dest.gz', array('!dest' => $destination)), 'ok');
   drush_print_pipe($destination);
   return $destination;
 }
