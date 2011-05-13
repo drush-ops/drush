@@ -42,28 +42,62 @@ function pm_update_last_check() {
  */
 function _pm_refresh() {
   drush_print(dt("Refreshing update status information ..."));
-  update_refresh(TRUE);
+  update_refresh();
   drush_print(dt("Done."));
 }
 
 /**
  * Get update information for all installed projects.
  *
- * @return An array containing remote and local versions for all installed projects
+ * @see update_get_available().
+ * @see update_manual_status().
+ *
+ * @return An array containing remote and local versions for all installed
+ *  projects
  */
 function _pm_get_update_info($projects) {
-  // We force a refresh if the cache is not available.
-  if (!cache_get('update_available_releases', 'cache_update')) {
-    _pm_refresh();
+  // Force to invalidate some caches that are only cleared
+  // when visiting update status report page. This allow to detect changes in
+  // .info files.
+  _update_cache_clear('update_project_data');
+  _update_cache_clear('update_project_projects');
+
+  // From update_get_available(): Iterate all projects and create a fetch task
+  // for those we have no information or is obsolete.
+  module_load_include('inc', 'update', 'update.compare');
+  $available = _update_get_cached_available_releases();
+  $num_avail = count($available);
+  $projects = update_get_projects();
+  foreach ($projects as $key => $project) {
+    if (empty($available[$key])) {
+      update_create_fetch_task($project);
+      continue;
+    }
+    if ($project['info']['_info_file_ctime'] > $available[$key]['last_fetch']) {
+      $available[$key]['fetch_status'] = UPDATE_FETCH_PENDING;
+    }
+    if (empty($available[$key]['releases'])) {
+      $available[$key]['fetch_status'] = UPDATE_FETCH_PENDING;
+    }
+    if (!empty($available[$key]['fetch_status']) && $available[$key]['fetch_status'] == UPDATE_FETCH_PENDING) {
+      update_create_fetch_task($project);
+    }
   }
 
-  $info = update_get_available(TRUE);
+  // Set a batch to process all pending tasks.
+  $batch = array(
+    'operations' => array(
+      array('update_fetch_data_batch', array()),
+    ),
+    'finished' => 'update_fetch_data_finished',
+    'file' => drupal_get_path('module', 'update') . '/update.fetch.inc',
+  );
+  batch_set($batch);
+  drush_backend_batch_process();
 
-  // Force to invalidate some update_status caches that are only cleared
-  // when visiting update status report page.
-  _update_cache_clear('update_project_data');
-  _update_cache_clear('update_project_projects'); 
-  $data = update_calculate_project_data($info);
+  // Calculate update status data.
+  $available = _update_get_cached_available_releases();
+  $data = update_calculate_project_data($available);
   foreach ($data as $project_name => $project) {
     // Discard custom projects.
     if ($project['status'] == UPDATE_UNKNOWN) {
