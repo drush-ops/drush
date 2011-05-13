@@ -1,0 +1,22 @@
+diff --git a/includes/drush.inc b/includes/drush.inc
+index 02e53f0..c81c6b8 100644
+--- a/includes/drush.inc
++++ b/includes/drush.inc
+@@ -761,7 +761,6 @@ function drush_remote_command() {
+   // @see drush_sitealias_check_arg
+   $remote_host = drush_get_option('remote-host');
+   if (isset($remote_host)) {
+-
+     $args = drush_get_arguments();
+     $command = array_shift($args);
+     $remote_user = drush_get_option('remote-user');
+@@ -789,7 +788,8 @@ function drush_remote_command() {
+       }
+ 
+       if (drush_confirm('Continue? ') === FALSE) {
+-        return drush_user_abort();
++        drush_user_abort();
++        return TRUE;
+       }
+     }
+     $command = array_shift($args);

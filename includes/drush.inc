@@ -746,7 +746,6 @@ function drush_remote_command() {
   // @see drush_sitealias_check_arg
   $remote_host = drush_get_option('remote-host');
   if (isset($remote_host)) {
-
     $args = drush_get_arguments();
     $command = array_shift($args);
     $remote_user = drush_get_option('remote-user');
@@ -774,7 +773,8 @@ function drush_remote_command() {
       }
 
       if (drush_confirm('Continue? ') === FALSE) {
-        return drush_user_abort();
+        drush_user_abort();
+        return TRUE;
       }
     }
     $command = array_shift($args);
