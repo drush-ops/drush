@@ -146,7 +146,7 @@ function core_drush_command() {
     'description' => 'Execute a shell command. Usually used with a site alias.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'arguments' => array(
-      'command', 'The shell command to be executed',
+      'command' => 'The shell command to be executed.',
     ),
     'examples' => array(
       'drush exec \'git pull\'' => 'Retrieve latest code from git',
