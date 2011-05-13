@@ -66,9 +66,8 @@ function _pm_get_update_info($projects) {
   // for those we have no information or is obsolete.
   module_load_include('inc', 'update', 'update.compare');
   $available = _update_get_cached_available_releases();
-  $num_avail = count($available);
-  $projects = update_get_projects();
-  foreach ($projects as $key => $project) {
+  $update_projects = update_get_projects();
+  foreach ($update_projects as $key => $project) {
     if (empty($available[$key])) {
       update_create_fetch_task($project);
       continue;
