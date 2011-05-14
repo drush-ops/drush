@@ -110,6 +110,8 @@ function _pm_get_update_info($projects) {
     // Set 'includes' key to all extensions. By default it only contain enabled
     // extensions and _pm_get_project_path() needs all of them.
     $data[$project_name]['includes'] = drupal_map_assoc($projects[$project_name]['extensions']);
+    // Store all releases, not just the ones selected by update.module.
+    $data[$project_name]['releases'] = $available[$project_name]['releases'];
   }
   $data = _pm_get_project_path($data, 'includes');
 
