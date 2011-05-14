@@ -17,7 +17,7 @@ function drush_pm_updatecode() {
   $security_only = drush_get_option('security-only');
 
   // Get specific requests.
-  $requests = pm_parse_arguments(func_get_args());
+  $requests = pm_parse_arguments(func_get_args(), FALSE);
 
   // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
