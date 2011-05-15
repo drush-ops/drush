@@ -114,11 +114,11 @@ function drush_copy_dir($src, $dest, $overwrite = FALSE) {
     }
   }
   // $src readable?
-  if (!drush_op('is_readable', $src)) {
+  if (!is_readable($src)) {
     return drush_set_error('DRUSH_SOURCE_NOT_EXISTS', dt('Source directory !src is not readable or does not exist.', array('!src' => $src)));
   }
   // $dest writable?
-  if (!drush_op('is_writable', dirname($dest))) {
+  if (!is_writable(dirname($dest))) {
     return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Destination directory !dest is not writable.', array('!dest' => dirname($dest))));
   }
   // Try to do a recursive copy.
