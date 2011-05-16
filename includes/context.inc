@@ -294,7 +294,7 @@ function &drush_get_context($context = NULL, $default = NULL) {
   static $cache = array();
   if (!is_null($context)) {
     if (!isset($cache[$context])) {
-      $default = !is_null($default) ? $default : array();
+      $default = is_null($default) ? array() : $default;
       $cache[$context] = $default;
     }
     return $cache[$context];
