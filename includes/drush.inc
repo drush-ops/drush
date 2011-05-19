@@ -779,7 +779,11 @@ function drush_remote_command() {
     }
     $command = array_shift($args);
     $multi_options = drush_get_context('cli');
+    if ($interactive) {
+      $multi_options['#interactive'] = TRUE;
+    }
 
+    // Compute output params for non-interactive mode if --no-label.
     if (!drush_get_option('no-label', FALSE) && !$interactive) {
       $label_separator = ' >> ';
       $max_name_length = 0;
@@ -789,26 +793,23 @@ function drush_remote_command() {
         }
       }
       $multi_options['reserve-margin'] = $max_name_length + strlen($label_separator);
-      foreach ($site_list as $alias_name => $alias_record) {
-        $values = drush_do_site_command($alias_record, $command, $args, $multi_options);
-        foreach (explode("\n", $values['output']) as $line) {
-          if (empty($line)) {
-            drush_print();
+    }
+
+    // Execute the command on each site and print output.
+    foreach ($site_list as $alias_name => $alias_record) {
+      drush_print(dt("!site >> !command", array('!command' => $command . ' ' . implode(" ", $args), '!site' => $alias_name)));
+      $values = drush_do_site_command($alias_record, $command, $args, $multi_options);
+      // In interactive mode $values is the return code of drush_op_system().
+      if (!$interactive) {
+        foreach ($values['log'] as $log) {
+          if (!drush_get_option('no-label', FALSE)) {
+            $message = str_pad($alias_name, $max_name_length, " ") . $label_separator . $log['message'];
           }
           else {
-            drush_print(str_pad($alias_name, $max_name_length, " ") . $label_separator . $line);
+            $message = $log['message'];
           }
+          drush_log($message, $log['type']);
         }
-      }
-    }
-    else {
-      if ($interactive) {
-        $multi_options['#interactive'] = TRUE;
-      }
-      foreach ($site_list as $alias_name => $alias_record) {
-        drush_print(dt("!site >> !command", array('!command' => $command . ' ' . implode(" ", $args), '!site' => $alias_name)));
-        $values = drush_do_site_command($alias_record, $command, $args, $multi_options);
-        drush_print($values['output']);
       }
     }
     return TRUE;
