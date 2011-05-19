@@ -594,6 +594,8 @@ function drush_get_commands() {
       foreach ((array)$result as $key => $command) {
         // Add some defaults and normalize the command descriptor
         $command += drush_command_defaults($key, $commandfile, $path);
+        // Translate command.
+        drush_command_translate($command);
         // If command callback function name begins with "drush_$commandfile_",
         // then fix up the command entry so that drush_invoke will be
         // called by way of drush_command.  This will cause all
@@ -665,6 +667,32 @@ function drush_command_defaults($key, $commandfile, $path) {
     'topics' => array(),
     'hidden' => FALSE,
   );
+}
+
+/**
+ * Translates description and other keys of a command definition.
+ *
+ * @param $command
+ *   A command definition.
+ */
+function drush_command_translate(&$command) {
+  $command['description'] = _drush_command_translate($command['description']);
+  $keys = array('arguments', 'options', 'examples', 'engines', 'sections');
+  foreach ($keys as $key) {
+    foreach ($command[$key] as $k => $v) {
+      $command[$key][$k] = _drush_command_translate($v);
+    }
+  }
+}
+
+/**
+ * Helper function for drush_command_translate().
+ *
+ * @param $source
+ *   String or array.
+ */
+function _drush_command_translate($source) {
+  return is_array($source)?call_user_func_array('dt', $source):dt($source);
 }
 
 /**
