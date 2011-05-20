@@ -99,6 +99,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     $cmd[] = UNISH_DRUSH;
     $cmd[] = empty($site_specification) ? NULL : escapeshellarg($site_specification);
     $cmd[] = $command;
+    if (in_array('--verbose', $_SERVER['argv'])) $args[] = '--verbose';
     if (in_array('--debug', $_SERVER['argv'])) $args[] = '--debug';
 
     foreach ($args as $arg) {
