@@ -18,7 +18,7 @@ class fieldCase extends Drush_TestCase {
     $output = $this->getOutput();
     list($city, $subtitle) = explode(' ', $output);
     $url = parse_url($subtitle);
-    $this->assertEquals($url['path'], '/admin/structure/types/manage/article/fields/subtitle');
+    $this->assertEquals('/admin/structure/types/manage/article/fields/subtitle', $url['path']);
 
     // Assure that the second field instance was created correctly (subtitle).
     $this->verifyInstance('subtitle', $options);
@@ -27,7 +27,7 @@ class fieldCase extends Drush_TestCase {
     $this->drush('field-update', array('subtitle'), $options);
     $output = $this->getOutput();
     $url = parse_url($this->getOutput());
-    $this->assertEquals($url['path'], '/admin/structure/types/manage/article/fields/subtitle');
+    $this->assertEquals('/admin/structure/types/manage/article/fields/subtitle', $url['path']);
 
     // Assure that field-clone actually clones.
     $this->drush('field-clone', array('subtitle', 'subtitlecloned'), $options);
