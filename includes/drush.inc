@@ -1220,7 +1220,7 @@ function drush_op($function) {
   }
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-     drush_print(sprintf("Calling %s(%s)", $function, implode(", ", $args_printed)));
+     drush_log(sprintf("Calling %s(%s)", $function, implode(", ", $args_printed)), 'debug');
   }
 
   if (drush_get_context('DRUSH_SIMULATE')) {
