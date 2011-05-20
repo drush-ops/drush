@@ -13,14 +13,13 @@ class saCase extends Drush_TestCase {
   public function testSAList() {
     $this->setUpDrupal('dev');
     $this->setUpDrupal('stage');
-    $eval = 'print bon;';
+    $eval = 'print "bon";';
     $options = array(
       'yes' => NULL,
       'root' => $this->sites['dev']['root'],
     );
     $this->drush('php-eval', array($eval), $options, "#dev,#stage");
-    $output = $this->getOutput();
-    $expected = "You are about to execute 'php-eval print bon;' non-interactively (--yes forced) on all of the following targets:
+    $expected = "You are about to execute 'php-eval print \"bon\";' non-interactively (--yes forced) on all of the following targets:
   #dev
   #stage
 Continue?  (y/n): y
