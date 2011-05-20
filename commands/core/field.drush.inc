@@ -106,7 +106,7 @@ function drush_field_create($bundle) {
   // Iterate over each field spec.
   foreach ($args as $string) {
     list($name, $type, $widget) = explode(',', $string);
-    $info = field_info_field($field_name);
+    $info = field_info_field($name);
     if (empty($info)) {
       // Field does not exist already. Create it.
       $field = array(
