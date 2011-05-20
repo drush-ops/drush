@@ -127,16 +127,25 @@ function drush_field_create($bundle) {
     }
     drush_op('field_create_instance', $instance);
 
-    $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $name, array('absolute' => TRUE));
+    $urls[] = url(drush_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $name, array('absolute' => TRUE));
   }
   drush_print(implode(' ', $urls));
+}
+
+// Copy of function _field_ui_bundle_admin_path() since we don't want to load UI module.
+function drush_field_ui_bundle_admin_path($entity_type, $bundle_name) {
+  $bundles = field_info_bundles($entity_type);
+  $bundle_info = $bundles[$bundle_name];
+  if (isset($bundle_info['admin'])) {
+    return isset($bundle_info['admin']['real path']) ? $bundle_info['admin']['real path'] : $bundle_info['admin']['path'];
+  }
 }
 
 function drush_field_update($field_name) {
    $info = field_info_field($field_name);
    foreach ($info['bundles'] as $entity_type => $bundles) {
      foreach ($bundles as $bundle) {
-       $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $field_name, array('absolute' => TRUE));
+       $urls[] = url(drush_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $field_name, array('absolute' => TRUE));
      }
    }
   drush_print(implode(' ', $urls));
@@ -201,7 +210,7 @@ function drush_field_clone($source_field_name, $target_field_name) {
        unset($instance['id']);
        $instance['field_id'] = $target['id'];
        drush_op('field_create_instance', $instance);
-       $urls[] = url(_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $target_field_name, array('absolute' => TRUE));
+       $urls[] = url(drush_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $target_field_name, array('absolute' => TRUE));
      }
    }
 
