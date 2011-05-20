@@ -1128,7 +1128,7 @@ function drush_print_timers() {
       }
       $table[] = array($name, $cum, $count, $avg);
     }
-    drush_print_table($table, TRUE);
+    drush_print_table($table, TRUE, array(), 'STDERR');
   }
 }
 
