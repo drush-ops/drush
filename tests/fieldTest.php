@@ -7,18 +7,18 @@
 class fieldCase extends Drush_TestCase {
 
   public function testField() {
-    $this->setUpDrupal('dev', TRUE, '7.x', 'standard');
+    $this->setUpDrupal('dev', TRUE);
     $options = array(
       'yes' => NULL,
       'root' => $this->sites['dev']['root'],
       'uri' => 'dev',
     );
     // Create two field instances on article content type.
-    $this->drush('field-create', array('article', 'city,text,text_textfield', 'subtitle,text,text_textfield'), $options);
+    $this->drush('field-create', array('user', 'city,text,text_textfield', 'subtitle,text,text_textfield'), $options + array('entity_type' => 'user'));
     $output = $this->getOutput();
     list($city, $subtitle) = explode(' ', $output);
     $url = parse_url($subtitle);
-    $this->assertEquals('/admin/structure/types/manage/article/fields/subtitle', $url['path']);
+    $this->assertEquals('/admin/config/people/accounts/fields/subtitle', $url['path']);
 
     // Assure that the second field instance was created correctly (subtitle).
     $this->verifyInstance('subtitle', $options);
@@ -27,7 +27,7 @@ class fieldCase extends Drush_TestCase {
     $this->drush('field-update', array('subtitle'), $options);
     $output = $this->getOutput();
     $url = parse_url($this->getOutput());
-    $this->assertEquals('/admin/structure/types/manage/article/fields/subtitle', $url['path']);
+    $this->assertEquals('/admin/config/people/accounts/fields/subtitle', $url['path']);
 
     // Assure that field-clone actually clones.
     $this->drush('field-clone', array('subtitle', 'subtitlecloned'), $options);
@@ -46,7 +46,7 @@ class fieldCase extends Drush_TestCase {
       $columns = explode(',', $row);
       if ($columns[0] == $name) {
         $this->assertEquals('text', $columns[1], $name . ' field is of type=text.');
-        $this->assertEquals('article', $columns[2], $name . ' field was added to article bundle.');
+        $this->assertEquals('user', $columns[2], $name . ' field was added to user bundle.');
         $found = TRUE;
         break;
       }
