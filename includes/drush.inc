@@ -1210,6 +1210,9 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE) {
 function drush_op($function) {
   $args = func_get_args();
   array_shift($args); // Skip function name
+  foreach ($args as $arg) {
+    $args_printed[] = is_scalar($arg) ? $arg : (is_array($arg) ? 'Array' : 'Object');
+  }
 
   // Special checking for drush_op('system')
   if ($function == 'system') {
@@ -1217,7 +1220,7 @@ function drush_op($function) {
   }
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-     drush_print(sprintf("Calling %s(%s)", $function, implode(", ", $args)));
+     drush_print(sprintf("Calling %s(%s)", $function, implode(", ", $args_printed)));
   }
 
   if (drush_get_context('DRUSH_SIMULATE')) {
