@@ -121,15 +121,15 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     *   An exit code.
     */
   function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL) {
-    $cmd[] = $cd ? sprintf('cd %s;', escapeshellarg($cd)) : NULL;
+    $cmd[] = $cd ? sprintf('cd %s;', self::unish_escapeshellarg($cd)) : NULL;
     $cmd[] = UNISH_DRUSH;
-    $cmd[] = empty($site_specification) ? NULL : escapeshellarg($site_specification);
+    $cmd[] = empty($site_specification) ? NULL : self::unish_escapeshellarg($site_specification);
     $cmd[] = $command;
     if (in_array('--verbose', $_SERVER['argv'])) $args[] = '--verbose';
     if (in_array('--debug', $_SERVER['argv'])) $args[] = '--debug';
 
     foreach ($args as $arg) {
-      $cmd[] = escapeshellarg($arg);
+      $cmd[] = self::unish_escapeshellarg($arg);
     }
     $options['nocolor'] = NULL;
     foreach ($options as $key => $value) {
@@ -137,7 +137,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
         $cmd[] = "--$key";
       }
       else {
-        $cmd[] = "--$key=" . escapeshellarg($value);
+        $cmd[] = "--$key=" . self::unish_escapeshellarg($value);
       }
     }
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs

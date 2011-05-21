@@ -59,12 +59,12 @@ class pmUpdateCode extends Drush_TestCase {
     // Verify that we keep backups as instructed.
     $pattern = 'find %s -iname %s';
     $backup_dir = UNISH_SANDBOX . '/backups';
-    $cmd = sprintf($pattern, escapeshellarg($backup_dir), escapeshellarg('devel.module'));
+    $cmd = sprintf($pattern, self::unish_escapeshellarg($backup_dir), escapeshellarg('devel.module'));
     $this->execute($cmd);
     $output = $this->getOutput();
     $this->assertNotEmpty($output);
 
-    $cmd = sprintf($pattern, escapeshellarg($backup_dir), escapeshellarg('webform.module'));
+    $cmd = sprintf($pattern, self::unish_escapeshellarg($backup_dir), escapeshellarg('webform.module'));
     $this->execute($cmd);
     $output = $this->getOutput();
     $this->assertEmpty($output);
