@@ -706,12 +706,14 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
  * @param $widths
  *   The widths of each column (in characters) to use - if not specified this
  *   will be determined automatically, based on a "best fit" algorithm.
- * @param $output_file
- *   File to write output to.  STDOUT used if not specified.
+ * @param $handle
+ *    File handle to write to.  NULL will write
+ *    to standard output, STDERR will write to the standard
+ *    error.  See http://php.net/manual/en/features.commandline.io-streams.php
  * @return $tbl
  *   Use $tbl->getTable() to get the output from the return value.
  */
-function drush_print_table($rows, $header = FALSE, $widths = array(), $output_file = NULL) {
+function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = NULL) {
   $tbl = new Console_Table(CONSOLE_TABLE_ALIGN_LEFT , '');
 
   $auto_widths = drush_table_column_autowidth($rows, $widths);
@@ -736,12 +738,8 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $output_fi
   if (!stristr(PHP_OS, 'WIN')) {
     $output = str_replace("\r\n", PHP_EOL, $output);
   }
-  if ($output_file == NULL) {
-    drush_print($output);
-  }
-  else {
-    file_put_contents($output_file, $output, FILE_APPEND);
-  }
+
+  drush_print($output, 0, $handle);
   return $tbl;
 }
 
@@ -2411,7 +2409,7 @@ function drush_print_timers() {
       }
       $table[] = array($name, $cum, $count, $avg);
     }
-    drush_print_table($table, TRUE);
+    drush_print_table($table, TRUE, array(), STDERR);
   }
 }
 
