@@ -19,7 +19,7 @@ class saCase extends Drush_TestCase {
       'root' => $this->sites['dev']['root'],
     );
     $this->drush('php-eval', array($eval), $options, "#dev,#stage");
-    $expected = "You are about to execute 'php-eval print \"bon\";' non-interactively (--yes forced) on all of the following targets:
+    $expected = "You are about to execute 'php-eval print \"bon\";' on all of the following targets:
   #dev
   #stage
 Continue?  (y/n): y
