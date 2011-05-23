@@ -148,7 +148,7 @@ function drush_drush_make_post_make($makefile = NULL, $build_path = NULL) {
 function drush_make_projects($recursion, $contrib_destination, $info, $build_path) {
   $projects = array();
   if (empty($info['projects'])) {
-    if (drush_get_option('no-core')) {
+    if (drush_get_option('no-core') || $recursion) {
       return TRUE;
     }
     else {
