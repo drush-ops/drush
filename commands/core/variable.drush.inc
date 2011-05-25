@@ -152,7 +152,7 @@ function drush_variable_set() {
     }
   }
 
-  if ((drush_get_option('always-set', FALSE)) || ((count($options) == 1 || $match) && drush_get_context('DRUSH_AFFIRMATIVE'))) {
+  if (drush_get_option('always-set', FALSE) || count($options) == 1 || $match) {
     variable_set($args[0], $value);
     drush_log(dt('!name was set to !value.', array('!name' => $args[0], '!value' => $value)), 'success');
     return '';
