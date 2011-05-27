@@ -128,7 +128,11 @@ function drush_pm_updatecode() {
   drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
   drush_print();
   drush_print(dt("Update status information on all installed and enabled Drupal projects:"));
-  drush_print_table($rows, TRUE, array(3 => 40), $tmpfile);
+  // Cache the output of drush_print_table in $tmpfile so that we can
+  // include it in the paginated output later.
+  $tmphandle = fopen($tmpfile, 'a');
+  drush_print_table($rows, TRUE, array(3 => 40), $tmphandle);
+  fclose($tmphandle);
   $contents = file_get_contents($tmpfile);
   drush_print($contents);
   drush_print();
