@@ -33,6 +33,7 @@ require_once DRUSH_BASE_PATH . '/includes/sitealias.inc';
 require_once DRUSH_BASE_PATH . '/includes/exec.inc';
 require_once DRUSH_BASE_PATH . '/includes/drupal.inc';
 require_once DRUSH_BASE_PATH . '/includes/output.inc';
+require_once DRUSH_BASE_PATH . '/includes/cache.inc';
 require_once DRUSH_BASE_PATH . '/includes/filesystem.inc';
 require_once DRUSH_BASE_PATH . '/includes/dbtng.inc';
 

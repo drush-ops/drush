@@ -6,6 +6,8 @@
 function cache_drush_command() {
   $items = array();
 
+  // We specify command callbacks here because the defaults would collide with
+  // the drush cache api functions.
   $items['cache-get'] = array(
     'description' => 'Fetch a cached object and display it.',
     'examples' => array(
@@ -19,13 +21,16 @@ function cache_drush_command() {
     'options' => array(
       'format' => 'Format to output the object. Use "print_r" for print_r (default), "export" for var_export, and "json" for JSON.',
     ),
+    'callback' => 'drush_cache_command_get',
     'aliases' => array('cg'),
   );
   $items['cache-clear'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'description' => 'Clear a specific cache, or all drupal caches.',
     'arguments' => array(
       'type' => 'The particular cache to clear. Omit this argument to choose from available caches.',
     ),
+    'callback' => 'drush_cache_command_clear',
     'aliases' => array('cc'),
   );
   $items['cache-set'] = array(
@@ -40,6 +45,7 @@ function cache_drush_command() {
       'format' => 'Format to parse the object. Use "string" for string (default), and "json" for JSON.',
       'cache-get' => 'If the object is the result a previous fetch from the cache, only store the value in the "data" property of the object in the cache.',
     ),
+    'callback' => 'drush_cache_command_set',
     'aliases' => array('cs'),
   );
 
@@ -49,8 +55,9 @@ function cache_drush_command() {
 /**
  * Command callback for drush cache-clear.
  */
-function drush_cache_clear($type = NULL) {
-  switch (drush_drupal_major_version()) {
+function drush_cache_command_clear($type = NULL) {
+  if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+    switch (drush_drupal_major_version()) {
     case 5:
       // clear preprocessor cache
       drupal_clear_css_cache();
@@ -67,23 +74,26 @@ function drush_cache_clear($type = NULL) {
     case 7:
     default:
       $types = drush_cache_clear_types();
-      // Check if the provided type ($type) is a valid cache type.
-      if ($type && !key_exists($type, $types)) {
-        return drush_set_error(dt("'!type' cache is not a valid cache type", array('!type' => $type)));
-      }
+    }
+  }
 
-      if ($type) {
-        drush_op($types[$type]);
-        drush_log(dt("'!name' cache was cleared", array('!name' => $type)), 'success');
-      }
-      else {
-        $choice = drush_choice($types, 'Enter a number to choose which cache to clear.', '!key');
-        if ($choice !== FALSE) {
-          call_user_func($types[$choice]);
-          drush_log(dt("'!name' cache was cleared", array('!name' => $choice)), 'success');
-        }
-      }
-      break;
+  $types['drush'] = '_drush_cache_clear_all';
+
+  // Check if the provided type ($type) is a valid cache type.
+  if ($type && !key_exists($type, $types)) {
+    return drush_set_error(dt("'!type' cache is not a valid cache type", array('!type' => $type)));
+  }
+
+  if ($type) {
+    drush_op($types[$type]);
+    drush_log(dt("'!name' cache was cleared", array('!name' => $type)), 'success');
+  }
+  else {
+    $choice = drush_choice($types, 'Enter a number to choose which cache to clear.', '!key');
+    if ($choice !== FALSE) {
+      call_user_func($types[$choice]);
+      drush_log(dt("'!name' cache was cleared", array('!name' => $choice)), 'success');
+    }
   }
 }
 
@@ -95,7 +105,7 @@ function drush_cache_clear($type = NULL) {
  * @param $bin
  *   Optional parameter to specify a specific bin to fetch from.
  */
-function drush_cache_get($cid = NULL, $bin = NULL) {
+function drush_cache_command_get($cid = NULL, $bin = NULL) {
   if (!$cid) {
     drush_log(dt('You must specify a cache id to fetch.'), 'error');
     return;
@@ -137,7 +147,7 @@ function drush_cache_get($cid = NULL, $bin = NULL) {
  * @param $expire
  *   Optional parameter to specify the expiry of the cached object.
  */
-function drush_cache_set($cid = NULL, $data = '', $bin = NULL, $expire = CACHE_PERMANENT) {
+function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire = CACHE_PERMANENT) {
   if (!$cid) {
     drush_log(dt('You must specify a cache id to set.'), 'error');
     return;

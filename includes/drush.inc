@@ -342,18 +342,19 @@ function drush_get_global_options($brief = FALSE) {
   $options['ia']                 = dt("Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).");
 
   if (!$brief) {
-    $options['quiet']            = array('short-form' => 'q', 'description' => dt('Suppress non-error messages.'));
-    $options['include']          = array('short-form' => 'i', 'description' => dt("A list of additional directory paths to search for drush commands."));
-    $options['config']           = array('short-form' => 'c', 'description' => dt("Specify an additional config file to load. See example.drushrc.php."));
-    $options['user']             = array('short-form' => 'u', 'description' => dt("Specify a Drupal user to login with. May be a name or a number."));
-    $options['backend']          = array('short-form' => 'b', 'description' => dt("Hide all output and return structured data (internal use only)."));
-    $options['choice']           = dt("Provide an answer to a multiple-choice prompt.");
-    $options['lib']              = dt("Location of directory where 3rd party libraries are available, or where Drush can downloaded them to if they are not found.");
-    $options['no-label']         = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
-    $options['nocolor']          = dt("Suppress color highlighting on log messages.");
-    $options['show-passwords']   = dt("Show database passwords in commands that display connection information.");
-    $options['show-invoke']      = dt("Show all function names which could have been called for the current command. See drush_invoke().");
-    $options['watchdog']         = dt("Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log.");
+    $options['quiet']               = array('short-form' => 'q', 'description' => dt('Suppress non-error messages.'));
+    $options['include']             = array('short-form' => 'i', 'description' => dt("A list of additional directory paths to search for drush commands."));
+    $options['config']              = array('short-form' => 'c', 'description' => dt("Specify an additional config file to load. See example.drushrc.php."));
+    $options['user']                = array('short-form' => 'u', 'description' => dt("Specify a Drupal user to login with. May be a name or a number."));
+    $options['backend']             = array('short-form' => 'b', 'description' => dt("Hide all output and return structured data (internal use only)."));
+    $options['choice']              = dt("Provide an answer to a multiple-choice prompt.");
+    $options['no-label']            = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
+    $options['nocolor']             = dt("Suppress color highlighting on log messages.");
+    $options['show-passwords']      = dt("Show database passwords in commands that display connection information.");
+    $options['show-invoke']         = dt("Show all function names which could have been called for the current command. See drush_invoke().");
+    $options['watchdog']            = dt("Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log.");
+    $options['cache-default-class'] = dt("A cache backend class that implements DrushCacheInterface.");
+    $options['cache-class-<bin>']   = dt("A cache backend class that implements DrushCacheInterface to use for a specific cache bin.");
   }
   return $options;
 }
