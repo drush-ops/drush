@@ -61,8 +61,10 @@ function _pm_get_update_info($projects) {
 
   // Force to invalidate some update_status caches that are only cleared
   // when visiting update status report page.
-  _update_cache_clear('update_project_data');
-  _update_cache_clear('update_project_projects');
+  if (function_exists('_update_cache_clear')) {
+    _update_cache_clear('update_project_data');
+    _update_cache_clear('update_project_projects');
+  }
 
   $data = update_calculate_project_data($info);
   foreach ($data as $project_name => $project) {
