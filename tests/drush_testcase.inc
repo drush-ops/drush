@@ -279,17 +279,13 @@ define('UNISH_DB_URL', ((!empty($GLOBALS['UNISH_DB_URL'])) ? $GLOBALS['UNISH_DB_
 
 // UNISH_DRUSH value can come from phpunit.xml or `which drush`.
 if (!defined('UNISH_DRUSH')) {
-  if (empty($GLOBALS['UNISH_DRUSH'])) {
-    if (Drush_TestCase::is_windows()) {
-      define('UNISH_DRUSH', exec('for %i in (drush) do @echo.   %~$PATH:i'));
-    }
-    else {
-      define('UNISH_DRUSH', trim(`which drush`));
-    }
+  // Let the UNISH_DRUSH environment variable override if set.
+  $unish_drush = isset($_SERVER['UNISH_DRUSH']) ? $_SERVER['UNISH_DRUSH'] : NULL;
+  $unish_drush = isset($GLOBALS['UNISH_DRUSH']) ? $GLOBALS['UNISH_DRUSH'] : NULL;
+  if (empty($unish_drush)) {
+    $unish_drush = Drush_TestCase::is_windows() ? exec('for %i in (drush) do @echo.   %~$PATH:i') : trim(`which drush`);
   }
-  else {
-    define('UNISH_DRUSH', $GLOBALS['UNISH_DRUSH']);
-  }
+  define('UNISH_DRUSH', $unish_drush);
 }
 
 if (empty($GLOBALS['UNISH_SANDBOX'])) {
