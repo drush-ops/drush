@@ -17,7 +17,7 @@ function upgrade_drush_command() {
     'drush dependencies' => array('sql', 'pm', 'core'),
     'core' => array(6), // Add 7 once drush supports 7 -> 8 upgrades.
     'arguments' => array(
-      'target' => 'The name of a sitealias, which points to the destination site. 'root' and 'uri' keys are required; db-url is recommended. See examples/aliases.drushrc.php for more information about creating a site alias.',
+      'target' => "The name of a sitealias, which points to the destination site. 'root' and 'uri' keys are required; db-url is recommended. See examples/aliases.drushrc.php for more information about creating a site alias.",
     ),
     'examples' => array(
       'drush site-upgrade @onward' => 'Upgrade from the current site to the site specified by @onward alias.',
