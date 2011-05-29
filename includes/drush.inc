@@ -2066,7 +2066,8 @@ function drush_remote_command() {
       }
 
       if (drush_confirm('Continue? ') === FALSE) {
-        return drush_user_abort();
+        drush_user_abort();
+        return TRUE;
       }
     }
     $command = array_shift($args);
