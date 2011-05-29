@@ -1475,6 +1475,21 @@ function drush_server_home() {
   return $home;
 }
 
+/*
+ * The path to the global cache directory.
+ */
+function drush_directory_cache() {
+  if (getenv('CACHE_PREFIX')) {
+    return getenv('CACHE_PREFIX') . '/cache';
+  }
+  elseif ($home = drush_server_home()) {
+    return "$home/.drush/cache";
+  }
+  else {
+    return FALSE;
+  }
+}
+
 /**
  * Get complete information for all available extensions (modules and themes).
  *

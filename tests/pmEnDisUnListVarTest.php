@@ -13,6 +13,7 @@ class EnDisUnListVarCase extends Drush_TestCase {
       'pipe' => NULL,
       'root' => $this->sites['dev']['root'],
       'uri' => 'dev',
+      'cache' => NULL,
     );
     $this->drush('pm-download', array('devel-7.x-1.0'), $options);
     $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'not installed'));

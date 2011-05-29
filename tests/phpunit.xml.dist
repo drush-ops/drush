@@ -10,7 +10,7 @@
     <!--<var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
 
     <!--User must have write permissions to this directory.-->
-    <var name="UNISH_SANDBOX" value="/tmp/drush-sandbox"/>
+    <var name="UNISH_TMP" value="/tmp"/>
 
     <!--Uncomment the line below if your path to drush differs from `which drush`. Use absolute path.-->
     <!--<var name="UNISH_DRUSH" value="/Users/mw/bin/drush"/>-->

@@ -27,7 +27,8 @@ function upgrade_drush_command() {
       'source-dump' => 'Path to dump file. Medium or large sized sites should set this. Optional; default is to create a temporary file.',
       'db-su' => 'DB username to use when dropping and creating the target database. Optional.',
       'db-su-pw' => 'DB password to use when dropping and creating the target database. Optional.',
-      'no-cache' => 'Transfer a fresh database from source site. Otherwise, DB dump is re-used for 24 hours.',
+      'cache' => 'Use pm-download cache to speed up re-download from drupal.org.',
+      'no-cache' => 'Transfer a fresh database from source site. Otherwise, DB dump is re-used for 24 hours. Negates --cache as well.',
       'core-only' => 'Stop after upgrading Drupal core; do not download and enable new versions of the site\'s modules.',
       'force-sites-default' => 'Forces settings.php to be written in sites/default folder, even if source settings.php is not.',
       'replace' => 'Replace target if it already exists.  Default is to prompt.',
@@ -90,7 +91,7 @@ function drush_upgrade_site_upgrade_check_parameters($target_key = NULL) {
   if (realpath($target_alias['root']) == realpath(DRUPAL_ROOT)) {
     return drush_set_error('DRUSH_UPGRADE_NO_TARGET', dt('Target site alias must have a different Drupal root directory than the source site.  Both are at @root.', array('@root' => $target_alias['root'])));
   }
-  
+
   return TRUE;
 }
 
@@ -242,7 +243,7 @@ function drush_upgrade_site_upgrade($target_key) {
     }
   }
 
-  // VALIDATE: did the user provide legal and usable parameters? 
+  // VALIDATE: did the user provide legal and usable parameters?
 
   if (drush_upgrade_site_upgrade_check_parameters($target_key) === FALSE) {
     return FALSE;

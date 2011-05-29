@@ -5,7 +5,7 @@
   */
 class pmDownloadCase extends Drush_TestCase {
   public function testPmDownload() {
-    $this->drush('pm-download', array('devel'));
+    $this->drush('pm-download', array('devel'), array('cache' => NULL));
     $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');
   }
 
@@ -65,7 +65,7 @@ class pmDownloadCase extends Drush_TestCase {
     $root = $this->sites['dev']['root'];
 
     // Default to sites/all
-    $this->drush('pm-download', array('devel'), array('root' => $root));
+    $this->drush('pm-download', array('devel'), array('root' => $root, 'cache' => NULL));
     $this->assertFileExists($root . '/sites/all/modules/devel/README.txt');
 
     // If we are in site specific dir, then download belongs there.
@@ -73,8 +73,7 @@ class pmDownloadCase extends Drush_TestCase {
     $this->setUpDrupal('stage', FALSE);
     $path_stage = "$root/sites/stage";
     mkdir("$path_stage/modules");
-    $this->drush('pm-download', array('devel'), array(), NULL, $path_stage);
+    $this->drush('pm-download', array('devel'), array('cache' => NULL), NULL, $path_stage);
     $this->assertFileExists($path_stage . '/modules/devel/README.txt');
   }
 }
-

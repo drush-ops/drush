@@ -216,8 +216,7 @@ function pm_drush_command() {
   $items['pm-download'] = array(
     'description' => 'Download projects from drupal.org or other sources.',
     'examples' => array(
-      'drush dl' => 'Download latest recommended release of Drupal core.',
-      'drush dl drupal' => 'Same as `drush dl`.',
+      'drush dl drupal' => 'Download latest recommended release of Drupal core.',
       'drush dl drupal-7.x' => 'Download latest 7.x development version of Drupal core.',
       'drush dl drupal-6' => 'Download latest recommended release of Drupal 6.x.',
       'drush dl cck zen' => 'Download latest versions of CCK and Zen projects.',
@@ -225,6 +224,7 @@ function pm_drush_command() {
       'drush dl diff-6.x-2.x' => 'Download a specific development branch of diff module for a specific Drupal version.',
       'drush dl views --select' => 'Show a list of recent releases of the views project, prompt for which one to download.',
       'drush dl webform --dev' => 'Download the latest dev release of webform.',
+      'drush dl webform --cache' => 'Download webform. Fetch and populate the download cache as needed.',
     ),
     'arguments' => array(
       'projects' => 'A list of drpal.org project names, with optional version. Defaults to \'drupal\'',
@@ -241,6 +241,9 @@ function pm_drush_command() {
       'drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. Defaults to "drupal".',
       'default-major' => 'Specify the default major version of modules to download when there is no bootstrapped Drupal site.  Defaults to "7".',
       'pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
+      'cache' => 'Cache release XML and tarballs or git clones. Git clones use git\'s --reference option.',
+      'cache-duration-releasexml' => 'Expire duration (in seconds) for release XML. Only applicable when --cache is set. Defaults to 86400 (24 hours).',
+      'no-cache' => 'Negate a --cache option which might have been set in drushrc.php (for example). Tip: the no- prefix works for any option.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('dl'),
@@ -613,7 +616,7 @@ function drush_pm_enable() {
           if (drush_get_option('resolve-dependencies')) {
             drush_log(dt("The following projects have unmet dependencies:\n@list\nThey are being downloaded.", array('@list' => implode("\n", $msgs))));
           }
-          $result = drush_invoke_process_args('pm-download', $unmet_project_list, array('y' => TRUE));
+          $result = drush_invoke_process_args('pm-download', $unmet_project_list, array('y' => TRUE, 'cache' => TRUE));
           // Refresh module cache after downloading the new modules.
           $extension_info = drush_get_extensions();
           $recheck = TRUE;
@@ -1322,9 +1325,9 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE, $tmpfile = NULL
         @$dom = DOMDocument::loadHTML($data->data);
       }
       else {
-        $filename = _drush_download_file($release_page_url);
-        @$dom = DOMDocument::loadHTMLFile($filename);
-        @unlink($filename);
+        $path = _drush_download_file($release_page_url);
+        @$dom = DOMDocument::loadHTMLFile($path);
+        @unlink($path);
         if ($dom === FALSE) {
           drush_log(dt("Error while requesting the release notes page for !project project.", array('!project' => $key)), 'error');
           continue;
@@ -1578,7 +1581,6 @@ function pm_drush_engine_package_handler() {
           'gitfetchparams' => 'Add options to the `git fetch` command.',
           'gitpullparams' => 'Add options to the `git pull` command.',
           'gitsubmoduleaddparams' => 'Add options to the `git submodule add` command.',
-          'cache' => 'Use a local git cache and clone projects using --reference.',
         ),
       ),
     ),
@@ -1710,11 +1712,8 @@ function _drush_pm_get_release_history_xml($request) {
   // bootstrapped.
   $url = drush_get_option('source', 'http://updates.drupal.org/release-history') . '/' . $request['name'] . '/' . $request['drupal_version'];
   drush_log('Downloading release history from ' . $url);
-  // Some hosts have allow_url_fopen disabled.
-  if (!$xml = @simplexml_load_file($url)) {
-    $filename = _drush_download_file($url);
-    $xml = simplexml_load_file($filename);
-    drush_op('unlink', $filename);
+  if ($path = drush_download_file($url, drush_get_option('cache-duration-releasexml', 24*3600))) {
+    $xml = simplexml_load_file($path);
   }
   if (!$xml) {
     // We are not getting here since drupal.org always serves an XML response.

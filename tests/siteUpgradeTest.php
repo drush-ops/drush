@@ -15,7 +15,7 @@
 class siteUpgradeCase extends Drush_TestCase {
   function testUpgrade() {
     $env = 'testupgrade';
-    $this->setUpDrupal($env, TRUE, '6.x');
+    $this->setUpDrupal($env, TRUE, '6');
     $root = $this->sites[$env]['root'];
 
     // Create the alias for D7 site.

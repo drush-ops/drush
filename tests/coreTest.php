@@ -38,6 +38,7 @@ drush_invoke("version", $arg);
       'uri' => 'dev',
       'verbose' => NULL,
       'yes' => NULL,
+      'cache' => NULL,
     );
     $this->drush('pm-download', array('devel-7.x-1.0'), $options);
     $this->drush('pm-enable', array('menu', 'devel'), $options);

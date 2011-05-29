@@ -52,7 +52,11 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    * Assure that each class starts with an empty sandbox directory.
    */
   public static function setUpBeforeClass() {
-    $sandbox = $GLOBALS['UNISH_SANDBOX'];
+    if (!defined('UNISH_TMP')) {
+      define('UNISH_TMP', $GLOBALS['UNISH_TMP']);
+    }
+
+    $sandbox = UNISH_TMP . '/drush-sandbox';
     if (file_exists($sandbox)) {
       self::file_delete_recursive($sandbox);
     }
@@ -73,6 +77,9 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     mkdir($sandbox . '/share/drush/commands', 0777, TRUE);
     putenv("ETC_PREFIX=$sandbox");
     putenv("SHARE_PREFIX=$sandbox");
+
+    putenv("CACHE_PREFIX=" . UNISH_TMP . '/drush_cache');
+
   }
 
   /**
@@ -162,7 +169,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return $this->_output;
   }
 
-  function setUpDrupal($env = 'dev', $install = FALSE, $version_string = '7.x', $profile = NULL) {
+  function setUpDrupal($env = 'dev', $install = FALSE, $version_string = '7', $profile = NULL) {
     $root = UNISH_SANDBOX . '/web';
     $this->sites[$env]['root'] = $root;
     $site = "$root/sites/$env";
@@ -177,6 +184,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
         'drupal-project-rename' => 'web',
         'yes' => NULL,
         'quiet' => NULL,
+        'cache' => NULL,
       );
       $this->drush('pm-download', array("drupal-$version_string"), $options);
     }

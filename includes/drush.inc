@@ -703,27 +703,62 @@ function drush_op($function) {
 }
 
 /**
- * Download a file using wget or curl.
+ * Download a file using wget or curl. Uses download cache.
+ *
+ * @param string $url
+ *   The path to the file to download
+ *
+ * @param integer $cache_duration
+ *   The acceptable age of a cached file. If cached file is too old, a fetch
+ *   will occur and cache will be updated.
+ *
+ * @return string
+ *   The path to the downloaded file, or FALSE
+ *   if the file could not be downloaded.
+ */
+function drush_download_file($url, $cache_duration) {
+  if (drush_get_option('cache') && $cache_dir = drush_directory_cache()) {
+    drush_mkdir($cache_dir);
+    $cache_name = str_replace(array(':', '/'), '-', $url);
+    $cache_file = $cache_dir . "/" . $cache_name;
+    // Check for cached, non-empty, unexpired file.
+    if (file_exists($cache_file) && filesize($cache_file) && filectime($cache_file) > ($_SERVER['REQUEST_TIME']-$cache_duration)) {
+      drush_log(dt('!name retrieved from cache.', array('!name' => $cache_name)));
+      return $cache_file;
+    }
+    else {
+      // Cache gets set just by downloading file to right location.
+      return _drush_download_file($url, $cache_file);
+    }
+  }
+  elseif ($return = _drush_download_file($url)) {
+    drush_register_file_for_deletion($return);
+    return $return;
+  }
+}
+
+/**
+ * Download a file using wget or curl. Does not use download cache.
  *
  * @param string $url
  *   The path to the file to download
  *
  * @return string
- *   The filename that was downloaded,
- *   or NULL if the file could not be
- *   downloaded.
+ *   The path to the downloaded file, or FALSE
+ *   if the file could not be downloaded.
  */
-function _drush_download_file($url) {
-  $filename = explode('/', $url);
-  $filename = array_pop($filename);
+function _drush_download_file($url, $destination = NULL) {
+  if (!$destination) {
+    $destination = getcwd() . '/' . basename($url);
+  }
 
-  if (!drush_shell_exec("wget %s", $url)) {
-    if(!drush_shell_exec("curl -O %s", $url)) {
-      return NULL;
+  if (!drush_shell_exec("wget -O %s %s", $destination, $url)) {
+    if (!drush_shell_exec("curl -o %s %s", $destination, $url)) {
+      return FALSE;
     }
   }
 
-  return $filename;
+  return $destination;
 }
 
 /**

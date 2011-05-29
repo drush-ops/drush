@@ -46,18 +46,15 @@ function package_handler_download_project(&$request, $release) {
     }
   }
 
-  $filename = explode('/', $release['download_link']);
-  $filename = array_pop($filename);
-
   // Chdir to the download location.
   $olddir = getcwd();
   drush_op('chdir', $request['base_project_path']);
 
-  // Download the project.
-  if (!drush_shell_exec("wget -P . %s", $release['download_link'])) {
-    drush_shell_exec("curl -O %s", $release['download_link']);
-  }
-  if (file_exists($filename) || drush_get_context('DRUSH_SIMULATE')) {
+  // Dev snapshots can be cached for 4 hours and releases for 1 year.
+  $max_age = strpos($release['download_link'], '-dev') !== FALSE ? 3600*4 : 86400*365;
+  $path = drush_download_file($release['download_link'], $max_age);
+  $filename = basename($release['download_link']);
+  if ($path || drush_get_context('DRUSH_SIMULATE')) {
     drush_log("Downloading " . $filename . " was successful.");
   }
   else {
@@ -66,9 +63,8 @@ function package_handler_download_project(&$request, $release) {
   }
 
   // Check Md5 hash.
-  if (drush_op('md5_file', $filename) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
+  if (drush_op('md5_file', $path) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
     drush_set_error('DRUSH_PM_FILE_CORRUPT', "File $filename is corrupt (wrong md5 checksum).");
-    drush_op('unlink', $filename);
     drush_op('chdir', $olddir);
     return FALSE;
   }
@@ -76,11 +72,11 @@ function package_handler_download_project(&$request, $release) {
     drush_log("Md5 checksum of $filename verified.");
   }
 
-  // Decompress and untar in two steps as tar -xzf does not work on windows.
-  drush_shell_exec("gzip -d %s", $filename);
-  $tarpath = basename($filename, '.tar.gz');
+  $tarpath = basename($path, '.tar.gz');
   $tarpath = basename($tarpath, '.tgz');
   $tarpath .= '.tar';
+  // Decompress and untar in two steps as tar -xzf does not work on windows.
+  drush_shell_exec("gzip --decompress --stdout %s > %s", $path, $tarpath);
   drush_shell_exec("tar -xf %s", $tarpath);
 
   // Move untarred directory to project_dir, if distinct.

@@ -19,6 +19,7 @@ class pmUpdateCode extends Drush_TestCase {
       'uri' => 'dev',
       'yes' => NULL,
       'quiet' => NULL,
+      'cache' => NULL,
     );
     $this->drush('pm-download', array('devel-7.x-1.0-rc1'), $options);
     $this->drush('pm-download', array('webform-7.x-3.4-beta1'), $options);
