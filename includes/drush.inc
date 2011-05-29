@@ -605,7 +605,7 @@ function _drush_is_drush_shebang_script($script_filename) {
  */
 function drush_print($message = '', $indent = 0, $handle = NULL) {
   $msg = str_repeat(' ', $indent) . (string)$message . "\n";
-  if ($charset = drush_get_option('output_charset') && function_exists('iconv')) {
+  if (($charset = drush_get_option('output_charset')) && function_exists('iconv')) {
     $msg = iconv('UTF-8', $charset, $msg);
   }
   if (isset($handle)) {
