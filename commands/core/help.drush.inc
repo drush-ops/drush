@@ -6,7 +6,9 @@
 function drush_global_options_command($brief = FALSE) {
   $global_options_help = array(
     'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.',
-    'sections' => array('options' => dt('Global options (see `drush topic core-global-options` for the full list)')),
+    'sections' => array(
+      'options' => 'Global options (see `drush topic core-global-options` for the full list).',
+    ),
     'options' => drush_get_global_options($brief),
     'examples' => array(
       'drush dl cck zen' => 'Download CCK module and Zen theme.',

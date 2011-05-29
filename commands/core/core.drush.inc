@@ -184,7 +184,7 @@ function core_drush_command() {
     'deprecated-aliases' => array('installsite', 'is'),
   );
   $items['drupal-directory'] = array(
-    'description' => dt('Return path to a given module/theme directory.'),
+    'description' => 'Return path to a given module/theme directory.',
     'arguments' => array(
       'target' => 'A module/theme name, or special names like root, files, private, or an alias : path alias string such as @alias:%files. Defaults to root.',
     ),
@@ -204,7 +204,7 @@ function core_drush_command() {
   );
 
   $items['core-cli'] = array(
-    'description' => dt('Enter a new shell optimized for drush use.'),
+    'description' => 'Enter a new shell optimized for drush use.',
     'options' => array(
       'override' => 'List of drush commands or aliases that should override built-in shell functions and commands; otherwise, built-ins override drush commands. Defaults to dd,help,sa.',
       'contextual' => 'Additional drush overrides that function ONLY when the prompt is "@alias>".  Defaults to cc,cron,rsync,status,sync,updatedb.',
@@ -230,7 +230,7 @@ function core_drush_command() {
   );
 
   $items['batch-process'] = array(
-    'description' => dt('Process operations in the specified batch set'),
+    'description' => 'Process operations in the specified batch set',
     'hidden' => TRUE,
       'arguments' => array(
         'batch-id' => 'The batch id that will be processed',
@@ -239,7 +239,7 @@ function core_drush_command() {
   );
 
   $items['updatedb-batch-process'] = array(
-    'description' => dt('Perform update functions'),
+    'description' => 'Perform update functions',
     'hidden' => TRUE,
     'arguments' => array(
       'batch-id' => 'The batch id that will be processed',
@@ -247,7 +247,7 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
   );
   $items['core-global-options'] = array(
-    'description' => dt('All global options'),
+    'description' => 'All global options',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
