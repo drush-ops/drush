@@ -141,13 +141,12 @@
  *     record.  Drush will look up the 'databases' record if it is not specified.
  * - 'path-aliases': An array of aliases for common rsync targets.
  *   Relative aliases are always taken from the Drupal root.
- *     '%drush': The path to the folder where drush is stored.  Optional;
- *       defaults to the folder containing the running script.  Always be sure
- *       to set '%drush' if the path to drush is different on the remote server.
- *     '%drush-script': The path to the 'drush' script (used by backend invoke);
- *       default is 'drush' on remote machines, or the full path to drush.php on
- *       the local machine.  Note that you only need to define one of '%drush'
- *       or '%drush-script', as drush can infer one from the other.
+ *     '%drush-script': The path to the 'drush' script, or to 'drush.php' or
+ *       'drush.bat', as desired.  This is used by backend invoke when drush
+ *       runs a drush command.  The default is 'drush' on remote machines, or 
+ *       the full path to drush.php on the local machine.
+ *     '%drush': A read-only property: points to the folder that the drush script
+ *       is stored in.
  *     '%dump-dir': Path to directory that "drush sql-sync" should use to store
  *       sql-dump files. Helpful filenames are auto-generated.
  *     '%dump': Path to the file that "drush sql-sync" should use to store sql-dump file.
