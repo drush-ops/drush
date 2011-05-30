@@ -18,7 +18,7 @@ REQUIREMENTS
 
 * Drush commands that work with git require git 1.7 or greater.
 
-* Drush is designed a Unix-like OS (Linux, OS X)
+* Drush is designed for a Unix-like OS (Linux, OS X)
 
 * Some Drush commands run on Windows.
   If you must run Drush on Windows, you have to install Unix Tools from
@@ -69,29 +69,43 @@ STANDARD CONFIGURATION:
   $ which drush
 
 
-AMP STACK CONFIGURATIONS:
--------------------------
-Users of Apache distributions such as MAMP, XAMPP, or Acquia's Dev Desktop
+ADDITIONAL CONFIGURATIONS FOR MAMP:
+-----------------------------------
+Users of MAMP will need to manually specify in their PATH which version
+of php and MySQL to use in the command line interface. This is independent of the php
+version selected in the MAMP application settings.
+Under OS X, edit (or create if it does not already exist) a file called .bash_profile
+in your home folder.
+
+To use php 5.2.x, add this line to .bash_profile:
+
+  export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.2/bin:$PATH"
+
+If you want to use php 5.3.x, add this line instead
+
+  export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.3/bin:$PATH"
+
+If you have MAMP v.1.84 or lower, this configuration will work for both version of php:
+  
+  export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5/bin:$PATH"
+
+Additionally, you may need to adjust your php.ini settings before you can use
+drush successfully. See CONFIGURING PHP.INI below for more details on how to proceed.
+
+
+ADDITIONAL CONFIGURATIONS FOR OTHER AMP STACKS:
+-----------------------------------------------
+Users of other Apache distributions such as XAMPP, or Acquia's Dev Desktop
 will want to ensure that its php can be found by the command line by adding
 it to the PATH variable, using the method in 3.b above. Depending on the
 version and distribution of your AMP stack, php might reside at:
 
-  /Applications/MAMP/bin/php5/bin       MAMP (<=v.1.84)
-  /Applications/MAMP/bin/php5.2/bin     MAMP (>v.1.9+)
-  /Applications/MAMP/bin/php5.3/bin     MAMP (>v.1.9+)
   /Applications/acquia-drupal/php/bin   Acquia Dev Desktop (Mac)
   /Applications/xampp/xamppfiles/bin    XAMP (Mac)
   /opt/lampp/bin                        XAMPP (Windows)
 
-Most AMP stacks store mysql binaries in the same directory as php, so the
-above paths cover both cases. MAMP is an exception in that it stores mysql elsewhere.
-Adding mysql to your PATH is advisable, or Drush sql commands may fail:
-
-  /Applications/MAMP/Library/bin
-
-Additionally, you may find that Drush does not use the same version of php.ini
-in the command-line as your AMP stack does for the web server. See CONFIGURING
-PHP.INI below for more details on how to proceed.
+Additionally, you may need to adjust your php.ini settings before you can use
+drush successfully. See CONFIGURING PHP.INI below for more details on how to proceed.
 
 
 CUSTOM CONFIGURATIONS:
@@ -124,6 +138,7 @@ Usually, php is configured to use separate php.ini files for the web server
 and the command line. Make sure that Drush's php.ini is given as much memory
 to work with as the web server is; otherwise, Drupal might run out of memory
 when Drush bootstraps it.
+
 To see which php.ini file Drush is using, run:
 
   $ drush status
