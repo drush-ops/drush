@@ -739,7 +739,14 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = 
     $output = str_replace("\r\n", PHP_EOL, $output);
   }
 
-  drush_print($output, 0, $handle);
+  // Check if the handle argument is a string to preserve compatability with
+  // previous versions that accepted a filename instead.
+  if (is_string($handle)) {
+    file_put_contents($handle, $output, FILE_APPEND);
+  }
+  else {
+    drush_print($output, 0, $handle);
+  }
   return $tbl;
 }
 
