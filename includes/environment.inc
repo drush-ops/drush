@@ -601,6 +601,9 @@ function _drush_bootstrap_drush() {
   $drush_info = drush_read_drush_info();
   define('DRUSH_VERSION', $drush_info['drush_version']);
 
+  // prime the CWD cache
+  drush_cwd();
+
   /* Copy ETC_PREFIX and SHARE_PREFIX from environment variables if available.
    * This alters where we check for server-wide config and alias files.
    * Used by unit test suite to provide a clean environment.
@@ -722,9 +725,6 @@ function _drush_bootstrap_drupal_root_validate() {
 function _drush_bootstrap_drupal_root() {
   $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
   define('DRUPAL_ROOT', $drupal_root);
-
-  // Save original working dir case some command wants it.
-  drush_set_context('DRUSH_OLDCWD', getcwd());
 
   chdir($drupal_root);
   drush_load_config('drupal');
@@ -995,9 +995,13 @@ function _drush_bootstrap_drupal_login() {
 /**
  * Returns the current working directory.
  *
- * TODO: Could cache result, but it isn't really expensive.
+ * This is the directory as it was when drush was started, not the
+ * directory we are currently in. For that, use getcwd() directly.
  */
 function drush_cwd() {
+  if ($path = drush_get_context('DRUSH_OLDCWD')) {
+    return $path;
+  }
   // We use PWD if available because getcwd() resolves symlinks, which
   // could take us outside of the Drupal root, making it impossible to find.
   // $_SERVER['PWD'] isn't set on windows and generates a Notice.
@@ -1008,6 +1012,9 @@ function drush_cwd() {
 
   // Convert windows paths.
   $path = _drush_convert_path($path);
+
+  // Save original working dir case some command wants it.
+  drush_set_context('DRUSH_OLDCWD', $path);
 
   return $path;
 }
