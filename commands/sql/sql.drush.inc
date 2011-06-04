@@ -95,7 +95,7 @@ function sql_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'drush dependencies' => array('core'), // core-rsync.
     'examples' => array(
-      'drush sql-sync @dev @prod' => 'Copy the DB defined in sites/dev to the DB in sites/prod.',
+      'drush sql-sync @prod @dev' => 'Copy the DB defined in sites/prod to the DB in sites/dev.',
     ),
     'arguments' => array(
       'from' => 'Name of subdirectory within /sites or a site-alias.',
