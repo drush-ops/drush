@@ -78,6 +78,7 @@ function drush_variable_get() {
   foreach ($keys as $name) {
     $value = $conf[$name];
     drush_print_pipe("\$variables['$name'] = ". var_export($value, TRUE). ";\n");
+    $returns[$name] = $value;
 
     if ($value === TRUE) {
       $value = 'TRUE';
@@ -97,6 +98,9 @@ function drush_variable_get() {
   
   if (!$found) {
     return drush_set_error('No matching variable found.');
+  }
+  else {
+    return $returns;
   }
 }
 
