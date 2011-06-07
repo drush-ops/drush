@@ -1023,6 +1023,18 @@ function drush_pm_uninstall() {
       unset($modules[$key]);
       drush_log(dt('!module is already uninstalled.', array('!module' => $module)), 'ok');
     }
+    else {
+      $required_by = array();
+      foreach (array_keys($module_info[$module]->required_by) as $required) {
+        if ($module_info[$required]->schema_version != -1) {
+          $required_by[] = $required;
+        }
+      }
+      if (count($required_by)) {
+        drush_log(dt('To uninstall !module, the following modules must be uninstalled first: !required', array('!module' => $module, '!required' => implode(', ', $required_by))), 'error');
+        unset($modules[$key]);
+      }
+    }
   }
 
   // Inform the user which modules will finally be uninstalled.
