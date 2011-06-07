@@ -1389,13 +1389,14 @@ function drush_unset_recursive(&$data, $unset_key) {
 }
 
 /**
- * Return a list of all supported VCSs reserved files and directories.
+ * Return a list of VCSs reserved files and directories.
  */
 function drush_version_control_reserved_files() {
   static $files = FALSE;
 
   if (!$files) {
-    $files = array();
+    // Also support VCSs that are not drush vc engines.
+    $files = array('.git', '.gitignore', '.hg', '.hgignore', '.hgrags');
     $vcs = array_keys(drush_get_engines('version_control'));
     foreach ($vcs as $name) {
       drush_include_engine('version_control', $name);
