@@ -782,6 +782,7 @@ function drush_remote_command() {
     }
     $command = array_shift($args);
     $multi_options = drush_get_context('cli');
+    $backend_options = array();
 
     if (!drush_get_option('no-label', FALSE) && !$interactive) {
       $label_separator = ' >> ';
@@ -793,24 +794,17 @@ function drush_remote_command() {
       }
       $multi_options['reserve-margin'] = $max_name_length + strlen($label_separator);
       foreach ($site_list as $alias_name => $alias_record) {
-        $values = drush_do_site_command($alias_record, $command, $args, $multi_options);
-        foreach (explode("\n", $values['output']) as $line) {
-          if (empty($line)) {
-            drush_print();
-          }
-          else {
-            drush_print(str_pad($alias_name, $max_name_length, " ") . $label_separator . $line);
-          }
-        }
+        $backend_options['output-label'] = str_pad($alias_name, $max_name_length, " ") . $label_separator;
+        $values = drush_do_site_command($alias_record, $command, $args, $multi_options, $backend_options);
       }
     }
     else {
       if ($interactive) {
-        $multi_options['#interactive'] = TRUE;
+        $backend_options['interactive'] = TRUE;
       }
       foreach ($site_list as $alias_name => $alias_record) {
         drush_print(dt("!site >> !command", array('!command' => $command . ' ' . implode(" ", $args), '!site' => $alias_name)));
-        $values = drush_do_site_command($alias_record, $command, $args, $multi_options);
+        $values = drush_do_site_command($alias_record, $command, $args, $multi_options, $backend_options);
         drush_print($values['output']);
       }
     }
@@ -872,7 +866,7 @@ function drush_do_multiple_command($command, $source_record, $destination_record
       $target_spec = drush_sitealias_alias_record_to_spec($one_target);
 
       drush_log(dt('Begin do_multiple !command via backend invoke', array('!command' => $command)));
-      $values = drush_backend_invoke_args($command, array($source_spec . $source_path, $target_spec . $destination_path), $data, 'GET', TRUE);
+      $values = drush_invoke_process_args($command, array($source_spec . $source_path, $target_spec . $destination_path), $data);
       drush_log(dt('Backend invoke is complete'));
     }
   }
@@ -886,16 +880,31 @@ function drush_do_multiple_command($command, $source_record, $destination_record
  * The standard function that provides this service is called
  * drush_invoke_sitealias_args.  Please call the standard function
  * unless you need to set $integrate = TRUE.
+ *
+ * @param backend_options
+ *   TRUE - integrate errors
+ *   FALSE - do not integrate errors
+ *   array - @see drush_backend_invoke_sitealias_command
  */
-function drush_do_site_command($site_record, $command, $args = array(), $data = array(), $integrate = FALSE) {
+function drush_do_site_command($site_record, $command, $args = array(), $data = array(), $backend_options = FALSE) {
   $values = NULL;
   if (!empty($site_record)) {
+    if (is_bool($backend_options)) {
+      $integrate = $backend_options;
+      $backend_options = array('integrate' => $integrate);
+    }
     foreach ($site_record as $key => $value) {
       if (!isset($data[$key]) && !in_array($key, drush_sitealias_site_selection_keys())) {
         $data[$key] = $site_record[$key];
       }
     }
-    $values = drush_backend_invoke_sitealias($site_record, $command, $args, $data, 'GET', $integrate);
+    // By default, if the caller does not specify a value for 'output', but does
+    // specify 'integrate' === FALSE, then we will set output to FALSE.  Otherwise we
+    // will allow it to default to TRUE.
+    if ((array_key_exists('integrate', $backend_options)) && ($backend_options['integrate'] === FALSE) && (!array_key_exists('output', $backend_options))) {
+      $backend_options['output'] = FALSE;
+    }
+    $values = drush_backend_invoke_sitealias_command($site_record, $command, $args, $data, $backend_options);
   }
   return $values;
 }
@@ -905,15 +914,9 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
  * options that were passed to this invocation of drush.
  */
 function drush_do_command_redispatch($command, $args = array(), $remote_host = NULL, $remote_user = NULL, $drush_path = NULL) {
-  $data = drush_redispatch_get_options();
+  $command_options = drush_redispatch_get_options();
 
-  // The option allows ad hoc usage of #interactive.
-  // @see _drush_backend_invoke().
-  if (drush_get_option(array('interactive', 'ia'))) {
-    $data['#interactive'] = TRUE;
-  }
-
-  // If the path to drush was supplied, then pass it to backend invoke.
+  // If the path to drush was supplied, then use it to invoke the new command.
   if ($drush_path == NULL) {
     $drush_path = drush_get_option('drush-script');
     if (!isset($drush_path)) {
@@ -923,10 +926,15 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
       }
     }
   }
-  // Call through to backend invoke.
-  drush_log(dt('Begin redispatch via backend invoke'));
-  $values = drush_backend_invoke_args($command, $args, $data, 'GET', TRUE, $drush_path, $remote_host, $remote_user);
-  drush_log(dt('Backend invoke is complete'));
+  $backend_options = array('drush-script' => $drush_path, 'remote-host' => $remote_host, 'remote-user' => $remote_user, 'integrate' => TRUE);
+  if (drush_get_option(array('interactive', 'ia'))) {
+    $backend_options['interactive'] = TRUE;
+  }
+
+  // Run the command in a new process.
+  drush_log(dt('Begin redispatch via invoke process'));
+  $values = drush_invoke_process_args($command, $args, $command_options, $backend_options);
+  drush_log(dt('Invoke process is complete'));
 
   return $values;
 }
@@ -975,6 +983,31 @@ function drush_log($message, $type = 'notice', $error = null) {
    );
   $entry['error'] = $error;
   $log[] = $entry;
+  drush_backend_packet('log', $entry);
+
+  return $callback($entry);
+}
+
+/**
+ * Backend command callback. Add a log message to the log history.
+ *
+ * @param entry
+ *   The log entry.
+ */
+function drush_backend_packet_log($entry, $backend_options) {
+  if (!$backend_options['log']) {
+    return;
+  }
+  $log =& drush_get_context('DRUSH_LOG', array());
+  $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
+  $log[] = $entry;
+  // Yes, this looks odd, but we might in fact be a backend command
+  // that ran another backend command.
+  drush_backend_packet('log', $entry);
+  if (array_key_exists('output-label', $backend_options)) {
+    $entry['message'] = $backend_options['output-label'] . $entry['message'];
+  }
+
   return $callback($entry);
 }
 
@@ -1238,7 +1271,7 @@ function drush_format_size($size, $langcode = NULL) {
  *   Always returns FALSE, to allow you to return with false in the calling functions,
  *   such as <code>return drush_set_error('DRUSH_FRAMEWORK_ERROR')</code>
  */
-function drush_set_error($error, $message = null) {
+function drush_set_error($error, $message = null, $output_label = "") {
   $error_code =& drush_get_context('DRUSH_ERROR_CODE', DRUSH_SUCCESS);
   $error_code = DRUSH_FRAMEWORK_ERROR;
 
@@ -1255,7 +1288,9 @@ function drush_set_error($error, $message = null) {
   }
 
   $error_log[$error][] = $message;
-  drush_log(($message) ? $message : $error, 'error', $error);
+  if (!drush_backend_packet('set_error', array('error' => $error, 'message' => $message))) {
+    drush_log(($message) ? $output_label . $message : $output_label . $error, 'error', $error);
+  }
 
   return FALSE;
 }

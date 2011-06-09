@@ -642,22 +642,33 @@ function _drush_bootstrap_drush() {
 
   $backend = drush_set_context('DRUSH_BACKEND', drush_get_option(array('b', 'backend')));
 
+  // Pipe implies quiet.
+  $quiet = drush_set_context('DRUSH_QUIET', drush_get_option(array('q', 'quiet', 'p', 'pipe')));
+
+  drush_set_context('DRUSH_PIPE', drush_get_option(array('p', 'pipe')));
+
   if ($backend) {
     // Load options passed as a JSON encoded string through STDIN.
     $stdin_options = _drush_backend_get_stdin();
     if (is_array($stdin_options)) {
       drush_set_context('stdin', $stdin_options);
     }
+    // Add an output buffer handler to collect output/pass through backend
+    // packets. Using a chunksize of 2 ensures that each line is flushed
+    // straight away.
+    if ($quiet) {
+      // Pass through of backend packets, discard regular output.
+      ob_start('drush_backend_output_discard', 2);
+    }
+    else {
+      // Collect output.
+      ob_start('drush_backend_output_collect', 2);
+    }
   }
 
-  // Pipe implies quiet.
-  $quiet = drush_set_context('DRUSH_QUIET', drush_get_option(array('q', 'quiet', 'p', 'pipe')));
-
-  drush_set_context('DRUSH_PIPE', drush_get_option(array('p', 'pipe')));
-
-  // When running in backend mode, all output is buffered, and returned
-  // as a property of a JSON encoded associative array.
-  if ($backend || $quiet) {
+  // In non-backend quiet mode we start buffering and discards it on command
+  // completion.
+  if ($quiet && !$backend) {
     ob_start();
   }
 
@@ -965,10 +976,13 @@ function _drush_bootstrap_drupal_database() {
  * Attempt to load the full Drupal system.
  */
 function _drush_bootstrap_drupal_full() {
-  ob_start();
+  if (!drush_get_context('DRUSH_QUIET', FALSE)) {
+    ob_start();
+  }
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-  ob_end_clean();
-
+  if (!drush_get_context('DRUSH_QUIET', FALSE)) {
+    ob_end_clean();
+  }
   // If needed, prod module_implements() to recognize our system_watchdog() implementation.
   $dogs = module_implements('watchdog');
   if (!in_array('system', $dogs)) {

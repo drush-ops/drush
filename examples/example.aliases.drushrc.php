@@ -146,7 +146,7 @@
  *   Relative aliases are always taken from the Drupal root.
  *     '%drush-script': The path to the 'drush' script, or to 'drush.php' or
  *       'drush.bat', as desired.  This is used by backend invoke when drush
- *       runs a drush command.  The default is 'drush' on remote machines, or 
+ *       runs a drush command.  The default is 'drush' on remote machines, or
  *       the full path to drush.php on the local machine.
  *     '%drush': A read-only property: points to the folder that the drush script
  *       is stored in.
@@ -156,6 +156,9 @@
  *     '%files': Path to 'files' directory.  This will be looked up if not specified.
  *     '%root': A reference to the Drupal root defined in the 'root' item
  *       in the site alias record.
+ * - 'php': path to custom php interpreter, defaults to /usr/bin/php
+ * - 'php-options': commandline options for php interpreter, you may
+ *   want to set this to '-d error_reporting="E_ALL^E_DEPRECATED"'
  * - 'command-specific': These options will only be set if the alias
  *   is used with the specified command.  In the example below, the option
  *   `--no-cache` will be selected whenever the @stage alias

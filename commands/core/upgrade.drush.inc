@@ -119,12 +119,12 @@ function drush_upgrade_site_upgrade($target_key) {
   }
 
   // Get a list of enabled contrib extensions.
-  $values = drush_invoke_process_args('pm-list', array(), array('status'=>'enabled','no-core'=>TRUE, '#integrate' => FALSE, '#override-simulated' => TRUE));
+  $values = drush_invoke_process_args('pm-list', array(), array('status'=>'enabled','no-core'=>TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
   if ($values['error_status'] != 0) return FALSE;
   $contrib_extensions = array_keys($values['object']);
 
   // Get a list of enabled core extensions.
-  $values = drush_invoke_process_args('pm-list', array(), array('status'=>'enabled','core'=>TRUE, '#integrate' => FALSE, '#override-simulated' => TRUE));
+  $values = drush_invoke_process_args('pm-list', array(), array('status'=>'enabled','core'=>TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
   if ($values['error_status'] != 0) return FALSE;
   $core_extensions = array_keys($values['object']);
 
@@ -188,7 +188,7 @@ function drush_upgrade_site_upgrade($target_key) {
     // we are not ready to upgrade (but still can, without that project); if there is no RECOMMENDED
     // release, then we might not be ready to upgrade (but still can, with a non-recommended release).
     if (!empty($project_download_list)) {
-      $result = drush_invoke_sitealias_args(array('root' => '', 'uri' => ''), 'pm-releases', array_keys($project_download_list), array('default-major' => $target_version, '#integrate' => FALSE, '#override-simulated' => TRUE));
+      $result = drush_invoke_sitealias_args(array('root' => '', 'uri' => ''), 'pm-releases', array_keys($project_download_list), array('default-major' => $target_version), array('integrate' => FALSE, 'override-simulated' => TRUE));
       $project_releases = $result['object'];
       foreach ($project_download_list as $project => $extension_list) {
         if (!array_key_exists($project, $project_releases)) {
@@ -312,7 +312,7 @@ function drush_upgrade_site_upgrade($target_key) {
         }
       }
     }
-    $result = (drush_invoke_sitealias_args($modify_site, 'site-upgrade-prepare', $contrib_extensions, array('uninstall' => implode(',', $uninstall_extensions), 'yes' => TRUE, '#interactive' => TRUE)) == 0);
+    $result = (drush_invoke_sitealias_args($modify_site, 'site-upgrade-prepare', $contrib_extensions, array('uninstall' => implode(',', $uninstall_extensions), 'yes' => TRUE), array('interactive' => TRUE)) == 0);
 
     // Delete the temporary site now that we're done with it.
     if (isset($modify_site_conf_path)) {
@@ -326,7 +326,7 @@ function drush_upgrade_site_upgrade($target_key) {
   // Run update.php in a subshell. It is run on @target site whereas this request was on @self.
   drush_log(dt('About to perform updatedb for Drupal core on !target', array('!target' => $target_key)), 'ok');
   // When we call drush_invoke_sitealias_args in #interactive mode, the result code comes from drush_op_system, where 0 == success.
-  $result = drush_invoke_sitealias_args($target_alias, 'updatedb', array(), array('yes' => TRUE, '#interactive' => TRUE)) == 0;
+  $result = drush_invoke_sitealias_args($target_alias, 'updatedb', array(), array('yes' => TRUE), array('interactive' => TRUE)) == 0;
   if ($result === FALSE) {
     return drush_set_error('DRUSH_DRUPAL_CORE_UPGRADE_FAILED', dt("The call to updatedb failed for Drupal core.  This may be caused by a contrib module that is not yet ready for upgrade.  Try running site-upgrade again with '--uninstall={module list}' to remove all contrib extensions prior to upgrade.  Add modules back in until the problematic one is isolated.  Please report problems in the issue queue of the module that is causing problems."));
   }
@@ -338,7 +338,8 @@ function drush_upgrade_site_upgrade($target_key) {
   // STEP 3: Download and re-enable the contrib modules.
 
   if (!empty($contrib_extensions) && !drush_get_option('core-only')) {
-    $options = array('#interactive' => TRUE);
+    $options = array();
+    $backend_options = array('interactive' => TRUE);
     if (!empty($project_download_list)) {
       $projects = implode(',', array_keys($project_download_list));
       $options['projects'] = $projects;
@@ -353,7 +354,7 @@ function drush_upgrade_site_upgrade($target_key) {
 
     // Redispatch to site-upgrade-modules command, so that we will be
     // bootstrapped to the target site.
-    $result = (drush_invoke_sitealias_args($target_alias, 'site-upgrade-modules', array_merge($core_extensions, array_diff($contrib_extensions, $unavailable_extensions, $uninstall_extensions)), $options) == 0);
+    $result = (drush_invoke_sitealias_args($target_alias, 'site-upgrade-modules', array_merge($core_extensions, array_diff($contrib_extensions, $unavailable_extensions, $uninstall_extensions)), $options, $backend_options) == 0);
   }
 
   return $result;
@@ -542,7 +543,7 @@ function drush_upgrade_site_upgrade_modules() {
 
   // Run updatedb to update all of the contrib extensions.
   drush_log(dt('About to perform updatedb for extensions'), 'ok');
-  $result = drush_invoke_process_args('updatedb', array(), array('yes' => TRUE, '#interactive' => TRUE));
+  $result = drush_invoke_process_args('updatedb', array(), array('yes' => TRUE), array('interactive' => TRUE));
   if ($result === FALSE) {
     return drush_set_error('DRUSH_DRUPAL_CONTRIB_UPGRADE_FAILED', dt("The call to updatedb failed for the enabled contrib modules.  Try running site-upgrade again with '--uninstall={module list}' to remove all contrib extensions prior to upgrade.  Add modules back in until the problematic one is isolated.  Please report problems in the issue queue of the module that is causing problems."));
   }

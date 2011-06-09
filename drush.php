@@ -196,16 +196,15 @@ function drush_shutdown() {
     }
   }
 
-  if (drush_get_context('DRUSH_BACKEND')) {
+  if (drush_get_context('DRUSH_BACKEND', FALSE)) {
     drush_backend_output();
   }
-  elseif (drush_get_context('DRUSH_QUIET')) {
+  elseif (drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_end_clean();
-  }
-
-  // If we are in pipe mode, emit the compact representation of the command, if available.
-  if (drush_get_context('DRUSH_PIPE')) {
-    drush_pipe_output();
+    // If we are in pipe mode, emit the compact representation of the command, if available.
+    if (drush_get_context('DRUSH_PIPE')) {
+      drush_pipe_output();
+    }
   }
 
   /**

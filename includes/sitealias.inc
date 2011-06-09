@@ -602,9 +602,9 @@ function _drush_sitealias_cache_alias($alias_name, $alias_record) {
  */
 function drush_sitealias_add_db_url(&$alias_record) {
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
-    // We use sql-conf to fetch our database info.  We set #override-simulated so that
+    // We use sql-conf to fetch our database info.  We set 'override-simulated' so that
     // we will fetch the database values even in --simulate mode.
-    $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('db-url' => TRUE, '#override-simulated' => TRUE));
+    $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('db-url' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
     if (isset($values['object']['db-url'])) {
       $alias_record['db-url'] = $values['object']['db-url'];
     }
@@ -642,7 +642,7 @@ function drush_sitealias_add_db_settings(&$alias_record)
   // If the alias record does not have a defined 'databases' entry,
   // then we'll need to look one up
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
-    $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('all' => TRUE, '#override-simulated' => TRUE));
+    $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('all' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
     if (is_array($values) && ($values['error_status'] == 0)) {
       $altered_record = TRUE;
       // If there are any special settings in the '@self' record returned by drush_invoke_sitealias_args,
@@ -740,7 +740,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
       $status_values = _core_site_status_table($project_list);
     }
     else {
-      $values = drush_invoke_sitealias_args($alias_record, "status", array(), empty($project_list) ? array() : array('project' => $project_list, '#override-simulated' => TRUE));
+      $values = drush_invoke_sitealias_args($alias_record, "status", array(), empty($project_list) ? array() : array('project' => $project_list), array('integrate' => FALSE, 'override-simulated' => TRUE));
       $status_values = $values['object'];
     }
     if (isset($status_values['%paths'])) {
@@ -1367,9 +1367,18 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
 
   // There are some items that we should just skip
   $skip_list = drush_get_special_keys();
-  // Also skip 'remote-host' and 'remote-user' if 'remote-host' is actually
-  // the local machine
-  if (array_key_exists('remote-host', $site_alias_settings) && drush_is_local_host($site_alias_settings['remote-host'])) {
+  // If 'php-options' are set in the alias, then we will force drush
+  // to redispatch via the remote dispatch mechanism even if the target is localhost.
+  if (array_key_exists('php-options', $site_alias_settings) || drush_get_context('DRUSH_BACKEND', FALSE)) {
+    if (!array_key_exists('remote-host', $site_alias_settings)) {
+      $site_alias_settings['remote-host'] = 'localhost';
+    }
+  }
+  // If 'php-options' are not set in the alias, then skip 'remote-host'
+  // and 'remote-user' if 'remote-host' is actually the local machine.
+  // This prevents drush from using the remote dispatch mechanism (the command
+  // is just run directly on the local machine, bootstrapping to the specified alias)
+  elseif (array_key_exists('remote-host', $site_alias_settings) && drush_is_local_host($site_alias_settings['remote-host'])) {
     $skip_list[] = 'remote-host';
     $skip_list[] = 'remote-user';
   }

@@ -238,7 +238,7 @@ function drush_invoke_process($command_name) {
 
 /**
  * Invoke a command in a new process.
- * Prefer this to drush_backend_invoke_args(...);
+ * Prefer this to drush_backend_invoke_command(...);
  *
  * @param command_name
  *   The drush command to execute.
@@ -248,8 +248,8 @@ function drush_invoke_process($command_name) {
  *   array containing the results of the API call.
  *   @see drush_backend_get_result()
  */
-function drush_invoke_process_args($command_name, $commandline_args, $commandline_options = array()) {
-  return drush_backend_invoke_args($command_name, $commandline_args, $commandline_options);
+function drush_invoke_process_args($command_name, $commandline_args, $commandline_options = array(), $backend_options = array()) {
+  return drush_backend_invoke_command($command_name, $commandline_args, $commandline_options, $backend_options);
 }
 
 /**
@@ -266,12 +266,12 @@ function drush_invoke_process_args($command_name, $commandline_args, $commandlin
  *   array containing the results of the API call.
  *   @see drush_backend_get_result()
  */
-function drush_invoke_sitealias($site_alias_record, $command_name) {
+function drush_invoke_sitealias($site_alias_record, $command_name, $backend_options = FALSE) {
   $args = func_get_args();
   array_shift($args);
   array_shift($args);
 
-  return drush_invoke_sitealias_args($site_alias_record, $command_name, $args);
+  return drush_invoke_sitealias_args($site_alias_record, $command_name, $args, array(), $backend_options);
 }
 
 /**
@@ -292,14 +292,14 @@ function drush_invoke_sitealias($site_alias_record, $command_name) {
  *   array containing the results of the API call.
  *   @see drush_backend_get_result()
  */
-function drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array()) {
+function drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array(), $backend_options = FALSE) {
   // If the first parameter is not a site alias record,
   // then presume it is an alias name, and try to look up
   // the alias record.
   if (!is_array($site_alias_record)) {
     $site_alias_record = drush_sitealias_get_record($site_alias_record);
   }
-  return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options);
+  return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options, $backend_options);
 }
 
 /**
@@ -315,7 +315,13 @@ function drush_invoke_sitealias_args($site_alias_record, $command_name, $command
 function drush_redispatch_get_options() {
   // Start off by taking everything from the site alias and command line
   // ('cli' context)
-  $options = array_merge(drush_get_context('alias'), drush_get_context('cli'));
+  $cli_context = drush_get_context('cli');
+  // local php settings should not override sitealias settings
+  unset($cli_context['php']);
+  unset($cli_context['php-options']);
+  // cli overrides sitealias
+  $options = $cli_context + drush_get_context('alias');
+
   $options = array_diff_key($options, array_flip(drush_sitealias_site_selection_keys()));
   unset($options['command-specific']);
   unset($options['path-aliases']);
@@ -332,10 +338,6 @@ function drush_redispatch_get_options() {
       }
     }
   }
-  // 'php', if needed, will be included in DRUSH_COMMAND.  If DRUSH_COMMAND
-  // is not used (e.g. when calling a remote instance of drush), then --php
-  // should not be passed along.
-  unset($options['php']);
   // If --bootstrap-to-first-arg is specified, do not
   // pass it along to remote commands.
   unset($options['bootstrap-to-first-arg']);

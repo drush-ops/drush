@@ -24,10 +24,10 @@ class backendCase extends Drush_TestCase {
    * General handling of site aliases will be in sitealiasTest.php.
    */
   function testOrigin() {
-    $exec = sprintf('%s %s version --simulate --ssh-options=%s | grep ssh', self::unish_escapeshellarg(UNISH_DRUSH), self::unish_escapeshellarg('user@server/path/to/drupal#sitename'), self::unish_escapeshellarg('-i mysite_dsa'));
+    $exec = sprintf('%s %s version --simulate --ssh-options=%s 2>/dev/null | grep ssh', self::unish_escapeshellarg(UNISH_DRUSH), self::unish_escapeshellarg('user@server/path/to/drupal#sitename'), self::unish_escapeshellarg('-i mysite_dsa'));
     $this->execute($exec);
     // $expected might be different on non unix platforms. We shall see.
-    $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server 'drush  --uri=sitename --root=/path/to/drupal --simulate version 2>&1' 2>&1";
+    $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server 'drush  --simulate --uri=sitename --root=/path/to/drupal version 2>&1' 2>&1";
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected ssh command was built');
   }
@@ -41,7 +41,7 @@ class backendCase extends Drush_TestCase {
   */
   function testTarget() {
     $stdin = json_encode(array('filter'=>'sql'));
-    $exec = sprintf('echo %s | %s help --backend', self::unish_escapeshellarg($stdin), self::unish_escapeshellarg(UNISH_DRUSH));
+    $exec = sprintf('echo %s | %s help --backend 2>/dev/null', self::unish_escapeshellarg($stdin), self::unish_escapeshellarg(UNISH_DRUSH));
     $this->execute($exec);
     $parsed = $this->parse($this->getOutput());
     $this->assertTrue((bool) $parsed, 'Successfully parsed backend output');
@@ -54,11 +54,30 @@ class backendCase extends Drush_TestCase {
     $this->assertEquals('Bootstrap to phase 0.', $parsed['log'][0]['message']);
 
     // Check error propogation by requesting an invalid command (missing Drupal site).
-    $exec = sprintf('%s core-cron --backend', self::unish_escapeshellarg(UNISH_DRUSH));
+    $exec = sprintf('%s core-cron --backend 2>/dev/null', self::unish_escapeshellarg(UNISH_DRUSH));
     $this->execute($exec, self::EXIT_ERROR);
     $parsed = $this->parse($this->getOutput());
     $this->assertEquals(1, $parsed['error_status']);
     $this->assertArrayHasKey('DRUSH_NO_DRUPAL_ROOT', $parsed['error_log']);
+  }
+
+  /*
+   * Covers the following target responsibilities.
+   *   - Insures that the 'Drush version' line from drush status appears in the output.
+   *   - Insures that the backend output start marker appears in the output (this is a backend command).
+   *   - Insures that the drush output appears before the backend output start marker (output is displayed in 'real time' as it is produced).
+   */
+  function testRealtimeOutput() {
+    $exec = sprintf('%s core-status --backend 2>&1', self::unish_escapeshellarg(UNISH_DRUSH));
+    $this->execute($exec);
+
+    $output = $this->getOutput();
+    $drush_version_offset = strpos($output, "Drush version");
+    $backend_output_offset = strpos($output, "DRUSH_BACKEND_OUTPUT_START>>>");
+
+    $this->assertTrue($drush_version_offset !== FALSE, "'Drush version' string appears in output.");
+    $this->assertTrue($backend_output_offset !== FALSE, "Drush backend output marker appears in output.");
+    $this->assertTrue($drush_version_offset < $backend_output_offset, "Drush version string appears in output before the backend output marker.");
   }
 
   /*
