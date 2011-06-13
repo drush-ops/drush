@@ -281,7 +281,6 @@ function drush_upgrade_site_upgrade($target_key) {
   // Always blow away the target database so we start fresh.
   // We still have DRUSH_AFFIRMATIVE set from above, so this will not prompt.
   drush_set_option('create-db', TRUE);
-  drush_include(DRUSH_BASE_PATH . '/commands/sql', 'sync.sql');
   drush_invoke('sql-sync', '@self', $target_key);
   if (drush_get_error()) return FALSE; // Early exit if we see an error.
 
@@ -509,13 +508,13 @@ function drush_upgrade_site_upgrade_prepare() {
 
   // Disable all contrib modules per Upgrade.txt.
   drush_log(dt("Disabling !list", array('!list' => implode(", ", $contrib_extensions))), 'ok');
-  call_user_func_array('drush_pm_disable', $contrib_extensions);
+  drush_invoke_args('pm-disable', $contrib_extensions);
   if (drush_get_error()) return FALSE; // Early exit if we see an error.
 
   // Uninstall any modules specified via the --uninstall flag.
   if (!empty($uninstall_extensions)) {
     drush_log(dt("Uninstalling !list", array('!list' => implode(", ", $uninstall_extensions))), 'ok');
-    call_user_func_array('drush_pm_uninstall', $uninstall_extensions);
+    drush_invoke_args('pm-uninstall', $uninstall_extensions);
     if (drush_get_error()) return FALSE; // Early exit if we see an error.
   }
 }
@@ -538,7 +537,7 @@ function drush_upgrade_site_upgrade_modules() {
     // User has already been prompted; if there is no recommended release,
     // we will just take the most recent.
     drush_set_option('choice', '1');
-    call_user_func_array('drush_pm_download', explode(',', $project_download_list));
+    drush_invoke_args('pm-download', $project_download_list);
   }
 
   // Run updatedb to update all of the contrib extensions.
@@ -576,7 +575,7 @@ function drush_upgrade_download_drupal($target_version, $destination_core) {
     drush_log(dt("Simulated download of drupal-!version", array('!version' => $target_version)));
   }
   else {
-    drush_pm_download('drupal-' . $target_version);
+    drush_invoke('pm-download', 'drupal-' . $target_version);
     if (drush_get_error()) return FALSE; // Early exit if we see an error.
 
     // Check and see if there is a Drupal site at the target.

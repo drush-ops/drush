@@ -41,7 +41,8 @@ class pmDownloadCase extends Drush_TestCase {
     );
     // Build an $eval string for use with php-eval in a subprocess.
     $eval = '$request_data = ' . var_export($request_data, TRUE) . ";\n";
-    $eval .= '$release = pm_parse_release($request_data, simplexml_load_file(\'' . $xml . "'));\n";
+    $eval .= "drush_include(DRUSH_BASE_PATH . '/commands/pm', 'download.pm');\n";
+    $eval .= '$release = _pm_download_parse_release($request_data, simplexml_load_file(\'' . $xml . "'));\n";
     $eval .= 'print json_encode($release);';
     $this->drush('php-eval', array($eval));
     $release = json_decode($this->getOutput());
@@ -76,3 +77,4 @@ class pmDownloadCase extends Drush_TestCase {
     $this->assertFileExists($path_stage . '/modules/devel/README.txt');
   }
 }
+
