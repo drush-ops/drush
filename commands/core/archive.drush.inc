@@ -16,6 +16,7 @@ function archive_drush_command() {
       'description' => 'Describe the archive contents.',
       'tags' => 'Add tags to the archive manifest. Delimit multiple by commas.',
       'destination' => 'Specify where the archive should be stored. Include filename but omit the .gz suffix.',
+      'overwrite' => 'Do not fail if the destination file exists; overwrite it instead.',
       'generator' => 'The generator name to store in the MANIFEST file. The default is "Drush archive-dump".',
       'generatorversion' => 'The generator version number to store in the MANIFEST file. The default is ' . DRUSH_VERSION . '.',
       'pipe' => 'Only print the destination of the archive. Useful for scripts that don\'t pass --destination.',
@@ -36,27 +37,90 @@ function archive_drush_command() {
 function drush_archive_dump($sites_subdirs = '@self') {
   $aliases = drush_sitealias_resolve_sitespecs(explode(',', $sites_subdirs));
   foreach ($aliases as $key => $alias) {
-    $full[$key] = $alias += sitealias_get_databases_from_record($alias);
+    if (($db_record = sitealias_get_databases_from_record($alias))) {
+      $full[$key] = $alias += $db_record;
+    }
+    else {
+      drush_set_error(dt('DB connections not found for !alias', array('!alias' => $alias)));
+    }
   }
 
-  // User did not pass a specific value for --destination. Make one.
-  if (!$destination = drush_get_option('destination')) {
-    $date = gmdate('Ymd_his');
-    $first = current($full);
-    $prefix = count($sites_subdirs) > 1 ? 'multiple_sites' : $first['default']['default']['database'];
-    $file = "$prefix.$date.tar";
-    //
+  // The user can specify a destination filepath or not. That filepath might
+  // end with .gz, .tgz, or something else. At the end of this command we will
+  // gzip a file, and we want it to end up with the user-specified name (if
+  // any), but gzip renames files and refuses to compress files ending with
+  // .gz and .tgz, making our lives difficult. Solution:
+  //
+  // 1. Create a unique temporary base name to which gzip WILL append .gz.
+  // 2. If no destination is provided, set $dest_dir to a backup directory and
+  // $final_destination to be the unique name in that dir.
+  // 3. If a destination is provided, set $dest_dir to that directory and
+  // $final_destination to the exact name given.
+  // 4. Set $destination, the actual working file we will build up, to the
+  // unqiue name in $dest_dir.
+  // 5. After gzip'ing $destination, rename $destination.gz to
+  // $final_destination.
+  //
+  // Sheesh.
+
+  // Create the unique temporary name.
+  $date = gmdate('Ymd_his');
+  $first = current($full);
+  $prefix = count($sites_subdirs) > 1 ? 'multiple_sites' : $first['default']['default']['database'];
+  $temp_dest_name = "$prefix.$date.tar";
+
+  $final_destination = drush_get_option('destination');
+  if (!$final_destination) {
+    // No destination provided.
     drush_include_engine('version_control', 'backup');
     $backup = new drush_pm_version_control_backup();
     // TODO: this standard drush pattern leads to a slightly obtuse directory structure.
-    $backup_dir = $backup->prepare_backup_dir('archive-dump');
-    if (empty($backup_dir)) {
-      $backup_dir = "/tmp";
+    $dest_dir = $backup->prepare_backup_dir('archive-dump');
+    if (empty($dest_dir)) {
+      $dest_dir = "/tmp";
     }
-    $destination = "$backup_dir/$file";
+    $final_destination = "$dest_dir/$temp_dest_name.gz";
   }
   else {
-    $destination = realpath($destination);
+    // Use the supplied --destination. If it is relative, resolve it
+    // relative to the directory in whic drush was invoked.
+    $command_cwd = getcwd();
+    drush_op('chdir', drush_get_context('DRUSH_OLDCWD', getcwd()));
+    // This doesn't perform realpath on the basename, but that's okay. This is
+    // not path-based security. We are just checking for permissions.
+    $dest_dir = realpath(dirname($final_destination));
+    $final_destination = $dest_dir . '/' . basename($final_destination);
+    drush_op('chdir', $command_cwd);
+  }
+
+  // $dest_dir is either the backup directory or specified directory. Set our
+  // working file.
+  $destination = "$dest_dir/$temp_dest_name";
+
+  // Validate the FINAL destination. It should be a file that does not exist
+  // (unless --overwrite) in a writable directory (and a writable file if
+  // it exists). We check all this up front to avoid failing after a long
+  // dump process.
+  $overwrite = drush_get_option('overwrite');
+  $dest_dir = dirname($final_destination);
+  $dt_args = array('!file' => $final_destination, '!dir' => $dest_dir);
+  if (is_dir($final_destination)) {
+    drush_set_error(dt('destination !file must be a file, not a directory.', $dt_args));
+    return;
+  }
+  else if (file_exists($final_destination)) {
+    if (!$overwrite) {
+      drush_set_error(dt('destination !file exists; specify --overwrite to overwrite.', $dt_args));
+      return;
+    }
+    else if (!is_writable($final_destination)) {
+      drush_set_error(dt('destination !file is not writable.', $dt_args));
+      return;
+    }
+  }
+  else if (!is_writable(dirname($final_destination))) {
+    drush_set_error(dt('destination directory !dir is not writable.', $dt_args));
+    return;
   }
 
   $docroot_path = realpath(drush_get_context('DRUSH_DRUPAL_ROOT'));
@@ -131,9 +195,14 @@ function drush_archive_dump($sites_subdirs = '@self') {
   drush_shell_cd_and_exec($tmp, 'tar --dereference -rf %s %s', $destination, "MANIFEST.info");
 
   // Compress the archive
-  drush_shell_exec("gzip -f %s", $destination);
+  drush_shell_exec("gzip --no-name -f %s", $destination);
 
-  drush_log(dt('Archive saved to !dest.gz', array('!dest' => $destination)), 'ok');
-  drush_print_pipe($destination);
-  return $destination;
+  // gzip appends .gz unless the name already ends in .gz, .tgz, or .taz.
+  if ("{$destination}.gz" != $final_destination) {
+    drush_shell_exec("mv {$destination}.gz $final_destination");
+  }
+
+  drush_log(dt('Archive saved to !dest', array('!dest' => $final_destination)), 'ok');
+  drush_print_pipe($final_destination);
+  return $final_destination;
 }
