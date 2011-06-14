@@ -47,11 +47,27 @@ function _drush_core_search_index() {
     // Use drush_invoke_process_args() to start subshell. Avoids out of memory issue.
     $eval = "register_shutdown_function('search_update_totals');";
     if (drush_drupal_major_version() >= 7) {
+      // If needed, prod module_implements() to recognize our
+      // hook_node_update_index() implementations.
+      $implementations = module_implements('node_update_index');
+      if (!in_array('system', $implementations)) {
+        // Note that this resets module_implements cache.
+        module_implements('node_update_index', FALSE, TRUE);
+      }
+
       foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {
         $eval .= " module_invoke($module, 'update_index');";
       }
     }
     else {
+      // If needed, prod module_implements() to recognize our hook_nodeapi()
+      // implementations.
+      $implementations = module_implements('nodeapi');
+      if (!in_array('system', $implementations)) {
+        // Note that this resets module_implements cache.
+        module_implements('nodeapi', FALSE, TRUE);
+      }
+
       $eval .= " module_invoke_all('update_index');";
     }
     drush_invoke_process_args('php-eval', array($eval));
@@ -80,5 +96,27 @@ function drush_core_search_reindex() {
   }
   else {
     drush_log(dt('The search index will be rebuilt.'), 'ok');
+  }
+}
+
+/**
+ * Fake an implementation of hook_node_update_index() for Drupal 7.
+ */
+function system_node_update_index($node) {
+  // Verbose output.
+  if (drush_get_context('DRUSH_VERBOSE')) {
+    drush_log(dt('Indexing node !nid.', array('!nid' => $node->nid)), 'ok');
+  }
+}
+
+/**
+ * Fake an implementation of hook_nodeapi() for Drupal 6.
+ */
+function system_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  if ($op == 'update index') {
+    // Verbose output.
+    if (drush_get_context('DRUSH_VERBOSE')) {
+      drush_log(dt('Indexing node !nid.', array('!nid' => $node->nid)), 'ok');
+    }
   }
 }
