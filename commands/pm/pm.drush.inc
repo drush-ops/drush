@@ -829,12 +829,12 @@ function drush_pm_info() {
     $args = array_keys($extension_info);
   }
 
-  foreach ($args as $project) {
-    if (isset($extension_info[$project])) {
-      $info = $extension_info[$project];
+  foreach ($args as $extension) {
+    if (isset($extension_info[$extension])) {
+      $info = $extension_info[$extension];
     }
     else {
-      drush_log(dt('!project was not found.', array('!project' => $project)), 'warning');
+      drush_log(dt('!extension was not found.', array('!extension' => $extension)), 'warning');
       continue;
     }
     if ($info->type == 'module') {
@@ -854,20 +854,15 @@ function drush_pm_info() {
 function _drush_pm_info_extension($info) {
   $major_version = drush_drupal_major_version();
 
-  $data['Project'] = $info->name;
+  $data['Extension'] = $info->name;
+  $data['Project'] = isset($info->info['project'])?$info->info['project']:dt('Unknown');
   $data['Type'] = $info->type;
-  if (($info->type == 'module')||($major_version >= 6)) {
-    $data['Title'] = $info->info['name'];
-    $data['Description'] = $info->info['description'];
-    $data['Version'] = $info->info['version'];
-  }
+  $data['Title'] = $info->info['name'];
+  $data['Description'] = $info->info['description'];
+  $data['Version'] = $info->info['version'];
   $data['Package'] = $info->info['package'];
-  if ($major_version >= 6) {
-    $data['Core'] = $info->info['core'];
-  }
-  if ($major_version == 6) {
-    $data['PHP'] = $info->info['php'];
-  }
+  $data['Core'] = $info->info['core'];
+  $data['PHP'] = $info->info['php'];
   $data['Status'] = drush_get_extension_status($info);
   $path = (($info->type == 'module')&&($major_version == 7))?$info->uri:$info->filename;
   $path = substr($path, 0, strrpos($path, '/'));
@@ -905,14 +900,12 @@ function _drush_pm_info_module($info) {
   $data['Requires'] = $requires;
 
   if ($major_version == 6) {
-    if (count($info->info['dependents']) > 0) {
-      $requiredby = implode(', ', $info->info['dependents']);
-    }
-    else {
-      $requiredby = "none";
-    }
-    $data['Required by'] = $requiredby;
+    $requiredby = !empty($info->info['dependents'])?$info->info['dependents']:array("none");
   }
+  else {
+    $requiredby = !empty($info->required_by)?array_keys($info->required_by):array("none");
+  }
+  $data['Required by'] = implode(', ', $requiredby);
 
   return $data;
 }
