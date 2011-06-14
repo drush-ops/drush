@@ -295,23 +295,6 @@ function drush_get_extension_status($extension) {
 }
 
 /**
- * Wrapper of drupal_get_extensions() with additional information used by
- * pm- commands.
- *
- * @return
- *   An array containing info for all available extensions w/additional info.
- */
-function drush_pm_get_extensions() {
-  $extensions = drush_get_extensions();
-  foreach ($extensions as $key => $extension) {
-    if (empty($extension->info['package'])) {
-      $extensions[$key]->info['package'] = dt('Other');
-    }
-  }
-  return $extensions;
-}
-
-/**
  * Classify extensions as modules, themes or unknown.
  *
  * @param $extensions
@@ -472,7 +455,7 @@ function drush_pm_list() {
   $header[] = dt('Version');
   $rows[] = $header;
 
-  $extension_info = drush_pm_get_extensions();
+  $extension_info = drush_get_extensions();
   uasort($extension_info, '_drush_pm_sort_extensions');
 
   $major_version = drush_drupal_major_version();
@@ -834,7 +817,7 @@ function drush_pm_disable() {
 function drush_pm_info() {
   $args = pm_parse_arguments(func_get_args());
 
-  $extension_info = drush_pm_get_extensions();
+  $extension_info = drush_get_extensions();
   _drush_pm_expand_extensions($args, $extension_info);
   // If no extensions are provided, select all but the hidden ones.
   if (count($args) == 0) {

@@ -1486,6 +1486,9 @@ function drush_get_extensions() {
   $extensions = array_merge(drush_get_modules(), drush_get_themes());
   foreach ($extensions as $name => $extension) {
     $extensions[$name]->label = $extension->info['name'].' ('.$extension->name.')';
+    if (empty($extension->info['package'])) {
+      $extensions[$name]->info['package'] = dt('Other');
+    }
   }
   return $extensions;
 }

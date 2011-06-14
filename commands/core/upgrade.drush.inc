@@ -145,7 +145,7 @@ function drush_upgrade_site_upgrade($target_key) {
   // WARN:  Tell the user about any special situations that might exist with contrib modules.
 
   $project_download_list = array();
-  $extension_info = drush_pm_get_extensions();
+  $extension_info = drush_get_extensions();
   if (!empty($contrib_extensions) && !drush_get_option('core-only')) {
     // Make a list of all of the extensions to download.  We will
     // download everything in the contrib extension list, but we
