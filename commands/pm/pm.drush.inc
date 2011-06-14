@@ -356,7 +356,14 @@ function drush_get_projects(&$extensions = NULL) {
   if (is_null($extensions)) {
     $extensions = drush_get_extensions();
   }
-  $projects = array('drupal' => array('version' => VERSION));
+  $projects = array(
+    'drupal' => array(
+      'label' => 'Drupal',
+      'version' => VERSION,
+      'type' => 'core',
+      'extensions' => array(),
+    )
+  );
   foreach ($extensions as $extension) {
     // The project name is not available in this cases:
     // 1. the extension is part of drupal core.
@@ -385,6 +392,7 @@ function drush_get_projects(&$extensions = NULL) {
     // Create/update the project in $projects with the project data.
     if (!isset($projects[$project])) {
       $projects[$project] = array(
+        'label' => $extensions[$project]->label,
         'type' => $extension->type,
         'version' => $extension->info['version'],
         'status' => $extension->status,
@@ -511,12 +519,8 @@ function drush_pm_list() {
       $row[] = $extension->info['package'];
     }
 
-    if (($major_version >= 6)||($extension->type == 'module')) {
-      $row[] = $extension->info['name'].' ('.$extension->name.')';
-    }
-    else {
-      $row[] = $extension->name;
-    }
+    $row[] = $extension->label;
+
     if (count($type_filter) > 1) {
       $row[] = ucfirst($extension->type);
     }

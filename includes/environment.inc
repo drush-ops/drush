@@ -1483,7 +1483,11 @@ function drush_server_home() {
  */
 function drush_get_extensions() {
   drush_include_engine('drupal', 'environment');
-  return array_merge(drush_get_modules(), drush_get_themes());
+  $extensions = array_merge(drush_get_modules(), drush_get_themes());
+  foreach ($extensions as $name => $extension) {
+    $extensions[$name]->label = $extension->info['name'].' ('.$extension->name.')';
+  }
+  return $extensions;
 }
 
 /**

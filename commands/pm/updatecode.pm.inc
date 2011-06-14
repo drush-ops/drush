@@ -39,10 +39,10 @@ function drush_pm_updatecode() {
     if (!isset($extension->info['project'])) {
       if ((isset($extension->vcs)) && ($extension->status)) {
         $update_info[$name] = array(
-          'title' => $extension->info['name'],
+          'label' => $extension->label,
           'existing_version' => 'Unknown',
           'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_PACKAGED,
-          'status_msg' => dt('Project was not packaged by drupal.org but obtained from !vcs. You need to enable !vcs_deploy module', array('!vcs' => $extension->vcs))
+          'status_msg' => dt('Project was not packaged by drupal.org but obtained from !vcs. You need to enable !vcs_deploy module', array('!vcs' => $extension->vcs)),
         );
         // The user may have requested to update a project matching this
         // extension. If it was by coincidence or error we don't mind as we've
@@ -66,9 +66,9 @@ function drush_pm_updatecode() {
       // Disabled projects.
       if ((isset($projects[$name])) && ($projects[$name]['status'] == 0)) {
         $update_info[$name] = array(
-          'title' => $name,
+          'label' => $projects[$name]['label'],
           'existing_version' => $projects[$name]['version'],
-          'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE
+          'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE,
         );
         unset($requests[$name]);
       }
@@ -76,7 +76,7 @@ function drush_pm_updatecode() {
       // It does not exist at all or it is mispelled,...
       else {
         $update_info[$name] = array(
-          'title' => $name,
+          'label' => $name,
           'existing_version' => 'Unknown',
           'status'=> DRUSH_PM_REQUESTED_PROJECT_NOT_FOUND,
         );
@@ -131,7 +131,7 @@ function drush_pm_updatecode() {
   // Cache the output of drush_print_table in $tmpfile so that we can
   // include it in the paginated output later.
   $tmphandle = fopen($tmpfile, 'a');
-  drush_print_table($rows, TRUE, array(3 => 40), $tmphandle);
+  drush_print_table($rows, TRUE, array(3 => 50), $tmphandle);
   fclose($tmphandle);
   $contents = file_get_contents($tmpfile);
   drush_print($contents);
@@ -506,9 +506,6 @@ function drush_pm_updatecode_rollback() {
 function pm_project_filter(&$update_info, &$rows, $security_only) {
   $updateable = array();
   foreach ($update_info as $key => $project) {
-    if (empty($project['title'])) {
-      continue;
-    }
     switch($project['status']) {
       case DRUSH_PM_REQUESTED_UPDATE:
         $status = dt('Specified version available');
@@ -561,7 +558,7 @@ function pm_project_filter(&$update_info, &$rows, $security_only) {
         unset($updateable[$key]);
       }
     }
-    $rows[] = array($project['title'], $project['existing_version'], $update_info[$key]['candidate_version'], $status);
+    $rows[] = array($project['label'], $project['existing_version'], $update_info[$key]['candidate_version'], $status);
   }
   return $updateable;
 }

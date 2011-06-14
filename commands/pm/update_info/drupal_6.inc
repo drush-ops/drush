@@ -73,9 +73,14 @@ function _pm_get_update_info($projects) {
       unset($data[$project_name]);
       continue;
     }
+    // Allow to update disabled projects.
     if (in_array($project['project_type'], array('disabled-module', 'disabled-theme'))) {
       $data[$project_name]['project_type'] = substr($project['project_type'], strpos($project['project_type'], '-') + 1);
     }
+    // Set project label (title + name).
+    $data[$project_name]['label'] = $projects[$project_name]['label'];
+    // Set 'includes' key to all extensions. By default it only contain enabled
+    // extensions and _pm_get_project_path() needs all of them.
     $data[$project_name]['includes'] = drupal_map_assoc($projects[$project_name]['extensions']);
   }
   $data = _pm_get_project_path($data, 'includes');
