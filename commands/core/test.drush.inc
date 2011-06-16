@@ -27,7 +27,9 @@ function test_drush_command() {
     'options' => array(
       'all' => 'Run all available tests',
       'methods' => 'A comma delimited list of methods that should be run within the test class. Defaults to all methods.',
-      'dirty' => 'Skip cleanup of temporary tables and files. Helpful for reading debug() messages and other post-mortem forensics.'
+      'dirty' => 'Skip cleanup of temporary tables and files. Helpful for reading debug() messages and other post-mortem forensics.',
+      'xml' => 'Output verbose test results to a specified directory using the JUnit test reporting format. Useful for integrating with Jenkins.'
+
     ),
     'drupal dependencies' => array('simpletest'),
     // If you DRUSH_BOOTSTRAP_DRUPAL_LOGIN, you fall victim to http://drupal.org/node/974768. We'd like
@@ -132,6 +134,10 @@ function simpletest_drush_run_test($class) {
           || (isset($test->results['#exception']) && $test->results['#exception'] > 0) ? 'error' : 'ok');
   drush_log($info['name'] . ' ' . _simpletest_format_summary_line($test->results), $status);
 
+  if ($dir = drush_get_option('xml')) {
+    drush_test_xml_results($test_id, $dir);
+  }
+
   // If there were some failed tests show them.
   if ($status === 'error') {
     if (drush_drupal_major_version() >= 7) {
@@ -191,4 +197,72 @@ function drush_test_get_all_tests() {
     }
   }
   return array($groups, $all_tests);
+}
+
+/*
+ * Display test results.
+ */
+function drush_test_xml_results($test_id, $dir) {
+  $dir = is_string($dir) ? $dir : '.';
+
+  $results_map = array(
+    'pass' => 'Pass',
+    'fail' => 'Fail',
+    'exception' => 'Exception',
+  );
+
+  if (drush_drupal_major_version() >= 7) {
+    $results = db_query("SELECT * FROM {simpletest} WHERE test_id = :test_id ORDER BY test_class, message_id", array(':test_id' => $test_id));
+  }
+  else {
+    $result = db_query("SELECT * FROM {simpletest} WHERE test_id = %d ORDER BY test_class, message_id", $test_id);
+    $results = array();
+    while ($row = db_fetch_object($result)) {
+      $results[] = $row;
+    }
+  }
+
+  $test_class = '';
+  $xml_files = array();
+
+  foreach ($results as $result) {
+    if (isset($results_map[$result->status])) {
+      if ($result->test_class != $test_class) {
+        // Display test class every time results are for new test class.
+        if (isset($xml_files[$test_class])) {
+          file_put_contents($dir . '/' . $test_class . '.xml', $xml_files[$test_class]['doc']->saveXML());
+          unset($xml_files[$test_class]);
+        }
+        $test_class = $result->test_class;
+        if (!isset($xml_files[$test_class])) {
+          $doc = new DomDocument('1.0');
+          $root = $doc->createElement('testsuite');
+          $root = $doc->appendChild($root);
+          $xml_files[$test_class] = array('doc' => $doc, 'suite' => $root);
+        }
+      }
+      // Save the result into the XML:
+      $case = $xml_files[$test_class]['doc']->createElement('testcase');
+      $case->setAttribute('classname', $test_class);
+      list($class, $name) = explode('->', $result->function, 2);
+      $case->setAttribute('name', $name);
+
+      if ($result->status == 'fail') {
+        $fail = $xml_files[$test_class]['doc']->createElement('failure');
+        $fail->setAttribute('type', 'failure');
+        $fail->setAttribute('message', $result->message_group);
+        $text = $xml_files[$test_class]['doc']->createTextNode($result->message);
+        $fail->appendChild($text);
+        $case->appendChild($fail);
+      }
+
+      $xml_files[$test_class]['suite']->appendChild($case);
+    }
+  }
+
+  // Save the last one:
+  if (isset($xml_files[$test_class])) {
+    file_put_contents($dir . '/' . $test_class . '.xml', $xml_files[$test_class]['doc']->saveXML());
+    unset($xml_files[$test_class]);
+  }
 }
