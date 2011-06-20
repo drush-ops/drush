@@ -74,7 +74,7 @@ function upgrade_drush_help($section) {
  * Do some sanity checks to make sure that we are ready to perform an upgrade, and
  * that the command is being called with reasonable-looking parameters.
  */
-function drush_upgrade_site_upgrade_validate($target_key = NULL) {
+function drush_upgrade_site_upgrade_check_parameters($target_key = NULL) {
   if (empty($target_key)) {
     return drush_set_error('DRUSH_UPGRADE_NO_TARGET', dt('Missing argument: target'));
   }
@@ -84,12 +84,14 @@ function drush_upgrade_site_upgrade_validate($target_key = NULL) {
   }
 
   if (!file_exists(dirname($target_alias['root']))) {
-    drush_set_error('DRUSH_UPGRADE_NO_TARGET', dt('Parent directory for site alias root not found: @root; this folder must exist before running site-upgrade. See example.drushrc.php.', array('@root' => dirname($target_alias['root']))));
+    return drush_set_error('DRUSH_UPGRADE_NO_TARGET', dt('Parent directory for site alias root not found: @root; this folder must exist before running site-upgrade. See example.drushrc.php.', array('@root' => dirname($target_alias['root']))));
   }
 
   if (realpath($target_alias['root']) == realpath(DRUPAL_ROOT)) {
-    drush_set_error('DRUSH_UPGRADE_NO_TARGET', dt('Target site alias must have a different Drupal root directory than the source site.  Both are at @root.', array('@root' => $target_alias['root'])));
+    return drush_set_error('DRUSH_UPGRADE_NO_TARGET', dt('Target site alias must have a different Drupal root directory than the source site.  Both are at @root.', array('@root' => $target_alias['root'])));
   }
+  
+  return TRUE;
 }
 
 /**
@@ -106,16 +108,16 @@ function drush_upgrade_site_upgrade($target_key) {
 
   $source_version = drush_drupal_major_version();
   $target_version = $source_version + 1;
-  $target_alias = drush_sitealias_get_record($target_key);
-  if (empty($target_alias)) {
-    return drush_set_error('DRUSH_UPGRADE_NO_TARGET', dt("Could not find target site for upgrade: !target", array("!target" => $target_key)));
-  }
+  if (isset($target_key)) {
+    $target_alias = drush_sitealias_get_record($target_key);
+    if (!empty($target_alias)) {
+      $destination_core = $target_alias['root'];
 
-  $destination_core = $target_alias['root'];
-
-  $destination_conf_path = conf_path();
-  if (drush_get_option('force-sites-default')) {
-    $destination_conf_path = 'sites/default';
+      $destination_conf_path = conf_path();
+      if (drush_get_option('force-sites-default')) {
+        $destination_conf_path = 'sites/default';
+      }
+    }
   }
 
   // Get a list of enabled contrib extensions.
@@ -145,6 +147,7 @@ function drush_upgrade_site_upgrade($target_key) {
   // WARN:  Tell the user about any special situations that might exist with contrib modules.
 
   $project_download_list = array();
+  $project_info_map = array();
   $extension_info = drush_get_extensions();
   if (!empty($contrib_extensions) && !drush_get_option('core-only')) {
     // Make a list of all of the extensions to download.  We will
@@ -157,53 +160,71 @@ function drush_upgrade_site_upgrade($target_key) {
       // Only check extensions that are NOT in our uninstall list.
       if (!in_array($extension_name, $uninstall_extensions) && array_key_exists($extension_name, $extension_info)) {
         $project = $extension_info[$extension_name]->info['project'];
-        // Check our lookup table to see if a project has been renamed.
-        if (array_key_exists($project, $special_projects['project-remap'])) {
-          $project = $special_projects['project-remap'][$project];
+        if (empty($project)) {
+          drush_log(dt('The no project information could be found for the module !module has no project information.', array('!module' => $extension_name)), 'warning');
         }
-        // If the module has been rolled into core in the next major release of
-        // Drupal, then we do not need to download it.  Add it to an array for
-        // reporting purposes.
-        if ((in_array($project, $special_projects['projects-in-core'])) || (in_array($extension_name, $special_projects['modules-in-core']))) {
-          $in_core[$extension_name] = $extension_name;
-          // Might some of these need to be enabled?
-          $unavailable_extensions[] = $extension_name;
-        }
-        elseif (($extension_info[$extension_name]->type == 'module') && !is_dir($destination_core . '/sites/all/modules/' . $project) && !is_dir($destination_core . '/' . $destination_conf_path . '/modules/' . $project)) {
-          $project_download_list[$project][] = $extension_name;
-        }
-        // If there is a special warning about a project, then add it
-        // to the warning list for later reporting.
-        if (array_key_exists($project . ':' . $extension_name, $special_projects['warning'])) {
-          $special_warning[$project] = $special_projects['warning'][$project . ':' . $extension_name];
-        }
-        elseif ((array_key_exists($project, $special_projects['warning'])) && (!array_key_exists($project, $special_warning))) {
-          $special_warning[$project] = $special_projects['warning'][$project];
+        else {
+          $project_info_map[$project]['name'] = $extension_info[$extension_name]->info['name'];
+          $project_info_map[$project]['version'] = $extension_info[$extension_name]->info['version'];
+          // Check our lookup table to see if a project has been renamed.
+          if (array_key_exists($project, $special_projects['project-remap'])) {
+            $project = $special_projects['project-remap'][$project];
+          }
+          // If the module has been rolled into core in the next major release of
+          // Drupal, then we do not need to download it.  Add it to an array for
+          // reporting purposes.
+          if ((in_array($project, $special_projects['projects-in-core'])) || (in_array($extension_name, $special_projects['modules-in-core']))) {
+            $in_core[$extension_name] = $extension_name;
+            // Might some of these need to be enabled?
+            $unavailable_extensions[] = $extension_name;
+          }
+          elseif (($extension_info[$extension_name]->type == 'module') && !is_dir($destination_core . '/sites/all/modules/' . $project) && !is_dir($destination_core . '/' . $destination_conf_path . '/modules/' . $project)) {
+            $project_download_list[$project][] = $extension_name;
+          }
+          // If there is a special warning about a project, then add it
+          // to the warning list for later reporting.
+          if (array_key_exists($project . ':' . $extension_name, $special_projects['warning'])) {
+            $special_warning[$project] = $special_projects['warning'][$project . ':' . $extension_name];
+          }
+          elseif ((array_key_exists($project, $special_projects['warning'])) && (!array_key_exists($project, $special_warning))) {
+            $special_warning[$project] = $special_projects['warning'][$project];
+          }
         }
       }
     }
 
+    $rows[] = array(dt('Project'), dt('Title'), dt('Installed'), dt('Available'), dt('Status'));
     // Consider each project from the contrib extensions and check with PM to see if there is
     // a recommended release available to download.  If there is NO release available, then
     // we are not ready to upgrade (but still can, without that project); if there is no RECOMMENDED
     // release, then we might not be ready to upgrade (but still can, with a non-recommended release).
     if (!empty($project_download_list)) {
-      $result = drush_invoke_sitealias_args(array('root' => '', 'uri' => ''), 'pm-releases', array_keys($project_download_list), array('default-major' => $target_version), array('integrate' => FALSE, 'override-simulated' => TRUE));
+      $result = drush_invoke_sitealias_args(array('root' => '', 'uri' => ''), 'pm-releases', array_keys($project_download_list), array('default-major' => $target_version), array('integrate' => FALSE, 'override-simulated' => TRUE, 'log' => FALSE));
       $project_releases = $result['object'];
       foreach ($project_download_list as $project => $extension_list) {
-        if (!array_key_exists($project, $project_releases)) {
-          drush_log(dt('The project !project has no releases in version !version', array('!project' => $project, '!version' => $target_version)), 'warning');
+        if (!array_key_exists($project, $project_releases) || empty($project_releases[$project]['releases'])) {
           $unavailable_extensions = array_merge($unavailable_extensions, $extension_list);
           $ready_to_upgrade = FALSE;
+          $available_version = '-';
+          $status = dt("NO !major_version RELEASES", array('!major_version' => $target_version . ".x"));
         }
         else {
+          $all_versions = array_keys($project_releases[$project]['releases']);
+          $available_version = $all_versions[0];
           if (empty($project_releases[$project]['recommended'])) {
-            drush_log(dt('The project !project has no recommended release in version !version', array('!project' => $project, '!version' => $target_version)), 'warning');
             $ready_to_upgrade = 'maybe';
+            $status = implode(',', $project_releases[$project]['releases'][$available_version]['release_status']);
+          }
+          else {
+            $status = dt('Recommended');
           }
         }
+        $title = $project_info_map[$project]['name'];
+        $installed_version = $project_info_map[$project]['version'];
+        $rows[] = array($project, $title, $installed_version, $available_version, $status);
       }
     }
+    drush_print_table($rows);
 
     // Print out some messages about projects that migrated  to core, or modules that will require special processing.
     if (!empty($in_core)) {
@@ -219,6 +240,12 @@ function drush_upgrade_site_upgrade($target_key) {
       }
       drush_log(dt("You are using the project !project, which requires data migration or other special processing.  $warning", array('!project' => $project, '!project_page' => 'http://drupal.org/project/' . $project, '!source' => $special_projects['source'])), 'warning');
     }
+  }
+
+  // VALIDATE: did the user provide legal and usable parameters? 
+
+  if (drush_upgrade_site_upgrade_check_parameters($target_key) === FALSE) {
+    return FALSE;
   }
 
   // CONFIRM:  Ask the user before overwriting an exsiting site, and ask if an upgrade is really decided if the site is not ready yet.

@@ -898,12 +898,6 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
         $data[$key] = $site_record[$key];
       }
     }
-    // By default, if the caller does not specify a value for 'output', but does
-    // specify 'integrate' === FALSE, then we will set output to FALSE.  Otherwise we
-    // will allow it to default to TRUE.
-    if ((array_key_exists('integrate', $backend_options)) && ($backend_options['integrate'] === FALSE) && (!array_key_exists('output', $backend_options))) {
-      $backend_options['output'] = FALSE;
-    }
     $values = drush_backend_invoke_sitealias_command($site_record, $command, $args, $data, $backend_options);
   }
   return $values;
@@ -997,6 +991,9 @@ function drush_log($message, $type = 'notice', $error = null) {
 function drush_backend_packet_log($entry, $backend_options) {
   if (!$backend_options['log']) {
     return;
+  }
+  if (!is_string($entry['message'])) {
+    $entry['message'] = implode("\n", (array)$entry['message']);
   }
   $log =& drush_get_context('DRUSH_LOG', array());
   $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');

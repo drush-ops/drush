@@ -425,6 +425,12 @@ function drush_backend_packet_set_error($data, $backend_options) {
  * Default options for backend_invoke commands.
  */
 function _drush_backend_adjust_options($site_record, $command, $command_options, $backend_options) {
+  // By default, if the caller does not specify a value for 'output', but does
+  // specify 'integrate' === FALSE, then we will set output to FALSE.  Otherwise we
+  // will allow it to default to TRUE.
+  if ((array_key_exists('integrate', $backend_options)) && ($backend_options['integrate'] === FALSE) && (!array_key_exists('output', $backend_options))) {
+    $backend_options['output'] = FALSE;
+  }
   $result = $backend_options + array(
      'method' => 'GET',
      'output' => TRUE,
