@@ -63,16 +63,17 @@ function core_drush_command() {
     'aliases' => array('updb'),
   );
   $items['core-config'] = array(
-    'description' => 'Edit drushrc and alias files.',
+    'description' => 'Edit drushrc, site alias, and Drupal settings.php files.',
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'arguments' => array(
       'filter' => 'A substring for filtering the list of files. Omit this argument to choose from loaded files.',
     ),
     'examples' => array(
-      'drush core-config' => 'Pick from a list of config/alias files. Open selected in editor.',
+      'drush core-config' => 'Pick from a list of config/alias/settings files. Open selected in editor.',
       'drush core-config etc' => 'Edit the global configuration file.',
       'drush core-config demo.alia' => 'Edit a particular alias file.',
-      'drush core-config --choice=2' => 'Edit the second config file in the list.',
+      'drush core-config sett' => 'Edit settings.php for the current Drupal site.',
+      'drush core-config --choice=2' => 'Edit the second file in the choice list.',
     ),
     'aliases' => array('conf', 'config'),
   );
@@ -527,6 +528,7 @@ function drush_core_cron() {
  * Command callback. Edit drushrc and alias files.
  */
 function drush_core_config($filter = NULL) {
+  $rcs = $aliases = $drupal = array();
   drush_sitealias_load_all();
   if ($rcs = drush_get_context_options('context-path', TRUE)) {
     $rcs = array_merge(array('drushrc' => '-- Drushrc --'), $rcs);
@@ -534,7 +536,10 @@ function drush_core_config($filter = NULL) {
   if ($aliases = drush_get_context('drush-alias-files')) {
     $aliases = array_merge(array('aliases' => '-- Aliases --'), $aliases);
   }
-  $all = array_merge($rcs, $aliases);
+  if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+    $drupal = array_merge(array('drupal' => '-- Drupal --'), array(realpath($site_root . '/settings.php'), realpath(DRUPAL_ROOT . '/.htaccess')));
+  }
+  $all = array_merge($rcs, $aliases, $drupal);
 
   // Apply any filter that was supplied.
   if ($filter) {
