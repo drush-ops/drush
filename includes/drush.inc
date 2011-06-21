@@ -679,6 +679,7 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE) {
  *
  */
 function drush_op($function) {
+  $args_printed = array();
   $args = func_get_args();
   array_shift($args); // Skip function name
   foreach ($args as $arg) {
