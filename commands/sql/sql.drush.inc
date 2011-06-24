@@ -87,6 +87,7 @@ function sql_drush_command() {
     ),
     'options' => array(
       'extra' => 'Add custom options to the mysql command.',
+      'result-file' => 'Save to a file. The file should be relative to Drupal root. Optional.',
     ) + $options,
     'aliases' => array('sqlq'),
   );
@@ -462,6 +463,9 @@ function _drush_sql_query($query, $db_spec = NULL) {
   // Save $query to a tmp file. We will redirect it in.
   if ($filename = drush_save_data_to_temp_file($query)) {
     $exec = drush_sql_build_exec($db_spec, $filename);
+    if ($output_file = drush_get_option('result-file')) {
+      $exec .= ' > '. drush_escapeshellarg($output_file);
+    }
     // In --simulate mode, drush_op will show the call to mysql or psql,
     // but the sql query itself is stored in a temp file and not displayed.
     // We will therefore show the query explicitly in the interest of full disclosure.
