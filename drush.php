@@ -67,6 +67,9 @@ function drush_verify_cli() {
  * - Prepares and executes a Drupal bootstrap, if possible,
  * - Dispatches the given command.
  *
+ * function_exists('drush_main') may be used by modules to detect whether
+ * they are being called from drush.  See http://drupal.org/node/1181308
+ *
  * @return
  *   Whatever the given command returns.
  */
