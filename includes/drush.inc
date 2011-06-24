@@ -721,20 +721,29 @@ function drush_download_file($url, $cache_duration) {
     drush_mkdir($cache_dir);
     $cache_name = str_replace(array(':', '/'), '-', $url);
     $cache_file = $cache_dir . "/" . $cache_name;
-    // Check for cached, non-empty, unexpired file.
-    if (file_exists($cache_file) && filesize($cache_file) && filectime($cache_file) > ($_SERVER['REQUEST_TIME']-$cache_duration)) {
+    // Check for cached, unexpired file.
+    if (file_exists($cache_file) && filectime($cache_file) > ($_SERVER['REQUEST_TIME']-$cache_duration)) {
       drush_log(dt('!name retrieved from cache.', array('!name' => $cache_name)));
       return $cache_file;
     }
     else {
-      // Cache gets set just by downloading file to right location.
-      return _drush_download_file($url, $cache_file);
+      if (_drush_download_file($url, $cache_file)) {
+        // Cache was set just by downloading file to right location.
+        return $cache_file;
+      }
+      elseif (file_exists($cache_file)) {
+        drush_log(dt('!name retrieved from an expired cache since refresh failed.', array('!name' => $cache_name)), 'warning');
+        return $cache_file;
+      }
     }
   }
   elseif ($return = _drush_download_file($url)) {
     drush_register_file_for_deletion($return);
     return $return;
   }
+
+  // Unable to retrieve from cache nor download.
+  return FALSE;
 }
 
 /**
@@ -745,17 +754,24 @@ function drush_download_file($url, $cache_duration) {
  *
  * @return string
  *   The path to the downloaded file, or FALSE
- *   if the file could not be downloaded.
+ *   if the file could not be downloaded. If omitted, downloads to
+ *   current working directory (Drupal root if bootstrapped).
  */
 function _drush_download_file($url, $destination = NULL) {
   if (!$destination) {
     $destination = getcwd() . '/' . basename($url);
   }
 
-  if (!drush_shell_exec("wget -O %s %s", $destination, $url)) {
+  $destination_tmp = drush_tempnam('download_file');
+  if (!drush_shell_exec("wget -O %s %s", $destination_tmp, $url)) {
+    // Wget failed - try curl.
     if (!drush_shell_exec("curl -o %s %s", $destination, $url)) {
       return FALSE;
     }
+  }
+  else {
+    // Wget succeeded. Move to final $destination.
+    drush_move_dir($destination_tmp, $destination);
   }
 
   return $destination;
