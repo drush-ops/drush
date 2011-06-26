@@ -53,14 +53,14 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    */
   public static function setUpBeforeClass() {
     if (!defined('UNISH_TMP')) {
-      define('UNISH_TMP', getenv('UNISH_TMP') ? getenv('UNISH_TMP') : isset($GLOBALS['UNISH_TMP']) ? $GLOBALS['UNISH_TMP'] : sys_get_temp_dir());
+      define('UNISH_TMP', getenv('UNISH_TMP') ? getenv('UNISH_TMP') : (isset($GLOBALS['UNISH_TMP']) ? $GLOBALS['UNISH_TMP'] : sys_get_temp_dir()));
     }
 
     $sandbox = UNISH_TMP . '/drush-sandbox';
     if (file_exists($sandbox)) {
       self::file_delete_recursive($sandbox);
     }
-    $ret = mkdir($sandbox);
+    $ret = mkdir($sandbox, 0777, TRUE);
     // Path must exist before we call realpath().
     if (!defined('UNISH_SANDBOX')) {
       // UNISH_SANDBOX is a private constant. Set UNISH_TMP instead.
