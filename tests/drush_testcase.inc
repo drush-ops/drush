@@ -53,7 +53,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    */
   public static function setUpBeforeClass() {
     if (!defined('UNISH_TMP')) {
-      define('UNISH_TMP', $GLOBALS['UNISH_TMP']);
+      define('UNISH_TMP', getenv('UNISH_TMP') ? getenv('UNISH_TMP') : isset($GLOBALS['UNISH_TMP']) ? $GLOBALS['UNISH_TMP'] : sys_get_temp_dir());
     }
 
     $sandbox = UNISH_TMP . '/drush-sandbox';
@@ -63,6 +63,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     $ret = mkdir($sandbox);
     // Path must exist before we call realpath().
     if (!defined('UNISH_SANDBOX')) {
+      // UNISH_SANDBOX is a private constant. Set UNISH_TMP instead.
       define('UNISH_SANDBOX', realpath($sandbox));
     }
     chdir(UNISH_SANDBOX);
@@ -78,6 +79,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     putenv("ETC_PREFIX=$sandbox");
     putenv("SHARE_PREFIX=$sandbox");
 
+    // This lives outside the sandbox so that we get persistence across classes.
     putenv("CACHE_PREFIX=" . UNISH_TMP . '/drush_cache');
 
   }
@@ -283,7 +285,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
 }
 
 // We read from globals here because env can be empty and ini did not work in quick test.
-define('UNISH_DB_URL', ((!empty($GLOBALS['UNISH_DB_URL'])) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1'));
+define('UNISH_DB_URL', getenv('UNISH_DB_URL') ? getenv('UNISH_DB_URL') : !empty($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
 
 // UNISH_DRUSH value can come from phpunit.xml or `which drush`.
 if (!defined('UNISH_DRUSH')) {
