@@ -159,6 +159,7 @@ function core_drush_command() {
     'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
     'arguments' => array(
       'profile' => 'the install profile you wish to run. defaults to \'default\' in D6, \'standard\' in D7',
+      'key=value...' => 'any additional settings you wish to pass to the profile. Only support on D7. The key is in the form [form name].[parameter name].',
     ),
     'options' => array(
       'db-url' => 'A Drupal 5/6 style database URL. Only required for initial install - not re-install.',
@@ -177,6 +178,7 @@ function core_drush_command() {
       'drush site-install --db-url=mysql://root:pass@localhost:port/dbname' => 'Install using the specified DB params.',
       'drush site-install --db-url=sqlite:/full/path/to/database.sqlite' => 'Install using SQLite (D7 only).',
       'drush site-install --account-name=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
+      'drush site-install standard install_configure_form.site_default_country=FR my_profile_form.my_settings.key=value' => 'Pass additional arguments to the profile (D7 only).',
     ),
     'core' => array('6+'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
