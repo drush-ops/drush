@@ -1325,9 +1325,9 @@ function _drush_pm_releasenotes($requests, $print_status = TRUE, $tmpfile = NULL
         @$dom = DOMDocument::loadHTML($data->data);
       }
       else {
-        $path = _drush_download_file($release_page_url);
-        @$dom = DOMDocument::loadHTMLFile($path);
-        @unlink($path);
+        $filename = drush_download_file($release_page_url);
+        @$dom = DOMDocument::loadHTMLFile($filename);
+        @unlink($filename);
         if ($dom === FALSE) {
           drush_log(dt("Error while requesting the release notes page for !project project.", array('!project' => $key)), 'error');
           continue;
@@ -1712,7 +1712,8 @@ function _drush_pm_get_release_history_xml($request) {
   // bootstrapped.
   $url = drush_get_option('source', 'http://updates.drupal.org/release-history') . '/' . $request['name'] . '/' . $request['drupal_version'];
   drush_log('Downloading release history from ' . $url);
-  if ($path = drush_download_file($url, drush_get_option('cache-duration-releasexml', 24*3600))) {
+  // Some hosts have allow_url_fopen disabled.
+  if ($path = drush_download_file($url, NULL, drush_get_option('cache-duration-releasexml', 24*3600))) {
     $xml = simplexml_load_file($path);
   }
   if (!$xml) {

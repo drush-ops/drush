@@ -123,9 +123,9 @@ define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
 define('DRUSH_TABLE_VERSION', '1.1.3');
 
 /**
- * URL for automatic file download for supported version of Console Table.
+ * Base URL for automatic file download of PEAR packages.
  */
-define('DRUSH_TABLE_URL', 'http://svn.php.net/viewvc/pear/packages/Console_Table/trunk/Table.php?revision=267580&view=co');
+define('DRUSH_PEAR_BASE_URL', 'http://download.pear.php.net/package/');
 
 /**
  * Helper function listing phases.
@@ -504,7 +504,11 @@ function _drush_bootstrap_drush_validate() {
     return $return;
   }
 
-  if (drush_environment_table_inc() === FALSE) {
+  if (drush_environment_lib() === FALSE) {
+    return FALSE;
+  }
+
+  if (drush_environment_table_lib() === FALSE) {
     return FALSE;
   }
 
@@ -522,35 +526,38 @@ function drush_environment_check_os() {
   }
 }
 
-function drush_environment_table_inc() {
-  // try using the PEAR installed version of Console_Table
+/*
+ * Check for the existence of the specified lib directory, and create if needed.
+ */
+function drush_environment_lib() {
+  $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
+  drush_mkdir($lib);
+  if (!is_dir($lib)) {
+    return FALSE;
+  }
+}
+
+function drush_environment_table_lib() {
+  // Try using the PEAR installed version of Console_Table.
   $tablefile = 'Console/Table.php';
   if (@file_get_contents($tablefile, FILE_USE_INCLUDE_PATH) === FALSE) {
-    $tablefile = DRUSH_BASE_PATH . '/includes/table.inc';
-
-    // Attempt to download Console Table, via various methods.
+    $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
+    $tablefile = $lib . '/Console_Table-' . DRUSH_TABLE_VERSION . '/Table.php';
+    // If it is not already present, download Console Table.
     if (!drush_file_not_empty($tablefile)) {
-      $targetpath = dirname($tablefile);
-      // not point continuing if we can't write to the target path
-      if (!is_writable($targetpath)) {
-        return drush_bootstrap_error('DRUSH_TABLES_INC', dt("Drush needs a copy of the PEAR Console_Table library in order to function, and the attempt to download this file automatically failed because you do not have permission to write files in !path. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract it, and copy the Table.php file into Drush's directory as !tablefile.", array('!path' => $targetpath, '!version' => DRUSH_TABLE_VERSION ,'!tablefile' => $tablefile)));
+      // Attempt to remove the old Console Table file, from the legacy location.
+      // TODO: Remove this (and associated .git.ignore) in Drush 6.x.
+      $tablefile_legacy = DRUSH_BASE_PATH . '/includes/table.inc';
+      if (drush_file_not_empty($tablefile_legacy)) {
+        drush_op('unlink', $tablefile_legacy);
       }
-
-      if ($file = @file_get_contents(DRUSH_TABLE_URL)) {
-        @file_put_contents($tablefile, $file);
-      }
-      if (!file_exists($tablefile)) {
-        drush_shell_exec("wget -q --timeout=30 -O $tablefile " . DRUSH_TABLE_URL);
-        // wget creates an empty file on timeout. We remove it here.
-        if (file_exists($tablefile) && !drush_file_not_empty($tablefile)) {
-          unlink($tablefile);
-        }
-        if (!file_exists($tablefile)) {
-          drush_shell_exec("curl -s  --connect-timeout 30 -o $tablefile " . DRUSH_TABLE_URL);
-          if (!file_exists($tablefile)) {
-            return drush_bootstrap_error('DRUSH_TABLES_INC', dt("Drush needs a copy of the PEAR Console_Table library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract it, and copy the Table.php file into Drush's directory as !tablefile.", array('!version' => DRUSH_TABLE_VERSION ,'!tablefile' => $tablefile)));
-          }
-        }
+      
+      // Download and extract Console_Table, and confirm success.
+      drush_lib_fetch(DRUSH_PEAR_BASE_URL . 'Console_Table-' . DRUSH_TABLE_VERSION . '.tgz');
+      // Remove unneccessary package.xml file which ends up in /lib.
+      drush_op('unlink', $lib . '/package.xml');
+      if (!drush_file_not_empty($tablefile)) {
+        return drush_bootstrap_error('DRUSH_TABLES_LIB_NOT_FOUND', dt("Drush needs a copy of the PEAR Console_Table library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract it into !lib directory, such that Table.php exists at !tablefile.", array('!version' => DRUSH_TABLE_VERSION, '!tablefile' => $tablefile, '!lib' => $lib)));
       }
     }
   }

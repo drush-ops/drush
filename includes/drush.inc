@@ -348,6 +348,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['user']             = array('short-form' => 'u', 'description' => dt("Specify a Drupal user to login with. May be a name or a number."));
     $options['backend']          = array('short-form' => 'b', 'description' => dt("Hide all output and return structured data (internal use only)."));
     $options['choice']           = dt("Provide an answer to a multiple-choice prompt.");
+    $options['lib']              = dt("Location of directory where 3rd party libraries are available, or where Drush can downloaded them to if they are not found.");
     $options['no-label']         = dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
     $options['nocolor']          = dt("Suppress color highlighting on log messages.");
     $options['show-passwords']   = dt("Show database passwords in commands that display connection information.");
@@ -703,21 +704,26 @@ function drush_op($function) {
 }
 
 /**
- * Download a file using wget or curl. Uses download cache.
+ * Download a file using wget, curl or file_get_contents, or via download cache.
  *
  * @param string $url
- *   The path to the file to download
- *
+ *   The url of the file to download.
+ * @param string $destination
+ *   The name of the file to be saved, which may include the full path.
+ *   Optional, if omitted the filename will be extracted from the url and the
+ *   file downloaded to the current working directory (Drupal root if
+ *   bootstrapped).
  * @param integer $cache_duration
  *   The acceptable age of a cached file. If cached file is too old, a fetch
- *   will occur and cache will be updated.
+ *   will occur and cache will be updated. Optional, if ommitted the file will
+ *   be fetched directly.
  *
  * @return string
- *   The path to the downloaded file, or FALSE
- *   if the file could not be downloaded.
+ *   The path to the downloaded file, or FALSE if the file could not be
+ *   downloaded.
  */
-function drush_download_file($url, $cache_duration) {
-  if (drush_get_option('cache') && $cache_dir = drush_directory_cache()) {
+function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
+  if (drush_get_option('cache') && $cache_duration !== 0 && $cache_dir = drush_directory_cache()) {
     drush_mkdir($cache_dir);
     $cache_name = str_replace(array(':', '/'), '-', $url);
     $cache_file = $cache_dir . "/" . $cache_name;
@@ -737,7 +743,7 @@ function drush_download_file($url, $cache_duration) {
       }
     }
   }
-  elseif ($return = _drush_download_file($url)) {
+  elseif ($return = _drush_download_file($url, $destination)) {
     drush_register_file_for_deletion($return);
     return $return;
   }
@@ -747,34 +753,101 @@ function drush_download_file($url, $cache_duration) {
 }
 
 /**
- * Download a file using wget or curl. Does not use download cache.
+ * Download a file using wget, curl or file_get_contents. Does not use download
+ * cache.
  *
  * @param string $url
- *   The path to the file to download
+ *   The url of the file to download.
+ * @param string $destination
+ *   The name of the file to be saved, which may include the full path.
+ *   Optional, if omitted the filename will be extracted from the url and the
+ *   file downloaded to the current working directory (Drupal root if
+ *   bootstrapped).
  *
  * @return string
- *   The path to the downloaded file, or FALSE
- *   if the file could not be downloaded. If omitted, downloads to
- *   current working directory (Drupal root if bootstrapped).
+ *   The path to the downloaded file, or FALSE if the file could not be
+ *   downloaded.
  */
-function _drush_download_file($url, $destination = NULL) {
+function _drush_download_file($url, $destination = FALSE) {
   if (!$destination) {
     $destination = getcwd() . '/' . basename($url);
   }
 
   $destination_tmp = drush_tempnam('download_file');
-  if (!drush_shell_exec("wget -O %s %s", $destination_tmp, $url)) {
-    // Wget failed - try curl.
-    if (!drush_shell_exec("curl -o %s %s", $destination, $url)) {
-      return FALSE;
-    }
+  drush_shell_exec("wget -q --timeout=30 -O %s %s", $destination_tmp, $url);
+  if (!drush_file_not_empty($destination_tmp)) {
+    drush_shell_exec("curl -s -L --connect-timeout 30 -o %s %s", $destination_tmp, $url);
   }
-  else {
-    // Wget succeeded. Move to final $destination.
-    drush_move_dir($destination_tmp, $destination);
+  if (!drush_file_not_empty($destination_tmp) && $file = @file_get_contents($url)) {
+    @file_put_contents($destination_tmp, $file);
+  }
+  if (!drush_file_not_empty($destination_tmp)) {
+    // Download failed.
+    return FALSE;
   }
 
+  drush_move_dir($destination_tmp, $destination);
   return $destination;
+}
+
+/**
+ * Extract a tarball.
+ *
+ * @param string $path
+ *   The name of the .tar.gz or .tgz file to be extracted.
+ * @param string $destination
+ *   The destination directory the tarball should be extracted into.
+ *   Optional, if ommitted the tarball directory will be used as destination.
+ *
+ * @return string
+ *   A file listing of the tarball if the extraction reported success,
+ *   otherwise FALSE.
+ */
+function drush_tarball_extract($path, $destination = FALSE) {
+  // Chdir to the download location.
+  $olddir = getcwd();
+  if (!$destination) {
+    $destination = dirname($path);
+  }
+  drush_op('chdir', $destination);
+  $tarpath = basename($path, '.tar.gz');
+  $tarpath = basename($tarpath, '.tgz');
+  $tarpath = $destination . '/' . $tarpath . '.tar';
+  // Ensure the intermediate file is deleted.
+  drush_register_file_for_deletion($tarpath);
+  // Decompress and untar in two steps as tar -xzf does not work on windows.
+  $result = FALSE;
+  if (drush_shell_exec("gzip --decompress --stdout %s > %s", $path, $tarpath) && drush_shell_exec("tar -xf %s", $tarpath)) {
+    // We use a separate tar -tf instead of -xvf above because
+    // the output is not the same in Mac.
+    drush_shell_exec("tar -tf %s", $tarpath);
+    $result = drush_shell_exec_output();
+  }
+  drush_op('chdir', $olddir);
+  return $result;
+}
+
+/**
+ * Extract a tarball to the lib directory.
+ * Checks for reported success, but callers should normally check for existence
+ * of specific expected file(s) in the library.
+ *
+ * @param string $url
+ *   The URL to of the .tar.gz or .tgz file to be extracted.
+ *
+ * @return string
+ *   TRUE is the download and extraction reported success, FALSE otherwise.
+ */
+function drush_lib_fetch($url) {
+  $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
+  if (!is_writable($lib)) {
+    return drush_bootstrap_error('DRUSH_LIB_UNWRITABLE', dt("Drush needs to download a library from !url in order to function, and the attempt to download this file automatically failed because you do not have permission to write to the library directory !path. To continue you will need to manually download the package from !url, extract it, and copy the directory into your !path directory.", array('!path' => $lib, '!url' => $url)));
+  }
+
+  // We use an arbitary filename, since some sources (e.g. github) do not
+  // include a filename in the URL.
+  $path = $lib . '/drush-library-' . mt_rand() . '.tar.gz';
+  return drush_download_file($url, $path) && drush_tarball_extract($path);
 }
 
 /**

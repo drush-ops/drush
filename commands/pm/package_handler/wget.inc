@@ -46,56 +46,38 @@ function package_handler_download_project(&$request, $release) {
     }
   }
 
-  // Chdir to the download location.
-  $olddir = getcwd();
-  drush_op('chdir', $request['base_project_path']);
-
   // Dev snapshots can be cached for 4 hours and releases for 1 year.
   $max_age = strpos($release['download_link'], '-dev') !== FALSE ? 3600*4 : 86400*365;
-  $path = drush_download_file($release['download_link'], $max_age);
   $filename = basename($release['download_link']);
+  $path = drush_download_file($release['download_link'], $request['base_project_path'] . $filename, $max_age);
   if ($path || drush_get_context('DRUSH_SIMULATE')) {
     drush_log("Downloading " . $filename . " was successful.");
   }
   else {
-    drush_op('chdir', $olddir);
     return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', 'Unable to download ' . $filename . ' to ' . $request['base_project_path'] . ' from '. $release['download_link']);
   }
 
   // Check Md5 hash.
   if (drush_op('md5_file', $path) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
     drush_set_error('DRUSH_PM_FILE_CORRUPT', "File $filename is corrupt (wrong md5 checksum).");
-    drush_op('chdir', $olddir);
     return FALSE;
   }
   else {
     drush_log("Md5 checksum of $filename verified.");
   }
 
-  $tarpath = basename($path, '.tar.gz');
-  $tarpath = basename($tarpath, '.tgz');
-  $tarpath .= '.tar';
-  // Decompress and untar in two steps as tar -xzf does not work on windows.
-  drush_shell_exec("gzip --decompress --stdout %s > %s", $path, $tarpath);
-  drush_shell_exec("tar -xf %s", $tarpath);
+  // Extract the tarball.
+  $file_list = drush_tarball_extract($path, $request['base_project_path']);
 
   // Move untarred directory to project_dir, if distinct.
   if (($request['project_type'] == 'core') || (($request['project_type'] == 'profile') && (drush_get_option('variant', 'core') == 'core'))) {
     // Obtain the dodgy project_dir for drupal core.
-    // We use a separate tar -tf instead of -xvf above because
-    // the output is not the same in Mac.
-    drush_shell_exec("tar -tf %s", $tarpath);
-    $output = drush_shell_exec_output();
-    $project_dir = drush_trim_path($output[0]);
+    $project_dir = drush_trim_path($file_list[0]);
     if ($request['project_dir'] != $project_dir) {
       $path = $request['base_project_path'];
       drush_move_dir($path . '/'. $project_dir, $path . '/' . $request['project_dir']);
     }
   }
-
-  // Cleanup. Remove the tar file and set previous working directory.
-  drush_op('unlink', $tarpath);
-  drush_op('chdir', $olddir);
 
   return TRUE;
 }
