@@ -113,8 +113,22 @@ function drush_core_pre_site_install() {
  * Command callback.
  */
 function drush_core_site_install($profile = NULL) {
+  $args = func_get_args();
+  if ($args) {
+    // The first argument is the profile.
+    $profile = array_shift($args);
+    // Subsequent arguments are additional form values.
+    foreach ($args as $arg) {
+      list($key, $value) = explode('=', $arg);
+      $form_options[$key] = $value;
+    }
+  }
+  else {
+    $form_options = array();
+  }
+
   drush_include_engine('drupal', 'site_install', drush_drupal_major_version());
-  drush_core_site_install_version($profile);
+  drush_core_site_install_version($profile, $form_options);
 }
 
 /**

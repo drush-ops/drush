@@ -3,7 +3,7 @@
 /**
  * Install Drupal 7+
  */
-function drush_core_site_install_version($profile) {
+function drush_core_site_install_version($profile, array $additional_form_options = array()) {
   if (is_null($profile)) {
     $profile = 'standard';
   }
@@ -46,6 +46,16 @@ function drush_core_site_install_version($profile) {
       ),
     ),
   );
+
+  // Merge in the additional options.
+  foreach ($additional_form_options as $key => $value) {
+    $current = &$settings['forms'];
+    foreach (explode('.', $key) as $param) {
+      $current = &$current[$param];
+    }
+    $current = $value;
+  }
+
   drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), 'ok');
   install_drupal($settings);
   drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
