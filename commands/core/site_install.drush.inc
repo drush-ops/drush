@@ -114,6 +114,8 @@ function drush_core_pre_site_install() {
  */
 function drush_core_site_install($profile = NULL) {
   $args = func_get_args();
+  $form_options = array();
+
   if ($args) {
     // The first argument is the profile.
     $profile = array_shift($args);
@@ -122,9 +124,6 @@ function drush_core_site_install($profile = NULL) {
       list($key, $value) = explode('=', $arg);
       $form_options[$key] = $value;
     }
-  }
-  else {
-    $form_options = array();
   }
 
   drush_include_engine('drupal', 'site_install', drush_drupal_major_version());
