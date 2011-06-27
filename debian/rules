@@ -1,76 +1,50 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
-# Sample debian/rules that uses debhelper.
-# This file was originally written by Joey Hess and Craig Small.
-# As a special exception, when this file is copied by dh-make into a
-# dh-make output file, you may use that output file without restriction.
-# This special exception was added by Craig Small in version 0.37 of dh-make.
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
-	touch configure-stamp
+%:
+	dh $@
 
-
-build: build-stamp
-
-build-stamp: configure-stamp  
-	dh_testdir
-	touch $@
-
-clean: 
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp configure-stamp
-
-	dh_clean 
-
-install: build
-	dh_testdir
-	dh_testroot
-	dh_prep
-	dh_installdirs
-
-	cp -r $(CURDIR)/commands $(CURDIR)/includes $(CURDIR)/debian/drush/usr/share/drush
+override_dh_install:
+	cp -r "$(CURDIR)/commands" "$(CURDIR)/includes" "$(CURDIR)/drush.php" "$(CURDIR)/drush.info" "$(CURDIR)/debian/drush/usr/share/drush/"
 	# trash the .gitignore file that generates lintian warnings
 	# there's got to be a better way
-	rm $(CURDIR)/debian/drush/usr/share/drush/includes/.gitignore
-	cp $(CURDIR)/drush.php $(CURDIR)/debian/drush/usr/share/drush/
-	cp $(CURDIR)/drush.info $(CURDIR)/debian/drush/usr/share/drush/
-	chmod a+x $(CURDIR)/debian/drush/usr/share/drush/drush.php
-	ln -s /usr/share/drush/drush.php $(CURDIR)/debian/drush/usr/bin/drush
-
-
-# Build architecture-dependent files here.
-binary-arch: build install
-# Nothing to do here, we're Arch: all
-
-# Build architecture-independent files here.
-binary-indep: build install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs 
-	dh_installdocs
-	dh_installexamples
-	dh_installman
-	dh_link
-	dh_strip
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
+	rm "$(CURDIR)/debian/drush/usr/share/drush/includes/.gitignore"
+	chmod a+x "$(CURDIR)/debian/drush/usr/share/drush/drush.php"
+	ln -s /usr/share/drush/drush.php "$(CURDIR)/debian/drush/usr/bin/drush"
 
 release: 
 	git-buildpackage --release
 
 snapshot: 
 	git-buildpackage --snapshot
+
+DOMAIN?=$(shell hostname -f)
+KEY?="-k jenkins@$(DOMAIN)"
+
+# this builds a debian package based on what the current branches are
+# this usually tests the latest release
+jenkins-build-official:
+	git-buildpackage -b --git-upstream-branch=origin/upstream --git-debian-branch=origin/debian --git-ignore-branch ${KEY}
+
+# the upstream version: strip the 6.x and turn the appendix into
+# +N.foo where N is the number of commits since last tag and foo is
+# the hash
+upstream_version=$(shell git describe --tags origin/7.x-4.x | sed 's/6.x-//;s/-\([0-9]*\)-\([^-]*\)$$/+\1.\2/')
+# the debian version, strip the debian/ part of the tag and the
+# upstream version number, keep just the debian part, replacing as
+# above for the N.foo part
+debian_version=$(shell git describe --tags origin/debian | sed "s/debian\///;s/-\([0-9]*\)-\([^-]*\)$$/+\1.\2/;s/^.*-//" )
+
+# this builds a debian package but first updates the branches to follow the latest 1.x branch
+# this assumes you are on a "debian" branch (of course)
+jenkins-build-auto:
+	git merge origin/7.x-4.x
+	dch -v ${upstream_version}-${debian_version} "automatic jenkins build ${BUILD_TAG}"
+	git commit -m"dummy commit for $version autobuild" debian/changelog
+	git-buildpackage -b --git-upstream-branch=origin/7.x-4.x ${KEY}
+
+show-version:
+	@echo ${upstream_version}-${debian_version}
