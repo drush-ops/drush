@@ -616,7 +616,7 @@ function drush_pm_enable() {
           if (drush_get_option('resolve-dependencies')) {
             drush_log(dt("The following projects have unmet dependencies:\n@list\nThey are being downloaded.", array('@list' => implode("\n", $msgs))));
           }
-          $result = drush_invoke_process_args('pm-download', $unmet_project_list, array('y' => TRUE, 'cache' => TRUE));
+          $result = drush_invoke_process('@self', 'pm-download', $unmet_project_list, array('y' => TRUE, 'cache' => TRUE));
           // Refresh module cache after downloading the new modules.
           $extension_info = drush_get_extensions();
           $recheck = TRUE;
@@ -1384,8 +1384,7 @@ function drush_pm_refresh() {
 function drush_pm_update() {
   // Call pm-updatecode.  updatedb will be called in the post-update process.
   $args = pm_parse_arguments(func_get_args(), FALSE);
-  array_unshift($args, 'pm-updatecode');
-  return call_user_func_array('drush_invoke', $args);
+  return drush_invoke('pm-updatecode', $args);
 }
 
 /**
@@ -1393,9 +1392,9 @@ function drush_pm_update() {
  * Execute updatedb command after an updatecode - user requested `update`.
  */
 function drush_pm_post_pm_update() {
-  // Use drush_invoke_process_args to start a subprocess. Cleaner that way.
+  // Use drush_invoke_process to start a subprocess. Cleaner that way.
   if (drush_get_context('DRUSH_PM_UPDATED', FALSE) !== FALSE) {
-    drush_invoke_process('updatedb');
+    drush_invoke_process('@self', 'updatedb');
   }
 }
 
@@ -1426,7 +1425,7 @@ function drush_pm_post_pm_updatecode() {
   $command = drush_get_command();
   if ($command['command'] != 'pm-update') {
     if (drush_get_context('DRUSH_PM_UPDATED', FALSE) !== FALSE) {
-      drush_invoke_process('pm-updatecode-postupdate');
+      drush_invoke_process('@self', 'pm-updatecode-postupdate');
     }
   }
 }

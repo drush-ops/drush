@@ -95,11 +95,11 @@ function drush_archive_dump($sites_subdirs = '@self') {
 
   $i=0;
   foreach ($full as $key => $alias) {
-    $vget = drush_invoke_sitealias_args($alias, 'vget', array('site_name'), array());
+    $vget = drush_invoke_process($alias, 'vget', array('site_name'), array());
     $name = $vget['output'];
     $pos1 = strpos($name, '"');
     $name = substr($name, $pos1);
-    $status = drush_invoke_sitealias_args($alias, 'core-status', array(), array());
+    $status = drush_invoke_process($alias, 'core-status', array(), array());
 
     // Add the site specific directory to archive.
     if (!empty($status['object']['%paths']['%site'])) {

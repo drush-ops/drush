@@ -604,7 +604,7 @@ function drush_sitealias_add_db_url(&$alias_record) {
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
     // We use sql-conf to fetch our database info.  We set 'override-simulated' so that
     // we will fetch the database values even in --simulate mode.
-    $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('db-url' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
+    $values = drush_invoke_process($alias_record, "sql-conf", array(), array('db-url' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
     if (isset($values['object']['db-url'])) {
       $alias_record['db-url'] = $values['object']['db-url'];
     }
@@ -642,10 +642,10 @@ function drush_sitealias_add_db_settings(&$alias_record)
   // If the alias record does not have a defined 'databases' entry,
   // then we'll need to look one up
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
-    $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('all' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
+    $values = drush_invoke_process($alias_record, "sql-conf", array(), array('all' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
     if (is_array($values) && ($values['error_status'] == 0)) {
       $altered_record = TRUE;
-      // If there are any special settings in the '@self' record returned by drush_invoke_sitealias_args,
+      // If there are any special settings in the '@self' record returned by drush_invoke_process,
       // then add those into our altered record as well
       if (array_key_exists('self', $values)) {
         $alias_record = array_merge($values['self'], $alias_record);
@@ -740,7 +740,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
       $status_values = _core_site_status_table($project_list);
     }
     else {
-      $values = drush_invoke_sitealias_args($alias_record, "status", array(), empty($project_list) ? array() : array('project' => $project_list), array('integrate' => FALSE, 'override-simulated' => TRUE));
+      $values = drush_invoke_process($alias_record, "status", array(), empty($project_list) ? array() : array('project' => $project_list), array('integrate' => FALSE, 'override-simulated' => TRUE));
       $status_values = $values['object'];
     }
     if (isset($status_values['%paths'])) {
