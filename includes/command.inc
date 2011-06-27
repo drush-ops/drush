@@ -126,6 +126,7 @@ function _drush_invoke($command, $args, $defined_in_commandfile) {
         // Only the 'main' callback can send data to backend.
         if ($var_hook == $hook) {
           drush_backend_set_result($result);
+          $return = $result;
         }
         _drush_log_drupal_messages();
         if (drush_get_error() || ($result === FALSE)) {
@@ -163,9 +164,10 @@ function _drush_invoke($command, $args, $defined_in_commandfile) {
         drush_log(dt("Changes made in !func have been rolled back.", array('!func' => $func)), 'rollback');
       }
     }
+    return !$rollback;
   }
 
-  return !$rollback;
+  return $return;
 }
 
 /**

@@ -243,9 +243,9 @@ function core_drush_command() {
   $items['batch-process'] = array(
     'description' => 'Process operations in the specified batch set',
     'hidden' => TRUE,
-      'arguments' => array(
-        'batch-id' => 'The batch id that will be processed',
-      ),
+    'arguments' => array(
+      'batch-id' => 'The batch id that will be processed',
+    ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
   );
 
@@ -263,6 +263,23 @@ function core_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
+  $items['core-quick-drupal'] = array(
+    'description' => 'Download, install, serve and login to Drupal with minimal configuration and dependencies.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('qd'),
+    'arguments' => array(
+      'site' => 'Short name for the site to be created - used as a directory name and as sqlite file name. Optional - if omitted timestamped "quick-drupal" directory will be used instead.',
+      'projects' => 'A list of projects to download into the new site. If projects contain extensions (modules or themes) with the same name they will be enabled by default. See --enable option to control this behaviour further.',
+    ),
+    'examples' => array(
+      'drush qd' => 'Download and install stable release of Drupal into a timestamped directory, start server, and open the site logged in as admin.',
+      'drush qd --profile=minimal --dev --cache --default-major=8 --yes' => 'Fire up dev release of Drupal site with minimal install profile.',
+      'drush qd testsite devel --server=:8081/admin --browser=firefox --cache --yes' => 'Fire up stable release (using the cache) of Drupal site called "testsite", download and enable devel module, start a server on port 8081 and open /admin in firefox.',
+      'drush qd commercesite --core=commerce_kickstart --profile=commerce_kickstart --cache --yes --watchdog' => 'Download and install the "Commerce Kickstart" distribution/install profile, display watchdog messages on the server console.',
+    ),
+  );
+  // Add in options/engines.
+  drush_core_quick_drupal_options($items);
   return $items;
 }
 
@@ -658,8 +675,108 @@ function _drush_core_is_named_in_array($key, $the_array) {
 }
 
 /**
+ * Callback for core-quick-drupal command.
+ */
+function drush_core_quick_drupal() {
+  $requests = FALSE;
+  $args = func_get_args();
+  if (empty($args)) {
+    $name = 'quick-drupal-' . gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
+  }
+  else {
+    $name = array_shift($args);
+    if (!empty($args)) {
+      $requests = pm_parse_arguments($args, FALSE);
+    }
+  }
+  $base = getcwd() . '/' . $name;
+  drush_set_option('destination', $base);
+  drush_set_option('backend', TRUE);
+  $core = drush_get_option('core', 'drupal');
+  drush_set_option('drupal-project-rename', $core);
+  if (drush_invoke('pm-download', array($core)) === FALSE) {
+    return drush_set_error('QUICK_DRUPAL_CORE_DOWNLOAD_FAIL', 'Drupal core download/extract failed.');
+  }
+  drush_set_option('root', $base . '/' . $core);
+  if (!drush_get_option('db-url', FALSE)) {
+    drush_set_option('db-url', 'sqlite:' . $base . '/' . $name . '.sqlite');
+  }
+  if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
+    return drush_set_error('QUICK_DRUPAL_ROOT_LOCATE_FAIL', 'Unable to locate Drupal root directory.');
+  }
+  if ($requests) {
+    // Unset --destination, so that downloads go to the site directories.
+    drush_unset_option('destination');
+    if (drush_invoke('pm-download', $requests) === FALSE) {
+      return drush_set_error('QUICK_DRUPAL_PROJECT_DOWNLOAD_FAIL', 'Project download/extract failed.');
+    }
+  }
+  drush_invoke('site-install', array(drush_get_option('profile')));
+  // Log in with the admin user.
+  drush_set_option('user', '1');
+  if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_LOGIN)) {
+    return drush_set_error('QUICK_DRUPAL_INSTALL_FAIL', 'Drupal core install failed.');
+  }
+  $enable = pm_parse_arguments(drush_get_option('enable', $requests));
+  if (!empty($enable)) {
+    if (drush_invoke('pm-enable', $enable) === FALSE) {
+     return drush_set_error('QUICK_DRUPAL_PROJECT_ENABLE_FAIL', 'Project enable failed.');
+    }
+  }
+  drush_print(dt('Login URL: ') . drush_invoke('user-login'));
+  if ($server = drush_get_option('server', '/')) {
+    drush_invoke('runserver', array($server));
+  }
+}
+
+/**
+ * Include options and engines for core-quick-drupal command, aggregated from
+ * other command options that are available. We prefix option descriptons,
+ * to make the long list more navigable.
+ *
+ * @param $items
+ *   The core commandfile command array, by reference. Used to include
+ *   site-install options and add options and engines for core-quick-drupal.
+ */
+function drush_core_quick_drupal_options(&$items) {
+  $options = array(
+    'core' => 'Drupal core to download. Defaults to "drupal" (latest stable version).',
+    'profile' => 'The install profile to use. Defaults to standard.',
+    'enable' => 'Specific extensions (modules or themes) to enable. By default, extensions with the same name as requested projects will be enabled automatically.',
+    'server' => 'Host IP address and port number to bind to and path to open in web browser (hyphen to clear a default path), all elements optional. See runserver examples for shorthand.',
+    'no-server' => 'Avoid starting runserver (and browser) for the created Drupal site.',
+    'browser' => 'Optional name of a browser to open site in. If omitted the OS default browser will be used. Set --no-browser to disable.',
+  );
+  $pm = pm_drush_command();
+  foreach ($pm['pm-download']['options'] as $option => $description) {
+    $options[$option] = 'Download option: ' . $description;
+  }
+  // Unset a few options that are not usable here, as we control them ourselves
+  // or they are otherwise implied by the environment.
+  unset($options['destination']);
+  unset($options['drupal-project-rename']);
+  unset($options['default-major']);
+  unset($options['use-site-dir']);
+  foreach ($items['site-install']['options'] as $option => $description) {
+    $options[$option] = 'Site install option: ' . $description;
+  }
+  unset($options['sites-subdir']);
+  $runserver = runserver_drush_command();
+  foreach ($runserver['runserver']['options'] as $option => $description) {
+    $options[$option] = 'Runserver option: ' . $description;
+  }
+  unset($options['user']);
+  $items['core-quick-drupal']['options'] = $options;
+  $items['core-quick-drupal']['engines'] = $pm['pm-download']['engines'];
+}
+
+/**
  * Command callback. Runs "naked" php scripts
  * and drush "shebang" scripts ("#!/usr/bin/env drush").
+ *
+ * @params
+ *   Command arguments, optional. First argument is site name, remaining
+ *   argument(s) are contrib modules to install.
  */
 function drush_core_php_script() {
   $found = FALSE;

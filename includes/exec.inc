@@ -290,5 +290,56 @@ function drush_shell_exec_output() {
 }
 
 /**
+ * Starts a background browser/tab for the current site or a specified URL.
+ *
+ * Uses a non-blocking proc_open call, so Drush execution will continue.
+ *
+ * @param $uri
+ *   Optional URI or site path to open in browser. If omitted, or if a site path
+ *   is specified, the current site home page uri will be prepended if the sites
+ *   hostname resolves.
+ * @return
+ *   TRUE if browser was opened, FALSE if browser was disabled by the user or a,
+ *   default browser could not be found.
+ */
+function drush_start_browser($uri = NULL) {
+  if (!parse_url($uri, PHP_URL_HOST)) {
+    $site = drush_get_context('DRUSH_URI');
+    $host = parse_url($site, PHP_URL_HOST);
+    // Validate that the host part of the URL resolves, so we don't attempt to
+    // open the browser for http://default or similar invalid hosts.
+    $hosterror = gethostbyname($host) == $host;
+    $iperror = ip2long($host) && gethostbyaddr($host) == $host;
+    if ($hosterror && $iperror) {
+      drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser.', array('!host' => $host)), 'warning');
+      return FALSE;
+    }
+    $uri = $site . '/' . ltrim($uri, '/');
+  }
+  if ($browser = drush_get_option('browser', TRUE)) {
+    if ($browser === TRUE) {
+      // See if we can find an OS helper to open URLs in default browser.
+      if (drush_shell_exec('which xdg-open')) {
+        $browser = 'xdg-open';
+      }
+      else if (drush_shell_exec('which open')) {
+        $browser = 'open';
+      }
+      else {
+        // Can't find a valid browser.
+        $browser = FALSE;
+      }
+    }
+    if ($browser && !drush_get_context('DRUSH_SIMULATE')) {
+      $pipes = array();
+      drush_log(dt('Opening browser at !uri', array('!uri' => $uri)));
+      proc_close(proc_open($browser . ' ' . drush_escapeshellarg($uri) . ' 2> /dev/null &', array(), $pipes));
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
  * @} End of "defgroup commandwrappers".
  */

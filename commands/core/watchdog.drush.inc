@@ -223,7 +223,10 @@ function core_watchdog_format_result($result, $full = FALSE) {
 
   // Message.
   if (drush_drupal_major_version() >= 6) {
-    $variables = unserialize($result->variables);
+    $variables = $result->variables;
+    if (is_string($variables)) {
+      $variables = unserialize();
+    }
     if (is_array($variables)) {
       $result->message = strtr($result->message, $variables);
     }
