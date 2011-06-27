@@ -29,7 +29,7 @@ jenkins-build-official:
 # the upstream version: strip the 6.x and turn the appendix into
 # +N.foo where N is the number of commits since last tag and foo is
 # the hash
-upstream_version=$(shell git describe --tags origin/6.x-1.x | sed 's/6.x-//;s/-\([0-9]*\)-\([^-]*\)$$/+\1.\2/')
+upstream_version=$(shell git describe --tags origin/7.x-4.x | sed 's/6.x-//;s/-\([0-9]*\)-\([^-]*\)$$/+\1.\2/')
 # the debian version, strip the debian/ part of the tag and the
 # upstream version number, keep just the debian part, replacing as
 # above for the N.foo part
@@ -38,10 +38,10 @@ debian_version=$(shell git describe --tags origin/debian | sed "s/debian\///;s/-
 # this builds a debian package but first updates the branches to follow the latest 1.x branch
 # this assumes you are on a "debian" branch (of course)
 jenkins-build-auto:
-	git merge origin/6.x-1.x
+	git merge origin/7.x-4.x
 	dch -v ${upstream_version}-${debian_version} "automatic jenkins build ${BUILD_TAG}"
 	git commit -m"dummy commit for $version autobuild" debian/changelog
-	git-buildpackage -b --git-upstream-branch=origin/6.x-1.x -kjenkins@ci.aegirproject.org
+	git-buildpackage -b --git-upstream-branch=origin/7.x-4.x -kjenkins@ci.aegirproject.org
 
 show-version:
 	@echo ${upstream_version}-${debian_version}
