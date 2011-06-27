@@ -8,13 +8,12 @@
 	dh $@
 
 override_dh_install:
-	cp -r $(CURDIR)/commands $(CURDIR)/includes $(CURDIR)/debian/drush/usr/share/drush
+	cp -r "$(CURDIR)/commands" "$(CURDIR)/includes" "$(CURDIR)/drush.php" "$(CURDIR)/drush.info" "$(CURDIR)/debian/drush/usr/share/drush/"
 	# trash the .gitignore file that generates lintian warnings
 	# there's got to be a better way
-	rm $(CURDIR)/debian/drush/usr/share/drush/includes/.gitignore
-	cp $(CURDIR)/drush.php $(CURDIR)/drush.info $(CURDIR)/debian/drush/usr/share/drush/
-	chmod a+x $(CURDIR)/debian/drush/usr/share/drush/drush.php
-	ln -s /usr/share/drush/drush.php $(CURDIR)/debian/drush/usr/bin/drush
+	rm "$(CURDIR)/debian/drush/usr/share/drush/includes/.gitignore"
+	chmod a+x "$(CURDIR)/debian/drush/usr/share/drush/drush.php"
+	ln -s /usr/share/drush/drush.php "$(CURDIR)/debian/drush/usr/bin/drush"
 
 release: 
 	git-buildpackage --release
