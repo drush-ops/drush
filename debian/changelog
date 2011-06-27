@@ -1,11 +1,3 @@
-drush (5.0~dev-1) experimental UNRELEASED; urgency=low
-
-  * Test snapshot release of the Drush 5 branch.
-  * Build from the debian-master branch and directly from the "master"
-    branch as upstream.
-
- -- Antoine Beaupré <anarcat@koumbit.org>  Mon, 27 Jun 2011 15:48:09 -0400
-
 drush (4.4-1) unstable; urgency=low
 
   * New upstream minor release to fix .info file.
