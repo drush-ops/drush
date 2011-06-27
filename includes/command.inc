@@ -58,13 +58,6 @@ function drush_invoke($command, $args = array()) {
 }
 
 /**
- * Deprecated. @see drush_invoke()
- */
-function drush_invoke_args($command, $args) {
-  return drush_invoke($command, $args);
-}
-
-/**
  * Variant of drush_invoke that allows the
  * commandfile to be specified correctly; this allows
  * the hook functions to be correctly determined for
