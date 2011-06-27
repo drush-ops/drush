@@ -26,6 +26,24 @@ function archive_drush_command() {
       'drush archive-dump default --destination=/backups/mysite.tar' => 'Save archive to custom location.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
+    'aliases' => array('ard'),
+  );
+  $items['archive-restore'] = array(
+    'description' => 'Expand a site archive into a Drupal web site.',
+    'arguments' => array(
+      'file' => 'The site archive file that should be expanded.',
+      'site number' => 'Optional. Which site within the archive you want to restore. Defaults to all.',
+    ),
+    'options' => array(
+      'destination' => 'Specify where the archive should be stored. Include filename but omit the .gz suffix.',
+    ),
+    'examples' => array(
+      'drush archive-dump default,example.com,foo.com' => 'Write an archive containing 3 sites in it.',
+      'drush archive-dump @sites' => 'Save archive containing all sites in a multi-site.',
+      'drush archive-dump default --destination=/backups/mysite.tar' => 'Save archive to custom location.',
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('arr'),
   );
   return $items;
 }
@@ -136,4 +154,23 @@ function drush_archive_dump($sites_subdirs = '@self') {
   drush_log(dt('Archive saved to !dest.gz', array('!dest' => $destination)), 'ok');
   drush_print_pipe($destination);
   return $destination;
+}
+
+/**
+ * Command callback. Restore web site(s) from a site archive file.
+ */
+function drush_archive_restore($file, $site_id = NULL) {
+  $destination = drush_get_option('destination', '.');
+  //if (!$files = drush_tarball_extract($file, $destination)) {
+  //  return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_EXTRACT', dt('Unable to extract site archive tarball.'));
+  //}
+  if (!$ini = parse_ini_file($destination . '/MANIFEST.info')) {
+    return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_PARSE_MANIFEST', dt('Unable to parse MANIFEST.info in the archive.'));
+  }
+
+  print_r($ini);
+
+
+
+
 }

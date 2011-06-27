@@ -417,6 +417,7 @@ function drush_prepare_backup_dir($subdir = NULL) {
  */
 function drush_file_not_empty($file_to_test) {
   if (file_exists($file_to_test)) {
+    clearstatcache();
     $stat = stat($file_to_test);
     if ($stat['size'] > 0) {
       return TRUE;
