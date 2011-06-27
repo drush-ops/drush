@@ -42,7 +42,7 @@ debian_version=$(shell git describe --tags origin/debian-master | sed "s/debian\
 # this assumes you are on a "debian" branch (of course)
 jenkins-build-auto:
 	git merge origin/master
-	dch -v ${upstream_version}-${debian_version} "automatic jenkins build ${BUILD_TAG}"
+	dch -D unstable -v ${upstream_version}-${debian_version} "automatic jenkins build ${BUILD_TAG}"
 	git commit -m"dummy commit for jenkins ${BUILD_TAG} autobuild" debian/changelog
 	git-buildpackage -b --git-upstream-branch=origin/master ${KEY}
 
