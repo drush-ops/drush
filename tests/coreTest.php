@@ -96,20 +96,19 @@ drush_invoke("version", $arg);
     $options['alias-path'] = UNISH_SANDBOX;
     $this->drush('core-cli', array(), $options);
 
-    $this->markTestIncomplete('In progress below.');
-
+    // $this->markTestIncomplete('In progress below.');
     // Exercise core-cli's non-interactive mode.
     // We spawn our own bash session using the --pipe feature of core-cli.
-    $options = array(
-      'pipe' => NULL,
-      'alias-path' => UNISH_SANDBOX,
-    );
-    $this->drush('core-cli', array(), $options);
-    $bashrc_data = $this->getOutput();
-    $bashrc_file = UNISH_SANDBOX . '/.bashrc';
-    $extra = 'cd @cliAlias;exit;';
-    $return = file_put_contents($bashrc_file, $bashrc_data . $extra);
-    $this->setUpDrupal('dev', FALSE);
+    //$options = array(
+    //  'pipe' => NULL,
+    //  'alias-path' => UNISH_SANDBOX,
+    //);
+    //$this->drush('core-cli', array(), $options);
+    //$bashrc_data = $this->getOutput();
+    //$bashrc_file = UNISH_SANDBOX . '/.bashrc';
+    //$extra = 'cd @cliAlias;exit;';
+    //$return = file_put_contents($bashrc_file, $bashrc_data . $extra);
+    //$this->setUpDrupal('dev', FALSE);
     //$this->execute('bash --rcfile ' . $bashrc_file);
     //$output = $this->getOutput();
     //$this->assertContains('????', $output);
