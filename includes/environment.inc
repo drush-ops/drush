@@ -553,9 +553,10 @@ function drush_environment_table_lib() {
       }
       
       // Download and extract Console_Table, and confirm success.
-      drush_lib_fetch(DRUSH_PEAR_BASE_URL . 'Console_Table-' . DRUSH_TABLE_VERSION . '.tgz');
-      // Remove unneccessary package.xml file which ends up in /lib.
-      drush_op('unlink', $lib . '/package.xml');
+      if (drush_lib_fetch(DRUSH_PEAR_BASE_URL . 'Console_Table-' . DRUSH_TABLE_VERSION . '.tgz')) {
+        // Remove unneccessary package.xml file which ends up in /lib.
+        drush_op('unlink', $lib . '/package.xml');
+      }
       if (!drush_file_not_empty($tablefile)) {
         return drush_bootstrap_error('DRUSH_TABLES_LIB_NOT_FOUND', dt("Drush needs a copy of the PEAR Console_Table library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract it into !lib directory, such that Table.php exists at !tablefile.", array('!version' => DRUSH_TABLE_VERSION, '!tablefile' => $tablefile, '!lib' => $lib)));
       }

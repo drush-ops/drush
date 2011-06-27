@@ -67,7 +67,7 @@ function package_handler_download_project(&$request, $release) {
   }
 
   // Extract the tarball.
-  $file_list = drush_tarball_extract($path, $request['base_project_path']);
+  $file_list = drush_tarball_extract($path, $request['base_project_path'], TRUE);
 
   // Move untarred directory to project_dir, if distinct.
   if (($request['project_type'] == 'core') || (($request['project_type'] == 'profile') && (drush_get_option('variant', 'core') == 'core'))) {

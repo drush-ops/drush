@@ -799,33 +799,47 @@ function _drush_download_file($url, $destination = FALSE, $overwrite = TRUE) {
  * @param string $destination
  *   The destination directory the tarball should be extracted into.
  *   Optional, if ommitted the tarball directory will be used as destination.
+ * @param boolean $listing
+ *   If TRUE, a listing of the tar contents will be returned on success.
  *
  * @return string
- *   A file listing of the tarball if the extraction reported success,
- *   otherwise FALSE.
+ *   TRUE on success, FALSE on fail. If $listing is TRUE, a file listing of the
+ *   tarball is returned if the extraction reported success, instead of TRUE.
  */
-function drush_tarball_extract($path, $destination = FALSE) {
-  // Chdir to the download location.
+function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
+  if (!file_exists($path)) {
+    return drush_set_error('TARBALL_EXTRACT_NOT_FOUND', dt('Tarball !path could not be found.', array('!path' => $path)));
+  }
   $olddir = getcwd();
   if (!$destination) {
     $destination = dirname($path);
   }
-  drush_op('chdir', $destination);
+  if (!is_writeable($destination)) {
+    return drush_set_error('TARBALL_EXTRACT_DESTINATION', dt('Extracting !path failed, as the destination directory !dest was not found or could not be written to.', array('!path' => $path, '!dest' => $dest)));
+  }
   $tarpath = basename($path, '.tar.gz');
   $tarpath = basename($tarpath, '.tgz');
   $tarpath = $destination . '/' . $tarpath . '.tar';
   // Ensure the intermediate file is deleted.
   drush_register_file_for_deletion($tarpath);
   // Decompress and untar in two steps as tar -xzf does not work on windows.
-  $result = FALSE;
-  if (drush_shell_exec("gzip --decompress --stdout %s > %s", $path, $tarpath) && drush_shell_exec("tar -xf %s", $tarpath)) {
-    // We use a separate tar -tf instead of -xvf above because
-    // the output is not the same in Mac.
-    drush_shell_exec("tar -tf %s", $tarpath);
-    $result = drush_shell_exec_output();
+  if (drush_shell_exec("gzip --decompress --stdout %s > %s", $path, $tarpath)) {
+    if (drush_shell_cd_and_exec($destination, "tar -xf %s", basename($tarpath))) {
+      if ($listing) {
+        // We use a separate tar -tf instead of -xvf above because
+        // the output is not the same in Mac.
+        drush_shell_cd_and_exec("tar -tf %s", basename($tarpath));
+        return drush_shell_exec_output();
+      }
+      return TRUE;
+    }
+    else {
+      return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', 'Extracting !path using the tar command failed.', array('!path' => $path));
+    } 
   }
-  drush_op('chdir', $olddir);
-  return $result;
+  else {
+    return drush_set_error('TARBALL_EXTRACT_GZIP_FAIL', 'Uncompressing !path using the gzip command failed.', array('!path' => $path));
+  }
 }
 
 /**
@@ -842,7 +856,7 @@ function drush_tarball_extract($path, $destination = FALSE) {
 function drush_lib_fetch($url) {
   $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
   if (!is_writable($lib)) {
-    return drush_bootstrap_error('DRUSH_LIB_UNWRITABLE', dt("Drush needs to download a library from !url in order to function, and the attempt to download this file automatically failed because you do not have permission to write to the library directory !path. To continue you will need to manually download the package from !url, extract it, and copy the directory into your !path directory.", array('!path' => $lib, '!url' => $url)));
+    return drush_set_error('DRUSH_LIB_UNWRITABLE', dt("Drush needs to download a library from !url in order to function, and the attempt to download this file automatically failed because you do not have permission to write to the library directory !path. To continue you will need to manually download the package from !url, extract it, and copy the directory into your !path directory.", array('!path' => $lib, '!url' => $url)));
   }
 
   // We use an arbitary filename, since some sources (e.g. github) do not
