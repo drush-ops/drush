@@ -53,10 +53,10 @@ function _drush_backend_batch_process($command = 'batch-process', $args) {
 
     while (!$finished) {
       if ($user->uid) {
-        $data = drush_invoke_process_args($command, $args, array($batch['id'], '-u', $user->uid));
+        $data = drush_invoke_process('@self', $command, $args, array($batch['id'], '-u', $user->uid));
       }
       else {
-        $data = drush_invoke_process_args($command, $args, array($batch['id']));
+        $data = drush_invoke_process('@self', $command, $args, array($batch['id']));
       }
       $finished = drush_get_error() || !$data || ($data['context']['drush_batch_process_finished'] == TRUE);
     }

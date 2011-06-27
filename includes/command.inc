@@ -47,37 +47,38 @@
  *
  * @param command
  *   The drush command to execute.
+ * @param args
+ *   An array of arguments to the command OR a single non-array argument.
  * @return
  *   The return value will be passed along to the caller if --backend option is
  *   present. A boolean FALSE indicates failure and rollback will be intitated.
  */
-function drush_invoke($command) {
-  $args = func_get_args();
-  array_shift($args);
-
-  return drush_invoke_args($command, $args);
+function drush_invoke($command, $args = array()) {
+  return _drush_invoke($command, $args, drush_get_commandfile_for_command($command));
 }
 
 /**
- * As drush_invoke, but args are passed in as an array
- * rather than as individual function parameters.
- *
- * @see drush_invoke()
+ * Deprecated. @see drush_invoke()
  */
 function drush_invoke_args($command, $args) {
-  return _drush_invoke_args($command, $args, drush_get_commandfile_for_command($command));
+  return drush_invoke($command, $args);
 }
 
 /**
- * Variant of _drush_invoke_args that allows the
+ * Variant of drush_invoke that allows the
  * commandfile to be specified correctly; this allows
  * the hook functions to be correctly determined for
  * commands that provide a 'callback' function.
  *
  * This function should not be called directly; use
- * @see drush_dispatch() and @see drush_invoke_args()
+ * @see drush_dispatch() and @see drush_invoke()
  */
-function _drush_invoke_args($command, $args, $defined_in_commandfile) {
+function _drush_invoke($command, $args, $defined_in_commandfile) {
+  // If someone passed a standalone arg, convert it to a single-element array
+  if (!is_array($args)) {
+    $args = array($args);
+  }
+  // Include the external command file used by this command, if there is one.
   drush_command_include($command);
   // Generate the base name for the hook by converting all
   // dashes in the command name to underscores.
@@ -219,67 +220,11 @@ function drush_dispatch($command, $arguments = array()) {
 }
 
 /**
- * Invoke a command in a new process.
- * Prefer this to drush_backend_invoke("command") [n.b. drush_backend_invoke is obsolete]
- *
- * @param command_name
- *   The drush command to execute.
- * @return
- *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative
- *   array containing the results of the API call.
- *   @see drush_backend_get_result()
- */
-function drush_invoke_process($command_name) {
-  $args = func_get_args();
-  array_shift($args);
-  return drush_invoke_process_args($command_name, $args);
-}
-
-/**
- * Invoke a command in a new process.
- * Prefer this to drush_backend_invoke_command(...);
- *
- * @param command_name
- *   The drush command to execute.
- * @return
- *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative
- *   array containing the results of the API call.
- *   @see drush_backend_get_result()
- */
-function drush_invoke_process_args($command_name, $commandline_args, $commandline_options = array(), $backend_options = array()) {
-  return drush_backend_invoke_command($command_name, $commandline_args, $commandline_options, $backend_options);
-}
-
-/**
  * Invoke a command in a new process, targeting the site specified by
  * the provided site alias record.
  *
  * @param array $site_alias_record
- *  The site record to execute the command on.
- * @param string $command_name
- *  The command to invoke.
- * @return
- *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative
- *   array containing the results of the API call.
- *   @see drush_backend_get_result()
- */
-function drush_invoke_sitealias($site_alias_record, $command_name, $backend_options = FALSE) {
-  $args = func_get_args();
-  array_shift($args);
-  array_shift($args);
-
-  return drush_invoke_sitealias_args($site_alias_record, $command_name, $args, array(), $backend_options);
-}
-
-/**
- * Invoke a command in a new process, targeting the site specified by
- * the provided site alias record.
- *
- * @param array $site_alias_record
- *  The site record to execute the command on.
+ *  The site record to execute the command on.  Use '@self' to run on the current site.
  * @param string $command_name
  *  The command to invoke.
  * @param array $commandline_args
@@ -292,7 +237,11 @@ function drush_invoke_sitealias($site_alias_record, $command_name, $backend_opti
  *   array containing the results of the API call.
  *   @see drush_backend_get_result()
  */
-function drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array(), $backend_options = FALSE) {
+function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = FALSE) {
+  // NULL is a synonym to '@self', although the later is preferred.
+  if (!isset($site_alias_record)) {
+    $site_alias_record = '@self';
+  }
   // If the first parameter is not a site alias record,
   // then presume it is an alias name, and try to look up
   // the alias record.
@@ -306,8 +255,7 @@ function drush_invoke_sitealias_args($site_alias_record, $command_name, $command
  * Get the options that were passed to the current command.
  *
  * This function returns an array that contains all of the options
- * that are appropriate for forwarding along to one of the drush_invoke_*_args
- * functions.
+ * that are appropriate for forwarding along to drush_invoke_process.
  *
  * @return
  *   An associative array of option key => value pairs.
@@ -781,7 +729,7 @@ function drush_command() {
   }
 
   if (!drush_get_error()) {
-    _drush_invoke_args($command['command-hook'], $args, $command['commandfile']);
+    _drush_invoke($command['command-hook'], $args, $command['commandfile']);
   }
 
   if (!drush_get_error()) {

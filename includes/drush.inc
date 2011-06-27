@@ -244,7 +244,7 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
       $backup_dir = drush_preflight_backup_dir('drush');
       if(drush_confirm(dt('A newer version of drush, !version, is available.  Would you like to back up your current drush, version !currentversion, to !backup and replace it with the newer release?', array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION, '!backup' => $backup_dir)))) {
         // pm-download will select the most recent stable release, which is what we want.
-        return (drush_invoke_process_args("pm-download", array("drush"), array("destination" => DRUSH_BASE_PATH, "backup-location" => $backup_dir, "dev" => $is_dev)) !== FALSE);
+        return (drush_invoke_process('@self', "pm-download", array("drush"), array("destination" => DRUSH_BASE_PATH, "backup-location" => $backup_dir, "dev" => $is_dev)) !== FALSE);
       }
     }
     else {
@@ -992,7 +992,7 @@ function drush_do_multiple_command($command, $source_record, $destination_record
       $target_spec = drush_sitealias_alias_record_to_spec($one_target);
 
       drush_log(dt('Begin do_multiple !command via backend invoke', array('!command' => $command)));
-      $values = drush_invoke_process_args($command, array($source_spec . $source_path, $target_spec . $destination_path), $data);
+      $values = drush_invoke_process('@self', $command, array($source_spec . $source_path, $target_spec . $destination_path), $data);
       drush_log(dt('Backend invoke is complete'));
     }
   }
@@ -1004,7 +1004,7 @@ function drush_do_multiple_command($command, $source_record, $destination_record
  * Run a command on the site specified by the provided command record.
  *
  * The standard function that provides this service is called
- * drush_invoke_sitealias_args.  Please call the standard function
+ * drush_invoke_process.  Please call the standard function
  * unless you need to set $integrate = TRUE.
  *
  * @param backend_options
@@ -1053,7 +1053,7 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
 
   // Run the command in a new process.
   drush_log(dt('Begin redispatch via invoke process'));
-  $values = drush_invoke_process_args($command, $args, $command_options, $backend_options);
+  $values = drush_invoke_process('@self', $command, $args, $command_options, $backend_options);
   drush_log(dt('Invoke process is complete'));
 
   return $values;

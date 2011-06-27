@@ -449,7 +449,7 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
 /**
  * Execute a new local or remote command in a new process.
  *
- * n.b. Prefer drush_invoke_sitealias_args() to this function.
+ * n.b. Prefer drush_invoke_process() to this function.
  *
  * @param site_record
  *   An array containing information used to generate the command.
@@ -818,12 +818,12 @@ function _drush_backend_get_stdin() {
 
 /* =========== Deprecated functions below this line: avoid using these ================== */
 
-// For internal use only; use drush_invoke_process_args() instead.  Future: to be renamed _drush_backend_invoke_command
+// For internal use only; use drush_invoke_process() instead.  Future: to be removed.
 function drush_backend_invoke_command($command, $args, $command_options = array(), $backend_options = array()) {
   return drush_backend_invoke_sitealias_command(drush_backend_generate_sitealias($backend_options), $command, $args, $command_options, $backend_options);
 }
 
-// Use drush_invoke_process_args() instead of drush_backend_invoke_args.  Future: drush_invoke_process_args  to be removed.
+// Use drush_invoke_process() instead of drush_backend_invoke_args.  Future: to be removed.
 function drush_backend_invoke_args($command, $args = array(), $data = array(), $method = 'GET', $integrate = TRUE, $drush_path = NULL, $hostname = NULL, $username = NULL, $ssh_options = NULL) {
   return drush_backend_invoke_command($command, $args, $data,
     array(
@@ -837,7 +837,7 @@ function drush_backend_invoke_args($command, $args = array(), $data = array(), $
   );
 }
 
-// Use drush_invoke_sitealias_args() instead of drush_backend_invoke_sitealias.  Future: drush_backend_invoke_sitealias to be removed.
+// Use drush_invoke_process() instead of drush_backend_invoke_sitealias.  Future: drush_backend_invoke_sitealias to be removed.
 function drush_backend_invoke_sitealias($site_record, $command, $args, $data = array(), $method = 'GET', $integrate = TRUE) {
   return drush_backend_invoke_sitealias_command($site_record, $command, $args, $data,
     array(
