@@ -43,7 +43,7 @@ debian_version=$(shell git describe --tags origin/debian | sed "s/debian\///;s/-
 jenkins-build-auto:
 	git merge origin/7.x-4.x
 	dch -v ${upstream_version}-${debian_version} "automatic jenkins build ${BUILD_TAG}"
-	git commit -m"dummy commit for $version autobuild" debian/changelog
+	git commit -m"dummy commit for jenkins ${BUILD_TAG} autobuild" debian/changelog
 	git-buildpackage -b --git-upstream-branch=origin/7.x-4.x ${KEY}
 
 show-version:
