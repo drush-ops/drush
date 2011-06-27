@@ -32,7 +32,7 @@ jenkins-build-official:
 # the upstream version: strip the 6.x and turn the appendix into
 # +N.foo where N is the number of commits since last tag and foo is
 # the hash
-upstream_version=$(shell git describe --tags origin/master | sed 's/6.x-//;s/-\([0-9]*\)-\([^-]*\)$$/+\1.\2/')
+upstream_version=$(shell git describe --tags origin/master | sed 's/[0-9]\.x-//;s/-\([0-9]*\)-\([^-]*\)$$/+\1.\2/')
 # the debian version, strip the debian/ part of the tag and the
 # upstream version number, keep just the debian part, replacing as
 # above for the N.foo part
