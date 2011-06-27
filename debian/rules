@@ -21,10 +21,13 @@ release:
 snapshot: 
 	git-buildpackage --snapshot
 
+DOMAIN?=$(shell hostname -f)
+KEY?="-k jenkins@$(DOMAIN)"
+
 # this builds a debian package based on what the current branches are
 # this usually tests the latest release
 jenkins-build-official:
-	git-buildpackage -b --git-upstream-branch=origin/upstream --git-debian-branch=origin/debian --git-ignore-branch -kjenkins@ci.aegirproject.org
+	git-buildpackage -b --git-upstream-branch=origin/upstream --git-debian-branch=origin/debian --git-ignore-branch ${KEY}
 
 # the upstream version: strip the 6.x and turn the appendix into
 # +N.foo where N is the number of commits since last tag and foo is
@@ -41,7 +44,7 @@ jenkins-build-auto:
 	git merge origin/7.x-4.x
 	dch -v ${upstream_version}-${debian_version} "automatic jenkins build ${BUILD_TAG}"
 	git commit -m"dummy commit for $version autobuild" debian/changelog
-	git-buildpackage -b --git-upstream-branch=origin/7.x-4.x -kjenkins@ci.aegirproject.org
+	git-buildpackage -b --git-upstream-branch=origin/7.x-4.x ${KEY}
 
 show-version:
 	@echo ${upstream_version}-${debian_version}
