@@ -733,7 +733,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
       return $cache_file;
     }
     else {
-      if (_drush_download_file($url, $cache_file)) {
+      if (_drush_download_file($url, $cache_file, TRUE)) {
         // Cache was set just by downloading file to right location.
         return $cache_file;
       }
@@ -763,12 +763,13 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
  *   Optional, if omitted the filename will be extracted from the url and the
  *   file downloaded to the current working directory (Drupal root if
  *   bootstrapped).
- *
+ * @param boolean $overwrite
+ *   Overwrite any file thats already at the destination.
  * @return string
  *   The path to the downloaded file, or FALSE if the file could not be
  *   downloaded.
  */
-function _drush_download_file($url, $destination = FALSE) {
+function _drush_download_file($url, $destination = FALSE, $overwrite = TRUE) {
   if (!$destination) {
     $destination = getcwd() . '/' . basename($url);
   }
@@ -786,7 +787,7 @@ function _drush_download_file($url, $destination = FALSE) {
     return FALSE;
   }
 
-  drush_move_dir($destination_tmp, $destination);
+  drush_move_dir($destination_tmp, $destination, $overwrite);
   return $destination;
 }
 
