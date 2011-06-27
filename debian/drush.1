@@ -1,0 +1,158 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+'\" t -*- coding: UTF-8 -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH DRUSH 1 "January 11, 2011"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+drush \- shell scripting interface for Drupal
+.SH SYNOPSIS
+.B drush
+.RI [ options ] " command" ...
+.SH DESCRIPTION
+.PP
+\fBdrush\fP is a veritable Swiss Army knife designed to make life
+easier for those of us who spend some of our working hours hacking
+away at the command prompt.
+.PP
+\fBDrush\fP core ships with lots of useful commands for interacting with
+code like modules/themes/profiles. Similarly, it runs update.php,
+executes sql queries and DB migrations, and misc utilities like run
+cron or clear cache.
+.SH OPTIONS
+.TP
+.BI \-r\  path ,\ \-\-root= path
+Drupal root directory to use (default: current directory)             
+.TP
+.BI \-l\  uri ,\ \-\-uri= uri
+URI of the drupal site to use (only needed in multisite environments) 
+.TP
+.BI \-v ,\ \-\-verbose
+Display extra information about the command.                          
+.TP
+.B \-q, \-\-quiet
+Hide all output
+.TP
+.B \-d, \-\-debug
+Display even more information, including internal messages.           
+.TP
+.B \-y, \-\-yes
+Assume 'yes' as answer to all prompts                                 
+.TP
+.B \-s, \-\-simulate
+Simulate all relevant actions (don't actually change the system)
+.TP
+.B \-p, \-\-pipe
+Emit a compact representation of the command for scripting.           
+.TP
+.B \-h, \-\-help
+A detailed help system, use \fBdrush help help\fP for complete help.
+.TP
+.B \-\-version
+Show drush version.
+.PP
+If you get tired of typing options all the time, you can add them to
+your drush.php alias or create a drushrc.php file. These provide
+additional options for your drush call. They provide great flexibility
+for a multi-site installation, for example. See example.drushrc.php.
+.SH COMMANDS
+Drush is all based around "commands" that are usually defined in
+various modules. 
+.TP
+.B help
+Print the help message. Use --filter to limit command list to one
+command file (e.g. --filter=pm).
+.TP
+.B cache-clear (cc)
+Clear a specific cache, or all drupal caches.
+.TP
+.B core-cli (cli)
+Enter a new shell optimized for Drush use.
+.TP
+.B core-cron (cron)
+Run all cron hooks.
+.TP
+.B core-status (st)
+Provides a birds-eye view of the current Drupal installation, if any.
+.TP
+.B php-eval (eval)
+Evaluate arbitrary php code after bootstrapping Drupal.
+.TP
+.B updatedb (updb)
+Apply any database updates required (as with running update.php).
+.TP
+.B variable-get (vget)
+Get a list of some or all site variables and values
+.TP
+.B variable-set (vset)
+Set a variable.
+.TP
+.B watchdog show
+Shows recent watchdog log messages. Optionally filter for a specific type.
+.TP
+.B pm-enable (en)
+Enable one or more extensions (modules or themes).
+.TP
+.B pm-disable (dis)
+Disable one or more extensions (modules or themes).
+.TP
+.B pm-download (dl)
+Download projects from drupal.org or other sources.
+.TP
+.B pm-uninstall
+Uninstall one or more modules.
+.TP
+.B pm-updatecode (upc)
+Update Drupal core and contrib projects to latest recommended releases.
+.TP
+.B pm-update (up)
+Update Drupal core and contrib projects and apply any pending database
+updates (Same as pm-updatecode + updatedb).
+.TP
+.B sql-cli (sqlc)
+Open a SQL command-line interface using Drupal's credentials.
+.TP
+.B sql-connect
+A string for connecting to the DB.
+.TP
+.B sql-dump
+Exports the Drupal DB as SQL using mysqldump.
+.PP
+This manual only lists a few of the most frequently used builtin
+commands shipped with the Drush core, since other Drupal modules and
+third-party "command files" may extend this list significantly. The
+canonical source of information for the available commands and their
+usage is the online help system.
+.PP
+More information on each command is also available through \fBdrush
+help <command>\fP. Most commands have shortcuts indicated in
+parenthesis.
+.SH FILES
+.IR /etc/drush/drushrc.php
+.br
+.I /usr/share/doc/drush/examples/example.drushrc.php
+.SH SEE ALSO
+.BR cvs (1),
+.BR svn (1),
+.BR wget (1).
+.SH AUTHOR
+Drush was originally developed by Arto for Drupal 4.7 (this alpha code
+can still be found in the DRUPAL-4-7 branch). In May 2007, it was
+partly rewritten and redesigned for Drupal 5 by frando. Since 2008,
+the module has been maintained by Moshe Weitzman, Owen Barton and
+Adrian Rossouw.
+.PP
+This manual page was written by Antoine Beaupré <anarcat@koumbit.org>
+in June 2009 for the Debian project (but may be used by others).
