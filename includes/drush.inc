@@ -817,29 +817,16 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
   if (!is_writeable($destination)) {
     return drush_set_error('TARBALL_EXTRACT_DESTINATION', dt('Extracting !path failed, as the destination directory !dest was not found or could not be written to.', array('!path' => $path, '!dest' => $dest)));
   }
-  $tarpath = basename($path, '.tar.gz');
-  $tarpath = basename($tarpath, '.tgz');
-  $tarpath = $destination . '/' . $tarpath . '.tar';
-  // Ensure the intermediate file is deleted.
-  drush_register_file_for_deletion($tarpath);
-  // Decompress and untar in two steps as tar -xzf does not work on windows.
-  if (drush_shell_exec("gzip --decompress --stdout %s > %s", $path, $tarpath)) {
-    if (drush_shell_cd_and_exec($destination, "tar -xf %s", basename($tarpath))) {
-      if ($listing) {
-        // We use a separate tar -tf instead of -xvf above because
-        // the output is not the same in Mac.
-        drush_shell_cd_and_exec("tar -tf %s", basename($tarpath));
-        return drush_shell_exec_output();
-      }
-      return TRUE;
+  if (drush_shell_cd_and_exec(dirname($path), "tar -C %s -xzf %s", $destination, basename($path))) {
+    if ($listing) {
+      // We use a separate tar -tf instead of -xvf above because
+      // the output is not the same in Mac.
+      drush_shell_cd_and_exec(dirname($path), "tar -tf %s", basename($path));
+      return drush_shell_exec_output();
     }
-    else {
-      return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', dt('Extracting !path using the tar command failed.', array('!path' => $path)));
-    } 
+    return TRUE;
   }
-  else {
-    return drush_set_error('TARBALL_EXTRACT_GZIP_FAIL', dt('Uncompressing !path using the gzip command failed.', array('!path' => $path)));
-  }
+  return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', dt('Extracting !path using the tar command failed.', array('!path' => $path)));
 }
 
 /**
