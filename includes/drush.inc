@@ -817,7 +817,8 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
   if (!is_writeable($destination)) {
     return drush_set_error('TARBALL_EXTRACT_DESTINATION', dt('Extracting !path failed, as the destination directory !dest was not found or could not be written to.', array('!path' => $path, '!dest' => $dest)));
   }
-  if (drush_shell_cd_and_exec(dirname($path), "tar -C %s -xzf %s", $destination, basename($path))) {
+  // If we are not on Windows, then try to do "tar" in a single operation.
+  if ((!drush_is_windows()) && (drush_shell_cd_and_exec(dirname($path), "tar -C %s -xzf %s", $destination, basename($path)))) {
     if ($listing) {
       // We use a separate tar -tf instead of -xvf above because
       // the output is not the same in Mac.
@@ -826,7 +827,31 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
     }
     return TRUE;
   }
-  return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', dt('Extracting !path using the tar command failed.', array('!path' => $path)));
+  // If we could not get the single-op tar to work, do it in three steps.
+  // Copy the source tarball to the destination directory.  Rename to a temp name in case the destination directory == dirname($path)
+  $paths_basename = basename(basename($path, '.tar.gz'), '.tgz');
+  $tarball = drush_tempnam($paths_basename, $destination) . ".tar.gz";
+  drush_register_file_for_deletion($tarball);
+  drush_copy_dir($path, $tarball);
+  $unzipped = $destination . '/' . basename($tarball, ".tar.gz") . ".tar";
+  // We used to use gzip --decompress in --stdout > out, but the output redirection sometimes failed on Windows for some binary output
+  drush_shell_cd_and_exec(dirname($tarball), "gzip --decompress %s", $tarball);
+  if (file_exists($unzipped)) {
+    drush_register_file_for_deletion($unzipped);
+    if (drush_shell_cd_and_exec(dirname($unzipped), "tar -xf %s", basename($unzipped))) {
+      if ($listing) {
+        // We use a separate tar -tf instead of -xf above because
+        // the output is not the same in Mac.
+        drush_shell_cd_and_exec(dirname($unzipped), "tar -tf %s", basename($unzipped));
+        return drush_shell_exec_output();
+      }
+      return TRUE;
+    }
+    return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', dt('Extracting !path using the tar command failed.', array('!path' => $path)));
+  }
+  else {
+    return drush_set_error('TARBALL_EXTRACT_GZIP_FAIL', dt('Uncompressing !path using  the gzip command failed.', array('!path' => $path)));
+  }
 }
 
 /**
