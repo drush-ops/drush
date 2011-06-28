@@ -218,7 +218,7 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
  * @see http://theserverpages.com/php/manual/en/function.mkdir.php#50383
  */
 function drush_mkdir($path) {
-  return is_dir($path) || (drush_mkdir(dirname($path)) && drush_shell_exec('mkdir %s', $path));
+  return is_dir($path) || (drush_mkdir(dirname($path)) && mkdir($path));
 }
 
 /**
