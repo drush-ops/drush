@@ -229,16 +229,36 @@ function drush_archive_dump($sites_subdirs = '@self') {
  */
 function drush_archive_restore($file, $site_id = NULL) {
   $destination = drush_get_option('destination', '.');
-  //if (!$files = drush_tarball_extract($file, $destination)) {
-  //  return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_EXTRACT', dt('Unable to extract site archive tarball.'));
-  //}
-  if (!$ini = parse_ini_file($destination . '/MANIFEST.info')) {
-    return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_PARSE_MANIFEST', dt('Unable to parse MANIFEST.info in the archive.'));
+  $manifest = $destination . '/MANIFEST.info2';
+
+  if (!$files = drush_tarball_extract($file, $destination)) {
+    return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_EXTRACT', dt('Unable to extract site archive tarball.'));
+  }
+  if (file_exists($manifest)) {
+    if (!$ini = parse_ini_file($manifest, TRUE)) {
+      return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_PARSE_MANIFEST', dt('Unable to parse MANIFEST.info in the archive.'));
+    }
+  }
+  else {
+    // No manifest. Try to find docroot and DB dump file.
+    // TODO:
+    $database = '';
+    $docroot = '';
+    $ini = array(
+      'Global' => array(),
+      'Site 0' => array(
+        'database' => $database,
+        'docroot' => $docroot,
+      ),
+    );
   }
 
-  print_r($ini);
-
-
-
-
+  if (is_numeric($site_id)) {
+    $site_id = 'Site ' . $site_id;
+  }
+  foreach ($sections as $section => $site) {
+    if (is_null($site_id) || $section == $site_id) {
+      // Work here.
+    }
+  }
 }
