@@ -834,11 +834,11 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
       return TRUE;
     }
     else {
-      return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', 'Extracting !path using the tar command failed.', array('!path' => $path));
+      return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', dt('Extracting !path using the tar command failed.', array('!path' => $path)));
     } 
   }
   else {
-    return drush_set_error('TARBALL_EXTRACT_GZIP_FAIL', 'Uncompressing !path using the gzip command failed.', array('!path' => $path));
+    return drush_set_error('TARBALL_EXTRACT_GZIP_FAIL', dt('Uncompressing !path using the gzip command failed.', array('!path' => $path)));
   }
 }
 
