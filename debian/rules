@@ -8,7 +8,7 @@
 	dh $@
 
 override_dh_install:
-	cp -r "$(CURDIR)/commands" "$(CURDIR)/includes" "$(CURDIR)/drush.php" "$(CURDIR)/drush.info" "$(CURDIR)/debian/drush/usr/share/drush/"
+	cp -r "$(CURDIR)/commands" "$(CURDIR)/docs" "$(CURDIR)/includes" "$(CURDIR)/drush.php" "$(CURDIR)/drush.info" "$(CURDIR)/debian/drush/usr/share/drush/"
 	# trash the .gitignore file that generates lintian warnings
 	# there's got to be a better way
 	rm "$(CURDIR)/debian/drush/usr/share/drush/includes/.gitignore"
