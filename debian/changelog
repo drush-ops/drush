@@ -2,8 +2,10 @@ drush (4.4-2) unstable; urgency=low
 
   * ship properly all the examples
   * ship properly the docs/ directory for drush topic to work
+  * update to standards version 3.9.2, no change
+  * do not suggest subversion/cvs but git (Closes: #628794).
 
- -- Antoine Beaupré <anarcat@koumbit.org>  Tue, 28 Jun 2011 12:12:56 -0400
+ -- Antoine Beaupré <anarcat@koumbit.org>  Tue, 28 Jun 2011 14:15:06 -0400
 
 drush (4.4-1) unstable; urgency=low
 
