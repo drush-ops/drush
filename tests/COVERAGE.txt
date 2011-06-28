@@ -31,7 +31,9 @@ php-eval: GOOD. Implicitly tested by many tests (e.g. siteUpgradeTest).
 php-script: GOOD.
 drupal-directory: GOOD
 core-cli: FAIR
-cache-clear
+cache-get: GOOD
+cache-set: GOOD
+cache-clear: GOOD
 core-cron
 core-status: FAIR: Implicit test by contextTest.
 docs
