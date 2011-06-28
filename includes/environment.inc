@@ -601,6 +601,11 @@ function _drush_bootstrap_drush() {
   $drush_info = drush_read_drush_info();
   define('DRUSH_VERSION', $drush_info['drush_version']);
 
+  drush_set_context('DOC_PREFIX', DRUSH_BASE_PATH);
+  if (!file_exists(DRUSH_BASE_PATH . '/README.txt') && file_exists(drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush') . '/README.txt') {
+    drush_set_context('DOC_PREFIX', drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush');
+  }
+
   // Load a drushrc.php file in the drush.php's directory.
   drush_load_config('drush');
 
