@@ -1,3 +1,10 @@
+drush (4.4-2) unstable; urgency=low
+
+  * ship properly all the examples
+  * ship properly the docs/ directory for drush topic to work
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Tue, 28 Jun 2011 12:12:56 -0400
+
 drush (4.4-1) unstable; urgency=low
 
   * New upstream minor release to fix .info file.
