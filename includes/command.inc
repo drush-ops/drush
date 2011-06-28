@@ -701,7 +701,7 @@ function _drush_prepare_command(&$command, $arguments = array()) {
 }
 
 /**
- * Entry point for commands into the drush_invoke API
+ * Entry point for commands into the drush_invoke() API
  *
  * If a command does not have a callback specified, this function will be called.
  *
@@ -716,7 +716,9 @@ function drush_command() {
 
   foreach (drush_command_implements("drush_init") as $name) {
     $func = $name . '_drush_init';
-    drush_log(dt("Initializing drush commandfile: !name", array('!name' => $name)), 'bootstrap');
+    if (drush_get_option('show-invoke')) {
+      drush_log(dt("Calling global init hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
+    }
     call_user_func_array($func, $args);
     _drush_log_drupal_messages();
   }
@@ -728,13 +730,14 @@ function drush_command() {
   if (!drush_get_error()) {
     foreach (drush_command_implements('drush_exit') as $name) {
       $func = $name . '_drush_exit';
+      if (drush_get_option('show-invoke')) {
+        drush_log(dt("Calling global exit hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
+      }
       call_user_func_array($func, $args);
       _drush_log_drupal_messages();
     }
   }
 }
-
-
 
 /**
  * Invoke a hook in all available command files that implement it.
