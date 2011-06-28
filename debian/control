@@ -3,7 +3,7 @@ Section: php
 Priority: optional
 Maintainer: Antoine Beaupré <anarcat@koumbit.org>
 DM-Upload-Allowed: yes
-Build-Depends: debhelper (>= 7)
+Build-Depends: debhelper (>= 7.0.50~)
 Standards-Version: 3.9.1
 Homepage: http://drupal.org/project/drush
 Vcs-git: http://git.drupal.org/project/drush.git
