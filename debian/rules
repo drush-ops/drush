@@ -15,6 +15,9 @@ override_dh_install:
 	chmod a+x "$(CURDIR)/debian/drush/usr/share/drush/drush.php"
 	ln -s /usr/share/drush/drush.php "$(CURDIR)/debian/drush/usr/bin/drush"
 
+override_dh_compress:
+	dh_compress -XREADME.txt -Xexamples/ -Xdocs/
+
 release: 
 	git-buildpackage --release
 
