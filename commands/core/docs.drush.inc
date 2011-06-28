@@ -24,6 +24,8 @@ function docs_drush_help($section) {
  *   An associative array describing your command(s).
  */
 function docs_drush_command() {
+  $docs_dir = drush_get_context('DOC_PREFIX', DRUSH_BASE_PATH);
+
   //
   // Topic commands.
   // Any commandfile may add topics.
@@ -37,7 +39,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/README.txt'),
+    'callback arguments' => array($docs_dir . '/README.txt'),
   );
   $items['docs-configuration'] = array(
     'description' => 'Drush configuration overview with examples',
@@ -45,7 +47,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/examples/example.drushrc.php'),
+    'callback arguments' => array($docs_dir . '/examples/example.drushrc.php'),
   );
   $items['docs-aliases'] = array(
     'description' => 'Site aliases overview with examples',
@@ -53,7 +55,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/examples/example.aliases.drushrc.php'),
+    'callback arguments' => array($docs_dir . '/examples/example.aliases.drushrc.php'),
   );
   $items['docs-ini-files'] = array(
     'description' => 'Configuring php.ini or drush.ini for use with drush.',
@@ -61,7 +63,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/examples/example.drush.ini'),
+    'callback arguments' => array($docs_dir . '/examples/example.drush.ini'),
   );
   $items['docs-bootstrap'] = array(
     'description' => 'Information about the drush bootstrap process.',
@@ -69,7 +71,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/bootstrap.html'),
+    'callback arguments' => array($docs_dir . '/docs/bootstrap.html'),
   );
   $items['docs-scripts'] = array(
     'description' => 'Overview on how to write drush shell scripts.',
@@ -77,7 +79,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/shellscripts.html'),
+    'callback arguments' => array($docs_dir . '/docs/shellscripts.html'),
   );
   $items['docs-commands'] = array(
     'description' => 'Overview on how to write drush commands.',
@@ -85,7 +87,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/commands.html'),
+    'callback arguments' => array($docs_dir . '/docs/commands.html'),
   );
   $items['docs-errorcodes'] = array(
     'description' => 'Summary of drush error codes.',
@@ -99,7 +101,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/drush.api.php'),
+    'callback arguments' => array($docs_dir . '/docs/drush.api.php'),
   );
   $items['docs-context'] = array(
     'description' => 'Drush contexts',
@@ -107,7 +109,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/context.html'),
+    'callback arguments' => array($docs_dir . '/docs/context.html'),
   );
   $items['docs-examplescript'] = array(
     'description' => 'Example drush script',
@@ -115,7 +117,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/examples/helloworld.script'),
+    'callback arguments' => array($docs_dir . '/examples/helloworld.script'),
   );
   $items['docs-examplecommand'] = array(
     'description' => 'Example drush command file.',
@@ -123,7 +125,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/examples/sandwich.drush.inc'),
+    'callback arguments' => array($docs_dir . '/examples/sandwich.drush.inc'),
   );
   $items['docs-policy'] = array(
     'description' => 'Example policy file.',
@@ -131,7 +133,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/examples/policy.drush.inc'),
+    'callback arguments' => array($docs_dir . '/examples/policy.drush.inc'),
   );
   $items['docs-upgrading'] = array(
     'description' => 'Upgrading Drupal using the drush site-upgrade command.',
@@ -139,7 +141,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array(DRUSH_BASE_PATH . '/docs/upgrade.html'),
+    'callback arguments' => array($docs_dir . '/docs/upgrade.html'),
   );
   return $items;
 }
