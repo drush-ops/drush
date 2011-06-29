@@ -4,10 +4,23 @@
  * The base project class.
  */
 class DrushMakeProject {
+
+  /**
+   * TRUE if make() has been called, otherwise FALSE.
+   */
+  protected $made = FALSE;
+
+  /**
+   * Keep track of instances.
+   *
+   * @see DrushMakeProject::getInstance()
+   */
+  protected static $self = array();
+
   /**
    * Set attributes and retrieve project information.
    */
-  function __construct($project) {
+  protected function __construct($project) {
     $project['base_contrib_destination'] = $project['contrib_destination'];
     foreach ($project as $key => $value) {
       $this->{$key} = $value;
@@ -15,12 +28,33 @@ class DrushMakeProject {
   }
 
   /**
+   * Get an instance for the type and project.
+   *
+   * @param $type
+   *   Type of project: core, library, module, profile, or translation.
+   * @param $project
+   *   Project information.
+   * @return
+   *   An instance for the project or FALSE if invalid type.
+   */
+  public static function getInstance($type, $project) {
+    if (!isset(self::$self[$type][$project['name']])) {
+      $class = 'DrushMakeProject_' . $type;
+      self::$self[$type][$project['name']] = class_exists($class) ? new $class($project) : FALSE;
+    }
+    return self::$self[$type][$project['name']];
+  }
+
+  /**
    * Build a project.
    */
   function make() {
-    if (!empty($this->made)) {
-      return FALSE;
+    if ($this->made) {
+      drush_log(dt('Attempt to build project @project more then once prevented.', array('@project' => $this->name)));
+      return TRUE;
     }
+    $this->made = TRUE;
+
     $download_location = $this->findDownloadLocation();
     if (drush_make_download_factory($this->name, $this->download, $download_location) === FALSE) {
       return FALSE;
@@ -37,7 +71,6 @@ class DrushMakeProject {
     if (!$this->recurse($download_location)) {
       return FALSE;
     }
-    $this->made = TRUE;
     return TRUE;
   }
 
@@ -225,14 +258,11 @@ class DrushMakeProject {
   }
 
   function recurse($path) {
-    if (!empty($this->directory_name)) {
-      $directory = $this->directory_name;
-    }
     $makefile = $this->download_location . '/' . $this->name . '.make';
     if (!file_exists($makefile)) {
       $makefile = $this->download_location . '/drupal-org.make';
       if (!file_exists($makefile)) {
-        return;
+        return TRUE;
       }
     }
     drush_log(dt("Found makefile: %makefile", array("%makefile" => basename($makefile))), 'ok');
@@ -244,11 +274,13 @@ class DrushMakeProject {
     $build_path = $this->buildPath($this->name);
     drush_make_projects(TRUE, trim($build_path, '/'), $info, $this->build_path);
     drush_make_libraries(trim($build_path, '/'), $info, $this->build_path);
+
+    return TRUE;
   }
 }
 
 class DrushMakeProject_Core extends DrushMakeProject {
-  function __construct(&$project) {
+  protected function __construct(&$project) {
     parent::__construct($project);
     $this->contrib_destination = '';
   }
@@ -268,7 +300,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
 }
 
 class DrushMakeProject_Library extends DrushMakeProject {
-  public function __construct(&$project) {
+  protected function __construct(&$project) {
     parent::__construct($project);
     // Allow libraries to specify where they should live in the build path.
     if (isset($project['destination'])) {
@@ -285,14 +317,14 @@ class DrushMakeProject_Library extends DrushMakeProject {
 }
 
 class DrushMakeProject_Module extends DrushMakeProject {
-  public function __construct(&$project) {
+  protected function __construct(&$project) {
     parent::__construct($project);
     $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . 'modules';
   }
 }
 
 class DrushMakeProject_Profile extends DrushMakeProject {
-  public function __construct(&$project) {
+  protected function __construct(&$project) {
     parent::__construct($project);
     $this->contrib_destination = ($this->destination ? $this->destination : 'profiles');
   }
@@ -303,14 +335,14 @@ class DrushMakeProject_Profile extends DrushMakeProject {
 }
 
 class DrushMakeProject_Theme extends DrushMakeProject {
-  public function __construct(&$project) {
+  protected function __construct(&$project) {
     parent::__construct($project);
     $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . 'themes';
   }
 }
 
 class DrushMakeProject_Translation extends DrushMakeProject {
-  public function __construct(&$project) {
+  protected function __construct(&$project) {
     parent::__construct($project);
     switch($project['core']) {
       case '5.x':

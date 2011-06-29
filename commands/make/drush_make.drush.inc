@@ -214,9 +214,8 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
       if ($ignore_checksums) {
         unset($project['download']['md5']);
       }
-      $class_name = 'DrushMakeProject_' . $project['type'];
-      if (class_exists($class_name)) {
-        $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = new $class_name($project);
+      if ($instance = DrushMakeProject::getInstance($project['type'], $project)) {
+        $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = $instance;
       }
       else {
         drush_make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $key)));
@@ -260,7 +259,7 @@ function drush_make_libraries($contrib_destination, $info, $build_path) {
     if ($ignore_checksums) {
       unset($library['download']['md5']);
     }
-    $class = new DrushMakeProject_Library($library);
+    $class = DrushMakeProject::getInstance('library', $library);
     $class->make();
   }
 }
