@@ -543,7 +543,7 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
  * Windows variant FIRST if you care.
  */
 function drush_is_windows($os = NULL) {
-  return _drush_test_os($os, array("WIN","CYGWIN","MINGW"));
+  return _drush_test_os($os, array("WIN","CYGWIN","CWRSYNC","MINGW"));
 }
 
 /**
@@ -553,7 +553,7 @@ function drush_is_windows($os = NULL) {
  * which is which, test mingw first.
  */
 function drush_is_cygwin($os = NULL) {
-  return _drush_test_os($os, array("CYGWIN","MINGW"));
+  return _drush_test_os($os, array("CYGWIN","CWRSYNC","MINGW"));
 }
 
 function drush_is_mingw($os = NULL) {
@@ -570,6 +570,16 @@ function drush_is_mingw($os = NULL) {
  *   MINGW* (e.g. MINGW32)
  */
 function _drush_get_os($os = NULL) {
+  // The special os "CWRSYNC" can be used to indicate that we are testing
+  // a path that will be passed as an argument to cwRsync, which requires
+  // that the path be converted to /cygdrive/c/path, even on DOS or Powershell.
+  // The special os "RSYNC" can be used to indicate that we want to assume
+  // "CWRSYNC" when cwrsync is installed, or default to the local OS otherwise.
+  if (strtoupper($os) == "RSYNC") {
+    $os = _drush_get_os("LOCAL");
+    // For now we assume that cwrsync is always installed on Windows, and never installed son any other platform.
+    return drush_is_windows($os) ? "CWRSYNC" : $os;
+  }
   // We allow "LOCAL" to document, in instances where some parameters are being escaped
   // for use on a remote machine, that one particular parameter will always be used on
   // the local machine (c.f. drush_backend_invoke).

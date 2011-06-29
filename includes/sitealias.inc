@@ -1428,25 +1428,19 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
  * local site in $path are defined.
  */
 function _drush_sitealias_preflight_path($path) {
-  // Special handling of absolute paths on Windows:  if
-  // we are on Windows, then we must be using cwRsync.
-  // Convert absolute paths from "C:\path" to "/cygdrive/C/path",
-  // because cwRsync expects this, even when running under
-  // DOS or Powershell.
-  if (drush_is_windows() && drush_is_absolute_path($path)) {
-    $path = preg_replace('/(\w):/', '/cygdrive/${1}', str_replace('\\', '/', $path));
-  }
   $alias = NULL;
   // Parse site aliases if there is a colon in the path
   // We allow:
   //   @alias:/path
   //   machine.domain.com:/path
   //   machine:/path
-  // However, we assume that
-  //   c:/path
-  // is a Windows full path (no single-letter machine names allowed)
+  // Note that paths in the form "c:/path" are converted to
+  // "/cygdrive/c/path" later; we do not want them to confuse
+  // us here, so we skip paths that start with a single character
+  // before the colon if we are running on Windows.  Single-character
+  // machine names are allowed in Linux only.
   $colon_pos = strpos($path, ':');
-  if ($colon_pos !== FALSE) {
+  if ($colon_pos > (drush_is_windows("LOCAL") ? 1 : 0)) {
     $alias = substr($path, 0, $colon_pos);
     $path = substr($path, $colon_pos + 1);
     $site_alias_settings = _drush_sitealias_get_record($alias);
@@ -1489,16 +1483,24 @@ function _drush_sitealias_preflight_path($path) {
  *   An array of options that overrides whatever was passed in on
  *   the command line (like the 'process' context, but only for
  *   the scope of this one call).
+ * @param local_only
+ *   If TRUE, force an error if the provided path points to a remote
+ *   machine.  This is used in core-cli, for example, to insure that you
+ *   do not 'cd' to a remote machine.
+ * @param os
+ *   This should be the local system os, unless evaluate path is
+ *   being called for rsync, in which case it should be "CWRSYNC"
+ *   if cwrsync is being used, or "rsync" to automatically select
+ *   between "LOCAL" and "CWRSYNC" based on the platform.
  * @return
  *   The site record for the machine specified in the path, if any,
  *   with the path to pass to rsync (including the machine specifier)
  *   in the 'evaluated-path' item.
  */
-function drush_sitealias_evaluate_path($path, &$additional_options, $local_only = FALSE) {
+function drush_sitealias_evaluate_path($path, &$additional_options, $local_only = FALSE, $os = NULL) {
   $site_alias_settings = array();
   $path_aliases = array();
   $remote_user = '';
-  $os = NULL;
 
   $preflight = _drush_sitealias_preflight_path($path);
   if (!isset($preflight)) {
@@ -1510,8 +1512,10 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   $machine = $preflight['machine'];
 
   if (isset($alias)) {
+    // Note that the alias settings may have an 'os' component, but we do
+    // not want to use it here.  The paths passed to rsync should always be
+    // escaped per the LOCAL rules, without regard to the remote platform type.
     $site_alias_settings = drush_sitealias_get_record($alias);
-    $os = drush_os($site_alias_settings);
   }
 
   if (!empty($site_alias_settings)) {
@@ -1605,7 +1609,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   $full_path_aliases = $path_aliases;
   foreach ($full_path_aliases as $key => $value) {
     // Expand all relative path aliases to be based off of the Drupal root
-    if (!drush_is_absolute_path($value, $os) && ($key != '%root')) {
+    if (!drush_is_absolute_path($value, "LOCAL") && ($key != '%root')) {
       $full_path_aliases[$key] = $drupal_root . $value;
     }
     // We do not want slashes on the end of our path aliases.
@@ -1620,16 +1624,16 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   if (!empty($exclude_path)) {
     drush_set_option('exclude-path', str_replace(array_keys($path_aliases), array_values($path_aliases), $exclude_path));
   }
-
   // Next make the rsync path, which includes the machine
   // and path components together.
   // First make empty paths or relative paths start from the drupal root.
-  // running on cygwin because we might have converted a Windows C:/path
-  // into a /cygdrive path.  @see _drush_sitealias_preflight_path.
-  if (empty($path) || (!drush_is_absolute_path($path, $os) && (!drush_is_absolute_path($path, "cygwin")))) {
+  if (empty($path) || (!drush_is_absolute_path($path, "LOCAL"))) {
     $path = $drupal_root . $path;
   }
-
+  // When calculating a path for use with rsync, we must correct
+  // absolute paths in the form c:\path when cwrsync is in use.
+  $path = drush_correct_absolute_path_for_exec($path, $os);
+  
   // If there is a $machine component, to the path, then
   // add it to the beginning
   $evaluated_path = drush_escapeshellarg($path, $os);

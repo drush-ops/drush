@@ -11,15 +11,18 @@
   * with "[A-Z]:\" or "[A-Z]:/" on Windows.
   */
 function drush_is_absolute_path($path, $os = NULL) {
-  if (drush_is_cygwin($os)) {
-    return preg_match('@/cygdrive/@', $path) || drush_is_absolute_path($path, "WINDOWS");
+  // Relative paths will never start with a '/', even on Windows,
+  // so it is safe to just call all paths that start with a '/'
+  // absolute.  This simplifies things for Windows with CYGWIN / MINGW / CWRSYNC,
+  // where absolute paths sometimes start c:\path and sometimes
+  // start /cygdrive/c/path.
+  if ($path[0] == '/') {
+    return TRUE;
   }
-  elseif (drush_is_windows($os)) {
+  if (drush_is_windows($os)) {
     return preg_match('@^[a-zA-Z]:[\\\/]@', $path);
   }
-  else {
-    return $path[0] == '/';
-  }
+  return FALSE;
 }
 
 /**

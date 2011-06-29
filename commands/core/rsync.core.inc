@@ -18,8 +18,8 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
   // Preflight destination in case it defines aliases used by the source
   _drush_sitealias_preflight_path($destination);
   // After preflight, evaluate file paths
-  $source_settings = drush_sitealias_evaluate_path($source, $additional_options);
-  $destination_settings = drush_sitealias_evaluate_path($destination, $additional_options);
+  $source_settings = drush_sitealias_evaluate_path($source, $additional_options, FALSE, "rsync");
+  $destination_settings = drush_sitealias_evaluate_path($destination, $additional_options, FALSE, "rsync");
   $source_path = $source_settings['evaluated-path'];
   $destination_path = $destination_settings['evaluated-path'];
 
