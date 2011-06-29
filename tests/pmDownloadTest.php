@@ -3,7 +3,7 @@
 /**
   * pm-download testing
   */
-class pmDownloadCase extends Drush_TestCase {
+class pmDownloadCase extends Drush_CommandTestCase {
   public function testPmDownload() {
     $this->drush('pm-download', array('devel'), array('cache' => NULL));
     $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');

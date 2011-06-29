@@ -8,7 +8,7 @@
 *  @see drush/includes/context.inc.
 */
 
-class contextCase extends Drush_TestCase {
+class contextCase extends Drush_CommandTestCase {
 
   function setUpPaths() {
     $this->root = $this->sites[$this->env]['root'];

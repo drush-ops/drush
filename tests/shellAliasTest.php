@@ -4,7 +4,7 @@
  * @file
  *   Tests for Shell aliases.
  */
-class shellAliasesCase extends Drush_TestCase {
+class shellAliasesCase extends Drush_CommandTestCase {
 
   /*
    * Assure that shell aliases expand as expected.

@@ -4,7 +4,7 @@
  * @file
  *   Tests for sitealias.inc
  */
-class saCase extends Drush_TestCase {
+class saCase extends Drush_CommandTestCase {
 
   /*
    * Assure that site lists work as expected.

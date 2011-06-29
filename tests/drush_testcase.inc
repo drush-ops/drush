@@ -2,51 +2,9 @@
 
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
 
-  // Unix exit codes.
-  const EXIT_SUCCESS  = 0;
-  const EXIT_ERROR = 1;
-  /*
-   * An array of Drupal sites that are setup in the drush-sandbox.
-   */
-  var $sites;
-
   function __construct() {
     $this->_output = false;
   }
-
-  public static function is_windows() {
-    return (strtoupper(substr(PHP_OS, 0, 3)) == "WIN");
-  }
-
-  public static function unish_escapeshellarg($arg) {
-    // Short-circuit escaping for simple params (keep stuff readable)
-    if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
-      return $arg;
-    }
-    elseif (self::is_windows()) {
-      return self::_unish_escapeshellarg_windows($arg);
-    }
-    else {
-      return escapeshellarg($arg);
-    }
-  }
-
-  public static function _unish_escapeshellarg_windows($arg) {
-    // Double up existing backslashes
-    $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
-
-    // Escape double quotes.
-    $arg = preg_replace('/"/', '\\"', $arg);
-
-    // Escape single quotes.
-    $arg = preg_replace('/\'/', '\\\'', $arg);
-
-    // Add surrounding quotes.
-    $arg = '"' . $arg . '"';
-
-    return $arg;
-  }
-
 
   /**
    * Assure that each class starts with an empty sandbox directory.
@@ -92,6 +50,136 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       self::file_delete_recursive(UNISH_SANDBOX);
     }
   }
+
+  public static function is_windows() {
+    return (strtoupper(substr(PHP_OS, 0, 3)) == "WIN");
+  }
+
+  public static function unish_escapeshellarg($arg) {
+    // Short-circuit escaping for simple params (keep stuff readable)
+    if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
+      return $arg;
+    }
+    elseif (self::is_windows()) {
+      return self::_unish_escapeshellarg_windows($arg);
+    }
+    else {
+      return escapeshellarg($arg);
+    }
+  }
+
+  public static function _unish_escapeshellarg_windows($arg) {
+    // Double up existing backslashes
+    $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
+
+    // Escape double quotes.
+    $arg = preg_replace('/"/', '\\"', $arg);
+
+    // Escape single quotes.
+    $arg = preg_replace('/\'/', '\\\'', $arg);
+
+    // Add surrounding quotes.
+    $arg = '"' . $arg . '"';
+
+    return $arg;
+  }
+
+  /**
+   *    Accessor for the last output.
+   *    @return string        Output as text.
+   *    @access public
+   */
+  function getOutput() {
+    return implode("\n", $this->_output);
+  }
+
+  /**
+   *    Accessor for the last output.
+   *    @return array         Output as array of lines.
+   *    @access public
+   */
+  function getOutputAsList() {
+    return $this->_output;
+  }
+
+  /**
+   * Same code as drush_delete_dir().
+   * @see drush_delete_dir()
+   *
+   * @param string $dir
+   * @return boolean
+   */
+  function file_delete_recursive($dir) {
+    if (!file_exists($dir)) {
+      return TRUE;
+    }
+    if (!is_dir($dir)) {
+      @chmod($dir, 0777); // Make file writeable
+      return unlink($dir);
+    }
+    foreach (scandir($dir) as $item) {
+      if ($item == '.' || $item == '..') {
+        continue;
+      }
+      if (!self::file_delete_recursive($dir.'/'.$item)) {
+        return FALSE;
+      }
+    }
+    return rmdir($dir);
+  }
+
+  function setUpDrupal($env = 'dev', $install = FALSE, $version_string = '7', $profile = NULL) {
+    $root = UNISH_SANDBOX . '/web';
+    $this->sites[$env]['root'] = $root;
+    $site = "$root/sites/$env";
+    if (is_null($profile)) {
+      $profile = substr($version_string, 0, 1) >= 7 ? 'testing' : 'default';
+    }
+
+    // Download Drupal if not already present.
+    if (!file_exists($root)) {
+      $options = array(
+        'destination' => UNISH_SANDBOX,
+        'drupal-project-rename' => 'web',
+        'yes' => NULL,
+        'quiet' => NULL,
+        'cache' => NULL,
+      );
+      $this->drush('pm-download', array("drupal-$version_string"), $options);
+    }
+
+    // If specified, install Drupal as a multi-site.
+    if ($install) {
+      $options = array(
+        'root' => $root,
+        'db-url' => UNISH_DB_URL . '/unish_' . $env,
+        'sites-subdir' => $env,
+        'yes' => NULL,
+        'quiet' => NULL,
+      );
+      $this->drush('site-install', array($profile), $options);
+      // Give us our write perms back.
+      $ret = chmod($site, 0777);
+
+      // Stash the db_url for this site.
+      $this->sites[$env]['db_url'] = UNISH_DB_URL . '/unish_' . $env;
+    }
+    else {
+      mkdir($site);
+      touch("$site/settings.php");
+    }
+  }
+}
+
+abstract class Drush_CommandTestCase extends Drush_TestCase {
+
+  // Unix exit codes.
+  const EXIT_SUCCESS  = 0;
+  const EXIT_ERROR = 1;
+  /*
+   * An array of Drupal sites that are setup in the drush-sandbox.
+   */
+  var $sites;
 
   /**
    * Actually runs the command. Does not trap the error stream output as this
@@ -153,66 +241,6 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return $this->execute(implode(' ', $exec));
   }
 
-  /**
-   *    Accessor for the last output.
-   *    @return string        Output as text.
-   *    @access public
-   */
-  function getOutput() {
-    return implode("\n", $this->_output);
-  }
-
-  /**
-   *    Accessor for the last output.
-   *    @return array         Output as array of lines.
-   *    @access public
-   */
-  function getOutputAsList() {
-    return $this->_output;
-  }
-
-  function setUpDrupal($env = 'dev', $install = FALSE, $version_string = '7', $profile = NULL) {
-    $root = UNISH_SANDBOX . '/web';
-    $this->sites[$env]['root'] = $root;
-    $site = "$root/sites/$env";
-    if (is_null($profile)) {
-      $profile = substr($version_string, 0, 1) >= 7 ? 'testing' : 'default';
-    }
-
-    // Download Drupal if not already present.
-    if (!file_exists($root)) {
-      $options = array(
-        'destination' => UNISH_SANDBOX,
-        'drupal-project-rename' => 'web',
-        'yes' => NULL,
-        'quiet' => NULL,
-        'cache' => NULL,
-      );
-      $this->drush('pm-download', array("drupal-$version_string"), $options);
-    }
-
-    // If specified, install Drupal as a multi-site.
-    if ($install) {
-      $options = array(
-        'root' => $root,
-        'db-url' => UNISH_DB_URL . '/unish_' . $env,
-        'sites-subdir' => $env,
-        'yes' => NULL,
-        'quiet' => NULL,
-      );
-      $this->drush('site-install', array($profile), $options);
-      // Give us our write perms back.
-      $ret = chmod($site, 0777);
-
-      // Stash the db_url for this site.
-      $this->sites[$env]['db_url'] = UNISH_DB_URL . '/unish_' . $env;
-    }
-    else {
-      mkdir($site);
-      touch("$site/settings.php");
-    }
-  }
-
   // Copied from D7 - profiles/standard/standard.install
   function create_node_types_php() {
     $php = "
@@ -257,30 +285,38 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return $contents;
   }
 
+}
+
+/**
+ * Base class for Drush unit tests
+ *
+ * Those tests will run in a bootstrapped Drush environment
+ *
+ * This should be ran in separate processes, which the following
+ * annotation should do in 3.6 and above:
+ *
+ * @runTestsInSeparateProcesses
+ */
+abstract class Drush_UnitTestCase extends Drush_TestCase {
+
   /**
-   * Same code as drush_delete_dir().
-   * @see drush_delete_dir()
+   * Minimally bootstrap drush
    *
-   * @param string $dir
-   * @return boolean
+   * This is equivalent to the level DRUSH_BOOTSTRAP_NONE, as we
+   * haven't run drush_bootstrap() yet. To do anything, you'll need to
+   * bootstrap to some level using drush_bootstrap().
+   *
+   * @see drush_bootstrap()
    */
-  function file_delete_recursive($dir) {
-    if (!file_exists($dir)) {
-      return TRUE;
-    }
-    if (!is_dir($dir)) {
-      @chmod($dir, 0777); // Make file writeable
-      return unlink($dir);
-    }
-    foreach (scandir($dir) as $item) {
-      if ($item == '.' || $item == '..') {
-        continue;
-      }
-      if (!self::file_delete_recursive($dir.'/'.$item)) {
-        return FALSE;
-      }
-    }
-    return rmdir($dir);
+  public static function setUpBeforeClass() {
+    parent::setUpBeforeClass();
+    require_once(dirname(__FILE__) . '/../includes/bootstrap.inc');
+    drush_bootstrap_prepare();
+  }
+
+  public static function tearDownAfterClass() {
+    parent::tearDownAfterClass();
+    drush_bootstrap_finish();
   }
 }
 

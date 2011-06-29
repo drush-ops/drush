@@ -4,7 +4,7 @@
  * @file
  *   Tests for field.drush.inc
  */
-class fieldCase extends Drush_TestCase {
+class fieldCase extends Drush_CommandTestCase {
 
   public function testField() {
     $this->setUpDrupal('dev', TRUE);

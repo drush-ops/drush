@@ -4,7 +4,7 @@
  * @file
  *   Tests for user.drush.inc
  */
-class userCase extends Drush_TestCase {
+class userCase extends Drush_CommandTestCase {
 
   /*
    * Create, edit, block, and cancel users.

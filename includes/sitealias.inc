@@ -1058,10 +1058,10 @@ function _drush_find_local_sites_at_root($a_drupal_root = '', $search_depth = 1)
       $site_list = _drush_find_local_sites_in_sites_folder($base_path);
     }
     else {
-      $bootstrap_files = drush_scan_directory($base_path, '/' . basename(DRUSH_DRUPAL_BOOTSTRAP) . '/' , array('.', '..', 'CVS', 'examples'), 0, drush_get_option('search-depth', $search_depth) + 1, 'filename', 1);
+      $bootstrap_files = drush_scan_directory($base_path, '/' . basename(DRUSH_DRUPAL_SIGNATURE) . '/' , array('.', '..', 'CVS', 'examples'), 0, drush_get_option('search-depth', $search_depth) + 1, 'filename', 1);
       foreach ($bootstrap_files as $one_bootstrap => $info) {
         $includes_dir = dirname($one_bootstrap);
-        if (basename($includes_dir) == basename(dirname(DRUSH_DRUPAL_BOOTSTRAP))) {
+        if (basename($includes_dir) == basename(dirname(DRUSH_DRUPAL_SIGNATURE))) {
           $drupal_root = dirname($includes_dir);
           $site_list = array_merge(_drush_find_local_sites_in_sites_folder($drupal_root), $site_list);
         }

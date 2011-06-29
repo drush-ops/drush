@@ -4,7 +4,7 @@
  * @file
  *   Tests for enable, disable, uninstall, pm-list, and variable-* commands.
  */
-class EnDisUnListVarCase extends Drush_TestCase {
+class EnDisUnListVarCase extends Drush_CommandTestCase {
 
   public function testEnDisUnListVar() {
     $this->setUpDrupal('dev', TRUE);

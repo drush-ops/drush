@@ -12,7 +12,7 @@
  *     - updatedb and batch.inc
  */
 
-class siteUpgradeCase extends Drush_TestCase {
+class siteUpgradeCase extends Drush_CommandTestCase {
   function testUpgrade() {
     $env = 'testupgrade';
     $this->setUpDrupal($env, TRUE, '6');

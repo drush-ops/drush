@@ -13,7 +13,7 @@
 *    - No network calls and thus faster.
 */
 
-class backendCase extends Drush_TestCase {
+class backendCase extends Drush_CommandTestCase {
   const DRUSH_BACKEND_OUTPUT_DELIMITER = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
 
   /*

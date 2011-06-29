@@ -4,7 +4,7 @@
  * @file
  *   Tests for core commands.
  */
-class coreCase extends Drush_TestCase {
+class coreCase extends Drush_CommandTestCase {
 
   /*
    * Test standalone php-script scripts. Assure that script args and options work.
