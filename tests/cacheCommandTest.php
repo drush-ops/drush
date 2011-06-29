@@ -3,7 +3,7 @@
 /**
   * cache command testing.
   */
-class cacheCommandCase extends Drush_TestCase {
+class cacheCommandCase extends Drush_CommandTestCase {
   public function testCacheGetSetClear() {
     $this->setUpDrupal('dev', TRUE);
     $options = array(
