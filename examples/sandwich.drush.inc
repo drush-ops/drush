@@ -114,9 +114,18 @@ function sandwich_drush_help($section) {
  * for more details.
  */
 function drush_sandwich_make_me_a_sandwich_validate() {
-  $name = posix_getpwuid(posix_geteuid());
-  if ($name['name'] !== 'root') {
-    return drush_set_error('MAKE_IT_YOUSELF', dt('What? Make your own sandwich.'));
+  if (drush_is_windows()) {
+    // $name = getenv('USERNAME');
+    // TODO: implement check for elevated process using w32api
+    // as sudo is not available for Windows
+    // http://php.net/manual/en/book.w32api.php
+    // http://social.msdn.microsoft.com/Forums/en/clr/thread/0957c58c-b30b-4972-a319-015df11b427d
+  }
+  else {
+    $name = posix_getpwuid(posix_geteuid());
+    if ($name['name'] !== 'root') {
+      return drush_set_error('MAKE_IT_YOUSELF', dt('What? Make your own sandwich.'));
+    }
   }
 }
 
@@ -157,5 +166,12 @@ function drush_sandwich_make_me_a_sandwich($filling = 'ascii') {
             array('!filling' => $filling, '!str_spreads' => $str_spreads)
          );
   drush_print("\n" . $msg . "\n");
-  drush_print(file_get_contents(dirname(__FILE__) . '/sandwich.txt'));
+
+  if (drush_get_context('DRUSH_NOCOLOR')) {
+    $filename = dirname(__FILE__) . '/sandwich-nocolor.txt';
+  } 
+  else {
+    $filename = dirname(__FILE__) . '/sandwich.txt';
+  }
+  drush_print(file_get_contents($filename));
 }

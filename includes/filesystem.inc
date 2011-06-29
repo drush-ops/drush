@@ -259,9 +259,21 @@ function drush_find_tmp() {
     $directories = array();
 
     // Operating system specific dirs.
-    if (substr(PHP_OS, 0, 3) == 'WIN') {
-      $directories[] = 'c:\\windows\\temp';
-      $directories[] = 'c:\\winnt\\temp';
+    if (drush_is_windows()) {
+      // get user specific and operating system temp folders from system environment variables
+      // see http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/ntcmds_shelloverview.mspx?mfr=true
+      $tempdir = getenv('TEMP');
+      if (isset($tempdir)) {
+        $directories[] = $tempdir;
+      }
+      $tmpdir = getenv('TMP');
+      if (isset($tmpdir)) {
+        $directories[] = $tmpdir;
+      }
+      $windir = getenv('WINDIR');
+      if (isset($windir)) {
+        $directories[] = $windir;
+      }
     }
     else {
       $directories[] = '/tmp';

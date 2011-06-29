@@ -330,7 +330,11 @@ function _drush_proc_open($cmd, $command_options = NULL, $context = NULL, $backe
     $outputted = FALSE;
     while (!feof($pipes[1]) && !$info['timed_out']) {
       $string = fread($pipes[1], 4096);
-      if (preg_match('/DRUSH_BACKEND_OUTPUT_START/', $string)) {
+      $output_end_pos = strpos($string, 'DRUSH_BACKEND_OUTPUT_START>>>');
+      if ($output_end_pos !== FALSE) {
+        $trailing_string = substr($string, 0, $output_end_pos);
+        drush_backend_parse_packets($trailing_string, $backend_options);
+        _drush_backend_print_output($trailing_string, $backend_options);
         $end_of_output = TRUE;
       }
       if (!$end_of_output) {

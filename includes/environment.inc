@@ -119,7 +119,7 @@ function _drush_environment_check_php_ini() {
  * in drushrc.php. See examples/example.drushrc.php.
  */
 function drush_environment_check_os() {
-  if (substr(PHP_OS, 0, 3) == 'WIN' && drush_get_option('check_os', TRUE)) {
+  if (drush_is_windows() && drush_get_option('check_os', TRUE)) {
     $msg = 'Drush has significant limitations on Windows. We seek a co-maintainer to remedy them. See http://drupal.org/project/drush for more information, and for instructions on disabling this warning.';
     drush_log(dt($msg), 'warning');
   }
