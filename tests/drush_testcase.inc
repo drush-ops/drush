@@ -1,10 +1,16 @@
 <?php
 
+/*
+ * @file
+ *   Initialize a sandboxed environment. Starts with call unish_init() at bottom.
+ */
+
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
 
   // Unix exit codes.
   const EXIT_SUCCESS  = 0;
   const EXIT_ERROR = 1;
+
   /*
    * An array of Drupal sites that are setup in the drush-sandbox.
    */
@@ -12,6 +18,32 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
 
   function __construct() {
     $this->_output = false;
+  }
+
+  /**
+   * Assure that each class starts with an empty sandbox directory and
+   * a clean environment - http://drupal.org/node/1103568.
+   */
+  public static function setUpBeforeClass() {
+    $sandbox = UNISH_SANDBOX;
+    if (file_exists($sandbox)) {
+      unish_file_delete_recursive($sandbox);
+    }
+    $ret = mkdir($sandbox, 0777, TRUE);
+    chdir(UNISH_SANDBOX);
+
+    mkdir(getenv('HOME') . '/.drush', 0777, TRUE);
+    mkdir($sandbox . '/etc/drush', 0777, TRUE);
+    mkdir($sandbox . '/share/drush/commands', 0777, TRUE);
+  }
+
+  /**
+   * Runs after each test case. Remove sandbox directory.
+   */
+  public static function tearDownAfterClass() {
+    if (file_exists(UNISH_SANDBOX)) {
+      unish_file_delete_recursive(UNISH_SANDBOX);
+    }
   }
 
   public static function is_windows() {
@@ -45,48 +77,6 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     $arg = '"' . $arg . '"';
 
     return $arg;
-  }
-
-
-  /**
-   * Assure that each class starts with an empty sandbox directory.
-   */
-  public static function setUpBeforeClass() {
-    if (!defined('UNISH_TMP')) {
-      define('UNISH_TMP', getenv('UNISH_TMP') ? getenv('UNISH_TMP') : isset($GLOBALS['UNISH_TMP']) ? $GLOBALS['UNISH_TMP'] : sys_get_temp_dir());
-    }
-
-    $sandbox = UNISH_TMP . '/drush-sandbox';
-    if (file_exists($sandbox)) {
-      self::file_delete_recursive($sandbox);
-    }
-    $ret = mkdir($sandbox);
-    // Path must exist before we call realpath().
-    if (!defined('UNISH_SANDBOX')) {
-      // UNISH_SANDBOX is a private constant. Set UNISH_TMP instead.
-      define('UNISH_SANDBOX', realpath($sandbox));
-    }
-    chdir(UNISH_SANDBOX);
-
-    // Assure a clean environment - http://drupal.org/node/1103568
-    $home = UNISH_SANDBOX . '/home';
-    mkdir("$home/.drush", 0777, TRUE);
-    putenv("HOME=$home");
-    putenv("HOMEDRIVE=$home");
-    $sandbox = UNISH_SANDBOX;
-    mkdir($sandbox . '/etc/drush', 0777, TRUE);
-    mkdir($sandbox . '/share/drush/commands', 0777, TRUE);
-    putenv("ETC_PREFIX=$sandbox");
-    putenv("SHARE_PREFIX=$sandbox");
-  }
-
-  /**
-   * Runs after each test case. Remove sandbox directory.
-   */
-  public static function tearDownAfterClass() {
-    if (file_exists(UNISH_SANDBOX)) {
-      self::file_delete_recursive(UNISH_SANDBOX);
-    }
   }
 
   /**
@@ -279,20 +269,69 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   }
 }
 
-// We read from globals here because env can be empty and ini did not work in quick test.
-define('UNISH_DB_URL', getenv('UNISH_DB_URL') ? getenv('UNISH_DB_URL') : !empty($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
+/*
+ * Initialize our environment at he start of each run (i.e. suite).
+ */
+function unish_init() {
+  // We read from globals here because env can be empty and ini did not work in quick test.
+  define('UNISH_DB_URL', getenv('UNISH_DB_URL') ? getenv('UNISH_DB_URL') : !empty($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
 
-// UNISH_DRUSH value can come from phpunit.xml or `which drush`.
-if (!defined('UNISH_DRUSH')) {
-  // Let the UNISH_DRUSH environment variable override if set.
-  $unish_drush = isset($_SERVER['UNISH_DRUSH']) ? $_SERVER['UNISH_DRUSH'] : NULL;
-  $unish_drush = isset($GLOBALS['UNISH_DRUSH']) ? $GLOBALS['UNISH_DRUSH'] : $unish_drush;
-  if (empty($unish_drush)) {
-    $unish_drush = Drush_TestCase::is_windows() ? exec('for %i in (drush) do @echo.   %~$PATH:i') : trim(`which drush`);
+  // UNISH_DRUSH value can come from phpunit.xml or `which drush`.
+  if (!defined('UNISH_DRUSH')) {
+    // Let the UNISH_DRUSH environment variable override if set.
+    $unish_drush = isset($_SERVER['UNISH_DRUSH']) ? $_SERVER['UNISH_DRUSH'] : NULL;
+    $unish_drush = isset($GLOBALS['UNISH_DRUSH']) ? $GLOBALS['UNISH_DRUSH'] : $unish_drush;
+    if (empty($unish_drush)) {
+      $unish_drush = Drush_TestCase::is_windows() ? exec('for %i in (drush) do @echo.   %~$PATH:i') : trim(`which drush`);
+    }
+    define('UNISH_DRUSH', $unish_drush);
   }
-  define('UNISH_DRUSH', $unish_drush);
+
+  define('UNISH_TMP', getenv('UNISH_TMP') ? getenv('UNISH_TMP') : (isset($GLOBALS['UNISH_TMP']) ? $GLOBALS['UNISH_TMP'] : sys_get_temp_dir()));
+  define('UNISH_SANDBOX', UNISH_TMP . '/drush-sandbox');
+
+  $home = UNISH_SANDBOX . '/home';
+  putenv("HOME=$home");
+  putenv("HOMEDRIVE=$home");
+
+  putenv('ETC_PREFIX=' . UNISH_SANDBOX);
+  putenv('SHARE_PREFIX=' . UNISH_SANDBOX);
+
+  // Cache dir lives outside the sandbox so that we get persistence across classes.
+  $cache = UNISH_TMP . '/drush_cache';
+  putenv("CACHE_PREFIX=" . $cache);
+  // Wipe at beginning of run.
+  if (file_exists($cache)) {
+    unish_file_delete_recursive($cache);
+  }
 }
 
-if (empty($GLOBALS['UNISH_SANDBOX'])) {
-  $GLOBALS['UNISH_SANDBOX'] = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'drush-sandbox';
-}
+/**
+  * Same code as drush_delete_dir().
+  * @see drush_delete_dir()
+  *
+  * @param string $dir
+  * @return boolean
+  */
+ function unish_file_delete_recursive($dir) {
+   if (!file_exists($dir)) {
+     return TRUE;
+   }
+   if (!is_dir($dir)) {
+     @chmod($dir, 0777); // Make file writeable
+     return unlink($dir);
+   }
+   foreach (scandir($dir) as $item) {
+     if ($item == '.' || $item == '..') {
+       continue;
+     }
+     if (!unish_file_delete_recursive($dir.'/'.$item)) {
+       return FALSE;
+     }
+   }
+   return rmdir($dir);
+ }
+
+ // This code is in global scope.
+ // TODO: I would rather this code at top of file, but I get Fatal error: Class 'Drush_TestCase' not found
+ unish_init();
