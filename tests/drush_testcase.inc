@@ -284,7 +284,6 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     $contents = "<?php\n\n" . implode("\n\n", $records);
     return $contents;
   }
-
 }
 
 /**
