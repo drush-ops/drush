@@ -315,6 +315,11 @@ function _drush_proc_open($cmd, $command_options = NULL, $context = NULL, $backe
     if ($command_options) {
       fwrite($pipes[0], json_encode($command_options)); // pass the data array in a JSON encoded string
     }
+    // If we do not close stdin here, then we cause a deadlock;
+    // see: http://drupal.org/node/766080#comment-4309936
+    // If we reimplement interactive commands to also use
+    // _drush_proc_open, then clearly we would need to keep
+    // this open longer.
     fclose($pipes[0]);
 
     $info = stream_get_meta_data($pipes[1]);
