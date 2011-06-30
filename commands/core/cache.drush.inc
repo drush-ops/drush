@@ -77,7 +77,7 @@ function drush_cache_command_clear($type = NULL) {
     }
   }
 
-  $types['drush'] = '_drush_cache_clear_all';
+  $types['drush'] = 'drush_cache_clear_all';
 
   // Check if the provided type ($type) is a valid cache type.
   if ($type && !key_exists($type, $types)) {
