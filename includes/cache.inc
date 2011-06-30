@@ -202,7 +202,7 @@ function drush_get_cid($prefix, $contexts = array(), $params = array()) {
  * To make Drush use your implementation for a certain cache bin, you have to
  * set a variable with the name of the cache bin as its key and the name of
  * your class as its value. For example, if your implementation of
- * DrushCacheInterface was called MyCustomCache, the following line in 
+ * DrushCacheInterface was called MyCustomCache, the following line in
  * drushrc.php would make Drush use it for the 'example' bin:
  * @code
  *  $options['cache-class-example'] = 'MyCustomCache;
@@ -304,7 +304,7 @@ class DrushFileCache implements DrushCacheInterface {
   const EXTENSION = '.cache';
   protected $bin;
 
-  function __construct($bin = NULL) {
+  function __construct($bin) {
     $this->bin = $bin;
     $this->directory = $this->cacheDirectory();
   }
@@ -413,7 +413,7 @@ class DrushFileCache implements DrushCacheInterface {
    *   The full path to the cache file.
    */
   protected function getFilePath($cid) {
-    return $this->directory . '/' . str_replace(array(':'), '.', $cid) . $this::EXTENSION;
+    return $this->directory . '/' . str_replace(array(':'), '.', $cid) . self::EXTENSION;
   }
 }
 
