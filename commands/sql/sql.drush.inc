@@ -152,6 +152,16 @@ function sql_drush_command() {
     'options' => $options,
     'aliases' => array('sqlc'),
   );
+  $items['sql-sanitize'] = array(
+    'description' => "Run sanitization operations on the current database.",
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'hidden' => TRUE,
+    'options' => array(
+      'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
+      'sanitize-email' => 'The username for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %login.  Default is "user+%uid@localhost".',
+    ),
+    'aliases' => array('sqlsan'),
+  );
   return $items;
 }
 
@@ -565,6 +575,39 @@ function drush_sql_cli() {
   proc_close(proc_open(_drush_sql_connect(), array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
 }
 
+/**
+ * Command callback. Run's the sanitization operations on the current database.
+ */
+function drush_sql_sanitize() {
+  if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
+    return drush_user_abort();
+  }
+  drush_include(DRUSH_BASE_PATH . '/commands/sql', 'sync.sql');
+  drush_command_invoke_all('drush_sql_sync_sanitize', 'default');
+  $options = drush_get_context('post-sync-ops');
+  if (!empty($options)) {
+    if (!drush_get_context('DRUSH_SIMULATE')) {
+      $messages = _drush_sql_get_post_sync_messages();
+      if ($messages) {
+        drush_print();
+        drush_print($messages);
+      }
+    }
+  }
+
+  $sanitize_query = '';
+  foreach($options as $id => $data) {
+    $sanitize_query .= $data['query'] . " ";
+  }
+  if ($sanitize_query) {
+    if (!drush_get_context('DRUSH_SIMULATE')) {
+      drush_sql_query($sanitize_query);
+    }
+    else {
+      drush_print("Executing: $sanitize_query");
+    }
+  }
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // SQL SERVICE HELPERS
