@@ -37,6 +37,7 @@ drush_invoke("version", $arg);
       'root' => $root,
       'uri' => 'dev',
       'verbose' => NULL,
+      'skip' => NULL, // No FirePHP
       'yes' => NULL,
       'cache' => NULL,
     );

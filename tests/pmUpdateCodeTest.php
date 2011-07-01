@@ -20,6 +20,7 @@ class pmUpdateCode extends Drush_CommandTestCase {
       'yes' => NULL,
       'quiet' => NULL,
       'cache' => NULL,
+      'skip' => NULL, // No FirePHP
     );
     $this->drush('pm-download', array('devel-7.x-1.0-rc1'), $options);
     $this->drush('pm-download', array('webform-7.x-3.4-beta1'), $options);
