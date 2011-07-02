@@ -260,6 +260,32 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
 }
 
 /**
+ * Generate an .ini file. used by archive-dump."
+ *
+ * @param array $ini
+ *   A two dimensional associative array where top level are sections and
+ *   second level are key => value pairs.
+ *
+ * @return string
+ *   .ini formatted text.
+ */
+function drush_export_ini($ini) {
+  $output = '';
+  foreach ($ini as $section => $pairs) {
+    if ($section) {
+      $output .= "[$section]\n";
+    }
+
+    foreach ($pairs as $k => $v) {
+      if ($v) {
+        $output .= "$k = \"$v\"\n";
+      }
+    }
+  }
+  return $output;
+}
+
+/**
  * Generate code friendly to the Drupal .info format from a structured array.
  * Mostly copied from http://drupalcode.org/viewvc/drupal/contributions/modules/features/features.export.inc.
  *
@@ -267,7 +293,7 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
  *   An array or single value to put in a module's .info file.
  *
  * @param boolean $integer_keys
- *   Use integer in keys. See archive-dump command.
+ *   Use integer in keys.
  *
  * @param $parents
  *   Array of parent keys (internal use only).

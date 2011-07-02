@@ -172,9 +172,9 @@ function drush_archive_dump($sites_subdirs = '@self') {
     'generator' => drush_get_option('generator', 'Drush archive-dump'),
     'generatorversion' => drush_get_option('generatorversion', DRUSH_VERSION),
     'description' => drush_get_option('description', ''),
-    'tags' => explode(',', drush_get_option('tags', '')),
+    'tags' => drush_get_option('tags', ''),
   );
-  $contents = drush_export_info($platform);
+  $contents = drush_export_ini(array('Global' => $platform));
 
   $i=0;
   foreach ($full as $key => $alias) {
@@ -182,6 +182,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
     $name = $vget['output'];
     $pos1 = strpos($name, '"');
     $name = substr($name, $pos1);
+    $name = str_replace(array('"', "\n"), '', $name);
     $status = drush_invoke_process($alias, 'core-status', array(), array());
 
     // Add the site specific directory to archive.
@@ -190,35 +191,32 @@ function drush_archive_dump($sites_subdirs = '@self') {
     }
 
     $site = array(
-      'name' => str_replace(array('"', "\n"), '', $name),
       'docroot' => DRUPAL_ROOT,
       'sitedir' => @$status['object']['%paths']['%site'],
-      'files' => array(
-        'public' => @$status['object']['%paths']['%files'],
-        'private' => @$status['object']['%paths']['%private'],
-      ),
+      'files-public' => @$status['object']['%paths']['%files'],
+      'files-private' => @$status['object']['%paths']['%private'],
     );
     // Add info for each DB connection (usually only 1);
     foreach ($alias['databases'] as $dbkey => $target) {
-      $site['database'][$dbkey]['file'] = './' . $target['default']['database'] . '.sql';
-      $site['database'][$dbkey]['driver'] = $target['default']['driver'];
+      $site["database-$dbkey-file"] = './' . $target['default']['database'] . '.sql';
+      $site["database-$dbkey-driver"] = $target['default']['driver'];
     }
-    $info['sites'][$i] = $site;
-    $contents .= "\n" . drush_export_info($info, TRUE);
+    $info[$name] = $site;
+    $contents .= "\n" . drush_export_ini($info);
     unset($info);
     $i++;
   }
-  file_put_contents("{$tmp}/MANIFEST.info", $contents);
+  file_put_contents("{$tmp}/MANIFEST.ini", $contents);
 
   // Add manifest to archive.
-  drush_shell_cd_and_exec($tmp, 'tar --dereference -rf %s %s', $destination, "MANIFEST.info");
+  drush_shell_cd_and_exec($tmp, 'tar --dereference -rf %s %s', $destination, "MANIFEST.ini");
 
   // Compress the archive
   drush_shell_exec("gzip --no-name -f %s", $destination);
 
   // gzip appends .gz unless the name already ends in .gz, .tgz, or .taz.
   if ("{$destination}.gz" != $final_destination) {
-    drush_move_dir("{$destination}.gz", $final_destination);
+    drush_move_dir("{$destination}.gz", $final_destination, $overwrite);
   }
 
   drush_log(dt('Archive saved to !dest', array('!dest' => $final_destination)), 'ok');
