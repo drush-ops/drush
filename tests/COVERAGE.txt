@@ -10,7 +10,7 @@ pm-disable: GOOD. testEnDisUnListVar().
 pm-uninstall: GOOD. testEnDisUnListVar().
 pm-list: GOOD. testEnDisUnListVar().
 pm-info:
-pm-refresh: 
+pm-refresh:
 version-control: FAIR. See updatecode. To be deprecated all git workflow after git.drupal.org?
 package-hander:
 
@@ -34,14 +34,18 @@ core-cli: FAIR
 cache-get: GOOD
 cache-set: GOOD
 cache-clear: GOOD
+config
 core-cron
 core-status: FAIR: Implicit test by contextTest.
 docs
 image
 core-rsync
+runserver
 search-*
+shellalias
 site-install: FAIR. Implicit test by setUpDrupal().
 site-upgrade: GOOD.
+ssh: GOOD
 test-*
 topic
 variable-*: GOOD. testEnDisUnListVar().
@@ -55,6 +59,7 @@ INCLUDES
 ------------
 backend: GOOD
 batch: FAIR. Implicit by siteUpgradeTest.
+bootstrap:
 command: FAIR
 context: FAIR
 drush: NONE.
