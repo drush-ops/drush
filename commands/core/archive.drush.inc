@@ -168,7 +168,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   // Build a manifest file AND add sites/$subdir to archive as we go.
   $platform = array(
     'datestamp' => time(),
-    'formatversion' => '.1',
+    'formatversion' => '1.0',
     'generator' => drush_get_option('generator', 'Drush archive-dump'),
     'generatorversion' => drush_get_option('generatorversion', DRUSH_VERSION),
     'description' => drush_get_option('description', ''),
