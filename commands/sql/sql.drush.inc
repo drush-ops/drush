@@ -814,6 +814,23 @@ function drush_sql_show_tables_pgsql() {
 }
 
 /*
+ * Build DB connection array with superuser credentials if provided.
+ */
+function drush_sql_su($db_spec) {
+  $create_db_target = $db_spec;
+  $create_db_target['database'] = '';
+  $db_superuser = drush_get_option(array('db-su', 'target-db-su'));
+  if (isset($db_superuser)) {
+    $create_db_target['username'] = $db_superuser;
+  }
+  $db_su_pw = drush_get_option(array('db-su-pw', 'target-db-su-pw'));
+  if (isset($db_su_pw)) {
+    $create_db_target['password'] = $db_su_pw;
+  }
+  return $create_db_target;
+}
+
+/*
  * Build a SQL string for dropping and creating a database.
  *
  * @param array $db_spec

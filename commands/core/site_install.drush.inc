@@ -97,7 +97,8 @@ function drush_core_pre_site_install() {
     // are about to DROP. @see _drush_sql_get_credentials().
     $create_db_spec = $db_spec;
     unset($create_db_spec['database']);
-    if (!_drush_sql_query($sql, $create_db_spec)) {
+    $create_db_su = drush_sql_su($create_db_spec);
+    if (!_drush_sql_query($sql, $create_db_su)) {
       // If we could not drop the database, try instead to drop all
       // of the tables in the database (presuming it exists...).
       // If we cannot do either operation, then fail with an error.
