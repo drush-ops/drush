@@ -380,17 +380,8 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       $pre_import_commands = '';
       $create_db = drush_get_option('create-db');
       if (isset($create_db)) {
-        $create_db_target = $target_db_url;
-        $create_db_target['database'] = '';
-        $db_superuser = drush_get_option(array('db-su', 'target-db-su'));
-        if (isset($db_superuser)) {
-          $create_db_target['username'] = $db_superuser;
-        }
-        $db_su_pw = drush_get_option(array('db-su-pw', 'target-db-su-pw'));
-        if (isset($db_su_pw)) {
-          $create_db_target['password'] = $db_su_pw;
-        }
-        $db_su_connect = _drush_sql_connect($create_db_target);
+        $create_db_su = drush_sql_su($target_db_url);
+        $db_su_connect = _drush_sql_connect($create_db_su);
         $pre_import_sql = drush_sql_build_createdb_sql($target_db_url);
         $pre_import_commands = sprintf('echo "%s" | %s; ', $pre_import_sql, $db_su_connect);
       }

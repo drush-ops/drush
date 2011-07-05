@@ -23,7 +23,8 @@ sql-drop:
 
 
 updatedb: GOOD. Implicitly tested siteUpgradeTest.
-archive-dump
+archive-dump: GOOD
+archive-restore: 
 help
 version: Good. Implicit by testStandaloneScript()
 self-update

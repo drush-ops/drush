@@ -191,6 +191,8 @@ function core_drush_command() {
     'options' => array(
       'db-url' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',
       'db-prefix' => 'An optional table prefix to use for initial install.',
+      'db-su' => 'Account to use when creating a new database. Optional.',
+      'db-su-pw' => 'Password for the "db-su" account. Optional.',
       'account-name' => 'uid1 name. Defaults to admin',
       'account-pass' => 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',
       'account-mail' => 'uid1 email. Defaults to admin@example.com',
