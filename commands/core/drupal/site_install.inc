@@ -11,7 +11,7 @@ function drush_core_site_install_version($profile, array $additional_form_option
   define('MAINTENANCE_MODE', 'install');
   require_once DRUPAL_ROOT . '/includes/install.core.inc';
 
-  $db_spec = drush_core_site_install_db_spec();
+  $db_spec = drush_sql_read_db_spec();
 
   $account_pass = drush_get_option('account-pass', 'admin');
   $settings = array(
