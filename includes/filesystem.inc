@@ -213,7 +213,7 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
     return TRUE;
   }
 
-  return drush_set_error('DRUSH_MOVE_DIR_FAILURE', dt('Unable to move !src to !dest.', array('src' => $src, 'dest' => $dest)));
+  return drush_set_error('DRUSH_MOVE_DIR_FAILURE', dt('Unable to move !src to !dest.', array('!src' => $src, '!dest' => $dest)));
 }
 
 /**
