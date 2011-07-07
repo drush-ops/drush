@@ -33,15 +33,22 @@ function archive_drush_command() {
     'description' => 'Expand a site archive into a Drupal web site.',
     'arguments' => array(
       'file' => 'The site archive file that should be expanded.',
-      'site number' => 'Optional. Which site within the archive you want to restore. Defaults to all.',
+      'site name' => 'Optional. Which site within the archive you want to restore. Defaults to all.',
     ),
     'options' => array(
-      'destination' => 'Specify where the archive should be stored. Include filename but omit the .gz suffix.',
+      'destination' => 'Specify where the Drupal site should be expanded. Defaults to the current working directory.',
+      'db-prefix' => 'An optional table prefix to use during restore.',
+      'db-url' => 'A Drupal 6 style database URL indicating the target for database restore. If not provided, the archived settings.php is used.',
+      'db-su' => 'Account to use when creating the new database. Optional.',
+      'db-su-pw' => 'Password for the "db-su" account. Optional.',
+      'overwrite' => 'Allow drush to overwrite any files in the destinion.',
+
     ),
     'examples' => array(
-      'drush archive-dump default,example.com,foo.com' => 'Write an archive containing 3 sites in it.',
-      'drush archive-dump @sites' => 'Save archive containing all sites in a multi-site.',
-      'drush archive-dump default --destination=/backups/mysite.tar' => 'Save archive to custom location.',
+      'drush archive-restore ./example.tar.gz' => 'Restore the files and databases for all sites in the archive.',
+      'drush archive-restore ./example.tar.gz example.com' => 'Restore the files and database for example.com site.',
+      'drush archive-restore ./example.tar.gz --destination=/var/www/example.com/docroot' => 'Restore archive to a custom location.',
+      'drush archive-restore ./example.tar.gz --db-url=mysql://root:pass@127.0.0.1/dbname' => 'Restore archive to a new database (and customize settings.php to point there.).',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'aliases' => array('arr'),
@@ -178,11 +185,6 @@ function drush_archive_dump($sites_subdirs = '@self') {
 
   $i=0;
   foreach ($full as $key => $alias) {
-    $vget = drush_invoke_sitealias_args($alias, 'vget', array('site_name'), array());
-    $name = $vget['output'];
-    $pos1 = strpos($name, '"');
-    $name = substr($name, $pos1);
-    $name = str_replace(array('"', "\n"), '', $name);
     $status = drush_invoke_sitealias_args($alias, 'core-status', array(), array());
 
     // Add the site specific directory to archive.
@@ -201,7 +203,8 @@ function drush_archive_dump($sites_subdirs = '@self') {
       $site["database-$dbkey-file"] = './' . $target['default']['database'] . '.sql';
       $site["database-$dbkey-driver"] = $target['default']['driver'];
     }
-    $info[$name] = $site;
+    // The section title is the sites subdirectory name.
+    $info[basename($site['sitedir'])] = $site;
     $contents .= "\n" . drush_export_ini($info);
     unset($info);
     $i++;
@@ -228,17 +231,81 @@ function drush_archive_dump($sites_subdirs = '@self') {
  * Command callback. Restore web site(s) from a site archive file.
  */
 function drush_archive_restore($file, $site_id = NULL) {
-  $destination = drush_get_option('destination', '.');
-  //if (!$files = drush_tarball_extract($file, $destination)) {
-  //  return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_EXTRACT', dt('Unable to extract site archive tarball.'));
-  //}
-  if (!$ini = parse_ini_file($destination . '/MANIFEST.info')) {
-    return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_PARSE_MANIFEST', dt('Unable to parse MANIFEST.info in the archive.'));
+  $tmp = drush_tempdir();
+
+  if (!$files = drush_tarball_extract($file, $tmp)) {
+    return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_EXTRACT', dt('Unable to extract site archive tarball to !tmp.', array('!tmp' => $tmp)));
   }
 
-  print_r($ini);
+  $manifest = $tmp . '/MANIFEST.ini';
+  if (file_exists($manifest)) {
+    if (!$ini = parse_ini_file($manifest, TRUE)) {
+      return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_PARSE_MANIFEST', dt('Unable to parse MANIFEST.ini in the archive.'));
+    }
+  }
+  else {
+    // No manifest. Try to find docroot and DB dump file.
+    $db_file = drush_scan_directory($tmp, '/\.sql$/',  array('.', '..', 'CVS'), 0, 0);
+    $directories = glob($tmp . '/*' , GLOB_ONLYDIR);
+    $ini = array(
+      'Global' => array(),
+      'default' => array(
+        'docroot' => reset($directories),
+        'sitedir' => 'sites/default',
+        'database-default-file' => key($db_file),
+      ),
+    );
+  }
 
+  // Grab the first site in the Manifest and move docroot to destination.
+  $ini_tmp = $ini;
+  unset($ini_tmp['Global']);
+  $first = array_shift($ini_tmp);
+  $docroot = basename($first['docroot']);
+  $destination = drush_get_option('destination', realpath('.') . "/$docroot");
+  if (!drush_move_dir("$tmp/$docroot", $destination, drush_get_option('overwrite'))) {
+    return drush_set_error('DRUSH_ARCHIVE_UNABLE _RESTORE_FILES', dt('Unable to restore files to !dest', array('!dest' => $destination)));
+  }
 
+  // Loop over sites and restore databases and append to settings.php.
+  foreach ($ini as $section => $site) {
+    if ($section != 'Global' && (is_null($site_id) || $section == $site_id) && !empty($site['database-default-file'])) {
 
+      // Restore database
+      $sql_file = $tmp . '/' . $site['database-default-file'];
+      if ($db_url = drush_get_option('db-url')) {
+        if (empty($site_id) && count($ini) >= 3) {
+          // TODO: Use drushrc to provide multiple db-urls for multi-restore?
+          return drush_set_error('DRUSH_ARCHIVE_UNABLE_MULTI_RESTORE', dt('You must specify a site to restore when the archive contains multiple sites and a db-url is provided.'));
+        }
+        $db_spec = drush_convert_db_from_db_url($db_url);
+      }
+      else {
+        $site_specification = $destination . '#' . $section;
+        if ($return = drush_invoke_sitealias_args($site_specification, 'sql-conf', array(), array('all' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE))) {
+          $databases = $return['object'];
+          $db_spec = $databases['default']['default'];
+        }
+        else {
+          return drush_set_error('DRUSH_ARCHIVE_UNABLE_DISCOVER_DB', dt('Unable to get database details from db-url option or settings.php', array('!key' => $key)));
+        }
+      }
+      drush_sql_empty_db($db_spec);
+      _drush_sql_query(NULL, $db_spec, $sql_file);
 
+      // Append new DB info to settings.php.
+      if ($db_url) {
+        $settingsfile = $destination . '/' . $site['sitedir'] . '/settings.php';
+        chmod($settingsfile, 0755); // Need to do something here or else we can't write.
+        file_put_contents($settingsfile, "\n// Appended by drush archive-restore command.\n", FILE_APPEND);
+        if (drush_drupal_major_version() >= 7) {
+          file_put_contents($settingsfile, "\n" . '$databases = \'' . drush_sitealias_convert_db_from_db_url($db_url) . "';\n", FILE_APPEND);
+        }
+        else {
+          file_put_contents($settingsfile, "\n" . '$db_url = \'' . $db_url . "';\n", FILE_APPEND);
+        }
+      }
+    }
+  }
+  return $destination;
 }
