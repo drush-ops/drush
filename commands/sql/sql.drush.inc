@@ -83,7 +83,8 @@ function sql_drush_command() {
       '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
     ),
     'arguments' => array(
-       'query' => 'An SQL query.',
+       'query' => 'An SQL query. Ignored if \'file\' is provided.',
+       'file' => 'Path to a file containing the SQL to be run.',
     ),
     'options' => array(
       'extra' => 'Add custom options to the mysql command.',
@@ -448,15 +449,28 @@ function _drush_sql_get_table_list($option_name) {
 /**
  * Command callback. Executes the given SQL query on the Drupal database.
  */
-function drush_sql_query($query) {
-  return _drush_sql_query($query);
+function drush_sql_query($query, $filename = NULL) {
+  return _drush_sql_query($query, NULL, $filename);
 }
 
-function _drush_sql_query($query, $db_spec = NULL) {
+/*
+ * Execute a SQL query.
+ *
+ * @param string $query
+ *   The SQL to be executed. Should be NULL if $file is provided.
+ * @param array $db_spec
+ *   A database target.
+ * @param string $filename
+ *   A path to a file containing the SQL to be executed.
+ */
+function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
   $scheme = _drush_sql_get_scheme($db_spec);
 
   // Inject table prefixes as needed.
   if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+    if ($filename) {
+      $query = file_get_contents($filename);
+    }
     if (drush_drupal_major_version() >= 7) {
       $query = Database::getConnection()->prefixTables($query);
     }
@@ -470,21 +484,22 @@ function _drush_sql_query($query, $db_spec = NULL) {
     $query = drush_sql_show_tables_pgsql();
   }
 
-  // Save $query to a tmp file. We will redirect it in.
-  if ($filename = drush_save_data_to_temp_file($query)) {
-    $exec = drush_sql_build_exec($db_spec, $filename);
-    if ($output_file = drush_get_option('result-file')) {
-      $exec .= ' > '. drush_escapeshellarg($output_file);
-    }
-    // In --simulate mode, drush_op will show the call to mysql or psql,
-    // but the sql query itself is stored in a temp file and not displayed.
-    // We will therefore show the query explicitly in the interest of full disclosure.
-    if (drush_get_context('DRUSH_SIMULATE')) {
-      drush_print('sql-query: ' . $query);
-    }
-    $return = drush_op_system($exec) == 0;
-    return $return;
+  // Save $query to a tmp file if needed. We will redirect it in.
+  if (!$filename) {
+    $filename = drush_save_data_to_temp_file($query);
   }
+  $exec = drush_sql_build_exec($db_spec, $filename);
+  if ($output_file = drush_get_option('result-file')) {
+    $exec .= ' > '. drush_escapeshellarg($output_file);
+  }
+  // In --simulate mode, drush_op will show the call to mysql or psql,
+  // but the sql query itself is stored in a temp file and not displayed.
+  // We will therefore show the query explicitly in the interest of full disclosure.
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    drush_print('sql-query: ' . $query);
+  }
+  $return = drush_op_system($exec) == 0;
+  return $return;
 }
 
 function drush_sql_drop() {
@@ -880,6 +895,55 @@ function _drush_sql_get_post_sync_messages() {
 // Convert mysql 'show tables;' query into something pgsql understands.
 function drush_sql_show_tables_pgsql() {
   return "select tablename from pg_tables where schemaname='public';";
+}
+
+/*
+ * Drop all tables or DROP+CREATE target database.
+ *
+ * return boolean
+ *   TRUE or FALSE depending on success.
+ */
+function drush_sql_empty_db($db_spec = NULL) {
+  if (is_null($db_spec)) {
+    $db_spec = drush_sql_read_db_spec();
+  }
+  $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
+  // Get credentials to connect to the server, but not the database which we
+  // are about to DROP. @see _drush_sql_get_credentials().
+  $create_db_spec = $db_spec;
+  unset($create_db_spec['database']);
+  $create_db_su = drush_sql_su($create_db_spec);
+  if (!_drush_sql_query($sql, $create_db_su)) {
+    // If we could not drop the database, try instead to drop all
+    // of the tables in the database (presuming it exists...).
+    // If we cannot do either operation, then fail with an error.
+    if (!_drush_sql_drop($db_spec)) {
+      return drush_set_error(dt('Could not drop and create database: @name', array('@name' => $db_name)));
+    }
+  }
+  return TRUE;
+}
+
+/**
+ * Return a db_spec based on supplied db_url/db_prefix options or an existing
+ * settings.php.
+ */
+function drush_sql_read_db_spec() {
+  if ($db_url = drush_get_option('db-url')) {
+    // We were passed a db_url. Usually a fresh site.
+    $db_spec = drush_convert_db_from_db_url($db_url);
+    $db_spec['db_prefix'] = drush_get_option('db-prefix');
+    return $db_spec;
+  }
+  elseif (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+    // We have an existing settings.php.
+    $db_spec = _drush_sql_get_db_spec();
+    $db_spec['db_prefix'] = $GLOBALS['db_prefix'];
+    return $db_spec;
+  }
+  else {
+    return FALSE;
+  }
 }
 
 /*
