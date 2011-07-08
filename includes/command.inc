@@ -114,8 +114,8 @@ function _drush_invoke($command, $args, $defined_in_commandfile) {
     // Run all of the functions available for this variation
     foreach ($list as $commandfile => $filename) {
       $func = sprintf("drush_%s_%s", $commandfile, $var_hook);
-      if ($defined_in_commandfile == $commandfile) {
-        $func = str_replace('drush_' . $commandfile . '_' . $commandfile . '_', 'drush_' . $commandfile . '_', $func);
+      if (($defined_in_commandfile == $commandfile) && ($commandfile . "_" == substr($var_hook . "_",0,strlen($commandfile)+ 1))) {
+        $func = sprintf("drush_%s", $var_hook);
       }
       if (function_exists($func)) {
         $functions[] = $func;
