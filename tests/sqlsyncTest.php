@@ -21,6 +21,7 @@ class sqlsyncCase extends Drush_CommandTestCase {
     $this->setUpDrupal('dev', TRUE);
     $this->setUpDrupal('stage', TRUE);
     $dump_dir = UNISH_SANDBOX . "/dump-dir";
+    mkdir($dump_dir);
 
     // Here we are actually testing the Unish framework to confirm that alias records were created for us.
     $this->drush('sa');
