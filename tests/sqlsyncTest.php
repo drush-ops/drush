@@ -38,13 +38,12 @@ class sqlsyncCase extends Drush_CommandTestCase {
     $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => $mail));
 
     // Copy stage to dev with --sanitize
-    $exec = sprintf('%s sql-sync @stage @dev --yes --dump-dir=%s --sanitize',
-      self::unish_escapeshellarg(UNISH_DRUSH),
-      self::unish_escapeshellarg($this->sites['stage']['root']),
-      self::unish_escapeshellarg($this->sites['dev']['root']),
-      self::unish_escapeshellarg($dump_dir)
-      );
-    $this->execute($exec);
+    $sync_options = array(
+      'sanitize' => NULL,
+      'yes' => NULL,
+      'dump-dir' => $dump_dir
+    );
+    $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
     
     // Confirm that the sample user has the correct email address on the staging site
     $this->drush('user-information', array($name), $options + array('pipe' => NULL));
