@@ -128,6 +128,9 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       mkdir($site);
       touch("$site/settings.php");
     }
+    // Make an alias for the site
+    $alias_definition = "<?php\n\$aliases['$env'] = array(\n  'root' => '$root',\n  'uri' => '$env'\n);";
+    $result = file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $env . '.alias.drushrc.php', $alias_definition);
   }
 }
 
@@ -345,3 +348,4 @@ function unish_init() {
  // This code is in global scope.
  // TODO: I would rather this code at top of file, but I get Fatal error: Class 'Drush_TestCase' not found
  unish_init();
+

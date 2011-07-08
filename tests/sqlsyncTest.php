@@ -1,0 +1,70 @@
+<?php
+
+/*
+* @file
+*  For now we only test sql-sync in simulated mode.
+*
+*  Future: Using two copies of Drupal, we could test 
+*  overwriting one site with another.
+*/
+
+class sqlsyncCase extends Drush_CommandTestCase {
+
+  /*
+   * Covers the following responsibilities.
+   *   - A user created on the source site is copied to the destination site.
+   *   - The email address of the copied user is sanitized on the destination site.
+   *
+   * General handling of site aliases will be in sitealiasTest.php.
+   */
+  public function testLocalSqlSync() {
+    $this->setUpDrupal('dev', TRUE);
+    $this->setUpDrupal('stage', TRUE);
+    $dump_dir = UNISH_SANDBOX . "/dump-dir";
+
+    // Here we are actually testing the Unish framework to confirm that alias records were created for us.
+    $this->drush('sa');
+    $output = $this->getOutput();
+    $this->assertEquals("@stage\n@dev", $output, 'Alias records were created for dev and stage');
+
+    // Create a user in the staging site
+    $name = 'joe.user';
+    $mail = "joe.user@myhome.com";
+    $options = array(
+      'root' => $this->sites['stage']['root'],
+      'uri' => 'stage',
+      'yes' => NULL,
+    );
+    $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => $mail));
+
+    // Copy stage to dev with --sanitize
+    $exec = sprintf('%s sql-sync @stage @dev --yes --dump-dir=%s --sanitize',
+      self::unish_escapeshellarg(UNISH_DRUSH),
+      self::unish_escapeshellarg($this->sites['stage']['root']),
+      self::unish_escapeshellarg($this->sites['dev']['root']),
+      self::unish_escapeshellarg($dump_dir)
+      );
+    $this->execute($exec);
+    
+    // Confirm that the sample user has the correct email address on the staging site
+    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
+    $output = $this->getOutput();
+    $row  = str_getcsv($output);
+    $uid = $row[1];
+    $this->assertEquals($mail, $row[2], 'email address is unchanged on source site.');
+    $this->assertEquals($name, $row[0]);
+    
+    $options = array(
+      'root' => $this->sites['dev']['root'],
+      'uri' => 'dev',
+      'yes' => NULL,
+    );
+    // Confirm that the sample user's email address has been sanitized on the dev site
+    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
+    $output = $this->getOutput();
+    $row  = str_getcsv($output);
+    $uid = $row[1];
+    $this->assertEquals("user+2@localhost", $row[2], 'email address was sanitized on destination site.');
+    $this->assertEquals($name, $row[0]);    
+  }
+}
