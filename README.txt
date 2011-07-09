@@ -21,9 +21,9 @@ REQUIREMENTS
 * Drush is designed for a Unix-like OS (Linux, OS X)
 
 * Some Drush commands run on Windows.
-  If you must run Drush on Windows, you have to install Unix Tools from
-  GnuWin32 (http://gnuwin32.sourceforge.net/). More info
-  about Drush on Windows available at http://drupal.org/node/594744.
+  There is a Windows msi installer for drush available at
+  http://drush.ws/drush_winodws_installer.  Please see that page
+  for more information on running Drush on Windows.
 
 * Drush works with Drupal 6, Drupal 7, and Drupal 8.  However, occasionally
   recent changes to the most recent version of Drupal can introduce issues
