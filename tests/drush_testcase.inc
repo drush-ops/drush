@@ -196,6 +196,9 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       mkdir($site);
       touch("$site/settings.php");
     }
+    // Make an alias for the site
+    $alias_definition = array($env => array('root' => $root,  'uri' => $env));
+    file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $env . '.alias.drushrc.php', $this->file_aliases($alias_definition));
   }
 
   // Copied from D7 - profiles/standard/standard.install
