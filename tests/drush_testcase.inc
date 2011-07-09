@@ -129,8 +129,8 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       touch("$site/settings.php");
     }
     // Make an alias for the site
-    $alias_definition = "<?php\n\$aliases['$env'] = array(\n  'root' => '$root',\n  'uri' => '$env'\n);";
-    $result = file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $env . '.alias.drushrc.php', $alias_definition);
+    $alias_definition = array($env => array('root' => $root,  'uri' => $env));
+    file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $env . '.alias.drushrc.php', $this->file_aliases($alias_definition));
   }
 }
 
