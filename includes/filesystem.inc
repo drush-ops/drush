@@ -67,17 +67,25 @@ function drush_trim_path($path, $os = NULL) {
 
 /**
  * Deletes the provided file or folder and everything inside it.
+ * Usually respects read-only files and folders. To do a forced delete use
+ * drush_delete_tmp_dir() or set the parameter $forced.
  *
  * @param $dir
  *   The directory to delete
+ * @param $force
+ *   Try whatever possible to delete the directory - also read-only ones.
  * @return
  *   FALSE on failure, TRUE if everything was deleted
  */
-function drush_delete_dir($dir) {
+function drush_delete_dir($dir, $force = FALSE) {
   if (!file_exists($dir)) {
     return TRUE;
   }
   if (!is_dir($dir)) {
+    if ($force) {
+      // Force deletion of items with readonly flag.
+      @chmod($dir, 0777);
+    }
     return unlink($dir);
   }
   foreach (scandir($dir) as $item) {
@@ -88,7 +96,24 @@ function drush_delete_dir($dir) {
       return FALSE;
     }
   }
+  if ($force) {
+    // Force deletion of items with readonly flag.
+    @chmod($dir, 0777);
+  }
   return rmdir($dir);
+}
+
+/**
+ * Deletes the provided file or folder and everything inside it.
+ * This function explicitely tries to delete read-only files / folders.
+ *
+ * @param $dir
+ *   The directory to delete
+ * @return
+ *   FALSE on failure, TRUE if everything was deleted
+ */
+function drush_delete_tmp_dir($dir) {
+  return drush_delete_dir($dir, TRUE);
 }
 
 /**
@@ -366,6 +391,7 @@ function _drush_delete_registered_files() {
         drush_delete_dir($file);
       }
       else {
+        @chmod($dir, 0777); // Make file writeable
         unlink($file);
       }
     }
