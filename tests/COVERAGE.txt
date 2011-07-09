@@ -17,8 +17,8 @@ package-hander:
 sql-cli:
 sql-connect:
 sql-query:
-sql-dump: FAIR. Implicitly tested by siteUpgradeTest.
-sql-sync: FAIR. Implicitly tested by siteUpgradeTest.
+sql-dump: FAIR. Implicitly tested by siteUpgradeTest and sqlSyncTest.
+sql-sync: GOOD. testLocalSqlSync(). Implicitly tested by siteUpgradeTest.
 sql-drop:
 
 

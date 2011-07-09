@@ -8,7 +8,7 @@
 *  overwriting one site with another.
 */
 
-class sqlSyncCase extends Drush_CommandTestCase {
+class sqlSyncTest extends Drush_CommandTestCase {
 
   /*
    * Covers the following responsibilities.
