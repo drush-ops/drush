@@ -8,7 +8,7 @@
 *  overwriting one site with another.
 */
 
-class sqlsyncCase extends Drush_CommandTestCase {
+class sqlSyncCase extends Drush_CommandTestCase {
 
   /*
    * Covers the following responsibilities.
@@ -24,7 +24,7 @@ class sqlsyncCase extends Drush_CommandTestCase {
     mkdir($dump_dir);
 
     // Here we are actually testing the Unish framework to confirm that alias records were created for us.
-    $this->drush('sa');
+    $this->drush('site-alias');
     $output = $this->getOutput();
     $this->assertEquals("@stage\n@dev", $output, 'Alias records were created for dev and stage');
 
