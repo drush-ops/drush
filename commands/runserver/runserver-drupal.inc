@@ -20,6 +20,19 @@ class DrupalServer extends HTTPServer {
   function route_request($request) {
     $cgi_env = array();
 
+    // We pass in the effective base_url to our auto_prepend_script via the cgi
+    // environment. This allows Drupal to generate working URLs to this http
+    // server, whilst finding the correct multisite from the HTTP_HOST header.
+    $cgi_env['RUNSERVER_BASE_URL'] = 'http://localhost:' . $this->port;
+
+    // We pass in an array of $conf overrides using the same approach.
+    // By default we set drupal_http_request_fails to FALSE, as the httpserver
+    // is unable to process simultanious requests on some systems.
+    // This is available as an option for developers to pass in their own
+    // favorite $conf overrides (e.g. disabling css aggregation).
+    $conf_inject = drush_get_option('conf-inject', array('drupal_http_request_fails' => FALSE));
+    $cgi_env['RUNSERVER_CONF'] = urlencode(serialize($conf_inject));
+
     // Handle static files and php scripts accessed directly
     $uri = $request->uri;
     $doc_root = DRUPAL_ROOT;
@@ -32,19 +45,6 @@ class DrupalServer extends HTTPServer {
       }
       return $this->get_static_response($request, $path);
     }
-
-    // We pass in the effective base_url to our auto_prepend_script via the cgi
-    // environment. This allows Drupal to generate working URLs to this http
-    // server, whilst finding the correct multisite from the HTTP_HOST header.
-    $cgi_env['RUNSERVER_BASE_URL'] = 'http://localhost:' . $this->port;
-    
-    // We pass in an array of $conf overrides using the same approach.
-    // By default we set drupal_http_request_fails to FALSE, as the httpserver
-    // is unable to process simultanious requests on some systems.
-    // This is available as an option for developers to pass in their own
-    // favorite $conf overrides (e.g. disabling css aggregation). 
-    $conf_inject = drush_get_option('conf-inject', array('drupal_http_request_fails' => FALSE));
-    $cgi_env['RUNSERVER_CONF'] = urlencode(serialize($conf_inject));
 
     // Rewrite clean-urls
     $cgi_env['QUERY_STRING'] = 'q=' . ltrim($uri, '/');
