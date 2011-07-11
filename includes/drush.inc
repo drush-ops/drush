@@ -750,7 +750,7 @@ function drush_op($function) {
  *   downloaded.
  */
 function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
-  if (drush_get_option('cache') && $cache_duration !== 0 && $cache_dir = drush_directory_cache()) {
+  if (drush_get_option('cache') && $cache_duration !== 0 && $cache_dir = drush_directory_cache() . '/download') {
     drush_mkdir($cache_dir);
     $cache_name = str_replace(array(':', '/'), '-', $url);
     $cache_file = $cache_dir . "/" . $cache_name;
