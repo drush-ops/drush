@@ -22,8 +22,7 @@ class pmUpdateCode extends Drush_CommandTestCase {
       'cache' => NULL,
       'skip' => NULL, // No FirePHP
     );
-    $this->drush('pm-download', array('devel-7.x-1.0-rc1'), $options);
-    $this->drush('pm-download', array('webform-7.x-3.4-beta1'), $options);
+    $this->drush('pm-download', array('devel-7.x-1.0-rc1,webform-7.x-3.4-beta1'), $options);
     $this->drush('pm-enable', array('menu', 'devel', 'webform'), $options);
   }
 
@@ -33,6 +32,7 @@ class pmUpdateCode extends Drush_CommandTestCase {
       'uri' => 'dev',
       'yes' => NULL,
       'backup-dir' => UNISH_SANDBOX . '/backups',
+      'self-update' => 0, // Don't try update Drush.
     );
 
     // Try to upgrade a specific module.

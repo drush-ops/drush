@@ -41,6 +41,9 @@ function core_drush_command() {
   $items['version'] = array(
     'description' => 'Show drush version.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'arguments' => array(
+      'self-update' => 'Check for pending updates to drush itself. Set to 0 to avoid check.',
+    ),
     'options' => array(
       'pipe' => 'Print just the version number, and nothing else.'
     ),

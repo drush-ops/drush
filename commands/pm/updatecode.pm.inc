@@ -119,7 +119,7 @@ function drush_pm_updatecode() {
     }
     drush_print_pipe($pipe);
     // Automatically curtail update process if in pipe mode
-    $updateable = FALSE;
+    $updateable = array();
   }
 
   $tmpfile = drush_tempnam('pm-updatecode.');
@@ -192,8 +192,8 @@ function drush_pm_updatecode() {
         drush_print(dt('Skipping core update (--no-core specified).'));
       }
       else {
-        drush_print(dt("Drupal core will be updated after all of the non-core modules are updated.\n"));  
-      } 
+        drush_print(dt("Drupal core will be updated after all of the non-core modules are updated.\n"));
+      }
     }
   }
 
