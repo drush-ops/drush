@@ -210,7 +210,9 @@ function _drush_sql_connect($db_spec = NULL) {
 }
 
 function drush_sql_connect() {
-  drush_print(_drush_sql_connect());
+  $connect = _drush_sql_connect();
+  drush_print($connect);
+  return $connect;
 }
 
 /**
