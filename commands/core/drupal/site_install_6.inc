@@ -18,11 +18,19 @@ function drush_core_site_install_version($profile) {
   drush_shell_exec('php -r %s', $phpcode);
   $cli_output = drush_shell_exec_output();
   $cli_cookie = end($cli_output);
+
+  // We need to bootstrap the database to be able to check the progress of the 
+  // install batch process since we're not duplicating the install process using
+  // drush_batch functions, but calling the process directly.
+  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
+
   $phpcode = _drush_site_install6_cookies($profile, $cli_cookie). ' $_GET["op"]="start"; include("'. $drupal_root .'/install.php");';
   drush_shell_exec('php -r %s', $phpcode);
 
-  $phpcode = _drush_site_install6_cookies($profile, $cli_cookie). ' $_GET["op"]="do_nojs"; include("'. $drupal_root .'/install.php");';
-  drush_shell_exec('php -r %s', $phpcode);
+  while (!_drush_site_install6_batch_check()) {
+    $phpcode = _drush_site_install6_cookies($profile, $cli_cookie). ' $_GET["op"]="do_nojs"; include("'. $drupal_root .'/install.php");';
+    drush_shell_exec('php -r %s', $phpcode);
+  }
 
   $phpcode = _drush_site_install6_cookies($profile, $cli_cookie). ' $_GET["op"]="finished"; include("'. $drupal_root .'/install.php");';
   drush_shell_exec('php -r %s', $phpcode);
@@ -73,4 +81,14 @@ register_shutdown_function("_cli_cookie_print");';
   }
 
   return $output;
+}
+
+/**
+ * Utility function to see if batch succeeded.
+ */
+function _drush_site_install6_batch_check() {
+  if ($data = db_result(db_query("SELECT batch FROM {batch} WHERE bid = %d",1))) {
+    $batch = unserialize($data);
+  }
+  return($batch['sets'][0]['success']);
 }
