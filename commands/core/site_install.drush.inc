@@ -38,7 +38,12 @@ function drush_core_pre_site_install() {
   if (!file_exists($settingsfile)) {
     $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
   }
-  $msg[] = dt("DROP your '@db' database and then CREATE a new one.", array('@db' => $db_spec['database']));
+  if (drush_sql_db_exists($db_spec)) {
+    $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
+  }
+  else {
+    $msg[] = dt("CREATE  the '@db' database.", array('@db' => $db_spec['database']));
+  }
 
   if (!drush_confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
     return drush_user_abort();
@@ -90,7 +95,7 @@ function drush_core_pre_site_install() {
   // Now we can bootstrap up to the specified site.
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
 
-  // Drop and create DB if needed.
+  // Empty or create the DB as needed.
   $db_name = $db_spec['database'];
   $scheme = _drush_sql_get_scheme($db_spec);
   $simulate = drush_get_context('DRUSH_SIMULATE');

@@ -939,7 +939,7 @@ function drush_sql_show_tables_pgsql() {
 }
 
 /*
- * Drop all tables or DROP+CREATE target database.
+ * Drop all tables (if DB exists) or CREATE target database.
  *
  * return boolean
  *   TRUE or FALSE depending on success.
@@ -948,21 +948,18 @@ function drush_sql_empty_db($db_spec = NULL) {
   if (is_null($db_spec)) {
     $db_spec = drush_sql_read_db_spec();
   }
-  $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
-  // Get credentials to connect to the server, but not the database which we
-  // are about to DROP. @see _drush_sql_get_credentials().
-  $create_db_spec = $db_spec;
-  unset($create_db_spec['database']);
-  $create_db_su = drush_sql_su($create_db_spec);
-  if (!_drush_sql_query($sql, $create_db_su)) {
-    // If we could not drop the database, try instead to drop all
-    // of the tables in the database (presuming it exists...).
-    // If we cannot do either operation, then fail with an error.
-    if (!_drush_sql_drop($db_spec)) {
-      return drush_set_error(dt('Could not drop and create database: @name', array('@name' => $db_name)));
-    }
+  if (drush_sql_db_exists($db_spec)) {
+    _drush_sql_drop($db_spec);
   }
-  return TRUE;
+  else {
+    $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
+    // Get credentials to connect to the server, but not the database which we
+    // are about to DROP. @see _drush_sql_get_credentials().
+    $create_db_spec = $db_spec;
+    unset($create_db_spec['database']);
+    $create_db_su = drush_sql_su($create_db_spec);
+    return _drush_sql_query($sql, $create_db_su);
+  }
 }
 
 /**
@@ -1041,6 +1038,39 @@ function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
       break;
   }
   return implode(' ', $sql);
+}
+
+/*
+ * Does specified database exist on target server
+ *
+ * @return boolean
+ */
+function drush_sql_db_exists($db_spec) {
+  $connect_yes_db = _drush_sql_connect($db_spec);
+
+  $database = $db_spec['database'];
+  unset($db_spec['database']);
+  $connect_no_db = _drush_sql_connect($db_spec);
+  // We need the output back so we can't use drush_sql_query().
+  switch ($db_spec['driver']) {
+    case 'mysql':
+      $sql = "SELECT 1;";
+      // Suppress ugly output. Redirect STDERR and STDOUT. We just need exit code.
+      return drush_shell_exec("$connect_yes_db -e \"$sql\" 2> /dev/null > /dev/null");
+    case 'pgsql':
+      $sql = "SELECT 1 AS result FROM pg_database WHERE datname='$database'";
+      drush_shell_exec("$connect_no_db -t -c \"$sql\"");
+      $output = drush_shell_exec_output();
+      return (bool)$output[0];
+    case 'sqlite':
+      return file_exists($database);
+    case 'sqlsrv':
+      // TODO: untested, but the gist is here.
+      $sql = "if db_id('$database') IS NOT NULL print 1";
+      drush_shell_exec("$connect_no_db -q \"$sql\"");
+      $output = drush_shell_exec_output();
+      return $output[0] == 1;
+  }
 }
 
 function drush_sql_build_exec($db_spec, $filepath) {
