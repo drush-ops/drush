@@ -169,6 +169,7 @@ function pm_drush_command() {
       'pipe' => 'Returns a space delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
       'notes' => 'Show release notes for each project to be updated.',
       'no-core' => 'Only update modules and skip the core update.',
+      'self-update' => 'Check for pending updates to drush itself. Set to 0 to avoid check.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'aliases' => array('upc'),
@@ -230,7 +231,7 @@ function pm_drush_command() {
       'drush dl webform --dev' => 'Download the latest dev release of webform.',
     ),
     'arguments' => array(
-      'projects' => 'A list of drpal.org project names, with optional version. Defaults to \'drupal\'',
+      'projects' => 'A comma delimited list of drupal.org project names, with optional version. Defaults to \'drupal\'',
     ),
     'options' => array(
       'destination' => 'Path to which the project will be copied. If you\'re providing a relative path, note it is relative to the drupal root (if bootstrapped).',

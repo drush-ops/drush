@@ -11,7 +11,7 @@ class archiveDumpCase extends Drush_TestCase {
    */
   public function testArchiveDump() {
     $env = 'testarchivedump';
-    $this->setUpDrupal($env, TRUE, '6.x');
+    $this->setUpDrupal($env, TRUE, '6');
     $root = $this->sites[$env]['root'];
     $docroot = 'web';
 

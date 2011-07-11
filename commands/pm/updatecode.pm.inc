@@ -119,7 +119,7 @@ function drush_pm_updatecode() {
     }
     drush_print_pipe($pipe);
     // Automatically curtail update process if in pipe mode
-    $updateable = FALSE;
+    $updateable = array();
   }
 
   $tmpfile = drush_tempnam('pm-updatecode.');
