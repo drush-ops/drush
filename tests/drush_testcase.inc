@@ -37,6 +37,40 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     }
   }
 
+  /*
+   *Print a log message to the console.
+   *
+   * @param string $message
+   * @param string $level
+   *   Minimum level required to see message. Supported levels are:
+   *     - notice
+   *     - verbose
+   *     - debug
+   */
+  function log($message, $type = 'notice') {
+    $line = "\nLog: $message\n";
+    switch ($this->log_level()) {
+      case 'verbose':
+        if (in_array($type, array('notice', 'verbose'))) print $line;
+        break;
+      case 'debug':
+        print $line;
+        break;
+      default:
+        if ($type == 'notice') print $line;
+        break;
+    }
+  }
+
+  function log_level() {
+    if (in_array('--debug', $_SERVER['argv'])) {
+      return 'debug';
+    }
+    elseif (in_array('--verbose', $_SERVER['argv'])) {
+      return 'verbose';
+    }
+  }
+
   public static function is_windows() {
     return (strtoupper(substr(PHP_OS, 0, 3)) == "WIN");
   }
@@ -155,10 +189,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
    */
   function execute($command, $expected_return = self::EXIT_SUCCESS) {
     $this->_output = FALSE;
-    // todo check verbose level from phpunit.
-    if (TRUE) {
-      print "\nExecuting: $command \n";
-    }
+    $this->log("Executing: $command", 'verbose');
     exec($command, $this->_output, $return);
     $this->assertEquals($expected_return, $return, 'Unexpected exit code: ' .  $command);
     return $return;
@@ -185,8 +216,9 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     $cmd[] = UNISH_DRUSH;
     $cmd[] = empty($site_specification) ? NULL : self::unish_escapeshellarg($site_specification);
     $cmd[] = $command;
-    if (in_array('--verbose', $_SERVER['argv'])) $args[] = '--verbose';
-    if (in_array('--debug', $_SERVER['argv'])) $args[] = '--debug';
+    if ($level = $this->log_level()) {
+      $args[] = '--' . $level;
+    }
 
     foreach ($args as $arg) {
       $cmd[] = self::unish_escapeshellarg($arg);
@@ -283,7 +315,7 @@ abstract class Drush_UnitTestCase extends Drush_TestCase {
 }
 
 /*
- * Initialize our environment at he start of each run (i.e. suite).
+ * Initialize our environment at the start of each run (i.e. suite).
  */
 function unish_init() {
   // We read from globals here because env can be empty and ini did not work in quick test.
