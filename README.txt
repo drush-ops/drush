@@ -20,10 +20,7 @@ REQUIREMENTS
 
 * Drush is designed for a Unix-like OS (Linux, OS X)
 
-* Some Drush commands run on Windows.
-  There is a Windows msi installer for drush available at
-  http://drush.ws/drush_winodws_installer.  Please see that page
-  for more information on running Drush on Windows.
+* Some Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
 
 * Drush works with Drupal 6, Drupal 7, and Drupal 8.  However, occasionally
   recent changes to the most recent version of Drupal can introduce issues
@@ -163,32 +160,19 @@ disable_classes are empty.
 
 INSTALLING DRUSH ON WINDOWS:
 ----------------------------
-Windows support is lacking! Consider using on Linux/Unix/OSX
-using Virtualbox or other virtual machine.
-Drush 3 has proven more reliable than 4 for many users.
+Windows support is improving, but is still lacking! Consider using on 
+Linux/Unix/OSX using Virtualbox or other virtual machine.
 
- 1. Drush depends on the following external packages:
-    Gzip, LibArchive, Tar, Wget, Less
-    which can be downloaded from
-      http://gnuwin32.sourceforge.net/packages.html
-    if you use cygwin, install the ncurses package to for tput support
-      http://invisible-island.net/ncurses/
+There is a Windows msi installer for drush available at:
 
- 2. bsdtar.exe is more reliable than tar.exe, so copy bsdtar.exe to tar.exe
-      C:\Program Files\GnuWin32\bin\bsdtar.exe
-      C:\Program Files\GnuWin32\bin\tar.exe
+    http://drush.ws/drush_windows_installer.  
 
- 3. Set your PATH environment variable to include drush, php, and binaries installed above, i.e.
-      ;C:\Program Files (x86)\php;C:\path\to\drush;C:\Program Files (x86)\GnuWin32\bin
-    (You will need to reopen your shell/command prompt window so the path variables refresh.)
-
- 4. To disable the warning about Windows support, set $options['check_os'] = FALSE
-    in drushrc.php. See examples/example.drushrc.php.
+Please see that page for more information on running Drush on Windows.
 
 Whenever the documentation or the help text refers to
 'drush [option] <command>' or something similar, 'drush' may need to be replaced by 'drush.bat'.
 
-Complete Drush Windows installation documentation can be found at http://drupal.org/node/594744
+Additional Drush Windows installation documentation can be found at http://drupal.org/node/594744
 
 
 USAGE
