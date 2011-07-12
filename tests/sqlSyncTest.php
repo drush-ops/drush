@@ -4,7 +4,7 @@
 * @file
 *  For now we only test sql-sync in simulated mode.
 *
-*  Future: Using two copies of Drupal, we could test 
+*  Future: Using two copies of Drupal, we could test
 *  overwriting one site with another.
 */
 
@@ -18,21 +18,20 @@ class sqlSyncTest extends Drush_CommandTestCase {
    * General handling of site aliases will be in sitealiasTest.php.
    */
   public function testLocalSqlSync() {
-    $this->setUpDrupal('dev', TRUE);
-    $this->setUpDrupal('stage', TRUE);
+    $sites = $this->setUpDrupal(2, TRUE);
     $dump_dir = UNISH_SANDBOX . "/dump-dir";
     mkdir($dump_dir);
 
     // Here we are actually testing the Unish framework to confirm that alias records were created for us.
     $this->drush('site-alias');
     $output = $this->getOutput();
-    $this->assertEquals("@stage\n@dev", $output, 'Alias records were created for dev and stage');
+    $this->assertEquals("@dev\n@stage", $output, 'Alias records were created for dev and stage');
 
     // Create a user in the staging site
     $name = 'joe.user';
     $mail = "joe.user@myhome.com";
     $options = array(
-      'root' => $this->sites['stage']['root'],
+      'root' => $this->webroot(),
       'uri' => 'stage',
       'yes' => NULL,
     );
@@ -45,7 +44,7 @@ class sqlSyncTest extends Drush_CommandTestCase {
       'dump-dir' => $dump_dir
     );
     $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
-    
+
     // Confirm that the sample user has the correct email address on the staging site
     $this->drush('user-information', array($name), $options + array('pipe' => NULL));
     $output = $this->getOutput();
@@ -53,9 +52,9 @@ class sqlSyncTest extends Drush_CommandTestCase {
     $uid = $row[1];
     $this->assertEquals($mail, $row[2], 'email address is unchanged on source site.');
     $this->assertEquals($name, $row[0]);
-    
+
     $options = array(
-      'root' => $this->sites['dev']['root'],
+      'root' => $this->webroot(),
       'uri' => 'dev',
       'yes' => NULL,
     );
@@ -65,6 +64,6 @@ class sqlSyncTest extends Drush_CommandTestCase {
     $row  = str_getcsv($output);
     $uid = $row[1];
     $this->assertEquals("user+2@localhost", $row[2], 'email address was sanitized on destination site.');
-    $this->assertEquals($name, $row[0]);    
+    $this->assertEquals($name, $row[0]);
   }
 }

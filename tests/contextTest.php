@@ -11,13 +11,13 @@
 class contextCase extends Drush_CommandTestCase {
 
   function setUpPaths() {
-    $this->root = $this->sites[$this->env]['root'];
-    $this->site = $this->root . '/sites/' . $this->env;
+    $this->env = key($this->sites);
+    $this->site = $this->webroot() . '/sites/' . $this->env;
     $this->home = UNISH_SANDBOX . '/home';
     $this->paths = array(
       'custom' => UNISH_SANDBOX,
       'site' =>  $this->site,
-      'drupal' => $this->root,
+      'drupal' => $this->webroot(),
       'user' => $this->home,
       'home.drush' => $this->home . '/.drush',
       'system' => UNISH_SANDBOX . '/etc/drush',
@@ -36,8 +36,7 @@ class contextCase extends Drush_CommandTestCase {
   function setup() {
     parent::setUp();
 
-    $this->env = 'dev';
-    $this->setUpDrupal($this->env, FALSE);
+    $this->setUpDrupal();
     $this->setUpPaths();
 
     // These files are only written to sandbox so get automatically cleaned up.
@@ -86,8 +85,8 @@ EOD;
     $options = array(
       'pipe' => NULL,
       'config' => UNISH_SANDBOX,
-      'root' => $this->root,
-      'uri' => $this->env,
+      'root' => $this->webroot(),
+      'uri' => $this->env
     );
     $this->drush('core-status', array('Drush configuration'), $options);
     $output = trim($this->getOutput());
@@ -110,7 +109,7 @@ EOD;
     $options = array(
       'cli1' => NULL,
       'config' => $config,
-      'root' => $this->root,
+      'root' => $this->webroot(),
       'uri' => $this->env,
     );
     $this->drush('php-eval', array($eval), $options);
@@ -124,7 +123,7 @@ EOD;
     $eval .= 'print json_encode(get_defined_vars());';
     $options = array(
       'config' => $config,
-      'root' => $this->root,
+      'root' => $this->webroot(),
       'uri' => $this->env,
     );
     $this->drush('php-eval', array($eval), $options, '@contextAlias');
@@ -138,7 +137,7 @@ EOD;
     $eval =  '$contextConfig = drush_get_option("contextConfig", "n/a");';
     $eval .= 'print json_encode(get_defined_vars());';
     $options = array(
-      'root' => $this->root,
+      'root' => $this->webroot(),
       'uri' => $this->env,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
     );

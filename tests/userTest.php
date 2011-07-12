@@ -11,13 +11,12 @@ class userCase extends Drush_CommandTestCase {
    */
   public function testUser() {
     // user-create
-    $env = 'dev';
-    $this->setUpDrupal($env, TRUE);
-    $root = $this->sites[$env]['root'];
+    $sites = $this->setUpDrupal(1, TRUE);
+    $root = $this->webroot();
     $name = "example";
     $options = array(
       'root' => $root,
-      'uri' => $env,
+      'uri' => key($sites),
       'yes' => NULL,
     );
     $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => "example@example.com"));

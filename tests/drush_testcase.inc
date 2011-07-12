@@ -41,8 +41,8 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    *Print a log message to the console.
    *
    * @param string $message
-   * @param string $level
-   *   Minimum level required to see message. Supported levels are:
+   * @param string $type
+   *   Supported types are:
    *     - notice
    *     - verbose
    *     - debug
@@ -122,13 +122,58 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return $this->_output;
   }
 
-  function setUpDrupal($env = 'dev', $install = FALSE, $version_string = '7', $profile = NULL) {
-    $root = UNISH_SANDBOX . '/web';
-    $this->sites[$env]['root'] = $root;
-    $site = "$root/sites/$env";
+  function webroot() {
+    return UNISH_SANDBOX . '/web';
+  }
+
+  function directory_cache($subdir = '') {
+    return getenv('CACHE_PREFIX') . '/' . $subdir;
+  }
+
+  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = '7', $profile = NULL) {
+    $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
+    $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
+    $root = $this->webroot();
+
     if (is_null($profile)) {
       $profile = substr($version_string, 0, 1) >= 7 ? 'testing' : 'default';
     }
+    $cache_keys = array($num_sites, $install ? 'install' : 'noinstall', $version_string, $profile);
+    $source = $this->directory_cache('environments') . '/' . implode('-', $cache_keys) . '.tar.gz';
+    if (file_exists($source)) {
+      $this->log('Cache HIT. Environment: ' . $source, 'verbose');
+      $this->drush('archive-restore', array($source), array('destination' => $root, 'overwrite' => NULL));
+    }
+    else {
+      $this->log('Cache MISS. Environment: ' . $source, 'verbose');
+      // Build the site(s), install (if needed), then cache.
+      foreach ($sites_subdirs as $subdir) {
+        $this->fetchInstallDrupal($subdir, $install, $version_string, $profile);
+      }
+      $options = array(
+        'destination' => $source,
+        'root' => $root,
+        'uri' => reset($sites_subdirs),
+        'overwrite' => NULL,
+      );
+      $this->drush('archive-dump', array('@sites'), $options);
+    }
+
+    // Stash details about each site.
+    foreach ($sites_subdirs as $subdir) {
+      $this->sites[$subdir] = array(
+        'db_url' => UNISH_DB_URL . '/unish_' . $subdir,
+      );
+      // Make an alias for the site
+      $alias_definition = array($subdir => array('root' => $root,  'uri' => $subdir));
+      file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $subdir . '.alias.drushrc.php', $this->file_aliases($alias_definition));
+    }
+    return $this->sites;
+  }
+
+  function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = '7', $profile = NULL) {
+    $root = $this->webroot();
+    $site = "$root/sites/$env";
 
     // Download Drupal if not already present.
     if (!file_exists($root)) {
@@ -153,18 +198,12 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       );
       $this->drush('site-install', array($profile), $options);
       // Give us our write perms back.
-      $ret = chmod($site, 0777);
-
-      // Stash the db_url for this site.
-      $this->sites[$env]['db_url'] = UNISH_DB_URL . '/unish_' . $env;
+      chmod($site, 0777);
     }
     else {
       mkdir($site);
       touch("$site/settings.php");
     }
-    // Make an alias for the site
-    $alias_definition = array($env => array('root' => $root,  'uri' => $env));
-    file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $env . '.alias.drushrc.php', $this->file_aliases($alias_definition));
   }
 }
 
@@ -189,7 +228,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
    */
   function execute($command, $expected_return = self::EXIT_SUCCESS) {
     $this->_output = FALSE;
-    $this->log("Executing: $command", 'verbose');
+    $this->log("Executing: $command", 'notice');
     exec($command, $this->_output, $return);
     $this->assertEquals($expected_return, $return, 'Unexpected exit code: ' .  $command);
     return $return;
@@ -343,11 +382,14 @@ function unish_init() {
   putenv('SHARE_PREFIX=' . UNISH_SANDBOX);
 
   // Cache dir lives outside the sandbox so that we get persistence across classes.
-  $cache = UNISH_TMP . '/drush_cache';
+  $cache = UNISH_TMP . '/drush-cache';
   putenv("CACHE_PREFIX=" . $cache);
   // Wipe at beginning of run.
   if (file_exists($cache)) {
-    unish_file_delete_recursive($cache);
+    // TODO: We no longer clean up cache dir between runs. Much faster, but we
+    // we should watch for subtle problems. To manually clean up, delete the
+    // UNISH_TMP/drush-cache directory.
+    // unish_file_delete_recursive($cache);
   }
 }
 

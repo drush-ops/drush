@@ -13,10 +13,10 @@ class pmUpdateCode extends Drush_CommandTestCase {
    * Download old core and older contrib releases which will always need updating.
    */
   public function setUp() {
-    $this->setUpDrupal('dev', TRUE, '7.0-rc3');
+    $sites = $this->setUpDrupal(1, TRUE, '7.0-rc3');
     $options = array(
-      'root' => $this->sites['dev']['root'],
-      'uri' => 'dev',
+      'root' => $this->webroot(),
+      'uri' => key($sites),
       'yes' => NULL,
       'quiet' => NULL,
       'cache' => NULL,
@@ -28,8 +28,8 @@ class pmUpdateCode extends Drush_CommandTestCase {
 
   function testUpdateCode() {
     $options = array(
-      'root' => $this->sites['dev']['root'],
-      'uri' => 'dev',
+      'root' => $this->webroot(),
+      'uri' => key($this->sites), // Have to access class property since $sites in in setUp().
       'yes' => NULL,
       'backup-dir' => UNISH_SANDBOX . '/backups',
       'self-update' => 0, // Don't try update Drush.

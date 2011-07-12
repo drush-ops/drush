@@ -31,18 +31,18 @@ drush_invoke("version", $arg);
   }
 
   function testDrupalDirectory() {
-    $this->setUpDrupal('dev', TRUE);
-    $root = $this->sites['dev']['root'];
+    $this->setUpDrupal(1, TRUE);
+    $root = $this->webroot();
     $options = array(
       'root' => $root,
-      'uri' => 'dev',
+      'uri' => key($this->sites),
       'verbose' => NULL,
       'skip' => NULL, // No FirePHP
       'yes' => NULL,
       'cache' => NULL,
     );
-    $this->drush('pm-download', array('devel-7.x-1.0'), $options);
-    $this->drush('pm-enable', array('menu', 'devel'), $options);
+    $this->drush('pm-download', array('devel'), $options);
+    $this->drush('pm-enable', array('devel', 'menu'), $options);
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();

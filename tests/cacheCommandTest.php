@@ -5,11 +5,11 @@
   */
 class cacheCommandCase extends Drush_CommandTestCase {
   public function testCacheGetSetClear() {
-    $this->setUpDrupal('dev', TRUE);
+    $this->setUpDrupal(1, TRUE);
     $options = array(
       'yes' => NULL,
-      'root' => $this->sites['dev']['root'],
-      'uri' => 'dev',
+      'root' => $this->webroot(),
+      'uri' => key($this->sites),
     );
 
     // Test the cache get command.

@@ -36,7 +36,7 @@ function archive_drush_command() {
       'site name' => 'Optional. Which site within the archive you want to restore. Defaults to all.',
     ),
     'options' => array(
-      'destination' => 'Specify where the Drupal site should be expanded. Defaults to the current working directory.',
+      'destination' => 'Specify where the Drupal site should be expanded, including the docroot. Defaults to the current working directory.',
       'db-prefix' => 'An optional table prefix to use during restore.',
       'db-url' => 'A Drupal 6 style database URL indicating the target for database restore. If not provided, the archived settings.php is used.',
       'db-su' => 'Account to use when creating the new database. Optional.',
@@ -60,14 +60,16 @@ function archive_drush_command() {
  * Command callback. Generate site archive file.
  */
 function drush_archive_dump($sites_subdirs = '@self') {
+  $full = array();
   $aliases = drush_sitealias_resolve_sitespecs(explode(',', $sites_subdirs));
   foreach ($aliases as $key => $alias) {
+    $full[$key] = $alias;
     if (($db_record = sitealias_get_databases_from_record($alias))) {
-      $full[$key] = $alias += $db_record;
+      $full[$key]['databases'] = $db_record;
     }
     else {
-      drush_log(dt('DB connections not found for !alias', array('!alias' => $alias)), 'error');
-      return;
+      $full[$key]['databases'] = array();
+      drush_log(dt('DB definition not found for !alias', array('!alias' => $key)), 'notice');
     }
   }
 
@@ -91,8 +93,13 @@ function drush_archive_dump($sites_subdirs = '@self') {
 
   // Create the unique temporary name.
   $date = gmdate('Ymd_his');
-  $first = current($full);
-  $prefix = count($sites_subdirs) > 1 ? 'multiple_sites' : $first['default']['default']['database'];
+  if (empty($full)) {
+    $prefix = 'none';
+  }
+  else {
+    $first = current($full);
+    $prefix = count($sites_subdirs) > 1 ? 'multiple_sites' : $first['default']['default']['database'];
+  }
   $temp_dest_name = "$prefix.$date.tar";
 
   $final_destination = drush_get_option('destination');
@@ -114,6 +121,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
     drush_op('chdir', drush_get_context('DRUSH_OLDCWD', getcwd()));
     // This doesn't perform realpath on the basename, but that's okay. This is
     // not path-based security. We just use it for checking for perms later.
+    drush_mkdir(dirname($final_destination));
     $dest_dir = realpath(dirname($final_destination));
     $final_destination = $dest_dir . '/' . basename($final_destination);
     drush_op('chdir', $command_cwd);
@@ -144,7 +152,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
       return;
     }
   }
-  else if (!is_writable(dirname($final_destination))) {
+  else if (!is_writable($dest_dir)) {
     drush_set_error('DRUSH_ARCHIVE_DEST_DIR_NOT_WRITEABLE', dt('destination directory !dir is not writable.', $dt_args));
     return;
   }
@@ -157,10 +165,10 @@ function drush_archive_dump($sites_subdirs = '@self') {
   // Add sites/all to the same archive.
   drush_shell_cd_and_exec($workdir, "tar --dereference -rf %s %s", $destination, "{$docroot}/sites/all");
 
+  $tmp = drush_tempdir();
   // Dump the database(s) for each site and add to the archive.
   foreach ($full as $key => $alias) {
     foreach ($alias['databases'] as $dbkey => $target) {
-      $tmp = drush_tempdir();
       // Use a subdirectory name matching the docroot name.
       drush_mkdir("{$tmp}/{$docroot}");
       $result_file = "{$tmp}/{$target['default']['database']}.sql";

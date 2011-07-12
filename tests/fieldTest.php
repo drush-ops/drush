@@ -7,11 +7,11 @@
 class fieldCase extends Drush_CommandTestCase {
 
   public function testField() {
-    $this->setUpDrupal('dev', TRUE);
+    $sites = $this->setUpDrupal(1, TRUE);
     $options = array(
       'yes' => NULL,
-      'root' => $this->sites['dev']['root'],
-      'uri' => 'dev',
+      'root' => $this->webroot(),
+      'uri' => key($sites),
     );
     // Create two field instances on article content type.
     $this->drush('field-create', array('user', 'city,text,text_textfield', 'subtitle,text,text_textfield'), $options + array('entity_type' => 'user'));

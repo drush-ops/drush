@@ -11,14 +11,17 @@ class saCase extends Drush_CommandTestCase {
    * @todo Use --backend for structured return data. Depends on http://drupal.org/node/1043922
    */
   public function testSAList() {
-    $this->setUpDrupal('dev');
-    $this->setUpDrupal('stage');
+    $sites = $this->setUpDrupal(2);
+    $subdirs = array_keys($sites);
     $eval = 'print "bon";';
     $options = array(
       'yes' => NULL,
-      'root' => $this->sites['dev']['root'],
+      'root' => $this->webroot(),
     );
-    $this->drush('php-eval', array($eval), $options, "#dev,#stage");
+    foreach ($subdirs as $dir) {
+      $dirs[] = "#$dir";
+    }
+    $this->drush('php-eval', array($eval), $options, implode(',', $dirs));
     $expected = "You are about to execute 'php-eval print \"bon\";' non-interactively (--yes forced) on all of the following targets:
   #dev
   #stage

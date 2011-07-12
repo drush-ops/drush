@@ -11,13 +11,15 @@ class pmDownloadCase extends Drush_CommandTestCase {
 
   // @todo Test pure drush commandfile projects. They get special destination.
   public function testDestination() {
-    // Setup first Drupal site. Skip install for speed.
-    $this->setUpDrupal('dev', FALSE);
-    $root = $this->sites['dev']['root'];
+    // Setup two Drupal sites. Skip install for speed.
+    $sites = $this->setUpDrupal(2);
+    $uri = key($sites);
+    $root = $this->webroot();
 
     // Default to sites/all
     $options = array(
       'root' => $root,
+      'uri' => $uri,
       'cache' => NULL,
       'skip' => NULL, // No FirePHP
     );
@@ -25,9 +27,7 @@ class pmDownloadCase extends Drush_CommandTestCase {
     $this->assertFileExists($root . '/sites/all/modules/devel/README.txt');
 
     // If we are in site specific dir, then download belongs there.
-    // Setup a second site. Skip install for speed.
-    $this->setUpDrupal('stage', FALSE);
-    $path_stage = "$root/sites/stage";
+    $path_stage = "$root/sites/$uri";
     mkdir("$path_stage/modules");
     $this->drush('pm-download', array('devel'), array('cache' => NULL, 'skip' => NULL), NULL, $path_stage);
     $this->assertFileExists($path_stage . '/modules/devel/README.txt');

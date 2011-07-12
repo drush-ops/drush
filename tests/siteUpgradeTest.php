@@ -14,14 +14,13 @@
 
 class siteUpgradeCase extends Drush_CommandTestCase {
   function testUpgrade() {
-    $env = 'testupgrade';
-    $this->setUpDrupal($env, TRUE, '6');
-    $root = $this->sites[$env]['root'];
+    $sites = $this->setUpDrupal(1, TRUE, '6');
+    $root = $this->webroot();
 
     // Create the alias for D7 site.
     $aliases['target'] = array(
       'root' => UNISH_SANDBOX . '/target',
-      'uri' => $env,
+      'uri' => key($sites),
       'db-url' => UNISH_DB_URL . '/unish_target',
     );
     $contents = $this->file_aliases($aliases);
@@ -34,7 +33,7 @@ class siteUpgradeCase extends Drush_CommandTestCase {
       'mail' => "example@example.com",
       'password' => 'password',
       'root' => $root,
-      'uri' => $env,
+      'uri' => key($sites),
     );
     $this->drush('user-create', array($name), $options);
 
@@ -42,7 +41,7 @@ class siteUpgradeCase extends Drush_CommandTestCase {
     $options = array(
       'yes' => NULL,
       'root' => $root,
-      'uri' => $env,
+      'uri' => key($sites),
     );
     $this->drush('site-upgrade', array('@target'), $options);
 
