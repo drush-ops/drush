@@ -359,6 +359,9 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
           // Change the location if the mkdir worked.
           if (is_dir($install_dir)) {
             $project['project_install_location'] = $install_dir;
+	    // We need to clear the drush commandfile cache so that
+	    // our newly-downloaded drush extension commandfiles can be found.
+	    drush_cache_clear_all();
           }
         }
       }
