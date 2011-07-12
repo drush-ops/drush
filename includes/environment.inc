@@ -516,8 +516,8 @@ function _drush_bootstrap_drush_validate() {
  * in drushrc.php. See examples/example.drushrc.php.
  */
 function drush_environment_check_os() {
-  if (substr(PHP_OS, 0, 3) == 'WIN' && drush_get_option('check_os', TRUE)) {
-    $msg = 'Drush has significant limitations on Windows. We seek a co-maintainer to remedy them. See http://drupal.org/project/drush for more information, and for instructions on disabling this warning.';
+  if (substr(PHP_OS, 0, 3) == 'WIN' && (drush_get_option('check_os', TRUE) !== 'i-want-4.x')) {
+    $msg = 'Drush 4.x has significant limitations on Windows; it is not advisable to use on that platform. Substantial progress has been made towards supporing Windows on the 5.x branch; please upgrade. See http://drupal.org/project/drush for more information.';
     drush_log(dt($msg), 'warning');
   }
 }
@@ -843,9 +843,6 @@ function _drush_bootstrap_do_drupal_site() {
 function _drush_bootstrap_drupal_site() {
   _drush_bootstrap_do_drupal_site();
   _drush_bootstrap_redo_drupal_site();
-
-  // Set warning for Windows users. We have already loaded site-specific drushrc.
-  drush_environment_check_os();
 }
 
 /**

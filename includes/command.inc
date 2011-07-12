@@ -192,6 +192,9 @@ function drush_dispatch($command, $arguments = array()) {
   drush_set_command($command);
   $return = FALSE;
 
+  // Set warning for Windows users. We have already loaded site-specific drushrc.
+  drush_environment_check_os();
+
   if ($command) {
     // Add arguments, if this has not already been done.
     // (If the command was fetched from drush_parse_command,

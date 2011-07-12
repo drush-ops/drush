@@ -57,9 +57,11 @@
 // Load a drushrc.php configuration file from the current working directory.
 # $options['c'] = '.';
 
-// Disable the nag warning for Windows.
-// Consider improving Windows support: http://drupal.org/node/766080. 
-# $options['check_os'] = FALSE;
+// You should not use drush-4.x on Windows; upgrade to the 5.x branch.
+// If you are really sure that you want to ignore this advice, you may
+// still disable the warning by setting the 'check_os' setting to the
+// special value shown below.
+# $options['check_os'] = 'i-want-4.x';
 
 // Control automatically check for updates in pm-updatecode and drush version.
 // FALSE = never check for updates.  'head' = allow updates to drush-HEAD.
