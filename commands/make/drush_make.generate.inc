@@ -12,7 +12,7 @@ function _drush_make_generate($file) {
   foreach(array("include", "exclude") as $option) {
     $version_options[$option] = drush_get_option("$option-versions");
     if ($version_options[$option] !== TRUE) {
-      $version_options[$option] = array_filter(split(",", $version_options[$option]));
+      $version_options[$option] = array_filter(explode(",", $version_options[$option]));
     }
   }
 
