@@ -303,7 +303,7 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
  *   If it executed successfully, it returns an associative array containing the command
  *   called, the output of the command, and the error code of the command.
  */
-function _drush_proc_open($cmd, $command_options = NULL, $context = NULL, $backend_options = array()) {
+function _drush_proc_open($cmd, $post_options = NULL, $context = NULL, $backend_options = array()) {
 
   $descriptorspec = array(
      0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
@@ -312,8 +312,8 @@ function _drush_proc_open($cmd, $command_options = NULL, $context = NULL, $backe
   );
   $process = proc_open($cmd, $descriptorspec, $pipes, null, null, array('context' => $context));
   if (is_resource($process)) {
-    if ($command_options) {
-      fwrite($pipes[0], json_encode($command_options)); // pass the data array in a JSON encoded string
+    if ($post_options) {
+      fwrite($pipes[0], json_encode($post_options)); // pass the data array in a JSON encoded string
     }
     // If we do not close stdin here, then we cause a deadlock;
     // see: http://drupal.org/node/766080#comment-4309936
@@ -445,6 +445,7 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
      'output' => TRUE,
      'log' => TRUE,
      'integrate' => TRUE,
+     'backend' => TRUE,
   );
   // Convert '#integrate' et. al. into backend options
   foreach ($command_options as $key => $value) {
@@ -525,8 +526,90 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  */
 function drush_backend_invoke_sitealias_command($site_record, $command, $args, $command_options = array(), $backend_options = array()) {
   $backend_options = _drush_backend_adjust_options($site_record, $command, $command_options, $backend_options);
-  $cmd = _drush_backend_generate_command_sitealias($site_record, $command, $args, $command_options, $backend_options);
-  return _drush_backend_invoke($cmd, $command_options, $backend_options);
+
+  $site_record += array( 'path-aliases' => array() );
+  $site_record['path-aliases'] += array(
+     '%drush-script' => NULL,
+  );
+  $drush_path = $site_record['path-aliases']['%drush-script'];
+
+  // If the caller did not pass in a specific path to drush, then we will
+  // use a default value.  For commands that are being executed on the same
+  // machine, we will use DRUSH_COMMAND, which is the path to the drush.php
+  // that is running right now.  For remote commands, we will run a wrapper
+  // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
+  $drush_command_path = drush_build_drush_command($drush_path, array_key_exists('php', $command_options) ? $command_options['php'] : NULL, drush_os($site_record), array_key_exists('remote-host', $site_record));
+
+  // Insure that contexts such as DRUSH_SIMULATE and NO_COLOR are included.
+  $command_options += _drush_backend_get_global_contexts();
+
+  list($post_options, $commandline_options, $drush_global_options) = _drush_backend_classify_options($command_options, $backend_options);
+  $cmd = _drush_backend_generate_command($site_record, $drush_command_path . " " . _drush_backend_argument_string($drush_global_options, $os) . " " . $command, $args, $commandline_options, $backend_options) . ' 2>&1';
+  return _drush_backend_invoke($cmd, $post_options, $backend_options);
+}
+
+/**
+ * Find all of the drush contexts that are used to cache global values and
+ * return them in an associative array.
+ */
+function _drush_backend_get_global_contexts() {
+  $result = array();
+  $global_option_list = drush_get_global_options(FALSE);
+  foreach ($global_option_list as $global_key => $global_metadata) {
+    if (array_key_exists('context', $global_metadata)) {
+      $value = drush_get_context($global_key, array());
+      if (!empty($value)) {
+        $result[$global_key] = $value;
+      }
+    }
+  }
+  return $result;
+}
+
+/**
+ * Take all of the values in the $command_options array, and place each of
+ * them into one of the following result arrays:
+ *
+ *     - $post_options: options to be encoded as JSON and written to the
+ *       standard input of the drush subprocess being executed.
+ *     - $commandline_options: options to be placed on the command line of the drush
+ *       subprocess.
+ *     - $drush_global_options: the drush global options also go on the command
+ *       line, but appear before the drush command name rather than after it.
+ */
+function _drush_backend_classify_options($command_options, $backend_options) {
+  // In 'POST' mode (the default, remove everything (except the items marked 'never-post'
+  // in the global option list) from the commandline options and put them into the post options.  
+  // The post options will be json-encoded and sent to the command via stdin
+  $global_option_list = drush_get_global_options(FALSE); // These should be in the command line.
+  $method_post = ((!array_key_exists('method', $backend_options)) || ($backend_options['method'] == 'POST'));
+  $post_options = array();
+  $commandline_options = array();
+  $drush_global_options = array();
+  foreach ($command_options as $key => $value) {
+    $global = array_key_exists($key, $global_option_list);
+    $propagate = TRUE;
+    $special = FALSE;
+    if ($global) {
+      $propagate = (!array_key_exists('never-propagate', $global_option_list[$key]));
+      $special = (array_key_exists('never-post', $global_option_list[$key]));
+    }
+    // Just remove options that are designated as non-propagating
+    if ($propagate === TRUE) {
+      // In METHOD POST, move command options to post options
+      if ($method_post && ($special === FALSE)) {
+        $post_options[$key] = $value;
+      }
+      // In METHOD GET, separate out drush global options
+      elseif ($global) {
+        $drush_global_options[$key] = $value;
+      }
+      else {
+        $commandline_options[$key] = $value;
+      }
+    }
+  }
+  return array($post_options, $commandline_options, $drush_global_options);
 }
 
 /**
@@ -541,8 +624,8 @@ function drush_backend_invoke_sitealias_command($site_record, $command, $args, $
  *
  * @param cmd
  *   The complete command line call to use.
- * @param command_options
- *   An associative array to pass to the remote script.
+ * @param post_options
+ *   An associative array to json-encode and pass to the remote script on stdin.
  * @param backend_options
  *   Options for the invocation.
  *
@@ -550,7 +633,7 @@ function drush_backend_invoke_sitealias_command($site_record, $command, $args, $
  *   If the command could not be completed successfully, FALSE.
  *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
  */
-function _drush_backend_invoke($cmd, $command_options = NULL, $backend_options = array()) {
+function _drush_backend_invoke($cmd, $post_options = NULL, $backend_options = array()) {
   if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('override-simulated', $backend_options)) {
     drush_print(dt('Simulating backend invoke: !cmd', array('!cmd' => $cmd)));
     return FALSE;
@@ -561,7 +644,7 @@ function _drush_backend_invoke($cmd, $command_options = NULL, $backend_options =
     return drush_op_system($cmd);
   }
   else {
-    $proc = _drush_proc_open($cmd, $command_options, NULL, $backend_options);
+    $proc = _drush_proc_open($cmd, $post_options, NULL, $backend_options);
 
     if (($proc['code'] == DRUSH_APPLICATION_ERROR) && $backend_options['integrate']) {
       drush_set_error('DRUSH_APPLICATION_ERROR', dt("The external command could not be executed due to an application error."));
@@ -639,7 +722,7 @@ function drush_backend_generate_sitealias($backend_options) {
  * @return
  *   A text string representing a fully escaped command.
  */
-function _drush_backend_generate_command_sitealias($site_record, $command, $args, &$command_options, $backend_options = array()) {
+function _drush_backend_generate_command($site_record, $command, $args = array(), $command_options = array(), $backend_options = array()) {
   $drush_path = null;
   $php = '';
 
@@ -649,31 +732,16 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
     'ssh-options' => NULL,
     'path-aliases' => array(),
   );
-  $site_record['path-aliases'] += array(
-     '%drush-script' => NULL,
-  );
 
   $hostname = $site_record['remote-host'];
   $username = $site_record['remote-user'];
   $ssh_options = $site_record['ssh-options'];
-  $drush_path = $site_record['path-aliases']['%drush-script'];
   $os = drush_os($site_record);
 
   if (drush_is_local_host($hostname)) {
     $hostname = null;
   }
 
-  // If the caller did not pass in a specific path to drush, then we will
-  // use a default value.  For commands that are being executed on the same
-  // machine, we will use DRUSH_COMMAND, which is the path to the drush.php
-  // that is running right now.  For remote commands, we will run a wrapper
-  // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
-  $drush_command = drush_build_drush_command($drush_path, array_key_exists('php', $command_options) ? $command_options['php'] : NULL, $os, !empty($hostname));
-
-  $command_options['root'] = array_key_exists('root', $command_options) ? $command_options['root'] : drush_get_context('DRUSH_DRUPAL_ROOT');
-  $command_options['uri'] = array_key_exists('uri', $command_options) ? $command_options['uri'] : drush_get_context('DRUSH_URI');
-
-  $option_str = _drush_backend_argument_string($command_options, $backend_options['method']);
   foreach ($command_options as $key => $arg) {
     if (is_numeric($key)) {
       $args[] = $arg;
@@ -683,19 +751,36 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
   foreach ($args as $arg) {
     $command .= ' ' . drush_escapeshellarg($arg, $os);
   }
-  $cmd = $drush_command . " " . $option_str . " " . $command . (empty($backend_options['interactive']) ? " --backend=2" : "");
+  $option_str = _drush_backend_argument_string($command_options, $os);
+  if (!empty($option_str)) {
+    $command .= " " . $option_str;
+  }
+  if (!empty($backend_options['backend']) && empty($backend_options['interactive'])) {
+    $command .= " --backend=2";
+  }
   if (!is_null($hostname)) {
-    $username = (!is_null($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
-    $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
-    $cmd = "ssh " . $ssh_options . " " . $username . drush_escapeshellarg($hostname, "LOCAL") . " " . drush_escapeshellarg($cmd . ' 2>&1', "LOCAL") . ' 2>&1';
+    if (drush_is_windows($os)) {
+      $username = (!is_null($username)) ? " -u:" . drush_escapeshellarg($username, "LOCAL") : '';
+      if (array_key_exists('winrs-password', $site_record)) {
+        $username .= " -p:" . drush_escapeshellarg($site_record['winrs-password'], "LOCAL");
+      }
+      $command = "winrs" . $username . " -r:" . drush_escapeshellarg($hostname, "LOCAL") . " " . drush_escapeshellarg($command, "LOCAL");
+    }
+    else {
+      $username = (!is_null($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
+      $ssh_options = $site_record['ssh-options'];
+      $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
+      $command = "ssh " . $ssh_options . " " . $username . drush_escapeshellarg($hostname, "LOCAL") . " " . drush_escapeshellarg($command . ' 2>&1', "LOCAL");
+    }
   }
   else {
     // TODO: `tty` is not usable on Windows.  Is this necessary at all, and if so, is there a better way to do it?
-    $interactive = ' ' . ((drush_is_windows() || empty($backend_options['interactive'])) ? '' : ' > `tty`') . ' 2>&1';
-    $cmd .= $interactive;
+    if (!drush_is_windows() && !empty($backend_options['interactive'])) {
+      $command .= ' > `tty`';
+    }
   }
 
-  return $cmd;
+  return $command;
 }
 
 /**
@@ -714,32 +799,20 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
  * @return
  *    A properly formatted and escaped set of arguments and options to append to the drush.php shell command.
  */
-function _drush_backend_argument_string(&$data, $method = 'GET', $os = NULL) {
-  // Named keys are options, numerically indexed keys are optional arguments.
-  $args = array();
+function _drush_backend_argument_string($data, $os = NULL) {
   $options = array();
 
   foreach ($data as $key => $value) {
     if (!is_array($value) && !is_object($value) && !is_null($value) && ($value != '')) {
-      if (is_numeric($key)) {
-        $args[$key] = $value;
-      }
-      elseif (substr($key,0,1) != '#') {
+      if (substr($key,0,1) != '#') {
         $options[$key] = $value;
       }
     }
   }
-  if (array_key_exists('backend', $data)) {
-    unset($data['backend']);
-  }
 
-  $special = array('root', 'uri'); // These should be in the command line.
   $option_str = '';
   foreach ($options as $key => $value) {
-    if (($method != 'POST') || (($method == 'POST') && in_array($key, $special))) {
-      $option_str .= _drush_escape_option($key, $value, $os);
-      unset($data[$key]); // Remove items in the data array.
-    }
+    $option_str .= _drush_escape_option($key, $value, $os);
   }
 
   return $option_str;

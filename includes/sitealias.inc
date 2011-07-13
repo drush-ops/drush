@@ -627,6 +627,51 @@ function sitealias_get_databases_from_record(&$alias_record) {
 }
 
 /**
+ * Return the $db_spec record for the database associated with
+ * the provided alias record.  @see drush_sitealias_add_db_settings(),
+ * which will be used to first add the database information to the
+ * alias records, invoking sql-conf to look them up if necessary.
+ *
+ * The options 'database' and 'target' are used to specify which 
+ * specific database should be fetched from the database record; 
+ * they may appear in the alias definition, or may be taken from the
+ * command line options.  The values 'default' and 'default' are
+ * used if these options are not specified in either location.
+ *
+ * Note that in the context of sql-sync, the site alias record will
+ * be taken from one of the source or target aliases 
+ * (e.g. `drush sql-sync @source @target`), which will be overlayed with 
+ * any options that begin with 'source-' or 'target-', respectively.
+ * Therefore, the commandline options 'source-database' and 'source-target'
+ * (or 'target-database' and 'source-target') may also affect the operation 
+ * of this function.
+ */
+function drush_sitealias_get_db_spec(&$alias_record, $default_to_self = FALSE) {
+  $db_spec = NULL;
+  $databases = sitealias_get_databases_from_record($alias_record);
+  if (isset($databases) && !empty($databases)) {
+    $database = drush_sitealias_get_option($alias_record, 'database', 'default');
+    $target = drush_sitealias_get_option($alias_record, 'target', 'default');
+    if (array_key_exists($database, $databases) && array_key_exists($target, $databases[$database])) {
+      $db_spec = $databases[$database][$target];
+    }
+  }
+  elseif ($default_to_self) {
+    $db_spec = _drush_sql_get_db_spec();
+  }
+
+  if (isset($db_spec)) {
+    $remote_host = drush_sitealias_get_option($alias_record, 'remote-host');
+    if (!drush_is_local_host($remote_host)) {
+      $db_spec['remote-host'] = $remote_host;
+      $db_spec['port'] = drush_get_option($prefix . 'remote-port', (isset($db_spec['port']) ? $db_spec['port'] : NULL));
+    }
+  }
+
+  return $db_spec;
+}
+
+/**
  * If the alias record does not contain a 'databases' or 'db-url'
  * entry, then use backend invoke to look up the settings value
  * from the remote or local site.  The 'databases' form is
@@ -1346,6 +1391,30 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
 }
 
 /**
+ * Given an alias record, overwrite its values with options
+ * from the command line and other drush contexts as specified
+ * by the provided prefix.  For example, if the prefix is 'source-',
+ * then any option 'source-foo' will set the value 'foo' in the
+ * alias record.
+ */
+function drush_sitealias_overlay_options($site_alias_record, $prefix) {
+  return array_merge($site_alias_record, drush_get_merged_prefixed_options($prefix));
+}
+
+/**
+ * Get an option out of the specified alias.  If it has not been
+ * set in the alias, then get it via drush_get_option.
+ */
+function drush_sitealias_get_option($site_alias_record, $option, $default = NULL) {
+  if (isset($site_alias_record) && array_key_exists($option, $site_alias_record)) {
+    return $site_alias_record[$option];
+  }
+  else {
+    return drush_get_option($option, $default);
+  }
+}
+
+/**
  * Given a site alias record, copy selected fields from it
  * into the drush 'alias' context.  The 'alias' context has
  * lower precedence than the 'cli' context, so values
@@ -1665,7 +1734,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
  * Option keys used for site selection.
  */
 function drush_sitealias_site_selection_keys() {
-  return array('remote-host', 'remote-user', 'ssh-options', 'name');
+  return array('remote-host', 'remote-user', 'winrs-password', 'ssh-options', 'name', 'os');
 }
 
 

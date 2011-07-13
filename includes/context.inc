@@ -472,7 +472,7 @@ function drush_get_context_options($option, $flatten = FALSE) {
 }
 
 /**
- * Retrieves a collapsed list of all options
+ * Retrieves a collapsed list of all options.
  */
 function drush_get_merged_options() {
   $contexts = drush_context_names();
@@ -481,6 +481,22 @@ function drush_get_merged_options() {
   foreach (array_reverse($contexts) as $context) {
     if (array_key_exists($context, $cache)) {
       $result = array_merge($result, $cache[$context]);
+    }
+  }
+
+  return $result;
+}
+
+/**
+ * Retrieves a collapsed list of all options
+ * with a specified prefix.
+ */
+function drush_get_merged_prefixed_options($prefix) {
+  $merged_options = drush_get_merged_options();
+  $result = array();
+  foreach ($merged_options as $key => $value) {
+    if ($prefix == substr($key, 0, strlen($prefix))) {
+      $result[substr($key, strlen($prefix))] = $value;
     }
   }
 

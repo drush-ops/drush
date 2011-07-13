@@ -251,7 +251,7 @@ function drush_sql_get_table_selection() {
  *     2. The filepath where the dump will be saved.
  */
 function drush_sql_dump($db_spec = NULL) {
-  return drush_sql_build_dump_command(drush_sql_get_table_selection(), $db_spec);
+  return drush_sql_build_dump_command(drush_sql_get_table_selection(), $db_spec, drush_get_option('result-file', FALSE));
 }
 
 /**
@@ -266,7 +266,7 @@ function drush_sql_dump($db_spec = NULL) {
  *     1. A mysqldump/pg_dump/sqlite statement that is ready for executing.
  *     2. The filepath where the dump will be saved.
  */
-function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
+function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file = FALSE) {
   $skip_tables = $table_selection['skip'];
   $structure_tables = $table_selection['structure'];
   $tables = $table_selection['tables'];
@@ -284,12 +284,11 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
   }
   $database = $db_spec['database'];
 
-  // Get the setting of --result-file.  If the user
+  // $file is passed in to us usually via --result-file.  If the user
   // has set $options['result-file'] = TRUE, then we
   // will generate an SQL dump file in the same backup
   // directory that pm-updatecode uses.
-  $file = NULL;
-  if ($file = drush_get_option('result-file', FALSE)) {
+  if ($file) {
     if ($file === TRUE) {
       // User did not pass a specific value for --result-file. Make one.
       drush_include_engine('version_control', 'backup');
@@ -709,7 +708,7 @@ function _drush_sql_get_spec_from_options($prefix, $default_to_self = TRUE) {
  *   to generate the filename.
  * @return string
  *   The path to the dump file
- */
+ *
 function drush_sql_dump_file(&$db_spec, $prefix) {
   // Use an entry in the db spec to indicate whether the dump
   // file we use is temporary or not.
@@ -736,6 +735,42 @@ function drush_sql_dump_file(&$db_spec, $prefix) {
       $db_spec['dump-is-temp'] = TRUE;
     }
   }
+  return $dump_file;
+}
+ */
+
+function drush_sql_dump_file(&$site_record) {
+  $site_record['dump-is-temp'] = FALSE;
+  // If the user has set the --{prefix}-dump option, then
+  // use the exact name provided.
+  if (array_key_exists('dump', $site_record)) {
+    $dump_file = $site_record['dump'];
+  }
+  else {
+    $databases = sitealias_get_databases_from_record($site_record);
+    if (isset($databases)) {
+      $db_spec = $databases['default']['default'];
+      // Make a base filename pattern to use to name the dump file
+      $filename_pattern = $db_spec['database'];
+      if (isset($db_spec['remote-host'])) {
+        $filename_pattern = $db_spec['remote-host'] . '_' . $filename_pattern;
+      }
+    }
+    // If the user has set the --dump-dir option, then
+    // store persistant sql dump files there.
+    $dump_dir = drush_sitealias_get_option($site_record, 'dump-dir');
+    if (isset($dump_dir)) {
+      $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
+    }
+    // If the --dump-dir option is not set, then store
+    // the sql dump in a temporary file.
+    else {
+      $dump_file = drush_tempnam($filename_pattern . '.sql.');
+      $site_record['dump-is-temp'] = TRUE;
+    }
+  }
+
+
   return $dump_file;
 }
 
@@ -950,15 +985,25 @@ function drush_sql_read_db_spec() {
 
 /*
  * Build DB connection array with superuser credentials if provided.
+ *
+ * The options 'db-su' and 'db-su-pw' will be retreived from the
+ * specified site alias record, if it exists and contains those items.
+ * If it does not, they will be fetched via drush_get_option.
+ *
+ * Note that in the context of sql-sync, the site alias record will
+ * be taken from the target alias (e.g. `drush sql-sync @source @target`),
+ * which will be overlayed with any options that begin with 'target-';
+ * therefore, the commandline options 'target-db-su' and 'target-db-su-pw'
+ * may also affect the operation of this function.
  */
-function drush_sql_su($db_spec) {
+function drush_sql_su($db_spec, $site_alias_record = NULL) {
   $create_db_target = $db_spec;
   $create_db_target['database'] = '';
-  $db_superuser = drush_get_option(array('db-su', 'target-db-su'));
+  $db_superuser = drush_sitealias_get_option($site_alias_record, 'db-su');
   if (isset($db_superuser)) {
     $create_db_target['username'] = $db_superuser;
   }
-  $db_su_pw = drush_get_option(array('db-su-pw', 'target-db-su-pw'));
+  $db_su_pw = drush_sitealias_get_option($site_alias_record, 'db-su-pw');
   if (isset($db_su_pw)) {
     $create_db_target['password'] = $db_su_pw;
   }
