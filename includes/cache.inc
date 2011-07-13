@@ -189,7 +189,7 @@ function drush_get_cid($prefix, $contexts = array(), $params = array()) {
     $cid[] = $param;
   }
 
-  return $prefix . '-' . md5(implode("", $cid));
+  return DRUSH_VERSION . '-' . $prefix . '-' . md5(implode("", $cid));
 }
 
 /**
