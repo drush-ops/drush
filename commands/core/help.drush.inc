@@ -28,8 +28,8 @@ function drush_core_help() {
   $commands = func_get_args();
 
   if (empty($commands)) {
-    // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE+1.
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE+1);
+    // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION.
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
     $implemented = drush_get_commands();
     
     // Organize all commands into categories

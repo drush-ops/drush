@@ -947,6 +947,16 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       $searchpath[] = 'sites/all/themes';
       $searchpath[] = conf_path() . '/themes';
       break;
+    case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
+      // See comment above  regarding this if() condition.
+      if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+        // You must define your install_profile in settings.php. The DB is not sufficient.
+        // Drupal core does not yet do that. See http://drupal.org/node/545452.
+        if ($profile = variable_get('install_profile', NULL)) {
+          $searchpath[] = "profiles/$profile/modules";
+        }
+      }
+      break;
     case DRUSH_BOOTSTRAP_DRUPAL_FULL:
       // Add enabled module paths. Since we are bootstrapped,
       // we can use the Drupal API.
