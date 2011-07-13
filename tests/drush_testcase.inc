@@ -75,20 +75,20 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return (strtoupper(substr(PHP_OS, 0, 3)) == "WIN");
   }
 
-  public static function unish_escapeshellarg($arg) {
+  public static function escapeshellarg($arg) {
     // Short-circuit escaping for simple params (keep stuff readable)
     if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
       return $arg;
     }
     elseif (self::is_windows()) {
-      return self::_unish_escapeshellarg_windows($arg);
+      return self::_escapeshellarg_windows($arg);
     }
     else {
       return escapeshellarg($arg);
     }
   }
 
-  public static function _unish_escapeshellarg_windows($arg) {
+  public static function _escapeshellarg_windows($arg) {
     // Double up existing backslashes
     $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
 
@@ -251,16 +251,16 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     *   An exit code.
     */
   function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL) {
-    $cmd[] = $cd ? sprintf('cd %s;', self::unish_escapeshellarg($cd)) : NULL;
+    $cmd[] = $cd ? sprintf('cd %s;', self::escapeshellarg($cd)) : NULL;
     $cmd[] = UNISH_DRUSH;
-    $cmd[] = empty($site_specification) ? NULL : self::unish_escapeshellarg($site_specification);
+    $cmd[] = empty($site_specification) ? NULL : self::escapeshellarg($site_specification);
     $cmd[] = $command;
     if ($level = $this->log_level()) {
       $args[] = '--' . $level;
     }
 
     foreach ($args as $arg) {
-      $cmd[] = self::unish_escapeshellarg($arg);
+      $cmd[] = self::escapeshellarg($arg);
     }
     $options['nocolor'] = NULL;
     foreach ($options as $key => $value) {
@@ -268,7 +268,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
         $cmd[] = "--$key";
       }
       else {
-        $cmd[] = "--$key=" . self::unish_escapeshellarg($value);
+        $cmd[] = "--$key=" . self::escapeshellarg($value);
       }
     }
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs

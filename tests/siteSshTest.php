@@ -22,7 +22,7 @@ class siteSshCase extends Drush_CommandTestCase {
     );
     $this->drush('ssh', array('@interactive', ), $options);
     $output = $this->getOutput();
-    $expected = sprintf('ssh -o PasswordAuthentication=no %s@%s', self::unish_escapeshellarg('user123'), self::unish_escapeshellarg('my.server.com'));
+    $expected = sprintf('ssh -o PasswordAuthentication=no %s@%s', self::escapeshellarg('user123'), self::escapeshellarg('my.server.com'));
     $this->assertEquals($expected, $output);
   }
 
@@ -42,7 +42,7 @@ class siteSshCase extends Drush_CommandTestCase {
     );
     $this->drush('ssh', array('@non-interactive', 'date'), $options);
     $output = $this->getOutput();
-    $expected = sprintf('ssh -o PasswordAuthentication=no %s@%s %s', self::unish_escapeshellarg('user123'), self::unish_escapeshellarg('my.server.com'), self::unish_escapeshellarg('date'));
+    $expected = sprintf('ssh -o PasswordAuthentication=no %s@%s %s', self::escapeshellarg('user123'), self::escapeshellarg('my.server.com'), self::escapeshellarg('date'));
     $this->assertEquals($expected, $output);
   }
 
