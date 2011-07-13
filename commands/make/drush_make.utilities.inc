@@ -38,6 +38,9 @@ function drush_make_parse_info_file($makefile, $parsed = TRUE) {
           else if (file_exists($include_path .'/'. $include) && ($file = drush_make_parse_info_file($include_path .'/'. $include, FALSE))) {
             $includes[] = $file;
           }
+          else if (file_exists($include) && ($file = drush_make_parse_info_file($include, FALSE))) {
+            $includes[] = $file;
+          }
           else {
             drush_make_error('BUILD_ERROR', dt("Include file missing: %include", array('%include' => $include)));
           }
