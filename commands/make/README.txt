@@ -211,6 +211,15 @@ Do not use both types of declarations for a single project in your makefile.
 
         projects[mytheme][l10n_url] = "http://myl10nserver.com/l10n_server.xml"
 
+- `overwrite`
+
+  Allows the project to be installed in a directory that is not empty.
+  If not specified this is treated as FALSE, drush_make sets an error when the directory is not empty.
+  If specified TRUE, drush_make will continue and use the existing directory.
+  Useful when adding extra files and folders to existing folders in libraries or module extensions.
+
+        projects[myproject][overwrite] = TRUE
+
 
 ### Project download options
 

@@ -78,8 +78,9 @@ class DrushMakeProject {
     $this->path = $this->generatePath();
     $this->project_directory = !empty($this->directory_name) ? $this->directory_name : $this->name;
     $this->download_location = $this->path . '/' . $this->project_directory;
-    // This directory shouldn't exist yet -- if it does, stop.
-    if (is_dir($this->download_location)) {
+    // This directory shouldn't exist yet -- if it does, stop,
+    // unless overwrite has been set to TRUE.
+    if (is_dir($this->download_location) && !$this->overwrite) {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $this->download_location)));
       return FALSE;
     }
