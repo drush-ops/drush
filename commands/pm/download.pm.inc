@@ -202,7 +202,7 @@ function drush_pm_download() {
     }
 
     // Copy the project to the install location.
-    if (_drush_recursive_copy($request['full_project_path'], $request['project_install_location'])) {
+    if (drush_op('_drush_recursive_copy',$request['full_project_path'], $request['project_install_location'])) {
       drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'success');
       $request['base_project_path'] = basename($request['project_install_location']);
       $request['full_project_path'] = $request['project_install_location'];

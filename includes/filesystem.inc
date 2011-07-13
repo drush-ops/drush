@@ -174,7 +174,7 @@ function _drush_recursive_copy($src, $dest) {
     }
     closedir($dir_handle);
   }
-  elseif (drush_op('copy', $src, $dest) !== TRUE) {
+  elseif (copy($src, $dest) !== TRUE) {
     return FALSE;
   }
 
