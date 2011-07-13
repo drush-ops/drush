@@ -200,7 +200,7 @@ function _drush_make_download_file($download) {
         foreach ($parts as $part) {
           $inner_parts = explode('=', $part, 2);
           if (trim($inner_parts[0]) == 'filename') {
-            $file = trim($inner_parts[1], "\"'");
+            $file = basename(trim($inner_parts[1], "\"'"));
             break;
           }
         }
