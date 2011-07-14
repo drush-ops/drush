@@ -169,7 +169,7 @@ function core_drush_command() {
       'account-pass' => 'uid1 pass. defaults to admin',
       'account-mail' => 'uid1 email. defaults to admin@example.com',
       'db-url' => 'A Drupal 5/6 style database URL. Only required for initial install - not re-install.',
-      'db-prefix' => 'An optional table prefix to use for initial install.',
+      'db-prefix' => 'An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).',
       'db-su' => 'Account to use when creating a new database. Optional.',
       'db-su-pw' => 'Password for the "db-su" account. Optional.',
       'locale' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',
