@@ -443,7 +443,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
     $alias_files[] = '/.*\.alias\.drushrc\.php$/';
   }
   else {
-    $alias_files[] = '/' . preg_quote($aliasname) . '\.alias\.drushrc\.php$/';
+    $alias_files[] = '/' . preg_quote($aliasname, '/') . '\.alias\.drushrc\.php$/';
   }
 
   // Search each path in turn
