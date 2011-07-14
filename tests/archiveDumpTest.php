@@ -2,7 +2,7 @@
 
 /*
  * @file
- *   Tests for archive.drush.inc
+ *   Tests for archive-dump
  */
 class archiveDumpCase extends Drush_CommandTestCase {
 
@@ -10,10 +10,10 @@ class archiveDumpCase extends Drush_CommandTestCase {
    * Test dump and extraction.
    */
   public function testArchiveDump() {
-    $this->setUpDrupal(1, TRUE);
-    $site = reset($this->sites);
+    $sites = $this->setUpDrupal(1, TRUE);
+    $site = reset($sites);
     $root = $this->webroot();
-    $uri = key($this->sites);
+    $uri = key($sites);
     $docroot = basename($root);
 
     $dump_dest = "dump.tar.gz";
