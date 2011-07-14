@@ -26,7 +26,7 @@ class sqlSyncTest extends Drush_TestCase {
     // Here we are actually testing the Unish framework to confirm that alias records were created for us.
     $this->drush('site-alias');
     $output = $this->getOutput();
-    $this->assertEquals("@stage\n@dev", $output, 'Alias records were created for dev and stage');
+    $this->assertEquals("@dev\n@stage", $output, 'Alias records were created for dev and stage');
 
     // Create a user in the staging site
     $name = 'joe.user';
