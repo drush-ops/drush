@@ -24,9 +24,9 @@ sql-drop:
 
 updatedb: GOOD. Implicitly tested siteUpgradeTest.
 archive-dump: GOOD
-archive-restore: 
+archive-restore: GOOD. Strong implicit testing by environment cache in the unish framework.
 help
-version: Good. Implicit by testStandaloneScript()
+version: GOOD. Implicit by testStandaloneScript()
 self-update
 php-eval: GOOD. Implicitly tested by many tests (e.g. siteUpgradeTest).
 php-script: GOOD.
