@@ -58,6 +58,58 @@ function drush_print_r($array, $handle = NULL) {
 }
 
 /**
+ * Prepares a variable for printing.
+ * @param mixed $input
+ *   A variable.
+ * @param string $label
+ *   Optional prefix. Not used by JSON format.
+ * @return string
+ *   The variable formatted according to specified format. Ready for drush_print().
+ */
+function drush_format($input, $label = NULL, $format = NULL) {
+  if (is_null(($format))) {
+    $format = drush_get_option('format', 'print_r');
+  }
+  if ($format != 'export') {
+    if ($input === TRUE) {
+      $input = 'TRUE';
+    }
+    elseif ($input === FALSE) {
+      $input = 'FALSE';
+    }
+  }
+
+  switch ($format) {
+    case 'export':
+      if ($label) {
+        $output = "\$variables['$label'] = " . var_export($input, TRUE) . ';';
+      }
+      else {
+        $output = var_export($input, TRUE);
+      }
+      break;
+    case 'json':
+      $output = drush_json_encode($input);
+      break;
+    case 'print_r':
+    default:
+      if (is_string($input)) {
+        $input = '"' . $input . '"';
+      }
+      elseif (is_array($input) || is_object($input)) {
+        $input = print_r($input, TRUE);
+      }
+
+      if ($label) {
+        $input = $label . ': ' . $input;
+      }
+      $output = $input;
+      break;
+  }
+  return $output;
+}
+
+/**
  * Rudimentary replacement for Drupal API t() function.
  *
  * @param string

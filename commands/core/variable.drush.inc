@@ -24,7 +24,8 @@ function variable_drush_command() {
       'drush vget user' => 'List all variables beginning with the string "user".',
     ),
     'options' => array(
-      'pipe' => 'Use var_export() to emit executable PHP. Useful for pasting into code.',
+      'format' => 'Format to output the object. Use "print_r" for print_r (default), "export" for var_export, and "json" for JSON.',
+      'pipe' => 'A synonym for --format=export. Useful for pasting into code.',
     ),
     'aliases' => array('vget'),
   );
@@ -32,11 +33,12 @@ function variable_drush_command() {
     'description' => "Set a variable.",
     'arguments' => array(
       'name' => 'The name of a variable or the first few letters of its name.',
-      'value' => 'The value to assign to the variable.',
+      'value' => 'The value to assign to the variable. Use \'-\' to read the object from STDIN.',
     ),
     'options' => array(
       'yes' => 'Skip confirmation if only one variable name matches.',
       'always-set' => 'Always skip confirmation.',
+      'format' => 'Format to parse the object. Use "string" for string (default), and "json" for JSON.',
     ),
     'examples' => array(
       'drush vset --yes preprocess_css 1' => 'Set the preprocess_css variable to true. Skip confirmation if variable already exists.',
@@ -69,34 +71,21 @@ function variable_drush_command() {
  */
 function drush_variable_get() {
   global $conf;
-  $found = FALSE;
+  $output = NULL;
 
   $keys = array_keys($conf);
   if ($args = func_get_args()) {
     $keys = preg_grep("/{$args[0]}/", $keys);
   }
+  
   foreach ($keys as $name) {
     $value = $conf[$name];
-    drush_print_pipe("\$variables['$name'] = ". var_export($value, TRUE). ";\n");
+    drush_print_pipe(drush_format($value, $name, 'export'));
+    drush_print(drush_format($value, $name));
     $returns[$name] = $value;
-
-    if ($value === TRUE) {
-      $value = 'TRUE';
-    }
-    elseif ($value === FALSE) {
-      $value = 'FALSE';
-    }
-    elseif (is_string($value)) {
-      $value = '"' . $value . '"';
-    }
-    elseif (is_array($value) || is_object($value)) {
-      $value = print_r($value, TRUE);
-    }
-    drush_print($name . ': ' . $value);
-    $found = TRUE;
   }
 
-  if (!$found) {
+  if (empty($keys)) {
     return drush_set_error('No matching variable found.');
   }
   else {
@@ -132,9 +121,25 @@ function drush_variable_set() {
     }
   }
 
+  if ($value == '-') {
+    $value = stream_get_contents(STDIN);
+  }
+
+  // Now, we parse the object.
+  switch (drush_get_option('format', 'string')) {
+    case 'json':
+      $value = drush_json_decode($value);
+      break;
+  }
+
   if (drush_get_option('always-set', FALSE) || count($options) == 1 || $match) {
     variable_set($args[0], $value);
-    drush_log(dt('!name was set to !value.', array('!name' => $args[0], '!value' => $value)), 'success');
+    if (is_scalar($value)) {
+      drush_log(dt('!name was set to !value.', array('!name' => $args[0], '!value' => $value)), 'success');
+    }
+    else {
+      drush_log(dt('!name was set.', array('!name' => $args[0])), 'success');
+    }
     return '';
   }
   else {

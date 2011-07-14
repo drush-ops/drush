@@ -117,18 +117,7 @@ function drush_cache_command_get($cid = NULL, $bin = NULL) {
 
   $result = cache_get($cid, $bin);
   if (!empty($result)) {
-    switch (drush_get_option('format', 'print_r')) {
-      case 'export':
-        drush_print(var_export($result, TRUE));
-        return;
-      case 'json':
-        drush_print(drush_json_encode($result));
-        return;
-      case 'print_r':
-      default:
-        drush_print_r($result);
-        return;
-    }
+    drush_print(drush_format($result));
   }
   else {
     drush_log(dt('The !cid object in the !bin cache bin was not found.', array('!cid' => $cid, '!bin' => $bin)), 'error');
