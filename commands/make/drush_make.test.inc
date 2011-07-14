@@ -69,7 +69,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/patches.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: 24f14f6e28498678cebcab2cff3e1030',
+        'Build hash: e2d38e343c7e95b994443c34ec665a23',
       ),
       'options'  => array('no-core' => TRUE, 'no-patch-txt' => TRUE),
     ),
@@ -78,7 +78,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/patches.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: 173ae5e2120463e31ff2e2a9cc02491b',
+        'Build hash: c17e8b59055db741778f9048bf289332',
       ),
       'options'  => array('no-core' => TRUE),
     ),

@@ -106,14 +106,47 @@ class DrushMakeProject {
       }
       // Download the patch.
       if ($filename = _drush_make_download_file($info)) {
-        $patched = drush_shell_exec("patch -p0 -d %s < %s", $project_directory, $filename);
+        $patched = FALSE;
+        $output = '';
+        // Test each patch style; -p1 is the default with git. See
+        // http://drupal.org/node/1054616
+        $patch_levels = array('-p1', '-p0');
+        foreach ($patch_levels as $patch_level) {
+          $checked = drush_shell_exec('cd %s && GIT_WORK_TREE=. git apply --check %s %s --verbose', $project_directory, $patch_level, $filename);
+          if ($checked) {
+            // Apply the first successful style.
+            $patched = drush_shell_exec('cd %s && GIT_WORK_TREE=. git apply %s %s --verbose', $project_directory, $patch_level, $filename);
+            break;
+          }
+        }
+
+        // In some rare cases, git will fail to apply a patch, fallback to using
+        // the 'patch -p0' command.
+        if (!$patched) {
+          $patched = drush_shell_exec("patch -p0 -d %s < %s", $project_directory, $filename);
+        }
+
+        if ($output = drush_shell_exec_output()) {
+          // Log any command output, visible only in --verbose or --debug mode.
+          drush_log(implode("\n", $output));
+        }
+
+        // Set up string placeholders to pass to dt().
+        $dt_args = array(
+          '@name' => $this->name,
+          '@filename' => basename($filename),
+        );
+
         if ($patched) {
           if (!$ignore_checksums && !_drush_make_verify_checksums($info, $filename)) {
              return FALSE;
           }
           $patches_txt .= '- ' . $info['url'] . "\n";
+          drush_log(dt('@name patched with @filename.', $dt_args), 'ok');
         }
-        drush_log($this->name . ' patched with ' . basename($filename) . '.', $patched ? 'ok' : 'error');
+        else {
+          drush_log(dt("Unable to patch @name with @filename.", $dt_args), 'error');
+        }
         drush_op('unlink', $filename);
       }
       else {
@@ -357,4 +390,3 @@ class DrushMakeProject_Translation extends DrushMakeProject {
     }
   }
 }
-
