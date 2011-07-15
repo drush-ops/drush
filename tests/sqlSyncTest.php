@@ -22,11 +22,6 @@ class sqlSyncTest extends Drush_CommandTestCase {
     $dump_dir = UNISH_SANDBOX . "/dump-dir";
     mkdir($dump_dir);
 
-    // Here we are actually testing the Unish framework to confirm that alias records were created for us.
-    $this->drush('site-alias');
-    $output = $this->getOutput();
-    $this->assertEquals("@dev\n@stage", $output, 'Alias records were created for dev and stage');
-
     // Create a user in the staging site
     $name = 'joe.user';
     $mail = "joe.user@myhome.com";
