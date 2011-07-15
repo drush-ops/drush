@@ -5,10 +5,10 @@ pm-updatecode: GOOD.
 pm-update: GOOD. Implicitly tested by pm-updatecode and updatedb.
 pm-releasenotes
 pm-releases
-pm-enable: GOOD. testEnDisUnListVar().
-pm-disable: GOOD. testEnDisUnListVar().
-pm-uninstall: GOOD. testEnDisUnListVar().
-pm-list: GOOD. testEnDisUnListVar().
+pm-enable: GOOD. testEnDisUnList().
+pm-disable: GOOD. testEnDisUnList().
+pm-uninstall: GOOD. testEnDisUnList().
+pm-list: GOOD. testEnDisUnList().
 pm-info:
 pm-refresh:
 version-control: FAIR. See updatecode. To be deprecated all git workflow after git.drupal.org?
@@ -49,7 +49,7 @@ site-upgrade: GOOD.
 ssh: GOOD
 test-*
 topic
-variable-*: GOOD. testEnDisUnListVar().
+variable-*: GOOD.
 watchdog-*
 
 user-*: GOOD.
