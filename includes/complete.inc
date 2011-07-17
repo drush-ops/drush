@@ -179,7 +179,10 @@ function drush_early_complete() {
     }
   }
 
-  return implode("\n", $completions);
+  if (!empty($completions)) {
+    return implode("\n", $completions);
+  }
+  return TRUE;
 }
 
 /**

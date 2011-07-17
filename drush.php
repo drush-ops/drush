@@ -36,6 +36,9 @@ function drush_main() {
       if ($return = $function()) {
         // If the function returns FALSE, we continue and attempt to bootstrap
         // as normal. Otherwise, we exit early with the returned output.
+        if ($return === TRUE) {
+          $return = '';
+        }
         drush_bootstrap_finish();
         return $return;
       }
