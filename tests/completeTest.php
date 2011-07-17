@@ -57,6 +57,12 @@ class completeCase extends Drush_CommandTestCase {
     $this->verifyComplete('d', 'drupal-directory', 'download');
     // Command with single result.
     $this->verifyComplete('core-t', 'core-topic', 'core-topic');
+    // Command with no results should produce no output.
+    $this->verifyComplete('dont-name-a-command-like-this', '', '');
+    // Commands that start the same as another command (i.e. unit is a valid
+    // command, but we should still list unit-eval and unit-invoke when
+    // completing on "unit").
+    $this->verifyComplete('@dev unit', 'unit', 'unit-invoke');
     // Global option alone.
     $this->verifyComplete('--n', '--no', '--nocolor');
     // Site alias + command.

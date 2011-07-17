@@ -10,6 +10,10 @@
  * Implementation of hook_drush_command().
  */
 function unit_drush_command() {
+  $items['unit'] = array(
+    'description' => 'No-op command, used to test completion for commands that start the same as other commands.',
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+  );
   $items['unit-eval'] = array(
     'description' => 'Works like php-eval. Used for testing $command_specific context.',
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,

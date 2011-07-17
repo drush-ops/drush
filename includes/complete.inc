@@ -159,9 +159,12 @@ function drush_early_complete() {
   }
   else {
     if ($last_word == $set_command_name) {
-      // The user typed a valid command name, include in in the completion list
-      // so they get a space inserted, confirming it is valid.
-      $completions[] = $set_command_name;
+      // The user just typed a valid command name, but we still do command
+      // completion, as there may be other commands that start with the detected
+      // command (e.g. "make" is a valid command, but so is "make-test").
+      // If there is only the single matching command, this will include in the
+      // completion list so they get a space inserted, confirming it is valid.
+      $completions += drush_complete_match($last_word, drush_complete_get('command-names'));
     }
     else if ($word_is_option) {
       // Include command option completions.
