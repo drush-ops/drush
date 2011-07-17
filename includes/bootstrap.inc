@@ -440,23 +440,11 @@ function _drush_bootstrap_drush() {
   // Statically define a way to call drush again.
   define('DRUSH_COMMAND', drush_find_drush());
 
-  $drush_info = drush_read_drush_info();
-  define('DRUSH_VERSION', $drush_info['drush_version']);
-
   // prime the CWD cache
   drush_cwd();
 
-  /* Copy ETC_PREFIX and SHARE_PREFIX from environment variables if available.
-   * This alters where we check for server-wide config and alias files.
-   * Used by unit test suite to provide a clean environment.
-   */
-  if (getenv('ETC_PREFIX')) drush_set_context('ETC_PREFIX', getenv('ETC_PREFIX'));
-  if (getenv('SHARE_PREFIX')) drush_set_context('SHARE_PREFIX', getenv('SHARE_PREFIX'));
-
-  drush_set_context('DOC_PREFIX', DRUSH_BASE_PATH);
-  if (!file_exists(DRUSH_BASE_PATH . '/README.txt') && file_exists(drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush') . '/README.txt') {
-    drush_set_context('DOC_PREFIX', drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush');
-  }
+  // Set up base environment for system-wide file locations.
+  _drush_bootstrap_base_environment();
 
   // Load a drushrc.php file in the drush.php's directory.
   drush_load_config('drush');
@@ -520,6 +508,24 @@ function _drush_bootstrap_drush() {
   }
 
   _drush_bootstrap_global_options();
+}
+
+/**
+ * Sets up basic environment that controls where Drush looks for files on a
+ * system-wide basis. Important to call for "early" functions that need to
+ * work with unit tests.
+ */
+function _drush_bootstrap_base_environment() {
+  // Copy ETC_PREFIX and SHARE_PREFIX from environment variables if available.
+  // This alters where we check for server-wide config and alias files.
+  // Used by unit test suite to provide a clean environment.
+  if (getenv('ETC_PREFIX')) drush_set_context('ETC_PREFIX', getenv('ETC_PREFIX'));
+  if (getenv('SHARE_PREFIX')) drush_set_context('SHARE_PREFIX', getenv('SHARE_PREFIX'));
+
+  drush_set_context('DOC_PREFIX', DRUSH_BASE_PATH);
+  if (!file_exists(DRUSH_BASE_PATH . '/README.txt') && file_exists(drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush') . '/README.txt') {
+    drush_set_context('DOC_PREFIX', drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush');
+  }
 }
 
 function _drush_bootstrap_global_options() {
@@ -907,6 +913,9 @@ function drush_bootstrap_prepare() {
     die('Your command line PHP installation is too old. Drush requires at least PHP ' . DRUSH_MINIMUM_PHP . "\n");
   }
 
+  $drush_info = drush_read_drush_info();
+  define('DRUSH_VERSION', $drush_info['drush_version']);
+
   define('DRUSH_REQUEST_TIME', microtime(TRUE));
 
   drush_set_context('argc', $GLOBALS['argc']);
@@ -918,9 +927,8 @@ function drush_bootstrap_prepare() {
 
   drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
 
-  // We need some global options processed at this early stage. Namely --debug.
+  // We need some global options/arguments processed at this early stage.
   drush_parse_args();
-  _drush_bootstrap_global_options();
 }
 
 /**

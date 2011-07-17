@@ -16,6 +16,7 @@ exit(drush_main());
 /**
  * The main Drush function.
  *
+ * - Runs "early" option code, if set (see global options).
  * - Parses the command line arguments, configuration files and environment.
  * - Prepares and executes a Drupal bootstrap, if possible,
  * - Dispatches the given command.
@@ -27,6 +28,23 @@ exit(drush_main());
  *   Whatever the given command returns.
  */
 function drush_main() {
+  $return = '';
+  if ($file = drush_get_option('early', FALSE)) {
+    require_once($file);
+    $function = 'drush_early_' . basename($file, '.inc');
+    if (function_exists($function)) {
+      if ($return = $function()) {
+        // If the function returns FALSE, we continue and attempt to bootstrap
+        // as normal. Otherwise, we exit early with the returned output.
+        drush_bootstrap_finish();
+        return $return;
+      }
+    }
+  }
+
+  // Process initial global options such as --debug.
+  _drush_bootstrap_global_options();
+
   $phases = _drush_bootstrap_phases(FALSE, TRUE);
 
   $return = '';

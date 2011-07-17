@@ -72,6 +72,16 @@ function drush_topic_core_topic($topic_name = NULL) {
 }
 
 /**
+ * A command argument complete callback.
+ *
+ * @return
+ *   Available topic keys.
+ */
+function topic_core_topic_complete() {
+  return array('values' => array_keys(drush_get_topics()));
+}
+
+/**
  * Retrieve all defined topics
  */
 function drush_get_topics() {

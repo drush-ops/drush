@@ -342,9 +342,8 @@ function drush_parse_args() {
         $opt = substr($opt, 1);
         // Check if the current opt is in $arg_opts (= has to be followed by an argument).
         if ((in_array($opt, $arg_opts))) {
-          if (($args[$i+1] == NULL) || ($args[$i+1] == "") || ($args[$i + 1]{0} == "-")) {
-            drush_set_error('DRUSH_INVALID_INPUT', "Invalid input: -$opt needs to be followed by an argument.");
-          }
+          // Raising errors for missing option values should be handled by the
+          // bootstrap or specific command, so we no longer do this here.
           $options[$opt] = $args[$i + 1];
           $i++;
         }
@@ -374,6 +373,7 @@ function drush_parse_args() {
 
   drush_set_arguments($arguments);
   drush_set_context('cli', $options);
+  return $arguments;
 }
 
 /**

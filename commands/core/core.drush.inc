@@ -535,18 +535,7 @@ function drush_core_cron() {
  * Command callback. Edit drushrc and alias files.
  */
 function drush_core_config($filter = NULL) {
-  $rcs = $aliases = $drupal = array();
-  drush_sitealias_load_all();
-  if ($rcs = drush_get_context_options('context-path', TRUE)) {
-    $rcs = array_merge(array('drushrc' => '-- Drushrc --'), $rcs);
-  }
-  if ($aliases = drush_get_context('drush-alias-files')) {
-    $aliases = array_merge(array('aliases' => '-- Aliases --'), $aliases);
-  }
-  if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    $drupal = array_merge(array('drupal' => '-- Drupal --'), array(realpath($site_root . '/settings.php'), realpath(DRUPAL_ROOT . '/.htaccess')));
-  }
-  $all = array_merge($rcs, $aliases, $drupal);
+  $all = drush_core_config_load();
 
   // Apply any filter that was supplied.
   if ($filter) {
@@ -567,6 +556,38 @@ function drush_core_config($filter = NULL) {
       return drush_shell_exec_interactive('$EDITOR %s &', $all[$choice]);
     }
   }
+}
+
+/**
+ * Command argument complete callback.
+ *
+ * @return
+ *   Array of available configuration files for editing.
+ */
+function core_core_config_complete() {
+  return array('values' => drush_core_config_load(FALSE));
+}
+
+function drush_core_config_load($headers = TRUE) {
+  $rcs_header = $rcs = $aliases_header = $aliases = $drupal_header = $drupal = array();
+  drush_sitealias_load_all();
+  if ($rcs = drush_get_context_options('context-path', TRUE)) {
+    if ($headers) {
+      $rcs_header = array('drushrc' => '-- Drushrc --');
+    }
+  }
+  if ($aliases = drush_get_context('drush-alias-files')) {
+    if ($headers) {
+      $aliases_header = array('aliases' => '-- Aliases --');
+    }
+  }
+  if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+    $drupal = array_merge(array(realpath($site_root . '/settings.php'), realpath(DRUPAL_ROOT . '/.htaccess')));
+    if ($headers) {
+      $drupal_header = array('drupal' => '-- Drupal --');
+    }
+  }
+  return array_merge($rcs_header, $rcs, $aliases_header, $aliases, $drupal_header, $drupal);
 }
 
 /**

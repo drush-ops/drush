@@ -180,7 +180,8 @@ function drush_get_cid($prefix, $contexts = array(), $params = array()) {
   $cid = array();
 
   foreach ($contexts as $context) {
-    if ($c = drush_get_context($context) && !empty($c)) {
+    $c = drush_get_context($context);
+    if (!empty($c)) {
       $cid[] = is_scalar($c) ? $c : serialize($c);
     }
   }

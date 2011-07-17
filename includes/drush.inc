@@ -391,6 +391,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['watchdog']            = array('description' => dt("Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log."));
     $options['cache-default-class'] = array('description' => dt("A cache backend class that implements DrushCacheInterface."));
     $options['cache-class-<bin>']   = array('description' => dt("A cache backend class that implements DrushCacheInterface to use for a specific cache bin."));
+    $options['early']               = array('description' => dt("Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename). The function is called pre-bootstrap and offers an opportunity to alter the drush bootstrap environment or process (returning FALSE from the function will continue the bootstrap), or return output very rapidly (e.g. from caches). See includes/complete.inc for an example."));
   }
   return $options;
 }
@@ -1684,4 +1685,30 @@ function drush_map_assoc($array, $function = NULL) {
     $array = array_map($function, $array);
   }
   return $array;
+}
+/**
+ * Clears completion caches.
+ *
+ * If called with no parameters the entire complete cache will be cleared.
+ * If called with just the $type parameter the global cache for that type will
+ * be cleared (in the site context, if any). If called with both $type and
+ * $command parameters the command cache of that type will be cleared  (in the
+ * site context, if any).
+ *
+ * This is included in drush.inc as complete.inc is only loaded conditionally.
+ *
+ * @param $type
+ *   The completion type (optional).
+ * @param $command
+ *   The command name (optional), if command specific cache is to be cleared.
+ *   If specifying a command, $type is not optional.
+ */
+function drush_complete_cache_clear($type = NULL, $command = NULL) {
+  require_once DRUSH_BASE_PATH . '/includes/complete.inc';
+  if ($type) {
+    drush_cache_clear_all(drush_complete_cache_cid($type, $command), 'complete');
+    return;
+  }
+  // No type or command, so clear the entire complete cache.
+  drush_cache_clear_all('*', 'complete', TRUE);
 }

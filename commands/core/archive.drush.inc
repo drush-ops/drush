@@ -235,6 +235,16 @@ function drush_archive_dump($sites_subdirs = '@self') {
 }
 
 /**
+ * Command argument complete callback.
+ *
+ * @return
+ *   List of site names/aliases for archival.
+ */
+function archive_archive_dump_complete() {
+  return array('values' => array_keys(_drush_sitealias_all_list()));
+}
+
+/**
  * Command callback. Restore web site(s) from a site archive file.
  */
 function drush_archive_restore($file, $site_id = NULL) {
@@ -315,4 +325,25 @@ function drush_archive_restore($file, $site_id = NULL) {
     }
   }
   return $destination;
+}
+
+
+/**
+ * Command argument complete callback.
+ *
+ * @return
+ *   Strong glob of files to complete on.
+ */
+function archive_archive_restore_complete() {
+  return array(
+           'files' => array(
+             'directories' => array(
+               'pattern' => '*',
+               'flags' => GLOB_ONLYDIR,
+             ),
+             'tar' => array(
+               'pattern' => '*.tar.gz',
+             ),
+           ),
+         );
 }
