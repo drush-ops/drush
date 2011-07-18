@@ -39,7 +39,7 @@ function drush_sitealias_check_arg() {
 function drush_sitealias_simplify_names($site_list) {
   $result = array();
   foreach ($site_list as $original_name => $alias_record) {
-    $adjusted_name = $alias_record['name'];
+    $adjusted_name = $alias_record['#name'];
     $hashpos = strpos($original_name, '#');
     if ($hashpos !== FALSE) {
       $adjusted_name = substr($original_name, $hashpos);
@@ -119,8 +119,8 @@ function drush_sitealias_get_record($alias) {
     $alias_record = _drush_sitealias_get_record($alias);
   }
   if (!empty($alias_record)) {
-    if (!array_key_exists('name', $alias_record)) {
-      $alias_record['name'] = drush_sitealias_uri_to_site_dir($alias);
+    if (!array_key_exists('#name', $alias_record)) {
+      $alias_record['#name'] = drush_sitealias_uri_to_site_dir($alias);
     }
 
     // Handle nested alias definitions and command-specific options.
@@ -352,7 +352,7 @@ function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
       if (array_key_exists('inherited', $result)) {
         $result = array_merge($primary_record, $result);
       }
-      $result['name'] = $relative_alias;
+      $result['#name'] = $relative_alias;
       _drush_sitealias_cache_alias(substr($alias, 1), $result);
     }
   }
@@ -396,7 +396,7 @@ function drush_sitealias_load_all($resolve_parent = TRUE) {
  * and finds the specified alias record.
  *
  * @param $aliasname
- *   The name of the alias without the leading '@' (i.e. 'name')
+ *   The name of the alias without the leading '@' (i.e. '#name')
  *   or NULL to load every alias found in every alias file.
  * @param $alias_path_context
  *   When looking up a relative alias, the alias path context is
@@ -548,7 +548,7 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
       // Fetch and merge in each parent
       foreach (explode(',', $alias_value['parent']) as $parent) {
         $parent_record = drush_sitealias_get_record($parent);
-        unset($parent_record['name']);
+        unset($parent_record['#name']);
         unset($parent_record['#hidden']);
         $array_based_keys = array_merge(drush_get_special_keys(), array('path-aliases'));
         foreach ($array_based_keys as $array_based_key) {
@@ -708,11 +708,11 @@ function drush_sitealias_cache_db_settings(&$alias_record, $databases) {
   }
 
   // If the name is set, then re-cache the record after we fetch the databases
-  if (array_key_exists('name', $alias_record)) {
+  if (array_key_exists('#name', $alias_record)) {
     $all_site_aliases =& drush_get_context('site-aliases');
-    $all_site_aliases[$alias_record['name']] = $alias_record;
+    $all_site_aliases[$alias_record['#name']] = $alias_record;
     // Check and see if this record is a copy of 'self'
-    if (($alias_record['name'] != 'self') && array_key_exists('@self', $all_site_aliases) && array_key_exists('name', $all_site_aliases['@self']) && ($all_site_aliases['@self']['name'] == $alias_record['name'])) {
+    if (($alias_record['#name'] != 'self') && array_key_exists('@self', $all_site_aliases) && array_key_exists('#name', $all_site_aliases['@self']) && ($all_site_aliases['@self']['#name'] == $alias_record['#name'])) {
       $all_site_aliases['@self'] = $alias_record;
     }
   }
@@ -815,8 +815,8 @@ function drush_sitealias_resolve_sitelist($alias_record) {
         $result_list = array_merge($result_list, drush_sitealias_resolve_sitelist($one_result));
       }
     }
-    elseif (array_key_exists('name', $alias_record)) {
-      $result_list[$alias_record['name']] = $alias_record;
+    elseif (array_key_exists('#name', $alias_record)) {
+      $result_list[$alias_record['#name']] = $alias_record;
     }
   }
 
@@ -1734,7 +1734,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
  * Option keys used for site selection.
  */
 function drush_sitealias_site_selection_keys() {
-  return array('remote-host', 'remote-user', 'winrs-password', 'ssh-options', 'name', 'os');
+  return array('remote-host', 'remote-user', 'winrs-password', 'ssh-options', '#name', 'os');
 }
 
 

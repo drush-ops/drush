@@ -159,7 +159,7 @@ function drush_backend_output() {
     unset($site_context['config-file']);
     unset($site_context['context-path']);
     unset($self_record['loaded-config']);
-    unset($self_record['name']);
+    unset($self_record['#name']);
     $data['self'] = array_merge($site_context, $self_record);
   }
 

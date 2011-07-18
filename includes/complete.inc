@@ -109,8 +109,8 @@ function drush_early_complete() {
   $argv = drush_complete_process_argv();
   $set_sitealias = drush_sitealias_get_record('@self');
   $set_sitealias_name = NULL;
-  if (!empty($set_sitealias['name'])) {
-    $set_sitealias_name = $set_sitealias['name'];
+  if (!empty($set_sitealias['#name'])) {
+    $set_sitealias_name = $set_sitealias['#name'];
   }
 
   // Arguments have now had site-aliases and options removed, so we take the
