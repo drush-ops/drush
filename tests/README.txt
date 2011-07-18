@@ -1,28 +1,34 @@
-Drush's test suite based on phpunit (http://www.phpunit.de/).
+Drush's test suite based on PHPUnit (http://www.phpunit.de/).
 
 Usage
 --------
 - Install PHPUnit [*]
 - Optional. Copy phpunit.xml.dist to phpunit.xml and customize if needed.
-- From the /tests subdirectory, run `phpunit .` or `runner.php .`
+- From the /tests subdirectory, run `phpunit .`
 
 Advanced usage
 ---------
 - Run only tests matching a regex: phpunit --filter=testVersionString .
 - XML results: phpunit --filter=testVersionString --log-junit results.xml .
 
+Reuse by Drush Commandfiles
+-----------
+Drush commandfiles are encouraged to ship with PHPUnit test cases that
+extend Drush_UnitTestCase and Drush_CommandTestCase. In order to run
+the tests, you have to point to the /tests/drush_testcase.inc file
+such as `phpunit --bootstrap=/path/to/drush/tests/drush_testcase.inc`.
+The devel project does exactly this -
+http://drupalcode.org/project/devel.git/blob/refs/heads/8.x-1.x:/develDrushTest.php
+
 Notes
 ----------
 - I have run tests within Netbeans and it works.
-- Speedup downloads with Squid as forward proxy - http://reluctanthacker.rollett.org/node/114.
-
-
 
 [*] Install PHPUnit:
 
 Drush requires PHPUnit 3.5 or later; installing with PEAR is easiest.
  
-On Linux:
+On Linux/OSX:
 ---------
 
   sudo apt-get install php5-curl php-pear
