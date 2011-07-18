@@ -89,6 +89,7 @@ function sql_drush_command() {
     'options' => array(
       'extra' => 'Add custom options to the mysql command.',
       'result-file' => 'Save to a file. The file should be relative to Drupal root. Optional.',
+      'db-prefix' => 'Disable DB prefix processing by providing a value of 0. Rarely needed.',
     ) + $options,
     'aliases' => array('sqlq'),
   );
@@ -472,11 +473,14 @@ function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
     if ($filename) {
       $query = file_get_contents($filename);
     }
-    if (drush_drupal_major_version() >= 7) {
-      $query = Database::getConnection()->prefixTables($query);
-    }
-    else {
-      $query = db_prefix_tables($query);
+    // Occasionally, it is necessary to override prefix processing - http://drupal.org/node/1219850.
+    if (drush_get_option('db-prefix', TRUE)) {
+      if (drush_drupal_major_version() >= 7) {
+        $query = Database::getConnection()->prefixTables($query);
+      }
+      else {
+        $query = db_prefix_tables($query);
+      }
     }
   }
 
