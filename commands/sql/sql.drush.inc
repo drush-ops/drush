@@ -89,7 +89,7 @@ function sql_drush_command() {
     'options' => array(
       'extra' => 'Add custom options to the mysql command.',
       'result-file' => 'Save to a file. The file should be relative to Drupal root. Optional.',
-      'db-prefix' => 'Disable DB prefix processing by providing a value of 0. Rarely needed.',
+      'db-prefix' => 'Enable replacement of braces in your query.',
     ) + $options,
     'aliases' => array('sqlq'),
   );
@@ -473,8 +473,8 @@ function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
     if ($filename) {
       $query = file_get_contents($filename);
     }
-    // Occasionally, it is necessary to override prefix processing - http://drupal.org/node/1219850.
-    if (drush_get_option('db-prefix', TRUE)) {
+    // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
+    if (drush_get_option('db-prefix')) {
       if (drush_drupal_major_version() >= 7) {
         $query = Database::getConnection()->prefixTables($query);
       }
