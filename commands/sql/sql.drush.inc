@@ -79,7 +79,8 @@ function sql_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
     'description' => 'Execute a query against the site database.',
     'examples' => array(
-      'drush sql-query "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record. Table prefixes are honored.',
+      'drush sql-query "SELECT * FROM users WHERE uid=1"' => 'Browse user record. Table prefixes, if used, must be added to table names by hand.',
+      'drush sql-query --db-prefix "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record. Table prefixes are honored.  Caution: curly-braces will be stripped from all portions of the query.',
       '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
     ),
     'arguments' => array(
