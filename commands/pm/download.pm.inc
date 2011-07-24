@@ -212,8 +212,11 @@ function drush_pm_download() {
       // If the version control engine is a proper vcs we also need to remove
       // orphan directories.
       if ($version_control->engine != 'backup') {
-        $files = drush_find_empty_directories($request['full_project_path'], $version_control->reserved_files());
-        array_map('drush_delete_dir', $files);
+        $empty_dirs = drush_find_empty_directories($request['full_project_path'], $version_control->reserved_files());
+        foreach ($empty_dirs as $empty_dir) {
+          // Some VCS files are read-only on Windows (e.g., .svn/entries).
+          drush_delete_dir($empty_dir, TRUE);
+        }
       }
     }
     else {

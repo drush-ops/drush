@@ -92,7 +92,7 @@ function drush_delete_dir($dir, $force = FALSE) {
     if ($item == '.' || $item == '..') {
       continue;
     }
-    if (!drush_delete_dir($dir.'/'.$item)) {
+    if (!drush_delete_dir($dir . '/' . $item, $force)) {
       return FALSE;
     }
   }

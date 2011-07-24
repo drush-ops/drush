@@ -1942,44 +1942,36 @@ function drush_pm_extensions_in_project($project) {
  *   Path to the directory to work in.
  * @param array $exclude
  *   Array of files or directory to exclude in the check.
+ *
+ * @return array
+ *   A list of directory paths that are empty. A directory is deemed to be empty
+ *   if it only contains excluded files or directories.
  */
 function drush_find_empty_directories($dir, $exclude = array()) {
+  // Skip files.
+  if (!is_dir($dir)) {
+    return array();
+  }
   $to_exclude = array_merge(array('.', '..'), $exclude);
-  $empty = array();
+  $empty_dirs = array();
   $dir_is_empty = TRUE;
-  if ($dh = opendir($dir)) {
-    while (($file = readdir($dh)) !== FALSE) {
-      if (in_array($file, $to_exclude)) {
-        continue;
-      }
-      if (is_dir($dir .'/'. $file)) {
-        $subdir = $dir .'/'. $file;
-        $subdir_is_empty = TRUE;
-        if ($dh2 = opendir($subdir)) {
-          while (($file2 = readdir($dh2)) !== FALSE) {
-            if (in_array($file2, $to_exclude)) {
-              continue;
-            }
-            $subdir_is_empty = FALSE;
-            if (is_dir($subdir . '/'. $file2)) {
-              $empty2 = drush_find_empty_directories($subdir . '/'. $file2, $exclude);
-              $empty = array_merge($empty, $empty2);
-            }
-          }
-          if ($subdir_is_empty) {
-            $empty[] = $subdir . '/'. $file2;
-          }
-        closedir($dh2);
-        }
-      }
+  foreach (scandir($dir) as $file) {
+    // Skip excluded directories.
+    if (in_array($file, $to_exclude)) {
+      continue;
+    }
+    // Recurse into sub-directories to find potentially empty ones.
+    $subdir = $dir . '/' . $file;
+    $empty_dirs += drush_find_empty_directories($subdir, $exclude);
+    // $empty_dir will not contain $subdir, if it is a file or if the
+    // sub-directory is not empty. $subdir is only set if it is empty.
+    if (!isset($empty_dirs[$subdir])) {
       $dir_is_empty = FALSE;
     }
   }
-  closedir($dh);
 
   if ($dir_is_empty) {
-    return array($dir);
+    $empty_dirs[$dir] = $dir;
   }
-
-  return $empty;
+  return $empty_dirs;
 }
