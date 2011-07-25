@@ -161,57 +161,23 @@ function drush_include_engine($type, $engine, $version = NULL, $path = NULL) {
 }
 
 /**
- * Install a newer version of drush, if available
- *
- * @param $explicit
- *   TRUE if called explicitly via the 'drush self-update'
- *   command; FALSE if called implicitly via 'drush --version'
- *   or 'drush pm-updatecode'.  When called via the self-update
- *   command, errors are reported via drush_set_error, and a dev
- *   release can be upgraded to a newer dev release.  If FALSE,
- *   then errors cause self-update to exit silently, and only
- *   stable releases are considered (unless the --dev flag is
- *   specified).  We do not want to nag users to upgrade to
- *   every single available dev release unless they explicitly
- *   ask.
- *
- * @param $update
- *   TRUE if this function is allowed to update drush; if FALSE,
- *   it will inform the user of available updates, but will take
- *   no action.
+ * Check to see if a newer version of drush is available
  *
  * @return
- *   TRUE - installed new version of drush (or new version is available, if $update === FALSE)
- *   FALSE - user cancelled, or error
- *   NULL - no action taken (e.g. no release available)
+ *   TRUE - A new version is available.
+ *   FALSE - Error.
+ *   NULL - No release available.
  */
-function drush_self_update($explicit = TRUE, $update = TRUE) {
+function drush_check_self_update() {
+  $explicit = FALSE;
+  $update = FALSE;
   $error = "";
 
-  // Do nothing unless we can write to the drush install location
-  if (!is_writable(DRUSH_BASE_PATH)) {
-    $error = dt('Drush folder at !loc is not writable', array('!loc' => DRUSH_BASE_PATH));
-  }
-  elseif (is_dir(DRUSH_BASE_PATH . "/CVS")) {
-    $error = dt('Drush was checked out from CVS; cannot self-update.');
-  }
-  else {
-    // Don't check unless we have a datestamp in drush.info
-    $drush_info = drush_read_drush_info();
-    if (($drush_info === FALSE) || (!array_key_exists('datestamp', $drush_info))) {
-      $error = dt('Cannot determine release date for drush');
-    }
-  }
-
-  // Fail with 'return FALSE' or 'drush_set_error', as appropriate.
-  if (!empty($error)) {
-    if ($explicit) {
-      return drush_set_error('DRUSH_CANNOT_SELF_UPDATE', $error, 'error');
-    }
-    else {
-      drush_log($error, 'notice');
-      return FALSE;
-    }
+  // Don't check unless we have a datestamp in drush.info
+  $drush_info = drush_read_drush_info();
+  if (($drush_info === FALSE) || (!array_key_exists('datestamp', $drush_info))) {
+    drush_log(dt('Cannot determine release date for drush'), 'notice');
+    return FALSE;
   }
 
   // Allow updates to the latest HEAD release if --self-update=head is specified.
@@ -227,7 +193,7 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
   $newer_version = FALSE;
   foreach ($info['drush']['releases'] as $version => $release_info) {
     // We deliberately skip any dev releases unless the current release is a dev release.
-    if ($dev_ok || ((strpos(DRUSH_VERSION, "-dev") !== FALSE) && $explicit) || (!array_key_exists('version_extra', $release_info) || ($release_info['version_extra'] != 'dev'))) {
+    if ($dev_ok || ((!array_key_exists('version_extra', $release_info) || ($release_info['version_extra'] != 'dev')))) {
       if ($release_info['date'] > $version_date) {
         $newer_version = $release_info['version'];
         $version_date = $release_info['date'];
@@ -240,20 +206,11 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
   }
 
   if ($newer_version) {
-    if ($update) {
-      $backup_dir = drush_preflight_backup_dir('drush');
-      if(drush_confirm(dt('A newer version of drush, !version, is available.  Would you like to back up your current drush, version !currentversion, to !backup and replace it with the newer release?', array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION, '!backup' => $backup_dir)))) {
-        // pm-download will select the most recent stable release, which is what we want.
-        return (drush_invoke_process('@self', "pm-download", array("drush"), array("destination" => DRUSH_BASE_PATH, "backup-location" => $backup_dir, "dev" => $is_dev)) !== FALSE);
-      }
-    }
-    else {
-      drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion; to update, run `drush self-update`.  To disable this check, put "$options[\'self-update\'] = FALSE;" in your drushrc.php configuration file.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
-      return TRUE;
-    }
+    drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion; to update, run `drush self-update`.  To disable this check, put "$options[\'self-update\'] = FALSE;" in your drushrc.php configuration file.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
+    return TRUE;
   }
   else {
-    drush_log(dt("drush self-update check: drush !version is up-to-date.", array('!version' => DRUSH_VERSION)), $explicit ? 'ok' : 'notice');
+    drush_log(dt("drush self-update check: drush !version is up-to-date.", array('!version' => DRUSH_VERSION)), 'notice');
   }
 
   return NULL;
