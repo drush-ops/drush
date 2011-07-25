@@ -29,7 +29,7 @@ function sql_drush_command() {
     'description' => 'Drop all tables in a given database.',
     'arguments' => array(
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'options' => array(
       'yes' => 'Skip confirmation and proceed.',
       'result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
@@ -48,7 +48,7 @@ function sql_drush_command() {
   );
   $items['sql-connect'] = array(
     'description' => 'A string for connecting to the DB.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'options' => $options,
     'examples' => array(
       '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
@@ -57,7 +57,7 @@ function sql_drush_command() {
   $items['sql-dump'] = array(
     'callback' => 'drush_sql_dump_execute',
     'description' => 'Exports the Drupal DB as SQL using mysqldump or equivalent.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'examples' => array(
       'drush sql-dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
       'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.com',
@@ -76,7 +76,7 @@ function sql_drush_command() {
     ) + $options,
   );
   $items['sql-query'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => 'Execute a query against the site database.',
     'examples' => array(
       'drush sql-query "SELECT * FROM users WHERE uid=1"' => 'Browse user record. Table prefixes, if used, must be added to table names by hand.',
@@ -151,13 +151,13 @@ function sql_drush_command() {
   }
   $items['sql-cli'] = array(
     'description' => "Open a SQL command-line interface using Drupal's credentials.",
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'options' => $options,
     'aliases' => array('sqlc'),
   );
   $items['sql-sanitize'] = array(
     'description' => "Run sanitization operations on the current database.",
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'hidden' => TRUE,
     'options' => array(
       'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
@@ -166,6 +166,15 @@ function sql_drush_command() {
     'aliases' => array('sqlsan'),
   );
   return $items;
+}
+
+/**
+ * Check whether further bootstrap is needed. If so, do it.
+ */
+function drush_sql_bootstrap_further() {
+  if (!drush_get_option('db-url')) {
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+  }
 }
 
 /**
@@ -212,6 +221,7 @@ function _drush_sql_connect($db_spec = NULL) {
 }
 
 function drush_sql_connect() {
+  drush_sql_bootstrap_further();
   $connect = _drush_sql_connect();
   drush_print($connect);
   return $connect;
@@ -221,6 +231,7 @@ function drush_sql_connect() {
  * Command callback. Outputs the entire Drupal database in SQL format using mysqldump.
  */
 function drush_sql_dump_execute() {
+  drush_sql_bootstrap_further();
   list($exec, $file) = drush_sql_dump();
   // Avoid the php memory of the $output array in drush_shell_exec().
   if (!$return = drush_op_system($exec)) {
@@ -453,6 +464,7 @@ function _drush_sql_get_table_list($option_name) {
  * Command callback. Executes the given SQL query on the Drupal database.
  */
 function drush_sql_query($query, $filename = NULL) {
+  drush_sql_bootstrap_further();
   return _drush_sql_query($query, NULL, $filename);
 }
 
@@ -512,6 +524,7 @@ function drush_sql_drop() {
   if (!drush_confirm(dt('Do you really want to drop all tables?'))) {
     return drush_user_abort();
   }
+  drush_sql_bootstrap_further();
   _drush_sql_drop();
 }
 
@@ -593,6 +606,7 @@ function _drush_sql_drop($db_spec = NULL) {
 }
 
 function drush_sql_cli() {
+  drush_sql_bootstrap_further();
   proc_close(proc_open(_drush_sql_connect(), array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
 }
 
@@ -603,6 +617,7 @@ function drush_sql_sanitize() {
   if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
     return drush_user_abort();
   }
+  drush_sql_bootstrap_further();
   drush_include(DRUSH_BASE_PATH . '/commands/sql', 'sync.sql');
   drush_command_invoke_all('drush_sql_sync_sanitize', 'default');
   $options = drush_get_context('post-sync-ops');
@@ -635,7 +650,8 @@ function drush_sql_sanitize() {
 
 /**
  * Get a database specification for the active DB connection. Honors the
- * 'database' and 'target command' line options.
+ * 'database' and 'target command' line options. If not in a Drupal site,
+ * honors a --db-url option.
  *
  * @return
  *   An info array describing a database target.
@@ -645,10 +661,23 @@ function _drush_sql_get_db_spec() {
   $target = drush_get_option('target', 'default');
 
   switch (drush_drupal_major_version()) {
+    case NULL:
+      // Not yet bootstrapped. Use --db-url option, and bootstrap if unsuccessful.
+      if ($url = drush_get_option('db-url')) {
+        $url =  is_array($url) ? $url[$database] : $url;
+        $db_spec = drush_convert_db_from_db_url($url);
+        $db_spec['db_prefix'] = drush_get_option('db-prefix');
+        return $db_spec;
+      }
+      elseif (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+        return _drush_sql_get_db_spec();
+      }
     case 6:
       $url = $GLOBALS['db_url'];
       $url =  is_array($url) ? $url[$database] : $url;
-      return drush_convert_db_from_db_url($url);
+      $db_spec = drush_convert_db_from_db_url($url);
+      $db_spec['db_prefix'] = $GLOBALS['db_prefix'];
+      return $db_spec;
 
     default:
       // We don't use DB API here `sql-sync` would have to messily addConnection.
@@ -947,7 +976,7 @@ function drush_sql_show_tables_pgsql() {
  */
 function drush_sql_empty_db($db_spec = NULL) {
   if (is_null($db_spec)) {
-    $db_spec = drush_sql_read_db_spec();
+    $db_spec = _drush_sql_get_db_spec();
   }
   if (drush_sql_db_exists($db_spec)) {
     _drush_sql_drop($db_spec);
@@ -960,28 +989,6 @@ function drush_sql_empty_db($db_spec = NULL) {
     unset($create_db_spec['database']);
     $create_db_su = drush_sql_su($create_db_spec);
     return _drush_sql_query($sql, $create_db_su);
-  }
-}
-
-/**
- * Return a db_spec based on supplied db_url/db_prefix options or an existing
- * settings.php.
- */
-function drush_sql_read_db_spec() {
-  if ($db_url = drush_get_option('db-url')) {
-    // We were passed a db_url. Usually a fresh site.
-    $db_spec = drush_convert_db_from_db_url($db_url);
-    $db_spec['db_prefix'] = drush_get_option('db-prefix');
-    return $db_spec;
-  }
-  elseif (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
-    // We have an existing settings.php.
-    $db_spec = _drush_sql_get_db_spec();
-    $db_spec['db_prefix'] = $GLOBALS['db_prefix'];
-    return $db_spec;
-  }
-  else {
-    return FALSE;
   }
 }
 
