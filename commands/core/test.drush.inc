@@ -46,6 +46,20 @@ function test_drush_command() {
   return $items;
 }
 
+/**
+ * Command argument complete callback.
+ *
+ * @return
+ *  Array of test classes and groups.
+ */
+function test_test_run_complete() {
+  if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL) && module_exists('simpletest')) {
+    // Retrieve all tests and groups.
+    list($groups, $all_tests) = drush_test_get_all_tests();
+  }
+  return array('values' => array_keys($groups) + $all_tests);
+}
+
 // Command callback
 function drush_test_clean() {
   return simpletest_clean_environment();
