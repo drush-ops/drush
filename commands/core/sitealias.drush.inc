@@ -43,6 +43,16 @@ function sitealias_drush_command() {
 }
 
 /**
+ * Command argument complete callback.
+ *
+ * @return
+ *  Array of available site aliases.
+ */
+function sitealias_sitealias_print_complete() {
+  return array('values' => array_keys(_drush_sitealias_all_list()));
+}
+
+/**
  * Return a list of all site aliases known to drush.
  *
  * The array key is the site alias name, and the array value
