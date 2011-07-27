@@ -170,6 +170,16 @@ function sql_drush_command() {
 }
 
 /**
+ * Command argument complete callback.
+ *
+ * @return
+ *  Array of available site aliases.
+ */
+function sql_sql_sync_complete() {
+  return array('values' => array_keys(_drush_sitealias_all_list()));
+}
+
+/**
  * Check whether further bootstrap is needed. If so, do it.
  */
 function drush_sql_bootstrap_further() {
