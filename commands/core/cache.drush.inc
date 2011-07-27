@@ -53,31 +53,20 @@ function cache_drush_command() {
 }
 
 /**
+ * Command argument complete callback.
+ *
+ * @return
+ *   Array of clear types.
+ */
+function cache_cache_command_clear_complete() {
+  return array('values' => array_keys(drush_cache_clear_types()));
+}
+
+/**
  * Command callback for drush cache-clear.
  */
 function drush_cache_command_clear($type = NULL) {
-  if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
-    switch (drush_drupal_major_version()) {
-    case 5:
-      // clear preprocessor cache
-      drupal_clear_css_cache();
-
-      // clear core tables
-      $core = array('cache', 'cache_filter', 'cache_menu', 'cache_page');
-      $alltables = array_merge($core, module_invoke_all('devel_caches'));
-      foreach ($alltables as $table) {
-        cache_clear_all('*', $table, TRUE);
-      }
-      drush_print(dt('Cache cleared.'));
-      break;
-    case 6:
-    case 7:
-    default:
-      $types = drush_cache_clear_types();
-    }
-  }
-
-  $types['drush'] = 'drush_cache_clear_all';
+  $types = drush_cache_clear_types();
 
   // Check if the provided type ($type) is a valid cache type.
   if ($type && !key_exists($type, $types)) {
@@ -180,22 +169,28 @@ function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire =
 function drush_cache_clear_types() {
   $types = array(
     'all' => 'drupal_flush_all_caches',
-    'theme-registry' => 'drush_cache_clear_theme_registry',
-    'menu' => 'menu_rebuild',
-    'css-js' => 'drush_cache_clear_css_js',
-    'block' => 'drush_cache_clear_block',
-    'module-list' => 'drush_get_modules',
-    'theme-list' => 'drush_get_themes',
+    'drush' => 'drush_cache_clear_drush',
   );
+  if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+    $types += array(
+      'theme-registry' => 'drush_cache_clear_theme_registry',
+      'menu' => 'menu_rebuild',
+      'css-js' => 'drush_cache_clear_css_js',
+      'block' => 'drush_cache_clear_block',
+      'module-list' => 'drush_get_modules',
+      'theme-list' => 'drush_get_themes',
+    );
+    if (count(module_implements('node_grants'))) {
+      $types['nodeaccess'] = 'node_access_rebuild';
+    }
+  }
+
   if (drush_drupal_major_version() >= 7) {
     $types['registry'] = 'registry_update';
   }
-  elseif (drush_drupal_major_version() == 6 && module_exists('autoload')) {
+  elseif (drush_drupal_major_version() == 6 && function_exists('module_exists') && module_exists('autoload')) {
     // TODO: move this to autoload module.
     $types['registry'] = 'autoload_registry_update';
-  }
-  if (count(module_implements('node_grants'))) {
-    $types['nodeaccess'] = 'node_access_rebuild';
   }
 
   // Include the appropriate environment engine, so callbacks can use core
@@ -204,6 +199,7 @@ function drush_cache_clear_types() {
 
   // Command files may customize $types as desired.
   drush_command_invoke_all_ref('drush_cache_clear', $types);
+
   return $types;
 }
 
@@ -224,3 +220,10 @@ function drush_cache_clear_block() {
   cache_clear_all(NULL, 'cache_block');
 }
 
+/**
+ * Clear caches internal to drush core.
+ */
+function drush_cache_clear_drush() {
+  drush_cache_clear_all(NULL, 'default'); // commandfiles, etc.
+  drush_cache_clear_all(NULL, 'complete'); // completion
+}
