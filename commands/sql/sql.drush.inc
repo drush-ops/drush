@@ -657,11 +657,10 @@ function _drush_sql_get_db_spec() {
       }
     case 5:
     case 6:
-      $url = $GLOBALS['db_url'];
-      // TODO: array version not working?
+      $url = isset($GLOBALS['db_url']) ? $GLOBALS['db_url'] : drush_get_option('db-url', NULL);
       $url =  is_array($url) ? $url[$database] : $url;
       $db_spec = drush_convert_db_from_db_url($url);
-      $db_spec['db_prefix'] = $GLOBALS['db_prefix'];
+      $db_spec['db_prefix'] = isset($GLOBALS['db_prefix']) ? $GLOBALS['db_prefix'] : drush_get_option('db-prefix', NULL);
       return $db_spec;
 
     default:
