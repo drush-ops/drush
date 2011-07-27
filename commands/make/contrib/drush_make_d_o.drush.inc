@@ -33,7 +33,7 @@ function drush_make_d_o_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   $items['verify-makefile'] = array(
-    'description' => 'Verify the specified makefile is in a drupal.org-friendly format.',
+    'description' => 'Verify the specified makefile is in a drupal.org friendly format.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
@@ -48,6 +48,9 @@ function drush_drush_make_d_o_verify_makefile($makefile) {
   if (!drush_make_ensure_version()) {
     return;
   }
+  // Force the --drupal-org option, it's required to trigger the drupal.org
+  // specific validation.
+  drush_set_option('drupal-org', TRUE);
   $info = drush_make_validate_info_file(drush_make_parse_info_file($makefile));
 }
 
