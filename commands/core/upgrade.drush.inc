@@ -72,6 +72,16 @@ function upgrade_drush_help($section) {
 }
 
 /**
+ * Command argument complete callback.
+ *
+ * @return
+ *  Array of available site aliases.
+ */
+function upgrade_site_upgrade_complete() {
+  return array('values' => array_keys(_drush_sitealias_all_list()));
+}
+
+/**
  * Do some sanity checks to make sure that we are ready to perform an upgrade, and
  * that the command is being called with reasonable-looking parameters.
  */
