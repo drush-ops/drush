@@ -663,18 +663,17 @@ function _drush_sql_get_db_spec() {
   $database = drush_get_option('database', 'default');
   $target = drush_get_option('target', 'default');
 
+  // Use --db-url if present.
+  if ($url = drush_get_option('db-url')) {
+    $url =  is_array($url) ? $url[$database] : $url;
+    $db_spec = drush_convert_db_from_db_url($url);
+    $db_spec['db_prefix'] = drush_get_option('db-prefix');
+    return $db_spec;
+  }
+
+  // Otherwise, read settings.php.
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
   switch (drush_drupal_major_version()) {
-    case NULL:
-      // Not yet bootstrapped. Use --db-url option, and bootstrap if unsuccessful.
-      if ($url = drush_get_option('db-url')) {
-        $url =  is_array($url) ? $url[$database] : $url;
-        $db_spec = drush_convert_db_from_db_url($url);
-        $db_spec['db_prefix'] = drush_get_option('db-prefix');
-        return $db_spec;
-      }
-      elseif (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
-        return _drush_sql_get_db_spec();
-      }
     case 6:
       $url = isset($GLOBALS['db_url']) ? $GLOBALS['db_url'] : drush_get_option('db-url', NULL);
       $url =  is_array($url) ? $url[$database] : $url;
