@@ -287,6 +287,16 @@ function core_drush_command() {
   return $items;
 }
 
+/**
+ * Command argument complete callback.
+ *
+ * @return
+ *  Array of available site aliases.
+ */
+function core_core_rsync_complete() {
+  return array('values' => array_keys(_drush_sitealias_all_list()));
+}
+
 function core_drush_engine_drupal() {
   $engines = array();
   $engines['batch'] = array();
