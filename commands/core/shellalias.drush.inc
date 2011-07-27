@@ -12,6 +12,16 @@ function shellalias_drush_help($section) {
   }
 }
 
+/**
+ * Command argument complete callback.
+ *
+ * @return
+ *  Array of available site aliases.
+ */
+function shellalias_shell_alias_complete() {
+  return array('values' => array_keys(_drush_sitealias_all_list()));
+}
+
 function shellalias_drush_command() {
   $items = array();
 
