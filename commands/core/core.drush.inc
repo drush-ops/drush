@@ -30,6 +30,9 @@ function core_drush_command() {
       'html' => 'Print help for all commands in HTML format.',
       'pipe' => 'A list of available commands, one per line.',
     ),
+    'arguments' => array(
+      'command' => 'A command name, or command alias.',
+    ),
     'examples' => array(
       'drush' => 'List all commands.',
       'drush --filter=devel_generate' => 'Show only commands defined in devel_generate.drush.inc',
@@ -285,6 +288,16 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
   return $items;
+}
+
+/**
+ * Command argument complete callback.
+ *
+ * @return
+ *   Array of available command names.
+ */
+function core_help_complete() {
+  return array('values' => array_keys(drush_get_commands()));
 }
 
 /**
