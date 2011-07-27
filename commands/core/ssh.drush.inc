@@ -28,6 +28,16 @@ function ssh_drush_command() {
 }
 
 /**
+ * Command argument complete callback.
+ *
+ * @return
+ *   Array of available site aliases.
+ */
+function ssh_site_ssh_complete() {
+  return array('values' => array_keys(_drush_sitealias_all_list()));
+}
+
+/**
  * Command callback.
  */
 function drush_ssh_site_ssh($alias, $command = NULL) {
