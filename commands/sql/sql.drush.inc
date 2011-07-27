@@ -82,14 +82,15 @@ function sql_drush_command() {
       'drush sql-query "SELECT * FROM users WHERE uid=1"' => 'Browse user record. Table prefixes, if used, must be added to table names by hand.',
       'drush sql-query --db-prefix "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record. Table prefixes are honored.  Caution: curly-braces will be stripped from all portions of the query.',
       '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
+      'drush sql-query --input-file=example.sql' => 'Alternate way to import sql statements from a file.',
     ),
     'arguments' => array(
        'query' => 'An SQL query. Ignored if \'file\' is provided.',
-       'file' => 'Path to a file containing the SQL to be run.',
     ),
     'options' => array(
-      'extra' => 'Add custom options to the mysql command.',
       'result-file' => 'Save to a file. The file should be relative to Drupal root. Optional.',
+      'input-file' => 'Path to a file containing the SQL to be run.',
+      'extra' => 'Add custom options to the mysql command.',
       'db-prefix' => 'Enable replacement of braces in your query.',
     ) + $options,
     'aliases' => array('sqlq'),
@@ -463,8 +464,10 @@ function _drush_sql_get_table_list($option_name) {
 /**
  * Command callback. Executes the given SQL query on the Drupal database.
  */
-function drush_sql_query($query, $filename = NULL) {
+
+function drush_sql_query($query) {
   drush_sql_bootstrap_further();
+  $filename = drush_get_option('file', NULL);
   return _drush_sql_query($query, NULL, $filename);
 }
 
