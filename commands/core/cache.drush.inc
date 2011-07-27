@@ -168,7 +168,7 @@ function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire =
 
 function drush_cache_clear_types() {
   $types = array(
-    'all' => 'drupal_flush_all_caches',
+    'all' => 'drush_cache_clear_both',
     'drush' => 'drush_cache_clear_drush',
   );
   if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
@@ -226,4 +226,14 @@ function drush_cache_clear_block() {
 function drush_cache_clear_drush() {
   drush_cache_clear_all(NULL, 'default'); // commandfiles, etc.
   drush_cache_clear_all(NULL, 'complete'); // completion
+}
+
+/**
+ * Clear caches internal to Drush core and Drupal.
+ */
+function drush_cache_clear_both() {
+  drush_cache_clear_drush();
+  if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+    drupal_flush_all_caches();
+  }
 }
