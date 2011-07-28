@@ -66,6 +66,40 @@ function variable_drush_command() {
 }
 
 /**
+ * Command argument complete callback.
+ */
+function variable_variable_get_complete() {
+  return variable_complete_variables();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function variable_variable_set_complete() {
+  return variable_complete_variables();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function variable_variable_delete_complete() {
+  return variable_complete_variables();
+}
+
+/**
+ * List variables for completion.
+ *
+ * @return
+ *  Array of available variables.
+ */
+function variable_complete_variables() {
+  if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+    global $conf;
+    return array('values' => array_keys($conf));
+  }
+}
+
+/**
  * Command callback.
  * List your site's variables.
  */
@@ -77,7 +111,7 @@ function drush_variable_get() {
   if ($args = func_get_args()) {
     $keys = preg_grep("/{$args[0]}/", $keys);
   }
-  
+
   foreach ($keys as $name) {
     $value = $conf[$name];
     drush_print_pipe(drush_format($value, $name, 'export'));
