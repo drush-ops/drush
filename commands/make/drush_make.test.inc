@@ -123,7 +123,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/translations.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: 4aa84d1d71fbe1120cb2988cc4dd224d',
+        'Build hash: 1c662c27170ac23942c6a7eb15512a95',
       ),
       'options'  => array('translations' => 'es,pt-br'),
     ),
