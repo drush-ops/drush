@@ -106,7 +106,7 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
     return;
   }
   $info = drush_make_parse_info_file($makefile);
-  if ( $info === FALSE || ($info = drush_make_validate_info_file($info)) === FALSE) {
+  if ($info === FALSE || ($info = drush_make_validate_info_file($info)) === FALSE) {
     return FALSE;
   }
 

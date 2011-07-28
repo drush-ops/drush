@@ -177,7 +177,7 @@ function _drush_make_download_file($download) {
               break;
             default:
               // Oops, error.
-              drush_make_error('BUILD_ERROR', $result->message);
+              drush_make_error('BUILD_ERROR', $result->error);
               return;
           }
           $download_mechanism = 'drush_make';
