@@ -135,6 +135,12 @@ function _drush_make_download_file($download) {
               $current_header[$name] = $value;
             }
             else {
+              $matches = array();
+              preg_match('/HTTP\/1\.1 (\d\d\d)/', $h, $matches);
+              // 4** or 5** errors are failures.
+              if ($matches[1]{0} == 4 || $matches[1]{0} == 5) {
+                $success = FALSE;
+              }
               $first = FALSE;
             }
           }
