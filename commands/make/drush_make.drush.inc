@@ -92,17 +92,16 @@ function drush_make_drush_help($section) {
 
 function drush_drush_make_make_validate() {
   drush_make_ensure_version();
+  if (drush_get_option('version', FALSE)) {
+    drush_print(drush_make_version());
+    return FALSE;
+  }
 }
 
 /**
  * Drush callback; make based on the makefile.
  */
 function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
-  if (drush_get_option('version', FALSE)) {
-    drush_print(drush_make_version());
-    return;
-  }
-
   if (!($build_path = drush_make_build_path($build_path))) {
     return;
   }
