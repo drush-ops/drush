@@ -288,11 +288,15 @@ function drush_make_tmp($set = TRUE) {
   if (!isset($tmp_dir) && $set) {
     $tmp_dir = sys_get_temp_dir();
     if (strrpos($tmp_dir, '/') == strlen($tmp_dir) - 1) {
-      $tmp_dir .= 'drush_make_tmp_' . time();
+      $tmp_dir .= 'drush_make_tmp_' . time() . '_' . uniqid();
     }
     else {
-      $tmp_dir .= '/drush_make_tmp_' . time();
+      $tmp_dir .= '/drush_make_tmp_' . time() . '_' . uniqid();
     }
+    if (file_exists($tmp_dir)) {
+      return drush_make_tmp(TRUE);
+    }
+    // else create it
     drush_make_mkdir($tmp_dir);
   }
   return $tmp_dir;
