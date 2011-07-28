@@ -260,6 +260,92 @@ function pm_drush_command() {
  */
 
 /**
+ * Command argument complete callback.
+ */
+function pm_pm_enable_complete() {
+  return pm_complete_extensions();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function pm_pm_disable_complete() {
+  return pm_complete_extensions();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function pm_pm_uninstall_complete() {
+  return pm_complete_extensions();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function pm_pm_info_complete() {
+  return pm_complete_extensions();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function pm_pm_releasenotes_complete() {
+  return pm_complete_projects();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function pm_pm_releases_complete() {
+  return pm_complete_projects();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function pm_pm_updatecode_complete() {
+  return pm_complete_projects();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function pm_pm_update_complete() {
+  return pm_complete_projects();
+}
+
+/**
+ * List extensions for completion.
+ *
+ * @return
+ *  Array of available extensions.
+ */
+function pm_complete_extensions() {
+  if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+    $extension_info = drush_get_extensions();
+    foreach ($extension_info as $key => $extension) {
+      if (!isset($extension->info['hidden'])) {
+        $extensions[] = $key;
+      }
+    }
+    return array('values' => $extensions);
+  }
+}
+
+/**
+ * List projects for completion.
+ *
+ * @return
+ *  Array of installed projects.
+ */
+function pm_complete_projects() {
+  if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+    return array('values' => array_keys(drush_get_projects()));
+  }
+}
+
+/**
  * Sort callback function for sorting extensions.
  *
  * It will sort first by type, second by package and third by name.
