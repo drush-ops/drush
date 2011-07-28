@@ -60,7 +60,7 @@ function drush_make_test_get_tests($id = NULL) {
       'makefile' => 'tests/git.make',
       'build'    => TRUE,
       'messages' => array(
-        'Build hash: 374b448ab58cb329585ff75337bf5374',
+        'Build hash: ac0899a193835f7e93af812dae4e2c58',
       ),
       'options'  => array('no-core' => TRUE),
     ),
