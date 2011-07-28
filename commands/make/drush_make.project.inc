@@ -145,7 +145,7 @@ class DrushMakeProject {
           drush_log(dt('@name patched with @filename.', $dt_args), 'ok');
         }
         else {
-          drush_log(dt("Unable to patch @name with @filename.", $dt_args), 'error');
+          drush_make_error('PATCH_ERROR', dt("Unable to patch @name with @filename.", $dt_args));
         }
         drush_op('unlink', $filename);
       }
