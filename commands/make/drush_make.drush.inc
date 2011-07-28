@@ -384,6 +384,11 @@ function _drush_make_update_xml_best_version($major, $releases) {
 }
 
 function drush_make_build_path($build_path) {
+  static $saved_path;
+  if (isset($saved_path)) {
+    return $saved_path;
+  }
+
   // Determine the base of the build.
   if (drush_get_option('tar')) {
     $build_path = dirname($build_path) . '/' . basename($build_path, '.tar.gz') . '.tar.gz';
@@ -403,6 +408,7 @@ function drush_make_build_path($build_path) {
     drush_set_error(dt('Base path %path already exists', array('%path' => $build_path)));
     return FALSE;
   }
+  $saved_path = $build_path;
   return $build_path;
 }
 
