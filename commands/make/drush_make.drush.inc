@@ -376,7 +376,7 @@ function drush_make_update_xml_download($project) {
 function _drush_make_update_xml_best_version($major, $releases) {
   $best = NULL;
   foreach ($releases as $version => $release_info) {
-    if ((!$major || $release_info['major'] == $major) && version_compare($best, $version, '<')) {
+    if ((!$major || $release_info['major'] == $major) && !empty($release_info['file']) && version_compare($best, $version, '<')) {
       $best = $version;
     }
   }
