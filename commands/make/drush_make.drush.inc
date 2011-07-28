@@ -312,7 +312,7 @@ function drush_make_update_xml_download($project) {
     $version = (string) $release->version_major;
     // there should be version_patch attribute for every stable release
     // so checking whether the attribute exists should be enough
-    if (isset($release->version_patch)) {
+    if (isset($release->version_patch) && ((string) $release->version_extra) != 'dev') {
       $version .= '.' . (string) $release->version_patch;
     }
     // if version_patch attribute does not exist, then it should be a dev release
@@ -320,9 +320,11 @@ function drush_make_update_xml_download($project) {
     else {
       $version .= '.x';
     }
+
     if ($extra_version = (string) $release->version_extra) {
       $version .= '-' . $extra_version;
     }
+
     $releases[$version] = array(
       'file' => (string) $release->download_link,
       'md5' => (string) $release->mdhash,
@@ -330,6 +332,9 @@ function drush_make_update_xml_download($project) {
     );
     foreach (array('major', 'patch', 'extra') as $part) {
       $releases[$version][$part] = (string) $release->{'version_' . $part};
+    }
+    if ($releases[$version]['extra'] == 'dev') {
+      $releases[$version]['patch'] = 'x';
     }
   }
 
@@ -371,7 +376,7 @@ function drush_make_update_xml_download($project) {
 function _drush_make_update_xml_best_version($major, $releases) {
   $best = NULL;
   foreach ($releases as $version => $release_info) {
-    if ($release_info['major'] == $major && version_compare($best, $version, '<')) {
+    if ((!$major || $release_info['major'] == $major) && version_compare($best, $version, '<')) {
       $best = $version;
     }
   }
