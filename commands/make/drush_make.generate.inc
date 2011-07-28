@@ -34,7 +34,7 @@ function _drush_make_generate($file) {
 
   // Non-default profiles section.
   $install_profile = variable_get('install_profile', '');
-  if ($install_profile != 'default' && $install_profile != '') {
+  if (!in_array($install_profile, array('default', 'standard', 'minimal')) && $install_profile != '') {
     $projects[$install_profile]['type'] =
     $projects[$install_profile]['_type'] = 'profile';
     if (!_drush_generate_makefile_check_updatexml($install_profile, 'profile')) {
