@@ -23,6 +23,7 @@ exit(drush_main());
  *
  * function_exists('drush_main') may be used by modules to detect whether
  * they are being called from drush.  See http://drupal.org/node/1181308
+ * and http://drupal.org/node/827478
  *
  * @return
  *   Whatever the given command returns.
