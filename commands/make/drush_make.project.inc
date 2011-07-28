@@ -150,7 +150,7 @@ class DrushMakeProject {
         drush_op('unlink', $filename);
       }
       else {
-        drush_make_error('Unable to download ' . $info['url'] . '.');
+        drush_make_error('DOWNLOAD_ERROR', 'Unable to download ' . $info['url'] . '.');
         return FALSE;
       }
     }
