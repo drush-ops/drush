@@ -38,7 +38,7 @@ function sandwich_drush_command() {
   $items['make-me-a-sandwich'] = array(
     'description' => "Makes a delicious sandwich.",
     'arguments' => array(
-      'filling' => 'The type of the sandwich (turkey, cheese, etc.)',
+      'filling' => 'The type of the sandwich (turkey, cheese, etc.). Defaults to ascii.',
     ),
     'options' => array(
       'spreads' => 'Comma delimited list of spreads (e.g. mayonnaise, mustard)',
@@ -64,6 +64,8 @@ function sandwich_drush_command() {
 
   return $items;
 }
+
+
 
 /**
  * Implementation of hook_drush_help().
@@ -169,9 +171,20 @@ function drush_sandwich_make_me_a_sandwich($filling = 'ascii') {
 
   if (drush_get_context('DRUSH_NOCOLOR')) {
     $filename = dirname(__FILE__) . '/sandwich-nocolor.txt';
-  } 
+  }
   else {
     $filename = dirname(__FILE__) . '/sandwich.txt';
   }
   drush_print(file_get_contents($filename));
+}
+
+/**
+ * Command argument complete callback. Provides argument
+ * values for shell completion.
+ *
+ * @return
+ *  Array of popular fillings.
+ */
+function sandwich_make_me_a_sandwich_complete() {
+  return array('values' => array('turkey', 'cheese', 'jelly', 'butter'));
 }

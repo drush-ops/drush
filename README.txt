@@ -65,6 +65,10 @@ STANDARD CONFIGURATION:
 
   $ which drush
 
+5. Optional. See top of drush.complete.sh file for instructions adding bash completion for drush
+command to your shell. Once configured, completion works for site aliases, command names,
+shell aliases, global  options, and command-specific options.
+
 
 ADDITIONAL CONFIGURATIONS FOR MAMP:
 -----------------------------------
@@ -83,7 +87,7 @@ If you want to use php 5.3.x, add this line instead
   export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.3/bin:$PATH"
 
 If you have MAMP v.1.84 or lower, this configuration will work for both version of php:
-  
+
   export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5/bin:$PATH"
 
 Additionally, you may need to adjust your php.ini settings before you can use
@@ -160,12 +164,12 @@ disable_classes are empty.
 
 INSTALLING DRUSH ON WINDOWS:
 ----------------------------
-Windows support is improving, but is still lacking! Consider using on 
+Windows support is improving, but is still lacking! Consider using on
 Linux/Unix/OSX using Virtualbox or other virtual machine.
 
 There is a Windows msi installer for drush available at:
 
-    http://drush.ws/drush_windows_installer.  
+    http://drush.ws/drush_windows_installer.
 
 Please see that page for more information on running Drush on Windows.
 
@@ -261,7 +265,7 @@ COMMANDS
 Drush can be extended to run your own commands. Writing a Drush command is no harder
 than writing simple Drupal modules, since they both follow the same structure.
 
-See sandwich.drush.inc for light details on the internals of a Drush command file.
+See examples/sandwich.drush.inc for light details on the internals of a Drush command file.
 Otherwise, the core commands in Drush are good models for your own commands.
 
 You can put your Drush command file in a number of places:
