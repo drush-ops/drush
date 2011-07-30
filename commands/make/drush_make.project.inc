@@ -348,6 +348,8 @@ class DrushMakeProject_Library extends DrushMakeProject {
   }
   // No recursion for libraries, sorry :-(
   function recurse() {}
+  // Neither translations.
+  function getTranslations() {}
 }
 
 class DrushMakeProject_Module extends DrushMakeProject {
@@ -360,7 +362,7 @@ class DrushMakeProject_Module extends DrushMakeProject {
 class DrushMakeProject_Profile extends DrushMakeProject {
   protected function __construct(&$project) {
     parent::__construct($project);
-    $this->contrib_destination = ($this->destination ? $this->destination : 'profiles');
+    $this->contrib_destination = (!empty($this->destination) ? $this->destination : 'profiles');
   }
 
   protected function buildPath($directory) {
