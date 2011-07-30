@@ -14,6 +14,11 @@
 
 class siteUpgradeCase extends Drush_CommandTestCase {
   function testUpgrade() {
+    if (strpos(UNISH_DB_URL, 'sqlite') !== FALSE) {
+      $this->markTestSkipped('Drupal 6 does not run on SQLite.');
+      return;
+    }
+
     $sites = $this->setUpDrupal(1, TRUE, '6');
     $root = $this->webroot();
 

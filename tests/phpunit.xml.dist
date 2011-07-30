@@ -10,6 +10,7 @@
     <!--DB User must have create/drop permissions-->
     <!-- <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/> -->
     <!-- <var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
+    <!-- <var name="UNISH_DB_URL" value="sqlite://none/of/this/matters"/> -->
 
     <!--User must have write permissions to this directory.-->
     <!--If not supplied, defaults to sys_get_tmp_dir().-->

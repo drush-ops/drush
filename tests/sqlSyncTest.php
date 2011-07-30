@@ -18,6 +18,11 @@ class sqlSyncTest extends Drush_CommandTestCase {
    * General handling of site aliases will be in sitealiasTest.php.
    */
   public function testLocalSqlSync() {
+    if (strpos(UNISH_DB_URL, 'sqlite') !== FALSE) {
+      $this->markTestSkipped('SQL Sync does not apply to SQLite.');
+      return;
+    }
+
     $sites = $this->setUpDrupal(2, TRUE);
     $dump_dir = UNISH_SANDBOX . "/dump-dir";
     mkdir($dump_dir);

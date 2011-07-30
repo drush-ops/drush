@@ -632,18 +632,18 @@ function sitealias_get_databases_from_record(&$alias_record) {
  * which will be used to first add the database information to the
  * alias records, invoking sql-conf to look them up if necessary.
  *
- * The options 'database' and 'target' are used to specify which 
- * specific database should be fetched from the database record; 
+ * The options 'database' and 'target' are used to specify which
+ * specific database should be fetched from the database record;
  * they may appear in the alias definition, or may be taken from the
  * command line options.  The values 'default' and 'default' are
  * used if these options are not specified in either location.
  *
  * Note that in the context of sql-sync, the site alias record will
- * be taken from one of the source or target aliases 
- * (e.g. `drush sql-sync @source @target`), which will be overlayed with 
+ * be taken from one of the source or target aliases
+ * (e.g. `drush sql-sync @source @target`), which will be overlayed with
  * any options that begin with 'source-' or 'target-', respectively.
  * Therefore, the commandline options 'source-database' and 'source-target'
- * (or 'target-database' and 'source-target') may also affect the operation 
+ * (or 'target-database' and 'source-target') may also affect the operation
  * of this function.
  */
 function drush_sitealias_get_db_spec(&$alias_record, $default_to_self = FALSE) {
@@ -1316,6 +1316,7 @@ function drush_convert_db_from_db_url($db_url) {
     'pass' => NULL,
     'host' => NULL,
     'port' => NULL,
+    'path' => NULL,
     'database' => NULL,
   );
   $url = (object)array_map('urldecode', $url);
@@ -1324,10 +1325,10 @@ function drush_convert_db_from_db_url($db_url) {
     'username' => $url->user,
     'password' => $url->pass,
     'port' => $url->port,
-    'host' => $url->host,
+    'host' => $url->scheme == 'sqlite' ? '' : $url->host,
     // Remove leading / character from database names, unless we're installing
     // to SQLite (which won't have a slash there unless it's part of a path).
-    'database' => $url->scheme === 'sqlite' ? $url->path : substr($url->path, 1)
+    'database' => $url->scheme == 'sqlite'  ? $url->host  . $url->path : substr($url->path, 1),
   );
 }
 
@@ -1702,7 +1703,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   // When calculating a path for use with rsync, we must correct
   // absolute paths in the form c:\path when cwrsync is in use.
   $path = drush_correct_absolute_path_for_exec($path, $os);
-  
+
   // If there is a $machine component, to the path, then
   // add it to the beginning
   $evaluated_path = drush_escapeshellarg($path, $os);

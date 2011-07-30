@@ -98,7 +98,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   }
   else {
     $first = current($full);
-    $prefix = count($sites_subdirs) > 1 ? 'multiple_sites' : $first['default']['default']['database'];
+    $prefix = count($sites_subdirs) > 1 ? 'multiple_sites' : str_replace('/', '-', $first['databases']['default']['default']['database']);
   }
   $temp_dest_name = "$prefix.$date.tar";
 
@@ -171,7 +171,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
     foreach ($alias['databases'] as $dbkey => $target) {
       // Use a subdirectory name matching the docroot name.
       drush_mkdir("{$tmp}/{$docroot}");
-      $result_file = "{$tmp}/{$target['default']['database']}.sql";
+      $result_file = $tmp . '/' . basename($target['default']['database']) . '.sql';
       $table_selection = drush_sql_get_table_selection();
       list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $target['default'], $result_file);
       drush_shell_exec($dump_exec);
@@ -207,7 +207,8 @@ function drush_archive_dump($sites_subdirs = '@self') {
     );
     // Add info for each DB connection (usually only 1);
     foreach ($alias['databases'] as $dbkey => $target) {
-      $site["database-$dbkey-file"] = './' . $target['default']['database'] . '.sql';
+      // basename() is for sqlite's sake.
+      $site["database-$dbkey-file"] = './' . basename($target['default']['database'] . '.sql');
       $site["database-$dbkey-driver"] = $target['default']['driver'];
     }
     // The section title is the sites subdirectory name.

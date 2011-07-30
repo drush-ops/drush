@@ -408,7 +408,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
       // Postgres or MySQL equivalents. We may be able to fake some in the
       // future, but for now, let's just support simple dumps.
       $exec .= ' ".dump"';
-      if ($file = drush_get_option('result-file')) {
+      if ($file) {
         $exec .= ' > '. $file;
       }
       break;
@@ -663,8 +663,7 @@ function drush_sql_sanitize() {
 
 /**
  * Get a database specification for the active DB connection. Honors the
- * 'database' and 'target command' line options. If not in a Drupal site,
- * honors a --db-url option.
+ * 'database' and 'target command' line options. Honors a --db-url option.
  *
  * @return
  *   An info array describing a database target.
@@ -673,30 +672,27 @@ function _drush_sql_get_db_spec() {
   $database = drush_get_option('database', 'default');
   $target = drush_get_option('target', 'default');
 
-  // Use --db-url if present.
   if ($url = drush_get_option('db-url')) {
     $url =  is_array($url) ? $url[$database] : $url;
     $db_spec = drush_convert_db_from_db_url($url);
     $db_spec['db_prefix'] = drush_get_option('db-prefix');
     return $db_spec;
   }
-
-  // Otherwise, read settings.php.
-  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-  switch (drush_drupal_major_version()) {
-    case 6:
-      $url = isset($GLOBALS['db_url']) ? $GLOBALS['db_url'] : drush_get_option('db-url', NULL);
-      $url =  is_array($url) ? $url[$database] : $url;
-      $db_spec = drush_convert_db_from_db_url($url);
-      $db_spec['db_prefix'] = isset($GLOBALS['db_prefix']) ? $GLOBALS['db_prefix'] : drush_get_option('db-prefix', NULL);
-      return $db_spec;
-
-    default:
-      // We don't use DB API here `sql-sync` would have to messily addConnection.
-      if (!isset($GLOBALS['databases']) || !array_key_exists($database, $GLOBALS['databases']) || !array_key_exists($target, $GLOBALS['databases'][$database])) {
-        return NULL;
-      }
-      return $GLOBALS['databases'][$database][$target];
+  elseif (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+    switch (drush_drupal_major_version()) {
+      case 6:
+        $url = isset($GLOBALS['db_url']) ? $GLOBALS['db_url'] : drush_get_option('db-url', NULL);
+        $url =  is_array($url) ? $url[$database] : $url;
+        $db_spec = drush_convert_db_from_db_url($url);
+        $db_spec['db_prefix'] = isset($GLOBALS['db_prefix']) ? $GLOBALS['db_prefix'] : drush_get_option('db-prefix', NULL);
+        return $db_spec;
+      default:
+        // We don't use DB API here `sql-sync` would have to messily addConnection.
+        if (!isset($GLOBALS['databases']) || !array_key_exists($database, $GLOBALS['databases']) || !array_key_exists($target, $GLOBALS['databases'][$database])) {
+          return NULL;
+        }
+        return $GLOBALS['databases'][$database][$target];
+    }
   }
 }
 
@@ -884,7 +880,7 @@ function _drush_sql_get_credentials($db_spec = NULL) {
       // SQLite doesn't do user management, instead relying on the filesystem
       // for that. So the only info we really need is the path to the database
       // file, and not as a "--key=value" parameter.
-      return ' ' . $db_spec['database'];
+      return ' '  .  $db_spec['database'];
       break;
 
     case 'sqlsrv':
@@ -1042,6 +1038,7 @@ function drush_sql_su($db_spec, $site_alias_record = NULL) {
  *   in a Windows shell. Set TRUE of the CREATE is not running on the bash command line.
  */
 function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
+  $sql = array();
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
       $dbname = $quoted ? '`' . $db_spec['database'] . '`' : $db_spec['database'];
@@ -1066,8 +1063,11 @@ function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
  * @return boolean
  */
 function drush_sql_db_exists($db_spec) {
-  $connect_yes_db = _drush_sql_connect($db_spec);
+  if  ($db_spec['driver'] == 'sqlite') {
+    return file_exists($db_spec['database']);
+  }
 
+  $connect_yes_db = _drush_sql_connect($db_spec);
   $database = $db_spec['database'];
   unset($db_spec['database']);
   $connect_no_db = _drush_sql_connect($db_spec);
@@ -1082,8 +1082,6 @@ function drush_sql_db_exists($db_spec) {
       drush_shell_exec("$connect_no_db -t -c \"$sql\"");
       $output = drush_shell_exec_output();
       return (bool)$output[0];
-    case 'sqlite':
-      return file_exists($database);
     case 'sqlsrv':
       // TODO: untested, but the gist is here.
       $sql = "if db_id('$database') IS NOT NULL print 1";

@@ -130,6 +130,10 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return getenv('CACHE_PREFIX') . '/' . $subdir;
   }
 
+  function db_url($env) {
+    return substr(UNISH_DB_URL, 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : UNISH_DB_URL . '/unish_' . $env;
+  }
+
   function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = '7', $profile = NULL) {
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
@@ -138,7 +142,8 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     if (is_null($profile)) {
       $profile = substr($version_string, 0, 1) >= 7 ? 'testing' : 'default';
     }
-    $cache_keys = array($num_sites, $install ? 'install' : 'noinstall', $version_string, $profile);
+    $db_driver = parse_url(UNISH_DB_URL, PHP_URL_SCHEME);
+    $cache_keys = array($num_sites, $install ? 'install' : 'noinstall', $version_string, $profile, $db_driver);
     $source = $this->directory_cache('environments') . '/' . implode('-', $cache_keys) . '.tar.gz';
     if (file_exists($source)) {
       $this->log('Cache HIT. Environment: ' . $source, 'verbose');
@@ -162,7 +167,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     // Stash details about each site.
     foreach ($sites_subdirs as $subdir) {
       $this->sites[$subdir] = array(
-        'db_url' => UNISH_DB_URL . '/unish_' . $subdir,
+        'db_url' => $this->db_url($subdir),
       );
       // Make an alias for the site
       $alias_definition = array($subdir => array('root' => $root,  'uri' => $subdir));
@@ -191,7 +196,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     if ($install) {
       $options = array(
         'root' => $root,
-        'db-url' => UNISH_DB_URL . '/unish_' . $env,
+        'db-url' => $this->db_url($env),
         'sites-subdir' => $env,
         'yes' => NULL,
         'quiet' => NULL,

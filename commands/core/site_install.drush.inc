@@ -23,7 +23,7 @@ function drush_core_pre_site_install() {
   }
   if ($sites_subdir = drush_get_option('sites-subdir')) {
     // Needed so that we later bootstrap into the right site.
-    drush_set_option('uri', 'http://'.$sites_subdir);
+    drush_set_option('uri', 'http://' . $sites_subdir);
   }
   else {
     $sites_subdir = 'default';
