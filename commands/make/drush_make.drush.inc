@@ -440,7 +440,7 @@ function drush_make_version() {
 /**
  * Drush callback; make a makefile from the current install.
  */
-function drush_drush_make_make_generate($file) {
+function drush_drush_make_make_generate($file = NULL) {
   include_once 'drush_make.generate.inc';
   _drush_make_generate($file);
 }

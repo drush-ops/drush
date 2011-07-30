@@ -6,7 +6,10 @@ include_once drupal_get_path('module', 'system') . '/system.install';
 /**
  * Drush callback; generate makefile from the current build.
  */
-function _drush_make_generate($file) {
+function _drush_make_generate($file = NULL) {
+  if (!$file) {
+    drush_die('Missing filename');
+  }
   // What projects should we pin the versions for?
   // Check the command-line options for details
   foreach(array("include", "exclude") as $option) {
