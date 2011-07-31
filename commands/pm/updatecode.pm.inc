@@ -97,7 +97,7 @@ function drush_pm_updatecode() {
       else {
         $update_info[$name]['status'] = DRUSH_PM_REQUESTED_UPDATE;
       }
-      // Set the candidate version to the requested release
+      // Set the candidate version to the requested release.
       $update_info[$name]['candidate_version'] = $release['version'];
     }
   }
@@ -105,7 +105,8 @@ function drush_pm_updatecode() {
   // Table headers.
   $rows[] = array(dt('Name'), dt('Installed version'), dt('Proposed version'), dt('Status'));
 
-  // Process releases, notifying user of status and building a list of proposed updates
+  // Process releases, notifying user of status and
+  // building a list of proposed updates.
   $updateable = pm_project_filter($update_info, $rows, $security_only);
 
   // Pipe preparation.
@@ -118,7 +119,7 @@ function drush_pm_updatecode() {
       $pipe .= str_replace(' ', '-', pm_update_filter($project)). "\n";
     }
     drush_print_pipe($pipe);
-    // Automatically curtail update process if in pipe mode
+    // Automatically curtail update process if in pipe mode.
     $updateable = array();
   }
 
@@ -133,7 +134,8 @@ function drush_pm_updatecode() {
   drush_print($contents);
   drush_print();
 
-  // If specific project updates were requested then remove releases for all others
+  // If specific project updates were requested then remove releases for all
+  // others.
   if (!empty($requests)) {
     foreach ($updateable as $name => $project) {
       if (!isset($requests[$name])) {
@@ -142,7 +144,13 @@ function drush_pm_updatecode() {
     }
   }
 
-  // If there are any locked projects that were not requested, then remove them
+  // Prevent update of core if --no-core was specified.
+  if (isset($updateable['drupal']) && drush_get_option('no-core', FALSE)) {
+    unset($updateable['drupal']);
+    drush_print(dt('Skipping core update (--no-core specified).'));
+  }
+
+  // If there are any locked projects that were not requested, then remove them.
   if (!empty($locked_list)) {
     foreach ($updateable as $name => $project) {
       if ((isset($locked_list[$name])) && (!isset($requests[$name]))) {
@@ -156,8 +164,8 @@ function drush_pm_updatecode() {
   if (drush_get_option('self-update', TRUE)) {
     $drush_update_available = drush_check_self_update();
   }
-  
-  // Do no updates in simulated mode
+
+  // Do no updates in simulated mode.
   if (drush_get_context('DRUSH_SIMULATE')) {
     return drush_log(dt('No action taken in simulated mode.'), 'ok');
     return TRUE;
@@ -184,12 +192,7 @@ function drush_pm_updatecode() {
       else {
         drush_print(dt("NOTE: A code update for the Drupal core is available."));
       }
-      if (drush_get_option('no-core', FALSE)) {
-        drush_print(dt('Skipping core update (--no-core specified).'));
-      }
-      else {
-        drush_print(dt("Drupal core will be updated after all of the non-core modules are updated.\n"));
-      }
+      drush_print(dt("Drupal core will be updated after all of the non-core modules are updated.\n"));
     }
   }
 
@@ -214,7 +217,7 @@ function drush_pm_updatecode() {
   }
 
   // After projects are updated we can update core.
-  if ($core_update_available && !drush_get_option('no-core', FALSE)) {
+  if ($core_update_available) {
     drush_print();
     return _pm_update_core($drupal_project, $tmpfile);
   }
