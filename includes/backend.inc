@@ -803,7 +803,7 @@ function _drush_backend_argument_string($data, $os = NULL) {
   $options = array();
 
   foreach ($data as $key => $value) {
-    if (!is_array($value) && !is_object($value) && !is_null($value) && ($value != '')) {
+    if (!is_array($value) && !is_object($value) && !is_null($value)) {
       if (substr($key,0,1) != '#') {
         $options[$key] = $value;
       }
