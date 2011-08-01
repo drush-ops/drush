@@ -110,7 +110,7 @@ function drush_upgrade_site_upgrade_check_parameters($target_key = NULL) {
  *
  * This runs bootstrapped to the SOURCE site.
  */
-function drush_upgrade_site_upgrade($target_key) {
+function drush_upgrade_site_upgrade($target_key = NULL) {
   // Presume we are ready to go (n.b. some checks already performed in 'validate')
   $ready_to_upgrade = TRUE;
   $result = TRUE;
