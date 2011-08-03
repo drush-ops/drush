@@ -378,12 +378,12 @@ class DrushFileCache implements DrushCacheInterface {
     $bin_dir = $this->cacheDirectory();
     $files = array();
     if (empty($cid)) {
-      drush_delete_dir($bin_dir);
+      drush_delete_dir($bin_dir, TRUE);
     }
     else {
       if ($wildcard) {
         if ($cid == '*') {
-          drush_delete_dir($bin_dir);
+          drush_delete_dir($bin_dir, TRUE);
         }
         else {
           $matches = drush_scan_directory($bin_dir, "/^$cid/", array('.', '..'));
