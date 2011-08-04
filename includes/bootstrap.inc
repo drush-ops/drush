@@ -318,6 +318,9 @@ function drush_bootstrap_to_phase($max_phase_index) {
  *
  * @param $max_phase_index
  *   Only attempt bootstrap to the specified level.
+ *
+ *  @return int
+ *    The maximum phase to which we bootstrapped.
  */
 function drush_bootstrap_max($max_phase_index = FALSE) {
   $phases = _drush_bootstrap_phases();

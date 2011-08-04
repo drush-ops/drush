@@ -304,6 +304,19 @@ function core_help_complete() {
  * Command argument complete callback.
  *
  * @return
+ *   Array of available profile names.
+ */
+function core_site_install_complete() {
+  $max = drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_ROOT);
+  if ($max >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
+    return array('values' => array_keys(drush_find_profiles(DRUPAL_ROOT)));
+  }
+}
+
+/**
+ * Command argument complete callback.
+ *
+ * @return
  *  Array of available site aliases.
  */
 function core_core_rsync_complete() {

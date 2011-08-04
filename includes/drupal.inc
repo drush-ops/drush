@@ -118,3 +118,7 @@ function _drush_log_update_sql($ret) {
     }
   }
 }
+
+function drush_find_profiles($drupal_root , $key = 'name') {
+  return drush_scan_directory($drupal_root . '/profiles', "/.*\.profile$/", array('.', '..', 'CVS', 'tests'), 0, 2, $key);
+}

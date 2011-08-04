@@ -3,7 +3,7 @@
 # BASH completion script for Drush.
 #
 # Place this in your /etc/bash_completion.d/ directory or source it from your
-# ~/.bash_completion file.
+# ~/.bash_completion or ~/.bash_profile  files.
 
 # Ensure drush is available.
 have drush || return

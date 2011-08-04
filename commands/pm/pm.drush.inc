@@ -907,7 +907,7 @@ function drush_pm_disable() {
     return drush_set_error('DRUSH_PM_DISABLE_EXTENSION_ISSUE', dt('There was a problem disabling !extension.', array('!extension' => implode(',', $problem_extensions))));
   }
 }
-  
+
 /**
  * Add extensions that match extension_name*.
  *
@@ -1960,7 +1960,7 @@ function drush_pm_extensions_in_project($project) {
     }
     // Special case: find profiles for drupal < 7.x (no .info)
     if ($project['drupal_version'][0] < 7) {
-      foreach (drush_scan_directory($project['project_install_location'], "/.*\.profile$/", $nomask) as $filename => $info) {
+      foreach (drush_find_profiles($project['project_install_location']) as $filename => $info) {
         $found['profile'][] = $info->name;
       }
     }
