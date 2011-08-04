@@ -31,25 +31,25 @@ function drush_pm_download_validate() {
   // Validate --variant or enforce a sane default.
   $variant = drush_get_option('variant', FALSE);
   if ($variant) {
-    if (!in_array($variant, array('core', 'no-core', 'make'))) {
+    if (!in_array($variant, array('full', 'projects', 'profile-only'))) {
       drush_log(dt('Unknown variant !variant. Valid values: !variations', array('!variant' => $variant, '!variations' => implode(', ', $variations))), 'error');
     }
   }
-  // core and no-core variants are only valid for wget package handler.
+  // full and projects variants are only valid for wget package handler.
   $package_handler = drush_get_option('package-handler', 'wget');
-  if (($package_handler != 'wget') && ($variant != 'make')) {
-    $new_variant = 'make';
+  if (($package_handler != 'wget') && ($variant != 'profile-only')) {
+    $new_variant = 'profile-only';
     if ($variant) {
       drush_log(dt('Variant !variant is incompatible with !ph package-handler.', array('!variant' => $variant, '!ph' => $package_handler)), 'warning');
     }
   }
-  // If we are working on a drupal root, core variant is not an option.
+  // If we are working on a drupal root, full variant is not an option.
   else if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
-    if ((!$variant) || (($variant == 'core') && (!isset($new_variant)))) {
-      $new_variant = 'no-core';
+    if ((!$variant) || (($variant == 'full') && (!isset($new_variant)))) {
+      $new_variant = 'projects';
     }
-    if ($variant == 'core') {
-      drush_log(dt('Variant core is not a valid option within a Drupal root.'), 'warning');
+    if ($variant == 'full') {
+      drush_log(dt('Variant full is not a valid option within a Drupal root.'), 'warning');
     }
   }
 
@@ -463,4 +463,3 @@ function _pm_download_destination($type) {
 
   return $destination;
 }
-

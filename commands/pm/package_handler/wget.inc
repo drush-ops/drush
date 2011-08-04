@@ -33,7 +33,7 @@ function package_handler_validate() {
  * @param $release The release details array from drupal.org.
  */
 function package_handler_download_project(&$request, $release) {
-  // Install profiles come in 3 variants. User may specify which one she wants.
+  // Install profiles come in several variants. User may specify which one she wants.
   if ($request['project_type'] == 'profile') {
     // @todo Use xpath to get the right file url.
     $files = $release['files'];
