@@ -755,6 +755,11 @@ function _drush_bootstrap_drupal_configuration() {
 
   drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
 
+  // Unset drupal error handler and restore drush's one.
+  if (drush_drupal_major_version() >= 7) {
+    restore_error_handler();
+  }
+
   // Overriding the $conf array from drupal CONFIGURATION bootstrap with the
   // Overrides we collected on the loaded config files on DRUSH_BOOTSTRAP_DRUSH
   $conf = is_array($conf) && is_array($drush_conf_override) ? array_merge($conf, $drush_conf_override) : $conf;
@@ -836,6 +841,12 @@ function _drush_bootstrap_drupal_full() {
   if (!drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_end_clean();
   }
+
+  // Unset drupal error handler and restore drush's one.
+  if (drush_drupal_major_version() == 6) {
+    restore_error_handler();
+  }
+
   // If needed, prod module_implements() to recognize our system_watchdog() implementation.
   $dogs = module_implements('watchdog');
   if (!in_array('system', $dogs)) {
