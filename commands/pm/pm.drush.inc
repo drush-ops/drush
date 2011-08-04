@@ -408,6 +408,21 @@ function drush_get_projects(&$extensions = NULL) {
 }
 
 /**
+ * Returns a list of enabled modules.
+ *
+ * This is a simplified version of module_list().
+ */
+function pm_module_list() {
+  $enabled = array();
+  $rsc = drush_db_select('system', 'name', 'type=:type AND status=:status', array('type' => 'module', 'status' => 1));
+  while ($row = drush_db_result($rsc)) {
+    $enabled[$row] = $row;
+  }
+
+  return $enabled;
+}
+
+/**
  * @} End of "defgroup extensions".
  */
 
@@ -569,10 +584,11 @@ function drush_pm_enable() {
   drush_include_engine('drupal', 'update');
   $args = _convert_csv_to_array(func_get_args());
 
+  $extension_info = drush_get_extensions();
+
   $recheck = TRUE;
   while ($recheck) {
     $recheck = FALSE;
-    $extension_info = drush_get_extensions();
 
     // Classify $args in themes, modules or unknown.
     $modules = array();
@@ -655,9 +671,7 @@ function drush_pm_enable() {
     if (!$dependencies_ok) {
       return FALSE;
     }
-    $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
-    $modules = array_diff(array_merge($modules, $all_dependencies), $enabled);
-
+    $modules = array_diff(array_merge($modules, $all_dependencies), pm_module_list());
     // Discard modules which doesn't meet requirements.
     require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
     foreach ($modules as $key => $module) {
@@ -692,10 +706,7 @@ function drush_pm_enable() {
   // Enable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_enable($modules);
-    $current = drupal_map_assoc($enabled, 'pm_true');
-    $processed = drupal_map_assoc($modules, 'pm_true');
-    $active_modules = array_merge($current, $processed);
-    drush_system_modules_form_submit($active_modules);
+    drush_system_modules_form_submit(pm_module_list());
   }
 
   // Inform the user of final status.
@@ -767,10 +778,8 @@ function drush_pm_disable() {
 
   if (!empty($modules)) {
     // Add enabled dependents to the list of modules to disable.
-    $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
     $dependents = drush_module_dependents($modules, $extension_info);
-    $dependents = array_unique($dependents);
-    $dependents = array_intersect($dependents, $enabled);
+    $dependents = array_intersect($dependents, pm_module_list());
     $modules = array_merge($modules, $dependents);
 
     // Discard required modules.
@@ -806,9 +815,7 @@ function drush_pm_disable() {
   // Disable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_disable($modules);
-    $active_modules = array_diff($enabled, $modules);
-    $active_modules = drupal_map_assoc($active_modules, 'pm_true');
-    drush_system_modules_form_submit($active_modules);
+    drush_system_modules_form_submit(pm_module_list());
   }
 
   // Inform the user of final status.
@@ -826,7 +833,7 @@ function drush_pm_disable() {
     return drush_set_error('DRUSH_PM_DISABLE_EXTENSION_ISSUE', dt('There was a problem disabling !extension.', array('!extension' => implode(',', $problem_extensions))));
   }
 }
-
+  
 /**
  * Command callback. Show detailed info for one or more extension.
  */
@@ -1057,23 +1064,6 @@ function drush_pm_uninstall() {
   foreach ($modules as $module) {
     drush_log(dt('!module was successfully uninstalled.', array('!module' => $module)), 'ok');
   }
-}
-
-/**
- * Array filter callback to return enabled modules.
- *
- * @param $module
- *  A module object as returned by drush_get_modules().
- */
-function pm_is_enabled($module) {
-  return $module->status;
-}
-
-/**
- * Callback helper.
- */
-function pm_true() {
-  return TRUE;
 }
 
 /**
@@ -1617,7 +1607,7 @@ function drush_pm_updatecode_postupdate() {
   drupal_load_updates();
 
   // @see system_requirements().
-  foreach (module_list() as $module) {
+  foreach (pm_module_list() as $module) {
     $updates = drupal_get_schema_versions($module);
     if ($updates !== FALSE) {
       $default = drupal_get_installed_schema_version($module);
