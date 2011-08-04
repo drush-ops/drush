@@ -18,6 +18,19 @@ function drush_get_modules() {
 }
 
 /**
+ * Returns drupal required modules, including modules declared as required dynamically.
+ */
+function _drush_drupal_required_modules($module_info) {
+  $required = drupal_required_modules();
+  foreach ($module_info as $name => $module) {
+    if (isset($module->info['required']) && $module->info['required']) {
+      $required[] = $name;
+    }
+  }
+  return array_unique($required);
+}
+
+/**
  * Return dependencies and its status for modules.
  *
  * @param $modules

@@ -848,7 +848,7 @@ function drush_pm_disable() {
     $modules = array_merge($modules, $dependents);
 
     // Discard required modules.
-    $required = drupal_required_modules();
+    $required = drush_drupal_required_modules($extension_info);
     foreach ($required as $module) {
       if (isset($modules[$module])) {
         unset($modules[$module]);
@@ -939,7 +939,7 @@ function drush_pm_uninstall() {
 
   drush_include_engine('drupal', 'environment');
   $module_info = drush_get_modules();
-  $required = drupal_required_modules();
+  $required = drush_drupal_required_modules($module_info);
 
   // Discards modules which are enabled, not found or already uninstalled.
   foreach ($modules as $key => $module) {
