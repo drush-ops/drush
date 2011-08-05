@@ -278,9 +278,9 @@ function drush_save_data_to_temp_file($data) {
  * path is not valid in some setups for Mac.
  */
 function drush_find_tmp() {
-  static $temporary_directory = NULL;
+  static $temporary_directory;
 
-  if (is_null($temporary_directory)) {
+  if (!isset($temporary_directory)) {
     $directories = array();
 
     // Operating system specific dirs.
@@ -297,7 +297,10 @@ function drush_find_tmp() {
       }
       $windir = getenv('WINDIR');
       if (isset($windir)) {
-        $directories[] = $windir;
+        // WINDIR itself is not writable, but it always contains a /Temp dir,
+        // which is the system-wide temporary directory on older versions. Newer
+        // versions only allow system processes to use it.
+        $directories[] = $windir . '/Temp';
       }
     }
     else {

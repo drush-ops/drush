@@ -58,10 +58,12 @@
 // See https://git.wiki.kernel.org/index.php/Aliases#Advanced.
 // For best success, define these in drushrc files located in #6-3 above.
 # $options['shell-aliases'] = array(
-#   'pull' => '!git pull', // we've all done it.
+#   'pull' => '!git pull', // We've all done it.
 #   'pulldb' => '!git pull && drush updatedb',
 #   'noncore' => 'pm-list --no-core',
 #   'wipe' => 'cache-clear all',
+#    // Add a 'pm-clone'  to simplify (cached) git cloning from drupal.org.
+#   'pm-clone' => 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg --cache' ,
 # );
 
 // Load a drushrc.php configuration file from the current working directory.
