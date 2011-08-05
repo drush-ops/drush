@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Examples of valid statements for a drushrc.php file. Use this file to cut down on
  * typing of options and avoid mistakes.
  *
@@ -61,14 +61,14 @@
 # $options['shell-aliases']['pulldb'] = '!git pull && drush updatedb';
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';
 # $options['shell-aliases']['wipe'] = 'cache-clear all';
-#  // Add a 'pm-clone'  to simplify (cached) git cloning from drupal.org.
-# $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg --cache' ;
+// Add a 'pm-clone' to simplify (cached) git cloning from drupal.org.
+# $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg --cache';
 
 // Load a drushrc.php configuration file from the current working directory.
 # $options['c'] = '.';
 
 // Disable the nag warning for Windows.
-// Consider improving Windows support: http://drupal.org/node/766080.
+// @see http://drupal.org/node/766080
 # $options['check_os'] = FALSE;
 
 // Control automatically check for updates in pm-updatecode and drush version.
@@ -102,13 +102,13 @@
 // Specify directory where sql-dump should store backups of database
 // dumps.  @DATABASE is replaced with the name of the database being
 // dumped, and @DATE is replaced with the current time and date of the
-// dump.  TRUE will cause sql-dump to use the same backup directory that
-// pm-updatecode does.
-//
+// dump.
 // If set, this can be explicitly overridden by specifying --result-file
 // on the commandline.  The default behavior of dumping to
 // STDOUT can be achieved via --result-file=0
 # $options['result-file'] = '/path/to/backup/dir/@DATABASE_@DATE.sql';
+// TRUE will cause sql-dump to use the same backup directory that pm-updatecode
+// does.
 # $options['result-file'] = TRUE;
 
 // Enable verbose mode.
@@ -117,12 +117,14 @@
 // Show database passwords in 'status' and 'sql-conf' commands
 # $options['show-passwords'] = 1;
 
-// Default logging level for php notices.  Defaults to "notice"; set to "warning"
-// if doing drush development.  Also make sure that error_reporting is set to E_ALL
-// in your php configuration file.  See 'drush status' for the path to your php.ini file.
+// Default logging level for PHP notices. Defaults to "notice".
+// Set to "warning" when doing drush development. Also make sure that
+// error_reporting is set to E_ALL in your php configuration file.
+// See 'drush status' for the path to your php.ini file.
 # $options['php-notices'] = 'warning';
 
-// Specify options to pass to ssh in backend invoke. (Default is to prohibit password authentication; uncomment to change)
+// Specify options to pass to ssh in backend invoke.
+// Default is to prohibit password authentication.
 # $options['ssh-options'] = '-o PasswordAuthentication=no';
 
 // Set 'remote-os' to 'Windows' to make drush use Windows shell escape
@@ -135,63 +137,57 @@
 // version of rsync installed on any system you are using with
 // drush).  Note that drush requires at least rsync version 2.6.4
 // for some functions to work correctly.
-//
 // Note that this option can also be set in a site alias.  This
 // is preferable if newer versions of rsync are available on some
 // of the systems you use.
 // See: http://drupal.org/node/955092
 # $options['rsync-version'] = '2.6.9';
 
-/*
-* The output charset suitable to pass to iconv PHP function as out_charset
-* parameter. Drush will convert its output from UTF-8 to the charset specified
-* here. It is possible to use //TRANSLIT and //IGNORE charset name suffixes
-* (see iconv documentation). If not defined conversion will not be performed.
-*/
+/**
+ * The output charset suitable to pass to iconv PHP function as out_charset parameter.
+ *
+ * Drush will convert its output from UTF-8 to the charset specified here. It is
+ * possible to use //TRANSLIT and //IGNORE charset name suffixes (see iconv
+ * documentation). If not defined conversion will not be performed.
+ */
 # $options['output_charset'] = 'ISO-8859-1';
 # $options['output_charset'] = 'KOI8-R//IGNORE';
 # $options['output_charset'] = 'ISO-8859-1//TRANSLIT';
 
-/*
- * Multiple command execution options
+/**
+ * Multiple command execution options.
+ *
+ * By default, drush will prepend the name of the site to the output of any
+ * multiple-site command execution. To disable this behavior, set the --no-label
+ * option.
  */
-// By default, drush will prepend the name of the
-// site to the output of any multiple-site command
-// execution.  To disable this behavior, set the
-// --no-label option
 # $options['no-label'] = TRUE;
 
-/*
+/**
  * Customize this associative array with your own tables. This is the list of
  * tables whose *data* is skipped by the 'sql-dump' and 'sql-sync' commands when
  * a structure-tables-key is provided. You may add new tables to the existing
  * array or add a new element.
  */
-$options['structure-tables'] = array(
- 'common' => array('cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'sessions', 'watchdog'),
-);
+# $options['structure-tables']['common'] = array('cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'sessions', 'watchdog');
 
 /**
- * Override specific entries in Drupal's 'variable' table or settings.php
- */
-# $options['variables'] = array(
-#   'site_name' => 'My Drupal site',
-#   'theme_default' => 'minnelli',
-#   'anonymous' => 'Visitor',
-# );
-
-/*
  * Customize this associative array with your own tables. This is the list of
  * tables that are entirely omitted by the 'sql-dump' and 'sql-sync' commands
  * when a skip-tables-key is provided. This is useful if your database contains
  * non Drupal tables used by some other application or during a migration for
  * example. You may add new tables to the existing array or add a new element.
  */
-$options['skip-tables'] = array(
- 'common' => array('migration_data1', 'migration_data2'),
-);
+# $options['skip-tables']['common'] = array('migration_data1', 'migration_data2');
 
-/*
+/**
+ * Override specific entries in Drupal's 'variable' table or settings.php
+ */
+# $options['variables']['site_name'] = 'My Drupal site';
+# $options['variables']['theme_default'] = 'minnelli';
+# $options['variables']['anonymous'] = 'Visitor';
+
+/**
  * Command-specific options
  *
  * To define options that are only applicable to certain commands,
