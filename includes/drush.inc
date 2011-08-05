@@ -307,12 +307,12 @@ function _convert_csv_to_array($args) {
  *   Return a reduced set of important options. Used by help command.
  *
  * @return
- *   An associative array containing the option definition as the key, 
+ *   An associative array containing the option definition as the key,
  *   and a descriptive array for each of the available options.  The array
  *   elements for each item are:
  *
  *     - short-form: The shortcut form for specifying the key on the commandline.
- *     - never-post: If TRUE, backend invoke will never POST this item's value 
+ *     - never-post: If TRUE, backend invoke will never POST this item's value
  *       on STDIN; it will always be sent as a commandline option.
  *     - never-propagate: If TRUE, backend invoke will never pass this item on
  *       to the subcommand being executed.
@@ -341,6 +341,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['user']                = array('short-form' => 'u', 'description' => dt("Specify a Drupal user to login with. May be a name or a number."));
     $options['backend']             = array('short-form' => 'b', 'never-propagate' => TRUE, 'description' => dt("Hide all output and return structured data (internal use only)."));
     $options['choice']              = array('description' => dt("Provide an answer to a multiple-choice prompt."));
+    $options['variables']           = array('description' => dt("Comma delimited list of name=value pairs. These values take precedence even over settings.php variable overrides."));
     $options['no-label']            = array('description' => dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`)."));
     $options['nocolor']             = array('context' => 'DRUSH_NOCOLOR', 'description' => dt("Suppress color highlighting on log messages."));
     $options['show-passwords']      = array('description' => dt("Show database passwords in commands that display connection information."));

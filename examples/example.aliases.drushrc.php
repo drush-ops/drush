@@ -159,6 +159,8 @@
  * - 'php': path to custom php interpreter, defaults to /usr/bin/php
  * - 'php-options': commandline options for php interpreter, you may
  *   want to set this to '-d error_reporting="E_ALL^E_DEPRECATED"'
+ * - 'variables' : An array of name/value pairs which override Drupal variables.
+ *    These values take precedence even over settings.php variable overrides.
  * - 'command-specific': These options will only be set if the alias
  *   is used with the specified command.  In the example below, the option
  *   `--no-cache` will be selected whenever the @stage alias
@@ -191,6 +193,9 @@
 #      '%files' => 'sites/mydrupalsite.com/files',
 #      '%custom' => '/my/custom/path',
 #     ),
+#     'variables => array(
+#        site_name => 'My Drupal site',
+#      ),
 #     'command-specific' => array (
 #       'sql-sync' => array (
 #         'no-cache' => TRUE,
@@ -200,6 +205,7 @@
 #$aliases['dev'] = array(
 #    'uri' => 'dev.mydrupalsite.com',
 #    'root' => '/path/to/drupal/root',
+#    'variables' => array('mail_system' => array('default-system' => 'DevelMailLog')),
 #  );
 #$aliases['server'] = array(
 #    'remote-host' => 'mystagingserver.myisp.com',

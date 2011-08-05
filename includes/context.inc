@@ -157,13 +157,6 @@ function drush_load_config_file($context, $config) {
 }
 
 function drush_set_config_options($context, $options, $override = array()) {
-  global $drush_conf_override;
-
-  // Only reset $drush_conf_override if the array is not set, otherwise keep old values and append new values to it.
-  if (!isset($drush_conf_override)) {
-    $drush_conf_override = array();
-  }
-
   // Copy 'config-file' into 'context-path', converting to an array to hold multiple values if necessary
   if (isset($options['config-file'])) {
     if (isset($options['context-path'])) {
@@ -178,29 +171,6 @@ function drush_set_config_options($context, $options, $override = array()) {
   drush_set_config_special_contexts($options);
 
   drush_set_context($context, $options);
-
-  // Instruct core not to store queries since we are not outputting them.
-  // Don't run poormanscron during drush request (D7+).
-  $defaults = array(
-    'dev_query' => FALSE,
-    'cron_safe_threshold' => 0,
-  );
-  foreach ($defaults as $key => $value) {
-    // This can be overridden by a command or a drushrc file if needed.
-    if (!isset($drush_conf_override[$key])) {
-      $drush_conf_override[$key] = $value;
-    }
-  }
-
-  /**
-   * Allow the drushrc.php file to override $conf settings.
-   * This is a separate variable because the $conf array gets
-   * initialized to an empty array, in the drupal bootstrap process,
-   * and changes in settings.php would wipe out the drushrc.php settings.
-   */
-  if (!empty($override)) {
-    $drush_conf_override = array_merge($drush_conf_override, $override);
-  }
 }
 
 /**

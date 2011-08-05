@@ -171,6 +171,15 @@ $options['structure-tables'] = array(
  'common' => array('cache', 'cache_filter', 'cache_menu', 'cache_page', 'history', 'sessions', 'watchdog'),
 );
 
+/**
+ * Override specific entries in Drupal's 'variable' table or settings.php
+ */
+# $options['variables'] = array(
+#   'site_name' => 'My Drupal site',
+#   'theme_default' => 'minnelli',
+#   'anonymous' => 'Visitor',
+# );
+
 /*
  * Customize this associative array with your own tables. This is the list of
  * tables that are entirely omitted by the 'sql-dump' and 'sql-sync' commands
@@ -223,20 +232,3 @@ $options['skip-tables'] = array(
 // you can use the regular shell command by typing in the full path
 // to the command (e.g. /bin/grep).
 # $command_specific['core-cli'] = array('override' => 'help,dd,sa');
-
-/**
- * Variable overrides:
- *
- * To override specific entries in the 'variable' table for this site,
- * set them here. Any configuration setting from the 'variable'
- * table can be given a new value. We use the $override global here
- * to make sure that changes from settings.php can not wipe out these
- * settings.
- *
- * Remove the leading hash signs to enable.
- */
-# $override = array(
-#   'site_name' => 'My Drupal site',
-#   'theme_default' => 'minnelli',
-#   'anonymous' => 'Visitor',
-# );

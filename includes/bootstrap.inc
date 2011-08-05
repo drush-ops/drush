@@ -752,9 +752,11 @@ function _drush_bootstrap_redo_drupal_site() {
  * We process and store a normalized set of database credentials
  * from the loaded configuration file, so we can validate them
  * and access them easily in the future.
+ *
+ * Also override Drupal variables as per --variables option.
  */
 function _drush_bootstrap_drupal_configuration() {
-  global $conf, $drush_conf_override;
+  global $conf;
 
   drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
 
@@ -763,9 +765,18 @@ function _drush_bootstrap_drupal_configuration() {
     restore_error_handler();
   }
 
-  // Overriding the $conf array from drupal CONFIGURATION bootstrap with the
-  // Overrides we collected on the loaded config files on DRUSH_BOOTSTRAP_DRUSH
-  $conf = is_array($conf) && is_array($drush_conf_override) ? array_merge($conf, $drush_conf_override) : $conf;
+  // Force Drupal6 not to store queries since we are not outputting them.
+  // Don't run poormanscron during Drush request (D7+).
+  $override = array(
+    'dev_query' => FALSE,
+    'cron_safe_threshold' => 0,
+  );
+  $current_override = drush_get_option_list('variables');
+  foreach ( $current_override as $pair) {
+    list($name, $value) = explode('=', $pair, 2);
+    $override[$name] = $value;
+  }
+  $conf = is_array($conf) ? array_merge($conf, $override) : $conf;
 
   // Populate the DRUSH_DB_CREDENTIALS with the fields loaded from the configuration.
   $creds = array();
