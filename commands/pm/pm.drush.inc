@@ -414,7 +414,7 @@ function drush_get_projects(&$extensions = NULL) {
  */
 function pm_module_list() {
   $enabled = array();
-  $rsc = drush_db_select('system', 'name', 'type=:type AND status=:status', array('type' => 'module', 'status' => 1));
+  $rsc = drush_db_select('system', 'name', 'type=:type AND status=:status', array(':type' => 'module', ':status' => 1));
   while ($row = drush_db_result($rsc)) {
     $enabled[$row] = $row;
   }
