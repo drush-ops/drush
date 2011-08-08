@@ -83,13 +83,19 @@ function drush_context_names() {
 /**
  * Return a list of possible drushrc file locations.
  *
+ * @context
+ *   A valid drush context from drush_context_names().
+ * @prefix
+ *   Optional. Specify a prefix to prepend to ".drushrc.php" when looking
+ *   for config files. Most likely used by contrib commands.
  * @return
  *   An associative array containing possible config files to load
  *   The keys are the 'context' of the files, the values are the file
  *   system locations.
  */
-function _drush_config_file($context) {
+function _drush_config_file($context, $prefix = NULL) {
   $configs = array();
+  $config_file = $prefix ? $prefix . '.' . 'drushrc.php' : 'drushrc.php';
 
   // Did the user explicitly specify a config file?
   if ($config = drush_get_option(array('c', 'config'))) {
@@ -100,28 +106,28 @@ function _drush_config_file($context) {
   }
 
   if ($site_path = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    $configs['site'] = $site_path . "/drushrc.php";
+    $configs['site'] = $site_path . "/" . $config_file;
   }
 
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
-    $configs['drupal'] = $drupal_root . '/drushrc.php';
+    $configs['drupal'] = $drupal_root . '/' . $config_file;
   }
 
   // in the user home directory
   if (!is_null(drush_server_home())) {
-    $configs['user'] = drush_server_home() . '/.drushrc.php';
+    $configs['user'] = drush_server_home() . '/.' . $config_file;
   }
 
   // in $HOME/.drush directory
   if (!is_null(drush_server_home())) {
-    $configs['home.drush'] = drush_server_home() . '/.drush/drushrc.php';
+    $configs['home.drush'] = drush_server_home() . '/.drush/' . $config_file;
   }
 
   // In the system wide configuration folder.
-  $configs['system'] = drush_get_context('ETC_PREFIX', '') . '/etc/drush/drushrc.php';
+  $configs['system'] = drush_get_context('ETC_PREFIX', '') . '/etc/drush/' . $config_file;
 
   // in the drush installation folder
-  $configs['drush'] = dirname(__FILE__) . '/../drushrc.php';
+  $configs['drush'] = dirname(__FILE__) . '/../' . $config_file;
 
   return empty($configs[$context]) ? '' : $configs[$context];
 }
