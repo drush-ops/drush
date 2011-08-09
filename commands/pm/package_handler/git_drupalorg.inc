@@ -182,7 +182,9 @@ function package_handler_post_download($project) {
 function drush_gitcache_check($gitcache) {
   if (is_dir(drush_server_home() . '/.drush')) {
     drush_mkdir($gitcache);
-    if (!drush_shell_cd_and_exec($gitcache, 'test $(git rev-parse --is-bare-repository) == "true"')) {
+    drush_shell_cd_and_exec($gitcache, 'git rev-parse --is-bare-repository');
+    $output = drush_shell_exec_output();
+    if (!isset($output[0]) || $output[0] != 'true') {
       drush_shell_cd_and_exec($gitcache, 'git init --bare');
       drush_shell_cd_and_exec($gitcache, 'git config core.compression 1');
     }
@@ -203,14 +205,14 @@ function drush_gitcache_add_project($gitcache, $request, $repository) {
   // On the first fetch, git will check for common commits with the remote
   // repository, so to speed this up we initially fetch from a local clone.
   $tmpdir = drush_tempdir();
-  $command = 'git clone --bare ';
+  $command = 'git clone --bare';
   if (drush_get_context('DRUSH_VERBOSE')) {
-    $command .= ' --verbose --progress ';
+    $command .= ' --verbose --progress';
   }
-  $command .= '%s';
-  if (drush_shell_cd_and_exec($tmpdir, $command, $repository)) {
+  $command .= ' %s %s';
+  if (drush_shell_cd_and_exec($tmpdir, $command, $repository, $request['name'])) {
     // Temporarily set the remote url to our temporary clone and fetch from there.
-    drush_shell_cd_and_exec($gitcache, 'git remote add %s %s && git fetch %s --tags', $request['name'], $tmpdir, $request['name']);
+    drush_shell_cd_and_exec($gitcache, 'git remote add %s %s/%s && git fetch %s --tags', $request['name'], $tmpdir, $request['name'], $request['name']);
 
     // Change the remote URL and fetch normally.
     drush_shell_cd_and_exec($gitcache, 'git remote set-url %s %s && git fetch %s --tags', $request['name'], $repository, $request['name']);
