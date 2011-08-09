@@ -17,6 +17,13 @@ function drupal_required_modules() {
 }
 
 /**
+ * Returns drupal required modules, including their dependencies.
+ */
+function _drush_drupal_required_modules($module_info) {
+  return drupal_required_modules();
+}
+
+/**
  * Get complete information for all available modules.
  *
  * We need to set the type for those modules that are not already in the system table.

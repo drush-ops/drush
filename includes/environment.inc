@@ -1380,6 +1380,14 @@ function drush_get_extensions() {
 }
 
 /**
+ *
+ */
+function drush_drupal_required_modules($modules) {
+  drush_include_engine('drupal', 'environment');
+  return _drush_drupal_required_modules($modules);
+}
+
+/**
  * Return the default theme.
  *
  * @return

@@ -774,7 +774,7 @@ function drush_pm_disable() {
     $modules = array_merge($modules, $dependents);
 
     // Discard required modules.
-    $required = drupal_required_modules();
+    $required = drush_drupal_required_modules($extension_info);
     foreach ($required as $module) {
       if (isset($modules[$module])) {
         unset($modules[$module]);
