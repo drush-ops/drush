@@ -1006,6 +1006,7 @@ function drush_pm_uninstall() {
 
   drush_include_engine('drupal', 'environment');
   $module_info = drush_get_modules();
+  $required = drupal_required_modules();
 
   // Discards modules which are enabled, not found or already uninstalled.
   foreach ($modules as $key => $module) {
@@ -1027,7 +1028,7 @@ function drush_pm_uninstall() {
     else {
       $required_by = array();
       foreach (array_keys($module_info[$module]->required_by) as $required) {
-        if ($module_info[$required]->schema_version != -1) {
+        if (!in_array($dependent, $required) && ($module_info[$dependent]->schema_version != -1)) {
           $required_by[] = $required;
         }
       }
