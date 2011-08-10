@@ -1027,9 +1027,9 @@ function drush_pm_uninstall() {
     }
     else {
       $required_by = array();
-      foreach (array_keys($module_info[$module]->required_by) as $required) {
+      foreach (array_keys($module_info[$module]->required_by) as $dependent) {
         if (!in_array($dependent, $required) && ($module_info[$dependent]->schema_version != -1)) {
-          $required_by[] = $required;
+          $required_by[] = $dependent;
         }
       }
       if (count($required_by)) {
