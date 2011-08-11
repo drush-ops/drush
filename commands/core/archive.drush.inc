@@ -27,7 +27,7 @@ function archive_drush_command() {
       'drush archive-dump default --destination=/backups/mysite.tar' => 'Save archive to custom location.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
-    'aliases' => array('ard'),
+    'aliases' => array('ard', 'archive-backup', 'arb'),
   );
   $items['archive-restore'] = array(
     'description' => 'Expand a site archive into a Drupal web site.',
