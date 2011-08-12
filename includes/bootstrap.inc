@@ -97,8 +97,6 @@ define('DRUSH_BOOTSTRAP_DRUPAL_DATABASE', 4);
 /**
  * Fully initialize Drupal.
  *
- * This is the default bootstrap phase all commands will try to reach,
- * unless otherwise specified.
  * This is analogous to the DRUPAL_BOOTSTRAP_FULL bootstrap phase in
  * Drupal.
  *
@@ -109,6 +107,9 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
 
 /**
  * Log in to the initialiased Drupal site.
+ *
+ * This is the default bootstrap phase all commands will try to reach,
+ * unless otherwise specified.
  *
  * This bootstrap phase is used after the site has been
  * fully bootstrapped.
