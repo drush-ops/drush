@@ -19,9 +19,14 @@
  *    File handle to write to.  NULL will write
  *    to standard output, STDERR will write to the standard
  *    error.  See http://php.net/manual/en/features.commandline.io-streams.php
+ * @param $newline
+ *    Add a "\n" to the end of the output.  Defaults to TRUE.
  */
-function drush_print($message = '', $indent = 0, $handle = NULL) {
-  $msg = str_repeat(' ', $indent) . (string)$message . "\n";
+function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE) {
+  $msg = str_repeat(' ', $indent) . (string)$message;
+  if ($newline) {
+    $msg .= "\n";
+  }
   if (($charset = drush_get_option('output_charset')) && function_exists('iconv')) {
     $msg = iconv('UTF-8', $charset, $msg);
   }
@@ -31,6 +36,13 @@ function drush_print($message = '', $indent = 0, $handle = NULL) {
   else {
     print $msg;
   }
+}
+
+/**
+ * Print a prompt -- that is, a message with no trailing newline.
+ */
+function drush_print_prompt($message, $indent = 0, $handle = NULL) {
+  drush_print($message, $indent, $handle, FALSE);
 }
 
 /**

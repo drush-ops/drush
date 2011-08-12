@@ -401,16 +401,16 @@ function _drush_is_drush_shebang_script($script_filename) {
  * @return TRUE if the user entered 'y', FALSE if he entered 'n'
  */
 function drush_confirm($msg, $indent = 0) {
-  drush_print(str_repeat(' ', $indent) . (string)$msg . " (y/n): ");
+  drush_print_prompt((string)$msg . " (y/n): ", $indent);
 
   // Automatically accept confirmations if the --yes argument was supplied.
   if (drush_get_context('DRUSH_AFFIRMATIVE')) {
-    drush_print("y\n");
+    drush_print("y");
     return TRUE;
   }
   // Automatically cancel confirmations if the --no argument was supplied.
   elseif (drush_get_context('DRUSH_NEGATIVE')) {
-    drush_print("n\n");
+    drush_print("n");
     return FALSE;
   }
   // See http://drupal.org/node/499758 before changing this.
@@ -424,7 +424,7 @@ function drush_confirm($msg, $indent = 0) {
     if ($line == 'n') {
       return FALSE;
     }
-    drush_print(str_repeat(' ', $indent) . (string)$msg . " (y/n): ");
+    drush_print_prompt((string)$msg . " (y/n): ", $indent);
   }
 }
 
@@ -455,7 +455,7 @@ function drush_confirm($msg, $indent = 0) {
  *   user name, use '!value (uid=!key)'.
  */
 function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') {
-  drush_print(dt($prompt) . "\n");
+  drush_print(dt($prompt));
 
   // Preflight so that all rows will be padded out to the same number of columns
   $array_pad = 0;
@@ -632,7 +632,7 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE) {
   }
   $prompt .= ": ";
 
-  drush_print($prompt);
+  drush_print_prompt($prompt);
 
   if (drush_get_context('DRUSH_AFFIRMATIVE')) {
     return $default;
@@ -648,7 +648,7 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE) {
     if ($line || !$required) {
       break;
     }
-    drush_print($prompt);
+    drush_print_prompt($prompt);
   }
   fclose($stdin);
   return $line;
