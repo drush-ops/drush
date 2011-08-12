@@ -221,20 +221,41 @@ function drush_dispatch($command, $arguments = array()) {
 }
 
 /**
- * Invoke a command in a new process.
+ * Invoke a command in a new process, targeting the site specified by
+ * the provided site alias record.
  *
- * @param command_name
- *   The drush command to execute.
+ * @param array $site_alias_record
+ *  The site record to execute the command on.
+ * @param string $command_name
+ *  The command to invoke.
+ * @param array $commandline_args
+ *  The arguments to pass to the command.
+ * @param array $commandline_options
+ *  The options (e.g. --select) to provide to the command.
  * @return
  *   If the command could not be completed successfully, FALSE.
  *   If the command was completed, this will return an associative
  *   array containing the results of the API call.
  *   @see drush_backend_get_result()
+ *
+ * This function may also be called via its deprecated function signature
+ * (drush-3.x compatible): drush_invoke_process($command_name, $arg1, $arg2, ...);
+ * Instead of this old form, prefer: drush_invoke_process("@self", $command_name, array($arg1, $arg2, ...));
  */
-function drush_invoke_process($command_name) {
-  $args = func_get_args();
-  array_shift($args);
-  return drush_invoke_process_args($command_name, $args);
+function drush_invoke_process($site_alias_record /*, $command_name, $commandline_args = array(), $commandline_options = array() */) {
+  if (is_array($site_alias_record)) {
+    $args = func_get_args();
+    array_shift($args);
+    $command_name = array_shift($args);
+    $commandline_args = empty($args) ? array() : array_shift($args);
+    $commandline_options = empty($args) ? array() : array_shift($args);
+    return drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options);
+  }
+  else {
+    $args = func_get_args();
+    $command_name = array_shift($args);
+    return drush_invoke_process_args($command_name, $args);
+  }
 }
 
 /**
@@ -247,6 +268,7 @@ function drush_invoke_process($command_name) {
  *   If the command was completed, this will return an associative
  *   array containing the results of the API call.
  *   @see drush_backend_get_result()
+ * @deprecated; @see drush_invoke_process("@self", $command_name, $commandline_args, $commandline_options) for a better option
  */
 function drush_invoke_process_args($command_name, $commandline_args, $commandline_options = array()) {
   return drush_backend_invoke_args($command_name, $commandline_args, $commandline_options);
@@ -265,6 +287,7 @@ function drush_invoke_process_args($command_name, $commandline_args, $commandlin
  *   If the command was completed, this will return an associative
  *   array containing the results of the API call.
  *   @see drush_backend_get_result()
+ * @deprecated; @see  drush_invoke_process($site_alias_record, $command_name, array($arg1, $arg2, ...)) for a better option
  */
 function drush_invoke_sitealias($site_alias_record, $command_name) {
   $args = func_get_args();
@@ -291,6 +314,7 @@ function drush_invoke_sitealias($site_alias_record, $command_name) {
  *   If the command was completed, this will return an associative
  *   array containing the results of the API call.
  *   @see drush_backend_get_result()
+ * @deprecated; @see drush_invoke_process($site_alias_record, $command_name, $commandline_args, $commandline_options) for a better option
  */
 function drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array()) {
   // If the first parameter is not a site alias record,
