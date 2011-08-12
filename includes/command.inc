@@ -68,7 +68,7 @@ function drush_invoke_args($command, $args) {
 }
 
 /**
- * Variant of _drush_invoke_args that allows the
+ * Variant of drush_invoke_args that allows the
  * commandfile to be specified correctly; this allows
  * the hook functions to be correctly determined for
  * commands that provide a 'callback' function.
