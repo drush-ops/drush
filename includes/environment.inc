@@ -31,7 +31,7 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
     return;
   }
 
-  if ($errno & (E_ALL)) {
+  if ($errno & (E_ALL ^ E_DEPRECATED)) {
     // By default we log notices.
     $type = drush_get_option('php-notices', 'notice');
 
@@ -150,7 +150,7 @@ function drush_environment_table_lib() {
       if (drush_file_not_empty($tablefile_legacy)) {
         drush_op('unlink', $tablefile_legacy);
       }
-      
+
       // Download and extract Console_Table, and confirm success.
       if (drush_lib_fetch(DRUSH_PEAR_BASE_URL . 'Console_Table-' . DRUSH_TABLE_VERSION . '.tgz')) {
         // Remove unneccessary package.xml file which ends up in /lib.
