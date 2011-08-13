@@ -39,12 +39,11 @@ function sql_drush_command() {
   $items['sql-conf'] = array(
     'description' => 'Print database connection details using print_r().',
     'hidden' => TRUE,
-    'arguments' => array(
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'options' => array(
       'all' => 'Show all database connections, instead of just one.',
       'show-passwords' => 'Show database password.',
-    ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
-    'options' => $options,
+    ) + $options,
   );
   $items['sql-connect'] = array(
     'description' => 'A string for connecting to the DB.',

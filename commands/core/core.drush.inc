@@ -106,6 +106,7 @@ function core_drush_command() {
     'arguments' => array(
       'code' => 'PHP code',
     ),
+    'allow-additional-options' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('eval', 'ev'),
   );
@@ -124,6 +125,7 @@ function core_drush_command() {
     'options' => array(
       'script-path' => "Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).",
     ),
+    'allow-additional-options' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('scr'),
     'deprecated-aliases' => array('script'),
@@ -178,6 +180,7 @@ function core_drush_command() {
       'exclude-paths' => 'List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).',
       'include-paths' => 'List of paths to include, seperated by : (Unix-based systems) or ; (Windows).',
     ),
+    'allow-additional-options' => TRUE,
     'examples' => array(
       'drush rsync @dev @stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
       'drush rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
@@ -245,6 +248,7 @@ function core_drush_command() {
       'ignore' => 'Drush commands or aliases that should not be usable from core-cli. Takes precedence over override and contextual options. Defaults to core-cli,cli.',
       'pipe' => 'Print the generated .bashrc file and exit.',
     ),
+    'allow-additional-options' => TRUE,
     'examples' => array(
       'help' => 'Print available drush commands',
       'cd @alias' => 'Navigate to the root of the site indicated by @alias; subsequent commands will target that site.',

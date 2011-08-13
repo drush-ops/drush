@@ -198,6 +198,12 @@ function drush_dispatch($command, $arguments = array()) {
     // Add command-specific options, if applicable
     drush_command_default_options($command);
 
+    // Test to see if any of the options in the 'cli' context
+    // are not represented in the command structure.
+    if (_drush_verify_cli_options($command) === FALSE) {
+      return FALSE;
+    }
+
     // Print a warning if someone tries to use a deprecated alias.
     if (isset($command['deprecated'])) {
       drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
@@ -210,6 +216,90 @@ function drush_dispatch($command, $arguments = array()) {
   drush_log(dt('Command dispatch complete'), 'notice');
 
   return $return;
+}
+
+/**
+ * Add command structure info from each engine back into the command.
+ */
+function _drush_merge_engine_data(&$command) {
+  // Merge in engine specific help.
+  foreach ($command['engines'] as $type => $description) {
+    $all_engines = drush_get_engines($type);
+    foreach ($all_engines as $name => $engine) {
+      $command = array_merge_recursive($command, $engine);
+    }
+  }
+}
+
+/**
+ * Fail with an error if the user specified options on the
+ * command line that are not documented in the current command
+ * record.
+ */
+function _drush_verify_cli_options($command) {
+  _drush_merge_engine_data($command);
+
+  // Start out with just the options in the current command record.
+  $options = _drush_get_command_options($command);
+  // Skip all tests if the command is marked to allow anything.
+  if ($command['allow-additional-options'] === TRUE) {
+    return TRUE;
+  }
+  // If 'allow-additional-options' contains a list of command names,
+  // then union together all of the options from all of the commands.
+  if (is_array($command['allow-additional-options'])) {
+    $implemented = drush_get_commands();
+    foreach ($command['allow-additional-options'] as $subcommand_name) {
+      if (array_key_exists($subcommand_name, $implemented)) {
+	$options = array_merge($options, _drush_get_command_options($implemented[$subcommand_name])); 
+      }
+    }
+  }
+  // Also add in global options
+  $options = array_merge($options, drush_get_global_options());
+
+  // Now we will figure out which options in the cli context
+  // are not represented in our options list.
+  $cli_options = array_keys(drush_get_context('cli'));
+  $allowed_options = _drush_flatten_options($options);
+  $disallowed_options = array_diff($cli_options, $allowed_options);
+  if (!empty($disallowed_options)) {
+    $unknown = count($disallowed_options) > 1 ? dt('Unknown options') : dt('Unknown option');
+    // Future: return drush_set_error to fail
+    drush_log(dt("@unknown: --@options.  See `drush help @command` for information on usage.", array('@unknown' => $unknown, '@options' => implode(', --', $disallowed_options), '@command' => $command['command'])), 'warning');
+  }
+  return TRUE;
+}
+
+/**
+ * Return the list of all of the options for the given
+ * command record by merging the 'options' and 'sub-options'
+ * records.
+ */
+function _drush_get_command_options($command) {
+  $options = $command['options'];
+  foreach ($command['sub-options'] as $group => $suboptions) {
+    $options = array_merge($options, $suboptions);
+  }
+  return $options;
+}
+
+/**
+ * Return the array keys of $options, plus any 'short-form'
+ * representations that may appear in the option's value.
+ */
+function _drush_flatten_options($options) {
+  $flattened_options = array();
+
+  foreach($options as $key => $value) {
+    $flattened_options[] = $key;
+    if (is_array($value)) {
+      if (array_key_exists('short-form', $value)) {
+	$flattened_options[] = $value['short-form'];
+      }
+    }
+  }
+  return $flattened_options;
 }
 
 /**
@@ -599,6 +689,8 @@ function drush_command_defaults($key, $commandfile, $path) {
     ),
     'arguments' => array(),
     'options' => array(),
+    'sub-options' => array(),
+    'allow-additional-options' => FALSE,
     'examples' => array(),
     'aliases' => array(),
     'deprecated-aliases' => array(),

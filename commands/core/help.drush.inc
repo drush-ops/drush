@@ -28,13 +28,7 @@ function drush_show_help($commandstring) {
  *   A fully loaded $command array.
  */
 function drush_print_help($command) {
-  // Merge in engine specific help.
-  foreach ($command['engines'] as $type => $description) {
-    $all_engines = drush_get_engines($type);
-    foreach ($all_engines as $name => $engine) {
-      $command = array_merge_recursive($command, $engine);
-    }
-  }
+  _drush_merge_engine_data($command);
 
   if (!$help = drush_command_invoke_all('drush_help', 'drush:'. $command['command'])) {
     $help = array($command['description']);
