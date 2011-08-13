@@ -16,7 +16,7 @@ function drush_core_site_install_validate() {
 /**
  * Perform setup tasks for installation.
  */
-function drush_core_pre_site_install() {
+function drush_core_pre_site_install($profile = NULL) {
   if (!$db_spec = _drush_sql_get_db_spec()) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
@@ -80,6 +80,12 @@ function drush_core_pre_site_install() {
           $db_prefix_config = '$db_prefix = \'' . $db_spec['db_prefix'] . '\';';
         }
         file_put_contents($settingsfile, "\n" . $db_prefix_config . "\n", FILE_APPEND);
+      }
+      // If there is a profile, write it into $conf['install_profile']
+      // to help drush find commandfiles earlier in the drush bootstrap.
+      if (!empty($profile)) {
+        $install_profile_config = "\$conf['install_profile'] = '$profile';";
+        file_put_contents($settingsfile, "\n" . $install_profile_config . "\n", FILE_APPEND);
       }
     }
   }

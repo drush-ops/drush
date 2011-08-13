@@ -977,10 +977,14 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       // enabled modules.
       if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
         $searchpath[] = conf_path() . '/modules';
-        // Too early for variable_get('install_profile', 'default'); Just use default.
-        $searchpath[] = "profiles/default/modules";
         // Add all module paths, even disabled modules. Prefer speed over accuracy.
         $searchpath[] = 'sites/all/modules';
+      }
+      if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
+        // Too early for variable_get('install_profile', 'default'); look in all profiles.
+        // If we're definitely going to get to DRUPAL_CONFIGURATION, then wait and
+        // see if we have 'install_profile' available there.
+        $searchpath[] = "profiles";
       }
       $searchpath[] = 'sites/all/themes';
       $searchpath[] = conf_path() . '/themes';
@@ -992,6 +996,10 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
         // Drupal core does not yet do that. See http://drupal.org/node/545452.
         if ($profile = variable_get('install_profile', NULL)) {
           $searchpath[] = "profiles/$profile/modules";
+        }
+        else {
+          // If 'install_profile' is not available, check all profiles.
+          $searchpath[] = "profiles";
         }
       }
       break;
