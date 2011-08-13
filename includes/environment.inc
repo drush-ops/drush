@@ -395,7 +395,7 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
     return;
   }
 
-  if ($errno & (E_ALL)) {
+  if ($errno & (E_ALL ^ E_DEPRECATED)) {
     // By default we log notices.
     $type = drush_get_option('php-notices', 'notice');
 
