@@ -206,7 +206,7 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
 
   if (!empty($alias_record)) {
     // Load the drush config file if there is one associated with this alias
-    if (!isset($alias_record['remote']) && !isset($alias_record['loaded-config'])) {
+    if (!isset($alias_record['remote']) && !isset($alias_record['#loaded-config'])) {
       if (array_key_exists('root', $alias_record)) {
         drush_sitealias_add_to_alias_path($alias_record['root']);
       }
@@ -222,7 +222,7 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
       }
       if (isset($alias_record['config']) && file_exists($alias_record['config'])) {
         drush_load_config_file('site', $alias_record['config']);
-        $alias_record['loaded-config'] = TRUE;
+        $alias_record['#loaded-config'] = TRUE;
       }
       unset($alias_record['config']);
     }
