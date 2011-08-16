@@ -28,6 +28,7 @@ function drush_show_help($commandstring) {
  *   A fully loaded $command array.
  */
 function drush_print_help($command) {
+  _drush_help_merge_subcommand_information($command);
   _drush_merge_engine_data($command);
 
   if (!$help = drush_command_invoke_all('drush_help', 'drush:'. $command['command'])) {
@@ -54,6 +55,30 @@ function drush_print_help($command) {
   // Append aliases if any.
   if ($command['aliases']) {
     drush_print(dt("Aliases: ") . implode(', ', $command['aliases']));
+  }
+}
+
+/**
+ * Check to see if the specified command contains an 'allow-additional-options'
+ * record.  If it does, find the additional options that are allowed, and
+ * add in the help text for the options of all of the sub-commands.
+ */
+function _drush_help_merge_subcommand_information(&$command) {
+  // 'allow-additional-options' will either be FALSE (default),
+  // TRUE ("allow anything"), or an array that lists subcommands
+  // that are or may be called via drush_invoke by this command.
+  if (is_array($command['allow-additional-options'])) {
+    $implemented = drush_get_commands();
+    foreach ($command['allow-additional-options'] as $subcommand_name) {
+      if (array_key_exists($subcommand_name, $implemented)) {
+	$command['options'] += $implemented[$subcommand_name]['options']; 
+        $command['sub-options'] = array_merge_recursive($command['sub-options'], $implemented[$subcommand_name]['sub-options']);
+        if (empty($command['arguments'])) {
+          $command['arguments'] = $implemented[$subcommand_name]['arguments'];
+        }
+        $command['topics'] = array_merge($command['topics'], $implemented[$subcommand_name]['topics']);
+      }
+    }
   }
 }
 

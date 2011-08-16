@@ -134,7 +134,26 @@ are shown below.
 <li>'options':
 
      An array of options that are understood by the command.
-     Used by `drush help` only.
+     Any option that the command expects to be able to query via
+     drush_get_option _must_ be listed in the options array.
+     If it is not, users will get an error about an "Unknown option"
+     when they try to specify the option on the command line.
+
+<li>'allow-additional-options':
+
+     If TRUE, then the ordinary testing to see if options exist
+     will be skipped.  Examples of where this is done includes
+     the core-rsync command, which passes options along to the
+     rsync shell command.
+     <p>
+     This item may also contain a list of other commands that
+     are invoked as subcommands (e.g. the pm-update
+     command calls pm-updatecode and updatedb commands).  When
+     this is done, the options from the subcommand may be used
+     on the commandline, and are also listed in the command's
+     `help` output.
+     <p>
+     Defaults to FALSE.
 
 <li>'examples':
 

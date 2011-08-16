@@ -174,11 +174,13 @@ function pm_drush_command() {
     'topics' => array('docs-policy'),
   ) + $engines;
   // Merge all items from above.
-  $items['pm-update'] = array_merge($items['pm-updatecode'], array(
+  $items['pm-update'] = array(
     'description' => 'Update Drupal core and contrib projects and apply any pending database updates (Same as pm-updatecode + updatedb).',
+    'drupal dependencies' => array($update),
     'aliases' => array('up'),
     'deprecated-aliases' => array('update'),
-  ));
+    'allow-additional-options' => array('pm-updatecode', 'updatedb'),
+  ) + $engines;
   $items['pm-updatecode-postupdate'] = array(
     'description' => 'Notify of pending db updates.',
     'hidden' => TRUE

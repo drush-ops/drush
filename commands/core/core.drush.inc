@@ -53,7 +53,7 @@ function core_drush_command() {
     'description' => 'Update drush to the latest version, if available.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'options' => array(
-      '--dev' => 'Allow updates to latest dev release.',
+      'dev' => 'Allow updates to latest dev release.',
     ),
     'aliases' => array('selfupdate'),
   );
