@@ -137,14 +137,14 @@ function user_drush_command() {
     'description' => '(Re)Set the password for the user account with the specified name.',
     'aliases' => array('upwd'),
     'arguments' => array(
-      'name' => 'The name of the account to modify'
+      'name' => 'The name of the account to modify.'
     ),
     'options' => array(
-      'password' => '(required) The new password for the account',
+      'password' => array('required' => TRUE, 'description' => 'The new password for the account.'),
     ),
     'examples' => array(
-      'drush user-password someuser --password="gr3@tP@$s"' =>
-        'Set the password for the username someuser to gr3@tP@$s.',
+      'drush user-password someuser --password="correct horse battery staple"' =>
+        'Set the password for the username someuser. @see xkcd.com/936',
     ),
   );
   $items['user-login'] = array(

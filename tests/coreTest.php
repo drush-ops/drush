@@ -40,6 +40,7 @@ drush_invoke("version", $arg);
       'skip' => NULL, // No FirePHP
       'yes' => NULL,
       'cache' => NULL,
+      'invoke' => NULL, // invoke from script: do not verify options
     );
     $this->drush('pm-download', array('devel'), $options);
     $this->drush('pm-enable', array('devel', 'menu'), $options);

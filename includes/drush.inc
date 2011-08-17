@@ -321,35 +321,49 @@ function _convert_csv_to_array($args) {
  *     - description: The help text for this item. displayed by `drush help`.
  */
 function drush_get_global_options($brief = FALSE) {
-  $options['root']               = array('short-form' => 'r', 'context' => 'DRUSH_DRUPAL_ROOT', 'never-post' => TRUE, 'description' => dt("Drupal root directory to use (default: current directory)."), 'example-value' => '<path>');
-  $options['uri']                = array('short-form' => 'l', 'context' => 'DRUSH_URI', 'never-post' => TRUE, 'description' => dt('URI of the drupal site to use (only needed in multisite environments or when running on an alternate port).'), 'example-value' => 'http://example.com:8888');
-  $options['verbose']            = array('short-form' => 'v', 'context' => 'DRUSH_VERBOSE', 'description' => dt('Display extra information about the command.'));
-  $options['debug']              = array('short-form' => 'd', 'context' => 'DRUSH_DEBUG', 'description' => dt('Display even more information, including internal messages.'));
-  $options['yes']                = array('short-form' => 'y', 'context' => 'DRUSH_AFFIRMATIVE', 'description' => dt("Assume 'yes' as answer to all prompts."));
-  $options['no']                 = array('short-form' => 'n', 'context' => 'DRUSH_NEGATIVE', 'description' => dt("Assume 'no' as answer to all prompts."));
-  $options['simulate']           = array('short-form' => 's', 'context' => 'DRUSH_SIMULATE', 'description' => dt("Simulate all relevant actions (don't actually change the system)."));
-  $options['pipe']               = array('short-form' => 'p', 'description' => dt("Emit a compact representation of the command for scripting."));
-  $options['help']               = array('short-form' => 'h', 'description' => dt("This help system."));
-  $options['version']            = array('description' => dt("Show drush version."));
-  $options['php']                = array('description' => dt("The absolute path to your PHP intepreter, if not 'php' in the path."));
-  $options['ia']                 = array('description' => dt("Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`)."));
+  $options['root']               = array('short-form' => 'r', 'context' => 'DRUSH_DRUPAL_ROOT', 'never-post' => TRUE, 'description' => "Drupal root directory to use (default: current directory).", 'example-value' => '<path>');
+  $options['uri']                = array('short-form' => 'l', 'context' => 'DRUSH_URI', 'never-post' => TRUE, 'description' => 'URI of the drupal site to use (only needed in multisite environments or when running on an alternate port).', 'example-value' => 'http://example.com:8888');
+  $options['verbose']            = array('short-form' => 'v', 'context' => 'DRUSH_VERBOSE', 'description' => 'Display extra information about the command.');
+  $options['debug']              = array('short-form' => 'd', 'context' => 'DRUSH_DEBUG', 'description' => 'Display even more information, including internal messages.');
+  $options['yes']                = array('short-form' => 'y', 'context' => 'DRUSH_AFFIRMATIVE', 'description' => "Assume 'yes' as answer to all prompts.");
+  $options['no']                 = array('short-form' => 'n', 'context' => 'DRUSH_NEGATIVE', 'description' => "Assume 'no' as answer to all prompts.");
+  $options['simulate']           = array('short-form' => 's', 'context' => 'DRUSH_SIMULATE', 'description' => "Simulate all relevant actions (don't actually change the system).");
+  $options['pipe']               = array('short-form' => 'p', 'description' => "Emit a compact representation of the command for scripting.");
+  $options['help']               = array('short-form' => 'h', 'description' => "This help system.");
+  $options['version']            = array('description' => "Show drush version.");
+  $options['php']                = array('description' => "The absolute path to your PHP intepreter, if not 'php' in the path.");
+  $options['ia']                 = array('description' => "Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).");
 
   if (!$brief) {
-    $options['quiet']               = array('short-form' => 'q', 'description' => dt('Suppress non-error messages.'));
-    $options['include']             = array('short-form' => 'i', 'description' => dt("A list of additional directory paths to search for drush commands."));
-    $options['config']              = array('short-form' => 'c', 'description' => dt("Specify an additional config file to load. See example.drushrc.php."));
-    $options['user']                = array('short-form' => 'u', 'description' => dt("Specify a Drupal user to login with. May be a name or a number."));
-    $options['backend']             = array('short-form' => 'b', 'never-propagate' => TRUE, 'description' => dt("Hide all output and return structured data (internal use only)."));
-    $options['choice']              = array('description' => dt("Provide an answer to a multiple-choice prompt."));
-    $options['variables']           = array('description' => dt("Comma delimited list of name=value pairs. These values take precedence even over settings.php variable overrides."));
-    $options['no-label']            = array('description' => dt("Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`)."));
-    $options['nocolor']             = array('context' => 'DRUSH_NOCOLOR', 'description' => dt("Suppress color highlighting on log messages."));
-    $options['show-passwords']      = array('description' => dt("Show database passwords in commands that display connection information."));
-    $options['show-invoke']         = array('description' => dt("Show all function names which could have been called for the current command. See drush_invoke()."));
-    $options['watchdog']            = array('description' => dt("Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log."));
-    $options['cache-default-class'] = array('description' => dt("A cache backend class that implements DrushCacheInterface."));
-    $options['cache-class-<bin>']   = array('description' => dt("A cache backend class that implements DrushCacheInterface to use for a specific cache bin."));
-    $options['early']               = array('description' => dt("Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename). The function is called pre-bootstrap and offers an opportunity to alter the drush bootstrap environment or process (returning FALSE from the function will continue the bootstrap), or return output very rapidly (e.g. from caches). See includes/complete.inc for an example."));
+    $options['quiet']               = array('short-form' => 'q', 'description' => 'Suppress non-error messages.');
+    $options['include']             = array('short-form' => 'i', 'description' => "A list of additional directory paths to search for drush commands.");
+    $options['config']              = array('short-form' => 'c', 'description' => "Specify an additional config file to load. See example.drushrc.php.");
+    $options['user']                = array('short-form' => 'u', 'description' => "Specify a Drupal user to login with. May be a name or a number.");
+    $options['cache']               = array('description' => 'Keep a local cache of downloaded files.');
+    $options['backend']             = array('short-form' => 'b', 'never-propagate' => TRUE, 'description' => "Hide all output and return structured data (internal use only).");
+    $options['invoke']              = array('hidden' => TRUE, 'description' => 'Invoked from a script; skip option verification.');
+    $options['choice']              = array('description' => "Provide an answer to a multiple-choice prompt.");
+    $options['variables']           = array('description' => "Comma delimited list of name=value pairs. These values take precedence even over settings.php variable overrides.");
+    $options['search-depth']        = array('description' => "Control the depth that drush will search for alias files.");
+    $options['no-label']            = array('description' => "Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
+    $options['nocolor']             = array('context' => 'DRUSH_NOCOLOR', 'description' => "Suppress color highlighting on log messages.");
+    $options['show-passwords']      = array('description' => "Show database passwords in commands that display connection information.");
+    $options['show-invoke']         = array('description' => "Show all function names which could have been called for the current command. See drush_invoke().");
+    $options['watchdog']            = array('description' => "Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log.");
+    $options['cache-default-class'] = array('description' => "A cache backend class that implements DrushCacheInterface.");
+    $options['cache-class-<bin>']   = array('description' => "A cache backend class that implements DrushCacheInterface to use for a specific cache bin.");
+    $options['early']               = array('description' => "Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename). The function is called pre-bootstrap and offers an opportunity to alter the drush bootstrap environment or process (returning FALSE from the function will continue the bootstrap), or return output very rapidly (e.g. from caches). See includes/complete.inc for an example.");
+    $options['alias-path']          = array('description' => "Specifies the list of paths where drush will search for alias files. Array only.");
+    $options['backup-location']     = array('description' => "Specifies the directory where drush will store backups.");
+    $options['complete-debug']      = array('hidden' => TRUE, 'description' => "Turn on debug mode forf completion code");
+    $options['check_os']            = array('hidden' => TRUE, 'description' => "Enable or disable O.S. testing, and warn user of potential incompabilities.");
+    $options['deferred-sanitization'] = array('hidden' => TRUE, 'description' => "Defer calculating the sanitization operations until after the database has been copied. This is done automatically if the source database is remote.");
+    $options['remote-host']         = array('hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.');
+    $options['remote-user']         = array('hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.');
+    $options['remote-os']           = array('hidden' => TRUE, 'description' => 'The operating system used on the remote host. Managed by site alias.');
+    $options['site-list']           = array('hidden' => TRUE, 'description' => 'List of sites to run commands on. Managed by site alias.');
+    $options['reserve-margin']      = array('hidden' => TRUE, 'description' => 'Remove columns from formatted opions. Managed by multi-site command handling.');
+    $options['in-cli']              = array('hidden' => TRUE, 'description' => 'Used by drush to indicate that core-cli is calling a drush command.');
   }
   return $options;
 }

@@ -106,6 +106,10 @@ function pm_drush_command() {
     'arguments' => array(
       'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to enable all matches.',
     ),
+    'options' => array(
+      'resolve-dependencies' => 'Attempt to download any missing dependencies. At the moment, only works when the module name is the same as the project name.',
+      'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
+    ),
     'aliases' => array('en'),
     'deprecated-aliases' => array('enable'),
   );
@@ -243,6 +247,7 @@ function pm_drush_command() {
       'all' => "Useful only with --select; shows all available releases instead of a short list of recent releases.",
       'drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. Defaults to "drupal".',
       'default-major' => 'Specify the default major version of modules to download when there is no bootstrapped Drupal site.  Defaults to "7".',
+      'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
       'pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
       'cache' => 'Cache release XML and tarballs or git clones. Git clones use git\'s --reference option.',
       'cache-duration-releasexml' => 'Expire duration (in seconds) for release XML. Only applicable when --cache is set. Defaults to 86400 (24 hours).',

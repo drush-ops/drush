@@ -100,11 +100,12 @@ function drush_format_help_section($command, $section) {
     }
     $help_attributes['label'] = $name;
     call_user_func_array($formatter, array($command, &$help_attributes));
-    $rows[] = array($help_attributes['label'], $help_attributes['description']);
-
-    // Process the subsections too, if any
-    if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
-      $rows = array_merge($rows, _drush_format_help_subsection($command, $section, $name, $formatter));
+    if (!array_key_exists('hidden', $help_attributes)) {
+      $rows[] = array($help_attributes['label'], $help_attributes['description']);
+      // Process the subsections too, if any
+      if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
+        $rows = array_merge($rows, _drush_format_help_subsection($command, $section, $name, $formatter));
+      }
     }
   }
   return $rows;
@@ -137,10 +138,12 @@ function _drush_format_help_subsection($command, $section, $subsection, $formatt
     }
     $help_attributes['label'] = $name;
     call_user_func_array($formatter, array($command, &$help_attributes));
-    $rows[] = array($prefix . $help_attributes['label'], $help_attributes['description']);
-    // Process the subsections too, if any
-    if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
-      $rows = array_merge($rows, _drush_format_help_subsection($command, $section, $name, $formatter, $prefix . '  '));
+    if (!array_key_exists('hidden', $help_attributes)) {
+      $rows[] = array($prefix . $help_attributes['label'], $help_attributes['description']);
+      // Process the subsections too, if any
+      if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
+        $rows = array_merge($rows, _drush_format_help_subsection($command, $section, $name, $formatter, $prefix . '  '));
+      }
     }
   }
   return $rows;
@@ -157,6 +160,9 @@ function drush_help_section_formatter_options($command, &$help_attributes) {
   }
   else {
     $help_attributes['label'] = '--' . $help_attributes['label'];
+  }
+  if ($help_attributes['required']) {
+    $help_attributes['description'] .= " " . dt("Required.");
   }
   if (array_key_exists('example-value', $help_attributes)) {
     $help_attributes['label'] .= '=' . $help_attributes['example-value'];

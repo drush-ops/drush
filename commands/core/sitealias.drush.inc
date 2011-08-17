@@ -31,6 +31,7 @@ function sitealias_drush_command() {
       'with-db-url' => 'Include the short-form db-url in the full alias record.',
       'no-db' => 'Do not include the database record in the full alias record (default).',
       'with-optional' => 'Include optional default items.',
+      'alias-name' => 'For a single alias, set the name to use in the output.',
     ),
     'aliases' => array('sa'),
     'examples' => array(

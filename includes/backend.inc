@@ -758,6 +758,9 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   if (!empty($backend_options['backend']) && empty($backend_options['interactive'])) {
     $command .= " --backend=2";
   }
+  if (!empty($backend_options['interactive'])) {
+    $command .= ' --invoke';
+  }
   if (!is_null($hostname)) {
     if (drush_is_windows($os)) {
       $username = (!is_null($username)) ? " -u:" . drush_escapeshellarg($username, "LOCAL") : '';

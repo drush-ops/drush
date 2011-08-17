@@ -22,6 +22,7 @@ class pmDownloadCase extends Drush_CommandTestCase {
       'uri' => $uri,
       'cache' => NULL,
       'skip' => NULL, // No FirePHP
+      'invoke' => NULL, // invoke from script: do not verify options
     );
     $this->drush('pm-download', array('devel'), $options);
     $this->assertFileExists($root . '/sites/all/modules/devel/README.txt');
@@ -29,7 +30,7 @@ class pmDownloadCase extends Drush_CommandTestCase {
     // If we are in site specific dir, then download belongs there.
     $path_stage = "$root/sites/$uri";
     mkdir("$path_stage/modules");
-    $this->drush('pm-download', array('devel'), array('cache' => NULL, 'skip' => NULL), NULL, $path_stage);
+    $this->drush('pm-download', array('devel'), array('cache' => NULL, 'skip' => NULL, 'invoke' => NULL), NULL, $path_stage);
     $this->assertFileExists($path_stage . '/modules/devel/README.txt');
   }
 }

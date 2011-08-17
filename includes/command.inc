@@ -242,7 +242,9 @@ function _drush_verify_cli_options($command) {
   // Start out with just the options in the current command record.
   $options = _drush_get_command_options($command);
   // Skip all tests if the command is marked to allow anything.
-  if ($command['allow-additional-options'] === TRUE) {
+  // Also skip backend commands, which may have options on the commandline
+  // that were inherited from the calling command.
+  if (($command['allow-additional-options'] === TRUE) || (drush_get_option(array('backend', 'invoke'), FALSE))) {
     return TRUE;
   }
   // If 'allow-additional-options' contains a list of command names,
@@ -267,6 +269,21 @@ function _drush_verify_cli_options($command) {
     $unknown = count($disallowed_options) > 1 ? dt('Unknown options') : dt('Unknown option');
     // Future: return drush_set_error to fail
     drush_log(dt("@unknown: --@options.  See `drush help @command` for information on usage.", array('@unknown' => $unknown, '@options' => implode(', --', $disallowed_options), '@command' => $command['command'])), 'warning');
+  }
+
+  // Next check to see if all required options were specified.
+  $missing_required_options = array();
+  foreach ($command['options'] as $key => $value) {
+    if (is_array($value) && array_key_exists('required', $value)) {
+      $option_value = drush_get_option($key, NULL);
+      if (!isset($option_value)) {
+        $missing_required_options[] = $key;
+      }
+    }
+  }
+  if (!empty($missing_required_options)) {
+    $missing = count($missing_required_options) > 1 ? dt('Missing required options') : dt('Missing required option');
+    return drush_set_error(dt("@missing: --@options.  See `drush help @command` for information on usage.", array('@missing' => $missing, '@options' => implode(', --', $missing_required_options), '@command' => $command['command'])));
   }
   return TRUE;
 }
@@ -715,7 +732,13 @@ function drush_command_translate(&$command) {
   $keys = array('arguments', 'options', 'examples', 'engines', 'sections');
   foreach ($keys as $key) {
     foreach ($command[$key] as $k => $v) {
-      $command[$key][$k] = _drush_command_translate($v);
+      if (is_array($v)) {
+        $v['description'] = _drush_command_translate($v['description']);
+      }
+      else {
+        $v = _drush_command_translate($v);
+      }
+      $command[$key][$k] = $v;
     }
   }
 }

@@ -15,6 +15,7 @@ class EnDisUnListCase extends Drush_CommandTestCase {
       'uri' => key($sites),
       'cache' => NULL,
       'skip' => NULL, // No FirePHP
+      'invoke' => NULL, // Don't validate options
     );
     $this->drush('pm-download', array('devel'), $options);
     $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'not installed'));
