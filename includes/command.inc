@@ -268,7 +268,13 @@ function _drush_verify_cli_options($command) {
   if (!empty($disallowed_options)) {
     $unknown = count($disallowed_options) > 1 ? dt('Unknown options') : dt('Unknown option');
     // Future: return drush_set_error to fail
-    drush_log(dt("@unknown: --@options.  See `drush help @command` for information on usage.", array('@unknown' => $unknown, '@options' => implode(', --', $disallowed_options), '@command' => $command['command'])), 'warning');
+    $msg = dt("@unknown: --@options.  See `drush help @command` for information on usage.", array('@unknown' => $unknown, '@options' => implode(', --', $disallowed_options), '@command' => $command['command']));
+    if (!drush_get_option('strict', FALSE)) {
+      drush_log($msg, 'warning');
+    }
+    else {
+      return drush_set_error('DRUSH_UNKNOWN_OPTION', $msg);
+    }
   }
 
   // Next check to see if all required options were specified.

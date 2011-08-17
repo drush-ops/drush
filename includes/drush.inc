@@ -364,6 +364,15 @@ function drush_get_global_options($brief = FALSE) {
     $options['site-list']           = array('hidden' => TRUE, 'description' => 'List of sites to run commands on. Managed by site alias.');
     $options['reserve-margin']      = array('hidden' => TRUE, 'description' => 'Remove columns from formatted opions. Managed by multi-site command handling.');
     $options['in-cli']              = array('hidden' => TRUE, 'description' => 'Used by drush to indicate that core-cli is calling a drush command.');
+    $options['strict']              = array('hidden' => TRUE, 'description' => 'Check requirements more strictly / remove backwards-compatibility features for unit tests.');
+
+    $command = array(
+      'options' => $options,
+      '#brief' => FALSE,
+    ) + drush_command_defaults('global-options', 'global_options', __FILE__);
+    drush_command_invoke_all_ref('drush_help_alter', $command);
+    
+    $options = $command['options'];
   }
   return $options;
 }

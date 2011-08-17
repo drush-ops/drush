@@ -31,4 +31,19 @@ class commandCase extends Drush_CommandTestCase {
     // Assure that core-cron fails when run outside of a Drupal site.
     $return = $this->execute(UNISH_DRUSH . ' core-cron --quiet', self::EXIT_ERROR);
   }
+
+  /**
+   * Assert that unknown options are caught and flagged as errors
+   */
+  public function testUnknownOptions() {
+    // Make sure an ordinary 'version' command works
+    $return = $this->execute(UNISH_DRUSH . ' version --pipe --strict');
+    $standard = $this->getOutput();
+    // Add an unknown option --magic=1234 and insure it fails
+    $return = $this->execute(UNISH_DRUSH . ' version --pipe --magic=1234 --strict', self::EXIT_ERROR);
+    // Finally, add in a hook that uses drush_hook_help_alter to allow the 'magic' flag
+    // We need to run 'drush cc drush' to clear the commandfile cache; otherwise, our include will not be found.
+    $include_path = dirname(__FILE__) . '/hooks/magic_help_alter';
+    $return = $this->execute(UNISH_DRUSH . ' cc drush && ' . UNISH_DRUSH . ' --include=' . $include_path . ' version --pipe --magic=1234 --strict && ' . UNISH_DRUSH . ' cc drush');
+  }
 }

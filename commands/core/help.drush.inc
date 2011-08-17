@@ -192,15 +192,17 @@ function drush_global_options_command($brief = FALSE) {
   $global_options_help = array(
     'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.',
     'sections' => array(
-      'options' => 'Global options (see `drush topic core-global-options` for the full list).',
+      'options' => 'Global options (see `drush topic core-global-options` for the full list)',
     ),
     'options' => drush_get_global_options($brief),
     'examples' => array(
       'drush dl cck zen' => 'Download CCK module and Zen theme.',
       'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
     ),
+    '#brief' => TRUE,
   );
   $global_options_help += drush_command_defaults('global-options', 'global_options', __FILE__);
+  drush_command_invoke_all_ref('drush_help_alter', $global_options_help);
 
   return $global_options_help;
 }

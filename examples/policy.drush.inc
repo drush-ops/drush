@@ -27,7 +27,22 @@ function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
 }
 
 /**
- * Implement of drush_hook_COMMAND_validate().
+ * Implementation of drush_hook_help_alter
+ */
+function drush_policy_help_alter($command) {
+  // If a command hook (e.g. drush_hook_COMMAND_validate, below)
+  // calls drush_get_option('abc'), then it is required to add
+  // the new option to the 'global-options' command (or, alternatively,
+  // to the single command hooked).  Otherwise, the user will get
+  // an "unknown option" error when they try to specify the option on the
+  // commandline.
+  if ($command['command'] == 'updatedb') {
+    $command['options']['token'] = 'Per site policy, you must specify a token in the --token option for all commands.',';
+  }
+}
+
+/**
+ * Implementation of drush_hook_COMMAND_validate().
  *
  * To test this example without copying, execute `drush --include=./examples updatedb`
  * from within your drush directory.
