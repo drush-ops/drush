@@ -44,6 +44,7 @@ function variable_drush_command() {
       'drush vset --yes preprocess_css 1' => 'Set the preprocess_css variable to true. Skip confirmation if variable already exists.',
       'drush vset --always-set site_offline 1' => 'Take the site offline; Skips confirmation even if site_offline variable does not exist.',
       'drush vset pr 1' => 'Choose from a list of variables beginning with "pr" to set to true.',
+      'php -r "print json_encode(TRUE);" | drush vset --format=json foo -' => 'Set foo to a boolean value',
     ),
     'aliases' => array('vset'),
   );
