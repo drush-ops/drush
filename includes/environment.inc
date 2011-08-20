@@ -389,13 +389,15 @@ function drush_bootstrap_error($code, $message = null) {
  * handler takes over.
  */
 function drush_error_handler($errno, $message, $filename, $line, $context) {
-  // If the @ error suppression operator was used, error_reporting will have
-  // been temporarily set to 0.
-  if (error_reporting() == 0) {
-    return;
+  // E_DEPRECATED was added in PHP 5.3. Drupal 6 will not fix all the
+  // deprecated errors, but suppresses them. So we suppress them as well.
+  if (defined('E_DEPRECATED')) {
+    $errno = $errno & ~E_DEPRECATED;
   }
 
-  if ($errno & (E_ALL ^ E_DEPRECATED)) {
+  // "error_reporting" is usually set in php.ini, but may be changed by
+  // drush_errors_on() and drush_errors_off().
+  if ($errno & error_reporting()) {
     // By default we log notices.
     $type = drush_get_option('php-notices', 'notice');
 
