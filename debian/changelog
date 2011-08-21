@@ -1,3 +1,12 @@
+drush (4.5-1) unstable; urgency=low
+
+  * new upstream release: http://drupal.org/node/1247086
+  * fix watch file to follow new naming convention
+  * fix a bunch of lintian tips
+  * switch to source format 3.0 (quilt)
+  
+ -- Antoine Beaupré <anarcat@koumbit.org>  Sun, 21 Aug 2011 15:14:15 +0100
+
 drush (4.4-2) unstable; urgency=low
 
   * ship properly all the examples
