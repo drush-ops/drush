@@ -108,8 +108,8 @@ class completeCase extends Drush_CommandTestCase {
     $exec = sprintf('%s --early=includes/complete.inc --complete-debug %s %s 2> %s', UNISH_DRUSH, UNISH_DRUSH, $command, $debug_file);
     $this->execute($exec);
     $result = $this->getOutputAsList();
-    $this->assertEquals(reset($result), $first);
-    $this->assertEquals(end($result), $last);
+    $this->assertEquals($first, reset($result));
+    $this->assertEquals($last, end($result));
     // If checking for HIT, we ensure no MISS exists, if checking for MISS we
     // ensure no HIT exists. However, we exclude the first cache report, since
     // it is expected that the command-names cache (loaded when matching
