@@ -132,7 +132,7 @@ function drush_include_engine($type, $engine, $version = NULL, $path = NULL) {
     $path = $engines[$engine]['path'];
   }
   if (!$path) {
-    return drush_set_error('DRUSH_ENGINE INCLUDE_NO_PATH', dt('No !path was set for including the !type engine !engine.', array('!path' => $path, '!type' => $type, '!engine' => $engine)));
+    return drush_set_error('DRUSH_ENGINE INCLUDE_NO_PATH', dt('No path was set for including the !type engine !engine.', array('!type' => $type, '!engine' => $engine)));
   }
   if (drush_include($path, $engine, $version)) {
     return TRUE;
@@ -171,57 +171,21 @@ function drush_drupal_version($drupal_root = NULL) {
 }
 
 /**
- * Install a newer version of drush, if available
- *
- * @param $explicit
- *   TRUE if called explicitly via the 'drush self-update'
- *   command; FALSE if called implicitly via 'drush --version'
- *   or 'drush pm-updatecode'.  When called via the self-update
- *   command, errors are reported via drush_set_error, and a dev
- *   release can be upgraded to a newer dev release.  If FALSE,
- *   then errors cause self-update to exit silently, and only
- *   stable releases are considered (unless the --dev flag is
- *   specified).  We do not want to nag users to upgrade to
- *   every single available dev release unless they explicitly
- *   ask.
- *
- * @param $update
- *   TRUE if this function is allowed to update drush; if FALSE,
- *   it will inform the user of available updates, but will take
- *   no action.
+ * Check to see if a newer version of drush is available
  *
  * @return
- *   TRUE - installed new version of drush (or new version is available, if $update === FALSE)
- *   FALSE - user cancelled, or error
- *   NULL - no action taken (e.g. no release available)
+ *   TRUE - A new version is available.
+ *   FALSE - Error.
+ *   NULL - No release available.
  */
-function drush_self_update($explicit = TRUE, $update = TRUE) {
+function drush_check_self_update() {
   $error = "";
 
-  // Do nothing unless we can write to the drush install location
-  if (!is_writable(DRUSH_BASE_PATH)) {
-    $error = dt('Drush folder at !loc is not writable', array('!loc' => DRUSH_BASE_PATH));
-  }
-  elseif (is_dir(DRUSH_BASE_PATH . "/CVS")) {
-    $error = dt('Drush was checked out from CVS; cannot self-update.');
-  }
-  else {
-    // Don't check unless we have a datestamp in drush.info
-    $drush_info = drush_read_drush_info();
-    if (($drush_info === FALSE) || (!array_key_exists('datestamp', $drush_info))) {
-      $error = dt('Cannot determine release date for drush');
-    }
-  }
-
-  // Fail with 'return FALSE' or 'drush_set_error', as appropriate.
-  if (!empty($error)) {
-    if ($explicit) {
-      return drush_set_error('DRUSH_CANNOT_SELF_UPDATE', $error, 'error');
-    }
-    else {
-      drush_log($error, 'notice');
-      return FALSE;
-    }
+  // Don't check unless we have a datestamp in drush.info
+  $drush_info = drush_read_drush_info();
+  if (($drush_info === FALSE) || (!array_key_exists('datestamp', $drush_info))) {
+    drush_log(dt('Cannot determine release date for drush'), 'notice');
+    return FALSE;
   }
 
   // Allow updates to the latest HEAD release if --self-update=head is specified.
@@ -237,7 +201,7 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
   $newer_version = FALSE;
   foreach ($info['drush']['releases'] as $version => $release_info) {
     // We deliberately skip any dev releases unless the current release is a dev release.
-    if ($dev_ok || ((strpos(DRUSH_VERSION, "-dev") !== FALSE) && $explicit) || (!array_key_exists('version_extra', $release_info) || ($release_info['version_extra'] != 'dev'))) {
+    if ($dev_ok || ((!array_key_exists('version_extra', $release_info) || ($release_info['version_extra'] != 'dev')))) {
       if ($release_info['date'] > $version_date) {
         $newer_version = $release_info['version'];
         $version_date = $release_info['date'];
@@ -250,23 +214,76 @@ function drush_self_update($explicit = TRUE, $update = TRUE) {
   }
 
   if ($newer_version) {
-    if ($update) {
-      $backup_dir = drush_preflight_backup_dir('drush');
-      if(drush_confirm(dt('A newer version of drush, !version, is available.  Would you like to back up your current drush, version !currentversion, to !backup and replace it with the newer release?', array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION, '!backup' => $backup_dir)))) {
-	// pm-download will select the most recent stable release, which is what we want.
-	return (drush_invoke_process_args("pm-download", array("drush"), array("destination" => DRUSH_BASE_PATH, "backup-location" => $backup_dir, "dev" => $is_dev)) !== FALSE);
-      }
-    }
-    else {
-      drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion; to update, run `drush self-update`.  To disable this check, put "$options[\'self-update\'] = FALSE;" in your drushrc.php configuration file.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
-      return TRUE;
-    }
+    drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion; to update, run `drush self-update`.  To disable this check, put "$options[\'self-update\'] = FALSE;" in your drushrc.php configuration file.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
+    return TRUE;
   }
   else {
-    drush_log(dt("drush self-update check: drush !version is up-to-date.", array('!version' => DRUSH_VERSION)), $explicit ? 'ok' : 'notice');
+    drush_log(dt("drush self-update check: drush !version is up-to-date.", array('!version' => DRUSH_VERSION)), 'notice');
   }
 
   return NULL;
+}
+
+/**
+ * Generate an .ini file. used by archive-dump."
+ *
+ * @param array $ini
+ *   A two dimensional associative array where top level are sections and
+ *   second level are key => value pairs.
+ *
+ * @return string
+ *   .ini formatted text.
+ */
+function drush_export_ini($ini) {
+  $output = '';
+  foreach ($ini as $section => $pairs) {
+    if ($section) {
+      $output .= "[$section]\n";
+    }
+
+    foreach ($pairs as $k => $v) {
+      if ($v) {
+        $output .= "$k = \"$v\"\n";
+      }
+    }
+  }
+  return $output;
+}
+
+/**
+ * Generate code friendly to the Drupal .info format from a structured array.
+ * Mostly copied from http://drupalcode.org/viewvc/drupal/contributions/modules/features/features.export.inc.
+ *
+ * @param $info
+ *   An array or single value to put in a module's .info file.
+ *
+ * @param boolean $integer_keys
+ *   Use integer in keys.
+ *
+ * @param $parents
+ *   Array of parent keys (internal use only).
+ *
+ * @return
+ *   A code string ready to be written to a module's .info file.
+ */
+function drush_export_info($info, $integer_keys = FALSE, $parents = array()) {
+  $output = '';
+  if (is_array($info)) {
+    foreach ($info as $k => $v) {
+      $child = $parents;
+      $child[] = $k;
+      $output .= drush_export_info($v, $integer_keys, $child);
+    }
+  }
+  else if (!empty($info) && count($parents)) {
+    $line = array_shift($parents);
+    foreach ($parents as $key) {
+      $line .= (!$integer_keys && is_numeric($key)) ? "[]" : "[{$key}]";
+    }
+    $line .=  " = \"{$info}\"\n";
+    return $line;
+  }
+  return $output;
 }
 
 function drush_drupal_cache_clear_all() {
@@ -324,7 +341,7 @@ function _convert_csv_to_array($args) {
  */
 function drush_get_global_options($brief = FALSE) {
   $options['root']               = array('short-form' => 'r', 'description' => dt("Drupal root directory to use (default: current directory)"), 'example-value' => '<path>');
-  $options['uri']                = array('short-form' => 'l', 'description' => dt('URI of the drupal site to use (only needed in multisite environments)'), 'example-value' => 'http://example.com');
+  $options['uri']                = array('short-form' => 'l', 'description' => dt('URI of the drupal site to use (only needed in multisite environments or when running on an alternate port)'), 'example-value' => 'http://example.com:8888');
   $options['verbose']            = array('short-form' => 'v', 'description' => dt('Display extra information about the command.'));
   $options['debug']              = array('short-form' => 'd', 'description' => dt('Display even more information, including internal messages.'));
   $options['yes']                = array('short-form' => 'y', 'description' => dt("Assume 'yes' as answer to all prompts"));
@@ -569,7 +586,7 @@ function _drush_is_drush_shebang_script($script_filename) {
  */
 function drush_print($message = '', $indent = 0, $handle = NULL) {
   $msg = str_repeat(' ', $indent) . (string)$message . "\n";
-  if ($charset = drush_get_option('output_charset') && function_exists('iconv')) {
+  if (($charset = drush_get_option('output_charset')) && function_exists('iconv')) {
     $msg = iconv('UTF-8', $charset, $msg);
   }
   if (isset($handle)) {
@@ -670,12 +687,14 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
  * @param $widths
  *   The widths of each column (in characters) to use - if not specified this
  *   will be determined automatically, based on a "best fit" algorithm.
- * @param $output_file
- *   File to write output to.  STDOUT used if not specified.
+ * @param $handle
+ *    File handle to write to.  NULL will write
+ *    to standard output, STDERR will write to the standard
+ *    error.  See http://php.net/manual/en/features.commandline.io-streams.php
  * @return $tbl
  *   Use $tbl->getTable() to get the output from the return value.
  */
-function drush_print_table($rows, $header = FALSE, $widths = array(), $output_file = NULL) {
+function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = NULL) {
   $tbl = new Console_Table(CONSOLE_TABLE_ALIGN_LEFT , '');
 
   $auto_widths = drush_table_column_autowidth($rows, $widths);
@@ -700,11 +719,14 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $output_fi
   if (!stristr(PHP_OS, 'WIN')) {
     $output = str_replace("\r\n", PHP_EOL, $output);
   }
-  if ($output_file == NULL) {
-    drush_print($output);
+
+  // Check if the handle argument is a string to preserve compatability with
+  // previous versions that accepted a filename instead.
+  if (is_string($handle)) {
+    file_put_contents($handle, $output, FILE_APPEND);
   }
   else {
-    file_put_contents($output_file, $output, FILE_APPEND);
+    drush_print($output, 0, $handle);
   }
   return $tbl;
 }
@@ -848,6 +870,33 @@ function drush_print_file($file) {
   else {
     drush_print(file_get_contents($file));
   }
+}
+
+/**
+ * Converts a PHP variable into its Javascript equivalent.
+ *
+ * We provide a copy of D7's drupal_json_encode since this function is
+ * unavailable on earlier versions of Drupal.
+ *
+ * @see drupal_json_decode()
+ * @ingroup php_wrappers
+ */
+function drush_json_encode($var) {
+  // json_encode() does not escape <, > and &, so we do it with str_replace().
+  return str_replace(array('<', '>', '&'), array('\u003c', '\u003e', '\u0026'), json_encode($var));
+}
+
+/**
+ * Converts an HTML-safe JSON string into its PHP equivalent.
+ *
+ * We provide a copy of D7's drupal_json_decode since this function is
+ * unavailable on earlier versions of Drupal.
+ *
+ * @see drupal_json_encode()
+ * @ingroup php_wrappers
+ */
+function drush_json_decode($var) {
+  return json_decode($var, TRUE);
 }
 
 /**
@@ -1147,6 +1196,9 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE) {
 function drush_op($function) {
   $args = func_get_args();
   array_shift($args); // Skip function name
+  foreach ($args as $arg) {
+    $args_printed[] = is_scalar($arg) ? $arg : (is_array($arg) ? 'Array' : 'Object');
+  }
 
   // Special checking for drush_op('system')
   if ($function == 'system') {
@@ -1154,7 +1206,7 @@ function drush_op($function) {
   }
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-     drush_print(sprintf("Calling %s(%s)", $function, implode(", ", $args)));
+     drush_log(sprintf("Calling %s(%s)", $function, implode(", ", $args_printed)), 'debug');
   }
 
   if (drush_get_context('DRUSH_SIMULATE')) {
@@ -1299,6 +1351,29 @@ function _drush_shell_exec($args, $interactive = FALSE) {
 }
 
 /**
+ * Determine the appropriate os value for the
+ * specified site record
+ *
+ * @returns
+ *   NULL for 'same as local machine', 'Windows' or 'Linux'.
+ */
+function drush_os($site_record = NULL) {
+  // Default to $os = NULL, meaning 'same as local machine'
+  $os = NULL;
+  // If the site record has an 'os' element, use it
+  if (isset($site_record) && array_key_exists('os', $site_record)) {
+    $os = $site_record['os'];
+  }
+  // Otherwise, we will assume that all remote machines are Linux
+  // (or whatever value 'remote-os' is set to in drushrc.php).
+  elseif (isset($site_record) && array_key_exists('remote-host', $site_record) && !empty($site_record['remote-host'])) {
+    $os = drush_get_option('remote-os', 'Linux');
+  }
+
+  return $os;
+}
+
+/**
  * Platform-independent version of escapeshellarg().
  * This only works for local commands.
  * TODO: Make a unified drush_escapeshellarg
@@ -1400,6 +1475,69 @@ function _drush_download_file($url) {
   }
 
   return $filename;
+}
+
+/**
+ * Extract a tarball.
+ *
+ * @param string $path
+ *   The name of the .tar.gz or .tgz file to be extracted.
+ * @param string $destination
+ *   The destination directory the tarball should be extracted into.
+ *   Optional, if ommitted the tarball directory will be used as destination.
+ * @param boolean $listing
+ *   If TRUE, a listing of the tar contents will be returned on success.
+ *
+ * @return string
+ *   TRUE on success, FALSE on fail. If $listing is TRUE, a file listing of the
+ *   tarball is returned if the extraction reported success, instead of TRUE.
+ */
+function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
+  if (!file_exists($path)) {
+    return drush_set_error('TARBALL_EXTRACT_NOT_FOUND', dt('Tarball !path could not be found.', array('!path' => $path)));
+  }
+  $olddir = getcwd();
+  if (!$destination) {
+    $destination = dirname($path);
+  }
+  if (!is_writeable($destination)) {
+    return drush_set_error('TARBALL_EXTRACT_DESTINATION', dt('Extracting !path failed, as the destination directory !dest was not found or could not be written to.', array('!path' => $path, '!dest' => $dest)));
+  }
+  // If we are not on Windows, then try to do "tar" in a single operation.
+  if ((!drush_is_windows()) && (drush_shell_cd_and_exec(dirname($path), "tar -C %s -xzf %s", $destination, basename($path)))) {
+    if ($listing) {
+      // We use a separate tar -tf instead of -xvf above because
+      // the output is not the same in Mac.
+      drush_shell_cd_and_exec(dirname($path), "tar -tf %s", basename($path));
+      return drush_shell_exec_output();
+    }
+    return TRUE;
+  }
+  // If we could not get the single-op tar to work, do it in three steps.
+  // Copy the source tarball to the destination directory.  Rename to a temp name in case the destination directory == dirname($path)
+  $paths_basename = basename(basename($path, '.tar.gz'), '.tgz');
+  $tarball = drush_tempnam($paths_basename, $destination) . ".tar.gz";
+  drush_register_file_for_deletion($tarball);
+  drush_copy_dir($path, $tarball);
+  $unzipped = $destination . '/' . basename($tarball, ".tar.gz") . ".tar";
+  // We used to use gzip --decompress in --stdout > out, but the output redirection sometimes failed on Windows for some binary output
+  drush_shell_cd_and_exec(dirname($tarball), "gzip --decompress %s", $tarball);
+  if (file_exists($unzipped)) {
+    drush_register_file_for_deletion($unzipped);
+    if (drush_shell_cd_and_exec(dirname($unzipped), "tar -xf %s", basename($unzipped))) {
+      if ($listing) {
+        // We use a separate tar -tf instead of -xf above because
+        // the output is not the same in Mac.
+        drush_shell_cd_and_exec(dirname($unzipped), "tar -tf %s", basename($unzipped));
+        return drush_shell_exec_output();
+      }
+      return TRUE;
+    }
+    return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', dt('Extracting !path using the tar command failed.', array('!path' => $path)));
+  }
+  else {
+    return drush_set_error('TARBALL_EXTRACT_GZIP_FAIL', dt('Uncompressing !path using  the gzip command failed.', array('!path' => $path)));
+  }
 }
 
 /**
@@ -1559,7 +1697,7 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
     return TRUE;
   }
 
-  return drush_set_error('DRUSH_MOVE_DIR_FAILURE', dt('Unable to move !src to !dest.', array('src' => $src, 'dest' => $dest)));
+  return drush_set_error('DRUSH_MOVE_DIR_FAILURE', dt('Unable to move !src to !dest.', array('!src' => $src, '!dest' => $dest)));
 }
 
 /**
@@ -2002,7 +2140,8 @@ function drush_remote_command() {
       }
 
       if (drush_confirm('Continue? ') === FALSE) {
-        return drush_user_abort();
+        drush_user_abort();
+        return TRUE;
       }
     }
     $command = array_shift($args);
@@ -2345,7 +2484,7 @@ function drush_print_timers() {
       }
       $table[] = array($name, $cum, $count, $avg);
     }
-    drush_print_table($table, TRUE);
+    drush_print_table($table, TRUE, array(), STDERR);
   }
 }
 
@@ -2686,13 +2825,14 @@ function drush_unset_recursive(&$data, $unset_key) {
 }
 
 /**
- * Return a list of all supported VCSs reserved files and directories.
+ * Return a list of VCSs reserved files and directories.
  */
 function drush_version_control_reserved_files() {
   static $files = FALSE;
 
   if (!$files) {
-    $files = array();
+    // Also support VCSs that are not drush vc engines.
+    $files = array('.git', '.gitignore', '.hg', '.hgignore', '.hgrags');
     $vcs = array_keys(drush_get_engines('version_control'));
     foreach ($vcs as $name) {
       drush_include_engine('version_control', $name);

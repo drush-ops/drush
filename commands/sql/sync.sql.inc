@@ -103,11 +103,11 @@ function sql_drush_sql_sync_sanitize($site) {
       // We need a different sanitization query for Postgres and Mysql.
       $db_driver = $site_settings['databases']['default']['default']['driver'];
       if ($db_driver == 'pgsql') {
-        $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%login' => "' || replace(login, ' ', '_') || '");
+        $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%name' => "' || replace(name, ' ', '_') || '");
         $newmail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "'";
       }
       else {
-        $email_map = array('%uid' => "', uid, '", '%mail' => "', replace(mail, '@', '_'), '", '%login' => "', replace(login, ' ', '_'), '");
+        $email_map = array('%uid' => "', uid, '", '%mail' => "', replace(mail, '@', '_'), '", '%name' => "', replace(name, ' ', '_'), '");
         $newmail =  "concat('" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "')";
       }
     }
@@ -378,17 +378,8 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       $pre_import_commands = '';
       $create_db = drush_get_option('create-db');
       if (isset($create_db)) {
-        $create_db_target = $target_db_url;
-        $create_db_target['database'] = '';
-        $db_superuser = drush_get_option(array('db-su', 'target-db-su'));
-        if (isset($db_superuser)) {
-          $create_db_target['username'] = $db_superuser;
-        }
-        $db_su_pw = drush_get_option(array('db-su-pw', 'target-db-su-pw'));
-        if (isset($db_su_pw)) {
-          $create_db_target['password'] = $db_su_pw;
-        }
-        $db_su_connect = _drush_sql_connect($create_db_target);
+        $create_db_su = drush_sql_su($target_db_url);
+        $db_su_connect = _drush_sql_connect($create_db_su);
         $pre_import_sql = drush_sql_build_createdb_sql($target_db_url);
         $pre_import_commands = sprintf('echo "%s" | %s; ', $pre_import_sql, $db_su_connect);
       }

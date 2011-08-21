@@ -3,7 +3,7 @@
 /**
  * Install Drupal 7+
  */
-function drush_core_site_install_version($profile) {
+function drush_core_site_install_version($profile, array $additional_form_options = array()) {
   if (is_null($profile)) {
     $profile = 'standard';
   }
@@ -11,7 +11,7 @@ function drush_core_site_install_version($profile) {
   define('MAINTENANCE_MODE', 'install');
   require_once DRUPAL_ROOT . '/includes/install.core.inc';
 
-  $db_spec = drush_core_site_install_db_spec();
+  $db_spec = drush_sql_read_db_spec();
 
   $account_pass = drush_get_option('account-pass', 'admin');
   $settings = array(
@@ -45,6 +45,16 @@ function drush_core_site_install_version($profile) {
       ),
     ),
   );
+
+  // Merge in the additional options.
+  foreach ($additional_form_options as $key => $value) {
+    $current = &$settings['forms'];
+    foreach (explode('.', $key) as $param) {
+      $current = &$current[$param];
+    }
+    $current = $value;
+  }
+
   drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), 'ok');
   install_drupal($settings);
 }

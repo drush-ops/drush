@@ -12,10 +12,14 @@ class drush_pm_version_control_bzr implements drush_pm_version_control {
    * Check that the project or drupal core directory looks clean
    */
   public function pre_update(&$project, $items_to_test = array()) {
-    // If items to test is empty, test everything; otherwise, pass just
-    // the list of files to test to Bazaar status.
+    // Bazaar needs a list of items to test within the given project.
+    // If $items_to_test is empty we need to force it to test the project
+    // directory itself --once we've cd'ed to it.
+    if (empty($items_to_test)) {
+      $items_to_test = array('.' => '.');
+    }
     $args = array_keys($items_to_test);
-    array_unshift($args, 'bzr status --short ' . str_repeat('%s ', count($args)));
+    array_unshift($args, 'bzr status --short' . str_repeat(' %s', count($args)));
     array_unshift($args, $project['full_project_path']);
     if (call_user_func_array('drush_shell_cd_and_exec', $args)) {
       $output = preg_grep('/^[\sRCP][\sNDKM][\s\*]/', drush_shell_exec_output());

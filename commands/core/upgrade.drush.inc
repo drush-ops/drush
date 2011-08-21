@@ -12,49 +12,49 @@ function upgrade_drush_command() {
   $items = array();
 
   $items['site-upgrade'] = array(
-    'description' => dt("Run a major version upgrade for Drupal (e.g. Drupal 6 to Drupal 7).  A copy of the site is made, and then upgraded; the source site is not changed."),
+    'description' => 'Run a major version upgrade for Drupal (e.g. Drupal 6 to Drupal 7).  A copy of the site is made, and then upgraded; the source site is not changed.',
     'drupal dependencies' => array('update'),
     'drush dependencies' => array('sql', 'pm', 'core'),
     'core' => array(6), // Add 7 once drush supports 7 -> 8 upgrades.
     'arguments' => array(
-      'target' => dt("The name of a sitealias, which points to the destination site. 'root' and 'uri' keys are required; db-url is recommended. See examples/aliases.drushrc.php for more information about creating a site alias."),
+      'target' => "The name of a sitealias, which points to the destination site. 'root' and 'uri' keys are required; db-url is recommended. See examples/aliases.drushrc.php for more information about creating a site alias.",
     ),
     'examples' => array(
-      'drush site-upgrade @onward' => dt('Upgrade from the current site to the site specified by @onward alias.'),
+      'drush site-upgrade @onward' => 'Upgrade from the current site to the site specified by @onward alias.',
     ),
     'options' => array(
-      'structure-tables-key' => dt('A key in the structure-tables array. @see example.drushrc.php. Defaults to \'common\'.'),
-      'source-dump' => dt('Path to dump file. Medium or large sized sites should set this. Optional; default is to create a temporary file.'),
-      'db-su' => dt('DB username to use when dropping and creating the target database. Optional.'),
-      'db-su-pw' => dt('DB password to use when dropping and creating the target database. Optional.'),
-      'no-cache' => dt('Transfer a fresh database from source site. Otherwise, DB dump is re-used for 24 hours.'),
-      'core-only' => dt('Stop after upgrading Drupal core; do not download and enable new versions of the site\'s modules.'),
-      'force-sites-default' => dt('Forces settings.php to be written in sites/default folder, even if source settings.php is not.'),
-      'replace' => dt('Replace target if it already exists.  Default is to prompt.'),
-      'reuse' => dt('Reuse target if it already exists.  Default is to prompt.'),
-      'uninstall' => dt('Comma-separated list of modules to uninstall in the target database prior to upgrade.  n.b. The source site is not affected.'),
+      'structure-tables-key' => 'A key in the structure-tables array. @see example.drushrc.php. Defaults to \'common\'.',
+      'source-dump' => 'Path to dump file. Medium or large sized sites should set this. Optional; default is to create a temporary file.',
+      'db-su' => 'DB username to use when dropping and creating the target database. Optional.',
+      'db-su-pw' => 'DB password to use when dropping and creating the target database. Optional.',
+      'no-cache' => 'Transfer a fresh database from source site. Otherwise, DB dump is re-used for 24 hours.',
+      'core-only' => 'Stop after upgrading Drupal core; do not download and enable new versions of the site\'s modules.',
+      'force-sites-default' => 'Forces settings.php to be written in sites/default folder, even if source settings.php is not.',
+      'replace' => 'Replace target if it already exists.  Default is to prompt.',
+      'reuse' => 'Reuse target if it already exists.  Default is to prompt.',
+      'uninstall' => 'Comma-separated list of modules to uninstall in the target database prior to upgrade.  n.b. The source site is not affected.',
     ),
     'aliases' => array('sup'),
     'topics' => array('docs-aliases'),
   );
   $items['site-upgrade-prepare'] = array(
-    'description' => dt('Prior to running updatedb on Drupal core, disable all contrib modules and uninstall any module the user specified should be uninstalled.  Called automatically by site-upgrade.'),
+    'description' => 'Prior to running updatedb on Drupal core, disable all contrib modules and uninstall any module the user specified should be uninstalled.  Called automatically by site-upgrade.',
     'hidden' => TRUE,
     'arguments' => array(
-      'modules' => dt('The modules to disable.'),
+      'modules' => 'The modules to disable.',
     ),
     'options' => array(
-      'uninstall' => dt('Comma-separated list of modules to uninstall prior to upgrade.'),
+      'uninstall' => 'Comma-separated list of modules to uninstall prior to upgrade.',
     ),
   );
   $items['site-upgrade-modules'] = array(
-    'description' => dt('Download, enable, and run updatedb on all contrib modules after an upgrade.  Called automatically by site-upgrade.'),
+    'description' => 'Download, enable, and run updatedb on all contrib modules after an upgrade.  Called automatically by site-upgrade.',
     'hidden' => TRUE,
     'arguments' => array(
-      'modules' => dt('The modules to download and enable.'),
+      'modules' => 'The modules to download and enable.',
     ),
     'options' => array(
-      'projects' => dt('The projects that must be downloaded to provide the specified module list.'),
+      'projects' => 'The projects that must be downloaded to provide the specified module list.',
     ),
   );
   return $items;

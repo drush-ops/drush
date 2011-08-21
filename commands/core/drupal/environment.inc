@@ -18,6 +18,19 @@ function drush_get_modules() {
 }
 
 /**
+ * Returns drupal required modules, including modules declared as required dynamically.
+ */
+function _drush_drupal_required_modules($module_info) {
+  $required = drupal_required_modules();
+  foreach ($module_info as $name => $module) {
+    if (isset($module->info['required']) && $module->info['required']) {
+      $required[] = $name;
+    }
+  }
+  return array_unique($required);
+}
+
+/**
  * Return dependencies and its status for modules.
  *
  * @param $modules
@@ -84,7 +97,10 @@ function drush_module_dependents($modules, $module_info) {
  *   Array of module names
  */
 function drush_module_enable($modules) {
-  module_enable($modules, FALSE);
+  // The list of modules already have all the dependencies, but they might not
+  // be in the correct order. Still pass $enable_dependencies = TRUE so that
+  // Drupal will enable the modules in the correct order.
+  module_enable($modules);
 }
 
 /**
@@ -94,7 +110,10 @@ function drush_module_enable($modules) {
  *   Array of module names
  */
 function drush_module_disable($modules) {
-  module_disable($modules, FALSE);
+  // The list of modules already have all the dependencies, but they might not
+  // be in the correct order. Still pass $enable_dependencies = TRUE so that
+  // Drupal will enable the modules in the correct order.
+  module_disable($modules);
 }
 
 /**

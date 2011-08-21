@@ -26,7 +26,6 @@ function pm_update_filter(&$project) {
     case UPDATE_NOT_CHECKED:
       $status = dt('Unable to check status');
       break;
-    case UPDATE_UNKNOWN:
     default:
       $status = dt('Unknown');
       break;
@@ -52,7 +51,7 @@ function _pm_refresh() {
  *
  * @return An array containing remote and local versions for all installed projects
  */
-function _pm_get_update_info($projects = NULL) {
+function _pm_get_update_info($projects) {
   // We force a refresh if the cache is not available.
   if (!cache_get('update_available_releases', 'cache_update')) {
     _pm_refresh();
@@ -67,9 +66,15 @@ function _pm_get_update_info($projects = NULL) {
 
   $data = update_calculate_project_data($info);
   foreach ($data as $project_name => $project) {
+    // Discard custom projects.
+    if ($project['status'] == UPDATE_UNKNOWN) {
+      unset($data[$project_name]);
+      continue;
+    }
     if (in_array($project['project_type'], array('disabled-module', 'disabled-theme'))) {
       $data[$project_name]['project_type'] = substr($project['project_type'], strpos($project['project_type'], '-') + 1);
     }
+    $data[$project_name]['includes'] = drupal_map_assoc($projects[$project_name]['extensions']);
   }
   $data = _pm_get_project_path($data, 'includes');
 

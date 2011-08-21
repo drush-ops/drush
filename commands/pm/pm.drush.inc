@@ -168,6 +168,8 @@ function pm_drush_command() {
     'options' => array(
       'pipe' => 'Returns a space delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
       'notes' => 'Show release notes for each project to be updated.',
+      'no-core' => 'Only update modules and skip the core update.',
+      'self-update' => 'Check for pending updates to drush itself. Set to 0 to avoid check.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'aliases' => array('upc'),
@@ -229,7 +231,7 @@ function pm_drush_command() {
       'drush dl webform --dev' => 'Download the latest dev release of webform.',
     ),
     'arguments' => array(
-      'projects' => 'A list of drpal.org project names, with optional version. Defaults to \'drupal\'',
+      'projects' => 'A comma delimited list of drupal.org project names, with optional version. Defaults to \'drupal\'',
     ),
     'options' => array(
       'destination' => 'Path to which the project will be copied. If you\'re providing a relative path, note it is relative to the drupal root (if bootstrapped).',
@@ -406,6 +408,21 @@ function drush_get_projects(&$extensions = NULL) {
 }
 
 /**
+ * Returns a list of enabled modules.
+ *
+ * This is a simplified version of module_list().
+ */
+function pm_module_list() {
+  $enabled = array();
+  $rsc = drush_db_select('system', 'name', 'type=:type AND status=:status', array(':type' => 'module', ':status' => 1));
+  while ($row = drush_db_result($rsc)) {
+    $enabled[$row] = $row;
+  }
+
+  return $enabled;
+}
+
+/**
  * @} End of "defgroup extensions".
  */
 
@@ -563,12 +580,15 @@ function drush_pm_find_project_from_extension($extension) {
  * Command callback. Enable one or more extensions from downloaded projects.
  */
 function drush_pm_enable() {
+  // Include update engine so we can use update_check_incompatibility().
+  drush_include_engine('drupal', 'update');
   $args = _convert_csv_to_array(func_get_args());
+
+  $extension_info = drush_get_extensions();
 
   $recheck = TRUE;
   while ($recheck) {
     $recheck = FALSE;
-    $extension_info = drush_get_extensions();
 
     // Classify $args in themes, modules or unknown.
     $modules = array();
@@ -582,16 +602,20 @@ function drush_pm_enable() {
       drush_log(dt('!extension was not found and will not be enabled.', array('!extension' => $name)), 'warning');
     }
 
-    // Discard already enabled extensions.
+    // Discard already enabled and incompatible extensions.
     foreach ($extensions as $name) {
       if ($extension_info[$name]->status) {
+        drush_log(dt('!extension is already enabled.', array('!extension' => $name)), 'ok');
+      }
+      // Check if is compatible with Drupal core.
+      if (update_check_incompatibility($name, $extension_info[$name]->type)) {
+        drush_set_error('DRUSH_PM_ENABLE_MODULE_INCOMPATIBLE', dt('!name is incompatible with the Drupal version.', array('!name' => $name)));
         if ($extension_info[$name]->type == 'module') {
           unset($modules[$name]);
         }
         else {
           unset($themes[$name]);
         }
-        drush_log(dt('!extension is already enabled.', array('!extension' => $name)), 'ok');
       }
     }
 
@@ -647,10 +671,7 @@ function drush_pm_enable() {
     if (!$dependencies_ok) {
       return FALSE;
     }
-    $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
-    $needed = array_diff($all_dependencies, $enabled);
-    $modules = $needed + $modules;
-
+    $modules = array_diff(array_merge($modules, $all_dependencies), pm_module_list());
     // Discard modules which doesn't meet requirements.
     require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
     foreach ($modules as $key => $module) {
@@ -685,10 +706,7 @@ function drush_pm_enable() {
   // Enable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_enable($modules);
-    $current = drupal_map_assoc($enabled, 'pm_true');
-    $processed = drupal_map_assoc($modules, 'pm_true');
-    $active_modules = array_merge($current, $processed);
-    drush_system_modules_form_submit($active_modules);
+    drush_system_modules_form_submit(pm_module_list());
   }
 
   // Inform the user of final status.
@@ -760,14 +778,12 @@ function drush_pm_disable() {
 
   if (!empty($modules)) {
     // Add enabled dependents to the list of modules to disable.
-    $enabled = array_keys(array_filter(drush_get_modules(), 'pm_is_enabled'));
     $dependents = drush_module_dependents($modules, $extension_info);
-    $dependents = array_unique($dependents);
-    $dependents = array_intersect($dependents, $enabled);
+    $dependents = array_intersect($dependents, pm_module_list());
     $modules = array_merge($modules, $dependents);
 
     // Discard required modules.
-    $required = drupal_required_modules();
+    $required = drush_drupal_required_modules($extension_info);
     foreach ($required as $module) {
       if (isset($modules[$module])) {
         unset($modules[$module]);
@@ -799,9 +815,7 @@ function drush_pm_disable() {
   // Disable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_disable($modules);
-    $active_modules = array_diff($enabled, $modules);
-    $active_modules = drupal_map_assoc($active_modules, 'pm_true');
-    drush_system_modules_form_submit($active_modules);
+    drush_system_modules_form_submit(pm_module_list());
   }
 
   // Inform the user of final status.
@@ -819,7 +833,7 @@ function drush_pm_disable() {
     return drush_set_error('DRUSH_PM_DISABLE_EXTENSION_ISSUE', dt('There was a problem disabling !extension.', array('!extension' => implode(',', $problem_extensions))));
   }
 }
-
+  
 /**
  * Command callback. Show detailed info for one or more extension.
  */
@@ -999,6 +1013,7 @@ function drush_pm_uninstall() {
 
   drush_include_engine('drupal', 'environment');
   $module_info = drush_get_modules();
+  $required = drupal_required_modules();
 
   // Discards modules which are enabled, not found or already uninstalled.
   foreach ($modules as $key => $module) {
@@ -1016,6 +1031,18 @@ function drush_pm_uninstall() {
       // The module is uninstalled.
       unset($modules[$key]);
       drush_log(dt('!module is already uninstalled.', array('!module' => $module)), 'ok');
+    }
+    else {
+      $required_by = array();
+      foreach (array_keys($module_info[$module]->required_by) as $dependent) {
+        if (!in_array($dependent, $required) && ($module_info[$dependent]->schema_version != -1)) {
+          $required_by[] = $dependent;
+        }
+      }
+      if (count($required_by)) {
+        drush_log(dt('To uninstall !module, the following modules must be uninstalled first: !required', array('!module' => $module, '!required' => implode(', ', $required_by))), 'error');
+        unset($modules[$key]);
+      }
     }
   }
 
@@ -1037,23 +1064,6 @@ function drush_pm_uninstall() {
   foreach ($modules as $module) {
     drush_log(dt('!module was successfully uninstalled.', array('!module' => $module)), 'ok');
   }
-}
-
-/**
- * Array filter callback to return enabled modules.
- *
- * @param $module
- *  A module object as returned by drush_get_modules().
- */
-function pm_is_enabled($module) {
-  return $module->status;
-}
-
-/**
- * Callback helper.
- */
-function pm_true() {
-  return TRUE;
 }
 
 /**
@@ -1156,7 +1166,7 @@ function drush_pm_releases() {
     drush_print($header);
     drush_print_table($rows, TRUE, array(0 => 14));
   }
-  
+
   return $info;
 }
 
@@ -1597,7 +1607,7 @@ function drush_pm_updatecode_postupdate() {
   drupal_load_updates();
 
   // @see system_requirements().
-  foreach (module_list() as $module) {
+  foreach (pm_module_list() as $module) {
     $updates = drupal_get_schema_versions($module);
     if ($updates !== FALSE) {
       $default = drupal_get_installed_schema_version($module);
@@ -1881,6 +1891,7 @@ function pm_drush_engine_package_handler() {
       ),
       'sub-options' => array(
         'package-handler=git_drupalorg' => array(
+          'gitusername' => 'Your git username as shown on user/[uid]/edit/git. Typically, this is set this in drushrc.php. Omitting this prevents users from pushing changes back to git.drupal.org.',
           'gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
           'gitcheckoutparams' => 'Add options to the `git checkout` command.',
           'gitcloneparams' => 'Add options to the `git clone` command.',
@@ -2042,25 +2053,25 @@ function drush_pm_download_validate() {
   // Validate --variant or enforce a sane default.
   $variant = drush_get_option('variant', FALSE);
   if ($variant) {
-    if (!in_array($variant, array('core', 'no-core', 'make'))) {
+    if (!in_array($variant, array('full', 'projects', 'profile-only'))) {
       drush_log(dt('Unknown variant !variant. Valid values: !variations', array('!variant' => $variant, '!variations' => implode(', ', $variations))), 'error');
     }
   }
-  // core and no-core variants are only valid for wget package handler.
+  // full and projects variants are only valid for wget package handler.
   $package_handler = drush_get_option('package-handler', 'wget');
-  if (($package_handler != 'wget') && ($variant != 'make')) {
-    $new_variant = 'make';
+  if (($package_handler != 'wget') && ($variant != 'profile-only')) {
+    $new_variant = 'profile-only';
     if ($variant) {
       drush_log(dt('Variant !variant is incompatible with !ph package-handler.', array('!variant' => $variant, '!ph' => $package_handler)), 'warning');
     }
   }
-  // If we are working on a drupal root, core variant is not an option.
+  // If we are working on a drupal root, full variant is not an option.
   else if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
-    if ((!$variant) || (($variant == 'core') && (!isset($new_variant)))) {
-      $new_variant = 'no-core';
+    if ((!$variant) || (($variant == 'full') && (!isset($new_variant)))) {
+      $new_variant = 'projects';
     }
-    if ($variant == 'core') {
-      drush_log(dt('Variant core is not a valid option within a Drupal root.'), 'warning');
+    if ($variant == 'full') {
+      drush_log(dt('Variant full is not a valid option within a Drupal root.'), 'warning');
     }
   }
 
@@ -2395,12 +2406,19 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
   return $locked_result;
 }
 
+function _drush_pm_extension_cache_file() {
+  return drush_server_home() . "/.drush/drush-extension-cache.inc";
+}
+
 function _drush_pm_get_extension_cache() {
   $extension_cache = array();
-  $cache_file = "/tmp/cache.inc";
+  $cache_file = _drush_pm_extension_cache_file();
 
   if (file_exists($cache_file)) {
-    include "/tmp/cache.inc";
+    include $cache_file;
+  }
+  if (!array_key_exists('extension-map', $extension_cache)) {
+    $extension_cache['extension-map'] = array();
   }
   return $extension_cache;
 }
@@ -2415,8 +2433,6 @@ function drush_pm_lookup_extension_in_cache($extension) {
 }
 
 function drush_pm_put_extension_cache($extension_cache) {
-  $output = var_export($extension_cache, TRUE);
-  file_put_contents("/tmp/cache.inc", '<?php $extension_cache = ' . $output . ';');
 }
 
 function drush_pm_cache_project_extensions($project, $found) {

@@ -14,10 +14,7 @@ REQUIREMENTS
 ------------
 * To use drush from the command line, you'll need a CLI-mode capable PHP
   binary. The minimum PHP version is 5.2.
-* Some drush commands run on Windows. We recommend you use a Unix-like OS (e.g Linux, OSX).
-  If you must run Drush on Windows, you have to install Unix Tools from
-  GnuWin32 (http://gnuwin32.sourceforge.net/). More info
-  about Drush on Windows available at http://drupal.org/node/594744.
+* Drush 4 does not support Windows; see "For Windows", below.
 * Drush works with Drupal 5, Drupal 6 and Drupal 7.  However, occasionally
   recent changes to the most recent version of Drupal can introduce issues
   with drush.  On Drupal 5, drush requires update_status v5.x-2.5 or later
@@ -87,20 +84,11 @@ For Linux/Unix/Mac:
     If you have troubles, try using the -l and -r options when invoking drush. See below.
 
 For Windows:
+  - Drush 4 does not support Windows.  Consider using Drush 3 or Drush 5 instead.
   - Consider using on Linux/Unix/OSX using Virtualbox or other VM. Windows support is lacking.
-  - Follow step 1. Use drush by navigating to /path/to/drush
-    and running 'drush.bat'.
-  - You have to install gzip, libarchive, tar, wget, ncurses, and less executables. Go to
-    http://gnuwin32.sourceforge.net/packages.html and install the packages.
-    Add the folder %ProgramFiles%\GnuWin32\bin to your PATH.
-    Documentation can be found at http://drupal.org/node/594744
-  - Whenever the documentation or the help text refers to
-   'drush [option] <command>' or something similar, 'drush' has to be replaced
-    by 'drush.bat'.
-  - If drush.bat is not working for you, either add the directory in which your
-    php.exe resides to your PATH or edit drush.bat to point to your php.exe.
-  - To disable the warning about Windows support, set $options['check_os'] = FALSE
-    in drushrc.php. See examples/example.drushrc.php.
+  - The Drush 5 Windows installer can be found at http://drush.ws/drush_windows_installer.
+  - Instructions for installing Drush 3 on Windows can be found at 
+    http://drupal.org/node/594744.
 
 USAGE
 -----

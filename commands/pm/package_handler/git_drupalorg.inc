@@ -33,19 +33,42 @@ function package_handler_validate() {
  *   The release details array from drupal.org.
  */
 function package_handler_download_project(&$request, $release) {
-  $repository = 'git://git.drupal.org/project/' . $request['name'] . '.git';
+  if ($username = drush_get_option('gitusername')) {
+    // Uses SSH, which enables pushing changes back to git.drupal.org.
+    $repository = $username . '@git.drupal.org:project/' . $request['name'] . '.git';
+  }
+  else {
+    $repository = 'git://git.drupal.org/project/' . $request['name'] . '.git';
+  }
+  $request['repository'] = $repository;
   $tag = $release['tag'];
 
-  if (drush_get_option('cache')) {
-    $gitcache = drush_server_home() . '/.drush/gitcache';
-    drush_gitcache_check($gitcache);
-
-    drush_shell_cd_and_exec($gitcache, 'git remote show');
-    $cached_modules = drush_shell_exec_output();
-
-    if (!in_array($request['name'], $cached_modules)) {
-      drush_gitcache_add_project($gitcache, $request, $repository);
+  // If the --cache option was given, create a new git reference cache of the
+  // remote repository, or update the existing cache to fetch recent changes.
+  if (drush_get_option('cache') && ($cachedir = drush_directory_cache())) {
+    $gitcache = $cachedir . '/git';
+    $projectcache = $gitcache . '/' . $request['name'] . '.git';
+    drush_mkdir($gitcache);
+    // Setup a new cache, if we don't have this project yet.
+    if (!file_exists($projectcache)) {
+      // --mirror works similar to --bare, but retrieves all tags, local
+      // branches, remote branches, and any other refs (notes, stashes, etc).
+      // @see http://stackoverflow.com/questions/3959924
+      $command = 'git clone --mirror';
+      if (drush_get_context('DRUSH_VERBOSE')) {
+        $command .= ' --verbose --progress';
+      }
+      $command .= ' %s %s';
+      drush_shell_cd_and_exec($gitcache, $command, $repository, $request['name'] . '.git');
     }
+    // If we already have this project, update it to speed up subsequent clones.
+    else {
+      // A --mirror clone is fully synchronized with `git remote update` instead
+      // of `git fetch --all`.
+      // @see http://stackoverflow.com/questions/6150188
+      drush_shell_cd_and_exec($projectcache, 'git remote update');
+    }
+    $gitcache = $projectcache;
   }
 
   // Clone the repo into its appropriate target location.
@@ -166,46 +189,3 @@ function package_handler_post_download($project) {
   }
 }
 
-/**
- * Check for gitcache directory or create it.
- *
- * @param $gitcache
- *   The location of the gitcache directory.
- */
-function drush_gitcache_check($gitcache) {
-  if (is_dir(drush_server_home() . '/.drush')) {
-    drush_mkdir($gitcache);
-    if (!drush_shell_cd_and_exec($gitcache, 'test $(git rev-parse --is-bare-repository) == "true"')) {
-      drush_shell_cd_and_exec($gitcache, 'git init --bare');
-      drush_shell_cd_and_exec($gitcache, 'git config core.compression 1');
-    }
-  }
-}
-
-/**
- * Add a project to the cache.
- *
- * @param $gitcache
- *   The location of the gitcache directory.
- * @param $request
- *   The project array with name, base and full (final) paths.
- * @param $release
- *   The release details array from drupal.org.
- */
-function drush_gitcache_add_project($gitcache, $request, $repository) {
-  // On the first fetch, git will check for common commits with the remote
-  // repository, so to speed this up we initially fetch from a local clone.
-  $tmpdir = drush_tempdir();
-  $command = 'git clone --bare ';
-  if (drush_get_context('DRUSH_VERBOSE')) {
-    $command .= ' --verbose --progress ';
-  }
-  $command .= '%s';
-  if (drush_shell_cd_and_exec($tmpdir, $command, $repository)) {
-    // Temporarily set the remote url to our temporary clone and fetch from there.
-    drush_shell_cd_and_exec($gitcache, 'git remote add %s %s && git fetch %s --tags', $request['name'], $tmpdir, $request['name']);
-
-    // Change the remote URL and fetch normally.
-    drush_shell_cd_and_exec($gitcache, 'git remote set-url %s %s && git fetch %s --tags', $request['name'], $repository, $request['name']);
-  }
-}

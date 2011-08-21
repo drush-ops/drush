@@ -1,0 +1,73 @@
+COMMANDS (perhaps keep these notes in $command definition?)
+------------
+pm-download: GOOD.
+pm-updatecode: GOOD.
+pm-update
+pm-releasenotes
+pm-releases
+pm-enable: GOOD. testEnDisUnList().
+pm-disable: GOOD. testEnDisUnList().
+pm-uninstall: GOOD. testEnDisUnList().
+pm-list: GOOD. testEnDisUnList().
+pm-info:
+pm-refresh
+version-control: FAIR. See updatecode. To be deprecated all git workflow after git.drupal.org?
+package-hander:
+
+sql-cli:
+sql-connect:
+sql-query:
+sql-dump: FAIR. Implicitly tested by siteUpgradeTest.
+sql-sync: FAIR. Implicitly tested by siteUpgradeTest.
+sql-drop:
+
+
+updatedb: GOOD. Implicitly tested siteUpgradeTest.
+archive-dump: GOOD
+archive-restore: 
+help
+version: Good. Implicit by testStandaloneScript()
+self-update
+php-eval: GOOD. Implicitly tested by many tests (e.g. siteUpgradeTest).
+php-script: GOOD.
+drupal-directory: GOOD
+core-cli: FAIR
+cache-clear
+core-cron
+core-status: FAIR: Implicit test by contextTest.
+docs
+image
+core-rsync
+search-*
+site-install: FAIR. Implicit test by setUpDrupal().
+site-upgrade: GOOD.
+test-*
+topic
+variable-*: GOOD.
+watchdog-*
+
+user-*: GOOD.
+
+field-*: GOOD.
+
+INCLUDES
+------------
+backend: GOOD
+batch: FAIR. Implicit by siteUpgradeTest.
+command: FAIR
+context: FAIR
+drush: NONE.
+environment
+sitealias. FAIR. Explicit test for alias lists. Single aliases implicitly tested by contextTest.
+dbtng: Good. Implicit by variable-*.
+drupal
+exec: GOOD: Implicitly tested all over.
+filesystem
+output
+
+
+ROOT
+-------------
+drush
+drush.php
+drush.bat

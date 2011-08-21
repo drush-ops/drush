@@ -17,14 +17,26 @@ function drush_core_site_install_version($profile) {
   drush_shell_exec('php -r %s', $phpcode);
   $cli_output = drush_shell_exec_output();
   $cli_cookie = end($cli_output);
-  $phpcode = _drush_site_install6_cookies($profile, $cli_cookie). ' $_GET["op"]="start"; include("'. $drupal_root .'/install.php");';
-  drush_shell_exec('php -r %s', $phpcode);
 
-  $phpcode = _drush_site_install6_cookies($profile, $cli_cookie). ' $_GET["op"]="do_nojs"; include("'. $drupal_root .'/install.php");';
-  drush_shell_exec('php -r %s', $phpcode);
+  // We need to bootstrap the database to be able to check the progress of the 
+  // install batch process since we're not duplicating the install process using
+  // drush_batch functions, but calling the process directly.
+  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
 
-  $phpcode = _drush_site_install6_cookies($profile, $cli_cookie). ' $_GET["op"]="finished"; include("'. $drupal_root .'/install.php");';
-  drush_shell_exec('php -r %s', $phpcode);
+  $status = _drush_site_install6_stage($profile, $cli_cookie, "start");
+  if ($status === FALSE) {
+    return FALSE;
+  }
+
+  $status = _drush_site_install6_stage($profile, $cli_cookie, "do_nojs");
+  if ($status === FALSE) {
+    return FALSE;
+  }
+
+  $status = _drush_site_install6_stage($profile, $cli_cookie, "finished");
+  if ($status === FALSE) {
+    return FALSE;
+  }
 
   $account_pass = drush_get_option('account-pass', 'admin');
   $phpcode = _drush_site_install6_cookies($profile, $cli_cookie);
@@ -50,8 +62,38 @@ function drush_core_site_install_version($profile) {
 }
 
 /**
+ * Submit a given op to install.php; if a meta "Refresh" tag
+ * is returned in the result, then submit that op as well.
+ */
+function _drush_site_install6_stage($profile, $cli_cookie, $initial_op) {
+  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+  // Remember the install task at the start of the stage
+  $install_task = _drush_site_install6_install_task();
+  $op = $initial_op;
+  while (!empty($op)) {
+    $phpcode = _drush_site_install6_cookies($profile, $cli_cookie). ' $_GET["op"]="' . $op . '"; include("'. $drupal_root .'/install.php");';
+    drush_shell_exec('php -r %s', $phpcode);
+    $output = implode("\n", drush_shell_exec_output());
+    // Check for a "Refresh" back to the do_nojs op; e.g.:
+    //   <meta http-equiv="Refresh" content="0; URL=http://default/install.php?locale=en&profile=wk_profile6&id=1&op=do_nojs">
+    // If this pattern is NOT found, then go on to the "finished" step.
+    $matches = array();
+    $match_result = preg_match('/http-equiv="Refresh".*op=([a-zA-Z0-9_]*)/', $output, $matches);
+    if ($match_result) {
+      $op = $matches[1];
+    }
+    else {
+      $op = '';
+    }
+  }
+  if (($install_task == _drush_site_install6_install_task()) && ($initial_op != "finished")) {
+    return drush_set_error('DRUSH_SITE_INSTALL_FAILED', dt("The site install task '!task' failed.", array('!task' => $install_task)));
+  }
+  return TRUE;
+}
+
+/**
  * Utility function to grab/set current "cli cookie".
- * 
  */
 function _drush_site_install6_cookies($profile, $cookie = NULL) {
   $drupal_base_url = parse_url(drush_get_option('uri', 'http://default'));
@@ -70,4 +112,15 @@ register_shutdown_function("_cli_cookie_print");';
   }
 
   return $output;
+}
+
+/**
+ * Utility function to check the install_task.  We are
+ * not bootstrapped to a high enough level to use variable_get.
+ */
+function _drush_site_install6_install_task() {
+  if ($data = db_result(db_query("SELECT value FROM {variable} WHERE name = 'install_task'",1))) {
+    $result = unserialize($data);
+  }
+  return $result;
 }
