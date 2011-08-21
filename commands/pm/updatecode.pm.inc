@@ -22,15 +22,15 @@ function drush_pm_updatecode() {
   // Parse out project name and version.
   $requests = pm_parse_project_version($requests);
 
-  // Get update status information.
-  $update_info = _pm_get_update_info();
-
-  // Process locks specified on the command line.
-  $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
-
   // Get installed extensions and projects.
   $extensions = drush_get_extensions();
   $projects = drush_get_projects($extensions);
+
+  // Get update status information.
+  $update_info = _pm_get_update_info($projects);
+
+  // Process locks specified on the command line.
+  $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
   foreach ($extensions as $name => $extension) {
     // Add an item to $update_info for each enabled extension which was obtained
@@ -97,7 +97,7 @@ function drush_pm_updatecode() {
       else {
         $update_info[$name]['status'] = DRUSH_PM_REQUESTED_UPDATE;
       }
-      // Set the candidate version to the requested release
+      // Set the candidate version to the requested release.
       $update_info[$name]['candidate_version'] = $release['version'];
     }
   }
@@ -105,7 +105,8 @@ function drush_pm_updatecode() {
   // Table headers.
   $rows[] = array(dt('Name'), dt('Installed version'), dt('Proposed version'), dt('Status'));
 
-  // Process releases, notifying user of status and building a list of proposed updates
+  // Process releases, notifying user of status and
+  // building a list of proposed updates.
   $updateable = pm_project_filter($update_info, $rows, $security_only);
 
   // Pipe preparation.
@@ -118,8 +119,8 @@ function drush_pm_updatecode() {
       $pipe .= str_replace(' ', '-', pm_update_filter($project)). "\n";
     }
     drush_print_pipe($pipe);
-    // Automatically curtail update process if in pipe mode
-    $updateable = FALSE;
+    // Automatically curtail update process if in pipe mode.
+    $updateable = array();
   }
 
   $tmpfile = drush_tempnam('pm-updatecode.');
@@ -133,7 +134,8 @@ function drush_pm_updatecode() {
   drush_print($contents);
   drush_print();
 
-  // If specific project updates were requested then remove releases for all others
+  // If specific project updates were requested then remove releases for all
+  // others.
   if (!empty($requests)) {
     foreach ($updateable as $name => $project) {
       if (!isset($requests[$name])) {
@@ -142,7 +144,13 @@ function drush_pm_updatecode() {
     }
   }
 
-  // If there are any locked projects that were not requested, then remove them
+  // Prevent update of core if --no-core was specified.
+  if (isset($updateable['drupal']) && drush_get_option('no-core', FALSE)) {
+    unset($updateable['drupal']);
+    drush_print(dt('Skipping core update (--no-core specified).'));
+  }
+
+  // If there are any locked projects that were not requested, then remove them.
   if (!empty($locked_list)) {
     foreach ($updateable as $name => $project) {
       if ((isset($locked_list[$name])) && (!isset($requests[$name]))) {
@@ -154,10 +162,10 @@ function drush_pm_updatecode() {
   // First check to see if there is a newer drush.
   $drush_update_available = NULL;
   if (drush_get_option('self-update', TRUE)) {
-    $drush_update_available = drush_self_update(FALSE, FALSE);
+    $drush_update_available = drush_check_self_update();
   }
-  
-  // Do no updates in simulated mode
+
+  // Do no updates in simulated mode.
   if (drush_get_context('DRUSH_SIMULATE')) {
     return drush_log(dt('No action taken in simulated mode.'), 'ok');
     return TRUE;
@@ -235,6 +243,7 @@ function _pm_update_core(&$project, $tmpfile) {
     _drush_pm_releasenotes(array('drupal'), TRUE, $tmpfile);
   }
   if(!drush_confirm(dt('Do you really want to continue?'))) {
+    drush_print(dt('Rolling back all changes. Run again with --no-core to update modules only.'));
     return drush_user_abort();
   }
 

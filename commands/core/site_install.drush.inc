@@ -17,7 +17,7 @@ function drush_core_site_install_validate() {
  * Perform setup tasks for installation.
  */
 function drush_core_pre_site_install() {
-  if (!$db_spec = drush_core_site_install_db_spec()) {
+  if (!$db_spec = drush_sql_read_db_spec()) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
   }
@@ -60,8 +60,22 @@ function drush_core_pre_site_install() {
       return;
     }
     elseif (drush_drupal_major_version() == 6) {
-      // On D6, we have to write $db_url ourselves. On D7+, the installer does it.
+      // On D6, we have to write $db_url ourselves. In D7+, the installer does it.
       file_put_contents($settingsfile, "\n" . '$db_url = \'' . drush_get_option('db-url') . "';\n", FILE_APPEND);
+      // Instead of parsing and performing string replacement on the configuration file,
+      // the options are appended and override the defaults.
+      // Database table prefix
+      if (!empty($db_spec['db_prefix'])) {
+        if (is_array($db_spec['db_prefix'])) {
+          // Write db_prefix configuration as an array
+          $db_prefix_config = '$db_prefix = ' . var_export($db_spec['db_prefix'], TRUE) . ';';
+        }
+        else {
+          // Write db_prefix configuration as a string
+          $db_prefix_config = '$db_prefix = \'' . $db_spec['db_prefix'] . '\';';
+        }
+        file_put_contents($settingsfile, "\n" . $db_prefix_config . "\n", FILE_APPEND);
+      }
     }
   }
 
@@ -92,19 +106,7 @@ function drush_core_pre_site_install() {
     }
   }
   else {
-    $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
-    // Get credentials to connect to the server, but not the database which we
-    // are about to DROP. @see _drush_sql_get_credentials().
-    $create_db_spec = $db_spec;
-    unset($create_db_spec['database']);
-    if (!_drush_sql_query($sql, $create_db_spec)) {
-      // If we could not drop the database, try instead to drop all
-      // of the tables in the database (presuming it exists...).
-      // If we cannot do either operation, then fail with an error.
-      if (!_drush_sql_drop($db_spec)) {
-        return drush_set_error(dt('Could not drop and create database: @name', array('@name' => $db_name)));
-      }
-    }
+    drush_sql_empty_db($db_spec);
   }
   return TRUE;
 }
@@ -113,27 +115,19 @@ function drush_core_pre_site_install() {
  * Command callback.
  */
 function drush_core_site_install($profile = NULL) {
-  drush_include_engine('drupal', 'site_install', drush_drupal_major_version());
-  drush_core_site_install_version($profile);
-}
+  $args = func_get_args();
+  $form_options = array();
 
-/**
- * Return a db_spec based on supplied db_url/db_prefix options or an existing settings.php.
- */
-function drush_core_site_install_db_spec() {
-  if ($db_url = drush_get_option('db-url')) {
-    // We were passed a db_url. Usually a fresh site.
-    $db_spec = drush_convert_db_from_db_url($db_url);
-    $db_spec['db_prefix'] = drush_get_option('db-prefix');
-    return $db_spec;
+  if ($args) {
+    // The first argument is the profile.
+    $profile = array_shift($args);
+    // Subsequent arguments are additional form values.
+    foreach ($args as $arg) {
+      list($key, $value) = explode('=', $arg);
+      $form_options[$key] = $value;
+    }
   }
-  elseif (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
-    // We have an existing settings.php.
-    $db_spec = _drush_sql_get_db_spec();
-    $db_spec['db_prefix'] = $GLOBALS['db_prefix'];
-    return $db_spec;
-  }
-  else {
-    return FALSE;
-  }
+
+  drush_include_engine('drupal', 'site_install', drush_drupal_major_version());
+  drush_core_site_install_version($profile, $form_options);
 }

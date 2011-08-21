@@ -33,7 +33,7 @@ function package_handler_validate() {
  * @param $release The release details array from drupal.org.
  */
 function package_handler_download_project(&$request, $release) {
-  // Install profiles come in 3 variants. User may specify which one she wants.
+  // Install profiles come in several variants. User may specify which one she wants.
   if ($request['project_type'] == 'profile') {
     // @todo Use xpath to get the right file url.
     $files = $release['files'];
@@ -45,13 +45,9 @@ function package_handler_download_project(&$request, $release) {
       }
     }
   }
-  
+
   $filename = explode('/', $release['download_link']);
   $filename = array_pop($filename);
-
-  // Chdir to the download location.
-  $olddir = getcwd();
-  drush_op('chdir', $request['base_project_path']);
 
   // Download the project.
   if (!drush_shell_exec("wget -P . %s", $release['download_link'])) {
@@ -61,7 +57,6 @@ function package_handler_download_project(&$request, $release) {
     drush_log("Downloading " . $filename . " was successful.");
   }
   else {
-    drush_op('chdir', $olddir);
     return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', 'Unable to download ' . $filename . ' to ' . $request['base_project_path'] . ' from '. $release['download_link']);
   }
 
@@ -69,37 +64,26 @@ function package_handler_download_project(&$request, $release) {
   if (drush_op('md5_file', $filename) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
     drush_set_error('DRUSH_PM_FILE_CORRUPT', "File $filename is corrupt (wrong md5 checksum).");
     drush_op('unlink', $filename);
-    drush_op('chdir', $olddir);
     return FALSE;
   }
   else {
     drush_log("Md5 checksum of $filename verified.");
   }
 
-  // Decompress and untar in two steps as tar -xzf does not work on windows.
-  drush_shell_exec("gzip -d %s", $filename);
-  $tarpath = basename($filename, '.tar.gz');
-  $tarpath = basename($tarpath, '.tgz');
-  $tarpath .= '.tar';
-  drush_shell_exec("tar -xf %s", $tarpath);
+  // Extract the tarball.
+  $file_list = drush_tarball_extract($filename, $request['base_project_path'], TRUE);
+  drush_op('unlink', $filename);
 
   // Move untarred directory to project_dir, if distinct.
   if (($request['project_type'] == 'core') || (($request['project_type'] == 'profile') && (drush_get_option('variant', 'core') == 'core'))) {
     // Obtain the dodgy project_dir for drupal core.
-    // We use a separate tar -tf instead of -xvf above because
-    // the output is not the same in Mac.
-    drush_shell_exec("tar -tf %s", $tarpath);
-    $output = drush_shell_exec_output();
-    $project_dir = rtrim($output[0], DIRECTORY_SEPARATOR);
+
+    $project_dir = rtrim($file_list[0], DIRECTORY_SEPARATOR);
     if ($request['project_dir'] != $project_dir) {
       $path = $request['base_project_path'];
       drush_move_dir($path . '/'. $project_dir, $path . '/' . $request['project_dir']);
     }
   }
-
-  // Cleanup. Remove the tar file and set previous working directory.
-  drush_op('unlink', $tarpath);
-  drush_op('chdir', $olddir);
 
   return TRUE;
 }
@@ -118,4 +102,3 @@ function package_handler_update_project(&$request, $release) {
  */
 function package_handler_post_download($project) {
 }
-

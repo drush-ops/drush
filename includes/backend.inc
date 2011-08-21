@@ -132,7 +132,7 @@ function drush_backend_output() {
     unset($site_context['config-file']);
     unset($site_context['context-path']);
     unset($self_record['loaded-config']);
-    unset($self_record['name']);
+    unset($self_record['#name']);
     $data['self'] = array_merge($site_context, $self_record);
   }
 
@@ -298,7 +298,7 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
  *    Optional. Defaults to the current user. If you specify this, you can choose which module to send.
  *
  * @deprecated Command name includes arguments, and these are not quote-escaped in any way.
- * @see drush_backend_invoke_args and @see drush_invoke_process for better options.
+ * @see drush_invoke_process("@self", $command, array($arg1, $arg2, ...), $data) for a better option.
  *
  * @return
  *   If the command could not be completed successfully, FALSE.
@@ -313,9 +313,8 @@ function drush_backend_invoke($command, $data = array(), $method = 'GET', $integ
 /**
  * A variant of drush_backend_invoke() which specifies command and arguments separately.
  *
- * @deprecated Is not as extensible as drush_backend_invoke_sitealias; @see http://drupal.org/node/766080
- * @see drush_invoke_sitealias_args() and @see drush_invoke_process and
- * @see drush_backend_invoke_sitealias() for better options.
+ * @deprecated; do not call directly.
+ * @see drush_invoke_process("@self", $command, $args, $data) for a better option.
  */
 function drush_backend_invoke_args($command, $args, $data = array(), $method = 'GET', $integrate = TRUE, $drush_path = NULL, $hostname = NULL, $username = NULL, $ssh_options = NULL) {
   $cmd = _drush_backend_generate_command($command, $args, $data, $method, $drush_path, $hostname, $username, $ssh_options);
@@ -362,6 +361,9 @@ function drush_backend_invoke_args($command, $args, $data = array(), $method = '
  *
  * @return
  *   A text string representing a fully escaped command.
+ *
+ * @deprecated; do not call directly.
+ * @see drush_invoke_process($site_record, $command, $args, $data) for a better option.
  */
 function drush_backend_invoke_sitealias($site_record, $command, $args, $data = array(), $method = 'GET', $integrate = TRUE) {
   $cmd = _drush_backend_generate_command_sitealias($site_record, $command, $args, $data, $method);
@@ -503,6 +505,7 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
   $hostname = array_key_exists('remote-host', $site_record) ? $site_record['remote-host'] : null;
   $username = array_key_exists('remote-user', $site_record) ? $site_record['remote-user'] : null;
   $ssh_options = array_key_exists('ssh-options', $site_record) ? $site_record['ssh-options'] : null;
+  $os = drush_os($site_record);
 
   $drush_path = NULL;
   if (array_key_exists('path-aliases', $site_record)) {
@@ -527,16 +530,16 @@ function _drush_backend_generate_command_sitealias($site_record, $command, $args
     }
   }
   foreach ($args as $arg) {
-    $command .= ' ' . escapeshellarg($arg);
+    $command .= ' ' . drush_escapeshellarg($arg);
   }
   $interactive = ' ' . (empty($data['#interactive']) ? '' : ' > `tty`') . ' 2>&1';
   // @TODO: Implement proper multi platform / multi server support.
   $cmd = escapeshellcmd($drush_path) . " " . $option_str . " " . $command . (empty($data['#interactive']) ? " --backend" : "");
 
   if (!is_null($hostname)) {
-    $username = (!is_null($username)) ? $username : get_current_user();
+    $username = (!is_null($username)) ? drush_escapeshellarg($username) . "@" : '';
     $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
-    $cmd = "ssh " . $ssh_options . " " . escapeshellarg($username) . "@" . escapeshellarg($hostname) . " " . escapeshellarg($cmd . ' 2>&1') . $interactive;
+    $cmd = "ssh " . $ssh_options . " " . $username . drush_escapeshellarg($hostname) . " " . drush_escapeshellarg($cmd . ' 2>&1', $os) . $interactive;
   }
   else {
     $cmd .= $interactive;

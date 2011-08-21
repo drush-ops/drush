@@ -26,6 +26,19 @@ function drush_get_modules() {
   return $modules;
 }
 
+/**
+ * Returns drupal required modules, including their dependencies.
+ *
+ * A module may alter other module's .info to set a dependency on it.
+ * See for example http://drupal.org/project/phpass
+ */
+function _drush_drupal_required_modules($module_info) {
+  $required = drupal_required_modules();
+  foreach ($required as $module) {
+    $required = array_merge($required, $module_info[$module]->info['dependencies']);
+  }
+  return $required;
+}
 
 /**
  * Return dependencies and its status for modules.

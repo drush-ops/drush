@@ -54,7 +54,7 @@ function sandwich_drush_command() {
   // the list of topics when `drush topic` is executed.
   // To view this topic, run `drush --include=/full/path/to/examples topic`
   $items['sandwich-exposition'] = array(
-    'description' => dt('Ruminations on the true meaning and philosophy of sandwiches.'),
+    'description' => 'Ruminations on the true meaning and philosophy of sandwiches.',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,

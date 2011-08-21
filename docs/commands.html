@@ -4,7 +4,7 @@ Creating a new drush command is very easy.  There are
 four simple steps.
 <ol>
 <li>Create a command file called COMMANDFILE.drush.inc
- 
+
 <li>Implement the function COMMANDFILE_drush_help(). Optional.
 
 <li>Implement the function COMMANDFILE_drush_command()
@@ -26,7 +26,7 @@ drush to compose the names of the functions it will call, so
 choose wisely.
 <p>
 The example drush command, 'make-me-a-sandwich', is stored
-in the 'sandwich' commandfile, 'sandwich.drush.inc'. 
+in the 'sandwich' commandfile, 'sandwich.drush.inc'.
 <p>
 Drush searches for commandfiles in the following locations:
 <ul>
@@ -50,8 +50,8 @@ though, then all drush commandfiles will be considered, whether the
 module is enabled or not.  See `drush topic docs-bootstrap` for
 more information on bootstrapping.
 <p>
-Additionally, drush commandfiles may optionally define a function 
-COMMANDFILE_drush_load() in the file COMMANDFILE.drush.load.inc.  
+Additionally, drush commandfiles may optionally define a function
+COMMANDFILE_drush_load() in the file COMMANDFILE.drush.load.inc.
 If this function returns FALSE, then the commandfile will not be loaded.
 
 <h2>Implement COMMANDFILE_drush_help()</h2>
@@ -82,32 +82,32 @@ Drush commands are very similar to the Drupal menu system.
 The elements that can appear in a drush command definition
 are shown below.
 <ul>
-<li>'aliases': 
- 
+<li>'aliases':
+
      Provides a list of shorter names for the command.
      For example, pm-download may also be called via `drush dl`.
      If the alias is used, drush will substitute back in the
      primary command name, so pm-download will still be used
      to generate the command hook, etc.
 
-<li>'deprecated-aliases': 
- 
+<li>'deprecated-aliases':
+
      Works just like 'aliases', but does not
      appear in help.  Used in instances where the drush
      maintainers intend to eventually remove support for a
      command alias.  If someone runs a drush command using a
      deprecated alias, drush will print a warning message.
 
-<li>'command hook': 
- 
+<li>'command hook':
+
      Change the name of the function drush will
      call to execute the command from drush_COMMANDFILE_COMMANDNAME()
      to drush_COMMANDFILE_COMMANDHOOK(), where COMMANDNAME is the
      original name of the command, and COMMANDHOOK is the value
      of the 'command hook' item.
- 
-<li>'callback': 
- 
+
+<li>'callback':
+
      Name of function to invoke for this command.  The callback
      function name _must_ begin with "drush_commandfile_", where commandfile
      is from the file "commandfile.drush.inc", which contains the
@@ -115,39 +115,39 @@ are shown below.
      Note that the callback entry is optional; it is preferable to
      omit it, in which case drush_invoke() will generate the hook function name.
 
-<li>'callback arguments': 
-     
+<li>'callback arguments':
+
      An array of arguments to pass to the callback.
      The command line arguments, if any, will appear after the
      callback arguments in the function parameters.
 
-<li>'description': 
- 
+<li>'description':
+
      Description of the command.
- 
-<li>'arguments': 
- 
-     An array of arguments that are understood by the command. 
+
+<li>'arguments':
+
+     An array of arguments that are understood by the command.
      Used by `drush help` only.
 
-<li>'options': 
- 
-     An array of options that are understood by the command. 
+<li>'options':
+
+     An array of options that are understood by the command.
      Used by `drush help` only.
 
-<li>'examples': 
- 
+<li>'examples':
+
      An array of examples that are understood by the command.
      Used by `drush help` only.
 
-<li>'scope': 
- 
+<li>'scope':
+
      One of 'system', 'project', 'site'.  Not currently used.
 
-<li>'bootstrap': 
- 
+<li>'bootstrap':
+
      Drupal bootstrap level.  Valid values are:
-<ul>     
+<ul>
       <li>DRUSH_BOOTSTRAP_DRUSH
       <li>DRUSH_BOOTSTRAP_DRUPAL_ROOT
       <li>DRUSH_BOOTSTRAP_DRUPAL_SITE
@@ -156,28 +156,28 @@ are shown below.
       <li>DRUSH_BOOTSTRAP_DRUPAL_FULL
       <li>DRUSH_BOOTSTRAP_DRUPAL_LOGIN
       <li>DRUSH_BOOTSTRAP_MAX
-</ul>     
+</ul>
      See `drush topic docs-bootstrap`.
-     
-<li>'core': 
- 
-     Drupal major version required.
 
-<li>'drupal dependencies': 
- 
+<li>'core':
+
+     Drupal major version required. Append a '+' to indicate 'and later versions.'
+
+<li>'drupal dependencies':
+
      Drupal modules required for this command.
 
-<li>'drush dependencies': 
- 
+<li>'drush dependencies':
+
      Other drush commandfiles required for this command.
 
- <li>'topics': 
- 
+ <li>'topics':
+
      Provides a list of topic commands that are related in
      some way to this command.  Used by `drush help` only.
- 
-<li>'topic': 
- 
+
+<li>'topic':
+
      Set to TRUE if this command is a topic, callable from the
      `drush docs-topics` command.
 </ul><p>
@@ -250,6 +250,5 @@ its result if the command cannot be validated for some reason.
 See `drush topic docs-policy` for more information on defining
 policy functions with validate hooks, and `drush topic docs-api`
 for information on how the command hook process works.  Also,
-the list of defined drush error codes can be found in 
+the list of defined drush error codes can be found in
 `drush topic docs-errorcodes`.
-

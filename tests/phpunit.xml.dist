@@ -1,0 +1,23 @@
+<!-- Copy and rename to phpunit.xml. Customize as needed. -->
+<phpunit backupGlobals="false"
+    backupStaticAttributes="false"
+    syntaxCheck="false"
+    bootstrap="drush_testcase.inc">
+  <php>
+    <!-- These variables may alternatively be set as bash environment variables. -->
+
+    <!--Uncomment and edit one of the lines below depending on DB platform.-->
+    <!--DB User must have create/drop permissions-->
+    <!-- <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/> -->
+    <!-- <var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
+
+    <!--User must have write permissions to this directory.-->
+    <!--If not supplied, defaults to sys_get_tmp_dir().-->
+    <!-- <var name="UNISH_TMP" value="/tmp"/> -->
+
+    <!--Uncomment the line below if your path to drush differs from `which drush`. Use absolute path.-->
+    <!--<var name="UNISH_DRUSH" value="/Users/mw/bin/drush"/>-->
+
+    <includePath>.</includePath>
+  </php>
+</phpunit>

@@ -42,7 +42,8 @@ function core_drush_command() {
     'description' => 'Show drush version.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'options' => array(
-      'pipe' => 'Print just the version number, and nothing else.'
+      'pipe' => 'Print just the version number, and nothing else.',
+      'self-update' => 'Check for pending updates to drush itself. Set to 0 to avoid check.',
     ),
   );
   $items['self-update'] = array(
@@ -110,13 +111,6 @@ function core_drush_command() {
     'deprecated-aliases' => array('script'),
     'topics' => array('docs-examplescript', 'docs-scripts'),
   );
-  $items['cache-clear'] = array(
-    'description' => 'Clear a specific cache, or all drupal caches.',
-    'arguments' => array(
-      'type' => 'The particular cache to clear. Omit this argument to choose from available caches.',
-    ),
-    'aliases' => array('cc'),
-  );
   $items['search-status'] = array(
     'description' => 'Show how many items remain to be indexed out of the total.',
     'drupal dependencies' => array('search'),
@@ -146,7 +140,8 @@ function core_drush_command() {
       'mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -az.',
       'RSYNC-FLAG' => 'Most rsync flags passed to drush sync will be passed on to rsync.  See rsync documentation.',
       'exclude-conf' => 'Excludes settings.php from being rsynced.  Default.',
-      'include-conf' => 'Allow settings.php to be rsynced',
+      'include-conf' => 'Allow settings.php to be rsynced. Default is to exclude settings.php.',
+      'include-vcs' => 'Include special version control directories (e.g. .svn).  Default is to exclude vcs files.',
       'exclude-files' => 'Exclude the files directory.',
       'exclude-sites' => 'Exclude all directories in "sites/" except for "sites/all".',
       'exclude-other-sites' => 'Exclude all directories in "sites/" except for "sites/all" and the site directory for the site being synced.  Note: if the site directory is different between the source and destination, use --exclude-sites followed by "drush rsync @from:%site @to:%site"',
@@ -165,13 +160,16 @@ function core_drush_command() {
     'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
     'arguments' => array(
       'profile' => 'the install profile you wish to run. defaults to \'default\' in D6, \'standard\' in D7',
+      'key=value...' => 'any additional settings you wish to pass to the profile. Only support on D7. The key is in the form [form name].[parameter name].',
     ),
     'options' => array(
-      'db-url' => 'A Drupal 5/6 style database URL. Only required for initial install - not re-install.',
-      'db-prefix' => 'An optional table prefix to use for initial install.',
       'account-name' => 'uid1 name. defaults to admin',
       'account-pass' => 'uid1 pass. defaults to admin',
       'account-mail' => 'uid1 email. defaults to admin@example.com',
+      'db-url' => 'A Drupal 5/6 style database URL. Only required for initial install - not re-install.',
+      'db-prefix' => 'An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).',
+      'db-su' => 'Account to use when creating a new database. Optional.',
+      'db-su-pw' => 'Password for the "db-su" account. Optional.',
       'locale' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',
       'clean-url'=> 'Defaults to 1',
       'site-name' => 'Defaults to Site-Install',
@@ -183,15 +181,15 @@ function core_drush_command() {
       'drush site-install --db-url=mysql://root:pass@localhost:port/dbname' => 'Install using the specified DB params.',
       'drush site-install --db-url=sqlite:/full/path/to/database.sqlite' => 'Install using SQLite (D7 only).',
       'drush site-install --account-name=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
+      'drush site-install standard install_configure_form.site_default_country=FR my_profile_form.my_settings.key=value' => 'Pass additional arguments to the profile (D7 only).',
     ),
-    'core' => array(6,7),
+    'core' => array('6+'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
     'aliases' => array('si'),
     'deprecated-aliases' => array('installsite', 'is'),
   );
-
   $items['drupal-directory'] = array(
-    'description' => dt('Return path to a given module/theme directory.'),
+    'description' => 'Return path to a given module/theme directory.',
     'arguments' => array(
       'target' => 'A module/theme name, or special names like root, files, private, or an alias : path alias string such as @alias:%files. Defaults to root.',
     ),
@@ -211,7 +209,7 @@ function core_drush_command() {
   );
 
   $items['core-cli'] = array(
-    'description' => dt('Enter a new shell optimized for drush use.'),
+    'description' => 'Enter a new shell optimized for drush use.',
     'options' => array(
       'override' => 'List of drush commands or aliases that should override built-in shell functions and commands; otherwise, built-ins override drush commands. Defaults to dd,help,sa.',
       'contextual' => 'Additional drush overrides that function ONLY when the prompt is "@alias>".  Defaults to cc,cron,rsync,status,sync,updatedb.',
@@ -237,7 +235,7 @@ function core_drush_command() {
   );
 
   $items['batch-process'] = array(
-    'description' => dt('Process operations in the specified batch set'),
+    'description' => 'Process operations in the specified batch set',
     'hidden' => TRUE,
       'arguments' => array(
         'batch-id' => 'The batch id that will be processed',
@@ -246,7 +244,7 @@ function core_drush_command() {
   );
 
   $items['updatedb-batch-process'] = array(
-    'description' => dt('Perform update functions'),
+    'description' => 'Perform update functions',
     'hidden' => TRUE,
     'arguments' => array(
       'batch-id' => 'The batch id that will be processed',
@@ -254,7 +252,7 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
   );
   $items['core-global-options'] = array(
-    'description' => dt('All global options'),
+    'description' => 'All global options',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -769,16 +767,13 @@ function drush_core_version() {
   drush_print_pipe(DRUSH_VERSION);
   // Next check to see if there is a newer drush.
   if (!drush_get_context('DRUSH_PIPE') && !drush_get_option('self-update', TRUE)) {
-    drush_self_update(FALSE, FALSE);
+    drush_check_self_update();
   }
 }
 
 function drush_core_self_update() {
-  if (drush_get_option(array('dev', 'head'), FALSE)) {
-    drush_set_option('self-update', 'head');
-  }
-
-  return drush_self_update(TRUE);
+  drush_set_option('select', TRUE);
+  return drush_invoke('pm-download', 'drush');
 }
 
 function drush_core_find_project_path($target) {
