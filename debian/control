@@ -15,9 +15,10 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, php5-cli (>= 5.2)
 Recommends: wget, php5-mysql | php5-pgsql
 Suggests: git, mysql-client
 Description: command line shell and Unix scripting interface for Drupal
- drush is a command line shell and Unix scripting interface for Drupal, a
- veritable Swiss Army knife designed to make life easier for those of us
- who spend some of our working hours hacking away at the command prompt.
+ drush is a command line shell and Unix scripting interface for
+ Drupal, a veritable Swiss Army knife designed to make life easier for
+ Drupal power users who spend a lot of time hacking away at the
+ command prompt.
  .
  Drush core ships with lots of useful commands for interacting with code
  like modules/themes/profiles. Similarly, it runs update.php, executes
