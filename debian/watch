@@ -3,4 +3,4 @@
 # Compulsory line, this is a version 3 file
 version=3
 
-http://ftp.drupal.org/files/projects/drush-All-Versions-([0-9].*)\.tar\.gz
+http://ftp.drupal.org/files/projects/drush-7.x-([0-9].*)\.tar\.gz
