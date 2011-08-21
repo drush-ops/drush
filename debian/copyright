@@ -56,7 +56,7 @@ Affero General Public License (AGPL) version 3."
 On Debian systems, the complete text of the GNU General
 Public License can be found in `/usr/share/common-licenses/GPL-2'.
 
-The Debian packaging is (C) 2009, Antoine Beaupré <anarcat@koumbit.org> and
+The Debian packaging is ©2009, Antoine Beaupré <anarcat@koumbit.org> and
 is licensed under the GPL, see above.
 
 The includes/table.inc comes from the Console_Table package and is
