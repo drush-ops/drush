@@ -161,7 +161,7 @@ function drush_help_section_formatter_options($command, &$help_attributes) {
   else {
     $help_attributes['label'] = '--' . $help_attributes['label'];
   }
-  if ($help_attributes['required']) {
+  if (array_key_exists('required', $help_attributes)) {
     $help_attributes['description'] .= " " . dt("Required.");
   }
   if (array_key_exists('example-value', $help_attributes)) {
