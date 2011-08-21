@@ -26,15 +26,6 @@ function unit_drush_command() {
   return $items;
 }
 
-/*
- * Dynamically append custom bash code to the generated .bashrc.
- *
- * @see coreCase::testCoreCLI().
- */
-function unit_cli_bashrc($drush_command, $interactive_mode) {
-  return drush_get_option('unit-extra');
-}
-
 // Implement each invoke hook with the same single line of code.
 // That line records that the hook was called.
 function drush_unit_invoke_init() {unit_invoke_log(__FUNCTION__);}

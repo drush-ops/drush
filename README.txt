@@ -217,11 +217,6 @@ Related Options:
   -v, --verbose                 Display verbose output.
   --php                         The absolute path to your php binary.
 
-The 'core-cli' command provides a customized bash shell, and the --pipe option
-lists the .bashrc code it uses, which you can import into your usual shell.
-
-  $ drush core-cli
-
 Very intensive scripts can exhaust your available PHP memory. One remedy is to
 just restart automatically using bash. For example:
 
