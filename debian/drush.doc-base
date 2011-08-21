@@ -5,4 +5,5 @@ Abstract: Those manuals explain various internals of Drush.
 Section: Web Development
 
 Format: HTML
+Index: /usr/share/doc/drush/docs/index.html
 Files: /usr/share/doc/drush/docs/*.html
