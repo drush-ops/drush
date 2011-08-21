@@ -1,0 +1,8 @@
+Document: drush
+Title: Drush internals documentation
+Author: Drush Maintainers
+Abstract: Those manuals explain various internals of Drush.
+Section: Web Development
+
+Format: HTML
+Files: /usr/share/doc/drush/docs/*.html
