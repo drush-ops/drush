@@ -35,6 +35,7 @@ function archive_drush_command() {
       'file' => 'The site archive file that should be expanded.',
       'site name' => 'Optional. Which site within the archive you want to restore. Defaults to all.',
     ),
+    'required-arguments' => 1,
     'options' => array(
       'destination' => 'Specify where the Drupal site should be expanded, including the docroot. Defaults to the current working directory.',
       'db-prefix' => 'An optional table prefix to use during restore.',

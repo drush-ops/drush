@@ -131,6 +131,12 @@ are shown below.
      An array of arguments that are understood by the command.
      Used by `drush help` only.
 
+<li>'required-arguments':
+
+     Defaults to FALSE; TRUE if all of the arguments are required.
+     Set to an integer count of required arguments if only some are
+     required.
+
 <li>'options':
 
      An array of options that are understood by the command.
@@ -138,6 +144,16 @@ are shown below.
      drush_get_option _must_ be listed in the options array.
      If it is not, users will get an error about an "Unknown option"
      when they try to specify the option on the command line.
+<p>
+     The value of each option may be either a simple string containing
+     the option description, or an array containing the following
+     information:
+
+     <ul>
+          <li>'description': A description of the option.
+          <li>'required': The option must be specified, or an error is returned.
+          <li>'hidden': The option is not shown in the help output (rare).
+     </ul>
 
 <li>'allow-additional-options':
 

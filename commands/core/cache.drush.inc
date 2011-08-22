@@ -18,6 +18,7 @@ function cache_drush_command() {
       'cid' => 'The id of the object to fetch.',
       'bin' => 'Optional. The cache bin to fetch from.',
     ),
+    'required-arguments' => 1,
     'options' => array(
       'format' => 'Format to output the object. Use "print_r" for print_r (default), "export" for var_export, and "json" for JSON.',
     ),
@@ -41,6 +42,7 @@ function cache_drush_command() {
       'bin' => 'Optional. The cache bin to store the object in.',
       'expire' => 'Optional. CACHE_PERMANENT, CACHE_TEMPORARY, or a Unix timestamp.',
     ),
+    'required-arguments' => 2,
     'options' => array(
       'format' => 'Format to parse the object. Use "string" for string (default), and "json" for JSON.',
       'cache-get' => 'If the object is the result a previous fetch from the cache, only store the value in the "data" property of the object in the cache.',
@@ -126,16 +128,6 @@ function drush_cache_command_get($cid = NULL, $bin = NULL) {
  *   Optional parameter to specify the expiry of the cached object.
  */
 function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire = CACHE_PERMANENT) {
-  if (!$cid) {
-    drush_log(dt('You must specify a cache id to set.'), 'error');
-    return;
-  }
-
-  if ($data === '') {
-    drush_log(dt('The data to set must be non-empty.'), 'error');
-    return;
-  }
-
   if (!$bin) {
     $bin = 'cache';
   }

@@ -29,6 +29,7 @@ function user_drush_command() {
     'arguments' => array(
       'users' => 'A comma delimited list of uids, user names, or email addresses.',
     ),
+    'required-arguments' => TRUE,
     'options' => array(
       'full' => 'show extended information about the user',
       'short' => 'show basic information about the user (this is the default)',
@@ -41,6 +42,7 @@ function user_drush_command() {
     'arguments' => array(
       'users' => 'A comma delimited list of uids, user names, or email addresses.',
     ),
+    'required-arguments' => TRUE,
     'examples' => array(
       'drush user-block 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Block the users with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
@@ -58,6 +60,7 @@ function user_drush_command() {
     'arguments' => array(
       'users' => 'A comma delimited list of uids, user names, or email addresses.',
     ),
+    'required-arguments' => TRUE,
     'examples' => array(
       'drush user-unblock 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Unblock the users with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
@@ -76,6 +79,7 @@ function user_drush_command() {
       'role' => 'The name of the role to add',
       'users' => '(optional) A comma delimited list of uids, user names, or email addresses.',
     ),
+    'required-arguments' => 1,
     'examples' => array(
       'drush user-add-role "power user" 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Add the "power user" role to the accounts with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
@@ -94,6 +98,7 @@ function user_drush_command() {
       'role' => 'The name of the role to remove',
       'users' => '(optional) A comma delimited list of uids, user names, or email addresses.',
     ),
+    'required-arguments' => 1,
     'examples' => array(
       'drush user-remove-role "power user" 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Remove the "power user" role from the accounts with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
@@ -111,6 +116,7 @@ function user_drush_command() {
     'arguments' => array(
       'name' => 'The name of the account to add'
     ),
+    'required-arguments' => TRUE,
     'examples' => array(
       'drush user-create newuser --mail="person@example.com" --password="letmein"' =>
         'Create a new user account with the name newuser, the email address person@example.com, and the password letmein',
@@ -127,6 +133,7 @@ function user_drush_command() {
     'arguments' => array(
       'name' => 'The name of the account to cancel',
     ),
+    'required-arguments' => TRUE,
     'examples' => array(
       'drush user-cancel username' =>
         'Cancel the user account with the name username and anonymize all content created by that user.',
@@ -139,6 +146,7 @@ function user_drush_command() {
     'arguments' => array(
       'name' => 'The name of the account to modify.'
     ),
+    'required-arguments' => TRUE,
     'options' => array(
       'password' => array('required' => TRUE, 'description' => 'The new password for the account.'),
     ),

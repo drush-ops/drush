@@ -35,6 +35,7 @@ function variable_drush_command() {
       'name' => 'The name of a variable or the first few letters of its name.',
       'value' => 'The value to assign to the variable. Use \'-\' to read the object from STDIN.',
     ),
+    'required-arguments' => TRUE,
     'options' => array(
       'yes' => 'Skip confirmation if only one variable name matches.',
       'always-set' => 'Always skip confirmation.',
@@ -53,6 +54,7 @@ function variable_drush_command() {
     'arguments' => array(
       'name' => 'The name of a variable or the first few letters of its name.',
     ),
+    'required-arguments' => TRUE,
     'options' => array(
       'yes' => 'Skip confirmation if only one variable name matches.',
     ),
@@ -134,9 +136,6 @@ function drush_variable_get() {
  */
 function drush_variable_set() {
   $args = func_get_args();
-  if (!isset($args[0])) {
-    return drush_set_error('DRUSH_VARIABLE_ERROR', dt('No variable specified.'));
-  }
   $value = $args[1];
   if (!isset($value)) {
     return drush_set_error('DRUSH_VARIABLE_ERROR', dt('No value specified.'));
@@ -194,9 +193,6 @@ function drush_variable_set() {
  */
 function drush_variable_delete() {
   $args = func_get_args();
-  if (!isset($args[0])) {
-    drush_set_error('DRUSH_VARIABLE_ERROR', dt('No variable specified'));
-  }
   // Look for similar variable names.
   $result = drush_variable_like($args[0]);
 

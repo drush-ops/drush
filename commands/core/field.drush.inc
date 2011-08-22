@@ -29,6 +29,7 @@ function field_drush_command() {
       'bundle' => 'Content type (for nodes). Name of bundle to attach fields to. Required.',
       'field_spec' => 'Comma delimited triple in the form: field_name,field_type,widget_name. If widget_name is omitted, the default widget will be used. Separate multiple fields by space. If omitted, a wizard will prompt you.'
     ),
+    'required-arguments' => 1,
     'options' => array(
       'entity_type' => 'Type of entity (e.g. node, user, comment). Defaults to node.',
     ),

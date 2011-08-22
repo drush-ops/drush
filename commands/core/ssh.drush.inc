@@ -13,6 +13,7 @@ function ssh_drush_command() {
       'site-alias' => 'A remote site alias. Can be an alias list.',
       'bash' => 'Bash to execute on target. Optional, except when site-alias is a list.',
     ),
+    'required-arguments' => 1,
     'options' => array(
       'ssh-options' => 'A string of extra options that will be passed to the ssh command (e.g. "-p 100")',
     ),

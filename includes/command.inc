@@ -202,7 +202,7 @@ function drush_dispatch($command, $arguments = array()) {
 
     // Test to see if any of the options in the 'cli' context
     // are not represented in the command structure.
-    if (_drush_verify_cli_options($command) === FALSE) {
+    if ((_drush_verify_cli_options($command) === FALSE) || (_drush_verify_cli_arguments($command) === FALSE)) {
       return FALSE;
     }
 
@@ -292,6 +292,23 @@ function _drush_verify_cli_options($command) {
   if (!empty($missing_required_options)) {
     $missing = count($missing_required_options) > 1 ? dt('Missing required options') : dt('Missing required option');
     return drush_set_error(dt("@missing: --@options.  See `drush help @command` for information on usage.", array('@missing' => $missing, '@options' => implode(', --', $missing_required_options), '@command' => $command['command'])));
+  }
+  return TRUE;
+}
+
+function _drush_verify_cli_arguments($command) {
+  // Check to see if all of the required arguments
+  // are specified.
+  if ($command['required-arguments']) {
+    $required_arg_count = $command['required-arguments'];
+    if ($required_arg_count === TRUE) {
+      $required_arg_count = count($command['argument-description']);
+    }
+    if ((count($command['arguments'])) < $required_arg_count) {
+      $missing = count($required_arg_count) > 1 ? dt('Missing required arguments') : dt('Missing required argument');
+      $required = implode("', '", array_keys($command['argument-description']));
+      return drush_set_error(dt("@missing: '@required'.  See `drush help @command` for information on usage.", array('@missing' => $missing, '@required' => $required, '@command' => $command['command'])));
+    }
   }
   return TRUE;
 }
@@ -713,6 +730,8 @@ function drush_command_defaults($key, $commandfile, $path) {
       'options' => 'Options',
     ),
     'arguments' => array(),
+    'argument-description' => array(), // a copy of 'arguments'
+    'required-arguments' => FALSE,
     'options' => array(),
     'sub-options' => array(),
     'allow-additional-options' => FALSE,
@@ -816,6 +835,10 @@ function drush_parse_command() {
  * this function.
  */
 function _drush_prepare_command(&$command, $arguments = array()) {
+  // Drush overloads $command['arguments']; save the argument description
+  if (!isset($command['argument-description'])) {
+    $command['argument-description'] = $command['arguments'];
+  }
   // Merge specified callback arguments, which precede the arguments passed on the command line.
   if (isset($command['callback arguments']) && is_array($command['callback arguments'])) {
     $arguments = array_merge($command['callback arguments'], $arguments);

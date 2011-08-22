@@ -106,6 +106,7 @@ function core_drush_command() {
     'arguments' => array(
       'code' => 'PHP code',
     ),
+    'required-arguments' => TRUE,
     'allow-additional-options' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('eval', 'ev'),
@@ -155,6 +156,7 @@ function core_drush_command() {
     'arguments' => array(
       'command' => 'The shell command to be executed.',
     ),
+    'required-arguments' => TRUE,
     'examples' => array(
       'drush exec \'git pull\'' => 'Retrieve latest code from git',
     ),
@@ -244,8 +246,9 @@ function core_drush_command() {
     'description' => 'Process operations in the specified batch set',
     'hidden' => TRUE,
     'arguments' => array(
-      'batch-id' => 'The batch id that will be processed',
+      'batch-id' => 'The batch id that will be processed.',
     ),
+    'required-arguments' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
   );
 
@@ -255,6 +258,7 @@ function core_drush_command() {
     'arguments' => array(
       'batch-id' => 'The batch id that will be processed',
     ),
+    'required-arguments' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
   );
   $items['core-global-options'] = array(
