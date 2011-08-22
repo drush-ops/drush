@@ -556,8 +556,8 @@ function _drush_backend_get_global_contexts() {
   $result = array();
   $global_option_list = drush_get_global_options(FALSE);
   foreach ($global_option_list as $global_key => $global_metadata) {
-    if (array_key_exists('context', $global_metadata)) {
-      $value = drush_get_context($global_key, array());
+    if ((is_array($global_metadata)) && (array_key_exists('context', $global_metadata))) {
+      $value = drush_get_context($global_metadata['context'], array());
       if (!empty($value)) {
         $result[$global_key] = $value;
       }
