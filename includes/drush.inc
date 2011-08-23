@@ -321,8 +321,8 @@ function _convert_csv_to_array($args) {
  *     - description: The help text for this item. displayed by `drush help`.
  */
 function drush_get_global_options($brief = FALSE) {
-  $options['root']               = array('short-form' => 'r', 'context' => 'DRUSH_DRUPAL_ROOT', 'never-post' => TRUE, 'description' => "Drupal root directory to use (default: current directory).", 'example-value' => '<path>');
-  $options['uri']                = array('short-form' => 'l', 'context' => 'DRUSH_URI', 'never-post' => TRUE, 'description' => 'URI of the drupal site to use (only needed in multisite environments or when running on an alternate port).', 'example-value' => 'http://example.com:8888');
+  $options['root']               = array('short-form' => 'r', 'never-post' => TRUE, 'description' => "Drupal root directory to use (default: current directory).", 'example-value' => '<path>');
+  $options['uri']                = array('short-form' => 'l', 'never-post' => TRUE, 'description' => 'URI of the drupal site to use (only needed in multisite environments or when running on an alternate port).', 'example-value' => 'http://example.com:8888');
   $options['verbose']            = array('short-form' => 'v', 'context' => 'DRUSH_VERBOSE', 'description' => 'Display extra information about the command.');
   $options['debug']              = array('short-form' => 'd', 'context' => 'DRUSH_DEBUG', 'description' => 'Display even more information, including internal messages.');
   $options['yes']                = array('short-form' => 'y', 'context' => 'DRUSH_AFFIRMATIVE', 'description' => "Assume 'yes' as answer to all prompts.");
@@ -336,7 +336,7 @@ function drush_get_global_options($brief = FALSE) {
 
   if (!$brief) {
     $options['quiet']               = array('short-form' => 'q', 'description' => 'Suppress non-error messages.');
-    $options['include']             = array('short-form' => 'i', 'description' => "A list of additional directory paths to search for drush commands.");
+    $options['include']             = array('short-form' => 'i', 'context' => 'DRUSH_INCLUDE', 'local-context-only' => TRUE, 'description' => "A list of additional directory paths to search for drush commands.");
     $options['config']              = array('short-form' => 'c', 'description' => "Specify an additional config file to load. See example.drushrc.php.");
     $options['user']                = array('short-form' => 'u', 'description' => "Specify a Drupal user to login with. May be a name or a number.");
     $options['cache']               = array('description' => 'Keep a local cache of downloaded files.');

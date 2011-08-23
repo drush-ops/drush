@@ -541,7 +541,7 @@ function drush_backend_invoke_sitealias_command($site_record, $command, $args, $
   $drush_command_path = drush_build_drush_command($drush_path, array_key_exists('php', $command_options) ? $command_options['php'] : NULL, drush_os($site_record), array_key_exists('remote-host', $site_record));
 
   // Insure that contexts such as DRUSH_SIMULATE and NO_COLOR are included.
-  $command_options += _drush_backend_get_global_contexts();
+  $command_options += _drush_backend_get_global_contexts($site_record);
 
   list($post_options, $commandline_options, $drush_global_options) = _drush_backend_classify_options($command_options, $backend_options);
   $cmd = _drush_backend_generate_command($site_record, $drush_command_path . " " . _drush_backend_argument_string($drush_global_options, $os) . " " . $command, $args, $commandline_options, $backend_options) . ' 2>&1';
@@ -552,14 +552,18 @@ function drush_backend_invoke_sitealias_command($site_record, $command, $args, $
  * Find all of the drush contexts that are used to cache global values and
  * return them in an associative array.
  */
-function _drush_backend_get_global_contexts() {
+function _drush_backend_get_global_contexts($site_record) {
   $result = array();
   $global_option_list = drush_get_global_options(FALSE);
   foreach ($global_option_list as $global_key => $global_metadata) {
     if ((is_array($global_metadata)) && (array_key_exists('context', $global_metadata))) {
-      $value = drush_get_context($global_metadata['context'], array());
-      if (!empty($value)) {
-        $result[$global_key] = $value;
+      // If the context is declared to be a 'local-context-only',
+      // then only put it in if this is a local dispatch.
+      if (!array_key_exists('local-context-only', $global_metadata) || !array_key_exists('remot-host', $site_record)) {
+        $value = drush_get_context($global_metadata['context'], array());
+        if (!empty($value)) {
+          $result[$global_key] = $value;
+        }
       }
     }
   }

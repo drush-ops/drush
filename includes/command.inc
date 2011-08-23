@@ -167,7 +167,9 @@ function _drush_invoke($command, $args, $defined_in_commandfile) {
     return !$rollback;
   }
 
-  return $return;
+  if (isset($return)) {
+    return $return;
+  }
 }
 
 /**
@@ -1003,6 +1005,8 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
 
       // User commands, specified by 'include' option
       if ($include = drush_get_option(array('i', 'include'), FALSE)) {
+        // We set the DRUSH_INCLUDE context here for the benefit of backend_invoke
+        drush_set_context('DRUSH_INCLUDE', $include);
         foreach (explode(PATH_SEPARATOR, $include) as $path) {
           $searchpath[] = $path;
         }

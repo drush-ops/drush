@@ -25,17 +25,17 @@ class completeCase extends Drush_CommandTestCase {
     $this->drush('php-eval', array('drush_complete_cache_clear();'));
     // Confirm we get cache rebuilds for runs both in and out of a site
     // which is expected since these should resolve to separate cache IDs.
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke', FALSE);
+    $this->verifyComplete('@dev uni', 'uninstall', 'unit-batch', FALSE);
     $this->verifyComplete('uni', 'uninstall', 'uninstall', FALSE);
     // Next, rerun and check results to confirm cache IDs are generated
     // correctly on our fast bootstrap when returning the cached result.
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke');
+    $this->verifyComplete('@dev uni', 'uninstall', 'unit-batch');
     $this->verifyComplete('uni', 'uninstall', 'uninstall');
 
     // Test cache clearing for a completion type, which should be effective only
     // for current environment - i.e. a specific site should not be effected.
     $this->drush('php-eval', array('drush_complete_cache_clear("command-names");'));
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke');
+    $this->verifyComplete('@dev uni', 'uninstall', 'unit-batch');
     $this->verifyComplete('uni', 'uninstall', 'uninstall', FALSE);
 
     // Test cache clearing for a command specific completion type, which should
@@ -62,7 +62,7 @@ class completeCase extends Drush_CommandTestCase {
     // Commands that start the same as another command (i.e. unit is a valid
     // command, but we should still list unit-eval and unit-invoke when
     // completing on "unit").
-    $this->verifyComplete('@dev unit', 'unit', 'unit-invoke');
+    $this->verifyComplete('@dev unit', 'unit', 'unit-batch');
     // Global option alone.
     $this->verifyComplete('--n', '--no', '--nocolor');
     // Site alias + command.
@@ -108,8 +108,10 @@ class completeCase extends Drush_CommandTestCase {
     $exec = sprintf('%s --early=includes/complete.inc --complete-debug %s %s 2> %s', UNISH_DRUSH, UNISH_DRUSH, $command, $debug_file);
     $this->execute($exec);
     $result = $this->getOutputAsList();
-    $this->assertEquals($first, reset($result));
-    $this->assertEquals($last, end($result));
+    $expected = reset($result);
+    $this->assertEquals("$command: $first", "$command: $expected");
+    $expected = end($result);
+    $this->assertEquals("$command: $last", "$command: $expected");
     // If checking for HIT, we ensure no MISS exists, if checking for MISS we
     // ensure no HIT exists. However, we exclude the first cache report, since
     // it is expected that the command-names cache (loaded when matching

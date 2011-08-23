@@ -14,7 +14,6 @@
 */
 
 class backendCase extends Drush_CommandTestCase {
-  const DRUSH_BACKEND_OUTPUT_DELIMITER = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
 
   /*
    * Covers the following origin responsibilities.
@@ -43,7 +42,7 @@ class backendCase extends Drush_CommandTestCase {
     $stdin = json_encode(array('filter'=>'sql'));
     $exec = sprintf('echo %s | %s help --backend 2>/dev/null', self::escapeshellarg($stdin), self::escapeshellarg(UNISH_DRUSH));
     $this->execute($exec);
-    $parsed = $this->parse($this->getOutput());
+    $parsed = parse_backend_output($this->getOutput());
     $this->assertTrue((bool) $parsed, 'Successfully parsed backend output');
     $this->assertArrayHasKey('log', $parsed);
     $this->assertArrayHasKey('output', $parsed);
@@ -56,7 +55,7 @@ class backendCase extends Drush_CommandTestCase {
     // Check error propogation by requesting an invalid command (missing Drupal site).
     $exec = sprintf('%s core-cron --backend 2>/dev/null', self::escapeshellarg(UNISH_DRUSH));
     $this->execute($exec, self::EXIT_ERROR);
-    $parsed = $this->parse($this->getOutput());
+    $parsed = parse_backend_output($this->getOutput());
     $this->assertEquals(1, $parsed['error_status']);
     $this->assertArrayHasKey('DRUSH_NO_DRUPAL_ROOT', $parsed['error_log']);
   }
@@ -78,27 +77,5 @@ class backendCase extends Drush_CommandTestCase {
     $this->assertTrue($drush_version_offset !== FALSE, "'Drush version' string appears in output.");
     $this->assertTrue($backend_output_offset !== FALSE, "Drush backend output marker appears in output.");
     $this->assertTrue($drush_version_offset < $backend_output_offset, "Drush version string appears in output before the backend output marker.");
-  }
-
-  /*
-   * A slightly less functional copy of drush_backend_parse_output().
-   */
-  function parse($string) {
-    $regex = sprintf(self::DRUSH_BACKEND_OUTPUT_DELIMITER, '(.*)');
-    preg_match("/$regex/s", $string, $match);
-    if ($match[1]) {
-      // we have our JSON encoded string
-      $output = $match[1];
-      // remove the match we just made and any non printing characters
-      $string = trim(str_replace(sprintf(self::DRUSH_BACKEND_OUTPUT_DELIMITER, $match[1]), '', $string));
-    }
-
-    if ($output) {
-      $data = json_decode($output, TRUE);
-      if (is_array($data)) {
-        return $data;
-      }
-    }
-    return $string;
   }
 }

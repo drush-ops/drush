@@ -14,8 +14,7 @@
  *    The command to call to process the batch.
  *
  */
-function _drush_backend_batch_process($command = 'batch-process', $args) {
-  global $user;
+function _drush_backend_batch_process($command = 'batch-process', $args, $options) {
   $batch =& batch_get();
 
   if (isset($batch)) {
@@ -31,6 +30,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args) {
     // Assign an arbitrary id: don't rely on a serial column in the 'batch'
     // table, since non-progressive batches skip database storage completely.
     $batch['id'] = db_next_id();
+    $args[] = $batch['id'];
 
     $batch['progressive'] = TRUE;
 
@@ -141,9 +141,12 @@ function _drush_batch_worker() {
         'finished' => &$finished,
         'message'  => &$task_message,
       );
-      call_user_func_array($function, array_merge($args, array(&$batch_context)));
+      // Magic wrap to catch changes to 'message' key.
+      $batch_context = new DrushBatchContext($batch_context);
 
-      if ($finished == 1) {
+      call_user_func_array($function, array_merge($args, array(&$batch_context)));
+      $finished = $batch_context['finished'];
+      if ($finished >= 1) {
         // Make sure this step is not counted twice when computing $current.
         $finished = 0;
         // Remove the processed operation and clear the sandbox.
@@ -172,8 +175,6 @@ function _drush_batch_worker() {
     $queue = _batch_queue($current_set);
 
     // If we are in progressive mode, break processing after 1 second.
-
-
     if ((memory_get_usage() * 2) >= drush_memory_limit()) {
       drush_log(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"), "batch");
       // Record elapsed wall clock time.
@@ -181,7 +182,6 @@ function _drush_batch_worker() {
       break;
     }
   }
-
 
   // Reporting 100% progress will cause the whole batch to be considered
   // processed. If processing was paused right after moving to a new set,

@@ -424,6 +424,29 @@ function unish_init() {
    return rmdir($dir);
  }
 
+/**
+ * A slightly less functional copy of drush_backend_parse_output().
+ */
+define('DRUSH_BACKEND_OUTPUT_DELIMITER', 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END');
+function parse_backend_output($string) {
+  $regex = sprintf(DRUSH_BACKEND_OUTPUT_DELIMITER, '(.*)');
+  preg_match("/$regex/s", $string, $match);
+  if ($match[1]) {
+    // we have our JSON encoded string
+    $output = $match[1];
+    // remove the match we just made and any non printing characters
+    $string = trim(str_replace(sprintf(DRUSH_BACKEND_OUTPUT_DELIMITER, $match[1]), '', $string));
+  }
+
+  if ($output) {
+    $data = json_decode($output, TRUE);
+    if (is_array($data)) {
+      return $data;
+    }
+  }
+  return $string;
+}
+
  // This code is in global scope.
  // TODO: I would rather this code at top of file, but I get Fatal error: Class 'Drush_TestCase' not found
  unish_init();

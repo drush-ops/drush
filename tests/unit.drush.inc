@@ -23,6 +23,10 @@ function unit_drush_command() {
     'description' => 'Return an array indicating which invoke hooks got called.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
+  $items['unit-batch'] = array(
+    'description' => 'Run a batch process.',
+    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
+  );
   return $items;
 }
 
@@ -68,4 +72,41 @@ function unit_invoke_log($function = NULL) {
   else {
     return $called;
   }
+}
+
+/**
+ * Command callback.
+ */
+function drush_unit_batch() {
+  // Reduce php memory/time limits to test backend respawn.
+  // TODO.
+
+  $batch = array(
+    'operations' => array(
+       array('_drush_unit_batch_operation', array()),
+    ),
+    'finished' => '_drush_unit_batch_finished',
+    // 'file' => Doesn't work for us. Drupal 7 enforces this path
+    // to be relative to DRUPAL_ROOT.
+    // @see _batch_process().
+  );
+  batch_set($batch);
+  drush_backend_batch_process();
+
+  // Print the batch output.
+  drush_backend_output();
+}
+
+function _drush_unit_batch_operation(&$context) {
+  $context['message'] = "!!! ArrayObject does its job.";
+
+  for ($i = 0; $i < 5; $i++) {
+    drush_print("Iteration $i");
+  }
+  $context['finished'] = 1;
+}
+
+function _drush_unit_batch_finished() {
+  // Restore php limits.
+  // TODO.
 }

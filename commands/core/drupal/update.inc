@@ -59,8 +59,7 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
   if (!empty($context['results']['#abort']) && array_intersect($context['results']['#abort'], array_merge($dependency_map, array($function)))) {
     return;
   }
-
-
+  
   $context['log'] = FALSE;
 
   $ret = array();
@@ -109,10 +108,8 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
     drupal_set_installed_schema_version($module, $number);
   }
 
-  $context['message'] = 'Updating ' . check_plain($module) . ' module';
+  $context['message'] = 'Performing ' . $function;
 }
-
-
 
 /**
  * Check update requirements and report any errors.
@@ -143,7 +140,6 @@ function update_main_prepare() {
   // Some unavoidable errors happen because the database is not yet up-to-date.
   // Our custom error handler is not yet installed, so we just suppress them.
   drush_errors_off();
-
 
   // We prepare a minimal bootstrap for the update requirements check to avoid
   // reaching the PHP memory limit.
@@ -206,19 +202,15 @@ function update_main_prepare() {
   module_list(TRUE, FALSE, TRUE);
 }
 
-
-
 function update_main() {
   update_main_prepare();
 
   $pending = update_get_update_list();
 
-
   $start = array();
 
-  // Ensure system module's updates run first
+  // Ensure system module's updates run first.
   $start['system'] = array();
-
 
   // Print a list of pending updates for this module and get confirmation.
   if (sizeof($pending)) {
@@ -246,7 +238,6 @@ function update_main() {
   else {
     drush_log(dt("No database updates required"), 'success');
   }
-
 }
 
 function _update_batch_command($id) {
@@ -295,7 +286,6 @@ function drush_update_batch($start) {
         unset($start[$update['module']]);
       }
       // Add this update function to the batch.
-
       $function = $update['module'] . '_update_' . $update['number'];
       $operations[] = array('drush_update_do_one', array($update['module'], $update['number'], $dependency_map[$function]));
     }
