@@ -61,6 +61,7 @@
 # $options['shell-aliases']['pulldb'] = '!git pull && drush updatedb';
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';
 # $options['shell-aliases']['wipe'] = 'cache-clear all';
+# $options['shell-aliases']['unsuck'] = 'pm-disable -y overlay,dashboard';
 // Add a 'pm-clone' to simplify (cached) git cloning from drupal.org.
 # $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg --cache';
 

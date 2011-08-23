@@ -336,6 +336,11 @@ function _drush_flatten_options($options) {
   $flattened_options = array();
 
   foreach($options as $key => $value) {
+    // engine sections start with 'package-handler=git_drupalorg',
+    // or something similar.  Get rid of everything from the = onward.
+    if (($eq_pos = strpos($key, '=')) !== FALSE) {
+      $key = substr($key, 0, $eq_pos);
+    }
     $flattened_options[] = $key;
     if (is_array($value)) {
       if (array_key_exists('short-form', $value)) {
