@@ -35,7 +35,7 @@ function drush_pm_download_validate() {
       drush_log(dt('Unknown variant !variant. Valid values: !variations', array('!variant' => $variant, '!variations' => implode(', ', $variations))), 'error');
     }
   }
-  // full and projects variants are only valid for wget package handler.
+  // 'full' and 'projects' variants are only valid for wget package handler.
   $package_handler = drush_get_option('package-handler', 'wget');
   if (($package_handler != 'wget') && ($variant != 'profile-only')) {
     $new_variant = 'profile-only';
@@ -111,6 +111,14 @@ function drush_pm_download() {
     // We face here all the asymetries to make it smooth for package handlers.
     // For Drupal core: --drupal-project-rename or drupal-x.y
     if ($request['project_type'] == 'core') {
+      // Avoid downloading core into existing core.
+      if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
+        if (strpos(realpath(drush_get_option('destination')), DRUPAL_ROOT) !== FALSE) {
+          drush_log(dt('It\'s forbidden to download !project core into an existing core.', array('!project' => $request['name'])), 'error');
+          continue;
+        }
+      }
+
       if ($rename = drush_get_option('drupal-project-rename', FALSE)) {
         if ($rename === TRUE) {
           $request['project_dir'] = 'drupal';
