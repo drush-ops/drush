@@ -233,10 +233,10 @@ function _drush_escapeshellarg_windows($arg) {
   $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
 
   // Escape double quotes.
-  $arg = preg_replace('/"/', '\\"', $arg);
+  $arg = preg_replace('/"/', '^"', $arg);
 
   // Escape single quotes.
-  $arg = preg_replace('/\'/', '\\\'', $arg);
+  $arg = preg_replace('/\'/', '^\'', $arg);
 
   // Add surrounding quotes.
   $arg = '"' . $arg . '"';
