@@ -105,6 +105,11 @@
  *
  *   $ drush -r /path/to/drupal site-alias @sites
  *
+ * The built-in alias "@none" represents the state of no Drupal site;
+ * to ignore the site at the cwd and just see default drush status:
+ *
+ *   $ drush @none status
+ *
  * See 'drush help site-alias' for more options for displaying site
  * aliases.
  *
