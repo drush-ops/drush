@@ -188,7 +188,7 @@ function drush_upgrade_site_upgrade($target_key) {
     // we are not ready to upgrade (but still can, without that project); if there is no RECOMMENDED 
     // release, then we might not be ready to upgrade (but still can, with a non-recommended release).
     if (!empty($project_download_list)) {
-      $result = drush_invoke_sitealias_args(array('root' => '', 'uri' => ''), 'pm-releases', array_keys($project_download_list), array('default-major' => $target_version, '#integrate' => FALSE, '#override-simulated' => TRUE));
+      $result = drush_invoke_process('@none', 'pm-releases', array_keys($project_download_list), array('default-major' => $target_version, '#integrate' => FALSE, '#override-simulated' => TRUE));
       $project_releases = $result['object'];
       foreach ($project_download_list as $project => $extension_list) {
         if (!array_key_exists($project, $project_releases)) {

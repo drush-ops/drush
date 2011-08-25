@@ -243,7 +243,7 @@ function drush_dispatch($command, $arguments = array()) {
  * Instead of this old form, prefer: drush_invoke_process("@self", $command_name, array($arg1, $arg2, ...));
  */
 function drush_invoke_process($site_alias_record /*, $command_name, $commandline_args = array(), $commandline_options = array() */) {
-  if (is_array($site_alias_record)) {
+  if (is_array($site_alias_record) || ($site_alias_record[0] == '@')) {
     $args = func_get_args();
     array_shift($args);
     $command_name = array_shift($args);
