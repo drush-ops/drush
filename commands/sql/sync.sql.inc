@@ -153,9 +153,15 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
     $target_rsync_options = array('ssh-options' => $target_remote_ssh_options);
 
     if (empty($source_db_url)) {
+      if (empty($source_settings)) {
+        return drush_set_error('DRUSH_ALIAS_NOT_FOUND', dt('Error: no alias record could be found for !source', array('!source' => $source)));
+      }
       return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for !source', array('!source' => $source)));
     }
     if (empty($target_db_url)) {
+      if (empty($target_db_url)) {
+        return drush_set_error('DRUSH_ALIAS_NOT_FOUND', dt('Error: no alias record could be found for !destination', array('!destination' => $destination)));
+      }
       return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for !destination', array('!destination' => $destination)));
     }
 
