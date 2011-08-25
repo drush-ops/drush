@@ -134,22 +134,28 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
 
   if ($is_multiple === FALSE) {
     // Get the options for the source and target databases
-    $source_db_url = drush_sitealias_get_db_spec($source_settings, FALSE);
+    $source_db_url = drush_sitealias_get_db_spec($source_settings, FALSE, 'source-');
     // The host may have special ssh requirements
     $source_remote_ssh_options = drush_sitealias_get_option($source_settings, 'ssh-options');
     // rsync later will also have to know this option
     $source_rsync_options = array('ssh-options' => $source_remote_ssh_options);
 
-    $target_db_url = drush_sitealias_get_db_spec($destination_settings, FALSE);
+    $target_db_url = drush_sitealias_get_db_spec($destination_settings, FALSE, 'target-');
     // The host may have special ssh requirements
     $target_remote_ssh_options = drush_sitealias_get_option($destination_settings, 'ssh-options');
     // rsync later will also have to know this option
     $target_rsync_options = array('ssh-options' => $target_remote_ssh_options);
 
     if (empty($source_db_url)) {
+      if (empty($source_settings)) {
+        return drush_set_error('DRUSH_ALIAS_NOT_FOUND', dt('Error: no alias record could be found for !source', array('!source' => $source)));
+      }
       return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for !source', array('!source' => $source)));
     }
     if (empty($target_db_url)) {
+      if (empty($target_db_url)) {
+        return drush_set_error('DRUSH_ALIAS_NOT_FOUND', dt('Error: no alias record could be found for !destination', array('!destination' => $destination)));
+      }
       return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for !destination', array('!destination' => $destination)));
     }
 

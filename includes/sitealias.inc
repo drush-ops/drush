@@ -646,12 +646,12 @@ function sitealias_get_databases_from_record(&$alias_record) {
  * (or 'target-database' and 'source-target') may also affect the operation
  * of this function.
  */
-function drush_sitealias_get_db_spec(&$alias_record, $default_to_self = FALSE) {
+function drush_sitealias_get_db_spec(&$alias_record, $default_to_self = FALSE, $prefix = '') {
   $db_spec = NULL;
   $databases = sitealias_get_databases_from_record($alias_record);
   if (isset($databases) && !empty($databases)) {
-    $database = drush_sitealias_get_option($alias_record, 'database', 'default');
-    $target = drush_sitealias_get_option($alias_record, 'target', 'default');
+    $database = drush_sitealias_get_option($alias_record, 'database', 'default', $prefix);
+    $target = drush_sitealias_get_option($alias_record, 'target', 'default', $prefix);
     if (array_key_exists($database, $databases) && array_key_exists($target, $databases[$database])) {
       $db_spec = $databases[$database][$target];
     }
@@ -661,10 +661,10 @@ function drush_sitealias_get_db_spec(&$alias_record, $default_to_self = FALSE) {
   }
 
   if (isset($db_spec)) {
-    $remote_host = drush_sitealias_get_option($alias_record, 'remote-host');
+    $remote_host = drush_sitealias_get_option($alias_record, 'remote-host', NULL, $prefix);
     if (!drush_is_local_host($remote_host)) {
       $db_spec['remote-host'] = $remote_host;
-      $db_spec['port'] = drush_get_option($prefix . 'remote-port', (isset($db_spec['port']) ? $db_spec['port'] : NULL));
+      $db_spec['port'] = drush_sitealias_get_option($alias_record, 'remote-port', (isset($db_spec['port']) ? $db_spec['port'] : NULL), $prefix);
     }
   }
 
@@ -1406,12 +1406,12 @@ function drush_sitealias_overlay_options($site_alias_record, $prefix) {
  * Get an option out of the specified alias.  If it has not been
  * set in the alias, then get it via drush_get_option.
  */
-function drush_sitealias_get_option($site_alias_record, $option, $default = NULL) {
+function drush_sitealias_get_option($site_alias_record, $option, $default = NULL, $prefix = '') {
   if (isset($site_alias_record) && array_key_exists($option, $site_alias_record)) {
     return $site_alias_record[$option];
   }
   else {
-    return drush_get_option($option, $default);
+    return drush_get_option($prefix . $option, $default);
   }
 }
 

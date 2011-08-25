@@ -526,6 +526,7 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  */
 function drush_backend_invoke_sitealias_command($site_record, $command, $args, $command_options = array(), $backend_options = array()) {
   $backend_options = _drush_backend_adjust_options($site_record, $command, $command_options, $backend_options);
+  $os = drush_os($site_record);
 
   $site_record += array( 'path-aliases' => array() );
   $site_record['path-aliases'] += array(
