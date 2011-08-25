@@ -748,25 +748,15 @@ function drush_sitealias_is_bootstrapped_site($alias_record) {
  *   e.g. "%files/%special".
  */
 function drush_sitealias_resolve_path_references(&$alias_record, $test_string = '') {
+  $path_aliases = array_key_exists('path-aliases', $alias_record) ? $alias_record['path-aliases'] : array();
   // Convert the test string into an array of items, and
   // from this make a comma-separated list of projects
   // that we can pass to 'drush status'.
   $test_array = explode('/', $test_string);
   $project_array = array();
   foreach($test_array as $one_item) {
-    if (substr($one_item,0,1) == '%') {
+    if (($one_item[0] == '%') && (!array_key_exists($one_item,$path_aliases))) {
       $project_array[] = substr($one_item,1);
-    }
-  }
-
-  // If we already have a path in the path aliases, then
-  // there is no need to search for it remotely; we can remove
-  // it from the project array.
-  if (array_key_exists('path-aliases', $alias_record)) {
-    foreach ($alias_record['path-aliases'] as $key => $value) {
-      if (substr($key,0,1) == '%') {
-        unset($project_array['%' . substr($key,1)]);
-      }
     }
   }
   $project_list = implode(',', $project_array);
