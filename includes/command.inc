@@ -321,6 +321,7 @@ function _drush_verify_cli_arguments($command) {
  * records.
  */
 function _drush_get_command_options($command) {
+  drush_command_invoke_all_ref('drush_help_alter', $command);
   $options = $command['options'];
   foreach ($command['sub-options'] as $group => $suboptions) {
     $options = array_merge($options, $suboptions);

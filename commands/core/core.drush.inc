@@ -684,29 +684,42 @@ function _drush_core_is_named_in_array($key, $the_array) {
 function drush_core_quick_drupal() {
   $requests = FALSE;
   $args = func_get_args();
-  if (empty($args)) {
-    $name = 'quick-drupal-' . gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
+  $name = drush_get_option('use-name');
+  drush_set_option('backend', TRUE);
+  if (drush_get_option('use-existing', FALSE)) {
+    $root = drush_get_option('root', FALSE);
+    if (!$root) {
+      return drush_set_error('QUICK_DRUPAL_NO_ROOT_SPECIFIED', 'Must specify site with --root when using --use-existing.');
+    }
+    if (empty($name)) {
+      $name = basename($root);
+    }
+    $base = dirname($root);
   }
   else {
-    $name = array_shift($args);
-    if (!empty($args)) {
-      $requests = pm_parse_arguments($args, FALSE);
+    if (!empty($args) && empty($name)) {
+      $name = array_shift($args);
     }
+    if (empty($name)) {
+      $name = 'quick-drupal-' . gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
+    }
+    $base = getcwd() . '/' . $name;
+    drush_set_option('destination', $base);
+    $core = drush_get_option('core', 'drupal');
+    drush_set_option('drupal-project-rename', $core);
+    if (drush_invoke('pm-download', array($core)) === FALSE) {
+      return drush_set_error('QUICK_DRUPAL_CORE_DOWNLOAD_FAIL', 'Drupal core download/extract failed.');
+    }
+    drush_set_option('root', $base . '/' . $core);
   }
-  $base = getcwd() . '/' . $name;
-  drush_set_option('destination', $base);
-  drush_set_option('backend', TRUE);
-  $core = drush_get_option('core', 'drupal');
-  drush_set_option('drupal-project-rename', $core);
-  if (drush_invoke('pm-download', array($core)) === FALSE) {
-    return drush_set_error('QUICK_DRUPAL_CORE_DOWNLOAD_FAIL', 'Drupal core download/extract failed.');
-  }
-  drush_set_option('root', $base . '/' . $core);
   if (!drush_get_option('db-url', FALSE)) {
     drush_set_option('db-url', 'sqlite:' . $base . '/' . $name . '.sqlite');
   }
   if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
     return drush_set_error('QUICK_DRUPAL_ROOT_LOCATE_FAIL', 'Unable to locate Drupal root directory.');
+  }
+  if (!empty($args)) {
+    $requests = pm_parse_arguments($args, FALSE);
   }
   if ($requests) {
     // Unset --destination, so that downloads go to the site directories.
@@ -745,11 +758,13 @@ function drush_core_quick_drupal() {
 function drush_core_quick_drupal_options(&$items) {
   $options = array(
     'core' => 'Drupal core to download. Defaults to "drupal" (latest stable version).',
+    'use-existing' => 'Use an existing Drupal root, specified with --root. Overrides --core.',
     'profile' => 'The install profile to use. Defaults to standard.',
     'enable' => 'Specific extensions (modules or themes) to enable. By default, extensions with the same name as requested projects will be enabled automatically.',
     'server' => 'Host IP address and port number to bind to and path to open in web browser (hyphen to clear a default path), all elements optional. See runserver examples for shorthand.',
     'no-server' => 'Avoid starting runserver (and browser) for the created Drupal site.',
     'browser' => 'Optional name of a browser to open site in. If omitted the OS default browser will be used. Set --no-browser to disable.',
+    'use-name' => array('hidden' => TRUE, 'description' => 'Overrides "name" argument.'),
   );
   $pm = pm_drush_command();
   foreach ($pm['pm-download']['options'] as $option => $description) {
