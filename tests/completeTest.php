@@ -50,9 +50,9 @@ class completeCase extends Drush_CommandTestCase {
 
     // Test overall context sensitivity - almost all of these are cache hits.
     // No context (i.e. "drush <tab>"), should list aliases and commands.
-    $this->verifyComplete("''", '@stage', 'wd');
+    $this->verifyComplete("''", '@none', 'wd');
     // Site alias alone.
-    $this->verifyComplete('@', '@stage', '@dev');
+    $this->verifyComplete('@', '@none', '@stage');
     // Command alone.
     $this->verifyComplete('d', 'drupal-directory', 'download');
     // Command with single result.

@@ -424,6 +424,9 @@ function _drush_bootstrap_drush_validate() {
  * the execution flow to be able to take affect/
  */
 function _drush_bootstrap_drush() {
+  // Create an alias '@none' to represent no Drupal site
+  _drush_sitealias_cache_alias('none', array('root' => '', 'uri' => ''));
+
   // Set the terminal width, used for wrapping table output.
   // Normally this is exported using tput in the drush script.
   // If this is not present we do an additional check using stty here.
