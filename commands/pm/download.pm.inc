@@ -144,7 +144,7 @@ function drush_pm_download() {
     $request['full_project_path'] = $request['base_project_path'] .'/'. $request['project_dir'];
     drush_log(dt('Downloading project !name to !dir ...', array('!name' => $request['name'], '!dir' => $request['base_project_path'])));
     if (!package_handler_download_project($request, $release)) {
-      drush_log(dt('Error downloading !name', array('!name' => $request['name']), 'error');
+      drush_log(dt('Error downloading !name', array('!name' => $request['name']), 'error'));
       continue;
     }
 
