@@ -1,4 +1,4 @@
-COMMANDS (perhaps keep these notes in $command definition?)
+COMMANDS
 ------------
 pm-download: GOOD.
 pm-updatecode: GOOD.
@@ -42,8 +42,9 @@ docs
 image
 core-rsync
 runserver
+core-quick-drupal
 search-*
-shellalias
+shellalias: GOOD
 site-install: FAIR. Implicit test by setUpDrupal().
 site-upgrade: GOOD.
 ssh: GOOD
@@ -62,6 +63,7 @@ backend: GOOD
 batch: FAIR. Implicit by siteUpgradeTest.
 bootstrap:
 command: FAIR
+complete: GOOD
 context: FAIR
 drush: NONE.
 environment
@@ -78,3 +80,4 @@ ROOT
 drush
 drush.php
 drush.bat
+drush.complete.sh:
