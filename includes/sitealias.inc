@@ -755,7 +755,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
   $test_array = explode('/', $test_string);
   $project_array = array();
   foreach($test_array as $one_item) {
-    if (($one_item[0] == '%') && (!array_key_exists($one_item,$path_aliases))) {
+    if (!empty($one_item) && ($one_item[0] == '%') && (!array_key_exists($one_item,$path_aliases))) {
       $project_array[] = substr($one_item,1);
     }
   }
