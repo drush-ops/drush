@@ -306,7 +306,10 @@ function update_main_prepare() {
 
   require_once './includes/bootstrap.inc';
   // Minimum load of components.
-  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+  // This differs from the Drupal 6 update.php workflow for compatbility with
+  // the Drupal 6 backport of module_implements() caching.
+  // @see http://drupal.org/node/557542
+  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
   require_once './includes/install.inc';
   require_once './includes/file.inc';
   require_once './modules/system/system.install';
@@ -316,6 +319,8 @@ function update_main_prepare() {
   $module_list['system']['filename'] = 'modules/system/system.module';
   $module_list['filter']['filename'] = 'modules/filter/filter.module';
   module_list(TRUE, FALSE, FALSE, $module_list);
+  module_implements('', FALSE, TRUE);
+
   drupal_load('module', 'system');
   drupal_load('module', 'filter');
 
