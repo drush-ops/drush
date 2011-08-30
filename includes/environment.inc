@@ -228,7 +228,9 @@ function _drush_shift_path_up($path) {
  * Like Drupal conf_path, but searching from beneath.
  * Allows proper site uri detection in site sub-directories.
  *
- * Essentially looks for a settings.php file.
+ * Essentially looks for a settings.php file.  Drush uses this
+ * function to find a usable site based on the user's current
+ * working directory.
  *
  * @param string
  *   Search starting path. Defaults to current working directory.
@@ -237,48 +239,99 @@ function _drush_shift_path_up($path) {
  *   Current site path (folder containing settings.php) or FALSE if not found.
  */
 function drush_site_path($path = NULL) {
-  static $site_path;
+  $site_path = FALSE;
 
-  if (!isset($site_path)) {
-    $site_path = FALSE;
-
-    $path = empty($path) ? drush_cwd() : $path;
-    // Check the current path.
-    if (file_exists($path . '/settings.php')) {
-      $site_path = $path;
-    }
-    else {
-      // Move up dir by dir and check each.
-      while ($path = _drush_shift_path_up($path)) {
-        if (file_exists($path . '/settings.php')) {
-          $site_path = $path;
-          break;
-        }
+  $path = empty($path) ? drush_cwd() : $path;
+  // Check the current path.
+  if (file_exists($path . '/settings.php')) {
+    $site_path = $path;
+  }
+  else {
+    // Move up dir by dir and check each.
+    while ($path = _drush_shift_path_up($path)) {
+      if (file_exists($path . '/settings.php')) {
+        $site_path = $path;
+        break;
       }
     }
+  }
 
-    $site_root = drush_locate_root();
-    if (file_exists($site_root . '/sites/sites.php')) {
-      $sites = array();
-      // This will overwrite $sites with the desired mappings.
-      include($site_root . '/sites/sites.php');
-      // We do a reverse lookup here to determine the URL given the site key.
-      if ($match = array_search($site_path, $sites)) {
-        $site_path = $match;
-      }
+  $site_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  if (file_exists($site_root . '/sites/sites.php')) {
+    $sites = array();
+    // This will overwrite $sites with the desired mappings.
+    include($site_root . '/sites/sites.php');
+    // We do a reverse lookup here to determine the URL given the site key.
+    if ($match = array_search($site_path, $sites)) {
+      $site_path = $match;
     }
+  }
 
-    // Last resort: try from site root
-    if (!$site_path) {
-      if ($site_root) {
-        if (file_exists($site_root . '/sites/default/settings.php')) {
-          $site_path = $site_root . '/sites/default';
-        }
+  // Last resort: try from site root
+  if (!$site_path) {
+    if ($site_root) {
+      if (file_exists($site_root . '/sites/default/settings.php')) {
+        $site_path = $site_root . '/sites/default';
       }
     }
   }
 
   return $site_path;
+}
+
+/**
+ * This is a copy of Drupal's conf_path function, taken from D7 and
+ * adjusted slightly to search from the selected Drupal Root.
+ *
+ * Drush uses this routine to find a usable site based on a URI
+ * passed in via a site alias record or the --uri commandline option.
+ *
+ * Drush uses Drupal itself (specifically, the Drupal conf_path function)
+ * to bootstrap the site itself.  If the implementation of conf_path
+ * changes, the site should still bootstrap correctly; the only consequence
+ * of this routine not working is that drush configuration files
+ * (drushrc.php) stored with the site's settimight not be found.
+ */
+function drush_conf_path($server_uri, $require_settings = TRUE) {
+  $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  if(!isset($drupal_root) || !isset($server_uri)) {
+    return NULL;
+  }
+  $parsed_uri = parse_url($server_uri);
+  if (!array_key_exists('scheme', $parsed_uri)) {
+    $parsed_uri = parse_url('http://' . $server_uri);
+  }
+  $server_host = $parsed_uri['host'];
+  if (array_key_exists('path', $parsed_uri)) {
+    $server_uri = $parsed_uri['path'] . '/index.php';
+  }
+  else {
+    $server_uri = "/index.php";
+  }
+  $confdir = 'sites';
+
+  $sites = array();
+  if (file_exists($drupal_root . '/' . $confdir . '/sites.php')) {
+    // This will overwrite $sites with the desired mappings.
+    include($drupal_root . '/' . $confdir . '/sites.php');
+  }
+
+  $uri = explode('/', $server_uri);
+  $server = explode('.', implode('.', array_reverse(explode(':', rtrim($server_host, '.')))));
+  for ($i = count($uri) - 1; $i > 0; $i--) {
+    for ($j = count($server); $j > 0; $j--) {
+      $dir = implode('.', array_slice($server, -$j)) . implode('.', array_slice($uri, 0, $i));
+      if (isset($sites[$dir]) && file_exists($drupal_root . '/' . $confdir . '/' . $sites[$dir])) {
+        $dir = $sites[$dir];
+      }
+      if (file_exists($drupal_root . '/' . $confdir . '/' . $dir . '/settings.php') || (!$require_settings && file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir))) {
+        $conf = "$confdir/$dir";
+        return $conf;
+      }
+    }
+  }
+  $conf = "$confdir/default";
+  return $conf;
 }
 
 /**

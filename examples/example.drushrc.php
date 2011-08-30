@@ -26,17 +26,18 @@
  * of a fully-initialized website.
  *
  * Configuration files are loaded in the reverse order they are
- * shown above.  Configuration files #6 through #3 are loaded immediately;
- * the configuration file stored in the Drupal root is loaded
- * when Drupal is initialized, and the configuration file stored
- * in the site folder is loaded when the site is initialized.
+ * shown above.  All configuration files are loaded in the first
+ * bootstrapping phase, but the configuration files stored at
+ * a Drupal root or Drupal site folder will not be loaded in
+ * instances where no Drupal site is selected.  However, they
+ * _will_ still be loaded if a site is selected (either via
+ * the current working directory or by use of the --root and
+ * --uri options), even if the drush command being run does
+ * not bootstrap to the Drupal Root or Drupal Site phase.
+ * Note that this is different than Drush-4.x and earlier, which
+ * did not load these configuration files until the Drupal site
+ * was bootstrapped.
  *
- * This load order means that in a multi-site environment, the
- * configuration file stored in the site folder will only be
- * available for commands that operate on that one particular
- * site.  Additionally, there are some drush commands such as
- * pm-download do not bootstrap a drupal environment at all,
- * and therefore only have access to configuration files #6 - #3.
  * The drush commands 'rsync' and 'sql-sync' are special cases.
  * These commands will load the configuration file for the site
  * specified by the source parameter; however, they do not

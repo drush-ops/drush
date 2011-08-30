@@ -52,7 +52,7 @@ class completeCase extends Drush_CommandTestCase {
     // No context (i.e. "drush <tab>"), should list aliases and commands.
     $this->verifyComplete("''", '@none', 'wd');
     // Site alias alone.
-    $this->verifyComplete('@', '@none', '@stage');
+    $this->verifyComplete('@', '@none', '@dev');
     // Command alone.
     $this->verifyComplete('d', 'drupal-directory', 'download');
     // Command with single result.

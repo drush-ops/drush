@@ -450,6 +450,9 @@ function _drush_bootstrap_drush() {
   // prime the CWD cache
   drush_cwd();
 
+  // Decide which Drupal site drush will later bootstrap
+  _drush_bootstrap_select_drupal_site();
+
   // Set up base environment for system-wide file locations.
   _drush_bootstrap_base_environment();
 
@@ -475,12 +478,25 @@ function _drush_bootstrap_drush() {
   // of the drush and drupal root bootstrap phases are
   // done, since site aliases may set option values that
   // affect these phases.
-  // TODO: Note that this function will call drush_locate_root
-  // (from within _drush_sitealias_find_record_for_local_site),
-  // and drush_locate_root will be called again when bootstrapping
-  // the drupal root below.  Is there a good way to refactor this
-  // so that we do not need to search for the root twice?
   drush_sitealias_check_arg();
+
+  // Load the config options from the Drupal root, even prior to bootstrapping the root
+  drush_load_config('drupal');
+
+  // Similarly, load the Drupal site configuration options upfront.
+  drush_load_config('site');
+
+  // If drush_load_config defined a site alias that did not
+  // exist before, then sitealias check arg might now match
+  // against one of those aliases.
+  if (drush_sitealias_check_arg() === TRUE) {
+    $remote_host = drush_get_option('remote-host');
+    if (!isset($remote_host)) {
+      // Load the config files for the "new" site.
+      drush_load_config('drupal');
+      drush_load_config('site');
+    }
+  }
 
   $backend = drush_set_context('DRUSH_BACKEND', drush_get_option(array('b', 'backend')));
 
@@ -515,6 +531,34 @@ function _drush_bootstrap_drush() {
   }
 
   _drush_bootstrap_global_options();
+}
+
+/**
+ * Determine which Drupal site will be selected.
+ *
+ * The Drupal site itself will be bootstrapped at a later
+ * phase; at this time, we set context variables to
+ * point to the drupal root, site URI and site configuration
+ * path that will be used when needed.
+ *
+ * These early context variables are used to find
+ * drush configuration and alias files stored with the
+ * site to be bootstrapped.
+ */
+function _drush_bootstrap_select_drupal_site() {
+  $drupal_root = drush_get_option(array('r', 'root'));
+  if (!isset($drupal_root)) {
+    $drupal_root = drush_locate_root();
+  }
+  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $drupal_root);
+  $uri = _drush_bootstrap_selected_uri();
+  drush_set_context('DRUSH_SELECTED_URI', $uri);
+  drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_ROOT', drush_conf_path($uri));
+
+  if (!empty($drupal_root) && !empty($uri)) {
+    // Create an alias '@self'
+    _drush_sitealias_cache_alias('self', array('root' => $drupal_root, 'uri' => $uri));
+  }
 }
 
 /**
@@ -566,7 +610,7 @@ function _drush_bootstrap_global_options() {
  * context and DRUPAL_ROOT constant if it is considered a valid option.
  */
 function _drush_bootstrap_drupal_root_validate() {
-  $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
+  $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
 
   if (empty($drupal_root)) {
     return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
@@ -598,7 +642,6 @@ function _drush_bootstrap_drupal_root() {
   define('DRUPAL_ROOT', $drupal_root);
 
   chdir($drupal_root);
-  drush_load_config('drupal');
   require_once DRUPAL_ROOT . '/' . DRUSH_DRUPAL_SIGNATURE;
   $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
   $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
@@ -606,6 +649,25 @@ function _drush_bootstrap_drupal_root() {
   _drush_bootstrap_global_options();
 
   drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
+}
+
+/**
+ * Find the URI that has been selected by the --uri / -l option
+ * or the cwd.
+ */
+function _drush_bootstrap_selected_uri() {
+  $uri = drush_get_option(array('l', 'uri'));
+  if (!isset($uri)) {
+    $site_path = drush_site_path();
+    $elements = explode('/', $site_path);
+    $current = array_pop($elements);
+    if (!$current) {
+      $current = 'default';
+    }
+    $uri = 'http://'. $current;
+  }
+
+  return $uri;
 }
 
 /**
@@ -619,15 +681,7 @@ function _drush_bootstrap_drupal_root() {
  * as a configuration file.
  */
 function _drush_bootstrap_drupal_site_validate() {
-  $site_path = drush_site_path();
-  $elements = explode('/', $site_path);
-  $current = array_pop($elements);
-  if (!$current) {
-    $current = 'default';
-  }
-  $uri = 'http://'. $current;
-
-  $drush_uri = drush_bootstrap_value('drush_uri', drush_get_option(array('l', 'uri'), $uri));
+  $drush_uri = drush_bootstrap_value('drush_uri', drush_get_context('DRUSH_SELECTED_URI'));
 
   // Fake the necessary HTTP headers that Drupal needs:
   if ($drush_uri) {
@@ -691,11 +745,7 @@ function _drush_bootstrap_do_drupal_site() {
   $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
   $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
 
-  // Create an alias '@self'
-  _drush_sitealias_cache_alias('self', array('root' => drush_get_context('DRUSH_DRUPAL_ROOT'), 'uri' => $drush_uri));
-
   drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
-  drush_load_config('site');
 
   _drush_bootstrap_global_options();
 }
@@ -708,46 +758,9 @@ function _drush_bootstrap_do_drupal_site() {
  */
 function _drush_bootstrap_drupal_site() {
   _drush_bootstrap_do_drupal_site();
-  _drush_bootstrap_redo_drupal_site();
 
   // Set warning for Windows users. We have already loaded site-specific drushrc.
   drush_environment_check_os();
-}
-
-/**
- * Re-do the drupal site bootstrap (and possibly the
- * drupal root bootstrap) if a site alias was processed
- * after the site bootstrap phase completed.  This will
- * happen when processing "drush sitealias command" for
- * a site alias defined in a drushrc.php file in the
- * default site's drush configuration directory.
- */
-function _drush_bootstrap_redo_drupal_site() {
-  // If drush_load_config defined a site alias that did not
-  // exist before, then sitealias check arg might now match
-  // against one of those aliases.
-  if (drush_sitealias_check_arg() === TRUE) {
-    $remote_host = drush_get_option('remote-host');
-    if (!isset($remote_host)) {
-      // Check to see if the drupal root changed.
-      // If it has, we will set remote-host to cause
-      // this command to be executed via the backend invoke
-      // process.
-      $sitealias_drupal_root = drush_get_option(array('r', 'root'));
-      if (($sitealias_drupal_root != null) && (DRUPAL_ROOT != $sitealias_drupal_root)) {
-        drush_set_option('remote-host', 'localhost');
-      }
-      else {
-        // If we set an alias, then we need to bootstrap the
-        // drupal site once again.  It is possible to re-bootstrap
-        // the site at this point because settings.php has not
-        // been included yet.
-        drush_log(dt("Re-bootstrap drupal site."));
-        _drush_bootstrap_drupal_site_validate();
-        _drush_bootstrap_do_drupal_site();
-      }
-    }
-  }
 }
 
 /**

@@ -284,10 +284,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
 
     // If the user defined the root of a drupal site, then also
     // look for alias files there.
-    $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-    if (empty($drupal_root)) {
-      $drupal_root = drush_get_option(array('root', 'r'), NULL);
-    }
+    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
     if (isset($drupal_root)) {
       $site_paths[] = $drupal_root;
     }
@@ -420,10 +417,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
       }
     }
     else {
-      $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-      if ($drupal_root == NULL) {
-        $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
-      }
+      $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
     }
     if (isset($drupal_root) && !is_array($drupal_root)) {
       drush_sitealias_create_sites_alias($drupal_root);
@@ -1225,8 +1219,7 @@ function _drush_sitealias_find_record_for_local_site($alias, $drupal_root = null
   }
 
   if (!isset($drupal_root)) {
-    //$drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-    $drupal_root = drush_get_option(array('r', 'root'), drush_locate_root());
+    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
   }
 
   if (isset($drupal_root)) {
@@ -1376,6 +1369,8 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
     // Create an alias '@self'
     _drush_sitealias_cache_alias('self', $site_alias_settings);
     drush_sitealias_set_alias_context($site_alias_settings, $prefix);
+    // change the selected site to match the new --root and --uri, if any were set
+    _drush_bootstrap_select_drupal_site();
     return TRUE;
   }
   return FALSE;

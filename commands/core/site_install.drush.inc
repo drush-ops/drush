@@ -10,6 +10,9 @@ function drush_core_site_install_validate() {
       drush_log(dt('Only lowercase sites-subdir are valid. Switching to !lower.', array('!lower' => $lower)), 'warning');
       drush_set_option('sites-subdir', $lower);
     }
+    // Make sure that we will bootstrap to the 'sites-subdir' site.
+    drush_set_option('uri', $sites_subdir);
+    _drush_bootstrap_select_drupal_site();
   }
 }
 
@@ -51,7 +54,7 @@ function drush_core_pre_site_install($profile = NULL) {
 
   // Can't install without sites directory and settings.php.
   if (!file_exists($conf_path)) {
-    if (!drush_op('mkdir', $conf_path) && !drush_get_context('DRUSH_SIMULATE')) {
+    if (!drush_mkdir($conf_path) && !drush_get_context('DRUSH_SIMULATE')) {
       drush_set_error(dt('Failed to create directory @conf_path', array('@conf_path' => $conf_path)));
       return;
     }
@@ -59,6 +62,7 @@ function drush_core_pre_site_install($profile = NULL) {
   else {
     drush_log(dt('Sites directory @subdir already exists - proceeding.', array('@subdir' => $conf_path)));
   }
+
   if (!file_exists($settingsfile)) {
     if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !drush_get_context('DRUSH_SIMULATE')) {
       drush_set_error(dt('Failed to copy sites/default/default.settings.php to  @settingsfile', array('@settingsfile' => $settingsfile)));
@@ -92,7 +96,7 @@ function drush_core_pre_site_install($profile = NULL) {
 
   // Add a files dir if needed
   if (!file_exists($files)) {
-    if (!drush_op('mkdir', $files) && !drush_get_context('DRUSH_SIMULATE')) {
+    if (!drush_mkdir($files) && !drush_get_context('DRUSH_SIMULATE')) {
       drush_set_error(dt('Failed to create directory @name', array('@name' => $files)));
       return;
     }

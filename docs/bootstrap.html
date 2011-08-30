@@ -15,25 +15,15 @@ have a working Drupal site available to bootstrap.  For example,
 you can use drush to download Drupal with `drush dl drupal`.  This
 obviously does not require any bootstrapping to work.
 <p>
-The drush bootstrapping process is also very closely related with
-drush configuration files.  At each bootstrap phase, drush may load
-additional configuration files that may contain additional drush
-settings.  This has two very important connotations.  First, settings
-that are only loaded in a later bootstrap phase are not available
-for commands that do not reach that bootstrap phase.  Second, it
-is possible to alter drush behavior on a per-site basis by applying
-settings in a site-specific configuration file.  See 
-`drush topic docs-configuration` for details on drush configuration
-files.
+Starting with Drush-5, the loading of configuration files is no
+longer closely tied to the drush bootstrapping process.  All configuration
+files are now loaded upfront, during DRUSH_BOOTSTRAP_DRUSH, with
+the Drupal root and site configuration files being loaded in advance
+of the corresponding bootstrap phase.   See `drush topic docs-configuration`
+for details on drush configuration files.
 
 <h2>DRUSH_BOOTSTRAP_DRUSH</h2>
 <p>
-Configuration files loaded during this phase:<ul>
-<li>Drush installation folder.
-<li>System wide configuration folder (e.g. /etc/drush/drushrc.php).
-<li>User's .drush folder (i.e. ~/.drush/drushrc.php).
-<li>In any location, as specified by the --config (-c) option.
-</ul><p>
 Only bootstrap Drush, without any Drupal specific code.
 <p>
 Any code that operates on the Drush installation, and not specifically
@@ -42,9 +32,6 @@ any Drupal directory, should bootstrap to this phase.
 
 <h2>DRUSH_BOOTSTRAP_DRUPAL_ROOT</h2>
 <p>
-Configuration files loaded during this phase:<ul>
-<li>Drupal installation root.
-</ul><p>
 Set up and test for a valid drupal root, either through the -r/--root options,
 or evaluated based on the current working directory.
 <p>
@@ -54,9 +41,6 @@ site on the Drupal installation should use this bootstrap phase.
 
 <h2>DRUSH_BOOTSTRAP_DRUPAL_SITE</h2>
 <p>
-Configuration files loaded during this phase:<ul>
-<li>Drupal site folder (e.g sites/{default|example.com}/drushrc.php).
-</ul><p>
 Set up a Drupal site directory and the correct environment variables to
 allow Drupal to find the configuration file.
 <p>
@@ -97,8 +81,6 @@ be bootstrapped to at least this phase.
 <p>
 Fully initialize Drupal.
 <p>
-This is the default bootstrap phase all commands will try to reach,
-unless otherwise specified.
 This is analogous to the DRUPAL_BOOTSTRAP_FULL bootstrap phase in
 Drupal.
 <p>
@@ -111,7 +93,9 @@ bootstrapped to this phase.
 Log in to the initialiased Drupal site.
 <p>
 This bootstrap phase is used after the site has been
-fully bootstrapped.
+fully bootstrapped.  This is the default bootstrap phase all
+commands will try to reach, unless otherwise specified.
+
 <p>
 This phase will log you in to the drupal site with the username
 or user ID specified by the --user/ -u option.

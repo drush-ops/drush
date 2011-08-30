@@ -105,12 +105,12 @@ function _drush_config_file($context, $prefix = NULL) {
     $configs['custom'] = $config;
   }
 
-  if ($site_path = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    $configs['site'] = $site_path . "/" . $config_file;
-  }
-
-  if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+  if ($drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT')) {
     $configs['drupal'] = $drupal_root . '/' . $config_file;
+
+    if ($site_path = $drupal_root . '/' . drush_get_context('DRUSH_SELECTED_DRUPAL_SITE_ROOT')) {
+      $configs['site'] = $site_path . "/" . $config_file;
+    }
   }
 
   // in the user home directory
