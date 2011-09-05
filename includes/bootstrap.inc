@@ -223,7 +223,7 @@ function drush_has_boostrapped($phase) {
 }
 
 /**
- * Validate whether a bootstrap phases can be reached.
+ * Validate whether a bootstrap phase can be reached.
  *
  * This function will validate the settings that will be used
  * during the actual bootstrap process, and allow commands to
@@ -307,6 +307,7 @@ function drush_bootstrap_to_phase($max_phase_index) {
       }
     }
     else {
+      $result = FALSE;
       break;
     }
   }

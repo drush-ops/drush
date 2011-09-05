@@ -422,7 +422,6 @@ function _core_site_credential_list($status_table) {
 
 function _core_path_aliases($project = '') {
   $paths = array();
-  $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $paths['%root'] = $drupal_root;
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
@@ -930,8 +929,7 @@ function drush_core_updatedb_batch_process($id) {
 }
 
 /**
- * Given a target (e.g. @site:%modules), return the evaluated
- * directory path
+ * Given a target (e.g. @site:%modules), return the evaluated directory path.
  *
  * @param $target
  *   The target to evaluate.  Can be @site or /path or @site:path
@@ -948,31 +946,29 @@ function _drush_core_directory($target = 'root', $component = 'path', $local_onl
   // Normalize to a sitealias in the target.
   $normalized_target = $target;
   if (strpos($target, ':') === FALSE) {
-    if (substr($target,0,1) == '@') {
-      $normalized_target = $target; // . ':%site';
-    }
-    else {
-      // @self makes no sense before 'site' level.
-      if(!drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
-        return FALSE;
+    if (substr($target, 0, 1) != '@') {
+      // drush_sitealias_evaluate_path() requires bootstrap to database.
+      if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+        return drush_set_error('DRUPAL_SITE_NOT_FOUND', dt('You need to specify an alias or run this command within a drupal site.'));
       }
       $normalized_target = '@self:';
-      if (substr($target,0,1) != '%') {
+      if (substr($target, 0, 1) != '%') {
         $normalized_target .= '%';
       }
       $normalized_target .= $target;
     }
   }
-
   $additional_options = array();
   $values = drush_sitealias_evaluate_path($normalized_target, $additional_options, $local_only);
   if (isset($values[$component])) {
-    // Hurray, we found the destination
+    // Hurray, we found the destination.
     return $values[$component];
   }
-  return NULL;
 }
 
+/**
+ * Command callback.
+ */
 function drush_core_drupal_directory($target = 'root') {
   $path = _drush_core_directory($target, drush_get_option('component', 'path'), drush_get_option('local', FALSE));
 
@@ -981,7 +977,7 @@ function drush_core_drupal_directory($target = 'root') {
   // If there is no such key, then no replacement is done.  In the
   // case of the dd command, we will consider it an error if
   // any keys are -not- replaced in _drush_core_directory.
-  if ((isset($path)) && (strpos($path, '%') === FALSE)) {
+  if ($path && (strpos($path, '%') === FALSE)) {
     drush_print($path);
   }
   else {
@@ -1009,27 +1005,11 @@ function drush_core_self_update() {
 }
 
 function drush_core_find_project_path($target) {
-  $theme_suffix = drush_drupal_major_version() >= 6 ? '.info' : '/style.css';
-  $masks = array(
-    conf_path() . '/modules' => "/^$target\.module$/",
-    'profiles/default/modules' => "/^$target\.module$/", // Too early for variable_get('install_profile', 'default'); Just use default.
-    'sites/all/modules' => "/^$target\.module$/", // Add all module paths, even disabled modules.
-    conf_path() . '/themes' => "/^$target" . "$theme_suffix/",
-    'sites/all/themes' => "/^$target" . "$theme_suffix/",
-  );
-
-  $files = array();
-  foreach ($masks as $key => $mask) {
-    $skip_list = array('.', '..', 'CVS');
-    $skip_list = array_merge($skip_list, drush_version_control_reserved_files());
-    if ($files = drush_scan_directory("$key", $mask, $skip_list, 0, TRUE, 'name')) {
-      // Just use the first match.
-      $file = reset($files);
-      return drush_get_context('DRUSH_DRUPAL_ROOT') . '/' . dirname($file->filename);
-    }
+  $path = drush_db_result(drush_db_select('system', array('filename'), 'name = :name', array(':name' => $target)));
+  if ($path) {
+    $path = dirname($path);
+    return DRUPAL_ROOT . '/' . $path;
   }
-
-  return NULL;
 }
 
 /*
