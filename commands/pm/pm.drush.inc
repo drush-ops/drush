@@ -726,7 +726,13 @@ function drush_pm_enable() {
           if (drush_get_option('resolve-dependencies')) {
             drush_log(dt("The following projects have unmet dependencies:\n@list\nThey are being downloaded.", array('@list' => implode("\n", $msgs))));
           }
-          $result = drush_invoke_process('@self', 'pm-download', $unmet_project_list, array('y' => TRUE, 'cache' => TRUE));
+          // Disable DRUSH_AFFIRMATIVE context temporarily.
+          $drush_affirmative = drush_get_context('DRUSH_AFFIRMATIVE');
+          drush_set_context('DRUSH_AFFIRMATIVE', FALSE);
+          // Invoke a new process to download dependencies.
+          $result = drush_invoke_process('@self', 'pm-download', $unmet_project_list, array('cache' => TRUE), array('interactive' => TRUE));
+          // Restore DRUSH_AFFIRMATIVE context.
+          drush_set_context('DRUSH_AFFIRMATIVE', $drush_affirmative);
           // Refresh module cache after downloading the new modules.
           $extension_info = drush_get_extensions();
           $recheck = TRUE;
