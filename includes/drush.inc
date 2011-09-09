@@ -1454,27 +1454,91 @@ function drush_shell_exec_output() {
 }
 
 /**
- * Download a file using wget or curl.
+ * Download a file using wget, curl or file_get_contents, or via download cache.
  *
  * @param string $url
- *   The path to the file to download
+ *   The url of the file to download.
+ * @param string $destination
+ *   The name of the file to be saved, which may include the full path.
+ *   Optional, if omitted the filename will be extracted from the url and the
+ *   file downloaded to the current working directory (Drupal root if
+ *   bootstrapped).
+ * @param integer $cache_duration
+ *   The acceptable age of a cached file. If cached file is too old, a fetch
+ *   will occur and cache will be updated. Optional, if ommitted the file will
+ *   be fetched directly.
  *
  * @return string
- *   The filename that was downloaded,
- *   or NULL if the file could not be
+ *   The path to the downloaded file, or FALSE if the file could not be
  *   downloaded.
  */
-function _drush_download_file($url) {
-  $filename = explode('/', $url);
-  $filename = array_pop($filename);
-
-  if (!drush_shell_exec("wget %s", $url)) {
-    if(!drush_shell_exec("curl -O %s", $url)) {
-      return NULL;
+function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
+  if (drush_get_option('cache') && $cache_duration !== 0 && $cache_dir = drush_directory_cache() . '/download') {
+    drush_mkdir($cache_dir);
+    $cache_name = str_replace(array(':', '/'), '-', $url);
+    $cache_file = $cache_dir . "/" . $cache_name;
+    // Check for cached, unexpired file.
+    if (file_exists($cache_file) && filectime($cache_file) > ($_SERVER['REQUEST_TIME']-$cache_duration)) {
+      drush_log(dt('!name retrieved from cache.', array('!name' => $cache_name)));
+      return $cache_file;
+    }
+    else {
+      if (_drush_download_file($url, $cache_file, TRUE)) {
+        // Cache was set just by downloading file to right location.
+        return $cache_file;
+      }
+      elseif (file_exists($cache_file)) {
+        drush_log(dt('!name retrieved from an expired cache since refresh failed.', array('!name' => $cache_name)), 'warning');
+        return $cache_file;
+      }
     }
   }
+  elseif ($return = _drush_download_file($url, $destination)) {
+    drush_register_file_for_deletion($return);
+    return $return;
+  }
 
-  return $filename;
+  // Unable to retrieve from cache nor download.
+  return FALSE;
+}
+
+/**
+ * Download a file using wget, curl or file_get_contents. Does not use download
+ * cache.
+ *
+ * @param string $url
+ *   The url of the file to download.
+ * @param string $destination
+ *   The name of the file to be saved, which may include the full path.
+ *   Optional, if omitted the filename will be extracted from the url and the
+ *   file downloaded to the current working directory (Drupal root if
+ *   bootstrapped).
+ * @param boolean $overwrite
+ *   Overwrite any file thats already at the destination.
+ * @return string
+ *   The path to the downloaded file, or FALSE if the file could not be
+ *   downloaded.
+ */
+function _drush_download_file($url, $destination = FALSE, $overwrite = TRUE) {
+  if (!$destination) {
+    $destination = getcwd() . '/' . basename($url);
+  }
+
+  $destination_tmp = drush_tempnam('download_file');
+  drush_shell_exec("wget -q --timeout=30 -O %s %s", $destination_tmp, $url);
+  if (!drush_file_not_empty($destination_tmp)) {
+    drush_shell_exec("curl -s -L --connect-timeout 30 -o %s %s", $destination_tmp, $url);
+  }
+  if (!drush_file_not_empty($destination_tmp) && $file = @file_get_contents($url)) {
+    @file_put_contents($destination_tmp, $file);
+  }
+  if (!drush_file_not_empty($destination_tmp)) {
+    // Download failed.
+    return FALSE;
+  }
+
+  drush_move_dir($destination_tmp, $destination, $overwrite);
+  return $destination;
 }
 
 /**
