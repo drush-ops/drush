@@ -710,6 +710,9 @@ function drush_core_quick_drupal() {
       return drush_set_error('QUICK_DRUPAL_CORE_DOWNLOAD_FAIL', 'Drupal core download/extract failed.');
     }
     drush_set_option('root', $base . '/' . $core);
+    // Reset the bootstrap Drupal context, so it finds the new site.
+    // TODO: refactor bootstrap process to avoid this.
+    _drush_bootstrap_select_drupal_site();
   }
   if (!drush_get_option('db-url', FALSE)) {
     drush_set_option('db-url', 'sqlite:' . $base . '/' . $name . '.sqlite');
