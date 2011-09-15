@@ -65,6 +65,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/example.drush.ini'),
   );
+  $items['docs-bastion'] = array(
+    'description' => 'How to use a bastion server to remotely operate on Drupal sites behind a firewall.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array($docs_dir . '/docs/bastion.html'),
+  );
   $items['docs-bootstrap'] = array(
     'description' => 'Information about the drush bootstrap process.',
     'hidden' => TRUE,
