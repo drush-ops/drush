@@ -41,6 +41,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/README.txt'),
   );
+  $items['docs-bashrc'] = array(
+    'description' => 'Drush bash customization examples',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array($docs_dir . '/examples/example.bashrc'),
+  );
   $items['docs-configuration'] = array(
     'description' => 'Drush configuration overview with examples',
     'hidden' => TRUE,
