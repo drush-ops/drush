@@ -6,7 +6,7 @@
 # ~/.bash_completion or ~/.bash_profile  files.
 
 # Ensure drush is available.
-have drush || return
+which drush > /dev/null || return
 
 # Completion function, uses the "drush complete" command to retrieve
 # completions for a specific command line COMP_WORDS.
