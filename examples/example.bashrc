@@ -143,7 +143,7 @@ function gitd() {
     `drush sa ${s%%:*} --component=remote-host > /dev/null 2>&1`
     if [ $? == 0 ]
     then
-      ssh ${s%%:*} cd "$d" ; /usr/bin/git "${@:2}"
+      dssh ${s%%:*} cd "$d" \; git "${@:2}"
     else
       echo cd "$d" ; git "${@:2}"
       ( 
@@ -242,12 +242,28 @@ function dssh() {
 
     # End: ssh_params now split into array p
     
-    # Begin: rewrite $@ into an array a with each element enclosed in quotes
+    # Begin: rewrite $@ into an array a where elements containing
+    # quotes or spaces enclosed in quotes. Bash does not have convenient
+    # "contains" tests, so to avoid spawning a process, we strip off
+    # all characters after a space and all characters after a quote with
+    # the ${v%%PATTERN} built-in, and then compare lengths.
     
     a=()
     shift
     for v in "$@" ; do
-      a[${#a[@]}]=\""$v"\"
+      spsqtest="${v%% *}${v%%\'*}"
+      dqtest="${v%%\"*}"
+      if [ ${#dqtest} == ${#v} ]
+      then
+        if [ ${#spsqtest} == $((${#v}*2)) ]
+        then
+          a[${#a[@]}]="$v"
+        else
+          a[${#a[@]}]=\""$v"\"
+        fi
+      else
+        a[${#a[@]}]=\'"$v"\'
+      fi
     done
     
     # End: $@ now converted into quoted array a
