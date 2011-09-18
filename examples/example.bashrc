@@ -1,6 +1,12 @@
-# Examples bash aliases to improve your drush experience with bash.
-# Copy this file to your home directory, customize it to suit, and
-# source it from your ~/.bash_profile file.
+# Example bash aliases to improve your drush experience with bash.
+# Copy this file to your home directory, rename and customize it to 
+# suit, and source it from your ~/.bash_profile file.
+#
+# Example - place this in your ~/.bash_profile:
+#
+#    if [ -f $HOME/.drush_bashrc ] ; then
+#        . $HOME/.drush_bashrc
+#    fi
 #
 # Features:
 #
@@ -9,21 +15,27 @@
 #
 # Creates aliases to common drush commands:
 #
-#	sa		- drush site-alias
-#	st		- drush core-status
+#       dr              - drush
+#       sa              - drush site-alias
+#       st              - drush core-status
 #
 # Enhances several common shell commands to work better with drush:
 #
-#	dd @dev		- print the path to the root directory of @dev
+#       dd @dev         - print the path to the root directory of @dev
 #       cd @dev         - change the current working directory to @dev
-#	ls @dev		- ls root folder of @dev
-#	ls %files	- ls "files" directory of current site
-#	ls @dev:%devel  - ls devel module directory in @dev
+#       ls @dev         - ls root folder of @dev
+#       ls %files       - ls "files" directory of current site
+#       ls @dev:%devel  - ls devel module directory in @dev
+#       @dev st         - drush @dev core-status
 #       ssh @live       - ssh to the remote server @live points at
-#	@dev st		- drush @dev core-status
+#       git @live pull  - run `git pull` on the drupal root of @live
+#
+# Drush site alias expansion is also done for the cp command:
+#
+#       cp -R @site1:%files @site2:%files
 #
 # When no drush site alias arguments are provided, the standard
-# shell command behaves 
+# shell command behaves exactly the same as it usually does.
 #
 
 # Find the drush executable
@@ -59,43 +71,105 @@ done
 #   cd %devel
 #   cd @site2:%files
 function cd() {
-  d="$1"
-  if [ -n "$d" ] && [ ${d:0:1} == "@" ] || [ ${d:0:1} == "%" ]
+  s="$1"
+  if [ -n "$s" ] && [ ${s:0:1} == "@" ] || [ ${s:0:1} == "%" ]
   then
-    cdd "$@";
+    d="`drush drupal-directory $1 --local 2>/dev/null`"
+    if [ $? == 0 ]
+    then
+      echo "cd $d";
+      builtin cd "$d";
+    else
+      echo "Cannot cd to remote site $s"
+    fi
   else
-    builtin cd "$d";
+    builtin cd "$s";
   fi
 }
 
-# Do a special drush cd, handling
-# shorthand notation directory names -- anything
-# understood by drupal-directory
+# Works just like the `cd` shell alias above, with one additional
+# feature: `cdd @remote-site` works like `ssh @remote-site`,
+# whereas cd above will fail unless the site alias is local.  If
+# you prefer the `ssh` behavior, you can rename this shell alias
+# to `cd`.
 function cdd() {
-  DEST=`drush drupal-directory $1 --local 2>/dev/null`
-  if [ $? == 0 ]
+  s="$1"
+  if [ -n "$s" ] && [ ${s:0:1} == "@" ] || [ ${s:0:1} == "%" ]
   then
-    echo "cd $DEST";
-    builtin cd "$DEST";
+    d="`drush drupal-directory $s 2>/dev/null`"
+    `drush sa ${s%%:*} --component=remote-host > /dev/null 2>&1`
+    if [ $? != 0 ]
+    then
+      echo "cd $d"
+      builtin cd "$d"
+    else
+      if [ -n "$d" ]
+      then
+        c="cd \"$d\" \; bash"
+        drush -s ssh ${s%%:*} --tty --escaped "$c"
+        drush ssh ${s%%:*} --tty --escaped "$c"
+      else
+        drush ssh ${s%%:*}
+      fi
+    fi
   else
-    builtin cd "$1"
+    builtin cd "$s"
   fi
 }
 
+# Allow `git @site gitcommand` as a shortcut for `cd @site; git gitcommand`.
+# Also works on remote sites, though.
+function git() {
+  s="$1"
+  if [ -n "$s" ] && [ ${s:0:1} == "@" ] || [ ${a:0:1} == "%" ]
+  then
+    d="`drush drupal-directory $s 2>/dev/null`"
+    `drush sa ${s%%:*} --component=remote-host > /dev/null 2>&1`
+    if [ $? == 0 ]
+    then
+      ssh ${s%%:*} cd "$d" ; /usr/bin/git "${@:2}"
+    else
+      echo cd "$d" ; git "${@:2}"
+      ( 
+        cd "$d"
+        git "${@:2}"
+      )
+    fi
+  else
+    `which git` "$@"
+  fi  
+}
+
+# Get a directory listing on @site or @site:%files, etc, for local or remote sites.
 function ls() {
   p=()
+  r=
   for a in "$@" ; do
     if [ ${a:0:1} == "@" ] || [ ${a:0:1} == "%" ]
     then
-      p[${#p[@]}]="`drush drupal-directory $a --local 2>/dev/null`"
+      p[${#p[@]}]="`drush drupal-directory $a 2>/dev/null`"
+      if [ ${a:0:1} == "@" ]
+      then
+        `drush sa ${a%:*} --component=remote-host > /dev/null 2>&1`
+        if [ $? == 0 ]
+        then
+          r=${a%:*}
+        fi
+      fi
     elif [ -n "$a" ]
     then
       p[${#p[@]}]="$a"
     fi
   done
-  `which ls` "${p[@]}"
+  if [ -n "$r" ]
+  then
+    ssh $r ls "${p[@]}"
+  else
+    `which ls` "${p[@]}"
+  fi
 }
 
+# Copy from or two @site or @site:%files, etc; local sites only.
 function cp() {
   p=()
   for a in "$@" ; do
@@ -110,6 +184,9 @@ function cp() {
   `which cp` "${p[@]}"
 }
 
+# Show the drush directory location of @site:%files, etc; if the
+# first parameter is not a site specification, then run the
+# unix dd (convert and copy a file) command.
 function dd() {
   p=()
   drushdd=false
@@ -123,18 +200,109 @@ function dd() {
   if $drushdd ; then
     drush dd "${p[@]}"
   else
-    `which dd` "${p[@]}"
+    "`which dd`" "${p[@]}"
   fi
 }
 
-function ssh() {
-  $d="$1"
-  if [ ${d:0:1} == "@" ]
+# Escaping not quite working for args with spaces
+function ssh_almost_working() {
+  s="$1"
+  if [ ${s:0:1} == "@" ]
   then
-    echo drush ssh "$@"
-    drush ssh "$@"
+    shift
+    c=
+    for v in "$@" ; do
+      c="$c \"$v\""
+    done
+
+    drush ssh -s --escaped $s "$c"
+    drush ssh --escaped $s "$c"
   else
     echo `which ssh` "$@"
-    `which ssh` "$@"
+    "`which ssh`" "$@"
+  fi 
+}
+
+# Closer, but escaping still not quite working for args with spaces
+function ssh_also_almost_working() {
+  s="$1"
+  if [ ${s:0:1} == "@" ]
+  then
+    # Begin: rewrite $@ into an array a with each element enclosed in quotes
+    
+    a=()
+    shift
+    for v in "$@" ; do
+      a[${#a[@]}]=\""$v"\"
+    done
+    
+    # End: $@ now converted into quoted array a
+    
+    c="${a[@]}"
+    drush ssh -s $s "$c"
+    drush ssh $s "$c"
+  else
+    echo `which ssh` "$@"
+    "`which ssh`" "$@"
+  fi 
+}
+
+# Here is a complex ssh function that works with args with spaces.
+function ssh() {
+  d="$1"
+  if [ ${d:0:1} == "@" ]
+  then
+    s="`drush -s ssh $d`"
+    ssh_params="${s#* }"
+    ssh_cmd="`which ssh`"
+
+    # Begin: convert ssh_params into an array p
+
+    c="$ssh_params "
+    p=()
+    while [ -n "$c" ] ; do
+      v=
+      hasvalue=true
+      if [ "x${c:0:1}" = 'x"' ]
+      then
+        c="${c:1}"
+        v="${c%%\"*}"
+        c="${c#*\"}"
+      elif [ "x${c:0:1}" = "x'" ]
+      then
+        c="${c:1}"
+        v="${c%%\'*}"
+        c="${c#*\'}"
+      elif [ "x${c:0:1}" = "x " ]
+      then
+        c="${c:1}"
+        hasvalue=false
+      else
+        v="${c%% *}"
+        c="${c#* }"
+      fi
+      if $hasvalue
+      then
+        p[${#p[@]}]="$v"
+      fi
+    done
+
+    # End: ssh_params now split into array p
+    
+    # Begin: rewrite $@ into an array a with each element enclosed in quotes
+    
+    a=()
+    shift
+    for v in "$@" ; do
+      a[${#a[@]}]=\""$v"\"
+    done
+    
+    # End: $@ now converted into quoted array a
+    
+    echo "$ssh_cmd" "${p[@]}" "${a[@]}"
+    "$ssh_cmd" "${p[@]}" "${a[@]}"
+  else
+    echo `which ssh` "$@"
+    "`which ssh`" "$@"
   fi 
 }

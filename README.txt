@@ -69,6 +69,9 @@ STANDARD CONFIGURATION:
 command to your shell. Once configured, completion works for site aliases, command names,
 shell aliases, global  options, and command-specific options.
 
+6. Also Optional. See examples/example.bashrc for instructions on how to add some very useful 
+shell aliases that provides even tighter integration between drush and bash.
+
 
 ADDITIONAL CONFIGURATIONS FOR MAMP:
 -----------------------------------

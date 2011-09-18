@@ -16,6 +16,8 @@ function ssh_drush_command() {
     'required-arguments' => 1,
     'options' => array(
       'ssh-options' => 'A string of extra options that will be passed to the ssh command (e.g. "-p 100")',
+      'tty' => 'Create a tty (e.g. to run an interactive program).',
+      'escaped' => 'Command string already escaped; do not add additional quoting.',
     ),
     'examples' => array(
       'drush ssh @mysite' => 'Open an interactive shell on @mysite\'s server.',
@@ -66,10 +68,18 @@ function drush_ssh_site_ssh($alias, $command = NULL) {
   $hostname = drush_escapeshellarg($site['remote-host'], "LOCAL");
   $username = isset($site['remote-user']) ? drush_escapeshellarg($site['remote-user'], "LOCAL") . "@" : '';
   $ssh_options = isset($site['ssh-options']) ? $site['ssh-options'] : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
+  if (drush_get_option('tty')) {
+    $ssh_options .= ' -t';
+  }
 
   $cmd = "ssh " . $ssh_options . " " . $username . $hostname;
   if (!empty($command)) {
-    $cmd .= " " . drush_escapeshellarg($command);
+    if (drush_get_option('escaped', FALSE) === FALSE) {
+      $cmd .= " " . drush_escapeshellarg($command);
+    }
+    else {
+      $cmd .= " $command";
+    }
   }
 
   // Execute.

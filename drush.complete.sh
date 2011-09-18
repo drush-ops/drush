@@ -3,7 +3,7 @@
 # BASH completion script for Drush.
 #
 # Place this in your /etc/bash_completion.d/ directory or source it from your
-# ~/.bash_completion or ~/.bash_profile files.  Alternately, source
+# ~/.bash_completion or ~/.bash_profile files.  Alternatively, source
 # examples/example.bashrc instead, as it will automatically find and source
 # this file.
 
