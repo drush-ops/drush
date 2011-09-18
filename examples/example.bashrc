@@ -2,7 +2,9 @@
 # Copy this file to your home directory, rename and customize it to 
 # suit, and source it from your ~/.bash_profile file.
 #
-# Example - place this in your ~/.bash_profile:
+# Example - place this to .drush_bashrc, and in your 
+# ~/.bash_profile add:
+#
 #
 #    if [ -f $HOME/.drush_bashrc ] ; then
 #        . $HOME/.drush_bashrc
@@ -35,10 +37,23 @@
 #
 #       cpd -R @site1:%files @site2:%files
 #
-# Optionally, you may also alias these commands so that they may
-# override the standard command (e.g. git instead of gitd).  If you
-# do this, when no drush site alias arguments are provided, the standard
-# shell command behaves exactly the same as it usually does.
+# Note that the 'cpd' alias only works for local sites.  Use 
+# `drush rsync` or gitd` to move files between remote sites.
+#
+# By default, aliases are also created for the following standard
+# commands:
+#
+#       cd                - cddl [*]
+#       ls                - lsd
+#       cp                - cpd
+#       ssh               - dssh
+#       git               - gitd
+#
+# These standard commands behave exactly the same as they always
+# do, unless a drush site specification such as @dev or @live:%files
+# is used in one of the arguments.  If you do not want to override
+# these standard commands, they may be easily removed or commented out
+# in your copy of this file.
 #
 
 # Aliases for common drush commands
@@ -49,8 +64,9 @@ alias ddd='drush drupal-directory'
 
 # Overrides for standard shell commands.  Remove these if you don't want this.
 # Alias cd='cdd' if you want to be able to use cd @remote to ssh to a remote site.
-alias ls='lsd'
 alias cd='cddl'
+alias ls='lsd'
+alias cp='cpd'
 alias ssh='dssh'
 alias git='gitd'
 
@@ -86,6 +102,10 @@ done
 #   cd %modules
 #   cd %devel
 #   cd @site2:%files
+# This is the "local-only" version of the function;
+# see the cdd function, below, for an expanded implementation 
+# that will ssh to the remote server when a remote site
+# specification is used.
 function cddl() {
   s="$1"
   if [ -n "$s" ] && [ ${s:0:1} == "@" ] || [ ${s:0:1} == "%" ]
@@ -205,71 +225,76 @@ function dssh() {
   d="$1"
   if [ ${d:0:1} == "@" ]
   then
-    s="`drush -s ssh $d`"
-    ssh_params="${s#* }"
-    ssh_cmd="`which ssh`"
-
-    # Begin: convert ssh_params into an array p
-
-    c="$ssh_params "
-    p=()
-    while [ -n "$c" ] ; do
-      v=
-      hasvalue=true
-      if [ "x${c:0:1}" = 'x"' ]
-      then
-        c="${c:1}"
-        v="${c%%\"*}"
-        c="${c#*\"}"
-      elif [ "x${c:0:1}" = "x'" ]
-      then
-        c="${c:1}"
-        v="${c%%\'*}"
-        c="${c#*\'}"
-      elif [ "x${c:0:1}" = "x " ]
-      then
-        c="${c:1}"
-        hasvalue=false
-      else
-        v="${c%% *}"
-        c="${c#* }"
-      fi
-      if $hasvalue
-      then
-        p[${#p[@]}]="$v"
-      fi
-    done
-
-    # End: ssh_params now split into array p
-    
-    # Begin: rewrite $@ into an array a where elements containing
-    # quotes or spaces enclosed in quotes. Bash does not have convenient
-    # "contains" tests, so to avoid spawning a process, we strip off
-    # all characters after a space and all characters after a quote with
-    # the ${v%%PATTERN} built-in, and then compare lengths.
-    
-    a=()
     shift
-    for v in "$@" ; do
-      spsqtest="${v%% *}${v%%\'*}"
-      dqtest="${v%%\"*}"
-      if [ ${#dqtest} == ${#v} ]
-      then
-        if [ ${#spsqtest} == $((${#v}*2)) ]
+    if [ $# == 0 ]
+    then
+      cdd "$d"
+    else
+      s="`drush -s ssh $d`"
+      ssh_params="${s#* }"
+      ssh_cmd="`which ssh`"
+
+      # Begin: convert ssh_params into an array p
+
+      c="$ssh_params "
+      p=()
+      while [ -n "$c" ] ; do
+        v=
+        hasvalue=true
+        if [ "x${c:0:1}" = 'x"' ]
         then
-          a[${#a[@]}]="$v"
+          c="${c:1}"
+          v="${c%%\"*}"
+          c="${c#*\"}"
+        elif [ "x${c:0:1}" = "x'" ]
+        then
+          c="${c:1}"
+          v="${c%%\'*}"
+          c="${c#*\'}"
+        elif [ "x${c:0:1}" = "x " ]
+        then
+          c="${c:1}"
+          hasvalue=false
         else
-          a[${#a[@]}]=\""$v"\"
+          v="${c%% *}"
+          c="${c#* }"
         fi
-      else
-        a[${#a[@]}]=\'"$v"\'
-      fi
-    done
-    
-    # End: $@ now converted into quoted array a
-    
-    echo "$ssh_cmd" "${p[@]}" "${a[@]}"
-    "$ssh_cmd" "${p[@]}" "${a[@]}"
+        if $hasvalue
+        then
+          p[${#p[@]}]="$v"
+        fi
+      done
+
+      # End: ssh_params now split into array p
+
+      # Begin: rewrite $@ into an array a where elements containing
+      # quotes or spaces enclosed in quotes. Bash does not have convenient
+      # "contains" tests, so to avoid spawning a process, we strip off
+      # all characters after a space and all characters after a quote with
+      # the ${v%%PATTERN} built-in, and then compare lengths.
+
+      a=()
+      for v in "$@" ; do
+        spsqtest="${v%% *}${v%%\'*}"
+        dqtest="${v%%\"*}"
+        if [ ${#dqtest} == ${#v} ]
+        then
+          if [ ${#spsqtest} == $((${#v}*2)) ]
+          then
+            a[${#a[@]}]="$v"
+          else
+            a[${#a[@]}]=\""$v"\"
+          fi
+        else
+          a[${#a[@]}]=\'"$v"\'
+        fi
+      done
+
+      # End: $@ now converted into quoted array 'a'
+
+      echo "$ssh_cmd" "${p[@]}" "${a[@]}"
+      "$ssh_cmd" "${p[@]}" "${a[@]}"
+    fi
   else
     echo `which ssh` "$@"
     "`which ssh`" "$@"

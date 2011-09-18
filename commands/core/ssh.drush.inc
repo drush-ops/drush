@@ -74,7 +74,7 @@ function drush_ssh_site_ssh($alias, $command = NULL) {
 
   $cmd = "ssh " . $ssh_options . " " . $username . $hostname;
   if (!empty($command)) {
-    if (drush_get_option('escaped', FALSE) === FALSE) {
+    if (!drush_get_option('escaped', FALSE)) {
       $cmd .= " " . drush_escapeshellarg($command);
     }
     else {
