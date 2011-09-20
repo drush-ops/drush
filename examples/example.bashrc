@@ -108,7 +108,10 @@ done
 # specification is used.
 function cddl() {
   s="$1"
-  if [ -n "$s" ] && [ ${s:0:1} == "@" ] || [ ${s:0:1} == "%" ]
+  if [ -z "$s" ]
+  then
+    builtin cd
+  elif [ "${s:0:1}" == "@" ] || [ "${s:0:1}" == "%" ]
   then
     d="`drush drupal-directory $1 --local 2>/dev/null`"
     if [ $? == 0 ]
@@ -130,7 +133,10 @@ function cddl() {
 # to `cd`.
 function cdd() {
   s="$1"
-  if [ -n "$s" ] && [ ${s:0:1} == "@" ] || [ ${s:0:1} == "%" ]
+  if [ -z "$s" ]
+  then
+    builtin cd
+  elif [ "${s:0:1}" == "@" ] || [ "${s:0:1}" == "%" ]
   then
     d="`drush drupal-directory $s 2>/dev/null`"
     `drush sa ${s%%:*} --component=remote-host > /dev/null 2>&1`
