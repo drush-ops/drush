@@ -677,6 +677,9 @@ function _drush_sql_get_db_spec() {
     $db_spec['db_prefix'] = drush_get_option('db-prefix');
     return $db_spec;
   }
+  elseif (($databases = drush_get_option('databases')) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
+    return $databases[$database][$target];
+  }
   elseif (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
     switch (drush_drupal_major_version()) {
       case 6:
