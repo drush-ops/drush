@@ -439,6 +439,7 @@ function drush_prepare_backup_dir($subdir = NULL) {
   $backup_parent = dirname($backup_dir);
 
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+  $drupal_root .= '/';
 
   if ((!empty($drupal_root)) && (strpos($backup_parent, $drupal_root) === 0)) {
     return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('It\'s not allowed to store backups inside the Drupal root directory.'));
