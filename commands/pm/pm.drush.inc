@@ -1803,7 +1803,7 @@ function _drush_pm_get_release_history_xml($request) {
   $url = drush_get_option('source', 'http://updates.drupal.org/release-history') . '/' . $request['name'] . '/' . $request['drupal_version'];
   drush_log('Downloading release history from ' . $url);
   // Some hosts have allow_url_fopen disabled.
-  if ($path = drush_download_file($url, NULL, drush_get_option('cache-duration-releasexml', 24*3600))) {
+  if ($path = drush_download_file($url, drush_tempnam($request['name']), drush_get_option('cache-duration-releasexml', 24*3600))) {
     $xml = simplexml_load_file($path);
   }
   if (!$xml) {
