@@ -91,6 +91,8 @@ function drush_core_pre_site_install($profile = NULL) {
         $install_profile_config = "\$conf['install_profile'] = '$profile';";
         file_put_contents($settingsfile, "\n" . $install_profile_config . "\n", FILE_APPEND);
       }
+      // The Drupal 6 installer needs to bootstrap up to the specified site.
+      drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
     }
   }
 
@@ -101,9 +103,6 @@ function drush_core_pre_site_install($profile = NULL) {
       return;
     }
   }
-
-  // Now we can bootstrap up to the specified site.
-  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
 
   // Empty or create the DB as needed.
   $db_name = $db_spec['database'];
