@@ -12,7 +12,7 @@
 /**
  * Supported version of httpserver. This is displayed in the manual install help.
  */
-define('DRUSH_HTTPSERVER_VERSION', '354b9142bf0cfd73063e28604d11288304531cd6');
+define('DRUSH_HTTPSERVER_VERSION', '41dd2b7160b8cbd25d7b5383e3ffc6d8a9a59478');
 
 /**
  * Directory name for httpserver. This is displayed in the manual install help.
