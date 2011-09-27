@@ -357,6 +357,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['backup-location']     = array('description' => "Specifies the directory where drush will store backups.");
     $options['complete-debug']      = array('hidden' => TRUE, 'description' => "Turn on debug mode forf completion code");
     $options['check_os']            = array('hidden' => TRUE, 'description' => "Enable or disable O.S. testing, and warn user of potential incompabilities.");
+    $options['php-options']         = array('description' => "Options to pass to php when running drush.  Only effective when using the `drush` script.");
     $options['deferred-sanitization'] = array('hidden' => TRUE, 'description' => "Defer calculating the sanitization operations until after the database has been copied. This is done automatically if the source database is remote.");
     $options['remote-host']         = array('hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.');
     $options['remote-user']         = array('hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.');
