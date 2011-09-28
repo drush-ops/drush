@@ -37,7 +37,7 @@ function drush_policy_help_alter($command) {
   // an "unknown option" error when they try to specify the option on the
   // commandline.
   if ($command['command'] == 'updatedb') {
-    $command['options']['token'] = 'Per site policy, you must specify a token in the --token option for all commands.',';
+    $command['options']['token'] = 'Per site policy, you must specify a token in the --token option for all commands.';
   }
 }
 
