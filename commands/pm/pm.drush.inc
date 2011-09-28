@@ -730,7 +730,7 @@ function drush_pm_enable() {
           $drush_affirmative = drush_get_context('DRUSH_AFFIRMATIVE');
           drush_set_context('DRUSH_AFFIRMATIVE', FALSE);
           // Invoke a new process to download dependencies.
-          $result = drush_invoke_process('@self', 'pm-download', $unmet_project_list, array('cache' => TRUE), array('interactive' => TRUE));
+          $result = drush_invoke_process('@self', 'pm-download', $unmet_project_list, array(), array('interactive' => TRUE));
           // Restore DRUSH_AFFIRMATIVE context.
           drush_set_context('DRUSH_AFFIRMATIVE', $drush_affirmative);
           // Refresh module cache after downloading the new modules.
