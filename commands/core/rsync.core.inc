@@ -95,7 +95,7 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
     }
   }
 
-  $mode = '-az';
+  $mode = '-akz';
   // Process --include-path and --exclude-path options the same way
   foreach (array('include', 'exclude') as $include_exclude) {
     // Get the option --include-path or --exclude-path and explode to an array of paths
