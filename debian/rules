@@ -7,6 +7,10 @@
 %:
 	dh $@
 
+# run drush so that table.inc is downloaded
+override_dh_auto_build:
+	$(CURDIR)/drush.php > /dev/null
+
 override_dh_install:
 	cp -r "$(CURDIR)/commands" "$(CURDIR)/includes" "$(CURDIR)/drush.php" "$(CURDIR)/drush.info" "$(CURDIR)/debian/drush/usr/share/drush/"
 	# trash the .gitignore file that generates lintian warnings
