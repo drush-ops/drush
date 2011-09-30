@@ -1,3 +1,13 @@
+drush (4.5-2) unstable; urgency=low
+
+  * fetch the table.inc file during the build instead of keeping a copy in
+    our source repo
+  * mark this package as a "single-debian-patch" to silence a lintian
+    warnings - our changes are now tracked in git (Closes: #643099).
+  * recommend wget *or* curl, which are both working with drush
+
+ -- Antoine Beaupré <anarcat@koumbit.org>  Fri, 30 Sep 2011 13:13:54 -0400
+
 drush (4.5-1) unstable; urgency=low
 
   * new upstream release: http://drupal.org/node/1247086
