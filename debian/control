@@ -12,7 +12,7 @@ Vcs-browser: http://drupalcode.org/project/drush.git
 Package: drush
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, php5-cli (>= 5.2)
-Recommends: wget, php5-mysql | php5-pgsql
+Recommends: wget | curl, php5-mysql | php5-pgsql
 Suggests: git, mysql-client
 Description: command line shell and Unix scripting interface for Drupal
  drush is a command line shell and Unix scripting interface for
