@@ -8,7 +8,7 @@
 # this file.
 
 # Ensure drush is available.
-which drush > /dev/null || return
+which drush > /dev/null || alias drush > /dev/null || return
 
 # Completion function, uses the "drush complete" command to retrieve
 # completions for a specific command line COMP_WORDS.
