@@ -80,7 +80,7 @@ alias ev='drush php-eval'
 alias sa='drush site-alias'
 alias st='drush core-status'
 
-# Aliases for drush commands that work on the current drupal site 
+# Aliases for drush commands that work on the current drupal site
 alias cc='drush cache-clear'
 alias dis='drush pm-disable'
 alias en='drush pm-enable'
@@ -112,7 +112,9 @@ fi
 [ -x $d ] || exit 0
 
 # If the file found is a symlink, resolve to the actual file.
-d=$(readlink -f $d)
+# Uncomment if your `drush` is a symlink. -f is unavailable on OSX's readlink.
+# d=$(readlink -f $d)
+
 # Get the directory that drush is stored in.
 d="${d%/*}"
 # If we have found drush.complete.sh, then source it.
