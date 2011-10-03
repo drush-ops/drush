@@ -131,7 +131,7 @@ for a in $(drush sa); do
   drush_complete -o nospace -F _drush_completion $a > /dev/null
 done
 
-# We override the cd command to allow convenient
+# We extend the cd command to allow convenient
 # shorthand notations, such as:
 #   cd @site1
 #   cd %modules
