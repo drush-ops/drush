@@ -59,7 +59,7 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
   if (!empty($context['results']['#abort']) && array_intersect($context['results']['#abort'], array_merge($dependency_map, array($function)))) {
     return;
   }
-  
+
   $context['log'] = FALSE;
 
   $ret = array();
@@ -146,10 +146,9 @@ function update_main_prepare() {
   require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
   require_once DRUPAL_ROOT . '/includes/common.inc';
   require_once DRUPAL_ROOT . '/includes/file.inc';
-  require_once DRUPAL_ROOT . '/includes/entity.inc';
   include_once DRUPAL_ROOT . '/includes/unicode.inc';
 
-  update_prepare_d7_bootstrap();
+  update_prepare_d8_bootstrap();
   drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
 
   require_once DRUPAL_ROOT . '/includes/install.inc';
@@ -178,7 +177,7 @@ function update_main_prepare() {
   // So bootstrap to DRUPAL_BOOTSTRAP_LANGUAGE then include unicode.inc.
   drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
 
-  update_fix_d7_requirements();
+  update_fix_d8_requirements();
 
   // Now proceed with a full bootstrap.
 
@@ -199,7 +198,7 @@ function update_main_prepare() {
     cache_clear_all('*', 'cache_update', TRUE);
   }
 
-  module_list(TRUE, FALSE, TRUE);
+  module_implements_reset();
 }
 
 function update_main() {
