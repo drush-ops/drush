@@ -65,12 +65,13 @@ STANDARD CONFIGURATION:
 
   $ which drush
 
-5. Optional. See top of drush.complete.sh file for instructions adding bash completion for drush
-command to your shell. Once configured, completion works for site aliases, command names,
-shell aliases, global  options, and command-specific options.
-
-6. Also Optional. See examples/example.bashrc for instructions on how to add some very useful 
+5. Also Optional. See examples/example.bashrc for instructions on how to add some very useful
 shell aliases that provides even tighter integration between drush and bash.
+
+6. Optional. If you didn't source it in Step 5 above, see top of drush.complete.sh
+file for instructions adding bash completion for drush command to your shell.
+Once configured, completion works for site aliases, command names, shell aliases,
+global options, and command-specific options.
 
 
 ADDITIONAL CONFIGURATIONS FOR MAMP:
