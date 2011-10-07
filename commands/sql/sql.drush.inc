@@ -342,7 +342,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
 
         // Run mysqldump again and append output if we need some structure only tables.
         if (!empty($structure_tables)) {
-          $exec .= "&& mysqldump --no-data $extra " . implode(' ', $structure_tables);
+          $exec .= " && mysqldump --no-data $extra " . implode(' ', $structure_tables);
           if ($file) {
             $exec .= " >> $file";
           }
@@ -379,7 +379,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
           foreach ($structure_tables as $table) {
             $schemaonlies[] = "--table=$table";
           }
-          $exec .= "; pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
+          $exec .= " && pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
           if ($file) {
             $exec .= " >> $file";
           }
