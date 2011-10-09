@@ -170,11 +170,11 @@ function drush_upgrade_site_upgrade($target_key = NULL) {
     foreach ($contrib_extensions as $extension_name) {
       // Only check extensions that are NOT in our uninstall list.
       if (!in_array($extension_name, $uninstall_extensions) && array_key_exists($extension_name, $extension_info)) {
-        $project = $extension_info[$extension_name]->info['project'];
-        if (empty($project)) {
-          drush_log(dt('The no project information could be found for the module !module has no project information.', array('!module' => $extension_name)), 'warning');
+        if (empty($extension_info[$extension_name]->info['project'])) {
+          drush_log(dt('No project information could be found for the module !module. Enable git_deploy project if you are using Git clones as projects.', array('!module' => $extension_name)), 'warning');
         }
         else {
+          $project = $extension_info[$extension_name]->info['project'];
           $project_info_map[$project]['name'] = $extension_info[$extension_name]->info['name'];
           $project_info_map[$project]['version'] = $extension_info[$extension_name]->info['version'];
           // Check our lookup table to see if a project has been renamed.
