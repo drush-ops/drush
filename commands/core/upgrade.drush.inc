@@ -316,9 +316,9 @@ function drush_upgrade_site_upgrade($target_key = NULL) {
   if (!drush_get_option('structure-tables-key')) {
     drush_set_option('structure-tables-key', 'common');
   }
-  // Always blow away the target database so we start fresh.
+  // Empty or create the target database as needed.
+  drush_sql_empty_db(drush_sitealias_get_db_spec($target_alias));
   // We still have DRUSH_AFFIRMATIVE set from above, so this will not prompt.
-  drush_set_option('create-db', TRUE);
   drush_invoke('sql-sync', array('@self', $target_key));
   if (drush_get_error()) return FALSE; // Early exit if we see an error.
 
