@@ -1657,7 +1657,11 @@ function pm_project_types() {
  */
 function pm_drush_engine_package_handler() {
   return array(
-    'wget' => array(),
+    'wget' => array(
+      'options' => array(
+        'package-handler=wget' => 'Download project packages using wget or curl.',
+      ),
+    ),
     'git_drupalorg' => array(
       'options' => array(
         'package-handler=git_drupalorg' => 'Use git.drupal.org to checkout and update projects.',
