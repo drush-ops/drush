@@ -69,10 +69,6 @@
 // Load a drushrc.php configuration file from the current working directory.
 # $options['c'] = '.';
 
-// Disable the nag warning for Windows.
-// @see http://drupal.org/node/766080
-# $options['check_os'] = FALSE;
-
 // Control automatically check for updates in pm-updatecode and drush version.
 // FALSE = never check for updates.  'head' = allow updates to drush-HEAD.
 // TRUE (default) = allow updates to latest stable release.

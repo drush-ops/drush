@@ -117,17 +117,6 @@ function _drush_environment_check_php_ini() {
 }
 
 /*
- * To disable the warning about Windows support, set $options['check_os'] = FALSE
- * in drushrc.php. See examples/example.drushrc.php.
- */
-function drush_environment_check_os() {
-  if (drush_is_windows() && drush_get_option('check_os', TRUE)) {
-    $msg = 'Drush has significant limitations on Windows. We seek a co-maintainer to remedy them. See http://drupal.org/project/drush for more information, and for instructions on disabling this warning.';
-    drush_log(dt($msg), 'warning');
-  }
-}
-
-/*
  * Check for the existence of the specified lib directory, and create if needed.
  */
 function drush_environment_lib() {

@@ -759,9 +759,6 @@ function _drush_bootstrap_do_drupal_site() {
  */
 function _drush_bootstrap_drupal_site() {
   _drush_bootstrap_do_drupal_site();
-
-  // Set warning for Windows users. We have already loaded site-specific drushrc.
-  drush_environment_check_os();
 }
 
 /**
