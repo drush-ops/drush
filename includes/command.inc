@@ -1106,7 +1106,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       // Scan for drush command files; add to list for consideration if found.
       foreach (array_unique($searchpath) as $path) {
         if (is_dir($path)) {
-          $files = drush_scan_directory($path, '/\.drush\.inc$/', array('.', '..', 'examples', 'gitcache'));
+          $files = drush_scan_directory($path, '/\.drush\.inc$/', array('.', '..', 'examples', 'tests', 'disabled', 'gitcache'));
           foreach ($files as $filename => $info) {
             $module = basename($filename, '.drush.inc');
             // Only try to bootstrap modules that we have never seen before, or that we
