@@ -13,8 +13,8 @@ function package_handler_validate() {
   drush_set_context('DRUSH_DEBUG', FALSE);
 
   // We need to check for a git executable and then make sure version is >=1.7
-  $success = drush_shell_exec('git --version');
-  $git = drush_shell_exec_output();
+  // (avoid drush_shell_exec because we want to run this even in --simulated mode.)
+  $success = exec('git --version', $git);
   $git_version_array = explode(" ", $git[0]);
   $git_version = $git_version_array[2];
 
