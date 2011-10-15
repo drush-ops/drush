@@ -682,7 +682,7 @@ function _drush_bootstrap_selected_uri() {
  * as a configuration file.
  */
 function _drush_bootstrap_drupal_site_validate() {
-  $drush_uri = drush_bootstrap_value('drush_uri', drush_get_context('DRUSH_SELECTED_URI'));
+  $drush_uri = drush_get_context('DRUSH_SELECTED_URI');
 
   // Fake the necessary HTTP headers that Drupal needs:
   if ($drush_uri) {
@@ -742,7 +742,8 @@ function _drush_bootstrap_drupal_site_validate() {
  * of the drush drupal site bootstrap.
  */
 function _drush_bootstrap_do_drupal_site() {
-  $drush_uri = drush_set_context('DRUSH_URI', drush_bootstrap_value('drush_uri'));
+  $drush_uri = drush_get_context('DRUSH_SELECTED_URI');
+  drush_set_context('DRUSH_URI', $drush_uri);
   $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
   $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
 

@@ -1621,7 +1621,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   // machine is local, then try to look
   // up an alias record for the default drush site.
   if (empty($site_alias_settings) && empty($machine)) {
-    $drush_uri = drush_bootstrap_value('drush_uri', drush_get_option(array('l', 'uri'), 'default'));
+    $drush_uri = drush_get_context('DRUSH_SELECTED_URI', 'default');
     $site_alias_settings = drush_sitealias_get_record($drush_uri);
   }
 

@@ -4,14 +4,14 @@
  * Command validate.
  */
 function drush_core_site_install_validate() {
-  if ($sites_subdir = drush_get_option('sites-subdir')) {
+  if ($sites_subdir = drush_get_option('sites-subdir', 'default')) {
     $lower = strtolower($sites_subdir);
     if ($sites_subdir != $lower) {
       drush_log(dt('Only lowercase sites-subdir are valid. Switching to !lower.', array('!lower' => $lower)), 'warning');
       drush_set_option('sites-subdir', $lower);
     }
     // Make sure that we will bootstrap to the 'sites-subdir' site.
-    drush_set_option('uri', $sites_subdir);
+    drush_set_option('uri', 'http://' . $sites_subdir);
     _drush_bootstrap_select_drupal_site();
   }
 }
@@ -24,13 +24,7 @@ function drush_core_pre_site_install($profile = NULL) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
   }
-  if ($sites_subdir = drush_get_option('sites-subdir')) {
-    // Needed so that we later bootstrap into the right site.
-    drush_set_option('uri', 'http://' . $sites_subdir);
-  }
-  else {
-    $sites_subdir = 'default';
-  }
+  $sites_subdir = drush_get_option('sites-subdir', 'default');
 
   $conf_path = "sites/$sites_subdir";
   $files = "$conf_path/files";
@@ -91,10 +85,11 @@ function drush_core_pre_site_install($profile = NULL) {
         $install_profile_config = "\$conf['install_profile'] = '$profile';";
         file_put_contents($settingsfile, "\n" . $install_profile_config . "\n", FILE_APPEND);
       }
-      // The Drupal 6 installer needs to bootstrap up to the specified site.
-      drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
     }
   }
+  // The Drupal 6 installer needs to bootstrap up to the specified site.
+  // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
+  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
 
   // Add a files dir if needed
   if (!file_exists($files)) {
@@ -141,7 +136,6 @@ function drush_core_site_install($profile = NULL) {
       $form_options[$key] = $value;
     }
   }
-
   drush_include_engine('drupal', 'site_install', drush_drupal_major_version());
   drush_core_site_install_version($profile, $form_options);
 }
