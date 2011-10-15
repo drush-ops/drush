@@ -409,8 +409,8 @@ function unish_init() {
    if (!file_exists($dir)) {
      return TRUE;
    }
+   @chmod($dir, 0777); // Make file/dir writeable
    if (!is_dir($dir)) {
-     @chmod($dir, 0777); // Make file writeable
      return unlink($dir);
    }
    foreach (scandir($dir) as $item) {
