@@ -208,7 +208,9 @@ function drush_set_config_special_contexts(&$options) {
     foreach ($special_contexts as $option_name) {
       if (isset($options[$option_name])) {
         $cache =& drush_get_context($option_name);
-        $cache = array_merge($cache, $options[$option_name]);
+        foreach ($options[$option_name] as $name => $option) {
+          $cache[$name] = array_merge(isset($cache[$name]) ? $cache[$name] : array(), $option);
+        }
         unset($options[$option_name]);
       }
     }
