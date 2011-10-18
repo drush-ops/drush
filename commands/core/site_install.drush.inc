@@ -89,7 +89,12 @@ function drush_core_pre_site_install($profile = NULL) {
   }
   // The Drupal 6 installer needs to bootstrap up to the specified site.
   // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
-  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+  if (drush_drupal_major_version() == 6) {
+    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+  }
+  elseif ($sites_subdir != 'default') {
+    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+  }
 
   // Add a files dir if needed
   if (!file_exists($files)) {
