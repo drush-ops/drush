@@ -732,6 +732,11 @@ function drush_core_quick_drupal() {
   }
   drush_invoke('site-install', array(drush_get_option('profile')));
   // Log in with the admin user.
+  // TODO: If site-install is given a sites-subdir other than 'default',
+  // then it will bootstrap to DRUSH_BOOTSTRAP_DRUPAL_SITE get the installer 
+  // to recognize the desired site directory. This somehow interferes
+  // with our desire to bootstrap to DRUSH_BOOTSTRAP_DRUPAL_LOGIN here.
+  // We could do the last few steps in a new process iff uri is not 'default'.
   drush_set_option('user', '1');
   if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_LOGIN)) {
     return drush_set_error('QUICK_DRUPAL_INSTALL_FAIL', 'Drupal core install failed.');
