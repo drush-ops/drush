@@ -64,7 +64,7 @@ batch: FAIR. Implicit by siteUpgradeTest.
 bootstrap:
 command: FAIR
 complete: GOOD
-context: FAIR
+context: FAIR. Many functions implicitly tested. Option merging (config, include, alias-path) not tested.
 drush: NONE.
 environment
 sitealias. FAIR. Explicit test for alias lists. Single aliases implicitly tested by contextTest.
