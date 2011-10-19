@@ -93,9 +93,10 @@ function drush_context_names() {
  *   The keys are the 'context' of the files, the values are the file
  *   system locations.
  */
-function _drush_config_file($context, $prefix = NULL) {
+function _drush_config_file($context, $prefix = NULL, $version = '') {
   $configs = array();
-  $config_file = $prefix ? $prefix . '.' . 'drushrc.php' : 'drushrc.php';
+  $base_name = 'drush' . $version . 'rc.php';
+  $config_file = $prefix ? $prefix . '.' . $base_name : $base_name;
 
   // Did the user explicitly specify a config file?
   if ($config_list = (array)drush_get_context('DRUSH_CONFIG')) {
@@ -140,6 +141,7 @@ function _drush_config_file($context, $prefix = NULL) {
  */
 function drush_load_config($context) {
   drush_load_config_file($context, _drush_config_file($context));
+  drush_load_config_file($context, _drush_config_file($context, '', DRUSH_MAJOR_VERSION));
 }
 
 function drush_load_config_file($context, $config_list) {

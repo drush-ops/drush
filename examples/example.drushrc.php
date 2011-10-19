@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Examples of valid statements for a drushrc.php file. Use this file to cut down on
- * typing of options and avoid mistakes.
+ * Examples of valid statements for a drushrc.php file. Use this file to
+ * cut down on typing of options and avoid mistakes.
  *
  * Rename this file to drushrc.php and optionally copy it to one of
  * five convenient places, listed below in order of precedence:
@@ -17,6 +17,13 @@
  * If a configuration file is found in any of the above locations, it
  * will be loaded and merged with other configuration files in the
  * search list.
+ *
+ * If you have some configuration options that are specific to a
+ * particular version of drush, then you may place them in a file
+ * called drush5rc.php.  The version-specific file is loaded in
+ * addtion to, and after, the general-purpose drushrc.php file.
+ * Version-specific configuration files can be placed in any of the
+ * locations specified above.
  *
  * IMPORTANT NOTE on configuration file loading:
  *
@@ -88,6 +95,10 @@
 // other configuration files.  On the command line, paths can be separated
 // by : (Unix-based systems) or ; (Windows).
 # $options['include'] = array('/path/to/commands','/path2/to/more/commands');
+
+// Specify modules to ignore when searching for *.drush.inc files
+// inside a Drupal site
+# $options['ignored-modules'] = array('module1', 'module2');
 
 // Specify directories to search for *.alias.drushrc.php and 
 // *.aliases.drushrc.php files.  Always merged with alias paths

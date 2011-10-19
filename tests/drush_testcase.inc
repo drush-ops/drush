@@ -280,6 +280,17 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     return $this->execute(implode(' ', $exec));
   }
 
+  function drush_major_version() {
+    static $major;
+
+    if (!isset($major)) {
+      $this->drush('version', array('drush_version'), array('pipe' => NULL));
+      $version = $this->getOutput();
+      list($major) = explode('.', $version);
+    }
+    return $major;
+  }
+
   // Copied from D7 - profiles/standard/standard.install
   function create_node_types_php() {
     $php = "
@@ -355,6 +366,10 @@ abstract class Drush_UnitTestCase extends Drush_TestCase {
   public static function tearDownAfterClass() {
     parent::tearDownAfterClass();
     drush_bootstrap_finish();
+  }
+
+  function drush_major_version() {
+    return DRUSH_MAJOR_VERSION;
   }
 }
 

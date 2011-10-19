@@ -353,6 +353,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['choice']              = array('description' => "Provide an answer to a multiple-choice prompt.");
     $options['variables']           = array('description' => "Comma delimited list of name=value pairs. These values take precedence even over settings.php variable overrides.");
     $options['search-depth']        = array('description' => "Control the depth that drush will search for alias files.");
+    $options['ignored-modules']     = array('description' => "Exclude some modules from consideration when searching for drush command files.");
     $options['no-label']            = array('description' => "Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
     $options['nocolor']             = array('context' => 'DRUSH_NOCOLOR', 'description' => "Suppress color highlighting on log messages.");
     $options['show-passwords']      = array('description' => "Show database passwords in commands that display connection information.");

@@ -962,6 +962,8 @@ function drush_bootstrap_prepare() {
 
   $drush_info = drush_read_drush_info();
   define('DRUSH_VERSION', $drush_info['drush_version']);
+  $version_parts = explode('.', DRUSH_VERSION);
+  define('DRUSH_MAJOR_VERSION', $version_parts[0]);
 
   define('DRUSH_REQUEST_TIME', microtime(TRUE));
 

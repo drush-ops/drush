@@ -257,7 +257,7 @@ function _drush_verify_cli_options($command) {
     $implemented = drush_get_commands();
     foreach ($command['allow-additional-options'] as $subcommand_name) {
       if (array_key_exists($subcommand_name, $implemented)) {
-	$options = array_merge($options, _drush_get_command_options($implemented[$subcommand_name])); 
+	$options = array_merge($options, _drush_get_command_options($implemented[$subcommand_name]));
       }
     }
   }
@@ -1075,7 +1075,8 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
     case DRUSH_BOOTSTRAP_DRUPAL_FULL:
       // Add enabled module paths. Since we are bootstrapped,
       // we can use the Drupal API.
-      foreach (module_list() as $module) {
+      $ignored_modules = drush_get_option_list('ignored-modules', array());
+      foreach (array_diff(module_list(), $ignored_modules) as $module) {
         $filename = drupal_get_filename('module', $module);
         $searchpath[] = dirname($filename);
       }
@@ -1114,7 +1115,8 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       // Scan for drush command files; add to list for consideration if found.
       foreach (array_unique($searchpath) as $path) {
         if (is_dir($path)) {
-          $files = drush_scan_directory($path, '/\.drush\.inc$/', array('.', '..', 'examples', 'tests', 'disabled', 'gitcache'));
+          $nomask = array_merge(drush_filename_blacklist(), drush_get_option_list('ignored-modules'));
+          $files = drush_scan_directory($path, '/\.drush(' . DRUSH_MAJOR_VERSION . '|)\.inc$/', $nomask);
           foreach ($files as $filename => $info) {
             $module = basename($filename, '.drush.inc');
             // Only try to bootstrap modules that we have never seen before, or that we
@@ -1172,6 +1174,13 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       ksort($cache);
     }
   }
+}
+
+/**
+ * Substrings to ignore during commandfile searching.
+ */
+function drush_filename_blacklist() {
+  return array_diff(array('.', '..', 'examples', 'tests', 'disabled', 'gitcache', 'drush4', 'drush5', 'drush6', 'drush7'), array('drush' . DRUSH_MAJOR_VERSION));
 }
 
 /**

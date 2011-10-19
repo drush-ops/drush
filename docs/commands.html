@@ -40,6 +40,10 @@ Drush searches for commandfiles in the following locations:
 <li>The ".drush" folder in the user's HOME folder.
 
 <li>All modules in the current Drupal installation
+
+<li>Folders and files containing other versions of drush in their names will
+be *skipped* (e.g. devel.drush4.inc or drush4/devel.drush.inc).  Names
+containing the current version of drush (e.g. devel.drush5.inc) will be loaded.</li>
 </ul> <p>
 Note that modules in the current Drupal installation will only
 be considered if drush has bootstrapped to at least the DRUSH_BOOSTRAP_SITE

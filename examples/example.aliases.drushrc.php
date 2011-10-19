@@ -47,6 +47,11 @@
  *      or any local Drupal site indicated by an alias used as
  *      a parameter to a command
  *
+ * Folders and files containing other versions of drush in their names will
+ * be *skipped* (e.g. mysite.aliases.drush4rc.php or drush4/mysite.aliases.drushrc.php).
+ * Names containing the current version of drush (e.g. mysite.aliases.drush5rc.php)
+ * will be loaded.
+ *
  * Files stored in these locations can be used to create aliases
  * to local and remote Drupal installations.  These aliases can be
  * used in place of a site specification on the command line, and
