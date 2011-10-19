@@ -18,7 +18,7 @@ class commandUnitCase extends Drush_UnitTestCase {
       $path .  "/drush$major_plus1/drush$major_plus1.drush.inc",
     );
     mkdir($path . '/drush' . $major);
-    mkdir($path . '/drush999');
+    mkdir($path . '/drush' . $major_plus1);
     foreach ($files as $file) {
       $contents = <<<EOD
 <?php
