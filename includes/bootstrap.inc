@@ -499,12 +499,12 @@ function _drush_bootstrap_drush() {
     }
   }
 
-  $backend = drush_set_context('DRUSH_BACKEND', drush_get_option(array('b', 'backend')));
+  $backend = drush_set_context('DRUSH_BACKEND', drush_get_option('backend'));
 
   // Pipe implies quiet.
-  $quiet = drush_set_context('DRUSH_QUIET', drush_get_option(array('q', 'quiet', 'p', 'pipe')));
+  $quiet = drush_set_context('DRUSH_QUIET', drush_get_option(array('quiet', 'pipe')));
 
-  drush_set_context('DRUSH_PIPE', drush_get_option(array('p', 'pipe')));
+  drush_set_context('DRUSH_PIPE', drush_get_option('pipe'));
 
   if ($backend) {
     // Load options passed as a JSON encoded string through STDIN.
@@ -547,7 +547,7 @@ function _drush_bootstrap_drush() {
  * site to be bootstrapped.
  */
 function _drush_bootstrap_select_drupal_site() {
-  $drupal_root = drush_get_option(array('r', 'root'));
+  $drupal_root = drush_get_option('root');
   if (!isset($drupal_root)) {
     $drupal_root = drush_locate_root();
   }
@@ -578,21 +578,27 @@ function _drush_bootstrap_base_environment() {
   if (!file_exists(DRUSH_BASE_PATH . '/README.txt') && file_exists(drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush') . '/README.txt') {
     drush_set_context('DOC_PREFIX', drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush');
   }
+  $alias_path =& drush_get_context('ALIAS_PATH');
+  $alias_path[] = drush_get_context('ETC_PREFIX', '') . '/etc/drush';
+  $alias_path[] = dirname(__FILE__) . '/..';
+  if(!is_null(drush_server_home())) {
+    $alias_path[] = drush_server_home() . '/.drush';
+  }
 }
 
 function _drush_bootstrap_global_options() {
   // Debug implies verbose
-  drush_set_context('DRUSH_VERBOSE',     drush_get_option(array('v', 'verbose', 'd', 'debug'), FALSE));
-  drush_set_context('DRUSH_DEBUG', drush_get_option(array('d', 'debug')));
+  drush_set_context('DRUSH_VERBOSE',     drush_get_option(array('verbose', 'debug'), FALSE));
+  drush_set_context('DRUSH_DEBUG', drush_get_option('debug'));
 
   // Backend implies affirmative unless negative is explicitly specified
-  drush_set_context('DRUSH_NEGATIVE',    drush_get_option(array('n', 'no'), FALSE));
-  drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('y', 'yes'), FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
-  drush_set_context('DRUSH_SIMULATE',    drush_get_option(array('s', 'simulate'), FALSE));
+  drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));
+  drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option('yes', FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
+  drush_set_context('DRUSH_SIMULATE',    drush_get_option('simulate', FALSE));
 
   // Suppress colored logging if --nocolor option is explicitly given or if
   // terminal does not support it.
-  $nocolor = (drush_get_option(array('nocolor'), FALSE));
+  $nocolor = (drush_get_option('nocolor', FALSE));
   if (!$nocolor) {
     // Check for colorless terminal.  If there is no terminal, then
     // 'tput colors 2>&1' will return "tput: No value for $TERM and no -T specified",
@@ -657,7 +663,7 @@ function _drush_bootstrap_drupal_root() {
  * or the cwd.
  */
 function _drush_bootstrap_selected_uri() {
-  $uri = drush_get_option(array('l', 'uri'));
+  $uri = drush_get_option('uri');
   if (!isset($uri)) {
     $site_path = drush_site_path();
     $elements = explode('/', $site_path);
@@ -892,7 +898,7 @@ function _drush_bootstrap_drupal_full() {
  * username or user id.
  */
 function _drush_bootstrap_drupal_login() {
-  $drush_user = drush_set_context('DRUSH_USER', drush_get_option(array('u', 'user'), 0));
+  $drush_user = drush_set_context('DRUSH_USER', drush_get_option('user', 0));
 
   drush_drupal_login($drush_user);
   _drush_log_drupal_messages();

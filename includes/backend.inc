@@ -557,14 +557,20 @@ function _drush_backend_get_global_contexts($site_record) {
   $result = array();
   $global_option_list = drush_get_global_options(FALSE);
   foreach ($global_option_list as $global_key => $global_metadata) {
-    if ((is_array($global_metadata)) && (array_key_exists('context', $global_metadata))) {
-      // If the context is declared to be a 'local-context-only',
-      // then only put it in if this is a local dispatch.
-      if (!array_key_exists('local-context-only', $global_metadata) || !array_key_exists('remot-host', $site_record)) {
-        $value = drush_get_context($global_metadata['context'], array());
-        if (!empty($value)) {
-          $result[$global_key] = $value;
+    if (is_array($global_metadata)) {
+      $value = '';
+      if ((array_key_exists('propagate-cli-value', $global_metadata))) {
+        $value = drush_get_option($global_key, '', 'cli');
+      }
+      elseif ((array_key_exists('context', $global_metadata))) {
+        // If the context is declared to be a 'local-context-only',
+        // then only put it in if this is a local dispatch.
+        if (!array_key_exists('local-context-only', $global_metadata) || !array_key_exists('remot-host', $site_record)) {
+          $value = drush_get_context($global_metadata['context'], array());
         }
+      }
+      if (!empty($value)) {
+        $result[$global_key] = $value;
       }
     }
   }
@@ -593,11 +599,20 @@ function _drush_backend_classify_options($command_options, $backend_options) {
   $drush_global_options = array();
   foreach ($command_options as $key => $value) {
     $global = array_key_exists($key, $global_option_list);
-    $propagate = TRUE;
+    $propagate = !is_array($value);
     $special = FALSE;
     if ($global) {
       $propagate = (!array_key_exists('never-propagate', $global_option_list[$key]));
       $special = (array_key_exists('never-post', $global_option_list[$key]));
+      if ($propagate) {
+        // We will allow 'merge-list' contexts to be propogated.  Right now
+        // these are all 'local-context-only' options; if we allowed them to
+        // propogate remotely, then we would need to get the right path separator
+        // for the remote machine.
+        if (is_array($value) && array_key_exists('merge-list', $global_option_list[$key])) {
+          $value = implode(PATH_SEPARATOR, $value);
+        }
+      }
     }
     // Just remove options that are designated as non-propagating
     if ($propagate === TRUE) {

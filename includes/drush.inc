@@ -312,17 +312,26 @@ function _convert_csv_to_array($args) {
  *   elements for each item are:
  *
  *     - short-form: The shortcut form for specifying the key on the commandline.
+ *     - context: The drush context where the value of this item is cached.  Used
+ *       by backend invoke to propagate values set in code.
  *     - never-post: If TRUE, backend invoke will never POST this item's value
  *       on STDIN; it will always be sent as a commandline option.
  *     - never-propagate: If TRUE, backend invoke will never pass this item on
  *       to the subcommand being executed.
- *     - context: The drush context where the value of this item is cached.  Used
- *       by backend invoke to propagate values set in code.
+ *     - local-context-only: Backend invoke will only pass this value on for local calls.
+ *     - merge-list: For options such as --include and --config, make a merged list
+ *       of all of the values specified for all of the contexts (config files) where
+ *       the option is defined.  The value is stored in the specified 'context'.
+ *     - merge-associative: Like 'merge-list', but key values are preserved.
+ *     - propagate-cli-value: Used to tell backend invoke to include the value for
+ *       this item as specified on the cli.  This can either override 'context'
+ *       (e.g., propagate --include from cli value instead of DRUSH_INCLUDE context),
+ *       or for an independent global setting (e.g. --user)
  *     - description: The help text for this item. displayed by `drush help`.
  */
 function drush_get_global_options($brief = FALSE) {
-  $options['root']               = array('short-form' => 'r', 'never-post' => TRUE, 'description' => "Drupal root directory to use (default: current directory).", 'example-value' => '<path>');
-  $options['uri']                = array('short-form' => 'l', 'never-post' => TRUE, 'description' => 'URI of the drupal site to use (only needed in multisite environments or when running on an alternate port).', 'example-value' => 'http://example.com:8888');
+  $options['root']               = array('short-form' => 'r', 'short-has-arg' => TRUE, 'never-post' => TRUE, 'description' => "Drupal root directory to use (default: current directory).", 'example-value' => '<path>');
+  $options['uri']                = array('short-form' => 'l', 'short-has-arg' => TRUE, 'never-post' => TRUE, 'description' => 'URI of the drupal site to use (only needed in multisite environments or when running on an alternate port).', 'example-value' => 'http://example.com:8888');
   $options['verbose']            = array('short-form' => 'v', 'context' => 'DRUSH_VERBOSE', 'description' => 'Display extra information about the command.');
   $options['debug']              = array('short-form' => 'd', 'context' => 'DRUSH_DEBUG', 'description' => 'Display even more information, including internal messages.');
   $options['yes']                = array('short-form' => 'y', 'context' => 'DRUSH_AFFIRMATIVE', 'description' => "Assume 'yes' as answer to all prompts.");
@@ -332,13 +341,13 @@ function drush_get_global_options($brief = FALSE) {
   $options['help']               = array('short-form' => 'h', 'description' => "This help system.");
   $options['version']            = array('description' => "Show drush version.");
   $options['php']                = array('description' => "The absolute path to your PHP intepreter, if not 'php' in the path.");
-  $options['ia']                 = array('description' => "Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).");
+  $options['interactive']        = array('short-form' => 'ia', 'description' => "Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).");
 
   if (!$brief) {
     $options['quiet']               = array('short-form' => 'q', 'description' => 'Suppress non-error messages.');
-    $options['include']             = array('short-form' => 'i', 'context' => 'DRUSH_INCLUDE', 'local-context-only' => TRUE, 'description' => "A list of additional directory paths to search for drush commands.");
-    $options['config']              = array('short-form' => 'c', 'description' => "Specify an additional config file to load. See example.drushrc.php.");
-    $options['user']                = array('short-form' => 'u', 'description' => "Specify a Drupal user to login with. May be a name or a number.");
+    $options['include']             = array('short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'local-context-only' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-list' => TRUE, 'description' => "A list of additional directory paths to search for drush commands.");
+    $options['config']              = array('short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'local-context-only' => TRUE, 'merge-list' => TRUE, 'description' => "Specify an additional config file to load. See example.drushrc.php.");
+    $options['user']                = array('short-form' => 'u', 'short-has-arg' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specify a Drupal user to login with. May be a name or a number.");
     $options['backend']             = array('short-form' => 'b', 'never-propagate' => TRUE, 'description' => "Hide all output and return structured data (internal use only).");
     $options['invoke']              = array('hidden' => TRUE, 'description' => 'Invoked from a script; skip option verification.');
     $options['choice']              = array('description' => "Provide an answer to a multiple-choice prompt.");
@@ -352,7 +361,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['cache-default-class'] = array('description' => "A cache backend class that implements DrushCacheInterface.");
     $options['cache-class-<bin>']   = array('description' => "A cache backend class that implements DrushCacheInterface to use for a specific cache bin.");
     $options['early']               = array('description' => "Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename). The function is called pre-bootstrap and offers an opportunity to alter the drush bootstrap environment or process (returning FALSE from the function will continue the bootstrap), or return output very rapidly (e.g. from caches). See includes/complete.inc for an example.");
-    $options['alias-path']          = array('description' => "Specifies the list of paths where drush will search for alias files. Array only.");
+    $options['alias-path']          = array('context' => 'ALIAS_PATH', 'local-context-only' => TRUE, 'merge-list' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specifies the list of paths where drush will search for alias files. Separate paths with ':'.");
     $options['backup-location']     = array('description' => "Specifies the directory where drush will store backups.");
     $options['complete-debug']      = array('hidden' => TRUE, 'description' => "Turn on debug mode forf completion code");
     $options['php-options']         = array('description' => "Options to pass to php when running drush.  Only effective when using the `drush` script.");
@@ -363,6 +372,9 @@ function drush_get_global_options($brief = FALSE) {
     $options['site-list']           = array('hidden' => TRUE, 'description' => 'List of sites to run commands on. Managed by site alias.');
     $options['reserve-margin']      = array('hidden' => TRUE, 'description' => 'Remove columns from formatted opions. Managed by multi-site command handling.');
     $options['strict']              = array('hidden' => TRUE, 'description' => 'Check requirements more strictly / remove backwards-compatibility features for unit tests.');
+    $options['command-specific']    = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'Command-specific options.');
+    $options['site-aliases']        = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'List of site aliases.');
+    
 
     $command = array(
       'options' => $options,
@@ -909,7 +921,7 @@ function drush_lib_fetch($url) {
  *   TRUE if the command was handled remotely.
  */
 function drush_remote_command() {
-  $interactive = drush_get_option(array('interactive','ia'), FALSE);
+  $interactive = drush_get_option('interactive', FALSE);
 
   // The command will be executed remotely if the --remote-host flag
   // is set; note that if a site alias is provided on the command line,
@@ -1090,7 +1102,7 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
     }
   }
   $backend_options = array('drush-script' => $drush_path, 'remote-host' => $remote_host, 'remote-user' => $remote_user, 'integrate' => TRUE);
-  if (drush_get_option(array('interactive', 'ia'))) {
+  if (drush_get_option('interactive')) {
     $backend_options['interactive'] = TRUE;
   }
 

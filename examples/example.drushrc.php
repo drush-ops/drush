@@ -83,13 +83,17 @@
 // Specify Git clones for drupal.org extensions.
 # $options['package-handler'] = 'git_drupalorg';
 
-// Specify additional directories to search for *.drush.inc files
-// Separate by : (Unix-based systems) or ; (Windows).
-# $options['i'] = 'sites/default:profiles/myprofile';
+// Specify additional directories to search for *.drush.inc files.
+// Always merged with include paths defined on the commandline or in 
+// other configuration files.  On the command line, paths can be separated
+// by : (Unix-based systems) or ; (Windows).
+# $options['include'] = array('/path/to/commands','/path2/to/more/commands');
 
-// Specify additional directories to search for *.alias.drushrc.php
-// and *.aliases.drushrc.php files
-# $options['alias-path'] = '/path/to/aliases:/path2/to/more/aliases';
+// Specify directories to search for *.alias.drushrc.php and 
+// *.aliases.drushrc.php files.  Always merged with alias paths
+// defined on the commandline or in other configuration files.
+// On the command line, paths can be separated by : (Unix-based systems) or ; (Windows).
+# $options['alias-path'] = array('/path/to/aliases','/path2/to/more/aliases');
 
 // Specify directory where sql-sync will store persistent dump files.
 // Keeping the dump files around will improve the performance of rsync
@@ -234,5 +238,6 @@
 #if (!empty($output)) {
 #  $repo = $output[0];
 #  $options['config'] = $repo . '/../drush/drushrc.php';
-#  $options['include'] = $repo . '/../drush';
+#  $options['include'] = $repo . '/../drush/commands';
+#  $options['alias-path'] = $repo . '/../drush/aliases';
 #}

@@ -98,11 +98,13 @@ function _drush_config_file($context, $prefix = NULL) {
   $config_file = $prefix ? $prefix . '.' . 'drushrc.php' : 'drushrc.php';
 
   // Did the user explicitly specify a config file?
-  if ($config = drush_get_option(array('c', 'config'))) {
-    if (is_dir($config)) {
-      $config = $config . '/drushrc.php';
+  if ($config_list = (array)drush_get_context('DRUSH_CONFIG')) {
+    foreach ($config_list as $config) {
+      if (is_dir($config)) {
+        $config = $config . '/drushrc.php';
+      }
+      $configs['custom'][] = $config;
     }
-    $configs['custom'] = $config;
   }
 
   if ($drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT')) {
@@ -140,24 +142,26 @@ function drush_load_config($context) {
   drush_load_config_file($context, _drush_config_file($context));
 }
 
-function drush_load_config_file($context, $config) {
-  if (file_exists($config)) {
-    $options = $aliases = $command_specific = $override = array();
-    drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
-    $ret = @include_once($config);
-    if ($ret === FALSE) {
-      drush_log(dt('Cannot open drushrc "!config", ignoring.', array('!config' => realpath($config))), 'warning');
-      return FALSE;
-    }
-    if (!empty($options) || !empty($aliases) || !empty($command_specific)) {
-      $options = array_merge(drush_get_context($context), $options);
-      $options['config-file'] = realpath($config);
+function drush_load_config_file($context, $config_list) {
+  foreach ((array)$config_list as $config) {
+    if (file_exists($config)) {
+      $options = $aliases = $command_specific = $override = array();
+      drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
+      $ret = @include_once($config);
+      if ($ret === FALSE) {
+        drush_log(dt('Cannot open drushrc "!config", ignoring.', array('!config' => realpath($config))), 'warning');
+        return FALSE;
+      }
+      if (!empty($options) || !empty($aliases) || !empty($command_specific)) {
+        $options = array_merge(drush_get_context($context), $options);
+        $options['config-file'] = realpath($config);
 
-      //$options['site-aliases'] = array_merge(isset($aliases) ? $aliases : array(), isset($options['site-aliases']) ? $options['site-aliases'] : array());
-      unset($options['site-aliases']);
-      $options['command-specific'] = array_merge(isset($command_specific) ? $command_specific : array(), isset($options['command-specific']) ? $options['command-specific'] : array());
+        //$options['site-aliases'] = array_merge(isset($aliases) ? $aliases : array(), isset($options['site-aliases']) ? $options['site-aliases'] : array());
+        unset($options['site-aliases']);
+        $options['command-specific'] = array_merge(isset($command_specific) ? $command_specific : array(), isset($options['command-specific']) ? $options['command-specific'] : array());
 
-      drush_set_config_options($context, $options, $override);
+        drush_set_config_options($context, $options, $override);
+      }
     }
   }
 }
@@ -188,7 +192,7 @@ function drush_set_config_options($context, $options, $override = array()) {
  * all of them into their own context so that this does not happen.
  */
 function drush_set_config_special_contexts(&$options) {
-  if (isset($options)) {
+  if (isset($options) && is_array($options)) {
     $has_command_specific = array_key_exists('command-specific', $options);
     // Change the keys of the site aliases from 'alias' to '@alias'
     if (array_key_exists('site-aliases', $options)) {
@@ -202,18 +206,51 @@ function drush_set_config_special_contexts(&$options) {
       }
     }
 
-    // Copy site aliases and command-specific options into their
-    // appropriate caches.
-    $special_contexts = drush_get_special_keys();
-    foreach ($special_contexts as $option_name) {
-      if (isset($options[$option_name])) {
-        $cache =& drush_get_context($option_name);
-        foreach ($options[$option_name] as $name => $option) {
-          $cache[$name] = array_merge(isset($cache[$name]) ? $cache[$name] : array(), $option);
+    foreach (drush_get_global_options() as $name => $info) {
+      if (is_array($info)) {
+        // For any option with a short form, check to see if the short form was set in the
+        // options.  If it was, then rename it to its long form.
+        if (array_key_exists('short-form', $info) && array_key_exists($info['short-form'], $options)) {
+          if (!array_key_exists($name, $options)) {
+            $options[$name] = $options[$info['short-form']];
+          }
+          else {
+            $options[$name] = array_merge((array)$options[$name], (array)$options[$info['short-form']]);
+          }
+          unset($options[$info['short-form']]);
         }
-        unset($options[$option_name]);
+        // For any global option with the 'merge-list' or 'merge-associative' flag, set its
+        // value in the specified context.  The option is 'merged' because we
+        // load $options with the value from the context prior to including the
+        // configuration file.  If the configuration file sets $option['special'][] = 'value',
+        // then the configuration will be merged.  $option['special'] = array(...), on the
+        // other hand, will replace rather than merge the values together.
+        if ((array_key_exists($name, $options)) && (array_key_exists('merge-list', $info) || array_key_exists('merge-associative', $info))) {
+          $context = array_key_exists('context', $info) ? $info['context'] : $name;
+          $cache =& drush_get_context($context);
+          $value = $options[$name];
+          if (!is_array($value)) {
+            $value = explode(PATH_SEPARATOR, $value);
+          }
+          if (array_key_exists('merge-associative', $info)) {
+            foreach ($value as $subkey => $subvalue) {
+              $cache[$subkey] = array_merge(isset($cache[$subkey]) ? $cache[$subkey] : array(), $subvalue);
+            }
+          }
+          else {
+            $cache = array_merge($cache, $value);
+          }
+          // Once we have moved the option to its special context, we
+          // can remove it from its option context -- unless 'propagate-cli-value'
+          // is set, in which case we need to let it stick around in options
+          // in case it is needed in backend invoke.
+          if (!array_key_exists('propagate-cli-value', $info)) {
+            unset($options[$name]);
+          }
+        }
       }
     }
+
     // If command-specific options were set and if we already have
     // a command, then apply the command-specific options immediately.
     if ($has_command_specific) {
@@ -559,6 +596,9 @@ function drush_unset_option($option, $context = NULL) {
  */
 function drush_save_config($context) {
   $filename = _drush_config_file($context);
+  if (is_array($filename)) {
+    $filename = $filename[0];
+  }
 
   if ($filename) {
     $cache = drush_get_context($context);

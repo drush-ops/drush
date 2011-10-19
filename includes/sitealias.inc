@@ -288,16 +288,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
     if (isset($drupal_root)) {
       $site_paths[] = $drupal_root;
     }
-    $alias_path = (array) drush_get_option('alias-path', array());
-    if (empty($alias_path)) {
-      $alias_path[] = drush_get_context('ETC_PREFIX', '') . '/etc/drush';
-      $alias_path[] = dirname(__FILE__) . '/..';
-      $alias_path[] = dirname(__FILE__) . '/../aliases';
-      if(!is_null(drush_server_home())) {
-        $alias_path[] = drush_server_home() . '/.drush';
-      }
-    }
-
+    $alias_path = (array) drush_get_context('ALIAS_PATH', array());
     return array_unique(array_merge($alias_path, $site_paths));
   }
 }
@@ -498,7 +489,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
               _drush_sitealias_initialize_alias_record($aliases[$name]);
             }
 
-            $result = array_merge($result, $aliases);
+            $result = _sitealias_array_merge($result, $aliases);
             $alias_recorded = TRUE;
           }
         }
@@ -506,8 +497,10 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
         // only the named alias into the alias cache
         elseif ((isset($aliases)) && array_key_exists($aliasname, $aliases)) {
           drush_set_config_special_contexts($options); // maybe unnecessary
-          $result = array_merge($options, $aliases[$aliasname]);
-          _drush_sitealias_initialize_alias_record($result);
+          $one_result = array_merge($options, $aliases[$aliasname]);
+          _drush_sitealias_initialize_alias_record($one_result);
+          // Merge together the two alias records, favoring the values found first
+          $result = array_merge($one_result, $result);
           $alias_recorded = TRUE;
         }
         // If we found at least one alias from this file
@@ -520,6 +513,23 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
           drush_set_context('drush-alias-files', $drush_alias_files);
         }
       }
+    }
+  }
+
+  return $result;
+}
+
+// array_merge_recursive is too much; we only want to run
+// array_merge on the common top-level keys of the array.
+function _sitealias_array_merge($a, $b) {
+  $result = $a;
+
+  foreach($b as $key => $value) {
+    if (array_key_exists($key, $result)) {
+      $result[$key] = array_merge($result[$key], $b[$key]);
+    }
+    else {
+      $result[$key] = $value;
     }
   }
 

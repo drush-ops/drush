@@ -448,7 +448,12 @@ function drush_redispatch_get_options() {
  */
 function drush_parse_args() {
   $args = drush_get_context('argv');
-  // TODO: commandfiles should be able to extend this list.
+  // It would be nice if commandfiles could somehow extend this list,
+  // but it is not possible. We need to parse args before we find commandfiles,
+  // because the specified options may affect how commandfiles are located.
+  // Therefore, commandfiles are loaded too late to affect arg parsing.
+  // There are only a limited number of short options anyway; drush reserves
+  // all for use by drush core.
   static $arg_opts = array('c', 'u', 'r', 'l', 'i');
 
   // Check to see if we were executed via a "#!/usr/bin/env drush" script
@@ -512,6 +517,7 @@ function drush_parse_args() {
   drush_process_bootstrap_to_first_arg($arguments);
 
   drush_set_arguments($arguments);
+  drush_set_config_special_contexts($options);
   drush_set_context('cli', $options);
   return $arguments;
 }
@@ -824,7 +830,7 @@ function drush_parse_command() {
   // We have found a command that matches. Set the appropriate values.
   if ($command) {
     // Special case. Force help command if --help option was specified.
-    if (drush_get_option(array('h', 'help'))) {
+    if (drush_get_option('help')) {
       $arguments = array($command['command']);
       $command = $implemented['help'];
       $command['arguments'] = $arguments;
@@ -1010,10 +1016,9 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       $searchpath[] = realpath(dirname(__FILE__) . '/../commands/');
 
       // User commands, specified by 'include' option
-      if ($include = drush_get_option(array('i', 'include'), FALSE)) {
-        // We set the DRUSH_INCLUDE context here for the benefit of backend_invoke
-        drush_set_context('DRUSH_INCLUDE', $include);
-        foreach (explode(PATH_SEPARATOR, $include) as $path) {
+      if ($include = drush_get_context('DRUSH_INCLUDE', FALSE)) {
+        foreach ($include as $path) {
+          drush_log('Include ' . $path, 'notice');
           $searchpath[] = $path;
         }
       }
@@ -1083,6 +1088,9 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
 function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
   static $evaluated = array();
   static $deferred = array();
+
+  $alias_path = (array) drush_get_context('ALIAS_PATH', array());
+  drush_set_context('ALIAS_PATH', array_unique(array_merge($alias_path, $searchpath)));
 
   $cache =& drush_get_context('DRUSH_COMMAND_FILES', array());
 
