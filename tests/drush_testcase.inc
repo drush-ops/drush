@@ -411,6 +411,8 @@ function unish_init() {
     // UNISH_TMP/drush-cache directory.
     // unish_file_delete_recursive($cache);
   }
+
+  define('UNISH_BACKEND_OUTPUT_DELIMITER', 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END');
 }
 
 /**
@@ -442,15 +444,14 @@ function unish_init() {
 /**
  * A slightly less functional copy of drush_backend_parse_output().
  */
-define('DRUSH_BACKEND_OUTPUT_DELIMITER', 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END');
 function parse_backend_output($string) {
-  $regex = sprintf(DRUSH_BACKEND_OUTPUT_DELIMITER, '(.*)');
+  $regex = sprintf(UNISH_BACKEND_OUTPUT_DELIMITER, '(.*)');
   preg_match("/$regex/s", $string, $match);
   if ($match[1]) {
     // we have our JSON encoded string
     $output = $match[1];
     // remove the match we just made and any non printing characters
-    $string = trim(str_replace(sprintf(DRUSH_BACKEND_OUTPUT_DELIMITER, $match[1]), '', $string));
+    $string = trim(str_replace(sprintf(UNISH_BACKEND_OUTPUT_DELIMITER, $match[1]), '', $string));
   }
 
   if ($output) {
