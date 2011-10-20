@@ -67,7 +67,7 @@ class backendCase extends Drush_CommandTestCase {
    *   - Insures that the drush output appears before the backend output start marker (output is displayed in 'real time' as it is produced).
    */
   function testRealtimeOutput() {
-    $exec = sprintf('%s core-status --backend 2>&1', self::escapeshellarg(UNISH_DRUSH));
+    $exec = sprintf('%s core-status --backend --nocolor 2>&1', self::escapeshellarg(UNISH_DRUSH));
     $this->execute($exec);
 
     $output = $this->getOutput();
