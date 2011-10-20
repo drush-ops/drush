@@ -225,7 +225,7 @@ function core_watchdog_format_result($result, $full = FALSE) {
   if (drush_drupal_major_version() >= 6) {
     $variables = $result->variables;
     if (is_string($variables)) {
-      $variables = unserialize();
+      $variables = unserialize($variables);
     }
     if (is_array($variables)) {
       $result->message = strtr($result->message, $variables);
@@ -337,7 +337,7 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
       $level = $severity;
     }
     elseif (($key = array_search($severity, $severities)) !== FALSE) {
-        $level = $key;
+      $level = $key;
     }
     else {
       $level = FALSE;
