@@ -395,7 +395,8 @@ class DrushFileCache implements DrushCacheInterface {
       }
 
       foreach ($files as $f) {
-        drush_register_file_for_deletion($f);
+        // Delete immediately instead of drush_register_file_for_deletion().
+        unlink($f);
       }
     }
   }
