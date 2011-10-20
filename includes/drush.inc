@@ -362,7 +362,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['search-depth']        = array('description' => "Control the depth that drush will search for alias files.");
     $options['ignored-modules']     = array('description' => "Exclude some modules from consideration when searching for drush command files.");
     $options['no-label']            = array('description' => "Remove the site label that drush includes in multi-site command output(e.g. `drush @site1,@site2 status`).");
-    $options['nocolor']             = array('context' => 'DRUSH_NOCOLOR', 'description' => "Suppress color highlighting on log messages.");
+    $options['nocolor']             = array('context' => 'DRUSH_NOCOLOR', 'propagate-cli-value' => TRUE, 'description' => "Suppress color highlighting on log messages.");
     $options['show-passwords']      = array('description' => "Show database passwords in commands that display connection information.");
     $options['show-invoke']         = array('description' => "Show all function names which could have been called for the current command. See drush_invoke().");
     $options['watchdog']            = array('description' => "Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log.");
