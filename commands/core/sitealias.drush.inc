@@ -32,6 +32,7 @@ function sitealias_drush_command() {
       'no-db' => 'Do not include the database record in the full alias record (default).',
       'with-optional' => 'Include optional default items.',
       'alias-name' => 'For a single alias, set the name to use in the output.',
+      'local' => 'Only display sites that are available on the local system (remote-site not set, and Drupal root exists).',
     ),
     'aliases' => array('sa'),
     'examples' => array(
@@ -124,6 +125,17 @@ function _drush_sitealias_user_specified_list() {
     }
   }
 
+  // Filter out the local sites
+  if (drush_get_option('local', FALSE)) {
+    foreach ($site_list as $site_name => $one_site) {
+      if ( (array_key_exists('remote-site', $one_site)) ||
+           (!array_key_exists('root', $one_site)) ||
+           (!is_dir($one_site['root']))
+         ) {
+        unset($site_list[$site_name]);
+      }
+    }
+  }
   return $site_list;
 }
 

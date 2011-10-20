@@ -24,6 +24,7 @@
 #       dl               - drush pm-download
 #       ev               - drush php-eval
 #       sa               - drush site-alias
+#       sa               - drush site-alias --local (show local site aliases)
 #       st               - drush core-status
 #
 # Aliases for drush commands that work on the current drupal site:
@@ -78,6 +79,7 @@ alias ddd='drush drupal-directory'
 alias dl='drush pm-download'
 alias ev='drush php-eval'
 alias sa='drush site-alias'
+alias lsa='drush site-alias --local'
 alias st='drush core-status'
 
 # Aliases for drush commands that work on the current drupal site
