@@ -51,6 +51,8 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
       ->execute();
     $finished = FALSE;
 
+    global $user;
+
     while (!$finished) {
       if ($user->uid) {
         $data = drush_invoke_process('@self', $command, $args, array($batch['id'], '-u', $user->uid));
