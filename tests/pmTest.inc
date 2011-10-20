@@ -36,7 +36,7 @@ class pmCase extends Drush_UnitTestCase {
     );
 
     // Pick specific release.
-    $release = _pm_download_parse_release($request_data, $xml);
+    $release = updatexml_parse_release($request_data, $xml);
     $this->assertEquals($release['version'], '6.x-1.18');
 
     // Pick latest recommended+published with no further specification.
@@ -46,7 +46,7 @@ class pmCase extends Drush_UnitTestCase {
       'name' => 'devel',
       'drupal_version' => '6.x',
     );
-    $release = _pm_download_parse_release($request_data, $xml);
+    $release = updatexml_parse_release($request_data, $xml);
     $this->assertEquals($release['version'], '6.x-2.1');
   }
 }

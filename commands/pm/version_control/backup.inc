@@ -4,7 +4,7 @@
  * @file Drush pm directory copy backup extension
  */
 
-class drush_pm_version_control_backup implements drush_pm_version_control {
+class drush_version_control_backup implements drush_version_control {
 
   /**
    * Implementation of pre_update().

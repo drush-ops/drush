@@ -106,8 +106,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $final_destination = drush_get_option('destination');
   if (!$final_destination) {
     // No destination provided.
-    drush_include_engine('version_control', 'backup');
-    $backup = new drush_pm_version_control_backup();
+    $backup = drush_include_engine('version_control', 'backup');
     // TODO: this standard drush pattern leads to a slightly obtuse directory structure.
     $dest_dir = $backup->prepare_backup_dir('archive-dump');
     if (empty($dest_dir)) {

@@ -4,7 +4,7 @@
  * @file Drush pm SVN extension
  */
 
-class drush_pm_version_control_svn implements drush_pm_version_control {
+class drush_version_control_svn implements drush_version_control {
 
   /**
    * Implementation of pre_update().

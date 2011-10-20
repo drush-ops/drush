@@ -73,6 +73,7 @@ function drush_pm_download_validate() {
 function drush_pm_download() {
   $package_handler = drush_get_option('package-handler', 'wget');
   drush_include_engine('package_handler', $package_handler);
+  drush_include_engine('release_info', 'updatexml');
 
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
@@ -82,61 +83,10 @@ function drush_pm_download() {
   $requests = pm_parse_project_version($requests);
 
   // Get release history for each request and download the project.
-  $project_types = pm_project_types();
-  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
   foreach ($requests as $name => $request) {
-    $xml = _drush_pm_get_release_history_xml($request);
-    if (!$xml) {
+    $release = release_info_fetch($request);
+    if ($release == FALSE) {
       continue;
-    }
-
-    // Identify the most appropriate release.
-    $release = _pm_download_parse_release($request, $xml);
-    if (!$release) {
-      continue;
-    }
-
-    // Determine what type of project we are to download.
-    $request['project_type'] = 'module';
-    if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
-      $request['project_type'] = array_search($types[0]->value, $project_types);
-    }
-
-    if ($request['project_type'] == 'translation') {
-      drush_set_error('DRUSH_PM_DOWNLOAD_TRANSLATIONS_FORBIDDEN', dt('Drush has dropped support for downloading translation projects. See l10n_update and l10n_install projects.'));
-      continue;
-    }
-
-    // Determine the name of the directory that will contain the project.
-    // We face here all the asymetries to make it smooth for package handlers.
-    // For Drupal core: --drupal-project-rename or drupal-x.y
-    if ($request['project_type'] == 'core') {
-      // Avoid downloading core into existing core.
-      if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
-        if (strpos(realpath(drush_get_option('destination')), DRUPAL_ROOT) !== FALSE) {
-          drush_log(dt('It\'s forbidden to download !project core into an existing core.', array('!project' => $request['name'])), 'error');
-          continue;
-        }
-      }
-
-      if ($rename = drush_get_option('drupal-project-rename', FALSE)) {
-        if ($rename === TRUE) {
-          $request['project_dir'] = 'drupal';
-        }
-        else {
-          $request['project_dir'] = $rename;
-        }
-      }
-      else {
-        // Set to drupal-x.y, the expected name for .tar.gz contents.
-        // Explicitly needed for cvs package handler.
-        $request['project_dir'] = strtolower(strtr($release['name'], ' ', '-'));
-      }
-    }
-    // For the other project types we want the project name. Including core
-    // variant for profiles.  Note those come with drupal-x.y in the .tar.gz.
-    else {
-      $request['project_dir'] = $request['name'];
     }
 
     // Download the project to a temporary location.
@@ -264,68 +214,6 @@ function _pm_download_releases_choice($xml, $project, $all = FALSE, $dev = FALSE
 }
 
 /**
- * Pick most appropriate release from XML list.
- *
- * @param array $request
- *   An array of version specifications as returned by pm_parse_project_version().
- * @param resource $xml
- *   A handle to the XML document.
- */
-function _pm_download_parse_release($request, $xml) {
-  if (!empty($request['version'])) {
-    $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
-    if (empty($releases)) {
-      drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'warning');
-    }
-  }
-  // If that did not work, we will get the first published release for the
-  // recommended major version.
-  if (empty($releases)) {
-    if ($recommended_major = $xml->xpath("/project/recommended_major")) {
-      $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$recommended_major[0] . "]";
-      $releases = @$xml->xpath($xpath_releases);
-    }
-  }
-  // If there are recommended releases (no 'version_extra' elements), then use
-  // only recommended releases.  Otherwise, use all; in this case, the
-  // recommended release defaults to the latest published release with the
-  // right recommended major version number.
-  $recommended_releases = array();
-  if (!empty($releases)) {
-    foreach ($releases as $one_release) {
-      if (!array_key_exists('version_extra', $one_release)) {
-        $recommended_releases[] = $one_release;
-      }
-    }
-  }
-  if (!empty($recommended_releases)) {
-    $releases = $recommended_releases;
-  }
-  $release_type = 'recommended';
-  if (drush_get_option('dev', FALSE)) {
-    $releases = @$xml->xpath("/project/releases/release[status='published'][version_extra='dev']");
-    $release_type = 'development';
-  }
-  if (drush_get_option('select', FALSE) || empty($releases)) {
-    if (empty($releases)) {
-      drush_print(dt('There is no !type release for project !project.', array('!type' => $release_type, '!project' => $request['name'])));
-    }
-    $options = _pm_download_releases_choice($xml, $request['name'], drush_get_option('all', FALSE), drush_get_option('dev', FALSE));
-    $choice = drush_choice($options, dt('Choose one of the available releases:'));
-    if ($choice) {
-      $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $choice . "']");
-    }
-    else {
-      return FALSE;
-    }
-  }
-
-  // First published release for the recommended major version is just the
-  // first value in $releases.
-  return (array)$releases[0];
-}
-
-/**
  * Implementation of hook_drush_pm_download_destination_alter().
  *
  * Built-in download-destination-alter hook. This particular version of
@@ -370,9 +258,9 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
           // Change the location if the mkdir worked.
           if (is_dir($install_dir)) {
             $project['project_install_location'] = $install_dir;
-	    // We need to clear the drush commandfile cache so that
-	    // our newly-downloaded drush extension commandfiles can be found.
-	    drush_cache_clear_all();
+            // We need to clear the drush commandfile cache so that
+            // our newly-downloaded drush extension commandfiles can be found.
+            drush_cache_clear_all();
           }
         }
       }

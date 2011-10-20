@@ -125,6 +125,9 @@ function drush_get_engines($type) {
  * If the engine type has implemented hook_drush_engine_$type the path to the
  * engine specified in the array will be used.
  *
+ * If a class named in the form drush_$type_$engine exists, it will be an
+ * object of that class will be created and returned.
+ *
  * If you don't need to present any user options for selecting the engine
  * (which is common if the selection is implied by the running environment)
  * and you don't need to allow other modules to define their own engines you can
@@ -144,7 +147,7 @@ function drush_get_engines($type) {
  * @param $path
  *   A path to include from, if the engine has no corresponding
  *   hook_drush_engine_$type item path.
- * @return unknown_type
+ * @return TRUE or instanced object of available class on success. FALSE on fail.
  */
 function drush_include_engine($type, $engine, $version = NULL, $path = NULL) {
   $engines = drush_get_engines($type);
@@ -155,6 +158,10 @@ function drush_include_engine($type, $engine, $version = NULL, $path = NULL) {
     return drush_set_error('DRUSH_ENGINE INCLUDE_NO_PATH', dt('No path was set for including the !type engine !engine.', array('!type' => $type, '!engine' => $engine)));
   }
   if (drush_include($path, $engine, $version)) {
+    $class = 'drush_' . $type . '_' . $engine;
+    if (class_exists($class)) {
+      return new $class();
+    }
     return TRUE;
   }
   return drush_set_error('DRUSH_ENGINE INCLUDE_FAILED', dt('Unable to include the !type engine !engine from !path.' , array('!path' => $path, '!type' => $type, '!engine' => $engine)));
@@ -1613,11 +1620,7 @@ function drush_version_control_reserved_files() {
     $files = array('.git', '.gitignore', '.hg', '.hgignore', '.hgrags');
     $vcs = array_keys(drush_get_engines('version_control'));
     foreach ($vcs as $name) {
-      drush_include_engine('version_control', $name);
-      $class = 'drush_pm_version_control_' . $name;
-      // For php < 5.3 we can't access a static method by referencing the class
-      // using a variable.
-      $version_control = new $class();
+      $version_control = drush_include_engine('version_control', $name);
       $files = array_merge($files, $version_control->reserved_files());
     }
   }

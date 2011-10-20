@@ -4,7 +4,7 @@
  * @file Drush pm Bazaar extension
  */
 
-class drush_pm_version_control_bzr implements drush_pm_version_control {
+class drush_version_control_bzr implements drush_version_control {
 
   /**
    * Implementation of pre_update().
