@@ -12,7 +12,6 @@ function drush_core_site_install_validate() {
     }
     // Make sure that we will bootstrap to the 'sites-subdir' site.
     drush_set_option('uri', 'http://' . $sites_subdir);
-    _drush_bootstrap_select_drupal_site();
   }
 }
 

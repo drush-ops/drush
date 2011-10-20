@@ -255,6 +255,8 @@ function drush_bootstrap_validate($phase) {
     $phases = _drush_bootstrap_phases(TRUE);
   }
   static $phase_index = 0;
+  // Check to see if anyone has changed --root or --uri
+  _drush_bootstrap_select_drupal_site();
   if (!array_key_exists($phase, $result_cache)) {
     drush_set_context('DRUSH_BOOTSTRAP_ERRORS', array());
     drush_set_context('DRUSH_BOOTSTRAP_VALUES', array());
@@ -451,9 +453,6 @@ function _drush_bootstrap_drush() {
   // prime the CWD cache
   drush_cwd();
 
-  // Decide which Drupal site drush will later bootstrap
-  _drush_bootstrap_select_drupal_site();
-
   // Set up base environment for system-wide file locations.
   _drush_bootstrap_base_environment();
 
@@ -554,7 +553,7 @@ function _drush_bootstrap_select_drupal_site() {
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $drupal_root);
   $uri = _drush_bootstrap_selected_uri();
   drush_set_context('DRUSH_SELECTED_URI', $uri);
-  drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_ROOT', drush_conf_path($uri));
+  drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($uri));
 
   if (!empty($drupal_root) && !empty($uri)) {
     // Create an alias '@self'
