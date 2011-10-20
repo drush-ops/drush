@@ -420,12 +420,9 @@ function drush_valid_db_credentials() {
           }
           break;
         case 'pgsql':
-          $conn_string = sprintf("host=%s user=%s dbname=%s", $creds['host'], $creds['user'], $creds['name']);
-          if (!empty($creds['pass'])) {
-            $conn_string .= sprintf(' password=%s', $creds['pass']);
-          }
-          if (!empty($creds['port'])) {
-            $conn_string .= sprintf(' port=%d', $creds['port']);
+          $conn_string = sprintf("host=%s user=%s password=%s dbname=%s", $creds['host'], $creds['user'], $creds['pass'], $creds['name']);
+          if (isset($creds['port'])) {
+            $conn_string .= ' port=' . $creds['port'];
           }
           // Copied from d6's database.pgsql.inc:
           // pg_last_error() does not return a useful error message for database
@@ -694,16 +691,16 @@ function drush_is_local_host($host) {
  * Return the user's home directory.
  */
 function drush_server_home() {
-  $home = NULL;
-  // $_SERVER['HOME'] isn't set on windows and generates a Notice.
-  if (!empty($_SERVER['HOME'])) {
-    $home = $_SERVER['HOME'];
+  // Cannot use $_SERVER superglobal since that's empty during Drush_UnitTestCase
+  // getenv('HOME') isn't set on windows and generates a Notice.
+  $home = getenv('HOME');
+  if (empty($home)) {
+    if (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
+      // home on windows
+      $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
+    }
   }
-  elseif (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
-    // home on windows
-    $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
-  }
-  return $home;
+  return empty($home) ? NULL : $home;
 }
 
 /*
