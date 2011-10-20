@@ -5,8 +5,7 @@ class commandUnitCase extends Drush_UnitTestCase {
    * Assure that matching version-specific command files are loaded and others are ignored.
    */
   function testCommandVersionSpecific() {
-    // Arbitrarily choose the system search path.
-    $path = UNISH_SANDBOX . '/share/drush/commands';
+    $path = UNISH_SANDBOX . '/commandUnitCase';
     $major = $this->drush_major_version();
     $major_plus1 = $major + 1;
 
@@ -17,6 +16,7 @@ class commandUnitCase extends Drush_UnitTestCase {
       $path .  "/$major_plus1.drush$major_plus1.inc",
       $path .  "/drush$major_plus1/drush$major_plus1.drush.inc",
     );
+    mkdir($path);
     mkdir($path . '/drush' . $major);
     mkdir($path . '/drush' . $major_plus1);
     foreach ($files as $file) {
@@ -27,7 +27,7 @@ class commandUnitCase extends Drush_UnitTestCase {
 EOD;
       $return = file_put_contents($file, $contents);
     }
-    drush_cache_clear_all(DRUSH_VERSION . '-commandfiles-', 'default', TRUE); // Not needed?
+    drush_set_context('DRUSH_INCLUDE', array($path));
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUSH);
     $loaded = drush_commandfile_list();
     $this->assertTrue(in_array($files[0], $loaded), 'Loaded a version-specific command file.');
