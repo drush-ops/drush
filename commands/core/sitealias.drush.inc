@@ -51,7 +51,9 @@ function sitealias_drush_command() {
  *  Array of available site aliases.
  */
 function sitealias_sitealias_print_complete() {
-  return array('values' => array_keys(_drush_sitealias_all_list()));
+  $site_specs = array_keys(_drush_sitealias_all_list());
+  ksort($site_specs);
+  return array('values' => $site_specs);
 }
 
 /**
@@ -150,6 +152,7 @@ function drush_sitealias_print() {
   }
 
   $site_list = _drush_sitealias_user_specified_list();
+  ksort($site_list);
   $full_output = drush_get_option('full');
   $long_output = drush_get_option('long');
   $with_db = (drush_get_option('with-db') != null) || (drush_get_option('with-db-url') != null);
@@ -177,6 +180,8 @@ function drush_sitealias_print() {
       drush_print($site);
     }
   }
+  $site_specs = array_unique($site_specs);
+  asort($site_specs);
   drush_print_pipe(array_unique($site_specs));
 }
 
