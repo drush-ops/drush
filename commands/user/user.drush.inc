@@ -528,7 +528,7 @@ function _drush_user_print_info($uid) {
     $userinfo_short['User roles'] = implode(', ', $userinfo->roles);
     $userinfo->status ? $userinfo_short['User status'] = 'active' : $userinfo_short['User status'] = 'blocked';
     drush_print_table(drush_key_value_to_array_table($userinfo_short));
-    drush_print_pipe("$userinfo->name, $userinfo->uid, $userinfo->mail, $userinfo->status, \"" . implode(', ', $userinfo->roles) . "\"\n");
+    drush_print_pipe("$userinfo->name,$userinfo->uid,$userinfo->mail,$userinfo->status,\"" . implode(',', $userinfo->roles) . "\"\n");
   }
 }
 
