@@ -29,9 +29,10 @@ REQUIREMENTS
 
 INSTALLATION
 ============
+The preferred way to install Drush is via our PEAR channel. See
+instructions at http://drupal.org/project/drush. If you prefer a more manual
+install, see below.
 
-STANDARD CONFIGURATION:
------------------------
 1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository
    in a directory that is outside of your web root.
 
@@ -65,7 +66,7 @@ STANDARD CONFIGURATION:
 
   $ which drush
 
-5. Also Optional. See examples/example.bashrc for instructions on how to add some very useful
+5. Optional. See examples/example.bashrc for instructions on how to add some very useful
 shell aliases that provides even tighter integration between drush and bash.
 
 6. Optional. If you didn't source it in Step 5 above, see top of drush.complete.sh
@@ -125,18 +126,6 @@ Running a specific php-cli version for Drush
     export DRUSH_PHP='/path/to/php'
 
 
-Controlling how Drush is called via an bash alias
-- - - - - - - - - - - - - - - - - - - - - - - - - -
-  If you want to exactly control how Drush is called, you may define an alias
-  in your shell configuration file that executes the drush.php file directly and
-  passes that path to Drush. Note that we can pass options to php if we want to,
-  but must also pass them to Drush with the '--php' option. We must also export
-  the columns variable so drush output is properly formatted
-
-    alias drush='/path/to/php -d memory_limit=128M /path/to/drush/drush.php --php="/path/to/php -d memory_limit=128M"'
-    export COLUMNS
-
-
 CONFIGURING PHP.INI
 -------------------
 Usually, php is configured to use separate php.ini files for the web server
@@ -173,7 +162,7 @@ Linux/Unix/OSX using Virtualbox or other virtual machine.
 
 There is a Windows msi installer for drush available at:
 
-    http://drush.ws/drush_windows_installer.
+    http://www.drush.org/drush_windows_installer.
 
 Please see that page for more information on running Drush on Windows.
 
@@ -219,7 +208,6 @@ Related Options:
                                 (defaults to current directory or anywhere in a Drupal directory tree)
   -l <uri> , --uri=<uri>        URI of the Drupal site to use
   -v, --verbose                 Display verbose output.
-  --php                         The absolute path to your php binary.
 
 Very intensive scripts can exhaust your available PHP memory. One remedy is to
 just restart automatically using bash. For example:
