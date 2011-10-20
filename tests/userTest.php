@@ -52,7 +52,7 @@ class userCase extends Drush_TestCase {
     $this->drush('user-information', array($name), $options + array('pipe' => NULL));
     $output = $this->getOutput();
     $row  = str_getcsv($output);
-    $this->assertEquals('authenticated user, administrator', $row[4], 'User has administrator role.');
+    $this->assertEquals('authenticated user,administrator', $row[4], 'User has administrator role.');
 
     // user-remove-role
     $this->drush('user-remove-role', array('administrator', $name), $options);
