@@ -23,6 +23,7 @@ function sitealias_drush_command() {
       'site' => 'Site specification alias to print',
     ),
     'options' => array(
+      'table' => 'Display the alias name, root, uri and host in a table.',
       'full' => 'Print the full alias record for each site.  Default when aliases are specified on the command line.',
       'component' => 'Print only the specified element from the full alias record.',
       'short' => 'Print only the site alias name.  Default when no command line arguments are specified.',
@@ -153,16 +154,27 @@ function drush_sitealias_print() {
 
   $site_list = _drush_sitealias_user_specified_list();
   ksort($site_list);
+  $table_output = drush_get_option('table');
   $full_output = drush_get_option('full');
   $long_output = drush_get_option('long');
   $with_db = (drush_get_option('with-db') != null) || (drush_get_option('with-db-url') != null);
 
   $site_specs = array();
+  $rows = array();
   foreach ($site_list as $site => $alias_record) {
     if (!array_key_exists('site-list', $alias_record)) {
       $site_specs[] = drush_sitealias_alias_record_to_spec($alias_record, $with_db);
     }
-    if (isset($full_output)) {
+    if (isset($table_output)) {
+      $alias_record += array('root' => '', 'uri' => '', 'remote-host' => '');
+      $row = array($site, $alias_record['root'], $alias_record['uri'], $alias_record['remote-host']);
+      if (empty($rows)) {
+        $header = array(dt('Name'), dt('Root'), dt('URI'), dt('Host'));
+        $rows = array($header);
+      }
+      $rows[] = $row;
+    }
+    elseif (isset($full_output)) {
       $component = drush_get_option('component');
       if ($component) {
         if (array_key_exists($component, $alias_record)) {
@@ -183,6 +195,9 @@ function drush_sitealias_print() {
   $site_specs = array_unique($site_specs);
   asort($site_specs);
   drush_print_pipe(array_unique($site_specs));
+  if (!empty($rows)) {
+    drush_print_table($rows, TRUE);
+  }
 }
 
 /**
