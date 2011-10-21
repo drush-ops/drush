@@ -18,6 +18,13 @@
  * will be loaded and merged with other configuration files in the
  * search list.
  *
+ * If you have some configuration options that are specific to a
+ * particular version of drush, then you may place them in a file
+ * called drush5rc.php.  The version-specific file is loaded in
+ * addtion to, and after, the general-purpose drushrc.php file.
+ * Version-specific configuration files can be placed in any of the
+ * locations specified above.
+ *
  * IMPORTANT NOTE on configuration file loading:
  *
  * At its core, drush works by "bootstrapping" the Drupal environment
@@ -83,6 +90,10 @@
 // Specify additional directories to search for *.drush.inc files
 // Separate by : (Unix-based systems) or ; (Windows).
 # $options['i'] = 'sites/default:profiles/myprofile';
+
+// Specify modules to ignore when searching for *.drush.inc files
+// inside a Drupal site
+# $options['ignored-modules'] = array('module1', 'module2');
 
 // Specify additional directories to search for *.alias.drushrc.php
 // and *.aliases.drushrc.php files

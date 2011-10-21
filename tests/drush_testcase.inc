@@ -193,12 +193,25 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       $this->sites[$env]['db_url'] = UNISH_DB_URL . '/unish_' . $env;
     }
     else {
-      mkdir($site);
+      if(!is_dir($site)) {
+        mkdir($site);
+      }
       touch("$site/settings.php");
     }
     // Make an alias for the site
     $alias_definition = array($env => array('root' => $root,  'uri' => $env));
     file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $env . '.alias.drushrc.php', $this->file_aliases($alias_definition));
+  }
+
+  function drush_major_version() {
+    static $major;
+
+    if (!isset($major)) {
+      $this->drush('version', array('drush_version'), array('pipe' => NULL));
+      $version = $this->getOutput();
+      list($major) = explode('.', $version);
+    }
+    return $major;
   }
 
   // Copied from D7 - profiles/standard/standard.install

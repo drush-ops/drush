@@ -438,12 +438,12 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
   // any folder in the alias path.  The directory scan
   // is not deep, though; only files immediately in the
   // search path are considered.
-  $alias_files = array('/.*aliases\.drushrc\.php$/');
+  $alias_files = array('/.*aliases\.drush(' . DRUSH_MAJOR_VERSION . '|)rc\.php$/');
   if ($aliasname == NULL) {
-    $alias_files[] = '/.*\.alias\.drushrc\.php$/';
+    $alias_files[] = '/.*\.alias\.drush(' . DRUSH_MAJOR_VERSION . '|)rc\.php$/';
   }
   else {
-    $alias_files[] = '/' . preg_quote($aliasname, '/') . '\.alias\.drushrc\.php$/';
+    $alias_files[] = '/' . preg_quote($aliasname, '/') . '\.alias\.drush(' . DRUSH_MAJOR_VERSION . '|)rc\.php$/';
   }
 
   // Search each path in turn
@@ -451,7 +451,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
     // Find all of the matching files in this location
     $alias_files_to_consider = array();
     foreach ($alias_files as $file_pattern_to_search_for) {
-      $alias_files_to_consider = array_merge($alias_files_to_consider, array_keys(drush_scan_directory($path, $file_pattern_to_search_for, array('.', '..', 'CVS'), 0, FALSE)));
+      $alias_files_to_consider = array_merge($alias_files_to_consider, array_keys(drush_scan_directory($path, $file_pattern_to_search_for, drush_filename_blacklist(), 0, FALSE)));
     }
 
     // For every file that matches, check inside it for
