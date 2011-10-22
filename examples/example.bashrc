@@ -212,7 +212,7 @@ function gitd() {
     then
       dssh ${s%%:*} cd "$d" \; git "${@:2}"
     else
-      echo cd "$d" ; git "${@:2}"
+      echo cd "$d" \; git "${@:2}"
       (
         cd "$d"
         "$(which git)" "${@:2}"
