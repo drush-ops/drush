@@ -89,7 +89,7 @@ function drush_test_run($specs = NULL) {
     // Run all tests.
     foreach (array_keys($groups) as $group) {
       foreach (array_keys($groups[$group]) as $class) {
-        drush_backend_invoke_args('test-run', array($class), array('--no-all'));
+        drush_invoke_process('@none', 'test-run', array($class), array('--no-all'));
       }
     }
     return;

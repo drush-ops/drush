@@ -919,34 +919,3 @@ function _drush_backend_get_stdin() {
   }
   return FALSE;
 }
-
-/* =========== Deprecated functions below this line: avoid using these ================== */
-
-// For internal use only; use drush_invoke_process() instead.  Future: to be removed.
-function drush_backend_invoke_command($command, $args, $command_options = array(), $backend_options = array()) {
-  return drush_backend_invoke_sitealias_command(drush_backend_generate_sitealias($backend_options), $command, $args, $command_options, $backend_options);
-}
-
-// Use drush_invoke_process() instead of drush_backend_invoke_args.  Future: to be removed.
-function drush_backend_invoke_args($command, $args = array(), $data = array(), $method = 'GET', $integrate = TRUE, $drush_path = NULL, $hostname = NULL, $username = NULL, $ssh_options = NULL) {
-  return drush_backend_invoke_command($command, $args, $data,
-    array(
-      'method' => $method,
-      'integrate' => $integrate,
-      'remote-host' => $hostname,
-      'remote-user' => $username,
-      'ssh-options' => $ssh_options,
-      'drush-script' => $drush_path,
-    )
-  );
-}
-
-// Use drush_invoke_process() instead of drush_backend_invoke_sitealias.  Future: drush_backend_invoke_sitealias to be removed.
-function drush_backend_invoke_sitealias($site_record, $command, $args, $data = array(), $method = 'GET', $integrate = TRUE) {
-  return drush_backend_invoke_sitealias_command($site_record, $command, $args, $data,
-    array(
-      'method' => $method,
-      'integrate' => $integrate,
-    )
-  );
-}
