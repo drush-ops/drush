@@ -1094,9 +1094,6 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
   static $evaluated = array();
   static $deferred = array();
 
-  $alias_path = (array) drush_get_context('ALIAS_PATH', array());
-  drush_set_context('ALIAS_PATH', array_unique(array_merge($alias_path, $searchpath)));
-
   $cache =& drush_get_context('DRUSH_COMMAND_FILES', array());
 
   if (sizeof($searchpath)) {
