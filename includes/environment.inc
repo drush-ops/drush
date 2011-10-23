@@ -737,6 +737,22 @@ function drush_get_extensions() {
 }
 
 /**
+ * Test compatibility of a extension with version of drupal core and php.
+ *
+ * @param $file Extension object as returned by system_rebuild_module_data().
+ * @return TRUE if the extension is incompatible.
+ */
+function drush_extension_check_incompatibility($file) {
+  if (!isset($file->info['core'])
+       || $file->info['core'] != DRUPAL_CORE_COMPATIBILITY
+       || version_compare(phpversion(), $file->info['php']) < 0) {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/**
  *
  */
 function drush_drupal_required_modules($modules) {
