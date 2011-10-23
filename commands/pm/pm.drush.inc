@@ -580,8 +580,6 @@ function drush_pm_find_project_from_extension($extension) {
  * Command callback. Enable one or more extensions from downloaded projects.
  */
 function drush_pm_enable() {
-  // Include update engine so we can use update_check_incompatibility().
-  drush_include_engine('drupal', 'update');
   $args = _convert_csv_to_array(func_get_args());
 
   $extension_info = drush_get_extensions();
@@ -607,8 +605,8 @@ function drush_pm_enable() {
       if ($extension_info[$name]->status) {
         drush_log(dt('!extension is already enabled.', array('!extension' => $name)), 'ok');
       }
-      // Check if is compatible with Drupal core.
-      if (update_check_incompatibility($name, $extension_info[$name]->type)) {
+      // Check if the extension is compatible with Drupal core and php version.
+      if (drush_extension_check_incompatibility($extension_info[$name])) {
         drush_set_error('DRUSH_PM_ENABLE_MODULE_INCOMPATIBLE', dt('!name is incompatible with the Drupal version.', array('!name' => $name)));
         if ($extension_info[$name]->type == 'module') {
           unset($modules[$name]);
