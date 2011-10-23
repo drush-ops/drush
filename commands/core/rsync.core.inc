@@ -234,7 +234,7 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
         $test_option = 'remove-sent-files';
       }
     }
-    if ((isset($test_option)) && (isset($value))) {
+    if ((isset($test_option)) && (isset($value)  && !is_array($value))) {
       if ($value === TRUE) {
         $options .= " --$test_option";
       }
