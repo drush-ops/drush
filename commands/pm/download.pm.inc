@@ -146,7 +146,10 @@ function drush_pm_download() {
     if ($version_control->engine == 'backup') {
       // Check if install location already exists.
       if (is_dir($request['project_install_location'])) {
-        if (!drush_confirm(dt('Install location !location already exists. Do you want to overwrite it?', array('!location' => $request['project_install_location'])))) {
+        if (drush_confirm(dt('Install location !location already exists. Do you want to overwrite it?', array('!location' => $request['project_install_location'])))) {
+          drush_delete_dir($request['project_install_location'], TRUE);
+        }
+        else {
           drush_log(dt("Skip installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), 'warning');
           continue;
         }
