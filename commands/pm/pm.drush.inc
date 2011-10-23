@@ -1213,6 +1213,7 @@ function _drush_pm_filter_releases($releases, $all = FALSE, $dev = FALSE, $show_
  * @see _drush_pm_releasenotes()
  */
 function _drush_pm_get_releases($requests) {
+  drush_include_engine('release_info', 'updatexml');
   $info = array();
 
   // Parse out project name and version.
