@@ -257,7 +257,7 @@ Otherwise, the core commands in Drush are good models for your own commands.
 
 You can put your Drush command file in a number of places:
 
-  a) In a folder specified with the --include option (see above).
+  a) In a folder specified with the --include option (see `drush topic docs-configuration`).
 
   b) Along with one of your existing modules. If your command is related to an
      existing module, this is the preferred approach.
