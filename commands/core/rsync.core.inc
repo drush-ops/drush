@@ -197,9 +197,9 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
     'link-dest',
     'skip-compress',
     'filter',
-    'exclude',
+    // filter out 'exclude'; consistency with --include. Use --exclude-paths.
     'exclude-from',
-    'include',
+    // filter out 'include'; conflicts with global drush --include option. Use --include-paths.
     'include-from',
     'files-from',
     'address',
