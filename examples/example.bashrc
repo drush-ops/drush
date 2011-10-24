@@ -114,8 +114,10 @@ fi
 [ -x $d ] || exit 0
 
 # If the file found is a symlink, resolve to the actual file.
-# Uncomment if your `drush` is a symlink. -f is unavailable on OSX's readlink.
-# d=$(readlink -f $d)
+if [ "$(stat $d --printf="%F")" == "symbolic link" ] ; then
+  # Change `readlink` to `readlink -f` if your drush is a symlink to a symlink. -f is unavailable on OSX's readlink.
+  d=$(readlink $d)
+fi
 
 # Get the directory that drush is stored in.
 d="${d%/*}"
