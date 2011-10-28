@@ -1398,6 +1398,22 @@ function drush_sitealias_overlay_options($site_alias_record, $prefix) {
 }
 
 /**
+ * First return an option set via drush_sitealias_overlay_options, if
+ * any, then fall back on "%" . $option from the path aliases.
+ */
+function drush_sitealias_get_path_option($site_alias_record, $option, $default = NULL) {
+  if (isset($site_alias_record) && array_key_exists($option, $site_alias_record)) {
+    return $site_alias_record[$option];
+  }
+  if (isset($site_alias_record) && array_key_exists('path-aliases', $site_alias_record) && array_key_exists("%$option", $site_alias_record['path-aliases'])) {
+    return $site_alias_record['path-aliases']["%$option"];
+  }
+  else {
+    return $default;
+  }
+}
+
+/**
  * Get an option out of the specified alias.  If it has not been
  * set in the alias, then get it via drush_get_option.
  */

@@ -743,53 +743,14 @@ function _drush_sql_get_spec_from_options($prefix, $default_to_self = TRUE) {
 
 /**
  * Determine where to store an sql dump file.  This
- * function is called by sql-sync if the caller did
- * not explicitly specify a dump file to use.
- *
- * @param db_spec
- *   Information about the database being dumped; used
- *   to generate the filename.
- * @return string
- *   The path to the dump file
- *
-function drush_sql_dump_file(&$db_spec, $prefix) {
-  // Use an entry in the db spec to indicate whether the dump
-  // file we use is temporary or not.
-  $db_spec['dump-is-temp'] = FALSE;
-  // Make a base filename pattern to use to name the dump file
-  $filename_pattern = $db_spec['database'];
-  if (isset($db_spec['remote-host'])) {
-    $filename_pattern = $db_spec['remote-host'] . '_' . $filename_pattern;
-  }
-  // If the user has set the --{prefix}-dir option, then
-  // use the exact name provided.
-  $dump_file = drush_get_option($prefix . 'dump');
-  if (!isset($dump_file)) {
-    // If the user has set the --dump-dir option, then
-    // store persistant sql dump files there.
-    $dump_dir = drush_get_option(array($prefix . 'dump-dir', 'dump-dir'));
-    if (isset($dump_dir)) {
-      $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
-    }
-    // If the --dump-dir option is not set, then store
-    // the sql dump in a temporary file.
-    else {
-      $dump_file = drush_tempnam($filename_pattern . '.sql.');
-      $db_spec['dump-is-temp'] = TRUE;
-    }
-  }
-  return $dump_file;
-}
+ * function is called by sql-sync.
  */
-
 function drush_sql_dump_file(&$site_record) {
   $site_record['dump-is-temp'] = FALSE;
   // If the user has set the --{prefix}-dump option, then
   // use the exact name provided.
-  if (array_key_exists('dump', $site_record)) {
-    $dump_file = $site_record['dump'];
-  }
-  else {
+  $dump_file = drush_sitealias_get_path_option($site_record, 'dump');
+  if (!isset($dump_file)) {
     $databases = sitealias_get_databases_from_record($site_record);
     if (isset($databases)) {
       $db_spec = $databases['default']['default'];
@@ -801,7 +762,7 @@ function drush_sql_dump_file(&$site_record) {
     }
     // If the user has set the --dump-dir option, then
     // store persistant sql dump files there.
-    $dump_dir = drush_sitealias_get_option($site_record, 'dump-dir');
+    $dump_dir = drush_sitealias_get_path_option($site_record, 'dump-dir');
     if (isset($dump_dir)) {
       $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
     }
