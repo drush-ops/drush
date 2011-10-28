@@ -1,6 +1,6 @@
 <?php
 
-function drush_make_ensure_version() {
+function make_ensure_version() {
   if (function_exists('drush_get_global_options')) {
     return TRUE;
   }
@@ -19,11 +19,11 @@ function drush_make_ensure_version() {
  *
  * @see drupal_parse_info_file
  */
-function drush_make_parse_info_file($makefile, $parsed = TRUE) {
-  if (!($data = drush_make_get_data($makefile))) {
+function make_parse_info_file($makefile, $parsed = TRUE) {
+  if (!($data = make_get_data($makefile))) {
     return drush_set_error(dt('Invalid or empty make file: %makefile', array('%makefile' => $makefile)));
   }
-  if (!($info = _drush_make_parse_info_file($data))) {
+  if (!($info = _make_parse_info_file($data))) {
     return FALSE;
   }
   if (!empty($info['includes'])) {
@@ -32,24 +32,24 @@ function drush_make_parse_info_file($makefile, $parsed = TRUE) {
     if (!empty($info['includes']) && is_array($info['includes'])) {
       foreach ($info['includes'] as $include) {
         if (is_string($include)) {
-          if (drush_make_valid_url($include, TRUE) && ($file = drush_make_parse_info_file($include, FALSE))) {
+          if (make_valid_url($include, TRUE) && ($file = make_parse_info_file($include, FALSE))) {
             $includes[] = $file;
           }
-          else if (file_exists($include_path .'/'. $include) && ($file = drush_make_parse_info_file($include_path .'/'. $include, FALSE))) {
+          else if (file_exists($include_path .'/'. $include) && ($file = make_parse_info_file($include_path .'/'. $include, FALSE))) {
             $includes[] = $file;
           }
-          else if (file_exists($include) && ($file = drush_make_parse_info_file($include, FALSE))) {
+          else if (file_exists($include) && ($file = make_parse_info_file($include, FALSE))) {
             $includes[] = $file;
           }
           else {
-            drush_make_error('BUILD_ERROR', dt("Include file missing: %include", array('%include' => $include)));
+            make_error('BUILD_ERROR', dt("Include file missing: %include", array('%include' => $include)));
           }
         }
       }
     }
     $includes[] = $data;
     $data = implode("\n", $includes);
-    $info = _drush_make_parse_info_file($data);
+    $info = _make_parse_info_file($data);
   }
   if ($parsed) {
     return $info;
@@ -59,7 +59,7 @@ function drush_make_parse_info_file($makefile, $parsed = TRUE) {
   }
 }
 
-function _drush_make_parse_info_file($data) {
+function _make_parse_info_file($data) {
   if (!$data) {
     return FALSE;
   }
@@ -118,12 +118,12 @@ function _drush_make_parse_info_file($data) {
   return FALSE;
 }
 
-function drush_make_validate_info_file($info) {
+function make_validate_info_file($info) {
   // Assume no errors to start.
   $errors = FALSE;
 
   if (empty($info['core'])) {
-    drush_make_error('BUILD_ERROR', dt("The 'core' attribute is required"));
+    make_error('BUILD_ERROR', dt("The 'core' attribute is required"));
     $errors = TRUE;
   }
   // Standardize on core.
@@ -137,16 +137,16 @@ function drush_make_validate_info_file($info) {
     $info['core'] = $matches[1] . '.x';
   }
   else {
-    drush_make_error('BUILD_ERROR', dt("The 'core' attribute %core has an incorrect format.", array('%core' => $info['core'])));
+    make_error('BUILD_ERROR', dt("The 'core' attribute %core has an incorrect format.", array('%core' => $info['core'])));
     $errors = TRUE;
   }
 
   if (!isset($info['api'])) {
-    $info['api'] = DRUSH_MAKE_API;
-    drush_log(dt("You need to specify an API version of two in your makefile:\napi = !api", array("!api" => DRUSH_MAKE_API)), 'warning');
+    $info['api'] = MAKE_API;
+    drush_log(dt("You need to specify an API version of two in your makefile:\napi = !api", array("!api" => MAKE_API)), 'warning');
   }
-  elseif ($info['api'] != DRUSH_MAKE_API) {
-    drush_make_error('BUILD_ERROR', dt("The specified API attribute is incompatible with this version of Drush Make."));
+  elseif ($info['api'] != MAKE_API) {
+    make_error('BUILD_ERROR', dt("The specified API attribute is incompatible with this version of Drush Make."));
     $errors = TRUE;
   }
 
@@ -155,7 +155,7 @@ function drush_make_validate_info_file($info) {
   // Process projects.
   if (isset($info['projects'])) {
     if (!is_array($info['projects'])) {
-      drush_make_error('BUILD_ERROR', dt("'projects' attribute must be an array."));
+      make_error('BUILD_ERROR', dt("'projects' attribute must be an array."));
       $errors = TRUE;
     }
     else {
@@ -166,7 +166,7 @@ function drush_make_validate_info_file($info) {
         // Project has an attributes array.
         if (is_string($project) && is_array($project_data)) {
           if (in_array($project, $names)) {
-            drush_make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project)));
+            make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project)));
             $errors = TRUE;
           }
           $names[] = $project;
@@ -176,8 +176,8 @@ function drush_make_validate_info_file($info) {
               unset($info['projects'][$project][$attribute]);
             }
             // Prevent malicious attempts to access other areas of the filesystem.
-            elseif (in_array($attribute, array('subdir', 'directory_name')) && !drush_make_safe_path($value)) {
-              drush_make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in project %project.", array('%path' => $value, '%attribute' => $attribute, '%project' => $project)));
+            elseif (in_array($attribute, array('subdir', 'directory_name')) && !make_safe_path($value)) {
+              make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in project %project.", array('%path' => $value, '%attribute' => $attribute, '%project' => $project)));
               $errors = TRUE;
             }
           }
@@ -185,7 +185,7 @@ function drush_make_validate_info_file($info) {
         // Cover if there is no project info, it's just a project name.
         elseif (is_numeric($project) && is_string($project_data)) {
           if (in_array($project_data, $names)) {
-            drush_make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project_data)));
+            make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project_data)));
             $errors = TRUE;
           }
           $names[] = $project_data;
@@ -195,14 +195,14 @@ function drush_make_validate_info_file($info) {
         // Convert shorthand project version style to array format.
         elseif (is_string($project_data)) {
           if (in_array($project, $names)) {
-            drush_make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project)));
+            make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project)));
             $errors = TRUE;
           }
           $names[] = $project;
           $info['projects'][$project] = array('version' => $project_data);
         }
         else {
-          drush_make_error('BUILD_ERROR', dt('Project %project incorrectly specified.', array('%project' => $project)));
+          make_error('BUILD_ERROR', dt('Project %project incorrectly specified.', array('%project' => $project)));
           $errors = TRUE;
         }
       }
@@ -210,7 +210,7 @@ function drush_make_validate_info_file($info) {
   }
   if (isset($info['libraries'])) {
     if (!is_array($info['libraries'])) {
-      drush_make_error('BUILD_ERROR', dt("'libraries' attribute must be an array."));
+      make_error('BUILD_ERROR', dt("'libraries' attribute must be an array."));
       $errors = TRUE;
     }
     else {
@@ -225,8 +225,8 @@ function drush_make_validate_info_file($info) {
               unset($info['libraries'][$library][$attribute]);
             }
             // Prevent malicious attempts to access other areas of the filesystem.
-            elseif (in_array($attribute, array('contrib-destination', 'directory_name')) && !drush_make_safe_path($value)) {
-              drush_make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in library %library.", array('%path' => $value, '%attribute' => $attribute, '%library' => $library)));
+            elseif (in_array($attribute, array('contrib-destination', 'directory_name')) && !make_safe_path($value)) {
+              make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in library %library.", array('%path' => $value, '%attribute' => $attribute, '%library' => $library)));
               $errors = TRUE;
             }
           }
@@ -235,8 +235,8 @@ function drush_make_validate_info_file($info) {
     }
   }
 
-  foreach (drush_command_implements('drush_make_validate_info') as $module) {
-    $function = $module .'_drush_make_validate_info';
+  foreach (drush_command_implements('make_validate_info') as $module) {
+    $function = $module .'_make_validate_info';
     $return = $function($info);
     if ($return) {
       $info = $return;
@@ -259,7 +259,7 @@ function drush_make_validate_info_file($info) {
  *
  * @see valid_url
  */
-function drush_make_valid_url($url, $absolute = FALSE) {
+function make_valid_url($url, $absolute = FALSE) {
   if ($absolute) {
     return (bool)preg_match("
       /^                                                      # Start at the beginning of the text
@@ -283,27 +283,27 @@ function drush_make_valid_url($url, $absolute = FALSE) {
   }
 }
 
-function drush_make_tmp($set = TRUE) {
+function make_tmp($set = TRUE) {
   static $tmp_dir;
   if (!isset($tmp_dir) && $set) {
     $tmp_dir = sys_get_temp_dir();
     if (strrpos($tmp_dir, '/') == strlen($tmp_dir) - 1) {
-      $tmp_dir .= 'drush_make_tmp_' . time() . '_' . uniqid();
+      $tmp_dir .= 'make_tmp_' . time() . '_' . uniqid();
     }
     else {
-      $tmp_dir .= '/drush_make_tmp_' . time() . '_' . uniqid();
+      $tmp_dir .= '/make_tmp_' . time() . '_' . uniqid();
     }
     if (file_exists($tmp_dir)) {
-      return drush_make_tmp(TRUE);
+      return make_tmp(TRUE);
     }
     // else create it
-    drush_make_mkdir($tmp_dir);
+    make_mkdir($tmp_dir);
   }
   return $tmp_dir;
 }
 
-function drush_make_clean_tmp() {
-  if (!($tmp_dir = drush_make_tmp(FALSE))) {
+function make_clean_tmp() {
+  if (!($tmp_dir = make_tmp(FALSE))) {
     return;
   }
   if (!drush_get_option('no-clean', FALSE)) {
@@ -314,20 +314,20 @@ function drush_make_clean_tmp() {
   }
 }
 
-function drush_make_prepare_install($build_path) {
-  $default = drush_make_tmp() . '/__build__/sites/default';
+function make_prepare_install($build_path) {
+  $default = make_tmp() . '/__build__/sites/default';
   drush_shell_exec("cp %s %s", $default . '/default.settings.php', $default . '/settings.php');
-  drush_make_mkdir($default . '/files');
+  make_mkdir($default . '/files');
   drush_shell_exec("chmod a+w %s %s", $default . '/settings.php', $default . '/files');
 }
 
-function drush_make_md5() {
-  if (drush_shell_exec("( find %s -type f -exec cksum {} \; )", drush_make_tmp())) {
+function make_md5() {
+  if (drush_shell_exec("( find %s -type f -exec cksum {} \; )", make_tmp())) {
     $hashes = array();
     foreach (drush_shell_exec_output() as $line) {
       // Remove the temporary build path which includes a (relatively)
       // unique timestamp.
-      $line = str_replace(drush_make_tmp(), '', $line);
+      $line = str_replace(make_tmp(), '', $line);
       // Trim to sanitize.
       $line = trim($line);
       $hashes[] = $line;
@@ -338,10 +338,10 @@ function drush_make_md5() {
   }
 }
 
-function drush_make_tar($build_path) {
-  $tmp_path = drush_make_tmp();
+function make_tar($build_path) {
+  $tmp_path = make_tmp();
 
-  drush_make_mkdir(dirname($build_path));
+  make_mkdir(dirname($build_path));
   $filename = basename($build_path);
   $dirname = basename($build_path, '.tar.gz');
   // Move the build directory to a more human-friendly name, so that tar will
@@ -359,7 +359,7 @@ function drush_make_tar($build_path) {
 /**
  * Logs an error unless the --force-complete command line option is specified.
  */
-function drush_make_error($error_code, $message) {
+function make_error($error_code, $message) {
   if (drush_get_option('force-complete')) {
     drush_log("$error_code: $message -- build forced", 'warning');
   }
@@ -374,7 +374,7 @@ function drush_make_error($error_code, $message) {
  * @param $path
  *   The path to check.
  */
-function drush_make_safe_path($path) {
+function make_safe_path($path) {
   return !preg_match("+^/|^\.\.|/\.\./+", $path);
 }
 
@@ -437,7 +437,7 @@ if (!function_exists('drush_shell_exec_interactive')) {
  * @return
  *   The raw data as a string.
  */
-function drush_make_get_data($data_source) {
+function make_get_data($data_source) {
   if ($data_source == '-') {
     // See http://drupal.org/node/499758 before changing this.
     $stdin = fopen('php://stdin', 'r');
@@ -460,7 +460,7 @@ function drush_make_get_data($data_source) {
   }
   // Remote file.
   else {
-    $file = _drush_make_download_file(array('url' => $data_source));
+    $file = _make_download_file(array('url' => $data_source));
     $data = file_get_contents($file);
     drush_op('unlink', $file);
   }
@@ -504,7 +504,7 @@ if (!function_exists('sys_get_temp_dir')) {
 /**
  * Drush make parallel to drupal_http_request, but writes responses to a file.
  */
-function drush_make_http_request($url, $destination, $headers = array(), $method = 'GET', $data = NULL, $retry = 5) {
+function make_http_request($url, $destination, $headers = array(), $method = 'GET', $data = NULL, $retry = 5) {
   global $db_prefix;
 
   $result = new stdClass();
@@ -670,6 +670,6 @@ function drush_make_http_request($url, $destination, $headers = array(), $method
  * Cross-platform compatible helper function to recursively create a directory tree.
  * @see http://theserverpages.com/php/manual/en/function.mkdir.php#50383
  */
-function drush_make_mkdir($path) {
-  return is_dir($path) || (drush_make_mkdir(dirname($path)) && drush_shell_exec('mkdir %s', $path));
+function make_mkdir($path) {
+  return is_dir($path) || (make_mkdir(dirname($path)) && drush_shell_exec('mkdir %s', $path));
 }

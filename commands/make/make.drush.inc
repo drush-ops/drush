@@ -1,25 +1,25 @@
 <?php
 
-define('DRUSH_MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
-define('DRUSH_MAKE_VERSION_BEST', 'best');
-define('DRUSH_MAKE_API', 2);
+define('MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
+define('MAKE_VERSION_BEST', 'best');
+define('MAKE_API', 2);
 
-include_once 'drush_make.utilities.inc';
-include_once 'drush_make.download.inc';
-include_once 'drush_make.project.inc';
+include_once 'make.utilities.inc';
+include_once 'make.download.inc';
+include_once 'make.project.inc';
 
 /**
  * Implement EXTENSION_drush_init().
  */
-function drush_make_drush_init() {
+function make_drush_init() {
   // The default URL to use for retrieving update XML files.
-  drush_set_default('drush-make-update-default-url', DRUSH_MAKE_UPDATE_DEFAULT_URL);
+  drush_set_default('make-update-default-url', MAKE_UPDATE_DEFAULT_URL);
 }
 
 /**
  * Implementation of hook_drush_command().
  */
-function drush_make_drush_command() {
+function make_drush_command() {
   $items['make'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => 'Turns a makefile into a working drupal install.',
@@ -44,7 +44,7 @@ function drush_make_drush_command() {
       '--test' => 'Run a temporary test build and clean up.',
       '--translations=languages' => 'Retrieve translations for the specified comma-separated list of language(s) if available for all projects.',
       '--working-copy' => 'Where possible, retrieve a working copy of projects from their respective repositories.',
-      '--download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "drush_make" (a native download method).',
+      '--download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
     ),
   );
 
@@ -79,7 +79,7 @@ function drush_make_drush_command() {
 /**
  * Implementation of hook_drush_help().
  */
-function drush_make_drush_help($section) {
+function make_drush_help($section) {
   switch ($section) {
     case 'drush:make':
       return dt('Turns a makefile into a working drupal install. For a full description of options and makefile syntax, see the README.txt included with drush make.');
@@ -90,10 +90,10 @@ function drush_make_drush_help($section) {
   }
 }
 
-function drush_drush_make_make_validate() {
-  drush_make_ensure_version();
+function drush_make_validate() {
+  make_ensure_version();
   if (drush_get_option('version', FALSE)) {
-    drush_print(drush_make_version());
+    drush_print(make_version());
     return FALSE;
   }
 }
@@ -101,20 +101,20 @@ function drush_drush_make_make_validate() {
 /**
  * Drush callback; make based on the makefile.
  */
-function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
-  if (!($build_path = drush_make_build_path($build_path))) {
+function drush_make($makefile = NULL, $build_path = NULL) {
+  if (!($build_path = make_build_path($build_path))) {
     return;
   }
-  $info = drush_make_parse_info_file($makefile);
-  if ($info === FALSE || ($info = drush_make_validate_info_file($info)) === FALSE) {
+  $info = make_parse_info_file($makefile);
+  if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
     return FALSE;
   }
 
-  if (drush_make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path)) {
-    drush_make_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
+  if (make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path)) {
+    make_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
 
     if (drush_get_option('prepare-install')) {
-      drush_make_prepare_install($build_path);
+      make_prepare_install($build_path);
     }
   }
 }
@@ -122,29 +122,29 @@ function drush_drush_make_make($makefile = NULL, $build_path = NULL) {
 /**
  * Implementation of drush_hook_post_COMMAND() for the make command.
  */
-function drush_drush_make_post_make($makefile = NULL, $build_path = NULL) {
-  if (!($build_path = drush_make_build_path($build_path))) {
+function drush_make_post_make($makefile = NULL, $build_path = NULL) {
+  if (!($build_path = make_build_path($build_path))) {
     return;
   }
 
   if (drush_get_option('md5')) {
-    drush_make_md5();
+    make_md5();
   }
 
   // Only take final build steps if not in testing mode.
   if (!drush_get_option('test')) {
     if (drush_get_option('tar')) {
-      drush_make_tar($build_path);
+      make_tar($build_path);
     }
     else {
-      drush_make_move_build($build_path);
+      make_move_build($build_path);
     }
   }
 
-  drush_make_clean_tmp();
+  make_clean_tmp();
 }
 
-function drush_make_projects($recursion, $contrib_destination, $info, $build_path) {
+function make_projects($recursion, $contrib_destination, $info, $build_path) {
   $projects = array();
   if (empty($info['projects'])) {
     if (drush_get_option('no-core') || $recursion) {
@@ -167,13 +167,13 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
       'core'                => $info['core'],
       'build_path'          => $build_path,
       'contrib_destination' => $contrib_destination,
-      'version'             => DRUSH_MAKE_VERSION_BEST,
-      'location'            => drush_get_option('drush-make-update-default-url'),
+      'version'             => MAKE_VERSION_BEST,
+      'location'            => drush_get_option('make-update-default-url'),
       'subdir'              => '',
       'directory_name'      => '',
     );
     if ($project['location'] != 'http://updates.drupal.org/release-history' && !isset($project['type'])) {
-      $project = drush_make_updatexml($project);
+      $project = make_updatexml($project);
       $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
     }
     elseif (!empty($project['type'])) {
@@ -205,7 +205,7 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
   foreach ($projects as $type => $type_projects) {
     foreach ($type_projects as $project) {
       if ($project['location'] == 'http://updates.drupal.org/release-history' && (!isset($project['type']) || !isset($project['download']))) {
-        $project = drush_make_updatexml($project);
+        $project = make_updatexml($project);
       }
       if (!empty($md5)) {
         $project['download']['md5'] = $md5;
@@ -217,7 +217,7 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
         $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = $instance;
       }
       else {
-        drush_make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $key)));
+        make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $key)));
       }
     }
   }
@@ -236,7 +236,7 @@ function drush_make_projects($recursion, $contrib_destination, $info, $build_pat
   return TRUE;
 }
 
-function drush_make_libraries($contrib_destination, $info, $build_path) {
+function make_libraries($contrib_destination, $info, $build_path) {
   if (empty($info['libraries'])) {
     return;
   }
@@ -263,17 +263,17 @@ function drush_make_libraries($contrib_destination, $info, $build_path) {
   }
 }
 
-function drush_make_updatexml($project) {
+function make_updatexml($project) {
   if (isset($project['download']) && isset($project['type'])) {
     return $project;
   }
-  if ($filename = _drush_make_download_file($project['location'] . '/' . $project['name'] . '/' . $project['core'])) {
+  if ($filename = _make_download_file($project['location'] . '/' . $project['name'] . '/' . $project['core'])) {
     $release_history = simplexml_load_string(file_get_contents($filename));
     drush_op('unlink', $filename);
   }
   // First, get the release history.
   if (!is_object($release_history) || !$release_history->title) {
-    drush_make_error('XML_ERROR', dt("Could not retrieve version information for %project.", array('%project' => $project['name'])));
+    make_error('XML_ERROR', dt("Could not retrieve version information for %project.", array('%project' => $project['name'])));
     return FALSE;
   }
   drush_log(dt('Project information for %project retrieved.', array('%project' => $project['name'])), 'ok');
@@ -296,17 +296,17 @@ function drush_make_updatexml($project) {
       }
     }
     if (!isset($project['type'])) {
-      drush_make_error('BUILD_ERROR', dt("Unable to determine project type for %project.", array('%project' => $project['name'])));
+      make_error('BUILD_ERROR', dt("Unable to determine project type for %project.", array('%project' => $project['name'])));
       return FALSE;
     }
   }
   if (!isset($project['download'])) {
-    $project = drush_make_update_xml_download($project);
+    $project = make_update_xml_download($project);
   }
   return $project;
 }
 
-function drush_make_update_xml_download($project) {
+function make_update_xml_download($project) {
   // Make an array of releases.
   foreach ($project['release_history']->releases->release as $release) {
     $version = (string) $release->version_major;
@@ -339,19 +339,19 @@ function drush_make_update_xml_download($project) {
   }
 
   // Find the best release.
-  if ($project['version'] == DRUSH_MAKE_VERSION_BEST) {
+  if ($project['version'] == MAKE_VERSION_BEST) {
     $recommended_major = (string)$project['release_history']->recommended_major;
     if (!$recommended_major && $project['type'] == 'core') {
       $recommended_major = strtok($project['core'], '.');
     }
-    $project['version'] = _drush_make_update_xml_best_version($recommended_major, $releases);
+    $project['version'] = _make_update_xml_best_version($recommended_major, $releases);
   }
   // Find the best release for the specified version.
   else {
     $exploded_version = explode('.', $project['version']);
     if (count($exploded_version) == 1) {
       list($major) = $exploded_version;
-      $project['version'] = _drush_make_update_xml_best_version($major, $releases);
+      $project['version'] = _make_update_xml_best_version($major, $releases);
     }
     // Otherwise we have a full version.
   }
@@ -360,7 +360,7 @@ function drush_make_update_xml_download($project) {
 
   // Uh oh, couldn't find a valid version.
   if (empty($final_version) || empty($releases[$final_version])) {
-    drush_make_error('BUILD_ERROR', dt("Invalid version %version for %project.", array('%version' => $final_version, '%project' => $project['name'])));
+    make_error('BUILD_ERROR', dt("Invalid version %version for %project.", array('%version' => $final_version, '%project' => $project['name'])));
     return FALSE;
   }
 
@@ -373,7 +373,7 @@ function drush_make_update_xml_download($project) {
   return $project;
 }
 
-function _drush_make_update_xml_best_version($major, $releases) {
+function _make_update_xml_best_version($major, $releases) {
   $best = NULL;
   foreach ($releases as $version => $release_info) {
     if ((!$major || $release_info['major'] == $major) && !empty($release_info['file']) && version_compare($best, $version, '<')) {
@@ -383,7 +383,7 @@ function _drush_make_update_xml_best_version($major, $releases) {
   return $best;
 }
 
-function drush_make_build_path($build_path) {
+function make_build_path($build_path) {
   static $saved_path;
   if (isset($saved_path)) {
     return $saved_path;
@@ -412,8 +412,8 @@ function drush_make_build_path($build_path) {
   return $build_path;
 }
 
-function drush_make_move_build($build_path) {
-  $tmp_path = drush_make_tmp();
+function make_move_build($build_path) {
+  $tmp_path = make_tmp();
   $ret = TRUE;
   if ($build_path == '.') {
     drush_shell_exec('ls -A %s', $tmp_path . '/__build__');
@@ -423,7 +423,7 @@ function drush_make_move_build($build_path) {
     }
   }
   else {
-    drush_make_mkdir(dirname($build_path));
+    make_mkdir(dirname($build_path));
     drush_shell_exec("mv %s %s", $tmp_path . '/__build__', $tmp_path . '/' . basename($build_path));
     drush_shell_exec("cp -Rf %s %s", $tmp_path . '/' . basename($build_path), dirname($build_path));
   }
@@ -433,22 +433,22 @@ function drush_make_move_build($build_path) {
   return $ret;
 }
 
-function drush_make_version() {
+function make_version() {
   return '2.0-dev';
 }
 
 /**
  * Drush callback; make a makefile from the current install.
  */
-function drush_drush_make_make_generate($file = NULL) {
-  include_once 'drush_make.generate.inc';
-  _drush_make_generate($file);
+function drush_make_generate($file = NULL) {
+  include_once 'make.generate.inc';
+  _make_generate($file);
 }
 
 /**
  * Drush callback; run a drush make test.
  */
-function drush_drush_make_make_test($test = NULL) {
-  include_once 'drush_make.test.inc';
-  drush_make_test($test);
+function drush_make_test($test = NULL) {
+  include_once 'make.test.inc';
+  make_test($test);
 }

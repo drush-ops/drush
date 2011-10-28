@@ -3,30 +3,30 @@
 /**
  * Main drush make-test callback.
  */
-function drush_make_test($test) {
+function make_test($test) {
   if (empty($test)) {
     $rows = array();
     $rows[] = array(dt('Command'), dt('Description'));
     $rows[] = array(   '-------',     '-----------');
-    foreach (drush_make_test_get_tests() as $id => $info) {
+    foreach (make_test_get_tests() as $id => $info) {
       $rows[] = array($id, $info['name']);
     }
     drush_print_table($rows, TRUE);
   }
   else if ($test === 'ALL') {
-    foreach (array_keys(drush_make_test_get_tests()) as $id) {
-      drush_make_test_run_test($id);
+    foreach (array_keys(make_test_get_tests()) as $id) {
+      make_test_run_test($id);
     }
   }
   else {
-    drush_make_test_run_test($test);
+    make_test_run_test($test);
   }
 }
 
 /**
  * Get an array of all tests.
  */
-function drush_make_test_get_tests($id = NULL) {
+function make_test_get_tests($id = NULL) {
   $tests = array(
     'cvs' => array(
       'name'     => 'CVS integration',
@@ -221,8 +221,8 @@ function drush_make_test_get_tests($id = NULL) {
 /**
  * Run a drush make test.
  */
-function drush_make_test_run_test($id) {
-  if ($test = drush_make_test_get_tests($id)) {
+function make_test_run_test($id) {
+  if ($test = make_test_get_tests($id)) {
     $makefile = dirname(__FILE__) .'/'. $test['makefile'];
     $options = $test['options'] + array('test' => TRUE, 'md5' => TRUE);
 
