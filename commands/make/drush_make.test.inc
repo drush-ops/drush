@@ -235,7 +235,7 @@ function drush_make_test_run_test($id) {
     drush_log(dt('Test command: @debug.', array('@debug' => $debug_command)), 'ok');
 
     $fail = FALSE;
-    if ($data = drush_invoke_process('@self', 'make', $makefile, $options)) {
+    if ($data = drush_invoke_process('@self', 'make', array($makefile), $options)) {
       // Test build completion.
       if (isset($test['build'])) {
         if ($test['build'] && !empty($data['error_status'])) {
