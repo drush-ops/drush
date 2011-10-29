@@ -46,6 +46,7 @@ function make_drush_command() {
       'working-copy' => 'Where possible, retrieve a working copy of projects from their respective repositories.',
       'download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
     ),
+    'topics' => array('docs-make', 'docs-make-example'),
   );
 
   $items['make-generate'] = array(
@@ -62,6 +63,25 @@ function make_drush_command() {
       'include-versions="list"' => 'Include a specific list of projects, while all other projects remain unversioned in the makefile (so implies --exclude-versions)',
     ),
     'aliases' => array('generate-makefile'),
+  );
+
+  // Add docs topic.
+  $make_dir = dirname(__FILE__);
+  $items['docs-make'] = array(
+    'description' => 'Drush Make overview with examples',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array($make_dir . '/README.txt'),
+  );
+  $items['docs-make-example'] = array(
+    'description' => 'Drush Make example makefile',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array($make_dir . '/EXAMPLE.make'),
   );
   return $items;
 }
