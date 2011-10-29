@@ -11,7 +11,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $makefiles = $this->getMakefiles();
     $default_options = array(
       'test' => NULL,
-      'md5' => NULL,
+      'md5' => 'print',
     );
     $makefile_path = dirname(__FILE__) . '/makefiles';
     foreach ($makefiles as $type => $config) {
