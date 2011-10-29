@@ -73,8 +73,6 @@ function make_drush_help($section) {
   switch ($section) {
     case 'drush:make':
       return dt('Turns a makefile into a working drupal install. For a full description of options and makefile syntax, see the README.txt included with drush make.');
-    case 'drush:make-test':
-      return dt('Run a drush make test.');
     case 'drush:make-generate':
       return dt('Attempts to generate a makefile from the current drupal install.');
   }
