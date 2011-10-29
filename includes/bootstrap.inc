@@ -486,6 +486,9 @@ function _drush_bootstrap_drush() {
   // Similarly, load the Drupal site configuration options upfront.
   drush_load_config('site');
 
+  // If applicable swaps in shell alias value (or executes it).
+  drush_shell_alias_replace();
+
   // If drush_load_config defined a site alias that did not
   // exist before, then sitealias check arg might now match
   // against one of those aliases.

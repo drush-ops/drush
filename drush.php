@@ -56,9 +56,6 @@ function drush_main() {
 
   foreach ($phases as $phase) {
     if (drush_bootstrap_to_phase($phase)) {
-      // If applicable swaps in shell alias value (or executes it).
-      drush_shell_alias_replace();
-
       $command = drush_parse_command();
 
       // Process a remote command if 'remote-host' option is set.
