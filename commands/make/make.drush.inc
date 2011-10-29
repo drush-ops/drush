@@ -48,16 +48,6 @@ function make_drush_command() {
     ),
   );
 
-  $items['make-test'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'description' => 'Run a drush make test.',
-    'arguments' => array(
-      'test' => 'Name of the test to run or ALL to run all tests.',
-    ),
-    'examples' => array(
-      'drush make-test svn' => 'Run tests for SVN integration.',
-    ),
-  );
   $items['make-generate'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
     'description' => 'Attempts to generate a makefile from the current Drupal install, specifying project version numbers unless not known or otherwise specified. Unversioned projects will be interpreted later by drush make as "most recent stable release"',
@@ -443,12 +433,4 @@ function make_version() {
 function drush_make_generate($file = NULL) {
   include_once 'make.generate.inc';
   _make_generate($file);
-}
-
-/**
- * Drush callback; run a drush make test.
- */
-function drush_make_test($test = NULL) {
-  include_once 'make.test.inc';
-  make_test($test);
 }
