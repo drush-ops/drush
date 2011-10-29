@@ -333,9 +333,7 @@ function make_md5() {
       $hashes[] = $line;
     }
     sort($hashes);
-    $output = md5(implode("\n", $hashes));
-    drush_log(dt('Build hash: %md5', array('%md5' => $output)), 'ok');
-    drush_print($output);
+    return md5(implode("\n", $hashes));
   }
 }
 

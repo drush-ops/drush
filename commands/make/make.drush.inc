@@ -35,7 +35,7 @@ function make_drush_command() {
       'contrib-destination=path' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
       'force-complete' => 'Force a complete build even if errors occur.',
       'ignore-checksums' => 'Ignore md5 checksums for downloads.',
-      'md5' => 'Output an md5 hash of the current build after completion.',
+      'md5' => 'Output an md5 hash of the current build after completion. Use --md5=print to print to stdout.',
       'no-clean' => 'Leave temporary build directories in place instead of cleaning up after completion.',
       'no-core' => 'Do not require a Drupal core project to be specified.',
       'no-patch-txt' => 'Do not write a PATCHES.txt file in the directory of each patched project.',
@@ -117,8 +117,14 @@ function drush_make_post_make($makefile = NULL, $build_path = NULL) {
     return;
   }
 
-  if (drush_get_option('md5')) {
-    make_md5();
+  if ($option = drush_get_option('md5')) {
+    $md5 = make_md5();
+    if ($option === 'print') {
+      drush_print($md5);
+    }
+    else {
+      drush_log(dt('Build hash: %md5', array('%md5' => $md5)), 'ok');
+    }
   }
 
   // Only take final build steps if not in testing mode.
