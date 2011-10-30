@@ -37,8 +37,7 @@
  *   1. In any path set in $options['alias-path'] in drushrc.php,
  *      or (equivalently) any path passed in via --alias-path=...
  *      on the command line.
- *   2. If 'alias-path' is not set, then in one of the default
- *      locations:
+ *   2. In one of the default locations:
  *        a. /etc/drush
  *        b. In the drush installation folder
  *        c. Inside the 'aliases' folder in the drush installation folder
@@ -109,6 +108,14 @@
  * root directory, use the built-in alias "@sites":
  *
  *   $ drush -r /path/to/drupal site-alias @sites
+ *
+ * It is also possible to define explicit lists of sites using a special
+ * alias list definition.  Alias lists contain a list of alias names in
+ * the group, and no other information.  For example:
+ *
+ * $aiases['mydevsites'] = array(
+ *   'site-list' => array('@mysite.dev', '@otherside.dev');
+ * );
  *
  * The built-in alias "@none" represents the state of no Drupal site;
  * to ignore the site at the cwd and just see default drush status:
