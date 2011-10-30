@@ -49,21 +49,30 @@ function drush_main() {
   // Process initial global options such as --debug.
   _drush_bootstrap_global_options();
 
+  $return = '';
+  drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUSH);
+  // Process a remote command if 'remote-host' option is set.
+  $command_handled = drush_remote_command();
+  if (!$command_handled) {
+    $return = _drush_bootstrap_and_dispatch();
+  }
+
+  drush_bootstrap_finish();
+
+  // After this point the drush_shutdown function will run,
+  // exiting with the correct exit code.
+  return $return;
+}
+
+function _drush_bootstrap_and_dispatch() {
   $phases = _drush_bootstrap_phases(FALSE, TRUE);
 
   $return = '';
   $command_found = FALSE;
-
+  _drush_bootstrap_output_prepare();
   foreach ($phases as $phase) {
     if (drush_bootstrap_to_phase($phase)) {
       $command = drush_parse_command();
-
-      // Process a remote command if 'remote-host' option is set.
-      if (drush_remote_command()) {
-        $command_found = TRUE;
-        break;
-      }
-
       if (is_array($command)) {
         $bootstrap_result = drush_bootstrap_to_phase($command['bootstrap']);
         drush_enforce_requirement_bootstrap_phase($command);
@@ -114,11 +123,6 @@ function drush_main() {
       drush_set_error($code, $message);
     }
   }
-
-  drush_bootstrap_finish();
-
-  // After this point the drush_shutdown function will run,
-  // exiting with the correct exit code.
   return $return;
 }
 

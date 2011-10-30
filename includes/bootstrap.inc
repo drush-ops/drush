@@ -501,6 +501,10 @@ function _drush_bootstrap_drush() {
     }
   }
 
+  _drush_bootstrap_global_options();
+}
+
+function _drush_bootstrap_output_prepare() {
   $backend = drush_set_context('DRUSH_BACKEND', drush_get_option('backend'));
 
   // Pipe implies quiet.
@@ -532,8 +536,6 @@ function _drush_bootstrap_drush() {
   if ($quiet && !$backend) {
     ob_start();
   }
-
-  _drush_bootstrap_global_options();
 }
 
 /**
@@ -595,7 +597,7 @@ function _drush_bootstrap_global_options() {
 
   // Backend implies affirmative unless negative is explicitly specified
   drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));
-  drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option('yes', FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
+  drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('yes', 'pipe'), FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
   drush_set_context('DRUSH_SIMULATE',    drush_get_option('simulate', FALSE));
 
   // Suppress colored logging if --nocolor option is explicitly given or if
