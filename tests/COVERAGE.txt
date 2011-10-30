@@ -1,6 +1,7 @@
 COMMANDS
 ------------
 pm-download: GOOD.
+  need test for `pm-download --select` (hard to test; depends on state of project releases on d.o.)
 pm-updatecode: GOOD.
 pm-update: GOOD. Implicitly tested by pm-updatecode and updatedb.
 pm-releasenotes
@@ -19,6 +20,7 @@ sql-connect:
 sql-query:
 sql-dump: FAIR. Implicitly tested by siteUpgradeTest and sqlSyncTest.
 sql-sync: GOOD. testLocalSqlSync(). Implicitly tested by siteUpgradeTest.
+  need test: %dump, %dump-dir, --dump, --dump-dir, --source-dump, --target-dump, --source-dump-dir and --target-dump-dir and permutations of same used together.
 sql-drop:
 
 
@@ -45,6 +47,7 @@ runserver
 core-quick-drupal
 search-*
 shellalias: GOOD
+  need test: shell alias with site alias
 site-install: FAIR. Implicit test by setUpDrupal().
 site-upgrade: GOOD.
 ssh: GOOD
@@ -60,6 +63,7 @@ field-*: GOOD.
 INCLUDES
 ------------
 backend: GOOD
+  need test: --pipe with remote alias and --pipe with list of aliases
 batch: FAIR. Implicit by siteUpgradeTest.
 bootstrap:
 command: FAIR
