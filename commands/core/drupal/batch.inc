@@ -58,7 +58,7 @@ function _drush_backend_batch_process($command = 'batch-process') {
       else {
         $data = drush_backend_invoke($command, array($batch['id']));
       }
-      $finished = drush_get_error() || !$data || ($data['context']['drush_batch_process_finished'] == TRUE);
+      $finished = drush_get_error() || !$data || (isset($data['context']['drush_batch_process_finished']) && $data['context']['drush_batch_process_finished'] == TRUE);
     }
   }
 }
