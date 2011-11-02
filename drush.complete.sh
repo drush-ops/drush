@@ -10,6 +10,16 @@
 # Ensure drush is available.
 which drush > /dev/null || alias drush &> /dev/null || return
 
+__drush_ps1() {
+  f="${TMPDIR:-/tmp/}/drush-drupal-site-$$"
+  if [ -f $f ]
+  then
+    DRUPAL_SITE=$(cat "$f")
+  fi
+
+  [[ -n "$DRUPAL_SITE" ]] && printf "${1:- (%s)}" "$DRUPAL_SITE"
+}
+
 # Completion function, uses the "drush complete" command to retrieve
 # completions for a specific command line COMP_WORDS.
 _drush_completion() {

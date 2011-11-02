@@ -30,6 +30,10 @@ function drush_sitealias_check_arg() {
     return TRUE;
   }
 
+  $site_env = drush_sitealias_site_get();
+  if (!empty($site_env) && (_drush_sitealias_set_context_by_name($site_env))) {
+    return TRUE;
+  }
   // Return false to indicate that no site alias was specified.
   return FALSE;
 }
@@ -1855,4 +1859,37 @@ function drush_get_special_keys() {
     'site-aliases',
   );
   return $special_keys;
+}
+
+/**
+ * Read the tmp file where the persistent site setting is stored.
+ *
+ * @return string
+ *   A valid site specification.
+ */
+function drush_sitealias_site_get() {
+  if (($filename = drush_sitealias_get_envar_filename()) && file_exists($filename)) {
+    $site = file_get_contents($filename);
+    return $site;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Return the filename for the file tht stores the DRUPAL_SITE variable.
+ *
+ * @return string
+ *   Full path to tmp file.
+ */
+function drush_sitealias_get_envar_filename() {
+  $tmp = getenv('TMPDIR') ?: '/tmp/';
+
+  if (is_dir($tmp) && is_writable($tmp)) {
+    return $tmp . '/drush-drupal-site-' . posix_getppid();
+  }
+  else {
+    return FALSE;
+  }
 }
