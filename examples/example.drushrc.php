@@ -91,7 +91,7 @@
 # $options['package-handler'] = 'git_drupalorg';
 
 // Specify additional directories to search for *.drush.inc files.
-// Always merged with include paths defined on the commandline or in 
+// Always merged with include paths defined on the commandline or in
 // other configuration files.  On the command line, paths can be separated
 // by : (Unix-based systems) or ; (Windows).
 # $options['include'] = array('/path/to/commands','/path2/to/more/commands');
@@ -100,7 +100,7 @@
 // inside a Drupal site
 # $options['ignored-modules'] = array('module1', 'module2');
 
-// Specify directories to search for *.alias.drushrc.php and 
+// Specify directories to search for *.alias.drushrc.php and
 // *.aliases.drushrc.php files.  Always merged with alias paths
 // defined on the commandline or in other configuration files.
 // On the command line, paths can be separated by : (Unix-based systems) or ; (Windows).
@@ -143,6 +143,10 @@
 // Set 'remote-os' to 'Windows' to make drush use Windows shell escape
 // rules for remote sites that do not have an 'os' item set.
 # $options['remote-os'] = 'Linux';
+
+// By default, unknown options are disallowed and result in an error.
+// Change them to issue only a warning and let command proceed.
+# $options['strict'] = FALSE;
 
 // rsync version 2.6.8 or earlier will give an error message:
 // "--remove-source-files: unknown option".  To fix this, set

@@ -972,6 +972,9 @@ function drush_remote_command() {
     $command = array_shift($args);
     $multi_options = drush_get_context('cli');
     $backend_options = array();
+    if (drush_get_option('pipe')) {
+      $backend_options['interactive'] = TRUE;
+    }
 
     if (!drush_get_option('no-label', FALSE) && !$interactive) {
       $label_separator = ' >> ';

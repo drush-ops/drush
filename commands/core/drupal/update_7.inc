@@ -20,7 +20,7 @@ define('MAINTENANCE_MODE', 'update');
  * for example, update_check_incompatibility() which can prove useful when
  * enabling modules.
  */
-require_once DRUPAL_ROOT . '/includes/update.inc';
+require_once DRUSH_DRUPAL_CORE . '/includes/update.inc';
 /**
  * Returns (and optionally stores) extra requirements that only apply during
  * particular parts of the update.php process.
@@ -59,7 +59,7 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
   if (!empty($context['results']['#abort']) && array_intersect($context['results']['#abort'], array_merge($dependency_map, array($function)))) {
     return;
   }
-  
+
   $context['log'] = FALSE;
 
   $ret = array();
@@ -143,20 +143,21 @@ function update_main_prepare() {
 
   // We prepare a minimal bootstrap for the update requirements check to avoid
   // reaching the PHP memory limit.
-  require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
-  require_once DRUPAL_ROOT . '/includes/common.inc';
-  require_once DRUPAL_ROOT . '/includes/file.inc';
-  require_once DRUPAL_ROOT . '/includes/entity.inc';
-  include_once DRUPAL_ROOT . '/includes/unicode.inc';
+  $core = DRUSH_DRUPAL_CORE;
+  require_once $core . '/includes/bootstrap.inc';
+  require_once $core . '/includes/common.inc';
+  require_once $core . '/includes/file.inc';
+  require_once $core . '/includes/entity.inc';
+  include_once $core . '/includes/unicode.inc';
 
   update_prepare_d7_bootstrap();
   drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
 
-  require_once DRUPAL_ROOT . '/includes/install.inc';
-  require_once DRUPAL_ROOT . '/modules/system/system.install';
+  require_once $core . '/includes/install.inc';
+  require_once $core . '/modules/system/system.install';
 
   // Load module basics.
-  include_once DRUPAL_ROOT . '/includes/module.inc';
+  include_once $core . '/includes/module.inc';
   $module_list['system']['filename'] = 'modules/system/system.module';
   module_list(TRUE, FALSE, FALSE, $module_list);
   drupal_load('module', 'system');

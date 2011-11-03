@@ -106,14 +106,12 @@ function drush_test_run($specs = NULL) {
       if (!drush_get_option('dirty')) {
         simpletest_clean_environment();
       }
-      return;
     }
     // Specific group specified.
     else if (isset($groups[$spec])) {
       foreach (array_keys($groups[$spec]) as $class) {
         drush_do_command_redispatch('test-run', array($class));
       }
-      return;
     }
   }
 }

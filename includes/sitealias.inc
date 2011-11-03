@@ -774,7 +774,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
       // level, and include file.inc to insure that we have access
       // to the %file path.
       if (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
-        include_once DRUPAL_ROOT . '/includes/file.inc';
+        include_once DRUSH_DRUPAL_CORE . '/includes/file.inc';
       }
       $status_values = _core_site_status_table($project_list);
     }
@@ -1395,6 +1395,22 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
  */
 function drush_sitealias_overlay_options($site_alias_record, $prefix) {
   return array_merge($site_alias_record, drush_get_merged_prefixed_options($prefix));
+}
+
+/**
+ * First return an option set via drush_sitealias_overlay_options, if
+ * any, then fall back on "%" . $option from the path aliases.
+ */
+function drush_sitealias_get_path_option($site_alias_record, $option, $default = NULL) {
+  if (isset($site_alias_record) && array_key_exists($option, $site_alias_record)) {
+    return $site_alias_record[$option];
+  }
+  if (isset($site_alias_record) && array_key_exists('path-aliases', $site_alias_record) && array_key_exists("%$option", $site_alias_record['path-aliases'])) {
+    return $site_alias_record['path-aliases']["%$option"];
+  }
+  else {
+    return $default;
+  }
 }
 
 /**

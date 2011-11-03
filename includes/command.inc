@@ -271,9 +271,8 @@ function _drush_verify_cli_options($command) {
   $disallowed_options = array_diff($cli_options, $allowed_options);
   if (!empty($disallowed_options)) {
     $unknown = count($disallowed_options) > 1 ? dt('Unknown options') : dt('Unknown option');
-    // Future: return drush_set_error to fail
     $msg = dt("@unknown: --@options.  See `drush help @command` for information on usage.", array('@unknown' => $unknown, '@options' => implode(', --', $disallowed_options), '@command' => $command['command']));
-    if (!drush_get_option('strict', FALSE)) {
+    if (!drush_get_option('strict', TRUE)) {
       drush_log($msg, 'warning');
     }
     else {
@@ -1038,6 +1037,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       if (!is_null(drush_server_home())) {
         $searchpath[] = drush_server_home() . '/.drush';
       }
+
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_SITE:
       // If we are going to stop bootstrapping at the site, then
@@ -1058,6 +1058,10 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
         // If we're definitely going to get to DRUPAL_CONFIGURATION, then wait and
         // see if we have 'install_profile' available there.
         $searchpath[] = "profiles";
+      }
+      // Planning ahead for Drush scripts in core Drupal.
+      if (drush_drupal_major_version() >=8) {
+        $searchpath[] = 'modules';
       }
       $searchpath[] = 'sites/all/themes';
       $searchpath[] = conf_path() . '/themes';

@@ -37,9 +37,9 @@ class commandCase extends Drush_CommandTestCase {
    */
   public function testUnknownOptions() {
     // Make sure an ordinary 'version' command works
-    $return = $this->drush('version', array(), array('pipe', 'strict'));
+    $return = $this->drush('version', array(), array('pipe' => NULL));
     // Add an unknown option --magic=1234 and insure it fails
-    $return = $this->execute(UNISH_DRUSH . ' version --pipe --magic=1234 --strict --nocolor', self::EXIT_ERROR);
+    $return = $this->execute(UNISH_DRUSH . ' version --pipe --magic=1234 --nocolor', self::EXIT_ERROR);
     // Finally, add in a hook that uses drush_hook_help_alter to allow the 'magic' option.
     // We need to run 'drush cc drush' to clear the commandfile cache; otherwise, our include will not be found.
     $include_path = dirname(__FILE__) . '/hooks/magic_help_alter';

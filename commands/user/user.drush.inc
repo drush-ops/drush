@@ -133,6 +133,9 @@ function user_drush_command() {
     'arguments' => array(
       'name' => 'The name of the account to cancel',
     ),
+    'options' => array(
+      'delete-content' => 'Instead of re-assigning content from the cancelled user to user ID 1, delete it.',
+    ),
     'required-arguments' => TRUE,
     'examples' => array(
       'drush user-cancel username' =>

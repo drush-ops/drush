@@ -12,11 +12,6 @@
  */
 
 /**
- * The indicator for a Drupal installation folder.
- */
-define('DRUSH_DRUPAL_SIGNATURE', 'includes/common.inc');
-
-/**
  * @name Drush bootstrap phases
  * @{
  * Sequential Drush bootstrapping phases.
@@ -486,6 +481,9 @@ function _drush_bootstrap_drush() {
   // Similarly, load the Drupal site configuration options upfront.
   drush_load_config('site');
 
+  // If applicable swaps in shell alias value (or executes it).
+  drush_shell_alias_replace();
+
   // If drush_load_config defined a site alias that did not
   // exist before, then sitealias check arg might now match
   // against one of those aliases.
@@ -498,6 +496,10 @@ function _drush_bootstrap_drush() {
     }
   }
 
+  _drush_bootstrap_global_options();
+}
+
+function _drush_bootstrap_output_prepare() {
   $backend = drush_set_context('DRUSH_BACKEND', drush_get_option('backend'));
 
   // Pipe implies quiet.
@@ -529,8 +531,6 @@ function _drush_bootstrap_drush() {
   if ($quiet && !$backend) {
     ob_start();
   }
-
-  _drush_bootstrap_global_options();
 }
 
 /**
@@ -592,7 +592,7 @@ function _drush_bootstrap_global_options() {
 
   // Backend implies affirmative unless negative is explicitly specified
   drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));
-  drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option('yes', FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
+  drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('yes', 'pipe'), FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
   drush_set_context('DRUSH_SIMULATE',    drush_get_option('simulate', FALSE));
 
   // Suppress colored logging if --nocolor option is explicitly given or if
@@ -621,11 +621,12 @@ function _drush_bootstrap_drupal_root_validate() {
   if (empty($drupal_root)) {
     return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
   }
-  if (!drush_valid_drupal_root($drupal_root)) {
+  if (!$signature = drush_valid_drupal_root($drupal_root)) {
     return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
   }
 
   drush_bootstrap_value('drupal_root', $drupal_root);
+  define('DRUSH_DRUPAL_SIGNATURE', $signature);
 
   return TRUE;
 }
@@ -636,8 +637,9 @@ function _drush_bootstrap_drupal_root_validate() {
  * In this function, the pwd will be moved to the root
  * of the Drupal installation.
  *
- * The DRUSH_DRUPAL_ROOT context and the DRUPAL_ROOT constant are
- * populated from the value that we determined during the validation phase.
+ * The DRUSH_DRUPAL_ROOT context, DRUSH_DRUPAL_CORE context, DRUPAL_ROOT, and the
+ * DRUSH_DRUPAL_CORE constants are populated from the value that we determined during
+ * the validation phase.
  *
  * We also now load the drushrc.php for this specific platform.
  * We can now include files from the Drupal Tree, and figure
@@ -651,6 +653,12 @@ function _drush_bootstrap_drupal_root() {
   require_once DRUPAL_ROOT . '/' . DRUSH_DRUPAL_SIGNATURE;
   $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
   $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
+
+  // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
+  // in prior versions.
+  $core = $major_version >= 8 ? DRUPAL_ROOT . '/core' : DRUPAL_ROOT;
+  drush_set_context('DRUSH_DRUPAL_CORE', $core);
+  define('DRUSH_DRUPAL_CORE', $core);
 
   _drush_bootstrap_global_options();
 
