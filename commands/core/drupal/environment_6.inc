@@ -118,7 +118,7 @@ function drush_module_disable($modules) {
  *   Array of module names
  */
 function drush_module_uninstall($modules) {
-  require_once drush_get_context('DRUSH_DRUPAL_ROOT') . '/includes/install.inc';
+  require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
   foreach ($modules as $module) {
     drupal_uninstall_module($module);
   }

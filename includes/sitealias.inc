@@ -774,7 +774,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
       // level, and include file.inc to insure that we have access
       // to the %file path.
       if (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
-        include_once DRUPAL_ROOT . '/includes/file.inc';
+        include_once DRUSH_DRUPAL_CORE . '/includes/file.inc';
       }
       $status_values = _core_site_status_table($project_list);
     }

@@ -65,7 +65,7 @@ class siteUpgradeCase extends Drush_CommandTestCase {
       'root' => $aliases['target']['root'],
       'uri' => $aliases['target']['uri'],
     );
-    $eval = "require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');";
+    $eval = "require_once DRUSH_DRUPAL_CORE . '/' . variable_get('password_inc', 'includes/password.inc');";
     $eval .= "\$account = user_load_by_name('example');";
     $eval .= "print (string) user_check_password('password', \$account)";
     $this->drush('php-eval', array($eval), $options);

@@ -369,11 +369,20 @@ function drush_locate_root($start_path = NULL) {
  * @param string
  *   Path to check.
  *
- * @return boolean
- *   True if given path seems to be a Drupal root, otherwise FALSE.
+ * @return string
+ *   The relative path to common.inc (varies by Drupal version), or FALSE if not
+ *   a Drupal root.
  */
 function drush_valid_drupal_root($path) {
-  return !empty($path) && is_dir($path) && file_exists($path . '/' . DRUSH_DRUPAL_SIGNATURE);
+  if (!empty($path) && is_dir($path)) {
+    $candidates = array('includes/common.inc', 'core/includes/common.inc');
+    foreach ($candidates as $candidate) {
+      if (file_exists($path . '/' . $candidate)) {
+        return $candidate;
+      }
+    }
+  }
+  return FALSE;
 }
 
 /**
