@@ -17,7 +17,8 @@ class makeMakefileCase extends Drush_CommandTestCase {
     foreach ($makefiles as $type => $config) {
       $options = array_merge($config['options'], $default_options);
       $makefile = $makefile_path . '/' . $config['makefile'];
-      $this->drush('make', array($makefile), $options);
+      $return = !empty($config['fail']) ? self::EXIT_ERROR : self::EXIT_SUCCESS;
+      $this->drush('make', array($makefile), $options, NULL, NULL, $return);
 
       // Check the log for the build hash.
       $output = $this->getOutputAsList();
@@ -125,16 +126,14 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'md5' => 'f76ec174a775ce67f8e9edcb02336ef2',
         'options'  => array('no-core' => NULL),
       ),
-/* TODO
       'md5-fail' => array(
         'name'     => 'Failed MD5 validation test',
         'makefile' => 'md5-fail.make',
         'build'    => FALSE,
-        'md5' => 'Checksum md5 verification failed for README.txt. Expected - fail -, received c8968d801a953b9ea735364d6f3dfabc.'
-        ),
+        'md5' => FALSE,
         'options'  => array('no-core' => NULL),
+        'fail' => TRUE,
       ),
-*/
       'ignore-checksums' => array(
         'name'     => 'Ignore invalid checksum/s',
         'makefile' => 'md5-fail.make',
