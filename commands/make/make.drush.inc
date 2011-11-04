@@ -1,6 +1,7 @@
 <?php
 
 define('MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
+define('MAKE_DEFAULT_L10N_SERVER', 'http://localize.drupal.org/l10n_server.xml');
 define('MAKE_VERSION_BEST', 'best');
 define('MAKE_API', 2);
 

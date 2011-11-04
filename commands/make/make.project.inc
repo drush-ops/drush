@@ -190,8 +190,8 @@ class DrushMakeProject {
         if (isset($this->l10n_url)) {
           $l10n_server = $this->l10n_url;
         }
-        elseif ($this->location === drush_get_option('drush-make-update-default-url')) {
-          $l10n_server = 'http://localize.drupal.org/l10n_server.xml';
+        elseif ($this->location === drush_get_option('make-update-default-url')) {
+          $l10n_server = MAKE_DEFAULT_L10N_SERVER;
         }
         else {
           $l10n_server = FALSE;
