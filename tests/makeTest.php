@@ -21,7 +21,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
 
       // Check the log for the build hash.
       $output = $this->getOutputAsList();
-      $this->assertEquals($output[0], $config['md5'], 'build md5 matches expected value: ' . $config['md5']);
+      $this->assertEquals($output[0], $config['md5'], $config['name'] . ' - build md5 matches expected value: ' . $config['md5']);
     }
   }
 
@@ -59,14 +59,14 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Test --no-patch-txt option',
         'makefile' => 'patches.make',
         'build'    => TRUE,
-        'md5' => 'e2d38e343c7e95b994443c34ec665a23',
+        'md5' => 'e43b25505a5edfcdf25b4eaa064978b2',
         'options'  => array('no-core' => NULL, 'no-patch-txt' => NULL),
       ),
       'patch' => array(
         'name'     => 'Test patching and writing of PATCHES.txt file',
         'makefile' => 'patches.make',
         'build'    => TRUE,
-        'md5' => 'c17e8b59055db741778f9048bf289332',
+        'md5' => '27403b34b599af1cbdb50417e6ea626f',
         'options'  => array('no-core' => NULL),
       ),
       'include' => array(
