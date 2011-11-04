@@ -1,8 +1,6 @@
-core = 6.x
+core = 7.x
 api = 2
 
 projects[buildkit][type] = "profile"
-projects[buildkit][download][type] = "cvs"
-projects[buildkit][download][date] = 2010-06-27
-projects[buildkit][download][root] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal-contrib"
-projects[buildkit][download][module] = "contributions/profiles/buildkit"
+projects[buildkit][download][type] = "git"
+projects[buildkit][download][revision] = "e209b80"

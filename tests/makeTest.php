@@ -80,7 +80,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Recursion',
         'makefile' => 'recursion.make',
         'build'    => TRUE,
-        'md5' => 'b4d0599c7c44566a7e3dc9086b870723',
+        'md5' => '1fb4b3b3f07d8ea7bacaf1c8c2c1e7a9',
         'options'  => array('no-core' => NULL),
       ),
       'svn' => array(
