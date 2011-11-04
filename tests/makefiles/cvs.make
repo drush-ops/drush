@@ -1,13 +1,6 @@
 core = 6.x
 api = 2
 
-; Test that an alternative CVSROOT specification works.
-projects[drupal][type] = core
-projects[drupal][download][type] = cvs
-projects[drupal][download][root] = :pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal
-projects[drupal][download][module] = drupal
-projects[drupal][download][revision] = DRUPAL-6-17
-
 ; Test that no CVSROOT specification falls back to Drupal contrib.
 projects[votingapi][type] = module
 projects[votingapi][download][type] = cvs
