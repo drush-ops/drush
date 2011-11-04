@@ -97,15 +97,13 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'md5' => '272e2b9bb27794c54396f2f03c159725',
         'options'  => array(),
       ),
-/* TODO translations broken
       'translations' => array(
         'name'     => 'Translation downloads',
         'makefile' => 'translations.make',
         'build'    => TRUE,
-        'md5' => '1c662c27170ac23942c6a7eb15512a95',
+        'md5' => 'd53de1aa4ed6115d928b7079ee7c5b57',
         'options'  => array('translations' => 'es,pt-br'),
       ),
-*/
       'contrib-destination' => array(
         'name'     => 'Contrib-destination attribute',
         'makefile' => 'contrib-destination.make',
