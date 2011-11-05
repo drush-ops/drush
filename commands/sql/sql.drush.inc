@@ -331,7 +331,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
         $exec .= ' --result-file '. $file;
       }
       // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
-      $extra = ' --single-transaction --opt -Q' . str_replace('--database=', ' ', _drush_sql_get_credentials($db_spec));
+      $extra = ' --no-autocommit --single-transaction --opt -Q' . str_replace('--database=', ' ', _drush_sql_get_credentials($db_spec));
       if (isset($data_only)) {
         $extra .= ' --no-create-info';
       }
