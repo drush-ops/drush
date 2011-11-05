@@ -221,7 +221,9 @@ function drush_sql_dump_execute() {
       drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
     }
   }
-  return $return;
+  else {
+    return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed');
+  }
 }
 
 function drush_sql_get_table_selection() {
