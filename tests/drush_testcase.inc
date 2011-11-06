@@ -252,10 +252,12 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     *   A site alias or site specification. Include the '@' at start of a site alias.
     * @param $cd
     *   A directory to change into before executing.
+    * @param $expected_return
+    *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
     * @return integer
     *   An exit code.
     */
-  function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL) {
+  function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS) {
     $cmd[] = $cd ? sprintf('cd %s;', self::escapeshellarg($cd)) : NULL;
     $cmd[] = UNISH_DRUSH;
     $cmd[] = empty($site_specification) ? NULL : self::escapeshellarg($site_specification);
@@ -277,7 +279,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
       }
     }
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs
-    return $this->execute(implode(' ', $exec));
+    return $this->execute(implode(' ', $exec), $expected_return);
   }
 
   function drush_major_version() {
