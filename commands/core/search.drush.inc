@@ -78,7 +78,7 @@ function _drush_search_index() {
       }
 
       foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {
-        $eval .= " module_invoke($module, 'update_index');";
+        $eval .= " module_invoke('$module', 'update_index');";
       }
     }
     else {
