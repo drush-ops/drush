@@ -1,7 +1,29 @@
 <?php
 
-function drush_core_search_status() {
-  list($remaining, $total) = _drush_core_search_status();
+function search_drush_command() {
+  $items['search-status'] = array(
+    'description' => 'Show how many items remain to be indexed out of the total.',
+    'drupal dependencies' => array('search'),
+    'options' => array(
+      'pipe' => 'Display in the format remaining/total for processing by scripts.',
+    ),
+  );
+  $items['search-index'] = array(
+    'description' => 'Index the remaining search items without wiping the index.',
+    'drupal dependencies' => array('search'),
+  );
+  $items['search-reindex'] = array(
+    'description' => 'Force the search index to be rebuilt.',
+    'drupal dependencies' => array('search'),
+    'options' => array(
+      'immediate' => 'Rebuild the index immediately, instead of waiting for cron.',
+    ),
+  );
+  return $items;
+}
+
+function drush_search_status() {
+  list($remaining, $total) = _drush_search_status();
   drush_print(dt('There are @remaining items out of @total still to be indexed.', array(
     '@remaining' => $remaining,
     '@total' => $total,
@@ -9,7 +31,7 @@ function drush_core_search_status() {
   drush_print_pipe("$remaining/$total\n");
 }
 
-function _drush_core_search_status() {
+function _drush_search_status() {
   $remaining = 0;
   $total = 0;
   if (drush_drupal_major_version() >= 7) {
@@ -34,13 +56,13 @@ function _drush_core_search_status() {
   return array($remaining, $total);
 }
 
-function drush_core_search_index() {
-  drush_op('_drush_core_search_index');
+function drush_search_index() {
+  drush_op('_drush_search_index');
   drush_log(dt('The search index has been built.'), 'ok');
 }
 
-function _drush_core_search_index() {
-  list($remaining, ) = _drush_core_search_status();
+function _drush_search_index() {
+  list($remaining, ) = _drush_search_status();
   register_shutdown_function('search_update_totals');
   while ($remaining > 0) {
     drush_log(dt('Remaining items to be indexed: ' . $remaining), 'ok');
@@ -71,11 +93,11 @@ function _drush_core_search_index() {
       $eval .= " module_invoke_all('update_index');";
     }
     drush_invoke_process('@self', 'php-eval', array($eval));
-    list($remaining, ) = _drush_core_search_status();
+    list($remaining, ) = _drush_search_status();
   }
 }
 
-function drush_core_search_reindex() {
+function drush_search_reindex() {
   drush_print(dt("The search index must be fully rebuilt before any new items can be indexed."));
   if (drush_get_option('immediate')) {
     drush_print(dt("Rebuilding the index may take a long time."));
@@ -91,7 +113,7 @@ function drush_core_search_reindex() {
     drush_op('search_wipe');
   }
   if (drush_get_option('immediate')) {
-    drush_op('_drush_core_search_index');
+    drush_op('_drush_search_index');
     drush_log(dt('The search index has been rebuilt.'), 'ok');
   }
   else {

@@ -132,24 +132,6 @@ function core_drush_command() {
     'deprecated-aliases' => array('script'),
     'topics' => array('docs-examplescript', 'docs-scripts'),
   );
-  $items['search-status'] = array(
-    'description' => 'Show how many items remain to be indexed out of the total.',
-    'drupal dependencies' => array('search'),
-    'options' => array(
-      'pipe' => 'Display in the format remaining/total for processing by scripts.',
-    ),
-  );
-  $items['search-index'] = array(
-    'description' => 'Index the remaining search items without wiping the index.',
-    'drupal dependencies' => array('search'),
-  );
-  $items['search-reindex'] = array(
-    'description' => 'Force the search index to be rebuilt.',
-    'drupal dependencies' => array('search'),
-    'options' => array(
-      'immediate' => 'Rebuild the index immediately, instead of waiting for cron.',
-    ),
-  );
   $items['core-execute'] = array(
     'description' => 'Execute a shell command. Usually used with a site alias.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
@@ -730,7 +712,7 @@ function drush_core_quick_drupal() {
   drush_invoke('site-install', array(drush_get_option('profile')));
   // Log in with the admin user.
   // TODO: If site-install is given a sites-subdir other than 'default',
-  // then it will bootstrap to DRUSH_BOOTSTRAP_DRUPAL_SITE get the installer 
+  // then it will bootstrap to DRUSH_BOOTSTRAP_DRUPAL_SITE get the installer
   // to recognize the desired site directory. This somehow interferes
   // with our desire to bootstrap to DRUSH_BOOTSTRAP_DRUPAL_LOGIN here.
   // We could do the last few steps in a new process iff uri is not 'default'.
