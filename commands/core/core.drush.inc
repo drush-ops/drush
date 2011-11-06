@@ -1022,5 +1022,5 @@ function drush_core_find_project_path($target) {
  * that start with !.
  */
 function drush_core_execute($script) {
-  return drush_op_system($script);
+  return drush_op_system($script) == 0;
 }
