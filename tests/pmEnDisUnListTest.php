@@ -45,10 +45,7 @@ class EnDisUnListCase extends Drush_CommandTestCase {
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));
 
-
-    // We expect an exit code of 1 so just call execute() directly.
-    $exec = sprintf('%s variable-get %s --pipe --root=%s --uri=%s', UNISH_DRUSH, 'devel_query_display', $options['root'], $options['uri']);
-    $this->execute($exec, self::EXIT_ERROR);
+    $this->drush('variable-get', array('devel_query_display'), $options, NULL, NULL, self::EXIT_ERROR);
     $output = $this->getOutput();
     $this->assertEmpty($output, 'Devel variable was uninstalled.');
   }
