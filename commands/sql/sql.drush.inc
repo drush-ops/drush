@@ -620,7 +620,7 @@ function _drush_sql_drop($db_spec = NULL) {
 
 function drush_sql_cli() {
   drush_sql_bootstrap_further();
-  proc_close(proc_open(_drush_sql_connect(), array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
+  drush_shell_proc_open(_drush_sql_connect());
 }
 
 /**

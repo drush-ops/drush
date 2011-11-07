@@ -64,29 +64,6 @@ function drush_ssh_site_ssh($alias, $command = NULL) {
     return;
   }
 
-  // Build up the command. TODO: We maybe refactor this soon.
-  $hostname = drush_escapeshellarg($site['remote-host'], "LOCAL");
-  $username = isset($site['remote-user']) ? drush_escapeshellarg($site['remote-user'], "LOCAL") . "@" : '';
-  $ssh_options = isset($site['ssh-options']) ? $site['ssh-options'] : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
-  if (drush_get_option('tty')) {
-    $ssh_options .= ' -t';
-  }
-
-  $cmd = "ssh " . $ssh_options . " " . $username . $hostname;
-  if (!empty($command)) {
-    if (!drush_get_option('escaped', FALSE)) {
-      $cmd .= " " . drush_escapeshellarg($command);
-    }
-    else {
-      $cmd .= " $command";
-    }
-  }
-
-  // Execute.
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-    drush_print($cmd);
-  }
-  if (!drush_get_context('DRUSH_SIMULATE')) {
-    proc_close(proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
-  }
+  $cmd = drush_shell_proc_build($site, $command);
+  drush_shell_proc_open($cmd);
 }

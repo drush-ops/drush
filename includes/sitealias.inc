@@ -22,6 +22,7 @@ function drush_sitealias_check_arg() {
 
   // Test to see if the first arg is a site specification
   if (_drush_sitealias_set_context_by_name($args[0])) {
+    drush_set_context('DRUSH_TARGET_SITE_ALIAS', $args[0]);
     array_shift($args);
     // We only need to expand the site specification
     // once, then we are done.
@@ -71,6 +72,20 @@ function drush_sitealias_resolve_sitespecs($site_specifications) {
     }
   }
   return $result_list;
+}
+
+/**
+ * Returns TRUE if $alias is a valid format for an alias name.
+ *
+ * Mirrors the allowed formats shown below for drush_sitealias_get_record.
+ */
+function drush_sitealias_valid_alias_format($alias) {
+  return ( (strpos($alias, ',') !== false) ||
+    ((strpos($alias, '@') === FALSE ? 0 : 1) + (strpos($alias, '/') === FALSE ? 0 : 1) + (strpos($alias, '#') === FALSE ? 0 : 1) >= 2) ||
+    ($alias{0} == '#') ||
+    ($alias{0} == '@')
+  );
+  return $alias{0} == '@';
 }
 
 /**

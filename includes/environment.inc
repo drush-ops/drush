@@ -287,8 +287,11 @@ function drush_conf_path($server_uri, $require_settings = TRUE) {
     return NULL;
   }
   $parsed_uri = parse_url($server_uri);
-  if (!array_key_exists('scheme', $parsed_uri)) {
+  if (is_array($parsed_uri) && !array_key_exists('scheme', $parsed_uri)) {
     $parsed_uri = parse_url('http://' . $server_uri);
+  }
+  if (!is_array($parsed_uri)) {
+    return NULL;
   }
   $server_host = $parsed_uri['host'];
   if (array_key_exists('path', $parsed_uri)) {

@@ -157,6 +157,9 @@ function core_drush_command() {
       'command' => 'The shell command to be executed.',
     ),
     'required-arguments' => TRUE,
+    'allow-additional-options' => TRUE,
+    'handle-remote-commands' => TRUE,
+    'mask-local-cli-options' => TRUE,
     'examples' => array(
       'drush exec \'git pull\'' => 'Retrieve latest code from git',
     ),
@@ -730,7 +733,7 @@ function drush_core_quick_drupal() {
   drush_invoke('site-install', array(drush_get_option('profile')));
   // Log in with the admin user.
   // TODO: If site-install is given a sites-subdir other than 'default',
-  // then it will bootstrap to DRUSH_BOOTSTRAP_DRUPAL_SITE get the installer 
+  // then it will bootstrap to DRUSH_BOOTSTRAP_DRUPAL_SITE get the installer
   // to recognize the desired site directory. This somehow interferes
   // with our desire to bootstrap to DRUSH_BOOTSTRAP_DRUPAL_LOGIN here.
   // We could do the last few steps in a new process iff uri is not 'default'.
@@ -1017,10 +1020,25 @@ function drush_core_find_project_path($target) {
   }
 }
 
-/*
+/**
  * Command callback. Execute specified shell code. Often used by shell aliases
  * that start with !.
  */
-function drush_core_execute($script) {
-  return drush_op_system($script);
+function drush_core_execute() {
+  // The DRUSH_COMMAND_ARGS contain all args and options that appear after the command name.
+  $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
+  for ($x = 0; $x < sizeof($args); $x++) {
+    $args[$x] = drush_escapeshellarg($args[$x]);
+  }
+  $cmd = implode(' ', $args);
+  if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+    $site = drush_sitealias_get_record($alias);
+    if (!empty($site['remote-host'])) {
+      // Remote, so execute an ssh command with a bash fragment at the end.
+      $exec = drush_shell_proc_build($site, $cmd);
+      return drush_shell_proc_open($exec);
+    }
+  }
+  // Must be a local command.
+  return (bool) !drush_op_system($cmd);
 }
