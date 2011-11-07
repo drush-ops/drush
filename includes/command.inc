@@ -1513,12 +1513,14 @@ function drush_shell_alias_replace() {
   if (isset($shell_aliases[$first])) {
     // Shell alias found for first argument in the request.
     $alias_value = $shell_aliases[$first];
-    drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => $alias_value)), 'debug');
-    if (substr($alias_value, 0, 1) == '!') {
-      $replacement = array('core-execute', ltrim($alias_value, '!'));
+    if (!is_array($alias_value)) {
+      $alias_value = explode(' ', $alias_value);
     }
-    else {
-      $replacement = explode(' ', $alias_value);
+    drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');
+    $replacement = $alias_value;
+    if (substr($alias_value[0], 0, 1) == '!') {
+      $replacement[0] = ltrim($replacement[0], '!');
+      array_unshift($replacement, 'core-execute');
     }
     $pos = array_search($first, $argv);
     array_splice($argv, $pos, 1, $replacement);

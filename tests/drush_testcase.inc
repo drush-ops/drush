@@ -258,18 +258,38 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     *   An exit code.
     */
   function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS) {
+    $global_option_list = array('simulate', 'root', 'uri', 'include', 'config');
+    // insert "cd ... ; drush"
     $cmd[] = $cd ? sprintf('cd %s;', self::escapeshellarg($cd)) : NULL;
     $cmd[] = UNISH_DRUSH;
-    $cmd[] = empty($site_specification) ? NULL : self::escapeshellarg($site_specification);
-    $cmd[] = $command;
-    if ($level = $this->log_level()) {
-      $args[] = '--' . $level;
+
+    // insert global options
+    foreach ($options as $key => $value) {
+      if (in_array($key, $global_option_list)) {
+        unset($options[$key]);
+        if (is_null($value)) {
+          $cmd[] = "--$key";
+        }
+        else {
+          $cmd[] = "--$key=" . self::escapeshellarg($value);
+        }
+      }
     }
 
+    if ($level = $this->log_level()) {
+      $cmd[] = '--' . $level;
+    }
+    $cmd[] = "--nocolor";
+
+    // insert site specification and drush command
+    $cmd[] = empty($site_specification) ? NULL : self::escapeshellarg($site_specification);
+    $cmd[] = $command;
+
+    // insert drush command arguments
     foreach ($args as $arg) {
       $cmd[] = self::escapeshellarg($arg);
     }
-    $options['nocolor'] = NULL;
+    // insert drush command options
     foreach ($options as $key => $value) {
       if (is_null($value)) {
         $cmd[] = "--$key";
