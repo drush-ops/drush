@@ -61,7 +61,8 @@ function drush_core_pre_site_install($profile = NULL) {
       drush_set_error(dt('Failed to copy sites/default/default.settings.php to  @settingsfile', array('@settingsfile' => $settingsfile)));
       return;
     }
-    elseif (drush_drupal_major_version() == 6) {
+
+    if (drush_drupal_major_version() == 6) {
       // On D6, we have to write $db_url ourselves. In D7+, the installer does it.
       file_put_contents($settingsfile, "\n" . '$db_url = \'' . drush_get_option('db-url') . "';\n", FILE_APPEND);
       // Instead of parsing and performing string replacement on the configuration file,
@@ -78,14 +79,19 @@ function drush_core_pre_site_install($profile = NULL) {
         }
         file_put_contents($settingsfile, "\n" . $db_prefix_config . "\n", FILE_APPEND);
       }
-      // If there is a profile, write it into $conf['install_profile']
-      // to help drush find commandfiles earlier in the drush bootstrap.
-      if (!empty($profile)) {
-        $install_profile_config = "\$conf['install_profile'] = '$profile';";
-        file_put_contents($settingsfile, "\n" . $install_profile_config . "\n", FILE_APPEND);
-      }
     }
   }
+
+  // If there is a profile, write it (as needed) into $conf['install_profile']
+  // to help drush find commandfiles earlier in the drush bootstrap.
+  if (!empty($profile)) {
+    $contents = file_get_contents($settingsfile);
+    if (strpos("\$conf['profile']", $contents) === FALSE) {
+      $install_profile_config = "\$conf['install_profile'] = '$profile';";
+      $appended = file_put_contents($settingsfile, "\n" . $install_profile_config . "\n", FILE_APPEND);
+    }
+  }
+
   // The Drupal 6 installer needs to bootstrap up to the specified site.
   // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
   if (drush_drupal_major_version() == 6) {
