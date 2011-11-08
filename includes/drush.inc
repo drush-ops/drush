@@ -857,9 +857,9 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
   // If we are not on Windows, then try to do "tar" in a single operation.
   if ((!drush_is_windows()) && (drush_shell_cd_and_exec(dirname($path), "tar -C %s -xzf %s", $destination, basename($path)))) {
     if ($listing) {
-      // We use a separate tar -tf instead of -xvf above because
+      // We use a separate tar -tzf instead of -xvf above because
       // the output is not the same in Mac.
-      drush_shell_cd_and_exec(dirname($path), "tar -tf %s", basename($path));
+      drush_shell_cd_and_exec(dirname($path), "tar -tzf %s", basename($path));
       return drush_shell_exec_output();
     }
     return TRUE;
