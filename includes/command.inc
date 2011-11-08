@@ -1010,9 +1010,11 @@ function _drush_add_commandfiles($searchpath, $phase = NULL) {
     foreach (array_unique($searchpath) as $path) {
       if (is_dir($path)) {
         $nomask = array_merge(drush_filename_blacklist(), drush_get_option_list('ignored-modules'));
-        $files = drush_scan_directory($path, '/\.drush(' . DRUSH_MAJOR_VERSION . '|)\.inc$/', $nomask);
+        $dmv = DRUSH_MAJOR_VERSION;
+        $files = drush_scan_directory($path, "/\.drush($dmv|)\.inc$/", $nomask);
         foreach ($files as $filename => $info) {
-          $module = basename($filename, '.drush.inc');
+          $module = basename($filename);
+          $module = str_replace(array('.drush.inc', ".drush$dmv.inc"), '', $module);
           // Only try to bootstrap modules that we have never seen before, or that we
           // have tried to load but did not due to an unmet _drush_load() requirement.
           if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
