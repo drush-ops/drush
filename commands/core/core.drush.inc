@@ -1017,7 +1017,7 @@ function drush_core_execute() {
     $site = drush_sitealias_get_record($alias);
     if (!empty($site['remote-host'])) {
       // Remote, so execute an ssh command with a bash fragment at the end.
-      $exec = drush_shell_proc_build($site, $cmd);
+      $exec = drush_shell_proc_build($site, $cmd, TRUE);
       return drush_shell_proc_open($exec);
     }
   }

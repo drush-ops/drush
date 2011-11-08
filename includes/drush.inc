@@ -939,13 +939,13 @@ function drush_remote_command() {
   $remote_host = drush_get_option('remote-host');
   // Get the command early so that we can allow commands to directly handle remote aliases if they wish
   $command = drush_parse_command();
-  if (isset($command) && array_key_exists('mask-local-cli-options', $command)) {
+  if (is_array($command) && array_key_exists('mask-local-cli-options', $command)) {
     $global_cli_options = drush_get_context('DRUSH_GLOBAL_CLI_OPTIONS', array());
     drush_expand_short_form_options($global_cli_options);
     drush_set_context('cli', $global_cli_options);
     _drush_bootstrap_global_options();
   }
-  if (isset($command) && array_key_exists('handle-remote-commands', $command)) {
+  if (is_array($command) && array_key_exists('handle-remote-commands', $command)) {
     return FALSE;
   }
   if (isset($remote_host)) {

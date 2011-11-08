@@ -33,7 +33,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    */
   public static function tearDownAfterClass() {
     if (file_exists(UNISH_SANDBOX)) {
-      unish_file_delete_recursive(UNISH_SANDBOX);
+      //unish_file_delete_recursive(UNISH_SANDBOX);
     }
   }
 
@@ -235,6 +235,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     $this->_output = FALSE;
     $this->log("Executing: $command", 'notice');
     exec($command, $this->_output, $return);
+    //$this->_output = array_filter(array_map('trim', $this->_output), 'strlen');;
     $this->assertEquals($expected_return, $return, 'Unexpected exit code: ' .  $command);
     return $return;
   }
@@ -258,7 +259,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     *   An exit code.
     */
   function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS) {
-    $global_option_list = array('simulate', 'root', 'uri', 'include', 'config');
+    $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'ssh-options');
     // insert "cd ... ; drush"
     $cmd[] = $cd ? sprintf('cd %s;', self::escapeshellarg($cd)) : NULL;
     $cmd[] = UNISH_DRUSH;

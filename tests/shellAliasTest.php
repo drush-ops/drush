@@ -19,7 +19,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
         'pull' => '!git pull',
       );
     ";
-    file_put_contents(UNISH_SANDBOX . '/drushrc.php', $contents);
+    file_put_contents(UNISH_SANDBOX . '/drushrc.php', trim($contents));
   }
 
   /*
@@ -29,7 +29,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $options = array(
       'config' => UNISH_SANDBOX,
     );
-    $this->drush('glopts', array('php_configuration'), $options);
+    $this->drush('glopts', array(), $options);
     $output = $this->getOutput();
     $this->assertContains('These options are applicable to most drush commands.', $output, 'Successfully executed local shell alias to drush command');
   }
@@ -53,10 +53,11 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $options = array(
       'config' => UNISH_SANDBOX,
       'simulate' => NULL,
+      'ssh-options' => '',
     );
-    $this->drush('glopts', array('php_configuration'), $options, 'user@server/path/to/drupal#sitename');
+    $this->drush('glopts', array(), $options, 'user@server/path/to/drupal#sitename');
     // $expected might be different on non unix platforms. We shall see.
-    $expected = "Simulating backend invoke: ssh user@server 'drush --simulate --uri=sitename --root=/path/to/drupal topic core-global-options --invoke 2>&1' 2>&1";
+    $expected = "Simulating backend invoke: ssh user@server 'drush  --simulate --nocolor --uri=sitename --root=/path/to/drupal --config=/tmp/drush-sandbox topic core-global-options --invoke 2>&1' 2>&1";
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected remote shell alias to a drush command was built');
   }
@@ -65,11 +66,12 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $options = array(
       'config' => UNISH_SANDBOX,
       'simulate' => NULL,
+      'ssh-options' => '',
       'rebase' => NULL,
     );
     $this->drush('pull', array('origin'), $options, 'user@server/path/to/drupal#sitename');
     // $expected might be different on non unix platforms. We shall see.
-    $expected = "Calling proc_open(ssh user@server \"cd '/path/to/drupal' && git pull origin --rebase\");";
+    $expected = "Calling proc_open(ssh  user@server 'cd /path/to/drupal && git pull origin --rebase');";
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected remote shell alias to a bash command was built');
   }

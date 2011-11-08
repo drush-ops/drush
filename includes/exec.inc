@@ -156,7 +156,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
  * @return string
  *   A string suitable for execution with drush_shell_remote_exec().
  */
-function drush_shell_proc_build($site, $command = NULL, $cd = NULL) {
+function drush_shell_proc_build($site, $command = '', $cd = NULL) {
   // Build up the command. TODO: We maybe refactor this soon.
   $hostname = drush_escapeshellarg($site['remote-host'], "LOCAL");
   $username = isset($site['remote-user']) ? drush_escapeshellarg($site['remote-user'], "LOCAL") . "@" : '';
@@ -166,19 +166,29 @@ function drush_shell_proc_build($site, $command = NULL, $cd = NULL) {
   }
 
   $cmd = "ssh " . $ssh_options . " " . $username . $hostname;
+
+  if ($cd === TRUE) {
+    if (array_key_exists('root', $site)) {
+      $cd = $site['root'];
+    }
+    else {
+      $cd = FALSE;
+    }
+  }
+  if ($cd) {
+    $command = 'cd ' . drush_escapeshellarg($cd, $site['os']) . ' && ' . $command;
+  }
+
   if (!empty($command)) {
     if (!drush_get_option('escaped', FALSE)) {
-      $cmd .= " " . drush_escapeshellarg($command);
+      $cmd .= " " . drush_escapeshellarg($command, $site['os']);
     }
     else {
       $cmd .= " $command";
     }
   }
-
-  if ($cd) {
-    $cd = 'cd ' . drush_escapeshellarg($cd, $site['os']) . ' && ';
-  }
-  return $cd . $cmd;
+  
+  return $cmd;
 }
 
 /*
