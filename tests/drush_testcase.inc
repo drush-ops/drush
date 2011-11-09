@@ -33,7 +33,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    */
   public static function tearDownAfterClass() {
     if (file_exists(UNISH_SANDBOX)) {
-      //unish_file_delete_recursive(UNISH_SANDBOX);
+      unish_file_delete_recursive(UNISH_SANDBOX);
     }
   }
 
@@ -235,7 +235,6 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     $this->_output = FALSE;
     $this->log("Executing: $command", 'notice');
     exec($command, $this->_output, $return);
-    //$this->_output = array_filter(array_map('trim', $this->_output), 'strlen');;
     $this->assertEquals($expected_return, $return, 'Unexpected exit code: ' .  $command);
     return $return;
   }
