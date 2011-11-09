@@ -768,19 +768,22 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
       unset($command_options[$key]);
     }
   }
+  
+  $cmd[] = $command;
   foreach ($args as $arg) {
-    $command .= ' ' . drush_escapeshellarg($arg, $os);
+    $cmd[] = drush_escapeshellarg($arg, $os);
   }
   $option_str = _drush_backend_argument_string($command_options, $os);
   if (!empty($option_str)) {
-    $command .= " " . $option_str;
+    $cmd[] = " " . $option_str;
   }
   if (!empty($backend_options['backend']) && empty($backend_options['interactive'])) {
-    $command .= " --backend=2";
+    $cmd[] = "--backend=2";
   }
   if (!empty($backend_options['interactive'])) {
-    $command .= ' --invoke';
+    $cmd[] .= '--invoke';
   }
+  $command = implode(' ', array_filter($cmd, 'strlen'));
   if (!is_null($hostname)) {
     if (drush_is_windows($os)) {
       if (!is_null($username) && (array_key_exists('winrs-password', $site_record))) {
@@ -792,7 +795,14 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
       $username = (!is_null($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
       $ssh_options = $site_record['ssh-options'];
       $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
-      $command = "ssh " . $ssh_options . " " . $username . drush_escapeshellarg($hostname, "LOCAL") . " " . drush_escapeshellarg($command . ' 2>&1', "LOCAL");
+
+      $ssh_cmd[] = "ssh";
+      $ssh_cmd[] = $ssh_options;
+      $ssh_cmd[] = $username . drush_escapeshellarg($hostname, "LOCAL");
+      $ssh_cmd[] = drush_escapeshellarg($command . ' 2>&1', "LOCAL");
+
+      // Remove NULLs and separate with spaces
+      $command = implode(' ', array_filter($ssh_cmd, 'strlen'));
     }
   }
   else {
