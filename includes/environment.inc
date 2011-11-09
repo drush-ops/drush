@@ -608,6 +608,7 @@ function _drush_bootstrap_drush() {
   define('DRUSH_VERSION', $drush_info['drush_version']);
   $version_parts = explode('.', DRUSH_VERSION);
   define('DRUSH_MAJOR_VERSION', $version_parts[0]);
+  define('DRUSH_MINOR_VERSION', $version_parts[1]);
 
   // prime the CWD cache
   drush_cwd();
