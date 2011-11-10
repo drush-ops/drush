@@ -104,6 +104,11 @@
  *
  *   $ drush site-alias @self
  *
+ * TIP:  If you would like to have drush include a 'databases' record
+ * in the output, include the options --with-db and --show-passwords:
+ *
+ *   $ drush site-alias @self --with-db --show-passwords
+ *
  * If you would like to see all of the Drupal sites at a specified
  * root directory, use the built-in alias "@sites":
  *
@@ -210,6 +215,21 @@
 #      '%dump-dir' => '/path/to/dumps/',
 #      '%files' => 'sites/mydrupalsite.com/files',
 #      '%custom' => '/my/custom/path',
+#     ),
+#    'databases' => 
+#      array (
+#        'default' => 
+#        array (
+#          'default' => 
+#          array (
+#            'driver' => 'mysql',
+#            'username' => 'sqlusername',
+#            'password' => 'sqlpassword',
+#            'port' => '',
+#            'host' => 'localhost',
+#            'database' => 'sqldbname',
+#          ),
+#       ),
 #     ),
 #     'variables => array(
 #        site_name => 'My Drupal site',
