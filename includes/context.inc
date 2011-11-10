@@ -195,7 +195,7 @@ function drush_expand_short_form_options(&$options) {
       // For any option with a short form, check to see if the short form was set in the
       // options.  If it was, then rename it to its long form.
       if (array_key_exists('short-form', $info) && array_key_exists($info['short-form'], $options)) {
-        if (!array_key_exists($name, $options)) {
+        if (!array_key_exists($name, $options) || !array_key_exists('merge-list', $info)) {
           $options[$name] = $options[$info['short-form']];
         }
         else {
