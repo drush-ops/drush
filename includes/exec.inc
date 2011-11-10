@@ -145,7 +145,9 @@ function _drush_shell_exec($args, $interactive = FALSE) {
 }
 
 /**
- * Build an SSH string including an optional fragment of bash.
+ * Build an SSH string including an optional fragment of bash. Commands that use
+ * this should also merge drush_shell_proc_build_options() into their
+ * command options. @see ssh_drush_command().
  *
  * @param array $site
  *   A site alias record.
@@ -187,7 +189,7 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL) {
       $cmd .= " $command";
     }
   }
-  
+
   return $cmd;
 }
 
@@ -204,6 +206,17 @@ function drush_shell_proc_open($cmd) {
   }
 }
 
+/**
+ * Used by definition of ssh and other commands that call into drush_shell_proc_build()
+ * to declare their options.
+ */
+function drush_shell_exec_proc_build_options() {
+  return array(
+   'ssh-options' => 'A string of extra options that will be passed to the ssh command (e.g. "-p 100")',
+    'tty' => 'Create a tty (e.g. to run an interactive program).',
+    'escaped' => 'Command string already escaped; do not add additional quoting.',
+  );
+}
 
 /**
  * Determine the appropriate os value for the

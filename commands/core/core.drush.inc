@@ -138,12 +138,13 @@ function core_drush_command() {
     'arguments' => array(
       'command' => 'The shell command to be executed.',
     ),
+    'options' => drush_shell_exec_proc_build_options(),
     'required-arguments' => TRUE,
     'allow-additional-options' => TRUE,
     'handle-remote-commands' => TRUE,
     'mask-local-cli-options' => TRUE,
     'examples' => array(
-      'drush exec \'git pull\'' => 'Retrieve latest code from git',
+      'drush core-execute git pull origin rebase' => 'Retrieve latest code from git',
     ),
     'aliases' => array('exec', 'execute'),
     'topics' => array('docs-aliases'),

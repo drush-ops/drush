@@ -14,11 +14,7 @@ function ssh_drush_command() {
       'bash' => 'Bash to execute on target. Optional, except when site-alias is a list.',
     ),
     'required-arguments' => 1,
-    'options' => array(
-      'ssh-options' => 'A string of extra options that will be passed to the ssh command (e.g. "-p 100")',
-      'tty' => 'Create a tty (e.g. to run an interactive program).',
-      'escaped' => 'Command string already escaped; do not add additional quoting.',
-    ),
+    'options' => drush_shell_exec_proc_build_options(),
     'examples' => array(
       'drush ssh @mysite' => 'Open an interactive shell on @mysite\'s server.',
       'drush ssh @prod \'ls /tmp\'' => 'Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.',
