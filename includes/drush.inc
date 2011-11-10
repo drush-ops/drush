@@ -382,7 +382,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['strict']              = array('hidden' => TRUE, 'description' => 'Check requirements more strictly / remove backwards-compatibility features for unit tests.');
     $options['command-specific']    = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'Command-specific options.');
     $options['site-aliases']        = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'List of site aliases.');
-    
+
 
     $command = array(
       'options' => $options,
@@ -857,9 +857,9 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
   // If we are not on Windows, then try to do "tar" in a single operation.
   if ((!drush_is_windows()) && (drush_shell_cd_and_exec(dirname($path), "tar -C %s -xzf %s", $destination, basename($path)))) {
     if ($listing) {
-      // We use a separate tar -tf instead of -xvf above because
+      // We use a separate tar -tzf instead of -xvf above because
       // the output is not the same in Mac.
-      drush_shell_cd_and_exec(dirname($path), "tar -tf %s", basename($path));
+      drush_shell_cd_and_exec(dirname($path), "tar -tzf %s", basename($path));
       return drush_shell_exec_output();
     }
     return TRUE;
@@ -937,14 +937,25 @@ function drush_remote_command() {
   // option will be set when the site alias is processed.
   // @see drush_sitealias_check_arg
   $remote_host = drush_get_option('remote-host');
+  // Get the command early so that we can allow commands to directly handle remote aliases if they wish
+  $command = drush_parse_command();
+  if (is_array($command) && array_key_exists('mask-local-cli-options', $command)) {
+    $global_cli_options = drush_get_context('DRUSH_GLOBAL_CLI_OPTIONS', array());
+    drush_expand_short_form_options($global_cli_options);
+    drush_set_context('cli', $global_cli_options);
+    _drush_bootstrap_global_options();
+  }
+  if (is_array($command) && array_key_exists('handle-remote-commands', $command)) {
+    return FALSE;
+  }
   if (isset($remote_host)) {
     $args = drush_get_arguments();
-    $command = array_shift($args);
+    $command_name = array_shift($args);
     $remote_user = drush_get_option('remote-user');
 
     // Force interactive mode if there is a single remote target.  #interactive is added by drush_do_command_redispatch
     drush_set_option('interactive', TRUE);
-    drush_do_command_redispatch($command, $args, $remote_host, $remote_user);
+    drush_do_command_redispatch($command_name, $args, $remote_host, $remote_user);
     return TRUE;
   }
   // If the --site-list flag is set, then we will execute the specified
@@ -969,7 +980,7 @@ function drush_remote_command() {
         return TRUE;
       }
     }
-    $command = array_shift($args);
+    $command_name = array_shift($args);
     $multi_options = drush_get_context('cli');
     $backend_options = array();
     if (drush_get_option('pipe')) {
@@ -987,7 +998,7 @@ function drush_remote_command() {
       $multi_options['reserve-margin'] = $max_name_length + strlen($label_separator);
       foreach ($site_list as $alias_name => $alias_record) {
         $backend_options['output-label'] = str_pad($alias_name, $max_name_length, " ") . $label_separator;
-        $values = drush_do_site_command($alias_record, $command, $args, $multi_options, $backend_options);
+        $values = drush_do_site_command($alias_record, $command_name, $args, $multi_options, $backend_options);
       }
     }
     else {
@@ -995,8 +1006,8 @@ function drush_remote_command() {
         $backend_options['interactive'] = TRUE;
       }
       foreach ($site_list as $alias_name => $alias_record) {
-        drush_print(dt("!site >> !command", array('!command' => $command . ' ' . implode(" ", $args), '!site' => $alias_name)));
-        $values = drush_do_site_command($alias_record, $command, $args, $multi_options, $backend_options);
+        drush_print(dt("!site >> !command", array('!command' => $command_name . ' ' . implode(" ", $args), '!site' => $alias_name)));
+        $values = drush_do_site_command($alias_record, $command_name, $args, $multi_options, $backend_options);
         drush_print($values['output']);
       }
     }

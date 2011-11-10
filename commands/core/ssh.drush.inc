@@ -13,15 +13,12 @@ function ssh_drush_command() {
       'site-alias' => 'A remote site alias. Can be an alias list.',
       'bash' => 'Bash to execute on target. Optional, except when site-alias is a list.',
     ),
-    'required-arguments' => 1,
-    'options' => array(
-      'ssh-options' => 'A string of extra options that will be passed to the ssh command (e.g. "-p 100")',
-      'tty' => 'Create a tty (e.g. to run an interactive program).',
-      'escaped' => 'Command string already escaped; do not add additional quoting.',
-    ),
+    'options' => drush_shell_exec_proc_build_options(),
+    'handle-remote-commands' => TRUE,
+    'mask-local-cli-options' => TRUE,
     'examples' => array(
-      'drush ssh @mysite' => 'Open an interactive shell on @mysite\'s server.',
-      'drush ssh @prod \'ls /tmp\'' => 'Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.',
+      'drush @mysite ssh' => 'Open an interactive shell on @mysite\'s server.',
+      'drush @prod ssh \'ls /tmp\'' => 'Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.',
     ),
     'aliases' => array('ssh'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -43,50 +40,31 @@ function ssh_site_ssh_complete() {
 /**
  * Command callback.
  */
-function drush_ssh_site_ssh($alias, $command = NULL) {
-  $site = drush_sitealias_get_record($alias);
-
-  // If we have multiple sites, run ourselves on each one.
-  if (isset($site['site-list'])) {
-    if (empty($command)) {
-      drush_set_error('DRUSH_SITE_SSH_COMMAND_REQUIRED', dt('A command is required when multiple site aliases are specified.'));
-      return;
-    }
-    foreach ($site['site-list'] as $alias) {
-      drush_ssh_site_ssh($alias, $command);
-    }
-    return;
+function drush_ssh_site_ssh($command = NULL) {
+  if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+    return drush_set_error('DRUSH_MISSING_TARGET_ALIAS', 'A remote site alias is required.');
   }
-
+  $site = drush_sitealias_get_record($alias);
   // We only accept remote aliases.
   if (empty($site['remote-host'])) {
     drush_set_error('DRUSH_SITE_SSH_REMOTE_ALIAS_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
     return;
   }
 
-  // Build up the command. TODO: We maybe refactor this soon.
-  $hostname = drush_escapeshellarg($site['remote-host'], "LOCAL");
-  $username = isset($site['remote-user']) ? drush_escapeshellarg($site['remote-user'], "LOCAL") . "@" : '';
-  $ssh_options = isset($site['ssh-options']) ? $site['ssh-options'] : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
-  if (drush_get_option('tty')) {
-    $ssh_options .= ' -t';
+  // If we have multiple sites, run ourselves on each one. Set context back when done.
+  if (isset($site['site-list'])) {
+    if (empty($command)) {
+      drush_set_error('DRUSH_SITE_SSH_COMMAND_REQUIRED', dt('A command is required when multiple site aliases are specified.'));
+      return;
+    }
+    foreach ($site['site-list'] as $alias_single) {
+      drush_set_context('DRUSH_TARGET_SITE_ALIAS', $alias_single);
+      drush_ssh_site_ssh($command);
+    }
+    drush_set_context('DRUSH_TARGET_SITE_ALIAS', $alias);
+    return;
   }
 
-  $cmd = "ssh " . $ssh_options . " " . $username . $hostname;
-  if (!empty($command)) {
-    if (!drush_get_option('escaped', FALSE)) {
-      $cmd .= " " . drush_escapeshellarg($command);
-    }
-    else {
-      $cmd .= " $command";
-    }
-  }
-
-  // Execute.
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-    drush_print($cmd);
-  }
-  if (!drush_get_context('DRUSH_SIMULATE')) {
-    proc_close(proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
-  }
+  $cmd = drush_shell_proc_build($site, $command);
+  drush_shell_proc_open($cmd);
 }

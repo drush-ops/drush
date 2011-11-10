@@ -84,7 +84,7 @@ fi
 # to use if it re-launches itself to run subcommands.  We
 # will also pass php options if any are defined.
 if [ -z "$php_options" ] ; then
-  exec "$php" $php_options "$SCRIPT_PATH" "$@" --php="$php"
+  exec "$php" $php_options "$SCRIPT_PATH" --php="$php" "$@"
 else
-  exec "$php" $php_options "$SCRIPT_PATH" "$@" --php="$php" --php-options="$php_options"
+  exec "$php" $php_options "$SCRIPT_PATH" --php="$php" --php-options="$php_options" "$@"
 fi

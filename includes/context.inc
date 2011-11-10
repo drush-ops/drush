@@ -186,6 +186,28 @@ function drush_set_config_options($context, $options, $override = array()) {
 }
 
 /**
+ * For all global options with a short form, convert all options in the option
+ * array that use the short form into the long form.
+ */
+function drush_expand_short_form_options(&$options) {
+  foreach (drush_get_global_options() as $name => $info) {
+    if (is_array($info)) {
+      // For any option with a short form, check to see if the short form was set in the
+      // options.  If it was, then rename it to its long form.
+      if (array_key_exists('short-form', $info) && array_key_exists($info['short-form'], $options)) {
+        if (!array_key_exists($name, $options) || !array_key_exists('merge-list', $info)) {
+          $options[$name] = $options[$info['short-form']];
+        }
+        else {
+          $options[$name] = array_merge((array)$options[$name], (array)$options[$info['short-form']]);
+        }
+        unset($options[$info['short-form']]);
+      }
+    }
+  }
+}
+
+/**
  * There are certain options such as 'site-aliases' and 'command-specific'
  * that must be merged together if defined in multiple drush configuration
  * files.  If we did not do this merge, then the last configuration file
@@ -207,20 +229,11 @@ function drush_set_config_special_contexts(&$options) {
         $options['site-aliases'][$alias_name] = $alias_value;
       }
     }
+    // Expand -s into --simulate, etc.
+    drush_expand_short_form_options($options);
 
     foreach (drush_get_global_options() as $name => $info) {
       if (is_array($info)) {
-        // For any option with a short form, check to see if the short form was set in the
-        // options.  If it was, then rename it to its long form.
-        if (array_key_exists('short-form', $info) && array_key_exists($info['short-form'], $options)) {
-          if (!array_key_exists($name, $options)) {
-            $options[$name] = $options[$info['short-form']];
-          }
-          else {
-            $options[$name] = array_merge((array)$options[$name], (array)$options[$info['short-form']]);
-          }
-          unset($options[$info['short-form']]);
-        }
         // For any global option with the 'merge-list' or 'merge-associative' flag, set its
         // value in the specified context.  The option is 'merged' because we
         // load $options with the value from the context prior to including the

@@ -145,6 +145,80 @@ function _drush_shell_exec($args, $interactive = FALSE) {
 }
 
 /**
+ * Build an SSH string including an optional fragment of bash. Commands that use
+ * this should also merge drush_shell_proc_build_options() into their
+ * command options. @see ssh_drush_command().
+ *
+ * @param array $site
+ *   A site alias record.
+ * @param string $command
+ *   An optional bash fragment.
+ * @param string $cd
+ *   An optional directory to change into before executing the $command.
+ * @return string
+ *   A string suitable for execution with drush_shell_remote_exec().
+ */
+function drush_shell_proc_build($site, $command = '', $cd = NULL) {
+  // Build up the command. TODO: We maybe refactor this soon.
+  $hostname = drush_escapeshellarg($site['remote-host'], "LOCAL");
+  $username = isset($site['remote-user']) ? drush_escapeshellarg($site['remote-user'], "LOCAL") . "@" : '';
+  $ssh_options = isset($site['ssh-options']) ? $site['ssh-options'] : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
+  if (drush_get_option('tty')) {
+    $ssh_options .= ' -t';
+  }
+
+  $cmd = "ssh " . $ssh_options . " " . $username . $hostname;
+
+  if ($cd === TRUE) {
+    if (array_key_exists('root', $site)) {
+      $cd = $site['root'];
+    }
+    else {
+      $cd = FALSE;
+    }
+  }
+  if ($cd) {
+    $command = 'cd ' . drush_escapeshellarg($cd, $site['os']) . ' && ' . $command;
+  }
+
+  if (!empty($command)) {
+    if (!drush_get_option('escaped', FALSE)) {
+      $cmd .= " " . drush_escapeshellarg($command, $site['os']);
+    }
+    else {
+      $cmd .= " $command";
+    }
+  }
+
+  return $cmd;
+}
+
+/*
+ * Execute bash command using proc_open().
+ * @todo: return value?
+ */
+function drush_shell_proc_open($cmd) {
+  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+    drush_print("Calling proc_open($cmd);");
+  }
+  if (!drush_get_context('DRUSH_SIMULATE')) {
+    proc_close(proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
+  }
+}
+
+/**
+ * Used by definition of ssh and other commands that call into drush_shell_proc_build()
+ * to declare their options.
+ */
+function drush_shell_exec_proc_build_options() {
+  return array(
+   'ssh-options' => 'A string of extra options that will be passed to the ssh command (e.g. "-p 100")',
+    'tty' => 'Create a tty (e.g. to run an interactive program).',
+    'escaped' => 'Command string already escaped; do not add additional quoting.',
+  );
+}
+
+/**
  * Determine the appropriate os value for the
  * specified site record
  *

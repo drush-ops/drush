@@ -451,6 +451,9 @@ function drush_redispatch_get_options() {
  */
 function drush_parse_args() {
   $args = drush_get_context('argv');
+  $command_args = NULL;
+  $global_options = array();
+  $target_alias_name = NULL;
   // It would be nice if commandfiles could somehow extend this list,
   // but it is not possible. We need to parse args before we find commandfiles,
   // because the specified options may affect how commandfiles are located.
@@ -468,6 +471,12 @@ function drush_parse_args() {
 
   for ($i = 1; $i < count($args); $i++) {
     $opt = $args[$i];
+    // We set $command_args to NULL until the first argument that is not
+    // an alias is found (the command); we put everything that follows
+    // into $command_args.
+    if (is_array($command_args)) {
+      $command_args[] = $opt;
+    }
     // Is the arg an option (starting with '-')?
     if ($opt{0} == "-" && strlen($opt) != 1) {
       // Do we have multiple options behind one '-'?
@@ -503,6 +512,26 @@ function drush_parse_args() {
     // If it's not an option, it's a command.
     else {
       $arguments[] = $opt;
+      // Once we find the first argument, record the command args and global options
+      if (!is_array($command_args)) {
+        // Remember whether we set $target_alias_name on a previous iteration,
+        // then record the $target_alias_name iff this arguement references a valid site alias.
+        $already_set_target = is_string($target_alias_name);
+        if (!$already_set_target && drush_sitealias_valid_alias_format($opt)) {
+          $target_alias_name = $opt;
+        }
+        // If an alias record was set on a previous iteration, then this
+        // argument must be the command name.  If we set the target alias
+        // record on this iteration, then this is not the command name.
+        // If we've found the command name, then save $options in $global_options
+        // (all options that came before the command name), and initialize
+        // $command_args to an array so that we will begin storing all args
+        // and options that follow the command name in $command_args.
+        if ($already_set_target || (!is_string($target_alias_name))) {
+          $command_args = array();
+          $global_options = $options;
+        }
+      }
     }
   }
   // If no arguments are specified, then the command will
@@ -515,6 +544,10 @@ function drush_parse_args() {
       $arguments = array('help');
     }
   }
+  if (is_array($command_args)) {
+    drush_set_context('DRUSH_COMMAND_ARGS', $command_args);
+  }
+  drush_set_context('DRUSH_GLOBAL_CLI_OPTIONS', $global_options);
 
   // Handle the "@shift" alias, if present
   drush_process_bootstrap_to_first_arg($arguments);
@@ -1121,9 +1154,11 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       foreach (array_unique($searchpath) as $path) {
         if (is_dir($path)) {
           $nomask = array_merge(drush_filename_blacklist(), drush_get_option_list('ignored-modules'));
-          $files = drush_scan_directory($path, '/\.drush(' . DRUSH_MAJOR_VERSION . '|)\.inc$/', $nomask);
+          $dmv = DRUSH_MAJOR_VERSION;
+          $files = drush_scan_directory($path, "/\.drush($dmv|)\.inc$/", $nomask);
           foreach ($files as $filename => $info) {
-            $module = basename($filename, '.drush.inc');
+            $module = basename($filename);
+            $module = str_replace(array('.drush.inc', ".drush$dmv.inc"), '', $module);
             // Only try to bootstrap modules that we have never seen before, or that we
             // have tried to load but did not due to an unmet _drush_load() requirement.
             if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
@@ -1480,12 +1515,14 @@ function drush_shell_alias_replace() {
   if (isset($shell_aliases[$first])) {
     // Shell alias found for first argument in the request.
     $alias_value = $shell_aliases[$first];
-    drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => $alias_value)), 'debug');
-    if (substr($alias_value, 0, 1) == '!') {
-      $replacement = array('core-execute', ltrim($alias_value, '!'));
+    if (!is_array($alias_value)) {
+      $alias_value = explode(' ', $alias_value);
     }
-    else {
-      $replacement = explode(' ', $alias_value);
+    drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');
+    $replacement = $alias_value;
+    if (substr($alias_value[0], 0, 1) == '!') {
+      $replacement[0] = ltrim($replacement[0], '!');
+      array_unshift($replacement, 'core-execute');
     }
     $pos = array_search($first, $argv);
     array_splice($argv, $pos, 1, $replacement);

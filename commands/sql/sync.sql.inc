@@ -117,7 +117,7 @@ function sql_drush_sql_sync_sanitize($site) {
   }
 
   if (!empty($user_table_updates)) {
-    $sanitize_query = "update {users} set " . implode(', ', $user_table_updates) . " where uid > 0;";
+    $sanitize_query = "update users set " . implode(', ', $user_table_updates) . " where uid > 0;";
     drush_sql_register_post_sync_op('user-email', dt('Reset !message in user table', array('!message' => implode(' and ', $message_list))), $sanitize_query);
   }
 
