@@ -81,7 +81,8 @@ output
 
 ROOT
 -------------
-drush
+drush:
+  need test: drush.ini
 drush.php
-drush.bat
-drush.complete.sh:
+drush.bat: N/A
+drush.complete.sh: N/A
