@@ -195,14 +195,23 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL) {
 
 /*
  * Execute bash command using proc_open().
- * @todo: return value?
+ *
+ * @returns
+ *   Exit code from launched application
+ *     0 no error
+ *     1 general error
+ *     127 command not found
  */
 function drush_shell_proc_open($cmd) {
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
     drush_print("Calling proc_open($cmd);");
+    return 0;
   }
   if (!drush_get_context('DRUSH_SIMULATE')) {
-    proc_close(proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
+    $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+    $proc_status = proc_get_status($process);
+    $exit_code = proc_close($process);
+    return ($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );
   }
 }
 

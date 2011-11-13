@@ -76,5 +76,8 @@ function drush_ssh_site_ssh($command = NULL) {
   }
 
   $cmd = drush_shell_proc_build($site, $command);
-  drush_shell_proc_open($cmd);
+  $status = drush_shell_proc_open($cmd);
+  if ($status != 0) {
+    return drush_set_error('DRUSH_SITE_SSH_ERROR', dt('An error @code occurred while running the command `@command`', array('@command' => $cmd, '@code' => $status)));
+  }
 }
