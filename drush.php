@@ -117,7 +117,7 @@ function _drush_bootstrap_and_dispatch() {
     elseif (!empty($args)) {
       drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!args' could not be found.", array('!args' => $args)));
     }
-    // Set errors that ocurred in the bootstrap phases.
+    // Set errors that occurred in the bootstrap phases.
     $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
     foreach ($errors as $code => $message) {
       drush_set_error($code, $message);

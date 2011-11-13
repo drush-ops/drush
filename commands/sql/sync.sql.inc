@@ -408,7 +408,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         }
 
         $import_exec = $pre_import_commands . $import_command . ' < ' . $target_dump;
-        // delete the remote target file if it is a temporary file
+        // Delete the remote target file if it is a temporary file.
         if (!drush_is_windows($target_os) && $destination_settings['dump-is-temp']) {
           $import_exec .= '; rm -f ' . drush_escapeshellarg($target_dump, $target_os);
         }

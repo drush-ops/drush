@@ -438,7 +438,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
  *
  * @param option_name
  *   The option name to check: skip-tables, structure-tables
- *   or tables.  This funciton will check both *-key and *-list,
+ *   or tables.  This function will check both *-key and *-list,
  *   and, in the case of sql-sync, will also check target-*
  *   and source-*, to see if an alias set one of these options.
  * @returns array
