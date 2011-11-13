@@ -661,7 +661,7 @@ function _drush_backend_invoke($cmd, $post_options = NULL, $backend_options = ar
   drush_log(dt('Backend invoke: !cmd', array('!cmd' => $cmd)), 'command');
   if (array_key_exists('interactive', $backend_options)) {
     drush_log(dt("executing !cmd", array('!cmd' => $cmd)));
-    return drush_op_system($cmd);
+    return drush_shell_proc_open($cmd);
   }
   else {
     $proc = _drush_proc_open($cmd, $post_options, NULL, $backend_options);
