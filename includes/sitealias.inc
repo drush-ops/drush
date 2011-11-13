@@ -1062,10 +1062,7 @@ function drush_sitealias_alias_record_to_spec($alias_record, $with_db = false) {
         $result = $alias_record['root'] . $result;
       }
       if (array_key_exists('remote-host', $alias_record)) {
-        $result = $alias_record['remote-host'] . $result;
-        if (array_key_exists('remote-user', $alias_record)) {
-          $result = $alias_record['remote-user'] . '@' . $result;
-        }
+        $result = drush_remote_host($alias_record) . $result;
       }
 
       // Add the database info to the specification if desired
@@ -1429,19 +1426,6 @@ function drush_sitealias_get_path_option($site_alias_record, $option, $default =
 }
 
 /**
- * Get an option out of the specified alias.  If it has not been
- * set in the alias, then get it via drush_get_option.
- */
-function drush_sitealias_get_option($site_alias_record, $option, $default = NULL, $prefix = '') {
-  if (isset($site_alias_record) && array_key_exists($option, $site_alias_record)) {
-    return $site_alias_record[$option];
-  }
-  else {
-    return drush_get_option($prefix . $option, $default);
-  }
-}
-
-/**
  * Given a site alias record, copy selected fields from it
  * into the drush 'alias' context.  The 'alias' context has
  * lower precedence than the 'cli' context, so values
@@ -1624,10 +1608,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
 
     // Use 'remote-host' from settings if available; otherwise site is local
     if (array_key_exists('remote-host', $site_alias_settings) && !drush_is_local_host($site_alias_settings['remote-host'])) {
-      if (array_key_exists('remote-user', $site_alias_settings)) {
-        $remote_user = $site_alias_settings['remote-user'] . '@';
-      }
-      $machine = $remote_user . $site_alias_settings['remote-host'];
+      $machine = drush_remote_host($site_alias_settings);
     }
     else {
       $machine = '';

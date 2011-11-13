@@ -41,6 +41,16 @@ function ssh_site_ssh_complete() {
  * Command callback.
  */
 function drush_ssh_site_ssh($command = NULL) {
+  // The DRUSH_COMMAND_ARGS contain all args and options that appear after the command name.
+  $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
+  // n.b. we do not escape the first (0th) arg to allow `drush ssh 'ls /path'`
+  // to work in addition to the preferred form of `drush ssh ls /path`.
+  // Supporting the legacy form means that we cannot give the full path to an
+  // executable if it contains spaces.
+  for ($x = 1; $x < sizeof($args); $x++) {
+    $args[$x] = drush_escapeshellarg($args[$x]);
+  }
+  $command = implode(' ', $args);
   if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
     return drush_set_error('DRUSH_MISSING_TARGET_ALIAS', 'A remote site alias is required.');
   }

@@ -258,7 +258,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     *   An exit code.
     */
   function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS) {
-    $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'ssh-options');
+    $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options');
     // insert "cd ... ; drush"
     $cmd[] = $cd ? sprintf('cd %s;', self::escapeshellarg($cd)) : NULL;
     $cmd[] = UNISH_DRUSH;
