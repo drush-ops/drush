@@ -328,7 +328,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
 
         // Run mysqldump again and append output if we need some structure only tables.
         if (!empty($structure_tables)) {
-          $exec .= "; mysqldump --no-data $extra " . implode(' ', $structure_tables);
+          $exec .= "&& mysqldump --no-data $extra " . implode(' ', $structure_tables);
           if ($file) {
             $exec .= " >> $file";
           }
