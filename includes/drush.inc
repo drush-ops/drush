@@ -371,6 +371,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['early']               = array('description' => "Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename). The function is called pre-bootstrap and offers an opportunity to alter the drush bootstrap environment or process (returning FALSE from the function will continue the bootstrap), or return output very rapidly (e.g. from caches). See includes/complete.inc for an example.");
     $options['alias-path']          = array('context' => 'ALIAS_PATH', 'local-context-only' => TRUE, 'merge-list' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specifies the list of paths where drush will search for alias files. Separate paths with ':'.");
     $options['backup-location']     = array('description' => "Specifies the directory where drush will store backups.");
+    $options['confirm-rollback']    = array('description' => 'Wait for confirmation before doing a rollback when something goes wrong.');
     $options['complete-debug']      = array('hidden' => TRUE, 'description' => "Turn on debug mode forf completion code");
     $options['php-options']         = array('description' => "Options to pass to php when running drush.  Only effective when using the `drush` script.");
     $options['deferred-sanitization'] = array('hidden' => TRUE, 'description' => "Defer calculating the sanitization operations until after the database has been copied. This is done automatically if the source database is remote.");

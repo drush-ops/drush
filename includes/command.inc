@@ -156,15 +156,24 @@ function _drush_invoke($command, $args, $defined_in_commandfile) {
 
   // something went wrong, we need to undo
   if ($rollback) {
-    foreach (array_reverse($completed) as $func) {
-      $rb_func = $func . '_rollback';
-      if (function_exists($rb_func)) {
-        call_user_func_array($rb_func, $args);
-        _drush_log_drupal_messages();
-        drush_log(dt("Changes made in !func have been rolled back.", array('!func' => $func)), 'rollback');
+    if (drush_get_option('confirm-rollback', FALSE)) {
+      // Optionally ask for confirmation, --yes and --no are ignored from here on as we are about to finish this process.
+      drush_set_context('DRUSH_AFFIRMATIVE', FALSE);
+      drush_set_context('DRUSH_NEGATIVE', FALSE);
+      $rollback = drush_confirm(dt('Do you want to rollback? (manual cleanup might be required otherwise)'));
+    }
+
+    if ($rollback) {
+      foreach (array_reverse($completed) as $func) {
+        $rb_func = $func . '_rollback';
+        if (function_exists($rb_func)) {
+          call_user_func_array($rb_func, $args);
+          _drush_log_drupal_messages();
+          drush_log(dt("Changes made in !func have been rolled back.", array('!func' => $func)), 'rollback');
+        }
       }
     }
-    return !$rollback;
+    $return = FALSE;
   }
 
   if (isset($return)) {
