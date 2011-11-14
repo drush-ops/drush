@@ -850,7 +850,21 @@ function _drush_command_translate($source) {
  * - core: Drupal major version required.
  * - drupal dependencies: drupal modules required for this command.
  * - drush dependencies: other drush command files required for this command.
- *
+ * - handle-remote-commands: set to TRUE if `drush @remote mycommand` should be executed
+ *   locally rather than remotely dispatched.  When this mode is set, the target site
+ *   can be obtained via:
+ *     drush_get_context('DRUSH_TARGET_SITE_ALIAS')
+ * - mask-local-cli-options: set to TRUE if drush should strictly separate local command
+ *   cli options from the global options.  Usually, drush allows global cli options and
+ *   command cli options to be interspersed freely on the commandline.  For commands where
+ *   this flag is set, options are separated, with global options comming before the
+ *   command names, and command options coming after, like so:
+ *     drush --global-options command --command-options
+ *   In this mode, the command options are no longer available via drush_get_option();
+ *   instead, they can be retrieved via:
+ *     $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
+ *   In this case, $args will contain the command options literally, exactly as they
+ *   were entered on the command line.
  */
 function drush_parse_command() {
   $args = drush_get_arguments();
