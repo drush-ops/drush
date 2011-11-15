@@ -206,7 +206,7 @@ function drush_pm_download() {
  * Helper function for pm-download.
  */
 function _pm_download_releases_choice($xml, $project, $all = FALSE, $dev = FALSE) {
-  $project_info = updatexml_get_release_history_xml($xml, $project);
+  $project_info = updatexml_get_releases_from_xml($xml, $project);
   $releases = _drush_pm_filter_releases($project_info['releases'], $all, $dev);
 
   $options = array();
