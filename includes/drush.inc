@@ -383,7 +383,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['strict']              = array('hidden' => TRUE, 'description' => 'Check requirements more strictly / remove backwards-compatibility features for unit tests.');
     $options['command-specific']    = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'Command-specific options.');
     $options['site-aliases']        = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'List of site aliases.');
-
+    $options['shell-aliases']       = array('hidden' => TRUE, 'merge' => TRUE, 'never-propagate' => TRUE, 'description' => 'List of shell aliases.');
 
     $command = array(
       'options' => $options,

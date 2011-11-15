@@ -435,7 +435,7 @@ function drush_complete_rebuild() {
     $complete['commands'][$command_name]['options'] = $options;
   }
   // We treat shell aliases as commands for the purposes of completion.
-  $complete['command-names'] = array_merge(array_keys($commands), array_keys(drush_get_option('shell-aliases', array())));
+  $complete['command-names'] = array_merge(array_keys($commands), array_keys(drush_get_context('shell-aliases', array())));
   $site_aliases = _drush_sitealias_all_list();
   // TODO: Figure out where this dummy @0 alias is introduced.
   unset($site_aliases['@0']);

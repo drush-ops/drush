@@ -1534,7 +1534,7 @@ function drush_shell_alias_replace() {
   $argv = drush_get_context('argv');
   $first = current($args);
   // @todo drush_get_option is awkward here.
-  $shell_aliases = drush_get_option('shell-aliases', array());
+  $shell_aliases = drush_get_context('shell-aliases', array());
   if (isset($shell_aliases[$first])) {
     // Shell alias found for first argument in the request.
     $alias_value = $shell_aliases[$first];

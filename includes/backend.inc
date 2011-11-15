@@ -559,18 +559,20 @@ function _drush_backend_get_global_contexts($site_record) {
   foreach ($global_option_list as $global_key => $global_metadata) {
     if (is_array($global_metadata)) {
       $value = '';
-      if ((array_key_exists('propagate-cli-value', $global_metadata))) {
-        $value = drush_get_option($global_key, '', 'cli');
-      }
-      elseif ((array_key_exists('context', $global_metadata))) {
-        // If the context is declared to be a 'local-context-only',
-        // then only put it in if this is a local dispatch.
-        if (!array_key_exists('local-context-only', $global_metadata) || !array_key_exists('remot-host', $site_record)) {
-          $value = drush_get_context($global_metadata['context'], array());
-        }
-      }
-      if (!empty($value)) {
-        $result[$global_key] = $value;
+      if (!array_key_exists('never-propagate', $global_metadata)) {
+	if ((array_key_exists('propagate-cli-value', $global_metadata))) {
+          $value = drush_get_option($global_key, '', 'cli');
+	}
+	elseif ((array_key_exists('context', $global_metadata))) {
+          // If the context is declared to be a 'local-context-only',
+          // then only put it in if this is a local dispatch.
+          if (!array_key_exists('local-context-only', $global_metadata) || !array_key_exists('remot-host', $site_record)) {
+            $value = drush_get_context($global_metadata['context'], array());
+          }
+	}
+	if (!empty($value)) {
+          $result[$global_key] = $value;
+	}
       }
     }
   }

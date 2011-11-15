@@ -240,11 +240,11 @@ function drush_set_config_special_contexts(&$options) {
         // configuration file.  If the configuration file sets $option['special'][] = 'value',
         // then the configuration will be merged.  $option['special'] = array(...), on the
         // other hand, will replace rather than merge the values together.
-        if ((array_key_exists($name, $options)) && (array_key_exists('merge-list', $info) || array_key_exists('merge-associative', $info))) {
+        if ((array_key_exists($name, $options)) && (array_key_exists('merge', $info) || (array_key_exists('merge-list', $info) || array_key_exists('merge-associative', $info)))) {
           $context = array_key_exists('context', $info) ? $info['context'] : $name;
           $cache =& drush_get_context($context);
           $value = $options[$name];
-          if (!is_array($value)) {
+          if (!is_array($value) && array_key_exists('merge-list', $info)) {
             $value = explode(PATH_SEPARATOR, $value);
           }
           if (array_key_exists('merge-associative', $info)) {
