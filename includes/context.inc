@@ -240,11 +240,11 @@ function drush_set_config_special_contexts(&$options) {
         // configuration file.  If the configuration file sets $option['special'][] = 'value',
         // then the configuration will be merged.  $option['special'] = array(...), on the
         // other hand, will replace rather than merge the values together.
-        if ((array_key_exists($name, $options)) && (array_key_exists('merge-list', $info) || array_key_exists('merge-associative', $info))) {
+        if ((array_key_exists($name, $options)) && (array_key_exists('merge', $info) || (array_key_exists('merge-list', $info) || array_key_exists('merge-associative', $info)))) {
           $context = array_key_exists('context', $info) ? $info['context'] : $name;
           $cache =& drush_get_context($context);
           $value = $options[$name];
-          if (!is_array($value)) {
+          if (!is_array($value) && array_key_exists('merge-list', $info)) {
             $value = explode(PATH_SEPARATOR, $value);
           }
           if (array_key_exists('merge-associative', $info)) {
@@ -463,12 +463,29 @@ function drush_get_option_list($option, $default = array(), $context = NULL) {
  *   Optional. The context to check for the option. If this is set, only this context will be searched.
  *
  */
-function drush_get_option_override($option_overrides, $option, $value = NULL, $context = NULL) {
-  if (array_key_exists($option, $option_overrides)) {
-    return $option_overrides[$option];
+function drush_get_option_override($option_overrides, $option, $default = NULL, $context = NULL) {
+  return drush_sitealias_get_option($options_overrides, $option, $default, '', $context);
+}
+
+/**
+ * Get an option out of the specified alias.  If it has not been
+ * set in the alias, then get it via drush_get_option.
+ *
+ * @param site_alias_record
+ *   An array of options for an alias record.
+ * @param option
+ *   The name of the option to get.
+ * @param default
+ *   Optional. The value to return if the option does not exist in the site record and has not been set in a context.
+ * @param context
+ *   Optional. The context to check for the option. If this is set, only this context will be searched.
+ */
+function drush_sitealias_get_option($site_alias_record, $option, $default = NULL, $prefix = '', $context = NULL) {
+  if (isset($site_alias_record) && array_key_exists($option, $site_alias_record)) {
+    return $site_alias_record[$option];
   }
   else {
-    return drush_get_option($option, $value, $context);
+    return drush_get_option($prefix . $option, $default, $context);
   }
 }
 

@@ -160,14 +160,14 @@ function _drush_shell_exec($args, $interactive = FALSE) {
  */
 function drush_shell_proc_build($site, $command = '', $cd = NULL) {
   // Build up the command. TODO: We maybe refactor this soon.
-  $hostname = drush_escapeshellarg($site['remote-host'], "LOCAL");
-  $username = isset($site['remote-user']) ? drush_escapeshellarg($site['remote-user'], "LOCAL") . "@" : '';
-  $ssh_options = isset($site['ssh-options']) ? $site['ssh-options'] : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
-  if (drush_get_option('tty')) {
+  $hostname = drush_remote_host($site);
+  $ssh_options = drush_sitealias_get_option($site, 'ssh-options', "-o PasswordAuthentication=no");
+  $os = drush_os($site);
+  if (drush_sitealias_get_option($site, 'tty')) {
     $ssh_options .= ' -t';
   }
 
-  $cmd = "ssh " . $ssh_options . " " . $username . $hostname;
+  $cmd = "ssh " . $ssh_options . " " . $hostname;
 
   if ($cd === TRUE) {
     if (array_key_exists('root', $site)) {
@@ -178,12 +178,12 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL) {
     }
   }
   if ($cd) {
-    $command = 'cd ' . drush_escapeshellarg($cd, $site['os']) . ' && ' . $command;
+    $command = 'cd ' . drush_escapeshellarg($cd, $os) . ' && ' . $command;
   }
 
   if (!empty($command)) {
     if (!drush_get_option('escaped', FALSE)) {
-      $cmd .= " " . drush_escapeshellarg($command, $site['os']);
+      $cmd .= " " . drush_escapeshellarg($command, $os);
     }
     else {
       $cmd .= " $command";
@@ -195,14 +195,23 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL) {
 
 /*
  * Execute bash command using proc_open().
- * @todo: return value?
+ *
+ * @returns
+ *   Exit code from launched application
+ *     0 no error
+ *     1 general error
+ *     127 command not found
  */
 function drush_shell_proc_open($cmd) {
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
     drush_print("Calling proc_open($cmd);");
+    return 0;
   }
   if (!drush_get_context('DRUSH_SIMULATE')) {
-    proc_close(proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
+    $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+    $proc_status = proc_get_status($process);
+    $exit_code = proc_close($process);
+    return ($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );
   }
 }
 
@@ -239,6 +248,16 @@ function drush_os($site_record = NULL) {
   }
 
   return $os;
+}
+
+/**
+ * Determine the remote host (username@hostname.tld) for
+ * the specified site.
+ */
+function drush_remote_host($site, $prefix = '') {
+  $hostname = drush_escapeshellarg(drush_sitealias_get_option($site, 'remote-host', '', $prefix), "LOCAL");
+  $username = drush_escapeshellarg(drush_sitealias_get_option($site, 'remote-user', '', $prefix), "LOCAL");
+  return $username . (empty($username) ? '' : '@') . $hostname;
 }
 
 /**

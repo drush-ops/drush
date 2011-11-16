@@ -122,3 +122,41 @@ function _drush_log_update_sql($ret) {
 function drush_find_profiles($drupal_root , $key = 'name') {
   return drush_scan_directory($drupal_root . '/profiles', "/.*\.profile$/", array('.', '..', 'CVS', 'tests'), 0, 2, $key);
 }
+
+/**
+ * Log the given user in to a bootstrapped Drupal site.
+ *
+ * @param mixed
+ *   Numeric user id or user name.
+ *
+ * @return boolean
+ *   TRUE if user was logged in, otherwise FALSE.
+ */
+function drush_drupal_login($drush_user) {
+  global $user;
+  if (drush_drupal_major_version() >= 7) {
+    $user = is_numeric($drush_user) ? user_load($drush_user) : user_load_by_name($drush_user);
+  }
+  else {
+    $user = user_load(is_numeric($drush_user) ? array('uid' => $drush_user) : array('name' => $drush_user));
+  }
+
+  if (empty($user)) {
+    if (is_numeric($drush_user)) {
+      $message = dt('Could not login with user ID #!user.', array('!user' => $drush_user));
+      if ($drush_user === 0) {
+        $message .= ' ' . dt('This is typically caused by importing a MySQL database dump from a faulty tool which re-numbered the anonymous user ID in the users table. See !link for help recovering from this situation.', array('!link' => 'http://drupal.org/node/1029506'));
+      }
+    }
+    else {
+      $message = dt('Could not login with user account `!user\'.', array('!user' => $drush_user));
+    }
+    return drush_set_error('DRUPAL_USER_LOGIN_FAILED', $message);
+  }
+  else {
+    $name = $user->name ? $user->name : variable_get('anonymous', t('Anonymous'));
+    drush_log(dt('Successfully logged into Drupal as !name', array('!name' => $name . " (uid=$user->uid)")), 'bootstrap');
+  }
+
+  return TRUE;
+}

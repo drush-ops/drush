@@ -10,48 +10,53 @@ class siteSshCase extends Drush_CommandTestCase {
    * Test drush ssh --simulate. No additional bash passed.
    */
   public function testInteractive() {
-    $aliases['interactive'] = array(
-      'remote-host' => 'my.server.com',
-      'remote-user' => 'user123',
-    );
-    $this->write_alias($aliases);
-
     $options = array(
       'simulate' => NULL,
-      'alias-path' => UNISH_SANDBOX,
     );
-    $this->drush('ssh', array('@interactive', ), $options);
+    $this->drush('ssh', array(), $options, 'user@server/path/to/drupal#sitename');
     $output = $this->getOutput();
-    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s);', self::escapeshellarg('user123'), self::escapeshellarg('my.server.com'));
+    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s);', self::escapeshellarg('user'), self::escapeshellarg('server'));
     $this->assertEquals($expected, $output);
   }
 
   /*
-   * Test drush ssh --simulate 'date'. Runs over a site listadditional bash.
+   * Test drush ssh --simulate 'date'.
+   * @todo Run over a site list. drush_sitealias_get_record() currently cannot
+   * handle a site list comprised of longhand site specifications.
    */
   public function testNonInteractive() {
-    $aliases['non-interactive'] = array(
-      'remote-host' => 'my.server.com',
-      'remote-user' => 'user123',
-    );
-    $this->write_alias($aliases);
-
     $options = array(
       'simulate' => NULL,
-      'alias-path' => UNISH_SANDBOX,
     );
-    $this->drush('ssh', array('@non-interactive', 'date'), $options);
+    $this->drush('ssh', array('date'), $options, 'user@server/path/to/drupal#sitename');
     $output = $this->getOutput();
-    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s %s);', self::escapeshellarg('user123'), self::escapeshellarg('my.server.com'), self::escapeshellarg('date'));
+    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), self::escapeshellarg('date'));
     $this->assertEquals($expected, $output);
   }
 
-  /*
-   * Write an alias file to the sandbox.
-   */
-  public function write_alias($aliases) {
-    $contents = $this->file_aliases($aliases);
-    $alias_path = UNISH_SANDBOX . "/aliases.drushrc.php";
-    file_put_contents($alias_path, $contents);
+  /**
+  * Test drush ssh with multiple arguments (preferred form).
+  */
+  public function testSshMultipleArgs() {
+    $options = array(
+      'simulate' => NULL,
+    );
+    $this->drush('ssh', array('ls', '/path1', '/path2'), $options, 'user@server/path/to/drupal#sitename');
+    $output = $this->getOutput();
+    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s \'ls /path1 /path2\');', self::escapeshellarg('user'), self::escapeshellarg('server'));
+    $this->assertEquals($expected, $output);
   }
+
+  /**
+   * Test drush ssh with multiple arguments (legacy form).
+   */
+  public function testSshMultipleArgsLegacy() {
+   $options = array(
+     'simulate' => NULL,
+   );
+   $this->drush('ssh', array('ls /path1 /path2'), $options, 'user@server/path/to/drupal#sitename');
+   $output = $this->getOutput();
+   $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s \'ls /path1 /path2\');', self::escapeshellarg('user'), self::escapeshellarg('server'));
+   $this->assertEquals($expected, $output);
+ }
 }

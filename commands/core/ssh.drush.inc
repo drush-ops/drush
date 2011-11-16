@@ -28,19 +28,19 @@ function ssh_drush_command() {
 }
 
 /**
- * Command argument complete callback.
- *
- * @return
- *   Array of available site aliases.
- */
-function ssh_site_ssh_complete() {
-  return array('values' => array_keys(_drush_sitealias_all_list()));
-}
-
-/**
  * Command callback.
  */
 function drush_ssh_site_ssh($command = NULL) {
+  // The DRUSH_COMMAND_ARGS contain all args and options that appear after the command name.
+  $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
+  // n.b. we do not escape the first (0th) arg to allow `drush ssh 'ls /path'`
+  // to work in addition to the preferred form of `drush ssh ls /path`.
+  // Supporting the legacy form means that we cannot give the full path to an
+  // executable if it contains spaces.
+  for ($x = 1; $x < sizeof($args); $x++) {
+    $args[$x] = drush_escapeshellarg($args[$x]);
+  }
+  $command = implode(' ', $args);
   if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
     return drush_set_error('DRUSH_MISSING_TARGET_ALIAS', 'A remote site alias is required.');
   }
@@ -66,5 +66,8 @@ function drush_ssh_site_ssh($command = NULL) {
   }
 
   $cmd = drush_shell_proc_build($site, $command);
-  drush_shell_proc_open($cmd);
+  $status = drush_shell_proc_open($cmd);
+  if ($status != 0) {
+    return drush_set_error('DRUSH_SITE_SSH_ERROR', dt('An error @code occurred while running the command `@command`', array('@command' => $cmd, '@code' => $status)));
+  }
 }

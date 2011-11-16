@@ -156,15 +156,24 @@ function _drush_invoke($command, $args, $defined_in_commandfile) {
 
   // something went wrong, we need to undo
   if ($rollback) {
-    foreach (array_reverse($completed) as $func) {
-      $rb_func = $func . '_rollback';
-      if (function_exists($rb_func)) {
-        call_user_func_array($rb_func, $args);
-        _drush_log_drupal_messages();
-        drush_log(dt("Changes made in !func have been rolled back.", array('!func' => $func)), 'rollback');
+    if (drush_get_option('confirm-rollback', FALSE)) {
+      // Optionally ask for confirmation, --yes and --no are ignored from here on as we are about to finish this process.
+      drush_set_context('DRUSH_AFFIRMATIVE', FALSE);
+      drush_set_context('DRUSH_NEGATIVE', FALSE);
+      $rollback = drush_confirm(dt('Do you want to rollback? (manual cleanup might be required otherwise)'));
+    }
+
+    if ($rollback) {
+      foreach (array_reverse($completed) as $func) {
+        $rb_func = $func . '_rollback';
+        if (function_exists($rb_func)) {
+          call_user_func_array($rb_func, $args);
+          _drush_log_drupal_messages();
+          drush_log(dt("Changes made in !func have been rolled back.", array('!func' => $func)), 'rollback');
+        }
       }
     }
-    return !$rollback;
+    $return = FALSE;
   }
 
   if (isset($return)) {
@@ -850,7 +859,21 @@ function _drush_command_translate($source) {
  * - core: Drupal major version required.
  * - drupal dependencies: drupal modules required for this command.
  * - drush dependencies: other drush command files required for this command.
- *
+ * - handle-remote-commands: set to TRUE if `drush @remote mycommand` should be executed
+ *   locally rather than remotely dispatched.  When this mode is set, the target site
+ *   can be obtained via:
+ *     drush_get_context('DRUSH_TARGET_SITE_ALIAS')
+ * - mask-local-cli-options: set to TRUE if drush should strictly separate local command
+ *   cli options from the global options.  Usually, drush allows global cli options and
+ *   command cli options to be interspersed freely on the commandline.  For commands where
+ *   this flag is set, options are separated, with global options comming before the
+ *   command names, and command options coming after, like so:
+ *     drush --global-options command --command-options
+ *   In this mode, the command options are no longer available via drush_get_option();
+ *   instead, they can be retrieved via:
+ *     $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
+ *   In this case, $args will contain the command options literally, exactly as they
+ *   were entered on the command line.
  */
 function drush_parse_command() {
   $args = drush_get_arguments();
@@ -1511,7 +1534,7 @@ function drush_shell_alias_replace() {
   $argv = drush_get_context('argv');
   $first = current($args);
   // @todo drush_get_option is awkward here.
-  $shell_aliases = drush_get_option('shell-aliases', array());
+  $shell_aliases = drush_get_context('shell-aliases', array());
   if (isset($shell_aliases[$first])) {
     // Shell alias found for first argument in the request.
     $alias_value = $shell_aliases[$first];
