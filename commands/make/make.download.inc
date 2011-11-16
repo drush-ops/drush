@@ -353,68 +353,14 @@ function make_download_git($name, $download, $download_location) {
   // check if specific revision is set in info file
   $download['revision'] = isset($download['revision']) ? $download['revision'] : FALSE;
 
-  if (!isset($download['url'])) {
-    // If no download URL specified, assume anonymous clone from git.drupal.org.
-    $download['url'] = "git://git.drupal.org/project/$name.git";
-  }
+  // If no download URL specified, assume anonymous clone from git.drupal.org.
+  $download['url'] = isset($download['url']) ? $download['url'] : "git://git.drupal.org/project/$name.git";
+  // If no working-copy download URL specified, assume it is the same.
+  $download['wc_url'] = isset($download['wc_url']) ? $download['wc_url'] : $download['url'];
 
-  // split the given download url into pieces
-  $url_array = array();
-  
-  // Get the protocol, site and resource parts of the URL
-  // original url = http://example.com/blog/index?name=foo
-  // protocol = http://
-  // site = example.com/
-  // resource = blog/index?name=foo
-  $regex = '#^(.*?//)*(.*@)*([\w\.\d]*)(:(\d+))*(/*)(.*)$#';
-  $matches = array();
-  preg_match($regex, $download['url'], $matches);
-  // Assign the matched parts of url to the result array
-  $url_array['protocol'] = $matches[1];
-  $url_array['user']     = $matches[2];
-  $url_array['port']     = $matches[5];
-  $url_array['host']     = $matches[3];
-  $url_array['resource'] = $matches[7];
-  
-  // clean up the site portion by removing the trailing /
-  $url_array['host'] = preg_replace('#/$#', '', $url_array['host']);
-  
-  // clean up the protocol portion by removing the trailing ://
-  $url_array['protocol'] = preg_replace('#://$#', '', $url_array['protocol']);
-  
-  if (empty($url_array['protocol'])) {
-    // If protocol is not given, assume an SSH URL.
-    $url = $download['url'];
-  }
-  else {
-    // build url for git clone to support different protocols
-    // currently all protocols seems to use the same url schema
-    switch ($url_array['protocol']) {
-      case 'git':
-        // github uses two different urls, working copy urls using scp format
-        // git@domain:repo export url format are git://domain/repo
-        if ($wc && $url_array['host'] == 'github.com') {
-          // working copy is set
-          $url = 'git@'. $url_array['host'] .':'. $url_array['resource'];
-          break;
-        }
-      case 'ssh':
-      case 'http':
-      case 'https':
-      case 'ftp':
-      case 'ftps':
-      case 'rsync':
-      case 'file':
-        // @TODO: implement port & user options
-        $url = $url_array['protocol'] .'://'. $url_array['user'] . $url_array['host'] .'/'. $url_array['resource'];
-        break;
-  
-      default:
-        make_error('DOWNLOAD_ERROR', dt('unknown protocol @protocol in %project', array('@protocol' => $url_array['protocol'], '%project' => $name)));
-        return false;
-    }
-  }
-  
+  // Use working-copy download URL if --working-copy specified.
+  $url = $wc ? $download['wc_url'] : $download['url'];
+
   $tmp_location = $tmp_path . '/__git__/' . basename($download_location);
   
   make_mkdir($tmp_path . '/__git__/');
