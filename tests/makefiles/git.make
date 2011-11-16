@@ -18,3 +18,8 @@ projects[provision][type] = module
 projects[provision][download][type] = git
 projects[provision][download][revision] = 23ccccd074b0c5c92df7c3a2a298907250525421
 
+; Test a non-Drupal.org repository.
+projects[geocode][type] = "module"
+projects[geocode][download][type] = "git"
+projects[geocode][download][url] = "git@github.com:phayes/geocode"
+projects[geocode][download][revision] = "281c70f86"
