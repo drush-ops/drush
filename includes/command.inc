@@ -376,6 +376,11 @@ function _drush_flatten_options($options) {
  *  The arguments to pass to the command.
  * @param array $commandline_options
  *  The options (e.g. --select) to provide to the command.
+ * @param $backend_options
+ *   TRUE - integrate errors
+ *   FALSE - do not integrate errors
+ *   array - @see drush_backend_invoke_sitealias_command
+ *
  * @return
  *   If the command could not be completed successfully, FALSE.
  *   If the command was completed, this will return an associative
@@ -383,7 +388,7 @@ function _drush_flatten_options($options) {
  *   @see drush_backend_get_result()
  */
 function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = FALSE) {
-  // NULL is a synonym to '@self', although the later is preferred.
+  // NULL is a synonym to '@self', although the latter is preferred.
   if (!isset($site_alias_record)) {
     $site_alias_record = '@self';
   }

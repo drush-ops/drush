@@ -95,25 +95,49 @@ function drush_test_run($specs = NULL) {
     return;
   }
   elseif (empty($specs)) {
+    // No argument so list all groups/classes.
     return drush_test_list($groups);
   }
+  elseif (strpos($specs, ',') === FALSE && in_array($specs, $all_tests)) {
+    // We got one, valid class. Good, now run it.
+    simpletest_drush_run_test($specs);
+    if (!drush_get_option('dirty')) {
+      simpletest_clean_environment();
+    }
+    return;
+  }
 
+  // See if we got a list of specs.
   foreach (explode(',', $specs) as $spec) {
     $spec = trim($spec);
-    // Specific test class specified.
     if (in_array($spec, $all_tests)) {
-      simpletest_drush_run_test($spec);
-      if (!drush_get_option('dirty')) {
-        simpletest_clean_environment();
-      }
+      // Specific test class specified.
+      drush_test_run_class($spec);
     }
-    // Specific group specified.
-    else if (isset($groups[$spec])) {
+    if (isset($groups[$spec])) {
+      // Specific group specified.
       foreach (array_keys($groups[$spec]) as $class) {
-        drush_do_command_redispatch('test-run', array($class));
+        drush_test_run_class($class);
       }
     }
   }
+}
+
+/*
+ * Run a test class via drush_invoke_process()
+ * @param string $class
+ *   The test class to run.
+ *
+ * @return
+ *   If the command could not be completed successfully, FALSE.
+ *   If the command was completed, this will return an associative
+ *   array containing the results of the API call.
+ *   @see drush_backend_get_result()
+ */
+function drush_test_run_class($class) {
+  $backend_options = array('output-label' => "$class ", 'integrate' => TRUE, 'output' => TRUE);
+  $return = drush_invoke_process('@self', 'test-run', array($class), drush_redispatch_get_options(), $backend_options);
+  return $return;
 }
 
 /**
