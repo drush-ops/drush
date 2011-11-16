@@ -464,7 +464,7 @@ function drush_get_option_list($option, $default = array(), $context = NULL) {
  *
  */
 function drush_get_option_override($option_overrides, $option, $default = NULL, $context = NULL) {
-  return drush_sitealias_get_option($options_overrides, $option, $default, '', $context);
+  return drush_sitealias_get_option($option_overrides, $option, $default, '', $context);
 }
 
 /**
