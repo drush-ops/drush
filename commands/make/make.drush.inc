@@ -187,7 +187,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       'subdir'              => '',
       'directory_name'      => '',
     );
-    if ($project['location'] != 'http://updates.drupal.org/release-history' && !isset($project['type'])) {
+    if ($project['location'] != MAKE_UPDATE_DEFAULT_URL && !isset($project['type'])) {
       $project = make_updatexml($project);
       $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
     }
@@ -219,7 +219,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
 
   foreach ($projects as $type => $type_projects) {
     foreach ($type_projects as $project) {
-      if ($project['location'] == 'http://updates.drupal.org/release-history' && (!isset($project['type']) || !isset($project['download']))) {
+      if ($project['location'] == MAKE_UPDATE_DEFAULT_URL && (!isset($project['type']) || !isset($project['download']))) {
         $project = make_updatexml($project);
       }
       if (!empty($md5)) {
