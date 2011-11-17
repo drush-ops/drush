@@ -490,8 +490,6 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  *    without duplicating data.
  * @param backend_options
  *    Optional. An array of options for the invocation.
- * @param backend_options
- *    Optional. An array of options for the invocation.
  *     'method'
  *        Optional. Defaults to 'GET'.
  *        If this parameter is set to 'POST', the $data array will be passed

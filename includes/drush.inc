@@ -665,10 +665,12 @@ function drush_choice_multiple($options, $defaults = FALSE, $prompt = 'Select so
  *   The default value of the input.
  * @param $required
  *   If TRUE, user may continue even when no value is in the input.
+ * @param $password
+ *   If TRUE, surpress printing of the input.
  *
  * @see drush_confirm()
  */
-function drush_prompt($prompt, $default = NULL, $required = TRUE) {
+function drush_prompt($prompt, $default = NULL, $required = TRUE, $password = FALSE) {
   if (!is_null($default)) {
     $prompt .= " [" . $default . "]";
   }
@@ -681,6 +683,9 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE) {
   }
 
   $stdin = fopen('php://stdin', 'r');
+
+  if ($password) drush_shell_exec("stty -echo");
+
   stream_set_blocking($stdin, TRUE);
   while (($line = fgets($stdin)) !== FALSE) {
     $line = trim($line);
@@ -693,6 +698,10 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE) {
     drush_print_prompt($prompt);
   }
   fclose($stdin);
+  if ($password) {
+    drush_shell_exec("stty echo");
+    print "\n";
+  }
   return $line;
 }
 
