@@ -46,15 +46,12 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'options' => array(
       'pipe' => 'Print just the version number, and nothing else.',
-      'self-update' => 'Check for pending updates to drush itself. Set to 0 to avoid check.',
+      'self-update' => 'Check for pending updates to Drush itself.',
     ),
   );
   $items['self-update'] = array(
-    'description' => 'Update drush to the latest version, if available.',
+    'description' => 'Check to see if there is a newer Drush release available.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
-    'options' => array(
-      'dev' => 'Allow updates to latest dev release.',
-    ),
     'aliases' => array('selfupdate'),
   );
   $items['core-cron'] = array(
@@ -991,8 +988,7 @@ function drush_core_version() {
 }
 
 function drush_core_self_update() {
-  drush_set_option('select', TRUE);
-  return drush_invoke('pm-download', 'drush');
+  drush_check_self_update();
 }
 
 function drush_core_find_project_path($target) {

@@ -187,9 +187,6 @@ function drush_check_self_update() {
     return FALSE;
   }
 
-  // Allow updates to the latest HEAD release if --self-update=head is specified.
-  // If we are called from `drush self-update`, then --dev will set --self-update=head.
-  $dev_ok = (drush_get_option('self-update') == 'head');
   $is_dev = FALSE;
 
   // Get release info for drush
@@ -200,7 +197,7 @@ function drush_check_self_update() {
   $newer_version = FALSE;
   foreach ($info['drush']['releases'] as $version => $release_info) {
     // We deliberately skip any dev releases unless the current release is a dev release.
-    if ($dev_ok || ((!array_key_exists('version_extra', $release_info) || ($release_info['version_extra'] != 'dev')))) {
+    if ((!array_key_exists('version_extra', $release_info) || ($release_info['version_extra'] != 'dev'))) {
       if ($release_info['date'] > $version_date) {
         $newer_version = $release_info['version'];
         $version_date = $release_info['date'];
@@ -213,7 +210,7 @@ function drush_check_self_update() {
   }
 
   if ($newer_version) {
-    drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion; to update, run `drush self-update`.  To disable this check, put "$options[\'self-update\'] = FALSE;" in your drushrc.php configuration file.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
+    drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion. The update process depends on how you installed drush. Some common update commands are: `pear upgrade drush`,  `git pull`, `drush dl drush --destination=[/path/to/drush]`.  To disable this check, put "$options[\'self-update\'] = FALSE;" in your drushrc.php configuration file.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
     return TRUE;
   }
   else {
