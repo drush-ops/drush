@@ -2807,6 +2807,13 @@ function drush_cmp_error($error) {
 }
 
 /**
+ * Clear error context.
+ */
+function drush_clear_error() {
+  drush_set_context('DRUSH_ERROR_CODE', DRUSH_SUCCESS);
+}
+
+/**
  * Exit due to user declining a confirmation prompt.
  *
  * Usage:  return drush_user_abort();

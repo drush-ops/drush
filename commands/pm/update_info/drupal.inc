@@ -94,6 +94,9 @@ function _pm_get_update_info($projects) {
   batch_set($batch);
   drush_backend_batch_process();
 
+  // Clear any error set by a failed update fetch task. This avoid rollbacks.
+  drush_clear_error();
+
   // Calculate update status data.
   $available = _update_get_cached_available_releases();
   $data = update_calculate_project_data($available);
