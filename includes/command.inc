@@ -1567,8 +1567,14 @@ function drush_shell_alias_replace() {
         }
       }
       $alias_value = str_replace(array_keys($alias_variables), array_values($alias_variables), $alias_value);
-      // Get rid of any unmatched replacements
-      $alias_value = preg_replace('/{{[%@#]*[a-z0-9.]*}}/i', '', $alias_value);
+      // Check for unmatched replacements
+      $matches = array();
+      $match_result = preg_match('/{{[%@#]*[a-z0-9.]*}}/', $alias_value, $matches);
+      if ($match_result) {
+        $unmatched_replacements = implode(', ', $matches);
+        $unmatched_replacements = preg_replace('/[{}]/', '', $unmatched_replacements);
+        return drush_set_error('DRUSH_SHELL_ALIAS_UNMATCHED_REPLACEMENTS', dt('The shell alias @alias-name uses replacements "@unmatched". You must use this command with a site alias (e.g. `drush @myalias @alias-name ...`) that defines all of these variables.', array('@alias-name' => $first, '@unmatched' => $unmatched_replacements)));
+      }
       $alias_value = explode(' ', $alias_value);
     }
     drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');

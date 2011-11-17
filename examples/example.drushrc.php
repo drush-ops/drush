@@ -65,6 +65,8 @@
 // Drush shell aliases act similar to git aliases.
 // See https://git.wiki.kernel.org/index.php/Aliases#Advanced.
 // For best success, define these in drushrc files located in #6-3 above.
+// More information on shell aliases can be found in 
+// `drush topic docs-shell-aliases`
 # $options['shell-aliases']['pull'] = '!git pull'; // We've all done it.
 # $options['shell-aliases']['pulldb'] = '!git pull && drush updatedb';
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';

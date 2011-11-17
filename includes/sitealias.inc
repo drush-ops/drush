@@ -149,6 +149,7 @@ function drush_sitealias_get_record($alias) {
  * not intended to be called directly.
  */
 function _drush_sitealias_get_record($alias, $alias_context = NULL) {
+  $alias_record = array();
   // Before we do anything else, load $alias if it needs to be loaded
   _drush_sitealias_load_alias($alias, $alias_context);
 

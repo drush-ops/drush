@@ -105,6 +105,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/docs/shellscripts.html'),
   );
+  $items['docs-shell-aliases'] = array(
+    'description' => 'Overview on how to use drush shell aliases.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array($docs_dir . '/docs/shellaliases.html'),
+  );
   $items['docs-commands'] = array(
     'description' => 'Overview on how to write drush commands.',
     'hidden' => TRUE,

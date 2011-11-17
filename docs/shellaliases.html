@@ -1,0 +1,57 @@
+<h1>Drush Shell Aliases</h1>
+
+A Drush shell alias is a shortcut to any Drush command or
+any shell command.  Drush shell aliases are very similar
+to git aliases.
+<p>
+  See: https://git.wiki.kernel.org/index.php/Aliases#Advanced
+<p>
+A shell alias is defined in a drush configuration file
+called drushrc.php.  See `drush topic docs-configuration`.
+There are two kinds of shell aliases:  an alias whose value
+begins with a '!' will execute the rest of the line as
+bash commands.  Aliases that do not start with a '!' will
+be interpreted as Drush commands.
+
+<h3>Example:</h3>
+<pre>
+    $options['shell-aliases']['pull'] = '!git pull'; // We've all done it.
+    $options['shell-aliases']['noncore'] = 'pm-list --no-core';
+</pre>
+With the above two aliases defined, `drush pull` will then be
+equivalent to `git pull`, and `drush nocore` will be equivalent
+to `drush pm-list --no-core`.
+
+<h2>Shell Alias Replacements</h2>
+
+Shell aliases are even more powerful when combined with shell alias
+replacements and site aliases.  Shell alias replacements take the
+form of {{sitealias-item}} or {{%pathalias-item}}, and also the 
+special {{@target}}, which is replaced with the name of the  site alias 
+used, or '@none' if none was used.
+<p>
+For example, given the following site alias:
+<pre>
+     $aliases['dev'] = array (
+       'root' => '/path/to/drupal',
+       'uri' => 'mysite.org',
+       '#peer' => '@stage',
+     );
+</pre>
+The aliases below can be used to pull the database to a dev site
+or push the code from the same site from/to its peer site (live or stage) 
+via `drush @dev site-pull` and `drush @dev site-push`.  Note that these
+aliases assume that the alias used defines an item named '#peer' 
+(as shown in the above alias) that names the live or stage site.
+
+<h3>Shell aliases using replacements:</h3>
+<pre>
+    $options['shell-aliases']['pull-data'] = '!drush sql-sync {{#peer}} {{@target}} && drush rsync {{#peer}}:%files {{@target}}:%files',
+    $options['shell-aliases']['push-code'] = '!drush rsync {{@target}} {{#peer}} && drush {{#peer}} updatedb',
+</pre>
+If the user does not use these shell aliases with any site alias, then
+an error will be returned and the script will not run.  If you define
+the site that you push to and pull from in the '#peer' value, though,
+then these aliases can be used to quickly run combinations of drush sql-sync
+and rsync commands on the "standard" peer site, reducing the risk of
+typos that might send information in the wrong direction or to the wrong site.

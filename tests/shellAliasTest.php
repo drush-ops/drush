@@ -17,6 +17,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
       \$options['shell-aliases'] = array(
         'glopts' => 'topic core-global-options',
         'pull' => '!git pull',
+        'echosimple' => '!echo {{@target}}',
         'echotest' => '!echo {{@target}} {{%root}} {{%mypath}}',
         'compound-command' => '!cd {{%sandbox}} && pwd && touch mytest && ls mytest',
       );
@@ -93,16 +94,27 @@ class shellAliasesCase extends Drush_CommandTestCase {
   }
   
   /*
-   * Test shell aliases with replacements -- no alias.
+   * Test shell aliases with simple replacements -- no alias.
+   */
+  public function testShellAliasSimpleReplacement() {
+    $options = array(
+      'config' => UNISH_SANDBOX,
+    );
+    $this->drush('echosimple', array(), $options);
+    $expected = "@none";
+    $output = $this->getOutput();
+    $this->assertEquals($expected, $output, 'Expected echo test returned "@none"');
+  }
+  
+  /*
+   * Test shell aliases with complex replacements -- no alias.
    */
   public function testShellAliasReplacementNoAlias() {
     $options = array(
       'config' => UNISH_SANDBOX,
     );
-    $this->drush('echotest', array(), $options);
-    $expected = "@none";
-    $output = $this->getOutput();
-    $this->assertEquals($expected, $output, 'Expected echo test returned "@none"');
+    // echo test has replacements that are not satisfied, so this is expected to return an error.
+    $this->drush('echotest', array(), $options, NULL, NULL, self::EXIT_ERROR);
   }
   
   /*
