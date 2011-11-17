@@ -741,9 +741,9 @@ function drush_sitealias_cache_db_settings(&$alias_record, $databases) {
  * Check to see if we have already bootstrapped to a site.
  */
 function drush_sitealias_is_bootstrapped_site($alias_record) {
-  if (!isset($alias_record['remote-host'])) {
+  if (!isset($alias_record['remote-host']) && array_key_exists('root', $alias_record)) {
     $self_record = drush_sitealias_get_record("@self");
-    if (empty($self_record)) {
+    if (empty($self_record) || !array_key_exists('root', $self_record)) {
       // TODO:  If we have not bootstrapped to a site yet, we could
       // perhaps bootstrap to $alias_record here.
       return FALSE;

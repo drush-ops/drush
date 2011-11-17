@@ -492,7 +492,7 @@ function drush_parse_args() {
       $command_args[] = $opt;
     }
     // Is the arg an option (starting with '-')?
-    if ($opt{0} == "-" && strlen($opt) != 1) {
+    if (!empty($opt) && $opt{0} == "-" && strlen($opt) != 1) {
       // Do we have multiple options behind one '-'?
       if (strlen($opt) > 2 && $opt{1} != "-") {
         // Each char becomes a key of its own.
@@ -1544,6 +1544,31 @@ function drush_shell_alias_replace() {
     // Shell alias found for first argument in the request.
     $alias_value = $shell_aliases[$first];
     if (!is_array($alias_value)) {
+      // Shell aliases can have embedded variables such as {{@target}} and {{%root}}
+      // that are replaced with the name of the target site alias, or the value of a
+      // path alias defined in the target site alias record.  We only support replacements
+      // when the alias value is a string; if it is already broken out into an array,
+      // then the values therein are used literally.
+      $alias_variables = array( '{{@target}}' => '@none' );
+      $target_site_alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS', FALSE);
+      if ($target_site_alias) {
+        $alias_variables = array( '{{@target}}' => $target_site_alias );
+        $target = drush_sitealias_get_record($target_site_alias);
+        foreach ($target as $key => $value) {
+          if (!is_array($value)) {
+            $alias_variables['{{' . $key . '}}'] = $value;
+          }
+        }
+        if (array_key_exists('path-aliases', $target)) {
+          foreach ($target['path-aliases'] as $key => $value) {
+            // n.b. $key will contain something like "%root" or "%files".
+            $alias_variables['{{' . $key . '}}'] = $value;
+          }
+        }
+      }
+      $alias_value = str_replace(array_keys($alias_variables), array_values($alias_variables), $alias_value);
+      // Get rid of any unmatched replacements
+      $alias_value = preg_replace('/{{[%@#]*[a-z0-9.]*}}/i', '', $alias_value);
       $alias_value = explode(' ', $alias_value);
     }
     drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');

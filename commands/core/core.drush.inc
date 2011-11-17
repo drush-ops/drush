@@ -1007,7 +1007,10 @@ function drush_core_execute() {
   // The DRUSH_COMMAND_ARGS contain all args and options that appear after the command name.
   $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
   for ($x = 0; $x < sizeof($args); $x++) {
-    $args[$x] = drush_escapeshellarg($args[$x]);
+    // escape all args except for command separators.
+    if (!in_array($args[$x], array('&&', '||', ';'))) {
+      $args[$x] = drush_escapeshellarg($args[$x]);
+    }
   }
   $cmd = implode(' ', $args);
   if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
@@ -1019,5 +1022,5 @@ function drush_core_execute() {
     }
   }
   // Must be a local command.
-  return (bool) !drush_op_system($cmd);
+  return drush_shell_proc_open($cmd);
 }
