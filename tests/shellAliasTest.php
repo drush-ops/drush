@@ -18,6 +18,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
         'glopts' => 'topic core-global-options',
         'pull' => '!git pull',
         'echotest' => '!echo {{@target}} {{%root}} {{%mypath}}',
+        'compound-command' => '!cd {{%sandbox}} && pwd && touch mytest && ls mytest',
       );
     ";
     file_put_contents(UNISH_SANDBOX . '/drushrc.php', trim($contents));
@@ -30,6 +31,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
         '#peer' => '@live',
         'path-aliases' => array (
           '%mypath' => '/srv/data/mypath',
+          '%sandbox' => '" . UNISH_SANDBOX . "'
         ),
       );
     ";
@@ -116,4 +118,19 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected echo test returned "' . $expected . '"');
   }
+  
+  /*
+   * Test shell aliases with replacements and compound commands.
+   */
+  public function testShellAliasCompoundCommands() {
+    $options = array(
+      'config' => UNISH_SANDBOX,
+      'alias-path' => UNISH_SANDBOX,
+    );
+    $this->drush('compound-command', array(), $options, '@myalias');
+    $expected = UNISH_SANDBOX . "\nmytest";
+    $output = $this->getOutput();
+    $this->assertEquals($expected, $output, 'Expected echo test returned "' . $expected . '"');
+  }
 }
+
