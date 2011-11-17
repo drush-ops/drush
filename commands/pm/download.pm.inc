@@ -102,7 +102,7 @@ function drush_pm_download() {
     // --destination has preference.
     $destination = drush_get_option('destination');
     if (!empty($destination)) {
-      $request['project_install_location'] = drush_get_context('DRUSH_DRUPAL_ROOT') . '/' .$destination;
+      $request['project_install_location'] = realpath($destination);
     }
     else {
       $request['project_install_location'] = _pm_download_destination($request['project_type']);

@@ -16,21 +16,43 @@ class pmDownloadCase extends Drush_CommandTestCase {
     $uri = key($sites);
     $root = $this->webroot();
 
-    // Default to sites/all
-    $options = array(
-      'root' => $root,
-      'uri' => $uri,
+    $devel_options = array(
       'cache' => NULL,
       'skip' => NULL, // No FirePHP
       'invoke' => NULL, // invoke from script: do not verify options
     );
+
+    // Default to sites/all
+    $options = array(
+      'root' => $root,
+      'uri' => $uri,
+    ) + $devel_options;
     $this->drush('pm-download', array('devel'), $options);
     $this->assertFileExists($root . '/sites/all/modules/devel/README.txt');
 
     // If we are in site specific dir, then download belongs there.
     $path_stage = "$root/sites/$uri";
     mkdir("$path_stage/modules");
-    $this->drush('pm-download', array('devel'), array('cache' => NULL, 'skip' => NULL, 'invoke' => NULL), NULL, $path_stage);
+    $options = $devel_options;
+    $this->drush('pm-download', array('devel'), $options, NULL, $path_stage);
     $this->assertFileExists($path_stage . '/modules/devel/README.txt');
+
+    // --destination with absolute path.
+    $destination = UNISH_SANDBOX . '/test-destination1';
+    mkdir($destination);
+    $options = array(
+      'destination' => $destination,
+    ) + $devel_options;
+    $this->drush('pm-download', array('devel'), $options);
+    $this->assertFileExists($destination . '/devel/README.txt');
+
+    // --destination with a relative path.
+    $destination = 'test-destination2';
+    mkdir(UNISH_SANDBOX . '/' . $destination);
+    $options = array(
+      'destination' => $destination,
+    ) + $devel_options;
+    $this->drush('pm-download', array('devel'), $options);
+    $this->assertFileExists(UNISH_SANDBOX . '/' . $destination . '/devel/README.txt');
   }
 }
