@@ -84,5 +84,12 @@ public function testSelect() {
     $output = $this->getOutput();
     $this->assertGreaterThanOrEqual(20, count($items), '--select --all offerred at least 16 options.');
     $this->assertContains('6.x-1.5', $output, 'Assure that --all lists very old releases.');
+
+    // --select --dev. Specify 6.x since that has so many releases.
+    $this->drush('pm-download', array('devel-6.x'), $options + array('dev' => NULL));
+    $items = $this->getOutputAsList();
+    $output = $this->getOutput();
+    $this->assertEquals(5, count($items), '--select --dev expected to offer only one option.');
+    $this->assertContains('6.x-1.x-dev', $output, 'Assure that --dev lists the only dev release.');
   }
 }
