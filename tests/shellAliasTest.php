@@ -23,6 +23,15 @@ class shellAliasesCase extends Drush_CommandTestCase {
       );
     ";
     file_put_contents(UNISH_SANDBOX . '/drushrc.php', trim($contents));
+    mkdir(UNISH_SANDBOX . '/b');
+    $contents = "
+      <?php
+
+      \$options['shell-aliases'] = array(
+        'also' => '!echo alternate config file included too',
+      );
+    ";
+    file_put_contents(UNISH_SANDBOX . '/b/drushrc.php', trim($contents));
     $contents = "
       <?php
 
@@ -142,7 +151,27 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $this->drush('compound-command', array(), $options, '@myalias');
     $expected = UNISH_SANDBOX . "\nmytest";
     $output = $this->getOutput();
-    $this->assertEquals($expected, $output, 'Expected echo test returned "' . $expected . '"');
+    $this->assertEquals($expected, $output, 'Expected compound test returned "' . $expected . '"');
   }
+
+  
+  /*
+   * Test shell aliases with replacements and compound commands.
+   */
+  public function testShellAliasMultipleConfigFiles() {
+    $options = array(
+      'config' => UNISH_SANDBOX . "/b" . PATH_SEPARATOR . UNISH_SANDBOX,
+      'alias-path' => UNISH_SANDBOX,
+    );
+    $this->drush('compound-command', array(), $options, '@myalias');
+    $expected = UNISH_SANDBOX . "\nmytest";
+    $output = $this->getOutput();
+    $this->assertEquals($expected, $output, 'Expected compound test returned "' . $expected . '"');
+    $this->drush('also', array(), $options);
+    $expected = "alternate config file included too";
+    $output = $this->getOutput();
+    $this->assertEquals($expected, $output, 'Expected also test returned "' . $expected . '"');
+  }
+
 }
 

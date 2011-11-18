@@ -243,6 +243,10 @@
 #         'no-cache' => TRUE,
 #       ),
 #     ),
+#     # This shell alias will run `mycommand` when executed via `drush @stage site-specific-alias`
+#     'shell-aliases' => array (
+#       'site-specific-alias' => '!mycommand',
+#     ),
 #  );
 #$aliases['dev'] = array(
 #    'uri' => 'dev.mydrupalsite.com',

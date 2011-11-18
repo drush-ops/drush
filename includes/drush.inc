@@ -323,10 +323,17 @@ function _convert_csv_to_array($args) {
  *     - never-propagate: If TRUE, backend invoke will never pass this item on
  *       to the subcommand being executed.
  *     - local-context-only: Backend invoke will only pass this value on for local calls.
- *     - merge-list: For options such as --include and --config, make a merged list
- *       of all of the values specified for all of the contexts (config files) where
- *       the option is defined.  The value is stored in the specified 'context'.
- *     - merge-associative: Like 'merge-list', but key values are preserved.
+ *     - merge: For options such as $options['shell-aliases'] that consist of an array
+ *       of items, make a merged array that contains all of the values specified for 
+ *       all of the contexts (config files) where the option is defined.  The value is stored in 
+ *       the specified 'context', or in a context named after the option itself if the
+ *       context flag is not specified.
+ *       IMPORTANT: When the merge flag is used, the option value must be obtained via
+ *       drush_get_context('option') rather than drush_get_option('option').
+ *     - merge-pathlist: For options such as --include and --config, make a merged list
+ *       of options from all contexts; works like the 'merge' flag, but also handles string
+ *       values separated by the PATH_SEPARATOR.
+ *     - merge-associative: Like 'merge-pathlist', but key values are preserved.
  *     - propagate-cli-value: Used to tell backend invoke to include the value for
  *       this item as specified on the cli.  This can either override 'context'
  *       (e.g., propagate --include from cli value instead of DRUSH_INCLUDE context),
@@ -349,8 +356,8 @@ function drush_get_global_options($brief = FALSE) {
 
   if (!$brief) {
     $options['quiet']               = array('short-form' => 'q', 'description' => 'Suppress non-error messages.');
-    $options['include']             = array('short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'local-context-only' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-list' => TRUE, 'description' => "A list of additional directory paths to search for drush commands.");
-    $options['config']              = array('short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'local-context-only' => TRUE, 'merge-list' => TRUE, 'description' => "Specify an additional config file to load. See example.drushrc.php.");
+    $options['include']             = array('short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'local-context-only' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of additional directory paths to search for drush commands.");
+    $options['config']              = array('short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'local-context-only' => TRUE, 'merge-pathlist' => TRUE, 'description' => "Specify an additional config file to load. See example.drushrc.php.");
     $options['user']                = array('short-form' => 'u', 'short-has-arg' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specify a Drupal user to login with. May be a name or a number.");
     $options['backend']             = array('short-form' => 'b', 'never-propagate' => TRUE, 'description' => "Hide all output and return structured data (internal use only).");
     $options['invoke']              = array('hidden' => TRUE, 'description' => 'Invoked from a script; skip option verification.');
@@ -366,7 +373,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['cache-default-class'] = array('description' => "A cache backend class that implements DrushCacheInterface.");
     $options['cache-class-<bin>']   = array('description' => "A cache backend class that implements DrushCacheInterface to use for a specific cache bin.");
     $options['early']               = array('description' => "Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename). The function is called pre-bootstrap and offers an opportunity to alter the drush bootstrap environment or process (returning FALSE from the function will continue the bootstrap), or return output very rapidly (e.g. from caches). See includes/complete.inc for an example.");
-    $options['alias-path']          = array('context' => 'ALIAS_PATH', 'local-context-only' => TRUE, 'merge-list' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specifies the list of paths where drush will search for alias files. Separate paths with ':'.");
+    $options['alias-path']          = array('context' => 'ALIAS_PATH', 'local-context-only' => TRUE, 'merge-pathlist' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specifies the list of paths where drush will search for alias files. Separate paths with ':'.");
     $options['backup-location']     = array('description' => "Specifies the directory where drush will store backups.");
     $options['confirm-rollback']    = array('description' => 'Wait for confirmation before doing a rollback when something goes wrong.');
     $options['complete-debug']      = array('hidden' => TRUE, 'description' => "Turn on debug mode forf completion code");

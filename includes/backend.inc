@@ -605,11 +605,11 @@ function _drush_backend_classify_options($command_options, $backend_options) {
       $propagate = (!array_key_exists('never-propagate', $global_option_list[$key]));
       $special = (array_key_exists('never-post', $global_option_list[$key]));
       if ($propagate) {
-        // We will allow 'merge-list' contexts to be propogated.  Right now
+        // We will allow 'merge-pathlist' contexts to be propogated.  Right now
         // these are all 'local-context-only' options; if we allowed them to
         // propogate remotely, then we would need to get the right path separator
         // for the remote machine.
-        if (is_array($value) && array_key_exists('merge-list', $global_option_list[$key])) {
+        if (is_array($value) && array_key_exists('merge-pathlist', $global_option_list[$key])) {
           $value = implode(PATH_SEPARATOR, $value);
         }
       }
