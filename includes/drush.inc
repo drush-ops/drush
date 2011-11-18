@@ -500,7 +500,7 @@ function drush_confirm($msg, $indent = 0) {
  *   example, if the key is a user id and the value is the
  *   user name, use '!value (uid=!key)'.
  */
-function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') {
+function drush_choice($options, $prompt = 'Enter a number.', $label = '!value', $widths = array()) {
   drush_print(dt($prompt));
 
   // Preflight so that all rows will be padded out to the same number of columns
@@ -530,7 +530,7 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
       $selection_list[$selection_number] = $key;
     }
   }
-  drush_print_table($rows);
+  drush_print_table($rows, FALSE, $widths);
   drush_print_pipe(array_keys($options));
 
   // If the user specified --choice, then make an
