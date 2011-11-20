@@ -46,7 +46,7 @@ function variable_drush_command() {
       'drush vset --always-set site_offline 1' => 'Take the site offline; Skips confirmation even if site_offline variable does not exist.',
       'drush vset pr 1' => 'Choose from a list of variables beginning with "pr" to set to true.',
       'php -r "print json_encode(TRUE);" | drush vset --format=json foo -' => 'Set foo to a boolean value',
-      'php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush vset --format=json project_dependency_excluded_dependencies -',
+      'php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush vset --format=json project_dependency_excluded_dependencies -'=> 'Set a variable to a complex value (e.g. array)',
     ),
     'aliases' => array('vset'),
   );
