@@ -10,7 +10,7 @@ function archive_drush_command() {
   $items['archive-dump'] = array(
     'description' => 'Backup your code, files, and database into a single file.',
     'arguments' => array(
-      'targets' => 'Optional. Site specifications, delimited by commas. Typically, list subdirectory name(s) under /sites.',
+      'sites' => 'Optional. Site specifications, delimited by commas. Typically, list subdirectory name(s) under /sites.',
     ),
     'options' => array(
       'description' => 'Describe the archive contents.',
@@ -42,7 +42,7 @@ function archive_drush_command() {
       'db-url' => 'A Drupal 6 style database URL indicating the target for database restore. If not provided, the archived settings.php is used.',
       'db-su' => 'Account to use when creating the new database. Optional.',
       'db-su-pw' => 'Password for the "db-su" account. Optional.',
-      'overwrite' => 'Allow drush to overwrite any files in the destinion.',
+      'overwrite' => 'Allow drush to overwrite any files in the destination.',
 
     ),
     'examples' => array(
@@ -166,14 +166,20 @@ function drush_archive_dump($sites_subdirs = '@self') {
   drush_shell_cd_and_exec($workdir, "tar --dereference -rf %s %s", $destination, "{$docroot}/sites/all");
 
   $tmp = drush_tempdir();
-  // Dump the database(s) for each site and add to the archive.
+  // Dump the default database for each site and add to the archive.
   foreach ($full as $key => $alias) {
-    foreach ($alias['databases'] as $dbkey => $target) {
+    if ($db = $alias['databases']['default']['default']) {
       // Use a subdirectory name matching the docroot name.
       drush_mkdir("{$tmp}/{$docroot}");
-      $result_file = $tmp . '/' . basename($target['default']['database']) . '.sql';
+      // Ensure uniqueness by prefixing key if needed.
+      $dbname = $db['database'];
+      $result_file = count($full) == 1 ? "$tmp/$dbname.sql" : str_replace('@', '', "$tmp/$key-$dbname.sql");
+      $all_dbs[$key] = array(
+        'file' => $result_file,
+        'driver' => $db['driver'],
+      );
       $table_selection = drush_sql_get_table_selection();
-      list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $target['default'], $result_file);
+      list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $db, $result_file);
       drush_shell_exec($dump_exec);
       drush_shell_cd_and_exec($tmp, 'tar --dereference -rf %s %s', $destination, basename($result_file));
     }
@@ -206,10 +212,10 @@ function drush_archive_dump($sites_subdirs = '@self') {
       'files-private' => @$status['object']['%paths']['%private'],
     );
     // Add info for each DB connection (usually only 1);
-    foreach ($alias['databases'] as $dbkey => $target) {
+    foreach ($all_dbs as $dbkey => $db) {
       // basename() is for sqlite's sake.
-      $site["database-$dbkey-file"] = './' . basename($target['default']['database'] . '.sql');
-      $site["database-$dbkey-driver"] = $target['default']['driver'];
+      $site["database-default-file"] = basename($db['file']);
+      $site["database-default-driver"] = $db['driver'];
     }
     // The section title is the sites subdirectory name.
     $info[basename($site['sitedir'])] = $site;
