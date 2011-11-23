@@ -460,7 +460,12 @@ function _core_site_status_table($project = '') {
       $status_table['Site URI'] = drush_get_context('DRUSH_URI');
       if ($creds = drush_get_context('DRUSH_DB_CREDENTIALS')) {
         $status_table['Database driver'] = $creds['driver'];
-        $status_table['Database hostname'] = $creds['host'];
+        if (!empty($creds['unix_socket'])) {
+          $status_table['Database socket'] = $creds['unix_socket'];
+        }
+        else {
+          $status_table['Database hostname'] = $creds['host'];
+        }
         $status_table['Database username'] = $creds['user'];
         $status_table['Database name'] = $creds['name'];
         if (drush_get_option('show-passwords', FALSE)) {
