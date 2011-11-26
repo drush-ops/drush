@@ -243,10 +243,26 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
 
 /**
  * Cross-platform compatible helper function to recursively create a directory tree.
- * @see http://theserverpages.com/php/manual/en/function.mkdir.php#50383
  */
 function drush_mkdir($path) {
-  return is_dir($path) || (drush_mkdir(dirname($path)) && mkdir($path));
+  if (!is_dir($path)) {
+    if (drush_mkdir(dirname($path))) {
+      if (@mkdir($path)) {
+        return TRUE;
+      }
+      else {
+        if (is_writable(dirname($path))) {
+          drush_set_error('DRUSH_CREATE_DIR_FAILURE', dt('Unable to create !dir.', array('!dir' => preg_replace('/\w+\/\.\.\//', '', $path))));
+        }
+        else {
+          drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Unable to write in !dir. Please check directory permissions.', array('!dir' => realpath(dirname($path)))));
+        }
+      }
+    }
+  }
+  else {
+    return TRUE;
+  }
 }
 
 /**
