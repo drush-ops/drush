@@ -10,11 +10,181 @@
  */
 
 /**
- * Invoke drush api calls.
+ * Invoke drush api calls, including all hooks.
  *
  * Executes the specified command with the specified arguments on the
  * currently bootstrapped site using the current option contexts.
  * Note that drush_invoke will not bootstrap any further than the
+ * current command has already bootstrapped; therefore, you should only invoke
+ * commands that have the same (or lower) bootstrap requirements.
+ *
+ * Commands execute with the same options that the user provided on
+ * the commandline.  If you need to invoke another drush commands with
+ * options you specify, @see drush_invoke_process.
+ */
+function drush_invoke($command, $arguments = array()) {
+  // If someone passed a standalone arg, convert it to a single-element array
+  if (!is_array($arguments)) {
+    $arguments = array($arguments);
+  }
+  $commands = drush_get_commands();
+  if (array_key_exists($command, $commands)) {
+    $command = $commands[$command];
+    // Drush overloads the 'arguments' element, which contains the
+    // help string for the allowed arguments for the command when
+    // fetched, and is fixed up by _drush_prepare_command to contain
+    // the actual commandline arguments during dispatching.
+    $command['arguments'] = array();
+    return drush_dispatch($command, $arguments);
+  }
+  else {
+    return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!command' could not be found.", array('!command' => $command)));
+  }
+}
+
+/**
+ * Invoke a command in a new process, targeting the site specified by
+ * the provided site alias record.
+ *
+ * Use this function instead of drush_backend_invoke_sitealias,
+ * drush_backend_invoke_args, or drush_backend_invoke_command
+ * (all obsolete in drush 5).
+ *
+ * @param array $site_alias_record
+ *  The site record to execute the command on.  Use '@self' to run on the current site.
+ * @param string $command_name
+ *  The command to invoke.
+ * @param array $commandline_args
+ *  The arguments to pass to the command.
+ * @param array $commandline_options
+ *  The options (e.g. --select) to provide to the command.
+ * @param $backend_options
+ *   TRUE - integrate errors
+ *   FALSE - do not integrate errors
+ *   array - @see drush_backend_invoke_sitealias_command
+ *
+ * @return
+ *   If the command could not be completed successfully, FALSE.
+ *   If the command was completed, this will return an associative
+ *   array containing the results of the API call.
+ *   @see drush_backend_get_result()
+ */
+function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = FALSE) {
+  // NULL is a synonym to '@self', although the latter is preferred.
+  if (!isset($site_alias_record)) {
+    $site_alias_record = '@self';
+  }
+  // If the first parameter is not a site alias record,
+  // then presume it is an alias name, and try to look up
+  // the alias record.
+  if (!is_array($site_alias_record)) {
+    $site_alias_record = drush_sitealias_get_record($site_alias_record);
+  }
+  return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options, $backend_options);
+}
+
+/**
+ * Given a command record, dispatch it as if it were
+ * the original command.  Executes in the currently
+ * bootstrapped site using the current option contexts.
+ * Note that drush_dispatch will not bootstrap any further than the
+ * current command has already bootstrapped; therefore, you should only invoke
+ * commands that have the same (or lower) bootstrap requirements.
+ *
+ * @param command
+ *   A full $command such as returned by drush_get_commands(),
+ *   or a string containing the name of the command record from
+ *   drush_get_commands() to call.
+ * @param arguments
+ *   An array of argument values.
+ *
+ * @see drush_topic_docs_topic().
+ */
+function drush_dispatch($command, $arguments = array()) {
+  drush_set_command($command);
+  $return = FALSE;
+
+  if ($command) {
+    // Add arguments, if this has not already been done.
+    // (If the command was fetched from drush_parse_command,
+    // then you cannot provide arguments to drush_dispatch.)
+    if (empty($command['arguments'])) {
+      _drush_prepare_command($command, $arguments);
+    }
+
+    // Add command-specific options, if applicable
+    drush_command_default_options($command);
+
+    // Test to see if any of the options in the 'cli' context
+    // are not represented in the command structure.
+    if ((_drush_verify_cli_options($command) === FALSE) || (_drush_verify_cli_arguments($command) === FALSE)) {
+      return FALSE;
+    }
+
+    // Print a warning if someone tries to use a deprecated alias.
+    if (isset($command['deprecated'])) {
+      drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
+    }
+    // Call the callback function of the active command.
+    $return = call_user_func_array($command['callback'], $command['arguments']);
+  }
+
+  // Add a final log entry, just so a timestamp appears.
+  drush_log(dt('Command dispatch complete'), 'notice');
+
+  return $return;
+}
+
+/**
+ * Entry point for commands into the drush_invoke() API
+ *
+ * If a command does not have a callback specified, this function will be called.
+ *
+ * This function will trigger $hook_drush_init, then if no errors occur,
+ * it will call drush_invoke() with the command that was dispatch.
+ *
+ * If no errors have occured, it will run $hook_drush_exit.
+ */
+function drush_command() {
+  $args = func_get_args();
+  $command = drush_get_command();
+
+  foreach (drush_command_implements("drush_init") as $name) {
+    $func = $name . '_drush_init';
+    if (drush_get_option('show-invoke')) {
+      drush_log(dt("Calling global init hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
+    }
+    call_user_func_array($func, $args);
+    _drush_log_drupal_messages();
+  }
+
+  if (!drush_get_error()) {
+    _drush_invoke_hooks($command['command-hook'], $args, $command['commandfile']);
+  }
+
+  if (!drush_get_error()) {
+    foreach (drush_command_implements('drush_exit') as $name) {
+      $func = $name . '_drush_exit';
+      if (drush_get_option('show-invoke')) {
+        drush_log(dt("Calling global exit hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
+      }
+      call_user_func_array($func, $args);
+      _drush_log_drupal_messages();
+    }
+  }
+}
+
+/**
+ * Invoke drush api calls, including all hooks.
+ *
+ * This is an internal function; it is called from drush_dispatch via
+ * drush_command, but only if the command does not specify a 'callback'
+ * function.  If a callback function is specified, it will be called
+ * instead of drush_command + _drush_invoke_hooks.
+ *
+ * Executes the specified command with the specified arguments on the
+ * currently bootstrapped site using the current option contexts.
+ * Note that _drush_invoke_hooks will not bootstrap any further than the
  * current command has already bootstrapped; therefore, you should only invoke
  * commands that have the same (or lower) bootstrap requirements.
  *
@@ -49,24 +219,20 @@
  *   The drush command to execute.
  * @param args
  *   An array of arguments to the command OR a single non-array argument.
+ * @param defined_in_commandfile
+ *   The name of the commandfile that this command exists in.  Will be looked up
+ *   if not provided.
  * @return
  *   The return value will be passed along to the caller if --backend option is
  *   present. A boolean FALSE indicates failure and rollback will be intitated.
- */
-function drush_invoke($command, $args = array()) {
-  return _drush_invoke($command, $args, drush_get_commandfile_for_command($command));
-}
-
-/**
- * Variant of drush_invoke that allows the
- * commandfile to be specified correctly; this allows
- * the hook functions to be correctly determined for
- * commands that provide a 'callback' function.
  *
- * This function should not be called directly; use
- * @see drush_dispatch() and @see drush_invoke()
+ * This function should not be called directly.
+ * @see drush_invoke() and @see drush_invoke_process()
  */
-function _drush_invoke($command, $args, $defined_in_commandfile) {
+function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
+  if ($defined_in_commandfile == NULL) {
+    $defined_in_commandfile = drush_get_commandfile_for_command($command);
+  }
   // If someone passed a standalone arg, convert it to a single-element array
   if (!is_array($args)) {
     $args = array($args);
@@ -179,56 +345,6 @@ function _drush_invoke($command, $args, $defined_in_commandfile) {
   if (isset($return)) {
     return $return;
   }
-}
-
-/**
- * Given a command record, dispatch it as if it were
- * the original command.  Executes in the currently
- * bootstrapped site using the current option contexts.
- * Note that drush_dispatch will not bootstrap any further than the
- * current command has already bootstrapped; therefore, you should only invoke
- * commands that have the same (or lower) bootstrap requirements.
- *
- * @param command
- *   A full $command such as returned by drush_get_commands().
- * @param arguments
- *   An array of argument values.
- *
- * @see drush_topic_docs_topic().
- */
-function drush_dispatch($command, $arguments = array()) {
-  drush_set_command($command);
-  $return = FALSE;
-
-  if ($command) {
-    // Add arguments, if this has not already been done.
-    // (If the command was fetched from drush_parse_command,
-    // then you cannot provide arguments to drush_dispatch.)
-    if (empty($command['arguments'])) {
-      _drush_prepare_command($command, $arguments);
-    }
-
-    // Add command-specific options, if applicable
-    drush_command_default_options($command);
-
-    // Test to see if any of the options in the 'cli' context
-    // are not represented in the command structure.
-    if ((_drush_verify_cli_options($command) === FALSE) || (_drush_verify_cli_arguments($command) === FALSE)) {
-      return FALSE;
-    }
-
-    // Print a warning if someone tries to use a deprecated alias.
-    if (isset($command['deprecated'])) {
-      drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
-    }
-    // Call the callback function of the active command.
-    $return = call_user_func_array($command['callback'], $command['arguments']);
-  }
-
-  // Add a final log entry, just so a timestamp appears.
-  drush_log(dt('Command dispatch complete'), 'notice');
-
-  return $return;
 }
 
 /**
@@ -358,47 +474,6 @@ function _drush_flatten_options($options) {
     }
   }
   return $flattened_options;
-}
-
-/**
- * Invoke a command in a new process, targeting the site specified by
- * the provided site alias record.
- *
- * Use this function instead of drush_backend_invoke_sitealias,
- * drush_backend_invoke_args, or drush_backend_invoke_command
- * (all obsolete in drush 5).
- *
- * @param array $site_alias_record
- *  The site record to execute the command on.  Use '@self' to run on the current site.
- * @param string $command_name
- *  The command to invoke.
- * @param array $commandline_args
- *  The arguments to pass to the command.
- * @param array $commandline_options
- *  The options (e.g. --select) to provide to the command.
- * @param $backend_options
- *   TRUE - integrate errors
- *   FALSE - do not integrate errors
- *   array - @see drush_backend_invoke_sitealias_command
- *
- * @return
- *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative
- *   array containing the results of the API call.
- *   @see drush_backend_get_result()
- */
-function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = FALSE) {
-  // NULL is a synonym to '@self', although the latter is preferred.
-  if (!isset($site_alias_record)) {
-    $site_alias_record = '@self';
-  }
-  // If the first parameter is not a site alias record,
-  // then presume it is an alias name, and try to look up
-  // the alias record.
-  if (!is_array($site_alias_record)) {
-    $site_alias_record = drush_sitealias_get_record($site_alias_record);
-  }
-  return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options, $backend_options);
 }
 
 /**
@@ -922,45 +997,6 @@ function _drush_prepare_command(&$command, $arguments = array()) {
     $arguments = array_merge($command['callback arguments'], $arguments);
   }
   $command['arguments'] = $arguments;
-}
-
-/**
- * Entry point for commands into the drush_invoke() API
- *
- * If a command does not have a callback specified, this function will be called.
- *
- * This function will trigger $hook_drush_init, then if no errors occur,
- * it will call drush_invoke() with the command that was dispatch.
- *
- * If no errors have occured, it will run $hook_drush_exit.
- */
-function drush_command() {
-  $args = func_get_args();
-  $command = drush_get_command();
-
-  foreach (drush_command_implements("drush_init") as $name) {
-    $func = $name . '_drush_init';
-    if (drush_get_option('show-invoke')) {
-      drush_log(dt("Calling global init hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
-    }
-    call_user_func_array($func, $args);
-    _drush_log_drupal_messages();
-  }
-
-  if (!drush_get_error()) {
-    _drush_invoke($command['command-hook'], $args, $command['commandfile']);
-  }
-
-  if (!drush_get_error()) {
-    foreach (drush_command_implements('drush_exit') as $name) {
-      $func = $name . '_drush_exit';
-      if (drush_get_option('show-invoke')) {
-        drush_log(dt("Calling global exit hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
-      }
-      call_user_func_array($func, $args);
-      _drush_log_drupal_messages();
-    }
-  }
 }
 
 /**
