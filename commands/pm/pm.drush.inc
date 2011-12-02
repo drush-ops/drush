@@ -148,7 +148,7 @@ function pm_drush_command() {
       'package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other").',
       'core' => 'Filter out extensions that are not in drupal core.',
       'no-core' => 'Filter out extensions that are provided by drupal core.',
-      'pipe' => 'Returns a space delimited list of the names of the resulting extensions.',
+      'pipe' => 'Returns a whitespace delimited list of the names of the resulting extensions.',
     ),
     'aliases' => array('pml'),
     'deprecated-aliases' => array('sm'),
@@ -166,7 +166,7 @@ function pm_drush_command() {
       'projects' => 'Optional. A list of installed projects to update.',
     ),
     'options' => array(
-      'pipe' => 'Returns a space delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
+      'pipe' => 'Returns a whitespace delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
       'notes' => 'Show release notes for each project to be updated.',
       'no-core' => 'Only update modules and skip the core update.',
       'self-update' => 'Check for pending updates to drush itself. Set to 0 to avoid check.',
