@@ -78,4 +78,30 @@ class backendCase extends Drush_CommandTestCase {
     $this->assertTrue($backend_output_offset !== FALSE, "Drush backend output marker appears in output.");
     $this->assertTrue($drush_version_offset < $backend_output_offset, "Drush version string appears in output before the backend output marker.");
   }
+
+  /**
+   * Covers the following target responsibilities.
+   *   - Insures that function result is returned in --backend mode
+   */
+  function testBackendFunctionResult() {
+    $php = "return 'bar'";
+    $this->drush('php-eval', array($php), array('backend' => NULL));
+    $parsed = parse_backend_output($this->getOutput());
+    // assert that $parsed has 'bar'
+    $this->assertEquals("'bar'", var_export($parsed['object'], TRUE));
+  }
+
+  /**
+   * Covers the following target responsibilities.
+   *   - Insures that backend_set_result is returned in --backend mode
+   *   - Insures that the result code for the function does not overwrite
+   *     the explicitly-set value
+   */
+  function testBackendSetResult() {
+    $php = "drush_backend_set_result('foo'); return 'bar'";
+    $this->drush('php-eval', array($php), array('backend' => NULL));
+    $parsed = parse_backend_output($this->getOutput());
+    // assert that $parsed has 'foo' and not 'bar'
+    $this->assertEquals("'foo'", var_export($parsed['object'], TRUE));
+  }
 }

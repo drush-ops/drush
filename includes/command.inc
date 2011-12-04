@@ -291,8 +291,15 @@ function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
         $result = call_user_func_array($func, $args);
         // Only the 'main' callback can send data to backend.
         if ($var_hook == $hook) {
-          drush_backend_set_result($result);
-          $return = $result;
+          // If the hook already called drush_backend_set_result,
+          // then return that value. If it did not, then the return
+          // value from the hook will be the value returned from
+          // this routine.
+          $return = drush_backend_get_result();
+          if (empty($return)) {
+            drush_backend_set_result($result);
+            $return = $result;
+          }
         }
         _drush_log_drupal_messages();
         if (drush_get_error() || ($result === FALSE)) {
