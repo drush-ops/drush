@@ -324,8 +324,8 @@ function _convert_csv_to_array($args) {
  *       to the subcommand being executed.
  *     - local-context-only: Backend invoke will only pass this value on for local calls.
  *     - merge: For options such as $options['shell-aliases'] that consist of an array
- *       of items, make a merged array that contains all of the values specified for 
- *       all of the contexts (config files) where the option is defined.  The value is stored in 
+ *       of items, make a merged array that contains all of the values specified for
+ *       all of the contexts (config files) where the option is defined.  The value is stored in
  *       the specified 'context', or in a context named after the option itself if the
  *       context flag is not specified.
  *       IMPORTANT: When the merge flag is used, the option value must be obtained via
