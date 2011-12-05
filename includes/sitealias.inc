@@ -63,11 +63,11 @@ function drush_sitealias_simplify_names($site_list) {
  * @return
  *   An array of alias records
  */
-function drush_sitealias_resolve_sitespecs($site_specifications) {
+function drush_sitealias_resolve_sitespecs($site_specifications, $alias_path_context = NULL) {
   $result_list = array();
   if (!empty($site_specifications)) {
     foreach ($site_specifications as $site) {
-      $alias_record = drush_sitealias_get_record($site);
+      $alias_record = drush_sitealias_get_record($site, $alias_path_context);
       $result_list = array_merge($result_list, drush_sitealias_resolve_sitelist($alias_record));
     }
   }
@@ -120,7 +120,7 @@ function drush_sitealias_valid_alias_format($alias) {
  * @return array
  *   An alias record, or empty if none found.
  */
-function drush_sitealias_get_record($alias) {
+function drush_sitealias_get_record($alias, $alias_context = NULL) {
   // Check to see if the alias contains commas.  If it does, then
   // we will go ahead and make a site list record
   $alias_record = array();
@@ -131,7 +131,7 @@ function drush_sitealias_get_record($alias) {
     $alias_record['site-list'] = explode(',', $alias);
   }
   else {
-    $alias_record = _drush_sitealias_get_record($alias);
+    $alias_record = _drush_sitealias_get_record($alias, $alias_context);
   }
   if (!empty($alias_record)) {
     if (!array_key_exists('#name', $alias_record)) {
@@ -290,23 +290,22 @@ function drush_sitealias_add_to_alias_path($add_path) {
  *   An array of paths
  */
 function drush_sitealias_alias_path($alias_path_context = NULL) {
+  $context_path = array();
   if (isset($alias_path_context)) {
-    return array(drush_sitealias_local_site_path($alias_path_context));
+    $context_path = array(drush_sitealias_local_site_path($alias_path_context));
   }
-  else {
-    // We get the current list of site paths by adding NULL
-    // (nothing) to the path list, which is a no-op
-    $site_paths = drush_sitealias_add_to_alias_path(NULL);
+  // We get the current list of site paths by adding NULL
+  // (nothing) to the path list, which is a no-op
+  $site_paths = drush_sitealias_add_to_alias_path(NULL);
 
-    // If the user defined the root of a drupal site, then also
-    // look for alias files there.
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-    if (isset($drupal_root)) {
-      $site_paths[] = $drupal_root;
-    }
-    $alias_path = (array) drush_get_context('ALIAS_PATH', array());
-    return array_unique(array_merge($alias_path, $site_paths));
+  // If the user defined the root of a drupal site, then also
+  // look for alias files there.
+  $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  if (isset($drupal_root)) {
+    $site_paths[] = $drupal_root;
   }
+  $alias_path = (array) drush_get_context('ALIAS_PATH', array());
+  return array_unique(array_merge($context_path, $alias_path, $site_paths));
 }
 
 /**
@@ -383,7 +382,7 @@ function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
  * alias search path.
  */
 function drush_sitealias_load_all($resolve_parent = TRUE) {
-  $result = _drush_sitealias_find_and_load_alias(NULL);
+  $result = _drush_sitealias_find_and_load_all_aliases();
   if (!empty($result) && ($resolve_parent == TRUE)) {
     // If any aliases were returned, then check for
     // inheritance and then store the aliases into the
@@ -399,37 +398,84 @@ function drush_sitealias_load_all($resolve_parent = TRUE) {
  * drush_sitealias_load_all.  Traverses the alias search path
  * and finds the specified alias record.
  *
- * @param $aliasname
- *   The name of the alias without the leading '@' (i.e. '#name')
- *   or NULL to load every alias found in every alias file.
- * @param $alias_path_context
- *   When looking up a relative alias, the alias path context is
- *   the primary alias that we will start our search from.
  * @return
- *   An empty array if nothing was loaded.  If $aliasname is
- *   not null, then the array returned is the alias record for
- *   $aliasname.  If $aliasname is NULL, then the array returned
- *   is a $kay => $value pair of alias names and alias records
+ *   An array of $kay => $value pair of alias names and alias records
  *   loaded.
  */
-function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = NULL) {
+function _drush_sitealias_find_and_load_all_aliases() {
   $result = array();
 
-  // Special checking for '@sites' alias
-  if ($aliasname == 'sites') {
-    $drupal_root = NULL;
-    if ($alias_path_context != null) {
-      if (array_key_exists('root', $alias_path_context) && !array_key_exists('remote-host', $alias_path_context)) {
-        $drupal_root = $alias_path_context['root'];
+  $drush_alias_files = _drush_sitealias_find_alias_files();
+  drush_set_context('drush-alias-files', $drush_alias_files);
+
+  // For every file that matches, check inside it for
+  // an alias with a matching name.
+  foreach ($drush_alias_files as $filename) {
+    if (file_exists($filename)) {
+      $aliases = $options = array();
+      // silently ignore files we can't include
+      if ((@include $filename) === FALSE) {
+        drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), 'bootstrap');
+        continue;
+      }
+      unset($options['site-aliases']); // maybe unnecessary
+
+      // If $aliases are not set, but $options are, then define one alias named
+      // after the first word of the file, before '.alias.drushrc.php.
+      if (empty($aliases) && !empty($options)) {
+        $this_alias_name = substr(basename($filename),0,strpos(basename($filename),'.'));
+        $aliases[$this_alias_name] = $options;
+        $options = array();
+      }
+      // If this is a group alias file, then make an
+      // implicit alias from the group name that contains
+      // a site-list of all of the aliases in the file
+      $group_name = '';
+      if (substr($filename, -20) == ".aliases.drushrc.php") {
+        $group_name = basename($filename,".aliases.drushrc.php");
+        if (!empty($aliases) && !array_key_exists($group_name, $aliases)) {
+          $alias_names = array();
+          foreach (array_keys($aliases) as $one_alias) {
+            $alias_names[] = "@$group_name.$one_alias";
+            $aliases["$group_name.$one_alias"] = $aliases[$one_alias];
+            unset($aliases[$one_alias]);
+          }
+          $aliases[$group_name] = array('site-list' => implode(',', $alias_names));
+        }
+      }
+      if (!empty($aliases)) {
+        if (!empty($options)) {
+          foreach ($aliases as $name => $value) {
+            $aliases[$name] = array_merge($options, $value);
+          }
+          $options = array();
+        }
+
+        foreach ($aliases as $name => $value) {
+          _drush_sitealias_initialize_alias_record($aliases[$name]);
+        }
+
+        $result = _sitealias_array_merge($result, $aliases);
+        // If we found at least one alias from this file
+        // then record it in the drush-alias-files context.
+        $drush_alias_files = drush_get_context('drush-alias-files');
+        if (!in_array($filename, $drush_alias_files)) {
+          $drush_alias_files[] = $filename;
+        }
+        drush_set_context('drush-alias-files', $drush_alias_files);
       }
     }
-    else {
-      $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-    }
-    if (isset($drupal_root) && !is_array($drupal_root)) {
-      drush_sitealias_create_sites_alias($drupal_root);
-    }
   }
+
+  return $result;
+}
+
+/**
+ * Function to find all alias files that might contain aliases
+ * that match the requested alias name.
+ */
+function _drush_sitealias_find_alias_files($aliasname = NULL, $alias_path_context = NULL) {
+  $alias_files_to_consider = array();
 
   // The alias path is a list of folders to search for alias settings files
   $alias_path = drush_sitealias_alias_path($alias_path_context);
@@ -450,86 +496,115 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
   // Search each path in turn
   foreach ($alias_path as $path) {
     // Find all of the matching files in this location
-    $alias_files_to_consider = array();
     foreach ($alias_files as $file_pattern_to_search_for) {
       $alias_files_to_consider = array_merge($alias_files_to_consider, array_keys(drush_scan_directory($path, $file_pattern_to_search_for, drush_filename_blacklist(), 0, FALSE)));
     }
+  }
 
-    // For every file that matches, check inside it for
-    // an alias with a matching name.
-    foreach ($alias_files_to_consider as $filename) {
-      if (file_exists($filename)) {
-        $aliases = $options = array();
-        // silently ignore files we can't include
-        if ((@include $filename) === FALSE) {
-          drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), 'bootstrap');
-          continue;
-        }
-        unset($options['site-aliases']); // maybe unnecessary
+  return $alias_files_to_consider;
+}
 
-        // If $aliases are not set, but $options are, then define one alias named
-        // after the first word of the file, before '.alias.drushrc.php.
-        if (empty($aliases) && !empty($options)) {
-          $this_alias_name = substr(basename($filename),0,strpos(basename($filename),'.'));
-          $aliases[$this_alias_name] = $options;
-          $options = array();
-        }
-        // If this is a group alias file, then make an
-        // implicit alias from the group name that contains
-        // a site-list of all of the aliases in the file
-        if (substr($filename, -20) == ".aliases.drushrc.php") {
-          $group_name = basename($filename,".aliases.drushrc.php");
-          if (!empty($aliases) && !array_key_exists($group_name, $aliases)) {
-            $alias_names = array();
-            foreach (array_keys($aliases) as $one_alias) {
-              $alias_names[] = "@$group_name.$one_alias";
-              $aliases["$group_name.$one_alias"] = $aliases[$one_alias];
-              $aliases[$one_alias]["#hidden"] = TRUE;
-            }
-            $aliases[$group_name] = array('site-list' => implode(',', $alias_names));
+/**
+ * Traverses the alias search path and finds the specified alias record.
+ *
+ * @param $aliasname
+ *   The name of the alias without the leading '@' (i.e. '#name')
+ *   or NULL to load every alias found in every alias file.
+ * @param $alias_path_context
+ *   When looking up a relative alias, the alias path context is
+ *   the primary alias that we will start our search from.
+ * @return
+ *   An empty array if nothing was loaded.  If $aliasname is
+ *   not null, then the array returned is the alias record for
+ *   $aliasname.  If $aliasname is NULL, then the array returned
+ *   is a $kay => $value pair of alias names and alias records
+ *   loaded.
+ */
+function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = NULL) {
+  $result = array();
+  $result_names = array();
+
+  // Special checking for '@sites' alias
+  if ($aliasname == 'sites') {
+    $drupal_root = NULL;
+    if ($alias_path_context != null) {
+      if (array_key_exists('root', $alias_path_context) && !array_key_exists('remote-host', $alias_path_context)) {
+        $drupal_root = $alias_path_context['root'];
+      }
+    }
+    else {
+      $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    }
+    if (isset($drupal_root) && !is_array($drupal_root)) {
+      drush_sitealias_create_sites_alias($drupal_root);
+    }
+  }
+
+  $alias_files_to_consider = _drush_sitealias_find_alias_files($aliasname, $alias_path_context);
+  // For every file that matches, check inside it for
+  // an alias with a matching name.
+  $recorded_files = array();
+  foreach ($alias_files_to_consider as $filename) {
+    if (file_exists($filename)) {
+      $aliases = $options = array();
+      // silently ignore files we can't include
+      if ((@include $filename) === FALSE) {
+        drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), 'bootstrap');
+        continue;
+      }
+      unset($options['site-aliases']); // maybe unnecessary
+
+      // If $aliases are not set, but $options are, then define one alias named
+      // after the first word of the file, before '.alias.drushrc.php.
+      if (empty($aliases) && !empty($options)) {
+        $this_alias_name = substr(basename($filename),0,strpos(basename($filename),'.'));
+        $aliases[$this_alias_name] = $options;
+        $options = array();
+      }
+      // If this is a group alias file, then make an
+      // implicit alias from the group name that contains
+      // a site-list of all of the aliases in the file
+      $group_prefix = '';
+      if (substr($filename, -20) == ".aliases.drushrc.php") {
+        $group_name = basename($filename,".aliases.drushrc.php");
+        $group_prefix = $group_name . '.';
+        if (!empty($aliases) && !array_key_exists($group_name, $aliases)) {
+          $alias_names = array();
+          foreach (array_keys($aliases) as $one_alias) {
+            $alias_names[] = "@$group_name.$one_alias";
+            $aliases[$one_alias]['#name'] = "$group_name.$one_alias";
+            $aliases[$one_alias]['#group'] = $group_name;
+            $aliases["$group_name.$one_alias"] = $aliases[$one_alias];
+            $aliases[$one_alias]["#hidden"] = TRUE;
           }
+          $aliases[$group_name] = array('site-list' => implode(',', $alias_names), '#group' => $group_name, '#name' => $group_name);
         }
-        // If aliasname is NULL, then we will store
-        // all $aliases into the alias cache
-        $alias_recorded = FALSE;
-        if ($aliasname == NULL) {
-          if (!empty($aliases)) {
-            if (!empty($options)) {
-              foreach ($aliases as $name => $value) {
-                $aliases[$name] = array_merge($options, $value);
-              }
-              $options = array();
-            }
-
-            foreach ($aliases as $name => $value) {
-              _drush_sitealias_initialize_alias_record($aliases[$name]);
-            }
-
-            $result = _sitealias_array_merge($result, $aliases);
-            $alias_recorded = TRUE;
-          }
+      }
+      // Store only the named alias into the alias cache
+      if ((isset($aliases)) && array_key_exists($aliasname, $aliases)) {
+        drush_set_config_special_contexts($options); // maybe unnecessary
+        $one_result = array_merge($options, $aliases[$aliasname]);
+        $one_result['#file'] = $filename;
+        if (!array_key_exists('#name', $one_result)) {
+          $one_result['#name'] = $aliasname;
         }
-        // If aliasname is not NULL, then we will store
-        // only the named alias into the alias cache
-        elseif ((isset($aliases)) && array_key_exists($aliasname, $aliases)) {
-          drush_set_config_special_contexts($options); // maybe unnecessary
-          $one_result = array_merge($options, $aliases[$aliasname]);
-          _drush_sitealias_initialize_alias_record($one_result);
-          // Merge together the two alias records, favoring the values found first
-          $result = array_merge($one_result, $result);
-          $alias_recorded = TRUE;
+        _drush_sitealias_initialize_alias_record($one_result);
+        // If the alias name is exactly the same as a previous match, then
+        // merge the two records together
+        if (!empty($result) && ($result['#name'] == $one_result['#name'])) {
+          $result = _sitealias_array_merge($result, $aliases);
         }
-        // If we found at least one alias from this file
-        // then record it in the drush-alias-files context.
-        if ($alias_recorded) {
-          $drush_alias_files = drush_get_context('drush-alias-files');
-          if (!in_array($filename, $drush_alias_files)) {
-            $drush_alias_files[] = $filename;
-          }
-          drush_set_context('drush-alias-files', $drush_alias_files);
+        // Add the name of the found record to the list of results
+        else {
+          $result_names[] = "@" . $one_result['#name'];
+          $result = $one_result;
         }
       }
     }
+  }
+  // If there are multiple matches, then return a list of results.
+  if (count($result_names) > 1) {
+    $result = array('site-list' => $result_names);
   }
 
   return $result;
@@ -1524,7 +1599,7 @@ function _drush_sitealias_preflight_path($path) {
   if ($colon_pos > (drush_is_windows("LOCAL") ? 1 : 0)) {
     $alias = substr($path, 0, $colon_pos);
     $path = substr($path, $colon_pos + 1);
-    $site_alias_settings = _drush_sitealias_get_record($alias);
+    $site_alias_settings = drush_sitealias_get_record($alias);
     if (empty($site_alias_settings) && (substr($path,0,1) == '@')) {
       return NULL;
     }
@@ -1533,7 +1608,7 @@ function _drush_sitealias_preflight_path($path) {
   else {
     $machine = '';
     // if the path is a site alias or a local site...
-    $site_alias_settings = _drush_sitealias_get_record($path);
+    $site_alias_settings = drush_sitealias_get_record($path);
     if (empty($site_alias_settings) && (substr($path,0,1) == '@')) {
       return NULL;
     }
