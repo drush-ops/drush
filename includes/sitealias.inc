@@ -356,6 +356,7 @@ function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
         $result = array_merge($primary_record, $result);
       }
       $result['#name'] = $relative_alias;
+      _drush_sitealias_add_inherited_values_to_record($result);
       _drush_sitealias_cache_alias(substr($alias, 1), $result);
     }
   }
@@ -640,21 +641,28 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
     if (isset($alias_value['parent'])) {
       // Prevent circular references from causing an infinite loop
       _drush_sitealias_cache_alias($alias_name, array());
-      // Fetch and merge in each parent
-      foreach (explode(',', $alias_value['parent']) as $parent) {
-        $parent_record = drush_sitealias_get_record($parent);
-        unset($parent_record['#name']);
-        unset($parent_record['#hidden']);
-        $array_based_keys = array_merge(drush_get_special_keys(), array('path-aliases'));
-        foreach ($array_based_keys as $array_based_key) {
-          if (isset($aliases[$alias_name][$array_based_key]) && isset($parent_record[$array_based_key])) {
-            $aliases[$alias_name][$array_based_key] = array_merge($parent_record[$array_based_key], $aliases[$alias_name][$array_based_key]);
-          }
-        }
-        $aliases[$alias_name] = array_merge($parent_record, $aliases[$alias_name]);
-      }
-      unset($aliases[$alias_name]['parent']);
+      _drush_sitealias_add_inherited_values_to_record($alias_value);
+      $aliases[$alias_name] = $alias_value;
     }
+  }
+}
+
+function _drush_sitealias_add_inherited_values_to_record(&$alias_value) {
+  if (isset($alias_value['parent'])) {
+    // Fetch and merge in each parent
+    foreach (explode(',', $alias_value['parent']) as $parent) {
+      $parent_record = drush_sitealias_get_record($parent);
+      unset($parent_record['#name']);
+      unset($parent_record['#hidden']);
+      $array_based_keys = array_merge(drush_get_special_keys(), array('path-aliases'));
+      foreach ($array_based_keys as $array_based_key) {
+        if (isset($alias_value[$array_based_key]) && isset($parent_record[$array_based_key])) {
+          $alias_value[$array_based_key] = array_merge($parent_record[$array_based_key], $alias_value[$array_based_key]);
+        }
+      }
+      $alias_value = array_merge($parent_record, $alias_value);
+    }
+    unset($alias_value['parent']);
   }
 }
 
