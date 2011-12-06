@@ -36,10 +36,10 @@
 class DrushBatchContext extends ArrayObject {
   function offsetSet($name, $value) {
     if ($name == 'message') {
-      drush_log($value, 'ok');
+      drush_log(strip_tags($value), 'ok');
     }
     elseif ($name == 'error_message') {
-      drush_set_error('DRUSH_BATCH_ERROR', $value);
+      drush_set_error('DRUSH_BATCH_ERROR', strip_tags($value));
     }
     parent::offsetSet($name, $value);
   }
