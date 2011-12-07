@@ -78,7 +78,7 @@
 # $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg --cache';
 
 // Load a drushrc.php configuration file from the current working directory.
-# $options['c'] = '.';
+# $options['config'][] = '.';
 
 // Control automatically check for updates in pm-updatecode and drush version.
 // FALSE = never check for updates.  'head' = allow updates to drush-HEAD.
