@@ -10,6 +10,9 @@
  * just to check on. In this case, say at the confirmation prompt.
  */
 function drush_pm_updatecode() {
+  $release_info = drush_get_option('release-info', 'updatexml');
+  drush_include_engine('release_info', $release_info);
+
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
@@ -19,12 +22,12 @@ function drush_pm_updatecode() {
   // Get specific requests.
   $requests = pm_parse_arguments(func_get_args(), FALSE);
 
-  // Parse out project name and version.
-  $requests = pm_parse_project_version($requests);
-
   // Get installed extensions and projects.
   $extensions = drush_get_extensions();
   $projects = drush_get_projects($extensions);
+
+  // Parse out project name and version.
+  $requests = pm_parse_project_version($requests, $projects);
 
   // Get update status information.
   $update_info = _pm_get_update_info($projects);
@@ -244,7 +247,8 @@ function _pm_update_core(&$project, $tmpfile) {
   drush_print();
   if (drush_get_option('notes', FALSE)) {
     drush_print('Obtaining release notes for above projects...');
-    _drush_pm_releasenotes(array('drupal'), TRUE, $tmpfile);
+    $requests = pm_parse_project_version(array('drupal'));
+    release_info_print_releasenotes($requests, TRUE, $tmpfile);
   }
   if(!drush_confirm(dt('Do you really want to continue?'))) {
     drush_print(dt('Rolling back all changes. Run again with --no-core to update modules only.'));
@@ -377,7 +381,8 @@ function pm_update_packages($update_info, $tmpfile) {
   // Print the release notes for projects to be updated.
   if (drush_get_option('notes', FALSE)) {
     drush_print('Obtaining release notes for above projects...');
-    _drush_pm_releasenotes(array_keys($update_info), TRUE, $tmpfile);
+    $requests = pm_parse_project_version(array_keys($update_info));
+    release_info_print_releasenotes($requests, TRUE, $tmpfile);
   }
 
   // We print some warnings before the user confirms the update.

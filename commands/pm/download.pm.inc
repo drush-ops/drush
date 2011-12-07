@@ -73,7 +73,8 @@ function drush_pm_download_validate() {
 function drush_pm_download() {
   $package_handler = drush_get_option('package-handler', 'wget');
   drush_include_engine('package_handler', $package_handler);
-  drush_include_engine('release_info', 'updatexml');
+  $release_info = drush_get_option('release-info', 'updatexml');
+  drush_include_engine('release_info', $release_info);
 
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
@@ -83,10 +84,46 @@ function drush_pm_download() {
   $requests = pm_parse_project_version($requests);
 
   // Get release history for each request and download the project.
+  $source = drush_get_option('source', RELEASE_INFO_DEFAULT_URL);
+  $dev = drush_get_option('dev', FALSE);
+  $select = drush_get_option('select', FALSE);
+  $all = drush_get_option('all', FALSE);
   foreach ($requests as $name => $request) {
-    $release = release_info_fetch($request);
+    $request['status url'] = $source;
+    $release = release_info_fetch($request, $dev, $select, $all);
     if ($release == FALSE) {
       continue;
+    }
+
+    // Determine the name of the directory that will contain the project.
+    // We face here all the asymetries to make it smooth for package handlers.
+    // For Drupal core: --drupal-project-rename or drupal-x.y
+    if ($request['project_type'] == 'core') {
+      // Avoid downloading core into existing core.
+      if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
+        if (strpos(realpath(drush_get_option('destination')), DRUPAL_ROOT) !== FALSE) {
+          return drush_set_error('DRUSH_PM_DOWNLOAD_TRANSLATIONS_FORBIDDEN', dt('It\'s forbidden to download !project core into an existing core.', array('!project' => $request['name'])));
+        }
+      }
+
+      if ($rename = drush_get_option('drupal-project-rename', FALSE)) {
+        if ($rename === TRUE) {
+          $request['project_dir'] = 'drupal';
+        }
+        else {
+          $request['project_dir'] = $rename;
+        }
+      }
+      else {
+        // Set to drupal-x.y, the expected name for .tar.gz contents.
+        // Explicitly needed for cvs package handler.
+        $request['project_dir'] = strtolower(strtr($release['name'], ' ', '-'));
+      }
+    }
+    // For the other project types we want the project name. Including core
+    // variant for profiles.  Note those come with drupal-x.y in the .tar.gz.
+    else {
+      $request['project_dir'] = $request['name'];
     }
 
     // Download the project to a temporary location.
@@ -192,28 +229,12 @@ function drush_pm_download() {
 
     // Print release notes if --notes option is set.
     if (drush_get_option('notes') && !drush_get_context('DRUSH_PIPE')) {
-      _drush_pm_releasenotes(array($name . '-' . $release['version']), FALSE);
+      release_info_print_releasenotes(array($name . '-' . $release['version']), FALSE);
     }
 
     // Inform the user about available modules a/o themes in the downloaded project.
     drush_pm_extensions_in_project($request);
   }
-}
-
-/**
- * Return an array of available releases for given project(s).
- *
- * Helper function for pm-download.
- */
-function _pm_download_releases_choice($xml, $project, $all = FALSE, $dev = FALSE) {
-  $project_info = updatexml_get_releases_from_xml($xml, $project);
-  $releases = _drush_pm_filter_releases($project_info['releases'], $all, $dev);
-
-  $options = array();
-  foreach($releases as $version => $release) {
-    $options[$version] = array($version, '-', gmdate('Y-M-d', $release['date']), '-', implode(', ', $release['release_status']));
-  }
-  return $options;
 }
 
 /**

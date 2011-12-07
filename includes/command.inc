@@ -359,10 +359,10 @@ function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
  */
 function _drush_merge_engine_data(&$command) {
   // Merge in engine specific help.
-  foreach ($command['engines'] as $type => $description) {
+  foreach ($command['engines'] as $type) {
     $all_engines = drush_get_engines($type);
-    foreach ($all_engines as $name => $engine) {
-      $command = array_merge_recursive($command, $engine);
+    foreach ($all_engines as $name => $definition) {
+      $command = array_merge_recursive($command, $definition);
     }
   }
 }
