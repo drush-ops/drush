@@ -188,7 +188,7 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
       unset($node_content[0]->div);
       $project_notes = $node_content[0]->asXML();
 
-      // Build the status message from the info from _drush_pm_get_releases
+      // Build the status message from the info from release_info_get_releases()
       $status_msg = '> ' . implode(', ', $project['releases'][$version]['release_status']);
       $break = '<br>';
       $notes_header = dt("<hr>
