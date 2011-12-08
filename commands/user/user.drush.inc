@@ -151,7 +151,7 @@ function user_drush_command() {
     ),
     'required-arguments' => TRUE,
     'options' => array(
-      'password' => array('required' => TRUE, 'description' => 'The new password for the account.'),
+      'password' => array('description' => 'The new password for the account.'),
     ),
     'examples' => array(
       'drush user-password someuser --password="correct horse battery staple"' =>
@@ -446,10 +446,6 @@ function drush_user_cancel($name) {
  * Sets the password for the account with the given username
  */
 function drush_user_password($name) {
-  $pass = drush_get_option('password');
-  if (empty($pass)) {
-    return drush_set_error("You must specify a password!");
-  }
   if (drush_drupal_major_version() >= 7) {
     $user = user_load_by_name($name);
   }
@@ -458,6 +454,10 @@ function drush_user_password($name) {
   }
   if ($user !== FALSE) {
     if (!drush_get_context('DRUSH_SIMULATE')) {
+      $pass = drush_get_option('password');
+      // If no password has been provided, prompt for one.
+      if (empty($pass)) $pass = drush_prompt(dt('Password'), NULL, TRUE, TRUE);
+
       $user_object = user_save($user, array('pass' => $pass));
       if ($user_object === FALSE) {
         drush_set_error("Could not change the password for the user account with the name " . $name . "!");

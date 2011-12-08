@@ -201,6 +201,10 @@
  *   command.  In the example below, `--skip-tables-list=comments` whenever
  *   the alias @live is the target of an sql-sync command, but comments will
  *   be included if @live is the source for the sql-sync command.
+ * - '#peer': Settings that begin with a '#' are not used directly by Drush, and
+ *   in fact are removed before making a backend invoke call (for example). These
+ *   kinds of values are useful in conjunction with shell aliases.  See
+ *   `drush topic docs-shell-aliases` for more information on this.
  * Some examples appear below.  Remove the leading hash signs to enable.
  */
 #$aliases['stage'] = array(
@@ -238,6 +242,10 @@
 #       'sql-sync' => array (
 #         'no-cache' => TRUE,
 #       ),
+#     ),
+#     # This shell alias will run `mycommand` when executed via `drush @stage site-specific-alias`
+#     'shell-aliases' => array (
+#       'site-specific-alias' => '!mycommand',
 #     ),
 #  );
 #$aliases['dev'] = array(

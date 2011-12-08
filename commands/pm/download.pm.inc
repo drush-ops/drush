@@ -73,7 +73,8 @@ function drush_pm_download_validate() {
 function drush_pm_download() {
   $package_handler = drush_get_option('package-handler', 'wget');
   drush_include_engine('package_handler', $package_handler);
-  drush_include_engine('release_info', 'updatexml');
+  $release_info = drush_get_option('release-info', 'updatexml');
+  drush_include_engine('release_info', $release_info);
 
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
@@ -83,10 +84,46 @@ function drush_pm_download() {
   $requests = pm_parse_project_version($requests);
 
   // Get release history for each request and download the project.
+  $source = drush_get_option('source', RELEASE_INFO_DEFAULT_URL);
+  $dev = drush_get_option('dev', FALSE);
+  $select = drush_get_option('select', FALSE);
+  $all = drush_get_option('all', FALSE);
   foreach ($requests as $name => $request) {
-    $release = release_info_fetch($request);
+    $request['status url'] = $source;
+    $release = release_info_fetch($request, $dev, $select, $all);
     if ($release == FALSE) {
       continue;
+    }
+
+    // Determine the name of the directory that will contain the project.
+    // We face here all the asymetries to make it smooth for package handlers.
+    // For Drupal core: --drupal-project-rename or drupal-x.y
+    if ($request['project_type'] == 'core') {
+      // Avoid downloading core into existing core.
+      if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
+        if (strpos(realpath(drush_get_option('destination')), DRUPAL_ROOT) !== FALSE) {
+          return drush_set_error('DRUSH_PM_DOWNLOAD_TRANSLATIONS_FORBIDDEN', dt('It\'s forbidden to download !project core into an existing core.', array('!project' => $request['name'])));
+        }
+      }
+
+      if ($rename = drush_get_option('drupal-project-rename', FALSE)) {
+        if ($rename === TRUE) {
+          $request['project_dir'] = 'drupal';
+        }
+        else {
+          $request['project_dir'] = $rename;
+        }
+      }
+      else {
+        // Set to drupal-x.y, the expected name for .tar.gz contents.
+        // Explicitly needed for cvs package handler.
+        $request['project_dir'] = strtolower(strtr($release['name'], ' ', '-'));
+      }
+    }
+    // For the other project types we want the project name. Including core
+    // variant for profiles.  Note those come with drupal-x.y in the .tar.gz.
+    else {
+      $request['project_dir'] = $request['name'];
     }
 
     // Download the project to a temporary location.
@@ -102,7 +139,7 @@ function drush_pm_download() {
     // --destination has preference.
     $destination = drush_get_option('destination');
     if (!empty($destination)) {
-      $request['project_install_location'] = drush_get_context('DRUSH_DRUPAL_ROOT') . '/' .$destination;
+      $request['project_install_location'] = realpath($destination);
     }
     else {
       $request['project_install_location'] = _pm_download_destination($request['project_type']);
@@ -192,28 +229,12 @@ function drush_pm_download() {
 
     // Print release notes if --notes option is set.
     if (drush_get_option('notes') && !drush_get_context('DRUSH_PIPE')) {
-      _drush_pm_releasenotes(array($name . '-' . $release['version']), FALSE);
+      release_info_print_releasenotes(array($name . '-' . $release['version']), FALSE);
     }
 
     // Inform the user about available modules a/o themes in the downloaded project.
     drush_pm_extensions_in_project($request);
   }
-}
-
-/**
- * Return an array of available releases for given project(s).
- *
- * Helper function for pm-download.
- */
-function _pm_download_releases_choice($xml, $project, $all = FALSE, $dev = FALSE) {
-  $project_info = updatexml_get_releases_from_xml($xml, $project);
-  $releases = _drush_pm_filter_releases($project_info['releases'], $all, $dev);
-
-  $options = array();
-  foreach($releases as $version => $release) {
-    $options[$version] = array($version, '-', gmdate('Y-M-d', $release['date']), '-', implode(', ', $release['release_status']));
-  }
-  return $options;
 }
 
 /**
@@ -230,41 +251,22 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
   if ($project['project_type'] == 'module') {
     $module_files = drush_scan_directory($project['full_project_path'], '/.*\.module/');
     if (empty($module_files)) {
-      if ($project['name'] == 'drush') {
-        // $project['version'] is empty here, so compose the version from the $release structure.
-        $drush_release_version = $release['version_major'] . "." . $release['version_patch'] . (empty($release['version_extra']) ? '' : ('-' . $release['version_extra']));
-        if(($project['project_install_location'] != DRUSH_BASE_PATH) && ($release['version_major'] >= '4')) {
-          $backup_dir = drush_preflight_backup_dir();
-          if (drush_confirm(dt('Would you like to back up your current drush version !currentversion to !backup and replace it with drush !version?', array('!version' => $drush_release_version, '!backup' => $backup_dir, '!currentversion' => DRUSH_VERSION)))) {
-            $project['project_install_location'] = DRUSH_BASE_PATH;
-          }
-          else {
-            // If we are called via 'drush self-update', then "no" means "do nothing".
-            // If we are called via 'drush dl drush', then "no" means "download to cwd".
-            if (drush_get_option('self-update', FALSE)) {
-              return drush_user_cancel();
-            }
-          }
+      $drush_command_files = drush_scan_directory($project['full_project_path'], '/.*\.drush.inc/');
+      if (!empty($drush_command_files)) {
+        $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
+        if (!is_dir($install_dir) || !is_writable($install_dir)) {
+          $install_dir = drush_server_home() . '/.drush';
         }
-      }
-      else {
-        $drush_command_files = drush_scan_directory($project['full_project_path'], '/.*\.drush.inc/');
-        if (!empty($drush_command_files)) {
-          $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
-          if (!is_dir($install_dir) || !is_writable($install_dir)) {
-            $install_dir = drush_server_home() . '/.drush';
-          }
-          // Make the .drush dir if it does not already exist.
-          if (!is_dir($install_dir)) {
-            drush_mkdir($install_dir);
-          }
-          // Change the location if the mkdir worked.
-          if (is_dir($install_dir)) {
-            $project['project_install_location'] = $install_dir;
-            // We need to clear the drush commandfile cache so that
-            // our newly-downloaded drush extension commandfiles can be found.
-            drush_cache_clear_all();
-          }
+        // Make the .drush dir if it does not already exist.
+        if (!is_dir($install_dir)) {
+          drush_mkdir($install_dir);
+        }
+        // Change the location if the mkdir worked.
+        if (is_dir($install_dir)) {
+          $project['project_install_location'] = $install_dir;
+          // We need to clear the drush commandfile cache so that
+          // our newly-downloaded drush extension commandfiles can be found.
+          drush_cache_clear_all();
         }
       }
     }

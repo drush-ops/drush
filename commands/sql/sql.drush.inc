@@ -807,10 +807,15 @@ function _drush_sql_get_credentials($db_spec = NULL) {
       // server, but not the database.  Connect to the built-in database.
       $parameters['database'] = empty($db_spec['database']) ? 'information_schema' : $db_spec['database'];
 
-      // Host is required.
-      $parameters['host'] = $db_spec['host'];
+      // Default to unix socket if configured.
+      if (!empty($db_spec['unix_socket'])) {
+        $parameters['socket'] = $db_spec['unix_socket'];
+      }
+      // EMPTY host is not the same as NO host, and is valid (see unix_socket).
+      elseif (isset($db_spec['host'])) {
+        $parameters['host'] = $db_spec['host'];
+      }
 
-      // An empty port is invalid.
       if (!empty($db_spec['port'])) {
         $parameters['port'] = $db_spec['port'];
       }

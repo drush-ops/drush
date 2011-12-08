@@ -33,7 +33,7 @@ class pmUpdateCode extends Drush_CommandTestCase {
       'uri' => key($this->sites), // Have to access class property since $sites in in setUp().
       'yes' => NULL,
       'backup-dir' => UNISH_SANDBOX . '/backups',
-      'self-update' => 0, // Don't try update Drush.
+      'self-update' => 0, // Don't check for any newer Drush release.
     );
 
     // Try to upgrade a specific module.

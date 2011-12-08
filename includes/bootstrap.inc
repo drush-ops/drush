@@ -837,9 +837,11 @@ function _drush_bootstrap_drupal_configuration() {
            'port' => NULL,
            'password' => NULL,
            'database' => NULL,
+           'unix_socket' => NULL,
          );
          $creds['driver'] = $conn['driver'];
          $creds['user'] = $conn['username'];
+         $creds['unix_socket'] = $conn['unix_socket'];
          $creds['host'] = $conn['host'];
          $creds['port'] = $conn['port'];
          $creds['name'] = $conn['database'];

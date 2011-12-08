@@ -10,11 +10,181 @@
  */
 
 /**
- * Invoke drush api calls.
+ * Invoke drush api calls, including all hooks.
  *
  * Executes the specified command with the specified arguments on the
  * currently bootstrapped site using the current option contexts.
  * Note that drush_invoke will not bootstrap any further than the
+ * current command has already bootstrapped; therefore, you should only invoke
+ * commands that have the same (or lower) bootstrap requirements.
+ *
+ * Commands execute with the same options that the user provided on
+ * the commandline.  If you need to invoke another drush commands with
+ * options you specify, @see drush_invoke_process.
+ */
+function drush_invoke($command, $arguments = array()) {
+  // If someone passed a standalone arg, convert it to a single-element array
+  if (!is_array($arguments)) {
+    $arguments = array($arguments);
+  }
+  $commands = drush_get_commands();
+  if (array_key_exists($command, $commands)) {
+    $command = $commands[$command];
+    // Drush overloads the 'arguments' element, which contains the
+    // help string for the allowed arguments for the command when
+    // fetched, and is fixed up by _drush_prepare_command to contain
+    // the actual commandline arguments during dispatching.
+    $command['arguments'] = array();
+    return drush_dispatch($command, $arguments);
+  }
+  else {
+    return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!command' could not be found.", array('!command' => $command)));
+  }
+}
+
+/**
+ * Invoke a command in a new process, targeting the site specified by
+ * the provided site alias record.
+ *
+ * Use this function instead of drush_backend_invoke_sitealias,
+ * drush_backend_invoke_args, or drush_backend_invoke_command
+ * (all obsolete in drush 5).
+ *
+ * @param array $site_alias_record
+ *  The site record to execute the command on.  Use '@self' to run on the current site.
+ * @param string $command_name
+ *  The command to invoke.
+ * @param array $commandline_args
+ *  The arguments to pass to the command.
+ * @param array $commandline_options
+ *  The options (e.g. --select) to provide to the command.
+ * @param $backend_options
+ *   TRUE - integrate errors
+ *   FALSE - do not integrate errors
+ *   array - @see drush_backend_invoke_sitealias_command
+ *
+ * @return
+ *   If the command could not be completed successfully, FALSE.
+ *   If the command was completed, this will return an associative
+ *   array containing the results of the API call.
+ *   @see drush_backend_get_result()
+ */
+function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = FALSE) {
+  // NULL is a synonym to '@self', although the latter is preferred.
+  if (!isset($site_alias_record)) {
+    $site_alias_record = '@self';
+  }
+  // If the first parameter is not a site alias record,
+  // then presume it is an alias name, and try to look up
+  // the alias record.
+  if (!is_array($site_alias_record)) {
+    $site_alias_record = drush_sitealias_get_record($site_alias_record);
+  }
+  return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options, $backend_options);
+}
+
+/**
+ * Given a command record, dispatch it as if it were
+ * the original command.  Executes in the currently
+ * bootstrapped site using the current option contexts.
+ * Note that drush_dispatch will not bootstrap any further than the
+ * current command has already bootstrapped; therefore, you should only invoke
+ * commands that have the same (or lower) bootstrap requirements.
+ *
+ * @param command
+ *   A full $command such as returned by drush_get_commands(),
+ *   or a string containing the name of the command record from
+ *   drush_get_commands() to call.
+ * @param arguments
+ *   An array of argument values.
+ *
+ * @see drush_topic_docs_topic().
+ */
+function drush_dispatch($command, $arguments = array()) {
+  drush_set_command($command);
+  $return = FALSE;
+
+  if ($command) {
+    // Add arguments, if this has not already been done.
+    // (If the command was fetched from drush_parse_command,
+    // then you cannot provide arguments to drush_dispatch.)
+    if (empty($command['arguments'])) {
+      _drush_prepare_command($command, $arguments);
+    }
+
+    // Add command-specific options, if applicable
+    drush_command_default_options($command);
+
+    // Test to see if any of the options in the 'cli' context
+    // are not represented in the command structure.
+    if ((_drush_verify_cli_options($command) === FALSE) || (_drush_verify_cli_arguments($command) === FALSE)) {
+      return FALSE;
+    }
+
+    // Print a warning if someone tries to use a deprecated alias.
+    if (isset($command['deprecated'])) {
+      drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
+    }
+    // Call the callback function of the active command.
+    $return = call_user_func_array($command['callback'], $command['arguments']);
+  }
+
+  // Add a final log entry, just so a timestamp appears.
+  drush_log(dt('Command dispatch complete'), 'notice');
+
+  return $return;
+}
+
+/**
+ * Entry point for commands into the drush_invoke() API
+ *
+ * If a command does not have a callback specified, this function will be called.
+ *
+ * This function will trigger $hook_drush_init, then if no errors occur,
+ * it will call drush_invoke() with the command that was dispatch.
+ *
+ * If no errors have occured, it will run $hook_drush_exit.
+ */
+function drush_command() {
+  $args = func_get_args();
+  $command = drush_get_command();
+
+  foreach (drush_command_implements("drush_init") as $name) {
+    $func = $name . '_drush_init';
+    if (drush_get_option('show-invoke')) {
+      drush_log(dt("Calling global init hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
+    }
+    call_user_func_array($func, $args);
+    _drush_log_drupal_messages();
+  }
+
+  if (!drush_get_error()) {
+    _drush_invoke_hooks($command['command-hook'], $args, $command['commandfile']);
+  }
+
+  if (!drush_get_error()) {
+    foreach (drush_command_implements('drush_exit') as $name) {
+      $func = $name . '_drush_exit';
+      if (drush_get_option('show-invoke')) {
+        drush_log(dt("Calling global exit hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
+      }
+      call_user_func_array($func, $args);
+      _drush_log_drupal_messages();
+    }
+  }
+}
+
+/**
+ * Invoke drush api calls, including all hooks.
+ *
+ * This is an internal function; it is called from drush_dispatch via
+ * drush_command, but only if the command does not specify a 'callback'
+ * function.  If a callback function is specified, it will be called
+ * instead of drush_command + _drush_invoke_hooks.
+ *
+ * Executes the specified command with the specified arguments on the
+ * currently bootstrapped site using the current option contexts.
+ * Note that _drush_invoke_hooks will not bootstrap any further than the
  * current command has already bootstrapped; therefore, you should only invoke
  * commands that have the same (or lower) bootstrap requirements.
  *
@@ -49,24 +219,20 @@
  *   The drush command to execute.
  * @param args
  *   An array of arguments to the command OR a single non-array argument.
+ * @param defined_in_commandfile
+ *   The name of the commandfile that this command exists in.  Will be looked up
+ *   if not provided.
  * @return
  *   The return value will be passed along to the caller if --backend option is
  *   present. A boolean FALSE indicates failure and rollback will be intitated.
- */
-function drush_invoke($command, $args = array()) {
-  return _drush_invoke($command, $args, drush_get_commandfile_for_command($command));
-}
-
-/**
- * Variant of drush_invoke that allows the
- * commandfile to be specified correctly; this allows
- * the hook functions to be correctly determined for
- * commands that provide a 'callback' function.
  *
- * This function should not be called directly; use
- * @see drush_dispatch() and @see drush_invoke()
+ * This function should not be called directly.
+ * @see drush_invoke() and @see drush_invoke_process()
  */
-function _drush_invoke($command, $args, $defined_in_commandfile) {
+function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
+  if ($defined_in_commandfile == NULL) {
+    $defined_in_commandfile = drush_get_commandfile_for_command($command);
+  }
   // If someone passed a standalone arg, convert it to a single-element array
   if (!is_array($args)) {
     $args = array($args);
@@ -125,8 +291,15 @@ function _drush_invoke($command, $args, $defined_in_commandfile) {
         $result = call_user_func_array($func, $args);
         // Only the 'main' callback can send data to backend.
         if ($var_hook == $hook) {
-          drush_backend_set_result($result);
-          $return = $result;
+          // If the hook already called drush_backend_set_result,
+          // then return that value. If it did not, then the return
+          // value from the hook will be the value returned from
+          // this routine.
+          $return = drush_backend_get_result();
+          if (empty($return)) {
+            drush_backend_set_result($result);
+            $return = $result;
+          }
         }
         _drush_log_drupal_messages();
         if (drush_get_error() || ($result === FALSE)) {
@@ -182,64 +355,14 @@ function _drush_invoke($command, $args, $defined_in_commandfile) {
 }
 
 /**
- * Given a command record, dispatch it as if it were
- * the original command.  Executes in the currently
- * bootstrapped site using the current option contexts.
- * Note that drush_dispatch will not bootstrap any further than the
- * current command has already bootstrapped; therefore, you should only invoke
- * commands that have the same (or lower) bootstrap requirements.
- *
- * @param command
- *   A full $command such as returned by drush_get_commands().
- * @param arguments
- *   An array of argument values.
- *
- * @see drush_topic_docs_topic().
- */
-function drush_dispatch($command, $arguments = array()) {
-  drush_set_command($command);
-  $return = FALSE;
-
-  if ($command) {
-    // Add arguments, if this has not already been done.
-    // (If the command was fetched from drush_parse_command,
-    // then you cannot provide arguments to drush_dispatch.)
-    if (empty($command['arguments'])) {
-      _drush_prepare_command($command, $arguments);
-    }
-
-    // Add command-specific options, if applicable
-    drush_command_default_options($command);
-
-    // Test to see if any of the options in the 'cli' context
-    // are not represented in the command structure.
-    if ((_drush_verify_cli_options($command) === FALSE) || (_drush_verify_cli_arguments($command) === FALSE)) {
-      return FALSE;
-    }
-
-    // Print a warning if someone tries to use a deprecated alias.
-    if (isset($command['deprecated'])) {
-      drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
-    }
-    // Call the callback function of the active command.
-    $return = call_user_func_array($command['callback'], $command['arguments']);
-  }
-
-  // Add a final log entry, just so a timestamp appears.
-  drush_log(dt('Command dispatch complete'), 'notice');
-
-  return $return;
-}
-
-/**
  * Add command structure info from each engine back into the command.
  */
 function _drush_merge_engine_data(&$command) {
   // Merge in engine specific help.
-  foreach ($command['engines'] as $type => $description) {
+  foreach ($command['engines'] as $type) {
     $all_engines = drush_get_engines($type);
-    foreach ($all_engines as $name => $engine) {
-      $command = array_merge_recursive($command, $engine);
+    foreach ($all_engines as $name => $definition) {
+      $command = array_merge_recursive($command, $definition);
     }
   }
 }
@@ -361,42 +484,6 @@ function _drush_flatten_options($options) {
 }
 
 /**
- * Invoke a command in a new process, targeting the site specified by
- * the provided site alias record.
- *
- * Use this function instead of drush_backend_invoke_sitealias,
- * drush_backend_invoke_args, or drush_backend_invoke_command
- * (all obsolete in drush 5).
- *
- * @param array $site_alias_record
- *  The site record to execute the command on.  Use '@self' to run on the current site.
- * @param string $command_name
- *  The command to invoke.
- * @param array $commandline_args
- *  The arguments to pass to the command.
- * @param array $commandline_options
- *  The options (e.g. --select) to provide to the command.
- * @return
- *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative
- *   array containing the results of the API call.
- *   @see drush_backend_get_result()
- */
-function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = FALSE) {
-  // NULL is a synonym to '@self', although the later is preferred.
-  if (!isset($site_alias_record)) {
-    $site_alias_record = '@self';
-  }
-  // If the first parameter is not a site alias record,
-  // then presume it is an alias name, and try to look up
-  // the alias record.
-  if (!is_array($site_alias_record)) {
-    $site_alias_record = drush_sitealias_get_record($site_alias_record);
-  }
-  return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options, $backend_options);
-}
-
-/**
  * Get the options that were passed to the current command.
  *
  * This function returns an array that contains all of the options
@@ -487,7 +574,7 @@ function drush_parse_args() {
       $command_args[] = $opt;
     }
     // Is the arg an option (starting with '-')?
-    if ($opt{0} == "-" && strlen($opt) != 1) {
+    if (!empty($opt) && $opt{0} == "-" && strlen($opt) != 1) {
       // Do we have multiple options behind one '-'?
       if (strlen($opt) > 2 && $opt{1} != "-") {
         // Each char becomes a key of its own.
@@ -920,45 +1007,6 @@ function _drush_prepare_command(&$command, $arguments = array()) {
 }
 
 /**
- * Entry point for commands into the drush_invoke() API
- *
- * If a command does not have a callback specified, this function will be called.
- *
- * This function will trigger $hook_drush_init, then if no errors occur,
- * it will call drush_invoke() with the command that was dispatch.
- *
- * If no errors have occured, it will run $hook_drush_exit.
- */
-function drush_command() {
-  $args = func_get_args();
-  $command = drush_get_command();
-
-  foreach (drush_command_implements("drush_init") as $name) {
-    $func = $name . '_drush_init';
-    if (drush_get_option('show-invoke')) {
-      drush_log(dt("Calling global init hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
-    }
-    call_user_func_array($func, $args);
-    _drush_log_drupal_messages();
-  }
-
-  if (!drush_get_error()) {
-    _drush_invoke($command['command-hook'], $args, $command['commandfile']);
-  }
-
-  if (!drush_get_error()) {
-    foreach (drush_command_implements('drush_exit') as $name) {
-      $func = $name . '_drush_exit';
-      if (drush_get_option('show-invoke')) {
-        drush_log(dt("Calling global exit hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
-      }
-      call_user_func_array($func, $args);
-      _drush_log_drupal_messages();
-    }
-  }
-}
-
-/**
  * Invoke a hook in all available command files that implement it.
  *
  * @see drush_command_invoke_all_ref()
@@ -1338,80 +1386,6 @@ function drush_command_hook($commandfile, $hook) {
   return function_exists($commandfile .'_'. $hook);
 }
 
-
-/**
- * Finds all files that match a given mask in a given directory.
- * Directories and files beginning with a period are excluded; this
- * prevents hidden files and directories (such as SVN working directories
- * and GIT repositories) from being scanned.
- *
- * @param $dir
- *   The base directory for the scan, without trailing slash.
- * @param $mask
- *   The regular expression of the files to find.
- * @param $nomask
- *   An array of files/directories to ignore.
- * @param $callback
- *   The callback function to call for each match.
- * @param $recurse_max_depth
- *   When TRUE, the directory scan will recurse the entire tree
- *   starting at the provided directory.  When FALSE, only files
- *   in the provided directory are returned.  Integer values
- *   limit the depth of the traversal, with zero being treated
- *   identically to FALSE, and 1 limiting the traversal to the
- *   provided directory and its immediate children only, and so on.
- * @param $key
- *   The key to be used for the returned array of files. Possible
- *   values are "filename", for the path starting with $dir,
- *   "basename", for the basename of the file, and "name" for the name
- *   of the file without an extension.
- * @param $min_depth
- *   Minimum depth of directories to return files from.
- * @param $include_dot_files
- *   If TRUE, files that begin with a '.' will be returned if they
- *   match the provided mask.  If FALSE, files that begin with a '.'
- *   will not be returned, even if they match the provided mask.
- * @param $depth
- *   Current depth of recursion. This parameter is only used internally and should not be passed.
- *
- * @return
- *   An associative array (keyed on the provided key) of objects with
- *   "path", "basename", and "name" members corresponding to the
- *   matching files.
- */
-function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $callback = 0, $recurse_max_depth = TRUE, $key = 'filename', $min_depth = 0, $include_dot_files = FALSE, $depth = 0) {
-  $key = (in_array($key, array('filename', 'basename', 'name')) ? $key : 'filename');
-  $files = array();
-
-  if (is_string($dir) && is_dir($dir) && $handle = opendir($dir)) {
-    while (FALSE !== ($file = readdir($handle))) {
-      if (!in_array($file, $nomask) && (($include_dot_files && (!preg_match("/\.\+/",$file))) || ($file[0] != '.'))) {
-        if (is_dir("$dir/$file") && (($recurse_max_depth === TRUE) || ($depth < $recurse_max_depth))) {
-          // Give priority to files in this folder by merging them in after any subdirectory files.
-          $files = array_merge(drush_scan_directory("$dir/$file", $mask, $nomask, $callback, $recurse_max_depth, $key, $min_depth, $include_dot_files, $depth + 1), $files);
-        }
-        elseif ($depth >= $min_depth && preg_match($mask, $file)) {
-          // Always use this match over anything already set in $files with the same $$key.
-          $filename = "$dir/$file";
-          $basename = basename($file);
-          $name = substr($basename, 0, strrpos($basename, '.'));
-          $files[$$key] = new stdClass();
-          $files[$$key]->filename = $filename;
-          $files[$$key]->basename = $basename;
-          $files[$$key]->name = $name;
-          if ($callback) {
-            drush_op($callback, $filename);
-          }
-        }
-      }
-    }
-
-    closedir($handle);
-  }
-
-  return $files;
-}
-
 /**
  * Check that a command is valid for the current bootstrap phase.
  *
@@ -1539,6 +1513,37 @@ function drush_shell_alias_replace() {
     // Shell alias found for first argument in the request.
     $alias_value = $shell_aliases[$first];
     if (!is_array($alias_value)) {
+      // Shell aliases can have embedded variables such as {{@target}} and {{%root}}
+      // that are replaced with the name of the target site alias, or the value of a
+      // path alias defined in the target site alias record.  We only support replacements
+      // when the alias value is a string; if it is already broken out into an array,
+      // then the values therein are used literally.
+      $alias_variables = array( '{{@target}}' => '@none' );
+      $target_site_alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS', FALSE);
+      if ($target_site_alias) {
+        $alias_variables = array( '{{@target}}' => $target_site_alias );
+        $target = drush_sitealias_get_record($target_site_alias);
+        foreach ($target as $key => $value) {
+          if (!is_array($value)) {
+            $alias_variables['{{' . $key . '}}'] = $value;
+          }
+        }
+        if (array_key_exists('path-aliases', $target)) {
+          foreach ($target['path-aliases'] as $key => $value) {
+            // n.b. $key will contain something like "%root" or "%files".
+            $alias_variables['{{' . $key . '}}'] = $value;
+          }
+        }
+      }
+      $alias_value = str_replace(array_keys($alias_variables), array_values($alias_variables), $alias_value);
+      // Check for unmatched replacements
+      $matches = array();
+      $match_result = preg_match('/{{[%@#]*[a-z0-9.]*}}/', $alias_value, $matches);
+      if ($match_result) {
+        $unmatched_replacements = implode(', ', $matches);
+        $unmatched_replacements = preg_replace('/[{}]/', '', $unmatched_replacements);
+        return drush_set_error('DRUSH_SHELL_ALIAS_UNMATCHED_REPLACEMENTS', dt('The shell alias @alias-name uses replacements "@unmatched". You must use this command with a site alias (e.g. `drush @myalias @alias-name ...`) that defines all of these variables.', array('@alias-name' => $first, '@unmatched' => $unmatched_replacements)));
+      }
       $alias_value = explode(' ', $alias_value);
     }
     drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');

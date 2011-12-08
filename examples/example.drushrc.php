@@ -65,16 +65,20 @@
 // Drush shell aliases act similar to git aliases.
 // See https://git.wiki.kernel.org/index.php/Aliases#Advanced.
 // For best success, define these in drushrc files located in #6-3 above.
+// More information on shell aliases can be found in
+// `drush topic docs-shell-aliases`
 # $options['shell-aliases']['pull'] = '!git pull'; // We've all done it.
 # $options['shell-aliases']['pulldb'] = '!git pull && drush updatedb';
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';
 # $options['shell-aliases']['wipe'] = 'cache-clear all';
 # $options['shell-aliases']['unsuck'] = 'pm-disable -y overlay,dashboard';
+# $options['shell-aliases']['offline'] = 'variable-set -y --always-set maintenance_mode 1';
+# $options['shell-aliases']['online'] = 'variable-delete -y --exact maintenance_mode';
 // Add a 'pm-clone' to simplify (cached) git cloning from drupal.org.
 # $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg --cache';
 
 // Load a drushrc.php configuration file from the current working directory.
-# $options['c'] = '.';
+# $options['config'][] = '.';
 
 // Control automatically check for updates in pm-updatecode and drush version.
 // FALSE = never check for updates.  'head' = allow updates to drush-HEAD.

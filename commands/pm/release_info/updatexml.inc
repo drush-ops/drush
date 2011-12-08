@@ -1,75 +1,308 @@
 <?php
 
 /**
- * @file Drush release info engine for update.drupal.org
+ * @file Drush release info engine for update.drupal.org and compatible services.
+ *
+ * This engine does connect directly to the update service. It doesn't depend
+ * on a bootstraped site.
  */
 
-function release_info_fetch(&$request) {
-  $project_types = pm_project_types();
-  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
+define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
+
+/**
+ * Obtain the most appropiate release for the requested project.
+ *
+ * @param Array &$request
+ *   A project request as returned by pm_parse_project_version(). The array will
+ *   be expanded with the project type.
+ * @param Boolean $dev
+ *   Forces to choose a -dev release.
+ * @param Boolean $select
+ *   If no supported release is found, allow to ask the user to choose one.
+ * @param Boolean $all
+ *   In case $select = TRUE this indicates that all available releases will be
+ *  offered the user to choose.
+ *
+ * @return
+ *  The selected release xml object.
+ */
+function release_info_fetch(&$request, $dev = FALSE, $select = FALSE, $all = FALSE) {
   $xml = updatexml_get_release_history_xml($request);
   if (!$xml) {
     return FALSE;
   }
 
-  // Identify the most appropriate release.
-  $release = updatexml_parse_release($request, $xml);
-  if (!$release) {
-    return FALSE;
-  }
-
-  // Determine what type of project we are to download.
+  // Determine project type.
+  $project_types = pm_project_types();
+  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
   $request['project_type'] = 'module';
   if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
     $request['project_type'] = array_search($types[0]->value, $project_types);
   }
 
-  if ($request['project_type'] == 'translation') {
-    return drush_set_error('DRUSH_PM_DOWNLOAD_TRANSLATIONS_FORBIDDEN', dt('Drush has dropped support for downloading translation projects. See l10n_update and l10n_install projects.'));
-  }
-
-  // Determine the name of the directory that will contain the project.
-  // We face here all the asymetries to make it smooth for package handlers.
-  // For Drupal core: --drupal-project-rename or drupal-x.y
-  if ($request['project_type'] == 'core') {
-    // Avoid downloading core into existing core.
-    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
-      if (strpos(realpath(drush_get_option('destination')), DRUPAL_ROOT) !== FALSE) {
-        return drush_set_error('DRUSH_PM_DOWNLOAD_TRANSLATIONS_FORBIDDEN', dt('It\'s forbidden to download !project core into an existing core.', array('!project' => $request['name'])));
-      }
-    }
-
-    if ($rename = drush_get_option('drupal-project-rename', FALSE)) {
-      if ($rename === TRUE) {
-        $request['project_dir'] = 'drupal';
-      }
-      else {
-        $request['project_dir'] = $rename;
-      }
+  if (!$select) {
+    // Try to identify the most appropriate release.
+    $release = updatexml_parse_release($request, $xml, $dev);
+    if ($release) {
+      return $release;
     }
     else {
-      // Set to drupal-x.y, the expected name for .tar.gz contents.
-      // Explicitly needed for cvs package handler.
-      $request['project_dir'] = strtolower(strtr($release['name'], ' ', '-'));
+      // A valid release was not found. Continue to select.
     }
   }
-    // For the other project types we want the project name. Including core
-    // variant for profiles.  Note those come with drupal-x.y in the .tar.gz.
-  else {
-    $request['project_dir'] = $request['name'];
+
+  $project_info = updatexml_get_releases_from_xml($xml, $request['name']);
+  $releases = release_info_filter_releases($project_info['releases'], $all, $dev);
+  $options = array();
+  foreach($releases as $version => $release) {
+    $options[$version] = array($version, '-', gmdate('Y-M-d', $release['date']), '-', implode(', ', $release['release_status']));
   }
-  return $release;
+  $choice = drush_choice($options, dt('Choose one of the available releases for !project:', array('!project' => $request['name'])));
+  if ($choice) {
+    return $project_info['releases'][$choice];
+  }
+
+  return FALSE;
 }
 
 /**
- * Pick most appropriate release from XML list.
+ * Obtain releases info for given requests and fill in status information.
+ *
+ * @param $requests
+ *   An array of project names optionally with a version.
+ */
+function release_info_get_releases($requests) {
+  $info = array();
+
+  foreach ($requests as $name => $request) {
+    $xml = updatexml_get_release_history_xml($request);
+    if (!$xml) {
+      continue;
+    }
+
+    $project_info = updatexml_get_releases_from_xml($xml, $name);
+    $info[$name] = $project_info;
+  }
+
+  return $info;
+}
+
+/**
+ * Prints release notes for given projects.
+ *
+ * @param $requests
+ *   An array of drupal.org project names optionally with a version.
+ * @param $print_status
+ *   Boolean. Used by pm-download to not print a informative note.
+ * @param $tmpfile
+ *   If provided, a file that contains contents to show before the
+ *   release notes.
+ */
+function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfile = NULL) {
+  $info = release_info_get_releases($requests);
+  if (!$info) {
+    return drush_log(dt('No valid projects given.'), 'ok');
+  }
+
+  if (is_null($tmpfile)) {
+    $tmpfile = drush_tempnam('rln-' . implode('-', $requests) . '.');
+  }
+
+  foreach ($info as $key => $project) {
+    $selected_versions = array();
+    // If the request included version, only show its release notes.
+    if (isset($requests[$key]['version'])) {
+      $selected_versions[] = $requests[$key]['version'];
+    }
+    else {
+      // Special handling if the project is installed.
+      if (isset($project['recommended'], $project['installed'])) {
+        $releases = array_reverse($project['releases']);
+        foreach($releases as $version => $release) {
+          if ($release['date'] >= $project['releases'][$project['installed']]['date']) {
+            $release += array('version_extra' => '');
+            $project['releases'][$project['installed']] += array('version_extra' => '');
+            if ($release['version_extra'] == 'dev' && $project['releases'][$project['installed']]['version_extra'] != 'dev') {
+              continue;
+            }
+            $selected_versions[] = $version;
+          }
+        }
+      }
+      else {
+        // Project is not installed so we will show the release notes
+        // for the recommended version, as the user did not specify one.
+        $selected_versions[] = $project['recommended'];
+      }
+    }
+
+    foreach ($selected_versions as $version) {
+      // Stage of parsing.
+      if (!isset($project['releases'][$version]['release_link'])) {
+        // We avoid the cases where the URL of the release notes does not exist.
+        drush_log(dt("Project !project does not have release notes for version !version.", array('!project' => $key, '!version' => $version)), 'warning');
+        continue;
+      }
+      else {
+        $release_page_url = $project['releases'][$version]['release_link'];
+      }
+      $release_page_url_parsed = parse_url($release_page_url);
+      $release_url_path = $release_page_url_parsed['path'];
+      if (!empty($release_url_path)) {
+        if ($release_page_url_parsed['host'] == 'drupal.org') {
+          $release_page_id = substr($release_url_path, strlen('/node/'));
+          drush_log(dt("Release link for !project (!version) project was found.", array('!project' => $key, '!version' => $version)), 'notice');
+        }
+        else {
+          drush_log(dt("Release notes' page for !project project is not hosted on drupal.org. See !url.", array('!project' => $key, '!url' => $release_page_url)), 'warning');
+          continue;
+        }
+      }
+      // We'll use drupal_http_request if available; it provides better error reporting.
+      if (function_exists('drupal_http_request')) {
+        $data = drupal_http_request($release_page_url);
+        if (isset($data->error)) {
+          drush_log(dt("Error (!error) while requesting the release notes page for !project project.", array('!error' => $data->error, '!project' => $key)), 'error');
+          continue;
+        }
+        @$dom = DOMDocument::loadHTML($data->data);
+      }
+      else {
+        $filename = drush_download_file($release_page_url);
+        @$dom = DOMDocument::loadHTMLFile($filename);
+        @unlink($filename);
+        if ($dom === FALSE) {
+          drush_log(dt("Error while requesting the release notes page for !project project.", array('!project' => $key)), 'error');
+          continue;
+        }
+      }
+      if ($dom) {
+        drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $key, '!version' => $version)), 'notice');
+      }
+      $xml = simplexml_import_dom($dom);
+      $xpath_expression = '//*[@id="node-' . $release_page_id .  '"]/div[@class="node-content"]';
+      $node_content = $xml->xpath($xpath_expression);
+
+      // We create the print format.
+      $notes_last_update = $node_content[0]->div[1]->div[0]->asXML();
+      unset($node_content[0]->div);
+      $project_notes = $node_content[0]->asXML();
+
+      // Build the status message from the info from release_info_get_releases()
+      $status_msg = '> ' . implode(', ', $project['releases'][$version]['release_status']);
+      $break = '<br>';
+      $notes_header = dt("<hr>
+ > RELEASE NOTES FOR '!name' PROJECT, VERSION !version:!break
+ > !time.!break
+ !status
+<hr>
+", array('!status' => $print_status ? $status_msg : '', '!name' => strtoupper($key), '!break' => $break, '!version' => $version, '!time' => $notes_last_update));
+      // Finally we print the release notes for the requested project.
+      if (drush_get_option('html', FALSE)) {
+        $print = $notes_header . $project_notes;
+      }
+      else {
+        $print = drush_html_to_text($notes_header . $project_notes . "\n", array('br', 'p', 'ul', 'ol', 'li', 'hr'));
+        if (drush_drupal_major_version() < 7) { $print .= "\n"; }
+      }
+      file_put_contents($tmpfile, $print, FILE_APPEND);
+    }
+  }
+  drush_print_file($tmpfile);
+}
+
+/**
+ * Helper function for release_info_filter_releases().
+ */
+function _release_info_compare_date($a, $b) {
+    if ($a['date'] == $b['date']) {
+        return 0;
+    }
+    if ($a['version_major'] == $b['version_major']) {
+      return ($a['date'] > $b['date']) ? -1 : 1;
+    }
+    return ($a['version_major'] > $b['version_major']) ? -1 : 1;
+}
+
+/**
+ * Filter a list of releases.
+ *
+ * @param $releases
+ *   Array of release information
+ * @param $all
+ *   Show all releases. If FALSE, shows only the first release that is
+ *   Recommended or Supported or Security or Installed.
+ * @param $dev
+ *   Show only development release.
+ * @param $show_all_until_installed
+ *   If TRUE, then all releases will be shown until the INSTALLED release
+ *   is found, at which point the algorithm will stop.
+ */
+function release_info_filter_releases($releases, $all = FALSE, $dev = FALSE, $show_all_until_installed = TRUE) {
+  // Start off by sorting releases by release date.
+  uasort($releases, '_release_info_compare_date');
+  // Find version_major for the installed release.
+  $installed_version_major = FALSE;
+  foreach ($releases as $version => $release_info) {
+    if (in_array("Installed", $release_info['release_status'])) {
+      $installed_version_major = $release_info['version_major'];
+    }
+  }
+  // Now iterate through and filter out the releases we're interested in.
+  $options = array();
+  $limits_list = array();
+  foreach ($releases as $version => $release_info) {
+    if (!$dev || ((array_key_exists('version_extra', $release_info)) && ($release_info['version_extra'] == 'dev'))) {
+      $saw_unique_status = FALSE;
+      foreach ($release_info['release_status'] as $one_status) {
+        // We will show the first release of a given kind;
+        // after we show the first security release, we show
+        // no other.  We do this on a per-major-version basis,
+        // though, so if a project has three major versions, then
+        // we will show the first security release from each.
+        // This rule is overridden by $all and $show_all_until_installed.
+        $test_key = $release_info['version_major'] . $one_status;
+        if (!array_key_exists($test_key, $limits_list)) {
+          $limits_list[$test_key] = TRUE;
+          $saw_unique_status = TRUE;
+          // Once we see the "Installed" release we will stop
+          // showing all releases
+          if ($one_status == "Installed") {
+            $show_all_until_installed = FALSE;
+            $installed_release_date = $release_info['date'];
+          }
+        }
+      }
+      if ($all || ($show_all_until_installed && ($installed_version_major == $release_info['version_major'])) || $saw_unique_status) {
+        $options[$release_info['version']] = $release_info;
+      }
+    }
+  }
+  // If "show all until installed" is still true, that means that
+  // we never encountered the installed release anywhere in releases,
+  // and therefore we did not filter out any releases at all.  If this
+  // is the case, then call ourselves again, this time with
+  // $show_all_until_installed set to FALSE from the beginning.
+  // The other situation we might encounter is when we do not encounter
+  // the installed release, and $options is still empty.  This means
+  // that there were no supported or recommented or security or development
+  // releases found.  If this is the case, then we will force ALL to TRUE
+  // and show everything on the second iteration.
+  if (($all === FALSE) && ($show_all_until_installed === TRUE)) {
+    $options = release_info_filter_releases($releases, empty($options), $dev, FALSE);
+  }
+  return $options;
+}
+
+/**
+ * Pick most appropriate release from XML list  or ask the user if no one fits.
  *
  * @param array $request
  *   An array of version specifications as returned by pm_parse_project_version().
  * @param resource $xml
  *   A handle to the XML document.
  */
-function updatexml_parse_release($request, $xml) {
+function updatexml_parse_release($request, $xml, $dev = FALSE) {
   if (!empty($request['version'])) {
     $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
     if (empty($releases)) {
@@ -100,22 +333,14 @@ function updatexml_parse_release($request, $xml) {
     $releases = $recommended_releases;
   }
   $release_type = 'recommended';
-  if (drush_get_option('dev', FALSE)) {
+  if ($dev) {
     $releases = @$xml->xpath("/project/releases/release[status='published'][version_extra='dev']");
     $release_type = 'development';
   }
-  if (drush_get_option('select', FALSE) || empty($releases)) {
-    if (empty($releases)) {
-      drush_print(dt('There is no !type release for project !project.', array('!type' => $release_type, '!project' => $request['name'])));
-    }
-    $options = _pm_download_releases_choice($xml, $request['name'], drush_get_option('all', FALSE), drush_get_option('dev', FALSE));
-    $choice = drush_choice($options, dt('Choose one of the available releases:'));
-    if ($choice) {
-      $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $choice . "']");
-    }
-    else {
-      return FALSE;
-    }
+
+  if (empty($releases)) {
+    drush_print(dt('There is no !type release for project !project.', array('!type' => $release_type, '!project' => $request['name'])));
+    return FALSE;
   }
 
   // First published release for the recommended major version is just the
@@ -127,9 +352,8 @@ function updatexml_parse_release($request, $xml) {
  * Download the release history xml for the specified request.
  */
 function updatexml_get_release_history_xml($request) {
-  // Don't rely on UPDATE_DEFAULT_URL since perhaps we are not fully
-  // bootstrapped.
-  $url = drush_get_option('source', 'http://updates.drupal.org/release-history') . '/' . $request['name'] . '/' . $request['drupal_version'];
+  $status_url = isset($request['status url'])?$request['status url']:RELEASE_INFO_DEFAULT_URL;
+  $url =  $status_url . '/' . $request['name'] . '/' . $request['drupal_version'];
   drush_log('Downloading release history from ' . $url);
   // Some hosts have allow_url_fopen disabled.
   if ($path = drush_download_file($url, drush_tempnam($request['name']), drush_get_option('cache-duration-releasexml', 24*3600))) {

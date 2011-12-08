@@ -187,20 +187,17 @@ function drush_check_self_update() {
     return FALSE;
   }
 
-  // Allow updates to the latest HEAD release if --self-update=head is specified.
-  // If we are called from `drush self-update`, then --dev will set --self-update=head.
-  $dev_ok = (drush_get_option('self-update') == 'head');
   $is_dev = FALSE;
 
   // Get release info for drush
-  $info = _drush_pm_get_releases(array('drush'));
+  $info = release_info_get_releases(array('drush'));
   // Check for newer releases based on the datestamp.
   // We add 60 seconds to the drush.info date because of a drupal.org WTF. See http://drupal.org/node/1019356.
   $version_date = $drush_info['datestamp'] + 60;
   $newer_version = FALSE;
   foreach ($info['drush']['releases'] as $version => $release_info) {
     // We deliberately skip any dev releases unless the current release is a dev release.
-    if ($dev_ok || ((!array_key_exists('version_extra', $release_info) || ($release_info['version_extra'] != 'dev')))) {
+    if ((!array_key_exists('version_extra', $release_info) || ($release_info['version_extra'] != 'dev'))) {
       if ($release_info['date'] > $version_date) {
         $newer_version = $release_info['version'];
         $version_date = $release_info['date'];
@@ -213,7 +210,7 @@ function drush_check_self_update() {
   }
 
   if ($newer_version) {
-    drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion; to update, run `drush self-update`.  To disable this check, put "$options[\'self-update\'] = FALSE;" in your drushrc.php configuration file.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
+    drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion. The update process depends on how you installed drush. Some common update commands are: `pear upgrade drush`,  `git pull`, `drush dl drush --destination=[/path/to/drush]`.  To disable this check, put "$options[\'self-update\'] = FALSE;" in your drushrc.php configuration file.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
     return TRUE;
   }
   else {
@@ -326,10 +323,17 @@ function _convert_csv_to_array($args) {
  *     - never-propagate: If TRUE, backend invoke will never pass this item on
  *       to the subcommand being executed.
  *     - local-context-only: Backend invoke will only pass this value on for local calls.
- *     - merge-list: For options such as --include and --config, make a merged list
- *       of all of the values specified for all of the contexts (config files) where
- *       the option is defined.  The value is stored in the specified 'context'.
- *     - merge-associative: Like 'merge-list', but key values are preserved.
+ *     - merge: For options such as $options['shell-aliases'] that consist of an array
+ *       of items, make a merged array that contains all of the values specified for
+ *       all of the contexts (config files) where the option is defined.  The value is stored in
+ *       the specified 'context', or in a context named after the option itself if the
+ *       context flag is not specified.
+ *       IMPORTANT: When the merge flag is used, the option value must be obtained via
+ *       drush_get_context('option') rather than drush_get_option('option').
+ *     - merge-pathlist: For options such as --include and --config, make a merged list
+ *       of options from all contexts; works like the 'merge' flag, but also handles string
+ *       values separated by the PATH_SEPARATOR.
+ *     - merge-associative: Like 'merge-pathlist', but key values are preserved.
  *     - propagate-cli-value: Used to tell backend invoke to include the value for
  *       this item as specified on the cli.  This can either override 'context'
  *       (e.g., propagate --include from cli value instead of DRUSH_INCLUDE context),
@@ -352,8 +356,8 @@ function drush_get_global_options($brief = FALSE) {
 
   if (!$brief) {
     $options['quiet']               = array('short-form' => 'q', 'description' => 'Suppress non-error messages.');
-    $options['include']             = array('short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'local-context-only' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-list' => TRUE, 'description' => "A list of additional directory paths to search for drush commands.");
-    $options['config']              = array('short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'local-context-only' => TRUE, 'merge-list' => TRUE, 'description' => "Specify an additional config file to load. See example.drushrc.php.");
+    $options['include']             = array('short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'local-context-only' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of additional directory paths to search for drush commands.");
+    $options['config']              = array('short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'local-context-only' => TRUE, 'merge-pathlist' => TRUE, 'description' => "Specify an additional config file to load. See example.drushrc.php.");
     $options['user']                = array('short-form' => 'u', 'short-has-arg' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specify a Drupal user to login with. May be a name or a number.");
     $options['backend']             = array('short-form' => 'b', 'never-propagate' => TRUE, 'description' => "Hide all output and return structured data (internal use only).");
     $options['invoke']              = array('hidden' => TRUE, 'description' => 'Invoked from a script; skip option verification.');
@@ -369,7 +373,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['cache-default-class'] = array('description' => "A cache backend class that implements DrushCacheInterface.");
     $options['cache-class-<bin>']   = array('description' => "A cache backend class that implements DrushCacheInterface to use for a specific cache bin.");
     $options['early']               = array('description' => "Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename). The function is called pre-bootstrap and offers an opportunity to alter the drush bootstrap environment or process (returning FALSE from the function will continue the bootstrap), or return output very rapidly (e.g. from caches). See includes/complete.inc for an example.");
-    $options['alias-path']          = array('context' => 'ALIAS_PATH', 'local-context-only' => TRUE, 'merge-list' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specifies the list of paths where drush will search for alias files. Separate paths with ':'.");
+    $options['alias-path']          = array('context' => 'ALIAS_PATH', 'local-context-only' => TRUE, 'merge-pathlist' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specifies the list of paths where drush will search for alias files. Separate paths with ':'.");
     $options['backup-location']     = array('description' => "Specifies the directory where drush will store backups.");
     $options['confirm-rollback']    = array('description' => 'Wait for confirmation before doing a rollback when something goes wrong.');
     $options['complete-debug']      = array('hidden' => TRUE, 'description' => "Turn on debug mode forf completion code");
@@ -496,7 +500,7 @@ function drush_confirm($msg, $indent = 0) {
  *   example, if the key is a user id and the value is the
  *   user name, use '!value (uid=!key)'.
  */
-function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') {
+function drush_choice($options, $prompt = 'Enter a number.', $label = '!value', $widths = array()) {
   drush_print(dt($prompt));
 
   // Preflight so that all rows will be padded out to the same number of columns
@@ -526,7 +530,7 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value') 
       $selection_list[$selection_number] = $key;
     }
   }
-  drush_print_table($rows);
+  drush_print_table($rows, FALSE, $widths);
   drush_print_pipe(array_keys($options));
 
   // If the user specified --choice, then make an
@@ -665,10 +669,12 @@ function drush_choice_multiple($options, $defaults = FALSE, $prompt = 'Select so
  *   The default value of the input.
  * @param $required
  *   If TRUE, user may continue even when no value is in the input.
+ * @param $password
+ *   If TRUE, surpress printing of the input.
  *
  * @see drush_confirm()
  */
-function drush_prompt($prompt, $default = NULL, $required = TRUE) {
+function drush_prompt($prompt, $default = NULL, $required = TRUE, $password = FALSE) {
   if (!is_null($default)) {
     $prompt .= " [" . $default . "]";
   }
@@ -681,6 +687,9 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE) {
   }
 
   $stdin = fopen('php://stdin', 'r');
+
+  if ($password) drush_shell_exec("stty -echo");
+
   stream_set_blocking($stdin, TRUE);
   while (($line = fgets($stdin)) !== FALSE) {
     $line = trim($line);
@@ -693,6 +702,10 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE) {
     drush_print_prompt($prompt);
   }
   fclose($stdin);
+  if ($password) {
+    drush_shell_exec("stty echo");
+    print "\n";
+  }
   return $line;
 }
 
@@ -1532,6 +1545,13 @@ function drush_cmp_error($error) {
   }
 
   return array_key_exists($error, $error_log);
+}
+
+/**
+ * Clear error context.
+ */
+function drush_clear_error() {
+  drush_set_context('DRUSH_ERROR_CODE', DRUSH_SUCCESS);
 }
 
 /**

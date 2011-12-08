@@ -18,6 +18,12 @@ function drush_show_help($commandstring) {
     drush_print_help($command);
     return TRUE;
   }
+  $shell_aliases = drush_get_context('shell-aliases', array());
+  if (array_key_exists($commandstring, $shell_aliases)) {
+    $msg = dt("'@alias-name' is a shell alias.  Its value is: !name. See `drush topic docs-shell-aliases` and `drush shell-alias` for more information.", array('@alias-name' => $commandstring, '!name' => $shell_aliases[$commandstring]));
+    drush_log($msg, 'ok');
+    return TRUE;
+  }  
   return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => $commandstring)));
 }
 

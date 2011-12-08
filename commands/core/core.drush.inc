@@ -46,15 +46,12 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'options' => array(
       'pipe' => 'Print just the version number, and nothing else.',
-      'self-update' => 'Check for pending updates to drush itself. Set to 0 to avoid check.',
+      'self-update' => 'Check for pending updates to Drush itself.',
     ),
   );
   $items['self-update'] = array(
-    'description' => 'Update drush to the latest version, if available.',
+    'description' => 'Check to see if there is a newer Drush release available.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
-    'options' => array(
-      'dev' => 'Allow updates to latest dev release.',
-    ),
     'aliases' => array('selfupdate'),
   );
   $items['core-cron'] = array(
@@ -463,7 +460,12 @@ function _core_site_status_table($project = '') {
       $status_table['Site URI'] = drush_get_context('DRUSH_URI');
       if ($creds = drush_get_context('DRUSH_DB_CREDENTIALS')) {
         $status_table['Database driver'] = $creds['driver'];
-        $status_table['Database hostname'] = $creds['host'];
+        if (!empty($creds['unix_socket'])) {
+          $status_table['Database socket'] = $creds['unix_socket'];
+        }
+        else {
+          $status_table['Database hostname'] = $creds['host'];
+        }
         $status_table['Database username'] = $creds['user'];
         $status_table['Database name'] = $creds['name'];
         if (drush_get_option('show-passwords', FALSE)) {
@@ -490,10 +492,9 @@ function _core_site_status_table($project = '') {
     // users figure out their php.ini issues.
     $status_table['PHP configuration'] = php_ini_loaded_file();
   }
-  drush_sitealias_load_all();
   $status_table['Drush version'] = DRUSH_VERSION;
   $status_table['Drush configuration'] = implode(' ', drush_get_context_options('context-path', TRUE));
-  $status_table['Drush alias files'] = implode(' ', drush_get_context('drush-alias-files'));
+  $status_table['Drush alias files'] = implode(' ', _drush_sitealias_find_alias_files());
 
   // None of the Status keys are in dt(); this helps with machine-parsing of status?
   $path_names['root'] = 'Drupal root';
@@ -991,8 +992,7 @@ function drush_core_version() {
 }
 
 function drush_core_self_update() {
-  drush_set_option('select', TRUE);
-  return drush_invoke('pm-download', 'drush');
+  drush_check_self_update();
 }
 
 function drush_core_find_project_path($target) {
@@ -1011,7 +1011,10 @@ function drush_core_execute() {
   // The DRUSH_COMMAND_ARGS contain all args and options that appear after the command name.
   $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
   for ($x = 0; $x < sizeof($args); $x++) {
-    $args[$x] = drush_escapeshellarg($args[$x]);
+    // escape all args except for command separators.
+    if (!in_array($args[$x], array('&&', '||', ';'))) {
+      $args[$x] = drush_escapeshellarg($args[$x]);
+    }
   }
   $cmd = implode(' ', $args);
   if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
@@ -1023,5 +1026,5 @@ function drush_core_execute() {
     }
   }
   // Must be a local command.
-  return (bool) !drush_op_system($cmd);
+  return drush_shell_proc_open($cmd);
 }

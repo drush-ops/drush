@@ -120,10 +120,8 @@ function _drush_shell_exec($args, $interactive = FALSE) {
 
   if (!drush_get_context('DRUSH_SIMULATE')) {
     if ($interactive) {
-      $result = proc_open($command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
-      proc_close($result);
-      // proc_open returns FALSE on failure, or a resource on success.
-      return ($result === FALSE) ? FALSE : TRUE;
+      $result = drush_shell_proc_open($command);
+      return ($result == 0) ? TRUE : FALSE;
     }
     else {
       exec($command . ' 2>&1', $output, $result);
@@ -205,7 +203,6 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL) {
 function drush_shell_proc_open($cmd) {
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
     drush_print("Calling proc_open($cmd);");
-    return 0;
   }
   if (!drush_get_context('DRUSH_SIMULATE')) {
     $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
@@ -213,6 +210,7 @@ function drush_shell_proc_open($cmd) {
     $exit_code = proc_close($process);
     return ($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );
   }
+  return 0;
 }
 
 /**

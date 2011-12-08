@@ -269,78 +269,13 @@ function cpd() {
   "$(which cp)" "${p[@]}"
 }
 
-# Here is a complex ssh function that works with args with spaces.
+# This alias allows `dssh @site` to work like `drush @site ssh`.
+# Ssh commands, such as `dssh @site ls /tmp`, are also supported.
 function dssh() {
   d="$1"
   if [ ${d:0:1} == "@" ]
   then
-    shift
-    if [ $# == 0 ]
-    then
-      cdd "$d"
-    else
-      s="$(drush -s ssh $d)"
-      ssh_params="${s#* }"
-      ssh_cmd="$(which ssh)"
-
-      # Begin: convert ssh_params into an array p.
-
-      c="$ssh_params "
-      p=()
-      while [ -n "$c" ]; do
-        v=
-        hasvalue=true
-        if [ "x${c:0:1}" = 'x"' ]
-        then
-          c="${c:1}"
-          v="${c%%\"*}"
-          c="${c#*\"}"
-        elif [ "x${c:0:1}" = "x'" ]
-        then
-          c="${c:1}"
-          v="${c%%\'*}"
-          c="${c#*\'}"
-        elif [ "x${c:0:1}" = "x " ]
-        then
-          c="${c:1}"
-          hasvalue=false
-        else
-          v="${c%% *}"
-          c="${c#* }"
-        fi
-        if $hasvalue
-        then
-          p[${#p[@]}]="$v"
-        fi
-      done
-      # End: ssh_params now split into array p
-
-      # Begin: rewrite $@ into an array a where elements containing
-      # quotes or spaces enclosed in quotes. Bash does not have convenient
-      # "contains" tests, so to avoid spawning a process, we strip off
-      # all characters after a space and all characters after a quote with
-      # the ${v%%PATTERN} built-in, and then compare lengths.
-      a=()
-      for v in "$@"; do
-        spsqtest="${v%% *}${v%%\'*}"
-        dqtest="${v%%\"*}"
-        if [ ${#dqtest} == ${#v} ]
-        then
-          if [ ${#spsqtest} == $((${#v}*2)) ]
-          then
-            a[${#a[@]}]="$v"
-          else
-            a[${#a[@]}]=\""$v"\"
-          fi
-        else
-          a[${#a[@]}]=\'"$v"\'
-        fi
-      done
-      # End: $@ now converted into quoted array 'a'.
-
-      echo "$ssh_cmd" "${p[@]}" "${a[@]}"
-      "$ssh_cmd" "${p[@]}" "${a[@]}"
-    fi
+    drush "$d" ssh "${@:2}"
   else
     "$(which ssh)" "$@"
   fi

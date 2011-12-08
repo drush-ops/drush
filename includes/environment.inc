@@ -441,19 +441,19 @@ function drush_valid_db_credentials() {
           // connection errors. We must turn on error tracking to get at a good error
           // message, which will be stored in $php_errormsg.
           $php_errormsg = '';
-	  $track_errors_previous = ini_get('track_errors');
+          $track_errors_previous = ini_get('track_errors');
           ini_set('track_errors', 1);
           $connection = @pg_connect($conn_string);
           // Restore error tracking setting
           ini_set('track_errors', $track_errors_previous);
           if (!$connection) {
-	    if (empty($php_errormsg)) {
+            if (empty($php_errormsg)) {
               drush_log(dt("Unknown error connecting to pgsql database via !constr", array('!constr' => $conn_string)), 'bootstrap');
-	    }
-	    else {
+            }
+            else {
               require_once './includes/unicode.inc';
               drush_log(decode_entities($php_errormsg), 'bootstrap');
-	    }
+            }
             return FALSE;
           }
           break;
@@ -484,9 +484,16 @@ function drush_valid_db_credentials() {
         $constr = sprintf("%s:database=%s;server=%s", $type, $creds['name'], $server);
       }
       else {
-        $constr = sprintf("%s:dbname=%s;host=%s", $type, $creds['name'], $creds['host']);
-        if (!empty($creds['port'])) {
-          $constr .= sprintf(";port=%d", $creds['port']);
+        $constr = sprintf("%s:dbname=%s", $type, $creds['name']);
+        // Use unix_socket if set instead of host:port.
+        if (!empty($creds['unix_socket'])) {
+          $constr .= sprintf(";unix_socket=%s", $creds['unix_socket']);
+        }
+        else {
+          $constr .= sprintf(";host=%s", $creds['host']);
+          if (!empty($creds['port'])) {
+            $constr .= sprintf(";port=%d", $creds['port']);
+          }
         }
       }
       try {

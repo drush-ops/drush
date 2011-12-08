@@ -195,7 +195,7 @@ function drush_expand_short_form_options(&$options) {
       // For any option with a short form, check to see if the short form was set in the
       // options.  If it was, then rename it to its long form.
       if (array_key_exists('short-form', $info) && array_key_exists($info['short-form'], $options)) {
-        if (!array_key_exists($name, $options) || !array_key_exists('merge-list', $info)) {
+        if (!array_key_exists($name, $options) || !array_key_exists('merge-pathlist', $info)) {
           $options[$name] = $options[$info['short-form']];
         }
         else {
@@ -234,17 +234,17 @@ function drush_set_config_special_contexts(&$options) {
 
     foreach (drush_get_global_options() as $name => $info) {
       if (is_array($info)) {
-        // For any global option with the 'merge-list' or 'merge-associative' flag, set its
+        // For any global option with the 'merge-pathlist' or 'merge-associative' flag, set its
         // value in the specified context.  The option is 'merged' because we
         // load $options with the value from the context prior to including the
         // configuration file.  If the configuration file sets $option['special'][] = 'value',
         // then the configuration will be merged.  $option['special'] = array(...), on the
         // other hand, will replace rather than merge the values together.
-        if ((array_key_exists($name, $options)) && (array_key_exists('merge', $info) || (array_key_exists('merge-list', $info) || array_key_exists('merge-associative', $info)))) {
+        if ((array_key_exists($name, $options)) && (array_key_exists('merge', $info) || (array_key_exists('merge-pathlist', $info) || array_key_exists('merge-associative', $info)))) {
           $context = array_key_exists('context', $info) ? $info['context'] : $name;
           $cache =& drush_get_context($context);
           $value = $options[$name];
-          if (!is_array($value) && array_key_exists('merge-list', $info)) {
+          if (!is_array($value) && array_key_exists('merge-pathlist', $info)) {
             $value = explode(PATH_SEPARATOR, $value);
           }
           if (array_key_exists('merge-associative', $info)) {
@@ -464,7 +464,7 @@ function drush_get_option_list($option, $default = array(), $context = NULL) {
  *
  */
 function drush_get_option_override($option_overrides, $option, $default = NULL, $context = NULL) {
-  return drush_sitealias_get_option($options_overrides, $option, $default, '', $context);
+  return drush_sitealias_get_option($option_overrides, $option, $default, '', $context);
 }
 
 /**

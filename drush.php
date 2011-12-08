@@ -51,12 +51,13 @@ function drush_main() {
 
   $return = '';
   drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUSH);
-  // Process a remote command if 'remote-host' option is set.
-  $command_handled = drush_remote_command();
-  if (!$command_handled) {
-    $return = _drush_bootstrap_and_dispatch();
+  if (!drush_get_error()) {
+    // Process a remote command if 'remote-host' option is set.
+    $command_handled = drush_remote_command();
+    if (!$command_handled) {
+      $return = _drush_bootstrap_and_dispatch();
+    }
   }
-
   drush_bootstrap_finish();
 
   // After this point the drush_shutdown function will run,
