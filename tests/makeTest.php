@@ -28,13 +28,6 @@ class makeMakefileCase extends Drush_CommandTestCase {
 
   function getMakefiles() {
     return array(
-      'cvs' => array(
-        'name'     => 'CVS integration',
-        'makefile' => 'cvs.make',
-        'build'    => TRUE,
-        'md5' => 'd46e1c48b17971637dcd89c1b5881bf7',
-        'options'  => array('no-core' => NULL),
-      ),
       'get' => array(
         'name'     => 'Test GET retrieval of projects',
         'makefile' => 'get.make',
