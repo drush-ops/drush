@@ -157,7 +157,7 @@ function _drush_generate_track_version($project, $version_options) {
  */
 function _drush_generate_makefile_check_updatexml($name, $type, $status_url = '') {
   if ($status_url == '') {
-    $status_url = drush_get_option('drush-make-update-default-url');
+    $status_url = MAKE_UPDATE_DEFAULT_URL;
   }
   // First we set up the project information array.
   $project = array(

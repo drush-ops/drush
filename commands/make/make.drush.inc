@@ -10,14 +10,6 @@ include_once 'make.download.inc';
 include_once 'make.project.inc';
 
 /**
- * Implement EXTENSION_drush_init().
- */
-function make_drush_init() {
-  // The default URL to use for retrieving update XML files.
-  drush_set_default('make-update-default-url', MAKE_UPDATE_DEFAULT_URL);
-}
-
-/**
  * Implementation of hook_drush_command().
  */
 function make_drush_command() {
@@ -183,7 +175,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       'build_path'          => $build_path,
       'contrib_destination' => $contrib_destination,
       'version'             => MAKE_VERSION_BEST,
-      'location'            => drush_get_option('make-update-default-url'),
+      'location'            => MAKE_UPDATE_DEFAULT_URL,
       'subdir'              => '',
       'directory_name'      => '',
     );
