@@ -2,7 +2,6 @@
 
 define('MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
 define('MAKE_DEFAULT_L10N_SERVER', 'http://localize.drupal.org/l10n_server.xml');
-define('MAKE_VERSION_BEST', 'best');
 define('MAKE_API', 2);
 
 include_once 'make.utilities.inc';
@@ -152,6 +151,9 @@ function drush_make_post_make($makefile = NULL, $build_path = NULL) {
 }
 
 function make_projects($recursion, $contrib_destination, $info, $build_path) {
+  $release_info = drush_get_option('release-info', 'updatexml');
+  drush_include_engine('release_info', $release_info);
+
   $projects = array();
   if (empty($info['projects'])) {
     if (drush_get_option('no-core') || $recursion) {
@@ -174,14 +176,27 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       'core'                => $info['core'],
       'build_path'          => $build_path,
       'contrib_destination' => $contrib_destination,
-      'version'             => MAKE_VERSION_BEST,
-      'location'            => MAKE_UPDATE_DEFAULT_URL,
+      'version'             => '',
+      'location'            => RELEASE_INFO_DEFAULT_URL,
       'subdir'              => '',
       'directory_name'      => '',
     );
-    if ($project['location'] != MAKE_UPDATE_DEFAULT_URL && !isset($project['type'])) {
-      $project = make_updatexml($project);
-      $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
+
+    // For convenience: define $request to be compatible with release_info engine.
+    // TODO: refactor to enforce 'make' to internally work with release_info keys.
+    $request = array(
+      'name' => $project['name'],
+      'drupal_version' => $project['core'],
+      'status url' => $project['location'],
+    );
+    if ($project['version'] != '') {
+      $request['project_version'] = $project['version'];
+      $request['version'] = $project['core'] . '-' . $project['version'];
+    }
+
+    if ($project['location'] != RELEASE_INFO_DEFAULT_URL && !isset($project['type'])) {
+      $project_type = release_info_check_project($request, 'core');
+      $project['download_type'] = ($project_type ? 'core' : 'contrib');
     }
     elseif (!empty($project['type'])) {
       $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
@@ -211,9 +226,25 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
 
   foreach ($projects as $type => $type_projects) {
     foreach ($type_projects as $project) {
-      if ($project['location'] == MAKE_UPDATE_DEFAULT_URL && (!isset($project['type']) || !isset($project['download']))) {
-        $project = make_updatexml($project);
+      // For convenience: define $request to be compatible with release_info engine.
+      // TODO: refactor to enforce 'make' to internally work with release_info keys.
+      $request = array(
+        'name' => $project['name'],
+        'drupal_version' => $project['core'],
+        'status url' => $project['location'],
+      );
+      if ($project['version'] != '') {
+        $request['project_version'] = $project['version'];
+        $request['version'] = $project['core'] . '-' . $project['version'];
       }
+      $release = release_info_fetch($request);
+      // Translate release_info key for project_type to drush make.
+      $project['type'] = $request['project_type'];
+      $project['download'] =array(
+        'type' => 'get',
+        'url'  => $release['download_link'],
+        'md5'  => $release['mdhash'],
+      );
       if (!empty($md5)) {
         $project['download']['md5'] = $md5;
       }
@@ -268,126 +299,6 @@ function make_libraries($contrib_destination, $info, $build_path) {
     $class = DrushMakeProject::getInstance('library', $library);
     $class->make();
   }
-}
-
-function make_updatexml($project) {
-  if (isset($project['download']) && isset($project['type'])) {
-    return $project;
-  }
-  if ($filename = _make_download_file($project['location'] . '/' . $project['name'] . '/' . $project['core'])) {
-    $release_history = simplexml_load_string(file_get_contents($filename));
-    drush_op('unlink', $filename);
-  }
-  // First, get the release history.
-  if (!is_object($release_history) || !$release_history->title) {
-    make_error('XML_ERROR', dt("Could not retrieve version information for %project.", array('%project' => $project['name'])));
-    return FALSE;
-  }
-  drush_log(dt('Project information for %project retrieved.', array('%project' => $project['name'])), 'ok');
-  $project['release_history'] = $release_history;
-  if (!isset($project['type'])) {
-    // Determine the project type.
-    $term_map = array(
-      'Modules' => 'module',
-      'Themes' => 'theme',
-      'Drupal core' => 'core',
-      'Installation profiles' => 'profile',
-      'Translations' => 'translation'
-    );
-    // Iterate through all terms related to this project.
-    foreach ($release_history->terms->term as $term) {
-      // If we find a term from the term map, add it.
-      if (in_array((string) $term->value, array_keys($term_map))) {
-        $project['type'] = $term_map[(string)$term->value];
-        break;
-      }
-    }
-    if (!isset($project['type'])) {
-      make_error('BUILD_ERROR', dt("Unable to determine project type for %project.", array('%project' => $project['name'])));
-      return FALSE;
-    }
-  }
-  if (!isset($project['download'])) {
-    $project = make_update_xml_download($project);
-  }
-  return $project;
-}
-
-function make_update_xml_download($project) {
-  // Make an array of releases.
-  foreach ($project['release_history']->releases->release as $release) {
-    $version = (string) $release->version_major;
-    // there should be version_patch attribute for every stable release
-    // so checking whether the attribute exists should be enough
-    if (isset($release->version_patch) && ((string) $release->version_extra) != 'dev') {
-      $version .= '.' . (string) $release->version_patch;
-    }
-    // if version_patch attribute does not exist, then it should be a dev release
-    // and the version string should be in format MAJOR_VERSION.x-dev
-    else {
-      $version .= '.x';
-    }
-
-    if ($extra_version = (string) $release->version_extra) {
-      $version .= '-' . $extra_version;
-    }
-
-    $releases[$version] = array(
-      'file' => (string) $release->download_link,
-      'md5' => (string) $release->mdhash,
-      'version' => (string) $release->version,
-    );
-    foreach (array('major', 'patch', 'extra') as $part) {
-      $releases[$version][$part] = (string) $release->{'version_' . $part};
-    }
-    if ($releases[$version]['extra'] == 'dev') {
-      $releases[$version]['patch'] = 'x';
-    }
-  }
-
-  // Find the best release.
-  if ($project['version'] == MAKE_VERSION_BEST) {
-    $recommended_major = (string)$project['release_history']->recommended_major;
-    if (!$recommended_major && $project['type'] == 'core') {
-      $recommended_major = strtok($project['core'], '.');
-    }
-    $project['version'] = _make_update_xml_best_version($recommended_major, $releases);
-  }
-  // Find the best release for the specified version.
-  else {
-    $exploded_version = explode('.', $project['version']);
-    if (count($exploded_version) == 1) {
-      list($major) = $exploded_version;
-      $project['version'] = _make_update_xml_best_version($major, $releases);
-    }
-    // Otherwise we have a full version.
-  }
-
-  $final_version = empty($project['version']) ? '' : $project['version'];
-
-  // Uh oh, couldn't find a valid version.
-  if (empty($final_version) || empty($releases[$final_version])) {
-    make_error('BUILD_ERROR', dt("Invalid version %version for %project.", array('%version' => $final_version, '%project' => $project['name'])));
-    return FALSE;
-  }
-
-  $release = $releases[$final_version];
-  $project['download'] = array(
-    'type' => 'get',
-    'url'  => $release['file'],
-    'md5'  => $release['md5'],
-  );
-  return $project;
-}
-
-function _make_update_xml_best_version($major, $releases) {
-  $best = NULL;
-  foreach ($releases as $version => $release_info) {
-    if ((!$major || $release_info['major'] == $major) && !empty($release_info['file']) && version_compare($best, $version, '<')) {
-      $best = $version;
-    }
-  }
-  return $best;
 }
 
 function make_build_path($build_path) {
