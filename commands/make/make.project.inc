@@ -190,9 +190,6 @@ class DrushMakeProject {
         if (isset($this->l10n_url)) {
           $l10n_server = $this->l10n_url;
         }
-        elseif ($this->location === MAKE_UPDATE_DEFAULT_URL) {
-          $l10n_server = MAKE_DEFAULT_L10N_SERVER;
-        }
         else {
           $l10n_server = FALSE;
         }

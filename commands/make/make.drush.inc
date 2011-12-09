@@ -1,6 +1,5 @@
 <?php
 
-define('MAKE_UPDATE_DEFAULT_URL', 'http://updates.drupal.org/release-history');
 define('MAKE_DEFAULT_L10N_SERVER', 'http://localize.drupal.org/l10n_server.xml');
 define('MAKE_API', 2);
 
@@ -181,6 +180,9 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       'subdir'              => '',
       'directory_name'      => '',
     );
+    if (!isset($project['l10n_url']) && ($project['location'] == RELEASE_INFO_DEFAULT_URL)) {
+      $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
+    }
 
     // For convenience: define $request to be compatible with release_info engine.
     // TODO: refactor to enforce 'make' to internally work with release_info keys.
