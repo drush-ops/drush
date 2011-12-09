@@ -238,7 +238,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
         );
         if ($project['version'] != '') {
           $request['project_version'] = $project['version'];
-          $request['version'] = $project['core'] . '-' . $project['version'];
+          $request['version'] = $type == 'core' ? $project['version'] : $project['core'] . '-' . $project['version'];
         }
         $release = release_info_fetch($request);
         // Translate release_info key for project_type to drush make.
