@@ -582,7 +582,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
         }
       }
       // Store only the named alias into the alias cache
-      if ((isset($aliases)) && array_key_exists($aliasname, $aliases)) {
+      if ((isset($aliases)) && !empty($aliasname) && array_key_exists($aliasname, $aliases)) {
         drush_set_config_special_contexts($options); // maybe unnecessary
         $one_result = array_merge($options, $aliases[$aliasname]);
         $one_result['#file'] = $filename;
