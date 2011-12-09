@@ -228,7 +228,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
 
   foreach ($projects as $type => $type_projects) {
     foreach ($type_projects as $project) {
-      if ($project['location'] == MAKE_UPDATE_DEFAULT_URL && (!isset($project['type']) || !isset($project['download']))) {
+      if ($project['location'] == RELEASE_INFO_DEFAULT_URL && (!isset($project['type']) || !isset($project['download']))) {
         // For convenience: define $request to be compatible with release_info engine.
         // TODO: refactor to enforce 'make' to internally work with release_info keys.
         $request = array(
