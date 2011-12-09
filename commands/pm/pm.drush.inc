@@ -655,8 +655,8 @@ function drush_pm_find_project_from_extension($extension) {
     // as the requested extension, then we'll call that a match.
     $release_info = drush_get_option('release-info', 'updatexml');
     drush_include_engine('release_info', $release_info);
-    $info = release_info_get_releases(array($extension));
-    if (!empty($info)) {
+    $request = pm_parse_project_version(array($extension));
+    if (release_info_check_project($request, 'module')) {
       $result = $extension;
     }
   }
@@ -1322,19 +1322,6 @@ function pm_parse_project_version($requests) {
     );
   }
   return $requestdata;
-}
-
-function pm_project_types() {
-  // Lookup the 'Project type' vocabulary to some standard strings.
-  $types = array(
-    'core' => 'Drupal core',
-    'profile' => 'Installation profiles',
-    'module' => 'Modules',
-    'theme' => 'Themes',
-    'theme engine' => 'Theme engines',
-    'translation' => 'Translations'
-  );
-  return $types;
 }
 
 /**

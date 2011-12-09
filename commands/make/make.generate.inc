@@ -10,6 +10,9 @@ function _drush_make_generate($file = NULL) {
   if (!$file) {
     drush_die('Missing filename');
   }
+  $release_info = drush_get_option('release-info', 'updatexml');
+  drush_include_engine('release_info', $release_info);
+
   // What projects should we pin the versions for?
   // Check the command-line options for details
   foreach(array("include", "exclude") as $option) {
@@ -40,7 +43,11 @@ function _drush_make_generate($file = NULL) {
   if (!in_array($install_profile, array('default', 'standard', 'minimal')) && $install_profile != '') {
     $projects[$install_profile]['type'] =
     $projects[$install_profile]['_type'] = 'profile';
-    if (!_drush_generate_makefile_check_updatexml($install_profile, 'profile')) {
+    $request = array(
+      'name' => $install_profile,
+      'drupal_version' => $system_requirements['drupal']['value'],
+    );
+    if (!release_info_check_project($request, 'profile')) {
       $projects[$install_profile]['custom_download'] = TRUE;
     }
   }
@@ -63,18 +70,20 @@ function _drush_make_generate($file = NULL) {
     if (($type == 'module') && (!$project['status'])) {
       continue;
     }
-    // Check the project is on drupal.org or its own update service.
-    $status_url = isset($project['status url'])?$project['status url']:'';
-    $updatexml = _drush_generate_makefile_check_updatexml($name, $type, $status_url);
     $projects[$name] = array('_type' => $type);
-    if (!$updatexml) {
+    // Check the project is on drupal.org or its own update service.
+    $request = array(
+      'name' => $name,
+      'drupal_version' => $system_requirements['drupal']['value'],
+    );
+    if (isset($project['status url'])) {
+      $request['status url'] = $project['status url'];
+      $projects[$name]['location'] = $status_url;
+    }
+    if (!release_info_check_project($request, $type)) {
       // It is not a project on drupal.org neither an external update service.
       $projects[$name]['type'] = $type;
       $projects[$name]['custom_download'] = TRUE;
-    }
-    elseif ($status_url != '') {
-      // Project is hosted in an external update service. Ex: a features server.
-      $projects[$name]['location'] = $status_url;
     }
     // Add 'subdir' if the project is installed in a non-default location.
     $projects[$name] += _drush_generate_makefile_check_path($project);
@@ -143,33 +152,6 @@ function _drush_generate_track_version($project, $version_options) {
 
   // If none of the above conditions match, include version number by default
   return TRUE;
-}
-
-/**
- * Check if a project is available in a update service.
- *
- * Default update service is obviously updates.drupal.org. We can receive here
- * an alternative url corresponding to the 'project status url' property in
- * project's .info file.
- *
- * It also checks for consistency by comparing given project type with to the
- * type obtained from the update service.
- */
-function _drush_generate_makefile_check_updatexml($name, $type, $status_url = '') {
-  if ($status_url == '') {
-    $status_url = MAKE_UPDATE_DEFAULT_URL;
-  }
-  // First we set up the project information array.
-  $project = array(
-    'name' => $name,
-    'location' => $status_url,
-    'core' => DRUPAL_CORE_COMPATIBILITY,
-    'version' => DRUSH_MAKE_VERSION_BEST,
-  );
-
-  // Now we get the project information.
-  $update_check = drush_make_updatexml($project);
-  return $update_check !== FALSE && $type == $update_check['type'];
 }
 
 /**

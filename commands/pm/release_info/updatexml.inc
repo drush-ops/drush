@@ -32,13 +32,7 @@ function release_info_fetch(&$request, $dev = FALSE, $select = FALSE, $all = FAL
     return FALSE;
   }
 
-  // Determine project type.
-  $project_types = pm_project_types();
-  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
-  $request['project_type'] = 'module';
-  if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
-    $request['project_type'] = array_search($types[0]->value, $project_types);
-  }
+  $request['project_type'] = updatexml_determine_project_type($xml);
 
   if (!$select) {
     // Try to identify the most appropriate release.
@@ -85,6 +79,26 @@ function release_info_get_releases($requests) {
   }
 
   return $info;
+}
+
+/**
+ * Check if a project is available in a update service.
+ *
+ * It also checks for consistency by comparing given project type with to the
+ * type obtained from the update service.
+ */
+function release_info_check_project($request, $type) {
+  $xml = updatexml_get_release_history_xml($request);
+  if (!$xml) {
+    return FALSE;
+  }
+
+  $project_type = updatexml_determine_project_type($xml);
+  if ($project_type != $type) {
+    return FALSE;
+  }
+
+  return TRUE;
 }
 
 /**
@@ -466,3 +480,24 @@ function updatexml_get_releases_from_xml($xml, $project) {
 
   return $project_info;
 }
+
+/**
+ * Determine a project type from its update service xml.
+ */
+function updatexml_determine_project_type($xml) {
+  $project_types = array(
+    'core' => 'Drupal core',
+    'profile' => 'Installation profiles',
+    'module' => 'Modules',
+    'theme' => 'Themes',
+    'theme engine' => 'Theme engines',
+    'translation' => 'Translations'
+  );
+
+  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
+  $request['project_type'] = 'module';
+  if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
+    return array_search($types[0]->value, $project_types);
+  }
+}
+
