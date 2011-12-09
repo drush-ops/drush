@@ -261,7 +261,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
         $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = $instance;
       }
       else {
-        make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $key)));
+        make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $project['name'])));
       }
     }
   }
