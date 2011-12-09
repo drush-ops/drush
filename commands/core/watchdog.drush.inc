@@ -20,12 +20,12 @@ function watchdog_drush_help($section) {
 function watchdog_drush_command() {
   $items['watchdog-list'] = array(
     'description' => 'Show available message types and severity levels. A prompt will ask for a choice to show watchdog messages.',
-    'drupal dependencies' => drush_drupal_major_version() >= 6 ? array('dblog') : array('watchdog'),
+    'drupal dependencies' => array('dblog'),
     'aliases' => array('wd-list'),
   );
   $items['watchdog-show'] = array(
     'description' => 'Show watchdog messages.',
-    'drupal dependencies' => drush_drupal_major_version() >= 6 ? array('dblog') : array('watchdog'),
+    'drupal dependencies' => array('dblog'),
     'arguments' => array(
       'wid' => 'Optional id of a watchdog message to show in detail. If not provided, a listing of most recent 10 messages will be displayed. Alternatively if a string is provided, watchdog messages will be filtered by it.',
     ),
@@ -50,7 +50,7 @@ function watchdog_drush_command() {
   );
   $items['watchdog-delete'] = array(
     'description' => 'Delete watchdog messages.',
-    'drupal dependencies' => drush_drupal_major_version() >= 6 ? array('dblog') : array('watchdog'),
+    'drupal dependencies' => array('dblog'),
     'arguments' => array(
       'severity' => 'Delete messages of a given severity level.',
       'type' => 'Delete messages of a given type.',
@@ -222,16 +222,14 @@ function core_watchdog_format_result($result, $full = FALSE) {
   unset($result->timestamp);
 
   // Message.
-  if (drush_drupal_major_version() >= 6) {
-    $variables = $result->variables;
-    if (is_string($variables)) {
-      $variables = unserialize($variables);
-    }
-    if (is_array($variables)) {
-      $result->message = strtr($result->message, $variables);
-    }
-    unset($result->variables);
+  $variables = $result->variables;
+  if (is_string($variables)) {
+    $variables = unserialize($variables);
   }
+  if (is_array($variables)) {
+    $result->message = strtr($result->message, $variables);
+  }
+  unset($result->variables);
   $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), 188, FALSE, FALSE);
 
   // This data is only used in a detailed view.
