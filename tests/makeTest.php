@@ -95,8 +95,11 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Translation downloads',
         'makefile' => 'translations.make',
         'build'    => TRUE,
-        'md5' => 'd53de1aa4ed6115d928b7079ee7c5b57',
-        'options'  => array('translations' => 'es,pt-br'),
+        'md5' => '9b209494006aecd7f68c228a61bb26f9',
+        'options'  => array(
+          'translations' => 'es,pt-br',
+          'no-core' => NULL,
+        ),
       ),
       'contrib-destination' => array(
         'name'     => 'Contrib-destination attribute',
