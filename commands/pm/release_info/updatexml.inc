@@ -499,7 +499,7 @@ function updatexml_determine_project_type($xml) {
   if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
     $type = array_search($types[0]->value, $project_types);
   }
-  
+
   return $type;
 }
 

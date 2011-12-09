@@ -228,25 +228,27 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
 
   foreach ($projects as $type => $type_projects) {
     foreach ($type_projects as $project) {
-      // For convenience: define $request to be compatible with release_info engine.
-      // TODO: refactor to enforce 'make' to internally work with release_info keys.
-      $request = array(
-        'name' => $project['name'],
-        'drupal_version' => $project['core'],
-        'status url' => $project['location'],
-      );
-      if ($project['version'] != '') {
-        $request['project_version'] = $project['version'];
-        $request['version'] = $project['core'] . '-' . $project['version'];
+      if ($project['location'] == MAKE_UPDATE_DEFAULT_URL && (!isset($project['type']) || !isset($project['download']))) {
+        // For convenience: define $request to be compatible with release_info engine.
+        // TODO: refactor to enforce 'make' to internally work with release_info keys.
+        $request = array(
+          'name' => $project['name'],
+          'drupal_version' => $project['core'],
+          'status url' => $project['location'],
+        );
+        if ($project['version'] != '') {
+          $request['project_version'] = $project['version'];
+          $request['version'] = $project['core'] . '-' . $project['version'];
+        }
+        $release = release_info_fetch($request);
+        // Translate release_info key for project_type to drush make.
+        $project['type'] = $request['project_type'];
+        $project['download'] = array(
+          'type' => 'get',
+          'url'  => $release['download_link'],
+          'md5'  => $release['mdhash'],
+        );
       }
-      $release = release_info_fetch($request);
-      // Translate release_info key for project_type to drush make.
-      $project['type'] = $request['project_type'];
-      $project['download'] =array(
-        'type' => 'get',
-        'url'  => $release['download_link'],
-        'md5'  => $release['mdhash'],
-      );
       if (!empty($md5)) {
         $project['download']['md5'] = $md5;
       }
