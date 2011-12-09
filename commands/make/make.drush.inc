@@ -243,11 +243,13 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
         $release = release_info_fetch($request);
         // Translate release_info key for project_type to drush make.
         $project['type'] = $request['project_type'];
-        $project['download'] = array(
-          'type' => 'get',
-          'url'  => $release['download_link'],
-          'md5'  => $release['mdhash'],
-        );
+        if (!isset($project['download'])) {
+          $project['download'] = array(
+            'type' => 'get',
+            'url'  => $release['download_link'],
+            'md5'  => $release['mdhash'],
+          );
+        }
       }
       if (!empty($md5)) {
         $project['download']['md5'] = $md5;
