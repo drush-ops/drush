@@ -113,7 +113,7 @@ function drush_make_generate($file = NULL) {
 
   $contents = _drush_make_generate_makefile_contents($projects);
   if (!$file) {
-    drush_print($file);
+    drush_print($contents);
   }
   elseif (file_put_contents($file, $contents)) {
     drush_log(dt("Wrote .make file %file", array('%file' => $file)), 'ok');
