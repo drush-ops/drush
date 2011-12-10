@@ -1,5 +1,3 @@
-; $Id$
-;
 ; Example makefile
 ; ----------------
 ; This is an example makefile to introduce new users of drush_make to the
@@ -14,7 +12,7 @@
 ; Each makefile should begin by declaring the core version of Drupal that all
 ; projects should be compatible with.
 
-core = 6.x
+core = 7.x
 
 ; API version
 ; ------------
@@ -30,24 +28,15 @@ api = 2
 ; alternative core projects like Pressflow. Note that makefiles included with
 ; install profiles *should not* include a core project.
 
-; Use pressflow instead of Drupal core:
+; Use Pressflow instead of Drupal core:
 ; projects[pressflow][type] = "core"
 ; projects[pressflow][download][type] = "file"
 ; projects[pressflow][download][url] = "http://launchpad.net/pressflow/6.x/6.15.73/+download/pressflow-6.15.73.tar.gz"
 
-; CVS checkout of Drupal 6.x core:
+; Git clone of Drupal 7.x. Requires the `core` property to be set to 7.x.
 ; projects[drupal][type] = "core"
-; projects[drupal][download][type] = "cvs"
-; projects[drupal][download][root] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal"
-; projects[drupal][download][revision] = "DRUPAL-6"
-; projects[drupal][download][module] = "drupal"
-
-; CVS checkout of Drupal 7.x. Requires the `core` property to be set to 7.x.
-; projects[drupal][type] = "core"
-; projects[drupal][download][type] = "cvs"
-; projects[drupal][download][root] = ":pserver:anonymous:anonymous@cvs.drupal.org:/cvs/drupal"
-; projects[drupal][download][revision] = "HEAD"
-; projects[drupal][download][module] = "drupal"
+; projects[drupal][download][type] = git
+; projects[drupal][download][url] = http://git.drupal.org/project/drupal.git
 
 projects[] = drupal
 
@@ -68,20 +57,20 @@ projects[] = views
 
 ; If you want to retrieve a specific version of a project:
 
-projects[cck] = 2.6
+projects[views] = 2.16
 
 ; Or an alternative, extended syntax:
 
 projects[ctools][version] = 1.3
 
-; Check out the latest version of a project from CVS. Note that when using a
+; Check out the latest version of a project from Git. Note that when using a
 ; repository as your project source, you must explictly declare the project
 ; type so that drush_make knows where to put your project.
 
 projects[data][type] = module
-projects[data][download][type] = cvs
-projects[data][download][module] = contributions/modules/data
-projects[data][download][revision] = DRUPAL-6--1
+projects[data][download][type] = git
+projects[data][download][url] = http://git.drupal.org/project/views.git
+projects[data][download][revision] = DRUPAL-6--3
 
 ; Clone a project from github.
 
