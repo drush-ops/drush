@@ -190,15 +190,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
 
     // For convenience: define $request to be compatible with release_info engine.
     // TODO: refactor to enforce 'make' to internally work with release_info keys.
-    $request = array(
-      'name' => $project['name'],
-      'drupal_version' => $project['core'],
-      'status url' => $project['location'],
-    );
-    if ($project['version'] != '') {
-      $request['project_version'] = $project['version'];
-      $request['version'] = $project['core'] . '-' . $project['version'];
-    }
+    $request = make_prepare_request($project);
 
     if ($project['location'] != RELEASE_INFO_DEFAULT_URL && !isset($project['type'])) {
       $project_type = release_info_check_project($request, 'core');
@@ -235,15 +227,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       if ($project['location'] == RELEASE_INFO_DEFAULT_URL && (!isset($project['type']) || !isset($project['download']))) {
         // For convenience: define $request to be compatible with release_info engine.
         // TODO: refactor to enforce 'make' to internally work with release_info keys.
-        $request = array(
-          'name' => $project['name'],
-          'drupal_version' => $project['core'],
-          'status url' => $project['location'],
-        );
-        if ($project['version'] != '') {
-          $request['project_version'] = $project['version'];
-          $request['version'] = $type == 'core' ? $project['version'] : $project['core'] . '-' . $project['version'];
-        }
+        $request = make_prepare_request($project, $type);
         $release = release_info_fetch($request);
         // Translate release_info key for project_type to drush make.
         $project['type'] = $request['project_type'];
@@ -359,6 +343,27 @@ function make_move_build($build_path) {
     drush_set_error(dt("Cannot move build into place"));
   }
   return $ret;
+}
+
+/**
+ * Create a request array for use with release_info_fetch().
+ *
+ * @param $project
+ *   Project array.
+ * @param $type
+ *   'contrib' or 'core'.
+ */
+function make_prepare_request($project, $type = 'contrib') {
+  $request = array(
+    'name' => $project['name'],
+    'drupal_version' => $project['core'],
+    'status url' => $project['location'],
+  );
+  if ($project['version'] != '') {
+    $request['project_version'] = $project['version'];
+    $request['version'] = $type == 'core' ? $project['version'] : $project['core'] . '-' . $project['version'];
+  }
+  return $request;
 }
 
 function make_version() {
