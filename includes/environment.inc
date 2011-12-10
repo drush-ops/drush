@@ -624,6 +624,13 @@ function drush_is_mingw($os = NULL) {
 }
 
 /**
+ * Checks if the operating system has bash.
+ */
+function drush_has_bash($os = NULL) {
+  return drush_is_cygwin($os) || !drush_is_windows($os);
+}
+
+/**
  * Return the OS we are running under.
  *
  * @return string
