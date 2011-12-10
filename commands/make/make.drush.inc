@@ -31,6 +31,7 @@ function make_drush_command() {
       'force-complete' => 'Force a complete build even if errors occur.',
       'ignore-checksums' => 'Ignore md5 checksums for downloads.',
       'md5' => 'Output an md5 hash of the current build after completion. Use --md5=print to print to stdout.',
+      'make-update-default-url' => 'The default location to load the XML update information from.',
       'no-clean' => 'Leave temporary build directories in place instead of cleaning up after completion.',
       'no-core' => 'Do not require a Drupal core project to be specified.',
       'no-patch-txt' => 'Do not write a PATCHES.txt file in the directory of each patched project.',
@@ -179,7 +180,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       'build_path'          => $build_path,
       'contrib_destination' => $contrib_destination,
       'version'             => '',
-      'location'            => RELEASE_INFO_DEFAULT_URL,
+      'location'            => drush_get_option('make-update-default-url', RELEASE_INFO_DEFAULT_URL),
       'subdir'              => '',
       'directory_name'      => '',
     );
