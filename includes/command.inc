@@ -1211,6 +1211,15 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       $command_cache = drush_cache_get($cid);
       if (isset($command_cache->data)) {
         $cached_list = $command_cache->data;
+        // Take drush_make out of the cache to help people transitioning
+        // from using drush make as a contrib module to drush make in core.
+        // See: http://drupal.org/node/1366746
+        unset($cached_list['drush_make']);
+        // If we want to temporarily ignore modules via 'ignored-modules',
+        // then we need to take these out of the cache as well.
+        foreach (drush_get_option_list('ignored-modules') as $ignored) {
+          unset($cached_list[$ignored]);
+        }
       }
     }
 
@@ -1291,7 +1300,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
  * Substrings to ignore during commandfile searching.
  */
 function drush_filename_blacklist() {
-  return array_diff(array('.', '..', 'examples', 'tests', 'disabled', 'gitcache', 'drush4', 'drush5', 'drush6', 'drush7'), array('drush' . DRUSH_MAJOR_VERSION));
+  return array_diff(array('.', '..', 'drush_make', 'examples', 'tests', 'disabled', 'gitcache', 'drush4', 'drush5', 'drush6', 'drush7'), array('drush' . DRUSH_MAJOR_VERSION));
 }
 
 /**
