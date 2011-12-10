@@ -85,7 +85,7 @@ class DrushMakeProject {
       return FALSE;
     }
     else {
-      make_mkdir($this->download_location);
+      drush_mkdir($this->download_location);
     }
     return $this->download_location;
   }
@@ -232,13 +232,13 @@ class DrushMakeProject {
             // 2. To modules/system/translations where it can be detected for
             //    import by other non-default install profiles.
             if ($this->type === 'core') {
-              make_mkdir($project_directory . '/profiles/default/translations');
-              make_mkdir($project_directory . '/modules/system/translations');
+              drush_mkdir($project_directory . '/profiles/default/translations');
+              drush_mkdir($project_directory . '/modules/system/translations');
               drush_shell_exec("cp %s %s", $filename, $project_directory . '/profiles/default/translations/' . $langcode . '.po');
               drush_shell_exec("mv %s %s", $filename, $project_directory . '/modules/system/translations/' . $langcode . '.po');
             }
             else {
-              make_mkdir($project_directory . '/translations');
+              drush_mkdir($project_directory . '/translations');
               drush_shell_exec("mv %s %s", $filename, $project_directory . '/translations/' . $langcode . '.po');
             }
           }
@@ -324,7 +324,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
       return FALSE;
     }
     else {
-      make_mkdir($this->download_location);
+      drush_mkdir($this->download_location);
     }
     return $this->download_location;
   }

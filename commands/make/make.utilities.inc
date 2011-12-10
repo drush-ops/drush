@@ -1,17 +1,5 @@
 <?php
 
-function make_ensure_version() {
-  if (function_exists('drush_get_global_options')) {
-    return TRUE;
-  }
-  $options = drush_get_option_help();
-  if (isset($options['-n, --nocolor']) || isset($options['--nocolor'])) {
-    return TRUE;
-  }
-
-  drush_set_error(dt('Drush version 2.1 or higher is required for drush make to work.'));
-}
-
 /**
  * Parse Drupal info file format.
  *
@@ -283,6 +271,9 @@ function make_valid_url($url, $absolute = FALSE) {
   }
 }
 
+/*
+ * @todo Merge with drush_tempdir().
+ */
 function make_tmp($set = TRUE) {
   static $tmp_dir;
   if (!isset($tmp_dir) && $set) {
@@ -297,7 +288,7 @@ function make_tmp($set = TRUE) {
       return make_tmp(TRUE);
     }
     // else create it
-    make_mkdir($tmp_dir);
+    drush_mkdir($tmp_dir);
   }
   return $tmp_dir;
 }
@@ -317,7 +308,7 @@ function make_clean_tmp() {
 function make_prepare_install($build_path) {
   $default = make_tmp() . '/__build__/sites/default';
   drush_shell_exec("cp %s %s", $default . '/default.settings.php', $default . '/settings.php');
-  make_mkdir($default . '/files');
+  drush_mkdir($default . '/files');
   drush_shell_exec("chmod a+w %s %s", $default . '/settings.php', $default . '/files');
 }
 
@@ -337,10 +328,13 @@ function make_md5() {
   }
 }
 
+/*
+ * @todo drush_archive_dump() also makes a tar. Consolidate?
+ */
 function make_tar($build_path) {
   $tmp_path = make_tmp();
 
-  make_mkdir(dirname($build_path));
+  drush_mkdir(dirname($build_path));
   $filename = basename($build_path);
   $dirname = basename($build_path, '.tar.gz');
   // Move the build directory to a more human-friendly name, so that tar will
@@ -376,55 +370,6 @@ function make_error($error_code, $message) {
 function make_safe_path($path) {
   return !preg_match("+^/|^\.\.|/\.\./+", $path);
 }
-
-if (!function_exists('drush_shell_cd_and_exec')) {
-  function drush_shell_cd_and_exec($effective_wd, $cmd) {
-    $args = func_get_args();
-
-    $effective_wd = array_shift($args);
-    $cwd = getcwd();
-    drush_op('chdir', $effective_wd);
-    $result = call_user_func_array('drush_shell_exec', $args);
-    drush_op('chdir', $cwd);
-    return $result;
-  }
-}
-
-if (!function_exists('drush_shell_exec_interactive')) {
-  /**
-   * Copy of drush_shell_exec() that allows for interactive commands.
-   */
-  function drush_shell_exec_interactive($cmd) {
-    $args = func_get_args();
-  
-    //do not change the command itself, just the parameters.
-    for ($x = 1; $x < sizeof($args); $x++) {
-      $args[$x] = escapeshellarg($args[$x]);
-    }
-    $command = call_user_func_array('sprintf', $args);
-  
-    if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-      drush_log('Executing: ' . $command);
-    }
-  
-    if (!drush_get_context('DRUSH_SIMULATE')) {
-      exec($command, $output, $result);
-  
-      if (drush_get_context('DRUSH_DEBUG')) {
-        foreach ($output as $line) {
-          drush_print($line, 2);
-        }
-      }
-  
-      // Exit code 0 means success.
-      return ($result == 0);
-    }
-    else {
-      return 0;
-    }
-  }
-}
-
 /**
  * Get data based on the source.
  *
@@ -501,6 +446,7 @@ if (!function_exists('sys_get_temp_dir')) {
 }
 
 /**
+ * @todo Consolidate with drush_download_file if possible.
  * Drush make parallel to drupal_http_request, but writes responses to a file.
  */
 function make_http_request($url, $destination, $headers = array(), $method = 'GET', $data = NULL, $retry = 5) {
@@ -663,12 +609,4 @@ function make_http_request($url, $destination, $headers = array(), $method = 'GE
 
   $result->code = $code;
   return $result;
-}
-
-/**
- * Cross-platform compatible helper function to recursively create a directory tree.
- * @see http://theserverpages.com/php/manual/en/function.mkdir.php#50383
- */
-function make_mkdir($path) {
-  return is_dir($path) || (make_mkdir(dirname($path)) && drush_shell_exec('mkdir %s', $path));
 }

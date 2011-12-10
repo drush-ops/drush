@@ -13,7 +13,7 @@ include_once 'make.project.inc';
 function make_drush_command() {
   $items['make'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'description' => 'Turns a makefile into a working drupal install.',
+    'description' => 'Turns a makefile into a working Drupal codebase.',
     'arguments' => array(
       'makefile' => 'Filename of the makefile to use for this build.',
       'build path' => 'The path at which to build the makefile.',
@@ -42,7 +42,7 @@ function make_drush_command() {
 
   $items['make-generate'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-    'description' => 'Attempts to generate a makefile from the current Drupal install, specifying project version numbers unless not known or otherwise specified. Unversioned projects will be interpreted later by drush make as "most recent stable release"',
+    'description' => 'Generate a makefile from the current Drupal site.',
     'examples' => array(
       'drush generate-makefile example.make' => 'Generate a makefile with ALL projects versioned (should a project have a known version number)',
       'drush generate-makefile example.make --exclude-versions' => 'Generate a makefile with NO projects versioned',
@@ -83,14 +83,13 @@ function make_drush_command() {
 function make_drush_help($section) {
   switch ($section) {
     case 'drush:make':
-      return dt('Turns a makefile into a working drupal install. For a full description of options and makefile syntax, see the README.txt included with drush make.');
+      return 'Turns a makefile into a Drupal codebase. For a full description of options and makefile syntax, see the README.txt included with drush make.';
     case 'drush:make-generate':
-      return dt('Attempts to generate a makefile from the current drupal install.');
+      return 'Generate a makefile from the current Drupal site, specifying project version numbers unless not known or otherwise specified. Unversioned projects will be interpreted later by drush make as "most recent stable release"';
   }
 }
 
 function drush_make_validate() {
-  make_ensure_version();
   if (drush_get_option('version', FALSE)) {
     drush_print(make_version());
     return FALSE;
@@ -347,7 +346,7 @@ function make_move_build($build_path) {
     }
   }
   else {
-    make_mkdir(dirname($build_path));
+    drush_mkdir(dirname($build_path));
     drush_shell_exec("mv %s %s", $tmp_path . '/__build__', $tmp_path . '/' . basename($build_path));
     drush_shell_exec("cp -Rf %s %s", $tmp_path . '/' . basename($build_path), dirname($build_path));
   }

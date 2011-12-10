@@ -97,7 +97,7 @@ function _make_download_file($download) {
     else {
       $success = FALSE;
       $download_path = $tmp_path . '/__download__';
-      make_mkdir($download_path);
+      drush_mkdir($download_path);
 
       if (!isset($download_mechanism) || $download_mechanism == 'curl') {
         $header_file = $tmp_path . '/__header__';
@@ -263,7 +263,7 @@ function make_download_file_unpack_tar($filename, $download_location) {
 
   list($main_directory) = array_reverse(explode('/', $download_location));
 
-  make_mkdir($tmp_path . '/__unzip__');
+  drush_mkdir($tmp_path . '/__unzip__');
   drush_shell_exec('tar -x -C %s -f %s', $tmp_path . '/__unzip__', $filename);
 
   _make_download_file_move($tmp_path, $filename, $download_location);
@@ -297,7 +297,7 @@ function make_download_file_unpack_zip($filename, $download_location) {
 
   list($main_directory) = array_reverse(explode('/', $download_location));
 
-  make_mkdir($tmp_path . '/__unzip__');
+  drush_mkdir($tmp_path . '/__unzip__');
   drush_shell_exec("unzip %s -d %s", $filename, $tmp_path . '/__unzip__');
 
   _make_download_file_move($tmp_path, $filename, $download_location);
@@ -363,7 +363,7 @@ function make_download_git($name, $download, $download_location) {
 
   $tmp_location = $tmp_path . '/__git__/' . basename($download_location);
   
-  make_mkdir($tmp_path . '/__git__/');
+  drush_mkdir($tmp_path . '/__git__/');
   
   // clone the given repository
   if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
@@ -448,7 +448,7 @@ function make_download_git($name, $download, $download_location) {
 function make_download_bzr($name, $download, $download_location) {
   $tmp_path = make_tmp();
   $tmp_location = $tmp_path . '/__bzr__/' . basename($download_location);
-  make_mkdir(dirname($tmp_location));
+  drush_mkdir(dirname($tmp_location));
   if (!empty($download['url'])) {
     $args = array();
     $command = 'bzr';
