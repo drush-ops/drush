@@ -7,27 +7,91 @@
  * TODO move these to a subdirectory here?
  */
 class makeMakefileCase extends Drush_CommandTestCase {
-  public function testMakeMakefile() {
-    $makefiles = $this->getMakefiles();
+  /**
+   * Run a given makefile test.
+   *
+   * @param $test
+   *   The test makefile to run, as defined by $this->getMakefile();
+   */
+  private function runMakefileTest($test) {
     $default_options = array(
       'test' => NULL,
       'md5' => 'print',
     );
     $makefile_path = dirname(__FILE__) . '/makefiles';
-    foreach ($makefiles as $type => $config) {
-      $options = array_merge($config['options'], $default_options);
-      $makefile = $makefile_path . '/' . $config['makefile'];
-      $return = !empty($config['fail']) ? self::EXIT_ERROR : self::EXIT_SUCCESS;
-      $this->drush('make', array($makefile), $options, NULL, NULL, $return);
+    $config = $this->getMakefile($test);
+    $options = array_merge($config['options'], $default_options);
+    $makefile = $makefile_path . '/' . $config['makefile'];
+    $return = !empty($config['fail']) ? self::EXIT_ERROR : self::EXIT_SUCCESS;
+    $this->drush('make', array($makefile), $options, NULL, NULL, $return);
 
-      // Check the log for the build hash.
-      $output = $this->getOutputAsList();
-      $this->assertEquals($output[0], $config['md5'], $config['name'] . ' - build md5 matches expected value: ' . $config['md5']);
-    }
+    // Check the log for the build hash.
+    $output = $this->getOutputAsList();
+    $this->assertEquals($output[0], $config['md5'], $config['name'] . ' - build md5 matches expected value: ' . $config['md5']);
   }
 
-  function getMakefiles() {
-    return array(
+  function testMakeGet() {
+    $this->runMakefileTest('get');
+  }
+
+  function testMakePost() {
+    $this->runMakefileTest('post');
+  }
+
+  function testMakeGit() {
+    $this->runMakefileTest('git');
+  }
+
+  function testMakeNoPatchTxt() {
+    $this->runMakefileTest('no-patch-txt');
+  }
+
+  function testMakePatch() {
+    $this->runMakefileTest('patch');
+  }
+
+  function testMakeInclude() {
+    $this->runMakefileTest('include');
+  }
+
+  function testMakeRecursion() {
+    $this->runMakefileTest('recursion');
+  }
+
+  function testMakeSvn() {
+    $this->runMakefileTest('svn');
+  }
+
+  function testMakeBzr() {
+    $this->runMakefileTest('bzr');
+  }
+
+  function testMakeTranslations() {
+    $this->runMakefileTest('translations');
+  }
+
+  function testMakeContribDestination() {
+    $this->runMakefileTest('contrib-destination');
+  }
+
+  function testMakeFile() {
+    $this->runMakefileTest('file');
+  }
+
+  function testMakeMd5Succeed() {
+    $this->runMakefileTest('md5-succeed');
+  }
+
+  function testMakeMd5Fail() {
+    $this->runMakefileTest('md5-fail');
+  }
+
+  function testMakeIgnoreChecksums() {
+    $this->runMakefileTest('ignore-checksums');
+  }
+
+  function getMakefile($key) {
+    static $tests = array(
       'get' => array(
         'name'     => 'Test GET retrieval of projects',
         'makefile' => 'get.make',
@@ -138,5 +202,6 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'options'  => array('no-core' => NULL, 'ignore-checksums' => NULL),
       ),
     );
+    return $tests[$key];
   }
 }
