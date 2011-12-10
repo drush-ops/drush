@@ -6,10 +6,7 @@ include_once drupal_get_path('module', 'system') . '/system.install';
 /**
  * Drush callback; generate makefile from the current build.
  */
-function _drush_make_generate($file = NULL) {
-  if (!$file) {
-    drush_die('Missing filename');
-  }
+function drush_make_generate($file = NULL) {
   $release_info = drush_get_option('release-info', 'updatexml');
   drush_include_engine('release_info', $release_info);
 
@@ -115,7 +112,10 @@ function _drush_make_generate($file = NULL) {
   }
 
   $contents = _drush_make_generate_makefile_contents($projects);
-  if (file_put_contents($file, $contents)) {
+  if (!$file) {
+    drush_print($file);
+  }
+  elseif (file_put_contents($file, $contents)) {
     drush_log(dt("Wrote .make file %file", array('%file' => $file)), 'ok');
   }
   else {

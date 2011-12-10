@@ -359,11 +359,3 @@ function make_move_build($build_path) {
 function make_version() {
   return '2.0-dev';
 }
-
-/**
- * Drush callback; make a makefile from the current install.
- */
-function drush_make_generate($file = NULL) {
-  include_once 'make.generate.inc';
-  _make_generate($file);
-}
