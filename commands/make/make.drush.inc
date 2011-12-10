@@ -1,6 +1,10 @@
 <?php
 
 define('MAKE_DEFAULT_L10N_SERVER', 'http://localize.drupal.org/l10n_server.xml');
+
+/*
+ * Make refuses to build makefiles whose api version is mismatched with make command.
+ */
 define('MAKE_API', 2);
 
 include_once 'make.utilities.inc';
