@@ -403,7 +403,7 @@ function _drush_verify_cli_options($command) {
   $disallowed_options = array_diff($cli_options, $allowed_options);
   if (!empty($disallowed_options)) {
     $unknown = count($disallowed_options) > 1 ? dt('Unknown options') : dt('Unknown option');
-    $msg = dt("@unknown: --@options.  See `drush help @command` for information on usage.", array('@unknown' => $unknown, '@options' => implode(', --', $disallowed_options), '@command' => $command['command']));
+    $msg = dt("@unknown: --@options.  See `drush help @command` for available options. To suppress this error, add the option --strict=0.", array('@unknown' => $unknown, '@options' => implode(', --', $disallowed_options), '@command' => $command['command']));
     if (!drush_get_option('strict', TRUE)) {
       drush_log($msg, 'warning');
     }
