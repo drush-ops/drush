@@ -2,9 +2,8 @@
 
 /**
  * Make makefile tests.
- *
- * The makefiles for testing are located in commands/make/tests
- * TODO move these to a subdirectory here?
+ * @group make
+ * @group slow
  */
 class makeMakefileCase extends Drush_CommandTestCase {
   /**
