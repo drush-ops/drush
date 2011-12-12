@@ -24,9 +24,11 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $return = !empty($config['fail']) ? self::EXIT_ERROR : self::EXIT_SUCCESS;
     $this->drush('make', array($makefile), $options, NULL, NULL, $return);
 
-    // Check the log for the build hash.
-    $output = $this->getOutputAsList();
-    $this->assertEquals($output[0], $config['md5'], $config['name'] . ' - build md5 matches expected value: ' . $config['md5']);
+    // Check the log for the build hash if this test should pass.
+    if (empty($config['fail'])) {
+      $output = $this->getOutputAsList();
+      $this->assertEquals($output[0], $config['md5'], $config['name'] . ' - build md5 matches expected value: ' . $config['md5']);
+    }
   }
 
   function testMakeGet() {
