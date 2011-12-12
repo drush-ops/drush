@@ -58,7 +58,14 @@ class makeMakefileCase extends Drush_CommandTestCase {
   }
 
   function testMakeSvn() {
-    $this->runMakefileTest('svn');
+    // Silently skip svn test if svn is not installed.
+    exec('which svn', $output, $whichSvnErrorCode);
+    if (!$whichSvnErrorCode) {
+      $this->runMakefileTest('svn');
+    }
+    else {
+      $this->markTestSkipped('svn command not available.');
+    }
   }
 
   function testMakeBzr() {
