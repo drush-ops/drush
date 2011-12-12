@@ -61,20 +61,6 @@ function make_drush_command() {
     'aliases' => array('generate-makefile'),
   );
 
-  $items['profile-generate'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-    'description' => 'Generate an installation profile from the current Drupal site.',
-    'examples' => array(
-      'drush generate-profile example-profile' => 'Generate an installation profile called example-profile.',
-    ),
-    'options' => array(
-      'exclude-versions(="list")' => 'Exclude all version numbers (default is include all version numbers) or optionally specify a list of projects to exclude from versioning',
-      'include-versions="list"' => 'Include a specific list of projects, while all other projects remain unversioned in the makefile (so implies --exclude-versions)',
-    ),
-    'aliases' => array('generate-profile'), 
-    'allow-additional-options' => 'make-generate',
-  );
-
   // Add docs topic.
   $make_dir = dirname(__FILE__);
   $items['docs-make'] = array(
