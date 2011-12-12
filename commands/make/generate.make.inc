@@ -7,9 +7,26 @@ include_once drupal_get_path('module', 'system') . '/system.install';
  * Drush callback; generate makefile from the current build.
  */
 function drush_make_generate($file = NULL) {
-  $release_info = drush_get_option('release-info', 'updatexml');
-  drush_include_engine('release_info', $release_info);
+  $version_options = _drush_make_generate_get_version_options();
+  $projects = _drush_make_generage_projects($version_options);
+  $contents = _drush_make_generate_makefile_contents($projects);
+  
+  if (!$file) {
+    drush_print($contents);
+  }
+  elseif (file_put_contents($file, $contents)) {
+    drush_log(dt("Wrote .make file @file", array('@file' => $file)), 'ok');
+  }
+  else {
+    drush_make_error('FILE_ERROR', dt("Unable to write .make file %file", array('%file' => $file)));
+  }
+}
 
+/**
+ * Create the $version_options array from the --include-versions and --exclude-versions
+ * command line options.
+ */
+function _drush_make_generate_get_version_options() {
   // What projects should we pin the versions for?
   // Check the command-line options for details
   foreach(array("include", "exclude") as $option) {
@@ -18,8 +35,17 @@ function drush_make_generate($file = NULL) {
       $version_options[$option] = array_filter(explode(",", $version_options[$option]));
     }
   }
+  return $version_options;
+}
 
+/**
+ * Generate the $projects makefile array for the current site.
+ */
+function _drush_make_generage_projects($version_options) {
   $projects = array();
+
+  $release_info = drush_get_option('release-info', 'updatexml');
+  drush_include_engine('release_info', $release_info);
 
   $system_requirements = system_requirements('runtime');
   // update xml expects the drupal version to be expressed as "7.x" or "8.x"
@@ -54,7 +80,8 @@ function drush_make_generate($file = NULL) {
   }
 
   // Iterate installed projects to build $projects array.
-  $extensions = drush_get_extensions();
+  $all_extensions = drush_get_extensions();
+  $extensions = $all_extensions;
   $project_info = drush_get_projects($extensions);
   foreach ($project_info as $name => $project) {
     // Discard the extensions within this project. At the end $extensions will
@@ -92,13 +119,15 @@ function drush_make_generate($file = NULL) {
     if (_drush_generate_track_version($name, $version_options) && $project["version"]) {
       $projects[$name]['version'] = preg_replace("/^". DRUPAL_CORE_COMPATIBILITY . "-/", "", $project["version"]);
     }
+    foreach ($project['extensions'] as $extension_name) {
+      _drush_make_generate_add_patch_files($projects[$name], dirname($all_extensions[$extension_name]->filename));
+    }
   }
 
   // Add a project for each unknown extension.
   foreach ($extensions as $name => $extension) {
-    $projects[$name] = array('_type' => $extension->type);
-    $projects[$name]['type'] = $extension->type;
-    $projects[$name]['custom_download'] = TRUE;
+    list($project_name, $project_data) = _drush_generate_custom_project($name, $extension, $version_options);
+    $projects[$project_name] = $project_data;
   }
 
   // Add libraries.
@@ -114,17 +143,113 @@ function drush_make_generate($file = NULL) {
       );
     }
   }
+  return $projects;
+}
 
-  $contents = _drush_make_generate_makefile_contents($projects);
-  if (!$file) {
-    drush_print($contents);
+/**
+ * Record any patches that were applied to this project
+ * per information stored in PATCHES.txt.
+ */
+function _drush_make_generate_add_patch_files(&$project, $location) {
+  $patchfile = DRUPAL_ROOT . '/' . $location . '/PATCHES.txt';
+  if (is_file($patchfile)) {
+    foreach (file($patchfile) as $line) {
+      if (substr($line,0,2) == '- ') {
+        $project['patches'][] = trim(substr($line,2));
+      }
+    }
   }
-  elseif (file_put_contents($file, $contents)) {
-    drush_log(dt("Wrote .make file @file", array('@file' => $file)), 'ok');
+}
+
+/**
+ * Create a project record for an extension not downloaded from drupal.org
+ */
+function _drush_generate_custom_project($name, $extension, $version_options) {
+  $project['_type'] = $extension->type;
+  $project['type'] = $extension->type;
+  $info_file = $extension->filename;
+  $location = DRUPAL_ROOT . '/' . dirname($info_file);
+  // To start off, we will presume that our custom extension is
+  // stored in a folder named after its project, and there are
+  // no subfolders between the .info file and the project root.
+  $project_name = basename($location);
+  drush_shell_cd_and_exec($location, 'git rev-parse --git-dir 2> /dev/null');
+  $output = drush_shell_exec_output();
+  if (!empty($output)) {
+    $git_dir = $output[0];
+    // Find the actual base of the git repository
+    $repo_root = $git_dir == ".git" ? $location : dirname($git_dir);
+    // If the repository root is at the drupal root or some parent
+    // of the drupal root, or some other location that could not
+    // pausibly be a project, then there is nothing we can do.
+    // (We can't tell Drush make to download some sub-part of a repo,
+    // can we?)
+    if ($project_name = _drush_generate_validate_repo_location($repo_root)) {
+      drush_shell_cd_and_exec($repo_root, 'git remote show origin');
+      $output = drush_shell_exec_output();
+      foreach ($output as $line) {
+        if (strpos($line, "Fetch URL:") !== FALSE) {
+          $url = preg_replace('/ *Fetch URL: */', '', $line);
+          if (!empty($url)) {
+            // We use the unconventional-looking keys
+            // `download][type` and `download][url` so that
+            // we can produce output that appears to be two-dimensional
+            // arrays from a single-dimensional array.
+            $project['download][type'] = 'git';
+            $project['download][url'] = $url;
+
+            // Fill in the branch as well
+            drush_shell_cd_and_exec($repo_root, 'git branch');
+            $output = drush_shell_exec_output();
+            foreach ($output as $line) {
+              if ($line{0} == '*') {
+                $branch = substr($line, 2);
+                if ($branch != "master") {
+                  $project['download][branch'] = $branch;
+                }
+              }
+            }
+
+            // Put in the commit hash
+            drush_shell_cd_and_exec($repo_root, 'git log');
+            $output = drush_shell_exec_output();
+            if (substr($output[0], 0, 7) == "commit ") {
+              $revision = substr($output[0], 7);
+              if (_drush_generate_track_version($project_name, $version_options)) {
+                $project['download][revision'] = $revision;
+              }
+            }
+
+            // Add patch files, if any
+            _drush_make_generate_add_patch_files($project, $repo_root);
+          }
+        }
+      }
+    }
   }
-  else {
-    drush_make_error('FILE_ERROR', dt("Unable to write .make file %file", array('%file' => $file)));
+  // If we could not figure out where the extension came from,
+  // then give up and flag it as a "custom" download
+  if (!isset($project['download][type'])) {
+    $project['custom_download'] = TRUE;
   }
+  return array($project_name, $project);
+}
+
+/**
+ * If the user has checked in the Drupal root, or the 'sites/all/modules'
+ * folder into a git repository, then we do not want to confuse that location
+ * with a "project".
+ */
+function _drush_generate_validate_repo_location($repo_root) {
+  $project_name = basename($repo_root);
+  // The Drupal root, or any folder immediately inside the Drupal
+  // root cannot be a project location.
+  if ((strlen(DRUPAL_ROOT) >= strlen($repo_root)) || (dirname($repo_root) == DRUPAL_ROOT)) {
+    return NULL;
+  }
+  // also exclude sites/* and sites/*/{modules,themes} and
+  // profile/* and profile/*/{modules,themes}
+  return $project_name;  
 }
 
 /**
@@ -163,11 +288,14 @@ function _drush_generate_track_version($project, $version_options) {
  */
 function _drush_generate_makefile_check_path($project) {
   $info = array();
-  $path = _pm_find_common_path($project['type'], $project['extensions']);
-  if (dirname($path) != 'sites/all/'.$project['type'].'s') {
-    // If it's in a subdir of sites/all/modules, set the subdir.
-    $subdir = preg_replace(array('@^sites/all/' . $type . 's/@', "@/$name" . '$@'), '', $path);
-    $info['subdir'] = $subdir;
+  $type = $project['type'];
+  $path = dirname(_pm_find_common_path($type, $project['extensions']));
+  // Check to see if the path is in a subdir sites/all/modules or profiles/profilename/modules
+  if (preg_match('@^sites/[a-zA-Z0-9_]*/' . $type . 's/..*@', $path) || preg_match('@^sites/[a-zA-Z0-9_]*/' . $type . 's/..*@', $path)) {
+    $subdir = preg_replace(array('@^[a-zA-Z0-9_]*/[a-zA-Z0-9_]*/' . $type . 's/*@', "@/$name" . '$@'), '', $path);
+    if (!empty($subdir)) {
+      $info['subdir'] = $subdir;
+    }
   }
   return $info;
 }
@@ -175,7 +303,7 @@ function _drush_generate_makefile_check_path($project) {
 function _drush_make_generate_makefile_contents($projects) {
   $output = array();
   $custom = FALSE;
-  $output[] = '; This file was auto-generated by drush_make';
+  $output[] = '; This file was auto-generated by drush make';
   $output['core'] = DRUPAL_CORE_COMPATIBILITY;
   $output[] = '';
   $output['api'] = MAKE_API;
@@ -201,7 +329,14 @@ function _drush_make_generate_makefile_contents($projects) {
       unset($project['custom_download']);
     }
     foreach ($project as $key => $value) {
-      $output[$base . '[' . $key . ']'] = '"' . $value . '"';
+      if (is_array($value)) {
+        foreach ($value as $item) {
+          $output[$base . '[' . $key . '][]'] = '"' . $item . '"';
+        }
+      }
+      else {
+        $output[$base . '[' . $key . ']'] = '"' . $value . '"';
+      }
     }
     $output[] = '';
   }
