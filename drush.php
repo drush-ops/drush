@@ -116,7 +116,7 @@ function _drush_bootstrap_and_dispatch() {
       drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The drush command '!args' could not be executed.", array('!args' => $args)));
     }
     elseif (!empty($args)) {
-      drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!args' could not be found.", array('!args' => $args)));
+      drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!args' could not be found.  Run `drush cache-clear drush` to clear the commandfile cache if you have installed new extensions.", array('!args' => $args)));
     }
     // Set errors that occurred in the bootstrap phases.
     $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());

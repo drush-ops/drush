@@ -249,26 +249,26 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
   // A module is a pure drush command if it has no .module and contain
   // .drush.inc files.
   if ($project['project_type'] == 'module') {
-    $module_files = drush_scan_directory($project['full_project_path'], '/.*\.module/');
-    if (empty($module_files)) {
-      $drush_command_files = drush_scan_directory($project['full_project_path'], '/.*\.drush.inc/');
-      if (!empty($drush_command_files)) {
-        $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
-        if (!is_dir($install_dir) || !is_writable($install_dir)) {
+    $drush_command_files = drush_scan_directory($project['full_project_path'], '/.*\.drush.inc/');
+    if (!empty($drush_command_files)) {
+      $module_files = drush_scan_directory($project['full_project_path'], '/.*\.module/');
+      if (empty($module_files)) {
+	$install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
+	if (!is_dir($install_dir) || !is_writable($install_dir)) {
           $install_dir = drush_server_home() . '/.drush';
-        }
-        // Make the .drush dir if it does not already exist.
-        if (!is_dir($install_dir)) {
+	}
+	// Make the .drush dir if it does not already exist.
+	if (!is_dir($install_dir)) {
           drush_mkdir($install_dir);
-        }
-        // Change the location if the mkdir worked.
-        if (is_dir($install_dir)) {
+	}
+	// Change the location if the mkdir worked.
+	if (is_dir($install_dir)) {
           $project['project_install_location'] = $install_dir;
-          // We need to clear the drush commandfile cache so that
-          // our newly-downloaded drush extension commandfiles can be found.
-          drush_cache_clear_all();
-        }
+	}
       }
+      // We need to clear the drush commandfile cache so that
+      // our newly-downloaded drush extension commandfiles can be found.
+      drush_cache_clear_all();
     }
   }
 }
