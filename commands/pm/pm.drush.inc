@@ -1757,7 +1757,7 @@ function pm_parse_release($request, $xml) {
       drush_print(dt('There is no !type release for project !project.', array('!type' => $release_type, '!project' => $request['name'])));
     }
     $options = _drush_pm_download_releases_choice($xml, $request['name'], drush_get_option('all', FALSE), drush_get_option('dev', FALSE));
-    $choice = drush_choice($options, dt('Choose one of the available releases:'));
+    $choice = drush_choice($options, dt('Choose one of the available releases for project !project:', array('!project' => $request['name'])));
     if ($choice) {
       $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $choice . "']");
     }
