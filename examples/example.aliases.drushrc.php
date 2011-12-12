@@ -21,6 +21,8 @@
  *   $ drush @dev status
  *   $ drush --root=/path/to/drupal --uri=dev.mydrupalsite.com status
  *
+ * See the --uri option documentation below for hints on setting its value.
+ *
  * Any option that can be placed on the drush commandline
  * can also appear in an alias definition.
  *
@@ -121,8 +123,13 @@
  * Although most aliases will contain only a few options, a number
  * of settings that are commonly used appear below:
  *
- * - 'uri': This should always be the same as the site's folder name
- *     in the 'sites' folder.
+ * - 'uri': In Drupal 7, the value of --uri should always be the same as 
+ *     when the site is being accessed from a web browser (e.g. http://mysite.org,
+ *     although the http:// is optional).  In Drupal 6, the value of --uri should 
+ *     always be the same as the site's folder name in the 'sites' folder
+ *     (e.g. default); it is best if the site folder name matches the
+ *     URI from the browser, and is consistent on every instance of the
+ *     same site (e.g. also use sites/mysite.org for http://dev.mysite.org).
  * - 'root': The Drupal root; must not be specified as a relative path.
  * - 'remote-port': If the database is remote and 'db-url' contains
  *     a tunneled port number, put the actual database port number
