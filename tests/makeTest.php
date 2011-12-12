@@ -68,6 +68,9 @@ class makeMakefileCase extends Drush_CommandTestCase {
     if (!$whichBzrErrorCode) {
       $this->runMakefileTest('bzr');
     }
+    else {
+      $this->markTestSkipped('bzr command is not available.');
+    }
   }
 
   function testMakeTranslations() {
