@@ -9,6 +9,7 @@ Usage
 Advanced usage
 ---------
 - Run only tests matching a regex: phpunit --filter=testVersionString .
+- Skip slow tests (usually those with network usage): phpunit --exclude-group slow .
 - XML results: phpunit --filter=testVersionString --log-junit results.xml .
 
 Reuse by Drush Commandfiles
