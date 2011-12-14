@@ -410,7 +410,7 @@ function drush_valid_db_credentials() {
         }
       }
       else {
-        drush_log('!type database type is unsupported.', array('!type' => $type), 'bootstrap');
+        drush_log(dt('!type database type is unsupported.', array('!type' => $type)), 'bootstrap');
         return FALSE;
       }
       // Verify connection settings.
