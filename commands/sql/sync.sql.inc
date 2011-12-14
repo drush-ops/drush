@@ -345,8 +345,9 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
 
     // Call sql-dump, either on the local machine or remotely via ssh, as appropriate.
     if (!empty($dump_exec)) {
-      drush_op_system($dump_exec);
-      // TODO: IF FAILURE THEN ABORT
+      if (drush_op_system($dump_exec)) {
+        return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed');
+      }
     }
 
     // If the sql-dump was remote, then rsync the file over to the local machine.
