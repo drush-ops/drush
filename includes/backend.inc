@@ -449,7 +449,7 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
   );
   // Convert '#integrate' et. al. into backend options
   foreach ($command_options as $key => $value) {
-    if (substr($key,0,1) != '#') {
+    if (substr($key,0,1) === '#') {
       $result[substr($key,1)] = $value;
     }
   }
