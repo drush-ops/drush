@@ -1104,7 +1104,7 @@ function drush_do_multiple_command($command, $source_record, $destination_record
  *   FALSE - do not integrate errors
  *   array - @see drush_backend_invoke_sitealias_command
  */
-function drush_do_site_command($site_record, $command, $args = array(), $data = array(), $backend_options = FALSE) {
+function drush_do_site_command($site_record, $command, $args = array(), $command_options = array(), $backend_options = FALSE) {
   $values = NULL;
   if (!empty($site_record)) {
     if (is_bool($backend_options)) {
@@ -1112,11 +1112,11 @@ function drush_do_site_command($site_record, $command, $args = array(), $data = 
       $backend_options = array('integrate' => $integrate);
     }
     foreach ($site_record as $key => $value) {
-      if (!isset($data[$key]) && !in_array($key, drush_sitealias_site_selection_keys())) {
-        $data[$key] = $site_record[$key];
+      if (!isset($command_options[$key]) && !in_array($key, drush_sitealias_site_selection_keys())) {
+        $command_options[$key] = $site_record[$key];
       }
     }
-    $values = drush_backend_invoke_sitealias_command($site_record, $command, $args, $data, $backend_options);
+    $values = drush_backend_invoke_sitealias_command($site_record, $command, $args, $command_options, $backend_options);
   }
   return $values;
 }
