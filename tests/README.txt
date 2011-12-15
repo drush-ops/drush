@@ -3,7 +3,7 @@ Drush's test suite based on PHPUnit (http://www.phpunit.de/).
 Usage
 --------
 - Install PHPUnit [*]
-- Optional. Copy phpunit.xml.dist to phpunit.xml and customize if needed.
+- Review the configuration settings in phpunit.xml.dist. If customization is needed, copy and rename to phpunit.xml and edit away.
 - From the /tests subdirectory, run `phpunit .`
 
 Advanced usage
@@ -20,10 +20,6 @@ the tests, you have to point to the /tests/drush_testcase.inc file
 such as `phpunit --bootstrap=/path/to/drush/tests/drush_testcase.inc`.
 The devel project does exactly this -
 http://drupalcode.org/project/devel.git/blob/refs/heads/8.x-1.x:/develDrushTest.php
-
-Notes
-----------
-- I have run tests within Netbeans and it works.
 
 [*] Install PHPUnit:
 
