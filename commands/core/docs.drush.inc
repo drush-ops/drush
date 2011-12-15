@@ -260,15 +260,15 @@ function _drush_docs_find_set_error_calls(&$error_list, $filename, $shortname) {
 
       // Regex adapted from http://stackoverflow.com/questions/1824325/regex-expression-for-escaped-quoted-string-wont-work-in-phps-preg-match-allif ($quote_char == '"') {
       if ($quote_char == '"') {
-	$regex = '/"((?:[^\\\]*?(?:\\\")?)*?)"/';
+        $regex = '/"((?:[^\\\]*?(?:\\\")?)*?)"/';
       }
       else {
-	$regex = "/'((?:[^\\\]*?(?:\\\')?)*?)'/";
+        $regex = "/'((?:[^\\\]*?(?:\\\')?)*?)'/";
       }
       $match_result = preg_match($regex, $line, $matches, 0, $message_start);
 
       if ($match_result) {
-	$error_message = $matches[1];
+        $error_message = $matches[1];
       }
       $error_list[$error_code] = array_key_exists($error_code, $error_list) ? array_merge($error_list[$error_code], array($error_message)) : array($error_message);
     }

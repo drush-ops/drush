@@ -389,7 +389,7 @@ function _drush_verify_cli_options($command) {
     $implemented = drush_get_commands();
     foreach ($command['allow-additional-options'] as $subcommand_name) {
       if (array_key_exists($subcommand_name, $implemented)) {
-	$options = array_merge($options, _drush_get_command_options($implemented[$subcommand_name]));
+        $options = array_merge($options, _drush_get_command_options($implemented[$subcommand_name]));
       }
     }
   }
@@ -476,7 +476,7 @@ function _drush_flatten_options($options) {
     $flattened_options[] = $key;
     if (is_array($value)) {
       if (array_key_exists('short-form', $value)) {
-	$flattened_options[] = $value['short-form'];
+        $flattened_options[] = $value['short-form'];
       }
     }
   }
