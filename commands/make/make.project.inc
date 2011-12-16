@@ -284,7 +284,7 @@ class DrushMakeProject {
    * @return
    *   The path that dependencies will be placed in.
    */
-  protected function buildPath() {
+  protected function buildPath($directory) {
     return $this->base_contrib_destination;
   }
 
@@ -344,9 +344,9 @@ class DrushMakeProject_Library extends DrushMakeProject {
     $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . $project_path;
   }
   // No recursion for libraries, sorry :-(
-  function recurse() {}
+  function recurse($path) {}
   // Neither translations.
-  function getTranslations() {}
+  function getTranslations($download_location) {}
 }
 
 class DrushMakeProject_Module extends DrushMakeProject {
