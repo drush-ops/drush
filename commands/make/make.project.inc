@@ -323,6 +323,9 @@ class DrushMakeProject_Core extends DrushMakeProject {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $this->download_location)));
       return FALSE;
     }
+    elseif ($this->download['type'] === 'pm') {
+      // pm-download will create the final __build__ directory, so nothing to do here.
+    }
     else {
       drush_mkdir($this->download_location);
     }

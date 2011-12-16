@@ -10,6 +10,28 @@ function make_download_factory($name, $download, $download_location) {
   }
 }
 
+/**
+ * Download project using drush's pm-download command.
+ */
+function make_download_pm($name, $download, $download_location) {
+  if ($name == 'drupal') {
+    $options['drupal-project-rename'] = basename($download_location);
+  }
+  $options['destination'] = dirname($download_location);
+
+  if (!drush_get_option('no-cache', FALSE)) {
+    $options['cache'] = NULL;
+  }
+
+  $version = $name . '-' . $download['release']['version'];
+
+  // Avoid any prompts from CLI.
+  drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
+
+  // Perform actual download with `drush pm-download`.
+  drush_invoke_process('@none', 'pm-download', array($version), $options);
+}
+
 function make_download_cvs($name, $download, $download_location) {
   if (!empty($download['module'])) {
     if (drush_get_option('working-copy')) {
