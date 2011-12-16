@@ -648,6 +648,7 @@ function _drush_bootstrap_drupal_root_validate() {
 function _drush_bootstrap_drupal_root() {
   $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
   define('DRUPAL_ROOT', $drupal_root);
+  define('DRUPAL_CORE', is_dir($drupal_root . '/core') ? $drupal_root . '/core' : $drupal_root);
 
   chdir($drupal_root);
   require_once DRUPAL_ROOT . '/' . DRUSH_DRUPAL_SIGNATURE;

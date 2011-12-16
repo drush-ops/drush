@@ -95,6 +95,18 @@ function core_drush_command() {
     ),
     'topics' => array('docs-readme'),
   );
+  $items['core-requirements'] = array(
+    'description' => 'Provides information about things that may be wrong in your Drupal installation, if any.',
+    'aliases' => array('status-report','rq'),
+    'examples' => array(
+      'drush core-requirements' => 'Show all status lines from the Status Report admin page.',
+      'drush core-requirements --severity=2' => 'Show only the red lines from the Status Report admin page.',
+      'drush core-requirements --pipe' => 'Print out a short report in the format "identifier: severity", where severity 2=error, 1=warning, and 0/-1=OK',
+    ),
+    'options' => array(
+      'severity' => 'Only show status report messages with a severity greater than or equal to the specified value.',
+    ),
+  );
   $items['php-eval'] = array(
     'description' => 'Evaluate arbitrary php code after bootstrapping Drupal (if available).',
     'examples' => array(
@@ -603,6 +615,41 @@ function drush_core_config_load($headers = TRUE) {
     }
   }
   return array_merge($rcs_header, $rcs, $aliases_header, $aliases, $drupal_header, $drupal);
+}
+
+/**
+ * Command callback. Provides information from the 'Status Reports' admin page.
+ */
+function drush_core_requirements() {
+  include_once DRUPAL_CORE . '/includes/install.inc';
+  drupal_load_updates();
+
+  $requirements = module_invoke_all('requirements', 'runtime');
+
+  $min_severity = drush_get_option('severity', '-1');
+  // We don't label the "severity" column because it messes up the wrapping
+  $rows[] = array('Title', '', 'Description');
+  foreach($requirements as $key => $info) {
+    $severity = array_key_exists('severity', $info) ? $info['severity'] : '-1';
+    if ($severity >= $min_severity) {
+      drush_print_pipe($key . ': ' . $severity . "\n");
+      if ($severity <= 0) {
+        $severity = 'OK';
+      }
+      $description = array_key_exists('value', $info) ? strip_tags($info['value']) : '';
+      if (array_key_exists('description', $info) && !empty($info['description'])) {
+        if (!empty($description)) {
+          $description .= "\n";
+        }
+        $description .= strip_tags($info['description']);
+      }
+      $rows[] = array($info['title'], $severity, $description);
+    }
+  }
+  if (count($rows) > 1) {
+    drush_print_table($rows);
+  }
+  return $requirements;
 }
 
 /**
