@@ -20,6 +20,7 @@ function archive_drush_command() {
       'generator' => 'The generator name to store in the MANIFEST file. The default is "Drush archive-dump".',
       'generatorversion' => 'The generator version number to store in the MANIFEST file. The default is ' . DRUSH_VERSION . '.',
       'pipe' => 'Only print the destination of the archive. Useful for scripts that don\'t pass --destination.',
+      'preserve-symlinks' => 'Preserve symbolic links.',
     ),
     'examples' => array(
       'drush archive-dump default,example.com,foo.com' => 'Write an archive containing 3 sites in it.',
@@ -152,10 +153,11 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $docroot_path = realpath(drush_get_context('DRUSH_DRUPAL_ROOT'));
   $docroot = basename($docroot_path);
   $workdir = dirname($docroot_path);
+  $dereference = (drush_get_option('preserve-symlinks', FALSE)) ? '' : '--dereference ';
   // Archive Drupal core, excluding sites dir.
-  drush_shell_cd_and_exec($workdir, "tar --exclude '{$docroot}/sites' --dereference -cf %s %s", $destination, $docroot);
+  drush_shell_cd_and_exec($workdir, "tar --exclude '{$docroot}/sites' {$dereference}-cf %s %s", $destination, $docroot);
   // Add sites/all to the same archive.
-  drush_shell_cd_and_exec($workdir, "tar --dereference -rf %s %s", $destination, "{$docroot}/sites/all");
+  drush_shell_cd_and_exec($workdir, "tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
 
   // Dump the default database for each site and add to the archive.
   foreach ($full as $key => $alias) {
