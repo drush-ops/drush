@@ -26,7 +26,10 @@ function make_download_pm($name, $download, $download_location) {
   $version = $name . '-' . $download['release']['version'];
 
   // Avoid any prompts from CLI.
-  drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
+  $options['yes'] = NULL;
+
+  // Package handler should use 'wget'.
+  $options['package-handler'] = 'wget';
 
   // Perform actual download with `drush pm-download`.
   drush_invoke_process('@none', 'pm-download', array($version), $options);
