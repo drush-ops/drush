@@ -84,6 +84,10 @@ class DrushMakeProject {
       drush_set_error(dt('Directory not empty: %directory', array('%directory' => $this->download_location)));
       return FALSE;
     }
+    elseif ($this->download['type'] === 'pm') {
+      // pm-download will create the final contrib directory.
+      drush_mkdir(dirname($this->download_location));
+    }
     else {
       drush_mkdir($this->download_location);
     }
