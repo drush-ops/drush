@@ -105,6 +105,7 @@ function core_drush_command() {
     ),
     'options' => array(
       'severity' => 'Only show status report messages with a severity greater than or equal to the specified value.',
+      'ignore' => 'Comma-separated list of requirements to remove from output. Run with --pipe to see key values to use.',
     ),
   );
   $items['php-eval'] = array(
@@ -625,6 +626,11 @@ function drush_core_requirements() {
   drupal_load_updates();
 
   $requirements = module_invoke_all('requirements', 'runtime');
+  $ignore_requirements = drush_get_option_list('ignore');
+  foreach ($ignore_requirements as $ignore) {
+    unset($requirements[$ignore]);
+  }
+  ksort($requirements);
 
   $min_severity = drush_get_option('severity', '-1');
   // We don't label the "severity" column because it messes up the wrapping

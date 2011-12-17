@@ -57,4 +57,40 @@ drush_invoke("version", $arg);
     $output = $this->getOutput();
     $this->assertEquals($root . '/sites/all/modules', $output);
   }
+
+  function testCoreRequirements() {
+    $this->setUpDrupal(1, TRUE);
+    $root = $this->webroot();
+    $options = array(
+      'root' => $root,
+      'uri' => key($this->sites),
+      'pipe' => NULL,
+      'ignore' => 'http requests,update_core', // no network access when running in tests, so ignore these
+      'invoke' => NULL, // invoke from script: do not verify options
+    );
+    // Verify that there are no severity 2 items in the status report
+    $this->drush('core-requirements', array(), $options + array('severity' => '2'));
+    $output = $this->getOutput();
+    $this->assertEquals('', $output);
+    $this->drush('core-requirements', array(), $options);
+    $output = $this->getOutput();
+    $expected="cron: 1
+database_system: -1
+database_system_version: -1
+drupal: -1
+file system: -1
+install_profile: -1
+node_access: -1
+php: -1
+php_extensions: -1
+php_memory_limit: -1
+php_register_globals: -1
+settings.php: -1
+unicode: 0
+update: 0
+update access: -1
+update status: -1
+webserver: -1";
+    $this->assertEquals($expected, trim($output));
+  }
 }
