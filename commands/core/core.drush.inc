@@ -622,7 +622,7 @@ function drush_core_config_load($headers = TRUE) {
  * Command callback. Provides information from the 'Status Reports' admin page.
  */
 function drush_core_requirements() {
-  include_once DRUPAL_CORE . '/includes/install.inc';
+  include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
   drupal_load_updates();
 
   $requirements = module_invoke_all('requirements', 'runtime');
