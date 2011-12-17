@@ -938,12 +938,14 @@ function drush_lib_fetch($url) {
  */
 
 /**
- * Process commands that are executed on a remote drush instance.
+ * Handle any command preprocessing that may need to be done, including
+ * potentially redispatching the command immediately (e.g. for remote
+ * commands).
  *
  * @return
  *   TRUE if the command was handled remotely.
  */
-function drush_remote_command() {
+function drush_preflight_command_dispatch() {
   $interactive = drush_get_option('interactive', FALSE);
 
   // The command will be executed remotely if the --remote-host flag
@@ -954,12 +956,20 @@ function drush_remote_command() {
   $remote_host = drush_get_option('remote-host');
   // Get the command early so that we can allow commands to directly handle remote aliases if they wish
   $command = drush_parse_command();
+  // If the command sets the 'mask-local-cli-options' flag, then we will remove
+  // any cli options that appear after the command name form the 'cli' context.
+  // The cli options that appear before the command name are stored in the 
+  // 'DRUSH_GLOBAL_CLI_OPTIONS' context, so we will just overwrite the cli context
+  // with this, after doing the neccessary fixup from short-form to long-form options.
   if (is_array($command) && array_key_exists('mask-local-cli-options', $command)) {
     $global_cli_options = drush_get_context('DRUSH_GLOBAL_CLI_OPTIONS', array());
     drush_expand_short_form_options($global_cli_options);
     drush_set_context('cli', $global_cli_options);
     _drush_bootstrap_global_options();
   }
+  // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
+  // remote command dispatching and site-list command dispatching, and always let
+  // the command handler run on the local machine.
   if (is_array($command) && array_key_exists('handle-remote-commands', $command)) {
     return FALSE;
   }

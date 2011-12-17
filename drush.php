@@ -52,8 +52,9 @@ function drush_main() {
   $return = '';
   drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUSH);
   if (!drush_get_error()) {
-    // Process a remote command if 'remote-host' option is set.
-    $command_handled = drush_remote_command();
+    // Do any necessary preprocessing operations on the command,
+    // perhaps handling immediately.
+    $command_handled = drush_preflight_command_dispatch();
     if (!$command_handled) {
       $return = _drush_bootstrap_and_dispatch();
     }
