@@ -50,14 +50,14 @@ function make_download_cvs($name, $download, $download_location) {
     array_unshift($args, $command);
     array_unshift($args, dirname($download_location));
     if (call_user_func_array('drush_shell_cd_and_exec', $args)) {
-       drush_log(dt('%project downloaded from %module.', array('%project' => $name, '%module' => $download['module'])), 'ok');
+       drush_log(dt('@project downloaded from @module.', array('@project' => $name, '@module' => $download['module'])), 'ok');
       return $download_location;
     }
   }
   else {
     $download['module'] = dt("unspecified module");
   }
-  make_error('DOWNLOAD_ERROR', dt('Unable to download %project from %root %module.', array('%project' => $name, '%root' => $download['root'], '%module' => $download['module'])));
+  make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @root @module.', array('@project' => $name, '@root' => $download['root'], '@module' => $download['module'])));
   return FALSE;
 }
 
@@ -66,10 +66,10 @@ function make_download_file($name, $download, $download_location) {
     if (!drush_get_option('ignore-checksums') && !_make_verify_checksums($download, $filename)) {
       return FALSE;
     }
-    drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
+    drush_log(dt('@project downloaded from @url.', array('@project' => $name, '@url' => $download['url'])), 'ok');
     return make_download_file_unpack($filename, $download_location, (isset($download['filename']) ? $download['filename'] : ''));
   }
-  make_error('DOWNLOAD_ERROR', dt('Unable to download %project from %url.', array('%project' => $name, '%url' => $download['url'])));
+  make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @url.', array('@project' => $name, '@url' => $download['url'])));
   return FALSE;
 }
 
@@ -288,7 +288,7 @@ function make_download_file_unpack_gzip($filename, $download_location) {
       return make_download_file_unpack_tar($file, $download_location);
     }
   }
-  make_error('PACKAGE_ERROR', dt('Could not retrieve package information for %filename.', array('%filename' => $filename)));
+  make_error('PACKAGE_ERROR', dt('Could not retrieve package information for @filename.', array('@filename' => $filename)));
   return;
 }
 
@@ -367,7 +367,7 @@ function make_download_git($name, $download, $download_location) {
   
   // clone the given repository
   if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
-    drush_log(dt('%project cloned from %url.', array('%project' => $name, '%url' => $url)), 'ok');
+    drush_log(dt('@project cloned from @url.', array('@project' => $name, '@url' => $url)), 'ok');
   
     // GIT Checkout only work on a ready cloned repo. So we switch to branch or to tag (only if we have no branch) after cloneing.
     if ($download['branch'] !== 'master' || $download['tag'] || $download['revision'] || !empty($download['submodule'])) {
@@ -381,32 +381,32 @@ function make_download_git($name, $download, $download_location) {
       // check if branch a other than master
       if ($download['branch'] !== 'master' && !$download['tag'] && !$download['revision']) {
         if (drush_shell_exec("git checkout %s", $download['branch'])) {
-          drush_log(dt("Checked out branch %branch.", array('%branch' => $download['branch'])), 'ok');
+          drush_log(dt("Checked out branch @branch.", array('@branch' => $download['branch'])), 'ok');
         }
         elseif (drush_shell_exec("git checkout -b %s %s", $download['branch'], 'origin/' . $download['branch'])) {
-          drush_log(dt("Checked out branch %branch.", array('%branch' => $download['branch'])), 'ok');
+          drush_log(dt("Checked out branch @branch.", array('@branch' => $download['branch'])), 'ok');
         }
         else {
-          make_error('DOWNLOAD_ERROR', dt("Unable to check out branch %branch.", array('%branch' => $download['branch'])));
+          make_error('DOWNLOAD_ERROR', dt("Unable to check out branch @branch.", array('%branch' => $download['branch'])));
         }
       }
       // progress if: tag is set but not the others
       elseif ($download['branch'] == 'master' && $download['tag'] && !$download['revision']) {
         // @TODO: change checkout to refs path
         if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
-          drush_log(dt("Checked out tag %tag.", array('%tag' => $download['tag'])), 'ok');
+          drush_log(dt("Checked out tag @tag.", array('@tag' => $download['tag'])), 'ok');
         }
         else {
-          make_error('DOWNLOAD_ERROR', dt("Unable to check out tag %tag.", array('%tag' => $download['tag'])));
+          make_error('DOWNLOAD_ERROR', dt("Unable to check out tag @tag.", array('@tag' => $download['tag'])));
         }
       }
       // progress if: revision is set but not the others
       elseif ($download['branch'] == 'master' && !$download['tag'] && $download['revision']) {
         if (drush_shell_exec("git checkout %s", $download['revision'])) {
-          drush_log(dt("Checked out revision %revision.", array('%revision' => $download['revision'])), 'ok');
+          drush_log(dt("Checked out revision @revision.", array('@revision' => $download['revision'])), 'ok');
         }
         else {
-          make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision %revision", array('%revision' => $download['revision'])));
+          make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision @revision", array('@revision' => $download['revision'])));
         }
       }
       // more than one option is set so we throw a error message
@@ -439,7 +439,7 @@ function make_download_git($name, $download, $download_location) {
     return dirname($tmp_location);
   }
   else {
-    make_error('DOWNLOAD_ERROR', dt('Unable to clone %project from %url.', array('%project' => $name, '%url' => $url)));
+    make_error('DOWNLOAD_ERROR', dt('Unable to clone @project from @url.', array('@project' => $name, '@url' => $url)));
   }
 
   return FALSE;
@@ -473,7 +473,7 @@ function make_download_bzr($name, $download, $download_location) {
     }
     array_unshift($args, $command);
     if (call_user_func_array('drush_shell_exec', $args)) {
-      drush_log(dt('%project downloaded from %url.', array('%project' => $name, '%url' => $download['url'])), 'ok');
+      drush_log(dt('@project downloaded from @url.', array('@project' => $name, '@url' => $download['url'])), 'ok');
       drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
       drush_shell_exec('rm -rf %s', dirname($tmp_location));
       return dirname($download_location);
@@ -482,7 +482,7 @@ function make_download_bzr($name, $download, $download_location) {
   else {
     $download['url'] = dt("unspecified location");
   }
-  make_error('DOWNLOAD_ERROR', dt('Unable to download %project from %url.', array('%project' => $name, '%url' => $download['url'])));
+  make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @url.', array('@project' => $name, '@url' => $download['url'])));
   drush_shell_exec('rm -rf %s', dirname($tmp_location));
   return FALSE;
 }
@@ -529,7 +529,7 @@ function make_download_svn($name, $download, $download_location) {
     array_unshift($args, $command);
     $result = call_user_func_array($function, $args);
     if ($result) {
-      drush_log(dt('%project @command from %url.', array('%project' => $name, '@command' => $command, '%url' => $download['url'])), 'ok');
+      drush_log(dt('@project @command from @url.', array('@project' => $name, '@command' => $command, '@url' => $download['url'])), 'ok');
       return $download_location;
     }
     else {
@@ -537,7 +537,7 @@ function make_download_svn($name, $download, $download_location) {
     }
   }
   else {
-    make_error('DOWNLOAD_ERROR', dt('Unable to download %project from %url.', array('%project' => $name, '%url' => $download['url'])));
+    make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @url.', array('@project' => $name, '@url' => $download['url'])));
     return FALSE;
   }
 }
@@ -557,7 +557,7 @@ function _make_verify_checksums($info, $filename) {
       if (!empty($info[$algo])) {
         $hash = _make_hash($algo, $content);
         if ($hash !== $info[$algo]) {
-           make_error('DOWNLOAD_ERROR', dt('Checksum %algo verification failed for %file. Expected %expected, received %hash.', array('%algo' => $algo, '%file' => basename($filename), '%expected' => $info[$algo], '%hash' => $hash)));
+           make_error('DOWNLOAD_ERROR', dt('Checksum @algo verification failed for @file. Expected @expected, received @hash.', array('@algo' => $algo, '@file' => basename($filename), '@expected' => $info[$algo], '@hash' => $hash)));
           return FALSE;
         }
       }
