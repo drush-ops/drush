@@ -14,22 +14,19 @@ function make_download_factory($name, $download, $download_location) {
  * Download project using drush's pm-download command.
  */
 function make_download_pm($name, $download, $download_location) {
+  $version = $name . '-' . $download['release']['version'];
+
+  $options = array(
+    'destination' => dirname($download_location),
+    'yes' => NULL,
+    'package-handler' => 'wget',
+  );
   if ($name == 'drupal') {
     $options['drupal-project-rename'] = basename($download_location);
   }
-  $options['destination'] = dirname($download_location);
-
   if (!drush_get_option('no-cache', FALSE)) {
     $options['cache'] = NULL;
   }
-
-  $version = $name . '-' . $download['release']['version'];
-
-  // Avoid any prompts from CLI.
-  $options['yes'] = NULL;
-
-  // Package handler should use 'wget'.
-  $options['package-handler'] = 'wget';
 
   // Perform actual download with `drush pm-download`.
   drush_invoke_process('@none', 'pm-download', array($version), $options);
