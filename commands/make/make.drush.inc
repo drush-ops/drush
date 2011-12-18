@@ -32,6 +32,7 @@ function make_drush_command() {
       'ignore-checksums' => 'Ignore md5 checksums for downloads.',
       'md5' => 'Output an md5 hash of the current build after completion. Use --md5=print to print to stdout.',
       'make-update-default-url' => 'The default location to load the XML update information from.',
+      'no-cache' => 'Do not use the pm-download caching (defaults to using this).',
       'no-clean' => 'Leave temporary build directories in place instead of cleaning up after completion.',
       'no-core' => 'Do not require a Drupal core project to be specified.',
       'no-patch-txt' => 'Do not write a PATCHES.txt file in the directory of each patched project.',
@@ -233,9 +234,8 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
         $project['type'] = $request['project_type'];
         if (!isset($project['download'])) {
           $project['download'] = array(
-            'type' => 'get',
-            'url'  => $release['download_link'],
-            'md5'  => $release['mdhash'],
+            'type' => 'pm',
+            'release' => $release,
           );
         }
       }
