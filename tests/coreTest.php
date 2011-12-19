@@ -65,7 +65,7 @@ drush_invoke("version", $arg);
       'root' => $root,
       'uri' => key($this->sites),
       'pipe' => NULL,
-      'ignore' => 'http requests,update_core', // no network access when running in tests, so ignore these
+      'ignore' => 'cron,http requests,update_core', // no network access when running in tests, so ignore these
       'invoke' => NULL, // invoke from script: do not verify options
     );
     // Verify that there are no severity 2 items in the status report
@@ -74,8 +74,7 @@ drush_invoke("version", $arg);
     $this->assertEquals('', $output);
     $this->drush('core-requirements', array(), $options);
     $output = $this->getOutput();
-    $expected="cron: 1
-database_system: -1
+    $expected="database_system: -1
 database_system_version: -1
 drupal: -1
 file system: -1
