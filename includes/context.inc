@@ -127,7 +127,12 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
   }
 
   // In the system wide configuration folder.
-  $configs['system'] = drush_get_context('ETC_PREFIX', '') . '/etc/drush/' . $config_file;
+  if (drush_is_windows()) {
+    $configs['system'] = getenv('ALLUSERSPROFILE'). '/Drush/' . $config_file;    
+  }
+  else {
+    $configs['system'] = drush_get_context('ETC_PREFIX', '') . '/etc/drush/' . $config_file;
+  }
 
   // in the drush installation folder
   $configs['drush'] = dirname(__FILE__) . '/../' . $config_file;

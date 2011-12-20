@@ -1133,7 +1133,12 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       }
 
       // System commands, residing in $SHARE_PREFIX/share/drush/commands
-      $share_path = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
+      if (drush_is_windows()) {
+        $share_path = getenv('ALLUSERSPROFILE') . '/Drush';
+      }
+      else {
+        $share_path = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
+      }
 
       if (is_dir($share_path)) {
         $searchpath[] = $share_path;

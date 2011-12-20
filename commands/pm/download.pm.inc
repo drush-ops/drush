@@ -253,7 +253,12 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
     if (!empty($drush_command_files)) {
       $module_files = drush_scan_directory($project['full_project_path'], '/.*\.module/');
       if (empty($module_files)) {
-        $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
+        if (drush_is_windows()) {
+          $install_dir = getenv('ALLUSERSPROFILE') . '/Drush';
+        }
+        else {
+          $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
+        }
         if (!is_dir($install_dir) || !is_writable($install_dir)) {
           $install_dir = drush_server_home() . '/.drush';
         }

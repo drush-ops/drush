@@ -24,6 +24,13 @@
  * addtion to, and after, the general-purpose drushrc.php file.
  * Version-specific configuration files can be placed in any of the
  * locations specified above.
+ * 
+ * IMPORTANT NOTE regarding configuration file on Windows:
+ * 
+ * For Windows 7, Windows Vista, Windows Server 2008 and later 
+ * versions is the system window configuration folder C:\ProgramData\Drush. 
+ * For previous versions of Windows is the folder 
+ * C:\Documents and Settings\All Users\Drush.
  *
  * IMPORTANT NOTE on configuration file loading:
  *
