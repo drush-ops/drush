@@ -428,12 +428,28 @@ function _drush_bootstrap_drush() {
   // Set the terminal width, used for wrapping table output.
   // Normally this is exported using tput in the drush script.
   // If this is not present we do an additional check using stty here.
+  // On Windows in CMD and PowerShell is this exported using mode con.
+  // PHP version prior to 5.3.0 is not supporting this, they always
+  // return 80 columns
   if (!($columns = getenv('COLUMNS'))) {
-    exec('stty size 2>&1', $stty_output, $stty_status);
-    if (!$stty_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $stty_output[0], -1, $stty_count);
-    // If stty failed, or we couldn't parse it's output, we assume 80 columns.
-    if ($stty_status || !$stty_count) $columns = 80;
-  }
+    // Trying to export the columns using stty.
+    exec('stty size 2>&1', $columns_output, $columns_status);
+    if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
+    
+    // If stty fails and Drush us running on Windows are we trying with mode con.
+    if (($columns_status || !$columns_count) && drush_is_windows() && version_compare(phpversion(), '5.3.0') > -1) {
+      $columns_output = array();
+      exec('mode con', $columns_output, $columns_status); 
+      if (!$columns_status && is_array($columns_output)) {
+        $columns = (int)preg_replace('/\D/', '', $columns_output[4], -1, $columns_count);
+      }      
+    } 
+    
+    // Failling back to default columns value
+    if (empty($columns)) {
+      $columns = 80;
+    }
+  } 
   // If a caller wants to reserve some room to add additional
   // information to the drush output via post-processing, the
   // --reserve-margin flag can be used to declare how much
