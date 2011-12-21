@@ -770,19 +770,19 @@ function drush_sql_dump_file(&$site_record) {
     if (!isset($dump_dir)) {
       // If this is a remote site, try to find a writable tmpdir.
       if (isset($site_record['remote-host'])) {
-        if (!isset($dump_dir)) {
-          $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'));
-          $dump_dir = trim($result['output']);
-          $site_record['dump-is-temp'] = TRUE;
-        }
+        $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'));
+        $dump_dir = trim($result['output']);
         $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
       }
       else {
         $dump_file = drush_tempnam($filename_pattern . '.sql.');
       }
+      $site_record['dump-is-temp'] = TRUE;
+    }
+    else {
+      $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
     }
   }
-
 
   return $dump_file;
 }
