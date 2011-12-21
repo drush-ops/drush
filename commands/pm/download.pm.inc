@@ -223,7 +223,7 @@ function drush_pm_download() {
     }
 
     // Post download actions.
-    package_handler_post_download($request);
+    package_handler_post_download($request, $release);
     drush_command_invoke_all('drush_pm_post_download', $request, $release);
     $version_control->post_download($request);
 

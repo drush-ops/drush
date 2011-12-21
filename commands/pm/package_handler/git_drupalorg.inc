@@ -174,7 +174,7 @@ function package_handler_update_project($request, $release) {
  *
  * Here we add the project as a git submodule.
  */
-function package_handler_post_download($project) {
+function package_handler_post_download($project, $release) {
   if (drush_get_option('gitsubmodule', FALSE)) {
     // Obtain the superproject path, then add as submodule.
     if (drush_shell_cd_and_exec(dirname($project['full_project_path']), 'git rev-parse --show-toplevel')) {
@@ -195,5 +195,50 @@ function package_handler_post_download($project) {
       return drush_set_error('DRUSH_PM_GIT_SUBMODULE_PROBLEMS', dt('Unable to create !project as a git submodule: !dir is not in a Git repository.', array('!project' => $project['name'], '!dir' => dirname($project['full_project_path']))));
     }
   }
+
+  if (drush_get_option('gitinfofile', FALSE)) {
+    package_handler_inject_info($project, $release);
+  }
+
 }
 
+function package_handler_inject_info($project, $release) {
+  // Handler for the directory and open directory and walk through the filenames
+  $info_files = drush_scan_directory($project['project_install_location'], "/.*\.info$/");
+  $return = TRUE;
+  // Consider that the d.o. package manager is aware of submodules in parent modules
+  foreach($info_files as $info_file) {
+    $return = $return && package_handler_fix_info_file_version($info_file->filename, $project['name'], $release['version']);
+  }
+  return $return;
+}
+
+/**
+ * Fix the given .info file with the specified version string
+ * Taken straight from: http://drupalcode.org/project/drupalorg.git/blob/refs/heads/6.x-3.x:/drupalorg_project/plugins/release_packager/DrupalorgProjectPackageRelease.class.php#l192
+ */
+function package_handler_fix_info_file_version($file, $project, $version) {
+  $info = "\n\n; Information added by the drush package handler on " . date('Y-m-d') . "\n";
+  $info .= "version = \"$version\"\n";
+  // .info files started with 5.x, so we don't have to worry about version
+  // strings like "4.7.x-1.0" in this regular expression. If we can't parse
+  // the version (also from an old "HEAD" release), or the version isn't at
+  // least 6.x, don't add any "core" attribute at all.
+  $matches = array();
+  if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
+    $info .= "core = \"$matches[1]\"\n";
+  }
+  $info .= "project = \"$project\"\n";
+  $info .= 'datestamp = "'. time() ."\"\n";
+  $info .= "\n";
+
+  if (!$info_fd = fopen($file, 'a+')) {
+    drush_set_error(dt("ERROR: fopen(@file, 'ab') failed", array('@file' => $file)));
+    return false;
+  }
+  if (!fwrite($info_fd, $info)) {
+    drush_set_error(dt("ERROR: fwrite(@file) failed", array('@file' => $file)) . '<pre>' . $info);
+    return false;
+  }
+  return true;
+}
