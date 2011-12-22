@@ -25,36 +25,36 @@ class completeCase extends Drush_CommandTestCase {
     $this->drush('php-eval', array('drush_complete_cache_clear();'));
     // Confirm we get cache rebuilds for runs both in and out of a site
     // which is expected since these should resolve to separate cache IDs.
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-batch', FALSE);
+    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke', FALSE);
     $this->verifyComplete('uni', 'uninstall', 'uninstall', FALSE);
     // Next, rerun and check results to confirm cache IDs are generated
     // correctly on our fast bootstrap when returning the cached result.
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-batch');
+    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke');
     $this->verifyComplete('uni', 'uninstall', 'uninstall');
 
     // Test cache clearing for a completion type, which should be effective only
     // for current environment - i.e. a specific site should not be effected.
     $this->drush('php-eval', array('drush_complete_cache_clear("command-names");'));
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-batch');
+    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke');
     $this->verifyComplete('uni', 'uninstall', 'uninstall', FALSE);
 
     // Test cache clearing for a command specific completion type, which should
     // be effective only for current environment. Prime caches first.
-    $this->verifyComplete('@dev topic docs-c', 'docs-configuration', 'docs-context', FALSE);
-    $this->verifyComplete('topic docs-c', 'docs-configuration', 'docs-context', FALSE);
+    $this->verifyComplete('@dev topic docs-c', 'docs-commands', 'docs-cron', FALSE);
+    $this->verifyComplete('topic docs-c', 'docs-commands', 'docs-cron', FALSE);
     $this->drush('php-eval', array('drush_complete_cache_clear("arguments", "topic");'));
     // We cleared the global cache for this argument, not the site specific
     // cache should still exist.
-    $this->verifyComplete('@dev topic docs-c', 'docs-configuration', 'docs-context');
-    $this->verifyComplete('topic docs-c', 'docs-configuration', 'docs-context', FALSE);
+    $this->verifyComplete('@dev topic docs-c', 'docs-commands', 'docs-cron');
+    $this->verifyComplete('topic docs-c', 'docs-commands', 'docs-cron', FALSE);
 
     // Test overall context sensitivity - almost all of these are cache hits.
     // No context (i.e. "drush <tab>"), should list aliases and commands.
-    $this->verifyComplete("''", '@none', 'wd');
+    $this->verifyComplete("''", '@dev', 'ws');
     // Site alias alone.
-    $this->verifyComplete('@', '@none', '@dev');
+    $this->verifyComplete('@', '@dev', '@stage');
     // Command alone.
-    $this->verifyComplete('d', 'drupal-directory', 'download');
+    $this->verifyComplete('d', 'dd', 'drupal-directory');
     // Command with single result.
     $this->verifyComplete('core-t', 'core-topic', 'core-topic');
     // Command with no results should produce no output.
@@ -62,25 +62,25 @@ class completeCase extends Drush_CommandTestCase {
     // Commands that start the same as another command (i.e. unit is a valid
     // command, but we should still list unit-eval and unit-invoke when
     // completing on "unit").
-    $this->verifyComplete('@dev unit', 'unit', 'unit-batch');
+    $this->verifyComplete('@dev unit', 'unit', 'unit-invoke');
     // Global option alone.
     $this->verifyComplete('--n', '--no', '--nocolor');
     // Site alias + command.
-    $this->verifyComplete('@dev d', 'drupal-directory', 'download');
+    $this->verifyComplete('@dev d', 'dd', 'drupal-directory');
     // Site alias + command, should allow no further site aliases or commands.
     $this->verifyComplete('@dev topic @', '', '');
     $this->verifyComplete('@dev topic topi', '', '');
     // Command + command option.
-    $this->verifyComplete('dl --', '--destination', '--gitsubmoduleaddparams');
+    $this->verifyComplete('dl --', '--cache', '--variant');
     // Site alias + command + command option.
-    $this->verifyComplete('@dev dl --', '--destination', '--gitsubmoduleaddparams');
+    $this->verifyComplete('@dev dl --', '--cache', '--variant');
     // Command + argument.
-    $this->verifyComplete('topic docs-c', 'docs-configuration', 'docs-context');
+    $this->verifyComplete('topic docs-c', 'docs-commands', 'docs-cron');
     // Site alias + command + regular argument.
     // Note: this is checked implicitly by the argument cache testing above.
     // Site alias + command + file/directory argument. This is a command
     // argument we have not used so far, so a cache miss is expected.
-    $this->verifyComplete('archive-restore aard', 'aardvark/', 'aard wolf.tar.gz', FALSE);
+    $this->verifyComplete('archive-restore aard', 'aard wolf.tar.gz', 'aardvark/', FALSE);
     // Site alias + command + file/directory argument with quoting.
     $this->verifyComplete('archive-restore aard\ w', 'aard\ wolf.tar.gz', 'aard\ wolf.tar.gz');
   }
@@ -109,9 +109,9 @@ class completeCase extends Drush_CommandTestCase {
     $this->execute($exec);
     $result = $this->getOutputAsList();
     $actual = reset($result);
-    $this->assertEquals("$command: $first", "$command: $actual");
+    $this->assertEquals("$command: (f) $first", "$command: (f) $actual");
     $actual = end($result);
-    $this->assertEquals("$command: $last", "$command: $actual");
+    $this->assertEquals("$command: (l) $last", "$command: (l) $actual");
     // If checking for HIT, we ensure no MISS exists, if checking for MISS we
     // ensure no HIT exists. However, we exclude the first cache report, since
     // it is expected that the command-names cache (loaded when matching

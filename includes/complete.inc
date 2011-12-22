@@ -183,6 +183,7 @@ function drush_early_complete() {
   }
 
   if (!empty($completions)) {
+    sort($completions);
     return implode("\n", $completions);
   }
   return TRUE;
