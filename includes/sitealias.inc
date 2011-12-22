@@ -1884,7 +1884,7 @@ function drush_sitealias_site_get() {
  *   Full path to tmp file.
  */
 function drush_sitealias_get_envar_filename() {
-  $tmp = getenv('TMPDIR') ?: '/tmp/';
+  $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp/';
 
   if (is_dir($tmp) && is_writable($tmp)) {
     return $tmp . '/drush-drupal-site-' . posix_getppid();
