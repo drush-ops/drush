@@ -114,7 +114,7 @@ fi
 [ -x $d ] || exit 0
 
 # If the file found is a symlink, resolve to the actual file.
-if [ "$(stat $d --printf="%F")" == "symbolic link" ] ; then
+if [ -h "$d" ] ; then
   # Change `readlink` to `readlink -f` if your drush is a symlink to a symlink. -f is unavailable on OSX's readlink.
   d=$(readlink $d)
 fi
