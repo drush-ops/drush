@@ -63,16 +63,33 @@ function drush_sitealias_simplify_names($site_list) {
  * it is preferable to simply call drush_sitealias_get_record directly.
  *
  * @param $site_specifications
- *   An array of site specifications.  @see drush_sitealias_get_record().
+ *   One of:
+ *     A comma-separated list of site specifications: '@site1,@site2'
+ *     An array of site specifications: array('@site1','@site2')
+ *     An array of alias records:
+ *       array(
+ *         'site1' => array('root' => ...),
+ *         'site2' => array('root' => ...)
+ *       )
+ *   An array of site specifications.  
+ *   @see drush_sitealias_get_record() for the format of site specifications.
  * @return
  *   An array of alias records
  */
 function drush_sitealias_resolve_sitespecs($site_specifications, $alias_path_context = NULL) {
   $result_list = array();
+  if (!is_array($site_specifications)) {
+    $site_specifications = explode(',', $site_specifications);
+  }
   if (!empty($site_specifications)) {
     foreach ($site_specifications as $site) {
-      $alias_record = drush_sitealias_get_record($site, $alias_path_context);
-      $result_list = array_merge($result_list, drush_sitealias_resolve_sitelist($alias_record));
+      if (is_array($site)) {
+        $result_list[] = $site;
+      }
+      else {
+        $alias_record = drush_sitealias_get_record($site, $alias_path_context);
+        $result_list = array_merge($result_list, drush_sitealias_resolve_sitelist($alias_record));
+      }
     }
   }
   return $result_list;

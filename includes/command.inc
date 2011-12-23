@@ -61,26 +61,55 @@ function drush_invoke($command, $arguments = array()) {
  * @param $backend_options
  *   TRUE - integrate errors
  *   FALSE - do not integrate errors
- *   array - @see drush_backend_invoke_sitealias_command
+ *   array - @see drush_backend_invoke_concurrent
+ *     There are also several options that _only_ work when set in 
+ *     this parameter.  They include:
+ *      'invoke-multiple'
+ *        If $site_alias_record represents a single site, then 'invoke-multiple'
+ *        will cause the _same_ command with the _same_ arguments and options
+ *        to be invoked concurrently (e.g. for running concurrent batch processes).
+ *      'concurrency'
+ *        Limits the number of concurrent processes that will run at the same time.
+ *        Defaults to '4'.
+ *      'override-simulated'
+ *        Forces the command to run, even in 'simulated' mode. Useful for
+ *        commands that do not change any state on the machine, e.g. to fetch
+ *        database information for sql-sync via sql-conf.
+ *      'interactive'
+ *        Overrides the backend invoke process to run commands interactively.
  *
  * @return
  *   If the command could not be completed successfully, FALSE.
  *   If the command was completed, this will return an associative
  *   array containing the results of the API call.
  *   @see drush_backend_get_result()
+ *
+ * Do not change the signature of this function!  drush_invoke_process
+ * is one of the key Drush APIs.  See http://drupal.org/node/1152908
  */
 function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = FALSE) {
-  // NULL is a synonym to '@self', although the latter is preferred.
-  if (!isset($site_alias_record)) {
-    $site_alias_record = '@self';
+  if (is_array($site_alias_record) && array_key_exists('site-list', $site_alias_record)) {
+    $site_alias_records = drush_sitealias_resolve_sitespecs($site_alias_record['site-list']);
+    $site_alias_records = drush_sitealias_simplify_names($site_alias_records);
+    foreach ($site_alias_records as $alias_name => $alias_record) {
+      $invocations[] = array(
+        'site' => $alias_record,
+        'command' => $command_name,
+        'args' => $commandline_args,
+      );
+    }
   }
-  // If the first parameter is not a site alias record,
-  // then presume it is an alias name, and try to look up
-  // the alias record.
-  if (!is_array($site_alias_record)) {
-    $site_alias_record = drush_sitealias_get_record($site_alias_record);
+  else {
+    $invocations[] = array(
+      'site' => $site_alias_record,
+      'command' => $command_name,
+      'args' => $commandline_args);
+    $invoke_multiple = drush_get_option_override($backend_options, 'invoke-multiple', 0);
+    if ($invoke_multiple) {
+      $invocations = array_fill(0, $invoke_multiple, $invocations);
+    }
   }
-  return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options, $backend_options);
+  return drush_backend_invoke_concurrent($invocations, $commandline_options, $backend_options);
 }
 
 /**

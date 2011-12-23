@@ -83,7 +83,8 @@ class shellAliasesCase extends Drush_CommandTestCase {
     );
     $this->drush('glopts', array(), $options, 'user@server/path/to/drupal#sitename');
     // $expected might be different on non unix platforms. We shall see.
-    $expected = "Simulating backend invoke: ssh user@server 'drush  --simulate --nocolor --uri=sitename --root=/path/to/drupal --config=" . UNISH_SANDBOX . " topic core-global-options --invoke 2>&1' 2>&1";
+    // n.b. --config is not included in calls to remote systems.
+    $expected = "Simulating backend invoke: ssh user@server 'drush  --simulate --nocolor --uri=sitename --root=/path/to/drupal topic core-global-options --invoke 2>&1' 2>&1";
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected remote shell alias to a drush command was built');
   }

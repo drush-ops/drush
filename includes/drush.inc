@@ -990,13 +990,12 @@ function drush_preflight_command_dispatch() {
     if (!is_array($site_list)) {
       $site_list = explode(',', $site_list);
     }
-    $site_list = drush_sitealias_resolve_sitespecs($site_list);
-    $site_list = drush_sitealias_simplify_names($site_list);
+    $site_record = array('site-list' => $site_list);
     $args = drush_get_arguments();
 
     if (!drush_get_context('DRUSH_SIMULATE') && !$interactive) {
       drush_print(dt("You are about to execute '!command' non-interactively (--yes forced) on all of the following targets:", array('!command' => implode(" ", $args))));
-      foreach ($site_list as $one_destination => $one_record) {
+      foreach ($site_list as $one_destination) {
         drush_print(dt('  !target', array('!target' => $one_destination)));
       }
 
@@ -1011,31 +1010,10 @@ function drush_preflight_command_dispatch() {
     if (drush_get_option('pipe')) {
       $backend_options['interactive'] = TRUE;
     }
-
-    if (!drush_get_option('no-label', FALSE) && !$interactive) {
-      $label_separator = ' >> ';
-      $max_name_length = 0;
-      foreach ($site_list as $alias_name => $alias_record) {
-        if (strlen($alias_name) > $max_name_length) {
-          $max_name_length = strlen($alias_name);
-        }
-      }
-      $multi_options['reserve-margin'] = $max_name_length + strlen($label_separator);
-      foreach ($site_list as $alias_name => $alias_record) {
-        $backend_options['output-label'] = str_pad($alias_name, $max_name_length, " ") . $label_separator;
-        $values = drush_do_site_command($alias_record, $command_name, $args, $multi_options, $backend_options);
-      }
+    if (drush_get_option('no-label', FALSE)) {
+      $backend_options['no-label'] = TRUE;
     }
-    else {
-      if ($interactive) {
-        $backend_options['interactive'] = TRUE;
-      }
-      foreach ($site_list as $alias_name => $alias_record) {
-        drush_print(dt("!site >> !command", array('!command' => $command_name . ' ' . implode(" ", $args), '!site' => $alias_name)));
-        $values = drush_do_site_command($alias_record, $command_name, $args, $multi_options, $backend_options);
-        drush_print($values['output']);
-      }
-    }
+    $values = drush_invoke_process($site_record, $command_name, $args, $multi_options, $backend_options);
     return TRUE;
   }
   return FALSE;
@@ -1106,30 +1084,17 @@ function drush_do_multiple_command($command, $source_record, $destination_record
  * Run a command on the site specified by the provided command record.
  *
  * The standard function that provides this service is called
- * drush_invoke_process.  Please call the standard function
- * unless you need to set $integrate = TRUE.
+ * drush_invoke_process.  Please call the standard function.
  *
  * @param backend_options
  *   TRUE - integrate errors
  *   FALSE - do not integrate errors
- *   array - @see drush_backend_invoke_sitealias_command
- */
+ *   array - @see drush_backend_invoke_concurrent
+ *
 function drush_do_site_command($site_record, $command, $args = array(), $command_options = array(), $backend_options = FALSE) {
-  $values = NULL;
-  if (!empty($site_record)) {
-    if (is_bool($backend_options)) {
-      $integrate = $backend_options;
-      $backend_options = array('integrate' => $integrate);
-    }
-    foreach ($site_record as $key => $value) {
-      if (!isset($command_options[$key]) && !in_array($key, drush_sitealias_site_selection_keys())) {
-        $command_options[$key] = $site_record[$key];
-      }
-    }
-    $values = drush_backend_invoke_sitealias_command($site_record, $command, $args, $command_options, $backend_options);
-  }
-  return $values;
+  return drush_invoke_process($site_record, $command, $args, $command_options, $backend_options);
 }
+ */
 
 /**
  * Redispatch the specified command using the same
@@ -1229,8 +1194,8 @@ function drush_backend_packet_log($entry, $backend_options) {
   // Yes, this looks odd, but we might in fact be a backend command
   // that ran another backend command.
   drush_backend_packet('log', $entry);
-  if (array_key_exists('output-label', $backend_options)) {
-    $entry['message'] = $backend_options['output-label'] . $entry['message'];
+  if (array_key_exists('#output-label', $backend_options)) {
+    $entry['message'] = $backend_options['#output-label'] . $entry['message'];
   }
 
   return $callback($entry);
