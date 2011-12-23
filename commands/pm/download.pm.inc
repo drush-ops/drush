@@ -253,14 +253,9 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
     if (!empty($drush_command_files)) {
       $module_files = drush_scan_directory($project['full_project_path'], '/.*\.module/');
       if (empty($module_files)) {
-        if (drush_is_windows()) {
-          $install_dir = getenv('ALLUSERSPROFILE') . '/Drush';
-        }
-        else {
-          $install_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
-        }
+        $install_dir = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
         if (!is_dir($install_dir) || !is_writable($install_dir)) {
-          $install_dir = drush_server_home() . '/.drush';
+          $install_dir = drush_get_context('DRUSH_PER_USER_CONFIGURATION');
         }
         // Make the .drush dir if it does not already exist.
         if (!is_dir($install_dir)) {

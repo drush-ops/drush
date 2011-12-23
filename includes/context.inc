@@ -122,17 +122,13 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
   }
 
   // in $HOME/.drush directory
-  if (!is_null(drush_server_home())) {
-    $configs['home.drush'] = drush_server_home() . '/.drush/' . $config_file;
+  $per_user_config_dir = drush_get_context('DRUSH_PER_USER_CONFIGURATION');
+  if (!empty($per_user_config_dir)) {
+    $configs['home.drush'] = $per_user_config_dir . '/' . $config_file;
   }
 
   // In the system wide configuration folder.
-  if (drush_is_windows()) {
-    $configs['system'] = getenv('ALLUSERSPROFILE'). '/Drush/' . $config_file;    
-  }
-  else {
-    $configs['system'] = drush_get_context('ETC_PREFIX', '') . '/etc/drush/' . $config_file;
-  }
+  $configs['system'] = drush_get_context('DRUSH_SITE_WIDE_CONFIGURATION') . '/' . $config_file;
 
   // in the drush installation folder
   $configs['drush'] = dirname(__FILE__) . '/../' . $config_file;

@@ -595,15 +595,20 @@ function _drush_bootstrap_base_environment() {
   }
   $alias_path =& drush_get_context('ALIAS_PATH');
   if (drush_is_windows()) {
-    $all_users_profile_path = getenv('ALLUSERSPROFILE') . '/Drush';
-    $alias_path[] = $all_users_profile_path;
+    $site_wide_configuration_dir = getenv('ALLUSERSPROFILE') . '/Drush';
+    $site_wide_commandfile_dir = $site_wide_configuration_dir;
   }
   else {
-    $alias_path[] = drush_get_context('ETC_PREFIX', '') . '/etc/drush';
+    $site_wide_configuration_dir = drush_get_context('ETC_PREFIX', '') . '/etc/drush';
+    $site_wide_commandfile_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
   }
+  $alias_path[] = $site_wide_configuration_dir;
+  drush_set_context('DRUSH_SITE_WIDE_CONFIGURATION', $site_wide_configuration_dir);
+  drush_set_context('DRUSH_SITE_WIDE_COMMANDFILES', $site_wide_commandfile_dir);
   $alias_path[] = dirname(__FILE__) . '/..';
   if(!is_null(drush_server_home())) {
     $alias_path[] = drush_server_home() . '/.drush';
+    drush_set_context('DRUSH_PER_USER_CONFIGURATION', drush_server_home() . '/.drush');
   }
 }
 

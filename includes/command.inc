@@ -1133,20 +1133,15 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       }
 
       // System commands, residing in $SHARE_PREFIX/share/drush/commands
-      if (drush_is_windows()) {
-        $share_path = getenv('ALLUSERSPROFILE') . '/Drush';
-      }
-      else {
-        $share_path = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
-      }
-
+      $share_path = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
       if (is_dir($share_path)) {
         $searchpath[] = $share_path;
       }
 
       // User commands, residing in ~/.drush
-      if (!is_null(drush_server_home())) {
-        $searchpath[] = drush_server_home() . '/.drush';
+      $per_user_config_dir = drush_get_context('DRUSH_PER_USER_CONFIGURATION');
+      if (!empty($per_user_config_dir)) {
+        $searchpath[] = $per_user_config_dir;
       }
 
       break;
