@@ -375,7 +375,7 @@ function core_drush_help($section) {
     case 'drush:rsync':
       return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes reserved files and directories for supported VCSs. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Relative paths start from the Drupal root directory if a site alias is used; otherwise they start from the current working directory.");
     case 'drush:drupal-directory':
-      return dt("Return the filesystem path for modules/themes and other key folders. Used by `cli` command for handy commands `cdd` and `lsd`. If you want to use this command directly, you usually want to prefix the command with cd and enclose the command invocation in backticks. See Examples below.");
+      return dt("Return the filesystem path for modules/themes and other key folders.");
     case 'error:DRUSH_DRUPAL_DB_ERROR':
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
       $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
