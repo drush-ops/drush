@@ -97,6 +97,22 @@ function make_drush_help($section) {
 }
 
 /**
+ * Command argument complete callback.
+ *
+ * @return
+ *   Strong glob of files to complete on.
+ */
+function make_make_complete() {
+  return array(
+    'files' => array(
+      'make' => array(
+        'pattern' => '*.make',
+      ),
+    ),
+  );
+}
+
+/**
  * Drush callback; make based on the makefile.
  */
 function drush_make($makefile = NULL, $build_path = NULL) {
