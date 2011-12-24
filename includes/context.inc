@@ -482,7 +482,7 @@ function drush_get_option_override($option_overrides, $option, $default = NULL, 
  *   Optional. The context to check for the option. If this is set, only this context will be searched.
  */
 function drush_sitealias_get_option($site_alias_record, $option, $default = NULL, $prefix = '', $context = NULL) {
-  if (isset($site_alias_record) && array_key_exists($option, $site_alias_record)) {
+  if (is_array($site_alias_record) && array_key_exists($option, $site_alias_record)) {
     return $site_alias_record[$option];
   }
   else {
