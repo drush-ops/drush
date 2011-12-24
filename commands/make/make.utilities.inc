@@ -277,7 +277,7 @@ function make_valid_url($url, $absolute = FALSE) {
 function make_tmp($set = TRUE) {
   static $tmp_dir;
   if (!isset($tmp_dir) && $set) {
-    $tmp_dir = sys_get_temp_dir();
+    $tmp_dir = drush_find_tmp();
     if (strrpos($tmp_dir, '/') == strlen($tmp_dir) - 1) {
       $tmp_dir .= 'make_tmp_' . time() . '_' . uniqid();
     }
@@ -387,12 +387,12 @@ function make_get_data($data_source) {
     $stdin = fopen('php://stdin', 'r');
     $data = '';
     $has_input = FALSE;
-  
+
     while ($line = fgets($stdin)) {
       $has_input = TRUE;
       $data .= $line;
     }
-  
+
     if ($has_input) {
       return $data;
     }

@@ -289,9 +289,10 @@ function drush_save_data_to_temp_file($data) {
 /**
  * Returns the path to a temporary directory.
  *
- * This is a custom version of file_directory_path().
+ * This is a custom version of Drupal's file_directory_path().
  * We can't directly rely on sys_get_temp_dir() as this
- * path is not valid in some setups for Mac.
+ * path is not valid in some setups for Mac, and we want to honor
+ * an environment variable (used by tests).
  */
 function drush_find_tmp() {
   static $temporary_directory;
