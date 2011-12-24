@@ -24,6 +24,7 @@ function make_drush_command() {
     ),
     'examples' => array(
       'drush make example.make example' => 'Build the example.make makefile in the example directory.',
+      'drush make --no-core --contrib-destination=. installprofile.make' => 'Build an installation profile within an existing Drupal site',
     ),
     'options' => array(
       'version' => 'Print the version and exit.',
@@ -103,12 +104,13 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   if (drush_get_option('version', FALSE)) {
     $version = make_version();
     drush_print($version);
-    return make_version();
+    return $version;
   }
 
   if (!($build_path = make_build_path($build_path))) {
-    return;
+    return FALSE;
   }
+
   $info = make_parse_info_file($makefile);
   if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
     return FALSE;
@@ -313,12 +315,10 @@ function make_build_path($build_path) {
     $build_path = '.';
   }
   else {
-    drush_log(dt('Build aborted.'), 'ok');
-    return FALSE;
+    return drush_user_abort(dt('Build aborted.'));
   }
   if ($build_path != '.' && file_exists($build_path)) {
-    drush_set_error(dt('Base path %path already exists', array('%path' => $build_path)));
-    return FALSE;
+    return drush_set_error(dt('Base path %path already exists', array('%path' => $build_path)));
   }
   $saved_path = $build_path;
   return $build_path;

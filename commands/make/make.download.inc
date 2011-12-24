@@ -32,57 +32,6 @@ function make_download_pm($name, $download, $download_location) {
   drush_invoke_process('@none', 'pm-download', array($version), $options);
 }
 
-function make_download_cvs($name, $download, $download_location) {
-  if (!empty($download['module'])) {
-    if (drush_get_option('working-copy')) {
-      if ($download['module'] == 'drupal') {
-        $download['root'] = ":pserver:anonymous:anonymous@drupalcode.org:/cvs/drupal";
-      }
-      elseif (isset($_ENV['CVSROOT'])) {
-        $download['root'] = trim($_ENV['CVSROOT']);
-      }
-      else {
-        drush_log(dt('Please set the CVSROOT variable in your shell environment when using the --working-copy option.'), 'ok');
-      }
-    }
-    // Fallback to anonymous @ cvs.drupal.org
-    if (!isset($download['root'])) {
-      $download['root'] = ":pserver:anonymous:anonymous@drupalcode.org:/cvs/drupal-contrib";
-    }
-  
-    // Checkout or export the module. CVS can't use absolute paths for named
-    // directories, so change into the directory just above the final
-    // destination for the checkout. 
-    $cd_to_directory = dirname($download_location);
-    $destination_directory = basename($download_location);
-  
-    $command = 'cvs -d%s ' . (drush_get_option('working-copy') ? 'checkout' : 'export') . ' -d%s';
-    $args = array($download['root'], $destination_directory);
-    if (isset($download['revision'])) {
-      $command .= ' -r %s';
-      $args[] = $download['revision'];
-    }
-    if (isset($download['date'])) {
-      $command .= ' -D %s';
-      $args[] = $download['date'];
-    }
-    $args[] = $download['module'];
-    $command .= ' %s';
-  
-    array_unshift($args, $command);
-    array_unshift($args, dirname($download_location));
-    if (call_user_func_array('drush_shell_cd_and_exec', $args)) {
-       drush_log(dt('@project downloaded from @module.', array('@project' => $name, '@module' => $download['module'])), 'ok');
-      return $download_location;
-    }
-  }
-  else {
-    $download['module'] = dt("unspecified module");
-  }
-  make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @root @module.', array('@project' => $name, '@root' => $download['root'], '@module' => $download['module'])));
-  return FALSE;
-}
-
 function make_download_file($name, $download, $download_location) {
   if ($filename = _make_download_file($download)) {
     if (!drush_get_option('ignore-checksums') && !_make_verify_checksums($download, $filename)) {
@@ -310,8 +259,6 @@ function make_download_file_unpack_gzip($filename, $download_location) {
       return make_download_file_unpack_tar($file, $download_location);
     }
   }
-  make_error('PACKAGE_ERROR', dt('Could not retrieve package information for @filename.', array('@filename' => $filename)));
-  return;
 }
 
 function make_download_file_unpack_zip($filename, $download_location) {

@@ -10,7 +10,7 @@ Drupal distribution as a single text file.
 Among drush make's capabilities are:
 
 - Downloading Drupal core, as well as contrib modules from drupal.org.
-- Checking code out from CVS, SVN, git, and bzr repositories.
+- Checking code out from SVN, git, and bzr repositories.
 - Getting plain `.tar.gz` and `.zip` files (particularly useful for libraries
   that can not be distributed directly with drupal core or modules).
 - Fetching and applying patches.
@@ -25,81 +25,6 @@ independent of any Drupal sites entirely. See the examples below for instances
 where `drush make` can be used within an existing Drupal site.
 
     drush make [-options] [filename.make] [build path]
-
-
-### Options
-
-    --contrib-destination=path
-
-      Specify a path under which modules and themes should be
-      placed. Defaults to sites/all.
-
-    --force-complete
-
-      Force a complete build even if errors occur.
-
-    --ignore-checksums
-
-      Do not verify md5 checksums for downloaded files.
-
-    --md5
-
-      Output an md5 hash of the current build after completion.
-
-    --no-clean
-
-      Leave temporary build directories in place instead of
-      cleaning up after completion.
-
-    --no-core
-
-      Do not require a Drupal core project to be specified.
-
-    --no-patch-txt
-
-      Do not write a PATCHES.txt file in the directory of
-      each patched project.
-
-    --prepare-install
-
-      Prepare the built site for installation. Generate a
-      properly permissioned settings.php and files directory.
-
-    --tar
-
-      Generate a tar archive of the build. The output filename
-      will be [build path].tar.gz.
-
-    --test
-
-      Run a temporary test build and clean up.
-
-    --translations=languages
-
-      Retrieve translations for the specified comma-separated list
-      of language(s) if available for all projects.
-
-    --working-copy
-
-      Where possible, retrieve a working copy of projects from
-      their respective repositories.
-
-
-### Examples
-
-1. Build a Drupal site at `example/` including Drupal core and any projects
-   defined in the makefile:
-
-        drush make example.make example
-
-2. Build a tarball of the platform above as `example.tar.gz`:
-
-        drush make --tar example.make example
-
-3. Build an installation profile within an existing Drupal site:
-
-        drush make --no-core --contrib-destination=. installprofile.make
-
 
 The `.make` file format
 -----------------------
@@ -247,24 +172,6 @@ Do not use both types of declarations for a single project in your makefile.
 
   `url` - the URL of the repository. Required.
 
-- `download[type] = cvs`
-
-  Use a CVS repository as the source for this project. Options:
-
-  `date` - use the latest revision no later than specified date. See the CVS
-  man page for more about how to use the date flag.
-
-  `root` - the CVS repository to use for this project. Optional. If unspecified,
-  the `CVSROOT` environment value will first be used and finally Drupal contrib
-  CVS is used as a last resort fallback.
-
-  `module` - the CVS module to retrieve. Required.
-
-  `revision` - a specific tag or revision to check out. Optional.
-
-     projects[mytheme][download][type] = "cvs"
-     projects[mytheme][download][module] = "mytheme"
-
 - `download[type] = git`
 
   Use a git repository as the source for this project. Options:
@@ -362,11 +269,10 @@ Properties in the includer takes precedence over the includee.
     projects[views][subdir] = "patched"
 
     ; This line overrides the included makefile, switching the download type
-    ; to a CVS checkout
+    ; to a git clone
     projects[views][type] = "module"
-    projects[views][download][type] = "cvs"
-    projects[views][download][module] = "contributions/modules/views"
-    projects[views][download][revision] = "DRUPAL-6--2"
+    projects[views][download][type] = "git"
+    projects[views][download][url] = "http://git.drupal.org/project/views.git"
 
 A project or library entry of an included makefile can be removed entirely by
 setting the corresponding key to FALSE:
@@ -440,7 +346,7 @@ Generate
 
 Drush make has a primitive makefile generation capability. To use it, simply
 change your directory to the Drupal installation from which you would like to
-generate the file, and run the following command: 
+generate the file, and run the following command:
 
 `drush generate-makefile /path/to/make-file.make`
 
@@ -448,15 +354,11 @@ This will generate a basic makefile. If you have code from other repositories,
 the makefile will not complete - you'll have to fill in some information before
 it is fully functional.
 
-Maintainer
+Maintainers
 ----------
-- Dmitri Gaskin (dmitrig01)
+- Jonathan Hedstrom
+- The rest of the Drush maintainers
 
-Co-maintainers
-------------
-- Adrian Rossouw (adrian)
-- Antoine Beaupré (anarcat)
-- Chad Phillips (hunmonk)
-- Jeff Miccolis (jmiccolis)
-- Young Hahn (yhahn)
-
+Original Author
+----------
+Dmitri Gaskin (dmitrig01)
