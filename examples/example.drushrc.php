@@ -5,10 +5,10 @@
  * cut down on typing of options and avoid mistakes.
  *
  * Rename this file to drushrc.php and optionally copy it to one of
- * five convenient places, listed below in order of precedence:
+ *  places listed below in order of precedence:
  *
  * 1. Drupal site folder (e.g sites/{default|example.com}/drushrc.php).
- * 2. Drupal installation root.
+ * 2. Drupal sites/all/drush folder.
  * 3. In any location, as specified by the --config (-c) option.
  * 4. User's .drush folder (i.e. ~/.drush/drushrc.php).
  * 5. System wide configuration folder (e.g. /etc/drush/drushrc.php).
@@ -34,7 +34,7 @@
  *
  * IMPORTANT NOTE on configuration file loading:
  *
- * At its core, drush works by "bootstrapping" the Drupal environment
+ * At its core, Drush works by "bootstrapping" the Drupal environment
  * in very much the same way that is done during a normal page request
  * from the web server, so most drush commands run in the context
  * of a fully-initialized website.
@@ -46,13 +46,13 @@
  * instances where no Drupal site is selected.  However, they
  * _will_ still be loaded if a site is selected (either via
  * the current working directory or by use of the --root and
- * --uri options), even if the drush command being run does
+ * --uri options), even if the Drush command being run does
  * not bootstrap to the Drupal Root or Drupal Site phase.
  * Note that this is different than Drush-4.x and earlier, which
  * did not load these configuration files until the Drupal site
  * was bootstrapped.
  *
- * The drush commands 'rsync' and 'sql-sync' are special cases.
+ * The Drush commands 'rsync' and 'sql-sync' are special cases.
  * These commands will load the configuration file for the site
  * specified by the source parameter; however, they do not
  * load the configuration file for the site specified by the
@@ -60,7 +60,7 @@
  * for remote sites.
  *
  * See `drush topic docs-bootstrap` for more information on how
- * bootstrapping affects the loading of drush configuration files.
+ * bootstrapping affects the loading of Drush configuration files.
  */
 
 // Specify a particular multisite.

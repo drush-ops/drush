@@ -12,6 +12,7 @@
  *     2. Anywhere in a folder tree below an active module on your site.
  *     3. /usr/share/drush/commands (configurable)
  *     4. In an arbitrary folder specified with the --include option.
+ *     5. Drupal's sites/all/drush folder.
  */
 
 /**

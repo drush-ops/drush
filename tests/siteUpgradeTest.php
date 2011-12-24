@@ -29,7 +29,7 @@ class siteUpgradeCase extends Drush_CommandTestCase {
       'db-url' => UNISH_DB_URL . '/unish_target',
     );
     $contents = $this->file_aliases($aliases);
-    $alias_path = "$root/aliases.drushrc.php";
+    $alias_path = "$root/sites/all/drush/aliases.drushrc.php";
     file_put_contents($alias_path, $contents);
 
     // Create a user in D6.

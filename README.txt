@@ -272,13 +272,16 @@ You can put your Drush command file in a number of places:
 
   a) In a folder specified with the --include option (see `drush topic docs-configuration`).
 
-  b) Along with one of your existing modules. If your command is related to an
+  b) Along with one of your enabled modules. If your command is related to an
      existing module, this is the preferred approach.
 
   c) In a .drush folder in your HOME folder. Note, that you have to create the
      .drush folder yourself.
 
   d) In the system-wide Drush commands folder, e.g. /usr/share/drush/commands
+
+  e) In Drupal's sites/all/drush folder. Note, that you have to create the
+     drush folder yourself.
 
 In any case, it is important that you end the filename with ".drush.inc", so
 that Drush can find it.

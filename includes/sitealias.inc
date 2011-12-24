@@ -242,10 +242,9 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
   }
 
   if (!empty($alias_record)) {
-    // Load the drush config file if there is one associated with this alias
     if (!isset($alias_record['remote']) && !isset($alias_record['#loaded-config'])) {
       if (array_key_exists('root', $alias_record)) {
-        drush_sitealias_add_to_alias_path($alias_record['root']);
+        drush_sitealias_add_to_alias_path($alias_record['root'] . '/sites/all/drush');
       }
       $alias_site_dir = drush_sitealias_local_site_path($alias_record);
 
@@ -253,6 +252,7 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
         // Add the sites folder of this site to the alias search path list
         drush_sitealias_add_to_alias_path($alias_site_dir);
 
+        // Load the drush config file if there is one associated with this alias
         if (!isset($alias_record['config'])) {
           $alias_record['config'] = realpath($alias_site_dir . '/drushrc.php');
         }
@@ -323,7 +323,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
   // look for alias files there.
   $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
   if (isset($drupal_root)) {
-    $site_paths[] = $drupal_root;
+    $site_paths[] = drush_get_context('DRUSH_SELECTED_DRUPAL_SITES_ALL_DRUSH');
   }
   $alias_path = (array) drush_get_context('ALIAS_PATH', array());
   return array_unique(array_merge($context_path, $alias_path, $site_paths));
@@ -703,11 +703,11 @@ function _drush_sitealias_cache_alias($alias_name, $alias_record) {
   $cache["@$alias_name"] = $alias_record;
 
   // If the alias record points at a local site, make sure
-  // that both the drupal root and the site folder for that site
+  // that both the sites/all/drush and the site folder for that site
   // are added to the alias path, so that other alias files
   // stored in those locations become searchable.
-  if (!array_key_exists('remote-host', $alias_record) && array_key_exists('root', $alias_record)) {
-    drush_sitealias_add_to_alias_path($alias_record['root']);
+  if (!array_key_exists('remote-host', $alias_record) && !empty($alias_record['root'])) {
+    drush_sitealias_add_to_alias_path($alias_record['root'] . '/sites/all/drush');
     $site_dir = drush_sitealias_local_site_path($alias_record);
     if (isset($site_dir)) {
       drush_sitealias_add_to_alias_path($site_dir);

@@ -17,7 +17,7 @@ class contextCase extends Drush_CommandTestCase {
     $this->paths = array(
       'custom' => UNISH_SANDBOX,
       'site' =>  $this->site,
-      'drupal' => $this->webroot(),
+      'drupal' => $this->webroot() . '/sites/all/drush',
       'user' => $this->home,
       'home.drush' => $this->home . '/.drush',
       'system' => UNISH_SANDBOX . '/etc/drush',

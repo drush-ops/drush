@@ -1126,11 +1126,13 @@ function drush_is_command($command) {
  * - Folders listed in the 'include' option (see example.drushrc.php).
  * - The system-wide drush commands folder, e.g. /usr/share/drush/commands
  * - The ".drush" folder in the user's HOME folder.
- * - All modules in the current Drupal installation whether they are enabled or
- *   not. Commands implementing hook_drush_load() in MODULE.drush.load.inc with
- *   a return value FALSE will not be loaded.
+ * - sites/all/drush in current Drupal site.
+ * - Folders belonging to enabled modules in the current Drupal site.
  *
- * A drush command file is a file that matches "*.drush.inc".
+ * Commands implementing hook_drush_load() in MODULE.drush.load.inc with
+ * a return value FALSE will not be loaded.
+ *
+ * A Drush command file is a file that matches "*.drush.inc".
  *
  * @see drush_scan_directory()
  *
@@ -1173,6 +1175,10 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
         $searchpath[] = $per_user_config_dir;
       }
 
+      // Include commandfiles located in Drupal's sites/all/drush even before root is bootstrapped.
+      if ($drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT')) {
+        $searchpath[] = $drupal_root . '/sites/all/drush';
+      }
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_SITE:
       // If we are going to stop bootstrapping at the site, then
@@ -1181,7 +1187,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       // or not.  If we are, however, going to continue on to bootstrap
       // all the way to DRUSH_BOOTSTRAP_DRUPAL_FULL, then we will
       // instead wait for that phase, which will more carefully add
-      // only those drush command files that are associated with
+      // only those Drush command files that are associated with
       // enabled modules.
       if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
         $searchpath[] = conf_path() . '/modules';
