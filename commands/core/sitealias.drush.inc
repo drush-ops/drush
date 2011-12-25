@@ -57,6 +57,7 @@ function sitealias_drush_command() {
   $items['site-reset'] = array(
     'description' => 'Reset a persistently set site.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'handle-remote-commands' => TRUE,
   );
   return $items;
 }

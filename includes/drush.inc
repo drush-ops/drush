@@ -958,10 +958,10 @@ function drush_preflight_command_dispatch() {
   $command = drush_parse_command();
   // If the command sets the 'mask-local-cli-options' flag, then we will remove
   // any cli options that appear after the command name form the 'cli' context.
-  // The cli options that appear before the command name are stored in the 
+  // The cli options that appear before the command name are stored in the
   // 'DRUSH_GLOBAL_CLI_OPTIONS' context, so we will just overwrite the cli context
   // with this, after doing the neccessary fixup from short-form to long-form options.
-  if (is_array($command) && array_key_exists('mask-local-cli-options', $command)) {
+  if (is_array($command) && !empty($command['mask-local-cli-options'])) {
     $global_cli_options = drush_get_context('DRUSH_GLOBAL_CLI_OPTIONS', array());
     drush_expand_short_form_options($global_cli_options);
     drush_set_context('cli', $global_cli_options);
@@ -970,7 +970,7 @@ function drush_preflight_command_dispatch() {
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
   // remote command dispatching and site-list command dispatching, and always let
   // the command handler run on the local machine.
-  if (is_array($command) && array_key_exists('handle-remote-commands', $command)) {
+  if (is_array($command) && !empty($command['handle-remote-commands'])) {
     return FALSE;
   }
   if (isset($remote_host)) {

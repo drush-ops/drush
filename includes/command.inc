@@ -919,6 +919,8 @@ function drush_command_defaults($key, $commandfile, $path) {
     'scope' => 'site',
     'drupal dependencies' => array(),
     'drush dependencies' => array(),
+    'handle-remote-commands' => FALSE,
+    'mask-local-cli-options' => FALSE,
     'bootstrap_errors' => array(),
     'topics' => array(),
     'hidden' => FALSE,
