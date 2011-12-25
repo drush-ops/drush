@@ -8,7 +8,8 @@ include_once drupal_get_path('module', 'system') . '/system.install';
  */
 function drush_make_generate($file = NULL) {
   $version_options = _drush_make_generate_get_version_options();
-  $projects = _drush_make_generage_projects($version_options);
+  $all_extensions = drush_get_extensions();
+  $projects = _drush_make_generage_projects($all_extensions, $version_options);
   $contents = _drush_make_generate_makefile_contents($projects);
   
   if (!$file) {
@@ -41,7 +42,7 @@ function _drush_make_generate_get_version_options() {
 /**
  * Generate the $projects makefile array for the current site.
  */
-function _drush_make_generage_projects($version_options) {
+function _drush_make_generage_projects($all_extensions, $version_options) {
   $projects = array();
 
   $release_info = drush_get_option('release-info', 'updatexml');
@@ -80,7 +81,6 @@ function _drush_make_generage_projects($version_options) {
   }
 
   // Iterate installed projects to build $projects array.
-  $all_extensions = drush_get_extensions();
   $extensions = $all_extensions;
   $project_info = drush_get_projects($extensions);
   foreach ($project_info as $name => $project) {
