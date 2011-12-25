@@ -18,14 +18,14 @@ function make_download_pm($name, $download, $download_location) {
 
   $options = array(
     'destination' => dirname($download_location),
-    'yes' => NULL,
+    'yes' => TRUE,
     'package-handler' => 'wget',
   );
   if ($name == 'drupal') {
     $options['drupal-project-rename'] = basename($download_location);
   }
   if (!drush_get_option('no-cache', FALSE)) {
-    $options['cache'] = NULL;
+    $options['cache'] = TRUE;
   }
 
   // Perform actual download with `drush pm-download`.
@@ -331,21 +331,21 @@ function make_download_git($name, $download, $download_location) {
   $url = $wc ? $download['wc_url'] : $download['url'];
 
   $tmp_location = $tmp_path . '/__git__/' . basename($download_location);
-  
+
   drush_mkdir($tmp_path . '/__git__/');
-  
+
   // clone the given repository
   if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
     drush_log(dt('@project cloned from @url.', array('@project' => $name, '@url' => $url)), 'ok');
-  
+
     // GIT Checkout only work on a ready cloned repo. So we switch to branch or to tag (only if we have no branch) after cloneing.
     if ($download['branch'] !== 'master' || $download['tag'] || $download['revision'] || !empty($download['submodule'])) {
-  
+
       // get current directory (for move back later)
       $cwd = getcwd();
       // change path to working copy of cloned repo
       chdir($tmp_location);
-  
+
       // Progress branch / tag / revision download. Ensure that only one option ist set (branch OR tag OR revision)
       // check if branch a other than master
       if ($download['branch'] !== 'master' && !$download['tag'] && !$download['revision']) {
@@ -398,7 +398,7 @@ function make_download_git($name, $download, $download_location) {
       // move back to last current directory (first line)
       chdir($cwd);
     }
-  
+
     // Remove .git/ directory if working-copy flag was not specified.
     if (!$wc && file_exists($tmp_location . '/.git')) {
       drush_shell_exec("rm -rf %s", $tmp_location . '/.git');
