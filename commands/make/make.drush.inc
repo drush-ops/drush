@@ -28,7 +28,7 @@ function make_drush_command() {
     ),
     'options' => array(
       'version' => 'Print the version and exit.',
-      'contrib-destination=path' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
+      'contrib-destination' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
       'force-complete' => 'Force a complete build even if errors occur.',
       'ignore-checksums' => 'Ignore md5 checksums for downloads.',
       'md5' => 'Output an md5 hash of the current build after completion. Use --md5=print to print to stdout.',
@@ -40,7 +40,7 @@ function make_drush_command() {
       'prepare-install' => 'Prepare the built site for installation. Generate a properly permissioned settings.php and files directory.',
       'tar' => 'Generate a tar archive of the build. The output filename will be [build path].tar.gz.',
       'test' => 'Run a temporary test build and clean up.',
-      'translations=languages' => 'Retrieve translations for the specified comma-separated list of language(s) if available for all projects.',
+      'translations' => 'Retrieve translations for the specified comma-separated list of language(s) if available for all projects.',
       'working-copy' => 'Where possible, retrieve a working copy of projects from their respective repositories.',
       'download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
     ),
@@ -57,8 +57,8 @@ function make_drush_command() {
       'drush generate-makefile example.make --include-versions=admin_menu,og,ctools (--exclude-versions)' => 'Generate a makefile with NO projects versioned EXCEPT Admin Menu, OG and CTools.',
     ),
     'options' => array(
-      'exclude-versions(="list")' => 'Exclude all version numbers (default is include all version numbers) or optionally specify a list of projects to exclude from versioning',
-      'include-versions="list"' => 'Include a specific list of projects, while all other projects remain unversioned in the makefile (so implies --exclude-versions)',
+      'exclude-versions' => 'Exclude all version numbers (default is include all version numbers) or optionally specify a list of projects to exclude from versioning',
+      'include-versions' => 'Include a specific list of projects, while all other projects remain unversioned in the makefile (so implies --exclude-versions)',
     ),
     'aliases' => array('generate-makefile'),
   );
