@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Programmatically upgrade a site from Drupal 6 to Druapl 7.
  *
@@ -12,6 +12,9 @@
  *     - updatedb and batch.inc
  */
 
+/**
+ *  @group slow
+ */
 class siteUpgradeCase extends Drush_CommandTestCase {
   function testUpgrade() {
     if (strpos(UNISH_DB_URL, 'sqlite') !== FALSE) {

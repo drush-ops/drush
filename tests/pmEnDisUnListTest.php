@@ -4,6 +4,10 @@
  * @file
  *   Tests for enable, disable, uninstall, pm-list commands.
  */
+
+/*
+ *  @group slow
+ */
 class EnDisUnListCase extends Drush_CommandTestCase {
 
   public function testEnDisUnList() {

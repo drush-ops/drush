@@ -4,6 +4,10 @@
  * @file
  *   Tests for user.drush.inc
  */
+
+/*
+ *  @group slow
+ */
 class userCase extends Drush_CommandTestCase {
 
   /*

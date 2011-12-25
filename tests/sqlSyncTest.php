@@ -8,6 +8,9 @@
 *  overwriting one site with another.
 */
 
+/*
+ *  @group slow
+ */
 class sqlSyncTest extends Drush_CommandTestCase {
 
   /*
