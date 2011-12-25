@@ -7,6 +7,6 @@ includes[] = included.make
 
 ; Final build should contain:
 ; - drupal 6.17
-; - views 2.11
+; - token
 ; - cck 2.6
 ; - eldorado_superfly 1.1
