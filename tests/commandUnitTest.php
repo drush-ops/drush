@@ -46,7 +46,6 @@ EOD;
     $command = $commands['dl'];
 
     $this->assertEquals('dl', current($command['aliases']));
-    $this->assertEquals('download', current($command['deprecated-aliases']));
     $this->assertContains('version_control', $command['engines']);
     $this->assertContains('package_handler', $command['engines']);
     $this->assertEquals('pm-download', $command['command']);

@@ -63,7 +63,6 @@ function watchdog_drush_command() {
       'drush watchdog-delete --type=cron' => 'Delete all messages of type cron.',
     ),
     'aliases' => array('wd-del', 'wd-delete'),
-    'deprecated-aliases' => array('wd'),
   );
   return $items;
 }

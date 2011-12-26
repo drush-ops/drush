@@ -150,10 +150,6 @@ function drush_dispatch($command, $arguments = array()) {
       return FALSE;
     }
 
-    // Print a warning if someone tries to use a deprecated alias.
-    if (isset($command['deprecated'])) {
-      drush_log(dt('Warning: The command name "!deprecated" is deprecated.  Please use a recommended form instead (!recommended).', array('!deprecated' => $command['deprecated-name'], '!recommended' => implode(',', array_merge(array($command['command']), $command['aliases'])))), 'warning');
-    }
     // Call the callback function of the active command.
     $return = call_user_func_array($command['callback'], $command['arguments']);
   }
@@ -873,16 +869,6 @@ function drush_get_commands() {
             $commands[$alias]['is_alias'] = TRUE;
           }
         }
-        // Do the same operation on the deprecated aliases.
-        if (isset($command['deprecated-aliases']) && count($command['deprecated-aliases'])) {
-          foreach ($command['deprecated-aliases'] as $alias) {
-            $commands[$alias] = $command;
-            $commands[$alias]['is_alias'] = TRUE;
-            $commands[$alias]['deprecated'] = TRUE;
-            $commands[$alias]['deprecated-name'] = $alias;
-          }
-        }
-
       }
     }
   }
@@ -914,7 +900,6 @@ function drush_command_defaults($key, $commandfile, $path) {
     'allow-additional-options' => FALSE,
     'examples' => array(),
     'aliases' => array(),
-    'deprecated-aliases' => array(),
     'core' => array(),
     'scope' => 'site',
     'drupal dependencies' => array(),

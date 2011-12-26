@@ -139,7 +139,6 @@ function core_drush_command() {
     'allow-additional-options' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('scr'),
-    'deprecated-aliases' => array('script'),
     'topics' => array('docs-examplescript', 'docs-scripts'),
   );
   $items['core-execute'] = array(
@@ -184,7 +183,6 @@ function core_drush_command() {
       'drush rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
     ),
     'aliases' => array('rsync'),
-    'deprecated-aliases' => array('sync'),
     'topics' => array('docs-aliases'),
   );
   $items['site-install'] = array(
@@ -216,7 +214,6 @@ function core_drush_command() {
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
     'aliases' => array('si'),
-    'deprecated-aliases' => array('installsite', 'is'),
   );
   $items['drupal-directory'] = array(
     'description' => 'Return path to a given module/theme directory.',

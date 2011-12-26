@@ -25,18 +25,21 @@ class completeCase extends Drush_CommandTestCase {
     $this->drush('php-eval', array('drush_complete_cache_clear();'));
     // Confirm we get cache rebuilds for runs both in and out of a site
     // which is expected since these should resolve to separate cache IDs.
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke', FALSE);
-    $this->verifyComplete('uni', 'uninstall', 'uninstall', FALSE);
+    $this->verifyComplete('@dev uni', 'unit', 'unit-invoke', FALSE);
+    // n.b. there is no "uninstall" any more; maybe this test needs a better command to test with
+    $this->verifyComplete('pm-uni', 'pm-uninstall', 'pm-uninstall', FALSE);
     // Next, rerun and check results to confirm cache IDs are generated
     // correctly on our fast bootstrap when returning the cached result.
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke');
-    $this->verifyComplete('uni', 'uninstall', 'uninstall');
+    $this->verifyComplete('@dev uni', 'unit', 'unit-invoke');
+    // n.b. there is no "uninstall" any more; maybe this test needs a better command to test with
+    $this->verifyComplete('pm-uni', 'pm-uninstall', 'pm-uninstall');
 
     // Test cache clearing for a completion type, which should be effective only
     // for current environment - i.e. a specific site should not be effected.
     $this->drush('php-eval', array('drush_complete_cache_clear("command-names");'));
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke');
-    $this->verifyComplete('uni', 'uninstall', 'uninstall', FALSE);
+    $this->verifyComplete('@dev uni', 'unit', 'unit-invoke');
+    // n.b. there is no "uninstall" any more; maybe this test needs a better command to test with
+    $this->verifyComplete('pm-uni', 'pm-uninstall', 'pm-uninstall', FALSE);
 
     // Test cache clearing for a command specific completion type, which should
     // be effective only for current environment. Prime caches first.

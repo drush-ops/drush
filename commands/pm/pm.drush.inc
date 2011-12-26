@@ -105,7 +105,6 @@ function pm_drush_command() {
       'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
     ),
     'aliases' => array('en'),
-    'deprecated-aliases' => array('enable'),
   );
   $items['pm-disable'] = array(
     'description' => 'Disable one or more extensions (modules or themes).',
@@ -113,7 +112,6 @@ function pm_drush_command() {
       'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to disable multiple matches.',
     ),
     'aliases' => array('dis'),
-    'deprecated-aliases' => array('disable'),
   );
   $items['pm-info'] = array(
     'description' => 'Show detailed info for one or more extensions (modules or themes).',
@@ -132,7 +130,6 @@ function pm_drush_command() {
     'arguments' => array(
       'modules' => 'A list of modules.',
     ),
-    'deprecated-aliases' => array('uninstall'),
   );
   $items['pm-list'] = array(
     'description' => 'Show a list of available extensions (modules and themes).',
@@ -146,13 +143,11 @@ function pm_drush_command() {
       'pipe' => 'Returns a whitespace delimited list of the names of the resulting extensions.',
     ),
     'aliases' => array('pml'),
-    'deprecated-aliases' => array('sm'),
   );
   $items['pm-refresh'] = array(
     'description' => 'Refresh update status information.',
     'drupal dependencies' => array($update),
     'aliases' => array('rf'),
-    'deprecated-aliases' => array('refresh'),
   );
   $items['pm-updatecode'] = array(
     'description' => 'Update Drupal core and contrib projects to latest recommended releases.',
@@ -168,7 +163,6 @@ function pm_drush_command() {
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'aliases' => array('upc'),
-    'deprecated-aliases' => array('updatecode'),
     'topics' => array('docs-policy'),
     'engines' => array(
       'version_control',
@@ -180,7 +174,6 @@ function pm_drush_command() {
     'description' => 'Update Drupal core and contrib projects and apply any pending database updates (Same as pm-updatecode + updatedb).',
     'drupal dependencies' => array($update),
     'aliases' => array('up'),
-    'deprecated-aliases' => array('update'),
     'allow-additional-options' => array('pm-updatecode', 'updatedb'),
     'engines' => array(
       'version_control',
@@ -255,7 +248,6 @@ function pm_drush_command() {
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('dl'),
-    'deprecated-aliases' => array('download'),
     'engines' => array(
       'version_control',
       'package_handler',
