@@ -71,7 +71,7 @@ function drush_sitealias_simplify_names($site_list) {
  *         'site1' => array('root' => ...),
  *         'site2' => array('root' => ...)
  *       )
- *   An array of site specifications.  
+ *   An array of site specifications.
  *   @see drush_sitealias_get_record() for the format of site specifications.
  * @return
  *   An array of alias records
@@ -1903,7 +1903,7 @@ function drush_sitealias_site_get() {
 function drush_sitealias_get_envar_filename() {
   $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp/';
 
-  if (is_dir($tmp) && is_writable($tmp)) {
+  if (function_exists('posix_getppid') && is_dir($tmp) && is_writable($tmp)) {
     return $tmp . '/drush-drupal-site-' . posix_getppid();
   }
   else {
