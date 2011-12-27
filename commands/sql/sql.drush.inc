@@ -1039,7 +1039,7 @@ function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
  * @return boolean
  */
 function drush_sql_db_exists($db_spec) {
-  if ($db_spec['driver'] == 'sqlite') {
+  if  ($db_spec['driver'] == 'sqlite') {
     return file_exists($db_spec['database']);
   }
 

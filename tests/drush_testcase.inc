@@ -420,9 +420,6 @@ function unish_init() {
   $home = UNISH_SANDBOX . '/home';
   putenv("HOME=$home");
   putenv("HOMEDRIVE=$home");
-  
-  putenv("TEMP=" . UNISH_TMP);
-  putenv("TMP=" . UNISH_TMP);
 
   putenv('ETC_PREFIX=' . UNISH_SANDBOX);
   putenv('SHARE_PREFIX=' . UNISH_SANDBOX);
