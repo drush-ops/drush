@@ -115,7 +115,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
   $command = call_user_func_array('sprintf', $args);
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-    drush_print('Executing: ' . $command);
+    drush_log('Executing: ' . $command, 'notice');
   }
 
   if (!drush_get_context('DRUSH_SIMULATE')) {
@@ -129,7 +129,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
 
       if (drush_get_context('DRUSH_DEBUG')) {
         foreach ($output as $line) {
-          drush_print($line, 2);
+          drush_log($line, 'notice');
         }
       }
 
