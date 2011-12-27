@@ -124,9 +124,6 @@ d="${d%/*}"
 # If we have found drush.complete.sh, then source it.
 if [ -f $d/drush.complete.sh ] ; then
   . $d/drush.complete.sh
-  alias drush_complete='complete'
-else
-  alias drush_complete='echo'
 fi
 
 # Create an alias for every drush site alias.  This allows
@@ -134,7 +131,9 @@ fi
 for a in $(drush sa); do
   alias $a="drush $a"
   ## Register another completion function for every alias to drush.
-  drush_complete -o nospace -F _drush_completion $a > /dev/null
+  if [ -n "`type _drush_completion 2>/dev/null`" ] ; then
+    complete -o nospace -F _drush_completion $a > /dev/null
+  fi
 done
 
 # We extend the cd command to allow convenient
