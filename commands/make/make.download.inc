@@ -20,12 +20,13 @@ function make_download_pm($name, $download, $download_location) {
     'destination' => dirname($download_location),
     'yes' => TRUE,
     'package-handler' => 'wget',
+    'cache' => TRUE,
   );
   if ($name == 'drupal') {
     $options['drupal-project-rename'] = basename($download_location);
   }
-  if (!drush_get_option('no-cache', FALSE)) {
-    $options['cache'] = TRUE;
+  if (drush_get_option('no-cache', FALSE)) {
+    unset($options['cache']);
   }
 
   // Perform actual download with `drush pm-download`.
