@@ -184,7 +184,8 @@ function _drush_generate_custom_project($name, $extension, $version_options) {
     // pausibly be a project, then there is nothing we can do.
     // (We can't tell Drush make to download some sub-part of a repo,
     // can we?)
-    if ($project_name = _drush_generate_validate_repo_location($repo_root)) {
+    if ($repo_project_name = _drush_generate_validate_repo_location($repo_root)) {
+      $project_name = $repo_project_name;
       drush_shell_cd_and_exec($repo_root, 'git remote show origin');
       $output = drush_shell_exec_output();
       foreach ($output as $line) {
