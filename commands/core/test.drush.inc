@@ -80,7 +80,12 @@ function drush_test_run_validate($specs = NULL) {
  *   A comman delimited string of test classes or group names.
  */
 function drush_test_run($specs = NULL) {
-  cache_clear_all('simpletest', 'cache');
+  if (drush_drupal_major_version() >= 7) {
+    cache()->delete('simpletest');
+  }
+  else {
+    cache_clear_all('simpletest', 'cache');
+  }
 
   // Retrieve all tests and groups.
   list($groups, $all_tests) = drush_test_get_all_tests();
