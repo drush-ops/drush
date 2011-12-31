@@ -41,7 +41,7 @@ function make_drush_command() {
       'tar' => 'Generate a tar archive of the build. The output filename will be [build path].tar.gz.',
       'test' => 'Run a temporary test build and clean up.',
       'translations' => 'Retrieve translations for the specified comma-separated list of language(s) if available for all projects.',
-      'working-copy' => 'Where possible, retrieve a working copy of projects from their respective repositories.',
+      'working-copy' => 'Preserves VCS directories, like .git, for projects downloaded using such methods.',
       'download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
     ),
     'topics' => array('docs-make', 'docs-make-example'),
