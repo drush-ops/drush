@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Downloads the given package to the destination directory.
+ *
+ * @return
+ *   The destination path on success, FALSE on failure.
+ */
 function make_download_factory($name, $download, $download_location) {
   $function = 'make_download_' . $download['type'];
   if (function_exists($function)) {
@@ -33,6 +39,12 @@ function make_download_pm($name, $download, $download_location) {
   drush_invoke_process('@none', 'pm-download', array($version), $options);
 }
 
+/**
+ * Downloads a file to the specified location.
+ *
+ * @return
+ *   The destination directory on success, FALSE on failure.
+ */
 function make_download_file($name, $download, $download_location) {
   if ($filename = _make_download_file($download)) {
     if (!drush_get_option('ignore-checksums') && !_make_verify_checksums($download, $filename)) {
@@ -158,7 +170,7 @@ function _make_download_file($download) {
       }
 
       if (!$success) {
-        return;
+        return FALSE;
       }
       // Much more useful in reverse order.
       $headers = array_reverse($headers);
@@ -211,25 +223,39 @@ function _make_download_file($download) {
   return FALSE;
 }
 
+/**
+ * Unpacks a file to the specified download location.
+ *
+ * @return
+ *   The download location on success, FALSE on failure.
+ */
 function make_download_file_unpack($filename, $download_location, $name) {
   $extension = array_pop(explode('.', $filename));
+  $success = FALSE;
   switch ($extension) {
     case 'gz':
     case 'tgz':
       // I'd like to just use tar -z, but apparently it breaks on windoze. Why do they always have to ruin everything?
-      make_download_file_unpack_gzip($filename, $download_location);
+      $success = make_download_file_unpack_gzip($filename, $download_location);
       break;
     case 'tar':
-      make_download_file_unpack_tar($filename, $download_location);
+      $success = make_download_file_unpack_tar($filename, $download_location);
       break;
     case 'zip':
-      make_download_file_unpack_zip($filename, $download_location);
+      $success = make_download_file_unpack_zip($filename, $download_location);
       break;
     default:
-      drush_shell_exec('mv %s %s', $filename, $download_location . ($name ? '/' . $name : ''));
+      $success = drush_shell_exec('mv %s %s', $filename, $download_location . ($name ? '/' . $name : ''));
   }
+  return $success ? $download_location : FALSE;
 }
 
+/**
+ * Unpacks a tar file to the specified location.
+ *
+ * @return
+ *   TRUE or FALSE depending on whether the operation was successful.
+ */
 function make_download_file_unpack_tar($filename, $download_location) {
   $tmp_path = make_tmp();
 
@@ -238,9 +264,15 @@ function make_download_file_unpack_tar($filename, $download_location) {
   drush_mkdir($tmp_path . '/__unzip__');
   drush_shell_exec('tar -x -C %s -f %s', $tmp_path . '/__unzip__', $filename);
 
-  _make_download_file_move($tmp_path, $filename, $download_location);
+  return _make_download_file_move($tmp_path, $filename, $download_location);
 }
 
+/**
+ * Unpacks a gzip file to the specified location.
+ *
+ * @return
+ *   TRUE or FALSE depending on whether the operation was successful.
+ */
 function make_download_file_unpack_gzip($filename, $download_location) {
   // Find out where contents will end up. Retrieve last column of output using awk.
   drush_shell_exec("gzip --list %s", $filename);
@@ -270,7 +302,7 @@ function make_download_file_unpack_zip($filename, $download_location) {
   drush_mkdir($tmp_path . '/__unzip__');
   drush_shell_exec("unzip %s -d %s", $filename, $tmp_path . '/__unzip__');
 
-  _make_download_file_move($tmp_path, $filename, $download_location);
+  return _make_download_file_move($tmp_path, $filename, $download_location);
 }
 
 function _make_download_file_move($tmp_path, $filename, $download_location) {
@@ -298,6 +330,7 @@ function _make_download_file_move($tmp_path, $filename, $download_location) {
   if (file_exists($tmp_path . '/__unzip__')) {
     drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__');
   }
+  return TRUE;
 }
 
 
@@ -312,6 +345,12 @@ function make_download_post($name, $download, $download_location) {
   return make_download_file($name, $download, $download_location);
 }
 
+/**
+ * Checks out a git repository to the specified download location.
+ *
+ * @return
+ *   The download location on success, FALSE otherwise.
+ */
 function make_download_git($name, $download, $download_location) {
   $tmp_path = make_tmp();
   $wc = drush_get_option('working-copy');
@@ -415,6 +454,12 @@ function make_download_git($name, $download, $download_location) {
   return FALSE;
 }
 
+/**
+ * Checks out a Bazaar repository to the specified download location.
+ *
+ * @return
+ *   The download location on success, FALSE otherwise.
+ */
 function make_download_bzr($name, $download, $download_location) {
   $tmp_path = make_tmp();
   $tmp_location = $tmp_path . '/__bzr__/' . basename($download_location);
@@ -457,7 +502,12 @@ function make_download_bzr($name, $download, $download_location) {
   return FALSE;
 }
 
-
+/**
+ * Checks out an SVN repository to the specified download location.
+ *
+ * @return
+ *   The download location on success, FALSE otherwise.
+ */
 function make_download_svn($name, $download, $download_location) {
   if (!empty($download['url'])) {
     if (!empty($download['interactive'])) {
