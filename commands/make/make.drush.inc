@@ -203,6 +203,15 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       'subdir'              => '',
       'directory_name'      => '',
     );
+    // If download components are specified, but not the download
+    // type, default to git. Additionally, if the 'revision' parameter is
+    // passed at the top level, this is short-hand for download revision.
+    if (isset($project['revision']) && !isset($project['download'])) {
+      $project['download']['revision'] = $project['revision'];
+    }
+    if (isset($project['download']) && !isset($project['download']['type'])) {
+      $project['download']['type'] = 'git';
+    }
     if (!isset($project['l10n_url']) && ($project['location'] == RELEASE_INFO_DEFAULT_URL)) {
       $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
     }

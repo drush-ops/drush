@@ -72,6 +72,13 @@ projects[data][download][type] = git
 projects[data][download][url] = http://git.drupal.org/project/views.git
 projects[data][download][revision] = DRUPAL-6--3
 
+; For projects on drupal.org, some shorthand is available. If any
+; download parameters are specified, but not type, the default is git.
+projects[cck_signup][download][revision] = "2fe932c"
+
+; Specifying 'revision' in the top level is shorthand for download revision.
+projects[context_admin][revision] = "eb9f05e"
+
 ; Clone a project from github.
 
 projects[tao][type] = theme

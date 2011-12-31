@@ -43,6 +43,10 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('git');
   }
 
+  function testMakeGitSimple() {
+    $this->runMakefileTest('git-simple');
+  }
+
   function testMakeNoPatchTxt() {
     $this->runMakefileTest('no-patch-txt');
   }
@@ -127,6 +131,13 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'build'    => TRUE,
         'md5' => 'bc7e559efce26252c961f27753a50bac',
         'options'  => array('no-core' => NULL),
+      ),
+      'git-simple' => array(
+        'name' => 'Simple git integration',
+        'makefile' => 'git-simple.make',
+        'build' => TRUE,
+        'md5' => '6754a6814d4213326513ea750e6d5b65',
+        'options' => array('no-core' => NULL),
       ),
       'no-patch-txt' => array(
         'name'     => 'Test --no-patch-txt option',
