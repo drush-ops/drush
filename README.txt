@@ -107,6 +107,12 @@ If you want to use php 5.3.x, add this line instead
 If you have MAMP v.1.84 or lower, this configuration will work for both version of php:
 
   export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5/bin:$PATH"
+  
+If you have done this and are still getting a "no such file or directory" error from
+PDO::__construct, try this:
+
+  sudo mkdir /var/mysql
+  sudo ln -s /Applications/MAMP/tmp/mysql/mysql.sock /var/mysql/mysql.sock
 
 Additionally, you may need to adjust your php.ini settings before you can use
 drush successfully. See CONFIGURING PHP.INI below for more details on how to proceed.
