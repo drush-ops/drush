@@ -324,15 +324,17 @@ function drush_archive_restore($file, $site_id = NULL) {
         $settingsfile = $destination . '/' . $site['sitedir'] . '/settings.php';
         chmod($settingsfile, 0755); // Need to do something here or else we can't write.
         file_put_contents($settingsfile, "\n// Appended by drush archive-restore command.\n", FILE_APPEND);
-        if (drush_drupal_major_version() >= 7) {
-          file_put_contents($settingsfile, "\n" . '$databases = \'' . drush_sitealias_convert_db_from_db_url($db_url) . "';\n", FILE_APPEND);
+        if (drush_drupal_major_version($destination) >= 7) {
+          file_put_contents($settingsfile, "\n" . '$databases = ' . var_export(drush_sitealias_convert_db_from_db_url($db_url), TRUE) . ";\n", FILE_APPEND);
         }
         else {
           file_put_contents($settingsfile, "\n" . '$db_url = \'' . $db_url . "';\n", FILE_APPEND);
         }
+        drush_log(dt('Drush appended the new database configuration at settings.php. Optionally remove the old configuration manually.'), 'ok');
       }
     }
   }
+  drush_log(dt('Archive restored to !dest', array('!dest' => $destination)), 'ok');
   return $destination;
 }
 
