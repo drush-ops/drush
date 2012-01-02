@@ -221,7 +221,14 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
     $request = make_prepare_request($project);
 
     if ($project['location'] != RELEASE_INFO_DEFAULT_URL && !isset($project['type'])) {
+      // Set the cache option based on our '--no-cache' option.
+      $cache_before = drush_get_option('cache');
+      if (!drush_get_option('no-cache', FALSE)) {
+        drush_set_option('cache', TRUE);
+      }
       $project_type = release_info_check_project($request, 'core');
+      // Restore the previous '--cache' option value.
+      drush_set_option('cache', $cache_before);
       $project['download_type'] = ($project_type ? 'core' : 'contrib');
     }
     elseif (!empty($project['type'])) {
@@ -256,7 +263,14 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
         // For convenience: define $request to be compatible with release_info engine.
         // TODO: refactor to enforce 'make' to internally work with release_info keys.
         $request = make_prepare_request($project, $type);
+        // Set the cache option based on our '--no-cache' option.
+        $cache_before = drush_get_option('cache');
+        if (!drush_get_option('no-cache', FALSE)) {
+          drush_set_option('cache', TRUE);
+        }
         $release = release_info_fetch($request);
+        // Restore the previous '--cache' option value.
+        drush_set_option('cache', $cache_before);
         // Translate release_info key for project_type to drush make.
         $project['type'] = $request['project_type'];
         if (!isset($project['download'])) {
