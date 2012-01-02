@@ -416,6 +416,9 @@ function drush_start_browser($uri = NULL) {
       else if (drush_shell_exec('which open')) {
         $browser = 'open';
       }
+      else if (!drush_has_bash()) {
+        $browser = 'start';
+      }
       else {
         // Can't find a valid browser.
         $browser = FALSE;
@@ -424,7 +427,7 @@ function drush_start_browser($uri = NULL) {
     if ($browser && !drush_get_context('DRUSH_SIMULATE')) {
       $pipes = array();
       drush_log(dt('Opening browser at !uri', array('!uri' => $uri)));
-      proc_close(proc_open($browser . ' ' . drush_escapeshellarg($uri) . ' 2> /dev/null &', array(), $pipes));
+      proc_close(proc_open($browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
       return TRUE;
     }
   }

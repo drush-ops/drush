@@ -1052,7 +1052,8 @@ function drush_sql_db_exists($db_spec) {
     case 'mysql':
       $sql = "SELECT 1;";
       // Suppress ugly output. Redirect STDERR and STDOUT. We just need exit code.
-      return drush_shell_exec("$connect_yes_db -e \"$sql\" 2> /dev/null > /dev/null");
+      $bit_bucket = drush_bit_bucket();
+      return drush_shell_exec("$connect_yes_db -e \"$sql\" 2> $bit_bucket > $bit_bucket");
     case 'pgsql':
       $sql = "SELECT 1 AS result FROM pg_database WHERE datname='$database'";
       drush_shell_exec("$connect_no_db -t -c \"$sql\"");

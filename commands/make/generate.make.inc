@@ -173,7 +173,7 @@ function _drush_generate_custom_project($name, $extension, $version_options) {
   // stored in a folder named after its project, and there are
   // no subfolders between the .info file and the project root.
   $project_name = basename($location);
-  drush_shell_cd_and_exec($location, 'git rev-parse --git-dir 2> /dev/null');
+  drush_shell_cd_and_exec($location, 'git rev-parse --git-dir 2> ' . drush_bit_bucket());
   $output = drush_shell_exec_output();
   if (!empty($output)) {
     $git_dir = $output[0];

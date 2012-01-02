@@ -630,6 +630,19 @@ function drush_has_bash($os = NULL) {
   return drush_is_cygwin($os) || !drush_is_windows($os);
 }
 
+/*
+ * Checks operating system and returns
+ * supported bit bucket folder.
+ */
+function drush_bit_bucket() {
+  if (drush_has_bash()) {
+    return '/dev/null';
+  }
+  else {
+    return 'nul';
+  }
+}
+
 /**
  * Return the OS we are running under.
  *
