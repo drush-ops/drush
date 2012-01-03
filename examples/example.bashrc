@@ -26,6 +26,7 @@
 #       sa               - drush site-alias
 #       sa               - drush site-alias --local (show local site aliases)
 #       st               - drush core-status
+#       use              - drush site-set
 #
 # Aliases for drush commands that work on the current drupal site:
 #
@@ -39,6 +40,7 @@
 #       up               - drush pm-update
 #       upc              - drush pm-updatecode
 #       updb             - drush uptatedb
+#       q                - drush sql-query
 #
 # Provides several common shell commands to work better with drush:
 #
@@ -81,6 +83,7 @@ alias ev='drush php-eval'
 alias sa='drush site-alias'
 alias lsa='drush site-alias --local'
 alias st='drush core-status'
+alias use='drush site-set'
 
 # Aliases for drush commands that work on the current drupal site
 alias cc='drush cache-clear'
@@ -93,6 +96,7 @@ alias unin='drush pm-uninstall'
 alias up='drush pm-update'
 alias upc='drush pm-updatecode'
 alias updb='drush uptatedb'
+alias q='drush sql-query'
 
 # Overrides for standard shell commands. Uncomment to enable.  Alias
 # cd='cdd' if you want to be able to use cd @remote to ssh to a
