@@ -107,11 +107,11 @@ alias updb='drush uptatedb'
 # Find the drush executable and test it.
 d=$(which drush)
 # If no program is found try an alias.
-if [ -z $d ]; then
+if [ -z "$d" ]; then
   d=$(alias drush | cut -f 2 -d '=' | sed "s/'//g")
 fi
 # Test that drush is an executable.
-[ -x $d ] || exit 0
+[ -x "$d" ] || exit 0
 
 # If the file found is a symlink, resolve to the actual file.
 if [ -h "$d" ] ; then
@@ -122,8 +122,8 @@ fi
 # Get the directory that drush is stored in.
 d="${d%/*}"
 # If we have found drush.complete.sh, then source it.
-if [ -f $d/drush.complete.sh ] ; then
-  . $d/drush.complete.sh
+if [ -f "$d/drush.complete.sh" ] ; then
+  . "$d/drush.complete.sh"
 fi
 
 # Create an alias for every drush site alias.  This allows
