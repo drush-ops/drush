@@ -1,11 +1,11 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for enable, disable, uninstall, pm-list commands.
  */
 
-/*
+/**
  *  @group slow
  */
 class EnDisUnListCase extends Drush_CommandTestCase {
@@ -52,5 +52,12 @@ class EnDisUnListCase extends Drush_CommandTestCase {
     $this->drush('variable-get', array('devel_query_display'), $options, NULL, NULL, self::EXIT_ERROR);
     $output = $this->getOutput();
     $this->assertEmpty($output, 'Devel variable was uninstalled.');
+
+    // Test pm-enable is able to download dependencies.
+    $this->drush('pm-download', array('pathauto'), $options);
+    $this->drush('pm-enable', array('pathauto'), $options + array('resolve-dependencies' => TRUE));
+    $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
+    $list = $this->getOutputAsList();
+    $this->assertTrue(in_array('token', $list));
   }
 }
