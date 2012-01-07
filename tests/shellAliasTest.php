@@ -9,7 +9,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
   /**
    * Write a config file that contains the shell-aliases array.
    */
-  static function setupBeforeClass() {
+  static function setUpBeforeClass() {
     parent::setUpBeforeClass();
     $contents = "
       <?php

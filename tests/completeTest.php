@@ -4,7 +4,7 @@ class completeCase extends Drush_CommandTestCase {
   /**
    * Write a config file that contains our configuration file.
    */
-  static function setupBeforeClass() {
+  static function setUpBeforeClass() {
     parent::setUpBeforeClass();
     $contents = "
       <?php

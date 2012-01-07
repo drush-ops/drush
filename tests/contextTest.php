@@ -11,6 +11,7 @@
 class contextCase extends Drush_CommandTestCase {
 
   function setUpPaths() {
+    $this->log("webroot: ".$this->webroot()."\n");
     $this->env = key($this->sites);
     $this->site = $this->webroot() . '/sites/' . $this->env;
     $this->home = UNISH_SANDBOX . '/home';
@@ -33,7 +34,7 @@ class contextCase extends Drush_CommandTestCase {
    * Try to write a tiny drushrc.php to each place that drush checks. Also
    * write a sites/dev/aliases.drushrc.php file to the sandbox.
    */
-  function setup() {
+  function setUp() {
     parent::setUp();
 
     $this->setUpDrupal();
@@ -43,7 +44,7 @@ class contextCase extends Drush_CommandTestCase {
     foreach ($this->paths as $key => $path) {
       $contents = <<<EOD
 <?php
-// Written by Drush's contextCase::setup(). This file is safe to delete.
+// Written by Drush's contextCase::setUp(). This file is safe to delete.
 
 \$options['contextConfig'] = '$key';
 \$command_specific['unit-eval']['contextConfig'] = '$key-specific';
@@ -71,7 +72,7 @@ EOD;
 
   /**
    * These should be different tests but I could not work out how to do that
-   * without calling setup() twice. setupBeforeClass() did not work out (for MW).
+   * without calling setUp() twice. setUpBeforeClass() did not work out (for MW).
    */
   function testContext() {
     $this->ConfigSearchPaths();

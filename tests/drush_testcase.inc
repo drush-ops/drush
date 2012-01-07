@@ -29,7 +29,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Runs after each test case. Remove sandbox directory.
+   * Runs after all tests in a class are run. Remove sandbox directory.
    */
   public static function tearDownAfterClass() {
     if (file_exists(UNISH_SANDBOX)) {

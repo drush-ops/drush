@@ -65,7 +65,7 @@ class pmDownloadCase extends Drush_CommandTestCase {
     $this->assertFileExists(UNISH_SANDBOX . '/' . $destination . '/devel/README.txt');
 }
 
-public function testSelect() {
+  public function testSelect() {
     $options = array(
       'cache' => NULL,
       'no' => NULL,

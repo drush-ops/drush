@@ -12,7 +12,7 @@
  */
 class pmUpdateCode extends Drush_CommandTestCase {
 
-  /*
+  /**
    * Download old core and older contrib releases which will always need updating.
    */
   public function setUp() {
