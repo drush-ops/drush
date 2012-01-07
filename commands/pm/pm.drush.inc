@@ -648,7 +648,7 @@ function drush_pm_find_project_from_extension($extension) {
     $release_info = drush_get_option('release-info', 'updatexml');
     drush_include_engine('release_info', $release_info);
     $request = pm_parse_project_version(array($extension));
-    if (release_info_check_project($request, 'module')) {
+    if (release_info_check_project($request[$extension], 'module')) {
       $result = $extension;
     }
   }

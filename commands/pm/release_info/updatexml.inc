@@ -84,7 +84,7 @@ function release_info_get_releases($requests) {
 /**
  * Check if a project is available in a update service.
  *
- * It also checks for consistency by comparing given project type with to the
+ * It also checks for consistency by comparing given project type and the
  * type obtained from the update service.
  */
 function release_info_check_project($request, $type) {
