@@ -4,6 +4,16 @@
  * Implementation of drush_COMMAND_validate().
  */
 function drush_pm_download_validate() {
+  // Accomodate --select to the values accepted by release_info_fetch().
+  $select = drush_get_option('select', 'auto');
+  if ($select === TRUE) {
+    drush_set_option('select', 'always');
+  }
+  else if ($select === FALSE) {
+    drush_set_option('select', 'never');
+  }
+  $select = drush_get_option('select', FALSE);
+
   // Validate the user specified destination directory.
   $destination = drush_get_option('destination');
   if (!empty($destination)) {
@@ -86,7 +96,7 @@ function drush_pm_download() {
   // Get release history for each request and download the project.
   $source = drush_get_option('source', RELEASE_INFO_DEFAULT_URL);
   $dev = drush_get_option('dev', FALSE);
-  $select = drush_get_option('select', FALSE);
+  $select = drush_get_option('select', 'auto');
   $all = drush_get_option('all', FALSE);
   foreach ($requests as $name => $request) {
     $request['status url'] = $source;

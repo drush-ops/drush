@@ -17,7 +17,12 @@ define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
  *   be expanded with the project type.
  * @param Boolean $dev
  *   Forces to choose a -dev release.
- * @param Boolean $select
+ * @param String $select
+ *   Strategy for selecting a release, should be one of:
+ *    - auto: Try to select the latest release, if none found allow the user
+ *            to choose.
+ *    - always: Force the user to choose a release.
+ *    - never: Try to select the latest release, if none found then fail.
  *   If no supported release is found, allow to ask the user to choose one.
  * @param Boolean $all
  *   In case $select = TRUE this indicates that all available releases will be
@@ -26,7 +31,12 @@ define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
  * @return
  *  The selected release xml object.
  */
-function release_info_fetch(&$request, $dev = FALSE, $select = FALSE, $all = FALSE) {
+function release_info_fetch(&$request, $dev = FALSE, $select = 'never', $all = FALSE) {
+  if (!in_array($select, array('auto', 'never', 'always'))) {
+    drush_log(dt("Error: select strategy must be one of: auto, never, always", array(), 'error'));
+    return FALSE;
+  }
+
   $xml = updatexml_get_release_history_xml($request);
   if (!$xml) {
     return FALSE;
@@ -34,14 +44,16 @@ function release_info_fetch(&$request, $dev = FALSE, $select = FALSE, $all = FAL
 
   $request['project_type'] = updatexml_determine_project_type($xml);
 
-  if (!$select) {
+  if ($select != 'always') {
     // Try to identify the most appropriate release.
     $release = updatexml_parse_release($request, $xml, $dev);
     if ($release) {
       return $release;
     }
     else {
-      // A valid release was not found. Continue to select.
+      if ($select == 'never') {
+        return FALSE;
+      }
     }
   }
 
