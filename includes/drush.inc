@@ -822,13 +822,19 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
  *   downloaded.
  */
 function _drush_download_file($url, $destination = FALSE, $overwrite = TRUE) {
+  static $use_wget;
+  if ($use_wget === NULL) {
+    $use_wget = drush_shell_exec('which wget');
+  }
   if (!$destination) {
     $destination = getcwd() . '/' . basename($url);
   }
 
   $destination_tmp = drush_tempnam('download_file');
-  drush_shell_exec("wget -q --timeout=30 -O %s %s", $destination_tmp, $url);
-  if (!drush_file_not_empty($destination_tmp)) {
+  if ($use_wget) {
+    drush_shell_exec("wget -q --timeout=30 -O %s %s", $destination_tmp, $url);
+  }
+  else {
     drush_shell_exec("curl -s -L --connect-timeout 30 -o %s %s", $destination_tmp, $url);
   }
   if (!drush_file_not_empty($destination_tmp) && $file = @file_get_contents($url)) {
