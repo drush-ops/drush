@@ -746,15 +746,24 @@ function drush_server_home() {
  * The path to the global cache directory.
  */
 function drush_directory_cache() {
+  $cache_locations = array();
   if (getenv('CACHE_PREFIX')) {
-    return getenv('CACHE_PREFIX') . '/cache';
+    $cache_locations[getenv('CACHE_PREFIX')] = 'cache';
   }
-  elseif ($home = drush_server_home()) {
-    return "$home/.drush/cache";
+  $home = drush_server_home();
+  if ($home) {
+    $cache_locations[$home] = '.drush/cache';
   }
-  else {
-    return FALSE;
+  $cache_locations[drush_find_tmp()] = '.drush/cache';
+  foreach ($cache_locations as $base => $dir) {
+    if (!empty($base)) {
+      $cache_dir = $base . '/' . $dir;
+      if (drush_mkdir($cache_dir)) {
+        return $cache_dir;
+      }
+    }
   }
+  return FALSE;
 }
 
 /**
