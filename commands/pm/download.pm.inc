@@ -86,7 +86,7 @@ function drush_pm_download() {
   $release_info = drush_get_option('release-info', 'updatexml');
   drush_include_engine('release_info', $release_info);
 
-  if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
+  if (!$requests = pm_parse_arguments(func_get_args(), FALSE, FALSE)) {
     $requests = array('drupal');
   }
 

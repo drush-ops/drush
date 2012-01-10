@@ -1231,11 +1231,13 @@ function drush_pm_updatecode_postupdate() {
  * Return an array of arguments off a space and/or comma separated values. It also
  * lowercase arguments and optionally convert dashes to underscores.
  */
-function pm_parse_arguments($args, $dashes_to_underscores = TRUE) {
+function pm_parse_arguments($args, $dashes_to_underscores = TRUE, $lowercase = TRUE) {
   $arguments = _convert_csv_to_array($args);
   foreach ($arguments as $key => $argument) {
     $argument = ($dashes_to_underscores) ? strtr($argument, '-', '_') : $argument;
-    $arguments[$key] = strtolower($argument);
+    if ($lowercase) {
+      $arguments[$key] = strtolower($argument);
+    }
   }
   return $arguments;
 }
