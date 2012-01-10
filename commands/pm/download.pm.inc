@@ -332,7 +332,7 @@ function _pm_download_destination($type) {
 
   $in_site_directory = FALSE;
   // Check if we are running within the site directory.
-  if ($full_site_root == substr(drush_cwd(), 0, strlen($full_site_root)) || (drush_get_option('use-site-dir', FALSE))) {
+  if ($full_site_root == substr(realpath(drush_cwd()), 0, strlen(realpath($full_site_root))) || (drush_get_option('use-site-dir', FALSE))) {
     $in_site_directory = TRUE;
   }
 
