@@ -46,12 +46,13 @@ function sitealias_drush_command() {
     'description' => 'Set a site alias to work on that will persist for the current session.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'arguments' => array(
-      'site' => 'Site specification to use.',
+      'site' => 'Site specification to use, or "-" for previous site.',
     ),
     'aliases' => array('use'),
     'examples' => array(
       'drush site-set @dev' => 'Set the current session to use the @dev alias.',
       'drush site-set user@server/path/to/drupal#sitename' => 'Set the current session to use a site specification.',
+      'drush site-set -' => 'Go back to the previously-set site (like `cd -`).',
     ),
   );
   $items['site-reset'] = array(
@@ -352,10 +353,28 @@ function _drush_sitealias_site_dir_to_uri($site_dir) {
  * @param site
  *  A valid site specification.
  */
-function drush_sitealias_site_set($site = NULL) {
+function drush_sitealias_site_set($site = '@none') {
   if ($filename = drush_sitealias_get_envar_filename()) {
+    $last_site_filename = drush_sitealias_get_envar_filename('drush-drupal-prev-site-');
+    if ($site == '-') {
+      if (file_exists($last_site_filename)) {
+        $site = file_get_contents($last_site_filename);
+      }
+      else {
+        $site = '@none';
+      }
+    }
     if (_drush_sitealias_set_context_by_name($site)) {
-      file_put_contents($filename, $site);
+      if (file_exists($filename)) {
+        @unlink($last_site_filename);
+        @rename($filename, $last_site_filename);
+      }
+      if ($site == '@none') {
+        drush_delete_dir($filename);
+      }
+      else {
+        file_put_contents($filename, $site);
+      }
       drush_print(dt("Site set to !site", array('!site' => $site)));
     }
     else {

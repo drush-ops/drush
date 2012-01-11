@@ -1900,11 +1900,13 @@ function drush_sitealias_site_get() {
  * @return string
  *   Full path to tmp file.
  */
-function drush_sitealias_get_envar_filename() {
+function drush_sitealias_get_envar_filename($filename_prefix = 'drush-drupal-site-') {
   $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp/';
 
   if (function_exists('posix_getppid') && is_dir($tmp) && is_writable($tmp)) {
-    return $tmp . '/drush-drupal-site-' . posix_getppid();
+    $dir = $tmp . '/drush-env';
+    drush_mkdir($dir);
+    return $dir . '/' . $filename_prefix . posix_getppid();
   }
   else {
     return FALSE;
