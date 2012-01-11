@@ -744,8 +744,12 @@ function drush_server_home() {
 
 /*
  * The path to the global cache directory.
+ *
+ * @param subdir
+ *   Return the specified subdirectory inside the global
+ *   cache directory instead.  The subdirectory is created.
  */
-function drush_directory_cache() {
+function drush_directory_cache($subdir = '') {
   $cache_locations = array();
   if (getenv('CACHE_PREFIX')) {
     $cache_locations[getenv('CACHE_PREFIX')] = 'cache';
@@ -756,14 +760,26 @@ function drush_directory_cache() {
   }
   $cache_locations[drush_find_tmp()] = '.drush/cache';
   foreach ($cache_locations as $base => $dir) {
-    if (!empty($base)) {
+    if (!empty($base) && is_writable($base)) {
       $cache_dir = $base . '/' . $dir;
+      if (!empty($subdir)) {
+        $cache_dir .= '/' . $subdir;
+      }
       if (drush_mkdir($cache_dir)) {
         return $cache_dir;
       }
+      else {
+        // If the base directory is writable, but the cache directory
+        // is not, then we will get an error. The error will be displayed,
+        // but we will still call drush_clear_error so that we can go
+        // on and try the next location to see if we can find a cache
+        // directory somewhere.
+        drush_clear_error();
+      }
     }
   }
-  return FALSE;
+  return drush_set_error('DRUSH_NO_WRITABLE_CACHE', dt('Drush must have a writable cache directory; please insure that one of the following locations is writable: @locations',
+    array('@locations' => implode(',', array_keys($cache_locations)))));
 }
 
 /**

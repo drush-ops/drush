@@ -252,15 +252,18 @@ function drush_mkdir($path) {
       }
       else {
         if (is_writable(dirname($path))) {
-          drush_set_error('DRUSH_CREATE_DIR_FAILURE', dt('Unable to create !dir.', array('!dir' => preg_replace('/\w+\/\.\.\//', '', $path))));
+          return drush_set_error('DRUSH_CREATE_DIR_FAILURE', dt('Unable to create !dir.', array('!dir' => preg_replace('/\w+\/\.\.\//', '', $path))));
         }
         else {
-          drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Unable to write in !dir. Please check directory permissions.', array('!dir' => realpath(dirname($path)))));
+          return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Unable to create !newdir in !dir. Please check directory permissions.', array('!newdir' => basename($path), '!dir' => realpath(dirname($path)))));
         }
       }
     }
   }
   else {
+    if (!is_writable($path)) {
+      return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Directory !dir exists, but is not writable. Please check directory permissions.', array('!dir' => realpath($path))));
+    }
     return TRUE;
   }
 }
