@@ -34,7 +34,8 @@ function watchdog_drush_command() {
       'severity' => 'Restrict to messages of a given severity level.',
       'type' => 'Restrict to messages of a given type.',
       'tail' => 'Continuously show new watchdog messages until interrupted.',
-      'sleep-delay' => 'To be used in conjunction with --tail. This is the number of seconds to wait between each poll to the database. Delay is 1 second by default.'
+      'sleep-delay' => 'To be used in conjunction with --tail. This is the number of seconds to wait between each poll to the database. Delay is 1 second by default.',
+      'full' => 'Return extended information about each message',
     ),
     'examples' => array(
       'drush watchdog-show' => 'Show a listing of most recent 10 messages.',
@@ -43,7 +44,7 @@ function watchdog_drush_command() {
       'drush watchdog-show --count=46' => 'Show a listing of most recent 46 messages.',
       'drush watchdog-show --severity=notice' => 'Show a listing of most recent 10 messages with a severity of notice.',
       'drush watchdog-show --type=php' => 'Show a listing of most recent 10 messages of type php.',
-      'drush watchdog-show --tail' => 'Show a listing of most recent 10 messages and continue showing messages as they are registered in the watchdog.',
+      'drush watchdog-show --tail --full' => 'Show a listing of most recent 10 messages with extended information about each one and continue showing messages as they are registered in the watchdog.',
       'drush watchdog-show --tail --sleep-delay=2' => 'Do a tail of the watchdog with a delay of two seconds between each poll to the database.',
     ),
     'aliases' => array('wd-show', 'ws'),
@@ -140,6 +141,7 @@ function drush_core_watchdog_show_many($filter = NULL) {
   $type = drush_get_option('type');
   $severity = drush_get_option('severity');
   $tail = drush_get_option('tail', FALSE);
+  $full = drush_get_option('full', FALSE);
 
   $where = core_watchdog_query($type, $severity, $filter);
   if ($where === FALSE) {
@@ -151,7 +153,7 @@ function drush_core_watchdog_show_many($filter = NULL) {
   }
   $header = array(dt('Id'), dt('Date'), dt('Severity'), dt('Type'), dt('Message'));
   while ($result = drush_db_fetch_object($rsc)) {
-    $row = core_watchdog_format_result($result);
+    $row = core_watchdog_format_result($result, $full);
     $table[] = array($row->wid, $row->date, $row->severity, $row->type, $row->message);
   }
   if (empty($table)) {
@@ -187,7 +189,7 @@ function drush_core_watchdog_show_many($filter = NULL) {
       $tbl->_data = array();
       $rsc = drush_db_select('watchdog', '*', $where['where'], $where['args'], NULL, NULL, 'wid', 'ASC');
       while ($result = drush_db_fetch_object($rsc)) {
-        $row = core_watchdog_format_result($result);
+        $row = core_watchdog_format_result($result, $full);
         $table[] = array($row->wid, $row->date, $row->severity, $row->type, $row->message);
         #$tbl->addRow(array($row->wid, $row->date, $row->severity, $row->type, $row->message));
         $last_wid = $row->wid;
@@ -207,6 +209,8 @@ function drush_core_watchdog_show_many($filter = NULL) {
  *
  * @param $result
  *   Array. A database result object.
+ * @param $full
+ *   Boolean. Return extended message details.
  * @return
  *   Array. The result object with some attributes themed.
  */
@@ -229,9 +233,9 @@ function core_watchdog_format_result($result, $full = FALSE) {
     $result->message = strtr($result->message, $variables);
   }
   unset($result->variables);
-  $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), 188, FALSE, FALSE);
+  $message_length = 188;
 
-  // This data is only used in a detailed view.
+  // Print all the data available
   if ($full) {
     // Possible empty values.
     if (empty($result->link)) {
@@ -248,7 +252,10 @@ function core_watchdog_format_result($result, $full = FALSE) {
       $result->username = dt('Anonymous');
     }
     unset($result->uid);
+    $message_length = PHP_INT_MAX;
   }
+  
+  $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), $message_length, FALSE, FALSE);
 
   return $result;
 }
