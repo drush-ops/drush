@@ -49,8 +49,10 @@ function _drush_search_status() {
         continue;
       }
       $status = module_invoke($module, 'search', 'status');
-      $remaining += $status['remaining'];
-      $total += $status['total'];
+      if (isset($status['remaining']) && isset($status['total'])) {
+        $remaining += $status['remaining'];
+        $total += $status['total'];
+      }
     }
   }
   return array($remaining, $total);
