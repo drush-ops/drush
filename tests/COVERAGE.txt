@@ -53,8 +53,8 @@ site-upgrade: GOOD.
 ssh: GOOD
 test-*
 topic
-variable-*: GOOD.
-watchdog-*
+variable-*: GOOD
+watchdog-*: GOOD
 
 user-*: GOOD.
 
