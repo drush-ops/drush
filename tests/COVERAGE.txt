@@ -43,8 +43,8 @@ site-install: FAIR. Implicit test by setUpDrupal().
 site-upgrade: GOOD.
 test-*
 topic
-variable-*: GOOD.
-watchdog-*
+variable-*: GOOD
+watchdog-*: GOOD
 
 user-*: GOOD.
 
