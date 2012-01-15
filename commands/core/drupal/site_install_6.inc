@@ -3,7 +3,7 @@
 /**
  * Install Drupal 6.x
  */
-function drush_core_site_install_version($profile) {
+function drush_core_site_install_version($profile, array $additional_form_options = array()) {
   drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), 'ok');
   if (is_null($profile)) {
     $profile = 'default';
@@ -19,7 +19,7 @@ function drush_core_site_install_version($profile) {
   $cli_output = drush_shell_exec_output();
   $cli_cookie = end($cli_output);
 
-  // We need to bootstrap the database to be able to check the progress of the 
+  // We need to bootstrap the database to be able to check the progress of the
   // install batch process since we're not duplicating the install process using
   // drush_batch functions, but calling the process directly.
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
@@ -42,25 +42,35 @@ function drush_core_site_install_version($profile) {
   $account_pass = drush_get_option('account-pass', drush_generate_password());
   $account_name = drush_get_option('account-name', 'admin');
   $phpcode = _drush_site_install6_cookies($profile, $cli_cookie);
-  $phpcode .= '
-  $_POST = array (
-    "site_name" => "'. drush_get_option('site-name', 'Site-Install') .'",
-    "site_mail" => "'. drush_get_option('site-mail', 'admin@example.com') .'",
+  $post = array (
+    "site_name" => drush_get_option('site-name', 'Site-Install'),
+    "site_mail" => drush_get_option('site-mail', 'admin@example.com'),
     "account" => array (
-      "name" => "'. $account_name .'",
-      "mail" => "'. drush_get_option('account-mail', 'admin@example.com') .'",
+      "name" => $account_name,
+      "mail" => drush_get_option('account-mail', 'admin@example.com'),
       "pass" => array (
-        "pass1" => "'. $account_pass .'",
-        "pass2" => "'. $account_pass .'"
+        "pass1" => $account_pass,
+        "pass2" => $account_pass,
       )
     ),
-    "date_default_timezone"=>"0",
-    "clean_url"=>'. drush_get_option('clean-url', TRUE) .',
-    "form_id"=>"install_configure_form",
-    "update_status_module" => array("1"=>"1")
+    "date_default_timezone" => "0",
+    "clean_url" => drush_get_option('clean-url', TRUE),
+    "form_id" => "install_configure_form",
+    "update_status_module" => array("1" => "1"),
   );
+  // Merge in the additional options.
+  foreach ($additional_form_options as $key => $value) {
+    $current = &$post;
+    foreach (explode('.', $key) as $param) {
+      $current = &$current[$param];
+    }
+    $current = $value;
+  }
+  $phpcode .= '
+  $_POST = ' . var_export($post, true) . ';
   include("'. $drupal_root .'/install.php");';
   drush_shell_exec('php -r %s', $phpcode);
+
   drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
 }
 

@@ -105,6 +105,40 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Helper function to generate a random string of arbitrary length.
+   *
+   * Copied from drush_generate_password(), which is otherwise not available here.
+   *
+   * @param $length
+   *   Number of characters the generated string should contain.
+   * @return
+   *   The generated string.
+   */
+  public function randomString($length = 10) {
+    // This variable contains the list of allowable characters for the
+    // password. Note that the number 0 and the letter 'O' have been
+    // removed to avoid confusion between the two. The same is true
+    // of 'I', 1, and 'l'.
+    $allowable_characters = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+    // Zero-based count of characters in the allowable list:
+    $len = strlen($allowable_characters) - 1;
+
+    // Declare the password as a blank string.
+    $pass = '';
+
+    // Loop the number of times specified by $length.
+    for ($i = 0; $i < $length; $i++) {
+
+      // Each iteration, pick a random character from the
+      // allowable string and append it to the password:
+      $pass .= $allowable_characters[mt_rand(0, $len)];
+    }
+
+    return $pass;
+  }
+
+  /**
    *    Accessor for the last output.
    *    @return string        Output as text.
    *    @access public
