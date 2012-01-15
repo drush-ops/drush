@@ -771,7 +771,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
   }
   foreach ($command_options as $key => $value) {
     $global = array_key_exists($key, $global_option_list);
-    $propagate = !is_array($value);
+    $propagate = TRUE;
     $special = FALSE;
     if ($global) {
       $propagate = (!array_key_exists('never-propagate', $global_option_list[$key]));
@@ -792,12 +792,14 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
       if ($method_post && ($special === FALSE)) {
         $post_options[$key] = $value;
       }
-      // In METHOD GET, separate out drush global options
-      elseif ($global) {
-        $drush_global_options[$key] = $value;
-      }
-      else {
-        $commandline_options[$key] = $value;
+      // In METHOD GET, ignore options with array values
+      elseif (!is_array($value)) {
+        if ($global) {
+          $drush_global_options[$key] = $value;
+        }
+        else {
+          $commandline_options[$key] = $value;
+        }
       }
     }
   }

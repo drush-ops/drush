@@ -104,4 +104,49 @@ class backendCase extends Drush_CommandTestCase {
     // assert that $parsed has 'foo' and not 'bar'
     $this->assertEquals("'foo'", var_export($parsed['object'], TRUE));
   }
+
+  /**
+   * Covers the following target responsibilities.
+   *   - Insures that arrays are stripped when using --backend mode's method GET
+   *   - Insures that arrays can be returned as the function result of
+   *     backend invoke.
+   */
+  function testBackendMethodGet() {
+    $options = array(
+      'backend' => NULL,
+      'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
+    );
+    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET')); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
+    $this->drush('php-eval', array($php), $options);
+    $parsed = parse_backend_output($this->getOutput());
+    // assert that $parsed has 'x' but not 'data'
+    $this->assertEquals("array (
+  'x' => 'y',
+)", var_export($parsed['object'], TRUE));
+  }
+  
+  /**
+   * Covers the following target responsibilities.
+   *   - Insures that complex arrays can be passed through when using --backend mode's method POST
+   *   - Insures that arrays can be returned as the function result of
+   *     backend invoke.
+   */
+  function testBackendMethodPost() {
+    $options = array(
+      'backend' => NULL,
+      'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
+    );
+    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'POST')); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
+    $this->drush('php-eval', array($php), $options);
+    $parsed = parse_backend_output($this->getOutput());
+    // assert that $parsed has 'x' and 'data'
+    $this->assertEquals("array (
+  'x' => 'y',
+  'data' => 
+  array (
+    'a' => 1,
+    'b' => 2,
+  ),
+)", var_export($parsed['object'], TRUE));
+  }
 }
