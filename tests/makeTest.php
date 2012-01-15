@@ -35,10 +35,6 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('get');
   }
 
-  function testMakePost() {
-    $this->runMakefileTest('post');
-  }
-
   function testMakeGit() {
     $this->runMakefileTest('git');
   }

@@ -58,169 +58,22 @@ function make_download_file($name, $download, $download_location) {
 }
 
 function _make_download_file($download) {
-  // Static variable to keep track of whether to use curl or wget.
-  static $download_mechanism;
-
-  if (!isset($download_mechanism) && drush_get_option('download-mechanism')) {
-    $download_mechanism = drush_get_option('download-mechanism');
-  }
-
-  $tmp_path = make_tmp();
-  $filename = FALSE;
+  // TODO cleanup so $download is always a string, since with
+  // drush_download_file(), that's all we pass in.
   if (is_string($download)) {
     $download = array('url' => $download);
   }
-  if (!isset($download['request_type'])) {
-    $download['request_type'] = 'get';
+
+  // Default to use cache.
+  $cache = drush_get_option('cache');
+  if (!drush_get_option('no-cache', FALSE)) {
+    drush_set_option('cache', TRUE);
   }
-  if (!empty($download['url'])) {
-    $url = $download['url'];
-    if (drush_get_context('DRUSH_SIMULATE')) {
-      $filename = t('file');
-    }
-    else {
-      $success = FALSE;
-      $download_path = $tmp_path . '/__download__';
-      drush_mkdir($download_path);
+  drush_set_option('cache', $cache);
 
-      if (!isset($download_mechanism) || $download_mechanism == 'curl') {
-        $header_file = $tmp_path . '/__header__';
-        touch($header_file);
-        drush_shell_exec("ls %s", $download_path);
-        $files = drush_shell_exec_output();
-        if ($download['request_type'] == 'get' && drush_shell_cd_and_exec($download_path, 'curl -LOD %s %s', $header_file, $url)) {
-          $download_mechanism = 'curl';
-          $success = TRUE;
-        }
-        elseif ($download['request_type'] == 'post' && drush_shell_cd_and_exec($download_path, 'curl -d %s -LOD %s %s', $download['data'], $header_file, $url)) {
-          $download_mechanism = 'curl';
-          $success = TRUE;
-        }
-
-        drush_shell_exec("ls %s", $download_path);
-        $files_new = drush_shell_exec_output();
-        // Can't use list beacuse it's not guarenteed to be at offset 0.
-        $diff = array_diff($files_new, $files);
-        $filename = $tmp_path . '/__download__/' . array_shift($diff);
-        // Determine the proper filename, or at least, the extension.
-        $header = explode("\n", trim(str_replace("\r", '', file_get_contents($header_file))));
-        $current_header = array();
-        $headers = array();
-        $first = TRUE;
-        foreach ($header as $h) {
-          if ($h == '') {
-            $headers[] = $current_header;
-            $current_header = array();
-            $first = TRUE;
-          }
-          else {
-            if (!$first) {
-              list($name, $value) = explode(': ', $h, 2);
-              $current_header[$name] = $value;
-            }
-            else {
-              $matches = array();
-              preg_match('/HTTP\/1\.1 (\d\d\d)/', $h, $matches);
-              if (isset($matches[1]) && ($matches[1]{0} == 4 || $matches[1]{0} == 5)) {
-                $success = FALSE;
-              }
-              $first = FALSE;
-            }
-          }
-        }
-        if (!empty($current_header)) {
-          $headers[] = $current_header;
-        }
-      }
-
-      if (!isset($download_mechanism) || $download_mechanism == 'make') {
-        $retry = 5;
-        $url = $download['url'];
-        $filename = $download_path . '/__destination__';
-        $request_type = strtoupper($download['request_type']);
-        $data = (isset($download['data']) ? $download['data'] : '');
-        $headers = array();
-        while ($retry) {
-          $result = make_http_request($url, $filename, array(), $request_type, $data);
-          switch ($result->code) {
-            case 200: // OK
-            case 304: // Not modified
-              $retry = FALSE;
-              break;
-            case 301: // Moved permanently
-            case 302: // Moved temporarily
-            case 307: // Moved temporarily
-              $retry--;
-
-              if ($retry) {
-                $url = $result->headers['Location'];
-                $request_type = 'GET';
-                $data = NULL;
-              }
-              break;
-            default:
-              // Oops, error.
-              make_error('BUILD_ERROR', $result->error);
-              return;
-          }
-          $download_mechanism = 'make';
-          $headers[] = $result->headers;
-          $success = TRUE;
-        }
-      }
-
-      if (!$success) {
-        return FALSE;
-      }
-      // Much more useful in reverse order.
-      $headers = array_reverse($headers);
-      $content_type = '';
-      $file = '';
-      foreach ($headers as $key => $header) {
-        // Normalize header key casing.
-        $headers[$key] = $header = array_change_key_case($header, CASE_LOWER);
-        // Check for location header.
-        if (isset($header['location'])) {
-          $file = basename($header['location']);
-        }
-      }
-      if (isset($headers[0]['content-disposition'])) {
-        $parts = explode(';', $headers[0]['content-disposition']);
-        foreach ($parts as $part) {
-          $inner_parts = explode('=', $part, 2);
-          if (trim($inner_parts[0]) == 'filename') {
-            $file = basename(trim($inner_parts[1], "\"'"));
-            break;
-          }
-        }
-      }
-      if (isset($headers[0]['content-type'])) {
-        // These still need finalizing.
-        switch ($headers[0]['content-type']) {
-          case 'application/zip':
-            $content_type = 'zip';
-            break;
-          case 'application/x-gzip':
-            $content_type = 'tar.gz';
-            break;
-          case 'application/x-tar':
-            $content_type = 'tar';
-            break;
-        }
-      }
-      if (!$file) {
-        $file = basename($url);
-      }
-      if ($content_type) {
-        $file .= '.' . $content_type;
-      }
-      drush_shell_exec('mv %s %s', $filename, $tmp_path . '/' . $file);
-      drush_shell_exec('rm -f %s', $tmp_path . '/__header__');
-      drush_shell_exec('rm -rf %s', $tmp_path . '/__download__');
-      return $tmp_path . '/' . $file;
-    }
-  }
-  return FALSE;
+  $tmp_path = make_tmp();
+  $file = basename($download['url']);
+  return drush_download_file($download['url'], $tmp_path . '/' . $file);
 }
 
 /**
@@ -336,12 +189,6 @@ function _make_download_file_move($tmp_path, $filename, $download_location) {
 
 // Backwards compatibility.
 function make_download_get($name, $download, $download_location) {
-  return make_download_file($name, $download, $download_location);
-}
-
-function make_download_post($name, $download, $download_location) {
-  $download['request_type'] = 'post';
-  $download['data'] = $download['post_data'];
   return make_download_file($name, $download, $download_location);
 }
 
