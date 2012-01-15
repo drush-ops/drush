@@ -95,10 +95,8 @@ function drush_archive_dump($sites_subdirs = '@self') {
 
   // Create the unique temporary name.
   $date = gmdate('Ymd_his');
-  if (empty($full)) {
-    $prefix = 'none';
-  }
-  else {
+  $prefix = 'none';
+  if (!empty($full) && !empty($first['databases']['default']['default']['database'])) {
     $first = current($full);
     $prefix = count($sites_subdirs) > 1 ? 'multiple_sites' : str_replace('/', '-', $first['databases']['default']['default']['database']);
   }
@@ -158,6 +156,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
     return;
   }
 
+  // Start adding codebase to the archive.
   $docroot_path = realpath(drush_get_context('DRUSH_DRUPAL_ROOT'));
   $docroot = basename($docroot_path);
   $workdir = dirname($docroot_path);
@@ -168,9 +167,11 @@ function drush_archive_dump($sites_subdirs = '@self') {
   drush_shell_cd_and_exec($workdir, "tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
 
   $tmp = drush_tempdir();
+  $all_dbs = array();
   // Dump the default database for each site and add to the archive.
   foreach ($full as $key => $alias) {
-    if ($db = $alias['databases']['default']['default']) {
+    if (isset($alias['databases']['default']['default'])) {
+      $db = $alias['databases']['default']['default'];
       // Use a subdirectory name matching the docroot name.
       drush_mkdir("{$tmp}/{$docroot}");
       // Ensure uniqueness by prefixing key if needed.
@@ -228,7 +229,11 @@ function drush_archive_dump($sites_subdirs = '@self') {
   file_put_contents("{$tmp}/MANIFEST.ini", $contents);
 
   // Add manifest to archive.
-  drush_shell_cd_and_exec($tmp, 'tar --dereference -rf %s %s', $destination, "MANIFEST.ini");
+  drush_shell_cd_and_exec($tmp, 'tar --dereference -rf %s %s', $destination, 'MANIFEST.ini');
+
+  // Ensure that default/default.settings.php is in the archive. This is needed
+  // by site-install when restoring a site without any DB.
+  drush_shell_cd_and_exec($workdir, 'tar --dereference -vrf %s %s', $destination, $docroot . '/sites/default/default.settings.php');
 
   // Compress the archive
   drush_shell_exec("gzip --no-name -f %s", $destination);
