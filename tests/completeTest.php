@@ -40,18 +40,18 @@ class completeCase extends Drush_CommandTestCase {
     $this->drush('php-eval', array('drush_complete_cache_clear();'));
     // Confirm we get cache rebuilds for runs both in and out of a site
     // which is expected since these should resolve to separate cache IDs.
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke', FALSE);
+    $this->verifyComplete('@dev uni', 'uninstall', 'unit-return-options', FALSE);
     // n.b. there is no "uninstall" any more; maybe this test needs a better command to test with
     $this->verifyComplete('uni', 'uninstall', 'uninstall', FALSE);
     // Next, rerun and check results to confirm cache IDs are generated
     // correctly on our fast bootstrap when returning the cached result.
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke');
+    $this->verifyComplete('@dev uni', 'uninstall', 'unit-return-options');
     $this->verifyComplete('uni', 'uninstall', 'uninstall');
 
     // Test cache clearing for a completion type, which should be effective only
     // for current environment - i.e. a specific site should not be effected.
     $this->drush('php-eval', array('drush_complete_cache_clear("command-names");'));
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-invoke');
+    $this->verifyComplete('@dev uni', 'uninstall', 'unit-return-options');
     // n.b. there is no "uninstall" any more; maybe this test needs a better command to test with
     $this->verifyComplete('uni', 'uninstall', 'uninstall', FALSE);
 
@@ -77,9 +77,9 @@ class completeCase extends Drush_CommandTestCase {
     // Command with no results should produce no output.
     $this->verifyComplete('dont-name-a-command-like-this', '', '');
     // Commands that start the same as another command (i.e. unit is a valid
-    // command, but we should still list unit-eval and unit-invoke when
+    // command, but we should still list unit-eval and unit-return-options when
     // completing on "unit").
-    $this->verifyComplete('@dev unit', 'unit', 'unit-invoke');
+    $this->verifyComplete('@dev unit', 'unit', 'unit-return-options');
     // Global option alone.
     $this->verifyComplete('--n', '--no', '--nocolor');
     // Site alias + command.
