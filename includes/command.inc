@@ -62,7 +62,7 @@ function drush_invoke($command, $arguments = array()) {
  *   TRUE - integrate errors
  *   FALSE - do not integrate errors
  *   array - @see drush_backend_invoke_concurrent
- *     There are also several options that _only_ work when set in 
+ *     There are also several options that _only_ work when set in
  *     this parameter.  They include:
  *      'invoke-multiple'
  *        If $site_alias_record represents a single site, then 'invoke-multiple'
@@ -429,10 +429,7 @@ function _drush_verify_cli_options($command) {
   if (!empty($disallowed_options)) {
     $unknown = count($disallowed_options) > 1 ? dt('Unknown options') : dt('Unknown option');
     $msg = dt("@unknown: --@options.  See `drush help @command` for available options. To suppress this error, add the option --strict=0.", array('@unknown' => $unknown, '@options' => implode(', --', $disallowed_options), '@command' => $command['command']));
-    if (!drush_get_option('strict', TRUE)) {
-      drush_log($msg, 'warning');
-    }
-    else {
+    if (drush_get_option('strict', TRUE)) {
       return drush_set_error('DRUSH_UNKNOWN_OPTION', $msg);
     }
   }
