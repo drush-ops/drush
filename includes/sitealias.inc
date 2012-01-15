@@ -804,8 +804,7 @@ function drush_sitealias_get_db_spec(&$alias_record, $default_to_self = FALSE, $
  * @param $alias_record
  *   The full alias record to populate with database settings
  */
-function drush_sitealias_add_db_settings(&$alias_record)
-{
+function drush_sitealias_add_db_settings(&$alias_record) {
   $altered_record = FALSE;
 
   // If the alias record does not have a defined 'databases' entry,
