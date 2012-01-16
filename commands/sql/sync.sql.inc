@@ -154,7 +154,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for !source', array('!source' => $source)));
     }
     if (empty($target_db_url)) {
-      if (empty($target_db_url)) {
+      if (empty($destination_settings)) {
         return drush_set_error('DRUSH_ALIAS_NOT_FOUND', dt('Error: no alias record could be found for !destination', array('!destination' => $destination)));
       }
       return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for !destination', array('!destination' => $destination)));
