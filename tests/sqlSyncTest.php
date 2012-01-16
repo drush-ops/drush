@@ -26,14 +26,28 @@ class sqlSyncTest extends Drush_CommandTestCase {
       return;
     }
 
-    // TODO: Test syncing D6 or D7?  Both should be tested, but it
-    // does not work to call $this->setUpDrupal(2, TRUE, '6'); from
-    // one method in a class and $this->setUpDrupal(2, TRUE); from
-    // another test method in the same class.
-    $sites = $this->setUpDrupal(2, TRUE, '6');
-    $dump_dir = UNISH_SANDBOX . "/dump-dir";
-    mkdir($dump_dir);
+    $sites = $this->setUpDrupal(2, TRUE);
+    return $this->localSqlSync();
+  }
+  /**
+   * Do the same test as above, but use Drupal 6 sites instead of Drupal 7.
+   */
+  public function testLocalSqlSyncD6() {
+    if (strpos(UNISH_DB_URL, 'sqlite') !== FALSE) {
+      $this->markTestSkipped('SQL Sync does not apply to SQLite.');
+      return;
+    }
 
+    $this->setUpBeforeClass();
+    $sites = $this->setUpDrupal(2, TRUE, '6');
+    return $this->localSqlSync();
+  }
+  
+  public function localSqlSync() {
+    $dump_dir = UNISH_SANDBOX . "/dump-dir";
+    if (!is_dir($dump_dir)) {
+      mkdir($dump_dir);
+    }
     // Create a user in the staging site
     $name = 'joe.user';
     $mail = "joe.user@myhome.com";
