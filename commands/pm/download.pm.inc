@@ -22,7 +22,7 @@ function drush_pm_download_validate() {
       drush_print(dt("The directory !destination does not exist.", array('!destination' => $destination)));
       if (!drush_get_context('DRUSH_SIMULATE')) {
         if (drush_confirm(dt('Would you like to create it?'))) {
-          drush_mkdir($destination);
+          drush_mkdir($destination, TRUE);
         }
         if (!is_dir($destination)) {
           return drush_set_error('DRUSH_PM_NO_DESTINATION', dt('Unable to create destination directory !destination.', array('!destination' => $destination)));
@@ -269,7 +269,7 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
         }
         // Make the .drush dir if it does not already exist.
         if (!is_dir($install_dir)) {
-          drush_mkdir($install_dir);
+          drush_mkdir($install_dir, FALSE);
         }
         // Change the location if the mkdir worked.
         if (is_dir($install_dir)) {
@@ -309,7 +309,7 @@ function _pm_download_destination_lookup($type, $drupal_root, $sitepath, $create
   }
   if ($create) {
     drush_log(dt('Attempting to create destination directory at !dir', array('!dir' => $destination)));
-    drush_mkdir($destination);
+    drush_mkdir($destination, TRUE);
   }
   if (is_dir($destination)) {
     drush_log(dt('Using destination directory !dir', array('!dir' => $destination)));

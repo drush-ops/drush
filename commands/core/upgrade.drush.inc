@@ -344,7 +344,7 @@ function drush_upgrade_site_upgrade($target_key = NULL) {
       $modify_site_settings = $modify_site_conf_path . '/settings.php';
       drush_log('Set up a transient site by copying ' . $settings_destination . ' to ' . $modify_site_settings, 'debug');
       if (!file_exists($modify_site_settings)) {
-        if ((drush_mkdir($modify_site_conf_path) === FALSE) || drush_op('copy', $settings_destination, $modify_site_settings) !== TRUE) {
+        if ((drush_mkdir($modify_site_conf_path, TRUE) === FALSE) || drush_op('copy', $settings_destination, $modify_site_settings) !== TRUE) {
           return drush_set_error('DRUSH_UPGRADE_COULD_NOT_DISABLE', dt("Could not create a temporary multisite "));
         }
       }

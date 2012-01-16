@@ -163,7 +163,9 @@ function drush_copy_dir($src, $dest, $overwrite = FALSE) {
 function _drush_recursive_copy($src, $dest) {
   // all subdirectories and contents:
   if(is_dir($src)) {
-    drush_mkdir($dest);
+    if (!drush_mkdir($dest, TRUE)) {
+      return FALSE;
+    }
     $dir_handle = opendir($src);
     while($file = readdir($dir_handle)) {
       if ($file != "." && $file != "..") {
@@ -243,25 +245,44 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
 
 /**
  * Cross-platform compatible helper function to recursively create a directory tree.
+ *
+ * @param path
+ *   Path to directory to create.
+ * @param required
+ *   If TRUE, then drush_mkdir will call drush_set_error on failure.
+ *
+ * Callers should *always* do their own error handling after calling drush_mkdir.
+ * If $required is FALSE, then a different location should be selected, and a final
+ * error message should be displayed if no usable locations can be found.
+ * @see drush_directory_cache().
+ * If $required is TRUE, then the execution of the current command should be
+ * halted if the required directory cannot be created.
  */
-function drush_mkdir($path) {
+function drush_mkdir($path, $required = TRUE) {
   if (!is_dir($path)) {
     if (drush_mkdir(dirname($path))) {
       if (@mkdir($path)) {
         return TRUE;
       }
       else {
+        if (!$required) {
+          return FALSE;
+        }
         if (is_writable(dirname($path))) {
           return drush_set_error('DRUSH_CREATE_DIR_FAILURE', dt('Unable to create !dir.', array('!dir' => preg_replace('/\w+\/\.\.\//', '', $path))));
         }
         else {
-          return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Unable to create !newdir in !dir. Please check directory permissions.', array('!newdir' => basename($path), '!dir' => realpath(dirname($path)))));
+          return drush_set_error('DRUSH_PARENT_NOT_WRITABLE', dt('Unable to create !newdir in !dir. Please check directory permissions.', array('!newdir' => basename($path), '!dir' => realpath(dirname($path)))));
         }
       }
     }
+    return FALSE;
   }
   else {
     if (!is_writable($path)) {
+      if (!$required) {
+        return FALSE;
+      }
       return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Directory !dir exists, but is not writable. Please check directory permissions.', array('!dir' => realpath($path))));
     }
     return TRUE;
@@ -342,7 +363,7 @@ function drush_find_tmp() {
     if (empty($temporary_directory)) {
       // If no directory has been found, create one in cwd.
       $temporary_directory = drush_cwd() . '/tmp';
-      drush_mkdir($temporary_directory);
+      drush_mkdir($temporary_directory, TRUE);
       if (!is_dir($directory)) {
         return drush_set_error('DRUSH_UNABLE_TO_CREATE_TMP_DIR', dt("Unable to create a temporary directory."));
       }
@@ -465,7 +486,7 @@ function drush_prepare_backup_dir($subdir = NULL) {
     return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('It\'s not allowed to store backups inside the Drupal root directory.'));
   }
   if (!file_exists($backup_parent)) {
-    if (!drush_mkdir($backup_parent)) {
+    if (!drush_mkdir($backup_parent, TRUE)) {
       return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Unable to create backup directory !dir.', array('!dir' => $backup_parent)));
     }
   }
@@ -473,7 +494,9 @@ function drush_prepare_backup_dir($subdir = NULL) {
     return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Backup directory !dir is not writable.', array('!dir' => $backup_parent)));
   }
 
-  drush_mkdir($backup_dir);
+  if (!drush_mkdir($backup_dir, TRUE)) {
+    return FALSE;
+  }
   return $backup_dir;
 }
 

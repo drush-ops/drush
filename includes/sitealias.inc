@@ -1904,10 +1904,9 @@ function drush_sitealias_get_envar_filename($filename_prefix = 'drush-drupal-sit
 
   if (function_exists('posix_getppid') && is_dir($tmp) && is_writable($tmp)) {
     $dir = $tmp . '/drush-env';
-    drush_mkdir($dir);
-    return $dir . '/' . $filename_prefix . posix_getppid();
+    if (drush_mkdir($dir, FALSE)) {
+      return $dir . '/' . $filename_prefix . posix_getppid();
+    }
   }
-  else {
-    return FALSE;
-  }
+  return FALSE;
 }

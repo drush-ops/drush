@@ -758,7 +758,7 @@ function drush_directory_cache($subdir = '') {
   if ($home) {
     $cache_locations[$home] = '.drush/cache';
   }
-  $cache_locations[drush_find_tmp()] = '.drush/cache';
+  $cache_locations[drush_find_tmp()] = 'drush/' . getenv('USER') . '/cache';
   foreach ($cache_locations as $base => $dir) {
     if (!empty($base) && is_writable($base)) {
       $cache_dir = $base . '/' . $dir;
