@@ -706,7 +706,7 @@ function _drush_sql_get_db_spec() {
 function _drush_sql_get_all_db_specs() {
   switch (drush_drupal_major_version()) {
     case 6:
-      if (!isset($GLOBALS['db-url'])) {
+      if (!isset($GLOBALS['db_url'])) {
         return NULL;
       }
       return drush_sitealias_convert_db_from_db_url($GLOBALS['db_url']);

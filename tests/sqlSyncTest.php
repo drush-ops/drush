@@ -26,7 +26,11 @@ class sqlSyncTest extends Drush_CommandTestCase {
       return;
     }
 
-    $sites = $this->setUpDrupal(2, TRUE);
+    // TODO: Test syncing D6 or D7?  Both should be tested, but it
+    // does not work to call $this->setUpDrupal(2, TRUE, '6'); from
+    // one method in a class and $this->setUpDrupal(2, TRUE); from
+    // another test method in the same class.
+    $sites = $this->setUpDrupal(2, TRUE, '6');
     $dump_dir = UNISH_SANDBOX . "/dump-dir";
     mkdir($dump_dir);
 
@@ -66,7 +70,7 @@ class sqlSyncTest extends Drush_CommandTestCase {
     $output = $this->getOutput();
     $row  = str_getcsv($output);
     $uid = $row[1];
-    $this->assertEquals("user+2@localhost", $row[2], 'email address was sanitized on destination site.');
+    $this->assertEquals("user+$uid@localhost", $row[2], 'email address was sanitized on destination site.');
     $this->assertEquals($name, $row[0]);
   }
 }
