@@ -22,9 +22,7 @@ REQUIREMENTS
 
 * Some Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
 
-* Drush works with Drupal 6, Drupal 7, and Drupal 8.  However, occasionally
-  recent changes to the most recent version of Drupal can introduce issues
-  with Drush.
+* Drush works with Drupal 6, Drupal 7, and usually Drupal 8.
 
 
 INSTALLATION
@@ -66,15 +64,24 @@ install, see below.
 
   $ which drush
 
-5. Optional. See examples/example.bashrc for instructions on how to add some very useful
+5. Optional. Help the Drush development team by sending anonymized usage statistics.
+To automatically send usage data, please add the following to a .drushrc.php file:
+   $options['drush_usage_log'] = TRUE;
+   $options['drush_usage_send'] = TRUE;
+
+Stats are usually logged locally and sent whenever log file exceeds 50Kb.
+Alternatively, one may disable automatic sending and instead use usage-view and
+usage-send commands to more carefully send data.
+
+6. Optional. See examples/example.bashrc for instructions on how to add some very useful
 shell aliases that provides even tighter integration between drush and bash.
 
-6. Optional. If you didn't source it in Step 5 above, see top of drush.complete.sh
+7. Optional. If you didn't source it in Step 5 above, see top of drush.complete.sh
 file for instructions adding bash completion for drush command to your shell.
 Once configured, completion works for site aliases, command names, shell aliases,
 global options, and command-specific options.
 
-7. Optional. If drush.complete.sh is being sourced (ideally in bash_completion.d),
+8. Optional. If drush.complete.sh is being sourced (ideally in bash_completion.d),
 you can use the supplied __drush_ps1() sh function to add your current drush
 site (set with `drush use @sitename`) to your PS1 prompt like so:
 
@@ -107,7 +114,7 @@ If you want to use php 5.3.x, add this line instead
 If you have MAMP v.1.84 or lower, this configuration will work for both version of php:
 
   export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5/bin:$PATH"
-  
+
 If you have done this and are still getting a "no such file or directory" error from
 PDO::__construct, try this:
 

@@ -123,6 +123,14 @@
 # $options['self-update'] = FALSE;
 
 /**
+ * Enable logging and periodic upload of anonymized usage statistics. The Drush
+ * maintainers use this data to learn which commands and options are most
+ * See the usage-show and usage-send commands.
+ */
+# $options['drush_usage_log'] = TRUE;
+# $options['drush_usage_send'] = TRUE;
+
+/**
  * By default, Drush will download projects compatibile with the current
  * version of Drupal, or, if no Drupal site is specified, then the Drupal-7
  * version of the project is downloaded.  Set default-major to select a
