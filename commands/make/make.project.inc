@@ -11,6 +11,16 @@ class DrushMakeProject {
   protected $made = FALSE;
 
   /**
+   * TRUE if download() method has been called successfully, otherwise FALSE.
+   */
+  protected $downloaded = NULL;
+
+  /**
+   * Download location to use.
+   */
+  protected $download_location = NULL;
+
+  /**
    * Keep track of instances.
    *
    * @see DrushMakeProject::getInstance()
@@ -46,6 +56,17 @@ class DrushMakeProject {
   }
 
   /**
+   * Download a project.
+   */
+  function download() {
+    $this->downloaded = TRUE;
+    if (make_download_factory($this->name, $this->download, $this->download_location) === FALSE) {
+      $this->downloaded = FALSE;
+    }
+    return $this->downloaded;
+  }
+
+  /**
    * Build a project.
    */
   function make() {
@@ -55,20 +76,22 @@ class DrushMakeProject {
     }
     $this->made = TRUE;
 
-    $download_location = $this->findDownloadLocation();
-    if (make_download_factory($this->name, $this->download, $download_location) === FALSE) {
+    if (is_null($this->download_location)) {
+      $this->download_location = $this->findDownloadLocation();
+    }
+    if ($this->download() === FALSE) {
       return FALSE;
     }
-    if (!$this->addLockfile($download_location)) {
+    if (!$this->addLockfile($this->download_location)) {
       return FALSE;
     }
-    if (!$this->applyPatches($download_location)) {
+    if (!$this->applyPatches($this->download_location)) {
       return FALSE;
     }
-    if (!$this->getTranslations($download_location)) {
+    if (!$this->getTranslations($this->download_location)) {
       return FALSE;
     }
-    if (!$this->recurse($download_location)) {
+    if (!$this->recurse($this->download_location)) {
       return FALSE;
     }
     return TRUE;

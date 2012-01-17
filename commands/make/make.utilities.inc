@@ -271,11 +271,23 @@ function make_valid_url($url, $absolute = FALSE) {
   }
 }
 
-/*
+/**
+ * Find, and possibly create, a temporary directory.
+ *
+ * @param $set
+ *   Must be TRUE to create a directory.
+ * @param $directory
+ *   Pass in a directory to use. This is required if using any
+ *   concurrent operations.
  * @todo Merge with drush_tempdir().
  */
-function make_tmp($set = TRUE) {
+function make_tmp($set = TRUE, $directory = NULL) {
   static $tmp_dir;
+
+  if (isset($directory) && !isset($tmp_dir)) {
+    $tmp_dir = $directory;
+  }
+
   if (!isset($tmp_dir) && $set) {
     $tmp_dir = drush_find_tmp();
     if (strrpos($tmp_dir, '/') == strlen($tmp_dir) - 1) {

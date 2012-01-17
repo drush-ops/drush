@@ -20,7 +20,7 @@ function make_download_factory($name, $download, $download_location) {
  * Download project using drush's pm-download command.
  */
 function make_download_pm($name, $download, $download_location) {
-  $version = $name . '-' . $download['release']['version'];
+  $version = $name . '-' . $download['version'];
 
   $options = array(
     'destination' => dirname($download_location),
@@ -217,9 +217,7 @@ function make_download_git($name, $download, $download_location) {
   // Use working-copy download URL if --working-copy specified.
   $url = $wc ? $download['wc_url'] : $download['url'];
 
-  $tmp_location = $tmp_path . '/__git__/' . basename($download_location);
-
-  drush_mkdir($tmp_path . '/__git__/');
+  $tmp_location = drush_tempdir() . '/' . basename($download_location);
 
   // clone the given repository
   if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
@@ -291,7 +289,6 @@ function make_download_git($name, $download, $download_location) {
       drush_shell_exec("rm -rf %s", $tmp_location . '/.git');
     }
     drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
-    drush_shell_exec("rm -rf %s", dirname($tmp_location));
     return dirname($tmp_location);
   }
   else {

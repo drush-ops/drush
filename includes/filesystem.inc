@@ -395,7 +395,7 @@ function drush_tempnam($pattern, $tmp_dir = NULL) {
  */
 function drush_tempdir() {
   $tmp_dir = drush_trim_path(drush_find_tmp());
-  $tmp_dir .= '/' . 'drush_tmp_' . time();
+  $tmp_dir .= '/' . 'drush_tmp_' . uniqid(time() . '_');
 
   drush_mkdir($tmp_dir);
   drush_register_file_for_deletion($tmp_dir);
