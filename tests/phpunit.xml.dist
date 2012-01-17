@@ -3,6 +3,12 @@
     backupStaticAttributes="false"
     syntaxCheck="false"
     bootstrap="drush_testcase.inc">
+  <testsuites>
+    <testsuite name="Drush Test Suite">
+      <directory>.</directory>
+    </testsuite>
+  </testsuites>
+
   <php>
     <!-- These variables may alternatively be set as bash environment variables. -->
 
