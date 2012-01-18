@@ -29,7 +29,7 @@ function make_drush_command() {
     ),
     'options' => array(
       'version' => 'Print the make API version and exit.',
-      'concurrency' => 'Limits the number of concurrent projects that will be processed at the same time. The default is 5.',
+      'concurrency' => 'Limits the number of concurrent projects that will be processed at the same time. The default is 4.',
       'contrib-destination' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
       'force-complete' => 'Force a complete build even if errors occur.',
       'ignore-checksums' => 'Ignore md5 checksums for downloads.',
@@ -370,7 +370,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       if (!drush_get_option('no-cache', FALSE)) {
         $common_options['cache'] = TRUE;
       }
-      drush_backend_invoke_concurrent($invocations, $common_options, array('concurrency' => drush_get_option('concurrency', 5), 'method' => 'POST'), 'make-process', '@none');
+      drush_backend_invoke_concurrent($invocations, $common_options, array('concurrency' => drush_get_option('concurrency', 4), 'method' => 'POST'), 'make-process', '@none');
     }
   }
   return TRUE;
