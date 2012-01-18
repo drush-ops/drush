@@ -221,7 +221,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
   }
   $ignore_checksums = drush_get_option('ignore-checksums');
   $translations = array();
-  if ($info['translations']) {
+  if (isset($info['translations'])) {
     $translations = $info['translations'];
   }
   if ($arg_translations = drush_get_option('translations', FALSE)) {
