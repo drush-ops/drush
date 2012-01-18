@@ -145,6 +145,12 @@ Do not use both types of declarations for a single project in your makefile.
 
         projects[myproject][overwrite] = TRUE
 
+- `translations`
+
+  Retrieve translations for the specified language, if available, for all projects.
+
+               translations[] = es
+
 
 ### Project download options
 

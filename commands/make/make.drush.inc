@@ -220,6 +220,13 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
     }
   }
   $ignore_checksums = drush_get_option('ignore-checksums');
+  $translations = array();
+  if ($info['translations']) {
+    $translations = $info['translations'];
+  }
+  if ($arg_translations = drush_get_option('translations', FALSE)) {
+    $translations = array_merge(explode(',', $arg_translations), $translations);
+  }
   foreach ($info['projects'] as $key => $project) {
     $md5 = '';
     if (isset($project['md5'])) {
@@ -229,6 +236,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
     $project += array(
       'name'                => $key,
       'core'                => $info['core'],
+      'translations'        => $translations,
       'build_path'          => $build_path,
       'contrib_destination' => $contrib_destination,
       'version'             => '',

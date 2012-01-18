@@ -85,6 +85,10 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('translations');
   }
 
+  function testMakeTranslationsInside() {
+    $this->runMakefileTest('translations-inside');
+  }
+
   function testMakeContribDestination() {
     $this->runMakefileTest('contrib-destination');
   }
@@ -184,6 +188,15 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'md5' => '9b209494006aecd7f68c228a61bb26f9',
         'options'  => array(
           'translations' => 'es,pt-br',
+          'no-core' => NULL,
+        ),
+      ),
+      'translations-inside' => array(
+        'name'     => 'Translation downloads inside makefile',
+        'makefile' => 'translations-inside.make',
+        'build'    => TRUE,
+        'md5' => '9b209494006aecd7f68c228a61bb26f9',
+        'options'  => array(
           'no-core' => NULL,
         ),
       ),
