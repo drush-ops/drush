@@ -28,7 +28,7 @@ function make_drush_command() {
       'drush make --no-core --contrib-destination=. installprofile.make' => 'Build an installation profile within an existing Drupal site',
     ),
     'options' => array(
-      'version' => 'Print the version and exit.',
+      'version' => 'Print the make API version and exit.',
       'concurrency' => 'Limits the number of concurrent projects that will be processed at the same time. The default is 5.',
       'contrib-destination' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
       'force-complete' => 'Force a complete build even if errors occur.',
@@ -132,9 +132,9 @@ function make_make_complete() {
 function drush_make($makefile = NULL, $build_path = NULL) {
   // If --version option is supplied, print it and bail.
   if (drush_get_option('version', FALSE)) {
-    $version = make_version();
-    drush_print($version);
-    return $version;
+    drush_print(dt('drush make API version !version', array('!version' => MAKE_API)));
+    drush_print_pipe(MAKE_API);
+    return;
   }
 
   if (!($build_path = make_build_path($build_path))) {
@@ -175,6 +175,9 @@ function drush_make_process($directory) {
  * Implementation of drush_hook_post_COMMAND() for the make command.
  */
 function drush_make_post_make($makefile = NULL, $build_path = NULL) {
+  if (drush_get_option('version')) {
+    return;
+  }
   if (!($build_path = make_build_path($build_path))) {
     return;
   }
@@ -459,8 +462,4 @@ function make_prepare_request($project, $type = 'contrib') {
     $request['version'] = $type == 'core' ? $project['version'] : $project['core'] . '-' . $project['version'];
   }
   return $request;
-}
-
-function make_version() {
-  return '2.0-dev';
 }
