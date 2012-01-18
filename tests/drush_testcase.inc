@@ -434,8 +434,15 @@ abstract class Drush_UnitTestCase extends Drush_TestCase {
  * Initialize our environment at the start of each run (i.e. suite).
  */
 function unish_init() {
-  // We read from globals here because env can be empty and ini did not work in quick test.
-  define('UNISH_DB_URL', getenv('UNISH_DB_URL') ? getenv('UNISH_DB_URL') : !empty($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
+  // We read from env then globals then default to mysql.
+  $unish_db_url = 'mysql://root:@127.0.0.1';
+  if (getenv('UNISH_DB_URL')) {
+    $unish_db_url = getenv('UNISH_DB_URL');
+  }
+  elseif (isset($GLOBALS['UNISH_DB_URL'])) {
+    $unish_db_url = $GLOBALS['UNISH_DB_URL'];
+  }
+  define('UNISH_DB_URL', $unish_db_url);
 
   // UNISH_DRUSH value can come from phpunit.xml or `which drush`.
   if (!defined('UNISH_DRUSH')) {
