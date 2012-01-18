@@ -3,6 +3,11 @@ language: php
 php:
   - 5.3
   - 5.4
+env:
+  - UNISH_DB_URL=mysql://root:@127.0.0.1
+  - UNISH_DB_URL=pgsql://postgres:@localhost
+  - UNISH_DB_URL=sqlite://none/of/this/matters
 before_script:
-- export UNISH_DRUSH="${PWD}/drush" && cd tests
+  - export UNISH_DRUSH="${PWD}/drush" && cd tests
+script: phpunit --verbose
 
