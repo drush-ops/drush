@@ -306,8 +306,7 @@ function make_download_git($name, $download, $download_location) {
  */
 function make_download_bzr($name, $download, $download_location) {
   $tmp_path = make_tmp();
-  $tmp_location = $tmp_path . '/__bzr__/' . basename($download_location);
-  drush_mkdir(dirname($tmp_location));
+  $tmp_location = drush_tempdir() . '/' . basename($download_location);
   if (!empty($download['url'])) {
     $args = array();
     $command = 'bzr';
@@ -334,7 +333,6 @@ function make_download_bzr($name, $download, $download_location) {
     if (call_user_func_array('drush_shell_exec', $args)) {
       drush_log(dt('@project downloaded from @url.', array('@project' => $name, '@url' => $download['url'])), 'ok');
       drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
-      drush_shell_exec('rm -rf %s', dirname($tmp_location));
       return dirname($download_location);
     }
   }
