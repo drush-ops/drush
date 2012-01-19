@@ -970,7 +970,7 @@ function drush_bootstrap_value($context, $value = null) {
  * @see drush.php
  */
 function drush_bootstrap_prepare() {
-  define('DRUSH_BASE_PATH', dirname(__FILE__) . '/..');
+  define('DRUSH_BASE_PATH', dirname(dirname(__FILE__)));
 
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
   require_once DRUSH_BASE_PATH . '/includes/command.inc';
