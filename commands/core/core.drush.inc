@@ -92,6 +92,7 @@ function core_drush_command() {
     ),
     'options' => array(
       'show-passwords' => 'Show database password.',
+      'full' => 'Show all drush aliases in the report, even if there are a lot.',
     ),
     'topics' => array('docs-readme'),
   );
@@ -462,7 +463,7 @@ function _core_path_aliases($project = '') {
   return $paths;
 }
 
-function _core_site_status_table($project = '') {
+function _core_site_status_table($project = '', $full = FALSE) {
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $status_table['Drupal version'] = drush_drupal_version();
@@ -504,8 +505,16 @@ function _core_site_status_table($project = '') {
   }
   $status_table['Drush version'] = DRUSH_VERSION;
   $status_table['Drush configuration'] = implode(' ', drush_get_context_options('context-path', TRUE));
-  $status_table['Drush alias files'] = implode(' ', _drush_sitealias_find_alias_files());
-
+  $alias_files = _drush_sitealias_find_alias_files();
+  if (!empty($alias_files)) {
+    if ($full || count($alias_files) < 24) {
+      $status_table['Drush alias files'] = implode(' ', $alias_files);
+    }
+    else {
+      $status_table['Drush alias files'] = dt("There are !count alias files. Run with --full to see the full list.", array('!count' => count($alias_files)));
+    }
+  }
+  
   // None of the Status keys are in dt(); this helps with machine-parsing of status?
   $path_names['root'] = 'Drupal root';
   $path_names['site'] = 'Site path';
@@ -660,7 +669,7 @@ function drush_core_requirements() {
  * installation.
  */
 function drush_core_status() {
-  $status_table = _core_site_status_table(drush_get_option('project',''));
+  $status_table = _core_site_status_table(drush_get_option('project',''), drush_get_option('full'));
   // If args are specified, filter out any entry that is not named
   // (in other words, only show lines named by one of the arg values)
   $args = func_get_args();
