@@ -442,10 +442,8 @@ function _core_site_status_table($project = '') {
     $status_table['Default theme'] = drush_theme_get_default();
     $status_table['Administration theme'] = drush_theme_get_admin();
   }
-  if (function_exists('php_ini_loaded_file')) {
-    // Function available on PHP >= 5.2.4, but we use it if available to help
-    // users figure out their php.ini issues.
-    $status_table['PHP configuration'] = php_ini_loaded_file();
+  if ($php_ini_files = _drush_core_config_php_ini_files()) {
+    $status_table['PHP configuration'] = implode(' ', $php_ini_files);
   }
   drush_sitealias_load_all();
   $status_table['Drush version'] = DRUSH_VERSION;
@@ -480,6 +478,24 @@ function _core_site_status_table($project = '') {
   $status_table['%paths'] = $paths;
 
   return $status_table;
+}
+
+function _drush_core_config_php_ini_files() {
+  $ini_files = array();
+  // Function available on PHP >= 5.2.4, but we use it if available to help
+  // users figure out their php.ini issues.
+  if (function_exists('php_ini_loaded_file')) {
+    $ini_files[] = php_ini_loaded_file();
+  }
+  foreach (array(DRUSH_BASE_PATH, '/etc/drush', drush_server_home() . '/.drush') as $ini_dir) {
+    if (file_exists($ini_dir . "/php.ini")) {
+      $ini_files[] = realpath($ini_dir . "/php.ini");
+    }
+    if (file_exists($ini_dir . "/drush.ini")) {
+      $ini_files[] = realpath($ini_dir . "/drush.ini");
+    }
+  }
+  return $ini_files;
 }
 
 /**
