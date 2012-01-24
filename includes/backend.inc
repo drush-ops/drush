@@ -981,8 +981,11 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   $command = implode(' ', array_filter($cmd, 'strlen'));
   if (!is_null($hostname)) {
     if (drush_is_windows($os)) {
-      if (!is_null($username) && (array_key_exists('winrs-password', $site_record))) {
-        $username = " -u:" . drush_escapeshellarg($username, "LOCAL") . " -p:" . drush_escapeshellarg($site_record['winrs-password'], "LOCAL");
+      if (!is_null($username)) {
+        $username = " -u:" . drush_escapeshellarg($username, "LOCAL");
+        if (array_key_exists('winrs-password', $site_record)) {
+          $username .= " -p:" . drush_escapeshellarg($site_record['winrs-password'], "LOCAL");
+        }
       }
       $command = "winrs" . $username . " -r:" . drush_escapeshellarg($hostname, "LOCAL") . " " . drush_escapeshellarg($command, "LOCAL");
     }
