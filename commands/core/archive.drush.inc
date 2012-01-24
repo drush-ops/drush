@@ -201,7 +201,9 @@ function drush_archive_dump($sites_subdirs = '@self') {
 
   $i=0;
   foreach ($full as $key => $alias) {
-    $status = drush_invoke_process($alias, 'core-status', array(), array());
+    if (!$status = drush_invoke_process($alias, 'core-status', array(), array())) {
+      drush_log(dt('Unable to determine sites directory for !alias', array('!alias' => $key)), 'warning');
+    }
 
     // Add the site specific directory to archive.
     if (!empty($status['object']['%paths']['%site'])) {
