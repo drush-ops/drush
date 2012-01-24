@@ -498,10 +498,8 @@ function _core_site_status_table($project = '', $full = FALSE) {
     $status_table['Default theme'] = drush_theme_get_default();
     $status_table['Administration theme'] = drush_theme_get_admin();
   }
-  if (function_exists('php_ini_loaded_file')) {
-    // Function available on PHP >= 5.2.4, but we use it if available to help
-    // users figure out their php.ini issues.
-    $status_table['PHP configuration'] = php_ini_loaded_file();
+  if ($php_ini_files = _drush_core_config_php_ini_files()) {
+    $status_table['PHP configuration'] = implode(' ', $php_ini_files);
   }
   $status_table['Drush version'] = DRUSH_VERSION;
   $status_table['Drush configuration'] = implode(' ', drush_get_context_options('context-path', TRUE));
@@ -603,7 +601,13 @@ function core_core_config_complete() {
 }
 
 function drush_core_config_load($headers = TRUE) {
-  $rcs_header = $rcs = $aliases_header = $aliases = $drupal_header = $drupal = array();
+  $php_header = $php = $rcs_header = $rcs = $aliases_header = $aliases = $drupal_header = $drupal = array();
+  $php = _drush_core_config_php_ini_files();
+  if (!empty($php)) {
+    if ($headers) {
+      $php_header = array('phpini' => '-- PHP ini files --');
+    }
+  }
   drush_sitealias_load_all();
   if ($rcs = drush_get_context_options('context-path', TRUE)) {
     if ($headers) {
@@ -621,7 +625,25 @@ function drush_core_config_load($headers = TRUE) {
       $drupal_header = array('drupal' => '-- Drupal --');
     }
   }
-  return array_merge($rcs_header, $rcs, $aliases_header, $aliases, $drupal_header, $drupal);
+  return array_merge($php_header, $php, $rcs_header, $rcs, $aliases_header, $aliases, $drupal_header, $drupal);
+}
+
+function _drush_core_config_php_ini_files() {
+  $ini_files = array();
+  // Function available on PHP >= 5.2.4, but we use it if available to help
+  // users figure out their php.ini issues.
+  if (function_exists('php_ini_loaded_file')) {
+    $ini_files[] = php_ini_loaded_file();
+  }
+  foreach (array(DRUSH_BASE_PATH, '/etc/drush', drush_server_home() . '/.drush') as $ini_dir) {
+    if (file_exists($ini_dir . "/php.ini")) {
+      $ini_files[] = realpath($ini_dir . "/php.ini");
+    }
+    if (file_exists($ini_dir . "/drush.ini")) {
+      $ini_files[] = realpath($ini_dir . "/drush.ini");
+    }
+  }
+  return $ini_files;
 }
 
 /**
