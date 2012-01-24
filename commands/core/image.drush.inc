@@ -53,8 +53,7 @@ function drush_image_flush($style_name = NULL) {
       drush_image_flush_all();
     }
     else {
-      $commands = drush_get_commands();
-      return drush_dispatch($commands['image-flush'], array($style_name));
+      return drush_invoke('image-flush', array($style_name));
     }
   }
   else {
