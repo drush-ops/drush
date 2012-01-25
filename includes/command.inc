@@ -114,8 +114,6 @@ function _drush_invoke_args($command, $args, $defined_in_commandfile) {
     // to a higher phase will do this).
     $list = drush_commandfile_list();
 
-    $functions = array();
-
     // Run all of the functions available for this variation
     foreach ($list as $commandfile => $filename) {
       $func = sprintf("drush_%s_%s", $commandfile, $var_hook);
@@ -127,7 +125,6 @@ function _drush_invoke_args($command, $args, $defined_in_commandfile) {
         }
       }
       if (function_exists($func)) {
-        $functions[] = $func;
         $all_available_hooks[] = $func . ' [* Defined in ' . $filename . ']';
         $available_rollbacks[] = $func . '_rollback';
         $completed[] = $func;
@@ -158,15 +155,19 @@ function _drush_invoke_args($command, $args, $defined_in_commandfile) {
   }
 
   // If no hook functions were found, print a warning.
-  if (empty($all_available_hooks)) {
+  if (empty($completed)) {
+    $default_command_hook = sprintf("drush_%s_%s", $defined_in_commandfile, $hook);
+    if (($defined_in_commandfile . "_" == substr($hook . "_",0,strlen($defined_in_commandfile)+ 1))) {
+      $default_command_hook = sprintf("drush_%s", $hook);
+    }
     drush_log(dt("No hook functions were found for !command.", array('!command' => $command)), 'warning');
-    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'warning');
+    drush_log(dt("The primary drush_invoke() hook for !command is !default_func().  Please implement this function.  Run with --show-invoke to see all available hooks.", array('!command' => $command, '!default_func' => $default_command_hook)), 'warning');
   }
-  elseif (drush_get_option('show-invoke')) {
+  if (drush_get_option('show-invoke')) {
     // We show all available hooks up to and including the one that failed (or all, if there were no failures)
     drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'ok');
   }
-  if (drush_get_option('show-invoke')) {
+  if (drush_get_option('show-invoke') && !empty($available_rollbacks)) {
     drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command, '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'ok');
   }
 
