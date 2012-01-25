@@ -58,21 +58,40 @@ function drush_include($path, $name, $version = NULL, $extension = 'inc') {
   $version = ($version) ? $version : drush_drupal_major_version();
   $file = sprintf("%s/%s_%s.%s", $path, $name, $version, $extension);
   if (file_exists($file)) {
-    // drush_log(dt('Including version specific file : @file', array('@file' => $file)));
+    //drush_log(dt('Including version specific file : @file', array('@file' => $file)));
     include_once($file);
     return TRUE;
   }
   $file = sprintf("%s/%s.%s", $path, $name, $extension);
   if (file_exists($file)) {
-    // drush_log(dt('Including non-version specific file : @file', array('@file' => $file)));
+    //drush_log(dt('Including non-version specific file : @file', array('@file' => $file)));
     include_once($file);
     return TRUE;
   }
 }
 
 /**
- * Return a structured array of engines of a specific type from commandfiles
- * implementing hook_drush_engine_$type.
+ * Obtain all engine types info and normalize with defaults.
+ *
+ * @see hook_drush_engine_type_info().
+ */
+function drush_get_engine_types_info() {
+  $info = drush_command_invoke_all('drush_engine_type_info');
+  foreach ($info as $type => $data) {
+    $info[$type] += array(
+      'description' => '',
+      'option' => FALSE,
+      'default' => NULL,
+      'options' => array(),
+      'add-options-to-command' => FALSE,
+    );
+  }
+
+  return $info;
+}
+
+/**
+ * Return a structured array of engines of a specific type.
  *
  * Engines are pluggable subsystems. Each engine of a specific type will
  * implement the same set of API functions and perform the same high-level
@@ -91,28 +110,37 @@ function drush_include($path, $name, $version = NULL, $extension = 'inc') {
  * the "pm" commandfile would automatically be found if the file
  * "pm/handler/wget.inc" exists and a specific path is not provided.
  *
- * @param $type
+ * @param $engine_type
  *   The type of engine.
  *
  * @return
  *   A structured array of engines.
  */
-function drush_get_engines($type) {
-  $engines = array();
+function drush_get_engines($engine_type) {
+  $info = drush_get_engine_types_info();
+  if (!isset($info[$engine_type])) {
+    return drush_set_error('DRUSH_UNKNOWN_ENGINE_TYPE', dt('Unknown engine type !engine_type', array('!engine_type' => $engine_type)));
+  }
+
+  $engines = array(
+    'info' => $info[$engine_type],
+    'engines' => array(),
+  );
   $list = drush_commandfile_list();
+  $hook = 'drush_engine_' . $engine_type;
   foreach ($list as $commandfile => $path) {
-    if (drush_command_hook($commandfile, 'drush_engine_' . $type)) {
-      $function = $commandfile . '_drush_engine_' . $type;
+    if (drush_command_hook($commandfile, $hook)) {
+      $function = $commandfile . '_' . $hook;
       $result = $function();
-      foreach ((array)$result as $key => $engine) {
+      foreach ($result as $key => $engine) {
         // Add some defaults
         $engine += array(
           'commandfile' => $commandfile,
           // Engines by default live in a subdirectory of the commandfile that
           // declared them, named as per the type of engine they are.
-          'path' => sprintf("%s/%s", dirname($path), $type),
+          'path' => sprintf("%s/%s", dirname($path), $engine_type),
         );
-        $engines[$key] = $engine;
+        $engines['engines'][$key] = $engine;
       }
     }
   }
@@ -150,9 +178,9 @@ function drush_get_engines($type) {
  * @return TRUE or instanced object of available class on success. FALSE on fail.
  */
 function drush_include_engine($type, $engine, $version = NULL, $path = NULL) {
-  $engines = drush_get_engines($type);
-  if (!$path && isset($engines[$engine])) {
-    $path = $engines[$engine]['path'];
+  $engine_info = drush_get_engines($type);
+  if (!$path && isset($engine_info['engines'][$engine])) {
+    $path = $engine_info['engines'][$engine]['path'];
   }
   if (!$path) {
     return drush_set_error('DRUSH_ENGINE INCLUDE_NO_PATH', dt('No path was set for including the !type engine !engine.', array('!type' => $type, '!engine' => $engine)));
@@ -1635,7 +1663,8 @@ function drush_version_control_reserved_files() {
   if (!$files) {
     // Also support VCSs that are not drush vc engines.
     $files = array('.git', '.gitignore', '.hg', '.hgignore', '.hgrags');
-    $vcs = array_keys(drush_get_engines('version_control'));
+    $engine_info = drush_get_engines('version_control');
+    $vcs = array_keys($engine_info['engines']);
     foreach ($vcs as $name) {
       $version_control = drush_include_engine('version_control', $name);
       $files = array_merge($files, $version_control->reserved_files());

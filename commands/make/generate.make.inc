@@ -45,9 +45,6 @@ function _drush_make_generate_get_version_options() {
 function _drush_make_generage_projects($all_extensions, $version_options) {
   $projects = array();
 
-  $release_info = drush_get_option('release-info', 'updatexml');
-  drush_include_engine('release_info', $release_info);
-
   $system_requirements = system_requirements('runtime');
   // update xml expects the drupal version to be expressed as "7.x" or "8.x"
   // We used to check $system_requirements['drupal']['value'], but this now

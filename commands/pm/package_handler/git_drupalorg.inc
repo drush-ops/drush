@@ -30,6 +30,8 @@ function package_handler_validate() {
       drush_log(dt('git package handler needs git_deploy module enabled to work properly.'), 'warning');
     }
   }
+
+  return TRUE;
 }
 
 /**

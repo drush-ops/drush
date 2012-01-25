@@ -81,7 +81,7 @@
  *
  * To check completion results without needing to actually trigger shell
  * completion, you can call this manually using a command like:
- * 
+ *
  * drush --early=includes/complete.inc [--complete-debug] drush [@alias] [command]...
  *
  * If you want to simulate the results of pressing tab after a space (i.e.
@@ -141,7 +141,6 @@ function drush_early_complete() {
   }
 
   $completions = array();
-
   if (!$set_command_name) {
     // We have no command yet.
     if ($word_is_option) {
@@ -416,22 +415,10 @@ function drush_complete_rebuild() {
   drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   $commands = drush_get_commands();
   foreach ($commands as $command_name => $command) {
-    // Add command options - we don't currently complete on option values (with
-    // the exception of engine names).
+    // Add command options and suboptions.
     $options = array_keys($command['options']);
-    // Add engine types and sub-options from engines, if any.
-    // This could potentially be improved to only show options associated with
-    // an active engine.
-    foreach ($command['engines'] as $type => $description) {
-      $all_engines = drush_get_engines($type);
-      foreach ($all_engines as $name => $engine) {
-        $options[] = $name;
-        if (!empty($engine['sub-options'])) {
-          foreach ($engine['sub-options'] as $sub_option => $sub_option_values) {
-            $options = array_merge($options, array_keys($sub_option_values));
-          }
-        }
-      }
+    foreach ($command['sub-options'] as $option => $sub_options) {
+      $options = array_merge($options, array_keys($sub_options));
     }
     $complete['commands'][$command_name]['options'] = $options;
   }

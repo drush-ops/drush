@@ -46,6 +46,7 @@ function make_drush_command() {
       'working-copy' => 'Preserves VCS directories, like .git, for projects downloaded using such methods.',
       'download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
     ),
+    'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
   );
 
@@ -62,6 +63,7 @@ function make_drush_command() {
       'exclude-versions' => 'Exclude all version numbers (default is include all version numbers) or optionally specify a list of projects to exclude from versioning',
       'include-versions' => 'Include a specific list of projects, while all other projects remain unversioned in the makefile (so implies --exclude-versions)',
     ),
+    'engines' => array('release_info'),
     'aliases' => array('generate-makefile'),
   );
 
@@ -206,9 +208,6 @@ function drush_make_post_make($makefile = NULL, $build_path = NULL) {
 }
 
 function make_projects($recursion, $contrib_destination, $info, $build_path) {
-  $release_info = drush_get_option('release-info', 'updatexml');
-  drush_include_engine('release_info', $release_info);
-
   $projects = array();
   if (empty($info['projects'])) {
     if (drush_get_option('no-core') || $recursion) {

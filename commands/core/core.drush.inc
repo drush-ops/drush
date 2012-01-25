@@ -314,6 +314,21 @@ function core_core_rsync_complete() {
   return array('values' => array_keys(_drush_sitealias_all_list()));
 }
 
+/**
+ * @defgroup engines Engine types
+ * @{
+ */
+
+/**
+ * Implementation of hook_drush_engine_type_info().
+ */
+function core_drush_engine_type_info() {
+  return array(
+    'drupal' => array(
+    ),
+  );
+}
+
 function core_drush_engine_drupal() {
   $engines = array();
   $engines['batch'] = array();
@@ -322,6 +337,10 @@ function core_drush_engine_drupal() {
   $engines['site_install'] = array();
   return $engines;
 }
+
+/**
+ * @} End of "Engine types".
+ */
 
 /**
  * Command handler. Execute update.php code from drush.

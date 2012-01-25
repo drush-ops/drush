@@ -9,6 +9,7 @@
 
 define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
 
+
 /**
  * Obtain the most appropiate release for the requested project.
  *

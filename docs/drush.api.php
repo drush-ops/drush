@@ -260,5 +260,61 @@ function hook_drush_cache_clear(&$types) {
 }
 
 /**
+ * Inform drush about one or more engine types.
+ *
+ * This hook allow to declare available engine types, the cli option to select
+ * between engine implementatins, which one to use by default, global options
+ * and other parameters. Commands may override this info when declaring the
+ * engines they use.
+ *
+ * @return
+ *   An array whose keys are engine type names and whose values describe
+ *   the characteristics of the engine type in relation to command definitions:
+ *
+ *   - description: The engine type description.
+ *   - option: The command line option to choose an implementation for
+ *     this engine type.
+ *     FALSE means there's no option. That is, the engine type is for internal
+ *     usage of the command and thus an implementation is not selectable.
+ *   - default: The default implementation to use by the engine type.
+ *   - options: Engine options common to all implementations.
+ *   - add-options-to-command: If there's a single implementation for this
+ *     engine type, add its options as command level options.
+ *
+ * @see drush_get_engine_types_info()
+ * @see pm_drush_engine_type_info()
+ */
+function hook_drush_engine_type_info() {
+  return array(
+    'dessert' => array(
+      'description' => 'Choose a dessert while the sandwich is baked.',
+      'option' => 'dessert',
+      'default' => 'ice-cream',
+      'options' => 'sweetness',
+      'add-options-to-command' => FALSE,
+    ),
+  );
+}
+
+/**
+ * Inform drush about one or more engines implementing a given engine type.
+ *
+ * This hook allow to declare implementations for an engine type.
+ *
+ * @see pm_drush_engine_package_handler()
+ * @see pm_drush_engine_version_control()
+ */
+function hook_drush_engine_ENGINE_TYPE() {
+  return array(
+    'ice-cream' => array(
+      'description' => 'Feature rich ice-cream with all kind of additives.',
+      'options' => array(
+        'flavour' => 'Choose your favorite flavour',
+      ),
+    ),
+  );
+}
+
+/**
  * @} End of "addtogroup hooks".
  */

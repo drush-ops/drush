@@ -141,12 +141,17 @@ function drush_dispatch($command, $arguments = array()) {
       _drush_prepare_command($command, $arguments);
     }
 
-    // Add command-specific options, if applicable
+    // Add command-specific options, if applicable.
     drush_command_default_options($command);
 
     // Test to see if any of the options in the 'cli' context
     // are not represented in the command structure.
     if ((_drush_verify_cli_options($command) === FALSE) || (_drush_verify_cli_arguments($command) === FALSE)) {
+      return FALSE;
+    }
+
+    // Include and validate command engines.
+    if (_drush_load_command_engines($command) === FALSE) {
       return FALSE;
     }
 
@@ -380,15 +385,113 @@ function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
 }
 
 /**
+ * Include, instantiate and validate command engines.
+ *
+ * @return FALSE if a engine doesn't validate.
+ */
+function _drush_load_command_engines($command) {
+  foreach ($command['engines'] as $engine_type => $config) {
+    drush_log(dt("Loading !engine engine.", array('!engine' => $engine_type), 'bootstrap'));
+    $engine_info = drush_get_engines($engine_type);
+    $engines = array_keys($engine_info['engines']);
+    $default = isset($config['default'])?$config['default']:current($engines);
+    $engine = drush_get_option($engine_type, $default);
+    if (!in_array($engine, $engines)) {
+      return drush_set_error('DRUSH_UNKNOWN_ENGINE_TYPE', dt('Unknown !engine_type engine !engine', array('!engine' => $engine, '!engine_type' => $engine_type)));
+    }
+    $result = drush_include_engine($engine_type, $engine);
+    if ($result === FALSE) {
+      return FALSE;
+    }
+    elseif (is_object($result) && method_exists($result, 'validate')) {
+      $result = $result->validate();
+    }
+    else {
+      $function = strtr($engine_type, '-', '_') . '_validate';
+      if (function_exists($function)) {
+        $result = call_user_func($function);
+      }
+    }
+    if (!$result) {
+      return FALSE;
+    }
+  }
+}
+
+/**
  * Add command structure info from each engine back into the command.
  */
 function _drush_merge_engine_data(&$command) {
-  // Merge in engine specific help.
-  foreach ($command['engines'] as $type) {
-    $all_engines = drush_get_engines($type);
-    foreach ($all_engines as $name => $definition) {
-      $command = array_merge_recursive($command, $definition);
+  foreach ($command['engines'] as $engine_type => $config) {
+    // Normalize engines structure.
+    if (!is_array($config)) {
+      unset($command['engines'][$engine_type]);
+      $command['engines'][$config] = array();
+      $engine_type = $config;
     }
+
+    // Get all implementations for this engine type.
+    $engine_info = drush_get_engines($engine_type);
+    if ($engine_info === FALSE) {
+      return FALSE;
+    }
+
+    // Override engine_info with customizations in the command.
+    $config = $command['engines'][$engine_type] += $engine_info['info'];
+
+    // Add engine type global options to the command.
+    $command['options'] += $config['options'];
+
+    $engine_data = array();
+
+    // If there's a single implementation for this engine type, it will be
+    // loaded by default, and makes no sense to provide a command line option
+    // to select the only flavor (ie. --release_info=updatexml), so we won't
+    // add an option in this case.
+    // Additionally, depending on the command, it may be convenient to extend
+    // the command with the engine options.
+    if (count($engine_info['engines']) == 1) {
+      if ($config['add-options-to-command'] !== FALSE) {
+        $engine = key($engine_info['engines']);
+        $data = $engine_info['engines'][$engine];
+        foreach (array('options', 'sub-options') as $key) {
+          if (isset($data[$key])) {
+            $engine_data[$key] = $data[$key];
+          }
+        }
+      }
+    }
+    // Otherwise, provide a command option to choose between engines and add
+    // the engine options and sub-obtions.
+    else {
+      // Process engines in order. First the default engine, the rest alphabetically.
+      $default = $config['default'];
+      $engines = array_keys($engine_info['engines']);
+      asort($engines);
+      array_unshift($engines, $default);
+      $engines = array_unique($engines);
+
+      // Extend the default engine description.
+      $desc = $engine_info['engines'][$default]['description'];
+      $engine_info['engines'][$default]['description'] = dt('Default type engine.', array('type' => $engine_type)) . ' ' . $desc;
+
+      $engine_data += array(
+        'options' => array(),
+        'sub-options' => array(),
+      );
+      foreach ($engines as $engine) {
+        $data = $engine_info['engines'][$engine];
+        $option = $engine_type . '=' . $engine;
+        $engine_data['options'][$option] = $data['description'];
+        if (isset($data['options'])) {
+          $engine_data['sub-options'][$option] = $data['options'];
+        }
+        if (isset($data['sub-options'])) {
+          $engine_data['sub-options'] += $data['sub-options'];
+        }
+      }
+    }
+    $command = array_merge_recursive($command, $engine_data);
   }
 }
 
@@ -398,8 +501,6 @@ function _drush_merge_engine_data(&$command) {
  * record.
  */
 function _drush_verify_cli_options($command) {
-  _drush_merge_engine_data($command);
-
   // Start out with just the options in the current command record.
   $options = _drush_get_command_options($command);
   // Skip all tests if the command is marked to allow anything.
@@ -490,11 +591,6 @@ function _drush_flatten_options($options) {
   $flattened_options = array();
 
   foreach($options as $key => $value) {
-    // engine sections start with 'package-handler=git_drupalorg',
-    // or something similar.  Get rid of everything from the = onward.
-    if (($eq_pos = strpos($key, '=')) !== FALSE) {
-      $key = substr($key, 0, $eq_pos);
-    }
     $flattened_options[] = $key;
     if (is_array($value)) {
       if (array_key_exists('short-form', $value)) {
@@ -837,10 +933,15 @@ function drush_get_commands() {
       $function = $commandfile . '_drush_command';
       $result = $function();
       foreach ((array)$result as $key => $command) {
-        // Add some defaults and normalize the command descriptor
+        // Add some defaults and normalize the command descriptor.
         $command += drush_command_defaults($key, $commandfile, $path);
+
+        // Add engine data.
+        _drush_merge_engine_data($command);
+
         // Translate command.
         drush_command_translate($command);
+
         // If command callback function name begins with "drush_$commandfile_",
         // then fix up the command entry so that drush_invoke will be
         // called by way of drush_command.  This will cause all
@@ -917,7 +1018,7 @@ function drush_command_defaults($key, $commandfile, $path) {
  */
 function drush_command_translate(&$command) {
   $command['description'] = _drush_command_translate($command['description']);
-  $keys = array('arguments', 'options', 'examples', 'engines', 'sections');
+  $keys = array('arguments', 'options', 'examples', 'sections');
   foreach ($keys as $key) {
     foreach ($command[$key] as $k => $v) {
       if (is_array($v)) {
@@ -1413,7 +1514,7 @@ function _drush_command_set_default_options($command) {
  *   TRUE if the the hook is implemented.
  */
 function drush_command_hook($commandfile, $hook) {
-  return function_exists($commandfile .'_'. $hook);
+  return function_exists($commandfile . '_' . $hook);
 }
 
 /**

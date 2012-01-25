@@ -77,7 +77,7 @@ class completeCase extends Drush_CommandTestCase {
     // Command with no results should produce no output.
     $this->verifyComplete('dont-name-a-command-like-this', '', '');
     // Commands that start the same as another command (i.e. unit is a valid
-    // command, but we should still list unit-eval and unit-return-options when
+    // command, but we should still list unit-eval and unit-invoke when
     // completing on "unit").
     $this->verifyComplete('@dev unit', 'unit', 'unit-return-options');
     // Global option alone.
@@ -88,9 +88,9 @@ class completeCase extends Drush_CommandTestCase {
     $this->verifyComplete('@dev topic @', '', '');
     $this->verifyComplete('@dev topic topi', '', '');
     // Command + command option.
-    $this->verifyComplete('dl --', '--cache', '--variant');
+    $this->verifyComplete('dl --', '--all', '--version_control=svn');
     // Site alias + command + command option.
-    $this->verifyComplete('@dev dl --', '--cache', '--variant');
+    $this->verifyComplete('@dev dl --', '--all', '--version_control=svn');
     // Command + argument.
     $this->verifyComplete('topic docs-c', 'docs-commands', 'docs-cron');
     // Site alias + command + regular argument.

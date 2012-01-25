@@ -10,9 +10,6 @@
  * just to check on. In this case, say at the confirmation prompt.
  */
 function drush_pm_updatecode() {
-  $release_info = drush_get_option('release-info', 'updatexml');
-  drush_include_engine('release_info', $release_info);
-
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
@@ -238,7 +235,6 @@ function drush_pm_updatecode() {
  *   copied from $update_info['drupal'].  @see drush_pm_updatecode.
  */
 function _pm_update_core(&$project, $tmpfile) {
-  drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
   drush_print(dt('Code updates will be made to drupal core.'));
@@ -353,7 +349,6 @@ function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflict
  *   array key candidate_version that specifies the version to be installed.
  */
 function pm_update_packages($update_info, $tmpfile) {
-  drush_include_engine('package_handler', drush_get_option('package-handler', 'wget'));
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
   $print = '';

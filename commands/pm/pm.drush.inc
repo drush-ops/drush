@@ -167,6 +167,9 @@ function pm_drush_command() {
     'engines' => array(
       'version_control',
       'package_handler',
+      'release_info' => array(
+        'add-options-to-command' => FALSE,
+      ),
     ),
   );
   // Merge all items from above.
@@ -175,10 +178,6 @@ function pm_drush_command() {
     'drupal dependencies' => array($update),
     'aliases' => array('up'),
     'allow-additional-options' => array('pm-updatecode', 'updatedb'),
-    'engines' => array(
-      'version_control',
-      'package_handler',
-    ),
   );
   $items['pm-updatecode-postupdate'] = array(
     'description' => 'Notify of pending db updates.',
@@ -243,8 +242,6 @@ function pm_drush_command() {
       'default-major' => 'Specify the default major version of modules to download when there is no bootstrapped Drupal site.  Defaults to "7".',
       'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
       'pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
-      'cache' => 'Cache release XML and tarballs or git clones. Git clones use git\'s --reference option.',
-      'no-cache' => 'Negate a --cache option which might have been set in drushrc.php (for example). Tip: the no- prefix works for any option.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('dl'),
@@ -639,14 +636,16 @@ function drush_pm_list() {
   return $extension_info;
 }
 
+/**
+ * Helper function for pm-enable.
+ */
 function drush_pm_find_project_from_extension($extension) {
   $result =  drush_pm_lookup_extension_in_cache($extension);
 
   if (!isset($result)) {
+    drush_include_engine('release_info', 'updatexml');
     // If we can find info on a project that has the same name
     // as the requested extension, then we'll call that a match.
-    $release_info = drush_get_option('release-info', 'updatexml');
-    drush_include_engine('release_info', $release_info);
     $request = pm_parse_project_version(array($extension));
     if (release_info_check_project($request[$extension], 'module')) {
       $result = $extension;
@@ -1085,9 +1084,6 @@ function _pm_find_common_path($project_type, $extensions) {
  * Command callback. Show available releases for given project(s).
  */
 function drush_pm_releases() {
-  $release_info = drush_get_option('release-info', 'updatexml');
-  drush_include_engine('release_info', $release_info);
-
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
@@ -1125,9 +1121,6 @@ function drush_pm_releases() {
  * Command callback. Show release notes for given project(s).
  */
 function drush_pm_releasenotes() {
-  $release_info = drush_get_option('release-info', 'updatexml');
-  drush_include_engine('release_info', $release_info);
-
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
@@ -1174,11 +1167,6 @@ function drush_pm_updatecode_validate() {
   if (is_dir($path) && (realpath(drush_get_option('backup-dir', FALSE)) != $path)) {
     return drush_set_error('', dt('Backup directory !path found. It\'s a security risk to store backups inside the Drupal tree. Drush now uses by default ~/drush-backups. You need to move !path out of the Drupal tree to proceed. Note: if you know what you\'re doing you can explicitly set --backup-dir to !path and continue.', array('!path' => $path)));
   }
-
-  // Validate package-handler.
-  $package_handler = drush_get_option('package-handler', 'wget');
-  drush_include_engine('package_handler', $package_handler);
-  return package_handler_validate();
 }
 
 /**
@@ -1318,30 +1306,60 @@ function pm_parse_project_version($requests) {
   return $requestdata;
 }
 
+
+/**
+ * @defgroup engines Engine types
+ * @{
+ */
+
+/**
+ * Implementation of hook_drush_engine_type_info().
+ */
+function pm_drush_engine_type_info() {
+  return array(
+    'package_handler' => array(
+      'option' => 'package-handler',
+      'description' => 'Determine how to fetch projects from update service.',
+      'default' => 'wget',
+      'options' => array(
+        'cache' => 'Cache release XML and tarballs or git clones. Git clones use git\'s --reference option.',
+      ),
+    ),
+    'release_info' => array(
+      'add-options-to-command' => TRUE,
+    ),
+    'update_info' => array(
+    ),
+    'version_control' => array(
+      'option' => 'version-control',
+      'default' => 'backup',
+      'description' => 'Integrate with version control systems.',
+    ),
+  );
+}
+
 /**
  * Used by dl and updatecode commands to determine how to download/checkout new projects and acquire updates to projects.
  */
 function pm_drush_engine_package_handler() {
   return array(
     'wget' => array(
-      'options' => array(
-        'package-handler=wget' => 'Download project packages using wget or curl.',
-      ),
+      'description' => 'Download project packages using wget or curl.',
     ),
     'git_drupalorg' => array(
+      'description' => 'Use git.drupal.org to checkout and update projects.',
       'options' => array(
-        'package-handler=git_drupalorg' => 'Use git.drupal.org to checkout and update projects.',
+        'gitusername' => 'Your git username as shown on user/[uid]/edit/git. Typically, this is set this in drushrc.php. Omitting this prevents users from pushing changes back to git.drupal.org.',
+        'gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
+        'gitcheckoutparams' => 'Add options to the `git checkout` command.',
+        'gitcloneparams' => 'Add options to the `git clone` command.',
+        'gitfetchparams' => 'Add options to the `git fetch` command.',
+        'gitpullparams' => 'Add options to the `git pull` command.',
+        'gitinfofile' => 'Inject version info into each .info file.',
       ),
       'sub-options' => array(
-        'package-handler=git_drupalorg' => array(
-          'gitusername' => 'Your git username as shown on user/[uid]/edit/git. Typically, this is set this in drushrc.php. Omitting this prevents users from pushing changes back to git.drupal.org.',
-          'gitsubmodule' => 'Use git submodules for checking out new projects. Existing git checkouts are unaffected, and will continue to (not) use submodules regardless of this setting.',
-          'gitcheckoutparams' => 'Add options to the `git checkout` command.',
-          'gitcloneparams' => 'Add options to the `git clone` command.',
-          'gitfetchparams' => 'Add options to the `git fetch` command.',
-          'gitpullparams' => 'Add options to the `git pull` command.',
+        'gitsubmodule' => array(
           'gitsubmoduleaddparams' => 'Add options to the `git submodule add` command.',
-          'gitinfofile' => 'Inject version info into each .info file.',
         ),
       ),
     ),
@@ -1354,15 +1372,17 @@ function pm_drush_engine_package_handler() {
 function pm_drush_engine_release_info() {
   return array(
     'updatexml' => array(
+      'description' => 'Drush release info engine for update.drupal.org and compatible services.',
       'options' => array(
-        'release-info=updatexml' => 'Drush release info engine for update.drupal.org and compatible services.',
+        'source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
+        'dev' => 'Work with development releases solely.',
       ),
       'sub-options' => array(
-        'release-info=updatexml' => array(
-          'source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
-          'dev' => 'Work with development releases solely.',
-          'all' => 'Shows all available releases instead of a short list of recent releases (for dl, useful only with --select).',
-          'cache-duration-releasexml' => 'Expire duration (in seconds) for release XML. Only applicable when --cache is set. Defaults to 86400 (24 hours).',
+        'cache' => array(
+          'cache-duration-releasexml' => 'Expire duration (in seconds) for release XML. Defaults to 86400 (24 hours).',
+        ),
+        'select' => array(
+          'all' => 'Shows all available releases instead of a short list of recent releases.',
         ),
       ),
     ),
@@ -1375,29 +1395,23 @@ function pm_drush_engine_release_info() {
 function pm_drush_engine_version_control() {
   return array(
     'backup' => array(
+      'description' => 'Backup all project files before updates.',
       'options' => array(
-        'version-control=backup' => 'Default engine. Backup all project files before updates.',
-      ),
-      'sub-options' => array(
-        'version-control=backup' => array(
-          'no-backup' => 'Do not perform backups.',
-          'backup-dir' => 'Specify a directory to backup projects into. Defaults to drush-backups within the home directory of the user running the command. It is forbidden to specify a directory inside your drupal root.',
-        ),
+        'no-backup' => 'Do not perform backups.',
+        'backup-dir' => 'Specify a directory to backup projects into. Defaults to drush-backups within the home directory of the user running the command. It is forbidden to specify a directory inside your drupal root.',
       ),
     ),
     'bzr' => array(
       'signature' => 'bzr root %s',
+      'description' => 'Quickly add/remove/commit your project changes to Bazaar.',
       'options' => array(
-        'version-control=bzr' => 'Quickly add/remove/commit your project changes to Bazaar.',
+        'bzrsync' => 'Automatically add new files to the Bazaar repository and remove deleted files. Caution.',
+        'bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also use the --bzrsync option.',
       ),
       'sub-options' => array(
-        'version-control=bzr' => array(
-          'bzrsync' => 'Automatically add new files to the Bazaar repository and remove deleted files. Caution.',
-          'bzrcommit' => 'Automatically commit changes to Bazaar repository. You must also usw the --bzrsync option.',
-        ),
         'bzrcommit' => array(
           'bzrmessage' => 'Override default commit message which is: Drush automatic commit. Project <name> <type> Command: <the drush command line used>',
-        )
+        ),
       ),
       'examples' => array(
         'drush dl cck --version-control=bzr --bzrsync --bzrcommit' =>  'Download the cck project and then add it and commit it to Bazaar.'
@@ -1405,22 +1419,20 @@ function pm_drush_engine_version_control() {
     ),
     'svn' => array(
       'signature' => 'svn info %s',
+      'description' => 'Quickly add/remove/commit your project changes to Subversion.',
       'options' => array(
-        'version-control=svn' => 'Quickly add/remove/commit your project changes to Subversion.',
+        'svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. Caution.',
+        'svncommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
+        'svnstatusparams' => "Add options to the 'svn status' command",
+        'svnaddparams' => 'Add options to the `svn add` command',
+        'svnremoveparams' => 'Add options to the `svn remove` command',
+        'svnrevertparams' => 'Add options to the `svn revert` command',
+        'svncommitparams' => 'Add options to the `svn commit` command',
       ),
       'sub-options' => array(
-        'version-control=svn' => array(
-          'svnsync' => 'Automatically add new files to the SVN repository and remove deleted files. Caution.',
-          'svncommit' => 'Automatically commit changes to SVN repository. You must also using the --svnsync option.',
-          'svnstatusparams' => "Add options to the 'svn status' command",
-          'svnaddparams' => 'Add options to the `svn add` command',
-          'svnremoveparams' => 'Add options to the `svn remove` command',
-          'svnrevertparams' => 'Add options to the `svn revert` command',
-          'svncommitparams' => 'Add options to the `svn commit` command',
-        ),
         'svncommit' => array(
-          'svnmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
-        )
+         'svnmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+        ),
       ),
       'examples' => array(
         'drush [command] cck --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
@@ -1428,6 +1440,10 @@ function pm_drush_engine_version_control() {
     ),
   );
 }
+
+/**
+ * @} End of "Engine types".
+ */
 
 /**
  * Interface for version control systems.
@@ -1448,12 +1464,12 @@ interface drush_version_control {
  * specific directory.
  */
 function drush_pm_include_version_control($directory = '.') {
-  $version_control_engines = drush_get_engines('version_control');
+  $engine_info = drush_get_engines('version_control');
   $version_controls = drush_get_option('version-control', FALSE);
   // If no version control was given, use a list of defaults.
   if (!$version_controls) {
     // Backup engine is the last option.
-    $version_controls = array_reverse(array_keys($version_control_engines));
+    $version_controls = array_reverse(array_keys($engine_info['engines']));
   }
   else {
     $version_controls = array($version_controls);
@@ -1463,10 +1479,10 @@ function drush_pm_include_version_control($directory = '.') {
   $engine = FALSE;
   while (!$engine && count($version_controls)) {
     $version_control = array_shift($version_controls);
-    if (isset($version_control_engines[$version_control])) {
-      if (!empty($version_control_engines[$version_control]['signature'])) {
+    if (isset($engine_info['engines'][$version_control])) {
+      if (!empty($engine_info['engines'][$version_control]['signature'])) {
         drush_log(dt('Verifying signature for !vcs version control engine.', array('!vcs' => $version_control)), 'debug');
-        if (drush_shell_exec($version_control_engines[$version_control]['signature'], $directory)) {
+        if (drush_shell_exec($engine_info['engines'][$version_control]['signature'], $directory)) {
           $engine = $version_control;
         }
       }

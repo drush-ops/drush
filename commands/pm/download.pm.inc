@@ -12,7 +12,6 @@ function drush_pm_download_validate() {
   else if ($select === FALSE) {
     drush_set_option('select', 'never');
   }
-  $select = drush_get_option('select', FALSE);
 
   // Validate the user specified destination directory.
   $destination = drush_get_option('destination');
@@ -69,23 +68,12 @@ function drush_pm_download_validate() {
       drush_log(dt('Switching to --variant=!variant.', array('!variant' => $new_variant)), 'ok');
     }
   }
-
-  // Validate package-handler.
-  $package_handler = drush_get_option('package-handler', 'wget');
-  drush_include_engine('package_handler', $package_handler);
-  // Return value not currently used.
-  return package_handler_validate();
 }
 
 /**
  * Command callback. Download Drupal core or any project.
  */
 function drush_pm_download() {
-  $package_handler = drush_get_option('package-handler', 'wget');
-  drush_include_engine('package_handler', $package_handler);
-  $release_info = drush_get_option('release-info', 'updatexml');
-  drush_include_engine('release_info', $release_info);
-
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE, FALSE)) {
     $requests = array('drupal');
   }
