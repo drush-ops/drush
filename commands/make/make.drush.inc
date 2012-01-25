@@ -317,6 +317,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
           $project['download'] = array(
             'type' => 'pm',
             'version' => $release['version'],
+            'download_link' => $release['download_link'],
           );
         }
       }
@@ -358,6 +359,12 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       );
     }
     if (!empty($invocations)) {
+      // Backend options.
+      $backend_options = array(
+        'concurrency' => drush_get_option('concurrency', 4),
+        'method' => 'POST',
+      );
+
       $common_options = drush_redispatch_get_options();
       // Package handler should use 'wget'.
       $common_options['package-handler'] = 'wget';
@@ -369,7 +376,11 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       if (!drush_get_option('no-cache', FALSE)) {
         $common_options['cache'] = TRUE;
       }
-      drush_backend_invoke_concurrent($invocations, $common_options, array('concurrency' => drush_get_option('concurrency', 4), 'method' => 'POST'), 'make-process', '@none');
+      // Unless --verbose or --debug are passed, quiter backend output.
+      if (!isset($common_options['verbose']) && !isset($common_options['debug'])) {
+        $backend_options['#output-label'] = FALSE;
+      }
+      drush_backend_invoke_concurrent($invocations, $common_options, $backend_options, 'make-process', '@none');
     }
   }
   return TRUE;

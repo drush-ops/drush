@@ -35,8 +35,17 @@ function make_download_pm($name, $download, $download_location) {
     unset($options['cache']);
   }
 
+  $backend_options = array();
+  if (!drush_get_option('verbose', FALSE) && !drush_get_option('debug', FALSE)) {
+    $backend_options['integrate'] = FALSE;
+    $backend_options['log'] = FALSE;
+  }
+
   // Perform actual download with `drush pm-download`.
-  drush_invoke_process('@none', 'pm-download', array($version), $options);
+  $return = drush_invoke_process('@none', 'pm-download', array($version), $options, $backend_options);
+  if (empty($return['error_log'])) {
+    drush_log(dt('@project downloaded from @url', array('@project' => $version, '@url' => $download['download_link'])), 'ok');
+  }
 }
 
 /**
