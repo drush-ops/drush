@@ -379,6 +379,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       // Unless --verbose or --debug are passed, quiter backend output.
       if (empty($common_options['verbose']) && empty($common_options['debug'])) {
         $backend_options['#output-label'] = FALSE;
+        $backend_options['integrate'] = FALSE;
       }
       drush_backend_invoke_concurrent($invocations, $common_options, $backend_options, 'make-process', '@none');
     }

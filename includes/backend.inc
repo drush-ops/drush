@@ -272,7 +272,7 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
       if (!is_null($log['error']) && $backend_options['integrate']) {
         drush_set_error($log['error'], $message);
       }
-      else {
+      elseif ($backend_options['integrate']) {
         drush_log($message, $log['type']);
       }
     }
