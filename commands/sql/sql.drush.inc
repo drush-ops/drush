@@ -24,6 +24,7 @@ function sql_drush_command() {
   if (drush_drupal_major_version() >= 7) {
     $options['target'] = 'The name of a target within the specified database.';
   }
+  $db_url['db-url'] = 'A Drupal 6 style database URL. Useful when you don\'t have a configured Drupal instance.';
 
   $items['sql-drop'] = array(
     'description' => 'Drop all tables in a given database.',
@@ -33,7 +34,7 @@ function sql_drush_command() {
     'options' => array(
       'yes' => 'Skip confirmation and proceed.',
       'result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
-    ) + $options,
+    ) + $options + $db_url,
     'topics' => array('docs-policy'),
   );
   $items['sql-conf'] = array(
@@ -48,7 +49,7 @@ function sql_drush_command() {
   $items['sql-connect'] = array(
     'description' => 'A string for connecting to the DB.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'options' => $options,
+    'options' => $options + $db_url,
     'examples' => array(
       '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
     ),
@@ -72,7 +73,7 @@ function sql_drush_command() {
       'data-only' => 'Omit CREATE TABLE statements. Postgres only.',
       'ordered-dump' => 'Order by primary key and add line breaks for efficient diff in revision control. Also, faster rsync. Slows down the dump. Mysql only.',
       'gzip' => 'Compress the dump using the gzip program which must be in your $PATH.',
-    ) + $options,
+    ) + $options + $db_url,
   );
   $items['sql-query'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -91,7 +92,7 @@ function sql_drush_command() {
       'input-file' => 'Path to a file containing the SQL to be run.',
       'extra' => 'Add custom options to the mysql command.',
       'db-prefix' => 'Enable replacement of braces in your query.',
-    ) + $options,
+    ) + $options + $db_url,
     'aliases' => array('sqlq'),
   );
   $items['sql-sync'] = array(
@@ -152,7 +153,7 @@ function sql_drush_command() {
   $items['sql-cli'] = array(
     'description' => "Open a SQL command-line interface using Drupal's credentials.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'options' => $options,
+    'options' => $options + $db_url,
     'aliases' => array('sqlc'),
   );
   $items['sql-sanitize'] = array(
@@ -162,7 +163,7 @@ function sql_drush_command() {
     'options' => array(
       'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
       'sanitize-email' => 'The username for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
-    ),
+    ) + $db_url,
     'aliases' => array('sqlsan'),
   );
   return $items;
