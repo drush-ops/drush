@@ -36,7 +36,7 @@ function make_download_pm($name, $download, $download_location) {
   }
 
   $backend_options = array();
-  if (!drush_get_option('verbose', FALSE) && !drush_get_option('debug', FALSE)) {
+  if (!drush_get_option(array('verbose', 'debug'), FALSE)) {
     $backend_options['integrate'] = FALSE;
     $backend_options['log'] = FALSE;
   }
