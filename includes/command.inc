@@ -483,7 +483,7 @@ function _drush_merge_engine_data(&$command) {
       foreach ($engines as $engine) {
         $data = $engine_info['engines'][$engine];
         $option = $engine_type . '=' . $engine;
-        $engine_data['options'][$option] = $data['description'];
+        $engine_data['options'][$option] = array_key_exists('description', $data) ? $data['description'] : NULL;
         if (isset($data['options'])) {
           $engine_data['sub-options'][$option] = $data['options'];
         }
