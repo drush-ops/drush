@@ -9,7 +9,7 @@ include_once drupal_get_path('module', 'system') . '/system.install';
 function drush_make_generate($file = NULL) {
   $version_options = _drush_make_generate_get_version_options();
   $all_extensions = drush_get_extensions();
-  $projects = _drush_make_generage_projects($all_extensions, $version_options);
+  $projects = _drush_make_generate_projects($all_extensions, $version_options);
   $contents = _drush_make_generate_makefile_contents($projects);
   
   if (!$file) {
@@ -42,7 +42,7 @@ function _drush_make_generate_get_version_options() {
 /**
  * Generate the $projects makefile array for the current site.
  */
-function _drush_make_generage_projects($all_extensions, $version_options) {
+function _drush_make_generate_projects($all_extensions, $version_options) {
   $projects = array();
 
   $system_requirements = system_requirements('runtime');
