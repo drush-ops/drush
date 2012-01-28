@@ -219,7 +219,8 @@ function drush_check_self_update() {
 
   // Get release info for drush.
   drush_include_engine('release_info', 'updatexml');
-  $info = release_info_get_releases(array('drush'));
+  $request = pm_parse_project_version(array('drush'));
+  $info = release_info_get_releases($request);
   // Check for newer releases based on the datestamp.
   // We add 60 seconds to the drush.info date because of a drupal.org WTF. See http://drupal.org/node/1019356.
   $version_date = $drush_info['datestamp'] + 60;
