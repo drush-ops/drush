@@ -435,21 +435,21 @@ function _drush_bootstrap_drush() {
     // Trying to export the columns using stty.
     exec('stty size 2>&1', $columns_output, $columns_status);
     if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
-    
+
     // If stty fails and Drush us running on Windows are we trying with mode con.
     if (($columns_status || !$columns_count) && drush_is_windows() && version_compare(phpversion(), '5.3.0') > -1) {
       $columns_output = array();
-      exec('mode con', $columns_output, $columns_status); 
+      exec('mode con', $columns_output, $columns_status);
       if (!$columns_status && is_array($columns_output)) {
         $columns = (int)preg_replace('/\D/', '', $columns_output[4], -1, $columns_count);
-      }      
-    } 
-    
+      }
+    }
+
     // Failling back to default columns value
     if (empty($columns)) {
       $columns = 80;
     }
-  } 
+  }
   // If a caller wants to reserve some room to add additional
   // information to the drush output via post-processing, the
   // --reserve-margin flag can be used to declare how much
@@ -595,14 +595,10 @@ function _drush_bootstrap_base_environment() {
     drush_set_context('DOC_PREFIX', drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush');
   }
   $alias_path =& drush_get_context('ALIAS_PATH');
-  if (drush_is_windows()) {
-    $site_wide_configuration_dir = getenv('ALLUSERSPROFILE') . '/Drush';
-    $site_wide_commandfile_dir = $site_wide_configuration_dir;
-  }
-  else {
-    $site_wide_configuration_dir = drush_get_context('ETC_PREFIX', '') . '/etc/drush';
-    $site_wide_commandfile_dir = drush_get_context('SHARE_PREFIX', '/usr') . '/share/drush/commands';
-  }
+  $default_prefix_configuration = drush_is_windows() ? '' : getenv('ALLUSERSPROFILE') . '/Drush';
+  $default_prefix_commandfile = drush_is_windows() ? '/usr' : getenv('ALLUSERSPROFILE') . '/Drush';
+  $site_wide_configuration_dir = drush_get_context('ETC_PREFIX', $default_prefix_configuration) . '/etc/drush';
+  $site_wide_commandfile_dir = drush_get_context('SHARE_PREFIX', $default_prefix_commandfile) . '/share/drush/commands';
   $alias_path[] = $site_wide_configuration_dir;
   drush_set_context('DRUSH_SITE_WIDE_CONFIGURATION', $site_wide_configuration_dir);
   drush_set_context('DRUSH_SITE_WIDE_COMMANDFILES', $site_wide_commandfile_dir);

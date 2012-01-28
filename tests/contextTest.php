@@ -52,7 +52,7 @@ class contextCase extends Drush_CommandTestCase {
 EOD;
       $path .= $key == 'user' ? '/.drushrc.php' : '/drushrc.php';
       if (file_put_contents($path, $contents)) {
-        $this->written[] = $path;
+        $this->written[] = $this->convert_path($path);
       }
     }
 
@@ -123,6 +123,9 @@ EOD;
     $this->drush('core-status', array('Drush configuration'), array('pipe' => NULL));
     $output = trim($this->getOutput());
     $loaded = explode(' ', $output);
+    // Next 2 lines needed for Windows compatibility.
+    $loaded = array_map(array(&$this, 'convert_path'), $loaded);
+    $files = array_map(array(&$this, 'convert_path'), $files);
     $this->assertTrue(in_array($files[0], $loaded), 'Loaded a version-specific config file.');
     $this->assertFalse(in_array($files[1], $loaded), 'Did not load a mismatched version-specific config file.');
   }

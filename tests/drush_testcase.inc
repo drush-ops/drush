@@ -75,6 +75,20 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return (strtoupper(substr(PHP_OS, 0, 3)) == "WIN");
   }
 
+  /**
+   * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
+   * Also converts a cygwin "drive emulation" path (/cygdrive/c/dir1) into a
+   * proper drive path, still with Unix slashes (c:/dir1).
+   *
+   * @copied from Drush's environment.inc
+   */
+  function convert_path($path) {
+    $path = str_replace('\\','/', $path);
+    $path = preg_replace('/^\/cygdrive\/([A-Za-z])(.*)$/', '\1:\2', $path);
+
+    return $path;
+  }
+
   public static function escapeshellarg($arg) {
     // Short-circuit escaping for simple params (keep stuff readable)
     if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
