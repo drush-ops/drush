@@ -147,15 +147,7 @@ function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire =
     $data = $data->data;
   }
 
-  switch(drush_drupal_major_version()) {
-    case 5:
-      cache_set($cid, $bin, $data, $expire);
-      break;
-    case 6:
-    case 7:
-    default:
-      cache_set($cid, $data, $bin, $expire);
-  }
+  cache_set($cid, $data, $bin, $expire);
 }
 
 function drush_cache_clear_types() {
