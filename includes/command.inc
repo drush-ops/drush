@@ -396,7 +396,15 @@ function _drush_load_command_engines($command) {
     $engine_info = drush_get_engines($engine_type);
     $engines = array_keys($engine_info['engines']);
     $default = isset($config['default'])?$config['default']:current($engines);
-    $engine = drush_get_option($engine_type, $default);
+    // If the engine provides a command line option to choose between engine
+    // implementations, get the user selection, if any.
+    if (!empty($config['option'])) {
+      $engine = drush_get_option($config['option'], $default);
+    }
+    // Otherwise the default engine is the only option.
+    else {
+      $engine = $default;
+    }
     if (!in_array($engine, $engines)) {
       return drush_set_error('DRUSH_UNKNOWN_ENGINE_TYPE', dt('Unknown !engine_type engine !engine', array('!engine' => $engine, '!engine_type' => $engine_type)));
     }
@@ -482,7 +490,7 @@ function _drush_merge_engine_data(&$command) {
       );
       foreach ($engines as $engine) {
         $data = $engine_info['engines'][$engine];
-        $option = $engine_type . '=' . $engine;
+        $option = $config['option'] . '=' . $engine;
         $engine_data['options'][$option] = array_key_exists('description', $data) ? $data['description'] : NULL;
         if (isset($data['options'])) {
           $engine_data['sub-options'][$option] = $data['options'];
@@ -592,6 +600,11 @@ function _drush_flatten_options($options) {
   $flattened_options = array();
 
   foreach($options as $key => $value) {
+    // engine sections start with 'package-handler=git_drupalorg',
+    // or something similar.  Get rid of everything from the = onward.
+    if (($eq_pos = strpos($key, '=')) !== FALSE) {
+      $key = substr($key, 0, $eq_pos);
+    }
     $flattened_options[] = $key;
     if (is_array($value)) {
       if (array_key_exists('short-form', $value)) {

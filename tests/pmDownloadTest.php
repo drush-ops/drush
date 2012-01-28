@@ -94,4 +94,14 @@ class pmDownloadCase extends Drush_CommandTestCase {
     $this->assertLessThanOrEqual(6, count($items), '--select --dev expected to offer only one option.');
     $this->assertContains('6.x-1.x-dev', $output, 'Assure that --dev lists the only dev release.');
   }
+
+  public function testPackageHandler() {
+    $options = array(
+      'cache' => NULL,
+      'package-handler' => 'git_drupalorg',
+    );
+    $this->drush('pm-download', array('devel'), $options);
+    $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');
+    $this->assertFileExists(UNISH_SANDBOX . '/devel/.git');
+  }
 }
