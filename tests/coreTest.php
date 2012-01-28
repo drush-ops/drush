@@ -10,6 +10,10 @@ class coreCase extends Drush_CommandTestCase {
    * Test standalone php-script scripts. Assure that script args and options work.
    */
   public function testStandaloneScript() {
+    if ($this->is_windows()) {
+      $this->markTestSkipped('Standalone scripts not currently available on Windows.');
+    }
+
     $this->drush('version', array('drush_version'), array('pipe' => NULL));
     $standard = $this->getOutput();
 
