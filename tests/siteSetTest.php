@@ -3,6 +3,9 @@
 class siteSetCommandCase extends Drush_CommandTestCase {
 
   function testSiteSet() {
+    if ($this->is_windows()) {
+      $this->markTestSkipped('Site-set not currently available on Windows.');
+    }
     $sites = $this->setUpDrupal(1, TRUE);
     $site_names = array_keys($sites);
     $alias = '@' . $site_names[0];

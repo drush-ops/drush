@@ -3,6 +3,10 @@
 class siteSetUnitTest extends Drush_UnitTestCase {
 
   function testSiteSet() {
+    if ($this->is_windows()) {
+      $this->markTestSkipped('Site-set not currently available on Windows.');
+    }
+
     $tmp_path = UNISH_TMP;
     putenv("TMPDIR=$tmp_path");
     $posix_pid = posix_getppid();
@@ -13,4 +17,3 @@ class siteSetUnitTest extends Drush_UnitTestCase {
     $this->assertEquals($expected_file, $filename);
   }
 }
-

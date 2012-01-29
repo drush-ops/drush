@@ -69,6 +69,7 @@ function drush_sql_sync_init($source = NULL, $destination = NULL) {
  */
 function sql_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
+  $databases = sitealias_get_databases_from_record($site_settings);
   $user_table_updates = array();
   $message_list = array();
 
@@ -102,7 +103,8 @@ function sql_drush_sql_sync_sanitize($site) {
   if ($newemail != 'no') {
     if (strpos($newemail, '%') !== FALSE) {
       // We need a different sanitization query for Postgres and Mysql.
-      $db_driver = $site_settings['databases']['default']['default']['driver'];
+
+      $db_driver = $databases['default']['default']['driver'];
       if ($db_driver == 'pgsql') {
         $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%name' => "' || replace(name, ' ', '_') || '");
         $newmail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "'";

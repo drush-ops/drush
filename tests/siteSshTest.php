@@ -10,6 +10,10 @@ class siteSshCase extends Drush_CommandTestCase {
    * Test drush ssh --simulate. No additional bash passed.
    */
   public function testInteractive() {
+    if ($this->is_windows()) {
+      $this->markTestSkipped('ssh command not currently available on Windows.');
+    }
+
     $options = array(
       'simulate' => NULL,
     );

@@ -209,7 +209,7 @@ function cdd() {
 # Also works on remote sites, though.
 function gitd() {
   s="$1"
-  if [ -n "$s" ] && [ ${s:0:1} == "@" ] || [ ${a:0:1} == "%" ]
+  if [ -n "$s" ] && [ ${s:0:1} == "@" ] || [ ${s:0:1} == "%" ]
   then
     d="$(drush drupal-directory $s 2>/dev/null)"
     $(drush sa ${s%%:*} --component=remote-host > /dev/null 2>&1)
