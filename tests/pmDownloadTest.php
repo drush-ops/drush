@@ -99,6 +99,7 @@ class pmDownloadCase extends Drush_CommandTestCase {
     $options = array(
       'cache' => NULL,
       'package-handler' => 'git_drupalorg',
+      'yes' => NULL,
     );
     $this->drush('pm-download', array('devel'), $options);
     $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');
