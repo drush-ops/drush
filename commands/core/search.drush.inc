@@ -13,7 +13,7 @@ function _drush_core_search_status() {
   $remaining = 0;
   $total = 0;
   if (drush_drupal_major_version() >= 7) {
-    foreach (module_implements('search_status') as $module) {
+    foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {
       $status = module_invoke($module, 'search_status');
       $remaining += $status['remaining'];
       $total += $status['total'];
