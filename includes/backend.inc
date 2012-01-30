@@ -295,8 +295,8 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
  * @param cmds
  *    An array of records containing the following elements:
  *      'cmd' - The command to execute, already properly escaped
- *      'post-options' - An associative array that will be JSON encoded 
- *        and passed to the script being called. Objects are not allowed, 
+ *      'post-options' - An associative array that will be JSON encoded
+ *        and passed to the script being called. Objects are not allowed,
  *        as they do not json_decode gracefully.
  *      'backend-options' - Options that control the operation of the backend invoke
  *     - OR -
@@ -318,6 +318,12 @@ function _drush_proc_open($cmds, $process_limit, $context = NULL) {
     1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
     2 => array("pipe", "w")   // stderr is a pipe the child will write to
   );
+
+  if (drush_is_windows()) {
+    /*  http://bg2.php.net/manual/en/function.proc-open.php#97012 */
+    $descriptorspec[2][1] = "a";
+  }
+
   $open_processes = array();
   $bucket = array();
   $process_limit = max($process_limit, 1);
@@ -328,7 +334,7 @@ function _drush_proc_open($cmds, $process_limit, $context = NULL) {
       end($cmds);
       list($site, $cmd) = each($cmds);
       unset($cmds[$site]);
-      
+
       if (is_array($cmd)) {
         $c = $cmd['cmd'];
         $post_options = $cmd['post-options'];
@@ -403,6 +409,16 @@ function _drush_proc_open($cmds, $process_limit, $context = NULL) {
               fclose($current_process['pipes'][$pipe]);
               unset($current_process['pipes'][$pipe]);
               // close the pipe , set a marker
+
+              if (drush_is_windows() && ($pipe == 1)) {
+                /* On windows STDERR doesn't give EOF even if STDOUT gets closed
+                * Because of this this loop goes indefinitely
+                * and this manual unset is needed on windows in order the script to work
+                */
+                fclose($current_process['pipes'][2]);
+                unset($current_process['pipes'][2]);
+              }
+
             }
           }
         }
@@ -751,7 +767,7 @@ function _drush_backend_get_global_contexts($site_record) {
  */
 function _drush_backend_classify_options($site_record, $command_options, &$backend_options) {
   // In 'POST' mode (the default, remove everything (except the items marked 'never-post'
-  // in the global option list) from the commandline options and put them into the post options.  
+  // in the global option list) from the commandline options and put them into the post options.
   // The post options will be json-encoded and sent to the command via stdin
   $global_option_list = drush_get_global_options(FALSE); // These should be in the command line.
   $method_post = ((!array_key_exists('method', $backend_options)) || ($backend_options['method'] == 'POST'));
@@ -963,7 +979,7 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
       unset($command_options[$key]);
     }
   }
-  
+
   $cmd[] = $command;
   foreach ($args as $arg) {
     $cmd[] = drush_escapeshellarg($arg, $os);

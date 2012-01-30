@@ -3,7 +3,7 @@
 /**
   * pm testing
   */
-class pmCase extends Drush_UnitTestCase {
+class releaseInfoCase extends Drush_UnitTestCase {
 
   /*
    * Parse Drupal version and release from project specification.
@@ -22,8 +22,8 @@ class pmCase extends Drush_UnitTestCase {
    * Pick right release from the XML (dev, latest published+recommended, ...).
    */
   public function testReleaseXML() {
-    // require_once DRUSH_BASE_PATH . '/commands/pm/pm.drush.inc';
-    require_once DRUSH_BASE_PATH . '/commands/pm/download.pm.inc';
+    _drush_add_commandfiles(array(DRUSH_BASE_PATH . '/commands/pm'));
+    drush_include_engine('release_info', 'updatexml');
 
     // Use a local, static XML file because live files change over time.
     $xml = simplexml_load_file(dirname(__FILE__). '/devel.xml');
