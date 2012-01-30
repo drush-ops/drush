@@ -159,24 +159,7 @@ function drush_pm_download() {
       continue;
     }
 
-    // Check for drush self update
-    if ($request['project_install_location'] == DRUSH_BASE_PATH && $request['name'] == 'drush') {
-      if (($backup_dir = drush_prepare_backup_dir()) === FALSE) {
-        return FALSE;
-      }
-      // Move the running drush out of the way
-      $drush_backup = $backup_dir . "/drush";
-      if (drush_move_dir(DRUSH_BASE_PATH, $drush_backup, TRUE) == FALSE) {
-        return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Failed to move drush directory !drush to !backup_target', array('!drush' => DRUSH_BASE_PATH, '!backup_target' => $drush_backup)));
-      }
-      else {
-        drush_log(dt("drush backed up to !targetdir", array('!targetdir' => $drush_backup)), "ok");
-      }
-    }
-    else {
-      // For all other projects, the final project install location will go in the project_dir.
-      $request['project_install_location'] .= '/' . $request['project_dir'];
-    }
+    $request['project_install_location'] .= '/' . $request['project_dir'];
 
     if ($version_control->engine == 'backup') {
       // Check if install location already exists.
