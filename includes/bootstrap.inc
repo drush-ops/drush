@@ -595,8 +595,8 @@ function _drush_bootstrap_base_environment() {
     drush_set_context('DOC_PREFIX', drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush');
   }
   $alias_path =& drush_get_context('ALIAS_PATH');
-  $default_prefix_configuration = drush_is_windows() ? '' : getenv('ALLUSERSPROFILE') . '/Drush';
-  $default_prefix_commandfile = drush_is_windows() ? '/usr' : getenv('ALLUSERSPROFILE') . '/Drush';
+  $default_prefix_configuration = drush_is_windows() ? getenv('ALLUSERSPROFILE') . '/Drush' : '';
+  $default_prefix_commandfile = drush_is_windows() ? getenv('ALLUSERSPROFILE') . '/Drush' : '/usr';
   $site_wide_configuration_dir = drush_get_context('ETC_PREFIX', $default_prefix_configuration) . '/etc/drush';
   $site_wide_commandfile_dir = drush_get_context('SHARE_PREFIX', $default_prefix_commandfile) . '/share/drush/commands';
   $alias_path[] = $site_wide_configuration_dir;
