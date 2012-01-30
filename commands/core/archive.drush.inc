@@ -62,6 +62,7 @@ function archive_drush_command() {
  * Command callback. Generate site archive file.
  */
 function drush_archive_dump($sites_subdirs = '@self') {
+  $tar = drush_get_tar_executable();
   $full = array();
   $aliases = drush_sitealias_resolve_sitespecs(explode(',', $sites_subdirs));
   foreach ($aliases as $key => $alias) {
@@ -162,9 +163,9 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $workdir = dirname($docroot_path);
   $dereference = (drush_get_option('preserve-symlinks', FALSE)) ? '' : '--dereference ';
   // Archive Drupal core, excluding sites dir.
-  drush_shell_cd_and_exec($workdir, "tar --exclude '{$docroot}/sites' {$dereference}-cf %s %s", $destination, $docroot);
+  drush_shell_cd_and_exec($workdir, "$tar --exclude \"{$docroot}/sites\" {$dereference}-cf %s %s", $destination, $docroot);
   // Add sites/all to the same archive.
-  drush_shell_cd_and_exec($workdir, "tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
+  drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
 
   $tmp = drush_tempdir();
   $all_dbs = array();
@@ -184,7 +185,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
       $table_selection = drush_sql_get_table_selection();
       list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $db, $result_file);
       drush_shell_exec($dump_exec);
-      drush_shell_cd_and_exec($tmp, 'tar --dereference -rf %s %s', $destination, basename($result_file));
+      drush_shell_cd_and_exec($tmp, "$tar --dereference -rf %s %s", $destination, basename($result_file));
     }
   }
 
@@ -207,7 +208,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
 
     // Add the site specific directory to archive.
     if (!empty($status['object']['%paths']['%site'])) {
-      drush_shell_cd_and_exec($workdir, "tar --dereference -rf %s %s", $destination,  "{$docroot}/sites/" . basename($status['object']['%paths']['%site']));
+      drush_shell_cd_and_exec($workdir, "$tar --dereference -rf %s %s", $destination,  "{$docroot}/sites/" . basename($status['object']['%paths']['%site']));
     }
 
     $site = array(
@@ -231,11 +232,11 @@ function drush_archive_dump($sites_subdirs = '@self') {
   file_put_contents("{$tmp}/MANIFEST.ini", $contents);
 
   // Add manifest to archive.
-  drush_shell_cd_and_exec($tmp, 'tar --dereference -rf %s %s', $destination, 'MANIFEST.ini');
+  drush_shell_cd_and_exec($tmp, "$tar --dereference -rf %s %s", $destination, 'MANIFEST.ini');
 
   // Ensure that default/default.settings.php is in the archive. This is needed
   // by site-install when restoring a site without any DB.
-  drush_shell_cd_and_exec($workdir, 'tar --dereference -vrf %s %s', $destination, $docroot . '/sites/default/default.settings.php');
+  drush_shell_cd_and_exec($workdir, "$tar --dereference -vrf %s %s", $destination, $docroot . '/sites/default/default.settings.php');
 
   // Compress the archive
   drush_shell_exec("gzip --no-name -f %s", $destination);

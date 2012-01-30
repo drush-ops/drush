@@ -623,6 +623,13 @@ function drush_is_mingw($os = NULL) {
   return _drush_test_os($os, array("MINGW"));
 }
 
+/*
+ * Return tar executable name specific for the current OS 
+ */
+function drush_get_tar_executable() {
+  return drush_is_windows() ? "bsdtar.exe" : "tar";
+}
+
 /**
  * Checks if the operating system has bash.
  */
