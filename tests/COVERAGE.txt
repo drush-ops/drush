@@ -41,7 +41,7 @@ config
 core-cron
 core-status: FAIR: Implicit test by contextTest.
 docs
-image
+image: GOOD
 core-rsync
 runserver
 core-quick-drupal
