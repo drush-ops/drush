@@ -88,9 +88,9 @@ class completeCase extends Drush_CommandTestCase {
     $this->verifyComplete('@dev topic @', '', '');
     $this->verifyComplete('@dev topic topi', '', '');
     // Command + command option.
-    $this->verifyComplete('dl --', '--all', '--version_control=svn');
+    $this->verifyComplete('dl --', '--all', '--version-control=svn');
     // Site alias + command + command option.
-    $this->verifyComplete('@dev dl --', '--all', '--version_control=svn');
+    $this->verifyComplete('@dev dl --', '--all', '--version-control=svn');
     // Command + argument.
     $this->verifyComplete('topic docs-c', 'docs-commands', 'docs-cron');
     // Site alias + command + regular argument.
