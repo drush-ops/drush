@@ -36,7 +36,7 @@ cache-clear
 core-cron
 core-status: FAIR: Implicit test by contextTest.
 docs
-image
+image: GOOD
 core-rsync
 search-*
 site-install: FAIR. Implicit test by setUpDrupal().
