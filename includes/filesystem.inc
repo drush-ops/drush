@@ -294,13 +294,16 @@ function drush_mkdir($path, $required = TRUE) {
  * The temporary file will be automatically deleted when drush exits.
  *
  * @param string $data
+ * @param string $suffix
+ *   Append string to filename. use of this parameter if is discouraged. @see
+ *   drush_tempnam().
  * @return string
  *   A path to the file.
  */
-function drush_save_data_to_temp_file($data) {
+function drush_save_data_to_temp_file($data, $suffix = NULL) {
   static $fp;
 
-  $file = drush_tempnam('drush_');
+  $file = drush_tempnam('drush_', NULL, $suffix);
   $fp = fopen($file, "w");
   fwrite($fp, $data);
   $meta_data = stream_get_meta_data($fp);
@@ -379,15 +382,20 @@ function drush_find_tmp() {
  * it will be deleted when drush exits.  Whenever possible,
  * drush_save_data_to_temp_file() should be used instead
  * of this function.
+ *
+ * @param string suffix
+ *   Append this suffix to the filename. Use of this parameter is discouraged as
+ *   it can break the guarantee of tempname(). See http://www.php.net/manual/en/function.tempnam.php#42052.
+ *   Originally added to support Oracle driver.
  */
-function drush_tempnam($pattern, $tmp_dir = NULL) {
+function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
   if ($tmp_dir == NULL) {
     $tmp_dir = drush_find_tmp();
   }
   $tmp_file = tempnam($tmp_dir, $pattern);
   drush_register_file_for_deletion($tmp_file);
 
-  return $tmp_file;
+  return $tmp_file . $suffix;
 }
 
 /**

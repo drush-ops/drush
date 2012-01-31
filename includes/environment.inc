@@ -398,6 +398,9 @@ function drush_valid_db_credentials() {
     return FALSE;
   }
   $type = $creds['driver'];
+
+  $type = ( $type=='oracle' ? 'oci' : $type);
+
   switch (drush_drupal_major_version()) {
     case 6:
       // Check availability of db extension in PHP and also Drupal support.
@@ -482,6 +485,17 @@ function drush_valid_db_credentials() {
           $server .= ", " . $creds['port'];
         }
         $constr = sprintf("%s:database=%s;server=%s", $type, $creds['name'], $server);
+      }
+      elseif ($type === 'oci') {
+
+        if (empty($creds['port']))
+          $creds['port'] = 1521;
+
+        if ($creds['host'] == 'USETNS')
+          $constr = 'oci:dbname=' . $creds['database'] . ';charset=AL32UTF8';
+        else
+          $constr = 'oci:dbname=//' . $creds['host'] . ':' . $creds['port'] . '/' . $creds['database'] . ';charset=AL32UTF8';
+
       }
       else {
         $constr = sprintf("%s:dbname=%s", $type, $creds['name']);
@@ -624,7 +638,7 @@ function drush_is_mingw($os = NULL) {
 }
 
 /*
- * Return tar executable name specific for the current OS 
+ * Return tar executable name specific for the current OS
  */
 function drush_get_tar_executable() {
   return drush_is_windows() ? "bsdtar.exe" : "tar";

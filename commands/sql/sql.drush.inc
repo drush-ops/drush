@@ -226,6 +226,16 @@ function _drush_sql_connect($db_spec = NULL) {
     case 'sqlsrv':
       $command = 'sqlcmd';
       break;
+    case 'oracle':
+      // use rlwrap if available for readline support
+      if ($handle = popen('rlwrap -v', 'r')) {
+        $command = 'rlwrap sqlplus';
+        pclose($handle);
+      }
+      else {
+        $command = 'sqlplus';
+      }
+      break;
   }
   $command .= _drush_sql_get_credentials($db_spec);
   return $command;
@@ -418,6 +428,20 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
     case 'sqlsrv':
       $exec = "echo 'sqlsrv sql-dump not yet supported'";
       break;
+    case 'oracle':
+      $create_db = drush_get_option('create-db');
+      $exec = 'exp ' . _drush_sql_get_credentials($db_spec);
+      if ($file)
+        $exec .= ' file=' . $file;
+      else
+        $exec .= ' file=' . $db_spec['username'] . '.dmp';
+
+      if (!empty($tables))
+        $exec .= ' tables="(' . implode(',', $tables) . ')"';
+      else
+        $exec .= ' owner=' . $db_spec['username'];
+
+      break;
   }
 
   if (drush_get_option('gzip')) {
@@ -495,6 +519,7 @@ function drush_sql_query($query) {
  *   A path to a file containing the SQL to be executed.
  */
 function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
+  $suffix = '';
   $scheme = _drush_sql_get_scheme($db_spec);
 
   // Inject table prefixes as needed.
@@ -513,6 +538,12 @@ function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
     }
   }
 
+  // is this an oracle query
+  if ($scheme == 'oracle') {
+    $query = drush_sql_format_oracle($query);
+    $suffix = '.sql';
+  }
+
   // Convert mysql 'show tables;' query into something pgsql understands
   if (($scheme == 'pgsql') && ($query == 'show tables;')) {
     $query = drush_sql_show_tables_pgsql();
@@ -520,7 +551,7 @@ function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
 
   // Save $query to a tmp file if needed. We will redirect it in.
   if (!$filename) {
-    $filename = drush_save_data_to_temp_file($query);
+    $filename = drush_save_data_to_temp_file($query, $suffix);
   }
   $exec = drush_sql_build_exec($db_spec, $filename);
   if ($output_file = drush_get_option('result-file')) {
@@ -551,6 +582,7 @@ function drush_sql_drop() {
 function _drush_sql_drop($db_spec = NULL) {
   // TODO: integrate with _drush_sql_get_table_list?
 
+  $suffix = '';
   $scheme = _drush_sql_get_scheme($db_spec);
   switch ($scheme) {
     case 'pgsql':
@@ -562,11 +594,15 @@ function _drush_sql_drop($db_spec = NULL) {
     case 'sqlsrv':
       $query = 'SELECT TABLE_NAME FROM information_schema.tables';
       break;
+    case 'oracle':
+      $query = "SELECT TABLE_NAME FROM USER_TABLES WHERE TABLE_NAME NOT IN ('BLOBS','LONG_IDENTIFIERS')";
+      $suffix = '.sql';
+      break;
     default:
       $query = 'SHOW TABLES;';
   }
 
-  $filename = drush_save_data_to_temp_file($query);
+  $filename = drush_save_data_to_temp_file($query, $suffix);
   $exec = drush_sql_build_exec($db_spec, $filename);
 
   // Actually run this prep query no matter if in SIMULATE.
@@ -880,6 +916,13 @@ function _drush_sql_get_credentials($db_spec = NULL) {
       $host = empty($db_spec['server']) ? '.\SQLEXPRESS' : $db_spec['server'];
       return ' -S ' . $host . ' -d ' . $database . ' -U ' . $db_spec['username'] . ' -P ' . $db_spec['password'];
       break;
+
+
+    case 'oracle':
+      // Return an Oracle connection string
+      return ' ' . $db_spec['username'] .'/' . $db_spec['password'] . ($db_spec['host']=='USETNS' ? '@' . $db_spec['database'] : '@//' . $db_spec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $db_spec['database']);
+      break;
+
   }
 
   // Turn each parameter into a valid parameter string.
@@ -964,6 +1007,38 @@ function _drush_sql_get_post_sync_messages() {
 function drush_sql_show_tables_pgsql() {
   return "select tablename from pg_tables where schemaname='public';";
 }
+
+// Format queries to work with Oracle and SqlPlus
+function drush_sql_format_oracle($query) {
+
+  // remove trailing semicolon from query if we have it
+  $query = preg_replace('/\;$/', '', $query);
+
+  // some sqlplus settings
+  $settings[] = "set TRIM ON";
+  $settings[] = "set FEEDBACK OFF";
+  $settings[] = "set UNDERLINE OFF";
+  $settings[] = "set PAGES 0";
+  $settings[] = "set PAGESIZE 50000";
+
+  // are we doing a describe ?
+  if (!preg_match('/^ *desc/i', $query)) {
+    $settings[] = "set LINESIZE 32767";
+  }
+
+  // are we doing a show tables ?
+  if (preg_match('/^ *show tables/i', $query)) {
+    $settings[] = "set HEADING OFF";
+    $query = "select object_name from user_objects where object_type='TABLE' order by object_name asc";
+  }
+
+  // create settings string
+  $sqlp_settings = implode("\n", $settings)."\n";
+
+  // important for sqlplus to exit correctly
+  return "${sqlp_settings}${query};\nexit;\n";
+}
+
 
 /*
  * Drop all tables (if DB exists) or CREATE target database.
@@ -1108,6 +1183,12 @@ function drush_sql_build_exec($db_spec, $filepath) {
       $exec .= ' ' . drush_get_option('extra');
       $exec .= _drush_sql_get_credentials($db_spec);
       $exec .= ' -h -1 -i "' . $filepath . '"';
+      break;
+    case 'oracle':
+      $exec = 'sqlplus';
+      $exec .= ' ' . drush_get_option('extra');
+      $exec .= _drush_sql_get_credentials($db_spec);
+      $exec .= " @$filepath";
       break;
   }
   return $exec;
