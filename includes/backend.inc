@@ -289,6 +289,7 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
   }
 }
 
+
 /**
  * Call an external command using proc_open.
  *
@@ -312,17 +313,11 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
  *   If it executed successfully, it returns an associative array containing the command
  *   called, the output of the command, and the error code of the command.
  */
-function _drush_proc_open($cmds, $process_limit, $context = NULL) {
+function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
   $descriptorspec = array(
     0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
     1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-    2 => array("pipe", "w")   // stderr is a pipe the child will write to
   );
-
-  if (drush_is_windows()) {
-    /*  http://bg2.php.net/manual/en/function.proc-open.php#97012 */
-    $descriptorspec[2][1] = "a";
-  }
 
   $open_processes = array();
   $bucket = array();
@@ -359,11 +354,9 @@ function _drush_proc_open($cmds, $process_limit, $context = NULL) {
         // this open longer.
         fclose($process['pipes'][0]);
 
-        foreach (array(1, 2) as $pipe) {
-          $process['info'] = stream_get_meta_data($process['pipes'][$pipe]);
-          stream_set_blocking($process['pipes'][$pipe], FALSE);
-          stream_set_timeout($process['pipes'][$pipe], 1);
-        }
+        $process['info'] = stream_get_meta_data($process['pipes'][1]);
+        stream_set_blocking($process['pipes'][1], FALSE);
+        stream_set_timeout($process['pipes'][1], 1);
         $bucket[$site]['cmd'] = $c;
         $bucket[$site]['output'] = '';
         $bucket[$site]['backend-options'] = $backend_options;
@@ -373,54 +366,40 @@ function _drush_proc_open($cmds, $process_limit, $context = NULL) {
       }
     }
     foreach ($open_processes as $site => &$current_process) {
-      if (isset($current_process['pipes'][1]) || isset($current_process['pipes'][2])) {
-        // Collect output from stdout and stderr
-        foreach (array(1, 2) as $pipe) {
-          if (isset($current_process['pipes'][$pipe])) {
-            $bucket[$site][$pipe] = '';
-            $info = stream_get_meta_data($current_process['pipes'][$pipe]);
+      if (isset($current_process['pipes'][1])) {
+        // Collect output from stdout
+        $bucket[$site][1] = '';
+        $info = stream_get_meta_data($current_process['pipes'][1]);
 
-            if (!feof($current_process['pipes'][$pipe]) && !$info['timed_out']) {
-              $string = fread($current_process['pipes'][$pipe], 4096);
-              $output_end_pos = strpos($string, 'DRUSH_BACKEND_OUTPUT_START>>>');
-              if ($output_end_pos !== FALSE) {
-                $trailing_string = substr($string, 0, $output_end_pos);
-                if (!empty($trailing_string)) {
-                  drush_backend_parse_packets($trailing_string, $bucket[$site]['backend-options']);
-                  _drush_backend_print_output($trailing_string, $bucket[$site]['backend-options']);
-                  $bucket[$site]['outputted'] = TRUE;
-                }
-                $bucket[$site]['end_of_output'] = TRUE;
-              }
-              if (!$bucket[$site]['end_of_output']) {
-                drush_backend_parse_packets($string, $bucket[$site]['backend-options']);
-                // Pass output through.
-                _drush_backend_print_output($string, $bucket[$site]['backend-options']);
-                if (!empty($string)) {
-                  $bucket[$site]['outputted'] = TRUE;
-                }
-              }
-              $bucket[$site][$pipe] .= $string;
-              $bucket[$site]['output'] .= $string;
-              $info = stream_get_meta_data($current_process['pipes'][$pipe]);
-              flush();
+        if (!feof($current_process['pipes'][1]) && !$info['timed_out']) {
+          $string = fread($current_process['pipes'][1], 4096);
+          $output_end_pos = strpos($string, 'DRUSH_BACKEND_OUTPUT_START>>>');
+          if ($output_end_pos !== FALSE) {
+            $trailing_string = substr($string, 0, $output_end_pos);
+            if (!empty($trailing_string)) {
+              drush_backend_parse_packets($trailing_string, $bucket[$site]['backend-options']);
+              _drush_backend_print_output($trailing_string, $bucket[$site]['backend-options']);
+              $bucket[$site]['outputted'] = TRUE;
             }
-            else {
-              fclose($current_process['pipes'][$pipe]);
-              unset($current_process['pipes'][$pipe]);
-              // close the pipe , set a marker
-
-              if (drush_is_windows() && ($pipe == 1)) {
-                /* On windows STDERR doesn't give EOF even if STDOUT gets closed
-                * Because of this this loop goes indefinitely
-                * and this manual unset is needed on windows in order the script to work
-                */
-                fclose($current_process['pipes'][2]);
-                unset($current_process['pipes'][2]);
-              }
-
+            $bucket[$site]['end_of_output'] = TRUE;
+          }
+          if (!$bucket[$site]['end_of_output']) {
+            drush_backend_parse_packets($string, $bucket[$site]['backend-options']);
+            // Pass output through.
+            _drush_backend_print_output($string, $bucket[$site]['backend-options']);
+            if (!empty($string)) {
+              $bucket[$site]['outputted'] = TRUE;
             }
           }
+          $bucket[$site][1] .= $string;
+          $bucket[$site]['output'] .= $string;
+          $info = stream_get_meta_data($current_process['pipes'][1]);
+          flush();
+        }
+        else {
+          fclose($current_process['pipes'][1]);
+          unset($current_process['pipes'][1]);
+          // close the pipe , set a marker
         }
       }
       else {
@@ -435,6 +414,8 @@ function _drush_proc_open($cmds, $process_limit, $context = NULL) {
   //}
   //return FALSE;
 }
+
+
 
 /**
  * Print the output received from a call to backend invoke,
@@ -862,7 +843,7 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
   }
   else {
     $process_limit = drush_get_option_override($common_backend_options, 'concurrency', 4);
-    $procs = _drush_proc_open($cmds, $process_limit, $context);
+    $procs = _drush_backend_proc_open($cmds, $process_limit, $context);
     $procs = is_array($procs) ? $procs : array($procs);
 
     foreach ($procs as $site => $proc) {
