@@ -37,12 +37,12 @@ class sqlSyncTest extends Drush_CommandTestCase {
       $this->markTestSkipped('SQL Sync does not apply to SQLite.');
       return;
     }
-
+    chdir(UNISH_TMP); // Avoids perm denied Windows error.
     $this->setUpBeforeClass();
     $sites = $this->setUpDrupal(2, TRUE, '6');
     return $this->localSqlSync();
   }
-  
+
   public function localSqlSync() {
     $dump_dir = UNISH_SANDBOX . "/dump-dir";
     if (!is_dir($dump_dir)) {
