@@ -106,11 +106,11 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     // Double up existing backslashes
     $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
 
-    // Escape double quotes.
-    $arg = preg_replace('/"/', '\\"', $arg);
+    // Double up double quotes
+    $arg = preg_replace('/"/', '""', $arg);
 
-    // Escape single quotes.
-    $arg = preg_replace('/\'/', '\\\'', $arg);
+    // Double up percents.
+    $arg = preg_replace('/%/', '%%', $arg);
 
     // Add surrounding quotes.
     $arg = '"' . $arg . '"';

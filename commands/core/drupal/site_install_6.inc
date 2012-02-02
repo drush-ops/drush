@@ -120,8 +120,7 @@ function _drush_site_install6_cookies($profile, $cookie = NULL) {
     $output .= sprintf('$_COOKIE=unserialize("%s");', str_replace('"', '\"', $cookie));
   }
   else {
-    $output .= 'function _cli_cookie_print(){print(serialize(array(session_name()=>session_id())));}
-register_shutdown_function("_cli_cookie_print");';
+    $output .= 'function _cli_cookie_print(){print(serialize(array(session_name()=>session_id())));} register_shutdown_function("_cli_cookie_print");';
   }
 
   return $output;
