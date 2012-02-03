@@ -155,6 +155,11 @@ Do not use both types of declarations for a single project in your makefile.
 ### Project download options
 
   Use an alternative download method instead of retrieval through update XML.
+
+  If no download type is specified, make defaults the type to
+  `git`. Additionally, if no url is specified, make defaults to use
+  Drupal.org.
+
   The following methods are available:
 
 - `download[type] = file`
@@ -192,6 +197,15 @@ Do not use both types of declarations for a single project in your makefile.
 
      projects[mytheme][download][type] = "git"
      projects[mytheme][download][url] = "git://github.com/jane_doe/mytheme.git"
+
+  Shorthand is available to pull a specific revision from a git
+  repository:
+
+  projects[context_admin][revision] = "eb9f05e"
+
+  is the same as:
+
+  projects[context_admin][download][revision] = "eb9f05e"
 
 - `download[type] = svn`
 
