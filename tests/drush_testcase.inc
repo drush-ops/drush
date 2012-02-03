@@ -103,9 +103,6 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   }
 
   public static function _escapeshellarg_windows($arg) {
-    // Windows apparently can't handle multiline commands.
-    $arg = str_replace("\n", '', $arg);
-
     // Double up existing backslashes
     $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
 
