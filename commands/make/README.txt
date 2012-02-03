@@ -340,14 +340,15 @@ Testing
 Drush make also comes with testing capabilities, designed to test drush make
 itself. Writing a new test is extremely simple. The process is as follows:
 
-1. Figure out what you want to test. Write a makefile that will test this out.
-   You can refer to existing test makefiles for examples.
+1. Figure out what you want to test. Write a makefile that will test
+   this out.  You can refer to existing test makefiles for
+   examples. These are located in `DRUSH/tests/makefiles`.
 2. Drush make your makefile, and use the --md5 option. You may also use other
    options, but be sure to take note of which ones for step 4.
 3. Verify that the result you got was in fact what you expected. If so,
    continue. If not, tweak it and re-run step 2 until it's what you expected.
 4. Using the md5 hash that was spit out from step 2, make a new entry in the
-   tests array in drush_make.test.inc, following the example below.
+   tests clase (DRUSH/tests/makeTest.php), following the example below.
     'machine-readable-name' => array(
       'name'     => 'Human readable name',
       'makefile' => 'tests/yourtest.make',
@@ -356,7 +357,11 @@ itself. Writing a new test is extremely simple. The process is as follows:
       ),
       'options'  => array('any' => TRUE, 'other' => TRUE, 'options' => TRUE),
     ),
-5. Test! Run drush make-test machine-readable-name to see if the test passes.
+5. Test! Run drush test suite (see DRUSH/tests/README.txt). To just
+   run the make tests:
+
+     `phpunit --filter=makeMake .`
+
 
 You can check for any messages you want in the message array, but the most
 basic tests would just check the build hash.
@@ -375,10 +380,10 @@ the makefile will not complete - you'll have to fill in some information before
 it is fully functional.
 
 Maintainers
-----------
-- Jonathan Hedstrom
+-----------
+- Jonathan Hedstrom (jhedstrom)
 - The rest of the Drush maintainers
 
 Original Author
-----------
+---------------
 Dmitri Gaskin (dmitrig01)
