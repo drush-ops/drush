@@ -82,16 +82,9 @@ class userCase extends Drush_CommandTestCase {
 
     // user-cancel
     // create content
-    $eval = $this->create_node_types_php();
+    $this->drush('php-script', array('create_node_types'), $options + array('script-path' => dirname(__FILE__) . '/resources'));
     $this->drush('php-eval', array($eval), $options);
-    $eval = "
-      \$node = (object) array(
-        'title' => 'foo',
-        'uid' => 2,
-        'type' => 'page',
-      );
-      node_save(\$node);
-    ";
+    $eval = "\$node = (object) array('title' => 'foo', 'uid' => 2, 'type' => 'page',); node_save(\$node);";
     $this->drush('php-eval', array($eval), $options);
     $this->drush('user-cancel', array($name), $options + array('delete-content' => NULL));
     $eval = 'print (string) user_load(2)';
