@@ -61,7 +61,7 @@ specified as the key.
 
 **Project using options (see below):**
 
-    projects[drupal][version] = 6.15
+    projects[drupal][version] = 7.12
 
 Do not use both types of declarations for a single project in your makefile.
 
