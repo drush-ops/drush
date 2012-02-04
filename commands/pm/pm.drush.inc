@@ -1741,3 +1741,43 @@ function drush_find_empty_directories($dir, $exclude = array()) {
   }
   return $empty_dirs;
 }
+
+/**
+ * Inject metadata into all .info files for a given project.
+ *
+ * @param string $project_dir
+ *   The full path to the root directory of the project to operate on.
+ * @param string $project_name
+ *   The project machine name (AKA shortname).
+ * @param string $version
+ *   The version string to inject into the .info file(s).
+ *
+ * @return boolean
+ *   TRUE on success, FALSE on any failures appending data to .info files.
+ */
+function drush_pm_inject_info_file_metadata($project_dir, $project_name, $version) {
+  $info_files = drush_scan_directory($project_dir, '/.*\.info$/');
+  if (!empty($info_files)) {
+    // Construct the string of metadata to append to all the .info files.
+    // Taken straight from: http://drupalcode.org/project/drupalorg.git/blob/refs/heads/6.x-3.x:/drupalorg_project/plugins/release_packager/DrupalorgProjectPackageRelease.class.php#l192
+    $info = "\n\n; Information added by drush on " . date('Y-m-d') . "\n";
+    $info .= "version = \"$version\"\n";
+    // .info files started with 5.x, so we don't have to worry about version
+    // strings like "4.7.x-1.0" in this regular expression. If we can't parse
+    // the version (also from an old "HEAD" release), or the version isn't at
+    // least 6.x, don't add any "core" attribute at all.
+    $matches = array();
+    if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
+      $info .= "core = \"$matches[1]\"\n";
+    }
+    $info .= "project = \"$project_name\"\n";
+    $info .= 'datestamp = "'. time() ."\"\n";
+    $info .= "\n";
+    foreach ($info_files as $info_file) {
+      if (!drush_file_append_data($info_file->filename, $info)) {
+        return FALSE;
+      }
+    }
+  }
+  return TRUE;
+}

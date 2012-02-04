@@ -596,5 +596,28 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
 }
 
 /**
+ * Simple helper function to append data to a given file.
+ *
+ * @param string $file
+ *   The full path to the file to append the data to.
+ * @param string $data
+ *   The data to append.
+ *
+ * @return boolean
+ *   TRUE on success, FALSE in case of failure to open or write to the file.
+ */
+function drush_file_append_data($file, $data) {
+  if (!$fd = fopen($file, 'a+')) {
+    drush_set_error(dt("ERROR: fopen(@file, 'ab') failed", array('@file' => $file)));
+    return FALSE;
+  }
+  if (!fwrite($fd, $data)) {
+    drush_set_error(dt("ERROR: fwrite(@file) failed", array('@file' => $file)) . '<pre>' . $data);
+    return FALSE;
+  }
+  return TRUE;
+}
+
+/**
  * @} End of "defgroup filesystemfunctions".
  */
