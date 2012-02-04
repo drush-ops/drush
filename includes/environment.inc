@@ -121,7 +121,11 @@ function _drush_environment_check_php_ini() {
  */
 function drush_environment_lib() {
   $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
-  drush_mkdir($lib);
+  // We tell drush_mkdir that $lib is not required, because otherwise it
+  // will throw an error if the folder exists but is not writable.  It
+  // is okay with us if the $lib dir is not writable by the current
+  // user, as it may have already been set up by the user who installed Drush.
+  drush_mkdir($lib, FALSE);
   if (!is_dir($lib)) {
     return FALSE;
   }
