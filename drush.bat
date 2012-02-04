@@ -13,4 +13,4 @@ rem set HOME=H:/drush
 rem set TEMP=H:/drush
 
 REM See http://drupal.org/node/506448 for more information.
-@php.exe "%~dp0drush.php" %* --php="php.exe"
+@php.exe "%~dp0drush.php" --php="php.exe" %*
