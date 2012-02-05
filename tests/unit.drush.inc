@@ -30,7 +30,11 @@ function unit_drush_command() {
   $items['unit-return-options'] = array(
     'description' => 'Return options as function result.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-  );    
+  );
+  $items['missing-callback'] = array(
+    'description' => 'Command with no callback function, to test error reporting.',
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+  );
   return $items;
 }
 

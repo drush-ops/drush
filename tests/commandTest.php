@@ -46,4 +46,15 @@ class commandCase extends Drush_CommandTestCase {
     $include_path = dirname(__FILE__) . '/hooks/magic_help_alter';
     $this->drush('version', array(), array('include' => $include_path, 'pipe' => NULL, 'magic' => '1234', 'strict' => NULL));
   }
+
+  /**
+   * Assert that errors are thrown for commands with missing callbacks.
+   */
+  public function testMissingCommandCallback() {
+    $options = array(
+      'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
+      //'show-invoke' => TRUE,
+    );
+    $this->drush('missing-callback', array(), $options, NULL, NULL, self::EXIT_ERROR);
+  }
 }

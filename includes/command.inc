@@ -347,8 +347,12 @@ function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
     if (($defined_in_commandfile . "_" == substr($hook . "_",0,strlen($defined_in_commandfile)+ 1))) {
       $default_command_hook = sprintf("drush_%s", $hook);
     }
-    drush_log(dt("No hook functions were found for !command.", array('!command' => $command)), 'warning');
-    drush_log(dt("The primary drush_invoke() hook for !command is !default_func().  Please implement this function.  Run with --show-invoke to see all available hooks.", array('!command' => $command, '!default_func' => $default_command_hook)), 'warning');
+    $dt_args = array(
+      '!command' => $command,
+      '!default_func' => $default_command_hook,
+    );
+    $message = "No hook functions were found for !command. The primary hook function is !default_func(). Please implement this function. Run with --show-invoke to see all available hooks.";
+    $return = drush_set_error('DRUSH_FUNCTION_NOT_FOUND', dt($message, $dt_args));
   }
   if (drush_get_option('show-invoke')) {
     // We show all available hooks up to and including the one that failed (or all, if there were no failures)
