@@ -602,7 +602,7 @@ function _drush_sitealias_cache_alias($alias_name, $alias_record) {
  */
 function drush_sitealias_add_db_url(&$alias_record) {
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
-    $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('db-url' => TRUE));
+    $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('db-url' => TRUE, '#override-simulated' => TRUE));
     if (isset($values['object']['db-url'])) {
       $alias_record['db-url'] = $values['object']['db-url'];
     }
@@ -640,7 +640,7 @@ function drush_sitealias_add_db_settings(&$alias_record)
   // If the alias record does not have a defined 'databases' entry,
   // then we'll need to look one up
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
-    $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('all' => TRUE));
+    $values = drush_invoke_sitealias_args($alias_record, "sql-conf", array(), array('all' => TRUE, '#override-simulated' => TRUE));
     if (isset($values) && ($values['error_status'] == 0)) {
       $altered_record = TRUE;
       // If there are any special settings in the '@self' record returned by drush_invoke_sitealias_args,

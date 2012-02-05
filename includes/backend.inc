@@ -230,7 +230,7 @@ function _drush_proc_open($cmd, $data = NULL, $context = NULL) {
      1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
      2 => array("pipe", "w")   // stderr is a pipe the child will write to
   );
-  if (drush_get_context('DRUSH_SIMULATE')) {
+  if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('#override-simulated', $data)) {
     drush_print('proc_open: ' . $cmd);
     return FALSE;
   }
