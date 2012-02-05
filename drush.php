@@ -110,20 +110,10 @@ function _drush_bootstrap_and_dispatch() {
   if (!$command_found) {
     // If we reach this point, we have not found either a valid or matching command.
 
-    // Check if the command belongs to a disabled module.
-    _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE, DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-    $commands = drush_get_commands();
-    $args = implode(' ', drush_get_arguments());
-    if (isset($commands[$args])) {
-      // We found it. Load its module name and set an error.
-      $command_files = drush_get_context('DRUSH_COMMAND_FILES', array());
-      $command_path = $commands[$args]['path'] . DIRECTORY_SEPARATOR . $commands[$args]['commandfile'] . '.drush.inc';
-      $module = array_search($command_path, $command_files);
-      $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] =
-        dt('Command !command needs the following module installed/enabled to run: !dependency.', array('!command' => $args, '!dependency' => $module));
-    }
+    drush_command_belongs_to_disabled_module($command);
 
     // Set errors related to this command.
+    $args = implode(' ', drush_get_arguments());
     if (isset($command) && is_array($command)) {
       foreach ($command['bootstrap_errors'] as $key => $error) {
         drush_set_error($key, $error);
@@ -140,4 +130,30 @@ function _drush_bootstrap_and_dispatch() {
     }
   }
   return $return;
+}
+
+/**
+ * Check if the given command belongs to a disabled module
+ *
+ * @param $command
+ *   Command to check. Any errors will be added to the 'bootstrap_errors' element.
+ *
+ * @return
+ *   FALSE if Drupal was not bootstrapped fully or the command does not belong
+ *   to a diabled module
+ */
+function drush_command_belongs_to_disabled_module(&$command) {
+  if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+    _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE, DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+    $commands = drush_get_commands();
+    $command_name = array_shift(drush_get_arguments());
+    if (isset($commands[$command_name])) {
+      // We found it. Load its module name and set an error.
+      $command_files = drush_get_context('DRUSH_COMMAND_FILES', array());
+      $command_path = $commands[$command_name]['path'] . DIRECTORY_SEPARATOR . $commands[$command_name]['commandfile'] . '.drush.inc';
+      $module = array_search($command_path, $command_files);
+      $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] =
+        dt('Command !command needs the following module enabled to run: !dependency.', array('!command' => $command_name, '!dependency' => $module));
+    }
+  }
 }
