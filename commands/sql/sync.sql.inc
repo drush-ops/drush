@@ -16,6 +16,9 @@ function drush_sql_sync_init($source = NULL, $destination = NULL) {
   // After preflight, get source and destination settings
   $source_settings = drush_sitealias_get_record($source);
   $destination_settings = drush_sitealias_get_record($destination);
+  // Apply command-specific options.
+  drush_sitealias_command_default_options($source_settings, 'source-');
+  drush_sitealias_command_default_options($destination_settings, 'target-');
 
   // Insure that we have database records for the source and destination
   // alias records.  sitealias_get_databases_from_record will cache the

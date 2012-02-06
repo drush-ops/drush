@@ -991,6 +991,9 @@ function drush_preflight_command_dispatch() {
   $remote_host = drush_get_option('remote-host');
   // Get the command early so that we can allow commands to directly handle remote aliases if they wish
   $command = drush_parse_command();
+  if (isset($command)) {
+    drush_command_default_options($command);
+  }
   // If the command sets the 'mask-local-cli-options' flag, then we will remove
   // any cli options that appear after the command name form the 'cli' context.
   // The cli options that appear before the command name are stored in the

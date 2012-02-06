@@ -1481,6 +1481,18 @@ function drush_command_get_includes($command) {
  * Conditionally include default options based on the command used.
  */
 function drush_command_default_options($command = NULL) {
+  $command_default_options = drush_get_context('command-specific');
+  return drush_command_set_command_specific($command_default_options);
+}
+
+function drush_sitealias_command_default_options($site_record, $prefix, $command = NULL) {
+  if (isset($site_record) && array_key_exists($prefix . 'command-specific', $site_record)) {
+    return drush_command_set_command_specific($site_record[$prefix . 'command-specific'], $command);
+  }
+  return FALSE;
+}
+
+function drush_command_set_command_specific($command_default_options, $command = NULL) {
   if (!$command) {
     $command = drush_get_command();
   }
@@ -1488,10 +1500,10 @@ function drush_command_default_options($command = NULL) {
     // Look for command-specific options for this command
     // keyed both on the command's primary name, and on each
     // of its aliases.
-    $options_were_set = _drush_command_set_default_options($command['command']);
+    $options_were_set = _drush_command_set_default_options($command_default_options, $command['command']);
     if (isset($command['aliases']) && count($command['aliases'])) {
       foreach ($command['aliases'] as $alias) {
-        if (_drush_command_set_default_options($alias) === TRUE) {
+        if (_drush_command_set_default_options($command_default_options, $alias) === TRUE) {
           $options_were_set = TRUE;
         }
       }
@@ -1504,9 +1516,8 @@ function drush_command_default_options($command = NULL) {
   }
 }
 
-function _drush_command_set_default_options($command) {
+function _drush_command_set_default_options($command_default_options, $command) {
   $options_were_set = FALSE;
-  $command_default_options = drush_get_context('command-specific');
   if (array_key_exists($command, $command_default_options)) {
     foreach ($command_default_options[$command] as $key => $value) {
       // We set command-specific options in their own context

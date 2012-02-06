@@ -1689,7 +1689,7 @@ function _drush_sitealias_preflight_path($path) {
  *   with the path to pass to rsync (including the machine specifier)
  *   in the 'evaluated-path' item.
  */
-function drush_sitealias_evaluate_path($path, &$additional_options, $local_only = FALSE, $os = NULL) {
+function drush_sitealias_evaluate_path($path, &$additional_options, $local_only = FALSE, $os = NULL, $command_specific_prefix = '') {
   $site_alias_settings = array();
   $path_aliases = array();
   $remote_user = '';
@@ -1708,6 +1708,9 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
     // not want to use it here.  The paths passed to rsync should always be
     // escaped per the LOCAL rules, without regard to the remote platform type.
     $site_alias_settings = drush_sitealias_get_record($alias);
+    if (!empty($command_specific_prefix)) {
+      drush_sitealias_command_default_options($site_alias_settings, $command_specific_prefix);
+    }
   }
 
   if (!empty($site_alias_settings)) {
