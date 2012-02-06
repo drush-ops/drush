@@ -249,6 +249,7 @@ function drush_complete_process_argv() {
   _drush_bootstrap_base_environment();
   // Check for and record any site alias.
   drush_sitealias_check_arg();
+  drush_sitealias_check_site_env();
 
   // Return the new argv for easy reference.
   return $argv;

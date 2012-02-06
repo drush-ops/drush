@@ -29,10 +29,18 @@ function drush_sitealias_check_arg() {
     drush_set_arguments($args);
     return TRUE;
   }
+  // Return false to indicate that no site alias was specified.
+  return FALSE;
+}
 
-  $site_env = drush_sitealias_site_get();
-  if (!empty($site_env) && (_drush_sitealias_set_context_by_name($site_env))) {
-    return TRUE;
+function drush_sitealias_check_site_env() {
+  $site = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
+  if (empty($site)) {
+    $site_env = drush_sitealias_site_get();
+    if (!empty($site_env) && (_drush_sitealias_set_context_by_name($site_env))) {
+      drush_set_context('DRUSH_TARGET_SITE_ALIAS', $site_env);
+      return TRUE;
+    }
   }
   // Return false to indicate that no site alias was specified.
   return FALSE;

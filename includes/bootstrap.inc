@@ -511,6 +511,8 @@ function _drush_bootstrap_drush() {
       drush_load_config('site');
     }
   }
+  // Check to see if we 'use'd a site alias with site-set
+  drush_sitealias_check_site_env();
 
   _drush_bootstrap_global_options();
 }
