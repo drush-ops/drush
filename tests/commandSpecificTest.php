@@ -8,7 +8,7 @@
 *  @see drush/includes/context.inc.
 */
 
-class contextCase extends Drush_CommandTestCase {
+class commandSpecificCase extends Drush_CommandTestCase {
 
   function setUpPaths() {
     $this->log("webroot: ".$this->webroot()."\n");
