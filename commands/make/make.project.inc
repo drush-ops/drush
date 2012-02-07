@@ -60,6 +60,35 @@ class DrushMakeProject {
    */
   function download() {
     $this->downloaded = TRUE;
+
+    // In some cases, make_download_factory() is going to need to know the
+    // full version string of the project we're trying to download. However,
+    // the version is a project-level attribute, not a download-level
+    // attribute. So, if we don't already have a full version string in the
+    // download array (e.g. if it was initialized via the release history XML
+    // for the PM case), we take the version info from the project-level
+    // attribute, convert it into a full version string, and stuff it into
+    // $this->download so that the download backend has access to it, too.
+    if (!empty($this->version) && empty($this->download['full_version'])) {
+      $full_version = '';
+      // If the version doesn't already define a core version, prepend it.
+      if (!preg_match('/\d+\.x-\d+.*/', $this->version)) {
+        $full_version = $this->core . '-';
+      }
+      $full_version .= $this->version;
+      // If the project-level version attribute is just a number it's a major version 
+      $matches = array();
+      if (preg_match('/\d+(\.x)?/', $this->version, $matches)) {
+        // If there's no '.x' already, append it.
+        if (empty($matches[1])) {
+          $full_version .= '.x';
+        }
+        $full_version .= '-dev';
+      }
+
+      $this->download['full_version'] = $full_version;
+    }
+
     if (make_download_factory($this->name, $this->download, $this->download_location) === FALSE) {
       $this->downloaded = FALSE;
     }
