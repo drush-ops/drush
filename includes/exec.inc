@@ -152,7 +152,8 @@ function _drush_shell_exec($args, $interactive = FALSE) {
  * @param string $command
  *   An optional bash fragment.
  * @param string $cd
- *   An optional directory to change into before executing the $command.
+ *   An optional directory to change into before executing the $command. Set to
+ *   boolean TRUE to change into $site['root'] if available.
  * @return string
  *   A string suitable for execution with drush_shell_remote_exec().
  */
