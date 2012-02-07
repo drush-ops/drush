@@ -78,7 +78,7 @@ class DrushMakeProject {
       $full_version .= $this->version;
       // If the project-level version attribute is just a number it's a major version 
       $matches = array();
-      if (preg_match('/\d+(\.x)?/', $this->version, $matches)) {
+      if (preg_match('/\d+(\.x)?$/', $this->version, $matches)) {
         // If there's no '.x' already, append it.
         if (empty($matches[1])) {
           $full_version .= '.x';
