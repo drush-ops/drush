@@ -141,7 +141,7 @@ function sql_drush_command() {
         'confirm-sanitizations' => 'Prompt yes/no after importing the database, but before running the sanitizations',
       ),
     ),
-    'topics' => array('docs-aliases', 'docs-policy'),
+    'topics' => array('docs-aliases', 'docs-policy', 'docs-example-sync-extension'),
   );
   if (drush_drupal_major_version() >= 7) {
 

@@ -159,6 +159,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/sandwich.drush.inc'),
   );
+  $items['docs-example-sync-extension'] = array(
+    'description' => 'Example Drush commandfile that extends sql-sync to enable development modules in the post-sync hook.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array($docs_dir . '/examples/sync_enable.drush.inc'),
+  );
   $items['docs-policy'] = array(
     'description' => 'Example policy file.',
     'hidden' => TRUE,
