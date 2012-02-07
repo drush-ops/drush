@@ -42,7 +42,7 @@ function drush_ssh_site_ssh($command = NULL) {
   }
   $command = implode(' ', $args);
   if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-    return drush_set_error('DRUSH_MISSING_TARGET_ALIAS', 'A remote site alias is required. The way call ssh command has changed to `drush @alias ssh`.');
+    return drush_set_error('DRUSH_MISSING_TARGET_ALIAS', 'A remote site alias is required. The way you call ssh command has changed to `drush @alias ssh`.');
   }
   $site = drush_sitealias_get_record($alias);
   // We only accept remote aliases.
