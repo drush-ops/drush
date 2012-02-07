@@ -318,7 +318,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
         if (!isset($project['download'])) {
           $project['download'] = array(
             'type' => 'pm',
-            'version' => $release['version'],
+            'full_version' => $release['version'],
             'download_link' => $release['download_link'],
           );
         }

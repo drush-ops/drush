@@ -20,7 +20,7 @@ function make_download_factory($name, $download, $download_location) {
  * Download project using drush's pm-download command.
  */
 function make_download_pm($name, $download, $download_location) {
-  $version = $name . '-' . $download['version'];
+  $full_project_version = $name . '-' . $download['full_version'];
 
   $options = array(
     'destination' => dirname($download_location),
@@ -42,9 +42,9 @@ function make_download_pm($name, $download, $download_location) {
   }
 
   // Perform actual download with `drush pm-download`.
-  $return = drush_invoke_process('@none', 'pm-download', array($version), $options, $backend_options);
+  $return = drush_invoke_process('@none', 'pm-download', array($full_project_version), $options, $backend_options);
   if (empty($return['error_log'])) {
-    drush_log(dt('@project downloaded from @url', array('@project' => $version, '@url' => $download['download_link'])), 'ok');
+    drush_log(dt('@project downloaded from @url', array('@project' => $full_project_version, '@url' => $download['download_link'])), 'ok');
   }
 }
 
@@ -297,28 +297,28 @@ function make_download_git($name, $download, $download_location) {
     if (!drush_get_option('no-gitinfofile', FALSE)) {
       // Figure out the proper version string to use based on the .make file.
       // Best case is the .make file author told us directly.
-      if (!empty($download['version'])) {
-        $version = $download['version'];
+      if (!empty($download['full_version'])) {
+        $full_version = $download['full_version'];
       }
       // Next best is if we have a tag, since those are identical to versions.
       elseif (!empty($download['tag'])) {
-        $version = $download['tag'];
+        $full_version = $download['tag'];
       }
       // If we have a branch, append '-dev'.
       elseif (!empty($download['branch'])) {
-        $version = $download['branch'] . '-dev';
+        $full_version = $download['branch'] . '-dev';
       }
       // Ugh. Not sure what else we can do in this case.
       elseif (!empty($download['revision'])) {
-        $version = $download['revision'];
+        $full_version = $download['revision'];
       }
       // Probably can never reach this case.
       else {
-        $version = 'unknown';
+        $full_version = 'unknown';
       }
 
       require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
-      drush_pm_inject_info_file_metadata($tmp_location, $name, $version);
+      drush_pm_inject_info_file_metadata($tmp_location, $name, $full_version);
     }
 
     // Remove .git/ directory if working-copy flag was not specified.

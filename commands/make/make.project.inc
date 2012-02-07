@@ -242,7 +242,7 @@ class DrushMakeProject {
         foreach ($langcodes as $langcode) {
           $variables = array(
             '%project' => $this->name,
-            '%release' => $this->download['version'],
+            '%release' => $this->download['full_version'],
             '%core' => $this->core,
             '%language' => $langcode,
             '%filename' => '%filename',
