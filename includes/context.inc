@@ -155,7 +155,7 @@ function drush_load_config_file($context, $config_list) {
         drush_log(dt('Cannot open drushrc "!config", ignoring.', array('!config' => realpath($config))), 'warning');
         return FALSE;
       }
-      if (!empty($options) || !empty($aliases) || !empty($command_specific)) {
+      if (!empty($options) || !empty($aliases) || !empty($command_specific) || !empty($override)) {
         $options = array_merge(drush_get_context($context), $options);
         $options['config-file'] = realpath($config);
 
