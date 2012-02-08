@@ -539,6 +539,7 @@ function _drush_verify_cli_options($command) {
   // are not represented in our options list.
   $cli_options = array_keys(drush_get_context('cli'));
   $allowed_options = _drush_flatten_options($options);
+  $allowed_options = drush_append_negation_options($allowed_options);
   $disallowed_options = array_diff($cli_options, $allowed_options);
   if (!empty($disallowed_options)) {
     $unknown = count($disallowed_options) > 1 ? dt('Unknown options') : dt('Unknown option');
@@ -563,6 +564,14 @@ function _drush_verify_cli_options($command) {
     return drush_set_error(dt("@missing: --@options.  See `drush help @command` for information on usage.", array('@missing' => $missing, '@options' => implode(', --', $missing_required_options), '@command' => $command['command'])));
   }
   return TRUE;
+}
+
+function drush_append_negation_options($allowed_options) {
+  $new_allowed = $allowed_options;
+  foreach ($allowed_options as $option) {
+    $new_allowed[] = 'no-' . $option;
+  }
+  return $new_allowed;
 }
 
 function _drush_verify_cli_arguments($command) {
