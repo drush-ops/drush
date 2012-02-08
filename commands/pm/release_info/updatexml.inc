@@ -333,7 +333,7 @@ function updatexml_parse_release($request, $xml, $dev = FALSE) {
   if (!empty($request['version'])) {
     $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
     if (empty($releases)) {
-      drush_log(dt("Could not locate specified project version, downloading latest stable version"), 'warning');
+      drush_log(dt("Could not locate @project version @version, downloading latest stable version", array('@project' => $request['name'], '@version' => $request['version'])), 'warning');
     }
   }
   // If that did not work, we will get the first published release for the
