@@ -10,35 +10,12 @@
 
 class commandSpecificCase extends Drush_CommandTestCase {
 
-  function setUpPaths() {
-    $this->log("webroot: ".$this->webroot()."\n");
-    $this->env = key($this->sites);
-    $this->site = $this->webroot() . '/sites/' . $this->env;
-    $this->home = UNISH_SANDBOX . '/home';
-    $this->paths = array(
-      'custom' => UNISH_SANDBOX,
-      'site' =>  $this->site,
-      'drupal' => $this->webroot() . '/sites/all/drush',
-      'user' => $this->home,
-      'home.drush' => $this->home . '/.drush',
-      'system' => UNISH_SANDBOX . '/etc/drush',
-      // We don't want to write a file into drush dir since it is not in the sandbox.
-      // 'drush' => dirname(realpath(UNISH_DRUSH)),
-    );
-    // Run each path through realpath() since the paths we'll compare against
-    // will have already run through drush_load_config_file().
-    foreach ($this->paths as $key => $path) $this->paths[$key] = realpath($path);
-  }
-
   /**
    * Try to write a tiny drushrc.php to each place that drush checks. Also
    * write a sites/dev/aliases.drushrc.php file to the sandbox.
    */
   function setUp() {
     parent::setUp();
-
-//    $this->setUpDrupal();
-//    $this->setUpPaths();
 
     $path = UNISH_SANDBOX . '/aliases.drushrc.php';
     $aliases['site1'] = array(
