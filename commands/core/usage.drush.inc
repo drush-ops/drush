@@ -44,12 +44,15 @@ function usage_drush_command() {
  * different endpoint.
  */
 function usage_drush_exit() {
-  $file = _drush_usage_get_file();
-  if (drush_get_option('drush_usage_log', FALSE)) {
-    _drush_usage_log(drush_get_command(), $file);
-  }
-  if (drush_get_option('drush_usage_send', FALSE)) {
-    _drush_usage_mongolab($file, drush_get_option('drush_usage_size', 51200));
+  // Ignore statistics for simulated commands. (n.b. in simulated mode, _drush_usage_mongolab will print rather than send statistics)
+  if (!drush_get_context('DRUSH_SIMULATE')) {
+    $file = _drush_usage_get_file();
+    if (drush_get_option('drush_usage_log', FALSE)) {
+      _drush_usage_log(drush_get_command(), $file);
+    }
+    if (drush_get_option('drush_usage_send', FALSE)) {
+      _drush_usage_mongolab($file, drush_get_option('drush_usage_size', 51200));
+    }
   }
 }
 
