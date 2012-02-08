@@ -1009,7 +1009,6 @@ function drush_command_defaults($key, $commandfile, $path) {
       'options' => 'Options',
     ),
     'arguments' => array(),
-    'argument-description' => array(), // a copy of 'arguments'
     'required-arguments' => FALSE,
     'options' => array(),
     'sub-options' => array(),
