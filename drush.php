@@ -149,11 +149,16 @@ function drush_command_belongs_to_disabled_module(&$command) {
     $command_name = array_shift(drush_get_arguments());
     if (isset($commands[$command_name])) {
       // We found it. Load its module name and set an error.
-      $command_files = drush_get_context('DRUSH_COMMAND_FILES', array());
-      $command_path = $commands[$command_name]['path'] . DIRECTORY_SEPARATOR . $commands[$command_name]['commandfile'] . '.drush.inc';
-      $module = array_search($command_path, $command_files);
+      if (is_array($commands[$command_name]['drupal dependencies']) && count($commands[$command_name]['drupal dependencies'])) {
+        $modules = implode(', ', $commands[$command_name]['drupal dependencies']);
+      } else {
+        // The command does not define Drupal dependencies. Derive them.
+        $command_files = drush_get_context('DRUSH_COMMAND_FILES', array());
+        $command_path = $commands[$command_name]['path'] . DIRECTORY_SEPARATOR . $commands[$command_name]['commandfile'] . '.drush.inc';
+        $modules = array_search($command_path, $command_files);
+      }
       $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] =
-        dt('Command !command needs the following module enabled to run: !dependency.', array('!command' => $command_name, '!dependency' => $module));
+        dt('Command !command needs the following module(s) enabled to run: !dependencies.', array('!command' => $command_name, '!dependencies' => $modules));
     }
   }
 }
