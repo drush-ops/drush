@@ -317,6 +317,13 @@ function make_download_git($name, $download, $download_location) {
         $full_version = 'unknown';
       }
 
+      // If the version string ends in '.x-dev' do the Git magic to figure out
+      // the appropriate 'rebuild version' string, e.g. '7.x-1.2+7-dev'.
+      $matches = array();
+      if (preg_match('/^(.+).x-dev$/', $full_version, $matches)) {
+        require_once dirname(__FILE__) . '/../pm/package_handler/git_drupalorg.inc';
+        $full_version = drush_pm_git_drupalorg_compute_rebuild_version($tmp_location, $matches[1]);
+      }
       require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
       drush_pm_inject_info_file_metadata($tmp_location, $name, $full_version);
     }

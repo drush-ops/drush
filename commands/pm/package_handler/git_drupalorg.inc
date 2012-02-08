@@ -199,7 +199,64 @@ function package_handler_post_download($project, $release) {
   }
 
   if (drush_get_option('gitinfofile', FALSE)) {
-    drush_pm_inject_info_file_metadata($project['project_install_location'], $project['name'], $release['version']);
+    $matches = array();
+    if (preg_match('/^(.+).x-dev$/', $release['version'], $matches)) {
+      $full_version = drush_pm_git_drupalorg_compute_rebuild_version($project['project_install_location'], $matches[1]);
+    }
+    else {
+      $full_version = $release['version'];
+    }
+    drush_pm_inject_info_file_metadata($project['project_install_location'], $project['name'], $full_version);
   }
 
+}
+
+/**
+ * Helper function to compute the rebulid version string for a project.
+ *
+ * This does some magic in Git to find the latest release tag along
+ * the branch we're packaging from, count the number of commits since
+ * then, and use that to construct this fancy alternate version string
+ * which is useful for the version-specific dependency support in Drupal
+ * 7 and higher.
+ *
+ * NOTE: A similar function lives in git_deploy and in the drupal.org
+ * packaging script (see DrupalorgProjectPackageRelease.class.php inside
+ * drupalorg/drupalorg_project/plugins/release_packager). Any changes to the
+ * actual logic in here should probably be reflected in the other places.
+ *
+ * @param string $project_dir
+ *   The full path to the root directory of the project to operate on.
+ * @param string $branch
+ *   The branch that we're using for -dev. This should only include the
+ *   core version, the dash, and the branch's major version (eg. '7.x-2').
+ *
+ * @return string
+ *   The full 'rebuild version string' in the given Git checkout.
+ */
+function drush_pm_git_drupalorg_compute_rebuild_version($project_dir, $branch) {
+  $rebuild_version = '';
+  $branch_preg = preg_quote($branch);
+
+  if (drush_shell_cd_and_exec($project_dir, 'git describe --tags')) {
+    $shell_output = drush_shell_exec_output();
+    $last_tag = $shell_output[0];
+    // Make sure the tag starts as Drupal formatted (for eg.
+    // 7.x-1.0-alpha1) and if we are on a proper branch (ie. not master)
+    // then it's on that branch.
+    if (preg_match('/^(?<drupalversion>' . $branch_preg . '\.\d+(?:-[^-]+)?)(?<gitextra>-(?<numberofcommits>\d+-)g[0-9a-f]{7})?$/', $last_tag, $matches)) {
+      // If we found additional git metadata (in particular, number of commits)
+      // then use that info to build the version string.
+      if (isset($matches['gitextra'])) {
+        $rebuild_version = $matches['drupalversion'] . '+' . $matches['numberofcommits'] . 'dev';
+      }
+      // Otherwise, the branch tip is pointing to the same commit as the
+      // last tag on the branch, in which case we use the prior tag and
+      // add '+0-dev' to indicate we're still on a -dev branch.
+      else {
+        $rebuild_version = $last_tag . '+0-dev';
+      }
+    }
+  }
+  return $rebuild_version;
 }
