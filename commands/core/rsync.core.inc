@@ -15,11 +15,13 @@
  *   the scope of this one call).
  */
 function drush_core_rsync($source, $destination, $additional_options = array()) {
-  // Preflight destination in case it defines aliases used by the source
-  _drush_sitealias_preflight_path($destination);
-  // After preflight, evaluate file paths
-  $source_settings = drush_sitealias_evaluate_path($source, $additional_options, FALSE, "rsync", 'source-');
+  // Preflight source in case it defines aliases used by the destination
+  _drush_sitealias_preflight_path($source);
+  // After preflight, evaluate file paths.  We evaluate destination paths first, because
+  // there is a first-one-wins policy with --exclude-paths, and we want --target-command-specific
+  // to take precidence over --source-command-specific.
   $destination_settings = drush_sitealias_evaluate_path($destination, $additional_options, FALSE, "rsync", 'target-');
+  $source_settings = drush_sitealias_evaluate_path($source, $additional_options, FALSE, "rsync", 'source-');
   $source_path = $source_settings['evaluated-path'];
   $destination_path = $destination_settings['evaluated-path'];
 
@@ -100,7 +102,7 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
   foreach (array('include', 'exclude') as $include_exclude) {
     // Get the option --include-path or --exclude-path and explode to an array of paths
     // that we will translate into an --include or --exclude option to pass to rsync
-    $inc_ex_path = explode(PATH_SEPARATOR, drush_get_option(array($include_exclude . '-path', $include_exclude . '-paths'), ''));
+    $inc_ex_path = explode(PATH_SEPARATOR, drush_get_option($include_exclude . '-paths', ''));
     foreach ($inc_ex_path as $one_path_to_inc_ex) {
       if (!empty($one_path_to_inc_ex)) {
         $options .= ' --' . $include_exclude . '="' . $one_path_to_inc_ex . '"';

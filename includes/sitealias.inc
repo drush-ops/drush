@@ -1741,17 +1741,33 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   }
 
   // If the --exclude-other-sites option is specified, then
-  // convert that into --include-path='%site' and --exclude-sites.
+  // convert that into --include-paths='%site' and --exclude-sites.
   if (drush_get_option_override($additional_options, 'exclude-other-sites', FALSE) && !drush_get_option_override($additional_options, 'exclude-other-sites-processed', FALSE, 'process')) {
-    $additional_options['include-path'] = '%site,' . drush_get_option_override($additional_options, 'include-path', '');
+    $include_path_option = drush_get_option_override($additional_options, 'include-paths', '');
+    $additional_options['include-paths'] = '%site';
+    if (!empty($include_path_option)) {
+      // We use PATH_SEPARATOR here because we are later going to explicitly explode() this variable using PATH_SEPARATOR.
+      $additional_options['include-paths'] .= PATH_SEPARATOR . $include_path_option;
+    }
     $additional_options['exclude-sites'] = TRUE;
     $additional_options['exclude-other-sites-processed'] = TRUE;
   }
+  else {
+    unset($additional_options['include-paths']);
+  }
   // If the --exclude-files option is specified, then
-  // convert that into --exclude-path='%files'.
+  // convert that into --exclude-paths='%files'.
   if (drush_get_option_override($additional_options, 'exclude-files', FALSE) && !drush_get_option_override($additional_options, 'exclude-files-processed', FALSE, 'process')) {
-    $additional_options['exclude-path'] = '%files,' . drush_get_option_override($additional_options, 'exclude-path', '');
+    $exclude_path_option = drush_get_option_override($additional_options, 'exclude-paths', '');
+    $additional_options['exclude-paths'] = '%files';
+    if (!empty($exclude_path_option)) {
+      // We use PATH_SEPARATOR here because we are later going to explicitly explode() this variable using PATH_SEPARATOR.
+      $additional_options['exclude-paths'] .= PATH_SEPARATOR . $exclude_path_option;
+    }
     $additional_options['exclude-files-processed'] = TRUE;
+  }
+  else {
+    unset($additional_options['exclude-paths']);
   }
 
   // If there was no site specification given, and the
@@ -1770,8 +1786,8 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   // in it, so that resolution is only done if the path alias is referenced.
   // Therefore, we can concatenate without worrying too much about the structure of
   // this variable's contents.
-  $include_path = drush_get_option_override($additional_options, 'include-path', '');
-  $exclude_path = drush_get_option_override($additional_options, 'exclude-path', '');
+  $include_path = drush_get_option_override($additional_options, 'include-paths', '');
+  $exclude_path = drush_get_option_override($additional_options, 'exclude-paths', '');
   $resolve_path = $path . $include_path . $exclude_path;
   // Resolve path aliases such as %files, if any exist in the path
   if (!empty($resolve_path)) {
@@ -1811,10 +1827,10 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   // Fill in path aliases in the path, the include path and the exclude path.
   $path = str_replace(array_keys($full_path_aliases), array_values($full_path_aliases), $path);
   if (!empty($include_path)) {
-    drush_set_option('include-path', str_replace(array_keys($path_aliases), array_values($path_aliases), $include_path));
+    drush_set_option('include-paths', str_replace(array_keys($path_aliases), array_values($path_aliases), $include_path));
   }
   if (!empty($exclude_path)) {
-    drush_set_option('exclude-path', str_replace(array_keys($path_aliases), array_values($path_aliases), $exclude_path));
+    drush_set_option('exclude-paths', str_replace(array_keys($path_aliases), array_values($path_aliases), $exclude_path));
   }
   // Next make the rsync path, which includes the machine
   // and path components together.
