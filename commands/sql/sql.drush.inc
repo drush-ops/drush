@@ -338,6 +338,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
   }
 
   switch (_drush_sql_get_scheme($db_spec)) {
+    case 'mysqli':
     case 'mysql':
       $exec = 'mysqldump';
       if ($file) {
