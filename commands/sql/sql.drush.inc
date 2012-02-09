@@ -502,7 +502,7 @@ function _drush_sql_get_table_list($option_name) {
  * Command callback. Executes the given SQL query on the Drupal database.
  */
 
-function drush_sql_query($query) {
+function drush_sql_query($query = NULL) {
   drush_sql_bootstrap_further();
   $filename = drush_get_option('file', NULL);
   return _drush_sql_query($query, NULL, $filename);
@@ -563,7 +563,12 @@ function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
   if (drush_get_context('DRUSH_SIMULATE')) {
     drush_print('sql-query: ' . $query);
   }
-  $return = drush_op_system($exec) == 0;
+  if ($exec) {
+    $return = drush_op_system($exec) == 0;
+  }
+  else {
+    $return = drush_set_error('DRUSH_SQL_NO_QUERY', 'No query provided');
+  }
   return $return;
 }
 
@@ -720,7 +725,7 @@ function _drush_sql_get_db_spec() {
   elseif (($databases = drush_get_option('databases')) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
     return $databases[$database][$target];
   }
-  elseif (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+  elseif (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
     switch (drush_drupal_major_version()) {
       case 6:
         if ($url = isset($GLOBALS['db_url']) ? $GLOBALS['db_url'] : drush_get_option('db-url', NULL)) {
@@ -1158,6 +1163,7 @@ function drush_sql_db_exists($db_spec) {
 
 function drush_sql_build_exec($db_spec, $filepath) {
   $scheme = _drush_sql_get_scheme($db_spec);
+  $exec = '';
   switch ($scheme) {
     case 'mysql':
       $exec = 'mysql';
