@@ -205,6 +205,11 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
 /**
  * Determine whether a given bootstrap phase has been completed
  *
+ * This function name has a typo which makes me laugh so we choose not to
+ * fix it. Take a deep breath, and smile. See
+ * http://en.wikipedia.org/wiki/HTTP_referer
+ *
+ *
  * @param phase
  *   The bootstrap phase to test
  *
