@@ -28,14 +28,13 @@ class releaseInfoCase extends Drush_UnitTestCase {
     // Use a local, static XML file because live files change over time.
     $xml = simplexml_load_file(dirname(__FILE__). '/devel.xml');
 
+    // Pick specific release.
     $request_data = array(
       'name' => 'devel',
       'drupal_version' => '6.x',
       'project_version' => '1.18',
       'version' => '6.x-1.18',
     );
-
-    // Pick specific release.
     $release = updatexml_parse_release($request_data, $xml);
     $this->assertEquals($release['version'], '6.x-1.18');
 
@@ -48,5 +47,35 @@ class releaseInfoCase extends Drush_UnitTestCase {
     );
     $release = updatexml_parse_release($request_data, $xml);
     $this->assertEquals($release['version'], '6.x-2.1');
+
+    // Pick latest from a specific branch.
+    $request_data = array(
+      'name' => 'devel',
+      'drupal_version' => '6.x',
+      'version' => '6.x-1',
+    );
+    $release = updatexml_parse_release($request_data, $xml);
+    $this->assertEquals($release['version'], '6.x-1.23');
+
+    // Pick latest from a different branch.
+    $request_data = array(
+      'name' => 'devel',
+      'drupal_version' => '6.x',
+      'version' => '6.x-2',
+    );
+    $release = updatexml_parse_release($request_data, $xml);
+    // 6.x-2.2 is skipped because it is unpublished.
+    // 6.x-2.2-rc1 is skipped because it is not a stable release.
+    $this->assertEquals($release['version'], '6.x-2.1');
+
+    // Pick a -dev release.
+    $request_data = array(
+      'name' => 'devel',
+      'drupal_version' => '6.x',
+      'version' => '6.x-1.x',
+    );
+    $release = updatexml_parse_release($request_data, $xml);
+    $this->assertEquals($release['version'], '6.x-1.x-dev');
+
   }
 }

@@ -331,9 +331,23 @@ function release_info_filter_releases($releases, $all = FALSE, $dev = FALSE, $sh
  */
 function updatexml_parse_release($request, $xml, $dev = FALSE) {
   if (!empty($request['version'])) {
-    $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
-    if (empty($releases)) {
-      drush_log(dt("Could not locate @project version @version, downloading latest stable version", array('@project' => $request['name'], '@version' => $request['version'])), 'warning');
+    $matches = array();
+    // See if we only have a branch version.
+    if (preg_match('/^\d+\.x-(\d+)$/', $request['version'], $matches)) {
+      $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$matches[1] . "]";
+      $releases = @$xml->xpath($xpath_releases);
+    }
+    else {
+      // In some cases, the request only says something like '7.x-3.x' but the
+      // version strings include '-dev' on the end, so we need to append that
+      // here for the xpath to match below.
+      if (substr($request['version'], -2) == '.x') {
+        $request['version'] .= '-dev';
+      }
+      $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
+      if (empty($releases)) {
+        drush_log(dt("Could not locate @project version @version, downloading latest stable version", array('@project' => $request['name'], '@version' => $request['version'])), 'warning');
+      }
     }
   }
   // If that did not work, we will get the first published release for the
