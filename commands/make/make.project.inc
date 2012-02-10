@@ -254,7 +254,6 @@ class DrushMakeProject {
             if ($filename = _make_download_file($l10n_server)) {
               $server_info = simplexml_load_string(file_get_contents($filename));
               $cache[$l10n_server] = !empty($server_info->update_url) ? $server_info->update_url : FALSE;
-              drush_op('unlink', $filename);
             }
           }
           if ($cache[$l10n_server]) {
