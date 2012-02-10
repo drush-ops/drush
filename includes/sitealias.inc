@@ -1739,6 +1739,12 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
       $machine = "$remote_user$machine";
     }
   }
+  
+  // TOD:  The code below is a little rube-goldberg-ish, and needs to be
+  // reworked.  core-rsync will call this function twice: once to
+  // evaluate the destination, and then again to evaluate the source.  Things
+  // get odd with --exclude-paths, especially in conjunction with command-specific
+  // and the --exclude-files option.  @see testCommandSpecific()
 
   // If the --exclude-other-sites option is specified, then
   // convert that into --include-paths='%site' and --exclude-sites.

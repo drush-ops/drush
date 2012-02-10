@@ -58,8 +58,18 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
     // destination contains a : or a /.
     $include_settings_is_default = (strpos($source . $destination, ':') !== FALSE) || (strpos($source . $destination, '/') !== FALSE);
 
+    $options = _drush_build_rsync_options($additional_options, $include_settings_is_default);
+
+    // Get all of the args and options that appear after the command name.
+    $original_args = drush_get_original_cli_args_and_options();
+    foreach ($original_args as $original_option) {
+      if ($original_option{0} == '-') {
+        $options .= ' ' . $original_option;
+      }
+    }
+    
     // Go ahead and call rsync with the paths we determined
-    return drush_core_call_rsync($source_path, $destination_path, $additional_options, $include_settings_is_default);
+    return drush_core_exec_rsync($source_path, $destination_path, $options);
   }
 }
 
@@ -88,13 +98,38 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
  *   TRUE on success, FALSE on failure.
  */
 function drush_core_call_rsync($source, $destination, $additional_options = array(), $include_settings_is_default = TRUE, $live_output = TRUE) {
-  // Exclude vcs reserved files.
+  $options = _drush_build_rsync_options($additional_options, $include_settings_is_default);  
+  return drush_core_exec_rsync($source, $destination, $options, $additional_options, $live_output);
+}
+
+function drush_core_exec_rsync($source, $destination, $options, $additional_options = array(), $live_output = TRUE) {
+  $ssh_options = drush_get_option_override($additional_options, 'ssh-options', '');
+  $exec = "rsync -e 'ssh $ssh_options' $options $source $destination";
+
+  if ($live_output) {
+    $exec_result = drush_op_system($exec);
+    $result = ($exec_result == 0);
+  }
+  else {
+    $result = drush_shell_exec($exec);
+  }
+
+  if (!$result) {
+    drush_set_error('DRUSH_RSYNC_FAILED', dt("Could not rsync from !source to !dest", array('!source' => $source, '!dest' => $destination)));
+  }
+
+  return $result;
+}
+
+function _drush_build_rsync_options($additional_options, $include_settings_is_default = TRUE) {
   $options = '';
+  // Exclude vcs reserved files.
   if (!_drush_rsync_option_exists('include-vcs', $additional_options)) {
     $vcs_files = drush_version_control_reserved_files();
     foreach ($vcs_files as $file) {
       $options .= ' --exclude="'.$file.'"';
     }
+    unset($additional_options['include-vcs']);
   }
 
   $mode = '-akz';
@@ -108,6 +143,9 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
         $options .= ' --' . $include_exclude . '="' . $one_path_to_inc_ex . '"';
       }
     }
+    // Remove stuff inserted by evaluate path
+    unset($additional_options[$include_exclude . '-paths']);
+    unset($additional_options[$include_exclude . '-files-processed']);
   }
   // drush_core_rsync passes in $include_settings_is_default such that
   // 'exclude-conf' is the default when syncing from one alias to
@@ -115,117 +153,26 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
   // is included.
   if ($include_settings_is_default ? _drush_rsync_option_exists('exclude-conf', $additional_options) : !_drush_rsync_option_exists('include-conf', $additional_options)) {
     $options .= ' --exclude="settings.php"';
+    unset($additional_options['exclude-conf']);
   }
   if (_drush_rsync_option_exists('exclude-sites', $additional_options)) {
     $options .= ' --include="sites/all" --exclude="sites/*"';
+    unset($additional_options['exclude-sites']);
   }
   if (_drush_rsync_option_exists('mode', $additional_options)) {
     $mode = "-" . drush_get_option_override($additional_options, 'mode');
+    unset($additional_options['mode']);
   }
   if (drush_get_context('DRUSH_VERBOSE')) {
     // the drush_op() will be verbose about the command that gets executed.
     $mode .= 'v';
     $options .= ' --stats --progress';
   }
-  $rsync_available_options = array(
-    // unary options
-    'archive', // -a
-    'recursive', // -r
-    'relative', // -R
-    'backup', // -b
-    'update', // -u
-    'checksum', // -c
-    'dirs', // -d
-    'links', // -l
-    'copy-links', // -L
-    'copy-dirlinks', // -k
-    'keep-dirlinks', // -K
-    'hard-links', // -H
-    'perms', // -p
-    'executability', // -E
-    'acls', // -A
-    'xattrs', // -X
-    'owner', // -o
-    'group', // -g
-    'times', // -t
-    'omit-dir-times', // -O
-    'sparse', // -S
-    'dry-run', // -n
-    'whole-file', // -W
-    'one-file-system', // -x
-    'prune-empty-dirs', // -m
-    'ignore-times', // -I
-    'fuzzy', // -y
-    'cvs-exclude', // -C
-    'compress', // -Z
-    'protect-args', // -s
-    '8-bit-output', // -8
-    'human-readable', // -h
-    'itemize-changes', // -i
-    'copy-unsafe-links',
-    'safe-links',
-    'no-implied-dirs',
-    'inplace',
-    'append',
-    'append-verify',
-    'existing',
-    'remove-source-files',
-    'delete',
-    'delete-before',
-    'delete-during',
-    'delete-delay',
-    'delete-after',
-    'delete-excluded',
-    'ignore-errors',
-    'force',
-    'ignore-existing',
-    'partial',
-    'delay-updates',
-    'numeric-ids',
-    'size-only',
-    'blocking-io',
-    'stats',
-    'progress',
-    'list-only',
-    // options with values
-    'block-size',
-    'backup-dir',
-    'suffix',
-    'chmod',
-    'rsync-path',
-    'modify-window',
-    'compare-dest',
-    'copy-dest',
-    'link-dest',
-    'skip-compress',
-    'filter',
-    // filter out 'exclude'; consistency with --include. Use --exclude-paths.
-    'exclude-from',
-    // filter out 'include'; conflicts with global drush --include option. Use --include-paths.
-    'include-from',
-    'files-from',
-    'address',
-    'port',
-    'sockopts',
-    'out-format',
-    'bwlimit',
-    'iconv',
-    'checksum-seed',
-    'max-delete',
-    'max-size',
-    'min-size',
-    'partial-dir',
-    'timeout',
-    'temp-dir',
-    'compress-level',
-    'out-format',
-    'protocol',
-    );
+
   // Check if the user has set $options['rsync-version'] to enable rsync legacy version support.
   // Drush was written for rsync 2.6.9 or later, so assume that version if nothing was explicitly set.
   $rsync_version = drush_get_option(array('rsync-version','source-rsync-version','target-rsync-version'), '2.6.9');
-  foreach ($rsync_available_options as $test_option) {
-    $value = drush_get_option_override($additional_options, $test_option);
+  foreach ($additional_options as $test_option => $value) {
     // Downgrade some options for older versions of rsync
     if ($test_option == 'remove-source-files') {
       if (version_compare($rsync_version, '2.6.4', '<')) {
@@ -246,22 +193,7 @@ function drush_core_call_rsync($source, $destination, $additional_options = arra
     }
   }
 
-  $ssh_options = drush_get_option_override($additional_options, 'ssh-options', '');
-  $exec = "rsync -e 'ssh $ssh_options' $mode$options $source $destination";
-
-  if ($live_output) {
-    $exec_result = drush_op_system($exec);
-    $result = ($exec_result == 0);
-  }
-  else {
-    $result = drush_shell_exec($exec);
-  }
-
-  if (!$result) {
-    drush_set_error('DRUSH_RSYNC_FAILED', dt("Could not rsync from !source to !dest", array('!source' => $source, '!dest' => $destination)));
-  }
-
-  return $result;
+  return $mode . $options;
 }
 
 function _drush_rsync_option_exists($option, $additional_options) {

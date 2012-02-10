@@ -994,15 +994,36 @@ function drush_preflight_command_dispatch() {
   if (isset($command)) {
     drush_command_default_options($command);
   }
-  // If the command sets the 'mask-local-cli-options' flag, then we will remove
+  // If the command sets the 'strict-option-handling' flag, then we will remove
   // any cli options that appear after the command name form the 'cli' context.
   // The cli options that appear before the command name are stored in the
   // 'DRUSH_GLOBAL_CLI_OPTIONS' context, so we will just overwrite the cli context
   // with this, after doing the neccessary fixup from short-form to long-form options.
-  if (is_array($command) && !empty($command['mask-local-cli-options'])) {
-    $global_cli_options = drush_get_context('DRUSH_GLOBAL_CLI_OPTIONS', array());
-    drush_expand_short_form_options($global_cli_options);
-    drush_set_context('cli', $global_cli_options);
+  // After we do that, we put back any local drush options identified by $command['options'].
+  if (is_array($command) && !empty($command['strict-option-handling'])) {
+    $cli_options = drush_get_context('DRUSH_GLOBAL_CLI_OPTIONS', array());
+    // Now we are going to sort out any options that exist in $command['options'];
+    // we will remove these from DRUSH_COMMAND_ARGS and put them back into the
+    // cli options.
+    $cli_context = drush_get_context('cli');
+    $remove_from_command_args = array();
+    foreach ($command['options'] as $option => $info) {
+      if (array_key_exists($option, $cli_context)) {
+        $cli_options[$option] = $cli_context[$option];
+        $remove_from_command_args[$option] = $option;
+      }
+    }
+    if (!empty($remove_from_command_args)) {
+      $drush_command_args = array();
+      foreach (drush_get_context('DRUSH_COMMAND_ARGS') as $arg) {
+        if (!_drush_should_remove_command_arg($arg, $remove_from_command_args)) {
+          $drush_command_args[] = $arg;
+        }
+      }
+      drush_set_context('DRUSH_COMMAND_ARGS', $drush_command_args);
+    }
+    drush_expand_short_form_options($cli_options);
+    drush_set_context('cli', $cli_options);
     _drush_bootstrap_global_options();
   }
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
@@ -1053,6 +1074,53 @@ function drush_preflight_command_dispatch() {
     }
     $values = drush_invoke_process($site_record, $command_name, $args, $multi_options, $backend_options);
     return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Determine whether or not an argument should be removed from the
+ * DRUSH_COMMAND_ARGS context.  This method is used when a Drush
+ * command has set the 'strict-option-handling' flag indicating
+ * that it will pass through all commandline arguments and any
+ * additional options (not known to Drush) to some shell command.
+ *
+ * Take as an example the following call to core-rsync:
+ *
+ *   drush --yes core-rsync -v -az --exclude-paths='.git:.svn' local-files/ @site:%files
+ *
+ * In this instance:
+ *
+ *   --yes is a global Drush option
+ *
+ *   -v is an rsync option.  It will make rsync run in verbose mode, 
+ *     but will not make Drush run in verbose mode due to the fact that
+ *     core-rsync sets the 'strict-option-handling' flag.
+ *
+ *   --exclude-paths is a local Drush option.  It will be converted by
+ *     Drush into --exclude='.git' and --exclude='.svn', and then passed
+ *     on to the rsync command.
+ *
+ * The parameter $arg passed to this function is one of the elements
+ * of DRUSH_COMMAND_ARGS.  It will have values such as:
+ *   -v
+ *   -az
+ *   --exclude-paths='.git:.svn'
+ *   local-files/
+ *   @site:%files
+ *
+ * Our job in this function is to determine if $arg should be removed
+ * by virtue of appearing in $removal_list.  $removal_list is an array
+ * that will contain values such as 'exclude-paths'.  Both the key and
+ * the value of $removal_list is the same.
+ */
+function _drush_should_remove_command_arg($arg, $removal_list) {
+  foreach ($removal_list as $candidate) {
+    if (($arg == "-$candidate") ||
+        ($arg == "--$candidate") ||
+        (substr($arg,0,strlen($candidate)+3) == "--$candidate=") ) {
+      return TRUE;
+    }
   }
   return FALSE;
 }

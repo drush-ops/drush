@@ -42,7 +42,7 @@ class commandSpecificCase extends Drush_CommandTestCase {
   function testCommandSpecific() {
     $options = array(
       'alias-path' => UNISH_SANDBOX,
-      's' => NULL,
+      'simulate' => NULL,
       'include-vcs' => NULL,
     );
     $this->drush('core-rsync', array('/tmp', '@site1'), $options);
@@ -60,14 +60,23 @@ class commandSpecificCase extends Drush_CommandTestCase {
     $output = trim($this->getOutput());
     $this->assertContains('sites/default/files', $output);
     $this->assertContains('excluded_by_target', $output);
+    $this->assertNotContains('include-vcs', $output);
+    $this->assertNotContains('exclude-paths', $output);
+    $this->assertNotContains('exclude-files-processed', $output);
     $this->drush('core-rsync', array('@site1', '/tmp'), $options);
     $output = trim($this->getOutput());
     $this->assertContains('sites/default/files', $output);
-// This one fails: --exclude='excluded_by_source' is not included in output
+// This one does not work. @see drush_sitealias_evaluate_path
 //    $this->assertContains('excluded_by_source', $output);
+    $this->assertNotContains('include-vcs', $output);
+    $this->assertNotContains('exclude-paths', $output);
+    $this->assertNotContains('exclude-files-processed', $output);
     $this->drush('core-rsync', array('@site1', '@site1'), $options);
     $output = trim($this->getOutput());
     $this->assertContains('sites/default/files', $output);
     $this->assertContains('excluded_by_target', $output);
+    $this->assertNotContains('include-vcs', $output);
+    $this->assertNotContains('exclude-paths', $output);
+    $this->assertNotContains('exclude-files-processed', $output);
   }
 }

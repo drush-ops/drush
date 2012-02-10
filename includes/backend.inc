@@ -755,6 +755,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
   $post_options = array();
   $commandline_options = array();
   $drush_global_options = array();
+  $drush_local_options = array();
   $additional_backend_options = array();
   foreach ($site_record as $key => $value) {
     if (!in_array($key, drush_sitealias_site_selection_keys())) {
@@ -765,6 +766,10 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
         $command_options[$key] = $value;
       }
     }
+  }
+  if (array_key_exists('drush-local-options', $backend_options)) {
+    $drush_local_options = $backend_options['drush-local-options'];
+    $command_options += $drush_local_options;
   }
   foreach ($command_options as $key => $value) {
     $global = array_key_exists($key, $global_option_list);

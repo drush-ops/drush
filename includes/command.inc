@@ -1029,7 +1029,7 @@ function drush_command_defaults($key, $commandfile, $path) {
     'drupal dependencies' => array(),
     'drush dependencies' => array(),
     'handle-remote-commands' => FALSE,
-    'mask-local-cli-options' => FALSE,
+    'strict-option-handling' => FALSE,
     'bootstrap_errors' => array(),
     'topics' => array(),
     'hidden' => FALSE,
@@ -1092,7 +1092,7 @@ function _drush_command_translate($source) {
  *   locally rather than remotely dispatched.  When this mode is set, the target site
  *   can be obtained via:
  *     drush_get_context('DRUSH_TARGET_SITE_ALIAS')
- * - mask-local-cli-options: set to TRUE if drush should strictly separate local command
+ * - strict-option-handling: set to TRUE if drush should strictly separate local command
  *   cli options from the global options.  Usually, drush allows global cli options and
  *   command cli options to be interspersed freely on the commandline.  For commands where
  *   this flag is set, options are separated, with global options comming before the
@@ -1100,9 +1100,10 @@ function _drush_command_translate($source) {
  *     drush --global-options command --command-options
  *   In this mode, the command options are no longer available via drush_get_option();
  *   instead, they can be retrieved via:
+ *     $args = drush_get_original_cli_args_and_options();
  *     $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
- *   In this case, $args will contain the command options literally, exactly as they
- *   were entered on the command line.
+ *   In this case, $args will contain the command args and options literally, exactly as they
+ *   were entered on the command line, and in the same order as they appeared.
  */
 function drush_parse_command() {
   $args = drush_get_arguments();
@@ -1538,6 +1539,30 @@ function _drush_command_set_default_options($command_default_options, $command) 
     }
   }
   return $options_were_set;
+}
+
+/**
+ * Return the original cli args and options, exactly as they
+ * appeared on the command line, and in the same order.
+ * Any command-specific options that were set will also
+ * appear in this list, appended at the very end.
+ *
+ * The args and options returned are raw, and must be
+ * escaped as necessary before use.
+ */
+function drush_get_original_cli_args_and_options($command = NULL) {
+  $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
+  $command_specific_options = drush_get_context('specific');
+  if ($command == NULL) {
+    $command = drush_get_command();
+  }
+  $command_options = ($command == NULL) ? array() : _drush_get_command_options($command);
+  foreach ($command_specific_options as $key => $value) {
+    if (!array_key_exists($key, $command_options)) {
+      $args[] = "--$key=$value";
+    }
+  }
+  return $args;
 }
 
 /**

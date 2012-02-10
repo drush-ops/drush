@@ -152,7 +152,7 @@ function core_drush_command() {
     'required-arguments' => TRUE,
     'allow-additional-options' => TRUE,
     'handle-remote-commands' => TRUE,
-    'mask-local-cli-options' => TRUE,
+    'strict-option-handling' => TRUE,
     'examples' => array(
       'drush core-execute git pull origin rebase' => 'Retrieve latest code from git',
     ),
@@ -178,7 +178,7 @@ function core_drush_command() {
       'exclude-paths' => 'List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).',
       'include-paths' => 'List of paths to include, seperated by : (Unix-based systems) or ; (Windows).',
     ),
-    'allow-additional-options' => TRUE,
+    'strict-option-handling' => TRUE,
     'examples' => array(
       'drush rsync @dev @stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
       'drush rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
@@ -1108,8 +1108,8 @@ function drush_core_find_project_path($target) {
  * that start with !.
  */
 function drush_core_execute() {
-  // The DRUSH_COMMAND_ARGS contain all args and options that appear after the command name.
-  $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
+  // Get all of the args and options that appear after the command name.
+  $args = drush_get_original_cli_args_and_options();
   for ($x = 0; $x < sizeof($args); $x++) {
     // escape all args except for command separators.
     if (!in_array($args[$x], array('&&', '||', ';'))) {
