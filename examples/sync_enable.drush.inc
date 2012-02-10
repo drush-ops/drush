@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Sync_enable adds an "enable" option to sql-sync to enable
+ * Sync_enable adds options to sql-sync to enable and disable
  * modules after an sql-sync operation.  One use case for this
  * is to use Drush site aliases to automatically enable your 
  * development modules whenever you sync from your live site to
@@ -13,8 +13,9 @@
  *   'root' => '/srv/www/drupal',
  *   'uri' => 'site.com',
  *   'target-command-specific' => array(
- *     'sql-sync' => array(
- *       'enable' => array('devel', 'hacked'),
+ *     'sql-sync'  => array(
+ *       'enable'  => array('devel', 'hacked'),
+ *       'disable' => array('securepages'),
  *     ),
  *   ),
  * );
@@ -40,7 +41,8 @@
  */
 function sync_enable_drush_help_alter(&$command) {
   if ($command['command'] == 'sql-sync') {
-    $command['options']['enable'] = "Enable the specified modules in the target database after the sync operation has completed.";
+    $command['options']['enable']  = "Enable the specified modules in the target database after the sync operation has completed.";
+    $command['options']['disable'] = "Disable the specified modules in the target database after the sync operation has completed.";
   }
 }
 
@@ -49,12 +51,17 @@ function sync_enable_drush_help_alter(&$command) {
  *
  * The post hook is only called if the sql-sync operation completes
  * without an error.  When called, we check to see if the user specified
- * any modules to enable.  If so, we will call pm-enable on each module.
+ * any modules to enable/disable.  If so, we will call pm-enable/pm-disable on each module.
  */
 function drush_sync_enable_post_sql_sync($source = NULL, $destination = NULL) {
   $modules_to_enable = drush_get_option_list('enable');
   if (!empty($modules_to_enable)) {
     drush_log(dt("Enable !modules post-sql-sync", array('!modules' => implode(',', $modules_to_enable))), 'ok');
     drush_invoke_process($destination, 'pm-enable', $modules_to_enable, array('yes' => TRUE));
+  }
+  $modules_to_disable = drush_get_option_list('disable');
+  if (!empty($modules_to_disable)) {
+    drush_log(dt("Disable !modules post-sql-sync", array('!modules' => implode(',', $modules_to_disable))), 'ok');
+    drush_invoke_process($destination, 'pm-disable', $modules_to_disable, array('yes' => TRUE));
   }
 }
