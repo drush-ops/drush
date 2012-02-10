@@ -364,6 +364,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['show-passwords']   = dt("Show database passwords in commands that display connection information.");
     $options['show-invoke']      = dt("Show all function names which could have been called for the current command. See drush_invoke().");
     $options['watchdog']         = dt("Control logging of Drupal's watchdog() to drush log. Recognized values are 'log', 'print', 'disabled'. Defaults to log. 'print' shows calls to admin but does not add them to the log.");
+    $options['confirm-rollback']    = array('description' => 'Wait for confirmation before doing a rollback when something goes wrong.');
   }
   return $options;
 }
