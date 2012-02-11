@@ -29,11 +29,18 @@ function make_drush_command() {
     ),
     'options' => array(
       'version' => 'Print the make API version and exit.',
-      'concurrency' => 'Limits the number of concurrent projects that will be processed at the same time. The default is 4.',
+      'concurrency' => array(
+        'description' => 'Limits the number of concurrent projects that will be processed at the same time. The default is 4.',
+        'example-value' => '1',
+      ),
       'contrib-destination' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
       'force-complete' => 'Force a complete build even if errors occur.',
       'ignore-checksums' => 'Ignore md5 checksums for downloads.',
-      'md5' => 'Output an md5 hash of the current build after completion. Use --md5=print to print to stdout.',
+      'md5' => array(
+        'description' => 'Output an md5 hash of the current build after completion. Use --md5=print to print to stdout.',
+        'example-value' => 'print',
+        'value' => 'optional',
+      ),
       'make-update-default-url' => 'The default location to load the XML update information from.',
       'no-cache' => 'Do not use the pm-download caching (defaults to using this).',
       'no-clean' => 'Leave temporary build directories in place instead of cleaning up after completion.',

@@ -24,7 +24,10 @@ function variable_drush_command() {
       'drush vget user' => 'List all variables beginning with the string "user".',
     ),
     'options' => array(
-      'format' => 'Format to output the object. Use "print_r" for print_r (default), "export" for var_export, and "json" for JSON.',
+      'format' => array(
+        'description' => 'Format to output the object. Use "print_r" for print_r (default), "export" for var_export, and "json" for JSON.',
+        'example-value' => 'export',
+      ),
       'pipe' => 'A synonym for --format=export. Useful for pasting into code.',
     ),
     'aliases' => array('vget'),
@@ -39,7 +42,10 @@ function variable_drush_command() {
     'options' => array(
       'yes' => 'Skip confirmation if only one variable name matches.',
       'always-set' => 'Always skip confirmation.',
-      'format' => 'Format to parse the object. Use "auto" to detect format from value (default), "string", "integer" or "boolean" for corresponding primitive type, and "json" for JSON.',
+      'format' => array(
+        'description' => 'Format to parse the object. Use "auto" to detect format from value (default), "string", "integer" or "boolean" for corresponding primitive type, and "json" for JSON.',
+        'example-value' => 'boolean',
+      ),
     ),
     'examples' => array(
       'drush vset --yes preprocess_css TRUE' => 'Set the preprocess_css variable to true. Skip confirmation if variable already exists.',

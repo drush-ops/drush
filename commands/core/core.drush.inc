@@ -26,7 +26,11 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'options' => array(
       'sort' => 'Sort commands in alphabetical order. drush waits for full bootstrap before printing any commands when this option is used.',
-      'filter' => 'Restrict command list to those commands defined in the specified file.',
+      'filter' => array(
+        'description' => 'Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.',
+        'example-value' => 'category',
+        'value' => 'optional',
+      ),
       'html' => 'Print help for all commands in HTML format.',
       'pipe' => 'A list of available commands, one per line.',
     ),
@@ -105,7 +109,11 @@ function core_drush_command() {
       'drush core-requirements --pipe' => 'Print out a short report in the format "identifier: severity", where severity 2=error, 1=warning, and 0/-1=OK',
     ),
     'options' => array(
-      'severity' => 'Only show status report messages with a severity greater than or equal to the specified value.',
+      'severity' => array(
+        'description' => 'Only show status report messages with a severity greater than or equal to the specified value.',
+        'value' => 'required',
+        'example-value' => '3',
+      ),
       'ignore' => 'Comma-separated list of requirements to remove from output. Run with --pipe to see key values to use.',
     ),
   );
@@ -135,7 +143,10 @@ function core_drush_command() {
       'filename' => 'Optional. The file you wish to execute (without extension). If omitted, list files ending in .php in the current working directory and specified script-path. Some might not be real drush scripts. Beware.',
     ),
     'options' => array(
-      'script-path' => "Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).",
+      'script-path' => array(
+        'description' => "Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).",
+        'example-value' => '~/scripts',
+      ),
     ),
     'allow-additional-options' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
@@ -193,18 +204,28 @@ function core_drush_command() {
       'key=value...' => 'any additional settings you wish to pass to the profile. Fully supported on D7+, partially supported on D6 (single step configure forms only). The key is in the form [form name].[parameter name] on D7 or just [parameter name] on D6.',
     ),
     'options' => array(
-      'db-url' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',
+      'db-url' => array(
+        'description' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',
+        'example-value' => 'mysql://root:pass@127.0.0.1/db',
+        ),
       'db-prefix' => 'An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).',
       'db-su' => 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.',
       'db-su-pw' => 'Password for the "db-su" account. Optional.',
       'account-name' => 'uid1 name. Defaults to admin',
       'account-pass' => 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',
       'account-mail' => 'uid1 email. Defaults to admin@example.com',
-      'locale' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',
+      'locale' => array(
+        'description' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',
+        'example-value' => 'en-GB',
+      ),
       'clean-url'=> 'Defaults to 1',
       'site-name' => 'Defaults to Site-Install',
       'site-mail' => 'From: for system mailings. Defaults to admin@example.com',
-      'sites-subdir' => "Name of directory under 'sites' which should be created. Only needed when the subdirectory does not already exist. Defaults to 'default'",
+      'sites-subdir' => array(
+        'description' => "Name of directory under 'sites' which should be created. Only needed when the subdirectory does not already exist. Defaults to 'default'",
+        'value' => 'required',
+        'example-value' => 'directory_name',
+      ),
     ),
     'examples' => array(
       'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukranian.',
@@ -531,7 +552,7 @@ function _core_site_status_table($project = '', $full = FALSE) {
       $status_table['Drush alias files'] = dt("There are !count alias files. Run with --full to see the full list.", array('!count' => count($alias_files)));
     }
   }
-  
+
   // None of the Status keys are in dt(); this helps with machine-parsing of status?
   $path_names['root'] = 'Drupal root';
   $path_names['site'] = 'Site path';

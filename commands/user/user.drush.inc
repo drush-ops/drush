@@ -151,7 +151,11 @@ function user_drush_command() {
     ),
     'required-arguments' => TRUE,
     'options' => array(
-      'password' => array('description' => 'The new password for the account.'),
+      'password' => array(
+        'description' => 'The new password for the account.',
+        'required' => TRUE,
+        'example-value' => 'foo',
+      ),
     ),
     'examples' => array(
       'drush user-password someuser --password="correct horse battery staple"' =>

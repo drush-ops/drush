@@ -24,7 +24,10 @@ function sql_drush_command() {
   if (drush_drupal_major_version() >= 7) {
     $options['target'] = 'The name of a target within the specified database.';
   }
-  $db_url['db-url'] = 'A Drupal 6 style database URL. Useful when you don\'t have a configured Drupal instance.';
+  $db_url['db-url'] = array(
+    'description' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',
+    'example-value' => 'mysql://root:pass@127.0.0.1/db',
+  );
 
   $items['sql-drop'] = array(
     'description' => 'Drop all tables in a given database.',
@@ -33,7 +36,10 @@ function sql_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'options' => array(
       'yes' => 'Skip confirmation and proceed.',
-      'result-file' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
+      'result-file' => array(
+        'description' => 'Save to a file. The file should be relative to Drupal root. Recommended.',
+        'example-value' => '/path/to/file',
+      ),
     ) + $options + $db_url,
     'topics' => array('docs-policy'),
   );
@@ -63,7 +69,11 @@ function sql_drush_command() {
       'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.com',
     ),
     'options' => array(
-      'result-file' => 'Save to a file. The file should be relative to Drupal root. If --result-file is provided with no value, then date based filename will be created under ~/drush-backups directory.',
+      'result-file' => array(
+        'description' => 'Save to a file. The file should be relative to Drupal root. If --result-file is provided with no value, then date based filename will be created under ~/drush-backups directory.',
+        'example-value' => '/path/to/file',
+        'value' => 'optional',
+      ),
       'skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
       'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
       'tables-key' => 'A key in the $tables array. Optional.',
@@ -88,7 +98,10 @@ function sql_drush_command() {
        'query' => 'An SQL query. Ignored if \'file\' is provided.',
     ),
     'options' => array(
-      'result-file' => 'Save to a file. The file should be relative to Drupal root. Optional.',
+      'result-file' => array(
+        'description' => 'Save to a file. The file should be relative to Drupal root. Optional.',
+        'example-value' => '/path/to/file',
+      ),
       'input-file' => 'Path to a file containing the SQL to be run.',
       'extra' => 'Add custom options to the mysql command.',
       'db-prefix' => 'Enable replacement of braces in your query.',

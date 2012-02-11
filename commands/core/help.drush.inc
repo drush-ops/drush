@@ -197,10 +197,18 @@ function drush_help_section_formatter_options($command, &$help_attributes) {
   if (array_key_exists('required', $help_attributes)) {
     $help_attributes['description'] .= " " . dt("Required.");
   }
+
+  $prefix = '<';
+  $suffix = '>';
   if (array_key_exists('example-value', $help_attributes)) {
-    $help_attributes['label'] .= '=' . $help_attributes['example-value'];
+    if (isset($help_attributes['value']) && $help_attributes['value'] == 'optional') {
+      $prefix = '[';
+      $suffix = ']';
+    }
+    $help_attributes['label'] .= '=' . $prefix . $help_attributes['example-value'] . $suffix;
+
     if (array_key_exists('short-form', $help_attributes)) {
-      $help_attributes['short-form'] .= ' ' . $help_attributes['example-value'];
+      $help_attributes['short-form'] .= " $prefix" . $help_attributes['example-value'] . $suffix;
     }
   }
   if (array_key_exists('short-form', $help_attributes)) {

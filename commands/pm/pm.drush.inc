@@ -90,7 +90,10 @@ function pm_drush_command() {
   );
   $update_suboptions = array(
     'lock' => array(
-      'lock-message' => 'A brief message explaining why a project is being locked; displayed during pm-updatecode.  Optional.',
+      'lock-message' => array(
+        'description' => 'A brief message explaining why a project is being locked; displayed during pm-updatecode.  Optional.',
+        'example-value' => 'message',
+      ),
       'unlock' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
     ),
   );
@@ -135,8 +138,14 @@ function pm_drush_command() {
     'description' => 'Show a list of available extensions (modules and themes).',
     'callback arguments' => array(array(), FALSE),
     'options' => array(
-      'type' => 'Filter by extension type. Choices: module, theme.',
-      'status' => 'Filter by extension status. Choices: enabled, disabled and/or \'not installed\'. You can use multiple comma separated values. (i.e. --status="disabled,not installed").',
+      'type' => array(
+        'description' => 'Filter by extension type. Choices: module, theme.',
+        'example-value' => 'module',
+      ),
+      'status' => array(
+        'description' => 'Filter by extension status. Choices: enabled, disabled and/or \'not installed\'. You can use multiple comma separated values. (i.e. --status="disabled,not installed").',
+        'example-value' => 'disabled',
+      ),
       'package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other").',
       'core' => 'Filter out extensions that are not in drupal core.',
       'no-core' => 'Filter out extensions that are provided by drupal core.',
@@ -233,13 +242,19 @@ function pm_drush_command() {
       'projects' => 'A comma delimited list of drupal.org project names, with optional version. Defaults to \'drupal\'',
     ),
     'options' => array(
-      'destination' => 'Path to which the project will be copied. If you\'re providing a relative path, note it is relative to the drupal root (if bootstrapped).',
+      'destination' => array(
+        'description' => 'Path to which the project will be copied. If you\'re providing a relative path, note it is relative to the drupal root (if bootstrapped).',
+        'example-value' => 'path',
+      ),
       'use-site-dir' => 'Force to use the site specific directory. It will create the directory if it doesn\'t exist. If --destination is also present this option will be ignored.',
       'notes' => 'Show release notes after each project is downloaded.',
       'variant' => "Only useful for install profiles. Possible values: 'full', 'projects', 'profile-only'.",
       'select' => "Select the version to download interactively from a list of available releases.",
       'drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. Defaults to "drupal".',
-      'default-major' => 'Specify the default major version of modules to download when there is no bootstrapped Drupal site.  Defaults to "7".',
+      'default-major' => array(
+        'description' => 'Specify the default major version of modules to download when there is no bootstrapped Drupal site.  Defaults to "7".',
+        'example-value' => '6',
+      ),
       'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
       'pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
     ),
