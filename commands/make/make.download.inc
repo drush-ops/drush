@@ -204,19 +204,25 @@ function make_download_get($name, $download, $download_location) {
 /**
  * Checks out a git repository to the specified download location.
  *
+ * Allowed parameters in $download, in order of precedence:
+ *   - 'tag'
+ *   - 'revision'
+ *   - 'branch'
+ *
+ * This will also attempt to write out release information to the
+ * .info file if the 'no-gitinfofile' option is FALSE. If
+ * $download['full_version'] is present, this will be used, otherwise,
+ * version will be set in this order of precedence:
+ *   - 'tag'
+ *   - 'branch'
+ *   - 'revision'
+ *
  * @return
  *   The download location on success, FALSE otherwise.
  */
 function make_download_git($name, $download, $download_location) {
   $tmp_path = make_tmp();
   $wc = drush_get_option('working-copy');
-
-  // check if branch option is set in info file, otherwise set default to master branch
-  $download['branch'] = isset($download['branch']) ? $download['branch'] : 'master';
-  // check if tag option is set in info file, otherwise we set it to false
-  $download['tag'] = isset($download['tag']) ? $download['tag'] : FALSE;
-  // check if specific revision is set in info file
-  $download['revision'] = isset($download['revision']) ? $download['revision'] : FALSE;
 
   // If no download URL specified, assume anonymous clone from git.drupal.org.
   $download['url'] = isset($download['url']) ? $download['url'] : "git://git.drupal.org/project/$name.git";
@@ -228,118 +234,114 @@ function make_download_git($name, $download, $download_location) {
 
   $tmp_location = drush_tempdir() . '/' . basename($download_location);
 
-  // clone the given repository
-  if (drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
-    drush_log(dt('@project cloned from @url.', array('@project' => $name, '@url' => $url)), 'ok');
-
-    // GIT Checkout only work on a ready cloned repo. So we switch to branch or to tag (only if we have no branch) after cloneing.
-    if ($download['branch'] !== 'master' || $download['tag'] || $download['revision'] || !empty($download['submodule'])) {
-
-      // get current directory (for move back later)
-      $cwd = getcwd();
-      // change path to working copy of cloned repo
-      chdir($tmp_location);
-
-      // Progress branch / tag / revision download. Ensure that only one option ist set (branch OR tag OR revision)
-      // check if branch a other than master
-      if ($download['branch'] !== 'master' && !$download['tag'] && !$download['revision']) {
-        if (drush_shell_exec("git checkout %s", $download['branch'])) {
-          drush_log(dt("Checked out branch @branch.", array('@branch' => $download['branch'])), 'ok');
-        }
-        elseif (drush_shell_exec("git checkout -b %s %s", $download['branch'], 'origin/' . $download['branch'])) {
-          drush_log(dt("Checked out branch @branch.", array('@branch' => $download['branch'])), 'ok');
-        }
-        else {
-          make_error('DOWNLOAD_ERROR', dt("Unable to check out branch @branch.", array('%branch' => $download['branch'])));
-        }
-      }
-      // progress if: tag is set but not the others
-      elseif ($download['branch'] == 'master' && $download['tag'] && !$download['revision']) {
-        // @TODO: change checkout to refs path
-        if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
-          drush_log(dt("Checked out tag @tag.", array('@tag' => $download['tag'])), 'ok');
-        }
-        else {
-          make_error('DOWNLOAD_ERROR', dt("Unable to check out tag @tag.", array('@tag' => $download['tag'])));
-        }
-      }
-      // progress if: revision is set but not the others
-      elseif ($download['branch'] == 'master' && !$download['tag'] && $download['revision']) {
-        if (drush_shell_exec("git checkout %s", $download['revision'])) {
-          drush_log(dt("Checked out revision @revision.", array('@revision' => $download['revision'])), 'ok');
-        }
-        else {
-          make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision @revision", array('@revision' => $download['revision'])));
-        }
-      }
-      // more than one option is set so we throw a error message
-      elseif ($download['branch'] !== 'master' || $download['tag'] || $download['revision']) {
-        make_error('DOWNLOAD_ERROR', dt("You can only specific branch or tag or revision but not combined in make file."));
-        return false;
-      }
-      if (!empty($download['submodule'])) {
-        $command = 'git submodule update';
-        foreach ($download['submodule'] as $option) {
-          $command .= ' --%s';
-        }
-        if (call_user_func_array('drush_shell_exec', array_merge(array($command), $download['submodule']))) {
-          drush_log(dt('Initialized registered submodules.'), 'ok');
-        }
-        else {
-          make_error('DOWNLOAD_ERROR', dt('Unable to initialize submodules.'));
-        }
-      }
-      // move back to last current directory (first line)
-      chdir($cwd);
-    }
-
-    // Handle .info file re-writing (if so desired).
-    if (!drush_get_option('no-gitinfofile', FALSE)) {
-      // Figure out the proper version string to use based on the .make file.
-      // Best case is the .make file author told us directly.
-      if (!empty($download['full_version'])) {
-        $full_version = $download['full_version'];
-      }
-      // Next best is if we have a tag, since those are identical to versions.
-      elseif (!empty($download['tag'])) {
-        $full_version = $download['tag'];
-      }
-      // If we have a branch, append '-dev'.
-      elseif (!empty($download['branch'])) {
-        $full_version = $download['branch'] . '-dev';
-      }
-      // Ugh. Not sure what else we can do in this case.
-      elseif (!empty($download['revision'])) {
-        $full_version = $download['revision'];
-      }
-      // Probably can never reach this case.
-      else {
-        $full_version = 'unknown';
-      }
-
-      // If the version string ends in '.x-dev' do the Git magic to figure out
-      // the appropriate 'rebuild version' string, e.g. '7.x-1.2+7-dev'.
-      $matches = array();
-      if (preg_match('/^(.+).x-dev$/', $full_version, $matches)) {
-        require_once dirname(__FILE__) . '/../pm/package_handler/git_drupalorg.inc';
-        $full_version = drush_pm_git_drupalorg_compute_rebuild_version($tmp_location, $matches[1]);
-      }
-      require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
-      drush_pm_inject_info_file_metadata($tmp_location, $name, $full_version);
-    }
-
-    // Remove .git/ directory if working-copy flag was not specified.
-    if (!$wc && file_exists($tmp_location . '/.git')) {
-      drush_shell_exec("rm -rf %s", $tmp_location . '/.git');
-    }
-    drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
-    return dirname($tmp_location);
-  }
-  else {
+  // Before we can checkout anything, we need to clone the repository.
+  if (!drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
     make_error('DOWNLOAD_ERROR', dt('Unable to clone @project from @url.', array('@project' => $name, '@url' => $url)));
+    return FALSE;
   }
 
-  return FALSE;
+  drush_log(dt('@project cloned from @url.', array('@project' => $name, '@url' => $url)), 'ok');
+
+  // Get the current directory (so we can move back later).
+  $cwd = getcwd();
+  // Change into the working copy of the cloned repo.
+  chdir($tmp_location);
+
+  // Now that we've got a clone, we can checkout what the .make file says.
+  // We want to use the most specific target possible, so first try a tag.
+  if (!empty($download['tag'])) {
+    // @TODO: change checkout to refs path
+    if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
+      drush_log(dt("Checked out tag @tag.", array('@tag' => $download['tag'])), 'ok');
+    }
+    else {
+      make_error('DOWNLOAD_ERROR', dt("Unable to check out tag @tag.", array('@tag' => $download['tag'])));
+    }
+  }
+
+  // If there wasn't a tag, try a specific revision hash.
+  elseif (!empty($download['revision'])) {
+    if (drush_shell_exec("git checkout %s", $download['revision'])) {
+      drush_log(dt("Checked out revision @revision.", array('@revision' => $download['revision'])), 'ok');
+    }
+    else {
+      make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision @revision", array('@revision' => $download['revision'])));
+    }
+  }
+
+  // If not, see if we at least have a branch.
+  elseif (!empty($download['branch'])) {
+    if (drush_shell_exec("git checkout %s", $download['branch'])) {
+      drush_log(dt("Checked out branch @branch.", array('@branch' => $download['branch'])), 'ok');
+    }
+    elseif (drush_shell_exec("git checkout -b %s %s", $download['branch'], 'origin/' . $download['branch'])) {
+      drush_log(dt('Checked out branch origin/@branch.', array('@branch' => $download['branch'])), 'ok');
+    }
+    else {
+      make_error('DOWNLOAD_ERROR', dt('Unable to check out branch @branch.', array('@branch' => $download['branch'])));
+    }
+  }
+
+  if (!empty($download['submodule'])) {
+    $command = 'git submodule update';
+    foreach ($download['submodule'] as $option) {
+      $command .= ' --%s';
+    }
+    if (call_user_func_array('drush_shell_exec', array_merge(array($command), $download['submodule']))) {
+      drush_log(dt('Initialized registered submodules.'), 'ok');
+    }
+    else {
+      make_error('DOWNLOAD_ERROR', dt('Unable to initialize submodules.'));
+    }
+  }
+
+  // move back to last current directory (first line)
+  chdir($cwd);
+
+  // Handle .info file re-writing (if so desired).
+  if (!drush_get_option('no-gitinfofile', FALSE)) {
+    // Figure out the proper version string to use based on the .make file.
+    // Best case is the .make file author told us directly.
+    if (!empty($download['full_version'])) {
+      $full_version = $download['full_version'];
+    }
+    // Next best is if we have a tag, since those are identical to versions.
+    elseif (!empty($download['tag'])) {
+      $full_version = $download['tag'];
+    }
+    // If we have a branch, append '-dev'.
+    elseif (!empty($download['branch'])) {
+      $full_version = $download['branch'] . '-dev';
+    }
+    // Ugh. Not sure what else we can do in this case.
+    elseif (!empty($download['revision'])) {
+      $full_version = $download['revision'];
+    }
+    // Probably can never reach this case.
+    else {
+      $full_version = 'unknown';
+    }
+
+    // If the version string ends in '.x-dev' do the Git magic to figure out
+    // the appropriate 'rebuild version' string, e.g. '7.x-1.2+7-dev'.
+    $matches = array();
+    if (preg_match('/^(.+).x-dev$/', $full_version, $matches)) {
+      require_once dirname(__FILE__) . '/../pm/package_handler/git_drupalorg.inc';
+      $full_version = drush_pm_git_drupalorg_compute_rebuild_version($tmp_location, $matches[1]);
+    }
+    require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
+    drush_pm_inject_info_file_metadata($tmp_location, $name, $full_version);
+  }
+
+  // Remove .git/ directory if working-copy flag was not specified.
+  if (!$wc && file_exists($tmp_location . '/.git')) {
+    drush_shell_exec("rm -rf %s", $tmp_location . '/.git');
+  }
+
+  // Move the directory into the final resting location.
+  drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
+
+  return dirname($tmp_location);
 }
 
 /**
