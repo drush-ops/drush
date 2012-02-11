@@ -22,7 +22,7 @@ REQUIREMENTS
 
 * Drush is designed for a Unix-like OS (Linux, OS X)
 
-* Some Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
+* Most Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
 
 * Drush works with Drupal 6, Drupal 7, and usually Drupal 8.
 
@@ -83,7 +83,7 @@ below.
    and usage-send commands to more carefully send data.
 
 6. Optional. See examples/example.bashrc for instructions on how to add some
-   very useful shell aliases that provides even tighter integration between
+   useful shell aliases that provides even tighter integration between
    drush and bash.
 
 7. Optional. If you didn't source it in Step 5 above, see top of
@@ -196,7 +196,7 @@ disable_classes are empty.
 INSTALLING DRUSH ON WINDOWS:
 ----------------------------
 
-Windows support is improving, but is still lacking! Consider using on
+Windows support has improved, but is still lagging. Consider using on
 Linux/Unix/OSX using Virtualbox or other virtual machine.
 
 There is a Windows msi installer for drush available at:
@@ -342,4 +342,4 @@ CREDITS
 * Originally developed by Arto Bendiken <http://bendiken.net/> for Drupal 4.7.
 * Redesigned by Franz Heinzmann (frando) <http://unbiskant.org/> in May 2007 for Drupal 5.
 * Maintained by Moshe Weitzman <http://drupal.org/moshe> with much help from
-  Owen Barton, Adrian Rossouw, greg.1.anderson, jonhattan, Jonathan Hedstrom.
+  Owen Barton, greg.1.anderson, jonhattan, Mark Sonnabaum, and Jonathan Hedstrom.
