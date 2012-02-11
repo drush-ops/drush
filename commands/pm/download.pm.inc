@@ -197,24 +197,24 @@ function drush_pm_download() {
           drush_delete_dir($empty_dir, TRUE);
         }
       }
+
+      // Post download actions.
+      package_handler_post_download($request, $release);
+      drush_command_invoke_all('drush_pm_post_download', $request, $release);
+      $version_control->post_download($request);
+
+      // Print release notes if --notes option is set.
+      if (drush_get_option('notes') && !drush_get_context('DRUSH_PIPE')) {
+        release_info_print_releasenotes(array($name . '-' . $release['version']), FALSE);
+      }
+
+      // Inform the user about available modules a/o themes in the downloaded project.
+      drush_pm_extensions_in_project($request);
     }
     else {
       drush_log(dt("Project !project (!version) could not be downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'error');
       continue;
     }
-
-    // Post download actions.
-    package_handler_post_download($request, $release);
-    drush_command_invoke_all('drush_pm_post_download', $request, $release);
-    $version_control->post_download($request);
-
-    // Print release notes if --notes option is set.
-    if (drush_get_option('notes') && !drush_get_context('DRUSH_PIPE')) {
-      release_info_print_releasenotes(array($name . '-' . $release['version']), FALSE);
-    }
-
-    // Inform the user about available modules a/o themes in the downloaded project.
-    drush_pm_extensions_in_project($request);
   }
 }
 
