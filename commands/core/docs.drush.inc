@@ -175,6 +175,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/policy.drush.inc'),
   );
+  $items['docs-strict-options'] = array(
+    'description' => 'Strict option handling, and how commands that use it differ from regular Drush commands.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array($docs_dir . '/docs/strict-options.html'),
+  );
   return $items;
 }
 

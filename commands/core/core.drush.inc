@@ -748,6 +748,8 @@ function drush_core_global_options() {
   $fake = drush_global_options_command(FALSE);
   $global_option_rows = drush_format_help_section($fake, 'options');
   drush_print_table($global_option_rows);
+  drush_print();
+  drush_print("See also: `drush topic docs-strict-options`");
 }
 
 function _drush_core_is_named_in_array($key, $the_array) {
