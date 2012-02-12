@@ -2,77 +2,107 @@
 
 /**
   * pm-download testing
-  */  
+  */
 class pmDownloadCase extends Drush_TestCase {
   public function testPmDownload() {
-    $this->drush('pm-download', array('devel'));
+    $this->drush('pm-download', array('devel'), array('cache' => NULL, 'skip' => NULL)); // No FirePHP
     $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');
   }
 
-  /*
-   * Parse Drupal version and release from command argument.
-   *
-   * --dev option bypasses the logic tested here.
-   * 
-   * @see pm_parse_project_version().
-   */ 
-  public function testVersionString() {
-    $eval = 'print json_encode(pm_parse_project_version(array("devel-6.x-1.18")));';
-    $this->drush('php-eval', array($eval));
-    $request_data = json_decode($this->getOutput());
-    $this->assertObjectHasAttribute('devel', $request_data);
-    $this->assertEquals($request_data->devel->drupal_version, '6.x');
-    $this->assertEquals($request_data->devel->project_version, '1.18');
-  }
-
-  /*
-   * Pick right release from the XML (dev, latest published+recommended, ...).
-   */ 
-  public function testReleaseXML() {
-    // Use a local, static XML file because live files change over time.
-    $xml = dirname(__FILE__). '/devel.xml';
-    
-    // Pick specific release.
-    $request_data = array(
-      'name' => 'devel',
-      'drupal_version' => '6.x',
-      'project_version' => '1.18',
-      'version' => '6.x-1.18',
-    );
-    // Build an $eval string for use with php-eval in a subprocess.
-    $eval = '$request_data = ' . var_export($request_data, TRUE) . ";\n";
-    $eval .= '$release = pm_parse_release($request_data, simplexml_load_file(\'' . $xml . "'));\n";
-    $eval .= 'print json_encode($release);';
-    $this->drush('php-eval', array($eval));
-    $release = json_decode($this->getOutput());
-    $this->assertEquals($release->version, '6.x-1.18');
-    
-    // Pick latest recommended+published with no further specification.
-    // 6.x-2.2 is skipped because it is unpublished.
-    // 6.x-2.2-rc1 is skipped because it is not a stable release.
-    // Remove unwanted $request_data items.
-    $eval = str_replace(array("'project_version' => '1.18',\n", "'version' => '6.x-1.18',\n"), NULL, $eval);
-    $this->drush('php-eval', array($eval));
-    $release = json_decode($this->getOutput());
-    $this->assertEquals($release->version, '6.x-2.1');
-  }
-  
   // @todo Test pure drush commandfile projects. They get special destination.
   public function testDestination() {
-    // Setup first Drupal site. Skip install for speed.
+    // Setup two Drupal sites. Skip install for speed.
     $this->setUpDrupal('dev', FALSE);
+    $uri = 'dev';
     $root = $this->sites['dev']['root'];
 
-    // Default to sites/all
-    $this->drush('pm-download', array('devel'), array('root' => $root));
+    // Common options for the invocations below.
+    $devel_options = array(
+      'cache' => NULL,
+      'skip' => NULL, // No FirePHP
+      'invoke' => NULL, // Invoke from script: do not verify options
+    );
+
+    // Default to sites/all.
+    $options = array(
+      'root' => $root,
+      'uri' => $uri,
+    ) + $devel_options;
+    $this->drush('pm-download', array('devel'), $options);
     $this->assertFileExists($root . '/sites/all/modules/devel/README.txt');
 
+    //  --use-site-dir
+    // Expand above $options.
+    $options += array('use-site-dir' => NULL);
+    $this->drush('pm-download', array('devel'), $options);
+    $this->assertFileExists("$root/sites/$uri/modules/devel/README.txt");
+    unish_file_delete_recursive("$root/sites/$uri/modules/devel");
+
     // If we are in site specific dir, then download belongs there.
-    // Setup a second site. Skip install for speed.
-    $this->setUpDrupal('stage', FALSE);
-    $path_stage = "$root/sites/stage";
-    mkdir("$path_stage/modules");
-    $this->drush('pm-download', array('devel'), array(), NULL, $path_stage);
+    $path_stage = "$root/sites/$uri";
+    // gets created by --use-site-dir above,
+    // mkdir("$path_stage/modules");
+    $options = $devel_options;
+    $this->drush('pm-download', array('devel'), $options, NULL, $path_stage);
     $this->assertFileExists($path_stage . '/modules/devel/README.txt');
+
+    // --destination with absolute path.
+    $destination = UNISH_SANDBOX . '/test-destination1';
+    mkdir($destination);
+    $options = array(
+      'destination' => $destination,
+    ) + $devel_options;
+    $this->drush('pm-download', array('devel'), $options);
+    $this->assertFileExists($destination . '/devel/README.txt');
+
+    // --destination with a relative path.
+    $destination = 'test-destination2';
+    mkdir(UNISH_SANDBOX . '/' . $destination);
+    $options = array(
+      'destination' => $destination,
+    ) + $devel_options;
+    $this->drush('pm-download', array('devel'), $options);
+    $this->assertFileExists(UNISH_SANDBOX . '/' . $destination . '/devel/README.txt');
+}
+
+  public function testSelect() {
+    $options = array(
+      'cache' => NULL,
+      'no' => NULL,
+      'select' => NULL,
+    );
+    // --select. Specify 6.x since that has so many releases.
+    $this->drush('pm-download', array('devel-6.x'), $options);
+    $items = $this->getOutputAsList();
+    $output = $this->getOutput();
+
+    // The maximums below are higher then they usually appear since --verbose can add one.
+    $this->assertLessThanOrEqual(8, count($items), '--select offerred no more than 3 options.');
+    $this->assertContains('dev', $output, 'Dev release was shown by --select.');
+
+    // --select --all. Specify 6.x since that has so many releases.
+    $this->drush('pm-download', array('devel-6.x'), $options + array('all' => NULL));
+    $items = $this->getOutputAsList();
+    $output = $this->getOutput();
+    $this->assertGreaterThanOrEqual(20, count($items), '--select --all offerred at least 16 options.');
+    $this->assertContains('6.x-1.5', $output, 'Assure that --all lists very old releases.');
+
+    // --select --dev. Specify 6.x since that has so many releases.
+    $this->drush('pm-download', array('devel-6.x'), $options + array('dev' => NULL));
+    $items = $this->getOutputAsList();
+    $output = $this->getOutput();
+    $this->assertLessThanOrEqual(6, count($items), '--select --dev expected to offer only one option.');
+    $this->assertContains('6.x-1.x-dev', $output, 'Assure that --dev lists the only dev release.');
+  }
+
+  public function testPackageHandler() {
+    $options = array(
+      'cache' => NULL,
+      'package-handler' => 'git_drupalorg',
+      'yes' => NULL,
+    );
+    $this->drush('pm-download', array('devel'), $options);
+    $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');
+    $this->assertFileExists(UNISH_SANDBOX . '/devel/.git');
   }
 }
