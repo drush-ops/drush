@@ -287,7 +287,7 @@ function drush_site_path($path = NULL) {
  */
 function drush_conf_path($server_uri, $require_settings = TRUE) {
   $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-  if(!isset($drupal_root) || !isset($server_uri)) {
+  if(empty($drupal_root) || empty($server_uri)) {
     return NULL;
   }
   $parsed_uri = parse_url($server_uri);
