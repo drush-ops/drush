@@ -83,12 +83,12 @@ function drush_pm_download() {
 
   // Get release history for each request and download the project.
   $source = drush_get_option('source', RELEASE_INFO_DEFAULT_URL);
-  $dev = drush_get_option('dev', FALSE);
+  $restrict_to = drush_get_option('dev', FALSE) ? 'dev' : '';
   $select = drush_get_option('select', 'auto');
   $all = drush_get_option('all', FALSE);
   foreach ($requests as $name => $request) {
     $request['status url'] = $source;
-    $release = release_info_fetch($request, $dev, $select, $all);
+    $release = release_info_fetch($request, $restrict_to, $select, $all);
     if ($release == FALSE) {
       continue;
     }

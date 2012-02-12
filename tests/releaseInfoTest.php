@@ -77,5 +77,11 @@ class releaseInfoCase extends Drush_UnitTestCase {
     $release = updatexml_parse_release($request_data, $xml);
     $this->assertEquals($release['version'], '6.x-1.x-dev');
 
+    // Test $restrict_to parameter.
+    $request_data['version'] = '6.x-1';
+    $release = updatexml_parse_release($request_data, $xml, 'version');
+    $this->assertEquals($release['version'], '6.x-1.23');
+    $release = updatexml_parse_release($request_data, $xml, 'dev');
+    $this->assertEquals($release['version'], '6.x-1.x-dev');
   }
 }
