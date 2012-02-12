@@ -236,7 +236,7 @@ class DrushMakeProject {
   function getTranslations($project_directory) {
     static $cache = array();
     $langcodes = $this->translations;
-    if ($langcodes && $this->version !== drush_get_option('drush-make-version-best') && in_array($this->type, array('core', 'module', 'profile', 'theme'), TRUE)) {
+    if ($langcodes && in_array($this->type, array('core', 'module', 'profile', 'theme'), TRUE)) {
       // Support the l10n_path, l10n_url keys from l10n_update. Note that the
       // l10n_server key is not supported.
       if (isset($this->l10n_path)) {
