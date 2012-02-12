@@ -259,7 +259,7 @@ function lsd() {
   fi
 }
 
-# Copy from or two @site or @site:%files, etc; local sites only.
+# Copy files from or to @site or @site:%files, etc; local sites only.
 function cpd() {
   p=()
   for a in "$@" ; do
