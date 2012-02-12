@@ -937,6 +937,28 @@ function drush_sql_empty_db($db_spec = NULL) {
   return TRUE;
 }
 
+/**
+ * Return a db_spec based on supplied db_url/db_prefix options or an existing
+ * settings.php.
+ */
+function drush_sql_read_db_spec() {
+  if ($db_url = drush_get_option('db-url')) {
+    // We were passed a db_url. Usually a fresh site.
+    $db_spec = drush_convert_db_from_db_url($db_url);
+    $db_spec['db_prefix'] = drush_get_option('db-prefix');
+    return $db_spec;
+  }
+  elseif (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+    // We have an existing settings.php.
+    $db_spec = _drush_sql_get_db_spec();
+    $db_spec['db_prefix'] = $GLOBALS['db_prefix'];
+    return $db_spec;
+  }
+  else {
+    return FALSE;
+  }
+}
+
 /*
  * Build DB connection array with superuser credentials if provided.
  */
