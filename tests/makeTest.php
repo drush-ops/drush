@@ -26,8 +26,8 @@ class makeMakefileCase extends Drush_CommandTestCase {
 
     // Check the log for the build hash if this test should pass.
     if (empty($config['fail'])) {
-      $output = $this->getOutputAsList();
-      $this->assertTrue(in_array($config['md5'], $output), $config['name'] . ' - build md5 matches expected value: ' . $config['md5']);
+      $output = $this->getOutput();
+      $this->assertContains($config['md5'], $output, $config['name'] . ' - build md5 matches expected value: ' . $config['md5']);
     }
   }
 
