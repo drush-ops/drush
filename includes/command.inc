@@ -716,7 +716,7 @@ function drush_command_translate(&$command) {
  *   String or array.
  */
 function _drush_command_translate($source) {
-  return is_array($source)?call_user_func_array('dt', $source):dt($source);
+  return is_array($source) ? call_user_func_array('dt', $source) : dt($source);
 }
 
 /**
