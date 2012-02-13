@@ -118,13 +118,6 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'md5' => '4bf18507da89bed601548210c22a3bed',
         'options'  => array('no-core' => NULL),
       ),
-      'post' => array(
-        'name'     => 'Test POST retrieval of projects',
-        'makefile' => 'post.make',
-        'build'    => TRUE,
-        'md5' => '6a50624cbd65cc69011ae6c089ce298a',
-        'options'  => array('no-core' => NULL),
-      ),
       'git' => array(
         'name'     => 'GIT integration',
         'makefile' => 'git.make',
