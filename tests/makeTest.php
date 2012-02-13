@@ -109,6 +109,33 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('ignore-checksums');
   }
 
+  /**
+   * Test .info file writing for git downloads.
+   */
+  function testInfoFileWritingGit() {
+    // Use the git-simple.make file.
+    $config = $this->getMakefile('git-simple');
+
+    $makefile_path = dirname(__FILE__) . '/makefiles';
+    $options = array('no-core' => NULL);
+    $makefile = $makefile_path . '/' . $config['makefile'];
+    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
+
+    // Test cck_signup.info file.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
+    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
+    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains('version = "2fe932c"', $contents);
+    $this->assertContains('project = "cck_signup"', $contents);
+
+    // Test context_admin.info file.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
+    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
+    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains('version = "eb9f05e"', $contents);
+    $this->assertContains('project = "context_admin"', $contents);
+  }
+
   function getMakefile($key) {
     static $tests = array(
       'get' => array(
