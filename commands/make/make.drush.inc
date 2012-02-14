@@ -506,12 +506,8 @@ function make_prepare_request($project, $type = 'contrib') {
  * @see make_projects()
  */
 function make_project_needs_release_info($project) {
-  $use_release_info = FALSE;
-
   return $project['location'] == RELEASE_INFO_DEFAULT_URL
     // Only fetch release info if the project type is unknown OR if
     // download attributes are unspecified.
     && (!isset($project['type']) || !isset($project['download']));
-
-  return $use_release_info;
 }
