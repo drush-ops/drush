@@ -308,7 +308,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
 
   foreach ($projects as $type => $type_projects) {
     foreach ($type_projects as $project) {
-      if ($project['location'] == RELEASE_INFO_DEFAULT_URL && (!isset($project['type']) || !isset($project['download']))) {
+      if (make_project_needs_release_info($project)) {
         // For convenience: define $request to be compatible with release_info engine.
         // TODO: refactor to enforce 'make' to internally work with release_info keys.
         $request = make_prepare_request($project, $type);
@@ -490,4 +490,28 @@ function make_prepare_request($project, $type = 'contrib') {
     $request['version'] = $type == 'core' ? $project['version'] : $project['core'] . '-' . $project['version'];
   }
   return $request;
+}
+
+/**
+ * Determine if the release information is required for this
+ * project. When it is determined that it is, this potentially results
+ * in the use of pm-download to process the project.
+ *
+ * If the location of the project is not customized (uses d.o), and
+ * one of the following is true, then release information is required:
+ *
+ * - $project['type'] has not been specified
+ * - $project['download'] has not been specified
+ *
+ * @see make_projects()
+ */
+function make_project_needs_release_info($project) {
+  $use_release_info = FALSE;
+
+  return $project['location'] == RELEASE_INFO_DEFAULT_URL
+    // Only fetch release info if the project type is unknown OR if
+    // download attributes are unspecified.
+    && (!isset($project['type']) || !isset($project['download']));
+
+  return $use_release_info;
 }
