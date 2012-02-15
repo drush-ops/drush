@@ -893,22 +893,8 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
   $project_list = implode(',', $project_array);
 
   if (!empty($project_array)) {
-    // Optimization:  if we're already bootstrapped to the
-    // site specified by $alias_record, then we can just
-    // call _core_site_status_table() rather than use backend invoke.
-    if (drush_sitealias_is_bootstrapped_site($alias_record)) {
-      // Make sure that we are bootstrapped at least to the 'site'
-      // level, and include file.inc to insure that we have access
-      // to the %file path.
-      if (drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
-        include_once DRUSH_DRUPAL_CORE . '/includes/file.inc';
-      }
-      $status_values = _core_site_status_table($project_list);
-    }
-    else {
-      $values = drush_invoke_process($alias_record, "status", array(), empty($project_list) ? array() : array('project' => $project_list), array('integrate' => FALSE, 'override-simulated' => TRUE));
-      $status_values = $values['object'];
-    }
+    $values = drush_invoke_process($alias_record, "status", array(), empty($project_list) ? array() : array('project' => $project_list), array('integrate' => FALSE, 'override-simulated' => TRUE));
+    $status_values = $values['object'];
     if (isset($status_values['%paths'])) {
       foreach ($status_values['%paths'] as $key => $path) {
         $alias_record['path-aliases'][$key] = $path;

@@ -5,6 +5,27 @@
  *   Tests for core commands.
  */
 class coreCase extends Drush_CommandTestCase {
+  /**
+   * Test to see if rsync @site:%files calculates the %files path correctly.
+   */
+  function testRsyncPercentFiles() {
+    $this->setUpDrupal(1, TRUE);
+    $root = $this->webroot();
+    $site = key($this->sites);
+    $options = array(
+      'root' => $root,
+      'uri' => key($this->sites),
+      'simulate' => NULL,
+      'include-conf' => NULL,
+      'include-vcs' => NULL,
+      'yes' => NULL,
+      'invoke' => NULL, // invoke from script: do not verify options
+    );
+    $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options);
+    $output = $this->getOutput();
+    $expected = "Calling system(rsync -e 'ssh ' -akz --yes --invoke /tmp/drush-sandbox/web/sites/dev/files /tmp);";
+    $this->assertEquals($expected, $output);
+  }
 
   /*
    * Test standalone php-script scripts. Assure that script args and options work.
