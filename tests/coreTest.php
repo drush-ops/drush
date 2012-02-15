@@ -7,6 +7,7 @@
 class coreCase extends Drush_CommandTestCase {
   /**
    * Test to see if rsync @site:%files calculates the %files path correctly.
+   * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
    */
   function testRsyncPercentFiles() {
     $this->setUpDrupal(1, TRUE);
@@ -24,6 +25,30 @@ class coreCase extends Drush_CommandTestCase {
     $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options);
     $output = $this->getOutput();
     $expected = "Calling system(rsync -e 'ssh ' -akz --yes --invoke /tmp/drush-sandbox/web/sites/dev/files /tmp);";
+    $this->assertEquals($expected, $output);
+  }
+
+  /**
+   * Test to see if the optimized code path in drush_sitealias_resolve_path_references
+   * that avoids a call to backend invoke when evaluating %files works.
+   */
+  function testPercentFilesOptimization() {
+    $this->setUpDrupal(1, TRUE);
+    $root = $this->webroot();
+    $site = key($this->sites);
+    $options = array(
+      'root' => $root,
+      'uri' => key($this->sites),
+      'simulate' => NULL,
+      'include-conf' => NULL,
+      'include-vcs' => NULL,
+      'yes' => NULL,
+      'invoke' => NULL, // invoke from script: do not verify options
+    );
+    $php = '$a=drush_sitealias_get_record("@' . $site . '"); drush_sitealias_resolve_path_references($a, "%files"); print_r($a["path-aliases"]["%files"]);';
+    $this->drush('ev', array($php), $options);
+    $output = $this->getOutput();
+    $expected = "sites/dev/files";
     $this->assertEquals($expected, $output);
   }
 
