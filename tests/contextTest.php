@@ -93,6 +93,7 @@ EOD;
     $this->drush('core-status', array('Drush configuration'), $options);
     $output = trim($this->getOutput());
     $loaded = explode(' ', $output);
+    $loaded = array_map(array(&$this, 'convert_path'), $loaded);
     $this->assertSame($this->written, $loaded);
   }
 
