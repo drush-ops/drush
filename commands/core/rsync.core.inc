@@ -172,6 +172,7 @@ function _drush_build_rsync_options($additional_options, $include_settings_is_de
   // Check if the user has set $options['rsync-version'] to enable rsync legacy version support.
   // Drush was written for rsync 2.6.9 or later, so assume that version if nothing was explicitly set.
   $rsync_version = drush_get_option(array('rsync-version','source-rsync-version','target-rsync-version'), '2.6.9');
+  $options_to_exclude = array('ssh-options');
   foreach ($additional_options as $test_option => $value) {
     // Downgrade some options for older versions of rsync
     if ($test_option == 'remove-source-files') {
@@ -183,7 +184,7 @@ function _drush_build_rsync_options($additional_options, $include_settings_is_de
         $test_option = 'remove-sent-files';
       }
     }
-    if ((isset($test_option)) && (isset($value)  && !is_array($value))) {
+    if ((isset($test_option)) && !in_array($test_option, $options_to_exclude) && (isset($value)  && !is_array($value))) {
       if ($value === TRUE) {
         $options .= " --$test_option";
       }
