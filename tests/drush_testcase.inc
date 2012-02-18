@@ -88,6 +88,20 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
 
     return $path;
   }
+  
+  /*
+   *Borrowed from Drush.
+   * Checks operating system and returns
+   * supported bit bucket folder.
+   */
+  function bit_bucket() {
+    if (!$this->is_windows()) {
+      return '/dev/null';
+    }
+    else {
+      return 'nul';
+    }
+  }
 
   public static function escapeshellarg($arg) {
     // Short-circuit escaping for simple params (keep stuff readable)

@@ -23,10 +23,10 @@ class backendCase extends Drush_CommandTestCase {
    * General handling of site aliases will be in sitealiasTest.php.
    */
   function testOrigin() {
-    $exec = sprintf('%s %s version arg1 arg2 --simulate --ssh-options=%s 2>/dev/null | grep ssh', self::escapeshellarg(UNISH_DRUSH), self::escapeshellarg('user@server/path/to/drupal#sitename'), self::escapeshellarg('-i mysite_dsa'));
+    $exec = sprintf('%s %s version arg1 arg2 --simulate --ssh-options=%s | grep ssh', UNISH_DRUSH, self::escapeshellarg('user@server/path/to/drupal#sitename'), self::escapeshellarg('-i mysite_dsa'));
     $this->execute($exec);
-    // $expected might be different on non unix platforms. We shall see.
-    $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server 'drush  --simulate --uri=sitename --root=/path/to/drupal version arg1 arg2 --invoke 2>&1' 2>&1";
+    $bash = $this->escapeshellarg('drush  --simulate --uri=sitename --root=/path/to/drupal version arg1 arg2 --invoke 2>&1');
+    $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash 2>&1";
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected ssh command was built');
   }
@@ -40,7 +40,7 @@ class backendCase extends Drush_CommandTestCase {
   */
   function testTarget() {
     $stdin = json_encode(array('filter'=>'sql'));
-    $exec = sprintf('echo %s | %s help --backend 2>/dev/null', self::escapeshellarg($stdin), self::escapeshellarg(UNISH_DRUSH));
+    $exec = sprintf('echo %s | %s version --backend', self::escapeshellarg($stdin), UNISH_DRUSH);
     $this->execute($exec);
     $parsed = parse_backend_output($this->getOutput());
     $this->assertTrue((bool) $parsed, 'Successfully parsed backend output');
@@ -49,12 +49,11 @@ class backendCase extends Drush_CommandTestCase {
     $this->assertArrayHasKey('object', $parsed);
     $this->assertEquals(self::EXIT_SUCCESS, $parsed['error_status']);
     // This assertion shows that `help` was called and that stdin options were respected.
-    $this->assertStringStartsWith('SQL commands', $parsed['output']);
+    $this->assertStringStartsWith('drush ', $parsed['output']);
     $this->assertEquals('Bootstrap to phase 0.', $parsed['log'][0]['message']);
 
     // Check error propogation by requesting an invalid command (missing Drupal site).
-    $exec = sprintf('%s core-cron --backend 2>/dev/null', self::escapeshellarg(UNISH_DRUSH));
-    $this->execute($exec, self::EXIT_ERROR);
+    $this->drush('core-cron', array(), array('backend' => NULL), NULL, NULL, self::EXIT_ERROR);
     $parsed = parse_backend_output($this->getOutput());
     $this->assertEquals(1, $parsed['error_status']);
     $this->assertArrayHasKey('DRUSH_NO_DRUPAL_ROOT', $parsed['error_log']);
@@ -67,7 +66,7 @@ class backendCase extends Drush_CommandTestCase {
    *   - Insures that the drush output appears before the backend output start marker (output is displayed in 'real time' as it is produced).
    */
   function testRealtimeOutput() {
-    $exec = sprintf('%s core-status --backend --nocolor 2>&1', self::escapeshellarg(UNISH_DRUSH));
+    $exec = sprintf('%s core-status --backend --nocolor 2>&1', UNISH_DRUSH);
     $this->execute($exec);
 
     $output = $this->getOutput();
