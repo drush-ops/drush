@@ -19,7 +19,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
         'pull' => '!git pull',
         'echosimple' => '!echo {{@target}}',
         'echotest' => '!echo {{@target}} {{%root}} {{%mypath}}',
-        'compound-command' => '!cd {{%sandbox}} && pwd && touch mytest && ls mytest',
+        'compound-command' => '!cd {{%sandbox}} && echo second',
       );
     ";
     file_put_contents(UNISH_SANDBOX . '/drushrc.php', trim($contents));
@@ -112,9 +112,9 @@ class shellAliasesCase extends Drush_CommandTestCase {
       'config' => UNISH_SANDBOX,
     );
     $this->drush('echosimple', array(), $options);
-    $expected = "@none";
+    $expected = $this->escapeshellarg('@none');
     $output = $this->getOutput();
-    $this->assertEquals($expected, $output, 'Expected echo test returned "@none"');
+    $this->assertEquals($expected, $output);
   }
   
   /*
@@ -137,9 +137,9 @@ class shellAliasesCase extends Drush_CommandTestCase {
       'alias-path' => UNISH_SANDBOX,
     );
     $this->drush('echotest', array(), $options, '@myalias');
-    $expected = "@myalias /path/to/drupal /srv/data/mypath";
+    $expected = $this->escapeshellarg('@myalias') . ' /path/to/drupal /srv/data/mypath';
     $output = $this->getOutput();
-    $this->assertEquals($expected, $output, 'Expected echo test returned "' . $expected . '"');
+    $this->assertEquals($expected, $output);
   }
   
   /*
@@ -151,28 +151,24 @@ class shellAliasesCase extends Drush_CommandTestCase {
       'alias-path' => UNISH_SANDBOX,
     );
     $this->drush('compound-command', array(), $options, '@myalias');
-    $expected = UNISH_SANDBOX . "\nmytest";
+    $expected = 'second';
     $output = $this->getOutput();
-    $this->assertEquals($expected, $output, 'Expected compound test returned "' . $expected . '"');
+    $this->assertEquals($expected, $output);
   }
 
   
   /*
-   * Test shell aliases with replacements and compound commands.
+   * Test shell aliases with multiple config files.
    */
   public function testShellAliasMultipleConfigFiles() {
     $options = array(
       'config' => UNISH_SANDBOX . "/b" . PATH_SEPARATOR . UNISH_SANDBOX,
       'alias-path' => UNISH_SANDBOX,
     );
-    $this->drush('compound-command', array(), $options, '@myalias');
-    $expected = UNISH_SANDBOX . "\nmytest";
-    $output = $this->getOutput();
-    $this->assertEquals($expected, $output, 'Expected compound test returned "' . $expected . '"');
     $this->drush('also', array(), $options);
     $expected = "alternate config file included too";
     $output = $this->getOutput();
-    $this->assertEquals($expected, $output, 'Expected also test returned "' . $expected . '"');
+    $this->assertEquals($expected, $output);
   }
 
 }
