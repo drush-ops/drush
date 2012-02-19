@@ -81,7 +81,9 @@ function _make_download_file($download) {
   drush_set_option('cache', $cache);
 
   $tmp_path = make_tmp();
-  $file = basename($download['url']);
+  // Ensure that we aren't including the querystring when generating a filename
+  // to save our download to.
+  $file = basename(reset(explode('?', $download['url'], 2)));
   return drush_download_file($download['url'], $tmp_path . '/' . $file);
 }
 

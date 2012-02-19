@@ -136,6 +136,10 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->assertContains('project = "context_admin"', $contents);
   }
 
+  function testMakeFileExtract() {
+    $this->runMakefileTest('file-extract');
+  }
+
   function getMakefile($key) {
     static $tests = array(
       'get' => array(
@@ -253,6 +257,13 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'build'    => TRUE,
         'md5' => 'f76ec174a775ce67f8e9edcb02336ef2',
         'options'  => array('no-core' => NULL, 'ignore-checksums' => NULL),
+      ),
+      'file-extract' => array(
+        'name'     => 'Extract archives',
+        'makefile' => 'file-extract.make',
+        'build'    => TRUE,
+        'md5' => '600fe82fba63b87c6d5de21c9e269a8a',
+        'options'  => array('no-core' => NULL),
       ),
     );
     return $tests[$key];
