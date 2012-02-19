@@ -97,6 +97,11 @@ class completeCase extends Drush_CommandTestCase {
     // Note: this is checked implicitly by the argument cache testing above.
     // Site alias + command + file/directory argument. This is a command
     // argument we have not used so far, so a cache miss is expected.
+    
+    if ($this->is_windows()) {
+      $this->markTestSkipped('Complete tests not fully working nor needed on Windows.');
+    }
+
     $this->verifyComplete('archive-restore aard', 'aard wolf.tar.gz', 'aardvark/', FALSE);
     // Site alias + command + file/directory argument with quoting.
     $this->verifyComplete('archive-restore aard\ w', 'aard\ wolf.tar.gz', 'aard\ wolf.tar.gz');
