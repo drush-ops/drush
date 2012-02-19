@@ -1094,12 +1094,11 @@ function drush_core_drupal_directory($target = 'root') {
   // any keys are -not- replaced in _drush_core_directory.
   if ($path && (strpos($path, '%') === FALSE)) {
     drush_print($path);
+    return $path;
   }
   else {
     return drush_set_error('DRUSH_TARGET_NOT_FOUND', dt("Target '!target' not found.", array('!target' => $target)));
   }
-
-  return TRUE;
 }
 
 /**
