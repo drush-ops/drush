@@ -1183,20 +1183,20 @@ function drush_sql_build_exec($db_spec, $filepath) {
       $exec = 'mysql';
       $exec .= _drush_sql_get_credentials($db_spec);
       $exec .= ' ' . drush_get_option('extra');
-      $exec .= " < $filepath";
+      $exec .= " < " . drush_escapeshellarg($filepath);
 
       break;
     case 'pgsql':
       $exec = 'psql -q ';
       $exec .= _drush_sql_get_credentials($db_spec);
       $exec .= ' ' . (drush_get_option('extra') ? drush_get_option('extra') : "--no-align --field-separator='\t' --pset footer=off");
-      $exec .= " --file $filepath";
+      $exec .= " --file " . drush_escapeshellarg($filepath);
       break;
     case 'sqlite':
       $exec = 'sqlite3';
       $exec .= ' ' . drush_get_option('extra');
       $exec .= _drush_sql_get_credentials($db_spec);
-      $exec .= " < $filepath";
+      $exec .= " < " . drush_escapeshellarg($filepath);
       break;
     case 'sqlsrv':
       $exec = 'sqlcmd';
@@ -1208,7 +1208,7 @@ function drush_sql_build_exec($db_spec, $filepath) {
       $exec = 'sqlplus';
       $exec .= ' ' . drush_get_option('extra');
       $exec .= _drush_sql_get_credentials($db_spec);
-      $exec .= " @$filepath";
+      $exec .= " @" . drush_escapeshellarg($filepath);
       break;
   }
   return $exec;

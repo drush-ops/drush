@@ -413,7 +413,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
           return FALSE;
         }
 
-        $import_exec = $pre_import_commands . $import_command . ' < ' . $target_dump;
+        $import_exec = $pre_import_commands . $import_command . ' < ' . drush_escapeshellarg($target_dump, $target_os);
         // Delete the remote target file if it is a temporary file.
         if (!drush_is_windows($target_os) && $destination_settings['dump-is-temp']) {
           $import_exec .= '; rm -f ' . drush_escapeshellarg($target_dump, $target_os);
@@ -421,7 +421,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         // TODO: make sure that the remote tmp file is deleted on remote Windows machines.
       }
       else {
-        $import_exec = $pre_import_commands . $import_command . ' < ' . $local_file;
+        $import_exec = $pre_import_commands . $import_command . ' < ' . drush_escapeshellarg($local_file);
       }
       $import_exec = _drush_backend_generate_command($destination_settings, $import_exec);
 
