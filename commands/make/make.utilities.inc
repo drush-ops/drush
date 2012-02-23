@@ -296,6 +296,9 @@ function make_tmp($set = TRUE, $directory = NULL) {
     else {
       $tmp_dir .= '/make_tmp_' . time() . '_' . uniqid();
     }
+    if (!drush_get_option('no-clean', FALSE)) {
+      drush_register_file_for_deletion($tmp_dir);
+    }
     if (file_exists($tmp_dir)) {
       return make_tmp(TRUE);
     }
