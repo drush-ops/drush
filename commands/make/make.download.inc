@@ -96,6 +96,22 @@ function _make_download_file($download) {
 function make_download_file_unpack($filename, $download_location, $name) {
   $extension = array_pop(explode('.', $filename));
   $success = FALSE;
+
+  // In order to support packed files without extensions or with non-extensions
+  // (period in the name, like "v1.2"), check the MIME type before assuming it's
+  // not a packed file. See http://drupal.org/node/1447558.
+  if (!$extension || !in_array($extension, array('gz', 'tgz', 'tar', 'zip'))) {
+    $mime_map = array(
+      'application/x-tar' => 'tar',
+      'application/x-gzip' => 'gz',
+      'application/zip' => 'zip',
+    );
+    $mime_type = mime_content_type($filename);
+    if (isset($mime_map[$mime_type])) {
+      $extension = $mime_map[$mime_type];
+    }
+  }
+
   switch ($extension) {
     case 'gz':
     case 'tgz':
