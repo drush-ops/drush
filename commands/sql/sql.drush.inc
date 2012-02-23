@@ -1169,7 +1169,7 @@ function drush_sql_db_exists($db_spec) {
     case 'sqlsrv':
       // TODO: untested, but the gist is here.
       $sql = "if db_id('$database') IS NOT NULL print 1";
-      drush_shell_exec("$connect_no_db -q \"$sql\"");
+      drush_shell_exec("$connect_no_db -Q \"$sql\"");
       $output = drush_shell_exec_output();
       return $output[0] == 1;
   }
