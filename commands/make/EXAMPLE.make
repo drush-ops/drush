@@ -48,7 +48,7 @@ projects[] = drupal
 
 ; To include the most recent views module:
 
-projects[] = views	
+projects[] = views
 
 ; This will, by default, retrieve the latest recommended version of the project
 ; using its update XML feed on Drupal.org. If any of those defaults are not
@@ -57,7 +57,7 @@ projects[] = views
 
 ; If you want to retrieve a specific version of a project:
 
-projects[views] = 2.16
+; projects[views] = 2.16
 
 ; Or an alternative, extended syntax:
 
