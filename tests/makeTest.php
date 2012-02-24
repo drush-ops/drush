@@ -110,7 +110,8 @@ class makeMakefileCase extends Drush_CommandTestCase {
   }
 
   /**
-   * Test .info file writing for git downloads.
+   * Test .info file writing and the use of a git reference cache for
+   * git downloads.
    */
   function testInfoFileWritingGit() {
     // Use the git-simple.make file.
@@ -128,12 +129,19 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->assertContains('version = "2fe932c"', $contents);
     $this->assertContains('project = "cck_signup"', $contents);
 
+    // Verify that a reference cache was created.
+    $cache_dir = UNISH_SANDBOX . '/home/.drush/cache';
+    $this->assertFileExists($cache_dir . '/git/cck_signup-' . md5('git://git.drupal.org/project/cck_signup.git'));
+
     // Test context_admin.info file.
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
     $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
     $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
     $this->assertContains('version = "eb9f05e"', $contents);
     $this->assertContains('project = "context_admin"', $contents);
+
+    // Verify git reference cache exists.
+    $this->assertFileExists($cache_dir . '/git/context_admin-' . md5('git://git.drupal.org/project/context_admin.git'));
   }
 
   function testMakeFileExtract() {

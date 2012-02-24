@@ -247,19 +247,51 @@ function make_download_get($name, $download, $download_location) {
 function make_download_git($name, $download, $download_location) {
   $tmp_path = make_tmp();
   $wc = drush_get_option('working-copy');
-
   // If no download URL specified, assume anonymous clone from git.drupal.org.
   $download['url'] = isset($download['url']) ? $download['url'] : "git://git.drupal.org/project/$name.git";
   // If no working-copy download URL specified, assume it is the same.
   $download['wc_url'] = isset($download['wc_url']) ? $download['wc_url'] : $download['url'];
+
+  // If not a working copy, and if --no-cache has not been explicitly
+  // declared, create a new git reference cache of the remote repository,
+  // or update the existing cache to fetch recent changes.
+  // @see package_handler_download_project()
+  $cache = !$wc && !drush_get_option('no-cache', FALSE);
+  if ($cache && ($cachedir = drush_directory_cache())) {
+    $git_cache = $cachedir . '/git';
+    $project_cache = $git_cache . '/' . $name . '-' . md5($download['url']);
+    drush_mkdir($git_cache);
+    // Set up a new cache, if it doesn't exist.
+    if (!file_exists($project_cache)) {
+      $command = 'git clone --mirror';
+      if (drush_get_context('DRUSH_VERBOSE')) {
+        $command .= ' --verbose --progress';
+      }
+      $command .= ' %s %s';
+      drush_shell_cd_and_exec($git_cache, $command, $download['url'], $project_cache);
+    }
+    else {
+      // Update the --mirror clone.
+      drush_shell_cd_and_exec($project_cache, 'git remote update');
+    }
+    $git_cache = $project_cache;
+  }
 
   // Use working-copy download URL if --working-copy specified.
   $url = $wc ? $download['wc_url'] : $download['url'];
 
   $tmp_location = drush_tempdir() . '/' . basename($download_location);
 
+  $command = 'git clone %s %s';
+  if (drush_get_context('DRUSH_VERBOSE')) {
+    $command .= ' --verbose --progress';
+  }
+  if ($cache) {
+    $command .= ' --reference ' . drush_escapeshellarg($git_cache);
+  }
+
   // Before we can checkout anything, we need to clone the repository.
-  if (!drush_shell_exec("git clone %s %s", $url, $tmp_location)) {
+  if (!drush_shell_exec($command, $url, $tmp_location)) {
     make_error('DOWNLOAD_ERROR', dt('Unable to clone @project from @url.', array('@project' => $name, '@url' => $url)));
     return FALSE;
   }
