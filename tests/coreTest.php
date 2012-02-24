@@ -24,7 +24,9 @@ class coreCase extends Drush_CommandTestCase {
     );
     $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options);
     $output = $this->getOutput();
-    $expected = sprintf("Calling system(rsync -e 'ssh ' -akz --yes --invoke %s /tmp);", UNISH_SANDBOX . "/web/sites/$site/files");
+    $level = $this->log_level();
+    $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress --yes --invoke %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz --yes --invoke %s /tmp);";
+    $expected = sprintf($pattern, UNISH_SANDBOX . "/web/sites/$site/files");
     $this->assertEquals($expected, $output);
   }
 
