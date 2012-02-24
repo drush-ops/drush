@@ -23,3 +23,9 @@ projects[os_lightbox][type] = "module"
 projects[os_lightbox][download][type] = "git"
 projects[os_lightbox][download][url] = "git@github.com:opensourcery/os_lightbox.git"
 projects[os_lightbox][download][revision] = "8d60090f2"
+
+; Test a refspec fetch.
+projects[storypal][type] = module
+projects[storypal][download][type] = git
+projects[storypal][download][url] = http://git.drupal.org/project/storypal.git
+projects[storypal][download][refspec] = refs/tags/7.x-1.0

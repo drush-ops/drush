@@ -207,6 +207,10 @@ Do not use both types of declarations for a single project in your makefile.
 
   projects[context_admin][download][revision] = "eb9f05e"
 
+  `refspec` - the git reference to fetch and checkout. Optional.
+
+     If this is set, it will have priority over tag, revision and branch options.
+
 - `download[type] = svn`
 
   Use an SVN repository as the source for this project. Options:

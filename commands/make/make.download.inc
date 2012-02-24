@@ -302,9 +302,22 @@ function make_download_git($name, $download, $download_location) {
   // Change into the working copy of the cloned repo.
   chdir($tmp_location);
 
-  // Now that we've got a clone, we can checkout what the .make file says.
-  // We want to use the most specific target possible, so first try a tag.
-  if (!empty($download['tag'])) {
+  // We want to use the most specific target possible, so first try a refspec.
+  if (!empty($download['refspec'])) {
+    if (drush_shell_exec("git fetch %s %s", $url, $download['refspec'])) {
+      drush_log(dt("Fetched refspec %refspec.", array('%refspec' => $download['refspec'])), 'ok');
+
+      if (drush_shell_exec("git checkout FETCH_HEAD")) {
+        drush_log(dt("Checked out FETCH_HEAD."), 'info');
+      }
+    }
+    else {
+      make_error('DOWNLOAD_ERROR', dt("Unable to fetch the refspec @refspec from @project.", array('@refspec' => $download['refspec'], '@project' => $name)));
+    }
+  }
+
+  // If there wasn't a refspec, try a tag.
+  elseif (!empty($download['tag'])) {
     // @TODO: change checkout to refs path
     if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
       drush_log(dt("Checked out tag @tag.", array('@tag' => $download['tag'])), 'ok');

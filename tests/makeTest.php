@@ -161,7 +161,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'GIT integration',
         'makefile' => 'git.make',
         'build'    => TRUE,
-        'md5' => '59a8e8f898e4f4d81349d3997498fee9',
+        'md5' => '4c80d78b50c89b5ba11a997bafec2b43',
         'options'  => array('no-core' => NULL, 'no-gitinfofile' => NULL),
       ),
       'git-simple' => array(
