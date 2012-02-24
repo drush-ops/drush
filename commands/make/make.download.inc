@@ -74,17 +74,16 @@ function _make_download_file($download) {
   }
 
   // Default to use cache.
-  $cache = drush_get_option('cache');
+  $cache_duration = 0;
   if (!drush_get_option('no-cache', FALSE)) {
-    drush_set_option('cache', TRUE);
+    $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT;
   }
-  drush_set_option('cache', $cache);
 
   $tmp_path = make_tmp();
   // Ensure that we aren't including the querystring when generating a filename
   // to save our download to.
   $file = basename(reset(explode('?', $download['url'], 2)));
-  return drush_download_file($download['url'], $tmp_path . '/' . $file);
+  return drush_download_file($download['url'], $tmp_path . '/' . $file, $cache_duration);
 }
 
 /**

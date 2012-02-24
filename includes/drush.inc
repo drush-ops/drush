@@ -31,6 +31,12 @@ define('DRUSH_APPLICATION_ERROR', 255);
 define('DRUSH_DRUPAL_KILOBYTE', 1024);
 
 /**
+ * Default amount of time, in seconds, to cache downloads via
+ * drush_download_file(). One day is 86400 seconds.
+ */
+define('DRUSH_CACHE_LIFETIME_DEFAULT', 86400);
+
+/**
  * Include a file, selecting a version specific file if available.
  *
  * For example, if you pass the path "/var/drush" and the name
