@@ -47,7 +47,8 @@ function make_download_pm($name, $download, $download_location) {
   // Perform actual download with `drush pm-download`.
   $return = drush_invoke_process('@none', 'pm-download', array($full_project_version), $options, $backend_options);
   if (empty($return['error_log'])) {
-    drush_log(dt('@project downloaded from @url', array('@project' => $full_project_version, '@url' => $download['download_link'])), 'ok');
+    // @todo Report the URL we used for download. See http://drupal.org/node/1452672.
+    drush_log(dt('@project downloaded.', array('@project' => $full_project_version)), 'ok');
   }
 }
 
