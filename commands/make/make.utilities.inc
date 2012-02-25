@@ -313,7 +313,7 @@ function make_clean_tmp() {
     return;
   }
   if (!drush_get_option('no-clean', FALSE)) {
-    drush_shell_exec('rm -rf %s', $tmp_dir);
+    drush_delete_dir($tmp_dir);
   }
   else {
     drush_log(dt('Temporary directory: %dir', array('%dir' => $tmp_dir)), 'ok');
