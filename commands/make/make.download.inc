@@ -26,6 +26,9 @@ function make_download_pm($name, $download, $download_location) {
     'destination' => dirname($download_location),
     'yes' => TRUE,
     'package-handler' => 'wget',
+    // This is only relevant for profiles, but we always want the variant to
+    // be 'profile-only' so we don't end up with extra copies of core.
+    'variant' => 'profile-only',
     'cache' => TRUE,
   );
   if ($name == 'drupal') {
