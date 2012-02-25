@@ -4,7 +4,7 @@
  * Command validate.
  */
 function drush_core_site_install_validate() {
-  if ($sites_subdir = drush_get_option('sites-subdir', 'default')) {
+  if ($sites_subdir = drush_get_option('sites-subdir')) {
     $lower = strtolower($sites_subdir);
     if ($sites_subdir != $lower) {
       drush_log(dt('Only lowercase sites-subdir are valid. Switching to !lower.', array('!lower' => $lower)), 'warning');
