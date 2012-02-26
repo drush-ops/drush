@@ -177,9 +177,13 @@ class DrushMakeProject {
         }
 
         // In some rare cases, git will fail to apply a patch, fallback to using
-        // the 'patch -p0' command.
+        // the 'patch' command.
         if (!$patched) {
-          $patched = drush_shell_exec("patch -p0 -d %s < %s", $project_directory, $filename);
+          foreach ($patch_levels as $patch_level) {
+            if ($patched = drush_shell_exec("patch %s -d %s < %s", $patch_level, $project_directory, $filename)) {
+              break;
+            }
+          }
         }
 
         if ($output = drush_shell_exec_output()) {
