@@ -131,7 +131,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
 
     // Verify that a reference cache was created.
     $cache_dir = UNISH_TMP . '/drush-cache/cache';
-    $this->assertFileExists($cache_dir . '/git/cck_signup-' . md5('git://git.drupal.org/project/cck_signup.git'));
+    $this->assertFileExists($cache_dir . '/git/cck_signup-' . md5('http://git.drupal.org/project/cck_signup.git'));
 
     // Test context_admin.info file.
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
@@ -141,7 +141,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->assertContains('project = "context_admin"', $contents);
 
     // Verify git reference cache exists.
-    $this->assertFileExists($cache_dir . '/git/context_admin-' . md5('git://git.drupal.org/project/context_admin.git'));
+    $this->assertFileExists($cache_dir . '/git/context_admin-' . md5('http://git.drupal.org/project/context_admin.git'));
   }
 
   function testMakeFileExtract() {
