@@ -133,7 +133,7 @@ function make_download_file_unpack($filename, $download_location, $name) {
       if (drush_mkdir($download_location)) {
         // Now that the destination directory exists, we can now move the file.
         $destination = $download_location . ($name ? '/' . $name : '');
-        $success = drush_shell_exec('mv %s %s', $filename, $destination);
+        $success = drush_move_dir($filename, $destination);
       }
   }
   return $success ? $download_location : FALSE;
@@ -260,10 +260,8 @@ function make_download_git($name, $download, $download_location) {
   // or update the existing cache to fetch recent changes.
   // @see package_handler_download_project()
   $cache = !$wc && !drush_get_option('no-cache', FALSE);
-  if ($cache && ($cachedir = drush_directory_cache())) {
-    $git_cache = $cachedir . '/git';
+  if ($cache && ($git_cache = drush_directory_cache('git'))) {
     $project_cache = $git_cache . '/' . $name . '-' . md5($download['url']);
-    drush_mkdir($git_cache);
     // Set up a new cache, if it doesn't exist.
     if (!file_exists($project_cache)) {
       $command = 'git clone --mirror';
@@ -407,11 +405,11 @@ function make_download_git($name, $download, $download_location) {
 
   // Remove .git/ directory if working-copy flag was not specified.
   if (!$wc && file_exists($tmp_location . '/.git')) {
-    drush_shell_exec("rm -rf %s", $tmp_location . '/.git');
+    drush_delete_dir($tmp_location . '/.git', TRUE);
   }
 
   // Move the directory into the final resting location.
-  drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
+  drush_copy_dir($tmp_location, $download_location, TRUE);
 
   return dirname($tmp_location);
 }
@@ -450,7 +448,7 @@ function make_download_bzr($name, $download, $download_location) {
     array_unshift($args, $command);
     if (call_user_func_array('drush_shell_exec', $args)) {
       drush_log(dt('@project downloaded from @url.', array('@project' => $name, '@url' => $download['url'])), 'ok');
-      drush_shell_exec('cp -Rf %s %s', $tmp_location, dirname($download_location));
+      drush_copy_dir($tmp_location, $download_location, TRUE);
       return dirname($download_location);
     }
   }
@@ -458,7 +456,7 @@ function make_download_bzr($name, $download, $download_location) {
     $download['url'] = dt("unspecified location");
   }
   make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @url.', array('@project' => $name, '@url' => $download['url'])));
-  drush_shell_exec('rm -rf %s', dirname($tmp_location));
+  drush_delete_dir(dirname($tmp_location), TRUE);
   return FALSE;
 }
 
