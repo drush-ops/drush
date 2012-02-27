@@ -21,7 +21,7 @@ projects[visitor][download][revision] = 5f256032cd4bcc2db45c962306d12c85131388ef
 ; Test a non-Drupal.org repository.
 projects[os_lightbox][type] = "module"
 projects[os_lightbox][download][type] = "git"
-projects[os_lightbox][download][url] = "git@github.com:opensourcery/os_lightbox.git"
+projects[os_lightbox][download][url] = "https://github.com/opensourcery/os_lightbox.git"
 projects[os_lightbox][download][revision] = "8d60090f2"
 
 ; Test a refspec fetch.
