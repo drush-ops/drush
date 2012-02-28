@@ -263,7 +263,7 @@ function drush_backend_parse_output($string, $backend_options = array(), $output
  *    Whether output has already been handled.
  */
 function _drush_backend_integrate($data, $backend_options, $outputted) {
-  if (is_array($data['log']) && $backend_options['log'] && !$outputted) {
+  if (is_array($data['log']) && $backend_options['log']) {
     foreach($data['log'] as $log) {
       $message = is_array($log['message']) ? implode("\n", $log['message']) : $log['message'];
       if (isset($backend_options['#output-label'])) {

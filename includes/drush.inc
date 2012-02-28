@@ -1302,7 +1302,6 @@ function drush_backend_packet_log($entry, $backend_options) {
     $entry['message'] = implode("\n", (array)$entry['message']);
   }
   $log =& drush_get_context('DRUSH_LOG', array());
-  $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
   $log[] = $entry;
   // Yes, this looks odd, but we might in fact be a backend command
   // that ran another backend command.
@@ -1311,7 +1310,13 @@ function drush_backend_packet_log($entry, $backend_options) {
     $entry['message'] = $backend_options['#output-label'] . $entry['message'];
   }
 
-  return $callback($entry);
+  // If 'integrate' is true, then _drush_backend_integrate (called via 
+  // drush_backend_packet) will print the log message; if that is the case,
+  // then we do not need to print it again.
+  if (!$backend_options['integrate']) {
+    $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
+    return $callback($entry);
+  }
 }
 
 /**
