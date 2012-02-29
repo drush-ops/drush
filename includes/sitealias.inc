@@ -868,6 +868,27 @@ function drush_sitealias_is_bootstrapped_site($alias_record) {
 }
 
 /**
+ * Get the name of the current bootstrapped site
+ */
+function drush_sitealias_bootstrapped_site_name() {
+  $site_name = NULL;
+  $self_record = drush_sitealias_get_record('@self');
+  if (array_key_exists('#name', $self_record)) {
+    $site_name = $self_record['#name'];
+  }
+  if (!isset($site_name) || ($site_name == '@self')) {
+    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    if (isset($drupal_root)) {
+      $drupal_uri = drush_get_context('DRUSH_SELECTED_URI', 'default');
+      $drupal_uri = str_replace('http://', '', $drupal_uri);
+      // TODO: Maybe use _drush_sitealias_find_local_alias_name?
+      $site_name = $drupal_root . '#' . $drupal_uri;
+    }
+  }
+  return $site_name;
+}
+
+/**
  * If there are any path aliases (items beginning with "%") in the test
  * string, then resolve them as path aliases and add them to the provided
  * alias record.

@@ -77,14 +77,29 @@ function drush_cache_command_clear($type = NULL) {
 
   if ($type) {
     drush_op($types[$type]);
-    drush_log(dt("'!name' cache was cleared", array('!name' => $type)), 'success');
+    if ($type == 'all' && !drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+      $type = 'drush';
+    }
   }
   else {
-    $choice = drush_choice($types, 'Enter a number to choose which cache to clear.', '!key');
-    if ($choice !== FALSE) {
-      call_user_func($types[$choice]);
-      drush_log(dt("'!name' cache was cleared", array('!name' => $choice)), 'success');
+    // Don't offer 'all' unless Drush has bootstrapped the Drupal site
+    if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+      unset($types['all']);
     }
+    $type = drush_choice($types, 'Enter a number to choose which cache to clear.', '!key');
+    if ($type !== FALSE) {
+      call_user_func($types[$type]);
+    }
+  }
+  if ($type !== FALSE) {
+    $site_label = '';
+    if ($type != 'drush') {
+      $self_name = drush_sitealias_bootstrapped_site_name();
+      if (isset($self_name)) {
+        $site_label = dt(' in !name', array('!name' => $self_name));
+      }
+    }
+    drush_log(dt("'!name' cache was cleared!insitename", array('!name' => $type, '!insitename' => $site_label)), 'success');
   }
 }
 
