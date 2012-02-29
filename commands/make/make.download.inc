@@ -91,40 +91,79 @@ function _make_download_file($download) {
 }
 
 /**
+ * Determines the MIME content type of the specified file. The power of this
+ * function depends on whether the PHP installation has either
+ * mime_content_type() or finfo installed -- if not, only tar, gz, and zip types
+ * can be detected, and other file types will return 'unknown'.
+ *
+ * @return
+ *   The MIME content type of the file, 'unknown', or FALSE on error.
+ */
+function drush_mime_content_type($filename) {
+  // tar files have no magic value, so we can detect them only by filename.
+  if (strrpos($filename, '.tar') === (strlen($filename) - 4)) {
+    return 'application/x-tar';
+  }
+
+  // mime_content_type() and the finfo class are not available everywhere.
+  if (function_exists('mime_content_type')) {
+    return mime_content_type($filename);
+  }
+  elseif (class_exists('finfo')) {
+    $finfo = new finfo(FILEINFO_MIME);
+    // We only want the first part, before the ;
+    $type = explode(';', $finfo->file($filename));
+    return $type[0];
+  }
+  elseif ($file = fopen($filename, 'rb')) {
+    // If PHP's built-ins aren't present, we'll detect (a few select) mime
+    // types on our own by examing the file's magic header bytes.
+    $first = fread($file, 2);
+    fclose($file);
+
+    if ($first === FALSE) {
+      return FALSE;
+    }
+
+    // Interpret the two bytes as a little endian 16-bit unsigned int.
+    $data = unpack('v', $first);
+    switch ($data[1]) {
+      // First two bytes of gzip files are 0x1f, 0x8b.
+      // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer.
+      case 0x8b1f:
+        return 'application/x-gzip';
+
+      // First two bytes of zip files are 0x50, 0x4b ('PK').
+      // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers.
+      case 0x4b50:
+        return 'application/zip';
+
+      // Not a file type we can detect.
+      default:
+        return 'unknown';
+    }
+  }
+  return FALSE;
+}
+
+/**
  * Unpacks a file to the specified download location.
  *
  * @return
  *   The download location on success, FALSE on failure.
  */
 function make_download_file_unpack($filename, $download_location, $name) {
-  $extension = array_pop(explode('.', $filename));
   $success = FALSE;
 
-  // In order to support packed files without extensions or with non-extensions
-  // (period in the name, like "v1.2"), check the MIME type before assuming it's
-  // not a packed file. See http://drupal.org/node/1447558.
-  if (!$extension || !in_array($extension, array('gz', 'tgz', 'tar', 'zip'))) {
-    $mime_map = array(
-      'application/x-tar' => 'tar',
-      'application/x-gzip' => 'gz',
-      'application/zip' => 'zip',
-    );
-    $mime_type = mime_content_type($filename);
-    if (isset($mime_map[$mime_type])) {
-      $extension = $mime_map[$mime_type];
-    }
-  }
-
-  switch ($extension) {
-    case 'gz':
-    case 'tgz':
+  switch (drush_mime_content_type($filename)) {
+    case 'application/x-gzip':
       // I'd like to just use tar -z, but apparently it breaks on windoze. Why do they always have to ruin everything?
       $success = make_download_file_unpack_gzip($filename, $download_location);
       break;
-    case 'tar':
+    case 'application/x-tar':
       $success = make_download_file_unpack_tar($filename, $download_location);
       break;
-    case 'zip':
+    case 'application/zip':
       $success = make_download_file_unpack_zip($filename, $download_location);
       break;
     default:
