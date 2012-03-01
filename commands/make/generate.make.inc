@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Functions for the generate makefile command.
+ */
 
 include_once 'includes/install.inc';
 include_once drupal_get_path('module', 'system') . '/system.install';
@@ -11,7 +15,7 @@ function drush_make_generate($file = NULL) {
   $all_extensions = drush_get_extensions();
   $projects = _drush_make_generate_projects($all_extensions, $version_options);
   $contents = _drush_make_generate_makefile_contents($projects);
-  
+
   if (!$file) {
     drush_print($contents);
   }
@@ -24,13 +28,13 @@ function drush_make_generate($file = NULL) {
 }
 
 /**
- * Create the $version_options array from the --include-versions and --exclude-versions
- * command line options.
+ * Create the $version_options array from the --include-versions and
+ * --exclude-versions command line options.
  */
 function _drush_make_generate_get_version_options() {
   // What projects should we pin the versions for?
-  // Check the command-line options for details
-  foreach(array("include", "exclude") as $option) {
+  // Check the command-line options for details.
+  foreach (array("include", "exclude") as $option) {
     $version_options[$option] = drush_get_option("$option-versions");
     if ($version_options[$option] !== TRUE) {
       $version_options[$option] = array_filter(explode(",", $version_options[$option]));
@@ -46,18 +50,18 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
   $projects = array();
 
   $system_requirements = system_requirements('runtime');
-  // update xml expects the drupal version to be expressed as "7.x" or "8.x"
+  // Update xml expects the drupal version to be expressed as "7.x" or "8.x"
   // We used to check $system_requirements['drupal']['value'], but this now
   // contains values such as "7.10-dev".
   $drupal_major_version = drush_drupal_major_version() . '.x';
-  $core_project = strtolower($system_requirements['drupal']['title']); 
+  $core_project = strtolower($system_requirements['drupal']['title']);
   $projects[$core_project] = array('_type' => 'core');
   if ($core_project != 'drupal') {
     $projects[$core_project]['custom_download'] = TRUE;
     $projects[$core_project]['type'] = 'core';
   }
   else {
-    // Drupal core - we can determine the version if required
+    // Drupal core - we can determine the version if required.
     if (_drush_generate_track_version("drupal", $version_options)) {
       $projects[$core_project]["version"] = $drupal_major_version;
     }
@@ -66,8 +70,8 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
   // Non-default profiles section.
   $install_profile = variable_get('install_profile', '');
   if (!in_array($install_profile, array('default', 'standard', 'minimal')) && $install_profile != '') {
-    $projects[$install_profile]['type'] =
-    $projects[$install_profile]['_type'] = 'profile';
+    $projects[$install_profile]['type']
+      = $projects[$install_profile]['_type'] = 'profile';
     $request = array(
       'name' => $install_profile,
       'drupal_version' => $drupal_major_version,
@@ -114,7 +118,7 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
     $projects[$name] += _drush_generate_makefile_check_path($project);
     // Add version number if this project's version is to be tracked.
     if (_drush_generate_track_version($name, $version_options) && $project["version"]) {
-      $projects[$name]['version'] = preg_replace("/^". DRUPAL_CORE_COMPATIBILITY . "-/", "", $project["version"]);
+      $projects[$name]['version'] = preg_replace("/^" . DRUPAL_CORE_COMPATIBILITY . "-/", "", $project["version"]);
     }
     foreach ($project['extensions'] as $extension_name) {
       _drush_make_generate_add_patch_files($projects[$name], dirname($all_extensions[$extension_name]->filename));
@@ -151,8 +155,8 @@ function _drush_make_generate_add_patch_files(&$project, $location) {
   $patchfile = DRUPAL_ROOT . '/' . $location . '/PATCHES.txt';
   if (is_file($patchfile)) {
     foreach (file($patchfile) as $line) {
-      if (substr($line,0,2) == '- ') {
-        $project['patches'][] = trim(substr($line,2));
+      if (substr($line, 0, 2) == '- ') {
+        $project['patches'][] = trim(substr($line, 2));
       }
     }
   }
@@ -174,7 +178,7 @@ function _drush_generate_custom_project($name, $extension, $version_options) {
   $output = drush_shell_exec_output();
   if (!empty($output)) {
     $git_dir = $output[0];
-    // Find the actual base of the git repository
+    // Find the actual base of the git repository.
     $repo_root = $git_dir == ".git" ? $location : dirname($git_dir);
     // If the repository root is at the drupal root or some parent
     // of the drupal root, or some other location that could not
@@ -196,7 +200,7 @@ function _drush_generate_custom_project($name, $extension, $version_options) {
             $project['download][type'] = 'git';
             $project['download][url'] = $url;
 
-            // Fill in the branch as well
+            // Fill in the branch as well.
             drush_shell_cd_and_exec($repo_root, 'git branch');
             $output = drush_shell_exec_output();
             foreach ($output as $line) {
@@ -208,7 +212,7 @@ function _drush_generate_custom_project($name, $extension, $version_options) {
               }
             }
 
-            // Put in the commit hash
+            // Put in the commit hash.
             drush_shell_cd_and_exec($repo_root, 'git log');
             $output = drush_shell_exec_output();
             if (substr($output[0], 0, 7) == "commit ") {
@@ -218,15 +222,15 @@ function _drush_generate_custom_project($name, $extension, $version_options) {
               }
             }
 
-            // Add patch files, if any
+            // Add patch files, if any.
             _drush_make_generate_add_patch_files($project, $repo_root);
           }
         }
       }
     }
   }
-  // If we could not figure out where the extension came from,
-  // then give up and flag it as a "custom" download
+  // If we could not figure out where the extension came from, then give up and
+  // flag it as a "custom" download.
   if (!isset($project['download][type'])) {
     $project['custom_download'] = TRUE;
   }
@@ -245,39 +249,40 @@ function _drush_generate_validate_repo_location($repo_root) {
   if ((strlen(DRUPAL_ROOT) >= strlen($repo_root)) || (dirname($repo_root) == DRUPAL_ROOT)) {
     return NULL;
   }
-  // also exclude sites/* and sites/*/{modules,themes} and
-  // profile/* and profile/*/{modules,themes}
-  return $project_name;  
+  // Also exclude sites/* and sites/*/{modules,themes} and profile/* and
+  // profile/*/{modules,themes}.
+  return $project_name;
 }
 
 /**
- * Helper function to determine if a given project is to have its version tracked
+ * Helper function to determine if a given project is to have its version
+ * tracked.
  */
 function _drush_generate_track_version($project, $version_options) {
   // A. If --exclude-versions has been specified:
-  //  A.a. if it's a boolean, check the --include-versions option
+  // A.a. if it's a boolean, check the --include-versions option.
   if ($version_options["exclude"] === TRUE) {
-    // A.a.1 if --include-versions has been specified, ensure it's an array
-    // 
+    // A.a.1 if --include-versions has been specified, ensure it's an array.
     if (is_array($version_options["include"])) {
       return in_array($project, $version_options["include"]);
     }
-    // A.a.2 If no include array, then we're excluding versions for ALL projects
+    // A.a.2 If no include array, then we're excluding versions for ALL
+    // projects.
     return FALSE;
   }
-  //  A.b. if --exclude-versions is an array with items, check this project is in it: if so,
-  //    then return FALSE.
+  // A.b. if --exclude-versions is an array with items, check this project is in
+  // it: if so, then return FALSE.
   elseif (is_array($version_options["exclude"]) && count($version_options["exclude"])) {
     return !in_array($project, $version_options["exclude"]);
   }
 
   // B. If by now no --exclude-versions, but --include-versions is an array,
-  // examine it for this project
+  // examine it for this project.
   if (is_array($version_options["include"]) && count($version_options["include"])) {
     return in_array($project, $version_options["include"]);
   }
 
-  // If none of the above conditions match, include version number by default
+  // If none of the above conditions match, include version number by default.
   return TRUE;
 }
 
@@ -288,7 +293,8 @@ function _drush_generate_makefile_check_path($project) {
   $info = array();
   $type = $project['type'];
   $path = dirname(_pm_find_common_path($type, $project['extensions']));
-  // Check to see if the path is in a subdir sites/all/modules or profiles/profilename/modules
+  // Check to see if the path is in a subdir sites/all/modules or
+  // profiles/profilename/modules
   if (preg_match('@^sites/[a-zA-Z0-9_]*/' . $type . 's/..*@', $path) || preg_match('@^sites/[a-zA-Z0-9_]*/' . $type . 's/..*@', $path)) {
     $subdir = preg_replace(array('@^[a-zA-Z0-9_]*/[a-zA-Z0-9_]*/' . $type . 's/*@', "@/$name" . '$@'), '', $path);
     if (!empty($subdir)) {
@@ -298,6 +304,9 @@ function _drush_generate_makefile_check_path($project) {
   return $info;
 }
 
+/**
+ * Generate the actual contents of the .make file.
+ */
 function _drush_make_generate_makefile_contents($projects) {
   $output = array();
   $custom = FALSE;
