@@ -58,8 +58,8 @@ function make_download_pm($name, $download, $download_location) {
  * @return
  *   The destination directory on success, FALSE on failure.
  */
-function make_download_file($name, $download, $download_location) {
-  if ($filename = _make_download_file($download)) {
+function make_download_file($name, $download, $download_location, $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT) {
+  if ($filename = _make_download_file($download, $cache_duration)) {
     if (!drush_get_option('ignore-checksums') && !_make_verify_checksums($download, $filename)) {
       return FALSE;
     }
@@ -70,17 +70,15 @@ function make_download_file($name, $download, $download_location) {
   return FALSE;
 }
 
-function _make_download_file($download) {
+function _make_download_file($download, $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT) {
   // TODO cleanup so $download is always a string, since with
   // drush_download_file(), that's all we pass in.
   if (is_string($download)) {
     $download = array('url' => $download);
   }
 
-  // Default to use cache.
-  $cache_duration = 0;
-  if (!drush_get_option('no-cache', FALSE)) {
-    $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT;
+  if (drush_get_option('no-cache', FALSE)) {
+    $cache_duration = 0;
   }
 
   $tmp_path = make_tmp();

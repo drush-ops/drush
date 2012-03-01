@@ -76,7 +76,7 @@ class DrushMakeProject {
         $full_version = $this->core . '-';
       }
       $full_version .= $this->version;
-      // If the project-level version attribute is just a number it's a major version 
+      // If the project-level version attribute is just a number it's a major version.
       $matches = array();
       if (preg_match('/\d+(\.x)?$/', $this->version, $matches)) {
         // If there's no '.x' already, append it.
@@ -281,8 +281,8 @@ class DrushMakeProject {
           );
           $url = strtr($update_url, $variables);
 
-          // Download the translation file.
-          if ($filename = _make_download_file($url)) {
+          // Download the translation file.  Since its contents are volatile, cache for only 4 hours.
+          if ($filename = _make_download_file($url, 3600*4)) {
             // If this is the core project type, download the translation file
             // and place it in every profile and an additional copy in
             // modules/system/translations where it can be detected for import
