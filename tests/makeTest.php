@@ -200,7 +200,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->assertContains('project = "cck_signup"', $contents);
 
     // Verify that a reference cache was created.
-    $cache_dir = UNISH_TMP . '/drush-cache/cache';
+    $cache_dir = UNISH_SANDBOX . '/home/.drush/cache';
     $this->assertFileExists($cache_dir . '/git/cck_signup-' . md5('http://git.drupal.org/project/cck_signup.git'));
 
     // Test context_admin.info file.
