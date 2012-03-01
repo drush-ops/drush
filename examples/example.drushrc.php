@@ -86,8 +86,10 @@
 # $options['shell-aliases']['offline'] = 'variable-set -y --always-set maintenance_mode 1';
 # $options['shell-aliases']['online'] = 'variable-delete -y --exact maintenance_mode';
 
-// Add a 'pm-clone' to simplify (cached) git cloning from drupal.org.
-# $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg --cache';
+// You can create a local cache of all projects checked out using
+// --package-handler=git_drupalorg; this can be faster for repeated
+// downloads, but can be dangerous. See: http://randyfay.com/node/119
+# $options['cache'] = TRUE;
 
 /**
  * Historical (deprecated) aliases:
