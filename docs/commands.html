@@ -5,8 +5,6 @@ four simple steps.
 <ol>
 <li>Create a command file called COMMANDFILE.drush.inc
 
-<li>Implement the function COMMANDFILE_drush_help(). Optional.
-
 <li>Implement the function COMMANDFILE_drush_command()
 
 <li>Implement the functions that your commands will call.
@@ -39,7 +37,9 @@ Drush searches for commandfiles in the following locations:
 
 <li>The ".drush" folder in the user's HOME folder.
 
-<li>All modules in the current Drupal installation
+<li>sites/all/drush in the current Drupal installation
+
+<li>All enabled modules in the current Drupal installation
 
 <li>Folders and files containing other versions of drush in their names will
 be *skipped* (e.g. devel.drush4.inc or drush4/devel.drush.inc).  Names
@@ -50,7 +50,7 @@ be considered if drush has bootstrapped to at least the DRUSH_BOOSTRAP_SITE
 level.  Usually, when working with a Drupal site, drush will
 bootstrap to DRUSH_BOOTSTRAP_FULL; in this case, only the drush
 commandfiles in enabled modules will be considered eligible for
-loading.  If a drush only bootstraps to DRUSH_BOOTSTRAP_SITE,
+loading.  If drush only bootstraps to DRUSH_BOOTSTRAP_SITE,
 though, then all drush commandfiles will be considered, whether the
 module is enabled or not.  See `drush topic docs-bootstrap` for
 more information on bootstrapping.
@@ -58,25 +58,6 @@ more information on bootstrapping.
 Additionally, drush commandfiles may optionally define a function
 COMMANDFILE_drush_load() in the file COMMANDFILE.drush.load.inc.
 If this function returns FALSE, then the commandfile will not be loaded.
-
-<h2>Implement COMMANDFILE_drush_help()</h2>
-<p>
-The drush_help hook is an optional place to describe a command in long form. If
-the command only requires a brief description, use the description key in
-COMMANDFILE_drush_command(). The drush_help hook for the 'sandwich' commandfile looks
-like this:
-<pre>
-        function sandwich_drush_help($section) {
-          switch ($section) {
-            case 'drush:make-me-a-sandwich':
-              return dt("... brief help summary goes here ...");
-          }
-        }
-</pre><p>
-Note that the command name is prepended with 'drush:' in
-the drush_help hook.  Your commandfile may implement
-multiple commands; to do so, just add more 'case' statements
-to the switch, one for each command.
 
 <h2>Implement COMMANDFILE_drush_command()</h2>
 <p>
@@ -210,7 +191,7 @@ are shown below.
  <li>'topics':
 
      Provides a list of topic commands that are related in
-     some way to this command.  Used by `drush help` only.
+     some way to this command.  Used by `drush help`.
 
 <li>'topic':
 
