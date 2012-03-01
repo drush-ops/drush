@@ -24,16 +24,18 @@ class archiveDumpCase extends Drush_CommandTestCase {
       'destination' => $dump_dest,
     );
     $this->drush('archive-dump', array($uri), $options);
-    $exec = sprintf('file %s/%s', UNISH_SANDBOX, $dump_dest);
+    $exec = sprintf('file %s%s%s', UNISH_SANDBOX, DIRECTORY_SEPARATOR, $dump_dest);
     $this->execute($exec);
     $output = $this->getOutput();
-    $expected = UNISH_SANDBOX . "/dump.tar.gz: gzip compressed data, from Unix";
-    $this->assertEquals($expected, $output);
+    $sep = self::is_windows() ? ';' : ':';
+    $expected = UNISH_SANDBOX . DIRECTORY_SEPARATOR . "dump.tar.gz$sep gzip compressed data, from";
+
+    $this->assertStringStartsWith($expected, $output);
 
     // Untar it, make sure it looks right.
-    $exec = sprintf('tar -xzf %s/%s', UNISH_SANDBOX, $dump_dest);
-    $untar_dest = UNISH_SANDBOX . '/untar';
-    $exec = sprintf('mkdir %s && cd %s && tar xzf %s/%s', $untar_dest, $untar_dest, UNISH_SANDBOX, $dump_dest);
+    $untar_dest = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'untar';
+    $tar = self::get_tar_executable();
+    $exec = sprintf("mkdir %s && cd %s && $tar -xzf %s%s%s", $untar_dest, $untar_dest, UNISH_SANDBOX, DIRECTORY_SEPARATOR, $dump_dest);
     $this->execute($exec);
     if (strpos(UNISH_DB_URL, 'mysql') !== FALSE) {
       $this->execute(sprintf('head %s/unish_%s.sql | grep "MySQL dump"', $untar_dest, $uri));

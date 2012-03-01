@@ -75,6 +75,10 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return (strtoupper(substr(PHP_OS, 0, 3)) == "WIN");
   }
 
+  public static function get_tar_executable() {
+    return self::is_windows() ? "bsdtar.exe" : "tar";
+  }
+
   /**
    * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
    * Also converts a cygwin "drive emulation" path (/cygdrive/c/dir1) into a
@@ -451,7 +455,7 @@ function unish_init() {
   }
 
   define('UNISH_TMP', getenv('UNISH_TMP') ? getenv('UNISH_TMP') : (isset($GLOBALS['UNISH_TMP']) ? $GLOBALS['UNISH_TMP'] : sys_get_temp_dir()));
-  define('UNISH_SANDBOX', UNISH_TMP . '/drush-sandbox');
+  define('UNISH_SANDBOX', UNISH_TMP . DIRECTORY_SEPARATOR . 'drush-sandbox');
 
   $home = UNISH_SANDBOX . '/home';
   putenv("HOME=$home");
