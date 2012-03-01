@@ -284,20 +284,23 @@ class DrushMakeProject {
           // Download the translation file.
           if ($filename = _make_download_file($url)) {
             // If this is the core project type, download the translation file
-            // and create two copies:
-            // 1. To profiles/default/translations. It must be named
-            //    langcode.po to be used properly by the installer.
-            // 2. To modules/system/translations where it can be detected for
-            //    import by other non-default install profiles.
+            // and place it in every profile and an additional copy in
+            // modules/system/translations where it can be detected for import
+            // by other non-default install profiles.
             if ($this->type === 'core') {
-              drush_mkdir($project_directory . '/profiles/default/translations');
+              $profiles = drush_scan_directory($project_directory . '/profiles', '/.*/', array(), 0, FALSE);
+              foreach ($profiles as $profile) {
+                if (is_dir($project_directory . '/profiles/' . $profile->basename)) {
+                  drush_mkdir($project_directory . '/profiles/' . $profile->basename . '/translations');
+                  drush_copy_dir($filename, $project_directory . '/profiles/' . $profile->basename . '/translations/' . $langcode . '.po');
+                }
+              }
               drush_mkdir($project_directory . '/modules/system/translations');
-              drush_shell_exec("cp %s %s", $filename, $project_directory . '/profiles/default/translations/' . $langcode . '.po');
-              drush_shell_exec("mv %s %s", $filename, $project_directory . '/modules/system/translations/' . $langcode . '.po');
+              drush_copy_dir($filename, $project_directory . '/modules/system/translations/' . $langcode . '.po');
             }
             else {
               drush_mkdir($project_directory . '/translations');
-              drush_shell_exec("mv %s %s", $filename, $project_directory . '/translations/' . $langcode . '.po');
+              drush_copy_dir($filename, $project_directory . '/translations/' . $langcode . '.po', TRUE);
             }
           }
           else {

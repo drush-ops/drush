@@ -81,12 +81,82 @@ class makeMakefileCase extends Drush_CommandTestCase {
     }
   }
 
+  /**
+   * Translations can change arbitrarily, so these test for the existence of .po
+   * files, rather than trying to match a build hash.
+   */
   function testMakeTranslations() {
-    $this->runMakefileTest('translations');
+    $config = $this->getMakefile('translations');
+
+    $makefile_path = dirname(__FILE__) . '/makefiles';
+    $makefile = $makefile_path . '/' . $config['makefile'];
+    $install_directory = UNISH_SANDBOX . '/translations';
+    $this->drush('make', array($makefile, $install_directory), $config['options']);
+
+    $po_files = array(
+      'sites/all/modules/token/translations/pt-br.po',
+      'sites/all/modules/token/translations/es.po',
+    );
+
+    foreach ($po_files as $po_file) {
+      $this->assertFileExists($install_directory . '/' . $po_file);
+    }
   }
 
+  /**
+   * Translations can change arbitrarily, so these test for the existence of .po
+   * files, rather than trying to match a build hash.
+   */
   function testMakeTranslationsInside() {
-    $this->runMakefileTest('translations-inside');
+    $config = $this->getMakefile('translations-inside');
+
+    $makefile_path = dirname(__FILE__) . '/makefiles';
+    $makefile = $makefile_path . '/' . $config['makefile'];
+    $install_directory = UNISH_SANDBOX . '/translations-inside';
+    $this->drush('make', array($makefile, $install_directory));
+
+    $po_files = array(
+      'profiles/default/translations/pt-br.po',
+      'profiles/default/translations/es.po',
+      'sites/all/modules/token/translations/pt-br.po',
+      'sites/all/modules/token/translations/es.po',
+      'modules/system/translations/pt-br.po',
+      'modules/system/translations/es.po',
+    );
+
+    foreach ($po_files as $po_file) {
+      $this->assertFileExists($install_directory . '/' . $po_file);
+    }
+  }
+
+  /**
+   * Translations can change arbitrarily, so these test for the existence of .po
+   * files, rather than trying to match a build hash.
+   */
+  function testMakeTranslationsInside7() {
+    $config = $this->getMakefile('translations-inside7');
+
+    $makefile_path = dirname(__FILE__) . '/makefiles';
+    $makefile = $makefile_path . '/' . $config['makefile'];
+    $install_directory = UNISH_SANDBOX . '/translations-inside7';
+    $this->drush('make', array($makefile, $install_directory));
+
+    $po_files = array(
+      'profiles/minimal/translations/pt-br.po',
+      'profiles/minimal/translations/es.po',
+      'profiles/testing/translations/pt-br.po',
+      'profiles/testing/translations/es.po',
+      'profiles/standard/translations/pt-br.po',
+      'profiles/standard/translations/es.po',
+      'sites/all/modules/token/translations/pt-br.po',
+      'sites/all/modules/token/translations/es.po',
+      'modules/system/translations/pt-br.po',
+      'modules/system/translations/es.po',
+    );
+
+    foreach ($po_files as $po_file) {
+      $this->assertFileExists($install_directory . '/' . $po_file);
+    }
   }
 
   function testMakeContribDestination() {
@@ -216,8 +286,6 @@ class makeMakefileCase extends Drush_CommandTestCase {
       'translations' => array(
         'name'     => 'Translation downloads',
         'makefile' => 'translations.make',
-        'build'    => TRUE,
-        'md5' => '9b209494006aecd7f68c228a61bb26f9',
         'options'  => array(
           'translations' => 'es,pt-br',
           'no-core' => NULL,
@@ -226,9 +294,10 @@ class makeMakefileCase extends Drush_CommandTestCase {
       'translations-inside' => array(
         'name'     => 'Translation downloads inside makefile',
         'makefile' => 'translations-inside.make',
-        'build'    => TRUE,
-        'md5' => '0566b12158e6fba7070b80714ea4019d',
-        'options'  => array(),
+      ),
+      'translations-inside7' => array(
+        'name'     => 'Translation downloads inside makefile, core 7.x',
+        'makefile' => 'translations-inside7.make',
       ),
       'contrib-destination' => array(
         'name'     => 'Contrib-destination attribute',
