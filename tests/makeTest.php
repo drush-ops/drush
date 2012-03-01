@@ -224,7 +224,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Test GET retrieval of projects',
         'makefile' => 'get.make',
         'build'    => TRUE,
-        'md5' => '5033e4a46274a4405b723f80ce4dfbe5',
+        'md5' => '4bf18507da89bed601548210c22a3bed',
         'options'  => array('no-core' => NULL),
       ),
       'git' => array(
@@ -310,7 +310,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'File extraction',
         'makefile' => 'file.make',
         'build'    => TRUE,
-        'md5' => 'f76ec174a775ce67f8e9edcb02336ef2',
+        'md5' => 'c7cab3930f644961a576d78769498172',
         'options'  => array('no-core' => NULL),
       ),
       'md5-succeed' => array(
