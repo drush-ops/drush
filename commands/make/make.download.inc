@@ -165,13 +165,9 @@ function make_download_file_unpack($filename, $download_location, $name) {
       $success = make_download_file_unpack_zip($filename, $download_location);
       break;
     default:
-      // For files that don't require extraction, we must first make sure the
-      // destination folder exists.
-      if (drush_mkdir($download_location)) {
-        // Now that the destination directory exists, we can now move the file.
-        $destination = $download_location . ($name ? '/' . $name : '');
-        $success = drush_move_dir($filename, $destination);
-      }
+      // The destination directory has already been created by findDownloadLocation().
+      $destination = $download_location . ($name ? '/' . $name : '');
+      $success = drush_shell_exec('mv %s %s', $filename, $destination);
   }
   return $success ? $download_location : FALSE;
 }
