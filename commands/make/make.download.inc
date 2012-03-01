@@ -30,6 +30,8 @@ function make_download_pm($name, $download, $download_location) {
     // be 'profile-only' so we don't end up with extra copies of core.
     'variant' => 'profile-only',
     'cache' => TRUE,
+    // Really try to download *something* rather than skipping if there is no recommended release.
+    'select' => 'auto',
   );
   if ($name == 'drupal') {
     $options['drupal-project-rename'] = basename($download_location);
