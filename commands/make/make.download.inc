@@ -1,9 +1,13 @@
 <?php
+/**
+ * @file
+ * Download-specific functions for Drush Make.
+ */
 
 /**
  * Downloads the given package to the destination directory.
  *
- * @return
+ * @return mixed
  *   The destination path on success, FALSE on failure.
  */
 function make_download_factory($name, $download, $download_location) {
@@ -30,7 +34,8 @@ function make_download_pm($name, $download, $download_location) {
     // be 'profile-only' so we don't end up with extra copies of core.
     'variant' => 'profile-only',
     'cache' => TRUE,
-    // Really try to download *something* rather than skipping if there is no recommended release.
+    // Really try to download *something* rather than skipping if there is no
+    // recommended release.
     'select' => 'auto',
   );
   if ($name == 'drupal') {
@@ -49,7 +54,8 @@ function make_download_pm($name, $download, $download_location) {
   // Perform actual download with `drush pm-download`.
   $return = drush_invoke_process('@none', 'pm-download', array($full_project_version), $options, $backend_options);
   if (empty($return['error_log'])) {
-    // @todo Report the URL we used for download. See http://drupal.org/node/1452672.
+    // @todo Report the URL we used for download. See
+    // http://drupal.org/node/1452672.
     drush_log(dt('@project downloaded.', array('@project' => $full_project_version)), 'ok');
   }
 }
@@ -57,7 +63,7 @@ function make_download_pm($name, $download, $download_location) {
 /**
  * Downloads a file to the specified location.
  *
- * @return
+ * @return mixed
  *   The destination directory on success, FALSE on failure.
  */
 function make_download_file($name, $download, $download_location, $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT) {
@@ -72,6 +78,9 @@ function make_download_file($name, $download, $download_location, $cache_duratio
   return FALSE;
 }
 
+/**
+ * Wrapper to drush_download_file().
+ */
 function _make_download_file($download, $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT) {
   // TODO cleanup so $download is always a string, since with
   // drush_download_file(), that's all we pass in.
@@ -96,11 +105,11 @@ function _make_download_file($download, $cache_duration = DRUSH_CACHE_LIFETIME_D
  * mime_content_type() or finfo installed -- if not, only tar, gz, and zip types
  * can be detected, and other file types will return 'unknown'.
  *
- * @return
+ * @return mixed
  *   The MIME content type of the file, 'unknown', or FALSE on error.
  */
 function drush_mime_content_type($filename) {
-  // tar files have no magic value, so we can detect them only by filename.
+  // Tar files have no magic value, so we can detect them only by filename.
   if (strrpos($filename, '.tar') === (strlen($filename) - 4)) {
     return 'application/x-tar';
   }
@@ -128,18 +137,18 @@ function drush_mime_content_type($filename) {
     // Interpret the two bytes as a little endian 16-bit unsigned int.
     $data = unpack('v', $first);
     switch ($data[1]) {
-      // First two bytes of gzip files are 0x1f, 0x8b.
-      // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer.
       case 0x8b1f:
+        // First two bytes of gzip files are 0x1f, 0x8b.
+        // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer.
         return 'application/x-gzip';
 
-      // First two bytes of zip files are 0x50, 0x4b ('PK').
-      // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers.
       case 0x4b50:
+        // First two bytes of zip files are 0x50, 0x4b ('PK').
+        // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers.
         return 'application/zip';
 
-      // Not a file type we can detect.
       default:
+        // Not a file type we can detect.
         return 'unknown';
     }
   }
@@ -149,7 +158,7 @@ function drush_mime_content_type($filename) {
 /**
  * Unpacks a file to the specified download location.
  *
- * @return
+ * @return mixed
  *   The download location on success, FALSE on failure.
  */
 function make_download_file_unpack($filename, $download_location, $name) {
@@ -157,17 +166,22 @@ function make_download_file_unpack($filename, $download_location, $name) {
 
   switch (drush_mime_content_type($filename)) {
     case 'application/x-gzip':
-      // I'd like to just use tar -z, but apparently it breaks on windoze. Why do they always have to ruin everything?
+      // I'd like to just use tar -z, but apparently it breaks on windoze. Why
+      // do they always have to ruin everything?
       $success = make_download_file_unpack_gzip($filename, $download_location);
       break;
+
     case 'application/x-tar':
       $success = make_download_file_unpack_tar($filename, $download_location);
       break;
+
     case 'application/zip':
       $success = make_download_file_unpack_zip($filename, $download_location);
       break;
+
     default:
-      // The destination directory has already been created by findDownloadLocation().
+      // The destination directory has already been created by
+      // findDownloadLocation().
       $destination = $download_location . ($name ? '/' . $name : '');
       $success = drush_shell_exec('mv %s %s', $filename, $destination);
   }
@@ -177,7 +191,7 @@ function make_download_file_unpack($filename, $download_location, $name) {
 /**
  * Unpacks a tar file to the specified location.
  *
- * @return
+ * @return boolean
  *   TRUE or FALSE depending on whether the operation was successful.
  */
 function make_download_file_unpack_tar($filename, $download_location) {
@@ -194,11 +208,12 @@ function make_download_file_unpack_tar($filename, $download_location) {
 /**
  * Unpacks a gzip file to the specified location.
  *
- * @return
+ * @return boolean
  *   TRUE or FALSE depending on whether the operation was successful.
  */
 function make_download_file_unpack_gzip($filename, $download_location) {
-  // Find out where contents will end up. Retrieve last column of output using awk.
+  // Find out where contents will end up. Retrieve last column of output using
+  // awk.
   drush_shell_exec("gzip --list %s", $filename);
   $info = drush_shell_exec_output();
   if ($info) {
@@ -218,6 +233,9 @@ function make_download_file_unpack_gzip($filename, $download_location) {
   }
 }
 
+/**
+ * Unpack a zip file.
+ */
 function make_download_file_unpack_zip($filename, $download_location) {
   $tmp_path = make_tmp();
 
@@ -229,6 +247,12 @@ function make_download_file_unpack_zip($filename, $download_location) {
   return _make_download_file_move($tmp_path, $filename, $download_location);
 }
 
+/**
+ * Move a downloaded and unpacked file or directory into place.
+ *
+ * TODO merge with core drush methods, as the __unzip__ directory will
+ * potentially cause problems when running concurrently.
+ */
 function _make_download_file_move($tmp_path, $filename, $download_location) {
   drush_shell_exec('ls %s', $tmp_path . '/__unzip__');
   $lines = drush_shell_exec_output();
@@ -258,7 +282,9 @@ function _make_download_file_move($tmp_path, $filename, $download_location) {
 }
 
 
-// Backwards compatibility.
+/**
+ * For backwards compatibility.
+ */
 function make_download_get($name, $download, $download_location) {
   return make_download_file($name, $download, $download_location);
 }
@@ -279,7 +305,7 @@ function make_download_get($name, $download, $download_location) {
  *   - 'branch'
  *   - 'revision'
  *
- * @return
+ * @return mixed
  *   The download location on success, FALSE otherwise.
  */
 function make_download_git($name, $download, $download_location) {
@@ -355,7 +381,7 @@ function make_download_git($name, $download, $download_location) {
 
   // If there wasn't a refspec, try a tag.
   elseif (!empty($download['tag'])) {
-    // @TODO: change checkout to refs path
+    // @TODO: change checkout to refs path.
     if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
       drush_log(dt("Checked out tag @tag.", array('@tag' => $download['tag'])), 'ok');
     }
@@ -400,7 +426,7 @@ function make_download_git($name, $download, $download_location) {
     }
   }
 
-  // move back to last current directory (first line)
+  // Move back to last current directory (first line).
   chdir($cwd);
 
   // Handle .info file re-writing (if so desired).
@@ -452,7 +478,7 @@ function make_download_git($name, $download, $download_location) {
 /**
  * Checks out a Bazaar repository to the specified download location.
  *
- * @return
+ * @return mixed
  *   The download location on success, FALSE otherwise.
  */
 function make_download_bzr($name, $download, $download_location) {
@@ -498,7 +524,7 @@ function make_download_bzr($name, $download, $download_location) {
 /**
  * Checks out an SVN repository to the specified download location.
  *
- * @return
+ * @return mixed
  *   The download location on success, FALSE otherwise.
  */
 function make_download_svn($name, $download, $download_location) {
@@ -542,7 +568,12 @@ function make_download_svn($name, $download, $download_location) {
     array_unshift($args, $command);
     $result = call_user_func_array($function, $args);
     if ($result) {
-      drush_log(dt('@project @command from @url.', array('@project' => $name, '@command' => $command, '@url' => $download['url'])), 'ok');
+      $args = array(
+        '@project' => $name,
+        '@command' => $command,
+        '@url' => $download['url'],
+      );
+      drush_log(dt('@project @command from @url.', $args), 'ok');
       return $download_location;
     }
     else {
@@ -570,7 +601,13 @@ function _make_verify_checksums($info, $filename) {
       if (!empty($info[$algo])) {
         $hash = _make_hash($algo, $content);
         if ($hash !== $info[$algo]) {
-           make_error('DOWNLOAD_ERROR', dt('Checksum @algo verification failed for @file. Expected @expected, received @hash.', array('@algo' => $algo, '@file' => basename($filename), '@expected' => $info[$algo], '@hash' => $hash)));
+          $args = array(
+            '@algo' => $algo,
+            '@file' => basename($filename),
+            '@expected' => $info[$algo],
+            '@hash' => $hash,
+          );
+          make_error('DOWNLOAD_ERROR', dt('Checksum @algo verification failed for @file. Expected @expected, received @hash.', $args));
           return FALSE;
         }
       }
