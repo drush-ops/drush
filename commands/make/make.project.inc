@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Drush Make processing classes.
+ */
 
 /**
  * The base project class.
@@ -40,11 +44,12 @@ class DrushMakeProject {
   /**
    * Get an instance for the type and project.
    *
-   * @param $type
+   * @param string $type
    *   Type of project: core, library, module, profile, or translation.
-   * @param $project
+   * @param array $project
    *   Project information.
-   * @return
+   *
+   * @return mixed
    *   An instance for the project or FALSE if invalid type.
    */
   public static function getInstance($type, $project) {
@@ -76,7 +81,8 @@ class DrushMakeProject {
         $full_version = $this->core . '-';
       }
       $full_version .= $this->version;
-      // If the project-level version attribute is just a number it's a major version.
+      // If the project-level version attribute is just a number it's
+      // a major version.
       $matches = array();
       if (preg_match('/\d+(\.x)?$/', $this->version, $matches)) {
         // If there's no '.x' already, append it.
@@ -126,6 +132,9 @@ class DrushMakeProject {
     return TRUE;
   }
 
+  /**
+   * Determine the location to download project to.
+   */
   function findDownloadLocation() {
     $this->path = $this->generatePath();
     $this->project_directory = !empty($this->directory_name) ? $this->directory_name : $this->name;
@@ -281,8 +290,9 @@ class DrushMakeProject {
           );
           $url = strtr($update_url, $variables);
 
-          // Download the translation file.  Since its contents are volatile, cache for only 4 hours.
-          if ($filename = _make_download_file($url, 3600*4)) {
+          // Download the translation file.  Since its contents are volatile,
+          // cache for only 4 hours.
+          if ($filename = _make_download_file($url, 3600 * 4)) {
             // If this is the core project type, download the translation file
             // and place it in every profile and an additional copy in
             // modules/system/translations where it can be detected for import
@@ -311,7 +321,7 @@ class DrushMakeProject {
           drush_log('All translations downloaded for ' . $this->name, 'ok');
         }
         else {
-          drush_log('Unable to download translations for '. $this->name .': ' . implode(', ', $failed), 'warning');
+          drush_log('Unable to download translations for ' . $this->name . ': ' . implode(', ', $failed), 'warning');
         }
       }
     }
@@ -321,7 +331,7 @@ class DrushMakeProject {
   /**
    * Generate the proper path for this project type.
    *
-   * @param $base
+   * @param boolean $base
    *   Whether include the base part (tmp dir). Defaults to TRUE.
    */
   protected function generatePath($base = TRUE) {
@@ -342,13 +352,17 @@ class DrushMakeProject {
   /**
    * Return the proper path for dependencies to be placed in.
    *
-   * @return
+   * @return string
    *   The path that dependencies will be placed in.
    */
   protected function buildPath($directory) {
     return $this->base_contrib_destination;
   }
 
+  /**
+   * Recurse to process additional makefiles that may be found during
+   * processing.
+   */
   function recurse($path) {
     $makefile = $this->download_location . '/' . $this->name . '.make';
     if (!file_exists($makefile)) {
@@ -371,12 +385,18 @@ class DrushMakeProject {
   }
 }
 
+/**
+ * For processing Drupal core projects.
+ */
 class DrushMakeProject_Core extends DrushMakeProject {
   protected function __construct(&$project) {
     parent::__construct($project);
     $this->contrib_destination = '';
   }
 
+  /**
+   * Determine the location to download project to.
+   */
   function findDownloadLocation() {
     $this->path = $this->download_location = $this->generatePath();
     $this->project_directory = '';
@@ -385,7 +405,8 @@ class DrushMakeProject_Core extends DrushMakeProject {
       return FALSE;
     }
     elseif ($this->download['type'] === 'pm') {
-      // pm-download will create the final __build__ directory, so nothing to do here.
+      // pm-download will create the final __build__ directory, so nothing to do
+      // here.
     }
     else {
       drush_mkdir($this->download_location);
@@ -394,6 +415,9 @@ class DrushMakeProject_Core extends DrushMakeProject {
   }
 }
 
+/**
+ * For processing libraries.
+ */
 class DrushMakeProject_Library extends DrushMakeProject {
   protected function __construct(&$project) {
     parent::__construct($project);
@@ -407,12 +431,21 @@ class DrushMakeProject_Library extends DrushMakeProject {
 
     $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . $project_path;
   }
-  // No recursion for libraries, sorry :-(
+
+  /**
+   * No recursion for libraries, sorry :-(
+   */
   function recurse($path) {}
-  // Neither translations.
+
+  /**
+   * No translations for libraries.
+   */
   function getTranslations($download_location) {}
 }
 
+/**
+ * For processing modules.
+ */
 class DrushMakeProject_Module extends DrushMakeProject {
   protected function __construct(&$project) {
     parent::__construct($project);
@@ -420,17 +453,26 @@ class DrushMakeProject_Module extends DrushMakeProject {
   }
 }
 
+/**
+ * For processing installation profiles.
+ */
 class DrushMakeProject_Profile extends DrushMakeProject {
   protected function __construct(&$project) {
     parent::__construct($project);
     $this->contrib_destination = (!empty($this->destination) ? $this->destination : 'profiles');
   }
 
+  /**
+   * Find the build path.
+   */
   protected function buildPath($directory) {
     return $this->generatePath(FALSE) . '/' . $directory;
   }
 }
 
+/**
+ * For processing themes.
+ */
 class DrushMakeProject_Theme extends DrushMakeProject {
   protected function __construct(&$project) {
     parent::__construct($project);
@@ -438,15 +480,19 @@ class DrushMakeProject_Theme extends DrushMakeProject {
   }
 }
 
+/**
+ * For processing translations.
+ */
 class DrushMakeProject_Translation extends DrushMakeProject {
   protected function __construct(&$project) {
     parent::__construct($project);
-    switch($project['core']) {
+    switch ($project['core']) {
       case '5.x':
         // Don't think there's an automatic place we can put 5.x translations,
         // so we'll toss them in a translations directory in the Drupal root.
         $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . 'translations';
         break;
+
       default:
         $this->contrib_destination = '';
         break;
