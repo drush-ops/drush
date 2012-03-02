@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * General utility functions for Drush Make.
+ */
 
 /**
  * Parse Drupal info file format.
@@ -23,10 +27,10 @@ function make_parse_info_file($makefile, $parsed = TRUE) {
           if (make_valid_url($include, TRUE) && ($file = make_parse_info_file($include, FALSE))) {
             $includes[] = $file;
           }
-          else if (file_exists($include_path .'/'. $include) && ($file = make_parse_info_file($include_path .'/'. $include, FALSE))) {
+          elseif (file_exists($include_path . '/' . $include) && ($file = make_parse_info_file($include_path . '/' . $include, FALSE))) {
             $includes[] = $file;
           }
-          else if (file_exists($include) && ($file = make_parse_info_file($include, FALSE))) {
+          elseif (file_exists($include) && ($file = make_parse_info_file($include, FALSE))) {
             $includes[] = $file;
           }
           else {
@@ -47,6 +51,9 @@ function make_parse_info_file($makefile, $parsed = TRUE) {
   }
 }
 
+/**
+ * Parse the make file.
+ */
 function _make_parse_info_file($data) {
   if (!$data) {
     return FALSE;
@@ -67,19 +74,19 @@ function _make_parse_info_file($data) {
     @msx', $data, $matches, PREG_SET_ORDER)) {
     $info = array();
     foreach ($matches as $match) {
-      // Fetch the key and value string
+      // Fetch the key and value string.
       $i = 0;
       foreach (array('key', 'value1', 'value2', 'value3') as $var) {
         $$var = isset($match[++$i]) ? $match[$i] : '';
       }
       $value = stripslashes(substr($value1, 1, -1)) . stripslashes(substr($value2, 1, -1)) . $value3;
 
-      // Parse array syntax
+      // Parse array syntax.
       $keys = preg_split('/\]?\[/', rtrim($key, ']'));
       $last = array_pop($keys);
       $parent = &$info;
 
-      // Create nested arrays
+      // Create nested arrays.
       foreach ($keys as $key) {
         if ($key == '') {
           $key = count($parent);
@@ -90,12 +97,12 @@ function _make_parse_info_file($data) {
         $parent = &$parent[$key];
       }
 
-      // Handle PHP constants
+      // Handle PHP constants.
       if (defined($value)) {
         $value = constant($value);
       }
 
-      // Insert actual value
+      // Insert actual value.
       if ($last == '') {
         $last = count($parent);
       }
@@ -106,6 +113,9 @@ function _make_parse_info_file($data) {
   return FALSE;
 }
 
+/**
+ * Validate the make file.
+ */
 function make_validate_info_file($info) {
   // Assume no errors to start.
   $errors = FALSE;
@@ -147,7 +157,7 @@ function make_validate_info_file($info) {
       $errors = TRUE;
     }
     else {
-      // Filter out entries that have been forcibly removed via [foo] = FALSE
+      // Filter out entries that have been forcibly removed via [foo] = FALSE.
       $info['projects'] = array_filter($info['projects']);
 
       foreach ($info['projects'] as $project => $project_data) {
@@ -163,9 +173,15 @@ function make_validate_info_file($info) {
             if (in_array($attribute, array('contrib_destination'))) {
               unset($info['projects'][$project][$attribute]);
             }
-            // Prevent malicious attempts to access other areas of the filesystem.
+            // Prevent malicious attempts to access other areas of the
+            // filesystem.
             elseif (in_array($attribute, array('subdir', 'directory_name')) && !make_safe_path($value)) {
-              make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in project %project.", array('%path' => $value, '%attribute' => $attribute, '%project' => $project)));
+              $args = array(
+                '%path' => $value,
+                '%attribute' => $attribute,
+                '%project' => $project,
+              );
+              make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in project %project.", $args));
               $errors = TRUE;
             }
           }
@@ -202,19 +218,25 @@ function make_validate_info_file($info) {
       $errors = TRUE;
     }
     else {
-      // Filter out entries that have been forcibly removed via [foo] = FALSE
+      // Filter out entries that have been forcibly removed via [foo] = FALSE.
       $info['libraries'] = array_filter($info['libraries']);
 
-      foreach($info['libraries'] as $library => $library_data) {
+      foreach ($info['libraries'] as $library => $library_data) {
         if (is_array($library_data)) {
-          foreach($library_data as $attribute => $value) {
+          foreach ($library_data as $attribute => $value) {
             // Unset disallowed attributes.
             if (in_array($attribute, array('contrib_destination'))) {
               unset($info['libraries'][$library][$attribute]);
             }
-            // Prevent malicious attempts to access other areas of the filesystem.
+            // Prevent malicious attempts to access other areas of the
+            // filesystem.
             elseif (in_array($attribute, array('contrib-destination', 'directory_name')) && !make_safe_path($value)) {
-              make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in library %library.", array('%path' => $value, '%attribute' => $attribute, '%library' => $library)));
+              $args = array(
+                '%path' => $value,
+                '%attribute' => $attribute,
+                '%library' => $library,
+              );
+              make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in library %library.", $args));
               $errors = TRUE;
             }
           }
@@ -224,7 +246,7 @@ function make_validate_info_file($info) {
   }
 
   foreach (drush_command_implements('make_validate_info') as $module) {
-    $function = $module .'_make_validate_info';
+    $function = $module . '_make_validate_info';
     $return = $function($info);
     if ($return) {
       $info = $return;
@@ -249,7 +271,7 @@ function make_validate_info_file($info) {
  */
 function make_valid_url($url, $absolute = FALSE) {
   if ($absolute) {
-    return (bool)preg_match("
+    return (bool) preg_match("
       /^                                                      # Start at the beginning of the text
       (?:ftp|https?):\/\/                                     # Look for ftp, http, or https schemes
       (?:                                                     # Userinfo (optional) which is typically
@@ -267,18 +289,19 @@ function make_valid_url($url, $absolute = FALSE) {
     $/xi", $url);
   }
   else {
-    return (bool)preg_match("/^(?:[\w#!:\.\?\+=&@$'~*,;\/\(\)\[\]\-]|%[0-9a-f]{2})+$/i", $url);
+    return (bool) preg_match("/^(?:[\w#!:\.\?\+=&@$'~*,;\/\(\)\[\]\-]|%[0-9a-f]{2})+$/i", $url);
   }
 }
 
 /**
  * Find, and possibly create, a temporary directory.
  *
- * @param $set
+ * @param boolean $set
  *   Must be TRUE to create a directory.
- * @param $directory
+ * @param string $directory
  *   Pass in a directory to use. This is required if using any
  *   concurrent operations.
+ *
  * @todo Merge with drush_tempdir().
  */
 function make_tmp($set = TRUE, $directory = NULL) {
@@ -302,12 +325,16 @@ function make_tmp($set = TRUE, $directory = NULL) {
     if (file_exists($tmp_dir)) {
       return make_tmp(TRUE);
     }
-    // else create it
+    // Create the directory.
     drush_mkdir($tmp_dir);
   }
   return $tmp_dir;
 }
 
+/**
+ * Removes the temporary build directory. On failed builds, this is handled by
+ * drush_register_file_for_deletion().
+ */
 function make_clean_tmp() {
   if (!($tmp_dir = make_tmp(FALSE))) {
     return;
@@ -320,6 +347,9 @@ function make_clean_tmp() {
   }
 }
 
+/**
+ * Prepare a Drupal installation, copying default.settings.php to settings.php.
+ */
 function make_prepare_install($build_path) {
   $default = make_tmp() . '/__build__/sites/default';
   drush_shell_exec("cp %s %s", $default . '/default.settings.php', $default . '/settings.php');
@@ -327,6 +357,9 @@ function make_prepare_install($build_path) {
   drush_shell_exec("chmod a+w %s %s", $default . '/settings.php', $default . '/files');
 }
 
+/**
+ * Calculate a cksum on each file in the build, and md5 the resulting hashes.
+ */
 function make_md5() {
   if (drush_shell_exec("( find %s -type f -exec cksum {} \; )", make_tmp())) {
     $hashes = array();
@@ -343,7 +376,7 @@ function make_md5() {
   }
 }
 
-/*
+/**
  * @todo drush_archive_dump() also makes a tar. Consolidate?
  */
 function make_tar($build_path) {
@@ -379,7 +412,7 @@ function make_error($error_code, $message) {
 /**
  * Checks an attribute's path to ensure it's not maliciously crafted.
  *
- * @param $path
+ * @param string $path
  *   The path to check.
  */
 function make_safe_path($path) {
@@ -391,9 +424,10 @@ function make_safe_path($path) {
  * This is a helper function to abstract the retrieval of data, so that it can
  * come from files, STDIN, etc.  Currently supports filepath and STDIN.
  *
- * @param $data_source
+ * @param string $data_source
  *   The path to a file, or '-' for STDIN.
- * @return
+ *
+ * @return string
  *   The raw data as a string.
  */
 function make_get_data($data_source) {
@@ -427,26 +461,28 @@ function make_get_data($data_source) {
 }
 
 /**
- * Helper to provide sys_get_temp_dir if on php < 5.2.1
+ * Helper to provide sys_get_temp_dir if on php < 5.2.1.
  */
 if (!function_exists('sys_get_temp_dir')) {
-  // Based on http://www.phpit.net/
-  // article/creating-zip-tar-archives-dynamically-php/2/
+  /**
+   * Based on
+   * http://www.phpit.net/article/creating-zip-tar-archives-dynamically-php/2/
+   */
   function sys_get_temp_dir() {
-    // Try to get from environment variable
-    if (!empty($_ENV['TMP'])){
+    // Try to get from environment variable.
+    if (!empty($_ENV['TMP'])) {
       return realpath($_ENV['TMP']);
     }
-    else if (!empty($_ENV['TMPDIR'])){
+    elseif (!empty($_ENV['TMPDIR'])) {
       return realpath($_ENV['TMPDIR']);
     }
-    else if (!empty($_ENV['TEMP'])){
+    elseif (!empty($_ENV['TEMP'])) {
       return realpath($_ENV['TEMP']);
     }
     else {
-      // Detect by creating a temporary file
-      // Try to use system's temporary directory
-      // as random name shouldn't exist
+      // Detect by creating a temporary file.
+      // Try to use system's temporary directory as random name
+      // shouldn't exist.
       $temp_file = tempnam(md5(uniqid(rand(), TRUE)), '');
       if ($temp_file) {
         $temp_dir = realpath(dirname($temp_file));
