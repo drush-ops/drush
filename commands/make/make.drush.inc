@@ -1,5 +1,12 @@
 <?php
+/**
+ * @file
+ * Drush Make commands.
+ */
 
+/**
+ * Default localization server for downloading translations.
+ */
 define('MAKE_DEFAULT_L10N_SERVER', 'http://localize.drupal.org/l10n_server.xml');
 
 /**
@@ -13,7 +20,7 @@ include_once 'make.download.inc';
 include_once 'make.project.inc';
 
 /**
- * Implementation of hook_drush_command().
+ * Implements hook_drush_command().
  */
 function make_drush_command() {
   $items['make'] = array(
@@ -110,7 +117,7 @@ function make_drush_command() {
 }
 
 /**
- * Implementation of hook_drush_help().
+ * Implements hook_drush_help().
  */
 function make_drush_help($section) {
   switch ($section) {
@@ -124,7 +131,7 @@ function make_drush_help($section) {
 /**
  * Command argument complete callback.
  *
- * @return
+ * @return array
  *   Strong glob of files to complete on.
  */
 function make_make_complete() {
@@ -183,7 +190,7 @@ function drush_make_process($directory) {
 }
 
 /**
- * Implementation of drush_hook_post_COMMAND() for the make command.
+ * Implements drush_hook_post_COMMAND() for the make command.
  */
 function drush_make_post_make($makefile = NULL, $build_path = NULL) {
   if (drush_get_option('version')) {
@@ -216,6 +223,9 @@ function drush_make_post_make($makefile = NULL, $build_path = NULL) {
   make_clean_tmp();
 }
 
+/**
+ * Process all projects specified in the make file.
+ */
 function make_projects($recursion, $contrib_destination, $info, $build_path) {
   $projects = array();
   if (empty($info['projects'])) {
@@ -265,8 +275,10 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
     }
 
-    // For convenience: define $request to be compatible with release_info engine.
-    // TODO: refactor to enforce 'make' to internally work with release_info keys.
+    // For convenience: define $request to be compatible with release_info
+    // engine.
+    // TODO: refactor to enforce 'make' to internally work with release_info
+    // keys.
     $request = make_prepare_request($project);
 
     if ($project['location'] != RELEASE_INFO_DEFAULT_URL && !isset($project['type'])) {
@@ -309,8 +321,10 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
   foreach ($projects as $type => $type_projects) {
     foreach ($type_projects as $project) {
       if (make_project_needs_release_info($project)) {
-        // For convenience: define $request to be compatible with release_info engine.
-        // TODO: refactor to enforce 'make' to internally work with release_info keys.
+        // For convenience: define $request to be compatible with release_info
+        // engine.
+        // TODO: refactor to enforce 'make' to internally work with release_info
+        // keys.
         $request = make_prepare_request($project, $type);
         // Set the cache option based on our '--no-cache' option.
         $cache_before = drush_get_option('cache');
@@ -396,6 +410,9 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
   return TRUE;
 }
 
+/**
+ * Process all libraries specified in the make file.
+ */
 function make_libraries($contrib_destination, $info, $build_path) {
   if (empty($info['libraries'])) {
     return;
@@ -403,7 +420,7 @@ function make_libraries($contrib_destination, $info, $build_path) {
   $ignore_checksums = drush_get_option('ignore-checksums');
   foreach ($info['libraries'] as $key => $library) {
     if (!is_string($key) || !is_array($library)) {
-      // TODO Print a prettier message
+      // TODO Print a prettier message.
       continue;
     }
     // Merge the known data onto the library info.
@@ -423,6 +440,9 @@ function make_libraries($contrib_destination, $info, $build_path) {
   }
 }
 
+/**
+ * The path where the final build will be placed.
+ */
 function make_build_path($build_path) {
   static $saved_path;
   if (isset($saved_path)) {
@@ -450,6 +470,9 @@ function make_build_path($build_path) {
   return $build_path;
 }
 
+/**
+ * Move the completed build into place.
+ */
 function make_move_build($build_path) {
   $tmp_path = make_tmp();
   $ret = TRUE;
@@ -474,9 +497,9 @@ function make_move_build($build_path) {
 /**
  * Create a request array for use with release_info_fetch().
  *
- * @param $project
+ * @param array $project
  *   Project array.
- * @param $type
+ * @param string $type
  *   'contrib' or 'core'.
  */
 function make_prepare_request($project, $type = 'contrib') {
