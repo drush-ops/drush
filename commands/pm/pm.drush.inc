@@ -531,13 +531,22 @@ function drush_get_projects(&$extensions = NULL) {
  */
 function _drush_pm_find_common_path($project_type, $extensions) {
   // Select the first path as the candidate to be the common prefix.
-  $path = drupal_get_path($project_type, array_pop($extensions));
+  $extension = array_pop($extensions);
+  while (!($path = drupal_get_path($project_type, $extension))) {
+    drush_log(dt('Unknown path for !extension !type.', array('!extension' => $extension, '!type' => $project_type)), 'warning');
+    $extension = array_pop($extensions);
+  }
+
   // If there's only one extension we are done. Otherwise, we need to find
   // the common prefix for all of them.
   if (count($extensions) > 0) {
     // Iterate over the other projects.
     while($extension = array_pop($extensions)) {
       $path2 = drupal_get_path($project_type, $extension);
+      if (!$path2) {
+        drush_log(dt('Unknown path for !extension !type.', array('!extension' => $extension, '!type' => $project_type)), 'debug');
+        continue;
+      }
       // Option 1: same path.
       if ($path == $path2) {
         continue;
