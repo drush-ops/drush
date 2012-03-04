@@ -960,9 +960,11 @@ function drush_pm_disable() {
     foreach ($required as $module) {
       if (isset($modules[$module])) {
         unset($modules[$module]);
+        $info = $extension_info[$module]->info;
         // No message for hidden modules.
-        if (!isset($extension_info[$module]->info['hidden'])) {
-          drush_log(dt('!module is a required module and can\'t be disabled.', array('!module' => $module)), 'ok');
+        if (!isset($info['hidden'])) {
+          $explanation = !empty($info['explanation']) ? ' ' . dt('Reason: !explanation', array('!explanation' => strip_tags($info['explanation'])))  : '';
+          drush_log(dt('!module is a required module and can\'t be disabled.', array('!module' => $module)) . $explanation, 'ok');
         }
       }
     }
