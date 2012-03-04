@@ -498,7 +498,73 @@ function drush_get_projects(&$extensions = NULL) {
     $projects[$project]['extensions'][] = $extension->name;
   }
 
+  // Once we have all the extensions for each project, obtain projects' path.
+  $reserved = array('modules', 'sites', 'themes');
+  foreach ($projects as $name => $project) {
+    if ($name == 'drupal') {
+      continue;
+    }
+    drush_log(dt('Obtaining !project project path.', array('!project' => $name)), 'debug');
+    $path = _drush_pm_find_common_path($project['type'], $project['extensions']);
+    // Prevent from setting a reserved path. For example it may happen in a case
+    // where a module and a theme are declared as part of a same project.
+    // There's a special case, a project called "sites", this is the reason for
+    // the second condition here.
+    if ((in_array(basename($path), $reserved)) && (!in_array($name, $reserved))) {
+      drush_log(dt('Error while trying to find the common path for enabled extensions of project !project. Extensions are: !extensions.', array('!project' => $name, '!extensions' => implode(', ', $extensions))), 'error');
+    }
+    else {
+      $projects[$name]['path'] = $path;
+    }
+  }
+
   return $projects;
+}
+
+/**
+ * Helper function to find the common path for a list of extensions in the aim to obtain the project name.
+ *
+ * @param $project_type
+ *  Type of project we're trying to find. Valid values: module, theme.
+ * @param $extensions
+ *  Array of extension names.
+ */
+function _drush_pm_find_common_path($project_type, $extensions) {
+  // Select the first path as the candidate to be the common prefix.
+  $path = drupal_get_path($project_type, array_pop($extensions));
+  // If there's only one extension we are done. Otherwise, we need to find
+  // the common prefix for all of them.
+  if (count($extensions) > 0) {
+    // Iterate over the other projects.
+    while($extension = array_pop($extensions)) {
+      $path2 = drupal_get_path($project_type, $extension);
+      // Option 1: same path.
+      if ($path == $path2) {
+        continue;
+      }
+      // Option 2: $path is a prefix of $path2.
+      if (strpos($path2, $path) === 0) {
+        continue;
+      }
+      // Option 3: $path2 is a prefix of $path.
+      if (strpos($path, $path2) === 0) {
+        $path = $path2;
+        continue;
+      }
+      // Option 4: no one is a prefix of the other. Find the common
+      // prefix by iteratively strip the rigthtmost piece of $path.
+      // We will iterate until a prefix is found or path = '.', that on the
+      // other hand is a condition theorically impossible to reach.
+      do {
+        $path = dirname($path);
+        if (strpos($path2, $path) === 0) {
+          break;
+        }
+      } while ($path != '.');
+    }
+  }
+
+  return $path;
 }
 
 /**
@@ -1021,78 +1087,6 @@ function drush_pm_uninstall() {
   foreach ($modules as $module) {
     drush_log(dt('!module was successfully uninstalled.', array('!module' => $module)), 'ok');
   }
-}
-
-/**
- * Completes projects' update data with the path to install location on disk.
- *
- * Given an array of release info for available projects, find the path to the install location.
- */
-function _pm_get_project_path($data, $lookup) {
-  foreach ($data as $name => $release) {
-    if ($name == 'drupal') {
-      continue;
-    }
-    // Array of extensions (modules/themes) within the project.
-    $extensions = array_keys($release[$lookup]);
-    $path = _pm_find_common_path($release['project_type'], $extensions);
-    $reserved = array('modules', 'sites', 'themes');
-    if ((in_array(basename($path), $reserved)) && (!in_array($name, $reserved))) {
-      drush_log(dt('Error while trying to find the common path for enabled extensions of project !project. Extensions are: !extensions.', array('!project' => $name, '!extensions' => implode(', ', $extensions))), 'error');
-      unset($data[$name]);
-    }
-    else {
-      $data[$name]['path'] = $path;
-    }
-  }
-
-  return $data;
-}
-
-/**
- * Helper function to find the common path for a list of extensions in the aim to obtain the project name.
- *
- * @param $project_type
- *  Type of project we're trying to find. Valid values: module, theme.
- * @param $extensions
- *  Array of extension names.
- */
-function _pm_find_common_path($project_type, $extensions) {
-  // Select the first path as the candidate to be the common prefix.
-  $path = drupal_get_path($project_type, array_pop($extensions));
-  // If there's only one extension we are done. Otherwise, we need to find
-  // the common prefix for all of them.
-  if (count($extensions) > 0) {
-    // Iterate over the other projects.
-    while($extension = array_pop($extensions)) {
-      $path2 = drupal_get_path($project_type, $extension);
-      // Option 1: same path.
-      if ($path == $path2) {
-        continue;
-      }
-      // Option 2: $path is a prefix of $path2.
-      if (strpos($path2, $path) === 0) {
-        continue;
-      }
-      // Option 3: $path2 is a prefix of $path.
-      if (strpos($path, $path2) === 0) {
-        $path = $path2;
-        continue;
-      }
-      // Option 4: no one is a prefix of the other. Find the common
-      // prefix by iteratively strip the rigthtmost piece of $path.
-      // We will iterate until a prefix is found or path = '.', that on the
-      // other hand is a condition theorically impossible to reach.
-      do {
-        $path = dirname($path);
-        if (strpos($path2, $path) === 0) {
-          break;
-        }
-      } while ($path != '.');
-    }
-  }
-
-  return $path;
 }
 
 /**

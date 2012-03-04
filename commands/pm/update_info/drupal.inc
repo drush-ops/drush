@@ -106,19 +106,23 @@ function _pm_get_update_info($projects) {
       unset($data[$project_name]);
       continue;
     }
+    // Discard projects with unknown installation path.
+    if (!isset($projects[$project_name]['path'])) {
+      unset($data[$project_name]);
+      continue;
+    }
     // Allow to update disabled projects.
     if (in_array($project['project_type'], array('module-disabled', 'theme-disabled'))) {
       $data[$project_name]['project_type'] = substr($project['project_type'], 0, strpos($project['project_type'], '-'));
     }
-    // Set project label (title + name).
-    $data[$project_name]['label'] = $projects[$project_name]['label'];
-    // Set 'includes' key to all extensions. By default it only contain enabled
-    // extensions and _pm_get_project_path() needs all of them.
-    $data[$project_name]['includes'] = drupal_map_assoc($projects[$project_name]['extensions']);
+    // Add some info from the project to $data.
+    $data[$project_name] += array(
+      'path'  => $projects[$project_name]['path'],
+      'label' => $projects[$project_name]['label'],
+    );
     // Store all releases, not just the ones selected by update.module.
     $data[$project_name]['releases'] = $available[$project_name]['releases'];
   }
-  $data = _pm_get_project_path($data, 'includes');
 
   return $data;
 }

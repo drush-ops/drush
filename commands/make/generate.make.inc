@@ -115,7 +115,9 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
       $projects[$name]['custom_download'] = TRUE;
     }
     // Add 'subdir' if the project is installed in a non-default location.
-    $projects[$name] += _drush_generate_makefile_check_path($project);
+    if (isset($project['path'])) {
+      $projects[$name] += _drush_generate_makefile_check_path($project);
+    }
     // Add version number if this project's version is to be tracked.
     if (_drush_generate_track_version($name, $version_options) && $project["version"]) {
       $projects[$name]['version'] = preg_replace("/^" . DRUPAL_CORE_COMPATIBILITY . "-/", "", $project["version"]);
@@ -292,7 +294,7 @@ function _drush_generate_track_version($project, $version_options) {
 function _drush_generate_makefile_check_path($project) {
   $info = array();
   $type = $project['type'];
-  $path = dirname(_pm_find_common_path($type, $project['extensions']));
+  $path = dirname($project['path']);
   // Check to see if the path is in a subdir sites/all/modules or
   // profiles/profilename/modules
   if (preg_match('@^sites/[a-zA-Z0-9_]*/' . $type . 's/..*@', $path) || preg_match('@^sites/[a-zA-Z0-9_]*/' . $type . 's/..*@', $path)) {
