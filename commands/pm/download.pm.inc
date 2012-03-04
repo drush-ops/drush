@@ -74,7 +74,7 @@ function drush_pm_download_validate() {
  * Command callback. Download Drupal core or any project.
  */
 function drush_pm_download() {
-  if (!$requests = pm_parse_arguments(func_get_args(), FALSE, FALSE)) {
+  if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
 
