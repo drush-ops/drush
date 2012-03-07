@@ -269,6 +269,10 @@ function _pm_update_core(&$project, $tmpfile) {
       $skip_list[] = $item;
       unset($items_to_test[$item]);
     }
+    elseif (is_link($item)) {
+      $skip_list[] = $item;
+      unset($items_to_test[$item]);
+    }
   }
   $project['skip_list'] = $skip_list;
 
