@@ -1265,7 +1265,7 @@ function pm_parse_project_version($requests) {
     preg_match('/-+(HEAD|(?:(\d+\.x)-+)?(\d+\.[\dx]+.*))$/', $request, $matches);
     if (isset($matches[1])) {
       // The project is whatever we have prior to the version part of the request.
-      $project = strtolower(trim(substr($request, 0, strlen($request) - strlen($matches[0])), ' -'));
+      $project = trim(substr($request, 0, strlen($request) - strlen($matches[0])), ' -');
 
       if ($matches[1] == 'HEAD' || $matches[2] == 'HEAD') {
         drush_log('DRUSH_PM_HEAD', 'Can\'t download HEAD releases because Drupal.org project information only provides for numbered release nodes.', 'warning');
