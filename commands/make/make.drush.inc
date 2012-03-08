@@ -159,7 +159,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
     return FALSE;
   }
 
-  $info = drush_drupal_parse_info_file($makefile);
+  $info = make_parse_info_file($makefile);
   if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
     return FALSE;
   }

@@ -373,7 +373,7 @@ class DrushMakeProject {
     }
     drush_log(dt("Found makefile: %makefile", array("%makefile" => basename($makefile))), 'ok');
 
-    $info = drush_drupal_parse_info_file($makefile);
+    $info = make_parse_info_file($makefile);
     if (!($info = make_validate_info_file($info))) {
       return FALSE;
     }

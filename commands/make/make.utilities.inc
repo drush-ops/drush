@@ -5,6 +5,53 @@
  */
 
 /**
+ * Parse Drupal info file format.
+ *
+ * Copied with modifications from includes/common.inc.
+ *
+ * @see drupal_parse_info_file
+ */
+function make_parse_info_file($makefile, $parsed = TRUE) {
+  if (!($data = make_get_data($makefile))) {
+    return drush_set_error(dt('Invalid or empty make file: %makefile', array('%makefile' => $makefile)));
+  }
+  if (!($info = _drush_drupal_parse_info_file($data))) {
+    return FALSE;
+  }
+  if (!empty($info['includes'])) {
+    $include_path = dirname($makefile);
+    $includes = array();
+    if (!empty($info['includes']) && is_array($info['includes'])) {
+      foreach ($info['includes'] as $include) {
+        if (is_string($include)) {
+          if (make_valid_url($include, TRUE) && ($file = make_parse_info_file($include, FALSE))) {
+            $includes[] = $file;
+          }
+          elseif (file_exists($include_path . '/' . $include) && ($file = make_parse_info_file($include_path . '/' . $include, FALSE))) {
+            $includes[] = $file;
+          }
+          elseif (file_exists($include) && ($file = make_parse_info_file($include, FALSE))) {
+            $includes[] = $file;
+          }
+          else {
+            make_error('BUILD_ERROR', dt("Include file missing: %include", array('%include' => $include)));
+          }
+        }
+      }
+    }
+    $includes[] = $data;
+    $data = implode("\n", $includes);
+    $info = _drush_drupal_parse_info_file($data);
+  }
+  if ($parsed) {
+    return $info;
+  }
+  else {
+    return $data;
+  }
+}
+
+/**
  * Validate the make file.
  */
 function make_validate_info_file($info) {
