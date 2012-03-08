@@ -160,3 +160,113 @@ function drush_drupal_login($drush_user) {
 
   return TRUE;
 }
+
+/**
+ * Parse Drupal info file format.
+ *
+ * Copied with modifications from includes/common.inc.
+ *
+ * @see drupal_parse_info_file
+ */
+function drush_drupal_parse_info_file($makefile, $parsed = TRUE) {
+  if (!($data = make_get_data($makefile))) {
+    return drush_set_error(dt('Invalid or empty make file: %makefile', array('%makefile' => $makefile)));
+  }
+  if (!($info = _drush_drupal_parse_info_file($data))) {
+    return FALSE;
+  }
+  if (!empty($info['includes'])) {
+    $include_path = dirname($makefile);
+    $includes = array();
+    if (!empty($info['includes']) && is_array($info['includes'])) {
+      foreach ($info['includes'] as $include) {
+        if (is_string($include)) {
+          if (make_valid_url($include, TRUE) && ($file = drush_drupal_parse_info_file($include, FALSE))) {
+            $includes[] = $file;
+          }
+          elseif (file_exists($include_path . '/' . $include) && ($file = drush_drupal_parse_info_file($include_path . '/' . $include, FALSE))) {
+            $includes[] = $file;
+          }
+          elseif (file_exists($include) && ($file = drush_drupal_parse_info_file($include, FALSE))) {
+            $includes[] = $file;
+          }
+          else {
+            make_error('BUILD_ERROR', dt("Include file missing: %include", array('%include' => $include)));
+          }
+        }
+      }
+    }
+    $includes[] = $data;
+    $data = implode("\n", $includes);
+    $info = _drush_drupal_parse_info_file($data);
+  }
+  if ($parsed) {
+    return $info;
+  }
+  else {
+    return $data;
+  }
+}
+
+/**
+ * Parse the make file.
+ */
+function _drush_drupal_parse_info_file($data) {
+  if (!$data) {
+    return FALSE;
+  }
+
+  if (preg_match_all('
+    @^\s*                           # Start at the beginning of a line, ignoring leading whitespace
+    ((?:
+      [^=;\[\]]|                    # Key names cannot contain equal signs, semi-colons or square brackets,
+      \[[^\[\]]*\]                  # unless they are balanced and not nested
+    )+?)
+    \s*=\s*                         # Key/value pairs are separated by equal signs (ignoring white-space)
+    (?:
+      ("(?:[^"]|(?<=\\\\)")*")|     # Double-quoted string, which may contain slash-escaped quotes/slashes
+      (\'(?:[^\']|(?<=\\\\)\')*\')| # Single-quoted string, which may contain slash-escaped quotes/slashes
+      ([^\r\n]*?)                   # Non-quoted string
+    )\s*$                           # Stop at the next end of a line, ignoring trailing whitespace
+    @msx', $data, $matches, PREG_SET_ORDER)) {
+    $info = array();
+    foreach ($matches as $match) {
+      // Fetch the key and value string.
+      $i = 0;
+      foreach (array('key', 'value1', 'value2', 'value3') as $var) {
+        $$var = isset($match[++$i]) ? $match[$i] : '';
+      }
+      $value = stripslashes(substr($value1, 1, -1)) . stripslashes(substr($value2, 1, -1)) . $value3;
+
+      // Parse array syntax.
+      $keys = preg_split('/\]?\[/', rtrim($key, ']'));
+      $last = array_pop($keys);
+      $parent = &$info;
+
+      // Create nested arrays.
+      foreach ($keys as $key) {
+        if ($key == '') {
+          $key = count($parent);
+        }
+        if (!isset($parent[$key]) || !is_array($parent[$key])) {
+          $parent[$key] = array();
+        }
+        $parent = &$parent[$key];
+      }
+
+      // Handle PHP constants.
+      if (defined($value)) {
+        $value = constant($value);
+      }
+
+      // Insert actual value.
+      if ($last == '') {
+        $last = count($parent);
+      }
+      $parent[$last] = $value;
+    }
+    return $info;
+  }
+  return FALSE;
+}
+
