@@ -92,7 +92,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
 
     return $path;
   }
-  
+
   /*
    *Borrowed from Drush.
    * Checks operating system and returns
@@ -457,23 +457,26 @@ function unish_init() {
   define('UNISH_TMP', getenv('UNISH_TMP') ? getenv('UNISH_TMP') : (isset($GLOBALS['UNISH_TMP']) ? $GLOBALS['UNISH_TMP'] : sys_get_temp_dir()));
   define('UNISH_SANDBOX', UNISH_TMP . DIRECTORY_SEPARATOR . 'drush-sandbox');
 
+  // Cache dir lives outside the sandbox so that we get persistence across classes.
+  define('UNISH_CACHE', UNISH_TMP . DIRECTORY_SEPARATOR . 'drush-cache');
+  putenv("CACHE_PREFIX=" . UNISH_CACHE);
+  // Wipe at beginning of run.
+  if (file_exists(UNISH_CACHE)) {
+    // TODO: We no longer clean up cache dir between runs. Much faster, but we
+    // we should watch for subtle problems. To manually clean up, delete the
+    // UNISH_TMP/drush-cache directory.
+    // unish_file_delete_recursive($cache);
+  }
+  else {
+    $ret = mkdir(UNISH_CACHE, 0777, TRUE);
+  }
+
   $home = UNISH_SANDBOX . '/home';
   putenv("HOME=$home");
   putenv("HOMEDRIVE=$home");
 
   putenv('ETC_PREFIX=' . UNISH_SANDBOX);
   putenv('SHARE_PREFIX=' . UNISH_SANDBOX);
-
-  // Cache dir lives outside the sandbox so that we get persistence across classes.
-  $cache = UNISH_TMP . '/drush-cache';
-  putenv("CACHE_PREFIX=" . $cache);
-  // Wipe at beginning of run.
-  if (file_exists($cache)) {
-    // TODO: We no longer clean up cache dir between runs. Much faster, but we
-    // we should watch for subtle problems. To manually clean up, delete the
-    // UNISH_TMP/drush-cache directory.
-    // unish_file_delete_recursive($cache);
-  }
 
   define('UNISH_BACKEND_OUTPUT_DELIMITER', 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END');
 }
