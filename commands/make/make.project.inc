@@ -76,22 +76,41 @@ class DrushMakeProject {
     // $this->download so that the download backend has access to it, too.
     if (!empty($this->version) && empty($this->download['full_version'])) {
       $full_version = '';
-      // If the version doesn't already define a core version, prepend it.
-      if (!preg_match('/\d+\.x-\d+.*/', $this->version)) {
-        $full_version = $this->core . '-';
-      }
-      $full_version .= $this->version;
-      // If the project-level version attribute is just a number it's
-      // a major version.
       $matches = array();
-      if (preg_match('/\d+(\.x)?$/', $this->version, $matches)) {
-        // If there's no '.x' already, append it.
-        if (empty($matches[1])) {
-          $full_version .= '.x';
+      // Core needs different conversion rules than contrib.
+      if (!empty($this->type) && $this->type == 'core') {
+        // Generally, the version for core is already set properly.
+        $full_version = $this->version;
+        // However, it might just be something like '7' or '7.x', in which
+        // case we need to turn that into '7.x-dev';
+        if (preg_match('/^\d+(\.x)?$/', $this->version, $matches)) {
+          // If there's no '.x' already, append it.
+          if (empty($matches[1])) {
+            $full_version .= '.x';
+          }
+          $full_version .= '-dev';
         }
-        $full_version .= '-dev';
       }
-
+      // Contrib.
+      else {
+        // If the version doesn't already define a core version, prepend it.
+        if (!preg_match('/^\d+\.x-\d+.*$/', $this->version)) {
+          // Just find the major version from $this->core so we don't end up
+          // with version strings like '7.12-2.0'.
+          $core_parts = explode('.', $this->core);
+          $full_version = $core_parts[0] . '.x-';
+        }
+        $full_version .= $this->version;
+        // If the project-level version attribute is just a number it's a major
+        // version.
+        if (preg_match('/^\d+(\.x)?$/', $this->version, $matches)) {
+          // If there's no '.x' already, append it.
+          if (empty($matches[1])) {
+            $full_version .= '.x';
+          }
+          $full_version .= '-dev';
+        }
+      }
       $this->download['full_version'] = $full_version;
     }
 
