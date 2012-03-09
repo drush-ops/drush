@@ -905,6 +905,8 @@ function drush_pm_enable() {
   if (!empty($problem_extensions)) {
     return drush_set_error('DRUSH_PM_ENABLE_EXTENSION_ISSUE', dt('There was a problem enabling !extension.', array('!extension' => implode(',', $problem_extensions))));
   }
+  // Return the list of extensions enabled
+  return $extensions;
 }
 
 /**
