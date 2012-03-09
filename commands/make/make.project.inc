@@ -408,6 +408,9 @@ class DrushMakeProject {
  * For processing Drupal core projects.
  */
 class DrushMakeProject_Core extends DrushMakeProject {
+  /**
+   * Override constructor for core to properly set contrib destination.
+   */
   protected function __construct(&$project) {
     parent::__construct($project);
     $this->contrib_destination = '';
@@ -438,6 +441,9 @@ class DrushMakeProject_Core extends DrushMakeProject {
  * For processing libraries.
  */
 class DrushMakeProject_Library extends DrushMakeProject {
+  /**
+   * Override constructor for libraries to properly set contrib destination.
+   */
   protected function __construct(&$project) {
     parent::__construct($project);
     // Allow libraries to specify where they should live in the build path.
@@ -466,6 +472,9 @@ class DrushMakeProject_Library extends DrushMakeProject {
  * For processing modules.
  */
 class DrushMakeProject_Module extends DrushMakeProject {
+  /**
+   * Override constructor for modules to properly set contrib destination.
+   */
   protected function __construct(&$project) {
     parent::__construct($project);
     $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . 'modules';
@@ -476,6 +485,10 @@ class DrushMakeProject_Module extends DrushMakeProject {
  * For processing installation profiles.
  */
 class DrushMakeProject_Profile extends DrushMakeProject {
+  /**
+   * Override contructor for installation profiles to properly set contrib
+   * destination.
+   */
   protected function __construct(&$project) {
     parent::__construct($project);
     $this->contrib_destination = (!empty($this->destination) ? $this->destination : 'profiles');
@@ -493,6 +506,9 @@ class DrushMakeProject_Profile extends DrushMakeProject {
  * For processing themes.
  */
 class DrushMakeProject_Theme extends DrushMakeProject {
+  /**
+   * Override contructor for themes to properly set contrib destination.
+   */
   protected function __construct(&$project) {
     parent::__construct($project);
     $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . 'themes';
@@ -503,6 +519,9 @@ class DrushMakeProject_Theme extends DrushMakeProject {
  * For processing translations.
  */
 class DrushMakeProject_Translation extends DrushMakeProject {
+  /**
+   * Override constructor for translations to properly set contrib destination.
+   */
   protected function __construct(&$project) {
     parent::__construct($project);
     switch ($project['core']) {
