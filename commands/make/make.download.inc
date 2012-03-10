@@ -111,19 +111,30 @@ function drush_mime_content_type($filename) {
     return 'application/x-tar';
   }
 
+  $content_type = '';
+
   // mime_content_type() and the finfo class are not available everywhere.
   if (function_exists('mime_content_type')) {
-    return mime_content_type($filename);
+    $content_type = mime_content_type($filename);
   }
   elseif (class_exists('finfo')) {
     $finfo = new finfo(FILEINFO_MIME);
     // We only want the first part, before the ;
     $type = explode(';', $finfo->file($filename));
-    return $type[0];
+    $content_type = $type[0];
   }
-  elseif ($file = fopen($filename, 'rb')) {
-    // If PHP's built-ins aren't present, we'll detect (a few select) mime
-    // types on our own by examing the file's magic header bytes.
+
+  // If we found what we're looking for, we're done.
+  if (!empty($content_type) && ($content_type == 'application/x-gzip' || $content_type == 'application/x-zip')) {
+    return $content_type;
+  }
+
+  // If PHP's built-ins aren't present or PHP is configured in such a way that
+  // all these files are considered octet-stream (e.g with mod_mime_magic and
+  // an http conf that's serving all archives as octet-stream for other
+  // reasons) we'll detect (a few select) mime types on our own by examing the
+  // file's magic header bytes.
+  if ($file = fopen($filename, 'rb')) {
     $first = fread($file, 2);
     fclose($file);
 
@@ -145,8 +156,9 @@ function drush_mime_content_type($filename) {
         return 'application/zip';
 
       default:
-        // Not a file type we can detect.
-        return 'unknown';
+        // Not a file type we can detect. If PHP's built-ins gave us
+        // something, we can at least return that.
+        return !empty($content_type) ? $content_type : 'unknown';
     }
   }
   return FALSE;
