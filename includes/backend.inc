@@ -771,6 +771,12 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
     $drush_local_options = $backend_options['drush-local-options'];
     $command_options += $drush_local_options;
   }
+  if (!empty($backend_options['backend']) && empty($backend_options['interactive'])) {
+    $drush_global_options['backend'] = '2';
+  }
+  if (!empty($backend_options['interactive'])) {
+    $drush_global_options['invoke'] = TRUE;
+  }
   foreach ($command_options as $key => $value) {
     $global = array_key_exists($key, $global_option_list);
     $propagate = TRUE;
@@ -973,12 +979,6 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   $option_str = _drush_backend_argument_string($command_options, $os);
   if (!empty($option_str)) {
     $cmd[] = " " . $option_str;
-  }
-  if (!empty($backend_options['backend']) && empty($backend_options['interactive'])) {
-    $cmd[] = "--backend=2";
-  }
-  if (!empty($backend_options['interactive'])) {
-    $cmd[] .= '--invoke';
   }
   $command = implode(' ', array_filter($cmd, 'strlen'));
   if (!is_null($hostname)) {
