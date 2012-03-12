@@ -511,7 +511,11 @@ function drush_get_projects(&$extensions = NULL) {
     // There's a special case, a project called "sites", this is the reason for
     // the second condition here.
     if ((in_array(basename($path), $reserved)) && (!in_array($name, $reserved))) {
-      drush_log(dt('Error while trying to find the common path for enabled extensions of project !project. Extensions are: !extensions.', array('!project' => $name, '!extensions' => implode(', ', $extensions))), 'error');
+      $extension_list = array();
+      foreach ($extensions as $extension) {
+        $extension_list[] = $extension->name;
+      }
+      drush_log(dt('Error while trying to find the common path for enabled extensions of project !project. Extensions are: !extensions.', array('!project' => $name, '!extensions' => implode(', ', $extension_list))), 'error');
     }
     else {
       $projects[$name]['path'] = $path;
