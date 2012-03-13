@@ -92,6 +92,9 @@ function drush_delete_dir($dir, $force = FALSE) {
     if ($item == '.' || $item == '..') {
       continue;
     }
+    if ($force) {
+      @chmod($dir, 0777);
+    }
     if (!drush_delete_dir($dir . '/' . $item, $force)) {
       return FALSE;
     }
