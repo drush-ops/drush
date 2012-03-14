@@ -350,7 +350,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
     if (!isset($no_sync)) {
       // If the source file is a temporary file, then we will have rsync
       // delete it for us (remove-source-files option set above).
-      if (!drush_core_call_rsync($source_remote_user . $source_at . $source_db_url['remote-host'] . ':' . $source_dump, $local_file, $source_rsync_options)) {
+      if (!drush_core_call_rsync($source_remote_user . $source_at . $source_db_url['remote-host'] . ':' . $source_dump, drush_correct_absolute_path_for_exec($local_file, "RSYNC"), $source_rsync_options)) {
         return FALSE;
       }
     }
@@ -409,7 +409,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
           $target_remote_pass = array_key_exists('remote-pass', $destination_settings) ? ':' . $destination_settings['remote-pass'] : '';
         }
 
-        if (!drush_core_call_rsync($local_file, $target_remote_user . $target_at . $target_db_url['remote-host'] . ':' . $target_dump, $target_rsync_options)) {
+        if (!drush_core_call_rsync(drush_correct_absolute_path_for_exec($local_file, "RSYNC"), $target_remote_user . $target_at . $target_db_url['remote-host'] . ':' . $target_dump, $target_rsync_options)) {
           return FALSE;
         }
 
