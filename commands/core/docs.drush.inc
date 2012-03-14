@@ -167,6 +167,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/sync_enable.drush.inc'),
   );
+  $items['docs-example-sync-via-http'] = array(
+    'description' => 'Example Drush commandfile that extends sql-sync to allow transfer of the sql dump file via http rather than ssh and rsync.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array($docs_dir . '/examples/sync_via_http.drush.inc'),
+  );
   $items['docs-policy'] = array(
     'description' => 'Example policy file.',
     'hidden' => TRUE,
