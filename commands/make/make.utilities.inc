@@ -52,6 +52,76 @@ function make_parse_info_file($makefile, $parsed = TRUE) {
 }
 
 /**
+ * Remove entries in the info file in accordance with the options passed in.
+ * Entries are either explicitly 'allowed' (with the $include_only parameter) in
+ * which case all *other* entries will be excluded.
+ *
+ * @param array $info
+ *   A parsed info file.
+ *
+ * @param array $include_only
+ *   (Optional) Array keyed by entry type (e.g. 'libraries') against an array of
+ *   allowed keys for that type. The special value '*' means 'all entries of
+ *   this type'. If this parameter is omitted, no entries will be excluded.
+ *
+ * @return array
+ *   The $info array, pruned if necessary.
+ */
+function make_prune_info_file($info, $include_only = array()) {
+
+  // We may get passed FALSE in some cases.
+  // Also we cannot prune an empty array, so no point in this code running!
+  if (empty($info)) {
+    return $info;
+  }
+
+  // We will accrue an explanation of our activities here.
+  $msg = array();
+  $msg['scope'] = dt("Drush make restricted to the following entries:");
+
+  $pruned = FALSE;
+
+  if (count(array_filter($include_only))) {
+    $pruned = TRUE;
+    foreach ($include_only as $type => $keys) {
+
+      // For translating
+      // dt("Projects");
+      // dt("Libraries");
+      $type_title = dt(ucfirst($type));
+
+      // Handle the special '*' value.
+      if (in_array('*', $keys)) {
+        $msg[$type] = dt("!entry_type: <All>", array('!entry_type' => $type_title));
+      }
+
+      // Handle a (possibly empty) array of keys to include/exclude.
+      else {
+        $info[$type] = array_intersect_key($info[$type], array_fill_keys($keys, 1));
+        unset($msg[$type]);
+        if (!empty($info[$type])) {
+          $msg[$type] = dt("!entry_type: %make_entries", array('!entry_type' => $type_title, '%make_entries' => implode(', ', array_keys($info[$type]))));
+        }
+      }
+    }
+  }
+
+  if ($pruned) {
+    // Make it clear to the user what's going on.
+    drush_log(implode("\n", $msg), 'ok');
+
+    // Throw an error if these restrictions reduced the make to nothing.
+    if (empty($info['projects']) && empty($info['libraries'])) {
+      // This error mentions the options explicitly to make it as clear as
+      // possible to the user why this error has occurred.
+      make_error('BUILD_ERROR', dt("All projects and libraries have been excluded. Review the 'projects' and 'libraries' options."));
+    }
+  }
+
+  return $info;
+}
+
+/**
  * Validate the make file.
  */
 function make_validate_info_file($info) {

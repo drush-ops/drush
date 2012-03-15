@@ -218,6 +218,16 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('file-extract');
   }
 
+  function testMakeLimitProjects() {
+    $this->runMakefileTest('limit-projects');
+    $this->runMakefileTest('limit-projects-multiple');
+  }
+
+  function testMakeLimitLibraries() {
+    $this->runMakefileTest('limit-libraries');
+    $this->runMakefileTest('limit-libraries-multiple');
+  }
+
   function getMakefile($key) {
     static $tests = array(
       'get' => array(
@@ -342,6 +352,34 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'md5' => 'a7d0c50e7fb166ab717507e3797f5cbf',
         // @todo This test often fails with concurrency set to more than one.
         'options'  => array('no-core' => NULL, 'concurrency' => 1),
+      ),
+      'limit-projects' => array(
+        'name'     => 'Limit projects downloaded',
+        'makefile' => 'limited-projects-libraries.make',
+        'build'    => TRUE,
+        'md5' => '3149650120e541d7d0fa577eef0ee9a3',
+        'options'  => array('no-core' => NULL, 'projects' => 'boxes'),
+      ),
+      'limit-projects-multiple' => array(
+        'name'     => 'Limit multiple projects downloaded',
+        'makefile' => 'limited-projects-libraries.make',
+        'build'    => TRUE,
+        'md5' => 'ef8996c4d6c6f0d229e2237c73860071',
+        'options'  => array('no-core' => NULL, 'projects' => 'boxes,admin_menu'),
+      ),
+      'limit-libraries' => array(
+        'name'     => 'Limit libraries downloaded',
+        'makefile' => 'limited-projects-libraries.make',
+        'build'    => TRUE,
+        'md5' => 'cb0da4465d86eb34cafb167787862eb6',
+        'options'  => array('no-core' => NULL, 'libraries' => 'drush_make'),
+      ),
+      'limit-libraries-multiple' => array(
+        'name'     => 'Limit multiple libraries downloaded',
+        'makefile' => 'limited-projects-libraries.make',
+        'build'    => TRUE,
+        'md5' => '7c10e6fc65728a77a2b0aed4ec2a29cd',
+        'options'  => array('no-core' => NULL, 'libraries' => 'drush_make,token'),
       ),
     );
     return $tests[$key];

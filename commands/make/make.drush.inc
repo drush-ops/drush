@@ -60,6 +60,14 @@ function make_drush_command() {
       'translations' => 'Retrieve translations for the specified comma-separated list of language(s) if available for all projects.',
       'working-copy' => 'Preserves VCS directories, like .git, for projects downloaded using such methods.',
       'download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
+      'projects' => array(
+        'description' => 'Restrict the make to this comma-separated list of projects. To specify all projects, pass *.',
+        'example' => 'views,ctools',
+      ),
+      'libraries' => array(
+        'description' => 'Restrict the make to this comma-separated list of libraries. To specify all libraries, pass *.',
+        'example' => 'tinymce',
+      ),
     ),
     'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
@@ -160,6 +168,14 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   }
 
   $info = make_parse_info_file($makefile);
+
+  // Support making just a portion of a make file.
+  $include_only = array(
+    'projects' => array_filter(drush_get_option_list('projects')),
+    'libraries' => array_filter(drush_get_option_list('libraries')),
+  );
+  $info = make_prune_info_file($info, $include_only);
+
   if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
     return FALSE;
   }
