@@ -167,6 +167,10 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('file');
   }
 
+  function testMakeSubtree() {
+    $this->runMakefileTest('subtree');
+  }
+
   function testMakeMd5Succeed() {
     $this->runMakefileTest('md5-succeed');
   }
@@ -321,6 +325,13 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'makefile' => 'file.make',
         'build'    => TRUE,
         'md5' => 'c7cab3930f644961a576d78769498172',
+        'options'  => array('no-core' => NULL),
+      ),
+      'subtree' => array(
+        'name'     => 'Use subtree from downloaded archive',
+        'makefile' => 'subtree.make',
+        'build'    => TRUE,
+        'md5' => '840ece0ec28834182054c49c4b7a204a',
         'options'  => array('no-core' => NULL),
       ),
       'md5-succeed' => array(

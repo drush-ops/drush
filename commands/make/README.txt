@@ -177,6 +177,9 @@ Do not use both types of declarations for a single project in your makefile.
 
   `filename` - What to name the file, if it's not an archive. Optional.
 
+  `subtree`  - if the download is an archive, only this subtree within the
+  archive will be copied to the target destination. Optional.
+
 - `download[type] = bzr`
 
   Use a bazaar repository as the source for this project. Options:

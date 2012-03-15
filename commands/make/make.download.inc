@@ -69,7 +69,9 @@ function make_download_file($name, $download, $download_location, $cache_duratio
       return FALSE;
     }
     drush_log(dt('@project downloaded from @url.', array('@project' => $name, '@url' => $download['url'])), 'ok');
-    return make_download_file_unpack($filename, $download_location, (isset($download['filename']) ? $download['filename'] : ''));
+    $download_filename = isset($download['filename']) ? $download['filename'] : '';
+    $subtree = isset($download['subtree']) ? $download['subtree'] : NULL;
+    return make_download_file_unpack($filename, $download_location, $download_filename, $subtree);
   }
   make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @url.', array('@project' => $name, '@url' => $download['url'])));
   return FALSE;
@@ -170,22 +172,22 @@ function drush_mime_content_type($filename) {
  * @return mixed
  *   The download location on success, FALSE on failure.
  */
-function make_download_file_unpack($filename, $download_location, $name) {
+function make_download_file_unpack($filename, $download_location, $name, $subtree = NULL) {
   $success = FALSE;
 
   switch (drush_mime_content_type($filename)) {
     case 'application/x-gzip':
       // I'd like to just use tar -z, but apparently it breaks on windoze. Why
       // do they always have to ruin everything?
-      $success = make_download_file_unpack_gzip($filename, $download_location);
+      $success = make_download_file_unpack_gzip($filename, $download_location, $subtree);
       break;
 
     case 'application/x-tar':
-      $success = make_download_file_unpack_tar($filename, $download_location);
+      $success = make_download_file_unpack_tar($filename, $download_location, $subtree);
       break;
 
     case 'application/zip':
-      $success = make_download_file_unpack_zip($filename, $download_location);
+      $success = make_download_file_unpack_zip($filename, $download_location, $subtree);
       break;
 
     default:
@@ -203,15 +205,15 @@ function make_download_file_unpack($filename, $download_location, $name) {
  * @return boolean
  *   TRUE or FALSE depending on whether the operation was successful.
  */
-function make_download_file_unpack_tar($filename, $download_location) {
-  $tmp_path = make_tmp();
+function make_download_file_unpack_tar($filename, $download_location, $subtree = NULL) {
+  $tmp_path = make_tmp() . '/__untar__';
 
   list($main_directory) = array_reverse(explode('/', $download_location));
 
-  drush_mkdir($tmp_path . '/__unzip__');
-  drush_shell_exec('tar -x -C %s -f %s', $tmp_path . '/__unzip__', $filename);
+  drush_mkdir($tmp_path);
+  drush_shell_exec('tar -x -C %s -f %s', $tmp_path, $filename);
 
-  return _make_download_file_move($tmp_path, $filename, $download_location);
+  return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
 }
 
 /**
@@ -220,7 +222,7 @@ function make_download_file_unpack_tar($filename, $download_location) {
  * @return boolean
  *   TRUE or FALSE depending on whether the operation was successful.
  */
-function make_download_file_unpack_gzip($filename, $download_location) {
+function make_download_file_unpack_gzip($filename, $download_location, $subtree = NULL) {
   // Find out where contents will end up. Retrieve last column of output using
   // awk.
   drush_shell_exec("gzip --list %s", $filename);
@@ -237,7 +239,7 @@ function make_download_file_unpack_gzip($filename, $download_location) {
     if (isset($file)) {
       // Unzip it and then delete the tar file.
       drush_shell_exec('gzip -d %s', $filename);
-      return make_download_file_unpack_tar($file, $download_location);
+      return make_download_file_unpack_tar($file, $download_location, $subtree);
     }
   }
 }
@@ -245,15 +247,15 @@ function make_download_file_unpack_gzip($filename, $download_location) {
 /**
  * Unpack a zip file.
  */
-function make_download_file_unpack_zip($filename, $download_location) {
-  $tmp_path = make_tmp();
+function make_download_file_unpack_zip($filename, $download_location, $subtree = NULL) {
+  $tmp_path = make_tmp() . '/__unzip__';
 
   list($main_directory) = array_reverse(explode('/', $download_location));
 
-  drush_mkdir($tmp_path . '/__unzip__');
-  drush_shell_exec("unzip %s -d %s", $filename, $tmp_path . '/__unzip__');
+  drush_mkdir($tmp_path);
+  drush_shell_exec("unzip %s -d %s", $filename, $tmp_path);
 
-  return _make_download_file_move($tmp_path, $filename, $download_location);
+  return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
 }
 
 /**
@@ -262,21 +264,21 @@ function make_download_file_unpack_zip($filename, $download_location) {
  * TODO merge with core drush methods, as the __unzip__ directory will
  * potentially cause problems when running concurrently.
  */
-function _make_download_file_move($tmp_path, $filename, $download_location) {
-  drush_shell_exec('ls %s', $tmp_path . '/__unzip__');
+function _make_download_file_move($tmp_path, $filename, $download_location, $subtree = NULL) {
+  drush_shell_exec('ls %s', $tmp_path);
   $lines = drush_shell_exec_output();
   $main_directory = basename($download_location);
   if (count($lines) == 1) {
     $directory = array_shift($lines);
     if ($directory != $main_directory) {
-      drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__/' . $directory, $tmp_path . '/__unzip__/' . $main_directory);
+      drush_shell_exec('mv %s %s', $tmp_path . '/' . $directory, $tmp_path . '/' . $main_directory);
     }
-    drush_shell_exec('cp -Rf %s %s', $tmp_path . '/__unzip__/' . $main_directory, dirname($download_location));
-    drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__');
+    drush_shell_exec('cp -Rf %s %s', $tmp_path . '/' . $main_directory . '/' . $subtree, dirname($download_location));
+    drush_shell_exec('rm -rf %s', $tmp_path);
   }
   elseif (count($lines) > 1) {
     drush_shell_exec('rm -rf %s', $download_location);
-    drush_shell_exec('mv %s %s', $tmp_path . '/__unzip__', $download_location);
+    drush_shell_exec('mv %s %s', $tmp_path . '/' . $subtree, $download_location);
   }
 
   // Remove the tarball.
@@ -284,8 +286,8 @@ function _make_download_file_move($tmp_path, $filename, $download_location) {
     drush_shell_exec('rm %s', $filename);
   }
 
-  if (file_exists($tmp_path . '/__unzip__')) {
-    drush_shell_exec('rm -rf %s', $tmp_path . '/__unzip__');
+  if (file_exists($tmp_path)) {
+    drush_shell_exec('rm -rf %s', $tmp_path);
   }
   return TRUE;
 }
