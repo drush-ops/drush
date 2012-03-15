@@ -49,6 +49,10 @@ function package_handler_download_project(&$request, $release) {
   $filename = explode('/', $release['download_link']);
   $filename = array_pop($filename);
 
+  // Chdir to the download location.
+  $olddir = getcwd();
+  drush_op('chdir', $request['base_project_path']);
+
   // Download the project.
   if (!drush_shell_exec("wget -P . %s", $release['download_link'])) {
     drush_shell_exec("curl -O %s", $release['download_link']);
@@ -57,6 +61,7 @@ function package_handler_download_project(&$request, $release) {
     drush_log("Downloading " . $filename . " was successful.");
   }
   else {
+    drush_op('chdir', $olddir);
     return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', 'Unable to download ' . $filename . ' to ' . $request['base_project_path'] . ' from '. $release['download_link']);
   }
 
@@ -73,17 +78,20 @@ function package_handler_download_project(&$request, $release) {
   // Extract the tarball.
   $file_list = drush_tarball_extract($filename, $request['base_project_path'], TRUE);
   drush_op('unlink', $filename);
+  drush_op('chdir', $olddir);
 
   // Move untarred directory to project_dir, if distinct.
   if (($request['project_type'] == 'core') || (($request['project_type'] == 'profile') && (drush_get_option('variant', 'core') == 'core'))) {
     // Obtain the dodgy project_dir for drupal core.
-
     $project_dir = rtrim($file_list[0], DIRECTORY_SEPARATOR);
     if ($request['project_dir'] != $project_dir) {
       $path = $request['base_project_path'];
       drush_move_dir($path . '/'. $project_dir, $path . '/' . $request['project_dir']);
     }
   }
+
+  // Cleanup. Set previous working directory.
+  drush_op('chdir', $olddir);
 
   return TRUE;
 }
