@@ -33,6 +33,7 @@ function make_drush_command() {
     'examples' => array(
       'drush make example.make example' => 'Build the example.make makefile in the example directory.',
       'drush make --no-core --contrib-destination=. installprofile.make' => 'Build an installation profile within an existing Drupal site',
+      'drush make http://example.com/example.make example' => 'Build the remote example.make makefile in the example directory.',
     ),
     'options' => array(
       'version' => 'Print the make API version and exit.',
