@@ -268,6 +268,7 @@ function drush_sql_dump_execute() {
   drush_sql_bootstrap_further();
   list($exec, $file) = drush_sql_dump();
   // Avoid the php memory of the $output array in drush_shell_exec().
+
   if (!$return = drush_op_system($exec)) {
     if ($file) {
       drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
@@ -440,15 +441,20 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
       }
       break;
     case 'sqlsrv':
-      $exec = "echo 'sqlsrv sql-dump not yet supported'";
+      // Change variable '$file' by reference in order to get drush_log() to report.
+      if (!$file) {
+        $file = $db_spec['database'] . '_' . date('Ymd_His') . '.bak';
+      }
+      $exec =  "sqlcmd -U \"" . $db_spec['username'] . "\" -P \"" . $db_spec['password'] . "\" -S \"" . $db_spec['host'] . "\" -Q \"BACKUP DATABASE [" . $db_spec['database'] . "] TO DISK='" . $file . "'\"";
       break;
     case 'oracle':
       $create_db = drush_get_option('create-db');
       $exec = 'exp ' . _drush_sql_get_credentials($db_spec);
-      if ($file)
-        $exec .= ' file=' . $file;
-      else
-        $exec .= ' file=' . $db_spec['username'] . '.dmp';
+      // Change variable '$file' by reference in order to get drush_log() to report.
+      if (!$file) {
+        $file = $db_spec['username'] . '.dmp';
+      }
+      $exec .= ' file=' . $file;
 
       if (!empty($tables))
         $exec .= ' tables="(' . implode(',', $tables) . ')"';
