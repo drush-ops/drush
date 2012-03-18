@@ -194,10 +194,14 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
       // Cases 1.) - 4.):
       // We will check for a site specification if the alias has at least
       // two characters from the set '@', '/', '#'.
-      if ((strpos($alias, '@') === FALSE ? 0 : 1) + (strpos($alias, '/') === FALSE ? 0 : 1) + (strpos($alias, '#') === FALSE ? 0 : 1) >= 2) {
-        if ((substr($alias,0,7) != 'http://') && (substr($alias,0,1) != '/')) {
+      if ((strpos($alias, '@') === FALSE ? 0 : 1) + ((strpos($alias, '/') === FALSE && strpos($alias, '\\') === FALSE) ? 0 : 1) + (strpos($alias, '#') === FALSE ? 0 : 1) >= 2) {
+        if ((substr($alias,0,7) != 'http://') && !drush_is_absolute_path($alias)) {
           // Add on a scheme so that "user:pass@server" will always parse correctly
           $parsed = parse_url('http://' . $alias);
+        }
+        else if (drush_is_windows() && drush_is_absolute_path($alias)) {
+          // On windows if alias begins with a filesystem path we must add file:// scheme to make it parse correcly
+          $parsed = parse_url('file:///' . $alias);
         }
         else {
           $parsed = parse_url($alias);
@@ -297,7 +301,12 @@ function drush_sitealias_add_to_alias_path($add_path) {
 
   if ($add_path != NULL) {
     if (!is_array($add_path)) {
-      $add_path = explode(':', $add_path);
+      $add_path = explode(PATH_SEPARATOR, $add_path);
+    }
+    // Normalize path to make sure we don't add the same path twice on
+    // windows due to different spelling. e.g. c:\tmp and c:/tmp
+    foreach($add_path as &$path) {
+      $path = drush_normalize_path($path);
     }
     $site_paths = array_unique(array_merge($site_paths, $add_path));
   }
@@ -1422,7 +1431,12 @@ function drush_sitealias_site_dir_from_filename($site_settings_file) {
  *   A directory, such as domain.com.8080.drupal
  */
 function drush_sitealias_uri_to_site_dir($uri) {
-  return str_replace(array('http://', '/', ':'), array('', '.', '.'), $uri);
+  $uri = str_replace('http://', '', $uri);
+  if (drush_is_windows()) {
+    // Handle absolute paths on windows
+    $uri = str_replace(array(':/', ':\\'), array('.', '.'), $uri);
+  }
+  return str_replace(array('/', ':', '\\'), array('.', '.', '.'), $uri);
 }
 
 /**

@@ -66,6 +66,19 @@ function drush_trim_path($path, $os = NULL) {
 }
 
 /**
+ * Makes sure the path has only path separators native for the current operating system
+ */
+function drush_normalize_path($path) {
+  if (drush_is_windows()) {
+    $path = str_replace('/', '\\',  strtolower($path));
+  }
+  else {
+    $path = str_replace('\\', '/', $path);
+  }
+  return drush_trim_path($path);
+}
+
+/**
  * Deletes the provided file or folder and everything inside it.
  * Usually respects read-only files and folders. To do a forced delete use
  * drush_delete_tmp_dir() or set the parameter $forced.
