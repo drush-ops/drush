@@ -206,11 +206,10 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
  *   TRUE or FALSE depending on whether the operation was successful.
  */
 function make_download_file_unpack_tar($filename, $download_location, $subtree = NULL) {
-  $tmp_path = make_tmp() . '/__untar__';
+  $tmp_path = drush_tempdir();
 
   list($main_directory) = array_reverse(explode('/', $download_location));
 
-  drush_mkdir($tmp_path);
   drush_shell_exec('tar -x -C %s -f %s', $tmp_path, $filename);
 
   return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
@@ -248,11 +247,10 @@ function make_download_file_unpack_gzip($filename, $download_location, $subtree 
  * Unpack a zip file.
  */
 function make_download_file_unpack_zip($filename, $download_location, $subtree = NULL) {
-  $tmp_path = make_tmp() . '/__unzip__';
+  $tmp_path = drush_tempdir();
 
   list($main_directory) = array_reverse(explode('/', $download_location));
 
-  drush_mkdir($tmp_path);
   drush_shell_exec("unzip %s -d %s", $filename, $tmp_path);
 
   return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
@@ -261,8 +259,7 @@ function make_download_file_unpack_zip($filename, $download_location, $subtree =
 /**
  * Move a downloaded and unpacked file or directory into place.
  *
- * TODO merge with core drush methods, as the __unzip__ directory will
- * potentially cause problems when running concurrently.
+ * TODO merge with core drush methods.
  */
 function _make_download_file_move($tmp_path, $filename, $download_location, $subtree = NULL) {
   $lines = drush_scan_directory($tmp_path, '/./', array('.', '..'), 0, FALSE);
