@@ -263,7 +263,14 @@ function drush_backend_parse_output($string, $backend_options = array(), $output
  *    Whether output has already been handled.
  */
 function _drush_backend_integrate($data, $backend_options, $outputted) {
-  if (is_array($data['log']) && $backend_options['log']) {
+  // In 'integrate' mode, logs and errors have already been handled
+  // by drush_backend_packet (sender) drush_backend_parse_packets (reciever - us)
+  // during incremental output.  We therefore do not need to call drush_set_error
+  // or drush_log here.  The exception is if the sender is an older version of
+  // Drush (version 4.x) that does not send backend packets, then we will
+  // not have processed the log entries yet, and must print them here.
+  $received_packets = drush_get_context('DRUSH_RECEIVED_BACKEND_PACKETS', FALSE);
+  if (is_array($data['log']) && $backend_options['log'] && (!$received_packets)) {
     foreach($data['log'] as $log) {
       $message = is_array($log['message']) ? implode("\n", $log['message']) : $log['message'];
       if (isset($backend_options['#output-label'])) {
@@ -289,6 +296,11 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
   }
 }
 
+/**
+ * Supress log message output during backend integrate.
+ */
+function _drush_backend_integrate_log($entry) {
+}
 
 /**
  * Call an external command using proc_open.
@@ -444,6 +456,7 @@ function _drush_backend_print_output($output_string, $backend_options) {
 function drush_backend_parse_packets(&$string, $backend_options) {
   $packet_regex = strtr(sprintf(DRUSH_BACKEND_PACKET_PATTERN, "([^\0]*)"), array("\0" => "\\0"));
   if (preg_match_all("/$packet_regex/s", $string, $match, PREG_PATTERN_ORDER)) {
+    drush_set_context('DRUSH_RECEIVED_BACKEND_PACKETS', TRUE);
     foreach ($match[1] as $packet_data) {
       $entry = (array) json_decode($packet_data);
       if (is_array($entry) && isset($entry['packet'])) {

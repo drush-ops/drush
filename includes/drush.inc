@@ -1301,6 +1301,7 @@ function drush_backend_packet_log($entry, $backend_options) {
   if (!is_string($entry['message'])) {
     $entry['message'] = implode("\n", (array)$entry['message']);
   }
+  $entry['message'] = $entry['message'];
   $log =& drush_get_context('DRUSH_LOG', array());
   $log[] = $entry;
   // Yes, this looks odd, but we might in fact be a backend command
@@ -1310,10 +1311,9 @@ function drush_backend_packet_log($entry, $backend_options) {
     $entry['message'] = $backend_options['#output-label'] . $entry['message'];
   }
 
-  // If 'integrate' is true, then _drush_backend_integrate (called via
-  // drush_backend_packet) will print the log message; if that is the case,
-  // then we do not need to print it again.
-  if (!$backend_options['integrate']) {
+  // If integrate is FALSE, then log messages are stored in DRUSH_LOG,
+  // but are -not- printed to the console.
+  if ($backend_options['integrate']) {
     $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
     return $callback($entry);
   }
