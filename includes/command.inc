@@ -251,14 +251,20 @@ function drush_dispatch($command, $arguments = array()) {
  * (drush-3.x compatible): drush_invoke_process($command_name, $arg1, $arg2, ...);
  * Instead of this old form, prefer: drush_invoke_process("@self", $command_name, array($arg1, $arg2, ...));
  */
-function drush_invoke_process($site_alias_record /*, $command_name, $commandline_args = array(), $commandline_options = array() */) {
+function drush_invoke_process($site_alias_record /*, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = array() */) {
   if (is_array($site_alias_record) || ($site_alias_record[0] == '@')) {
     $args = func_get_args();
     array_shift($args);
     $command_name = array_shift($args);
     $commandline_args = empty($args) ? array() : array_shift($args);
     $commandline_options = empty($args) ? array() : array_shift($args);
-    return drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options);
+    // Forwards-compatibility with drush_invoke_process in Drush-5.x.
+    $backend_options = empty($args) ? array() : array_shift($args);
+    foreach ($backend_options as $key => $value) {
+      $commandline_options['#' . $key] = $value;
+    }
+    $integrate = TRUE;
+    return drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options, $integrate);
   }
   else {
     $args = func_get_args();
@@ -318,6 +324,8 @@ function drush_invoke_sitealias($site_alias_record, $command_name) {
  *  The arguments to pass to the command.
  * @param array $commandline_options
  *  The options (e.g. --select) to provide to the command.
+ * @param integrate
+ *  @see drush_backend_invoke
  * @return
  *   If the command could not be completed successfully, FALSE.
  *   If the command was completed, this will return an associative
@@ -325,14 +333,14 @@ function drush_invoke_sitealias($site_alias_record, $command_name) {
  *   @see drush_backend_get_result()
  * @deprecated; @see drush_invoke_process($site_alias_record, $command_name, $commandline_args, $commandline_options) for a better option
  */
-function drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array()) {
+function drush_invoke_sitealias_args($site_alias_record, $command_name, $commandline_args, $commandline_options = array(), $integrate = FALSE) {
   // If the first parameter is not a site alias record,
   // then presume it is an alias name, and try to look up
   // the alias record.
   if (!is_array($site_alias_record)) {
     $site_alias_record = drush_sitealias_get_record($site_alias_record);
   }
-  return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options);
+  return drush_do_site_command($site_alias_record, $command_name, $commandline_args, $commandline_options, $integrate);
 }
 
 /**
