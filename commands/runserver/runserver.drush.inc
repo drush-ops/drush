@@ -149,11 +149,13 @@ function drush_core_runserver($uri = NULL) {
   drush_set_context('DRUSH_URI', 'http://' . $hostname . ':' . $uri['port']);
 
   // Add a querystring parameter to indicate that this is the first page request, so that the user can be logged in.
-  if (strpos($uri['path'], '?') === FALSE) {
-    $uri['path'] .= '?login';
-  }
-  else {
-    $uri['path'] .= '&login';
+  if (!empty($uri['path'])) {
+    if (strpos($uri['path'], '?') === FALSE) {
+      $uri['path'] .= '?login';
+    }
+    else {
+      $uri['path'] .= '&login';
+    }
   }
 
   // We delete any registered files here, since they are not caught by Ctrl-C.
