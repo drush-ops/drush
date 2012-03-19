@@ -392,7 +392,7 @@ function drush_shell_exec_output() {
  *   TRUE if browser was opened, FALSE if browser was disabled by the user or a,
  *   default browser could not be found.
  */
-function drush_start_browser($uri = NULL) {
+function drush_start_browser($uri = NULL, $sleep = FALSE) {
   if (!parse_url($uri, PHP_URL_HOST)) {
     $site = drush_get_context('DRUSH_URI');
     $host = parse_url($site, PHP_URL_HOST);
@@ -423,10 +423,14 @@ function drush_start_browser($uri = NULL) {
         $browser = FALSE;
       }
     }
+    $prefix = '';
+    if ($sleep) {
+      $prefix = 'sleep ' . $sleep . ' && ';
+    }
     if ($browser && !drush_get_context('DRUSH_SIMULATE')) {
       $pipes = array();
       drush_log(dt('Opening browser at !uri', array('!uri' => $uri)));
-      proc_close(proc_open($browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
+      proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
       return TRUE;
     }
   }

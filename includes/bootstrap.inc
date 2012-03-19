@@ -832,9 +832,9 @@ function _drush_bootstrap_drupal_configuration() {
     'cron_safe_threshold' => 0,
   );
   $current_override = drush_get_option_list('variables');
-  foreach ( $current_override as $name => $value) {
+  foreach ($current_override as $name => $value) {
     if (is_numeric($name) && (strpos($value, '=') !== FALSE)) {
-      list($name, $value) = explode('=', $pair, 2);
+      list($name, $value) = explode('=', $value, 2);
     }
     $override[$name] = $value;
   }

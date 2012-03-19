@@ -12,7 +12,7 @@
 class DrupalServer extends HTTPServer {
   // We pass in variables, rather than querying options here, to allow this to
   // potentially be used in other commands.
-  public $site, $path, $conf_inject, $user, $watchdog, $debug, $first_request_complete;
+  public $site, $path, $conf_inject, $user, $debug, $first_request_complete;
 
   /**
    * This is the equivalent of .htaccess, passing requests to files if they
@@ -20,28 +20,7 @@ class DrupalServer extends HTTPServer {
    * of CGI environment variables here.
    */
   function route_request($request) {
-    $cgi_env = array();
-
-    // We pass in the effective base_url to our auto_prepend_script via the cgi
-    // environment. This allows Drupal to generate working URLs to this http
-    // server, whilst finding the correct multisite from the HTTP_HOST header.
-    $cgi_env['RUNSERVER_BASE_URL'] = 'http://' . $this->addr . ':' . $this->port;
-
-    // We pass in an array of $conf overrides using the same approach.
-    // By default we set drupal_http_request_fails to FALSE, as the httpserver
-    // is unable to process simultaneous requests on some systems.
-    // This is available as an option for developers to pass in their own
-    // favorite $conf overrides (e.g. disabling css aggregation).
-    $conf_inject = $this->conf_inject;
-    $cgi_env['RUNSERVER_CONF'] = urlencode(serialize($conf_inject));
-
-    // We pass in the specified user (if set) - should be a fully loaded user
-    // object. This will automatically log this user in the browser during the
-    // first request (but not subsequent requests, to allow logging out).
-    if (!empty($this->user) && $this->user->uid && $this->first_request_complete !== TRUE) {
-      $this->first_request_complete = TRUE;
-      $cgi_env['RUNSERVER_USER'] = urlencode(serialize($this->user));
-    }
+    $cgi_env = $this->env;
 
     // Handle static files and php scripts accessed directly
     $uri = $request->uri;
@@ -83,16 +62,7 @@ class DrupalServer extends HTTPServer {
    */
   function request_done($request) {
     drush_print(trim($this->get_log_line($request), "\n"));
-    $headers = $request->response->headers;
-    if ($this->watchdog && isset($headers['X-Runserver-Watchdog'])) {
-      $results = unserialize(urldecode($headers['X-Runserver-Watchdog']));
-      foreach ($results as $result) {
-        $result = (object)$result;
-        $result->uid = $result->user->uid;
-        $result = core_watchdog_format_result($result, TRUE);
-        drush_print("Watchdog: {$result->date} ({$result->severity}, {$result->type}, {$result->user->name}) {$result->message}", 2);
-      }
-    }
+
     if ($this->debug) {
       drush_print_r($request);
     }

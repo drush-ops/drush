@@ -52,11 +52,12 @@ function runserver_drush_command() {
       'addr:port/path' => 'Host IP address and port number to bind to and path to open in web browser. Format is addr:port/path, default 127.0.0.1:8888, all elements optional. See examples for shorthand.',
     ),
     'options' => array(
+      'server' => 'Which http server to use - either: "cgi" for a CGI based httpserver (default, requires php 5.3 and php-cgi binary) or "builtin" for php 5.4 built in http server.',
       'php-cgi' => 'Name of the php-cgi binary. If it is not on your current $PATH you should include the full path. You can include command line parameters to pass into php-cgi.',
-      'conf-inject' => 'Key-value array of variables to override in the $conf array for the running site. By default disables drupal_http_request_fails to avoid errors on Windows (which supports only one connection at a time). Note that as this is a key-value array, it can only be specified in a drushrc or alias file, and not on the command line.',
+      'variables' => 'Key-value array of variables to override in the $conf array for the running site. By default disables drupal_http_request_fails to avoid errors on Windows (which supports only one connection at a time). Comma delimited list of name=value pairs (or array in drushrc).',
       'default-server' => 'A default addr:port/path to use for any values not specified as an argument.',
-      'user' => 'If opening a web browser, automatically log in as this user (user ID or username)',
-      'watchdog' => 'Collect and integrate watchdog messages from each request into the log',
+      'user' => 'If opening a web browser, automatically log in as this user (user ID or username).',
+      'browser' => 'If opening a web browser, which browser to user (defaults to operating system default).',
       'dns' => 'Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.',
     ),
     'aliases' => array('rs'),
@@ -66,7 +67,7 @@ function runserver_drush_command() {
       'drush rs --php-cgi=php5-cgi --dns localhost:8888/user' => 'Start runserver on localhost (using rDNS to determine binding IP), port 8888, and open /user in browser. Use "php5-cgi" as the php-cgi binary.',
       'drush rs /' => 'Start runserver on default IP/port (127.0.0.1, port 8888), and open / in browser.',
       'drush rs --default-server=127.0.0.1:8080/ -' => 'Use a default (would be specified in your drushrc) that starts runserver on port 8080, and opens a browser to the front page. Set path to a single hyphen path in argument to prevent opening browser for this session.',
-      'drush rs --watchdog :9000/admin' => 'Start runserver on 127.0.0.1, port 9000, and open /admin in browser, including any watchdog messages for the session in the log. Note that you need a colon when you specify port and path, but no IP.',
+      'drush rs --server=builtin :9000/admin' => 'Start builtin php 5.4 runserver on 127.0.0.1, port 9000, and open /admin in browser. Note that you need a colon when you specify port and path, but no IP.',
     ),
   );
   return $items;
@@ -77,10 +78,35 @@ function runserver_drush_command() {
  */
 function drush_core_runserver_validate() {
   if (version_compare(PHP_VERSION, '5.3.0') < 0) {
-    return drush_set_error('RUNSERVER_PHP_VERSION', dt('The runserver command requires php 5.3, which could not be found.'));
+    return drush_set_error('RUNSERVER_PHP53_VERSION', dt('The runserver command requires php 5.3, which could not be found.'));
   }
-  if (!drush_shell_exec('which ' . drush_get_option('php-cgi', 'php-cgi'))) {
-    return drush_set_error('RUNSERVER_PHP_CGI', dt('The runserver command requires the php-cgi binary, which could not be found.'));
+  $php_cgi = drush_shell_exec('which ' . drush_get_option('php-cgi', 'php-cgi'));
+  $builtin = version_compare(PHP_VERSION, '5.4.0') >= 0;
+  $server = drush_get_option('server', FALSE);
+  if (!$server) {
+    // No server specified, try and find a valid server option, preferring cgi.
+    if ($php_cgi) {
+      drush_set_option('server', 'cgi');
+    }
+    else if ($builtin) {
+      drush_set_option('server', 'builtin');
+    }
+    else {
+      return drush_set_error('RUNSERVER_PHP_CGI54', dt('The runserver command requires either the php-cgi binary, or php 5.4 (or higher). Neither could not be found.'));
+    }
+  }
+  else if ($server == 'cgi' && !$php_cgi) {
+    // Validate user specified cgi server option.
+    return drush_set_error('RUNSERVER_PHP_CGI', dt('The runserver command with the "cgi" server requires the php-cgi binary, which could not be found.'));
+  }
+  else if ($server == 'builtin' && !$builtin) {
+    // Validate user specified builtin server option.
+    return drush_set_error('RUNSERVER_PHP_CGI', dt('The runserver command with the "builtin" server requires php 5.4 (or higher), which could not be found.'));
+  }
+
+  // Check we have a valid server.
+  if (!in_array(drush_get_option('server', FALSE), array('cgi', 'builtin'))) {
+    return drush_set_error('RUNSERVER_INVALID', dt('Invalid server specified.'));
   }
 }
 
@@ -89,22 +115,6 @@ function drush_core_runserver_validate() {
  */
 function drush_core_runserver($uri = NULL) {
   global $user;
-
-  // Fetch httpserver to our /lib directory, if needed.
-  $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
-  $httpserverfile = $lib . '/' . DRUSH_HTTPSERVER_DIR_BASE . substr(DRUSH_HTTPSERVER_VERSION, 0, 7) . '/httpserver.php';
-  if (!drush_file_not_empty($httpserverfile)) {
-    // Download and extract httpserver, and confirm success.
-    drush_lib_fetch(DRUSH_HTTPSERVER_BASE_URL . DRUSH_HTTPSERVER_VERSION);
-    if (!drush_file_not_empty($httpserverfile)) {
-      // Something went wrong - the library is still not present.
-      return drush_set_error('RUNSERVER_HTTPSERVER_LIB_NOT_FOUND', dt("The runserver command needs a copy of the httpserver library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the package from !url, extract it into the !lib directory, such that httpserver.php exists at !httpserverfile.", array('!version' => DRUSH_HTTPSERVER_VERSION, '!url' => DRUSH_HTTPSERVER_BASE_URL . DRUSH_HTTPSERVER_VERSION, '!httpserverfile' => $httpserverfile, '!lib' => $lib)));
-    }
-  }
-
-  // Include the library and our class that extends it.
-  require_once $httpserverfile;
-  require_once 'runserver-drupal.inc';
 
   // We pass in the currently logged in user (if set via the --user option),
   // which will automatically log this user in the browser during the first
@@ -138,24 +148,87 @@ function drush_core_runserver($uri = NULL) {
   }
   drush_set_context('DRUSH_URI', 'http://' . $hostname . ':' . $uri['port']);
 
+  // Add a querystring parameter to indicate that this is the first page request, so that the user can be logged in.
+  if (strpos($uri['path'], '?') === FALSE) {
+    $uri['path'] .= '?login';
+  }
+  else {
+    $uri['path'] .= '&login';
+  }
+
   // We delete any registered files here, since they are not caught by Ctrl-C.
   _drush_delete_registered_files();
 
-  // Create a new server instance and start it running.
-  $server = new DrupalServer(array(
-    'addr' => $addr,
-    'port' => $uri['port'],
-    'path' => $uri['path'],
-    'hostname' => $hostname,
-    'site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'),
-    'server_id' => 'Drush runserver',
-    'php_cgi' => drush_get_option('php-cgi', 'php-cgi') . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"',
-    'conf_inject' => drush_get_option('conf-inject', array('drupal_http_request_fails' => FALSE)),
-    'user' => $user,
-    'watchdog' => drush_get_option('watchdog', FALSE),
-    'debug' => drush_get_context('DRUSH_DEBUG'),
-  ));
-  $server->run_forever();
+  // We pass in the effective base_url to our auto_prepend_script via the cgi
+  // environment. This allows Drupal to generate working URLs to this http
+  // server, whilst finding the correct multisite from the HTTP_HOST header.
+  $env['RUNSERVER_BASE_URL'] = 'http://' . $addr . ':' . $uri['port'];
+
+  // We pass in an array of $conf overrides using the same approach.
+  // By default we set drupal_http_request_fails to FALSE, as the httpserver
+  // is unable to process simultaneous requests on some systems.
+  // This is available as an option for developers to pass in their own
+  // favorite $conf overrides (e.g. disabling css aggregation).
+  $current_override = drush_get_option_list('variables', array('drupal_http_request_fails' => FALSE));
+  foreach ($current_override as $name => $value) {
+    if (is_numeric($name) && (strpos($value, '=') !== FALSE)) {
+      list($name, $value) = explode('=', $value, 2);
+    }
+    $override[$name] = $value;
+  }
+  $env['RUNSERVER_CONF'] = urlencode(serialize($override));
+
+  // We pass in the specified user ID (if set). This will automatically log
+  // this user in the browser during the first request (but not subsequent
+  // requests, to allow logging out).
+  if ($user->uid) {
+    $env['RUNSERVER_USER'] = $user->uid;
+  }
+
+  if (drush_get_option('server', FALSE) == 'builtin') {
+    // Start php 5.4 builtin server.
+    // Store data used by runserver-prepend.php in the shell environment.
+    foreach ($env as $key => $value) {
+      putenv($key . '=' . $value);
+    }
+    if (!empty($uri['path'])) {
+      // Start a browser if desired. Include a 2 second delay to allow the server to come up.
+      drush_start_browser($uri['path'], 2);
+    }
+    // Start the server using 'php -S'.
+    $php = drush_get_option('php');
+    drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"');
+  }
+  else {
+    // Fetch httpserver cgi based server to our /lib directory, if needed.
+    $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
+    $httpserverfile = $lib . '/' . DRUSH_HTTPSERVER_DIR_BASE . substr(DRUSH_HTTPSERVER_VERSION, 0, 7) . '/httpserver.php';
+    if (!drush_file_not_empty($httpserverfile)) {
+      // Download and extract httpserver, and confirm success.
+      drush_lib_fetch(DRUSH_HTTPSERVER_BASE_URL . DRUSH_HTTPSERVER_VERSION);
+      if (!drush_file_not_empty($httpserverfile)) {
+        // Something went wrong - the library is still not present.
+        return drush_set_error('RUNSERVER_HTTPSERVER_LIB_NOT_FOUND', dt("The runserver command needs a copy of the httpserver library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the package from !url, extract it into the !lib directory, such that httpserver.php exists at !httpserverfile.", array('!version' => DRUSH_HTTPSERVER_VERSION, '!url' => DRUSH_HTTPSERVER_BASE_URL . DRUSH_HTTPSERVER_VERSION, '!httpserverfile' => $httpserverfile, '!lib' => $lib)));
+      }
+    }
+
+    // Include the library and our class that extends it.
+    require_once $httpserverfile;
+    require_once 'runserver-drupal.inc';
+    // Create a new httpserver instance and start it running.
+    $server = new DrupalServer(array(
+      'addr' => $addr,
+      'port' => $uri['port'],
+      'path' => $uri['path'],
+      'hostname' => $hostname,
+      'site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'),
+      'server_id' => 'Drush runserver',
+      'php_cgi' => drush_get_option('php-cgi', 'php-cgi') . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"',
+      'env' => $env,
+      'debug' => drush_get_context('DRUSH_DEBUG'),
+    ));
+    $server->run_forever();
+  }
 }
 
 /**
