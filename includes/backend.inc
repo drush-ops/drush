@@ -637,7 +637,7 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
       '%drush-script' => NULL,
     );
 
-    $site = array_key_exists('#name', $site_record) ? $site_record['#name'] : $index++;
+    $site = (array_key_exists('#name', $site_record) && !array_key_exists($site_record['#name'], $invocation_options)) ? $site_record['#name'] : $index++;
     $invocation_options[$site] = array(
       'site-record' => $site_record,
       'command' => $command,
@@ -846,7 +846,11 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
  *
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If the command was completed, this will return an associative array containing the data from drush_backend_output().
+ *   If one command was executed, this will return an associative array containing 
+ *   the data from drush_backend_output().
+ *   If multiple commands were executed, this will return an associative array
+ *   containing one item, 'concurrent', which will contain a list of the different
+ *   backend invoke results from each concurrent command.
  */
 function _drush_backend_invoke($cmds, $common_backend_options = array(), $context = NULL) {
   if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('override-simulated', $common_backend_options)) {
@@ -870,8 +874,8 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
     $procs = _drush_backend_proc_open($cmds, $process_limit, $context);
     $procs = is_array($procs) ? $procs : array($procs);
 
+    $ret = array();
     foreach ($procs as $site => $proc) {
-      $ret = array();
       if (($proc['code'] == DRUSH_APPLICATION_ERROR) && isset($common_backend_options['integrate'])) {
         drush_set_error('DRUSH_APPLICATION_ERROR', dt("The external command could not be executed due to an application error."));
       }
@@ -883,11 +887,11 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
           if (empty($ret)) {
             $ret = $values;
           }
-          elseif (!array_key_exists('multiple', $ret)) {
-            $ret = array('multiple' => array($ret['site'] => $ret, $values['site'] => $values));
+          elseif (!array_key_exists('concurrent', $ret)) {
+            $ret = array('concurrent' => array($ret, $values));
           }
           else {
-            $ret['multiple'][$values['site']] = $values;
+            $ret['concurrent'][] = $values;
           }
         }
         else {

@@ -106,7 +106,7 @@ function drush_invoke_process($site_alias_record, $command_name, $commandline_ar
       'args' => $commandline_args);
     $invoke_multiple = drush_get_option_override($backend_options, 'invoke-multiple', 0);
     if ($invoke_multiple) {
-      $invocations = array_fill(0, $invoke_multiple, $invocations);
+      $invocations = array_fill(0, $invoke_multiple, $invocations[0]);
     }
   }
   return drush_backend_invoke_concurrent($invocations, $commandline_options, $backend_options);

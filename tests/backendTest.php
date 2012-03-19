@@ -103,7 +103,35 @@ class backendCase extends Drush_CommandTestCase {
     // assert that $parsed has 'foo' and not 'bar'
     $this->assertEquals("'foo'", var_export($parsed['object'], TRUE));
   }
-
+  
+  /**
+   * Covers the following target responsibilities.
+   *   - Insures that the backend option 'invoke-multiple' will cause multiple commands to be executed.
+   *   - Insures that the right number of commands run.
+   *   - Insures that the 'concurrent'-format result array is returned.
+   *   - Insures that correct results are returned from each command.
+   */
+  function testBackendInvokeMultiple() {
+    $options = array(
+      'backend' => NULL,
+      'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
+    );
+    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y'), array('invoke-multiple' => '3')); return \$values;";
+    $this->drush('php-eval', array($php), $options);
+    $parsed = parse_backend_output($this->getOutput());
+    // assert that $parsed has a 'concurrent'-format output result
+    $this->assertEquals('concurrent', implode(',', array_keys($parsed['object'])));
+    // assert that the concurrent output has indexes 0, 1 and 2 (in any order)
+    $concurrent_indexes = array_keys($parsed['object']['concurrent']);
+    sort($concurrent_indexes);
+    $this->assertEquals('0,1,2', implode(',', $concurrent_indexes));
+    foreach ($parsed['object']['concurrent'] as $index => $values) {
+      // assert that each result contains 'x' => 'y' and nothing else
+      $this->assertEquals("array (
+  'x' => 'y',
+)", var_export($values['object'], TRUE));
+    }
+  }
   /**
    * Covers the following target responsibilities.
    *   - Insures that arrays are stripped when using --backend mode's method GET
