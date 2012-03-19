@@ -189,7 +189,7 @@ class DrushMakeProject {
         $info = array('url' => $info);
       }
       // Download the patch.
-      if ($filename = _make_download_file($info)) {
+      if ($filename = _make_download_file($info['url'])) {
         $patched = FALSE;
         $output = '';
         // Test each patch style; -p1 is the default with git. See

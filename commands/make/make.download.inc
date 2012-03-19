@@ -64,7 +64,7 @@ function make_download_pm($name, $download, $download_location) {
  *   The destination directory on success, FALSE on failure.
  */
 function make_download_file($name, $download, $download_location, $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT) {
-  if ($filename = _make_download_file($download, $cache_duration)) {
+  if ($filename = _make_download_file($download['url'], $cache_duration)) {
     if (!drush_get_option('ignore-checksums') && !_make_verify_checksums($download, $filename)) {
       return FALSE;
     }
@@ -79,14 +79,16 @@ function make_download_file($name, $download, $download_location, $cache_duratio
 
 /**
  * Wrapper to drush_download_file().
+ *
+ * @param string $download
+ *   The url of the file to download.
+ * @param int $cache_duration
+ *   The time in seconds to cache the resultant download.
+ *
+ * @return string
+ *   The location of the downloaded file, or FALSE on failure.
  */
 function _make_download_file($download, $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT) {
-  // TODO cleanup so $download is always a string, since with
-  // drush_download_file(), that's all we pass in.
-  if (is_string($download)) {
-    $download = array('url' => $download);
-  }
-
   if (drush_get_option('no-cache', FALSE)) {
     $cache_duration = 0;
   }
@@ -94,8 +96,8 @@ function _make_download_file($download, $cache_duration = DRUSH_CACHE_LIFETIME_D
   $tmp_path = make_tmp();
   // Ensure that we aren't including the querystring when generating a filename
   // to save our download to.
-  $file = basename(reset(explode('?', $download['url'], 2)));
-  return drush_download_file($download['url'], $tmp_path . '/' . $file, $cache_duration);
+  $file = basename(reset(explode('?', $download, 2)));
+  return drush_download_file($download, $tmp_path . '/' . $file, $cache_duration);
 }
 
 /**
