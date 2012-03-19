@@ -146,6 +146,10 @@ function make_drush_help($section) {
 function make_make_complete() {
   return array(
     'files' => array(
+      'directories' => array(
+        'pattern' => '*',
+        'flags' => GLOB_ONLYDIR,
+      ),
       'make' => array(
         'pattern' => '*.make',
       ),
