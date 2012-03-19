@@ -360,9 +360,10 @@ function make_clean_tmp() {
  */
 function make_prepare_install($build_path) {
   $default = make_tmp() . '/__build__/sites/default';
-  drush_shell_exec("cp %s %s", $default . '/default.settings.php', $default . '/settings.php');
+  drush_copy_dir($default . DIRECTORY_SEPARATOR . 'default.settings.php', $default . DIRECTORY_SEPARATOR . 'settings.php', TRUE);
   drush_mkdir($default . '/files');
-  drush_shell_exec("chmod a+w %s %s", $default . '/settings.php', $default . '/files');
+  chmod($default . DIRECTORY_SEPARATOR . 'settings.php', 0666);
+  chmod($default . DIRECTORY_SEPARATOR . 'files', 0777);
 }
 
 /**

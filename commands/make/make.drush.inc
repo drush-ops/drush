@@ -494,16 +494,15 @@ function make_move_build($build_path) {
   $tmp_path = make_tmp();
   $ret = TRUE;
   if ($build_path == '.') {
-    drush_shell_exec('ls -A %s', $tmp_path . '/__build__');
-    $info = drush_shell_exec_output();
+    $info = drush_scan_directory($tmp_path . DIRECTORY_SEPARATOR . '__build__', '/./', array('.', '..'), 0, FALSE);
     foreach ($info as $file) {
-      $ret = $ret && drush_shell_exec("cp -Rf %s %s", $tmp_path . '/__build__/' . $file, $build_path);
+      $ret = $ret && drush_copy_dir($file->filename, $build_path . DIRECTORY_SEPARATOR . $file->basename, TRUE);
     }
   }
   else {
     drush_mkdir(dirname($build_path));
-    drush_shell_exec("mv %s %s", $tmp_path . '/__build__', $tmp_path . '/' . basename($build_path));
-    drush_shell_exec("cp -Rf %s %s", $tmp_path . '/' . basename($build_path), dirname($build_path));
+    $ret = drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . '__build__', $tmp_path . DIRECTORY_SEPARATOR . basename($build_path), TRUE);
+    $ret = $ret && drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . basename($build_path), $build_path);
   }
   if (!$ret) {
     drush_set_error(dt("Cannot move build into place"));

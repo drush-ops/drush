@@ -194,7 +194,7 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
       // The destination directory has already been created by
       // findDownloadLocation().
       $destination = $download_location . ($name ? '/' . $name : '');
-      $success = drush_shell_exec('mv %s %s', $filename, $destination);
+      $success = drush_move_dir($filename, $destination, TRUE);
   }
   return $success ? $download_location : FALSE;
 }
@@ -265,29 +265,28 @@ function make_download_file_unpack_zip($filename, $download_location, $subtree =
  * potentially cause problems when running concurrently.
  */
 function _make_download_file_move($tmp_path, $filename, $download_location, $subtree = NULL) {
-  drush_shell_exec('ls %s', $tmp_path);
-  $lines = drush_shell_exec_output();
+  $lines = drush_scan_directory($tmp_path, '/./', array('.', '..'), 0, FALSE);
   $main_directory = basename($download_location);
   if (count($lines) == 1) {
     $directory = array_shift($lines);
-    if ($directory != $main_directory) {
-      drush_shell_exec('mv %s %s', $tmp_path . '/' . $directory, $tmp_path . '/' . $main_directory);
+    if ($directory->basename != $main_directory) {
+      drush_move_dir($directory->filename, $tmp_path . DIRECTORY_SEPARATOR . $main_directory, TRUE);
     }
-    drush_shell_exec('cp -Rf %s %s', $tmp_path . '/' . $main_directory . '/' . $subtree, dirname($download_location));
-    drush_shell_exec('rm -rf %s', $tmp_path);
+    drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . $main_directory, $download_location, TRUE);
+    drush_delete_dir($tmp_path, TRUE);
   }
   elseif (count($lines) > 1) {
-    drush_shell_exec('rm -rf %s', $download_location);
-    drush_shell_exec('mv %s %s', $tmp_path . '/' . $subtree, $download_location);
+    drush_delete_dir($download_location, TRUE);
+    drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . $subtree, $download_location, TRUE);
   }
 
   // Remove the tarball.
   if (file_exists($filename)) {
-    drush_shell_exec('rm %s', $filename);
+    drush_delete_dir($filename, TRUE);
   }
 
   if (file_exists($tmp_path)) {
-    drush_shell_exec('rm -rf %s', $tmp_path);
+    drush_delete_dir($tmp_path, TRUE);
   }
   return TRUE;
 }
