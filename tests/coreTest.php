@@ -22,7 +22,7 @@ class coreCase extends Drush_CommandTestCase {
       'yes' => NULL,
       'invoke' => NULL, // invoke from script: do not verify options
     );
-    $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options);
+    $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
     $output = $this->getOutput();
     $level = $this->log_level();
     $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress --yes --invoke %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz --yes --invoke %s /tmp);";

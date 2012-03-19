@@ -1100,7 +1100,7 @@ function drush_preflight_command_dispatch() {
  *
  *   --yes is a global Drush option
  *
- *   -v is an rsync option.  It will make rsync run in verbose mode, 
+ *   -v is an rsync option.  It will make rsync run in verbose mode,
  *     but will not make Drush run in verbose mode due to the fact that
  *     core-rsync sets the 'strict-option-handling' flag.
  *
@@ -1310,7 +1310,7 @@ function drush_backend_packet_log($entry, $backend_options) {
     $entry['message'] = $backend_options['#output-label'] . $entry['message'];
   }
 
-  // If 'integrate' is true, then _drush_backend_integrate (called via 
+  // If 'integrate' is true, then _drush_backend_integrate (called via
   // drush_backend_packet) will print the log message; if that is the case,
   // then we do not need to print it again.
   if (!$backend_options['integrate']) {

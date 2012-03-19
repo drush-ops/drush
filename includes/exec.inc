@@ -25,9 +25,7 @@
  * @see drush_shell_exec()
  */
 function drush_op_system($exec) {
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-     drush_print("Calling system($exec);");
-  }
+  drush_print("Calling system($exec);", 0, STDERR);
 
   if (drush_get_context('DRUSH_SIMULATE')) {
     return 0;
@@ -108,15 +106,13 @@ function drush_shell_exec_interactive($cmd) {
  * @see drush_shell_exec.
  */
 function _drush_shell_exec($args, $interactive = FALSE) {
-  //do not change the command itself, just the parameters.
+  // Do not change the command itself, just the parameters.
   for ($x = 1; $x < sizeof($args); $x++) {
     $args[$x] = drush_escapeshellarg($args[$x]);
   }
   $command = call_user_func_array('sprintf', $args);
 
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-    drush_print('Executing: ' . $command);
-  }
+  drush_print('Executing: ' . $command, 0, STDERR);
 
   if (!drush_get_context('DRUSH_SIMULATE')) {
     if ($interactive) {
@@ -202,9 +198,7 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL) {
  *     127 command not found
  */
 function drush_shell_proc_open($cmd) {
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-    drush_print("Calling proc_open($cmd);");
-  }
+  drush_print("Calling proc_open($cmd);", 0, STDERR);
   if (!drush_get_context('DRUSH_SIMULATE')) {
     $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
     $proc_status = proc_get_status($process);

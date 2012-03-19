@@ -70,7 +70,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
       'simulate' => NULL,
       'rebase' => NULL,
     );
-    $this->drush('pull', array('origin'), $options);
+    $this->drush('pull', array('origin'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getOutput();
     $this->assertContains('Calling proc_open(git pull origin --rebase);', $output);
   }
@@ -97,13 +97,13 @@ class shellAliasesCase extends Drush_CommandTestCase {
       'ssh-options' => '',
       'rebase' => NULL,
     );
-    $this->drush('pull', array('origin'), $options, 'user@server/path/to/drupal#sitename');
+    $this->drush('pull', array('origin'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
     // $expected might be different on non unix platforms. We shall see.
     $expected = "Calling proc_open(ssh  user@server 'cd /path/to/drupal && git pull origin --rebase');";
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected remote shell alias to a bash command was built');
   }
-  
+
   /*
    * Test shell aliases with simple replacements -- no alias.
    */
@@ -117,7 +117,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $output = $this->getOutput();
     $this->assertEquals($expected, $output);
   }
-  
+
   /*
    * Test shell aliases with complex replacements -- no alias.
    */
@@ -128,7 +128,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     // echo test has replacements that are not satisfied, so this is expected to return an error.
     $this->drush('echotest', array(), $options, NULL, NULL, self::EXIT_ERROR);
   }
-  
+
   /*
    * Test shell aliases with replacements -- alias.
    */
@@ -144,7 +144,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $output = $this->getOutput();
     $this->assertEquals($expected, $output);
   }
-  
+
   /*
    * Test shell aliases with replacements and compound commands.
    */
@@ -159,7 +159,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $this->assertEquals($expected, $output);
   }
 
-  
+
   /*
    * Test shell aliases with multiple config files.
    */
@@ -175,4 +175,3 @@ class shellAliasesCase extends Drush_CommandTestCase {
   }
 
 }
-

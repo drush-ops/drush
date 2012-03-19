@@ -321,10 +321,12 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     *   A directory to change into before executing.
     * @param $expected_return
     *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
+    * @param $suffix
+    *   Any code to append to the command. For example, redirection like 2>&1.
     * @return integer
     *   An exit code.
     */
-  function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS) {
+  function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL) {
     $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options');
     // insert "cd ... ; drush"
     $cmd[] = $cd ? sprintf('cd %s &&', self::escapeshellarg($cd)) : NULL;
@@ -365,6 +367,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
         $cmd[] = "--$key=" . self::escapeshellarg($value);
       }
     }
+    $cmd[] = $suffix;
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs
     return $this->execute(implode(' ', $exec), $expected_return);
   }
