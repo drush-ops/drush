@@ -862,10 +862,14 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
   foreach ($cmds as $cmd) {
     drush_log(dt('Backend invoke: !cmd', array('!cmd' => $cmd['cmd'])), 'command');
   }
-  if (array_key_exists('interactive', $common_backend_options)) {
+  if (array_key_exists('interactive', $common_backend_options) || array_key_exists('fork', $common_backend_options)) {
     foreach ($cmds as $cmd) {
-      drush_log(dt("executing !cmd", array('!cmd' => $cmd['cmd'])));
-      $ret = drush_shell_proc_open($cmd['cmd']);
+      $exec_cmd = $cmd['cmd'];
+      if (array_key_exists('fork', $common_backend_options)) {
+        $exec_cmd .= ' --quiet &';
+      }
+      drush_log(dt("executing !cmd", array('!cmd' => $exec_cmd)));
+      $ret = drush_shell_proc_open($exec_cmd);
     }
     return $ret;
   }

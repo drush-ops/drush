@@ -177,3 +177,34 @@ class backendCase extends Drush_CommandTestCase {
 )", var_export($parsed['object'], TRUE));
   }
 }
+
+class backendUnitCase extends Drush_UnitTestCase {
+
+  /**
+   * Covers the following target responsibilities.
+   *   - Insures that drush_invoke_process called with fork backend set is able
+   *     to invoke a non-blocking process.
+   */
+  function testBackendFork() {
+    // Need to set DRUSH_COMMAND so that drush will be called and not phpunit
+    define('DRUSH_COMMAND', UNISH_DRUSH);
+
+    // Ensure that file that will be created by forked process does not exist
+    // before invocation.
+    $test_file = UNISH_SANDBOX . '/fork_test.txt';
+    if (file_exists($test_file)) {
+      unlink($test_file);
+    }
+
+    // Sleep for a milisecond, then create the file
+    $ev_php = "usleep(1000);fopen('$test_file','a');";
+    drush_invoke_process("@none", "ev", array($ev_php), array(), array("fork" => TRUE));
+
+    // Test file does not exist immediate after process forked
+    $this->assertEquals(file_exists($test_file), FALSE);
+
+    // Test file exists after waiting half a second
+    usleep(500000);
+    $this->assertEquals(file_exists($test_file), TRUE);
+  }
+}

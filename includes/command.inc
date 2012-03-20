@@ -77,6 +77,12 @@ function drush_invoke($command, $arguments = array()) {
  *        database information for sql-sync via sql-conf.
  *      'interactive'
  *        Overrides the backend invoke process to run commands interactively.
+ *      'fork'
+ *        Overrides the backend invoke process to run non blocking commands in 
+ *        the background. Forks a new process by adding a '&' at the end of the 
+ *        command. The calling process does not receive any output from the child 
+ *        process. The fork option is used to spawn a process that outlives its
+ *        parent.
  *
  * @return
  *   If the command could not be completed successfully, FALSE.
