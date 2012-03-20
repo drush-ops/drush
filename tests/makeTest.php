@@ -232,6 +232,22 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('limit-libraries-multiple');
   }
 
+  /**
+   * Test that make_move_build() doesn't wipe out directories that it shouldn't.
+   */
+  function testMakeMoveBuild() {
+    // Manually download a module.
+    $this->drush('pm-download', array('cck_signup'), array('destination' => UNISH_SANDBOX . '/modules', 'yes' => NULL));
+
+    // Build a make file.
+    $config = $this->getMakefile('contrib-destination');
+    $makefile = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'makefiles' . DIRECTORY_SEPARATOR . $config['makefile'];
+    $this->drush('make', array($makefile, '.'), $config['options']);
+
+    // Verify that the manually downloaded module still exists.
+    $this->assertFileExists(UNISH_SANDBOX . '/modules/cck_signup/README.txt');
+  }
+
   function getMakefile($key) {
     static $tests = array(
       'get' => array(

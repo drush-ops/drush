@@ -500,7 +500,19 @@ function make_move_build($build_path) {
   if ($build_path == '.') {
     $info = drush_scan_directory($tmp_path . DIRECTORY_SEPARATOR . '__build__', '/./', array('.', '..'), 0, FALSE);
     foreach ($info as $file) {
-      $ret = $ret && drush_copy_dir($file->filename, $build_path . DIRECTORY_SEPARATOR . $file->basename, TRUE);
+      $destination = $build_path . DIRECTORY_SEPARATOR . $file->basename;
+      if (file_exists($destination)) {
+        // To prevent the removal of top-level directories such as 'modules' or
+        // 'themes', descend in a level if the file exists.
+        // TODO: This only protects one level of directories from being removed.
+        $files = drush_scan_directory($file->filename, '/./', array('.', '..'), 0, FALSE);
+        foreach ($files as $file) {
+          $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, TRUE);
+        }
+      }
+      else {
+        $ret = $ret && drush_copy_dir($file->filename, $destination);
+      }
     }
   }
   else {
