@@ -7,6 +7,18 @@
  */
 class makeMakefileCase extends Drush_CommandTestCase {
   /**
+   * Path to test make files.
+   */
+  protected $makefile_path;
+
+  /**
+   * Initialize $makefile_path.
+   */
+  function __construct() {
+    $this->makefile_path =  dirname(__FILE__) . DIRECTORY_SEPARATOR . 'makefiles';
+  }
+
+  /**
    * Run a given makefile test.
    *
    * @param $test
@@ -17,10 +29,9 @@ class makeMakefileCase extends Drush_CommandTestCase {
       'test' => NULL,
       'md5' => 'print',
     );
-    $makefile_path = dirname(__FILE__) . '/makefiles';
     $config = $this->getMakefile($test);
     $options = array_merge($config['options'], $default_options);
-    $makefile = $makefile_path . '/' . $config['makefile'];
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
     $return = !empty($config['fail']) ? self::EXIT_ERROR : self::EXIT_SUCCESS;
     $this->drush('make', array($makefile), $options, NULL, NULL, $return);
 
@@ -88,8 +99,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
   function testMakeTranslations() {
     $config = $this->getMakefile('translations');
 
-    $makefile_path = dirname(__FILE__) . '/makefiles';
-    $makefile = $makefile_path . '/' . $config['makefile'];
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
     $install_directory = UNISH_SANDBOX . '/translations';
     $this->drush('make', array($makefile, $install_directory), $config['options']);
 
@@ -110,8 +120,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
   function testMakeTranslationsInside() {
     $config = $this->getMakefile('translations-inside');
 
-    $makefile_path = dirname(__FILE__) . '/makefiles';
-    $makefile = $makefile_path . '/' . $config['makefile'];
+    $makefile = $this->makefile_path . '/' . $config['makefile'];
     $install_directory = UNISH_SANDBOX . '/translations-inside';
     $this->drush('make', array($makefile, $install_directory));
 
@@ -136,8 +145,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
   function testMakeTranslationsInside7() {
     $config = $this->getMakefile('translations-inside7');
 
-    $makefile_path = dirname(__FILE__) . '/makefiles';
-    $makefile = $makefile_path . '/' . $config['makefile'];
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
     $install_directory = UNISH_SANDBOX . '/translations-inside7';
     $this->drush('make', array($makefile, $install_directory));
 
@@ -191,9 +199,8 @@ class makeMakefileCase extends Drush_CommandTestCase {
     // Use the git-simple.make file.
     $config = $this->getMakefile('git-simple');
 
-    $makefile_path = dirname(__FILE__) . '/makefiles';
     $options = array('no-core' => NULL);
-    $makefile = $makefile_path . '/' . $config['makefile'];
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
     $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
 
     // Test cck_signup.info file.
@@ -241,7 +248,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
 
     // Build a make file.
     $config = $this->getMakefile('contrib-destination');
-    $makefile = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'makefiles' . DIRECTORY_SEPARATOR . $config['makefile'];
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
     $this->drush('make', array($makefile, '.'), $config['options']);
 
     // Verify that the manually downloaded module still exists.
