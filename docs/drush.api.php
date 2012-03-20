@@ -200,14 +200,29 @@ function hook_drush_pm_download_destination_alter(&$project, $release) {
 }
 
 /**
- * Add information to the upgrade project map; this information
- * will be shown to the user when upgrading Drupal to the next
- * major version if the module containing this hook is enabled.
+ * Automatically download project dependencies at pm-enable time.
+ * Use a pre-pm_enable hook to download before your module is enabled,
+ * or a post-pm_enable hook (drush_hook_post_pm_enable) to run after
+ * your module is enabled.
  *
- * @see drush_upgrade_project_map().
+ * Your hook will be called every time pm-enable is executed; you should
+ * only download dependencies when your module is being enabled.  Respect 
+ * the --skip flag, and take no action if it is present.
  */
-function hook_drush_upgrade_project_map_alter(&$project_map) {
-  $project_map['warning']['hook'] = dt("You need to take special action before upgrading this module. See http://mysite.com/mypage for more information.");
+function drush_hook_pre_pm_enable() {
+  // Get the list of modules being enabled; only download dependencies if our module name appears in the list
+  $modules = drush_get_context('PM_ENABLE_MODULES');
+  if (in_array('hook', $modules) && !drush_get_option('skip')) {
+    $url = 'http://server.com/path/MyLibraryName.tgz';
+    $path = drush_get_context('DRUSH_DRUPAL_ROOT');
+    if (module_exists('libraries')) {
+      $path .= '/' . libraries_get_path('MyLibraryName') . '/MyLibraryName.tgz';
+    }
+    else {
+      $path .= '/'. drupal_get_path('module', 'hook') . '/MyLibraryName.tgz';
+    }
+    drush_download_file($url, $path) && drush_tarball_extract($path);
+  }
 }
 
 /**
@@ -222,19 +237,6 @@ function hook_drush_sql_sync_sanitize($source) {
     dt('Reset passwords and email addresses in user table'),
     "update users set pass = MD5('password'), mail = concat('user+', uid, '@localhost') where uid > 0;");
 }
-
-/**
- * Take action before modules are disabled in a major upgrade.
- * Note that when this hook fires, it will be operating on a
- * copy of the database.
- */
-function drush_hook_pre_site_upgrade_prepare() {
-  // site upgrade prepare will disable contrib_extensions and
-  // uninstall the uninstall_extension
-  $contrib_extensions = func_get_args();
-  $uninstall_extensions = explode(',', drush_get_option('uninstall', ''));
-}
-
 
 /**
  * Add help components to a command
