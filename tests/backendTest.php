@@ -202,9 +202,12 @@ class backendUnitCase extends Drush_UnitTestCase {
 
     // Test file does not exist immediate after process forked
     $this->assertEquals(file_exists($test_file), FALSE);
-
-    // Test file exists after waiting half a second
-    usleep(500000);
+    // Check every 100th of a second for up to 4 seconds to see if the file appeared
+    $repetitions = 400;
+    while (!file_exists($test_file) && ($repetitions > 0)) {
+      usleep(10000);
+    }
+    // Assert that the file did finally appear
     $this->assertEquals(file_exists($test_file), TRUE);
   }
 }
