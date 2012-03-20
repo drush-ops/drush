@@ -5,6 +5,17 @@
 // site in a multisite configuration (e.g. http://mysite.com/...).
 $base_url = runserver_env('RUNSERVER_BASE_URL');
 
+// Complete $_GET['q'] for Drupal 6 with built in server
+// - this uses the Drupal 7 method.
+if (!isset($_GET['q']) && isset($_SERVER['REQUEST_URI'])) {
+    // This request is either a clean URL, or 'index.php', or nonsense.
+    // Extract the path from REQUEST_URI.
+    $request_path = strtok($_SERVER['REQUEST_URI'], '?');
+    $base_path_len = strlen(rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/'));
+    // Unescape and strip $base_path prefix, leaving q without a leading slash.
+  $_GET['q'] = substr(urldecode($request_path), $base_path_len + 1);
+}
+
 // We hijack filter_init (which core filter module does not implement) as
 // a convenient place to affect early changes.
 if (!function_exists('filter_init')) {
@@ -16,18 +27,24 @@ if (!function_exists('filter_init')) {
     $conf_inject = unserialize(urldecode(runserver_env('RUNSERVER_CONF')));
     // Merge in the injected conf, overriding existing items.
     $conf = array_merge($conf, $conf_inject);
-    $uid = runserver_env('RUNSERVER_USER');
-    if (isset($_GET['login']) && $user->uid == 0 && !empty($uid)) {
-      // If a user was provided, log in as this user.
-      $user = user_load($uid);
-      if (function_exists('drupal_session_regenerate')) {
-        // Drupal 7
-        drupal_session_regenerate();
+
+    // Log in user if needed.
+    if (isset($_GET['login'])) {
+      $uid = runserver_env('RUNSERVER_USER');
+      if (!empty($uid) && $user->uid !== $uid) {
+        // If a user was provided, log in as this user.
+        $user = user_load($uid);
+        if (function_exists('drupal_session_regenerate')) {
+          // Drupal 7
+          drupal_session_regenerate();
+        }
+        else {
+          // Drupal 6
+          sess_regenerate();
+        }
       }
-      else {
-        // Drupal 6
-        sess_regenerate();
-      }
+      // Refresh the page (in case access denied has been called already).
+      drupal_goto($_GET['q']);
     }
   }
 }

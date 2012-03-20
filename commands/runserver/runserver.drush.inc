@@ -104,6 +104,20 @@ function drush_core_runserver_validate() {
     return drush_set_error('RUNSERVER_PHP_CGI', dt('The runserver command with the "builtin" server requires php 5.4 (or higher), which could not be found.'));
   }
 
+  if ($server == 'cgi') {
+    // Fetch httpserver cgi based server to our /lib directory, if needed.
+    $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
+    $httpserverfile = $lib . '/' . DRUSH_HTTPSERVER_DIR_BASE . substr(DRUSH_HTTPSERVER_VERSION, 0, 7) . '/httpserver.php';
+    if (!drush_file_not_empty($httpserverfile)) {
+      // Download and extract httpserver, and confirm success.
+      drush_lib_fetch(DRUSH_HTTPSERVER_BASE_URL . DRUSH_HTTPSERVER_VERSION);
+      if (!drush_file_not_empty($httpserverfile)) {
+        // Something went wrong - the library is still not present.
+        return drush_set_error('RUNSERVER_HTTPSERVER_LIB_NOT_FOUND', dt("The runserver command needs a copy of the httpserver library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the package from !url, extract it into the !lib directory, such that httpserver.php exists at !httpserverfile.", array('!version' => DRUSH_HTTPSERVER_VERSION, '!url' => DRUSH_HTTPSERVER_BASE_URL . DRUSH_HTTPSERVER_VERSION, '!httpserverfile' => $httpserverfile, '!lib' => $lib)));
+      }
+    }
+  }
+
   // Check we have a valid server.
   if (!in_array(drush_get_option('server', FALSE), array('cgi', 'builtin'))) {
     return drush_set_error('RUNSERVER_INVALID', dt('Invalid server specified.'));
@@ -183,10 +197,13 @@ function drush_core_runserver($uri = NULL) {
   // We pass in the specified user ID (if set). This will automatically log
   // this user in the browser during the first request (but not subsequent
   // requests, to allow logging out).
+  $user_message = '';
   if ($user->uid) {
     $env['RUNSERVER_USER'] = $user->uid;
+    $user_message = ', logged in as ' . $user->name;
   }
 
+  drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $uri['path'], '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
   if (drush_get_option('server', FALSE) == 'builtin') {
     // Start php 5.4 builtin server.
     // Store data used by runserver-prepend.php in the shell environment.
@@ -202,19 +219,9 @@ function drush_core_runserver($uri = NULL) {
     drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"');
   }
   else {
-    // Fetch httpserver cgi based server to our /lib directory, if needed.
+    // Include the library and our class that extends it.
     $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
     $httpserverfile = $lib . '/' . DRUSH_HTTPSERVER_DIR_BASE . substr(DRUSH_HTTPSERVER_VERSION, 0, 7) . '/httpserver.php';
-    if (!drush_file_not_empty($httpserverfile)) {
-      // Download and extract httpserver, and confirm success.
-      drush_lib_fetch(DRUSH_HTTPSERVER_BASE_URL . DRUSH_HTTPSERVER_VERSION);
-      if (!drush_file_not_empty($httpserverfile)) {
-        // Something went wrong - the library is still not present.
-        return drush_set_error('RUNSERVER_HTTPSERVER_LIB_NOT_FOUND', dt("The runserver command needs a copy of the httpserver library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the package from !url, extract it into the !lib directory, such that httpserver.php exists at !httpserverfile.", array('!version' => DRUSH_HTTPSERVER_VERSION, '!url' => DRUSH_HTTPSERVER_BASE_URL . DRUSH_HTTPSERVER_VERSION, '!httpserverfile' => $httpserverfile, '!lib' => $lib)));
-      }
-    }
-
-    // Include the library and our class that extends it.
     require_once $httpserverfile;
     require_once 'runserver-drupal.inc';
     // Create a new httpserver instance and start it running.

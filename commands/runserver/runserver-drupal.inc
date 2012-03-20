@@ -12,7 +12,7 @@
 class DrupalServer extends HTTPServer {
   // We pass in variables, rather than querying options here, to allow this to
   // potentially be used in other commands.
-  public $site, $path, $conf_inject, $user, $debug, $first_request_complete;
+  public $path, $debug, $env, $site;
 
   /**
    * This is the equivalent of .htaccess, passing requests to files if they
@@ -51,7 +51,6 @@ class DrupalServer extends HTTPServer {
    * Override get started event.
    */
   function listening() {
-    drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/), serving site !site...', array('!addr' => $this->addr, '!hostname' => $this->hostname, '!port' => $this->port, '!site' => $this->site)));
     if (!empty($this->path)) {
       drush_start_browser($this->path);
     }
