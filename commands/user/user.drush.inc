@@ -171,71 +171,13 @@ function user_drush_command() {
   return $items;
 }
 
-// Implementation of hook_drush_init().
-function user_drush_init() {
-  $command_info = drush_get_command();
-  $command = $command_info['command'];
-  $needs_parse_args = array('user-block', 'user-unblock', 'user-add-role', 'user-remove-role');
-  if (in_array($command, $needs_parse_args)) {
-    // parse args and call drush_set_option for --uids
-    $users = array();
-    foreach (array('uid', 'name', 'mail' ) as $user_attr) {
-      if ($arg = drush_get_option($user_attr)) {
-        foreach(explode(',', $arg) as $search) {
-          $uid_query = FALSE;
-          switch ($user_attr) {
-            case 'uid':
-              if (drush_drupal_major_version() >= 7) {
-                $uid_query = db_query("SELECT uid FROM {users} WHERE uid = :uid", array(':uid' => $search));
-              }
-              else {
-                $uid_query = db_query("SELECT uid FROM {users} WHERE uid = %d", $search);
-              }
-              break;
-            case 'name':
-              if (drush_drupal_major_version() >= 7) {
-                $uid_query = db_query("SELECT uid FROM {users} WHERE name = :name", array(':name' => $search));
-              }
-              else {
-                $uid_query = db_query("SELECT uid FROM {users} WHERE name = '%s'", $search);
-              }
-              break;
-            case 'mail':
-              if (drush_drupal_major_version() >= 7) {
-                $uid_query = db_query("SELECT uid FROM {users} WHERE mail = :mail", array(':mail' => $search));
-              }
-              else {
-                $uid_query = db_query("SELECT uid FROM {users} WHERE mail = '%s'", $search);
-              }
-              break;
-          }
-          if ($uid_query !== FALSE) {
-            if ($uid = drush_db_result($uid_query)) {
-              $users[] = $uid;
-            }
-            else {
-              drush_set_error("Could not find a uid for $user_attr = $search");
-            }
-          }
-        }
-      }
-    }
-    if (!empty($users)) {
-      drush_set_option('uids', $users);
-    }
-  }
-}
-
 /**
  * Prints information about the specified user(s).
  */
 function drush_user_information($users) {
-  $users = explode(',', $users);
-  foreach($users as $user) {
-    $uid = _drush_user_get_uid($user);  
-    if ($uid !== FALSE) {
-        _drush_user_print_info($uid);
-    }
+  $uids = _drush_user_get_users_from_arguments($users);
+  foreach($uids as $uid) {
+    _drush_user_print_info($uid);
   }
 }
 
@@ -243,16 +185,7 @@ function drush_user_information($users) {
  * Block the specified user(s).
  */
 function drush_user_block($users = '') {
-  $uids = drush_get_option('uids');
-  if ($users !== '') {
-    $users = explode(',', $users);
-    foreach($users as $user) {
-      $uid = _drush_user_get_uid($user);  
-      if ($uid !== FALSE) {
-        $uids[] = $uid;
-      }
-    }
-  }
+  $uids = _drush_user_get_users_from_options_and_arguments($users);
   if (!empty($uids)) {
     drush_op('user_user_operations_block', $uids);
   }
@@ -265,16 +198,7 @@ function drush_user_block($users = '') {
  * Unblock the specified user(s).
  */
 function drush_user_unblock($users = '') {
-  $uids = drush_get_option('uids');
-  if ($users !== '') {
-    $users = explode(',', $users);
-    foreach($users as $user) {
-      $uid = _drush_user_get_uid($user);  
-      if ($uid !== FALSE) {
-        $uids[] = $uid;
-      }
-    }
-  }
+  $uids = _drush_user_get_users_from_options_and_arguments($users);
   if (!empty($uids)) {
     drush_op('user_user_operations_unblock', $uids);
   }
@@ -287,16 +211,7 @@ function drush_user_unblock($users = '') {
  * Add a role to the specified user accounts.
  */
 function drush_user_add_role($role, $users = '') {
-  $uids = drush_get_option('uids');
-  if ($users !== '') {
-    $users = explode(',', $users);
-    foreach($users as $user) {
-      $uid = _drush_user_get_uid($user);  
-      if ($uid !== FALSE) {
-        $uids[] = $uid;
-      }
-    }
-  }
+  $uids = _drush_user_get_users_from_options_and_arguments($users);
   if (drush_drupal_major_version() >= 7) {
     $rid_query = db_query("SELECT rid FROM {role} WHERE name = :role", array(':role' => $role));
   }
@@ -323,16 +238,7 @@ function drush_user_add_role($role, $users = '') {
  * Remove a role from the specified user accounts.
  */
 function drush_user_remove_role($role, $users = '') {
-  $uids = drush_get_option('uids');
-  if ($users !== '') {
-    $users = explode(',', $users);
-    foreach($users as $user) {
-      $uid = _drush_user_get_uid($user);  
-      if ($uid !== FALSE) {
-        $uids[] = $uid;
-      }
-    }
-  }
+  $uids = _drush_user_get_users_from_options_and_arguments($users);
   if (drush_drupal_major_version() >= 7) {
     $rid_query = db_query("SELECT rid FROM {role} WHERE name = :role", array(':role' => $role));
   }
@@ -530,6 +436,75 @@ function _drush_user_print_info($uid) {
     drush_print_table(drush_key_value_to_array_table($userinfo_short));
     drush_print_pipe("$userinfo->name,$userinfo->uid,$userinfo->mail,$userinfo->status,\"" . implode(',', $userinfo->roles) . "\"\n");
   }
+}
+
+/**
+ * Given a comma-separated list of users, return uids
+ * for users that match either by uid or email address.
+ */
+function _drush_user_get_users_from_arguments($users) {
+  $uids = array();
+  if ($users !== '') {
+    $users = explode(',', $users);
+    foreach($users as $user) {
+      $uid = _drush_user_get_uid($user);
+      if ($uid !== FALSE) {
+        $uids[] = $uid;
+      }
+    }
+  }
+  return $uids;
+}
+
+/**
+ * Return the list of matching uids given
+ */
+function _drush_user_get_users_from_options_and_arguments($users) {
+  $uids = drush_get_option_list('uids');
+
+  foreach (array('uid', 'name', 'mail' ) as $user_attr) {
+    if ($arg = drush_get_option($user_attr)) {
+      foreach(explode(',', $arg) as $search) {
+        $uid_query = FALSE;
+        switch ($user_attr) {
+          case 'uid':
+            if (drush_drupal_major_version() >= 7) {
+              $uid_query = db_query("SELECT uid FROM {users} WHERE uid = :uid", array(':uid' => $search));
+            }
+            else {
+              $uid_query = db_query("SELECT uid FROM {users} WHERE uid = %d", $search);
+            }
+            break;
+          case 'name':
+            if (drush_drupal_major_version() >= 7) {
+              $uid_query = db_query("SELECT uid FROM {users} WHERE name = :name", array(':name' => $search));
+            }
+            else {
+              $uid_query = db_query("SELECT uid FROM {users} WHERE name = '%s'", $search);
+            }
+            break;
+          case 'mail':
+            if (drush_drupal_major_version() >= 7) {
+              $uid_query = db_query("SELECT uid FROM {users} WHERE mail = :mail", array(':mail' => $search));
+            }
+            else {
+              $uid_query = db_query("SELECT uid FROM {users} WHERE mail = '%s'", $search);
+            }
+            break;
+        }
+        if ($uid_query !== FALSE) {
+          if ($uid = drush_db_result($uid_query)) {
+            $uids[] = $uid;
+          }
+          else {
+            drush_set_error("Could not find a uid for $user_attr = $search");
+          }
+        }
+      }
+    }
+  }
+
+  return array_merge($uids, _drush_user_get_users_from_arguments($users));
 }
 
 /**
