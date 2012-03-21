@@ -26,6 +26,15 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     mkdir(getenv('HOME') . '/.drush', 0777, TRUE);
     mkdir($sandbox . '/etc/drush', 0777, TRUE);
     mkdir($sandbox . '/share/drush/commands', 0777, TRUE);
+
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+      // Hack to make git use unix line endings on windows
+      // We need it to make hashes of files pulled from git match ones hardcoded in tests
+      if (!file_exists($sandbox . '\home')) {
+        mkdir($sandbox . '\home');
+      }
+      exec("git config --file $sandbox\\home\\.gitconfig core.autocrlf false", $output, $return);
+    }
   }
 
   /**
