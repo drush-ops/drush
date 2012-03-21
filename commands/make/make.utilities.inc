@@ -370,19 +370,7 @@ function make_prepare_install($build_path) {
  * Calculate a cksum on each file in the build, and md5 the resulting hashes.
  */
 function make_md5() {
-  if (drush_shell_exec("( find %s -type f -exec cksum {} \; )", make_tmp())) {
-    $hashes = array();
-    foreach (drush_shell_exec_output() as $line) {
-      // Remove the temporary build path which includes a (relatively)
-      // unique timestamp.
-      $line = str_replace(make_tmp(), '', $line);
-      // Trim to sanitize.
-      $line = trim($line);
-      $hashes[] = $line;
-    }
-    sort($hashes);
-    return md5(implode("\n", $hashes));
-  }
+  return drush_dir_md5(make_tmp());
 }
 
 /**
@@ -399,7 +387,7 @@ function make_tar($build_path) {
   drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . '__build__', $tmp_path . DIRECTORY_SEPARATOR . $dirname, TRUE);
   // Only move the tar file to it's final location if it's been built
   // successfully.
-  if (drush_shell_exec("tar -C %s -Pczf %s %s", $tmp_path, $tmp_path . '/' . $filename, $dirname)) {
+  if (drush_shell_exec("%s -C %s -Pczf %s %s", drush_get_tar_executable(), $tmp_path, $tmp_path . '/' . $filename, $dirname)) {
     drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . $filename, $build_path, TRUE);
   };
   // Move the build directory back to it's original location for consistency.

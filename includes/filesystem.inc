@@ -79,6 +79,22 @@ function drush_normalize_path($path) {
 }
 
 /**
+ * Calculates a single md5 hash for all files a directory (incuding subdirectories)
+ */
+function drush_dir_md5($dir) {
+  $flist = drush_scan_directory($dir, '/./', array('.', '..'), 0, TRUE, 'filename', 0, TRUE);
+  $hashes = array();
+  foreach ($flist as $f) {
+    $sum = array();
+    exec('cksum ' . escapeshellarg($f->filename), $sum);
+    $hashes[] = trim(str_replace(array($dir), array(''), $sum[0]));
+  }
+  sort($hashes);
+  file_put_contents('flist.1', implode("\n", $hashes));
+  return md5(implode("\n", $hashes));
+}
+
+/**
  * Deletes the provided file or folder and everything inside it.
  * Usually respects read-only files and folders. To do a forced delete use
  * drush_delete_tmp_dir() or set the parameter $forced.
@@ -170,7 +186,7 @@ function drush_copy_dir($src, $dest, $overwrite = FALSE) {
     return TRUE;
   }
 
-  return drush_set_error('DRUSH_COPY_DIR_FAILURE', dt('Unable to copy !src to !dest.', array('src' => $src, 'dest' => $dest)));
+  return drush_set_error('DRUSH_COPY_DIR_FAILURE', dt('Unable to copy !src to !dest.', array('!src' => $src, '!dest' => $dest)));
 }
 
 /**

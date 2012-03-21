@@ -813,22 +813,27 @@ function drush_op($function) {
  */
 function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
   if (drush_get_option('cache') && $cache_duration !== 0 && $cache_dir = drush_directory_cache('download')) {
-    $cache_name = str_replace(array(':', '/'), '-', $url);
+    $cache_name = str_replace(array(':', '/', '?'), '-', $url);
     $cache_file = $cache_dir . "/" . $cache_name;
     // Check for cached, unexpired file.
     if (file_exists($cache_file) && filectime($cache_file) > ($_SERVER['REQUEST_TIME']-$cache_duration)) {
       drush_log(dt('!name retrieved from cache.', array('!name' => $cache_name)));
-      return $cache_file;
     }
     else {
       if (_drush_download_file($url, $cache_file, TRUE)) {
         // Cache was set just by downloading file to right location.
-        return $cache_file;
       }
       elseif (file_exists($cache_file)) {
         drush_log(dt('!name retrieved from an expired cache since refresh failed.', array('!name' => $cache_name)), 'warning');
-        return $cache_file;
       }
+      else {
+        $cache_file = FALSE;
+      }
+    }
+
+    if ($cache_file && copy($cache_file, $destination)) {
+      // Copy cached file to the destination
+      return $destination;
     }
   }
   elseif ($return = _drush_download_file($url, $destination)) {

@@ -212,7 +212,7 @@ function make_download_file_unpack_tar($filename, $download_location, $subtree =
 
   list($main_directory) = array_reverse(explode('/', $download_location));
 
-  drush_shell_exec('tar -x -C %s -f %s', $tmp_path, $filename);
+  drush_shell_exec('%s -x -C %s -f %s', drush_get_tar_executable(), $tmp_path, $filename);
 
   return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
 }
