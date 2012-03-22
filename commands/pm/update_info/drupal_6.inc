@@ -74,7 +74,7 @@ function _pm_get_update_info($projects) {
       continue;
     }
     // Discard projects with unknown installation path.
-    if (!isset($projects[$project_name]['path'])) {
+    if ($project_name != 'drupal' && !isset($projects[$project_name]['path'])) {
       unset($data[$project_name]);
       continue;
     }
