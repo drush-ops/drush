@@ -104,6 +104,8 @@ function drush_core_runserver_validate() {
     return drush_set_error('RUNSERVER_PHP_CGI', dt('The runserver command with the "builtin" server requires php 5.4 (or higher), which could not be found.'));
   }
 
+  // Update with detected configuration.
+  $server = drush_get_option('server', FALSE);
   if ($server == 'cgi') {
     // Fetch httpserver cgi based server to our /lib directory, if needed.
     $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
@@ -119,7 +121,7 @@ function drush_core_runserver_validate() {
   }
 
   // Check we have a valid server.
-  if (!in_array(drush_get_option('server', FALSE), array('cgi', 'builtin'))) {
+  if (!in_array($server, array('cgi', 'builtin'))) {
     return drush_set_error('RUNSERVER_INVALID', dt('Invalid server specified.'));
   }
 }
@@ -129,13 +131,6 @@ function drush_core_runserver_validate() {
  */
 function drush_core_runserver($uri = NULL) {
   global $user;
-
-  // We pass in the currently logged in user (if set via the --user option),
-  // which will automatically log this user in the browser during the first
-  // request.
-  if (drush_get_option('user', FALSE)) {
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
-  }
 
   // Determine active configuration.
   $drush_default = array(
@@ -162,13 +157,20 @@ function drush_core_runserver($uri = NULL) {
   }
   drush_set_context('DRUSH_URI', 'http://' . $hostname . ':' . $uri['port']);
 
-  // Add a querystring parameter to indicate that this is the first page request, so that the user can be logged in.
-  if (!empty($uri['path'])) {
-    if (strpos($uri['path'], '?') === FALSE) {
-      $uri['path'] .= '?login';
-    }
-    else {
-      $uri['path'] .= '&login';
+
+  // We pass in the currently logged in user (if set via the --user option),
+  // which will automatically log this user in the browser during the first
+  // request.
+  if (drush_get_option('user', FALSE)) {
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
+    // Add a querystring parameter to indicate that this is the first page request, so that the user can be logged in.
+    if (!empty($uri['path'])) {
+      if (strpos($uri['path'], '?') === FALSE) {
+        $uri['path'] .= '?login';
+      }
+      else {
+        $uri['path'] .= '&login';
+      }
     }
   }
 
