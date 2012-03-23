@@ -259,6 +259,11 @@
 # $options['no-label'] = TRUE;
 
 /**
+ * An explicit list of tables which should be included in sql-dump and sql-sync.
+ */
+# $options['tables']['common'] = array('user', 'permissions', 'role_permission', 'role');
+
+/**
  * List of tables whose *data* is skipped by the 'sql-dump' and 'sql-sync'
  * commands when the "--structure-tables-key=common" option is provided.
  * You may add specific tables to the existing array or add a new element.
