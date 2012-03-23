@@ -86,9 +86,11 @@ function drush_core_runserver_validate() {
   if (!$server) {
     // No server specified, try and find a valid server option, preferring cgi.
     if ($php_cgi) {
+      $server = 'cgi';
       drush_set_option('server', 'cgi');
     }
     else if ($builtin) {
+      $server = 'builtin';
       drush_set_option('server', 'builtin');
     }
     else {
