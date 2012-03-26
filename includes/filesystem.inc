@@ -90,7 +90,6 @@ function drush_dir_md5($dir) {
     $hashes[] = trim(str_replace(array($dir), array(''), $sum[0]));
   }
   sort($hashes);
-  file_put_contents('flist.1', implode("\n", $hashes));
   return md5(implode("\n", $hashes));
 }
 
