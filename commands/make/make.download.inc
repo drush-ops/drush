@@ -264,7 +264,7 @@ function make_download_file_unpack_zip($filename, $download_location, $subtree =
  * TODO merge with core drush methods.
  */
 function _make_download_file_move($tmp_path, $filename, $download_location, $subtree = NULL) {
-  $lines = drush_scan_directory($tmp_path, '/./', array('.', '..'), 0, FALSE);
+  $lines = drush_scan_directory($tmp_path, '/./', array('.', '..'), 0, FALSE, 'filename', 0, TRUE);
   $main_directory = basename($download_location);
   if (count($lines) == 1) {
     $directory = array_shift($lines);

@@ -498,7 +498,7 @@ function make_move_build($build_path) {
   $tmp_path = make_tmp();
   $ret = TRUE;
   if ($build_path == '.') {
-    $info = drush_scan_directory($tmp_path . DIRECTORY_SEPARATOR . '__build__', '/./', array('.', '..'), 0, FALSE);
+    $info = drush_scan_directory($tmp_path . DIRECTORY_SEPARATOR . '__build__', '/./', array('.', '..'), 0, FALSE, 'filename', 0, TRUE);
     foreach ($info as $file) {
       $destination = $build_path . DIRECTORY_SEPARATOR . $file->basename;
       if (file_exists($destination)) {
