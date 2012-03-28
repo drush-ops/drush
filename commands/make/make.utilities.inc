@@ -450,7 +450,7 @@ function make_get_data($data_source) {
   }
   // Remote file.
   else {
-    $file = _make_download_file(array('url' => $data_source));
+    $file = _make_download_file($data_source);
     $data = file_get_contents($file);
     drush_op('unlink', $file);
   }
