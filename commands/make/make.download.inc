@@ -193,6 +193,12 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
       break;
 
     default:
+      // If this is an individual file, and no filename has been specified,
+      // assume the original name.
+      if (is_file($filename) && !$name) {
+        $name = basename($filename);
+      }
+
       // The destination directory has already been created by
       // findDownloadLocation().
       $destination = $download_location . ($name ? '/' . $name : '');

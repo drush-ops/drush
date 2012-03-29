@@ -11,3 +11,7 @@ projects[devel][download][md5] = "3dbd3cd4c15f001c1ac7067ca58c74ff"
 
 libraries[vegas][download][type] = "get"
 libraries[vegas][download][url] = "https://github.com/jaysalvat/vegas/zipball/v1.2"
+
+libraries[autopager][download][type] = "get"
+libraries[autopager][download][url] = "http://lagoscript.org/files/jquery/autopager/jquery.autopager-1.0.0.js"
+libraries[autopager][directory_name] = "autopager"
