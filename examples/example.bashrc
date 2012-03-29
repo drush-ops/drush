@@ -40,7 +40,7 @@
 #       unin             - drush pm-uninstall
 #       up               - drush pm-update
 #       upc              - drush pm-updatecode
-#       updb             - drush uptatedb
+#       updb             - drush updatedb
 #       q                - drush sql-query
 #
 # Provides several common shell commands to work better with drush:
@@ -97,7 +97,7 @@ alias rf='drush pm-refresh'
 alias unin='drush pm-uninstall'
 alias up='drush pm-update'
 alias upc='drush pm-updatecode'
-alias updb='drush uptatedb'
+alias updb='drush updatedb'
 alias q='drush sql-query'
 
 # Overrides for standard shell commands. Uncomment to enable.  Alias
