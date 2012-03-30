@@ -524,7 +524,7 @@ function _drush_sql_get_table_list($option_name) {
 
 function drush_sql_query($query = NULL) {
   drush_sql_bootstrap_further();
-  $filename = drush_get_option('file', NULL);
+  $filename = drush_get_option('input-file', NULL);
   return _drush_sql_query($query, NULL, $filename);
 }
 
