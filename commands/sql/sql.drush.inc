@@ -341,7 +341,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
   if ($file) {
     if ($file === TRUE) {
       // User did not pass a specific value for --result-file. Make one.
-      $backup = drush_include_engine('version-control', 'backup');
+      $backup = drush_include_engine('version_control', 'backup');
       $backup_dir = $backup->prepare_backup_dir($db_spec['database']);
       if (empty($backup_dir)) {
         $backup_dir = "/tmp";
