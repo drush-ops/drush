@@ -410,6 +410,8 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       );
 
       $common_options = drush_redispatch_get_options();
+      // Merge in stdin options since we process makefiles recursively. See http://drupal.org/node/1510180.
+      $common_options = array_merge($common_options, drush_get_context('stdin'));
       // Package handler should use 'wget'.
       $common_options['package-handler'] = 'wget';
 
