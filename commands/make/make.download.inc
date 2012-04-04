@@ -277,7 +277,7 @@ function _make_download_file_move($tmp_path, $filename, $download_location, $sub
     if ($directory->basename != $main_directory) {
       drush_move_dir($directory->filename, $tmp_path . DIRECTORY_SEPARATOR . $main_directory, TRUE);
     }
-    drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . $main_directory, $download_location, TRUE);
+    drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . $main_directory . DIRECTORY_SEPARATOR . $subtree, $download_location, TRUE);
     drush_delete_dir($tmp_path, TRUE);
   }
   elseif (count($lines) > 1) {

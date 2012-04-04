@@ -354,7 +354,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Use subtree from downloaded archive',
         'makefile' => 'subtree.make',
         'build'    => TRUE,
-        'md5' => '840ece0ec28834182054c49c4b7a204a',
+        'md5' => 'db3770d8b4c9ce77510cbbcc566da9b8',
         'options'  => array('no-core' => NULL),
       ),
       'md5-succeed' => array(
