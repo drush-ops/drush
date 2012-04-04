@@ -32,6 +32,14 @@ class DrushMakeProject {
   protected static $self = array();
 
   /**
+   * Default to overwrite to allow recursive builds to process properly.
+   *
+   * TODO refactor this to be more selective. Ideally a merge would take place
+   * instead of an overwrite.
+   */
+  protected $overwrite = TRUE;
+
+  /**
    * Set attributes and retrieve project information.
    */
   protected function __construct($project) {

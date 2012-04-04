@@ -304,7 +304,10 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'makefile' => 'recursion.make',
         'build'    => TRUE,
         'md5' => 'cd095bd6dadb2f0d3e81f85f13685372',
-        'options'  => array('no-core' => NULL),
+        'options'  => array(
+          'no-core' => NULL,
+          'contrib-destination' => 'profiles/drupal_forum',
+        ),
       ),
       'svn' => array(
         'name'     => 'SVN',
