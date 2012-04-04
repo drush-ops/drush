@@ -156,7 +156,7 @@
  *     is not set, and 'Linux' (or $options['remote-os']) if it is.
  * - 'ssh-options': If the target requires special options, such as a non-
  *     standard port, alternative identity file, or alternative
- *     authentication method, ssh- options can contain a string of extra
+ *     authentication method, ssh-options can contain a string of extra
  *     options that are used with the ssh command, eg "-p 100"
  * - 'parent': The name of a parent alias (e.g. '@server') to use as a basis
  *     for this alias.  Any value of the parent will appear in the child
