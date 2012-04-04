@@ -87,7 +87,7 @@ below.
    drush and bash. You may source this file directly into your shell by adding to
    your .bashrc (rr equivalent): source /path/to/drush/examples/example.bashrc
 
-7. Optional. If you didn't source it in Step 5 above, see top of
+7. Optional. If you didn't source it in Step 6 above, see top of
    drush.complete.sh file for instructions adding bash completion for drush
    command to your shell.  Once configured, completion works for site aliases,
    command names, shell aliases, global options, and command-specific options.
