@@ -22,7 +22,7 @@
  *
  * To use this feature, copy the 'target-command-specific'
  * item from the example alias above, place it in your development
- * site aliases, and custom the development module list
+ * site aliases, and customize the development module list
  * to suit.  You must also copy the sync_enable.drush.inc
  * file to a location where Drush will find it, such as
  * $HOME/.drush.  See `drush topic docs-commands` for more
