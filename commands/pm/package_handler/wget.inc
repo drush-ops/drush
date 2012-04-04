@@ -51,7 +51,7 @@ function package_handler_download_project(&$request, $release) {
   // Dev snapshots can be cached for 4 hours and releases for 1 year.
   $max_age = strpos($release['download_link'], '-dev') !== FALSE ? 3600*4 : 86400*365;
   $filename = basename($release['download_link']);
-  $path = drush_download_file($release['download_link'], $request['base_project_path'] . $filename, $max_age);
+  $path = drush_download_file($release['download_link'], $request['base_project_path'] . DIRECTORY_SEPARATOR . $filename, $max_age);
   if ($path || drush_get_context('DRUSH_SIMULATE')) {
     drush_log("Downloading " . $filename . " was successful.");
   }
