@@ -25,6 +25,9 @@
     <!--Uncomment the line below if your path to drush differs from `which drush`. Use absolute path.-->
     <!--<var name="UNISH_DRUSH" value="/Users/mw/bin/drush"/>-->
 
+    <!--Uncomment to provide a group the user running the tests belong to. This is needed for some filesystem tests. -->
+    <!--<var name="UNISH_USERGROUP" value="staff"/>-->
+
     <includePath>.</includePath>
   </php>
 </phpunit>

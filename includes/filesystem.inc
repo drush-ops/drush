@@ -211,9 +211,15 @@ function _drush_recursive_copy($src, $dest) {
     return FALSE;
   }
 
-  // Preserve permissions
+  // Preserve execute permission.
   if (!drush_is_windows()) {
-    chmod($dest, intval(fileperms($src), 8));
+    // Get execute bits of $src.
+    $execperms = fileperms($src) & 0111;
+    // Apply execute permissions if any.
+    if ($execperms > 0) {
+      $perms = fileperms($dest) | $execperms;
+      chmod($dest, $perms);
+    }
   }
 
   return TRUE;
