@@ -467,7 +467,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
   if (drush_get_option('gzip')) {
     if ($file) {
       // Gzip the result-file
-      $exec .= "; gzip $file";
+      $exec .= "&& gzip $file";
       $file .= '.gz';
     }
     else {
