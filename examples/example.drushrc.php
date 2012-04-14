@@ -342,10 +342,10 @@
  * git repository.  Example script below by grayside.  Customize as desired.
  * @see: http://grayside.org/node/93.
  */
-#exec('git rev-parse --git-dir 2> /dev/null', $output);
+#exec('git rev-parse --show-toplevel 2> /dev/null', $output);
 #if (!empty($output)) {
 #  $repo = $output[0];
-#  $options['config'] = $repo . '/../drush/drushrc.php';
-#  $options['include'] = $repo . '/../drush/commands';
-#  $options['alias-path'] = $repo . '/../drush/aliases';
+#  $options['config'] = $repo . '/drush/drushrc.php';
+#  $options['include'] = $repo . '/drush/commands';
+#  $options['alias-path'] = $repo . '/drush/aliases';
 #}
