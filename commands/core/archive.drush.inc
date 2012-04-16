@@ -97,9 +97,11 @@ function drush_archive_dump($sites_subdirs = '@self') {
   // Create the unique temporary name.
   $date = gmdate('Ymd_his');
   $prefix = 'none';
-  if (!empty($full) && !empty($first['databases']['default']['default']['database'])) {
+  if (!empty($full)) {
     $first = current($full);
-    $prefix = count($sites_subdirs) > 1 ? 'multiple_sites' : str_replace('/', '-', $first['databases']['default']['default']['database']);
+    if ( !empty($first['databases']['default']['default']['database']) ) {
+      $prefix = count($full) > 1 ? 'multiple_sites' : str_replace('/', '-', $first['databases']['default']['default']['database']);
+    }
   }
   $temp_dest_name = "$prefix.$date.tar";
 
