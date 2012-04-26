@@ -323,7 +323,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         // from different users sharing the same dump file.
         if (!drush_is_windows($source_os) && (!$source_settings['dump-is-temp'])) {
           $source_intermediate = $source_dump . '-' . date("U");
-          $mv_intermediate = '; mv -f ' . $source_intermediate . ' ' . $source_dump;
+          $mv_intermediate = '&& mv -f ' . $source_intermediate . ' ' . $source_dump;
         }
         list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $source_db_url, $source_intermediate);
         $dump_exec .= $mv_intermediate;
