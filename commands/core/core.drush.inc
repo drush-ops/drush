@@ -882,6 +882,9 @@ function drush_core_quick_drupal_options(&$items) {
   );
   $pm = pm_drush_command();
   foreach ($pm['pm-download']['options'] as $option => $description) {
+    if (is_array($description)) {
+      $description = $description['description'];
+    }
     $options[$option] = 'Download option: ' . $description;
   }
   // Unset a few options that are not usable here, as we control them ourselves
@@ -891,6 +894,9 @@ function drush_core_quick_drupal_options(&$items) {
   unset($options['default-major']);
   unset($options['use-site-dir']);
   foreach ($items['site-install']['options'] as $option => $description) {
+    if (is_array($description)) {
+      $description = $description['description'];
+    }
     $options[$option] = 'Site install option: ' . $description;
   }
   unset($options['sites-subdir']);
