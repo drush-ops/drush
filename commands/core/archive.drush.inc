@@ -168,6 +168,10 @@ function drush_archive_dump($sites_subdirs = '@self') {
   drush_shell_cd_and_exec($workdir, "$tar --exclude \"{$docroot}/sites\" {$dereference}-cf %s %s", $destination, $docroot);
   // Add sites/all to the same archive.
   drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
+  // Add sites/sites.php to the same archive.
+  if (file_exists("{$docroot}/sites/sites.php")) {
+    drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/sites.php");
+  }
 
   $tmp = drush_tempdir();
   $all_dbs = array();
