@@ -186,7 +186,9 @@ function drush_archive_dump($sites_subdirs = '@self') {
       );
       $table_selection = drush_sql_get_table_selection();
       list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $db, $result_file);
-      drush_shell_exec($dump_exec);
+      if (!drush_shell_exec($dump_exec)) {
+        return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed.');
+      }
       drush_shell_cd_and_exec($tmp, "$tar --dereference -rf %s %s", $destination, basename($result_file));
     }
   }
