@@ -540,7 +540,7 @@ function updatexml_get_releases_from_xml($xml, $project) {
 function updatexml_determine_project_type($xml) {
   $project_types = array(
     'core' => 'Drupal core',
-    'profile' => 'Installation profiles',
+    'profile' => 'Distributions',
     'module' => 'Modules',
     'theme' => 'Themes',
     'theme engine' => 'Theme engines',

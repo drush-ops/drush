@@ -248,7 +248,10 @@ function pm_drush_command() {
       ),
       'use-site-dir' => 'Force to use the site specific directory. It will create the directory if it doesn\'t exist. If --destination is also present this option will be ignored.',
       'notes' => 'Show release notes after each project is downloaded.',
-      'variant' => "Only useful for install profiles. Possible values: 'full', 'projects', 'profile-only'.",
+      'variant' => array(
+        'description' => "Only useful for install profiles. Possible values: 'full', 'projects', 'profile-only'.",
+        'example-value' => 'full',
+      ),
       'select' => "Select the version to download interactively from a list of available releases.",
       'drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. Defaults to "drupal".',
       'default-major' => array(

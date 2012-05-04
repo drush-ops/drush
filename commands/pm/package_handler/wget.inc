@@ -72,7 +72,7 @@ function package_handler_download_project(&$request, $release) {
   $file_list = drush_tarball_extract($path, $request['base_project_path'], TRUE);
 
   // Move untarred directory to project_dir, if distinct.
-  if (($request['project_type'] == 'core') || (($request['project_type'] == 'profile') && (drush_get_option('variant', 'core') == 'core'))) {
+  if (($request['project_type'] == 'core') || (($request['project_type'] == 'profile') && (drush_get_option('variant', 'full') == 'full'))) {
     // Obtain the dodgy project_dir for drupal core.
     $project_dir = drush_trim_path($file_list[0]);
     if ($request['project_dir'] != $project_dir) {

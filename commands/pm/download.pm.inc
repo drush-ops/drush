@@ -96,7 +96,8 @@ function drush_pm_download() {
     // Determine the name of the directory that will contain the project.
     // We face here all the asymetries to make it smooth for package handlers.
     // For Drupal core: --drupal-project-rename or drupal-x.y
-    if ($request['project_type'] == 'core') {
+    if (($request['project_type'] == 'core') ||
+        (($request['project_type'] == 'profile') && (drush_get_option('variant', 'full') == 'full'))) {
       // Avoid downloading core into existing core.
       if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
         if (strpos(realpath(drush_get_option('destination')), DRUPAL_ROOT) !== FALSE) {
@@ -106,7 +107,7 @@ function drush_pm_download() {
 
       if ($rename = drush_get_option('drupal-project-rename', FALSE)) {
         if ($rename === TRUE) {
-          $request['project_dir'] = 'drupal';
+          $request['project_dir'] = $request['name'];
         }
         else {
           $request['project_dir'] = $rename;
