@@ -35,6 +35,11 @@ function unit_drush_command() {
     'description' => 'Command with no callback function, to test error reporting.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
+  $items['unit-drush-dependency'] = array(
+    'description' => 'Command depending on an unknown commandfile.',
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'drush dependencies' => array('unknown-commandfile'),
+  );
   return $items;
 }
 

@@ -1660,7 +1660,7 @@ function drush_enforce_requirement_drush_dependencies(&$command) {
           '!command' => $command['command'],
           '!dependency' => "$dependency.drush.inc",
         );
-        $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] = dt('Command !command needs the following drush command file to run: !dependency.', $dt_args);
+        $command['bootstrap_errors']['DRUSH_COMMANDFILE_DEPENDENCY_ERROR'] = dt('Command !command needs the following drush command file to run: !dependency.', $dt_args);
         return FALSE;
       }
     }
