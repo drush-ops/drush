@@ -334,8 +334,11 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
   $open_processes = array();
   $bucket = array();
   $process_limit = max($process_limit, 1);
-  // Loop through processes until they all close.
+  $is_windows = drush_is_windows();
+  // Loop through processes until they all close, having a nap as needed.
+  $nap_time = 0;
   while (sizeof($open_processes) || sizeof($cmds)) {
+    $nap_time++;
     if (sizeof($cmds) && (sizeof($open_processes) < $process_limit)) {
       // Pop the site and command (key / value) from the cmds array
       end($cmds);
@@ -376,7 +379,34 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
         $bucket[$site]['outputted'] = FALSE;
         $open_processes[$site] = $process;
       }
+      // Reset the $nap_time variable as there might be output to process next
+      // time around:
+      $nap_time = 0;
     }
+    // Set up to call stream_select(). See:
+    // http://php.net/manual/en/function.stream-select.php
+    // We can't use stream_select on Windows, because it doesn't work for
+    // streams returned by proc_open.
+    if (!$is_windows) {
+      $ss_result = 0;
+      $read_streams = array();
+      $write_streams = array();
+      $except_streams = array();
+      foreach ($open_processes as $site => &$current_process) {
+        if (isset($current_process['pipes'][1])) {
+          $read_streams[] = $current_process['pipes'][1];
+        }
+      }
+      // Wait up to 2s for data to become ready on one of the read streams.
+      if (sizeof($read_streams)) {
+        $ss_result = stream_select($read_streams, $write_streams, $except_streams, 2);
+        // If stream_select returns a error, then fallback to using $nap_time.
+        if ($ss_result !== FALSE) {
+          $nap_time = 0;
+        }
+      }
+    }
+
     foreach ($open_processes as $site => &$current_process) {
       if (isset($current_process['pipes'][1])) {
         // Collect output from stdout
@@ -407,18 +437,38 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
           $bucket[$site]['output'] .= $string;
           $info = stream_get_meta_data($current_process['pipes'][1]);
           flush();
+
+          // Reset the $nap_time variable as there might be output to process
+          // next time around:
+          if (!empty($string)) {
+            $nap_time = 0;
+          }
         }
         else {
           fclose($current_process['pipes'][1]);
           unset($current_process['pipes'][1]);
           // close the pipe , set a marker
+
+          // Reset the $nap_time variable as there might be output to process
+          // next time around:
+          $nap_time = 0;
         }
       }
       else {
         // if both pipes are closed for the process, remove it from active loop and add a new process to open.
         $bucket[$site]['code'] = proc_close($current_process['process']);
         unset($open_processes[$site]);
+
+        // Reset the $nap_time variable as there might be output to process next
+        // time around:
+        $nap_time = 0;
       }
+    }
+
+    // We should sleep for a bit if we need to, up to a maximum of 1/10 of a
+    // second.
+    if ($nap_time > 0) {
+      usleep(max($nap_time * 500, 100000));
     }
   }
   return $bucket;
