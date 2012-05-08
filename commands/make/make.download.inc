@@ -259,7 +259,12 @@ function make_download_file_unpack_zip($filename, $download_location, $subtree =
 
   list($main_directory) = array_reverse(explode('/', $download_location));
 
-  drush_shell_exec("unzip %s -d %s", $filename, $tmp_path);
+  $result = drush_shell_exec("unzip %s -d %s", $filename, $tmp_path);
+
+  if (!$result) {
+    make_error('UNZIP_ERROR', dt('Unable to unzip @filename.', array('@filename' => $filename)));
+    return FALSE;
+  }
 
   return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
 }
