@@ -78,9 +78,9 @@ function drush_invoke($command, $arguments = array()) {
  *      'interactive'
  *        Overrides the backend invoke process to run commands interactively.
  *      'fork'
- *        Overrides the backend invoke process to run non blocking commands in 
- *        the background. Forks a new process by adding a '&' at the end of the 
- *        command. The calling process does not receive any output from the child 
+ *        Overrides the backend invoke process to run non blocking commands in
+ *        the background. Forks a new process by adding a '&' at the end of the
+ *        command. The calling process does not receive any output from the child
  *        process. The fork option is used to spawn a process that outlives its
  *        parent.
  *
@@ -93,7 +93,7 @@ function drush_invoke($command, $arguments = array()) {
  * Do not change the signature of this function!  drush_invoke_process
  * is one of the key Drush APIs.  See http://drupal.org/node/1152908
  */
-function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = FALSE) {
+function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = TRUE) {
   if (is_array($site_alias_record) && array_key_exists('site-list', $site_alias_record)) {
     $site_alias_records = drush_sitealias_resolve_sitespecs($site_alias_record['site-list']);
     $site_alias_records = drush_sitealias_simplify_names($site_alias_records);
