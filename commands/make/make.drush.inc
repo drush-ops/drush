@@ -105,14 +105,14 @@ function make_drush_command() {
   );
 
   // Add docs topic.
-  $make_dir = dirname(__FILE__);
+  $docs_dir = drush_get_context('DOC_PREFIX', DRUSH_BASE_PATH);
   $items['docs-make'] = array(
     'description' => 'Drush Make overview with examples',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($make_dir . '/README.txt'),
+    'callback arguments' => array($docs_dir . '/docs/make.txt'),
   );
   $items['docs-make-example'] = array(
     'description' => 'Drush Make example makefile',
@@ -120,7 +120,7 @@ function make_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($make_dir . '/EXAMPLE.make'),
+    'callback arguments' => array($docs_dir . '/examples/example.make'),
   );
   return $items;
 }
@@ -131,7 +131,7 @@ function make_drush_command() {
 function make_drush_help($section) {
   switch ($section) {
     case 'drush:make':
-      return 'Turns a makefile into a Drupal codebase. For a full description of options and makefile syntax, see the README.txt included with drush make.';
+      return 'Turns a makefile into a Drupal codebase. For a full description of options and makefile syntax, see docs/make.txt and examples/example.make.';
     case 'drush:make-generate':
       return 'Generate a makefile from the current Drupal site, specifying project version numbers unless not known or otherwise specified. Unversioned projects will be interpreted later by drush make as "most recent stable release"';
   }
