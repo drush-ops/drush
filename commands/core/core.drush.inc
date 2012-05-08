@@ -178,7 +178,7 @@ function core_drush_command() {
       'destination' => 'May be rsync path or site alias. See rsync documentation and example.aliases.drushrc.php.',
     ),
     'options' => array(
-      'mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -az.',
+      'mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -akz.',
       'RSYNC-FLAG' => 'Most rsync flags passed to drush sync will be passed on to rsync.  See rsync documentation.',
       'exclude-conf' => 'Excludes settings.php from being rsynced.  Default.',
       'include-conf' => 'Allow settings.php to be rsynced. Default is to exclude settings.php.',
