@@ -402,13 +402,13 @@ function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
     // Only aliases--those named entities that begin with '@'--can be loaded this way.
     // We also skip any alias that has already been loaded.
     if ((substr($alias,0,1) == '@') && !array_key_exists($alias,$all_site_aliases)) {
-      drush_log(dt('Load alias !alias', array('!alias' => $alias)));
       $aliasname = substr($alias,1);
       $result = _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context);
       if (!empty($result)) {
         $alias_options = array('site-aliases' => array($aliasname => $result));
         _drush_sitealias_add_inherited_values($alias_options['site-aliases']);
         drush_set_config_special_contexts($alias_options);
+        drush_log(dt('Loaded alias !alias from file !file', array('!alias' => $alias, '!file' => $result['#file'])));
       }
     }
   }
@@ -1768,7 +1768,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
       $machine = "$remote_user$machine";
     }
   }
-  
+
   // TOD:  The code below is a little rube-goldberg-ish, and needs to be
   // reworked.  core-rsync will call this function twice: once to
   // evaluate the destination, and then again to evaluate the source.  Things
