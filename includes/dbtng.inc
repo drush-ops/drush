@@ -106,12 +106,14 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
       $query .= " ORDER BY $order_by_field $order_by_direction";
     }
     if (!is_null($length)) {
+      $db_spec = _drush_sql_get_db_spec();
+      $db_scheme = _drush_sql_get_scheme($db_spec);
       if ($db_scheme == 'oracle')
-           return db_query_range($query, $start, $length);
+        return db_query_range($query, $start, $length);
       else {
 	      $limit = " LIMIT $length";
 	      if (!is_null($start)) {
-		$limit .= " OFFSET $start";
+          $limit .= " OFFSET $start";
 	      }
 	      $query .= $limit;
       }
