@@ -86,5 +86,27 @@ class sqlSyncTest extends Drush_CommandTestCase {
     $uid = $row[1];
     $this->assertEquals("user+$uid@localhost", $row[2], 'email address was sanitized on destination site.');
     $this->assertEquals($name, $row[0]);
+
+    // Copy stage to dev with --sanitize and a fixed sanitized email
+    $sync_options = array(
+      'sanitize' => NULL,
+      'yes' => NULL,
+      'dump-dir' => $dump_dir,
+      'sanitize-email' => 'user@localhost',
+    );
+    $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
+
+    $options = array(
+      'root' => $this->webroot(),
+      'uri' => 'dev',
+      'yes' => NULL,
+    );
+    // Confirm that the sample user's email address has been sanitized on the dev site
+    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
+    $output = $this->getOutput();
+    $row  = str_getcsv($output);
+    $uid = $row[1];
+    $this->assertEquals("user@localhost", $row[2], 'email address was sanitized (fixed email) on destination site.');
+    $this->assertEquals($name, $row[0]);
   }
 }

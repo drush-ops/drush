@@ -116,8 +116,11 @@ function sql_drush_sql_sync_sanitize($site) {
         $email_map = array('%uid' => "', uid, '", '%mail' => "', replace(mail, '@', '_'), '", '%name' => "', replace(name, ' ', '_'), '");
         $newmail =  "concat('" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "')";
       }
+      $user_table_updates[] = "mail = $newmail";
     }
-    $user_table_updates[] = "mail = $newmail";
+    else {
+      $user_table_updates[] = "mail = '$newemail'";
+    }
     $message_list[] = 'email addresses';
   }
 
