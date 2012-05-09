@@ -368,7 +368,7 @@ function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
     drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command, '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'ok');
   }
 
-  // something went wrong, we need to undo
+  // Something went wrong, we need to undo.
   if ($rollback) {
     if (drush_get_option('confirm-rollback', FALSE)) {
       // Optionally ask for confirmation, --yes and --no are ignored from here on as we are about to finish this process.
