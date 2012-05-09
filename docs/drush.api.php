@@ -12,18 +12,20 @@
  * order, for the command "COMMAND":
  *
  * 0. drush_COMMAND_init()
- * 1. drush_hook_COMMAND_validate()
- * 2. drush_hook_pre_COMMAND()
- * 3. drush_hook_COMMAND()
- * 4. drush_hook_post_COMMAND()
+ * 1. drush_hook_COMMAND_pre_validate()
+ * 2. drush_hook_COMMAND_validate()
+ * 3. drush_hook_pre_COMMAND()
+ * 4. drush_hook_COMMAND()
+ * 5. drush_hook_post_COMMAND()
  *
  * For example, here are the hook opportunities for a mysite.drush.inc file
  * that wants to hook into the `pm-download` command.
  *
- * 1. drush_mysite_pm_download_validate()
- * 2. drush_mysite_pre_pm_download()
- * 3. drush_mysite_pm_download()
- * 4. drush_mysite_post_pm_download()
+ * 1. drush_mysite_pm_download_pre_validate()
+ * 2. drush_mysite_pm_download_validate()
+ * 3. drush_mysite_pre_pm_download()
+ * 4. drush_mysite_pm_download()
+ * 5. drush_mysite_post_pm_download()
  *
  * Note that the drush_COMMAND_init() hook is only for use by the
  * commandfile that defines the command.
@@ -48,6 +50,7 @@
  * 2. drush_mysite_pm_download_rollback()
  * 3. drush_mysite_pre_pm_download_rollback()
  * 4. drush_mysite_pm_download_validate_rollback()
+ * 5. drush_mysite_pm_download_pre_validate_rollback()
  *
  * Before any command is called, hook_drush_init() is also called.
  * hook_drush_exit() is called at the very end of command invocation.
@@ -56,6 +59,7 @@
  *
  * @see hook_drush_init()
  * @see drush_COMMAND_init()
+ * @see drush_hook_COMMAND_pre_validate()
  * @see drush_hook_COMMAND_validate()
  * @see drush_hook_pre_COMMAND()
  * @see drush_hook_COMMAND()
@@ -64,6 +68,7 @@
  * @see drush_hook_COMMAND_rollback()
  * @see drush_hook_pre_COMMAND_rollback()
  * @see drush_hook_COMMAND_validate_rollback()
+ * @see drush_hook_COMMAND_pre_validate_rollback()
  * @see hook_drush_exit()
  */
 
@@ -93,6 +98,18 @@ function hook_drush_init() {
  */
 function drush_COMMAND_init() {
   drush_bootstrap_max();
+}
+
+/**
+ * Run before a specific command validates.
+ *
+ * Logging an error stops command execution, and the rollback function (if any)
+ * for each hook implementation is invoked.
+ *
+ * @see drush_hook_COMMAND_pre_validate_rollback()
+ */
+function drush_hook_COMMAND_pre_validate() {
+
 }
 
 /**
@@ -206,7 +223,7 @@ function hook_drush_pm_download_destination_alter(&$project, $release) {
  * your module is enabled.
  *
  * Your hook will be called every time pm-enable is executed; you should
- * only download dependencies when your module is being enabled.  Respect 
+ * only download dependencies when your module is being enabled.  Respect
  * the --skip flag, and take no action if it is present.
  */
 function drush_hook_pre_pm_enable() {

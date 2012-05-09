@@ -211,7 +211,7 @@ function drush_command() {
 }
 
 /**
- * Invoke drush api calls, including all hooks.
+ * Invoke Drush API calls, including all hooks.
  *
  * This is an internal function; it is called from drush_dispatch via
  * drush_command, but only if the command does not specify a 'callback'
@@ -301,7 +301,7 @@ function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
   $all_available_hooks = array();
 
   // Iterate through the different hook variations
-  $variations = array($hook . "_validate", "pre_$hook", $hook, "post_$hook");
+  $variations = array($hook . "_pre_validate", $hook . "_validate", "pre_$hook", $hook, "post_$hook");
   foreach ($variations as $var_hook) {
     // Get the list of command files.
     // We re-fetch the list every time through
