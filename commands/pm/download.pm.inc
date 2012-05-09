@@ -213,8 +213,8 @@ function drush_pm_download() {
       drush_pm_extensions_in_project($request);
     }
     else {
-      drush_log(dt("Project !project (!version) could not be downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'error');
-      continue;
+      // We don't `return` here in order to proceed with downloading additional projects.
+      drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt("Project !project (!version) could not be downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])));
     }
   }
 }
