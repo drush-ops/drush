@@ -1518,21 +1518,36 @@ function drush_command_set_command_specific($command_default_options, $command =
     $options_were_set = _drush_command_set_default_options($command_default_options, $command['command']);
     if (isset($command['aliases']) && count($command['aliases'])) {
       foreach ($command['aliases'] as $alias) {
-        if (_drush_command_set_default_options($command_default_options, $alias) === TRUE) {
-          $options_were_set = TRUE;
-        }
+        $options_were_set += _drush_command_set_default_options($command_default_options, $alias);
       }
     }
     // If we set or cleared any options, go back and re-bootstrap any global
     // options such as -y and -v.
-    if ($options_were_set) {
+    if (!empty($options_were_set)) {
       _drush_bootstrap_global_options();
+    }
+    // If the command uses strict option handling, back out any global
+    // options that were set.
+    if ($command['strict-option-handling']) {
+      $global_options = drush_get_global_options();
+      foreach ($options_were_set as $key) {
+        if (array_key_exists($key, $global_options)) {
+          if (!array_key_exists('context', $global_options[$key])) {
+            $strict_options_warning =& drush_get_context('DRUSH_STRICT_OPTIONS_WARNING', array());
+            if (!array_key_exists($key, $strict_options_warning)) {
+              drush_log(dt("Global option --!option not supported in command-specific options for command !command due to a limitation in strict option handling.", array('!option' => $key, '!command' => $command['command'])), 'warning');
+              $strict_options_warning[$key] = TRUE;
+            }
+          }
+          drush_unset_option($key, 'specific');
+        }
+      }
     }
   }
 }
 
 function _drush_command_set_default_options($command_default_options, $command) {
-  $options_were_set = FALSE;
+  $options_were_set = array();
   if (array_key_exists($command, $command_default_options)) {
     foreach ($command_default_options[$command] as $key => $value) {
       // We set command-specific options in their own context
@@ -1540,7 +1555,7 @@ function _drush_command_set_default_options($command_default_options, $command) 
       // context, but lower than command-line options.
       if (!drush_get_option('no-' . $key, FALSE)) {
         drush_set_option($key, $value, 'specific');
-        $options_were_set = TRUE;
+        $options_were_set[] = $key;
       }
     }
   }
