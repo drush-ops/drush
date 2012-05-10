@@ -1276,8 +1276,10 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       // User commands, specified by 'include' option
       if ($include = drush_get_context('DRUSH_INCLUDE', FALSE)) {
         foreach ($include as $path) {
-          drush_log('Include ' . $path, 'notice');
-          $searchpath[] = $path;
+          if (is_dir($path)) {
+            drush_log('Include ' . $path, 'notice');
+            $searchpath[] = $path;
+          }
         }
       }
 
