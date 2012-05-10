@@ -95,6 +95,7 @@ function drush_core_pre_site_install($profile = NULL) {
 
   // The Drupal 6 installer needs to bootstrap up to the specified site.
   // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
+  define('MAINTENANCE_MODE', 'install');
   if (drush_drupal_major_version() == 6) {
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
   }

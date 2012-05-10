@@ -8,7 +8,6 @@ function drush_core_site_install_version($profile, array $additional_form_option
     $profile = 'standard';
   }
 
-  define('MAINTENANCE_MODE', 'install');
   require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
 
   $db_spec = _drush_sql_get_db_spec();
