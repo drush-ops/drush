@@ -28,15 +28,16 @@ function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
 }
 
 /**
- * Implementation of drush_hook_help_alter
+ * Implement hook help alter.
+ *
+ * When a hook extends a command with additional options, it must
+ * implement help alter and declare the option(s).  Doing so will add
+ * the option to the help text for the modified command, and will also
+ * allow the new option to be specified on the command line.  Without
+ * this, Drush will fail with an error when a user attempts to use
+ * the option.
  */
-function drush_policy_help_alter($command) {
-  // If a command hook (e.g. drush_hook_COMMAND_validate, below)
-  // calls drush_get_option('abc'), then it is required to add
-  // the new option to the 'global-options' command (or, alternatively,
-  // to the single command hooked).  Otherwise, the user will get
-  // an "unknown option" error when they try to specify the option on the
-  // commandline.
+function policy_drush_help_alter($command) {
   if ($command['command'] == 'updatedb') {
     $command['options']['token'] = 'Per site policy, you must specify a token in the --token option for all commands.';
   }
