@@ -342,13 +342,8 @@ function pm_pm_update_complete() {
  */
 function pm_complete_extensions() {
   if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-    $extension_info = drush_get_extensions();
-    foreach ($extension_info as $key => $extension) {
-      if (!isset($extension->info['hidden'])) {
-        $extensions[] = $key;
-      }
-    }
-    return array('values' => $extensions);
+    $extension_info = drush_get_extensions(FALSE);
+    return array('values' => array_keys($extension_info));
   }
 }
 
@@ -655,7 +650,7 @@ function drush_pm_list() {
   $header[] = dt('Version');
   $rows[] = $header;
 
-  $extension_info = drush_get_extensions();
+  $extension_info = drush_get_extensions(FALSE);
   uasort($extension_info, '_drush_pm_sort_extensions');
 
   $major_version = drush_drupal_major_version();
@@ -666,10 +661,6 @@ function drush_pm_list() {
     }
     $status = drush_get_extension_status($extension);
     if (!in_array($status, $status_filter)) {
-      unset($extension_info[$key]);
-      continue;
-    }
-    if (($major_version >= 6) and (isset($extension->info['hidden']))) {
       unset($extension_info[$key]);
       continue;
     }

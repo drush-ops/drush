@@ -6,15 +6,10 @@
 function drush_pm_info() {
   $args = pm_parse_arguments(func_get_args());
 
-  $extension_info = drush_get_extensions();
+  $extension_info = drush_get_extensions(FALSE);
   _drush_pm_expand_extensions($args, $extension_info);
-  // If no extensions are provided, select all but the hidden ones.
+  // If no extensions are provided, show all.
   if (count($args) == 0) {
-    foreach ($extension_info as $key => $extension) {
-      if (isset($extension->info['hidden'])) {
-        unset($extension_info[$key]);
-      }
-    }
     $args = array_keys($extension_info);
   }
 

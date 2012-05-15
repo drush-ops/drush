@@ -15,11 +15,14 @@
  * @return
  *   An array containing module info for all available modules.
  */
-function drush_get_modules() {
+function drush_get_modules($include_hidden = TRUE) {
   $modules = module_rebuild_cache();
-  foreach ($modules as $module) {
+  foreach ($modules as $key => $module) {
     if (!isset($module->type)) {
       $module->type = 'module';
+    }
+    if ((!$include_hidden) && $module->info['hidden']) {
+      unset($modules[$key]);
     }
   }
 
@@ -99,7 +102,8 @@ function drush_module_enable($modules) {
     _drupal_install_module($module);
   }
   module_enable($modules);
-  drush_system_modules_form_submit(pm_module_list());
+  $modules = drush_map_assoc(array_keys(drush_get_modules(FALSE)));
+  drush_system_modules_form_submit($modules);
 }
 
 /**
@@ -110,7 +114,8 @@ function drush_module_enable($modules) {
  */
 function drush_module_disable($modules) {
   module_disable($modules, FALSE);
-  drush_system_modules_form_submit(pm_module_list());
+  $modules = drush_map_assoc(array_keys(drush_get_modules(FALSE)));
+  drush_system_modules_form_submit($modules);
 }
 
 /**
@@ -149,9 +154,12 @@ function drush_system_modules_form_submit($active_modules) {
  */
 function drush_get_themes() {
   $themes = system_theme_data();
-  foreach ($themes as $theme) {
+  foreach ($themes as $key => $theme) {
     if (!isset($theme->type)) {
       $theme->type = 'theme';
+    }
+    if ((!$include_hidden) && $theme->info['hidden']) {
+      unset($themes[$key]);
     }
   }
 

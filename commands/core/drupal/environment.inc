@@ -13,8 +13,17 @@
  * @return
  *   An array containing module info for all available modules.
  */
-function drush_get_modules() {
-  return system_rebuild_module_data();
+function drush_get_modules($include_hidden = TRUE) {
+  $modules = system_rebuild_module_data();
+  if (!$include_hidden) {
+    foreach ($modules as $key => $module) {
+      if (isset($module->info['hidden'])) {
+        unset($modules[$key]);
+      }
+    }
+  }
+
+  return $modules;
 }
 
 /**
@@ -129,30 +138,22 @@ function drush_module_uninstall($modules) {
 }
 
 /**
- * Submit the system modules form.
- *
- * The modules should already be fully enabled/disabled before calling this
- * function. Calling this function just makes sure any activities triggered by
- * the form submit (such as admin_role) are completed.
- */
-function drush_system_modules_form_submit($active_modules) {
-  module_load_include('inc', 'system', 'system.admin');
-  $form_state = array('values' => array('status' => $active_modules));
-  drupal_form_submit('system_modules', $form_state);
-  // Because normally system_modules_submit would call this function if modules
-  // had been changed, in this case we are submitting the module form without
-  // any changes, so we need to clear caches manually.
-  drupal_flush_all_caches();
-}
-
-/**
  * Get complete information for all available themes.
  *
  * @return
  *   An array containing theme info for all available themes.
  */
-function drush_get_themes() {
-  return system_rebuild_theme_data();
+function drush_get_themes($include_hidden = TRUE) {
+  $themes = system_rebuild_theme_data();
+  if (!$include_hidden) {
+    foreach ($themes as $key => $theme) {
+      if (isset($theme->info['hidden'])) {
+        unset($themes[$key]);
+      }
+    }
+  }
+
+  return $themes;
 }
 
 /**

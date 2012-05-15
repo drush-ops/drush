@@ -812,9 +812,9 @@ function drush_directory_cache($subdir = '') {
  * @return
  *   An array containing info for all available extensions.
  */
-function drush_get_extensions() {
+function drush_get_extensions($include_hidden = TRUE) {
   drush_include_engine('drupal', 'environment');
-  $extensions = array_merge(drush_get_modules(), drush_get_themes());
+  $extensions = array_merge(drush_get_modules($include_hidden), drush_get_themes($include_hidden));
   foreach ($extensions as $name => $extension) {
     $extensions[$name]->label = $extension->info['name'].' ('.$extension->name.')';
     if (empty($extension->info['package'])) {
