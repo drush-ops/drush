@@ -108,7 +108,7 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
     drupal_set_installed_schema_version($module, $number);
   }
 
-  $context['message'] = 'Performing ' . $function;
+  $context['message'] = 'Performed update: ' . $function;
 }
 
 /**
