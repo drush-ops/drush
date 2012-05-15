@@ -237,11 +237,11 @@ function drush_user_add_role($role, $users = '') {
     if ($rid = drush_db_result($rid_query)) {
       drush_op('user_multiple_role_edit', $uids, 'add_role', $rid);
       foreach($uids as $uid) {
-        drush_log(dt("Added the %role role to uid %uid", array('%role' => $role, '%uid' => $uid)), 'success');
+        drush_log(dt("Added the !role role to uid !uid", array('!role' => $role, '!uid' => $uid)), 'success');
       }
     }
     else {
-      return drush_set_error("There is no role named: \"$role\"!");
+      return drush_set_error(dt("There is no role named: !role", array('!role' => $role)));
     }
   }
   else {
@@ -264,11 +264,11 @@ function drush_user_remove_role($role, $users = '') {
     if ($rid = drush_db_result($rid_query)) {
       drush_op('user_multiple_role_edit', $uids, 'remove_role', $rid);
       foreach($uids as $uid) {
-        drush_log(dt("Removed the %role role from uid %uid", array('%role' => $role, '%uid' => $uid)), 'success');
+        drush_log(dt("Removed the !role role from uid !uid", array('!role' => $role, '!uid' => $uid)), 'success');
       }
     }
     else {
-      return drush_set_error("There is no role named: \"$role\"!");
+      return drush_set_error(dt("There is no role named: !role", array('!role' => $role)));
     }
   }
   else {

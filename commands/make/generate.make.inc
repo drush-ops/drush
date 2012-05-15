@@ -23,7 +23,7 @@ function drush_make_generate($file = NULL) {
     drush_log(dt("Wrote .make file @file", array('@file' => $file)), 'ok');
   }
   else {
-    drush_make_error('FILE_ERROR', dt("Unable to write .make file %file", array('%file' => $file)));
+    drush_make_error('FILE_ERROR', dt("Unable to write .make file !file", array('!file' => $file)));
   }
 }
 

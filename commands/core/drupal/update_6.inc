@@ -129,8 +129,8 @@ function update_fix_compatibility() {
   while ($result = db_fetch_object($query)) {
     if (update_check_incompatibility($result->name, $result->type)) {
       $incompatible[] = $result->name;
-      drush_log(dt("%type %name is incompatible with this release of Drupal, and will be disabled.",
-        array("%type" => $result->type, '%name' => $result->name)), "warning");
+      drush_log(dt("!type !name is incompatible with this release of Drupal, and will be disabled.",
+        array("!type" => $result->type, '!name' => $result->name)), "warning");
     }
   }
   if (!empty($incompatible)) {

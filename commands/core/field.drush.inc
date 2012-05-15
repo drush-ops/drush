@@ -223,7 +223,7 @@ function drush_field_delete($field_name) {
       $confirm = FALSE;
     }
     else {
-      if (!drush_confirm(dt('Do you want to delete the %field_name field?', array('%field_name' => $field_name)))) {
+      if (!drush_confirm(dt('Do you want to delete the !field_name field?', array('!field_name' => $field_name)))) {
         return drush_user_abort();
       }
     }
@@ -252,7 +252,7 @@ function drush_field_delete($field_name) {
 
 function drush_field_clone($source_field_name, $target_field_name) {
    if (!$info = field_info_field($source_field_name)) {
-     return drush_set_error(dt('%source not found in field list.', array('%source' => $source_field_name)));
+     return drush_set_error(dt('!source not found in field list.', array('!source' => $source_field_name)));
    }
 
    unset($info['id']);

@@ -169,7 +169,7 @@ class DrushMakeProject {
     // This directory shouldn't exist yet -- if it does, stop,
     // unless overwrite has been set to TRUE.
     if (is_dir($this->download_location) && !$this->overwrite) {
-      drush_set_error(dt('Directory not empty: %directory', array('%directory' => $this->download_location)));
+      drush_set_error(dt('Directory not empty: !directory', array('!directory' => $this->download_location)));
       return FALSE;
     }
     elseif ($this->download['type'] === 'pm') {
@@ -302,7 +302,7 @@ class DrushMakeProject {
             $update_url = $cache[$l10n_server];
           }
           else {
-            make_error('XML_ERROR', dt("Could not retrieve l10n update url for %project.", array('%project' => $project['name'])));
+            make_error('XML_ERROR', dt("Could not retrieve l10n update url for !project.", array('!project' => $project['name'])));
             return FALSE;
           }
         }
@@ -400,7 +400,7 @@ class DrushMakeProject {
         return TRUE;
       }
     }
-    drush_log(dt("Found makefile: %makefile", array("%makefile" => basename($makefile))), 'ok');
+    drush_log(dt("Found makefile: !makefile", array("!makefile" => basename($makefile))), 'ok');
 
     $info = make_parse_info_file($makefile);
     if (!($info = make_validate_info_file($info))) {
@@ -433,7 +433,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
     $this->path = $this->download_location = $this->generatePath();
     $this->project_directory = '';
     if (is_dir($this->download_location)) {
-      drush_set_error(dt('Directory not empty: %directory', array('%directory' => $this->download_location)));
+      drush_set_error(dt('Directory not empty: !directory', array('!directory' => $this->download_location)));
       return FALSE;
     }
     elseif ($this->download['type'] === 'pm') {

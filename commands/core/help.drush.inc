@@ -189,7 +189,7 @@ function _drush_format_help_subsection($command, $section, $subsection, $formatt
  */
 function drush_help_section_formatter_options($command, &$help_attributes) {
   if ($help_attributes['label'][0] == '-') {
-    drush_log(dt("Option '%option' of command %command should instead be declared as '%fixed'", array('%option' => $help_attributes['label'], '%command' => $command['command'], '%fixed' => preg_replace('/^--*/', '', $help_attributes['label']))), 'debug');
+    drush_log(dt("Option '!option' of command !command should instead be declared as '!fixed'", array('!option' => $help_attributes['label'], '!command' => $command['command'], '!fixed' => preg_replace('/^--*/', '', $help_attributes['label']))), 'debug');
   }
   else {
     $help_attributes['label'] = '--' . $help_attributes['label'];

@@ -13,7 +13,7 @@
  */
 function make_parse_info_file($makefile, $parsed = TRUE) {
   if (!($data = make_get_data($makefile))) {
-    return drush_set_error(dt('Invalid or empty make file: %makefile', array('%makefile' => $makefile)));
+    return drush_set_error(dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
   if (!($info = _drush_drupal_parse_info_file($data))) {
     return FALSE;
@@ -34,7 +34,7 @@ function make_parse_info_file($makefile, $parsed = TRUE) {
             $includes[] = $file;
           }
           else {
-            make_error('BUILD_ERROR', dt("Include file missing: %include", array('%include' => $include)));
+            make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
           }
         }
       }
@@ -100,7 +100,7 @@ function make_prune_info_file($info, $include_only = array()) {
         $info[$type] = array_intersect_key($info[$type], array_fill_keys($keys, 1));
         unset($msg[$type]);
         if (!empty($info[$type])) {
-          $msg[$type] = dt("!entry_type: %make_entries", array('!entry_type' => $type_title, '%make_entries' => implode(', ', array_keys($info[$type]))));
+          $msg[$type] = dt("!entry_type: !make_entries", array('!entry_type' => $type_title, '!make_entries' => implode(', ', array_keys($info[$type]))));
         }
       }
     }
@@ -143,7 +143,7 @@ function make_validate_info_file($info) {
     $info['core'] = $matches[1] . '.x';
   }
   else {
-    make_error('BUILD_ERROR', dt("The 'core' attribute %core has an incorrect format.", array('%core' => $info['core'])));
+    make_error('BUILD_ERROR', dt("The 'core' attribute !core has an incorrect format.", array('!core' => $info['core'])));
     $errors = TRUE;
   }
 
@@ -172,7 +172,7 @@ function make_validate_info_file($info) {
         // Project has an attributes array.
         if (is_string($project) && is_array($project_data)) {
           if (in_array($project, $names)) {
-            make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project)));
+            make_error('BUILD_ERROR', dt("Project !project defined twice (remove the first projects[] = !project).", array('!project' => $project)));
             $errors = TRUE;
           }
           $names[] = $project;
@@ -185,11 +185,11 @@ function make_validate_info_file($info) {
             // filesystem.
             elseif (in_array($attribute, array('subdir', 'directory_name')) && !make_safe_path($value)) {
               $args = array(
-                '%path' => $value,
-                '%attribute' => $attribute,
-                '%project' => $project,
+                '!path' => $value,
+                '!attribute' => $attribute,
+                '!project' => $project,
               );
-              make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in project %project.", $args));
+              make_error('BUILD_ERROR', dt("Illegal path !path for '!attribute' attribute in project !project.", $args));
               $errors = TRUE;
             }
           }
@@ -197,7 +197,7 @@ function make_validate_info_file($info) {
         // Cover if there is no project info, it's just a project name.
         elseif (is_numeric($project) && is_string($project_data)) {
           if (in_array($project_data, $names)) {
-            make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project_data)));
+            make_error('BUILD_ERROR', dt("Project !project defined twice (remove the first projects[] = !project).", array('!project' => $project_data)));
             $errors = TRUE;
           }
           $names[] = $project_data;
@@ -207,14 +207,14 @@ function make_validate_info_file($info) {
         // Convert shorthand project version style to array format.
         elseif (is_string($project_data)) {
           if (in_array($project, $names)) {
-            make_error('BUILD_ERROR', dt("Project %project defined twice (remove the first projects[] = %project).", array('%project' => $project)));
+            make_error('BUILD_ERROR', dt("Project !project defined twice (remove the first projects[] = !project).", array('!project' => $project)));
             $errors = TRUE;
           }
           $names[] = $project;
           $info['projects'][$project] = array('version' => $project_data);
         }
         else {
-          make_error('BUILD_ERROR', dt('Project %project incorrectly specified.', array('%project' => $project)));
+          make_error('BUILD_ERROR', dt('Project !project incorrectly specified.', array('!project' => $project)));
           $errors = TRUE;
         }
       }
@@ -240,11 +240,11 @@ function make_validate_info_file($info) {
             // filesystem.
             elseif (in_array($attribute, array('contrib-destination', 'directory_name')) && !make_safe_path($value)) {
               $args = array(
-                '%path' => $value,
-                '%attribute' => $attribute,
-                '%library' => $library,
+                '!path' => $value,
+                '!attribute' => $attribute,
+                '!library' => $library,
               );
-              make_error('BUILD_ERROR', dt("Illegal path %path for '%attribute' attribute in library %library.", $args));
+              make_error('BUILD_ERROR', dt("Illegal path !path for '!attribute' attribute in library !library.", $args));
               $errors = TRUE;
             }
           }
@@ -351,7 +351,7 @@ function make_clean_tmp() {
     drush_delete_dir($tmp_dir);
   }
   else {
-    drush_log(dt('Temporary directory: %dir', array('%dir' => $tmp_dir)), 'ok');
+    drush_log(dt('Temporary directory: !dir', array('!dir' => $tmp_dir)), 'ok');
   }
 }
 
