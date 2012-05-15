@@ -99,6 +99,7 @@ function drush_module_enable($modules) {
     _drupal_install_module($module);
   }
   module_enable($modules);
+  drush_system_modules_form_submit(pm_module_list());
 }
 
 /**
@@ -109,6 +110,7 @@ function drush_module_enable($modules) {
  */
 function drush_module_disable($modules) {
   module_disable($modules, FALSE);
+  drush_system_modules_form_submit(pm_module_list());
 }
 
 /**

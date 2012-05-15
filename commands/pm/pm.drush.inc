@@ -912,7 +912,6 @@ function drush_pm_enable() {
   // Enable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_enable($modules);
-    drush_system_modules_form_submit(pm_module_list());
   }
 
   // Inform the user of final status.
@@ -1016,7 +1015,6 @@ function drush_pm_disable() {
   // Disable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_disable($modules);
-    drush_system_modules_form_submit(pm_module_list());
   }
 
   // Inform the user of final status.
