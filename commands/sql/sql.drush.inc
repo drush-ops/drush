@@ -66,7 +66,7 @@ function sql_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'examples' => array(
       'drush sql-dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
-      'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.com',
+      'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.php',
     ),
     'options' => array(
       'result-file' => array(
