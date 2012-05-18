@@ -316,12 +316,13 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL) {
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysqli':
     case 'mysql':
-      $exec = 'mysqldump';
+      // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
+      // needs to be first because we may have --defaults-file from _drush_sql_get_credentials()
+      $exec = 'mysqldump ' . str_replace('--database=', ' ', _drush_sql_get_credentials($db_spec));
       if ($file) {
         $exec .= ' --result-file '. $file;
       }
-      // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
-      $extra = ' --no-autocommit --single-transaction --opt -Q' . str_replace('--database=', ' ', _drush_sql_get_credentials($db_spec));
+      $extra = ' --no-autocommit --single-transaction --opt -Q';
       if (isset($data_only)) {
         $extra .= ' --no-create-info';
       }
@@ -780,6 +781,22 @@ function _drush_sql_get_credentials($db_spec = NULL) {
 
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
+      // EMPTY password is not the same as NO password, and is valid.
+      if (isset($db_spec['password'])) {
+        if ($db_spec['remote_host']) {
+          // we can't create a local secret file for sql-sync
+          // XXX: this is unsafe and should be fixed, probably by
+          // first rsyncing the tmp file or by passing the password
+          // through a file descriptor
+          $parameters['password'] = $db_spec['password'];
+        }
+        else {
+          $data = "[client]\npassword=" . $db_spec['password'] . "\n";
+          $tmpfile = drush_save_data_to_temp_file($data);
+          $parameters['defaults-file'] = $tmpfile;
+        }
+      }
+
       // Some drush commands (e.g. site-install) want to connect to the
       // server, but not the database.  Connect to the built-in database.
       $parameters['database'] = empty($db_spec['database']) ? 'information_schema' : $db_spec['database'];
@@ -795,11 +812,6 @@ function _drush_sql_get_credentials($db_spec = NULL) {
 
       // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
       $parameters['user'] = $db_spec['username'];
-
-      // EMPTY password is not the same as NO password, and is valid.
-      if (isset($db_spec['password'])) {
-        $parameters['password'] = $db_spec['password'];
-      }
       break;
 
     case 'pgsql':
