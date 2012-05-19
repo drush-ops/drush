@@ -362,6 +362,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
             'type' => 'pm',
             'full_version' => $release['version'],
             'download_link' => $release['download_link'],
+            'status url' => $request['status url'],
           );
         }
       }
@@ -563,7 +564,7 @@ function make_prepare_request($project, $type = 'contrib') {
  * @see make_projects()
  */
 function make_project_needs_release_info($project) {
-  return $project['location'] == RELEASE_INFO_DEFAULT_URL
+  return isset($project['location'])
     // Only fetch release info if the project type is unknown OR if
     // download attributes are unspecified.
     && (!isset($project['type']) || !isset($project['download']));
