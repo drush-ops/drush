@@ -140,7 +140,8 @@ function drush_pm_updatecode() {
 
   // If specific project updates were requested then remove releases for all
   // others.
-  if (!empty($requests)) {
+  $requested = func_get_args();
+  if (!empty($requested)) {
     foreach ($updateable as $name => $project) {
       if (!isset($requests[$name])) {
         unset($updateable[$name]);
