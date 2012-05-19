@@ -244,7 +244,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
    */
   function testMakeMoveBuild() {
     // Manually download a module.
-    $this->drush('pm-download', array('cck_signup'), array('destination' => UNISH_SANDBOX . '/modules', 'yes' => NULL));
+    $this->drush('pm-download', array('cck_signup'), array('destination' => UNISH_SANDBOX . '/sites/all/modules/contrib', 'yes' => NULL));
 
     // Build a make file.
     $config = $this->getMakefile('contrib-destination');
@@ -252,7 +252,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->drush('make', array($makefile, '.'), $config['options']);
 
     // Verify that the manually downloaded module still exists.
-    $this->assertFileExists(UNISH_SANDBOX . '/modules/cck_signup/README.txt');
+    $this->assertFileExists(UNISH_SANDBOX . '/sites/all/modules/contrib/cck_signup/README.txt');
   }
 
   function getMakefile($key) {

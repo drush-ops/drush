@@ -5,6 +5,13 @@
  * @{
  */
 
+/**
+ * Behavior for drush_copy_dir() and drush_move_dir() when destinations exist.
+ */
+define('FILE_EXISTS_ABORT', 0);
+define('FILE_EXISTS_OVERWRITE', 1);
+define('FILE_EXISTS_MERGE', 2);
+
  /**
   * Determines whether the provided path is absolute or not
   * on the specified O.S. -- starts with "/" on *nix, or starts
@@ -158,18 +165,25 @@ function drush_delete_tmp_dir($dir) {
  *   $src = "/b/a" and $dest = "/c/a".  To copy "a" to "/c" and rename
  *   it to "d", then $dest = "/c/d".
  * @param $overwrite
- *   If TRUE, the destination will be deleted if it exists.
+ *   Action to take if destination already exists.
+ *     - FILE_EXISTS_OVERWRITE - completely removes existing directory.
+ *     - FILE_EXISTS_ABORT - aborts the operation.
+ *     - FILE_EXISTS_MERGE - Leaves existing files and directories in place.
  * @return
  *   TRUE on success, FALSE on failure.
  */
-function drush_copy_dir($src, $dest, $overwrite = FALSE) {
+function drush_copy_dir($src, $dest, $overwrite = FILE_EXISTS_ABORT) {
   // Preflight based on $overwrite if $dest exists.
   if (file_exists($dest)) {
-    if ($overwrite) {
+    if ($overwrite === FILE_EXISTS_OVERWRITE) {
       drush_op('drush_delete_dir', $dest, TRUE);
     }
-    else {
+    elseif ($overwrite === FILE_EXISTS_ABORT) {
       return drush_set_error('DRUSH_DESTINATION_EXISTS', dt('Destination directory !dest already exists.', array('!dest' => $dest)));
+    }
+    elseif ($overwrite === FILE_EXISTS_MERGE) {
+      // $overwrite flag may indicate we should merge instead.
+      drush_log(dt('Merging existing !dest directory', array('!dest' => $dest)));
     }
   }
   // $src readable?

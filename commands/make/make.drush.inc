@@ -510,7 +510,7 @@ function make_move_build($build_path) {
         // TODO: This only protects one level of directories from being removed.
         $files = drush_scan_directory($file->filename, '/./', array('.', '..'), 0, FALSE);
         foreach ($files as $file) {
-          $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, TRUE);
+          $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, FILE_EXISTS_MERGE);
         }
       }
       else {
