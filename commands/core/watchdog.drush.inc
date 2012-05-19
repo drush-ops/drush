@@ -52,7 +52,7 @@ function watchdog_drush_command() {
   $items['watchdog-delete'] = array(
     'description' => 'Delete watchdog messages.',
     'drupal dependencies' => array('dblog'),
-    'arguments' => array(
+    'options' => array(
       'severity' => 'Delete messages of a given severity level.',
       'type' => 'Delete messages of a given type.',
     ),
