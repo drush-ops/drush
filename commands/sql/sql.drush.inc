@@ -830,7 +830,7 @@ function _drush_sql_get_credentials($db_spec = NULL) {
   $parameter_strings = array();
   foreach ($parameters as $key => $value) {
     // Only escape the values, not the keys or the rest of the string.
-    $value = escapeshellcmd($value);
+    $value = drush_escapeshellarg($value);
     $parameter_strings[] = "--$key=$value";
   }
 
