@@ -40,8 +40,9 @@ function drush_pm_download_validate() {
   // Validate --variant or enforce a sane default.
   $variant = drush_get_option('variant', FALSE);
   if ($variant) {
-    if (!in_array($variant, array('full', 'projects', 'profile-only'))) {
-      drush_log(dt('Unknown variant !variant. Valid values: !variations', array('!variant' => $variant, '!variations' => implode(', ', $variations))), 'error');
+    $variants = array('full', 'projects', 'profile-only');
+    if (!in_array($variant, $variants)) {
+      return drush_set_error('DRUSH_PM_PROFILE_INVALID_VARIANT', dt('Invalid variant !variant. Valid values: !variants.', array('!variant' => $variant, '!variants' => implode(', ', $variants))));
     }
   }
   // 'full' and 'projects' variants are only valid for wget package handler.
