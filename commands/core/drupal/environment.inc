@@ -10,6 +10,8 @@
 /**
  * Get complete information for all available modules.
  *
+ * @param $include_hidden
+ *   Boolean to indicate whether hidden modules should be excluded or not.
  * @return
  *   An array containing module info for all available modules.
  */
@@ -140,6 +142,8 @@ function drush_module_uninstall($modules) {
 /**
  * Get complete information for all available themes.
  *
+ * @param $include_hidden
+ *   Boolean to indicate whether hidden themes should be excluded or not.
  * @return
  *   An array containing theme info for all available themes.
  */

@@ -12,6 +12,8 @@
  *
  * We need to set the type for those modules that are not already in the system table.
  *
+ * @param $include_hidden
+ *   Boolean to indicate whether hidden modules should be excluded or not.
  * @return
  *   An array containing module info for all available modules.
  */
@@ -21,7 +23,7 @@ function drush_get_modules($include_hidden = TRUE) {
     if (!isset($module->type)) {
       $module->type = 'module';
     }
-    if ((!$include_hidden) && $module->info['hidden']) {
+    if ((!$include_hidden) && isset($module->info['hidden']) && ($module->info['hidden'])) {
       unset($modules[$key]);
     }
   }
@@ -149,16 +151,18 @@ function drush_system_modules_form_submit($active_modules) {
  *
  * We need to set the type for those themes that are not already in the system table.
  *
+ * @param $include_hidden
+ *   Boolean to indicate whether hidden themes should be excluded or not.
  * @return
  *   An array containing theme info for all available themes.
  */
-function drush_get_themes() {
+function drush_get_themes($include_hidden = TRUE) {
   $themes = system_theme_data();
   foreach ($themes as $key => $theme) {
     if (!isset($theme->type)) {
       $theme->type = 'theme';
     }
-    if ((!$include_hidden) && $theme->info['hidden']) {
+    if ((!$include_hidden) && isset($theme->info['hidden']) && ($theme->info['hidden'])) {
       unset($themes[$key]);
     }
   }
