@@ -104,8 +104,7 @@ function drush_module_enable($modules) {
     _drupal_install_module($module);
   }
   module_enable($modules);
-  $modules = drush_map_assoc(array_keys(drush_get_modules(FALSE)));
-  drush_system_modules_form_submit($modules);
+  drush_system_modules_form_submit();
 }
 
 /**
@@ -116,8 +115,7 @@ function drush_module_enable($modules) {
  */
 function drush_module_disable($modules) {
   module_disable($modules, FALSE);
-  $modules = drush_map_assoc(array_keys(drush_get_modules(FALSE)));
-  drush_system_modules_form_submit($modules);
+  drush_system_modules_form_submit();
 }
 
 /**
@@ -140,7 +138,13 @@ function drush_module_uninstall($modules) {
  * function. Calling this function just makes sure any activities triggered by
  * the form submit (such as admin_role) are completed.
  */
-function drush_system_modules_form_submit($active_modules) {
+function drush_system_modules_form_submit() {
+  $active_modules = array();
+  foreach (drush_get_modules(FALSE) as $key => $module) {
+    if ($module->status == 1) {
+      $active_modules[$key] = $key;
+    }
+  }
   module_load_include('inc', 'system', 'system.admin');
   $form_state = array('values' => array('status' => $active_modules));
   drupal_execute('system_modules', $form_state);
