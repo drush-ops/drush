@@ -129,6 +129,8 @@ function _drush_build_rsync_options($additional_options, $include_settings_is_de
     foreach ($vcs_files as $file) {
       $options .= ' --exclude="'.$file.'"';
     }
+  }
+  else {
     unset($additional_options['include-vcs']);
   }
 
