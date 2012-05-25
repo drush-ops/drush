@@ -950,7 +950,7 @@ function _drush_sql_get_credentials($db_spec = NULL) {
       // server, but not the database.  Connect to the built-in database.
       $database = empty($db_spec['database']) ? 'master' : $db_spec['database'];
       // Host and port are optional but have defaults.
-      $host = empty($db_spec['server']) ? '.\SQLEXPRESS' : $db_spec['server'];
+      $host = empty($db_spec['host']) ? '.\SQLEXPRESS' : $db_spec['host'];
       return ' -S ' . $host . ' -d ' . $database . ' -U ' . $db_spec['username'] . ' -P ' . $db_spec['password'];
       break;
 
