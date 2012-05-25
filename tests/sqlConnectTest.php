@@ -20,7 +20,7 @@ class SqlConnectCase extends Drush_CommandTestCase {
     // Get the connection details with sql-connect and check its structure.
     $this->drush('sql-connect', array(), $options);
     $output = $this->getOutput();
-    $this->assertRegExp('/^mysql --database=[^\s]+ --host=[^\s]+ --user=[^\s]+ --password=.*$/', $output);
+    $this->assertRegExp('/^mysql --password=.* --database=[^\s]+ --host=[^\s]+ --user=[^\s]+$/', $output);
 
     // Issue a query and check the result to verify the connection.
     $this->execute($output . ' -e "select name from users where uid = 1;"');
