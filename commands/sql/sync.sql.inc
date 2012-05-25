@@ -54,8 +54,8 @@ function drush_sql_sync_init($source = NULL, $destination = NULL) {
 }
 
 /**
- * Sql sync sanitization function.  This hook function will sanitize usernames and
- * passwords in the user table when the --sanitize option is used.  It is
+ * Sql sync sanitization function.  This hook function will sanitize usernames,
+ * passwords, and sessions when the --sanitize option is used.  It is
  * also an example of how to write a database sanitizer for sql sync.
  *
  * To write your own sync hook function, define mymodule_drush_sql_sync_sanitize()
@@ -125,10 +125,13 @@ function sql_drush_sql_sync_sanitize($site) {
   }
 
   if (!empty($user_table_updates)) {
-    $sanitize_query = "update users set " . implode(', ', $user_table_updates) . " where uid > 0;";
+    $sanitize_query = "UPDATE users SET " . implode(', ', $user_table_updates) . " WHERE uid > 0;";
     drush_sql_register_post_sync_op('user-email', dt('Reset !message in user table', array('!message' => implode(' and ', $message_list))), $sanitize_query);
   }
 
+  // Seems quite portable (SQLite?) - http://en.wikipedia.org/wiki/Truncate_(SQL)
+  $sql_sessions = 'TRUNCATE TABLE sessions;';
+  drush_sql_register_post_sync_op('sessions', dt('Truncate Drupal\'s sessions table'), $sql_sessions);
 }
 
 
