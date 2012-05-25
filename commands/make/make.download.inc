@@ -189,6 +189,7 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
       $success = make_download_file_unpack_tar($filename, $download_location, $subtree);
       break;
 
+    case 'application/x-zip':
     case 'application/zip':
       $success = make_download_file_unpack_zip($filename, $download_location, $subtree);
       break;
