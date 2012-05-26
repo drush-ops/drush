@@ -1659,7 +1659,7 @@ function drush_copy_dir($src, $dest, $overwrite = FALSE) {
   // Preflight based on $overwrite if $dest exists.
   if (file_exists($dest)) {
     if ($overwrite) {
-      drush_op('drush_delete_dir', $dest);
+      drush_op('drush_delete_dir', $dest, TRUE);
     }
     else {
       return drush_set_error('DRUSH_DESTINATION_EXISTS', dt('Destination directory !dest already exists.', array('!dest' => $dest)));
@@ -1731,7 +1731,7 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
   // Preflight based on $overwrite if $dest exists.
   if (file_exists($dest)) {
     if ($overwrite) {
-      drush_op('drush_delete_dir', $dest);
+      drush_op('drush_delete_dir', $dest, TRUE);
     }
     else {
       return drush_set_error('DRUSH_DESTINATION_EXISTS', dt('Destination directory !dest already exists.', array('!dest' => $dest)));
@@ -1758,7 +1758,7 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
   // If 'rename' fails, then we will use copy followed
   // by a delete of the source.
   if (drush_copy_dir($src, $dest)) {
-    drush_op('drush_delete_dir', $src);
+    drush_op('drush_delete_dir', $src, TRUE);
     return TRUE;
   }
 
@@ -1915,7 +1915,7 @@ function _drush_delete_registered_files() {
     // though they did not need to.
     if (file_exists($file)) {
       if (is_dir($file)) {
-        drush_delete_dir($file);
+        drush_delete_dir($file, TRUE);
       }
       else {
         unlink($file);
