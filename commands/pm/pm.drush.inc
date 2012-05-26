@@ -2124,11 +2124,8 @@ function _drush_pm_get_release_history_xml($request) {
   // bootstrapped.
   $url = drush_get_option('source', 'http://updates.drupal.org/release-history') . '/' . $request['name'] . '/' . $request['drupal_version'];
   drush_log('Downloading release history from ' . $url);
-  // Some hosts have allow_url_fopen disabled.
-  if (!$xml = @simplexml_load_file($url)) {
-    $filename = _drush_download_file($url);
-    $xml = simplexml_load_file($filename);
-    drush_op('unlink', $filename);
+  if ($path = drush_download_file($url, drush_tempnam($request['name']), drush_get_option('cache-duration-releasexml', 24*3600))) {
+    $xml = simplexml_load_file($path);
   }
   if (!$xml) {
     // We are not getting here since drupal.org always serves an XML response.
