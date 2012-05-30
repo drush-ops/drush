@@ -225,7 +225,7 @@ function drush_sql_conf() {
 /**
  * Command callback. Emits a connect string for mysql or pgsql.
  */
-function _drush_sql_connect($db_spec = NULL, $insecure = FALSE) {
+function _drush_sql_connect($db_spec = NULL) {
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
       $command = 'mysql';
@@ -250,15 +250,13 @@ function _drush_sql_connect($db_spec = NULL, $insecure = FALSE) {
       }
       break;
   }
-  // do not cloak the credentials in a tempfile
-  // XXX: this is used by sql-sync, which is *really* insecure
-  $command .= _drush_sql_get_credentials($db_spec, $insecure);
+  $command .= _drush_sql_get_credentials($db_spec);
   return $command;
 }
 
 function drush_sql_connect() {
   drush_sql_bootstrap_further();
-  $connect = _drush_sql_connect(NULL, TRUE);
+  $connect = _drush_sql_connect();
   drush_print($connect);
   return $connect;
 }
@@ -887,13 +885,9 @@ function _drush_sql_get_scheme($db_spec = NULL) {
  * Build a fragment containing credentials and mysql-connection parameters.
  *
  * @param $db_spec
- * @param $insecure bool
- *   if true, will add the database password to the commandline in the
- *   clear, which is insecure. the default (false), is to write the
- *   credentials to a temporary file.
  * @return string
  */
-function _drush_sql_get_credentials($db_spec = NULL, $insecure = FALSE) {
+function _drush_sql_get_credentials($db_spec = NULL) {
   if (is_null($db_spec)) {
     $db_spec = _drush_sql_get_db_spec();
   }
@@ -905,7 +899,8 @@ function _drush_sql_get_credentials($db_spec = NULL, $insecure = FALSE) {
     case 'mysql':
       // EMPTY password is not the same as NO password, and is valid.
       if (isset($db_spec['password'])) {
-        if ($insecure) {
+        if ($db_spec['remote_host']) {
+          // we can't create a local secret file for sql-sync
           // XXX: this is unsafe and should be fixed, probably by
           // first rsyncing the tmp file or by passing the password
           // through a file descriptor
