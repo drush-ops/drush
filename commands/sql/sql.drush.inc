@@ -849,7 +849,7 @@ function drush_sql_dump_file(&$site_record) {
     if (!isset($dump_dir)) {
       // If this is a remote site, try to find a writable tmpdir.
       if (isset($site_record['remote-host'])) {
-        $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'), array(), array('integrate' => FALSE));
+        $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
         // If the call to invoke process does not work for some reason (e.g. drush not
         // installed on the target machine), then we will just presume that the tmp dir is '/tmp'.
         if (!array_key_exists('output', $result) || empty($result['output'])) {
