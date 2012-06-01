@@ -834,7 +834,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
     $drush_local_options = $backend_options['drush-local-options'];
     $command_options += $drush_local_options;
   }
-  if (!empty($backend_options['backend']) && empty($backend_options['interactive'])) {
+  if (!empty($backend_options['backend']) && empty($backend_options['interactive']) && empty($backend_options['fork'])) {
     $drush_global_options['backend'] = '2';
   }
   if (!empty($backend_options['interactive'])) {
@@ -896,7 +896,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
  *
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If one command was executed, this will return an associative array containing 
+ *   If one command was executed, this will return an associative array containing
  *   the data from drush_backend_output().
  *   If multiple commands were executed, this will return an associative array
  *   containing one item, 'concurrent', which will contain a list of the different
