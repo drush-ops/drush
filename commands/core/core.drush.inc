@@ -484,6 +484,9 @@ function _core_path_aliases($project = '') {
       elseif (function_exists('file_directory_path')) {
         $paths['%files'] = file_directory_path();
       }
+      if (function_exists('file_directory_temp')) {
+        $paths['%temp'] = file_directory_temp();
+      }
       // If the 'project' parameter was specified, then search
       // for a project (or a few) and add its path to the path list
       if (!empty($project)) {
