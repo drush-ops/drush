@@ -451,41 +451,6 @@ function make_download_git($name, $download, $download_location) {
   // Move back to last current directory (first line).
   chdir($cwd);
 
-  // Handle .info file re-writing (if so desired).
-  if (!drush_get_option('no-gitinfofile', FALSE)) {
-    // Figure out the proper version string to use based on the .make file.
-    // Best case is the .make file author told us directly.
-    if (!empty($download['full_version'])) {
-      $full_version = $download['full_version'];
-    }
-    // Next best is if we have a tag, since those are identical to versions.
-    elseif (!empty($download['tag'])) {
-      $full_version = $download['tag'];
-    }
-    // If we have a branch, append '-dev'.
-    elseif (!empty($download['branch'])) {
-      $full_version = $download['branch'] . '-dev';
-    }
-    // Ugh. Not sure what else we can do in this case.
-    elseif (!empty($download['revision'])) {
-      $full_version = $download['revision'];
-    }
-    // Probably can never reach this case.
-    else {
-      $full_version = 'unknown';
-    }
-
-    // If the version string ends in '.x-dev' do the Git magic to figure out
-    // the appropriate 'rebuild version' string, e.g. '7.x-1.2+7-dev'.
-    $matches = array();
-    if (preg_match('/^(.+).x-dev$/', $full_version, $matches)) {
-      require_once dirname(__FILE__) . '/../pm/package_handler/git_drupalorg.inc';
-      $full_version = drush_pm_git_drupalorg_compute_rebuild_version($tmp_location, $matches[1]);
-    }
-    require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
-    drush_pm_inject_info_file_metadata($tmp_location, $name, $full_version);
-  }
-
   // Remove .git/ directory if working-copy flag was not specified.
   if (!$wc && file_exists($tmp_location . '/.git')) {
     drush_delete_dir($tmp_location . '/.git', TRUE);
