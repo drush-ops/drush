@@ -63,15 +63,15 @@ function archive_drush_command() {
  */
 function drush_archive_dump($sites_subdirs = '@self') {
   $tar = drush_get_tar_executable();
-  $full = array();
+  $sites = array();
   $aliases = drush_sitealias_resolve_sitespecs(explode(',', $sites_subdirs));
   foreach ($aliases as $key => $alias) {
-    $full[$key] = $alias;
+    $sites[$key] = $alias;
     if (($db_record = sitealias_get_databases_from_record($alias))) {
-      $full[$key]['databases'] = $db_record;
+      $sites[$key]['databases'] = $db_record;
     }
     else {
-      $full[$key]['databases'] = array();
+      $sites[$key]['databases'] = array();
       drush_log(dt('DB definition not found for !alias', array('!alias' => $key)), 'notice');
     }
   }
@@ -95,14 +95,14 @@ function drush_archive_dump($sites_subdirs = '@self') {
   // Sheesh.
 
   // Create the unique temporary name.
-  $date = gmdate('Ymd_his');
   $prefix = 'none';
-  if (!empty($full)) {
-    $first = current($full);
+  if (!empty($sites)) {
+    $first = current($sites);
     if ( !empty($first['databases']['default']['default']['database']) ) {
-      $prefix = count($full) > 1 ? 'multiple_sites' : str_replace('/', '-', $first['databases']['default']['default']['database']);
+      $prefix = count($sites) > 1 ? 'multiple_sites' : str_replace('/', '-', $first['databases']['default']['default']['database']);
     }
   }
+  $date = gmdate('Ymd_his');
   $temp_dest_name = "$prefix.$date.tar";
 
   $final_destination = drush_get_option('destination');
@@ -176,14 +176,14 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $tmp = drush_tempdir();
   $all_dbs = array();
   // Dump the default database for each site and add to the archive.
-  foreach ($full as $key => $alias) {
+  foreach ($sites as $key => $alias) {
     if (isset($alias['databases']['default']['default'])) {
       $db = $alias['databases']['default']['default'];
       // Use a subdirectory name matching the docroot name.
       drush_mkdir("{$tmp}/{$docroot}");
       // Ensure uniqueness by prefixing key if needed.
       $dbname = $db['database'];
-      $result_file = count($full) == 1 ? "$tmp/$dbname.sql" : str_replace('@', '', "$tmp/$key-$dbname.sql");
+      $result_file = count($sites) == 1 ? "$tmp/$dbname.sql" : str_replace('@', '', "$tmp/$key-$dbname.sql");
       $all_dbs[$key] = array(
         'file' => $result_file,
         'driver' => $db['driver'],
@@ -209,7 +209,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $contents = drush_export_ini(array('Global' => $platform));
 
   $i=0;
-  foreach ($full as $key => $alias) {
+  foreach ($sites as $key => $alias) {
     if (!$status = drush_invoke_process($alias, 'core-status', array(), array())) {
       drush_log(dt('Unable to determine sites directory for !alias', array('!alias' => $key)), 'warning');
     }

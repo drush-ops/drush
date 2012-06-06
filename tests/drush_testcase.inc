@@ -16,6 +16,13 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    * a clean environment - http://drupal.org/node/1103568.
    */
   public static function setUpBeforeClass() {
+    self::setUpFreshSandBox();
+  }
+
+  /**
+   * Remove any pre-existing sandbox, then create a new one.
+   */
+  public static function setUpFreshSandBox() {
     $sandbox = UNISH_SANDBOX;
     if (file_exists($sandbox)) {
       unish_file_delete_recursive($sandbox);
@@ -46,8 +53,8 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     }
   }
 
-  /*
-   *Print a log message to the console.
+  /**
+   * Print a log message to the console.
    *
    * @param string $message
    * @param string $type
@@ -102,8 +109,8 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return $path;
   }
 
-  /*
-   *Borrowed from Drush.
+  /**
+   * Borrowed from Drush.
    * Checks operating system and returns
    * supported bit bucket folder.
    */
@@ -304,6 +311,8 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
    *
    * @param string $command
    *   The actual command line to run.
+   * @param integer $expected_return
+   *   The return code to expect
    * @return integer
    *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
    */
