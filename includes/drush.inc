@@ -246,7 +246,7 @@ function drush_check_self_update() {
   }
 
   if ($newer_version) {
-    drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion. The update process depends on how you installed drush. Some common update commands are: `pear upgrade drush`,  `git pull`, `drush dl drush --destination=[/path/to/drush]`.  To disable this check, put "$options[\'self-update\'] = FALSE;" in your drushrc.php configuration file.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
+    drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion. The update process depends on how you installed drush. Some common update commands are: `pear upgrade drush/drush`,  `git pull`, `drush dl drush --destination=[/path/to/drush]`.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
     return TRUE;
   }
   else {

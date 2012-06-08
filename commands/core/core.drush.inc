@@ -50,7 +50,7 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'options' => array(
       'pipe' => 'Print just the version number, and nothing else.',
-      'self-update' => 'Check for pending updates to Drush itself.',
+      'self-update' => 'Check for pending updates to Drush itself. Set to 0 to disable.',
     ),
   );
   $items['self-update'] = array(
