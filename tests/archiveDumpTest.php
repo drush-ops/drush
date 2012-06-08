@@ -40,7 +40,7 @@ class archiveDumpCase extends Drush_CommandTestCase {
     if (strpos(UNISH_DB_URL, 'mysql') !== FALSE) {
       $this->execute(sprintf('head %s/unish_%s.sql | grep "MySQL dump"', $untar_dest, $uri));
     }
-    $this->execute('test -f ' . $untar_dest . '/MANIFEST.ini');
-    $this->execute('test -d ' . $untar_dest . '/' . $docroot);
+    $this->assertFileExists($untar_dest . '/MANIFEST.ini');
+    $this->assertFileExists($untar_dest . '/' . $docroot);
   }
 }
