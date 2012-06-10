@@ -1619,7 +1619,7 @@ function drush_enforce_requirement_bootstrap_phase(&$command) {
   }
   // TODO: provide description text for each bootstrap level so we can give
   // the user something more helpful and specific here.
-  $command['bootstrap_errors']['DRUSH_COMMAND_INSUFFICIENT_BOOTSTRAP'] = dt('Command !command needs a higher bootstrap level to run - you will need invoke drush from a more functional Drupal environment to run this command.', array('!command' => $command['command']));
+  $command['bootstrap_errors']['DRUSH_COMMAND_INSUFFICIENT_BOOTSTRAP'] = dt('Command !command needs a higher bootstrap level to run - you will need to invoke drush from a more functional Drupal environment to run this command.', array('!command' => $command['command']));
 }
 
 /**
