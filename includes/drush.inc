@@ -813,7 +813,7 @@ function drush_op($function) {
  */
 function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
   if (drush_get_option('cache') && $cache_duration !== 0 && $cache_dir = drush_directory_cache('download')) {
-    $cache_name = str_replace(array(':', '/', '?'), '-', $url);
+    $cache_name = str_replace(array(':', '/', '?', '='), '-', $url);
     $cache_file = $cache_dir . "/" . $cache_name;
     // Check for cached, unexpired file.
     if (file_exists($cache_file) && filectime($cache_file) > ($_SERVER['REQUEST_TIME']-$cache_duration)) {
