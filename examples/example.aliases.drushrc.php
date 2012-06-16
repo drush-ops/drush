@@ -119,7 +119,7 @@
  * alias list definition.  Alias lists contain a list of alias names in
  * the group, and no other information.  For example:
  *
- * $aiases['mydevsites'] = array(
+ * $aliases['mydevsites'] = array(
  *   'site-list' => array('@mysite.dev', '@otherside.dev');
  * );
  *
@@ -135,9 +135,9 @@
  * Although most aliases will contain only a few options, a number
  * of settings that are commonly used appear below:
  *
- * - 'uri': In Drupal 7, the value of --uri should always be the same as 
+ * - 'uri': In Drupal 7, the value of --uri should always be the same as
  *     when the site is being accessed from a web browser (e.g. http://mysite.org,
- *     although the http:// is optional).  In Drupal 6, the value of --uri should 
+ *     although the http:// is optional).  In Drupal 6, the value of --uri should
  *     always be the same as the site's folder name in the 'sites' folder
  *     (e.g. default); it is best if the site folder name matches the
  *     URI from the browser, and is consistent on every instance of the
@@ -226,11 +226,11 @@
 #      '%files' => 'sites/mydrupalsite.com/files',
 #      '%custom' => '/my/custom/path',
 #     ),
-#    'databases' => 
+#    'databases' =>
 #      array (
-#        'default' => 
+#        'default' =>
 #        array (
-#          'default' => 
+#          'default' =>
 #          array (
 #            'driver' => 'mysql',
 #            'username' => 'sqlusername',
