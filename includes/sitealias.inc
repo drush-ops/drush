@@ -130,13 +130,12 @@ function drush_sitealias_valid_alias_format($alias) {
  * values in the specification.
  *
  * Site specifications come in several forms:
- *
- * 1.) /path/to/drupal#sitename
- * 2.) user@server/path/to/drupal#sitename
- * 3.) user@server/path/to/drupal            (sitename == server)
- * 4.) user@server#sitename                  (only if $option['r'] set in some drushrc file on server)
- * 5.) #sitename                             (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
- * 6.) sitename                              (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
+ * - /path/to/drupal#sitename
+ * - user@server/path/to/drupal#sitename
+ * - user@server/path/to/drupal            (sitename == server)
+ * - user@server#sitename                  (only if $option['r'] set in some drushrc file on server)
+ * - #sitename                             (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
+ * - sitename                              (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
  *
  * Note that in the case of the first four forms, it is also possible
  * to add additional site variable to the specification using uri query
