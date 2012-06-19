@@ -394,13 +394,13 @@ function drush_user_login($name = NULL) {
     $user = user_load(array('name' => $name));
   }
 
-  if ($user !== FALSE) {
+  if ($user !== FALSE && $user->status) {
     $link = user_pass_reset_url($user);
     drush_print($link);
     return $link;
   }
   else {
-    drush_set_error("The user account with the name " . $name . " could not be loaded!");
+    drush_set_error("The user account with the name " . $name . " could not be loaded or is blocked!");
   }
 }
 
