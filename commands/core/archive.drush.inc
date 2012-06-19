@@ -246,7 +246,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   // by site-install when restoring a site without any DB.
   // NOTE: Windows tar file replace operation is broken so we have to check if file already exists.
   // Otherwise it will corrupt the archive.
-  $res = drush_shell_cd_and_exec($workdir, "$tar -tzf %s %s", $destination, $docroot . '/sites/default/default.settings.php');
+  $res = drush_shell_cd_and_exec($workdir, "$tar -tf %s %s", $destination, $docroot . '/sites/default/default.settings.php');
   $output = drush_shell_exec_output();
   if (!$res || !isset($output[0]) || empty($output[0])) {
     drush_shell_cd_and_exec($workdir, "$tar --dereference -vrf %s %s", $destination, $docroot . '/sites/default/default.settings.php');
