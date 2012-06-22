@@ -171,6 +171,10 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('contrib-destination');
   }
 
+  function testMakeDefaults() {
+    $this->runMakefileTest('defaults');
+  }
+
   function testMakeFile() {
     $this->runMakefileTest('file');
   }
@@ -402,6 +406,13 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'build'    => TRUE,
         'md5' => 'c7cab3930f644961a576d78769498172',
         'options'  => array('no-core' => NULL),
+      ),
+      'defaults' => array(
+        'name'     => 'Test defaults array.',
+        'makefile' => 'defaults.make',
+        'build'    => TRUE,
+        'md5' => 'e6c0d6b37cd8573cbd188742b95a274e',
+        'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),
       ),
       'subtree' => array(
         'name'     => 'Use subtree from downloaded archive',

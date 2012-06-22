@@ -275,6 +275,20 @@ makefiles to override the keys/values of former makefiles.
     includes[example_relative] = "../example_relative/example_relative.make"
     includes[remote] = "http://www.example.com/remote.make"
 
+### Defaults
+
+If all projects or libraries have identical settings for a given
+attribute, the `defaults` array can be used to specify these,
+rather than specifying the attribute for each project.
+
+**Example:**
+
+    ; Specify common subdir of "contrib"
+    defaults[projects][subdir] = "contrib"
+    ; Projects that don't specify subdir will go to the 'contrib' directory.
+    projects[views][version] = "3.3"
+    ; Override default value
+    projects[devel][subdir] = "development"
 
 ### Overriding properties
 

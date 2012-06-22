@@ -492,3 +492,27 @@ if (!function_exists('sys_get_temp_dir')) {
     }
   }
 }
+
+/**
+ * Apply any defaults.
+ *
+ * @param array &$info
+ *   A parsed make array.
+ */
+function make_apply_defaults(&$info) {
+  if (isset($info['defaults'])) {
+    $defaults = $info['defaults'];
+    unset($info['defaults']);
+
+    foreach ($defaults as $type => $default_data) {
+      if (isset($info[$type])) {
+        foreach ($info[$type] as $project => $data) {
+          $info[$type][$project] += $default_data;
+        }
+      }
+      else {
+        drush_log(dt("Unknown attribute '@type' in defaults array", array('@type' => $type)), 'warning');
+      }
+    }
+  }
+}

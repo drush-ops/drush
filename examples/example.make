@@ -94,3 +94,9 @@ projects[admin_menu][subdir] = custom
 ; of the patch.
 
 projects[admin_menu][patch][] = "http://drupal.org/files/issues/admin_menu.long_.31.patch"
+
+; If all projects or libraries share common attributes, the `defaults`
+; array can be used to specify these globally, rather than
+; per-project.
+
+defaults[projects][subdir] = "contrib"
