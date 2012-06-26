@@ -8,12 +8,14 @@ class archiveDumpCase extends Drush_CommandTestCase {
 
   /*
    * Test dump and extraction.
+   *
+   * archive-dump behaves slightly different when archiving a site installed at sites/default
+   * so we make the test to use sites/default as the installation directory.
    */
   public function testArchiveDump() {
-    $sites = $this->setUpDrupal(1, TRUE);
-    $site = reset($sites);
+    $uri = 'default';
+    $this->fetchInstallDrupal($uri, TRUE, 7, 'testing');
     $root = $this->webroot();
-    $uri = key($sites);
     $docroot = basename($root);
 
     $dump_dest = "dump.tar.gz";
