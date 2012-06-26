@@ -124,12 +124,14 @@ function drush_variable_get() {
     $keys = preg_grep("/{$args[0]}/", $keys);
   }
 
+  $pipe = array();
   foreach ($keys as $name) {
     $value = $conf[$name];
-    drush_print_pipe(drush_format($value, $name, 'export'));
+    $pipe[] = drush_format($value, $name, 'export');
     drush_print(drush_format($value, $name));
     $returns[$name] = $value;
   }
+  drush_print_pipe($pipe);
 
   if (empty($keys)) {
     return drush_set_error('No matching variable found.');
