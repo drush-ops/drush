@@ -315,6 +315,10 @@ function drush_mkdir($path, $required = TRUE) {
       if (@mkdir($path)) {
         return TRUE;
       }
+      elseif (is_dir($path) && is_writable($path)) {
+        // The directory was created by a concurrent process.
+        return TRUE;
+      }
       else {
         if (!$required) {
           return FALSE;
