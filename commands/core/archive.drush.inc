@@ -168,9 +168,12 @@ function drush_archive_dump($sites_subdirs = '@self') {
   drush_shell_cd_and_exec($workdir, "$tar --exclude \"{$docroot}/sites\" {$dereference}-cf %s %s", $destination, $docroot);
   // Add sites/all to the same archive.
   drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
-  // Add sites/sites.php to the same archive.
-  if (file_exists("{$docroot}/sites/sites.php")) {
-    drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/sites.php");
+  // Add sites/sites.php and sites/example.sites.php to the same archive.
+  $files_to_add = array('sites/sites.php', 'sites/example.sites.php');
+  foreach ($files_to_add as $file_to_add) {
+    if (file_exists($file_to_add)) {
+      drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, $docroot . DIRECTORY_SEPARATOR . $file_to_add);
+    }
   }
 
   $tmp = drush_tempdir();
