@@ -44,5 +44,17 @@ class archiveDumpCase extends Drush_CommandTestCase {
     }
     $this->assertFileExists($untar_dest . '/MANIFEST.ini');
     $this->assertFileExists($untar_dest . '/' . $docroot);
+
+    // Restore archive and verify that the file structure is identical.
+    require_once dirname(__FILE__) . '/../includes/filesystem.inc';
+    $restore_dest = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'restore';
+    $options = array(
+      'yes' => NULL,
+      'destination' => $restore_dest,
+    );
+    $this->drush('archive-restore', array(UNISH_SANDBOX . DIRECTORY_SEPARATOR . $dump_dest), $options);
+    $original_codebase = drush_dir_md5($root);
+    $restored_codebase = drush_dir_md5($restore_dest);
+    $this->assertEquals($original_codebase, $restored_codebase);
   }
 }
