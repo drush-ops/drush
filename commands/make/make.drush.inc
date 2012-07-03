@@ -181,9 +181,6 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   );
   $info = make_prune_info_file($info, $include_only);
 
-  // Apply defaults prior to validation.
-  make_apply_defaults($info);
-
   if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
     return FALSE;
   }

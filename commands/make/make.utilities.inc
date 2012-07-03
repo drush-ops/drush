@@ -253,6 +253,10 @@ function make_validate_info_file($info) {
     }
   }
 
+  // Apply defaults after projects[] array has been expanded, but prior to
+  // external validation.
+  make_apply_defaults($info);
+
   foreach (drush_command_implements('make_validate_info') as $module) {
     $function = $module . '_make_validate_info';
     $return = $function($info);
