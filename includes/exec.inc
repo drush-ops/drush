@@ -299,19 +299,7 @@ function drush_escapeshellarg($arg, $os = NULL) {
     return _drush_escapeshellarg_windows($arg);
   }
   else {
-    $escaped = _drush_escapeshellarg_linux($arg);
-    // We expect that our escapeshellarg should return exactly the
-    // same thing that escapeshellarg does on Linux; to be conservative,
-    // though, we will compare and correct against the reference implementation,
-    // and remove this check once everything works perfectly.
-    if (!drush_is_windows()) {
-      $compare_escaped = escapeshellarg($arg);
-      if ($compare_escaped != $escaped) {
-        drush_log(dt("Error in _drush_escapeshellarg_linux;\nReturned: !escaped\nExpected: !expected", array('!escaped' => $escaped, '!expected' => $compare_escaped)), 'debug');
-        $escaped = $compare_escaped;
-      }
-    }
-    return $escaped;
+    return _drush_escapeshellarg_linux($arg);
   }
 }
 
@@ -350,6 +338,11 @@ function _drush_escapeshellarg_linux($arg) {
   $arg = preg_replace('/\'/', '\'\\\'\'', $arg);
 
   // Replace "\t", "\n", "\r", "\0", "\x0B" with a whitespace.
+  // Note that this replacement makes Drush's escapeshellarg work differently
+  // than the built-in escapeshellarg in PHP on Linux, as these characters
+  // usually are NOT replaced. However, this was done deliberately to be more
+  // conservative when running _drush_escapeshellarg_linux on Windows
+  // (this can happen when generating a command to run on a remote Linux server.)
   $arg = str_replace(array("\t", "\n", "\r", "\0", "\x0B"), ' ', $arg);
 
   // Add surrounding quotes.
