@@ -63,6 +63,20 @@ function sql_drush_command() {
       '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
     ),
   );
+  $items['sql-create'] = array(
+    'description' => 'Create a database.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'examples' => array(
+      'drush sql-create' => 'Create the database for the current site.',
+      'drush @site.test sql-create' => 'Create the database as specified for @site.test.',
+      'drush sql-create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"' =>
+        'Create the database as specified in the db-url option.'
+    ),
+    'options' => array(
+      'db-su' => 'Account to use when creating a new database. Optional.',
+      'db-su-pw' => 'Password for the "db-su" account. Optional.',
+    ) + $options + $db_url,
+  );
   $items['sql-dump'] = array(
     'callback' => 'drush_sql_dump_execute',
     'description' => 'Exports the Drupal DB as SQL using mysqldump or equivalent.',
@@ -268,6 +282,35 @@ function drush_sql_connect() {
   $connect = _drush_sql_connect();
   drush_print($connect);
   return $connect;
+}
+
+/**
+ * Command callback. Create a database.
+ */
+function drush_sql_create() {
+  $db_spec = _drush_sql_get_db_spec();
+
+  // Prompt for confirmation.
+  if (!drush_get_context('DRUSH_SIMULATE')) {
+    $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
+    drush_print(dt("Creating database !target. Any possible existing database will be dropped!", array('!target' => $txt_destination)));
+
+    if (!drush_confirm(dt('Do you really want to continue?'))) {
+      return drush_user_abort();
+    }
+  }
+
+  return _drush_sql_create($db_spec);
+}
+
+function _drush_sql_create($db_spec) {
+    $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
+    // Get credentials to connect to the server, but not the database which we
+    // are about to DROP. @see _drush_sql_get_credentials().
+    $create_db_spec = $db_spec;
+    unset($create_db_spec['database']);
+    $create_db_su = drush_sql_su($create_db_spec);
+    return _drush_sql_query($sql, $create_db_su);
 }
 
 /**
@@ -1100,13 +1143,7 @@ function drush_sql_empty_db($db_spec = NULL) {
     _drush_sql_drop($db_spec);
   }
   else {
-    $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
-    // Get credentials to connect to the server, but not the database which we
-    // are about to DROP. @see _drush_sql_get_credentials().
-    $create_db_spec = $db_spec;
-    unset($create_db_spec['database']);
-    $create_db_su = drush_sql_su($create_db_spec);
-    return _drush_sql_query($sql, $create_db_su);
+    _drush_sql_create($db_spec);
   }
 }
 
