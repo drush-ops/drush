@@ -145,8 +145,14 @@ function sql_drush_command() {
       'temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
       'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.  Takes precedence over --temp.',
       'create-db' => 'Create a new database before importing the database dump on the target machine.',
-      'db-su' => 'Account to use when creating a new database. Optional.',
-      'db-su-pw' => 'Password for the "db-su" account. Optional.',
+      'db-su' => array(
+        'description' => 'Account to use when creating a new database. Optional.',
+        'example-value' => 'root',
+      ),
+      'db-su-pw' => array(
+        'description' => 'Password for the "db-su" account. Optional.',
+        'example-value' => 'pass',
+      ), 
       'no-ordered-dump' => 'Do not pass --ordered-dump to sql-dump.  sql-sync orders the dumpfile by default in order to increase the efficiency of rsync.',
       'sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync. Optional.',
     ),
@@ -1125,8 +1131,13 @@ function drush_sql_su($db_spec, $site_alias_record = NULL) {
     $create_db_target['username'] = $db_superuser;
   }
   $db_su_pw = drush_sitealias_get_option($site_alias_record, 'db-su-pw');
-  if (isset($db_su_pw)) {
+  // If --db-su-pw is not provided and --db-su is, default to empty password.
+  // This way db cli command will take password from .my.cnf or .pgpass.
+  if (!empty($db_su_pw)) {
     $create_db_target['password'] = $db_su_pw;
+  }
+  elseif (isset($db_superuser)) {
+    unset($create_db_target['password']);
   }
   return $create_db_target;
 }
