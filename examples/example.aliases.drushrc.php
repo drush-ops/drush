@@ -241,8 +241,8 @@
 #          ),
 #       ),
 #     ),
-#     'variables => array(
-#        site_name => 'My Drupal site',
+#     'variables' => array(
+#        'site_name' => 'My Drupal site',
 #      ),
 #     'command-specific' => array (
 #       'sql-sync' => array (
