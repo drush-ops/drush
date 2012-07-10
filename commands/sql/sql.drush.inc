@@ -20,7 +20,10 @@ function sql_drush_help($section) {
  * Implementation of hook_drush_command().
  */
 function sql_drush_command() {
-  $options['database'] = 'The DB connection key if using multiple connections in settings.php.';
+  $options['database'] = array(
+    'description' => 'The DB connection key if using multiple connections in settings.php.',
+    'example-value' => 'extra',
+  );
   if (drush_drupal_major_version() >= 7) {
     $options['target'] = 'The name of a target within the specified database.';
   }
