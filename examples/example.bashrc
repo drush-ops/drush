@@ -196,8 +196,8 @@ function cdd() {
       if [ -n "$d" ]
       then
         c="cd \"$d\" \; bash"
-        drush -s ssh ${s%%:*} --tty --escaped "$c"
-        drush ssh ${s%%:*} --tty --escaped "$c"
+        drush -s ${s%%:*} ssh --tty --escaped "$c"
+        drush ${s%%:*} ssh --tty --escaped "$c"
       else
         drush ssh ${s%%:*}
       fi
