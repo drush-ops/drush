@@ -164,7 +164,7 @@ function drush_sandwich_make_me_a_sandwich_validate() {
  */
 function drush_sandwich_make_me_a_sandwich($filling = 'ascii') {
   $str_spreads = '';
-  // Read options with drush_get_options. Note that the options _must_
+  // Read options with drush_get_option. Note that the options _must_
   // be documented in the $items structure for this command in the 'command' hook.
   // See `drush topic docs-commands` for more information.
   if ($spreads = drush_get_option('spreads')) {
