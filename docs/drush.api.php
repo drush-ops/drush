@@ -4,7 +4,15 @@
  * @file
  * Documentation of the Drush API.
  *
- * All drush commands are invoked in a specific order, using
+
+/**
+ * Declare a new command.
+ */
+function hook_drush_command() {
+  // To learn more, run `drush topic docs-commands` and `drush topic docs-examplecommand`
+}
+
+/* All drush commands are invoked in a specific order, using
  * drush-made hooks, very similar to the Drupal hook system. See drush_invoke()
  * for the actual implementation.
  *
