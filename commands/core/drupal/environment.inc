@@ -113,6 +113,8 @@ function drush_module_enable($modules) {
   // be in the correct order. Still pass $enable_dependencies = TRUE so that
   // Drupal will enable the modules in the correct order.
   module_enable($modules);
+  // Flush all caches.
+  drupal_flush_all_caches();
 }
 
 /**
@@ -126,6 +128,8 @@ function drush_module_disable($modules) {
   // be in the correct order. Still pass $enable_dependencies = TRUE so that
   // Drupal will enable the modules in the correct order.
   module_disable($modules);
+  // Flush all caches.
+  drupal_flush_all_caches();
 }
 
 /**
