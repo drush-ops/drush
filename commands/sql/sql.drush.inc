@@ -1150,7 +1150,7 @@ function drush_sql_su($db_spec, $site_alias_record = NULL) {
  *
  * @param boolean $quoted
  *   Quote the database name. Mysql uses backticks to quote which can cause problems
- *   in a Windows shell. Set TRUE of the CREATE is not running on the bash command line.
+ *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
  */
 function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
   $sql = array();
