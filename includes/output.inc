@@ -64,9 +64,11 @@ function drush_print_pipe($message = '') {
  * Prints an array or string.
  * @param $array
  *   The array to print.
+ * @param $newline
+ *    Add a "\n" to the end of the output.  Defaults to TRUE.
  */
-function drush_print_r($array, $handle = NULL) {
-  drush_print(print_r($array, TRUE), 0, $handle);
+function drush_print_r($array, $handle = NULL, $newline = TRUE) {
+  drush_print(print_r($array, TRUE), 0, $handle, $newline);
 }
 
 /**
