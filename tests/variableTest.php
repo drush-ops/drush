@@ -21,17 +21,18 @@ class VariableCase extends Drush_CommandTestCase {
     eval($var_export);
     $this->assertEquals('US/Mountain', $variables['date_default_timezone'], 'Variable was successfully set and get.');
 
-    $this->drush('variable-set', array('site_name', 'unish'), $options + array('always-set' => NULL));
-    $this->drush('variable-get', array('site_name'), $options);
+    $this->drush('variable-set', array('site_name', 'control'), $options + array('exact' => NULL));
+    $this->drush('variable-set', array('site_na', 'unish'), $options + array('always-set' => NULL));
+    $this->drush('variable-get', array('site_na'), $options + array('exact' => NULL));
     $var_export = $this->getOutput();
     eval($var_export);
-    $this->assertEquals('unish', $variables['site_name'], '--always-set option works as expected.');
+    $this->assertEquals('unish', $variables['site_na'], '--always-set option works as expected.');
 
-    $this->drush('variable-set', array('site_name', 'exactish'), $options + array('exact' => NULL));
-    $this->drush('variable-get', array('site_name'), $options);
+    $this->drush('variable-set', array('site_n', 'exactish'), $options + array('exact' => NULL));
+    $this->drush('variable-get', array('site_n'), $options + array('exact' => NULL));
     $var_export = $this->getOutput();
     eval($var_export);
-    $this->assertEquals('exactish', $variables['site_name'], '--exact option works as expected.');
+    $this->assertEquals('exactish', $variables['site_n'], '--exact option works as expected.');
 
     $this->drush('variable-delete', array('site_name'), $options);
     $output = $this->getOutput();
