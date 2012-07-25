@@ -20,12 +20,18 @@ class VariableCase extends Drush_CommandTestCase {
     $var_export = $this->getOutput();
     eval($var_export);
     $this->assertEquals('US/Mountain', $variables['date_default_timezone'], 'Variable was successfully set and get.');
-    
+
     $this->drush('variable-set', array('site_name', 'unish'), $options + array('always-set' => NULL));
     $this->drush('variable-get', array('site_name'), $options);
     $var_export = $this->getOutput();
     eval($var_export);
     $this->assertEquals('unish', $variables['site_name'], '--always-set option works as expected.');
+
+    $this->drush('variable-set', array('site_name', 'exactish'), $options + array('exact' => NULL));
+    $this->drush('variable-get', array('site_name'), $options);
+    $var_export = $this->getOutput();
+    eval($var_export);
+    $this->assertEquals('exactish', $variables['site_name'], '--exact option works as expected.');
 
     $this->drush('variable-delete', array('site_name'), $options);
     $output = $this->getOutput();
