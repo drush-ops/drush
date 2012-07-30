@@ -203,7 +203,12 @@ function drush_cache_clear_types() {
 }
 
 function drush_cache_clear_theme_registry() {
-  drush_db_delete('cache', 'cid LIKE :theme_registry', array(':theme_registry' => 'theme_registry%'));
+  if (drush_drupal_major_version() >= 7) {
+    drupal_theme_rebuild();
+  }
+  else {
+    drush_db_delete('cache', 'cid LIKE :theme_registry', array(':theme_registry' => 'theme_registry%'));
+  }
 }
 
 function drush_cache_clear_css_js() {
