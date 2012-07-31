@@ -925,8 +925,9 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
   }
   if (!$tarball_handler && function_exists('finfo_file')) {
     // If we can't assume the file type from the file extension, check its magic.
+    // TODO: simplify by using FILEINFO_MIME_TYPE once drush requires php > 5.3
     $fi = finfo_open(FILEINFO_MIME);
-    $mimetype = finfo_file($fi, $path);
+    list($mimetype, $encoding) = explode(';', finfo_file($fi, $path));
     finfo_close($fi);
 
     $tarball_handler_for_mimetype = array(
