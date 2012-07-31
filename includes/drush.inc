@@ -894,7 +894,7 @@ function _drush_download_file($url, $destination = FALSE, $overwrite = TRUE) {
  * Extract a tarball.
  *
  * @param string $path
- *   The name of the .tar.gz or .tgz file to be extracted.
+ *   The name of the archive to be extracted.
  * @param string $destination
  *   The destination directory the tarball should be extracted into.
  *   Optional, if ommitted the tarball directory will be used as destination.
@@ -906,6 +906,46 @@ function _drush_download_file($url, $destination = FALSE, $overwrite = TRUE) {
  *   tarball is returned if the extraction reported success, instead of TRUE.
  */
 function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
+  $tarball_handler_for_extension = array(
+    '.zip'     => 'zip',
+    '.tar'     => 'tar',
+    '.tar.gz'  => 'tar/gzip',
+    '.tgz'     => 'tar/gzip',
+    '.tar.bz2' => 'tar/bzip2',
+    '.tbz'     => 'tar/bzip2',
+    '.tbz2'    => 'tar/bzip2',
+    '.tb2'     => 'tar/bzip2',
+  );
+  $tarball_handler = NULL;
+  foreach ($tarball_handler_for_extension as $extension => $handler) {
+    if (substr($path, -strlen($extension)) === $extension) {
+      $tarball_extension = $extension;
+      $tarball_handler = $handler;
+    }
+  }
+  if (!$tarball_handler && function_exists('finfo_file')) {
+    // If we can't assume the file type from the file extension, check its magic.
+    $fi = finfo_open(FILEINFO_MIME);
+    $mimetype = finfo_file($fi, $path);
+    finfo_close($fi);
+
+    $tarball_handler_for_mimetype = array(
+      'application/zip'     => 'zip',
+      'application/x-tar'   => 'tar',
+      'application/x-gzip'  => 'tar/gzip',
+      'application/x-bzip2' => 'tar/bzip2',
+    );
+    foreach ($tarball_handler_for_mimetype as $mt => $handler) {
+      if ($mimetype === $mt) {
+        $tarball_extension = '';
+        $tarball_handler = $handler;
+      }
+    }
+  }
+  if (!$tarball_handler) {
+    return drush_set_error('TARBALL_EXTRACT_UNKNOWN_FORMAT', dt('Tarball !path has unknown file extension.', array('!path' => $path)));
+  }
+
   if (!file_exists($path)) {
     return drush_set_error('TARBALL_EXTRACT_NOT_FOUND', dt('Tarball !path could not be found.', array('!path' => $path)));
   }
@@ -916,41 +956,76 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
   if (!is_writeable($destination)) {
     return drush_set_error('TARBALL_EXTRACT_DESTINATION', dt('Extracting !path failed, as the destination directory !dest was not found or could not be written to.', array('!path' => $path, '!dest' => $dest)));
   }
+
+  if ($tarball_handler === 'zip') {
+    if (drush_shell_cd_and_exec(dirname($path), "unzip %s -d %s", $path, $destination)) {
+      if ($listing) {
+        // unzip prefixes the file listing output with a header line, and prefixes each line with a verb representing the compression type.
+        $output = drush_shell_exec_output();
+        // Remove the header line.
+        array_shift($output);
+        // Remove the prefix verb from each line.
+        $output = array_map(create_function('$str', 'return substr($str, strpos($str, ":") + 3 + ' . strlen(dirname($path)) . ');'), $output);
+        // Remove any remaining blank lines.
+        $output = array_filter($output, create_function('$str', 'return $str != "";'));
+        return $output;
+      }
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
+  }
+  // ...otherwise we have a possibly-compressed Tar file.
+
+  $tar_compression_flag = '';
+  if ($tarball_handler === 'tar/gzip') {
+      $tar_compression_flag = 'z';
+  }
+  else if ($tarball_handler === 'tar/bzip2') {
+      $tar_compression_flag = 'j';
+  }
   // If we are not on Windows, then try to do "tar" in a single operation.
-  if ((!drush_is_windows()) && (drush_shell_cd_and_exec(dirname($path), "tar -C %s -xzf %s", $destination, basename($path)))) {
+  if ((!drush_is_windows()) && (drush_shell_cd_and_exec(dirname($path), "tar -C %s -x%sf %s", $destination, $tar_compression_flag, basename($path)))) {
     if ($listing) {
-      // We use a separate tar -tzf instead of -xvf above because
+      // We use a separate tar -tf instead of -xvf above because
       // the output is not the same in Mac.
-      drush_shell_cd_and_exec(dirname($path), "tar -tzf %s", basename($path));
+      drush_shell_cd_and_exec(dirname($path), "tar -t%sf %s", $tar_compression_flag, basename($path));
       return drush_shell_exec_output();
     }
     return TRUE;
   }
+
   // If we could not get the single-op tar to work, do it in three steps.
   // Copy the source tarball to the destination directory.  Rename to a temp name in case the destination directory == dirname($path)
-  $paths_basename = basename(basename($path, '.tar.gz'), '.tgz');
-  $tarball = drush_tempnam($paths_basename, $destination) . ".tar.gz";
+  $paths_basename = basename($path, $tarball_extension);
+  $tarball = drush_tempnam($paths_basename, $destination) . $tarball_extension;
   drush_register_file_for_deletion($tarball);
   drush_copy_dir($path, $tarball);
-  $unzipped = $destination . '/' . basename($tarball, ".tar.gz") . ".tar";
-  // We used to use gzip --decompress in --stdout > out, but the output redirection sometimes failed on Windows for some binary output
-  drush_shell_cd_and_exec(dirname($tarball), "gzip --decompress %s", $tarball);
-  if (file_exists($unzipped)) {
-    drush_register_file_for_deletion($unzipped);
-    if (drush_shell_cd_and_exec(dirname($unzipped), "tar -xf %s", basename($unzipped))) {
-      if ($listing) {
-        // We use a separate tar -tf instead of -xf above because
-        // the output is not the same in Mac.
-        drush_shell_cd_and_exec(dirname($unzipped), "tar -tf %s", basename($unzipped));
-        return drush_shell_exec_output();
-      }
-      return TRUE;
+  $unzipped = $destination . '/' . basename($tarball, $tarball_extension) . ".tar";
+
+  if ($tarball_handler === 'gzip') {
+      // We used to use gzip --decompress in --stdout > out, but the output redirection sometimes failed on Windows for some binary output
+      drush_shell_cd_and_exec(dirname($tarball), "gzip --decompress %s", $tarball);
+  }
+  else if ($tarball_handler === 'bzip2') {
+      drush_shell_cd_and_exec(dirname($tarball), "bzip2 --decompress %s", $tarball);
+  }
+  if (!file_exists($unzipped)) {
+    return drush_set_error('TARBALL_EXTRACT_UNCOMPRESS_FAIL', dt('Uncompressing !path failed.', array('!path' => $path)));
+  }
+  drush_register_file_for_deletion($unzipped);
+
+  if (drush_shell_cd_and_exec(dirname($unzipped), "tar -xf %s", basename($unzipped))) {
+    if ($listing) {
+      // We use a separate tar -tf instead of -xf above because
+      // the output is not the same in Mac.
+      drush_shell_cd_and_exec(dirname($unzipped), "tar -tf %s", basename($unzipped));
+      return drush_shell_exec_output();
     }
-    return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', dt('Extracting !path using the tar command failed.', array('!path' => $path)));
+    return TRUE;
   }
-  else {
-    return drush_set_error('TARBALL_EXTRACT_GZIP_FAIL', dt('Uncompressing !path using  the gzip command failed.', array('!path' => $path)));
-  }
+  return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', dt('Extracting !path using the tar command failed.', array('!path' => $path)));
 }
 
 /**

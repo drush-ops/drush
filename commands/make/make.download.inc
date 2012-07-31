@@ -179,19 +179,32 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
   $success = FALSE;
 
   switch (drush_mime_content_type($filename)) {
+    case 'application/x-bzip2':
     case 'application/x-gzip':
-      // I'd like to just use tar -z, but apparently it breaks on windoze. Why
-      // do they always have to ruin everything?
-      $success = make_download_file_unpack_gzip($filename, $download_location, $subtree);
-      break;
-
     case 'application/x-tar':
-      $success = make_download_file_unpack_tar($filename, $download_location, $subtree);
-      break;
-
     case 'application/x-zip':
     case 'application/zip':
-      $success = make_download_file_unpack_zip($filename, $download_location, $subtree);
+      $listing = drush_tarball_extract($filename, FALSE, TRUE);
+      if (!$listing) {
+        return FALSE;
+      }
+
+      if ($subtree) {
+        $source = dirname($filename) . DIRECTORY_SEPARATOR . $subtree;
+      }
+      else {
+        // If there's just one file, get the path to that file.
+        // If there are multiple files, get the path to the wrapper directory.
+        $slash = strpos(reset($listing), DIRECTORY_SEPARATOR);
+        $source = dirname($filename) . DIRECTORY_SEPARATOR . ($slash === FALSE ? reset($listing) : substr(reset($listing), 0, $slash));
+      }
+
+      $success = drush_move_dir($source, $download_location, TRUE);
+
+      // Remove the tarball.
+      if (file_exists($filename)) {
+        drush_delete_dir($filename, TRUE);
+      }
       break;
 
     default:
@@ -207,68 +220,6 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
       $success = drush_move_dir($filename, $destination, TRUE);
   }
   return $success ? $download_location : FALSE;
-}
-
-/**
- * Unpacks a tar file to the specified location.
- *
- * @return boolean
- *   TRUE or FALSE depending on whether the operation was successful.
- */
-function make_download_file_unpack_tar($filename, $download_location, $subtree = NULL) {
-  $tmp_path = drush_tempdir();
-
-  list($main_directory) = array_reverse(explode('/', $download_location));
-
-  drush_shell_exec('%s -x -C %s -f %s', drush_get_tar_executable(), $tmp_path, $filename);
-
-  return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
-}
-
-/**
- * Unpacks a gzip file to the specified location.
- *
- * @return boolean
- *   TRUE or FALSE depending on whether the operation was successful.
- */
-function make_download_file_unpack_gzip($filename, $download_location, $subtree = NULL) {
-  // Find out where contents will end up. Retrieve last column of output using
-  // awk.
-  drush_shell_exec("gzip --list %s", $filename);
-  $info = drush_shell_exec_output();
-  if ($info) {
-    foreach ($info as $line) {
-      $matches = array();
-      preg_match('/^\s+[0-9]+\s+[0-9-]+\s+[0-9\.%]+\s+(.*)$/', $line, $matches);
-      if (isset($matches[1])) {
-        $file = $matches[1];
-        break;
-      }
-    }
-    if (isset($file)) {
-      // Unzip it and then delete the tar file.
-      drush_shell_exec('gzip -d %s', $filename);
-      return make_download_file_unpack_tar($file, $download_location, $subtree);
-    }
-  }
-}
-
-/**
- * Unpack a zip file.
- */
-function make_download_file_unpack_zip($filename, $download_location, $subtree = NULL) {
-  $tmp_path = drush_tempdir();
-
-  list($main_directory) = array_reverse(explode('/', $download_location));
-
-  $result = drush_shell_exec("unzip %s -d %s", $filename, $tmp_path);
-
-  if (!$result) {
-    make_error('UNZIP_ERROR', dt('Unable to unzip @filename.', array('@filename' => $filename)));
-    return FALSE;
-  }
-
-  return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
 }
 
 /**
