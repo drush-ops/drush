@@ -812,6 +812,12 @@ function drush_op($function) {
  *   downloaded.
  */
 function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
+  // Generate destination of omitted.
+  if (!$destination) {
+    $file = basename(reset(explode('?', $url, 2)));
+    $destination = getcwd() . '/' . basename($file);
+  }
+
   if (drush_get_option('cache') && $cache_duration !== 0 && $cache_dir = drush_directory_cache('download')) {
     $cache_name = str_replace(array(':', '/', '?', '='), '-', $url);
     $cache_file = $cache_dir . "/" . $cache_name;
@@ -853,22 +859,16 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
  *   The url of the file to download.
  * @param string $destination
  *   The name of the file to be saved, which may include the full path.
- *   Optional, if omitted the filename will be extracted from the url and the
- *   file downloaded to the current working directory (Drupal root if
- *   bootstrapped).
  * @param boolean $overwrite
  *   Overwrite any file thats already at the destination.
  * @return string
  *   The path to the downloaded file, or FALSE if the file could not be
  *   downloaded.
  */
-function _drush_download_file($url, $destination = FALSE, $overwrite = TRUE) {
+function _drush_download_file($url, $destination, $overwrite = TRUE) {
   static $use_wget;
   if ($use_wget === NULL) {
     $use_wget = drush_shell_exec('which wget');
-  }
-  if (!$destination) {
-    $destination = getcwd() . '/' . basename($url);
   }
 
   $destination_tmp = drush_tempnam('download_file');
