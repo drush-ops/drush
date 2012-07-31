@@ -917,8 +917,9 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
     '.tb2'     => 'tar/bzip2',
   );
   $tarball_handler = NULL;
+  $file = basename(reset(explode('?', $path, 2)));
   foreach ($tarball_handler_for_extension as $extension => $handler) {
-    if (substr($path, -strlen($extension)) === $extension) {
+    if (substr($file, -strlen($extension)) === $extension) {
       $tarball_extension = $extension;
       $tarball_handler = $handler;
     }
