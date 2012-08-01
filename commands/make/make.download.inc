@@ -102,74 +102,6 @@ function _make_download_file($download, $cache_duration = DRUSH_CACHE_LIFETIME_D
 }
 
 /**
- * Determines the MIME content type of the specified file. The power of this
- * function depends on whether the PHP installation has either
- * mime_content_type() or finfo installed -- if not, only tar, gz, and zip types
- * can be detected, and other file types will return 'unknown'.
- *
- * @return mixed
- *   The MIME content type of the file, 'unknown', or FALSE on error.
- */
-function drush_mime_content_type($filename) {
-  // Tar files have no magic value, so we can detect them only by filename.
-  if (strrpos($filename, '.tar') === (strlen($filename) - 4)) {
-    return 'application/x-tar';
-  }
-
-  $content_type = '';
-
-  // mime_content_type() and the finfo class are not available everywhere.
-  if (function_exists('mime_content_type')) {
-    $content_type = mime_content_type($filename);
-  }
-  elseif (class_exists('finfo')) {
-    $finfo = new finfo(FILEINFO_MIME);
-    // We only want the first part, before the ;
-    $type = explode(';', $finfo->file($filename));
-    $content_type = $type[0];
-  }
-
-  // If we found what we're looking for, we're done.
-  if (!empty($content_type) && ($content_type == 'application/x-gzip' || $content_type == 'application/x-zip')) {
-    return $content_type;
-  }
-
-  // If PHP's built-ins aren't present or PHP is configured in such a way that
-  // all these files are considered octet-stream (e.g with mod_mime_magic and
-  // an http conf that's serving all archives as octet-stream for other
-  // reasons) we'll detect (a few select) mime types on our own by examing the
-  // file's magic header bytes.
-  if ($file = fopen($filename, 'rb')) {
-    $first = fread($file, 2);
-    fclose($file);
-
-    if ($first === FALSE) {
-      return FALSE;
-    }
-
-    // Interpret the two bytes as a little endian 16-bit unsigned int.
-    $data = unpack('v', $first);
-    switch ($data[1]) {
-      case 0x8b1f:
-        // First two bytes of gzip files are 0x1f, 0x8b.
-        // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer.
-        return 'application/x-gzip';
-
-      case 0x4b50:
-        // First two bytes of zip files are 0x50, 0x4b ('PK').
-        // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers.
-        return 'application/zip';
-
-      default:
-        // Not a file type we can detect. If PHP's built-ins gave us
-        // something, we can at least return that.
-        return !empty($content_type) ? $content_type : 'unknown';
-    }
-  }
-  return FALSE;
-}
-
-/**
  * Unpacks a file to the specified download location.
  *
  * @return mixed
@@ -178,46 +110,40 @@ function drush_mime_content_type($filename) {
 function make_download_file_unpack($filename, $download_location, $name, $subtree = NULL) {
   $success = FALSE;
 
-  switch (drush_mime_content_type($filename)) {
-    case 'application/x-bzip2':
-    case 'application/x-gzip':
-    case 'application/x-tar':
-    case 'application/x-zip':
-    case 'application/zip':
-      $listing = drush_tarball_extract($filename, FALSE, TRUE);
-      if (!$listing) {
-        return FALSE;
-      }
+  if (drush_file_is_tarball($filename)) {
+    $listing = drush_tarball_extract($filename, FALSE, TRUE);
+    if (!$listing) {
+      return FALSE;
+    }
 
-      if ($subtree) {
-        $source = dirname($filename) . DIRECTORY_SEPARATOR . $subtree;
-      }
-      else {
-        // If there's just one file, get the path to that file.
-        // If there are multiple files, get the path to the wrapper directory.
-        $slash = strpos(reset($listing), DIRECTORY_SEPARATOR);
-        $source = dirname($filename) . DIRECTORY_SEPARATOR . ($slash === FALSE ? reset($listing) : substr(reset($listing), 0, $slash));
-      }
+    if ($subtree) {
+      $source = dirname($filename) . DIRECTORY_SEPARATOR . $subtree;
+    }
+    else {
+      // If there's just one file, get the path to that file.
+      // If there are multiple files, get the path to the wrapper directory.
+      $slash = strpos(reset($listing), DIRECTORY_SEPARATOR);
+      $source = dirname($filename) . DIRECTORY_SEPARATOR . ($slash === FALSE ? reset($listing) : substr(reset($listing), 0, $slash));
+    }
 
-      $success = drush_move_dir($source, $download_location, TRUE);
+    $success = drush_move_dir($source, $download_location, TRUE);
 
-      // Remove the tarball.
-      if (file_exists($filename)) {
-        drush_delete_dir($filename, TRUE);
-      }
-      break;
+    // Remove the tarball.
+    if (file_exists($filename)) {
+      drush_delete_dir($filename, TRUE);
+    }
+  }
+  else {
+    // If this is an individual file, and no filename has been specified,
+    // assume the original name.
+    if (is_file($filename) && !$name) {
+      $name = basename($filename);
+    }
 
-    default:
-      // If this is an individual file, and no filename has been specified,
-      // assume the original name.
-      if (is_file($filename) && !$name) {
-        $name = basename($filename);
-      }
-
-      // The destination directory has already been created by
-      // findDownloadLocation().
-      $destination = $download_location . ($name ? '/' . $name : '');
-      $success = drush_move_dir($filename, $destination, TRUE);
+    // The destination directory has already been created by
+    // findDownloadLocation().
+    $destination = $download_location . ($name ? '/' . $name : '');
+    $success = drush_move_dir($filename, $destination, TRUE);
   }
   return $success ? $download_location : FALSE;
 }
