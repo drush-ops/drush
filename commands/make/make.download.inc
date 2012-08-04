@@ -97,7 +97,7 @@ function _make_download_file($download, $cache_duration = DRUSH_CACHE_LIFETIME_D
   $tmp_path = make_tmp();
   // Ensure that we aren't including the querystring when generating a filename
   // to save our download to.
-  $file = basename(reset(explode('?', $download, 2)));
+  $file = basename(current(explode('?', $download, 2)));
   return drush_download_file($download, $tmp_path . '/' . $file, $cache_duration);
 }
 

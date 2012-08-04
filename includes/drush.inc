@@ -814,7 +814,7 @@ function drush_op($function) {
 function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
   // Generate destination of omitted.
   if (!$destination) {
-    $file = basename(reset(explode('?', $url, 2)));
+    $file = basename(current(explode('?', $url, 2)));
     $destination = getcwd() . '/' . basename($file);
   }
 
@@ -908,7 +908,7 @@ function drush_mime_content_type($filename) {
     // TODO: simplify and use FILEINFO_MIME_TYPE when drush requires php 5.3
     $finfo = new finfo(FILEINFO_MIME);
     // We only want the first part, before the ;
-    $content_type = reset(explode(';', $finfo->file($filename)));
+    $content_type = current(explode(';', $finfo->file($filename)));
   }
   // TODO: this is deprecated in php 5.3
   elseif (function_exists('mime_content_type')) {
@@ -959,7 +959,7 @@ function drush_mime_content_type($filename) {
   // header bytes (for example tarballs).
 
   // Remove querystring from the filename, if present.
-  $filename = basename(reset(explode('?', $filename, 2)));
+  $filename = basename(current(explode('?', $filename, 2)));
   $extension_mimetype = array(
     '.tar'     => 'application/x-tar',
   );
