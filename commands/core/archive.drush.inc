@@ -378,14 +378,14 @@ function drush_archive_restore($file, $site_id = NULL) {
  */
 function archive_archive_restore_complete() {
   return array(
-           'files' => array(
-             'directories' => array(
-               'pattern' => '*',
-               'flags' => GLOB_ONLYDIR,
-             ),
-             'tar' => array(
-               'pattern' => '*.tar.gz',
-             ),
-           ),
-         );
+    'files' => array(
+      'directories' => array(
+        'pattern' => '*',
+        'flags' => GLOB_ONLYDIR,
+      ),
+      'tar' => array(
+        'pattern' => '*.tar.gz',
+      ),
+    ),
+  );
 }
