@@ -1684,7 +1684,14 @@ function _drush_sitealias_preflight_path($path) {
   return array('alias' => $alias, 'path' => $path, 'machine' => $machine);
 }
 
-
+/**
+ * Given a properly-escaped options string, replace any occurance of
+ * %files and so on embedded inside it with its corresponding path.
+ */
+function drush_sitealias_evaluate_paths_in_options($option_string) {
+  $path_aliases = _core_path_aliases();
+  return str_replace(array_keys($path_aliases), array_values($path_aliases), $option_string);
+}
 
 /**
  * Evaluate a path from its shorthand form to a literal path

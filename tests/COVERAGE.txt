@@ -18,41 +18,42 @@ package-hander:
 sql-cli:
 sql-connect:
 sql-query: FAIR. Implicit by site-install
-sql-dump: FAIR. Implicitly tested by siteUpgradeTest and sqlSyncTest.
-sql-sync: GOOD. testLocalSqlSync(). Implicitly tested by siteUpgradeTest.
+sql-dump: FAIR. Implicitly tested by sqlSyncTest.
+sql-sync: GOOD. testLocalSqlSync().
   need test: %dump, %dump-dir, --dump, --dump-dir, --source-dump, --target-dump, --source-dump-dir and --target-dump-dir and permutations of same used together.
 sql-drop: FAIR. Implicit by site-install
+sql-sanitize:
 
 
-updatedb: GOOD. Implicitly tested siteUpgradeTest.
+updatedb: (Used to be implicitly tested siteUpgradeTest).
 archive-dump: GOOD
-archive-restore: GOOD. Strong implicit testing by environment cache in the unish framework.
+archive-restore: GOOD. Has own test and implicitly tested by environment cache in Unish framework.
 help
 version: GOOD. Implicit by testStandaloneScript()
-self-update
-php-eval: GOOD. Implicitly tested by many tests (e.g. siteUpgradeTest).
+php-eval: GOOD. Implicitly tested by many tests (e.g. completeTest).
 php-script: GOOD.
 drupal-directory: GOOD
 core-cli: FAIR
 cache-get: GOOD
 cache-set: GOOD
 cache-clear: GOOD
-config
+core-config: NONE
 core-cron
 core-status: FAIR: Implicit test by contextTest.
 docs
-image: GOOD
 core-rsync
-runserver
 core-quick-drupal
+image: GOOD
+queue-*: GOOD
+runserver
 search-*
 shellalias: GOOD
   need test: shell alias with site alias
 site-install: FAIR. Implicit test by setUpDrupal().
-site-upgrade: GOOD.
 ssh: GOOD
 test-*
 topic
+usage-*
 variable-*: GOOD
 watchdog-*: GOOD
 
@@ -60,11 +61,13 @@ user-*: GOOD.
 
 field-*: GOOD.
 
+make: GOOD
+
 INCLUDES
 ------------
 backend: GOOD
   need test: --pipe with remote alias and --pipe with list of aliases
-batch: FAIR. Implicit by siteUpgradeTest.
+batch: GOOD
 bootstrap:
 command: FAIR
 complete: GOOD

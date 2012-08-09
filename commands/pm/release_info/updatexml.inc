@@ -541,6 +541,7 @@ function updatexml_determine_project_type($xml) {
   $project_types = array(
     'core' => 'Drupal core',
     'profile' => 'Distributions',
+    'profile-legacy' => 'Installation profiles',
     'module' => 'Modules',
     'theme' => 'Themes',
     'theme engine' => 'Theme engines',
@@ -551,6 +552,7 @@ function updatexml_determine_project_type($xml) {
   $type = 'module';
   if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
     $type = array_search($types[0]->value, $project_types);
+    $type = ($type == 'profile-legacy') ? 'profile' : $type;
   }
 
   return $type;

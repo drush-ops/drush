@@ -21,11 +21,14 @@ function archive_drush_command() {
       'generatorversion' => 'The generator version number to store in the MANIFEST file. The default is ' . DRUSH_VERSION . '.',
       'pipe' => 'Only print the destination of the archive. Useful for scripts that don\'t pass --destination.',
       'preserve-symlinks' => 'Preserve symbolic links.',
+      'tar-options' => 'Options passed thru to the tar command.',
     ),
     'examples' => array(
       'drush archive-dump default,example.com,foo.com' => 'Write an archive containing 3 sites in it.',
       'drush archive-dump @sites' => 'Save archive containing all sites in a multi-site.',
       'drush archive-dump default --destination=/backups/mysite.tar' => 'Save archive to custom location.',
+      'drush archive-dump --tar-options="--exclude=.git --exclude=sites/default/files"' => 'Omits any .git directories found in the tree as well as sites/default/files.',
+      'drush archive-dump --tar-options="--exclude=%files"' => 'Placeholder %files is replaced with the real path for the current site, and that path is excluded.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
     'aliases' => array('ard', 'archive-backup', 'arb'),
@@ -159,15 +162,18 @@ function drush_archive_dump($sites_subdirs = '@self') {
     return;
   }
 
+  // Get the extra options for tar, if any
+  $tar_extra_options = drush_sitealias_evaluate_paths_in_options(drush_get_option('tar-options', ''));
+
   // Start adding codebase to the archive.
   $docroot_path = realpath(drush_get_context('DRUSH_DRUPAL_ROOT'));
   $docroot = basename($docroot_path);
   $workdir = dirname($docroot_path);
   $dereference = (drush_get_option('preserve-symlinks', FALSE)) ? '' : '--dereference ';
   // Archive Drupal core, excluding sites dir.
-  drush_shell_cd_and_exec($workdir, "$tar --exclude \"{$docroot}/sites\" {$dereference}-cf %s %s", $destination, $docroot);
+  drush_shell_cd_and_exec($workdir, "$tar {$tar_extra_options} --exclude \"{$docroot}/sites\" {$dereference}-cf %s %s", $destination, $docroot);
   // Add sites/all to the same archive.
-  drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
+  drush_shell_cd_and_exec($workdir, "$tar {$tar_extra_options} {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
   // Add sites/sites.php and sites/example.sites.php to the same archive.
   $files_to_add = array('sites/sites.php', 'sites/example.sites.php');
   foreach ($files_to_add as $file_to_add) {
@@ -196,7 +202,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
       if (!drush_shell_exec($dump_exec)) {
         return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed.');
       }
-      drush_shell_cd_and_exec($tmp, "$tar --dereference -rf %s %s", $destination, basename($result_file));
+      drush_shell_cd_and_exec($tmp, "$tar {$tar_extra_options} --dereference -rf %s %s", $destination, basename($result_file));
     }
   }
 
@@ -219,7 +225,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
 
     // Add the site specific directory to archive.
     if (!empty($status['object']['%paths']['%site'])) {
-      drush_shell_cd_and_exec($workdir, "$tar --dereference -rf %s %s", $destination,  "{$docroot}/sites/" . basename($status['object']['%paths']['%site']));
+      drush_shell_cd_and_exec($workdir, "$tar {$tar_extra_options} --dereference -rf %s %s", $destination,  "{$docroot}/sites/" . basename($status['object']['%paths']['%site']));
     }
 
     $site = array(
@@ -372,14 +378,14 @@ function drush_archive_restore($file, $site_id = NULL) {
  */
 function archive_archive_restore_complete() {
   return array(
-           'files' => array(
-             'directories' => array(
-               'pattern' => '*',
-               'flags' => GLOB_ONLYDIR,
-             ),
-             'tar' => array(
-               'pattern' => '*.tar.gz',
-             ),
-           ),
-         );
+    'files' => array(
+      'directories' => array(
+        'pattern' => '*',
+        'flags' => GLOB_ONLYDIR,
+      ),
+      'tar' => array(
+        'pattern' => '*.tar.gz',
+      ),
+    ),
+  );
 }

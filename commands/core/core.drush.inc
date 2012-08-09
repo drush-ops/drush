@@ -73,8 +73,12 @@ function core_drush_command() {
     'arguments' => array(
       'filter' => 'A substring for filtering the list of files. Omit this argument to choose from loaded files.',
     ),
+    'options' => array(
+      'bg' => 'Run editor in the background. Does not work with editors such as `vi` that run in the terminal.',
+    ),
     'examples' => array(
       'drush core-config' => 'Pick from a list of config/alias/settings files. Open selected in editor.',
+      'drush --bg core-config' => 'Return to shell prompt as soon as the editor window opens.',
       'drush core-config etc' => 'Edit the global configuration file.',
       'drush core-config demo.alia' => 'Edit a particular alias file.',
       'drush core-config sett' => 'Edit settings.php for the current Drupal site.',
@@ -422,15 +426,15 @@ function core_drush_help($section) {
       return dt("Return the filesystem path for modules/themes and other key folders.");
     case 'error:DRUSH_DRUPAL_DB_ERROR':
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
-      $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
-      $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_site_credentials()));
-      $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
+      $message .= dt("Hint: This may occur when Drush is trying to:\n");
+      $message .= dt(" * bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.\n");
+      $message .= dt(" * connect the database through a socket. The socket file may be wrong or the php-cli may have no access to it in a jailed shell. See http://drupal.org/node/1428638 for details.\n");
+      $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials()));
       return $message;
     case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR':
       $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
       $message .= dt("Hint: This error can only occur once the database connection has already been successfully initiated, therefore this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
-      $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_site_credentials()));
-      $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
+      $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials()));
       return $message;
       break;
   }
@@ -618,6 +622,11 @@ function drush_core_cron() {
 function drush_core_config($filter = NULL) {
   $all = drush_core_config_load();
 
+  // Run in the foreground unless --bg is specified.
+  $bg = '';
+  if (drush_get_option('bg', FALSE)) {
+    $bg = '&';
+  }
   // Apply any filter that was supplied.
   if ($filter) {
     foreach ($all as $key => $file) {
@@ -629,12 +638,12 @@ function drush_core_config($filter = NULL) {
   $all = drush_map_assoc(array_values($all));
 
   if (count($all) == 1) {
-    return drush_shell_exec_interactive('$EDITOR %s &', current($all));
+    return drush_shell_exec_interactive('$EDITOR %s ' . $bg, current($all));
   }
   else {
     $choice = drush_choice($all, 'Enter a number to choose which file to edit.', '!key');
     if ($choice !== FALSE) {
-      return drush_shell_exec_interactive('$EDITOR %s &', $all[$choice]);
+      return drush_shell_exec_interactive('$EDITOR %s ' . $bg, $all[$choice]);
     }
   }
 }

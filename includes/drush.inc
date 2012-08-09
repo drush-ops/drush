@@ -812,6 +812,12 @@ function drush_op($function) {
  *   downloaded.
  */
 function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
+  // Generate destination of omitted.
+  if (!$destination) {
+    $file = basename(current(explode('?', $url, 2)));
+    $destination = getcwd() . '/' . basename($file);
+  }
+
   if (drush_get_option('cache') && $cache_duration !== 0 && $cache_dir = drush_directory_cache('download')) {
     $cache_name = str_replace(array(':', '/', '?', '='), '-', $url);
     $cache_file = $cache_dir . "/" . $cache_name;
@@ -853,22 +859,16 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
  *   The url of the file to download.
  * @param string $destination
  *   The name of the file to be saved, which may include the full path.
- *   Optional, if omitted the filename will be extracted from the url and the
- *   file downloaded to the current working directory (Drupal root if
- *   bootstrapped).
  * @param boolean $overwrite
  *   Overwrite any file thats already at the destination.
  * @return string
  *   The path to the downloaded file, or FALSE if the file could not be
  *   downloaded.
  */
-function _drush_download_file($url, $destination = FALSE, $overwrite = TRUE) {
+function _drush_download_file($url, $destination, $overwrite = TRUE) {
   static $use_wget;
   if ($use_wget === NULL) {
     $use_wget = drush_shell_exec('which wget');
-  }
-  if (!$destination) {
-    $destination = getcwd() . '/' . basename($url);
   }
 
   $destination_tmp = drush_tempnam('download_file');
@@ -891,10 +891,110 @@ function _drush_download_file($url, $destination = FALSE, $overwrite = TRUE) {
 }
 
 /**
+ * Determines the MIME content type of the specified file.
+ *
+ * The power of this function depends on whether the PHP installation
+ * has either mime_content_type() or finfo installed -- if not, only tar,
+ * gz, zip and bzip2 types can be detected, and other file types will return
+ * 'unknown'.
+ *
+ * @return mixed
+ *   The MIME content type of the file or 'unknown'.
+ */
+function drush_mime_content_type($filename) {
+  // 1. Try to use php built-ins
+  $content_type = FALSE;
+  if (class_exists('finfo')) {
+    // TODO: simplify and use FILEINFO_MIME_TYPE when drush requires php 5.3
+    $finfo = new finfo(FILEINFO_MIME);
+    // We only want the first part, before the ;
+    $content_type = current(explode(';', $finfo->file($filename)));
+  }
+  // TODO: this is deprecated in php 5.3
+  elseif (function_exists('mime_content_type')) {
+    $content_type = mime_content_type($filename);
+  }
+
+  if ($content_type && $content_type != 'application/octet-stream') {
+    return $content_type;
+  }
+
+  // 2. if PHP's built-ins aren't present or PHP is configured in such a way
+  // that all these files are considered octet-stream (e.g with mod_mime_magic
+  // and an http conf that's serving all archives as octet-stream for other
+  // reasons) we'll detect (a few select) mime types on our own by examing the
+  // file's magic header bytes.
+  if ($file = fopen($filename, 'rb')) {
+    $first = fread($file, 2);
+    var_dump($first);
+    fclose($file);
+
+    if ($first === FALSE) {
+      return FALSE;
+    }
+
+    // Interpret the two bytes as a little endian 16-bit unsigned int.
+    $data = unpack('v', $first);
+    var_dump($data);
+    switch ($data[1]) {
+      case 0x8b1f:
+        // First two bytes of gzip files are 0x1f, 0x8b (little-endian).
+        // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer
+        return 'application/x-gzip';
+
+      case 0x4b50:
+        // First two bytes of zip files are 0x50, 0x4b ('PK') (little-endian).
+        // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers
+        return 'application/zip';
+
+      case 0x5a42:
+        // First two bytes of bzip2 files are 0x5a, 0x42 ('BZ') (big-endian).
+        // See http://en.wikipedia.org/wiki/Bzip2#File_format
+        return 'application/x-bzip2';
+    }
+  }
+
+  // 3. Lastly if above methods didn't work, try to guess the mime type from
+  // the file extension. This is useful if the file has no identificable magic
+  // header bytes (for example tarballs).
+
+  // Remove querystring from the filename, if present.
+  $filename = basename(current(explode('?', $filename, 2)));
+  $extension_mimetype = array(
+    '.tar'     => 'application/x-tar',
+  );
+  foreach ($extension_mimetype as $extension => $content_type) {
+    if (substr($filename, -strlen($extension)) === $extension) {
+      return $content_type;
+    }
+  }
+
+  return 'unknown';
+}
+
+/**
+ * Check whether a file is a supported tarball.
+ */
+function drush_file_is_tarball($path) {
+  $content_type = drush_mime_content_type($path);
+  $supported = array(
+    'application/x-bzip2',
+    'application/x-gzip',
+    'application/x-tar',
+    'application/x-zip',
+    'application/zip',
+  );
+  if (in_array($content_type, $supported)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
  * Extract a tarball.
  *
  * @param string $path
- *   The name of the .tar.gz or .tgz file to be extracted.
+ *   Path to the archive to be extracted.
  * @param string $destination
  *   The destination directory the tarball should be extracted into.
  *   Optional, if ommitted the tarball directory will be used as destination.
@@ -906,62 +1006,115 @@ function _drush_download_file($url, $destination = FALSE, $overwrite = TRUE) {
  *   tarball is returned if the extraction reported success, instead of TRUE.
  */
 function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
-  if (!file_exists($path)) {
-    return drush_set_error('TARBALL_EXTRACT_NOT_FOUND', dt('Tarball !path could not be found.', array('!path' => $path)));
+  // Check if tarball is supported.
+  if (!drush_file_is_tarball($path)) {
+    return drush_set_error('TARBALL_EXTRACT_UNKNOWN_FORMAT', dt('Unable to extract !path. Unknown archive format.', array('!path' => $path)));
   }
-  $olddir = getcwd();
+  $mimetype = drush_mime_content_type($path);
+
+  // Check if destination is valid.
   if (!$destination) {
     $destination = dirname($path);
   }
-  if (!is_writeable($destination)) {
-    return drush_set_error('TARBALL_EXTRACT_DESTINATION', dt('Extracting !path failed, as the destination directory !dest was not found or could not be written to.', array('!path' => $path, '!dest' => $dest)));
+  if (!drush_mkdir($destination)) {
+    // drush_mkdir already set an error.
+    return FALSE;
   }
-  // If we are not on Windows, then try to do "tar" in a single operation.
-  if ((!drush_is_windows()) && (drush_shell_cd_and_exec(dirname($path), "tar -C %s -xzf %s", $destination, basename($path)))) {
+
+  // Perform the extraction of a zip file.
+  if (($mimetype == 'application/zip') || ($mimetype == 'application/x-zip')) {
+    $return = drush_shell_cd_and_exec(dirname($path), "unzip %s -d %s", $path, $destination);
+    if (!$return) {
+      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to unzip !filename.', array('!filename' => $path)));
+    }
     if ($listing) {
-      // We use a separate tar -tzf instead of -xvf above because
+      // unzip prefixes the file listing output with a header line,
+      // and prefixes each line with a verb representing the compression type.
+      $output = drush_shell_exec_output();
+      // Remove the header line.
+      array_shift($output);
+      // Remove the prefix verb from each line.
+      $output = array_map(create_function('$str', 'return substr($str, strpos($str, ":") + 3 + ' . strlen(dirname($path)) . ');'), $output);
+      // Remove any remaining blank lines.
+      $return = array_filter($output, create_function('$str', 'return $str != "";'));
+    }
+  }
+  // Otherwise we have a possibly-compressed Tar file.
+  // If we are not on Windows, then try to do "tar" in a single operation.
+  elseif (!drush_is_windows()) {
+    $tar = drush_get_tar_executable();
+    $tar_compression_flag = '';
+    if ($mimetype == 'application/x-gzip') {
+      $tar_compression_flag = 'z';
+    }
+    elseif ($mimetype == 'application/x-bzip2') {
+      $tar_compression_flag = 'j';
+    }
+
+    $return = drush_shell_cd_and_exec(dirname($path), "$tar -C %s -x%sf %s", $destination, $tar_compression_flag, basename($path));
+    if (!$return) {
+      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', array('!filename' => $path)));
+    }
+    if ($listing) {
+      // We use a separate tar -tf instead of -xvf above because
       // the output is not the same in Mac.
-      drush_shell_cd_and_exec(dirname($path), "tar -tzf %s", basename($path));
-      return drush_shell_exec_output();
+      drush_shell_cd_and_exec(dirname($path), "$tar -t%sf %s", $tar_compression_flag, basename($path));
+      $return = drush_shell_exec_output();
     }
-    return TRUE;
   }
-  // If we could not get the single-op tar to work, do it in three steps.
-  // Copy the source tarball to the destination directory.  Rename to a temp name in case the destination directory == dirname($path)
-  $paths_basename = basename(basename($path, '.tar.gz'), '.tgz');
-  $tarball = drush_tempnam($paths_basename, $destination) . ".tar.gz";
-  drush_register_file_for_deletion($tarball);
-  drush_copy_dir($path, $tarball);
-  $unzipped = $destination . '/' . basename($tarball, ".tar.gz") . ".tar";
-  // We used to use gzip --decompress in --stdout > out, but the output redirection sometimes failed on Windows for some binary output
-  drush_shell_cd_and_exec(dirname($tarball), "gzip --decompress %s", $tarball);
-  if (file_exists($unzipped)) {
-    drush_register_file_for_deletion($unzipped);
-    if (drush_shell_cd_and_exec(dirname($unzipped), "tar -xf %s", basename($unzipped))) {
-      if ($listing) {
-        // We use a separate tar -tf instead of -xf above because
-        // the output is not the same in Mac.
-        drush_shell_cd_and_exec(dirname($unzipped), "tar -tf %s", basename($unzipped));
-        return drush_shell_exec_output();
-      }
-      return TRUE;
-    }
-    return drush_set_error('TARBALL_EXTRACT_TAR_FAIL', dt('Extracting !path using the tar command failed.', array('!path' => $path)));
-  }
+  // In windows, do the extraction by its primitive steps.
   else {
-    return drush_set_error('TARBALL_EXTRACT_GZIP_FAIL', dt('Uncompressing !path using  the gzip command failed.', array('!path' => $path)));
+    // 1. copy the source tarball to the destination directory. Rename to a
+    // temp name in case the destination directory == dirname($path)
+    $tmpfile = drush_tempnam(basename($path), $destination);
+    drush_copy_dir($path, $tmpfile, FILE_EXISTS_OVERWRITE);
+
+    // 2. uncompress the tarball, if compressed.
+    if (($mimetype == 'application/x-gzip') || ($mimetype == 'application/x-bzip2')) {
+      if ($mimetype == 'application/x-gzip') {
+        $compressed = $tmpfile . '.gz';
+        // We used to use gzip --decompress in --stdout > out, but the output
+        // redirection sometimes failed on Windows for some binary output.
+        $command = 'gzip --decompress %s';
+      }
+      elseif ($mimetype == 'application/x-bzip2') {
+        $compressed = $tmpfile . '.bz2';
+        $command = 'bzip2 --decompress %s';
+      }
+      drush_op('rename', $tmpfile, $compressed);
+      $return = drush_shell_cd_and_exec(dirname($compressed), $command, $compressed);
+      if (!$return || !file_exists($tmpfile)) {
+        return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to decompress !filename.', array('!filename' => $compressed)));
+      }
+    }
+
+    // 3. Untar.
+    $tar = drush_get_tar_executable();
+    $return = drush_shell_cd_and_exec(dirname($tmpfile), "$tar -xvf %s", basename($tmpfile));
+    if (!$return) {
+      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', array('!filename' => $tmpfile)));
+    }
+    if ($listing) {
+      $return = drush_shell_exec_output();
+    }
+
+    // Remove the temporary file so the md5 hash is accurate.
+    unlink($tmpfile);
   }
+
+  return $return;
 }
 
 /**
- * Extract a tarball to the lib directory.
+ * Download and extract a tarball to the lib directory.
+ * 
  * Checks for reported success, but callers should normally check for existence
  * of specific expected file(s) in the library.
  *
  * @param string $url
- *   The URL to of the .tar.gz or .tgz file to be extracted.
+ *   The URL to the library tarball.
  *
- * @return string
+ * @return boolean
  *   TRUE is the download and extraction reported success, FALSE otherwise.
  */
 function drush_lib_fetch($url) {
@@ -970,10 +1123,12 @@ function drush_lib_fetch($url) {
     return drush_set_error('DRUSH_LIB_UNWRITABLE', dt("Drush needs to download a library from !url in order to function, and the attempt to download this file automatically failed because you do not have permission to write to the library directory !path. To continue you will need to manually download the package from !url, extract it, and copy the directory into your !path directory.", array('!path' => $lib, '!url' => $url)));
   }
 
-  // We use an arbitary filename, since some sources (e.g. github) do not
-  // include a filename in the URL.
-  $path = $lib . '/drush-library-' . mt_rand() . '.tar.gz';
-  return drush_download_file($url, $path) && drush_tarball_extract($path);
+  $destination = $lib . '/drush-library-' . mt_rand();
+  $path = drush_download_file($url, $destination);
+  if (!$path) {
+    return FALSE;
+  }
+  return drush_tarball_extract($path);
 }
 
 /**
@@ -1078,7 +1233,7 @@ function drush_preflight_command_dispatch() {
     $command_name = array_shift($args);
     $multi_options = drush_get_context('cli');
     $backend_options = array();
-    if (drush_get_option('pipe')) {
+    if (drush_get_option('pipe') || drush_get_option('interactive')) {
       $backend_options['interactive'] = TRUE;
     }
     if (drush_get_option('no-label', FALSE)) {
@@ -1347,7 +1502,7 @@ function dlm($object) {
 function drush_pipe_output() {
   $pipe = drush_get_context('DRUSH_PIPE_BUFFER');
   if (!empty($pipe)) {
-    drush_print_r($pipe);
+    drush_print_r($pipe, NULL, FALSE);
   }
 }
 
