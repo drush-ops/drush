@@ -926,7 +926,6 @@ function drush_mime_content_type($filename) {
   // file's magic header bytes.
   if ($file = fopen($filename, 'rb')) {
     $first = fread($file, 2);
-    var_dump($first);
     fclose($file);
 
     if ($first === FALSE) {
@@ -935,7 +934,6 @@ function drush_mime_content_type($filename) {
 
     // Interpret the two bytes as a little endian 16-bit unsigned int.
     $data = unpack('v', $first);
-    var_dump($data);
     switch ($data[1]) {
       case 0x8b1f:
         // First two bytes of gzip files are 0x1f, 0x8b (little-endian).
