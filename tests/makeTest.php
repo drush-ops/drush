@@ -376,7 +376,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Test patching and writing of PATCHES.txt file',
         'makefile' => 'patches.make',
         'build'    => TRUE,
-        'md5' => '27403b34b599af1cbdb50417e6ea626f',
+        'md5' => '56f1613fc8b6a9f03ab62cfa0300df4c',
         'options'  => array('no-core' => NULL),
       ),
       'include' => array(
