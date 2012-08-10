@@ -113,9 +113,6 @@ function drush_dir_md5($dir) {
  *   FALSE on failure, TRUE if everything was deleted
  */
 function drush_delete_dir($dir, $force = FALSE) {
-  if (!file_exists($dir)) {
-    return TRUE;
-  }
   if (!is_dir($dir)) {
     if ($force) {
       // Force deletion of items with readonly flag.
@@ -221,12 +218,15 @@ function _drush_recursive_copy($src, $dest) {
     }
     closedir($dir_handle);
   }
+  elseif (is_link($src)) {
+    symlink(readlink($src), $dest);
+  }
   elseif (copy($src, $dest) !== TRUE) {
     return FALSE;
   }
 
   // Preserve execute permission.
-  if (!drush_is_windows()) {
+  if (!is_link($src) && !drush_is_windows()) {
     // Get execute bits of $src.
     $execperms = fileperms($src) & 0111;
     // Apply execute permissions if any.
