@@ -465,7 +465,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'gzip',
         'makefile' => 'gzip.make',
         'build'    => TRUE,
-        'md5'      => 'df7f4caff766cf428fc2e72862de6da5',
+        'md5'      => '615975484966c36f4c9186601afd61e0',
         'options'  => array('no-core' => NULL),
       ),
       'subtree' => array(

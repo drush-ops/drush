@@ -111,22 +111,28 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
   $success = FALSE;
 
   if (drush_file_is_tarball($filename)) {
-    $listing = drush_tarball_extract($filename, FALSE, TRUE);
-    if (!$listing) {
+    $tmp_location = drush_tempdir();
+
+    if (!drush_tarball_extract($filename, $tmp_location)) {
       return FALSE;
     }
 
     if ($subtree) {
-      $source = dirname($filename) . DIRECTORY_SEPARATOR . $subtree;
+      $tmp_location .= '/' . $subtree;
+      if (!file_exists($tmp_location)) {
+        return drush_set_error('DRUSH_MAKE_SUBTREE_NOT_FOUND', dt('Directory !subtree not found within !file', array('!subtree' => $subtree, '!file' => $filename)));
+      }
     }
     else {
-      // If there's just one file, get the path to that file.
-      // If there are multiple files, get the path to the wrapper directory.
-      $slash = strpos(reset($listing), DIRECTORY_SEPARATOR);
-      $source = dirname($filename) . DIRECTORY_SEPARATOR . ($slash === FALSE ? reset($listing) : substr(reset($listing), 0, $slash));
+      $files = scandir($tmp_location);
+      unset($files[0]); // . directory
+      unset($files[1]); // .. directory
+      if (count($files) == 1) {
+        $tmp_location .= '/' . current($files);
+      }
     }
 
-    $success = drush_move_dir($source, $download_location, TRUE);
+    $success = drush_move_dir($tmp_location, $download_location, TRUE);
 
     // Remove the tarball.
     if (file_exists($filename)) {
