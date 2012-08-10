@@ -895,28 +895,41 @@ function _drush_download_file($url, $destination, $overwrite = TRUE) {
  *
  * The power of this function depends on whether the PHP installation
  * has either mime_content_type() or finfo installed -- if not, only tar,
- * gz, zip and bzip2 types can be detected, and other file types will return
- * 'unknown'.
+ * gz, zip and bzip2 types can be detected.
+ *
+ * If mime type can't be obtained, an error will be set.
  *
  * @return mixed
- *   The MIME content type of the file or 'unknown'.
+ *   The MIME content type of the file or FALSE.
  */
 function drush_mime_content_type($filename) {
-  // 1. Try to use php built-ins
+  // 1. Try to use php built-ins.
   $content_type = FALSE;
   if (class_exists('finfo')) {
-    // TODO: simplify and use FILEINFO_MIME_TYPE when drush requires php 5.3
-    $finfo = new finfo(FILEINFO_MIME);
-    // We only want the first part, before the ;
-    $content_type = current(explode(';', $finfo->file($filename)));
-  }
-  // TODO: this is deprecated in php 5.3
-  elseif (function_exists('mime_content_type')) {
-    $content_type = mime_content_type($filename);
+    drush_log(dt('Fileinfo extension available.'), 'debug');
+    // For pecl's fileinfo on php 5.2 there is quite some inconsistency in
+    // distributions and loading of magic files.
+    // TODO: remove @ and use FILEINFO_MIME_TYPE when drush requires php 5.3
+    $finfo = @new finfo(FILEINFO_MIME);
+    $ct = @$finfo->file($filename);
+    if ($ct) {
+      // We only want the first part, before the ;
+      $content_type = current(explode(';', $ct));
+    }
   }
 
-  if ($content_type && $content_type != 'application/octet-stream') {
-    return $content_type;
+  // TODO: to be removed in php 5.3 (deprecated).
+  if ((!$content_type) && (function_exists('mime_content_type'))) {
+    drush_log(dt('mime_magic support enabled.'), 'debug');
+    $content_type = trim(mime_content_type($filename));
+  }
+
+  if (!$content_type) {
+    drush_log(dt('No fileinfo or mime_magic support available.'), 'debug');
+  }
+  elseif ($content_type == 'application/octet-stream') {
+    drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), 'debug');
+    $content_type = FALSE;
   }
 
   // 2. if PHP's built-ins aren't present or PHP is configured in such a way
@@ -924,54 +937,75 @@ function drush_mime_content_type($filename) {
   // and an http conf that's serving all archives as octet-stream for other
   // reasons) we'll detect (a few select) mime types on our own by examing the
   // file's magic header bytes.
-  if ($file = fopen($filename, 'rb')) {
-    $first = fread($file, 2);
-    fclose($file);
+  if (!$content_type) {
+    drush_log(dt('Examining !file headers.', array('!file' => $filename)), 'debug');
+    if ($file = fopen($filename, 'rb')) {
+      $first = fread($file, 2);
+      fclose($file);
 
-    if ($first === FALSE) {
-      return FALSE;
+      if ($first !== FALSE) {
+        // Interpret the two bytes as a little endian 16-bit unsigned int.
+        $data = unpack('v', $first);
+        switch ($data[1]) {
+          case 0x8b1f:
+            // First two bytes of gzip files are 0x1f, 0x8b (little-endian).
+            // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer
+            $content_type = 'application/x-gzip';
+
+          case 0x4b50:
+            // First two bytes of zip files are 0x50, 0x4b ('PK') (little-endian).
+            // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers
+            $content_type = 'application/zip';
+
+          case 0x5a42:
+            // First two bytes of bzip2 files are 0x5a, 0x42 ('BZ') (big-endian).
+            // See http://en.wikipedia.org/wiki/Bzip2#File_format
+            $content_type = 'application/x-bzip2';
+
+          default:
+            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', array('!hex' => dechex($data[1]), '!file' => $filename,), 'debug'));
+        }
+      }
+      else {
+        drush_log(dt('Unable to read !file.', array('!file' => $filename)), 'warning');
+      }
     }
-
-    // Interpret the two bytes as a little endian 16-bit unsigned int.
-    $data = unpack('v', $first);
-    switch ($data[1]) {
-      case 0x8b1f:
-        // First two bytes of gzip files are 0x1f, 0x8b (little-endian).
-        // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer
-        return 'application/x-gzip';
-
-      case 0x4b50:
-        // First two bytes of zip files are 0x50, 0x4b ('PK') (little-endian).
-        // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers
-        return 'application/zip';
-
-      case 0x5a42:
-        // First two bytes of bzip2 files are 0x5a, 0x42 ('BZ') (big-endian).
-        // See http://en.wikipedia.org/wiki/Bzip2#File_format
-        return 'application/x-bzip2';
+    else {
+      drush_log(dt('Unable to open !file.', array('!file' => $filename)), 'warning');
     }
   }
 
   // 3. Lastly if above methods didn't work, try to guess the mime type from
   // the file extension. This is useful if the file has no identificable magic
   // header bytes (for example tarballs).
+  if (!$content_type) {
+    drush_log(dt('Examining !file extension.', array('!file' => $filename)), 'debug');
 
-  // Remove querystring from the filename, if present.
-  $filename = basename(current(explode('?', $filename, 2)));
-  $extension_mimetype = array(
-    '.tar'     => 'application/x-tar',
-  );
-  foreach ($extension_mimetype as $extension => $content_type) {
-    if (substr($filename, -strlen($extension)) === $extension) {
-      return $content_type;
+    // Remove querystring from the filename, if present.
+    $filename = basename(current(explode('?', $filename, 2)));
+    $extension_mimetype = array(
+      '.tar'     => 'application/x-tar',
+    );
+    foreach ($extension_mimetype as $extension => $content_type) {
+      if (substr($filename, -strlen($extension)) === $extension) {
+        break;
+      }
     }
   }
 
-  return 'unknown';
+  if ($content_type) {
+    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), 'notice');
+    return $content_type;
+  }
+
+  return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', array('!file' => $filename)));
 }
 
 /**
  * Check whether a file is a supported tarball.
+ *
+ * @return mixed
+ *   The file content type if it's a tarball. FALSE otherwise.
  */
 function drush_file_is_tarball($path) {
   $content_type = drush_mime_content_type($path);
@@ -983,7 +1017,7 @@ function drush_file_is_tarball($path) {
     'application/zip',
   );
   if (in_array($content_type, $supported)) {
-    return TRUE;
+    return $content_type;
   }
   return FALSE;
 }
@@ -999,16 +1033,15 @@ function drush_file_is_tarball($path) {
  * @param boolean $listing
  *   If TRUE, a listing of the tar contents will be returned on success.
  *
- * @return string
+ * @return mixed
  *   TRUE on success, FALSE on fail. If $listing is TRUE, a file listing of the
  *   tarball is returned if the extraction reported success, instead of TRUE.
  */
 function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
   // Check if tarball is supported.
-  if (!drush_file_is_tarball($path)) {
+  if (!($mimetype = drush_file_is_tarball($path))) {
     return drush_set_error('TARBALL_EXTRACT_UNKNOWN_FORMAT', dt('Unable to extract !path. Unknown archive format.', array('!path' => $path)));
   }
-  $mimetype = drush_mime_content_type($path);
 
   // Check if destination is valid.
   if (!$destination) {
