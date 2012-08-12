@@ -708,15 +708,15 @@ function _drush_core_config_php_ini_files() {
  * Command callback. Provides information from the 'Status Reports' admin page.
  */
 function drush_core_requirements() {
+  include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
   $severities = array(
     -1 => '',
-    (int)REQUIREMENT_INFO => t('Info'),
-    (int)REQUIREMENT_OK => t('OK'),
-    (int)REQUIREMENT_WARNING => t('Warning'),
-    (int)REQUIREMENT_ERROR => t('Error'),
+    REQUIREMENT_INFO => t('Info'),
+    REQUIREMENT_OK => t('OK'),
+    REQUIREMENT_WARNING => t('Warning'),
+    REQUIREMENT_ERROR => t('Error'),
   );
 
-  include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
   drupal_load_updates();
 
   $requirements = module_invoke_all('requirements', 'runtime');
