@@ -710,7 +710,6 @@ function _drush_core_config_php_ini_files() {
 function drush_core_requirements() {
   include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
   $severities = array(
-    -1 => '',
     REQUIREMENT_INFO => t('Info'),
     REQUIREMENT_OK => t('OK'),
     REQUIREMENT_WARNING => t('Warning'),
