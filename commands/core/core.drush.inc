@@ -708,6 +708,14 @@ function _drush_core_config_php_ini_files() {
  * Command callback. Provides information from the 'Status Reports' admin page.
  */
 function drush_core_requirements() {
+  $severities = array(
+    -1 => '',
+    (int)REQUIREMENT_INFO => t('Info'),
+    (int)REQUIREMENT_OK => t('OK'),
+    (int)REQUIREMENT_WARNING => t('Warning'),
+    (int)REQUIREMENT_ERROR => t('Error'),
+  );
+
   include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
   drupal_load_updates();
 
@@ -718,16 +726,13 @@ function drush_core_requirements() {
   }
   ksort($requirements);
 
-  $min_severity = drush_get_option('severity', '-1');
-  // We don't label the "severity" column because it messes up the wrapping
-  $rows[] = array('Title', '', 'Description');
+  $min_severity = drush_get_option('severity', -1);
+  $rows[] = array('Title', 'Severity', 'Description');
   foreach($requirements as $key => $info) {
-    $severity = array_key_exists('severity', $info) ? $info['severity'] : '-1';
+    $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
     if ($severity >= $min_severity) {
       drush_print_pipe($key . ': ' . $severity . "\n");
-      if ($severity <= 0) {
-        $severity = 'OK';
-      }
+      $severity = $severities[$severity];
       $description = array_key_exists('value', $info) ? strip_tags($info['value']) : '';
       if (array_key_exists('description', $info) && !empty($info['description'])) {
         if (!empty($description)) {
@@ -739,7 +744,7 @@ function drush_core_requirements() {
     }
   }
   if (count($rows) > 1) {
-    drush_print_table($rows);
+    drush_print_table($rows, TRUE, array(1 => 8));
   }
   return $requirements;
 }
