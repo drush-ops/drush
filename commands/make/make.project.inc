@@ -460,10 +460,12 @@ class DrushMakeProject {
  */
 class DrushMakeProject_Core extends DrushMakeProject {
   /**
-   * Override constructor for core to properly set contrib destination.
+   * Override constructor for core to adjust project info.
    */
   protected function __construct(&$project) {
     parent::__construct($project);
+    // subdir and contrib_destination are not allowed for core.
+    $this->subdir = '';
     $this->contrib_destination = '';
   }
 
