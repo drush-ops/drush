@@ -102,17 +102,22 @@ function drush_dir_md5($dir) {
 
 /**
  * Deletes the provided file or folder and everything inside it.
+ *
  * Usually respects read-only files and folders. To do a forced delete use
  * drush_delete_tmp_dir() or set the parameter $forced.
  *
  * @param $dir
- *   The directory to delete
+ *   The file or directory to delete.
  * @param $force
  *   Try whatever possible to delete the directory - also read-only ones.
  * @return
- *   FALSE on failure, TRUE if everything was deleted
+ *   FALSE on failure, TRUE if everything was deleted.
  */
 function drush_delete_dir($dir, $force = FALSE) {
+  // Allow to delete symlinks even if the target doesn't exist.
+  if (!is_link($dir) && !file_exists($dir)) {
+    return TRUE;
+  }
   if (!is_dir($dir)) {
     if ($force) {
       // Force deletion of items with readonly flag.
