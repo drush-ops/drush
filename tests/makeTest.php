@@ -458,7 +458,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'bzip2 single file',
         'makefile' => 'bz2-singlefile.make',
         'build'    => TRUE,
-        'md5'      => '6a6f5cda115329b13d55ad0978083a94',
+        'md5'      => '4f9d57f6caaf6ece0526d867327621cc',
         'options'  => array('no-core' => NULL),
       ),
       'gzip' => array(

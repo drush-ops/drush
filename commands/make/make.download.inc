@@ -127,7 +127,7 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
       $files = scandir($tmp_location);
       unset($files[0]); // . directory
       unset($files[1]); // .. directory
-      if (count($files) == 1) {
+      if ((count($files) == 1) && is_dir($tmp_location . '/' . current($files))) {
         $tmp_location .= '/' . current($files);
       }
     }
