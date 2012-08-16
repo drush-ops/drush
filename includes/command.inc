@@ -1087,6 +1087,7 @@ function _drush_command_translate($source) {
  * - callback arguments: an array of arguments to pass to the calback.
  * - description: description of the command.
  * - arguments: an array of arguments that are understood by the command. for help texts.
+ * - required-arguments: The minimum number of arguments that are required, or TRUE if all are required.
  * - options: an array of options that are understood by the command. for help texts.
  * - examples: an array of examples that are understood by the command. for help texts.
  * - scope: one of 'system', 'project', 'site'.
