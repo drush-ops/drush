@@ -85,6 +85,9 @@ function make_prune_info_file($info, $include_only = array()) {
     $pruned = TRUE;
     foreach ($include_only as $type => $keys) {
 
+      if (!isset($info[$type])) {
+        continue;
+      }
       // For translating
       // dt("Projects");
       // dt("Libraries");
