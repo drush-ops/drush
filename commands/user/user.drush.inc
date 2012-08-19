@@ -297,7 +297,13 @@ function drush_user_create($name) {
   }
   if (drush_db_result($result) === FALSE) {
     if (!drush_get_context('DRUSH_SIMULATE')) {
-      $new_user_object = user_save(NULL, $new_user, NULL);
+      if (drush_drupal_major_version() >= 8) {
+        $new_user_object = entity_create('user', $new_user);
+        $new_user_object->save();
+      }
+      else {
+        $new_user_object = user_save(NULL, $new_user, NULL);
+      }
       if ($new_user_object !== FALSE) {
         _drush_user_print_info($new_user_object->uid);
         return $new_user_object->uid;
@@ -367,8 +373,13 @@ function drush_user_password($name) {
       $pass = drush_get_option('password');
       // If no password has been provided, prompt for one.
       if (empty($pass)) $pass = drush_prompt(dt('Password'), NULL, TRUE, TRUE);
-
-      $user_object = user_save($user, array('pass' => $pass));
+      if (drush_drupal_major_version() >= 8) {
+        $user->pass = $pass;
+        $user_object = $user->save();
+      }
+      else {
+        $user_object = user_save($user, array('pass' => $pass));
+      }
       if ($user_object === FALSE) {
         drush_set_error("Could not change the password for the user account with the name " . $name . "!");
       }
