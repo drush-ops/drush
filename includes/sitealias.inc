@@ -407,7 +407,9 @@ function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
         $alias_options = array('site-aliases' => array($aliasname => $result));
         _drush_sitealias_add_inherited_values($alias_options['site-aliases']);
         drush_set_config_special_contexts($alias_options);
-        drush_log(dt('Loaded alias !alias from file !file', array('!alias' => $alias, '!file' => $result['#file'])));
+        if (array_key_exists('#file', $result)) {
+          drush_log(dt('Loaded alias !alias from file !file', array('!alias' => $alias, '!file' => $result['#file'])));
+        }
       }
     }
   }
