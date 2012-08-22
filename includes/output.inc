@@ -84,7 +84,7 @@ function drush_format($input, $label = NULL, $format = NULL) {
   if (is_null(($format))) {
     $format = drush_get_option('format', 'print_r');
   }
-  if ($format != 'export') {
+  if ($format != 'export' && $format != 'config') {
     if ($input === TRUE) {
       $input = 'TRUE';
     }
@@ -94,6 +94,14 @@ function drush_format($input, $label = NULL, $format = NULL) {
   }
 
   switch ($format) {
+    case 'config':
+      if ($label) {
+        $output = "\$config['$label'] = " . var_export($input, TRUE) . ';';
+      }
+      else {
+        $output = var_export($input, TRUE);
+      }
+      break;
     case 'export':
       if ($label) {
         $output = "\$variables['$label'] = " . var_export($input, TRUE) . ';';
