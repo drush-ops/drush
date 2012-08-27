@@ -222,11 +222,11 @@ function gitd() {
       echo cd "$d" \; git "${@:2}"
       (
         cd "$d"
-        "$(which git)" "${@:2}"
+        "git" "${@:2}"
       )
     fi
   else
-    "$(which git)" "$@"
+    "git" "$@"
   fi
 }
 
@@ -255,7 +255,7 @@ function lsd() {
   then
     ssh $r ls "${p[@]}"
   else
-    "$(which ls)" "${p[@]}"
+    "ls" "${p[@]}"
   fi
 }
 
@@ -271,7 +271,7 @@ function cpd() {
       p[${#p[@]}]="$a"
     fi
   done
-  "$(which cp)" "${p[@]}"
+  "cp" "${p[@]}"
 }
 
 # This alias allows `dssh @site` to work like `drush @site ssh`.
@@ -282,6 +282,6 @@ function dssh() {
   then
     drush "$d" ssh "${@:2}"
   else
-    "$(which ssh)" "$@"
+    "ssh" "$@"
   fi
 }
