@@ -3,7 +3,7 @@
 /**
  * @file
  *   Built in http server commands.
- *   
+ *
  *   This uses an excellent php http server library developed by Jesse Young
  *   with support from the Envaya project.
  *   See https://github.com/youngj/httpserver/ and http://envaya.org/.
@@ -77,9 +77,6 @@ function runserver_drush_command() {
  * Validate callback for runserver command.
  */
 function drush_core_runserver_validate() {
-  if (version_compare(PHP_VERSION, '5.3.0') < 0) {
-    return drush_set_error('RUNSERVER_PHP53_VERSION', dt('The runserver command requires php 5.3, which could not be found.'));
-  }
   $php_cgi = drush_shell_exec('which ' . drush_get_option('php-cgi', 'php-cgi'));
   $builtin = version_compare(PHP_VERSION, '5.4.0') >= 0;
   $server = drush_get_option('server', FALSE);

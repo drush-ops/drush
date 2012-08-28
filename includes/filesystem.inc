@@ -410,11 +410,7 @@ function drush_find_tmp() {
     else {
       $directories[] = '/tmp';
     }
-    // This function exists in PHP 5 >= 5.2.1, but drush
-    // requires PHP 5 >= 5.2.0, so we check for it.
-    if (function_exists('sys_get_temp_dir')) {
-      $directories[] = sys_get_temp_dir();
-    }
+    $directories[] = sys_get_temp_dir();
 
     foreach ($directories as $directory) {
       if (is_dir($directory) && is_writable($directory)) {

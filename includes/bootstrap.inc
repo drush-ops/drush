@@ -434,15 +434,13 @@ function _drush_bootstrap_drush() {
   // Normally this is exported using tput in the drush script.
   // If this is not present we do an additional check using stty here.
   // On Windows in CMD and PowerShell is this exported using mode con.
-  // PHP version prior to 5.3.0 is not supporting this, they always
-  // return 80 columns
   if (!($columns = getenv('COLUMNS'))) {
     // Trying to export the columns using stty.
     exec('stty size 2>&1', $columns_output, $columns_status);
     if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
 
     // If stty fails and Drush us running on Windows are we trying with mode con.
-    if (($columns_status || !$columns_count) && drush_is_windows() && version_compare(phpversion(), '5.3.0') > -1) {
+    if (($columns_status || !$columns_count) && drush_is_windows()) {
       $columns_output = array();
       exec('mode con', $columns_output, $columns_status);
       if (!$columns_status && is_array($columns_output)) {
@@ -1001,7 +999,7 @@ function drush_bootstrap_prepare() {
   }
 
   // Check supported version of PHP.
-  define('DRUSH_MINIMUM_PHP', '5.2.0');
+  define('DRUSH_MINIMUM_PHP', '5.3.2');
   if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0) {
     die('Your command line PHP installation is too old. Drush requires at least PHP ' . DRUSH_MINIMUM_PHP . "\n");
   }

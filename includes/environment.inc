@@ -467,7 +467,7 @@ function drush_valid_db_credentials() {
     case 7:
     default:
       $type = ( $type=='oracle' ? 'oci' : $type); // fix PDO driver name, should go away in Drupal 8
-      // Drupal >=7 requires PDO and drush requires php 5.2, that ships with PDO
+      // Drupal >=7 requires PDO and drush requires php 5.3 which ships with PDO
       // but it may be compiled with --disable-pdo.
       if (!class_exists('PDO')) {
         drush_log(dt('PDO support is required.'), 'bootstrap');

@@ -16,7 +16,7 @@ REQUIREMENTS
 ============
 
 * To use Drush from the command line, you'll need a CLI-mode capable PHP binary
-  version 5.2 or greater.
+  version 5.3 or greater.
 
 * Drush commands that work with git require git 1.7 or greater.
 
@@ -113,13 +113,13 @@ and MySQL to use in the command line interface. This is independent of the php
 version selected in the MAMP application settings.  Under OS X, edit (or create
 if it does not already exist) a file called .bash_profile in your home folder.
 
-To use php 5.2.x, add this line to .bash_profile:
-
-  export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.2/bin:$PATH"
-
-If you want to use php 5.3.x, add this line instead:
+To use php 5.3.x, add this line to .bash_profile:
 
   export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.3/bin:$PATH"
+
+If you want to use php 5.4.x, add this line instead:
+
+  export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.4/bin:$PATH"
 
 If you have MAMP v.1.84 or lower, this configuration will work for both version
 of PHP:
