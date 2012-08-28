@@ -102,7 +102,7 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
   if ($config_list = (array)drush_get_context('DRUSH_CONFIG')) {
     foreach ($config_list as $config) {
       if (is_dir($config)) {
-        $config = $config . '/drushrc.php';
+        $config = $config . '/' . $config_file;
       }
       $configs['custom'][] = $config;
     }
