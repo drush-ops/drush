@@ -13,10 +13,11 @@ use Symfony\Component\Yaml\Yaml;
  * Implementation of hook_drush_command().
  */
 function config_drush_command() {
-  $items['config-view'] = array(
-    'description' => 'Display config object.',
+  $items['config-get'] = array(
+    'description' => 'Display a config value, or a whole configuration object.',
     'arguments' => array(
       'config-name' => 'The config object name, for example "system.site".',
+      'key' => 'The config key, for example "page.front". Optional.',
     ),
     'required-arguments' => 1,
     'options' => array(
@@ -33,8 +34,9 @@ function config_drush_command() {
     ),
     'examples' => array(
       'drush config-view system.site' => 'Displays the system.site config.',
+      'drush config-get system.site page.front' => 'gets system.site:page.front value.',
     ),
-    'aliases' => array('cview'),
+    'aliases' => array('cget'),
     'core' => array('8+'),
   );
 
@@ -61,20 +63,6 @@ function config_drush_command() {
     'core' => array('8+'),
   );
 
-  $items['config-get'] = array(
-    'description' => 'Display config value.',
-    'arguments' => array(
-      'config-name' => 'The config object name, for example "system.site".',
-      'key' => 'The config key, for example "page.front".',
-    ),
-    'required-arguments' => 2,
-    'examples' => array(
-      'drush config-get system.site page.front' => 'gets system.site:page.front value.',
-    ),
-    'aliases' => array('cget'),
-    'core' => array('8+'),
-  );
-
   $items['config-export'] = array(
     'description' => 'Export config from the active store to the file store.',
     'core' => array('8+'),
@@ -91,53 +79,20 @@ function config_drush_command() {
 }
 
 /**
- * Config view command callback.
+ * Config get command callback.
  *
  * @param $config_name
- *   The config object name.
+ *   The config name.
+ * @param $key
+ *   The config key.
  */
-function drush_config_view($config_name) {
-  $source = drush_get_option('source', 'database');
-  if ($source == 'database') {
-    $config = new DatabaseStorage();
+function drush_config_get($config_name, $key = NULL) {
+  if (is_null($key)) {
+    return drush_config_get_object($config_name);
   }
-  elseif ($source == 'file') {
-    $config = new FileStorage();
+  else {
+    return drush_config_get_value($config_name, $key);
   }
-
-  $data = $config->read($config_name);
-  if ($data === FALSE) {
-    return drush_set_error(dt('Config !name does not exist in the !source system.', array('!name' => $config_name, '!source' => $source)));
-  }
-  if (empty($data)) {
-    drush_print(dt('Config !name exists but has no data.', array('!name' => $config_name)));
-    return;
-  }
-  $format = drush_get_option('format', 'yaml');
-  switch ($format) {
-    case 'yaml':
-      // As config appears in the file system.
-      $output = Yaml::dump($config->read($config_name));
-      break;
-    case 'php':
-      // As config appears in the database.
-      $output = serialize($data);
-      break;
-    case 'dump':
-      include_once DRUPAL_ROOT . '/core/includes/utility.inc';
-      // Do this so it's super easy to copy and paste into settings.php for
-      // evil global overrides.
-      $data = array(
-        $config_name => $data,
-      );
-      $output = drupal_var_export($data);
-      break;
-    default:
-      return drush_set_error(dt('Unsupported config dump format: !format', array('!format' => $format)));
-      break;
-  }
-  drush_print($output);
-  return $output;
 }
 
 /**
@@ -203,36 +158,6 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
 }
 
 /**
- * Config get command callback.
- *
- * @param $config_name
- *   The config name.
- * @param $key
- *   The config key.
- */
-function drush_config_get($config_name, $key) {
-  $config = config($config_name);
-  if ($config->isNew()) {
-    return drush_set_error(dt('Config !name does not exist', array('!name' => $config_name)));
-  }
-  $value = $config->get($key);
-  $pipe = array();
-  $data = array(
-    $key => $value,
-  );
-  $pipe[] = drush_format($data, $config_name, 'config');
-  drush_print(drush_format($value, $config_name . ':' . $key));
-  $returns[$config_name . ':' . $key] = $value;
-
-  if ($value === NULL) {
-    return drush_set_error('DRUSH_CONFIG_ERROR', dt('No matching key found in !name config.', array('!name' => $config_name)));
-  }
-  else {
-    return $returns;
-  }
-}
-
-/**
  * Import config ommand callback.
  */
 function drush_config_export() {
@@ -263,6 +188,88 @@ function drush_config_import() {
   _drush_print_config_changes_table($config_changes);
   if (drush_confirm(dt('Import the listed configuration changes?'))) {
     return drush_op('config_import');
+  }
+}
+
+/* Helper functions */
+
+/**
+ * Show and return a config object
+ *
+ * @param $config_name
+ *   The config object name.
+ */
+function drush_config_get_object($config_name) {
+  $source = drush_get_option('source', 'database');
+  if ($source == 'database') {
+    $config = new DatabaseStorage();
+  }
+  elseif ($source == 'file') {
+    $config = new FileStorage();
+  }
+
+  $data = $config->read($config_name);
+  if ($data === FALSE) {
+    return drush_set_error(dt('Config !name does not exist in the !source system.', array('!name' => $config_name, '!source' => $source)));
+  }
+  if (empty($data)) {
+    drush_print(dt('Config !name exists but has no data.', array('!name' => $config_name)));
+    return;
+  }
+  $format = drush_get_option('format', 'yaml');
+  switch ($format) {
+    case 'yaml':
+      // As config appears in the file system.
+      $output = Yaml::dump($config->read($config_name));
+      break;
+    case 'php':
+      // As config appears in the database.
+      $output = serialize($data);
+      break;
+    case 'dump':
+      include_once DRUPAL_ROOT . '/core/includes/utility.inc';
+      // Do this so it's super easy to copy and paste into settings.php for
+      // evil global overrides.
+      $data = array(
+        $config_name => $data,
+      );
+      $output = drupal_var_export($data);
+      break;
+    default:
+      return drush_set_error(dt('Unsupported config dump format: !format', array('!format' => $format)));
+      break;
+  }
+  drush_print($output);
+  return $output;
+}
+
+/**
+ * Show and return a value from config system.
+ *
+ * @param $config_name
+ *   The config name.
+ * @param $key
+ *   The config key.
+ */
+function drush_config_get_value($config_name, $key) {
+  $config = config($config_name);
+  if ($config->isNew()) {
+    return drush_set_error(dt('Config !name does not exist', array('!name' => $config_name)));
+  }
+  $value = $config->get($key);
+  $pipe = array();
+  $data = array(
+    $key => $value,
+  );
+  $pipe[] = drush_format($data, $config_name, 'config');
+  drush_print(drush_format($value, $config_name . ':' . $key));
+  $returns[$config_name . ':' . $key] = $value;
+
+  if ($value === NULL) {
+    return drush_set_error('DRUSH_CONFIG_ERROR', dt('No matching key found in !name config.', array('!name' => $config_name)));
+  }
+  else {
+    return $returns;
   }
 }
 

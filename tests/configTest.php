@@ -23,7 +23,7 @@ class ConfigCase extends Drush_CommandTestCase {
     $this->drush('config-export', array(), $options);
     $system_site_file = $options['root'] . '/sites/' . key($sites) . '/files/' . $config_directory_name . '/system.site.yml';
     $this->assertFileExists($system_site_file);
-    $this->drush('config-view', array('system.site'), $options);
+    $this->drush('config-get', array('system.site'), $options);
     $config_view_yaml = $this->getOutput();
     $this->assertEquals($config_view_yaml, file_get_contents($system_site_file), 'Config-view creates YAML that matches the config management system.');
 
