@@ -10,6 +10,18 @@ use Drupal\Core\Config\FileStorage;
 use Symfony\Component\Yaml\Yaml;
 
 /**
+ * Implementation of hook_drush_help().
+ */
+function config_drush_help($section) {
+  switch ($section) {
+    case 'meta:config:title':
+      return dt('Config commands');
+    case 'meta:config:summary':
+      return dt('Interact with the configuration system.');
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  */
 function config_drush_command() {
