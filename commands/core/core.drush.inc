@@ -305,6 +305,7 @@ function core_drush_command() {
       'drush qd --profile=minimal --dev --cache --core=drupal-8.x --yes' => 'Fire up dev release of Drupal site with minimal install profile.',
       'drush qd testsite devel --server=:8081/admin --browser=firefox --cache --yes' => 'Fire up stable release (using the cache) of Drupal site called "testsite", download and enable devel module, start a server on port 8081 and open /admin in firefox.',
       'drush qd commercesite --core=commerce_kickstart --profile=commerce_kickstart --cache --yes --watchdog' => 'Download and install the "Commerce Kickstart" distribution/install profile, display watchdog messages on the server console.',
+      'drush qd --makefile=mysite.make' => 'Create and install a site from a makefile.',
     ),
   );
   // Add in options/engines.
@@ -810,9 +811,11 @@ function _drush_core_is_named_in_array($key, $the_array) {
  */
 function drush_core_quick_drupal() {
   $requests = FALSE;
+  $make_projects = array();
   $args = func_get_args();
   $name = drush_get_option('use-name');
   drush_set_option('backend', TRUE);
+  $makefile = drush_get_option('makefile');
   if (drush_get_option('use-existing', FALSE)) {
     $root = drush_get_option('root', FALSE);
     if (!$root) {
@@ -830,18 +833,38 @@ function drush_core_quick_drupal() {
     if (empty($name)) {
       $name = 'quick-drupal-' . gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
     }
-    $base = getcwd() . '/' . $name;
-    drush_set_option('destination', $base);
+    $root = drush_get_option('root', FALSE);
     $core = drush_get_option('core', 'drupal');
-    drush_set_option('drupal-project-rename', $core);
-    if (drush_invoke('pm-download', array($core)) === FALSE) {
-      return drush_set_error('QUICK_DRUPAL_CORE_DOWNLOAD_FAIL', 'Drupal core download/extract failed.');
+    $project_rename = $core;
+    if ($root) {
+      $base = dirname($root);
+      $project_rename = basename($root);
     }
-    drush_set_option('root', $base . '/' . $core);
+    else {
+      $base = getcwd() . '/' . $name;
+      $root = $base . '/' . $core;
+    }
+    if (!empty($makefile)) {
+      // Invoke 'drush make $makefile'.
+      $result = drush_invoke_process('@none', 'make', array($makefile, $root));
+      if ($result['error_status'] != 0) {
+        return drush_set_error('DRUSH_QD_MAKE', 'Could not make; aborting.');
+      }
+      $make_projects = array_diff(array_keys($result['object']['projects']), array('drupal'));
+    }
+    else {
+      drush_mkdir($base);
+      drush_set_option('destination', $base);
+      drush_set_option('drupal-project-rename', $project_rename);
+      if (drush_invoke('pm-download', array($core)) === FALSE) {
+        return drush_set_error('QUICK_DRUPAL_CORE_DOWNLOAD_FAIL', 'Drupal core download/extract failed.');
+      }
+    }
   }
   if (!drush_get_option('db-url', FALSE)) {
     drush_set_option('db-url', 'sqlite:' . $base . '/' . $name . '.sqlite');
   }
+  drush_set_option('root', $root);
   if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
     return drush_set_error('QUICK_DRUPAL_ROOT_LOCATE_FAIL', 'Unable to locate Drupal root directory.');
   }
@@ -866,15 +889,17 @@ function drush_core_quick_drupal() {
   if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_LOGIN)) {
     return drush_set_error('QUICK_DRUPAL_INSTALL_FAIL', 'Drupal core install failed.');
   }
-  $enable = pm_parse_arguments(drush_get_option('enable', $requests));
+  $enable = array_merge(pm_parse_arguments(drush_get_option('enable', $requests)), $make_projects);
   if (!empty($enable)) {
     if (drush_invoke('pm-enable', $enable) === FALSE) {
      return drush_set_error('QUICK_DRUPAL_PROJECT_ENABLE_FAIL', 'Project enable failed.');
     }
   }
   drush_print(dt('Login URL: ') . drush_invoke('user-login'));
-  if ($server = drush_get_option('server', '/')) {
-    drush_invoke('runserver', array($server));
+  if (!drush_get_option('no-server', FALSE)) {
+    if ($server = drush_get_option('server', '/')) {
+      drush_invoke('runserver', array($server));
+    }
   }
 }
 
@@ -897,6 +922,8 @@ function drush_core_quick_drupal_options(&$items) {
     'no-server' => 'Avoid starting runserver (and browser) for the created Drupal site.',
     'browser' => 'Optional name of a browser to open site in. If omitted the OS default browser will be used. Set --no-browser to disable.',
     'use-name' => array('hidden' => TRUE, 'description' => 'Overrides "name" argument.'),
+    'makefile' => array('description' => 'Makefile to use. Makefile must specify which version of Drupal core to build.', 'example-value' => 'mysite.make', 'value' => 'optional'),
+    'root' => array('description' => 'Path to Drupal root.', 'example-value' => '/path/to/root', 'value' => 'optional'),
   );
   $pm = pm_drush_command();
   foreach ($pm['pm-download']['options'] as $option => $description) {

@@ -33,7 +33,6 @@ version: GOOD. Implicit by testStandaloneScript()
 php-eval: GOOD. Implicitly tested by many tests (e.g. completeTest).
 php-script: GOOD.
 drupal-directory: GOOD
-core-cli: FAIR
 cache-get: GOOD
 cache-set: GOOD
 cache-clear: GOOD
@@ -42,7 +41,7 @@ core-cron
 core-status: FAIR: Implicit test by contextTest.
 docs
 core-rsync
-core-quick-drupal
+core-quick-drupal: GOOD
 image: GOOD
 queue-*: GOOD
 runserver
