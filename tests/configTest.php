@@ -27,5 +27,18 @@ class ConfigCase extends Drush_CommandTestCase {
     $config_view_yaml = $this->getOutput();
     $this->assertEquals($config_view_yaml, file_get_contents($system_site_file), 'Config-view creates YAML that matches the config management system.');
 
+    $this->drush('config-list', array(), $options);
+    $result = $this->getOutputAsList();
+    $this->assertNotEmpty($result, 'An array of all config names was returned.');
+    $this->assertTrue(in_array('update.settings', $result), 'update.settings name found in all config names.');
+
+    $this->drush('config-list', array('system'), $options);
+    $result = $this->getOutputAsList();
+    $this->assertTrue(in_array('system.site', $result), 'system.site found in list of config names with "system" prefix.');
+
+    $this->drush('config-list', array('system'), $options += array('format' => 'json'));
+    $result = $this->getOutput();
+    $expected = '["system.cron","system.logging","system.maintenance","system.performance","system.rss","system.site"]';
+    $this->assertEquals($result, $expected, 'Expected JSON output was returned.');
   }
 }

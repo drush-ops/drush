@@ -87,7 +87,62 @@ function config_drush_command() {
     'aliases' => array('cim')
   );
 
+  $items['config-list'] = array(
+    'description' => 'List config names by prefix.',
+    'core' => array('8+'),
+    'aliases' => array('cli'),
+    'arguments' => array(
+      'prefix' => 'The config prefix. For example, "system". No prefix will return all names in the system.',
+    ),
+    'options' => array(
+      'format' => array(
+        'description' => 'Define the output format. Known formats are: json, print_r, and export.',
+      ),
+    ),
+    'examples' => array(
+      'drush config-list system' => 'Return a list of all system config names.',
+      'drush config-list "image.style"' => 'Return a list of all image styles.',
+      'drush config-list --format="json"' => 'Return all config names as json.',
+    ),
+  );
+
   return $items;
+}
+
+/**
+ * Config list command callback
+ *
+ * @param string $prefix
+ *   The config prefix to retrieve, or empty to return all.
+ */
+function drush_config_list($prefix = '') {
+  $names = config_get_storage_names_with_prefix($prefix);
+  $format = drush_get_option('format', FALSE);
+
+  if (!empty($names)) {
+    // Use the format if we have one.
+    if ($format) {
+      $output = drush_format($names, $format);
+      drush_print($output);
+      return $output;
+    }
+    // Otherwise just print each name.
+    else {
+      foreach ($names as $name) {
+        drush_print($name);
+      }
+      return $names;
+    }
+  }
+  else {
+    // Just incase there is no config.
+    if (!$prefix) {
+      drush_set_error(dt('No config storage names found.'));
+    }
+    else {
+      drush_set_error(dt('No config storage names found matching @prefix', array('@prefix' => $prefix)));
+    }
+  }
 }
 
 /**
