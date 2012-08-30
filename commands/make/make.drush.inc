@@ -192,6 +192,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
       make_prepare_install($build_path);
     }
   }
+  return $info;
 }
 
 /**
