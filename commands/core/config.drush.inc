@@ -228,9 +228,9 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
  * Import config ommand callback.
  */
 function drush_config_export() {
-  // Retrieve a list of differences between the active store and FileStorage.
+  // Retrieve a list of differences between the active and staged configuration.
   $source_storage = drupal_container()->get('config.storage');
-  $target_storage = new FileStorage();
+  $target_storage = drupal_container()->get('config.storage.staging');
   $config_changes = config_sync_get_changes($source_storage, $target_storage);
   if ($config_changes === FALSE) {
     drush_print(dt('There are no changes to export.'));
@@ -245,8 +245,8 @@ function drush_config_export() {
  * Export config command callback.
  */
 function drush_config_import() {
-  // Retrieve a list of differences between the active store and FileStorage.
-  $source_storage = new FileStorage();
+  // Retrieve a list of differences between the active and staged configuration.
+  $source_storage = drupal_container()->get('config.storage.staging');
   $target_storage = drupal_container()->get('config.storage');
   $config_changes = config_sync_get_changes($source_storage, $target_storage);
   if ($config_changes === FALSE) {
