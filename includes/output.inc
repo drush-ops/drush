@@ -145,20 +145,32 @@ function drush_format($input, $label = NULL, $format = NULL) {
  * @see t()
  */
 function dt($string, $args = array()) {
-  if (function_exists('t') && (drush_drupal_version() >= 7 || function_exists('theme'))) {
+  $output = NULL;
+  if (function_exists('t') && drush_drupal_version() == 7) {
+    $output = t($string, $args);
+  }
+  else if (drush_drupal_version() >= 8 && drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
     if (function_exists('drupal_classloader')) {
       drupal_classloader();
     }
-    return t($string, $args);
+    if (function_exists('t')) {
+      $output = t($string, $args);
+    }
   }
-  else {
+  else if (function_exists('t') && drush_drupal_version() <= 7 && function_exists('theme')) {
+    $output = t($string, $args);
+  }
+
+  // If Drupal's t() function unavailable.
+  if (is_null($output)) {
     if (!empty($args)) {
-      return strtr($string, $args);
+      $output = strtr($string, $args);
     }
     else {
-      return $string;
+      $output = $string;
     }
   }
+  return $output;
 }
 
 /**
