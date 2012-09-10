@@ -146,10 +146,11 @@ function drush_format($input, $label = NULL, $format = NULL) {
  */
 function dt($string, $args = array()) {
   $output = NULL;
-  if (function_exists('t') && drush_drupal_version() == 7) {
+  if (function_exists('t') && drush_drupal_major_version() == 7) {
     $output = t($string, $args);
   }
-  else if (drush_drupal_version() >= 8 && drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+  // The language system triggers a container build which requires config dirs to be defined.
+  else if (drush_drupal_major_version() >= 8 && !empty($GLOBALS['config_directories'])) {
     if (function_exists('drupal_classloader')) {
       drupal_classloader();
     }
@@ -157,7 +158,7 @@ function dt($string, $args = array()) {
       $output = t($string, $args);
     }
   }
-  else if (function_exists('t') && drush_drupal_version() <= 7 && function_exists('theme')) {
+  else if (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
     $output = t($string, $args);
   }
 
