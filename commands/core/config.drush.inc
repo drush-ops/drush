@@ -5,6 +5,7 @@
  *   Provides CMI commands.
  */
 
+use Drupal\Core\Config\Config;
 use Drupal\Core\Config\DatabaseStorage;
 use Drupal\Core\Config\FileStorage;
 use Symfony\Component\Yaml\Yaml;
