@@ -106,6 +106,24 @@ function config_drush_command() {
     ),
   );
 
+  $items['config-edit'] = array(
+    'description' => 'Open a config file in a text editor. Edits are imported into Drupal after closing editor.',
+    'core' => array('8+'),
+    'aliases' => array('cedit'),
+    'arguments' => array(
+      'config-name' => 'The config object name, for example "system.site".',
+    ),
+    'options' => array(
+      'bg' => 'Run editor in the background. Does not work with editors such as `vi` that run in the terminal. Supresses config-import at the end.',
+    ),
+    'examples' => array(
+      'drush config-edit image.style.large' => 'Edit the image style configurations.',
+      'drush config-edit' => 'Choose a config file to edit.',
+      'drush config-edit --choice=2' => 'Edit the second file in the choice list.',
+      'drush --bg config-edit image.style.large' => 'Return to shell prompt as soon as the editor window opens.',
+    ),
+  );
+
   return $items;
 }
 
@@ -258,6 +276,62 @@ function drush_config_import() {
   }
 }
 
+/**
+ * Edit command callback.
+ */
+function drush_config_edit($config_name = '') {
+  // Identify and validate input.
+  if ($config_name) {
+    $config = config($config_name);
+    if ($config->isNew()) {
+      return drush_set_error(dt('Config !name does not exist', array('!name' => $config_name)));
+    }
+  }
+  else {
+    $config_names = config_get_storage_names_with_prefix();
+    $choice = drush_choice($config_names, 'Choose a configuration.');
+    if (empty($choice)) {
+      return drush_user_abort();
+    }
+    else {
+      $config_name = $config_names[$choice];
+    }
+  }
+
+  // Copy from active storage to a file to staging.
+  $active_storage = drupal_container()->get('config.storage');
+  $staging_storage = drupal_container()->get('config.storage.staging');
+  $staging_storage->write($config_name, $active_storage->read($config_name));
+  $filepath = $staging_storage->getFilePath($config_name);
+
+  // Run in the foreground unless --bg is specified.
+  if (drush_get_option('bg', FALSE)) {
+    return drush_shell_exec_interactive('$EDITOR %s &', $filepath);
+  }
+  else {
+    drush_shell_exec_interactive('$EDITOR %s', $filepath);
+
+    $handled_by_module = FALSE;
+    $module = strtok($config_name, '.');
+    if (module_hook($module, 'config_import_change')) {
+      // Get contents from staging file, and set it in new config object.
+      $data = $staging_storage->read($config_name);
+      $new_config = new Config($config_name, $active_storage);
+      if ($data !== FALSE) {
+        $new_config->setData($data);
+      }
+
+      $old_config = new Config($config_name, $active_storage);
+      $old_config->load();
+      // Let module handle own config changes if it does that.
+      $handled_by_module = module_invoke($module, 'config_import_change', $config_name, $new_config, $old_config);
+    }
+    if (!$handled_by_module) {
+      return $active_storage->write($config_name, $staging_storage->read($config_name));
+    }
+  }
+}
+
 /* Helper functions */
 
 /**
@@ -403,6 +477,13 @@ function drush_config_set_complete() {
  * Command argument complete callback.
  */
 function drush_config_view_complete() {
+  return _drush_config_complete();
+}
+
+/*
+ * Command argument complete callback.
+ */
+function drush_config_edit_complete() {
   return _drush_config_complete();
 }
 
