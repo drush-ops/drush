@@ -1130,6 +1130,12 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
     }
     if ($listing) {
       $return = drush_shell_exec_output();
+      // Cut off the 'x ' prefix for the each line of the tar output
+      // See http://drupal.org/node/1775520
+      foreach($return as &$line) {
+        if(strpos($line, "x ") === 0)
+          $line = substr($line, 2);
+      }
     }
 
     // Remove the temporary file so the md5 hash is accurate.
@@ -1141,7 +1147,7 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
 
 /**
  * Download and extract a tarball to the lib directory.
- * 
+ *
  * Checks for reported success, but callers should normally check for existence
  * of specific expected file(s) in the library.
  *
