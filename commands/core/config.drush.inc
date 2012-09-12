@@ -305,13 +305,10 @@ function drush_config_edit($config_name = '') {
   $staging_storage->write($config_name, $active_storage->read($config_name));
   $filepath = $staging_storage->getFilePath($config_name);
 
-  // Run in the foreground unless --bg is specified.
-  if (drush_get_option('bg', FALSE)) {
-    return drush_shell_exec_interactive('$EDITOR %s &', $filepath);
-  }
-  else {
-    drush_shell_exec_interactive('$EDITOR %s', $filepath);
-
+  $exec = drush_get_editor();
+  drush_shell_exec_interactive($exec, $filepath, $filepath);
+  // Perform import operation if user did not immediately exit editor.
+  if (!drush_get_option('bg', FALSE)) {
     $handled_by_module = FALSE;
     $module = strtok($config_name, '.');
     if (module_hook($module, 'config_import_change')) {
