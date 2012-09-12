@@ -252,7 +252,7 @@ function drush_config_export() {
   $target_storage = drupal_container()->get('config.storage.staging');
   $config_changes = config_sync_get_changes($source_storage, $target_storage);
   if ($config_changes === FALSE) {
-    drush_print(dt('There are no changes to export.'));
+    return drush_log(dt('There are no changes to export.'), 'ok');
   }
   _drush_print_config_changes_table($config_changes);
   if (drush_confirm(dt('Export the listed configuration changes?'))) {
@@ -269,7 +269,7 @@ function drush_config_import() {
   $target_storage = drupal_container()->get('config.storage');
   $config_changes = config_sync_get_changes($source_storage, $target_storage);
   if ($config_changes === FALSE) {
-    return drush_print(dt('There are no changes to import.'));
+    return drush_log(dt('There are no changes to import.'), 'ok');
   }
   _drush_print_config_changes_table($config_changes);
   if (drush_confirm(dt('Import the listed configuration changes?'))) {
@@ -355,7 +355,7 @@ function drush_config_get_object($config_name) {
     return drush_set_error(dt('Config !name does not exist in the !source system.', array('!name' => $config_name, '!source' => $source)));
   }
   if (empty($data)) {
-    drush_print(dt('Config !name exists but has no data.', array('!name' => $config_name)));
+    drush_log(dt('Config !name exists but has no data.', array('!name' => $config_name)), 'notice');
     return;
   }
   $format = drush_get_option('format', 'yaml');
