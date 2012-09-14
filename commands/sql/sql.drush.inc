@@ -166,7 +166,7 @@ function sql_drush_command() {
       'db-su-pw' => array(
         'description' => 'Password for the "db-su" account. Optional.',
         'example-value' => 'pass',
-      ), 
+      ),
       'no-ordered-dump' => 'Do not pass --ordered-dump to sql-dump.  sql-sync orders the dumpfile by default in order to increase the efficiency of rsync.',
       'sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync. Optional.',
     ),
@@ -363,6 +363,8 @@ function drush_sql_dump($db_spec = NULL) {
  *   Supported keys: 'skip', 'structure', 'tables'.
  * @param db_spec
  *   For D5/D6, a $db_url. For D7, a target in the default DB connection.
+ * @param file
+ *   Destination for the dump file.
  * @return array
  *   An array with items.
  *     1. A mysqldump/pg_dump/sqlite statement that is ready for executing.
@@ -483,7 +485,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
       // is stored in a single file on the filesystem which can be copied just
       // like any other file. But it still has a use in migration purposes and
       // building human-readable diffs and such, so let's do it anyway.
-      $exec = _drush_sql_connect();
+      $exec = _drush_sql_connect($db_spec);
       // SQLite's dump command doesn't support many of the features of its
       // Postgres or MySQL equivalents. We may be able to fake some in the
       // future, but for now, let's just support simple dumps.

@@ -190,8 +190,8 @@ function drush_archive_dump($sites_subdirs = '@self') {
       $db = $alias['databases']['default']['default'];
       // Use a subdirectory name matching the docroot name.
       drush_mkdir("{$tmp}/{$docroot}");
-      // Ensure uniqueness by prefixing key if needed.
-      $dbname = $db['database'];
+      // Ensure uniqueness by prefixing key if needed. Remove path delimiters.
+      $dbname = str_replace(DIRECTORY_SEPARATOR, '-', $db['database']);
       $result_file = count($sites) == 1 ? "$tmp/$dbname.sql" : str_replace('@', '', "$tmp/$key-$dbname.sql");
       $all_dbs[$key] = array(
         'file' => $result_file,
