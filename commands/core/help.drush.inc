@@ -384,7 +384,7 @@ function drush_core_help() {
       $commands = $info['commands'];
       sort($commands);
 
-      // Remove hidden commands and build output for drush_print_table.
+      // Build rows for drush_print_table().
       $rows = array();
       foreach($commands as $cmd) {
         $command = $implemented[$cmd];
