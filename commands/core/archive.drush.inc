@@ -234,12 +234,8 @@ function drush_archive_dump($sites_subdirs = '@self') {
       'files-public' => @$status['object']['%paths']['%files'],
       'files-private' => @$status['object']['%paths']['%private'],
     );
-    // Add info for each DB connection (usually only 1);
-    foreach ($all_dbs as $dbkey => $db) {
-      // basename() is for sqlite's sake.
-      $site["database-default-file"] = basename($db['file']);
-      $site["database-default-driver"] = $db['driver'];
-    }
+    $site["database-default-file"] = $all_dbs[$key]['file'];
+    $site["database-default-driver"] = $all_dbs[$key]['driver'];
     // The section title is the sites subdirectory name.
     $info[basename($site['sitedir'])] = $site;
     $contents .= "\n" . drush_export_ini($info);
