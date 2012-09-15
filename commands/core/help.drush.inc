@@ -254,12 +254,19 @@ function drush_global_options_command($brief = FALSE) {
  */
 function drush_core_help() {
   $commands = func_get_args();
+  $format = drush_get_option('format');
+  // Backwards compatibility for --html option.
+  if (drush_get_option('html')) {
+    $format = 'html';
+  }
 
   if (empty($commands)) {
     // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION.
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
     $implemented = drush_get_commands();
+    ksort($implemented);
     $command_categories = drush_help_categorize($implemented);
+    $visible = drush_help_visible($command_categories);
 
     // If the user specified --filter w/out a value, then
     // present a choice list of help categories.
@@ -279,58 +286,35 @@ function drush_core_help() {
       drush_set_option('filter', $result);
     }
 
-    if (drush_get_option('html')) {
+    if ($format == 'html') {
       drush_print(drush_help_html_header());
     }
 
     // Make a fake command section to hold the global options, then print it.
     $global_options_help = drush_global_options_command(TRUE);
-    if ((!drush_get_option('html')) && (!drush_get_option('filter'))) {
+    if (!in_array($format, array('html', 'export', 'json')) && !drush_get_option('filter')) {
       drush_print_help($global_options_help);
     }
 
-    $all_commands = array();
-    foreach ($command_categories as $key => $info) {
-      // Get the commands in this category and sort them
-      $commands = $info['commands'];
-      sort($commands);
-
-      // Build rows for drush_print_table().
-      $rows = array();
-      foreach($commands as $cmd) {
-        $command = $implemented[$cmd];
-        $all_commands[$cmd] = $command;
-        $name = $command['aliases'] ? $cmd . ' (' . implode(', ', $command['aliases']) . ')': $cmd;
-        $rows[$cmd] = array($name, $command['description']);
-        $pipe[] = $cmd;
-      }
-
-      // Vary the output by mode: text or html
-      if (drush_get_option('html')) {
-        $sorted_commands = array();
-        foreach($commands as $cmd) {
-          $sorted_commands[$cmd] = $implemented[$cmd];
-        }
-
-        drush_print("<h3>" . $info['title'] . "</h3>");
-        drush_print(drush_help_html_command_list($sorted_commands));
-      }
-      else {
-        drush_print($info['title'] . ": (" . $key . ")");
-        drush_print_table($rows, FALSE, array(0 => 20));
-      }
+    if ($format == 'json' || $format == 'export') {
+      // Print giant array and return.
+      drush_print(drush_format($command_categories, 'commands'));
+      return $command_categories;
     }
+    else {
+      // HTML and CLI command listing (in a table).
+      drush_help_listing_print($command_categories, $format);
 
-    // Print out the long-form help for all commands
-    if (drush_get_option('html')) {
-      drush_print(drush_help_html_global_options($global_options_help));
-      drush_print(drush_help_html($all_commands));
+      if ($format == 'html') {
+        // Print global options and long-form help for all commands.
+        drush_print(drush_help_html_global_options($global_options_help));
+        drush_print(drush_help_html($visible));
+      }
     }
 
     // Newline-delimited list for use by other scripts. Set the --pipe option.
-    if (drush_get_option('pipe') && isset($pipe)) {
-      sort($pipe);
-      drush_print_pipe(implode(" ", $pipe));
+    if (drush_get_option('pipe')) {
+      drush_print_pipe(implode("\n", array_keys($visible)));
     }
     return;
   }
@@ -343,6 +327,44 @@ function drush_core_help() {
   }
 
   return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
+}
+
+// Uncategorize the list of commands. Hiddens have been removed and
+// filtering performed.
+function drush_help_visible($command_categories) {
+  $all = array();
+  foreach ($command_categories as $category => $info) {
+    $all = array_merge($all,  $info['commands']);
+  }
+  return $all;
+}
+
+/*
+ * Print CLI table or HTML table listing all commands.
+ */
+function drush_help_listing_print($command_categories, $format) {
+  $all_commands = array();
+  foreach ($command_categories as $key => $info) {
+    // Get the commands in this category.
+    $commands = $info['commands'];
+
+    // Build rows for drush_print_table().
+    $rows = array();
+    foreach($commands as $cmd => $command) {
+      $name = $command['aliases'] ? $cmd . ' (' . implode(', ', $command['aliases']) . ')': $cmd;
+      $rows[$cmd] = array($name, $command['description']);
+    }
+
+    // Vary the output by mode: CLI or HTML
+    if ($format == 'html') {
+      drush_print("<h3>" . $info['title'] . "</h3>");
+      drush_print(drush_help_html_command_list($commands));
+    }
+    else {
+      drush_print($info['title'] . ": (" . $key . ")");
+      drush_print_table($rows, FALSE, array(0 => 20));
+    }
+  }
 }
 
 /*
@@ -380,9 +402,13 @@ function drush_help_categorize($implemented) {
           $command_categories[$category]['summary'] = $summary[0];
         }
       }
-      $command_categories[$category]['commands'][] = $key;
+      $command_categories[$category]['commands'][$key] = $candidate;
     }
   }
+
+  // Make sure that 'core' is always first in the list
+  $core_category = array('core' => $command_categories['core']);
+  unset($command_categories['core']);
 
   // Filter out categories that the user does not want to see
   if ($filter_category = drush_get_option('filter')) {
@@ -392,13 +418,8 @@ function drush_help_categorize($implemented) {
     $command_categories = array($filter_category => $command_categories[$filter_category]);
   }
 
-  // Sort the command categories; make sure that 'core' is
-  // always first in the list
-  $core_category = array('core' => $command_categories['core']);
-  unset($command_categories['core']);
   // Post-process the categories that have no title.
-  // Any that have fewer than 4 commands will go into a
-  // section called "other".
+  // Any that have fewer than 4 commands go into a section called "other".
   $processed_categories = array();
   $misc_categories = array();
   $other_commands = array();

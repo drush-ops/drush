@@ -31,7 +31,8 @@ function core_drush_command() {
         'example-value' => 'category',
         'value' => 'optional',
       ),
-      'html' => 'Print help for all commands in HTML format.',
+      'format' => 'Format to output . Allowed values are: json, export, html.',
+      'html' => 'Print help for all commands in HTML format. Deprecated - see --format option.',
       'pipe' => 'A list of available commands, one per line.',
     ),
     'arguments' => array(
