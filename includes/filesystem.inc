@@ -110,10 +110,16 @@ function drush_dir_md5($dir) {
  *   The file or directory to delete.
  * @param $force
  *   Try whatever possible to delete the directory - also read-only ones.
+ * @param $follow_symlinks
+ *   Do not delete symlinked files. Simply unlink symbolic links.
  * @return
  *   FALSE on failure, TRUE if everything was deleted.
  */
-function drush_delete_dir($dir, $force = FALSE) {
+function drush_delete_dir($dir, $force = FALSE, $follow_symlinks = FALSE) {
+  // Do not delete symlinked files, only unlink symbolic links
+  if (is_link($dir) && !$follow_symlinks) {
+    return unlink($dir);
+  }
   // Allow to delete symlinks even if the target doesn't exist.
   if (!is_link($dir) && !file_exists($dir)) {
     return TRUE;
