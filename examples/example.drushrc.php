@@ -76,7 +76,7 @@
  * More information on shell aliases can be found via:
  * `drush topic docs-shell-aliases` on the command line.
  *
- * @see https://git.wiki.kernel.org/articles/a/l/i/Aliases.html#Advanced.
+ * @see https://git.wiki.kernel.org/index.php/Aliases#Advanced
  */
 # $options['shell-aliases']['pull'] = '!git pull'; // We've all done it.
 # $options['shell-aliases']['pulldb'] = '!git pull && drush updatedb';
