@@ -575,6 +575,7 @@ function _core_site_status_table($project = '', $full = FALSE) {
   $path_names['themes'] = 'Themes path';
   $path_names['files'] = 'File directory path';
   $path_names['private'] = 'Private file directory path';
+  $path_names['temp'] = 'Temporary file directory path';
 
   $paths = _core_path_aliases($project);
   if (!empty($paths)) {
