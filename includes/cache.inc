@@ -400,7 +400,7 @@ class DrushFileCache implements DrushCacheInterface {
     }
   }
 
-  function isEmpty() {
+  function isEmpty($dir) {
     $files = drush_scan_directory($dir, "//", array('.', '..'));
     return empty($files);
   }

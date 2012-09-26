@@ -1,4 +1,4 @@
-all : bootstrap
+all : drushcompile
 
 drushcompile: 
 	hphp -o hphpout -k 1 -t cpp drushcompile.php
