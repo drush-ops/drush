@@ -171,8 +171,45 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('contrib-destination');
   }
 
+  function testMakeDefaults() {
+    $this->runMakefileTest('defaults');
+  }
+
   function testMakeFile() {
     $this->runMakefileTest('file');
+  }
+
+  function testMakeBZ2() {
+    // Silently skip bz2 test if bz2 is not installed.
+    exec('which bzip2', $output, $whichBzip2ErrorCode);
+    if (!$whichBzip2ErrorCode) {
+      $this->runMakefileTest('bz2');
+    }
+    else {
+      $this->markTestSkipped('bzip2 command not available.');
+    }
+  }
+
+  function testMakeBZ2SingleFile() {
+    // Silently skip bz2 test if bz2 is not installed.
+    exec('which bzip2', $output, $whichBzip2ErrorCode);
+    if (!$whichBzip2ErrorCode) {
+      $this->runMakefileTest('bz2-singlefile');
+    }
+    else {
+      $this->markTestSkipped('bzip2 command not available.');
+    }
+  }
+
+  function testMakeGZip() {
+    // Silently skip gzip test if gzip is not installed.
+    exec('which gzip', $output, $whichGzipErrorCode);
+    if (!$whichGzipErrorCode) {
+      $this->runMakefileTest('gzip');
+    }
+    else {
+      $this->markTestSkipped('gzip command not available.');
+    }
   }
 
   function testMakeSubtree() {
@@ -339,7 +376,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Test patching and writing of PATCHES.txt file',
         'makefile' => 'patches.make',
         'build'    => TRUE,
-        'md5' => '27403b34b599af1cbdb50417e6ea626f',
+        'md5' => '56f1613fc8b6a9f03ab62cfa0300df4c',
         'options'  => array('no-core' => NULL),
       ),
       'include' => array(
@@ -401,6 +438,34 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'makefile' => 'file.make',
         'build'    => TRUE,
         'md5' => 'c7cab3930f644961a576d78769498172',
+        'options'  => array('no-core' => NULL),
+      ),
+      'defaults' => array(
+        'name'     => 'Test defaults array.',
+        'makefile' => 'defaults.make',
+        'build'    => TRUE,
+        'md5' => 'e6c0d6b37cd8573cbd188742b95a274e',
+        'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),
+      ),
+      'bz2' => array(
+        'name'     => 'bzip2',
+        'makefile' => 'bz2.make',
+        'build'    => TRUE,
+        'md5'      => '5ec081203131a1a3277c8b23f9ddb995',
+        'options'  => array('no-core' => NULL),
+      ),
+      'bz2-singlefile' => array(
+        'name'     => 'bzip2 single file',
+        'makefile' => 'bz2-singlefile.make',
+        'build'    => TRUE,
+        'md5'      => '4f9d57f6caaf6ece0526d867327621cc',
+        'options'  => array('no-core' => NULL),
+      ),
+      'gzip' => array(
+        'name'     => 'gzip',
+        'makefile' => 'gzip.make',
+        'build'    => TRUE,
+        'md5'      => '615975484966c36f4c9186601afd61e0',
         'options'  => array('no-core' => NULL),
       ),
       'subtree' => array(

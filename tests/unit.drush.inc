@@ -31,6 +31,10 @@ function unit_drush_command() {
     'description' => 'Return options as function result.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
+  $items['unit-return-argv'] = array(
+    'description' => 'Return original argv as function result.',
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+  );
   $items['missing-callback'] = array(
     'description' => 'Command with no callback function, to test error reporting.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
@@ -132,4 +136,9 @@ function drush_unit_return_options() {
     unset($all_option_values[$key]);
   }
   return $all_option_values;
+}
+
+// Return all of the original arguments passed to this script
+function drush_unit_return_argv() {
+  return drush_get_context('argv');
 }

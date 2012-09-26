@@ -275,6 +275,20 @@ makefiles to override the keys/values of former makefiles.
     includes[example_relative] = "../example_relative/example_relative.make"
     includes[remote] = "http://www.example.com/remote.make"
 
+### Defaults
+
+If all projects or libraries have identical settings for a given
+attribute, the `defaults` array can be used to specify these,
+rather than specifying the attribute for each project.
+
+**Example:**
+
+    ; Specify common subdir of "contrib"
+    defaults[projects][subdir] = "contrib"
+    ; Projects that don't specify subdir will go to the 'contrib' directory.
+    projects[views][version] = "3.3"
+    ; Override default value
+    projects[devel][subdir] = "development"
 
 ### Overriding properties
 
@@ -336,6 +350,8 @@ for a given module, or bundle a set of module and its dependencies together.
 For Drush Make to recognize a makefile embedded within a project, the makefile
 itself must have the same name as the project. For instance, the makefile
 embedded within the managingnews profile must be called "managingnews.make".
+The file should also be in the project's root directory. Subdirectories will
+be ignored.
 
 **Build a full Drupal site with the Managing News install profile:**
 

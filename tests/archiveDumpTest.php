@@ -8,12 +8,14 @@ class archiveDumpCase extends Drush_CommandTestCase {
 
   /*
    * Test dump and extraction.
+   *
+   * archive-dump behaves slightly different when archiving a site installed at sites/default
+   * so we make the test to use sites/default as the installation directory.
    */
   public function testArchiveDump() {
-    $sites = $this->setUpDrupal(1, TRUE);
-    $site = reset($sites);
+    $uri = 'default';
+    $this->fetchInstallDrupal($uri, TRUE, 7, 'testing');
     $root = $this->webroot();
-    $uri = key($sites);
     $docroot = basename($root);
 
     $dump_dest = "dump.tar.gz";
@@ -40,7 +42,19 @@ class archiveDumpCase extends Drush_CommandTestCase {
     if (strpos(UNISH_DB_URL, 'mysql') !== FALSE) {
       $this->execute(sprintf('head %s/unish_%s.sql | grep "MySQL dump"', $untar_dest, $uri));
     }
-    $this->execute('test -f ' . $untar_dest . '/MANIFEST.ini');
-    $this->execute('test -d ' . $untar_dest . '/' . $docroot);
+    $this->assertFileExists($untar_dest . '/MANIFEST.ini');
+    $this->assertFileExists($untar_dest . '/' . $docroot);
+
+    // Restore archive and verify that the file structure is identical.
+    require_once dirname(__FILE__) . '/../includes/filesystem.inc';
+    $restore_dest = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'restore';
+    $options = array(
+      'yes' => NULL,
+      'destination' => $restore_dest,
+    );
+    $this->drush('archive-restore', array(UNISH_SANDBOX . DIRECTORY_SEPARATOR . $dump_dest), $options);
+    $original_codebase = drush_dir_md5($root);
+    $restored_codebase = drush_dir_md5($restore_dest);
+    $this->assertEquals($original_codebase, $restored_codebase);
   }
 }

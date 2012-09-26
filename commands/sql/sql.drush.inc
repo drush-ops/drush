@@ -20,7 +20,10 @@ function sql_drush_help($section) {
  * Implementation of hook_drush_command().
  */
 function sql_drush_command() {
-  $options['database'] = 'The DB connection key if using multiple connections in settings.php.';
+  $options['database'] = array(
+    'description' => 'The DB connection key if using multiple connections in settings.php.',
+    'example-value' => 'extra',
+  );
   if (drush_drupal_major_version() >= 7) {
     $options['target'] = 'The name of a target within the specified database.';
   }
@@ -59,6 +62,20 @@ function sql_drush_command() {
     'examples' => array(
       '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
     ),
+  );
+  $items['sql-create'] = array(
+    'description' => 'Create a database.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'examples' => array(
+      'drush sql-create' => 'Create the database for the current site.',
+      'drush @site.test sql-create' => 'Create the database as specified for @site.test.',
+      'drush sql-create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"' =>
+        'Create the database as specified in the db-url option.'
+    ),
+    'options' => array(
+      'db-su' => 'Account to use when creating a new database. Optional.',
+      'db-su-pw' => 'Password for the "db-su" account. Optional.',
+    ) + $options + $db_url,
   );
   $items['sql-dump'] = array(
     'callback' => 'drush_sql_dump_execute',
@@ -142,8 +159,14 @@ function sql_drush_command() {
       'temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
       'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.  Takes precedence over --temp.',
       'create-db' => 'Create a new database before importing the database dump on the target machine.',
-      'db-su' => 'Account to use when creating a new database. Optional.',
-      'db-su-pw' => 'Password for the "db-su" account. Optional.',
+      'db-su' => array(
+        'description' => 'Account to use when creating a new database. Optional.',
+        'example-value' => 'root',
+      ),
+      'db-su-pw' => array(
+        'description' => 'Password for the "db-su" account. Optional.',
+        'example-value' => 'pass',
+      ),
       'no-ordered-dump' => 'Do not pass --ordered-dump to sql-dump.  sql-sync orders the dumpfile by default in order to increase the efficiency of rsync.',
       'sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync. Optional.',
     ),
@@ -225,7 +248,7 @@ function drush_sql_conf() {
 /**
  * Command callback. Emits a connect string for mysql or pgsql.
  */
-function _drush_sql_connect($db_spec = NULL, $insecure = FALSE) {
+function _drush_sql_connect($db_spec = NULL) {
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
       $command = 'mysql';
@@ -250,17 +273,44 @@ function _drush_sql_connect($db_spec = NULL, $insecure = FALSE) {
       }
       break;
   }
-  // do not cloak the credentials in a tempfile
-  // XXX: this is used by sql-sync, which is *really* insecure
-  $command .= _drush_sql_get_credentials($db_spec, $insecure);
+  $command .= _drush_sql_get_credentials($db_spec);
   return $command;
 }
 
 function drush_sql_connect() {
   drush_sql_bootstrap_further();
-  $connect = _drush_sql_connect(NULL, TRUE);
+  $connect = _drush_sql_connect();
   drush_print($connect);
   return $connect;
+}
+
+/**
+ * Command callback. Create a database.
+ */
+function drush_sql_create() {
+  $db_spec = _drush_sql_get_db_spec();
+
+  // Prompt for confirmation.
+  if (!drush_get_context('DRUSH_SIMULATE')) {
+    $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
+    drush_print(dt("Creating database !target. Any possible existing database will be dropped!", array('!target' => $txt_destination)));
+
+    if (!drush_confirm(dt('Do you really want to continue?'))) {
+      return drush_user_abort();
+    }
+  }
+
+  return _drush_sql_create($db_spec);
+}
+
+function _drush_sql_create($db_spec) {
+    $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
+    // Get credentials to connect to the server, but not the database which we
+    // are about to DROP. @see _drush_sql_get_credentials().
+    $create_db_spec = $db_spec;
+    unset($create_db_spec['database']);
+    $create_db_su = drush_sql_su($create_db_spec);
+    return _drush_sql_query($sql, $create_db_su);
 }
 
 /**
@@ -313,6 +363,8 @@ function drush_sql_dump($db_spec = NULL) {
  *   Supported keys: 'skip', 'structure', 'tables'.
  * @param db_spec
  *   For D5/D6, a $db_url. For D7, a target in the default DB connection.
+ * @param file
+ *   Destination for the dump file.
  * @return array
  *   An array with items.
  *     1. A mysqldump/pg_dump/sqlite statement that is ready for executing.
@@ -356,15 +408,14 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysqli':
     case 'mysql':
-      // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
-      // needs to be first because we may have --defaults-file from _drush_sql_get_credentials()
-      $exec = 'mysqldump ' . str_replace('--database=', ' ', _drush_sql_get_credentials($db_spec));
+      $exec = 'mysqldump';
       if ($file) {
         $exec .= ' --result-file '. $file;
       }
+      // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
       // We had --skip-add-locks here for a while to help people with insufficient permissions,
       // but removed it because it slows down the import a lot.  See http://drupal.org/node/1283978
-      $extra = ' --no-autocommit --single-transaction --opt -Q';
+      $extra = ' --no-autocommit --single-transaction --opt -Q' . str_replace('--database=', ' ', _drush_sql_get_credentials($db_spec));
       if (isset($data_only)) {
         $extra .= ' --no-create-info';
       }
@@ -434,7 +485,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
       // is stored in a single file on the filesystem which can be copied just
       // like any other file. But it still has a use in migration purposes and
       // building human-readable diffs and such, so let's do it anyway.
-      $exec = _drush_sql_connect();
+      $exec = _drush_sql_connect($db_spec);
       // SQLite's dump command doesn't support many of the features of its
       // Postgres or MySQL equivalents. We may be able to fake some in the
       // future, but for now, let's just support simple dumps.
@@ -852,10 +903,11 @@ function drush_sql_dump_file(&$site_record) {
     if (!isset($dump_dir)) {
       // If this is a remote site, try to find a writable tmpdir.
       if (isset($site_record['remote-host'])) {
-        $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'), array(), array('integrate' => FALSE));
-        // If the call to invoke process does not work for some reason (e.g. drush not
-        // installed on the target machine), then we will just presume that the tmp dir is '/tmp'.
-        if (!array_key_exists('output', $result) || empty($result['output'])) {
+        $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
+        // If the call to invoke process does not work for some reason
+        // (e.g. drush not installed on the target machine),
+        // then we will just presume that the tmp dir is '/tmp'.
+        if (!$result || empty($result['output'])) {
           $dump_dir = '/tmp';
         }
         else {
@@ -887,13 +939,9 @@ function _drush_sql_get_scheme($db_spec = NULL) {
  * Build a fragment containing credentials and mysql-connection parameters.
  *
  * @param $db_spec
- * @param $insecure bool
- *   if true, will add the database password to the commandline in the
- *   clear, which is insecure. the default (false), is to write the
- *   credentials to a temporary file.
  * @return string
  */
-function _drush_sql_get_credentials($db_spec = NULL, $insecure = FALSE) {
+function _drush_sql_get_credentials($db_spec = NULL) {
   if (is_null($db_spec)) {
     $db_spec = _drush_sql_get_db_spec();
   }
@@ -903,21 +951,6 @@ function _drush_sql_get_credentials($db_spec = NULL, $insecure = FALSE) {
 
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
-      // EMPTY password is not the same as NO password, and is valid.
-      if (isset($db_spec['password'])) {
-        if ($insecure) {
-          // XXX: this is unsafe and should be fixed, probably by
-          // first rsyncing the tmp file or by passing the password
-          // through a file descriptor
-          $parameters['password'] = $db_spec['password'];
-        }
-        else {
-          $data = "[client]\npassword=" . $db_spec['password'] . "\n";
-          $tmpfile = drush_save_data_to_temp_file($data);
-          $parameters['defaults-file'] = $tmpfile;
-        }
-      }
-
       // Some drush commands (e.g. site-install) want to connect to the
       // server, but not the database.  Connect to the built-in database.
       $parameters['database'] = empty($db_spec['database']) ? 'information_schema' : $db_spec['database'];
@@ -937,6 +970,11 @@ function _drush_sql_get_credentials($db_spec = NULL, $insecure = FALSE) {
 
       // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
       $parameters['user'] = $db_spec['username'];
+
+      // EMPTY password is not the same as NO password, and is valid.
+      if (isset($db_spec['password'])) {
+        $parameters['password'] = $db_spec['password'];
+      }
       break;
 
     case 'pgsql':
@@ -1108,13 +1146,7 @@ function drush_sql_empty_db($db_spec = NULL) {
     _drush_sql_drop($db_spec);
   }
   else {
-    $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
-    // Get credentials to connect to the server, but not the database which we
-    // are about to DROP. @see _drush_sql_get_credentials().
-    $create_db_spec = $db_spec;
-    unset($create_db_spec['database']);
-    $create_db_su = drush_sql_su($create_db_spec);
-    return _drush_sql_query($sql, $create_db_su);
+    _drush_sql_create($db_spec);
   }
 }
 
@@ -1139,8 +1171,13 @@ function drush_sql_su($db_spec, $site_alias_record = NULL) {
     $create_db_target['username'] = $db_superuser;
   }
   $db_su_pw = drush_sitealias_get_option($site_alias_record, 'db-su-pw');
-  if (isset($db_su_pw)) {
+  // If --db-su-pw is not provided and --db-su is, default to empty password.
+  // This way db cli command will take password from .my.cnf or .pgpass.
+  if (!empty($db_su_pw)) {
     $create_db_target['password'] = $db_su_pw;
+  }
+  elseif (isset($db_superuser)) {
+    unset($create_db_target['password']);
   }
   return $create_db_target;
 }
@@ -1153,7 +1190,7 @@ function drush_sql_su($db_spec, $site_alias_record = NULL) {
  *
  * @param boolean $quoted
  *   Quote the database name. Mysql uses backticks to quote which can cause problems
- *   in a Windows shell. Set TRUE of the CREATE is not running on the bash command line.
+ *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
  */
 function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
   $sql = array();

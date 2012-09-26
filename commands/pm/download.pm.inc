@@ -139,6 +139,9 @@ function drush_pm_download() {
     // --destination has preference.
     $destination = drush_get_option('destination');
     if (!empty($destination)) {
+      if (!file_exists($destination)) {
+        drush_mkdir($destination);
+      }
       $request['project_install_location'] = realpath($destination);
     }
     else {

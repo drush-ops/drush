@@ -117,15 +117,6 @@
 # $options['config'][] = '.';
 
 /**
- * Drush knows how to check for and download its own code updates with the
- * `drush pm-updatecode` and `drush version` commands.  Set this value to TRUE
- * (default) allows updates to latest stable release.  Set to FALSE to disable
- * self update checks completely.  Set to 'head' to allow bleeding-edge updates
- * from the code repository.
- */
-# $options['self-update'] = FALSE;
-
-/**
  * Enable logging and periodic upload of anonymized usage statistics. The Drush
  * maintainers use this data to learn which commands and options are most
  * See the usage-show and usage-send commands.

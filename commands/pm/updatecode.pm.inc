@@ -164,12 +164,6 @@ function drush_pm_updatecode() {
     }
   }
 
-  // First check to see if there is a newer drush.
-  $drush_update_available = NULL;
-  if (drush_get_option('self-update', TRUE)) {
-    $drush_update_available = drush_check_self_update();
-  }
-
   // Do no updates in simulated mode.
   if (drush_get_context('DRUSH_SIMULATE')) {
     return drush_log(dt('No action taken in simulated mode.'), 'ok');
@@ -202,12 +196,8 @@ function drush_pm_updatecode() {
   }
 
   // If there are no releases to update, then print a final
-  // exit message.  Supress the message if we already printed
-  // a message about a drush update being available.
+  // exit message.
   if (empty($updateable)) {
-    if ($drush_update_available === TRUE) {
-      return FALSE;
-    }
     if ($security_only) {
       return drush_log(dt('No security updates available.'), 'ok');
     }

@@ -148,7 +148,7 @@ function update_main_prepare() {
   require_once $core . '/includes/common.inc';
   require_once $core . '/includes/file.inc';
   require_once $core . '/includes/entity.inc';
-  include_once $core . '/includes/unicode.inc';
+
 
   update_prepare_d7_bootstrap();
   drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);

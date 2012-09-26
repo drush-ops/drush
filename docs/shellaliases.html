@@ -45,7 +45,7 @@ Note that these aliases assume that the alias used defines an item named
 
 <h3>Shell aliases using replacements:</h3>
 <pre>
-    $options['shell-aliases']['pull-data'] = '!drush sql-sync {{#live}} {{@target}} && drush rsync {{#live}}:%files {{@target}}:%files',
+    $options['shell-aliases']['pull-data'] = '!drush sql-sync {{#live}} {{@target}} && drush rsync {{#live}}:%files {{@target}}:%files';
 </pre>
 If the user does not use these shell aliases with any site alias, then
 an error will be returned and the script will not run.

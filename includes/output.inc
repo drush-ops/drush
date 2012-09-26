@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * @defgroup outputfunctions Process output text.
  * @{
@@ -64,9 +65,11 @@ function drush_print_pipe($message = '') {
  * Prints an array or string.
  * @param $array
  *   The array to print.
+ * @param $newline
+ *    Add a "\n" to the end of the output.  Defaults to TRUE.
  */
-function drush_print_r($array, $handle = NULL) {
-  drush_print(print_r($array, TRUE), 0, $handle);
+function drush_print_r($array, $handle = NULL, $newline = TRUE) {
+  drush_print(print_r($array, TRUE), 0, $handle, $newline);
 }
 
 /**
@@ -82,7 +85,7 @@ function drush_format($input, $label = NULL, $format = NULL) {
   if (is_null(($format))) {
     $format = drush_get_option('format', 'print_r');
   }
-  if ($format != 'export') {
+  if ($format != 'export' && $format != 'config') {
     if ($input === TRUE) {
       $input = 'TRUE';
     }
@@ -92,6 +95,14 @@ function drush_format($input, $label = NULL, $format = NULL) {
   }
 
   switch ($format) {
+    case 'config':
+      if ($label) {
+        $output = "\$config['$label'] = " . var_export($input, TRUE) . ';';
+      }
+      else {
+        $output = var_export($input, TRUE);
+      }
+      break;
     case 'export':
       if ($label) {
         $output = "\$variables['$label'] = " . var_export($input, TRUE) . ';';
@@ -135,20 +146,33 @@ function drush_format($input, $label = NULL, $format = NULL) {
  * @see t()
  */
 function dt($string, $args = array()) {
-  if (function_exists('t') && (drush_drupal_version() >= 7 || function_exists('theme'))) {
+  $output = NULL;
+  if (function_exists('t') && drush_drupal_major_version() == 7) {
+    $output = t($string, $args);
+  }
+  // The language system triggers a container build which requires config dirs to be defined.
+  else if (drush_drupal_major_version() >= 8 && !empty($GLOBALS['config_directories'])) {
     if (function_exists('drupal_classloader')) {
       drupal_classloader();
     }
-    return t($string, $args);
+    if (function_exists('t')) {
+      $output = t($string, $args);
+    }
   }
-  else {
+  else if (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
+    $output = t($string, $args);
+  }
+
+  // If Drupal's t() function unavailable.
+  if (is_null($output)) {
     if (!empty($args)) {
-      return strtr($string, $args);
+      $output = strtr($string, $args);
     }
     else {
-      return $string;
+      $output = $string;
     }
   }
+  return $output;
 }
 
 /**
@@ -197,6 +221,7 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
  * @return $tbl
  *   Use $tbl->getTable() to get the output from the return value.
  */
+
 function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = NULL) {
   $tbl = new Console_Table(CONSOLE_TABLE_ALIGN_LEFT , '');
 

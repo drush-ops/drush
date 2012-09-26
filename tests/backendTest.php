@@ -14,6 +14,39 @@
 */
 
 class backendCase extends Drush_CommandTestCase {
+  // Test to insure that calling drush_invoke_process with 'dispatch-using-alias'
+  // will build a command string that uses the alias instead of --root and --uri.
+  function testDispatchUsingAlias() {
+    $aliasPath = UNISH_SANDBOX . '/aliases';
+    mkdir($aliasPath);
+    $aliasFile = $aliasPath . '/foo.aliases.drushrc.php';
+    $aliasContents = <<<EOD
+  <?php
+  // Writtne by Unish. This file is safe to delete.
+  \$aliases['dev'] = array('root' => '/fake/path/to/root', 'uri' => 'default');
+EOD;
+    file_put_contents($aliasFile, $aliasContents);
+    $options = array(
+      'alias-path' => $aliasPath,
+      'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
+      'backend' => TRUE,
+    );
+    $php = <<<EOD
+    \$valuesUsingAlias = drush_invoke_process("@dev", "unit-return-argv", array(), array(), array("dispatch-using-alias" => TRUE));
+    \$valuesWithoutAlias = drush_invoke_process("@dev", "unit-return-argv", array(), array(), array());
+    return array('with' => \$valuesUsingAlias['object'], 'without' => \$valuesWithoutAlias['object']);
+EOD;
+    $this->drush('php-eval', array($php), $options);
+    $parsed = parse_backend_output($this->getOutput());
+
+    // $parsed['with'] and $parsed['without'] now contain an array
+    // each with the original arguments passed in with and without
+    // 'dispatch-using-alias', respectively.
+    $argDifference = array_diff($parsed['object']['with'], $parsed['object']['without']);
+    $this->assertEquals(array_diff(array_values($argDifference), array('@foo.dev')), array());
+    $argDifference = array_diff($parsed['object']['without'], $parsed['object']['with']);
+    $this->assertEquals(array_diff(array_values($argDifference), array('--root=/fake/path/to/root', '--uri=default')), array());
+  }
 
   /*
    * Covers the following origin responsibilities.
@@ -25,7 +58,7 @@ class backendCase extends Drush_CommandTestCase {
   function testOrigin() {
     $exec = sprintf('%s %s version arg1 arg2 --simulate --ssh-options=%s | grep ssh', UNISH_DRUSH, self::escapeshellarg('user@server/path/to/drupal#sitename'), self::escapeshellarg('-i mysite_dsa'));
     $this->execute($exec);
-    $bash = $this->escapeshellarg('drush  --invoke --simulate --uri=sitename --root=/path/to/drupal version arg1 arg2 2>&1');
+    $bash = $this->escapeshellarg('drush  --invoke --simulate --uri=sitename --root=/path/to/drupal  version arg1 arg2 2>&1');
     $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash 2>&1";
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected ssh command was built');
@@ -103,7 +136,7 @@ class backendCase extends Drush_CommandTestCase {
     // assert that $parsed has 'foo' and not 'bar'
     $this->assertEquals("'foo'", var_export($parsed['object'], TRUE));
   }
-  
+
   /**
    * Covers the following target responsibilities.
    *   - Insures that the backend option 'invoke-multiple' will cause multiple commands to be executed.
@@ -151,7 +184,7 @@ class backendCase extends Drush_CommandTestCase {
   'x' => 'y',
 )", var_export($parsed['object'], TRUE));
   }
-  
+
   /**
    * Covers the following target responsibilities.
    *   - Insures that complex arrays can be passed through when using --backend mode's method POST
@@ -167,14 +200,14 @@ class backendCase extends Drush_CommandTestCase {
     $this->drush('php-eval', array($php), $options);
     $parsed = parse_backend_output($this->getOutput());
     // assert that $parsed has 'x' and 'data'
-    $this->assertEquals("array (
+    $this->assertEquals(array_diff(array (
   'x' => 'y',
-  'data' => 
+  'data' =>
   array (
     'a' => 1,
     'b' => 2,
   ),
-)", var_export($parsed['object'], TRUE));
+), $parsed['object']), array());
   }
 }
 

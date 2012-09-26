@@ -378,6 +378,7 @@ function drush_bootstrap_max_to_sitealias($site_record, $max_phase_index = NULL)
  * Helper function to collect any errors that occur during the bootstrap process.
  * Always returns FALSE, for convenience.
  */
+
 function drush_bootstrap_error($code, $message = null) {
   $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS');
   $errors[$code] = $message;
@@ -434,15 +435,13 @@ function _drush_bootstrap_drush() {
   // Normally this is exported using tput in the drush script.
   // If this is not present we do an additional check using stty here.
   // On Windows in CMD and PowerShell is this exported using mode con.
-  // PHP version prior to 5.3.0 is not supporting this, they always
-  // return 80 columns
   if (!($columns = getenv('COLUMNS'))) {
     // Trying to export the columns using stty.
     exec('stty size 2>&1', $columns_output, $columns_status);
     if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
 
     // If stty fails and Drush us running on Windows are we trying with mode con.
-    if (($columns_status || !$columns_count) && drush_is_windows() && version_compare(phpversion(), '5.3.0') > -1) {
+    if (($columns_status || !$columns_count) && drush_is_windows()) {
       $columns_output = array();
       exec('mode con', $columns_output, $columns_status);
       if (!$columns_status && is_array($columns_output)) {
@@ -653,7 +652,8 @@ function _drush_bootstrap_drupal_root_validate() {
     return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
   }
   if (!$signature = drush_valid_drupal_root($drupal_root)) {
-    return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
+   return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
+
   }
 
   drush_bootstrap_value('drupal_root', $drupal_root);
@@ -684,6 +684,10 @@ function _drush_bootstrap_drupal_root() {
   require_once DRUPAL_ROOT . '/' . DRUSH_DRUPAL_SIGNATURE;
   $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
   $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
+
+  if ($major_version < 6) {
+    drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
+  }
 
   // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
   // in prior versions.
@@ -997,7 +1001,7 @@ function drush_bootstrap_prepare() {
   }
 
   // Check supported version of PHP.
-  define('DRUSH_MINIMUM_PHP', '5.2.0');
+  define('DRUSH_MINIMUM_PHP', '5.3.2');
   if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0) {
     die('Your command line PHP installation is too old. Drush requires at least PHP ' . DRUSH_MINIMUM_PHP . "\n");
   }

@@ -559,6 +559,7 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
      'log' => TRUE,
      'integrate' => TRUE,
      'backend' => TRUE,
+     'dispatch-using-alias' => FALSE,
   );
   // Convert '#integrate' et. al. into backend options
   foreach ($command_options as $key => $value) {
@@ -629,6 +630,12 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  *            PATH) on remote servers.  You may also specify a different drush.php
  *            script explicitly.  You will need to set this when calling drush on
  *            a remote server if 'drush' is not in the PATH on that machine.
+ *          'dispatch-using-alias'
+ *            Optional. Defaults to FALSE.
+ *            If specified as a non-empty value the drush command will be
+ *            dispatched using the alias name on the command line, instead of
+ *            the options from the alias being added to the command line
+ *            automatically.
  * @param common_options
  *    Optional. Merged in with the options for each invocation.
  * @param backend_options
@@ -681,7 +688,16 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // Insure that contexts such as DRUSH_SIMULATE and NO_COLOR are included.
     $command_options += _drush_backend_get_global_contexts($site_record);
 
-    list($post_options, $commandline_options, $drush_global_options) = _drush_backend_classify_options($site_record, $command_options, $backend_options);
+    // If the caller has requested it, don't pull the options from the alias
+    // into the command line, but use the alias name for dispatching.
+    if (!empty($backend_options['dispatch-using-alias']) && isset($site_record['#name'])) {
+      list($post_options, $commandline_options, $drush_global_options) = _drush_backend_classify_options(array(), $command_options, $backend_options);
+      $site_record_to_dispatch = '@' . ltrim($site_record['#name'], '@');
+    }
+    else {
+      list($post_options, $commandline_options, $drush_global_options) = _drush_backend_classify_options($site_record, $command_options, $backend_options);
+      $site_record_to_dispatch = '';
+    }
     $site_record += array('path-aliases' => array());
     $site_record['path-aliases'] += array(
       '%drush-script' => NULL,
@@ -690,6 +706,7 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     $site = (array_key_exists('#name', $site_record) && !array_key_exists($site_record['#name'], $invocation_options)) ? $site_record['#name'] : $index++;
     $invocation_options[$site] = array(
       'site-record' => $site_record,
+      'site-record-to-dispatch' => $site_record_to_dispatch,
       'command' => $command,
       'args' => $args,
       'post-options' => $post_options,
@@ -740,6 +757,7 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
   $cmds = array();
   foreach ($invocation_options as $site => $item) {
     $site_record = $item['site-record'];
+    $site_record_to_dispatch = $item['site-record-to-dispatch'];
     $command = $item['command'];
     $args = $item['args'];
     $post_options = $item['post-options'];
@@ -755,7 +773,7 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
     $drush_path = $site_record['path-aliases']['%drush-script'];
     $drush_command_path = drush_build_drush_command($drush_path, array_key_exists('php', $command_options) ? $command_options['php'] : NULL, $os, array_key_exists('remote-host', $site_record));
-    $cmd = _drush_backend_generate_command($site_record, $drush_command_path . " " . _drush_backend_argument_string($drush_global_options, $os) . " " .  $command, $args, $commandline_options, $backend_options) . ' 2>&1';
+    $cmd = _drush_backend_generate_command($site_record, $drush_command_path . " " . _drush_backend_argument_string($drush_global_options, $os) . " " . $site_record_to_dispatch . " " . $command, $args, $commandline_options, $backend_options) . ' 2>&1';
     $cmds[$site] = array(
       'cmd' => $cmd,
       'post-options' => $post_options,
@@ -834,7 +852,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
     $drush_local_options = $backend_options['drush-local-options'];
     $command_options += $drush_local_options;
   }
-  if (!empty($backend_options['backend']) && empty($backend_options['interactive'])) {
+  if (!empty($backend_options['backend']) && empty($backend_options['interactive']) && empty($backend_options['fork'])) {
     $drush_global_options['backend'] = '2';
   }
   if (!empty($backend_options['interactive'])) {
@@ -896,7 +914,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
  *
  * @return
  *   If the command could not be completed successfully, FALSE.
- *   If one command was executed, this will return an associative array containing 
+ *   If one command was executed, this will return an associative array containing
  *   the data from drush_backend_output().
  *   If multiple commands were executed, this will return an associative array
  *   containing one item, 'concurrent', which will contain a list of the different

@@ -456,7 +456,6 @@ function drush_valid_db_credentials() {
               drush_log(dt("Unknown error connecting to pgsql database via !constr", array('!constr' => $conn_string)), 'bootstrap');
             }
             else {
-              require_once './includes/unicode.inc';
               drush_log(decode_entities($php_errormsg), 'bootstrap');
             }
             return FALSE;
@@ -467,7 +466,7 @@ function drush_valid_db_credentials() {
     case 7:
     default:
       $type = ( $type=='oracle' ? 'oci' : $type); // fix PDO driver name, should go away in Drupal 8
-      // Drupal >=7 requires PDO and drush requires php 5.2, that ships with PDO
+      // Drupal >=7 requires PDO and drush requires php 5.3 which ships with PDO
       // but it may be compiled with --disable-pdo.
       if (!class_exists('PDO')) {
         drush_log(dt('PDO support is required.'), 'bootstrap');
@@ -738,15 +737,22 @@ function drush_is_local_host($host) {
     return TRUE;
   }
 
-  // If uname -n returns an fqdn (that is, uname -n == hostname -f),
-  // then we will require that it exactly match the host in order
-  // to be considered local.  However, the usual convention is for
-  // uname -n to return only the node name (that is, uname -n == hostname -a).
-  // When this is the case, we will consider $host to be local if the
-  // machine portion of it (everything up to the first dot) matches the
-  // current value of uname -n.  We prefer uname -n to hostname as
-  // the output of uname is more regular than hostname.
+  // We'll start out by asking for uname -n via php_uname, since
+  // that is most portable.  On Linux, uname -n returns the contents of
+  // /etc/hostname, which, according to `man hostname`, should never
+  // contain the fqdn.  We will therefore also try `hostname -f`, and
+  // see if we can get the fqdn from that.
   $uname = php_uname('n');
+  if ((strpos($uname,'.') === FALSE) && (!drush_is_windows())) {
+    $hostname = exec('hostname -f');
+    if (!empty($hostname)) {
+      $uname = $hostname;
+    }
+  }
+  // We will require an exact match if we have the fqdn for this
+  // host; if we only have the short name, then we will consider it
+  // to be a match if it matches the first part of the remote-host
+  // item (up to the first dot).
   return (strpos($uname,'.') !== FALSE) ? ($host == $uname) : substr($host . '.',0,strlen($uname)+1) == $uname . '.';
 }
 

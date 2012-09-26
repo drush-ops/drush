@@ -151,12 +151,13 @@ function drush_core_watchdog_show_many($filter = NULL) {
   if ($rsc === FALSE) {
     return drush_log(dt('Aborting.'));
   }
+  $table = array();
   $header = array(dt('Id'), dt('Date'), dt('Severity'), dt('Type'), dt('Message'));
   while ($result = drush_db_fetch_object($rsc)) {
     $row = core_watchdog_format_result($result, $full);
     $table[] = array($row->wid, $row->date, $row->severity, $row->type, $row->message);
   }
-  if (empty($table)) {
+  if (empty($table) && !$tail) {
     return drush_log(dt('No log messages available.'), 'ok');
   }
   else {
@@ -169,12 +170,18 @@ function drush_core_watchdog_show_many($filter = NULL) {
   }
 
   if ($tail) {
-    // We will reuse the table object to display each line generated while in tail mode.
-    // To make it possible some hacking is done on the object: remove the header and reset the rows on each iteration.
+    // Reuse the table object to display each line generated while in tail mode.
+    // To make it possible some hacking is done on the object:
+    // remove the header and reset the rows on each iteration.
     $tbl->_headers = NULL;
-    // Obtain the last wid.
-    $last = array_pop($table);
-    $last_wid = $last[0];
+    // Obtain the last wid. If the table has no rows, start at 0.
+    if (count($table) > 1) {
+      $last = array_pop($table);
+      $last_wid = $last[0];
+    }
+    else {
+      $last_wid = 0;
+    }
     // Adapt the where snippet.
     if ($where['where'] != '') {
       $where['where'] .= ' AND ';
@@ -254,7 +261,7 @@ function core_watchdog_format_result($result, $full = FALSE) {
     unset($result->uid);
     $message_length = PHP_INT_MAX;
   }
-  
+
   $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), $message_length, FALSE, FALSE);
 
   return $result;

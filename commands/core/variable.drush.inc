@@ -17,11 +17,12 @@ function variable_drush_command() {
   $items['variable-get'] = array(
     'description' => 'Get a list of some or all site variables and values.',
     'arguments' => array(
-      'name' => 'A string to filter the variables by.  Only variables beginning with the string will be listed.',
+      'name' => 'A string to filter the variables by. Variables whose name contains the string will be listed.',
     ),
     'examples' => array(
       'drush vget' => 'List all variables and values.',
-      'drush vget user' => 'List all variables beginning with the string "user".',
+      'drush vget user' => 'List all variables containing the string "user".',
+      'drush vget site_mail --exact' => 'Show the variable with the exact key "site_mail".',
     ),
     'options' => array(
       'format' => array(
@@ -29,6 +30,7 @@ function variable_drush_command() {
         'example-value' => 'export',
       ),
       'pipe' => 'A synonym for --format=export. Useful for pasting into code.',
+      'exact' => 'Only get the one variable that exactly matches the specified name.',
     ),
     'aliases' => array('vget'),
   );
@@ -41,7 +43,8 @@ function variable_drush_command() {
     'required-arguments' => TRUE,
     'options' => array(
       'yes' => 'Skip confirmation if only one variable name matches.',
-      'always-set' => 'Always skip confirmation.',
+      'always-set' => array('description' => 'Older synonym for --exact; deprecated.', 'hidden' => TRUE),
+      'exact' => 'The exact name of the variable to set has been provided; do not prompt for similarly-named variables.',
       'format' => array(
         'description' => 'Format to parse the object. Use "auto" to detect format from value (default), "string", "integer" or "boolean" for corresponding primitive type, and "json" for JSON.',
         'example-value' => 'boolean',
@@ -49,7 +52,7 @@ function variable_drush_command() {
     ),
     'examples' => array(
       'drush vset --yes preprocess_css TRUE' => 'Set the preprocess_css variable to true. Skip confirmation if variable already exists.',
-      'drush vset --always-set maintenance_mode 1' => 'Take the site offline; skips confirmation even if maintenance_mode variable does not exist. Variable is rewritten to site_offline for Drupal 6.',
+      'drush vset --exact maintenance_mode 1' => 'Take the site offline; skips confirmation even if maintenance_mode variable does not exist. Variable is rewritten to site_offline for Drupal 6.',
       'drush vset pr TRUE' => 'Choose from a list of variables beginning with "pr" to set to (bool)true.',
       'php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush vset --format=json project_dependency_excluded_dependencies -'=> 'Set a variable to a complex value (e.g. array)',
     ),
@@ -121,15 +124,20 @@ function drush_variable_get() {
   $keys = array_keys($conf);
   if ($args = func_get_args()) {
     $args[0] = drush_variable_name_adjust($args[0]);
+    if (drush_get_option('exact', FALSE)) {
+      $keys = in_array($args[0], $keys) ? array($args[0]) : array();
+    }
     $keys = preg_grep("/{$args[0]}/", $keys);
   }
 
+  $pipe = array();
   foreach ($keys as $name) {
     $value = $conf[$name];
-    drush_print_pipe(drush_format($value, $name, 'export'));
+    $pipe[] = drush_format($value, $name, 'export');
     drush_print(drush_format($value, $name));
     $returns[$name] = $value;
   }
+  drush_print_pipe($pipe);
 
   if (empty($keys)) {
     return drush_set_error('No matching variable found.');
@@ -189,7 +197,10 @@ function drush_variable_set() {
     $display = '"' . $value . '"';
   }
 
-  if (drush_get_option('always-set', FALSE) || count($options) == 1 || $match) {
+  // Check 'always-set' for compatibility with older scripts; --exact is preferred.
+  $always_set = drush_get_option('always-set', FALSE) || drush_get_option('exact', FALSE);
+
+  if ($always_set || count($options) == 1 || $match) {
     variable_set($args[0], $value);
     drush_log(dt('!name was set to !value.', array('!name' => $args[0], '!value' => $display)), 'success');
     return '';

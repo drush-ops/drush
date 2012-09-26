@@ -79,6 +79,21 @@ function drush_shell_exec($cmd) {
   return _drush_shell_exec(func_get_args());
 }
 
+/*
+ * Returns executable code for invoking preferred test editor.
+ *
+ * The next line after calling this function is usually
+ *   @code drush_shell_exec_interactive($exec, $filepath, $filepath) @endcode
+ *
+ * @see drush_config_edit()
+ */
+function drush_get_editor() {
+  $bg = drush_get_option('bg') ? '&' : '';
+  // see http://drupal.org/node/1740294
+  $exec = drush_get_option('editor', '${VISUAL-${EDITOR-vi}}') . " %s $bg";
+  return $exec;
+}
+
 /**
  * Executes a command in interactive mode.
  *
@@ -111,7 +126,17 @@ function _drush_shell_exec($args, $interactive = FALSE) {
   for ($x = 1; $x < sizeof($args); $x++) {
     $args[$x] = drush_escapeshellarg($args[$x]);
   }
-  $command = call_user_func_array('sprintf', $args);
+  // Important: we allow $args to take one of two forms here.  If
+  // there is only one item in the array, it is the already-escaped
+  // command string, but otherwise sprintf is used.  In the case
+  // of pre-escaped strings, sprintf will fail if any of the escaped
+  // parameters contain '%', so we must not call sprintf unless necessary.
+  if (count($args) == 1) {
+    $command = $args[0];
+  }
+  else {
+    $command = call_user_func_array('sprintf', $args);
+  }
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
     drush_print('Executing: ' . $command, 0, STDERR);
@@ -299,19 +324,7 @@ function drush_escapeshellarg($arg, $os = NULL) {
     return _drush_escapeshellarg_windows($arg);
   }
   else {
-    $escaped = _drush_escapeshellarg_linux($arg);
-    // We expect that our escapeshellarg should return exactly the
-    // same thing that escapeshellarg does on Linux; to be conservative,
-    // though, we will compare and correct against the reference implementation,
-    // and remove this check once everything works perfectly.
-    if (!drush_is_windows()) {
-      $compare_escaped = escapeshellarg($arg);
-      if ($compare_escaped != $escaped) {
-        drush_log(dt("Error in _drush_escapeshellarg_linux;\nReturned: !escaped\nExpected: !expected", array('!escaped' => $escaped, '!expected' => $compare_escaped)), 'debug');
-        $escaped = $compare_escaped;
-      }
-    }
-    return $escaped;
+    return _drush_escapeshellarg_linux($arg);
   }
 }
 
@@ -350,6 +363,11 @@ function _drush_escapeshellarg_linux($arg) {
   $arg = preg_replace('/\'/', '\'\\\'\'', $arg);
 
   // Replace "\t", "\n", "\r", "\0", "\x0B" with a whitespace.
+  // Note that this replacement makes Drush's escapeshellarg work differently
+  // than the built-in escapeshellarg in PHP on Linux, as these characters
+  // usually are NOT replaced. However, this was done deliberately to be more
+  // conservative when running _drush_escapeshellarg_linux on Windows
+  // (this can happen when generating a command to run on a remote Linux server.)
   $arg = str_replace(array("\t", "\n", "\r", "\0", "\x0B"), ' ', $arg);
 
   // Add surrounding quotes.

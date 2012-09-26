@@ -97,76 +97,8 @@ function _make_download_file($download, $cache_duration = DRUSH_CACHE_LIFETIME_D
   $tmp_path = make_tmp();
   // Ensure that we aren't including the querystring when generating a filename
   // to save our download to.
-  $file = basename(reset(explode('?', $download, 2)));
+  $file = basename(current(explode('?', $download, 2)));
   return drush_download_file($download, $tmp_path . '/' . $file, $cache_duration);
-}
-
-/**
- * Determines the MIME content type of the specified file. The power of this
- * function depends on whether the PHP installation has either
- * mime_content_type() or finfo installed -- if not, only tar, gz, and zip types
- * can be detected, and other file types will return 'unknown'.
- *
- * @return mixed
- *   The MIME content type of the file, 'unknown', or FALSE on error.
- */
-function drush_mime_content_type($filename) {
-  // Tar files have no magic value, so we can detect them only by filename.
-  if (strrpos($filename, '.tar') === (strlen($filename) - 4)) {
-    return 'application/x-tar';
-  }
-
-  $content_type = '';
-
-  // mime_content_type() and the finfo class are not available everywhere.
-  if (function_exists('mime_content_type')) {
-    $content_type = mime_content_type($filename);
-  }
-  elseif (class_exists('finfo')) {
-    $finfo = new finfo(FILEINFO_MIME);
-    // We only want the first part, before the ;
-    $type = explode(';', $finfo->file($filename));
-    $content_type = $type[0];
-  }
-
-  // If we found what we're looking for, we're done.
-  if (!empty($content_type) && ($content_type == 'application/x-gzip' || $content_type == 'application/x-zip')) {
-    return $content_type;
-  }
-
-  // If PHP's built-ins aren't present or PHP is configured in such a way that
-  // all these files are considered octet-stream (e.g with mod_mime_magic and
-  // an http conf that's serving all archives as octet-stream for other
-  // reasons) we'll detect (a few select) mime types on our own by examing the
-  // file's magic header bytes.
-  if ($file = fopen($filename, 'rb')) {
-    $first = fread($file, 2);
-    fclose($file);
-
-    if ($first === FALSE) {
-      return FALSE;
-    }
-
-    // Interpret the two bytes as a little endian 16-bit unsigned int.
-    $data = unpack('v', $first);
-    switch ($data[1]) {
-      case 0x8b1f:
-        // First two bytes of gzip files are 0x1f, 0x8b.
-        // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer.
-        return 'application/x-gzip';
-
-      case 0x4b50:
-        // First two bytes of zip files are 0x50, 0x4b ('PK').
-        // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers.
-        return 'application/zip';
-
-      default:
-        // Not a file type we can detect. If PHP's built-ins gave us
-        // something, we can at least return that.
-        return !empty($content_type) ? $content_type : 'unknown';
-    }
-  }
-  return FALSE;
 }
 
 /**
@@ -178,97 +110,48 @@ function drush_mime_content_type($filename) {
 function make_download_file_unpack($filename, $download_location, $name, $subtree = NULL) {
   $success = FALSE;
 
-  switch (drush_mime_content_type($filename)) {
-    case 'application/x-gzip':
-      // I'd like to just use tar -z, but apparently it breaks on windoze. Why
-      // do they always have to ruin everything?
-      $success = make_download_file_unpack_gzip($filename, $download_location, $subtree);
-      break;
+  if (drush_file_is_tarball($filename)) {
+    $tmp_location = drush_tempdir();
 
-    case 'application/x-tar':
-      $success = make_download_file_unpack_tar($filename, $download_location, $subtree);
-      break;
+    if (!drush_tarball_extract($filename, $tmp_location)) {
+      return FALSE;
+    }
 
-    case 'application/x-zip':
-    case 'application/zip':
-      $success = make_download_file_unpack_zip($filename, $download_location, $subtree);
-      break;
-
-    default:
-      // If this is an individual file, and no filename has been specified,
-      // assume the original name.
-      if (is_file($filename) && !$name) {
-        $name = basename($filename);
+    if ($subtree) {
+      $tmp_location .= '/' . $subtree;
+      if (!file_exists($tmp_location)) {
+        return drush_set_error('DRUSH_MAKE_SUBTREE_NOT_FOUND', dt('Directory !subtree not found within !file', array('!subtree' => $subtree, '!file' => $filename)));
       }
+    }
+    else {
+      $files = scandir($tmp_location);
+      unset($files[0]); // . directory
+      unset($files[1]); // .. directory
+      if ((count($files) == 1) && is_dir($tmp_location . '/' . current($files))) {
+        $tmp_location .= '/' . current($files);
+      }
+    }
 
-      // The destination directory has already been created by
-      // findDownloadLocation().
-      $destination = $download_location . ($name ? '/' . $name : '');
-      $success = drush_move_dir($filename, $destination, TRUE);
+    $success = drush_move_dir($tmp_location, $download_location, TRUE);
+
+    // Remove the tarball.
+    if (file_exists($filename)) {
+      drush_delete_dir($filename, TRUE);
+    }
+  }
+  else {
+    // If this is an individual file, and no filename has been specified,
+    // assume the original name.
+    if (is_file($filename) && !$name) {
+      $name = basename($filename);
+    }
+
+    // The destination directory has already been created by
+    // findDownloadLocation().
+    $destination = $download_location . ($name ? '/' . $name : '');
+    $success = drush_move_dir($filename, $destination, TRUE);
   }
   return $success ? $download_location : FALSE;
-}
-
-/**
- * Unpacks a tar file to the specified location.
- *
- * @return boolean
- *   TRUE or FALSE depending on whether the operation was successful.
- */
-function make_download_file_unpack_tar($filename, $download_location, $subtree = NULL) {
-  $tmp_path = drush_tempdir();
-
-  list($main_directory) = array_reverse(explode('/', $download_location));
-
-  drush_shell_exec('%s -x -C %s -f %s', drush_get_tar_executable(), $tmp_path, $filename);
-
-  return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
-}
-
-/**
- * Unpacks a gzip file to the specified location.
- *
- * @return boolean
- *   TRUE or FALSE depending on whether the operation was successful.
- */
-function make_download_file_unpack_gzip($filename, $download_location, $subtree = NULL) {
-  // Find out where contents will end up. Retrieve last column of output using
-  // awk.
-  drush_shell_exec("gzip --list %s", $filename);
-  $info = drush_shell_exec_output();
-  if ($info) {
-    foreach ($info as $line) {
-      $matches = array();
-      preg_match('/^\s+[0-9]+\s+[0-9-]+\s+[0-9\.%]+\s+(.*)$/', $line, $matches);
-      if (isset($matches[1])) {
-        $file = $matches[1];
-        break;
-      }
-    }
-    if (isset($file)) {
-      // Unzip it and then delete the tar file.
-      drush_shell_exec('gzip -d %s', $filename);
-      return make_download_file_unpack_tar($file, $download_location, $subtree);
-    }
-  }
-}
-
-/**
- * Unpack a zip file.
- */
-function make_download_file_unpack_zip($filename, $download_location, $subtree = NULL) {
-  $tmp_path = drush_tempdir();
-
-  list($main_directory) = array_reverse(explode('/', $download_location));
-
-  $result = drush_shell_exec("unzip %s -d %s", $filename, $tmp_path);
-
-  if (!$result) {
-    make_error('UNZIP_ERROR', dt('Unable to unzip @filename.', array('@filename' => $filename)));
-    return FALSE;
-  }
-
-  return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
 }
 
 /**
@@ -450,41 +333,6 @@ function make_download_git($name, $download, $download_location) {
 
   // Move back to last current directory (first line).
   chdir($cwd);
-
-  // Handle .info file re-writing (if so desired).
-  if (!drush_get_option('no-gitinfofile', FALSE)) {
-    // Figure out the proper version string to use based on the .make file.
-    // Best case is the .make file author told us directly.
-    if (!empty($download['full_version'])) {
-      $full_version = $download['full_version'];
-    }
-    // Next best is if we have a tag, since those are identical to versions.
-    elseif (!empty($download['tag'])) {
-      $full_version = $download['tag'];
-    }
-    // If we have a branch, append '-dev'.
-    elseif (!empty($download['branch'])) {
-      $full_version = $download['branch'] . '-dev';
-    }
-    // Ugh. Not sure what else we can do in this case.
-    elseif (!empty($download['revision'])) {
-      $full_version = $download['revision'];
-    }
-    // Probably can never reach this case.
-    else {
-      $full_version = 'unknown';
-    }
-
-    // If the version string ends in '.x-dev' do the Git magic to figure out
-    // the appropriate 'rebuild version' string, e.g. '7.x-1.2+7-dev'.
-    $matches = array();
-    if (preg_match('/^(.+).x-dev$/', $full_version, $matches)) {
-      require_once dirname(__FILE__) . '/../pm/package_handler/git_drupalorg.inc';
-      $full_version = drush_pm_git_drupalorg_compute_rebuild_version($tmp_location, $matches[1]);
-    }
-    require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
-    drush_pm_inject_info_file_metadata($tmp_location, $name, $full_version);
-  }
 
   // Remove .git/ directory if working-copy flag was not specified.
   if (!$wc && file_exists($tmp_location . '/.git')) {

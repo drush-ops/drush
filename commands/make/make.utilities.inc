@@ -85,6 +85,9 @@ function make_prune_info_file($info, $include_only = array()) {
     $pruned = TRUE;
     foreach ($include_only as $type => $keys) {
 
+      if (!isset($info[$type])) {
+        continue;
+      }
       // For translating
       // dt("Projects");
       // dt("Libraries");
@@ -252,6 +255,10 @@ function make_validate_info_file($info) {
       }
     }
   }
+
+  // Apply defaults after projects[] array has been expanded, but prior to
+  // external validation.
+  make_apply_defaults($info);
 
   foreach (drush_command_implements('make_validate_info') as $module) {
     $function = $module . '_make_validate_info';
@@ -458,36 +465,24 @@ function make_get_data($data_source) {
 }
 
 /**
- * Helper to provide sys_get_temp_dir if on php < 5.2.1.
+ * Apply any defaults.
+ *
+ * @param array &$info
+ *   A parsed make array.
  */
-if (!function_exists('sys_get_temp_dir')) {
-  /**
-   * Based on
-   * http://www.phpit.net/article/creating-zip-tar-archives-dynamically-php/2/
-   */
-  function sys_get_temp_dir() {
-    // Try to get from environment variable.
-    if (!empty($_ENV['TMP'])) {
-      return realpath($_ENV['TMP']);
-    }
-    elseif (!empty($_ENV['TMPDIR'])) {
-      return realpath($_ENV['TMPDIR']);
-    }
-    elseif (!empty($_ENV['TEMP'])) {
-      return realpath($_ENV['TEMP']);
-    }
-    else {
-      // Detect by creating a temporary file.
-      // Try to use system's temporary directory as random name
-      // shouldn't exist.
-      $temp_file = tempnam(md5(uniqid(rand(), TRUE)), '');
-      if ($temp_file) {
-        $temp_dir = realpath(dirname($temp_file));
-        unlink($temp_file);
-        return $temp_dir;
+function make_apply_defaults(&$info) {
+  if (isset($info['defaults'])) {
+    $defaults = $info['defaults'];
+    unset($info['defaults']);
+
+    foreach ($defaults as $type => $default_data) {
+      if (isset($info[$type])) {
+        foreach ($info[$type] as $project => $data) {
+          $info[$type][$project] += $default_data;
+        }
       }
       else {
-        return FALSE;
+        drush_log(dt("Unknown attribute '@type' in defaults array", array('@type' => $type)), 'warning');
       }
     }
   }

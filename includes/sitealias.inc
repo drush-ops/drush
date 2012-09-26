@@ -130,13 +130,12 @@ function drush_sitealias_valid_alias_format($alias) {
  * values in the specification.
  *
  * Site specifications come in several forms:
- *
- * 1.) /path/to/drupal#sitename
- * 2.) user@server/path/to/drupal#sitename
- * 3.) user@server/path/to/drupal            (sitename == server)
- * 4.) user@server#sitename                  (only if $option['r'] set in some drushrc file on server)
- * 5.) #sitename                             (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
- * 6.) sitename                              (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
+ * - /path/to/drupal#sitename
+ * - user@server/path/to/drupal#sitename
+ * - user@server/path/to/drupal            (sitename == server)
+ * - user@server#sitename                  (only if $option['r'] set in some drushrc file on server)
+ * - #sitename                             (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
+ * - sitename                              (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
  *
  * Note that in the case of the first four forms, it is also possible
  * to add additional site variable to the specification using uri query
@@ -408,7 +407,9 @@ function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
         $alias_options = array('site-aliases' => array($aliasname => $result));
         _drush_sitealias_add_inherited_values($alias_options['site-aliases']);
         drush_set_config_special_contexts($alias_options);
-        drush_log(dt('Loaded alias !alias from file !file', array('!alias' => $alias, '!file' => $result['#file'])));
+        if (array_key_exists('#file', $result)) {
+          drush_log(dt('Loaded alias !alias from file !file', array('!alias' => $alias, '!file' => $result['#file'])));
+        }
       }
     }
   }
@@ -823,22 +824,22 @@ function drush_sitealias_get_db_spec(&$alias_record, $default_to_self = FALSE, $
  */
 function drush_sitealias_add_db_settings(&$alias_record) {
   $altered_record = FALSE;
-
-  // If the alias record does not have a defined 'databases' entry,
-  // then we'll need to look one up
-  if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
-    $values = drush_invoke_process($alias_record, "sql-conf", array(), array('all' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
-    if (is_array($values) && ($values['error_status'] == 0)) {
-      $altered_record = TRUE;
-      // If there are any special settings in the '@self' record returned by drush_invoke_process,
-      // then add those into our altered record as well
-      if (array_key_exists('self', $values)) {
-        $alias_record = array_merge($values['self'], $alias_record);
+  if (isset($alias_record['root'])) {
+    // If the alias record does not have a defined 'databases' entry,
+    // then we'll need to look one up
+    if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
+      $values = drush_invoke_process($alias_record, "sql-conf", array(), array('all' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
+      if (is_array($values) && ($values['error_status'] == 0)) {
+        $altered_record = TRUE;
+        // If there are any special settings in the '@self' record returned by drush_invoke_process,
+        // then add those into our altered record as well
+        if (array_key_exists('self', $values)) {
+          $alias_record = array_merge($values['self'], $alias_record);
+        }
+        drush_sitealias_cache_db_settings($alias_record, $values['object']);
       }
-      drush_sitealias_cache_db_settings($alias_record, $values['object']);
     }
   }
-
   return $altered_record;
 }
 
@@ -1685,7 +1686,14 @@ function _drush_sitealias_preflight_path($path) {
   return array('alias' => $alias, 'path' => $path, 'machine' => $machine);
 }
 
-
+/**
+ * Given a properly-escaped options string, replace any occurance of
+ * %files and so on embedded inside it with its corresponding path.
+ */
+function drush_sitealias_evaluate_paths_in_options($option_string) {
+  $path_aliases = _core_path_aliases();
+  return str_replace(array_keys($path_aliases), array_values($path_aliases), $option_string);
+}
 
 /**
  * Evaluate a path from its shorthand form to a literal path

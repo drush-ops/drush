@@ -4,10 +4,12 @@
 # This script is a simple wrapper that will run Drush with the most appropriate
 # php executable it can find.
 #
+# Solaris users: Add /usr/xpg4/bin to the head of your PATH
+#
 
 # Get the absolute path of this executable
-ORIGDIR=$(pwd)
-SELF_PATH=$(cd -P -- "$(dirname -- "$0")" && pwd -P) && SELF_PATH=$SELF_PATH/$(basename -- "$0")
+SELF_DIRNAME="`dirname -- "$0"`"
+SELF_PATH="`cd -P -- "$SELF_DIRNAME" && pwd -P`/`basename -- "$0"`"
 
 # Resolve symlinks - this is the equivalent of "readlink -f", but also works with non-standard OS X readlink.
 while [ -h "$SELF_PATH" ]; do
@@ -15,28 +17,28 @@ while [ -h "$SELF_PATH" ]; do
     # 2) cd to the directory of where the symlink points
     # 3) Get the pwd
     # 4) Append the basename
-    DIR=$(dirname -- "$SELF_PATH")
-    SYM=$(readlink $SELF_PATH)
-    SELF_PATH=$(cd "$DIR" && cd "$(dirname -- "$SYM")" && pwd)/$(basename -- "$SYM")
+    DIR="`dirname -- "$SELF_PATH"`"
+    SYM="`readlink $SELF_PATH`"
+    SYM_DIRNAME="`dirname -- "$SYM"`"
+    SELF_PATH="`cd "$DIR" && cd "$SYM_DIRNAME" && pwd`/`basename -- "$SYM"`"
 done
-cd "$ORIGDIR"
 
 # Build the path to drush.php.
-SCRIPT_PATH=$(dirname "$SELF_PATH")/drush.php
-case $(uname -a) in
+SCRIPT_PATH="`dirname "$SELF_PATH"`/drush.php"
+case "`uname -a`" in
   CYGWIN*)
-    SCRIPT_PATH=$(cygpath -w -a -- "$SCRIPT_PATH") ;;
+    SCRIPT_PATH="`cygpath -w -a -- "$SCRIPT_PATH"`" ;;
 esac
 
 # If not exported, try to determine and export the number of columns.
-# We do not want to run $(tput cols) if $TERM is empty or "dumb", because
+# We do not want to run `tput cols` if $TERM is empty or "dumb", because
 # if we do, tput will output an undesirable error message to stderr.  If
-# we redirect stderr in any way, e.g. $(tput cols 2>/dev/null), then the
+# we redirect stderr in any way, e.g. `tput cols 2>/dev/null`, then the
 # error message is suppressed, but tput cols becomes confused about the
 # terminal and prints out the default value (80).
 if [ -z $COLUMNS ] && [ -n "$TERM" ] && [ "$TERM" != dumb ] && [ ! -z "`which tput`" ] ; then
   # Note to cygwin users: install the ncurses package to get tput command.
-  if COLUMNS=$(tput cols); then
+  if COLUMNS="`tput cols`"; then
     export COLUMNS
   fi
 fi
@@ -47,27 +49,28 @@ if [ ! -z "$DRUSH_PHP" ] ; then
 else
   # Default to using the php that we find on the PATH.
   # Note that we need the full path to php here for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
-  php=`which php`
+  php="`which php`"
 
   # We check for a command line (cli) version of php, and if found use that.
-  which php-cli >/dev/null 2>&1
+  php-cli -v >/dev/null 2>&1
   if [ "$?" = 0 ] ; then
-    php=`which php-cli`
+    php="`which php-cli`"
   fi
 
   # On MSYSGIT, we need to use "php", not the full path to php
-  if [ ! -z "$MSYSTEM" ] && [ "x${MSYSTEM:0:5}" = "xMINGW" ] ; then
+  # See http://drupal.org/node/1659014 for an explanation of the comparison op.
+  if [ ! -z "$MSYSTEM" ] && [ "x${MSYSTEM}" != "x${MSYSTEM#MINGW}" ] ; then
     php="php"
   fi
 fi
 
 # Check to see if the user has provided a php.ini file or drush.ini file in any conf dir
 # Last found wins, so search in reverse priority order
-for conf_dir in $(dirname "$SELF_PATH") /etc/drush $HOME/.drush ; do
-  if [ -f $conf_dir/php.ini ] ; then
+for conf_dir in "`dirname "$SELF_PATH"`" /etc/drush $HOME/.drush ; do
+  if [ -f "$conf_dir/php.ini" ] ; then
     drush_php_ini=$conf_dir/php.ini
   fi
-  if [ -f $conf_dir/drush.ini ] ; then
+  if [ -f "$conf_dir/drush.ini" ] ; then
     drush_php_override=$conf_dir/drush.ini
   fi
 done

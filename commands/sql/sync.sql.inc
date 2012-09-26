@@ -170,6 +170,9 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       }
       return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for !destination', array('!destination' => $destination)));
     }
+    if (($source_db_url['remote-host'] == $target_db_url['remote-host']) && ($source_db_url['database'] == $target_db_url['database']) && !drush_get_context('DRUSH_SIMULATE')) {
+      return drush_set_error('DRUSH_SAME_DATABASE', dt('Source and target databases are the same; please sync to a different target.'));
+    }
 
     // Set up the result file and the remote file.
     // If the result file is not set, then create a temporary file.

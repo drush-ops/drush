@@ -43,15 +43,19 @@ function package_handler_download_project(&$request, $release) {
       if ((string)$file->variant == drush_get_option('variant', 'full') && (string)$file->archive_type == 'tar.gz') {
         $release['download_link'] = (string)$file->url;
         $release['mdhash'] = (string)$file->md5;
+        $release['date'] = (string)$file->filedate;
         break;
       }
     }
   }
 
-  // Dev snapshots can be cached for 4 hours and releases for 1 year.
-  $max_age = strpos($release['download_link'], '-dev') !== FALSE ? 3600*4 : 86400*365;
+  // Add <date> to URL so it is part of the cache key . Dev snapshots can then be cached forever.
+  if (strpos($release['download_link'], '-dev') !== FALSE) {
+    $release['download_link'] .= '?date=' . $release['date'];
+  }
   $filename = basename($release['download_link']);
-  $path = drush_download_file($release['download_link'], $request['base_project_path'] . DIRECTORY_SEPARATOR . $filename, $max_age);
+  $cache_duration = 86400*365;
+  $path = drush_download_file($release['download_link'], $request['base_project_path'] . DIRECTORY_SEPARATOR . $filename, $cache_duration);
   if ($path || drush_get_context('DRUSH_SIMULATE')) {
     drush_log("Downloading " . $filename . " was successful.");
   }

@@ -168,7 +168,6 @@ function pm_drush_command() {
       'pipe' => 'Returns a whitespace delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
       'notes' => 'Show release notes for each project to be updated.',
       'no-core' => 'Only update modules and skip the core update.',
-      'self-update' => 'Check for pending updates to drush itself. Set to 0 to avoid check.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'aliases' => array('upc'),
@@ -852,7 +851,7 @@ function drush_pm_enable_validate() {
       }
     }
   }
-  
+
   $searchpath = array();
   foreach (array_merge($modules, $themes) as $name) {
     $searchpath[] = dirname($extension_info[$name]->filename);
@@ -864,11 +863,11 @@ function drush_pm_enable_validate() {
   if (!empty($searchpath)) {
     _drush_add_commandfiles($searchpath);
   }
-  
+
   drush_set_context('PM_ENABLE_EXTENSION_INFO', $extension_info);
   drush_set_context('PM_ENABLE_MODULES', $modules);
   drush_set_context('PM_ENABLE_THEMES', $themes);
-  
+
   return TRUE;
 }
 
