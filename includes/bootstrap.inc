@@ -379,6 +379,13 @@ function drush_bootstrap_max_to_sitealias($site_record, $max_phase_index = NULL)
  * Always returns FALSE, for convenience.
  */
 
+function drush_bootstrap_error($code, $message = null) {
+  $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS');
+  $errors[$code] = $message;
+  drush_set_context('DRUSH_BOOTSTRAP_ERRORS', $errors);
+  return FALSE;
+}
+
 /**
  * Validate that Drush is running in a suitable environment.
  */
@@ -645,6 +652,7 @@ function _drush_bootstrap_drupal_root_validate() {
     return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
   }
   if (!$signature = drush_valid_drupal_root($drupal_root)) {
+   return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
 
   }
 
