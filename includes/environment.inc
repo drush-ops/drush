@@ -456,7 +456,6 @@ function drush_valid_db_credentials() {
               drush_log(dt("Unknown error connecting to pgsql database via !constr", array('!constr' => $conn_string)), 'bootstrap');
             }
             else {
-              require_once './includes/unicode.inc';
               drush_log(decode_entities($php_errormsg), 'bootstrap');
             }
             return FALSE;
