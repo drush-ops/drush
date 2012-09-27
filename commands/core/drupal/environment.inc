@@ -140,7 +140,13 @@ function drush_module_disable($modules) {
  */
 function drush_module_uninstall($modules) {
   require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-  drupal_uninstall_modules($modules);
+  // Break off 8.x functionality when we get another change.
+  if (drush_drupal_major_version() >= 8) {
+    module_uninstall($modules);
+  }
+  else {
+    drupal_uninstall_modules($modules);
+  }
 }
 
 /**
