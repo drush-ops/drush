@@ -194,7 +194,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
       $dbname = str_replace(DIRECTORY_SEPARATOR, '-', $db['database']);
       $result_file = count($sites) == 1 ? "$tmp/$dbname.sql" : str_replace('@', '', "$tmp/$key-$dbname.sql");
       $all_dbs[$key] = array(
-        'file' => $result_file,
+        'file' => basename($result_file),
         'driver' => $db['driver'],
       );
       $table_selection = drush_sql_get_table_selection();
