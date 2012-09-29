@@ -272,7 +272,8 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
         'cache' => NULL,
       );
       $this->drush('pm-download', array("drupal-$version_string"), $options);
-      mkdir(UNISH_SANDBOX . '/web/sites/all/drush');
+      // @todo This path is not proper in D8.
+      mkdir(UNISH_SANDBOX . '/web/sites/all/drush', 0777, 1);
     }
 
     // If specified, install Drupal as a multi-site.
