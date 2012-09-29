@@ -59,8 +59,7 @@ function drush_core_pre_site_install($profile = NULL) {
 
   if (!drush_file_not_empty($settingsfile)) {
     if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !drush_get_context('DRUSH_SIMULATE')) {
-      drush_set_error(dt('Failed to copy sites/default/default.settings.php to  @settingsfile', array('@settingsfile' => $settingsfile)));
-      return;
+      return drush_set_error(dt('Failed to copy sites/default/default.settings.php to  @settingsfile', array('@settingsfile' => $settingsfile)));
     }
 
     if (drush_drupal_major_version() == 6) {
