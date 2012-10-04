@@ -341,10 +341,10 @@ function drush_config_edit($config_name = '') {
 function drush_config_get_object($config_name) {
   $source = drush_get_option('source', 'database');
   if ($source == 'database') {
-    $config = new DatabaseStorage();
+    $config = drupal_container()->get('config.storage');
   }
   elseif ($source == 'file') {
-    $config = new FileStorage();
+    $config = drupal_container()->get('config.storage.staging');
   }
 
   $data = $config->read($config_name);
