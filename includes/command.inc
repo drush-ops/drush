@@ -1315,17 +1315,19 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
         $searchpath[] = conf_path() . '/modules';
         // Add all module paths, even disabled modules. Prefer speed over accuracy.
         $searchpath[] = 'sites/all/modules';
+        // In D8, we search top level directories as well.
+        if (drush_drupal_major_version() >=8) {
+          $searchpath[] = 'modules';
+        }
       }
       if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
         // Too early for variable_get('install_profile', 'default'); look in all profiles.
         // If we're definitely going to get to DRUPAL_CONFIGURATION, then wait and
         // see if we have 'install_profile' available there.
         $searchpath[] = "profiles";
+        $searchpath[] = "sites/all/profiles";
       }
-      // Planning ahead for Drush scripts in core Drupal.
-      if (drush_drupal_major_version() >=8) {
-        $searchpath[] = 'modules';
-      }
+      // TODO: Treat themes like modules and stop unconditionally searching here.
       $searchpath[] = 'sites/all/themes';
       $searchpath[] = conf_path() . '/themes';
       break;
