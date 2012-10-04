@@ -42,7 +42,7 @@
  *   2. In one of the default locations:
  *        a. /etc/drush
  *        b. $HOME/.drush
- *        c. The sites/all/drush folder for the current Drupal site
+ *        c. The /drush and /sites/all/drush folders for the current Drupal site
  *   3. Inside the sites folder of any bootstrapped Drupal site,
  *      or any local Drupal site indicated by an alias used as
  *      a parameter to a command

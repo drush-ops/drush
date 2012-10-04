@@ -318,7 +318,7 @@ You can put your Drush command file in a number of places:
 
   d) In the system-wide Drush commands folder, e.g. /usr/share/drush/commands.
 
-  e) In Drupal's sites/all/drush folder. Note, that you have to create the
+  e) In Drupal's /drush or sites/all/drush folders. Note, that you have to create the
      drush folder yourself.
 
 In any case, it is important that you end the filename with ".drush.inc", so

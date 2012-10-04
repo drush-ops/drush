@@ -494,7 +494,8 @@ function _drush_bootstrap_drush() {
   // affect these phases.
   drush_sitealias_check_arg();
 
-  // Load the config options from Drupal's sites/all/drush directory, even prior to bootstrapping the root
+  // Load the config options from Drupal's /drush and sites/all/drush directories,
+  // even prior to bootstrapping the root.
   drush_load_config('drupal');
 
   // Similarly, load the Drupal site configuration options upfront.
@@ -572,7 +573,6 @@ function _drush_bootstrap_select_drupal_site() {
     $drupal_root = drush_locate_root();
   }
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $drupal_root);
-  drush_set_context('DRUSH_SELECTED_DRUPAL_SITES_ALL_DRUSH', $drupal_root . '/sites/all/drush');
   $uri = _drush_bootstrap_selected_uri();
   drush_set_context('DRUSH_SELECTED_URI', $uri);
   drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($uri));

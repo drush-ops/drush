@@ -1245,7 +1245,7 @@ function drush_is_command($command) {
  * - Folders listed in the 'include' option (see example.drushrc.php).
  * - The system-wide drush commands folder, e.g. /usr/share/drush/commands
  * - The ".drush" folder in the user's HOME folder.
- * - sites/all/drush in current Drupal site.
+ * - /drush and sites/all/drush in current Drupal site.
  * - Folders belonging to enabled modules in the current Drupal site.
  *
  * Commands implementing hook_drush_load() in MODULE.drush.load.inc with
@@ -1296,8 +1296,9 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
         $searchpath[] = $per_user_config_dir;
       }
 
-      // Include commandfiles located in Drupal's sites/all/drush even before root is bootstrapped.
+      // Include commandfiles located in Drupal's /drush and sites/all/drush even before root is bootstrapped.
       if ($drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT')) {
+        $searchpath[] = $drupal_root . '/drush';
         $searchpath[] = $drupal_root . '/sites/all/drush';
       }
       break;

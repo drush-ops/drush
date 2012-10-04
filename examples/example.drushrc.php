@@ -9,7 +9,7 @@
  * listed below in order of precedence:
  *
  * 1.  Drupal site folder (e.g. sites/{default|example.com}/drushrc.php).
- * 2.  Drupal sites/all/drush folder.
+ * 2.  Drupal /drush and sites/all/drush folders.
  * 3.  In any location, as specified by the --config (-c) option.
  * 4.  User's .drush folder (i.e. ~/.drush/drushrc.php).
  * 5.  System wide configuration folder (e.g. /etc/drush/drushrc.php).
@@ -50,7 +50,7 @@
  *
  * Drush 5 no longer looks for aliases, configs or command files in the Drupal
  * root folder, so if you previously used drushrc.php files in the Drupal root
- * you will need to move the file to sites/all/drush/drushrc.php.
+ * you will need to move the file to /drush or /sites/all/drush/drushrc.php.
  *
  * The Drush commands 'rsync' and 'sql-sync' are special cases.  These commands
  * will load the configuration file for the site specified by the source
