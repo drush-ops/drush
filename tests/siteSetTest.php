@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group base
+ */
 class siteSetCommandCase extends Drush_CommandTestCase {
 
   function testSiteSet() {

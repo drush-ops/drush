@@ -2,7 +2,8 @@
 
 /**
  * core-quick-drupal tests.
- * @group make
+ *
+ * @group quick-drupal
  * @group slow
  */
 class quickDrupalCase extends Drush_CommandTestCase {

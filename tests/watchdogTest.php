@@ -3,6 +3,8 @@
 /*
  * @file
  *   Tests watchdog-show and watchdog-delete commands
+ *
+ * @group commands
  */
 class WatchdogCase extends Drush_CommandTestCase {
 

@@ -3,6 +3,8 @@
 /*
  * @file
  *   Tests for enable, disable, uninstall, pm-list commands.
+ *
+ * @group commands
  */
 class VariableCase extends Drush_CommandTestCase {
 

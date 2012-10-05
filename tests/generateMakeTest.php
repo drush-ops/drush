@@ -2,6 +2,9 @@
 
 /**
  * Generate makefile tests
+ *
+ * @group commands
+ * @group make
  */
 class generateMakeCase extends Drush_CommandTestCase {
   function testGenerateMake() {

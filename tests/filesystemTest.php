@@ -2,6 +2,8 @@
 
 /**
  * Filesystem related testing.
+ *
+ * @group base
  */
 class FilesystemCase extends Drush_CommandTestCase {
 

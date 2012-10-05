@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group base
+ */
 class completeCase extends Drush_CommandTestCase {
   /**
    * Write a config file that contains our configuration file.

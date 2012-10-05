@@ -2,6 +2,8 @@
 /*
  * @file
  *   Tests image-flush command
+ *
+ * @group commands
  */
 class ImageCase extends Drush_CommandTestCase {
 

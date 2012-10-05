@@ -2,11 +2,14 @@
 language: php
 php:
   - 5.3
-  - 5.4
+  #- 5.4
 env:
-  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=make,slow
+  #- UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=make,slow
   - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
-  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=slow
+  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=base
+  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=commands
+  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=pm
+  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=quick-drupal
   #- UNISH_DB_URL=pgsql://postgres:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=make
   #- UNISH_DB_URL=pgsql://postgres:@127.0.0.1 PHPUNIT_ARGS=--group=make
   #- UNISH_DB_URL=sqlite://none/of/this/matters

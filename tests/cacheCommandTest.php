@@ -2,6 +2,8 @@
 
 /**
   * cache command testing.
+  *
+  * @group base
   */
 class cacheCommandCase extends Drush_CommandTestCase {
   public function testCacheGetSetClear() {

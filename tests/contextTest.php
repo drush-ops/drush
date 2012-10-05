@@ -6,6 +6,8 @@
 *  do have some edges that need explicit testing.
 *
 *  @see drush/includes/context.inc.
+*
+*  @group base
 */
 
 class contextCase extends Drush_CommandTestCase {

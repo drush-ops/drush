@@ -1,8 +1,10 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for enable, disable, uninstall, pm-list commands.
+ *
+ * @group commands
  */
 class ConfigCase extends Drush_CommandTestCase {
 

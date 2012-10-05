@@ -9,6 +9,7 @@
 
 /*
  *  @group slow
+ *  @group pm
  */
 class pmUpdateCode extends Drush_CommandTestCase {
 
