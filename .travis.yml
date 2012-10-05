@@ -11,6 +11,6 @@ env:
   #- UNISH_DB_URL=pgsql://postgres:@127.0.0.1 PHPUNIT_ARGS=--group=make
   #- UNISH_DB_URL=sqlite://none/of/this/matters
 before_script:
-  - export UNISH_DRUSH="${PWD}/drush" && cd tests
+  - echo "sendmail_path='tee mail.out > /dev/null'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`; export UNISH_DRUSH="${PWD}/drush" && cd tests
 script: phpunit $PHPUNIT_ARGS
 
