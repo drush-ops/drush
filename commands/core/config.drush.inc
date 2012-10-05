@@ -9,6 +9,7 @@ use Drupal\Core\Config\Config;
 use Drupal\Core\Config\DatabaseStorage;
 use Drupal\Core\Config\FileStorage;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Dumper;
 
 /**
  * Implementation of hook_drush_help().
@@ -358,8 +359,13 @@ function drush_config_get_object($config_name) {
   $format = drush_get_option('format', 'yaml');
   switch ($format) {
     case 'yaml':
-      // As config appears in the file system.
-      $output = Yaml::dump($config->read($config_name));
+      $dumper = new Dumper();
+      // Set Yaml\Dumper's default indentation for nested nodes/collections to
+      // 2 spaces for consistency with Drupal coding standards.
+      $dumper->setIndentation(2);
+      // The level where you switch to inline YAML is set to PHP_INT_MAX to
+      // ensure this does not occur.
+      $output = $dumper->dump($config->read($config_name), PHP_INT_MAX);
       break;
     case 'php':
       // As config appears in the database.

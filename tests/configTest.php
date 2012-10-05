@@ -21,7 +21,7 @@ class ConfigCase extends Drush_CommandTestCase {
     $this->assertEquals('system.site:name: "config_test"', $this->getOutput(), 'Config was successfully set and get.');
 
     $this->drush('config-export', array(), $options);
-    $system_site_file = $options['root'] . '/sites/' . key($sites) . '/files/' . $config_directory_name . '/system.site.yml';
+    $system_site_file = $options['root'] . '/sites/' . key($sites) . '/files/' . $config_directories['staging']['path'] . '/system.site.yml';
     $this->assertFileExists($system_site_file);
     $this->drush('config-get', array('system.site'), $options);
     $config_view_yaml = $this->getOutput();
