@@ -53,7 +53,9 @@ function package_handler_download_project(&$request, $release) {
   if (strpos($release['download_link'], '-dev') !== FALSE) {
     $release['download_link'] .= '?date=' . $release['date'];
   }
-  $filename = basename($release['download_link']);
+  // On Windows file name cannot contain '?'
+  // See http://drupal.org/node/1782444
+  $filename = str_replace('?', '_', basename($release['download_link']));
   $cache_duration = 86400*365;
   $path = drush_download_file($release['download_link'], $request['base_project_path'] . DIRECTORY_SEPARATOR . $filename, $cache_duration);
   if ($path || drush_get_context('DRUSH_SIMULATE')) {
