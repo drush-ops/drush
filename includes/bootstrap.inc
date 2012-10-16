@@ -917,7 +917,16 @@ function _drush_bootstrap_drupal_full() {
   if (!drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_start();
   }
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  if (drush_drupal_major_version() >= 8) {
+    // Mimic what index.php does.
+    drupal_bootstrap(DRUPAL_BOOTSTRAP_CODE);
+    // global $kernel;
+    $kernel = new Drupal\Core\DrupalKernel('prod', drush_get_context('DRUSH_DEBUG', FALSE));
+    $kernel->boot();
+  }
+  else {
+    drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  }
   if (!drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_end_clean();
   }
