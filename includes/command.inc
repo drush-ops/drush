@@ -1399,12 +1399,18 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
           $files = drush_scan_directory($path, "/\.drush($dmv|)\.inc$/", $nomask);
           foreach ($files as $filename => $info) {
             $module = basename($filename);
-            $module = str_replace(array('.drush.inc', ".drush$dmv.inc"), '', $module);
-            // Only try to bootstrap modules that we have never seen before, or that we
-            // have tried to load but did not due to an unmet _drush_load() requirement.
-            if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
-              $evaluated[$module] = TRUE;
-              $list[$module] = $filename;
+            $drupal_version = 'all';
+            if (preg_match('/\.d([0-9]+[+-]*)\.drush/', $module, $matches)) {
+              $drupal_version = $matches[1];
+            }
+            if (($drupal_version == 'all') || ($drupal_version == drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', ''))) {
+              $module = preg_replace('/(\.d[0-9]+[+-]*|)\.*drush[0-9]*\.inc/', '', $module);
+              // Only try to bootstrap modules that we have never seen before, or that we
+              // have tried to load but did not due to an unmet _drush_load() requirement.
+              if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
+                $evaluated[$module] = TRUE;
+                $list[$module] = $filename;
+              }
             }
           }
         }
