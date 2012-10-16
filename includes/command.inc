@@ -1399,18 +1399,12 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
           $files = drush_scan_directory($path, "/\.drush($dmv|)\.inc$/", $nomask);
           foreach ($files as $filename => $info) {
             $module = basename($filename);
-            $drupal_version = 'all';
-            if (preg_match('/\.d([0-9]+[+-]*)\.drush/', $module, $matches)) {
-              $drupal_version = $matches[1];
-            }
-            if (($drupal_version == 'all') || ($drupal_version == drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', ''))) {
-              $module = preg_replace('/(\.d[0-9]+[+-]*|)\.*drush[0-9]*\.inc/', '', $module);
-              // Only try to bootstrap modules that we have never seen before, or that we
-              // have tried to load but did not due to an unmet _drush_load() requirement.
-              if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
-                $evaluated[$module] = TRUE;
-                $list[$module] = $filename;
-              }
+            $module = preg_replace('/\.*drush[0-9]*\.inc/', '', $module);
+            // Only try to bootstrap modules that we have never seen before, or that we
+            // have tried to load but did not due to an unmet _drush_load() requirement.
+            if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
+              $evaluated[$module] = TRUE;
+              $list[$module] = $filename;
             }
           }
         }
@@ -1419,18 +1413,27 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
         drush_cache_set($cid, $list);
       }
     }
-
     // Check each file in the consideration list; if there is
     // a modulename_drush_load() function in modulename.drush.load.inc,
     // then call it to determine if this file should be loaded.
     foreach ($list as $module => $filename) {
       $load_command = TRUE;
-      $load_test_inc = dirname($filename) . "/" . $module . ".drush.load.inc";
-      if (file_exists($load_test_inc)) {
-        include_once($load_test_inc);
-        $load_test_func = $module . "_drush_load";
-        if (function_exists($load_test_func)) {
-          $load_command = $load_test_func($phase);
+      $drupal_version = '';
+      if (preg_match('/\.d([0-9]+)$/', $module, $matches)) {
+        $drupal_version = $matches[1];
+      }
+      if (!empty($drupal_version) && ($drupal_version != drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', ''))) {
+        $load_command = FALSE;
+      }
+      else {
+        $load_test_inc = dirname($filename) . "/" . $module . ".drush.load.inc";
+        if (file_exists($load_test_inc)) {
+          include_once($load_test_inc);
+          $module_versionless = preg_replace('/\.d([0-9]+)$/', '', $module);
+          $load_test_func = $module_versionless . "_drush_load";
+          if (function_exists($load_test_func)) {
+            $load_command = $load_test_func($phase);
+          }
         }
       }
       if ($load_command) {
@@ -1457,7 +1460,10 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
     }
 
     if (sizeof($list)) {
-      $cache = array_merge($cache, $list);
+      foreach ($list as $module => $filename) {
+        $module_versionless = preg_replace('/\.d([0-9]+)$/', '', $module);
+        $cache[$module_versionless] = $filename;
+      }
       ksort($cache);
     }
   }
