@@ -310,6 +310,13 @@ class makeMakefileCase extends Drush_CommandTestCase {
 
     // Verify git reference cache exists.
     $this->assertFileExists($cache_dir . '/git/context_admin-' . md5('http://git.drupal.org/project/context_admin.git'));
+
+    // Text caption_filter .info rewrite.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/caption_filter/caption_filter.info');
+    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/caption_filter/caption_filter.info');
+    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains('version = "7.x-1.2+0-dev"', $contents);
+    $this->assertContains('project = "caption_filter"', $contents);
   }
 
   function testMakeFileExtract() {
