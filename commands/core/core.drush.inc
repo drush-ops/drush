@@ -390,8 +390,8 @@ function drush_core_updatedb() {
   }
 
   if (drush_drupal_major_version() <= 6) {
-    // Clear all caches. We just performed major surgery.
-    drush_drupal_cache_clear_all();
+    // Clear all caches in a new process. We just performed major surgery.
+    drush_invoke_process('@self', 'cache-clear', array('all'));
   }
   else {
     // Should be unnecessary on D7.
