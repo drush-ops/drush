@@ -251,6 +251,14 @@ function drush_command() {
  * as the command file, then the repeated sequence is dropped; thus, the command
  * hook for "pm-enable" is "drush_pm_enable", not "drush_pm_pm_enable".
  *
+ * There is also a special Drupal-version-specific naming convention that may
+ * be used.  To hide a commandfile from all versions of Drupal except for the
+ * specific one named, add a ".dVERSION" after the command prefix.  For example,
+ * the file "views.d8.drush.inc" defines a "views" commandfile that will only
+ * load with Drupal 8.  This feature is not necessary and should not be used
+ * in contrib modules (any extension with a ".module" file), since these modules
+ * are already version-specific.
+ *
  * @param command
  *   The drush command to execute.
  * @param args
@@ -1399,7 +1407,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
           $files = drush_scan_directory($path, "/\.drush($dmv|)\.inc$/", $nomask);
           foreach ($files as $filename => $info) {
             $module = basename($filename);
-            $module = str_replace(array('.drush.inc', ".drush$dmv.inc"), '', $module);
+            $module = preg_replace('/\.*drush[0-9]*\.inc/', '', $module);
             // Only try to bootstrap modules that we have never seen before, or that we
             // have tried to load but did not due to an unmet _drush_load() requirement.
             if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
@@ -1413,18 +1421,27 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
         drush_cache_set($cid, $list);
       }
     }
-
     // Check each file in the consideration list; if there is
     // a modulename_drush_load() function in modulename.drush.load.inc,
     // then call it to determine if this file should be loaded.
     foreach ($list as $module => $filename) {
       $load_command = TRUE;
-      $load_test_inc = dirname($filename) . "/" . $module . ".drush.load.inc";
-      if (file_exists($load_test_inc)) {
-        include_once($load_test_inc);
-        $load_test_func = $module . "_drush_load";
-        if (function_exists($load_test_func)) {
-          $load_command = $load_test_func($phase);
+      $drupal_version = '';
+      if (preg_match('/\.d([0-9]+)$/', $module, $matches)) {
+        $drupal_version = $matches[1];
+      }
+      if (!empty($drupal_version) && ($drupal_version != drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', ''))) {
+        $load_command = FALSE;
+      }
+      else {
+        $load_test_inc = dirname($filename) . "/" . $module . ".drush.load.inc";
+        if (file_exists($load_test_inc)) {
+          include_once($load_test_inc);
+          $module_versionless = preg_replace('/\.d([0-9]+)$/', '', $module);
+          $load_test_func = $module_versionless . "_drush_load";
+          if (function_exists($load_test_func)) {
+            $load_command = $load_test_func($phase);
+          }
         }
       }
       if ($load_command) {
@@ -1451,7 +1468,10 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
     }
 
     if (sizeof($list)) {
-      $cache = array_merge($cache, $list);
+      foreach ($list as $module => $filename) {
+        $module_versionless = preg_replace('/\.d([0-9]+)$/', '', $module);
+        $cache[$module_versionless] = $filename;
+      }
       ksort($cache);
     }
   }
