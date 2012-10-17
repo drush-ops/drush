@@ -251,6 +251,14 @@ function drush_command() {
  * as the command file, then the repeated sequence is dropped; thus, the command
  * hook for "pm-enable" is "drush_pm_enable", not "drush_pm_pm_enable".
  *
+ * There is also a special Drupal-version-specific naming convention that may
+ * be used.  To hide a commandfile from all versions of Drupal except for the
+ * specific one named, add a ".dVERSION" after the command prefix.  For example,
+ * the file "views.d8.drush.inc" defines a "views" commandfile that will only
+ * load with Drupal 8.  This feature is not necessary and should not be used
+ * in contrib modules (any extension with a ".module" file), since these modules
+ * are already version-specific.
+ *
  * @param command
  *   The drush command to execute.
  * @param args

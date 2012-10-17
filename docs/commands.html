@@ -19,8 +19,10 @@ detail below.
 The name of your drush command is very important.  It must end
 in ".drush.inc" to be recognized as a drush command.  The part
 of the filename that comes before the ".drush.inc" becomes the
-name of the commandfile.  Your commandfile name is used by
-drush to compose the names of the functions it will call, so
+name of the commandfile.  Optionally, the commandfile may be restricted
+to a particular version of Drupal by adding a ".dVERSION" after
+the name of the commandfile (e.g. ".d8.drush.inc")  Your commandfile name
+is used by drush to compose the names of the functions it will call, so
 choose wisely.
 <p>
 The example drush command, 'make-me-a-sandwich', is stored
