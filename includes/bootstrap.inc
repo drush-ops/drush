@@ -682,6 +682,9 @@ function _drush_bootstrap_drupal_root() {
 
   chdir($drupal_root);
   require_once DRUPAL_ROOT . '/' . DRUSH_DRUPAL_SIGNATURE;
+  // Beware the poison pill: prefer drush_drupal_version() and
+  // drush_drupal_major_version() to 'DRUSH_DRUPAL_VERSION' and
+  // 'DRUSH_DRUPAL_MAJOR_VERSION', respectively. See http://drupal.org/node/1816192
   $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
   $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
 
