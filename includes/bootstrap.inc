@@ -680,8 +680,8 @@ function _drush_bootstrap_drupal_root() {
 
   chdir($drupal_root);
   require_once DRUPAL_ROOT . '/' . DRUSH_DRUPAL_SIGNATURE;
-  $version = drush_set_context('DRUSH_DRUPAL_VERSION', drush_drupal_version());
-  $major_version = drush_set_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_drupal_major_version());
+  $version = drush_drupal_version();
+  $major_version = drush_drupal_major_version();
 
   if ($major_version < 6) {
     drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
