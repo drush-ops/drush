@@ -1267,7 +1267,11 @@ function pm_parse_arguments($args, $dashes_to_underscores = TRUE) {
  */
 function pm_parse_project_version($requests) {
   $requestdata = array();
-  $drupal_version_default = drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', drush_get_option('default-major', 7)) . '.x';
+  $drupal_version_default = drush_drupal_major_version();
+  if (!$drupal_version_default) {
+    $drupal_version_default = drush_get_option('default-major', 7);
+  }
+  $drupal_version_default .= '.x';
   $drupal_bootstrap = drush_get_context('DRUSH_BOOTSTRAP_PHASE') > 0;
   foreach($requests as $request) {
     $drupal_version = $drupal_version_default;

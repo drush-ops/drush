@@ -1430,7 +1430,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       if (preg_match('/\.d([0-9]+)$/', $module, $matches)) {
         $drupal_version = $matches[1];
       }
-      if (!empty($drupal_version) && (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) && ($drupal_version != drush_get_context('DRUSH_DRUPAL_MAJOR_VERSION', ''))) {
+      if (!empty($drupal_version) && ($drupal_version != drush_drupal_major_version())) {
         $load_command = FALSE;
       }
       else {
