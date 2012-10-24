@@ -904,40 +904,18 @@ function _drush_download_file($url, $destination, $overwrite = TRUE) {
  *   The MIME content type of the file or FALSE.
  */
 function drush_mime_content_type($filename) {
-  // 1. Try to use php built-ins.
   $content_type = FALSE;
-  if (class_exists('finfo')) {
-    drush_log(dt('Fileinfo extension available.'), 'debug');
-    // For pecl's fileinfo on php 5.2 there is quite some inconsistency in
-    // distributions and loading of magic files.
-    // TODO: remove @ and use FILEINFO_MIME_TYPE when drush requires php 5.3
-    $finfo = @new finfo(FILEINFO_MIME);
-    $ct = @$finfo->file($filename);
-    if ($ct) {
-      // We only want the first part, before the ;
-      $content_type = current(explode(';', $ct));
-    }
-  }
-
-  // TODO: to be removed in php 5.3 (deprecated).
-  if ((!$content_type) && (function_exists('mime_content_type'))) {
-    drush_log(dt('mime_magic support enabled.'), 'debug');
-    $content_type = trim(mime_content_type($filename));
-  }
-
-  if (!$content_type) {
-    drush_log(dt('No fileinfo or mime_magic support available.'), 'debug');
-  }
-  elseif ($content_type == 'application/octet-stream') {
+  $finfo = new finfo(FILEINFO_MIME_TYPE);
+  $content_type = $finfo->file($filename);
+  if ($content_type == 'application/octet-stream') {
     drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), 'debug');
     $content_type = FALSE;
   }
 
-  // 2. if PHP's built-ins aren't present or PHP is configured in such a way
-  // that all these files are considered octet-stream (e.g with mod_mime_magic
-  // and an http conf that's serving all archives as octet-stream for other
-  // reasons) we'll detect (a few select) mime types on our own by examing the
-  // file's magic header bytes.
+  // If apache is configured in such a way that all files are considered
+  // octet-stream (e.g with mod_mime_magic and an http conf that's serving all
+  // archives as octet-stream for other reasons) we'll detect mime types on our
+  //  own by examing the file's magic header bytes.
   if (!$content_type) {
     drush_log(dt('Examining !file headers.', array('!file' => $filename)), 'debug');
     if ($file = fopen($filename, 'rb')) {
