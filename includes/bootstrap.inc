@@ -1008,7 +1008,7 @@ function drush_bootstrap_prepare() {
   }
 
   // Check supported version of PHP.
-  define('DRUSH_MINIMUM_PHP', '5.3.2');
+  define('DRUSH_MINIMUM_PHP', '5.3.5');
   if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0) {
     die('Your command line PHP installation is too old. Drush requires at least PHP ' . DRUSH_MINIMUM_PHP . "\n");
   }
