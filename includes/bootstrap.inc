@@ -1004,13 +1004,13 @@ function drush_bootstrap_prepare() {
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
-    die('drush is designed to run via the command line.');
+    return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Drush is designed to run via the command line.'));
   }
 
   // Check supported version of PHP.
   define('DRUSH_MINIMUM_PHP', '5.3.5');
   if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0) {
-    die('Your command line PHP installation is too old. Drush requires at least PHP ' . DRUSH_MINIMUM_PHP . "\n");
+    return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Your command line PHP installation is too old. Drush requires at least PHP !version.', array('!version' => DRUSH_MINIMUM_PHP)));
   }
 
   $drush_info = drush_read_drush_info();

@@ -10,7 +10,9 @@
 
 require(dirname(__FILE__) . '/includes/bootstrap.inc');
 
-drush_bootstrap_prepare();
+if (drush_bootstrap_prepare() === FALSE) {
+  exit(1);
+}
 exit(drush_main());
 
 /**
