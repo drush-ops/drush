@@ -1225,7 +1225,14 @@ function drush_preflight_command_dispatch() {
 
     // Force interactive mode if there is a single remote target.  #interactive is added by drush_do_command_redispatch
     drush_set_option('interactive', TRUE);
-    drush_do_command_redispatch($command_name, $args, $remote_host, $remote_user);
+    $values = drush_do_command_redispatch($command_name, $args, $remote_host, $remote_user);
+    // In 'interactive' mode, $values is the result code from drush_shell_proc_open.
+    // TODO: in _drush_backend_invoke, return array('error_status' => $ret) instead for uniformity.
+    if (!is_array($values) && ($values != 0)) {
+      // Force an error result code.  Note that drush_shutdown() will still run.
+      drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
+      exit($values);
+    }
     return TRUE;
   }
   // If the --site-list flag is set, then we will execute the specified
