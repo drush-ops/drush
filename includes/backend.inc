@@ -772,7 +772,8 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // that is running right now.  For remote commands, we will run a wrapper
     // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
     $drush_path = $site_record['path-aliases']['%drush-script'];
-    $drush_command_path = drush_build_drush_command($drush_path, array_key_exists('php', $command_options) ? $command_options['php'] : NULL, $os, array_key_exists('remote-host', $site_record));
+    $php = array_key_exists('php', $site_record) ? $site_record['php'] : (array_key_exists('php', $command_options) ? $command_options['php'] : NULL);
+    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, array_key_exists('remote-host', $site_record));
     $cmd = _drush_backend_generate_command($site_record, $drush_command_path . " " . _drush_backend_argument_string($drush_global_options, $os) . " " . $site_record_to_dispatch . " " . $command, $args, $commandline_options, $backend_options) . ' 2>&1';
     $cmds[$site] = array(
       'cmd' => $cmd,
