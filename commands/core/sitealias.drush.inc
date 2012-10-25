@@ -93,13 +93,16 @@ function _drush_sitealias_alias_list() {
  */
 function _drush_sitealias_site_list() {
   $site_list = array();
-  $base_path = drush_get_context('DRUSH_DRUPAL_ROOT') . '/sites';
-  $files = drush_scan_directory($base_path, '/settings\.php/', array('.', '..', 'CVS', 'all'));
-  foreach ($files as $filename => $info) {
-    if ($info->basename == 'settings.php') {
-      $alias_record = drush_sitealias_build_record_from_settings_file($filename);
-      if (!empty($alias_record)) {
-        $site_list[drush_sitealias_uri_to_site_dir($alias_record['uri'])] = $alias_record;
+  $base_path = drush_get_context('DRUSH_DRUPAL_ROOT');
+  if ($base_path) {
+    $base_path .= '/sites';
+    $files = drush_scan_directory($base_path, '/settings\.php/', array('.', '..', 'CVS', 'all'));
+    foreach ($files as $filename => $info) {
+      if ($info->basename == 'settings.php') {
+        $alias_record = drush_sitealias_build_record_from_settings_file($filename);
+        if (!empty($alias_record)) {
+          $site_list[drush_sitealias_uri_to_site_dir($alias_record['uri'])] = $alias_record;
+        }
       }
     }
   }
