@@ -86,6 +86,7 @@
 # $options['shell-aliases']['offline'] = 'variable-set -y --always-set maintenance_mode 1';
 # $options['shell-aliases']['online'] = 'variable-delete -y --exact maintenance_mode';
 # $options['shell-aliases']['dis-all'] = '!drush -y dis $(drush pml --status=enabled --type=module --no-core --pipe)';
+# $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
 
 // You can create a local cache of all projects checked out using
 // --package-handler=git_drupalorg; this can be faster for repeated
