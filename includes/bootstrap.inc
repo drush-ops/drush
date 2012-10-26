@@ -692,11 +692,8 @@ function _drush_bootstrap_drupal_root() {
     drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
   }
 
-  // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
-  // in prior versions.
-  $core = $major_version >= 8 ? DRUPAL_ROOT . '/core' : DRUPAL_ROOT;
-  drush_set_context('DRUSH_DRUPAL_CORE', $core);
-  define('DRUSH_DRUPAL_CORE', $core);
+  drush_set_context('DRUSH_DRUPAL_CORE', DRUPAL_ROOT);
+  define('DRUSH_DRUPAL_CORE', DRUPAL_ROOT);
 
   _drush_bootstrap_global_options();
 

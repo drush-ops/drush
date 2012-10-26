@@ -20,11 +20,11 @@ REQUIREMENTS
 
 * Drush commands that work with git require git 1.7 or greater.
 
-* Drush is designed for a Unix-like OS (Linux, OS X)
+* Drush is designed for a Unix-like OS (Linux, OS X).
 
 * Most Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
 
-* Drush works with Drupal 6, Drupal 7, and usually Drupal 8.
+* This version of Drush works with Drupal 6 and Drupal 7.
 
 
 INSTALLATION
