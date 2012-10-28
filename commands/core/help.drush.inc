@@ -411,7 +411,8 @@ function drush_help_categorize($implemented) {
   unset($command_categories['core']);
 
   // Filter out categories that the user does not want to see
-  if ($filter_category = drush_get_option('filter')) {
+  $filter_category = drush_get_option('filter');
+  if (!empty($filter_category) && ($filter_category !== TRUE)) {
     if (!array_key_exists($filter_category, $command_categories)) {
       return drush_set_error('DRUSH_NO_CATEGORY', dt("The specified command category !filter does not exist.", array('!filter' => $filter_category)));
     }
