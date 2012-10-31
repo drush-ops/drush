@@ -905,13 +905,14 @@ function _drush_download_file($url, $destination, $overwrite = TRUE) {
  */
 function drush_mime_content_type($filename) {
   $content_type = FALSE;
-  $finfo = new finfo(FILEINFO_MIME_TYPE);
-  $content_type = $finfo->file($filename);
-  if ($content_type == 'application/octet-stream') {
-    drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), 'debug');
-    $content_type = FALSE;
+  if (class_exists('finfo')) {
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $content_type = $finfo->file($filename);
+    if ($content_type == 'application/octet-stream') {
+      drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), 'debug');
+      $content_type = FALSE;
+    }
   }
-
   // If apache is configured in such a way that all files are considered
   // octet-stream (e.g with mod_mime_magic and an http conf that's serving all
   // archives as octet-stream for other reasons) we'll detect mime types on our
