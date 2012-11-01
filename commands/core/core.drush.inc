@@ -488,7 +488,7 @@ function _core_path_aliases($project = '') {
         if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_SITE) {
           $paths['%files'] = variable_get('file_public_path', conf_path() . '/files');
           $private_path = variable_get('file_private_path', FALSE);
-          if ($private_path !== FALSE) {
+          if (!empty($private_path)) {
             $paths['%private'] = $private_path;
           }
         }
