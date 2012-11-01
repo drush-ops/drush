@@ -95,6 +95,7 @@ function core_drush_command() {
       'drush core-status version' => 'Show all status lines that contain version information.',
       'drush core-status --pipe' => 'A list key=value items separated by line breaks.',
       'drush core-status drush-version --pipe' => 'Emit just the drush version with no label.',
+      'drush core-status config-active --pipe' => 'Emit just the active Config directory with no label.',
     ),
     'arguments' => array(
       'item' => 'Optional.  The status item line(s) to display.',
@@ -484,6 +485,10 @@ function _core_path_aliases($project = '') {
       else {
         $paths['%themes'] = 'sites/all/themes';
       }
+      if (drush_drupal_major_version() >= 8) {
+        $paths['%config-active'] = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
+        $paths['%config-staging'] = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+      }
       if (drush_drupal_major_version() >= 7) {
         if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_SITE) {
           $paths['%files'] = variable_get('file_public_path', conf_path() . '/files');
@@ -491,6 +496,7 @@ function _core_path_aliases($project = '') {
           if (!empty($private_path)) {
             $paths['%private'] = $private_path;
           }
+
         }
       }
       elseif (function_exists('file_directory_path')) {
@@ -569,13 +575,17 @@ function _core_site_status_table($project = '', $full = FALSE) {
   }
 
   // None of the Status keys are in dt(); this helps with machine-parsing of status?
-  $path_names['root'] = 'Drupal root';
-  $path_names['site'] = 'Site path';
-  $path_names['modules'] = 'Modules path';
-  $path_names['themes'] = 'Themes path';
-  $path_names['files'] = 'File directory path';
-  $path_names['private'] = 'Private file directory path';
-  $path_names['temp'] = 'Temporary file directory path';
+  $path_names = array(
+    'root' => 'Drupal root',
+    'site' => 'Site path',
+    'themes' => 'Themes path',
+    'modules' => 'Modules path',
+    'files' => 'File directory path',
+    'private' => 'Private file directory path',
+    'temp' => 'Temporary file directory path',
+    'config-active' => 'Config directory pat: Active',
+    'config-staging' => 'Config directory path: Staging',
+   );
 
   $paths = _core_path_aliases($project);
   if (!empty($paths)) {
