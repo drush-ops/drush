@@ -407,7 +407,7 @@ function drush_user_login($name = NULL) {
 
   if ($user !== FALSE && $user->status) {
     $link = user_pass_reset_url($user);
-    drush_print($link);
+    drush_print($link .'/login');
     return $link;
   }
   else {
