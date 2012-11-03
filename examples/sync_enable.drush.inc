@@ -77,25 +77,18 @@ function drush_sync_enable_post_sql_sync($source = NULL, $destination = NULL) {
   }
   $permissions_table = drush_get_option('permission');
   if (!empty($permissions_table)) {
-    foreach ($permissions_table as $role => $actions) {
-      $values = drush_invoke_process($destination, 'sql-query', array("select perm from permission, role where role.name='$role' and role.rid = permission.rid;"), array(), array('integrate' => FALSE));
-      // Remove the first line and explode
-      $sql_output = preg_replace('/^.+\n/', '', trim($values['output']));
-      $permissions = explode(', ', $sql_output);
-      $original_permissions = $permissions;
+    foreach ($permissions_table as $role_name => $actions) {
       if (array_key_exists('add', $actions)) {
         $permissions_to_add = is_array($actions['add']) ? $actions['add'] : explode(', ', $actions['add']);
-        drush_log(dt("Add !permissions to !role post-sql-sync", array('!permissions' => implode(', ', $permissions_to_add), '!role' => $role)), 'ok');
-        $permissions = array_unique(array_merge($permissions, $permissions_to_add));
+        foreach ($permissions_to_add as $permission) {
+          $values = drush_invoke_process($destination, 'role-add-perm', array($role_name, $permission), array(), array('integrate' => TRUE));
+        }
       }
       if (array_key_exists('remove', $actions)) {
         $permissions_to_remove = is_array($actions['remove']) ? $actions['remove'] : explode(', ', $actions['remove']);
-        drush_log(dt("Remove !permissions from !role post-sql-sync", array('!permissions' => implode(', ', $permissions_to_remove), '!role' => $role)), 'ok');
-        $permissions = array_diff($permissions, $permissions_to_remove);
-      }
-      if ($permissions != $original_permissions) {
-        $permissions_string = implode(', ', $permissions);
-        $values = drush_invoke_process($destination, 'sql-query', array("update permission, role set perm='$permissions_string' where role.name='$role' and role.rid = permission.rid;"), array(), array('integrate' => FALSE));
+        foreach ($permissions_to_remove as $permission) {
+          $values = drush_invoke_process($destination, 'role-remove-perm', array($role_name, $permission), array(), array('integrate' => TRUE));
+        }
       }
     }
   }
