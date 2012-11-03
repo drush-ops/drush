@@ -989,8 +989,9 @@ function drush_mime_content_type($filename) {
     $extension_mimetype = array(
       '.tar'     => 'application/x-tar',
     );
-    foreach ($extension_mimetype as $extension => $content_type) {
+    foreach ($extension_mimetype as $extension => $ct) {
       if (substr($filename, -strlen($extension)) === $extension) {
+        $content_type = $ct;
         break;
       }
     }
