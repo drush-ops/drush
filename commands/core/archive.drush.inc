@@ -174,8 +174,8 @@ function drush_archive_dump($sites_subdirs = '@self') {
   drush_shell_cd_and_exec($workdir, "$tar {$tar_extra_options} --exclude \"{$docroot}/sites\" {$dereference}-cf %s %s", $destination, $docroot);
   // Add sites/all to the same archive.
   drush_shell_cd_and_exec($workdir, "$tar {$tar_extra_options} {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
-  // Add sites/sites.php and sites/example.sites.php to the same archive.
-  $files_to_add = array('sites/sites.php', 'sites/example.sites.php');
+  // Add sites/sites.php, sites/example.sites.php and sites/default/default.settings.php to the same archive.
+  $files_to_add = array('sites/sites.php', 'sites/example.sites.php', 'sites/default/default.settings.php');
   foreach ($files_to_add as $file_to_add) {
     if (file_exists($file_to_add)) {
       drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, $docroot . DIRECTORY_SEPARATOR . $file_to_add);
@@ -349,7 +349,12 @@ function drush_archive_restore($file, $site_id = NULL) {
       // Append new DB info to settings.php.
       if ($db_url) {
         $settingsfile = $destination . '/' . $site['sitedir'] . '/settings.php';
-        chmod($settingsfile, 0755); // Need to do something here or else we can't write.
+        //If settings.php doesn't exist in the archive, create it from default.settings.php.
+        if (!file_exists($settingsfile)) {
+          drush_op('copy', $destination . '/sites/default/default.settings.php', $settingsfile);
+        }
+        // Need to do something here or else we can't write.
+        chmod($settingsfile, 0664);
         file_put_contents($settingsfile, "\n// Appended by drush archive-restore command.\n", FILE_APPEND);
         if (drush_drupal_major_version($destination) >= 7) {
           file_put_contents($settingsfile, "\n" . '$databases = ' . var_export(drush_sitealias_convert_db_from_db_url($db_url), TRUE) . ";\n", FILE_APPEND);
