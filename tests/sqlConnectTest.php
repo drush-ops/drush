@@ -33,7 +33,7 @@ class SqlConnectCase extends Drush_CommandTestCase {
       $this->assertContains('sqlite3', $output);
     }
     elseif (strpos(UNISH_DB_URL, 'pgsql') !== FALSE) {
-      $this->markTestSkipped('sql-connect test does not recognize postgres database type.');
+      $this->assertRegExp('/^psql --dbname=[^\s]+ --host=[^\s]+ --port=[^\s] --username=[^\s]+', $output);
     }
     else {
       $this->markTestSkipped('sql-connect test does not recognize database type in UNISH_DB_URL.');
