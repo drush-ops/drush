@@ -2,7 +2,7 @@
 
 /**
  * Examples of valid statements for a Drush runtime config (drushrc) file.
- * Use this file to cut down on typing out lenghty and repetetive command line
+ * Use this file to cut down on typing out lengthy and repetitive command line
  * options in the Drush commands you use and to avoid mistakes.
  *
  * Rename this file to drushrc.php and optionally copy it to one of the places
@@ -20,7 +20,7 @@
  *
  * If you have some configuration options that are specific to a particular
  * version of Drush, then you may place them in a file called drush5rc.php.
- * The version-specific file is loaded in addtion to, and after, the general-
+ * The version-specific file is loaded in addition to, and after, the general-
  * purpose drushrc file.  Version-specific configuration files can be placed
  * in any of the locations specified above.
  *
@@ -126,7 +126,7 @@
 # $options['drush_usage_send'] = TRUE;
 
 /**
- * By default, Drush will download projects compatibile with the current
+ * By default, Drush will download projects compatible with the current
  * version of Drupal, or, if no Drupal site is specified, then the Drupal-7
  * version of the project is downloaded.  Set default-major to select a
  * different default version.
@@ -217,7 +217,7 @@
  * message: "--remove-source-files: unknown option".  To fix this, set
  * $options['rsync-version'] = '2.6.8'; (replace with the lowest version of
  * rsync installed on any system you are using with Drush).  Note that this
- * option can also be set in a site alias, which is the prefered solution if
+ * option can also be set in a site alias, which is the preferred solution if
  * newer versions of rsync are available on some of the systems you use.
  * See: http://drupal.org/node/955092
  */
