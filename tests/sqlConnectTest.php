@@ -18,14 +18,10 @@ class SqlConnectCase extends Drush_CommandTestCase {
       'uri' => key($sites),
     );
 
-    // Issue a query and check the result to verify the connection.
-    $this->execute($output . ' -e "select name from users where uid = 1;"');
-    $output = $this->getOutput();
-    $this->assertContains('admin', $output);
-
     // Get the connection details with sql-connect and check its structure.
     $this->drush('sql-connect', array(), $options);
     $output = $this->getOutput();
+
     if (strpos(UNISH_DB_URL, 'mysql') !== FALSE) {
       $this->assertRegExp('/^mysql --database=[^\s]+ --host=[^\s]+ --user=[^\s]+ --password=.*$/', $output);
     }
@@ -38,5 +34,11 @@ class SqlConnectCase extends Drush_CommandTestCase {
     else {
       $this->markTestSkipped('sql-connect test does not recognize database type in UNISH_DB_URL.');
     }
+
+    // Issue a query and check the result to verify the connection.
+    $this->execute($output . ' -e "select name from users where uid = 1;"');
+    $output = $this->getOutput();
+    $this->assertContains('admin', $output);
+
   }
 }
