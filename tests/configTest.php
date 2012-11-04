@@ -15,7 +15,7 @@ class ConfigCase extends Drush_CommandTestCase {
       'root' => $this->webroot(),
       'uri' => key($sites),
     );
-    // Include test site's settings file to get the config directory.
+    // Include test site's settings file to get the config directories.
     include $options['root'] . '/sites/' . key($sites) . '/settings.php';
 
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $options);

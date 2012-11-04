@@ -78,7 +78,7 @@ function config_drush_command() {
   );
 
   $items['config-export'] = array(
-    'description' => 'Export config from the active store to the file store.',
+    'description' => 'Export config from the active directory to staging directory.',
     'core' => array('8+'),
     'aliases' => array('cex'),
   );
