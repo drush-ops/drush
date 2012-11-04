@@ -77,6 +77,37 @@ function drush_include($path, $name, $version = NULL, $extension = 'inc') {
 }
 
 /**
+ * Provide a version-specific class instance.
+ *
+ * @param $class_name
+ *   The name of the class to instantiate.  Appends the Drupal
+ *   major version number to the end of the class name before instantiation.
+ * @param $constructor_args
+ *   An array of arguments to pass to the class constructor.
+ * @param $class_dir
+ *   The directory where the commandfile stores its classes.
+ *   For Drush Core, using the default value will search the
+ *   'classes' directory in the Drupal root.  If the class file(s) are
+ *   stored in the same directory as your commandfile, pass
+ *   dirname(__FILE__) here.
+ */
+function drush_get_class($class_name, $constructor_args, $class_dir = NULL) {
+  if (!isset($class_dir)) {
+    $class_dir = DRUSH_BASE_PATH . '/classes';
+  }
+  $version = drush_drupal_major_version();
+  drush_include($class_dir, $class_name, $version, 'php');
+  $version_specific_class_name = $class_name . $version;
+  if (class_exists($version_specific_class_name)) {
+    $reflectionClass = new ReflectionClass($version_specific_class_name);
+    return $reflectionClass->newInstanceArgs($constructor_args);
+  }
+  else {
+    return drush_set_error('DRUSH_ROLE_ERROR', dt('Drupal %d not supported!', $version));
+  }
+}
+
+/**
  * Obtain all engine types info and normalize with defaults.
  *
  * @see hook_drush_engine_type_info().
