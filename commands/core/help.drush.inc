@@ -285,6 +285,14 @@ function drush_core_help() {
       }
       drush_set_option('filter', $result);
     }
+    // Filter out categories that the user does not want to see
+    $filter_category = drush_get_option('filter');
+    if (!empty($filter_category) && ($filter_category !== TRUE)) {
+      if (!array_key_exists($filter_category, $command_categories)) {
+        return drush_set_error('DRUSH_NO_CATEGORY', dt("The specified command category !filter does not exist.", array('!filter' => $filter_category)));
+      }
+      $command_categories = array($filter_category => $command_categories[$filter_category]);
+    }
 
     if ($format == 'html') {
       drush_print(drush_help_html_header());
@@ -409,15 +417,6 @@ function drush_help_categorize($implemented) {
   // Make sure that 'core' is always first in the list
   $core_category = array('core' => $command_categories['core']);
   unset($command_categories['core']);
-
-  // Filter out categories that the user does not want to see
-  $filter_category = drush_get_option('filter');
-  if (!empty($filter_category) && ($filter_category !== TRUE)) {
-    if (!array_key_exists($filter_category, $command_categories)) {
-      return drush_set_error('DRUSH_NO_CATEGORY', dt("The specified command category !filter does not exist.", array('!filter' => $filter_category)));
-    }
-    $command_categories = array($filter_category => $command_categories[$filter_category]);
-  }
 
   // Post-process the categories that have no title.
   // Any that have fewer than 4 commands go into a section called "other".
