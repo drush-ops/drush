@@ -485,7 +485,7 @@ function _core_path_aliases($project = '') {
       else {
         $paths['%themes'] = 'sites/all/themes';
       }
-      if (drush_drupal_major_version() >= 8 && drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+      if (drush_drupal_major_version() >= 8 && drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
         $paths['%config-active'] = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
         $paths['%config-staging'] = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
       }
