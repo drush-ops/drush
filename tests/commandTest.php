@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group base
+ */
 class commandCase extends Drush_CommandTestCase {
   public function testInvoke() {
     $expected = array(

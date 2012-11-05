@@ -3,6 +3,8 @@
 /*
  * @file
  *   Tests for Shell aliases.
+ *
+ * @group base
  */
 class shellAliasesCase extends Drush_CommandTestCase {
 

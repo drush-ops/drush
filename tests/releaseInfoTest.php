@@ -2,6 +2,8 @@
 
 /**
   * pm testing
+  *
+  * @group pm
   */
 class releaseInfoCase extends Drush_UnitTestCase {
 

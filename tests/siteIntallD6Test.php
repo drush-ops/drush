@@ -2,6 +2,8 @@
 /*
  * @file
  *   Tests for site-install on a Drupal 6 installation.
+ *
+ * @group commands
  */
 
 class siteInstallD6Case extends Drush_CommandTestCase {

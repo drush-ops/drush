@@ -3,6 +3,8 @@
 /*
  * @file
  *   Tests for field.drush.inc
+ *
+ * @group commands
  */
 class fieldCase extends Drush_CommandTestCase {
 

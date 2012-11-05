@@ -2,6 +2,8 @@
 
 /**
   * pm-download testing
+  *
+  * @group pm
   */
 class pmDownloadCase extends Drush_CommandTestCase {
   public function testPmDownload() {

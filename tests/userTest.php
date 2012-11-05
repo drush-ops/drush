@@ -7,6 +7,7 @@
 
 /*
  *  @group slow
+ *  @group commands
  */
 class userCase extends Drush_CommandTestCase {
 

@@ -3,6 +3,7 @@
 /*
  * @file
  *   Tests for archive-dump
+ * @group commands
  */
 class archiveDumpCase extends Drush_CommandTestCase {
 

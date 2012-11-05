@@ -7,6 +7,7 @@
 
 /**
  *  @group slow
+ *  @group pm
  */
 class EnDisUnListCase extends Drush_CommandTestCase {
 

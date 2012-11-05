@@ -11,6 +11,8 @@
 *  Advantages of this approach:
 *    - No network calls and thus more robust.
 *    - No network calls and thus faster.
+*
+*  @group base
 */
 
 class backendCase extends Drush_CommandTestCase {

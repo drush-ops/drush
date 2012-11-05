@@ -10,6 +10,7 @@
 
 /*
  *  @group slow
+ *  @group commands
  */
 class sqlSyncTest extends Drush_CommandTestCase {
 

@@ -3,6 +3,8 @@
 /*
  * @file
  *   Tests for sitealias.inc
+ *
+ * @group base
  */
 class saCase extends Drush_CommandTestCase {
 

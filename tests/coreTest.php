@@ -3,6 +3,8 @@
 /*
  * @file
  *   Tests for core commands.
+ *
+ * @group commands
  */
 class coreCase extends Drush_CommandTestCase {
   /**

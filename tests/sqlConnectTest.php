@@ -6,6 +6,8 @@
  *
  *   Installs Drupal and checks that the given URL by sql-connect is correct.
  *   @TODO: test Postgre-SQL and Sqlite.
+ *
+ * @group commands
  */
 class SqlConnectCase extends Drush_CommandTestCase {
 

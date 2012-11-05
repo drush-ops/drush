@@ -3,6 +3,8 @@
 /*
  * @file
  *   Tests for ssh.drush.inc
+ *
+ * @group commands
  */
 class siteSshCase extends Drush_CommandTestCase {
 

@@ -5,6 +5,8 @@
  *   Tests the drush batch subsystem.
  *
  * @see includes/batch.inc
+ *
+ * @group base
  */
 class batchCase extends Drush_CommandTestCase {
 

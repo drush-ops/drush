@@ -3,6 +3,8 @@
 /*
  * @file
  *   Tests for queue commands.
+ *
+ * @group commands
  */
 class QueueCase extends Drush_CommandTestCase {
 
