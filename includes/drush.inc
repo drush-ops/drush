@@ -90,6 +90,13 @@ function drush_include($path, $name, $version = NULL, $extension = 'inc') {
  *   'classes' directory in the Drupal root.  If the class file(s) are
  *   stored in the same directory as your commandfile, pass
  *   dirname(__FILE__) here.
+ *
+ * Example wrapper class to instantiate a widget, called with the
+ * arguments for the WIDGET_CLASS constructor:
+ *
+ *  function drush_WIDGET_CLASS_get_class($widgetName, $widgetStyle) {
+ *    retrun drush_get_class('Widget_Class', func_get_args()));
+ *  }
  */
 function drush_get_class($class_name, $constructor_args, $class_dir = NULL) {
   if (!isset($class_dir)) {
@@ -103,7 +110,7 @@ function drush_get_class($class_name, $constructor_args, $class_dir = NULL) {
     return $reflectionClass->newInstanceArgs($constructor_args);
   }
   else {
-    return drush_set_error('DRUSH_ROLE_ERROR', dt('Drupal %d not supported!', $version));
+    return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Drupal %d not supported!', $version));
   }
 }
 

@@ -6,24 +6,33 @@
 function role_drush_command() {
   $items['role-add-perm'] = array(
     'description' => 'Grant a specified permission to a role.',
-    'arguments' => array(
-      'role' => 'The role to modify.',
-      'permission' => 'The permission to grant.',
+    'examples' => array(
+      "drush role-add-perm 'anonymous user' 'post comments'" => 'Allow anonymous users to put their own advertisements on your site.',
+      "drush role-add-perm 'authenticated user' --module=node" => 'Select a permission from "node" permissions to add to authenticated users.'
     ),
+    'arguments' => array(
+      'role' => 'The role to modify.  Required.',
+      'permission' => 'The permission to grant. Required, unless the --module option is used.',
+    ),
+    'required-arguments' => 1,
     'options' => array(
-      'module' => 'List the permissions provided by a specific module.',
+      'module' => 'Select the permission to modify from an interactive list of all permissions available in the specified module.',
     ),
     'aliases' => array('rap'),
   );
 
   $items['role-remove-perm'] = array(
     'description' => 'Remove a specified permission from a role.',
+    'examples' => array(
+      "drush role-remove-perm 'anonymous user' 'access content'" => 'Hide content from anonymous users.',
+    ),
     'arguments' => array(
       'role' => 'The role to modify.',
-      'permission' => 'The permission to remove.',
+      'permission' => 'The permission to remove. Required, unless the --module option is used.',
     ),
+    'required-arguments' => 1,
     'options' => array(
-      'module' => 'List the permissions provided by a specific module.',
+      'module' => 'Select the permission to modify from an interactive list of all permissions available in the specified module.',
     ),
     'aliases' => array('rmp'),
   );

@@ -86,7 +86,7 @@ class DrushRole6 extends DrushRole {
 
   public function grant_permissions($perms_to_add) {
     $perms = $this->getPerms();
-    $this->perms += $perms_to_add;
+    $this->perms = array_unique(array_merge($this->perms, $perms_to_add));
     $this->updatePerms();
   }
 
@@ -98,7 +98,7 @@ class DrushRole6 extends DrushRole {
 
   function updatePerms() {
     $new_perms = implode(", ", $this->perms);
-    db_query("UPDATE {permission} SET perm = '%s' FROM {role} WHERE role.rid = permission.rid AND role.rid= '%d'", $new_perms, $this->rid);
+    drush_op('db_query', "UPDATE {permission} SET perm = '%s' FROM {role} WHERE role.rid = permission.rid AND role.rid= '%d'", $new_perms, $this->rid);
   }
 }
 
@@ -114,12 +114,15 @@ class DrushRole7 extends DrushRole {
   }
 
   public function grant_permissions($perms) {
-    user_role_grant_permissions($this->rid, $perms);
+    return drush_op('user_role_grant_permissions', $this->rid, $perms);
   }
 
   public function revoke_permissions($perms) {
-    return user_role_revoke_permissions($this->rid, $perms);
+    return drush_op('user_role_revoke_permissions', $this->rid, $perms);
   }
+}
+
+class DrushRole8 extends DrushRole7 {
 }
 
 class DrushRoleException extends Exception {}
