@@ -140,6 +140,14 @@ function drush_core_pre_site_install($profile = NULL) {
   else {
     drush_sql_empty_db($db_spec);
   }
+
+  // Empty out any existing config directories.
+  if (drush_drupal_major_version() >= 8 && $active = config_get_config_directory()) {
+    $staging = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+    drush_delete_dir_contents(config_get_config_directory(CONFIG_ACTIVE_DIRECTORY), TRUE);
+    drush_delete_dir_contents(config_get_config_directory(CONFIG_STAGING_DIRECTORY), TRUE);
+  }
+
   return TRUE;
 }
 
