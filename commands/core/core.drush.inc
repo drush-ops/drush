@@ -583,8 +583,8 @@ function _core_site_status_table($project = '', $full = FALSE) {
     'files' => 'File directory path',
     'private' => 'Private file directory path',
     'temp' => 'Temporary file directory path',
-    'config-active' => 'Config directory pat: Active',
-    'config-staging' => 'Config directory path: Staging',
+    'config-active' => 'Active config directory path',
+    'config-staging' => 'Staging config directory path',
    );
 
   $paths = _core_path_aliases($project);
