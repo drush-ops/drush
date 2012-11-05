@@ -125,6 +125,27 @@ function drush_delete_dir($dir, $force = FALSE) {
     }
     return unlink($dir);
   }
+  if (drush_delete_dir_contents($dir, $force) === FALSE) {
+    return FALSE;
+  }
+  if ($force) {
+    // Force deletion of items with readonly flag.
+    @chmod($dir, 0777);
+  }
+  return rmdir($dir);
+}
+
+/**
+ * Deletes the contents of a folder.
+ *
+ * @param $dir
+ *   The directory to delete.
+ * @param $force
+ *   Try whatever possible to delete the directory - also read-only ones.
+ * @return
+ *   FALSE on failure, TRUE if everything was deleted.
+ */
+function drush_delete_dir_contents($dir, $force = FALSE) {
   foreach (scandir($dir) as $item) {
     if ($item == '.' || $item == '..') {
       continue;
@@ -136,11 +157,7 @@ function drush_delete_dir($dir, $force = FALSE) {
       return FALSE;
     }
   }
-  if ($force) {
-    // Force deletion of items with readonly flag.
-    @chmod($dir, 0777);
-  }
-  return rmdir($dir);
+  return TRUE;
 }
 
 /**
