@@ -31,6 +31,18 @@ abstract class DrushRole {
     return array();
   }
 
+  public function getAllModulePerms() {
+    $permissions = array();
+    $module_list = module_list();
+    ksort($module_list);
+    foreach ($module_list as $module) {
+      if ($perms = $this->getModulePerms($module)) {
+        $permissions = array_merge($permissions, $perms);
+      }
+    }
+    return $permissions;
+  }
+
   public function add($perm) {
     $perms = $this->getPerms();
     if (!in_array($perm, $perms)) {

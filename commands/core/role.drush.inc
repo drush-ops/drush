@@ -62,7 +62,7 @@ function drush_role_add_perm($rid, $permission = NULL) {
   $result = drush_role_perm('add', $rid, $permission);
   if ($result !== FALSE) {
     drush_print(dt('Added' . ' "!perm" to "!role"', array('!perm' => $permission, '!role' => $result->name)));
-    cache_clear_all();
+    drush_drupal_cache_clear_all();
   }
   return $result;
 }
@@ -74,7 +74,7 @@ function drush_role_remove_perm($rid, $permission = NULL) {
   $result = drush_role_perm('remove', $rid, $permission);
   if ($result !== FALSE) {
     drush_print(dt('Removed' . ' "!perm" from "!role"', array('!perm' => $permission, '!role' => $result->name)));
-    cache_clear_all();
+    drush_drupal_cache_clear_all();
   }
   return $result;
 }
@@ -83,7 +83,6 @@ function drush_role_remove_perm($rid, $permission = NULL) {
  * Implement permission add / remove operations.
  */
 function drush_role_perm($action, $rid, $permission = NULL) {
-  $permissions = array();
   $role = drush_role_get_class($rid);
   if (!$role) {
     return FALSE;
@@ -106,11 +105,7 @@ function drush_role_perm($action, $rid, $permission = NULL) {
     $permission = $module_perms[$choice];
   }
   else {
-    foreach (module_list(FALSE, FALSE, TRUE) as $module) {
-      if ($perms = $role->getModulePerms($module)) {
-        $permissions = array_merge($permissions, $perms);
-      }
-    }
+    $permissions = $role->getAllModulePerms();
     if (!in_array($permission, $permissions)) {
       return drush_set_error(dt('Could not find the permission: !perm', array('!perm' => $permission)));
     }
