@@ -666,7 +666,7 @@ function drush_pm_list() {
 
     // filter out core if --no-core specified
     if (drush_get_option('no-core', FALSE)) {
-      if ($extension->info['version'] == VERSION) {
+      if ($extension->info['package'] == 'Core') {
         unset($extension_info[$key]);
         continue;
       }
@@ -674,7 +674,7 @@ function drush_pm_list() {
 
     // filter out non-core if --core specified
     if (drush_get_option('core', FALSE)) {
-      if ($extension->info['version'] != VERSION) {
+      if ($extension->info['package'] != 'Core') {
         unset($extension_info[$key]);
         continue;
       }
