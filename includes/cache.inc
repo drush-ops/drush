@@ -131,7 +131,7 @@ function drush_cache_set($cid, $data, $bin = 'default', $expire = DRUSH_CACHE_PE
 function drush_cache_clear_all($cid = NULL, $bin = 'default', $wildcard = FALSE) {
   if (!isset($cid) && !isset($bin)) {
     foreach (drush_cache_get_bins() as $bin) {
-      return _drush_cache_get_object($bin)->clear();
+      _drush_cache_get_object($bin)->clear();
     }
     return;
   }

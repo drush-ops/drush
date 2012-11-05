@@ -165,6 +165,9 @@ function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire =
   cache_set($cid, $data, $bin, $expire);
 }
 
+/*
+ * All types of caches available for clearing. Contrib commands can alter in their own.
+ */
 function drush_cache_clear_types() {
   $types = array(
     'all' => 'drush_cache_clear_both',
@@ -179,9 +182,6 @@ function drush_cache_clear_types() {
       'module-list' => 'drush_get_modules',
       'theme-list' => 'drush_get_themes',
     );
-    if (count(module_implements('node_grants'))) {
-      $types['nodeaccess'] = 'node_access_rebuild';
-    }
   }
 
   if (drush_drupal_major_version() >= 7) {
