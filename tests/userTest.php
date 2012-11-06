@@ -84,7 +84,7 @@ class userCase extends Drush_CommandTestCase {
     $this->assertStringStartsWith('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
     $browser = FALSE;
     foreach ($parsed['log'] as $key => $log) {
-      if (strpos($log['message'], 'Opening browser unish at http://dev/user/reset/1/') === 0) {
+      if (strpos($log['message'], 'Opening browser unish at http://') === 0) {
         $browser = TRUE;
       }
     }
