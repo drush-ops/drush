@@ -277,35 +277,32 @@ function drush_config_edit($config_name = '') {
     }
   }
 
-  // Copy from active storage to a file to staging.
   $active_storage = drupal_container()->get('config.storage');
   $staging_storage = drupal_container()->get('config.storage.staging');
-  $staging_storage->write($config_name, $active_storage->read($config_name));
   $filepath = $staging_storage->getFilePath($config_name);
+  $staging_directory = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+
+  // Wipe staging directory before we write our work file.
+  drush_delete_dir_contents($staging_directory, TRUE);
+
+  // Copy from active storage to staging directory.
+  $staging_storage->write($config_name, $active_storage->read($config_name));
 
   $exec = drush_get_editor();
   drush_shell_exec_interactive($exec, $filepath, $filepath);
   // Perform import operation if user did not immediately exit editor.
   if (!drush_get_option('bg', FALSE)) {
-    $handled_by_module = FALSE;
-    $module = strtok($config_name, '.');
-    if (module_hook($module, 'config_import_change')) {
-      // Get contents from staging file, and set it in new config object.
-      $data = $staging_storage->read($config_name);
-      $new_config = new Config($config_name, $active_storage);
-      if ($data !== FALSE) {
-        $new_config->setData($data);
-      }
-
-      $old_config = new Config($config_name, $active_storage);
-      $old_config->load();
-      // Let module handle own config changes if it does that.
-      $handled_by_module = module_invoke($module, 'config_import_change', $config_name, $new_config, $old_config);
+    $result = config_import();
+    if ($result === NULL) {
+      drush_log('No changes to import.', 'ok');
     }
-    if (!$handled_by_module) {
-      return $active_storage->write($config_name, $staging_storage->read($config_name));
+    elseif ($result === FALSE) {
+      drush_set_error('Error importing new configuration.');
     }
   }
+
+  // Cleanup staging.
+  drush_delete_dir_contents($staging_directory, TRUE);
 }
 
 /* Helper functions */
