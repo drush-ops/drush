@@ -128,10 +128,8 @@ drush_invoke("version", $arg);
     $this->assertEquals('', $output);
     $this->drush('core-requirements', array(), $options);
     $output = $this->getOutput();
-    $expected="database_system: -1
-database_system_version: -1
-drupal: -1
-file system: -1
+    // Pick a substring that is valid for D7/D8.
+    $expected="
 install_profile: -1
 node_access: -1
 php: -1
@@ -139,11 +137,7 @@ php_extensions: -1
 php_memory_limit: -1
 php_register_globals: -1
 settings.php: -1
-unicode: 0
-update: 0
-update access: -1
-update status: -1
-webserver: -1";
-    $this->assertEquals($expected, trim($output));
+";
+    $this->assertContains($expected, trim($output));
   }
 }
