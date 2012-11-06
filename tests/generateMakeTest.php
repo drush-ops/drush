@@ -8,7 +8,7 @@
  */
 class generateMakeCase extends Drush_CommandTestCase {
   function testGenerateMake() {
-    $sites = $this->setUpDrupal(1, TRUE, '7', 'standard');
+    $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
 
     $options = array(
       'yes' => NULL,

@@ -216,7 +216,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return substr(UNISH_DB_URL, 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : UNISH_DB_URL . '/unish_' . $env;
   }
 
-  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = '7', $profile = NULL) {
+  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
     $root = $this->webroot();
@@ -258,7 +258,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return $this->sites;
   }
 
-  function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = '7', $profile = NULL) {
+  function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
     $root = $this->webroot();
     $site = "$root/sites/$env";
 
@@ -454,6 +454,16 @@ abstract class Drush_UnitTestCase extends Drush_TestCase {
  * Initialize our environment at the start of each run (i.e. suite).
  */
 function unish_init() {
+  // Default drupal major version to run tests over.
+  $unish_drupal_major = '7';
+  if (getenv('UNISH_DRUPAL_MAJOR_VERSION')) {
+    $unish_drupal_major = getenv('UNISH_DUPAL_MAJOR_VERSION');
+  }
+  elseif (isset($GLOBALS['UNISH_DRUPAL_MAJOR_VERSION'])) {
+    $unish_drupal_major = $GLOBALS['UNISH_DRUPAL_MAJOR_VERSION'];
+  }
+  define('UNISH_DRUPAL_MAJOR_VERSION', $unish_drupal_major);
+
   // We read from env then globals then default to mysql.
   $unish_db_url = 'mysql://root:@127.0.0.1';
   if (getenv('UNISH_DB_URL')) {

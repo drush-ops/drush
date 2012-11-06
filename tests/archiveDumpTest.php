@@ -15,7 +15,7 @@ class archiveDumpCase extends Drush_CommandTestCase {
    */
   public function testArchiveDump() {
     $uri = 'default';
-    $this->fetchInstallDrupal($uri, TRUE, 7, 'testing');
+    $this->fetchInstallDrupal($uri, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'testing');
     $root = $this->webroot();
     $docroot = basename($root);
 
