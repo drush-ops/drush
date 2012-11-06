@@ -77,12 +77,6 @@ function config_drush_command() {
     'core' => array('8+'),
   );
 
-  $items['config-export'] = array(
-    'description' => 'Export config from the active directory to staging directory.',
-    'core' => array('8+'),
-    'aliases' => array('cex'),
-  );
-
   $items['config-import'] = array(
     'description' => 'Import config from the file store.',
     'core' => array('8+'),
@@ -245,24 +239,7 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
 }
 
 /**
- * Import config ommand callback.
- */
-function drush_config_export() {
-  // Retrieve a list of differences between the active and staged configuration.
-  $source_storage = drupal_container()->get('config.storage');
-  $target_storage = drupal_container()->get('config.storage.staging');
-  $config_changes = config_sync_get_changes($source_storage, $target_storage);
-  if ($config_changes === FALSE) {
-    return drush_log(dt('There are no changes to export.'), 'ok');
-  }
-  _drush_print_config_changes_table($config_changes);
-  if (drush_confirm(dt('Export the listed configuration changes?'))) {
-    return drush_op('config_export');
-  }
-}
-
-/**
- * Export config command callback.
+ * Import config command callback.
  */
 function drush_config_import() {
   // Retrieve a list of differences between the active and staged configuration.

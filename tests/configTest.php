@@ -22,17 +22,18 @@ class ConfigCase extends Drush_CommandTestCase {
     $this->drush('config-get', array('system.site', 'name'), $options);
     $this->assertEquals('system.site:name: "config_test"', $this->getOutput(), 'Config was successfully set and get.');
 
-    $this->drush('config-export', array(), $options);
-    $system_site_file = $options['root'] . '/sites/' . key($sites) . '/files/' . $config_directories['staging']['path'] . '/system.site.yml';
-    $this->assertFileExists($system_site_file);
-    $this->drush('config-get', array('system.site'), $options);
-    $config_view_yaml = $this->getOutput();
-    $this->assertEquals($config_view_yaml, file_get_contents($system_site_file), 'Config-view creates YAML that matches the config management system.');
+    // @todo, test that config-view or similar matches what filesystem says.
+    //$this->drush('config-view', array(), $options);
+    //$system_site_file = $options['root'] . '/sites/' . key($sites) . '/files/' . $config_directories['staging']['path'] . '/system.site.yml';
+    //$this->assertFileExists($system_site_file);
+    //$this->drush('config-get', array('system.site'), $options);
+    //$config_view_yaml = $this->getOutput();
+    //$this->assertEquals($config_view_yaml, file_get_contents($system_site_file), 'Config-view displays YAML that matches the config management system.');
 
     $this->drush('config-list', array(), $options);
     $result = $this->getOutputAsList();
-    $this->assertNotEmpty($result, 'An array of all config names was returned.');
-    $this->assertTrue(in_array('update.settings', $result), 'update.settings name found in all config names.');
+    $this->assertNotEmpty($result, 'An array of config names was returned.');
+    $this->assertTrue(in_array('update.settings', $result), 'update.settings name found in the config names.');
 
     $this->drush('config-list', array('system'), $options);
     $result = $this->getOutputAsList();
