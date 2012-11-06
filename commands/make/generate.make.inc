@@ -4,7 +4,7 @@
  * Functions for the generate makefile command.
  */
 
-include_once 'includes/install.inc';
+include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
 include_once drupal_get_path('module', 'system') . '/system.install';
 
 /**
@@ -70,7 +70,7 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
 
   // Non-default profiles section.
   $install_profile = variable_get('install_profile', '');
-  if (!in_array($install_profile, array('default', 'standard', 'minimal')) && $install_profile != '') {
+  if (!in_array($install_profile, array('default', 'standard', 'minimal', 'testing')) && $install_profile != '') {
     $projects[$install_profile]['type']
       = $projects[$install_profile]['_type'] = 'profile';
     $request = array(
