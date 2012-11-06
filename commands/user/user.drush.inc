@@ -167,11 +167,18 @@ function user_drush_command() {
     'description' => 'Display a one time login link for the given user account (defaults to uid 1).',
     'aliases' => array('uli'),
     'arguments' => array(
-      'name' => 'The name of the account to log in as. Leave it empty to log in as uid 1.'
+      'user' => 'An optional uid, user name, or email address for the user to log in as. Default is to log in as uid 1. The uid/name/mail options take priority if specified.',
+      'path' => 'Optional path to redirect to after logging in.',
+    ),
+    'options' => array(
+      'browser' => 'Optional value denotes which browser to use (defaults to operating system default). Set to 0 to suppress opening a browser.',
+      'uid' => 'A uid to log in as.',
+      'name' => 'A user name to log in as.',
+      'mail' => 'A user mail address to log in as.',
     ),
     'examples' => array(
-      'drush user-login ryan' => 'Displays a one-time login link for the user ryan.',
-      'open `drush user-login ryan`' => 'Open web browser and login as user ryan.',
+      'drush user-login ryan node/add/blog' => 'Displays and opens default web browser (if configured or detected) for a one-time login link for the user with the username ryan and redirect to the path node/add/blog.',
+      'drush user-login --browser=firefox --mail=drush@example.org admin/settings/performance' => 'Open firefox web browser, login as the user with the e-mail address drush@example.org and redirect to the path admin/settings/performance.',
     ),
   );
 
@@ -393,25 +400,40 @@ function drush_user_password($name) {
 /**
  * Displays a one time login link for the given user.
  */
-function drush_user_login($name = NULL) {
-  if (empty($name)) {
-    $user = user_load(1);
-    $name = '[uid 1]';
+function drush_user_login($user = NULL, $path = NULL) {
+  $user_object = $uid = FALSE;
+  $args = func_get_args();
+  if (drush_get_option('uid', FALSE) || drush_get_option('name', FALSE) || drush_get_option('mail', FALSE)) {
+    // One of the user options was passed, so we prefer that to the user
+    // argument.
+    $user = NULL;
+    // If we only have a single argument and one of the user options is passed,
+    // then we assume the argument is the path to open.
+    if (count($args) == 1) {
+      $path = $args[0];
+    }
   }
-  elseif (drush_drupal_major_version() >= 7) {
-    $user = user_load_by_name($name);
+  else if (empty($user)) {
+    // No user option or argument was passed, so we default to uid 1.
+    $uid = 1;
   }
-  else {
-    $user = user_load(array('name' => $name));
+  // Try and load a user from provided options and arguments.
+  if ($uid || $uid = reset(_drush_user_get_users_from_options_and_arguments($user))) {
+    $user_object = user_load($uid);
   }
 
-  if ($user !== FALSE && $user->status) {
-    $link = user_pass_reset_url($user);
-    drush_print($link .'/login');
+  if ($user_object !== FALSE && $user_object->status) {
+    $options = array();
+    if ($path) {
+      $options['query']['destination'] = $path;
+    }
+    $link = url(user_pass_reset_url($user_object) . '/login', $options);
+    drush_start_browser($link);
+    drush_print($link);
     return $link;
   }
   else {
-    drush_set_error("The user account with the name " . $name . " could not be loaded or is blocked!");
+    drush_set_error("The user account could not be loaded or is blocked!");
   }
 }
 

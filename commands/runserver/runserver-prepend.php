@@ -27,25 +27,6 @@ if (!function_exists('filter_init')) {
     $conf_inject = unserialize(urldecode(runserver_env('RUNSERVER_CONF')));
     // Merge in the injected conf, overriding existing items.
     $conf = array_merge($conf, $conf_inject);
-
-    // Log in user if needed.
-    if (isset($_GET['login'])) {
-      $uid = runserver_env('RUNSERVER_USER');
-      if (!empty($uid) && $user->uid !== $uid) {
-        // If a user was provided, log in as this user.
-        $user = user_load($uid);
-        if (function_exists('drupal_session_regenerate')) {
-          // Drupal 7
-          drupal_session_regenerate();
-        }
-        else {
-          // Drupal 6
-          sess_regenerate();
-        }
-      }
-      // Refresh the page (in case access denied has been called already).
-      drupal_goto($_GET['q']);
-    }
   }
 }
 
