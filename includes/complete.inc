@@ -51,8 +51,9 @@
  *   expensive to generate. Arguments are also cached per-site.
  *
  * For argument completions, commandfiles can implement
- * COMMANDFILE_COMMAND_complete() returning an array of argument completions for
- * that command. For example, return array('aardvark', 'aardwolf') will offer
+ * COMMANDFILE_COMMAND_complete() returning an array containing a key 'values'
+ * containing an array of all possible argument completions for that command.
+ * For example, return array('values' => array('aardvark', 'aardwolf')) offers
  * the words 'aardvark' and 'aardwolf', or will complete to 'aardwolf' if the
  * letters 'aardw' are already present. Since command arguments are cached,
  * commandfiles can bootstrap a site or perform other somewhat time consuming
@@ -446,11 +447,6 @@ function drush_complete_trailing_space(&$item, $key) {
     $item = (string)$item . ' ';
   }
 }
-
-/**
- * Rebuild and cache completions for command arguments.
- *
- */
 
 /**
  * Rebuild and cache completions for command arguments.
