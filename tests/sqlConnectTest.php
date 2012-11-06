@@ -23,13 +23,13 @@ class SqlConnectCase extends Drush_CommandTestCase {
     $output = $this->getOutput();
 
     if (strpos(UNISH_DB_URL, 'mysql') !== FALSE) {
-      $this->assertRegExp('/^mysql --database=[^\s]+ --host=[^\s]+ --user=[^\s]+ --password=.*$/', $output);
+      $this->assertRegExp('^mysql --database=[^\s]+ --host=[^\s]+ --user=[^\s]+ --password=.*$', $output);
     }
     elseif (strpos(UNISH_DB_URL, 'sqlite') !== FALSE) {
       $this->assertContains('sqlite3', $output);
     }
     elseif (strpos(UNISH_DB_URL, 'pgsql') !== FALSE) {
-      $this->assertRegExp('/^psql --dbname=[^\s]+ --host=[^\s]+ --port=[^\s] --username=[^\s]+', $output);
+      $this->assertRegExp('^psql --dbname=[^\s]+ --host=[^\s]+ --port=[^\s] --username=[^\s]+', $output);
     }
     else {
       $this->markTestSkipped('sql-connect test does not recognize database type in UNISH_DB_URL.');
