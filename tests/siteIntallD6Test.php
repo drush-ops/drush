@@ -9,8 +9,9 @@
 class siteInstallD6Case extends Drush_CommandTestCase {
 
   function setUp() {
-    if (strpos(UNISH_DB_URL, 'sqlite') !== FALSE) {
-      $this->markTestSkipped('SQlite not compatible with Drupal 6.');
+    if (UNISH_DRUPAL_MAJOR_VERSION != 6) {
+      $this->markTestSkipped('This test class is designed for Drupal 6.');
+      return;
     }
   }
 

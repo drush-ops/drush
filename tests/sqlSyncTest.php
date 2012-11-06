@@ -34,10 +34,11 @@ class sqlSyncTest extends Drush_CommandTestCase {
    * Do the same test as above, but use Drupal 6 sites instead of Drupal 7.
    */
   public function testLocalSqlSyncD6() {
-    if (strpos(UNISH_DB_URL, 'sqlite') !== FALSE) {
-      $this->markTestSkipped('SQL Sync does not apply to SQLite.');
+    if (UNISH_DRUPAL_MAJOR_VERSION != 6) {
+      $this->markTestSkipped('This test class is designed for Drupal 6.');
       return;
     }
+
     chdir(UNISH_TMP); // Avoids perm denied Windows error.
     $this->setUpBeforeClass();
     $sites = $this->setUpDrupal(2, TRUE, '6');

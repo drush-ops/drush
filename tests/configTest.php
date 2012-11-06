@@ -9,6 +9,10 @@
 class ConfigCase extends Drush_CommandTestCase {
 
   function testConfig() {
+    if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
+      $this->markTestSkipped('Config only available on D8+.');
+    }
+
     $sites = $this->setUpDrupal(1, TRUE, '8');
     $options = array(
       'yes' => NULL,
