@@ -8,6 +8,13 @@
 
 class siteInstallD6Case extends Drush_CommandTestCase {
 
+  function setUp() {
+    if (UNISH_DRUPAL_MAJOR_VERSION != 6) {
+      $this->markTestSkipped('This test class is designed for Drupal 6.');
+      return;
+    }
+  }
+
   /*
    * Test a D6 install with extra options.
    */
