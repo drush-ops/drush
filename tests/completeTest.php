@@ -20,14 +20,19 @@ class completeCase extends Drush_CommandTestCase {
   }
 
   public function testComplete() {
+    // We copy our completetest commandfile into our path.
+    // We cannot use --include since complete deliberately avoids drush
+    // command dispatch.
+    copy(dirname(__FILE__) . '/completetest.drush.inc', UNISH_CACHE . "/completetest.drush.inc");
+
     $sites = $this->setUpDrupal(2);
     $env = key($sites);
     $root = $this->webroot();
-    // We copy our test command into our dev site, so we have a difference we
-    // can detect for cache correctness. We cannot use --include since complete
-    // deliberately avoids drush command dispatch.
+    // We copy the unit test command into (only) our dev site, so we have a
+    // detectable difference we can use to detect cache correctness between
+    // sites.
     mkdir("$root/sites/$env/modules");
-    copy(dirname(__FILE__) . '/unit.drush.inc', "$root/sites/$env/modules/unit.drush.inc");
+    copy(dirname(__FILE__) . '/completetestsite.drush.inc', "$root/sites/$env/modules/completetestsite.drush.inc");
     // Clear the cache, so it finds our test command.
     $this->drush('php-eval', array('drush_cache_clear_all();'), array(), '@' . $env);
 
@@ -43,68 +48,68 @@ class completeCase extends Drush_CommandTestCase {
     $this->drush('php-eval', array('drush_complete_cache_clear();'));
     // Confirm we get cache rebuilds for runs both in and out of a site
     // which is expected since these should resolve to separate cache IDs.
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-return-options', FALSE);
-    // n.b. there is no "uninstall" any more; maybe this test needs a better command to test with
-    $this->verifyComplete('uni', 'uninstall', 'uninstall', FALSE);
+    $this->verifyComplete('@dev aaaaaaaard-', 'aaaaaaaard-ant', 'aaaaaaaard-zebra', FALSE);
+    $this->verifyComplete('aaaaaaaard-', 'aaaaaaaard-ant', 'aaaaaaaard-wolf', FALSE);
     // Next, rerun and check results to confirm cache IDs are generated
     // correctly on our fast bootstrap when returning the cached result.
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-return-options');
-    $this->verifyComplete('uni', 'uninstall', 'uninstall');
+    $this->verifyComplete('@dev aaaaaaaard-', 'aaaaaaaard-ant', 'aaaaaaaard-zebra');
+    $this->verifyComplete('aaaaaaaard-', 'aaaaaaaard-ant', 'aaaaaaaard-wolf');
 
     // Test cache clearing for a completion type, which should be effective only
     // for current environment - i.e. a specific site should not be effected.
     $this->drush('php-eval', array('drush_complete_cache_clear("command-names");'));
-    $this->verifyComplete('@dev uni', 'uninstall', 'unit-return-options');
-    // n.b. there is no "uninstall" any more; maybe this test needs a better command to test with
-    $this->verifyComplete('uni', 'uninstall', 'uninstall', FALSE);
+    $this->verifyComplete('@dev aaaaaaaard-', 'aaaaaaaard-ant', 'aaaaaaaard-zebra');
+    $this->verifyComplete('aaaaaaaard-', 'aaaaaaaard-ant', 'aaaaaaaard-wolf', FALSE);
 
     // Test cache clearing for a command specific completion type, which should
     // be effective only for current environment. Prime caches first.
-    $this->verifyComplete('@dev topic docs-c', 'docs-commands', 'docs-cron', FALSE);
-    $this->verifyComplete('topic docs-c', 'docs-commands', 'docs-cron', FALSE);
-    $this->drush('php-eval', array('drush_complete_cache_clear("arguments", "topic");'));
+    $this->verifyComplete('@dev aaaaaaaard a', 'aardvark', 'aardwolf', FALSE);
+    $this->verifyComplete('aaaaaaaard a', 'aardvark', 'aardwolf', FALSE);
+    $this->drush('php-eval', array('drush_complete_cache_clear("arguments", "aaaaaaaard");'));
     // We cleared the global cache for this argument, not the site specific
     // cache should still exist.
-    $this->verifyComplete('@dev topic docs-c', 'docs-commands', 'docs-cron');
-    $this->verifyComplete('topic docs-c', 'docs-commands', 'docs-cron', FALSE);
+    $this->verifyComplete('@dev aaaaaaaard a', 'aardvark', 'aardwolf');
+    $this->verifyComplete('aaaaaaaard a', 'aardvark', 'aardwolf', FALSE);
 
     // Test overall context sensitivity - almost all of these are cache hits.
     // No context (i.e. "drush <tab>"), should list aliases and commands.
-    $this->verifyComplete('""', '@dev', 'ws');
+    $this->verifyComplete('""', '@dev', 'zzzzzzzzebra');
     // Site alias alone.
     $this->verifyComplete('@', '@dev', '@stage');
     // Command alone.
-    $this->verifyComplete('d', 'dd', 'drupal-directory');
+    $this->verifyComplete('aaaaaaaa', 'aaaaaaaard', 'aaaaaaaard-wolf');
     // Command with single result.
-    $this->verifyComplete('core-t', 'core-topic', 'core-topic');
+    $this->verifyComplete('aaaaaaaard-v', 'aaaaaaaard-vark', 'aaaaaaaard-vark');
     // Command with no results should produce no output.
     $this->verifyComplete('dont-name-a-command-like-this', '', '');
-    // Commands that start the same as another command (i.e. unit is a valid
-    // command, but we should still list unit-eval and unit-invoke when
-    // completing on "unit").
-    $this->verifyComplete('@dev unit', 'unit', 'unit-return-options');
+    // Commands that start the same as another command (i.e. aaaaaaaard is a
+    // valid command, but we should still list aaaaaaaardwolf when completing on
+    // "aaaaaaaard").
+    $this->verifyComplete('@dev aaaaaaaard', 'aaaaaaaard', 'aaaaaaaard-zebra');
     // Global option alone.
     $this->verifyComplete('--n', '--no', '--nocolor');
     // Site alias + command.
-    $this->verifyComplete('@dev d', 'dd', 'drupal-directory');
+    $this->verifyComplete('@dev aaaaaaaa', 'aaaaaaaard', 'aaaaaaaard-zebra');
     // Site alias + command, should allow no further site aliases or commands.
-    $this->verifyComplete('@dev topic @', '', '');
-    $this->verifyComplete('@dev topic topi', '', '');
+    $this->verifyComplete('@dev aaaaaaaard-wolf @', '', '', FALSE);
+    $this->verifyComplete('@dev aaaaaaaard-wolf aaaaaaaa', '', '');
     // Command + command option.
-    $this->verifyComplete('dl --', '--all', '--version-control=svn');
+    $this->verifyComplete('aaaaaaaard --', '--ears', '--nose');
     // Site alias + command + command option.
-    $this->verifyComplete('@dev dl --', '--all', '--version-control=svn');
+    $this->verifyComplete('@dev aaaaaaaard --', '--ears', '--nose');
+    // Command + all arguments
+    $this->verifyComplete('aaaaaaaard ""', 'aardvark', 'zebra');
     // Command + argument.
-    $this->verifyComplete('topic docs-c', 'docs-commands', 'docs-cron');
+    $this->verifyComplete('aaaaaaaard a', 'aardvark', 'aardwolf');
     // Site alias + command + regular argument.
     // Note: this is checked implicitly by the argument cache testing above.
-    // Site alias + command + file/directory argument. This is a command
-    // argument we have not used so far, so a cache miss is expected.
-    
+
     if ($this->is_windows()) {
       $this->markTestSkipped('Complete tests not fully working nor needed on Windows.');
     }
 
+    // Site alias + command + file/directory argument. This is a command
+    // argument we have not used so far, so a cache miss is expected.
     $this->verifyComplete('archive-restore aard', 'aard wolf.tar.gz', 'aardvark/', FALSE);
     // Site alias + command + file/directory argument with quoting.
     $this->verifyComplete('archive-restore aard\ w', 'aard\ wolf.tar.gz', 'aard\ wolf.tar.gz');
