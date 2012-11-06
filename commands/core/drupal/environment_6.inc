@@ -93,6 +93,34 @@ function drush_module_dependents($modules, $module_info) {
 }
 
 /**
+ * Returns a list of enabled modules.
+ *
+ * This is a simplified version of module_list().
+ */
+function drush_module_list() {
+  $enabled = array();
+  $rsc = drush_db_select('system', 'name', 'type=:type AND status=:status', array(':type' => 'module', ':status' => 1));
+  while ($row = drush_db_result($rsc)) {
+    $enabled[$row] = $row;
+  }
+
+  return $enabled;
+}
+
+/**
+ * Return a list of extensions from a list of named extensions.
+ * Both enabled and disabled/uninstalled extensions are returned.
+ */
+function drush_get_named_extensions_list($extensions) {
+  $result = array();
+  $rsc = drush_db_select('system', array('name', 'status'), 'name IN (:extensions)', array(':extensions' => $extensions));
+  while ($row = drush_db_fetch_object($rsc)) {
+    $result[$row->name] = $row;
+  }
+  return $result;
+}
+
+/**
  * Enable a list of modules. It is assumed the list contains all the dependencies not already enabled.
  *
  * @param $modules

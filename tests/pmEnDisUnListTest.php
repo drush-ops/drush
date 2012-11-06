@@ -31,7 +31,9 @@ class EnDisUnListCase extends Drush_CommandTestCase {
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));
-    $this->assertTrue(in_array('bartik', $list), 'Themes are in the pm-list');
+    // In D7, the testing profile uses 'bartik', whereas in D8, 'stark' is used.
+    $themeToCheck = (UNISH_DRUPAL_MAJOR_VERSION >= 8) ? 'stark' : 'bartik';
+    $this->assertTrue(in_array($themeToCheck, $list), 'Themes are in the pm-list');
 
     $this->drush('sql-query', array('SELECT path FROM menu_router WHERE path = "devel/settings"'), array('root' => $this->webroot(), 'uri' => key($sites)));
     $list = $this->getOutputAsList();
@@ -59,6 +61,9 @@ class EnDisUnListCase extends Drush_CommandTestCase {
     $this->assertEmpty($output, 'Devel variable was uninstalled.');
 
     // Test pm-enable is able to download dependencies.
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      $this->markTestSkipped("pathauto does not have a release for Drupal 8 yet.");
+    }
     $this->drush('pm-download', array('pathauto'), $options);
     $this->drush('pm-enable', array('pathauto'), $options + array('resolve-dependencies' => TRUE));
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));

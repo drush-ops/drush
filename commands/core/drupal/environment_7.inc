@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- *   Specific functions for a drupal 8 environment.
+ *   Specific functions for a drupal 7 environment.
  *   drush_include_engine() magically includes either this file
  *   or environment_X.inc depending on which version of drupal drush
  *   is called from.
@@ -17,14 +17,11 @@
  */
 function drush_get_modules($include_hidden = TRUE) {
   $modules = system_rebuild_module_data();
-
-  foreach ($modules as $key => $module) {
-    $module->type = 'module';
-    if ((!$include_hidden) && (isset($module->info['hidden']))) {
-      unset($modules[$key]);
-    }
-    else {
-      $module->schema_version = drupal_get_installed_schema_version($key);
+  if (!$include_hidden) {
+    foreach ($modules as $key => $module) {
+      if (isset($module->info['hidden'])) {
+        unset($modules[$key]);
+      }
     }
   }
 
@@ -108,29 +105,27 @@ function drush_module_dependents($modules, $module_info) {
 /**
  * Returns a list of enabled modules.
  *
- * This is a wrapper for module_list().
+ * This is a simplified version of module_list().
  */
 function drush_module_list() {
-  return module_list('module_enabled');
+  $enabled = array();
+  $rsc = drush_db_select('system', 'name', 'type=:type AND status=:status', array(':type' => 'module', ':status' => 1));
+  while ($row = drush_db_result($rsc)) {
+    $enabled[$row] = $row;
+  }
+
+  return $enabled;
 }
 
 /**
- * Return a list of modules from a list of named modules.
- * Both enabled and disabled/uninstalled modules are returned.
+ * Return a list of extensions from a list of named extensions.
+ * Both enabled and disabled/uninstalled extensions are returned.
  */
 function drush_get_named_extensions_list($extensions) {
   $result = array();
-  $modules = drush_get_modules();
-  foreach($modules as $name => $module) {
-    if (in_array($name, $extensions)) {
-      $result[$name] = $module;
-    }
-  }
-  $themes = drush_get_themes();
-  foreach($themes as $name => $theme) {
-    if (in_array($name, $extensions)) {
-      $result[$name] = $theme;
-    }
+  $rsc = drush_db_select('system', array('name', 'status'), 'name IN (:extensions)', array(':extensions' => $extensions));
+  while ($row = drush_db_fetch_object($rsc)) {
+    $result[$row->name] = $row;
   }
   return $result;
 }
@@ -192,9 +187,8 @@ function drush_module_uninstall($modules) {
  */
 function drush_get_themes($include_hidden = TRUE) {
   $themes = system_rebuild_theme_data();
-  foreach ($themes as $key => $theme) {
-    $theme->type = 'theme';
-    if (!$include_hidden) {
+  if (!$include_hidden) {
+    foreach ($themes as $key => $theme) {
       if (isset($theme->info['hidden'])) {
         unset($themes[$key]);
       }

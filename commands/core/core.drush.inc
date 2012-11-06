@@ -508,10 +508,11 @@ function _core_path_aliases($project = '') {
       // If the 'project' parameter was specified, then search
       // for a project (or a few) and add its path to the path list
       if (!empty($project)) {
+        drush_include_engine('drupal', 'environment');
+        $modules = drush_get_modules();
         foreach(explode(',', $project) as $target) {
-          $path = drush_core_find_project_path($target);
-          if(isset($path)) {
-            $paths['%' . $target] = $path;
+          if (array_key_exists($target, $modules)) {
+            $paths['%' . $target] = DRUPAL_ROOT . '/' . dirname($modules[$target]->filename);
           }
         }
       }
@@ -1176,14 +1177,6 @@ function drush_core_version() {
 
 function drush_core_self_update() {
   drush_check_self_update();
-}
-
-function drush_core_find_project_path($target) {
-  $path = drush_db_result(drush_db_select('system', array('filename'), 'name = :name', array(':name' => $target)));
-  if ($path) {
-    $path = dirname($path);
-    return DRUPAL_ROOT . '/' . $path;
-  }
 }
 
 /**

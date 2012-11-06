@@ -574,21 +574,6 @@ function _drush_pm_find_common_path($project_type, $extensions) {
 }
 
 /**
- * Returns a list of enabled modules.
- *
- * This is a simplified version of module_list().
- */
-function pm_module_list() {
-  $enabled = array();
-  $rsc = drush_db_select('system', 'name', 'type=:type AND status=:status', array(':type' => 'module', ':status' => 1));
-  while ($row = drush_db_result($rsc)) {
-    $enabled[$row] = $row;
-  }
-
-  return $enabled;
-}
-
-/**
  * @} End of "defgroup extensions".
  */
 
@@ -837,7 +822,7 @@ function drush_pm_enable_validate() {
     if (!$dependencies_ok) {
       return FALSE;
     }
-    $modules = array_diff(array_merge($modules, $all_dependencies), pm_module_list());
+    $modules = array_diff(array_merge($modules, $all_dependencies), drush_module_list());
     // Discard modules which doesn't meet requirements.
     require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
     foreach ($modules as $key => $module) {
@@ -905,9 +890,9 @@ function drush_pm_enable() {
   }
 
   // Inform the user of final status.
-  $rsc = drush_db_select('system', array('name', 'status'), 'name IN (:extensions)', array(':extensions' => $extensions));
+  $result_extensions = drush_get_named_extensions_list($extensions);
   $problem_extensions = array();
-  while ($extension = drush_db_fetch_object($rsc)) {
+  foreach ($result_extensions as $name => $extension) {
     if ($extension->status) {
       drush_log(dt('!extension was enabled successfully.', array('!extension' => $extension->name)), 'ok');
     }
@@ -967,7 +952,7 @@ function drush_pm_disable() {
   if (!empty($modules)) {
     // Add enabled dependents to the list of modules to disable.
     $dependents = drush_module_dependents($modules, $extension_info);
-    $dependents = array_intersect($dependents, pm_module_list());
+    $dependents = array_intersect($dependents, drush_module_list());
     $modules = array_merge($modules, $dependents);
 
     // Discard required modules.
@@ -1008,9 +993,9 @@ function drush_pm_disable() {
   }
 
   // Inform the user of final status.
-  $rsc = drush_db_select('system', array('name', 'status'), 'name IN (:extensions)', array(':extensions' => $extensions));
+  $result_extensions = drush_get_named_extensions_list($extensions);
   $problem_extensions = array();
-  while ($extension = drush_db_fetch_object($rsc)) {
+  foreach ($result_extensions as $name => $extension) {
     if (!$extension->status) {
       drush_log(dt('!extension was disabled successfully.', array('!extension' => $extension->name)), 'ok');
     }
@@ -1235,7 +1220,7 @@ function drush_pm_updatecode_postupdate() {
   drupal_load_updates();
 
   // @see system_requirements().
-  foreach (pm_module_list() as $module) {
+  foreach (drush_module_list() as $module) {
     $updates = drupal_get_schema_versions($module);
     if ($updates !== FALSE) {
       $default = drupal_get_installed_schema_version($module);
