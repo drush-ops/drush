@@ -15,12 +15,18 @@ class fieldCase extends Drush_CommandTestCase {
       'root' => $this->webroot(),
       'uri' => key($sites),
     );
+
+    $expected_url = '/admin/config/people/accounts/fields/subtitle';
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      // Prepend for D8. We might want to change setUpDrupal() to add clean url.
+      $expected_url = '/index.php' . $expected_url;
+    }
     // Create two field instances on article content type.
     $this->drush('field-create', array('user', 'city,text,text_textfield', 'subtitle,text,text_textfield'), $options + array('entity_type' => 'user'));
     $output = $this->getOutput();
     list($city, $subtitle) = explode(' ', $output);
     $url = parse_url($subtitle);
-    $this->assertEquals('/admin/config/people/accounts/fields/subtitle', $url['path']);
+    $this->assertEquals($expected_url, $url['path']);
 
     // Assure that the second field instance was created correctly (subtitle).
     $this->verifyInstance('subtitle', $options);
@@ -29,7 +35,7 @@ class fieldCase extends Drush_CommandTestCase {
     $this->drush('field-update', array('subtitle'), $options);
     $output = $this->getOutput();
     $url = parse_url($this->getOutput());
-    $this->assertEquals('/admin/config/people/accounts/fields/subtitle', $url['path']);
+    $this->assertEquals($expected_url, $url['path']);
 
     // Assure that field-clone actually clones.
     $this->drush('field-clone', array('subtitle', 'subtitlecloned'), $options);

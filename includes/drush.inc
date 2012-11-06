@@ -828,7 +828,26 @@ function drush_op($function) {
     return TRUE;
   }
 
-  return call_user_func_array($function, $args);
+  return drush_call_user_func_array($function, $args);
+}
+
+/*
+ * Mimic cufa but still call function directly. See http://drupal.org/node/329012#comment-1260752
+ */
+function drush_call_user_func_array($function, $args = array() ) {
+  switch (count($args)) {
+    case 0: return $function(); break;
+    case 1: return $function($args[0]); break;
+    case 2: return $function($args[0], $args[1]); break;
+    case 3: return $function($args[0], $args[1], $args[2]); break;
+    case 4: return $function($args[0], $args[1], $args[2], $args[3]); break;
+    case 5: return $function($args[0], $args[1], $args[2], $args[3], $args[4]); break;
+    case 6: return $function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5]); break;
+    case 7: return $function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6]); break;
+    case 8: return $function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7]); break;
+    case 9: return $function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7], $args[8]); break;
+    default: return call_user_func_array($function,$args);
+  }
 }
 
 /**
