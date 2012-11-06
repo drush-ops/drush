@@ -51,8 +51,8 @@ class DrupalServer extends HTTPServer {
    * Override get started event.
    */
   function listening() {
-    if (!empty($this->path)) {
-      drush_start_browser($this->path);
+    if (!empty($this->browse)) {
+      drush_start_browser($this->browse);
     }
   }
 

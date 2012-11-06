@@ -76,10 +76,31 @@ class userCase extends Drush_CommandTestCase {
     $this->assertEquals('1', $output, 'User can login with new password.');
 
     // user-login
-    $this->drush('user-login', array($name), $options);
+    $user_login_options = $options + array('simulate' => TRUE, 'browser' => 'unish');
+    // Collect full logs so we can check browser.
+    $this->drush('user-login', array(), $user_login_options + array('backend' => NULL));
+    $parsed = parse_backend_output($this->getOutput());
+    $url = parse_url($parsed['output']);
+    $this->assertStringStartsWith('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
+    $browser = FALSE;
+    foreach ($parsed['log'] as $key => $log) {
+      if (strpos($log['message'], 'Opening browser unish at http://dev/user/reset/1/') === 0) {
+        $browser = TRUE;
+      }
+    }
+    $this->assertEquals($browser, TRUE, 'Correct browser opened at correct URL');
+    // Check specific user and path argument.
+    $this->drush('user-login', array($name, 'node/add'), $user_login_options);
     $output = $this->getOutput();
     $url = parse_url($output);
-    $this->assertStringStartsWith('/user/reset/' . $uid, $url['path'], 'Login returned a valid reset URL');
+    $this->assertStringStartsWith('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
+    $this->assertEquals('destination=node/add', $url['query'], 'Login included destination path in URL');
+    // Check path used as only argument when using uid option.
+    $this->drush('user-login', array('node/add'), $user_login_options + array('uid' => $uid));
+    $output = $this->getOutput();
+    $url = parse_url($output);
+    $this->assertStringStartsWith('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+    $this->assertEquals('destination=node/add', $url['query'], 'Login included destination path in URL');
 
     // user-cancel
     // create content

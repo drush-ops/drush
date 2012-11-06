@@ -129,7 +129,7 @@ function drush_core_runserver_validate() {
  * Callback for runserver command.
  */
 function drush_core_runserver($uri = NULL) {
-  global $user;
+  global $user, $base_url;
 
   // Determine active configuration.
   $drush_default = array(
@@ -143,6 +143,8 @@ function drush_core_runserver($uri = NULL) {
     // Allow a path of a single hyphen to clear a default path.
     $uri['path'] = '';
   }
+  // Remove any leading slashes from the path, since that is what url() expects.
+  $uri['path'] = ltrim($uri['path'], '/');
 
   // Determine and set the new URI.
   $hostname = $addr = $uri['host'];
@@ -162,24 +164,18 @@ function drush_core_runserver($uri = NULL) {
   // request.
   if (drush_get_option('user', FALSE)) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
-    // Add a querystring parameter to indicate that this is the first page request, so that the user can be logged in.
-    if (!empty($uri['path'])) {
-      if (strpos($uri['path'], '?') === FALSE) {
-        $uri['path'] .= '?login';
-      }
-      else {
-        $uri['path'] .= '&login';
-      }
-    }
   }
 
   // We delete any registered files here, since they are not caught by Ctrl-C.
   _drush_delete_registered_files();
 
-  // We pass in the effective base_url to our auto_prepend_script via the cgi
-  // environment. This allows Drupal to generate working URLs to this http
+  // We set the effective base_url, since we have now detected the current site,
+  // and need to ensure generated URLs point to our runserver host.
+  // We also pass in the effective base_url to our auto_prepend_script via the
+  // CGI environment. This allows Drupal to generate working URLs to this http
   // server, whilst finding the correct multisite from the HTTP_HOST header.
-  $env['RUNSERVER_BASE_URL'] = 'http://' . $addr . ':' . $uri['port'];
+  $base_url = 'http://' . $addr . ':' . $uri['port'];
+  $env['RUNSERVER_BASE_URL'] = $base_url;
 
   // We pass in an array of $conf overrides using the same approach.
   // By default we set drupal_http_request_fails to FALSE, as the httpserver
@@ -195,16 +191,18 @@ function drush_core_runserver($uri = NULL) {
   }
   $env['RUNSERVER_CONF'] = urlencode(serialize($override));
 
-  // We pass in the specified user ID (if set). This will automatically log
-  // this user in the browser during the first request (but not subsequent
-  // requests, to allow logging out).
+  // We log in with the specified user ID (if set) via the password reset URL.
   $user_message = '';
   if ($user->uid) {
-    $env['RUNSERVER_USER'] = $user->uid;
+    $options = array('query' => array('destination' => $uri['path']));
+    $browse = url(user_pass_reset_url($user) . '/login', $options);
     $user_message = ', logged in as ' . $user->name;
   }
+  else {
+    $browse = url($uri['path']);
+  }
 
-  drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $uri['path'], '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
+  drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $uri['path'], '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
   if (drush_get_option('server', FALSE) == 'builtin') {
     // Start php 5.4 builtin server.
     // Store data used by runserver-prepend.php in the shell environment.
@@ -212,8 +210,9 @@ function drush_core_runserver($uri = NULL) {
       putenv($key . '=' . $value);
     }
     if (!empty($uri['path'])) {
-      // Start a browser if desired. Include a 2 second delay to allow the server to come up.
-      drush_start_browser($uri['path'], 2);
+      // Start a browser if desired. Include a 2 second delay to allow the
+      // server to come up.
+      drush_start_browser($browse, 2);
     }
     // Start the server using 'php -S'.
     $php = drush_get_option('php');
@@ -229,7 +228,7 @@ function drush_core_runserver($uri = NULL) {
     $server = new DrupalServer(array(
       'addr' => $addr,
       'port' => $uri['port'],
-      'path' => $uri['path'],
+      'browse' => $browse,
       'hostname' => $hostname,
       'site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'),
       'server_id' => 'Drush runserver',

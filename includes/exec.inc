@@ -411,20 +411,28 @@ function drush_shell_exec_output() {
  *   default browser could not be found.
  */
 function drush_start_browser($uri = NULL, $sleep = FALSE) {
-  if (!parse_url($uri, PHP_URL_HOST)) {
-    $site = drush_get_context('DRUSH_URI');
-    $host = parse_url($site, PHP_URL_HOST);
+  if ($browser = drush_get_option('browser', TRUE)) {
+    // We can only open a browser if we have a DISPLAY environment variable on
+    // POSIX or are running Windows.
+    if (!getenv('DISPLAY') && !drush_is_windows()) {
+      drush_log(dt('No graphical display appears to be available, not starting browser.'), 'notice');
+      return FALSE;
+    }
+    $host = parse_url($uri, PHP_URL_HOST);
+    if (!$host) {
+      // Build a URI for the current site, if we were passed a path.
+      $site = drush_get_context('DRUSH_URI');
+      $host = parse_url($site, PHP_URL_HOST);
+      $uri = $site . '/' . ltrim($uri, '/');
+    }
     // Validate that the host part of the URL resolves, so we don't attempt to
     // open the browser for http://default or similar invalid hosts.
-    $hosterror = gethostbyname($host) == $host;
-    $iperror = ip2long($host) && gethostbyaddr($host) == $host;
-    if ($hosterror && $iperror) {
+    $hosterror = (gethostbynamel($host) === FALSE);
+    $iperror = (ip2long($host) && gethostbyaddr($host) == $host);
+    if (!drush_get_context('DRUSH_SIMULATE') && ($hosterror || $iperror)) {
       drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser.', array('!host' => $host)), 'warning');
       return FALSE;
     }
-    $uri = $site . '/' . ltrim($uri, '/');
-  }
-  if ($browser = drush_get_option('browser', TRUE)) {
     if ($browser === TRUE) {
       // See if we can find an OS helper to open URLs in default browser.
       if (drush_shell_exec('which xdg-open')) {
@@ -445,10 +453,12 @@ function drush_start_browser($uri = NULL, $sleep = FALSE) {
     if ($sleep) {
       $prefix = 'sleep ' . $sleep . ' && ';
     }
-    if ($browser && !drush_get_context('DRUSH_SIMULATE')) {
-      $pipes = array();
-      drush_log(dt('Opening browser at !uri', array('!uri' => $uri)));
-      proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
+    if ($browser) {
+      drush_log(dt('Opening browser !browser at !uri', array('!browser' => $browser, '!uri' => $uri)));
+      if (!drush_get_context('DRUSH_SIMULATE')) {
+        $pipes = array();
+        proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
+      }
       return TRUE;
     }
   }
