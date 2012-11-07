@@ -8,7 +8,6 @@
 class ImageCase extends Drush_CommandTestCase {
 
   function testImage() {
-    // Install Drupal 7 with standard installation profile
     $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
     $options = array(
       'yes' => NULL,

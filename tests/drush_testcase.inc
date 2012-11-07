@@ -237,6 +237,10 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       foreach ($sites_subdirs as $subdir) {
         $this->fetchInstallDrupal($subdir, $install, $version_string, $profile);
       }
+      // Write an empty sites.php if we are on D8+. Needed for multi-site.
+      if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+        copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
+      }
       $options = array(
         'destination' => $source,
         'root' => $root,
