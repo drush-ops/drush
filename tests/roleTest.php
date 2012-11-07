@@ -23,18 +23,24 @@ class roleCase extends Drush_CommandTestCase {
       'uri' => key($sites),
       'yes' => NULL,
     );
-    $this->drush('role-list', array('anonymous user'), $options );
+    $anonymous = 'anonymous';
+    $authenticated = 'authenticated';
+    if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
+      $anonymous .= ' user';
+      $authenticated .= ' user';
+    }
+    $this->drush('role-list', array($anonymous), $options );
     $output = $this->getOutput();
     $this->assertEquals('access content', $output);
-    $this->drush('role-list', array('authenticated user'), $options );
+    $this->drush('role-list', array($authenticated), $options );
     $output = $this->getOutput();
     $this->assertEquals('access content', $output);
-    $this->drush('role-add-perm', array('anonymous user', 'administer nodes'), $options );
-    $this->drush('role-list', array('anonymous user'), $options );
+    $this->drush('role-add-perm', array($anonymous, 'administer nodes'), $options );
+    $this->drush('role-list', array($anonymous), $options );
     $output = $this->getOutput();
     $this->assertContains('administer nodes', $output);
-    $this->drush('role-remove-perm', array('anonymous user', 'administer nodes'), $options );
-    $this->drush('role-list', array('anonymous user'), $options );
+    $this->drush('role-remove-perm', array($anonymous, 'administer nodes'), $options );
+    $this->drush('role-list', array($anonymous), $options );
     $output = $this->getOutput();
     $this->assertEquals('access content', $output);
   }
