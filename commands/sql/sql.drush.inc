@@ -607,7 +607,6 @@ function drush_sql_query($query = NULL) {
 function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
   $suffix = '';
   $scheme = _drush_sql_get_scheme($db_spec);
-
   // Inject table prefixes as needed.
   if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
     if ($filename) {
@@ -648,14 +647,18 @@ function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
   // We will therefore show the query explicitly in the interest of full disclosure.
   if (drush_get_context('DRUSH_SIMULATE')) {
     drush_print('sql-query: ' . $query);
+    if (!empty($exec)) {
+      drush_print('exec: ' . $exec);
+    }
+    return TRUE;
   }
-  if ($exec) {
-    $return = drush_op_system($exec) == 0;
+  if (empty($scheme)) {
+    return drush_set_error('DRUSH_SQL_NO_DATABASE', dt("No database to operate on."));
   }
-  else {
-    $return = drush_set_error('DRUSH_SQL_NO_QUERY', 'No query provided');
+  if (empty($exec)) {
+    return drush_set_error('DRUSH_SQL_NO_QUERY', 'No query provided');
   }
-  return $return;
+  return (drush_op_system($exec) == 0);
 }
 
 function drush_sql_drop() {
