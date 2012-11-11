@@ -30,7 +30,7 @@ function drush_core_pre_site_install($profile = NULL) {
   $files = "$conf_path/files";
   $settingsfile = "$conf_path/settings.php";
   $sitesfile = "sites/sites.php";
-  $sitesfile_write = drush_drupal_major_version() >= 8 && !file_exists($sitesfile);
+  $sitesfile_write = drush_drupal_major_version() >= 8 && !file_exists($sitesfile) && $sites_subdir != 'default';
   if (!file_exists($files)) {
     $msg[] = dt('create a @files directory', array('@files' => $files));
   }
