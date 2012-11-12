@@ -51,7 +51,7 @@ function drush_core_pre_site_install($profile = NULL) {
     return drush_user_abort();
   }
 
-  // Can't install without sites directory and settings.php.
+  // Can't install without sites subdirectory and settings.php.
   if (!file_exists($conf_path)) {
     if (!drush_mkdir($conf_path) && !drush_get_context('DRUSH_SIMULATE')) {
       drush_set_error(dt('Failed to create directory @conf_path', array('@conf_path' => $conf_path)));
@@ -87,7 +87,7 @@ function drush_core_pre_site_install($profile = NULL) {
     }
   }
 
-  // Write an empty sites.php if we are on D8 and in a multi-site
+  // Write an empty sites.php if we are on D8 and using multi-site.
   if ($sitesfile_write) {
     if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !drush_get_context('DRUSH_SIMULATE')) {
       return drush_set_error(dt('Failed to copy sites/sites.php to @sitesfile', array('@sitesfile' => $sitesfile)));
