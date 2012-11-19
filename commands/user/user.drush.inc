@@ -393,7 +393,7 @@ function drush_user_password($name) {
     }
   }
   else {
-    drush_set_error("The user account with the name " . $name . " could not be loaded!");
+    drush_set_error("The user account with the name " . $name . " could not be loaded.");
   }
 }
 
