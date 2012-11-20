@@ -921,7 +921,7 @@ function _drush_bootstrap_drupal_full() {
     // Mimic what index.php does.
     drupal_bootstrap(DRUPAL_BOOTSTRAP_CODE);
     // global $kernel;
-    $kernel = new Drupal\Core\DrupalKernel('prod', drush_get_context('DRUSH_DEBUG', FALSE));
+    $kernel = new Drupal\Core\DrupalKernel('prod', drush_get_context('DRUSH_DEBUG', FALSE), drupal_classloader());
     $kernel->boot();
   }
   else {
