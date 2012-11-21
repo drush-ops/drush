@@ -82,7 +82,7 @@ function docs_drush_command() {
     'callback arguments' => array($docs_dir . '/docs/bastion.html'),
   );
   $items['docs-bootstrap'] = array(
-    'description' => 'Bootstrap explanation: how Drush starts up and prepared the Drupal envionment for use with the command.',
+    'description' => 'Bootstrap explanation: how Drush starts up and prepares the Drupal environment for use with the command.',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
