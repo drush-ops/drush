@@ -1,11 +1,32 @@
 <?php
 
 abstract class DrushRole {
+  /**
+   * Drupal 6 and Drupal 7:
+   *   'rid' is numeric
+   *   'name' is machine name (e.g. 'anonymous user')
+   *
+   * Drupal 8:
+   *   'rid' is machine name (e.g. 'anonymous')
+   *   'name' is human-readable name (e.g. 'Anonymous user').
+   *
+   * c.f. http://drupal.org/node/1619504
+   */
   public $name;
   public $rid;
+
+  /**
+   * This is initialized to the result of the user_roles()
+   * function, which returns an associative array of
+   * rid => name pairs.
+   */
   public $roles;
 
-  public function __construct($rid = 'anonymous user') {
+  /**
+   * This constructor will allow the role to be selected either
+   * via the role id or via the role name.
+   */
+  public function __construct($rid = DRUPAL_ANONYMOUS_RID) {
     $this->roles = user_roles();
     if (!is_numeric($rid)) {
       $role_name = $rid;
@@ -41,6 +62,12 @@ abstract class DrushRole {
       }
     }
     return $permissions;
+  }
+
+  public function role_create($role_machine_name, $role_human_readable_name = '') {
+  }
+
+  public function delete() {
   }
 
   public function add($perm) {
@@ -96,6 +123,29 @@ class DrushRole6 extends DrushRole {
     return module_invoke($module, 'perm');
   }
 
+  public function role_create($role_machine_name, $role_human_readable_name = '') {
+    $this->_admin_user_role_op($role_machine_name, t('Add role'));
+    return TRUE;
+  }
+
+  public function delete() {
+    $this->_admin_user_role_op($this->rid, t('Delete role'));
+  }
+
+  function _admin_user_role_op($role_machine_name, $op) {
+    // c.f. http://drupal.org/node/283261
+    require_once(drupal_get_path('module', 'user') . "/user.admin.inc");
+
+    $form_id = "user_admin_new_role";
+    $form_values = array();
+    $form_values["name"] = $role_machine_name;
+    $form_values["op"] = $op;
+    $form_state = array();
+    $form_state["values"] = $form_values;
+
+    drupal_execute($form_id, $form_state);
+  }
+
   public function grant_permissions($perms_to_add) {
     $perms = $this->getPerms();
     $this->perms = array_unique(array_merge($this->perms, $perms_to_add));
@@ -125,6 +175,14 @@ class DrushRole7 extends DrushRole {
     return $perms ? array_keys($perms) : array();
   }
 
+  public function role_create($role_machine_name, $role_human_readable_name = '') {
+    return user_role_save((object)array('name' => $role_machine_name));
+  }
+
+  public function delete() {
+    user_role_delete($this->rid);
+  }
+
   public function grant_permissions($perms) {
     return drush_op('user_role_grant_permissions', $this->rid, $perms);
   }
@@ -135,6 +193,19 @@ class DrushRole7 extends DrushRole {
 }
 
 class DrushRole8 extends DrushRole7 {
+  public function role_create($role_machine_name, $role_human_readable_name = '') {
+    // In D6 and D7, when we create a new role, the role
+    // machine name is specified, and the numeric rid is
+    // auto-assigned (next available id); in D8, when we
+    // create a new role, we need to specify both the rid,
+    // which is now the role machine name, and also a human-readable
+    // role name.  If the client did not provide a human-readable
+    // name, then we'll use the role machine name in its place.
+    if (empty($role_human_readable_name)) {
+      $role_human_readable_name = ucfirst($role_machine_name);
+    }
+    return user_role_save((object)array('name' => $role_human_readable_name, 'rid' => $role_machine_name));
+  }
 }
 
 class DrushRoleException extends Exception {}

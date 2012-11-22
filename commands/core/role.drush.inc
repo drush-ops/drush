@@ -4,6 +4,28 @@
  * Implementation of hook_drush_command().
  */
 function role_drush_command() {
+  $items['role-create'] = array(
+    'description' => 'Create a new role.',
+    'examples' => array(
+      "drush role-create 'test role'" => "Create a new role 'test role' on D6 or D7; auto-assign the rid. On D8, 'test role' is the rid, and the human-readable name is set to 'Test role'.",
+      "drush role-create 'test role' 'Test role'" => "Create a new role with a machine name of 'test role', and a human-readable name of 'Test role'. On D6 and D7, behaves as the previous example."
+    ),
+    'arguments' => array(
+      'machine name' => 'The symbolic machine name for the role. Required.',
+      'human-readable name' => 'A descriptive name for the role. Optional; Drupal 8 only.  Ignored in D6 and D7.',
+    ),
+    'aliases' => array('rcrt'),
+  );
+  $items['role-delete'] = array(
+    'description' => 'Delete a role.',
+    'examples' => array(
+      "drush role-delete 'test role'" => "Delete the role 'test role'.",
+    ),
+    'arguments' => array(
+      'machine name' => 'The symbolic machine name for the role. Required.  In D6 and D7, this may also be a numeric role ID.',
+    ),
+    'aliases' => array('rdel'),
+  );
   $items['role-add-perm'] = array(
     'description' => 'Grant a specified permission to a role.',
     'examples' => array(
@@ -56,12 +78,39 @@ function role_drush_command() {
 }
 
 /**
+ * Create the specified role
+ */
+function drush_role_create($rid, $role_name = '') {
+  $role = drush_role_get_class();
+  $result = $role->role_create($rid, $role_name);
+  if ($result !== FALSE) {
+    drush_log(dt('Created "!role"', array('!role' => $rid)), 'success');
+  }
+  return $result;
+}
+
+/**
+ * Create the specified role
+ */
+function drush_role_delete($rid) {
+  $role = drush_role_get_class($rid);
+  if ($role === FALSE) {
+    return FALSE;
+  }
+  $result = $role->delete();
+  if ($result !== FALSE) {
+    drush_log(dt('Deleted "!role"', array('!role' => $rid)), 'success');
+  }
+  return $result;
+}
+
+/**
  * Add a permission to the specified role.
  */
 function drush_role_add_perm($rid, $permission = NULL) {
   $result = drush_role_perm('add', $rid, $permission);
   if ($result !== FALSE) {
-    drush_print(dt('Added' . ' "!perm" to "!role"', array('!perm' => $permission, '!role' => $result->name)));
+    drush_log(dt('Added "!perm" to "!role"', array('!perm' => $permission, '!role' => $result->name)), 'success');
     drush_drupal_cache_clear_all();
   }
   return $result;
@@ -73,7 +122,7 @@ function drush_role_add_perm($rid, $permission = NULL) {
 function drush_role_remove_perm($rid, $permission = NULL) {
   $result = drush_role_perm('remove', $rid, $permission);
   if ($result !== FALSE) {
-    drush_print(dt('Removed' . ' "!perm" from "!role"', array('!perm' => $permission, '!role' => $result->name)));
+    drush_print(dt('Removed "!perm" from "!role"', array('!perm' => $permission, '!role' => $result->name)));
     drush_drupal_cache_clear_all();
   }
   return $result;
@@ -124,7 +173,7 @@ function drush_role_perm($action, $rid, $permission = NULL) {
  * Wrapper for drush_get_class; instantiates an instance of the version-specific
  * DrushRole class suitable for the current version of Drupal.
  */
-function drush_role_get_class($role_name) {
+function drush_role_get_class($role_name = DRUPAL_ANONYMOUS_RID) {
   return drush_get_class('DrushRole', array($role_name));
 }
 

@@ -479,10 +479,16 @@ function _drush_user_print_info($uid) {
       'User name' => $userinfo->name,
       'User mail' => $userinfo->mail,
     );
-    $userinfo_short['User roles'] = implode(', ', $userinfo->roles);
+    // Note: in D8, $userinfo->roles may not contain the human-readable role names.
+    // For example, it may contain 'authenticated' => 'authenticated' instead of
+    // 'authenticated' => 'Authenticated user'.  In any event, we display the
+    // machine name rather than the human-readable name for better output-conformity
+    // with D6 and D7.
+    $role_ids = drush_drupal_major_version() >= 8 ? array_keys($userinfo->roles) : $userinfo->roles;
+    $userinfo_short['User roles'] = implode(', ', $role_ids);
     $userinfo->status ? $userinfo_short['User status'] = 'active' : $userinfo_short['User status'] = 'blocked';
     drush_print_table(drush_key_value_to_array_table($userinfo_short));
-    drush_print_pipe("$userinfo->name,$userinfo->uid,$userinfo->mail,$userinfo->status,\"" . implode(',', $userinfo->roles) . "\"\n");
+    drush_print_pipe("$userinfo->name,$userinfo->uid,$userinfo->mail,$userinfo->status,\"" . implode(',', $role_ids) . "\"\n");
   }
 }
 

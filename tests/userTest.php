@@ -24,6 +24,10 @@ class userCase extends Drush_CommandTestCase {
       'uri' => key($sites),
       'yes' => NULL,
     );
+    $authenticated = 'authenticated';
+    if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
+      $authenticated .= ' user';
+    }
     $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => "example@example.com"));
     $this->drush('user-information', array($name), $options + array('pipe' => NULL));
     $output = $this->getOutput();
@@ -32,7 +36,7 @@ class userCase extends Drush_CommandTestCase {
     $this->assertEquals('example@example.com', $row[2]);
     $this->assertEquals($name, $row[0]);
     $this->assertEquals(1, $row[3], 'Newly created user is Active.');
-    $this->assertEquals('authenticated user', $row[4], 'Newly created user has one role.');
+    $this->assertEquals($authenticated, $row[4], 'Newly created user has one role.');
 
     // user-block
     $this->drush('user-block', array($name), $options);
@@ -50,30 +54,32 @@ class userCase extends Drush_CommandTestCase {
 
     // user-add-role
     // first, create the fole since we use testing install profile.
-    $eval = "user_role_save((object)array('name' => 'administrator'))";
-    $this->drush('php-eval', array($eval), $options);
-    $this->drush('user-add-role', array('administrator', $name), $options);
+    $this->drush('role-create', array('test role'), $options);
+    $this->drush('user-add-role', array('test role', $name), $options);
     $this->drush('user-information', array($name), $options + array('pipe' => NULL));
     $output = $this->getOutput();
     $row  = str_getcsv($output);
-    $this->assertEquals('authenticated user,administrator', $row[4], 'User has administrator role.');
+    $this->assertEquals("$authenticated,test role", $row[4], 'User has test role.');
 
     // user-remove-role
-    $this->drush('user-remove-role', array('administrator', $name), $options);
+    $this->drush('user-remove-role', array('test role', $name), $options);
     $this->drush('user-information', array($name), $options + array('pipe' => NULL));
     $output = $this->getOutput();
     $row  = str_getcsv($output);
-    $this->assertEquals('authenticated user', $row[4], 'User removed administrator role.');
+    $this->assertEquals($authenticated, $row[4], 'User removed test role.');
 
     // user-password
     $newpass = 'newpass';
     $this->drush('user-password', array($name), $options + array('password' => $newpass));
-    $eval = "require_once DRUSH_DRUPAL_CORE . '/' . variable_get('password_inc', 'includes/password.inc');";
-    $eval .= "\$account = user_load_by_name('example');";
-    $eval .= "print (string) user_check_password('$newpass', \$account)";
-    $this->drush('php-eval', array($eval), $options);
-    $output = $this->getOutput();
-    $this->assertEquals('1', $output, 'User can login with new password.');
+    // There is no user_check_password in D6
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {
+      $eval = "require_once DRUSH_DRUPAL_CORE . '/' . variable_get('password_inc', 'includes/password.inc');";
+      $eval .= "\$account = user_load_by_name('example');";
+      $eval .= "print (string) user_check_password('$newpass', \$account)";
+      $this->drush('php-eval', array($eval), $options);
+      $output = $this->getOutput();
+      $this->assertEquals('1', $output, 'User can login with new password.');
+    }
 
     // user-login
     $user_login_options = $options + array('simulate' => TRUE, 'browser' => 'unish');
@@ -81,10 +87,10 @@ class userCase extends Drush_CommandTestCase {
     $this->drush('user-login', array(), $user_login_options + array('backend' => NULL));
     $parsed = parse_backend_output($this->getOutput());
     $url = parse_url($parsed['output']);
-    $this->assertStringStartsWith('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
+    $this->assertContains('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
     $browser = FALSE;
     foreach ($parsed['log'] as $key => $log) {
-      if (strpos($log['message'], 'Opening browser unish at http://dev/user/reset/1') === 0) {
+      if (strpos($log['message'], 'Opening browser unish at http://') === 0) {
         $browser = TRUE;
       }
     }
@@ -93,29 +99,45 @@ class userCase extends Drush_CommandTestCase {
     $this->drush('user-login', array($name, 'node/add'), $user_login_options);
     $output = $this->getOutput();
     $url = parse_url($output);
-    $this->assertStringStartsWith('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
-    $this->assertEquals('destination=node/add', $url['query'], 'Login included destination path in URL');
+    // user_pass_reset_url encodes the URL in D6, but not in D7 or D8
+    $query = $url['query'];
+    if (UNISH_DRUPAL_MAJOR_VERSION < 7) {
+      $query = urldecode($query);
+    }
+    $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
+    $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
     // Check path used as only argument when using uid option.
     $this->drush('user-login', array('node/add'), $user_login_options + array('uid' => $uid));
     $output = $this->getOutput();
     $url = parse_url($output);
-    $this->assertStringStartsWith('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
-    $this->assertEquals('destination=node/add', $url['query'], 'Login included destination path in URL');
+    $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+    $query = $url['query'];
+    if (UNISH_DRUPAL_MAJOR_VERSION < 7) {
+      $query = urldecode($query);
+    }
+    $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
 
     // user-cancel
     // create content
-    $this->drush('php-script', array('create_node_types'), $options + array('script-path' => dirname(__FILE__) . '/resources'));
-    $this->drush('php-eval', array($eval), $options);
-    $eval = "\$node = (object) array('title' => 'foo', 'uid' => 2, 'type' => 'page',); node_save(\$node);";
-    $this->drush('php-eval', array($eval), $options);
-    $this->drush('user-cancel', array($name), $options + array('delete-content' => NULL));
-    $eval = 'print (string) user_load(2)';
-    $this->drush('php-eval', array($eval), $options);
-    $output = $this->getOutput();
-    $this->assertEmpty($output, 'User was deleted');
-    $eval = 'print (string) node_load(2)';
-    $this->drush('php-eval', array($eval), $options);
-    $output = $this->getOutput();
-    $this->assertEmpty($output, 'Content was deleted');
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {
+      // create_node_types script does not work for D6
+      $this->drush('php-script', array('create_node_types'), $options + array('script-path' => dirname(__FILE__) . '/resources'));
+      $this->drush('php-eval', array($eval), $options);
+      $eval = "\$node = (object) array('title' => 'foo', 'uid' => 2, 'type' => 'page',);";
+      if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+        $eval .= " \$node = node_submit(entity_create('node', \$node));";
+      }
+      $eval .= " node_save(\$node);";
+      $this->drush('php-eval', array($eval), $options);
+      $this->drush('user-cancel', array($name), $options + array('delete-content' => NULL));
+      $eval = 'print (string) user_load(2)';
+      $this->drush('php-eval', array($eval), $options);
+      $output = $this->getOutput();
+      $this->assertEmpty($output, 'User was deleted');
+      $eval = 'print (string) node_load(2)';
+      $this->drush('php-eval', array($eval), $options);
+      $output = $this->getOutput();
+      $this->assertEmpty($output, 'Content was deleted');
+    }
   }
 }
