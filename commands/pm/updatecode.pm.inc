@@ -529,15 +529,6 @@ function pm_project_filter(&$update_info, &$rows, $security_only) {
         break;
     }
 
-    // Special checking:  if drush decides that the candidate version is older
-    // than the installed version, then we will set the candidate version to
-    // the installed version.
-    if (isset($project['candidate_version'], $project['releases'][$project['candidate_version']], $project['releases'][$project['existing_version']])) {
-      if ($project['releases'][$project['candidate_version']]['date'] < $project['releases'][$project['existing_version']]['date']) {
-        $project['candidate_version'] = $project['existing_version'];
-      }
-    }
-
     if (isset($project['locked'])) {
       $status = $project['locked'] . " ($status)";
     }
@@ -568,6 +559,17 @@ function pm_release_recommended(&$project) {
   if (isset($project['recommended'])) {
     $project['candidate_version'] = $project['recommended'];
     $project['updateable'] = TRUE;
+  }
+  // If installed version is dev and the candidate version is older, choose
+  // latest dev as candidate.
+  if (($project['install_type'] == 'dev') && isset($project['candidate_version'])) {
+    if ($project['releases'][$project['candidate_version']]['date'] < $project['info']['datestamp']) {
+      $project['candidate_version'] = $project['latest_dev'];
+      if ($project['releases'][$project['candidate_version']]['date'] <= $project['info']['datestamp']) {
+        $project['candidate_version'] = $project['existing_version'];
+        $project['updateable'] = FALSE;
+      }
+    }
   }
 }
 
