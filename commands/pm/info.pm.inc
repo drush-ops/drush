@@ -44,6 +44,7 @@ function _drush_pm_info_extension($info) {
   $data['Title'] = $info->info['name'];
   $data['Description'] = $info->info['description'];
   $data['Version'] = $info->info['version'];
+  $data['Date'] = format_date($info->info['datestamp'], 'custom', 'Y-m-d');
   $data['Package'] = $info->info['package'];
   $data['Core'] = $info->info['core'];
   $data['PHP'] = $info->info['php'];
