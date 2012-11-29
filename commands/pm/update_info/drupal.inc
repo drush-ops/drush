@@ -5,7 +5,8 @@ function pm_update_filter(&$project) {
   switch($project['status']) {
     case UPDATE_CURRENT:
       $status = dt('Up to date');
-      $project['candidate_version'] = $project['recommended'];
+      pm_release_recommended($project);
+      $project['updateable'] = FALSE;
       break;
     case UPDATE_NOT_CURRENT:
       $status = dt('Update available');
