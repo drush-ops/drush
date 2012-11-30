@@ -149,14 +149,9 @@ function dt($string, $args = array()) {
   if (function_exists('t') && drush_drupal_major_version() == 7) {
     $output = t($string, $args);
   }
-  // The language system triggers a container build which requires config dirs to be defined.
-  else if (drush_drupal_major_version() >= 8 && !empty($GLOBALS['config_directories'])) {
-    if (function_exists('drupal_classloader')) {
-      drupal_classloader();
-    }
-    if (function_exists('t')) {
-      $output = t($string, $args);
-    }
+  // The language system requires a working container which is built in DRUPAL_BOOTSTRAP_KERNEL phase.
+  else if (drush_drupal_major_version() >= 8 && function_exists('drupal_get_bootstrap_phase') && drupal_get_bootstrap_phase() >= DRUPAL_BOOTSTRAP_KERNEL) {
+    $output = t($string, $args);
   }
   else if (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
     $output = t($string, $args);
