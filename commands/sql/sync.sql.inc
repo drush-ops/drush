@@ -102,7 +102,7 @@ function sql_drush_sql_sync_sanitize($site) {
   }
 
   // Sanitize email addresses.
-  $newemail = drush_get_option(array('sanitize-email', 'destination-sanitize-email'), 'user+%uid@localhost');
+  $newemail = drush_get_option(array('sanitize-email', 'destination-sanitize-email'), 'user+%uid@localhost.localdomain');
   if ($newemail != 'no') {
     if (strpos($newemail, '%') !== FALSE) {
       // We need a different sanitization query for Postgres and Mysql.
