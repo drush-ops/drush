@@ -136,17 +136,18 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
   }
 
   if (is_null($tmpfile)) {
-    $tmpfile = drush_tempnam('rln-' . implode('-', $requests) . '.');
+    $tmpfile = drush_tempnam('rln-' . implode('-', array_keys($requests)) . '.');
   }
 
-  foreach ($info as $key => $project) {
+  foreach ($info as $name => $project) {
     $selected_versions = array();
-    // If the request included version, only show its release notes.
-    if (isset($requests[$key]['version'])) {
-      $selected_versions[] = $requests[$key]['version'];
+    // If the request includes version, show the release notes for this version.
+    if (isset($requests[$name]['version'])) {
+      $selected_versions[] = $requests[$name]['version'];
     }
     else {
-      // Special handling if the project is installed.
+      // If requested project is installed,
+      // show release notes for the installed version and all newer versions.
       if (isset($project['recommended'], $project['installed'])) {
         $releases = array_reverse($project['releases']);
         foreach($releases as $version => $release) {
@@ -161,65 +162,36 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
         }
       }
       else {
-        // Project is not installed so we will show the release notes
-        // for the recommended version, as the user did not specify one.
+        // Project is not installed and user did not specify a version,
+        // so show the release notes for the recommended version.
         $selected_versions[] = $project['recommended'];
       }
     }
 
     foreach ($selected_versions as $version) {
-      // Stage of parsing.
       if (!isset($project['releases'][$version]['release_link'])) {
-        // We avoid the cases where the URL of the release notes does not exist.
-        drush_log(dt("Project !project does not have release notes for version !version.", array('!project' => $key, '!version' => $version)), 'warning');
+        drush_log(dt("Project !project does not have release notes for version !version.", array('!project' => $name, '!version' => $version)), 'warning');
         continue;
       }
-      else {
-        $release_page_url = $project['releases'][$version]['release_link'];
-      }
-      $release_page_url_parsed = parse_url($release_page_url);
-      $release_url_path = $release_page_url_parsed['path'];
-      if (!empty($release_url_path)) {
-        if ($release_page_url_parsed['host'] == 'drupal.org') {
-          $release_page_id = substr($release_url_path, strlen('/node/'));
-          drush_log(dt("Release link for !project (!version) project was found.", array('!project' => $key, '!version' => $version)), 'notice');
-        }
-        else {
-          drush_log(dt("Release notes' page for !project project is not hosted on drupal.org. See !url.", array('!project' => $key, '!url' => $release_page_url)), 'warning');
-          continue;
-        }
-      }
-      // We'll use drupal_http_request if available; it provides better error reporting.
-      if (function_exists('drupal_http_request')) {
-        $data = drupal_http_request($release_page_url);
-        if (isset($data->error)) {
-          drush_log(dt("Error (!error) while requesting the release notes page for !project project.", array('!error' => $data->error, '!project' => $key)), 'error');
-          continue;
-        }
-        @$dom = DOMDocument::loadHTML($data->data);
-      }
-      else {
-        $filename = drush_download_file($release_page_url);
-        @$dom = DOMDocument::loadHTMLFile($filename);
-        @unlink($filename);
-        if ($dom === FALSE) {
-          drush_log(dt("Error while requesting the release notes page for !project project.", array('!project' => $key)), 'error');
-          continue;
-        }
-      }
+      $release_link = $project['releases'][$version]['release_link'];
+      $filename = drush_download_file($release_link, drush_tempnam($name));
+      @$dom = DOMDocument::loadHTMLFile($filename);
       if ($dom) {
-        drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $key, '!version' => $version)), 'notice');
+        drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $name, '!version' => $version)), 'notice');
+      }
+      else {
+        drush_log(dt("Error while requesting the release notes page for !project project.", array('!project' => $name)), 'error');
+        continue;
       }
       $xml = simplexml_import_dom($dom);
-      $xpath_expression = '//*[@id="node-' . $release_page_id .  '"]/div[@class="node-content"]';
-      $node_content = $xml->xpath($xpath_expression);
+      $node_content = $xml->xpath('//*/div[@class="node-content"]');
 
-      // We create the print format.
+      // Prepare the project notes to print.
       $notes_last_update = $node_content[0]->div[1]->div[0]->asXML();
       unset($node_content[0]->div);
       $project_notes = $node_content[0]->asXML();
 
-      // Build the status message from the info from release_info_get_releases()
+      // Build the status message.
       $status_msg = '> ' . implode(', ', $project['releases'][$version]['release_status']);
       $break = '<br>';
       $notes_header = dt("<hr>
@@ -227,8 +199,9 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
  > !time.!break
  !status
 <hr>
-", array('!status' => $print_status ? $status_msg : '', '!name' => strtoupper($key), '!break' => $break, '!version' => $version, '!time' => $notes_last_update));
-      // Finally we print the release notes for the requested project.
+", array('!status' => $print_status ? $status_msg : '', '!name' => strtoupper($name), '!break' => $break, '!version' => $version, '!time' => $notes_last_update));
+
+      // Finally print the release notes for the requested project.
       if (drush_get_option('html', FALSE)) {
         $print = $notes_header . $project_notes;
       }
