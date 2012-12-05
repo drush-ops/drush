@@ -11,6 +11,14 @@
 SELF_DIRNAME="`dirname -- "$0"`"
 SELF_PATH="`cd -P -- "$SELF_DIRNAME" && pwd -P`/`basename -- "$0"`"
 
+# Decide if we are running a Unix shell on Windows
+case "`uname -a`" in
+  CYGWIN*)
+    CYGWIN=1 ;;
+  MINGW*)
+    MINGW=1 ;;
+esac
+
 # Resolve symlinks - this is the equivalent of "readlink -f", but also works with non-standard OS X readlink.
 while [ -h "$SELF_PATH" ]; do
     # 1) cd to directory of the symlink
@@ -25,10 +33,9 @@ done
 
 # Build the path to drush.php.
 SCRIPT_PATH="`dirname "$SELF_PATH"`/drush.php"
-case "`uname -a`" in
-  CYGWIN*)
-    SCRIPT_PATH="`cygpath -w -a -- "$SCRIPT_PATH"`" ;;
-esac
+if [ ! -z "$CYGWIN" ] ; then
+  SCRIPT_PATH="`cygpath -w -a -- "$SCRIPT_PATH"`"
+fi
 
 # If not exported, try to determine and export the number of columns.
 # We do not want to run `tput cols` if $TERM is empty or "dumb", because
@@ -37,7 +44,8 @@ esac
 # error message is suppressed, but tput cols becomes confused about the
 # terminal and prints out the default value (80).
 if [ -z $COLUMNS ] && [ -n "$TERM" ] && [ "$TERM" != dumb ] && [ ! -z "`which tput`" ] ; then
-  # Note to cygwin users: install the ncurses package to get tput command.
+  # Note to cygwin/mingw/msys users: install the ncurses package to get tput command.
+  # Note to mingw/msys users: there is no precompiled ncurses package.
   if COLUMNS="`tput cols`"; then
     export COLUMNS
   fi
@@ -58,8 +66,7 @@ else
   fi
 
   # On MSYSGIT, we need to use "php", not the full path to php
-  # See http://drupal.org/node/1659014 for an explanation of the comparison op.
-  if [ ! -z "$MSYSTEM" ] && [ "x${MSYSTEM}" != "x${MSYSTEM#MINGW}" ] ; then
+  if [ ! -z "$MINGW" ] ; then
     php="php"
   fi
 fi
@@ -67,6 +74,13 @@ fi
 # Check to see if the user has provided a php.ini file or drush.ini file in any conf dir
 # Last found wins, so search in reverse priority order
 for conf_dir in "`dirname "$SELF_PATH"`" /etc/drush $HOME/.drush ; do
+  if [ ! -d $conf_dir ] ; then
+    continue
+  fi
+  # Handle paths that don't start with a drive letter on MinGW shell. Equivalent to cygpath on Cygwin.
+  if [ ! -z "$MINGW" ] ; then
+    conf_dir=`sh -c "cd $conf_dir; pwd -W"`
+  fi
   if [ -f "$conf_dir/php.ini" ] ; then
     drush_php_ini=$conf_dir/php.ini
   fi

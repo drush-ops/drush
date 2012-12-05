@@ -170,6 +170,12 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $docroot = basename($docroot_path);
   $workdir = dirname($docroot_path);
   $dereference = (drush_get_option('preserve-symlinks', FALSE)) ? '' : '--dereference ';
+  // Convert destination path to Unix style for tar on MinGW - see http://drupal.org/node/1844224
+  if (drush_is_mingw()) {
+    $destination_orig = $destination;
+    $destination = str_replace('\\', '/', $destination);
+    $destination = preg_replace('$^([a-zA-Z]):$', '/$1', $destination);
+  }
   // Archive Drupal core, excluding sites dir.
   drush_shell_cd_and_exec($workdir, "$tar {$tar_extra_options} --exclude \"{$docroot}/sites\" {$dereference}-cf %s %s", $destination, $docroot);
   // Add sites/all to the same archive.
@@ -255,6 +261,11 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $output = drush_shell_exec_output();
   if (!$res || !isset($output[0]) || empty($output[0])) {
     drush_shell_cd_and_exec($workdir, "$tar --dereference -vrf %s %s", $destination, $docroot . '/sites/default/default.settings.php');
+  }
+
+  // Switch back to original destination in case it was modified for tar on MinGW.
+  if (!empty($destination_orig)) {
+    $destination = $destination_orig;
   }
 
   // Compress the archive

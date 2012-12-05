@@ -926,7 +926,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
 function _drush_download_file($url, $destination, $overwrite = TRUE) {
   static $use_wget;
   if ($use_wget === NULL) {
-    $use_wget = drush_shell_exec('which wget');
+    $use_wget = drush_shell_exec('wget --version');
   }
 
   $destination_tmp = drush_tempnam('download_file');
