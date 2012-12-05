@@ -644,14 +644,16 @@ function drush_is_mingw($os = NULL) {
  * Return tar executable name specific for the current OS
  */
 function drush_get_tar_executable() {
-  return drush_is_windows() ? "bsdtar.exe" : "tar";
+  return drush_is_windows() ? (drush_is_mingw() ? "tar.exe" : "bsdtar.exe") : "tar";
 }
 
 /**
  * Checks if the operating system has bash.
+ *
+ * MinGW has bash, but PHP isn't part of MinGW and hence doesn't run in bash.
  */
 function drush_has_bash($os = NULL) {
-  return drush_is_cygwin($os) || !drush_is_windows($os);
+  return (drush_is_cygwin($os) && !drush_is_mingw($os)) || !drush_is_windows($os);
 }
 
 /*
