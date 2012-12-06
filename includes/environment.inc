@@ -88,7 +88,7 @@ function _drush_postmortem() {
  * notify the user that a setting change is needed and abort.
  */
 function _drush_environment_check_php_ini() {
-  $ini_checks = array('safe_mode' => '', 'open_basedir' => '', 'disable_functions' => array('exec', 'system'), 'disable_classes' => '');
+  $ini_checks = array('safe_mode' => '', 'open_basedir' => '', 'disable_functions' => array('exec', 'system'), 'disable_classes' => '', 'magic_quotes_gpc' => '', 'magic_quotes_runtime' => '');
 
   // Test to insure that certain php ini restrictions have not been enabled
   $prohibited_list = array();
