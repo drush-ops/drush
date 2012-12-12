@@ -189,10 +189,10 @@ function drush_views_list() {
   foreach ($views as $id => $view) {
     // If options were specified, check that first mismatch push the loop to the
     // next view.
-    if ($with_name && !stristr($view->name, $name[0])) {
+    if ($with_name && !stristr($view->id(), $name[0])) {
       continue;
     }
-    if ($with_tags && !in_array($view->tag, $tags)) {
+    if ($with_tags && !in_array($view->get('tag'), $tags)) {
       continue;
     }
 
@@ -205,9 +205,9 @@ function drush_views_list() {
 
     $row[] = $view->id();
     $row[] = $view->label();
-    $row[] = $view->description;
+    $row[] = $view->get('description');
     $row[] = $view->isEnabled() ? dt('Enabled') : dt('Disabled');
-    $row[] = $view->tag;
+    $row[] = $view->get('tag');
 
     // Place the row in the appropiate array, so we can have disabled views at
     // the bottom.
