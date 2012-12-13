@@ -457,16 +457,6 @@ function _core_site_credential_table($status_table) {
   return $credentials;
 }
 
-function _core_site_credential_list($status_table) {
-  $credentials = '';
-  foreach ($status_table as $key => $value) {
-    if (isset($value)) {
-      $credentials .= sprintf("%s=%s\n", strtolower(str_replace(' ', '_', $key)), $value);
-    }
-  }
-  return $credentials;
-}
-
 function _core_path_aliases($project = '') {
   $paths = array();
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
@@ -774,21 +764,10 @@ function drush_core_status() {
   }
   $return = $status_table;
   unset($status_table['%paths']);
-  // Print either an ini-format list or a formatted ASCII table
-  if (drush_get_option('pipe')) {
-    if (count($status_table) == 1) {
-      $first_value = array_shift($status_table);
-      drush_print_pipe($first_value);
-    }
-    else {
-      drush_print_pipe(_core_site_credential_list($status_table));
-    }
-  }
-  else {
-    unset($status_table['Modules path']);
-    unset($status_table['Themes path']);
-    drush_print_table(drush_key_value_to_array_table($status_table));
-  }
+  unset($status_table['Modules path']);
+  unset($status_table['Themes path']);
+  drush_print_table(drush_key_value_to_array_table($status_table));
+  drush_print_pipe(drush_format($return, NULL, 'ini-or-single'));
   return $return;
 }
 

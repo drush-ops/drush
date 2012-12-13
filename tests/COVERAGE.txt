@@ -10,7 +10,7 @@ pm-enable: GOOD. testEnDisUnList().
 pm-disable: GOOD. testEnDisUnList().
 pm-uninstall: GOOD. testEnDisUnList().
 pm-list: GOOD. testEnDisUnList().
-pm-info:
+pm-info: GOOD. testEnDisUnList().
 pm-refresh:
 version-control: FAIR. See updatecode. To be deprecated all git workflow after git.drupal.org?
 package-hander:

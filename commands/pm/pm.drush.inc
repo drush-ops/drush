@@ -892,9 +892,14 @@ function drush_pm_enable() {
   // Inform the user of final status.
   $result_extensions = drush_get_named_extensions_list($extensions);
   $problem_extensions = array();
+  $role = drush_role_get_class();
   foreach ($result_extensions as $name => $extension) {
     if ($extension->status) {
       drush_log(dt('!extension was enabled successfully.', array('!extension' => $extension->name)), 'ok');
+      $perms = $role->getModulePerms($extension->name);
+      if (!empty($perms)) {
+        drush_print(dt('!extension defines the following permissions: !perms', array('!extension' => $extension->name, '!perms' => implode(', ', $perms))));
+      }
     }
     else {
       $problem_extensions[] = $extension->name;

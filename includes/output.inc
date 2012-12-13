@@ -77,12 +77,41 @@ function drush_print_r($array, $handle = NULL, $newline = TRUE) {
  *   A variable.
  * @param string $label
  *   Optional prefix. Not used by JSON format.
+ * @param string $format
+ *   Optional format; defaults to print_r.
+ *     print_r: output with print_r function
+ *     export: output with var_export. Prefix with "$variables['label'] = "
+ *       if label is given.
+ *     config: output with var_export. Prefix with "$config['label'] = "
+ *       if label is given.
+ *     json: output with drush_json_encode
+ *     ini: output data that could be parsed by parse_ini_string
+ *     ini-or-single: output a single string if there is only
+ *       one item in the input; otherwise, output in ini format.
+ *     ini-list: input contains an associative array where
+ *       the key is the ini section, and the value is an array
+ *       of data to output in ini format.
+ *     export-list, config-list: An array of items to be output
+ *       with var_export; the array key is used as the label.
+ *     list: Print a list of key: value items.
  * @return string
  *   The variable formatted according to specified format. Ready for drush_print().
  */
 function drush_format($input, $label = NULL, $format = NULL) {
   if (is_null(($format))) {
     $format = drush_get_option('format', 'print_r');
+  }
+  // Handle FORMAT-list, an array of items to be output in FORMAT
+  if (substr($format, -4) == "list") {
+    $format = substr($format, 0, -5);
+    $result = '';
+    if (is_array($input)) {
+      foreach ($input as $label => $data) {
+        $result .= drush_format($data, $label, $format);
+        $result .= "\n";
+      }
+    }
+    return $result;
   }
   if ($format != 'export' && $format != 'config') {
     if ($input === TRUE) {
@@ -112,6 +141,31 @@ function drush_format($input, $label = NULL, $format = NULL) {
       break;
     case 'json':
       $output = drush_json_encode($input);
+      break;
+    case 'ini-or-single':
+    case 'ini':
+      if (is_array($input)) {
+        $output = '';
+        if (isset($label)) {
+          $output = "[$label]\n";
+        }
+        if (($format == 'ini-or-single') && (count($input) == 1)) {
+          $output = array_shift($input);
+        }
+        else {
+          foreach ($input as $key => $value) {
+            if (isset($value)) {
+              if (is_array($value)) {
+                $value = implode(', ', $value);
+              }
+              $output .= sprintf("%s=%s\n", strtolower(str_replace(' ', '_', $key)), $value);
+            }
+          }
+        }
+      }
+      else {
+        $output = drush_format($input, $label, 'print_r');
+      }
       break;
     case 'print_r':
     default:

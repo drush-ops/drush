@@ -4,6 +4,7 @@
  * Command callback. Show detailed info for one or more extensions.
  */
 function drush_pm_info() {
+  $result = array();
   $args = pm_parse_arguments(func_get_args());
 
   $extension_info = drush_get_extensions(FALSE);
@@ -27,9 +28,28 @@ function drush_pm_info() {
     else {
       $data = _drush_pm_info_theme($info);
     }
-    drush_print_table(drush_key_value_to_array_table($data));
+    $result[$extension] = $data;
+    drush_print_table(drush_key_value_to_array_table(_drush_pm_info_format_table_data($data)));
     print "\n";
   }
+  drush_print_pipe(drush_format($result, NULL, 'ini-list'));
+  return $result;
+}
+
+function _drush_pm_info_format_table_data($data) {
+  $result = array();
+  foreach( $data as $key => $value) {
+    if (is_array($value)) {
+      if (empty($value)) {
+        $value = 'none';
+      }
+      else {
+        $value = implode(', ', $value);
+      }
+    }
+    $result[$key] = $value;
+  }
+  return $result;
 }
 
 /**
@@ -74,24 +94,21 @@ function _drush_pm_info_module($info) {
   }
   $data['Schema version'] = $schema_version;
   if ($major_version == 7) {
-    $data['Files'] = implode(', ', $info->info['files']);
+    $data['Files'] = $info->info['files'];
   }
-  if (count($info->info['dependencies']) > 0) {
-    $requires = implode(', ', $info->info['dependencies']);
-  }
-  else {
-    $requires = "none";
-  }
-  $data['Requires'] = $requires;
+  $data['Requires'] = $info->info['dependencies'];
 
   if ($major_version == 6) {
-    $requiredby = !empty($info->info['dependents'])?$info->info['dependents']:array("none");
+    $requiredby = $info->info['dependents'];
   }
   else {
-    $requiredby = !empty($info->required_by)?array_keys($info->required_by):array("none");
+    $requiredby = array_keys($info->required_by);
   }
-  $data['Required by'] = implode(', ', $requiredby);
-
+  $data['Required by'] = $requiredby;
+  if ($info->status == 1) {
+    $role = drush_role_get_class();
+    $data['Permissions'] = $role->getModulePerms($info->name);
+  }
   return $data;
 }
 
@@ -107,21 +124,20 @@ function _drush_pm_info_theme($info) {
   $data['PHP'] = $info->info['php'];
   $data['Engine'] = $info->info['engine'];
   $data['Base theme'] = isset($info->base_themes) ? implode($info->base_themes, ', ') : '';
-  $regions = implode(', ', $info->info['regions']);
+  $regions = $info->info['regions'];
   $data['Regions'] = $regions;
-  $features = implode(', ', $info->info['features']);
+  $features = $info->info['features'];
   $data['Features'] = $features;
   if (count($info->info['stylesheets']) > 0) {
     $data['Stylesheets'] = '';
     foreach ($info->info['stylesheets'] as $media => $files) {
-      $files = implode(', ', array_keys($files));
+      $files = array_keys($files);
       $data['Media '.$media] = $files;
     }
   }
   if (count($info->info['scripts']) > 0) {
-    $scripts = implode(', ', array_keys($info->info['scripts']));
+    $scripts = array_keys($info->info['scripts']);
     $data['Scripts'] = $scripts;
   }
   return $data;
 }
-

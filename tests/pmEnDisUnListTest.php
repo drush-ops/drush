@@ -13,21 +13,33 @@ class EnDisUnListCase extends Drush_CommandTestCase {
 
   public function testEnDisUnList() {
     $sites = $this->setUpDrupal(1, TRUE);
-    $options = array(
+    $options_no_pipe = array(
       'yes' => NULL,
-      'pipe' => NULL,
       'root' => $this->webroot(),
       'uri' => key($sites),
       'cache' => NULL,
       'skip' => NULL, // No FirePHP
       'invoke' => NULL, // Don't validate options
     );
+    $options = $options_no_pipe + array(
+      'pipe' => NULL,
+    );
     $this->drush('pm-download', array('devel'), $options);
     $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'not installed'));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));
 
-    $this->drush('pm-enable', array('devel'), $options);
+    $this->drush('pm-enable', array('devel'), $options_no_pipe);
+    $output = $this->getOutput();
+    $this->assertContains('access devel information', $output);
+    $this->drush('pm-info', array('devel'), $options);
+    $output = $this->getOutput();
+    $this->assertContains('extension=devel', $output);
+    $this->assertContains('project=devel', $output);
+    $this->assertContains('type=module', $output);
+    $this->assertContains('title=Devel', $output);
+    $this->assertContains('status=enabled', $output);
+    $this->assertContains('access devel information', $output);
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));
