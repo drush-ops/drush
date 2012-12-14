@@ -149,7 +149,8 @@ function drush_command_belongs_to_disabled_module() {
   if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
     _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE, DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
     $commands = drush_get_commands();
-    $command_name = array_shift(drush_get_arguments());
+    $arguments = drush_get_arguments();
+    $command_name = array_shift($arguments);
     if (isset($commands[$command_name])) {
       // We found it. Load its module name and set an error.
       if (is_array($commands[$command_name]['drupal dependencies']) && count($commands[$command_name]['drupal dependencies'])) {
