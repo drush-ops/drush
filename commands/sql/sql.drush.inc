@@ -150,7 +150,7 @@ function sql_drush_command() {
       'source-remote-port' => 'Override sql database port number in source-db-url. Optional.',
       'source-remote-host' => 'Remote machine to run sql-dump file on. Optional; default is local machine.',
       'source-dump' => 'Path to dump file. Optional; default is to create a temporary file.',
-      'target-database' => 'A key in the $db_url (D6) or $databases (D7+) array which provides the data.',
+      'source-database' => 'A key in the $db_url (D6) or $databases (D7+) array which provides the data.',
       'source-target' => 'Oy. A key within the --target_database identifying a particular server in the database group.',
       'target-db-url' => '',
       'target-remote-port' => '',
