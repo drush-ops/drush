@@ -14,8 +14,8 @@ function drush_drupal_version($drupal_root = NULL) {
 
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
-      // Path to files in D6 and D7 where VERSION is defined.
-      $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc');
+      // D7 stores VERSION in bootstrap.inc. D8 moved that to /core/includes.
+      $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc', '/core/includes/bootstrap.inc');
       foreach ($version_constant_paths as $path) {
         if (file_exists($drupal_root . $path)) {
           require_once $drupal_root . $path;

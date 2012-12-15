@@ -145,10 +145,7 @@ function drush_format($input, $label = NULL, $format = NULL) {
  * @see t()
  */
 function dt($string, $args = array()) {
-  if (function_exists('t') && (drush_drupal_version() >= 7 || function_exists('theme'))) {
-    if (function_exists('drupal_classloader')) {
-      drupal_classloader();
-    }
+  if (function_exists('t') && (drush_drupal_version() == 7 || function_exists('theme'))) {
     return t($string, $args);
   }
   else {
