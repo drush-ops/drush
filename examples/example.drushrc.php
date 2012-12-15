@@ -88,6 +88,9 @@
 # $options['shell-aliases']['dis-all'] = '!drush -y dis $(drush pml --status=enabled --type=module --no-core --pipe)';
 # $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
 
+// Add a 'pm-clone' to simplify git cloning from drupal.org.
+# $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg';
+
 // You can create a local cache of all projects checked out using
 // --package-handler=git_drupalorg; this can be faster for repeated
 // downloads, but can be dangerous. See: http://randyfay.com/node/119
