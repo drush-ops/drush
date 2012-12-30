@@ -464,7 +464,7 @@ function unish_init() {
   // Default drupal major version to run tests over.
   $unish_drupal_major = '7';
   if (getenv('UNISH_DRUPAL_MAJOR_VERSION')) {
-    $unish_drupal_major = getenv('UNISH_DUPAL_MAJOR_VERSION');
+    $unish_drupal_major = getenv('UNISH_DRUPAL_MAJOR_VERSION');
   }
   elseif (isset($GLOBALS['UNISH_DRUPAL_MAJOR_VERSION'])) {
     $unish_drupal_major = $GLOBALS['UNISH_DRUPAL_MAJOR_VERSION'];
