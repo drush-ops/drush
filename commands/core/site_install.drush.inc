@@ -142,17 +142,15 @@ function drush_core_pre_site_install($profile = NULL) {
   }
 
   if (drush_drupal_major_version() >= 8) {
-    // Empty out any existing config directories, or create them if needed.
-    $active = config_get_config_directory();
-    $staging = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
-    if (file_exists($active)) {
-      try {
-        // Exception in line below when config dirs don't exist.
-        drush_delete_dir_contents(config_get_config_directory(CONFIG_ACTIVE_DIRECTORY), TRUE);
-        drush_delete_dir_contents(config_get_config_directory(CONFIG_STAGING_DIRECTORY), TRUE);
-      }
-      catch (Exception $e) {
-        // Nothing to do.
+    // Empty out any existing config directories.
+    $directories = array();
+    preg_match('/\n\$config_directories[^;]*\'path\' => \'([^\']*)\'.*\'path\' => \'([^\']*)\'/s', file_get_contents($settingsfile), $directories);
+    if (!empty($directories)) {
+      $active = $files . '/' . $directories[1];
+      $staging = $files . '/' . $directories[2];
+      if (file_exists($active)) {
+        drush_delete_dir_contents($active, TRUE);
+        drush_delete_dir_contents($staging, TRUE);
       }
     }
 
