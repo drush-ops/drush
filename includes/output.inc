@@ -345,6 +345,9 @@ function drush_table_column_autowidth($rows, $widths) {
     foreach ($row as $col_num => $cell) {
       if (empty($widths[$col_num])) {
         $length = strlen($cell);
+        if ($length == 0) {
+          $col_dist[$col_num] = array(0 => 0);
+        }
         while ($length > 0) {
           if (!isset($col_dist[$col_num][$length])) {
             $col_dist[$col_num][$length] = 0;
