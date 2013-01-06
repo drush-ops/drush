@@ -174,11 +174,11 @@ function drush_archive_dump($sites_subdirs = '@self') {
   drush_shell_cd_and_exec($workdir, "$tar {$tar_extra_options} --exclude \"{$docroot}/sites\" {$dereference}-cf %s %s", $destination, $docroot);
   // Add sites/all to the same archive.
   drush_shell_cd_and_exec($workdir, "$tar {$tar_extra_options} {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
-  // Add sites/sites.php, sites/example.sites.php and sites/default/default.settings.php to the same archive.
-  $files_to_add = array('sites/sites.php', 'sites/example.sites.php', 'sites/default/default.settings.php');
+  // Add special files in sites/ to the archive.
+  $files_to_add = array('sites/README.txt', 'sites/sites.php', 'sites/example.sites.php', 'sites/default/default.settings.php');
   foreach ($files_to_add as $file_to_add) {
     if (file_exists($file_to_add)) {
-      drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, $docroot . DIRECTORY_SEPARATOR . $file_to_add);
+      drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, $docroot . '/' . $file_to_add);
     }
   }
 
