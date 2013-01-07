@@ -91,7 +91,8 @@ function drush_pm_download() {
     $request['status url'] = $source;
     $release = release_info_fetch($request, $restrict_to, $select, $all);
     if ($release == FALSE) {
-      continue;
+      // Stop working on the first failure
+      return FALSE;
     }
 
     // Determine the name of the directory that will contain the project.

@@ -38,8 +38,7 @@ define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
  */
 function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $all = FALSE) {
   if (!in_array($select, array('auto', 'never', 'always'))) {
-    drush_log(dt("Error: select strategy must be one of: auto, never, always", array(), 'error'));
-    return FALSE;
+    return drush_set_error('DRUSH_PM_UNKNOWN_SELECT_STRATEGY', dt("Error: select strategy must be one of: auto, never, always", array()));
   }
 
   $xml = updatexml_get_release_history_xml($request);
@@ -50,15 +49,30 @@ function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $al
   $request['project_type'] = updatexml_determine_project_type($xml);
 
   if ($select != 'always') {
-    // Try to identify the most appropriate release.
-    $release = updatexml_parse_release($request, $xml, $restrict_to);
+    if ($restrict_to == 'dev') {
+      $release = updatexml_dev_release($request, $xml);
+      if ($release === FALSE) {
+        return drush_set_error('DRUSN_PM_NO_DEV_RELEASE', dt('There is no development release for project !project.', array('!project' => $request['name'])));
+      }
+    }
+    if (empty($release)) {
+      $release = updatexml_specific_release_version($request, $xml);
+      if ($release === FALSE) {
+        return drush_set_error('DRUSH_PM_COULD_NOT_FIND_VERSION', dt("Could not locate !project version !version.", array('!project' => $request['name'], '!version' => $request['version'])));
+      }
+    }
+    // If there was no specific release requested, try to identify the most appropriate release.
+    if (empty($release)) {
+      $release = updatexml_most_appropriate_release($request, $xml);
+    }
     if ($release) {
       return $release;
     }
     else {
       if ($select == 'never') {
-        return FALSE;
+        return drush_user_abort();
       }
+      drush_log(dt('There are no stable releases for project !project.', array('!project' => $request['name'])), 'warning');
     }
   }
 
@@ -69,11 +83,11 @@ function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $al
     $options[$version] = array($version, '-', gmdate('Y-M-d', $release['date']), '-', implode(', ', $release['release_status']));
   }
   $choice = drush_choice($options, dt('Choose one of the available releases for !project:', array('!project' => $request['name'])));
-  if ($choice) {
-    return $project_info['releases'][$choice];
+  if (!$choice) {
+    return drush_user_abort();
   }
 
-  return FALSE;
+  return $project_info['releases'][$choice];
 }
 
 /**
@@ -300,7 +314,22 @@ function release_info_filter_releases($releases, $all = FALSE, $restrict_to = ''
 }
 
 /**
- * Pick most appropriate release from XML list or ask the user if no one fits.
+ * No longer used by Drush core.  Called by tests in releaseInfoTest.php.
+ * See equivalent logic in release_info_fetch.
+ */
+function updatexml_parse_release($request, $xml, $restrict_to = '') {
+  if ($restrict_to == 'dev') {
+    return updatexml_dev_release($request, $xml);
+  }
+  $release = updatexml_specific_release_version($request, $xml);
+  if (is_array($release) && !empty($release)) {
+    return $release;
+  }
+  return updatexml_most_appropriate_release($request, $xml);
+}
+
+/**
+ * Pick a specific version from XML list.
  *
  * @param array $request
  *   An array with project and version strings as returned by
@@ -312,10 +341,14 @@ function release_info_filter_releases($releases, $all = FALSE, $restrict_to = ''
  *     'dev': Forces a -dev release.
  *     'version': Forces a point release.
  *     '': No restriction (auto-selects latest recommended or supported release
-           if requested release is not found).
+ *         if requested release is not found).
  *   Default is ''.
+ * @return
+ *  array  - The selected release xml object. Empty if user did not specify a
+ *    specific release.
+ *  FALSE - The specified version could not be found.
  */
-function updatexml_parse_release($request, $xml, $restrict_to = '') {
+function updatexml_specific_release_version($request, $xml) {
   if (!empty($request['version'])) {
     $matches = array();
     // See if we only have a branch version.
@@ -331,40 +364,68 @@ function updatexml_parse_release($request, $xml, $restrict_to = '') {
         $request['version'] .= '-dev';
       }
       $releases = $xml->xpath("/project/releases/release[status='published'][version='" . $request['version'] . "']");
-      if (empty($releases)) {
-        if (empty($restrict_to)) {
-          drush_log(dt("Could not locate !project version !version, will try to download latest recommended or supported release.", array('!project' => $request['name'], '!version' => $request['version'])), 'warning');
-        }
-        else {
-          drush_log(dt("Could not locate !project version !version.", array('!project' => $request['name'], '!version' => $request['version'])), 'warning');
-          return FALSE;
-        }
-      }
     }
-  }
-
-  if ($restrict_to == 'dev') {
-    $releases = @$xml->xpath("/project/releases/release[status='published'][version_extra='dev']");
     if (empty($releases)) {
-      drush_print(dt('There is no development release for project !project.', array('!type' => $release_type, '!project' => $request['name'])));
       return FALSE;
     }
+    return updatexml_best_release_found($releases);
   }
+  return array();
+}
 
-  // If that did not work, we will get the first published release for the
-  // recommended major version or fallback to other supported major versions.
+/**
+ * Pick the first dev release from XML list.
+ *
+ * @param array $request
+ *   An array with project and version strings as returned by
+ *   pm_parse_project_version().
+ * @param resource $xml
+ *   A handle to the XML document.
+ * @return
+ *  array  - The selected release xml object.
+ *  FALSE  - No dev releases were found.
+ */
+function updatexml_dev_release($request, $xml) {
+  $releases = @$xml->xpath("/project/releases/release[status='published'][version_extra='dev']");
   if (empty($releases)) {
-    foreach(array('recommended_major', 'supported_majors') as $release_type) {
-      if ($versions = $xml->xpath("/project/$release_type")) {
-        $xpath = "/project/releases/release[status='published'][version_major=" . (string)$versions[0] . "]";
-        $releases = @$xml->xpath($xpath);
-        if (!empty($releases)) {
-          break;
-        }
+    return FALSE;
+  }
+  return updatexml_best_release_found($releases);
+}
+
+/**
+ * Pick most appropriate release from XML list.
+ *
+ * @param array $request
+ *   An array with project and version strings as returned by
+ *   pm_parse_project_version().
+ * @param resource $xml
+ *   A handle to the XML document.
+ * @return
+ *  array  - The selected release xml object.
+ *  FALSE  - No releases were found.
+ */
+function updatexml_most_appropriate_release($request, $xml) {
+  $releases = array();
+  foreach(array('recommended_major', 'supported_majors') as $release_type) {
+    if ($versions = $xml->xpath("/project/$release_type")) {
+      $xpath = "/project/releases/release[status='published'][version_major=" . (string)$versions[0] . "]";
+      $releases = @$xml->xpath($xpath);
+      if (!empty($releases)) {
+        break;
       }
     }
   }
 
+  return updatexml_best_release_found($releases);
+}
+
+/**
+ * Given a list of candidate releases, return the best one.
+ * This will be the first stable release if there are stable
+ * releases; otherwise, it will be any available release.
+ */
+function updatexml_best_release_found($releases) {
   // If there are releases found, let's try first to fetch one with no
   // 'version_extra'. Otherwise, use all.
   if (!empty($releases)) {
@@ -380,7 +441,6 @@ function updatexml_parse_release($request, $xml, $restrict_to = '') {
   }
 
   if (empty($releases)) {
-    drush_print(dt('There are no releases for project !project.', array('!project' => $request['name'])));
     return FALSE;
   }
 
