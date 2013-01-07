@@ -94,7 +94,7 @@ if [ "x$drush_php_ini" != "x" ] ; then
   php_options="--php-ini $drush_php_ini"
 fi
 if [ "x$drush_php_override" != "x" ] ; then
-  php_options=`grep '^[a-z_A-Z0-9]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
+  php_options=`grep '^[a-z_A-Z0-9.]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
 fi
 
 # Pass in the path to php so that drush knows which one
