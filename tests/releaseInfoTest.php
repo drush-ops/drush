@@ -16,8 +16,8 @@ class releaseInfoCase extends Drush_UnitTestCase {
     require_once DRUSH_BASE_PATH . '/commands/pm/pm.drush.inc';
     $request_data = pm_parse_project_version(array('devel-6.x-1.18'));
     $this->assertArrayHasKey('devel', $request_data);
-    $this->assertEquals($request_data['devel']['drupal_version'], '6.x');
-    $this->assertEquals($request_data['devel']['project_version'], '1.18');
+    $this->assertEquals('6.x', $request_data['devel']['drupal_version']);
+    $this->assertEquals('1.18', $request_data['devel']['project_version']);
   }
 
   /*
@@ -38,7 +38,7 @@ class releaseInfoCase extends Drush_UnitTestCase {
       'version' => '6.x-1.18',
     );
     $release = updatexml_parse_release($request_data, $xml);
-    $this->assertEquals($release['version'], '6.x-1.18');
+    $this->assertEquals('6.x-1.18', $release['version']);
 
     // Pick latest recommended+published with no further specification.
     // 6.x-2.2 is skipped because it is unpublished.
@@ -48,7 +48,7 @@ class releaseInfoCase extends Drush_UnitTestCase {
       'drupal_version' => '6.x',
     );
     $release = updatexml_parse_release($request_data, $xml);
-    $this->assertEquals($release['version'], '6.x-2.1');
+    $this->assertEquals('6.x-2.1', $release['version']);
 
     // Pick latest from a specific branch.
     $request_data = array(
@@ -57,7 +57,7 @@ class releaseInfoCase extends Drush_UnitTestCase {
       'version' => '6.x-1',
     );
     $release = updatexml_parse_release($request_data, $xml);
-    $this->assertEquals($release['version'], '6.x-1.23');
+    $this->assertEquals('6.x-1.23', $release['version']);
 
     // Pick latest from a different branch.
     $request_data = array(
@@ -68,7 +68,7 @@ class releaseInfoCase extends Drush_UnitTestCase {
     $release = updatexml_parse_release($request_data, $xml);
     // 6.x-2.2 is skipped because it is unpublished.
     // 6.x-2.2-rc1 is skipped because it is not a stable release.
-    $this->assertEquals($release['version'], '6.x-2.1');
+    $this->assertEquals('6.x-2.1', $release['version']);
 
     // Pick a -dev release.
     $request_data = array(
@@ -77,13 +77,13 @@ class releaseInfoCase extends Drush_UnitTestCase {
       'version' => '6.x-1.x',
     );
     $release = updatexml_parse_release($request_data, $xml);
-    $this->assertEquals($release['version'], '6.x-1.x-dev');
+    $this->assertEquals('6.x-1.x-dev', $release['version']);
 
     // Test $restrict_to parameter.
     $request_data['version'] = '6.x-1';
     $release = updatexml_parse_release($request_data, $xml, 'version');
-    $this->assertEquals($release['version'], '6.x-1.23');
+    $this->assertEquals('6.x-1.23', $release['version']);
     $release = updatexml_parse_release($request_data, $xml, 'dev');
-    $this->assertEquals($release['version'], '6.x-1.x-dev');
+    $this->assertEquals('6.x-1.x-dev', $release['version']);
   }
 }
