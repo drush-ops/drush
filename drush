@@ -102,7 +102,7 @@ if [ -n "$DRUSH_INI" ] ; then
 fi
 
 # Add in the php file location and/or the php override variables as appropriate
-if [ -n "x$drush_php_ini" ] ; then
+if [ -n "$drush_php_ini" ] ; then
   php_options="--php-ini $drush_php_ini"
 fi
 if [ -n "$drush_php_override" ] ; then
