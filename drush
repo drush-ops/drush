@@ -88,9 +88,15 @@ for conf_dir in "`dirname "$SELF_PATH"`" /etc/drush $HOME/.drush ; do
     drush_php_override="$conf_dir/drush.ini"
   fi
 done
+# If the PHP_INI environment variable is specified, then tell
+# php to use the php.ini file that it specifies.
 if [ -n "$PHP_INI" ] ; then
   drush_php_ini="$PHP_INI"
 fi
+# If the DRUSH_INI environment variable is specified, then
+# extract all ini variable assignments from it and convert
+# them into php '-d' options. These will override similarly-named
+# options in the php.ini file
 if [ -n "$DRUSH_INI" ] ; then
   drush_php_override="$DRUSH_INI"
 fi
@@ -102,6 +108,9 @@ fi
 if [ -n "$drush_php_override" ] ; then
   php_options=`grep '^[a-z_A-Z0-9.]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
 fi
+# If the PHP_OPTIONS environment variable is specified, then
+# its contents will be passed to php on the command line as
+# additional options to use.
 if [ -n "$PHP_OPTIONS" ] ; then
   php_options="$php_options $PHP_OPTIONS"
 fi
