@@ -7,7 +7,7 @@
 class drushScriptCase extends Drush_CommandTestCase {
 
   /*
-   * Test drush ssh --simulate. No additional bash passed.
+   * Test `PHP_OPTIONS=... drush`
    */
   public function testPhpOptionsTest() {
     // todo: could probably run this test on mingw
