@@ -208,10 +208,10 @@ class DrushMakeProject {
         // http://drupal.org/node/1054616
         $patch_levels = array('-p1', '-p0');
         foreach ($patch_levels as $patch_level) {
-          $checked = drush_shell_exec('cd %s && GIT_WORK_TREE=. git apply --check %s %s --verbose', $project_directory, $patch_level, $filename);
+          $checked = drush_shell_exec('cd %s && GIT_DIR=. git apply --check %s %s --verbose', $project_directory, $patch_level, $filename);
           if ($checked) {
             // Apply the first successful style.
-            $patched = drush_shell_exec('cd %s && GIT_WORK_TREE=. git apply %s %s --verbose', $project_directory, $patch_level, $filename);
+            $patched = drush_shell_exec('cd %s && GIT_DIR=. git apply %s %s --verbose', $project_directory, $patch_level, $filename);
             break;
           }
         }
