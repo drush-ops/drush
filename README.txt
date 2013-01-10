@@ -190,6 +190,21 @@ Alternately, if you only want to override a few values, copy example.drush.ini
 from the "examples" folder into $HOME/.drush or the folder /etc/drush and edit
 to suit.  See comments in example.drush.ini for more details.
 
+You may also use environment variables to control the php settings that Drush
+will use.  There are three options:
+
+    export PHP_INI='/path/to/php.ini'
+
+    export DRUSH_INI='/path/to/drush.ini'
+
+    export PHP_OPTIONS='-d memory_limit="128M"'
+
+In the case of PHP_INI and DRUSH_INI, these environment variables specify the
+full path to a php.ini or drush.ini file, should you wish to use one that is
+not in one of the standard locations described above.  The PHP_OPTIONS
+environment variable can be used to specify individual options that should
+be passed to php on the command line when Drush is executed.
+
 Drush requires a fairly unrestricted php environment to run in.  In particular,
 you should insure that safe_mode, open_basedir, disable_functions and
 disable_classes are empty.

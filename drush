@@ -33,7 +33,7 @@ done
 
 # Build the path to drush.php.
 SCRIPT_PATH="`dirname "$SELF_PATH"`/drush.php"
-if [ ! -z "$CYGWIN" ] ; then
+if [ -n "$CYGWIN" ] ; then
   SCRIPT_PATH="`cygpath -w -a -- "$SCRIPT_PATH"`"
 fi
 
@@ -43,7 +43,7 @@ fi
 # we redirect stderr in any way, e.g. `tput cols 2>/dev/null`, then the
 # error message is suppressed, but tput cols becomes confused about the
 # terminal and prints out the default value (80).
-if [ -z $COLUMNS ] && [ -n "$TERM" ] && [ "$TERM" != dumb ] && [ ! -z "`which tput`" ] ; then
+if [ -z $COLUMNS ] && [ -n "$TERM" ] && [ "$TERM" != dumb ] && [ -n "`which tput`" ] ; then
   # Note to cygwin/mingw/msys users: install the ncurses package to get tput command.
   # Note to mingw/msys users: there is no precompiled ncurses package.
   if COLUMNS="`tput cols`"; then
@@ -51,7 +51,7 @@ if [ -z $COLUMNS ] && [ -n "$TERM" ] && [ "$TERM" != dumb ] && [ ! -z "`which tp
   fi
 fi
 
-if [ ! -z "$DRUSH_PHP" ] ; then
+if [ -n "$DRUSH_PHP" ] ; then
   # Use the DRUSH_PHP environment variable if it is available.
   php="$DRUSH_PHP"
 else
@@ -66,7 +66,7 @@ else
   fi
 
   # On MSYSGIT, we need to use "php", not the full path to php
-  if [ ! -z "$MINGW" ] ; then
+  if [ -n "$MINGW" ] ; then
     php="php"
   fi
 fi
@@ -78,23 +78,41 @@ for conf_dir in "`dirname "$SELF_PATH"`" /etc/drush $HOME/.drush ; do
     continue
   fi
   # Handle paths that don't start with a drive letter on MinGW shell. Equivalent to cygpath on Cygwin.
-  if [ ! -z "$MINGW" ] ; then
+  if [ -n "$MINGW" ] ; then
     conf_dir=`sh -c "cd $conf_dir; pwd -W"`
   fi
   if [ -f "$conf_dir/php.ini" ] ; then
-    drush_php_ini=$conf_dir/php.ini
+    drush_php_ini="$conf_dir/php.ini"
   fi
   if [ -f "$conf_dir/drush.ini" ] ; then
-    drush_php_override=$conf_dir/drush.ini
+    drush_php_override="$conf_dir/drush.ini"
   fi
 done
+# If the PHP_INI environment variable is specified, then tell
+# php to use the php.ini file that it specifies.
+if [ -n "$PHP_INI" ] ; then
+  drush_php_ini="$PHP_INI"
+fi
+# If the DRUSH_INI environment variable is specified, then
+# extract all ini variable assignments from it and convert
+# them into php '-d' options. These will override similarly-named
+# options in the php.ini file
+if [ -n "$DRUSH_INI" ] ; then
+  drush_php_override="$DRUSH_INI"
+fi
 
 # Add in the php file location and/or the php override variables as appropriate
-if [ "x$drush_php_ini" != "x" ] ; then
+if [ -n "$drush_php_ini" ] ; then
   php_options="--php-ini $drush_php_ini"
 fi
-if [ "x$drush_php_override" != "x" ] ; then
+if [ -n "$drush_php_override" ] ; then
   php_options=`grep '^[a-z_A-Z0-9.]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
+fi
+# If the PHP_OPTIONS environment variable is specified, then
+# its contents will be passed to php on the command line as
+# additional options to use.
+if [ -n "$PHP_OPTIONS" ] ; then
+  php_options="$php_options $PHP_OPTIONS"
 fi
 
 # Pass in the path to php so that drush knows which one

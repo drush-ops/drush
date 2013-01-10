@@ -316,10 +316,29 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
    * @return integer
    *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
    */
-  function execute($command, $expected_return = self::EXIT_SUCCESS) {
+  function execute($command, $expected_return = self::EXIT_SUCCESS, $env = NULL) {
     $this->_output = FALSE;
+    $return = 1;
     $this->log("Executing: $command", 'notice');
-    exec($command, $this->_output, $return);
+    // If the test passed in an environment to use, then run the test
+    // with proc_open
+    if (isset($env)) {
+      $descriptorspec = array(
+        0 => array("pipe", "r"),
+        1 => array("pipe", "w") );
+      $process = proc_open($command, $descriptorspec, $pipes, NULL, $env);
+      if (is_resource($process)) {
+        fclose($pipes[0]);
+        $output = stream_get_contents($pipes[1]);
+        $this->_output = explode("\n", rtrim($output)); // one more /n than with exec
+        fclose($pipes[1]);
+        $return = proc_close($process);
+      }
+    }
+    // Tests that do not provide their own environment run with exec
+    else {
+      exec($command, $this->_output, $return);
+    }
     $this->assertEquals($expected_return, $return, 'Unexpected exit code: ' .  $command);
     return $return;
   }
@@ -344,7 +363,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     * @return integer
     *   An exit code.
     */
-  function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL) {
+  function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL, $env = NULL) {
     $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options');
     // insert "cd ... ; drush"
     $cmd[] = $cd ? sprintf('cd %s &&', self::escapeshellarg($cd)) : NULL;
@@ -387,7 +406,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     }
     $cmd[] = $suffix;
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs
-    return $this->execute(implode(' ', $exec), $expected_return);
+    return $this->execute(implode(' ', $exec), $expected_return, $env);
   }
 
   function drush_major_version() {
