@@ -97,7 +97,7 @@
  *   @mysite.live       A copy of @live
  *
  * Thus, aliases defined in an alias group file may be referred to
- * either by their simple (short) name, or by thier full namespace-qualified
+ * either by their simple (short) name, or by their full namespace-qualified
  * name.
  *
  * To see an example alias definition for the current bootstrapped
