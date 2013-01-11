@@ -10,30 +10,40 @@
  */
 
 /**
- * Invoke drush api calls, including all hooks.
+ * Invokes a Drush API call, including all hooks.
  *
- * Executes the specified command with the specified arguments on the
- * currently bootstrapped site using the current option contexts.
- * Note that drush_invoke will not bootstrap any further than the
- * current command has already bootstrapped; therefore, you should only invoke
- * commands that have the same (or lower) bootstrap requirements.
+ * Executes the specified command with the specified arguments on the currently
+ * bootstrapped site using the current option contexts. Note that it will not
+ * bootstrap any further than the current command has already bootstrapped;
+ * therefore, you should only invoke commands that have the same (or lower)
+ * bootstrap requirements.
  *
- * Commands execute with the same options that the user provided on
- * the commandline.  If you need to invoke another drush commands with
- * options you specify, @see drush_invoke_process.
+ * Commands execute with the same options that the user provided on the
+ * commandline. If you need to invoke another Drush command with options you
+ * specify, use drush_invoke_process() instead.
+ *
+ * @param string $command
+ *   The command to invoke.
+ * @param array $arguments
+ *   An array of argument to pass into the command.
+ *
+ * @return mixed|false
+ *   The return value from drush_dispatch() or FALSE on error.
+ *
+ * @see drush_invoke_process()
  */
 function drush_invoke($command, $arguments = array()) {
-  // If someone passed a standalone arg, convert it to a single-element array
+  // Convert a standalone argument to a single-element array.
   if (!is_array($arguments)) {
     $arguments = array($arguments);
   }
   $commands = drush_get_commands();
   if (array_key_exists($command, $commands)) {
     $command = $commands[$command];
-    // Drush overloads the 'arguments' element, which contains the
-    // help string for the allowed arguments for the command when
-    // fetched, and is fixed up by _drush_prepare_command to contain
-    // the actual commandline arguments during dispatching.
+    // Drush overloads the 'arguments' element, which contains the help string
+    // for the allowed arguments for the command when fetched, and is fixed up
+    // by _drush_prepare_command() to contain the actual commandline arguments
+    // during dispatching.
     $command['arguments'] = array();
     return drush_dispatch($command, $arguments);
   }
