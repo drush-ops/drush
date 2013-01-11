@@ -285,11 +285,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       'directory_name'      => '',
     );
     // If download components are specified, but not the download
-    // type, default to git. Additionally, if the 'revision' parameter is
-    // passed at the top level, this is short-hand for download revision.
-    if (isset($project['revision']) && !isset($project['download']['revision'])) {
-      $project['download']['revision'] = $project['revision'];
-    }
+    // type, default to git.
     if (isset($project['download']) && !isset($project['download']['type'])) {
       $project['download']['type'] = 'git';
     }

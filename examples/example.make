@@ -75,9 +75,10 @@ projects[data][download][revision] = DRUPAL-6--3
 ; For projects on drupal.org, some shorthand is available. If any
 ; download parameters are specified, but not type, the default is git.
 projects[cck_signup][download][revision] = "2fe932c"
-
-; Specifying 'revision' in the top level is shorthand for download revision.
-projects[context_admin][revision] = "eb9f05e"
+; It is recommended to also specify the corresponding branch so that
+; the .info file rewriting can obtain a version string that works with
+; the core update module
+projects[cck_signup][download][branch] = "7.x-1.x"
 
 ; Clone a project from github.
 
