@@ -64,7 +64,7 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
   else {
     // Drupal core - we can determine the version if required.
     if (_drush_generate_track_version("drupal", $version_options)) {
-      $projects[$core_project]["version"] = $drupal_major_version;
+      $projects[$core_project]["version"] = drush_drupal_version();
     }
   }
 
