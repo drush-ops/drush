@@ -382,11 +382,16 @@ function drush_locate_root($start_path = NULL) {
  */
 function drush_valid_drupal_root($path) {
   if (!empty($path) && is_dir($path)) {
-    $candidates = array('includes/common.inc', 'core/includes/common.inc');
-    foreach ($candidates as $candidate) {
-      if (file_exists($path . '/' . $candidate)) {
-        return $candidate;
-      }
+    // Drupal 8 root.
+    $candidate = 'core/includes/common.inc';
+    if (file_exists($path . '/' . $candidate)) {
+      return $candidate;
+    }
+    // Drupal 7 root. Ensure $path is not inside core/ of a Drupal 8 root.
+    // Double check: parent is core/ and ../sites/example.sites.php exists.
+    $candidate = 'includes/common.inc';
+    if (file_exists($path . '/' . $candidate) && ((basename($path) != 'core') && !file_exists($path . '../sites/example.sites.php'))) {
+      return $candidate;
     }
   }
   return FALSE;
