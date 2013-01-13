@@ -24,6 +24,7 @@ function core_drush_command() {
   $items['help'] = array(
     'description' => 'Print this help message. See `drush help help` for more options.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'allow-additional-options' => TRUE,
     'options' => array(
       'sort' => 'Sort commands in alphabetical order. drush waits for full bootstrap before printing any commands when this option is used.',
       'filter' => array(
