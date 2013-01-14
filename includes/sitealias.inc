@@ -1051,7 +1051,7 @@ function _drush_sitelist_check_site_records($source, $target) {
  * in the cache.
  *
  * @param alias_record
- *   The alias record to be initialized; paramter is modified in place.
+ *   The alias record to be initialized; parameter is modified in place.
  */
 function _drush_sitealias_initialize_alias_record(&$alias_record) {
   // If there is a 'from-list' entry, then build a derived
