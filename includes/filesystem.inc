@@ -146,7 +146,12 @@ function drush_delete_dir($dir, $force = FALSE) {
  *   FALSE on failure, TRUE if everything was deleted.
  */
 function drush_delete_dir_contents($dir, $force = FALSE) {
-  foreach (scandir($dir) as $item) {
+  $scandir = @scandir($dir);
+  if (!is_array($scandir)) {
+    return FALSE;
+  }
+
+  foreach ($scandir as $item) {
     if ($item == '.' || $item == '..') {
       continue;
     }
