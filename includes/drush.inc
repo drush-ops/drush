@@ -477,12 +477,18 @@ function _drush_is_drush_shebang_script($script_filename) {
 /**
  * @defgroup userinput Get input from the user.
  * @{
+ */
 
 /**
- * Ask the user a basic yes/no question.
+ * Asks the user a basic yes/no question.
  *
- * @param $msg The question to ask
- * @return TRUE if the user entered 'y', FALSE if he entered 'n'
+ * @param string $msg
+ *   The question to ask.
+ * @param int $indent
+ *   The number of spaces to indent the message.
+ *
+ * @return bool
+ *   TRUE if the user enters "y" or FALSE if "n".
  */
 function drush_confirm($msg, $indent = 0) {
   drush_print_prompt((string)$msg . " (y/n): ", $indent);
