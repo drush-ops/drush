@@ -108,7 +108,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
       $prefix = count($sites) > 1 ? 'multiple_sites' : str_replace('/', '-', $first['databases']['default']['default']['database']);
     }
   }
-  $date = gmdate('Ymd_his');
+  $date = gmdate('Ymd_His');
   $temp_dest_name = "$prefix.$date.tar";
 
   $final_destination = drush_get_option('destination');
