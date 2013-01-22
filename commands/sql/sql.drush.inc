@@ -406,7 +406,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
       }
       $file = $backup_dir . '/@DATABASE_@DATE.sql';
     }
-    $file = str_replace(array('@DATABASE', '@DATE'), array($database, gmdate('Ymd_his')), $file);
+    $file = str_replace(array('@DATABASE', '@DATE'), array($database, gmdate('Ymd_His')), $file);
   }
 
   switch (_drush_sql_get_scheme($db_spec)) {
