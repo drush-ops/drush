@@ -140,7 +140,9 @@ function sql_drush_command() {
     ),
     'options' => array(
       'skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
+      'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
       'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
+      'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
       'tables-key' => 'A key in the $tables array. Optional.',
       'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
       'cache' => 'Skip dump if result file exists and is less than "cache" hours old. Optional; default is 24 hours.',
