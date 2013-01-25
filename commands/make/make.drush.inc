@@ -255,7 +255,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       return TRUE;
     }
     else {
-      drush_set_error(dt('No core project specified.'));
+      drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
       return FALSE;
     }
   }
@@ -325,14 +325,14 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
     unset($projects['core']);
   }
   elseif ($cores == 0 && !$recursion) {
-    drush_set_error(dt('No core project specified.'));
+    drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
     return FALSE;
   }
   elseif ($cores == 1 && $recursion) {
     unset($projects['core']);
   }
   elseif ($cores > 1) {
-    drush_set_error(dt('More than one core project specified.'));
+    drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
     return FALSE;
   }
 
@@ -488,7 +488,7 @@ function make_build_path($build_path) {
     return drush_user_abort(dt('Build aborted.'));
   }
   if ($build_path != '.' && file_exists($build_path)) {
-    return drush_set_error(dt('Base path %path already exists', array('%path' => $build_path)));
+    return drush_set_error('MAKE_PATH_EXISTS', dt('Base path %path already exists', array('%path' => $build_path)));
   }
   $saved_path = $build_path;
   return $build_path;
@@ -524,7 +524,7 @@ function make_move_build($build_path) {
     $ret = $ret && drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . basename($build_path), $build_path);
   }
   if (!$ret) {
-    drush_set_error(dt("Cannot move build into place"));
+    drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place"));
   }
   return $ret;
 }

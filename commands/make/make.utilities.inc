@@ -13,7 +13,7 @@
  */
 function make_parse_info_file($makefile, $parsed = TRUE) {
   if (!($data = make_get_data($makefile))) {
-    return drush_set_error(dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
+    return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
   if (!($info = _drush_drupal_parse_info_file($data))) {
     return FALSE;
