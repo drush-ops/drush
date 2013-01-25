@@ -173,7 +173,7 @@ class DrushMakeProject {
     // This directory shouldn't exist yet -- if it does, stop,
     // unless overwrite has been set to TRUE.
     if (is_dir($this->download_location) && !$this->overwrite) {
-      drush_set_error(dt('Directory not empty: !directory', array('!directory' => $this->download_location)));
+      drush_set_error('MAKE_DIRECTORY_EXISTS', dt('Directory not empty: !directory', array('!directory' => $this->download_location)));
       return FALSE;
     }
     elseif ($this->download['type'] === 'pm') {
@@ -476,7 +476,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
     $this->path = $this->download_location = $this->generatePath();
     $this->project_directory = '';
     if (is_dir($this->download_location)) {
-      drush_set_error(dt('Directory not empty: !directory', array('!directory' => $this->download_location)));
+      drush_set_error('MAKE_DIRECTORY_EXISTS', dt('Directory not empty: !directory', array('!directory' => $this->download_location)));
       return FALSE;
     }
     elseif ($this->download['type'] === 'pm') {
