@@ -390,7 +390,7 @@ function drush_valid_drupal_root($path) {
     // Drupal 7 root. Ensure $path is not inside core/ of a Drupal 8 root.
     // Double check: parent is core/ and ../sites/example.sites.php exists.
     $candidate = 'includes/common.inc';
-    if (file_exists($path . '/' . $candidate) && ((basename($path) != 'core') && !file_exists($path . '../sites/example.sites.php'))) {
+    if (file_exists($path . '/' . $candidate) && ((basename($path) != 'core') && !file_exists($path . '/../sites/example.sites.php'))) {
       return $candidate;
     }
   }
