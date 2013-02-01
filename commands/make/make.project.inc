@@ -274,6 +274,11 @@ class DrushMakeProject {
    * Process info files when downloading things from git.
    */
   function processGitInfoFiles() {
+    // Bail out if this isn't hosted on Drupal.org.
+    if (isset($this->download['url']) && strpos($this->download['url'], 'drupal.org') === FALSE) {
+      return;
+    }
+
     // Figure out the proper version string to use based on the .make file.
     // Best case is the .make file author told us directly.
     if (!empty($this->download['full_version'])) {
