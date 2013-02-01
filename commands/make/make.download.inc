@@ -337,11 +337,6 @@ function make_download_git($name, $download, $download_location) {
   // Move the directory into the final resting location.
   drush_copy_dir($tmp_location, $download_location, TRUE);
 
-  // Remove .git/ directory if working-copy flag was not specified.
-  if (!$wc && file_exists($download_location . '/.git')) {
-    drush_register_file_for_deletion($download_location . '/.git');
-  }
-
   return dirname($tmp_location);
 }
 

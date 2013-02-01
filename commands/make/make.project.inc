@@ -157,6 +157,10 @@ class DrushMakeProject {
     if (!drush_get_option('no-gitinfofile', FALSE) && isset($this->download['type']) && $this->download['type'] == 'git') {
       $this->processGitInfoFiles();
     }
+    // Clean-up .git directories.
+    if (!drush_get_option('working-copy')) {
+      $this->removeGitDirectory();
+    }
     if (!$this->recurse($this->download_location)) {
       return FALSE;
     }
@@ -301,6 +305,15 @@ class DrushMakeProject {
     }
     require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
     drush_pm_inject_info_file_metadata($this->download_location, $this->name, $full_version);
+  }
+
+  /**
+   * Remove the .git directory from a project.
+   */
+  function removeGitDirectory() {
+    if (isset($this->download['type']) && $this->download['type'] == 'git' && file_exists($this->download_location . '/.git')) {
+      drush_delete_dir($this->download_location . '/.git', TRUE);
+    }
   }
 
   /**
@@ -513,12 +526,18 @@ class DrushMakeProject_Library extends DrushMakeProject {
   /**
    * No recursion for libraries, sorry :-(
    */
-  function recurse($path) {}
+  function recurse($path) {
+    // Return TRUE so that processing continues in the make() method.
+    return TRUE;
+  }
 
   /**
    * No translations for libraries.
    */
-  function getTranslations($download_location) {}
+  function getTranslations($download_location) {
+    // Return TRUE so that processing continues in the make() method.
+    return TRUE;
+  }
 }
 
 /**
