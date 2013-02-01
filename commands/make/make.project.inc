@@ -306,7 +306,10 @@ class DrushMakeProject {
     $matches = array();
     if (preg_match('/^(.+).x-dev$/', $full_version, $matches)) {
       require_once dirname(__FILE__) . '/../pm/package_handler/git_drupalorg.inc';
-      $full_version = drush_pm_git_drupalorg_compute_rebuild_version($this->download_location, $matches[1]);
+      $rebuild_version = drush_pm_git_drupalorg_compute_rebuild_version($this->download_location, $matches[1]);
+      if ($rebuild_version) {
+        $full_version = $rebuild_version;
+      }
     }
     require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
     drush_pm_inject_info_file_metadata($this->download_location, $this->name, $full_version);
