@@ -1336,7 +1336,10 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
   if (sizeof($searchpath)) {
     if (!$reset) {
       // Assemble a cid specific to the bootstrap phase and searchpaths.
-      $cid = drush_get_cid('commandfiles-' . $phase, array(), $searchpath);
+      // Bump $cf_version when making a change to a dev version of Drush
+      // that invalidates the commandfile cache.
+      $cf_version = 2;
+      $cid = drush_get_cid('commandfiles-' . $phase, array(), array_merge($searchpath, array($cf_version)));
       $command_cache = drush_cache_get($cid);
       if (isset($command_cache->data)) {
         $cached_list = $command_cache->data;
