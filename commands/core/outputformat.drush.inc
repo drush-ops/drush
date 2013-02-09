@@ -268,7 +268,7 @@ class drush_outputformat {
       $metadata += $metadata[$this->selected_engine . '-metadata'];
     }
     $machine_parsable = $this->engine_config['engine-info']['machine-parsable'];
-    $formatter_type = $machine_readable ? 'pipe' : 'formatted';
+    $formatter_type = $machine_parsable ? 'pipe' : 'formatted';
     if ((!$machine_parsable) && is_bool($input)) {
       $input = $input ? 'TRUE' : 'FALSE';
     }
