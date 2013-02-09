@@ -29,25 +29,24 @@ function drush_pm_info() {
       $data = _drush_pm_info_theme($info);
     }
     $result[$extension] = $data;
-    drush_print_table(drush_key_value_to_array_table(_drush_pm_info_format_table_data($data)));
-    print "\n";
   }
-  drush_print_pipe(drush_format($result, NULL, 'ini-list'));
   return $result;
 }
 
 function _drush_pm_info_format_table_data($data) {
   $result = array();
-  foreach( $data as $key => $value) {
-    if (is_array($value)) {
-      if (empty($value)) {
-        $value = 'none';
+  foreach ($data as $extension => $info) {
+    foreach($info as $key => $value) {
+      if (is_array($value)) {
+        if (empty($value)) {
+          $value = 'none';
+        }
+        else {
+          $value = implode(', ', $value);
+        }
       }
-      else {
-        $value = implode(', ', $value);
-      }
+      $result[$extension][$key] = $value;
     }
-    $result[$key] = $value;
   }
   return $result;
 }

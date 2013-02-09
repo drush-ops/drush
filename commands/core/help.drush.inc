@@ -46,6 +46,7 @@ function drush_print_help($command) {
 
   // Give commandfiles an opportunity to add examples and options to the command.
   drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+  drush_engine_add_help_topics($command);
   drush_command_invoke_all_ref('drush_help_alter', $command);
 
   drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));

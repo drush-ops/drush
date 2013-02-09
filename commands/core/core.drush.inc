@@ -54,6 +54,14 @@ function core_drush_command() {
       'pipe' => 'Print just the version number, and nothing else.',
       'self-update' => 'Check for pending updates to Drush itself. Set to 0 to disable.',
     ),
+    'engines' => array(
+      'outputformat' => array(
+        'default' => 'key-value',
+        'pipe-format' => 'string',
+        'label' => 'Drush Version',
+        'require-engine-capability' => array('format-single'),
+      ),
+    ),
   );
   $items['self-update'] = array(
     'description' => 'Check to see if there is a newer Drush release available.',
@@ -105,6 +113,18 @@ function core_drush_command() {
       'show-passwords' => 'Show database password.',
       'full' => 'Show all drush aliases in the report, even if there are a lot.',
     ),
+    'engines' => array(
+      'outputformat' => array(
+        'default' => 'key-value',
+        'pipe-format' => 'ini',
+        'formatted-filter' => '_drush_core_status_format_table_data',
+        'simplify-single' => TRUE,
+        'table-metadata' => array(
+          'list-separator' => ' ',
+        ),
+        'require-engine-capability' => array('format-list'),
+      ),
+    ),
     'topics' => array('docs-readme'),
   );
   $items['core-requirements'] = array(
@@ -113,7 +133,7 @@ function core_drush_command() {
     'examples' => array(
       'drush core-requirements' => 'Show all status lines from the Status Report admin page.',
       'drush core-requirements --severity=2' => 'Show only the red lines from the Status Report admin page.',
-      'drush core-requirements --pipe' => 'Print out a short report in the format "identifier: severity", where severity 2=error, 1=warning, and 0/-1=OK',
+      'drush core-requirements --pipe' => 'Print out a short report in the format "identifier=severity", where severity 2=error, 1=warning, and 0/-1=OK',
     ),
     'options' => array(
       'severity' => array(
@@ -122,6 +142,23 @@ function core_drush_command() {
         'example-value' => '3',
       ),
       'ignore' => 'Comma-separated list of requirements to remove from output. Run with --pipe to see key values to use.',
+    ),
+    'engines' => array(
+      'outputformat' => array(
+        'default' => 'table',
+        'pipe-format' => 'ini',
+        'field-labels' => array('title' => 'Title', 'severity' => 'Severity', 'sid' => 'SID', 'description' => 'Description', 'value' => 'Summary', 'reason' => 'Reason', 'weight' => 'Weight'),
+        'fields-default' => array('title', 'severity', 'description'),
+        'column-widths' => array('severity' => 8),
+        'concatenate-columns' => array('description' => array('value', 'description')),
+        'strip-tags' => TRUE,
+        'ini-item' => 'sid',
+        'key-value-item' => 'severity',
+        'list-metadata' => array(
+          'list-item' => 'severity',
+        ),
+        'require-engine-capability' => array('format-table'),
+      ),
     ),
   );
   $items['php-eval'] = array(
@@ -136,6 +173,11 @@ function core_drush_command() {
     'allow-additional-options' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('eval', 'ev'),
+    'engines' => array(
+      'outputformat' => array(
+        'default' => 'export',
+      ),
+    ),
   );
   $items['php-script'] = array(
     'description' => "Run php script(s).",
@@ -313,6 +355,8 @@ function core_drush_command() {
   );
   // Add in options/engines.
   drush_core_quick_drupal_options($items);
+  // Add in topics for engines
+  $items += drush_get_engine_topics();
   return $items;
 }
 
@@ -358,12 +402,14 @@ function core_core_rsync_complete() {
  * Implementation of hook_drush_engine_type_info().
  */
 function core_drush_engine_type_info() {
-  return array(
-    'drupal' => array(
-    ),
-  );
+  $info = array();
+  $info['drupal'] = array();
+  return $info;
 }
 
+/**
+ * Implements hook_drush_engine_ENGINE_TYPE().
+ */
 function core_drush_engine_drupal() {
   $engines = array();
   $engines['batch'] = array();
@@ -516,7 +562,7 @@ function _core_path_aliases($project = '') {
   return $paths;
 }
 
-function _core_site_status_table($project = '', $full = FALSE) {
+function _core_site_status_table($project = '') {
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $status_table['Drupal version'] = drush_drupal_version();
@@ -552,19 +598,12 @@ function _core_site_status_table($project = '', $full = FALSE) {
     $status_table['Administration theme'] = drush_theme_get_admin();
   }
   if ($php_ini_files = _drush_core_config_php_ini_files()) {
-    $status_table['PHP configuration'] = implode(' ', $php_ini_files);
+    $status_table['PHP configuration'] = $php_ini_files;
   }
   $status_table['Drush version'] = DRUSH_VERSION;
-  $status_table['Drush configuration'] = implode(' ', drush_get_context_options('context-path', TRUE));
+  $status_table['Drush configuration'] = drush_flatten_array(drush_get_context_options('context-path', ''));
   $alias_files = _drush_sitealias_find_alias_files();
-  if (!empty($alias_files)) {
-    if ($full || count($alias_files) < 24) {
-      $status_table['Drush alias files'] = implode(' ', $alias_files);
-    }
-    else {
-      $status_table['Drush alias files'] = dt("There are !count alias files. Run with --full to see the full list.", array('!count' => count($alias_files)));
-    }
-  }
+  $status_table['Drush alias files'] = $alias_files;
 
   // None of the Status keys are in dt(); this helps with machine-parsing of status?
   $path_names = array(
@@ -577,7 +616,7 @@ function _core_site_status_table($project = '', $full = FALSE) {
     'temp' => 'Temporary file directory path',
     'config-active' => 'Active config directory path',
     'config-staging' => 'Staging config directory path',
-   );
+  );
 
   $paths = _core_path_aliases($project);
   if (!empty($paths)) {
@@ -599,6 +638,28 @@ function _core_site_status_table($project = '', $full = FALSE) {
   $status_table['%paths'] = $paths;
 
   return $status_table;
+}
+
+// Adjust the status output for any non-pipe output format
+function _drush_core_status_format_table_data($output, $metadata) {
+  // Hide any key that begins with a %
+  foreach ($output as $key => $value) {
+    if ($key[0] == '%') {
+      unset($output[$key]);
+    }
+  }
+  // Hide 'Modules path' and 'Themes path' as well, because that's
+  // the way it's always been.
+  unset($output['Modules path']);
+  unset($output['Themes path']);
+  // Shorten the list of alias files if there are too many
+  if (drush_get_option('full', FALSE) == FALSE) {
+    if (isset($output['Drush alias files']) && count($output['Drush alias files']) > 24) {
+      $msg = dt("\nThere are !count more alias files. Run with --full to see the full list.", array('!count' => count($output['Drush alias files']) - 1));
+      $output['Drush alias files'] = array($output['Drush alias files'][0] , $msg);
+    }
+  }
+  return $output;
 }
 
 /**
@@ -718,6 +779,16 @@ function drush_core_requirements() {
   drupal_load_updates();
 
   $requirements = module_invoke_all('requirements', 'runtime');
+  // If a module uses "$requirements[] = " instead of
+  // "$requirements['label'] = ", then build a label from
+  // the title.
+  foreach($requirements as $key => $info) {
+    if (is_numeric($key)) {
+      unset($requirements[$key]);
+      $new_key = strtolower(str_replace(' ', '_', $info['title']));
+      $requirements[$new_key] = $info;
+    }
+  }
   $ignore_requirements = drush_get_option_list('ignore');
   foreach ($ignore_requirements as $ignore) {
     unset($requirements[$ignore]);
@@ -725,24 +796,13 @@ function drush_core_requirements() {
   ksort($requirements);
 
   $min_severity = drush_get_option('severity', -1);
-  $rows[] = array('Title', 'Severity', 'Description');
   foreach($requirements as $key => $info) {
     $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
-    if ($severity >= $min_severity) {
-      drush_print_pipe($key . ': ' . $severity . "\n");
-      $severity = $severities[$severity];
-      $description = array_key_exists('value', $info) ? strip_tags($info['value']) : '';
-      if (array_key_exists('description', $info) && !empty($info['description'])) {
-        if (!empty($description)) {
-          $description .= "\n";
-        }
-        $description .= strip_tags($info['description']);
-      }
-      $rows[] = array($info['title'], $severity, $description);
+    $requirements[$key]['sid'] = $severity;
+    $requirements[$key]['severity'] = $severities[$severity];
+    if ($severity < $min_severity) {
+      unset($requirements[$key]);
     }
-  }
-  if (count($rows) > 1) {
-    drush_print_table($rows, TRUE, array(1 => 8));
   }
   return $requirements;
 }
@@ -752,7 +812,7 @@ function drush_core_requirements() {
  * installation.
  */
 function drush_core_status() {
-  $status_table = _core_site_status_table(drush_get_option('project',''), drush_get_option('full'));
+  $status_table = _core_site_status_table(drush_get_option('project',''));
   // If args are specified, filter out any entry that is not named
   // (in other words, only show lines named by one of the arg values)
   $args = func_get_args();
@@ -763,13 +823,7 @@ function drush_core_status() {
       }
     }
   }
-  $return = $status_table;
-  unset($status_table['%paths']);
-  unset($status_table['Modules path']);
-  unset($status_table['Themes path']);
-  drush_print_table(drush_key_value_to_array_table($status_table));
-  drush_print_pipe(drush_format($return, NULL, 'ini-or-single'));
-  return $return;
+  return $status_table;
 }
 
 // Command callback. Show all global options. Exposed via topic command.
@@ -1147,8 +1201,10 @@ function drush_core_drupal_directory($target = 'root') {
  * Called for `drush version` or `drush --version`
  */
 function drush_core_version() {
-  drush_print(dt("drush version !version", array('!version' => DRUSH_VERSION)));
-  drush_print_pipe(DRUSH_VERSION);
+  return DRUSH_VERSION;
+}
+
+function drush_core_post_version() {
   // Next check to see if there is a newer drush.
   if (!drush_get_context('DRUSH_PIPE') && drush_get_option('self-update', TRUE)) {
     drush_check_self_update();

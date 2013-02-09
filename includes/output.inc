@@ -3,6 +3,7 @@
 /**
  * @defgroup outputfunctions Process output text.
  * @{
+ */
 
 /**
  * Prints a message with optional indentation. In general,
@@ -72,116 +73,52 @@ function drush_print_r($array, $handle = NULL, $newline = TRUE) {
 }
 
 /**
- * Prepares a variable for printing.
+ * Prepares a variable for printing.  Loads the requested output
+ * formatter and uses it to process the provided input.
+ *
  * @param mixed $input
  *   A variable.
- * @param string $label
- *   Optional prefix. Not used by JSON format.
+ * @param string $metadata
+ *   Optional formatting metadata. Not used by all formats.
+ *     'label' - text to label data with in some formats (e.g. export, config)
  * @param string $format
  *   Optional format; defaults to print_r.
- *     print_r: output with print_r function
- *     export: output with var_export. Prefix with "$variables['label'] = "
- *       if label is given.
- *     config: output with var_export. Prefix with "$config['label'] = "
- *       if label is given.
- *     json: output with drush_json_encode
- *     ini: output data that could be parsed by parse_ini_string
- *     ini-or-single: output a single string if there is only
- *       one item in the input; otherwise, output in ini format.
- *     ini-list: input contains an associative array where
- *       the key is the ini section, and the value is an array
- *       of data to output in ini format.
- *     export-list, config-list: An array of items to be output
- *       with var_export; the array key is used as the label.
- *     list: Print a list of key: value items.
  * @return string
- *   The variable formatted according to specified format. Ready for drush_print().
+ *   The variable formatted according to specified format.
+ *   Ready for drush_print().
  */
-function drush_format($input, $label = NULL, $format = NULL) {
+function drush_format($input, $metadata = NULL, $format = NULL) {
+  $output = '';
+  // Look up the format and label, and fill in default values for metadata
+  if (is_string($metadata)) {
+    $metadata = array('label' => $metadata);
+  }
+  if (!is_array($metadata)) {
+    $metadata = array();
+  }
+  $metadata += array(
+    'metameta' => array(),
+  );
+  if (isset($metadata['format'])) {
+    // If the format is set in metadata, then it will
+    // override whatever is passed in via the $format parameter.
+    $format = $metadata['format'];
+  }
   if (is_null(($format))) {
-    $format = drush_get_option('format', 'print_r');
-  }
-  // Handle FORMAT-list, an array of items to be output in FORMAT
-  if (substr($format, -4) == "list") {
-    $format = substr($format, 0, -5);
-    $result = '';
-    if (is_array($input)) {
-      foreach ($input as $label => $data) {
-        $result .= drush_format($data, $label, $format);
-        $result .= "\n";
-      }
-    }
-    return $result;
-  }
-  if ($format != 'export' && $format != 'config') {
-    if ($input === TRUE) {
-      $input = 'TRUE';
-    }
-    elseif ($input === FALSE) {
-      $input = 'FALSE';
-    }
+    // TODO: we shouldn't ever call drush_get_option here.
+    // Get rid of this once we confirm that there are no
+    // callers that still need it.
+    $format = drush_get_option('format', 'print-r');
   }
 
-  switch ($format) {
-    case 'config':
-      if ($label) {
-        $output = "\$config['$label'] = " . var_export($input, TRUE) . ';';
-      }
-      else {
-        $output = var_export($input, TRUE);
-      }
-      break;
-    case 'export':
-      if ($label) {
-        $output = "\$variables['$label'] = " . var_export($input, TRUE) . ';';
-      }
-      else {
-        $output = var_export($input, TRUE);
-      }
-      break;
-    case 'json':
-      $output = drush_json_encode($input);
-      break;
-    case 'ini-or-single':
-    case 'ini':
-      if (is_array($input)) {
-        $output = '';
-        if (isset($label)) {
-          $output = "[$label]\n";
-        }
-        if (($format == 'ini-or-single') && (count($input) == 1)) {
-          $output = array_shift($input);
-        }
-        else {
-          foreach ($input as $key => $value) {
-            if (isset($value)) {
-              if (is_array($value)) {
-                $value = implode(', ', $value);
-              }
-              $output .= sprintf("%s=%s\n", strtolower(str_replace(' ', '_', $key)), $value);
-            }
-          }
-        }
-      }
-      else {
-        $output = drush_format($input, $label, 'print_r');
-      }
-      break;
-    case 'print_r':
-    default:
-      if (is_string($input)) {
-        $input = '"' . $input . '"';
-      }
-      elseif (is_array($input) || is_object($input)) {
-        $input = print_r($input, TRUE);
-      }
-
-      if ($label) {
-        $input = $label . ': ' . $input;
-      }
-      $output = $input;
-      break;
+  $formatter = drush_load_engine('outputformat', $format);
+  if ($formatter) {
+    if ($formatter === TRUE) {
+      return drush_set_error(dt('No outputformat class defined for !format', array('!format' => $format)));
+    }
+    $output = $formatter->process($input, $metadata);
   }
+
   return $output;
 }
 
@@ -270,6 +207,39 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
  *   Use $tbl->getTable() to get the output from the return value.
  */
 function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = NULL) {
+  $tbl = _drush_format_table($rows, $header, $widths);
+  $output = $tbl->getTable();
+  if (!stristr(PHP_OS, 'WIN')) {
+    $output = str_replace("\r\n", PHP_EOL, $output);
+  }
+
+  drush_print($output, 0, $handle);
+  return $tbl;
+}
+
+/**
+ * Formatted a table of data.
+ *
+ * @param $rows
+ *   The rows to print.
+ * @param $header
+ *   If TRUE, the first line will be treated as table header.
+ * @param $widths
+ *   The widths of each column (in characters) to use - if not specified this
+ *   will be determined automatically, based on a "best fit" algorithm.
+ * @return $output
+ *   The formatted output.
+ */
+function drush_format_table($rows, $header = FALSE, $widths = array()) {
+  $tbl = _drush_format_table($rows, $header, $widths);
+  $output = $tbl->getTable();
+  if (!stristr(PHP_OS, 'WIN')) {
+    $output = str_replace("\r\n", PHP_EOL, $output);
+  }
+  return $output;
+}
+
+function _drush_format_table($rows, $header = FALSE, $widths = array()) {
   $tbl = new Console_Table(CONSOLE_TABLE_ALIGN_LEFT , '');
 
   $auto_widths = drush_table_column_autowidth($rows, $widths);
@@ -290,12 +260,6 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = 
   }
 
   $tbl->addData($newrows);
-  $output = $tbl->getTable();
-  if (!stristr(PHP_OS, 'WIN')) {
-    $output = str_replace("\r\n", PHP_EOL, $output);
-  }
-
-  drush_print($output, 0, $handle);
   return $tbl;
 }
 
@@ -305,20 +269,120 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = 
  *
  * @param $keyvalue_table
  *    An associative array of key : value pairs.
+ * @param $metadata
+ *    'key-value-item':  If the value is an array, then
+ *    the item key determines which item from the value
+ *    will appear in the output.
  * @return
  *    An array of arrays, where the keys from the input
  *    array are stored in the first column, and the values
  *    are stored in the third.  A second colum is created
  *    specifically to hold the ':' separator.
  */
-function drush_key_value_to_array_table($keyvalue_table) {
+function drush_key_value_to_array_table($keyvalue_table, $metadata = array()) {
+  if (!is_array($keyvalue_table)) {
+    return drush_set_error('DRUSH_INVALID_FORMAT', dt("Data not compatible with selected key-value output format."));
+  }
+  if (!is_array($metadata)) {
+    $metadata = array('key-value-item' => $metadata);
+  }
+  $item_key = array_key_exists('key-value-item', $metadata) ? $metadata['key-value-item'] : NULL;
+  $metadata += array(
+    'format' => 'list',
+    'separator' => ' ',
+  );
   $table = array();
   foreach ($keyvalue_table as $key => $value) {
     if (isset($value)) {
+      if (is_array($value) && isset($item_key)) {
+        $value = $value[$item_key];
+      }
+      // We should only have simple values here, but if
+      // we don't, use drush_format() to flatten as a fallback.
+      if (is_array($value)) {
+        $value = drush_format($value, $metadata, 'list');
+      }
       $table[] = array($key, ' :', $value);
     }
     else {
       $table[] = array($key . ':', '', '');
+    }
+  }
+  return $table;
+}
+
+/**
+ * Convert an array of data rows, where each row contains an
+ * associative array of key : value pairs, into
+ * a table suitable for processing by drush_print_table.
+ * The provided $header determines the order that the items
+ * will appear in the output.  Only data items listed in the
+ * header will be placed in the output.
+ *
+ * @param $rows_of_keyvalue_table
+ *    array(
+ *      'row1' => array('col1' => 'data', 'col2' => 'data'),
+ *      'row2' => array('col1' => 'data', 'col2' => 'data'),
+ * @param $header
+ *    array('col1' => 'Column 1 Label', 'col2' => 'Column 2 Label')
+ * @param $metadata
+ *    An array of special options
+ *      'strip-tags' - call the strip_tags function on the data
+ *         before placing it in the table
+ *      'concatenate-columns' - an array of:
+ *          'dest-col' => array('src-col1', 'src-col2')
+ *         Appends all of the src columns with whatever is
+ *         in the destination column.  Appended columns are
+ *         separated by newlines.
+ *       'transform-columns' - an array of:
+ *           'dest-col' => array('from' => 'to'),
+ *         Transforms any occurance of 'from' in 'dest-col' to 'to'.
+ * @return
+ *    An array of arrays
+ */
+function drush_rows_of_key_value_to_array_table($rows_of_keyvalue_table, $header, $metadata) {
+  $table = array();
+  if (!empty($rows_of_keyvalue_table)) {
+    if (empty($header)) {
+      $keys = array_keys(reset($rows_of_keyvalue_table));
+      $header = array_combine($keys, $keys);
+    }
+    $table[] = array_values($header);
+    foreach ($rows_of_keyvalue_table as $row_index => $row_data) {
+      $row = array();
+      foreach ($header as $column_key => $column_label) {
+        $data = isset($row_data[$column_key]) ? $row_data[$column_key] : '';
+        if (array_key_exists('transform-columns', $metadata)) {
+          foreach ($metadata['transform-columns'] as $dest_col => $transformations) {
+            if ($dest_col == $column_key) {
+              $data = str_replace(array_keys($transformations), array_values($transformations), $data);
+            }
+          }
+        }
+        if (array_key_exists('concatenate-columns', $metadata)) {
+          foreach ($metadata['concatenate-columns'] as $dest_col => $src_cols) {
+            if ($dest_col == $column_key) {
+              $data = '';
+              if (!is_array($src_cols)) {
+                $src_cols = array($src_cols);
+              }
+              foreach($src_cols as $src) {
+                if (array_key_exists($src, $row_data) && !empty($row_data[$src])) {
+                  if (!empty($data)) {
+                    $data .= "\n";
+                  }
+                  $data .= $row_data[$src];
+                }
+              }
+            }
+          }
+        }
+        if (array_key_exists('strip-tags', $metadata)) {
+          $data = strip_tags($data);
+        }
+        $row[] = $data;
+      }
+      $table[] = $row;
     }
   }
   return $table;
@@ -346,7 +410,7 @@ function drush_table_column_autowidth($rows, $widths) {
       if (empty($widths[$col_num])) {
         $length = strlen($cell);
         if ($length == 0) {
-          $col_dist[$col_num] = array(0 => 0);
+          $col_dist[$col_num][0] = 0;
         }
         while ($length > 0) {
           if (!isset($col_dist[$col_num][$length])) {

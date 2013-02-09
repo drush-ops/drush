@@ -166,8 +166,11 @@ function drush_dispatch($command, $arguments = array()) {
       return FALSE;
     }
 
+    // Give command files an opportunity to alter the command record
+    drush_command_invoke_all_ref('drush_command_alter', $command);
+
     // Include and validate command engines.
-    if (_drush_load_command_engines($command) === FALSE) {
+    if (drush_load_command_engines($command) === FALSE) {
       return FALSE;
     }
 
@@ -194,7 +197,6 @@ function drush_dispatch($command, $arguments = array()) {
 function drush_command() {
   $args = func_get_args();
   $command = drush_get_command();
-
   foreach (drush_command_implements("drush_init") as $name) {
     $func = $name . '_drush_init';
     if (drush_get_option('show-invoke')) {
@@ -205,7 +207,7 @@ function drush_command() {
   }
 
   if (!drush_get_error()) {
-    _drush_invoke_hooks($command['command-hook'], $args, $command['commandfile']);
+    $result = _drush_invoke_hooks($command, $args);
   }
 
   if (!drush_get_error()) {
@@ -273,9 +275,6 @@ function drush_command() {
  *   The drush command to execute.
  * @param args
  *   An array of arguments to the command OR a single non-array argument.
- * @param defined_in_commandfile
- *   The name of the commandfile that this command exists in.  Will be looked up
- *   if not provided.
  * @return
  *   The return value will be passed along to the caller if --backend option is
  *   present. A boolean FALSE indicates failure and rollback will be intitated.
@@ -283,19 +282,16 @@ function drush_command() {
  * This function should not be called directly.
  * @see drush_invoke() and @see drush_invoke_process()
  */
-function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
-  if ($defined_in_commandfile == NULL) {
-    $defined_in_commandfile = drush_get_commandfile_for_command($command);
-  }
+function _drush_invoke_hooks($command, $args) {
   // If someone passed a standalone arg, convert it to a single-element array
   if (!is_array($args)) {
     $args = array($args);
   }
   // Include the external command file used by this command, if there is one.
-  drush_command_include($command);
+  drush_command_include($command['command-hook']);
   // Generate the base name for the hook by converting all
   // dashes in the command name to underscores.
-  $hook = str_replace("-", "_", $command);
+  $hook = str_replace("-", "_", $command['command-hook']);
 
   // Call the hook init function, if it exists.
   // If a command needs to bootstrap, it is advisable
@@ -308,7 +304,7 @@ function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
     call_user_func_array($func, $args);
     _drush_log_drupal_messages();
     if (drush_get_error()) {
-      drush_log(dt('The command @command could not be initialized.', array('@command' => $command)), 'error');
+      drush_log(dt('The command @command could not be initialized.', array('@command' => $command['command-hook'])), 'error');
       return FALSE;
     }
   }
@@ -329,50 +325,66 @@ function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
     // to a higher phase will do this).
     $list = drush_commandfile_list();
 
-    // Run all of the functions available for this variation
+    // Make a list of function callbacks to call.  Make sure
+    // that the primary callback for this command (the one
+    // from the commandfile that defines this command) always
+    // appears first in the list
+    $primary_func = ($command['commandfile'] . "_" == substr($var_hook . "_",0,strlen($command['commandfile']) + 1)) ? sprintf("drush_%s", $var_hook) : sprintf("drush_%s_%s", $command['commandfile'], $var_hook);
+    $callback_list = array($primary_func => $list[$command['commandfile']]);
+    // We've got the callback for the primary function in the
+    // callback list; now add all of the other callback functions.
+    unset($list[$command['commandfile']]);
     foreach ($list as $commandfile => $filename) {
       $func = sprintf("drush_%s_%s", $commandfile, $var_hook);
-      if (($defined_in_commandfile == $commandfile) && ($commandfile . "_" == substr($var_hook . "_",0,strlen($commandfile)+ 1))) {
-        $func = sprintf("drush_%s", $var_hook);
-      }
+      $callback_list[$func] = $filename;
+    }
+    // Run all of the functions available for this variation
+    $accumulated_result = array();
+    foreach ($callback_list as $func => $filename) {
       if (function_exists($func)) {
         $all_available_hooks[] = $func . ' [* Defined in ' . $filename . ']';
         $available_rollbacks[] = $func . '_rollback';
         $completed[] = $func;
         $result = call_user_func_array($func, $args);
-        // Only the 'main' callback can send data to backend.
-        if ($var_hook == $hook) {
-          // If the hook already called drush_backend_set_result,
-          // then return that value. If it did not, then the return
-          // value from the hook will be the value returned from
-          // this routine.
-          $return = drush_backend_get_result();
-          if (empty($return)) {
-            drush_backend_set_result($result);
-            $return = $result;
+        // If there is an error, break out of the foreach
+        // $variations and foreach $callback_list
+        if (drush_get_error() || ($result === FALSE)) {
+          $rollback = TRUE;
+          break 2;
+        }
+        // If result values are arrays, then combine them all together.
+        // Later results overwrite earlier results.
+        if (isset($result)) {
+          if (is_array($accumulated_result) && is_array($result)) {
+            $accumulated_result = array_merge($accumulated_result, $result);
+          }
+          else {
+            $accumulated_result = $result;
           }
         }
         _drush_log_drupal_messages();
-        if (drush_get_error() || ($result === FALSE)) {
-          $rollback = TRUE;
-          // break out of the foreach variations and foreach list
-          break 2;
-        }
       }
       else {
         $all_available_hooks[] = $func;
+      }
+    }
+    // Process the result value from the 'main' callback hook only.
+    if ($var_hook == $hook) {
+      $return = $accumulated_result;
+      if (isset($return)) {
+        drush_handle_command_output($command, $return);
       }
     }
   }
 
   // If no hook functions were found, print a warning.
   if (empty($completed)) {
-    $default_command_hook = sprintf("drush_%s_%s", $defined_in_commandfile, $hook);
-    if (($defined_in_commandfile . "_" == substr($hook . "_",0,strlen($defined_in_commandfile)+ 1))) {
+    $default_command_hook = sprintf("drush_%s_%s", $command['commandfile'], $hook);
+    if (($command['commandfile'] . "_" == substr($hook . "_",0,strlen($command['commandfile'])+ 1))) {
       $default_command_hook = sprintf("drush_%s", $hook);
     }
     $dt_args = array(
-      '!command' => $command,
+      '!command' => $command['command-hook'],
       '!default_func' => $default_command_hook,
     );
     $message = "No hook functions were found for !command. The primary hook function is !default_func(). Please implement this function. Run with --show-invoke to see all available hooks.";
@@ -380,10 +392,10 @@ function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
   }
   if (drush_get_option('show-invoke')) {
     // We show all available hooks up to and including the one that failed (or all, if there were no failures)
-    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command, '!available' => "\n" . implode("\n", $all_available_hooks))), 'ok');
+    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command['command-hook'], '!available' => "\n" . implode("\n", $all_available_hooks))), 'ok');
   }
   if (drush_get_option('show-invoke') && !empty($available_rollbacks)) {
-    drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command, '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'ok');
+    drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command['command-hook'], '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'ok');
   }
 
   // Something went wrong, we need to undo.
@@ -414,121 +426,55 @@ function _drush_invoke_hooks($command, $args, $defined_in_commandfile = NULL) {
 }
 
 /**
- * Include, instantiate and validate command engines.
- *
- * @return FALSE if a engine doesn't validate.
+ * Convert the structured output array provided from the Drush
+ * command into formatted output.  Output is only printed for commands
+ * that define 'default-format' &/or 'default-pipe-format'; all
+ * other commands are expected to do their own output.
  */
-function _drush_load_command_engines($command) {
-  foreach ($command['engines'] as $engine_type => $config) {
-    drush_log(dt("Loading !engine engine.", array('!engine' => $engine_type), 'bootstrap'));
-    $engine_info = drush_get_engines($engine_type);
-    $engines = array_keys($engine_info['engines']);
-    $default = isset($config['default'])?$config['default']:current($engines);
-    // If the engine provides a command line option to choose between engine
-    // implementations, get the user selection, if any.
-    if (!empty($config['option'])) {
-      $engine = drush_get_option($config['option'], $default);
-    }
-    // Otherwise the default engine is the only option.
-    else {
-      $engine = $default;
-    }
-    if (!in_array($engine, $engines)) {
-      return drush_set_error('DRUSH_UNKNOWN_ENGINE_TYPE', dt('Unknown !engine_type engine !engine', array('!engine' => $engine, '!engine_type' => $engine_type)));
-    }
-    $result = drush_include_engine($engine_type, $engine);
-    if ($result === FALSE) {
-      return FALSE;
-    }
-    elseif (is_object($result) && method_exists($result, 'validate')) {
-      $result = $result->validate();
-    }
-    else {
-      $function = strtr($engine_type, '-', '_') . '_validate';
-      if (function_exists($function)) {
-        $result = call_user_func($function);
-      }
-    }
-    if (!$result) {
-      return FALSE;
-    }
+function drush_handle_command_output($command, $structured_output) {
+  // If the hook already called drush_backend_set_result,
+  // then return that value. If it did not, then the return
+  // value from the hook will be the value returned from
+  // this routine.
+  $return = drush_backend_get_result();
+  if (empty($return)) {
+    drush_backend_set_result($structured_output);
   }
-}
-
-/**
- * Add command structure info from each engine back into the command.
- */
-function _drush_merge_engine_data(&$command) {
-  foreach ($command['engines'] as $engine_type => $config) {
-    // Normalize engines structure.
-    if (!is_array($config)) {
-      unset($command['engines'][$engine_type]);
-      $command['engines'][$config] = array();
-      $engine_type = $config;
-    }
-
-    // Get all implementations for this engine type.
-    $engine_info = drush_get_engines($engine_type);
-    if ($engine_info === FALSE) {
-      return FALSE;
-    }
-
-    // Override engine_info with customizations in the command.
-    $config = $command['engines'][$engine_type] += $engine_info['info'];
-
-    // Add engine type global options to the command.
-    $command['options'] += $config['options'];
-
-    $engine_data = array();
-
-    // If there's a single implementation for this engine type, it will be
-    // loaded by default, and makes no sense to provide a command line option
-    // to select the only flavor (ie. --release_info=updatexml), so we won't
-    // add an option in this case.
-    // Additionally, depending on the command, it may be convenient to extend
-    // the command with the engine options.
-    if (count($engine_info['engines']) == 1) {
-      if ($config['add-options-to-command'] !== FALSE) {
-        $engine = key($engine_info['engines']);
-        $data = $engine_info['engines'][$engine];
-        foreach (array('options', 'sub-options') as $key) {
-          if (isset($data[$key])) {
-            $engine_data[$key] = $data[$key];
+  // We skip empty strings and empty arrays, but note that 'empty'
+  // returns TRUE for the integer value '0', but we do wat to print that.
+  // Only handle output here if the command defined an output format
+  // engine.  If no engine was declared, then we presume that the command
+  // handled its own output.
+  if ((!empty($structured_output) || ($structured_output === 0)) && !empty($command['engines']['outputformat'])) {
+    // If the command specifies a default pipe format and
+    // returned a result, then output the formatted output when
+    // in --pipe mode.
+    $formatter = drush_get_engine('outputformat');
+    if ($formatter) {
+      if ($formatter === TRUE) {
+        return drush_set_error(dt('No outputformat class defined for !format', array('!format' => $format)));
+      }
+      if (!in_array($formatter->selected_engine, $command['engines']['outputformat']['usable'])) {
+        return $formatter->format_error(dt("The command '!command' does not produce output in a structure usable by this output format.", array('!command' => $command['command'])));
+      }
+      // Add any user-specified options to the metadata passed to the formatter.
+      $metadata = array();
+      if (isset($formatter->engine_config['options'])) {
+        foreach ($formatter->engine_config['options'] as $option => $option_info) {
+          $user_specified_value = drush_get_option_list($option, isset($formatter->engine_config[$option . '-default']) ? $formatter->engine_config[$option . '-default'] : FALSE);
+          if ($user_specified_value !== FALSE) {
+            $metadata[$option] =$user_specified_value;
           }
         }
       }
-    }
-    // Otherwise, provide a command option to choose between engines and add
-    // the engine options and sub-obtions.
-    else {
-      // Process engines in order. First the default engine, the rest alphabetically.
-      $default = $config['default'];
-      $engines = array_keys($engine_info['engines']);
-      asort($engines);
-      array_unshift($engines, $default);
-      $engines = array_unique($engines);
-
-      // Extend the default engine description.
-      $desc = $engine_info['engines'][$default]['description'];
-      $engine_info['engines'][$default]['description'] = dt('Default type engine.', array('type' => $engine_type)) . ' ' . $desc;
-
-      $engine_data += array(
-        'options' => array(),
-        'sub-options' => array(),
-      );
-      foreach ($engines as $engine) {
-        $data = $engine_info['engines'][$engine];
-        $option = $config['option'] . '=' . $engine;
-        $engine_data['options'][$option] = array_key_exists('description', $data) ? $data['description'] : NULL;
-        if (isset($data['options'])) {
-          $engine_data['sub-options'][$option] = $data['options'];
-        }
-        if (isset($data['sub-options'])) {
-          $engine_data['sub-options'] += $data['sub-options'];
-        }
+      $output = $formatter->process($structured_output, $metadata);
+      if (drush_get_context('DRUSH_PIPE')) {
+        drush_print_pipe($output);
+      }
+      else {
+        drush_print($output);
       }
     }
-    $command = array_merge_recursive($command, $engine_data);
   }
 }
 
@@ -948,27 +894,6 @@ function drush_process_bootstrap_to_first_arg(&$arguments) {
 }
 
 /**
- * Get the short commandfile name that matches the
- * command.
- *
- * @param $command
- *   The name of the command (e.g. search-index)
- * @return String
- *   The short commandfile name where that command was
- *   defined (e.g. search, not search.drush.inc)
- */
-function drush_get_commandfile_for_command($command) {
-  $commandfile = FALSE;
-
-  $commands = drush_get_commands();
-  if (array_key_exists($command, $commands)) {
-    $commandfile = $commands[$command]['commandfile'];
-  }
-
-  return $commandfile;
-}
-
-/**
  * Get a list of all implemented commands.
  * This invokes hook_drush_command().
  *
@@ -988,7 +913,7 @@ function drush_get_commands() {
         $command += drush_command_defaults($key, $commandfile, $path);
 
         // Add engine data.
-        _drush_merge_engine_data($command);
+        drush_merge_engine_data($command);
 
         // Translate command.
         drush_command_translate($command);
@@ -1057,6 +982,9 @@ function drush_command_defaults($key, $commandfile, $path) {
     'bootstrap_errors' => array(),
     'topics' => array(),
     'hidden' => FALSE,
+    'default-format' => FALSE,
+    'default-pipe-format' => FALSE,
+    'pipe-format-metadata' => array(),
   );
 }
 
@@ -1129,6 +1057,28 @@ function _drush_command_translate($source) {
  *     $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
  *   In this case, $args will contain the command args and options literally, exactly as they
  *   were entered on the command line, and in the same order as they appeared.
+ * - engines: declares information on Drush engines the command will load.
+ *   Available engines can vary by command type.
+ *     - 'outputformat': declares the data format to be used to render the
+ *       command result.  In addition to the output format engine options
+ *       listed below, each output format type can take additional metadata
+ *       items that control the way that the output is rendered.  See the
+ *       comment in each particular output format class for information. The
+ *       Drush core output format engines can be found in commands/core/outputformat.
+ *         - 'default': The default type to render output as. If declared, the
+ *           command should not print any output on its own, but instead should
+ *           return a data structure (usually an associative array) that can
+ *           be rendered by the output type selected.
+ *         - 'pipe-format': When the command is executed in --pipe mode, the
+ *           command output will be rendered by the format specified by the
+ *           pipe-format item instead of the default format.  Note that in
+ *           either event, the user may specify the format to use via the
+ *           --format command-line option.
+ *         - 'formatted-filter': specifies a function callback that will be
+ *           used to filter the command result if a "formatted" output formatter
+ *           is selected.  "table" is an example of a "formatted" filter.
+ *         - 'pipe-filter': function callback that will be used to filter the
+ *           command result if the "pipe" output formatter is selected.
  */
 function drush_parse_command() {
   $args = drush_get_arguments();

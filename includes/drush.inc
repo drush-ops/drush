@@ -62,13 +62,13 @@ define('DRUSH_CACHE_LIFETIME_DEFAULT', 86400);
  */
 function drush_include($path, $name, $version = NULL, $extension = 'inc') {
   $version = ($version) ? $version : drush_drupal_major_version();
-  $file = sprintf("%s/%s_%s.%s", $path, $name, $version, $extension);
+  $file = sprintf("%s/%s_%s.%s", $path, str_replace('-', '_', $name), $version, $extension);
   if (file_exists($file)) {
     //drush_log(dt('Including version specific file : @file', array('@file' => $file)));
     include_once($file);
     return TRUE;
   }
-  $file = sprintf("%s/%s.%s", $path, $name, $extension);
+  $file = sprintf("%s/%s.%s", $path, str_replace('-', '_', $name), $extension);
   if (file_exists($file)) {
     //drush_log(dt('Including non-version specific file : @file', array('@file' => $file)));
     include_once($file);
@@ -112,131 +112,6 @@ function drush_get_class($class_name, $constructor_args, $class_dir = NULL) {
   else {
     return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Drupal %d not supported!', $version));
   }
-}
-
-/**
- * Obtain all engine types info and normalize with defaults.
- *
- * @see hook_drush_engine_type_info().
- */
-function drush_get_engine_types_info() {
-  $info = drush_command_invoke_all('drush_engine_type_info');
-  foreach ($info as $type => $data) {
-    $info[$type] += array(
-      'description' => '',
-      'option' => FALSE,
-      'default' => NULL,
-      'options' => array(),
-      'add-options-to-command' => FALSE,
-    );
-  }
-
-  return $info;
-}
-
-/**
- * Return a structured array of engines of a specific type.
- *
- * Engines are pluggable subsystems. Each engine of a specific type will
- * implement the same set of API functions and perform the same high-level
- * task using a different backend or approach.
- *
- * This function/hook is useful when you have a selection of several mutually
- * exclusive options to present to a user to select from.
- *
- * Other commands are able to extend this list and provide their own engines.
- * The hook can return useful information to help users decide which engine
- * they need, such as description or list of available engine options.
- *
- * The engine path element will automatically default to a subdirectory (within
- * the directory of the commandfile that implemented the hook) with the name of
- * the type of engine - e.g. an engine "wget" of type "handler" provided by
- * the "pm" commandfile would automatically be found if the file
- * "pm/handler/wget.inc" exists and a specific path is not provided.
- *
- * @param $engine_type
- *   The type of engine.
- *
- * @return
- *   A structured array of engines.
- */
-function drush_get_engines($engine_type) {
-  $info = drush_get_engine_types_info();
-  if (!isset($info[$engine_type])) {
-    return drush_set_error('DRUSH_UNKNOWN_ENGINE_TYPE', dt('Unknown engine type !engine_type', array('!engine_type' => $engine_type)));
-  }
-
-  $engines = array(
-    'info' => $info[$engine_type],
-    'engines' => array(),
-  );
-  $list = drush_commandfile_list();
-  $hook = 'drush_engine_' . $engine_type;
-  foreach ($list as $commandfile => $path) {
-    if (drush_command_hook($commandfile, $hook)) {
-      $function = $commandfile . '_' . $hook;
-      $result = $function();
-      foreach ($result as $key => $engine) {
-        // Add some defaults
-        $engine += array(
-          'commandfile' => $commandfile,
-          // Engines by default live in a subdirectory of the commandfile that
-          // declared them, named as per the type of engine they are.
-          'path' => sprintf("%s/%s", dirname($path), $engine_type),
-        );
-        $engines['engines'][$key] = $engine;
-      }
-    }
-  }
-  return $engines;
-}
-
-/**
- * Include the engine code for a specific named engine of a certain type.
- *
- * If the engine type has implemented hook_drush_engine_$type the path to the
- * engine specified in the array will be used.
- *
- * If a class named in the form drush_$type_$engine exists, it will be an
- * object of that class will be created and returned.
- *
- * If you don't need to present any user options for selecting the engine
- * (which is common if the selection is implied by the running environment)
- * and you don't need to allow other modules to define their own engines you can
- * simply pass the $path to the directory where the engines are, and the
- * appropriate one will be included.
- *
- * Unlike drush_include this function will set errors if the requested engine
- * cannot be found.
- *
- * @param $type
- *   The type of engine.
- * @param $engine
- *   The key for the engine to be included.
- * @param $version
- *   The version of the engine to be included - defaults to the current Drupal core
- *   major version.
- * @param $path
- *   A path to include from, if the engine has no corresponding
- *   hook_drush_engine_$type item path.
- * @return TRUE or instanced object of available class on success. FALSE on fail.
- */
-function drush_include_engine($type, $engine, $version = NULL, $path = NULL) {
-  $engine_info = drush_get_engines($type);
-  if (!$path && isset($engine_info['engines'][$engine])) {
-    $path = $engine_info['engines'][$engine]['path'];
-  }
-  if (!$path) {
-    return drush_set_error('DRUSH_ENGINE INCLUDE_NO_PATH', dt('No path was set for including the !type engine !engine.', array('!type' => $type, '!engine' => $engine)));
-  }
-  if (drush_include($path, $engine, $version)) {
-    $class = 'drush_' . $type . '_' . $engine;
-    if (class_exists($class)) {
-      return new $class();
-    }
-    return TRUE;
-  }
-  return drush_set_error('DRUSH_ENGINE INCLUDE_FAILED', dt('Unable to include the !type engine !engine from !path.' , array('!path' => $path, '!type' => $type, '!engine' => $engine)));
 }
 
 /**
@@ -378,6 +253,28 @@ function _convert_csv_to_array($args) {
 }
 
 /**
+ * Convert a nested array into a flat array.  Thows away
+ * the array keys, returning only the values.
+ *
+ * @param $args
+ *   An array that may potentially be nested.
+ *   e.g. array('a', array('b', 'c'))
+ *
+ * @returns array
+ *   A simple list of items (e.g. array('a','b','c')
+ */
+function drush_flatten_array($a) {
+  $result = array();
+  if (!is_array($a)) {
+    return array($a);
+  }
+  foreach ($a as $value) {
+    $result = array_merge($result, drush_flatten_array($value));
+  }
+  return $result;
+}
+
+/**
  * Get the available global options. Used by help command. Command files may
  * modify this list using hook_drush_help_alter().
  *
@@ -422,7 +319,7 @@ function drush_get_global_options($brief = FALSE) {
   $options['yes']                = array('short-form' => 'y', 'context' => 'DRUSH_AFFIRMATIVE', 'description' => "Assume 'yes' as answer to all prompts.");
   $options['no']                 = array('short-form' => 'n', 'context' => 'DRUSH_NEGATIVE', 'description' => "Assume 'no' as answer to all prompts.");
   $options['simulate']           = array('short-form' => 's', 'context' => 'DRUSH_SIMULATE', 'description' => "Simulate all relevant actions (don't actually change the system).");
-  $options['pipe']               = array('short-form' => 'p', 'description' => "Emit a compact representation of the command for scripting.");
+  $options['pipe']               = array('short-form' => 'p', 'hidden' => TRUE, 'description' => "Emit a compact representation of the command for scripting.");
   $options['help']               = array('short-form' => 'h', 'description' => "This help system.");
   $options['version']            = array('description' => "Show drush version.");
   $options['php']                = array('description' => "The absolute path to your PHP intepreter, if not 'php' in the path.", 'example-value' => '/path/to/file');

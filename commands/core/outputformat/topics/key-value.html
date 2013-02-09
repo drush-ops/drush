@@ -1,0 +1,27 @@
+The drush `version` command returns a simple string result; however,
+a label, "Drush Version", is also defined in the command definition
+array:
+<pre>
+'outputformat' => array(
+  'default' => 'key-value',
+  'label' => 'Drush Version',
+  ...
+),
+</pre>
+This label is shown when the version is output in its
+default 'key-value' format.
+<p>
+
+for the data, and this is printed when drush version is executed
+in its default format of key-value.  When output in string format,
+then only the data itself is shown.
+<p>
+<i>$ drush version</i>
+<pre>
+drush version: 6.0-dev
+</pre>
+<p>
+Code:
+<pre>
+return DRUSH_VERSION;
+</pre>

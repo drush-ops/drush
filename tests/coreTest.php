@@ -130,13 +130,13 @@ drush_invoke("version", $arg);
     $output = $this->getOutput();
     // Pick a substring that is valid for D7/D8.
     $expected="
-install_profile: -1
-node_access: -1
-php: -1
-php_extensions: -1
-php_memory_limit: -1
-php_register_globals: -1
-settings.php: -1
+install_profile=-1
+node_access=-1
+php=-1
+php_extensions=-1
+php_memory_limit=-1
+php_register_globals=-1
+settings.php=-1
 ";
     $this->assertContains($expected, trim($output));
   }

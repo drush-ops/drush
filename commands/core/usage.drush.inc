@@ -88,7 +88,7 @@ function _drush_usage_get_file($required = FALSE) {
 }
 
 function _drush_usage_log($command, $file) {
-  _drush_merge_engine_data($command);
+  drush_merge_engine_data($command);
 
   // Start out with just the options in the current command record.
   $options = _drush_get_command_options($command);

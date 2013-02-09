@@ -180,7 +180,7 @@ function drush_drupal_parse_info_file($filename) {
 /**
  * Parse the info file.
  */
-function _drush_drupal_parse_info_file($data) {
+function _drush_drupal_parse_info_file($data, $merge_item = NULL) {
   if (!$data) {
     return FALSE;
   }
@@ -217,6 +217,9 @@ function _drush_drupal_parse_info_file($data) {
         if ($key == '') {
           $key = count($parent);
         }
+        if (isset($merge_item) && isset($parent[$key]) && !is_array($parent[$key])) {
+          $parent[$key] = array($merge_item => $parent[$key]);
+        }
         if (!isset($parent[$key]) || !is_array($parent[$key])) {
           $parent[$key] = array();
         }
@@ -232,7 +235,12 @@ function _drush_drupal_parse_info_file($data) {
       if ($last == '') {
         $last = count($parent);
       }
-      $parent[$last] = $value;
+      if (isset($merge_item) && isset($parent[$last]) && is_array($parent[$last])) {
+        $parent[$last][$merge_item] = $value;
+      }
+      else {
+        $parent[$last] = $value;
+      }
     }
     return $info;
   }

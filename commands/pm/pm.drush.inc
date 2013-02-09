@@ -122,6 +122,14 @@ function pm_drush_command() {
       'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to show info for multiple matches. If no argument is provided it will show info for all available extensions.',
     ),
     'aliases' => array('pmi'),
+    'engines' => array(
+      'outputformat' => array(
+        'default' => 'key-value-list',
+        'pipe-format' => 'ini-sections',
+        'formatted-filter' => '_drush_pm_info_format_table_data',
+        'require-engine-capability' => array('format-table'),
+      ),
+    ),
   );
   // Install command is reserved for the download and enable of projects including dependencies.
   // @see http://drupal.org/node/112692 for more information.
@@ -1519,8 +1527,7 @@ function drush_pm_include_version_control($directory = '.') {
     return drush_set_error('DRUSH_PM_NO_VERSION_CONTROL', dt('No valid version control or backup engine found (the --version-control option was set to "!version-control").', array('!version-control' => $version_control)));
   }
 
-  $instance = drush_include_engine('version_control', $version_control);
-  $instance->engine = $engine;
+  $instance = drush_include_engine('version_control', $engine);
   return $instance;
 }
 

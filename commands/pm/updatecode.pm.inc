@@ -132,7 +132,7 @@ function drush_pm_updatecode() {
   // Cache the output of drush_print_table in $tmpfile so that we can
   // include it in the paginated output later.
   $tmphandle = fopen($tmpfile, 'a');
-  drush_print_table($rows, TRUE, array(3 => 50), $tmphandle);
+  drush_print_table($rows, TRUE, array(), $tmphandle);
   fclose($tmphandle);
   $contents = file_get_contents($tmpfile);
   drush_print($contents);

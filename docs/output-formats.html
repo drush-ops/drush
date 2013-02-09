@@ -1,0 +1,27 @@
+<h1>Drush Output Formats</h1>
+<p>
+Some Drush commands produce output that may be rendered in a variety
+of different ways using a pluggable formatting system.  Drush commands
+that support output formats will show a --format option in their
+help text.  The available formats are also listed in the help text,
+along with the default value for the format option.  The list of values
+shown is abreviated; to see the complete list of available formats, run
+the help command with the --verbose option.
+<p>
+The --pipe option is equivalent to using --format=&lt;pipe-format&gt;;
+note that pipe format varies by command.  The pipe format will be shown
+in the options section of the command help, under the --pipe option. For
+historic reasons, --pipe also hides all log messages.
+<p>
+To best understand how the various Drush output formatters work,
+it is best to first look at the ouput of the command using the
+'export' format.  This will show the result of the command using
+the exact structure that was built by the command, without any
+reformatting.  This is the "standard format" for the Drush command.
+Different formatters will take this information and present it in
+different ways.
+
+<h2>Output Formats</h2>
+<p>
+A list of available formats, and their affect on the output of
+certain Drush commands, is shown below.

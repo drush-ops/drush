@@ -1,0 +1,15 @@
+The drush version command is an example of a command that returns
+a simple string result. A label, "Drush Version", is also defined
+for the data, and this is printed when drush version is executed
+in its default format of key-value.  When output in string format,
+then only the data itself is shown.
+<p>
+<i>$ drush version --pipe</i>
+<pre>
+6.0-dev
+</pre>
+<p>
+Code:
+<pre>
+return DRUSH_VERSION;
+</pre>

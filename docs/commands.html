@@ -190,7 +190,49 @@ are shown below.
 
      Other drush commandfiles required for this command.
 
- <li>'topics':
+<li>'engines':
+
+    Provides a list of Drush engines to load with this command.  The set
+    of appropriate engines varies by command.
+<ul>
+   <li>'outputformat':
+
+       One important engine is the 'outputformat' engine.  This engine is
+       responsible for formatting the structured data (usually an associative
+       array) that a Drush command returns as its function result into a
+       human-readable or machine-parsable string.
+
+       Some of the options that may be used with output format engines
+       are listed below; however, each specific output format type can take
+       additional option items that control the way that the output is rendered.
+       See the comment in the output format's implementation for information. The
+       Drush core output format engines can be found in commands/core/outputformat.
+  <ul>
+     <li>'default':
+
+          The default type to render output as. If declared, the command should
+          not print any output on its own, but instead should return a data
+          structure (usually an associative array) that can be rendered by the
+          output type selected.
+
+     <li>'pipe-format':
+
+          When the command is executed in --pipe mode, the command output will
+          be rendered by the format specified by the pipe-format item instead of
+          the default format.  Note that in either event, the user may specify
+          the format to use via the --format command-line option.
+
+     <li>'formatted-filter' and 'pipe-filter':
+
+          Specifies a function callback that will be used to filter the command
+          result.  The filter is selected based on the type of output format
+          object selected.  Most output formatters are 'pipe' formatters, that
+          produce machine-parsable output.  A few formatters, such as 'table'
+          and 'key-value' are 'formatted' filter types, that produce
+          human-readable output.
+  </ul>
+</ul>
+<li>'topics':
 
      Provides a list of topic commands that are related in
      some way to this command.  Used by `drush help`.

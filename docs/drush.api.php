@@ -200,6 +200,14 @@ function hook_drush_load() {
 
 }
 
+/*
+ * A commandfile may adjust the contents of any command structure
+ * prior to dispatch.  @see core_drush_command_alter() for an example.
+ */
+function hook_drush_command_alter(&$command) {
+
+}
+
 /**
  * Take action after a project has been downloaded.
  */
@@ -300,6 +308,17 @@ function hook_drush_cache_clear(&$types) {
  *   the characteristics of the engine type in relation to command definitions:
  *
  *   - description: The engine type description.
+ *   - topic: If specified, the name of the topic command that will
+ *     display the automatically generated topic for this engine.
+ *   - topic-file: If specified, the path to the file that will be
+ *     displayed at the head of the automatically generated topic for
+ *     this engine.  This path is relative to the Drush root directory;
+ *     non-core commandfiles should therefore use:
+ *       'topic-file' => dirname(__FILE__) . '/mytopic.html';
+ *   - topics: If set, contains a list of topics that should be added to
+ *     the "Topics" section of any command that uses this engine.  Note
+ *     that if 'topic' is set, it will automatically be added to the topics
+ *     list, and therefore does not need to also be listed here.
  *   - option: The command line option to choose an implementation for
  *     this engine type.
  *     FALSE means there's no option. That is, the engine type is for internal
@@ -308,6 +327,11 @@ function hook_drush_cache_clear(&$types) {
  *   - options: Engine options common to all implementations.
  *   - add-options-to-command: If there's a single implementation for this
  *     engine type, add its options as command level options.
+ *   - combine-help: If there are multiple implementations for this engine
+ *     type, then instead of adding multiple help items in the form of
+ *     --engine-option=engine-type [description], instead combine all help
+ *     options into a single --engine-option that lists the different possible
+ *     values that can be used.
  *
  * @see drush_get_engine_types_info()
  * @see pm_drush_engine_type_info()
@@ -326,6 +350,12 @@ function hook_drush_engine_type_info() {
 
 /**
  * Inform drush about one or more engines implementing a given engine type.
+ *
+ *   - description: The engine implementation's description.
+ *   - engine-class:  The class that contains the engine implementation.
+ *       Defaults to the engine type key (e.g. 'ice-cream').
+ *   - verbose-only:  The engine implementation will only appear in help
+ *       output in --verbose mode.
  *
  * This hook allow to declare implementations for an engine type.
  *
