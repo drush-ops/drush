@@ -487,6 +487,11 @@ function drush_get_projects(&$extensions = NULL) {
     // Create/update the project in $projects with the project data.
     if (!isset($projects[$project])) {
       $projects[$project] = array(
+        // If there's an extension with matching name, pick its label.
+        // Otherwise use just the project name. We avoid $extension->label
+        // for the project label because the extension's label may have
+        // no direct relation with the project name. For example,
+        // "Text (text)" or "Number (number)" for the CCK project.
         'label' => isset($extensions[$project])?$extensions[$project]->label:$project,
         'type' => $extension->type,
         'version' => $extension->info['version'],
