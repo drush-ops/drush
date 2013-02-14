@@ -516,11 +516,36 @@ function drush_get_projects(&$extensions = NULL) {
       continue;
     }
 
-    // If this project has no human label and it only contains an extension,
-    // construct a label based on the extension name.
-    if (($project['label'] == $name) && (count($project['extensions']) == 1)) {
-      $extension = $extensions[$project['extensions'][0]];
-      $projects[$name]['label'] = $extension->info['name'] .  ' (' . $name . ')';
+    // If this project has no human label, see if we can find
+    // one "main" extension whose label we could use.
+    if ($project['label'] == $name)  {
+      // If there is only one extension, construct a label based on
+      // the extension name.
+      if (count($project['extensions']) == 1) {
+        $extension = $extensions[$project['extensions'][0]];
+        $projects[$name]['label'] = $extension->info['name'] .  ' (' . $name . ')';
+      }
+      else {
+        // Make a list of all of the extensions in this project
+        // that do not depend on any other extension in this
+        // project.
+        $candidates = array();
+        foreach ($project['extensions'] as $e) {
+          $has_project_dependency = FALSE;
+          foreach ($extensions[$e]->info['dependencies'] as $dependent) {
+            if (in_array($dependent, $project['extensions'])) {
+              $has_project_dependency = TRUE;
+            }
+          }
+          if ($has_project_dependency === FALSE) {
+            $candidates[] = $extensions[$e]->info['name'];
+          }
+        }
+        // If only one of the modules is a candidate, use its name in the label
+        if (count($candidates) == 1) {
+          $projects[$name]['label'] = reset($candidates) .  ' (' . $name . ')';
+        }
+      }
     }
 
     drush_log(dt('Obtaining !project project path.', array('!project' => $name)), 'debug');
