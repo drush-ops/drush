@@ -487,7 +487,7 @@ function drush_get_projects(&$extensions = NULL) {
     // Create/update the project in $projects with the project data.
     if (!isset($projects[$project])) {
       $projects[$project] = array(
-        'label' => $extension->label,
+        'label' => isset($extensions[$project])?$extensions[$project]->label:$project,
         'type' => $extension->type,
         'version' => $extension->info['version'],
         'status' => $extension->status,
