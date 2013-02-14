@@ -500,12 +500,21 @@ function drush_get_projects(&$extensions = NULL) {
     $projects[$project]['extensions'][] = $extension->name;
   }
 
-  // Once we have all the extensions for each project, obtain projects' path.
+  // Obtain each project's path and try to provide a better label for ones
+  // with machine name.
   $reserved = array('modules', 'sites', 'themes');
   foreach ($projects as $name => $project) {
     if ($name == 'drupal') {
       continue;
     }
+
+    // If this project has no human label and it only contains an extension,
+    // construct a label based on the extension name.
+    if (($project['label'] == $name) && (count($project['extensions']) == 1)) {
+      $extension = $extensions[$project['extensions'][0]];
+      $projects[$name]['label'] = $extension->info['name'] .  ' (' . $name . ')';
+    }
+
     drush_log(dt('Obtaining !project project path.', array('!project' => $name)), 'debug');
     $path = _drush_pm_find_common_path($project['type'], $project['extensions']);
     // Prevent from setting a reserved path. For example it may happen in a case
