@@ -58,15 +58,23 @@
 
 /**
  * Identify the JSON encoded output from a command.
+ *
+ * Note that Drush now outputs a null ("\0") before the DRUSH_BACKEND_OUTPUT_DELIMITER,
+ * but this null occurs where this constant is output rather than being
+ * included in the define.  This is done to maintain compatibility with
+ * older versions of Drush, so that Drush-6.x can correctly parse backend messages
+ * from calls made to Drush-5.x and earlier.  The null is removed via trim().
  */
-define('DRUSH_BACKEND_OUTPUT_DELIMITER', 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END');
+define('DRUSH_BACKEND_OUTPUT_START', 'DRUSH_BACKEND_OUTPUT_START>>>');
+define('DRUSH_BACKEND_OUTPUT_DELIMITER', DRUSH_BACKEND_OUTPUT_START . '%s<<<DRUSH_BACKEND_OUTPUT_END');
 
 /**
  * Identify JSON encoded "packets" embedded inside of backend
  * output; used to send out-of-band information durring a backend
  * invoke call (currently only used for log and error messages).
  */
-define('DRUSH_BACKEND_PACKET_PATTERN', "\0DRUSH_BACKEND:%s\0\n");
+define('DRUSH_BACKEND_PACKET_START', "DRUSH_BACKEND:");
+define('DRUSH_BACKEND_PACKET_PATTERN', "\0" . DRUSH_BACKEND_PACKET_START . "%s\0\n");
 
 /**
  * The backend result is the original PHP data structure (usually an array)
@@ -165,7 +173,7 @@ function drush_backend_output() {
 
   // Return the options that were set at the end of the process.
   $data['context']  = drush_get_merged_options();
-  printf(DRUSH_BACKEND_OUTPUT_DELIMITER, json_encode($data));
+  printf("\0" . DRUSH_BACKEND_OUTPUT_DELIMITER, json_encode($data));
 }
 
 /**
@@ -355,6 +363,10 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
         $post_options = array();
         $backend_options = array();
       }
+      $backend_options += array(
+        '#output-label' => '',
+        '#process-read-size' => 4096,
+      );
       $process = array();
       drush_log($backend_options['#output-label'] . $c);
       $process['process'] = proc_open($c, $descriptorspec, $process['pipes'], null, null, array('context' => $context));
@@ -374,6 +386,7 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
         stream_set_timeout($process['pipes'][1], 1);
         $bucket[$site]['cmd'] = $c;
         $bucket[$site]['output'] = '';
+        $bucket[$site]['remainder'] = '';
         $bucket[$site]['backend-options'] = $backend_options;
         $bucket[$site]['end_of_output'] = FALSE;
         $bucket[$site]['outputted'] = FALSE;
@@ -414,19 +427,21 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
         $info = stream_get_meta_data($current_process['pipes'][1]);
 
         if (!feof($current_process['pipes'][1]) && !$info['timed_out']) {
-          $string = fread($current_process['pipes'][1], 4096);
-          $output_end_pos = strpos($string, 'DRUSH_BACKEND_OUTPUT_START>>>');
+          $string = $bucket[$site]['remainder'] . fread($current_process['pipes'][1], $backend_options['#process-read-size']);
+          $bucket[$site]['remainder'] = '';
+          $output_end_pos = strpos($string, DRUSH_BACKEND_OUTPUT_START);
           if ($output_end_pos !== FALSE) {
-            $trailing_string = substr($string, 0, $output_end_pos);
+            $trailing_string = trim(substr($string, 0, $output_end_pos));
             if (!empty($trailing_string)) {
-              drush_backend_parse_packets($trailing_string, $bucket[$site]['backend-options']);
-              _drush_backend_print_output($trailing_string, $bucket[$site]['backend-options']);
+              $trailing_remainder = '';
+              drush_backend_parse_packets($trailing_string, $trailing_remainder, $bucket[$site]['backend-options']);
+              _drush_backend_print_output($trailing_string . $trailing_remainder, $bucket[$site]['backend-options']);
               $bucket[$site]['outputted'] = TRUE;
             }
             $bucket[$site]['end_of_output'] = TRUE;
           }
           if (!$bucket[$site]['end_of_output']) {
-            drush_backend_parse_packets($string, $bucket[$site]['backend-options']);
+            drush_backend_parse_packets($string, $bucket[$site]['remainder'], $bucket[$site]['backend-options']);
             // Pass output through.
             _drush_backend_print_output($string, $bucket[$site]['backend-options']);
             if (!empty($string)) {
@@ -503,7 +518,8 @@ function _drush_backend_print_output($output_string, $backend_options) {
  * Parse out and remove backend packet from the supplied string and
  * invoke the commands.
  */
-function drush_backend_parse_packets(&$string, $backend_options) {
+function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
+  $remainder = '';
   $packet_regex = strtr(sprintf(DRUSH_BACKEND_PACKET_PATTERN, "([^\0]*)"), array("\0" => "\\0"));
   if (preg_match_all("/$packet_regex/s", $string, $match, PREG_PATTERN_ORDER)) {
     drush_set_context('DRUSH_RECEIVED_BACKEND_PACKETS', TRUE);
@@ -526,6 +542,27 @@ function drush_backend_parse_packets(&$string, $backend_options) {
     }
 
     $string = trim(preg_replace("/$packet_regex/s", '', $string));
+  }
+  // Check to see if there is potentially a partial packet remaining.
+  // We only care about the last null; if there are any nulls prior
+  // to the last one, they would have been removed above if they were
+  // valid drush packets.
+  $embedded_null = strrpos($string, "\0");
+  if ($embedded_null !== FALSE) {
+    // We will consider everything after $embedded_null to be part of
+    // the $remainder string if:
+    //   - the embedded null is less than strlen(DRUSH_BACKEND_OUTPUT_START)
+    //     from the end of $string (that is, there might be a truncated
+    //     backend packet header, or the truncated backend output start
+    //     after the null)
+    //   OR
+    //   - the embedded null is followed by DRUSH_BACKEND_PACKET_START
+    //     (that is, the terminating null for that packet has not been
+    //     read into our buffer yet)
+    if (($embedded_null + strlen(DRUSH_BACKEND_OUTPUT_START) >= strlen($string)) || (substr($string, $embedded_null + 1, strlen(DRUSH_BACKEND_PACKET_START)) == DRUSH_BACKEND_PACKET_START)) {
+      $remainder = substr($string, $embedded_null);
+      $string = substr($string, 0, $embedded_null);
+    }
   }
 }
 
