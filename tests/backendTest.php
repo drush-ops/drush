@@ -211,6 +211,29 @@ EOD;
   ),
 ), $parsed['object']), array());
   }
+
+  /**
+   * Covers the following target responsibilities.
+   *   - Insures that backend invoke can properly re-assemble packets
+   *     that are split across process-read-size boundaries.
+   *
+   * This test works by repeating testBackendMethodGet(), while setting
+   * '#process-read-size' to a very small value, insuring that packets
+   * will be split.
+   */
+  function testBackendReassembleSplitPackets() {
+    $options = array(
+      'backend' => NULL,
+      'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
+    );
+    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET', '#process-read-size' => 16)); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
+    $this->drush('php-eval', array($php), $options);
+    $parsed = parse_backend_output($this->getOutput());
+    // assert that $parsed has 'x' but not 'data'
+    $this->assertEquals("array (
+  'x' => 'y',
+)", var_export($parsed['object'], TRUE));
+  }
 }
 
 class backendUnitCase extends Drush_UnitTestCase {
