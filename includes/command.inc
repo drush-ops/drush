@@ -982,9 +982,6 @@ function drush_command_defaults($key, $commandfile, $path) {
     'bootstrap_errors' => array(),
     'topics' => array(),
     'hidden' => FALSE,
-    'default-format' => FALSE,
-    'default-pipe-format' => FALSE,
-    'pipe-format-metadata' => array(),
   );
 }
 
@@ -1057,28 +1054,43 @@ function _drush_command_translate($source) {
  *     $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
  *   In this case, $args will contain the command args and options literally, exactly as they
  *   were entered on the command line, and in the same order as they appeared.
- * - engines: declares information on Drush engines the command will load.
+ * - 'outputformat': declares the data format to be used to render the
+ *   command result.  In addition to the output format engine options
+ *   listed below, each output format type can take additional metadata
+ *   items that control the way that the output is rendered.  See the
+ *   comment in each particular output format class for information. The
+ *   Drush core output format engines can be found in commands/core/outputformat.
+ *     - 'default': The default type to render output as. If declared, the
+ *       command should not print any output on its own, but instead should
+ *       return a data structure (usually an associative array) that can
+ *       be rendered by the output type selected.
+ *     - 'pipe-format': When the command is executed in --pipe mode, the
+ *       command output will be rendered by the format specified by the
+ *       pipe-format item instead of the default format.  Note that in
+ *       either event, the user may specify the format to use via the
+ *       --format command-line option.
+ *     - 'formatted-filter': specifies a function callback that will be
+ *       used to filter the command result if the selected output formatter
+ *       is NOT declared to be machine-parsable.  "table" is an example of
+ *       an output format that is not machine-parsable.
+ *     - 'parsable-filter': function callback that will be used to filter the
+ *       command result if the selected output formatter is declared to be
+ *       machine-parsable. "export" is an example of an output format that
+ *       is machine-parsable.
+ *     - 'output-data-type': An identifier representing the data structure that
+ *       the command returns.  @see outputformat_drush_engine_outputformat() for
+ *       a description of the supported values.
+ *     - 'field-labels': A mapping from machine name to human-readable name
+ *       for all of the fields in a table-format command result.  All
+ *       possible field names should appear in this list.
+ *     - 'fields-default': A list of the machine names of the fields that
+ *       should be displayed by default in tables.
+ *     - 'column-widths': A mapping from field machine name to the column width
+ *       that should be used in table output.  Drush will automatically
+ *       calculate the width of any field not listed here based on the length
+ *       of the data items in it.
+ * - engines: declares infocolumn-widthsrmation on Drush engines the command will load.
  *   Available engines can vary by command type.
- *     - 'outputformat': declares the data format to be used to render the
- *       command result.  In addition to the output format engine options
- *       listed below, each output format type can take additional metadata
- *       items that control the way that the output is rendered.  See the
- *       comment in each particular output format class for information. The
- *       Drush core output format engines can be found in commands/core/outputformat.
- *         - 'default': The default type to render output as. If declared, the
- *           command should not print any output on its own, but instead should
- *           return a data structure (usually an associative array) that can
- *           be rendered by the output type selected.
- *         - 'pipe-format': When the command is executed in --pipe mode, the
- *           command output will be rendered by the format specified by the
- *           pipe-format item instead of the default format.  Note that in
- *           either event, the user may specify the format to use via the
- *           --format command-line option.
- *         - 'formatted-filter': specifies a function callback that will be
- *           used to filter the command result if a "formatted" output formatter
- *           is selected.  "table" is an example of a "formatted" filter.
- *         - 'pipe-filter': function callback that will be used to filter the
- *           command result if the "pipe" output formatter is selected.
  */
 function drush_parse_command() {
   $args = drush_get_arguments();

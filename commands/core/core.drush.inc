@@ -58,7 +58,7 @@ function core_drush_command() {
       'default' => 'key-value',
       'pipe-format' => 'string',
       'label' => 'Drush Version',
-      'output-data-type' => array('format-single'),
+      'output-data-type' => 'format-single',
     ),
   );
   $items['self-update'] = array(
@@ -119,7 +119,7 @@ function core_drush_command() {
       'table-metadata' => array(
         'list-separator' => ' ',
       ),
-      'output-data-type' => array('format-list'),
+      'output-data-type' => 'format-list',
     ),
     'topics' => array('docs-readme'),
   );
@@ -152,7 +152,7 @@ function core_drush_command() {
       'list-metadata' => array(
         'list-item' => 'severity',
       ),
-      'output-data-type' => array('format-table'),
+      'output-data-type' => 'format-table',
     ),
   );
   $items['php-eval'] = array(

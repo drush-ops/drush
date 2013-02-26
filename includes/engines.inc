@@ -144,6 +144,10 @@ function drush_merge_engine_data(&$command) {
           unset($config[$engine_option_alias_name]);
         }
       }
+      // Make sure that 'require-engine-capability' is always an array.
+      if (isset($config['require-engine-capability']) && !is_array($config['require-engine-capability'])) {
+        $config['require-engine-capability'] = array($config['require-engine-capability']);
+      }
       $command['engines'][$engine_type] = $config;
     }
   }

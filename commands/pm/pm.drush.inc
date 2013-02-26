@@ -126,7 +126,7 @@ function pm_drush_command() {
       'default' => 'key-value-list',
       'pipe-format' => 'ini-sections',
       'formatted-filter' => '_drush_pm_info_format_table_data',
-      'output-data-type' => array('format-table'),
+      'output-data-type' => 'format-table',
     ),
   );
   // Install command is reserved for the download and enable of projects including dependencies.

@@ -62,6 +62,9 @@ function outputformat_drush_engine_type_info() {
  *                      cell contents before rendering (e.g. if
  *                      a cell contains a list of items in an array).
  *
+ * These definitions align with the declared 'output-data-type'
+ * declared in command records.  @see drush_parse_command().
+ *
  * Any output format that does not declare any engine capabilities
  * is expected to be able to render any php data structure that is
  * passed to it.
@@ -274,7 +277,7 @@ class drush_outputformat {
       $metadata += $metadata[$this->selected_engine . '-metadata'];
     }
     $machine_parsable = $this->engine_config['engine-info']['machine-parsable'];
-    $formatter_type = $machine_parsable ? 'pipe' : 'formatted';
+    $formatter_type = $machine_parsable ? 'parsable' : 'formatted';
     if ((!$machine_parsable) && is_bool($input)) {
       $input = $input ? 'TRUE' : 'FALSE';
     }
