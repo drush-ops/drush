@@ -217,7 +217,7 @@ function gitd() {
     $(drush sa ${s%%:*} --component=remote-host > /dev/null 2>&1)
     if [ $? == 0 ]
     then
-      dssh ${s%%:*} cd "$d" \; git "${@:2}"
+      drush ${s%%:*} ssh "cd '$d' ; git ${@:2}"
     else
       echo cd "$d" \; git "${@:2}"
       (
