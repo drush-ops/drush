@@ -634,7 +634,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
         // If the alias name is exactly the same as a previous match, then
         // merge the two records together
         if (!empty($result) && ($result['#name'] == $one_result['#name'])) {
-          $result = _sitealias_array_merge($result, $aliases);
+          $result = _sitealias_array_merge($result, $one_result);
         }
         // Add the name of the found record to the list of results
         else {
