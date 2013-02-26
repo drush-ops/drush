@@ -26,6 +26,12 @@ function outputformat_drush_engine_type_info() {
         'value' => 'required',
       ),
     ),
+    // Allow output formats to declare their
+    // "output data type" instead of their
+    // "required engine capability" for readability.
+    'config-aliases' => array(
+      'output-data-type' => 'require-engine-capability',
+    ),
   );
   return $info;
 }

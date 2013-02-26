@@ -18,6 +18,7 @@ function drush_get_engine_types_info() {
       'option' => FALSE,
       'default' => NULL,
       'options' => array(),
+      'config-aliases' => array(),
       'add-options-to-command' => FALSE,
       'combine-help' => FALSE,
     );
@@ -130,6 +131,22 @@ function drush_load_command_engines($command) {
  * Add command structure info from each engine back into the command.
  */
 function drush_merge_engine_data(&$command) {
+  // First remap engine data from the shortcut location
+  // ($command['engine_type']) to the standard location
+  // ($command['engines']['engine_type'])
+  $info = drush_get_engine_types_info();
+  foreach ($info as $engine_type => $info) {
+    if (isset($command[$engine_type])) {
+      $config = $command[$engine_type];
+      foreach ($info['config-aliases'] as $engine_option_alias_name => $engine_option_standard_name) {
+        if (array_key_exists($engine_option_alias_name, $config)) {
+          $config[$engine_option_standard_name] = $config[$engine_option_alias_name];
+          unset($config[$engine_option_alias_name]);
+        }
+      }
+      $command['engines'][$engine_type] = $config;
+    }
+  }
   foreach ($command['engines'] as $engine_type => $config) {
     // Normalize engines structure.
     if (!is_array($config)) {

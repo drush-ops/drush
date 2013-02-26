@@ -54,13 +54,11 @@ function core_drush_command() {
       'pipe' => 'Print just the version number, and nothing else.',
       'self-update' => 'Check for pending updates to Drush itself. Set to 0 to disable.',
     ),
-    'engines' => array(
-      'outputformat' => array(
-        'default' => 'key-value',
-        'pipe-format' => 'string',
-        'label' => 'Drush Version',
-        'require-engine-capability' => array('format-single'),
-      ),
+    'outputformat' => array(
+      'default' => 'key-value',
+      'pipe-format' => 'string',
+      'label' => 'Drush Version',
+      'output-data-type' => array('format-single'),
     ),
   );
   $items['self-update'] = array(
@@ -113,17 +111,15 @@ function core_drush_command() {
       'show-passwords' => 'Show database password.',
       'full' => 'Show all drush aliases in the report, even if there are a lot.',
     ),
-    'engines' => array(
-      'outputformat' => array(
-        'default' => 'key-value',
-        'pipe-format' => 'ini',
-        'formatted-filter' => '_drush_core_status_format_table_data',
-        'simplify-single' => TRUE,
-        'table-metadata' => array(
-          'list-separator' => ' ',
-        ),
-        'require-engine-capability' => array('format-list'),
+    'outputformat' => array(
+      'default' => 'key-value',
+      'pipe-format' => 'ini',
+      'formatted-filter' => '_drush_core_status_format_table_data',
+      'simplify-single' => TRUE,
+      'table-metadata' => array(
+        'list-separator' => ' ',
       ),
+      'output-data-type' => array('format-list'),
     ),
     'topics' => array('docs-readme'),
   );
@@ -143,22 +139,20 @@ function core_drush_command() {
       ),
       'ignore' => 'Comma-separated list of requirements to remove from output. Run with --pipe to see key values to use.',
     ),
-    'engines' => array(
-      'outputformat' => array(
-        'default' => 'table',
-        'pipe-format' => 'ini',
-        'field-labels' => array('title' => 'Title', 'severity' => 'Severity', 'sid' => 'SID', 'description' => 'Description', 'value' => 'Summary', 'reason' => 'Reason', 'weight' => 'Weight'),
-        'fields-default' => array('title', 'severity', 'description'),
-        'column-widths' => array('severity' => 8),
-        'concatenate-columns' => array('description' => array('value', 'description')),
-        'strip-tags' => TRUE,
-        'ini-item' => 'sid',
-        'key-value-item' => 'severity',
-        'list-metadata' => array(
-          'list-item' => 'severity',
-        ),
-        'require-engine-capability' => array('format-table'),
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'ini',
+      'field-labels' => array('title' => 'Title', 'severity' => 'Severity', 'sid' => 'SID', 'description' => 'Description', 'value' => 'Summary', 'reason' => 'Reason', 'weight' => 'Weight'),
+      'fields-default' => array('title', 'severity', 'description'),
+      'column-widths' => array('severity' => 8),
+      'concatenate-columns' => array('description' => array('value', 'description')),
+      'strip-tags' => TRUE,
+      'ini-item' => 'sid',
+      'key-value-item' => 'severity',
+      'list-metadata' => array(
+        'list-item' => 'severity',
       ),
+      'output-data-type' => array('format-table'),
     ),
   );
   $items['php-eval'] = array(
@@ -173,10 +167,8 @@ function core_drush_command() {
     'allow-additional-options' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('eval', 'ev'),
-    'engines' => array(
-      'outputformat' => array(
-        'default' => 'export',
-      ),
+    'outputformat' => array(
+      'default' => 'export',
     ),
   );
   $items['php-script'] = array(

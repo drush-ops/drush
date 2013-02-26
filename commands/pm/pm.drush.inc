@@ -122,13 +122,11 @@ function pm_drush_command() {
       'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to show info for multiple matches. If no argument is provided it will show info for all available extensions.',
     ),
     'aliases' => array('pmi'),
-    'engines' => array(
-      'outputformat' => array(
-        'default' => 'key-value-list',
-        'pipe-format' => 'ini-sections',
-        'formatted-filter' => '_drush_pm_info_format_table_data',
-        'require-engine-capability' => array('format-table'),
-      ),
+    'outputformat' => array(
+      'default' => 'key-value-list',
+      'pipe-format' => 'ini-sections',
+      'formatted-filter' => '_drush_pm_info_format_table_data',
+      'output-data-type' => array('format-table'),
     ),
   );
   // Install command is reserved for the download and enable of projects including dependencies.
