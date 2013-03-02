@@ -1085,6 +1085,10 @@ function _drush_command_translate($source) {
  *       possible field names should appear in this list.
  *     - 'fields-default': A list of the machine names of the fields that
  *       should be displayed by default in tables.
+ *     - 'private-fields': A list of any fields that contain sensitive
+ *       information, such as passwords.  By default, Drush will hide private
+ *       fields before printing the results to the console, but will include
+ *       them in backend invoke results. Use --show-passwords to display.
  *     - 'column-widths': A mapping from field machine name to the column width
  *       that should be used in table output.  Drush will automatically
  *       calculate the width of any field not listed here based on the length

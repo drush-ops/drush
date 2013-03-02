@@ -256,6 +256,16 @@ class drush_outputformat {
   }
   function process($input, $metadata = array()) {
     $metadata += $this->engine_config;
+    if (isset($metadata['private-fields']) && is_array($input)) {
+      if (!drush_get_option('show-passwords', FALSE)) {
+        if (!is_array($metadata['private-fields'])) {
+          $metadata['private-fields'] = array($metadata['private-fields']);
+        }
+        foreach ($metadata['private-fields'] as $private) {
+          drush_unset_recursive($input, $private);
+        }
+      }
+    }
     if (isset($metadata['fields']) && is_array($input)) {
       $first_value = reset($input);
       if (is_array($first_value)) {

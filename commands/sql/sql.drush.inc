@@ -54,6 +54,11 @@ function sql_drush_command() {
       'all' => 'Show all database connections, instead of just one.',
       'show-passwords' => 'Show database password.',
     ) + $options,
+    'outputformat' => array(
+      'default' => 'print-r',
+      'pipe-format' => 'export',
+      'private-fields' => 'password',
+    ),
   );
   $items['sql-connect'] = array(
     'description' => 'A string for connecting to the DB.',
@@ -241,12 +246,7 @@ function drush_sql_conf() {
   if (!isset($db_spec)) {
     $db_spec = _drush_sql_get_db_spec();
   }
-  $return = $db_spec;
-  if (!drush_get_option('show-passwords', FALSE)) {
-    drush_unset_recursive($db_spec, 'password');
-  }
-  drush_print_r($db_spec);
-  return $return;
+  return $db_spec;
 }
 
 /**
