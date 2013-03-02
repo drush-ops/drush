@@ -30,9 +30,33 @@ function user_drush_command() {
       'users' => 'A comma delimited list of uids, user names, or email addresses.',
     ),
     'required-arguments' => TRUE,
-    'options' => array(
-      'full' => 'show extended information about the user',
-      'short' => 'show basic information about the user (this is the default)',
+    'outputformat' => array(
+      'default' => 'key-value-list',
+      'pipe-format' => 'export',
+      'field-labels' => array(
+        'uid' => 'User ID',
+        'name' => 'User name',
+        'pass' => 'Password',
+        'mail' => 'User mail',
+        'theme' => 'User theme',
+        'signature' => 'Signature',
+        'signature_format' => 'Signature format',
+        'user_created' => 'User created',
+        'created' => 'Created',
+        'user_access' => 'User last access',
+        'access' => 'Last access',
+        'user_login' => 'User last login',
+        'login' => 'Last login',
+        'user_status' => 'User status',
+        'status' => 'Status',
+        'timezone' => 'Time zone',
+        'picture' => 'User picture',
+        'init' => 'Initial user mail',
+        'roles' => 'User roles',
+        'group_audience' => 'Group Audience',
+      ),
+      'fields-default' => array('uid', 'name', 'mail', 'roles', 'user_status'),
+      'fields-full' => array('uid', 'name', 'pass', 'mail', 'theme', 'signature', 'user_created', 'user_access', 'user_login', 'user_status', 'timezone', 'roles', 'group_audience'),
     ),
   );
   $items['user-block'] = array(
@@ -197,10 +221,12 @@ function user_drush_command() {
  * Prints information about the specified user(s).
  */
 function drush_user_information($users) {
+  $result = array();
   $uids = _drush_user_get_users_from_arguments($users);
   foreach($uids as $uid) {
-    _drush_user_print_info($uid);
+    $result[$uid] = _drush_user_info($uid);
   }
+  return $result;
 }
 
 /**
@@ -316,12 +342,12 @@ function drush_user_create($name) {
         return $new_user_object->uid;
       }
       else {
-        drush_set_error("Could not create a new user account with the name " . $name . "!");
+        return drush_set_error("Could not create a new user account with the name " . $name . "!");
       }
     }
   }
   else {
-    drush_set_error("There is already a user account with the name " . $name . " or email address " . $new_user['mail'] . "!");
+    return drush_set_error("There is already a user account with the name " . $name . " or email address " . $new_user['mail'] . "!");
   }
 }
 
@@ -441,55 +467,35 @@ function drush_user_login($user = NULL, $path = NULL) {
  * Print information about a given uid
  */
 function _drush_user_print_info($uid) {
+  $user_info = _drush_user_info($uid);
+  drush_print_format($user_info, 'key-value-list');
+}
+
+function _drush_user_info($uid) {
   if (drush_drupal_major_version() >= 7) {
     $userinfo = user_load($uid);
   }
   else {
     $userinfo = user_load(array('uid' => $uid));
   }
-  if (drush_get_option('full')) {
-    $userinfo = (array)$userinfo;
-    $userinfo_pipe = array();
-    unset($userinfo['data']);
-    unset($userinfo['block']);
-    unset($userinfo['form_build_id']);
-    foreach($userinfo as $key => $val) {
-      if (is_array($val)) {
-        drush_print($key . ': ');
-        drush_print_r($val);
-        $userinfo_pipe[] = '"' . implode(",", $val) . '"';
-      }
-      else {
-        if ($key === 'created' OR $key === 'access' OR $key === 'login') {
-          drush_print($key . ': ' . format_date($val));
-          $userinfo_pipe[] = $val;
-        }
-        else {
-          drush_print($key . ': ' . $val);
-          $userinfo_pipe[] = $val;
-        }
-      }
-    }
-    drush_print_pipe(implode(",", $userinfo_pipe));
-    drush_print_pipe("\n");
+  $userinfo = (array)$userinfo;
+  unset($userinfo['data']);
+  unset($userinfo['block']);
+  unset($userinfo['form_build_id']);
+  foreach (array('created', 'access', 'login') as $key) {
+    $userinfo['user_' . $key] = format_date($userinfo[$key]);
   }
-  else {
-    $userinfo_short = array(
-      'User ID' => $userinfo->uid,
-      'User name' => $userinfo->name,
-      'User mail' => $userinfo->mail,
-    );
-    // Note: in D8, $userinfo->roles may not contain the human-readable role names.
-    // For example, it may contain 'authenticated' => 'authenticated' instead of
-    // 'authenticated' => 'Authenticated user'.  In any event, we display the
-    // machine name rather than the human-readable name for better output-conformity
-    // with D6 and D7.
-    $role_ids = drush_drupal_major_version() >= 8 ? array_keys($userinfo->roles) : $userinfo->roles;
-    $userinfo_short['User roles'] = implode(', ', $role_ids);
-    $userinfo->status ? $userinfo_short['User status'] = 'active' : $userinfo_short['User status'] = 'blocked';
-    drush_print_table(drush_key_value_to_array_table($userinfo_short));
-    drush_print_pipe("$userinfo->name,$userinfo->uid,$userinfo->mail,$userinfo->status,\"" . implode(',', $role_ids) . "\"\n");
+  // Note: in D8, $userinfo->roles may not contain the human-readable role names.
+  // For example, it may contain 'authenticated' => 'authenticated' instead of
+  // 'authenticated' => 'Authenticated user'.  In any event, we display the
+  // machine name rather than the human-readable name for better output-conformity
+  // with D6 and D7.
+  if (drush_drupal_major_version() >= 8) {
+    $userinfo['user_roles'] = $userinfo['roles'];
+    $userinfo['roles'] = array_keys($userinfo['roles']);
   }
+  $userinfo['user_status'] = $userinfo['status'] ? 'active' : 'blocked';
+  return $userinfo;
 }
 
 /**

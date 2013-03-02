@@ -65,6 +65,9 @@ class drush_outputformat_key_value extends drush_outputformat {
         return $this->format_error(dt('No label provided.'));
       }
     }
+    if (isset($metadata['field-labels'])) {
+      $input = drush_select_output_fields($input, $metadata['field-labels']);
+    }
     $kv_metadata = isset($metadata['table-metadata']) ? $metadata['table-metadata'] : array();
     $formatted_table = drush_key_value_to_array_table($input, $kv_metadata);
     if ($formatted_table === FALSE) {

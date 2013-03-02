@@ -73,6 +73,13 @@ function drush_print_r($array, $handle = NULL, $newline = TRUE) {
 }
 
 /**
+ * Format some data and print it out.  Respece --format option.
+ */
+function drush_print_format($input, $default_format, $metadata = NULL) {
+  drush_print(drush_format($user_info, $metadata, drush_get_option('format', $default_format)));
+}
+
+/**
  * Prepares a variable for printing.  Loads the requested output
  * formatter and uses it to process the provided input.
  *
@@ -309,6 +316,32 @@ function drush_key_value_to_array_table($keyvalue_table, $metadata = array()) {
     }
   }
   return $table;
+}
+
+/**
+ * Select the fields from the input array that should be output.
+ *
+ * @param $input
+ *   An associative array of key:value pairs to be output
+ * @param $fields
+ *   An associative array that maps FROM a field in $input
+ *   TO the corresponding field name in $output.
+ * @return
+ *   The input array, re-ordered and re-keyed per $fields
+ */
+function drush_select_output_fields($input, $fields) {
+  $result = array();
+  if (empty($fields)) {
+    $result = $input;
+  }
+  else {
+    foreach ($fields as $key => $label) {
+      if (isset($input[$key])) {
+        $result[$label] = $input[$key];
+      }
+    }
+  }
+  return $result;
 }
 
 /**

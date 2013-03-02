@@ -31,7 +31,7 @@ class drush_outputformat_list extends drush_outputformat {
     // else in $engine_config['engine-info']
     $list_metadata = array();
     foreach ($this->engine_config as $key => $value) {
-      if ((substr($key, 0, 4) == 'list') || (substr($key, -6) == 'filter')) {
+      if ((substr($key, 0, 4) == 'list') || (substr($key, -6) == 'filter') || (substr($key, 0, 5) == 'field') || ($key == 'options')) {
         unset($this->engine_config[$key]);
         $list_metadata[$key] = $value;
       }
@@ -74,6 +74,11 @@ class drush_outputformat_list extends drush_outputformat {
         }
         else {
           $metameta = $metadata['metameta'] + array('label' => $label);
+        }
+        foreach (array('field-labels') as $key) {
+          if (isset($metadata[$key])) {
+            $metameta[$key] = $metadata[$key];
+          }
         }
         $formatted_item = $this->sub_engine->process($data, $metameta);
         if ($formatted_item === FALSE) {
