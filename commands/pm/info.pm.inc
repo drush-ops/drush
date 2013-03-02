@@ -57,20 +57,20 @@ function _drush_pm_info_format_table_data($data) {
 function _drush_pm_info_extension($info) {
   $major_version = drush_drupal_major_version();
 
-  $data['Extension'] = $info->name;
-  $data['Project'] = isset($info->info['project'])?$info->info['project']:dt('Unknown');
-  $data['Type'] = $info->type;
-  $data['Title'] = $info->info['name'];
-  $data['Description'] = $info->info['description'];
-  $data['Version'] = $info->info['version'];
-  $data['Date'] = format_date($info->info['datestamp'], 'custom', 'Y-m-d');
-  $data['Package'] = $info->info['package'];
-  $data['Core'] = $info->info['core'];
-  $data['PHP'] = $info->info['php'];
-  $data['Status'] = drush_get_extension_status($info);
+  $data['extension'] = $info->name;
+  $data['project'] = isset($info->info['project'])?$info->info['project']:dt('Unknown');
+  $data['type'] = $info->type;
+  $data['title'] = $info->info['name'];
+  $data['description'] = $info->info['description'];
+  $data['version'] = $info->info['version'];
+  $data['date'] = format_date($info->info['datestamp'], 'custom', 'Y-m-d');
+  $data['package'] = $info->info['package'];
+  $data['core'] = $info->info['core'];
+  $data['php'] = $info->info['php'];
+  $data['status'] = drush_get_extension_status($info);
   $path = (($info->type == 'module')&&($major_version == 7))?$info->uri:$info->filename;
   $path = substr($path, 0, strrpos($path, '/'));
-  $data['Path'] = $path;
+  $data['path'] = $path;
 
   return $data;
 }
@@ -91,11 +91,11 @@ function _drush_pm_info_module($info) {
   else {
     $schema_version = "module has no schema";
   }
-  $data['Schema version'] = $schema_version;
+  $data['schema_version'] = $schema_version;
   if ($major_version == 7) {
-    $data['Files'] = $info->info['files'];
+    $data['files'] = $info->info['files'];
   }
-  $data['Requires'] = $info->info['dependencies'];
+  $data['requires'] = $info->info['dependencies'];
 
   if ($major_version == 6) {
     $requiredby = $info->info['dependents'];
@@ -103,10 +103,10 @@ function _drush_pm_info_module($info) {
   else {
     $requiredby = array_keys($info->required_by);
   }
-  $data['Required by'] = $requiredby;
+  $data['required_by'] = $requiredby;
   if ($info->status == 1) {
     $role = drush_role_get_class();
-    $data['Permissions'] = $role->getModulePerms($info->name);
+    $data['permissions'] = $role->getModulePerms($info->name);
   }
   return $data;
 }
@@ -119,24 +119,24 @@ function _drush_pm_info_theme($info) {
 
   $data = _drush_pm_info_extension($info);
 
-  $data['Core'] = $info->info['core'];
-  $data['PHP'] = $info->info['php'];
-  $data['Engine'] = $info->info['engine'];
-  $data['Base theme'] = isset($info->base_themes) ? implode($info->base_themes, ', ') : '';
+  $data['core'] = $info->info['core'];
+  $data['php'] = $info->info['php'];
+  $data['engine'] = $info->info['engine'];
+  $data['base_theme'] = isset($info->base_themes) ? implode($info->base_themes, ', ') : '';
   $regions = $info->info['regions'];
-  $data['Regions'] = $regions;
+  $data['regions'] = $regions;
   $features = $info->info['features'];
-  $data['Features'] = $features;
+  $data['features'] = $features;
   if (count($info->info['stylesheets']) > 0) {
-    $data['Stylesheets'] = '';
+    $data['stylesheets'] = '';
     foreach ($info->info['stylesheets'] as $media => $files) {
       $files = array_keys($files);
-      $data['Media '.$media] = $files;
+      $data['media '.$media] = $files;
     }
   }
   if (count($info->info['scripts']) > 0) {
     $scripts = array_keys($info->info['scripts']);
-    $data['Scripts'] = $scripts;
+    $data['scripts'] = $scripts;
   }
   return $data;
 }

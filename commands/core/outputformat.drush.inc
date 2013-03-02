@@ -189,7 +189,7 @@ function outputformat_drush_help_alter(&$command) {
       $field_defaults = isset($outputformat['fields-default']) ? $outputformat['fields-default'] : $all_fields;
       $command['options']['fields']['example-value'] = implode(', ', $field_defaults);
       $command['options']['fields']['description'] .= ' '. dt('All available fields are: !fields.', array('!fields' => implode(', ', $all_fields)));
-      if (count($outputformat['fields-default']) < count($all_fields)) {
+      if (isset($outputformat['fields-default'])) {
         $command['options']['full']['description'] = dt("Show the full output, with all fields included.");
       }
     }
