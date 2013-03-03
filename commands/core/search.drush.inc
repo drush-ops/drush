@@ -4,8 +4,15 @@ function search_drush_command() {
   $items['search-status'] = array(
     'description' => 'Show how many items remain to be indexed out of the total.',
     'drupal dependencies' => array('search'),
-    'options' => array(
-      'pipe' => 'Display in the format remaining/total for processing by scripts.',
+    'outputformat' => array(
+      'default' => 'message',
+      'pipe-format' => 'message',
+      'field-labels' => array('remaining' => 'Items not yet indexed', 'total' => 'Total items'),
+      'message-template' => 'There are !remaining items out of !total still to be indexed.',
+      'pipe-metadata' => array(
+        'message-template' => '!remaining/!total',
+      ),
+      'output-data-type' => 'format-list',
     ),
   );
   $items['search-index'] = array(
@@ -24,11 +31,10 @@ function search_drush_command() {
 
 function drush_search_status() {
   list($remaining, $total) = _drush_search_status();
-  drush_print(dt('There are @remaining items out of @total still to be indexed.', array(
-    '@remaining' => $remaining,
-    '@total' => $total,
-  )));
-  drush_print_pipe("$remaining/$total\n");
+  return array(
+    'remaining' => $remaining,
+    'total' => $total,
+  );
 }
 
 function _drush_search_status() {

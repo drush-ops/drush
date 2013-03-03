@@ -101,6 +101,11 @@ function outputformat_drush_engine_outputformat() {
     'description' => 'A simple string.',
     'engine-capabilities' => array('format-single'),
   );
+  $engines['message'] = array(
+    'machine-parsable' => FALSE, // depends on the label....
+    'description' => 'A human-readable sentence containing the output.',
+    'hidden' => TRUE,
+  );
   $engines['print-r'] = array(
     'machine-parsable' => TRUE,
     'description' => 'Output via php print_r function.',
@@ -212,7 +217,12 @@ function outputformat_drush_help_alter(&$command) {
       else {
         $command['options']['pipe'] = '';
       }
-      $command['options']['pipe'] .= dt("Equivalent to --format=!default.", array('!default' => $outputformat['pipe-format']));
+      if (isset($outputformat['pipe-metadata']['message-template'])) {
+        $command['options']['pipe'] .= dt('Displays output in the form "!message"', array('!message' => $outputformat['pipe-metadata']['message-template']));
+      }
+      else {
+        $command['options']['pipe'] .= dt("Equivalent to --format=!default.", array('!default' => $outputformat['pipe-format']));
+      }
     }
   }
 }
@@ -309,7 +319,14 @@ class drush_outputformat {
       }
     }
     if (isset($metadata[$this->selected_engine . '-metadata'])) {
-      $metadata += $metadata[$this->selected_engine . '-metadata'];
+      $engine_specific_metadata = $metadata[$this->selected_engine . '-metadata'];
+      unset($metadata[$this->selected_engine . '-metadata']);
+      $metadata = array_merge($metadata, $engine_specific_metadata);
+    }
+    if ((drush_get_context('DRUSH_PIPE')) && (isset($metadata['pipe-metadata']))) {
+      $pipe_specific_metadata = $metadata['pipe-metadata'];
+      unset($metadata['pipe-metadata']);
+      $metadata = array_merge($metadata, $pipe_specific_metadata);
     }
     $machine_parsable = $this->engine_config['engine-info']['machine-parsable'];
     $formatter_type = $machine_parsable ? 'parsable' : 'formatted';

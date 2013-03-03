@@ -231,19 +231,21 @@ function drush_merge_engine_data(&$command) {
         }
         if ($engine_is_usable) {
           $command['engines'][$engine_type]['usable'][] = $engine;
-          $option = $config['option'] . '=' . $engine;
-          $engine_data['options'][$option]['description'] = array_key_exists('description', $data) ? $data['description'] : NULL;
-          if ($combine_help) {
-            $engine_data['options'][$option]['hidden'] = TRUE;
-            if (drush_get_context('DRUSH_VERBOSE') || !isset($data['verbose-only'])) {
-              $combine_help_data[$engine] = $engine . ': ' . $data['description'];
+          if (!isset($data['hidden'])) {
+            $option = $config['option'] . '=' . $engine;
+            $engine_data['options'][$option]['description'] = array_key_exists('description', $data) ? $data['description'] : NULL;
+            if ($combine_help) {
+              $engine_data['options'][$option]['hidden'] = TRUE;
+              if (drush_get_context('DRUSH_VERBOSE') || !isset($data['verbose-only'])) {
+                $combine_help_data[$engine] = $engine . ': ' . $data['description'];
+              }
             }
-          }
-          if (isset($data['options'])) {
-            $engine_data['sub-options'][$option] = $data['options'];
-          }
-          if (isset($data['sub-options'])) {
-            $engine_data['sub-options'] += $data['sub-options'];
+            if (isset($data['options'])) {
+              $engine_data['sub-options'][$option] = $data['options'];
+            }
+            if (isset($data['sub-options'])) {
+              $engine_data['sub-options'] += $data['sub-options'];
+            }
           }
         }
       }
