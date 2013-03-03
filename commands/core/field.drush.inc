@@ -90,6 +90,22 @@ function field_drush_command() {
     'examples' => array(
       'field-info types' => 'Show a table which lists all field types and their available widgets',
     ),
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'ini-sections',
+      'field-labels' => array(
+        'field-name' => 'Field name',
+        'type' => 'Field type',
+        'bundle' => 'Field bundle',
+        'type-name' => 'Type name',
+        'widget' => 'Default widget',
+        'widgets' => 'Widgets',
+      ),
+      'table-metadata' => array(
+        'process-cell' => '_drush_field_info_process_cell',
+      ),
+      'output-data-type' => 'format-table',
+    ),
   );
   return $items;
 }
@@ -275,56 +291,71 @@ function drush_field_clone($source_field_name, $target_field_name) {
 
 function drush_field_info($type = NULL) {
   if (is_null($type)) {
-    $type = drush_choice(drupal_map_assoc(array('types', 'fields')), dt('Which information do you wish to see?'));
+    // Don't ask in 'pipe' mode -- just default to 'fields'.
+    if (drush_get_context('DRUSH_PIPE')) {
+      $type = 'fields';
+    }
+    else {
+      $type = drush_choice(drupal_map_assoc(array('types', 'fields')), dt('Which information do you wish to see?'));
+    }
   }
 
+  $result = array();
   switch ($type) {
     case 'fields':
-      $rows[] = array(
-        dt('Field name'),
-        dt('Field type'),
-        dt('Bundles'),
-      );
+      drush_hide_output_fields(array('type-name', 'widget', 'widgets'));
       $info = field_info_fields();
       foreach ($info as $field_name => $field) {
         $bundle_strs = array();
         foreach ($field['bundles'] as $entity_type => $bundles) {
           $bundle_strs[] = implode(',', $bundles);
         }
-        $row = array(
-          $field_name,
-          $field['type'],
-          implode(' ', $bundle_strs),
+        $result[$field_name] = array(
+          'field-name' => $field_name,
+          'type' => $field['type'],
+          'bundle' => $field['bundles'] /*implode(' ', $bundle_strs)*/,
         );
-        $rows[] = $row;
-        $pipe[] = implode(',', $row);
       }
       break;
     case 'types':
-      $rows[] = array(
-        dt('Field type'),
-        dt('Default widget'),
-        dt('Widgets'),
-      );
+      drush_hide_output_fields(array('field-name', 'type', 'bundle'));
       $info = field_info_field_types();
       module_load_include('inc', 'field_ui', 'field_ui.admin');
       $widgets = field_info_widget_types();
       foreach ($info as $type_name => $type) {
         $widgets = field_ui_widget_type_options($type_name);
-        $row = array(
-          $type_name,
-          $type['default_widget'],
-          implode(', ', array_keys($widgets)),
+        $result[$type_name] = array(
+          'type-name' => $type_name,
+          'widget' => $type['default_widget'],
+          'widgets' => $widgets /* implode(', ', array_keys($widgets))*/,
         );
-        $rows[] = $row;
-        $pipe[] = implode(',', $row);
       }
       break;
+    default:
+      return drush_set_error('DRUSH_FIELD_INVALID_SELECTION', dt("Argument for drush field-info must be 'fields' or 'types'"));
   }
 
-  drush_print_table($rows, TRUE);
-  drush_print_pipe($pipe);
-  return $rows;
+  return $result;
+}
+
+/**
+ * We need to handle the formatting of cells in table-format
+ * output specially.  In 'types' output, the output data is a simple
+ * associative array of machine names => human-readable names.
+ * We choose to show the machine names.  In 'fields' output, the
+ * output data is a list of entity types, each of which contains a list
+ * of bundles.  We comma-separate the bundles, and space-separate
+ * the entities.
+ */
+function _drush_field_info_process_cell($data, $metadata) {
+  $first = reset($data);
+  if (is_array($first)) {
+    foreach($data as $entity => $bundles) {
+      $list[] = drush_format($bundles, array(), 'csv');
+    }
+    return drush_format($list, array(), 'list');
+  }
+  return drush_format(array_keys($data), array(), 'csv');
 }
 
 /**

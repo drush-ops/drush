@@ -344,9 +344,24 @@ class drush_outputformat {
         }
       }
     }
+    if (isset($metadata['field-labels'])) {
+      foreach (drush_hide_output_fields() as $hidden_field) {
+        unset($metadata['field-labels'][$hidden_field]);
+      }
+    }
     return $this->format($input, $metadata);
   }
   function format($input, $metadata) {
     return $input;
   }
+}
+
+/**
+ * Specify that certain fields should not appear in the resulting output.
+ */
+function drush_hide_output_fields($fields_to_hide = array()) {
+  $already_hidden = drush_get_context('DRUSH_HIDDEN_OUTPUT_FIELDS');
+  $result = array_merge($already_hidden, $fields_to_hide);
+  drush_set_context('DRUSH_HIDDEN_OUTPUT_FIELDS', $result);
+  return $result;
 }
