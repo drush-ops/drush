@@ -32,6 +32,14 @@ function variable_drush_command() {
       'pipe' => 'A synonym for --format=export. Useful for pasting into code.',
       'exact' => 'Only get the one variable that exactly matches the specified name.',
     ),
+    'outputformat' => array(
+      'default' => 'key-value',
+      'pipe-format' => 'config',
+      'variable-name' => 'variables',
+      'table-metadata' => array(
+        'format' => 'export',
+      ),
+    ),
     'aliases' => array('vget'),
   );
   $items['variable-set'] = array(
@@ -119,7 +127,6 @@ function variable_complete_variables() {
  */
 function drush_variable_get() {
   global $conf;
-  $output = NULL;
 
   $keys = array_keys($conf);
   if ($args = func_get_args()) {
@@ -133,11 +140,8 @@ function drush_variable_get() {
   $pipe = array();
   foreach ($keys as $name) {
     $value = $conf[$name];
-    $pipe[] = drush_format($value, $name, 'export');
-    drush_print(drush_format($value, $name));
     $returns[$name] = $value;
   }
-  drush_print_pipe($pipe);
 
   if (empty($keys)) {
     return drush_set_error('No matching variable found.');
