@@ -145,7 +145,8 @@ function outputformat_drush_engine_outputformat() {
     'machine-parsable' => TRUE,
     'list-item-type' => 'string',
     'description' => 'A simple list of values.',
-    'engine-capabilities' => array('format-list'),
+    // When a table is printed as a list, only the array keys of the rows will print.
+    'engine-capabilities' => array('format-list', 'format-table'),
     'topic-example' => array('a', 'b', 'c'),
   );
   $engines['csv'] = array(

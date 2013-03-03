@@ -71,6 +71,12 @@ function role_drush_command() {
     'options' => array(
       'filter' => 'Limits the list of roles to only those that have been assigned the specified permission. Optional; may not be specified if a role argument is provided.',
     ),
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'csv',
+      'field-labels' => array('rid' => 'ID', 'role' => 'Role Name', 'perm' => "Permission"),
+      'output-data-type' => 'format-table',
+    ),
     'aliases' => array('rls'),
   );
 
@@ -181,39 +187,36 @@ function drush_role_get_class($role_name = DRUPAL_ANONYMOUS_RID) {
  * Displays a list of roles
  */
 function drush_role_list($rid = '') {
+  $result = array();
   if (empty($rid)) {
+    drush_hide_output_fields(array('perm'));
     // get options passed
     $perm = drush_get_option('filter');
     $roles = array();
 
     // get all roles - if $perm is empty user_roles retrieves all roles
     $roles = user_roles(FALSE, $perm);
-
-    if (!empty($roles)) {
-      $rows[] = array('rid',dt('Name'));
-      foreach($roles as $rid => $name) {
-        $rows[] = array($rid, $name);
-        drush_print_pipe($rid .','. $name ."\n");
-      }
-      $num = count($roles);
-
-      drush_print_table($rows, TRUE);
+    if (empty($roles)) {
+      return drush_set_error('DRUSH_NO_ROLES', dt("No roles found."));
     }
-
-    else {
-      drush_set_error('No roles found.');
+    foreach ($roles as $rid => $role_name) {
+      $result[$role_name] = array(
+        'rid' => $rid,
+        'role' => $role_name,
+      );
     }
-
-    return $roles;
   }
   else {
+    drush_hide_output_fields(array('rid', 'role'));
     $role = drush_role_get_class($rid);
     if (!$role) {
       return FALSE;
     }
     $perms = $role->getPerms();
-    drush_print(implode("\n", $perms));
-
-    return $perms;
+    foreach ($perms as $permission) {
+      $result[$permission] = array(
+        'perm' => $permission);
+    }
   }
+  return $result;
 }
