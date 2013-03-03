@@ -149,7 +149,7 @@ function outputformat_drush_engine_outputformat() {
     'list-separator' => ',',
     'list-item-type' => 'string',
     'description' => 'A comma-separated list of values.',
-    'engine-capabilities' => array('format-list'),
+    'engine-capabilities' => array('format-list', 'format-table'),
     'topic-example' => array('a', 'b', 'c'),
   );
   $engines['variables'] = array(
@@ -256,6 +256,28 @@ class drush_outputformat {
   }
   function format_error($message) {
     return drush_set_error('DRUSH_FORMAT_ERROR', dt("The output data could not be processed by the selected format '!type'.  !message", array('!type' => $this->selected_engine, '!message' => $message)));
+  }
+  function data_type($metadata) {
+    if (isset($metadata['metameta']['require-engine-capability'])) {
+      return  $metadata['metameta']['require-engine-capability'][0];
+    }
+    if (isset($metadata['require-engine-capability'])) {
+      return  $metadata['require-engine-capability'][0];
+    }
+    return 'unspecified';
+  }
+  function supported_data_types($metadata) {
+    if (isset($metadata['metameta']['engine-info'])) {
+      return  $metadata['metameta']['engine-info']['engine-capabilities'];
+    }
+    if (isset($metadata['engine-info'])) {
+      return  $metadata['engine-info']['engine-capabilities'];
+    }
+    return array();
+  }
+  function supports_single_only($metadata) {
+    $supported = $this->supported_data_types($metadata);
+    return (count($supported) == 1) && ($supported[0] == 'format-single');
   }
   function process($input, $metadata = array()) {
     $metadata += $this->engine_config;

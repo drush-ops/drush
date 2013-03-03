@@ -61,6 +61,13 @@ class drush_outputformat_list extends drush_outputformat {
     $output = '';
     $separator = isset($metadata['list-separator']) ? $metadata['list-separator'] : "\n";
     if (is_array($input)) {
+      // If this list is processing output from a command that produces table
+      // output, but our subformatter only supports 'single' items (e.g. csv),
+      // then we will convert our data such that the output will be the keys
+      // of the table rows.
+      if (($this->data_type($metadata) == 'format-table') && ($this->supports_single_only($metadata)) && !isset($metadata['list-item'])) {
+        $input = array_keys($input);
+      }
       $first = TRUE;
       foreach ($input as $label => $data) {
         if (isset($metadata['list-item'])) {

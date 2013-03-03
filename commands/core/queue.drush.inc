@@ -23,9 +23,20 @@ function queue_drush_command() {
   );
   $items['queue-list'] = array(
     'description' => 'Returns a list of all defined queues',
-    'options' => array(
-      'pipe' => 'Return a comma delimited list of queues.'
-    )
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'csv',
+      'field-labels' => array(
+        'queue' => 'Queue',
+        'items' => 'Items',
+        'class' => 'Class',
+      ),
+      'ini-item' => 'items',
+      'table-metadata' => array(
+        'key-value-item' => 'items',
+      ),
+      'output-data-type' => 'format-table',
+    ),
   );
 
   return $items;
@@ -114,29 +125,19 @@ function drush_queue_run($queue_name) {
  * Command callback for drush queue-list.
  */
 function drush_queue_list() {
+  $result = array();
   $queues = drush_queue_get_queues();
   $default_class = variable_get('queue_default_class', 'SystemQueue');
-  $rows = array(array('Queue', 'Items', 'Class'));
   foreach (array_keys($queues) as $name) {
     $q = drush_queue_get($name);
     $class = variable_get('queue_class_' . $name, $default_class);
-    $rows[] = array($name, $q->numberOfItems(), $class);
+    $result[$name] = array(
+      'queue' => $name,
+      'items' => $q->numberOfItems(),
+      'class' => $class,
+    );
   }
-
-  if (drush_get_option('pipe')) {
-    $pipe = array();
-    array_shift($rows);
-    foreach ($rows as $r) {
-      $pipe[] = implode(",", $r);
-    }
-    drush_print_pipe($pipe);
-  }
-  else {
-    drush_print_table($rows, TRUE);
-  }
-
-  // Return the result for backend invoke
-  return $rows;
+  return $result;
 }
 
 /**
