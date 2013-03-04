@@ -285,20 +285,12 @@ function drush_remote_host($site, $prefix = '') {
 /**
  * Make an attempt to simply wrap the arg with the
  * kind of quote characters it does not already contain.
- * If it contains both kinds, or if it contains no quote
- * characters, then this function reverts to drush_escapeshellarg.
- *
- * Note that this routine is only useful in certain very
- * specific circumstances (e.g. core-cli), as in general,
- * Windows -must- use double-quotes to escape a shell arg.
+ * If it contains both kinds, then this function reverts to drush_escapeshellarg.
  */
 function drush_wrap_with_quotes($arg) {
   $has_double = strpos($arg, '"') !== FALSE;
   $has_single = strpos($arg, "'") !== FALSE;
-  // If there are both kinds of quotes ($has_double == TRUE && $has_single == TRUE)
-  // or there are neither kind of quotes ($has_double == FALSE && $has_single == FALSE)
-  // then we call drush_escapeshellarg.  The relations above logically reduce to:
-  if ($has_double == $has_single) {
+  if ($has_double && $has_single) {
     return drush_escapeshellarg($arg);
   }
   elseif ($has_double) {

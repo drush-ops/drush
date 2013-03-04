@@ -92,7 +92,7 @@ function field_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'table',
-      'pipe-format' => 'ini-sections',
+      'pipe-format' => 'csv-list',
       'field-labels' => array(
         'field-name' => 'Field name',
         'type' => 'Field type',
@@ -308,12 +308,12 @@ function drush_field_info($type = NULL) {
       foreach ($info as $field_name => $field) {
         $bundle_strs = array();
         foreach ($field['bundles'] as $entity_type => $bundles) {
-          $bundle_strs[] = implode(',', $bundles);
+          $bundle_strs += $bundles;
         }
         $result[$field_name] = array(
           'field-name' => $field_name,
           'type' => $field['type'],
-          'bundle' => $field['bundles'] /*implode(' ', $bundle_strs)*/,
+          'bundle' => $bundle_strs,
         );
       }
       break;
@@ -327,7 +327,7 @@ function drush_field_info($type = NULL) {
         $result[$type_name] = array(
           'type-name' => $type_name,
           'widget' => $type['default_widget'],
-          'widgets' => $widgets /* implode(', ', array_keys($widgets))*/,
+          'widgets' => $widgets,
         );
       }
       break;

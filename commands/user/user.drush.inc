@@ -32,7 +32,7 @@ function user_drush_command() {
     'required-arguments' => TRUE,
     'outputformat' => array(
       'default' => 'key-value-list',
-      'pipe-format' => 'export',
+      'pipe-format' => 'csv-list',
       'field-labels' => array(
         'uid' => 'User ID',
         'name' => 'User name',
@@ -55,8 +55,11 @@ function user_drush_command() {
         'roles' => 'User roles',
         'group_audience' => 'Group Audience',
       ),
+      'format-cell' => 'csv',
       'fields-default' => array('uid', 'name', 'mail', 'roles', 'user_status'),
+      'fields-pipe' => array('name', 'uid', 'mail', 'status', 'roles'),
       'fields-full' => array('uid', 'name', 'pass', 'mail', 'theme', 'signature', 'user_created', 'user_access', 'user_login', 'user_status', 'timezone', 'roles', 'group_audience'),
+      'output-data-type' => 'format-table',
     ),
   );
   $items['user-block'] = array(

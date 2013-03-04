@@ -73,7 +73,7 @@ function role_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'table',
-      'pipe-format' => 'csv',
+      'pipe-format' => 'list',
       'field-labels' => array('rid' => 'ID', 'role' => 'Role Name', 'perm' => "Permission"),
       'output-data-type' => 'format-table',
     ),

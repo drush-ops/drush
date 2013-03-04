@@ -29,18 +29,18 @@ class roleCase extends Drush_CommandTestCase {
       $anonymous .= ' user';
       $authenticated .= ' user';
     }
-    $this->drush('role-list', array($anonymous), $options );
+    $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
     $output = $this->getOutput();
     $this->assertEquals('access content', $output);
-    $this->drush('role-list', array($authenticated), $options );
+    $this->drush('role-list', array($authenticated), $options + array('pipe' => NULL) );
     $output = $this->getOutput();
     $this->assertEquals('access content', $output);
     $this->drush('role-add-perm', array($anonymous, 'administer nodes'), $options );
-    $this->drush('role-list', array($anonymous), $options );
+    $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
     $output = $this->getOutput();
     $this->assertContains('administer nodes', $output);
     $this->drush('role-remove-perm', array($anonymous, 'administer nodes'), $options );
-    $this->drush('role-list', array($anonymous), $options );
+    $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
     $output = $this->getOutput();
     $this->assertEquals('access content', $output);
   }

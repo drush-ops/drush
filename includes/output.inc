@@ -345,6 +345,23 @@ function drush_select_output_fields($input, $fields) {
 }
 
 /**
+ * Given a table array (an associative array of associative arrays),
+ * return an array of all of the values with the specified field name.
+ */
+function drush_output_get_selected_field($input, $field_name, $default_value = '') {
+  $result = array();
+  foreach ($input as $key => $data) {
+    if (is_array($data) && isset($data[$field_name])) {
+      $result[] = $data[$field_name];
+    }
+    else {
+      $result[] = $default_value;
+    }
+  }
+  return $result;
+}
+
+/**
  * Convert an array of data rows, where each row contains an
  * associative array of key : value pairs, into
  * a table suitable for processing by drush_print_table.

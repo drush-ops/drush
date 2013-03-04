@@ -339,7 +339,7 @@ function _drush_invoke_hooks($command, $args) {
       $callback_list[$func] = $filename;
     }
     // Run all of the functions available for this variation
-    $accumulated_result = array();
+    $accumulated_result = NULL;
     foreach ($callback_list as $func => $filename) {
       if (function_exists($func)) {
         $all_available_hooks[] = $func . ' [* Defined in ' . $filename . ']';
@@ -354,13 +354,11 @@ function _drush_invoke_hooks($command, $args) {
         }
         // If result values are arrays, then combine them all together.
         // Later results overwrite earlier results.
-        if (isset($result)) {
-          if (is_array($accumulated_result) && is_array($result)) {
-            $accumulated_result = array_merge($accumulated_result, $result);
-          }
-          else {
-            $accumulated_result = $result;
-          }
+        if (isset($result) && is_array($accumulated_result) && is_array($result)) {
+          $accumulated_result = array_merge($accumulated_result, $result);
+        }
+        else {
+          $accumulated_result = $result;
         }
         _drush_log_drupal_messages();
       }
@@ -467,6 +465,9 @@ function drush_handle_command_output($command, $structured_output) {
           else {
             $formatter->engine_config['fields-default'] = array_keys($formatter->engine_config['fields-labels']);
           }
+        }
+        elseif (drush_get_context('DRUSH_PIPE') && isset($formatter->engine_config['fields-pipe'])) {
+          $formatter->engine_config['fields-default'] = $formatter->engine_config['fields-pipe'];
         }
         foreach ($formatter->engine_config['options'] as $option => $option_info) {
           $default_value = isset($formatter->engine_config[$option . '-default']) ? $formatter->engine_config[$option . '-default'] : FALSE;

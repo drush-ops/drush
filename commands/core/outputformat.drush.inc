@@ -88,6 +88,7 @@ function outputformat_drush_engine_outputformat() {
     'engine-class' => 'list',
     'list-item-type' => 'key-value',
     'description' => 'A list of formatted lists of key-value pairs.',
+    'list-field-selection-control' => 1,
     'engine-capabilities' => array('format-table'),
   );
   $engines['json'] = array(
@@ -103,7 +104,6 @@ function outputformat_drush_engine_outputformat() {
   );
   $engines['message'] = array(
     'machine-parsable' => FALSE, // depends on the label....
-    'description' => 'A human-readable sentence containing the output.',
     'hidden' => TRUE,
   );
   $engines['print-r'] = array(
@@ -157,6 +157,25 @@ function outputformat_drush_engine_outputformat() {
     'description' => 'A comma-separated list of values.',
     'engine-capabilities' => array('format-list', 'format-table'),
     'topic-example' => array('a', 'b', 'c'),
+  );
+  $engines['nested-csv'] = array(
+    'machine-parsable' => TRUE,
+    'engine-class' => 'list',
+    'list-separator' => ',',
+    'list-item-type' => 'csv-or-string',
+    'hidden' => TRUE,
+  );
+  $engines['csv-or-string'] = array(
+    'machine-parsable' => TRUE,
+    'hidden' => TRUE,
+  );
+  $engines['csv-list'] = array(
+    'machine-parsable' => TRUE,
+    'engine-class' => 'list',
+    'list-item-type' => 'nested-csv',
+    'description' => 'A list of values, one per row, each of which is a comma-separated list of values.',
+    'engine-capabilities' => array('format-table'),
+    'topic-example' => array(array('a', 12, 'a@one.com'),array('b', 17, 'b@two.com')),
   );
   $engines['variables'] = array(
     'machine-parsable' => TRUE,
@@ -278,10 +297,10 @@ class drush_outputformat {
     return 'unspecified';
   }
   function supported_data_types($metadata) {
-    if (isset($metadata['metameta']['engine-info'])) {
+    if (isset($metadata['metameta']['engine-info']['engine-capabilities'])) {
       return  $metadata['metameta']['engine-info']['engine-capabilities'];
     }
-    if (isset($metadata['engine-info'])) {
+    if (isset($metadata['engine-info']['engine-capabilities'])) {
       return  $metadata['engine-info']['engine-capabilities'];
     }
     return array();

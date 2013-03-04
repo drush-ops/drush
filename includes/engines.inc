@@ -301,14 +301,16 @@ function drush_engine_topic_command($engine) {
   $instances = $engine_instances['engines'];
   ksort($instances);
   foreach ($instances as $instance => $config) {
-    $doc_text .= "\n\n--$option=$instance:\n\n" . $config['description'];
-    $path = $config['path'] . '/topics/' . $instance . '.html';
-    if (file_exists($path)) {
-      $doc_text .= "\n\n" . drush_html_to_text(file_get_contents($path));
-    }
-    $additional_topic_text = drush_command_invoke_all('drush_engine_topic_additional_text', $engine, $instance, $config);
-    if (!empty($additional_topic_text)) {
-      $doc_text .= "\n\n" . implode("\n\n", $additional_topic_text);
+    if (isset($config['description'])) {
+      $doc_text .= "\n\n--$option=$instance:\n\n" . $config['description'];
+      $path = $config['path'] . '/topics/' . $instance . '.html';
+      if (file_exists($path)) {
+        $doc_text .= "\n\n" . drush_html_to_text(file_get_contents($path));
+      }
+      $additional_topic_text = drush_command_invoke_all('drush_engine_topic_additional_text', $engine, $instance, $config);
+      if (!empty($additional_topic_text)) {
+        $doc_text .= "\n\n" . implode("\n\n", $additional_topic_text);
+      }
     }
   }
 
@@ -348,7 +350,6 @@ function drush_load_engine($type, $engine, $version = NULL, $path = NULL, $engin
   }
 
   $result = drush_include_engine($type, $selected_engine, $version, $path, $engine_config);
-
   if (is_object($result)) {
     $valid = method_exists($result, 'validate') ? $result->validate() : TRUE;
     if ($valid) {
