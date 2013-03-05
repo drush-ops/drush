@@ -447,7 +447,7 @@ function drush_handle_command_output($command, $structured_output) {
     // If the command specifies a default pipe format and
     // returned a result, then output the formatted output when
     // in --pipe mode.
-    $formatter = drush_get_engine('outputformat');
+    $formatter = drush_get_outputformat();
     if ($formatter) {
       if ($formatter === TRUE) {
         return drush_set_error(dt('No outputformat class defined for !format', array('!format' => $format)));

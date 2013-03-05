@@ -23,17 +23,18 @@ function sitealias_drush_command() {
       'site' => 'Site specification to print',
     ),
     'options' => array(
-      'table' => 'Display the alias name, root, uri and host in a table.',
-      'full' => 'Print the full alias record for each site.  Default when aliases are specified on the command line.',
-      'component' => 'Print only the specified element from the full alias record.',
-      'short' => 'Print only the site alias name.  Default when no command line arguments are specified.',
-      'pipe' => 'Print the long-form site specification for each site.',
       'with-db' => 'Include the databases structure in the full alias record.',
       'with-db-url' => 'Include the short-form db-url in the full alias record.',
       'no-db' => 'Do not include the database record in the full alias record (default).',
       'with-optional' => 'Include optional default items.',
       'alias-name' => 'For a single alias, set the name to use in the output.',
       'local' => 'Only display sites that are available on the local system (remote-site not set, and Drupal root exists).',
+    ),
+    'outputformat' => array(
+      'default' => 'config',
+      'pipe-format' => 'export',
+      'private-fields' => 'password',
+      'output-data-type' => 'format-table',
     ),
     'aliases' => array('sa'),
     'examples' => array(
@@ -127,18 +128,13 @@ function _drush_sitealias_user_specified_list() {
   $specifications = $command['arguments'];
   $site_list = array();
 
-  // Did the user specify --short or --full output?
-  $specified_output_style = drush_get_option(array('full', 'short'), FALSE);
-
   // Iterate over the arguments and convert them to alias records
   if (!empty($specifications)) {
     $site_list = drush_sitealias_resolve_sitespecs($specifications);
-    if (!$specified_output_style) {
-      drush_set_option('full', TRUE);
-    }
   }
   // If the user provided no args, then we will return everything.
   else {
+    drush_set_default_outputformat('list', array('field-labels' => array('#id' => 'ID')));
     $site_list = _drush_sitealias_all_list();
 
     // Filter out the hidden items
@@ -168,57 +164,20 @@ function _drush_sitealias_user_specified_list() {
  * specified.
  */
 function drush_sitealias_print() {
-  // Call bootstrap max, unless the caller requested short output
-  if (!drush_get_option('short', FALSE)) {
-    drush_bootstrap_max();
-  }
+  // Call bootstrap max in case we need it (defer or otherwise optimize this?)
+  // drush_bootstrap_max();
 
   $site_list = _drush_sitealias_user_specified_list();
   ksort($site_list);
-  $table_output = drush_get_option('table');
-  $full_output = drush_get_option('full');
-  $long_output = drush_get_option('long');
   $with_db = (drush_get_option('with-db') != null) || (drush_get_option('with-db-url') != null);
 
   $site_specs = array();
-  $rows = array();
   foreach ($site_list as $site => $alias_record) {
-    if (!array_key_exists('site-list', $alias_record)) {
-      $site_specs[] = drush_sitealias_alias_record_to_spec($alias_record, $with_db);
-    }
-    if (isset($table_output)) {
-      $alias_record += array('root' => '', 'uri' => '', 'remote-host' => '');
-      $row = array($site, $alias_record['root'], $alias_record['uri'], $alias_record['remote-host']);
-      if (empty($rows)) {
-        $header = array(dt('Name'), dt('Root'), dt('URI'), dt('Host'));
-        $rows = array($header);
-      }
-      $rows[] = $row;
-    }
-    elseif (isset($full_output)) {
-      $component = drush_get_option('component');
-      if ($component) {
-        if (array_key_exists($component, $alias_record)) {
-          drush_print($alias_record[$component]);
-        }
-        else {
-          drush_set_error('DRUSH_NO_SUCH_ELEMENT', dt('The element @component was not found in the alias record for @site.', array('@component' => $component, '@site' => $site)));
-        }
-      }
-      else {
-        _drush_sitealias_print_record($alias_record, $site);
-      }
-    }
-    else {
-      drush_print($site);
-    }
+    list($alias_name, $result_record) = _drush_sitealias_prepare_record($alias_record, $site);
+    $site_specs[$alias_name] = $result_record;
   }
-  $site_specs = array_unique($site_specs);
-  asort($site_specs);
-  drush_print_pipe(array_unique($site_specs));
-  if (!empty($rows)) {
-    drush_print_table($rows, TRUE);
-  }
+  ksort($site_specs);
+  return $site_specs;
 }
 
 /**
@@ -228,7 +187,7 @@ function drush_sitealias_print() {
  * @param alias_record
  *   The name of the site alias to print
  */
-function _drush_sitealias_print_record($alias_record, $site_alias = '') {
+function _drush_sitealias_prepare_record($alias_record, $site_alias = '') {
   $output_db = drush_get_option('with-db');
   $output_db_url = drush_get_option('with-db-url');
   $output_optional_items = drush_get_option('with-optional');
@@ -279,8 +238,7 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
     }
   }
 
-  // We don't want the name or group to go into the output
-  unset($alias_record['#name']);
+  // We don't want the certain fields to go into the output
   unset($alias_record['#group']);
   unset($alias_record['#hidden']);
 
@@ -299,11 +257,12 @@ function _drush_sitealias_print_record($alias_record, $site_alias = '') {
     $alias_name = substr($alias_name,1);
   }
 
-  if (!drush_get_option('show-passwords', FALSE)) {
-    drush_unset_recursive($alias_record, 'password');
-  }
+  return array($alias_name, $alias_record);
+}
 
-  $exported_alias = var_export($alias_record, TRUE);
+function _drush_sitealias_print_record($alias_record, $site_alias = '') {
+  list($alias_name, $result_record) = _drush_sitealias_prepare_record($alias_record, $site_alias);
+  $exported_alias = var_export($result_record, TRUE);
   drush_print('$aliases[\'' . $alias_name . '\'] = ' . $exported_alias . ';');
 }
 

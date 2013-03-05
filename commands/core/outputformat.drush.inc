@@ -6,6 +6,23 @@
  */
 
 /**
+ * Return selected output format engine
+ */
+function drush_get_outputformat() {
+  return drush_get_engine('outputformat');
+}
+
+/**
+ * Dynamically switch to a new output format.  Does NOT override
+ * user-selected output format.
+ */
+function drush_set_default_outputformat($format, $metadata = array()) {
+  $command = drush_get_command();
+  $command['engines']['outputformat']['default'] = $format;
+  $outputformat = drush_load_command_engine($command, 'outputformat', $metadata);
+}
+
+/**
  * Implementation of hook_drush_engine_type_info().
  */
 function outputformat_drush_engine_type_info() {

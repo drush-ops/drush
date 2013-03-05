@@ -495,6 +495,8 @@ function _drush_sitealias_find_and_load_all_aliases() {
 
         foreach ($aliases as $name => $value) {
           _drush_sitealias_initialize_alias_record($aliases[$name]);
+          $aliases[$name]['#name'] = $name;
+          $aliases[$name]['#id'] = "@$name";
         }
 
         $result = _sitealias_array_merge($result, $aliases);
@@ -615,6 +617,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
           foreach (array_keys($aliases) as $one_alias) {
             $alias_names[] = "@$group_name.$one_alias";
             $aliases[$one_alias]['#name'] = "$group_name.$one_alias";
+            $aliases[$one_alias]['#id'] = "@" . $aliases[$one_alias]['#name'];
             $aliases[$one_alias]['#group'] = $group_name;
             $aliases["$group_name.$one_alias"] = $aliases[$one_alias];
             $aliases[$one_alias]["#hidden"] = TRUE;
@@ -630,6 +633,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
         if (!array_key_exists('#name', $one_result)) {
           $one_result['#name'] = $aliasname;
         }
+        $one_result['#id'] = "@$aliasname";
         _drush_sitealias_initialize_alias_record($one_result);
         // If the alias name is exactly the same as a previous match, then
         // merge the two records together
@@ -694,6 +698,8 @@ function _drush_sitealias_add_inherited_values_to_record(&$alias_value) {
     foreach (explode(',', $alias_value['parent']) as $parent) {
       $parent_record = drush_sitealias_get_record($parent);
       unset($parent_record['#name']);
+      unset($parent_record['#id']);
+      unset($parent_record['#file']);
       unset($parent_record['#hidden']);
       $array_based_keys = array_merge(drush_get_special_keys(), array('path-aliases'));
       foreach ($array_based_keys as $array_based_key) {
@@ -719,6 +725,12 @@ function _drush_sitealias_cache_alias($alias_name, $alias_record) {
   // the new alias with the existing alias
   if (array_key_exists("@$alias_name", $cache)) {
     $alias_record = array_merge($cache["@$alias_name"], $alias_record);
+  }
+  if (!isset($alias_record['#name'])) {
+    $alias_record['#name'] = $alias_name;
+  }
+  if (!isset($alias_record['#id'])) {
+    $alias_record['#id'] = "@$alias_name";
   }
   $cache["@$alias_name"] = $alias_record;
 
@@ -1120,6 +1132,9 @@ function _drush_sitealias_add_static_defaults(&$alias_record) {
     }
     // If there is a 'root' entry, then copy it to the '%root' path alias
     $alias_record['path-aliases']['%root'] = $alias_record['root'];
+  }
+  if (!isset($alias_record['#id']) && isset($alias_record['#name'])) {
+    $alias_record['#id'] = "@" . $alias_record['#name'];
   }
 }
 

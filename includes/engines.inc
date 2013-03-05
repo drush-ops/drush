@@ -107,24 +107,35 @@ function drush_get_engine_topics() {
   return $items;
 }
 
-
 /**
  * Include, instantiate and validate command engines.
  *
  * @return FALSE if a engine doesn't validate.
  */
 function drush_load_command_engines($command) {
-  $version = drush_drupal_major_version();
   foreach ($command['engines'] as $engine_type => $config) {
-    drush_log(dt("Loading !engine engine.", array('!engine' => $engine_type), 'bootstrap'));
-    $engine_info = drush_get_engines($engine_type);
-    $selected_engine = drush_get_user_selected_engine($config, $engine_info);
+    $result = drush_load_command_engine($command, $engine_type);
+  }
+}
+
+function drush_load_command_engine($command, $engine_type, $metadata = array()) {
+  $config = array_merge($metadata, $command['engines'][$engine_type]);
+  $version = drush_drupal_major_version();
+  drush_log(dt("Loading !engine engine.", array('!engine' => $engine_type), 'bootstrap'));
+  $engine_info = drush_get_engines($engine_type);
+  $selected_engine = drush_get_user_selected_engine($config, $engine_info);
+  $result = drush_get_context($engine_type . '_engine_' . $selected_engine . '_' . $version, FALSE);
+  if ($result != FALSE) {
+    drush_set_engine($engine_type, $result);
+  }
+  else {
     $result = drush_load_engine($engine_type, $selected_engine, NULL, NULL, $config);
     if ($result == FALSE) {
       return FALSE;
     }
     drush_set_context($engine_type . '_engine_' . $selected_engine . '_' . $version, $result);
   }
+  return $result;
 }
 
 /**
