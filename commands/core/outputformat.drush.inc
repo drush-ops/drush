@@ -155,6 +155,7 @@ function outputformat_drush_engine_outputformat() {
     'metadata' => array(
       'variable-name' => 'config',
     ),
+    'list-field-selection-control' => -1,
     'engine-capabilities' => array('format-list','format-table'),
     'verbose-only' => TRUE,
   );
@@ -199,6 +200,7 @@ function outputformat_drush_engine_outputformat() {
     'description' => 'A list of php variable assignments.',
     'engine-capabilities' => array('format-table'),
     'verbose-only' => TRUE,
+    'list-field-selection-control' => -1,
     'topic-example' => $common_topic_example,
   );
   return $engines;

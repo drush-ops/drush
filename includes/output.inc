@@ -362,6 +362,26 @@ function drush_output_get_selected_field($input, $field_name, $default_value = '
 }
 
 /**
+ * Hide any fields that are empty
+ */
+function drush_hide_empty_fields($input, $fields) {
+  $has_data = array();
+  foreach ($input as $key => $data) {
+    foreach ($fields as $field => $label) {
+      if (isset($data[$field]) && !empty($data[$field])) {
+        $has_data[$field] = TRUE;
+      }
+    }
+  }
+  foreach ($fields as $field => $label) {
+    if (!isset($has_data[$field])) {
+      unset($fields[$field]);
+    }
+  }
+  return $fields;
+}
+
+/**
  * Convert an array of data rows, where each row contains an
  * associative array of key : value pairs, into
  * a table suitable for processing by drush_print_table.
@@ -395,6 +415,9 @@ function drush_output_get_selected_field($input, $field_name, $default_value = '
  *    An array of arrays
  */
 function drush_rows_of_key_value_to_array_table($rows_of_keyvalue_table, $header, $metadata) {
+  if (isset($metadata['hide-empty-fields'])) {
+    $header = drush_hide_empty_fields($rows_of_keyvalue_table, $header);
+  }
   $table = array();
   if (!empty($rows_of_keyvalue_table)) {
     if (empty($header)) {
