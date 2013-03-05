@@ -203,6 +203,19 @@ function outputformat_drush_engine_outputformat() {
     'list-field-selection-control' => -1,
     'topic-example' => $common_topic_example,
   );
+  $engines['labeled-export'] = array(
+    'machine-parsable' => TRUE,
+    'description' => 'A list of php exports, labeled with a name.',
+    'engine-capabilities' => array('format-table'),
+    'verbose-only' => TRUE,
+    'engine-class' => 'list',
+    'list-item-type' => 'export',
+    'metadata' => array(
+      'label-template' => '!label: ',
+    ),
+    'list-field-selection-control' => -1,
+    'topic-example' => $common_topic_example,
+  );
   return $engines;
 }
 

@@ -33,7 +33,7 @@ function variable_drush_command() {
       'exact' => 'Only get the one variable that exactly matches the specified name.',
     ),
     'outputformat' => array(
-      'default' => 'key-value',
+      'default' => 'labeled-export',
       'pipe-format' => 'config',
       'variable-name' => 'variables',
       'table-metadata' => array(
