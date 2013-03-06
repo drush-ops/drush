@@ -23,6 +23,10 @@ function cache_drush_command() {
       'format' => 'Format to output the object. Use "print_r" for print_r (default), "export" for var_export, and "json" for JSON.',
     ),
     'callback' => 'drush_cache_command_get',
+    'outputformat' => array(
+      'default' => 'print-r',
+      'pipe-format' => 'export',
+    ),
     'aliases' => array('cg'),
   );
   $items['cache-clear'] = array(
@@ -113,8 +117,7 @@ function drush_cache_command_clear($type = NULL) {
  */
 function drush_cache_command_get($cid = NULL, $bin = NULL) {
   if (!$cid) {
-    drush_log(dt('You must specify a cache id to fetch.'), 'error');
-    return;
+    return drush_set_error('DRUSH_CACHE_NOT_SPECIFIED', dt('You must specify a cache id to fetch.'));
   }
 
   if (!$bin) {
@@ -122,12 +125,10 @@ function drush_cache_command_get($cid = NULL, $bin = NULL) {
   }
 
   $result = cache_get($cid, $bin);
-  if (!empty($result)) {
-    drush_print(drush_format($result));
+  if (empty($result)) {
+    return drush_set_error('DRUSH_CACHE_OBJECT_NOT_FOUND', dt('The !cid object in the !bin cache bin was not found.', array('!cid' => $cid, '!bin' => $bin)));
   }
-  else {
-    drush_log(dt('The !cid object in the !bin cache bin was not found.', array('!cid' => $cid, '!bin' => $bin)), 'error');
-  }
+  return $result;
 }
 
 /**
