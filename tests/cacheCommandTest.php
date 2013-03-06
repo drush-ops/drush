@@ -20,7 +20,7 @@ class cacheCommandCase extends Drush_CommandTestCase {
     $this->assertObjectHasAttribute('data', $schema);
 
     // Test that get-ing a non-existant cid fails.
-    $this->drush('cache-get', array('test-failure-cid'), $options + array('format' => 'json'));
+    $this->drush('cache-get', array('test-failure-cid'), $options + array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
     $output = json_decode($this->getOutput());
     $this->assertEmpty($output);
 
@@ -33,7 +33,7 @@ class cacheCommandCase extends Drush_CommandTestCase {
 
     // Test cache-clear all.
     $this->drush('cache-clear', array('all'), $options);
-    $this->drush('cache-get', array('cache-test-cid'), $options + array('format' => 'json'));
+    $this->drush('cache-get', array('cache-test-cid'), $options + array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
     $output = json_decode($this->getOutput());
     $this->assertEmpty($output);
   }
