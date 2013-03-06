@@ -305,9 +305,6 @@
 // Ensure all rsync commands use verbose output.
 # $command_specific['rsync'] = array('verbose' => TRUE);
 
-// CVS credentials for module dowlnoads.
-# $command_specific['dl'] = array('cvscredentials' => 'user:pass');
-
 // Additional folders to search for scripts.
 // Separate by : (Unix-based systems) or ; (Windows).
 # $command_specific['script']['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
