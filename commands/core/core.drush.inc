@@ -641,13 +641,16 @@ function drush_core_config($filter = NULL) {
   }
   $all = drush_map_assoc(array_values($all));
 
+  $exec = drush_get_editor();
   if (count($all) == 1) {
-    return drush_shell_exec_interactive('$EDITOR %s ' . $bg, current($all));
+    $filepath = current($all);
+    return drush_shell_exec_interactive($exec, $filepath, $filepath);
   }
   else {
     $choice = drush_choice($all, 'Enter a number to choose which file to edit.', '!key');
     if ($choice !== FALSE) {
-      return drush_shell_exec_interactive('$EDITOR %s ' . $bg, $all[$choice]);
+      $filepath = $all[$choice];
+      drush_shell_exec_interactive($exec, $filepath, $filepath);
     }
   }
 }
