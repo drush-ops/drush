@@ -520,7 +520,7 @@ function drush_valid_db_credentials() {
         }
       }
       try {
-        $db = new PDO($constr, $creds['user'], $creds['pass']);
+        $db = new PDO($constr, $creds['user'], $creds['pass'], $creds['pdo']);
         $db = null;
       }
       catch (PDOException $e) {

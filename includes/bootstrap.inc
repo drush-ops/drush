@@ -884,6 +884,9 @@ function _drush_bootstrap_drupal_configuration() {
          $creds['port'] = $conn['port'];
          $creds['name'] = $conn['database'];
          $creds['pass'] = $conn['password'];
+         if(isset($conn['pdo'])) {
+             $creds['pdo'] = $conn['pdo'];
+         } else { $creds['pdo'] = null; }
        }
        break;
   }
