@@ -408,6 +408,9 @@ class drush_outputformat {
  */
 function drush_hide_output_fields($fields_to_hide = array()) {
   $already_hidden = drush_get_context('DRUSH_HIDDEN_OUTPUT_FIELDS');
+  if (!is_array($fields_to_hide)) {
+    $fields_to_hide = array($fields_to_hide);
+  }
   $result = array_merge($already_hidden, $fields_to_hide);
   drush_set_context('DRUSH_HIDDEN_OUTPUT_FIELDS', $result);
   return $result;

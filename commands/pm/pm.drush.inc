@@ -183,6 +183,12 @@ function pm_drush_command() {
       'no-core' => 'Filter out extensions that are provided by drupal core.',
       'pipe' => 'Returns a whitespace delimited list of the names of the resulting extensions.',
     ),
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'list',
+      'field-labels' => array('package' => 'Package', 'name' => 'Name', 'type' => 'Type', 'status' => 'Status', 'version' => 'Version'),
+      'output-data-type' => 'format-table',
+    ),
     'aliases' => array('pml'),
   );
   $items['pm-refresh'] = array(
@@ -658,11 +664,9 @@ function drush_pm_list() {
   if (!empty($package)) {
     $package_filter = explode(',', $package);
   }
-  if (empty($package_filter) || count($package_filter) > 1) {
-    $header[] = dt('Package');
+  if (!empty($package_filter) && (count($package_filter) == 1)) {
+    drush_hide_output_fields('package');
   }
-
-  $header[] = dt('Name');
 
   //--type
   $all_types = array('module', 'theme');
@@ -674,8 +678,8 @@ function drush_pm_list() {
     $type_filter = $all_types;
   }
 
-  if (count($type_filter) > 1) {
-    $header[] = dt('Type');
+  if (count($type_filter) == 1) {
+    drush_hide_output_fields('type');
   }
   foreach ($type_filter as $type) {
     if (!in_array($type, $all_types)) { //TODO: this kind of chck can be implemented drush-wide
@@ -692,19 +696,17 @@ function drush_pm_list() {
   else {
     $status_filter = $all_status;
   }
-  if (count($status_filter) > 1) {
-    $header[] = dt('Status');
+  if (count($status_filter) == 1) {
+    drush_hide_output_fields('status');
   }
 
   foreach ($status_filter as $status) {
-    if (!in_array($status, $status_filter)) { //TODO: this kind of chck can be implemented drush-wide
+    if (!in_array($status, $all_status)) { //TODO: this kind of chck can be implemented drush-wide
       return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status)));
   }
   }
 
-  $header[] = dt('Version');
-  $rows[] = $header;
-
+  $result = array();
   $extension_info = drush_get_extensions(FALSE);
   uasort($extension_info, '_drush_pm_sort_extensions');
 
@@ -744,35 +746,18 @@ function drush_pm_list() {
       }
     }
 
-    if (empty($package_filter) || count($package_filter) > 1) {
-      $row[] = $extension->info['package'];
-    }
+    $row['package'] = $extension->info['package'];
+    $row['name'] = $extension->label;
+    $row['type'] = ucfirst($extension->type);
+    $row['status'] = ucfirst($status);
+    // Suppress notice when version is not present.
+    $row['version'] = @$extension->info['version'];
 
-    $row[] = $extension->label;
-
-    if (count($type_filter) > 1) {
-      $row[] = ucfirst($extension->type);
-    }
-    if (count($status_filter) > 1) {
-      $row[] = ucfirst($status);
-    }
-    if (($major_version >= 6)||($extension->type == 'module')) {
-      // Suppress notice when version is not present.
-      $row[] = @$extension->info['version'];
-    }
-
-    $rows[] = $row;
-    $pipe[] = $extension->name;
+    $result[$extension->name] = $row;
     unset($row);
   }
-  drush_print_table($rows, TRUE);
-
-  if (isset($pipe)) {
-    // Newline-delimited list for use by other scripts. Set the --pipe option.
-    drush_print_pipe($pipe);
-  }
-  // Return the result for backend invoke
-  return $extension_info;
+  // In Drush-5, we used to return $extension_info here.
+  return $result;
 }
 
 /**
