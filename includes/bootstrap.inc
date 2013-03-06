@@ -1003,6 +1003,10 @@ function drush_bootstrap_prepare() {
   }
 
   // Check supported version of PHP.
+  // Note: If this is adjusted, check other code that compares
+  // PHP_VERSION, such as runserver/runserver.drush.inc, and also
+  // adjust _drush_environment_check_php_ini() and the php_prohibited_options
+  // list in the drush script.  See http://drupal.org/node/1748228
   define('DRUSH_MINIMUM_PHP', '5.3.5');
   if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0) {
     return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Your command line PHP installation is too old. Drush requires at least PHP !version.', array('!version' => DRUSH_MINIMUM_PHP)));
