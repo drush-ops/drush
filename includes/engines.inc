@@ -451,7 +451,8 @@ function drush_set_engine($type, $instance) {
  */
 function drush_engine_add_help_topics(&$command) {
   $engine_types = drush_get_engine_types_info();
-  foreach ($engine_types as $engine => $info) {
+  foreach ($command['engines'] as $engine_type => $config) {
+    $info = $engine_types[$engine_type];
     if (isset($info['topics'])) {
       $command['topics'] = array_merge($command['topics'], $info['topics']);
     }
