@@ -358,12 +358,7 @@ class drush_outputformat {
       if (is_array($first_value)) {
         $input_data_keys = array_keys($first_value);
         $all_field_labels = (isset($metadata['field-labels']) ? $metadata['field-labels'] : array()) + array_combine($input_data_keys, $input_data_keys);
-        $field_labels = array();
-        foreach ($metadata['fields'] as $field) {
-          if (array_key_exists($field, $all_field_labels)) {
-            $field_labels[$field] = $all_field_labels[$field];
-          }
-        }
+        $field_labels = drush_select_fields($all_field_labels, $metadata['fields']);
         // Ignore the fields option unless it selects at least one field
         if (!empty($field_labels)) {
           $metadata['field-labels'] = $field_labels;

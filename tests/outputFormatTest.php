@@ -160,11 +160,11 @@ f=6",
         'code' => "return array(
           'a' => array('b' => 2, 'c' => 3),
           'd' => array('e' => 5, 'f' => 6));",
-        'expected' => "\$config['a'] = array (
+        'expected' => "\$config[\"a\"] = array (
   'b' => 2,
   'c' => 3,
 );
-\$config['d'] = array (
+\$config[\"d\"] = array (
   'e' => 5,
   'f' => 6,
 );",
@@ -175,10 +175,10 @@ f=6",
         'code' => "return array(
           'a' => array('b' => 2, 'c' => 3),
           'd' => array('e' => 5, 'f' => 6));",
-        'expected' => "\$a['b'] = 2;
-\$a['c'] = 3;
-\$d['e'] = 5;
-\$d['f'] = 6;",
+        'expected' => "\$a[\"b\"] = 2;
+\$a[\"c\"] = 3;
+\$d[\"e\"] = 5;
+\$d[\"f\"] = 6;",
       ),
     );
   }

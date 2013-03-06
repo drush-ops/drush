@@ -220,7 +220,7 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = 
     $output = str_replace("\r\n", PHP_EOL, $output);
   }
 
-  drush_print($output, 0, $handle);
+  drush_print(rtrim($output), 0, $handle);
   return $tbl;
 }
 
@@ -316,6 +316,19 @@ function drush_key_value_to_array_table($keyvalue_table, $metadata = array()) {
     }
   }
   return $table;
+}
+
+/**
+ * Select the fields that should be used.
+ */
+function drush_select_fields($all_field_labels, $fields) {
+  $field_labels = array();
+  foreach ($fields as $field) {
+    if (array_key_exists($field, $all_field_labels)) {
+      $field_labels[$field] = $all_field_labels[$field];
+    }
+  }
+  return $field_labels;
 }
 
 /**
@@ -418,13 +431,12 @@ function drush_rows_of_key_value_to_array_table($rows_of_keyvalue_table, $header
   if (isset($metadata['hide-empty-fields'])) {
     $header = drush_hide_empty_fields($rows_of_keyvalue_table, $header);
   }
-  $table = array();
-  if (!empty($rows_of_keyvalue_table)) {
-    if (empty($header)) {
-      $keys = array_keys(reset($rows_of_keyvalue_table));
-      $header = array_combine($keys, $keys);
-    }
-    $table[] = array_values($header);
+  if (empty($header)) {
+    $keys = array_keys(reset($rows_of_keyvalue_table));
+    $header = array_combine($keys, $keys);
+  }
+  $table = array(array_values($header));
+  if (isset($rows_of_keyvalue_table) && is_array($rows_of_keyvalue_table) && !empty($rows_of_keyvalue_table)) {
     foreach ($rows_of_keyvalue_table as $row_index => $row_data) {
       $row = array();
       foreach ($header as $column_key => $column_label) {

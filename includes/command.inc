@@ -463,7 +463,7 @@ function drush_handle_command_output($command, $structured_output) {
             $formatter->engine_config['fields-default'] = $formatter->engine_config['fields-full'];
           }
           else {
-            $formatter->engine_config['fields-default'] = array_keys($formatter->engine_config['fields-labels']);
+            $formatter->engine_config['fields-default'] = array_keys($formatter->engine_config['field-labels']);
           }
         }
         elseif (drush_get_context('DRUSH_PIPE') && isset($formatter->engine_config['fields-pipe'])) {
