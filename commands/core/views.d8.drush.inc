@@ -26,15 +26,18 @@ function views_drush_help($section) {
 function views_drush_command() {
   $items = array();
 
-  $items['views-dev'] = array(
-    'callback' => 'views_development_settings',
+  $base = array(
+    'core' => array('8+'),
     'drupal dependencies' => array('views'),
-    'description' => 'Set the Views settings to more developer-oriented values.',
-    'aliases' => array('vd'),
   );
 
+  $items['views-dev'] = array(
+    'callback' => 'views_development_settings',
+    'description' => 'Set the Views settings to more developer-oriented values.',
+    'aliases' => array('vd'),
+  ) + $base;
+
   $items['views-list'] = array(
-    'drupal dependencies' => array('views'),
     'description' => 'Get a list of all views in the system.',
     'aliases' => array('vl'),
     'options' => array(
@@ -63,7 +66,37 @@ function views_drush_command() {
       'drush vl --tags=tag1,tag2' => 'Show a list of views tagged with "tag1" or "tag2".',
       'drush vl --status=enabled' => 'Show a list of enabled views.',
     ),
-  );
+  ) + $base;
+
+  $items['views-execute'] = array(
+    'description' => 'Execute a view and get the results.',
+    'aliases' => array('vex'),
+    'arguments' => array(
+      'view' => 'The name of the view to execute.',
+      'display' => 'The display ID to execute. If none specified, the default display will be used.',
+    ),
+    'required-arguments' => 1,
+    'options' => array(
+      'count' => array(
+        'description' => 'Display a count of the results instead of each row.',
+      ),
+      'rendered' => array(
+        'description' => 'Return the results as rendered HTML output for the display.',
+      ),
+      'show-admin-links' => array(
+        'description' => 'Show contextual admin links in the rendered markup.',
+      ),
+    ),
+    'outputformat' => array(
+      'default' => 'print-r',
+      'pipe-format' => 'export',
+    ),
+    'examples' => array(
+      'drush views-execute my_view' => 'Show the result set of the default display for the my_view view.',
+      'drush views-execute my_view page_1 --rendered' => 'Show the rendered output of the my_view:page_1 view.',
+      'drush views-execute my_view page_1 3 --count' => 'Show a count of my_view:page_1 with an agument of 3 being passed.',
+    ),
+  ) + $base;
 
   $items['views-analyze'] = array(
     'drupal dependencies' => array('views', 'views_ui'),
@@ -74,10 +107,9 @@ function views_drush_command() {
         'description' => 'Define the output format. Known formats are: json, print_r, and export.',
       ),
     ),
-  );
+  ) + $base;
 
   $items['views-enable'] = array(
-    'drupal dependencies' => array('views'),
     'description' => 'Enable the specified views.',
     'arguments' => array(
       'views' => 'A space delimited list of view names.',
@@ -87,10 +119,9 @@ function views_drush_command() {
     'examples' => array(
       'drush ven frontpage taxonomy_term' => 'Enable the frontpage and taxonomy_term views.',
     ),
-  );
+  ) + $base;
 
   $items['views-disable'] = array(
-    'drupal dependencies' => array('views'),
     'description' => 'Disable the specified views.',
     'arguments' => array(
       'views' => 'A space delimited list of view names.',
@@ -100,7 +131,7 @@ function views_drush_command() {
     'examples' => array(
       'drush vdis frontpage taxonomy_term' => 'Disable the frontpage and taxonomy_term views.',
     ),
-  );
+  ) + $base;
 
   return $items;
 }
@@ -275,6 +306,47 @@ function drush_views_list() {
     drush_set_error(dt('No views found.'));
   }
 
+}
+
+/**
+ * Drush views execute command.
+ */
+function drush_views_execute($view_name, $display_id = NULL) {
+  $args = func_get_args();
+  $view_args = array();
+
+  // If it's more than 2, we have arguments. A display has to be specified in
+  // that case.
+  if (count($args) > 2) {
+    $view_args = array_slice($args, 2);
+  }
+
+  if (!$view = views_get_view($view_name)) {
+    return drush_set_error(dt('View: "@view" not found.', array('@view' => $view_name)));
+  }
+
+  // Set the display and execute the view.
+  $view->setDisplay($display_id);
+  $view->preExecute($view_args);
+  $view->execute();
+
+  if (drush_get_option('count', FALSE)) {
+    return count($view->result);
+  }
+  elseif (!empty($view->result)) {
+    if (drush_get_option('rendered', FALSE)) {
+      // Don't show admin links in markup by default.
+      $view->hide_admin_links = !drush_get_option('show-admin-links', FALSE);
+      return $view->preview();
+    }
+    else {
+      return $view->result;
+    }
+  }
+  else {
+    drush_log(dt('No results returned for this view.') ,'warning');
+    return NULL;
+  }
 }
 
 /**
