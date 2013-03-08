@@ -36,8 +36,9 @@ function sitealias_drush_command() {
       'variable-name' => 'aliases',
       'hide-empty-fields' => TRUE,
       'private-fields' => 'password',
-      'field-labels' => array('id' => 'ID', 'root' => 'Root', 'uri' => 'URI', 'remote-host' => 'Host', 'remote-user' => 'User', 'remote-port' => 'Port', 'os' => 'OS', 'ssh-options' => 'SSH options', 'php' => 'PHP'),
-      'fields-default' => array('id', 'root', 'uri', 'remote-host', 'remote-user'),
+      'field-labels' => array('#id' => 'ID', 'root' => 'Root', 'uri' => 'URI', 'remote-host' => 'Host', 'remote-user' => 'User', 'remote-port' => 'Port', 'os' => 'OS', 'ssh-options' => 'SSH options', 'php' => 'PHP'),
+      'fields-default' => array('#id', 'root', 'uri', 'remote-host', 'remote-user'),
+      'field-mappings' => array('name' => '#name', 'id' => '#id'),
       'output-data-type' => 'format-table',
     ),
     'aliases' => array('sa'),
@@ -242,12 +243,7 @@ function _drush_sitealias_prepare_record($alias_record, $site_alias = '') {
     }
   }
 
-  // Rename '#name' and '#id' so that they can be used as fields
-  $alias_record['name'] = $alias_record['#name'];
-  unset($alias_record['#name']);
-  $alias_record['id'] = $alias_record['#id'];
-  unset($alias_record['#id']);
-  // We don't want the certain fields to go into the output
+  // We don't want certain fields to go into the output
   unset($alias_record['#group']);
   unset($alias_record['#hidden']);
 

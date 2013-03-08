@@ -27,7 +27,8 @@
  */
 class drush_outputformat_variables extends drush_outputformat {
   function validate() {
-    $this->sub_engine = drush_load_engine('outputformat', 'export', NULL, NULL, $this->engine_config);
+    $metadata = $this->engine_config;
+    $this->sub_engine = drush_load_engine('outputformat', 'export', NULL, NULL, $metadata);
     if (!is_object($this->sub_engine)) {
       return FALSE;
     }

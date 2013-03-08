@@ -457,6 +457,7 @@ function drush_handle_command_output($command, $structured_output) {
       }
       // Add any user-specified options to the metadata passed to the formatter.
       $metadata = array();
+      $metadata['strict'] = drush_get_option('strict', FALSE);
       if (isset($formatter->engine_config['options'])) {
         if (drush_get_option('full', FALSE)) {
           if (isset($formatter->engine_config['fields-full'])) {

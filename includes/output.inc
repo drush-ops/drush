@@ -321,11 +321,14 @@ function drush_key_value_to_array_table($keyvalue_table, $metadata = array()) {
 /**
  * Select the fields that should be used.
  */
-function drush_select_fields($all_field_labels, $fields) {
+function drush_select_fields($all_field_labels, $fields, $strict = TRUE) {
   $field_labels = array();
   foreach ($fields as $field) {
     if (array_key_exists($field, $all_field_labels)) {
       $field_labels[$field] = $all_field_labels[$field];
+    }
+    elseif (!$strict) {
+      $field_labels[$field] = $field;
     }
   }
   return $field_labels;
@@ -339,18 +342,66 @@ function drush_select_fields($all_field_labels, $fields) {
  * @param $fields
  *   An associative array that maps FROM a field in $input
  *   TO the corresponding field name in $output.
+ * @param $mapping
+ *   An associative array that maps FROM a field in $fields
+ *   TO the actual field in $input to use in the preceeding
+ *   translation described above.
  * @return
  *   The input array, re-ordered and re-keyed per $fields
  */
-function drush_select_output_fields($input, $fields) {
+function drush_select_output_fields($input, $fields, $mapping = array()) {
   $result = array();
   if (empty($fields)) {
     $result = $input;
   }
   else {
     foreach ($fields as $key => $label) {
-      if (isset($input[$key])) {
-        $result[$label] = $input[$key];
+      $result[$label] = drush_lookup_field_by_path($input, $key, $mapping);
+    }
+  }
+  return $result;
+}
+
+/**
+ * Return a specific item inside an array, as identified
+ * by the provided path.
+ *
+ * @param $input:
+ *   An array of items, potentially multiple layers deep.
+ * @param $path:
+ *   A specifier of array keys, either in an array or separated by
+ *   a '/', that list the elements of the array to access.  This
+ *   works much like a very simple version of xpath for arrays, with
+ *   all items being treated identically (like elements).
+ *
+ * Example 1:
+ *
+ *   $input = array('#name' => 'site.dev', '#id' => '222');
+ *   $path = '#name';
+ *   result: 'site.dev';
+ *
+ * Example 2:
+ *
+ *   $input = array('ca' => array('sf' => array('mission'=>array('1700'=>'woodward'))));
+ *   $path = 'ca/sf/mission/1701';
+ *   result: 'woodward'
+ */
+function drush_lookup_field_by_path($input, $path, $mapping = array()) {
+  $result = '';
+  if (isset($mapping[$path])) {
+    $path = $mapping[$path];
+  }
+  if (!is_array($path)) {
+    $parts = explode('/', $path);
+  }
+  if (!empty($parts)) {
+    $result = $input;
+    foreach ($parts as $key) {
+      if ((is_array($result)) && (isset($result[$key]))) {
+        $result = $result[$key];
+      }
+      else {
+        return '';
       }
     }
   }
@@ -432,15 +483,17 @@ function drush_rows_of_key_value_to_array_table($rows_of_keyvalue_table, $header
     $header = drush_hide_empty_fields($rows_of_keyvalue_table, $header);
   }
   if (empty($header)) {
-    $keys = array_keys(reset($rows_of_keyvalue_table));
+    $first = (array)reset($rows_of_keyvalue_table);
+    $keys = array_keys($first);
     $header = array_combine($keys, $keys);
   }
   $table = array(array_values($header));
   if (isset($rows_of_keyvalue_table) && is_array($rows_of_keyvalue_table) && !empty($rows_of_keyvalue_table)) {
     foreach ($rows_of_keyvalue_table as $row_index => $row_data) {
+      $row_data = (array)$row_data;
       $row = array();
       foreach ($header as $column_key => $column_label) {
-        $data = isset($row_data[$column_key]) ? $row_data[$column_key] : '';
+        $data = drush_lookup_field_by_path($row_data, $column_key, $metadata['field-mappings']);
         if (array_key_exists('transform-columns', $metadata)) {
           foreach ($metadata['transform-columns'] as $dest_col => $transformations) {
             if ($dest_col == $column_key) {

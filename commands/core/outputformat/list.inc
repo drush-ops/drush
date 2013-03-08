@@ -94,7 +94,7 @@ class drush_outputformat_list extends drush_outputformat {
         // cause output fields to be selected at a later point in the call chain.
         elseif (is_array($data) && isset($metadata['field-labels'])) {
           if (!$field_selection_control) {
-            $data = drush_select_output_fields($data, $metadata['field-labels']);
+            $data = drush_select_output_fields($data, $metadata['field-labels'], $metadata['field-mappings']);
             $selected_output_fields = true;
           }
         }

@@ -307,6 +307,7 @@ class drush_outputformat {
   function __construct($config) {
     $config += array(
       'column-widths' => array(),
+      'field-mappings' => array(),
       'engine-info' => array(),
     );
     $config['engine-info'] += array(
@@ -353,16 +354,12 @@ class drush_outputformat {
         }
       }
     }
-    if (isset($metadata['fields']) && is_array($input)) {
-      $first_value = reset($input);
-      if (is_array($first_value)) {
-        $input_data_keys = array_keys($first_value);
-        $all_field_labels = (isset($metadata['field-labels']) ? $metadata['field-labels'] : array()) + array_combine($input_data_keys, $input_data_keys);
-        $field_labels = drush_select_fields($all_field_labels, $metadata['fields']);
-        // Ignore the fields option unless it selects at least one field
-        if (!empty($field_labels)) {
-          $metadata['field-labels'] = $field_labels;
-        }
+    if (isset($metadata['fields'])) {
+      if (isset($metadata['field-labels'])) {
+        $metadata['field-labels'] = drush_select_fields($metadata['field-labels'], $metadata['fields'], $metadata['strict']);
+      }
+      else {
+        $metadata['field-labels'] = array_combine($metadata['fields'], $metadata['fields']);
       }
     }
     if (isset($metadata[$this->selected_engine . '-metadata'])) {
