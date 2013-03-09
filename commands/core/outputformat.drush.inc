@@ -358,7 +358,7 @@ class drush_outputformat {
       if (isset($metadata['field-labels'])) {
         $metadata['field-labels'] = drush_select_fields($metadata['field-labels'], $metadata['fields'], $metadata['strict']);
       }
-      else {
+      elseif (!empty($metadata['field-labels'])) {
         $metadata['field-labels'] = array_combine($metadata['fields'], $metadata['fields']);
       }
     }
