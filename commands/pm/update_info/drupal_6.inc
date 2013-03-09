@@ -84,7 +84,7 @@ function _pm_get_update_info($projects) {
     }
     // Add some info from the project to $data.
     $data[$project_name] += array(
-      'path'  => $projects[$project_name]['path'],
+      'path'  => isset($projects[$project_name]['path']) ? $projects[$project_name]['path'] : '',
       'label' => $projects[$project_name]['label'],
     );
   }

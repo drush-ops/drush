@@ -320,6 +320,15 @@ class drush_outputformat {
   function format_error($message) {
     return drush_set_error('DRUSH_FORMAT_ERROR', dt("The output data could not be processed by the selected format '!type'.  !message", array('!type' => $this->selected_engine, '!message' => $message)));
   }
+  function formatter_type() {
+    return $this->engine;
+  }
+  function formatter_is_simple_list() {
+    if (!isset($this->sub_engine)) {
+      return false;
+    }
+    return ($this->formatter_type() == 'list') && ($this->sub_engine->supports_single_only());
+  }
   function data_type($metadata) {
     if (isset($metadata['metameta']['require-engine-capability'])) {
       return  $metadata['metameta']['require-engine-capability'][0];
@@ -329,7 +338,10 @@ class drush_outputformat {
     }
     return 'unspecified';
   }
-  function supported_data_types($metadata) {
+  function supported_data_types($metadata = NULL) {
+    if ($metadata == NULL) {
+      $metadata = $this->engine_config;
+    }
     if (isset($metadata['metameta']['engine-info']['engine-capabilities'])) {
       return  $metadata['metameta']['engine-info']['engine-capabilities'];
     }
@@ -338,7 +350,7 @@ class drush_outputformat {
     }
     return array();
   }
-  function supports_single_only($metadata) {
+  function supports_single_only($metadata = NULL) {
     $supported = $this->supported_data_types($metadata);
     return (count($supported) == 1) && ($supported[0] == 'format-single');
   }

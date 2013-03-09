@@ -118,11 +118,13 @@ function _pm_get_update_info($projects) {
     }
     // Add some info from the project to $data.
     $data[$project_name] += array(
-      'path'  => $projects[$project_name]['path'],
+      'path'  => isset($projects[$project_name]['path']) ? $projects[$project_name]['path'] : '',
       'label' => $projects[$project_name]['label'],
     );
     // Store all releases, not just the ones selected by update.module.
-    $data[$project_name]['releases'] = $available[$project_name]['releases'];
+    if (isset($available[$project_name]['releases'])) {
+      $data[$project_name]['releases'] = $available[$project_name]['releases'];
+    }
   }
 
   return $data;

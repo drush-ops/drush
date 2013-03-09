@@ -196,6 +196,25 @@ function pm_drush_command() {
     'drupal dependencies' => array($update),
     'aliases' => array('rf'),
   );
+  $items['pm-updatestatus'] = array(
+    'description' => 'Show a report of available minor updates to Drupal core and contrib projects.',
+    'drupal dependencies' => array($update),
+    'arguments' => array(
+      'projects' => 'Optional. A list of installed projects to show.',
+    ),
+    'options' => array(
+      'pipe' => 'Returns a whitespace delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
+    ) + $update_options,
+    'sub-options' => $update_suboptions,
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'list',
+      'field-labels' => array('label' => 'Name', 'existing_version' => 'Installed Version', 'status' => 'Status', 'status_msg' => 'Message', 'candidate_version' => 'Proposed version'),
+      'fields-default' => array('label', 'existing_version', 'candidate_version', 'status_msg' ),
+      'output-data-type' => 'format-table',
+    ),
+    'aliases' => array('ups'),
+  );
   $items['pm-updatecode'] = array(
     'description' => 'Update Drupal core and contrib projects to latest recommended releases.',
     'drupal dependencies' => array($update),
@@ -1624,26 +1643,28 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
       continue;
     }
     $message = NULL;
-    $lockfile = $drupal_root . '/' . $project['path'] . '/.drush-lock-update';
+    if (isset($project['path'])) {
+      $lockfile = $drupal_root . '/' . $project['path'] . '/.drush-lock-update';
 
-    // Remove the lock file if the --unlock option was specified
-    if (((in_array($name, $projects_to_unlock)) || (in_array('all', $projects_to_unlock))) && (file_exists($lockfile))) {
-      drush_op('unlink', $lockfile);
-    }
+      // Remove the lock file if the --unlock option was specified
+      if (((in_array($name, $projects_to_unlock)) || (in_array('all', $projects_to_unlock))) && (file_exists($lockfile))) {
+        drush_op('unlink', $lockfile);
+      }
 
-    // Create the lock file if the --lock option was specified
-    if ((in_array($name, $projects_to_lock)) || (in_array('all', $projects_to_lock))) {
-      drush_op('file_put_contents', $lockfile, $lock_message != NULL ? $lock_message : "Locked via drush.");
-      // Note that the project is locked.  This will work even if we are simulated,
-      // or if we get permission denied from the file_put_contents.
-      // If the lock is -not- simulated or transient, then the lock message will be
-      // read from the lock file below.
-      $message = drush_get_context('DRUSH_SIMULATE') ? 'Simulated lock.' : 'Transient lock.';
-    }
+      // Create the lock file if the --lock option was specified
+      if ((in_array($name, $projects_to_lock)) || (in_array('all', $projects_to_lock))) {
+        drush_op('file_put_contents', $lockfile, $lock_message != NULL ? $lock_message : "Locked via drush.");
+        // Note that the project is locked.  This will work even if we are simulated,
+        // or if we get permission denied from the file_put_contents.
+        // If the lock is -not- simulated or transient, then the lock message will be
+        // read from the lock file below.
+        $message = drush_get_context('DRUSH_SIMULATE') ? 'Simulated lock.' : 'Transient lock.';
+      }
 
-    // If the persistent lock file exists, then mark the project as locked.
-    if (file_exists($lockfile)) {
-      $message = trim(file_get_contents($lockfile));
+      // If the persistent lock file exists, then mark the project as locked.
+      if (file_exists($lockfile)) {
+        $message = trim(file_get_contents($lockfile));
+      }
     }
 
     // If there is a message set, then mark the project as locked.
