@@ -56,13 +56,12 @@ if [ -n "$DRUSH_PHP" ] ; then
   php="$DRUSH_PHP"
 else
   # Default to using the php that we find on the PATH.
-  # Note that we need the full path to php here for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
-  php="`which php`"
-
   # We check for a command line (cli) version of php, and if found use that.
-  php-cli -v >/dev/null 2>&1
-  if [ "$?" = 0 ] ; then
-    php="`which php-cli`"
+  # Note that we need the full path to php here for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
+  php="$(which php-cli php 2>/dev/null | head -1)"
+
+  if [ ! -x "$php" ]; then
+    echo "ERROR: can't find php."; exit 1
   fi
 
   # On MSYSGIT, we need to use "php", not the full path to php
