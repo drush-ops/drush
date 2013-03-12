@@ -8,8 +8,6 @@
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\DatabaseStorage;
 use Drupal\Core\Config\FileStorage;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Yaml\Dumper;
 
 /**
  * Implementation of hook_drush_help().
@@ -35,11 +33,6 @@ function config_drush_command() {
     ),
     'required-arguments' => 1,
     'options' => array(
-      'format' => array(
-        'description' => 'Format the object. Use "yaml" for YAML (default), "php" for a serialized array, or "dump" for a php array declaration.',
-        'example-value' => 'yaml',
-        'value' => 'required',
-      ),
       'source' => array(
         'description' => 'The config storage source to read. Use "database" for database storage, or "file" for file stroage',
         'example-value' => 'database',
@@ -49,6 +42,10 @@ function config_drush_command() {
     'examples' => array(
       'drush config-view system.site' => 'Displays the system.site config.',
       'drush config-get system.site page.front' => 'gets system.site:page.front value.',
+    ),
+    'outputformat' => array(
+      'default' => 'yaml',
+      'pipe-format' => 'export',
     ),
     'aliases' => array('cget'),
     'core' => array('8+'),
@@ -100,6 +97,11 @@ function config_drush_command() {
       'drush config-list "image.style"' => 'Return a list of all image styles.',
       'drush config-list --format="json"' => 'Return all config names as json.',
     ),
+    'outputformat' => array(
+      'default' => 'list',
+      'pipe-format' => 'export',
+      'output-data-type' => 'format-list',
+    ),
   );
 
   $items['config-edit'] = array(
@@ -131,32 +133,18 @@ function config_drush_command() {
  */
 function drush_config_list($prefix = '') {
   $names = config_get_storage_names_with_prefix($prefix);
-  $format = drush_get_option('format', FALSE);
 
-  if (!empty($names)) {
-    // Use the format if we have one.
-    if ($format) {
-      $output = drush_format($names, $format);
-      drush_print($output);
-      return $output;
-    }
-    // Otherwise just print each name.
-    else {
-      foreach ($names as $name) {
-        drush_print($name);
-      }
-      return $names;
-    }
-  }
-  else {
+  if (empty($names)) {
     // Just incase there is no config.
     if (!$prefix) {
-      drush_set_error(dt('No config storage names found.'));
+      return drush_set_error(dt('No config storage names found.'));
     }
     else {
-      drush_set_error(dt('No config storage names found matching @prefix', array('@prefix' => $prefix)));
+      return drush_set_error(dt('No config storage names found matching @prefix', array('@prefix' => $prefix)));
     }
   }
+
+  return $names;
 }
 
 /**
@@ -330,36 +318,7 @@ function drush_config_get_object($config_name) {
     drush_log(dt('Config !name exists but has no data.', array('!name' => $config_name)), 'notice');
     return;
   }
-  $format = drush_get_option('format', 'yaml');
-  switch ($format) {
-    case 'yaml':
-      $dumper = new Dumper();
-      // Set Yaml\Dumper's default indentation for nested nodes/collections to
-      // 2 spaces for consistency with Drupal coding standards.
-      $dumper->setIndentation(2);
-      // The level where you switch to inline YAML is set to PHP_INT_MAX to
-      // ensure this does not occur.
-      $output = $dumper->dump($config->read($config_name), PHP_INT_MAX);
-      break;
-    case 'php':
-      // As config appears in the database.
-      $output = serialize($data);
-      break;
-    case 'dump':
-      include_once DRUPAL_ROOT . '/core/includes/utility.inc';
-      // Do this so it's super easy to copy and paste into settings.php for
-      // evil global overrides.
-      $data = array(
-        $config_name => $data,
-      );
-      $output = drupal_var_export($data);
-      break;
-    default:
-      return drush_set_error(dt('Unsupported config dump format: !format', array('!format' => $format)));
-      break;
-  }
-  drush_print($output);
-  return $output;
+  return $data;
 }
 
 /**
@@ -371,17 +330,12 @@ function drush_config_get_object($config_name) {
  *   The config key.
  */
 function drush_config_get_value($config_name, $key) {
+  drush_set_default_outputformat('labeled-export');
   $config = config($config_name);
   if ($config->isNew()) {
     return drush_set_error(dt('Config !name does not exist', array('!name' => $config_name)));
   }
   $value = $config->get($key);
-  $pipe = array();
-  $data = array(
-    $key => $value,
-  );
-  $pipe[] = drush_format($data, $config_name, 'config');
-  drush_print(drush_format($value, $config_name . ':' . $key));
   $returns[$config_name . ':' . $key] = $value;
 
   if ($value === NULL) {

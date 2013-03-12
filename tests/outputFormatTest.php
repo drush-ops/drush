@@ -141,14 +141,12 @@ f=6",
         'code' => "return array(
           'a' => array('b' => 2, 'c' => 3),
           'd' => array('e' => 5, 'f' => 6));",
-        'expected' => "array (
-  'a' =>
-  array (
+        'expected' => "array(
+  'a' => array(
     'b' => 2,
     'c' => 3,
   ),
-  'd' =>
-  array (
+  'd' => array(
     'e' => 5,
     'f' => 6,
   ),

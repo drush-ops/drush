@@ -147,6 +147,18 @@ function outputformat_drush_engine_outputformat() {
     'verbose-only' => TRUE,
     'topic-example' => $common_topic_example,
   );
+  $engines['yaml'] = array(
+    'machine-parsable' => TRUE,
+    'description' => 'Yaml output format.',
+    'verbose-only' => TRUE,
+    'topic-example' => $common_topic_example,
+  );
+  $engines['php'] = array(
+    'machine-parsable' => TRUE,
+    'description' => 'A serialized php string.',
+    'verbose-only' => TRUE,
+    'topic-example' => $common_topic_example,
+  );
   $engines['config'] = array(
     'machine-parsable' => TRUE,
     'engine-class' => 'list',
@@ -211,7 +223,7 @@ function outputformat_drush_engine_outputformat() {
     'engine-class' => 'list',
     'list-item-type' => 'export',
     'metadata' => array(
-      'label-template' => '!label: ',
+      'label-template' => '!label: !value',
     ),
     'list-field-selection-control' => -1,
     'topic-example' => $common_topic_example,
