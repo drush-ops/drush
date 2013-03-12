@@ -51,11 +51,11 @@ class drush_outputformat_export extends drush_outputformat {
       $variable_name = isset($metadata['variable-name']) ? $metadata['variable-name'] : 'variables';
       $variable_name = preg_replace("/[^a-zA-Z0-9_-]/", "", str_replace(' ', '_', $variable_name));
       $label = $metadata['label'];
-      $label_template = (isset($metadata['label-template'])) ? $metadata['label-template'] : '$!variable["!label"] = ';
-      $output = dt($label_template, array('!variable' => $variable_name, '!label' => $label)) . var_export($input, TRUE) . ';';
+      $label_template = (isset($metadata['label-template'])) ? $metadata['label-template'] : '$!variable["!label"] = !value;';
+      $output = dt($label_template, array('!variable' => $variable_name, '!label' => $label, '!value' => var_export($input, TRUE)));
     }
     else {
-      $output = var_export($input, TRUE);
+      $output = drush_var_export($input);
     }
     return $output;
   }
