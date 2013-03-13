@@ -132,16 +132,6 @@ if [ -f "$d/drush.complete.sh" ] ; then
   . "$d/drush.complete.sh"
 fi
 
-# Create an alias for every drush site alias.  This allows
-# for commands such as `@live pml` to run `drush @live pm-list`
-for a in $(drush sa); do
-  alias $a="drush $a"
-  ## Register another completion function for every alias to drush.
-  if [ -n "`type _drush_completion 2>/dev/null`" ] ; then
-    complete -o nospace -F _drush_completion $a > /dev/null
-  fi
-done
-
 # We extend the cd command to allow convenient
 # shorthand notations, such as:
 #   cd @site1
