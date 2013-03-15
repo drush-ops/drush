@@ -114,7 +114,9 @@ function core_drush_command() {
     'outputformat' => array(
       'default' => 'key-value',
       'pipe-format' => 'ini',
+      'field-labels' => array('drupal-version' => 'Drupal version', 'uri' => 'Site URI', 'db-driver' => 'Database driver', 'db-host' => 'Database hostname', 'db-user' => 'Database username', 'db-name' => 'Database name', 'db-status' => 'Database', 'bootstrap' => 'Drupal bootstrap', 'user' => 'Drupal user', 'theme' => 'Default theme', 'admin-theme' => 'Administration theme', 'php-conf' => 'PHP configuration', 'drush-version' => 'Drush version', 'drush-conf' => 'Drush configuration', 'drush-alias-files' => 'Drush alias files', 'root' => 'Drupal root', 'site-path' => 'Site path',     'root' => 'Drupal root', 'site' => 'Site path', 'themes' => 'Themes path', 'modules' => 'Modules path', 'files' => 'File directory path', 'private' => 'Private file directory path', 'temp' => 'Temporary file directory path', 'config-active' => 'Active config directory path', 'config-staging' => 'Staging config directory path', 'files-path' => 'File directory path', 'temp-path' => 'Temporary file directory path', '%paths' => 'Other paths'),
       'formatted-filter' => '_drush_core_status_format_table_data',
+      'private-fields' => 'db-password',
       'simplify-single' => TRUE,
       'table-metadata' => array(
         'list-separator' => ' ',
@@ -123,6 +125,10 @@ function core_drush_command() {
     ),
     'topics' => array('docs-readme'),
   );
+
+  $path_names = array(
+  );
+
   $items['core-requirements'] = array(
     'description' => 'Provides information about things that may be wrong in your Drupal installation, if any.',
     'aliases' => array('status-report','rq'),
@@ -472,21 +478,28 @@ function core_drush_help($section) {
       $message .= dt("Hint: This may occur when Drush is trying to:\n");
       $message .= dt(" * bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.\n");
       $message .= dt(" * connect the database through a socket. The socket file may be wrong or the php-cli may have no access to it in a jailed shell. See http://drupal.org/node/1428638 for details.\n");
-      $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials()));
+      $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials(12)));
       return $message;
     case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR':
       $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
       $message .= dt("Hint: This error can only occur once the database connection has already been successfully initiated, therefore this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
-      $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials()));
+      $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials(12)));
       return $message;
       break;
   }
 }
 
 // TODO: consolidate with SQL commands?
-function _core_site_credentials() {
+function _core_site_credentials($right_margin = 0) {
+  // Leave some space on the right so that we can put the result into the
+  // drush_log, which will again wordwrap the result.
+  $original_columns = drush_get_context('DRUSH_COLUMNS', 80);
+  drush_set_context('DRUSH_COLUMNS', $original_columns - $right_margin);
   $status_table = _core_site_status_table();
-  return _core_site_credential_table($status_table);
+  $metadata = drush_get_command_format_metadata('core-status');
+  $output = drush_format($status_table, $metadata, 'key-value');
+  drush_set_context('DRUSH_COLUMNS', $original_columns);
+  return $output;
 }
 
 function _core_site_credential_table($status_table) {
@@ -558,58 +571,43 @@ function _core_path_aliases($project = '') {
 function _core_site_status_table($project = '') {
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
-    $status_table['Drupal version'] = drush_drupal_version();
+    $status_table['drupal-version'] = drush_drupal_version();
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-      $status_table['Site URI'] = drush_get_context('DRUSH_URI');
+      $status_table['uri'] = drush_get_context('DRUSH_URI');
       if ($creds = drush_get_context('DRUSH_DB_CREDENTIALS')) {
-        $status_table['Database driver'] = $creds['driver'];
+        $status_table['db-driver'] = $creds['driver'];
         if (!empty($creds['unix_socket'])) {
-          $status_table['Database socket'] = $creds['unix_socket'];
+          $status_table['db-socket'] = $creds['unix_socket'];
         }
         else {
-          $status_table['Database hostname'] = $creds['host'];
+          $status_table['db-hostname'] = $creds['host'];
         }
-        $status_table['Database username'] = $creds['user'];
-        $status_table['Database name'] = $creds['name'];
-        if (drush_get_option('show-passwords', FALSE)) {
-          $status_table['Database password'] = $creds['pass'];
-        }
+        $status_table['db-username'] = $creds['user'];
+        $status_table['db-name'] = $creds['name'];
+        $status_table['db-password'] = $creds['pass'];
         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
-          $status_table['Database'] = dt('Connected');
+          $status_table['db-status'] = dt('Connected');
           if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-            $status_table['Drupal bootstrap'] = dt('Successful');
+            $status_table['bootstrap'] = dt('Successful');
             if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
               global $user;
               $username =  ($user->uid) ? $user->name : dt('Anonymous');
-              $status_table['Drupal user'] = $username;
+              $status_table['user'] = $username;
             }
           }
         }
       }
     }
-    $status_table['Default theme'] = drush_theme_get_default();
-    $status_table['Administration theme'] = drush_theme_get_admin();
+    $status_table['theme'] = drush_theme_get_default();
+    $status_table['admin-theme'] = drush_theme_get_admin();
   }
   if ($php_ini_files = _drush_core_config_php_ini_files()) {
-    $status_table['PHP configuration'] = $php_ini_files;
+    $status_table['php-conf'] = $php_ini_files;
   }
-  $status_table['Drush version'] = DRUSH_VERSION;
-  $status_table['Drush configuration'] = drush_flatten_array(drush_get_context_options('context-path', ''));
+  $status_table['drush-version'] = DRUSH_VERSION;
+  $status_table['drush-conf'] = drush_flatten_array(drush_get_context_options('context-path', ''));
   $alias_files = _drush_sitealias_find_alias_files();
-  $status_table['Drush alias files'] = $alias_files;
-
-  // None of the Status keys are in dt(); this helps with machine-parsing of status?
-  $path_names = array(
-    'root' => 'Drupal root',
-    'site' => 'Site path',
-    'themes' => 'Themes path',
-    'modules' => 'Modules path',
-    'files' => 'File directory path',
-    'private' => 'Private file directory path',
-    'temp' => 'Temporary file directory path',
-    'config-active' => 'Active config directory path',
-    'config-staging' => 'Staging config directory path',
-  );
+  $status_table['drush-alias-files'] = $alias_files;
 
   $paths = _core_path_aliases($project);
   if (!empty($paths)) {
@@ -617,9 +615,6 @@ function _core_site_status_table($project = '') {
       $name = $target;
       if (substr($name,0,1) == '%') {
         $name = substr($name,1);
-      }
-      if (array_key_exists($name, $path_names)) {
-        $name = $path_names[$name];
       }
       $status_table[$name] = $one_path;
     }
@@ -643,13 +638,13 @@ function _drush_core_status_format_table_data($output, $metadata) {
   }
   // Hide 'Modules path' and 'Themes path' as well, because that's
   // the way it's always been.
-  unset($output['Modules path']);
-  unset($output['Themes path']);
+  unset($output['modules']);
+  unset($output['themes']);
   // Shorten the list of alias files if there are too many
   if (drush_get_option('full', FALSE) == FALSE) {
-    if (isset($output['Drush alias files']) && count($output['Drush alias files']) > 24) {
-      $msg = dt("\nThere are !count more alias files. Run with --full to see the full list.", array('!count' => count($output['Drush alias files']) - 1));
-      $output['Drush alias files'] = array($output['Drush alias files'][0] , $msg);
+    if (isset($output['drush-alias-files']) && count($output['drush-alias-files']) > 24) {
+      $msg = dt("\nThere are !count more alias files. Run with --full to see the full list.", array('!count' => count($output['drush-alias-files']) - 1));
+      $output['drush-alias-files'] = array($output['drush-alias-files'][0] , $msg);
     }
   }
   return $output;
@@ -810,8 +805,15 @@ function drush_core_status() {
   // (in other words, only show lines named by one of the arg values)
   $args = func_get_args();
   if (!empty($args)) {
+    $field_list = $args;
+    $metadata = drush_get_command_format_metadata('core-status');
+    foreach ($metadata['field-labels'] as $field_key => $field_label) {
+      if (_drush_core_is_named_in_array($field_label, $args)) {
+        $field_list[] = $field_key;
+      }
+    }
     foreach ($status_table as $key => $value) {
-      if (!_drush_core_is_named_in_array($key, $args)) {
+      if (!_drush_core_is_named_in_array($key, $field_list)) {
         unset($status_table[$key]);
       }
     }

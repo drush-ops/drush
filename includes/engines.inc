@@ -118,8 +118,15 @@ function drush_load_command_engines($command) {
   }
 }
 
+function drush_get_command_engine_config($command, $engine_type, $metadata = array()) {
+  if (isset($command['engines'][$engine_type])) {
+    $metadata = array_merge($metadata, $command['engines'][$engine_type]);
+  }
+  return $metadata;
+}
+
 function drush_load_command_engine($command, $engine_type, $metadata = array()) {
-  $config = array_merge($metadata, $command['engines'][$engine_type]);
+  $config = drush_get_command_engine_config($command, $engine_type, $metadata);
   $version = drush_drupal_major_version();
   drush_log(dt("Loading !engine engine.", array('!engine' => $engine_type), 'bootstrap'));
   $engine_info = drush_get_engines($engine_type);

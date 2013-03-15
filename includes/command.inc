@@ -478,6 +478,11 @@ function drush_handle_command_output($command, $structured_output) {
           }
         }
       }
+      if (isset($metadata['fields']) && !empty($metadata['fields'])) {
+        if (isset($formatter->engine_config['field-labels'])) {
+          $formatter->engine_config['field-labels'] = drush_select_fields($formatter->engine_config['field-labels'], $metadata['fields'], $metadata['strict']);
+        }
+      }
       $output = $formatter->process($structured_output, $metadata);
       if (drush_get_context('DRUSH_PIPE')) {
         drush_print_pipe($output);

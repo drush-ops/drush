@@ -23,6 +23,18 @@ function drush_set_default_outputformat($format, $metadata = array()) {
 }
 
 /**
+ * Given a command name or a command record, return the
+ * command formatter that is used to process that command's output.
+ */
+function drush_get_command_format_metadata($command, $metadata = array()) {
+  $commands = drush_get_commands();
+  if (!is_array($command) && array_key_exists($command, $commands)) {
+    $command = $commands[$command];
+  }
+  return drush_get_command_engine_config($command, 'outputformat', $metadata);
+}
+
+/**
  * Implementation of hook_drush_engine_type_info().
  */
 function outputformat_drush_engine_type_info() {
@@ -376,14 +388,6 @@ class drush_outputformat {
         foreach ($metadata['private-fields'] as $private) {
           drush_unset_recursive($input, $private);
         }
-      }
-    }
-    if (isset($metadata['fields'])) {
-      if (isset($metadata['field-labels'])) {
-        $metadata['field-labels'] = drush_select_fields($metadata['field-labels'], $metadata['fields'], $metadata['strict']);
-      }
-      elseif (!empty($metadata['field-labels'])) {
-        $metadata['field-labels'] = array_combine($metadata['fields'], $metadata['fields']);
       }
     }
     if (isset($metadata[$this->selected_engine . '-metadata'])) {

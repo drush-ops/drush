@@ -118,7 +118,7 @@ class drush_outputformat_list extends drush_outputformat {
             $metameta[$key] = $metadata[$key];
           }
         }
-        $formatted_item = $this->sub_engine->process($data, $metameta);
+        $formatted_item = $this->sub_engine->format($data, $metameta);
         if ($formatted_item === FALSE) {
           return FALSE;
         }

@@ -327,8 +327,19 @@ function drush_select_fields($all_field_labels, $fields, $strict = TRUE) {
     if (array_key_exists($field, $all_field_labels)) {
       $field_labels[$field] = $all_field_labels[$field];
     }
-    elseif (!$strict) {
-      $field_labels[$field] = $field;
+    else {
+      // Allow the user to select fields via their human-readable names.
+      // This is less convenient than the field name (since the human-readable
+      // names may contain spaces, and must therefore be quoted), but these are
+      // the values that the user sees in the command output. n.b. the help
+      // text lists fields by their more convenient machine names.
+      $key = array_search(strtolower($field), array_map('strtolower', $all_field_labels));
+      if ($key !== FALSE) {
+        $field_labels[$key] = $all_field_labels[$key];
+      }
+      elseif (!$strict) {
+        $field_labels[$field] = $field;
+      }
     }
   }
   return $field_labels;
@@ -349,14 +360,17 @@ function drush_select_fields($all_field_labels, $fields, $strict = TRUE) {
  * @return
  *   The input array, re-ordered and re-keyed per $fields
  */
-function drush_select_output_fields($input, $fields, $mapping = array()) {
+function drush_select_output_fields($input, $fields, $mapping = array(), $default_value = NULL) {
   $result = array();
   if (empty($fields)) {
     $result = $input;
   }
   else {
     foreach ($fields as $key => $label) {
-      $result[$label] = drush_lookup_field_by_path($input, $key, $mapping);
+      $value = drush_lookup_field_by_path($input, $key, $mapping, $default_value);
+      if (isset($value)) {
+        $result[$label] = $value;
+      }
     }
   }
   return $result;
@@ -386,7 +400,7 @@ function drush_select_output_fields($input, $fields, $mapping = array()) {
  *   $path = 'ca/sf/mission/1701';
  *   result: 'woodward'
  */
-function drush_lookup_field_by_path($input, $path, $mapping = array()) {
+function drush_lookup_field_by_path($input, $path, $mapping = array(), $default_value = NULL) {
   $result = '';
   if (isset($mapping[$path])) {
     $path = $mapping[$path];
@@ -401,7 +415,7 @@ function drush_lookup_field_by_path($input, $path, $mapping = array()) {
         $result = $result[$key];
       }
       else {
-        return '';
+        return $default_value;
       }
     }
   }
