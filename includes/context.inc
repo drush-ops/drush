@@ -442,7 +442,13 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
  *   Optional. The context to check for the option. If this is set, only this context will be searched.
  */
 function drush_get_option_list($option, $default = array(), $context = NULL) {
-  return _convert_csv_to_array(drush_get_option($option, $default, $context));
+  $result = drush_get_option($option, $default, $context);
+
+  if (!is_array($result)) {
+    $result = array_map('trim', array_filter(explode(',', $result)));
+  }
+
+  return $result;
 }
 
 /**
