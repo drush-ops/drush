@@ -184,9 +184,10 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
     return FALSE;
   }
+  $make_dir = realpath(dirname($makefile));
+  if (make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path, $make_dir)) {
+    make_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path, $make_dir);
 
-  if (make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path)) {
-    make_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
 
     if (drush_get_option('prepare-install')) {
       make_prepare_install($build_path);
@@ -248,7 +249,7 @@ function drush_make_post_make($makefile = NULL, $build_path = NULL) {
 /**
  * Process all projects specified in the make file.
  */
-function make_projects($recursion, $contrib_destination, $info, $build_path) {
+function make_projects($recursion, $contrib_destination, $info, $build_path, $make_dir) {
   $projects = array();
   if (empty($info['projects'])) {
     if (drush_get_option('no-core') || $recursion) {
@@ -283,6 +284,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
       'location'            => drush_get_option('make-update-default-url', RELEASE_INFO_DEFAULT_URL),
       'subdir'              => '',
       'directory_name'      => '',
+      'make_directory'      => $make_dir,
     );
     // If download components are specified, but not the download
     // type, default to git.
@@ -437,7 +439,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
 /**
  * Process all libraries specified in the make file.
  */
-function make_libraries($contrib_destination, $info, $build_path) {
+function make_libraries($contrib_destination, $info, $build_path, $make_dir) {
   if (empty($info['libraries'])) {
     return;
   }
@@ -455,6 +457,7 @@ function make_libraries($contrib_destination, $info, $build_path) {
       'contrib_destination' => $contrib_destination,
       'subdir'              => '',
       'directory_name'      => $key,
+      'make_directory'      => $make_dir,
     );
     if ($ignore_checksums) {
       unset($library['download']['md5']);

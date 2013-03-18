@@ -5,6 +5,8 @@ api = 2
 projects[wysiwyg][version] = "2.1"
 ; http://drupal.org/node/624018#comment-5098162
 projects[wysiwyg][patch][] = "http://drupal.org/files/0001-feature.inc-from-624018-211.patch"
+; Test local filesystem patches
+projects[wysiwyg][patch][] = "patches-local-test-wysiwyg.patch"
 
 ; http://drupal.org/node/1152908#comment-5010536
 projects[features][version] = "1.0-beta4"

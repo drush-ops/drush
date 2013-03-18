@@ -167,6 +167,8 @@ Do not use both types of declarations for a single project in your makefile.
   Retrieve a project as a direct download. Options:
 
   `url` - the URL of the file. Required.
+          The URL can also be a path to a local file either using the bare path or
+          the file:// protocol. The path may be absolute or relative to the makefile.
 
   `md5`, `sha1`, `sha256`, or `sha512` - one or more checksums for the file. Optional.
 

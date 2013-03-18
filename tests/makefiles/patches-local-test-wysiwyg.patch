@@ -1,0 +1,17 @@
+diff --git a/wysiwyg.module b/wysiwyg.module
+index 771cbd7..647ac31 100644
+--- a/wysiwyg.module
++++ b/wysiwyg.module
+@@ -112,6 +112,12 @@ function wysiwyg_theme() {
+ }
+ 
+ /**
++ * This patch doesn't really do anything. It just adds a comment to
++ * wysiwyg.module so that we can test Drush Make's support of applying patches
++ * that are on the local filesystem.
++ */
++
++/**
+  * Implementation of hook_help().
+  */
+ function wysiwyg_help($path, $arg) {

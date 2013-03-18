@@ -781,6 +781,11 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
     $destination = getcwd() . '/' . basename($file);
   }
 
+  // Simply copy local files to the destination
+  if (!_drush_is_url($url)) {
+    return copy($url, $destination) ? $destination : FALSE;
+  }
+
   if (drush_get_option('cache') && $cache_duration !== 0 && $cache_dir = drush_directory_cache('download')) {
     $cache_name = str_replace(array(':', '/', '?', '='), '-', $url);
     $cache_file = $cache_dir . "/" . $cache_name;
@@ -812,6 +817,16 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
 
   // Unable to retrieve from cache nor download.
   return FALSE;
+}
+
+/**
+ * Check whether the given path is just a url or a local path
+ * @param string $url
+ * @return boolean
+ *   TRUE if the path does not contain a schema:// part.
+ */
+function _drush_is_url($url) {
+  return parse_url($url, PHP_URL_SCHEME) !== NULL;
 }
 
 /**

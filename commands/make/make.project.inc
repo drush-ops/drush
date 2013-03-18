@@ -191,6 +191,22 @@ class DrushMakeProject {
   }
 
   /**
+   * Rewrite relative URLs and file:/// URLs
+   *
+   * relative path -> absolute path using the make_directory
+   * local file:/// urls -> local paths
+   */
+  protected function preprocessLocalFileUrl($url) {
+    print $url;
+    if (!_drush_is_url($url) && !drush_is_absolute_path($url)) {
+      $url = $this->make_directory . '/' . $url;
+    } elseif (substr($url, 0, 8) == 'file:///') {
+      $url = substr($url, 7);
+    }
+    return $url;
+  }
+
+  /**
    * Retrieve and apply any patches specified by the makefile to this project.
    */
   function applyPatches($project_directory) {
@@ -202,7 +218,10 @@ class DrushMakeProject {
     $ignore_checksums = drush_get_option('ignore-checksums');
     foreach ($this->patch as $info) {
       if (!is_array($info)) {
-        $info = array('url' => $info);
+        $info = array('url' => $this->preprocessLocalFileUrl($info));
+      }
+      else {
+        $info['url'] = $this->preprocessLocalFileUrl($info['url']);
       }
       // Download the patch.
       if ($filename = _make_download_file($info['url'])) {
@@ -355,7 +374,7 @@ class DrushMakeProject {
         }
         if ($l10n_server) {
           if (!isset($cache[$l10n_server])) {
-            if ($filename = _make_download_file($l10n_server)) {
+            if ($filename = _make_download_file($this->preprocessLocalFileUrl($l10n_server))) {
               $server_info = simplexml_load_string(file_get_contents($filename));
               $cache[$l10n_server] = !empty($server_info->update_url) ? $server_info->update_url : FALSE;
             }
@@ -469,8 +488,8 @@ class DrushMakeProject {
       return FALSE;
     }
     $build_path = $this->buildPath($this->name);
-    make_projects(TRUE, trim($build_path, '/'), $info, $this->build_path);
-    make_libraries(trim($build_path, '/'), $info, $this->build_path);
+    make_projects(TRUE, trim($build_path, '/'), $info, $this->build_path, $this->download_location);
+    make_libraries(trim($build_path, '/'), $info, $this->build_path, $this->download_location);
 
     return TRUE;
   }
