@@ -682,7 +682,6 @@ function _drush_bootstrap_drupal_root() {
   define('DRUPAL_ROOT', $drupal_root);
 
   chdir($drupal_root);
-  require_once DRUPAL_ROOT . '/' . DRUSH_DRUPAL_SIGNATURE;
   $version = drush_drupal_version();
   $major_version = drush_drupal_major_version();
 
