@@ -61,8 +61,8 @@
 # Note that the 'cpd' alias only works for local sites.  Use
 # `drush rsync` or gitd` to move files between remote sites.
 #
-# By default, aliases are also created for the following standard
-# commands:
+# Aliases are also possible for the following standard
+# commands. Uncomment their definitions below as desired.
 #
 #       cd                - cddl [*]
 #       ls                - lsd
