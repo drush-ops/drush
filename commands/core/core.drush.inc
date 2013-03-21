@@ -226,7 +226,6 @@ function core_drush_command() {
     ),
     'options' => array(
       'mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -akz.',
-      'RSYNC-FLAG' => 'Most rsync flags passed to drush sync will be passed on to rsync.  See rsync documentation.',
       'exclude-conf' => 'Excludes settings.php from being rsynced.  Default.',
       'include-conf' => 'Allow settings.php to be rsynced. Default is to exclude settings.php.',
       'include-vcs' => 'Include special version control directories (e.g. .svn).  Default is to exclude vcs files.',
@@ -235,11 +234,14 @@ function core_drush_command() {
       'exclude-other-sites' => 'Exclude all directories in "sites/" except for "sites/all" and the site directory for the site being synced.  Note: if the site directory is different between the source and destination, use --exclude-sites followed by "drush rsync @from:%site @to:%site"',
       'exclude-paths' => 'List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).',
       'include-paths' => 'List of paths to include, seperated by : (Unix-based systems) or ; (Windows).',
+      '{rsync-option-name}' => "Replace {rsync-option-name} with the rsync option (or option='value') that you would like to pass through to rsync. Examples include --delete, --exclude=*.sql, --filter='merge /etc/rsync/default.rules', etc. See the rsync documentation for a complete explaination of all the rsync options and values.",
+
     ),
     'strict-option-handling' => TRUE,
     'examples' => array(
-      'drush rsync @dev @stage' => 'Rsync Drupal root from dev to stage (one of which must be local).',
-      'drush rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on stage.',
+      'drush rsync @dev @stage' => 'Rsync Drupal root from Drush alias dev to the alias stage (one of which must be local).',
+      'drush rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on the Drush alias stage.',
+      'drush -s rsync @dev @stage --exclude=*.sql --delete' => "Simulate Rsync Drupal root from the Drush alias dev to the alias stage (one of which must be local), excluding all files that match the filter '*.sql' and delete all files on the destination that are no longer on the source.",
     ),
     'aliases' => array('rsync'),
     'topics' => array('docs-aliases'),

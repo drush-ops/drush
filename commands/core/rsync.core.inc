@@ -67,7 +67,7 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
         $options .= ' ' . $original_option;
       }
     }
-    
+
     // Go ahead and call rsync with the paths we determined
     return drush_core_exec_rsync($source_path, $destination_path, $options);
   }
@@ -98,7 +98,7 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
  *   TRUE on success, FALSE on failure.
  */
 function drush_core_call_rsync($source, $destination, $additional_options = array(), $include_settings_is_default = TRUE, $live_output = TRUE) {
-  $options = _drush_build_rsync_options($additional_options, $include_settings_is_default);  
+  $options = _drush_build_rsync_options($additional_options, $include_settings_is_default);
   return drush_core_exec_rsync($source, $destination, $options, $additional_options, $live_output);
 }
 
@@ -187,7 +187,7 @@ function _drush_build_rsync_options($additional_options, $include_settings_is_de
       }
     }
     if ((isset($test_option)) && !in_array($test_option, $options_to_exclude) && (isset($value)  && !is_array($value))) {
-      if ($value === TRUE) {
+      if (($value === TRUE) || (!isset($value))) {
         $options .= " --$test_option";
       }
       else {

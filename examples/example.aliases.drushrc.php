@@ -211,6 +211,42 @@
  *   in fact are removed before making a backend invoke call (for example). These
  *   kinds of values are useful in conjunction with shell aliases.  See
  *   `drush topic docs-shell-aliases` for more information on this.
+ * - rsync command options have specific requirements in order to
+ *   be passed through by Drush. See the comments on the sample below:
+ *
+ *       'command-specific' => array (
+ *         'core-rsync' => array (
+ *
+ *           // single-letter rsync options are placed in the 'mode' key
+ *           // instead of adding '--mode=rultvz' to drush rsync command.
+ *           'mode' => 'rultvz',
+ *
+ *           // multi-letter rsync options without values must be set to
+ *           // TRUE or NULL to work (i.e. setting $VALUE to 1, 0, or ''
+ *           // will not work).
+ *           'delete' => TRUE,
+ *
+ *           // wrapping an option's value in "" preserves inner '' on output;
+ *           // but is not always required.
+ *           'exclude' => "'*.gz'",
+ *
+ *           // cannot add multiple options of same key; each key overwrites
+ *           // the previous key's value. This 'exclude' option will overwrite
+ *           // the previous one above.
+ *           'exclude' => '*.sql',
+ *
+ *           // if you need multiple exludes, use an rsync exclude file
+ *           'exclude-from' => "'/etc/rsync/exclude.rules'",
+ *
+ *           // filter options with white space must be wrapped in "" to preserve
+ *           // the inner ''.
+ *           'filter' => "'exclude *.sql'",
+ *
+ *           // if you need multple filter options, see rsync merge-file options
+ *           'filter' => "'merge /etc/rsync/default.rules'",
+ *         ),
+ *       ),
+ *
  * Some examples appear below.  Remove the leading hash signs to enable.
  */
 #$aliases['stage'] = array(
