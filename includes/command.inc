@@ -1593,7 +1593,12 @@ function drush_get_original_cli_args_and_options($command = NULL) {
   $command_options = ($command == NULL) ? array() : _drush_get_command_options($command);
   foreach ($command_specific_options as $key => $value) {
     if (!array_key_exists($key, $command_options)) {
-      $args[] = "--$key=$value";
+      if (($value === TRUE) || (!isset($value))) {
+        $args[] = "--$key";
+      }
+      else {
+        $args[] = "--$key=$value";
+      }
     }
   }
   return $args;
