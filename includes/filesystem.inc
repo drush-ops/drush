@@ -248,7 +248,7 @@ function _drush_recursive_copy($src, $dest) {
   elseif (is_link($src)) {
     symlink(readlink($src), $dest);
   }
-  elseif (copy($src, $dest) !== TRUE) {
+  elseif (!(copy($src, $dest) && touch($dest, filemtime($src)))) {
     return FALSE;
   }
 
