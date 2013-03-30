@@ -409,18 +409,18 @@ function drush_find_tmp() {
   if (!isset($temporary_directory)) {
     $directories = array();
 
+    // Get user specific and operating system temp folders from system environment variables.
+    // See http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/ntcmds_shelloverview.mspx?mfr=true
+    $tempdir = getenv('TEMP');
+    if (!empty($tempdir)) {
+      $directories[] = $tempdir;
+    }
+    $tmpdir = getenv('TMP');
+    if (!empty($tmpdir)) {
+      $directories[] = $tmpdir;
+    }
     // Operating system specific dirs.
     if (drush_is_windows()) {
-      // get user specific and operating system temp folders from system environment variables
-      // see http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/ntcmds_shelloverview.mspx?mfr=true
-      $tempdir = getenv('TEMP');
-      if (isset($tempdir)) {
-        $directories[] = $tempdir;
-      }
-      $tmpdir = getenv('TMP');
-      if (isset($tmpdir)) {
-        $directories[] = $tmpdir;
-      }
       $windir = getenv('WINDIR');
       if (isset($windir)) {
         // WINDIR itself is not writable, but it always contains a /Temp dir,
