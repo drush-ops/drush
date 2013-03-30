@@ -775,7 +775,14 @@ function drush_server_home() {
   return empty($home) ? NULL : $home;
 }
 
-/*
+/**
+ * Return the name of the user running drush.
+ */
+function drush_get_username() {
+  return drush_is_windows() ? getenv("username") : getenv("USER");
+}
+
+/**
  * The path to the global cache directory.
  *
  * @param subdir
@@ -791,7 +798,7 @@ function drush_directory_cache($subdir = '') {
   if ($home) {
     $cache_locations[$home] = '.drush/cache';
   }
-  $cache_locations[drush_find_tmp()] = 'drush/' . getenv('USER') . '/cache';
+  $cache_locations[drush_find_tmp()] = 'drush-' . drush_get_username() . '/cache';
   foreach ($cache_locations as $base => $dir) {
     if (!empty($base) && is_writable($base)) {
       $cache_dir = $base . '/' . $dir;
