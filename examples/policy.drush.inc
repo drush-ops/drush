@@ -67,7 +67,7 @@ function drush_policy_updatedb_validate() {
  */
 function drush_policy_make_me_a_sandwich_validate() {
   if (drush_is_windows()) {
-    // $name = getenv('USERNAME');
+    // $name = drush_get_username();
     // TODO: implement check for elevated process using w32api
     // as sudo is not available for Windows
     // http://php.net/manual/en/book.w32api.php
