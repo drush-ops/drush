@@ -323,29 +323,19 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
    * @return integer
    *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
    */
-  function execute($command, $expected_return = self::EXIT_SUCCESS, $env = NULL) {
+  function execute($command, $expected_return = self::EXIT_SUCCESS, $env = array()) {
     $this->_output = FALSE;
     $return = 1;
     $this->log("Executing: $command", 'notice');
-    // If the test passed in an environment to use, then run the test
-    // with proc_open
-    if (isset($env)) {
-      $descriptorspec = array(
-        0 => array("pipe", "r"),
-        1 => array("pipe", "w") );
-      $process = proc_open($command, $descriptorspec, $pipes, NULL, $env);
-      if (is_resource($process)) {
-        fclose($pipes[0]);
-        $output = stream_get_contents($pipes[1]);
-        $this->_output = explode("\n", rtrim($output)); // one more /n than with exec
-        fclose($pipes[1]);
-        $return = proc_close($process);
-      }
+
+    // Apply the environment variables we need for our test
+    // to the head of the command
+    $prefix = '';
+    foreach ($env as $env_name => $env_value) {
+      $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
     }
-    // Tests that do not provide their own environment run with exec
-    else {
-      exec($command, $this->_output, $return);
-    }
+    exec($prefix . $command, $this->_output, $return);
+
     $this->assertEquals($expected_return, $return, 'Unexpected exit code: ' .  $command);
     return $return;
   }
@@ -370,7 +360,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     * @return integer
     *   An exit code.
     */
-  function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL, $env = NULL) {
+  function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL, $env = array()) {
     $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options');
     // insert "cd ... ; drush"
     $cmd[] = $cd ? sprintf('cd %s &&', self::escapeshellarg($cd)) : NULL;

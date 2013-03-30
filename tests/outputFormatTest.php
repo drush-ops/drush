@@ -47,7 +47,13 @@ class outputFormatCase extends Drush_CommandTestCase {
       );
       $name = $test['name'] . ": ";
       $expected = $test['expected'];
-      $this->drush($test['command'], $test['args'], $options + $test['options'] + array('format' => $test['format']));
+      // We need to specify a fixed column width so that word wrapping does
+      // not change our output contrary to our expectations when run in
+      // a narrow terminal window.
+      $env = array(
+        'COLUMNS' => '120',
+      );
+      $this->drush($test['command'], $test['args'], $options + $test['options'] + array('format' => $test['format']), NULL, NULL, self::EXIT_SUCCESS, NULL, $env);
       $output = trim($this->getOutput()); // note: we consider trailing eols insignificant
       // If the Drupal command we are running might produce variable output,
       // we can use one or more output filters to simplify the output down
