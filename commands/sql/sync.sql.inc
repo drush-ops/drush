@@ -392,6 +392,17 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         $db_su_connect = _drush_sql_connect($create_db_su);
         $pre_import_sql = drush_sql_build_createdb_sql($target_db_url);
         $pre_import_commands = sprintf('echo "%s" | %s; ', $pre_import_sql, $db_su_connect);
+        // Linux requires quotes around echo statements. Windows generally supports
+        // quotes for echo statements, but will complain if they are present
+        // when piping echo statements as input to other commands. Also,
+        // Windows multi-commands normally work when separated by '&&', '&', or ';'
+        // but will not function with ';' in this case.(http://drupal.org/node/1957020)
+        if (drush_is_windows($target_os)) {
+          $pre_import_commands = sprintf('echo %s | %s && ', $pre_import_sql, $db_su_connect);
+        }
+        else {
+          $pre_import_commands = sprintf('echo "%s" | %s; ', $pre_import_sql, $db_su_connect);
+        }
       }
 
       // Generate the import command

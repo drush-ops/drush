@@ -212,8 +212,8 @@ disable_classes are empty.
 INSTALLING DRUSH ON WINDOWS:
 ----------------------------
 
-Windows support has improved, but is still lagging. Consider using on
-Linux/Unix/OSX using Virtualbox or other virtual machine.
+Windows support has improved, but is still lagging. For full functionality,
+consider using on Linux/Unix/OSX using Virtualbox or other virtual machine.
 
 There is a Windows msi installer for drush available at:
 
@@ -227,6 +227,16 @@ Whenever the documentation or the help text refers to 'drush [option]
 
 Additional Drush Windows installation documentation can be found at
 http://drupal.org/node/594744.
+
+Most Drush commands will run in a Windows CMD shell or PowerShell, but the
+Git Bash shell provided by the 'Git for Windows' installation is the preferred
+shell in which to run Drush commands. For more information on "Git for Windows'
+visit http://msysgit.github.com/.
+
+When creating aliases for Windows remote machines, pay particular attention to
+information presented in the example.aliases.drushrc.php file, especially when
+setting values for 'remote-host' and 'os', as these are very important when
+running Drush rsync and Drush sql-sync commands.
 
 
 USAGE

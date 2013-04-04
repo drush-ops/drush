@@ -147,13 +147,17 @@
  *     a tunneled port number, put the actual database port number
  *     used on the remote machine in the 'remote-port' setting.
  * - 'remote-host': The fully-qualified domain name of the remote system
- *     hosting the Drupal instance.  The remote-host option must be
- *     omitted for local sites, as this option controls whether or not
+ *     hosting the Drupal instance. **Important Note: The remote-host option
+ *     must be omitted for local sites, as this option controls whether or not
  *     rsync parameters are for local or remote machines.
  * - 'remote-user': The username to log in as when using ssh or rsync.
  * - 'os': The operating system of the remote server.  Valid values
- *     are 'Windows' and 'Linux'.  Default value is PHP_OS if 'remote-host'
- *     is not set, and 'Linux' (or $options['remote-os']) if it is.
+ *     are 'Windows' and 'Linux'. Be sure to set this value for all remote 
+ *     aliases because the default value is PHP_OS if 'remote-host'
+ *     is not set, and 'Linux' (or $options['remote-os']) if it is. Therefore,
+ *     if you set a 'remote-host' value, and your remote OS is Windows, if you
+ *     do not set the 'OS' value, it will default to 'Linux' and could cause
+ *     unintended consequences, particularly when running 'drush sql-sync'.
  * - 'ssh-options': If the target requires special options, such as a non-
  *     standard port, alternative identity file, or alternative
  *     authentication method, ssh-options can contain a string of extra
@@ -255,6 +259,7 @@
 #    'db-url' => 'pgsql://username:password@dbhost.com:port/databasename',
 #    'remote-host' => 'mystagingserver.myisp.com',
 #    'remote-user' => 'publisher',
+#    'os' => 'Linux',
 #    'path-aliases' => array(
 #      '%drush' => '/path/to/drush',
 #      '%drush-script' => '/path/to/drush/drush',
@@ -298,6 +303,7 @@
 #$aliases['server'] = array(
 #    'remote-host' => 'mystagingserver.myisp.com',
 #    'remote-user' => 'publisher',
+#    'os' => 'Linux',
 #  );
 #$aliases['live'] = array(
 #    'parent' => '@server,@dev',
