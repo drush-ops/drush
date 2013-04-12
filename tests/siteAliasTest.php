@@ -37,4 +37,11 @@ Continue?  (y/n): y
 You are about to execute 'php-eval print \"bon\";' non-interactively (--yes forced) on all of the following targets:";
     $this->assertEquals($expected, implode("\n", $output));
   }
+
+  /**
+   * Ensure that requesting a non-existent alias throws an error.
+   */
+  public function testBadAlias() {
+    $this->drush('sa', array('@badalias'), array(), NULL, NULL, self::EXIT_ERROR);
+  }
 }

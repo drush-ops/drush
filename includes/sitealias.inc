@@ -86,6 +86,7 @@ function drush_sitealias_simplify_names($site_list) {
  */
 function drush_sitealias_resolve_sitespecs($site_specifications, $alias_path_context = NULL) {
   $result_list = array();
+  $not_found = array();
   if (!is_array($site_specifications)) {
     $site_specifications = explode(',', $site_specifications);
   }
@@ -96,11 +97,16 @@ function drush_sitealias_resolve_sitespecs($site_specifications, $alias_path_con
       }
       else {
         $alias_record = drush_sitealias_get_record($site, $alias_path_context);
-        $result_list = array_merge($result_list, drush_sitealias_resolve_sitelist($alias_record));
+        if (!$alias_record) {
+          $not_found[] = $site;
+        }
+        else {
+          $result_list = array_merge($result_list, drush_sitealias_resolve_sitelist($alias_record));
+        }
       }
     }
   }
-  return $result_list;
+  return array($result_list, $not_found);
 }
 
 /**

@@ -135,7 +135,10 @@ function _drush_sitealias_user_specified_list() {
 
   // Iterate over the arguments and convert them to alias records
   if (!empty($specifications)) {
-    $site_list = drush_sitealias_resolve_sitespecs($specifications);
+    list($site_list, $not_found) = drush_sitealias_resolve_sitespecs($specifications);
+    if (!empty($not_found)) {
+      return drush_set_error('DRUSH_ALIAS_NOT_FOUND', dt("Not found: @list", array("@list" => implode(', ', $not_found))));
+    }
   }
   // If the user provided no args, then we will return everything.
   else {
@@ -169,10 +172,10 @@ function _drush_sitealias_user_specified_list() {
  * specified.
  */
 function drush_sitealias_print() {
-  // Call bootstrap max in case we need it (defer or otherwise optimize this?)
-  // drush_bootstrap_max();
-
   $site_list = _drush_sitealias_user_specified_list();
+  if ($site_list === FALSE) {
+    return FALSE;
+  }
   ksort($site_list);
   $with_db = (drush_get_option('with-db') != null) || (drush_get_option('with-db-url') != null);
 

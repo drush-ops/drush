@@ -70,7 +70,10 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $tar = drush_get_tar_executable();
 
   $sites = array();
-  $aliases = drush_sitealias_resolve_sitespecs(explode(',', $sites_subdirs));
+  list($aliases, $not_found) = drush_sitealias_resolve_sitespecs(explode(',', $sites_subdirs));
+  if (!empty($not_found)) {
+    drush_log(dt("Some site subdirectories are not valid Drupal sites: @list", array("@list" => implode(', ', $not_found))), 'warning');
+  }
   foreach ($aliases as $key => $alias) {
     $sites[$key] = $alias;
     if (($db_record = sitealias_get_databases_from_record($alias))) {
