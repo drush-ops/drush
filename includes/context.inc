@@ -350,12 +350,14 @@ function drush_set_arguments($arguments) {
 }
 
 /**
- * Get the arguments passed to the drush.php script.
+ * Gets the command line arguments passed to Drush.
  *
- * When drush_set_arguments is initially called by drush_parse_args,
- * the entire list of arguments will be populated.
- * Once the command has been dispatched, this will be return only the remaining
- * arguments to the command.
+ * @return array
+ *   An indexed array of arguments. Until Drush has dispatched the command, the
+ *   array will include the command name as the first element. After that point
+ *   the array will not include the command name.
+ *
+ * @see drush_set_arguments()
  */
 function drush_get_arguments() {
   return drush_get_context('arguments');
