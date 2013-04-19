@@ -749,6 +749,10 @@ function _drush_bootstrap_drupal_site_validate() {
     );
     $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
 
+    if ($drupal_base_url['scheme'] == 'https') {
+      $_SERVER['HTTPS'] = 'on';
+    }
+
     if ($drupal_base_url['port']) {
       $_SERVER['HTTP_HOST'] .= ':' . $drupal_base_url['port'];
     }
