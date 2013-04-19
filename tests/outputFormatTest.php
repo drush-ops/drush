@@ -2,7 +2,7 @@
 
 /*
  * @file
- *   Tests for role.drush.inc
+ *   Tests for outputformat.drush.inc
  */
 
 /*
@@ -72,7 +72,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'command' => 'core-status',
         'args' => array('drush version'),
         'format' => 'ini',
-        'output-filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', ),
+        'output-filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev'),
         'expected' => '0.0-dev',
       ),
       array(
@@ -127,7 +127,7 @@ drush-alias-files=/etc/drush/dev.alias.drushrc.php',
         'command' => 'pm-updatestatus',
         'args' => array(),
         'format' => 'table',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0'),
+        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
         'expected' => "Name    Installed Version  Proposed version  Message
  Drupal  0.0               0.0              Up to date",
       ),
@@ -151,7 +151,7 @@ drush-alias-files=/etc/drush/dev.alias.drushrc.php',
         'command' => 'pm-updatestatus',
         'args' => array(),
         'format' => 'csv-list',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0'),
+        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
         'expected' => "Drupal,0.0,0.0,Up to date",
       ),
       /*
@@ -171,7 +171,7 @@ drush-alias-files=/etc/drush/dev.alias.drushrc.php',
         'command' => 'pm-updatestatus',
         'args' => array(),
         'format' => 'ini-sections',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0'),
+        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
         'expected' => "[drupal]
 name=Drupal
 installed_version=0.0
@@ -195,7 +195,7 @@ message=Up to date",
         'command' => 'pm-updatestatus',
         'args' => array(),
         'format' => 'key-value-list',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0'),
+        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
         'expected' => "Name                :  Drupal
  Installed Version   :  0.0
  Proposed version    :  0.0
