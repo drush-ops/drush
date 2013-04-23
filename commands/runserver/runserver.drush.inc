@@ -34,7 +34,7 @@ function runserver_drush_help($section) {
     case 'drush:runserver':
       return dt("Runs a lightweight built in http server for development.
  - Don't use this for production, it is neither scalable nor secure for this use.
- - If you run multiple servers simultaniously, you will need to assign each a unique port.
+ - If you run multiple servers simultaneously, you will need to assign each a unique port.
  - Use Ctrl-C or equivalent to stop the server when complete.");
   }
 }
