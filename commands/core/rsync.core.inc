@@ -135,9 +135,9 @@ function _drush_build_rsync_options($additional_options, $include_settings_is_de
   }
 
   $mode = '-akz';
-  // Process --include-path and --exclude-path options the same way
+  // Process --include-paths and --exclude-paths options the same way
   foreach (array('include', 'exclude') as $include_exclude) {
-    // Get the option --include-path or --exclude-path and explode to an array of paths
+    // Get the option --include-paths or --exclude-paths and explode to an array of paths
     // that we will translate into an --include or --exclude option to pass to rsync
     $inc_ex_path = explode(PATH_SEPARATOR, drush_get_option($include_exclude . '-paths', ''));
     foreach ($inc_ex_path as $one_path_to_inc_ex) {
