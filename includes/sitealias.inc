@@ -1587,7 +1587,7 @@ function drush_sitealias_get_path_option($site_alias_record, $option, $default =
     return $site_alias_record['path-aliases']["%$option"];
   }
   else {
-    return $default;
+    return drush_get_option($option, $default);
   }
 }
 
