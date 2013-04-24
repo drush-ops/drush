@@ -19,6 +19,12 @@ class SqlConnectCase extends Drush_CommandTestCase {
       'uri' => key($sites),
     );
 
+    // @todo: extend to other DB platforms.
+    if (strpos(UNISH_DB_URL, 'mysql') === FALSE) {
+      $this->markTestSkipped('sql-connect tests need updating for non-mysql UNISH_DB_URL.');
+    }
+
+    // Get the connection details with sql-connect and check its structure.
     $this->drush('sql-connect', array(), $options);
     $output = $this->getOutput();
     $this->assertRegExp('/^mysql --database=[^\s]+ --host=[^\s]+ --user=[^\s]+ --password=.*$/', $output);
@@ -27,10 +33,5 @@ class SqlConnectCase extends Drush_CommandTestCase {
     $this->execute($output . ' -e "select name from users where uid = 1;"');
     $output = $this->getOutput();
     $this->assertContains('admin', $output);
-
-    // Get the connection details with sql-connect and check its structure.
-    if (strpos(UNISH_DB_URL, 'mysql') === FALSE) {
-      $this->markTestSkipped('sql-connect tests need updating for non-mysql UNISH_DB_URL.');
-    }
   }
 }
