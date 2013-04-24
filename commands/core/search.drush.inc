@@ -72,6 +72,7 @@ function drush_search_index() {
 function _drush_search_index() {
   list($remaining, ) = _drush_search_status();
   register_shutdown_function('search_update_totals');
+  $failures = 0;
   while ($remaining > 0) {
     drush_log(dt('Remaining items to be indexed: ' . $remaining), 'ok');
     // Use drush_invoke_process() to start subshell. Avoids out of memory issue.
@@ -101,7 +102,22 @@ function _drush_search_index() {
       $eval .= " module_invoke_all('update_index');";
     }
     drush_invoke_process('@self', 'php-eval', array($eval));
+    $previous_remaining = $remaining;
     list($remaining, ) = _drush_search_status();
+    // Make sure we're actually making progress.
+    if ($remaining == $previous_remaining) {
+      $failures++;
+      if ($failures == 3) {
+        drush_log(dt('Indexing stalled with @number items remaining.', array(
+          '@number' => $remaining,
+        )), 'error');
+        return;
+      }
+    }
+    // Only count consecutive failures.
+    else {
+      $failures = 0;
+    }
   }
 }
 
