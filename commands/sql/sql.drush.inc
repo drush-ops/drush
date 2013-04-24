@@ -198,8 +198,14 @@ function sql_drush_command() {
   $items['sql-cli'] = array(
     'description' => "Open a SQL command-line interface using Drupal's credentials.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'options' => $options + $db_url,
+    'options' => array(
+      'A' => 'Skip reading table information. This gives a quicker start of mysql.',
+    ) + $db_url,
     'aliases' => array('sqlc'),
+    'examples' => array(
+      'drush sql-cli' => "Open a SQL command-line interface using Drupal's credentials.",
+      'drush sql-cli -A' => "Open a SQL command-line interface using Drupal's credentials and skip reading table information.",
+    ),
   );
   $items['sql-sanitize'] = array(
     'description' => "Run sanitization operations on the current database.",
@@ -256,6 +262,9 @@ function _drush_sql_connect($db_spec = NULL) {
   switch (_drush_sql_get_scheme($db_spec)) {
     case 'mysql':
       $command = 'mysql';
+      if (drush_get_option('A', FALSE)) {
+        $command .= ' -A';
+      }
       break;
     case 'pgsql':
       $command = 'psql';
