@@ -118,13 +118,10 @@ if [ -n "$PHP_OPTIONS" ] ; then
   php_options="$php_options $PHP_OPTIONS"
 fi
 
-php_prohibited_options="-d magic_quotes_gpc=0 -d magic_quotes_runtime=0 -d magic_quotes_sybase=0"
+# Always disable magic_quotes_gpc and friends
+php_options="$php_options -d magic_quotes_gpc=0 -d magic_quotes_runtime=0 -d magic_quotes_sybase=0"
 
 # Pass in the path to php so that drush knows which one
 # to use if it re-launches itself to run subcommands.  We
-# will also pass php options if any are defined.
-if [ -z "$php_options" ] ; then
-  exec "$php" $php_options $php_prohibited_options "$SCRIPT_PATH" --php="$php" "$@"
-else
-  exec "$php" $php_options $php_prohibited_options "$SCRIPT_PATH" --php="$php" --php-options="$php_options" "$@"
-fi
+# will also pass in the php options.
+exec "$php" $php_options "$SCRIPT_PATH" --php="$php" --php-options="$php_options" "$@"
