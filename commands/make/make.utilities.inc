@@ -367,9 +367,15 @@ function make_clean_tmp() {
  */
 function make_prepare_install($build_path) {
   $default = make_tmp() . '/__build__/sites/default';
-  drush_copy_dir($default . DIRECTORY_SEPARATOR . 'default.settings.php', $default . DIRECTORY_SEPARATOR . 'settings.php', TRUE);
+  $default_settings_file = $default . DIRECTORY_SEPARATOR . 'default.settings.php';
+  $settings_file = $default . DIRECTORY_SEPARATOR . 'settings.php';
+
+  if(file_exists($default_settings_file)) {
+      drush_copy_dir($default_settings_file, $settings_file, TRUE);
+      chmod($settings_file, 0666);
+  }
+
   drush_mkdir($default . '/files');
-  chmod($default . DIRECTORY_SEPARATOR . 'settings.php', 0666);
   chmod($default . DIRECTORY_SEPARATOR . 'files', 0777);
 }
 
