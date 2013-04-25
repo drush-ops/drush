@@ -37,14 +37,16 @@ function package_handler_validate() {
 function package_handler_download_project(&$request, $release) {
   // Install profiles come in several variants. User may specify which one she wants.
   if ($request['project_type'] == 'profile') {
-    // @todo Use xpath to get the right file url.
-    $files = $release['files'];
-    foreach ($files as $key => $file) {
-      if ((string)$file->variant == drush_get_option('variant', 'full') && (string)$file->archive_type == 'tar.gz') {
-        $release['download_link'] = (string)$file->url;
-        $release['mdhash'] = (string)$file->md5;
-        $release['date'] = (string)$file->filedate;
-        break;
+    if (!empty($request['files'])) {
+      // @todo Use xpath to get the right file url.
+      $files = $release['files'];
+      foreach ($files as $key => $file) {
+        if ((string)$file->variant == drush_get_option('variant', 'full') && (string)$file->archive_type == 'tar.gz') {
+          $release['download_link'] = (string)$file->url;
+          $release['mdhash'] = (string)$file->md5;
+          $release['date'] = (string)$file->filedate;
+          break;
+        }
       }
     }
   }
