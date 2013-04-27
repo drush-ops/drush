@@ -634,8 +634,8 @@ function drush_redispatch_get_options() {
   // local php settings should not override sitealias settings
   unset($cli_context['php']);
   unset($cli_context['php-options']);
-  // cli overrides sitealias
-  $options = $cli_context + drush_get_context('alias');
+  // cli overrides sitealias and command specific
+  $options = $cli_context + drush_get_context('alias') + drush_get_context('specific');
 
   $options = array_diff_key($options, array_flip(drush_sitealias_site_selection_keys()));
   unset($options['command-specific']);
@@ -1522,7 +1522,7 @@ function drush_command_get_includes($command) {
  */
 function drush_command_default_options($command = NULL) {
   $command_default_options = drush_get_context('command-specific');
-  return drush_command_set_command_specific($command_default_options);
+  return drush_command_set_command_specific($command_default_options, $command);
 }
 
 function drush_sitealias_command_default_options($site_record, $prefix, $command = NULL) {

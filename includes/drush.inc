@@ -1204,7 +1204,7 @@ function drush_preflight_command_dispatch() {
 
     // Force interactive mode if there is a single remote target.  #interactive is added by drush_do_command_redispatch
     drush_set_option('interactive', TRUE);
-    $values = drush_do_command_redispatch($command_name, $args, $remote_host, $remote_user);
+    $values = drush_do_command_redispatch(isset($command) ? $command : $command_name, $args, $remote_host, $remote_user);
     // In 'interactive' mode, $values is the result code from drush_shell_proc_open.
     // TODO: in _drush_backend_invoke, return array('error_status' => $ret) instead for uniformity.
     if (!is_array($values) && ($values != 0)) {
@@ -1379,8 +1379,24 @@ function drush_do_site_command($site_record, $command, $args = array(), $command
  * options that were passed to this invocation of drush.
  */
 function drush_do_command_redispatch($command, $args = array(), $remote_host = NULL, $remote_user = NULL, $drush_path = NULL) {
+  $additional_global_options = array();
   $command_options = drush_redispatch_get_options();
-
+  if (is_array($command)) {
+    $command_name = $command['command'];
+    // If we are executing a remote command that uses strict option handling,
+    // then mark all of the options in the alias context as global, so that they
+    // will appear before the command name.
+    if (!empty($command['strict-option-handling'])) {
+      foreach(drush_get_context('alias') as $alias_key => $alias_value) {
+        if (array_key_exists($alias_key, $command_options) && !array_key_exists($alias_key, $command['options'])) {
+          $additional_global_options[$alias_key] = $alias_value;
+        }
+      }
+    }
+  }
+  else {
+    $command_name = $command;
+  }
   // If the path to drush was supplied, then use it to invoke the new command.
   if ($drush_path == NULL) {
     $drush_path = drush_get_option('drush-script');
@@ -1391,14 +1407,14 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
       }
     }
   }
-  $backend_options = array('drush-script' => $drush_path, 'remote-host' => $remote_host, 'remote-user' => $remote_user, 'integrate' => TRUE);
+  $backend_options = array('drush-script' => $drush_path, 'remote-host' => $remote_host, 'remote-user' => $remote_user, 'integrate' => TRUE, 'additional-global-options' => $additional_global_options);
   if (drush_get_option('interactive')) {
     $backend_options['interactive'] = TRUE;
   }
 
   // Run the command in a new process.
   drush_log(dt('Begin redispatch via invoke process'));
-  $values = drush_invoke_process('@self', $command, $args, $command_options, $backend_options);
+  $values = drush_invoke_process('@self', $command_name, $args, $command_options, $backend_options);
   drush_log(dt('Invoke process is complete'));
 
   return $values;
