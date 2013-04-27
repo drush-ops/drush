@@ -838,17 +838,23 @@ function drush_shift() {
  */
 function drush_adjust_args_if_shebang_script(&$args) {
   if (drush_has_bash()) {
-    if (_drush_is_drush_shebang_script($args[1])) {
+    // The drush script may add --php or --php-options at the
+    // head of the argument list; skip past those.
+    $base_arg_number = 1;
+    while (substr($args[$base_arg_number], 0, 5) == '--php') {
+      ++$base_arg_number;
+    }
+    if (_drush_is_drush_shebang_script($args[$base_arg_number])) {
       // If $args[1] is a drush "shebang" script, we will insert
       // the option "--bootstrap-to-first-arg" and the command
       // "php-script" at the beginning of  @args, so the command
       // line args become:
       //   /path/to/drush --bootstrap-to-first-arg php-script /path/to/script userArg1 userArg2 ...
       drush_set_option('bootstrap-to-first-arg', TRUE);
-      array_splice($args, 1, 0, array('php-script'));
+      array_splice($args, $base_arg_number, 0, array('php-script'));
       drush_set_context('DRUSH_SHEBANG_SCRIPT', TRUE);
     }
-    elseif (((strpos($args[1], ' ') !== FALSE) || (!ctype_alnum($args[1][0]))) && (_drush_is_drush_shebang_script($args[2]))) {
+    elseif (((strpos($args[$base_arg_number], ' ') !== FALSE) || (!ctype_alnum($args[$base_arg_number][0]))) && (_drush_is_drush_shebang_script($args[$base_arg_number + 1]))) {
       // If $args[2] is a drush "shebang" script, we will insert
       // the space-exploded $arg[1] in place of $arg[1], so the
       // command line args become:
@@ -856,7 +862,7 @@ function drush_adjust_args_if_shebang_script(&$args) {
       // If none of the script arguments look like a drush command,
       // then we will insert "php-script" as the default command to
       // execute.
-      $script_args = explode(' ', $args[1]);
+      $script_args = explode(' ', $args[$base_arg_number]);
       $has_command = FALSE;
       foreach ($script_args as $script_arg) {
         if (preg_match("/^[a-z][a-z0-9-]*$/",$script_arg)) {
@@ -866,7 +872,7 @@ function drush_adjust_args_if_shebang_script(&$args) {
       if (!$has_command) {
         $script_args[] = 'php-script';
       }
-      array_splice($args, 1, 1, $script_args);
+      array_splice($args, 1, $base_arg_number, $script_args);
       drush_set_context('DRUSH_SHEBANG_SCRIPT', TRUE);
     }
   }
