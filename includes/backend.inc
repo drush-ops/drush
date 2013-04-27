@@ -879,6 +879,11 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
   // in the global option list) from the commandline options and put them into the post options.
   // The post options will be json-encoded and sent to the command via stdin
   $global_option_list = drush_get_global_options(FALSE); // These should be in the command line.
+  $additional_global_options = array();
+  if (array_key_exists('additional-global-options', $backend_options)) {
+    $additional_global_options = $backend_options['additional-global-options'];
+    $command_options += $additional_global_options;
+  }
   $method_post = ((!array_key_exists('method', $backend_options)) || ($backend_options['method'] == 'POST'));
   $post_options = array();
   $commandline_options = array();
@@ -930,7 +935,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
       }
       // In METHOD GET, ignore options with array values
       elseif (!is_array($value)) {
-        if ($global) {
+        if ($global || array_key_exists($key, $additional_global_options)) {
           $drush_global_options[$key] = $value;
         }
         else {
