@@ -176,24 +176,7 @@ function simpletest_drush_run_test($class) {
   drush_log($info['name'] . ' ' . _simpletest_format_summary_line($test->results), $status);
 
   if ($dir = drush_get_option('xml')) {
-    drush_test_xml_results($test_id, $dir);
-  }
-
-  // If there were some failed tests show them.
-  if ($status === 'error') {
-    if (drush_drupal_major_version() >= 7) {
-      $args = array(':test_id' => $test_id);
-      $result = db_query("SELECT * FROM {simpletest} WHERE test_id = :test_id AND status IN ('exception', 'fail') ORDER BY test_class, message_id", $args);
-      foreach($result as $record) {
-        drush_set_error('DRUSH_TEST_FAIL', dt("Test !function failed: !message", array('!function' => $record->function, '!message' => $record->message)));
-      }
-    }
-    else {
-      $result = db_query("SELECT * FROM {simpletest} WHERE test_id = %d AND status IN ('exception', 'fail') ORDER BY test_class, message_id", $test_id);
-      while ($row = db_fetch_object($result)) {
-        drush_set_error('DRUSH_TEST_FAIL', dt("Test !function failed: !message", array('!function' => $row->function, '!message' => $row->message)));
-      }
-    }
+    drush_test_xml_results($test_id, $dir, $info);
   }
 }
 
@@ -240,18 +223,13 @@ function drush_test_get_all_tests() {
   return array($groups, $all_tests);
 }
 
-/*
- * Display test results.
+/**
+ * Write test results in jUnit XML format.
  */
-function drush_test_xml_results($test_id, $dir) {
+function drush_test_xml_results($test_id, $dir, $info) {
   $dir = is_string($dir) ? $dir : '.';
 
-  $results_map = array(
-    'pass' => 'Pass',
-    'fail' => 'Fail',
-    'exception' => 'Exception',
-  );
-
+  // Get an array of test result objects from the database.
   if (drush_drupal_major_version() >= 7) {
     $results = db_query("SELECT * FROM {simpletest} WHERE test_id = :test_id ORDER BY test_class, message_id", array(':test_id' => $test_id));
   }
@@ -263,47 +241,88 @@ function drush_test_xml_results($test_id, $dir) {
     }
   }
 
-  $test_class = '';
-  $xml_files = array();
-
+  // Collect and aggregate the data from simpletest.
+  $test_suites = array();
   foreach ($results as $result) {
-    if (isset($results_map[$result->status])) {
-      if ($result->test_class != $test_class) {
-        // Display test class every time results are for new test class.
-        if (isset($xml_files[$test_class])) {
-          file_put_contents($dir . '/' . $test_class . '.xml', $xml_files[$test_class]['doc']->saveXML());
-          unset($xml_files[$test_class]);
-        }
-        $test_class = $result->test_class;
-        if (!isset($xml_files[$test_class])) {
-          $doc = new DomDocument('1.0');
-          $root = $doc->createElement('testsuite');
-          $root = $doc->appendChild($root);
-          $xml_files[$test_class] = array('doc' => $doc, 'suite' => $root);
-        }
-      }
-      // Save the result into the XML:
-      $case = $xml_files[$test_class]['doc']->createElement('testcase');
-      $case->setAttribute('classname', $test_class);
-      list($class, $name) = explode('->', $result->function, 2);
-      $case->setAttribute('name', $name);
-
-      if ($result->status == 'fail') {
-        $fail = $xml_files[$test_class]['doc']->createElement('failure');
-        $fail->setAttribute('type', 'failure');
-        $fail->setAttribute('message', $result->message_group);
-        $text = $xml_files[$test_class]['doc']->createTextNode($result->message);
-        $fail->appendChild($text);
-        $case->appendChild($fail);
-      }
-
-      $xml_files[$test_class]['suite']->appendChild($case);
+    // Create test_suite object.
+    // Formatting name so it becomes "group.name" without any other dots. Jenkins uses string splitting on dots to gather info.
+    $test_suite_name = str_replace('.', '', $info['group']) . '.' . str_replace('.', '', $info['name']);
+    if (!isset($test_suites[$test_suite_name])) {
+      $test_suite = new stdClass();
+      $test_suite->name = $test_suite_name;
+      $test_suite->test_cases = array();
+      $test_suites[$test_suite_name] = $test_suite;
+    }
+    else {
+      $test_suite = $test_suites[$test_suite_name];
+    }
+    // Create test_case object.
+    list(, $test_case_name) = explode('->', $result->function, 2);
+    if (empty($test_case_name)) {
+      // There is no '->' present on static function calls. Use the whole string in those cases.
+      $test_case_name = $result->function;
+    }
+    $test_case_name = str_replace('.', '', $test_case_name);  // Remove those dots Jenkins loves so much.
+    if (!isset($test_suite->test_cases[$test_case_name])) {
+      $test_case = new stdClass();
+      $test_case->name = $test_case_name;
+      $test_case->failure_message = '';
+      $test_case->error_message = '';
+      $test_case->system_out = '';
+      $test_case->system_err = '';
+      $test_suite->test_cases[$test_case_name] = $test_case;
+    }
+    else {
+      $test_case = $test_suite->test_cases[$test_case_name];
+    }
+    // Prepare message.
+    $status = str_pad($result->status . ':', 10);
+    $message = strip_tags($result->message, '<a>');  // Jenkins encodes the output so don't use any tags.
+    $message = preg_replace('/<a.*?href="([^"]+)".*?>(.*?)<\/a>/', '$1 $2', $message); // Jenkins will turn urls into clickable links.
+    $message = $status . ' [' . $result->message_group . '] ' . $message . ' [' . basename($result->file) . ':' . $result->line . "]\n";
+    // Everything is logged in system_out.
+    $test_case->system_out .= $message;
+    // Failures go to failures.
+    if ($result->status == 'fail') {
+      $test_case->failure_message .= $message;
+    }
+    // Exceptions go both to errors and system_err.
+    if ($result->status == 'exception') {
+      $test_case->error_message .= $message;
+      $test_case->system_err .= $message;
     }
   }
 
-  // Save the last one:
-  if (isset($xml_files[$test_class])) {
-    file_put_contents($dir . '/' . $test_class . '.xml', $xml_files[$test_class]['doc']->saveXML());
-    unset($xml_files[$test_class]);
+  // Build an XML document from our results.
+  $xml = new DOMDocument('1.0', 'UTF-8');
+  foreach ($test_suites as $test_suite) {
+    $test_suite_element = $xml->createElement('testsuite');
+    $test_suite_element->setAttribute('name', $test_suite->name);
+    foreach ($test_suite->test_cases as $test_case) {
+      $test_case_element = $xml->createElement('testcase');
+      $test_case_element->setAttribute('name', $test_case->name);
+      if (!empty($test_case->failure_message)) {
+        $failure_element = $xml->createElement('failure');
+        $failure_element->setAttribute('message', $test_case->failure_message);
+        $test_case_element->appendChild($failure_element);
+      }
+      if (!empty($test_case->error_message)) {
+        $error_element = $xml->createElement('error');
+        $error_element->setAttribute('message', $test_case->error_message);
+        $test_case_element->appendChild($error_element);
+      }
+      if (!empty($test_case->system_out)) {
+        $system_out_element = $xml->createElement('system-out', $test_case->system_out);
+        $test_case_element->appendChild($system_out_element);
+      }
+      if (!empty($test_case->system_err)) {
+        $system_err_element = $xml->createElement('system-err', $test_case->system_err);
+        $test_case_element->appendChild($system_err_element);
+      }
+      $test_suite_element->appendChild($test_case_element);
+    }
+    $xml->appendChild($test_suite_element);
   }
+  // Save to disk.
+  file_put_contents($dir . '/testsuite-' . $test_id . '.xml', $xml->saveXML());
 }
