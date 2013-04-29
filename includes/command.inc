@@ -463,6 +463,7 @@ function drush_handle_command_output($command, $structured_output) {
       $metadata = array();
       $metadata['strict'] = drush_get_option('strict', FALSE);
       if (isset($formatter->engine_config['options'])) {
+        $machine_parsable = $formatter->engine_config['engine-info']['machine-parsable'];
         if (drush_get_option('full', FALSE)) {
           if (isset($formatter->engine_config['fields-full'])) {
             $formatter->engine_config['fields-default'] = $formatter->engine_config['fields-full'];
@@ -471,12 +472,17 @@ function drush_handle_command_output($command, $structured_output) {
             $formatter->engine_config['fields-default'] = array_keys($formatter->engine_config['field-labels']);
           }
         }
-        elseif (drush_get_context('DRUSH_PIPE') && isset($formatter->engine_config['fields-pipe'])) {
+        elseif ((drush_get_context('DRUSH_PIPE') || $machine_parsable) && isset($formatter->engine_config['fields-pipe'])) {
           $formatter->engine_config['fields-default'] = $formatter->engine_config['fields-pipe'];
         }
         foreach ($formatter->engine_config['options'] as $option => $option_info) {
           $default_value = isset($formatter->engine_config[$option . '-default']) ? $formatter->engine_config[$option . '-default'] : FALSE;
-          $user_specified_value = drush_get_option_list($option, $default_value);
+          if (isset($option_info['list'])) {
+            $user_specified_value = drush_get_option_list($option, $default_value);
+          }
+          else {
+            $user_specified_value = drush_get_option($option, $default_value);
+          }
           if ($user_specified_value !== FALSE) {
             $metadata[$option] =$user_specified_value;
           }

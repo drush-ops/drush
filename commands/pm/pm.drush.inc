@@ -203,14 +203,15 @@ function pm_drush_command() {
       'projects' => 'Optional. A list of installed projects to show.',
     ),
     'options' => array(
-      'pipe' => 'Returns a whitespace delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
+      'pipe' => 'Returns a list of the projects with any extensions enabled that need updating, one project per line.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'outputformat' => array(
       'default' => 'table',
       'pipe-format' => 'list',
-      'field-labels' => array('label' => 'Name', 'existing_version' => 'Installed Version', 'status' => 'Status', 'status_msg' => 'Message', 'candidate_version' => 'Proposed version'),
+      'field-labels' => array('name' => 'Short Name', 'label' => 'Name', 'existing_version' => 'Installed Version', 'status' => 'Status', 'status_msg' => 'Message', 'candidate_version' => 'Proposed version'),
       'fields-default' => array('label', 'existing_version', 'candidate_version', 'status_msg' ),
+      'fields-pipe' => array('name', 'existing_version', 'candidate_version', 'status_msg' ),
       'output-data-type' => 'format-table',
     ),
     'aliases' => array('ups'),
@@ -218,11 +219,15 @@ function pm_drush_command() {
   $items['pm-updatecode'] = array(
     'description' => 'Update Drupal core and contrib projects to latest recommended releases.',
     'drupal dependencies' => array($update),
+    'examples' => array(
+      'drush pm-updatecode --no-core' => 'Update contrib projects, but skip core.',
+      'drush pm-updatestatus --format=csv-list --list-separator=" " --fields="name,existing_version,candidate_version,status_msg"' => 'To show a list of projects with their update status, use pm-updatestatus instead of pm-updatecode.',
+    ),
     'arguments' => array(
       'projects' => 'Optional. A list of installed projects to update.',
     ),
     'options' => array(
-      'pipe' => 'Returns a whitespace delimited list of projects with any of its extensions enabled and their respective version and update information, one project per line. Order: project name, current version, recommended version, update status.',
+      'pipe' => 'Returns a list of the projects with any extensions enabled that need updating, one project per line.',
       'notes' => 'Show release notes for each project to be updated.',
       'no-core' => 'Only update modules and skip the core update.',
     ) + $update_options,

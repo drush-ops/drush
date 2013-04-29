@@ -152,7 +152,7 @@ drush-alias-files=/etc/drush/dev.alias.drushrc.php',
         'args' => array(),
         'format' => 'csv-list',
         'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
-        'expected' => "Drupal,0.0,0.0,Up to date",
+        'expected' => "drupal,0.0,0.0,Up to date",
       ),
       /*
         pm-updatestatus --format=ini does not work
@@ -173,7 +173,7 @@ drush-alias-files=/etc/drush/dev.alias.drushrc.php',
         'format' => 'ini-sections',
         'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
         'expected' => "[drupal]
-name=Drupal
+short_name=drupal
 installed_version=0.0
 proposed_version=0.0
 message=Up to date",

@@ -32,6 +32,7 @@ function drush_pm_updatestatus() {
     if (!isset($extension->info['project'])) {
       if ((isset($extension->vcs)) && ($extension->status)) {
         $update_info[$name] = array(
+          'name' => $name,
           'label' => $extension->label,
           'existing_version' => 'Unknown',
           'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_PACKAGED,
@@ -68,6 +69,7 @@ function drush_pm_updatestatus() {
       // Disabled projects.
       if ((isset($projects[$name])) && ($projects[$name]['status'] == 0)) {
         $update_info[$name] = array(
+          'name' => $name,
           'label' => $projects[$name]['label'],
           'existing_version' => $projects[$name]['version'],
           'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE,
@@ -78,6 +80,7 @@ function drush_pm_updatestatus() {
       // It does not exist at all or it is mispelled,...
       else {
         $update_info[$name] = array(
+          'name' => $name,
           'label' => $name,
           'existing_version' => 'Unknown',
           'status'=> DRUSH_PM_REQUESTED_PROJECT_NOT_FOUND,

@@ -26,6 +26,9 @@
  *   c
  */
 class drush_outputformat_list extends drush_outputformat {
+  function is_list() {
+    return TRUE;
+  }
   function validate() {
     // Separate the 'list' and 'filter' metadata from everything
     // else in $engine_config['engine-info']
@@ -59,7 +62,6 @@ class drush_outputformat_list extends drush_outputformat {
 
   function format($input, $metadata) {
     $output = '';
-    $separator = isset($metadata['list-separator']) ? $metadata['list-separator'] : "\n";
     if (is_array($input)) {
       // If this list is processing output from a command that produces table
       // output, but our subformatter only supports 'single' items (e.g. csv),
@@ -79,6 +81,27 @@ class drush_outputformat_list extends drush_outputformat {
       $first = TRUE;
       $field_selection_control = isset($metadata['list-field-selection-control']) ? $metadata['list-field-selection-control'] : 0;
       $selected_output_fields = false;
+      if (empty($metadata['metameta'])) {
+        $metameta = $metadata;
+        unset($metameta['list-item']);
+        unset($metameta['list-item-default-value']);
+      }
+      else {
+        $metameta = $metadata['metameta'];
+      }
+      $list_separator_key = 'list-separator';
+      if ($this->sub_engine->is_list()) {
+        $list_separator_key = 'line-separator';
+        if (isset($metadata['list-separator'])) {
+          $metameta['list-separator'] = $metadata['list-separator'];
+        }
+      }
+      $separator = isset($metadata[$list_separator_key]) && !empty($metadata[$list_separator_key]) ? $metadata[$list_separator_key] : "\n";
+      foreach (array('field-labels') as $key) {
+        if (isset($metadata[$key])) {
+          $metameta[$key] = $metadata[$key];
+        }
+      }
       foreach ($input as $label => $data) {
         // If this output formatter is set to print a single item from each
         // element, select that item here.
@@ -98,25 +121,12 @@ class drush_outputformat_list extends drush_outputformat {
             $selected_output_fields = true;
           }
         }
-        if (empty($metadata['metameta'])) {
-          $metameta = $metadata;
-          unset($metameta['list-item']);
-          unset($metameta['list-item-default-value']);
-          $metameta['label'] = $label;
-        }
-        else {
-          $metameta = $metadata['metameta'] + array('label' => $label);
-        }
+        $metameta['label'] = $label;
         if ($selected_output_fields) {
           $metameta['list-field-selection-control'] = -1;
         }
         elseif ($field_selection_control) {
           $metameta['list-field-selection-control'] = $field_selection_control - 1;
-        }
-        foreach (array('field-labels') as $key) {
-          if (isset($metadata[$key])) {
-            $metameta[$key] = $metadata[$key];
-          }
         }
         $formatted_item = $this->sub_engine->format($data, $metameta);
         if ($formatted_item === FALSE) {
@@ -125,7 +135,7 @@ class drush_outputformat_list extends drush_outputformat {
         if (!$first) {
           $output .= $separator;
         }
-        if (($separator != "\n") && (strpos($formatted_item, $separator) !== FALSE)) {
+        if (($separator != "\n") && !empty($separator) && (strpos($formatted_item, $separator) !== FALSE)) {
           $formatted_item = drush_wrap_with_quotes($formatted_item);
         }
         $output .= $formatted_item;

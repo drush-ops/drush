@@ -53,6 +53,13 @@ function outputformat_drush_engine_type_info() {
         'description' => 'Fields to output.',
         'example-value' => 'field1,field2',
         'value' => 'required',
+        'list' => TRUE,
+      ),
+      'list-separator' => array(
+        'description' => 'Specify how elements in a list should be separated. In lists of lists, this applies to the elements in the inner lists.',
+      ),
+      'line-separator' => array(
+        'description' => 'In nested lists of lists, specify how the outer lists ("lines") should be separated.',
       ),
     ),
     // Allow output formats to declare their
@@ -346,6 +353,9 @@ class drush_outputformat {
   }
   function formatter_type() {
     return $this->engine;
+  }
+  function is_list() {
+    return FALSE;
   }
   function formatter_is_simple_list() {
     if (!isset($this->sub_engine)) {
