@@ -17,6 +17,12 @@ class VariableCase extends Drush_CommandTestCase {
       'uri' => key($sites),
     );
 
+    $this->drush('variable-set', array('test_integer', '3.14159'), $options);
+    $this->drush('variable-get', array('test_integer'), $options);
+    $var_export = $this->getOutput();
+    eval($var_export);
+    $this->assertEquals("3.14159", $variables['test_integer'], 'Integer variable was successfully set and get.');
+
     $this->drush('variable-set', array('date_default_timezone', 'US/Mountain'), $options);
     $this->drush('variable-get', array('date_default_timezone'), $options); // Wildcard get.
     $var_export = $this->getOutput();

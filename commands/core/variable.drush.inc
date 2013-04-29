@@ -222,7 +222,7 @@ function drush_variable_set() {
 
 function _drush_variable_format($value, $format) {
   if ($format == 'auto') {
-    if (is_numeric($value)) {
+    if (is_int($value)) {
       $format = 'integer';
     }
     elseif (($value == 'TRUE') || ($value == 'FALSE')) {
