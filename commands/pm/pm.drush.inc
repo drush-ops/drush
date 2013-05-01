@@ -1725,31 +1725,39 @@ function drush_pm_cache_project_extensions($project, $found) {
 /**
  * Print out all extensions (modules/themes/profiles) found in specified project.
  *
- * Find .info files in the project path and identify modules, themes and
+ * Find .info.yml files in the project path and identify modules, themes and
  * profiles. It handles two kind of projects: drupal core/profiles and
  * modules/themes.
  * It does nothing with theme engine projects.
  */
 function drush_pm_extensions_in_project($project) {
-  // Mask for drush_scan_directory, to  avoid tests directories.
+  // Mask for drush_scan_directory, to match .info.yml files.
+  $mask = $project['drupal_version'][0] >= 8 ? '/(.*)\.info\.yml$/' : '/(.*)\.info$/';
+
+  // Mask for drush_scan_directory, to avoid tests directories.
   $nomask = array('.', '..', 'CVS', 'tests');
 
   // Drupal core and profiles can contain modules, themes and profiles.
   if (in_array($project['project_type'], array('core', 'profile'))) {
     $found = array('profile' => array(), 'theme' => array(), 'module' => array());
     // Find all of the .info files
-    foreach (drush_scan_directory($project['project_install_location'], "/.*\.info$/", $nomask) as $filename => $info) {
+    foreach (drush_scan_directory($project['project_install_location'], $mask, $nomask) as $filename => $info) {
+      // Extract extension name from filename.
+      $matches = array();
+      preg_match($mask, $info->basename, $matches);
+      $name = $matches[1];
+
       // Find the project type corresponding the .info file.
      // (Only drupal >=7.x has .info for .profile)
-      $base = dirname($filename) . '/' . $info->name;
+      $base = dirname($filename) . '/' . $name;
       if (is_file($base . '.module')) {
-        $found['module'][] = $info->name;
+        $found['module'][] = $name;
       }
       else if (is_file($base . '.profile')) {
-        $found['profile'][] = $info->name;
+        $found['profile'][] = $name;
       }
       else {
-        $found['theme'][] = $info->name;
+        $found['theme'][] = $name;
       }
     }
     // Special case: find profiles for drupal < 7.x (no .info)
