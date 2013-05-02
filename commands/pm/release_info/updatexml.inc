@@ -115,18 +115,20 @@ function release_info_get_releases($requests) {
 /**
  * Check if a project is available in a update service.
  *
- * It also checks for consistency by comparing given project type and the
- * type obtained from the update service.
+ * Optionally check for consistency by comparing given project type and
+ * the type obtained from the update service.
  */
-function release_info_check_project($request, $type) {
+function release_info_check_project($request, $type = NULL) {
   $xml = updatexml_get_release_history_xml($request);
   if (!$xml) {
     return FALSE;
   }
 
-  $project_type = updatexml_determine_project_type($xml);
-  if ($project_type != $type) {
-    return FALSE;
+  if ($type) {
+    $project_type = updatexml_determine_project_type($xml);
+    if ($project_type != $type) {
+      return FALSE;
+    }
   }
 
   return TRUE;
