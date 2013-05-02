@@ -64,5 +64,11 @@ class EnDisUnListCase extends Drush_CommandTestCase {
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('token', $list));
+
+    // Test that pm-enable downloads missing projects and dependencies.
+    $this->drush('pm-enable', array('views'), $options + array('resolve-dependencies' => TRUE));
+    $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
+    $list = $this->getOutputAsList();
+    $this->assertTrue(in_array('ctools', $list));
   }
 }

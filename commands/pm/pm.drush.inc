@@ -744,7 +744,7 @@ function drush_pm_find_project_from_extension($extension) {
     // If we can find info on a project that has the same name
     // as the requested extension, then we'll call that a match.
     $request = pm_parse_project_version(array($extension));
-    if (release_info_check_project($request[$extension], 'module')) {
+    if (release_info_check_project($request[$extension])) {
       $result = $extension;
     }
   }
@@ -767,13 +767,31 @@ function drush_pm_enable_validate() {
     // Classify $args in themes, modules or unknown.
     $modules = array();
     $themes = array();
+    $download = array();
     drush_pm_classify_extensions($args, $modules, $themes, $extension_info);
     $extensions = array_merge($modules, $themes);
     $unknown = array_diff($args, $extensions);
 
-    // Discard and set an error for each unknown extension.
-    foreach ($unknown as $name) {
-      drush_log(dt('!extension was not found and will not be enabled.', array('!extension' => $name)), 'warning');
+    // If there're unknown extensions, try and download projects
+    // with matching names.
+    if (!empty($unknown)) {
+      $found = array();
+      foreach ($unknown as $key => $name) {
+        drush_log(dt('!extension was not found.', array('!extension' => $name)), 'warning');
+        $project = drush_pm_find_project_from_extension($name);
+        if (!empty($project)) {
+          $found[] = $project;
+        }
+      }
+      if (!empty($found)) {
+        drush_log(dt("The following projects provide some or all of the extensions not found:\n@list", array('@list' => implode("\n", $found))), 'ok');
+        if (drush_get_option('resolve-dependencies')) {
+          drush_log(dt("They are being downloaded."), 'ok');
+        }
+        if ((drush_get_option('resolve-dependencies')) || (drush_confirm("Would you like to download them?"))) {
+          $download = $found;
+        }
+      }
     }
 
     // Discard already enabled and incompatible extensions.
@@ -814,23 +832,27 @@ function drush_pm_enable_validate() {
           $unmet_project_list = array_merge($unmet_project_list, $unmet_projects);
           $msgs[] = dt("!module requires !unmet-projects", array('!unmet-projects' => implode(', ', $unmet_projects), '!module' => $module));
         }
-        if (drush_get_option('resolve-dependencies') || drush_confirm(dt("The following projects have unmet dependencies:\n!list\nWould you like to download them?", array('!list' => implode("\n", $msgs))))) {
-          // If we did not already print a log message via drush_confirm, then print one now.
-          if (drush_get_option('resolve-dependencies')) {
-            drush_log(dt("The following projects have unmet dependencies:\n@list\nThey are being downloaded.", array('@list' => implode("\n", $msgs))));
-          }
-          // Disable DRUSH_AFFIRMATIVE context temporarily.
-          $drush_affirmative = drush_get_context('DRUSH_AFFIRMATIVE');
-          drush_set_context('DRUSH_AFFIRMATIVE', FALSE);
-          // Invoke a new process to download dependencies.
-          $result = drush_invoke_process('@self', 'pm-download', $unmet_project_list, array(), array('interactive' => TRUE));
-          // Restore DRUSH_AFFIRMATIVE context.
-          drush_set_context('DRUSH_AFFIRMATIVE', $drush_affirmative);
-          // Refresh module cache after downloading the new modules.
-          $extension_info = drush_get_extensions();
-          $recheck = TRUE;
+        drush_log(dt("The following projects have unmet dependencies:\n!list", array('!list' => implode("\n", $msgs))), 'ok');
+        if (drush_get_option('resolve-dependencies')) {
+          drush_log(dt("They are being downloaded."), 'ok');
+        }
+        if (drush_get_option('resolve-dependencies') || drush_confirm(dt("Would you like to download them?"))) {
+          $download = array_merge($download, $unmet_project_list);
         }
       }
+    }
+
+    if (!empty($download)) {
+      // Disable DRUSH_AFFIRMATIVE context temporarily.
+      $drush_affirmative = drush_get_context('DRUSH_AFFIRMATIVE');
+      drush_set_context('DRUSH_AFFIRMATIVE', FALSE);
+      // Invoke a new process to download dependencies.
+      $result = drush_invoke_process('@self', 'pm-download', $download, array(), array('interactive' => TRUE));
+      // Restore DRUSH_AFFIRMATIVE context.
+      drush_set_context('DRUSH_AFFIRMATIVE', $drush_affirmative);
+      // Refresh module cache after downloading the new modules.
+      $extension_info = drush_get_extensions();
+      $recheck = TRUE;
     }
   }
 
