@@ -37,7 +37,7 @@ function package_handler_validate() {
 function package_handler_download_project(&$request, $release) {
   // Install profiles come in several variants. User may specify which one she wants.
   if ($request['project_type'] == 'profile') {
-    if (!empty($request['files'])) {
+    if (!empty($release['files'])) {
       // @todo Use xpath to get the right file url.
       $files = $release['files'];
       foreach ($files as $key => $file) {
