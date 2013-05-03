@@ -679,13 +679,14 @@ function _drush_bootstrap_drupal_root_validate() {
  */
 function _drush_bootstrap_drupal_root() {
   $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
-  define('DRUPAL_ROOT', $drupal_root);
-
   chdir($drupal_root);
   $version = drush_drupal_version();
   $major_version = drush_drupal_major_version();
 
-  if ($major_version < 6) {
+  if ($major_version <= 7) {
+    define('DRUPAL_ROOT', $drupal_root);
+  }
+  elseif ($major_version <= 5) {
     drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
   }
 
