@@ -1805,12 +1805,13 @@ function drush_pm_extensions_in_project($project) {
   }
   // Modules and themes can only contain other extensions of the same type.
   elseif (in_array($project['project_type'], array('module', 'theme'))) {
-    // Find all of the .info files
     $found = array();
-    foreach (drush_scan_directory($project['project_install_location'], "/.*\.info$/", $nomask) as $filename => $info) {
-      $found[] = $info->name;
+    foreach (drush_scan_directory($project['project_install_location'], $mask, $nomask) as $filename => $info) {
+      // Extract extension name from filename.
+      $matches = array();
+      preg_match($mask, $info->basename, $matches);
+      $found[] = $matches[1];
     }
-    // Log results.
     // If there is only one module / theme in the project, only print out
     // the message if is different than the project name.
     if (count($found) == 1) {
