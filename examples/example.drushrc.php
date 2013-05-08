@@ -63,7 +63,7 @@
  */
 
 // Specify a particular multisite.
-# $options['l'] = 'http://example.com/subir';
+# $options['l'] = 'http://example.com/subdir';
 
 // Specify your Drupal core base directory (useful if you use symlinks).
 # $options['r'] = '/home/USER/workspace/drupal-6';
