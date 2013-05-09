@@ -1,11 +1,15 @@
 <?php
 
-// TODO: This Yaml formatter only works when Drupal 8 is bootstrapped.  :(
-// It was ported mechanically from config.drush.inc, when it was
-// adjusted to use Drush's output format engines.  It would be preferable
-// to do this in a way that worked independently of Drupal 8.
-// See: http://drupal.org/node/1366098
-use Symfony\Component\Yaml\Yaml;
+define('DRUSH_YAML_VERSION', '2.2.1');
+
+if (!class_exists('Symfony\Component\Yaml\Dumper')) {
+  // For Drush PSR-0 and Composer information, see http://drupal.org/node/1316322.
+  $path = DRUSH_BASE_PATH . '/lib/Yaml-' . DRUSH_YAML_VERSION;
+  require_once "$path/Dumper.php";
+  require_once "$path/Inline.php";
+  require_once "$path/Escaper.php";
+}
+
 use Symfony\Component\Yaml\Dumper;
 
 /**
