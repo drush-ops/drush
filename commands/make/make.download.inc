@@ -10,10 +10,10 @@
  * @return mixed
  *   The destination path on success, FALSE on failure.
  */
-function make_download_factory($name, $download, $download_location) {
+function make_download_factory($name, $type, $download, $download_location) {
   $function = 'make_download_' . $download['type'];
   if (function_exists($function)) {
-    return $function($name, $download, $download_location);
+    return $function($name, $type, $download, $download_location);
   }
   else {
     return FALSE;
@@ -23,7 +23,7 @@ function make_download_factory($name, $download, $download_location) {
 /**
  * Download project using drush's pm-download command.
  */
-function make_download_pm($name, $download, $download_location) {
+function make_download_pm($name, $type, $download, $download_location) {
   $full_project_version = $name . '-' . $download['full_version'];
 
   $options = array(
@@ -33,10 +33,10 @@ function make_download_pm($name, $download, $download_location) {
     'source' => $download['status url'],
     // This is only relevant for profiles, but we always want the variant to
     // be 'profile-only' so we don't end up with extra copies of core.
-    'variant' => 'profile-only',
+    'variant' => $type == 'core' ? 'full' : 'profile-only',
     'cache' => TRUE,
   );
-  if ($name == 'drupal') {
+  if ($type == 'core') {
     $options['drupal-project-rename'] = basename($download_location);
   }
   if (drush_get_option('no-cache', FALSE)) {
@@ -64,7 +64,7 @@ function make_download_pm($name, $download, $download_location) {
  * @return mixed
  *   The destination directory on success, FALSE on failure.
  */
-function make_download_file($name, $download, $download_location, $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT) {
+function make_download_file($name, $type, $download, $download_location, $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT) {
   if ($filename = _make_download_file($download['url'], $cache_duration)) {
     if (!drush_get_option('ignore-checksums') && !_make_verify_checksums($download, $filename)) {
       return FALSE;
@@ -190,8 +190,8 @@ function _make_download_file_move($tmp_path, $filename, $download_location, $sub
 /**
  * For backwards compatibility.
  */
-function make_download_get($name, $download, $download_location) {
-  return make_download_file($name, $download, $download_location);
+function make_download_get($name, $type, $download, $download_location) {
+  return make_download_file($name, $type, $download, $download_location);
 }
 
 /**
@@ -213,7 +213,7 @@ function make_download_get($name, $download, $download_location) {
  * @return mixed
  *   The download location on success, FALSE otherwise.
  */
-function make_download_git($name, $download, $download_location) {
+function make_download_git($name, $type, $download, $download_location) {
   $tmp_path = make_tmp();
   $wc = drush_get_option('working-copy');
   // If no download URL specified, assume anonymous clone from git.drupal.org.
@@ -346,7 +346,7 @@ function make_download_git($name, $download, $download_location) {
  * @return mixed
  *   The download location on success, FALSE otherwise.
  */
-function make_download_bzr($name, $download, $download_location) {
+function make_download_bzr($name, $type, $download, $download_location) {
   $tmp_path = make_tmp();
   $tmp_location = drush_tempdir() . '/' . basename($download_location);
   if (!empty($download['url'])) {
@@ -392,7 +392,7 @@ function make_download_bzr($name, $download, $download_location) {
  * @return mixed
  *   The download location on success, FALSE otherwise.
  */
-function make_download_svn($name, $download, $download_location) {
+function make_download_svn($name, $type, $download, $download_location) {
   if (!empty($download['url'])) {
     if (!empty($download['interactive'])) {
       $function = 'drush_shell_exec_interactive';

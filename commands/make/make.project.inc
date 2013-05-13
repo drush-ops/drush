@@ -122,7 +122,7 @@ class DrushMakeProject {
       $this->download['full_version'] = $full_version;
     }
 
-    if (make_download_factory($this->name, $this->download, $this->download_location) === FALSE) {
+    if (make_download_factory($this->name, $this->type, $this->download, $this->download_location) === FALSE) {
       $this->downloaded = FALSE;
     }
     return $this->downloaded;

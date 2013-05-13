@@ -349,6 +349,13 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->assertFileExists(UNISH_SANDBOX . '/sites/all/modules/contrib/cck_signup/README.txt');
   }
 
+  /**
+   * Test that a distribution can be used as a "core" project.
+   */
+  function testMakeUseDistributionAsCore() {
+    $this->runMakefileTest('use-distribution-as-core');
+  }
+
   function getMakefile($key) {
     static $tests = array(
       'get' => array(
@@ -539,6 +546,13 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'build'    => TRUE,
         'md5' => '7c10e6fc65728a77a2b0aed4ec2a29cd',
         'options'  => array('no-core' => NULL, 'libraries' => 'drush_make,token'),
+      ),
+      'use-distribution-as-core' => array(
+        'name'     => 'Use distribution as core',
+        'makefile' => 'use-distribution-as-core.make',
+        'build'    => TRUE,
+        'md5' => '643a603025a20d498eb583a1e7970bad',
+        'options'  => array(),
       ),
     );
     return $tests[$key];
