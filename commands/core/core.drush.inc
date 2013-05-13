@@ -109,7 +109,7 @@ function core_drush_command() {
     ),
     'options' => array(
       'show-passwords' => 'Show database password.',
-      'full' => 'Show all drush aliases in the report, even if there are a lot.',
+      'full' => 'Show all file paths and drush aliases in the report, even if there are a lot.',
     ),
     'outputformat' => array(
       'default' => 'key-value',
@@ -632,18 +632,17 @@ function _core_site_status_table($project = '') {
 
 // Adjust the status output for any non-pipe output format
 function _drush_core_status_format_table_data($output, $metadata) {
-  // Hide any key that begins with a %
-  foreach ($output as $key => $value) {
-    if ($key[0] == '%') {
-      unset($output[$key]);
-    }
-  }
-  // Hide 'Modules path' and 'Themes path' as well, because that's
-  // the way it's always been.
-  unset($output['modules']);
-  unset($output['themes']);
-  // Shorten the list of alias files if there are too many
   if (drush_get_option('full', FALSE) == FALSE) {
+    // Hide any key that begins with a %
+    foreach ($output as $key => $value) {
+      if ($key[0] == '%') {
+        unset($output[$key]);
+      }
+    }
+    // Hide 'Modules path' and 'Themes path' as well
+    unset($output['modules']);
+    unset($output['themes']);
+    // Shorten the list of alias files if there are too many
     if (isset($output['drush-alias-files']) && count($output['drush-alias-files']) > 24) {
       $msg = dt("\nThere are !count more alias files. Run with --full to see the full list.", array('!count' => count($output['drush-alias-files']) - 1));
       $output['drush-alias-files'] = array($output['drush-alias-files'][0] , $msg);
