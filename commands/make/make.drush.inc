@@ -357,8 +357,10 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
         }
         // Restore the previous '--cache' option value.
         drush_set_option('cache', $cache_before);
-        // Translate release_info key for project_type to drush make.
-        $project['type'] = $request['project_type'];
+        if (!isset($project['type'])) {
+          // Translate release_info key for project_type to drush make.
+          $project['type'] = $request['project_type'];
+        }
         if (!isset($project['download'])) {
           $project['download'] = array(
             'type' => 'pm',
