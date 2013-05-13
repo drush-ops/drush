@@ -354,6 +354,12 @@ be ignored.
     projects[] = drupal
     projects[] = managingnews
 
+** Use a distribution as core **
+
+    core = 7.x
+    projects[commerce_kickstart][type] = "core"
+    projects[commerce_kickstart][version] = "7.x-1.19"
+
 Testing
 -------
 Drush make also comes with testing capabilities, designed to test drush make
