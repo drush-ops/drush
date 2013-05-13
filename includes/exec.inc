@@ -177,15 +177,17 @@ function _drush_shell_exec($args, $interactive = FALSE) {
  * @param string $cd
  *   An optional directory to change into before executing the $command. Set to
  *   boolean TRUE to change into $site['root'] if available.
+ * @param boolean $interactive
+ *   Force creation of a tty
  * @return string
  *   A string suitable for execution with drush_shell_remote_exec().
  */
-function drush_shell_proc_build($site, $command = '', $cd = NULL) {
+function drush_shell_proc_build($site, $command = '', $cd = NULL, $interactive = FALSE) {
   // Build up the command. TODO: We maybe refactor this soon.
   $hostname = drush_remote_host($site);
   $ssh_options = drush_sitealias_get_option($site, 'ssh-options', "-o PasswordAuthentication=no");
   $os = drush_os($site);
-  if (drush_sitealias_get_option($site, 'tty')) {
+  if (drush_sitealias_get_option($site, 'tty') || $interactive) {
     $ssh_options .= ' -t';
   }
 

@@ -13,12 +13,15 @@ function ssh_drush_command() {
       'site-alias' => 'A remote site alias. Can be an alias list.',
       'bash' => 'Bash to execute on target. Optional, except when site-alias is a list.',
     ),
-    'options' => drush_shell_exec_proc_build_options(),
+    'options' => array(
+      'cd' => "Directory to change to. Use a full path, TRUE for the site's Drupal root directory, or FALSE for the remote user's home directory. Defaults to the Drupal root.",
+    ) + drush_shell_exec_proc_build_options(),
     'handle-remote-commands' => TRUE,
     'strict-option-handling' => TRUE,
     'examples' => array(
       'drush @mysite ssh' => 'Open an interactive shell on @mysite\'s server.',
       'drush @prod ssh \'ls /tmp\'' => 'Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.',
+      'drush @prod git pull' => 'Run "git pull" on the Drupal root directory on the @prod site.',
     ),
     'aliases' => array('ssh'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -65,7 +68,13 @@ function drush_ssh_site_ssh($command = NULL) {
     return;
   }
 
-  $cmd = drush_shell_proc_build($site, $command);
+  $interactive = FALSE;
+  $cd = drush_get_option('cd', TRUE);
+  if (empty($command)) {
+    $command = 'bash';
+    $interactive = TRUE;
+  }
+  $cmd = drush_shell_proc_build($site, $command, $cd, $interactive);
   $status = drush_shell_proc_open($cmd);
   if ($status != 0) {
     return drush_set_error('DRUSH_SITE_SSH_ERROR', dt('An error @code occurred while running the command `@command`', array('@command' => $cmd, '@code' => $status)));

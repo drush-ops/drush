@@ -305,6 +305,9 @@
 // Ensure all rsync commands use verbose output.
 # $command_specific['rsync'] = array('verbose' => TRUE);
 
+// Prevent drush ssh command from adding a cd to Drupal root before provided command.
+# $command_specific['ssh'] = array('cd' => FALSE);
+
 // Additional folders to search for scripts.
 // Separate by : (Unix-based systems) or ; (Windows).
 # $command_specific['script']['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
