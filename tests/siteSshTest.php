@@ -21,7 +21,7 @@ class siteSshCase extends Drush_CommandTestCase {
     );
     $this->drush('ssh', array(), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getOutput();
-    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s);', self::escapeshellarg('user'), self::escapeshellarg('server'));
+    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no -t %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), "'cd /path/to/drupal && bash'");
     $this->assertEquals($expected, $output);
   }
 
@@ -32,6 +32,7 @@ class siteSshCase extends Drush_CommandTestCase {
    */
   public function testNonInteractive() {
     $options = array(
+      'cd' => '0',
       'simulate' => NULL,
     );
     $this->drush('ssh', array('date'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
@@ -45,6 +46,7 @@ class siteSshCase extends Drush_CommandTestCase {
   */
   public function testSshMultipleArgs() {
     $options = array(
+      'cd' => '0',
       'simulate' => NULL,
     );
     $this->drush('ssh', array('ls', '/path1', '/path2'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
@@ -58,6 +60,7 @@ class siteSshCase extends Drush_CommandTestCase {
    */
   public function testSshMultipleArgsLegacy() {
    $options = array(
+      'cd' => '0',
      'simulate' => NULL,
    );
    $this->drush('ssh', array('ls /path1 /path2'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
