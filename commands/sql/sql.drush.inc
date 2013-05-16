@@ -49,7 +49,7 @@ function sql_drush_command() {
   $items['sql-conf'] = array(
     'description' => 'Print database connection details using print_r().',
     'hidden' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'options' => array(
       'all' => 'Show all database connections, instead of just one.',
       'show-passwords' => 'Show database password.',
@@ -243,6 +243,15 @@ function drush_sql_bootstrap_further() {
  * Command callback. Displays the Drupal site's database connection string.
  */
 function drush_sql_conf() {
+  // Under Drupal 7, if the database is configured but empty, then
+  // DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION will throw an exception.
+  // If this happens, we'll just catch it and continue.
+  // TODO:  Fix this in the bootstrap, per http://drupal.org/node/1996004
+  try {
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+  }
+  catch (Exception $e) {
+  }
   if (drush_get_option('db-url', FALSE)) {
     $db_spec['db-url'] = $GLOBALS['db_url'];
   }
