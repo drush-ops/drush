@@ -300,6 +300,16 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       touch("$site/settings.php");
     }
   }
+
+  /**
+   * @see drush_drupal_sitewide_directory()
+   */
+  function drupalSitewideDirectory($major_version = NULL) {
+    if (!$major_version) {
+      $major_version = drush_drupal_major_version();
+    }
+    return ($major_version < 8) ? 'sites/all' : '';
+  }
 }
 
 abstract class Drush_CommandTestCase extends Drush_TestCase {

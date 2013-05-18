@@ -41,7 +41,7 @@ function make_drush_command() {
         'description' => 'Limits the number of concurrent projects that will be processed at the same time. The default is 4.',
         'example-value' => '1',
       ),
-      'contrib-destination' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
+      'contrib-destination' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all for Drupal 6,7 and the corresponding directory in the Drupal root for Drupal 8 and above.',
       'force-complete' => 'Force a complete build even if errors occur.',
       'ignore-checksums' => 'Ignore md5 checksums for downloads.',
       'md5' => array(
@@ -184,10 +184,11 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
     return FALSE;
   }
-  $make_dir = realpath(dirname($makefile));
-  if (make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path, $make_dir)) {
-    make_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path, $make_dir);
 
+  $make_dir = realpath(dirname($makefile));
+  $sitewide = drush_drupal_sitewide_directory($includes['core'][0]);
+  if (make_projects(FALSE, drush_get_option('contrib-destination', $sitewide), $info, $build_path, $make_dir)) {
+    make_libraries(drush_get_option('contrib-destination', $sitewide), $info, $build_path, $make_dir);
 
     if (drush_get_option('prepare-install')) {
       make_prepare_install($build_path);

@@ -87,6 +87,7 @@ drush_invoke("version", $arg);
   function testDrupalDirectory() {
     $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
+    $sitewide = $this->drupalSitewideDirectory();
     $options = array(
       'root' => $root,
       'uri' => key($this->sites),
@@ -101,7 +102,7 @@ drush_invoke("version", $arg);
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();
-    $this->assertEquals($root . '/sites/all/modules/devel', $output);
+    $this->assertEquals($root . '/' . $sitewide . '/modules/devel', $output);
 
     $this->drush('drupal-directory', array('%files'), $options);
     $output = $this->getOutput();
@@ -109,7 +110,7 @@ drush_invoke("version", $arg);
 
     $this->drush('drupal-directory', array('%modules'), $options);
     $output = $this->getOutput();
-    $this->assertEquals($root . '/sites/all/modules', $output);
+    $this->assertEquals($root .  '/' . $sitewide . '/modules', $output);
   }
 
   function testCoreRequirements() {

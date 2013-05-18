@@ -1346,18 +1346,29 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       // TODO: Treat themes like modules and stop unconditionally searching here.
       $searchpath[] = 'sites/all/themes';
       $searchpath[] = conf_path() . '/themes';
+      // In D8, we search top level directories as well.
+      if (drush_drupal_major_version() >=8) {
+        $searchpath[] = 'themes';
+      }
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
-      // See comment above  regarding this if() condition.
+      // See comment above regarding this if() condition.
       if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
         // You must define your install_profile in settings.php. The DB is not sufficient.
         // Drupal core does not yet do that. See http://drupal.org/node/545452.
         if ($profile = variable_get('install_profile', NULL)) {
-          $searchpath[] = "profiles/$profile/modules";
+          $path = "profiles/$profile/modules";
+          if (file_exists($path)) {
+            $searchpath[] = $path;
+          }
+          elseif (file_exists('sites/all/' . $path)) {
+            $searchpath[] = 'sites/all/' . $path;
+          }
         }
         else {
           // If 'install_profile' is not available, check all profiles.
           $searchpath[] = "profiles";
+          $searchpath[] = "sites/all/profiles";
         }
       }
       break;

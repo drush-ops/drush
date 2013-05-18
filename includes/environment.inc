@@ -889,3 +889,13 @@ function drush_theme_get_default() {
 function drush_theme_get_admin() {
   return variable_get('admin_theme', drush_theme_get_default());
 }
+
+/**
+ * Returns the sitewide Drupal directory for extensions.
+ */
+function drush_drupal_sitewide_directory($major_version = NULL) {
+  if (!$major_version) {
+    $major_version = drush_drupal_major_version();
+  }
+  return ($major_version < 8) ? 'sites/all' : '';
+}

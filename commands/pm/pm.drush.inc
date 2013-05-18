@@ -73,7 +73,7 @@ function pm_drush_help($section) {
 
 If no --destination is provided, then destination depends on the project type:
   - Profiles will be downloaded to profiles/ in your Drupal root.
-  - Modules and themes will be downloaded to the site specific directory (sites/example.com/modules|themes) if available, or to sites/all/modules|themes.
+  - Modules and themes will be downloaded to the site specific directory (sites/example.com/modules|themes) if available, or to the site wide directory otherwise.
   - If you're downloading drupal core or you are not running the command within a bootstrapped drupal site, the default location is the current directory.
   - Drush commands will be relocated to @site_wide_location (if available) or ~/.drush. Relocation is determined once the project is downloaded by examining its content. Note you can provide your own function in a commandfile to determine the relocation of any project.", array('@site_wide_location' => drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES')));
   }
