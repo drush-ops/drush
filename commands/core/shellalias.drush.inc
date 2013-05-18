@@ -33,6 +33,12 @@ function shellalias_drush_command() {
     'arguments' => array(
       'alias' => 'Shell alias to print',
     ),
+    'outputformat' => array(
+      'default' => 'key-value',
+      'pipe-format' => 'ini',
+      'simplify-single' => TRUE,
+      'output-data-type' => 'format-list',
+    ),
     'aliases' => array('sha'),
     'examples' => array(
       'drush shell-alias' => 'List all alias records known to drush.',
@@ -48,9 +54,9 @@ function shellalias_drush_command() {
 function drush_core_shell_alias($alias = FALSE) {
   $shell_aliases = drush_get_context('shell-aliases', array());
   if (!$alias) {
-    drush_print_table(drush_key_value_to_array_table($shell_aliases));
+    return $shell_aliases;
   }
   elseif (isset($shell_aliases[$alias])) {
-    drush_print_table(drush_key_value_to_array_table(array($alias => $shell_aliases[$alias])));
+    return array($alias => $shell_aliases[$alias]);
   }
 }
