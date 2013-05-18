@@ -1,6 +1,18 @@
 <?php
 
 /**
+ * Implementation of hook_drush_help().
+ */
+function role_drush_help($section) {
+  switch ($section) {
+    case 'meta:role:title':
+      return dt('Role commands');
+    case 'meta:role:summary':
+      return dt('Interact with the role system.');
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  */
 function role_drush_command() {
