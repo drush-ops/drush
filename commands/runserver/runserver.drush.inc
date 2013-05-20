@@ -144,7 +144,7 @@ function drush_core_runserver($uri = NULL) {
     $uri['path'] = '';
   }
   // Remove any leading slashes from the path, since that is what url() expects.
-  $uri['path'] = ltrim($uri['path'], '/');
+  $path = ltrim($uri['path'], '/');
 
   // Determine and set the new URI.
   $hostname = $addr = $uri['host'];
@@ -194,15 +194,15 @@ function drush_core_runserver($uri = NULL) {
   // We log in with the specified user ID (if set) via the password reset URL.
   $user_message = '';
   if ($user->uid) {
-    $options = array('query' => array('destination' => $uri['path']));
+    $options = array('query' => array('destination' => $path));
     $browse = url(user_pass_reset_url($user) . '/login', $options);
     $user_message = ', logged in as ' . $user->name;
   }
   else {
-    $browse = url($uri['path']);
+    $browse = url($path);
   }
 
-  drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $uri['path'], '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
+  drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
   if (drush_get_option('server', FALSE) == 'builtin') {
     // Start php 5.4 builtin server.
     // Store data used by runserver-prepend.php in the shell environment.

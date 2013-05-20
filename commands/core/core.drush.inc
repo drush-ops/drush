@@ -936,11 +936,13 @@ function drush_core_quick_drupal() {
      return drush_set_error('QUICK_DRUPAL_PROJECT_ENABLE_FAIL', 'Project enable failed.');
     }
   }
-  drush_print(dt('Login URL: ') . drush_invoke('user-login'));
   if (!drush_get_option('no-server', FALSE)) {
     if ($server = drush_get_option('server', '/')) {
       drush_invoke('runserver', array($server));
     }
+  }
+  else {
+    drush_print(dt('Login URL: ') . drush_invoke('user-login'));
   }
 }
 
