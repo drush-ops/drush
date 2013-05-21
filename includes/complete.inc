@@ -554,7 +554,12 @@ function drush_complete_cache_cid($type, $command = NULL) {
   // the possibility of cache misses/ but they should be rare, since sites are
   // normally referred to the same way (e.g. a site alias, or using the current
   // directory), at least within a single command completion session.
-  $root = drush_get_option(array('r', 'root'), drush_locate_root());
-  $site = drush_get_option(array('l', 'uri'), drush_site_path());
+  // We also static cache them, since we may get differing results after
+  // bootstrap, which prevents the caches from being found on the next call.
+  static $root, $site;
+  if (empty($root)) {
+    $root = drush_get_option(array('r', 'root'), drush_locate_root());
+    $site = drush_get_option(array('l', 'uri'), drush_site_path());
+  }
   return drush_get_cid('complete', array(), array($type, $command, $root, $site));
 }
