@@ -800,8 +800,8 @@ function drush_pm_enable_validate() {
         drush_log(dt('!extension is already enabled.', array('!extension' => $name)), 'ok');
       }
       // Check if the extension is compatible with Drupal core and php version.
-      if (drush_extension_check_incompatibility($extension_info[$name])) {
-        drush_set_error('DRUSH_PM_ENABLE_MODULE_INCOMPATIBLE', dt('!name is incompatible with the Drupal version.', array('!name' => $name)));
+      if ($component = drush_extension_check_incompatibility($extension_info[$name])) {
+        drush_set_error('DRUSH_PM_ENABLE_MODULE_INCOMPATIBLE', dt('!name is incompatible with the !component version.', array('!name' => $name, '!component' => $component)));
         if ($extension_info[$name]->type == 'module') {
           unset($modules[$name]);
         }

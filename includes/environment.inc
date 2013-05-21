@@ -844,15 +844,15 @@ function drush_get_extensions($include_hidden = TRUE) {
  * Test compatibility of a extension with version of drupal core and php.
  *
  * @param $file Extension object as returned by system_rebuild_module_data().
- * @return TRUE if the extension is incompatible.
+ * @return FALSE if the extension is compatible.
  */
 function drush_extension_check_incompatibility($file) {
-  if (!isset($file->info['core'])
-       || $file->info['core'] != DRUPAL_CORE_COMPATIBILITY
-       || version_compare(phpversion(), $file->info['php']) < 0) {
-    return TRUE;
+  if (!isset($file->info['core']) || $file->info['core'] != DRUPAL_CORE_COMPATIBILITY) {
+    return 'Drupal';
   }
-
+  if (version_compare(phpversion(), $file->info['php']) < 0) {
+    return 'PHP';
+  }
   return FALSE;
 }
 
