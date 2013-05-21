@@ -69,6 +69,10 @@ function make_drush_command() {
         'description' => 'Restrict the make to this comma-separated list of libraries. To specify all libraries, pass *.',
         'example' => 'tinymce',
       ),
+      'allow-override' => array(
+        'description' => 'Restrict the make options to this comma-separated list of options.',
+        'example' => 'all or none or working-copy or no-core, working-copy',
+      ),
     ),
     'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
@@ -286,6 +290,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       'subdir'              => '',
       'directory_name'      => '',
       'make_directory'      => $make_dir,
+      'options'             => array(),
     );
     // If download components are specified, but not the download
     // type, default to git.

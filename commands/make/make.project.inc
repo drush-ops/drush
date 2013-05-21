@@ -47,6 +47,9 @@ class DrushMakeProject {
     foreach ($project as $key => $value) {
       $this->{$key} = $value;
     }
+    if ($this->options['working-copy']) {
+      $this->download['working-copy'] = TRUE;
+    }
   }
 
   /**
@@ -158,7 +161,7 @@ class DrushMakeProject {
       $this->processGitInfoFiles();
     }
     // Clean-up .git directories.
-    if (!drush_get_option('working-copy')) {
+    if (!drush_get_option('working-copy') && (!$this->options['working-copy'] ||  !_make_is_override_allowed('working-copy'))) {
       $this->removeGitDirectory();
     }
     if (!$this->recurse($this->download_location)) {
@@ -506,15 +509,25 @@ class DrushMakeProject {
     }
     drush_log(dt("Found makefile: !makefile", array("!makefile" => basename($makefile))), 'ok');
 
-    $info = make_parse_info_file($makefile);
-    if (!($info = make_validate_info_file($info))) {
-      return FALSE;
-    }
-    $build_path = $this->buildPath($this->name);
-    make_projects(TRUE, trim($build_path, '/'), $info, $this->build_path, $this->download_location);
-    make_libraries(trim($build_path, '/'), $info, $this->build_path, $this->download_location);
+    // Save the original state of the 'custom' context.
+    $custom_context = &drush_get_context('custom');
+    $original_custom_context_values = $custom_context;
 
-    return TRUE;
+    $info = make_parse_info_file($makefile, TRUE, $this->options);
+    if (!($info = make_validate_info_file($info))) {
+      $result = FALSE;
+    }
+    else {
+      $build_path = $this->buildPath($this->name);
+      make_projects(TRUE, trim($build_path, '/'), $info, $this->build_path, $this->download_location);
+      make_libraries(trim($build_path, '/'), $info, $this->build_path, $this->download_location);
+      $result = TRUE;
+    }
+    // Restore original 'custom' context so that any
+    // settings changes made are used.
+    $custom_context = $original_custom_context_values;
+
+    return $result;
   }
 }
 

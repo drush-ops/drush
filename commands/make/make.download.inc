@@ -215,7 +215,7 @@ function make_download_get($name, $type, $download, $download_location) {
  */
 function make_download_git($name, $type, $download, $download_location) {
   $tmp_path = make_tmp();
-  $wc = drush_get_option('working-copy');
+  $wc = _get_working_copy_option($download);
   // If no download URL specified, assume anonymous clone from git.drupal.org.
   $download['url'] = isset($download['url']) ? $download['url'] : "http://git.drupal.org/project/$name.git";
   // If no working-copy download URL specified, assume it is the same.
@@ -349,10 +349,11 @@ function make_download_git($name, $type, $download, $download_location) {
 function make_download_bzr($name, $type, $download, $download_location) {
   $tmp_path = make_tmp();
   $tmp_location = drush_tempdir() . '/' . basename($download_location);
+  $wc = _get_working_copy_option($download);
   if (!empty($download['url'])) {
     $args = array();
     $command = 'bzr';
-    if (drush_get_option('working-copy')) {
+    if ($wc) {
       $command .= ' branch  --use-existing-dir';
     }
     else {
@@ -363,7 +364,7 @@ function make_download_bzr($name, $type, $download, $download_location) {
       $args[] = $download['revision'];
     }
     $command .= ' %s %s';
-    if (drush_get_option('working-copy')) {
+    if ($wc) {
       $args[] = $download['url'];
       $args[] = $tmp_location;
     }
@@ -393,6 +394,7 @@ function make_download_bzr($name, $type, $download, $download_location) {
  *   The download location on success, FALSE otherwise.
  */
 function make_download_svn($name, $type, $download, $download_location) {
+  $wc = _get_working_copy_option($download);
   if (!empty($download['url'])) {
     if (!empty($download['interactive'])) {
       $function = 'drush_shell_exec_interactive';
@@ -404,7 +406,7 @@ function make_download_svn($name, $type, $download, $download_location) {
     if (!isset($download['force']) || $download['force']) {
       $options = ' --force';
     }
-    if (drush_get_option('working-copy')) {
+    if ($wc) {
       $command = 'svn' . $options . ' checkout';
     }
     else {
