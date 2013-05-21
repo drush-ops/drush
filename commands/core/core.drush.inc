@@ -925,7 +925,7 @@ function drush_core_quick_drupal() {
   // then it will bootstrap to DRUSH_BOOTSTRAP_DRUPAL_SITE get the installer
   // to recognize the desired site directory. This somehow interferes
   // with our desire to bootstrap to DRUSH_BOOTSTRAP_DRUPAL_LOGIN here.
-  // We could do the last few steps in a new process iff uri is not 'default'.
+  // We could do the last few steps in a new process if uri is not 'default'.
   drush_set_option('user', '1');
   if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_LOGIN)) {
     return drush_set_error('QUICK_DRUPAL_INSTALL_FAIL', 'Drupal core install failed.');
@@ -938,6 +938,10 @@ function drush_core_quick_drupal() {
   }
   if (!drush_get_option('no-server', FALSE)) {
     if ($server = drush_get_option('server', '/')) {
+      // Current CLI user is also the web server user, which is for development
+      // only. Hence we can safely make the site directory writable. This makes
+      // it easier to delete and edit settings.php.
+      @chmod(conf_path(), 0700);
       drush_invoke('runserver', array($server));
     }
   }
