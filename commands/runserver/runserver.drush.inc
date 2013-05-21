@@ -64,6 +64,7 @@ function runserver_drush_command() {
     'examples' => array(
       'drush rs 8080' => 'Start runserver on 127.0.0.1, port 8080.',
       'drush rs 10.0.0.28:80' => 'Start runserver on 10.0.0.28, port 80.',
+      'drush rs [::1]:80' => 'Start runserver on IPv6 localhost ::1, port 80.',
       'drush rs --php-cgi=php5-cgi --dns localhost:8888/user' => 'Start runserver on localhost (using rDNS to determine binding IP), port 8888, and open /user in browser. Use "php5-cgi" as the php-cgi binary.',
       'drush rs /' => 'Start runserver on default IP/port (127.0.0.1, port 8888), and open / in browser.',
       'drush rs --default-server=127.0.0.1:8080/ -' => 'Use a default (would be specified in your drushrc) that starts runserver on port 8080, and opens a browser to the front page. Set path to a single hyphen path in argument to prevent opening browser for this session.',
@@ -138,7 +139,12 @@ function drush_core_runserver($uri = NULL) {
     'path' => '',
   );
   $user_default = runserver_parse_uri(drush_get_option('default-server', '127.0.0.1:8888'));
-  $uri = runserver_parse_uri($uri) + $user_default + $drush_default;
+  $uri = runserver_parse_uri($uri);
+  if (!$uri) {
+    return $uri;
+  }
+  // Populate defaults.
+  $uri = $uri + $user_default + $drush_default;
   if (ltrim($uri['path'], '/') == '-') {
     // Allow a path of a single hyphen to clear a default path.
     $uri['path'] = '';
@@ -253,9 +259,12 @@ function runserver_parse_uri($uri) {
     // ':port/path' shorthand, insert a placeholder hostname to allow parsing.
     $uri = 'placeholder-hostname' . $uri;
   }
-  $first_part = substr($uri, 0, strpos($uri, '/'));
-  if (ip2long($first_part)) {
-    // 'IP/path' shorthand, insert a schema to allow parsing.
+  // FILTER_VALIDATE_IP expects '[' and ']' to be removed from IPv6 addresses.
+  // We check for colon from the right, since IPv6 addresses contain colons.
+  $to_path = trim(substr($uri, 0, strpos($uri, '/')), '[]');
+  $to_port = trim(substr($uri, 0, strrpos($uri, ':')), '[]');
+  if (filter_var(trim($uri, '[]'), FILTER_VALIDATE_IP) || filter_var($to_path, FILTER_VALIDATE_IP) || filter_var($to_port, FILTER_VALIDATE_IP)) {
+    // 'IP', 'IP/path' or 'IP:port' shorthand, insert a schema to allow parsing.
     $uri = 'http://' . $uri;
   }
   $uri = parse_url($uri);
@@ -268,7 +277,7 @@ function runserver_parse_uri($uri) {
       $uri['port'] = $uri['path'];
       unset($uri['path']);
     }
-    else if (ip2long($uri['path'])) {
+    else if (filter_var($uri['path'], FILTER_VALIDATE_IP)) {
       // IP only shorthand.
       $uri['host'] = $uri['path'];
       unset($uri['path']);
