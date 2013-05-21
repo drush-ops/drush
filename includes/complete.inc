@@ -108,10 +108,9 @@ function drush_early_complete() {
   }
   // Set up as if we were running the command, and attempt to parse.
   $argv = drush_complete_process_argv();
-  $set_sitealias = drush_sitealias_get_record('@self');
-  $set_sitealias_name = NULL;
-  if (!empty($set_sitealias['#name'])) {
-    $set_sitealias_name = $set_sitealias['#name'];
+  if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+    $set_sitealias_name = $alias;
+    $set_sitealias = drush_sitealias_get_record($alias);
   }
 
   // Arguments have now had site-aliases and options removed, so we take the
@@ -149,7 +148,7 @@ function drush_early_complete() {
       $completions += drush_hyphenate_options(drush_complete_match($last_word, drush_complete_get('options')));
     }
     else {
-      if (!$set_sitealias_name) {
+      if (empty($set_sitealias_name)) {
         // Include site alias completions.
         $completions += drush_complete_match($last_word, drush_complete_get('site-aliases'));
       }
