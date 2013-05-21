@@ -277,11 +277,6 @@ function runserver_parse_uri($uri) {
       $uri['port'] = $uri['path'];
       unset($uri['path']);
     }
-    else if (filter_var($uri['path'], FILTER_VALIDATE_IP)) {
-      // IP only shorthand.
-      $uri['host'] = $uri['path'];
-      unset($uri['path']);
-    }
   }
   if (isset($uri['host']) && $uri['host'] == 'placeholder-hostname') {
     unset($uri['host']);
