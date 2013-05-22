@@ -140,7 +140,7 @@ function drush_role_add_perm($rid, $permission = NULL) {
 function drush_role_remove_perm($rid, $permission = NULL) {
   $result = drush_role_perm('remove', $rid, $permission);
   if ($result !== FALSE) {
-    drush_print(dt('Removed "!perm" from "!role"', array('!perm' => $permission, '!role' => $result->name)));
+    drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $permission, '!role' => $result->name)), 'ok');
     drush_drupal_cache_clear_all();
   }
   return $result;
