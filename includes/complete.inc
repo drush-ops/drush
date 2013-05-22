@@ -351,24 +351,24 @@ function drush_complete_match_file($last_word, $files) {
       // matching the behaviour with relative paths.
       $pos = strlen($last_word);
       foreach ($return as $id => $item) {
-	if ($item[$pos] !== $return[0][$pos]) {
-	  $firstchar = FALSE;
-	  continue;
-	}
+        if ($item[$pos] !== $return[0][$pos]) {
+          $firstchar = FALSE;
+          continue;
+        }
       }
     }
     foreach ($return as $id => $item) {
       // For directories we leave the path alone.
       $slash_pos = strpos($last_word, '/');
       if ($slash_pos === 0 && $firstchar) {
-	// With absolute paths where completions share initial characters, we
-	// pass in a resolved path.
-	$return[$id] = realpath($item);
+        // With absolute paths where completions share initial characters, we
+        // pass in a resolved path.
+        $return[$id] = realpath($item);
       }
       else if ($slash_pos !== FALSE && $dir != './') {
-	// For files, we pass only the file name, ignoring the false match when
-	// the user is using a single dot relative path.
-	$return[$id] = basename($item);
+        // For files, we pass only the file name, ignoring the false match when
+        // the user is using a single dot relative path.
+        $return[$id] = basename($item);
       }
     }
   }
