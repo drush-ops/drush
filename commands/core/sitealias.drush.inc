@@ -76,9 +76,17 @@ function sitealias_drush_command() {
  *  Array of available site aliases.
  */
 function sitealias_sitealias_print_complete() {
-  $site_specs = array_keys(_drush_sitealias_all_list());
-  ksort($site_specs);
-  return array('values' => $site_specs);
+  return array('values' => array_keys(_drush_sitealias_all_list()));
+}
+
+/**
+ * Command argument complete callback.
+ *
+ * @return
+ *  Array of available site aliases.
+ */
+function sitealias_site_set_complete() {
+  return array('values' => array_keys(_drush_sitealias_all_list()));
 }
 
 /**
