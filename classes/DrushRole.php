@@ -77,10 +77,10 @@ abstract class DrushRole {
       return TRUE;
     }
     else {
-      drush_print(dt('"!role" already has the permission "!perm"', array(
+      drush_log(dt('"!role" already has the permission "!perm"', array(
         '!perm' => $perm,
         '!role' => $this->name,
-      )));
+      )), 'ok');
       return FALSE;
     }
   }
@@ -92,10 +92,10 @@ abstract class DrushRole {
       return TRUE;
     }
     else {
-      drush_print(dt('"!role" does not have the permission "!perm"', array(
+      drush_log(dt('"!role" does not have the permission "!perm"', array(
         '!perm' => $perm,
         '!role' => $this->name,
-      )));
+      )), 'ok');
       return FALSE;
     }
   }
