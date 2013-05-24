@@ -438,15 +438,8 @@ function drush_core_updatedb() {
     return FALSE;
   }
 
-  if (drush_drupal_major_version() <= 6) {
-    // Clear all caches in a new process. We just performed major surgery.
-    drush_invoke_process('@self', 'cache-clear', array('all'));
-  }
-  else {
-    // Should be unnecessary on D7.
-    // On D7 site-upgrade, this cache_clear was leading to:
-    // Call to undefined function field_read_fields() in field_sql_storage.install line 17
-  }
+  // Clear all caches in a new process. We just performed major surgery.
+  drush_invoke_process('@self', 'cache-clear', array('all'));
 
   drush_log(dt('Finished performing updates.'), 'ok');
 }
