@@ -214,7 +214,9 @@ function drush_backend_packet($packet, $data) {
   if (drush_get_context('DRUSH_BACKEND')) {
     $data['packet'] = $packet;
     $data = json_encode($data);
-    drush_print(sprintf(DRUSH_BACKEND_PACKET_PATTERN, $data), 0, STDERR);
+    // We use 'print' instead of 'drush_print' here because
+    // this backend packet is out-of-band data.
+    print(sprintf(DRUSH_BACKEND_PACKET_PATTERN, $data));
     return TRUE;
   }
 
@@ -541,7 +543,7 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
       }
     }
 
-    $string = trim(preg_replace("/$packet_regex/s", '', $string));
+    $string = rtrim(preg_replace("/$packet_regex/s", '', $string), "\n");
   }
   // Check to see if there is potentially a partial packet remaining.
   // We only care about the last null; if there are any nulls prior
