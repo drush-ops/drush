@@ -306,7 +306,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    */
   function drupalSitewideDirectory($major_version = NULL) {
     if (!$major_version) {
-      $major_version = drush_drupal_major_version();
+      $major_version = UNISH_DRUPAL_MAJOR_VERSION;
     }
     return ($major_version < 8) ? 'sites/all' : '';
   }
