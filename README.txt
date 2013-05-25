@@ -207,7 +207,13 @@ be passed to php on the command line when Drush is executed.
 
 Drush requires a fairly unrestricted php environment to run in.  In particular,
 you should insure that safe_mode, open_basedir, disable_functions and
-disable_classes are empty.
+disable_classes are empty.  If you are using php 5.3.x, you may also need to
+add the following definitions to your php.ini file:
+
+magic_quotes_gpc = Off
+magic_quotes_runtime = Off
+magic_quotes_sybase = Off
+
 
 INSTALLING DRUSH ON WINDOWS:
 ----------------------------

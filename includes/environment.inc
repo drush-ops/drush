@@ -88,7 +88,7 @@ function _drush_postmortem() {
  * notify the user that a setting change is needed and abort.
  */
 function _drush_environment_check_php_ini() {
-  $ini_checks = array('safe_mode' => '', 'open_basedir' => '', 'disable_functions' => array('exec', 'system'), 'disable_classes' => '', 'magic_quotes_gpc' => '', 'magic_quotes_runtime' => '');
+  $ini_checks = array('safe_mode' => '', 'open_basedir' => '', 'disable_functions' => array('exec', 'system'), 'disable_classes' => '', 'magic_quotes_gpc' => '', 'magic_quotes_runtime' => '', 'magic_quotes_sybase' => '');
 
   // Test to insure that certain php ini restrictions have not been enabled
   $prohibited_list = array();
@@ -96,7 +96,7 @@ function _drush_environment_check_php_ini() {
     $ini_value = ini_get($prohibited_mode);
     $invalid_value = FALSE;
     if (empty($disallowed_value)) {
-      $invalid_value = !empty($ini_value);
+      $invalid_value = !empty($ini_value) && (strcasecmp($ini_value, 'off') != 0);
     }
     else {
       foreach ($disallowed_value as $test_value) {
