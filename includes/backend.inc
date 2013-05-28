@@ -214,9 +214,9 @@ function drush_backend_packet($packet, $data) {
   if (drush_get_context('DRUSH_BACKEND')) {
     $data['packet'] = $packet;
     $data = json_encode($data);
-    // We use 'print' instead of 'drush_print' here because
+    // We use 'fwrite' instead of 'drush_print' here because
     // this backend packet is out-of-band data.
-    print(sprintf(DRUSH_BACKEND_PACKET_PATTERN, $data));
+    fwrite(STDERR, sprintf(DRUSH_BACKEND_PACKET_PATTERN, $data));
     return TRUE;
   }
 
