@@ -190,7 +190,8 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   }
 
   $make_dir = realpath(dirname($makefile));
-  $sitewide = drush_drupal_sitewide_directory($includes['core'][0]);
+  $core_version = str_replace('.x', '', $info['core'][0]);
+  $sitewide = drush_drupal_sitewide_directory($core_version);
   if (make_projects(FALSE, drush_get_option('contrib-destination', $sitewide), $info, $build_path, $make_dir)) {
     make_libraries(drush_get_option('contrib-destination', $sitewide), $info, $build_path, $make_dir);
 
