@@ -47,7 +47,7 @@ class DrushMakeProject {
     foreach ($project as $key => $value) {
       $this->{$key} = $value;
     }
-    if ($this->options['working-copy']) {
+    if (!empty($this->options['working-copy'])) {
       $this->download['working-copy'] = TRUE;
     }
   }
@@ -161,7 +161,7 @@ class DrushMakeProject {
       $this->processGitInfoFiles();
     }
     // Clean-up .git directories.
-    if (!drush_get_option('working-copy') && (!$this->options['working-copy'] ||  !_make_is_override_allowed('working-copy'))) {
+    if (!drush_get_option('working-copy') && (empty($this->options['working-copy']) ||  !_make_is_override_allowed('working-copy'))) {
       $this->removeGitDirectory();
     }
     if (!$this->recurse($this->download_location)) {
@@ -211,8 +211,8 @@ class DrushMakeProject {
     if (!_drush_is_url($info['url']) && !drush_is_absolute_path($info['url'])) {
       $info['url'] = $this->make_directory . '/' . $info['url'];
       $info['local'] = TRUE;
-    } elseif (substr($url, 0, 8) == 'file:///') {
-      $url = substr($url, 7);
+    } elseif (substr($info['url'], 0, 8) == 'file:///') {
+      $info['url'] = substr($info['url'], 7);
       $info['local'] = TRUE;
     }
   }
