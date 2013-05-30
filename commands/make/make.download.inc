@@ -307,7 +307,7 @@ function make_download_git($name, $download, $download_location) {
 
   // If not, see if we at least have a branch.
   elseif (!empty($download['branch'])) {
-    if (drush_shell_exec("git checkout %s", $download['branch'])) {
+    if (drush_shell_exec("git checkout %s", $download['branch']) && (trim(implode(drush_shell_exec_output())) != '')) {
       drush_log(dt("Checked out branch @branch.", array('@branch' => $download['branch'])), 'ok');
     }
     elseif (drush_shell_exec("git checkout -b %s %s", $download['branch'], 'origin/' . $download['branch'])) {
