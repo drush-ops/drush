@@ -226,13 +226,27 @@ EOD;
       'backend' => NULL,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
     );
-    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET', '#process-read-size' => 16)); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
-    $this->drush('php-eval', array($php), $options);
-    $parsed = parse_backend_output($this->getOutput());
-    // assert that $parsed has 'x' but not 'data'
-    $this->assertEquals("array (
-  'x' => 'y',
+    $read_sizes_to_test = array(128, 64, 16);
+    foreach ($read_sizes_to_test as $read_size) {
+      $log_message="";
+      for ($i = 1; $i <= 16; $i++) {
+        $log_message .= "X";
+        $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('log-message' => '$log_message', 'x' => 'y$read_size', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET', '#process-read-size' => $read_size)); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
+        $this->drush('php-eval', array($php), $options);
+        $parsed = parse_backend_output($this->getOutput());
+        // assert that $parsed has 'x' but not 'data'
+        $all_warnings=array();
+        foreach ($parsed['log'] as $log) {
+          if ($log['type'] == 'warning') {
+            $all_warnings[] = $log['message'];
+          }
+        }
+        $this->assertEquals("$log_message,done", implode(',', $all_warnings), 'Log reconstruction with read_size ' . $read_size);
+        $this->assertEquals("array (
+  'x' => 'y$read_size',
 )", var_export($parsed['object'], TRUE));
+      }
+    }
   }
 }
 

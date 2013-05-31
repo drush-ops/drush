@@ -135,6 +135,11 @@ function drush_unit_return_options() {
   foreach (drush_get_global_options() as $key => $info) {
     unset($all_option_values[$key]);
   }
+  if (isset($all_option_values['log-message'])) {
+    drush_log($all_option_values['log-message'], 'warning');
+    drush_log("done", 'warning');
+    unset($all_option_values['log-message']);
+  }
   return $all_option_values;
 }
 

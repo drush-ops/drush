@@ -74,7 +74,7 @@ define('DRUSH_BACKEND_OUTPUT_DELIMITER', DRUSH_BACKEND_OUTPUT_START . '%s<<<DRUS
  * invoke call (currently only used for log and error messages).
  */
 define('DRUSH_BACKEND_PACKET_START', "DRUSH_BACKEND:");
-define('DRUSH_BACKEND_PACKET_PATTERN', "\0" . DRUSH_BACKEND_PACKET_START . "%s\0\n");
+define('DRUSH_BACKEND_PACKET_PATTERN', "\0" . DRUSH_BACKEND_PACKET_START . "%s\n\0");
 
 /**
  * The backend result is the original PHP data structure (usually an array)
@@ -543,7 +543,7 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
       }
     }
 
-    $string = rtrim(preg_replace("/$packet_regex/s", '', $string), "\n");
+    $string = preg_replace("/$packet_regex/s", '', $string);
   }
   // Check to see if there is potentially a partial packet remaining.
   // We only care about the last null; if there are any nulls prior
@@ -987,7 +987,7 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
     return $ret;
   }
   else {
-    $process_limit = drush_get_option_override($common_backend_options, 'concurrency', 4);
+    $process_limit = drush_get_option_override($common_backend_options, 'concurrency', 1);
     $procs = _drush_backend_proc_open($cmds, $process_limit, $context);
     $procs = is_array($procs) ? $procs : array($procs);
 
