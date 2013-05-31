@@ -391,7 +391,7 @@ function drush_valid_drupal_root($path) {
     // Drupal 7 root. Additional check for the absence of core/composer.json to
     // grant $path is not core/ of a Drupal 8 root.
     $candidate = 'includes/common.inc';
-    if (file_exists($path . '/' . $candidate) && ((basename($path) != 'core') || !file_exists($path . '/../core/composer.json'))) {
+    if (file_exists($path . '/' . $candidate) && ((basename($path) != 'core') || !file_exists($path . '/../composer.json'))) {
       return $candidate;
     }
   }
