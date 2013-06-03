@@ -226,7 +226,7 @@ EOD;
       'backend' => NULL,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
     );
-    $read_sizes_to_test = array(128, 64, 16);
+    $read_sizes_to_test = array(4096, 128, 16);
     foreach ($read_sizes_to_test as $read_size) {
       $log_message="";
       for ($i = 1; $i <= 16; $i++) {

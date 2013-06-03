@@ -433,10 +433,17 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
           $bucket[$site]['remainder'] = '';
           $output_end_pos = strpos($string, DRUSH_BACKEND_OUTPUT_START);
           if ($output_end_pos !== FALSE) {
-            $trailing_string = trim(substr($string, 0, $output_end_pos));
-            if (!empty($trailing_string)) {
-              $trailing_remainder = '';
+            $trailing_string = substr($string, 0, $output_end_pos);
+            $trailing_remainder = '';
+            // If there is any data in the trailing string (characters prior
+            // to the backend output start), then process any backend packets
+            // embedded inside.
+            if (strlen($trailing_string) > 0) {
               drush_backend_parse_packets($trailing_string, $trailing_remainder, $bucket[$site]['backend-options']);
+            }
+            // If there is any data remaining in the trailing string after
+            // the backend packets are removed, then print it.
+            if (strlen($trailing_string) > 0) {
               _drush_backend_print_output($trailing_string . $trailing_remainder, $bucket[$site]['backend-options']);
               $bucket[$site]['outputted'] = TRUE;
             }
@@ -446,7 +453,7 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
             drush_backend_parse_packets($string, $bucket[$site]['remainder'], $bucket[$site]['backend-options']);
             // Pass output through.
             _drush_backend_print_output($string, $bucket[$site]['backend-options']);
-            if (!empty($string)) {
+            if (strlen($string) > 0) {
               $bucket[$site]['outputted'] = TRUE;
             }
           }
@@ -457,7 +464,7 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
 
           // Reset the $nap_time variable as there might be output to process
           // next time around:
-          if (!empty($string)) {
+          if (strlen($string) > 0) {
             $nap_time = 0;
           }
         }
