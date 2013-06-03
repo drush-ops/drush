@@ -1,9 +1,11 @@
-Drush's test suite based on PHPUnit (http://www.phpunit.de/).
+Drush's test suite based on PHPUnit (http://www.phpunit.de/). In order to maintain
+high quality, our tests are run on every commit - https://travis-ci.org/drush-ops/drush
 
 Usage
 --------
 - Install PHPUnit [*]
-- Review the configuration settings in phpunit.xml.dist. If customization is needed, copy and rename to phpunit.xml and edit away.
+- Review the configuration settings in phpunit.xml.dist. If customization is needed,
+  copy and rename to phpunit.xml and edit away.
 - From the /tests subdirectory, run `phpunit .`
 
 Advanced usage
