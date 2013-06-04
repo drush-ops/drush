@@ -38,7 +38,7 @@ function make_drush_command() {
     'options' => array(
       'version' => 'Print the make API version and exit.',
       'concurrency' => array(
-        'description' => 'Limits the number of concurrent projects that will be processed at the same time. The default is 4.',
+        'description' => 'Set the number of concurrent projects that will be processed at the same time. The default is 1.',
         'example-value' => '1',
       ),
       'contrib-destination' => 'Specify a path under which modules and themes should be placed. Defaults to sites/all.',
@@ -407,7 +407,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
     if (!empty($invocations)) {
       // Backend options.
       $backend_options = array(
-        'concurrency' => drush_get_option('concurrency', 4),
+        'concurrency' => drush_get_option('concurrency', 1),
         'method' => 'POST',
       );
 

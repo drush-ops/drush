@@ -74,7 +74,7 @@ define('DRUSH_BACKEND_OUTPUT_DELIMITER', DRUSH_BACKEND_OUTPUT_START . '%s<<<DRUS
  * invoke call (currently only used for log and error messages).
  */
 define('DRUSH_BACKEND_PACKET_START', "DRUSH_BACKEND:");
-define('DRUSH_BACKEND_PACKET_PATTERN', "\0" . DRUSH_BACKEND_PACKET_START . "%s\0\n");
+define('DRUSH_BACKEND_PACKET_PATTERN', "\0" . DRUSH_BACKEND_PACKET_START . "%s\n\0");
 
 /**
  * The backend result is the original PHP data structure (usually an array)
@@ -214,7 +214,9 @@ function drush_backend_packet($packet, $data) {
   if (drush_get_context('DRUSH_BACKEND')) {
     $data['packet'] = $packet;
     $data = json_encode($data);
-    drush_print(sprintf(DRUSH_BACKEND_PACKET_PATTERN, $data), 0, STDERR);
+    // We use 'fwrite' instead of 'drush_print' here because
+    // this backend packet is out-of-band data.
+    fwrite(STDERR, sprintf(DRUSH_BACKEND_PACKET_PATTERN, $data));
     return TRUE;
   }
 
@@ -431,10 +433,17 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
           $bucket[$site]['remainder'] = '';
           $output_end_pos = strpos($string, DRUSH_BACKEND_OUTPUT_START);
           if ($output_end_pos !== FALSE) {
-            $trailing_string = trim(substr($string, 0, $output_end_pos));
-            if (!empty($trailing_string)) {
-              $trailing_remainder = '';
+            $trailing_string = substr($string, 0, $output_end_pos);
+            $trailing_remainder = '';
+            // If there is any data in the trailing string (characters prior
+            // to the backend output start), then process any backend packets
+            // embedded inside.
+            if (strlen($trailing_string) > 0) {
               drush_backend_parse_packets($trailing_string, $trailing_remainder, $bucket[$site]['backend-options']);
+            }
+            // If there is any data remaining in the trailing string after
+            // the backend packets are removed, then print it.
+            if (strlen($trailing_string) > 0) {
               _drush_backend_print_output($trailing_string . $trailing_remainder, $bucket[$site]['backend-options']);
               $bucket[$site]['outputted'] = TRUE;
             }
@@ -444,7 +453,7 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
             drush_backend_parse_packets($string, $bucket[$site]['remainder'], $bucket[$site]['backend-options']);
             // Pass output through.
             _drush_backend_print_output($string, $bucket[$site]['backend-options']);
-            if (!empty($string)) {
+            if (strlen($string) > 0) {
               $bucket[$site]['outputted'] = TRUE;
             }
           }
@@ -455,7 +464,7 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
 
           // Reset the $nap_time variable as there might be output to process
           // next time around:
-          if (!empty($string)) {
+          if (strlen($string) > 0) {
             $nap_time = 0;
           }
         }
@@ -541,7 +550,7 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
       }
     }
 
-    $string = trim(preg_replace("/$packet_regex/s", '', $string));
+    $string = preg_replace("/$packet_regex/s", '', $string);
   }
   // Check to see if there is potentially a partial packet remaining.
   // We only care about the last null; if there are any nulls prior
@@ -980,7 +989,7 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
     return $ret;
   }
   else {
-    $process_limit = drush_get_option_override($common_backend_options, 'concurrency', 4);
+    $process_limit = drush_get_option_override($common_backend_options, 'concurrency', 1);
     $procs = _drush_backend_proc_open($cmds, $process_limit, $context);
     $procs = is_array($procs) ? $procs : array($procs);
 
