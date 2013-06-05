@@ -78,13 +78,13 @@ fi
 
 # Check to see if the user has provided a php.ini file or drush.ini file in any conf dir
 # Last found wins, so search in reverse priority order
-for conf_dir in "`dirname "$SELF_PATH"`" /etc/drush $HOME/.drush ; do
-  if [ ! -d $conf_dir ] ; then
+for conf_dir in "`dirname "$SELF_PATH"`" /etc/drush "$HOME/.drush" ; do
+  if [ ! -d "$conf_dir" ] ; then
     continue
   fi
   # Handle paths that don't start with a drive letter on MinGW shell. Equivalent to cygpath on Cygwin.
   if [ -n "$MINGW" ] ; then
-    conf_dir=`sh -c "cd $conf_dir; pwd -W"`
+    conf_dir=`sh -c "cd "$conf_dir"; pwd -W"`
   fi
   if [ -f "$conf_dir/php.ini" ] ; then
     drush_php_ini="$conf_dir/php.ini"
