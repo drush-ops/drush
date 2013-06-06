@@ -114,7 +114,7 @@ function core_drush_command() {
     'outputformat' => array(
       'default' => 'key-value',
       'pipe-format' => 'ini',
-      'field-labels' => array('drupal-version' => 'Drupal version', 'uri' => 'Site URI', 'db-driver' => 'Database driver', 'db-host' => 'Database hostname', 'db-username' => 'Database username', 'db-password' => 'Database password', 'db-name' => 'Database name', 'db-status' => 'Database', 'bootstrap' => 'Drupal bootstrap', 'user' => 'Drupal user', 'theme' => 'Default theme', 'admin-theme' => 'Administration theme', 'php-conf' => 'PHP configuration', 'drush-version' => 'Drush version', 'drush-conf' => 'Drush configuration', 'drush-alias-files' => 'Drush alias files', 'root' => 'Drupal root', 'site-path' => 'Site path', 'root' => 'Drupal root', 'site' => 'Site path', 'themes' => 'Themes path', 'modules' => 'Modules path', 'files' => 'File directory path', 'private' => 'Private file directory path', 'temp' => 'Temporary file directory path', 'config-active' => 'Active config directory path', 'config-staging' => 'Staging config directory path', 'files-path' => 'File directory path', 'temp-path' => 'Temporary file directory path', '%paths' => 'Other paths'),
+      'field-labels' => array('drupal-version' => 'Drupal version', 'uri' => 'Site URI', 'db-driver' => 'Database driver', 'db-host' => 'Database hostname', 'db-username' => 'Database username', 'db-password' => 'Database password', 'db-name' => 'Database name', 'db-status' => 'Database', 'bootstrap' => 'Drupal bootstrap', 'user' => 'Drupal user', 'theme' => 'Default theme', 'admin-theme' => 'Administration theme', 'php-bin' => 'PHP executable', 'php-conf' => 'PHP configuration', 'drush-version' => 'Drush version', 'drush-conf' => 'Drush configuration', 'drush-alias-files' => 'Drush alias files', 'root' => 'Drupal root', 'site-path' => 'Site path', 'root' => 'Drupal root', 'site' => 'Site path', 'themes' => 'Themes path', 'modules' => 'Modules path', 'files' => 'File directory path', 'private' => 'Private file directory path', 'temp' => 'Temporary file directory path', 'config-active' => 'Active config directory path', 'config-staging' => 'Staging config directory path', 'files-path' => 'File directory path', 'temp-path' => 'Temporary file directory path', '%paths' => 'Other paths'),
       'formatted-filter' => '_drush_core_status_format_table_data',
       'private-fields' => 'db-password',
       'simplify-single' => TRUE,
@@ -595,6 +595,9 @@ function _core_site_status_table($project = '') {
     }
     $status_table['theme'] = drush_theme_get_default();
     $status_table['admin-theme'] = drush_theme_get_admin();
+  }
+  if ($php_bin = drush_get_option('php')) {
+    $status_table['php-bin'] = $php_bin;
   }
   if ($php_ini_files = _drush_core_config_php_ini_files()) {
     $status_table['php-conf'] = $php_ini_files;
