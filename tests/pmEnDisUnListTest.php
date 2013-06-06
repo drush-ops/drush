@@ -33,7 +33,7 @@ class EnDisUnListCase extends Drush_CommandTestCase {
     $this->assertTrue(in_array('devel', $list));
     $this->assertTrue(in_array('bartik', $list), 'Themes are in the pm-list');
 
-    $this->drush('sql-query', array("SELECT path FROM menu_router WHERE path = 'devel/settings'"), array('root' => $this->webroot(), 'uri' => key($sites)));
+    $this->drush('sql-query', array("SELECT path FROM menu_router WHERE path = 'devel/settings';"), array('root' => $this->webroot(), 'uri' => key($sites)));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel/settings', $list), 'Cache was cleared after modules were enabled');
 
