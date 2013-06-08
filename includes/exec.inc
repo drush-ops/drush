@@ -407,8 +407,8 @@ function drush_shell_exec_output() {
 function drush_start_browser($uri = NULL, $sleep = FALSE) {
   if ($browser = drush_get_option('browser', TRUE)) {
     // We can only open a browser if we have a DISPLAY environment variable on
-    // POSIX or are running Windows.
-    if (!drush_get_context('DRUSH_SIMULATE') && !getenv('DISPLAY') && !drush_is_windows()) {
+    // POSIX or are running Windows or OS X.
+    if (!drush_get_context('DRUSH_SIMULATE') && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
       drush_log(dt('No graphical display appears to be available, not starting browser.'), 'notice');
       return FALSE;
     }

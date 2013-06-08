@@ -654,6 +654,14 @@ function drush_get_tar_executable() {
 }
 
 /**
+ * Check if the operating system is OS X.
+ * This will return TRUE for Mac OS X (Darwin).
+ */
+function drush_is_osx($os = NULL) {
+  return _drush_test_os($os, array("DARWIN"));
+}
+
+/**
  * Checks if the operating system has bash.
  *
  * MinGW has bash, but PHP isn't part of MinGW and hence doesn't run in bash.
