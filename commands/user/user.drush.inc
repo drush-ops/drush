@@ -193,6 +193,8 @@ function user_drush_command() {
     'callback' => 'drush_user_login',
     'description' => 'Display a one time login link for the given user account (defaults to uid 1).',
     'aliases' => array('uli'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'handle-remote-commands' => TRUE,
     'arguments' => array(
       'user' => 'An optional uid, user name, or email address for the user to log in as. Default is to log in as uid 1. The uid/name/mail options take priority if specified.',
       'path' => 'Optional path to redirect to after logging in.',
@@ -430,40 +432,76 @@ function drush_user_password($name) {
  * Displays a one time login link for the given user.
  */
 function drush_user_login($user = NULL, $path = NULL) {
+  // Fix up arguments based on our assumptions.
   $user_object = $uid = FALSE;
   $args = func_get_args();
-  if (drush_get_option('uid', FALSE) || drush_get_option('name', FALSE) || drush_get_option('mail', FALSE)) {
-    // One of the user options was passed, so we prefer that to the user
-    // argument.
-    $user = NULL;
-    // If we only have a single argument and one of the user options is passed,
-    // then we assume the argument is the path to open.
-    if (count($args) == 1) {
-      $path = $args[0];
+
+  // Determine whether redispatch is needed. We want to start a browser on *local*
+  // machine when this command was called aginst a remote-host.
+  $redispatch = FALSE;
+  if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+    if ($site_record = drush_sitealias_get_record($alias)) {
+      if (!empty($site_record['remote-host']) && drush_get_option('browser')) {
+        $redispatch = TRUE;
+      }
     }
-  }
-  else if (empty($user)) {
-    // No user option or argument was passed, so we default to uid 1.
-    $uid = 1;
-  }
-  // Try and load a user from provided options and arguments.
-  if ($uid || $uid = reset(_drush_user_get_users_from_options_and_arguments($user))) {
-    $user_object = user_load($uid);
+    else {
+      drush_set_error('Unrecognized site alias.');
+    }
   }
 
-  if ($user_object !== FALSE && $user_object->status) {
-    $options = array();
-    if ($path) {
-      $options['query']['destination'] = $path;
+  if ($redispatch) {
+    $return = drush_invoke_process($site_record, 'user-login', $args, drush_redispatch_get_options());
+    if ($return['error_status']) {
+      return drush_set_error('Unable to execute user login.');
     }
-    $link = url(user_pass_reset_url($user_object) . '/login', $options);
-    drush_start_browser($link);
-    drush_print($link);
-    return $link;
+    else {
+      $link = $return['object'];
+    }
   }
   else {
-    drush_set_error("The user account could not be loaded or is blocked!");
+    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+
+    if (drush_get_option('uid', FALSE) || drush_get_option('name', FALSE) || drush_get_option('mail', FALSE)) {
+      // A user option was passed, prefer that to the user argument.
+      $user = NULL;
+      // If we only have a single argument and one of the user options is passed,
+      // then we assume the argument is the path to open.
+      if (count($args) == 1) {
+        $path = $args[0];
+      }
+    }
+    else if (empty($user)) {
+      // No user option or argument was passed, so we default to uid 1.
+      $uid = 1;
+    }
+
+    // Try to load a user from provided options and arguments.
+    if ($uid || $uid = reset(_drush_user_get_users_from_options_and_arguments($user))) {
+      if ($user_object = user_load($uid)) {
+        if ($user_object->status) {
+          $options = array();
+          if ($path) {
+            $options['query']['destination'] = $path;
+          }
+          $link = url(user_pass_reset_url($user_object) . '/login', $options);
+        }
+        else {
+          return drush_set_error("The user account $uid is blocked.");
+        }
+      }
+      else {
+        return drush_set_error("The user account for uid $uid could not be loaded.");
+      }
+    }
+    else {
+      return FALSE; // An error has already been logged.
+    }
   }
+
+  drush_start_browser($link);
+  drush_print($link);
+  return $link;
 }
 
 /**
