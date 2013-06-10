@@ -189,6 +189,8 @@ function drush_make($makefile = NULL, $build_path = NULL) {
     return FALSE;
   }
 
+  drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), 'ok');
+
   $make_dir = realpath(dirname($makefile));
   $core_version = str_replace('.x', '', $info['core'][0]);
   $sitewide = drush_drupal_sitewide_directory($core_version);
