@@ -773,6 +773,8 @@ function drush_parse_args() {
   }
   // If no arguments are specified, then the command will
   // be either 'help' or 'version' (the later if --version is specified)
+  // @todo: it would be handy if one could do `drush @remote st --help` and
+  // have that show help for st. Today, that shows --help for help command!
   if (!sizeof($arguments)) {
     if (array_key_exists('version', $options)) {
       $arguments = array('version');
