@@ -185,6 +185,8 @@ function drush_make($makefile = NULL, $build_path = NULL) {
     return FALSE;
   }
 
+  drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), 'ok');
+
   if (make_projects(FALSE, drush_get_option('contrib-destination', 'sites/all'), $info, $build_path)) {
     make_libraries(drush_get_option('contrib-destination', 'sites/all'), $info, $build_path);
 
