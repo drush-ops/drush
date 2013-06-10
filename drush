@@ -84,7 +84,7 @@ for conf_dir in "`dirname "$SELF_PATH"`" /etc/drush "$HOME/.drush" ; do
   fi
   # Handle paths that don't start with a drive letter on MinGW shell. Equivalent to cygpath on Cygwin.
   if [ -n "$MINGW" ] ; then
-    conf_dir=`sh -c "cd "$conf_dir"; pwd -W"`
+    conf_dir=`sh -c "cd \"$conf_dir\"; pwd -W"`
   fi
   if [ -f "$conf_dir/php.ini" ] ; then
     drush_php_ini="$conf_dir/php.ini"
