@@ -443,7 +443,7 @@ function drush_handle_command_output($command, $structured_output) {
     drush_backend_set_result($structured_output);
   }
   // We skip empty strings and empty arrays, but note that 'empty'
-  // returns TRUE for the integer value '0', but we do wat to print that.
+  // returns TRUE for the integer value '0', but we do want to print that.
   // Only handle output here if the command defined an output format
   // engine.  If no engine was declared, then we presume that the command
   // handled its own output.
