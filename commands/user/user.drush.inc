@@ -441,7 +441,7 @@ function drush_user_login($user = NULL, $path = NULL) {
   $redispatch = FALSE;
   if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
     if ($site_record = drush_sitealias_get_record($alias)) {
-      if (!empty($site_record['remote-host']) && drush_get_option('browser')) {
+      if (!empty($site_record['remote-host'])) {
         $redispatch = TRUE;
       }
     }
