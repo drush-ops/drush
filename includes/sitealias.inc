@@ -662,14 +662,26 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
   return $result;
 }
 
-// array_merge_recursive is too much; we only want to run
-// array_merge on the common top-level keys of the array.
-function _sitealias_array_merge($a, $b) {
-  $result = $a;
+/**
+ * Merges two site aliases.
+ *
+ * array_merge_recursive is too much; we only want to run
+ * array_merge on the common top-level keys of the array.
+ *
+ * @param array $site_alias_a
+ *   A site alias array.
+ * @param array $site_alias_b
+ *   A site alias array.
+ * @return
+ *   A site alias array where the keys from $site_alias_a are overwritten by the
+ *   keys from $site_alias_b.
+ */
+function _sitealias_array_merge($site_alias_a, $site_alias_b) {
+  $result = $site_alias_a;
 
-  foreach($b as $key => $value) {
-    if (array_key_exists($key, $result)) {
-      $result[$key] = array_merge($result[$key], $b[$key]);
+  foreach($site_alias_b as $key => $value) {
+    if (is_array($value) && array_key_exists($key, $result)) {
+      $result[$key] = array_merge($result[$key], $value);
     }
     else {
       $result[$key] = $value;
