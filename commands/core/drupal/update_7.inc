@@ -206,34 +206,14 @@ function update_main_prepare() {
 function update_main() {
   update_main_prepare();
 
-  $pending = update_get_update_list();
-
-  $start = array();
-
-  // Ensure system module's updates run first.
-  $start['system'] = array();
-
-  // Print a list of pending updates for this module and get confirmation.
-  if (sizeof($pending)) {
-    drush_print(dt('The following updates are pending:'));
-    drush_print();
-    foreach ($pending as $module => $updates) {
-      if (isset($updates['start']))  {
-        drush_print($module . ' module : ');
-        if (isset($updates['start'])) {
-          $start[$module] = $updates['start'];
-          foreach ($updates['pending'] as $update) {
-            drush_print($update, 2);
-          }
-        }
-        drush_print();
-      }
-    }
-
+  list($pending, $start) = updatedb_status();
+  if ($pending) {
+    // @todo get table header working.
+    // $headers = array(dt('Module'), dt('ID'), dt('Description'));
+    drush_print_table($pending);
     if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
       return drush_user_abort();
     }
-
     drush_update_batch($start);
   }
   else {
@@ -308,4 +288,32 @@ function drush_update_batch($start) {
 
 function drush_update_finished($success, $results, $operations) {
   // Nothing to do here. All caches already cleared. Kept as documentation of 'finished' callback.
+}
+
+/*
+ * Return a 2 item array with
+ *  - an array where each item is a 3 item associative array describing a pending update.
+ *  - an array listing the first update to run, keyed by module.
+ */
+function updatedb_status() {
+  $pending = update_get_update_list();
+
+  $return = array();
+  // Ensure system module's updates run first.
+  $start['system'] = array();
+
+  // Print a list of pending updates for this module and get confirmation.
+  foreach ($pending as $module => $updates) {
+    if (isset($updates['start']))  {
+      foreach ($updates['pending'] as $update_id => $description) {
+        // Strip cruft from front.
+        $description = str_replace($update_id . ' -   ', '', $description);
+        $return[] = array('module' => ucfirst($module), 'update_id' => $update_id, 'description' => $description);
+      }
+      if (isset($updates['start'])) {
+        $start[$module] = $updates['start'];
+      }
+    }
+  }
+  return array($return, $start);
 }

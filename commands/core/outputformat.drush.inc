@@ -82,7 +82,7 @@ function outputformat_drush_engine_type_info() {
  * format-single:       A simple string.
  *
  * format-list:         An associative array where the key
- *                      is usualy the row label, and the value
+ *                      is usually the row label, and the value
  *                      is a simple string.  Some list formatters
  *                      render the label, and others (like
  *                      "list" and "csv") throw it away.

@@ -75,6 +75,17 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
     'aliases' => array('updb'),
   );
+  $items['updatedb-status'] = array(
+    'description' => 'List any pending database updates.',
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'csv-list',
+      'field-labels' => array('module' => 'Module', 'update_id' => 'Update ID', 'description' => 'Description'),
+      'fields-default' => array('module', 'update_id', 'description'),
+      'output-data-type' => 'format-table',
+    ),
+    'aliases' => array('updbst'),
+  );
   $items['core-config'] = array(
     'description' => 'Edit drushrc, site alias, and Drupal settings.php files.',
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
@@ -442,6 +453,20 @@ function drush_core_updatedb() {
   drush_invoke_process('@self', 'cache-clear', array('all'));
 
   drush_log(dt('Finished performing updates.'), 'ok');
+}
+
+/**
+ * Command handler. List pending DB updates.
+ */
+function drush_core_updatedb_status() {
+  require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+  drupal_load_updates();
+  drush_include_engine('drupal', 'update', drush_drupal_major_version());
+  list($pending, $start) = updatedb_status();
+  if (empty($pending)) {
+    drush_log(dt("No database updates required"), 'ok');
+  }
+  return $pending;
 }
 
 /**

@@ -376,61 +376,13 @@ function update_main_prepare() {
 function update_main() {
   update_main_prepare();
 
-  $start = array();
-  $has_updates = FALSE;
-  $modules = drupal_get_installed_schema_version(NULL, FALSE, TRUE);
-  foreach ($modules as $module => $schema_version) {
-    $updates = drupal_get_schema_versions($module);
-    // Skip incompatible module updates completely, otherwise test schema versions.
-    if (!update_check_incompatibility($module) && $updates !== FALSE && $schema_version >= 0) {
-      // module_invoke returns NULL for nonexisting hooks, so if no updates
-      // are removed, it will == 0.
-      $last_removed = module_invoke($module, 'update_last_removed');
-      if ($schema_version < $last_removed) {
-        drush_set_error('PROVISION_DRUPAL_UPDATE_FAILED', dt( $module .' module can not be updated. Its schema version is '. $schema_version .'. Updates up to and including '. $last_removed .' have been removed in this release. In order to update '. $module .' module, you will first <a href="http://drupal.org/upgrade">need to upgrade</a> to the last version in which these updates were available.'));
-        continue;
-      }
-
-      $updates = drupal_map_assoc($updates);
-      foreach (array_keys($updates) as $update) {
-        if ($update > $schema_version) {
-          $start[$module] = $update;
-          break;
-        }
-      }
-
-      // Record any pending updates. Used for confirmation prompt.
-      foreach (array_keys($updates) as $update) {
-        if ($update > $schema_version) {
-          if (class_exists('ReflectionFunction')) {
-            // The description for an update comes from its Doxygen.
-            $func = new ReflectionFunction($module. '_update_'. $update);
-            $description = str_replace(array("\n", '*', '/'), '', $func->getDocComment());
-          }
-          if (empty($description)) {
-            $description = dt('description not available');
-          }
-
-          $pending[$module][] = array("$update - ". trim($description));
-          $has_updates = TRUE;
-        }
-      }
-
-    }
-  }
-
+  list($pending, $start) = updatedb_status();
 
   // Print a list of pending updates for this module and get confirmation.
-  if ($has_updates) {
-    drush_print(dt('The following updates are pending:'));
-    drush_print();
-    foreach ($pending as $module => $updates) {
-      if (sizeof($updates)) {
-        array_unshift($updates, array($module . ' module'));
-        drush_print_table($updates, TRUE);
-        drush_print();
-      }
-    }
+  if ($pending) {
+    // @todo get table header working
+    // array_unshift($pending, array(dt('Module'), dt('ID'), dt('Description')));
+    drush_print_table($pending, FALSE);
     if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
       return drush_user_abort();
     }
@@ -505,4 +457,57 @@ function _update_do_one($module, $number, &$context) {
 function _update_batch_command($id) {
   update_main_prepare();
   drush_batch_command($id);
+}
+
+/*
+ * Return a 2 item array with
+ *  - an array where each item is a 3 item associative array describing a pending update.
+ *  - an array listing the first update to run, keyed by module.
+ */
+function updatedb_status() {
+  $return = array();
+
+  $modules = drupal_get_installed_schema_version(NULL, FALSE, TRUE);
+  foreach ($modules as $module => $schema_version) {
+    $updates = drupal_get_schema_versions($module);
+    // Skip incompatible module updates completely, otherwise test schema versions.
+    if (!update_check_incompatibility($module) && $updates !== FALSE && $schema_version >= 0) {
+      // module_invoke returns NULL for nonexisting hooks, so if no updates
+      // are removed, it will == 0.
+      $last_removed = module_invoke($module, 'update_last_removed');
+      if ($schema_version < $last_removed) {
+        drush_set_error('PROVISION_DRUPAL_UPDATE_FAILED', dt( $module .' module can not be updated. Its schema version is '. $schema_version .'. Updates up to and including '. $last_removed .' have been removed in this release. In order to update '. $module .' module, you will first <a href="http://drupal.org/upgrade">need to upgrade</a> to the last version in which these updates were available.'));
+        continue;
+      }
+
+      $updates = drupal_map_assoc($updates);
+
+      // Record the starting update number for each module.
+      foreach (array_keys($updates) as $update) {
+        if ($update > $schema_version) {
+          $start[$module] = $update;
+          break;
+        }
+      }
+      if (isset($start['system'])) {
+        // Ensure system module's updates run first.
+        $start = array('system' => $start['system']) + $start;
+      }
+
+      // Record any pending updates. Used for confirmation prompt.
+      foreach (array_keys($updates) as $update) {
+        if ($update > $schema_version) {
+          if (class_exists('ReflectionFunction')) {
+            // The description for an update comes from its Doxygen.
+            $func = new ReflectionFunction($module. '_update_'. $update);
+            $description = empty($description) ? dt('Description not available') : trim(str_replace(array("\n", '*', '/'), '', $func->getDocComment()));
+          }
+
+          $return[] = array('module' => ucfirst($module), 'update_id' => $update, 'description' => $description);
+        }
+      }
+    }
+  }
+
+  return array($return, $start);
 }

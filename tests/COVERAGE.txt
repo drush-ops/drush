@@ -3,7 +3,7 @@ COMMANDS
 pm-download: GOOD.
   need test for `pm-download --select` (hard to test; depends on state of project releases on d.o.)
 pm-updatecode: GOOD.
-pm-update: GOOD. Implicitly tested by pm-updatecode and updatedb.
+pm-update: FAIR. Implicitly tested by pm-updatecode but updatedb not yet tested.
 pm-releasenotes
 pm-releases
 pm-enable: GOOD. testEnDisUnList().
@@ -25,7 +25,7 @@ sql-drop: FAIR. Implicit by site-install
 sql-sanitize:
 
 
-updatedb: (Used to be implicitly tested siteUpgradeTest).
+updatedb: NONE. Used to be implicitly tested by siteUpgradeTest.
 archive-dump: GOOD
 archive-restore: GOOD. Has own test and implicitly tested by environment cache in Unish framework.
 help
