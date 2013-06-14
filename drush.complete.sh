@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # BASH completion script for Drush.
 #
 # Place this in your /etc/bash_completion.d/ directory or source it from your
