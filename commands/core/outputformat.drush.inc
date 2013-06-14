@@ -57,9 +57,11 @@ function outputformat_drush_engine_type_info() {
       ),
       'list-separator' => array(
         'description' => 'Specify how elements in a list should be separated. In lists of lists, this applies to the elements in the inner lists.',
+        'hidden' => TRUE,
       ),
       'line-separator' => array(
         'description' => 'In nested lists of lists, specify how the outer lists ("lines") should be separated.',
+        'hidden' => TRUE,
       ),
     ),
     // Allow output formats to declare their
