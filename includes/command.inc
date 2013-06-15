@@ -1327,7 +1327,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       // or not.  If we are, however, going to continue on to bootstrap
       // all the way to DRUSH_BOOTSTRAP_DRUPAL_FULL, then we will
       // instead wait for that phase, which will more carefully add
-      // only those Drush command files that are associated with
+      // only those Drush commandfiles that are associated with
       // enabled modules.
       if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
         $searchpath[] = conf_path() . '/modules';
@@ -1338,13 +1338,24 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
           $searchpath[] = 'modules';
         }
       }
-      if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
-        // Too early for variable_get('install_profile', 'default'); look in all profiles.
-        // If we're definitely going to get to DRUPAL_CONFIGURATION, then wait and
-        // see if we have 'install_profile' available there.
+
+      $cid = drush_cid_install_profile();
+      if ($cached = drush_cache_get($cid)) {
+        $profile = $cached->data;
+        $path = "profiles/$profile/modules";
+        if (file_exists($path)) {
+          $searchpath[] = $path;
+        }
+        elseif (file_exists('sites/all/' . $path)) {
+          $searchpath[] = 'sites/all/' . $path;
+        }
+      }
+      else {
+        // If install_profile is not available, scan all profiles.
         $searchpath[] = "profiles";
         $searchpath[] = "sites/all/profiles";
       }
+      
       // TODO: Treat themes like modules and stop unconditionally searching here.
       $searchpath[] = 'sites/all/themes';
       $searchpath[] = conf_path() . '/themes';
@@ -1354,25 +1365,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       }
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
-      // See comment above regarding this if() condition.
-      if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-        // You must define your install_profile in settings.php. The DB is not sufficient.
-        // Drupal core does not yet do that. See http://drupal.org/node/545452.
-        if ($profile = variable_get('install_profile', NULL)) {
-          $path = "profiles/$profile/modules";
-          if (file_exists($path)) {
-            $searchpath[] = $path;
-          }
-          elseif (file_exists('sites/all/' . $path)) {
-            $searchpath[] = 'sites/all/' . $path;
-          }
-        }
-        else {
-          // If 'install_profile' is not available, check all profiles.
-          $searchpath[] = "profiles";
-          $searchpath[] = "sites/all/profiles";
-        }
-      }
+      // Nothing to do here anymore. Left for documentation.
       break;
     case DRUSH_BOOTSTRAP_DRUPAL_FULL:
       // Add enabled module paths. Since we are bootstrapped,
