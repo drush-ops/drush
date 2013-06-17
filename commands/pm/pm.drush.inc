@@ -86,7 +86,10 @@ function pm_drush_command() {
   $update = 'update';
   $update_options = array(
     'security-only' => 'Only update modules that have security updates available. However, if there were other releases of a module between the installed version the security update, other changes to features or functionality may occur.',
-    'lock' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the project as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.  See also the update_advanced project for similar and improved functionality.',
+    'lock' => array(
+      'description' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the project as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.  See also the update_advanced project for similar and improved functionality.',
+      'example-value' => 'foo,bar',
+    ),
   );
   $update_suboptions = array(
     'lock' => array(
@@ -94,7 +97,10 @@ function pm_drush_command() {
         'description' => 'A brief message explaining why a project is being locked; displayed during pm-updatecode.  Optional.',
         'example-value' => 'message',
       ),
-      'unlock' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
+      'unlock' => array(
+        'description' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
+        'example-value' => 'foo,bar',
+      ),
     ),
   );
 
