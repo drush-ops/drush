@@ -5,8 +5,8 @@
  *
  * @param $data
  *   The render data may be either a string or an array
- *   string - printed as-is, without quotes
- *   array - the value is printed as a csv list
+ *   - string: printed as-is, without quotes.
+ *   - array: the value is printed as a csv list.
  *
  * This is a helper format for handling nested csv lists.
  */
