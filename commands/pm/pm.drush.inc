@@ -725,7 +725,7 @@ function drush_pm_list() {
   }
 
   foreach ($status_filter as $status) {
-    if (!in_array($status, $all_status)) { //TODO: this kind of chck can be implemented drush-wide
+    if (!in_array($status, $all_status)) { //TODO: this kind of check can be implemented drush-wide
       return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status)));
   }
   }
