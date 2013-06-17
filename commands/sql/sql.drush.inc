@@ -28,7 +28,7 @@ function sql_drush_command() {
     $options['target'] = 'The name of a target within the specified database.';
   }
   $db_url['db-url'] = array(
-    'description' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',
+    'description' => 'A Drupal 6 style database URL.',
     'example-value' => 'mysql://root:pass@127.0.0.1/db',
   );
 
