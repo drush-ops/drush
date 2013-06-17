@@ -706,7 +706,7 @@ function drush_pm_list() {
     drush_hide_output_fields('type');
   }
   foreach ($type_filter as $type) {
-    if (!in_array($type, $all_types)) { //TODO: this kind of chck can be implemented drush-wide
+    if (!in_array($type, $all_types)) { //TODO: this kind of check can be implemented drush-wide
       return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!type is not a valid project type.', array('!type' => $type)));
     }
   }
