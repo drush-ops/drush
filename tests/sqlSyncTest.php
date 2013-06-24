@@ -60,11 +60,13 @@ class sqlSyncTest extends Drush_CommandTestCase {
     );
     $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => $mail));
 
-    // Copy stage to dev with --sanitize
+    // Copy stage to dev with --sanitize.
     $sync_options = array(
       'sanitize' => NULL,
       'yes' => NULL,
-      'dump-dir' => $dump_dir
+      'dump-dir' => $dump_dir,
+      // @todo test wildcards expansion from within sql-sync.
+      // 'skip-tables-list' => 'role_permiss*',
     );
     $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
 
@@ -88,6 +90,9 @@ class sqlSyncTest extends Drush_CommandTestCase {
     $uid = $row[1];
     $this->assertEquals("user+$uid@localhost.localdomain", $row[2], 'email address was sanitized on destination site.');
     $this->assertEquals($name, $row[0]);
+
+    // @todo Confirm that the role_permissions table no longer exists in dev site (i.e. wildcard expansion works in sql-sync).
+    // $this->drush('sql-query', array('SELECT * FROM role_permission'), $options, NULL, NULL, self::EXIT_ERROR);
 
     // Copy stage to dev with --sanitize and a fixed sanitized email
     $sync_options = array(

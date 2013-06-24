@@ -252,7 +252,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
 
     $table_selection = array();
     if (!isset($no_dump)) {
-      $table_selection = drush_sql_get_table_selection();
+      $table_selection = drush_sql_get_expanded_table_selection($source_db_url, $source);
     }
 
     // Prompt for confirmation. This is destructive.

@@ -17,12 +17,12 @@ package-hander:
 
 sql-cli:
 sql-connect:
-sql-query: FAIR. Implicit by site-install
-sql-dump: FAIR. Implicitly tested by sqlSyncTest.
+sql-query: FAIR. Implicit by site-install, sql-sync
+sql-dump: GOOD. tested by sqlDumpTest.
 sql-sync: GOOD. testLocalSqlSync().
   need test: %dump, %dump-dir, --dump, --dump-dir, --source-dump, --target-dump, --source-dump-dir and --target-dump-dir and permutations of same used together.
 sql-drop: FAIR. Implicit by site-install
-sql-sanitize:
+sql-sanitize: FAIR. Implicit by testLocalSqlSync()
 
 
 updatedb: NONE. Used to be implicitly tested by siteUpgradeTest.

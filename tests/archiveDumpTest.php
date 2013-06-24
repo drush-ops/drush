@@ -119,7 +119,6 @@ class archiveDumpCase extends Drush_CommandTestCase {
     $root = $this->webroot();
     $original_codebase = drush_dir_md5($root);
     unish_file_delete_recursive($root . '/sites/' . self::uri);
-
     $options = array(
       'yes' => NULL,
       'destination' => $root,
