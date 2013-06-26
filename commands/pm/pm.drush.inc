@@ -227,7 +227,7 @@ function pm_drush_command() {
     'drupal dependencies' => array($update),
     'examples' => array(
       'drush pm-updatecode --no-core' => 'Update contrib projects, but skip core.',
-      'drush pm-updatestatus --format=csv-list --list-separator=" " --fields="name,existing_version,candidate_version,status_msg"' => 'To show a list of projects with their update status, use pm-updatestatus instead of pm-updatecode.',
+      'drush pm-updatestatus --format=csv --list-separator=" " --fields="name,existing_version,candidate_version,status_msg"' => 'To show a list of projects with their update status, use pm-updatestatus instead of pm-updatecode.',
     ),
     'arguments' => array(
       'projects' => 'Optional. A list of installed projects to update.',

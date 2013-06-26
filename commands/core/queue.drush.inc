@@ -25,7 +25,7 @@ function queue_drush_command() {
     'description' => 'Returns a list of all defined queues',
     'outputformat' => array(
       'default' => 'table',
-      'pipe-format' => 'csv-list',
+      'pipe-format' => 'csv',
       'field-labels' => array(
         'queue' => 'Queue',
         'items' => 'Items',

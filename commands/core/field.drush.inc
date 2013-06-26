@@ -92,7 +92,7 @@ function field_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'table',
-      'pipe-format' => 'csv-list',
+      'pipe-format' => 'csv',
       'field-labels' => array(
         'field-name' => 'Field name',
         'type' => 'Field type',

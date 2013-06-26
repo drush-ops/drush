@@ -79,7 +79,7 @@ function core_drush_command() {
     'description' => 'List any pending database updates.',
     'outputformat' => array(
       'default' => 'table',
-      'pipe-format' => 'csv-list',
+      'pipe-format' => 'csv',
       'field-labels' => array('module' => 'Module', 'update_id' => 'Update ID', 'description' => 'Description'),
       'fields-default' => array('module', 'update_id', 'description'),
       'output-data-type' => 'format-table',

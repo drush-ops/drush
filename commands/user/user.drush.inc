@@ -32,7 +32,7 @@ function user_drush_command() {
     'required-arguments' => TRUE,
     'outputformat' => array(
       'default' => 'key-value-list',
-      'pipe-format' => 'csv-list',
+      'pipe-format' => 'csv',
       'field-labels' => array(
         'uid' => 'User ID',
         'name' => 'User name',

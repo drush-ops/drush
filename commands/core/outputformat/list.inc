@@ -64,6 +64,7 @@ class drush_outputformat_list extends drush_outputformat {
     $output = '';
     if (is_array($input)) {
       // If this list is processing output from a command that produces table
+      // @todo - need different example below?
       // output, but our subformatter only supports 'single' items (e.g. csv),
       // then we will convert our data such that the output will be the keys
       // of the table rows.
@@ -97,11 +98,13 @@ class drush_outputformat_list extends drush_outputformat {
         }
       }
       $separator = isset($metadata[$list_separator_key]) && !empty($metadata[$list_separator_key]) ? $metadata[$list_separator_key] : "\n";
+      // @todo - bug? we iterate over a hard coded, single item array?
       foreach (array('field-labels') as $key) {
         if (isset($metadata[$key])) {
           $metameta[$key] = $metadata[$key];
         }
       }
+
       foreach ($input as $label => $data) {
         // If this output formatter is set to print a single item from each
         // element, select that item here.
@@ -113,7 +116,7 @@ class drush_outputformat_list extends drush_outputformat {
         // careful about when we call drush_select_output_fields(); sometimes,
         // there will be nested formatters of type 'list', and it would not
         // do to select the output fields more than once.
-        // 'list-field-selection-control' can be set to a positive number to
+        // 'list-field-selection-control can be set to a positive number to
         // cause output fields to be selected at a later point in the call chain.
         elseif (is_array($data) && isset($metadata['field-labels'])) {
           if (!$field_selection_control) {

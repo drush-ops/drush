@@ -200,15 +200,6 @@ function outputformat_drush_engine_outputformat() {
     'engine-capabilities' => array('format-list', 'format-table'),
     'topic-example' => array('a', 'b', 'c'),
   );
-  $engines['csv'] = array(
-    'machine-parsable' => TRUE,
-    'engine-class' => 'list',
-    'list-separator' => ',',
-    'list-item-type' => 'string',
-    'description' => 'A comma-separated list of values.',
-    'engine-capabilities' => array('format-list', 'format-table'),
-    'topic-example' => array('a', 'b', 'c'),
-  );
   $engines['nested-csv'] = array(
     'machine-parsable' => TRUE,
     'engine-class' => 'list',
@@ -220,7 +211,7 @@ function outputformat_drush_engine_outputformat() {
     'machine-parsable' => TRUE,
     'hidden' => TRUE,
   );
-  $engines['csv-list'] = array(
+  $engines['csv'] = array(
     'machine-parsable' => TRUE,
     'engine-class' => 'list',
     'list-item-type' => 'nested-csv',
