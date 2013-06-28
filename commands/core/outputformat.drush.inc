@@ -6,7 +6,7 @@
  */
 
 /**
- * Return selected output format engine
+ * @return drush_outputformat The selected output format engine
  */
 function drush_get_outputformat() {
   return drush_get_engine('outputformat');
@@ -390,6 +390,9 @@ class drush_outputformat {
     $supported = $this->supported_data_types($metadata);
     return (count($supported) == 1) && ($supported[0] == 'format-single');
   }
+  /*
+   * Perform pre-processing and then format() the $input.
+   */
   function process($input, $metadata = array()) {
     $metadata += $this->engine_config;
     if (isset($metadata['private-fields']) && is_array($input)) {
@@ -417,6 +420,8 @@ class drush_outputformat {
     if ((!$machine_parsable) && is_bool($input)) {
       $input = $input ? 'TRUE' : 'FALSE';
     }
+
+    // Run $input through any filters that are specified for this formatter.
     if (isset($metadata[$formatter_type . '-filter'])) {
       $filters = $metadata[$formatter_type . '-filter'];
       if (!is_array($filters)) {

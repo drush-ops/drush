@@ -475,6 +475,8 @@ function drush_handle_command_output($command, $structured_output) {
         elseif ((drush_get_context('DRUSH_PIPE') || $machine_parsable) && isset($formatter->engine_config['fields-pipe'])) {
           $formatter->engine_config['fields-default'] = $formatter->engine_config['fields-pipe'];
         }
+
+        // Determine the --format, and options relevant for that format.
         foreach ($formatter->engine_config['options'] as $option => $option_info) {
           $default_value = isset($formatter->engine_config[$option . '-default']) ? $formatter->engine_config[$option . '-default'] : FALSE;
           if (isset($option_info['list'])) {
