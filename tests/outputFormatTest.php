@@ -68,23 +68,23 @@ class outputFormatCase extends Drush_CommandTestCase {
   public function getTestDataForDrupal() {
     return array(
       array(
-        'name' => 'Status test - drush version / ini',
+        'name' => 'Status test - drush version / list',
         'command' => 'core-status',
         'args' => array('drush version'),
-        'format' => 'ini',
+        'format' => 'list',
         'output-filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev'),
         'expected' => '0.0-dev',
       ),
-      array(
-        'name' => 'Status test - drush / ini',
-        'command' => 'core-status',
-        'args' => array('drush'),
-        'format' => 'ini',
-        'output-filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
-        'expected' => 'drush-version=0.0-dev
-drush-conf=
-drush-alias-files=/etc/drush/dev.alias.drushrc.php',
-      ),
+//      array(
+//        'name' => 'Status test - drush / ini',
+//        'command' => 'core-status',
+//        'args' => array('drush'),
+//        'format' => 'ini',
+//        'output-filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
+//        'expected' => 'drush-version=0.0-dev
+//drush-conf=
+//drush-alias-files=/etc/drush/dev.alias.drushrc.php',
+//      ),
       array(
         'name' => 'Status test - drush / export',
         'command' => 'core-status',
@@ -166,18 +166,18 @@ drush-alias-files=/etc/drush/dev.alias.drushrc.php',
         'expected' => "",
       ),
       */
-      array(
-        'name' => 'pm-updatestatus - ini-sections',
-        'command' => 'pm-updatestatus',
-        'args' => array(),
-        'format' => 'ini-sections',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
-        'expected' => "[drupal]
-short_name=drupal
-installed_version=0.0
-proposed_version=0.0
-message=Up to date",
-      ),
+//      array(
+//        'name' => 'pm-updatestatus - ini-sections',
+//        'command' => 'pm-updatestatus',
+//        'args' => array(),
+//        'format' => 'ini-sections',
+//        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
+//        'expected' => "[drupal]
+//short_name=drupal
+//installed_version=0.0
+//proposed_version=0.0
+//message=Up to date",
+//      ),
       /*
         pm-updatestatus --format=key-value does not work
 
@@ -217,14 +217,6 @@ message=Up to date",
         'args' => array('devel'),
         'options' => array('fields' => 'project,type,devel,description'),
         'format' => 'csv',
-        'expected' => "devel",
-      ),
-      array(
-        'name' => 'pm-info - csv',
-        'command' => 'pm-info',
-        'args' => array('devel'),
-        'options' => array('fields' => 'project,type,devel,description'),
-        'format' => 'csv',
         'expected' => "devel,module,\"Various blocks, pages, and functions for developers.\"",
       ),
       /*
@@ -242,17 +234,17 @@ message=Up to date",
         'expected' => "",
       ),
       */
-      array(
-        'name' => 'pm-info - ini-sections',
-        'command' => 'pm-info',
-        'args' => array('devel'),
-        'options' => array('fields' => 'project,type,devel,description'),
-        'format' => 'ini-sections',
-        'expected' => "[devel]
-project=devel
-type=module
-description=Various blocks, pages, and functions for developers.",
-      ),
+//      array(
+//        'name' => 'pm-info - ini-sections',
+//        'command' => 'pm-info',
+//        'args' => array('devel'),
+//        'options' => array('fields' => 'project,type,devel,description'),
+//        'format' => 'ini-sections',
+//        'expected' => "[devel]
+//project=devel
+//type=module
+//description=Various blocks, pages, and functions for developers.",
+//      ),
       /*
         pm-info --format=key-value does not respect --fields
 
@@ -354,29 +346,6 @@ description=Various blocks, pages, and functions for developers.",
           'a' => array('b' => 2, 'c' => 3),
           'd' => array('e' => 5, 'f' => 6));",
         'expected' => '{"a":{"b":2,"c":3},"d":{"e":5,"f":6}}',
-      ),
-      array(
-        'name' => 'ini test',
-        'format' => 'ini',
-        'code' => "return array(
-          'a' => array('b' => 2, 'c' => 3),
-          'd' => array('e' => 5, 'f' => 6));",
-        'expected' => "a=2 3
-d=5 6",
-      ),
-      array(
-        'name' => 'ini-list test',
-        'format' => 'ini-sections',
-        'code' => "return array(
-          'a' => array('b' => 2, 'c' => 3),
-          'd' => array('e' => 5, 'f' => 6));",
-        'expected' => "[a]
-b=2
-c=3
-
-[d]
-e=5
-f=6",
       ),
       array(
         'name' => 'key-value test 1d array',

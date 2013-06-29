@@ -84,12 +84,11 @@ function sandwich_drush_command() {
     ),
     'aliases' => array('sps'),
     // Example output engine data:  command returns a deep array
-    // that can either be printed in table format or as an
-    // ini file in sections.
+    // that can either be printed in table format or as a json array.
     'engines' => array(
       'outputformat' => array(
         'default' => 'table',
-        'pipe-format' => 'ini-sections',
+        'pipe-format' => 'json',
         // Commands that return deep arrays will usually use
         // machine-ids for the column data.  A 'field-labels'
         // item maps from the machine-id to a human-readable label.

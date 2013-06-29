@@ -130,7 +130,7 @@ function pm_drush_command() {
     'aliases' => array('pmi'),
     'outputformat' => array(
       'default' => 'key-value-list',
-      'pipe-format' => 'ini-sections',
+      'pipe-format' => 'json',
       'formatted-filter' => '_drush_pm_info_format_table_data',
       'field-labels' => array(
         'extension' => 'Extension',

@@ -150,18 +150,6 @@ function outputformat_drush_engine_outputformat() {
     'verbose-only' => TRUE,
     'topic-example' => $common_topic_example,
   );
-  $engines['ini'] = array(
-    'machine-parsable' => TRUE,
-    'description' => 'A list of key-value pairs, parsable by php parse_ini_file().',
-    'engine-capabilities' => array('format-list', 'format-table'),
-  );
-  $engines['ini-sections'] = array(
-    'machine-parsable' => TRUE,
-    'engine-class' => 'list',
-    'list-item-type' => 'ini',
-    'description' => 'A sectioned list of key-value pairs, parsable by php parse_ini_file().',
-    'engine-capabilities' => array('format-table'),
-  );
   $engines['export'] = array(
     'machine-parsable' => TRUE,
     'description' => 'An array in executable php format.',

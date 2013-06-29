@@ -35,7 +35,7 @@ function shellalias_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'key-value',
-      'pipe-format' => 'ini',
+      'pipe-format' => 'json',
       'simplify-single' => TRUE,
       'output-data-type' => 'format-list',
     ),
