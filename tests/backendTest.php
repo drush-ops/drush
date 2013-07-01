@@ -268,7 +268,7 @@ class backendUnitCase extends Drush_UnitTestCase {
       unlink($test_file);
     }
 
-    // Sleep for a milisecond, then create the file
+    // Sleep for a millisecond, then create the file
     $ev_php = "usleep(1000);fopen('$test_file','a');";
     drush_invoke_process("@none", "ev", array($ev_php), array(), array("fork" => TRUE));
 

@@ -11,68 +11,50 @@
  */
 class outputFormatCase extends Drush_CommandTestCase {
 
-  /*
-   * Test various output formats using php-eval with no Drupal site.
-   */
-  public function testOutputFormat() {
-    $testdata = $this->getTestData();
-    $options = array();
-    foreach ($testdata as $test) {
-      $name = $test['name'] . ": ";
-      $expected = $test['expected'];
-      $this->drush('php-eval', array($test['code']), $options + array('format' => $test['format']));
-      $output = trim($this->getOutput()); // note: we consider trailing eols insignificant
-      $this->assertEquals($name . $expected, $name. $output);
-    }
-  }
-
-  /*
-   * Test various output formats using various Drush commands on a Drupal site.
-   */
+/**
+ * Test output formats using various Drush commands on a Drupal site.
+ *
+ * Cannot use dataProvider since we want to share one setUpDrupal(),
+ **/
   public function testOutputFormatWithDrupal() {
+    $data = $this->getDataForDrupal();
     $sites = $this->setUpDrupal(1, TRUE);
-    $testdata = $this->getTestDataForDrupal();
-    $options = array(
+    $site_options = array(
       'root' => $this->webroot(),
       'uri' => key($sites),
     );
-    $this->drush('pm-download', array('devel'), $options);
-    foreach ($testdata as $test) {
-      $test += array(
-        'command' => 'php-eval',
-        'args' => array(),
-        'options' => array(),
-        'format' => 'export',
-        'output-filter' => array(),
-      );
-      $name = $test['name'] . ": ";
-      $expected = $test['expected'];
+    $this->drush('pm-download', array('devel'), $site_options + array('cache' => NULL, 'skip' => TRUE));
+
+    foreach ($data as $row) {
+      extract($row);
+      $name = $name . ": ";
       // We need to specify a fixed column width so that word wrapping does
       // not change our output contrary to our expectations when run in
       // a narrow terminal window.
       $env = array(
         'COLUMNS' => '120',
       );
-      $this->drush($test['command'], $test['args'], $options + $test['options'] + array('format' => $test['format']), NULL, NULL, self::EXIT_SUCCESS, NULL, $env);
+      $this->drush($command, $args, $site_options + $options + array('format' => $format), NULL, NULL, self::EXIT_SUCCESS, NULL, $env);
       $output = trim($this->getOutput()); // note: we consider trailing eols insignificant
       // If the Drupal command we are running might produce variable output,
       // we can use one or more output filters to simplify the output down
       // to an invariant form.
-      foreach ($test['output-filter'] as $regex => $replacement) {
+      foreach ($output_filter as $regex => $replacement) {
         $output = preg_replace($regex, $replacement, $output);
       }
       $this->assertEquals($name . $expected, $name. $output);
     }
   }
 
-  public function getTestDataForDrupal() {
+  public function getDataForDrupal() {
     return array(
       array(
         'name' => 'Status test - drush version / list',
         'command' => 'core-status',
         'args' => array('drush version'),
+        'options' => array(),
         'format' => 'list',
-        'output-filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev'),
+        'output_filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev'),
         'expected' => '0.0-dev',
       ),
 //      array(
@@ -80,7 +62,7 @@ class outputFormatCase extends Drush_CommandTestCase {
 //        'command' => 'core-status',
 //        'args' => array('drush'),
 //        'format' => 'ini',
-//        'output-filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
+//        'output_filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
 //        'expected' => 'drush-version=0.0-dev
 //drush-conf=
 //drush-alias-files=/etc/drush/dev.alias.drushrc.php',
@@ -89,8 +71,9 @@ class outputFormatCase extends Drush_CommandTestCase {
         'name' => 'Status test - drush / export',
         'command' => 'core-status',
         'args' => array('drush'),
+        'options' => array(),
         'format' => 'export',
-        'output-filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
+        'output_filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
         'expected' => "array(
   'drush-version' => '0.0-dev',
   'drush-conf' => array(),
@@ -103,8 +86,9 @@ class outputFormatCase extends Drush_CommandTestCase {
         'name' => 'Status test - drush / key-value',
         'command' => 'core-status',
         'args' => array('drush'),
+        'options' => array(),
         'format' => 'key-value',
-        'output-filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
+        'output_filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
         'expected' => "Drush version         :  0.0-dev
  Drush configuration   :
  Drush alias files     :  /etc/drush/dev.alias.drushrc.php",
@@ -118,19 +102,20 @@ class outputFormatCase extends Drush_CommandTestCase {
         'command' => 'core-requirements',
         'args' => array(),
         'format' => 'table',
-        'output-filter' => array(),
+        'output_filter' => array(),
         'expected' => "",
       ),
       */
-      array(
-        'name' => 'pm-updatestatus - table',
-        'command' => 'pm-updatestatus',
-        'args' => array(),
-        'format' => 'table',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
-        'expected' => "Name    Installed Version  Proposed version  Message
- Drupal  0.0               0.0              Up to date",
-      ),
+//      array(
+//        'name' => 'pm-updatestatus - table',
+//        'command' => 'pm-updatestatus',
+//        'args' => array(),
+//        'options' => array(),
+//        'format' => 'table',
+//        'output_filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
+//        'expected' => "Name    Installed Version  Proposed version  Message
+// Drupal  0.0               0.0              Up to date",
+//      ),
       /*
         pm-updatestatus --format=csv does not work.
 
@@ -142,7 +127,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'command' => 'pm-updatestatus',
         'args' => array(),
         'format' => 'csv',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0'),
+        'output_filter' => array('/[0-9]+\.[0-9]+/' => '0.0'),
         'expected' => "",
       ),
       */
@@ -150,8 +135,9 @@ class outputFormatCase extends Drush_CommandTestCase {
         'name' => 'pm-updatestatus - csv',
         'command' => 'pm-updatestatus',
         'args' => array(),
+        'options' => array(),
         'format' => 'csv',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
+        'output_filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
         'expected' => "drupal,0.0,0.0,Up to date",
       ),
       /*
@@ -162,7 +148,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'command' => 'pm-updatestatus',
         'args' => array(),
         'format' => 'ini',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0'),
+        'output_filter' => array('/[0-9]+\.[0-9]+/' => '0.0'),
         'expected' => "",
       ),
       */
@@ -171,7 +157,7 @@ class outputFormatCase extends Drush_CommandTestCase {
 //        'command' => 'pm-updatestatus',
 //        'args' => array(),
 //        'format' => 'ini-sections',
-//        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
+//        'output_filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
 //        'expected' => "[drupal]
 //short_name=drupal
 //installed_version=0.0
@@ -185,8 +171,9 @@ class outputFormatCase extends Drush_CommandTestCase {
         'name' => 'pm-updatestatus - key-value',
         'command' => 'pm-updatestatus',
         'args' => array(),
+        'options' => array(),
         'format' => 'key-value',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0'),
+        'output_filter' => array('/[0-9]+\.[0-9]+/' => '0.0'),
         'expected' => "",
       ),
       */
@@ -194,8 +181,9 @@ class outputFormatCase extends Drush_CommandTestCase {
         'name' => 'pm-updatestatus - key-value-list',
         'command' => 'pm-updatestatus',
         'args' => array(),
+        'options' => array(),
         'format' => 'key-value-list',
-        'output-filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
+        'output_filter' => array('/[0-9]+\.[0-9]+/' => '0.0', '/Update available/' => 'Up to date'),
         'expected' => "Name                :  Drupal
  Installed Version   :  0.0
  Proposed version    :  0.0
@@ -207,6 +195,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'args' => array('devel'),
         'options' => array('fields' => 'project,type,devel,description'),
         'format' => 'key-value-list',
+        'output_filter' => array(),
         'expected' => "Project       :  devel
  Type          :  module
  Description   :  Various blocks, pages, and functions for developers.",
@@ -263,6 +252,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'args' => array('devel'),
         'options' => array('fields' => 'project,type,description'),
         'format' => 'table',
+        'output_filter' => array(),
         'expected' => "Project  Type    Description
  devel    module  Various blocks, pages, and functions for developers.",
       ),
@@ -284,138 +274,6 @@ class outputFormatCase extends Drush_CommandTestCase {
       // watchdog-list
       // watchdog-show
 
-    );
-  }
-
-  public function getTestData() {
-    return array(
-      array(
-        'name' => 'String test',
-        'format' => 'string',
-        'code' => "return array('drush version' => '6.0-dev')",
-        'expected' => '6.0-dev',
-      ),
-      array(
-        'name' => 'List test',
-        'format' => 'list',
-        'code' => "return array('drush version' => '6.0-dev')",
-        'expected' => '6.0-dev',
-      ),
-      array(
-        'name' => 'Key-value test',
-        'format' => 'key-value',
-        'code' => "return array('drush version' => '6.0-dev')",
-        'expected' => 'drush version   :  6.0-dev',
-      ),
-      array(
-        'name' => 'Table test',
-        'format' => 'table',
-        'code' => "return array(
-          'a' => array('b' => 2, 'c' => 3),
-          'd' => array('b' => 5, 'c' => 6));",
-        'expected' => "b  c
- 2  3
- 5  6",
-      ),
-      array(
-        'name' => 'print-r test',
-        'format' => 'print-r',
-        'code' => "return array(
-          'a' => array('b' => 2, 'c' => 3),
-          'd' => array('b' => 5, 'c' => 6));",
-        'expected' => "Array
-(
-    [a] => Array
-        (
-            [b] => 2
-            [c] => 3
-        )
-
-    [d] => Array
-        (
-            [b] => 5
-            [c] => 6
-        )
-
-)",
-      ),
-      array(
-        'name' => 'json test',
-        'format' => 'json',
-        'code' => "return array(
-          'a' => array('b' => 2, 'c' => 3),
-          'd' => array('e' => 5, 'f' => 6));",
-        'expected' => '{"a":{"b":2,"c":3},"d":{"e":5,"f":6}}',
-      ),
-      array(
-        'name' => 'key-value test 1d array',
-        'format' => 'key-value',
-        'code' => "return array(
-          'b' => 'Two B or ! Two B, that is the comparison',
-          'c' => 'I see that C has gone to Sea');",
-        'expected' => "b   :  Two B or ! Two B, that is the comparison
- c   :  I see that C has gone to Sea",
-      ),
-      array(
-        'name' => 'key-value test 2d array',
-        'format' => 'key-value',
-        'code' => "return array(
-          'a' => array(
-            'b' => 'Two B or ! Two B, that is the comparison',
-            'c' => 'I see that C has gone to Sea',
-          ),
-          'd' => array(
-            'e' => 'Elephants and electron microscopes',
-            'f' => 'My margin is too small',
-          ));",
-        'expected' => "a   :  Two B or ! Two B, that is the comparison
-        I see that C has gone to Sea
- d   :  Elephants and electron microscopes
-        My margin is too small",
-      ),
-      array(
-        'name' => 'export test',
-        'format' => 'export',
-        'code' => "return array(
-          'a' => array('b' => 2, 'c' => 3),
-          'd' => array('e' => 5, 'f' => 6));",
-        'expected' => "array(
-  'a' => array(
-    'b' => 2,
-    'c' => 3,
-  ),
-  'd' => array(
-    'e' => 5,
-    'f' => 6,
-  ),
-)",
-      ),
-      array(
-        'name' => 'config test',
-        'format' => 'config',
-        'code' => "return array(
-          'a' => array('b' => 2, 'c' => 3),
-          'd' => array('e' => 5, 'f' => 6));",
-        'expected' => "\$config[\"a\"] = array (
-  'b' => 2,
-  'c' => 3,
-);
-\$config[\"d\"] = array (
-  'e' => 5,
-  'f' => 6,
-);",
-      ),
-      array(
-        'name' => 'variables test',
-        'format' => 'variables',
-        'code' => "return array(
-          'a' => array('b' => 2, 'c' => 3),
-          'd' => array('e' => 5, 'f' => 6));",
-        'expected' => "\$a[\"b\"] = 2;
-\$a[\"c\"] = 3;
-\$d[\"e\"] = 5;
-\$d[\"f\"] = 6;",
-      ),
     );
   }
 }

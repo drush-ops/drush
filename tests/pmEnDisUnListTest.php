@@ -33,13 +33,18 @@ class EnDisUnListCase extends Drush_CommandTestCase {
     $output = $this->getOutput();
     $this->assertContains('access devel information', $output);
     $this->drush('pm-info', array('devel'), $options);
-    $output = $this->getOutput();
-    $this->assertContains('extension=devel', $output);
-    $this->assertContains('project=devel', $output);
-    $this->assertContains('type=module', $output);
-    $this->assertContains('title=Devel', $output);
-    $this->assertContains('status=enabled', $output);
-    $this->assertContains('access devel information', $output);
+    $output = $this->getOutputFromJSON('devel');
+    $expected = array(
+      'extension' => 'devel',
+      'project' => 'devel',
+      'type' => 'module',
+      'title' => 'Devel',
+      'status' => 'enabled',
+    );
+    foreach ($expected as $key => $value) {
+      $this->assertEquals($expected[$key], $value);
+    }
+
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));

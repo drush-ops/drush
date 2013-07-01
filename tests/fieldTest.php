@@ -47,14 +47,13 @@ class fieldCase extends Drush_CommandTestCase {
   }
 
   function verifyInstance($name, $options, $expected = TRUE) {
-    $this->drush('field-info', array('fields'), $options + array('pipe' => NULL));
-    $output = $this->getOutputAsList();
+    $this->drush('field-info', array('fields'), $options + array('format' => 'json'));
+    $output = $this->getOutputFromJSON();
     $found = FALSE;
-    foreach($output as $row) {
-      $columns = explode(',', $row);
-      if ($columns[0] == $name) {
-        $this->assertEquals('text', $columns[1], $name . ' field is of type=text.');
-        $this->assertEquals('user', $columns[2], $name . ' field was added to user bundle.');
+    foreach($output as $key => $field) {
+      if ($key == $name) {
+        $this->assertEquals('text', $field->type, $name . ' field is of type=text.');
+        $this->assertEquals('user', current($field->bundle), $name . ' field was added to user bundle.');
         $found = TRUE;
         break;
       }

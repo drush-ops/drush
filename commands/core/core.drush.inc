@@ -146,7 +146,7 @@ function core_drush_command() {
     'examples' => array(
       'drush core-requirements' => 'Show all status lines from the Status Report admin page.',
       'drush core-requirements --severity=2' => 'Show only the red lines from the Status Report admin page.',
-      'drush core-requirements --pipe' => 'Print out a short report in the format "identifier=severity", where severity 2=error, 1=warning, and 0/-1=OK',
+      'drush core-requirements --pipe' => 'Print out a short report in JSON format, where severity 2=error, 1=warning, and 0/-1=OK',
     ),
     'options' => array(
       'severity' => array(

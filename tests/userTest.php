@@ -29,44 +29,40 @@ class userCase extends Drush_CommandTestCase {
       $authenticated .= ' user';
     }
     $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => "example@example.com"));
-    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
-    $output = $this->getOutput();
-    $row  = str_getcsv($output);
-    $uid = $row[1];
-    $this->assertEquals('example@example.com', $row[2]);
-    $this->assertEquals($name, $row[0]);
-    $this->assertEquals(1, $row[3], 'Newly created user is Active.');
-    $this->assertEquals($authenticated, $row[4], 'Newly created user has one role.');
+    $this->drush('user-information', array($name), $options + array('format' => 'json'));
+    $output = $this->getOutputFromJSON('2');
+    $this->assertEquals('example@example.com', $output->mail);
+    $this->assertEquals($name, $output->name);
+    $this->assertEquals(1, $output->status, 'Newly created user is Active.');
+    $obj_authenticated = (object) array(2 => $authenticated);
+    $this->assertEquals($obj_authenticated, $output->roles, 'Newly created user has one role.');
 
     // user-block
     $this->drush('user-block', array($name), $options);
-    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
-    $output = $this->getOutput();
-    $row  = str_getcsv($output);
-    $this->assertEquals(0, $row[3], 'User is blocked.');
+    $this->drush('user-information', array($name), $options + array('format' => 'json'));
+    $output = $this->getOutputFromJSON('2');
+    $this->assertEquals(0, $output->status, 'User is blocked.');
 
     // user-unblock
     $this->drush('user-unblock', array($name), $options);
-    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
-    $output = $this->getOutput();
-    $row  = str_getcsv($output);
-    $this->assertEquals(1, $row[3], 'User is unblocked.');
+    $this->drush('user-information', array($name), $options + array('format' => 'json'));
+    $output = $this->getOutputFromJSON('2');
+    $this->assertEquals(1, $output->status, 'User is unblocked.');
 
     // user-add-role
     // first, create the fole since we use testing install profile.
     $this->drush('role-create', array('test role'), $options);
     $this->drush('user-add-role', array('test role', $name), $options);
-    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
-    $output = $this->getOutput();
-    $row  = str_getcsv($output);
-    $this->assertEquals("$authenticated,test role", $row[4], 'User has test role.');
+    $this->drush('user-information', array($name), $options + array('format' => 'json'));
+    $output = $this->getOutputFromJSON('2');
+    $expected = (object) array(2 => $authenticated, 3 => 'test role');
+    $this->assertEquals($expected, $output->roles, 'User has test role.');
 
     // user-remove-role
     $this->drush('user-remove-role', array('test role', $name), $options);
-    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
-    $output = $this->getOutput();
-    $row  = str_getcsv($output);
-    $this->assertEquals($authenticated, $row[4], 'User removed test role.');
+    $this->drush('user-information', array($name), $options + array('format' => 'json'));
+    $output = $this->getOutputFromJSON('2');
+    $this->assertEquals($obj_authenticated, $output->roles, 'User removed test role.');
 
     // user-password
     $newpass = 'newpass';

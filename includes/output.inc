@@ -73,7 +73,7 @@ function drush_print_r($array, $handle = NULL, $newline = TRUE) {
 }
 
 /**
- * Format some data and print it out.  Respece --format option.
+ * Format some data and print it out.  Respect --format option.
  */
 function drush_print_format($input, $default_format, $metadata = NULL) {
   drush_print(drush_format($user_info, $metadata, drush_get_option('format', $default_format)));

@@ -7,8 +7,9 @@
 
 abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
 
-  function __construct() {
-    $this->_output = false;
+  function __construct($name = NULL, array $data = array(), $dataName = '') {
+    $this->_output = FALSE;
+    parent::__construct($name, $data, $dataName);
   }
 
   /**
@@ -202,6 +203,20 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    */
   function getOutputAsList() {
     return $this->_output;
+  }
+
+  /**
+   *    Accessor for the last output, decoded from json.
+   *    @param key Optionally return only a top level element from the json object.
+   *    @return array         Output as php stdClass object.
+   *    @access public
+   */
+  function getOutputFromJSON($key = NULL) {
+    $json = json_decode(current($this->_output));
+    if (isset($key)) {
+      $json = $json->{$key}; // http://stackoverflow.com/questions/2925044/hyphens-in-keys-of-object
+    }
+    return $json;
   }
 
   function webroot() {

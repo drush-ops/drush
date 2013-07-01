@@ -127,18 +127,21 @@ drush_invoke("version", $arg);
     $this->drush('core-requirements', array(), $options + array('severity' => '2'));
     $output = $this->getOutput();
     $this->assertEquals('', $output);
+
     $this->drush('core-requirements', array(), $options);
-    $output = $this->getOutput();
+    $loaded = $this->getOutputFromJSON();
     // Pick a substring that is valid for D7/D8.
-    $expected="
-install_profile=-1
-node_access=-1
-php=-1
-php_extensions=-1
-php_memory_limit=-1
-php_register_globals=-1
-settings.php=-1
-";
-    $this->assertContains($expected, trim($output));
+    $expected = array(
+      'install_profile' => -1,
+      'node_access' => -1,
+      'php' => -1,
+      'php_extensions' => -1,
+      'php_memory_limit' => -1,
+      'php_register_globals' => -1,
+      'settings.php' => -1,
+    );
+    foreach ($expected as $key => $value) {
+      $this->assertEquals($value, $loaded->$key->sid);
+    }
   }
 }
