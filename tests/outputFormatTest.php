@@ -72,7 +72,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'command' => 'core-status',
         'args' => array('drush'),
         'options' => array(),
-        'format' => 'export',
+        'format' => 'var_export',
         'output_filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
         'expected' => "array(
   'drush-version' => '0.0-dev',

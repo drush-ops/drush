@@ -56,7 +56,7 @@ function sql_drush_command() {
     ) + $options,
     'outputformat' => array(
       'default' => 'print-r',
-      'pipe-format' => 'export',
+      'pipe-format' => 'var_export',
       'private-fields' => 'password',
     ),
   );

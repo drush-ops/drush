@@ -111,7 +111,7 @@ class outputFormatUnitCase extends Drush_UnitTestCase {
 //      ),
       array(
         'name' => 'export test',
-        'format' => 'export',
+        'format' => 'var_export',
         'data' => array(
           'a' => array('b' => 2, 'c' => 3),
           'd' => array('e' => 5, 'f' => 6),

@@ -187,7 +187,6 @@ function pm_drush_command() {
       'package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other").',
       'core' => 'Filter out extensions that are not in drupal core.',
       'no-core' => 'Filter out extensions that are provided by drupal core.',
-      'pipe' => 'Returns a whitespace delimited list of the names of the resulting extensions.',
     ),
     'outputformat' => array(
       'default' => 'table',

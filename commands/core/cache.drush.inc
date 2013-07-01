@@ -19,13 +19,10 @@ function cache_drush_command() {
       'bin' => 'Optional. The cache bin to fetch from.',
     ),
     'required-arguments' => 1,
-    'options' => array(
-      'format' => 'Format to output the object. Use "print_r" for print_r (default), "export" for var_export, and "json" for JSON.',
-    ),
     'callback' => 'drush_cache_command_get',
     'outputformat' => array(
       'default' => 'print-r',
-      'pipe-format' => 'export',
+      'pipe-format' => 'var_export',
     ),
     'aliases' => array('cg'),
   );
@@ -48,6 +45,7 @@ function cache_drush_command() {
     ),
     'required-arguments' => 2,
     'options' => array(
+      // Note that this is not an outputformat option.
       'format' => 'Format to parse the object. Use "string" for string (default), and "json" for JSON.',
       'cache-get' => 'If the object is the result a previous fetch from the cache, only store the value in the "data" property of the object in the cache.',
     ),

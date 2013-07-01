@@ -22,13 +22,8 @@ function watchdog_drush_command() {
     'description' => 'Show available message types and severity levels. A prompt will ask for a choice to show watchdog messages.',
     'drupal dependencies' => array('dblog'),
     'outputformat' => array(
-      'default' => 'export', // table
-      'pipe-format' => 'export',
-      'output-data-type' => 'format-table',
-    ),
-    'outputformat' => array(
       'default' => 'table',
-      'pipe-format' => 'export',
+      'pipe-format' => 'var_export',
       'field-labels' => array('wid' => 'ID', 'type' => 'Type', 'message' => 'Message', 'severity' => 'Severity', 'location' => 'Location', 'hostname' => 'Hostname', 'date' => 'Date', 'username' => 'Username'),
       'fields-default' => array('wid', 'date', 'type', 'severity', 'message'),
       'column-widths' => array('type' => 8, 'severity' => 8),
@@ -62,7 +57,7 @@ function watchdog_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'table',
-      'pipe-format' => 'export',
+      'pipe-format' => 'var_export',
       'field-labels' => array('wid' => 'ID', 'type' => 'Type', 'message' => 'Message', 'severity' => 'Severity', 'location' => 'Location', 'hostname' => 'Hostname', 'date' => 'Date', 'username' => 'Username'),
       'fields-default' => array('wid', 'date', 'type', 'severity', 'message'),
       'column-widths' => array('type' => 8, 'severity' => 8),

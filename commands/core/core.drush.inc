@@ -185,7 +185,7 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('eval', 'ev'),
     'outputformat' => array(
-      'default' => 'export',
+      'default' => 'var_export',
     ),
   );
   $items['php-script'] = array(

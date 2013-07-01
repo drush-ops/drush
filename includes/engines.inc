@@ -276,7 +276,7 @@ function drush_merge_engine_data(&$command) {
           $command['options'][$engine_selection_option]['description'] .= "\n" . dt("All available values are:") . "\n - " . implode("\n - ", $combine_help_data) . "\n";
         }
         else {
-          $command['options'][$engine_selection_option]['description'] .= " " . dt("Values include: ") . implode(', ', array_keys($combine_help_data)) . ". ";
+          $command['options'][$engine_selection_option]['description'] .= " " . dt("Available: ") . implode(', ', array_keys($combine_help_data)) . ". ";
         }
         $command['options'][$engine_selection_option]['description'] .= dt("Default is !default.", array('!default' => $default));
       }

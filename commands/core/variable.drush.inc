@@ -25,11 +25,6 @@ function variable_drush_command() {
       'drush vget site_mail --exact' => 'Show the variable with the exact key "site_mail".',
     ),
     'options' => array(
-      'format' => array(
-        'description' => 'Format to output the object. Use "print_r" for print_r (default), "export" for var_export, and "json" for JSON.',
-        'example-value' => 'export',
-      ),
-      'pipe' => 'A synonym for --format=export. Useful for pasting into code.',
       'exact' => 'Only get the one variable that exactly matches the specified name.',
     ),
     'outputformat' => array(
@@ -37,7 +32,7 @@ function variable_drush_command() {
       'pipe-format' => 'config',
       'variable-name' => 'variables',
       'table-metadata' => array(
-        'format' => 'export',
+        'format' => 'var_export',
       ),
     ),
     'aliases' => array('vget'),

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Output formatter 'export'
+ * Output formatter 'var_export'
  *
  * Note: this class is also used by format 'config'
  *
@@ -45,7 +45,7 @@
  *     'f' => 6,
  *   );
  */
-class drush_outputformat_export extends drush_outputformat {
+class drush_outputformat_var_export extends drush_outputformat {
   function format($input, $metadata) {
     if (isset($metadata['label'])) {
       $variable_name = isset($metadata['variable-name']) ? $metadata['variable-name'] : 'variables';

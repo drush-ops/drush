@@ -7,7 +7,7 @@
  *   The $data parameter is expected to be a nested array of key / value pairs.
  *   The top-level key becomes the variable name, $metadata['variable-name'],
  *   and the key on the inner-level items becomes the array label,
- *   $metadata['label'].  These items are then rendered by the 'export' formatter.
+ *   $metadata['label'].  These items are then rendered by the 'var_export' formatter.
  * @param $metadata
  *   Unused.
  *
@@ -28,7 +28,7 @@
 class drush_outputformat_variables extends drush_outputformat {
   function validate() {
     $metadata = $this->engine_config;
-    $this->sub_engine = drush_load_engine('outputformat', 'export', NULL, NULL, $metadata);
+    $this->sub_engine = drush_load_engine('outputformat', 'var_export', NULL, NULL, $metadata);
     if (!is_object($this->sub_engine)) {
       return FALSE;
     }

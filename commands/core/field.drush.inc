@@ -84,9 +84,6 @@ function field_drush_command() {
     'arguments' => array(
       'type' => 'Recognized values: fields, types. If omitted, a choice list appears.',
     ),
-    'options' => array(
-      'pipe' => 'Return field information table as CSV.',
-    ),
     'examples' => array(
       'field-info types' => 'Show a table which lists all field types and their available widgets',
     ),

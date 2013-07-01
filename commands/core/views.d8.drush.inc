@@ -89,7 +89,7 @@ function views_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'print-r',
-      'pipe-format' => 'export',
+      'pipe-format' => 'var_export',
     ),
     'examples' => array(
       'drush views-execute my_view' => 'Show the result set of the default display for the my_view view.',

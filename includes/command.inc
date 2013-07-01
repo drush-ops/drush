@@ -1111,7 +1111,7 @@ function _drush_command_translate($source) {
  *       an output format that is not machine-parsable.
  *     - 'parsable-filter': function callback that will be used to filter the
  *       command result if the selected output formatter is declared to be
- *       machine-parsable. "export" is an example of an output format that
+ *       machine-parsable. "var_export" is an example of an output format that
  *       is machine-parsable.
  *     - 'output-data-type': An identifier representing the data structure that
  *       the command returns.  @see outputformat_drush_engine_outputformat() for

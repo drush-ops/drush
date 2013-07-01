@@ -32,7 +32,7 @@ function sitealias_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'config',
-      'pipe-format' => 'export',
+      'pipe-format' => 'var_export',
       'variable-name' => 'aliases',
       'hide-empty-fields' => TRUE,
       'private-fields' => 'password',

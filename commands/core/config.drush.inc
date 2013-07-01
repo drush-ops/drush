@@ -45,7 +45,7 @@ function config_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'yaml',
-      'pipe-format' => 'export',
+      'pipe-format' => 'var_export',
     ),
     'aliases' => array('cget'),
     'core' => array('8+'),
@@ -99,7 +99,7 @@ function config_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'list',
-      'pipe-format' => 'export',
+      'pipe-format' => 'var_export',
       'output-data-type' => 'format-list',
     ),
   );

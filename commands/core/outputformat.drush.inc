@@ -48,6 +48,7 @@ function outputformat_drush_engine_type_info() {
     'options' => array(
       'format' => array(
         'description' => 'Select output format to use.',
+        'example-value' => 'json',
       ),
       'fields' => array(
         'description' => 'Fields to output.',
@@ -132,7 +133,6 @@ function outputformat_drush_engine_outputformat() {
   $engines['json'] = array(
     'machine-parsable' => TRUE,
     'description' => 'Javascript Object Notation.',
-    'verbose-only' => TRUE,
     'topic-example' => $common_topic_example,
   );
   $engines['string'] = array(
@@ -150,16 +150,14 @@ function outputformat_drush_engine_outputformat() {
     'verbose-only' => TRUE,
     'topic-example' => $common_topic_example,
   );
-  $engines['export'] = array(
+  $engines['var_export'] = array(
     'machine-parsable' => TRUE,
     'description' => 'An array in executable php format.',
-    'verbose-only' => TRUE,
     'topic-example' => $common_topic_example,
   );
   $engines['yaml'] = array(
     'machine-parsable' => TRUE,
     'description' => 'Yaml output format.',
-    'verbose-only' => TRUE,
     'topic-example' => $common_topic_example,
   );
   $engines['php'] = array(
@@ -171,7 +169,7 @@ function outputformat_drush_engine_outputformat() {
   $engines['config'] = array(
     'machine-parsable' => TRUE,
     'engine-class' => 'list',
-    'list-item-type' => 'export',
+    'list-item-type' => 'var_export',
     'description' => "A configuration file in executable php format. The variable name is \"config\", and the variable keys are taken from the output data array's keys.",
     'metadata' => array(
       'variable-name' => 'config',
@@ -221,7 +219,7 @@ function outputformat_drush_engine_outputformat() {
     'engine-capabilities' => array('format-table'),
     'verbose-only' => TRUE,
     'engine-class' => 'list',
-    'list-item-type' => 'export',
+    'list-item-type' => 'var_export',
     'metadata' => array(
       'label-template' => '!label: !value',
     ),
@@ -235,9 +233,8 @@ function outputformat_drush_engine_outputformat() {
  * Implements hook_drush_command_alter
  */
 function outputformat_drush_command_alter(&$command) {
-  // In --pipe mode, change the default format
-  // to the default pipe format, or to json, if
-  // no default pipe format is given.
+  // In --pipe mode, change the default format to the default pipe format, or
+  // to json, if no default pipe format is given.
   if (drush_get_context('DRUSH_PIPE') && (isset($command['engines']['outputformat']))) {
     $default_format = isset($command['engines']['outputformat']['pipe-format']) ? $command['engines']['outputformat']['pipe-format'] : 'json';
     $command['engines']['outputformat']['default'] = $default_format;
@@ -272,6 +269,7 @@ function outputformat_drush_help_alter(&$command) {
         }
       }
     }
+
     // If the command defines a default pipe format, then
     // add '--pipe   Equivalent to --format=<default>'.
     if (isset($outputformat['pipe-format'])) {
