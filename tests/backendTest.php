@@ -202,14 +202,14 @@ EOD;
     $this->drush('php-eval', array($php), $options);
     $parsed = parse_backend_output($this->getOutput());
     // assert that $parsed has 'x' and 'data'
-    $this->assertEquals(array_diff(array (
+    $this->assertEquals(array (
   'x' => 'y',
   'data' =>
   array (
     'a' => 1,
     'b' => 2,
   ),
-), $parsed['object']), array());
+), $parsed['object']);
   }
 
   /**
