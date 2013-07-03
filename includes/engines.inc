@@ -213,7 +213,7 @@ function drush_merge_engine_data(&$command) {
       }
     }
     // Otherwise, provide a command option to choose between engines and add
-    // the engine options and sub-obtions.
+    // the engine options and sub-options.
     else {
       // Process engines in order. First the default engine, the rest alphabetically.
       $default = drush_find_engine_to_use($config, $engine_info);

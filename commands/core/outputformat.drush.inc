@@ -47,7 +47,7 @@ function outputformat_drush_engine_type_info() {
     'option' => 'format',
     'options' => array(
       'format' => array(
-        'description' => 'Select output format to use.',
+        'description' => 'Select output format.',
         'example-value' => 'json',
       ),
       'fields' => array(
@@ -122,6 +122,7 @@ function outputformat_drush_engine_outputformat() {
   $engines['key-value'] = array(
     'description' => 'A formatted list of key-value pairs.',
     'engine-capabilities' => array('format-single', 'format-list', 'format-table'),
+    'hidden' => TRUE,
   );
   $engines['key-value-list'] = array(
     'engine-class' => 'list',
@@ -129,6 +130,7 @@ function outputformat_drush_engine_outputformat() {
     'description' => 'A list of formatted lists of key-value pairs.',
     'list-field-selection-control' => 1,
     'engine-capabilities' => array('format-table'),
+    'hidden' => TRUE,
   );
   $engines['json'] = array(
     'machine-parsable' => TRUE,
@@ -271,7 +273,7 @@ function outputformat_drush_help_alter(&$command) {
     }
 
     // If the command defines a default pipe format, then
-    // add '--pipe   Equivalent to --format=<default>'.
+    // add '--pipe   Equivalent to --format=<pipe-default>'.
     if (isset($outputformat['pipe-format'])) {
       if (isset($command['options']['pipe'])) {
         $command['options']['pipe'] .= ' ';
