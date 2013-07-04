@@ -563,7 +563,7 @@ function drush_table_column_autowidth($rows, $widths) {
   $auto_widths = $widths;
 
   // First we determine the distribution of row lengths in each column.
-  // This is an array of descending character length keys (i.e. starting at
+  // This is an array of descending character  length keys (i.e. starting at
   // the rightmost character column), with the value indicating the number
   // of rows where that character column is present.
   $col_dist = array();
