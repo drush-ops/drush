@@ -191,9 +191,7 @@ function drush_pm_download() {
       drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'success');
       $request['base_project_path'] = basename($request['project_install_location']);
       $request['full_project_path'] = $request['project_install_location'];
-      if ($request['project_install_location'] == DRUSH_BASE_PATH) {
-        drush_log(dt("Drush successfully updated to version !version.", array('!version' => $release['version'])), 'success');
-      }
+
       // If the version control engine is a proper vcs we also need to remove
       // orphan directories.
       if ($version_control->engine != 'backup') {
@@ -220,6 +218,16 @@ function drush_pm_download() {
     else {
       // We don't `return` here in order to proceed with downloading additional projects.
       drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt("Project !project (!version) could not be downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])));
+    }
+
+    // Notify about this project.
+    if (drush_notify_allowed('pm-download')) {
+      $msg = dt('Project !project (!version) downloaded to !install.', array(
+        '!project' => $name,
+        '!version' => $release['version'],
+        '!install' => $request['project_install_location'],
+      ));
+      drush_notify_send(drush_notify_command_message('pm-download', $msg));
     }
   }
 }
