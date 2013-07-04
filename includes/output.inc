@@ -485,7 +485,7 @@ function drush_hide_empty_fields($input, $fields) {
  *       'transform-columns' - an array of:
  *           'dest-col' => array('from' => 'to'),
  *         Transforms any occurance of 'from' in 'dest-col' to 'to'.
- *       'format-cell' - Drush ouput format name to use to format
+ *       'format-cell' - Drush output format name to use to format
  *         any cell that is an array.
  *       'process-cell' - php function name to use to process
  *         any cell that is an array.
