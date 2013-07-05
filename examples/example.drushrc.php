@@ -157,6 +157,9 @@
 # $options['result-file'] = TRUE;
 # $options['result-file'] = '/path/to/backup/dir/@DATABASE_@DATE.sql';
 
+// Notify user via Notification Center (OSX) or libnotify (Linux) when command
+// takes more than 30 seconds. See global options for more configuration.
+# $options['notify'] = 30;
 
 // Enable verbose mode.
 # $options['v'] = 1;
