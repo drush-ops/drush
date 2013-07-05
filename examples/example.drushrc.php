@@ -296,21 +296,8 @@
 # $command_specific['site-install'] = array('account-name' => 'alice', 'account-pass' => 'secret');
 
 /**
- * List of Drush commands or aliases that should override built-in shell
- * functions and commands; otherwise, built-ins override Drush commands. Default
- * is 'help,dd,sa'.  Warning: bad things can happen if you put the wrong thing
- * here (e.g. eval, grep), so be cautious.  If a Drush command overrides a
- * built-in command (e.g. bash help), then you can use the `builtin` operator
- * to run the built-in version (e.g. `builtin help` to show bash help instead of
- * Drush help.) If a Drush command overrides a shell command (e.g. grep), then
- * you can use the regular shell command by typing in the full path to the
- * command (e.g. /bin/grep).
- */
-# $command_specific['core-cli'] = array('override' => 'help,dd,sa');
-
-/**
  * Load a drushrc file from the 'drush' folder at the root of the current
- * git repository.  Example script below by grayside.  Customize as desired.
+ * git repository.  Example script below by Grayside.  Customize as desired.
  * @see: http://grayside.org/node/93.
  */
 #exec('git rev-parse --show-toplevel 2> /dev/null', $output);
