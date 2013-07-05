@@ -248,7 +248,7 @@
  * non-Drupal tables used by some other application or during a migration for
  * example.  You may add new tables to the existing array or add a new element.
  */
-# $options['skip-tables']['common'] = array('migration_data1', 'migration_data2');
+# $options['skip-tables']['common'] = array('migration_*');
 
 /**
  * Override specific entries in Drupal's variable/config system or settings.php
