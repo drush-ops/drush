@@ -46,12 +46,6 @@
  * even if the Drush command being run does not bootstrap to the Drupal Site
  * phase.
  *
- * IMPORTANT NOTE for users upgrading from Drush 4:
- *
- * Drush 5 no longer looks for aliases, configs or command files in the Drupal
- * root folder, so if you previously used drushrc.php files in the Drupal root
- * you will need to move the file to /drush or /sites/all/drush/drushrc.php.
- *
  * The Drush commands 'rsync' and 'sql-sync' are special cases.  These commands
  * will load the configuration file for the site specified by the source
  * parameter; however, they do not load the configuration file for the site
@@ -95,27 +89,6 @@
 // --package-handler=git_drupalorg; this can be faster for repeated
 // downloads, but can be dangerous. See: http://randyfay.com/node/119
 # $options['cache'] = TRUE;
-
-/**
- * Historical (deprecated) aliases:
- *
- * The following aliases were supported in Drush 4, but removed in Drush 5.  To
- * keep using them, uncomment the following lines or copy them to your drushrc
- * file.
- */
-# $options['shell-aliases']['script'] = 'php-script';
-# $options['shell-aliases']['sync'] = 'core-rsync';
-# $options['shell-aliases']['installsite'] = 'site-install';
-# $options['shell-aliases']['is'] = 'site-install';
-# $options['shell-aliases']['wd'] = 'watchdog-delete';
-# $options['shell-aliases']['enable'] = 'pm-enable';
-# $options['shell-aliases']['disable'] = 'pm-disable';
-# $options['shell-aliases']['uninstall'] = 'pm-uninstall';
-# $options['shell-aliases']['sm'] = 'pm-list';
-# $options['shell-aliases']['refresh'] = 'pm-refresh';
-# $options['shell-aliases']['updatecode'] = 'pm-updatecode';
-# $options['shell-aliases']['update'] = 'pm-update';
-# $options['shell-aliases']['download'] = 'pm-download';
 
 // Load a drushrc.php configuration file from the current working directory.
 # $options['config'][] = '.';
