@@ -72,9 +72,7 @@
 #
 # These standard commands behave exactly the same as they always
 # do, unless a drush site specification such as @dev or @live:%files
-# is used in one of the arguments.  If you do not want to override
-# these standard commands, they may be easily removed or commented out
-# in your copy of this file.
+# is used in one of the arguments.
 
 # Aliases for common drush commands that work in a global context.
 alias dr='drush'
@@ -279,7 +277,6 @@ function dssh() {
 # Drush checks the current PHP version to ensure compatibility, and fails with
 # an error if less than the supported minimum (currently 5.3.3). If you would
 # like to try to run Drush on a lower version of PHP, you can un-comment the
-# line below to skip this check. Note, however, that this is un-supported, and
-# we recommend against it. USE AT YOUR OWN RISK.
+# line below to skip this check. Note, however, that this is un-supported.
 
 # DRUSH_NO_MIN_PHP=TRUE
