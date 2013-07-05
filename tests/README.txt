@@ -1,12 +1,12 @@
-Drush's test suite based on PHPUnit (http://www.phpunit.de/). In order to maintain
+Drush's test suite isbased on PHPUnit (http://www.phpunit.de/). In order to maintain
 high quality, our tests are run on every commit - https://travis-ci.org/drush-ops/drush
 
 Usage
 --------
 - Install PHPUnit [*]
 - Review the configuration settings in phpunit.xml.dist. If customization is needed,
-  copy and rename to phpunit.xml and edit away.
-- From the /tests subdirectory, run `phpunit .`
+  copy to phpunit.xml and edit away.
+- Run unit tests [*]
 
 Advanced usage
 ---------
@@ -29,28 +29,16 @@ In order to speed up test runs, Unish (the drush testing class) caches built Dru
 and restores them as requested by tests. Once in while, you might need to clear this cache
 by deleting the <tmp>/drush-cache directory.
 
+[*] Run unit tests:
+- From the /tests subdirectory, run phpunit
+  $ cd tests
+  $ php ../vendor/phpunit/phpunit/phpunit.php .
+
 [*] Install PHPUnit:
 ---------------
+- Follow the installation instruction from
+  - http://getcomposer.org/download
+- now run composer depending on your installation from the drush root directory
+  - php composer.phar install --dev
+  - composer install --dev
 
-Drush requires PHPUnit 3.5 or later; installing with PEAR is easiest.
- 
-On Linux/OSX:
----------
-
-  sudo apt-get install php5-curl php-pear
-  sudo pear upgrade --force PEAR
-  sudo pear channel-discover pear.phpunit.de
-  sudo pear channel-discover components.ez.no
-  sudo pear channel-discover pear.symfony.com
-  sudo pear install --alldeps phpunit/PHPUnit
-
-On Windows:
------------
-
-Download and save from go-pear.phar http://pear.php.net/go-pear.phar
-
-  php -q go-pear.phar
-  pear channel-discover pear.phpunit.de
-  pear channel-discover components.ez.no
-  pear channel-discover pear.symfony-project.com
-  pear install --alldeps phpunit/PHPUnit
