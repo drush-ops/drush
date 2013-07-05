@@ -1,5 +1,5 @@
-Drush's test suite isbased on PHPUnit (http://www.phpunit.de/). In order to maintain
-high quality, our tests are run on every commit - https://travis-ci.org/drush-ops/drush
+Drush's test suite is based on PHPUnit (http://www.phpunit.de/). In order to maintain
+high quality, our tests are run on every push - https://travis-ci.org/drush-ops/drush
 
 Usage
 --------
