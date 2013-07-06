@@ -94,7 +94,7 @@ class completeCase extends Drush_CommandTestCase {
     // "aaaaaaaard").
     $this->verifyComplete('@dev aaaaaaaard', 'aaaaaaaard', 'aaaaaaaard-zebra');
     // Global option alone.
-    $this->verifyComplete('--n', '--no', '--nocolor');
+    $this->verifyComplete('--n', '--no', '--notify-audio');
     // Site alias + command.
     $this->verifyComplete('@dev aaaaaaaa', 'aaaaaaaard', 'aaaaaaaard-zebra');
     // Site alias + command, should allow no further site aliases or commands.
