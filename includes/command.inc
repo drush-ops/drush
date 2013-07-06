@@ -68,7 +68,7 @@ function drush_invoke($command, $arguments = array()) {
  *  The arguments to pass to the command.
  * @param array $commandline_options
  *  The options (e.g. --select) to provide to the command.
- * @param $backend_options
+ * @param mixed $backend_options
  *   TRUE - integrate errors
  *   FALSE - do not integrate errors
  *   array - @see drush_backend_invoke_concurrent

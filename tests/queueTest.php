@@ -17,7 +17,7 @@ class QueueCase extends Drush_CommandTestCase {
     );
 
     // Enable aggregator since it declares a queue.
-    $this->drush('en', array('aggregator'), $options);
+    $this->drush('pm-enable', array('aggregator'), $options);
 
     $this->drush('queue-list', array(), $options);
     $output = $this->getOutput();

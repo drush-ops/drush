@@ -16,7 +16,7 @@
 */
 
 class backendCase extends Drush_CommandTestCase {
-  // Test to insure that calling drush_invoke_process with 'dispatch-using-alias'
+  // Test to insure that calling drush_invoke_process() with 'dispatch-using-alias'
   // will build a command string that uses the alias instead of --root and --uri.
   function testDispatchUsingAlias() {
     $aliasPath = UNISH_SANDBOX . '/aliases';
@@ -24,7 +24,7 @@ class backendCase extends Drush_CommandTestCase {
     $aliasFile = $aliasPath . '/foo.aliases.drushrc.php';
     $aliasContents = <<<EOD
   <?php
-  // Writtne by Unish. This file is safe to delete.
+  // Written by Unish. This file is safe to delete.
   \$aliases['dev'] = array('root' => '/fake/path/to/root', 'uri' => 'default');
 EOD;
     file_put_contents($aliasFile, $aliasContents);
@@ -255,7 +255,7 @@ class backendUnitCase extends Drush_UnitTestCase {
 
   /**
    * Covers the following target responsibilities.
-   *   - Insures that drush_invoke_process called with fork backend set is able
+   *   - Insures that drush_invoke_process() called with fork backend set is able
    *     to invoke a non-blocking process.
    */
   function testBackendFork() {

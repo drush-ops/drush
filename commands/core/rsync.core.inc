@@ -19,7 +19,7 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
   _drush_sitealias_preflight_path($source);
   // After preflight, evaluate file paths.  We evaluate destination paths first, because
   // there is a first-one-wins policy with --exclude-paths, and we want --target-command-specific
-  // to take precidence over --source-command-specific.
+  // to take precedence over --source-command-specific.
   $destination_settings = drush_sitealias_evaluate_path($destination, $additional_options, FALSE, "rsync", 'target-');
   $source_settings = drush_sitealias_evaluate_path($source, $additional_options, FALSE, "rsync", 'source-');
   $source_path = $source_settings['evaluated-path'];
