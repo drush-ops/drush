@@ -54,13 +54,17 @@ class quickDrupalCase extends Drush_CommandTestCase {
   }
 
   function getQuickDrupalTestParameters($key) {
-    static $tests = array(
+    $tests = array(
       'devel' => array(
         'name'     => 'Test quick-drupal with a makefile that downloads devel',
         'makefile' => 'qd-devel.make',
         'expected-modules' => 'devel',
         'args' => array(),
-        'options'  => array(),
+        'options'  => array(
+          'skip' => NULL, // for speed up enable of devel module.
+          'browser' => 0,
+          'profile' => 'testing',
+        ),
       ),
     );
     return $tests[$key];
