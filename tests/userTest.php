@@ -92,6 +92,7 @@ class userCase extends Drush_CommandTestCase {
     }
     $this->assertEquals($browser, TRUE, 'Correct browser opened at correct URL');
     // Check specific user and path argument.
+    $uid = 2;
     $this->drush('user-login', array($name, 'node/add'), $user_login_options);
     $output = $this->getOutput();
     $url = parse_url($output);
