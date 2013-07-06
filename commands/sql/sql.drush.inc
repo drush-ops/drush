@@ -589,6 +589,7 @@ function drush_sql_build_dump_command($table_selection, $db_spec, $file = FALSE)
             $schemaonlies[] = "--table=$table";
           }
           $exec .= " && pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
+          $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
           if ($file) {
             $exec .= " >> $file";
           }
