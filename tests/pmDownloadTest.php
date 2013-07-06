@@ -22,7 +22,7 @@ class pmDownloadCase extends Drush_CommandTestCase {
     $devel_options = array(
       'cache' => NULL,
       'skip' => NULL, // No FirePHP
-      'invoke' => NULL, // Invoke from script: do not verify options
+      'strict' => 0, // Invoke from script: do not verify options
     );
 
     // Default to Drupal sitewide directory.

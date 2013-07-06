@@ -121,6 +121,10 @@ function core_drush_command() {
     'options' => array(
       'show-passwords' => 'Show database password.',
       'full' => 'Show all file paths and drush aliases in the report, even if there are a lot.',
+      'project' => array(
+        'description' => 'One or more projects that should be added to the path list',
+        'example-value' => 'foo,bar',
+      ),
     ),
     'outputformat' => array(
       'default' => 'key-value',
@@ -877,6 +881,7 @@ function drush_core_quick_drupal() {
   $args = func_get_args();
   $name = drush_get_option('use-name');
   drush_set_option('backend', TRUE);
+  drush_set_option('strict', FALSE); // We fail option validation because do so much internal drush_invoke().
   $makefile = drush_get_option('makefile');
   if (drush_get_option('use-existing', FALSE)) {
     $root = drush_get_option('root', FALSE);

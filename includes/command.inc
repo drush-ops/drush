@@ -509,7 +509,7 @@ function drush_handle_command_output($command, $structured_output) {
 /**
  * Fail with an error if the user specified options on the
  * command line that are not documented in the current command
- * record.
+ * record. Also verify that required options are present.
  */
 function _drush_verify_cli_options($command) {
   // Start out with just the options in the current command record.
@@ -517,7 +517,7 @@ function _drush_verify_cli_options($command) {
   // Skip all tests if the command is marked to allow anything.
   // Also skip backend commands, which may have options on the commandline
   // that were inherited from the calling command.
-  if (($command['allow-additional-options'] === TRUE) || (drush_get_option(array('backend', 'invoke'), FALSE))) {
+  if (($command['allow-additional-options'] === TRUE)) {
     return TRUE;
   }
   // If 'allow-additional-options' contains a list of command names,
@@ -541,8 +541,8 @@ function _drush_verify_cli_options($command) {
   $disallowed_options = array_diff($cli_options, $allowed_options);
   if (!empty($disallowed_options)) {
     $unknown = count($disallowed_options) > 1 ? dt('Unknown options') : dt('Unknown option');
-    $msg = dt("@unknown: --@options.  See `drush help @command` for available options. To suppress this error, add the option --strict=0.", array('@unknown' => $unknown, '@options' => implode(', --', $disallowed_options), '@command' => $command['command']));
     if (drush_get_option('strict', TRUE)) {
+      $msg = dt("@unknown: --@options.  See `drush help @command` for available options. To suppress this error, add the option --strict=0.", array('@unknown' => $unknown, '@options' => implode(', --', $disallowed_options), '@command' => $command['command']));
       return drush_set_error('DRUSH_UNKNOWN_OPTION', $msg);
     }
   }

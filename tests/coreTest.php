@@ -22,12 +22,11 @@ class coreCase extends Drush_CommandTestCase {
       'include-conf' => NULL,
       'include-vcs' => NULL,
       'yes' => NULL,
-      'invoke' => NULL, // invoke from script: do not verify options
     );
     $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
     $output = $this->getOutput();
     $level = $this->log_level();
-    $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress --yes --invoke %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz --yes --invoke %s /tmp);";
+    $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress --yes %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz --yes %s /tmp);";
     $expected = sprintf($pattern, UNISH_SANDBOX . "/web/sites/$site/files");
     $this->assertEquals($expected, $output);
   }
@@ -47,7 +46,7 @@ class coreCase extends Drush_CommandTestCase {
       'include-conf' => NULL,
       'include-vcs' => NULL,
       'yes' => NULL,
-      'invoke' => NULL, // invoke from script: do not verify options
+      'strict' => 0, // invoke from script: do not verify options
     );
     $php = '$a=drush_sitealias_get_record("@' . $site . '"); drush_sitealias_resolve_path_references($a, "%files"); print_r($a["path-aliases"]["%files"]);';
     $this->drush('ev', array($php), $options);
@@ -91,11 +90,10 @@ drush_invoke("version", $arg);
     $options = array(
       'root' => $root,
       'uri' => key($this->sites),
-      'verbose' => NULL,
-      'skip' => NULL, // No FirePHP
       'yes' => NULL,
+      'skip' => NULL,
       'cache' => NULL,
-      'invoke' => NULL, // invoke from script: do not verify options
+      'strict' => 0, // invoke from script: do not verify options
     );
     $this->drush('pm-download', array('devel'), $options);
     $this->drush('pm-enable', array('devel', 'menu'), $options);
@@ -121,7 +119,7 @@ drush_invoke("version", $arg);
       'uri' => key($this->sites),
       'pipe' => NULL,
       'ignore' => 'cron,http requests,update_core', // no network access when running in tests, so ignore these
-      'invoke' => NULL, // invoke from script: do not verify options
+      'strict' => 0, // invoke from script: do not verify options
     );
     // Verify that there are no severity 2 items in the status report
     $this->drush('core-requirements', array(), $options + array('severity' => '2'));

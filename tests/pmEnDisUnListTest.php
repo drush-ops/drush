@@ -19,7 +19,7 @@ class EnDisUnListCase extends Drush_CommandTestCase {
       'uri' => key($sites),
       'cache' => NULL,
       'skip' => NULL, // No FirePHP
-      'invoke' => NULL, // Don't validate options
+      'strict' => 0, // Don't validate options
     );
     $options = $options_no_pipe + array(
       'pipe' => NULL,

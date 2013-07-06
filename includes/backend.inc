@@ -907,9 +907,6 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
   if (!empty($backend_options['backend']) && empty($backend_options['interactive']) && empty($backend_options['fork'])) {
     $drush_global_options['backend'] = '2';
   }
-  if (!empty($backend_options['interactive'])) {
-    $drush_global_options['invoke'] = TRUE;
-  }
   foreach ($command_options as $key => $value) {
     $global = array_key_exists($key, $global_option_list);
     $propagate = TRUE;
