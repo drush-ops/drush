@@ -84,6 +84,7 @@ class commandCase extends Drush_CommandTestCase {
     $options = array(
       'root' => $root,
       'uri' => $uri,
+      'cache' => NULL,
     );
     $this->drush('pm-download', array('devel'), $options);
     $options += array(
