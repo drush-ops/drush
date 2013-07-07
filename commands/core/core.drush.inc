@@ -103,6 +103,10 @@ function core_drush_command() {
     'options' => array(
       'show-passwords' => 'Show database password.',
       'full' => 'Show all drush aliases in the report, even if there are a lot.',
+      'project' => array(
+        'description' => 'One or more projects that should be added to the path list',
+        'example-value' => 'foo,bar',
+      ),
     ),
     'topics' => array('docs-readme'),
   );
