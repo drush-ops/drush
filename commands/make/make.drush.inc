@@ -528,6 +528,14 @@ function make_move_build($build_path) {
     $ret = drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . '__build__', $tmp_path . DIRECTORY_SEPARATOR . basename($build_path), TRUE);
     $ret = $ret && drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . basename($build_path), $build_path);
   }
+
+  // Copying to final destination resets write permissions. Re-apply.
+  if (drush_get_option('prepare-install')) {
+    $default = $build_path . '/sites/default';
+    chmod($default . '/settings.php', 0666);
+    chmod($default . '/files', 0777);
+  }
+
   if (!$ret) {
     drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place"));
   }
