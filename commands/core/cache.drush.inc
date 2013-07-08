@@ -219,7 +219,7 @@ function drush_cache_clear_theme_registry() {
     drupal_theme_rebuild();
   }
   else {
-    drush_db_delete('cache', 'cid LIKE :theme_registry', array(':theme_registry' => 'theme_registry%'));
+    cache_clear_all('theme_registry', 'cache', TRUE);
   }
 }
 
