@@ -141,6 +141,7 @@ function drush_backend_output() {
   else {
     // Strip out backend commands.
     $packet_regex = strtr(sprintf(DRUSH_BACKEND_PACKET_PATTERN, "([^\0]*)"), array("\0" => "\\0"));
+    $packet_regex = str_replace("\n", "", $packet_regex);
     $data['output'] = preg_replace("/$packet_regex/s", '', drush_backend_output_collect(NULL));
   }
 
@@ -194,6 +195,7 @@ function drush_backend_output_collect($string) {
  */
 function drush_backend_output_discard($string) {
   $packet_regex = strtr(sprintf(DRUSH_BACKEND_PACKET_PATTERN, "([^\0]*)"), array("\0" => "\\0"));
+  $packet_regex = str_replace("\n", "", $packet_regex);
   if (preg_match_all("/$packet_regex/s", $string, $matches)) {
     return implode('', $matches[0]);
   }
@@ -530,6 +532,7 @@ function _drush_backend_print_output($output_string, $backend_options) {
 function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
   $remainder = '';
   $packet_regex = strtr(sprintf(DRUSH_BACKEND_PACKET_PATTERN, "([^\0]*)"), array("\0" => "\\0"));
+  $packet_regex = str_replace("\n", "", $packet_regex);
   if (preg_match_all("/$packet_regex/s", $string, $match, PREG_PATTERN_ORDER)) {
     drush_set_context('DRUSH_RECEIVED_BACKEND_PACKETS', TRUE);
     foreach ($match[1] as $packet_data) {
@@ -549,7 +552,6 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
         drush_log(dt("String is: @str", array('@str' => $packet_data), 'debug'));
       }
     }
-
     $string = preg_replace("/$packet_regex/s", '', $string);
   }
   // Check to see if there is potentially a partial packet remaining.
