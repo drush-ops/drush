@@ -34,6 +34,7 @@ function pm_update_filter(&$project) {
   return $status;
 }
 
+// @todo This moved to state() in D8.
 function pm_update_last_check() {
   return variable_get('update_last_check', 0);
 }

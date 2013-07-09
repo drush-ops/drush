@@ -46,7 +46,7 @@ function drush_pm_updatestatus() {
         }
       }
     }
-    // Aditionally if the extension name is distinct to the project name and
+    // Additionally if the extension name is distinct to the project name and
     // the user asked to update the extension, fix the request.
     elseif ((isset($requests[$name])) && ($extension->name != $extension->info['project'])) {
       $requests[$extension->info['project']] = $requests[$name];
@@ -77,7 +77,7 @@ function drush_pm_updatestatus() {
         unset($requests[$name]);
       }
       // At this point we are unable to find matching installed project.
-      // It does not exist at all or it is mispelled,...
+      // It does not exist at all or it is misspelled,...
       else {
         $update_info[$name] = array(
           'name' => $name,
@@ -88,6 +88,7 @@ function drush_pm_updatestatus() {
       }
     }
   }
+
   // If specific versions were requested, match the requested release.
   foreach ($requests as $name => $request) {
     if (!empty($request['version'])) {
@@ -108,7 +109,7 @@ function drush_pm_updatestatus() {
   // Process locks specified on the command line.
   $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
-  // Build project updatable messages, set candidate verion and mark
+  // Build project updatable messages, set candidate version and mark
   // 'updatable' in the project.
   foreach ($update_info as $key => $project) {
     switch($project['status']) {
@@ -132,7 +133,7 @@ function drush_pm_updatestatus() {
         $status = dt('Project has no enabled extensions and can\'t be updated');
         break;
       default:
-        // This can set $project['updateable'] and $project['candidate_verison']
+        // This can set $project['updateable'] and $project['candidate_version']
         $status = pm_update_filter($project);
         break;
     }
@@ -150,6 +151,13 @@ function drush_pm_updatestatus() {
     $update_info[$key]['status_msg'] = $status;
     if (isset($project['updateable'])) {
       $update_info[$key]['updateable'] = $project['updateable'];
+    }
+  }
+
+  // Include only pending security projects if specified.
+  foreach ($update_info as $key => $project) {
+    if (drush_get_option('security-only') && ($project['status'] != UPDATE_NOT_SECURE)) {
+      unset($update_info[$key]);
     }
   }
 
