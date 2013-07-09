@@ -451,7 +451,7 @@ function drush_user_login($user = NULL, $path = NULL) {
   }
 
   if ($redispatch) {
-    $return = drush_invoke_process($site_record, 'user-login', $args, drush_redispatch_get_options());
+    $return = drush_invoke_process($site_record, 'user-login', $args, drush_redispatch_get_options(), array('integrate' => FALSE));
     if ($return['error_status']) {
       return drush_set_error('Unable to execute user login.');
     }
