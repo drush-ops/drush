@@ -332,8 +332,26 @@ function drush_sql_create() {
   return _drush_sql_create($db_spec);
 }
 
+/**
+ * Generate CREATE DATABASE sql plus additonal preparations.
+ *
+ * NOTE: sqlite needs a correct path for creating it's database file.
+ *
+ * @param type $db_spec
+ * @return type
+ */
 function _drush_sql_create($db_spec) {
     $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
+    if ($db_spec['driver'] == 'sqlite') {
+      // Make sure sqlite can create file
+      $file = $db_spec['database'];
+      $path = dirname($file);
+      drush_log("SQLITE: creating '$path' for creating '$file'", 'debug');
+      drush_mkdir($path);
+      if (!file_exists($path)) {
+        drush_log("SQLITE: Cannot create $path", 'error');
+      }
+    }
     // Get credentials to connect to the server, but not the database which we
     // are about to DROP. @see _drush_sql_get_credentials().
     $create_db_spec = $db_spec;
@@ -1369,7 +1387,8 @@ function drush_sql_su($db_spec, $site_alias_record = NULL) {
  */
 function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
   $sql = array();
-  switch (_drush_sql_get_scheme($db_spec)) {
+  $schema = _drush_sql_get_scheme($db_spec);
+  switch ($schema) {
     case 'mysql':
       $dbname = $quoted ? '`' . $db_spec['database'] . '`' : $db_spec['database'];
       $sql[] = sprintf('DROP DATABASE IF EXISTS %s;', $dbname);
@@ -1383,6 +1402,11 @@ function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
       $sql[] = sprintf('drop database if exists %s;', $dbname);
       $sql[] = sprintf("create database %s ENCODING 'UTF8';", $dbname);
       break;
+    case 'sqlite':
+      $sql[] = '';
+      break;
+    default:
+      drush_log("Unable to generate CREATE DATABASE sql for $schema", 'error');
   }
   return implode(' ', $sql);
 }
