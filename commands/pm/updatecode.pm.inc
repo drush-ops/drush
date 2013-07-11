@@ -10,12 +10,19 @@
  * just to check on. In this case, say at the confirmation prompt.
  */
 function drush_pm_updatecode() {
+  // In --pipe mode, just run pm-updatestatus and exit.
+  if (drush_get_context('DRUSH_PIPE')) {
+    drush_set_option('strict', 0);
+    return drush_invoke('pm-updatestatus');
+  }
   // We don't provide for other options here, so we supply an explicit path.
   drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
   // Get specific requests.
   $requests = pm_parse_arguments(func_get_args(), FALSE);
 
+  // Print report of modules to update, and record
+  // result of that function in $update_info.
   $updatestatus_options = array();
   foreach (array('lock', 'unlock', 'lock-message', 'security-only') as $option) {
     $value = drush_get_option($option, FALSE);
@@ -27,22 +34,14 @@ function drush_pm_updatecode() {
   if (!is_array($values) || $values['error_status']) {
     return FALSE;
   }
-  $update_info = $values['object'];
-
-  $updateable = array();
-  // Remove projects that are not updateable.
-  foreach ($update_info as $key => $project) {
-    if (!empty($project['updateable'])) {
-      $updateable[$key] = $project;
-    }
-  }
+  $updateable = $values['object'];
 
   $tmpfile = drush_tempnam('pm-updatecode.');
 
   $last = pm_update_last_check();
   drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
   drush_print();
-  drush_print(dt("Update status information on enabled Drupal projects:"));
+  drush_print(dt("Update status information on all enabled Drupal projects:"));
   // Cache the output of drush_print_table in $tmpfile so that we can
   // include it in the paginated output later.
   $tmphandle = fopen($tmpfile, 'a');
@@ -71,6 +70,7 @@ function drush_pm_updatecode() {
   $core_update_available = FALSE;
   if (isset($updateable['drupal'])) {
     $drupal_project = $updateable['drupal'];
+    unset($update_info['drupal']);
     unset($updateable['drupal']);
 
     // At present we need to update drupal core after non-core projects

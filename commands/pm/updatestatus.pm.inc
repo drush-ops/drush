@@ -154,31 +154,29 @@ function drush_pm_updatestatus() {
     }
   }
 
-  // Include only pending security projects if specified.
-  foreach ($update_info as $key => $project) {
-    if (drush_get_option('security-only') && ($project['status'] != UPDATE_NOT_SECURE)) {
-      unset($update_info[$key]);
-    }
-  }
+  // Only list projects that have updates available. Use pm-list if you want more info.
+  $updateable = pm_project_filter($update_info, drush_get_option('security-only'));
+  return $updateable;
+}
 
-  // When the output is a simple list, Drush's output formatting
-  // system will automatically reduce the provided table to just
-  // the array keys of the row.  Showing the names of all available
-  // projects would not make sense, so we remove the items from the
-  // list that do not need to be updated, making the result a list
-  // of the projects that need updating.  This is consistent with
-  // how Drush has always worked with pm-updatecode in --pipe mode.
-  // (n.b. --pipe for pm-updatestatus returns data in a 'list')
-  $format = drush_get_outputformat();
-  if ($format->formatter_is_simple_list()) {
-    foreach ($update_info as $key => $project) {
-      unset($project['releases']);
-      if (empty($project['updateable'])) {
-        unset($update_info[$key]);
+/**
+ * Return an array of updateable projects and fill $rows.
+ *
+ * Array of updateable projects is obtained from calculated project update
+ * status and $security_only flag.
+ */
+function pm_project_filter(&$update_info, $security_only) {
+  $updateable = array();
+  foreach ($update_info as $key => $project) {
+    if (!empty($project['updateable'])) {
+      $updateable[$key] = $project;
+      // Find only security updates
+      if ($security_only && ($project['status'] != UPDATE_NOT_SECURE)) {
+        unset($updateable[$key]);
       }
     }
   }
-  return $update_info;
+  return $updateable;
 }
 
 /**
