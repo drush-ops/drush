@@ -40,13 +40,6 @@ function drush_pm_updatecode() {
 
   $last = pm_update_last_check();
   drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
-  drush_print();
-  drush_print(dt("Update status information on all enabled Drupal projects:"));
-  // Cache the output of drush_print_table in $tmpfile so that we can
-  // include it in the paginated output later.
-  $tmphandle = fopen($tmpfile, 'a');
-  drush_print($values['output'], 0, $tmphandle);
-  fclose($tmphandle);
 
   // Prevent update of core if --no-core was specified.
   if (isset($updateable['drupal']) && drush_get_option('no-core', FALSE)) {
@@ -70,7 +63,6 @@ function drush_pm_updatecode() {
   $core_update_available = FALSE;
   if (isset($updateable['drupal'])) {
     $drupal_project = $updateable['drupal'];
-    unset($update_info['drupal']);
     unset($updateable['drupal']);
 
     // At present we need to update drupal core after non-core projects
@@ -88,7 +80,7 @@ function drush_pm_updatecode() {
       else {
         drush_print(dt("NOTE: A code update for the Drupal core is available."));
       }
-      drush_print(dt("Drupal core will be updated after all of the non-core modules are updated.\n"));
+      drush_print(dt("Drupal core will be updated after all of the non-core projects are updated.\n"));
     }
   }
 
