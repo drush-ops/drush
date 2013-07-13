@@ -329,12 +329,19 @@ function _drush_invoke_hooks($command, $args) {
     // to a higher phase will do this).
     $list = drush_commandfile_list();
 
-    // Make a list of function callbacks to call.  Make sure
-    // that the primary callback for this command (the one
-    // from the commandfile that defines this command) always
-    // appears first in the list
+    // Make a list of function callbacks to call.  If
+    // there is a 'primary function' mentioned, make sure
+    // that it appears first in the list, but only if
+    // we are running the main hook ("$hook").  After that,
+    // make sure that any callback associated with this commandfile
+    // executes before any other hooks defined in any other
+    // commandfiles.
+    $callback_list = array();
+    if (($var_hook == $hook) && ($command['primary function'])) {
+      $callback_list[$command['primary function']] = $list[$command['commandfile']];
+    }
     $primary_func = ($command['commandfile'] . "_" == substr($var_hook . "_",0,strlen($command['commandfile']) + 1)) ? sprintf("drush_%s", $var_hook) : sprintf("drush_%s_%s", $command['commandfile'], $var_hook);
-    $callback_list = array($primary_func => $list[$command['commandfile']]);
+    $callback_list[$primary_func] = $list[$command['commandfile']];
     // We've got the callback for the primary function in the
     // callback list; now add all of the other callback functions.
     unset($list[$command['commandfile']]);
@@ -349,7 +356,9 @@ function _drush_invoke_hooks($command, $args) {
         $all_available_hooks[] = $func . ' [* Defined in ' . $filename . ']';
         $available_rollbacks[] = $func . '_rollback';
         $completed[] = $func;
+        drush_log(dt("Calling hook !hook", array('!hook' => $func)), 'debug');
         $result = call_user_func_array($func, $args);
+        drush_log(dt("Returned from hook !hook", array('!hook' => $func)), 'debug');
         // If there is an error, break out of the foreach
         // $variations and foreach $callback_list
         if (drush_get_error() || ($result === FALSE)) {
@@ -954,20 +963,15 @@ function drush_get_commands() {
         // Translate command.
         drush_command_translate($command);
 
-        // If command callback function name begins with "drush_$commandfile_",
-        // then fix up the command entry so that drush_invoke will be
-        // called by way of drush_command.  This will cause all
-        // of the applicable hook functions to be called for the
-        // command when it is invoked.  If the callback function does
-        // -not- begin with its commandfile name, then it will be
-        // called directly by drush_dispatch, and no hook functions
-        // will be called (e.g. you cannot hook drush_print_file).
+        // If the command callback is not 'drush_command', then
+        // copy the callback function to an alternate element
+        // of the command array that will be called when Drush
+        // calls the command function hooks.  Then, set the
+        // callback to drush_command so that the function hooks
+        // will be called.
         if ($command['callback'] != 'drush_command') {
-          $required_command_prefix = 'drush_' . $commandfile . '_';
-          if ((substr($command['callback'], 0, strlen($required_command_prefix)) == $required_command_prefix)) {
-            $command['command-hook'] = substr($command['callback'], strlen('drush_'));
-            $command['callback'] = 'drush_command';
-          }
+          $command['primary function'] = $command['callback'];
+          $command['callback'] = 'drush_command';
         }
 
         $commands[$key] = $command;
@@ -996,6 +1000,7 @@ function drush_command_defaults($key, $commandfile, $path) {
     'path' => dirname($path),
     'engines' => array(), // Helpful for drush_show_help().
     'callback' => 'drush_command',
+    'primary function' => FALSE,
     'description' => NULL,
     'sections' => array(
       'examples' => 'Examples',
@@ -1064,6 +1069,12 @@ function _drush_command_translate($source) {
  * drush_parse_command returns a normalized command descriptor, which
  * is an associative array. Some of its entries are:
  * - callback arguments: an array of arguments to pass to the calback.
+ * - callback: the function to run. Usually, this is 'drush_command', which
+ *   will determine the primary hook for the function automatically.  Only
+ *   specify a callback function if you need many commands to call the same
+ *   function (e.g. drush_print_file).
+ * - primary function: Drush will copy the 'callback' parameter here if
+ *   necessary.  This value should not be set explicitly; use 'callback' instead.
  * - description: description of the command.
  * - arguments: an array of arguments that are understood by the command. for help texts.
  * - required-arguments: The minimum number of arguments that are required, or TRUE if all are required.
@@ -1357,7 +1368,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
         $searchpath[] = "profiles";
         $searchpath[] = "sites/all/profiles";
       }
-      
+
       // TODO: Treat themes like modules and stop unconditionally searching here.
       $searchpath[] = 'sites/all/themes';
       $searchpath[] = conf_path() . '/themes';

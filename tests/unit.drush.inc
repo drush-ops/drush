@@ -17,11 +17,12 @@ function unit_drush_command() {
   $items['unit-eval'] = array(
     'description' => 'Works like php-eval. Used for testing $command_specific context.',
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
-    'callback' => 'drush_core_php_eval', // Note - no invoke hooks.
+    'callback' => 'drush_core_php_eval',
   );
   $items['unit-invoke'] = array(
     'description' => 'Return an array indicating which invoke hooks got called.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'callback' => 'drush_unit_invoke_primary',
   );
   $items['unit-batch'] = array(
     'description' => 'Run a batch process.',
@@ -53,6 +54,7 @@ function drush_unit_invoke_init() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_invoke_validate() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_pre_unit_invoke() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_invoke() {unit_invoke_log(__FUNCTION__);}
+function drush_unit_invoke_primary() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_pre_unit_invoke_rollback() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_post_unit_invoke_rollback() {unit_invoke_log(__FUNCTION__);}
 

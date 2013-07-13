@@ -10,6 +10,7 @@ class commandCase extends Drush_CommandTestCase {
       'drush_unit_invoke_init',
       'drush_unit_invoke_validate',
       'drush_unit_pre_unit_invoke',
+      'drush_unit_invoke_primary',
       'drush_unit_invoke',
       'drush_unit_post_unit_invoke',
       'drush_unit_post_unit_invoke_rollback',

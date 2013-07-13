@@ -21,6 +21,7 @@ function completetest_drush_command() {
       'description' => 'No-op command, used to test various completions for commands that start the same as other commands.',
       'bootstrap' => DRUSH_BOOTSTRAP_NONE,
       'callback' => 'drush_completetest_noop',
+      'command-hook' => 'completetest_noop',
     );
   }
   $items['aaaaaaaard']['arguments'] = array('name' => 'Name');
