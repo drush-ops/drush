@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  * Tests for sql-dump commands.
  *

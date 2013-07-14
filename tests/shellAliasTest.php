@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for Shell aliases.
  *
@@ -50,7 +50,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     file_put_contents(UNISH_SANDBOX . '/aliases.drushrc.php', trim($contents));
   }
 
-  /*
+  /**
    * Test shell aliases to Drush commands.
    */
   public function testShellAliasDrushLocal() {
@@ -62,7 +62,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $this->assertContains('These options are applicable to most drush commands.', $output, 'Successfully executed local shell alias to drush command');
   }
 
-  /*
+  /**
    * Test shell aliases to Bash commands. Assure we pass along extra arguments
    * and options.
    */
@@ -106,7 +106,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $this->assertEquals($expected, $output, 'Expected remote shell alias to a bash command was built');
   }
 
-  /*
+  /**
    * Test shell aliases with simple replacements -- no alias.
    */
   public function testShellAliasSimpleReplacement() {
@@ -120,7 +120,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $this->assertEquals($expected, $output);
   }
 
-  /*
+  /**
    * Test shell aliases with complex replacements -- no alias.
    */
   public function testShellAliasReplacementNoAlias() {
@@ -131,7 +131,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $this->drush('echotest', array(), $options, NULL, NULL, self::EXIT_ERROR);
   }
 
-  /*
+  /**
    * Test shell aliases with replacements -- alias.
    */
   public function testShellAliasReplacementWithAlias() {
@@ -147,7 +147,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
     $this->assertEquals($expected, $output);
   }
 
-  /*
+  /**
    * Test shell aliases with replacements and compound commands.
    */
   public function testShellAliasCompoundCommands() {
@@ -162,7 +162,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
   }
 
 
-  /*
+  /**
    * Test shell aliases with multiple config files.
    */
   public function testShellAliasMultipleConfigFiles() {

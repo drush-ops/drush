@@ -1,7 +1,6 @@
 <?php
-// $Id$
 
-/*
+/**
  * @file
  *   Commands which are useful for unit tests.
  */
@@ -74,7 +73,7 @@ function drush_unit_post_unit_invoke() {
   drush_set_error('');
 }
 
-/*
+/**
  * The final invoke hook. Emit the call history.
  * Cannot use 'exit' as it does not fire in rollback scenario.
  */

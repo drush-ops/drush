@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for enable, disable, uninstall, pm-list commands.
  *

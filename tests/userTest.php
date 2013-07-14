@@ -1,17 +1,17 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for user.drush.inc
  */
 
-/*
+/**
  *  @group slow
  *  @group commands
  */
 class userCase extends Drush_CommandTestCase {
 
-  /*
+  /**
    * Create, edit, block, and cancel users.
    */
   public function testUser() {

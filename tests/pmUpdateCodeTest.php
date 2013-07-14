@@ -7,7 +7,7 @@
   *   @todo test security-only once one of these modules or core gets a security release.
   */
 
-/*
+/**
  *  @group slow
  *  @group pm
  */

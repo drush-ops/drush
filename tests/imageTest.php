@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @file
  *   Tests image-flush command
  *

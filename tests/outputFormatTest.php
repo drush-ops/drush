@@ -1,11 +1,11 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for outputformat.drush.inc
  */
 
-/*
+/**
  *  @group slow
  *  @group commands
  */

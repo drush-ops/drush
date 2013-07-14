@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for queue commands.
  *

@@ -7,7 +7,7 @@
   */
 class releaseInfoCase extends Drush_UnitTestCase {
 
-  /*
+  /**
    * Parse Drupal version and release from project specification.
    *
    * @see pm_parse_project_version().
@@ -20,7 +20,7 @@ class releaseInfoCase extends Drush_UnitTestCase {
     $this->assertEquals('1.18', $request_data['devel']['project_version']);
   }
 
-  /*
+  /**
    * Pick right release from the XML (dev, latest published+recommended, ...).
    */
   public function testReleaseXML() {

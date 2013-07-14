@@ -1,17 +1,17 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for role.drush.inc
  */
 
-/*
+/**
  *  @group slow
  *  @group commands
  */
 class roleCase extends Drush_CommandTestCase {
 
-  /*
+  /**
    * Create, edit, block, and cancel users.
    */
   public function testRole() {

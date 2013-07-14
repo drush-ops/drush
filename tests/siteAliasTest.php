@@ -1,13 +1,13 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for sitealias.inc
  *
  * @group base
  */
 class saCase extends Drush_CommandTestCase {
-  /*
+  /**
    * Covers the following responsibilities.
    *   - Dispatching a Drush command that uses strict option handling
    *     using a site alias that contains a generic option (e.g. 'site'
@@ -56,7 +56,7 @@ EOD;
     $this->assertTrue($command_position < $command_specific_position);
   }
 
-  /*
+  /**
    * Assure that site lists work as expected.
    * @todo Use --backend for structured return data. Depends on http://drupal.org/node/1043922
    */

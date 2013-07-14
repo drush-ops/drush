@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests watchdog-show and watchdog-delete commands
  *

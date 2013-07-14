@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Initialize a sandboxed environment. Starts with call unish_init() at bottom.
  */
@@ -332,7 +332,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
   // Unix exit codes.
   const EXIT_SUCCESS  = 0;
   const EXIT_ERROR = 1;
-  /*
+  /**
    * An array of Drupal sites that are setup in the drush-sandbox.
    */
   var $sites;
@@ -345,6 +345,8 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
    *   The actual command line to run.
    * @param integer $expected_return
    *   The return code to expect
+   * @param array $env
+   *   Extra environment variables
    * @return integer
    *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
    */
@@ -442,7 +444,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     return $major;
   }
 
-  /*
+  /**
    * Prepare the contents of an aliases file.
    */
   function file_aliases($aliases) {
@@ -491,7 +493,7 @@ abstract class Drush_UnitTestCase extends Drush_TestCase {
   }
 }
 
-/*
+/**
  * Initialize our environment at the start of each run (i.e. suite).
  */
 function unish_init() {

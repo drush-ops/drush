@@ -1,12 +1,12 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for the 'drush' script itself
  */
 class drushScriptCase extends Drush_CommandTestCase {
 
-  /*
+  /**
    * Test `PHP_OPTIONS=... drush`
    */
   public function testPhpOptionsTest() {

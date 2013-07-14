@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for ssh.drush.inc
  *
@@ -8,7 +8,7 @@
  */
 class siteSshCase extends Drush_CommandTestCase {
 
-  /*
+  /**
    * Test drush ssh --simulate. No additional bash passed.
    */
   public function testInteractive() {
@@ -25,7 +25,7 @@ class siteSshCase extends Drush_CommandTestCase {
     $this->assertEquals($expected, $output);
   }
 
-  /*
+  /**
    * Test drush ssh --simulate 'date'.
    * @todo Run over a site list. drush_sitealias_get_record() currently cannot
    * handle a site list comprised of longhand site specifications.

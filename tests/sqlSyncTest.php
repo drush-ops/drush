@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
 * @file
 *  For now we only test sql-sync in simulated mode.
 *
@@ -8,13 +8,13 @@
 *  overwriting one site with another.
 */
 
-/*
+/**
  *  @group slow
  *  @group commands
  */
 class sqlSyncTest extends Drush_CommandTestCase {
 
-  /*
+  /**
    * Covers the following responsibilities.
    *   - A user created on the source site is copied to the destination site.
    *   - The email address of the copied user is sanitized on the destination site.

@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
 * @file
 *  We choose to test the backend system in two parts.
 *    - Origin. These tests assure that we are generate a proper ssh command
@@ -50,7 +50,7 @@ EOD;
     $this->assertEquals(array_diff(array_values($argDifference), array('--root=/fake/path/to/root', '--uri=default')), array());
   }
 
-  /*
+  /**
    * Covers the following origin responsibilities.
    *   - A remote host is recognized in site specification.
    *   - Generates expected ssh command.
@@ -66,7 +66,7 @@ EOD;
     $this->assertEquals($expected, $output, 'Expected ssh command was built');
   }
 
-  /*
+  /**
    * Covers the following target responsibilities.
    *   - Interpret stdin as options as per REST API.
    *   - Successfully execute specified command.
@@ -94,7 +94,7 @@ EOD;
     $this->assertArrayHasKey('DRUSH_NO_DRUPAL_ROOT', $parsed['error_log']);
   }
 
-  /*
+  /**
    * Covers the following target responsibilities.
    *   - Insures that the 'Drush version' line from drush status appears in the output.
    *   - Insures that the backend output start marker appears in the output (this is a backend command).

@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests sql-connect command
  *

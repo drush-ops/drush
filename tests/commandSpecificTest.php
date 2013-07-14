@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
 * @file
 *  Assure that context API behaves as designed. Mostly implicitly tested, but we
 *  do have some edges that need explicit testing.

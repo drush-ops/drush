@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for core commands.
  *
@@ -55,7 +55,7 @@ class coreCase extends Drush_CommandTestCase {
     $this->assertEquals($expected, $output);
   }
 
-  /*
+  /**
    * Test standalone php-script scripts. Assure that script args and options work.
    */
   public function testStandaloneScript() {

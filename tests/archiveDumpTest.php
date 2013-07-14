@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Tests for archive-dump
  * @group commands

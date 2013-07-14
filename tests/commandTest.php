@@ -26,7 +26,7 @@ class commandCase extends Drush_CommandTestCase {
     $this->assertSame($expected, $called);
   }
 
-  /*
+  /**
    * Assert that minimum bootstrap phase is honored.
    *
    * Not testing dependency on a module since that requires an installed Drupal.

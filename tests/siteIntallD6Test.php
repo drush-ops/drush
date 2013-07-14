@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @file
  *   Tests for site-install on a Drupal 6 installation.
  *
@@ -15,7 +15,7 @@ class siteInstallD6Case extends Drush_CommandTestCase {
     }
   }
 
-  /*
+  /**
    * Test a D6 install with extra options.
    */
   public function testExtraConfigurationOptions() {
