@@ -500,7 +500,10 @@ function updatedb_status() {
           if (class_exists('ReflectionFunction')) {
             // The description for an update comes from its Doxygen.
             $func = new ReflectionFunction($module. '_update_'. $update);
-            $description = empty($description) ? dt('Description not available') : trim(str_replace(array("\n", '*', '/'), '', $func->getDocComment()));
+            $description = trim(str_replace(array("\n", '*', '/'), '', $func->getDocComment()));
+          }
+          if (empty($description)) {
+            $description = dt('description not available');
           }
 
           $return[] = array('module' => ucfirst($module), 'update_id' => $update, 'description' => $description);
