@@ -207,7 +207,7 @@ function sql_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'options' => array(
       'A' => 'Skip reading table information. This gives a quicker start of mysql.',
-    ) + $db_url,
+    ) + $options + $db_url,
     'aliases' => array('sqlc'),
     'examples' => array(
       'drush sql-cli' => "Open a SQL command-line interface using Drupal's credentials.",
