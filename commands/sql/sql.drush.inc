@@ -281,6 +281,7 @@ function _drush_sql_connect($db_spec = NULL) {
       if (drush_get_option('A', FALSE)) {
         $command .= ' -A';
       }
+
       break;
     case 'pgsql':
       $command = 'psql';
