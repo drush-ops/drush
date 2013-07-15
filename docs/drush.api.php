@@ -374,5 +374,27 @@ function hook_drush_engine_ENGINE_TYPE() {
 }
 
 /**
+ * Alter the order that hooks are invoked.
+ *
+ * When implementing a given hook we may need to ensure it is invoked before
+ * or after another implementation of the same hook. For example, let's say
+ * you want to implement a hook that would be called after drush_make. You'd
+ * write a drush_MY_MODULE_post_make() function. But if you need your hook to
+ * be called before drush_make_post_make(), you can ensure this by implemen-
+ * ting MY_MODULE_drush_invoke_alter().
+ *
+ * @see drush_command_invoke_all_ref()
+ */
+function hook_drush_invoke_alter($modules, $hook) {
+  if ($hook == 'some_hook') {
+    // Take the module who's hooks would normally be called last
+    $module = array_pop($modules);
+    // Ensure it'll be called first for 'some_hook'
+    array_unshift($modules, $module);
+  }
+}
+
+
+/**
  * @} End of "addtogroup hooks".
  */

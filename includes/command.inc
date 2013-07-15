@@ -1222,7 +1222,12 @@ function drush_command_invoke_all_ref($hook, &$reference_parameter) {
   // Insure that call_user_func_array can alter first parameter
   $args[0] = &$reference_parameter;
   $return = array();
-  foreach (drush_command_implements($hook) as $module) {
+  $modules = drush_command_implements($hook);
+  if ($hook != 'drush_invoke_alter') {
+    // Allow modules to control the order of hook invocations
+    drush_command_invoke_all_ref('drush_invoke_alter', $modules, $hook);
+  }
+  foreach ($modules as $module) {
     $function = $module .'_'. $hook;
     $result = call_user_func_array($function, $args);
     if (isset($result) && is_array($result)) {
