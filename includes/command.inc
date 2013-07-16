@@ -340,8 +340,10 @@ function _drush_invoke_hooks($command, $args) {
     if (($var_hook == $hook) && ($command['primary function'])) {
       $callback_list[$command['primary function']] = $list[$command['commandfile']];
     }
-    $primary_func = ($command['commandfile'] . "_" == substr($var_hook . "_",0,strlen($command['commandfile']) + 1)) ? sprintf("drush_%s", $var_hook) : sprintf("drush_%s_%s", $command['commandfile'], $var_hook);
-    $callback_list[$primary_func] = $list[$command['commandfile']];
+    else {
+      $primary_func = ($command['commandfile'] . "_" == substr($var_hook . "_",0,strlen($command['commandfile']) + 1)) ? sprintf("drush_%s", $var_hook) : sprintf("drush_%s_%s", $command['commandfile'], $var_hook);
+      $callback_list[$primary_func] = $list[$command['commandfile']];
+    }
     // We've got the callback for the primary function in the
     // callback list; now add all of the other callback functions.
     unset($list[$command['commandfile']]);
@@ -969,7 +971,7 @@ function drush_get_commands() {
         // calls the command function hooks.  Then, set the
         // callback to drush_command so that the function hooks
         // will be called.
-        if ($command['callback'] != 'drush_command') {
+        if (($command['callback'] != 'drush_command') && $command['invoke hooks']) {
           $command['primary function'] = $command['callback'];
           $command['callback'] = 'drush_command';
         }
@@ -994,6 +996,7 @@ function drush_command_defaults($key, $commandfile, $path) {
   return array(
     'command' => $key,
     'command-hook' => $key,
+    'invoke hooks' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
     'callback arguments' => array(),
     'commandfile' => $commandfile,
@@ -1073,6 +1076,9 @@ function _drush_command_translate($source) {
  *   will determine the primary hook for the function automatically.  Only
  *   specify a callback function if you need many commands to call the same
  *   function (e.g. drush_print_file).
+ * - invoke hooks: If TRUE (the default), Drush will invoke all of the pre and
+ *   post hooks for this command.  Set to FALSE to supress hooks.  This setting
+ *   is ignored unless the command 'callback' is also set.
  * - primary function: Drush will copy the 'callback' parameter here if
  *   necessary.  This value should not be set explicitly; use 'callback' instead.
  * - description: description of the command.

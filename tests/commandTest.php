@@ -11,7 +11,8 @@ class commandCase extends Drush_CommandTestCase {
       'drush_unit_invoke_validate',
       'drush_unit_pre_unit_invoke',
       'drush_unit_invoke_primary',
-      'drush_unit_invoke',
+      // Primary callback is not invoked when command specifies a 'callback'.
+      // 'drush_unit_invoke',
       'drush_unit_post_unit_invoke',
       'drush_unit_post_unit_invoke_rollback',
       'drush_unit_pre_unit_invoke_rollback',
@@ -22,7 +23,7 @@ class commandCase extends Drush_CommandTestCase {
       'include' => dirname(__FILE__),
     );
     $this->drush('unit-invoke', array(), $options, NULL, NULL, self::EXIT_ERROR);
-    $called = json_decode($this->getOutput());
+    $called = $this->getOutputFromJSON();
     $this->assertSame($expected, $called);
   }
 

@@ -52,7 +52,8 @@ function unit_drush_command() {
 function drush_unit_invoke_init() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_invoke_validate() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_pre_unit_invoke() {unit_invoke_log(__FUNCTION__);}
-function drush_unit_invoke() {unit_invoke_log(__FUNCTION__);}
+// Primary callback is not invoked when command specifies a 'callback'.
+// function drush_unit_invoke() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_invoke_primary() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_pre_unit_invoke_rollback() {unit_invoke_log(__FUNCTION__);}
 function drush_unit_post_unit_invoke_rollback() {unit_invoke_log(__FUNCTION__);}
