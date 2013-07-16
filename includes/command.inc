@@ -1077,7 +1077,7 @@ function _drush_command_translate($source) {
  *   specify a callback function if you need many commands to call the same
  *   function (e.g. drush_print_file).
  * - invoke hooks: If TRUE (the default), Drush will invoke all of the pre and
- *   post hooks for this command.  Set to FALSE to supress hooks.  This setting
+ *   post hooks for this command.  Set to FALSE to suppress hooks.  This setting
  *   is ignored unless the command 'callback' is also set.
  * - primary function: Drush will copy the 'callback' parameter here if
  *   necessary.  This value should not be set explicitly; use 'callback' instead.
