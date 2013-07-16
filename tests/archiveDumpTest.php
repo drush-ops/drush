@@ -2,9 +2,12 @@
 
 /**
  * @file
- *   Tests for archive-dump
+ *   Tests for archive-dump and archive-restore
  * @group commands
  */
+
+require_once dirname(__FILE__) . '/../includes/filesystem.inc';
+
 class archiveDumpCase extends Drush_CommandTestCase {
   /**
    * archive-dump behaves slightly different when archiving a site installed
@@ -59,9 +62,8 @@ class archiveDumpCase extends Drush_CommandTestCase {
     $exec = sprintf('file %s', $dump_dest);
     $this->execute($exec);
     $output = $this->getOutput();
-    $sep = self::is_windows() ? ';' : ':';
-    $expected = $dump_dest . "$sep gzip compressed data, from";
-    $this->assertStringStartsWith($expected, $output);
+    $expected = '%sgzip compressed data%s';
+    $this->assertStringMatchesFormat($expected, $output);
 
     // Untar the archive and make sure it looks right.
     $untar_dest = $this->unTar($dump_dest);
@@ -84,7 +86,6 @@ class archiveDumpCase extends Drush_CommandTestCase {
    * @depends testArchiveDump
    */
    public function testArchiveRestore($dump_dest) {
-    require_once dirname(__FILE__) . '/../includes/filesystem.inc';
     $restore_dest = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'restore';
     $options = array(
       'yes' => NULL,
