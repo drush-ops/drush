@@ -590,9 +590,11 @@ function drush_get_projects(&$extensions = NULL) {
         $candidates = array();
         foreach ($project['extensions'] as $e) {
           $has_project_dependency = FALSE;
-          foreach ($extensions[$e]->info['dependencies'] as $dependent) {
-            if (in_array($dependent, $project['extensions'])) {
-              $has_project_dependency = TRUE;
+          if (isset($extensions[$e]->info['dependencies']) && is_array($extensions[$e]->info['dependencies'])) {
+            foreach ($extensions[$e]->info['dependencies'] as $dependent) {
+              if (in_array($dependent, $project['extensions'])) {
+                $has_project_dependency = TRUE;
+              }
             }
           }
           if ($has_project_dependency === FALSE) {
