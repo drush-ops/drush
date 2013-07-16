@@ -270,7 +270,7 @@ function core_drush_command() {
     'options' => array(
       'db-url' => array(
         'description' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',
-        'example-value' => 'mysql://root:pass@127.0.0.1/db',
+        'example-value' => 'mysql://root:pass@host/db',
         ),
       'db-prefix' => 'An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).',
       'db-su' => array(

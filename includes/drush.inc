@@ -363,6 +363,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['path-aliases']        = array('hidden' => TRUE, 'never-propagate' => TRUE, 'description' => 'Path aliases from site alias.');
     $options['ssh-options']         = array('never-propagate' => TRUE, 'description' => 'A string of extra options that will be passed to the ssh command (e.g. "-p 100")');
     $options['editor']              = array('never-propagate' => TRUE, 'description' => 'A string of bash which launches user\'s preferred text editor. Defaults to ${VISUAL-${EDITOR-vi}}.');
+    $options['db-url']              = array('hidden' => TRUE, 'description' => 'A Drupal 6 style database URL. Used by various commands.', 'example-value' => 'mysql://root:pass@127.0.0.1/db');
 
     $command = array(
       'options' => $options,

@@ -44,7 +44,10 @@ function archive_drush_command() {
     'options' => array(
       'destination' => 'Specify where the Drupal site should be expanded, including the docroot. Defaults to the current working directory.',
       'db-prefix' => 'An optional table prefix to use during restore.',
-      'db-url' => 'A Drupal 6 style database URL indicating the target for database restore. If not provided, the archived settings.php is used.',
+      'db-url' => array(
+        'description' => 'A Drupal 6 style database URL indicating the target for database restore. If not provided, the archived settings.php is used.',
+        'example-value' => 'mysql://root:pass@host/db',
+      ),
       'db-su' => 'Account to use when creating the new database. Optional.',
       'db-su-pw' => 'Password for the "db-su" account. Optional.',
       'overwrite' => 'Allow drush to overwrite any files in the destination.',
