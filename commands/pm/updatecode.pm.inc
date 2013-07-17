@@ -30,12 +30,15 @@ function drush_pm_updatecode() {
       $updatestatus_options[$option] = $value;
     }
   }
-  $values = drush_invoke_process("@self", 'pm-updatestatus', func_get_args(), $updatestatus_options);
+  $backend_options = array(
+    'integrate' => FALSE,
+  );
+  $values = drush_invoke_process("@self", 'pm-updatestatus', func_get_args(), $updatestatus_options, $backend_options);
   if (!is_array($values) || $values['error_status']) {
     return FALSE;
   }
   $updateable = $values['object'];
-
+  drush_print($values['output']);
   $tmpfile = drush_tempnam('pm-updatecode.');
 
   $last = pm_update_last_check();
