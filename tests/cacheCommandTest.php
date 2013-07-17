@@ -32,7 +32,5 @@ class cacheCommandCase extends Drush_CommandTestCase {
     // Test cache-clear all.
     $this->drush('cache-clear', array('all'), $options);
     $this->drush('cache-get', array('cache-test-cid'), $options + array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
-    $output = $this->getOutputFromJSON('data');
-    $this->assertEmpty($output);
   }
 }
