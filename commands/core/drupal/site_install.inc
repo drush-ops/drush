@@ -56,6 +56,6 @@ function drush_core_site_install_version($profile, array $additional_form_option
   }
 
   drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), 'ok');
-  install_drupal($settings);
+  drush_op('install_drupal', $settings);
   drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
 }
