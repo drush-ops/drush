@@ -781,10 +781,12 @@ function _drush_sql_get_db_table_list($db_spec, $site_record = NULL) {
   // this is called by sql-drop. Also needed during archive-restore.
   $options = array(
     'db-spec' => $db_spec,
-    'override-simulated' => TRUE,
-    'integrate' => FALSE,
   );
-  $backend_options = array('method' => 'POST');
+  $backend_options = array(
+    'integrate' => FALSE,
+    'method' => 'POST',
+    'override-simulated' => TRUE,
+  );
   $result = drush_invoke_process($target_site, 'sql-query', array($query), $options, $backend_options);
   $tables_raw = explode("\n", rtrim($result['output']));
 
