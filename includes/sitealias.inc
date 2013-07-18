@@ -180,9 +180,6 @@ function drush_sitealias_get_record($alias, $alias_context = NULL) {
     else {
       $alias_record['#name'] = drush_sitealias_uri_to_site_dir($alias);
     }
-
-    // Handle nested alias definitions and command-specific options.
-    drush_set_config_special_contexts($alias_record);
   }
   return $alias_record;
 }

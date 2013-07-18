@@ -736,6 +736,9 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // Insure that contexts such as DRUSH_SIMULATE and NO_COLOR are included.
     $command_options += _drush_backend_get_global_contexts($site_record);
 
+    // Add in command-specific options as well
+    $command_options += drush_command_get_command_specific_options($site_record, $command);
+
     // If the caller has requested it, don't pull the options from the alias
     // into the command line, but use the alias name for dispatching.
     if (!empty($backend_options['dispatch-using-alias']) && isset($site_record['#name'])) {

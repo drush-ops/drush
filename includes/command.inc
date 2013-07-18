@@ -1279,6 +1279,18 @@ function drush_is_command($command) {
 }
 
 /**
+ * @param string
+ *   name of command or command alias.
+ *
+ * @return string
+ *   Primary name of command.
+ */
+function drush_command_normalize_name($command_name) {
+  $commands = drush_get_commands();
+  return isset($commands[$command_name]) ? $commands[$command_name]['command'] : $command_name;
+}
+
+/**
  * Collect a list of all available drush command files.
  *
  * Scans the following paths for drush command files:
@@ -1627,6 +1639,25 @@ function _drush_command_set_default_options($command_default_options, $command) 
     }
   }
   return $options_were_set;
+}
+
+/**
+ * Return all of the command-specific options defined in the given
+ * options set for the specified command name.  Note that it is valid
+ * to use the command name alias rather than the primary command name,
+ * both in the parameter to this function, and in the options set.
+ */
+function drush_command_get_command_specific_options($options, $command_name, $prefix = '') {
+  $result = array();
+  $command_name = drush_command_normalize_name($command_name);
+  if (isset($options[$prefix . 'command-specific'])) {
+    foreach ($options[$prefix . 'command-specific'] as $options_for_command => $values) {
+      if (drush_command_normalize_name($options_for_command)) {
+        $result = array_merge($result, $values);
+      }
+    }
+  }
+  return $result;
 }
 
 /**
