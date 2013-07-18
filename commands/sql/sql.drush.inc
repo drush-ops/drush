@@ -1099,29 +1099,29 @@ function drush_sql_dump_file(&$site_record) {
     // If the user has set the --dump-dir option, then
     // store persistant sql dump files there.
     $dump_dir = drush_sitealias_get_path_option($site_record, 'dump-dir');
-    if (!isset($dump_dir)) {
-      // If this is a remote site, try to find a writable tmpdir.
-      if (isset($site_record['remote-host'])) {
-        $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
-        // If the call to invoke process does not work for some reason
-        // (e.g. drush not installed on the target machine),
-        // then we will just presume that the tmp dir is '/tmp'.
-        if (!$result || empty($result['output'])) {
-          $dump_dir = '/tmp';
-        }
-        else {
-          $dump_dir = trim($result['output']);
-        }
-        $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
+    $suffix = '';
+    // If this is a remote site, try to find a writable tmpdir.
+    if (!isset($dump_dir) && isset($site_record['remote-host'])) {
+      // If the alias is remote, we'll add on the 'sql' suffix.
+      // As mentioned in drush_tempnam, providing a suffix removes
+      // the guarentee of tempnam to return a unique filename;
+      // however, when the file is going to be used on a remote
+      // system, there is no such guarentee anyway, so we might
+      // as well include it.
+      $suffix = '.sql';
+      $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
+      // If the call to invoke process does not work for some reason
+      // (e.g. drush not installed on the target machine),
+      // then we will just presume that the tmp dir is '/tmp'.
+      if (!$result || empty($result['output'])) {
+        $dump_dir = '/tmp';
       }
       else {
-        $dump_file = drush_tempnam($filename_pattern . '.sql.');
+        $dump_dir = trim($result['output']);
       }
-      $site_record['dump-is-temp'] = TRUE;
     }
-    else {
-      $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
-    }
+    $dump_file = drush_tempnam($filename_pattern, $dump_dir, $suffix);
+    $site_record['dump-is-temp'] = TRUE;
   }
 
   return $dump_file;
