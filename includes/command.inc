@@ -1657,7 +1657,7 @@ function drush_command_get_command_specific_options($options, $command_name, $pr
   $command_name = drush_command_normalize_name($command_name);
   if (isset($options[$prefix . 'command-specific'])) {
     foreach ($options[$prefix . 'command-specific'] as $options_for_command => $values) {
-      if (drush_command_normalize_name($options_for_command)) {
+      if ($command_name == drush_command_normalize_name($options_for_command)) {
         $result = array_merge($result, $values);
       }
     }
