@@ -194,11 +194,11 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
       foreach ($errors as $code => $message) {
         drush_set_error($code, $message);
       }
+      break;
     }
     unset($phases[$phase_index++]);
   }
   drush_set_context('DRUSH_BOOTSTRAPPING', FALSE);
-
   return !drush_get_error();
 }
 

@@ -78,6 +78,10 @@ class userCase extends Drush_CommandTestCase {
     }
 
     // user-login
+    // Check if user-login on non-bootstrapped environment returns error.
+    $this->drush('user-login', array(), array(), NULL, NULL, self::EXIT_ERROR);
+
+    // Check user-login
     $user_login_options = $options + array('simulate' => TRUE, 'browser' => 'unish');
     // Collect full logs so we can check browser.
     $this->drush('user-login', array(), $user_login_options + array('backend' => NULL));

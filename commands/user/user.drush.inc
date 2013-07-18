@@ -460,7 +460,11 @@ function drush_user_login($user = NULL, $path = NULL) {
     }
   }
   else {
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+    if (!drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+      // Fail gracefully if unable to bootstrap Drupal.
+      // drush_bootstrap() has already logged an error.
+      return FALSE;
+    }
 
     if (drush_get_option('uid', FALSE) || drush_get_option('name', FALSE) || drush_get_option('mail', FALSE)) {
       // A user option was passed, prefer that to the user argument.
