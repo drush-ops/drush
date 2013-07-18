@@ -197,6 +197,9 @@ class completeCase extends Drush_CommandTestCase {
       $check_not_exist = 'MISS';
     }
     $contents = file_get_contents($debug_file);
+    // Find the all cache messages of type "-complete-"
+    preg_match_all("/Cache [A-Z]* cid:.*-complete-/", $contents, $matches);
+    $contents = implode("\n", $matches[0]);
     $first_cache_pos = strpos($contents, 'Cache ') + 6;
     $this->assertFalse(strpos($contents, 'Cache ' . $check_not_exist . ' cid', $first_cache_pos));
     unlink($debug_file);

@@ -80,7 +80,9 @@ EOD;
 Continue?  (y/n): y
 #stage >> bon
 #dev   >> bon";
-    $this->assertEquals($expected, implode("\n", $output));
+    $actual = implode("\n", $output);
+    $actual = trim(preg_replace('/^#[a-z]* *>> *$/m', '', $actual)); // ignore blank lines
+    $this->assertEquals($expected, $actual);
   }
 
   /**
