@@ -428,7 +428,7 @@ function _drush_bootstrap_drush_validate() {
  */
 function _drush_bootstrap_drush() {
   // Create an alias '@none' to represent no Drupal site
-  _drush_sitealias_cache_alias('none', array('root' => '', 'uri' => ''));
+  _drush_sitealias_cache_alias('@none', array('root' => '', 'uri' => ''));
 
   // Set the terminal width, used for wrapping table output.
   // Normally this is exported using tput in the drush script.
@@ -582,7 +582,7 @@ function _drush_bootstrap_select_drupal_site() {
 
   if (!empty($drupal_root) && !empty($uri)) {
     // Create an alias '@self'
-    _drush_sitealias_cache_alias('self', array('root' => $drupal_root, 'uri' => $uri));
+    _drush_sitealias_cache_alias('@self', array('root' => $drupal_root, 'uri' => $uri));
   }
 }
 
@@ -838,7 +838,7 @@ function _drush_bootstrap_drupal_configuration() {
     'dev_query' => FALSE, // Force Drupal6 not to store queries since we are not outputting them.
     'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7+).
   );
-  // Avoid MTimeProtected grief in D8+. See http://drupal.org/node/1899842. If you really don't 
+  // Avoid MTimeProtected grief in D8+. See http://drupal.org/node/1899842. If you really don't
   // want this override, set different values using a drushrc.php by passing different values.
   $override['php_storage']['default'] = array(
     'class' => 'Drupal\Component\PhpStorage\FileReadOnlyStorage',
