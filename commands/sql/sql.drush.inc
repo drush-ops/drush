@@ -1080,6 +1080,10 @@ function _drush_sql_get_spec_from_options($prefix, $default_to_self = TRUE) {
 /**
  * Determine where to store an sql dump file.  This
  * function is called by sql-sync.
+ *
+ * @param array $site_record
+ *
+ * @return string Full path to the sql-dump file.
  */
 function drush_sql_dump_file(&$site_record) {
   $site_record['dump-is-temp'] = FALSE;
@@ -1109,15 +1113,18 @@ function drush_sql_dump_file(&$site_record) {
       // system, there is no such guarentee anyway, so we might
       // as well include it.
       $suffix = '.sql';
-      $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
+      $remote_site = $site_record;
+      unset($remote_site['root']);
+      unset($remote_site['uri']);
+      $result = drush_invoke_process($site_record, 'php-eval', array('return drush_find_tmp();'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
       // If the call to invoke process does not work for some reason
       // (e.g. drush not installed on the target machine),
       // then we will just presume that the tmp dir is '/tmp'.
-      if (!$result || empty($result['output'])) {
+      if (!$result || !empty($result['error_status']) || empty($result['object'])) {
         $dump_dir = '/tmp';
       }
       else {
-        $dump_dir = trim($result['output']);
+        $dump_dir = $result['object'];
       }
     }
     $dump_file = drush_tempnam($filename_pattern, $dump_dir, $remote ? '.sql' : '');
