@@ -1586,6 +1586,11 @@ function drush_sitealias_command_default_options($site_record, $prefix, $command
   return FALSE;
 }
 
+function drush_command_set_command_specific_options($prefix, $command = NULL) {
+  $command_default_options = drush_get_option($prefix . 'command-specific', array());
+  return drush_command_set_command_specific($command_default_options, $command);
+}
+
 function drush_command_set_command_specific($command_default_options, $command = NULL) {
   if (!$command) {
     $command = drush_get_command();

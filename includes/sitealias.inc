@@ -1798,6 +1798,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
     // escaped per the LOCAL rules, without regard to the remote platform type.
     $site_alias_settings = drush_sitealias_get_record($alias);
     if (!empty($command_specific_prefix)) {
+      drush_command_set_command_specific_options($command_specific_prefix);
       drush_sitealias_command_default_options($site_alias_settings, $command_specific_prefix);
     }
   }
