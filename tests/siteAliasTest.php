@@ -10,10 +10,8 @@ class saCase extends Drush_CommandTestCase {
   /**
    * Covers the following responsibilities.
    *   - Dispatching a Drush command that uses strict option handling
-   *     using a site alias that contains a generic option (e.g. 'site'
-   *     or 'env') that is not a recognized Drush option (maybe for
-   *     use in an init hook, etc.) places the generic option BEFORE
-   *     the command name.
+   *     using a global option (e.g. --alias-path) places said global
+   *     option BEFORE the command name.
    *   - Dispatching a Drush command that uses strict option handling
    *     using a site alias that contains a command-specific option
    *     places said option AFTER the command name.
@@ -30,7 +28,6 @@ class saCase extends Drush_CommandTestCase {
     'remote-user' => 'www-admin',
     'root' => '/fake/path/to/root',
     'uri' => 'default',
-    'site' => 'stage',
     'command-specific' => array(
       'rsync' => array(
         'delete' => TRUE,
@@ -47,12 +44,12 @@ EOD;
     $this->drush('core-rsync', array('/a', '/b'), $options, '@test');
     $output = $this->getOutput();
     $command_position = strpos($output, 'core-rsync');
-    $special_option_position = strpos($output, '--site=stage');
+    $global_option_position = strpos($output, '--alias-path=');
     $command_specific_position = strpos($output, '--delete');
     $this->assertTrue($command_position !== FALSE);
-    $this->assertTrue($special_option_position !== FALSE);
+    $this->assertTrue($global_option_position !== FALSE);
     $this->assertTrue($command_specific_position !== FALSE);
-    $this->assertTrue($command_position > $special_option_position);
+    $this->assertTrue($command_position > $global_option_position);
     $this->assertTrue($command_position < $command_specific_position);
   }
 

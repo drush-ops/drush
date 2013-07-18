@@ -653,8 +653,8 @@ function drush_redispatch_get_options() {
   // local php settings should not override sitealias settings
   unset($cli_context['php']);
   unset($cli_context['php-options']);
-  // cli overrides sitealias and command specific
-  $options = $cli_context + drush_get_context('alias') + drush_get_context('specific');
+  // cli overrides and command specific
+  $options = $cli_context + drush_get_context('specific');
 
   $options = array_diff_key($options, array_flip(drush_sitealias_site_selection_keys()));
   unset($options['command-specific']);
