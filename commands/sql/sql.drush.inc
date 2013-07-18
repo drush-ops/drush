@@ -1338,7 +1338,7 @@ function drush_sql_format_oracle($query) {
 }
 
 
-/*
+/**
  * Drop all tables (if DB exists) or CREATE target database.
  *
  * return boolean
@@ -1353,7 +1353,7 @@ function drush_sql_empty_db($db_spec) {
   }
 }
 
-/*
+/**
  * Build DB connection array with superuser credentials if provided.
  *
  * The options 'db-su' and 'db-su-pw' will be retreived from the
@@ -1385,7 +1385,7 @@ function drush_sql_su($db_spec, $site_alias_record = NULL) {
   return $create_db_target;
 }
 
-/*
+/**
  * Build a SQL string for dropping and creating a database.
  *
  * @param array $db_spec
@@ -1421,7 +1421,7 @@ function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
   return implode(' ', $sql);
 }
 
-/*
+/**
  * Does specified database exist on target server
  *
  * @return boolean

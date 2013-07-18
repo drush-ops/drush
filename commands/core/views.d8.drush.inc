@@ -504,14 +504,14 @@ function views_drush_cache_clear(&$types) {
   $types['views'] = 'views_invalidate_cache';
 }
 
-/*
+/**
  * Command argument complete callback.
  */
 function drush_views_enable_complete() {
   return _drush_views_complete();
 }
 
-/*
+/**
  * Command argument complete callback.
  */
 function drush_views_disable_complete() {

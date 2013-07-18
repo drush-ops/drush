@@ -369,7 +369,7 @@ class drush_outputformat {
     $supported = $this->supported_data_types($metadata);
     return (count($supported) == 1) && ($supported[0] == 'format-single');
   }
-  /*
+  /**
    * Perform pre-processing and then format() the $input.
    */
   function process($input, $metadata = array()) {

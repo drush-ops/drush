@@ -1176,7 +1176,7 @@ function drush_parse_command() {
   return $command;
 }
 
-/*
+/**
  * Called by drush_parse_command.  If a command is dispatched
  * directly by drush_dispatch, then drush_dispatch will call
  * this function.
@@ -1821,7 +1821,7 @@ function drush_enforce_requirement_core(&$command) {
   $command['bootstrap_errors']['DRUSH_COMMAND_CORE_VERSION_ERROR'] = dt('Command !command requires Drupal core version !versions to run.', array('!command' => $command['command'], '!versions' => $versions));
 }
 
-/*
+/**
  * Check if a shell alias exists for current request. If so, re-route to
  * core-execute like the and pass alias value along with rest of CLI arguments.
  */

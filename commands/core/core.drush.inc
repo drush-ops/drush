@@ -1107,7 +1107,7 @@ function drush_core_php_eval($command) {
   return eval($command . ';');
 }
 
-/*
+/**
  * Evaluate a script that begins with #!drush php-script
  */
 function _drush_core_eval_shebang_script($script_filename) {

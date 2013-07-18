@@ -55,7 +55,7 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
   }
 }
 
-/*
+/**
  * Returns a localizable message about php.ini that
  * varies depending on whether the php_ini_loaded_file()
  * is available or not.
@@ -116,7 +116,7 @@ function _drush_environment_check_php_ini() {
   return TRUE;
 }
 
-/*
+/**
  * Check for the existence of the specified lib directory, and create if needed.
  */
 function drush_environment_lib() {
@@ -646,7 +646,7 @@ function drush_is_mingw($os = NULL) {
   return _drush_test_os($os, array("MINGW"));
 }
 
-/*
+/**
  * Return tar executable name specific for the current OS
  */
 function drush_get_tar_executable() {
@@ -670,7 +670,7 @@ function drush_has_bash($os = NULL) {
   return (drush_is_cygwin($os) && !drush_is_mingw($os)) || !drush_is_windows($os);
 }
 
-/*
+/**
  * Checks operating system and returns
  * supported bit bucket folder.
  */

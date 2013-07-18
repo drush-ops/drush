@@ -37,7 +37,7 @@ function usage_drush_command() {
   return $items;
 }
 
-/*
+/**
  * Log and/or send usage data to Mongolab.
  *
  * An organization can implement own hook_drush_exit() to send data to a

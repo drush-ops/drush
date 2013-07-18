@@ -247,7 +247,7 @@ function _drush_drupal_parse_info_file($data, $merge_item = NULL) {
   return FALSE;
 }
 
-/*
+/**
  * Build a cache id to store the install_profile for a given site.
  */
 function drush_cid_install_profile() {

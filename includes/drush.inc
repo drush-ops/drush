@@ -385,7 +385,7 @@ function drush_die($msg = NULL, $status = NULL) {
   die($msg ? "drush: $msg\n" : '');
 }
 
-/*
+/**
  * Check to see if the provided line is a "#!/usr/bin/env drush"
  * "shebang" script line.
  */
@@ -393,7 +393,7 @@ function _drush_is_drush_shebang_line($line) {
    return ((substr($line,0,2) == '#!') && (strstr($line, 'drush') !== FALSE));
 }
 
-/*
+/**
  * Check to see if the provided script file is a "#!/usr/bin/env drush"
  * "shebang" script line.
  */
@@ -736,7 +736,7 @@ function drush_op($function) {
   return drush_call_user_func_array($function, $args);
 }
 
-/*
+/**
  * Mimic cufa but still call function directly. See http://drupal.org/node/329012#comment-1260752
  */
 function drush_call_user_func_array($function, $args = array() ) {

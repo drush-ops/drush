@@ -191,7 +191,7 @@ function hook_drush_exit() {
 
 }
 
-/*
+/**
  * A commandfile may choose to decline to load for the current bootstrap
  * level by returning FALSE. This hook must be placed in MODULE.drush.load.inc.
  * @see drush_commandfile_list().
@@ -200,7 +200,7 @@ function hook_drush_load() {
 
 }
 
-/*
+/**
  * A commandfile may adjust the contents of any command structure
  * prior to dispatch.  @see core_drush_command_alter() for an example.
  */

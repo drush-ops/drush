@@ -128,7 +128,7 @@ function drush_test_run($specs = NULL) {
   }
 }
 
-/*
+/**
  * Run a test class via drush_invoke_process()
  * @param string $class
  *   The test class to run.

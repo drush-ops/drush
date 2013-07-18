@@ -348,7 +348,7 @@ function drush_help_visible($command_categories) {
   return $all;
 }
 
-/*
+/**
  * Print CLI table or HTML table listing all commands.
  */
 function drush_help_listing_print($command_categories, $format) {
@@ -376,7 +376,7 @@ function drush_help_listing_print($command_categories, $format) {
   }
 }
 
-/*
+/**
  * Organize commands into categories
  */
 function drush_help_categorize($implemented) {

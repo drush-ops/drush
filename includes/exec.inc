@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  *   Functions for executing system commands. (e.g. exec(), system(), ...).
  */
@@ -79,7 +79,7 @@ function drush_shell_exec($cmd) {
   return _drush_shell_exec(func_get_args());
 }
 
-/*
+/**
  * Returns executable code for invoking preferred test editor.
  *
  * The next line after calling this function is usually
@@ -217,7 +217,7 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL, $interactive =
   return $cmd;
 }
 
-/*
+/**
  * Execute bash command using proc_open().
  *
  * @returns

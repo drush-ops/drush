@@ -459,7 +459,7 @@ function _update_batch_command($id) {
   drush_batch_command($id);
 }
 
-/*
+/**
  * Return a 2 item array with
  *  - an array where each item is a 3 item associative array describing a pending update.
  *  - an array listing the first update to run, keyed by module.

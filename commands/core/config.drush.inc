@@ -391,28 +391,28 @@ function _drush_print_config_changes_table(array $config_changes) {
   drush_print_table($rows, TRUE);
 }
 
-/*
+/**
  * Command argument complete callback.
  */
 function drush_config_get_complete() {
   return _drush_config_complete();
 }
 
-/*
+/**
  * Command argument complete callback.
  */
 function drush_config_set_complete() {
   return _drush_config_complete();
 }
 
-/*
+/**
  * Command argument complete callback.
  */
 function drush_config_view_complete() {
   return _drush_config_complete();
 }
 
-/*
+/**
  * Command argument complete callback.
  */
 function drush_config_edit_complete() {

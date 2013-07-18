@@ -176,7 +176,7 @@ function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire =
   cache_set($cid, $data, $bin, $expire);
 }
 
-/*
+/**
  * All types of caches available for clearing. Contrib commands can alter in their own.
  */
 function drush_cache_clear_types($include_bootstraped_types = FALSE) {

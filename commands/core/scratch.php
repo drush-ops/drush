@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @file
  * Use this file as a php scratchpad for your Drupal site. You might want to
  * load a node, change it, and call node_save($node), for example. If you have
