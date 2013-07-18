@@ -6,6 +6,6 @@ libraries[drush_make][download][url] = "http://drupalcode.org/project/drush_make
 libraries[drush_make][download][filename] = "README.txt"
 
 ; Single file download
-libraries[jquery.cycle][download][type] = "get"
-libraries[jquery.cycle][download][url] = "https://github.com/downloads/malsup/cycle/jquery.cycle.all.2.88.min.js"
-libraries[jquery.cycle][download][filename] = "jquery.cycle.js"
+libraries[responsiveslides][download][type] = "get"
+libraries[responsiveslides][download][url] = "https://raw.github.com/viljamis/ResponsiveSlides.js/v1.54/responsiveslides.min.js"
+libraries[responsiveslides][download][filename] = "responsiveslides.js"
