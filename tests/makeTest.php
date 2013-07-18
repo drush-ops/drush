@@ -451,7 +451,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'File extraction',
         'makefile' => 'file.make',
         'build'    => TRUE,
-        'md5' => 'c7cab3930f644961a576d78769498172',
+        'md5' => '4e9883d6f9f6572af287635689c2545d',
         'options'  => array('no-core' => NULL),
       ),
       'defaults' => array(
