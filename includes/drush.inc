@@ -115,61 +115,6 @@ function drush_get_class($class_name, $constructor_args, $class_dir = NULL) {
 }
 
 /**
- * Check to see if a newer version of drush is available
- *
- * @return
- *   TRUE - A new version is available.
- *   FALSE - Error.
- *   NULL - No release available.
- */
-function drush_check_self_update() {
-  $explicit = FALSE;
-  $update = FALSE;
-  $error = "";
-
-  // Don't check unless we have a datestamp in drush.info
-  $drush_info = drush_read_drush_info();
-  if (($drush_info === FALSE) || (!array_key_exists('datestamp', $drush_info))) {
-    drush_log(dt('Cannot determine release date for drush'), 'notice');
-    return FALSE;
-  }
-
-  $is_dev = FALSE;
-
-  // Get release info for drush.
-  drush_include_engine('release_info', 'updatexml');
-  $request = pm_parse_project_version(array('drush'));
-  $info = release_info_get_releases($request);
-  // Check for newer releases based on the datestamp.
-  // We add 60 seconds to the drush.info date because of a drupal.org WTF. See http://drupal.org/node/1019356.
-  $version_date = $drush_info['datestamp'] + 60;
-  $newer_version = FALSE;
-  foreach ($info['drush']['releases'] as $version => $release_info) {
-    // We deliberately skip any dev releases unless the current release is a dev release.
-    if ((!array_key_exists('version_extra', $release_info) || ($release_info['version_extra'] != 'dev'))) {
-      if ($release_info['date'] > $version_date) {
-        $newer_version = $release_info['version'];
-        $version_date = $release_info['date'];
-        $is_dev = isset($release_info['version_extra']) && $release_info['version_extra'] == 'dev';
-        if ($is_dev) {
-          $newer_version .= " (" . date('Y-M-d', $version_date) . ")";
-        }
-      }
-    }
-  }
-
-  if ($newer_version) {
-    drush_print(dt('A newer version of drush, !version, is available.  You are currently running drush version !currentversion. The update process depends on how you installed drush. Some common update commands are: `pear upgrade drush/drush`,  `git pull`, `drush dl drush --destination=[/path/to/drush]`.' . "\n", array('!version' => $newer_version, '!currentversion' => DRUSH_VERSION)));
-    return TRUE;
-  }
-  else {
-    drush_log(dt("drush self-update check: drush !version is up-to-date.", array('!version' => DRUSH_VERSION)), 'notice');
-  }
-
-  return NULL;
-}
-
-/**
  * Generate an .ini file. used by archive-dump."
  *
  * @param array $ini

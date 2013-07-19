@@ -52,7 +52,6 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'options' => array(
       'pipe' => 'Print just the version number, and nothing else.',
-      'self-update' => 'Check for pending updates to Drush itself. Set to 0 to disable.',
     ),
     'outputformat' => array(
       'default' => 'key-value',
@@ -60,11 +59,6 @@ function core_drush_command() {
       'label' => 'Drush Version',
       'output-data-type' => 'format-single',
     ),
-  );
-  $items['self-update'] = array(
-    'description' => 'Check to see if there is a newer Drush release available.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
-    'aliases' => array('selfupdate'),
   );
   $items['core-cron'] = array(
     'description' => 'Run all cron hooks in all active modules for specified site.',
@@ -1231,17 +1225,6 @@ function drush_core_drupal_directory($target = 'root') {
  */
 function drush_core_version() {
   return DRUSH_VERSION;
-}
-
-function drush_core_post_version() {
-  // Next check to see if there is a newer drush.
-  if (!drush_get_context('DRUSH_PIPE') && drush_get_option('self-update', TRUE)) {
-    drush_check_self_update();
-  }
-}
-
-function drush_core_self_update() {
-  drush_check_self_update();
 }
 
 /**
