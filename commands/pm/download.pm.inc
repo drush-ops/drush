@@ -278,17 +278,19 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
  */
 function _pm_download_destination_lookup($type, $drupal_root, $sitepath, $create = FALSE) {
   if ($type == 'theme engine') {
-    $directory = 'themes/engines';
+    $destination = 'themes/engines';
   }
   // Profiles in Drupal < 8
   elseif (($type == 'profile') && (drush_drupal_major_version() < 8)) {
-    $directory = 'profiles';
+    $destination = 'profiles';
   }
   // Type: module, theme or profile.
   else {
-    $directory = $type . 's';
+    $destination = $type . 's';
     // Prefer /contrib if it exists.
-    $destination = $sitepath . '/' . $directory;
+    if ($sitepath) {
+      $destination = $sitepath . '/' . $destination;
+    }
     $contrib = $destination . '/contrib';
     if (is_dir($contrib)) {
       $destination = $contrib;
