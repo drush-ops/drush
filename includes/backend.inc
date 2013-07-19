@@ -901,7 +901,9 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
         $backend_options[$key] = $value;
       }
       if (!isset($command_options[$key])) {
-        $command_options[$key] = $value;
+        if (array_key_exists($key, $global_option_list)) {
+          $command_options[$key] = $value;
+        }
       }
     }
   }

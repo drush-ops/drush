@@ -655,6 +655,12 @@ function drush_redispatch_get_options() {
   unset($cli_context['php-options']);
   // cli overrides and command specific
   $options = $cli_context + drush_get_context('specific');
+  $global_option_list = drush_get_global_options(FALSE);
+  foreach (drush_get_context('alias') as $key => $value) {
+    if (array_key_exists($key, $global_option_list)) {
+      $options[$key] = $value;
+    }
+  }
 
   $options = array_diff_key($options, array_flip(drush_sitealias_site_selection_keys()));
   unset($options['command-specific']);
