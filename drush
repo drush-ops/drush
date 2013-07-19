@@ -120,6 +120,9 @@ if [ -n "$PHP_OPTIONS" ] ; then
   php_options="$php_options $PHP_OPTIONS"
 fi
 
+# Always disable magic_quotes_gpc and friends
+php_options="$php_options -d magic_quotes_gpc=Off -d magic_quotes_runtime=Off -d magic_quotes_sybase=Off"
+
 # Pass in the path to php so that drush knows which one to use if it
 # re-launches itself to run subcommands.  We will also pass in the php options.
 # Important note: Any options added here must be removed  when Drush processes

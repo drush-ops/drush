@@ -8,11 +8,6 @@
  * @requires PHP CLI 5.2.0, or newer.
  */
 
-// Always disable magic_quotes_gpc and friends
-ini_set("magic_quotes_gpc", "Off");
-ini_set("magic_quotes_runtime", "Off");
-ini_set("magic_quotes_sybase", "Off");
-
 require(dirname(__FILE__) . '/includes/bootstrap.inc');
 
 if (drush_bootstrap_prepare() === FALSE) {

@@ -387,7 +387,7 @@ function drush_get_global_options($brief = FALSE) {
   $options['pipe']               = array('short-form' => 'p', 'description' => "Emit a compact representation of the command for scripting.");
   $options['help']               = array('short-form' => 'h', 'description' => "This help system.");
   $options['version']            = array('description' => "Show drush version.");
-  $options['php']                = array('description' => "The absolute path to your PHP intepreter, if not 'php' in the path.", 'example-value' => '/path/to/file');
+  $options['php']                = array('description' => "The absolute path to your PHP intepreter, if not 'php' in the path.", 'example-value' => '/path/to/file', 'never-propagate' => TRUE);
   $options['interactive']        = array('short-form' => 'ia', 'description' => "Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).");
 
   if (!$brief) {
@@ -413,7 +413,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['backup-location']     = array('description' => "Specifies the directory where drush will store backups.");
     $options['confirm-rollback']    = array('description' => 'Wait for confirmation before doing a rollback when something goes wrong.');
     $options['complete-debug']      = array('hidden' => TRUE, 'description' => "Turn on debug mode forf completion code");
-    $options['php-options']         = array('description' => "Options to pass to php when running drush.  Only effective when using the `drush` script.");
+    $options['php-options']         = array('description' => "Options to pass to php when running drush.  Only effective when using the `drush` script.", 'never-propagate' => TRUE);
     $options['deferred-sanitization'] = array('hidden' => TRUE, 'description' => "Defer calculating the sanitization operations until after the database has been copied. This is done automatically if the source database is remote.");
     $options['remote-host']         = array('hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.');
     $options['remote-user']         = array('hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.');
