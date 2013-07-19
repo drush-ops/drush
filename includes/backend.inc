@@ -1091,9 +1091,6 @@ function drush_backend_generate_sitealias($backend_options) {
  *   A text string representing a fully escaped command.
  */
 function _drush_backend_generate_command($site_record, $command, $args = array(), $command_options = array(), $backend_options = array()) {
-  $drush_path = null;
-  $php = '';
-
   $site_record += array(
     'remote-host' => NULL,
     'remote-user' => NULL,
