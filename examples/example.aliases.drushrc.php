@@ -189,7 +189,7 @@
  *     '%files': Path to 'files' directory.  This will be looked up if not specified.
  *     '%root': A reference to the Drupal root defined in the 'root' item
  *       in the site alias record.
- * - 'php': path to custom php interpreter, defaults to /usr/bin/php
+ * - 'php': path to custom php interpreter. Windows support limited to Cygwin.
  * - 'php-options': commandline options for php interpreter, you may
  *   want to set this to '-d error_reporting="E_ALL^E_DEPRECATED"'
  * - 'variables' : An array of name/value pairs which override Drupal variables/config.

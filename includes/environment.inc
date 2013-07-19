@@ -616,9 +616,10 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
       $additional_options .= ' --php-options=' . drush_escapeshellarg($php_options, $os);
     }
   }
-  else {
-    $php = '';
+  elseif ($php && drush_has_bash($os)) {
+    $php = 'DRUSH_PHP=' . drush_escapeshellarg($php, $os) . ' ';
   }
+
   return $php . drush_escapeshellarg($drush_path, $os) . $additional_options;
 }
 
