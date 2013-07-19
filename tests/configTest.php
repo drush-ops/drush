@@ -44,8 +44,7 @@ class ConfigCase extends Drush_CommandTestCase {
     $this->assertTrue(in_array('system.site', $result), 'system.site found in list of config names with "system" prefix.');
 
     $this->drush('config-list', array('system'), $options += array('format' => 'json'));
-    $result = $this->getOutput();
-    $expected = json_decode($result);
-    $this->assertNotEmpty($expected, 'Valid, non-empty JSON output was returned.');
+    $result = $this->getOutputFromJSON();
+    $this->assertNotEmpty($result, 'Valid, non-empty JSON output was returned.');
   }
 }
