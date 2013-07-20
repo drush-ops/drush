@@ -23,7 +23,7 @@
  */
 function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
   if ($destination == '@prod') {
-    return drush_set_error(dt('Per examples/policy.drush.inc, you may never overwrite the production database.'));
+    return drush_set_error('POLICY_DENY', dt('Per examples/policy.drush.inc, you may never overwrite the production database.'));
   }
 }
 
@@ -76,7 +76,7 @@ function drush_policy_make_me_a_sandwich_validate() {
   else {
     $name = posix_getpwuid(posix_geteuid());
     if ($name['name'] !== 'root') {
-      return drush_set_error('MAKE_IT_YOUSELF', dt('What? Make your own sandwich.'));
+      return drush_set_error('POLICY_MAKE_IT_YOUSELF', dt('What? Make your own sandwich.'));
     }
   }
 }
