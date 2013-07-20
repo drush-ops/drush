@@ -245,6 +245,7 @@ function drush_global_options_command($brief = FALSE) {
   );
   $global_options_help += drush_command_defaults('global-options', 'global_options', __FILE__);
   drush_command_invoke_all_ref('drush_help_alter', $global_options_help);
+  ksort($global_options_help['options']);
 
   return $global_options_help;
 }

@@ -14,11 +14,16 @@ register_shutdown_function('drush_notify_shutdown_error');
  */
 function notify_drush_help_alter(&$command) {
   if ($command['command'] == 'global-options') {
-    $command['options']['notify'] = 'Use system notifications to signal command completion. If set to a number, that will be the number of seconds of command execution before the notification will be triggered.';
-    $command['options']['notify-audio'] = 'Trigger an audio alert to signal command completion.';
-
     // Do not include these in options in standard help.
     if ($command['#brief'] === FALSE) {
+      $command['options']['notify'] = array(
+        'description' => 'Use system notifications to signal command completion. If set to a number, commands that finish in fewer seconds will not trigger a notification.',
+        'example-value' => 60,
+      );
+      $command['options']['notify-audio'] = array(
+        'description' => 'Trigger an audio alert to signal command completion. If set to a number, commands that finish in fewer seconds will not trigger a notification.',
+        'example-value' => 60,
+      );
       $command['sub-options']['notify']['notify-cmd'] = 'Specify the shell command to trigger the notification.';
       $command['sub-options']['notify']['notify-cmd-audio'] = 'Specify the shell command to trigger the audio notification.';
     }
