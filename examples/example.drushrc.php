@@ -87,7 +87,7 @@
 
 // You can create a local cache of all projects checked out using
 // --package-handler=git_drupalorg; this can be faster for repeated
-// downloads, but can be dangerous. See: http://randyfay.com/node/119
+// downloads, but can be brittle. See: http://randyfay.com/node/119
 # $options['cache'] = TRUE;
 
 // Load a drushrc.php configuration file from the current working directory.
