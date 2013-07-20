@@ -14,6 +14,11 @@ class SqlDumpTest extends Drush_CommandTestCase {
    * Test that a dump file is created successfully.
    */
   function testSqlDump() {
+    if (strpos(UNISH_DB_URL, 'sqlite') !== FALSE) {
+      $this->markTestSkipped('SQL Dump does not apply to SQLite.');
+      return;
+    }
+
     $this->sites = $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
     $uri = 'dev';
