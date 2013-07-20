@@ -15,16 +15,15 @@ and DB migrations, and misc utilities like run cron or clear cache.
 REQUIREMENTS
 ============
 
-* To use Drush from the command line, you'll need a CLI-mode capable PHP binary
-  version 5.3 or greater.
+* To use Drush, you'll need a command line PHP version 5.3+.
 
 * Drush commands that work with git require git 1.7 or greater.
 
-* Drush is designed for a Unix-like OS (Linux, OS X)
+* Drush works best on a Unix-like OS (Linux, OS X)
 
 * Most Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
 
-* Drush works with Drupal 6, Drupal 7, and usually Drupal 8.
+* Drush 6 works with Drupal 6 or Drupal 7.
 
 
 INSTALLATION
@@ -85,7 +84,7 @@ below.
 6. Optional. See examples/example.bashrc for instructions on how to add some
    useful shell aliases that provides even tighter integration between
    drush and bash. You may source this file directly into your shell by adding to
-   your .bashrc (rr equivalent): source /path/to/drush/examples/example.bashrc
+   your .bashrc (or equivalent): source /path/to/drush/examples/example.bashrc
 
 7. Optional. If you didn't source it in Step 6 above, see top of
    drush.complete.sh file for instructions adding bash completion for drush
@@ -262,7 +261,7 @@ For even more documentation, use the 'topic' command:
   $ drush topic
 
 For a full list of Drush commands and documentation by version, visit
-http://drush.ws.
+http://www.drush.org.
 
 Many commands support a --pipe option which returns machine readable output.
 For example, return a list of enabled modules:
