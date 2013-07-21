@@ -132,7 +132,7 @@ function _drush_sitealias_all_list() {
 }
 
 /**
- * Return the list of sites (aliases or local) that the
+ * Return the list of site aliases (remote or local) that the
  * user specified on the command line.  If none were specified,
  * then all are returned.
  */
@@ -176,7 +176,7 @@ function _drush_sitealias_user_specified_list() {
 }
 
 /**
- * Print out the specified site aliases using the format
+ * Print out the specified site aliases (or else all) using the format
  * specified.
  */
 function drush_sitealias_print() {
@@ -185,7 +185,7 @@ function drush_sitealias_print() {
     return FALSE;
   }
   ksort($site_list);
-  $with_db = (drush_get_option('with-db') != null) || (drush_get_option('with-db-url') != null);
+  $with_db = (drush_get_option('with-db') != NULL) || (drush_get_option('with-db-url') != NULL);
 
   $site_specs = array();
   foreach ($site_list as $site => $alias_record) {
