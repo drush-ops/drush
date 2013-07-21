@@ -40,11 +40,11 @@ class shellAliasesCase extends Drush_CommandTestCase {
       '#peer' => '@live',
       'path-aliases' => array (
         '%mypath' => '/srv/data/mypath',
-        '%sandbox' => '" . UNISH_SANDBOX . "'
+        '%sandbox' => UNISH_SANDBOX,
       ),
     );
     $contents = unish_file_aliases($aliases);
-    file_put_contents(UNISH_SANDBOX . '/aliases.drushrc.php', $contents));
+    file_put_contents(UNISH_SANDBOX . '/aliases.drushrc.php', $contents);
   }
 
   /**
