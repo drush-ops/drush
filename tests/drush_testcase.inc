@@ -481,6 +481,8 @@ abstract class Drush_UnitTestCase extends Drush_TestCase {
     parent::setUpBeforeClass();
     require_once(dirname(__FILE__) . '/../includes/bootstrap.inc');
     drush_bootstrap_prepare();
+    // Need to set DRUSH_COMMAND so that drush will be called and not phpunit
+    define('DRUSH_COMMAND', UNISH_DRUSH);
   }
 
   public static function tearDownAfterClass() {

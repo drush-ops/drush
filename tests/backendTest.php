@@ -258,9 +258,6 @@ class backendUnitCase extends Drush_UnitTestCase {
    *     to invoke a non-blocking process.
    */
   function testBackendFork() {
-    // Need to set DRUSH_COMMAND so that drush will be called and not phpunit
-    define('DRUSH_COMMAND', UNISH_DRUSH);
-
     // Ensure that file that will be created by forked process does not exist
     // before invocation.
     $test_file = UNISH_SANDBOX . '/fork_test.txt';
