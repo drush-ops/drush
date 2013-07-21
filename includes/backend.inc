@@ -772,7 +772,7 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
   $max_name_length = 0;
   $label_separator = '';
   if (!array_key_exists('no-label', $common_options) && (count($invocation_options) > 1)) {
-    $label_separator = array_key_exists('#label-separator', $common_options) ? $common_options['#label-separator'] : ' >> ';
+    $label_separator = array_key_exists('label-separator', $common_options) ? $common_options['label-separator'] : ' >> ';
     foreach ($invocation_options as $site => $item) {
       $backend_options = $item['backend-options'];
       if (!array_key_exists('#output-label', $backend_options)) {
