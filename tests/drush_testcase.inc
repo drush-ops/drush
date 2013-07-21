@@ -274,7 +274,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
       );
       // Make an alias for the site
       $alias_definition = array($subdir => array('root' => $root,  'uri' => $subdir));
-      file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $subdir . '.alias.drushrc.php', $this->file_aliases($alias_definition));
+      file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $subdir . '.alias.drushrc.php', unish_file_aliases($alias_definition));
     }
     return $this->sites;
   }
@@ -443,17 +443,6 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     }
     return $major;
   }
-
-  /**
-   * Prepare the contents of an aliases file.
-   */
-  function file_aliases($aliases) {
-    foreach ($aliases as $name => $alias) {
-      $records[] = sprintf('$aliases[\'%s\'] = %s;', $name, var_export($alias, TRUE));
-    }
-    $contents = "<?php\n\n" . implode("\n\n", $records);
-    return $contents;
-  }
 }
 
 /**
@@ -606,6 +595,17 @@ function parse_backend_output($string) {
     }
   }
   return $string;
+}
+
+/**
+ * Prepare the contents of an aliases file.
+ */
+function unish_file_aliases($aliases) {
+  foreach ($aliases as $name => $alias) {
+    $records[] = sprintf('$aliases[\'%s\'] = %s;', $name, var_export($alias, TRUE));
+  }
+  $contents = "<?php\n\n" . implode("\n\n", $records);
+  return $contents;
 }
 
  // This code is in global scope.

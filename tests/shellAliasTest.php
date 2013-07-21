@@ -34,20 +34,17 @@ class shellAliasesCase extends Drush_CommandTestCase {
       );
     ";
     file_put_contents(UNISH_SANDBOX . '/b/drushrc.php', trim($contents));
-    $contents = "
-      <?php
-
-      \$aliases['myalias'] = array (
-        'root' => '/path/to/drupal',
-        'uri' => 'mysite.org',
-        '#peer' => '@live',
-        'path-aliases' => array (
-          '%mypath' => '/srv/data/mypath',
-          '%sandbox' => '" . UNISH_SANDBOX . "'
-        ),
-      );
-    ";
-    file_put_contents(UNISH_SANDBOX . '/aliases.drushrc.php', trim($contents));
+    $aliases['myalias'] = array(
+      'root' => '/path/to/drupal',
+      'uri' => 'mysite.org',
+      '#peer' => '@live',
+      'path-aliases' => array (
+        '%mypath' => '/srv/data/mypath',
+        '%sandbox' => '" . UNISH_SANDBOX . "'
+      ),
+    );
+    $contents = unish_file_aliases($aliases);
+    file_put_contents(UNISH_SANDBOX . '/aliases.drushrc.php', $contents));
   }
 
   /**

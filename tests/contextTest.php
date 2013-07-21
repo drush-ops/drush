@@ -68,7 +68,7 @@ EOD;
         ),
       ),
     );
-    $contents = $this->file_aliases($aliases);
+    $contents = unish_file_aliases($aliases);
     $return = file_put_contents($path, $contents);
   }
 
