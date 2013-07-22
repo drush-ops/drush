@@ -150,7 +150,7 @@ function _drush_sitealias_user_specified_list() {
   }
   // If the user provided no args, then we will return everything.
   else {
-    drush_set_default_outputformat('list', array('field-labels' => array('#name' => 'Name')));
+    drush_set_default_outputformat('list');
     $site_list = _drush_sitealias_all_list();
 
     // Filter out the hidden items
@@ -161,7 +161,7 @@ function _drush_sitealias_user_specified_list() {
     }
   }
 
-  // Filter out the local sites
+  // Filter for only local sites if specified.
   if (drush_get_option('local', FALSE)) {
     foreach ($site_list as $site_name => $one_site) {
       if ( (array_key_exists('remote-site', $one_site)) ||
