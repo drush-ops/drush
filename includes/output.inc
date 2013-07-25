@@ -387,6 +387,9 @@ function drush_select_output_fields($input, $fields, $mapping = array(), $defaul
  *   a '/', that list the elements of the array to access.  This
  *   works much like a very simple version of xpath for arrays, with
  *   all items being treated identically (like elements).
+ * @param $mapping:
+ *   (optional) An array whose keys may correspond to the $path parameter and
+ *   whose values are the corresponding paths to be used in $input.
  *
  * Example 1:
  *
@@ -399,6 +402,13 @@ function drush_select_output_fields($input, $fields, $mapping = array(), $defaul
  *   $input = array('ca' => array('sf' => array('mission'=>array('1700'=>'woodward'))));
  *   $path = 'ca/sf/mission/1701';
  *   result: 'woodward'
+ *
+ * Example 3:
+ *
+ *   $input = array('#name' => 'site.dev', '#id' => '222');
+ *   $path = 'name';
+ *   $mapping = array('name' => '#name');
+ *   result: 'site.dev';
  */
 function drush_lookup_field_by_path($input, $path, $mapping = array(), $default_value = NULL) {
   $result = '';
@@ -471,24 +481,28 @@ function drush_hide_empty_fields($input, $fields) {
  *    array(
  *      'row1' => array('col1' => 'data', 'col2' => 'data'),
  *      'row2' => array('col1' => 'data', 'col2' => 'data'),
+ *    )
  * @param $header
  *    array('col1' => 'Column 1 Label', 'col2' => 'Column 2 Label')
  * @param $metadata
- *    An array of special options
- *      'strip-tags' - call the strip_tags function on the data
+ *    (optional) An array of special options, all optional:
+ *    - strip-tags: call the strip_tags function on the data
  *         before placing it in the table
- *      'concatenate-columns' - an array of:
- *          'dest-col' => array('src-col1', 'src-col2')
+ *    - concatenate-columns: an array of:
+ *         - dest-col: array('src-col1', 'src-col2')
  *         Appends all of the src columns with whatever is
  *         in the destination column.  Appended columns are
  *         separated by newlines.
- *       'transform-columns' - an array of:
- *           'dest-col' => array('from' => 'to'),
+ *    - transform-columns: an array of:
+ *         - dest-col: array('from' => 'to'),
  *         Transforms any occurance of 'from' in 'dest-col' to 'to'.
- *       'format-cell' - Drush output format name to use to format
+ *    - format-cell: Drush output format name to use to format
  *         any cell that is an array.
- *       'process-cell' - php function name to use to process
+ *    - process-cell: php function name to use to process
  *         any cell that is an array.
+ *    - field-mappings: an array whose keys are some or all of the keys in
+ *         $header and whose values are the corresponding keys to use when
+ *         indexing the values of $rows_of_keyvalue_table.
  * @return
  *    An array of arrays
  */
