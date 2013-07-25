@@ -237,12 +237,12 @@ function drush_views_list() {
     $row[] = $view->id();
     $row[] = $view->label();
     $row[] = $view->get('description');
-    $row[] = $view->isEnabled() ? dt('Enabled') : dt('Disabled');
+    $row[] = $view->status() ? dt('Enabled') : dt('Disabled');
     $row[] = $view->get('tag');
 
     // Place the row in the appropiate array, so we can have disabled views at
     // the bottom.
-    if ($view->isEnabled()) {
+    if ($view->status()) {
       $enabled_views[] = $row;
       }
     else{
