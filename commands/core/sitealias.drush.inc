@@ -66,6 +66,7 @@ function sitealias_drush_command() {
     'description' => 'Reset a persistently set site.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'handle-remote-commands' => TRUE,
+    'aliases' => array('unuse'),
   );
   return $items;
 }
