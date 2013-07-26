@@ -51,6 +51,7 @@ function sitealias_drush_command() {
   $items['site-set'] = array(
     'description' => 'Set a site alias to work on that will persist for the current session.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'handle-remote-commands' => TRUE,
     'arguments' => array(
       'site' => 'Site specification to use, or "-" for previous site.',
     ),
