@@ -34,7 +34,7 @@ class WatchdogCase extends Drush_CommandTestCase {
     $this->drush('watchdog-show', array(), $options);
     $output = $this->getOutput();
     $this->assertGreaterThan(substr_count($output, $char), $message_chars);
-    $this->drush('watchdog-show', array(), $options + array('full' => NULL));
+    $this->drush('watchdog-show', array(), $options + array('extended' => NULL));
     $output = $this->getOutput();
     $this->assertGreaterThanOrEqual($message_chars, substr_count($output, $char));
 
