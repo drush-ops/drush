@@ -109,7 +109,7 @@ function drush_test_run($specs = NULL) {
     if (!drush_get_option('dirty')) {
       simpletest_clean_environment();
     }
-    return;
+    return drush_get_error() === DRUSH_SUCCESS;
   }
 
   // See if we got a list of specs.
