@@ -250,7 +250,7 @@ function drush_format_table($rows, $header = FALSE, $widths = array(), $console_
 
 function _drush_format_table($rows, $header = FALSE, $widths = array(), $console_table_options = array()) {
   // Add defaults.
-  $console_table_options += array(CONSOLE_TABLE_ALIGN_LEFT , CONSOLE_TABLE_BORDER_ASCII);
+  $console_table_options += array(CONSOLE_TABLE_ALIGN_LEFT , '');
   $tbl = new ReflectionClass('Console_Table');
   $tbl = $tbl->newInstanceArgs($console_table_options);
 
