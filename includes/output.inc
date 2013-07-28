@@ -234,11 +234,13 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = 
  * @param $widths
  *   The widths of each column (in characters) to use - if not specified this
  *   will be determined automatically, based on a "best fit" algorithm.
+ * @param array $console_table_options
+ *   An array that is passed along when constructing a Console_Table instance.
  * @return $output
  *   The formatted output.
  */
-function drush_format_table($rows, $header = FALSE, $widths = array()) {
-  $tbl = _drush_format_table($rows, $header, $widths);
+function drush_format_table($rows, $header = FALSE, $widths = array(), $console_table_options = array()) {
+  $tbl = _drush_format_table($rows, $header, $widths, $console_table_options);
   $output = $tbl->getTable();
   if (!stristr(PHP_OS, 'WIN')) {
     $output = str_replace("\r\n", PHP_EOL, $output);
@@ -246,8 +248,11 @@ function drush_format_table($rows, $header = FALSE, $widths = array()) {
   return $output;
 }
 
-function _drush_format_table($rows, $header = FALSE, $widths = array()) {
-  $tbl = new Console_Table(CONSOLE_TABLE_ALIGN_LEFT , '');
+function _drush_format_table($rows, $header = FALSE, $widths = array(), $console_table_options = array()) {
+  // Add defaults.
+  $console_table_options += array(CONSOLE_TABLE_ALIGN_LEFT , CONSOLE_TABLE_BORDER_ASCII);
+  $tbl = new ReflectionClass('Console_Table');
+  $tbl = $tbl->newInstanceArgs($console_table_options);
 
   $auto_widths = drush_table_column_autowidth($rows, $widths);
 
