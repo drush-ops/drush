@@ -327,6 +327,16 @@ function _drush_sitealias_site_dir_to_uri($site_dir) {
 }
 
 /**
+ * Validation callback for drush site-set.
+ */
+function drush_sitealias_site_set_validate() {
+  if (!function_exists('posix_getppid')) {
+    $args = array('!command' => 'site-set', '!dependencies' => 'POSIX');
+    return drush_set_error('DRUSH_COMMAND_PHP_DEPENDENCY_ERROR', dt('Command !command needs the following PHP extensions installed/enabled to run: !dependencies.', $args));
+  }
+}
+
+/**
  * Set the DRUPAL_SITE variable by writing it out to a temporary file that we
  * then source for persistent site switching.
  *
