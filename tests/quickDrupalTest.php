@@ -63,7 +63,7 @@ class quickDrupalCase extends Drush_CommandTestCase {
         'options'  => array(
           'skip' => NULL, // for speed up enable of devel module.
           'browser' => 0,
-          'profile' => 'testing',
+          'profile' => UNISH_DRUPAL_MAJOR_VERSION == 6 ? 'standard' : 'testing',
         ),
       ),
     );

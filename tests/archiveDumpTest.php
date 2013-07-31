@@ -20,7 +20,7 @@ class archiveDumpCase extends Drush_CommandTestCase {
    * Install a site and dump it to an archive.
    */
   private function archiveDump($no_core) {
-    $this->fetchInstallDrupal(self::uri, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'testing');
+    $this->fetchInstallDrupal(self::uri, TRUE, UNISH_DRUPAL_MAJOR_VERSION);
     $root = $this->webroot();
     $dump_dest = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'dump.tar.gz';
     $options = array(
