@@ -9,6 +9,10 @@
 class QueueCase extends Drush_CommandTestCase {
 
   function testQueue() {
+    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
+      $this->markTestSkipped("Queue API not available in Drupal 6.");
+    }
+
     $sites = $this->setUpDrupal(1, TRUE);
     $options = array(
       'yes' => NULL,
