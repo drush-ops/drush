@@ -128,12 +128,12 @@ drush_invoke("version", $arg);
 
     $this->drush('core-requirements', array(), $options);
     $loaded = $this->getOutputFromJSON();
-    // Pick a substring that is valid for D7/D8.
+    // Pick a subset that are valid for D6/D7/D8.
     $expected = array(
-      'install_profile' => -1,
-      'node_access' => -1,
+      // 'install_profile' => -1,
+      // 'node_access' => -1,
       'php' => -1,
-      'php_extensions' => -1,
+      // 'php_extensions' => -1,
       'php_memory_limit' => -1,
       'php_register_globals' => -1,
       'settings.php' => -1,
