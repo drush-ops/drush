@@ -388,7 +388,8 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     *   An exit code.
     */
   function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL, $env = array()) {
-    $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options');
+    $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend');
+    $hide_stderr = FALSE;
     // insert "cd ... ; drush"
     $cmd[] = $cd ? sprintf('cd %s &&', self::escapeshellarg($cd)) : NULL;
     $cmd[] = UNISH_DRUSH;
@@ -397,6 +398,10 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     foreach ($options as $key => $value) {
       if (in_array($key, $global_option_list)) {
         unset($options[$key]);
+        if ($key == 'backend') {
+          $hide_stderr = TRUE;
+          $value = NULL;
+        }
         if (is_null($value)) {
           $cmd[] = "--$key";
         }
@@ -429,6 +434,9 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
       }
     }
     $cmd[] = $suffix;
+    if ($hide_stderr) {
+      $cmd[] = '2>/dev/null';
+    }
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs
     return $this->execute(implode(' ', $exec), $expected_return, $env);
   }

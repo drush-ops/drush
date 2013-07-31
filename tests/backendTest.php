@@ -58,7 +58,7 @@ EOD;
    * General handling of site aliases will be in sitealiasTest.php.
    */
   function testOrigin() {
-    $exec = sprintf('%s %s version arg1 arg2 --simulate --ssh-options=%s | grep ssh', UNISH_DRUSH, self::escapeshellarg('user@server/path/to/drupal#sitename'), self::escapeshellarg('-i mysite_dsa'));
+    $exec = sprintf('%s %s version arg1 arg2 --simulate --ssh-options=%s 2>/dev/null | grep ssh', UNISH_DRUSH, self::escapeshellarg('user@server/path/to/drupal#sitename'), self::escapeshellarg('-i mysite_dsa'));
     $this->execute($exec);
     $bash = $this->escapeshellarg('drush  --uri=sitename --root=/path/to/drupal  version arg1 arg2 2>&1');
     $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash 2>&1";
@@ -75,7 +75,7 @@ EOD;
   */
   function testTarget() {
     $stdin = json_encode(array('filter'=>'sql'));
-    $exec = sprintf('echo %s | %s version --backend', self::escapeshellarg($stdin), UNISH_DRUSH);
+    $exec = sprintf('echo %s | %s version --backend 2>/dev/null', self::escapeshellarg($stdin), UNISH_DRUSH);
     $this->execute($exec);
     $parsed = parse_backend_output($this->getOutput());
     $this->assertTrue((bool) $parsed, 'Successfully parsed backend output');
@@ -226,10 +226,17 @@ EOD;
       'backend' => NULL,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
     );
-    $read_sizes_to_test = array(4096, 128, 16);
+    $min = 1;
+    $max = 4;
+    $read_sizes_to_test = array(4096);
+    if (in_array('--debug', $_SERVER['argv'])) {
+      $read_sizes_to_test[] = 128;
+      $read_sizes_to_test[] = 16;
+      $max = 16;
+    }
     foreach ($read_sizes_to_test as $read_size) {
       $log_message="";
-      for ($i = 1; $i <= 16; $i++) {
+      for ($i = $min; $i <= $max; $i++) {
         $log_message .= "X";
         $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('log-message' => '$log_message', 'x' => 'y$read_size', 'strict' => 0, 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET', '#process-read-size' => $read_size)); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
         $this->drush('php-eval', array($php), $options);
