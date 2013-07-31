@@ -9,6 +9,10 @@
 class fieldCase extends Drush_CommandTestCase {
 
   public function testField() {
+    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
+      $this->markTestSkipped("Field API not available in Drupal 6.");
+    }
+
     $sites = $this->setUpDrupal(1, TRUE);
     $options = array(
       'yes' => NULL,
