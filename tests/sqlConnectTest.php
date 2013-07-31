@@ -24,14 +24,15 @@ class SqlConnectCase extends Drush_CommandTestCase {
 
     // Not all drivers need -e option like sqlite
     $shell_options = "-e";
-    if (strpos(UNISH_DB_URL, 'mysql') !== FALSE) {
+    $db_driver = $this->db_driver();
+    if ($db_driver == 'mysql') {
       $this->assertRegExp('/^mysql --database=[^\s]+ --host=[^\s]+ --user=[^\s]+ --password=.*$/', $output);
     }
-    elseif (strpos(UNISH_DB_URL, 'sqlite') !== FALSE) {
+    elseif ($db_driver == 'sqlite') {
       $this->assertContains('sqlite3', $output);
       $shell_options = '';
     }
-    elseif (strpos(UNISH_DB_URL, 'pgsql') !== FALSE) {
+    elseif ($db_driver == 'pgsql') {
       $this->assertRegExp('/^psql --dbname=[^\s]+ --host=[^\s]+ --port=[^\s] --username=[^\s]+/', $output);
     }
     else {

@@ -22,7 +22,7 @@ class sqlSyncTest extends Drush_CommandTestCase {
    * General handling of site aliases will be in sitealiasTest.php.
    */
   public function testLocalSqlSync() {
-    if (strpos(UNISH_DB_URL, 'sqlite') !== FALSE) {
+    if ($this->db_driver() == 'sqlite') {
       $this->markTestSkipped('SQL Sync does not apply to SQLite.');
       return;
     }

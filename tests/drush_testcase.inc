@@ -231,15 +231,21 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     return substr(UNISH_DB_URL, 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : UNISH_DB_URL . '/unish_' . $env;
   }
 
+  function db_driver($db_url = UNISH_DB_URL) {
+    return parse_url(UNISH_DB_URL, PHP_URL_SCHEME);
+  }
+
   function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
     $root = $this->webroot();
+    $major_version = substr($version_string, 0, 1);
 
     if (is_null($profile)) {
-      $profile = substr($version_string, 0, 1) >= 7 ? 'testing' : 'default';
+      $profile = $major_version >= 7 ? 'testing' : 'default';
     }
-    $db_driver = parse_url(UNISH_DB_URL, PHP_URL_SCHEME);
+    $db_driver = $this->db_driver(UNISH_DB_URL);
+
     $cache_keys = array($num_sites, $install ? 'install' : 'noinstall', $version_string, $profile, $db_driver);
     $source = $this->directory_cache('environments') . '/' . implode('-', $cache_keys) . '.tar.gz';
     if (file_exists($source)) {
@@ -253,7 +259,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
         $this->fetchInstallDrupal($subdir, $install, $version_string, $profile);
       }
       // Write an empty sites.php if we are on D8+. Needed for multi-site.
-      if (UNISH_DRUPAL_MAJOR_VERSION >= 8 && !file_exists($root . '/sites/sites.php')) {
+      if ($major_version >= 8 && !file_exists($root . '/sites/sites.php')) {
         copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
       }
       $options = array(
@@ -282,6 +288,12 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
   function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
     $root = $this->webroot();
     $site = "$root/sites/$env";
+
+
+    // Validate
+    if (substr($version_string, 0, 1) == 6 && $this->db_driver(UNISH_DB_URL) == 'sqlite') {
+      $this->markTestSkipped("Drupal 6 does not support SQLite.");
+    }
 
     // Download Drupal if not already present.
     if (!file_exists($root)) {
