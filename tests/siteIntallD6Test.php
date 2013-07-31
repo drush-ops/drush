@@ -71,7 +71,7 @@ class siteInstallD6Case extends Drush_CommandTestCase {
       'uri' => $site,
     );
 
-    $this->drush('vget', array($name), $options);
+    $this->drush('variable-get', array($name), $options);
     $this->assertEquals($name . ': "' . $value . '"', $this->getOutput());
   }
 }
