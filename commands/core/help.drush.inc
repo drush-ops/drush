@@ -135,7 +135,7 @@ function drush_format_help_section($command, $section) {
     $help_attributes['label'] = $name;
     call_user_func_array($formatter, array($command, &$help_attributes));
     if (!array_key_exists('hidden', $help_attributes)) {
-      $rows[] = array($help_attributes['label'], $help_attributes['description']);
+      $rows[] = array('label' => $help_attributes['label'], 'description' => $help_attributes['description']);
       // Process the subsections too, if any
       if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
         $rows = array_merge($rows, _drush_format_help_subsection($command, $section, $name, $formatter));
@@ -173,7 +173,7 @@ function _drush_format_help_subsection($command, $section, $subsection, $formatt
     $help_attributes['label'] = $name;
     call_user_func_array($formatter, array($command, &$help_attributes));
     if (!array_key_exists('hidden', $help_attributes)) {
-      $rows[] = array($prefix . $help_attributes['label'], $help_attributes['description']);
+      $rows[] = array('label' => $prefix . $help_attributes['label'], 'description' => $help_attributes['description']);
       // Process the subsections too, if any
       if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
         $rows = array_merge($rows, _drush_format_help_subsection($command, $section, $name, $formatter, $prefix . '  '));

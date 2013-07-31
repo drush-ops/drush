@@ -346,6 +346,13 @@ function core_drush_command() {
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'csv',
+      'field-labels' => array('label' => 'Label', 'description' => 'Description'),
+      // 'fields-default' => array('module', 'update_id', 'description'),
+      'output-data-type' => 'format-table',
+    ),
   );
   $items['core-quick-drupal'] = array(
     'description' => 'Download, install, serve and login to Drupal with minimal configuration and dependencies.',
@@ -847,10 +854,7 @@ function drush_core_global_options() {
   drush_print(dt('These options are applicable to most drush commands.'));
   drush_print();
   $fake = drush_global_options_command(FALSE);
-  $global_option_rows = drush_format_help_section($fake, 'options');
-  drush_print_table($global_option_rows);
-  drush_print();
-  drush_print("See also: `drush topic docs-strict-options`");
+  return drush_format_help_section($fake, 'options');
 }
 
 function _drush_core_is_named_in_array($key, $the_array) {
