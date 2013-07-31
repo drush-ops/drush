@@ -15,7 +15,8 @@ class cacheCommandCase extends Drush_CommandTestCase {
     );
 
     // Test the cache get command.
-    $this->drush('cache-get', array('schema'), $options + array('format' => 'json'));
+    $key = UNISH_DRUPAL_MAJOR_VERSION == 6 ? 'variables' : 'schema';
+    $this->drush('cache-get', array($key), $options + array('format' => 'json'));
     $schema = $this->getOutputFromJSON('data');
     $this->assertNotEmpty($schema);
 
