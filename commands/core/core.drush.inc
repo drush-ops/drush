@@ -350,7 +350,6 @@ function core_drush_command() {
       'default' => 'table',
       'pipe-format' => 'csv',
       'field-labels' => array('label' => 'Label', 'description' => 'Description'),
-      // 'fields-default' => array('module', 'update_id', 'description'),
       'output-data-type' => 'format-table',
     ),
   );
