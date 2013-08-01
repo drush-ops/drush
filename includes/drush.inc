@@ -1102,9 +1102,8 @@ function drush_preflight_command_dispatch() {
   $remote_host = drush_get_option('remote-host');
   // Get the command early so that we can allow commands to directly handle remote aliases if they wish
   $command = drush_parse_command();
-  if (isset($command)) {
-    drush_command_default_options($command);
-  }
+  drush_command_default_options($command);
+
   // If the command sets the 'strict-option-handling' flag, then we will remove
   // any cli options that appear after the command name form the 'cli' context.
   // The cli options that appear before the command name are stored in the
@@ -1150,9 +1149,9 @@ function drush_preflight_command_dispatch() {
 
     // Force interactive mode if there is a single remote target.  #interactive is added by drush_do_command_redispatch
     drush_set_option('interactive', TRUE);
-    $values = drush_do_command_redispatch(isset($command) ? $command : $command_name, $args, $remote_host, $remote_user);
+    $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, $remote_host, $remote_user);
     // In 'interactive' mode, $values is the result code from drush_shell_proc_open.
-    // TODO: in _drush_backend_invoke, return array('error_status' => $ret) instead for uniformity.
+    // @todo: in _drush_backend_invoke, return array('error_status' => $ret) instead for uniformity.
     if (!is_array($values) && ($values != 0)) {
       // Force an error result code.  Note that drush_shutdown() will still run.
       drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
