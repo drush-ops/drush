@@ -56,7 +56,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'args' => array('drush version'),
         'options' => array(),
         'format' => 'list',
-        'output_filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev'),
+        'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev'),
         'expected' => '0.0-dev',
       ),
 //      array(
@@ -64,7 +64,7 @@ class outputFormatCase extends Drush_CommandTestCase {
 //        'command' => 'core-status',
 //        'args' => array('drush'),
 //        'format' => 'ini',
-//        'output_filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
+//        'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
 //        'expected' => 'drush-version=0.0-dev
 //drush-conf=
 //drush-alias-files=/etc/drush/dev.alias.drushrc.php',
@@ -75,7 +75,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'args' => array('drush'),
         'options' => array(),
         'format' => 'var_export',
-        'output_filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
+        'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
         'expected' => "array(
   'drush-version' => '0.0-dev',
   'drush-conf' => array(),
@@ -90,7 +90,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'args' => array('drush'),
         'options' => array(),
         'format' => 'key-value',
-        'output_filter' => array('/[0-9]+\.[0-9]+-dev/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
+        'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
         'expected' => "Drush version         :  0.0-dev
  Drush configuration   :
  Drush alias files     :  /etc/drush/dev.alias.drushrc.php",
