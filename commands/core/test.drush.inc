@@ -31,7 +31,15 @@ function test_drush_command() {
       'xml' => 'Output verbose test results to a specified directory using the JUnit test reporting format. Useful for integrating with Jenkins.'
 
     ),
-    'drupal dependencies' => array('simpletest'),
+    'outputformat' => array(
+      'default' => 'table',
+      'field-labels' => array(
+        'group' => 'Group',
+        'class' => 'Class',
+        'name' => 'Name',
+      ),
+      'output-data-type' => 'format-table',
+    ),
     // If you DRUSH_BOOTSTRAP_DRUPAL_LOGIN, you fall victim to http://drupal.org/node/974768. We'd like
     // to not bootstrap at all but simpletest uses Drupal to discover test classes,
     // cache the lists of tests, file_prepare_directory(), variable lookup like
@@ -195,17 +203,12 @@ function simpletest_drush_test_groups($tests) {
 
 // Print a listing of all available tests
 function drush_test_list($groups) {
-  $rows[] = array(dt('Command'), dt('Description'));
-  $rows[] = array('-------', '-----------');
   foreach ($groups as $group_name => $group_tests) {
     foreach ($group_tests as $test_class => $test_info) {
-      if (!isset($rows[$test_info['group']])) {
-        $rows[$test_info['group']] = array($group_name, $test_info['group']);
-      }
-      $rows[] = array("  {$test_class}", "  {$test_info['name']}");
+      $rows[] = array('group' => $group_name, 'class' => $test_class, 'name' => $test_info['name']);
     }
   }
-  return drush_print_table($rows, TRUE);
+  return $rows;
 }
 
 function drush_test_get_all_tests() {
