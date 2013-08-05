@@ -66,8 +66,6 @@ function pm_drush_help($section) {
       return $message;
     case 'drush:pm-updatecode-postupdate':
       return dt("This is a helper command needed by updatecode. It is used to check for db updates in a backend process after code updated have been performed. We need to run this task in a separate process to not conflict with old code already in memory.");
-      case 'drush:pm-releases':
-      return dt("View all releases for a given drupal.org project. Useful for deciding which version to install/update.");
     case 'drush:pm-download':
       return dt("Download Drupal core or projects from drupal.org (Drupal core, modules, themes or profiles) and other sources. It will automatically figure out which project version you want based on its recommended release, or you may specify a particular version.
 
@@ -286,6 +284,14 @@ function pm_drush_command() {
     ),
     'aliases' => array('rl'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'csv',
+      'field-labels' => array('project' => 'Project', 'version' => 'Release', 'date' => 'Date', 'status' => 'Status'),
+      'fields-default' => array('project', 'version', 'date', 'status'),
+      'fields-pipe' => array('project', 'version', 'date', 'status'),
+      'output-data-type' => 'format-table',
+    ),
     'engines' => array(
       'release_info',
     ),
@@ -1231,22 +1237,17 @@ function drush_pm_releases() {
   $all = drush_get_option('all', FALSE);
   $dev = drush_get_option('dev', FALSE);
   foreach ($info as $name => $project) {
-    $header = dt('------- RELEASES FOR \'!name\' PROJECT -------', array('!name' => strtoupper($name)));
-    $rows = array();
-    $rows[] = array(dt('Release'), dt('Date'), dt('Status'));
     $releases = release_info_filter_releases($project['releases'], $all, $dev);
-    foreach ($releases as $release) {
-      $rows[] = array(
-        $release['version'],
-        gmdate('Y-M-d', $release['date']),
-        implode(', ', $release['release_status'])
+    foreach ($releases as $key => $release) {
+      $rows[$key] = array(
+        'project' => $name,
+        'version' => $release['version'],
+        'date' => gmdate('Y-M-d', $release['date']),
+        'status' => implode(', ', $release['release_status'])
       );
     }
-    drush_print($header);
-    drush_print_table($rows, TRUE, array(0 => 14));
   }
-
-  return $info;
+  return $rows;
 }
 
 /**
