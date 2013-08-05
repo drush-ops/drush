@@ -460,7 +460,7 @@ function _drush_bootstrap_drush() {
   // information to the drush output via post-processing, the
   // --reserve-margin flag can be used to declare how much
   // space to leave out.  This only affects drush functions
-  // such as drush_print_table that wrap the output.
+  // such as drush_print_table() that wrap the output.
   $columns -= drush_get_option('reserve-margin', 0);
   drush_set_context('DRUSH_COLUMNS', $columns);
 

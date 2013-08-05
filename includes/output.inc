@@ -204,8 +204,8 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
  * @param $header
  *   If TRUE, the first line will be treated as table header.
  * @param $widths
- *   The widths of each column (in characters) to use - if not specified this
- *   will be determined automatically, based on a "best fit" algorithm.
+ *   An associative array whose keys are column IDs and values are widths of each column (in characters).
+ *   If not specified this will be determined automatically, based on a "best fit" algorithm.
  * @param $handle
  *    File handle to write to.  NULL will write
  *    to standard output, STDERR will write to the standard
@@ -232,8 +232,8 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = 
  * @param $header
  *   If TRUE, the first line will be treated as table header.
  * @param $widths
- *   The widths of each column (in characters) to use - if not specified this
- *   will be determined automatically, based on a "best fit" algorithm.
+ *   An associative array whose keys are column IDs and values are widths of each column (in characters).
+ *   If not specified this will be determined automatically, based on a "best fit" algorithm.
  * @param array $console_table_options
  *   An array that is passed along when constructing a Console_Table instance.
  * @return $output
@@ -582,33 +582,33 @@ function drush_table_column_autowidth($rows, $widths) {
   $auto_widths = $widths;
 
   // First we determine the distribution of row lengths in each column.
-  // This is an array of descending character  length keys (i.e. starting at
+  // This is an array of descending character length keys (i.e. starting at
   // the rightmost character column), with the value indicating the number
   // of rows where that character column is present.
   $col_dist = array();
   foreach ($rows as $rowkey => $row) {
-    foreach ($row as $col_num => $cell) {
-      if (empty($widths[$col_num])) {
+    foreach ($row as $col_id => $cell) {
+      if (empty($widths[$col_id])) {
         $length = strlen($cell);
         if ($length == 0) {
-          $col_dist[$col_num][0] = 0;
+          $col_dist[$col_id][0] = 0;
         }
         while ($length > 0) {
-          if (!isset($col_dist[$col_num][$length])) {
-            $col_dist[$col_num][$length] = 0;
+          if (!isset($col_dist[$col_id][$length])) {
+            $col_dist[$col_id][$length] = 0;
           }
-          $col_dist[$col_num][$length]++;
+          $col_dist[$col_id][$length]++;
           $length--;
         }
       }
     }
   }
-  foreach ($col_dist as $col_num => $count) {
+  foreach ($col_dist as $col_id => $count) {
     // Sort the distribution in decending key order.
-    krsort($col_dist[$col_num]);
+    krsort($col_dist[$col_id]);
     // Initially we set all columns to their "ideal" longest width
     // - i.e. the width of their longest column.
-    $auto_widths[$col_num] = max(array_keys($col_dist[$col_num]));
+    $auto_widths[$col_id] = max(array_keys($col_dist[$col_id]));
   }
 
   // We determine what width we have available to use, and what width the
@@ -622,7 +622,7 @@ function drush_table_column_autowidth($rows, $widths) {
   while ($auto_width_current > $available_width) {
     $count = 0;
     $width = 0;
-    foreach ($col_dist as $col_num => $counts) {
+    foreach ($col_dist as $col_id => $counts) {
       // If we are just starting out, select the first column.
       if ($count == 0 ||
          // OR: if this column would cause less wrapping than the currently
@@ -634,7 +634,7 @@ function drush_table_column_autowidth($rows, $widths) {
          (current($counts) == $count && key($counts) > $width)) {
         // Select the column number, and record the count and current width
         // for later comparisons.
-        $column = $col_num;
+        $column = $col_id;
         $count = current($counts);
         $width = key($counts);
       }

@@ -60,7 +60,7 @@ function drush_print_help($command) {
     if (!empty($command[$key])) {
       drush_print(dt($value) . ':');
       $rows = drush_format_help_section($command, $key);
-      drush_print_table($rows, FALSE, array(40));
+      drush_print_table($rows, FALSE, array('label' => 40));
       unset($rows);
       drush_print();
     }
@@ -362,7 +362,7 @@ function drush_help_listing_print($command_categories, $format) {
     $rows = array();
     foreach($commands as $cmd => $command) {
       $name = $command['aliases'] ? $cmd . ' (' . implode(', ', $command['aliases']) . ')': $cmd;
-      $rows[$cmd] = array($name, $command['description']);
+      $rows[$cmd] = array('name' => $name, 'description' => $command['description']);
     }
 
     // Vary the output by mode: CLI or HTML
@@ -372,7 +372,7 @@ function drush_help_listing_print($command_categories, $format) {
     }
     else {
       drush_print($info['title'] . ": (" . $key . ")");
-      drush_print_table($rows, FALSE, array(0 => 20));
+      drush_print_table($rows, FALSE, array('name' => 20));
     }
   }
 }
