@@ -29,8 +29,8 @@ REQUIREMENTS
 INSTALLATION
 ============
 
-The preferred way to install Drush is via our PEAR channel. See instructions at
-http://drupal.org/project/drush. If you prefer a more manual install, see
+A common way to install Drush is via our PEAR channel. See instructions at
+http://drupal.org/project/drush. If you prefer a (slightly) more manual install, see
 below.
 
 1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in
@@ -315,7 +315,7 @@ SITE ALIASES
 Drush lets you run commands on a remote server, or even on a set of remote
 servers.  Once defined, aliases can be references with the @ nomenclature, i.e.
 
-  # Syncronize staging files to production
+  # Synchronize staging files to production
   $ drush rsync @staging:%files/ @live:%files
 
   # Syncronize database from production to dev, excluding the cache table
