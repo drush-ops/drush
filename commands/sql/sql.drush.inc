@@ -28,6 +28,13 @@ function sql_drush_command() {
     'description' => 'A Drupal 6 style database URL.',
     'example-value' => 'mysql://root:pass@127.0.0.1/db',
   );
+  $options['target'] = array(
+    'description' => 'The name of a target within the specified database connection. Defaults to \'default\'.',
+    'example-value' => 'key',
+    // Gets unhidden in help_alter(). We only want to show this to D7 users but have to
+    // declare it here since some commands do not bootstrap fully.
+    'hidden' => TRUE,
+  );
 
   $items['sql-drop'] = array(
     'description' => 'Drop all tables in a given database.',
@@ -162,11 +169,25 @@ function sql_drush_command() {
       'source-remote-host' => 'Remote machine to run sql-dump file on. Optional; default is local machine.',
       'source-dump' => 'Path to dump file. Optional; default is to create a temporary file.',
       'source-database' => 'A key in the $db_url (D6) or $databases (D7+) array which provides the data.',
+      'source-target' => array(
+          'description' => 'A key within the SOURCE database identifying a particular server in the database group.',
+          'example-value' => 'key',
+          // Gets unhidden in help_alter(). We only want to show to D7 users but have to
+          // declare it here since this command does not bootstrap fully.
+          'hidden' => TRUE,
+      ),
       'target-db-url' => '',
       'target-remote-port' => '',
       'target-remote-host' => '',
       'target-dump' => '',
       'target-database' => 'A key in the $db_url (D6) or $databases (D7+) array which shall receive the data.',
+      'target-target' => array(
+          'description' => 'Oy. A key within the TARGET database identifying a particular server in the database group.',
+          'example-value' => 'key',
+          // Gets unhidden in help_alter(). We only want to show to D7 users but have to
+          // declare it here since this command does not bootstrap fully.
+          'hidden' => TRUE,
+      ),
       'temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
       'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.  Takes precedence over --temp.',
       'create-db' => 'Create a new database before importing the database dump on the target machine.',
@@ -222,22 +243,10 @@ function sql_drush_help_alter(&$command) {
   // Drupal 7+ only options.
   if (drush_drupal_major_version() >= 7) {
     if ($command['command'] == 'sql-sync') {
-      $command['options'] += array(
-        'source-target' => array(
-          'description' => 'A key within the SOURCE database identifying a particular server in the database group.',
-          'example-value' => 'key',
-        ),
-        'target-target' => array(
-          'description' => 'Oy. A key within the TARGET database identifying a particular server in the database group.',
-          'example-value' => 'key',
-        ),
-      );
+      unset($command['options']['source-target']['hidden'], $command['options']['target-target']['hidden']);
     }
     else {
-      $command['options']['target'] = array(
-        'description' => 'The name of a target within the specified database.',
-        'example-value' => 'key',
-      );
+      unset($command['options']['target']['hidden']);
     }
   }
 }
