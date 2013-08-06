@@ -1230,6 +1230,7 @@ function drush_pm_releases() {
   $requests = pm_parse_project_version($requests);
 
   $info = release_info_get_releases($requests);
+  drush_backend_set_result($info);
   if (!$info) {
     return drush_log(dt('No valid projects given.'), 'ok');
   }
