@@ -207,16 +207,19 @@ function user_drush_command() {
       'drush user-login --browser=firefox --mail=drush@example.org admin/settings/performance' => 'Open firefox web browser, login as the user with the e-mail address drush@example.org and redirect to the path admin/settings/performance.',
     ),
   );
+  return $items;
+}
 
+/**
+ * Implements hook_drush_help_alter().
+ */
+function user_drush_help_alter(&$command) {
   // Drupal 7+ only options.
-  if (drush_drupal_major_version() >= 7) {
-    $items['user-cancel']['options'] = array(
-      'delete-content' => 'Delete all content created by the user',
-    );
-    $items['user-cancel']['examples']['drush user-cancel --delete-content username'] =
+  if ($command['command'] == 'user-cancel' && drush_drupal_major_version() >= 7) {
+    $command['options']['delete-content'] = 'Delete all content created by the user';
+    $command['examples']['drush user-cancel --delete-content username'] =
       'Cancel the user account with the name username and delete all content created by that user.';
   }
-  return $items;
 }
 
 /**
