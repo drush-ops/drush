@@ -135,9 +135,6 @@ function core_drush_command() {
     'topics' => array('docs-readme'),
   );
 
-  $path_names = array(
-  );
-
   $items['core-requirements'] = array(
     'description' => 'Provides information about things that may be wrong in your Drupal installation, if any.',
     'aliases' => array('status-report','rq'),
