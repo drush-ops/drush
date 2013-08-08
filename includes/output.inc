@@ -225,7 +225,7 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = 
 }
 
 /**
- * Formatted a table of data.
+ * Format a table of data.
  *
  * @param $rows
  *   The rows to print.
