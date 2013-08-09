@@ -195,6 +195,11 @@ function drush_cache_clear_types($include_bootstraped_types = FALSE) {
     );
   }
 
+  // D8 renamed menu_rebuild() (https://drupal.org/node/1561492).
+  if (drush_drupal_major_version() >= 8) {
+    $types['menu'] = 'menu_router_rebuild';
+  }
+
   if (drush_drupal_major_version() >= 7) {
     $types['registry'] = 'registry_update';
   }
