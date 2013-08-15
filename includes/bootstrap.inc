@@ -683,22 +683,23 @@ function _drush_bootstrap_drupal_root() {
   $version = drush_drupal_version();
   $major_version = drush_drupal_major_version();
 
-  if ($major_version <= 7) {
+  // For Drupal 8, use the master branch of Drush.
+  if ($major_version <= 5 || $major_version >= 8) {
+    drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version. See http://drupal.org/project/drush for more information.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
+  }
+  else {
     define('DRUPAL_ROOT', $drupal_root);
+
+    // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
+    // in prior versions.
+    $core = $major_version >= 8 ? DRUPAL_ROOT . '/core' : DRUPAL_ROOT;
+    drush_set_context('DRUSH_DRUPAL_CORE', $core);
+    define('DRUSH_DRUPAL_CORE', $core);
+
+    _drush_bootstrap_global_options();
+
+    drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
   }
-  elseif ($major_version <= 5) {
-    drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
-  }
-
-  // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
-  // in prior versions.
-  $core = $major_version >= 8 ? DRUPAL_ROOT . '/core' : DRUPAL_ROOT;
-  drush_set_context('DRUSH_DRUPAL_CORE', $core);
-  define('DRUSH_DRUPAL_CORE', $core);
-
-  _drush_bootstrap_global_options();
-
-  drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
 }
 
 /**
