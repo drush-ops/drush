@@ -120,6 +120,10 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('recursion');
   }
 
+  function testMakeRecursionOverride() {
+    $this->runMakefileTest('recursion-override');
+  }
+
   function testMakeSvn() {
     // Silently skip svn test if svn is not installed.
     exec('which svn', $output, $whichSvnErrorCode);
@@ -458,6 +462,15 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'options'  => array(
           'no-core' => NULL,
           'contrib-destination' => 'profiles/drupal_forum',
+        ),
+      ),
+      'recursion-override' => array(
+        'name' => 'Recursion overrides',
+        'makefile' => 'recursion-override.make',
+        'build' => TRUE,
+        'md5' => 'a13c3d5d416be9fa78569514844b96a2',
+        'options' => array(
+          'no-core' => NULL,
         ),
       ),
       'svn' => array(
