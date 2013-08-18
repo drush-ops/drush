@@ -683,8 +683,7 @@ function _drush_bootstrap_drupal_root() {
   $version = drush_drupal_version();
   $major_version = drush_drupal_major_version();
 
-  // For Drupal 8, use the master branch of Drush.
-  if ($major_version <= 5 || $major_version >= 8) {
+  if ($major_version <= 5) {
     drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version. See http://drupal.org/project/drush for more information.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
   }
   else {
