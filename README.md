@@ -123,11 +123,11 @@ want to ensure that its php can be found by the command line by adding it to
 the PATH variable, using the method in 3.b above. Depending on the version and
 distribution of your AMP stack, PHP might reside at:
 
-Path|Application
------|----
-/Applications/acquia-drupal/php/bin|Acquia Dev Desktop (Mac)
-/Applications/xampp/xamppfiles/bin|XAMP (Mac)
-/opt/lampp/bin|XAMPP (Windows)
+Path                                       | Application
+-----                                      | ----
+/Applications/acquia-drupal/php/bin        | Acquia Dev Desktop (Mac)
+/Applications/xampp/xamppfiles/bin         | XAMP (Mac)
+/opt/lampp/bin                             | XAMPP (Windows)
 
 Additionally, you may need to adjust your php.ini settings before you can use
 drush successfully. See CONFIGURING PHP.INI below for more details on how to
