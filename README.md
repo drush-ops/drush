@@ -309,7 +309,7 @@ COMMANDS
 
 Drush can be extended to run your own commands. Writing a Drush command is no harder than writing simple Drupal modules, since they both follow the same structure.
 
-See [sandwich.drush.inc](examples/sandwich.drush.inc) for a quick tutorial arounda Drush command file.  Otherwise, the core commands in Drush are good models for your own commands.
+See [sandwich.drush.inc](examples/sandwich.drush.inc) for a quick tutorial on Drush command files.  Otherwise, the core commands in Drush are good models for your own commands.
 
 You can put your Drush command file in a number of places:
 
@@ -323,8 +323,7 @@ You can put your Drush command file in a number of places:
   1. In Drupal's /drush or sites/all/drush folders. Note, that you have to create the
      drush folder yourself.
 
-In any case, it is important that you end the filename with ".drush.inc", so
-that Drush can find it.
+In any case, it is important that you end the filename with ".drush.inc", so that Drush can find it.
 
 
 FAQ
