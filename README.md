@@ -56,6 +56,8 @@ pear install drush/drush-5.0.0
 pear install drush/drush-6.0.0RC4
 ```
 
+See the POST-INSTALL section for configuration tips.
+
 INSTALL - MANUAL
 -----------
 1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in a directory that is outside of your web root.
@@ -84,24 +86,17 @@ INSTALL - MANUAL
 1. Test that Drush is found by your system:
 
      `$ which drush`
+     
+See the POST-INSTALL section for configuration tips.
 
-1. Optional. Help the Drush development team by sending anonymized usage statistics.  To automatically send usage data, please add the following to a .drushrc.php file:
-
-       ```php
-       $options['drush_usage_log'] = TRUE;
-       $options['drush_usage_send'] = TRUE;
-       ```
-
-     Stats are usually logged locally and sent whenever log file exceeds 50Kb.
-     Alternatively, one may disable automatic sending and instead use usage-view
-     and usage-send commands to more carefully send data.
-
-1. Optional. See [example.bashrc](examples/example.bashrc) for instructions on how to add some
+POST-INSTALL
+-----------------------
+1. See [example.bashrc](examples/example.bashrc) for instructions on how to add some
    useful shell aliases that provides even tighter integration between
    drush and bash. You may source this file directly into your shell by adding to
    your .bashrc (or equivalent): source /path/to/drush/examples/example.bashrc
 
-1. Optional. If you didn't source it in Step 6 above, see top of
+1. If you didn't source it the step above, see top of
    [drush.complete.sh](drush.complete.sh) file for instructions adding bash completion for drush
    command to your shell.  Once configured, completion works for site aliases,
    command names, shell aliases, global options, and command-specific options.
@@ -118,6 +113,18 @@ INSTALL - MANUAL
    Putting this in a .bashrc/.bash_profile/.profile would produce this prompt:
 
      `msonnabaum@hostname ~/repos/drush (master)[@sitename]$`
+     
+1. Help the Drush development team by sending anonymized usage statistics.  To automatically send usage data, please add the following to a .drushrc.php file:
+
+       ```php
+       $options['drush_usage_log'] = TRUE;
+       $options['drush_usage_send'] = TRUE;
+       ```
+
+     Stats are usually logged locally and sent whenever log file exceeds 50Kb.
+     Alternatively, one may disable automatic sending and instead use usage-view
+     and usage-send commands to more carefully send data.
+     
 
 ADDITIONAL CONFIGURATIONS FOR MAMP:
 -----------------------------------
