@@ -1,97 +1,73 @@
-
 DESCRIPTION
 ===========
 
-Drush is a command line shell and Unix scripting interface for Drupal.  If you
-are unfamiliar with shell scripting, reviewing the documentation for your shell
-(e.g. man bash) or reading an online tutorial (e.g. search for "bash tutorial")
-will help you get the most out of Drush.
+Drush is a command line shell and Unix scripting interface for Drupal.  If you are unfamiliar with shell scripting, reviewing the documentation for your shell (e.g. man bash) or reading an online tutorial (e.g. search for "bash tutorial") will help you get the most out of Drush.
 
-Drush core ships with lots of useful commands for interacting with code like
-modules/themes/profiles. Similarly, it runs update.php, executes sql queries
-and DB migrations, and misc utilities like run cron or clear cache.
+Drush core ships with lots of useful commands for interacting with code like modules/themes/profiles. Similarly, it runs update.php, executes sql queries and DB migrations, and misc utilities like run cron or clear cache.
 
+To contribute to Drush, see /CONTRIBUTING.md
 
 REQUIREMENTS
 ============
 
 * To use Drush, you'll need a command line PHP version 5.3+.
-
 * Drush commands that work with git require git 1.7 or greater.
-
 * Drush works best on a Unix-like OS (Linux, OS X)
-
 * Most Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
-
 * Drush 6 works with Drupal 6 or Drupal 7.
-
 
 INSTALLATION
 ============
 
-A common way to install Drush is via our PEAR channel. See instructions at
-http://drupal.org/project/drush. If you prefer a (slightly) more manual install, see
-below.
+A common way to install Drush is via our PEAR channel. See instructions at http://drupal.org/project/drush. If you prefer a (slightly) more manual install, see below.
 
-1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in
-   a directory that is outside of your web root.
+1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in a directory that is outside of your web root.
+1. Make the 'drush' command executable:
+    
+    `$ ln -s /path/to/drush/drush /usr/bin/drush`
 
-2. Make the 'drush' command executable:
+1. Configure your system to recognize where Drush resides. There are 2 options:
+    1. create a symbolic link to the Drush executable in a directory that is already in your PATH, e.g.:
 
-     $ chmod u+x /path/to/drush/drush
+         `$ ln -s /path/to/drush/drush /usr/bin/drush`
 
-3. Configure your system to recognize where Drush resides. There are 2 options:
+    1. explicitly add the Drush executable to the PATH variable which is defined in the the shell configuration file called .profile, .bash_profile, .bash_aliases, or .bashrc that is located in your home folder, i.e.:
 
-  a) create a symbolic link to the Drush executable in a directory that is
-     already in your PATH, e.g.:
+           `export PATH="$PATH:/path/to/drush:/usr/local/bin"`
 
-       $ ln -s /path/to/drush/drush /usr/bin/drush
-
-  b) explicitly add the Drush executable to the PATH variable which is defined
-     in the the shell configuration file called .profile, .bash_profile,
-     .bash_aliases, or .bashrc that is located in your home folder, i.e.:
-
-       export PATH="$PATH:/path/to/drush:/usr/local/bin"
-
-     Your system will search path options from left to right until it finds a
-     result.
+     Your system will search path options from left to right until it finds a result.
 
      To apply your changes to your current session, either log out and then log
      back in again, or re-load your bash configuration file, i.e.:
 
-       $ source .bashrc
+        `$ source .bashrc`
 
-  NOTE: If you do not follow step 3, you will need to inconveniently run Drush
-  commands using the full path to the executable "/path/to/drush/drush" or by
-  navigating to /path/to/drush and running "./drush". The -r or -l options will
-  be required (see USAGE, below).
+NOTE: If you do not follow step 3, you will need to inconveniently run Drush commands using the full path to the executable "/path/to/drush/drush" or by navigating to /path/to/drush and running "./drush". The -r or -l options will be required (see USAGE, below).
 
-4. Test that Drush is found by your system:
+1. Test that Drush is found by your system:
 
-  $ which drush
+     `$ which drush`
 
-5. Optional. Help the Drush development team by sending anonymized usage
-   statistics.  To automatically send usage data, please add the following to a
-   .drushrc.php file:
+1. Optional. Help the Drush development team by sending anonymized usage statistics.  To automatically send usage data, please add the following to a .drushrc.php file:
 
-     $options['drush_usage_log'] = TRUE;
-     $options['drush_usage_send'] = TRUE;
+       `$options['drush_usage_log'] = TRUE;`
+       `$options['drush_usage_send'] = TRUE;`
 
-   Stats are usually logged locally and sent whenever log file exceeds 50Kb.
-   Alternatively, one may disable automatic sending and instead use usage-view
-   and usage-send commands to more carefully send data.
+     Stats are usually logged locally and sent whenever log file exceeds 50Kb.
+     Alternatively, one may disable automatic sending and instead use usage-view
+     and usage-send commands to more carefully send data.
 
-6. Optional. See examples/example.bashrc for instructions on how to add some
+1. Optional. See examples/example.bashrc for instructions on how to add some
    useful shell aliases that provides even tighter integration between
    drush and bash. You may source this file directly into your shell by adding to
    your .bashrc (or equivalent): source /path/to/drush/examples/example.bashrc
 
-7. Optional. If you didn't source it in Step 6 above, see top of
+1. Optional. If you didn't source it in Step 6 above, see top of
    drush.complete.sh file for instructions adding bash completion for drush
    command to your shell.  Once configured, completion works for site aliases,
    command names, shell aliases, global options, and command-specific options.
 
-8. Optional. If drush.complete.sh is being sourced (ideally in
+1. Optional. If drush.complete.sh is being sourced (ideally in
    bash_completion.d), you can use the supplied __drush_ps1() sh function to
    add your current drush site (set with `drush use @sitename`) to your PS1
    prompt like so:
