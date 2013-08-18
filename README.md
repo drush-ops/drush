@@ -387,3 +387,5 @@ CREDITS
 * Redesigned by [Franz Heinzmann](http://unbiskant.org) in May 2007 for Drupal 5.
 * Maintained by [Moshe Weitzman](http://drupal.org/moshe) with much help from
   Owen Barton, greg.1.anderson, jonhattan, Mark Sonnabaum, and Jonathan Hedstrom.
+
+![Drush Logo](drush_logo-black.png)
