@@ -1,5 +1,5 @@
 DESCRIPTION
-===========
+-----------
 
 Drush is a command line shell and Unix scripting interface for Drupal.  If you are unfamiliar with shell scripting, reviewing the documentation for your shell (e.g. man bash) or reading an online tutorial (e.g. search for "bash tutorial") will help you get the most out of Drush.
 
@@ -7,20 +7,57 @@ Drush core ships with lots of useful commands for interacting with code like mod
 
 To contribute to Drush, see [/CONTRIBUTING.md](CONTRIBUTING.md)
 
+Code Status
+-----------
+Drush comes with a full test suite powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush):
+
+* <a href="https://travis-ci.org/drush-ops/drush">8.x-6.x</a>: <img src="https://travis-ci.org/drush-ops/drush.png?branch=8.x-6.x">
+* <a href="https://travis-ci.org/drush-ops/drush">7.x-5.x</a>: <img src="https://travis-ci.org/drush-ops/drush.png?branch=7.x-5.x">
+
+Misc
+-----------
+* [www.drush.org](http://www.drush.org)
+* [A list of modules that include Drush integration](http://drupal.org/project/modules?filters=tid%3A4654)
+* For more help, please see the [Resources](http://drush.org/resources) and the [Drush FAQ](http://drupal.org/drush-faq). Run the `drush topic` command for even more help.
+* If you are using Debian or Ubuntu, you can alternatively use the Debian packages uploaded in your distribution. You may need to use the backports to get the latest version, if you are running a LTS or "stable" release.
+* For advice on using Drush with your ISP, see the <a href="http://drush.org/resources#hosting">hosting section of the Resources page</a> on <a href="http://drush.org">drush.org</a>.
+
 REQUIREMENTS
-============
+-----------
 
 * To use Drush, you'll need a command line PHP version 5.3+.
 * Drush commands that work with git require git 1.7 or greater.
 * Drush works best on a Unix-like OS (Linux, OS X)
 * Most Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
-* Drush 6 works with Drupal 6 or Drupal 7.
 
-INSTALLATION
-============
+INSTALL - PEAR
+-----------
+If you have trouble with PEAR installation, consider trying MANUAL INSTALLATION. It is not too hard.
 
-A common way to install Drush is via our PEAR channel. See instructions at http://drupal.org/project/drush. If you prefer a (slightly) more manual install, see below.
+```bash
+pear channel-discover pear.drush.org
+pear install drush/drush
+```
 
+_Tip: Use sudo to overcome permission problems.  If the channel-discover fails, try running the following sequence of commands:_
+
+```bash
+pear upgrade --force Console_Getopt
+pear upgrade --force pear
+pear upgrade-all
+```
+
+To update, run `pear upgrade drush/drush`
+
+To get alternate drush versions, replace that last line with one of the below that matches your fancy.
+
+```bash
+pear install drush/drush-5.0.0
+pear install drush/drush-6.0.0RC4
+```
+
+INSTALL - MANUAL
+-----------
 1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in a directory that is outside of your web root.
 1. Make the 'drush' command executable:
     
@@ -222,7 +259,7 @@ setting values for 'remote-host' and 'os', as these are very important when
 running Drush rsync and Drush sql-sync commands.
 
 USAGE
-=====
+-----------
 
 Once you have completed the installation steps, Drush can be run in your shell
 by typing "drush" from within any Drupal root directory.
@@ -270,7 +307,7 @@ just restart automatically using bash. For example:
 
 
 DRUSH CONFIGURATION FILES
-=========================
+-----------
 
 Inside the [examples](examples) directory you will find some example files to help you get
 started with your Drush configuration file (example.drushrc.php), site alias
@@ -327,7 +364,7 @@ In any case, it is important that you end the filename with ".drush.inc", so tha
 
 
 FAQ
-===
+------
 
 ```
   Q: What does "drush" stand for?
@@ -344,7 +381,7 @@ FAQ
 ```
 
 CREDITS
-=======
+-----------
 
 * Originally developed by [Arto Bendiken](http://bendiken.net) for Drupal 4.7.
 * Redesigned by [Franz Heinzmann](http://unbiskant.org) in May 2007 for Drupal 5.
