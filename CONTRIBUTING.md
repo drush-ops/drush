@@ -2,10 +2,10 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 
 ## Git and Pull requests
 * Contributions are submitted, reviewed, and accepted using Github pull requests. [Read this article](https://help.github.com/articles/using-pull-requests) for some details. We use the _Fork and Pull_ model, as described there.
-* The latest changes are in your `master` branch.
+* The latest changes are in the `master` branch.
 * Make a new branch for every feature you're working on.
 * Try to make clean commits that are easy readable (including descriptive commit messages!)
-* Test before you push. get familiar with Unish, our test suite. Docs are at /tests/README.md
+* Test before you push. Get familiar with Unish, our test suite. See the test-specific [README.md](tests/README.md)
 * Make small pull requests that are easy to review but make sure they do add value by themselves.
 * We maintain branches named 6.x, 5.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.
 
@@ -17,6 +17,6 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 * Keep it compatible. Do not introduce changes to the public API, or configurations too lightly. Don't make incompatible changes without good reasons!
 
 ## Documentation
-* The docs are in the `docs/` and `examples/` folders in the git repository, so people can easily find the suitable docs for the current git revision. You can read these from within Drush, with the `drush topic` command.
+* The docs are in the [docs](docs) and [examples](examples) folders in the git repository, so people can easily find the suitable docs for the current git revision. You can read these from within Drush, with the `drush topic` command.
 * Documentation should be kept up-to-date. This means, whenever you add a new API method, add a new hook or change the database model, pack the relevant changes to the docs in the same pull request.
 * You can build the docs e.g. produce html, using `drush help --html`. This page also resides at http://www.drush.org. You might enjoy prettier and more comprehensive version at [Drush Commands](http://www.drushcommands.com)
