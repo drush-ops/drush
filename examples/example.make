@@ -64,7 +64,7 @@ projects[] = views
 projects[ctools][version] = 1.3
 
 ; Check out the latest version of a project from Git. Note that when using a
-; repository as your project source, you must explictly declare the project
+; repository as your project source, you must explicitly declare the project
 ; type so that drush_make knows where to put your project.
 
 projects[data][type] = module
