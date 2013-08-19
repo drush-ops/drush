@@ -238,7 +238,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
 
   $i=0;
   foreach ($sites as $key => $alias) {
-    if (!$status = drush_invoke_process($alias, 'core-status', array(), array())) {
+    if (!$status = drush_invoke_process($alias, 'core-status', array(), array(), array('integrate' => FALSE))) {
       drush_log(dt('Unable to determine sites directory for !alias', array('!alias' => $key)), 'warning');
     }
 
