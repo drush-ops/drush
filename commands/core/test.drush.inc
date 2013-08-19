@@ -315,11 +315,13 @@ function drush_test_xml_results($test_id, $dir, $info) {
         $test_case_element->appendChild($error_element);
       }
       if (!empty($test_case->system_out)) {
-        $system_out_element = $xml->createElement('system-out', $test_case->system_out);
+        $system_out_element = $xml->createElement('system-out');
+        $system_out_element->appendChild($xml->createTextNode($test_case->system_out));
         $test_case_element->appendChild($system_out_element);
       }
       if (!empty($test_case->system_err)) {
-        $system_err_element = $xml->createElement('system-err', $test_case->system_err);
+        $system_err_element = $xml->createElement('system-err');
+        $system_err_element->appendChild($xml->createTextNode($test_case->system_err));
         $test_case_element->appendChild($system_err_element);
       }
       $test_suite_element->appendChild($test_case_element);
