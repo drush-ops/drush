@@ -134,23 +134,19 @@ function drush_find_profiles($drupal_root , $key = 'name') {
  */
 function drush_drupal_login($drush_user) {
   global $user;
+  drush_include_engine('drupal', 'user', drush_drupal_major_version());
   if (drush_drupal_major_version() >= 8) {
     // @todo the global $user is no longer the right way to login a user in D8.
-    // @todo: might be time to move this function into the Drupal engine.
     $user = is_numeric($drush_user) ? user_load($drush_user) : user_load_by_name($drush_user);
-    $name = $user->getUsername() ? $user->getUsername() : variable_get('anonymous', t('Anonymous'));
-    $uid = $user->id();
   }
   elseif (drush_drupal_major_version() == 7) {
     $user = is_numeric($drush_user) ? user_load($drush_user) : user_load_by_name($drush_user);
-    $name = $user->name ? $user->name : variable_get('anonymous', t('Anonymous'));
-    $uid = $user->uid;
   }
   else {
     $user = user_load(is_numeric($drush_user) ? array('uid' => $drush_user) : array('name' => $drush_user));
-    $name = $user->name ? $user->name : variable_get('anonymous', t('Anonymous'));
-    $uid = $user->uid;
   }
+  $name = drush_get_user_name($user);
+  $uid = drush_get_user_id($user);
 
   if (empty($user)) {
     if (is_numeric($drush_user)) {

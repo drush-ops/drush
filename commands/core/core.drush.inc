@@ -429,6 +429,7 @@ function core_drush_engine_drupal() {
   $engines['update'] = array();
   $engines['environment'] = array();
   $engines['site_install'] = array();
+  $engines['user'] = array();
   return $engines;
 }
 
@@ -611,9 +612,8 @@ function _core_site_status_table($project = '') {
           if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
             $status_table['bootstrap'] = dt('Successful');
             if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
-              global $user;
-              $username =  ($user->uid) ? $user->name : dt('Anonymous');
-              $status_table['user'] = $username;
+              drush_include_engine('drupal', 'user', drush_drupal_major_version());
+              $status_table['user'] = drush_get_user_name();
             }
           }
         }
