@@ -11,6 +11,7 @@ Code Status
 -----------
 Drush comes with a full test suite powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush):
 
+* <a href="https://travis-ci.org/drush-ops/drush">master</a>: <img src="https://travis-ci.org/drush-ops/drush.png?branch=master">
 * <a href="https://travis-ci.org/drush-ops/drush">8.x-6.x</a>: <img src="https://travis-ci.org/drush-ops/drush.png?branch=8.x-6.x">
 * <a href="https://travis-ci.org/drush-ops/drush">7.x-5.x</a>: <img src="https://travis-ci.org/drush-ops/drush.png?branch=7.x-5.x">
 
