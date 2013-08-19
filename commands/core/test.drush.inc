@@ -77,7 +77,7 @@ function drush_test_run_validate($specs = NULL) {
  * Test-run command callback.
  *
  * @specs
- *   A comman delimited string of test classes or group names.
+ *   A comma delimited string of test classes or group names.
  */
 function drush_test_run($specs = NULL) {
   if (drush_drupal_major_version() > 7) {
