@@ -1540,7 +1540,13 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
  * Substrings to ignore during commandfile searching.
  */
 function drush_filename_blacklist() {
-  return array_diff(array('.', '..', 'drush_make', 'examples', 'tests', 'disabled', 'gitcache', 'cache', 'drush4', 'drush5', 'drush6', 'drush7'), array('drush' . DRUSH_MAJOR_VERSION));
+  $blacklist = array('.', '..', 'drush_make', 'examples', 'tests', 'disabled', 'gitcache', 'cache');
+  for ($v=4; $v<=(DRUSH_MAJOR_VERSION)+3; ++$v) {
+    if ($v != DRUSH_MAJOR_VERSION) {
+      $blacklist[] = 'drush' . $v;
+    }
+  }
+  return $blacklist;
 }
 
 /**
