@@ -544,6 +544,9 @@ function _drush_verify_cli_options($command) {
   // Also add in global options
   $options = array_merge($options, drush_get_global_options());
 
+  // Add a placeholder option so that backend requests originating from prior versions of Drush are valid.
+  $options += array('invoke' => '');
+
   // Now we will figure out which options in the cli context
   // are not represented in our options list.
   $cli_options = array_keys(drush_get_context('cli'));
