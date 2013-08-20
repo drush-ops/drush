@@ -562,12 +562,12 @@ function drush_get_projects(&$extensions = NULL) {
         'status' => $extension->status,
         'extensions' => array(),
       );
-      if (isset($extension->info['project status url'])) {
-        $projects[$project]['status url'] = $extension->info['project status url'];
-      }
     }
     elseif ($extension->status != 0) {
       $projects[$project]['status'] = $extension->status;
+    }
+    if (isset($extension->info['project status url'])) {
+      $projects[$project]['status url'] = $extension->info['project status url'];
     }
     $projects[$project]['extensions'][] = $extension->name;
   }
