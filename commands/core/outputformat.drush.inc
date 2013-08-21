@@ -373,7 +373,7 @@ class drush_outputformat {
    * Perform pre-processing and then format() the $input.
    */
   function process($input, $metadata = array()) {
-    $metadata += $this->engine_config;
+    $metadata = array_merge_recursive($metadata, $this->engine_config);
     if (isset($metadata['private-fields']) && is_array($input)) {
       if (!drush_get_option('show-passwords', FALSE)) {
         if (!is_array($metadata['private-fields'])) {
