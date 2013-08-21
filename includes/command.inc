@@ -458,16 +458,19 @@ function drush_handle_command_output($command, $structured_output) {
   // Only handle output here if the command defined an output format
   // engine.  If no engine was declared, then we presume that the command
   // handled its own output.
-  if ((!empty($structured_output) || ($structured_output === 0)) && !empty($command['engines']['outputformat'])) {
+  if ((!empty($structured_output) || ($structured_output === 0))) {
     // If the command specifies a default pipe format and
     // returned a result, then output the formatted output when
     // in --pipe mode.
     $formatter = drush_get_outputformat();
+    if (!$formatter && is_string($structured_output)) {
+      $formatter = drush_load_engine('outputformat', 'string');
+    }
     if ($formatter) {
       if ($formatter === TRUE) {
         return drush_set_error(dt('No outputformat class defined for !format', array('!format' => $format)));
       }
-      if (!in_array($formatter->selected_engine, $command['engines']['outputformat']['usable'])) {
+      if ((!empty($command['engines']['outputformat'])) && (!in_array($formatter->selected_engine, $command['engines']['outputformat']['usable']))) {
         return $formatter->format_error(dt("The command '!command' does not produce output in a structure usable by this output format.", array('!command' => $command['command'])));
       }
       // Add any user-specified options to the metadata passed to the formatter.
