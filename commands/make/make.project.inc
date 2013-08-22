@@ -635,7 +635,15 @@ class DrushMakeProject_Module extends DrushMakeProject {
    */
   protected function __construct(&$project) {
     parent::__construct($project);
-    $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . 'modules';
+    // Allow modules to specify where they should live in the build path.
+    if (isset($project['destination'])) {
+      $project_path = $project['destination'];
+    }
+    else {
+      $project_path = 'modules';
+    }
+
+    $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . $project_path;
   }
 }
 
@@ -669,7 +677,15 @@ class DrushMakeProject_Theme extends DrushMakeProject {
    */
   protected function __construct(&$project) {
     parent::__construct($project);
-    $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . 'themes';
+    // Allow themes to specify where they should live in the build path.
+    if (isset($project['destination'])) {
+      $project_path = $project['destination'];
+    }
+    else {
+      $project_path = 'themes';
+    }
+
+    $this->contrib_destination = ($this->base_contrib_destination != '.' ? $this->base_contrib_destination . '/' : '') . $project_path;
   }
 }
 
