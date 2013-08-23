@@ -26,7 +26,7 @@ Misc
 REQUIREMENTS
 -----------
 
-* To use Drush, you'll need a command line PHP version 5.3+.
+* To use Drush, you'll need a command line PHP version 5.3.3+.
 * Drush commands that work with git require git 1.7 or greater.
 * Drush works best on a Unix-like OS (Linux, OS X)
 * Most Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
