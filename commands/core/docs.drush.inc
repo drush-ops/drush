@@ -34,12 +34,12 @@ function docs_drush_command() {
   // any other command).
   //
   $items['docs-readme'] = array(
-    'description' => 'README.txt',
+    'description' => 'README.md',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/README.txt'),
+    'callback arguments' => array($docs_dir . '/README.md'),
   );
   $items['docs-bashrc'] = array(
     'description' => 'Bashrc customization examples for Drush.',
