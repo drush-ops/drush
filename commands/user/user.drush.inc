@@ -504,7 +504,6 @@ function drush_user_login($user = NULL, $path = NULL) {
   }
 
   drush_start_browser($link);
-  drush_print($link);
   return $link;
 }
 
