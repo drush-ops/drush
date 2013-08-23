@@ -333,9 +333,7 @@ function _drush_sql_connect($db_spec = NULL) {
 
 function drush_sql_connect() {
   drush_sql_bootstrap_further();
-  $connect = _drush_sql_connect();
-  drush_print($connect);
-  return $connect;
+  return _drush_sql_connect();
 }
 
 /**
