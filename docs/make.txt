@@ -387,7 +387,7 @@ itself. Writing a new test is extremely simple. The process is as follows:
       ),
       'options'  => array('any' => TRUE, 'other' => TRUE, 'options' => TRUE),
     ),
-5. Test! Run drush test suite (see DRUSH/tests/README.txt). To just
+5. Test! Run drush test suite (see DRUSH/tests/README.md). To just
    run the make tests:
 
      `phpunit --filter=makeMake .`

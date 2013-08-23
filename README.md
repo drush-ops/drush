@@ -384,7 +384,7 @@ FAQ
      rhymes with hush, rush, flush, etc. This is the preferred pronunciation.
 
   Q: Does Drush have unit tests?
-  A: Drush has an excellent suite of unit tests. See the README.txt file in the /tests subdirectory for
+  A: Drush has an excellent suite of unit tests. See the README.md file in the /tests subdirectory for
      more information.
 ```
 
