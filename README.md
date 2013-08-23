@@ -10,7 +10,7 @@ To contribute to Drush, see [/CONTRIBUTING.md](CONTRIBUTING.md)
 DRUSH VERSIONS
 --------------
 
-Each version of Drush supports multiple Drupal versions.  Drush 6 is the recommended branch.
+Each version of Drush supports multiple Drupal versions.  Drush 6 is the recommended version.
 
 Drush Version | Branch  | Compatible Drupal versions | Code Status
 ------------- | ------  | -------------------------- | -----------
