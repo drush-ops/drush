@@ -1212,7 +1212,6 @@ function drush_core_drupal_directory($target = 'root') {
   // case of the dd command, we will consider it an error if
   // any keys are -not- replaced in _drush_core_directory.
   if ($path && (strpos($path, '%') === FALSE)) {
-    drush_print($path);
     return $path;
   }
   else {
