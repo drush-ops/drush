@@ -7,15 +7,22 @@ Drush core ships with lots of useful commands for interacting with code like mod
 
 To contribute to Drush, see [/CONTRIBUTING.md](CONTRIBUTING.md)
 
-Code Status
------------
+DRUSH VERSIONS
+--------------
+
+Each version of Drush supports multiple Drupal versions.  Drush 6 is the recommended branch.
+
+Drush Version | Branch  | Compatible Drupal versions | Code Status
+------------- | ------  | -------------------------- | -----------
+Drush 7       | <a href="https://travis-ci.org/drush-ops/drush">master</a>  | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.png?branch=master">
+Drush 6       | <a href="https://travis-ci.org/drush-ops/drush">8.x-6.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=8.x-6.x">
+Drush 5       | <a href="https://travis-ci.org/drush-ops/drush">7.x-5.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=7.x-5.x">
+Drush 4       | 7.x-4.x | D5, D6, D7                 | Unsupported
+Drush 3       | 6.x-3.x | D5, D6                     | Unsupported
+
 Drush comes with a full test suite powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush):
 
-* <a href="https://travis-ci.org/drush-ops/drush">master</a>: <img src="https://travis-ci.org/drush-ops/drush.png?branch=master">
-* <a href="https://travis-ci.org/drush-ops/drush">8.x-6.x</a>: <img src="https://travis-ci.org/drush-ops/drush.png?branch=8.x-6.x">
-* <a href="https://travis-ci.org/drush-ops/drush">7.x-5.x</a>: <img src="https://travis-ci.org/drush-ops/drush.png?branch=7.x-5.x">
-
-Misc
+MISC
 -----------
 * [www.drush.org](http://www.drush.org)
 * [A list of modules that include Drush integration](http://drupal.org/project/modules?filters=tid%3A4654)
