@@ -275,7 +275,7 @@ function outputformat_drush_help_alter(&$command) {
       // If the command does not define specific field labels,
       // then hide the help for --fields unless the command
       // works with output format engines that format tables.
-      if (isset($outputformat['require-engine-capability'])) {
+      if (isset($outputformat['require-engine-capability']) && is_array($outputformat['require-engine-capability'])) {
         if (!in_array('format-table', $outputformat['require-engine-capability'])) {
           unset($command['options']['fields']);
         }
@@ -355,10 +355,10 @@ class drush_outputformat {
     return ($this->formatter_type() == 'list') && ($this->sub_engine->supports_single_only());
   }
   function data_type($metadata) {
-    if (isset($metadata['metameta']['require-engine-capability'])) {
+    if (isset($metadata['metameta']['require-engine-capability']) && is_array($metadata['metameta']['require-engine-capability'])) {
       return  $metadata['metameta']['require-engine-capability'][0];
     }
-    if (isset($metadata['require-engine-capability'])) {
+    if (isset($metadata['require-engine-capability']) && is_array($metadata['require-engine-capability'])) {
       return  $metadata['require-engine-capability'][0];
     }
     return 'unspecified';
