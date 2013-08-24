@@ -253,10 +253,20 @@ function outputformat_drush_help_alter(&$command) {
     // then modify the help for --fields to include
     // specific information about the available fields.
     if (isset($outputformat['field-labels'])) {
-      $all_fields = array_keys($outputformat['field-labels']);
+      $all_fields = array();
+      $all_fields_description = array();
+      foreach ($outputformat['field-labels'] as $field => $human_readable) {
+        $all_fields[] = $field;
+        if ((strtolower($field) != strtolower($human_readable)) && !array_key_exists(strtolower($human_readable), $outputformat['field-labels'])) {
+          $all_fields_description[] = $field . dt(" (or '!other')", array('!other' => strtolower($human_readable)));
+        }
+        else {
+          $all_fields_description[] = $field;
+        }
+      }
       $field_defaults = isset($outputformat['fields-default']) ? $outputformat['fields-default'] : $all_fields;
       $command['options']['fields']['example-value'] = implode(', ', $field_defaults);
-      $command['options']['fields']['description'] .= ' '. dt('All available fields are: !fields.', array('!fields' => implode(', ', $all_fields)));
+      $command['options']['fields']['description'] .= ' '. dt('All available fields are: !fields.', array('!fields' => implode(', ', $all_fields_description)));
       if (isset($outputformat['fields-default'])) {
         $command['options']['full']['description'] = dt("Show the full output, with all fields included.");
       }
