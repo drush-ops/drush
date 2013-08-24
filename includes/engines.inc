@@ -162,8 +162,8 @@ function drush_merge_engine_data(&$command) {
           unset($config[$engine_option_alias_name]);
         }
       }
-      // Make sure that 'require-engine-capability' is always an array.
-      if (isset($config['require-engine-capability']) && !is_array($config['require-engine-capability'])) {
+      // Convert single string values of 'require-engine-capability' to an array.
+      if (isset($config['require-engine-capability']) && is_string($config['require-engine-capability'])) {
         $config['require-engine-capability'] = array($config['require-engine-capability']);
       }
       $command['engines'][$engine_type] = $config;
@@ -239,10 +239,15 @@ function drush_merge_engine_data(&$command) {
           // it is assumed that the engine can satisfy all requirements.
           if (array_key_exists('engine-capabilities', $data)) {
             $engine_is_usable = FALSE;
-            foreach ($config['require-engine-capability'] as $required) {
-              // We need an engine that provides any one of the requirements.
-              if (in_array($required, $data['engine-capabilities'])) {
-                $engine_is_usable = TRUE;
+            // If 'require-engine-capability' is TRUE instead of an array,
+            // then only engines that are universal (do not declare any
+            // particular capabilities) are usable.
+            if (is_array($config['require-engine-capability'])) {
+              foreach ($config['require-engine-capability'] as $required) {
+                // We need an engine that provides any one of the requirements.
+                if (in_array($required, $data['engine-capabilities'])) {
+                  $engine_is_usable = TRUE;
+                }
               }
             }
           }
@@ -254,7 +259,7 @@ function drush_merge_engine_data(&$command) {
             $engine_data['options'][$option]['description'] = array_key_exists('description', $data) ? $data['description'] : NULL;
             if ($combine_help) {
               $engine_data['options'][$option]['hidden'] = TRUE;
-              if (drush_get_context('DRUSH_VERBOSE') || !isset($data['verbose-only'])) {
+              if (drush_get_context('DRUSH_VERBOSE') || ($default == $engine) || !isset($data['verbose-only'])) {
                 $combine_help_data[$engine] = $engine . ': ' . $data['description'];
               }
             }
