@@ -23,6 +23,7 @@ function cache_drush_command() {
     'outputformat' => array(
       'default' => 'print-r',
       'pipe-format' => 'var_export',
+      'output-data-type' => TRUE,
     ),
     'aliases' => array('cg'),
   );
