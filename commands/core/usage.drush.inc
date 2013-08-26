@@ -82,7 +82,8 @@ function drush_usage_show() {
 function _drush_usage_get_file($required = FALSE) {
   $file = drush_directory_cache('usage') . '/usage.txt';
   if (!file_exists($file) && $required) {
-    return FALSE; // drush_set_error('DRUSH_NO_USAGE_FILE', dt("No usage file; set $options['drush_usage_log'] = TRUE; in a .drushrc.php file to enable."));
+    drush_set_error('DRUSH_NO_USAGE_FILE', dt('No usage file; set $options[\'drush_usage_log\'] = TRUE; in a .drushrc.php file to enable.'));
+    return FALSE;
   }
   return $file;
 }
