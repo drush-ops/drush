@@ -1,7 +1,5 @@
 <?php
 
-define('DRUSH_YAML_VERSION', '2.2.1');
-
 if (!class_exists('Symfony\Component\Yaml\Dumper')) {
   // For Drush PSR-0 and Composer information, see http://drupal.org/node/1316322.
   $path = DRUSH_BASE_PATH . '/lib/Yaml-' . DRUSH_YAML_VERSION;

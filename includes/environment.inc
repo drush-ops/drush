@@ -21,6 +21,11 @@ define('DRUSH_TABLE_VERSION', '1.1.3');
 define('DRUSH_PEAR_BASE_URL', 'http://download.pear.php.net/package/');
 
 /**
+ * Used by outputformat engine and config-set in core.
+ */
+define('DRUSH_YAML_VERSION', '2.2.1');
+
+/**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
  * handler takes over.
  */
