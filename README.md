@@ -130,9 +130,9 @@ POST-INSTALL
        ```
 
      Stats are usually logged locally and sent whenever log file exceeds 50Kb.
-     Alternatively, one may disable automatic sending and instead use usage-view
-     and usage-send commands to more carefully send data.
-
+     Alternatively, one may disable automatic sending and instead use 
+     `usage-show` and `usage-send` commands to more carefully send data.
+     
 
 ADDITIONAL CONFIGURATIONS FOR MAMP:
 -----------------------------------
