@@ -704,7 +704,11 @@ function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
   if (empty($exec)) {
     return drush_set_error('DRUSH_SQL_NO_QUERY', 'No query provided');
   }
-  return (drush_op_system($exec) == 0);
+  $resultcode = drush_op_system($exec);
+  if ($resultcode != 0) {
+    return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed with result code !result', array('!result' => $resultcode)));
+  }
+  return TRUE;
 }
 
 function drush_sql_drop() {
