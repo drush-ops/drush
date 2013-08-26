@@ -58,7 +58,7 @@ function config_drush_command() {
     'arguments' => array(
       'config-name' => 'The config object name, for example "system.site".',
       'key' => 'The config key, for example "page.front".',
-      'value' => 'The value to assign to the config key.'
+      'value' => 'The value to assign to the config key. Use \'-\' to read from STDIN.',
     ),
     'options' => array(
       'format' => array(
@@ -66,7 +66,6 @@ function config_drush_command() {
         'example-value' => 'yaml',
         'value' => 'required',
       ),
-      'stdin' => 'Get value from STDIN.',
       // A convenient way to pass a multiline value within a backend request.
       'value' => array(
         'description' => 'The value to assign to the config key (if any).',
@@ -184,7 +183,7 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
   // This hidden option is a convenient way to pass a value without passing a key.
   $data = drush_get_option('value', $data);
 
-  if (!isset($data) && !drush_get_option('stdin')) {
+  if (is_null($data)) {
     return drush_set_error('DRUSH_CONFIG_ERROR', dt('No config value specified.'));
   }
 
@@ -197,7 +196,8 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
     $new_key = FALSE;
   }
 
-  if (drush_get_option('stdin')) {
+  // Special flag indicating that the value has been passed via STDIN.
+  if ($data === '-') {
     $data = stream_get_contents(STDIN);
   }
 
