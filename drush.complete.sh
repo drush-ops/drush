@@ -12,10 +12,12 @@ __drush_ps1() {
   f="${TMPDIR:-/tmp/}/drush-env/drush-drupal-site-$$"
   if [ -f $f ]
   then
-    DRUPAL_SITE=$(cat "$f")
+    __DRUPAL_SITE=$(cat "$f")
+  else
+    __DRUPAL_SITE="$DRUPAL_SITE"
   fi
 
-  [[ -n "$DRUPAL_SITE" ]] && printf "${1:- (%s)}" "$DRUPAL_SITE"
+  [[ -n "$__DRUPAL_SITE" ]] && printf "${1:- (%s)}" "$__DRUPAL_SITE"
 }
 
 # Completion function, uses the "drush complete" command to retrieve
