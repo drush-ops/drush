@@ -61,6 +61,7 @@ function _drush_pm_info_extension($info) {
   $data['project'] = isset($info->info['project'])?$info->info['project']:dt('Unknown');
   $data['type'] = $info->type;
   $data['title'] = $info->info['name'];
+  $data['config'] = isset($info->info['configure']) ? $info->info['configure'] : dt('None');
   $data['description'] = $info->info['description'];
   $data['version'] = $info->info['version'];
   $data['date'] = format_date($info->info['datestamp'], 'custom', 'Y-m-d');
