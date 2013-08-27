@@ -81,6 +81,7 @@
 # $options['shell-aliases']['online'] = 'variable-delete -y --exact maintenance_mode';
 # $options['shell-aliases']['dis-all'] = '!drush -y dis `drush pml --status=enabled --type=module --no-core --pipe`';
 # $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
+# $options['shell-aliases']['site-get'] = '@none php-eval "return drush_sitealias_site_get();"';
 
 // Add a 'pm-clone' to simplify git cloning from drupal.org.
 # $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg';
