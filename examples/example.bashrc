@@ -176,7 +176,7 @@ function cdd() {
   then
     d="$(drush drupal-directory $s 2>/dev/null)"
     $(drush sa ${s%%:*} --fields=remote-host --format=list > /dev/null 2>&1)
-    if [ $? != "" ]
+    if [ $? == "" ]
     then
       echo "cd $d"
       builtin cd "$d"
@@ -203,7 +203,7 @@ function gitd() {
   then
     d="$(drush drupal-directory $s 2>/dev/null)"
     $(drush sa ${s%%:*} --fields=remote-host --format=list > /dev/null 2>&1)
-    if [ $? == "" ]
+    if [ $? != "" ]
     then
       drush ${s%%:*} ssh "cd '$d' ; git ${@:2}"
     else
