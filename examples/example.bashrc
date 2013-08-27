@@ -175,8 +175,8 @@ function cdd() {
   elif [ "${s:0:1}" == "@" ] || [ "${s:0:1}" == "%" ]
   then
     d="$(drush drupal-directory $s 2>/dev/null)"
-    $(drush sa ${s%%:*} --fields=remote-host --format=list > /dev/null 2>&1)
-    if [ $? == "" ]
+    rh="$(drush sa ${s%%:*} --fields=remote-host --format=list)"
+    if [ -z "$rh" ]
     then
       echo "cd $d"
       builtin cd "$d"
@@ -202,8 +202,8 @@ function gitd() {
   if [ -n "$s" ] && [ ${s:0:1} == "@" ] || [ ${s:0:1} == "%" ]
   then
     d="$(drush drupal-directory $s 2>/dev/null)"
-    $(drush sa ${s%%:*} --fields=remote-host --format=list > /dev/null 2>&1)
-    if [ $? != "" ]
+    rh="$(drush sa ${s%%:*} --fields=remote-host --format=list)"
+    if [ -n "$rh" ]
     then
       drush ${s%%:*} ssh "cd '$d' ; git ${@:2}"
     else
@@ -228,8 +228,8 @@ function lsd() {
       p[${#p[@]}]="$(drush drupal-directory $a 2>/dev/null)"
       if [ ${a:0:1} == "@" ]
       then
-        $(drush sa ${a%:*} --fields=remote-host --format=list > /dev/null 2>&1)
-        if [ $? == "" ]
+        rh="$(drush sa ${a%:*} --fields=remote-host --format=list)"
+        if [ -n "$rh" ]
         then
           r=${a%:*}
         fi
@@ -241,7 +241,7 @@ function lsd() {
   done
   if [ -n "$r" ]
   then
-    ssh $r ls "${p[@]}"
+    drush $r ssh 'ls "${p[@]}"'
   else
     "ls" "${p[@]}"
   fi
