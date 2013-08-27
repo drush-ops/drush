@@ -68,6 +68,12 @@ function sitealias_drush_command() {
     'handle-remote-commands' => TRUE,
     'aliases' => array('unuse'),
   );
+  $items['site-show'] = array(
+    'description' => 'Show the site currently in use.  Prints nothing if "use" is not in effect.',
+    'callback' => 'drush_sitealias_site_get',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'aliases' => array('using'),
+  );
   return $items;
 }
 
