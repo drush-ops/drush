@@ -62,11 +62,13 @@ function sitealias_drush_command() {
       'drush site-set -' => 'Go back to the previously-set site (like `cd -`).',
     ),
   );
+  // @deprecated and hidden as of 6.0.1. Use site-set without an argument.
   $items['site-reset'] = array(
     'description' => 'Reset a persistently set site.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'handle-remote-commands' => TRUE,
     'aliases' => array('unuse'),
+    'hidden' => TRUE,
   );
   return $items;
 }
