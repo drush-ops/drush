@@ -53,20 +53,15 @@ function sitealias_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'handle-remote-commands' => TRUE,
     'arguments' => array(
-      'site' => 'Site specification to use, or "-" for previous site.',
+      'site' => 'Site specification to use, or "-" for previous site. Omit this argument to "unset"',
     ),
     'aliases' => array('use'),
     'examples' => array(
       'drush site-set @dev' => 'Set the current session to use the @dev alias.',
       'drush site-set user@server/path/to/drupal#sitename' => 'Set the current session to use a site specification.',
       'drush site-set -' => 'Go back to the previously-set site (like `cd -`).',
+      'drush site-set' => 'Without an argument, any existing site becomes unset.',
     ),
-  );
-  $items['site-reset'] = array(
-    'description' => 'Reset a persistently set site.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'handle-remote-commands' => TRUE,
-    'aliases' => array('unuse'),
   );
   return $items;
 }
@@ -370,15 +365,5 @@ function drush_sitealias_site_set($site = '@none') {
     else {
       drush_set_error('DRUPAL_SITE_NOT_FOUND', dt("Could not find a site definition for !site.", array('!site' => $site)));
     }
-  }
-}
-
-/**
- * Deletes the file that stores the DRUPAL_SITE variable for persistent
- * site switching.
- */
-function drush_sitealias_site_reset() {
-  if (($filename = drush_sitealias_get_envar_filename()) && file_exists($filename)) {
-    drush_delete_dir($filename);
   }
 }
