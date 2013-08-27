@@ -148,6 +148,7 @@ function pm_drush_command() {
         'requires' => 'Requires',
         'required_by' => 'Required by',
         'permissions' => 'Permissions',
+        'config' => 'Configure',
         'engine' => 'Engine',
         'base_theme' => 'Base theme',
         'regions' => 'Regions',
