@@ -26,7 +26,7 @@ class ConfigCase extends Drush_CommandTestCase {
 
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $options);
     $this->drush('config-get', array('system.site', 'name'), $options);
-    $this->assertEquals("system.site:name: 'config_test'", $this->getOutput(), 'Config was successfully set and get.');
+    $this->assertEquals("'system.site:name': config_test\n", $this->getOutput(), 'Config was successfully set and get.');
 
     // @todo, test that config-view or similar matches what filesystem says.
     //$this->drush('config-view', array(), $options);

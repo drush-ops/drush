@@ -360,7 +360,6 @@ function drush_config_get_object($config_name) {
  *   The config key.
  */
 function drush_config_get_value($config_name, $key) {
-  drush_set_default_outputformat('labeled-export');
   $config = Drupal::config($config_name);
   if ($config->isNew()) {
     return drush_set_error(dt('Config !name does not exist', array('!name' => $config_name)));
