@@ -187,7 +187,7 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
     return drush_set_error('DRUSH_CONFIG_ERROR', dt('No config value specified.'));
   }
 
-  $config = config($config_name);
+  $config = Drupal::config($config_name);
   // Check to see if config key already exists.
   if ($config->get($key) === NULL) {
     $new_key = TRUE;
@@ -361,7 +361,7 @@ function drush_config_get_object($config_name) {
  */
 function drush_config_get_value($config_name, $key) {
   drush_set_default_outputformat('labeled-export');
-  $config = config($config_name);
+  $config = Drupal::config($config_name);
   if ($config->isNew()) {
     return drush_set_error(dt('Config !name does not exist', array('!name' => $config_name)));
   }
