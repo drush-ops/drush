@@ -53,13 +53,14 @@ function sitealias_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'handle-remote-commands' => TRUE,
     'arguments' => array(
-      'site' => 'Site specification to use, or "-" for previous site.',
+      'site' => 'Site specification to use, or "-" for previous site. Omit this argument to "unset"',
     ),
     'aliases' => array('use'),
     'examples' => array(
       'drush site-set @dev' => 'Set the current session to use the @dev alias.',
       'drush site-set user@server/path/to/drupal#sitename' => 'Set the current session to use a site specification.',
       'drush site-set -' => 'Go back to the previously-set site (like `cd -`).',
+      'drush site-set' => 'Without an argument, any existing site becomes unset.',
     ),
   );
   // @deprecated and hidden as of 6.0.1. Use site-set without an argument.
