@@ -19,7 +19,7 @@
  *     "d" => array("e" => 5, "f" => 6)
  *   );
  *
- * Output with --format=export:
+ * Output with --format=var_export:
  *
  *   array (
  *     'a' =>
