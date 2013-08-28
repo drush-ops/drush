@@ -2,8 +2,8 @@
 # whitelist
 branches:
   only:
-    - 8.x-6.x
-    - 7.x-5.x
+    - 6.x
+    - 5.x
 language: php
 php:
   - 5.3
