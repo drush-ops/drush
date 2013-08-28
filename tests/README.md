@@ -22,8 +22,9 @@ Usage
 Advanced usage
 ---------
 - Run only tests matching a regex: `phpunit --filter=testVersionString`
-- Skip slow tests (usually those with network usage): `phpunit --exclude-group slow`
+- Skip slow tests (usually those with network usage): `n of Druphpunit --exclude-group slow`
 - XML results: `phpunit --filter=testVersionString --log-junit results.xml`
+- Use an alternate version of Drupal: `UNISH_DRUPAL_MAJOR_VERSION=8 phpunit ...`
 
 Reuse by Drush Commandfiles
 -----------
