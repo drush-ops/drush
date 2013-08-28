@@ -15,10 +15,10 @@ Each version of Drush supports multiple Drupal versions.  Drush 6 is the recomme
 Drush Version | Branch  | Compatible Drupal versions | Code Status
 ------------- | ------  | -------------------------- | -----------
 Drush 7       | <a href="https://travis-ci.org/drush-ops/drush">master</a>  | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.png?branch=master">
-Drush 6       | <a href="https://travis-ci.org/drush-ops/drush">8.x-6.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=8.x-6.x">
-Drush 5       | <a href="https://travis-ci.org/drush-ops/drush">7.x-5.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=7.x-5.x">
-Drush 4       | 7.x-4.x | D5, D6, D7                 | Unsupported
-Drush 3       | 6.x-3.x | D5, D6                     | Unsupported
+Drush 6       | <a href="https://travis-ci.org/drush-ops/drush">6.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=6.x">
+Drush 5       | <a href="https://travis-ci.org/drush-ops/drush">5.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=5.x">
+Drush 4       | 4.x | D5, D6, D7                 | Unsupported
+Drush 3       | 3.x | D5, D6                     | Unsupported
 
 Drush comes with a full test suite powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush):
 
