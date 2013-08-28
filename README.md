@@ -15,8 +15,8 @@ Each version of Drush supports multiple Drupal versions.  Drush 6 is recommended
 Drush Version | Branch  | Compatible Drupal versions | Code Status
 ------------- | ------  | -------------------------- | -----------
 Drush 7       | <a href="https://travis-ci.org/drush-ops/drush">master</a>  | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.png?branch=master">
-Drush 6       | <a href="https://travis-ci.org/drush-ops/drush">8.x-6.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=8.x-6.x">
-Drush 5       | <a href="https://travis-ci.org/drush-ops/drush">7.x-5.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=7.x-5.x">
+Drush 6       | <a href="https://travis-ci.org/drush-ops/drush">6.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=8.x-6.x">
+Drush 5       | <a href="https://travis-ci.org/drush-ops/drush">5.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=7.x-5.x">
 Drush 4       | 7.x-4.x | D5, D6, D7                 | Unsupported
 Drush 3       | 6.x-3.x | D5, D6                     | Unsupported
 
