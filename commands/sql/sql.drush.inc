@@ -265,7 +265,7 @@ function sql_sql_sync_complete() {
  * Check whether further bootstrap is needed. If so, do it.
  */
 function drush_sql_bootstrap_further() {
-  if (!drush_get_option('db-url')) {
+  if (!drush_get_option(array('db-url', 'db-spec'))) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
   }
 }
