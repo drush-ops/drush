@@ -274,11 +274,16 @@ function outputformat_drush_help_alter(&$command) {
     else {
       // If the command does not define specific field labels,
       // then hide the help for --fields unless the command
-      // works with output format engines that format tables.
+      // uses output format engines that format tables.
       if (isset($outputformat['require-engine-capability']) && is_array($outputformat['require-engine-capability'])) {
         if (!in_array('format-table', $outputformat['require-engine-capability'])) {
           unset($command['options']['fields']);
         }
+      }
+      // If the command does define output formats, but does not
+      // define fields, then just hide the help for the --fields option.
+      else {
+        $command['options']['fields']['hidden'] = TRUE;
       }
     }
 
