@@ -1782,7 +1782,12 @@ function drush_shell_alias_replace() {
         $unmatched_replacements = preg_replace('/[{}]/', '', $unmatched_replacements);
         return drush_set_error('DRUSH_SHELL_ALIAS_UNMATCHED_REPLACEMENTS', dt('The shell alias @alias-name uses replacements "@unmatched". You must use this command with a site alias (e.g. `drush @myalias @alias-name ...`) that defines all of these variables.', array('@alias-name' => $first, '@unmatched' => $unmatched_replacements)));
       }
-      $alias_value = explode(' ', $alias_value);
+      if (function_exists('str_getcsv')) {
+        $alias_value = str_getcsv($alias_value, ' ');
+      }
+      else {
+        $alias_value = explode(' ', $alias_value);
+      }
     }
     drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');
     $replacement = $alias_value;
