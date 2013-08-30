@@ -92,7 +92,7 @@ function drush_pm_download() {
     $release = release_info_fetch($request, $restrict_to, $select, $all);
     if ($release == FALSE) {
       // Stop working on the first failure
-      return FALSE;
+      return drush_set_error('DRUSH_DOWNLOAD_FAILED', dt("Could not download requested project(s)."));
     }
 
     // Determine the name of the directory that will contain the project.
