@@ -91,7 +91,11 @@ function drush_pm_download() {
     $request['status url'] = $source;
     $release = release_info_fetch($request, $restrict_to, $select, $all);
     if ($release == FALSE) {
-      // Stop working on the first failure
+      // Stop working on the first failure. Return silently on user abort.
+      if (drush_get_context('DRUSH_USER_ABORT', FALSE)) {
+        return FALSE;
+      }
+      // Signal that the command failed for all other problems.
       return drush_set_error('DRUSH_DOWNLOAD_FAILED', dt("Could not download requested project(s)."));
     }
 
