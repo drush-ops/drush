@@ -1167,7 +1167,7 @@ function drush_parse_command() {
 
   // Get a list of all implemented commands.
   $implemented = drush_get_commands();
-  if (isset($implemented[$args[0]])) {
+  if (!empty($args) && isset($implemented[$args[0]])) {
     $command = $implemented[$args[0]];
     $arguments = array_slice($args, 1);
   }

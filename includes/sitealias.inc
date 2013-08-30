@@ -21,7 +21,7 @@ function drush_sitealias_check_arg() {
   $args = drush_get_arguments();
 
   // Test to see if the first arg is a site specification
-  if (_drush_sitealias_set_context_by_name($args[0])) {
+  if (!empty($args) && _drush_sitealias_set_context_by_name($args[0])) {
     drush_set_context('DRUSH_TARGET_SITE_ALIAS', $args[0]);
     array_shift($args);
     // We only need to expand the site specification
