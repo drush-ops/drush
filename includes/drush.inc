@@ -1189,6 +1189,29 @@ function drush_preflight_command_dispatch() {
     if (drush_get_option('no-label', FALSE)) {
       $backend_options['no-label'] = TRUE;
     }
+    // If the user specified a format, try to look up the
+    // default list separator for the specified format.
+    // If the user did not specify a different label separator,
+    // then pass in the default as an option, so that the
+    // separtor between the items in the list and the site
+    // name will be consistant.
+    $format = drush_get_option('format', FALSE);
+    if ($format) {
+      $implemented = drush_get_commands();
+      if (array_key_exists($command_name, $implemented)) {
+        $command = $implemented[$command_name];
+        if ($command) {
+          $result = drush_load_command_engines($command);
+          $formatter = drush_get_outputformat();
+          if (!array_key_exists('label-separator', $multi_options)) {
+            $list_separator = $formatter->get_info('list-separator');
+            if ($list_separator) {
+              $multi_options['label-separator'] = $list_separator;
+            }
+          }
+        }
+      }
+    }
     $values = drush_invoke_process($site_record, $command_name, $args, $multi_options, $backend_options);
     return TRUE;
   }
