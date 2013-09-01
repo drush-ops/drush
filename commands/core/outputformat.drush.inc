@@ -384,6 +384,15 @@ class drush_outputformat {
     $supported = $this->supported_data_types($metadata);
     return (count($supported) == 1) && ($supported[0] == 'format-single');
   }
+  function get_info($key) {
+    if (array_key_exists($key, $this->engine_config)) {
+      return $this->engine_config[$key];
+    }
+    elseif (isset($this->sub_engine)) {
+      return $this->sub_engine->get_info($key);
+    }
+    return FALSE;
+  }
   /**
    * Perform pre-processing and then format() the $input.
    */
