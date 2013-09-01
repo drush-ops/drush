@@ -1197,17 +1197,12 @@ function drush_preflight_command_dispatch() {
     // name will be consistant.
     $format = drush_get_option('format', FALSE);
     if ($format) {
-      $implemented = drush_get_commands();
-      if (array_key_exists($command_name, $implemented)) {
-        $command = $implemented[$command_name];
-        if ($command) {
-          $result = drush_load_command_engines($command);
-          $formatter = drush_get_outputformat();
-          if (!array_key_exists('label-separator', $multi_options)) {
-            $list_separator = $formatter->get_info('list-separator');
-            if ($list_separator) {
-              $multi_options['label-separator'] = $list_separator;
-            }
+      if (!array_key_exists('label-separator', $multi_options)) {
+        $formatter = drush_load_engine('outputformat', $format);
+        if ($formatter) {
+          $list_separator = $formatter->get_info('list-separator');
+          if ($list_separator) {
+            $multi_options['label-separator'] = $list_separator;
           }
         }
       }
