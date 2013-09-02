@@ -71,7 +71,7 @@ INSTALL - MANUAL
 1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in a directory that is outside of your web root.
 1. Make the 'drush' command executable:
     
-    `$ ln -s /path/to/drush/drush /usr/bin/drush`
+    `$ chmod u+x /path/to/drush/drush`
 
 1. Configure your system to recognize where Drush resides. There are 2 options:
     1. Create a symbolic link to the Drush executable in a directory that is already in your PATH, e.g.:
