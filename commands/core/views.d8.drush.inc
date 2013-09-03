@@ -6,7 +6,9 @@
  */
 
 use Drupal\views\Analyzer;
-use Drupal\views\ViewStorage;
+use Drupal\views\Entity\View;
+use Drupal\views\Views;
+use Drupal\Component\Utility\MapArray;
 
 /**
  * Implements hook_drush_help().
@@ -183,13 +185,12 @@ function views_development_settings() {
  * Callback function for views-list command.
  */
 function drush_views_list() {
-  $rows = array();
   $disabled_views = array();
   $enabled_views = array();
 
   $format = drush_get_option('format', FALSE);
 
-  $views = views_get_all_views();
+  $views = Drupal::entityManager()->getStorageController('view')->loadMultiple();
 
   // Get the --name option.
   $name = array_filter(drush_get_option_list('name'));
@@ -217,7 +218,7 @@ function drush_views_list() {
   );
 
   // Setup a row for each view.
-  foreach ($views as $id => $view) {
+  foreach ($views as $view) {
     // If options were specified, check that first mismatch push the loop to the
     // next view.
     if ($with_name && !stristr($view->id(), $name[0])) {
@@ -228,7 +229,7 @@ function drush_views_list() {
     }
 
     $status_bool = $status == 'enabled';
-    if ($status && ($view->isEnabled() !== $status_bool)) {
+    if ($status && ($view->status() !== $status_bool)) {
       continue;
     }
 
@@ -321,7 +322,7 @@ function drush_views_execute($view_name, $display_id = NULL) {
     $view_args = array_slice($args, 2);
   }
 
-  if (!$view = views_get_view($view_name)) {
+  if (!$view = Views::getView($view_name)) {
     return drush_set_error(dt('View: "@view" not found.', array('@view' => $view_name)));
   }
 
@@ -358,13 +359,13 @@ function drush_views_analyze() {
 
   $format = drush_get_option('format', FALSE);
 
-  $views = views_get_all_views();
+  $views = Drupal::entityManager()->getStorageController('view')->loadMultiple();
 
   if (!empty($views)) {
-    $analyzer = new Analyzer();
+    $analyzer = Drupal::service('views.analyzer');
     foreach ($views as $view_name => $view) {
       $view = $view->getExecutable();
-      $analyzer->setView($view);
+
       if ($messages = $analyzer->getMessages($view)) {
         if ($format) {
           $output = drush_format($messages, $format);
@@ -419,9 +420,9 @@ function _views_drush_op($op = '', array $view_names = array()) {
     return drush_set_error(dt('Invalid op type'));
   }
 
-  $view_names = drupal_map_assoc($view_names);
+  $view_names = MapArray::copyValuesToKeys($view_names);
 
-  if ($views = entity_load_multiple('view', $view_names)) {
+  if ($views = Drupal::entityManager()->getStorageController('view')->loadMultiple($view_names)) {
     foreach ($views as $view) {
       $tokens = array('@view' => $view->id(), '@action' => $op_types[$op]['action']);
 
@@ -474,27 +475,27 @@ function _views_drush_op_types() {
 /**
  * Returns whether a view is enabled.
  *
- * @param Drupal\views\ViewStorage $view
+ * @param Drupal\views\Entity\ViewDrupal\views\ $view
  *   The view object to check.
  *
  * @return bool
  *   TRUE if the View is enabled, FALSE otherwise.
  */
-function _views_drush_view_is_enabled(ViewStorage $view) {
-  return $view->isEnabled();
+function _views_drush_view_is_enabled(View $view) {
+  return $view->status();
 }
 
 /**
  * Returns whether a view is disabled.
  *
- * @param Drupal\views\ViewStorage $view
+ * @param Drupal\views\Entity\View $view
  *   The view object to check.
  *
  * @return bool
  *   TRUE if the View is disabled, FALSE otherwise.
  */
-function _views_drush_view_is_disabled(ViewStorage $view) {
-  return !$view->isEnabled();
+function _views_drush_view_is_disabled(View $view) {
+  return !$view->status();
 }
 
 /**
@@ -525,5 +526,5 @@ function drush_views_disable_complete() {
  *   An array of available view names.
  */
 function _drush_views_complete() {
-  return array('values' => array_keys(views_get_all_views()));
+  return array('values' => array_keys(Drupal::entityManager()->getStorageController('view')->loadMultiple()));
 }
