@@ -1193,17 +1193,15 @@ function drush_preflight_command_dispatch() {
     // default list separator for the specified format.
     // If the user did not specify a different label separator,
     // then pass in the default as an option, so that the
-    // separtor between the items in the list and the site
-    // name will be consistant.
+    // separator between the items in the list and the site
+    // name will be consistent.
     $format = drush_get_option('format', FALSE);
-    if ($format) {
-      if (!array_key_exists('label-separator', $multi_options)) {
-        $formatter = drush_load_engine('outputformat', $format);
-        if ($formatter) {
-          $list_separator = $formatter->get_info('list-separator');
-          if ($list_separator) {
-            $multi_options['label-separator'] = $list_separator;
-          }
+    if ($format && !array_key_exists('label-separator', $multi_options)) {
+      $formatter = drush_load_engine('outputformat', $format);
+      if ($formatter) {
+        $list_separator = $formatter->get_info('list-separator');
+        if ($list_separator) {
+          $multi_options['label-separator'] = $list_separator;
         }
       }
     }
