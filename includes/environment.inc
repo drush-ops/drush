@@ -381,32 +381,21 @@ function drush_locate_root($start_path = NULL) {
  *   a Drupal root.
  */
 function drush_valid_drupal_root($path) {
-  if (!empty($path) && is_dir($path)) {
+  if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
     // Drupal 8 root. Additional check for the presence of core/composer.json to
     // grant it is not a Drupal 7 site with a base folder named "core".
     $candidate = 'core/includes/common.inc';
-    if (file_exists($path . '/' . $candidate) && file_exists($path . '/composer.json')) {
-      return _drush_valid_drupal_root_extra_checks($path, $candidate);
+    if (file_exists($path . '/' . $candidate) && file_exists($path . '/core/misc/drupal.js') && file_exists($path . '/composer.json')) {
+      return $candidate;
     }
     // Drupal 7 root. Additional check for the absence of core/composer.json to
     // grant $path is not core/ of a Drupal 8 root.
     $candidate = 'includes/common.inc';
-    if (file_exists($path . '/' . $candidate) && ((basename($path) != 'core') || !file_exists($path . '/../composer.json'))) {
-      return _drush_valid_drupal_root_extra_checks($path, $candidate);
+    if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js') && ((basename($path) != 'core') || !file_exists($path . '/../composer.json'))) {
+      return $candidate;
     }
   }
   return FALSE;
-}
-
-// Extra checks to insure that the candidate is in fact part of a Drupal root,
-// and not some other non-Drupal directory
-function _drush_valid_drupal_root_extra_checks($path, $candidate) {
-  // We also require that there must be a file misc/drupal.js in a sibling
-  // folder of the candidate file.
-  if (!file_exists(dirname(dirname($path . '/' . $candidate)) . '/misc/drupal.js')) {
-    return FALSE;
-  }
-  return $candidate;
 }
 
 /**
