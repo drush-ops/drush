@@ -1491,52 +1491,52 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
     // then call it to determine if this file should be loaded.
     foreach ($list as $module => $filename) {
       $load_command = TRUE;
-      $drupal_version = '';
-      if (preg_match('/\.d([0-9]+)$/', $module, $matches)) {
-        $drupal_version = $matches[1];
-      }
-      if (!empty($drupal_version) && ($drupal_version != drush_drupal_major_version())) {
-        $load_command = FALSE;
-      }
-      else {
-        $load_test_inc = dirname($filename) . "/" . $module . ".drush.load.inc";
-        if (file_exists($load_test_inc)) {
-          include_once($load_test_inc);
-          $module_versionless = preg_replace('/\.d([0-9]+)$/', '', $module);
-          $load_test_func = $module_versionless . "_drush_load";
-          if (function_exists($load_test_func)) {
-            $load_command = $load_test_func($phase);
+      $module_versionless = preg_replace('/\.d([0-9]+)$/', '', $module);
+      if (!isset($cache[$module_versionless])) {
+        $drupal_version = '';
+        if (preg_match('/\.d([0-9]+)$/', $module, $matches)) {
+          $drupal_version = $matches[1];
+        }
+        if (!empty($drupal_version) && ($drupal_version != drush_drupal_major_version())) {
+          $load_command = FALSE;
+        }
+        else {
+          $load_test_inc = dirname($filename) . "/" . $module . ".drush.load.inc";
+          if (file_exists($load_test_inc)) {
+            include_once($load_test_inc);
+            $module_versionless = preg_replace('/\.d([0-9]+)$/', '', $module);
+            $load_test_func = $module_versionless . "_drush_load";
+            if (function_exists($load_test_func)) {
+              $load_command = $load_test_func($phase);
+            }
           }
         }
-      }
-      if ($load_command) {
-        // Only try to require if the file exists. If not, a file from the
-        // command file cache may not be available anymore, in which case
-        // we rebuild the cache for this phase.
-        if ($filepath = realpath($filename)) {
-          require_once $filepath;
-          unset($deferred[$module]);
+        if ($load_command) {
+          // Only try to require if the file exists. If not, a file from the
+          // command file cache may not be available anymore, in which case
+          // we rebuild the cache for this phase.
+          if ($filepath = realpath($filename)) {
+            $cache[$module_versionless] = $filename;
+            require_once $filepath;
+            unset($deferred[$module]);
+          }
+          elseif (!$reset) {
+            _drush_add_commandfiles($searchpath, $phase, TRUE);
+          }
         }
-        elseif (!$reset) {
-          _drush_add_commandfiles($searchpath, $phase, TRUE);
+        else {
+          unset($list[$module]);
+          // Signal that we should try again on
+          // the next bootstrap phase.  We set
+          // the flag to the filename of the first
+          // module we find so that only that one
+          // will be retried.
+          $deferred[$module] = $filename;
         }
-      }
-      else {
-        unset($list[$module]);
-        // Signal that we should try again on
-        // the next bootstrap phase.  We set
-        // the flag to the filename of the first
-        // module we find so that only that one
-        // will be retried.
-        $deferred[$module] = $filename;
       }
     }
 
     if (sizeof($list)) {
-      foreach ($list as $module => $filename) {
-        $module_versionless = preg_replace('/\.d([0-9]+)$/', '', $module);
-        $cache[$module_versionless] = $filename;
-      }
       ksort($cache);
     }
   }
