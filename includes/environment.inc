@@ -873,7 +873,7 @@ function drush_get_extensions($include_hidden = TRUE) {
  * @return FALSE if the extension is compatible.
  */
 function drush_extension_check_incompatibility($file) {
-  if (!isset($file->info['core']) || $file->info['core'] != DRUPAL_CORE_COMPATIBILITY) {
+  if (!isset($file->info['core']) || $file->info['core'] != drush_get_drupal_core_compatibility()) {
     return 'Drupal';
   }
   if (version_compare(phpversion(), $file->info['php']) < 0) {

@@ -14,8 +14,8 @@ function drush_drupal_version($drupal_root = NULL) {
 
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
-      // D7 stores VERSION in bootstrap.inc. D8 moved that to /core/includes.
-      $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc', '/core/includes/bootstrap.inc');
+      // D7 stores VERSION in bootstrap.inc.
+      $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc');
       foreach ($version_constant_paths as $path) {
         if (file_exists($drupal_root . $path)) {
           require_once $drupal_root . $path;
@@ -24,6 +24,16 @@ function drush_drupal_version($drupal_root = NULL) {
       // We just might be dealing with an early Drupal version (pre 4.7)
       if (defined('VERSION')) {
         $version = VERSION;
+      }
+      elseif (file_exists($drupal_root . '/core/lib/Drupal.php')) {
+        // Drush depends on bootstrap being loaded at this point;
+        require_once $drupal_root .'/core/includes/bootstrap.inc';
+        // D8 moved that to /core/lib/Drupal.php. We can not include the file
+        // because then the autoloader will not work.
+        $contents = file_get_contents($drupal_root . '/core/lib/Drupal.php');
+        if (preg_match("/const VERSION = '([^']*)';/s", $contents, $matches)) {
+          $version = $matches[1];
+        }
       }
     }
   }

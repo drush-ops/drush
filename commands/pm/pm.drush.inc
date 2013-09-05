@@ -519,7 +519,7 @@ function drush_get_projects(&$extensions = NULL) {
   $projects = array(
     'drupal' => array(
       'label' => 'Drupal',
-      'version' => VERSION,
+      'version' => drush_drupal_version(),
       'type' => 'core',
       'extensions' => array(),
     )
@@ -531,7 +531,7 @@ function drush_get_projects(&$extensions = NULL) {
     // is not installed.
     // 3. it is not a project hosted in drupal.org.
     if (empty($extension->info['project'])) {
-      if (isset($extension->info['version']) && ($extension->info['version'] == VERSION)) {
+      if (isset($extension->info['version']) && ($extension->info['version'] == drush_drupal_version())) {
         $project = 'drupal';
       }
       else {

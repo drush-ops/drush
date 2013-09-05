@@ -69,7 +69,7 @@ function drush_check_module_dependencies($modules, $module_info) {
       // check for version incompatibility
       foreach ($dependencies as $dependency_name => $v) {
         $current_version = $module_info[$dependency_name]->info['version'];
-        $current_version = str_replace(DRUPAL_CORE_COMPATIBILITY . '-', '', $current_version);
+        $current_version = str_replace(drush_get_drupal_core_compatibility() . '-', '', $current_version);
         $incompatibility = drupal_check_incompatibility($v, $current_version);
         if (!is_null($incompatibility)) {
           $status[$key]['error'] = array(
@@ -245,4 +245,19 @@ function core_watchdog_severity_levels() {
     WATCHDOG_INFO     => 'info',
     WATCHDOG_DEBUG    => 'debug',
   );
+}
+
+/**
+ * Helper function to get core compatibility constant.
+ *
+ * @return string
+ *   The Drupal core compatibility constant.
+ */
+function drush_get_drupal_core_compatibility() {
+  if (defined('DRUPAL_CORE_COMPATIBILITY')) {
+    return DRUPAL_CORE_COMPATIBILITY;
+  }
+  elseif (defined('Drupal::CORE_COMPATIBILITY')) {
+    return Drupal::CORE_COMPATIBILITY;
+  }
 }
