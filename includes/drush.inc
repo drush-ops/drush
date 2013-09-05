@@ -972,7 +972,7 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
       // Remove the header line.
       array_shift($output);
       // Remove the prefix verb from each line.
-      $output = array_map(create_function('$str', 'return substr($str, strpos($str, ":") + 3 + ' . strlen(dirname($path)) . ');'), $output);
+      $output = array_map(create_function('$str', 'return substr($str, strpos($str, ":") + 3 + ' . strlen($destination) . ');'), $output);
       // Remove any remaining blank lines.
       $return = array_filter($output, create_function('$str', 'return $str != "";'));
     }
