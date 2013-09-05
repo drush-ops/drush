@@ -246,18 +246,3 @@ function core_watchdog_severity_levels() {
     WATCHDOG_DEBUG    => 'debug',
   );
 }
-
-/**
- * Helper function to get core compatibility constant.
- *
- * @return string
- *   The Drupal core compatibility constant.
- */
-function drush_get_drupal_core_compatibility() {
-  if (defined('DRUPAL_CORE_COMPATIBILITY')) {
-    return DRUPAL_CORE_COMPATIBILITY;
-  }
-  elseif (defined('Drupal::CORE_COMPATIBILITY')) {
-    return Drupal::CORE_COMPATIBILITY;
-  }
-}
