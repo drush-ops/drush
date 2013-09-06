@@ -161,7 +161,7 @@ function update_check_incompatibility($name, $type = 'module') {
   }
   if (!isset($file)
       || !isset($file->info['core'])
-      || $file->info['core'] != drush_get_drupal_core_compatibility()
+      || $file->info['core'] != DRUPAL_CORE_COMPATIBILITY
       || version_compare(phpversion(), $file->info['php']) < 0) {
     return TRUE;
   }

@@ -66,7 +66,7 @@ function drush_check_module_dependencies($modules, $module_info) {
       // check for version incompatibility
       foreach ($dependencies as $dependency_name => $v) {
         $current_version = $module_info[$dependency_name]->info['version'];
-        $current_version = str_replace(drush_get_drupal_core_compatibility() . '-', '', $current_version);
+        $current_version = str_replace(DRUPAL_CORE_COMPATIBILITY . '-', '', $current_version);
         $incompatibility = drupal_check_incompatibility($v, $current_version);
         if (!is_null($incompatibility)) {
           $status[$key]['error'] = array(
