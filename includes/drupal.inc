@@ -25,7 +25,7 @@ function drush_drupal_version($drupal_root = NULL) {
       if (defined('VERSION')) {
         $version = VERSION;
       }
-      elseif (file_exists($drupal_root . '/core/lib/Drupal.php')) {
+      elseif (file_exists($drupal_root . '/core/vendor/autoload.php')) {
         // Load the autoloader so we can access the class constants.
         require_once $drupal_root .'/core/vendor/autoload.php';
         // Drush depends on bootstrap being loaded at this point;
