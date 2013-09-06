@@ -103,7 +103,7 @@ function drush_cache_command_clear($type = NULL) {
     }
     $type = drush_choice($types, 'Enter a number to choose which cache to clear.', '!key');
     if ($type !== FALSE) {
-      call_user_func($types[$type]);
+      drush_op($types[$type]);
     }
   }
   if ($type !== FALSE) {
