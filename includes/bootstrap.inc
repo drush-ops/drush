@@ -761,8 +761,11 @@ function _drush_bootstrap_drupal_site_validate() {
 
     if ($drupal_base_url['port']) {
       $_SERVER['HTTP_HOST'] .= ':' . $drupal_base_url['port'];
+      $_SERVER['SERVER_PORT'] = $drupal_base_url['port'];
     }
-    $_SERVER['SERVER_PORT'] = $drupal_base_url['port'];
+    else {
+      $_SERVER['SERVER_PORT'] = 80;
+    }
 
     if (array_key_exists('path', $drupal_base_url)) {
       $_SERVER['PHP_SELF'] = $drupal_base_url['path'] . '/index.php';
