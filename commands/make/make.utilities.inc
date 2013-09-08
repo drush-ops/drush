@@ -67,6 +67,26 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
 }
 
 /**
+ * Helper function to parse a makefile and prune projects.
+ */
+function _make_parse_info_file($makefile) {
+  $info = make_parse_info_file($makefile);
+
+  // Support making just a portion of a make file.
+  $include_only = array(
+    'projects' => array_filter(drush_get_option_list('projects')),
+    'libraries' => array_filter(drush_get_option_list('libraries')),
+  );
+  $info = make_prune_info_file($info, $include_only);
+
+  if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
+    return FALSE;
+  }
+
+  return $info;
+}
+
+/**
  * Remove entries in the info file in accordance with the options passed in.
  * Entries are either explicitly 'allowed' (with the $include_only parameter) in
  * which case all *other* entries will be excluded.

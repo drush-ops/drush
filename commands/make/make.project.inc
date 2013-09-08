@@ -543,7 +543,7 @@ class DrushMakeProject {
       }
       $build_path = $this->buildPath($this->name);
       make_projects(TRUE, trim($build_path, '/'), $info, $this->build_path, $this->download_location);
-      make_libraries(trim($build_path, '/'), $info, $this->build_path, $this->download_location);
+      make_libraries(TRUE, trim($build_path, '/'), $info, $this->build_path, $this->download_location);
       $result = TRUE;
     }
     // Restore original 'custom' context so that any
