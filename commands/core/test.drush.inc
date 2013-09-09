@@ -280,9 +280,14 @@ function drush_test_xml_results($test_id, $dir, $info) {
     }
     // Prepare message.
     $status = str_pad($result->status . ':', 10);
+    $root = drush_get_option('root');
+    if (substr($root, -1) !== '/') {
+      $root .= '/';
+    }
+    $filename = str_replace($root, '', $result->file);
     $message = strip_tags($result->message, '<a>');  // Jenkins encodes the output so don't use any tags.
     $message = preg_replace('/<a.*?href="([^"]+)".*?>(.*?)<\/a>/', '$1 $2', $message); // Jenkins will turn urls into clickable links.
-    $message = $status . ' [' . $result->message_group . '] ' . $message . ' [' . basename($result->file) . ':' . $result->line . "]\n";
+    $message = $status . ' [' . $result->message_group . '] ' . $message . ' [' . $filename . ':' . $result->line . "]\n";
     // Everything is logged in system_out.
     $test_case->system_out .= $message;
     // Failures go to failures.
