@@ -809,7 +809,7 @@ function _drush_sql_get_db_table_list($db_spec, $site_record = NULL) {
     'override-simulated' => TRUE,
   );
   $result = drush_invoke_process($target_site, 'sql-query', array($query), $options, $backend_options);
-  $tables_raw = explode("\n", rtrim($result['output']));
+  $tables_raw = preg_split('/\r\n|\r|\n/', rtrim($result['output']));
 
   $tables = array();
   if (!empty($tables_raw)) {
