@@ -97,7 +97,10 @@ function make_generate_from_makefile($file, $makefile) {
       $projects[$name]['version'] = substr($projects[$name]['version'], strlen($project['core'] . '-'));
     }
     $projects[$name]['_type'] = $project['type'];
-    $ignore = array('build_path', 'contrib_destination', 'core', 'location', 'make_directory', 'l10n_url', 'download_type', 'download');
+    if (!(isset($project['download']['type'])) || ($project['download']['type'] == 'pm')) {
+      unset($projects[$name]['download']); // PM is the default, don't clutter the makefile.
+    }
+    $ignore = array('build_path', 'contrib_destination', 'core', 'location', 'make_directory', 'l10n_url', 'download_type');
     foreach ($ignore as $key) {
       unset($projects[$name][$key]);
     }
