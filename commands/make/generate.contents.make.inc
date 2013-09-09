@@ -93,6 +93,9 @@ function make_generate_from_makefile($file, $makefile) {
   $core = $core['core'];
   foreach ($projects as $name => $project) {
     $projects[$name]['version'] = $project['download']['full_version'];
+    if (strpos($projects[$name]['version'], $project['core']) === 0) {
+      $projects[$name]['version'] = substr($projects[$name]['version'], strlen($project['core'] . '-'));
+    }
     $projects[$name]['_type'] = $project['type'];
     $ignore = array('build_path', 'contrib_destination', 'core', 'location', 'make_directory', 'l10n_url', 'download_type', 'download');
     foreach ($ignore as $key) {
