@@ -42,8 +42,8 @@ function _drush_make_generate_makefile_body($projects, $output = array()) {
     }
     foreach ($project as $key => $value) {
       if (is_array($value)) {
-        foreach ($value as $item) {
-          $output[$base . '[' . $key . '][]'] = '"' . $item . '"';
+        foreach ($value as $itemkey => $item) {
+          $output[$base . '[' . $key . '][' . $itemkey . ']'] = '"' . $item . '"';
         }
       }
       else {
