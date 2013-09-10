@@ -40,16 +40,8 @@ function _drush_make_generate_makefile_body($projects, $output = array()) {
       $output[$base . '[download][url]'] = '""';
       unset($project['custom_download']);
     }
-    foreach ($project as $key => $value) {
-      if (is_array($value)) {
-        foreach ($value as $itemkey => $item) {
-          $output[$base . '[' . $key . '][' . $itemkey . ']'] = '"' . $item . '"';
-        }
-      }
-      else {
-        $output[$base . '[' . $key . ']'] = '"' . $value . '"';
-      }
-    }
+
+    $output = array_merge($output, _drush_make_generate_lines($base, $project));
     $output[] = '';
   }
   $string = '';
@@ -92,9 +84,16 @@ function make_generate_from_makefile($file, $makefile) {
   $core = current($projects);
   $core = $core['core'];
   foreach ($projects as $name => $project) {
-    $projects[$name]['version'] = $project['download']['full_version'];
-    if (strpos($projects[$name]['version'], $project['core']) === 0) {
-      $projects[$name]['version'] = substr($projects[$name]['version'], strlen($project['core'] . '-'));
+    // If a specific revision was requested, do not set the version.
+    if (!isset($project['revision'])) {
+      $projects[$name]['version'] = $project['download']['full_version'];
+
+      if (strpos($projects[$name]['version'], $project['core']) === 0) {
+        $projects[$name]['version'] = substr($projects[$name]['version'], strlen($project['core'] . '-'));
+      }
+    }
+    else {
+      unset($projects[$name]['version']);
     }
     $projects[$name]['_type'] = $project['type'];
     if (!(isset($project['download']['type'])) || ($project['download']['type'] == 'pm')) {
@@ -141,4 +140,33 @@ function make_generate_print($contents, $file = NULL) {
   else {
     drush_make_error('FILE_ERROR', dt("Unable to write .make file !file", array('!file' => $file)));
   }
+}
+
+/**
+ * Utility function to generate the line or lines for a key/value pair in the
+ * make file.
+ *
+ * @param $base
+ *   The base for the configuration lines. Values will be appended to it as
+ *   [$key] = $value, or if value is an array itself it will expand into as many
+ *   lines as required.
+ * @param $values
+ *   May be a single value or an array.
+ * @return
+ *   An array of strings that represent lines for the make file.
+ */
+function _drush_make_generate_lines($base, $values) {
+  $output = array();
+
+  if (is_array($values)) {
+    foreach ($values as $key => $value) {
+      $newbase = $base . '[' . $key . ']';
+      $output = array_merge($output, _drush_make_generate_lines($newbase, $value));
+    }
+  }
+  else {
+    $output[$base] = '"' . $values . '"';
+  }
+
+  return $output;
 }
