@@ -19,7 +19,8 @@
     "drush.complete.sh"
   ],
   "require": {
-    "php": ">=5.3.3"
+    "php": ">=5.3.3",
+    "symfony/console": "*"
   },
   "require-dev": {
     "phpunit/phpunit": ">=3.5"
