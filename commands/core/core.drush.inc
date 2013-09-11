@@ -63,6 +63,7 @@ function core_drush_command() {
   $items['core-cron'] = array(
     'description' => 'Run all cron hooks in all active modules for specified site.',
     'aliases' => array('cron'),
+    'topics' => array('core-cron'),
   );
   $items['updatedb'] = array(
     'description' => 'Apply any database updates required (as with running update.php).',
@@ -601,15 +602,7 @@ function _core_site_status_table($project = '', $full = FALSE) {
 }
 
 /**
- * Command callback. Runs cron hooks.
- *
- * This is where the action takes place.
- *
- * In this function, all of Drupals API is (usually) available, including
- * any functions you have added in your own modules/themes.
- *
- * To print something to the terminal window, use drush_print().
- *
+ * Command callback. Runs all cron hooks.
  */
 function drush_core_cron() {
   if (drupal_cron_run()) {
