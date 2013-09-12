@@ -84,6 +84,21 @@ function drush_pm_download() {
 
   // Get release history for each request and download the project.
   $source = drush_get_option('source', RELEASE_INFO_DEFAULT_URL);
+  // this assumes that drush_get_option will ALWAYS return a string
+  $source = array(explode(',', $source));
+  
+  // support for prepending sources
+  $plus_source = drush_get_option('source+', RELEASE_INFO_DEFAULT_URL);
+  if (isset($plus_source)){
+    $source = array_merge(explode(',', $plus_source), $source);
+  }
+
+  // support for appending source
+  $source_plus = drush_get_option('source++', RELEASE_INFO_DEFAULT_URL);
+  if (isset($source_plus)){
+    $source = array_merge($source, explode(',', $source_plus));
+  }
+  
   $restrict_to = drush_get_option('dev', FALSE) ? 'dev' : '';
   $select = drush_get_option('select', 'auto');
   $all = drush_get_option('all', FALSE);
