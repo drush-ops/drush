@@ -322,7 +322,6 @@ function _pm_download_destination($type) {
   $site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT', FALSE);
   $full_site_root = $drupal_root .'/'. $site_root;
   $sitewide = drush_drupal_sitewide_directory();
-  $execdir = drush_cwd();
  
   $in_site_directory = FALSE;
   // Check if we are running within the site directory.
@@ -339,15 +338,15 @@ function _pm_download_destination($type) {
       $destination = _pm_download_destination_lookup($type, $drupal_root, $full_site_root, $create_dir);
     }
     // Attempt 2: If the user is inside a profile download to that.
-    if (empty($destination) && $drupal_root && strpos($execdir, "/profiles/")) {
-      $profiledir = ltrim($execdir, $full_site_root);
+    if (empty($destination) && $drupal_root && strpos(drush_cwd(), "/profiles/")) {
+      $profiledir = ltrim(drush_cwd(), $full_site_root);
       $profiledir = explode("/", $profiledir);
       $profiledir = $profiledir[0] . "/" . $profiledir[1];
       $destination = _pm_download_destination_lookup($type, $drupal_root, $profiledir);
     }
     // Attempt 3: If the destination directory already exists for
     // the sitewide directory, use that.
-    if (empty($destination) && $drupal_root) {
+    if (empty($destination) && $drupal_root && !strpos(drush_cwd(), "/profiles/")) {
       $destination = _pm_download_destination_lookup($type, $drupal_root, $sitewide);
     }
     // Attempt 4: If a specific (non default) site directory exists and
