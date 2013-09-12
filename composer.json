@@ -24,5 +24,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": ">=3.5"
+  },
+  "autoload": {
+    "psr-0": {"Drupal\\Drush\\": "src/"}
   }
 }

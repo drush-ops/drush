@@ -1,4 +1,4 @@
 #!/usr/bin/env php
 <?php
 
-include('drush.php');
+include('bin/drush.php');
