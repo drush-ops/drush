@@ -1,4 +1,4 @@
 #!/usr/bin/env php
 <?php
 
-include('bin/drush.php');
+include(dirname(__FILE__) . '/drush.php');
