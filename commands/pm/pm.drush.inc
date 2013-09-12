@@ -1510,6 +1510,8 @@ function pm_drush_engine_release_info() {
       'description' => 'Drush release info engine for update.drupal.org and compatible services.',
       'options' => array(
         'source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
+        'source+' => 'Prepends the provided set of urls (seperated by a comma[,]) to the default source option.  See the --source option for details.',
+        'source++' => 'Appends the provided set of urls (seperated by a comma[,]) to the default source option.  See the --source option for details.',
         'dev' => 'Work with development releases solely.',
       ),
       'sub-options' => array(

@@ -451,29 +451,46 @@ function updatexml_best_release_found($releases) {
 }
 
 /**
- * Download the release history xml for the specified request.
+ * Attempt to download XML release history from a single url
  */
-function updatexml_get_release_history_xml($request) {
-  $status_url = isset($request['status url'])?$request['status url']:RELEASE_INFO_DEFAULT_URL;
-  $url =  $status_url . '/' . $request['name'] . '/' . $request['drupal_version'];
+function _updatexml_get_release_history_xml($u, $request){
+  $url =  $u . '/' . $request['name'] . '/' . $request['drupal_version'];
   drush_log('Downloading release history from ' . $url);
   // Some hosts have allow_url_fopen disabled.
+  $xml = FALSE;
   if ($path = drush_download_file($url, drush_tempnam($request['name']), drush_get_option('cache-duration-releasexml', 24*3600))) {
     $xml = simplexml_load_file($path);
   }
   if (!$xml) {
-    // We are not getting here since drupal.org always serves an XML response.
-    return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
+    // urls may not always server XML (maybe there was an network error?)
+    drush_log(dt('Could not download project status information from !url', array('!url' => $url)), 'warning'); // 'DRUSH_PM_DOWNLOAD_FAILED'
+    return FALSE;
   }
   if ($error = $xml->xpath('/error')) {
-    // Don't set an error here since it stops processing during site-upgrade.
-    drush_log($error[0], 'warning'); // 'DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE',
+    drush_log(dt('!url: !err', array('!url' => $url, '!err' => $error[0])), 'warning'); // 'DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE'
     return FALSE;
   }
   // Unpublished project?
   $project_status = $xml->xpath('/project/project_status');
   if ($project_status[0][0] == 'unpublished') {
-    return drush_set_error('DRUSH_PM_PROJECT_UNPUBLISHED', dt("Project !project is unpublished and has no releases available.", array('!project' => $request['name'])), 'warning');
+    drush_log(dt("Project !project is unpublished and has no releases available.", array('!project' => $request['name'])), 'warning'); // 'DRUSH_PM_PROJECT_UNPUBLISHED'
+    return FALSE;
+  }
+  return $xml;
+}
+
+/**
+ * Download the release history xml for the specified request.
+ */
+function updatexml_get_release_history_xml($request) {
+  $status_url = isset($request['status url'])?$request['status url']:RELEASE_INFO_DEFAULT_URL;
+  if (!is_array($status_url)){
+    // TODO: find a better way to facilitate this.
+    $status_url = explode(',', $status_url);
+  }
+  foreach($status_url as $u){
+    $xml = _updatexml_get_release_history_xml($u, $request);
+    if ($xml !== FALSE) break;
   }
 
   return $xml;
