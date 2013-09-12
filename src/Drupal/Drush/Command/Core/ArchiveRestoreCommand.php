@@ -10,6 +10,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+require dirname(__FILE__) . '/../../../../../commands/core/archive.drush.inc';
+
 class ArchiveRestoreCommand extends Command
 {
   protected function configure()
@@ -59,7 +61,7 @@ class ArchiveRestoreCommand extends Command
 
   protected function execute(InputInterface $input, OutputInterface $output)
   {
-    $text = 'Hello!';
-    $output->writeln($text);
+    drush_bootstrap_prepare();
+    drush_archive_restore($input->getArgument('file'), $input->getArgument('site name'));
   }
 }
