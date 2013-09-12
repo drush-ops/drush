@@ -339,8 +339,7 @@ function _pm_download_destination($type) {
     }
     // Attempt 2: If the user is inside a profile download to that.
     if (empty($destination) && $drupal_root && strpos(drush_cwd(), "/profiles/")) {
-      $profiledir = ltrim(drush_cwd(), $full_site_root);
-      $profiledir = explode("/", $profiledir);
+      $profiledir = explode("/", ltrim(drush_cwd(), $full_site_root));
       $profiledir = $profiledir[0] . "/" . $profiledir[1];
       $destination = _pm_download_destination_lookup($type, $drupal_root, $profiledir);
     }
