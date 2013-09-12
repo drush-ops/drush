@@ -322,7 +322,8 @@ function _pm_download_destination($type) {
   $site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT', FALSE);
   $full_site_root = $drupal_root .'/'. $site_root;
   $sitewide = drush_drupal_sitewide_directory();
-
+  $execdir = drush_cwd();
+ 
   $in_site_directory = FALSE;
   // Check if we are running within the site directory.
   if (strpos(realpath(drush_cwd()), realpath($full_site_root)) !== FALSE || (drush_get_option('use-site-dir', FALSE))) {
@@ -337,22 +338,29 @@ function _pm_download_destination($type) {
       $create_dir = drush_get_option('use-site-dir', FALSE);
       $destination = _pm_download_destination_lookup($type, $drupal_root, $full_site_root, $create_dir);
     }
-    // Attempt 2: If the destination directory already exists for
+    // Attempt 2: If the user is inside a profile download to that.
+    if (empty($destination) && $drupal_root && strpos($execdir, "/profiles/")) {
+      $profiledir = ltrim($execdir, $full_site_root);
+      $profiledir = explode("/", $profiledir);
+      $profiledir = $profiledir[0] . "/" . $profiledir[1];
+      $destination = _pm_download_destination_lookup($type, $drupal_root, $profiledir);
+    }
+    // Attempt 3: If the destination directory already exists for
     // the sitewide directory, use that.
     if (empty($destination) && $drupal_root) {
       $destination = _pm_download_destination_lookup($type, $drupal_root, $sitewide);
     }
-    // Attempt 3: If a specific (non default) site directory exists and
+    // Attempt 4: If a specific (non default) site directory exists and
     // the sitewide directory does not exist, then create destination
     // in the site specific directory.
     if (empty($destination) && $site_root && $site_root !== 'sites/default' && is_dir($full_site_root) && !is_dir($sitewide)) {
       $destination = _pm_download_destination_lookup($type, $drupal_root, $full_site_root, TRUE);
     }
-    // Attempt 4: If sitewide directory exists, then create destination there.
+    // Attempt 5: If sitewide directory exists, then create destination there.
     if (empty($destination) && is_dir($sitewide)) {
       $destination = _pm_download_destination_lookup($type, $drupal_root, $sitewide, TRUE);
     }
-    // Attempt 5: If site directory exists (even default), then create
+    // Attempt 6: If site directory exists (even default), then create
     // destination in that directory.
     if (empty($destination) && $site_root && is_dir($full_site_root)) {
       $destination = _pm_download_destination_lookup($type, $drupal_root, $full_site_root, TRUE);
