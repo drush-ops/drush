@@ -1,6 +1,6 @@
 <?php
 
-include_once(DRUSH_BASE_PATH . '/commands/core/status.drush.inc')
+include_once(DRUSH_BASE_PATH . '/commands/core/core.drush.inc')
 
 namespace Drupal\Drush\Command;
 
