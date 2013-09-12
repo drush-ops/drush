@@ -226,7 +226,6 @@ function sql_drush_command() {
   $items['sql-sanitize'] = array(
     'description' => "Run sanitization operations on the current database.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'hidden' => TRUE,
     'options' => array(
       'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
       'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
