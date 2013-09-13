@@ -35,7 +35,7 @@ done
 # Build the path to drush.php.
 SCRIPT_PATH="`dirname "$SELF_PATH"`/drush.php"
 if [ -n "$CYGWIN" ] ; then
-  SCRIPT_PATH="`cygpath -w -a -- "$SCRIPT_PATH"`"
+  SCRIPT_PATH="`cygpath -u -a -- "$SCRIPT_PATH"`"
 fi
 
 # If not exported, try to determine and export the number of columns.
