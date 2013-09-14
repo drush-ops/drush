@@ -934,11 +934,15 @@ function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
  * Drops all tables in the database.
  */
 function drush_sql_drop() {
-  if (!drush_confirm(dt('Do you really want to drop all tables?'))) {
+  drush_sql_bootstrap_further();
+  $db_spec = _drush_sql_get_db_spec();
+  if (!$db_spec) {
+    return drush_set_error('DRUSH_SQL_NO_DATABASE', dt("No database to operate on."));
+  }
+  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
     return drush_user_abort();
   }
-  drush_sql_bootstrap_further();
-  _drush_sql_drop();
+  _drush_sql_drop($db_spec);
 }
 
 // n.b. site-install uses _drush_sql_drop as a fallback technique if
