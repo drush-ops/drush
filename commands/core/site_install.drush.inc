@@ -23,10 +23,10 @@ function drush_core_pre_site_install($profile = NULL) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
   }
-  $default_sites_subdir = drush_get_context('DRUSH_DRUPAL_SITE', 'default');
-  $sites_subdir = drush_get_option('sites-subdir', $default_sites_subdir);
 
-  $conf_path = "sites/$sites_subdir";
+  $conf_path = drush_get_context('DRUSH_DRUPAL_SITE_ROOT');
+  $sites_subdir = basename($conf_path);
+
   $files = "$conf_path/files";
   $settingsfile = "$conf_path/settings.php";
   $sitesfile = "sites/sites.php";
