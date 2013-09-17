@@ -1146,12 +1146,6 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
       $command = implode(' ', array_filter($ssh_cmd, 'strlen'));
     }
   }
-  else {
-    // TODO: `tty` is not usable on Windows.  Is this necessary at all, and if so, is there a better way to do it?
-    if (!drush_is_windows() && !empty($backend_options['interactive'])) {
-      $command .= ' > `tty`';
-    }
-  }
 
   return $command;
 }
