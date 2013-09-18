@@ -18,7 +18,26 @@ Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7  
 Drush 4       | 4.x | 5.2.0+ | D5, D6, D7                 | Unsupported
 Drush 3       | 3.x | 5.2.0+ | D5, D6                     | Unsupported
 
-Drush comes with a full test suite powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush):
+Drush comes with a full test suite powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush).
+
+USAGE
+-----------
+
+Drush can be run in your shell by typing "drush" from within any Drupal root directory.
+
+    $ drush [options] <command> [argument1] [argument2]
+
+Use the 'help' command to get a list of available options and commands:
+
+    $ drush help
+
+For even more documentation, use the 'topic' command:
+
+    $ drush topic
+
+Installation instructions can be found below.  For a full list of Drush commands 
+and documentation by version, visit http://www.drush.org.
+
 
 SUPPORT
 -----------
@@ -282,29 +301,9 @@ information presented in the example.aliases.drushrc.php file, especially when
 setting values for 'remote-host' and 'os', as these are very important when
 running Drush rsync and Drush sql-sync commands.
 
-USAGE
+
+OPTIONS
 -----------
-
-Once you have completed the installation steps, Drush can be run in your shell
-by typing "drush" from within any Drupal root directory.
-
-    $ drush [options] <command> [argument1] [argument2]
-
-Use the 'help' command to get a list of available options and commands:
-
-    $ drush help
-
-For even more documentation, use the 'topic' command:
-
-    $ drush topic
-
-For a full list of Drush commands and documentation by version, visit
-http://www.drush.org.
-
-Many commands support a --pipe option which returns machine readable output.
-For example, return a list of enabled modules:
-
-    $ drush pm-list --type=module --status=enabled --pipe
 
 For multisite installations, use the -l option to target a particular site.  If
 you are outside the Drupal web root, you might need to use the -r, -l or other
