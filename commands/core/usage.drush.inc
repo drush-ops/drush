@@ -96,13 +96,15 @@ function drush_usage_send() {
 function drush_usage_show() {
   $file = _drush_usage_get_file(TRUE);
   if ($file) {
-    $json = '[' . file_get_contents($file) . ']';
-    $usage_data = json_decode($json);
-    foreach ($usage_data as $item) {
-      $cmd = $item->cmd;
-      $options = (array) $item->opt;
-      array_unshift($options, '');
-      drush_print($cmd . implode(' --', $options));
+    $lines = file($file, FILE_IGNORE_NEW_LINES);
+    foreach ($lines as $cmd) {
+      $cmd_data = json_decode($cmd);
+      if ($cmd_data->action == 'track') {
+        $cmd = explode(' ', $cmd_data->event)[1];
+        $options = (array) $cmd_data->properties->opt;
+        array_unshift($options, '');
+        drush_print($cmd . implode(' --', $options));
+      }
     }
   }
   else {
