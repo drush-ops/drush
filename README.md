@@ -5,8 +5,6 @@ Drush is a command line shell and Unix scripting interface for Drupal.  If you a
 
 Drush core ships with lots of useful commands for interacting with code like modules/themes/profiles. Similarly, it runs update.php, executes sql queries and DB migrations, and misc utilities like run cron or clear cache.
 
-To contribute to Drush, see [/CONTRIBUTING.md](CONTRIBUTING.md)
-
 DRUSH VERSIONS
 --------------
 
@@ -14,19 +12,29 @@ Each version of Drush supports multiple Drupal versions.  Drush 6 is recommended
 
 Drush Version | Branch  | PHP | Compatible Drupal versions | Code Status
 ------------- | ------  | --- | -------------------------- | -----------
-Drush 7       | <a href="https://travis-ci.org/drush-ops/drush">master</a>  | 5.3.3+ | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.png?branch=master">
-Drush 6       | <a href="https://travis-ci.org/drush-ops/drush">6.x</a> | 5.3.3+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=6.x">
-Drush 5       | <a href="https://travis-ci.org/drush-ops/drush">5.x</a> | 5.2.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=5.x">
+Drush 7       | [master](https://travis-ci.org/drush-ops/drush)  | 5.3.3+ | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.png?branch=master">
+Drush 6       | [6.x](https://travis-ci.org/drush-ops/drush) | 5.3.3+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=6.x">
+Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=5.x">
 Drush 4       | 4.x | 5.2.0+ | D5, D6, D7                 | Unsupported
 Drush 3       | 3.x | 5.2.0+ | D5, D6                     | Unsupported
 
 Drush comes with a full test suite powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush):
 
+SUPPORT
+-----------
+
+Please take a moment to review the rest of the information in this file before
+pursuing one of the support options below.
+
+* Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush).
+* Bug reports and feature requests should be reported in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
+* Use pull requests (PRs) to contribute to Drush. See [/CONTRIBUTING.md](CONTRIBUTING.md).
+
 MISC
 -----------
 * [www.drush.org](http://www.drush.org)
 * [A list of modules that include Drush integration](http://drupal.org/project/modules?filters=tid%3A4654)
-* For more help, please see the [Resources](http://drush.org/resources) and the [Drush FAQ](http://drupal.org/drush-faq). Run the `drush topic` command for even more help.
+* For more information, please see the [Resources](http://drush.org/resources) and the [Drush FAQ](http://drupal.org/drush-faq). Run the `drush topic` command for even more help.
 * If you are using Debian or Ubuntu, you can alternatively use the Debian packages uploaded in your distribution. You may need to use the backports to get the latest version, if you are running a LTS or "stable" release.
 * For advice on using Drush with your ISP, see the <a href="http://drush.org/resources#hosting">hosting section of the Resources page</a> on <a href="http://drush.org">drush.org</a>.
 
