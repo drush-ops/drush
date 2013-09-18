@@ -38,26 +38,43 @@ function usage_drush_command() {
 }
 
 /**
- * Log and/or send usage data to Mongolab.
+ * Log and/or send usage data to Segment.io.
  *
  * An organization can implement own hook_drush_exit() to send data to a
  * different endpoint.
  */
 function usage_drush_exit() {
-  // Ignore statistics for simulated commands. (n.b. in simulated mode, _drush_usage_mongolab will print rather than send statistics)
+  // Ignore statistics for simulated commands.
   if (!drush_get_context('DRUSH_SIMULATE')) {
     $file = _drush_usage_get_file();
     if (drush_get_option('drush_usage_log', FALSE)) {
       _drush_usage_log(drush_get_command(), $file);
     }
-    if (drush_get_option('drush_usage_send', FALSE)) {
-      _drush_usage_mongolab($file, drush_get_option('drush_usage_size', 51200));
+    $min_size_to_send = drush_get_option('drush_usage_size', 51200);
+    $current_size = filesize($file);
+    if (drush_get_option('drush_usage_send', FALSE) && $current_size > $min_size_to_send) {
+      $cmd = "python " . DRUSH_BASE_PATH . "/vendor/segmentio/analytics-php/file_reader.py --file ${file}";
+      drush_shell_exec($cmd);
+
+      $output = preg_grep('/ImportError/', drush_shell_exec_output());
+      if (empty($output)) {
+        drush_log(dt('Sent usage stats (!bytesize bytes).', array('!bytesize' => $current_size)), 'ok');
+      } else {
+        return drush_set_error('DRUSH_USAGE_ANALYTICS_PY_PKG', dt('Python package analytics-python not installed. Cannot send usage stats. Please run `[sudo] pip install analytics-python`.'));
+      }
+
     }
   }
 }
 
 /**
- * Set option to send usage to Mongolab.
+ * Implementation of hook_cron().
+ */
+function hook_cron() {
+}
+
+/**
+ * Set option to send usage to Segment.io.
  *
  * See usage_drush_exit() for more information.
  */
@@ -108,6 +125,24 @@ function _drush_usage_get_file($required = FALSE) {
 function _drush_usage_log($command, $file) {
   drush_merge_engine_data($command);
 
+  # Initialize the drush usage tracker.
+  $drush_api_key = 'iizjgmy3n692hgiy0twe';
+  Analytics::init(
+    $drush_api_key,
+    array(
+      "consumer" => "file",
+      "filename" => $file,
+      "ssl" => true
+    )
+  );
+
+  # Identify by anonymous drush install hash.
+  $traits = array();
+  Analytics::identify(
+    _drush_usage_get_drush_key(),
+    $traits
+  );
+
   // Start out with just the options in the current command record.
   $options = _drush_get_command_options($command);
   // If 'allow-additional-options' contains a list of command names,
@@ -124,44 +159,35 @@ function _drush_usage_log($command, $file) {
   $used = drush_get_merged_options();
   $command_specific = array_intersect(array_keys($used), array_keys($options));
   $record = array(
-    'date' => $_SERVER['REQUEST_TIME'],
-    'cmd' => $command['command'],
+  );
+
+  # Track each event
+  $action = "Ran ${command['command']} Command";
+  $properties = array(
+    'site_key' => _drush_usage_get_site_key(),
     'opt' => $command_specific,
     'major' => DRUSH_MAJOR_VERSION,
     'minor' => DRUSH_MINOR_VERSION,
-    'os' => php_uname('s'),
-    'host' => md5(php_uname('n') . get_current_user()),
+    'os' => php_uname('s')
   );
-  $prequel = (file_exists($file)) ? ",\n" : "";
-  if (file_put_contents($file, $prequel . json_encode($record), FILE_APPEND)) {
-    drush_log(dt('Logged command and option names to local cache.'), 'debug');
-  }
-  else {
-    drush_log(dt('Failed to log command and option names to local cache.'), 'debug');
-  }
+  Analytics::track(
+    _drush_usage_get_drush_key(),
+    $action,
+    $properties
+  );
 }
 
-// We only send data periodically to save network traffic and delay. Files
-// are sent once they grow over 50KB (configurable).
-function _drush_usage_mongolab($file, $min_size_to_send) {
-  $json = '[' . file_get_contents($file) . ']';
-  if (filesize($file) > $min_size_to_send) {
-    $base = 'https://api.mongolab.com/api/1';
-    $apikey = '4eb95456e4b0bcd285d8135d'; // submitter account.
-    $database = 'usage';
-    $collection = 'usage';
-    $action = "/databases/$database/collections/$collection";
-    $url = $base . $action . "?apiKey=$apikey";
-    $header = 'Content-Type: application/json';
-    if (!drush_shell_exec("wget -q -O - --no-check-certificate --timeout=20 --header=\"$header\" --post-data %s %s", $json, $url)) {
-      if (!drush_shell_exec("curl -s --connect-timeout 20 --header \"$header\" --data %s %s", $json, $url)) {
-        drush_log(dt('Drush usage statistics failed to post.'), 'debug');
-        return FALSE;
-      }
-    }
-    drush_log(dt('Drush usage statistics successfully posted.'), 'debug');
-    // Empty the usage.txt file.
-    unlink($file);
-    return TRUE;
+function _drush_usage_get_drush_key() {
+  return sha1($_SERVER["USER"] . constant("DRUSH_BASE_PATH"));
+}
+
+function _drush_usage_get_site_key() {
+  if (drush_bootstrap_max() >= DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
+    global $base_url;
+    $site_key = sha1($base_url . drupal_get_private_key());
+  } else {
+    $site_key = null;
   }
+
+  return $site_key;
 }
