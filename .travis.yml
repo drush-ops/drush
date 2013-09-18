@@ -32,5 +32,8 @@ notifications:
   irc: "irc.freenode.org#drush"
 before_script:
   - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`; export UNISH_DRUSH="${PWD}/drush" && cd tests
+
+install: composer install
+
 script: phpunit $PHPUNIT_ARGS
 
