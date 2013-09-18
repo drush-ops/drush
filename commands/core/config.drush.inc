@@ -203,11 +203,6 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
   // Now, we parse the value.
   switch (drush_get_option('format', 'string')) {
     case 'yaml':
-      if (!class_exists('Symfony\Component\Yaml')) {
-        // For Drush PSR-0 and Composer information, see http://drupal.org/node/1316322.
-        $path = DRUSH_BASE_PATH . '/lib/Yaml-' . DRUSH_YAML_VERSION;
-        require_once "$path/Yaml.php";
-      }
       $parser = new Parser();
       $data = $parser->parse($data, TRUE);
   }
