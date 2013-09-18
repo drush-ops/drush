@@ -18,10 +18,19 @@
     "drush.bat",
     "drush.complete.sh"
   ],
+  "repositories": [
+    {
+      "type": "pear",
+      "url": "http://pear.php.net/",
+      "vendor-alias": "pear"
+    }
+  ],
   "require": {
-    "php": ">=5.3.3"
+    "php": ">=5.3.3",
+    "pear/Console_Table": "1.1.3"
   },
   "require-dev": {
     "phpunit/phpunit": ">=3.5"
   }
+
 }
