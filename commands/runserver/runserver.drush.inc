@@ -89,8 +89,8 @@ function drush_core_runserver_validate() {
     return drush_set_error('RUNSERVER_PHP_CGI', dt('The runserver command with the "builtin" server requires php 5.4 (or higher), which could not be found.'));
   }
 
-  // Check we have a valid server.
   $server = drush_get_option('server', FALSE);
+  // Check we have a valid server.
   if (!in_array($server, array('cgi', 'builtin'))) {
     return drush_set_error('RUNSERVER_INVALID', dt('Invalid server specified.'));
   }
@@ -195,6 +195,8 @@ function drush_core_runserver($uri = NULL) {
     drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"');
   }
   else {
+    // Include our class that extends the library.
+    require_once 'runserver-drupal.inc';
     // Create a new httpserver instance and start it running.
     $server = new DrupalServer(array(
       'addr' => $addr,
