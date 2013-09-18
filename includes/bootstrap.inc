@@ -395,10 +395,6 @@ function _drush_bootstrap_drush_validate() {
     return $return;
   }
 
-  if (drush_environment_lib() === FALSE) {
-    return FALSE;
-  }
-
   return TRUE;
 }
 
