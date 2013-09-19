@@ -1006,6 +1006,8 @@ function drush_bootstrap_value($context, $value = null) {
 function drush_bootstrap_prepare() {
   define('DRUSH_BASE_PATH', dirname(dirname(__FILE__)));
 
+  require DRUSH_BASE_PATH . '/vendor/autoload.php';
+
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
   require_once DRUSH_BASE_PATH . '/includes/command.inc';
   require_once DRUSH_BASE_PATH . '/includes/drush.inc';
