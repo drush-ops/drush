@@ -1250,8 +1250,16 @@ function _drush_sql_get_credentials($db_spec = NULL) {
 
 
     case 'oracle':
-      // Return an Oracle connection string
-      return ' ' . $db_spec['username'] .'/' . $db_spec['password'] . ($db_spec['host']=='USETNS' ? '@' . $db_spec['database'] : '@//' . $db_spec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $db_spec['database']);
+        if ($db_spec['database'])
+        {
+            // Return an Oracle connection string
+            return ' ' . $db_spec['username'] .'/' . $db_spec['password'] . ($db_spec['host']=='USETNS' ? '@' . $db_spec['database'] : '@//' . $db_spec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $db_spec['database']);
+        }
+        else
+        {            
+            return ' / as sysdba';   
+        }
+            
       break;
 
   }
@@ -1448,6 +1456,14 @@ function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
     case 'sqlite':
       $sql[] = '';
       break;
+    case 'oracle':
+      $dbname = $db_spec['username'];
+      $sql[] = sprintf("begin execute immediate 'drop user %s cascade'; exception when others then null; end;\n/", $dbname);
+      $sql[] = sprintf("begin execute immediate 'drop tablespace %s including contents and datafiles;'; exception when others then null; end;\n/", $dbname);
+      $sql[] = sprintf("create tablespace %s datafile size 100M autoextend on maxsize 1G;", $dbname);
+      $sql[] = sprintf("create user %s identified by %s default tablespace %s quota unlimited on %s;", $dbname, $db_spec['password'], $dbname, $dbname);
+      $sql[] = sprintf("grant connect, resource to %s;", $dbname, $dbname);
+      return implode("\n", $sql);
     default:
       drush_log("Unable to generate CREATE DATABASE sql for $schema", 'error');
   }
@@ -1486,6 +1502,13 @@ function drush_sql_db_exists($db_spec) {
       drush_shell_exec("$connect_no_db -Q \"$sql\"");
       $output = drush_shell_exec_output();
       return $output[0] == 1;
+    case 'oracle':
+      $user = $db_spec['username'];
+      $sql = "SELECT 1 AS result FROM all_users WHERE username='$user'";
+      $tmpfile = drush_save_data_to_temp_file(drush_sql_format_oracle($sql), '.sql');
+      drush_shell_exec("$connect_no_db @$tmpfile");
+      $output = drush_shell_exec_output();
+      return (bool)$output[0];
   }
 }
 

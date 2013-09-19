@@ -506,9 +506,9 @@ function drush_valid_db_credentials() {
           $creds['port'] = 1521;
 
         if ($creds['host'] == 'USETNS')
-          $constr = 'oci:dbname=' . $creds['database'] . ';charset=AL32UTF8';
+          $constr = 'oci:dbname=' . $creds['name'] . ';charset=AL32UTF8';
         else
-          $constr = 'oci:dbname=//' . $creds['host'] . ':' . $creds['port'] . '/' . $creds['database'] . ';charset=AL32UTF8';
+          $constr = 'oci:dbname=//' . $creds['host'] . ':' . $creds['port'] . '/' . $creds['name'] . ';charset=AL32UTF8';
 
       }
       else {

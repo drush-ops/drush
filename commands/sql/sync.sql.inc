@@ -108,7 +108,7 @@ function sql_drush_sql_sync_sanitize($site) {
       // We need a different sanitization query for Postgres and Mysql.
 
       $db_driver = $databases['default']['default']['driver'];
-      if ($db_driver == 'pgsql') {
+      if ($db_driver == 'pgsql' || $db_driver == 'oracle') {
         $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%name' => "' || replace(name, ' ', '_') || '");
         $newmail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "'";
       }
@@ -390,11 +390,20 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       // permissions to the specified user if said user was not created with this right.
       $pre_import_commands = '';
       $create_db = drush_sitealias_get_option($destination_settings, 'create-db');
+      $scheme = _drush_sql_get_scheme($target_db_url);
+      $create_db_file= '';
       if (isset($create_db)) {
         $create_db_su = drush_sql_su($target_db_url, $destination_settings);
         $db_su_connect = _drush_sql_connect($create_db_su);
         $pre_import_sql = drush_sql_build_createdb_sql($target_db_url);
-        $pre_import_commands = sprintf('echo "%s" | %s; ', $pre_import_sql, $db_su_connect);
+        if ($scheme=='oracle') {
+            $create_db_file = drush_save_data_to_temp_file(drush_sql_format_oracle($pre_import_sql), '.sql');
+            $pre_import_commands = sprintf("%s @%s; ", $db_su_connect, drush_escapeshellarg($create_db_file));
+        }
+        else
+        {
+            $pre_import_commands = sprintf('echo "%s" | %s; ', $pre_import_sql, $db_su_connect);
+        }
         // Linux requires quotes around echo statements. Windows generally supports
         // quotes for echo statements, but will complain if they are present
         // when piping echo statements as input to other commands. Also,
@@ -417,6 +426,11 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         case 'pgsql':
           $import_command .= ' -q';
           break;
+        case 'oracle':
+          $target_db_spec = $target_db_url; 
+          $source_db_spec = ($source_db_url ? $source_db_url : $target_db_spec); 
+          $import_command = 'imp '.substr(_drush_sql_get_credentials($target_db_url),1).' fromuser='.$source_db_spec['username'].' touser='.$target_db_spec['username'].' file=';
+          break;
       }
 
       // If destination is remote, then use rsync to push the database, then use ssh to import the database
@@ -429,12 +443,21 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
           $target_at ='@';
           $target_remote_pass = array_key_exists('remote-pass', $destination_settings) ? ':' . $destination_settings['remote-pass'] : '';
         }
+        
+        if ($scheme=='oracle'&&!drush_core_call_rsync(drush_correct_absolute_path_for_exec($create_db_file, "RSYNC"), $target_remote_user . $target_at . $target_db_url['remote-host'] . ':' . $create_db_file, $target_rsync_options)) {
+          return FALSE;
+        }
 
         if (!drush_core_call_rsync(drush_correct_absolute_path_for_exec($local_file, "RSYNC"), $target_remote_user . $target_at . $target_db_url['remote-host'] . ':' . $target_dump, $target_rsync_options)) {
           return FALSE;
         }
-
-        $import_exec = $pre_import_commands . $import_command . ' < ' . drush_escapeshellarg($target_dump, $target_os);
+        
+        if ($scheme=='oracle') {
+          $import_exec = $pre_import_commands . $import_command . drush_escapeshellarg($target_dump, $target_os);
+        }
+        else {
+          $import_exec = $pre_import_commands . $import_command . ' < ' . drush_escapeshellarg($target_dump, $target_os);
+        }
         // Delete the remote target file if it is a temporary file.
         if (!drush_is_windows($target_os) && $destination_settings['dump-is-temp']) {
           $import_exec .= '; rm -f ' . drush_escapeshellarg($target_dump, $target_os);
