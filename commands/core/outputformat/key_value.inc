@@ -57,6 +57,9 @@
  */
 class drush_outputformat_key_value extends drush_outputformat {
   function format($input, $metadata) {
+    if (isset($metadata['no-field-labels'])) {
+      return drush_format($input, $metadata, 'list');
+    }
     if (!is_array($input)) {
       if (isset($metadata['label'])) {
         $input = array(dt($metadata['label']) => $input);
