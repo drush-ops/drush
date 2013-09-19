@@ -38,6 +38,24 @@ REQUIREMENTS
 * Drush works best on a Unix-like OS (Linux, OS X)
 * Most Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
 
+INSTALL - COMPOSER
+------------------
+
+* [Install Composer][composer-install]. (Global install recommended.)
+* To install Drush 6.x (stable), run `composer global require drush/drush:6`
+
+To get alternate drush versions, try one of the commands below.
+
+```bash
+composer global require drush/drush:6.0.0-rc4
+composer global require drush/drush:6.x-dev
+composer global require drush/drush:7.x-dev
+```
+
+NOTE: Only [specific drush versions][drush-packagist] are available for
+this method. Please see the Composer docs for
+[fuller explanation of the command syntax][composer-cmd-require].
+
 INSTALL - PEAR
 -----------
 If you have trouble with PEAR installation, consider trying MANUAL INSTALLATION. It is not too hard.
@@ -404,3 +422,8 @@ CREDITS
   Owen Barton, greg.1.anderson, jonhattan, Mark Sonnabaum, and Jonathan Hedstrom.
 
 ![Drush Logo](drush_logo-black.png)
+
+<!-- Links -->
+   [drush-packagist]:      https://packagist.org/packages/drush/drush
+   [composer-install]:     http://getcomposer.org/doc/00-intro.md#system-requirements
+   [composer-cmd-require]: http://getcomposer.org/doc/03-cli.md#require
