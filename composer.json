@@ -23,5 +23,10 @@
   },
   "require-dev": {
     "phpunit/phpunit": ">=3.5"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "7.x-dev"
+    }
   }
 }
