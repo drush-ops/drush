@@ -5,28 +5,56 @@ Drush is a command line shell and Unix scripting interface for Drupal.  If you a
 
 Drush core ships with lots of useful commands for interacting with code like modules/themes/profiles. Similarly, it runs update.php, executes sql queries and DB migrations, and misc utilities like run cron or clear cache.
 
-To contribute to Drush, see [/CONTRIBUTING.md](CONTRIBUTING.md)
-
 DRUSH VERSIONS
 --------------
 
-Each version of Drush supports multiple Drupal versions.  Drush 6 is the recommended version.
+Each version of Drush supports multiple Drupal versions.  Drush 6 is recommended version.
 
-Drush Version | Branch  | Compatible Drupal versions | Code Status
-------------- | ------  | -------------------------- | -----------
-Drush 7       | <a href="https://travis-ci.org/drush-ops/drush">master</a>  | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.png?branch=master">
-Drush 6       | <a href="https://travis-ci.org/drush-ops/drush">6.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=6.x">
-Drush 5       | <a href="https://travis-ci.org/drush-ops/drush">5.x</a> | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=5.x">
-Drush 4       | 4.x | D5, D6, D7                 | Unsupported
-Drush 3       | 3.x | D5, D6                     | Unsupported
+Drush Version | Branch  | PHP | Compatible Drupal versions | Code Status
+------------- | ------  | --- | -------------------------- | -----------
+Drush 7       | [master](https://travis-ci.org/drush-ops/drush)  | 5.3.3+ | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.png?branch=master">
+Drush 6       | [6.x](https://travis-ci.org/drush-ops/drush) | 5.3.3+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=6.x">
+Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.png?branch=5.x">
+Drush 4       | 4.x | 5.2.0+ | D5, D6, D7                 | Unsupported
+Drush 3       | 3.x | 5.2.0+ | D5, D6                     | Unsupported
 
-Drush comes with a full test suite powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush):
+Drush comes with a full test suite powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush).
+
+USAGE
+-----------
+
+Drush can be run in your shell by typing "drush" from within any Drupal root directory.
+
+    $ drush [options] <command> [argument1] [argument2]
+
+Use the 'help' command to get a list of available options and commands:
+
+    $ drush help
+
+For even more documentation, use the 'topic' command:
+
+    $ drush topic
+
+Installation instructions can be found below.  For a full list of Drush commands 
+and documentation by version, visit http://www.drush.org.
+
+
+SUPPORT
+-----------
+
+Please take a moment to review the rest of the information in this file before
+pursuing one of the support options below.
+
+* Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush).
+* Bug reports and feature requests should be reported in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
+* Use pull requests (PRs) to contribute to Drush. See [/CONTRIBUTING.md](CONTRIBUTING.md).
+* It is still possible to search the old issue queue on Drupal.org for [fixed bugs](https://drupal.org/project/issues/search/drush?status%5B%5D=7&categories%5B%5D=bug), [unmigrated issues](https://drupal.org/project/issues/search/drush?status%5B%5D=5&issue_tags=needs+migration), [unmigrated bugs](https://drupal.org/project/issues/search/drush?status%5B%5D=5&categories%5B%5D=bug&issue_tags=needs+migration), and so on.
 
 MISC
 -----------
 * [www.drush.org](http://www.drush.org)
 * [A list of modules that include Drush integration](http://drupal.org/project/modules?filters=tid%3A4654)
-* For more help, please see the [Resources](http://drush.org/resources) and the [Drush FAQ](http://drupal.org/drush-faq). Run the `drush topic` command for even more help.
+* For more information, please see the [Resources](http://drush.org/resources) and the [Drush FAQ](http://drupal.org/drush-faq). Run the `drush topic` command for even more help.
 * If you are using Debian or Ubuntu, you can alternatively use the Debian packages uploaded in your distribution. You may need to use the backports to get the latest version, if you are running a LTS or "stable" release.
 * For advice on using Drush with your ISP, see the <a href="http://drush.org/resources#hosting">hosting section of the Resources page</a> on <a href="http://drush.org">drush.org</a>.
 
@@ -70,8 +98,8 @@ INSTALL - MANUAL
 -----------
 1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in a directory that is outside of your web root.
 1. Make the 'drush' command executable:
-
-    `$ ln -s /path/to/drush/drush /usr/bin/drush`
+    
+    `$ chmod u+x /path/to/drush/drush`
 
 1. Configure your system to recognize where Drush resides. There are 2 options:
     1. Create a symbolic link to the Drush executable in a directory that is already in your PATH, e.g.:
@@ -94,7 +122,7 @@ INSTALL - MANUAL
 1. Test that Drush is found by your system:
 
      `$ which drush`
-
+     
 See the POST-INSTALL section for configuration tips.
 
 POST-INSTALL
@@ -121,7 +149,7 @@ POST-INSTALL
    Putting this in a .bashrc/.bash_profile/.profile would produce this prompt:
 
      `msonnabaum@hostname ~/repos/drush (master)[@sitename]$`
-
+     
 1. Help the Drush development team by sending anonymized usage statistics.  To automatically send usage data, please add the following to a .drushrc.php file:
 
        ```php
@@ -273,29 +301,9 @@ information presented in the example.aliases.drushrc.php file, especially when
 setting values for 'remote-host' and 'os', as these are very important when
 running Drush rsync and Drush sql-sync commands.
 
-USAGE
+
+OPTIONS
 -----------
-
-Once you have completed the installation steps, Drush can be run in your shell
-by typing "drush" from within any Drupal root directory.
-
-    $ drush [options] <command> [argument1] [argument2]
-
-Use the 'help' command to get a list of available options and commands:
-
-    $ drush help
-
-For even more documentation, use the 'topic' command:
-
-    $ drush topic
-
-For a full list of Drush commands and documentation by version, visit
-http://www.drush.org.
-
-Many commands support a --pipe option which returns machine readable output.
-For example, return a list of enabled modules:
-
-    $ drush pm-list --type=module --status=enabled --pipe
 
 For multisite installations, use the -l option to target a particular site.  If
 you are outside the Drupal web root, you might need to use the -r, -l or other
