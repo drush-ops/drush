@@ -57,9 +57,6 @@
  */
 class drush_outputformat_key_value extends drush_outputformat {
   function format($input, $metadata) {
-    if (isset($metadata['no-field-labels'])) {
-      return drush_format($input, $metadata, 'list');
-    }
     if (!is_array($input)) {
       if (isset($metadata['label'])) {
         $input = array(dt($metadata['label']) => $input);
@@ -71,6 +68,9 @@ class drush_outputformat_key_value extends drush_outputformat {
     $kv_metadata = isset($metadata['table-metadata']) ? $metadata['table-metadata'] : array();
     if ((!isset($kv_metadata['key-value-item'])) && (isset($metadata['field-labels']))) {
       $input = drush_select_output_fields($input, $metadata['field-labels'], $metadata['field-mappings']);
+    }
+    if (isset($metadata['no-field-labels'])) {
+      $kv_metadata['no-field-labels'] = $metadata['no-field-labels'];
     }
     $formatted_table = drush_key_value_to_array_table($input, $kv_metadata);
     if ($formatted_table === FALSE) {

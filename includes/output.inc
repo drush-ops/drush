@@ -314,6 +314,11 @@ function drush_key_value_to_array_table($keyvalue_table, $metadata = array()) {
       if (is_array($value)) {
         $value = drush_format($value, $metadata, 'list');
       }
+    }
+    if (isset($metadata['no-field-labels'])) {
+      $table[] = array(isset($value) ? $value : '');
+    }
+    elseif (isset($value)) {
       $table[] = array($key, ' :', $value);
     }
     else {
