@@ -493,6 +493,9 @@ function drush_handle_command_output($command, $structured_output) {
         // Determine the --format, and options relevant for that format.
         foreach ($formatter->engine_config['options'] as $option => $option_info) {
           $default_value = isset($formatter->engine_config[$option . '-default']) ? $formatter->engine_config[$option . '-default'] : FALSE;
+          if (($default_value === FALSE) && array_key_exists('default', $option_info)) {
+            $default_value = $option_info['default'];
+          }
           if (isset($option_info['list'])) {
             $user_specified_value = drush_get_option_list($option, $default_value);
           }
@@ -500,6 +503,9 @@ function drush_handle_command_output($command, $structured_output) {
             $user_specified_value = drush_get_option($option, $default_value);
           }
           if ($user_specified_value !== FALSE) {
+            if (array_key_exists('key', $option_info)) {
+              $option = $option_info['key'];
+            }
             $metadata[$option] =$user_specified_value;
           }
         }
