@@ -64,6 +64,11 @@ function outputformat_drush_engine_type_info() {
         'description' => 'In nested lists of lists, specify how the outer lists ("lines") should be separated.',
         'hidden' => TRUE,
       ),
+      'field-labels' => array(
+        'description' => 'Add field labels before first line of data. Default is on; --field-labels=0 to disable.',
+        'default' => '1',
+        'key' => 'include-field-labels',
+      ),
     ),
     // Allow output formats to declare their
     // "output data type" instead of their
@@ -203,6 +208,7 @@ function outputformat_drush_engine_outputformat() {
     'machine-parsable' => TRUE,
     'engine-class' => 'list',
     'list-item-type' => 'nested-csv',
+    'labeled-list' => TRUE,
     'description' => 'A list of values, one per row, each of which is a comma-separated list of values.',
     'engine-capabilities' => array('format-table'),
     'topic-example' => array(array('a', 12, 'a@one.com'),array('b', 17, 'b@two.com')),
@@ -278,7 +284,14 @@ function outputformat_drush_help_alter(&$command) {
       if (isset($outputformat['require-engine-capability']) && is_array($outputformat['require-engine-capability'])) {
         if (!in_array('format-table', $outputformat['require-engine-capability'])) {
           unset($command['options']['fields']);
+          unset($command['options']['field-labels']);
         }
+      }
+      // If the command does define output formats, but does not
+      // define fields, then just hide the help for the --fields option.
+      else {
+        $command['options']['fields']['hidden'] = TRUE;
+        $command['options']['field-labels']['hidden'] = TRUE;
       }
     }
 
