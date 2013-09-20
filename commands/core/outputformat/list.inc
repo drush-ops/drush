@@ -106,7 +106,7 @@ class drush_outputformat_list extends drush_outputformat {
       }
 
       // Include field labels, if specified
-      if (!isset($metadata['list-item']) && is_array($input) && isset($metadata['field-labels'])) {
+      if (!isset($metadata['list-item']) && isset($metadata['labeled-list']) && is_array($input) && isset($metadata['field-labels'])) {
         if (isset($metadata['include-field-labels']) && $metadata['include-field-labels']) {
           array_unshift($input, $metadata['field-labels']);
         }

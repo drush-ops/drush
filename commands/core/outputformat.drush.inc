@@ -208,6 +208,7 @@ function outputformat_drush_engine_outputformat() {
     'machine-parsable' => TRUE,
     'engine-class' => 'list',
     'list-item-type' => 'nested-csv',
+    'labeled-list' => TRUE,
     'description' => 'A list of values, one per row, each of which is a comma-separated list of values.',
     'engine-capabilities' => array('format-table'),
     'topic-example' => array(array('a', 12, 'a@one.com'),array('b', 17, 'b@two.com')),
