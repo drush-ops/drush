@@ -1250,16 +1250,13 @@ function _drush_sql_get_credentials($db_spec = NULL) {
 
 
     case 'oracle':
-        if ($db_spec['database'])
-        {
+        if ($db_spec['database']) {
             // Return an Oracle connection string
-            return ' ' . $db_spec['username'] .'/' . $db_spec['password'] . ($db_spec['host']=='USETNS' ? '@' . $db_spec['database'] : '@//' . $db_spec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $db_spec['database']);
+            return ' ' . $db_spec['username'] . '/' . $db_spec['password'] . ($db_spec['host']=='USETNS' ? '@' . $db_spec['database'] : '@//' . $db_spec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $db_spec['database']);
         }
-        else
-        {            
+        else {            
             return ' / as sysdba';   
-        }
-            
+        }            
       break;
 
   }
@@ -1505,10 +1502,10 @@ function drush_sql_db_exists($db_spec) {
     case 'oracle':
       $user = $db_spec['username'];
       $sql = "SELECT 1 AS result FROM all_users WHERE username='$user'";
-      $tmpfile = drush_save_data_to_temp_file(drush_sql_format_oracle($sql), '.sql');
-      drush_shell_exec("$connect_no_db @$tmpfile");
+      $tmp_file = drush_save_data_to_temp_file(drush_sql_format_oracle($sql), '.sql');
+      drush_shell_exec("$connect_no_db @$tmp_file");
       $output = drush_shell_exec_output();
-      return (bool)$output[0];
+      return (bool) $output[0];
   }
 }
 

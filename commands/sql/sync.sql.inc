@@ -391,18 +391,17 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
       $pre_import_commands = '';
       $create_db = drush_sitealias_get_option($destination_settings, 'create-db');
       $scheme = _drush_sql_get_scheme($target_db_url);
-      $create_db_file= '';
+      $create_db_file = '';
       if (isset($create_db)) {
         $create_db_su = drush_sql_su($target_db_url, $destination_settings);
         $db_su_connect = _drush_sql_connect($create_db_su);
         $pre_import_sql = drush_sql_build_createdb_sql($target_db_url);
         if ($scheme=='oracle') {
-            $create_db_file = drush_save_data_to_temp_file(drush_sql_format_oracle($pre_import_sql), '.sql');
-            $pre_import_commands = sprintf("%s @%s; ", $db_su_connect, drush_escapeshellarg($create_db_file));
+          $create_db_file = drush_save_data_to_temp_file(drush_sql_format_oracle($pre_import_sql), '.sql');
+          $pre_import_commands = sprintf("%s @%s; ", $db_su_connect, drush_escapeshellarg($create_db_file));
         }
-        else
-        {
-            $pre_import_commands = sprintf('echo "%s" | %s; ', $pre_import_sql, $db_su_connect);
+        else {
+          $pre_import_commands = sprintf('echo "%s" | %s; ', $pre_import_sql, $db_su_connect);
         }
         // Linux requires quotes around echo statements. Windows generally supports
         // quotes for echo statements, but will complain if they are present
@@ -429,7 +428,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         case 'oracle':
           $target_db_spec = $target_db_url; 
           $source_db_spec = ($source_db_url ? $source_db_url : $target_db_spec); 
-          $import_command = 'imp '.substr(_drush_sql_get_credentials($target_db_url),1).' fromuser='.$source_db_spec['username'].' touser='.$target_db_spec['username'].' file=';
+          $import_command = 'imp ' . substr(_drush_sql_get_credentials($target_db_url),1) . ' fromuser=' . $source_db_spec['username'] . ' touser=' . $target_db_spec['username'] . ' file=';
           break;
       }
 
@@ -444,7 +443,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
           $target_remote_pass = array_key_exists('remote-pass', $destination_settings) ? ':' . $destination_settings['remote-pass'] : '';
         }
         
-        if ($scheme=='oracle'&&!drush_core_call_rsync(drush_correct_absolute_path_for_exec($create_db_file, "RSYNC"), $target_remote_user . $target_at . $target_db_url['remote-host'] . ':' . $create_db_file, $target_rsync_options)) {
+        if ($scheme == 'oracle' && !drush_core_call_rsync(drush_correct_absolute_path_for_exec($create_db_file, "RSYNC"), $target_remote_user . $target_at . $target_db_url['remote-host'] . ':' . $create_db_file, $target_rsync_options)) {
           return FALSE;
         }
 
@@ -452,7 +451,7 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
           return FALSE;
         }
         
-        if ($scheme=='oracle') {
+        if ($scheme == 'oracle') {
           $import_exec = $pre_import_commands . $import_command . drush_escapeshellarg($target_dump, $target_os);
         }
         else {
