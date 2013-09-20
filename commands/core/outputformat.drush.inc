@@ -64,8 +64,10 @@ function outputformat_drush_engine_type_info() {
         'description' => 'In nested lists of lists, specify how the outer lists ("lines") should be separated.',
         'hidden' => TRUE,
       ),
-      'no-field-labels' => array(
-        'description' => 'Leave off the field labels.',
+      'field-labels' => array(
+        'description' => 'Add field labels before first line of data. Default is on; --field-labels=0 to disable.',
+        'default' => '1',
+        'key' => 'include-field-labels',
       ),
     ),
     // Allow output formats to declare their
@@ -281,14 +283,14 @@ function outputformat_drush_help_alter(&$command) {
       if (isset($outputformat['require-engine-capability']) && is_array($outputformat['require-engine-capability'])) {
         if (!in_array('format-table', $outputformat['require-engine-capability'])) {
           unset($command['options']['fields']);
-          unset($command['options']['no-field-labels']);
+          unset($command['options']['field-labels']);
         }
       }
       // If the command does define output formats, but does not
       // define fields, then just hide the help for the --fields option.
       else {
         $command['options']['fields']['hidden'] = TRUE;
-        $command['options']['no-field-labels']['hidden'] = TRUE;
+        $command['options']['field-labels']['hidden'] = TRUE;
       }
     }
 

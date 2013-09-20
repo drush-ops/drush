@@ -42,7 +42,7 @@ class drush_outputformat_table extends drush_outputformat {
       ++$col;
     }
     $rows = drush_rows_of_key_value_to_array_table($input, $field_list, $metadata);
-    $field_labels = !array_key_exists('no-field-labels', $metadata);
+    $field_labels = array_key_exists('include-field-labels', $metadata) && $metadata['include-field-labels'];
     if (!$field_labels) {
       array_shift($rows);
     }

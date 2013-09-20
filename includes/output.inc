@@ -315,7 +315,7 @@ function drush_key_value_to_array_table($keyvalue_table, $metadata = array()) {
         $value = drush_format($value, $metadata, 'list');
       }
     }
-    if (isset($metadata['no-field-labels'])) {
+    if (isset($metadata['include-field-labels']) && !$metadata['include-field-labels']) {
       $table[] = array(isset($value) ? $value : '');
     }
     elseif (isset($value)) {

@@ -69,8 +69,8 @@ class drush_outputformat_key_value extends drush_outputformat {
     if ((!isset($kv_metadata['key-value-item'])) && (isset($metadata['field-labels']))) {
       $input = drush_select_output_fields($input, $metadata['field-labels'], $metadata['field-mappings']);
     }
-    if (isset($metadata['no-field-labels'])) {
-      $kv_metadata['no-field-labels'] = $metadata['no-field-labels'];
+    if (isset($metadata['include-field-labels'])) {
+      $kv_metadata['include-field-labels'] = $metadata['include-field-labels'];
     }
     $formatted_table = drush_key_value_to_array_table($input, $kv_metadata);
     if ($formatted_table === FALSE) {
