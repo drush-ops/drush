@@ -113,23 +113,7 @@ function drush_core_pre_site_install($profile = NULL) {
   }
 
   // Empty or create the DB as needed.
-  $db_name = $db_spec['database'];
-  $scheme = _drush_sql_get_scheme($db_spec);
-  $simulate = drush_get_context('DRUSH_SIMULATE');
-
-  if ($scheme === 'sqlite') {
-    // With SQLite, we don't DROP DATABASEs. Each database is in a single file,
-    // so we just remove the file. We also don't CREATE DATABASEs; it is created
-    // when SQLite attempts to open a database file which doesn't exist.
-    if (file_exists($db_spec['database']) && !$simulate) {
-      if (!unlink($db_spec['database'])) {
-        drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));
-      }
-    }
-  }
-  else {
-    drush_sql_empty_db($db_spec);
-  }
+  drush_sql_empty_db($db_spec);
 
   if (drush_drupal_major_version() >= 8) {
     // Empty out any existing config directories.

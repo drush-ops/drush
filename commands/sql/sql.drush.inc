@@ -946,7 +946,7 @@ function drush_sql_drop() {
 }
 
 // n.b. site-install uses _drush_sql_drop as a fallback technique if
-// drop database; create database fails.  If _drush_sql_drop
+// drop database; create database fails.  If _drush_sql_drop()
 // is rewritten to also use that technique, it should maintain
 // the drop tables code here as a fallback.
 function _drush_sql_drop($db_spec = NULL) {
