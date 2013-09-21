@@ -166,14 +166,16 @@ function drush_module_uninstall($modules) {
 }
 
 /**
- * Disable a list of modules. It is assumed the list contains all dependents not already disabled.
+ * Disable a list of modules.
+ *
+ * There's no disabled state for modules in D8. Thus we throw an error.
  *
  * @param $modules
  *   Array of module names
  */
 function drush_module_disable($modules) {
-  // There's no disabled state for modules in D8.
-  drush_module_uninstall($modules);
+  drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', 'Drupal 8 no longer supports disabled modules. To uninstall a module use pm-uninstall.');
+  return FALSE;
 }
 
 
