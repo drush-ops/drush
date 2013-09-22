@@ -431,6 +431,7 @@ function core_drush_engine_drupal() {
   $engines['environment'] = array();
   $engines['site_install'] = array();
   $engines['user'] = array();
+  $engines['pm'] = array();
   return $engines;
 }
 
