@@ -233,6 +233,7 @@ function pm_drush_command() {
     'options' => array(
       'notes' => 'Show release notes for each project to be updated.',
       'no-core' => 'Only update modules and skip the core update.',
+      'check-updatedb' => 'Check to see if an updatedb is needed after updating the code. Default is on; use --check-updatedb=0 to disable.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'aliases' => array('upc'),
@@ -1280,6 +1281,7 @@ function drush_pm_refresh() {
 function drush_pm_update() {
   // Call pm-updatecode.  updatedb will be called in the post-update process.
   $args = pm_parse_arguments(func_get_args(), FALSE);
+  drush_set_option('check-updatedb', FALSE);
   return drush_invoke('pm-updatecode', $args);
 }
 
@@ -1313,9 +1315,8 @@ function drush_pm_updatecode_validate() {
 function drush_pm_post_pm_updatecode() {
   // Skip if updatecode was invoked by pm-update.
   // This way we avoid being noisy, as updatedb is to be executed.
-  $command = drush_get_command();
-  if ($command['command'] != 'pm-update') {
-    if (drush_get_context('DRUSH_PM_UPDATED', FALSE) !== FALSE) {
+  if (drush_get_option('check-updatedb', TRUE)) {
+    if (drush_get_context('DRUSH_PM_UPDATED', FALSE)) {
       drush_invoke_process('@self', 'pm-updatecode-postupdate');
     }
   }
