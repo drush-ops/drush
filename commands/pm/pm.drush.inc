@@ -1256,8 +1256,8 @@ function drush_pm_updatecode_validate() {
 function drush_pm_post_pm_updatecode() {
   // Skip if updatecode was invoked by pm-update.
   // This way we avoid being noisy, as updatedb is to be executed.
-  if (drush_get_option('check-updatedb', TRUE) != FALSE) {
-    if (drush_get_context('DRUSH_PM_UPDATED', FALSE) !== FALSE) {
+  if (drush_get_option('check-updatedb', TRUE)) {
+    if (drush_get_context('DRUSH_PM_UPDATED', FALSE)) {
       drush_invoke_process('@self', 'pm-updatecode-postupdate');
     }
   }
