@@ -1164,6 +1164,7 @@ function _drush_pm_expand_extensions(&$extensions, $extension_info = array()) {
  */
 function drush_pm_uninstall() {
   $modules = pm_parse_arguments(func_get_args());
+  $major_version = drush_drupal_major_version();
 
   drush_include_engine('drupal', 'environment');
   $module_info = drush_get_modules();
@@ -1176,28 +1177,54 @@ function drush_pm_uninstall() {
       unset($modules[$key]);
       drush_log(dt('Module !module was not found and will not be uninstalled.', array('!module' => $module)), 'warning');
     }
-    else if ($module_info[$module]->status) {
-      // The module is enabled.
-      unset($modules[$key]);
-      drush_log(dt('!module is not disabled. Use `pm-disable` command before `pm-uninstall`.', array('!module' => $module)), 'warning');
-    }
-    else if ($module_info[$module]->schema_version == -1) { // SCHEMA_UNINSTALLED
-      // The module is uninstalled.
-      unset($modules[$key]);
-      drush_log(dt('!module is already uninstalled.', array('!module' => $module)), 'ok');
-    }
-    else {
-      $dependents = array();
-      foreach (drush_module_dependents(array($module), $module_info) as $dependent) {
-        if (!in_array($dependent, $required) && ($module_info[$dependent]->schema_version != -1)) {
-          $dependents[] = $dependent;
+
+    $dependents = array();
+    $module_dependents = drush_module_dependents(array($module), $module_info);
+
+    // Drupal versions prior to 8 have a module disabled state that needs to be
+    // checked.
+    if ($major_version <= 7) {
+      if ($module_info[$module]->status) {
+        // The module is enabled.
+        unset($modules[$key]);
+        drush_log(dt('!module is not disabled. Use `pm-disable` command before `pm-uninstall`.', array('!module' => $module)), 'warning');
+      }
+      elseif ($module_info[$module]->schema_version == -1 ) { // SCHEMA_UNINSTALLED
+        // The module is uninstalled.
+        unset($modules[$key]);
+        drush_log(dt('!module is already uninstalled.', array('!module' => $module)), 'ok');
+      }
+      else {
+        foreach ($module_dependents as $dependent) {
+          if (!in_array($dependent, $required) && ($module_info[$dependent]->schema_version != -1)) {
+            $dependents[] = $dependent;
+          }
         }
       }
-      if (count($dependents)) {
-        drush_log(dt('To uninstall !module, the following modules must be uninstalled first: !required', array('!module' => $module, '!required' => implode(', ', $dependents))), 'error');
+    }
+    else {
+      // Module already uninstalled.
+      if (!$module_info[$module]->status) {
+        // The module is uninstalled.
         unset($modules[$key]);
+        drush_log(dt('!module is already uninstalled.', array('!module' => $module)), 'ok');
+      }
+      else {
+        // D8 doesn't do a scheme but a status check for dependent modules.
+        foreach ($module_dependents as $dependent) {
+          if (!in_array($dependent, $required) && $module_info[$module]->status) {
+            $dependents[] = $dependent;
+          }
+        }
       }
     }
+
+    // Check if active dependent modules where found that block an uninstall.
+    if (count($dependents)) {
+      drush_log(dt('To uninstall !module, the following modules must be uninstalled first: !required', array('!module' => $module, '!required' => implode(', ', $dependents))), 'error');
+      unset($modules[$key]);
+    }
+
   }
 
   // Inform the user which modules will finally be uninstalled.
