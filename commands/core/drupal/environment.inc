@@ -157,7 +157,7 @@ function drush_module_enable($modules) {
  *   Array of module names
  */
 function drush_module_disable($modules) {
-  trigger_error(dt('Drupal 8 does not support disabling modules'));
+  drush_set_error('DRUSH_MODULE_DISABLE', dt('Drupal 8 does not support disabling modules'));
 }
 
 /**

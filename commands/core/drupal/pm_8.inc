@@ -1,16 +1,25 @@
 <?php
 
 /**
- * Command callback. Uninstall one or more extensions.
+ * Prompts user for confirmation because Drupal 8 does not support disabled modules.
+ *
+ * @param array $args
+ *   Arguments from the command line.
  */
 function _drush_pm_disable($args) {
-  drush_print(dt('Drupal 8 does not support disabling modules.'));
-  if(!drush_confirm(dt('Would you like to uninstall?'))) {
+  drush_log(dt('Drupal 8 does not support disabling modules.'), 'warning');
+  if(!drush_confirm(dt('The uninstall process removes all data related to a module. Would you like to uninstall instead?'))) {
     return drush_user_abort();
   }
   _drush_pm_uninstall($args);
 }
 
+/**
+ * Command callback. Uninstall one or more extensions.
+ *
+ * @param array $args
+ *   Arguments from the command line.
+ */
 function _drush_pm_uninstall($args) {
   $extension_info = drush_get_extensions();
 
@@ -26,11 +35,11 @@ function _drush_pm_uninstall($args) {
     drush_log('DRUSH_PM_DISABLE_EXTENSION_NOT_FOUND', dt('!extension was not found and will not be uninstalled.', array('!extension' => $name)), 'warning');
   }
 
-  // Discard already disabled extensions.
+  // Discard extensions that are not installed.
   foreach ($extensions as $name) {
     if (!$extension_info[$name]->status && $extension_info[$name]->type == 'theme') {
       unset($themes[$name]);
-      drush_log(dt('!extension is already uninstalled.', array('!extension' => $name)), 'ok');
+      drush_log(dt('!extension is not installed.', array('!extension' => $name)), 'ok');
     }
   }
 
@@ -44,7 +53,7 @@ function _drush_pm_uninstall($args) {
   }
 
   if (!empty($modules)) {
-    // Add enabled dependents to the list of modules to disable.
+    // Add enabled dependents to the list of modules to uninstall.
     $dependents = drush_module_dependents($modules, $extension_info);
     $dependents = array_intersect($dependents, drush_module_list());
     $modules = array_merge($modules, $dependents);
@@ -64,7 +73,7 @@ function _drush_pm_uninstall($args) {
     }
   }
 
-  // Inform the user which extensions will finally be disabled.
+  // Inform the user which extensions will finally be uninstalled.
   $extensions = array_merge($modules, $themes);
   if (empty($extensions)) {
     return drush_log(dt('There were no extensions that could be uninstall.'), 'ok');
@@ -81,7 +90,7 @@ function _drush_pm_uninstall($args) {
     drush_theme_disable($themes);
   }
 
-  // Disable modules and pass dependency validation in form submit.
+  // Uninstall modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_uninstall($modules);
   }
