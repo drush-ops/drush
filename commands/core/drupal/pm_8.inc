@@ -1,17 +1,15 @@
 <?php
 
 /**
- * Prompts user for confirmation because Drupal 8 does not support disabled modules.
+ * Command callback. Drupal 8 does not support disabled modules.
  *
  * @param array $args
  *   Arguments from the command line.
  */
 function _drush_pm_disable($args) {
-  drush_log(dt('Drupal 8 does not support disabling modules.'), 'warning');
-  if(!drush_confirm(dt('The uninstall process removes all data related to a module. Would you like to uninstall instead?'))) {
-    return drush_user_abort();
-  }
-  _drush_pm_uninstall($args);
+  // To be consistent call the environment.inc function which will show the user
+  // an error.
+  drush_module_disable($args);
 }
 
 /**

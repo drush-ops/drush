@@ -177,6 +177,7 @@ function pm_drush_command() {
     'arguments' => array(
       'modules' => 'A list of modules.',
     ),
+    'aliases' => array('pmu'),
   );
   $items['pm-list'] = array(
     'description' => 'Show a list of available extensions (modules and themes).',
