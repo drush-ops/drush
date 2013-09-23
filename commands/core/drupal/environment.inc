@@ -145,7 +145,7 @@ function drush_module_enable($modules) {
   // The list of modules already have all the dependencies, but they might not
   // be in the correct order. Still pass $enable_dependencies = TRUE so that
   // Drupal will enable the modules in the correct order.
-  module_enable($modules);
+  Drupal::moduleHandler()->install($modules);
   // Flush all caches.
   drupal_flush_all_caches();
 }
@@ -160,7 +160,7 @@ function drush_module_disable($modules) {
   // The list of modules already have all the dependencies, but they might not
   // be in the correct order. Still pass $enable_dependencies = TRUE so that
   // Drupal will enable the modules in the correct order.
-  module_disable($modules);
+  Drupal::moduleHandler()->uninstall($modules);
   // Flush all caches.
   drupal_flush_all_caches();
 }
