@@ -7,6 +7,7 @@
  *   Arguments from the command line.
  */
 function _drush_pm_disable($args) {
+  drush_include_engine('drupal', 'environment');
   // To be consistent call the environment.inc function which will show the user
   // an error.
   drush_module_disable($args);
