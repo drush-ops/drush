@@ -105,6 +105,12 @@ class drush_outputformat_list extends drush_outputformat {
         }
       }
 
+      // Include field labels, if specified
+      if (!isset($metadata['list-item']) && isset($metadata['labeled-list']) && is_array($input) && isset($metadata['field-labels'])) {
+        if (isset($metadata['include-field-labels']) && $metadata['include-field-labels']) {
+          array_unshift($input, $metadata['field-labels']);
+        }
+      }
       foreach ($input as $label => $data) {
         // If this output formatter is set to print a single item from each
         // element, select that item here.

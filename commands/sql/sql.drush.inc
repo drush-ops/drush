@@ -226,7 +226,6 @@ function sql_drush_command() {
   $items['sql-sanitize'] = array(
     'description' => "Run sanitization operations on the current database.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'hidden' => TRUE,
     'options' => array(
       'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
       'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
@@ -810,7 +809,7 @@ function _drush_sql_get_db_table_list($db_spec, $site_record = NULL) {
     'override-simulated' => TRUE,
   );
   $result = drush_invoke_process($target_site, 'sql-query', array($query), $options, $backend_options);
-  $tables_raw = explode("\n", rtrim($result['output']));
+  $tables_raw = preg_split('/\r\n|\r|\n/', rtrim($result['output']));
 
   $tables = array();
   if (!empty($tables_raw)) {
@@ -934,15 +933,19 @@ function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
  * Drops all tables in the database.
  */
 function drush_sql_drop() {
-  if (!drush_confirm(dt('Do you really want to drop all tables?'))) {
+  drush_sql_bootstrap_further();
+  $db_spec = _drush_sql_get_db_spec();
+  if (!$db_spec) {
+    return drush_set_error('DRUSH_SQL_NO_DATABASE', dt("No database to operate on."));
+  }
+  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
     return drush_user_abort();
   }
-  drush_sql_bootstrap_further();
-  _drush_sql_drop();
+  _drush_sql_drop($db_spec);
 }
 
 // n.b. site-install uses _drush_sql_drop as a fallback technique if
-// drop database; create database fails.  If _drush_sql_drop
+// drop database; create database fails.  If _drush_sql_drop()
 // is rewritten to also use that technique, it should maintain
 // the drop tables code here as a fallback.
 function _drush_sql_drop($db_spec = NULL) {

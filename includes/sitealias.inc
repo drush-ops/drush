@@ -1838,7 +1838,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
 
   // If the --exclude-other-sites option is specified, then
   // convert that into --include-paths='%site' and --exclude-sites.
-  if (drush_get_option_override($additional_options, 'exclude-other-sites', FALSE) && !drush_get_option_override($additional_options, 'exclude-other-sites-processed', FALSE, 'process')) {
+  if (drush_get_option_override($additional_options, 'exclude-other-sites', FALSE) && !drush_get_context('exclude-other-sites-processed', FALSE)) {
     $include_path_option = drush_get_option_override($additional_options, 'include-paths', '');
     $additional_options['include-paths'] = '%site';
     if (!empty($include_path_option)) {
@@ -1846,7 +1846,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
       $additional_options['include-paths'] .= PATH_SEPARATOR . $include_path_option;
     }
     $additional_options['exclude-sites'] = TRUE;
-    $additional_options['exclude-other-sites-processed'] = TRUE;
+    drush_set_context('exclude-other-sites-processed', TRUE);
   }
   else {
     unset($additional_options['include-paths']);
