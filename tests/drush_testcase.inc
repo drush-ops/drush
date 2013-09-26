@@ -596,6 +596,63 @@ function unish_init() {
  }
 
 /**
+ * Same code as _drush_recursive_copy, except always overwrites
+ * and does not preserve permissions
+ */
+function unish_copy_dir($src, $dest) {
+  if(is_dir($src)) {
+    if(!is_dir($dest)) {
+      mkdir($dest, 0777, TRUE);
+    }
+    $dir_handle = opendir($src);
+    while($file = readdir($dir_handle)) {
+      if ($file != "." && $file != "..") {
+        if (unish_copy_dir("$src/$file", "$dest/$file") !== TRUE) {
+          return FALSE;
+        }
+      }
+    }
+    closedir($dir_handle);
+  }
+  elseif (is_link($src)) {
+    symlink(readlink($src), $dest);
+  }
+  elseif (copy($src, $dest) !== TRUE) {
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+/**
+ * Simpler version of drush_scan_directory
+ */
+function unish_scan_directory($dir) {
+  $files = array();
+  $dir_handle = opendir($dir);
+  $dirs = array();
+  while($file = readdir($dir_handle)) {
+    if ($file != "." && $file != "..") {
+      $filename = $dir . '/' . $file;
+      if (is_dir($filename)) {
+        $dirs[] = $filename;
+      }
+      else {
+        $files[$filename] = $file;
+      }
+    }
+  }
+  closedir($dir_handle);
+  asort($files);
+  asort($dirs);
+  foreach ($dirs as $filename) {
+    $files[$filename] = $file;
+    $files = array_merge($files, unish_scan_directory($filename));
+  }
+  return $files;
+}
+
+/**
  * A slightly less functional copy of drush_backend_parse_output().
  */
 function parse_backend_output($string) {

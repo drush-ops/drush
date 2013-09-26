@@ -351,6 +351,119 @@ function core_drush_command() {
       'output-data-type' => 'format-table',
     ),
   );
+  $items['core-permissions'] = array(
+    'description' => "Set appropriate ownership and permissions of files and directories within a Drupal web directory.",
+    'examples' => array(
+      'drush core-permissions www-admin:www-data' => 'Set permissions with "www-admin" as the user owner and "www-data" as the group owner.  "Files" and "Private" will be writable by the group "www-data"; other files will be writable by the owner and world readable. Suitable for use in a typical site running on a dedicated server. The web server user / php process MUST be a member of the group www-data.',
+      'drush perms www-admin:www-data www-data --strict' => 'Set permissions with "www-admin" as the user owner and "www-data" as the group owner of the code files, and "www-data" as both the owner and group of "Files" and "Private". Other users not in the www-data group will not be able to read any files. Suitable for use in a typical site running on a shared server. The web server user / php process MUST be a member of the group "www-data".',
+      'drush perms bob:devs www-data:devs --lax' => 'Set permissions with "bob" as the user owner and "devs" as the group owner.  "Files" and "Private" will be world-writable.  Members of group "devs" will be able to write to all files (except settings.php). Other files will be world-readable. Suitable for use in a typical development environment. The web server user / php process SHOULD NOT be a member of the group "devs".',
+      'drush perms bob www-data' => 'Set permissions with "bob" as the user and group owner of code files. Data files will be owned by "www-data". Other files will be world-readable.',
+      'sudo chown -R www-admin . && drush perms --skip-set-owner www-data' => 'Only run unprivileged commands from Drush.',
+      'drush perms --sudo=all www-admin:www-data' => 'Instruct Drush to call sudo before executing privileged commands.  n.b. This is preferable to using `sudo drush ...`, which gives all enabled contrib modules an opportunity to run arbitrary code as the superuser.',
+      'drush perms --pipe www-admin:www-data > perms.sh && chmod +x perms.sh && sudo ./perms.sh' => 'Generate a script and run it via sudo. Even more secure than the --sudo option.',
+    ),
+    'arguments' => array(
+      'code owner:group' => 'The user and group that will own most directories and files.  For security reasons, it is recommended that this user should be neither "root" (the superuser) nor the web user (e.g. "www-data" or "apache").  Optional; if not specified, forces --skip-set-owner and sets permissions only.',
+      'data owner:group' => 'The user and group that will own the "Files" and "Private" directories and files.  Optional; default is to use the code owner and group.',
+    ),
+    'options' => array(
+      'doc-files' => array(
+        'description' => 'Octal permissions for documentation files such as "INSTALL.txt". Optional; default is 0400.',
+        'value' => 'required',
+        'example-value' => '0400',
+      ),
+      'doc-patterns' => array(
+        'description' => 'Filename pattern of files in the top-level directory that should be treated like documentation. Optional; default is *.txt,quickstart.html',
+        'value' => 'required',
+        'example-value' => '*.txt',
+      ),
+      'doc-exceptions' => array(
+        'description' => 'Filename pattern of files in the top-level directory that should NOT be treated like documentation, even though they match the pattern given in --doc-patterns. Optional; default is robots.txt',
+        'value' => 'required',
+        'example-value' => 'robots.txt',
+      ),
+      'code-files' => array(
+        'description' => 'Octal permissions for files that need to be read by (but not written to) the web server such as PHP files. Optional; default is 0644 or 0640 (strict).',
+        'value' => 'required',
+        'example-value' => '0644',
+      ),
+      'code-dirs' => array(
+        'description' => 'Octal permissions for directories that need to be read by (but not written to) the web server such as directories containing PHP files. Optional; default is 0755 or 750 (strict).',
+        'value' => 'required',
+        'example-value' => '0755',
+      ),
+      'settings-files' => array(
+        'description' => 'Octal permissions for settings.php configuration files. Optional; default is 0440.',
+        'value' => 'required',
+        'example-value' => '0440',
+      ),
+      'data-files' => array(
+        'description' => 'Octal permissions for user-uploaded and Drupal-generated files (files in the "Files" and "Private" directories) that need to be readable and writable by the php process. Optional; default is 0664 or 0640 (strict).',
+        'value' => 'required',
+        'example-value' => '0664',
+      ),
+      'data-dirs' => array(
+        'description' => 'Octal permissions for directories that contain user-uploaded and Drupal-generated files that need to be readable and writable by the php process. Optional; default is 0775 or 0750 (strict).',
+        'value' => 'required',
+        'example-value' => '0775',
+      ),
+      'code-files-group' => array(
+        'description' => 'The group who will own the code (.php) and documentation (.txt) files. Alternative to specifying owner via the commandline argument; allows setting a group without setting the user.',
+        'value' => 'required',
+        'example-value' => 'www-data',
+      ),
+      'code-files-owner' => array(
+        'description' => 'The user who will own the code (.php) and documentation (.txt) files.',
+        'value' => 'required',
+        'example-value' => 'www-admin',
+      ),
+      'data-files-group' => array(
+        'description' => 'The group who will own the user-provided and Drupal-generated files.',
+        'value' => 'required',
+        'example-value' => 'www-data',
+      ),
+      'data-files-owner' => array(
+        'description' => 'The user who will own the user-provided and Drupal-generated files.',
+        'value' => 'required',
+        'example-value' => 'www-data',
+      ),
+      'dir' => array(
+        'description' => 'Apply permissions changes at the specified directory. Optional; defaults to Drupal root.',
+        'value' => 'required',
+        'example-value' => '.',
+      ),
+      'not-world-readable' => 'Prevent users who are not the file owner and not in the applicable group from accessing files in the webroot.  Optional; defaults to world-readable, except for settings.php.',
+      'not-group-writable' => 'Changes the defaults for --data-dirs and --data-files to be the same as the defaults for --code-dirs and --code-files, respectively.',
+      'lax' => 'Make writable files writable by any user. Optional; synonym for --code-files=0664 --code-dirs=0775 --data-files=0666 --data-dirs=0777 --doc-files=664.',
+      'strict' => 'Optional; synonym for --not-world-readable --not-group-writable. Overrides --lax.',
+      'skip-set-owner' => 'Presumes that the owner of the files is already correct, and skips setting it. Allows execution by unprivileged user.',
+      'sudo' => array(
+        'description' => 'Call sudo before commands that set file ownership. If --sudo=all is specified, then sudo is also used before commands that set file permissions.',
+        'value' => 'optional',
+        'example-value' => 'all',
+      ),
+      'pipe' => 'Output a script instead of executing the commands.',
+      'no-variables' => 'In --script mode, do not assign variables; use values directly.',
+      'audit' => 'Change nothing; only show files and folders that do not match requested permissions.',
+      'files' => array(
+        'description' => 'Comma-separated list of paths to files directories. Optional; default is "%files,%private".',
+        'value' => 'required',
+        'example-value' => '%files,%private',
+      ),
+      'settings' => array(
+        'description' => 'Comma-separated list of paths to settings files. Optional; default is "%settings".',
+        'value' => 'required',
+        'example-value' => '%settings',
+      ),
+      'exclude' => array(
+        'description' => 'Comma-separated list of paths to directories that should never be touched (e.g. network-mounted shared folders). Optional.',
+        'value' => 'required',
+        'example-value' => '%private',
+      ),
+    ),
+    'aliases' => array('perms'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  );
   $items['core-quick-drupal'] = array(
     'description' => 'Download, install, serve and login to Drupal with minimal configuration and dependencies.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
@@ -540,6 +653,10 @@ function _core_path_aliases($project = '') {
     $paths['%root'] = $drupal_root;
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $paths['%site'] = $site_root;
+      $settings_file = $site_root . '/settings.php';
+      if (file_exists($settings_file)) {
+        $paths['%settings'] = $settings_file;
+      }
       if (is_dir($modules_path = conf_path() . '/modules')) {
         $paths['%modules'] = $modules_path;
       }
