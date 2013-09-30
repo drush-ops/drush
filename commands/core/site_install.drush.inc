@@ -40,6 +40,9 @@ function drush_core_pre_site_install($profile = NULL) {
   if ($sitesfile_write) {
     $msg[] = dt('create a @sitesfile file', array('@sitesfile' => $sitesfile));
   }
+  if (drush_drupal_major_version() >= 8) {
+    $msg[] = dt('empty any Config directories');
+  }
   if (drush_sql_db_exists($db_spec)) {
     $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
   }
