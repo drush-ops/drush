@@ -843,12 +843,6 @@ function _drush_bootstrap_drupal_configuration() {
     'dev_query' => FALSE, // Force Drupal6 not to store queries since we are not outputting them.
     'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7+).
   );
-  // Avoid MTimeProtected grief in D8+. See http://drupal.org/node/1899842. If you really don't
-  // want this override, set different values using a drushrc.php by passing different values.
-  $override['php_storage']['default'] = array(
-    'class' => 'Drupal\Component\PhpStorage\FileReadOnlyStorage',
-    // 'directory' => drush_directory_cache('php_storage'),
-  );
 
   $current_override = drush_get_option_list('variables');
   foreach ($current_override as $name => $value) {
