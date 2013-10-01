@@ -53,6 +53,7 @@ pursuing one of the support options below.
 MISC
 -----------
 * [www.drush.org](http://www.drush.org)
+* Subscribe to https://github.com/drush-ops/drush/releases.atom to receive notification on new releases.
 * [A list of modules that include Drush integration](http://drupal.org/project/modules?filters=tid%3A4654)
 * For more information, please see the [Resources](http://drush.org/resources) and the [Drush FAQ](http://drupal.org/drush-faq). Run the `drush topic` command for even more help.
 * If you are using Debian or Ubuntu, you can alternatively use the Debian packages uploaded in your distribution. You may need to use the backports to get the latest version, if you are running a LTS or "stable" release.
