@@ -25,7 +25,7 @@
  * @see drush_shell_exec()
  */
 function drush_op_system($exec) {
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+  if (drush_get_context('DRUSH_VERBOSE')) {
     drush_print("Calling system($exec);", 0, STDERR);
   }
   if (drush_get_context('DRUSH_SIMULATE')) {
