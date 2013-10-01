@@ -20,7 +20,8 @@ class archiveDumpCase extends Drush_CommandTestCase {
    * Install a site and dump it to an archive.
    */
   private function archiveDump($no_core) {
-    $this->fetchInstallDrupal(self::uri, TRUE, UNISH_DRUPAL_MAJOR_VERSION);
+    $profile = UNISH_DRUPAL_MAJOR_VERSION >= 7 ? 'testing' : 'default';
+    $this->fetchInstallDrupal(self::uri, TRUE, UNISH_DRUPAL_MAJOR_VERSION, $profile);
     $root = $this->webroot();
     $dump_dest = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'dump.tar.gz';
     $options = array(
@@ -106,7 +107,8 @@ class archiveDumpCase extends Drush_CommandTestCase {
     $docroot = basename($this->webroot());
     $this->assertFileExists($untar_dest . '/MANIFEST.ini');
     $this->assertFileExists($untar_dest . '/' . $docroot);
-    $this->assertFileNotExists($untar_dest . '/' . $docroot . '/modules', 'No modules directory should exist with --no-core');
+    $modules_dir = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? '/core/modules' : '/modules';
+    $this->assertFileNotExists($untar_dest . '/' . $docroot . $modules_dir, 'No modules directory should exist with --no-core');
 
     return $dump_dest;
   }
