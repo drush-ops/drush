@@ -25,7 +25,7 @@
  * @see drush_shell_exec()
  */
 function drush_op_system($exec) {
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+  if (drush_get_context('DRUSH_VERBOSE')) {
     drush_print("Calling system($exec);", 0, STDERR);
   }
   if (drush_get_context('DRUSH_SIMULATE')) {
@@ -138,7 +138,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
     $command = call_user_func_array('sprintf', $args);
   }
 
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+  if (drush_get_context('DRUSH_VERBOSE')) {
     drush_print('Executing: ' . $command, 0, STDERR);
   }
   if (!drush_get_context('DRUSH_SIMULATE')) {
@@ -227,7 +227,7 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL, $interactive =
  *     127 command not found
  */
 function drush_shell_proc_open($cmd) {
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+  if (drush_get_context('DRUSH_VERBOSE')) {
     drush_print("Calling proc_open($cmd);", 0, STDERR);
   }
   if (!drush_get_context('DRUSH_SIMULATE')) {
