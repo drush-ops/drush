@@ -113,12 +113,16 @@ INSTALL - MANUAL
 
      Your system will search path options from left to right until it finds a result.
 
-     To apply your changes to your current session, either log out and then log
+    1. Add an alias for drush (this method can also be handy if you want to use 2 versions of Drush, for example Drush 5 or 6 (stable) for Drupal 7 development, and Drush 7 (master) for Drupal 8 development).
+     To add an alias to your Drush 7 executable, add this to you shell configuration file (see list in previous option):
+         `$ alias drush-master=/path/to/drush/drush`
+
+     For options 2 and 3 above, in order to apply your changes to your current session, either log out and then log
      back in again, or re-load your bash configuration file, i.e.:
 
         `$ source .bashrc`
 
-     NOTE: If you do not follow step 3, you will need to inconveniently run Drush commands using the full path to the executable "/path/to/drush/drush" or by navigating to /path/to/drush and running "./drush". The -r or -l options will be required (see USAGE, below).
+     NOTE: If you do not follow this step, you will need to inconveniently run Drush commands using the full path to the executable "/path/to/drush/drush" or by navigating to /path/to/drush and running "./drush". The -r or -l options will be required (see USAGE, below).
 
 1. Test that Drush is found by your system:
 
