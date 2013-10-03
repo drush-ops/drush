@@ -102,7 +102,7 @@ INSTALL - MANUAL
     
     `$ chmod u+x /path/to/drush/drush`
 
-1. Configure your system to recognize where Drush resides. There are 2 options:
+1. Configure your system to recognize where Drush resides. There are 3 options:
     1. Create a symbolic link to the Drush executable in a directory that is already in your PATH, e.g.:
 
          `$ ln -s /path/to/drush/drush /usr/bin/drush`
@@ -117,12 +117,11 @@ INSTALL - MANUAL
      To add an alias to your Drush 7 executable, add this to you shell configuration file (see list in previous option):
          `$ alias drush-master=/path/to/drush/drush`
 
-     For options 2 and 3 above, in order to apply your changes to your current session, either log out and then log
-     back in again, or re-load your bash configuration file, i.e.:
+    For options 2 and 3 above, in order to apply your changes to your current session, either log out and then log back in again, or re-load your bash configuration file, i.e.:
 
-        `$ source .bashrc`
+      `$ source .bashrc`
 
-     NOTE: If you do not follow this step, you will need to inconveniently run Drush commands using the full path to the executable "/path/to/drush/drush" or by navigating to /path/to/drush and running "./drush". The -r or -l options will be required (see USAGE, below).
+    NOTE: If you do not follow this step, you will need to inconveniently run Drush commands using the full path to the executable "/path/to/drush/drush" or by navigating to /path/to/drush and running "./drush". The -r or -l options will be required (see USAGE, below).
 
 1. Test that Drush is found by your system:
 
