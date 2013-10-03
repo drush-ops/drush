@@ -54,11 +54,12 @@ function user_drush_command() {
         'init' => 'Initial user mail',
         'roles' => 'User roles',
         'group_audience' => 'Group Audience',
+        'langcode' => 'Language code',
       ),
       'format-cell' => 'csv',
       'fields-default' => array('uid', 'name', 'mail', 'roles', 'user_status'),
       'fields-pipe' => array('name', 'uid', 'mail', 'status', 'roles'),
-      'fields-full' => array('uid', 'name', 'pass', 'mail', 'theme', 'signature', 'user_created', 'user_access', 'user_login', 'user_status', 'timezone', 'roles', 'group_audience'),
+      'fields-full' => array('uid', 'name', 'pass', 'mail', 'theme', 'signature', 'user_created', 'user_access', 'user_login', 'user_status', 'timezone', 'roles', 'group_audience', 'langcode'),
       'output-data-type' => 'format-table',
     ),
   );
@@ -223,13 +224,14 @@ function user_drush_help_alter(&$command) {
 }
 
 /**
- * Prints information about the specified user(s).
+ * Command callback. Prints information about the specified user(s).
  */
 function drush_user_information($users) {
   $result = array();
   $uids = _drush_user_get_users_from_arguments($users);
   foreach($uids as $uid) {
-    $result[$uid] = _drush_user_info($uid);
+    $account = drush_user_load($uid);
+    $result[$uid] = drush_user_info_single($account);
   }
   return $result;
 }
@@ -240,7 +242,8 @@ function drush_user_information($users) {
 function drush_user_block($users = '') {
   $uids = _drush_user_get_users_from_options_and_arguments($users);
   if (!empty($uids)) {
-    drush_op('user_user_operations_block', $uids);
+    drush_include_engine('drupal', 'user', drush_drupal_major_version());
+    drush_op('_drush_user_block', $uids);
   }
   else {
     return drush_set_error("Could not find any valid uids!");
@@ -253,7 +256,8 @@ function drush_user_block($users = '') {
 function drush_user_unblock($users = '') {
   $uids = _drush_user_get_users_from_options_and_arguments($users);
   if (!empty($uids)) {
-    drush_op('user_user_operations_unblock', $uids);
+    drush_include_engine('drupal', 'user', drush_drupal_major_version());
+    drush_op('_drush_user_unblock', $uids);
   }
   else {
     return drush_set_error("Could not find any valid uids!");
@@ -273,7 +277,8 @@ function drush_user_add_role($role, $users = '') {
   }
   if (!empty($uids)) {
     if ($rid = drush_db_result($rid_query)) {
-      drush_op('user_multiple_role_edit', $uids, 'add_role', $rid);
+      drush_include_engine('drupal', 'user', drush_drupal_major_version());
+      drush_op('_drush_add_role', $uids, $rid);
       foreach($uids as $uid) {
         drush_log(dt("Added the !role role to uid !uid", array('!role' => $role, '!uid' => $uid)), 'success');
       }
@@ -300,7 +305,8 @@ function drush_user_remove_role($role, $users = '') {
   }
   if (!empty($uids)) {
     if ($rid = drush_db_result($rid_query)) {
-      drush_op('user_multiple_role_edit', $uids, 'remove_role', $rid);
+      drush_include_engine('drupal', 'user', drush_drupal_major_version());
+      drush_op('_drush_remove_role', $uids, $rid);
       foreach($uids as $uid) {
         drush_log(dt("Removed the !role role from uid !uid", array('!role' => $role, '!uid' => $uid)), 'success');
       }
@@ -335,16 +341,11 @@ function drush_user_create($name) {
   }
   if (drush_db_result($result) === FALSE) {
     if (!drush_get_context('DRUSH_SIMULATE')) {
-      if (drush_drupal_major_version() >= 8) {
-        $new_user_object = entity_create('user', $new_user);
-        $new_user_object->save();
-      }
-      else {
-        $new_user_object = user_save(NULL, $new_user, NULL);
-      }
-      if ($new_user_object !== FALSE) {
-        _drush_user_print_info($new_user_object->uid);
-        return $new_user_object->uid;
+      drush_include_engine('drupal', 'user', drush_drupal_major_version());
+      $account = _drush_user_create($new_user);
+      if ($account) {
+        _drush_user_print_info($account);
+        return $account;
       }
       else {
         return drush_set_error("Could not create a new user account with the name " . $name . "!");
@@ -369,7 +370,8 @@ function drush_user_cancel($name) {
   $uid = drush_db_result($result);
   if ($uid !== FALSE) {
     drush_print("Cancelling the user account with the following information:");
-    _drush_user_print_info($uid);
+    $account = drush_user_load($uid);
+    _drush_user_print_info($account);
     if (drush_get_option('delete-content') && drush_drupal_major_version() >= 7) {
       drush_print("All content created by this user will be deleted!");
     }
@@ -410,14 +412,11 @@ function drush_user_password($name) {
     if (!drush_get_context('DRUSH_SIMULATE')) {
       $pass = drush_get_option('password');
       // If no password has been provided, prompt for one.
-      if (empty($pass)) $pass = drush_prompt(dt('Password'), NULL, TRUE, TRUE);
-      if (drush_drupal_major_version() >= 8) {
-        $user->pass = $pass;
-        $user_object = $user->save();
+      if (empty($pass)) {
+        $pass = drush_prompt(dt('Password'), NULL, TRUE, TRUE);
       }
-      else {
-        $user_object = user_save($user, array('pass' => $pass));
-      }
+      drush_include_engine('drupal', 'user', drush_drupal_major_version());
+      $user_object = drush_op('_drush_user_password', $user, $pass);
       if ($user_object === FALSE) {
         drush_set_error("Could not change the password for the user account with the name " . $name . "!");
       }
@@ -510,36 +509,9 @@ function drush_user_login($user = NULL, $path = NULL) {
 /**
  * Print information about a given uid
  */
-function _drush_user_print_info($uid) {
-  $user_info = _drush_user_info($uid);
+function _drush_user_print_info($account) {
+  $user_info = drush_user_info_single($account);
   drush_print_format($user_info, 'key-value-list');
-}
-
-function _drush_user_info($uid) {
-  if (drush_drupal_major_version() >= 7) {
-    $userinfo = user_load($uid);
-  }
-  else {
-    $userinfo = user_load(array('uid' => $uid));
-  }
-  $userinfo = (array)$userinfo;
-  unset($userinfo['data']);
-  unset($userinfo['block']);
-  unset($userinfo['form_build_id']);
-  foreach (array('created', 'access', 'login') as $key) {
-    $userinfo['user_' . $key] = format_date($userinfo[$key]);
-  }
-  // Note: in D8, $userinfo->roles may not contain the human-readable role names.
-  // For example, it may contain 'authenticated' => 'authenticated' instead of
-  // 'authenticated' => 'Authenticated user'.  In any event, we display the
-  // machine name rather than the human-readable name for better output-conformity
-  // with D6 and D7.
-  if (drush_drupal_major_version() >= 8) {
-    $userinfo['user_roles'] = $userinfo['roles'];
-    $userinfo['roles'] = array_keys($userinfo['roles']);
-  }
-  $userinfo['user_status'] = $userinfo['status'] ? 'active' : 'blocked';
-  return $userinfo;
 }
 
 /**
@@ -642,7 +614,8 @@ function _drush_user_get_uid($search) {
       return drush_set_error("Could not find a uid for the search term '" . $search . "'!");
       break;
     case 1:
-      return array_pop(array_keys($uids));
+      $keys = array_keys($uids);
+      return array_pop($keys);
       break;
     default:
       drush_print('More than one user account was found for the search string "' . $search . '".');
