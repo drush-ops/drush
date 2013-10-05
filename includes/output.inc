@@ -73,6 +73,27 @@ function drush_print_r($array, $handle = NULL, $newline = TRUE) {
 }
 
 /**
+ * Print debug output with the location of the caller.
+ *
+ * @param $value
+ *  A variable to output.
+ * @param $message = ''
+ *  (optional) A message to display.
+ * @param $backtrace = NULL
+ *  (optional) A backtrace from debug_backtrace(). Use this if the caller is
+ *  itself a debug helper, and you want the displayed caller location to be the
+ *  caller of the helper rather than the helper itself.
+ */
+function ddebug($value, $message = '', $backtrace = NULL) {
+  if (empty($backtrace)) {
+    $backtrace = debug_backtrace();
+  }
+
+  drush_print_r(sprintf("== %s (%s:%s)", $message, $backtrace[1]['file'], $backtrace[1]['line']));
+  drush_print_r($value);
+}
+
+/**
  * Format some data and print it out.  Respect --format option.
  */
 function drush_print_format($input, $default_format, $metadata = NULL) {
