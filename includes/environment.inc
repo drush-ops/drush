@@ -246,7 +246,9 @@ function drush_site_path($path = NULL) {
   }
   else {
     // Move up dir by dir and check each.
-    while ($path = _drush_shift_path_up($path)) {
+    // Stop if we get to a Drupal root.   We don't care
+    // if it is DRUSH_SELECTED_DRUPAL_ROOT or some other root.
+    while ($path = _drush_shift_path_up($path) && !drush_valid_drupal_root($path)) {
       if (file_exists($path . '/settings.php')) {
         $site_path = $path;
         break;
