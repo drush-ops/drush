@@ -1240,12 +1240,32 @@ function drush_core_execute() {
   $cmd = implode(' ', $args);
   if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
     $site = drush_sitealias_get_record($alias);
-    if (!empty($site['remote-host'])) {
-      // Remote, so execute an ssh command with a bash fragment at the end.
-      $exec = drush_shell_proc_build($site, $cmd, TRUE);
-      return drush_shell_proc_open($exec);
+    if (!empty($site['site-list'])) {
+      $sites = drush_sitealias_resolve_sitelist($site);
+      foreach ($sites as $site_name => $site_spec) {
+        _drush_core_execute_cmd($site_spec, $cmd);
+      }
+      return;
+    }
+    else {
+      return _drush_core_execute_cmd($site, $cmd);
     }
   }
   // Must be a local command.
+  return drush_shell_proc_open($cmd);
+}
+
+/**
+ * Helper function for drush_core_execute: run one shell command
+ */
+function _drush_core_execute_cmd($site, $cmd) {
+  if (!empty($site['remote-host'])) {
+    // Remote, so execute an ssh command with a bash fragment at the end.
+    $exec = drush_shell_proc_build($site, $cmd, TRUE);
+    return drush_shell_proc_open($exec);
+  }
+  elseif (!empty($site['root'])) {
+    return drush_shell_proc_open('cd ' . drush_escapeshellarg($site['root']) . ' && ' . $cmd);
+  }
   return drush_shell_proc_open($cmd);
 }
