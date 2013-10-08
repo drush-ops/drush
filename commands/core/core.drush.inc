@@ -1229,6 +1229,7 @@ function drush_core_version() {
  * that start with !.
  */
 function drush_core_execute() {
+  $result = TRUE;
   // Get all of the args and options that appear after the command name.
   $args = drush_get_original_cli_args_and_options();
   for ($x = 0; $x < sizeof($args); $x++) {
@@ -1243,16 +1244,24 @@ function drush_core_execute() {
     if (!empty($site['site-list'])) {
       $sites = drush_sitealias_resolve_sitelist($site);
       foreach ($sites as $site_name => $site_spec) {
-        _drush_core_execute_cmd($site_spec, $cmd);
+        $result = _drush_core_execute_cmd($site_spec, $cmd);
+        if (!$result) {
+          break;
+        }
       }
-      return;
     }
     else {
-      return _drush_core_execute_cmd($site, $cmd);
+      $result = _drush_core_execute_cmd($site, $cmd);
     }
   }
-  // Must be a local command.
-  return drush_shell_proc_open($cmd);
+  else {
+    // Must be a local command.
+    $result = drush_shell_proc_open($cmd);
+  }
+  if (!$result) {
+    return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
+  }
+  return $result;
 }
 
 /**
@@ -1262,10 +1271,10 @@ function _drush_core_execute_cmd($site, $cmd) {
   if (!empty($site['remote-host'])) {
     // Remote, so execute an ssh command with a bash fragment at the end.
     $exec = drush_shell_proc_build($site, $cmd, TRUE);
-    return drush_shell_proc_open($exec);
+    return (drush_shell_proc_open($exec) == 0);
   }
   elseif (!empty($site['root'])) {
-    return drush_shell_proc_open('cd ' . drush_escapeshellarg($site['root']) . ' && ' . $cmd);
+    return (drush_shell_proc_open('cd ' . drush_escapeshellarg($site['root']) . ' && ' . $cmd) == 0);
   }
-  return drush_shell_proc_open($cmd);
+  return (drush_shell_proc_open($cmd) == 0);
 }
