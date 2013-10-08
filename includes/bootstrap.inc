@@ -497,6 +497,9 @@ function _drush_bootstrap_drush() {
   // affect these phases.
   drush_sitealias_check_arg();
 
+  // Check to see if we 'use'd a site alias with site-set
+  drush_sitealias_check_site_env();
+
   // Load the config options from Drupal's /drush and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
@@ -510,7 +513,7 @@ function _drush_bootstrap_drush() {
   // If drush_load_config defined a site alias that did not
   // exist before, then sitealias check arg might now match
   // against one of those aliases.
-  if (drush_sitealias_check_arg() === TRUE) {
+  if ((drush_sitealias_check_arg() === TRUE) || (drush_sitealias_check_site_env() === TRUE)) {
     $remote_host = drush_get_option('remote-host');
     if (!isset($remote_host)) {
       // Load the config files for the "new" site.
@@ -518,8 +521,6 @@ function _drush_bootstrap_drush() {
       drush_load_config('site');
     }
   }
-  // Check to see if we 'use'd a site alias with site-set
-  drush_sitealias_check_site_env();
 
   _drush_bootstrap_global_options();
 }
