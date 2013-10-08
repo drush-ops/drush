@@ -1133,6 +1133,7 @@ function drush_sql_dump_file(&$site_record) {
     // If the user has set the --dump-dir option, then
     // store persistant sql dump files there.
     $dump_dir = drush_sitealias_get_path_option($site_record, 'dump-dir');
+    $site_record['dump-is-temp'] = !$dump_dir;
     $remote = isset($site_record['remote-host']);
     // If this is a remote site, try to find a writable tmpdir.
     if (!isset($dump_dir) && $remote) {
@@ -1157,15 +1158,19 @@ function drush_sql_dump_file(&$site_record) {
         $dump_dir = $result['object'];
       }
     }
-    $dump_file = drush_tempnam($filename_pattern, $dump_dir, $remote ? '.sql' : '');
-    // If $dump_dir does not exist, tempname will use the system
-    // directory instead.  That is the behavior we want on the local
-    // system, but on remote systems, force the result back to the
-    // specified directory.
-    if ($remote) {
-      $dump_file = $dump_dir . '/' . basename($dump_file);
+    if ($site_record['dump-is-temp']) {
+      $dump_file = drush_tempnam($filename_pattern, $dump_dir, $remote ? '.sql' : '');
+      // If $dump_dir does not exist, tempname will use the system
+      // directory instead.  That is the behavior we want on the local
+      // system, but on remote systems, force the result back to the
+      // specified directory.
+      if ($remote) {
+        $dump_file = $dump_dir . '/' . basename($dump_file);
+      }
     }
-    $site_record['dump-is-temp'] = TRUE;
+    else {
+      $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
+    }
   }
 
   return $dump_file;
