@@ -187,6 +187,21 @@ function simpletest_drush_run_test($class) {
   if ($dir = drush_get_option('xml')) {
     drush_test_xml_results($test_id, $test_suites, $dir);
   }
+  elseif ($status === 'error') {
+    if (drush_drupal_major_version() >= 7) {
+      $args = array(':test_id' => $test_id);
+      $result = db_query("SELECT * FROM {simpletest} WHERE test_id = :test_id AND status IN ('exception', 'fail') ORDER BY test_class, message_id", $args);
+      foreach ($result as $record) {
+        drush_set_error('DRUSH_TEST_FAIL', dt("Test !function failed: !message", array('!function' => $record->function, '!message' => $record->message)));
+      }
+    }
+    else {
+      $result = db_query("SELECT * FROM {simpletest} WHERE test_id = %d AND status IN ('exception', 'fail') ORDER BY test_class, message_id", $test_id);
+      while ($row = db_fetch_object($result)) {
+        drush_set_error('DRUSH_TEST_FAIL', dt("Test !function failed: !message", array('!function' => $row->function, '!message' => $row->message)));
+      }
+    }
+  }
 }
 
 /**
