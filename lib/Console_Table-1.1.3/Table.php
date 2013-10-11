@@ -36,7 +36,7 @@
  * @copyright 2002-2005 Richard Heyes
  * @copyright 2006-2008 Jan Schneider
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @version   CVS: $Id: Table.php,v 1.27 2008/10/20 22:22:13 yunosh Exp $
+ * @version   CVS: $Id$
  * @link      http://pear.php.net/package/Console_Table
  */
 
@@ -177,6 +177,9 @@ class Console_Table
         $this->_border       = $border;
         $this->_padding      = $padding;
         $this->_ansiColor    = $color;
+        if ($this->_ansiColor) {
+            include_once 'Console/Color.php';
+        }
         if (!empty($charset)) {
             $this->setCharset($charset);
         }
@@ -592,14 +595,26 @@ class Console_Table
 
         }
 
-        $return = implode("\r\n", $return);
+        if (!stristr(PHP_OS, 'WIN')) {
+            $return = implode("\r\n", $return);
+        }
+        else {
+            $return = implode("\n", $return);
+        }
         if (!empty($separator)) {
             $return = $separator . "\r\n" . $return . "\r\n" . $separator;
         }
-        $return .= "\r\n";
 
+        if (!stristr(PHP_OS, 'WIN')) {
+            $return .= "\r\n";
+        }
         if (!empty($this->_headers)) {
+          if (!stristr(PHP_OS, 'WIN')) {
             $return = $this->_getHeaderLine() .  "\r\n" . $return;
+          }
+          else {
+            $return = $this->_getHeaderLine() .  "\n" . $return;
+          }
         }
 
         return $return;
@@ -774,29 +789,20 @@ class Console_Table
      */
     function _strlen($str)
     {
-        static $mbstring, $utf8;
+        static $mbstring;
 
         // Strip ANSI color codes if requested.
         if ($this->_ansiColor) {
-            include_once 'Console/Color.php';
             $str = Console_Color::strip($str);
         }
 
         // Cache expensive function_exists() calls.
         if (!isset($mbstring)) {
-            $mbstring = function_exists('mb_strlen');
-        }
-        if (!isset($utf8)) {
-            $utf8 = function_exists('utf8_decode');
+            $mbstring = function_exists('mb_strwidth');
         }
 
-        if ($utf8 &&
-            ($this->_charset == strtolower('utf-8') ||
-             $this->_charset == strtolower('utf8'))) {
-            return strlen(utf8_decode($str));
-        }
         if ($mbstring) {
-            return mb_strlen($str, $this->_charset);
+            return mb_strwidth($str, $this->_charset);
         }
 
         return strlen($str);
