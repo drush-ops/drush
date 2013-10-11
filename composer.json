@@ -19,9 +19,13 @@
     "drush.complete.sh"
   ],
   "require": {
-    "php": ">=5.3.3"
+    "php": ">=5.3.3",
+    "symfony/yaml": "2.2.1",
+    "youngj/httpserver": "dev-master#41dd2b7 as 1.0.1",
+    "pear/console_table": "dev-trunk#f4cfeb7 as 1.1.3"
   },
   "require-dev": {
     "phpunit/phpunit": ">=3.5"
   }
+
 }

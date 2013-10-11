@@ -8,7 +8,7 @@
  * @requires PHP CLI 5.3.5, or newer.
  */
 
-require(dirname(__FILE__) . '/includes/bootstrap.inc');
+require dirname(__FILE__) . '/includes/bootstrap.inc';
 
 if (drush_bootstrap_prepare() === FALSE) {
   exit(1);
