@@ -28,17 +28,20 @@ function drush_core_pre_site_install($profile = NULL) {
 
   $conf_path = "sites/$sites_subdir";
   $files = "$conf_path/files";
+  // Used by a D8 log message.
+  drush_set_context('DRUSH_SITE_INSTALL_FILES', $files);
   $settingsfile = "$conf_path/settings.php";
   $sitesfile = "sites/sites.php";
   $sitesfile_write = drush_drupal_major_version() >= 8 && !file_exists($sitesfile) && $sites_subdir != 'default';
-  if (!file_exists($files)) {
-    $msg[] = dt('create a @files directory', array('@files' => $files));
-  }
+  
   if (!file_exists($settingsfile)) {
     $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
   }
   if ($sitesfile_write) {
     $msg[] = dt('create a @sitesfile file', array('@sitesfile' => $sitesfile));
+  }
+  if (drush_drupal_major_version() >= 8) {
+    $msg[] = dt('empty any Config directories');
   }
   if (drush_sql_db_exists($db_spec)) {
     $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
@@ -104,32 +107,8 @@ function drush_core_pre_site_install($profile = NULL) {
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   }
 
-  // Add a files dir if needed
-  if (!file_exists($files)) {
-    if (!drush_mkdir($files) && !drush_get_context('DRUSH_SIMULATE')) {
-      drush_set_error(dt('Failed to create directory @name', array('@name' => $files)));
-      return;
-    }
-  }
-
   // Empty or create the DB as needed.
-  $db_name = $db_spec['database'];
-  $scheme = _drush_sql_get_scheme($db_spec);
-  $simulate = drush_get_context('DRUSH_SIMULATE');
-
-  if ($scheme === 'sqlite') {
-    // With SQLite, we don't DROP DATABASEs. Each database is in a single file,
-    // so we just remove the file. We also don't CREATE DATABASEs; it is created
-    // when SQLite attempts to open a database file which doesn't exist.
-    if (file_exists($db_spec['database']) && !$simulate) {
-      if (!unlink($db_spec['database'])) {
-        drush_set_error(dt('Could not drop database: @name', array('@name' => $db_name)));
-      }
-    }
-  }
-  else {
-    drush_sql_empty_db($db_spec);
-  }
+  drush_sql_empty_db($db_spec);
 
   if (drush_drupal_major_version() >= 8) {
     // Empty out any existing config directories.

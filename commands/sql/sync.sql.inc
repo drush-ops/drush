@@ -78,7 +78,7 @@ function sql_drush_sql_sync_sanitize($site) {
 
   // Sanitize passwords.
   $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
-  if ($newpassword != 'no') {
+  if ($newpassword != 'no' && $newpassword !== 0) {
     $major_version = drush_drupal_major_version();
     $pw_op = "";
 
@@ -103,7 +103,7 @@ function sql_drush_sql_sync_sanitize($site) {
 
   // Sanitize email addresses.
   $newemail = drush_get_option(array('sanitize-email', 'destination-sanitize-email'), 'user+%uid@localhost.localdomain');
-  if ($newemail != 'no') {
+  if ($newemail != 'no' && $newemail !== 0) {
     if (strpos($newemail, '%') !== FALSE) {
       // We need a different sanitization query for Postgres and Mysql.
 

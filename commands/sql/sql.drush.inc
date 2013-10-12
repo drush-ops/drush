@@ -189,7 +189,7 @@ function sql_drush_command() {
           'hidden' => TRUE,
       ),
       'temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
-      'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.  Takes precedence over --temp.',
+      'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.',
       'create-db' => 'Create a new database before importing the database dump on the target machine.',
       'db-su' => array(
         'description' => 'Account to use when creating a new database. Optional.',
@@ -226,7 +226,6 @@ function sql_drush_command() {
   $items['sql-sanitize'] = array(
     'description' => "Run sanitization operations on the current database.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'hidden' => TRUE,
     'options' => array(
       'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
       'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
@@ -810,7 +809,7 @@ function _drush_sql_get_db_table_list($db_spec, $site_record = NULL) {
     'override-simulated' => TRUE,
   );
   $result = drush_invoke_process($target_site, 'sql-query', array($query), $options, $backend_options);
-  $tables_raw = explode("\n", rtrim($result['output']));
+  $tables_raw = preg_split('/\r\n|\r|\n/', rtrim($result['output']));
 
   $tables = array();
   if (!empty($tables_raw)) {
@@ -934,15 +933,19 @@ function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
  * Drops all tables in the database.
  */
 function drush_sql_drop() {
-  if (!drush_confirm(dt('Do you really want to drop all tables?'))) {
+  drush_sql_bootstrap_further();
+  $db_spec = _drush_sql_get_db_spec();
+  if (!$db_spec) {
+    return drush_set_error('DRUSH_SQL_NO_DATABASE', dt("No database to operate on."));
+  }
+  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
     return drush_user_abort();
   }
-  drush_sql_bootstrap_further();
-  _drush_sql_drop();
+  _drush_sql_drop($db_spec);
 }
 
 // n.b. site-install uses _drush_sql_drop as a fallback technique if
-// drop database; create database fails.  If _drush_sql_drop
+// drop database; create database fails.  If _drush_sql_drop()
 // is rewritten to also use that technique, it should maintain
 // the drop tables code here as a fallback.
 function _drush_sql_drop($db_spec = NULL) {
@@ -1129,6 +1132,7 @@ function drush_sql_dump_file(&$site_record) {
     // If the user has set the --dump-dir option, then
     // store persistant sql dump files there.
     $dump_dir = drush_sitealias_get_path_option($site_record, 'dump-dir');
+    $use_temp_file = drush_sitealias_get_path_option($site_record, 'temp') || !$dump_dir;
     $remote = isset($site_record['remote-host']);
     // If this is a remote site, try to find a writable tmpdir.
     if (!isset($dump_dir) && $remote) {
@@ -1153,15 +1157,20 @@ function drush_sql_dump_file(&$site_record) {
         $dump_dir = $result['object'];
       }
     }
-    $dump_file = drush_tempnam($filename_pattern, $dump_dir, $remote ? '.sql' : '');
-    // If $dump_dir does not exist, tempname will use the system
-    // directory instead.  That is the behavior we want on the local
-    // system, but on remote systems, force the result back to the
-    // specified directory.
-    if ($remote) {
-      $dump_file = $dump_dir . '/' . basename($dump_file);
+    if ($use_temp_file) {
+      $dump_file = drush_tempnam($filename_pattern, $dump_dir, $remote ? '.sql' : '');
+      // If $dump_dir does not exist, tempname will use the system
+      // directory instead.  That is the behavior we want on the local
+      // system, but on remote systems, force the result back to the
+      // specified directory.
+      if ($remote) {
+        $dump_file = $dump_dir . '/' . basename($dump_file);
+      }
+      $site_record['dump-is-temp'] = TRUE;
     }
-    $site_record['dump-is-temp'] = TRUE;
+    else {
+      $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
+    }
   }
 
   return $dump_file;
