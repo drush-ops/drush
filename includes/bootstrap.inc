@@ -497,6 +497,9 @@ function _drush_bootstrap_drush() {
   // affect these phases.
   drush_sitealias_check_arg();
 
+  // Check to see if we 'use'd a site alias with site-set
+  drush_sitealias_check_site_env();
+
   // Load the config options from Drupal's /drush and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
@@ -510,7 +513,7 @@ function _drush_bootstrap_drush() {
   // If drush_load_config defined a site alias that did not
   // exist before, then sitealias check arg might now match
   // against one of those aliases.
-  if (drush_sitealias_check_arg() === TRUE) {
+  if ((drush_sitealias_check_arg() === TRUE) || (drush_sitealias_check_site_env() === TRUE)) {
     $remote_host = drush_get_option('remote-host');
     if (!isset($remote_host)) {
       // Load the config files for the "new" site.
@@ -518,8 +521,6 @@ function _drush_bootstrap_drush() {
       drush_load_config('site');
     }
   }
-  // Check to see if we 'use'd a site alias with site-set
-  drush_sitealias_check_site_env();
 
   _drush_bootstrap_global_options();
 }
@@ -842,12 +843,6 @@ function _drush_bootstrap_drupal_configuration() {
   $override = array(
     'dev_query' => FALSE, // Force Drupal6 not to store queries since we are not outputting them.
     'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7+).
-  );
-  // Avoid MTimeProtected grief in D8+. See http://drupal.org/node/1899842. If you really don't
-  // want this override, set different values using a drushrc.php by passing different values.
-  $override['php_storage']['default'] = array(
-    'class' => 'Drupal\Component\PhpStorage\FileReadOnlyStorage',
-    // 'directory' => drush_directory_cache('php_storage'),
   );
 
   $current_override = drush_get_option_list('variables');
