@@ -13,7 +13,7 @@
 /**
  * Supported version of Console Table. This is displayed in the manual install help.
  */
-define('DRUSH_TABLE_VERSION', '1.1.3');
+define('DRUSH_TABLE_VERSION', '1.1.6');
 
 /**
  * Base URL for automatic file download of PEAR packages.
