@@ -1256,7 +1256,7 @@ function drush_core_execute() {
   }
   else {
     // Must be a local command.
-    $result = drush_shell_proc_open($cmd);
+    $result = (drush_shell_proc_open($cmd) == 0);
   }
   if (!$result) {
     return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
