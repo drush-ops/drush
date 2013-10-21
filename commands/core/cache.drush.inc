@@ -107,14 +107,7 @@ function drush_cache_command_clear($type = NULL) {
     }
   }
   if ($type !== FALSE) {
-    $site_label = '';
-    if ($type != 'drush') {
-      $self_name = drush_sitealias_bootstrapped_site_name();
-      if (isset($self_name)) {
-        $site_label = dt(' in !name', array('!name' => $self_name));
-      }
-    }
-    drush_log(dt("'!name' cache was cleared!insitename", array('!name' => $type, '!insitename' => $site_label)), 'success');
+    drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), 'success');
   }
 }
 
