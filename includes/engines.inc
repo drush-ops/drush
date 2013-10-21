@@ -216,11 +216,14 @@ function drush_merge_engine_data(&$command) {
     // the engine options and sub-options.
     else {
       // Process engines in order. First the default engine, the rest alphabetically.
-      $default = drush_find_engine_to_use($config, $engine_info);
       $engines = array_keys($engine_info['engines']);
       asort($engines);
-      array_unshift($engines, $default);
-      $engines = array_unique($engines);
+
+      $default = drush_find_engine_to_use($config, $engine_info);
+      if ($default) {
+        array_unshift($engines, $default);
+        $engines = array_unique($engines);
+      }
 
       $engine_data += array(
         'options' => array(),
