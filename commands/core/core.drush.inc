@@ -1257,7 +1257,7 @@ function drush_core_execute() {
   }
   else {
     // Must be a local command.
-    $result = drush_shell_proc_open($cmd);
+    $result = (drush_shell_proc_open($cmd) == 0);
   }
   if (!$result) {
     return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
@@ -1274,7 +1274,7 @@ function _drush_core_execute_cmd($site, $cmd) {
     $exec = drush_shell_proc_build($site, $cmd, TRUE);
     return (drush_shell_proc_open($exec) == 0);
   }
-  elseif (!empty($site['root'])) {
+  elseif (!empty($site['root']) && is_dir($site['root'])) {
     return (drush_shell_proc_open('cd ' . drush_escapeshellarg($site['root']) . ' && ' . $cmd) == 0);
   }
   return (drush_shell_proc_open($cmd) == 0);
