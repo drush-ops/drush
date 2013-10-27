@@ -13,6 +13,8 @@ function sql_drush_help($section) {
       return dt('SQL commands');
     case 'meta:sql:summary':
       return dt('Examine and modify your Drupal database.');
+    case 'drush:sql-sanitize':
+      return dt('Run sanitization operations on the current database. You can add more sanitization to this command by implementing hook_drush_sql_sanitize().');
   }
 }
 
@@ -983,6 +985,8 @@ function drush_sql_cli() {
 
 /**
  * Command callback. Run's the sanitization operations on the current database.
+ *
+ * @see hook_drush_sql_sync_sanitize() for adding custom sanitize routines.
  */
 function drush_sql_sanitize() {
   if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
