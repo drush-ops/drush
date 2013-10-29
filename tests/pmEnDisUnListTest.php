@@ -60,27 +60,23 @@ class EnDisUnListCase extends Drush_CommandTestCase {
     $list = $this->getOutputAsList();
     $this->assertFalse(in_array('devel', $list), 'Devel is not part of core package');
 
-    // For testing uninstall later.
-    $this->drush('variable-set', array('devel_query_display', 1), $options);
-
-    $this->drush('pm-disable', array('devel'), $options);
-    $this->drush('pm-list', array(), $options + array('status' => 'disabled'));
-    $list = $this->getOutputAsList();
-    $this->assertTrue(in_array('devel', $list));
+    if (UNISH_DRUPAL_MAJOR_VERSION <= 7) {
+      $this->drush('pm-disable', array('devel'), $options);
+      $this->drush('pm-list', array(), $options + array('status' => 'disabled'));
+      $list = $this->getOutputAsList();
+      $this->assertTrue(in_array('devel', $list));
+    }
 
     $this->drush('pm-uninstall', array('devel'), $options);
     $this->drush('pm-list', array(), $options + array('status' => 'not installed', 'type' => 'module'));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));
 
-    $this->drush('variable-get', array('devel_query_display'), $options, NULL, NULL, self::EXIT_ERROR);
-    $output = $this->getOutput();
-    $this->assertEmpty($output, 'Devel variable was uninstalled.');
-
     // Test pm-enable is able to download dependencies.
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
       $this->markTestSkipped("pathauto does not have a release for Drupal 8 yet.");
     }
+
     $this->drush('pm-download', array('pathauto'), $options);
     $this->drush('pm-enable', array('pathauto'), $options + array('resolve-dependencies' => TRUE));
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
