@@ -64,7 +64,7 @@ function _drush_pm_info_extension($info) {
   $data['config'] = isset($info->info['configure']) ? $info->info['configure'] : dt('None');
   $data['description'] = $info->info['description'];
   $data['version'] = $info->info['version'];
-  $data['date'] = format_date($info->info['datestamp'], 'custom', 'Y-m-d');
+  $data['date'] = $info->info['datestamp'] ? format_date($info->info['datestamp'] ?: 0, 'custom', 'Y-m-d') : NULL;
   $data['package'] = $info->info['package'];
   $data['core'] = $info->info['core'];
   $data['php'] = $info->info['php'];
