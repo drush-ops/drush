@@ -55,11 +55,12 @@ function user_drush_command() {
         'roles' => 'User roles',
         'group_audience' => 'Group Audience',
         'langcode' => 'Language code',
+        'uuid' => 'Uuid',
       ),
       'format-cell' => 'csv',
       'fields-default' => array('uid', 'name', 'mail', 'roles', 'user_status'),
       'fields-pipe' => array('name', 'uid', 'mail', 'status', 'roles'),
-      'fields-full' => array('uid', 'name', 'pass', 'mail', 'theme', 'signature', 'user_created', 'user_access', 'user_login', 'user_status', 'timezone', 'roles', 'group_audience', 'langcode'),
+      'fields-full' => array('uid', 'name', 'pass', 'mail', 'theme', 'signature', 'user_created', 'user_access', 'user_login', 'user_status', 'timezone', 'roles', 'group_audience', 'langcode', 'uuid'),
       'output-data-type' => 'format-table',
     ),
   );

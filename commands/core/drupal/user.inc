@@ -32,15 +32,6 @@ function drush_user_info_single($userinfo) {
   foreach (array('created', 'access', 'login') as $key) {
     $userinfo['user_' . $key] = format_date($userinfo[$key]);
   }
-  // Note: in D8, $userinfo->roles may not contain the human-readable role names.
-  // For example, it may contain 'authenticated' => 'authenticated' instead of
-  // 'authenticated' => 'Authenticated user'.  In any event, we display the
-  // machine name rather than the human-readable name for better output-conformity
-  // with D6 and D7.
-  if (drush_drupal_major_version() >= 8) {
-    $userinfo['user_roles'] = $userinfo['roles'];
-    $userinfo['roles'] = array_keys($userinfo['roles']);
-  }
   $userinfo['user_status'] = $userinfo['status'] ? 'active' : 'blocked';
   return $userinfo;
 }

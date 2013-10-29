@@ -40,10 +40,11 @@ function drush_user_info_single($account) {
     'user_login' => $account->getLastLoginTime(),
     'login' => format_date($account->getLastLoginTime()),
     'user_status' => $account->get('status')->value,
-    'status' => $account->status->value,
+    'status' => $account->isActive() ? 'active' : 'blocked',
     'timezone' => $account->getTimeZone(),
     'roles' => $account->getRoles(),
     'langcode' => $account->getPreferredLangcode(),
+    'uuid' => $account->uuid->value,
   );
   return $return;
 }
