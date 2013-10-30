@@ -822,19 +822,6 @@ function _drush_bootstrap_drupal_site() {
 }
 
 /**
- * VALIDATE the DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION phase.
- */
-function _drush_bootstrap_drupal_configuration_validate() {
-  if (drush_drupal_major_version() >= 8) {
-    // D8 will redirect to install.php if $databases is empty.
-    if (empty($GLOBALS['databases'])) {
-      return drush_bootstrap_error('DRUSH_NO_DATABASES', dt("No Drupal databases are configured."));
-    }
-  }
-  return TRUE;
-}
-
-/**
  * Initialize and load the Drupal configuration files.
  *
  * We process and store a normalized set of database credentials
