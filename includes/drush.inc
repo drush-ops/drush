@@ -721,7 +721,7 @@ function drush_call_user_func_array($function, $args = array() ) {
  *   downloaded.
  */
 function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
-  // Generate destination of omitted.
+  // Generate destination if omitted.
   if (!$destination) {
     $file = basename(current(explode('?', $url, 2)));
     $destination = getcwd() . '/' . basename($file);
@@ -732,9 +732,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
     return copy($url, $destination) ? $destination : FALSE;
   }
 
-  if (drush_get_option('cache') && $cache_duration !== 0 && $cache_dir = drush_directory_cache('download')) {
-    $cache_name = str_replace(array(':', '/', '?', '='), '-', $url);
-    $cache_file = $cache_dir . "/" . $cache_name;
+  if (drush_get_option('cache') && $cache_duration !== 0 && $cache_file = drush_download_file_name($url)) {
     // Check for cached, unexpired file.
     if (file_exists($cache_file) && filectime($cache_file) > ($_SERVER['REQUEST_TIME']-$cache_duration)) {
       drush_log(dt('!name retrieved from cache.', array('!name' => $cache_name)));
@@ -763,6 +761,19 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
 
   // Unable to retrieve from cache nor download.
   return FALSE;
+}
+
+/**
+ * Helper function to determine name of cached file.
+ */
+function drush_download_file_name($url) {
+  if ($cache_dir = drush_directory_cache('download')) {
+    $cache_name = str_replace(array(':', '/', '?', '='), '-', $url);
+    return $cache_dir . "/" . $cache_name;
+  }
+  else {
+    return FALSE;
+  }
 }
 
 /**
