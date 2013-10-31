@@ -975,7 +975,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
       $status_values = _core_site_status_table($project_list);
     }
     else {
-      $values = drush_invoke_process($alias_record, "status", array(), empty($project_list) ? array() : array('project' => $project_list), array('integrate' => FALSE, 'override-simulated' => TRUE));
+      $values = drush_invoke_process($alias_record, "core-status", array(), empty($project_list) ? array() : array('project' => $project_list), array('integrate' => FALSE, 'override-simulated' => TRUE));
       $status_values = $values['object'];
     }
     if (isset($status_values['%paths'])) {
