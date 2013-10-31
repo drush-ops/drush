@@ -28,8 +28,8 @@ function test_drush_command() {
       'all' => 'Run all available tests',
       'methods' => 'A comma delimited list of methods that should be run within the test class. Defaults to all methods.',
       'dirty' => 'Skip cleanup of temporary tables and files. Helpful for reading debug() messages and other post-mortem forensics.',
-      'xml' => 'Output verbose test results to a specified directory using the JUnit test reporting format. Useful for integrating with Jenkins.'
-
+      'xml' => 'Output verbose test results to a specified directory using the JUnit test reporting format. Useful for integrating with Jenkins.',
+      'tap' => 'Output verbose test results to a specified file using the TAP reporting format. Useful for integrating with CI systems.',
     ),
     'outputformat' => array(
       'default' => 'table',
@@ -186,6 +186,13 @@ function simpletest_drush_run_test($class) {
   $test_suites = drush_test_get_results($test_id, $info);
   if ($dir = drush_get_option('xml')) {
     drush_test_xml_results($test_id, $test_suites, $dir);
+  }
+  if ($file = drush_get_option('tap')) {
+    // Writing results to a directory would be bad.
+    // @TODO show error when the user enters a directory name
+    if (substr($file, -1) !== '/') {
+      drush_test_tap_results($test_id, $test_suites, $file);
+    }
   }
   if ($status === 'error') {
     if (drush_drupal_major_version() >= 7) {
@@ -366,4 +373,86 @@ function drush_test_xml_results($test_id, $test_suites, $dir) {
   }
   // Save to disk.
   file_put_contents($dir . '/testsuite-' . $test_id . '.xml', $xml->saveXML());
+}
+
+/**
+ * Write test results in TAP format.
+ *
+ * A custom TAP producer, in favor of Jenkins TAP plugin is used. Notably,
+ * test suites are not supported by the official TAP.
+ */
+function drush_test_tap_results($test_id, $test_suites, $file) {
+  $file = is_string($file) ? $file : './testsuite-' . $test_id . '.tap';
+
+  // The array containing all the lines of the generated TAP file.
+  $tap = array();
+  $tap[] = 'TAP version 13';
+
+  // TAP plan.
+  $tap[] = '1..' . count($test_suites);
+
+  $counter = 0;
+  foreach ($test_suites as $test_suite) {
+    $counter++;
+    // The whole test suite has to be checked for failure/pass.
+    $checks = drush_test_check_test_suite($test_suite);
+
+    $test_suite_directive = $checks['pass'] ? 'ok' : 'not ok';
+    $tap[] = $test_suite_directive . ' ' . $counter . ' - ' . $checks['name'];
+
+    // TAP plan.
+    $tap[] = '    1..' . count($checks['test_cases']);
+
+    $subcounter = 0;
+    foreach ($checks['test_cases'] as $test_case) {
+      $subcounter++;
+      $test_suite_directive = $checks['pass'] ? 'ok' : 'not ok';
+      $tap[] = '    ' . $test_suite_directive . ' ' . $subcounter . ' - ' .
+        str_replace("\n", " | ", $test_case['message']);
+    }
+  }
+
+  // Save to disk. Doesn't forget the ending newline.
+  file_put_contents($file, implode("\n", $tap) . "\n");
+}
+
+/**
+ * Checks every test result of the test suite.
+ */
+function drush_test_check_test_suite($test_suite) {
+  $test_cases = array();
+
+  foreach ($test_suite->test_cases as $test_case) {
+    $test = array(
+      'name' => $test_case->name,
+      'pass' => drush_test_check_test_case($test_case),
+    );
+
+    $test['message'] = $test['pass'] ? $test_case->system_out : $test_case->failure_message;
+
+    $test_cases[] = $test;
+  }
+
+  $pass = TRUE;
+  foreach ($test_cases as $test_case) {
+    if (!$test_case['pass']) {
+      $pass = FALSE;
+    }
+  }
+
+  return array(
+    'name' => $test_suite->name,
+    'pass' => $pass,
+    'test_cases' => $test_cases,
+  );
+}
+
+/**
+ * Checks a test case to know it if passed or failed.
+ */
+function drush_test_check_test_case($test_case) {
+  return $test_case->failure_message === '' &&
+    $test_case->error_message === '' &&
+    $test_case->system_err === '' &&
+    substr($test_case->system_out, 0, 5) === 'pass:';
 }
