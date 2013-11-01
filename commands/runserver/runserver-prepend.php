@@ -35,6 +35,13 @@ if (!function_exists('filter_init')) {
 if (!function_exists('system_watchdog')) {
   // Check function_exists as a safety net in case it is added in future.
   function system_watchdog($log_entry = array()) {
+    // Drupal <= 7.x defines VERSION. Drupal 8 defines Drupal::VERSION instead.
+    if (defined('VERSION')) {
+      $uid = $log_entry['user']->uid;
+    }
+    else {
+      $uid = $log_entry['user']->id();
+    }
     $message = strtr('Watchdog: !message | severity: !severity | type: !type | uid: !uid | !ip | !request_uri | !referer | !link', array(
       '!message'     => strip_tags(!isset($log_entry['variables']) ? $log_entry['message'] : strtr($log_entry['message'], $log_entry['variables'])),
       '!severity'    => $log_entry['severity'],
@@ -42,7 +49,7 @@ if (!function_exists('system_watchdog')) {
       '!ip'          => $log_entry['ip'],
       '!request_uri' => $log_entry['request_uri'],
       '!referer'     => $log_entry['referer'],
-      '!uid'         => $log_entry['user']->uid,
+      '!uid'         => $uid,
       '!link'        => strip_tags($log_entry['link']),
     ));
     error_log($message);
