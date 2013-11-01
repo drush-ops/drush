@@ -12,13 +12,9 @@ class batchCase extends Drush_CommandTestCase {
 
   public function testBatch() {
     $sites = $this->setUpDrupal(1, TRUE);
-    $site = reset($sites);
-    $root = $this->webroot();
-    $uri = key($sites);
-    $name = "example";
     $options = array(
-      'root' => $root,
-      'uri' => $uri,
+      'root' => $this->webroot(),
+      'uri' => key($sites),
       'yes' => NULL,
       'include' => dirname(__FILE__),
     );
