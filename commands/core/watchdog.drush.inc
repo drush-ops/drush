@@ -342,12 +342,23 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
   $conditions = array();
   if ($type) {
     $types = core_watchdog_message_types();
-    if (array_search($type, $types) === FALSE) {
-      $msg = "Unrecognized message type: !type.\nRecognized types are: !types.";
-      return drush_set_error('WATCHDOG_UNRECOGNIZED_TYPE', dt($msg, array('!type' => $type, '!types' => implode(', ', $types))));
+    $type_pieces = explode(',', $type);
+    $type_condition = "";
+    $index = 0;
+    foreach ($type_pieces as $type_piece) {
+      if (array_search($type_piece, $types) === FALSE) {
+          $msg = "Unrecognized message type: !type.\nRecognized types are: !types.";
+          return drush_set_error('WATCHDOG_UNRECOGNIZED_TYPE', dt($msg, array('!type' => $type_piece, '!types' => implode(', ', $types))));
+      }
+      $place_holder = ':type' . $index;
+      if ($index > 0) {
+        $type_condition .= " OR ";
+      }
+      $type_condition .= "type = $place_holder";
+      $args[$place_holder] = $type_piece;
+      $index++;
     }
-    $conditions[] = "type = :type";
-    $args[':type'] = $type;
+    $conditions[] = "(" . $type_condition . ")";
   }
   if (!is_null($severity)) {
     drush_include_engine('drupal', 'environment');
