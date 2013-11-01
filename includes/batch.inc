@@ -69,10 +69,7 @@ class DrushBatchContext extends ArrayObject {
  */
 function drush_backend_batch_process($command = 'batch-process', $args = array(), $options = array()) {
   // Command line options to pass to the command.
-  global $user;
-  if ($user->uid) {
-    $options['u'] = $user->uid;
-  }
+  $options['u'] = drush_get_user_id();
 
   drush_include_engine('drupal', 'batch', drush_drupal_major_version());
   _drush_backend_batch_process($command, $args, $options);
