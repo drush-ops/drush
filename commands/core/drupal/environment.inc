@@ -222,7 +222,7 @@ function drush_theme_disable($themes) {
  * @return
  *   Array of watchdog severity levels.
  */
-function core_watchdog_severity_levels() {
+function drush_watchdog_severity_levels() {
   return array(
     WATCHDOG_EMERGENCY=> 'emergency',
     WATCHDOG_ALERT    => 'alert',
@@ -233,4 +233,14 @@ function core_watchdog_severity_levels() {
     WATCHDOG_INFO     => 'info',
     WATCHDOG_DEBUG    => 'debug',
   );
+}
+
+/**
+ * Helper function to obtain the message types based on drupal version.
+ *
+ * @return
+ *   Array of watchdog message types.
+ */
+function drush_watchdog_message_types() {
+  return _dblog_get_message_types();
 }

@@ -21,7 +21,6 @@ class WatchdogCase extends Drush_CommandTestCase {
     $this->drush('watchdog-show', array(), $options);
     $output = $this->getOutput();
     $this->assertContains('dblog module installed.', $output);
-    $this->assertContains('dblog module enabled.', $output);
 
     // Add a new entry with a long message with the letter 'd' and verify that watchdog-show does
     // not print it completely in the listing unless --full is given.

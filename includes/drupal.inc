@@ -73,7 +73,7 @@ function system_watchdog($log_entry) {
   }
   else {
     drush_include_engine('drupal', 'environment');
-    $levels = core_watchdog_severity_levels();
+    $levels = drush_watchdog_severity_levels();
     $severity = $levels[$log_entry['severity']];
   }
   // Format the message.
