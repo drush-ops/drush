@@ -450,12 +450,16 @@ function updatexml_best_release_found($releases) {
   return (array)$releases[0];
 }
 
+function updatexml_get_url($request) {
+  $status_url = isset($request['status url']) ? $request['status url'] : RELEASE_INFO_DEFAULT_URL;
+  return $status_url . '/' . $request['name'] . '/' . $request['drupal_version'];
+}
+
 /**
  * Download the release history xml for the specified request.
  */
 function updatexml_get_release_history_xml($request) {
-  $status_url = isset($request['status url'])?$request['status url']:RELEASE_INFO_DEFAULT_URL;
-  $url =  $status_url . '/' . $request['name'] . '/' . $request['drupal_version'];
+  $url =  updatexml_get_url($request);
   drush_log('Downloading release history from ' . $url);
   // Some hosts have allow_url_fopen disabled.
   if ($path = drush_download_file($url, drush_tempnam($request['name']), drush_get_option('cache-duration-releasexml', 24*3600))) {
