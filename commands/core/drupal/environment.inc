@@ -244,3 +244,23 @@ function drush_watchdog_severity_levels() {
 function drush_watchdog_message_types() {
   return _dblog_get_message_types();
 }
+
+/**
+ * Call the correct queue factory method
+ */
+function drush_queue_get($name) {
+  return \Drupal::queue($name);
+}
+
+/**
+ * Returns all defined queues.
+ */
+function drush_queue_get_queues() {
+  static $queues;
+  if (!isset($queues)) {
+    $queues = \Drupal::moduleHandler()->invokeAll('queue_info');
+    drupal_alter('queue_info', $queues);
+  }
+  return $queues;
+}
+
