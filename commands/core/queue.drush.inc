@@ -43,18 +43,6 @@ function queue_drush_command() {
 }
 
 /**
- * Call the correct queue factory method
- */
-function drush_queue_get($name) {
-  if (drush_drupal_major_version() < 8) {
-    return DrupalQueue::get($name);
-  }
-  else {
-    return queue($name);
-  }
-}
-
-/**
  * Validation for Drupal 6 to ensure the drupal_queue module is enabled.
  *
  * @param $command
@@ -76,6 +64,8 @@ function drush_queue_validate($command) {
  * Validation callback for drush queue-run.
  */
 function drush_queue_run_validate($queue_name) {
+  drush_include_engine('drupal', 'environment');
+
   drush_queue_validate('queue-run');
 
   // Get all queues.
@@ -102,8 +92,7 @@ function drush_queue_list_validate() {
  *   Arbitrary string. The name of the queue to work with.
  */
 function drush_queue_run($queue_name) {
-  // Get all queues.
-  $queues = drush_queue_get_queues();
+  drush_include_engine('drupal', 'environment');
 
   // Try to increase the maximum execution time if it is too low.
   $max_execution_time = ini_get('max_execution_time');
@@ -111,8 +100,9 @@ function drush_queue_run($queue_name) {
     set_time_limit(240);
   }
 
+  $queues = drush_queue_get_queues();
   $info = $queues[$queue_name];
-  $function = $info['cron']['callback'];
+  $function = $info['worker callback'];
   $end = time() + (isset($info['cron']['time']) ? $info['cron']['time'] : 15);
   $queue = drush_queue_get($queue_name);
   while (time() < $end && ($item = $queue->claimItem())) {
@@ -125,46 +115,18 @@ function drush_queue_run($queue_name) {
  * Command callback for drush queue-list.
  */
 function drush_queue_list() {
+  drush_include_engine('drupal', 'environment');
+
   $result = array();
   $queues = drush_queue_get_queues();
-  $default_class = variable_get('queue_default_class', 'SystemQueue');
   foreach (array_keys($queues) as $name) {
     $q = drush_queue_get($name);
-    $class = variable_get('queue_class_' . $name, $default_class);
     $result[$name] = array(
       'queue' => $name,
       'items' => $q->numberOfItems(),
-      'class' => $class,
+      'class' => get_class($q),
     );
   }
   return $result;
 }
 
-/**
- * Get queues defined with hook_cron_queue_info().
- *
- * @return
- *   Array of queues indexed by name and containing queue object and number
- *   of items.
- */
-function drush_queue_get_queues() {
-  static $queues;
-  $hook_name = (drush_drupal_major_version() < 8) ? 'cron_queue_info' : 'queue_info';
-  if (!isset($queues)) {
-    // Invoke hook_queue_info(), currently only defined by the queue_ui module.
-    $queues = module_invoke_all('queue_info');
-
-    // Merge in queues from modules that implement hook_cron_queue_info().
-    $cron_queues = module_invoke_all($hook_name);
-    drupal_alter($hook_name, $cron_queues);
-    foreach($cron_queues as $name => $queue) {
-      $queues[$name] = array(
-        'cron' => array(
-          'callback' => $queue['worker callback'],
-          'time' => $queue['time'],
-        )
-      );
-    }
-  }
-  return $queues;
-}
