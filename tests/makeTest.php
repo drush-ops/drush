@@ -507,7 +507,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Contrib-destination attribute',
         'makefile' => 'contrib-destination.make',
         'build'    => TRUE,
-        'md5' => 'd615d004adfa8ebfe44e91119b88389c',
+        'md5' => '2aed36201ede1849ce43d9b7d6f7e9e1',
         'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),
       ),
       'file' => array(
