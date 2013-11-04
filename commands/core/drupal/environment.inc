@@ -246,7 +246,7 @@ function drush_watchdog_message_types() {
 }
 
 /**
- * Call the correct queue factory method
+ * Returns a queue object.
  */
 function drush_queue_get($name) {
   return \Drupal::queue($name);
