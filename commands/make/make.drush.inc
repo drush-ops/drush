@@ -270,8 +270,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       return TRUE;
     }
     else {
-      drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
-      return FALSE;
+      return drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
     }
   }
   $ignore_checksums = drush_get_option('ignore-checksums');
@@ -342,15 +341,13 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
     unset($projects['core']);
   }
   elseif ($cores == 0 && !$recursion) {
-    drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
-    return FALSE;
+    return drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
   }
   elseif ($cores == 1 && $recursion) {
     unset($projects['core']);
   }
   elseif ($cores > 1) {
-    drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
-    return FALSE;
+    return drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
   }
 
   foreach ($projects as $type => $type_projects) {
