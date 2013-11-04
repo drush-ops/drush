@@ -387,15 +387,14 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
 
   // Core is built in place, rather than using make-process.
   if (isset($projects['core'])) {
-    foreach ($projects['core'] as $project) {
-      if ($instance = DrushMakeProject::getInstance($project['type'], $project)) {
-        $project = $instance;
-      }
-      else {
-        make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $project['name'])));
-      }
-      $project->make();
+    $project = current($projects['core']);
+    if ($instance = DrushMakeProject::getInstance($project['type'], $project)) {
+      $project = $instance;
     }
+    else {
+      make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $project['name'])));
+    }
+    $project->make();
   }
 
   // Process all projects concurrently using make-process.
