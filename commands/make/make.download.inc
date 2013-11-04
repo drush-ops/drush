@@ -24,7 +24,7 @@ function make_download_factory($name, $type, $download, $download_location) {
  * Download project using drush's pm-download command.
  */
 function make_download_pm($name, $type, $download, $download_location) {
-  $full_project_version = $name . '-' . $download['full_version'];
+  $full_project_version = $name . '-' . $download['full_version'] . '/' . $type;
 
   $options = array(
     'destination' => dirname($download_location),
