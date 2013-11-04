@@ -1516,12 +1516,12 @@ function drush_command_get_includes($command) {
  */
 function drush_command_default_options($command = NULL) {
   $command_default_options = drush_get_context('command-specific');
-  return drush_command_set_command_specific($command_default_options, $command);
+  drush_command_set_command_specific($command_default_options, $command);
 }
 
 function drush_sitealias_command_default_options($site_record, $prefix, $command = NULL) {
   if (isset($site_record) && array_key_exists($prefix . 'command-specific', $site_record)) {
-    return drush_command_set_command_specific($site_record[$prefix . 'command-specific'], $command);
+    drush_command_set_command_specific($site_record[$prefix . 'command-specific'], $command);
   }
   return FALSE;
 }
