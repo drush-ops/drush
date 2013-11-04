@@ -283,7 +283,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
     $translations = array_merge(explode(',', $arg_translations), $translations);
   }
 
-  // Normalize projects list.
+  // Normalize projects.
   $projects = array();
   $ignore_checksums = drush_get_option('ignore-checksums');
   foreach ($info['projects'] as $key => $project) {
@@ -317,13 +317,10 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
     }
 
-    // Custom downloads.
-    if (isset($project['download'])) {
-      // Can't guess the project type.
-      if (empty($project['type'])) {
-        make_error('PROJECT-TYPE', dt('Unable to determine project type on project %project.', array('%project' => $project['name'])));
-        continue;
-      }
+    // Can't guess the project type for external downloads.
+    if (isset($project['download']) && isset($project['download']['url']) && empty($project['type'])) {
+      make_error('PROJECT-TYPE', dt('Unable to determine project type on project %project.', array('%project' => $project['name'])));
+      continue;
     }
     // Projects with an update service.
     else {
@@ -559,8 +556,10 @@ function make_prepare_request($project, $type = 'contrib') {
     'name' => $project['name'],
     'drupal_version' => $project['core'],
     'status url' => $project['location'],
-    'project_type' => $project['type'],
   );
+  if (!empty($project['type'])) {
+    $request['project_type'] = $project['type'];
+  }
   if ($project['version'] != '') {
     $request['project_version'] = $project['version'];
     $request['version'] = $type == 'core' ? $project['version'] : $project['core'] . '-' . $project['version'];
