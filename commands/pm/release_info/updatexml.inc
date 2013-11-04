@@ -38,7 +38,7 @@ define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
  */
 function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $all = FALSE) {
   if (!in_array($select, array('auto', 'never', 'always'))) {
-    return drush_set_error('DRUSH_PM_UNKNOWN_SELECT_STRATEGY', dt("Error: select strategy must be one of: auto, never, always", array()));
+    return drush_set_error('RELEASE_INFO_UNKNOWN_SELECT_STRATEGY', dt("Error: select strategy must be one of: auto, never, always", array()));
   }
 
   $xml = updatexml_get_release_history_xml($request);
@@ -46,19 +46,24 @@ function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $al
     return FALSE;
   }
 
-  $request['project_type'] = updatexml_determine_project_type($xml);
+  if (empty($request['project_type'])) {
+    $request['project_type'] = updatexml_determine_project_type($xml);
+    if (!$request['project_type']) {
+      return drush_set_error('RELEASE_INFO_UNKNOWN_PROJECT_TYPE', dt('Unable to obtain project type for !project.', array('!project' => $request['name'])));
+    }
+  }
 
   if ($select != 'always') {
     if ($restrict_to == 'dev') {
       $release = updatexml_dev_release($request, $xml);
       if ($release === FALSE) {
-        return drush_set_error('DRUSN_PM_NO_DEV_RELEASE', dt('There is no development release for project !project.', array('!project' => $request['name'])));
+        return drush_set_error('RELEASE_INFO_NO_DEV_RELEASE', dt('There is no development release for project !project.', array('!project' => $request['name'])));
       }
     }
     if (empty($release)) {
       $release = updatexml_specific_release_version($request, $xml);
       if ($release === FALSE) {
-        return drush_set_error('DRUSH_PM_COULD_NOT_FIND_VERSION', dt("Could not locate !project version !version.", array('!project' => $request['name'], '!version' => $request['version'])));
+        return drush_set_error('RELEASE_INFO_FIND_VERSION', dt("Could not locate !project version !version.", array('!project' => $request['name'], '!version' => $request['version'])));
       }
     }
     // If there was no specific release requested, try to identify the most appropriate release.
@@ -113,7 +118,7 @@ function release_info_get_releases($requests) {
 }
 
 /**
- * Check if a project is available in a update service.
+ * Check if a project is available in the update service.
  *
  * Optionally check for consistency by comparing given project type and
  * the type obtained from the update service.
@@ -317,7 +322,7 @@ function release_info_filter_releases($releases, $all = FALSE, $restrict_to = ''
 
 /**
  * No longer used by Drush core.  Called by tests in releaseInfoTest.php.
- * See equivalent logic in release_info_fetch.
+ * See equivalent logic in release_info_fetch().
  */
 function updatexml_parse_release($request, $xml, $restrict_to = '') {
   if ($restrict_to == 'dev') {
@@ -467,7 +472,7 @@ function updatexml_get_release_history_xml($request) {
   }
   if (!$xml) {
     // We are not getting here since drupal.org always serves an XML response.
-    return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
+    return drush_set_error('RELEASE_INFO_UNABLE_TO_FETCH_RELEASE_HISTORY', dt('Could not download project status information from !url', array('!url' => $url)));
   }
   if ($error = $xml->xpath('/error')) {
     // Don't set an error here since it stops processing during site-upgrade.
@@ -477,12 +482,11 @@ function updatexml_get_release_history_xml($request) {
   // Unpublished project?
   $project_status = $xml->xpath('/project/project_status');
   if ($project_status[0][0] == 'unpublished') {
-    return drush_set_error('DRUSH_PM_PROJECT_UNPUBLISHED', dt("Project !project is unpublished and has no releases available.", array('!project' => $request['name'])), 'warning');
+    return drush_set_error('RELEASE_INFO_PROJECT_UNPUBLISHED', dt("Project !project is unpublished and has no releases available.", array('!project' => $request['name'])), 'warning');
   }
 
   return $xml;
 }
-
 
 /**
  * Obtain releases for a project's xml as returned by the update service.
@@ -588,7 +592,7 @@ function updatexml_determine_project_type($xml) {
   );
 
   $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
-  $type = 'module';
+  $type = NULL;
   if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
     $type = array_search($types[0]->value, $project_types);
     $type = ($type == 'profile-legacy') ? 'profile' : $type;
