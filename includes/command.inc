@@ -1164,7 +1164,7 @@ function _drush_command_translate($source) {
  *       that should be used in table output.  Drush will automatically
  *       calculate the width of any field not listed here based on the length
  *       of the data items in it.
- * - engines: declares infocolumn-widthsrmation on Drush engines the command will load.
+ * - engines: declares information on Drush engines the command will load.
  *   Available engines can vary by command type.
  */
 function drush_parse_command() {
@@ -1600,19 +1600,19 @@ function drush_command_get_includes($command) {
  */
 function drush_command_default_options($command = NULL) {
   $command_default_options = drush_get_context('command-specific');
-  return drush_command_set_command_specific($command_default_options, $command);
+  drush_command_set_command_specific($command_default_options, $command);
 }
 
 function drush_sitealias_command_default_options($site_record, $prefix, $command = NULL) {
   if (isset($site_record) && array_key_exists($prefix . 'command-specific', $site_record)) {
-    return drush_command_set_command_specific($site_record[$prefix . 'command-specific'], $command);
+    drush_command_set_command_specific($site_record[$prefix . 'command-specific'], $command);
   }
   return FALSE;
 }
 
 function drush_command_set_command_specific_options($prefix, $command = NULL) {
   $command_default_options = drush_get_option($prefix . 'command-specific', array());
-  return drush_command_set_command_specific($command_default_options, $command);
+  drush_command_set_command_specific($command_default_options, $command);
 }
 
 function drush_command_set_command_specific($command_default_options, $command = NULL) {
