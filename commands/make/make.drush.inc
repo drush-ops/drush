@@ -264,7 +264,7 @@ function drush_make_post_make($makefile = NULL, $build_path = NULL) {
  * Process all projects specified in the make file.
  */
 function make_projects($recursion, $contrib_destination, $info, $build_path, $make_dir) {
-  $projects = array();
+  // Nothing to make if the project list is empty. To complain or not.
   if (empty($info['projects'])) {
     if (drush_get_option('no-core') || $recursion) {
       return TRUE;
@@ -274,6 +274,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
     }
   }
 
+  // Obtain translations to download along with the projects.
   $translations = array();
   if (isset($info['translations'])) {
     $translations = $info['translations'];
@@ -281,8 +282,10 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
   if ($arg_translations = drush_get_option('translations', FALSE)) {
     $translations = array_merge(explode(',', $arg_translations), $translations);
   }
+
+  // Normalize projects list.
+  $projects = array();
   foreach ($info['projects'] as $key => $project) {
-    // Merge the known data onto the project info.
     $project += array(
       'name'                => $key,
       'core'                => $info['core'],
@@ -301,17 +304,13 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
     if (isset($project['download']) && !isset($project['download']['type'])) {
       $project['download']['type'] = 'git';
     }
+    // Localization server.
     if (!isset($project['l10n_url']) && ($project['location'] == RELEASE_INFO_DEFAULT_URL)) {
       $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
     }
-
-    // For convenience: define $request to be compatible with release_info
-    // engine.
-    // TODO: refactor to enforce 'make' to internally work with release_info
-    // keys.
-    $request = make_prepare_request($project);
-
+    // Classify projects in core or contrib.
     if ($project['location'] != RELEASE_INFO_DEFAULT_URL && !isset($project['type'])) {
+      $request = make_prepare_request($project);
       // Set the cache option based on our '--no-cache' option.
       $cache_before = drush_get_option('cache');
       if (!drush_get_option('no-cache', FALSE)) {
@@ -331,8 +330,8 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
     $projects[$project['download_type']][$project['name']] = $project;
   }
 
+  // Verify there're enough cores, but not too many.
   $cores = !empty($projects['core']) ? count($projects['core']) : 0;
-
   if (drush_get_option('no-core')) {
     unset($projects['core']);
   }
@@ -346,14 +345,11 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
     return drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
   }
 
+  // Set download type = pm for suitable projects.
   $ignore_checksums = drush_get_option('ignore-checksums');
-  foreach ($projects as $type => $type_projects) {
-    foreach ($type_projects as $project) {
+  foreach (array_keys($projects) as $project_type) {
+    foreach ($projects[$project_type] as $project) {
       if (make_project_needs_release_info($project)) {
-        // For convenience: define $request to be compatible with release_info
-        // engine.
-        // TODO: refactor to enforce 'make' to internally work with release_info
-        // keys.
         $request = make_prepare_request($project, $type);
         // Set the cache option based on our '--no-cache' option.
         $cache_before = drush_get_option('cache');
@@ -385,7 +381,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       elseif (!empty($project['md5'])) {
         $project['download']['md5'] = $project['md5'];
       }
-      $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = $project;
+      $projects[$project_type][$project['name']] = $project;
     }
   }
 
@@ -564,6 +560,12 @@ function make_move_build($build_path) {
 
 /**
  * Create a request array for use with release_info_fetch().
+ *
+ * This is a convenience function to easily integrate drush_make
+ * with drush release_info engine.
+ *
+ * @todo: refactor to enforce 'make' to internally work with
+ * release_info keys.
  *
  * @param array $project
  *   Project array.
