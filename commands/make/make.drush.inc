@@ -285,6 +285,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
 
   // Normalize projects list.
   $projects = array();
+  $ignore_checksums = drush_get_option('ignore-checksums');
   foreach ($info['projects'] as $key => $project) {
     $project += array(
       'name'                => $key,
@@ -299,6 +300,13 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       'make_directory'      => $make_dir,
       'options'             => array(),
     );
+    // MD5 Checksum.
+    if ($ignore_checksums) {
+      unset($project['download']['md5']);
+    }
+    elseif (!empty($project['md5'])) {
+      $project['download']['md5'] = $project['md5'];
+    }
     // If download components are specified, but not the download
     // type, default to git.
     if (isset($project['download']) && !isset($project['download']['type'])) {
@@ -308,26 +316,41 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
     if (!isset($project['l10n_url']) && ($project['location'] == RELEASE_INFO_DEFAULT_URL)) {
       $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
     }
-    // Classify projects in core or contrib.
-    if ($project['location'] != RELEASE_INFO_DEFAULT_URL && !isset($project['type'])) {
-      $request = make_prepare_request($project);
-      // Set the cache option based on our '--no-cache' option.
+
+    // Custom downloads.
+    if (isset($project['download'])) {
+      // Can't guess the project type.
+      if (empty($project['type'])) {
+        make_error('PROJECT-TYPE', dt('Unable to determine project type on project %project.', array('%project' => $project['name'])));
+        continue;
+      }
+    }
+    // Projects with an update service.
+    else {
+      // Force this request to be cached. pm-download will use it later.
       $cache_before = drush_get_option('cache');
       if (!drush_get_option('no-cache', FALSE)) {
         drush_set_option('cache', TRUE);
       }
-      $project_type = release_info_check_project($request, 'core');
-      // Restore the previous '--cache' option value.
+      $request = make_prepare_request($project);
+      $release = release_info_fetch($request);
+      if (!$release) {
+        continue;
+      }
       drush_set_option('cache', $cache_before);
-      $project['download_type'] = ($project_type ? 'core' : 'contrib');
+
+      $project['type'] = $request['project_type'];
+      $project['download'] = array(
+        'type' => 'pm',
+        'full_version' => $release['version'],
+        'download_link' => $release['download_link'],
+        'status url' => $request['status url'],
+      );
     }
-    elseif (!empty($project['type'])) {
-      $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
-    }
-    else {
-      $project['download_type'] = ($project['name'] == 'drupal' ? 'core' : 'contrib');
-    }
-    $projects[$project['download_type']][$project['name']] = $project;
+
+    // Classify project in core or contrib.
+    $project_type = ($project['type'] == 'core' ? 'core' : 'contrib');
+    $projects[$project_type][$project['name']] = $project;
   }
 
   // Verify there're enough cores, but not too many.
@@ -343,46 +366,6 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
   }
   elseif ($cores > 1) {
     return drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
-  }
-
-  // Set download type = pm for suitable projects.
-  $ignore_checksums = drush_get_option('ignore-checksums');
-  foreach (array_keys($projects) as $project_type) {
-    foreach ($projects[$project_type] as $project) {
-      if (make_project_needs_release_info($project)) {
-        $request = make_prepare_request($project, $type);
-        // Set the cache option based on our '--no-cache' option.
-        $cache_before = drush_get_option('cache');
-        if (!drush_get_option('no-cache', FALSE)) {
-          drush_set_option('cache', TRUE);
-        }
-        $release = release_info_fetch($request);
-        if ($release === FALSE) {
-          return FALSE;
-        }
-        // Restore the previous '--cache' option value.
-        drush_set_option('cache', $cache_before);
-        if (!isset($project['type'])) {
-          // Translate release_info key for project_type to drush make.
-          $project['type'] = $request['project_type'];
-        }
-        if (!isset($project['download'])) {
-          $project['download'] = array(
-            'type' => 'pm',
-            'full_version' => $release['version'],
-            'download_link' => $release['download_link'],
-            'status url' => $request['status url'],
-          );
-        }
-      }
-      if ($ignore_checksums) {
-        unset($project['download']['md5']);
-      }
-      elseif (!empty($project['md5'])) {
-        $project['download']['md5'] = $project['md5'];
-      }
-      $projects[$project_type][$project['name']] = $project;
-    }
   }
 
   // Core is built in place, rather than using make-process.
@@ -576,6 +559,7 @@ function make_prepare_request($project, $type = 'contrib') {
     'name' => $project['name'],
     'drupal_version' => $project['core'],
     'status url' => $project['location'],
+    'project_type' => $project['type'],
   );
   if ($project['version'] != '') {
     $request['project_version'] = $project['version'];
@@ -584,22 +568,3 @@ function make_prepare_request($project, $type = 'contrib') {
   return $request;
 }
 
-/**
- * Determine if the release information is required for this
- * project. When it is determined that it is, this potentially results
- * in the use of pm-download to process the project.
- *
- * If the location of the project is not customized (uses d.o), and
- * one of the following is true, then release information is required:
- *
- * - $project['type'] has not been specified
- * - $project['download'] has not been specified
- *
- * @see make_projects()
- */
-function make_project_needs_release_info($project) {
-  return isset($project['location'])
-    // Only fetch release info if the project type is unknown OR if
-    // download attributes are unspecified.
-    && (!isset($project['type']) || !isset($project['download']));
-}
