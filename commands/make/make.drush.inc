@@ -273,7 +273,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       return drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
     }
   }
-  $ignore_checksums = drush_get_option('ignore-checksums');
+
   $translations = array();
   if (isset($info['translations'])) {
     $translations = $info['translations'];
@@ -282,10 +282,6 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
     $translations = array_merge(explode(',', $arg_translations), $translations);
   }
   foreach ($info['projects'] as $key => $project) {
-    $md5 = '';
-    if (isset($project['md5'])) {
-      $md5 = $project['md5'];
-    }
     // Merge the known data onto the project info.
     $project += array(
       'name'                => $key,
@@ -350,6 +346,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
     return drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
   }
 
+  $ignore_checksums = drush_get_option('ignore-checksums');
   foreach ($projects as $type => $type_projects) {
     foreach ($type_projects as $project) {
       if (make_project_needs_release_info($project)) {
@@ -382,11 +379,11 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
           );
         }
       }
-      if (!empty($md5)) {
-        $project['download']['md5'] = $md5;
-      }
       if ($ignore_checksums) {
         unset($project['download']['md5']);
+      }
+      elseif (!empty($project['md5'])) {
+        $project['download']['md5'] = $project['md5'];
       }
       $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = $project;
     }
