@@ -24,7 +24,7 @@ function make_download_factory($name, $type, $download, $download_location) {
  * Download project using drush's pm-download command.
  */
 function make_download_pm($name, $type, $download, $download_location) {
-  $full_project_version = $name . '-' . $download['full_version'] . '/' . $type;
+  $full_project_version = $name . '-' . $download['full_version'];
 
   $options = array(
     'destination' => dirname($download_location),
@@ -50,7 +50,7 @@ function make_download_pm($name, $type, $download, $download_location) {
   }
 
   // Perform actual download with `drush pm-download`.
-  $return = drush_invoke_process('@none', 'pm-download', array($full_project_version), $options, $backend_options);
+  $return = drush_invoke_process('@none', 'pm-download', array($full_project_version . '/' . $type), $options, $backend_options);
   if (empty($return['error_log'])) {
     // @todo Report the URL we used for download. See
     // http://drupal.org/node/1452672.
