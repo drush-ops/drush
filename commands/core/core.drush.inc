@@ -26,13 +26,13 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'allow-additional-options' => TRUE,
     'options' => array(
-      'sort' => 'Sort commands in alphabetical order. drush waits for full bootstrap before printing any commands when this option is used.',
+      'sort' => 'Sort commands in alphabetical order. Drush waits for full bootstrap before printing any commands when this option is used.',
       'filter' => array(
         'description' => 'Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.',
         'example-value' => 'category',
         'value' => 'optional',
       ),
-      'format' => 'Format to output . Allowed values are: json, export, html.',
+      'format' => 'Format to output . Allowed values are: json, var_export, html.',
       'html' => 'Print help for all commands in HTML format. Deprecated - see --format option.',
       'pipe' => 'A list of available commands, one per line.',
     ),
