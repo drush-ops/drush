@@ -1240,6 +1240,10 @@ function pm_parse_project_version($requests) {
   $drupal_version_default .= '.x';
   $drupal_bootstrap = drush_get_context('DRUSH_BOOTSTRAP_PHASE') > 0;
   foreach($requests as $request) {
+    // Extract project type, in case the request provides it.
+    if (strpos($request, '/') !== FALSE) {
+      list($request, $project_type) = explode('/', $request);
+    }
     $drupal_version = $drupal_version_default;
     $project_version = NULL;
     $version = NULL;
@@ -1302,6 +1306,9 @@ function pm_parse_project_version($requests) {
       'drupal_version' => $drupal_version,
       'project_version' => $project_version,
     );
+    if (!empty($project_type)) {
+      $requestdata[$project]['project_type'] = $project_type;
+    }
   }
   return $requestdata;
 }

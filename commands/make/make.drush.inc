@@ -264,17 +264,17 @@ function drush_make_post_make($makefile = NULL, $build_path = NULL) {
  * Process all projects specified in the make file.
  */
 function make_projects($recursion, $contrib_destination, $info, $build_path, $make_dir) {
-  $projects = array();
+  // Nothing to make if the project list is empty. To complain or not.
   if (empty($info['projects'])) {
     if (drush_get_option('no-core') || $recursion) {
       return TRUE;
     }
     else {
-      drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
-      return FALSE;
+      return drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
     }
   }
-  $ignore_checksums = drush_get_option('ignore-checksums');
+
+  // Obtain translations to download along with the projects.
   $translations = array();
   if (isset($info['translations'])) {
     $translations = $info['translations'];
@@ -282,14 +282,14 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
   if ($arg_translations = drush_get_option('translations', FALSE)) {
     $translations = array_merge(explode(',', $arg_translations), $translations);
   }
+
+  // Normalize projects.
+  $projects = array();
+  $ignore_checksums = drush_get_option('ignore-checksums');
   foreach ($info['projects'] as $key => $project) {
-    $md5 = '';
-    if (isset($project['md5'])) {
-      $md5 = $project['md5'];
-    }
-    // Merge the known data onto the project info.
     $project += array(
       'name'                => $key,
+      'type'                => 'module',
       'core'                => $info['core'],
       'translations'        => $translations,
       'build_path'          => $build_path,
@@ -301,111 +301,86 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       'make_directory'      => $make_dir,
       'options'             => array(),
     );
+    // MD5 Checksum.
+    if ($ignore_checksums) {
+      unset($project['download']['md5']);
+    }
+    elseif (!empty($project['md5'])) {
+      $project['download']['md5'] = $project['md5'];
+    }
     // If download components are specified, but not the download
     // type, default to git.
     if (isset($project['download']) && !isset($project['download']['type'])) {
       $project['download']['type'] = 'git';
     }
+    // Localization server.
     if (!isset($project['l10n_url']) && ($project['location'] == RELEASE_INFO_DEFAULT_URL)) {
       $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
     }
 
-    // For convenience: define $request to be compatible with release_info
-    // engine.
-    // TODO: refactor to enforce 'make' to internally work with release_info
-    // keys.
-    $request = make_prepare_request($project);
-
-    if ($project['location'] != RELEASE_INFO_DEFAULT_URL && !isset($project['type'])) {
-      // Set the cache option based on our '--no-cache' option.
+    // Can't guess the project type for external downloads.
+    if (isset($project['download']) && isset($project['download']['url'])) {
+      if (empty($project['type'])) {
+        make_error('PROJECT-TYPE', dt('Unable to determine project type on project %project.', array('%project' => $project['name'])));
+        continue;
+      }
+    }
+    // Projects with an update service.
+    else {
+      // Force this request to be cached. pm-download will use it later.
       $cache_before = drush_get_option('cache');
       if (!drush_get_option('no-cache', FALSE)) {
         drush_set_option('cache', TRUE);
       }
-      $project_type = release_info_check_project($request, 'core');
-      // Restore the previous '--cache' option value.
+      $request = make_prepare_request($project);
+      $release = release_info_fetch($request);
+      if (!$release) {
+        continue;
+      }
       drush_set_option('cache', $cache_before);
-      $project['download_type'] = ($project_type ? 'core' : 'contrib');
+
+      $project['type'] = $request['project_type'];
+
+      if (!isset($project['download'])) {
+        $project['download'] = array(
+          'type' => 'pm',
+          'full_version' => $release['version'],
+          'download_link' => $release['download_link'],
+          'status url' => $request['status url'],
+        );
+      }
     }
-    elseif (!empty($project['type'])) {
-      $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
-    }
-    else {
-      $project['download_type'] = ($project['name'] == 'drupal' ? 'core' : 'contrib');
-    }
-    $projects[$project['download_type']][$project['name']] = $project;
+
+    // Classify project in core or contrib.
+    $project_type = ($project['type'] == 'core' ? 'core' : 'contrib');
+    $projects[$project_type][$project['name']] = $project;
   }
 
+  // Verify there're enough cores, but not too many.
   $cores = !empty($projects['core']) ? count($projects['core']) : 0;
-
   if (drush_get_option('no-core')) {
     unset($projects['core']);
   }
   elseif ($cores == 0 && !$recursion) {
-    drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
-    return FALSE;
+    return drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
   }
   elseif ($cores == 1 && $recursion) {
     unset($projects['core']);
   }
   elseif ($cores > 1) {
-    drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
-    return FALSE;
-  }
-
-  foreach ($projects as $type => $type_projects) {
-    foreach ($type_projects as $project) {
-      if (make_project_needs_release_info($project)) {
-        // For convenience: define $request to be compatible with release_info
-        // engine.
-        // TODO: refactor to enforce 'make' to internally work with release_info
-        // keys.
-        $request = make_prepare_request($project, $type);
-        // Set the cache option based on our '--no-cache' option.
-        $cache_before = drush_get_option('cache');
-        if (!drush_get_option('no-cache', FALSE)) {
-          drush_set_option('cache', TRUE);
-        }
-        $release = release_info_fetch($request);
-        if ($release === FALSE) {
-          return FALSE;
-        }
-        // Restore the previous '--cache' option value.
-        drush_set_option('cache', $cache_before);
-        if (!isset($project['type'])) {
-          // Translate release_info key for project_type to drush make.
-          $project['type'] = $request['project_type'];
-        }
-        if (!isset($project['download'])) {
-          $project['download'] = array(
-            'type' => 'pm',
-            'full_version' => $release['version'],
-            'download_link' => $release['download_link'],
-            'status url' => $request['status url'],
-          );
-        }
-      }
-      if (!empty($md5)) {
-        $project['download']['md5'] = $md5;
-      }
-      if ($ignore_checksums) {
-        unset($project['download']['md5']);
-      }
-      $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = $project;
-    }
+    return drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
   }
 
   // Core is built in place, rather than using make-process.
   if (isset($projects['core'])) {
-    foreach ($projects['core'] as $project) {
-      if ($instance = DrushMakeProject::getInstance($project['type'], $project)) {
-        $project = $instance;
-      }
-      else {
-        make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $project['name'])));
-      }
-      $project->make();
+    $project = current($projects['core']);
+    if ($instance = DrushMakeProject::getInstance($project['type'], $project)) {
+      $project = $instance;
     }
+    else {
+      make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $project['name'])));
+    }
+    $project->make();
   }
 
   // Process all projects concurrently using make-process.
@@ -571,6 +546,12 @@ function make_move_build($build_path) {
 /**
  * Create a request array for use with release_info_fetch().
  *
+ * This is a convenience function to easily integrate drush_make
+ * with drush release_info engine.
+ *
+ * @todo: refactor to enforce 'make' to internally work with
+ * release_info keys.
+ *
  * @param array $project
  *   Project array.
  * @param string $type
@@ -582,6 +563,9 @@ function make_prepare_request($project, $type = 'contrib') {
     'drupal_version' => $project['core'],
     'status url' => $project['location'],
   );
+  if (!empty($project['type'])) {
+    $request['project_type'] = $project['type'];
+  }
   if ($project['version'] != '') {
     $request['project_version'] = $project['version'];
     $request['version'] = $type == 'core' ? $project['version'] : $project['core'] . '-' . $project['version'];
@@ -589,22 +573,3 @@ function make_prepare_request($project, $type = 'contrib') {
   return $request;
 }
 
-/**
- * Determine if the release information is required for this
- * project. When it is determined that it is, this potentially results
- * in the use of pm-download to process the project.
- *
- * If the location of the project is not customized (uses d.o), and
- * one of the following is true, then release information is required:
- *
- * - $project['type'] has not been specified
- * - $project['download'] has not been specified
- *
- * @see make_projects()
- */
-function make_project_needs_release_info($project) {
-  return isset($project['location'])
-    // Only fetch release info if the project type is unknown OR if
-    // download attributes are unspecified.
-    && (!isset($project['type']) || !isset($project['download']));
-}
