@@ -318,9 +318,11 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
     }
 
     // Can't guess the project type for external downloads.
-    if (isset($project['download']) && isset($project['download']['url']) && empty($project['type'])) {
-      make_error('PROJECT-TYPE', dt('Unable to determine project type on project %project.', array('%project' => $project['name'])));
-      continue;
+    if (isset($project['download']) && isset($project['download']['url'])) {
+      if (empty($project['type'])) {
+        make_error('PROJECT-TYPE', dt('Unable to determine project type on project %project.', array('%project' => $project['name'])));
+        continue;
+      }
     }
     // Projects with an update service.
     else {
@@ -337,12 +339,15 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       drush_set_option('cache', $cache_before);
 
       $project['type'] = $request['project_type'];
-      $project['download'] = array(
-        'type' => 'pm',
-        'full_version' => $release['version'],
-        'download_link' => $release['download_link'],
-        'status url' => $request['status url'],
-      );
+
+      if (!isset($project['download'])) {
+        $project['download'] = array(
+          'type' => 'pm',
+          'full_version' => $release['version'],
+          'download_link' => $release['download_link'],
+          'status url' => $request['status url'],
+        );
+      }
     }
 
     // Classify project in core or contrib.
