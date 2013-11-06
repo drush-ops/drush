@@ -387,6 +387,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
     // Merge the known data onto the project info.
     $project += array(
       'name'                => $key,
+      'type'                => 'module',
       'core'                => $info['core'],
       'translations'        => $translations,
       'build_path'          => $build_path,
