@@ -289,6 +289,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
   foreach ($info['projects'] as $key => $project) {
     $project += array(
       'name'                => $key,
+      'type'                => 'module',
       'core'                => $info['core'],
       'translations'        => $translations,
       'build_path'          => $build_path,
