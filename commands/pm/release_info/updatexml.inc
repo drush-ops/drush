@@ -514,22 +514,18 @@ function updatexml_get_releases_from_xml($xml, $project) {
  */
 function updatexml_determine_project_type($xml) {
   $project_types = array(
-    'core' => 'Drupal core',
-    'profile' => 'Distributions',
-    'profile-legacy' => 'Installation profiles',
-    'module' => 'Modules',
-    'theme' => 'Themes',
-    'theme engine' => 'Theme engines',
-    'translation' => 'Translations'
+    'core' => 'project_core',
+    'profile' => 'project_distribution',
+    'module' => 'project_module',
+    'theme' => 'project_theme',
+    'theme engine' => 'project_theme_engine',
+    'translation' => 'project_translation'
   );
 
-  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
-  $type = 'module';
-  if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
-    $type = array_search($types[0]->value, $project_types);
-    $type = ($type == 'profile-legacy') ? 'profile' : $type;
-  }
-
+  $type = (string)$xml->type;
+  // Probably unused but kept for possible legacy compat.
+  $type = ($type == 'profile-legacy') ? 'profile' : $type;
+  $type = array_search($type, $project_types);
   return $type;
 }
 
