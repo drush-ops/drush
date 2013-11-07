@@ -78,6 +78,12 @@ function config_drush_command() {
     'core' => array('8+'),
   );
 
+  $items['config-export'] = array(
+    'description' => 'Export config from the active directory to staging directory.',
+    'core' => array('8+'),
+    'aliases' => array('cex'),
+  );
+
   $items['config-import'] = array(
     'description' => 'Import config from the file store.',
     'core' => array('8+'),
@@ -232,6 +238,19 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
     if ($confirmed && !drush_get_context('DRUSH_SIMULATE')) {
       return $config->set($key, $data)->save();
     }
+  }
+}
+
+/**
+ * Command callback: Export config to staging directory.
+ */
+function drush_config_export() {
+  // Retrieve a list of differences between the active and staged configuration.
+  $active_dir = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
+  $staging_dir = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+
+  if (!drush_invoke_process('@self', 'core-rsync', array($active_dir . '/', $staging_dir), array('delete' => 1, 'yes' => 1, 'quiet' => TRUE))) {
+    drush_set_error(dt('CONFIG_EXPORT_FAILED', dt('Error while export config.')));
   }
 }
 
