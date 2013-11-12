@@ -515,7 +515,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Extract archives',
         'makefile' => 'file-extract.make',
         'build'    => TRUE,
-        'md5' => 'f92471fb7979e45d2554c61314ac6236',
+        'md5' => 'b43d271ab3510eb33c1e300c78893458',
         // @todo This test often fails with concurrency set to more than one.
         'options'  => array('no-core' => NULL, 'concurrency' => 1),
       ),
