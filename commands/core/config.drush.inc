@@ -256,7 +256,7 @@ function drush_config_export() {
   }
 
   if (!drush_invoke_process('@self', 'core-rsync', array($active_dir . '/*', $staging_dir), array('delete' => 1, 'yes' => TRUE))) {
-    return drush_set_error('CONFIG_EXPORT_FAILED', dt('Error while export config.'));
+    return drush_set_error('CONFIG_EXPORT_FAILED', dt('Error while exporting configuration.'));
   }
 }
 
