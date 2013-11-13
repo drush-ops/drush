@@ -211,9 +211,9 @@ function drush_make($makefile = NULL, $build_path = NULL) {
 function drush_make_process($directory) {
   // Set the temporary directory.
   make_tmp(TRUE, $directory);
-  $projects = drush_get_option('projects', FALSE);
+  $projects = drush_get_option('projects', array());
 
-  $manifest = drush_get_option('manifest', FALSE);
+  $manifest = drush_get_option('manifest', array());
 
   foreach ($projects as $project) {
     if ($instance = DrushMakeProject::getInstance($project['type'], $project)) {
