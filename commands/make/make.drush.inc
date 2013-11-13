@@ -431,7 +431,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       // Add the project to this sub-process.
       $invocations[$thread]['options']['projects'][] = $project;
       // Add the manifest so recursive downloads do not override projects.
-      $invocations[$thread]['options']['manifest'] = $projects['contrib'];
+      $invocations[$thread]['options']['manifest'] = array_keys($projects['contrib']);
     }
     if (!empty($invocations)) {
       // Backend options.
