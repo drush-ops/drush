@@ -153,21 +153,21 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $dest_dir = dirname($final_destination);
   $dt_args = array('!file' => $final_destination, '!dir' => $dest_dir);
   if (is_dir($final_destination)) {
-    drush_set_error('DRUSH_ARCHIVE_DEST_IS_DIR', dt('destination !file must be a file, not a directory.', $dt_args));
+    drush_set_error('DRUSH_ARCHIVE_DEST_IS_DIR', dt('Destination !file must be a file, not a directory.', $dt_args));
     return;
   }
   else if (file_exists($final_destination)) {
     if (!$overwrite) {
-      drush_set_error('DRUSH_ARCHIVE_DEST_EXISTS', dt('destination !file exists; specify --overwrite to overwrite.', $dt_args));
+      drush_set_error('DRUSH_ARCHIVE_DEST_EXISTS', dt('Destination !file exists; specify --overwrite to overwrite.', $dt_args));
       return;
     }
     else if (!is_writable($final_destination)) {
-      drush_set_error('DRUSH_ARCHIVE_DEST_FILE_NOT_WRITEABLE', dt('destination !file is not writable.', $dt_args));
+      drush_set_error('DRUSH_ARCHIVE_DEST_FILE_NOT_WRITEABLE', dt('Destination !file is not writable.', $dt_args));
       return;
     }
   }
   else if (!is_writable($dest_dir)) {
-    drush_set_error('DRUSH_ARCHIVE_DEST_DIR_NOT_WRITEABLE', dt('destination directory !dir is not writable.', $dt_args));
+    drush_set_error('DRUSH_ARCHIVE_DEST_DIR_NOT_WRITEABLE', dt('Destination directory !dir is not writable.', $dt_args));
     return;
   }
 
@@ -290,7 +290,6 @@ function drush_archive_dump($sites_subdirs = '@self') {
   }
 
   drush_log(dt('Archive saved to !dest', array('!dest' => $final_destination)), 'ok');
-  drush_print_pipe($final_destination);
   return $final_destination;
 }
 
