@@ -168,7 +168,7 @@ function make_make_complete() {
 function drush_make($makefile = NULL, $build_path = NULL) {
   // If --version option is supplied, print it and bail.
   if (drush_get_option('version', FALSE)) {
-    drush_print(dt('drush make API version !version', array('!version' => MAKE_API)));
+    drush_print(dt('Drush make API version !version', array('!version' => MAKE_API)));
     drush_print_pipe(MAKE_API);
     return;
   }
@@ -221,7 +221,7 @@ function drush_make_process($directory) {
       $instance->make();
     }
     else {
-      make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $project['name'])));
+      make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project.', array('%type' => $project['type'], '%project' => $project['name'])));
     }
   }
 }
@@ -402,7 +402,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
         $project = $instance;
       }
       else {
-        make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $project['name'])));
+        make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project.', array('%type' => $project['type'], '%project' => $project['name'])));
       }
       $project->make();
     }
@@ -519,7 +519,7 @@ function make_build_path($build_path) {
     return drush_user_abort(dt('Build aborted.'));
   }
   if ($build_path != '.' && file_exists($build_path)) {
-    return drush_set_error('MAKE_PATH_EXISTS', dt('Base path %path already exists', array('%path' => $build_path)));
+    return drush_set_error('MAKE_PATH_EXISTS', dt('Base path %path already exists.', array('%path' => $build_path)));
   }
   $saved_path = $build_path;
   return $build_path;
@@ -563,7 +563,7 @@ function make_move_build($build_path) {
   }
 
   if (!$ret) {
-    drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place"));
+    drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place."));
   }
   return $ret;
 }
