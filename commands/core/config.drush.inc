@@ -82,6 +82,9 @@ function config_drush_command() {
     'description' => 'Export config from the active directory to staging directory.',
     'core' => array('8+'),
     'aliases' => array('cex'),
+    'options' => array(
+      'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
+    ),
   );
 
   $items['config-import'] = array(
@@ -255,8 +258,17 @@ function drush_config_export() {
     }
   }
 
-  if (!drush_invoke_process('@self', 'core-rsync', array($active_dir . '/*', $staging_dir), array('delete' => 1, 'yes' => TRUE))) {
-    return drush_set_error('CONFIG_EXPORT_FAILED', dt('Error while exporting configuration.'));
+  if (drush_delete_dir_contents($staging_dir, TRUE)) {
+    // We specify the MERGE flag below in order to copy only contents, not the dir itself. Since
+    // The dir is empty, it is effectively a copy, not a merge.
+    drush_copy_dir($active_dir, $staging_dir, FILE_EXISTS_MERGE);
+  }
+  else {
+    return drush_set_error('DRUSH_CONFIG_EXPORT_DELETE', dt('Failed to empty staging directory.'));
+  }
+
+  if (drush_get_option('add')) {
+    drush_shell_exec_interactive('git add -p %s', $staging_dir);
   }
 }
 
