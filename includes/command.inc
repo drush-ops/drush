@@ -329,21 +329,10 @@ function _drush_invoke_hooks($command, $args) {
     // to a higher phase will do this).
     $list = drush_commandfile_list();
 
-    // Make a list of function callbacks to call.  If
-    // there is a 'primary function' mentioned, make sure
-    // that it appears first in the list, but only if
-    // we are running the main hook ("$hook").  After that,
-    // make sure that any callback associated with this commandfile
-    // executes before any other hooks defined in any other
-    // commandfiles.
+    // Compile a list of function callbacks to call.
     $callback_list = array();
-    if (($var_hook == $hook) && ($command['primary function'])) {
-      $callback_list[$command['primary function']] = $list[$command['commandfile']];
-    }
-    else {
-      $primary_func = ($command['commandfile'] . "_" == substr($var_hook . "_",0,strlen($command['commandfile']) + 1)) ? sprintf("drush_%s", $var_hook) : sprintf("drush_%s_%s", $command['commandfile'], $var_hook);
-      $callback_list[$primary_func] = $list[$command['commandfile']];
-    }
+    $primary_func = _drush_get_primary_function($command, $hook, $var_hook);
+    $callback_list[$primary_func] = $list[$command['commandfile']];
     // We've got the callback for the primary function in the
     // callback list; now add all of the other callback functions.
     unset($list[$command['commandfile']]);
@@ -437,6 +426,28 @@ function _drush_invoke_hooks($command, $args) {
 
   if (isset($return)) {
     return $return;
+  }
+}
+
+/**
+ * If we are running the main hook ("$hook"), and a 'primary function' is
+ * mentioned, return it. Otherwise, return the callback associated with this
+ * commandfile.
+ */
+function _drush_get_primary_function($command, $hook, $var_hook) {
+  if (($var_hook == $hook) && ($command['primary function'])) {
+    return $command['primary function'];
+  }
+  else {
+    $cmd_file = $command['commandfile'];
+    // When the command name starts with the same sequence of characters as
+    // the command file, then drop the repeated sequence.
+    if ($cmd_file . '_' == substr($var_hook . '_', 0, strlen($cmd_file) + 1)) {
+      return sprintf("drush_%s", $var_hook);
+    }
+    else {
+      return sprintf("drush_%s_%s", $cmd_file, $var_hook);
+    }
   }
 }
 
