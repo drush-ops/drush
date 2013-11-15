@@ -377,13 +377,12 @@ function hook_drush_engine_ENGINE_TYPE() {
  * Alter the order that hooks are invoked.
  *
  * When implementing a given hook we may need to ensure it is invoked before
- * or after another implementation of the same hook. For example, let's say
- * you want to implement a hook that would be called after drush_make. You'd
- * write a drush_MY_MODULE_post_make() function. But if you need your hook to
- * be called before drush_make_post_make(), you can ensure this by implemen-
- * ting MY_MODULE_drush_invoke_alter().
+ * or after another implementation of the same hook. This only applies to hooks
+ * that use drush_command_invoke_all() or drush_command_invoke_all_ref(). This
+ * does not apply to drush-made hook (e.g. drush_hook_pre_COMMAND()).
  *
- * @see drush_command_invoke_all_ref()
+ * @see hook_drush_callback_list_alter().
+ * @see drush_command_invoke_all_ref().
  */
 function hook_drush_invoke_alter($modules, $hook) {
   if ($hook == 'some_hook') {
@@ -394,6 +393,31 @@ function hook_drush_invoke_alter($modules, $hook) {
   }
 }
 
+/**
+ * Alter the order that hooks are invoked.
+ *
+ * When implementing a given drush-made hook (e.g. drush_hook_pre_COMMAND()),
+ * we may need to ensure it is invoked before or after another implementation
+ * of the same hook. For example, let's say you want to implement a hook that
+ * would be called after drush_make. You'd write a drush_MY_MODULE_post_make()
+ * function. Since the order is alphabetical, your command will run after
+ * drush_make_post_make(). But if you need your hook to be called before, you
+ * can ensure this by implementing MY_MODULE_drush_callback_list_alter().
+ *
+ * @see hook_drush_invoke_alter().
+ * @see _drush_invoke_hooks().
+ */
+function hook_drush_callback_list_alter($callback_list, $var_hook, $command, $args)) {
+ if ($var_hook == 'post_make') {
+    // Find the index of our callback, and pull it out of the list.
+    $index = array_search('drush_MY_MODULE_post_make', array_keys($callback_list));
+    $callback = array_splice($callback_list, $index, 1);
+    // Find where to insert our callback, and add it back to the list.
+    $target = array_search('drush_make_post_make', array_keys($callback_list));
+    $tail = array_splice($callback_list, $target + 1);
+    $callback_list += $callback + $tail;
+  }
+}
 
 /**
  * @} End of "addtogroup hooks".

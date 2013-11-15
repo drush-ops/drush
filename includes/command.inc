@@ -351,6 +351,8 @@ function _drush_invoke_hooks($command, $args) {
       $func = sprintf("drush_%s_%s", $commandfile, $var_hook);
       $callback_list[$func] = $filename;
     }
+    // Allow modules to control the order of the callback list.
+    drush_command_invoke_all_ref('drush_callback_list_alter', $callback_list, $var_hook, $command, $args);
     // Run all of the functions available for this variation
     $accumulated_result = NULL;
     foreach ($callback_list as $func => $filename) {
