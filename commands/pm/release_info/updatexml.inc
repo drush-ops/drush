@@ -70,7 +70,7 @@ function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $al
     }
     else {
       if ($select == 'never') {
-        return drush_user_abort();
+        return FALSE;
       }
       drush_log(dt('There are no stable releases for project !project.', array('!project' => $request['name'])), 'warning');
     }
@@ -84,7 +84,7 @@ function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $al
   }
   $choice = drush_choice($options, dt('Choose one of the available releases for !project:', array('!project' => $request['name'])));
   if (!$choice) {
-    return drush_user_abort();
+    return FALSE;
   }
 
   return $project_info['releases'][$choice];

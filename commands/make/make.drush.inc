@@ -367,9 +367,6 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
           drush_set_option('cache', TRUE);
         }
         $release = release_info_fetch($request);
-        if ($release === FALSE) {
-          return FALSE;
-        }
         // Restore the previous '--cache' option value.
         drush_set_option('cache', $cache_before);
         if (!isset($project['type'])) {
