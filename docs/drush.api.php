@@ -9,7 +9,8 @@
  * Declare a new command.
  */
 function hook_drush_command() {
-  // To learn more, run `drush topic docs-commands` and `drush topic docs-examplecommand`
+  // To learn more, run `drush topic docs-commands` and
+  // `drush topic docs-examplecommand`.
 }
 
 /**
@@ -87,23 +88,24 @@ function hook_drush_command() {
  */
 
 /**
- * Take action before any command is run. Logging an error stops command execution.
+ * Take action before any command is run.
+ *
+ * Logging an error stops command execution.
  */
 function hook_drush_init() {
 
 }
 
 /**
- * Initialize a command prior to validation.  If a command
- * needs to bootstrap to a higher level, this is best done in
- * the command init hook.  It is permisible to bootstrap in
- * any hook, but note that if bootstrapping adds more commandfiles
- * (*.drush.inc) to the commandfile list, the newly-added
- * commandfiles will not have any hooks called until the next
- * phase.  For example, a command that calls drush_bootstrap_max()
- * in drush_hook_COMMAND() would only permit commandfiles from
- * modules enabled in the site to participate in drush_hook_post_COMMAND()
- * hooks.
+ * Initialize a command prior to validation.
+ *
+ * If a command needs to bootstrap to a higher level, this is best done in the
+ * command init hook.  It is permisible to bootstrap in any hook, but note that
+ * if bootstrapping adds more commandfiles (*.drush.inc) to the commandfile
+ * list, the newly-added commandfiles will not have any hooks called until the
+ * next phase.  For example, a command that calls drush_bootstrap_max() in
+ * drush_hook_COMMAND() would only permit commandfiles from modules enabled in
+ * the site to participate in drush_hook_post_COMMAND() hooks.
  */
 function drush_COMMAND_init() {
   drush_bootstrap_max();
@@ -134,11 +136,11 @@ function drush_hook_COMMAND_validate() {
 }
 
 /**
- * Run before a specific command executes. Logging an error stops command execution.
+ * Run before a specific command executes.
  *
  * Logging an error stops command execution, and the rollback function (if any)
- * for each hook implementation is invoked, in addition to the
- * validate rollback.
+ * for each hook implementation is invoked, in addition to the validate
+ * rollback.
  *
  * @see drush_hook_pre_COMMAND_rollback()
  * @see drush_hook_COMMAND_validate_rollback()
@@ -156,7 +158,7 @@ function drush_hook_pre_COMMAND() {
  * for each hook implementation is invoked, in addition to pre and
  * validate rollbacks.
  *
- * @return
+ * @return mixed|false
  *   The return value will be passed along to the caller if --backend option is
  *   present. A boolean FALSE indicates failure and rollback will be intitated.
  *
@@ -169,7 +171,7 @@ function drush_hook_COMMAND() {
 }
 
 /**
- * Run after a specific command executes. Logging an error stops command execution.
+ * Run after a specific command executes.
  *
  * Logging an error stops command execution, and the rollback function (if any)
  * for each hook implementation is invoked, in addition to pre, normal
@@ -192,17 +194,21 @@ function hook_drush_exit() {
 }
 
 /**
+ * Take action when Drush loads.
+ *
  * A commandfile may choose to decline to load for the current bootstrap
  * level by returning FALSE. This hook must be placed in MODULE.drush.load.inc.
- * @see drush_commandfile_list().
+ *
+ * @see drush_commandfile_list()
  */
 function hook_drush_load() {
 
 }
 
 /**
- * A commandfile may adjust the contents of any command structure
- * prior to dispatch.  @see core_drush_command_alter() for an example.
+ * Adjust the contents of any command structure prior to dispatch.
+ *
+ * @see core_drush_command_alter()
  */
 function hook_drush_command_alter(&$command) {
 
@@ -223,7 +229,7 @@ function hook_pm_post_update($release_name, $release_candidate_version, $project
 }
 
 /**
- * Adjust the location that a project should be copied to after being downloaded.
+ * Adjust the location a project should be copied to after being downloaded.
  *
  * See @pm_drush_pm_download_destination_alter().
  */
@@ -235,6 +241,7 @@ function hook_drush_pm_download_destination_alter(&$project, $release) {
 
 /**
  * Automatically download project dependencies at pm-enable time.
+ *
  * Use a pre-pm_enable hook to download before your module is enabled,
  * or a post-pm_enable hook (drush_hook_post_pm_enable) to run after
  * your module is enabled.
@@ -244,7 +251,8 @@ function hook_drush_pm_download_destination_alter(&$project, $release) {
  * the --skip flag, and take no action if it is present.
  */
 function drush_hook_pre_pm_enable() {
-  // Get the list of modules being enabled; only download dependencies if our module name appears in the list
+  // Get the list of modules being enabled; only download dependencies if our
+  // module name appears in the list.
   $modules = drush_get_context('PM_ENABLE_MODULES');
   if (in_array('hook', $modules) && !drush_get_option('skip')) {
     $url = 'http://server.com/path/MyLibraryName.tgz';
@@ -253,18 +261,19 @@ function drush_hook_pre_pm_enable() {
       $path .= '/' . libraries_get_path('MyLibraryName') . '/MyLibraryName.tgz';
     }
     else {
-      $path .= '/'. drupal_get_path('module', 'hook') . '/MyLibraryName.tgz';
+      $path .= '/' . drupal_get_path('module', 'hook') . '/MyLibraryName.tgz';
     }
     drush_download_file($url, $path) && drush_tarball_extract($path);
   }
 }
 
 /**
- * Sql-sync sanitization example.  This is equivalent to
- * the built-in --sanitize option of sql-sync, but simplified
- * to only work with default values on Drupal 6 + mysql.
+ * Sql-sync sanitization example.
  *
- * @see sql_drush_sql_sync_sanitize().
+ * This is equivalent to the built-in --sanitize option of sql-sync, but
+ * simplified to only work with default values on Drupal 6 + mysql.
+ *
+ * @see sql_drush_sql_sync_sanitize()
  */
 function hook_drush_sql_sync_sanitize($source) {
   drush_sql_register_post_sync_op('my-sanitize-id',
@@ -273,7 +282,7 @@ function hook_drush_sql_sync_sanitize($source) {
 }
 
 /**
- * Add help components to a command
+ * Add help components to a command.
  */
 function hook_drush_help_alter(&$command) {
   if ($command['command'] == 'sql-sync') {
@@ -289,7 +298,7 @@ function hook_drush_help_alter(&$command) {
 }
 
 /**
- * Add/edit options to cache-clear command
+ * Add/edit options to cache-clear command.
  */
 function hook_drush_cache_clear(&$types) {
   $types['views'] = 'views_invalidate_cache';
@@ -303,7 +312,7 @@ function hook_drush_cache_clear(&$types) {
  * and other parameters. Commands may override this info when declaring the
  * engines they use.
  *
- * @return
+ * @return array
  *   An array whose keys are engine type names and whose values describe
  *   the characteristics of the engine type in relation to command definitions:
  *
@@ -387,13 +396,12 @@ function hook_drush_engine_ENGINE_TYPE() {
  */
 function hook_drush_invoke_alter($modules, $hook) {
   if ($hook == 'some_hook') {
-    // Take the module who's hooks would normally be called last
+    // Take the module who's hooks would normally be called last.
     $module = array_pop($modules);
-    // Ensure it'll be called first for 'some_hook'
+    // Ensure it'll be called first for 'some_hook'.
     array_unshift($modules, $module);
   }
 }
-
 
 /**
  * @} End of "addtogroup hooks".
