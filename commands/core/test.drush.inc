@@ -55,7 +55,7 @@ function test_drush_command() {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *  Array of test classes and groups.

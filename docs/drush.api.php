@@ -112,6 +112,18 @@ function drush_COMMAND_init() {
 }
 
 /**
+ * Provide command completion output for shells.
+ *
+ * @return array
+ *   An indexed array of command completion options.
+ *
+ * @see complete.inc
+ */
+function hook_COMMAND_complete() {
+  return array('option1', 'option2', 'etc');
+}
+
+/**
  * Run before a specific command validates.
  *
  * Logging an error stops command execution, and the rollback function (if any)

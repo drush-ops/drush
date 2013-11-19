@@ -39,7 +39,7 @@ function drush_completetest_noop() {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *  Array of completions.

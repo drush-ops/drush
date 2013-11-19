@@ -58,7 +58,7 @@ function cache_drush_command() {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *   Array of clear types.

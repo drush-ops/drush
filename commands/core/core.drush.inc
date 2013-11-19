@@ -375,7 +375,7 @@ function core_drush_command() {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *   Array of available command names.
@@ -385,7 +385,7 @@ function core_help_complete() {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *   Array of available profile names.
@@ -398,7 +398,7 @@ function core_site_install_complete() {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *  Array of available site aliases.
@@ -724,7 +724,7 @@ function drush_core_config($filter = NULL) {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *   Array of available configuration files for editing.

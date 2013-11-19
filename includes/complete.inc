@@ -51,7 +51,7 @@
  *   expensive to generate. Arguments are also cached per-site.
  *
  * For argument completions, commandfiles can implement
- * COMMANDFILE_COMMAND_complete() returning an array containing a key 'values'
+ * hook_COMMAND_complete() returning an array containing a key 'values'
  * containing an array of all possible argument completions for that command.
  * For example, return array('values' => array('aardvark', 'aardwolf')) offers
  * the words 'aardvark' and 'aardwolf', or will complete to 'aardwolf' if the

@@ -143,7 +143,7 @@ function make_drush_help($section) {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return array
  *   Strong glob of files to complete on.

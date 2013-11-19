@@ -67,7 +67,7 @@ function sitealias_drush_command() {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *  Array of available site aliases.
@@ -77,7 +77,7 @@ function sitealias_sitealias_print_complete() {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *  Array of available site aliases.

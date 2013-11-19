@@ -506,14 +506,14 @@ function views_drush_cache_clear(&$types) {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function drush_views_enable_complete() {
   return _drush_views_complete();
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function drush_views_disable_complete() {
   return _drush_views_complete();

@@ -298,10 +298,11 @@ function drush_sandwich_spreads_status() {
 }
 
 /**
- * Command argument complete callback. Provides argument
- * values for shell completion.
+ * Implements hook_COMMAND_complete().
  *
- * @return
+ * Provides argument values for shell completion.
+ *
+ * @return array
  *  Array of popular fillings.
  */
 function sandwich_make_me_a_sandwich_complete() {

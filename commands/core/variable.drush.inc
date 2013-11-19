@@ -83,21 +83,21 @@ function variable_drush_command() {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function variable_variable_get_complete() {
   return variable_complete_variables();
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function variable_variable_set_complete() {
   return variable_complete_variables();
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function variable_variable_delete_complete() {
   return variable_complete_variables();
