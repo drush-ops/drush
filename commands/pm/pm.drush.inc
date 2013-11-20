@@ -223,7 +223,7 @@ function pm_drush_command() {
       'pipe-format' => 'list',
       'field-labels' => array('name' => 'Short Name', 'label' => 'Name', 'existing_version' => 'Installed Version', 'status' => 'Status', 'status_msg' => 'Message', 'candidate_version' => 'Proposed version'),
       'fields-default' => array('label', 'existing_version', 'candidate_version', 'status_msg' ),
-      'fields-pipe' => array('name', 'existing_version', 'candidate_version', 'status_msg' ),
+      'fields-pipe' => array('name', 'existing_version', 'candidate_version', 'status_msg'),
       'output-data-type' => 'format-table',
     ),
     'aliases' => array('ups'),
