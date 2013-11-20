@@ -13,7 +13,7 @@ function shellalias_drush_help($section) {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *  Array of available site aliases.

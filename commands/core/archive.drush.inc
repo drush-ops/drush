@@ -294,7 +294,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *   List of site names/aliases for archival.
@@ -406,7 +406,7 @@ function drush_archive_restore($file, $site_id = NULL) {
 
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *   Strong glob of files to complete on.

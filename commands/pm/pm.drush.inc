@@ -360,56 +360,56 @@ function pm_drush_command() {
  */
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function pm_pm_enable_complete() {
   return pm_complete_extensions();
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function pm_pm_disable_complete() {
   return pm_complete_extensions();
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function pm_pm_uninstall_complete() {
   return pm_complete_extensions();
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function pm_pm_info_complete() {
   return pm_complete_extensions();
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function pm_pm_releasenotes_complete() {
   return pm_complete_projects();
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function pm_pm_releases_complete() {
   return pm_complete_projects();
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function pm_pm_updatecode_complete() {
   return pm_complete_projects();
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  */
 function pm_pm_update_complete() {
   return pm_complete_projects();

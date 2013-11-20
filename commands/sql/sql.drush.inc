@@ -253,7 +253,7 @@ function sql_drush_help_alter(&$command) {
 }
 
 /**
- * Command argument complete callback.
+ * Implements hook_COMMAND_complete().
  *
  * @return
  *  Array of available site aliases.
