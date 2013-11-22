@@ -186,7 +186,7 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
         continue;
       }
       $xml = simplexml_import_dom($dom);
-      $node_content = $xml->xpath('//*/div[@class="node-content"]');
+      $node_content = $xml->xpath('//div[@class="node node-project-release clearfix"]');
 
       // Prepare the project notes to print.
       $notes_last_update = $node_content[0]->div[1]->div[0]->asXML();
