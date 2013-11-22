@@ -787,7 +787,17 @@ function drush_server_home() {
  * Return the name of the user running drush.
  */
 function drush_get_username() {
-  return drush_is_windows() ? getenv("username") : getenv("USER");
+  $name = NULL;
+  if (!$name = getenv("username")) { // Windows
+    if (!$name = getenv("USER")) {
+      // If USER not defined, use posix
+      if (function_exists('posix_getpwuid')) {
+        $processUser = posix_getpwuid(posix_geteuid());
+        $name = $processUser['name'];
+      }
+    }
+  }
+  return $name;
 }
 
 /**
