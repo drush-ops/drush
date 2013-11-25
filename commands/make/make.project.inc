@@ -316,10 +316,10 @@ class DrushMakeProject {
   }
 
   /**
-   * Remove the .git directory from a project.
+   * Remove the .git directory from a project, unless working-copy was specified.
    */
   function removeGitDirectory() {
-    if (isset($this->download['type']) && $this->download['type'] == 'git' && file_exists($this->download_location . '/.git')) {
+    if (!empty($this->download['working-copy']) && isset($this->download['type']) && $this->download['type'] == 'git' && file_exists($this->download_location . '/.git')) {
       drush_delete_dir($this->download_location . '/.git', TRUE);
     }
   }
