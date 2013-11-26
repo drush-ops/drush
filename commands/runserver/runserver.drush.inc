@@ -59,7 +59,7 @@ function runserver_drush_command() {
       'user' => 'If opening a web browser, automatically log in as this user (user ID or username).',
       'browser' => 'If opening a web browser, which browser to user (defaults to operating system default).',
       'dns' => 'Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.',
-      'drush-server' => 'Expose Drush as a web service',
+      'drush-server' => 'Expose Drush as a web service. Run Drush commands by passing the command, arguments and options to the http server.',
     ),
     'aliases' => array('rs'),
     'examples' => array(
@@ -70,7 +70,7 @@ function runserver_drush_command() {
       'drush rs /' => 'Start runserver on default IP/port (127.0.0.1, port 8888), and open / in browser.',
       'drush rs --default-server=127.0.0.1:8080/ -' => 'Use a default (would be specified in your drushrc) that starts runserver on port 8080, and opens a browser to the front page. Set path to a single hyphen path in argument to prevent opening browser for this session.',
       'drush rs --server=builtin :9000/admin' => 'Start builtin php 5.4 runserver on 127.0.0.1, port 9000, and open /admin in browser. Note that you need a colon when you specify port and path, but no IP.',
-      'drush rs --drush-server' => 'Expose Drush as a web server at http://127.0.0.1:8888. Example command: `http://127.0.0.1:8888/@example.dev core-status --format=json',
+      'drush rs --drush-server' => 'Expose Drush as a web server at http://127.0.0.1:8888. Just as you would with the CLI, pass the Drush command, arguments, and options to the http server to run them. For example, to display `core-status` information for a local site in JSON format, you would visit `http://127.0.0.1:8888/@example.dev core-status --format=json`. Use `drush-server` with care as no security layer is provided; anyone who can access your local http server can run Drush commands on your system.',
     ),
   );
   return $items;

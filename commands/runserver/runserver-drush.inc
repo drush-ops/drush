@@ -2,7 +2,7 @@
 
 /**
  * @file
- *   Classes extending the httpserver library that provide Drush specific
+ * Class extending the httpserver library that provides Drush specific
  *   behaviours.
  */
 
@@ -12,12 +12,16 @@
 class DrushServer extends HTTPServer {
   // We pass in variables, rather than querying options here, to allow this to
   // potentially be used in other commands.
-  public $path, $debug, $env, $site;
+  public $path;
+  public $debug;
+  public $env;
+  public $site;
 
   /**
-   * This is the equivalent of .htaccess, passing requests to files if they
-   * exist, and all other requests to index.php. We also set a number
-   * of CGI environment variables here.
+   * Handle routing requests and pass off to Drush.
+   *
+   * Callers to the server should specify `--format=json` if JSON output is
+   * desired. Error output will always be displayed in JSON format.
    */
   function route_request($request) {
     drush_shell_exec('which drush');
