@@ -19,7 +19,6 @@ function user_drush_help($section) {
  */
 function user_drush_command() {
   $items['user-information'] = array(
-    'callback' => 'drush_user_information',
     'description' => 'Print information about the specified user(s).',
     'aliases' => array('uinf'),
     'examples' => array(
@@ -65,7 +64,6 @@ function user_drush_command() {
     ),
   );
   $items['user-block'] = array(
-    'callback' => 'drush_user_block',
     'description' => 'Block the specified user(s).',
     'aliases' => array('ublk'),
     'arguments' => array(
@@ -83,7 +81,6 @@ function user_drush_command() {
     ),
   );
   $items['user-unblock'] = array(
-    'callback' => 'drush_user_unblock',
     'description' => 'Unblock the specified user(s).',
     'aliases' => array('uublk'),
     'arguments' => array(
@@ -101,7 +98,6 @@ function user_drush_command() {
     ),
   );
   $items['user-add-role'] = array(
-    'callback' => 'drush_user_add_role',
     'description' => 'Add a role to the specified user accounts.',
     'aliases' => array('urol'),
     'arguments' => array(
@@ -120,7 +116,6 @@ function user_drush_command() {
     ),
   );
   $items['user-remove-role'] = array(
-    'callback' => 'drush_user_remove_role',
     'description' => 'Remove a role from the specified user accounts.',
     'aliases' => array('urrol'),
     'arguments' => array(
@@ -139,7 +134,6 @@ function user_drush_command() {
     ),
   );
   $items['user-create'] = array(
-    'callback' => 'drush_user_create',
     'description' => 'Create a user account with the specified name.',
     'aliases' => array('ucrt'),
     'arguments' => array(
@@ -156,7 +150,6 @@ function user_drush_command() {
     ),
   );
   $items['user-cancel'] = array(
-    'callback' => 'drush_user_cancel',
     'description' => 'Cancel a user account with the specified name.',
     'aliases' => array('ucan'),
     'arguments' => array(
@@ -169,7 +162,6 @@ function user_drush_command() {
     ),
   );
   $items['user-password'] = array(
-    'callback' => 'drush_user_password',
     'description' => '(Re)Set the password for the user account with the specified name.',
     'aliases' => array('upwd'),
     'arguments' => array(
@@ -189,7 +181,6 @@ function user_drush_command() {
     ),
   );
   $items['user-login'] = array(
-    'callback' => 'drush_user_login',
     'description' => 'Display a one time login link for the given user account (defaults to uid 1).',
     'aliases' => array('uli'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
