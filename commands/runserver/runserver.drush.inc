@@ -59,6 +59,7 @@ function runserver_drush_command() {
       'user' => 'If opening a web browser, automatically log in as this user (user ID or username).',
       'browser' => 'If opening a web browser, which browser to user (defaults to operating system default).',
       'dns' => 'Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.',
+      'drush-server' => 'Expose Drush as a web service',
     ),
     'aliases' => array('rs'),
     'examples' => array(
@@ -69,6 +70,7 @@ function runserver_drush_command() {
       'drush rs /' => 'Start runserver on default IP/port (127.0.0.1, port 8888), and open / in browser.',
       'drush rs --default-server=127.0.0.1:8080/ -' => 'Use a default (would be specified in your drushrc) that starts runserver on port 8080, and opens a browser to the front page. Set path to a single hyphen path in argument to prevent opening browser for this session.',
       'drush rs --server=builtin :9000/admin' => 'Start builtin php 5.4 runserver on 127.0.0.1, port 9000, and open /admin in browser. Note that you need a colon when you specify port and path, but no IP.',
+      'drush rs --drush-server' => 'Expose Drush as a web server at http://127.0.0.1:8888. Example command: `http://127.0.0.1:8888/@example.dev core-status --format=json',
     ),
   );
   return $items;
@@ -198,8 +200,8 @@ function drush_core_runserver($uri = NULL) {
   $env['RUNSERVER_CONF'] = urlencode(serialize($override));
 
   // We log in with the specified user ID (if set) via the password reset URL.
-  $user_message = '';
-  if (drush_get_user_id()) {
+  // $user_message = '';
+  if (!drush_get_option('drush-server') && drush_get_user_id()) {
     $options = array('query' => array('destination' => $path));
     $browse = url(user_pass_reset_url($user) . '/login', $options);
     $user_message = ', logged in as ' . drush_get_user_name();
@@ -230,19 +232,35 @@ function drush_core_runserver($uri = NULL) {
     $httpserverfile = $lib . '/' . DRUSH_HTTPSERVER_DIR_BASE . substr(DRUSH_HTTPSERVER_VERSION, 0, 7) . '/httpserver.php';
     require_once $httpserverfile;
     require_once 'runserver-drupal.inc';
-    // Create a new httpserver instance and start it running.
-    $server = new DrupalServer(array(
-      'addr' => $addr,
-      'port' => $uri['port'],
-      'browse' => $browse,
-      'hostname' => $hostname,
-      'site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'),
-      'server_id' => 'Drush runserver',
-      'php_cgi' => drush_get_option('php-cgi', 'php-cgi') . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"',
-      'env' => $env,
-      'debug' => drush_get_context('DRUSH_DEBUG'),
-    ));
-    $server->run_forever();
+    require_once 'runserver-drush.inc';
+    if (drush_get_option('drush-server')) {
+      $server = new DrushServer(array(
+        'addr' => $addr,
+        'port' => $uri['port'],
+        'hostname' => $hostname,
+        'site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'),
+        'server_id' => 'Drush runserver',
+        'php_cgi' => drush_get_option('php-cgi', 'php-cgi') . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"',
+        'env' => $env,
+        'debug' => drush_get_context('DRUSH_DEBUG'),
+      ));
+      $server->run_forever();
+    }
+    else {
+      // Create a new httpserver instance and start it running.
+      $server = new DrupalServer(array(
+        'addr' => $addr,
+        'port' => $uri['port'],
+        'browse' => $browse,
+        'hostname' => $hostname,
+        'site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'),
+        'server_id' => 'Drush runserver',
+        'php_cgi' => drush_get_option('php-cgi', 'php-cgi') . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"',
+        'env' => $env,
+        'debug' => drush_get_context('DRUSH_DEBUG'),
+      ));
+      $server->run_forever();
+    }
   }
 }
 
