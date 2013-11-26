@@ -134,9 +134,9 @@ function drush_core_runserver_validate() {
 function drush_core_runserver($uri = NULL) {
   global $user, $base_url;
 
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL);
   // If we are running `drush-server`, we don't need to bootstrap Drupal.
   if (!drush_get_option('drush-server')) {
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL);
     if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
       return drush_set_error('RUNSERVER_NO_BOOTSTRAP', 'Unable to bootstrap Drupal site.');
     }
