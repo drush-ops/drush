@@ -27,17 +27,11 @@ class DrushServer extends HTTPServer {
     drush_print(dt('Drush Server: Running command !cmd', array('!cmd' => $command)));
     $data = shell_exec($command);
     $output = drush_backend_parse_output($data);
-    $error_log = '';
     if ($output['error_log']) {
-      foreach ($output['error_log'] as $type => $value) {
-        $error_log .= $type . ': ';
-        $error_log .= implode('; ', $value);
-        $error_log .= "\n";
-      }
-      $local_file = drush_save_data_to_temp_file($error_log);
+      $local_file = drush_save_data_to_temp_file(json_encode($output['error_log']));
     }
     elseif (!$output['output']) {
-      $local_file = drush_save_data_to_temp_file(dt('There was an error processing the request: !request', array('!request' => $request->uri)));
+      $local_file = drush_save_data_to_temp_file(json_encode(dt('There was an error processing the request: !request', array('!request' => $request->uri))));
     }
     else {
       $local_file = drush_save_data_to_temp_file($output['output']);
