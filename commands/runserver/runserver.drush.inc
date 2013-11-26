@@ -47,7 +47,7 @@ function runserver_drush_command() {
 
   $items['runserver'] = array(
     'description' => 'Runs a lightweight built in http server for development.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'arguments' => array(
       'addr:port/path' => 'Host IP address and port number to bind to and path to open in web browser. Format is addr:port/path, default 127.0.0.1:8888, all elements optional. See examples for shorthand.',
     ),
@@ -134,6 +134,14 @@ function drush_core_runserver_validate() {
 function drush_core_runserver($uri = NULL) {
   global $user, $base_url;
 
+  // If we are running `drush-server`, we don't need to bootstrap Drupal.
+  if (!drush_get_option('drush-server')) {
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+    if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+      return drush_set_error('RUNSERVER_NO_BOOTSTRAP', 'Unable to bootstrap Drupal site.');
+    }
+  }
+
   // Determine active configuration.
   $drush_default = array(
     'host' => '127.0.0.1',
@@ -165,7 +173,6 @@ function drush_core_runserver($uri = NULL) {
     }
   }
   drush_set_context('DRUSH_URI', 'http://' . $hostname . ':' . $uri['port']);
-
 
   // We pass in the currently logged in user (if set via the --user option),
   // which will automatically log this user in the browser during the first
@@ -199,17 +206,18 @@ function drush_core_runserver($uri = NULL) {
   }
   $env['RUNSERVER_CONF'] = urlencode(serialize($override));
 
-  // We log in with the specified user ID (if set) via the password reset URL.
-  // $user_message = '';
-  if (!drush_get_option('drush-server') && drush_get_user_id()) {
-    $options = array('query' => array('destination' => $path));
-    $browse = url(user_pass_reset_url($user) . '/login', $options);
-    $user_message = ', logged in as ' . drush_get_user_name();
+  if (!drush_get_option('drush-server')) {
+    // We log in with the specified user ID (if set) via the password reset URL.
+    // $user_message = '';
+    if (drush_get_user_id()) {
+      $options = array('query' => array('destination' => $path));
+      $browse = url(user_pass_reset_url($user) . '/login', $options);
+      $user_message = ', logged in as ' . drush_get_user_name();
+    }
+    else {
+      $browse = url($path);
+    }
   }
-  else {
-    $browse = url($path);
-  }
-
   drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
   if (drush_get_option('server', FALSE) == 'builtin') {
     // Start php 5.4 builtin server.

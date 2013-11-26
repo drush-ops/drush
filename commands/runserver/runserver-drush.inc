@@ -20,8 +20,11 @@ class DrushServer extends HTTPServer {
    * of CGI environment variables here.
    */
   function route_request($request) {
-    $drush_command = ltrim($request->uri, '/');
-    $command = sprintf('/usr/bin/drush %s --backend --root=%s', $drush_command, DRUPAL_ROOT);
+    drush_shell_exec('which drush');
+    $drush_command = drush_shell_exec_output();
+    $drush_args = ltrim($request->uri, '/');
+    $command = sprintf('%s %s --backend', array_shift($drush_command), $drush_args);
+    drush_print(dt('Drush Server: Running command !cmd', array('!cmd' => $command)));
     $data = shell_exec($command);
     $output = drush_backend_parse_output($data);
     $error_log = '';
