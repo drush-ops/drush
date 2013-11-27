@@ -522,7 +522,7 @@ function _drush_user_print_info($account) {
 function _drush_user_get_users_from_arguments($users) {
   $uids = array();
   if ($users !== '') {
-    $users = explode(',', $users);
+    $users = _convert_csv_to_array($users);
     foreach($users as $user) {
       $uid = _drush_user_get_uid($user);
       if ($uid !== FALSE) {
