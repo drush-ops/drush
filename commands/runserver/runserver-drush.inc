@@ -35,7 +35,7 @@ class DrushServer extends HTTPServer {
       $local_file = drush_save_data_to_temp_file(json_encode($output['error_log']));
     }
     elseif (!$output['output']) {
-      $local_file = drush_save_data_to_temp_file(json_encode(dt('There was an error processing the request: !request', array('!request' => $request->uri))));
+      $local_file = drush_save_data_to_temp_file(json_encode(dt('Successfully ran the command: !request', array('!request' => $request->uri))));
     }
     else {
       $local_file = drush_save_data_to_temp_file($output['output']);
