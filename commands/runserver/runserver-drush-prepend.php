@@ -5,7 +5,7 @@
  * Code for exposing Drush as a web service using PHP's built in server.
  */
 
-$drush_args = ltrim($_SERVER['SCRIPT_NAME'], '/');
+$drush_args = ltrim($_SERVER['PATH_INFO'], '/');
 $drush_executable = trim(shell_exec('which drush'));
 $command = sprintf('%s %s --backend', $drush_executable, $drush_args);
 error_log(sprintf('Drush Server: Running command %s', $command));
