@@ -225,14 +225,19 @@ function drush_core_runserver($uri = NULL) {
     foreach ($env as $key => $value) {
       putenv($key . '=' . $value);
     }
-    if (!empty($uri['path'])) {
+    if (!empty($uri['path']) && !drush_get_option('drush-server')) {
       // Start a browser if desired. Include a 2 second delay to allow the
       // server to come up.
       drush_start_browser($browse, 2);
     }
     // Start the server using 'php -S'.
     $php = drush_get_option('php');
-    drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"');
+    if (drush_get_option('drush-server')) {
+      drush_shell_exec_interactive(sprintf('%s -S %s:%s %s', $php, $addr, $uri['port'], DRUSH_BASE_PATH . '/commands/runserver/runserver-drush-prepend.php'));
+    }
+    else {
+      drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"');
+    }
   }
   else {
     // Include the library and our class that extends it.
