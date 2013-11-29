@@ -8,6 +8,7 @@ use Fhaculty\Graph\Uml\ClassDiagramBuilder;
 
 require __DIR__ . '/bootstrap.php';
 
+define('DRUPAL_ANONYMOUS_RID', 0);
 // initialize empty graph and an UML builder
 $graph = new Graph();
 $builder = new ClassDiagramBuilder($graph);
