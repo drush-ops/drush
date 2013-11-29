@@ -1,0 +1,18 @@
+What old style classes do we have?
+
+$ grep -r "^class" . | grep -v vendor/ | grep -v tests/
+
+Next we ignore the Symfony tree which has the old class loader
+
+$ grep -r "^class" . | grep -v vendor | grep -v tests/ | cut -c 1-14 | sort -u
+./classes/Drus
+./commands/cor
+./commands/mak
+./commands/pm/
+./commands/run
+./includes/bat
+./includes/cac
+./lib/Console_
+./lib/Yaml-2.2
+
+We need to add all directories containing classes except ./lib/
