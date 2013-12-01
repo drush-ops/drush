@@ -404,7 +404,14 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       else {
         make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project.', array('%type' => $project['type'], '%project' => $project['name'])));
       }
+      // Set the cache option based on our '--no-cache' option.
+      $cache_before = drush_get_option('cache');
+      if (!drush_get_option('no-cache', FALSE)) {
+        drush_set_option('cache', TRUE);
+      }
       $project->make();
+      // Restore the previous '--cache' option value.
+      drush_set_option('cache', $cache_before);
     }
   }
 
