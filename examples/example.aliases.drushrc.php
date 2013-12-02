@@ -263,7 +263,7 @@
 #    'path-aliases' => array(
 #      '%drush' => '/path/to/drush',
 #      '%drush-script' => '/path/to/drush/drush',
-#      '%dump-dir' => '/path/to/dumps/',
+#      '%dump-dir' => '/path/to/dumps',
 #      '%files' => 'sites/mydrupalsite.com/files',
 #      '%custom' => '/my/custom/path',
 #     ),
