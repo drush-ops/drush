@@ -41,7 +41,7 @@ REQUIREMENTS
 INSTALL - COMPOSER
 ------------------
 
-* [Install Composer globally][composer-install].
+* [Install Composer globally.](http://getcomposer.org/doc/00-intro.md#system-requirements)
 * Make sure Composer's global bin directory is on the system PATH:
 
         echo 'export PATH=$HOME/.composer/vendor/bin:$PATH' >> $HOME/.zshrc
@@ -56,9 +56,9 @@ composer global require drush/drush:6.x-dev
 composer global require drush/drush:7.x-dev
 ```
 
-NOTE: Only [specific drush versions][drush-packagist] are available for
+NOTE: Only [specific Drush versions](https://packagist.org/packages/drush/drush) are available for
 this method. Please see the Composer docs for
-[fuller explanation of the command syntax][composer-cmd-require].
+[fuller explanation of the command syntax.](http://getcomposer.org/doc/03-cli.md#require)
 
 INSTALL - PEAR
 -----------
@@ -426,8 +426,3 @@ CREDITS
   Owen Barton, greg.1.anderson, jonhattan, Mark Sonnabaum, and Jonathan Hedstrom.
 
 ![Drush Logo](drush_logo-black.png)
-
-<!-- Links -->
-   [drush-packagist]:      https://packagist.org/packages/drush/drush
-   [composer-install]:     http://getcomposer.org/doc/00-intro.md#system-requirements
-   [composer-cmd-require]: http://getcomposer.org/doc/03-cli.md#require
