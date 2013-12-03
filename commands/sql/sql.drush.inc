@@ -14,7 +14,7 @@ function sql_drush_help($section) {
     case 'meta:sql:summary':
       return dt('Examine and modify your Drupal database.');
     case 'drush:sql-sanitize':
-      return dt('Run sanitization operations on the current database. You can add more sanitization to this command by implementing hook_drush_sql_sanitize().');
+      return dt('Run sanitization operations on the current database. You can add more sanitization to this command by implementing hook_drush_sql_sync_sanitize().');
   }
 }
 
