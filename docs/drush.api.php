@@ -268,8 +268,8 @@ function drush_hook_pre_pm_enable() {
  */
 function hook_drush_sql_sync_sanitize($source) {
   drush_sql_register_post_sync_op('my-sanitize-id',
-    dt('Reset passwords and email addresses in user table'),
-    "update users set pass = MD5('password'), mail = concat('user+', uid, '@localhost') where uid > 0;");
+    dt('Reset passwords and email addresses in user table.'),
+    "UPDATE users SET pass = MD5('password'), mail = concat('user+', uid, '@localhost') WHERE uid > 0;");
 }
 
 /**
