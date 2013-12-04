@@ -1266,10 +1266,6 @@ function drush_command_invoke_all_ref($hook, &$reference_parameter) {
   $args[0] = &$reference_parameter;
   $return = array();
   $modules = drush_command_implements($hook);
-  if ($hook != 'drush_invoke_alter') {
-    // Allow modules to control the order of hook invocations
-    drush_command_invoke_all_ref('drush_invoke_alter', $modules, $hook);
-  }
   foreach ($modules as $module) {
     $function = $module .'_'. $hook;
     $result = call_user_func_array($function, $args);
@@ -1300,6 +1296,11 @@ function drush_command_implements($hook) {
       $implementations[$hook][] = $commandfile;
     }
   }
+  if ($hook != 'drush_command_implements_alter') {
+    // Allow modules to control the order of hook invocations
+    drush_command_invoke_all_ref('drush_command_implements_alter', $implementations, $hook);
+  }
+
   return (array)$implementations[$hook];
 }
 
