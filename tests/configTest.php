@@ -28,13 +28,13 @@ class ConfigCase extends Drush_CommandTestCase {
     $this->drush('config-get', array('system.site', 'name'), $options);
     $this->assertEquals("'system.site:name': config_test\n", $this->getOutput(), 'Config was successfully set and get.');
 
-    // @todo, test that config-view or similar matches what filesystem says.
-    //$this->drush('config-view', array(), $options);
+    // @todo, test that config-get or similar matches what filesystem says.
+    //$this->drush('config-get', array(), $options);
     //$system_site_file = $options['root'] . '/sites/' . key($sites) . '/files/' . $config_directories['staging']['path'] . '/system.site.yml';
     //$this->assertFileExists($system_site_file);
     //$this->drush('config-get', array('system.site'), $options);
-    //$config_view_yaml = $this->getOutput();
-    //$this->assertEquals($config_view_yaml, file_get_contents($system_site_file), 'Config-view displays YAML that matches the config management system.');
+    //$config_get_yaml = $this->getOutput();
+    //$this->assertEquals($config_get_yaml, file_get_contents($system_site_file), 'Config-get displays YAML that matches the config management system.');
 
     $this->drush('config-list', array(), $options);
     $result = $this->getOutputAsList();

@@ -41,7 +41,7 @@ function config_drush_command() {
       ),
     ),
     'examples' => array(
-      'drush config-view system.site' => 'Displays the system.site config.',
+      'drush config-get system.site' => 'Displays the system.site config.',
       'drush config-get system.site page.front' => 'gets system.site:page.front value.',
     ),
     'outputformat' => array(
