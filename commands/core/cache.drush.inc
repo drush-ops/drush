@@ -156,6 +156,14 @@ function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire =
     $data = stream_get_contents(STDIN);
   }
 
+  // Convert the "expire" argument to a valid value for Drupal's cache_set().
+  if ($expire == 'CACHE_TEMPORARY') {
+    $expire = CACHE_TEMPORARY;
+  }
+  if ($expire == 'CACHE_PERMANENT') {
+    $expire = CACHE_PERMANENT;
+  }
+
   // Now, we parse the object.
   switch (drush_get_option('format', 'string')) {
     case 'json':
@@ -164,7 +172,19 @@ function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire =
   }
 
   if (drush_get_option('cache-get')) {
-    $data = $data->data;
+    // $data might be an object.
+    if (is_object($data) && $data->data) {
+      $data = $data->data;
+    }
+    // But $data returned from `drush cache-get --format=json` will be an array.
+    elseif (is_array($data) && isset($data['data'])) {
+      $data = $data['data'];
+    }
+    else {
+      // If $data is neither object nor array and cache-get was specified, then
+      // there is a problem.
+      return drush_set_error('CACHE_INVALID_FORMAT', dt("'cache-get' was specified as an option, but the data is neither an object or an array."));
+    }
   }
 
   cache_set($cid, $data, $bin, $expire);
