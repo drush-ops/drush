@@ -1034,9 +1034,9 @@ function drush_bootstrap_prepare() {
   // PHP_VERSION, such as runserver/runserver.drush.inc, and also
   // adjust _drush_environment_check_php_ini() and the php_prohibited_options
   // list in the drush script.  See http://drupal.org/node/1748228
-  define('DRUSH_MINIMUM_PHP', '5.3.3');
+  define('DRUSH_MINIMUM_PHP', '5.3.0');
   if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0 && !getenv('DRUSH_NO_MIN_PHP')) {
-    return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Your command line PHP installation is too old. Drush requires at least PHP !version.', array('!version' => DRUSH_MINIMUM_PHP)));
+    return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Your command line PHP installation is too old. Drush requires at least PHP !version. To suppress this check, set the environment variable DRUSH_NO_MIN_PHP=1', array('!version' => DRUSH_MINIMUM_PHP)));
   }
 
   $drush_info = drush_read_drush_info();

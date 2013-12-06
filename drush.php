@@ -5,7 +5,7 @@
  * @file
  * drush is a PHP script implementing a command line shell for Drupal.
  *
- * @requires PHP CLI 5.3.5, or newer.
+ * @requires PHP CLI 5.3.0, or newer.
  */
 
 require(dirname(__FILE__) . '/includes/bootstrap.inc');
