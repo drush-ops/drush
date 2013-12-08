@@ -1127,15 +1127,7 @@ function drush_shutdown() {
     }
   }
 
-  /**
-   * For now, drush skips end of page processing on D7. Doing so could write
-   * cache entries to module_implements and lookup_cache that don't match web requests.
-   */
-  // if (drush_drupal_major_version() >= 7 && function_exists('drupal_page_footer')) {
-    // drupal_page_footer();
-  // }
-
-  // this way drush_return_status will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
+  // This way drush_return_status() will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
   // and won't prevent other registered shutdown functions (IE from numerous cron methods) from running by calling exit() before they get a chance.
   register_shutdown_function('drush_return_status');
 }
