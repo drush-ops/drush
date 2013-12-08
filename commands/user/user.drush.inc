@@ -407,6 +407,11 @@ function drush_user_password($name) {
       if (empty($pass)) {
         $pass = drush_prompt(dt('Password'), NULL, TRUE, TRUE);
       }
+       if (drush_drupal_major_version() >= 8) {
+         $user->pass = $pass;
+         require_once DRUPAL_ROOT . '/' . settings()->get('session_inc', 'core/includes/session.inc');
+         $user_object = $user->save();
+       }
       drush_include_engine('drupal', 'user', drush_drupal_major_version());
       $user_object = drush_op('_drush_user_password', $user, $pass);
       if ($user_object === FALSE) {
