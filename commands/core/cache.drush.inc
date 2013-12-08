@@ -106,7 +106,9 @@ function drush_cache_command_clear($type = NULL) {
       drush_op($types[$type]);
     }
   }
-  if ($type !== FALSE) {
+  if ($type == 'drush'){
+    drush_log(dt("No Drupal site found, only '!name' cache was cleared.", array('!name' => $type)), 'warning');
+  } else if ($type !== FALSE) {
     drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), 'success');
   }
 }
