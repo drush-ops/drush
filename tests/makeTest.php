@@ -124,6 +124,15 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('recursion-override');
   }
 
+  function testMakeNoRecursion() {
+    $config = $this->getMakefile('recursion');
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+
+    $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'norecursion';
+    $this->drush('make', array('--no-core', '--no-recursion', $makefile, $install_directory));
+    $this->assertNotContains("ctools", $this->getOutput(), "Make with --no-recursion does not recurse into drupal_forum to download ctools.");
+  }
+
   function testMakeSvn() {
     // Silently skip svn test if svn is not installed.
     exec('which svn', $output, $whichSvnErrorCode);
