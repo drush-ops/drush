@@ -49,6 +49,11 @@ class DrushMakeProject {
   protected $overwrite = TRUE;
 
   /**
+   * Recursively process any makefiles found in downloaded projects.
+   */
+  protected $do_recursion = TRUE;
+
+  /**
    * Set attributes and retrieve project information.
    */
   protected function __construct($project) {
@@ -519,6 +524,11 @@ class DrushMakeProject {
    * processing.
    */
   function recurse($path) {
+    if (!$this->do_recursion || drush_get_option('no-recursion')) {
+      drush_log(dt("Preventing recursive makefile parsing for !project",
+                array("!project" => $this->name)), 'notice');
+      return TRUE;
+    }
     $makefile = $this->download_location . '/' . $this->name . '.make';
     if (!file_exists($makefile)) {
       $makefile = $this->download_location . '/drupal-org.make';

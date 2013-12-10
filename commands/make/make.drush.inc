@@ -53,6 +53,7 @@ function make_drush_command() {
       'no-cache' => 'Do not use the pm-download caching (defaults to cache enabled).',
       'no-clean' => 'Leave temporary build directories in place instead of cleaning up after completion.',
       'no-core' => 'Do not require a Drupal core project to be specified.',
+      'no-recursion' => 'Do not recurse into the makefiles of any downloaded projects; you can also set [do_recursion] = 0 on a per-project basis in the makefile.',
       'no-patch-txt' => 'Do not write a PATCHES.txt file in the directory of each patched project.',
       'no-gitinfofile' => 'Do not modify .info files when cloning from Git.',
       'prepare-install' => 'Prepare the built site for installation. Generate a properly permissioned settings.php and files directory.',
