@@ -244,9 +244,8 @@ function drush_core_runserver($uri = NULL) {
     $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
     $httpserverfile = $lib . '/' . DRUSH_HTTPSERVER_DIR_BASE . substr(DRUSH_HTTPSERVER_VERSION, 0, 7) . '/httpserver.php';
     require_once $httpserverfile;
-    require_once 'runserver-drupal.inc';
-    require_once 'runserver-drush.inc';
     if (drush_get_option('drush-server')) {
+      require_once 'runserver-drush.inc';
       $server = new DrushServer(array(
         'addr' => $addr,
         'port' => $uri['port'],
@@ -261,6 +260,7 @@ function drush_core_runserver($uri = NULL) {
     }
     else {
       // Create a new httpserver instance and start it running.
+      require_once 'runserver-drupal.inc';
       $server = new DrupalServer(array(
         'addr' => $addr,
         'port' => $uri['port'],

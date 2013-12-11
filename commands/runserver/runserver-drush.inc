@@ -31,16 +31,25 @@ class DrushServer extends HTTPServer {
     drush_print(dt('Drush Server: Running command !cmd', array('!cmd' => $command)));
     $data = shell_exec($command);
     $output = drush_backend_parse_output($data);
+    $response_data = '';
+    $status = 200;
     if ($output['error_log']) {
-      $local_file = drush_save_data_to_temp_file(json_encode($output['error_log']));
+      $header = array('Content-Type' => 'application/json');
+      $response_data = json_encode($output['error_log']);
+      $status = 500;
     }
     elseif (!$output['output']) {
-      $local_file = drush_save_data_to_temp_file(json_encode(dt('Successfully ran the command: !request', array('!request' => $request->uri))));
+      $header = array('Content-Type' => 'application/json');
+      $response_data = json_encode(dt('Successfully ran the command: !request', array('!request' => $request->uri)));
     }
     else {
-      $local_file = drush_save_data_to_temp_file($output['output']);
+      // Check if Drush output can be decoded as JSON and set headers appropriately.
+      if (json_decode($output['output'])) {
+        $header = array('Content-Type' => 'application/json');
+      }
+      $response_data = $output['output'];
     }
-    return $this->get_static_response($request, $local_file);
+    return $this->response($status, $response_data, $header, NULL);
   }
 
   /**
