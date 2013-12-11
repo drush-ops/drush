@@ -47,6 +47,22 @@ function drush_sitealias_check_site_env() {
 }
 
 /**
+ * Check to see if a '@self' record was created during bootstrap.
+ * If not, make one now.
+ */
+function drush_sitealias_create_self_alias() {
+  $self_record = drush_sitealias_get_record('@self');
+  if (!array_key_exists('root', $self_record) && !array_key_exists('remote-host', $self_record)) {
+    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $uri = drush_get_context('DRUSH_SELECTED_URI');
+    if (!empty($drupal_root) && !empty($uri)) {
+      // Create an alias '@self'
+      _drush_sitealias_cache_alias('@self', array('root' => $drupal_root, 'uri' => $uri));
+    }
+  }
+}
+
+/**
  * Given a list of alias records, shorten the name used if possible
  */
 function drush_sitealias_simplify_names($site_list) {
