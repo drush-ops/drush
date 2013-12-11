@@ -500,6 +500,10 @@ function _drush_bootstrap_drush() {
   // Check to see if we 'use'd a site alias with site-set
   drush_sitealias_check_site_env();
 
+  // If an alias was not created by drush_sitealias_check_arg()
+  // or drush_sitealias_check_site_env(), make one now.
+  drush_sitealias_create_self_alias();
+
   // Load the config options from Drupal's /drush and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
@@ -512,7 +516,9 @@ function _drush_bootstrap_drush() {
 
   // If drush_load_config defined a site alias that did not
   // exist before, then sitealias check arg might now match
-  // against one of those aliases.
+  // against one of those aliases.  This is also the place
+  // where we will find @self, if it was created via
+  // drush_sitealias_create_self_alias().
   if ((drush_sitealias_check_arg() === TRUE) || (drush_sitealias_check_site_env() === TRUE)) {
     $remote_host = drush_get_option('remote-host');
     if (!isset($remote_host)) {
