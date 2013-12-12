@@ -40,16 +40,3 @@ Cache
 In order to speed up test runs, Unish (the drush testing class) caches built Drupal sites
 and restores them as requested by tests. Once in while, you might need to clear this cache
 by deleting the <tmp>/drush-cache directory.
-
-Sendmail configuration
-----------------------
-Some tests create temporary Drupal sites, and call them in ways that cause
-Drupal to send email notifications to the default site administrator.  Depending
-on how sendmail is configured on the development system, this could result in
-email leaving the system, or could cause some tests to fail if sendmail returns
-error status codes due to undeliverable mail.
-
-To avoid these problems, edit the php.ini for your php cli, and change
-`sendmail_path` to point to a program that does nothing (e.g. a shell script
-that contains only `exit 0`).   See http://www.drupal4hu.com/node/55 for
-a short script that will record your test email messages in a file.
