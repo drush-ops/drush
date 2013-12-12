@@ -450,6 +450,10 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
       $cmd[] = '2>/dev/null';
     }
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs
+    // set sendmail_path to 'true' to disable any outgoing emails
+    // that tests might cause Drupal to send.
+    $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
+    $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
     return $this->execute(implode(' ', $exec), $expected_return, $env);
   }
 
