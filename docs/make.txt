@@ -349,9 +349,10 @@ build multiple install profiles on the same site, fetch library dependencies
 for a given module, or bundle a set of module and its dependencies together.
 For Drush Make to recognize a makefile embedded within a project, the makefile
 itself must have the same name as the project. For instance, the makefile
-embedded within the managingnews profile must be called "managingnews.make".
-The file should also be in the project's root directory. Subdirectories will
-be ignored.
+embedded within the managingnews profile must be called "managingnews.make". If
+no makefile matching the project's name is found, Drush Make will look for a
+"drupal-org.make" makefile instead. The file must be in the project's root
+directory. Subdirectories will be ignored.
 
 **Build a full Drupal site with the Managing News install profile:**
 
