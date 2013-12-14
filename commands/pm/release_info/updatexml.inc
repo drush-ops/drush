@@ -28,6 +28,7 @@ define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
  *            to choose.
  *    - always: Force the user to choose a release.
  *    - never: Try to select the latest release, if none found then fail.
+ *    - ignore: Ignore and return NULL.
  *   If no supported release is found, allow to ask the user to choose one.
  * @param Boolean $all
  *   In case $select = TRUE this indicates that all available releases will be
@@ -37,8 +38,8 @@ define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
  *  The selected release xml object.
  */
 function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $all = FALSE) {
-  if (!in_array($select, array('auto', 'never', 'always'))) {
-    return drush_set_error('DRUSH_PM_UNKNOWN_SELECT_STRATEGY', dt("Error: select strategy must be one of: auto, never, always", array()));
+  if (!in_array($select, array('auto', 'never', 'always', 'ignore'))) {
+    return drush_set_error('DRUSH_PM_UNKNOWN_SELECT_STRATEGY', dt("Error: select strategy must be one of: auto, never, always, ignore", array()));
   }
 
   $xml = updatexml_get_release_history_xml($request);
@@ -70,9 +71,13 @@ function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $al
     }
     else {
       if ($select == 'never') {
+        drush_log(dt('There are no stable releases for project !project.', array('!project' => $request['name'])), 'error');
         return drush_user_abort();
       }
       drush_log(dt('There are no stable releases for project !project.', array('!project' => $request['name'])), 'warning');
+      if ($select == 'ignore') {
+        return;
+      }
     }
   }
 
