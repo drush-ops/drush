@@ -366,7 +366,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
         if (!drush_get_option('no-cache', FALSE)) {
           drush_set_option('cache', TRUE);
         }
-        $release = release_info_fetch($request);
+        $release = release_info_fetch($request, '', 'ignore');
         if ($release === FALSE) {
           return FALSE;
         }
