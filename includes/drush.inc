@@ -950,12 +950,14 @@ function drush_file_is_tarball($path) {
  *   Optional, if ommitted the tarball directory will be used as destination.
  * @param boolean $listing
  *   If TRUE, a listing of the tar contents will be returned on success.
+ * @param string $tar_extra_options
+ *   Extra options to be passed to the tar command.
  *
  * @return mixed
  *   TRUE on success, FALSE on fail. If $listing is TRUE, a file listing of the
  *   tarball is returned if the extraction reported success, instead of TRUE.
  */
-function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
+function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE, $tar_extra_options = '') {
   // Check if tarball is supported.
   if (!($mimetype = drush_file_is_tarball($path))) {
     return drush_set_error('TARBALL_EXTRACT_UNKNOWN_FORMAT', dt('Unable to extract !path. Unknown archive format.', array('!path' => $path)));
@@ -1000,7 +1002,7 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
       $tar_compression_flag = 'j';
     }
 
-    $return = drush_shell_cd_and_exec(dirname($path), "$tar -C %s -x%sf %s", $destination, $tar_compression_flag, basename($path));
+    $return = drush_shell_cd_and_exec(dirname($path), "$tar {$tar_extra_options} -C %s -x%sf %s", $destination, $tar_compression_flag, basename($path));
     if (!$return) {
       return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', array('!filename' => $path)));
     }
@@ -1039,7 +1041,7 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE) {
 
     // 3. Untar.
     $tar = drush_get_tar_executable();
-    $return = drush_shell_cd_and_exec(dirname($tmpfile), "$tar -xvf %s", basename($tmpfile));
+    $return = drush_shell_cd_and_exec(dirname($tmpfile), "$tar {$tar_extra_options} -xvf %s", basename($tmpfile));
     if (!$return) {
       return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', array('!filename' => $tmpfile)));
     }

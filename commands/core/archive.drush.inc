@@ -51,7 +51,7 @@ function archive_drush_command() {
       'db-su' => 'Account to use when creating the new database. Optional.',
       'db-su-pw' => 'Password for the "db-su" account. Optional.',
       'overwrite' => 'Allow drush to overwrite any files in the destination.',
-
+      'tar-options' => 'Options passed thru to the tar command.',
     ),
     'examples' => array(
       'drush archive-restore ./example.tar.gz' => 'Restore the files and databases for all sites in the archive.',
@@ -309,7 +309,10 @@ function archive_archive_dump_complete() {
 function drush_archive_restore($file, $site_id = NULL) {
   $tmp = drush_tempdir();
 
-  if (!$files = drush_tarball_extract($file, $tmp)) {
+  // Get the extra options for tar, if any
+  $tar_extra_options = drush_sitealias_evaluate_paths_in_options(drush_get_option('tar-options', ''));
+
+  if (!$files = drush_tarball_extract($file, $tmp, FALSE, $tar_extra_options)) {
     return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_EXTRACT', dt('Unable to extract site archive tarball to !tmp.', array('!tmp' => $tmp)));
   }
 
