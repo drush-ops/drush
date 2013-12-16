@@ -127,7 +127,12 @@ function drush_cache_command_get($cid = NULL, $bin = NULL) {
     $bin = 'cache';
   }
 
-  $result = cache_get($cid, $bin);
+  if (drush_drupal_major_version() >=8) {
+    $result = cache($bin)->get($cid);
+  }
+  else {
+    $result = cache_get($cid, $bin);
+  }
   if (empty($result)) {
     return drush_set_error('DRUSH_CACHE_OBJECT_NOT_FOUND', dt('The !cid object in the !bin cache bin was not found.', array('!cid' => $cid, '!bin' => $bin)));
   }
