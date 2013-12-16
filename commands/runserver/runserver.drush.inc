@@ -60,6 +60,7 @@ function runserver_drush_command() {
       'browser' => 'If opening a web browser, which browser to user (defaults to operating system default).',
       'dns' => 'Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.',
       'drush-server' => 'Expose Drush as a web service. Run Drush commands by passing the command, arguments and options to the http server.',
+      'allowed-ips' => 'A comma-separated list of IPs that are allowed to access the server. If you do not pass this option, any IP may access the server.',
     ),
     'aliases' => array('rs'),
     'examples' => array(
@@ -126,6 +127,22 @@ function drush_core_runserver_validate() {
   if (!in_array($server, array('cgi', 'builtin'))) {
     return drush_set_error('RUNSERVER_INVALID', dt('Invalid server specified.'));
   }
+}
+
+/**
+ * Check if IP is allowed access to the runserver instance.
+ *
+ * N.B. This option is only valid when using the php-cgi binary and the
+ * HTTPServer class.
+ */
+function runserver_check_allowed_ips() {
+  if (drush_get_option('server', FALSE) !== 'builtin' && ($ips = drush_get_option('allowed-ips', FALSE))) {
+    $allowed_ips = explode(',', $ips);
+    if (!in_array($_SERVER['REMOTE_ADDR'], $allowed_ips)) {
+      return drush_set_error('RUNSERVER_DISALLOWED_IP', dt('The IP !ip is not in the list of allowed IPs.', array('!ip' => $_SERVER['REMOTE_ADDR'])));
+    }
+  }
+  return TRUE;
 }
 
 /**

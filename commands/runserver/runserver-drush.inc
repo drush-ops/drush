@@ -24,6 +24,10 @@ class DrushServer extends HTTPServer {
    * desired. Error output will always be displayed in JSON format.
    */
   function route_request($request) {
+    // Check if IP is allowed access to the runserver.
+    if (!runserver_check_allowed_ips()) {
+      return $this->response(403, json_encode('Access denied.'));
+    }
     drush_shell_exec('which drush');
     $drush_command = drush_shell_exec_output();
     $drush_args = ltrim($request->uri, '/');

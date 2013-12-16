@@ -20,6 +20,10 @@ class DrupalServer extends HTTPServer {
    * of CGI environment variables here.
    */
   function route_request($request) {
+    // Check if IP is allowed access to the runserver.
+    if (!runserver_check_allowed_ips()) {
+      return $this->response(403, 'Access denied.');
+    }
     $cgi_env = $this->env;
 
     // Handle static files and php scripts accessed directly
