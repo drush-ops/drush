@@ -292,7 +292,7 @@ function drush_cache_clear_drush() {
 function drush_cache_clear_both() {
   // We want Drupal 8 users to use the `drush rebuild` command instead.
   if (drush_drupal_major_version() >= 8) {
-    return drush_set_error('DRUSH_CC_ALL_DEPRECATED', '`clear-cache all` is deprecated for Drupal 8 and later. Please use the `rebuild` command instead.');
+    return drush_set_error('DRUSH_CC_ALL_DEPRECATED', dt('`clear-cache all` is deprecated for Drupal 8 and later. Please use the `rebuild` command instead.'));
   }
   drush_cache_clear_drush();
   if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
