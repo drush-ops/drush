@@ -61,7 +61,6 @@ function cache_drush_command() {
     'arguments' => array(),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
     'core' => array('8+'),
-    'callback' => 'drush_cache_rebuild',
   );
 
   return $items;
