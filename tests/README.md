@@ -40,4 +40,3 @@ Cache
 In order to speed up test runs, Unish (the drush testing class) caches built Drupal sites
 and restores them as requested by tests. Once in while, you might need to clear this cache
 by deleting the <tmp>/drush-cache directory.
-
