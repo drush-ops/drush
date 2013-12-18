@@ -70,11 +70,11 @@ function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $al
       return $release;
     }
     else {
+      $message = dt('There are no stable releases for project !project.', array('!project' => $request['name']));
       if ($select == 'never') {
-        drush_log(dt('There are no stable releases for project !project.', array('!project' => $request['name'])), 'error');
-        return drush_user_abort();
+        return drush_set_error('DRUSH_PM_NO_STABLE_RELEASE', $message);
       }
-      drush_log(dt('There are no stable releases for project !project.', array('!project' => $request['name'])), 'warning');
+      drush_log($message, 'warning');
       if ($select == 'ignore') {
         return;
       }
