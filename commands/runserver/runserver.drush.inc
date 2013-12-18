@@ -199,7 +199,8 @@ function drush_core_runserver($uri = NULL) {
 
   // We log in with the specified user ID (if set) via the password reset URL.
   $user_message = '';
-  if (drush_get_option('user', FALSE) && drush_get_user_id()) {
+  drush_include_engine('drupal', 'user', drush_drupal_major_version());
+  if (drush_get_user_id()) {
     $options = array('query' => array('destination' => $path));
     $browse = url(user_pass_reset_url($user) . '/login', $options);
     $user_message = ', logged in as ' . drush_get_user_name();
