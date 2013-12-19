@@ -124,13 +124,16 @@ function sql_drush_sql_sync_sanitize($site) {
     $message_list[] = 'email addresses';
   }
 
+  // Determine the default database prefix.
+  $db_prefix = isset($databases['default']['default']['prefix']) ? $databases['default']['default']['prefix'] : '';
+
   if (!empty($user_table_updates)) {
-    $sanitize_query = "UPDATE users SET " . implode(', ', $user_table_updates) . " WHERE uid > 0;";
+    $sanitize_query = "UPDATE {$db_prefix}users SET " . implode(', ', $user_table_updates) . " WHERE uid > 0;";
     drush_sql_register_post_sync_op('user-email', dt('Reset !message in user table', array('!message' => implode(' and ', $message_list))), $sanitize_query);
   }
 
   // Seems quite portable (SQLite?) - http://en.wikipedia.org/wiki/Truncate_(SQL)
-  $sql_sessions = 'TRUNCATE TABLE sessions;';
+  $sql_sessions = 'TRUNCATE TABLE ' . $db_prefix . 'sessions;';
   drush_sql_register_post_sync_op('sessions', dt('Truncate Drupal\'s sessions table'), $sql_sessions);
 }
 
