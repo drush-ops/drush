@@ -53,6 +53,16 @@ function cache_drush_command() {
     'callback' => 'drush_cache_command_set',
     'aliases' => array('cs'),
   );
+  $items['cache-rebuild'] = array(
+    'description' => 'Rebuild a Drupal 8 site and clear all its caches.',
+    // rebuild.php only bootstraps to DRUPAL_BOOTSTRAP_CONFIGURATION, so we'll
+    // do the same
+    'options' => array(),
+    'arguments' => array(),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'core' => array('8+'),
+    'aliases' => array('cr', 'rebuild'),
+  );
 
   return $items;
 }
@@ -75,6 +85,9 @@ function drush_cache_command_clear($type = NULL) {
 
   // Check if the provided type ($type) is a valid cache type.
   if ($type && !key_exists($type, $types)) {
+    if ($type === 'all' && drush_drupal_major_version() >= 8) {
+      return drush_set_error(dt('`cache-clear all` is deprecated for Drupal 8 and later. Please use the `cache-rebuild` command instead.'));
+    }
     // If we haven't done a full bootstrap, provide a more
     // specific message with instructions to the user on
     // bootstrapping a Drupal site for more options.
@@ -199,7 +212,6 @@ function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire =
  */
 function drush_cache_clear_types($include_bootstraped_types = FALSE) {
   $types = array(
-    'all' => 'drush_cache_clear_both',
     'drush' => 'drush_cache_clear_drush',
   );
   if ($include_bootstraped_types) {
@@ -213,17 +225,25 @@ function drush_cache_clear_types($include_bootstraped_types = FALSE) {
     );
   }
 
+  $drupal_version = drush_drupal_major_version();
+
   // D8 renamed menu_rebuild() (https://drupal.org/node/1561492).
-  if (drush_drupal_major_version() >= 8) {
+  if ($drupal_version >= 8) {
     $types['menu'] = 'menu_router_rebuild';
   }
 
-  if (drush_drupal_major_version() >= 7) {
+  if ($drupal_version >= 7) {
     $types['registry'] = 'registry_update';
   }
-  elseif (drush_drupal_major_version() == 6 && function_exists('module_exists') && module_exists('autoload')) {
+  elseif ($drupal_version == 6 && function_exists('module_exists') && module_exists('autoload')) {
     // TODO: move this to autoload module.
     $types['registry'] = 'autoload_registry_update';
+  }
+
+  // Don't allow "all" cache type on D8 and later - we want users to use the
+  // "cache-rebuild" command instead.
+  if ($drupal_version <= 7) {
+    $types['all'] = 'drush_cache_clear_both';
   }
 
   // Include the appropriate environment engine, so callbacks can use core
@@ -270,8 +290,25 @@ function drush_cache_clear_drush() {
  * Clear caches internal to Drush core and Drupal.
  */
 function drush_cache_clear_both() {
+  // We want Drupal 8 users to use the `drush cache-rebuild` command instead.
+  if (drush_drupal_major_version() >= 8) {
+    return drush_set_error('DRUSH_CC_ALL_DEPRECATED', dt('`clear-cache all` is deprecated for Drupal 8 and later. Please use the `cache-rebuild` command instead.'));
+  }
   drush_cache_clear_drush();
   if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
     drupal_flush_all_caches();
   }
+}
+
+/**
+ * Rebuild a Drupal 8 site.
+ */
+function drush_cache_rebuild() {
+  require_once DRUPAL_ROOT . '/core/includes/utility.inc';
+  // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it
+  // manually.
+  drupal_rebuild();
+  // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
+  // the Drush cache as well, for consistency with that behavior.
+  drush_cache_clear_drush();
 }
