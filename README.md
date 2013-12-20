@@ -286,8 +286,7 @@ Then, comment out the disable_functions line.
 In addition, if you are running on Linux, you may find that you need
 the php5-json package.  On Ubuntu, you can install it via:
 
-```apt-get install php5-json
-```
+`apt-get install php5-json`
 
 INSTALLING DRUSH ON WINDOWS:
 ----------------------------
