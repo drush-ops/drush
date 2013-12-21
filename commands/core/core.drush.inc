@@ -26,13 +26,13 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'allow-additional-options' => TRUE,
     'options' => array(
-      'sort' => 'Sort commands in alphabetical order. drush waits for full bootstrap before printing any commands when this option is used.',
+      'sort' => 'Sort commands in alphabetical order. Drush waits for full bootstrap before printing any commands when this option is used.',
       'filter' => array(
         'description' => 'Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.',
         'example-value' => 'category',
         'value' => 'optional',
       ),
-      'format' => 'Format to output . Allowed values are: json, export, html.',
+      'format' => 'Format to output . Allowed values are: json, var_export, html.',
       'html' => 'Print help for all commands in HTML format. Deprecated - see --format option.',
       'pipe' => 'A list of available commands, one per line.',
     ),
@@ -553,8 +553,13 @@ function _core_path_aliases($project = '') {
         $paths['%themes'] = 'sites/all/themes';
       }
       if (drush_drupal_major_version() >= 8 && drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
-        $paths['%config-active'] = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
-        $paths['%config-staging'] = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+        try {
+          $paths['%config-active'] = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
+          $paths['%config-staging'] = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+        }
+        catch (Exception $e) {
+          // Nothing to do.
+        }
       }
       if (drush_drupal_major_version() >= 7) {
         if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_SITE) {
@@ -1230,6 +1235,7 @@ function drush_core_version() {
  * that start with !.
  */
 function drush_core_execute() {
+  $result = TRUE;
   // Get all of the args and options that appear after the command name.
   $args = drush_get_original_cli_args_and_options();
   for ($x = 0; $x < sizeof($args); $x++) {
@@ -1241,12 +1247,40 @@ function drush_core_execute() {
   $cmd = implode(' ', $args);
   if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
     $site = drush_sitealias_get_record($alias);
-    if (!empty($site['remote-host'])) {
-      // Remote, so execute an ssh command with a bash fragment at the end.
-      $exec = drush_shell_proc_build($site, $cmd, TRUE);
-      return drush_shell_proc_open($exec);
+    if (!empty($site['site-list'])) {
+      $sites = drush_sitealias_resolve_sitelist($site);
+      foreach ($sites as $site_name => $site_spec) {
+        $result = _drush_core_execute_cmd($site_spec, $cmd);
+        if (!$result) {
+          break;
+        }
+      }
+    }
+    else {
+      $result = _drush_core_execute_cmd($site, $cmd);
     }
   }
-  // Must be a local command.
-  return drush_shell_proc_open($cmd);
+  else {
+    // Must be a local command.
+    $result = (drush_shell_proc_open($cmd) == 0);
+  }
+  if (!$result) {
+    return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
+  }
+  return $result;
+}
+
+/**
+ * Helper function for drush_core_execute: run one shell command
+ */
+function _drush_core_execute_cmd($site, $cmd) {
+  if (!empty($site['remote-host'])) {
+    // Remote, so execute an ssh command with a bash fragment at the end.
+    $exec = drush_shell_proc_build($site, $cmd, TRUE);
+    return (drush_shell_proc_open($exec) == 0);
+  }
+  elseif (!empty($site['root']) && is_dir($site['root'])) {
+    return (drush_shell_proc_open('cd ' . drush_escapeshellarg($site['root']) . ' && ' . $cmd) == 0);
+  }
+  return (drush_shell_proc_open($cmd) == 0);
 }

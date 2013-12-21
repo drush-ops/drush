@@ -51,7 +51,7 @@ function archive_drush_command() {
       'db-su' => 'Account to use when creating the new database. Optional.',
       'db-su-pw' => 'Password for the "db-su" account. Optional.',
       'overwrite' => 'Allow drush to overwrite any files in the destination.',
-
+      'tar-options' => 'Options passed thru to the tar command.',
     ),
     'examples' => array(
       'drush archive-restore ./example.tar.gz' => 'Restore the files and databases for all sites in the archive.',
@@ -153,21 +153,21 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $dest_dir = dirname($final_destination);
   $dt_args = array('!file' => $final_destination, '!dir' => $dest_dir);
   if (is_dir($final_destination)) {
-    drush_set_error('DRUSH_ARCHIVE_DEST_IS_DIR', dt('destination !file must be a file, not a directory.', $dt_args));
+    drush_set_error('DRUSH_ARCHIVE_DEST_IS_DIR', dt('Destination !file must be a file, not a directory.', $dt_args));
     return;
   }
   else if (file_exists($final_destination)) {
     if (!$overwrite) {
-      drush_set_error('DRUSH_ARCHIVE_DEST_EXISTS', dt('destination !file exists; specify --overwrite to overwrite.', $dt_args));
+      drush_set_error('DRUSH_ARCHIVE_DEST_EXISTS', dt('Destination !file exists; specify --overwrite to overwrite.', $dt_args));
       return;
     }
     else if (!is_writable($final_destination)) {
-      drush_set_error('DRUSH_ARCHIVE_DEST_FILE_NOT_WRITEABLE', dt('destination !file is not writable.', $dt_args));
+      drush_set_error('DRUSH_ARCHIVE_DEST_FILE_NOT_WRITEABLE', dt('Destination !file is not writable.', $dt_args));
       return;
     }
   }
   else if (!is_writable($dest_dir)) {
-    drush_set_error('DRUSH_ARCHIVE_DEST_DIR_NOT_WRITEABLE', dt('destination directory !dir is not writable.', $dt_args));
+    drush_set_error('DRUSH_ARCHIVE_DEST_DIR_NOT_WRITEABLE', dt('Destination directory !dir is not writable.', $dt_args));
     return;
   }
 
@@ -290,7 +290,6 @@ function drush_archive_dump($sites_subdirs = '@self') {
   }
 
   drush_log(dt('Archive saved to !dest', array('!dest' => $final_destination)), 'ok');
-  drush_print_pipe($final_destination);
   return $final_destination;
 }
 
@@ -310,7 +309,10 @@ function archive_archive_dump_complete() {
 function drush_archive_restore($file, $site_id = NULL) {
   $tmp = drush_tempdir();
 
-  if (!$files = drush_tarball_extract($file, $tmp)) {
+  // Get the extra options for tar, if any
+  $tar_extra_options = drush_sitealias_evaluate_paths_in_options(drush_get_option('tar-options', ''));
+
+  if (!$files = drush_tarball_extract($file, $tmp, FALSE, $tar_extra_options)) {
     return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_EXTRACT', dt('Unable to extract site archive tarball to !tmp.', array('!tmp' => $tmp)));
   }
 

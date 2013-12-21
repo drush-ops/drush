@@ -124,6 +124,15 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->runMakefileTest('recursion-override');
   }
 
+  function testMakeNoRecursion() {
+    $config = $this->getMakefile('recursion');
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+
+    $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'norecursion';
+    $this->drush('make', array('--no-core', '--no-recursion', $makefile, $install_directory));
+    $this->assertNotContains("ctools", $this->getOutput(), "Make with --no-recursion does not recurse into drupal_forum to download ctools.");
+  }
+
   function testMakeSvn() {
     // Silently skip svn test if svn is not installed.
     exec('which svn', $output, $whichSvnErrorCode);
@@ -507,7 +516,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Contrib-destination attribute',
         'makefile' => 'contrib-destination.make',
         'build'    => TRUE,
-        'md5' => 'd615d004adfa8ebfe44e91119b88389c',
+        'md5' => '2aed36201ede1849ce43d9b7d6f7e9e1',
         'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),
       ),
       'file' => array(
@@ -578,7 +587,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'name'     => 'Extract archives',
         'makefile' => 'file-extract.make',
         'build'    => TRUE,
-        'md5' => 'f92471fb7979e45d2554c61314ac6236',
+        'md5' => 'b43d271ab3510eb33c1e300c78893458',
         // @todo This test often fails with concurrency set to more than one.
         'options'  => array('no-core' => NULL, 'concurrency' => 1),
       ),

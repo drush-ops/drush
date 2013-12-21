@@ -72,7 +72,7 @@ class drush_outputformat_list extends drush_outputformat {
         // If the user specified exactly one field with --fields, then
         // use it to select the data column to use instead of the array key.
         if (isset($metadata['field-labels']) && (count($metadata['field-labels']) == 1)) {
-          $first_label = reset(array_keys($metadata['field-labels']));
+          $first_label = key($metadata['field-labels']);
           $input = drush_output_get_selected_field($input, $first_label);
         }
         else {

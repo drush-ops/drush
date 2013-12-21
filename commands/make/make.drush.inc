@@ -53,6 +53,7 @@ function make_drush_command() {
       'no-cache' => 'Do not use the pm-download caching (defaults to cache enabled).',
       'no-clean' => 'Leave temporary build directories in place instead of cleaning up after completion.',
       'no-core' => 'Do not require a Drupal core project to be specified.',
+      'no-recursion' => 'Do not recurse into the makefiles of any downloaded projects; you can also set [do_recursion] = 0 on a per-project basis in the makefile.',
       'no-patch-txt' => 'Do not write a PATCHES.txt file in the directory of each patched project.',
       'no-gitinfofile' => 'Do not modify .info files when cloning from Git.',
       'prepare-install' => 'Prepare the built site for installation. Generate a properly permissioned settings.php and files directory.',
@@ -168,7 +169,7 @@ function make_make_complete() {
 function drush_make($makefile = NULL, $build_path = NULL) {
   // If --version option is supplied, print it and bail.
   if (drush_get_option('version', FALSE)) {
-    drush_print(dt('drush make API version !version', array('!version' => MAKE_API)));
+    drush_print(dt('Drush make API version !version', array('!version' => MAKE_API)));
     drush_print_pipe(MAKE_API);
     return;
   }
@@ -211,9 +212,9 @@ function drush_make($makefile = NULL, $build_path = NULL) {
 function drush_make_process($directory) {
   // Set the temporary directory.
   make_tmp(TRUE, $directory);
-  $projects = drush_get_option('projects', FALSE);
+  $projects = drush_get_option('projects', array());
 
-  $manifest = drush_get_option('manifest', FALSE);
+  $manifest = drush_get_option('manifest', array());
 
   foreach ($projects as $project) {
     if ($instance = DrushMakeProject::getInstance($project['type'], $project)) {
@@ -221,7 +222,7 @@ function drush_make_process($directory) {
       $instance->make();
     }
     else {
-      make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $project['name'])));
+      make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project.', array('%type' => $project['type'], '%project' => $project['name'])));
     }
   }
 }
@@ -366,7 +367,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
         if (!drush_get_option('no-cache', FALSE)) {
           drush_set_option('cache', TRUE);
         }
-        $release = release_info_fetch($request);
+        $release = release_info_fetch($request, '', 'ignore');
         if ($release === FALSE) {
           return FALSE;
         }
@@ -402,9 +403,16 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
         $project = $instance;
       }
       else {
-        make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project', array('%type' => $project['type'], '%project' => $project['name'])));
+        make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project.', array('%type' => $project['type'], '%project' => $project['name'])));
+      }
+      // Set the cache option based on our '--no-cache' option.
+      $cache_before = drush_get_option('cache');
+      if (!drush_get_option('no-cache', FALSE)) {
+        drush_set_option('cache', TRUE);
       }
       $project->make();
+      // Restore the previous '--cache' option value.
+      drush_set_option('cache', $cache_before);
     }
   }
 
@@ -431,7 +439,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       // Add the project to this sub-process.
       $invocations[$thread]['options']['projects'][] = $project;
       // Add the manifest so recursive downloads do not override projects.
-      $invocations[$thread]['options']['manifest'] = $projects['contrib'];
+      $invocations[$thread]['options']['manifest'] = array_keys($projects['contrib']);
     }
     if (!empty($invocations)) {
       // Backend options.
@@ -519,7 +527,7 @@ function make_build_path($build_path) {
     return drush_user_abort(dt('Build aborted.'));
   }
   if ($build_path != '.' && file_exists($build_path)) {
-    return drush_set_error('MAKE_PATH_EXISTS', dt('Base path %path already exists', array('%path' => $build_path)));
+    return drush_set_error('MAKE_PATH_EXISTS', dt('Base path %path already exists.', array('%path' => $build_path)));
   }
   $saved_path = $build_path;
   return $build_path;
@@ -563,7 +571,7 @@ function make_move_build($build_path) {
   }
 
   if (!$ret) {
-    drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place"));
+    drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place."));
   }
   return $ret;
 }

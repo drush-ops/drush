@@ -302,14 +302,18 @@ function drush_core_help() {
 
     // Make a fake command section to hold the global options, then print it.
     $global_options_help = drush_global_options_command(TRUE);
-    if (!in_array($format, array('html', 'export', 'json')) && !drush_get_option('filter')) {
+    if (!in_array($format, array('html', 'var_export', 'json')) && !drush_get_option('filter')) {
       drush_print_help($global_options_help);
     }
 
-    if ($format == 'json' || $format == 'export') {
-      // Print giant array and return.
+    if ($format == 'json' || $format == 'var_export') {
+      // Print giant array, and set backend_result. We do it this way because this command
+      // isn't yet fully compliant with outputformat system. To do so, we need to deal with
+      // the fact that this command varies output significantly when showing help for one
+      // command versus a listing. We also have oddball HTML format.
       drush_print(drush_format($command_categories, 'commands'));
-      return $command_categories;
+      drush_backend_set_result($command_categories);
+      return NULL;
     }
     else {
       // HTML and CLI command listing (in a table).

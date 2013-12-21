@@ -40,6 +40,7 @@ function role_drush_command() {
   );
   $items['role-add-perm'] = array(
     'description' => 'Grant a specified permission to a role.',
+    // @todo Role names changed in D8. Alter them by version.
     'examples' => array(
       "drush role-add-perm 'anonymous user' 'post comments'" => 'Allow anonymous users to put their own advertisements on your site.',
       "drush role-add-perm 'authenticated user' --module=node" => 'Select a permission from "node" permissions to add to authenticated users.'
@@ -57,6 +58,7 @@ function role_drush_command() {
 
   $items['role-remove-perm'] = array(
     'description' => 'Remove a specified permission from a role.',
+    // @todo Role names changed in D8
     'examples' => array(
       "drush role-remove-perm 'anonymous user' 'access content'" => 'Hide content from anonymous users.',
     ),
@@ -73,6 +75,7 @@ function role_drush_command() {
 
   $items['role-list'] = array(
     'description' => 'Display a list of all roles defined on the system.  If a role name is provided as an argument, then all of the permissions of that role will be listed.  If a permission name is provided as an option, then all of the roles that have been granted that permission will be listed.',
+    // @todo Role names changed in D8. Alter them by version.
     'examples' => array(
       "drush role-list --filter='administer nodes'" => 'Display a list of roles that have the administer nodes permission assigned.',
       "drush role-list 'anonymous user'" => 'Display all of the permissions assigned to the anonymous user role.'
@@ -86,7 +89,7 @@ function role_drush_command() {
     'outputformat' => array(
       'default' => 'table',
       'pipe-format' => 'list',
-      'field-labels' => array('rid' => 'ID', 'role' => 'Role Name', 'perm' => "Permission"),
+      'field-labels' => array('rid' => 'ID', 'label' => 'Role Label', 'perm' => "Permission"),
       'output-data-type' => 'format-table',
     ),
     'aliases' => array('rls'),
@@ -202,19 +205,20 @@ function drush_role_list($rid = '') {
   $result = array();
   if (empty($rid)) {
     drush_hide_output_fields(array('perm'));
-    // get options passed
+    // Get options passed.
     $perm = drush_get_option('filter');
     $roles = array();
 
-    // get all roles - if $perm is empty user_roles retrieves all roles
+    // Get all roles - if $perm is empty user_roles retrieves all roles.
     $roles = user_roles(FALSE, $perm);
     if (empty($roles)) {
       return drush_set_error('DRUSH_NO_ROLES', dt("No roles found."));
     }
-    foreach ($roles as $rid => $role_name) {
-      $result[$role_name] = array(
+    foreach ($roles as $rid => $value) {
+      $role = drush_role_get_class($rid);
+      $result[$role->name] = array(
         'rid' => $rid,
-        'role' => $role_name,
+        'label' => $role->name,
       );
     }
   }

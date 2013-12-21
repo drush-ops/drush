@@ -28,6 +28,7 @@ define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
  *            to choose.
  *    - always: Force the user to choose a release.
  *    - never: Try to select the latest release, if none found then fail.
+ *    - ignore: Ignore and return NULL.
  *   If no supported release is found, allow to ask the user to choose one.
  * @param Boolean $all
  *   In case $select = TRUE this indicates that all available releases will be
@@ -37,8 +38,8 @@ define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
  *  The selected release xml object.
  */
 function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $all = FALSE) {
-  if (!in_array($select, array('auto', 'never', 'always'))) {
-    return drush_set_error('DRUSH_PM_UNKNOWN_SELECT_STRATEGY', dt("Error: select strategy must be one of: auto, never, always", array()));
+  if (!in_array($select, array('auto', 'never', 'always', 'ignore'))) {
+    return drush_set_error('DRUSH_PM_UNKNOWN_SELECT_STRATEGY', dt("Error: select strategy must be one of: auto, never, always, ignore", array()));
   }
 
   $xml = updatexml_get_release_history_xml($request);
@@ -69,10 +70,14 @@ function release_info_fetch(&$request, $restrict_to = '', $select = 'never', $al
       return $release;
     }
     else {
+      $message = dt('There are no stable releases for project !project.', array('!project' => $request['name']));
       if ($select == 'never') {
-        return drush_user_abort();
+        return drush_set_error('DRUSH_PM_NO_STABLE_RELEASE', $message);
       }
-      drush_log(dt('There are no stable releases for project !project.', array('!project' => $request['name'])), 'warning');
+      drush_log($message, 'warning');
+      if ($select == 'ignore') {
+        return;
+      }
     }
   }
 
@@ -200,7 +205,7 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
         continue;
       }
       $xml = simplexml_import_dom($dom);
-      $node_content = $xml->xpath('//*/div[@class="node-content"]');
+      $node_content = $xml->xpath('//div[@class="node node-project-release clearfix"]');
 
       // Prepare the project notes to print.
       $notes_last_update = $node_content[0]->div[1]->div[0]->asXML();
@@ -450,12 +455,16 @@ function updatexml_best_release_found($releases) {
   return (array)$releases[0];
 }
 
+function updatexml_get_url($request) {
+  $status_url = isset($request['status url']) ? $request['status url'] : RELEASE_INFO_DEFAULT_URL;
+  return $status_url . '/' . $request['name'] . '/' . $request['drupal_version'];
+}
+
 /**
  * Download the release history xml for the specified request.
  */
 function updatexml_get_release_history_xml($request) {
-  $status_url = isset($request['status url'])?$request['status url']:RELEASE_INFO_DEFAULT_URL;
-  $url =  $status_url . '/' . $request['name'] . '/' . $request['drupal_version'];
+  $url =  updatexml_get_url($request);
   drush_log('Downloading release history from ' . $url);
   // Some hosts have allow_url_fopen disabled.
   if ($path = drush_download_file($url, drush_tempnam($request['name']), drush_get_option('cache-duration-releasexml', 24*3600))) {
@@ -574,22 +583,18 @@ function updatexml_get_releases_from_xml($xml, $project) {
  */
 function updatexml_determine_project_type($xml) {
   $project_types = array(
-    'core' => 'Drupal core',
-    'profile' => 'Distributions',
-    'profile-legacy' => 'Installation profiles',
-    'module' => 'Modules',
-    'theme' => 'Themes',
-    'theme engine' => 'Theme engines',
-    'translation' => 'Translations'
+    'core' => 'project_core',
+    'profile' => 'project_distribution',
+    'module' => 'project_module',
+    'theme' => 'project_theme',
+    'theme engine' => 'project_theme_engine',
+    'translation' => 'project_translation'
   );
 
-  $project_types_xpath = '(value="' . implode('" or value="', $project_types) . '")';
-  $type = 'module';
-  if ($types = $xml->xpath('/project/terms/term[name="Projects" and ' . $project_types_xpath . ']')) {
-    $type = array_search($types[0]->value, $project_types);
-    $type = ($type == 'profile-legacy') ? 'profile' : $type;
-  }
-
+  $type = (string)$xml->type;
+  // Probably unused but kept for possible legacy compat.
+  $type = ($type == 'profile-legacy') ? 'profile' : $type;
+  $type = array_search($type, $project_types);
   return $type;
 }
 

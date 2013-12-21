@@ -34,8 +34,8 @@ class userCase extends Drush_CommandTestCase {
     $this->assertEquals('example@example.com', $output->mail);
     $this->assertEquals($name, $output->name);
     $this->assertEquals(1, $output->status, 'Newly created user is Active.');
-    $obj_authenticated = (object) array(2 => $authenticated);
-    $this->assertEquals(json_encode($obj_authenticated), json_encode($output->roles), 'Newly created user has one role.');
+    $expected = array($authenticated);
+    $this->assertEquals($expected, array_values((array)$output->roles), 'Newly created user has one role.');
 
     // user-block
     $this->drush('user-block', array($name), $options);
@@ -55,14 +55,15 @@ class userCase extends Drush_CommandTestCase {
     $this->drush('user-add-role', array('test role', $name), $options);
     $this->drush('user-information', array($name), $options + array('format' => 'json'));
     $output = $this->getOutputFromJSON('2');
-    $expected = (object) array(2 => $authenticated, 3 => 'test role');
-    $this->assertEquals(json_encode($expected), json_encode($output->roles), 'User has test role.');
+    $expected = array($authenticated, 'test role');
+    $this->assertEquals($expected, array_values((array)$output->roles), 'User has test role.');
 
     // user-remove-role
     $this->drush('user-remove-role', array('test role', $name), $options);
     $this->drush('user-information', array($name), $options + array('format' => 'json'));
     $output = $this->getOutputFromJSON('2');
-    $this->assertEquals(json_encode($obj_authenticated), json_encode($output->roles), 'User removed test role.');
+    $expected = array($authenticated);
+    $this->assertEquals($expected, array_values((array)$output->roles), 'User removed test role.');
 
     // user-password
     $newpass = 'newpass';

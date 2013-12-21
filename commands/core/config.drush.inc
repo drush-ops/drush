@@ -41,7 +41,7 @@ function config_drush_command() {
       ),
     ),
     'examples' => array(
-      'drush config-view system.site' => 'Displays the system.site config.',
+      'drush config-get system.site' => 'Displays the system.site config.',
       'drush config-get system.site page.front' => 'gets system.site:page.front value.',
     ),
     'outputformat' => array(
@@ -76,6 +76,15 @@ function config_drush_command() {
     ),
     'aliases' => array('cset'),
     'core' => array('8+'),
+  );
+
+  $items['config-export'] = array(
+    'description' => 'Export config from the active directory to staging directory.',
+    'core' => array('8+'),
+    'aliases' => array('cex'),
+    'options' => array(
+      'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
+    ),
   );
 
   $items['config-import'] = array(
@@ -236,6 +245,34 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
 }
 
 /**
+ * Command callback: Export config to staging directory.
+ */
+function drush_config_export() {
+  // Retrieve a list of differences between the active and staged configuration.
+  $active_dir = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
+  $staging_dir = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+
+  if (count(glob($staging_dir . '/*')) > 0) {
+    if (!drush_confirm(dt('The current contents of your staging directory (!staging) will be deleted.', array('!staging' => $staging_dir)))) {
+      return drush_user_abort();
+    }
+  }
+
+  if (drush_delete_dir_contents($staging_dir, TRUE)) {
+    // We specify the MERGE flag below in order to copy only contents, not the dir itself. Since
+    // The dir is empty, it is effectively a copy, not a merge.
+    drush_copy_dir($active_dir, $staging_dir, FILE_EXISTS_MERGE);
+  }
+  else {
+    return drush_set_error('DRUSH_CONFIG_EXPORT_DELETE', dt('Failed to empty staging directory.'));
+  }
+
+  if (drush_get_option('add')) {
+    drush_shell_exec_interactive('git add -p %s', $staging_dir);
+  }
+}
+
+/**
  * Command callback. Import from staging directory.
  */
 function drush_config_import() {
@@ -258,7 +295,8 @@ function _drush_config_import(StorageComparer $storage_comparer) {
     Drupal::service('event_dispatcher'),
     Drupal::service('config.factory'),
     Drupal::entityManager(),
-    Drupal::lock()
+    Drupal::lock(),
+    Drupal::service('uuid')
   );
   if ($config_importer->alreadyImporting()) {
     drush_log('Another request may be synchronizing configuration already.', 'warning');

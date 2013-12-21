@@ -11,7 +11,7 @@ SELF_DIRNAME="`dirname -- "$0"`"
 SELF_PATH="`cd -P -- "$SELF_DIRNAME" && pwd -P`/`basename -- "$0"`"
 
 # Decide if we are running a Unix shell on Windows
-if [ `which uname` ]; then
+if `which uname > /dev/null 2>&1`; then
   case "`uname -a`" in
     CYGWIN*)
       CYGWIN=1 ;;

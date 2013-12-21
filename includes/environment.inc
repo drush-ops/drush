@@ -13,7 +13,7 @@
 /**
  * Supported version of Console Table. This is displayed in the manual install help.
  */
-define('DRUSH_TABLE_VERSION', '1.1.3');
+define('DRUSH_TABLE_VERSION', '1.1.6');
 
 /**
  * Base URL for automatic file download of PEAR packages.
@@ -246,7 +246,9 @@ function drush_site_path($path = NULL) {
   }
   else {
     // Move up dir by dir and check each.
-    while ($path = _drush_shift_path_up($path)) {
+    // Stop if we get to a Drupal root.   We don't care
+    // if it is DRUSH_SELECTED_DRUPAL_ROOT or some other root.
+    while ($path = _drush_shift_path_up($path) && !drush_valid_drupal_root($path)) {
       if (file_exists($path . '/settings.php')) {
         $site_path = $path;
         break;
@@ -799,7 +801,17 @@ function drush_server_home() {
  * Return the name of the user running drush.
  */
 function drush_get_username() {
-  return drush_is_windows() ? getenv("username") : getenv("USER");
+  $name = NULL;
+  if (!$name = getenv("username")) { // Windows
+    if (!$name = getenv("USER")) {
+      // If USER not defined, use posix
+      if (function_exists('posix_getpwuid')) {
+        $processUser = posix_getpwuid(posix_geteuid());
+        $name = $processUser['name'];
+      }
+    }
+  }
+  return $name;
 }
 
 /**

@@ -13,6 +13,8 @@ function sql_drush_help($section) {
       return dt('SQL commands');
     case 'meta:sql:summary':
       return dt('Examine and modify your Drupal database.');
+    case 'drush:sql-sanitize':
+      return dt('Run sanitization operations on the current database. You can add more sanitization to this command by implementing hook_drush_sql_sync_sanitize().');
   }
 }
 
@@ -189,7 +191,7 @@ function sql_drush_command() {
           'hidden' => TRUE,
       ),
       'temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
-      'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.  Takes precedence over --temp.',
+      'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.',
       'create-db' => 'Create a new database before importing the database dump on the target machine.',
       'db-su' => array(
         'description' => 'Account to use when creating a new database. Optional.',
@@ -983,6 +985,8 @@ function drush_sql_cli() {
 
 /**
  * Command callback. Run's the sanitization operations on the current database.
+ *
+ * @see hook_drush_sql_sync_sanitize() for adding custom sanitize routines.
  */
 function drush_sql_sanitize() {
   if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
@@ -1132,6 +1136,7 @@ function drush_sql_dump_file(&$site_record) {
     // If the user has set the --dump-dir option, then
     // store persistant sql dump files there.
     $dump_dir = drush_sitealias_get_path_option($site_record, 'dump-dir');
+    $use_temp_file = drush_sitealias_get_path_option($site_record, 'temp') || !$dump_dir;
     $remote = isset($site_record['remote-host']);
     // If this is a remote site, try to find a writable tmpdir.
     if (!isset($dump_dir) && $remote) {
@@ -1156,15 +1161,20 @@ function drush_sql_dump_file(&$site_record) {
         $dump_dir = $result['object'];
       }
     }
-    $dump_file = drush_tempnam($filename_pattern, $dump_dir, $remote ? '.sql' : '');
-    // If $dump_dir does not exist, tempname will use the system
-    // directory instead.  That is the behavior we want on the local
-    // system, but on remote systems, force the result back to the
-    // specified directory.
-    if ($remote) {
-      $dump_file = $dump_dir . '/' . basename($dump_file);
+    if ($use_temp_file) {
+      $dump_file = drush_tempnam($filename_pattern, $dump_dir, $remote ? '.sql' : '');
+      // If $dump_dir does not exist, tempname will use the system
+      // directory instead.  That is the behavior we want on the local
+      // system, but on remote systems, force the result back to the
+      // specified directory.
+      if ($remote) {
+        $dump_file = $dump_dir . '/' . basename($dump_file);
+      }
+      $site_record['dump-is-temp'] = TRUE;
     }
-    $site_record['dump-is-temp'] = TRUE;
+    else {
+      $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
+    }
   }
 
   return $dump_file;

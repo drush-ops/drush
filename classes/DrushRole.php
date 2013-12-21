@@ -1,5 +1,8 @@
 <?php
 
+// For D8+.
+use Drupal\user\Entity\Role;
+
 abstract class DrushRole {
   /**
    * Drupal 6 and Drupal 7:
@@ -37,7 +40,8 @@ abstract class DrushRole {
 
     if (isset($this->roles[$rid])) {
       $this->rid = $rid;
-      $this->name = $this->roles[$rid];
+      // In D8+ Role is an object.
+      $this->name = is_object($this->roles[$rid]) ? $this->roles[$rid]->label() : $this->roles[$rid];
     }
     else {
       throw new DrushRoleException(dt('Could not find the role: !role', array('!role' => $rid)));
@@ -204,7 +208,37 @@ class DrushRole8 extends DrushRole7 {
     if (empty($role_human_readable_name)) {
       $role_human_readable_name = ucfirst($role_machine_name);
     }
-    return user_role_save((object)array('name' => $role_human_readable_name, 'rid' => $role_machine_name));
+    $role = new Role(array(
+      'id' => $role_machine_name,
+      'label' => $role_human_readable_name,
+    ), 'user_role');
+    $role->save();
+    return $role;
+  }
+
+  public function getPerms() {
+    $role = entity_load('user_role', $this->rid);
+    $perms = $role->getPermissions();
+    // $perms = user_role_permissions(array($this->rid => $this->name));
+    return $perms;
+  }
+
+  public function getModulePerms($module) {
+    $perms = module_invoke($module, 'permission');
+    return $perms ? array_keys($perms) : array();
+  }
+
+  public function delete() {
+    $role = entity_load('user_role', $this->rid);
+    $role->delete();
+  }
+
+  public function grant_permissions($perms) {
+    return drush_op('user_role_grant_permissions', $this->rid, $perms);
+  }
+
+  public function revoke_permissions($perms) {
+    return drush_op('user_role_revoke_permissions', $this->rid, $perms);
   }
 }
 

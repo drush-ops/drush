@@ -250,7 +250,7 @@ function drush_theme_disable($themes) {
  * @return
  *   Array of watchdog severity levels.
  */
-function core_watchdog_severity_levels() {
+function drush_watchdog_severity_levels() {
   return array(
     WATCHDOG_EMERG    => 'emergency',
     WATCHDOG_ALERT    => 'alert',
@@ -261,4 +261,41 @@ function core_watchdog_severity_levels() {
     WATCHDOG_INFO     => 'info',
     WATCHDOG_DEBUG    => 'debug',
   );
+}
+
+/**
+ * Helper function to obtain the message types based on drupal version.
+ *
+ * @return
+ *   Array of watchdog message types.
+ */
+function drush_watchdog_message_types() {
+  return drupal_map_assoc(_dblog_get_message_types());
+}
+
+/**
+ * Returns a queue object.
+ */
+function drush_queue_get($name) {
+  return DrupalQueue::get($name);
+}
+
+/**
+ * Returns all defined queues.
+ */
+function drush_queue_get_queues() {
+  static $queues;
+  if (!isset($queues)) {
+    $queues = module_invoke_all('cron_queue_info');
+    drupal_alter('cron_queue_info', $queues);
+    foreach($queues as $name => $queue) {
+      $queues[$name] = array(
+        'worker callback' => $queue['worker callback'],
+        'cron' => array(
+          'time' => $queue['time'],
+        ),
+      );
+    }
+  }
+  return $queues;
 }
