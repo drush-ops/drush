@@ -369,6 +369,17 @@ function core_drush_command() {
   );
   // Add in options/engines.
   drush_core_quick_drupal_options($items);
+
+  $items['drupal-rebuild'] = array(
+    'description' => 'Performs a rebuild of php storage and caches.',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'examples' => array(
+      'drush drupal-rebuild' => 'Rebuilds site php storage and caches.',
+    ),
+    'aliases' => array('dr'),
+    'core' => array('8+'),
+  );
+
   // Add in topics for engines
   $items += drush_get_engine_topics();
   return $items;
@@ -1268,6 +1279,15 @@ function drush_core_execute() {
     return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
   }
   return $result;
+}
+
+/**
+ * Command callback, drupal-rebuild.
+ */
+function drush_core_drupal_rebuild() {
+  require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
+  drupal_rebuild();
+  drush_log(dt('Drupal rebuild complete.'), 'ok');
 }
 
 /**
