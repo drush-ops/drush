@@ -31,10 +31,10 @@ class roleCase extends Drush_CommandTestCase {
     }
     $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
     $output = $this->getOutput();
-    $this->assertEquals('access content', $output);
+    $this->assertContains('access content', $output);
     $this->drush('role-list', array($authenticated), $options + array('pipe' => NULL) );
     $output = $this->getOutput();
-    $this->assertEquals('access content', $output);
+    $this->assertContains('access content', $output);
     $this->drush('role-add-perm', array($anonymous, 'administer nodes'), $options );
     $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
     $output = $this->getOutput();
@@ -42,6 +42,6 @@ class roleCase extends Drush_CommandTestCase {
     $this->drush('role-remove-perm', array($anonymous, 'administer nodes'), $options );
     $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
     $output = $this->getOutput();
-    $this->assertEquals('access content', $output);
+    $this->assertContains('access content', $output);
   }
 }

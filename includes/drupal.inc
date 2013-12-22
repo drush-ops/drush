@@ -40,10 +40,15 @@ function drush_drupal_version($drupal_root = NULL) {
 }
 
 function drush_drupal_cache_clear_all() {
-  $prior = drush_get_context('DRUSH_AFFIRMATIVE');
-  drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
-  drush_invoke('cache-clear', 'all');
-  drush_set_context('DRUSH_AFFIRMATIVE', $prior);
+  if (drush_drupal_major_version() >= 8) {
+    drush_invoke('cache-rebuild');
+  }
+  else {
+    $prior = drush_get_context('DRUSH_AFFIRMATIVE');
+    drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
+    drush_invoke('cache-clear', 'all');
+    drush_set_context('DRUSH_AFFIRMATIVE', $prior);
+  }
 }
 
 /**
