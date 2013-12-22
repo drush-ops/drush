@@ -44,11 +44,11 @@ function _drush_user_unblock($uids) {
   user_user_operations_unblock($uids);
 }
 
-function _drush_add_role($uids, $rid) {
+function _drush_user_add_role($uids, $rid) {
   user_multiple_role_edit($uids, 'add_role', $rid);
 }
 
-function _drush_remove_role($uids, $rid) {
+function _drush_user_remove_role($uids, $rid) {
   user_multiple_role_edit($uids, 'remove_role', $rid);
 }
 

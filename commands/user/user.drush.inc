@@ -261,22 +261,18 @@ function drush_user_unblock($users = '') {
  */
 function drush_user_add_role($role, $users = '') {
   $uids = _drush_user_get_users_from_options_and_arguments($users);
-  if (drush_drupal_major_version() >= 7) {
-    $rid_query = db_query("SELECT rid FROM {role} WHERE name = :role", array(':role' => $role));
+
+  try {
+    $role_object = drush_role_get_class($role);
+  } catch (Exception $e) {
+    return drush_set_error($e->getMessage());
   }
-  else {
-    $rid_query = db_query("SELECT rid FROM {role} WHERE name = '%s'", $role);
-  }
+
   if (!empty($uids)) {
-    if ($rid = drush_db_result($rid_query)) {
-      drush_include_engine('drupal', 'user', drush_drupal_major_version());
-      drush_op('_drush_add_role', $uids, $rid);
-      foreach($uids as $uid) {
-        drush_log(dt("Added the !role role to uid !uid", array('!role' => $role, '!uid' => $uid)), 'success');
-      }
-    }
-    else {
-      return drush_set_error(dt("There is no role named: !role", array('!role' => $role)));
+    drush_include_engine('drupal', 'user', drush_drupal_major_version());
+    drush_op('_drush_user_add_role', $uids, $role_object->rid);
+    foreach($uids as $uid) {
+      drush_log(dt("Added the !role role to uid !uid", array('!role' => $role, '!uid' => $uid)), 'success');
     }
   }
   else {
@@ -289,22 +285,17 @@ function drush_user_add_role($role, $users = '') {
  */
 function drush_user_remove_role($role, $users = '') {
   $uids = _drush_user_get_users_from_options_and_arguments($users);
-  if (drush_drupal_major_version() >= 7) {
-    $rid_query = db_query("SELECT rid FROM {role} WHERE name = :role", array(':role' => $role));
+  try {
+    $role_object = drush_role_get_class($role);
+  } catch (Exception $e) {
+    return drush_set_error($e->getMessage());
   }
-  else {
-    $rid_query = db_query("SELECT rid FROM {role} WHERE name = '%s'", $role);
-  }
+
   if (!empty($uids)) {
-    if ($rid = drush_db_result($rid_query)) {
-      drush_include_engine('drupal', 'user', drush_drupal_major_version());
-      drush_op('_drush_remove_role', $uids, $rid);
-      foreach($uids as $uid) {
-        drush_log(dt("Removed the !role role from uid !uid", array('!role' => $role, '!uid' => $uid)), 'success');
-      }
-    }
-    else {
-      return drush_set_error(dt("There is no role named: !role", array('!role' => $role)));
+    drush_include_engine('drupal', 'user', drush_drupal_major_version());
+    drush_op('_drush_user_remove_role', $uids, $role_object->rid);
+    foreach($uids as $uid) {
+      drush_log(dt("Removed the !role role from uid !uid", array('!role' => $role, '!uid' => $uid)), 'success');
     }
   }
   else {

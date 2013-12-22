@@ -25,15 +25,19 @@ class userCase extends Drush_CommandTestCase {
       'yes' => NULL,
     );
     $authenticated = 'authenticated';
+    $status_prop = 'status';
     if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
       $authenticated .= ' user';
+    }
+    else {
+      $status_prop = 'user_status';
     }
     $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => "example@example.com"));
     $this->drush('user-information', array($name), $options + array('format' => 'json'));
     $output = $this->getOutputFromJSON('2');
     $this->assertEquals('example@example.com', $output->mail);
     $this->assertEquals($name, $output->name);
-    $this->assertEquals(1, $output->status, 'Newly created user is Active.');
+    $this->assertEquals(1, $output->$status_prop, 'Newly created user is Active.');
     $expected = array($authenticated);
     $this->assertEquals($expected, array_values((array)$output->roles), 'Newly created user has one role.');
 
@@ -41,13 +45,13 @@ class userCase extends Drush_CommandTestCase {
     $this->drush('user-block', array($name), $options);
     $this->drush('user-information', array($name), $options + array('format' => 'json'));
     $output = $this->getOutputFromJSON('2');
-    $this->assertEquals(0, $output->status, 'User is blocked.');
+    $this->assertEquals(0, $output->$status_prop, 'User is blocked.');
 
     // user-unblock
     $this->drush('user-unblock', array($name), $options);
     $this->drush('user-information', array($name), $options + array('format' => 'json'));
     $output = $this->getOutputFromJSON('2');
-    $this->assertEquals(1, $output->status, 'User is unblocked.');
+    $this->assertEquals(1, $output->$status_prop, 'User is unblocked.');
 
     // user-add-role
     // first, create the fole since we use testing install profile.
@@ -68,14 +72,12 @@ class userCase extends Drush_CommandTestCase {
     // user-password
     $newpass = 'newpass';
     $this->drush('user-password', array($name), $options + array('password' => $newpass));
-    // There is no user_check_password in D6
+    // user_authenticate() is more complex in D6 so skip it.
     if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {
-      $eval = "require_once DRUSH_DRUPAL_CORE . '/' . variable_get('password_inc', 'includes/password.inc');";
-      $eval .= "\$account = user_load_by_name('example');";
-      $eval .= "print (string) user_check_password('$newpass', \$account)";
+      $eval = "return user_authenticate($name, '$newpass')";
       $this->drush('php-eval', array($eval), $options);
       $output = $this->getOutput();
-      $this->assertEquals('1', $output, 'User can login with new password.');
+      $this->assertEquals("'2'", $output, 'User can login with new password.');
     }
 
     // user-login
@@ -121,6 +123,10 @@ class userCase extends Drush_CommandTestCase {
 
     // user-cancel
     // create content
+    // @todo Creation of node types and content has changed in D8.
+    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
+      $this->markTestSkipped("@todo Creation of node types and content has changed in D8.");
+    }
     if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {
       // create_node_types script does not work for D6
       $this->drush('php-script', array('create_node_types'), $options + array('script-path' => dirname(__FILE__) . '/resources'));

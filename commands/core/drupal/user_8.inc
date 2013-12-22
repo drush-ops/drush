@@ -65,7 +65,7 @@ function _drush_user_unblock($uids) {
   }
 }
 
-function _drush_user_add_role($uids) {
+function _drush_user_add_role($uids, $rid) {
   foreach ($uids as $uid) {
     if ($account = user_load($uid)) {
       $account->addRole($rid);
@@ -74,7 +74,7 @@ function _drush_user_add_role($uids) {
   }
 }
 
-function _drush_user_remove_role($uids) {
+function _drush_user_remove_role($uids, $rid) {
   foreach ($uids as $uid) {
     if ($account = user_load($uid)) {
       $account->removeRole($rid);
