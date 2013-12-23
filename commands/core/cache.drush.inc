@@ -115,17 +115,16 @@ function drush_cache_command_clear($type = NULL) {
       unset($types['all']);
     }
     $type = drush_choice($types, 'Enter a number to choose which cache to clear.', '!key');
-    if ($type !== FALSE) {
-      drush_op($types[$type]);
+    if (empty($type)) {
+      return drush_user_abort();
     }
   }
-
+  // Do it.
+  drush_op($types[$type]);
   if ($type == 'all' && !drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
     drush_log(dt("No Drupal site found, only 'drush' cache was cleared."), 'warning');
   }
-  elseif ($type !== FALSE) {
-    drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), 'success');
-  }
+  drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), 'success');
 }
 
 /**
