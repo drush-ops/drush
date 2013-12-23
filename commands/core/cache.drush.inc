@@ -134,17 +134,9 @@ function drush_cache_command_clear($type = NULL) {
  * @param $cid
  *   The cache ID of the object to fetch.
  * @param $bin
- *   Optional parameter to specify a specific bin to fetch from.
+ *   A specific bin to fetch from.
  */
-function drush_cache_command_get($cid = NULL, $bin = NULL) {
-  if (!$cid) {
-    return drush_set_error('DRUSH_CACHE_NOT_SPECIFIED', dt('You must specify a cache id to fetch.'));
-  }
-
-  if (!$bin) {
-    $bin = 'cache';
-  }
-
+function drush_cache_command_get($cid = NULL, $bin = 'cache') {
   if (drush_drupal_major_version() >=8) {
     $result = cache($bin)->get($cid);
   }
