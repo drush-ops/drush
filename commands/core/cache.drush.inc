@@ -161,11 +161,7 @@ function drush_cache_command_get($cid = NULL, $bin = 'cache') {
  * @param $expire
  *   Optional parameter to specify the expiry of the cached object.
  */
-function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire = CACHE_PERMANENT) {
-  if (!$bin) {
-    $bin = 'cache';
-  }
-
+function drush_cache_command_set($cid = NULL, $data = '', $bin = 'cache', $expire = CACHE_PERMANENT) {
   if ($data == '-') {
     $data = stream_get_contents(STDIN);
   }
