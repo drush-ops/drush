@@ -536,6 +536,7 @@ function _core_site_credential_table($status_table) {
 
 function _core_path_aliases($project = '') {
   $paths = array();
+  $site_wide = drush_drupal_sitewide_directory();
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $paths['%root'] = $drupal_root;
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
@@ -544,13 +545,13 @@ function _core_path_aliases($project = '') {
         $paths['%modules'] = $modules_path;
       }
       else {
-        $paths['%modules'] = 'sites/all/modules';
+        $paths['%modules'] = ltrim($site_wide . '/modules', '/');
       }
       if (is_dir($themes_path = conf_path() . '/themes')) {
         $paths['%themes'] = $themes_path;
       }
       else {
-        $paths['%themes'] = 'sites/all/themes';
+        $paths['%themes'] = ltrim($site_wide . '/themes', '/');
       }
       if (drush_drupal_major_version() >= 8 && drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
         try {
