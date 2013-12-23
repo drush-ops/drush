@@ -77,12 +77,8 @@ function cache_cache_command_clear_complete() {
   return array('values' => array_keys(drush_cache_clear_types(TRUE)));
 }
 
-/**
- * Command callback for drush cache-clear.
- */
-function drush_cache_command_clear($type = NULL) {
+function drush_cache_clear_pre_validate($type = NULL) {
   $types = drush_cache_clear_types(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
-
   // Check if the provided type ($type) is a valid cache type.
   if ($type && !key_exists($type, $types)) {
     if ($type === 'all' && drush_drupal_major_version() >= 8) {
@@ -102,6 +98,13 @@ function drush_cache_command_clear($type = NULL) {
     }
     return drush_set_error(dt("'!type' cache is not a valid cache type.", array('!type' => $type)));
   }
+}
+
+/**
+ * Command callback for drush cache-clear.
+ */
+function drush_cache_command_clear($type = NULL) {
+  $types = drush_cache_clear_types(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
 
   if ($type) {
     drush_op($types[$type]);
