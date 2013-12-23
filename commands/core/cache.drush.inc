@@ -116,9 +116,11 @@ function drush_cache_command_clear($type = NULL) {
       drush_op($types[$type]);
     }
   }
+
   if ($type == 'all' && !drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
     drush_log(dt("No Drupal site found, only 'drush' cache was cleared."), 'warning');
-  } else if ($type !== FALSE) {
+  }
+  elseif ($type !== FALSE) {
     drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), 'success');
   }
 }

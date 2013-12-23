@@ -26,7 +26,7 @@ class SqlDumpTest extends Drush_CommandTestCase {
 
     $options = array(
       'result-file' => $full_dump_file_path,
-      'skip-tables-list' => 'role_permiss*',
+      'skip-tables-list' => 'histo*',
       'yes' => NULL,
     );
     $site_selection_options = array(
@@ -40,7 +40,7 @@ class SqlDumpTest extends Drush_CommandTestCase {
     // Test that we have sane contents.
     $this->assertContains('sequences', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
-    $this->assertNotContains('role_permission', $full_dump_file);
+    $this->assertNotContains('history', $full_dump_file);
     // Next, set up an alias file and run a couple of simulated
     // tests to see if options are propagated correctly.
     // Control: insure options are not set when not specified
@@ -52,7 +52,7 @@ class SqlDumpTest extends Drush_CommandTestCase {
     // Test that we have sane contents.
     $this->assertContains('sequences', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
-    $this->assertContains('role_permission', $full_dump_file);
+    $this->assertContains('history', $full_dump_file);
 
     $aliasPath = UNISH_SANDBOX . '/aliases';
     mkdir($aliasPath);
@@ -66,7 +66,7 @@ class SqlDumpTest extends Drush_CommandTestCase {
     'site' => 'stage',
     'command-specific' => array(
       'sql-dump' => array(
-        'skip-tables-list' => 'role_permiss*',
+        'skip-tables-list' => 'histo*',
       ),
     ),
   );
@@ -81,7 +81,7 @@ EOD;
     // Test that we have sane contents.
     $this->assertContains('sequences', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
-    $this->assertNotContains('role_permission', $full_dump_file);
+    $this->assertNotContains('history', $full_dump_file);
     // Repeat control test:  options not recovered in absence of an alias.
     unlink($full_dump_file_path);
     $this->drush('sql-dump', array(), array_merge($options, $site_selection_options));
@@ -90,7 +90,7 @@ EOD;
     // Test that we have sane contents.
     $this->assertContains('sequences', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
-    $this->assertContains('role_permission', $full_dump_file);
+    $this->assertContains('history', $full_dump_file);
     // Now run yet with @self, and test to see that Drush can recover the option
     // --skip-tables-list, defined in @test.
     unlink($full_dump_file_path);
@@ -100,6 +100,6 @@ EOD;
     // Test that we have sane contents.
     $this->assertContains('sequences', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
-    $this->assertNotContains('role_permission', $full_dump_file);
+    $this->assertNotContains('history', $full_dump_file);
   }
 }
