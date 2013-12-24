@@ -149,7 +149,7 @@ function drush_cache_command_get($cid = NULL, $bin = 'cache') {
 }
 
 /**
- * Validate $data when using --cache-get option.
+ * Set an object in the cache.
  *
  * @param $cid
  *   The cache ID of the object to fetch.
@@ -162,7 +162,31 @@ function drush_cache_command_get($cid = NULL, $bin = 'cache') {
  * @param $tags
  *   Cache tags for the cached object.
  */
-function drush_cache_set_pre_validate($cid = NULL, $data = '', $bin = 'cache', $expire = CACHE_PERMANENT, $tags = NULL) {
+function drush_cache_command_set($cid = NULL, $data = '', $bin = 'cache', $expire = CACHE_PERMANENT, $tags = NULL) {
+  // In addition to prepare, this also validates. Can't easily be in own validate callback as
+  // reading once from STDIN empties it.
+  $data = drush_cache_set_prepare_data($data);
+  if ($data === FALSE && drush_get_error()) {
+    // An error was logged above.
+    return;
+  }
+
+  // Convert the "expire" argument to a valid value for Drupal's cache_set().
+  if ($expire == 'CACHE_TEMPORARY') {
+    $expire = CACHE_TEMPORARY;
+  }
+  if ($expire == 'CACHE_PERMANENT') {
+    $expire = CACHE_PERMANENT;
+  }
+
+  cache_set($cid, $data, $bin, $expire);
+}
+
+function drush_cache_set_prepare_data($data) {
+  if ($data == '-') {
+    $data = file_get_contents("php://stdin");
+  }
+
   // Now, we parse the object.
   switch (drush_get_option('format', 'string')) {
     case 'json':
@@ -185,43 +209,8 @@ function drush_cache_set_pre_validate($cid = NULL, $data = '', $bin = 'cache', $
       return drush_set_error('CACHE_INVALID_FORMAT', dt("'cache-get' was specified as an option, but the data is neither an object or an array."));
     }
   }
-}
 
-/**
- * Set an object in the cache.
- *
- * @param $cid
- *   The cache ID of the object to fetch.
- * @param $data
- *   The data to save to the cache, or '-' to read from STDIN.
- * @param $bin
- *   A specific bin to fetch from.
- * @param $expire
- *   The expiry timestamp for the cached object.
- * @param $tags
- *   Cache tags for the cached object.
- */
-function drush_cache_command_set($cid = NULL, $data = '', $bin = 'cache', $expire = CACHE_PERMANENT, $tags = NULL) {
-  if ($data == '-') {
-    $data = stream_get_contents(STDIN);
-  }
-
-  // Convert the "expire" argument to a valid value for Drupal's cache_set().
-  if ($expire == 'CACHE_TEMPORARY') {
-    $expire = CACHE_TEMPORARY;
-  }
-  if ($expire == 'CACHE_PERMANENT') {
-    $expire = CACHE_PERMANENT;
-  }
-
-  // Now, we parse the object.
-  switch (drush_get_option('format', 'string')) {
-    case 'json':
-      $data = drush_json_decode($data);
-      break;
-  }
-
-  cache_set($cid, $data, $bin, $expire);
+  return $data;
 }
 
 /**
