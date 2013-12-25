@@ -425,13 +425,15 @@ function core_drush_engine_type_info() {
  * Implements hook_drush_engine_ENGINE_TYPE().
  */
 function core_drush_engine_drupal() {
-  $engines = array();
-  $engines['batch'] = array();
-  $engines['update'] = array();
-  $engines['environment'] = array();
-  $engines['site_install'] = array();
-  $engines['user'] = array();
-  $engines['pm'] = array();
+  $engines = array(
+    'batch' => array(),
+    'update'=> array(),
+    'environment' => array(),
+    'site_install' => array(),
+    'user' => array(),
+    'pm' => array(),
+    'cache' => array(),
+  );
   return $engines;
 }
 

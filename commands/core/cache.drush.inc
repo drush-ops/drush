@@ -136,12 +136,9 @@ function drush_cache_command_clear($type = NULL) {
  *   A specific bin to fetch from.
  */
 function drush_cache_command_get($cid = NULL, $bin = 'cache') {
-  if (drush_drupal_major_version() >=8) {
-    $result = cache($bin)->get($cid);
-  }
-  else {
-    $result = cache_get($cid, $bin);
-  }
+  drush_include_engine('drupal', 'cache', drush_drupal_major_version());
+  $result = drush_op('_drush_cache_command_get', $cid, $bin);
+
   if (empty($result)) {
     return drush_set_error('DRUSH_CACHE_OBJECT_NOT_FOUND', dt('The !cid object in the !bin cache bin was not found.', array('!cid' => $cid, '!bin' => $bin)));
   }
@@ -162,7 +159,7 @@ function drush_cache_command_get($cid = NULL, $bin = 'cache') {
  * @param $tags
  *   Cache tags for the cached object.
  */
-function drush_cache_command_set($cid = NULL, $data = '', $bin = 'cache', $expire = CACHE_PERMANENT, $tags = NULL) {
+function drush_cache_command_set($cid = NULL, $data = '', $bin = 'cache', $expire = NULL, $tags = NULL) {
   // In addition to prepare, this also validates. Can't easily be in own validate callback as
   // reading once from STDIN empties it.
   $data = drush_cache_set_prepare_data($data);
@@ -171,15 +168,8 @@ function drush_cache_command_set($cid = NULL, $data = '', $bin = 'cache', $expir
     return;
   }
 
-  // Convert the "expire" argument to a valid value for Drupal's cache_set().
-  if ($expire == 'CACHE_TEMPORARY') {
-    $expire = CACHE_TEMPORARY;
-  }
-  if ($expire == 'CACHE_PERMANENT') {
-    $expire = CACHE_PERMANENT;
-  }
-
-  cache_set($cid, $data, $bin, $expire);
+  drush_include_engine('drupal', 'cache', drush_drupal_major_version());
+  return drush_op('_drush_cache_command_set', $cid, $data, $bin, $expire, $tags);
 }
 
 function drush_cache_set_prepare_data($data) {
@@ -216,11 +206,11 @@ function drush_cache_set_prepare_data($data) {
 /**
  * All types of caches available for clearing. Contrib commands can alter in their own.
  */
-function drush_cache_clear_types($include_bootstraped_types = FALSE) {
+function drush_cache_clear_types($include_bootstrapped_types = FALSE) {
   $types = array(
     'drush' => 'drush_cache_clear_drush',
   );
-  if ($include_bootstraped_types) {
+  if ($include_bootstrapped_types) {
     $types += array(
       'theme-registry' => 'drush_cache_clear_theme_registry',
       'menu' => 'menu_rebuild',
@@ -231,26 +221,8 @@ function drush_cache_clear_types($include_bootstraped_types = FALSE) {
     );
   }
 
-  $drupal_version = drush_drupal_major_version();
-
-  // D8 renamed menu_rebuild() (https://drupal.org/node/1561492).
-  if ($drupal_version >= 8) {
-    $types['menu'] = 'menu_router_rebuild';
-  }
-
-  if ($drupal_version >= 7) {
-    $types['registry'] = 'registry_update';
-  }
-  elseif ($drupal_version == 6 && function_exists('module_exists') && module_exists('autoload')) {
-    // TODO: move this to autoload module.
-    $types['registry'] = 'autoload_registry_update';
-  }
-
-  // Don't allow "all" cache type on D8 and later - we want users to use the
-  // "cache-rebuild" command instead.
-  if ($drupal_version <= 7) {
-    $types['all'] = 'drush_cache_clear_both';
-  }
+  drush_include_engine('drupal', 'cache', drush_drupal_major_version());
+  $types = _drush_cache_clear_types($include_bootstrapped_types);
 
   // Include the appropriate environment engine, so callbacks can use core
   // version specific cache clearing functions directly.
@@ -262,59 +234,10 @@ function drush_cache_clear_types($include_bootstraped_types = FALSE) {
   return $types;
 }
 
-function drush_cache_clear_theme_registry() {
-  if (drush_drupal_major_version() >= 7) {
-    drupal_theme_rebuild();
-  }
-  else {
-    cache_clear_all('theme_registry', 'cache', TRUE);
-  }
-}
-
-function drush_cache_clear_css_js() {
-  _drupal_flush_css_js();
-  drupal_clear_css_cache();
-  drupal_clear_js_cache();
-}
-
-/**
- * Clear the cache of the block output.
- */
-function drush_cache_clear_block() {
-  cache_clear_all(NULL, 'cache_block');
-}
-
 /**
  * Clear caches internal to drush core.
  */
 function drush_cache_clear_drush() {
   drush_cache_clear_all(NULL, 'default'); // commandfiles, etc.
   drush_cache_clear_all(NULL, 'complete'); // completion
-}
-
-/**
- * Clear caches internal to Drush core and Drupal.
- */
-function drush_cache_clear_both() {
-  // We want Drupal 8 users to use the `drush cache-rebuild` command instead.
-  if (drush_drupal_major_version() >= 8) {
-    return drush_set_error('DRUSH_CC_ALL_DEPRECATED', dt('`clear-cache all` is deprecated for Drupal 8 and later. Please use the `cache-rebuild` command instead.'));
-  }
-  drush_cache_clear_drush();
-  if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-    drupal_flush_all_caches();
-  }
-}
-
-/**
- * Rebuild a Drupal 8 site.
- */
-function drush_cache_rebuild() {
-  require_once DRUPAL_ROOT . '/core/includes/utility.inc';
-  // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it
-  // manually.
-  drupal_rebuild();
-  // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
-  // the Drush cache as well, for consistency with that behavior.
-  drush_cache_clear_drush();
 }
