@@ -43,6 +43,7 @@ function cache_drush_command() {
       'data' => 'The object to set in the cache. Use \'-\' to read the object from STDIN.',
       'bin' => 'Optional. The cache bin to store the object in.',
       'expire' => 'Optional. CACHE_PERMANENT, CACHE_TEMPORARY, or a Unix timestamp.',
+      'tags' => 'An array of cache tags.',
     ),
     'required-arguments' => 2,
     'options' => array(
