@@ -159,7 +159,7 @@ function drush_cache_command_get($cid = NULL, $bin = 'cache') {
  * @param $tags
  *   Cache tags for the cached object.
  */
-function drush_cache_command_set($cid = NULL, $data = '', $bin = 'cache', $expire = NULL, $tags = NULL) {
+function drush_cache_command_set($cid = NULL, $data = '', $bin = 'cache', $expire = NULL, $tags = array()) {
   // In addition to prepare, this also validates. Can't easily be in own validate callback as
   // reading once from STDIN empties it.
   $data = drush_cache_set_prepare_data($data);
@@ -207,20 +207,6 @@ function drush_cache_set_prepare_data($data) {
  * All types of caches available for clearing. Contrib commands can alter in their own.
  */
 function drush_cache_clear_types($include_bootstrapped_types = FALSE) {
-  $types = array(
-    'drush' => 'drush_cache_clear_drush',
-  );
-  if ($include_bootstrapped_types) {
-    $types += array(
-      'theme-registry' => 'drush_cache_clear_theme_registry',
-      'menu' => 'menu_rebuild',
-      'css-js' => 'drush_cache_clear_css_js',
-      'block' => 'drush_cache_clear_block',
-      'module-list' => 'drush_get_modules',
-      'theme-list' => 'drush_get_themes',
-    );
-  }
-
   drush_include_engine('drupal', 'cache', drush_drupal_major_version());
   $types = _drush_cache_clear_types($include_bootstrapped_types);
 
@@ -240,4 +226,17 @@ function drush_cache_clear_types($include_bootstrapped_types = FALSE) {
 function drush_cache_clear_drush() {
   drush_cache_clear_all(NULL, 'default'); // commandfiles, etc.
   drush_cache_clear_all(NULL, 'complete'); // completion
+}
+
+/**
+ * Rebuild a Drupal 8 site.
+ */
+function drush_cache_rebuild() {
+  require_once DRUPAL_ROOT . '/core/includes/utility.inc';
+  // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it
+  // manually.
+  drupal_rebuild();
+  // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
+  // the Drush cache as well, for consistency with that behavior.
+  drush_cache_clear_drush();
 }

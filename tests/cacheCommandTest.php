@@ -41,7 +41,12 @@ class cacheCommandCase extends Drush_CommandTestCase {
     $this->assertEquals((object)$expected, $data);
 
     // Test cache-clear all.
-    $this->drush('cache-clear', array('all'), $options);
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      $this->drush('cache-rebuild', array(), $options);
+    }
+    else {
+      $this->drush('cache-clear', array('all'), $options);
+    }
     $this->drush('cache-get', array('cache-test-cid'), $options + array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
   }
 }
