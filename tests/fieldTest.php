@@ -13,6 +13,10 @@ class fieldCase extends Drush_CommandTestCase {
       $this->markTestSkipped("Field API not available in Drupal 6.");
     }
 
+    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
+      $this->markTestSkipped("Field commands are not yet ported to D8.");
+    }
+
     $sites = $this->setUpDrupal(1, TRUE);
     $options = array(
       'yes' => NULL,
