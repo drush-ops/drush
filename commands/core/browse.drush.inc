@@ -24,6 +24,7 @@ function browse_drush_command() {
     'examples' => array(
       'drush browse' => 'Display and open default web browser (if configured or detected) to the site front page.',
       'drush browse node/1' => 'Display and open web browser to the path node/1.',
+      'drush @example.prod' => 'Open a remote site in a browser on the local machine.',
       'drush browse --browser=firefox admin' => 'Open firefox web browser to the path admin.',
     ),
   );
