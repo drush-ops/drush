@@ -37,23 +37,10 @@ function browse_drush_command() {
  * @see browse_drush_command()
  */
 function drush_browse($path = '') {
-  // Determine whether redispatch is needed. We want to start a browser on the
-  // *local* machine when this command is called aginst a remote-host.
-  $redispatch = FALSE;
+  // Redispatch if called against a remote-host so a browser is started on the
+  // the *local* machine.
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
-  if ($alias) {
-    $site_record = drush_sitealias_get_record($alias);
-    if ($site_record) {
-      if (!empty($site_record['remote-host'])) {
-        $redispatch = TRUE;
-      }
-    }
-    else {
-      drush_set_error('Unrecognized site alias.');
-    }
-  }
-
-  if ($redispatch) {
+  if (drush_sitealias_is_remote_site($alias)) {
     $return = drush_invoke_process($site_record, 'site-browse', func_get_args(), drush_redispatch_get_options(), array(
       'integrate' => FALSE,
     ));

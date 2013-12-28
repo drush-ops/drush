@@ -427,21 +427,10 @@ function drush_user_login($user = NULL, $path = NULL) {
   $user_object = $uid = FALSE;
   $args = func_get_args();
 
-  // Determine whether redispatch is needed. We want to start a browser on *local*
-  // machine when this command was called aginst a remote-host.
-  $redispatch = FALSE;
-  if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-    if ($site_record = drush_sitealias_get_record($alias)) {
-      if (!empty($site_record['remote-host'])) {
-        $redispatch = TRUE;
-      }
-    }
-    else {
-      drush_set_error('Unrecognized site alias.');
-    }
-  }
-
-  if ($redispatch) {
+  // Redispatch if called against a remote-host so a browser is started on the
+  // the *local* machine.
+  $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
+  if (drush_sitealias_is_remote_site($alias)) {
     $return = drush_invoke_process($site_record, 'user-login', $args, drush_redispatch_get_options(), array('integrate' => FALSE));
     if ($return['error_status']) {
       return drush_set_error('Unable to execute user login.');
