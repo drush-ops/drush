@@ -27,6 +27,19 @@ function image_drush_command() {
       'drush image-flush --all' => 'Flush all derived images. They will be regenerated on the fly.',
     ),
   );
+// @todo: finish this.
+//  $items['image-create'] = array(
+//    'description' => 'Create an image derivative.',
+//    'core' => array('7+'),
+//    'drupal_dependencies' => array('image'),
+//    'arguments' => array(
+//      'style' => 'An image style machine name. If not provided, user may choose from a list of names.',
+//      'source' => 'Path to a source image.',
+//    ),
+//    'required arguments' => TRUE,
+//    'options' => array(),
+//    'examples' => array(),
+//  );
   return $items;
 }
 
@@ -38,38 +51,64 @@ function image_drush_command() {
  */
 function image_image_flush_complete() {
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
-  return array('values' => array_keys(image_styles()));
+  drush_include_engine('drupal', 'image', drush_drupal_major_version());
+  return array('values' => array_keys(drush_image_styles()));
+}
+
+function drush_image_flush_pre_validate($style_name = NULL) {
+  if (!empty($style_name) && !$style = image_style_load($style_name)) {
+    return drush_set_error(dt('Image style !style not recognized.', array('!style' => $style_name)));
+  }
 }
 
 function drush_image_flush($style_name = NULL) {
+  drush_include_engine('drupal', 'image', drush_drupal_major_version());
   if (drush_get_option('all')) {
-    drush_image_flush_all();
+    $style_name = 'all';
   }
-  elseif (empty($style_name)) {
-    $choices = drupal_map_assoc(array_keys(image_styles()));
+
+  if (empty($style_name)) {
+    $choices = drupal_map_assoc(array_keys(drush_image_styles()));
     $choices = array_merge(array('all' => 'all'), $choices);
     $style_name = drush_choice($choices, dt("Choose a style to flush."));
-    if ($style_name == 'all') {
-      drush_image_flush_all();
-    }
-    else {
-      return drush_invoke('image-flush', array($style_name));
+    if ($style_name === FALSE) {
+      return drush_user_abort();
     }
   }
+
+  if ($style_name == 'all') {
+    foreach (drush_image_styles() as $style_name => $style) {
+      drush_image_flush_single($style_name);
+    }
+    drush_log(dt('All image styles flushed'), 'success');
+  }
   else {
-    if ($style = image_style_load($style_name)) {
-      image_style_flush($style);
-      drush_log(dt('Image style !style_name flushed', array('!style_name' => $style_name)), 'success');
-    }
-    else {
-      return drush_set_error(dt('Image style !style not recognized.', array('!style' => $style_name)));
-    }
+    drush_image_flush_single($style_name);
   }
 }
 
-function drush_image_flush_all() {
-  foreach (image_styles() as $style) {
-    image_style_flush($style);
+function drush_image_create_validate($stylename, $source) {
+  if (!$style = image_style_load($style_name)) {
+    return drush_set_error(dt('Image style !style not recognized.', array('!style' => $style_name)));
   }
-  drush_log(dt('All image styles flushed'), 'success');
+
+  if (!file_exists($source)) {
+    return drush_set_error(dt('Source file not found - !file.', array('!file' => $source)));
+  }
+}
+
+/*
+ * Untested. Please help.
+ */
+function drush_image_create($stylename, $source) {
+  $image_style = image_style_load($style_name);
+  if (drush_drupal_major_version() >= 8) {
+    $destination = $image_style->buildUri($source);
+    $return = $image_style->createDerivative($source, $destination);
+  }
+  else {
+    // @todo figure out destination.
+    $return = image_style_create_derivative($image_style, $source, $destination);
+  }
+  return $return;
 }

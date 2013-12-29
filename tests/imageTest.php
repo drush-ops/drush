@@ -20,9 +20,16 @@ class ImageCase extends Drush_CommandTestCase {
     );
     // Test that "drush image-flush thumbnail" deletes derivatives created by the thumbnail image style.
     $style_name = 'thumbnail';
-    $php = "\$image_style = image_style_load('--stylename--');" .
-           "image_style_create_derivative(\$image_style, '" . $options['root'] .
-	   "/themes/bartik/logo.png', 'public://styles/--stylename--/logo.png');";
+    $php = "\$image_style = image_style_load('--stylename--');";
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      $logo = $options['root'] . '/core/themes/bartik/logo.png';
+      $php .= "return \$image_style->createDerivative('$logo', 'public://styles/--stylename--/logo.png');";
+    }
+    else {
+      $logo = $options['root'] . '/themes/bartik/logo.png';
+      $php .= "return image_style_create_derivative(\$image_style, '$logo', 'public://styles/--stylename--/logo.png');";
+    }
+
     $this->drush('php-eval', array(str_replace('--stylename--', $style_name, $php)), $options);
     $this->assertFileExists($options['root'] . '/sites/' . key($sites) . '/files/styles/' . $style_name . '/logo.png');
     $this->drush('image-flush', array($style_name), $options);

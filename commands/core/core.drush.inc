@@ -433,6 +433,7 @@ function core_drush_engine_drupal() {
     'user' => array(),
     'pm' => array(),
     'cache' => array(),
+    'image' => array(),
   );
   return $engines;
 }

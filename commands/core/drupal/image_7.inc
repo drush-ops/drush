@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * @file
+ *   Specific functions for a Drupal image handling.
+ *   drush_include_engine() magically includes either this file
+ *   or image_X.inc depending on which version of Drupal
+ *   is in use.
+ */
+
+function drush_image_styles() {
+  return image_styles();
+}
+
+function drush_image_flush_single($style_name) {
+  if ($style = image_style_load($style_name)) {
+    image_style_flush($style);
+    drush_log(dt('Image style !style_name flushed', array('!style_name' => $style_name)), 'success');
+  }
+}
