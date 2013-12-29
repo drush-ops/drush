@@ -18,33 +18,28 @@ class ImageCase extends Drush_CommandTestCase {
       'root' => $this->webroot(),
       'uri' => key($sites),
     );
-    // Test that "drush image-flush thumbnail" deletes derivatives created by the thumbnail image style.
-    $style_name = 'thumbnail';
-    $php = "\$image_style = image_style_load('--stylename--');";
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      $logo = $options['root'] . '/core/themes/bartik/logo.png';
-      $php .= "return \$image_style->createDerivative('$logo', 'public://styles/--stylename--/logo.png');";
-    }
-    else {
-      $logo = $options['root'] . '/themes/bartik/logo.png';
-      $php .= "return image_style_create_derivative(\$image_style, '$logo', 'public://styles/--stylename--/logo.png');";
-    }
+    $logo = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'core/themes/bartik/logo.png' : 'themes/bartik/logo.png';
+    $styles_dir = $options['root'] . '/sites/' . key($sites) . '/files/styles/';
+    $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
+    $medium = $styles_dir . 'medium/public/' . $logo;
 
-    $this->drush('php-eval', array(str_replace('--stylename--', $style_name, $php)), $options);
-    $this->assertFileExists($options['root'] . '/sites/' . key($sites) . '/files/styles/' . $style_name . '/logo.png');
+    // Test that "drush image-derive" works.
+    $style_name = 'thumbnail';
+    $this->drush('image-derive', array($style_name, $logo), $options);
+    $this->assertFileExists($thumbnail);
+
+    // Test that "drush image-flush thumbnail" deletes derivatives created by the thumbnail image style.
     $this->drush('image-flush', array($style_name), $options);
-    $this->assertFileNotExists($options['root'] . '/sites/' . key($sites) . '/files/styles/' . $style_name . '/logo.png');
+    $this->assertFileNotExists($thumbnail);
 
     // Check that "drush image-flush --all" deletes all image styles by creating two different ones and testing its
     // existance afterwards.
-    $style_name = 'thumbnail';
-    $this->drush('php-eval', array(str_replace('--stylename--', $style_name, $php)), $options);
-    $this->assertFileExists($options['root'] . '/sites/' . key($sites) . '/files/styles/' . $style_name . '/logo.png');
-    $style_name = 'medium';
-    $this->drush('php-eval', array(str_replace('--stylename--', $style_name, $php)), $options);
-    $this->assertFileExists($options['root'] . '/sites/' . key($sites) . '/files/styles/' . $style_name . '/logo.png');
+    $this->drush('image-derive', array('thumbnail', $logo), $options);
+    $this->assertFileExists($thumbnail);
+    $this->drush('image-derive', array('medium', $logo), $options);
+    $this->assertFileExists($medium);
     $this->drush('image-flush', array(), array('all' => TRUE) + $options);
-    $this->assertFileNotExists($options['root'] . '/sites/' . key($sites) . '/files/styles/thumbnail/logo.png');
-    $this->assertFileNotExists($options['root'] . '/sites/' . key($sites) . '/files/styles/medium/logo.png');
+    $this->assertFileNotExists($thumbnail);
+    $this->assertFileNotExists($medium);
   }
 }

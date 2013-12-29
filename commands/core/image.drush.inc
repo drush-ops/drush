@@ -26,21 +26,35 @@ function image_drush_command() {
       'drush image-flush thumbnail' => 'Delete all thumbnail images.',
       'drush image-flush --all' => 'Flush all derived images. They will be regenerated on the fly.',
     ),
+    'aliases' => array('if'),
   );
-// @todo: finish this.
-//  $items['image-create'] = array(
-//    'description' => 'Create an image derivative.',
-//    'core' => array('7+'),
-//    'drupal_dependencies' => array('image'),
-//    'arguments' => array(
-//      'style' => 'An image style machine name. If not provided, user may choose from a list of names.',
-//      'source' => 'Path to a source image.',
-//    ),
-//    'required arguments' => TRUE,
-//    'options' => array(),
-//    'examples' => array(),
-//  );
+  $items['image-derive'] = array(
+    'description' => 'Create an image derivative.',
+    'core' => array('7+'),
+    'drupal_dependencies' => array('image'),
+    'arguments' => array(
+      'style' => 'An image style machine name.',
+      'source' => 'Path to a source image. Optionally prepend stream wrapper scheme.',
+    ),
+    'required arguments' => TRUE,
+    'options' => array(),
+    'examples' => array(
+      'drush image-derive thumbnail themes/bartik/logo.png' => 'Save thumbnail sized derivative of logo image.',
+    ),
+    'aliases' => array('id'),
+  );
   return $items;
+}
+
+/**
+ * Implements hook_drush_help_alter().
+ */
+function image_drush_help_alter(&$command) {
+  // Drupal 8+ customizations.
+  if ($command['command'] == 'image-derive' && drush_drupal_major_version() >= 8) {
+    unset($command['examples']);
+    $command['examples']['drush image-derive thumbnail core/themes/bartik/logo.png'] = 'Save thumbnail sized derivative of logo image.';
+  }
 }
 
 /**
@@ -87,7 +101,7 @@ function drush_image_flush($style_name = NULL) {
   }
 }
 
-function drush_image_create_validate($stylename, $source) {
+function drush_image_derive_validate($style_name, $source) {
   if (!$style = image_style_load($style_name)) {
     return drush_set_error(dt('Image style !style not recognized.', array('!style' => $style_name)));
   }
@@ -98,17 +112,15 @@ function drush_image_create_validate($stylename, $source) {
 }
 
 /*
- * Untested. Please help.
+ * Command callback. Create an image derivative.
+ *
+ * @param string $style_name
+ *   The name of an image style.
+ *
+ * @param string $source
+ *   The path to a source image, relative to Drupal root.
  */
-function drush_image_create($stylename, $source) {
-  $image_style = image_style_load($style_name);
-  if (drush_drupal_major_version() >= 8) {
-    $destination = $image_style->buildUri($source);
-    $return = $image_style->createDerivative($source, $destination);
-  }
-  else {
-    // @todo figure out destination.
-    $return = image_style_create_derivative($image_style, $source, $destination);
-  }
-  return $return;
+function drush_image_derive($style_name, $source) {
+  drush_include_engine('drupal', 'image', drush_drupal_major_version());
+  return _drush_image_derive($style_name, $source);
 }
