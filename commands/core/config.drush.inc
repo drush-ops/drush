@@ -35,8 +35,8 @@ function config_drush_command() {
     'required-arguments' => 1,
     'options' => array(
       'source' => array(
-        'description' => 'The config storage source to read. Use "database" for database storage, or "file" for file stroage',
-        'example-value' => 'database',
+        'description' => 'The config storage source to read. recognized values are \'active \'and \'staging\'.',
+        'example-value' => 'active',
         'value' => 'required',
       ),
     ),
@@ -53,7 +53,7 @@ function config_drush_command() {
   );
 
   $items['config-set'] = array(
-    'description' => 'Set config value in the active store. This does not invoke config_sync_changes().',
+    'description' => 'Set config value directly in active configuration.',
     'arguments' => array(
       'config-name' => 'The config object name, for example "system.site".',
       'key' => 'The config key, for example "page.front".',
@@ -118,7 +118,7 @@ function config_drush_command() {
   );
 
   $items['config-edit'] = array(
-    'description' => 'Open a config file in a text editor. Edits are imported into Drupal after closing editor.',
+    'description' => 'Open a config file in a text editor. Edits are imported into active configration after closing editor.',
     'core' => array('8+'),
     'aliases' => array('cedit'),
     'arguments' => array(
@@ -369,17 +369,17 @@ function drush_config_edit($config_name = '') {
  *   The config object name.
  */
 function drush_config_get_object($config_name) {
-  $source = drush_get_option('source', 'database');
-  if ($source == 'database') {
+  $source = drush_get_option('source', 'active');
+  if ($source == 'active') {
     $config = drupal_container()->get('config.storage');
   }
-  elseif ($source == 'file') {
+  elseif ($source == 'staging') {
     $config = drupal_container()->get('config.storage.staging');
   }
 
   $data = $config->read($config_name);
   if ($data === FALSE) {
-    return drush_set_error(dt('Config !name does not exist in the !source system.', array('!name' => $config_name, '!source' => $source)));
+    return drush_set_error(dt('Config !name does not exist in !source configuration.', array('!name' => $config_name, '!source' => $source)));
   }
   if (empty($data)) {
     drush_log(dt('Config !name exists but has no data.', array('!name' => $config_name)), 'notice');
