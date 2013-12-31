@@ -17,7 +17,23 @@ class pmUpdateCode extends Drush_CommandTestCase {
    * Download old core and older contrib releases which will always need updating.
    */
   public function setUp() {
-    $sites = $this->setUpDrupal(1, TRUE, '7.0-rc3');
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      $core = '8.0-alpha6';
+      $modules_str = 'instagram_block-8.x-1.0,honeypot-8.x-1.14-beta5';
+      $modules = array('block', 'instagram_block', 'honeypot');
+    }
+    elseif (UNISH_DRUPAL_MAJOR_VERSION == 7) {
+      $core = '7.0-rc3';
+      $modules_str = 'devel-7.x-1.0-rc1,webform-7.x-3.4-beta1';
+      $modules = array('menu', 'devel', 'webform');
+    }
+    else {
+      $core = '6.28';
+      $modules_str = 'devel-6.x-1.26,webform-6.x-3.18';
+      $modules = array('menu', 'devel', 'webform');
+    }
+
+    $sites = $this->setUpDrupal(1, TRUE, $core);
     $options = array(
       'root' => $this->webroot(),
       'uri' => key($sites),
@@ -27,8 +43,9 @@ class pmUpdateCode extends Drush_CommandTestCase {
       'skip' => NULL, // No FirePHP
       'strict' => 0, // invoke from script: do not verify options
     );
-    $this->drush('pm-download', array('devel-7.x-1.0-rc1,webform-7.x-3.4-beta1'), $options);
-    $this->drush('pm-enable', array('menu', 'devel', 'webform'), $options);
+
+    $this->drush('pm-download', array($modules_str), $options);
+    $this->drush('pm-enable', $modules, $options);
   }
 
   function testUpdateCode() {
