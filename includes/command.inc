@@ -603,10 +603,16 @@ function _drush_verify_cli_arguments($command) {
     if ($required_arg_count === TRUE) {
       $required_arg_count = count($command['argument-description']);
     }
-    if ((count($command['arguments'])) < $required_arg_count) {
-      $missing = count($required_arg_count) > 1 ? dt('Missing required arguments') : dt('Missing required argument');
-      $required = implode("', '", array_keys($command['argument-description']));
-      return drush_set_error(dt("@missing: '@required'.  See `drush help @command` for information on usage.", array('@missing' => $missing, '@required' => $required, '@command' => $command['command'])));
+
+    if (count($command['arguments']) < $required_arg_count) {
+      $missing = $required_arg_count > 1 ? dt('Missing required arguments') : dt('Missing required argument');
+      $required = array_slice(array_keys($command['argument-description']), 0, $required_arg_count);
+
+      return drush_set_error(dt("@missing: '@required'.  See `drush help @command` for information on usage.", array(
+        '@missing' => $missing,
+        '@required' => implode("', '", $required),
+        '@command' => $command['command'],
+      )));
     }
   }
   return TRUE;
