@@ -58,11 +58,13 @@ function drush_print_help($command) {
   // Print command sections help.
   foreach ($command['sections'] as $key => $value) {
     if (!empty($command[$key])) {
-      drush_print(dt($value) . ':');
       $rows = drush_format_help_section($command, $key);
-      drush_print_table($rows, FALSE, array('label' => 40));
-      unset($rows);
-      drush_print();
+      if ($rows) {
+        drush_print(dt($value) . ':');
+        drush_print_table($rows, FALSE, array('label' => 40));
+        unset($rows);
+        drush_print();
+      }
     }
   }
 
@@ -124,9 +126,11 @@ function _drush_help_merge_subcommand_information(&$command) {
  * @param $section
  *   The name of the section to format ('options', 'topic', etc.)
  * @returns array
- *   Formatted rows, suitable for printing via drush_print_table.
+ *   Formatted rows, suitable for printing via drush_print_table. The returned
+ *   array can be empty.
  */
 function drush_format_help_section($command, $section) {
+  $rows = array();
   $formatter = (function_exists('drush_help_section_formatter_' . $section)) ? 'drush_help_section_formatter_' . $section : 'drush_help_section_default_formatter';
   foreach ($command[$section] as $name => $help_attributes) {
     if (!is_array($help_attributes)) {
@@ -134,7 +138,7 @@ function drush_format_help_section($command, $section) {
     }
     $help_attributes['label'] = $name;
     call_user_func_array($formatter, array($command, &$help_attributes));
-    if (!array_key_exists('hidden', $help_attributes)) {
+    if (empty($help_attributes['hidden'])) {
       $rows[] = array('label' => $help_attributes['label'], 'description' => $help_attributes['description']);
       // Process the subsections too, if any
       if (!empty($command['sub-' . $section]) && array_key_exists($name, $command['sub-' . $section])) {
