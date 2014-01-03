@@ -181,7 +181,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $workdir = dirname($docroot_path);
 
   if ($include_platform) {
-    $dereference = (drush_get_option('preserve-symlinks', FALSE)) ? '' : '--dereference ';
+    $dereference = (drush_get_option('preserve-symlinks', FALSE)) ? '--dereference ' : '';
     // Convert destination path to Unix style for tar on MinGW - see http://drupal.org/node/1844224
     if (drush_is_mingw()) {
       $destination_orig = $destination;
