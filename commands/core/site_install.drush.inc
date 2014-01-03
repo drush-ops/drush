@@ -116,7 +116,7 @@ function drush_core_pre_site_install($profile = NULL) {
 
   // Empty or create the DB as needed.
   if ($db_drop_existing_tables) {
-	drush_sql_empty_db($db_spec);
+    drush_sql_empty_db($db_spec);
   }
 
   if (drush_drupal_major_version() >= 8) {
