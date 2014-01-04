@@ -33,4 +33,4 @@ _drush_completion() {
 }
 
 # Register our completion function. We include common short aliases for Drush.
-complete -o bashdefault -o default -o nospace -F _drush_completion d dr drush drush5 drush6 drush6 drush.php
+complete -o bashdefault -o default -o nospace -F _drush_completion d dr drush drush5 drush6 drush7 drush.php
