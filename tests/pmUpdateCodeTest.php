@@ -62,12 +62,15 @@ class pmUpdateCode extends Drush_CommandTestCase {
       'uri' => key($this->sites), // Have to access class property since $sites in in setUp().
       'yes' => NULL,
       'backup-dir' => UNISH_SANDBOX . '/backups',
+      'cache' => NULL,
+      'check-updatedb' => 0,
+      'strict' => 0,
     );
 
     // Try to upgrade a specific module.
     $this->drush('pm-updatecode', array($first), $options + array());
     // Assure that first was upgraded and second was not.
-    $this->drush('pm-updatecode', array(), $options + array('pipe' => NULL));
+    $this->drush('pm-updatestatus', array(), $options + array());
     $all = $this->getOutput();
     $this->assertNotContains($first, $all);
     $this->assertContains($second, $all);
@@ -75,7 +78,7 @@ class pmUpdateCode extends Drush_CommandTestCase {
     // Lock second, and update core.
     $this->drush('pm-updatecode', array(), $options + array('lock' => $second));
     $list = $this->getOutputAsList(); // For debugging.
-    $this->drush('pm-updatecode', array(), $options + array('pipe' => NULL));
+    $this->drush('pm-updatestatus', array(), $options + array());
     $all = $this->getOutput();
     $this->assertNotContains('drupal', $all, 'Core was updated');
     $this->assertContains($second, $all, 'Second was skipped.');
@@ -83,7 +86,7 @@ class pmUpdateCode extends Drush_CommandTestCase {
     // Unlock second, update, and check.
     $this->drush('pm-updatecode', array(), $options + array('unlock' => $second, 'no-backup' => NULL));
     $list = $this->getOutputAsList();
-    $this->drush('pm-updatecode', array(), $options + array('pipe' => NULL));
+    $this->drush('pm-updatestatus', array(), $options + array());
     $all = $this->getOutput();
     $this->assertNotContains($second, $all, 'Second was updated');
 
