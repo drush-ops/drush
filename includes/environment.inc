@@ -100,7 +100,7 @@ function _drush_environment_check_php_ini() {
     }
     else {
       foreach ($disallowed_value as $test_value) {
-        if (strstr($ini_value, $test_value) !== FALSE) {
+        if (preg_match('/(^|,)' . $test_value . '(,|$)/', $ini_value)) {
           $invalid_value = TRUE;
         }
       }
