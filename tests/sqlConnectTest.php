@@ -7,6 +7,7 @@
  *   Installs Drupal and checks that the given URL by sql-connect is correct.
  *
  * @group commands
+ * @group sql
  */
 class SqlConnectCase extends Drush_CommandTestCase {
 
