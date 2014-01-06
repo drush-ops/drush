@@ -280,10 +280,7 @@ magic_quotes_sybase = Off
 CONFIGURING DRUSH FOR PHP 5.5
 -----------------------------
 
-Find your php-cli php.ini file using `drush status`, as described above.  
-Then, comment out the disable_functions line.
-
-In addition, if you are running on Linux, you may find that you need
+If you are running on Linux, you may find that you need
 the php5-json package.  On Ubuntu, you can install it via:
 
 `apt-get install php5-json`
