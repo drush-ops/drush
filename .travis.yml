@@ -8,7 +8,6 @@ branches:
 language: php
 php:
   - 5.3
-  - 5.4
 env:
   - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
   - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=base
