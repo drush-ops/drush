@@ -33,7 +33,7 @@ class SqlConnectCase extends Drush_CommandTestCase {
       $shell_options = '';
     }
     elseif ($db_driver == 'pgsql') {
-      $this->assertRegExp('/^psql --dbname=[^\s]+ --host=[^\s]+ --port=[^\s] --username=[^\s]+/', $output);
+      $this->assertRegExp('/^psql --dbname=[^\s]+ --host=[^\s]+ --port=[^\s]+ --username=[^\s]+/', $output);
     }
     else {
       $this->markTestSkipped('sql-connect test does not recognize database type in ' . UNISH_DB_URL);
