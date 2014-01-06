@@ -9,7 +9,7 @@
  * @todo, Consider removing these tests now that we have outputFormatUnitCase.
  *
  *  @group slow
- *  @group commands
+ *  @group base
  */
 class outputFormatCase extends Drush_CommandTestCase {
 
