@@ -10,7 +10,7 @@ branches:
 language: php
 php:
   - 5.3
-  - 5.4
+#  - 5.4 Bugs in this version should be caught by 5.3 or 5.5
   - 5.5
 env:
   - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
