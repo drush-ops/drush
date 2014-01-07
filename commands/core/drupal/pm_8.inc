@@ -75,7 +75,7 @@ function _drush_pm_uninstall($args) {
   // Inform the user which extensions will finally be uninstalled.
   $extensions = array_merge($modules, $themes);
   if (empty($extensions)) {
-    return drush_log(dt('There were no extensions that could be uninstall.'), 'ok');
+    return drush_log(dt('There were no extensions that could be uninstalled.'), 'ok');
   }
   else {
     drush_print(dt('The following extensions will be uninstalled: !extensions', array('!extensions' => implode(', ', $extensions))));
