@@ -1194,7 +1194,7 @@ function drush_preflight_command_dispatch() {
       }
     }
     $command_name = array_shift($args);
-    $multi_options = drush_get_context('cli');
+    $multi_options = drush_redispatch_get_options();
     $backend_options = array();
     if (drush_get_option('pipe') || drush_get_option('interactive')) {
       $backend_options['interactive'] = TRUE;
