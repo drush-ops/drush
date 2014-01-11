@@ -56,6 +56,8 @@ function make_drush_command() {
       'no-recursion' => 'Do not recurse into the makefiles of any downloaded projects; you can also set [do_recursion] = 0 on a per-project basis in the makefile.',
       'no-patch-txt' => 'Do not write a PATCHES.txt file in the directory of each patched project.',
       'no-gitinfofile' => 'Do not modify .info files when cloning from Git.',
+      'force-gitinfofile' => 'Force a modification of .info files when cloning from Git even if repository isn\'t hosted on Drupal.org.',
+      'no-gitprojectinfo' => 'Do not inject project info into .info files when cloning from Git.',
       'prepare-install' => 'Prepare the built site for installation. Generate a properly permissioned settings.php and files directory.',
       'tar' => 'Generate a tar archive of the build. The output filename will be [build path].tar.gz.',
       'test' => 'Run a temporary test build and clean up.',
