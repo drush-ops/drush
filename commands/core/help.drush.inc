@@ -393,7 +393,7 @@ function drush_help_categorize($implemented) {
   $category_map = array();
   foreach ($implemented as $key => $candidate) {
     if ((!array_key_exists('is_alias', $candidate) || !$candidate['is_alias']) && !$candidate['hidden']) {
-      $category = $candidate['commandfile'];
+      $category = $candidate['category'];
       // If we have decided to remap a category, remap every command
       if (array_key_exists($category, $category_map)) {
         $category = $category_map[$category];
