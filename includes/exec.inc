@@ -40,21 +40,34 @@ function drush_op_system($exec) {
 
 /**
  * Executes a shell command at a new working directory.
+ *
  * The old cwd is restored on exit.
  *
- * @param $effective_wd
+ * @param string $effective_wd
  *   The new working directory to execute the shell command at.
- * @param $cmd
+ * @param string|array $cmd
  *   The command to execute. May include placeholders used for sprintf.
+ *   If the $cmd is an array then the first item is the command to execute and
+ *   the rest are values for the placeholders. Each of these will be passed
+ *   through escapeshellarg() to ensure they are safe to use on the command
+ *   line.
  * @param ...
- *   Values for the placeholders specified in $cmd. Each of these will be passed through escapeshellarg() to ensure they are safe to use on the command line.
- * @return
+ *   These parameters are only used if the $cmd is not an array.
+ *   Values for the placeholders specified in $cmd. Each of these will be passed
+ *   through escapeshellarg() to ensure they are safe to use on the command
+ *   line. If the third parameter is an array then the remaining parameters
+ *   will be skipped.
+ *
+ * @return bool
  *   TRUE on success, FALSE on failure
  */
 function drush_shell_cd_and_exec($effective_wd, $cmd) {
   $args = func_get_args();
 
   $effective_wd = array_shift($args);
+  if (is_array($args[0])) {
+    $args = $args[0];
+  }
   $cwd = getcwd();
   drush_op('chdir', $effective_wd);
   $result = call_user_func_array('drush_shell_exec', $args);
