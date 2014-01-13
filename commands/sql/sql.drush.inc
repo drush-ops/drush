@@ -989,9 +989,6 @@ function drush_sql_cli() {
  * @see hook_drush_sql_sync_sanitize() for adding custom sanitize routines.
  */
 function drush_sql_sanitize() {
-  if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
-    return drush_user_abort();
-  }
   drush_sql_bootstrap_further();
   drush_include(DRUSH_BASE_PATH . '/commands/sql', 'sync.sql');
   drush_command_invoke_all('drush_sql_sync_sanitize', 'default');
@@ -1004,6 +1001,9 @@ function drush_sql_sanitize() {
         drush_print($messages);
       }
     }
+  }
+  if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
+    return drush_user_abort();
   }
 
   $sanitize_query = '';
