@@ -74,6 +74,7 @@ function sql_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
   $databases = sitealias_get_databases_from_record($site_settings);
   $prefix = $databases['default']['default']['prefix'];
+  $prefix = isset($databases['default']['default']['prefix']) ? $databases['default']['default']['prefix'] : '';
   $user_table_updates = array();
   $message_list = array();
 
