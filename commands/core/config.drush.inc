@@ -339,6 +339,7 @@ function drush_config_edit($config_name = '') {
     }
     else {
       $config_name = $config_names[$choice];
+      $config = Drupal::config($config_name);
     }
   }
 
