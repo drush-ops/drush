@@ -55,6 +55,7 @@ function runserver_drush_command() {
       'server' => 'Which http server to use - either: "cgi" for a CGI based httpserver (default, requires php 5.3 and php-cgi binary) or "builtin" for php 5.4 built in http server.',
       'php-cgi' => 'Name of the php-cgi binary. If it is not on your current $PATH you should include the full path. You can include command line parameters to pass into php-cgi.',
       'variables' => 'Key-value array of variables to override in the $conf array for the running site. By default disables drupal_http_request_fails to avoid errors on Windows (which supports only one connection at a time). Comma delimited list of name=value pairs (or array in drushrc).',
+      'globals' => 'Key-value array of global variables to override when initializing the running site. By default this automatically sets $base_url. Comma delimited list of name=value pairs (or array in drushrc).',
       'default-server' => 'A default addr:port/path to use for any values not specified as an argument.',
       'user' => 'If opening a web browser, automatically log in as this user (user ID or username).',
       'browser' => 'If opening a web browser, which browser to user (defaults to operating system default).',
@@ -164,7 +165,6 @@ function drush_core_runserver($uri = NULL) {
   }
   drush_set_context('DRUSH_URI', 'http://' . $hostname . ':' . $uri['port']);
 
-
   // We pass in the currently logged in user (if set via the --user option),
   // which will automatically log this user in the browser during the first
   // request.
@@ -181,7 +181,16 @@ function drush_core_runserver($uri = NULL) {
   // CGI environment. This allows Drupal to generate working URLs to this http
   // server, whilst finding the correct multisite from the HTTP_HOST header.
   $base_url = 'http://' . $addr . ':' . $uri['port'];
-  $env['RUNSERVER_BASE_URL'] = $base_url;
+
+  // We pass in an array of global variable overrides, including the base_url.
+  $current_override = drush_get_option_list('globals', array('base_url' => $base_url));
+  foreach ($current_override as $name => $value) {
+    if (is_numeric($name) && (strpos($value, '=') !== FALSE)) {
+      list($name, $value) = explode('=', $value, 2);
+    }
+    $override[$name] = $value;
+  }
+  $env['RUNSERVER_GLOBALS'] = urlencode(serialize($override));
 
   // We pass in an array of $conf overrides using the same approach.
   // By default we set drupal_http_request_fails to FALSE, as the httpserver

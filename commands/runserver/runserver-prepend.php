@@ -1,19 +1,28 @@
 <?php
 
-// We set the base_url so that Drupal generates correct URLs for runserver
-// (e.g. http://127.0.0.1:8888/...), but can still select and serve a specific
-// site in a multisite configuration (e.g. http://mysite.com/...).
-$base_url = runserver_env('RUNSERVER_BASE_URL');
+/**
+ * Bootstrap the global environment for Drupal.
+ */
+function runserver_bootstrap() {
+  // Override global variables, passed in via the environment. A primary use for
+  // this is to set the base_url so that Drupal generates correct URLs for
+  // runserver (e.g. http://127.0.0.1:8888/...), but can still select and serve a
+  // specific site in a multisite configuration (e.g. http://mysite.com/...).
+  $overrides = unserialize(urldecode(runserver_env('RUNSERVER_GLOBALS')));
+  foreach ($overrides as $key => $value) {
+    $GLOBALS[$key] = $value;
+  }
 
-// Complete $_GET['q'] for Drupal 6 with built in server
-// - this uses the Drupal 7 method.
-if (!isset($_GET['q']) && isset($_SERVER['REQUEST_URI'])) {
-    // This request is either a clean URL, or 'index.php', or nonsense.
-    // Extract the path from REQUEST_URI.
-    $request_path = strtok($_SERVER['REQUEST_URI'], '?');
-    $base_path_len = strlen(rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/'));
-    // Unescape and strip $base_path prefix, leaving q without a leading slash.
-  $_GET['q'] = substr(urldecode($request_path), $base_path_len + 1);
+  // Complete $_GET['q'] for Drupal 6 with built in server
+  // - this uses the Drupal 7 method.
+  if (!isset($_GET['q']) && isset($_SERVER['REQUEST_URI'])) {
+      // This request is either a clean URL, or 'index.php', or nonsense.
+      // Extract the path from REQUEST_URI.
+      $request_path = strtok($_SERVER['REQUEST_URI'], '?');
+      $base_path_len = strlen(rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/'));
+      // Unescape and strip $base_path prefix, leaving q without a leading slash.
+    $_GET['q'] = substr(urldecode($request_path), $base_path_len + 1);
+  }
 }
 
 // We hijack filter_init (which core filter module does not implement) as
@@ -64,3 +73,5 @@ function runserver_env($key) {
     return getenv($key);
   }
 }
+
+runserver_bootstrap();
