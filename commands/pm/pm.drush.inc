@@ -638,6 +638,8 @@ function drush_get_projects(&$extensions = NULL) {
     }
   }
 
+  // Allow to alter final list of modules to be updated.
+  drupal_alter('drush_get_projects', $projects);
   return $projects;
 }
 
