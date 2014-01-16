@@ -97,10 +97,15 @@ drush_invoke("version", $arg);
     );
     $this->drush('pm-download', array('devel'), $options);
     $this->drush('pm-enable', array('devel', 'menu'), $options);
+    $this->drush('pm-download', array('zen'), $options);
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();
     $this->assertEquals($root . '/' . $sitewide . '/modules/devel', $output);
+
+    $this->drush('drupal-directory', array('zen'), $options);
+    $output = $this->getOutput();
+    $this->assertEquals($root . '/' . $sitewide . '/themes/zen', $output);
 
     $this->drush('drupal-directory', array('%files'), $options);
     $output = $this->getOutput();
