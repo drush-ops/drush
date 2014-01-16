@@ -574,10 +574,10 @@ function _core_path_aliases($project = '') {
       // for a project (or a few) and add its path to the path list
       if (!empty($project)) {
         drush_include_engine('drupal', 'environment');
-        $modules = drush_get_modules();
+        $projects = array_merge(drush_get_modules(), drush_get_themes());
         foreach(explode(',', $project) as $target) {
-          if (array_key_exists($target, $modules)) {
-            $paths['%' . $target] = DRUPAL_ROOT . '/' . dirname($modules[$target]->filename);
+          if (array_key_exists($target, $projects)) {
+            $paths['%' . $target] = $drupal_root . '/' . dirname($projects[$target]->filename);
           }
         }
       }
