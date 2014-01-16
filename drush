@@ -32,12 +32,6 @@ while [ -h "$SELF_PATH" ]; do
     SELF_PATH="`cd "$DIR" && cd "$SYM_DIRNAME" && pwd`/`basename -- "$SYM"`"
 done
 
-# Build the path to drush.php.
-SCRIPT_PATH="`dirname "$SELF_PATH"`/drush.php"
-if [ -n "$CYGWIN" ] ; then
-  SCRIPT_PATH="`cygpath -w -a -- "$SCRIPT_PATH"`"
-fi
-
 # If not exported, try to determine and export the number of columns.
 # We do not want to run `tput cols` if $TERM is empty or "dumb", because
 # if we do, tput will output an undesirable error message to stderr.  If
@@ -72,6 +66,17 @@ else
     if [ ! -x "$php" ]; then
       echo "ERROR: can't find php."; exit 1
     fi
+  fi
+fi
+
+# Build the path to drush.php.
+SCRIPT_PATH="`dirname "$SELF_PATH"`/drush.php"
+if [ -n "$CYGWIN" ] ; then
+  # try to determine if we are running cygwin port php or Windows native php:
+  if [ -n "`"$php" -i | grep -E '^System => Windows'`" ]; then
+    SCRIPT_PATH="`cygpath -w -a -- "$SCRIPT_PATH"`"
+  else
+    SCRIPT_PATH="`cygpath -u -a -- "$SCRIPT_PATH"`"
   fi
 fi
 
