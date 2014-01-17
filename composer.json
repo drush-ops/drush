@@ -12,6 +12,10 @@
     { "name": "Jonathan Araña Cruz", "email": "jonhattan@faita.net" },
     { "name": "Jonathan Hedstrom", "email": "jhedstrom@gmail.com" }
   ],
+  "support": {
+    "forum": "http://drupal.stackexchange.com/questions/tagged/drush",
+    "irc": "irc://irc.freenode.org/drush"
+  },
   "bin": [
     "drush",
     "drush.php",
