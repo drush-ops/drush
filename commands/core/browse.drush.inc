@@ -33,9 +33,10 @@ function drush_browse($path = '') {
   // the *local* machine.
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
   if (drush_sitealias_is_remote_site($alias)) {
+    $site_record = drush_sitealias_get_record($alias);
     $return = drush_invoke_process($site_record, 'browse', func_get_args(), drush_redispatch_get_options(), array('integrate' => FALSE));
     if ($return['error_status']) {
-      return drush_set_error('Unable to execute site browse.');
+      return drush_set_error('Unable to execute browse command on remote alias.');
     }
     else {
       $link = $return['object'];
