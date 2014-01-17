@@ -832,7 +832,7 @@ function _drush_download_file($url, $destination, $overwrite = TRUE) {
  * has either mime_content_type() or finfo installed -- if not, only tar,
  * gz, zip and bzip2 types can be detected.
  *
- * If mime type can't be obtained, an error will be set.
+ * If mime type can't be obtained, return FALSE.
  *
  * @return mixed
  *   The MIME content type of the file or FALSE.
@@ -916,7 +916,8 @@ function drush_mime_content_type($filename) {
     return $content_type;
   }
 
-  return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', array('!file' => $filename)));
+  drush_log(dt('Unable to determine mime type for !file.', array('!file' => $filename)), 'warning');
+  return FALSE;
 }
 
 /**
