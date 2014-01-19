@@ -922,7 +922,10 @@ function _drush_bootstrap_drupal_database_validate() {
  */
 function _drush_bootstrap_drupal_database() {
   drush_log(dt("Successfully connected to the Drupal database."), 'bootstrap');
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
+  // D8 omits this bootstrap level as nothing special needs to be done.
+  if (drush_drupal_major_version() <= 7) {
+    drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
+  }
 }
 
 /**
