@@ -107,10 +107,7 @@ function drush_cache_clear_pre_validate($type = NULL) {
 function drush_cache_command_clear($type = NULL) {
   $types = drush_cache_clear_types(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
 
-  if ($type) {
-    drush_op($types[$type]);
-  }
-  else {
+  if (!isset($type)) {
     // Don't offer 'all' unless Drush has bootstrapped the Drupal site
     if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
       unset($types['all']);
@@ -119,9 +116,9 @@ function drush_cache_command_clear($type = NULL) {
     if (empty($type)) {
       return drush_user_abort();
     }
-    // Do it.
-    drush_op($types[$type]);
   }
+  // Do it.
+  drush_op($types[$type]);
   if ($type == 'all' && !drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
     drush_log(dt("No Drupal site found, only 'drush' cache was cleared."), 'warning');
   }
