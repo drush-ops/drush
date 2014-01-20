@@ -116,26 +116,23 @@ function drush_core_pre_site_install($profile = NULL) {
     // Check for alternative format:
     // @code
     // $config_directories = array(
-    //   'active' => array(
-    //     'path' => 'config/active',
-    //   ),
-    //   'staging' => array(
-    //     'path' => 'config/staging',
-    //   ),
+    //   'active' => 'config/active',
+    //   'staging' => 'config/staging',
     // );
     // @endcode
-    preg_match('/\n\$config_directories[^;]*\'path\' => \'([^\']*)\'.*\'path\' => \'([^\']*)\'/s', file_get_contents($settingsfile), $directories);
+    // @todo update this regex to omit path.
+    // preg_match('/\n\$config_directories[^;]*\'path\' => \'([^\']*)\'.*\'path\' => \'([^\']*)\'/s', file_get_contents($settingsfile), $directories);
 
     if (empty($directories)) {
-      // Check for alternative format:
+      // Check for canonical format:
       // @code
-      // $config_directories['active']['path'] = 'config/active';
-      // $config_directories['staging']['path'] = 'config/staging';
+      // $config_directories['active'] = 'config/active';
+      // $config_directories['staging'] = 'config/staging';
       // @endcode
       foreach (array('active', 'staging') as $type) {
-        preg_match('/\n\$config_directories[^;]*\'' . $type . '\'\]\[\'path\'\] = \'([^\']*)\'/', file_get_contents($settingsfile), $directory);
+        preg_match('/\n\$config_directories[^;]*\'' . $type . '\'\] = \'([^\']*)\'/', file_get_contents($settingsfile), $directory);
         if (isset($directory[1])) {
-          $directories[$type] = $files . '/' . $directory[1];
+          $directories[$type] = $directory[1];
         }
       }
     }
