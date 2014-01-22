@@ -32,6 +32,13 @@ exit(drush_main());
  */
 function drush_main() {
   $return = '';
+  // Start code coverage collection.
+  if ($coverage_file = drush_get_option('drush-coverage', FALSE)) {
+    drush_set_context('DRUSH_CODE_COVERAGE', $coverage_file);
+    xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+    register_shutdown_function('drush_coverage_shutdown');
+  }
+
   if ($file = drush_get_option('early', FALSE)) {
     require_once $file;
     $function = 'drush_early_' . basename($file, '.inc');
