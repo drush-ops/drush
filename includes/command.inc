@@ -1855,6 +1855,15 @@ function drush_enforce_requirement_core(&$command) {
 function drush_shell_alias_replace() {
   $args = drush_get_arguments();
   $argv = drush_get_context('argv');
+  // Normally we want the coverage argument to get passed along, but this is
+  // one case where we specifically don't.
+  $argv = array_filter($argv, function($arg) {
+                                if (substr($arg, 0, 17) == '--drush-coverage=') {
+                                  return FALSE;
+                                }
+                                return TRUE;
+                              }
+  );
   $first = current($args);
   // @todo drush_get_option is awkward here.
   $shell_aliases = drush_get_context('shell-aliases', array());

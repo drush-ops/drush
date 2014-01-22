@@ -1089,6 +1089,42 @@ function drush_shutdown() {
   register_shutdown_function('drush_return_status');
 }
 
+/**
+ * Shutdown function to save code coverage data.
+ */
+function drush_coverage_shutdown() {
+  if ($file_name = drush_get_context('DRUSH_CODE_COVERAGE', FALSE)) {
+    $data = xdebug_get_code_coverage();
+    xdebug_stop_code_coverage();
+
+    // If coverage dump file contains anything, merge in the old data before
+    // saving. This happens if the current drush command invoked another drush
+    // command.
+    if (file_exists($file_name) && $content = file_get_contents($file_name)) {
+      $merge_data = unserialize($content);
+      if (is_array($merge_data)) {
+        foreach ($merge_data as $file => $lines) {
+          if (!isset($data[$file])) {
+            $data[$file] = $lines;
+          }
+          else {
+            foreach ($lines as $num => $executed) {
+              if (!isset($data[$file][$num])) {
+                $data[$file][$num] = $executed;
+              }
+              else {
+                $data[$file][$num] = ($executed == 1 ? $executed : $data[$file][$num]);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    file_put_contents($file_name, serialize($data));
+  }
+}
+
 function drush_return_status() {
   exit((drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS);
 }

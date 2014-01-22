@@ -349,6 +349,11 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
    */
   var $sites;
 
+  /*
+   * Array of code coverage data collected during a single test.
+   */
+  var $coverage_data = array();
+
   /**
    * Actually runs the command. Does not trap the error stream output as this
    * need PHP 4.3+.
@@ -445,6 +450,16 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
         $cmd[] = "--$key=" . self::escapeshellarg($value);
       }
     }
+
+    // Insert code coverage argument.
+    $result = $this->getTestResultObject();
+    if ($result->getCollectCodeCoverageInformation()) {
+      $coverage_file = tempnam(UNISH_TMP, 'drush_coverage');
+      if ($coverage_file) {
+        $cmd[] = "--drush-coverage=" . $coverage_file;
+      }
+    }
+
     $cmd[] = $suffix;
     if ($hide_stderr) {
       $cmd[] = '2>/dev/null';
@@ -454,7 +469,54 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     // that tests might cause Drupal to send.
     $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
     $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
-    return $this->execute(implode(' ', $exec), $expected_return, $env);
+    $return = $this->execute(implode(' ', $exec), $expected_return, $env);
+
+    // Save code coverage information.
+    if (!empty($coverage_file)) {
+      $data = unserialize(file_get_contents($coverage_file));
+      unlink($coverage_file);
+      // Save for appending after the test finishes.
+      $this->coverage_data[] = $data;
+    }
+
+    return $return;
+  }
+
+  /**
+   * Override the run method, so we can add in our code coverage data after the
+   * test has run.
+   *
+   * We have to collect all coverage data, merge them and append them as one, to
+   * avoid having phpUnit duplicating the test function as many times as drush
+   * has been invoked.
+   */
+  public function run(PHPUnit_Framework_TestResult $result = NULL) {
+    $result = parent::run($result);
+    $data = array();
+    foreach ($this->coverage_data as $merge_data) {
+      foreach ($merge_data as $file => $lines) {
+        if (!isset($data[$file])) {
+          $data[$file] = $lines;
+        }
+        else {
+          foreach ($lines as $num => $executed) {
+            if (!isset($data[$file][$num])) {
+              $data[$file][$num] = $executed;
+            }
+            else {
+              $data[$file][$num] = ($executed == 1 ? $executed : $data[$file][$num]);
+            }
+          }
+        }
+      }
+    }
+
+    // Reset coverage data.
+    $this->coverage_data = array();
+    if (!empty($data)) {
+      $result->getCodeCoverage()->append($data, $this);
+    }
+    return $result;
   }
 
   function drush_major_version() {
