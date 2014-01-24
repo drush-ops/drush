@@ -433,6 +433,17 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     }
     $cmd[] = "--nocolor";
 
+    // Insert code coverage argument before command, in order for it to be
+    // parsed as a global command. This matters for commands like ssh and rsync
+    // where options after the command are passed along to external commands.
+    $result = $this->getTestResultObject();
+    if ($result->getCollectCodeCoverageInformation()) {
+      $coverage_file = tempnam(UNISH_TMP, 'drush_coverage');
+      if ($coverage_file) {
+        $cmd[] = "--drush-coverage=" . $coverage_file;
+      }
+    }
+
     // insert site specification and drush command
     $cmd[] = empty($site_specification) ? NULL : self::escapeshellarg($site_specification);
     $cmd[] = $command;
@@ -448,15 +459,6 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
       }
       else {
         $cmd[] = "--$key=" . self::escapeshellarg($value);
-      }
-    }
-
-    // Insert code coverage argument.
-    $result = $this->getTestResultObject();
-    if ($result->getCollectCodeCoverageInformation()) {
-      $coverage_file = tempnam(UNISH_TMP, 'drush_coverage');
-      if ($coverage_file) {
-        $cmd[] = "--drush-coverage=" . $coverage_file;
       }
     }
 
