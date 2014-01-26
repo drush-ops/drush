@@ -689,7 +689,13 @@ function _drush_core_status_format_table_data($output, $metadata) {
  * Command callback. Runs all cron hooks.
  */
 function drush_core_cron() {
-  if (drupal_cron_run()) {
+  if (drush_drupal_major_version() < 8) {
+    $result = drupal_cron_run();
+  }
+  else {
+    $result = \Drupal::service('cron')->run();
+  }
+  if ($result) {
     drush_log(dt('Cron run successful.'), 'success');
   }
   else {
