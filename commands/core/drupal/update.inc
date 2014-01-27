@@ -207,8 +207,6 @@ function update_main_prepare() {
   if (db_table_exists('cache_update')) {
     cache_clear_all('*', 'cache_update', TRUE);
   }
-
-  module_implements_reset();
 }
 
 function update_main() {
