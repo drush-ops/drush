@@ -373,10 +373,10 @@ function drush_config_edit($config_name = '') {
 function drush_config_get_object($config_name) {
   $source = drush_get_option('source', 'active');
   if ($source == 'active') {
-    $config = drupal_container()->get('config.storage');
+    $config = \Drupal::service('config.storage');
   }
   elseif ($source == 'staging') {
-    $config = drupal_container()->get('config.storage.staging');
+    $config = \Drupal::service('config.storage');
   }
 
   $data = $config->read($config_name);
@@ -494,5 +494,5 @@ function drush_config_edit_complete() {
  *   Array of available config names.
  */
 function _drush_config_complete() {
-  return array('values' => drupal_container()->get('config.storage')->listAll());
+  return array('values' => $storage = \Drupal::service('config.storage')->listAll());
 }
