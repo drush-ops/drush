@@ -107,10 +107,7 @@ function drush_cache_clear_pre_validate($type = NULL) {
 function drush_cache_command_clear($type = NULL) {
   $types = drush_cache_clear_types(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
 
-  if ($type) {
-    drush_op($types[$type]);
-  }
-  else {
+  if (!isset($type)) {
     // Don't offer 'all' unless Drush has bootstrapped the Drupal site
     if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
       unset($types['all']);
