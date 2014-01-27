@@ -28,8 +28,6 @@ function drush_core_pre_site_install($profile = NULL) {
 
   $conf_path = "sites/$sites_subdir";
   $files = "$conf_path/files";
-  // Used by a D8 log message.
-  drush_set_context('DRUSH_SITE_INSTALL_FILES', $files);
   $settingsfile = "$conf_path/settings.php";
   $sitesfile = "sites/sites.php";
   $sitesfile_write = drush_drupal_major_version() >= 8 && !file_exists($sitesfile) && $sites_subdir != 'default';
