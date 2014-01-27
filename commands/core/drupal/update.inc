@@ -163,7 +163,7 @@ function update_main_prepare() {
 
   // Reset the module_implements() cache so that any new hook implementations
   // in updated code are picked up.
-  module_implements('', FALSE, TRUE);
+  \Drupal::moduleHandler()->resetImplementations();
 
   // Set up $language, since the installer components require it.
   drupal_language_initialize();
@@ -179,6 +179,15 @@ function update_main_prepare() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
 
   update_fix_d8_requirements();
+
+  // Clear the module_implements() cache before the full bootstrap. The calls
+  // above to drupal_maintenance_theme() and update_check_requirements() have
+  // invoked hooks before all modules have actually been loaded by the full
+  // bootstrap. This means that the module_implements() results for any hooks
+  // that have been invoked, including hook_module_implements_alter(), is a
+  // smaller set of modules than should be returned normally.
+  // @see https://github.com/drush-ops/drush/pull/399
+  \Drupal::moduleHandler()->resetImplementations();
 
   // Now proceed with a full bootstrap.
 
