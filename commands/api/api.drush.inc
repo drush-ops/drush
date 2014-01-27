@@ -160,6 +160,7 @@ function _api_parse_request($request) {
   $args = explode('/', $parsed['path']);
   $alias = array_shift($args);
   $command = array_shift($args);
+  // FIXME: Currently this skips the first option.
   $options = explode('&', $parsed['query']);
   $parsed_request = array(
     'alias' => $alias,
@@ -190,7 +191,7 @@ function _api_is_valid_request($request) {
   if (count($request['args']) > count($context['DRUSH_COMMANDS'][$request['command']]['arguments'])) {
     return FALSE;
   }
-  // Validate options.
+  // TODO: Validate options.
 
 
   return TRUE;
@@ -203,7 +204,8 @@ function api_process_request($ip_address, $host, $request) {
   if (!$data) {
     return _api_error();
   }
-  if ($result = drush_command_invoke_all_ref('drush_api_process_request_alter', $ip_address, $host, $request)) {
+  // TODO: Test this.
+  if ($result = drush_command_invoke_all('drush_api_process_request_alter', $ip_address, $host, $request)) {
     return $result;
   }
   return _api_run_command($data['alias'], $data['command'], $data['args'], $data['options']);
@@ -233,6 +235,6 @@ function _api_access_denied() {
 function _api_error() {
   return array(
     'error_status' => 1,
-    'error_log' => dt('Invalid request.'),
+    'error_log' => dt('Invalid request. API requests must use this format: {@alias}/{command}/{argument}/{argument_two}?{option=value&option2=value2}'),
   );
 }
