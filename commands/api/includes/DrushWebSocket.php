@@ -58,7 +58,7 @@ class DrushWebSocket implements MessageComponentInterface {
         $ip = $client->remoteAddress;
         $host = 'host';
         drush_set_option('request-handler', $this->requestHandler);
-        $response = api_process_request($ip, $host, $this->request);
+        $response = _api_process_request($ip, $host, $this->request);
         drush_log(dt('Processed request.'), 'success');
         $client->send(json_encode($response));
       }

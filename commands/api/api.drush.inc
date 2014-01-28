@@ -28,15 +28,28 @@ function api_drush_command() {
       ),
     ),
     'options' => array(
-      'host' => 'The hostname to use for the Drush API server.',
-      'port' => 'The port to use for the Drush API server.',
-      'allowable-ips' => 'A comma-separated list of IPs that may use the web service. By default all IPs are allowed.',
-      'allowable-http-hosts' => 'A comma-separated list of host names that will be accepted from the requester. By default all host names are allowed.',
+      'host' => array(
+        'description' => 'The hostname to use for the Drush API server. Typical values may include "localhost", "127.0.0.1", or "0.0.0.0".',
+        'example-value' => 'localhost',
+      ),
+      'port' => array(
+        'description' => 'The port to use for the Drush API server.',
+        'example-value' => '8888',
+      ),
+      'allowable-ips' => array(
+        'description' => 'A comma-separated list of IPs that may use the web service. By default all IPs are allowed.',
+        'example-value' => '"127.0.0.1,0.0.0.0"',
+      ),
+      'allowable-http-hosts' => array(
+        'description' => 'A comma-separated list of host names that will be accepted from the requester. By default all host names are allowed.',
+        'example-value' => "localhost,example.com",
+      ),
     ),
   );
   $items['api-request'] = array(
     'description' => 'Return data from Drush to the caller.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'hidden' => TRUE,
     'options' => array(),
     'arguments' => array(
       'request' => 'The request to execute',
@@ -106,12 +119,13 @@ function api_drush_engine_api_server() {
       'description' => 'Serve Drush over HTTP using PHP\'s built-in server. This should not be used on a public network',
       'options' => array(
         'headers' => array(
-          'description' => 'A comma-separated list of additional headers to set, for example, "Access-Control-Allow-Origin: *".',
+          'description' => 'A comma-separated list of additional headers to set.',
+          'example-value' => '"Access-Control-Allow-Origin: *"',
         ),
       ),
     ),
     'websocket' => array(
-      'description' => 'Serve Drush over a websocket. Use SSL if using over a public network.',
+      'description' => 'Serve Drush over a WebSocket. If on a public network, using SSL is highly recommended.',
     ),
   );
 }
@@ -128,11 +142,26 @@ function drush_api_request($request, $http_host = NULL, $ip_address = NULL) {
   if (!_api_request_allow($http_host, $ip_address)) {
     return _api_access_denied();
   }
-  return api_process_request($ip_address, $http_host, $request);
+  return _api_process_request($ip_address, $http_host, $request);
 }
 
 /**
  * Check if the request is allowed.
+ *
+ * Validation is performed against the allowable IP addresses and hosts
+ * specified when the `api-server` command was run. Contrib Drush commands can
+ * hook into the validation process later on in the process, in
+ * _api_process_request().
+ *
+ * @param string $http_host
+ *   The HTTP host making the request, e.g. "example.com". Note that this value
+ *   can easily be spoofed by non-browser clients.
+ * @param string $ip_address
+ *   The IP address making the request, e.g. "127.0.0.1". Note that this value
+ *   can be spoofed by non-browser clients.
+ *
+ * @return bool
+ *   Return TRUE if the request is allowed and FALSE if not.
  */
 function _api_request_allow($http_host, $ip_address) {
 
@@ -199,7 +228,7 @@ function _api_is_valid_request($request) {
 /**
  * Process an incoming request via drush_invoke_process() and return results.
  */
-function api_process_request($ip_address, $host, $request) {
+function _api_process_request($ip_address, $host, $request) {
   $data = _api_parse_request($request);
   if (!$data) {
     return _api_error();
