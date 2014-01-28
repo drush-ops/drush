@@ -27,7 +27,7 @@ class DrushWebSocket implements MessageComponentInterface {
   /**
    * Constructor.
    */
-  public function __construct($allowable_ips = array(), $allowable_hosts = array()) {
+  public function __construct($allowable_ips = '', $allowable_hosts = '') {
     $this->allowableIps = $allowable_ips;
     $this->allowableHosts = $allowable_hosts;
     $this->clients = new \SplObjectStorage();
@@ -59,15 +59,23 @@ class DrushWebSocket implements MessageComponentInterface {
             '!ip' => $client->remoteAddress,
             '!request' => trim($request))),
           'ok');
-        $ip = $client->remoteAddress;
         // TODO: Get the correct HOST value.
-        $host = 'host';
+        $host = 'localhost';
+        $options = array();
+        if (count($this->allowableIps)) {
+          $options['allowable-ips'] = implode(',', $this->allowableIps);
+        }
+        if (count($this->allowableHosts)) {
+          $options['allowable-http-hosts'] = implode(',', $this->allowableHosts);
+        }
         // Process the request.
-        $response = drush_api_request($this->request, $host, $ip);
+        $result = drush_invoke_process('@none', 'api-request', array(
+          trim($request),
+          $host,
+          $client->remoteAddress,
+        ), $options, FALSE);
         drush_log(dt('Processed request.'), 'success');
-        // Since we are not calling `api-request` with Drush, we need to
-        // JSON encode the output.
-        $client->send(json_encode($response));
+        $client->send($result['output']);
       }
     }
   }

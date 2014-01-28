@@ -65,6 +65,12 @@ function _drush_api_request() {
     escapeshellarg($_SERVER['HTTP_HOST']),
     escapeshellarg($_SERVER['REMOTE_ADDR'])
   );
+  if (isset($_ENV['DRUSH_API_ALLOWABLE_IPS'])) {
+    $command .= sprintf(' --allowable-ips="%s"', $_ENV['DRUSH_API_ALLOWABLE_IPS']);
+  }
+  if (isset($_ENV['DRUSH_API_ALLOWABLE_HOSTS'])) {
+    $command .= sprintf(' --allowable-http-hosts="%s"', $_ENV['DRUSH_API_ALLOWABLE_HOSTS']);
+  }
   // Log the command.
   error_log('Drush API: ' . $command);
   // `api-request` will return a JSON encoded string. We need to decode it

@@ -18,11 +18,13 @@ use Ratchet\WebSocket\WsServer;
 function api_server_launch() {
   require_once DRUSH_BASE_PATH . '/commands/api/includes/DrushWebSocket.php';
   $port = drush_get_option('port', 8080);
+  $allowable_ips = drush_get_option_list('allowable-ips');
+  $allowable_hosts = drush_get_option_list('allowable-http-hosts');
   drush_log(dt('Creating Drush Web Socket, listening at http://localhost:!port', array('!port' => $port)), 'ok');
   $server = IoServer::factory(
     new HttpServer(
       new WsServer(
-        new DrushWebSocket()
+        new DrushWebSocket($allowable_ips, $allowable_hosts)
       )
     ),
     $port

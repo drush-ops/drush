@@ -18,11 +18,11 @@ function api_server_launch() {
   $php = drush_get_option('php');
   // Set allowable IPs as an environment variable.
   if ($allowable_ips = array_filter(drush_get_option_list('allowable-ips'))) {
-    $env_vars['DRUSH_API_ALLOWABLE_IPS'] = $allowable_ips;
+    $env_vars['DRUSH_API_ALLOWABLE_IPS'] = implode(',', $allowable_ips);
   }
   // Set allowable HTTP hosts as an environment variable.
   if ($allowable_http_hosts = array_filter(drush_get_option_list('allowable-http-hosts'))) {
-    $env_vars['DRUSH_API_ALLOWABLE_HOSTS'] = $allowable_http_hosts;
+    $env_vars['DRUSH_API_ALLOWABLE_HOSTS'] = implode(',', $allowable_http_hosts);
   }
   // Set any additional headers as an environment variable.
   if ($headers = array_filter(drush_get_option_list('headers'))) {

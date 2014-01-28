@@ -42,8 +42,8 @@ function api_drush_command() {
         'example-value' => '"127.0.0.1,0.0.0.0"',
       ),
       'allowable-http-hosts' => array(
-        'description' => 'A comma-separated list of host names that will be accepted from the requester. By default all host names are allowed.',
-        'example-value' => "localhost,example.com",
+        'description' => 'A comma-separated list of host names and ports that will be accepted from the requester. By default all host names are allowed.',
+        'example-value' => "localhost:8080,example.com:443",
       ),
     ),
   );
@@ -51,7 +51,18 @@ function api_drush_command() {
     'description' => 'Return data from Drush to the caller.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'hidden' => TRUE,
-    'options' => array(),
+    'options' => array(
+      'allowable-ips' => array(
+        'description' => 'A comma-separated list of IPs that may use the web service. By default all IPs are allowed.',
+        'example-value' => '"127.0.0.1,0.0.0.0"',
+        'hidden' => TRUE,
+      ),
+      'allowable-http-hosts' => array(
+        'description' => 'A comma-separated list of host names and ports that will be accepted from the requester. By default all host names are allowed.',
+        'example-value' => "localhost:8080,example.com:443",
+        'hidden' => TRUE,
+      ),
+    ),
     'arguments' => array(
       'request' => 'The request to execute',
       'http-host' => 'The HTTP host of the requester',
@@ -176,15 +187,12 @@ function drush_api_request($request, $http_host = NULL, $ip_address = NULL) {
  *   Return TRUE if the request is allowed and FALSE if not.
  */
 function _api_request_allow($http_host, $ip_address) {
-
-  // FIXME: These options don't load in the `api-request` command.
   // Check if allowable IPs are defined.
-  if ($allowable_ips = array_filter(drush_get_option('allowable-ips'))) {
+  if ($allowable_ips = array_filter(drush_get_option_list('allowable-ips'))) {
     if ($ip_address && !in_array($ip_address, $allowable_ips)) {
       return FALSE;
     }
   }
-
   // Check if HTTP_HOST matches.
   if ($allowable_http_hosts = array_filter(drush_get_option_list('allowable-http-hosts'))) {
     if (!in_array($http_host, $allowable_http_hosts)) {
