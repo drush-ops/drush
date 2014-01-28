@@ -1,22 +1,30 @@
 <?php
 
 /**
- * Launch a Drush server over HTTP(s).
+ * Launch a Drush API server over HTTP.
+ *
+ * This code is run with the `--server-type=http` option for the `api-server`
+ * command.
  */
 function api_server_launch() {
+  // Warn the user about running this command on a public network.
   if (!drush_confirm('You should not use the HTTP server option on a public network. Are you sure you want to continue?')) {
     return FALSE;
   }
+  // Set the path to Drush as an environment variable, for use in the DrushHttp
+  // file.
   $env_vars = array();
   $env_vars['DRUSH'] = DRUSH_BASE_PATH . '/drush';
-
   $php = drush_get_option('php');
+  // Set allowable IPs as an environment variable.
   if ($allowable_ips = array_filter(drush_get_option_list('allowable-ips'))) {
     $env_vars['DRUSH_API_ALLOWABLE_IPS'] = $allowable_ips;
   }
+  // Set allowable HTTP hosts as an environment variable.
   if ($allowable_http_hosts = array_filter(drush_get_option_list('allowable-http-hosts'))) {
     $env_vars['DRUSH_API_ALLOWABLE_HOSTS'] = $allowable_http_hosts;
   }
+  // Set any additional headers as an environment variable.
   if ($headers = array_filter(drush_get_option_list('headers'))) {
     $env_vars['DRUSH_API_HEADERS'] = escapeshellarg(serialize($headers));
   }
@@ -27,6 +35,8 @@ function api_server_launch() {
   foreach ($env_vars as $key => $value) {
     $vars .= $key . '=' . $value . ' ';
   }
+  // Instantiate the HTTP server, using the environment variables defined above.
+  // The `cli-server.ini` file is included for colorized output to the terminal.
   $cmd = sprintf('%s%s -d variables_order=EGPCS -S %s:%s %s -c %s',
     $vars,
     $php,

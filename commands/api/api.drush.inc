@@ -27,6 +27,7 @@ function api_drush_command() {
         'add-options-to-command' => FALSE,
       ),
     ),
+    // TODO: Host may not work with Ratchet.
     'options' => array(
       'host' => array(
         'description' => 'The hostname to use for the Drush API server. Typical values may include "localhost", "127.0.0.1", or "0.0.0.0".',
@@ -136,6 +137,17 @@ function api_drush_engine_api_server() {
 
 /**
  * Command callback for `drush api-request`.
+ *
+ * @param string $request
+ *   The incoming request to the Drush API server.
+ * @param string $http_host
+ *   The HTTP host of the requester.
+ * @param string $ip_address
+ *   The IP address of the requester.
+ *
+ * @return array
+ *   Returns an array of data to present to the requester. By default, the
+ *   `api-request` command will use the JSON output format.
  */
 function drush_api_request($request, $http_host = NULL, $ip_address = NULL) {
   // Check if access is allowed.
@@ -165,6 +177,7 @@ function drush_api_request($request, $http_host = NULL, $ip_address = NULL) {
  */
 function _api_request_allow($http_host, $ip_address) {
 
+  // FIXME: These options don't load in the `api-request` command.
   // Check if allowable IPs are defined.
   if ($allowable_ips = array_filter(drush_get_option('allowable-ips'))) {
     if ($ip_address && !in_array($ip_address, $allowable_ips)) {
@@ -183,6 +196,14 @@ function _api_request_allow($http_host, $ip_address) {
 
 /**
  * Parse an incoming request into alias, command, args and options.
+ *
+ * @param string $request
+ *   The incoming request to the Drush API server.
+ *
+ * @return mixed
+ *   If the request is in the format expected by the Drush API server, an array
+ *   with the request values parsed into alias, command, args and options is
+ *   returned. Otherwise we return FALSE.
  */
 function _api_parse_request($request) {
   $parsed = parse_url($request);
@@ -202,12 +223,23 @@ function _api_parse_request($request) {
 
 /**
  * Validate the incoming request.
+ *
+ * In _api_parse_request(), we generate an array from the incoming request
+ * with the alias, command, options, and args that the requester would like to
+ * run. Here we check if those parameters are valid.
+ *
+ * @param array $request
+ *   The parsed request returned from _api_parse_request().
+ *
+ * @return bool
+ *   Return TRUE if the request is valid, and FALSE otherwise.
  */
 function _api_is_valid_request($request) {
   // Verify alias.
   if (!drush_sitealias_get_record($request['alias']) && $request['alias'] !== '@none') {
     return FALSE;
   }
+  // Check that the command exists.
   $context = drush_get_context();
   if (!in_array($request['command'], array_keys($context['DRUSH_COMMANDS']))) {
     return FALSE;
@@ -216,7 +248,7 @@ function _api_is_valid_request($request) {
   if (in_array($request['command'], array('api-server', 'api-request'))) {
     return FALSE;
   }
-  // Validate number of args does not exceed what command will accept.
+  // Validate number of args sent does not exceed what the command will accept.
   if (count($request['args']) > count($context['DRUSH_COMMANDS'][$request['command']]['arguments'])) {
     return FALSE;
   }
@@ -225,8 +257,20 @@ function _api_is_valid_request($request) {
 
   return TRUE;
 }
+
 /**
  * Process an incoming request via drush_invoke_process() and return results.
+ *
+ * @param string $ip_address
+ *   The IP address of the requester.
+ * @param string $host
+ *   The hostname of the requester.
+ * @param string $request
+ *   The request made to the API server.
+ *
+ * @return string
+ *   Return a JSON formatted string containing either an error message if an
+ *  invalid request was made, or the complete output of drush_invoke_process().
  */
 function _api_process_request($ip_address, $host, $request) {
   $data = _api_parse_request($request);
@@ -237,11 +281,30 @@ function _api_process_request($ip_address, $host, $request) {
   if ($result = drush_command_invoke_all('drush_api_process_request_alter', $ip_address, $host, $request)) {
     return $result;
   }
-  return _api_run_command($data['alias'], $data['command'], $data['args'], $data['options']);
+  else {
+    return _api_run_command(
+      $data['alias'],
+      $data['command'],
+      $data['args'],
+      $data['options']
+    );
+  }
 }
 
 /**
  * Run a command via drush_invoke_process() and return the output.
+ *
+ * @param string $alias
+ *   The Drush alias to use for the command.
+ * @param string $command
+ *   The Drush command to run.
+ * @param array $args
+ *   An array of arguments to pass.
+ * @param array $options
+ *   An array of options to use.
+ *
+ * @return array
+ *   The output of drush_invoke_process().
  */
 function _api_run_command($alias, $command, $args = array(), $options = array()) {
   return drush_invoke_process($alias, $command, $args, $options, FALSE);
@@ -249,6 +312,10 @@ function _api_run_command($alias, $command, $args = array(), $options = array())
 
 /**
  * An access denied array to return to drush_api_request().
+ *
+ * @return array
+ *   Returns an array of data to be used for an access denied message to the
+ *   requester.
  */
 function _api_access_denied() {
   return array(
@@ -260,6 +327,10 @@ function _api_access_denied() {
 
 /**
  * An error array to return to drush_api_request().
+ *
+ * @return array
+ *   Returns an array of data to be used as an error message if an invalid
+ *   request is made.
  */
 function _api_error() {
   return array(

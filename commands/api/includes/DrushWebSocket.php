@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Code for processing incoming requests to the Drush API server.
+ */
+
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
@@ -22,9 +27,9 @@ class DrushWebSocket implements MessageComponentInterface {
   /**
    * Constructor.
    */
-  public function __construct($allowable_ips = array(), $alllowable_hosts = array()) {
+  public function __construct($allowable_ips = array(), $allowable_hosts = array()) {
     $this->allowableIps = $allowable_ips;
-    $this->allowableHosts = $alllowable_hosts;
+    $this->allowableHosts = $allowable_hosts;
     $this->clients = new \SplObjectStorage();
   }
 
@@ -44,7 +49,7 @@ class DrushWebSocket implements MessageComponentInterface {
   public function onMessage(ConnectionInterface $from, $request) {
 
     foreach ($this->clients as $client) {
-      // Send the message to the requester, not all clients.
+      // Send the message to the requester, not all connected clients.
       if ($from == $client) {
         $this->from = $from;
         $this->response = '';
@@ -54,12 +59,14 @@ class DrushWebSocket implements MessageComponentInterface {
             '!ip' => $client->remoteAddress,
             '!request' => trim($request))),
           'ok');
-        // TODO: Get values.
         $ip = $client->remoteAddress;
+        // TODO: Get the correct HOST value.
         $host = 'host';
-        drush_set_option('request-handler', $this->requestHandler);
-        $response = _api_process_request($ip, $host, $this->request);
+        // Process the request.
+        $response = drush_api_request($this->request, $host, $ip);
         drush_log(dt('Processed request.'), 'success');
+        // Since we are not calling `api-request` with Drush, we need to
+        // JSON encode the output.
         $client->send(json_encode($response));
       }
     }
@@ -78,9 +85,9 @@ class DrushWebSocket implements MessageComponentInterface {
   /**
    * Log errors.
    */
-  public function onError(ConnectionInterface $conn, \Exception $e) {
+  public function onError(ConnectionInterface $conn, \Exception $err) {
     drush_set_error('DRUSH_WEB_SOCKET_ERROR', dt('An error occurred: !msg',
-       array('!msg' => $e->getMessage())));
+       array('!msg' => $err->getMessage())));
     $conn->close();
   }
 }
