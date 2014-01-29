@@ -45,6 +45,15 @@ function api_drush_command() {
         'description' => 'A comma-separated list of host names and ports that will be accepted from the requester. By default all host names are allowed.',
         'example-value' => "localhost:8080,example.com:443",
       ),
+      'kill' => array(
+        'description' => 'Add this option if you already started a Drush API server process (for example, using `drush api-server &` that you want to stop.',
+      ),
+    ),
+    'examples' => array(
+      'drush api-server' => 'Start a Drush API server using WebSockets.',
+      'drush api-server --server-type=http' => 'Start a Drush API server using PHP\'s built-in HTTP server.',
+      'drush api-server &' => 'Start a Drush API server process using WebSockets, and run in the background. End the process by running `drush api-server --kill`.',
+      'drush api-server --kill' => 'Terminate the current running Drush API server process.',
     ),
   );
   $items['api-request'] = array(
@@ -87,9 +96,41 @@ function drush_api_server() {
 }
 
 /**
+ * Implements hook_COMMAND_init().
+ */
+function drush_api_server_init() {
+
+}
+
+/**
  * Implements hook_COMMAND_validate().
  */
 function drush_api_server_validate() {
+  // If the '--kill' option was passed, then terminate the Drush API server
+  // process ID that is stored in the cache.
+  if (drush_get_option('kill')) {
+    if ($cache = drush_cache_get('pid', 'drush-api')) {
+      // Kill the process.
+      $pid = $cache->data;
+      $result = stripos(php_uname('s'), 'win') > -1 ? drush_shell_exec("taskkill /F /PID $pid") : drush_shell_exec("kill -9 $pid");
+      if ($result) {
+        drush_log(dt('Successfully terminated Drush API server process !pid.', array('!pid' => $pid)), 'success');
+      }
+      else {
+        drush_set_error(dt('There was no Drush API server process with ID !pid', array('!pid' => $pid)));
+      }
+      return FALSE;
+    }
+    else {
+      return drush_set_error(dt('There is no active Drush API server process.'));
+    }
+  }
+  // Clear the process ID cache, and set the new process ID.
+  drush_cache_clear_all('pid', 'drush-api');
+  drush_log(dt('Starting Drush API server with process ID !pid', array('!pid' => getmypid())));
+  // Store the process ID for the server.
+  drush_cache_set('pid', getmypid(), 'drush-api');
+  // Verify PHP requirements.
   if (drush_get_option('server-type') == 'http') {
     // Verify that user is on PHP 5.4+ for HTTP option.
     if (version_compare(phpversion(), '5.4') < 0) {
