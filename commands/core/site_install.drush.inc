@@ -51,7 +51,15 @@ function site_install_drush_command() {
   return $items;
 }
 
-
+/**
+ * Implements hook_drush_help_alter().
+ */
+function site_install_drush_help_alter(&$command) {
+  // Drupal 8+ customizations.
+  if ($command['command'] == 'site-install' && drush_drupal_major_version() >= 8) {
+    unset($command['options']['clean-url']);
+  }
+}
 
 /**
  * Command validate.
