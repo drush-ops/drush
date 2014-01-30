@@ -82,6 +82,9 @@ function config_drush_command() {
     'description' => 'Export config from the active directory to staging directory.',
     'core' => array('8+'),
     'aliases' => array('cex'),
+    'arguments' => array(
+      'destination' => "A config directory to receive the exported files. Defaults to 'staging'",
+    ),
     'options' => array(
       'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
     ),
@@ -247,28 +250,28 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
 /**
  * Command callback: Export config to staging directory.
  */
-function drush_config_export() {
+function drush_config_export($destination = CONFIG_STAGING_DIRECTORY) {
   // Retrieve a list of differences between the active and staged configuration.
   $active_dir = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
-  $staging_dir = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+  $destination_dir = config_get_config_directory($destination);
 
-  if (count(glob($staging_dir . '/*')) > 0) {
-    if (!drush_confirm(dt('The current contents of your staging directory (!staging) will be deleted.', array('!staging' => $staging_dir)))) {
+  if (count(glob($destination_dir . '/*')) > 0) {
+    if (!drush_confirm(dt('The current contents of your staging directory (!staging) will be deleted.', array('!staging' => $destination_dir)))) {
       return drush_user_abort();
     }
   }
 
-  if (drush_delete_dir_contents($staging_dir, TRUE)) {
+  if (drush_delete_dir_contents($destination_dir, TRUE)) {
     // We specify the MERGE flag below in order to copy only contents, not the dir itself. Since
     // The dir is empty, it is effectively a copy, not a merge.
-    drush_copy_dir($active_dir, $staging_dir, FILE_EXISTS_MERGE);
+    drush_copy_dir($active_dir, $destination_dir, FILE_EXISTS_MERGE);
   }
   else {
     return drush_set_error('DRUSH_CONFIG_EXPORT_DELETE', dt('Failed to empty staging directory.'));
   }
 
   if (drush_get_option('add')) {
-    drush_shell_exec_interactive('git add -p %s', $staging_dir);
+    drush_shell_exec_interactive('git add -p %s', $destination_dir);
   }
 }
 
@@ -462,29 +465,38 @@ function _drush_print_config_changes_table(array $config_changes) {
 /**
  * Command argument complete callback.
  */
-function drush_config_get_complete() {
-  return _drush_config_complete();
+function config_config_get_complete() {
+  return _drush_config_names_complete();
 }
 
 /**
  * Command argument complete callback.
  */
-function drush_config_set_complete() {
-  return _drush_config_complete();
+function config_config_set_complete() {
+  return _drush_config_names_complete();
 }
 
 /**
  * Command argument complete callback.
  */
-function drush_config_view_complete() {
-  return _drush_config_complete();
+function config_config_view_complete() {
+  return _drush_config_names_complete();
 }
 
 /**
  * Command argument complete callback.
  */
-function drush_config_edit_complete() {
-  return _drush_config_complete();
+function config_config_edit_complete() {
+  return _drush_config_names_complete();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function config_config_export_complete() {
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+  global $config_directories;
+  return array('values' => array_keys($config_directories));
 }
 
 /**
@@ -493,6 +505,7 @@ function drush_config_edit_complete() {
  * @return
  *   Array of available config names.
  */
-function _drush_config_complete() {
+function _drush_config_names_complete() {
+  drush_bootstrap_max();
   return array('values' => $storage = \Drupal::service('config.storage')->listAll());
 }
