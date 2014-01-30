@@ -1,5 +1,58 @@
 <?php
 
+function site_install_drush_command() {
+  $items['site-install'] = array(
+    'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
+    'arguments' => array(
+      'profile' => 'the install profile you wish to run. defaults to \'default\' in D6, \'standard\' in D7+',
+      'key=value...' => 'any additional settings you wish to pass to the profile. Fully supported on D7+, partially supported on D6 (single step configure forms only). The key is in the form [form name].[parameter name] on D7 or just [parameter name] on D6.',
+    ),
+    'options' => array(
+      'db-url' => array(
+        'description' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',
+        'example-value' => 'mysql://root:pass@host/db',
+      ),
+      'db-prefix' => 'An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).',
+      'db-su' => array(
+        'description' => 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.',
+        'example-value' => 'root',
+      ),
+      'db-su-pw' => array(
+        'description' => 'Password for the "db-su" account. Optional.',
+        'example-value' => 'pass',
+      ),
+      'account-name' => 'uid1 name. Defaults to admin',
+      'account-pass' => 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',
+      'account-mail' => 'uid1 email. Defaults to admin@example.com',
+      'locale' => array(
+        'description' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',
+        'example-value' => 'en-GB',
+      ),
+      'clean-url'=> 'Defaults to 1',
+      'site-name' => 'Defaults to Site-Install',
+      'site-mail' => 'From: for system mailings. Defaults to admin@example.com',
+      'sites-subdir' => array(
+        'description' => "Name of directory under 'sites' which should be created. Only needed when the subdirectory does not already exist. Defaults to 'default'",
+        'value' => 'required',
+        'example-value' => 'directory_name',
+      ),
+    ),
+    'examples' => array(
+      'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukrainian.',
+      'drush site-install --db-url=mysql://root:pass@localhost:port/dbname' => 'Install using the specified DB params.',
+      'drush site-install --db-url=sqlite://sites/example.com/files/.ht.sqlite' => 'Install using SQLite (D7+ only).',
+      'drush site-install --account-name=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
+      'drush site-install standard install_configure_form.site_default_country=FR my_profile_form.my_settings.key=value' => 'Pass additional arguments to the profile (D7 example shown here - for D6, omit the form id).',
+      "drush site-install install_configure_form.update_status_module='array(FALSE,FALSE)'" => 'Disable email notification during install and later. If your server has no smtp, this gets rid of an error during install.',
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
+    'aliases' => array('si'),
+  );
+  return $items;
+}
+
+
+
 /**
  * Command validate.
  */
