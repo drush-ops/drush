@@ -83,7 +83,7 @@ function config_drush_command() {
     'core' => array('8+'),
     'aliases' => array('cex'),
     'arguments' => array(
-      'destination' => "A config directory to receive the exported files. Defaults to 'staging'",
+      'destination' => "A config directory name. Defaults to 'staging'",
     ),
     'options' => array(
       'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
@@ -91,9 +91,12 @@ function config_drush_command() {
   );
 
   $items['config-import'] = array(
-    'description' => 'Import config from the file store.',
+    'description' => 'Import config from a config directory.',
+    'arguments' => array(
+      'source' => "A config directory name. Defaults to 'staging'",
+    ),
     'core' => array('8+'),
-    'aliases' => array('cim')
+    'aliases' => array('cim'),
   );
 
   $items['config-list'] = array(
@@ -248,7 +251,7 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
 }
 
 /**
- * Command callback: Export config to staging directory.
+ * Command callback: Export config to specified directory (usually staging).
  */
 function drush_config_export($destination = CONFIG_STAGING_DIRECTORY) {
   // Retrieve a list of differences between the active and staged configuration.
@@ -276,11 +279,12 @@ function drush_config_export($destination = CONFIG_STAGING_DIRECTORY) {
 }
 
 /**
- * Command callback. Import from staging directory.
+ * Command callback. Import from specified config directory (defaults to staging).
  */
-function drush_config_import() {
+function drush_config_import($source = 'staging') {
   // Retrieve a list of differences between the active and staged configuration.
-  $config_comparer = new StorageComparer(Drupal::service('config.storage.staging'), Drupal::service('config.storage'));
+  $source_storage = new FileStorage(config_get_config_directory($source));
+  $config_comparer = new StorageComparer($source_storage, Drupal::service('config.storage'));
   if (!$config_comparer->createChangelist()->hasChanges()) {
     return drush_log(dt('There are no changes to import.'), 'ok');
   }
@@ -493,7 +497,24 @@ function config_config_edit_complete() {
 /**
  * Command argument complete callback.
  */
+function config_config_import_complete() {
+  return _drush_config_directories_complete();
+}
+
+/**
+ * Command argument complete callback.
+ */
 function config_config_export_complete() {
+  return _drush_config_directories_complete();
+}
+
+/**
+ * Helper function for command argument complete callback.
+ *
+ * @return
+ *   Array of available config directories.
+ */
+function _drush_config_directories_complete() {
   drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
   global $config_directories;
   return array('values' => array_keys($config_directories));
