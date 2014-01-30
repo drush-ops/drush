@@ -121,7 +121,7 @@ function sql_drush_sql_sync_sanitize($site) {
       $user_table_updates[] = "mail = $newmail, init = $newmail";
     }
     else {
-      $user_table_updates[] = "mail = '$newemail', init = '$newmail'";
+      $user_table_updates[] = "mail = '$newemail', init = '$newemail'";
     }
     $message_list[] = 'email addresses';
   }
