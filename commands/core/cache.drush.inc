@@ -74,7 +74,9 @@ function cache_drush_command() {
  * @return
  *   Array of clear types.
  */
-function cache_cache_command_clear_complete() {
+function cache_cache_clear_complete() {
+  // Bootstrap as far as possible so that Views and others can add lookup their caches.
+  drush_bootstrap_max();
   return array('values' => array_keys(drush_cache_clear_types(TRUE)));
 }
 

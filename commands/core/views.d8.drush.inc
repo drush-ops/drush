@@ -34,7 +34,6 @@ function views_drush_command() {
   );
 
   $items['views-dev'] = array(
-    'callback' => 'views_development_settings',
     'description' => 'Set the Views settings to more developer-oriented values.',
     'aliases' => array('vd'),
   ) + $base;
@@ -139,11 +138,11 @@ function views_drush_command() {
 }
 
 /**
- * Drush views dev command.
+ * Command callback function for views-dev command.
  *
  * Changes the settings to more developer oriented values.
  */
-function views_development_settings() {
+function drush_views_dev() {
   $settings = array(
     'ui.show.listing_filters' => TRUE,
     'ui.show.master_display' => TRUE,
@@ -510,14 +509,14 @@ function views_drush_cache_clear(&$types) {
 /**
  * Command argument complete callback.
  */
-function drush_views_enable_complete() {
+function views_views_enable_complete() {
   return _drush_views_complete();
 }
 
 /**
  * Command argument complete callback.
  */
-function drush_views_disable_complete() {
+function views_views_disable_complete() {
   return _drush_views_complete();
 }
 
@@ -528,5 +527,6 @@ function drush_views_disable_complete() {
  *   An array of available view names.
  */
 function _drush_views_complete() {
+  drush_bootstrap_max();
   return array('values' => array_keys(Drupal::entityManager()->getStorageController('view')->loadMultiple()));
 }
