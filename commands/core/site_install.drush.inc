@@ -36,6 +36,7 @@ function site_install_drush_command() {
         'value' => 'required',
         'example-value' => 'directory_name',
       ),
+      'writable' => 'Make CMI and other dirs writable by both web and CLI users. Suitable for non Prod environments.',
     ),
     'examples' => array(
       'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukrainian.',
@@ -55,9 +56,14 @@ function site_install_drush_command() {
  * Implements hook_drush_help_alter().
  */
 function site_install_drush_help_alter(&$command) {
-  // Drupal 8+ customizations.
-  if ($command['command'] == 'site-install' && drush_drupal_major_version() >= 8) {
-    unset($command['options']['clean-url']);
+  // Drupal version-specific customizations.
+  if ($command['command'] == 'site-install') {
+    if (drush_drupal_major_version() >= 8) {
+      unset($command['options']['clean-url']);
+    }
+    else {
+      unset($command['options']['writable']);
+    }
   }
 }
 
@@ -106,7 +112,7 @@ function drush_core_pre_site_install($profile = NULL) {
     $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
   }
   else {
-    $msg[] = dt("CREATE  the '@db' database.", array('@db' => $db_spec['database']));
+    $msg[] = dt("CREATE the '@db' database.", array('@db' => $db_spec['database']));
   }
 
   if (!drush_confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
@@ -126,7 +132,7 @@ function drush_core_pre_site_install($profile = NULL) {
 
   if (!drush_file_not_empty($settingsfile)) {
     if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !drush_get_context('DRUSH_SIMULATE')) {
-      return drush_set_error(dt('Failed to copy sites/default/default.settings.php to  @settingsfile', array('@settingsfile' => $settingsfile)));
+      return drush_set_error(dt('Failed to copy sites/default/default.settings.php to @settingsfile', array('@settingsfile' => $settingsfile)));
     }
 
     if (drush_drupal_major_version() == 6) {
@@ -205,6 +211,21 @@ function drush_core_pre_site_install($profile = NULL) {
         drush_delete_dir_contents($directory, TRUE);
       }
     }
+
+    if (drush_get_option('writable')) {
+      if (is_writable($settingsfile)) {
+        $chmod = <<<'EOD'
+// Appended by Drush site-install.
+$settings['file_chmod_directory'] = 0777;
+$settings['file_chmod_file'] = 0777;
+EOD;
+        drush_file_append_data($settingsfile, "\n$chmod\n");
+      }
+      else {
+        drush_log(dt('Not appending file_chmod_* to @settingsfile as it is not writable.', array('@settingsfile' => $settingsfile)), 'notice');
+      }
+    }
+
 
     // Remove files/php if needed.
     drush_delete_dir("$files/php", TRUE);
