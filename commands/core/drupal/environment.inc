@@ -264,3 +264,19 @@ function drush_queue_get_queues() {
   return $queues;
 }
 
+function _drush_theme_default() {
+  return config('system.theme')->get('default');
+}
+
+function _drush_theme_admin() {
+  return config('system.theme')->get('admin');
+}
+
+function _drush_file_public_path() {
+  return settings()->get('file_public_path', conf_path() . '/files');
+}
+
+function _drush_file_private_path() {
+  return \Drupal::config('system.file')->get('path.private');
+}
+

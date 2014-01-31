@@ -31,6 +31,14 @@ function drush_get_modules($include_hidden = TRUE) {
   return $modules;
 }
 
+function _drush_theme_default() {
+  return variable_get('theme_default', 'garland');
+}
+
+function _drush_theme_admin() {
+  return variable_get('admin_theme', drush_theme_get_default());
+}
+
 /**
  * Returns drupal required modules, including their dependencies.
  *
@@ -298,4 +306,22 @@ function drush_queue_get_queues() {
     }
   }
   return $queues;
+}
+
+function _drush_theme_default() {
+  return variable_get('theme_default', 'garland');
+}
+
+function _drush_theme_admin() {
+  return variable_get('admin_theme', drush_theme_get_default());
+}
+
+function _drush_file_public_path() {
+  if (function_exists('file_directory_path')) {
+    return file_directory_path();
+  }
+}
+
+function _drush_file_private_path() {
+  // @todo
 }

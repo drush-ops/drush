@@ -518,19 +518,14 @@ function _core_path_aliases($project = '') {
           // Nothing to do.
         }
       }
-      if (drush_drupal_major_version() >= 7) {
-        if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_SITE) {
-          $paths['%files'] = variable_get('file_public_path', conf_path() . '/files');
-          $private_path = variable_get('file_private_path', FALSE);
-          if (!empty($private_path)) {
-            $paths['%private'] = $private_path;
-          }
 
+      if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_SITE) {
+        $paths['%files'] = drush_file_get_public();
+        if ($private_path = drush_file_get_private()) {
+          $paths['%private'] = $private_path;
         }
       }
-      elseif (function_exists('file_directory_path')) {
-        $paths['%files'] = file_directory_path();
-      }
+
       if (function_exists('file_directory_temp')) {
         $paths['%temp'] = file_directory_temp();
       }
