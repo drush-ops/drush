@@ -31,14 +31,6 @@ function drush_get_modules($include_hidden = TRUE) {
   return $modules;
 }
 
-function _drush_theme_default() {
-  return variable_get('theme_default', 'garland');
-}
-
-function _drush_theme_admin() {
-  return variable_get('admin_theme', drush_theme_get_default());
-}
-
 /**
  * Returns drupal required modules, including their dependencies.
  *
