@@ -511,8 +511,9 @@ function _core_path_aliases($project = '') {
       }
       if (drush_drupal_major_version() >= 8 && drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
         try {
-          $paths['%config-active'] = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
-          $paths['%config-staging'] = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+          foreach ($GLOBALS['config_directories'] as $label => $unused) {
+            $paths["%config-$label"] = config_get_config_directory($label);
+          }
         }
         catch (Exception $e) {
           // Nothing to do.
