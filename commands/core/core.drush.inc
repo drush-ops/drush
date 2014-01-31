@@ -509,7 +509,7 @@ function _core_path_aliases($project = '') {
       else {
         $paths['%themes'] = ltrim($site_wide . '/themes', '/');
       }
-      if (drush_drupal_major_version() >= 8 && drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
+      if (drush_drupal_major_version() >= 8 && drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
         try {
           $paths['%config-active'] = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
           $paths['%config-staging'] = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
