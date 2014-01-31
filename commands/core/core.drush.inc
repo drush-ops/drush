@@ -519,7 +519,7 @@ function _core_path_aliases($project = '') {
         }
       }
 
-      if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_SITE) {
+      if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
         $paths['%files'] = drush_file_get_public();
         if ($private_path = drush_file_get_private()) {
           $paths['%private'] = $private_path;
