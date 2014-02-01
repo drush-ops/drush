@@ -1,6 +1,9 @@
 <?php
 
 /**
+ * @file
+ * Example "Sync via HTTP" sql-sync command alter.
+ *
  * Sync_via_http allows you to sql-sync your database using HTTP
  * (e.g. wget or curl) instead of rsync.  This is helpful for
  * exporting your database to colaborators without shell access
@@ -8,6 +11,7 @@
  *
  * For example:
  *
+ * @code
  * $aliases['staging'] = array (
  *   'root' => '/srv/www/drupal',
  *   'uri' => 'staging.site.com',
@@ -19,6 +23,7 @@
  *     ),
  *   ),
  * );
+ * @endcode
  *
  * To use this feature, copy the 'source-command-specific'
  * item from the example alias above, place it in your staging
@@ -36,7 +41,7 @@
  */
 
 /**
- * Implement hook help alter.
+ * Implements hook_drush_help_alter().
  *
  * When a hook extends a command with additional options, it must 
  * implement help alter and declare the option(s).  Doing so will add 
@@ -54,7 +59,7 @@ function sync_via_http_drush_help_alter(&$command) {
 }
 
 /**
- * Implement hook pre sql sync.
+ * Implements drush_hook_pre_COMMAND().
  *
  * During the pre hook, determine if the http-sync option has been
  * specified.  If it has been, then disable the normal ssh + rsync
@@ -77,8 +82,9 @@ function drush_sync_via_http_pre_sql_sync($source = NULL, $destination = NULL) {
 }
 
 /**
- * Download a file, optionaly with user authentication, using either wget or
- * curl, as available.
+ * Downloads a files.
+ * 
+ * Optionaly uses user authentication, using either wget or curl, as available.
  */
 function _drush_sync_via_http_download_file($url, $user = FALSE, $password = FALSE, $destination = FALSE, $overwrite = TRUE) {
   static $use_wget;
