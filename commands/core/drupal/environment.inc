@@ -265,11 +265,12 @@ function drush_queue_get_queues() {
 }
 
 function _drush_theme_default() {
-  return config('system.theme')->get('default');
+  return \Drupal::config('system.theme')->get('default');
 }
 
 function _drush_theme_admin() {
-  return config('system.theme')->get('admin');
+  $theme = \Drupal::config('system.theme')->get('admin');
+  return empty($theme) ? 'seven' : $theme;
 }
 
 function _drush_file_public_path() {
