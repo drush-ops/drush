@@ -72,6 +72,6 @@ class siteInstallD6Case extends Drush_CommandTestCase {
     );
 
     $this->drush('variable-get', array($name), $options);
-    $this->assertEquals($name . ': "' . $value . '"', $this->getOutput());
+    $this->assertEquals("$name: '$value'", $this->getOutput());
   }
 }
