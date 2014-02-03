@@ -38,7 +38,7 @@ class SqlDumpTest extends Drush_CommandTestCase {
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('sequences', $full_dump_file);
+    $this->assertContains('batch', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
     // Next, set up an alias file and run a couple of simulated
@@ -50,7 +50,7 @@ class SqlDumpTest extends Drush_CommandTestCase {
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('sequences', $full_dump_file);
+    $this->assertContains('batch', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertContains('history', $full_dump_file);
 
@@ -79,7 +79,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('sequences', $full_dump_file);
+    $this->assertContains('batch', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
     // Repeat control test:  options not recovered in absence of an alias.
@@ -88,7 +88,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('sequences', $full_dump_file);
+    $this->assertContains('batch', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertContains('history', $full_dump_file);
     // Now run yet with @self, and test to see that Drush can recover the option
@@ -98,7 +98,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('sequences', $full_dump_file);
+    $this->assertContains('batch', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
   }
