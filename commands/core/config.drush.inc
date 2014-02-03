@@ -82,15 +82,21 @@ function config_drush_command() {
     'description' => 'Export config from the active directory to staging directory.',
     'core' => array('8+'),
     'aliases' => array('cex'),
+    'arguments' => array(
+      'destination' => "A config directory name. Defaults to 'staging'",
+    ),
     'options' => array(
       'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
     ),
   );
 
   $items['config-import'] = array(
-    'description' => 'Import config from the file store.',
+    'description' => 'Import config from a config directory.',
+    'arguments' => array(
+      'source' => "A config directory name. Defaults to 'staging'",
+    ),
     'core' => array('8+'),
-    'aliases' => array('cim')
+    'aliases' => array('cim'),
   );
 
   $items['config-list'] = array(
@@ -245,39 +251,40 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
 }
 
 /**
- * Command callback: Export config to staging directory.
+ * Command callback: Export config to specified directory (usually staging).
  */
-function drush_config_export() {
+function drush_config_export($destination = CONFIG_STAGING_DIRECTORY) {
   // Retrieve a list of differences between the active and staged configuration.
   $active_dir = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
-  $staging_dir = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+  $destination_dir = config_get_config_directory($destination);
 
-  if (count(glob($staging_dir . '/*')) > 0) {
-    if (!drush_confirm(dt('The current contents of your staging directory (!staging) will be deleted.', array('!staging' => $staging_dir)))) {
+  if (count(glob($destination_dir . '/*')) > 0) {
+    if (!drush_confirm(dt('The current contents of your staging directory (!staging) will be deleted.', array('!staging' => $destination_dir)))) {
       return drush_user_abort();
     }
   }
 
-  if (drush_delete_dir_contents($staging_dir, TRUE)) {
+  if (drush_delete_dir_contents($destination_dir, TRUE)) {
     // We specify the MERGE flag below in order to copy only contents, not the dir itself. Since
     // The dir is empty, it is effectively a copy, not a merge.
-    drush_copy_dir($active_dir, $staging_dir, FILE_EXISTS_MERGE);
+    drush_copy_dir($active_dir, $destination_dir, FILE_EXISTS_MERGE);
   }
   else {
     return drush_set_error('DRUSH_CONFIG_EXPORT_DELETE', dt('Failed to empty staging directory.'));
   }
 
   if (drush_get_option('add')) {
-    drush_shell_exec_interactive('git add -p %s', $staging_dir);
+    drush_shell_exec_interactive('git add -p %s', $destination_dir);
   }
 }
 
 /**
- * Command callback. Import from staging directory.
+ * Command callback. Import from specified config directory (defaults to staging).
  */
-function drush_config_import() {
+function drush_config_import($source = 'staging') {
   // Retrieve a list of differences between the active and staged configuration.
-  $config_comparer = new StorageComparer(Drupal::service('config.storage.staging'), Drupal::service('config.storage'));
+  $source_storage = new FileStorage(config_get_config_directory($source));
+  $config_comparer = new StorageComparer($source_storage, Drupal::service('config.storage'));
   if (!$config_comparer->createChangelist()->hasChanges()) {
     return drush_log(dt('There are no changes to import.'), 'ok');
   }
@@ -296,7 +303,8 @@ function _drush_config_import(StorageComparer $storage_comparer) {
     Drupal::service('config.factory'),
     Drupal::entityManager(),
     Drupal::lock(),
-    Drupal::service('uuid')
+    Drupal::service('uuid'),
+    Drupal::service('config.typed')
   );
   if ($config_importer->alreadyImporting()) {
     drush_log('Another request may be synchronizing configuration already.', 'warning');
@@ -338,6 +346,7 @@ function drush_config_edit($config_name = '') {
     }
     else {
       $config_name = $config_names[$choice];
+      $config = Drupal::config($config_name);
     }
   }
 
@@ -371,10 +380,10 @@ function drush_config_edit($config_name = '') {
 function drush_config_get_object($config_name) {
   $source = drush_get_option('source', 'active');
   if ($source == 'active') {
-    $config = drupal_container()->get('config.storage');
+    $config = \Drupal::service('config.storage');
   }
   elseif ($source == 'staging') {
-    $config = drupal_container()->get('config.storage.staging');
+    $config = \Drupal::service('config.storage');
   }
 
   $data = $config->read($config_name);
@@ -460,29 +469,55 @@ function _drush_print_config_changes_table(array $config_changes) {
 /**
  * Command argument complete callback.
  */
-function drush_config_get_complete() {
-  return _drush_config_complete();
+function config_config_get_complete() {
+  return _drush_config_names_complete();
 }
 
 /**
  * Command argument complete callback.
  */
-function drush_config_set_complete() {
-  return _drush_config_complete();
+function config_config_set_complete() {
+  return _drush_config_names_complete();
 }
 
 /**
  * Command argument complete callback.
  */
-function drush_config_view_complete() {
-  return _drush_config_complete();
+function config_config_view_complete() {
+  return _drush_config_names_complete();
 }
 
 /**
  * Command argument complete callback.
  */
-function drush_config_edit_complete() {
-  return _drush_config_complete();
+function config_config_edit_complete() {
+  return _drush_config_names_complete();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function config_config_import_complete() {
+  return _drush_config_directories_complete();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function config_config_export_complete() {
+  return _drush_config_directories_complete();
+}
+
+/**
+ * Helper function for command argument complete callback.
+ *
+ * @return
+ *   Array of available config directories.
+ */
+function _drush_config_directories_complete() {
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+  global $config_directories;
+  return array('values' => array_keys($config_directories));
 }
 
 /**
@@ -491,6 +526,7 @@ function drush_config_edit_complete() {
  * @return
  *   Array of available config names.
  */
-function _drush_config_complete() {
-  return array('values' => drupal_container()->get('config.storage')->listAll());
+function _drush_config_names_complete() {
+  drush_bootstrap_max();
+  return array('values' => $storage = \Drupal::service('config.storage')->listAll());
 }

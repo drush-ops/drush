@@ -299,3 +299,21 @@ function drush_queue_get_queues() {
   }
   return $queues;
 }
+
+function _drush_theme_default() {
+  return variable_get('theme_default', 'garland');
+}
+
+function _drush_theme_admin() {
+  return variable_get('admin_theme', drush_theme_get_default());
+}
+
+function _drush_file_public_path() {
+  if (function_exists('file_directory_path')) {
+    return file_directory_path();
+  }
+}
+
+function _drush_file_private_path() {
+  // @todo
+}

@@ -2,7 +2,7 @@
   "name": "drush/drush",
   "description": "Drush is a command line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those of us who spend some of our working hours hacking away at the command prompt.",
   "homepage": "http://www.drush.org",
-  "license": "GPLv2",
+  "license": "GPL-2.0+",
   "authors": [
     { "name": "Moshe Weitzman", "email": "weitzman@tejasa.com" },
     { "name": "Owen Barton", "email": "drupal@owenbarton.com" },
@@ -12,6 +12,10 @@
     { "name": "Jonathan Araña Cruz", "email": "jonhattan@faita.net" },
     { "name": "Jonathan Hedstrom", "email": "jhedstrom@gmail.com" }
   ],
+  "support": {
+    "forum": "http://drupal.stackexchange.com/questions/tagged/drush",
+    "irc": "irc://irc.freenode.org/drush"
+  },
   "bin": [
     "drush",
     "drush.php",

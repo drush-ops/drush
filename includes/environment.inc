@@ -105,7 +105,7 @@ function _drush_environment_check_php_ini() {
     }
     else {
       foreach ($disallowed_value as $test_value) {
-        if (strstr($ini_value, $test_value) !== FALSE) {
+        if (preg_match('/(^|,)' . $test_value . '(,|$)/', $ini_value)) {
           $invalid_value = TRUE;
         }
       }
@@ -909,7 +909,8 @@ function drush_drupal_required_modules($modules) {
  *  Machine name of the default theme.
  */
 function drush_theme_get_default() {
-  return variable_get('theme_default', 'garland');
+  drush_include_engine('drupal', 'environment');
+  return _drush_theme_default();
 }
 
 /**
@@ -919,7 +920,24 @@ function drush_theme_get_default() {
  *  Machine name of the administration theme.
  */
 function drush_theme_get_admin() {
-  return variable_get('admin_theme', drush_theme_get_default());
+  drush_include_engine('drupal', 'environment');
+  return _drush_theme_admin();
+}
+
+/**
+ * Return the path to public files directory.
+ */
+function drush_file_get_public() {
+  drush_include_engine('drupal', 'environment');
+  return _drush_file_public_path();
+}
+
+/**
+ * Return the path to private files directory.
+ */
+function drush_file_get_private() {
+  drush_include_engine('drupal', 'environment');
+  return _drush_file_private_path();
 }
 
 /**

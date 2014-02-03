@@ -1,5 +1,72 @@
 <?php
 
+function site_install_drush_command() {
+  $items['site-install'] = array(
+    'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
+    'arguments' => array(
+      'profile' => 'the install profile you wish to run. defaults to \'default\' in D6, \'standard\' in D7+',
+      'key=value...' => 'any additional settings you wish to pass to the profile. Fully supported on D7+, partially supported on D6 (single step configure forms only). The key is in the form [form name].[parameter name] on D7 or just [parameter name] on D6.',
+    ),
+    'options' => array(
+      'db-url' => array(
+        'description' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',
+        'example-value' => 'mysql://root:pass@host/db',
+      ),
+      'db-prefix' => 'An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).',
+      'db-su' => array(
+        'description' => 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.',
+        'example-value' => 'root',
+      ),
+      'db-su-pw' => array(
+        'description' => 'Password for the "db-su" account. Optional.',
+        'example-value' => 'pass',
+      ),
+      'account-name' => 'uid1 name. Defaults to admin',
+      'account-pass' => 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',
+      'account-mail' => 'uid1 email. Defaults to admin@example.com',
+      'locale' => array(
+        'description' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',
+        'example-value' => 'en-GB',
+      ),
+      'clean-url'=> 'Defaults to 1',
+      'site-name' => 'Defaults to Site-Install',
+      'site-mail' => 'From: for system mailings. Defaults to admin@example.com',
+      'sites-subdir' => array(
+        'description' => "Name of directory under 'sites' which should be created. Only needed when the subdirectory does not already exist. Defaults to 'default'",
+        'value' => 'required',
+        'example-value' => 'directory_name',
+      ),
+      'writable' => 'Make CMI and other dirs writable by both web and CLI users. Suitable for non Prod environments.',
+    ),
+    'examples' => array(
+      'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukrainian.',
+      'drush site-install --db-url=mysql://root:pass@localhost:port/dbname' => 'Install using the specified DB params.',
+      'drush site-install --db-url=sqlite://sites/example.com/files/.ht.sqlite' => 'Install using SQLite (D7+ only).',
+      'drush site-install --account-name=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
+      'drush site-install standard install_configure_form.site_default_country=FR my_profile_form.my_settings.key=value' => 'Pass additional arguments to the profile (D7 example shown here - for D6, omit the form id).',
+      "drush site-install install_configure_form.update_status_module='array(FALSE,FALSE)'" => 'Disable email notification during install and later. If your server has no smtp, this gets rid of an error during install.',
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
+    'aliases' => array('si'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_drush_help_alter().
+ */
+function site_install_drush_help_alter(&$command) {
+  // Drupal version-specific customizations.
+  if ($command['command'] == 'site-install') {
+    if (drush_drupal_major_version() >= 8) {
+      unset($command['options']['clean-url']);
+    }
+    else {
+      unset($command['options']['writable']);
+    }
+  }
+}
+
 /**
  * Command validate.
  */
@@ -28,8 +95,6 @@ function drush_core_pre_site_install($profile = NULL) {
 
   $conf_path = "sites/$sites_subdir";
   $files = "$conf_path/files";
-  // Used by a D8 log message.
-  drush_set_context('DRUSH_SITE_INSTALL_FILES', $files);
   $settingsfile = "$conf_path/settings.php";
   $sitesfile = "sites/sites.php";
   $sitesfile_write = drush_drupal_major_version() >= 8 && !file_exists($sitesfile) && $sites_subdir != 'default';
@@ -47,7 +112,7 @@ function drush_core_pre_site_install($profile = NULL) {
     $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
   }
   else {
-    $msg[] = dt("CREATE  the '@db' database.", array('@db' => $db_spec['database']));
+    $msg[] = dt("CREATE the '@db' database.", array('@db' => $db_spec['database']));
   }
 
   if (!drush_confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
@@ -67,7 +132,7 @@ function drush_core_pre_site_install($profile = NULL) {
 
   if (!drush_file_not_empty($settingsfile)) {
     if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !drush_get_context('DRUSH_SIMULATE')) {
-      return drush_set_error(dt('Failed to copy sites/default/default.settings.php to  @settingsfile', array('@settingsfile' => $settingsfile)));
+      return drush_set_error(dt('Failed to copy sites/default/default.settings.php to @settingsfile', array('@settingsfile' => $settingsfile)));
     }
 
     if (drush_drupal_major_version() == 6) {
@@ -116,26 +181,23 @@ function drush_core_pre_site_install($profile = NULL) {
     // Check for alternative format:
     // @code
     // $config_directories = array(
-    //   'active' => array(
-    //     'path' => 'config/active',
-    //   ),
-    //   'staging' => array(
-    //     'path' => 'config/staging',
-    //   ),
+    //   'active' => 'config/active',
+    //   'staging' => 'config/staging',
     // );
     // @endcode
-    preg_match('/\n\$config_directories[^;]*\'path\' => \'([^\']*)\'.*\'path\' => \'([^\']*)\'/s', file_get_contents($settingsfile), $directories);
+    // @todo update this regex to omit path.
+    // preg_match('/\n\$config_directories[^;]*\'path\' => \'([^\']*)\'.*\'path\' => \'([^\']*)\'/s', file_get_contents($settingsfile), $directories);
 
     if (empty($directories)) {
-      // Check for alternative format:
+      // Check for canonical format:
       // @code
-      // $config_directories['active']['path'] = 'config/active';
-      // $config_directories['staging']['path'] = 'config/staging';
+      // $config_directories['active'] = 'config/active';
+      // $config_directories['staging'] = 'config/staging';
       // @endcode
       foreach (array('active', 'staging') as $type) {
-        preg_match('/\n\$config_directories[^;]*\'' . $type . '\'\]\[\'path\'\] = \'([^\']*)\'/', file_get_contents($settingsfile), $directory);
+        preg_match('/\n\$config_directories[^;]*\'' . $type . '\'\] = \'([^\']*)\'/', file_get_contents($settingsfile), $directory);
         if (isset($directory[1])) {
-          $directories[$type] = $files . '/' . $directory[1];
+          $directories[$type] = $directory[1];
         }
       }
     }
@@ -149,6 +211,21 @@ function drush_core_pre_site_install($profile = NULL) {
         drush_delete_dir_contents($directory, TRUE);
       }
     }
+
+    if (drush_get_option('writable')) {
+      if (is_writable($settingsfile)) {
+        $chmod = <<<'EOD'
+// Appended by Drush site-install.
+$settings['file_chmod_directory'] = 0777;
+$settings['file_chmod_file'] = 0777;
+EOD;
+        drush_file_append_data($settingsfile, "\n$chmod\n");
+      }
+      else {
+        drush_log(dt('Not appending file_chmod_* to @settingsfile as it is not writable.', array('@settingsfile' => $settingsfile)), 'notice');
+      }
+    }
+
 
     // Remove files/php if needed.
     drush_delete_dir("$files/php", TRUE);

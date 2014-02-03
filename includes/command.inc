@@ -1047,6 +1047,7 @@ function drush_command_defaults($key, $commandfile, $path) {
     'bootstrap_errors' => array(),
     'topics' => array(),
     'hidden' => FALSE,
+    'category' => $commandfile,
   );
 }
 

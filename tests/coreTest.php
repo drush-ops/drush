@@ -95,13 +95,6 @@ drush_invoke("version", $arg);
       'cache' => NULL,
       'strict' => 0, // invoke from script: do not verify options
     );
-    $this->drush('pm-download', array('devel'), $options);
-    $this->drush('pm-enable', array('devel'), $options);
-
-    $this->drush('drupal-directory', array('devel'), $options);
-    $output = $this->getOutput();
-    $this->assertEquals($root  . $sitewide . '/modules/devel', $output);
-
     $this->drush('drupal-directory', array('%files'), $options);
     $output = $this->getOutput();
     $this->assertEquals($root . '/sites/dev/files', $output);
@@ -109,6 +102,24 @@ drush_invoke("version", $arg);
     $this->drush('drupal-directory', array('%modules'), $options);
     $output = $this->getOutput();
     $this->assertEquals($root . $sitewide . '/modules', $output);
+
+    $this->drush('pm-download', array('devel'), $options);
+    $this->drush('pm-enable', array('devel'), $options);
+    $this->drush('pm-download', array('zen'), $options);
+
+    $this->drush('drupal-directory', array('devel'), $options);
+    $output = $this->getOutput();
+    $this->assertEquals($root  . $sitewide . '/modules/devel', $output);
+
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      // Known failure. See https://github.com/drush-ops/drush/pull/382.
+      $this->markTestSkipped('dd needs updating for D8.');
+    }
+    else {
+      $this->drush('drupal-directory', array('zen'), $options);
+      $output = $this->getOutput();
+      $this->assertEquals($root  . $sitewide . '/themes/zen', $output);
+    }
   }
 
   function testCoreRequirements() {

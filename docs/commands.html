@@ -78,13 +78,13 @@ are shown below.
      primary command name, so pm-download will still be used
      to generate the command hook, etc.
 
-<li>'command hook':
+<li>'command-hook':
 
      Change the name of the function drush will
      call to execute the command from drush_COMMANDFILE_COMMANDNAME()
      to drush_COMMANDFILE_COMMANDHOOK(), where COMMANDNAME is the
      original name of the command, and COMMANDHOOK is the value
-     of the 'command hook' item.
+     of the 'command-hook' item.
 
 <li>'callback':
 
@@ -130,7 +130,7 @@ are shown below.
 
      <ul>
           <li>'description': A description of the option.
-          <li>'example_value': An example value to show in help.
+          <li>'example-value': An example value to show in help.
           <li>'value': optional|required.
           <li>'required': This option must be passed.
           <li>'hidden': The option is not shown in the help output (rare).
@@ -241,6 +241,10 @@ are shown below.
 
      Set to TRUE if this command is a topic, callable from the
      `drush docs-topics` command.
+
+<li>'category':
+
+     Set this to override the category in which your command is listed in help.
 </ul><p>
 The 'sandwich' drush_command hook looks like this:
 <pre>

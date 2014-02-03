@@ -124,7 +124,7 @@ function core_drush_command() {
     'outputformat' => array(
       'default' => 'key-value',
       'pipe-format' => 'json',
-      'field-labels' => array('drupal-version' => 'Drupal version', 'uri' => 'Site URI', 'db-driver' => 'Database driver', 'db-host' => 'Database hostname', 'db-username' => 'Database username', 'db-password' => 'Database password', 'db-name' => 'Database name', 'db-status' => 'Database', 'bootstrap' => 'Drupal bootstrap', 'user' => 'Drupal user', 'theme' => 'Default theme', 'admin-theme' => 'Administration theme', 'php-bin' => 'PHP executable', 'php-conf' => 'PHP configuration', 'php-os' => 'PHP OS', 'drush-version' => 'Drush version', 'drush-conf' => 'Drush configuration', 'drush-alias-files' => 'Drush alias files', 'root' => 'Drupal root', 'site-path' => 'Site path', 'root' => 'Drupal root', 'site' => 'Site path', 'themes' => 'Themes path', 'modules' => 'Modules path', 'files' => 'File directory path', 'private' => 'Private file directory path', 'temp' => 'Temporary file directory path', 'config-active' => 'Active config directory path', 'config-staging' => 'Staging config directory path', 'files-path' => 'File directory path', 'temp-path' => 'Temporary file directory path', '%paths' => 'Other paths'),
+      'field-labels' => array('drupal-version' => 'Drupal version', 'uri' => 'Site URI', 'db-driver' => 'Database driver', 'db-host' => 'Database hostname', 'db-username' => 'Database username', 'db-password' => 'Database password', 'db-name' => 'Database name', 'db-status' => 'Database', 'bootstrap' => 'Drupal bootstrap', 'user' => 'Drupal user', 'theme' => 'Default theme', 'admin-theme' => 'Administration theme', 'php-bin' => 'PHP executable', 'php-conf' => 'PHP configuration', 'php-os' => 'PHP OS', 'drush-version' => 'Drush version', 'drush-conf' => 'Drush configuration', 'drush-alias-files' => 'Drush alias files', 'root' => 'Drupal root', 'site-path' => 'Site path', 'root' => 'Drupal root', 'site' => 'Site path', 'themes' => 'Themes path', 'modules' => 'Modules path', 'files' => 'File directory path', 'private' => 'Private file directory path', 'temp' => 'Temporary file directory path', 'config-active' => 'Active config path', 'config-staging' => 'Staging config path', 'files-path' => 'File directory path', 'temp-path' => 'Temporary file directory path', '%paths' => 'Other paths'),
       'formatted-filter' => '_drush_core_status_format_table_data',
       'private-fields' => 'db-password',
       'simplify-single' => TRUE,
@@ -252,53 +252,6 @@ function core_drush_command() {
     ),
     'aliases' => array('rsync'),
     'topics' => array('docs-aliases'),
-  );
-  $items['site-install'] = array(
-    'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
-    'arguments' => array(
-      'profile' => 'the install profile you wish to run. defaults to \'default\' in D6, \'standard\' in D7+',
-      'key=value...' => 'any additional settings you wish to pass to the profile. Fully supported on D7+, partially supported on D6 (single step configure forms only). The key is in the form [form name].[parameter name] on D7 or just [parameter name] on D6.',
-    ),
-    'options' => array(
-      'db-url' => array(
-        'description' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',
-        'example-value' => 'mysql://root:pass@host/db',
-        ),
-      'db-prefix' => 'An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).',
-      'db-su' => array(
-        'description' => 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.',
-        'example-value' => 'root',
-      ),
-      'db-su-pw' => array(
-        'description' => 'Password for the "db-su" account. Optional.',
-        'example-value' => 'pass',
-      ),
-      'account-name' => 'uid1 name. Defaults to admin',
-      'account-pass' => 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',
-      'account-mail' => 'uid1 email. Defaults to admin@example.com',
-      'locale' => array(
-        'description' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',
-        'example-value' => 'en-GB',
-      ),
-      'clean-url'=> 'Defaults to 1',
-      'site-name' => 'Defaults to Site-Install',
-      'site-mail' => 'From: for system mailings. Defaults to admin@example.com',
-      'sites-subdir' => array(
-        'description' => "Name of directory under 'sites' which should be created. Only needed when the subdirectory does not already exist. Defaults to 'default'",
-        'value' => 'required',
-        'example-value' => 'directory_name',
-      ),
-    ),
-    'examples' => array(
-      'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukranian.',
-      'drush site-install --db-url=mysql://root:pass@localhost:port/dbname' => 'Install using the specified DB params.',
-      'drush site-install --db-url=sqlite://sites/example.com/files/.ht.sqlite' => 'Install using SQLite (D7+ only).',
-      'drush site-install --account-name=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',
-      'drush site-install standard install_configure_form.site_default_country=FR my_profile_form.my_settings.key=value' => 'Pass additional arguments to the profile (D7 example shown here - for D6, omit the form id).',
-      "drush site-install install_configure_form.update_status_module='array(FALSE,FALSE)'" => 'Disable email notification during install and later. If your server has no smtp, this gets rid of an error during install.',
-    ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
-    'aliases' => array('si'),
   );
   $items['drupal-directory'] = array(
     'description' => 'Return path to a given module/theme directory.',
@@ -556,28 +509,24 @@ function _core_path_aliases($project = '') {
       else {
         $paths['%themes'] = ltrim($site_wide . '/themes', '/');
       }
-      if (drush_drupal_major_version() >= 8 && drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
+      if (drush_drupal_major_version() >= 8 && drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
         try {
-          $paths['%config-active'] = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
-          $paths['%config-staging'] = config_get_config_directory(CONFIG_STAGING_DIRECTORY);
+          foreach ($GLOBALS['config_directories'] as $label => $unused) {
+            $paths["%config-$label"] = config_get_config_directory($label);
+          }
         }
         catch (Exception $e) {
           // Nothing to do.
         }
       }
-      if (drush_drupal_major_version() >= 7) {
-        if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_SITE) {
-          $paths['%files'] = variable_get('file_public_path', conf_path() . '/files');
-          $private_path = variable_get('file_private_path', FALSE);
-          if (!empty($private_path)) {
-            $paths['%private'] = $private_path;
-          }
 
+      if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+        $paths['%files'] = drush_file_get_public();
+        if ($private_path = drush_file_get_private()) {
+          $paths['%private'] = $private_path;
         }
       }
-      elseif (function_exists('file_directory_path')) {
-        $paths['%files'] = file_directory_path();
-      }
+
       if (function_exists('file_directory_temp')) {
         $paths['%temp'] = file_directory_temp();
       }
@@ -585,10 +534,10 @@ function _core_path_aliases($project = '') {
       // for a project (or a few) and add its path to the path list
       if (!empty($project)) {
         drush_include_engine('drupal', 'environment');
-        $modules = drush_get_modules();
+        $projects = array_merge(drush_get_modules(), drush_get_themes());
         foreach(explode(',', $project) as $target) {
-          if (array_key_exists($target, $modules)) {
-            $paths['%' . $target] = DRUPAL_ROOT . '/' . dirname($modules[$target]->filename);
+          if (array_key_exists($target, $projects)) {
+            $paths['%' . $target] = $drupal_root . '/' . dirname($projects[$target]->filename);
           }
         }
       }
@@ -630,8 +579,10 @@ function _core_site_status_table($project = '') {
         }
       }
     }
-    $status_table['theme'] = drush_theme_get_default();
-    $status_table['admin-theme'] = drush_theme_get_admin();
+    if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+      $status_table['theme'] = drush_theme_get_default();
+      $status_table['admin-theme'] = drush_theme_get_admin();
+    }
   }
   if ($php_bin = drush_get_option('php')) {
     $status_table['php-bin'] = $php_bin;
@@ -689,7 +640,13 @@ function _drush_core_status_format_table_data($output, $metadata) {
  * Command callback. Runs all cron hooks.
  */
 function drush_core_cron() {
-  if (drupal_cron_run()) {
+  if (drush_drupal_major_version() < 8) {
+    $result = drupal_cron_run();
+  }
+  else {
+    $result = \Drupal::service('cron')->run();
+  }
+  if ($result) {
     drush_log(dt('Cron run successful.'), 'success');
   }
   else {
@@ -1014,7 +971,8 @@ function drush_core_quick_drupal_options(&$items) {
   unset($options['drupal-project-rename']);
   unset($options['default-major']);
   unset($options['use-site-dir']);
-  foreach ($items['site-install']['options'] as $option => $description) {
+  $si = site_install_drush_command();
+  foreach ($si['site-install']['options'] as $option => $description) {
     if (is_array($description)) {
       $description = $description['description'];
     }
