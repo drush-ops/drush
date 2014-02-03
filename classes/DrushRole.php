@@ -164,7 +164,7 @@ class DrushRole6 extends DrushRole {
 
   function updatePerms() {
     $new_perms = implode(", ", $this->perms);
-    drush_op('db_query', "UPDATE {permission} SET perm = '%s' FROM {role} WHERE role.rid = permission.rid AND role.rid= '%d'", $new_perms, $this->rid);
+    drush_op('db_query', "UPDATE {permission} SET perm = '%s' WHERE rid= %d", $new_perms, $this->rid);
   }
 }
 
