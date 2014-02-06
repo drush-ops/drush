@@ -374,17 +374,22 @@ function drush_sitealias_local_site_path($alias_record) {
 
   if (isset($alias_record['root']) && !isset($alias_record['remote-host'])) {
     if (isset($alias_record['uri'])) {
-      if (file_exists($alias_record['root'] . '/sites/sites.php')) {
-        $sites = array();
-        include($alias_record['root'] . '/sites/sites.php');
-        if (array_key_exists($alias_record['uri'], $sites)) {
-          $result = $alias_record['root'] . '/sites/' . $sites[$alias_record['uri']];
+      $uri = $alias_record['uri'];
+      $uri = preg_replace('#^[^:]*://#', '', $uri);
+      while (!$result && !empty($uri)) {
+        if (file_exists($alias_record['root'] . '/sites/sites.php')) {
+          $sites = array();
+          include($alias_record['root'] . '/sites/sites.php');
+          if (array_key_exists($uri, $sites)) {
+            $result = $alias_record['root'] . '/sites/' . $sites[$uri];
+          }
         }
+        if (!$result) {
+          $result = ($alias_record['root'] . '/sites/' . drush_sitealias_uri_to_site_dir($uri));
+        }
+        $result = realpath($result);
+        $uri = preg_replace('#^[^.]*\.*#', '', $uri);
       }
-      if (!$result) {
-        $result = ($alias_record['root'] . '/sites/' . drush_sitealias_uri_to_site_dir($alias_record['uri']));
-      }
-      $result = realpath($result);
     }
     if (!$result) {
       $result = realpath($alias_record['root'] . '/sites/default');
