@@ -2,33 +2,43 @@
 # whitelist
 branches:
   only:
-    - master
+    - master-fulltest
     - 6.x
+    - 6.x-fulltest
     - 5.x
+    - 5.x-fulltest
 language: php
 php:
   - 5.3
+#  - 5.4 Bugs in this version should be caught by 5.3 or 5.5
+  - 5.5
 env:
-  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
-  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=base
-  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=commands
-  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=pm
-  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=quick-drupal
-  - UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
-#  - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=make
-#  - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=base
-#  - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=commands
-#  - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=pm
-#  - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=quick-drupal
-#  - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
-#  - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=make
-#  - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=base
-#  - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=commands
-#  - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=pm
-#  - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=quick-drupal
-#  - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
-notifications:
-  irc: "irc.freenode.org#drush"
+#D8
+  - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
+  - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=base
+  - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=commands
+  - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=pm
+  - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=quick-drupal
+  - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
+#D6
+  - UNISH_DRUPAL_MAJOR_VERSION=6 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
+  - UNISH_DRUPAL_MAJOR_VERSION=6 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=base
+  - UNISH_DRUPAL_MAJOR_VERSION=6 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=commands
+  - UNISH_DRUPAL_MAJOR_VERSION=6 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=pm
+  - UNISH_DRUPAL_MAJOR_VERSION=6 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=quick-drupal
+  - UNISH_DRUPAL_MAJOR_VERSION=6 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
+  # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=make
+  # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=base
+  # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=commands
+  # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=pm
+  # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=quick-drupal
+  # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
+  # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=make
+  # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=base
+  # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=commands
+  # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=pm
+  # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=quick-drupal
+  # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
 before_script:
   - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`; export UNISH_DRUSH="${PWD}/drush" && cd tests
 script: phpunit $PHPUNIT_ARGS

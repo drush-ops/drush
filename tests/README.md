@@ -20,7 +20,7 @@ extend Drush_UnitTestCase and Drush_CommandTestCase. In order to run
 the tests, you have to point to the [drush_testcase.inc](tests/drush_testcase.inc) file
 such as `phpunit --bootstrap=/path/to/drush/tests/drush_testcase.inc`.
 The devel project does exactly this -
-http://drupalcode.org/project/devel.git/blob/refs/heads/8.x-1.x:/develDrushTest.php
+http://drupalcode.org/project/devel.git/blob/refs/heads/8.x-1.x:/drush/develDrushTest.php
 
 Cache
 -----------

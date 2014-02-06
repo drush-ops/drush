@@ -74,7 +74,9 @@ function cache_drush_command() {
  * @return
  *   Array of clear types.
  */
-function cache_cache_command_clear_complete() {
+function cache_cache_clear_complete() {
+  // Bootstrap as far as possible so that Views and others can add lookup their caches.
+  drush_bootstrap_max();
   return array('values' => array_keys(drush_cache_clear_types(TRUE)));
 }
 
@@ -107,10 +109,7 @@ function drush_cache_clear_pre_validate($type = NULL) {
 function drush_cache_command_clear($type = NULL) {
   $types = drush_cache_clear_types(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
 
-  if ($type) {
-    drush_op($types[$type]);
-  }
-  else {
+  if (!isset($type)) {
     // Don't offer 'all' unless Drush has bootstrapped the Drupal site
     if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
       unset($types['all']);

@@ -72,7 +72,7 @@ function sitealias_drush_command() {
  * @return
  *  Array of available site aliases.
  */
-function sitealias_sitealias_print_complete() {
+function sitealias_site_alias_complete() {
   return array('values' => array_keys(_drush_sitealias_all_list()));
 }
 

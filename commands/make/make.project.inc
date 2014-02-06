@@ -341,8 +341,8 @@ class DrushMakeProject {
    * Process info files when downloading things from git.
    */
   function processGitInfoFiles() {
-    // Bail out if this isn't hosted on Drupal.org.
-    if (isset($this->download['url']) && strpos($this->download['url'], 'drupal.org') === FALSE) {
+    // Bail out if this isn't hosted on Drupal.org (unless --force-gitinfofile option was specified).
+    if (!drush_get_option('force-gitinfofile', FALSE) && isset($this->download['url']) && strpos($this->download['url'], 'drupal.org') === FALSE) {
       return;
     }
 

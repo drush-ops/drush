@@ -1,7 +1,9 @@
 <?php
 
 /**
+ * @file
  * Examples of valid statements for a Drush runtime config (drushrc) file.
+ *
  * Use this file to cut down on typing out lengthy and repetitive command line
  * options in the Drush commands you use and to avoid mistakes.
  *

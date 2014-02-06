@@ -181,6 +181,15 @@ function update_main_prepare() {
 
   update_fix_d7_requirements();
 
+  // Clear the module_implements() cache before the full bootstrap. The calls
+  // above to drupal_maintenance_theme() and update_check_requirements() have
+  // invoked hooks before all modules have actually been loaded by the full
+  // bootstrap. This means that the module_implements() results for any hooks
+  // that have been invoked, including hook_module_implements_alter(), is a
+  // smaller set of modules than should be returned normally.
+  // @see https://github.com/drush-ops/drush/pull/399
+  module_implements('', FALSE, TRUE);
+
   // Now proceed with a full bootstrap.
 
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);

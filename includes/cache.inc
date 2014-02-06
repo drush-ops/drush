@@ -67,7 +67,7 @@ function drush_cache_get($cid, $bin = 'default') {
   $ret = _drush_cache_get_object($bin)->get($cid);
   $mess = $ret ? "HIT" : "MISS";
   drush_log(dt("Cache !mess cid: !cid", array('!mess' => $mess, '!cid' => $cid)), 'debug');
-  return _drush_cache_get_object($bin)->get($cid);
+  return $ret;
 }
 
 /**

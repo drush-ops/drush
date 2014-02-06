@@ -1780,7 +1780,9 @@ function drush_pm_inject_info_file_metadata($project_dir, $project_name, $versio
     if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
       $info .= "core = \"$matches[1]\"\n";
     }
-    $info .= "project = \"$project_name\"\n";
+    if (!drush_get_option('no-gitprojectinfo', FALSE)) {
+      $info .= "project = \"$project_name\"\n";
+    }
     $info .= 'datestamp = "'. time() ."\"\n";
     $info .= "\n";
     foreach ($info_files as $info_file) {

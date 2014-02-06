@@ -109,8 +109,6 @@ function _drush_batch_worker() {
   $current_set =& _batch_current_set();
   $set_changed = TRUE;
 
-
-  timer_start('batch_processing');
   if (empty($current_set['start'])) {
     $current_set['start'] = microtime(TRUE);
   }
