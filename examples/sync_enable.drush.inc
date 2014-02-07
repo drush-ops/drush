@@ -26,6 +26,13 @@
  *           'add' => 'access environment indicator',
  *         ),
  *       ),
+ *       'variable-set' => array(
+ *         'error_level' => 2,
+ *         'cache' => 0,
+ *       ),
+ *       'variable-delete' => array(
+ *         'googleanalytics_account',
+ *       ),
  *     ),
  *   ),
  * );
@@ -54,6 +61,8 @@ function sync_enable_drush_help_alter(&$command) {
     $command['options']['enable']  = "Enable the specified modules in the target database after the sync operation has completed.";
     $command['options']['disable'] = "Disable the specified modules in the target database after the sync operation has completed.";
     $command['options']['permission'] = "Add or remove permissions from a role in the target database after the sync operation has completed. The value of this option must be an array, so it may only be specified in a site alias record or drush configuration file.  See `drush topic docs-example-sync-extension`.";
+    $command['options']['variable-set'] = "Set specific variables in the target database after the sync operation has completed.";
+    $command['options']['variable-delete'] = "Delete specific variables in the target database after the sync operation has completed.";
   }
 }
 
@@ -90,6 +99,18 @@ function drush_sync_enable_post_sql_sync($source = NULL, $destination = NULL) {
           $values = drush_invoke_process($destination, 'role-remove-perm', array($role_name, $permission), array(), array('integrate' => TRUE));
         }
       }
+    }
+  }
+  $variables_set = drush_get_option('variable-set');
+  if (!empty($variables_set) && is_array($variables_set)) {
+    foreach ($variables_set as $variable => $value) {
+      drush_invoke_process($destination, 'variable-set', array($variable, $value), array('yes' => TRUE));
+    }
+  }
+  $variables_delete = drush_get_option('variable-delete');
+  if (!empty($variables_delete) && is_array($variables_delete)) {
+    foreach ($variables_delete as $variable) {
+      drush_invoke_process($destination, 'variable-delete', array($variable), array('yes' => TRUE));
     }
   }
 }
