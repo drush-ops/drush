@@ -42,6 +42,21 @@
  * file to a location where Drush will find it, such as
  * $HOME/.drush.  See `drush topic docs-commands` for more
  * information.
+ *
+ * To set variables on a development site:
+ *
+ * Instead of calling variable_set and variable_delete in a post-sync
+ * hook, consider adding $conf variables to settings.php.
+ *
+ * For example:
+ *
+ * $conf['error_level'] = 2;
+ * error_reporting(E_ALL);
+ * ini_set('display_errors', TRUE);
+ * ini_set('display_startup_errors', TRUE);
+ * $conf['preprocess_css'] = 0;
+ * $conf['cache'] = 0;
+ * $conf['googleanalytics_account'] = '';
  */
 
 /**
