@@ -1566,6 +1566,7 @@ function drush_filename_blacklist() {
       $blacklist[] = 'drush' . $v;
     }
   }
+  $blacklist = array_merge($blacklist, drush_get_option_list('exclude'));
   return $blacklist;
 }
 
