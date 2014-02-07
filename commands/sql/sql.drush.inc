@@ -224,6 +224,7 @@ function sql_drush_command() {
       'drush sql-cli' => "Open a SQL command-line interface using Drupal's credentials.",
       'drush sql-cli -A' => "Open a SQL command-line interface using Drupal's credentials and skip reading table information.",
     ),
+    'remote-tty' => TRUE,
   );
   $items['sql-sanitize'] = array(
     'description' => "Run sanitization operations on the current database.",
