@@ -1064,32 +1064,6 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE, $t
 }
 
 /**
- * Download and extract a tarball to the lib directory.
- *
- * Checks for reported success, but callers should normally check for existence
- * of specific expected file(s) in the library.
- *
- * @param string $url
- *   The URL to the library tarball.
- *
- * @return boolean
- *   TRUE is the download and extraction reported success, FALSE otherwise.
- */
-function drush_lib_fetch($url) {
-  $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
-  if (!is_writable($lib)) {
-    return drush_set_error('DRUSH_LIB_UNWRITABLE', dt("Drush needs to download a library from !url in order to function, and the attempt to download this file automatically failed because you do not have permission to write to the library directory !path. To continue you will need to manually download the package from !url, extract it, and copy the directory into your !path directory.", array('!path' => $lib, '!url' => $url)));
-  }
-
-  $destination = $lib . '/drush-library-' . mt_rand();
-  $path = drush_download_file($url, $destination);
-  if (!$path) {
-    return FALSE;
-  }
-  return drush_tarball_extract($path);
-}
-
-/**
  * @defgroup commandprocessing Command processing functions.
  * @{
  *

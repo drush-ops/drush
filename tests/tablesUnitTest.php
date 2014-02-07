@@ -8,7 +8,7 @@
   */
 class tablesUnitTest extends Drush_UnitTestCase {
   function setUp() {
-    // Bootstrap to ensure the Console_Table library is present and included.
+    // Bootstrap to ensure the auto-loaded is running so that Console_Table is found.
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUSH);
     $this->original_columns = drush_get_context('DRUSH_COLUMNS');
 

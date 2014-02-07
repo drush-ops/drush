@@ -18,8 +18,6 @@ function cli_drush_command() {
  */
 function drush_cli_core_cli() {
   drush_bootstrap_max();
-  // @todo - Remove after https://github.com/drush-ops/drush/pull/127.
-  require_once DRUSH_BASE_PATH . '/../../autoload.php';
 
   $boris = new \Boris\Boris(drush_sitealias_bootstrapped_site_name() . '> ');
 

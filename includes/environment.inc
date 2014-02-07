@@ -11,19 +11,10 @@
  */
 
 /**
- * Supported version of Console Table. This is displayed in the manual install help.
+ * @todo Find out why this constant isn't defined in PEAR package loaded by
+ * Composer.
  */
-define('DRUSH_TABLE_VERSION', '1.1.6');
-
-/**
- * Base URL for automatic file download of PEAR packages.
- */
-define('DRUSH_PEAR_BASE_URL', 'http://download.pear.php.net/package/');
-
-/**
- * Used by outputformat engine and config-set in core.
- */
-define('DRUSH_YAML_VERSION', '2.2.1');
+define('CONSOLE_TABLE_ALIGN_LEFT', -1);
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
@@ -119,49 +110,6 @@ function _drush_environment_check_php_ini() {
   }
 
   return TRUE;
-}
-
-/**
- * Check for the existence of the specified lib directory, and create if needed.
- */
-function drush_environment_lib() {
-  $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
-  // We tell drush_mkdir that $lib is not required, because otherwise it
-  // will throw an error if the folder exists but is not writable.  It
-  // is okay with us if the $lib dir is not writable by the current
-  // user, as it may have already been set up by the user who installed Drush.
-  drush_mkdir($lib, FALSE);
-  if (!is_dir($lib)) {
-    return FALSE;
-  }
-}
-
-function drush_environment_table_lib() {
-  // Try using the PEAR installed version of Console_Table.
-  $tablefile = 'Console/Table.php';
-  if (@file_get_contents($tablefile, FILE_USE_INCLUDE_PATH) === FALSE) {
-    $lib = drush_get_option('lib', DRUSH_BASE_PATH . '/lib');
-    $tablefile = $lib . '/Console_Table-' . DRUSH_TABLE_VERSION . '/Table.php';
-    // If it is not already present, download Console Table.
-    if (!drush_file_not_empty($tablefile)) {
-      // Attempt to remove the old Console Table file, from the legacy location.
-      // TODO: Remove this (and associated .git.ignore) in Drush 6.x.
-      $tablefile_legacy = DRUSH_BASE_PATH . '/includes/table.inc';
-      if (drush_file_not_empty($tablefile_legacy)) {
-        drush_op('unlink', $tablefile_legacy);
-      }
-
-      // Download and extract Console_Table, and confirm success.
-      if (drush_lib_fetch(DRUSH_PEAR_BASE_URL . 'Console_Table-' . DRUSH_TABLE_VERSION . '.tgz')) {
-        // Remove unneccessary package.xml file which ends up in /lib.
-        drush_op('unlink', $lib . '/package.xml');
-      }
-      if (!drush_file_not_empty($tablefile)) {
-        return drush_bootstrap_error('DRUSH_TABLES_LIB_NOT_FOUND', dt("Drush needs a copy of the PEAR Console_Table library in order to function, and the attempt to download this file automatically failed. To continue you will need to download the !version package from http://pear.php.net/package/Console_Table, extract it into !lib directory, such that Table.php exists at !tablefile.", array('!version' => DRUSH_TABLE_VERSION, '!tablefile' => $tablefile, '!lib' => $lib)));
-      }
-    }
-  }
-  require_once $tablefile;
 }
 
 /**

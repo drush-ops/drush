@@ -242,7 +242,7 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = 
 function drush_format_table($rows, $header = FALSE, $widths = array(), $console_table_options = array()) {
   $tbl = _drush_format_table($rows, $header, $widths, $console_table_options);
   $output = $tbl->getTable();
-  if (!stristr(PHP_OS, 'WIN')) {
+  if (!drush_is_windows()) {
     $output = str_replace("\r\n", PHP_EOL, $output);
   }
   return $output;
