@@ -1440,7 +1440,6 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
 }
 
 function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
-  static $evaluated = array();
   static $deferred = array();
   static $loaded = array();
 
@@ -1482,14 +1481,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
           $dmv = DRUSH_MAJOR_VERSION;
           $files = drush_scan_directory($path, "/\.drush($dmv|)\.inc$/", $nomask);
           foreach ($files as $filename => $info) {
-            $module = basename($filename);
-            $module = preg_replace('/\.*drush[0-9]*\.inc/', '', $module);
-            // Only try to bootstrap modules that we have never seen before, or that we
-            // have tried to load but did not due to an unmet _drush_load() requirement.
-            if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
-              $evaluated[$module] = TRUE;
-              $list[$module] = $filename;
-            }
+            $list[$module] = $filename;
           }
         }
       }
