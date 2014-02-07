@@ -145,6 +145,10 @@ INSTALL - MANUAL
 1. Test that Drush is found by your system:
 
      `$ which drush`
+
+1. From Drush root, run Composer to fetch dependencies.
+
+     `$ composer install`
      
 See the POST-INSTALL section for configuration tips.
 
