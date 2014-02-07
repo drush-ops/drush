@@ -23,6 +23,7 @@ function topic_drush_command() {
       'drush docs-context' => 'Show documentation for the drush context API',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'remote-tty' => TRUE,
     'aliases' => array('topic'),
     'topics' => array('docs-readme'),
   );

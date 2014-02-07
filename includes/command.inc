@@ -1043,6 +1043,7 @@ function drush_command_defaults($key, $commandfile, $path) {
     'drupal dependencies' => array(),
     'drush dependencies' => array(),
     'handle-remote-commands' => FALSE,
+    'remote-tty' => FALSE,
     'strict-option-handling' => FALSE,
     'bootstrap_errors' => array(),
     'topics' => array(),
@@ -1117,6 +1118,9 @@ function _drush_command_translate($source) {
  *   locally rather than remotely dispatched.  When this mode is set, the target site
  *   can be obtained via:
  *     drush_get_context('DRUSH_TARGET_SITE_ALIAS')
+ * - remote-tty: set to TRUE if Drush should force ssh to allocate a pseudo-tty
+ *   when this command is being called remotely.  Important for interactive commands.
+ *   Remote commands that allocate a psedo-tty always print "Connection closed..." when done.
  * - strict-option-handling: set to TRUE if drush should strictly separate local command
  *   cli options from the global options.  Usually, drush allows global cli options and
  *   command cli options to be interspersed freely on the commandline.  For commands where
