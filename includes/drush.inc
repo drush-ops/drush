@@ -272,7 +272,8 @@ function drush_get_global_options($brief = FALSE) {
   if (!$brief) {
     $options['version']            = array('description' => "Show drush version.");
     $options['php']                = array('description' => "The absolute path to your PHP intepreter, if not 'php' in the path.", 'example-value' => '/path/to/file', 'never-propagate' => TRUE);
-    $options['interactive']        = array('short-form' => 'ia', 'description' => "Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).");
+    $options['interactive']        = array('short-form' => 'ia', 'description' => "Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).", 'never-propagate' => TRUE);
+    $options['tty']                = array('hidden' => TRUE, 'description' => "Force allocation of tty for remote commands", 'never-propagate' => TRUE);
     $options['quiet']               = array('short-form' => 'q', 'description' => 'Suppress non-error messages.');
     $options['include']             = array('short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'local-context-only' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of additional directory paths to search for drush commands.", 'example-value' => '/path/dir');
     $options['config']              = array('short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'local-context-only' => TRUE, 'merge-pathlist' => TRUE, 'description' => "Specify an additional config file to load. See example.drushrc.php.", 'example-value' => '/path/file');
@@ -1161,8 +1162,9 @@ function drush_preflight_command_dispatch() {
     $remote_user = drush_get_option('remote-user');
 
     // Force interactive mode if there is a single remote target.  #interactive is added by drush_do_command_redispatch
+    $user_interactive = drush_get_option('interactive');
     drush_set_option('interactive', TRUE);
-    $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, $remote_host, $remote_user);
+    $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, $remote_host, $remote_user, $user_interactive);
     // In 'interactive' mode, $values is the result code from drush_shell_proc_open.
     // @todo: in _drush_backend_invoke, return array('error_status' => $ret) instead for uniformity.
     if (!is_array($values) && ($values != 0)) {
@@ -1352,7 +1354,7 @@ function drush_do_site_command($site_record, $command, $args = array(), $command
  * Redispatch the specified command using the same
  * options that were passed to this invocation of drush.
  */
-function drush_do_command_redispatch($command, $args = array(), $remote_host = NULL, $remote_user = NULL, $drush_path = NULL) {
+function drush_do_command_redispatch($command, $args = array(), $remote_host = NULL, $remote_user = NULL, $drush_path = NULL, $user_interactive = FALSE) {
   $additional_global_options = array();
   $command_options = drush_redispatch_get_options();
   if (is_array($command)) {
@@ -1382,7 +1384,14 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
     }
   }
   $backend_options = array('drush-script' => $drush_path, 'remote-host' => $remote_host, 'remote-user' => $remote_user, 'integrate' => TRUE, 'additional-global-options' => $additional_global_options);
-  if (drush_get_option('interactive')) {
+  // Set the tty if requested, if the command necessitates it,
+  // or if the user explicitly asks for interactive mode, but
+  // not if interactive mode is forced.  tty implies interactive
+  if (drush_get_option('tty') || $user_interactive || !empty($command['remote-tty'])) {
+    $backend_options['#tty'] = TRUE;
+    $backend_options['interactive'] = TRUE;
+  }
+  elseif (drush_get_option('interactive')) {
     $backend_options['interactive'] = TRUE;
   }
 
