@@ -1140,6 +1140,9 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
 
       $ssh_cmd[] = "ssh";
       $ssh_cmd[] = $ssh_options;
+      if (!empty($backend_options['interactive'])) {
+        $ssh_cmd[] = '-t';
+      }
       $ssh_cmd[] = $username . drush_escapeshellarg($hostname, "LOCAL");
       $ssh_cmd[] = drush_escapeshellarg($command . ' 2>&1', "LOCAL");
 
