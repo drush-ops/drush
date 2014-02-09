@@ -104,10 +104,6 @@ function drush_get_class($class_name, $constructor_args) {
   }
 }
 
-function get_specific_class_version($class_name) {
-
-}
-
 /**
  * Generate an .ini file. used by archive-dump."
  *
