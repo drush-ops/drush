@@ -1,0 +1,1 @@
+class DrushRoleException extends Exception {}
