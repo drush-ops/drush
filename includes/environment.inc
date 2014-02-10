@@ -11,12 +11,6 @@
  */
 
 /**
- * @todo Find out why this constant isn't defined in PEAR package loaded by
- * Composer.
- */
-define('CONSOLE_TABLE_ALIGN_LEFT', -1);
-
-/**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
  * handler takes over.
  */
