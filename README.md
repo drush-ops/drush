@@ -74,15 +74,15 @@ INSTALL - COMPOSER
 
         sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
 
-* To install Drush 6.x (stable), run `composer global require drush/drush:6.*`
+* To install Drush 6.x (stable):
 
-Some alternate commands in case you want some other variant of Drush:
+        composer global require drush/drush:6.*
 
-```bash
-composer global require drush/drush:6.1.0
-# Master branch as a git clone. Great for contributing back to Drush project.
-composer global require drush/drush:dev-master --prefer-source
-```
+* Alternate commands to install some other variant of Drush:
+
+        composer global require drush/drush:6.1.0
+        # Master branch as a git clone. Great for contributing back to Drush project.
+        composer global require drush/drush:dev-master --prefer-source
 
 [Fuller explanation of the require command.](http://getcomposer.org/doc/03-cli.md#require)
 
