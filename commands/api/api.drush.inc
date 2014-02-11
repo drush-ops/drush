@@ -129,7 +129,7 @@ function drush_api_server_validate($action) {
   else {
     // Check if an instance is already running. If so, return an error.
     if ($cache->data) {
-      // TODO: This will only work for Linux.
+      // N.B. This will only work for Linux.
       if (file_exists('/proc/' . (int) $cache->data)) {
         return drush_set_error(dt('It appears that a Drush API server instance is already running with process ID !pid. Run `drush api-server stop` to terminate the process.', array('!pid' => $cache->data)));
       }
@@ -312,8 +312,15 @@ function _api_is_valid_request($request) {
   if (count($request['args']) > count($context['DRUSH_COMMANDS'][$request['command']]['arguments'])) {
     return FALSE;
   }
-  // TODO: Validate options.
+  // Validate options for command.
+  if (count($request['options']) && !empty($request['options'])) {
+    foreach ($request['options'] as $option) {
+      if (!empty($option) && !isset($context['DRUSH_COMMANDS'][$request['command']]['options'][$option])) {
+        return FALSE;
+      }
+    }
 
+  }
 
   return TRUE;
 }
@@ -367,7 +374,18 @@ function _api_process_request($ip_address, $host, $request) {
  *   The output of drush_invoke_process().
  */
 function _api_run_command($alias, $command, $args = array(), $options = array()) {
-  return drush_invoke_process($alias, $command, $args, $options, FALSE);
+  // Convert options.
+  $converted_options = array();
+  foreach ($options as $option) {
+    if (strpos($option, '=')) {
+      list($opt, $value) = explode('=', $option);
+      $converted_options[$opt] = $value;
+    }
+    else {
+      $converted_options[$option] = TRUE;
+    }
+  }
+  return drush_invoke_process($alias, $command, $args, $converted_options, FALSE);
 }
 
 /**
