@@ -295,10 +295,8 @@ function _drush_config_import(StorageComparer $storage_comparer) {
   $config_importer = new ConfigImporter(
     $storage_comparer,
     Drupal::service('event_dispatcher'),
-    Drupal::service('config.factory'),
-    Drupal::entityManager(),
+    Drupal::service('config.manager'),
     Drupal::lock(),
-    Drupal::service('uuid'),
     Drupal::service('config.typed')
   );
   if ($config_importer->alreadyImporting()) {
