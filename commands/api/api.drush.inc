@@ -301,6 +301,7 @@ function _api_is_valid_request($request) {
   }
   // Check that the command exists.
   $context = drush_get_context();
+  // TODO: Ensure we are checking the command context for the alias.
   if (!in_array($request['command'], array_keys($context['DRUSH_COMMANDS']))) {
     return FALSE;
   }
@@ -313,6 +314,7 @@ function _api_is_valid_request($request) {
     return FALSE;
   }
   // Validate options for command.
+  // TODO: Handle cases where command has strict=0.
   if (count($request['options']) && !empty($request['options'])) {
     foreach ($request['options'] as $option) {
       if (!empty($option) && !isset($context['DRUSH_COMMANDS'][$request['command']]['options'][$option])) {
