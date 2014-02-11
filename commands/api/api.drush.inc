@@ -27,6 +27,12 @@ function api_drush_command() {
         'add-options-to-command' => FALSE,
       ),
     ),
+    'arguments' => array(
+      'action' => array(
+        'description' => 'The action to run, e.g. `start` or `stop`.',
+      ),
+    ),
+    'required-arguments' => TRUE,
     // TODO: Host may not work with Ratchet.
     'options' => array(
       'host' => array(
@@ -45,15 +51,12 @@ function api_drush_command() {
         'description' => 'A comma-separated list of host names and ports that will be accepted from the requester. By default all host names are allowed.',
         'example-value' => "localhost:8080,example.com:443",
       ),
-      'kill' => array(
-        'description' => 'Add this option if you already started a Drush API server process (for example, using `drush api-server &` that you want to stop.',
-      ),
     ),
     'examples' => array(
       'drush api-server' => 'Start a Drush API server using WebSockets.',
       'drush api-server --server-type=http' => 'Start a Drush API server using PHP\'s built-in HTTP server.',
-      'drush api-server &' => 'Start a Drush API server process using WebSockets, and run in the background. End the process by running `drush api-server --kill`.',
-      'drush api-server --kill' => 'Terminate the current running Drush API server process.',
+      'drush api-server &' => 'Start a Drush API server process using WebSockets, and run in the background. End the process by running `drush api-server stop`.',
+      'drush api-server stop' => 'Terminate the current running Drush API server process.',
     ),
   );
   $items['api-request'] = array(
@@ -96,22 +99,17 @@ function drush_api_server() {
 }
 
 /**
- * Implements hook_COMMAND_init().
- */
-function drush_api_server_init() {
-  // Remove the process ID from the cache.
-  register_shutdown_function('drush_cache_clear_all', 'pid', 'drush-api');
-}
-
-/**
  * Implements hook_COMMAND_validate().
  */
-function drush_api_server_validate() {
+function drush_api_server_validate($action) {
+  if (!in_array($action, array('stop', 'start'))) {
+    return drush_set_error('DRUSH_API_SERVER_INVALID_ACTION', dt('Only "start" and "stop" are valid arguments.'));
+  }
   // See if a process is already running.
   $cache = drush_cache_get('pid', 'drush-api');
-  // If the '--kill' option was passed, then terminate the Drush API server
+  // If the 'stop' command was passed, then terminate the Drush API server
   // process ID that is stored in the cache.
-  if (drush_get_option('kill')) {
+  if ($action == 'stop') {
     if ($cache->data) {
       // Kill the process.
       $pid = $cache->data;
@@ -128,6 +126,15 @@ function drush_api_server_validate() {
       return drush_set_error(dt('There is no active Drush API server process.'));
     }
   }
+  else {
+    // Check if an instance is already running. If so, return an error.
+    if ($cache->data) {
+      // TODO: This will only work for Linux.
+      if (file_exists('/proc/' . (int) $cache->data)) {
+        return drush_set_error(dt('It appears that a Drush API server instance is already running with process ID !pid. Run `drush api-server stop` to terminate the process.', array('!pid' => $cache->data)));
+      }
+    }
+  }
   // Clear the process ID cache, and set the new process ID.
   if ($cache->data) {
     drush_cache_clear_all('pid', 'drush-api');
@@ -140,13 +147,6 @@ function drush_api_server_validate() {
     // Verify that user is on PHP 5.4+ for HTTP option.
     if (version_compare(phpversion(), '5.4') < 0) {
       return drush_set_error('DRUSH_API_SERVER_REQUIREMENTS_ERROR', dt('You need PHP 5.4 to use the HTTP option for the API Server command. You are running PHP !version', array('!version' => phpversion())));
-    }
-  }
-  // Check if an instance is already running. If so, return.
-  if ($cache->data) {
-    // TODO: This will only work for Linux.
-    if (file_exists('/proc/' . (int) $cache->data)) {
-      return drush_set_error(dt('It appears that a Drush API server instance is already running with process ID !pid. Run `drush api-server --kill` to terminate the process.', array('!pid' => $cache->data)));
     }
   }
   return TRUE;
