@@ -240,6 +240,33 @@ function drush_shell_proc_open($cmd) {
 }
 
 /**
+ * Checks if a process ID is active on the system.
+ *
+ * @param int $pid
+ *   The process ID to check.
+ *
+ * @return bool
+ *   Returns TRUE if process ID is active, FALSE otherwise.
+ */
+function drush_process_is_active($pid) {
+  // TODO: This won't work for Windows.
+  return file_exists(sprintf('/proc/%d', $pid)) ? TRUE : FALSE;
+}
+
+/**
+ * Kill a process on the system.
+ *
+ * @param int $pid
+ *   The process ID to kill.
+ *
+ * @return bool
+ *   Returns TRUE if successful, FALSE otherwise.
+ */
+function drush_kill_task($pid) {
+  return drush_is_windows() ? drush_shell_exec(sprintf('taskkill /F /PID %d', $pid)) : drush_shell_exec(sprintf('kill -9 %d', $pid));
+}
+
+/**
  * Used by definition of ssh and other commands that call into drush_shell_proc_build()
  * to declare their options.
  */

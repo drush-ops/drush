@@ -113,7 +113,7 @@ function drush_api_server_validate($action) {
     if ($cache->data) {
       // Kill the process.
       $pid = $cache->data;
-      $result = stripos(php_uname('s'), 'win') > -1 ? drush_shell_exec("taskkill /F /PID $pid") : drush_shell_exec("kill -9 $pid");
+      $result = drush_kill_task($pid);
       if ($result) {
         drush_log(dt('Successfully terminated Drush API server process !pid.', array('!pid' => $pid)), 'success');
       }
@@ -130,7 +130,7 @@ function drush_api_server_validate($action) {
     // Check if an instance is already running. If so, return an error.
     if ($cache->data) {
       // N.B. This will only work for Linux.
-      if (file_exists('/proc/' . (int) $cache->data)) {
+      if (drush_process_is_active($cache->data)) {
         return drush_set_error(dt('It appears that a Drush API server instance is already running with process ID !pid. Run `drush api-server stop` to terminate the process.', array('!pid' => $cache->data)));
       }
     }
@@ -345,6 +345,7 @@ function _api_process_request($ip_address, $host, $request) {
     return _api_error();
   }
   // TODO: Test this.
+  // Pass in port as well?
   if ($result = drush_command_invoke_all('drush_api_process_request_alter', $ip_address, $host, $request)) {
     return $result;
   }
