@@ -24,7 +24,7 @@ function rest_api_server_launch() {
   $server = IoServer::factory(
     new HttpServer(
       new WsServer(
-        new DrushWebSocket($allowable_ips, $allowable_hosts)
+        new DrushRestApiServerWebSocket($allowable_ips, $allowable_hosts)
       )
     ),
     $port

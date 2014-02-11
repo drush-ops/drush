@@ -2,79 +2,85 @@
 
 /**
  * @file
- * Code for exposing Drush as a web service using PHP's built in server.
+ * Code for the Drush Rest API HTTP server.
  */
 
-// Process the request and return the output.
-return _drush_rest_api_http_set_output(_drush_rest_api_http_request());
+/**
+ * Class DrushRestApiServerHttp.
+ */
+class DrushRestApiServerHttp extends HTTPServer
+{
+  protected $allowableIps;
+  protected $allowableHosts;
+  protected $headers;
 
-/**
- * Set the output and response code.
- *
- * @param array $response
- *   The data to output to the requester.
- *
- * @return string
- *   Return a JSON encoded string of data.
- */
-function _drush_rest_api_http_set_output($response) {
-  // Set headers.
-  _drush_rest_api_http_set_headers();
-  // Print output.
-  echo json_encode($response);
-  // Set response code.
-  if (isset($response['response_code'])) {
-    http_response_code($response['response_code']);
+  /**
+   * Constructor.
+   *
+   * @param int $port
+   * @param string $hostname
+   * @param array $allowable_ips
+   * @param array $allowable_hosts
+   * @param array $headers
+   */
+  function __construct($port, $hostname, $allowable_ips, $allowable_hosts, $headers = array())
+  {
+    parent::__construct(array(
+      'port' => $port,
+      'host' => $hostname,
+    ));
+    $this->allowableHosts = $allowable_hosts;
+    $this->allowableIps = $allowable_ips;
+    $this->headers = $headers;
   }
-  else {
-    if ($response['error_status'] == 1) {
-      http_response_code(500);
-    }
-    else {
-      http_response_code(200);
-    }
-  }
-}
-/**
- * Set the headers.
- */
-function _drush_rest_api_http_set_headers() {
-  header('Content-Type: application/json');
-  // Set custom headers.
-  if (isset($_ENV['DRUSH_REST_HEADERS'])) {
-    $headers = unserialize($_ENV['DRUSH_REST_HEADERS']);
-    foreach ($headers as $header) {
-      header($header);
-    }
-  }
-}
 
-/**
- * Make the request and get a response.
- *
- * @return array
- *   Return an array of data to display to the requester.
- */
-function _drush_rest_api_http_request() {
-  // Take our request and pass to `drush web-service-request`.
-  $request = urldecode(ltrim($_SERVER['REQUEST_URI'], '/'));
-  $drush_executable = $_ENV['DRUSH'];
-  $command = sprintf('%s rest-api-request %s %s %s',
-    escapeshellarg($drush_executable),
-    escapeshellarg($request),
-    escapeshellarg($_SERVER['HTTP_HOST']),
-    escapeshellarg($_SERVER['REMOTE_ADDR'])
-  );
-  if (isset($_ENV['DRUSH_REST_ALLOWABLE_IPS'])) {
-    $command .= sprintf(' --allowable-ips="%s"', $_ENV['DRUSH_REST_ALLOWABLE_IPS']);
+  /**
+   * Routes the incoming request.
+   *
+   * @param array $request
+   *   The request array.
+   *
+   * @return HTTPResponse
+   */
+  public function route_request($request) {
+    $uri = urldecode(ltrim($request->request_uri, '/'));
+    $options = array();
+    if (count($this->allowableIps)) {
+      $options['allowable-ips'] = $this->allowableIps;
+    }
+    if (count($this->allowableHosts)) {
+      $options['allowable-hosts'] = $this->allowableHosts;
+    }
+    // Process request.
+    $result = drush_invoke_process('@none', 'rest-api-request', array(
+      trim($uri),
+      $request->headers['Host'],
+      $request->remote_addr,
+    ), $options, FALSE);
+    $file = drush_save_data_to_temp_file($result['output']);
+    return $this->get_static_response($request, $file);
   }
-  if (isset($_ENV['DRUSH_REST_ALLOWABLE_HOSTS'])) {
-    $command .= sprintf(' --allowable-http-hosts="%s"', $_ENV['DRUSH_REST_ALLOWABLE_HOSTS']);
+
+  /**
+   * Return a response based on the data saved to a temp file.
+   *
+   * @param array $request
+   *   The original request.
+   * @param string $local_path
+   *   The output of drush_invoke_process().
+   *
+   * @return HTTPResponse
+   */
+  public function get_static_response($request, $local_path) {
+    // Check if error and set response code appropriately.
+    $headers = array_merge($this->headers, array(
+      'Content-Type' => 'application/json',
+      'Content-Length' => filesize($local_path),
+    ));
+    $data = drush_json_decode(file_get_contents($local_path));
+    return $this->response($data['error_status'] == 0 ? 200 : 500,
+      fopen($local_path, 'rb'),
+      $headers
+    );
   }
-  // Log the command.
-  error_log('Drush REST API: ' . $command);
-  // `rest-api-request` will return a JSON encoded string. We need to decode it
-  // so that we can get at the response code and error status values.
-  $response = json_decode(shell_exec($command), TRUE);
-  return $response;
 }

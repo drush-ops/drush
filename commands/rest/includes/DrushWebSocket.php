@@ -11,7 +11,7 @@ use Ratchet\ConnectionInterface;
 /**
  * Class DrushWebSocket.
  */
-class DrushWebSocket implements MessageComponentInterface {
+class DrushRestApiServerWebSocket implements MessageComponentInterface {
 
   protected $clients;
   protected $response;
