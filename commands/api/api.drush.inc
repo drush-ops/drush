@@ -118,7 +118,7 @@ function drush_api_server_validate($action) {
         drush_log(dt('Successfully terminated Drush API server process !pid.', array('!pid' => $pid)), 'success');
       }
       else {
-        drush_set_error(dt('There was no Drush API server process with ID !pid', array('!pid' => $pid)));
+        drush_set_error(dt('There is no currently active Drush API server process.'));
       }
       return FALSE;
     }
@@ -271,7 +271,6 @@ function _api_parse_request($request) {
   $args = explode('/', $parsed['path']);
   $alias = array_shift($args);
   $command = array_shift($args);
-  // FIXME: Currently this skips the first option.
   $options = explode('&', $parsed['query']);
   $parsed_request = array(
     'alias' => $alias,
