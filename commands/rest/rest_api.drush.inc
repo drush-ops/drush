@@ -307,31 +307,10 @@ function _rest_api_is_valid_request($request) {
   if (!drush_sitealias_get_record($request['alias']) && $request['alias'] !== '@none') {
     return FALSE;
   }
-  // Check that the command exists.
-  $context = drush_get_context();
-  // TODO: Ensure we are checking the command context for the alias.
-  if (!in_array($request['command'], array_keys($context['DRUSH_COMMANDS']))) {
-    return FALSE;
-  }
   // Don't let users get clever.
   if (in_array($request['command'], array('rest-api-server', 'rest-api-request'))) {
     return FALSE;
   }
-  // Validate number of args sent does not exceed what the command will accept.
-  if (count($request['args']) > count($context['DRUSH_COMMANDS'][$request['command']]['arguments'])) {
-    return FALSE;
-  }
-  // Validate options for command.
-  // TODO: Handle cases where command has strict=0.
-  if (count($request['options']) && !empty($request['options'])) {
-    foreach ($request['options'] as $option) {
-      if (!empty($option) && !isset($context['DRUSH_COMMANDS'][$request['command']]['options'][$option])) {
-        return FALSE;
-      }
-    }
-
-  }
-
   return TRUE;
 }
 
