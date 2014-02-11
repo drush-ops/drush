@@ -83,7 +83,7 @@ function config_drush_command() {
     'core' => array('8+'),
     'aliases' => array('cex'),
     'arguments' => array(
-      'destination' => "A config directory label (i.e. a key \$config_directories[] in settings.php). Defaults to 'staging'",
+      'destination' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
     ),
     'options' => array(
       'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
@@ -93,7 +93,7 @@ function config_drush_command() {
   $items['config-import'] = array(
     'description' => 'Import config from a config directory.',
     'arguments' => array(
-      'source' => "A config directory label (i.e. a key \$config_directories[] in settings.php). Defaults to 'staging'",
+      'source' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
     ),
     'core' => array('8+'),
     'aliases' => array('cim'),
