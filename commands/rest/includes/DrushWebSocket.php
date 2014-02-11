@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Code for processing incoming requests to the Drush API server.
+ * Code for processing incoming requests to the Drush REST server.
  */
 
 use Ratchet\MessageComponentInterface;
@@ -69,7 +69,7 @@ class DrushWebSocket implements MessageComponentInterface {
           $options['allowable-http-hosts'] = implode(',', $this->allowableHosts);
         }
         // Process the request.
-        $result = drush_invoke_process('@none', 'api-request', array(
+        $result = drush_invoke_process('@none', 'rest-request', array(
           trim($request),
           $host,
           $client->remoteAddress,

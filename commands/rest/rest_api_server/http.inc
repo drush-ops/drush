@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Launch a Drush API server over HTTP.
+ * Launch a Drush REST API server over HTTP.
  *
- * This code is run with the `--server-type=http` option for the `api-server`
+ * This code is run with the `--server-type=http` option for the `rest-server`
  * command.
  */
-function api_server_launch() {
+function rest_api_server_launch() {
   // Warn the user about running this command on a public network.
   if (!drush_confirm('You should not use the HTTP server option on a public network. Are you sure you want to continue?')) {
     return FALSE;
@@ -28,7 +28,7 @@ function api_server_launch() {
   if ($headers = array_filter(drush_get_option_list('headers'))) {
     $env_vars['DRUSH_API_HEADERS'] = escapeshellarg(serialize($headers));
   }
-  $prepend = DRUSH_BASE_PATH . '/commands/api/includes/DrushHttp.php';
+  $prepend = DRUSH_BASE_PATH . '/commands/rest/includes/DrushHttp.php';
   $host = drush_get_option('host', 'localhost');
   $port = drush_get_option('port', '8888');
   $vars = '';
@@ -43,6 +43,6 @@ function api_server_launch() {
     $host,
     $port,
     $prepend,
-    DRUSH_BASE_PATH . '/commands/api/includes/cli-server.ini');
+    DRUSH_BASE_PATH . '/commands/rest/includes/cli-server.ini');
   return drush_shell_exec_interactive($cmd);
 }

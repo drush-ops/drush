@@ -6,7 +6,7 @@
  */
 
 // Process the request and return the output.
-return _drush_api_set_output(_drush_api_request());
+return _drush_rest_api_http_set_output(_drush_rest_api_http_request());
 
 /**
  * Set the output and response code.
@@ -17,9 +17,9 @@ return _drush_api_set_output(_drush_api_request());
  * @return string
  *   Return a JSON encoded string of data.
  */
-function _drush_api_set_output($response) {
+function _drush_rest_api_http_set_output($response) {
   // Set headers.
-  _drush_api_set_headers();
+  _drush_rest_api_http_set_headers();
   // Print output.
   echo json_encode($response);
   // Set response code.
@@ -38,11 +38,11 @@ function _drush_api_set_output($response) {
 /**
  * Set the headers.
  */
-function _drush_api_set_headers() {
+function _drush_rest_api_http_set_headers() {
   header('Content-Type: application/json');
   // Set custom headers.
-  if (isset($_ENV['DRUSH_API_HEADERS'])) {
-    $headers = unserialize($_ENV['DRUSH_API_HEADERS']);
+  if (isset($_ENV['DRUSH_REST_HEADERS'])) {
+    $headers = unserialize($_ENV['DRUSH_REST_HEADERS']);
     foreach ($headers as $header) {
       header($header);
     }
@@ -55,25 +55,25 @@ function _drush_api_set_headers() {
  * @return array
  *   Return an array of data to display to the requester.
  */
-function _drush_api_request() {
+function _drush_rest_api_http_request() {
   // Take our request and pass to `drush web-service-request`.
   $request = urldecode(ltrim($_SERVER['REQUEST_URI'], '/'));
   $drush_executable = $_ENV['DRUSH'];
-  $command = sprintf('%s api-request %s %s %s',
+  $command = sprintf('%s rest-api-request %s %s %s',
     escapeshellarg($drush_executable),
     escapeshellarg($request),
     escapeshellarg($_SERVER['HTTP_HOST']),
     escapeshellarg($_SERVER['REMOTE_ADDR'])
   );
-  if (isset($_ENV['DRUSH_API_ALLOWABLE_IPS'])) {
-    $command .= sprintf(' --allowable-ips="%s"', $_ENV['DRUSH_API_ALLOWABLE_IPS']);
+  if (isset($_ENV['DRUSH_REST_ALLOWABLE_IPS'])) {
+    $command .= sprintf(' --allowable-ips="%s"', $_ENV['DRUSH_REST_ALLOWABLE_IPS']);
   }
-  if (isset($_ENV['DRUSH_API_ALLOWABLE_HOSTS'])) {
-    $command .= sprintf(' --allowable-http-hosts="%s"', $_ENV['DRUSH_API_ALLOWABLE_HOSTS']);
+  if (isset($_ENV['DRUSH_REST_ALLOWABLE_HOSTS'])) {
+    $command .= sprintf(' --allowable-http-hosts="%s"', $_ENV['DRUSH_REST_ALLOWABLE_HOSTS']);
   }
   // Log the command.
-  error_log('Drush API: ' . $command);
-  // `api-request` will return a JSON encoded string. We need to decode it
+  error_log('Drush REST API: ' . $command);
+  // `rest-request` will return a JSON encoded string. We need to decode it
   // so that we can get at the response code and error status values.
   $response = json_decode(shell_exec($command), TRUE);
   return $response;
