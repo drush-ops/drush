@@ -106,7 +106,7 @@ function drush_rest_api_server_validate($action) {
     return drush_set_error('DRUSH_REST_API_SERVER_INVALID_ACTION', dt('Only "start" and "stop" are valid actions.'));
   }
   // See if a process is already running.
-  $cache = drush_cache_get('pid', 'drush-rest-api');
+  $cache = drush_cache_get('rest-server-pid', 'drush-rest-api');
   // If the 'stop' command was passed, then terminate the Drush REST server
   // process ID that is stored in the cache.
   if ($action == 'stop') {
@@ -143,13 +143,14 @@ function drush_rest_api_server_validate($action) {
       }
     }
   }
-  // Clear the process ID cache, and set the new process ID.
+  // Clear the process ID and port cache, and set the new process ID.
   if ($cache->data) {
-    drush_cache_clear_all('pid', 'drush-rest-api');
+    drush_cache_clear_all(NULL, 'drush-rest-api');
   }
   drush_log(dt('Starting Drush REST API server with process ID !pid', array('!pid' => getmypid())));
   // Store the process ID for the server.
-  drush_cache_set('pid', getmypid(), 'drush-rest-api');
+  drush_cache_set('rest-server-pid', getmypid(), 'drush-rest-api');
+  drush_cache_set('rest-server-port', drush_get_option('port', 8888), 'drush-rest-api');
   // Verify PHP requirements.
   if (drush_get_option('server-type') == 'http') {
     // Verify that user is on PHP 5.4+ for HTTP option.
@@ -211,7 +212,7 @@ function rest_api_drush_engine_rest_api_server() {
  * Command callback for `drush rest-api-request`.
  *
  * @param string $request
- *   The incoming request to the Drush REST server.
+ *   The incoming request to the Drush REST API server.
  * @param string $http_host
  *   The HTTP host of the requester.
  * @param string $ip_address
@@ -226,7 +227,16 @@ function drush_rest_api_request($request, $http_host = NULL, $ip_address = NULL)
   if (!_rest_api_request_allow($http_host, $ip_address)) {
     return _rest_api_access_denied();
   }
-  return _rest_api_process_request($ip_address, $http_host, $request);
+  $port = _drush_rest_api_server_get_port();
+  return _rest_api_process_request($ip_address, $http_host, $port, $request);
+}
+
+/**
+ * Return the port number of the active REST API server process.
+ */
+function _drush_rest_api_server_get_port() {
+  $cache = drush_cache_get('rest-server-port', 'drush-rest-api');
+  return $cache->data;
 }
 
 /**
@@ -328,14 +338,14 @@ function _rest_api_is_valid_request($request) {
  *   Return a JSON formatted string containing either an error message if an
  *  invalid request was made, or the complete output of drush_invoke_process().
  */
-function _rest_api_process_request($ip_address, $host, $request) {
+function _rest_api_process_request($ip_address, $host, $port, $request) {
   $data = _rest_api_parse_request($request);
   if (!$data) {
     return _rest_api_error();
   }
-  // TODO: Test this.
-  // Pass in port as well?
-  if ($result = drush_command_invoke_all('drush_rest_api_process_request_alter', $ip_address, $host, $request)) {
+  // Allow custom Drush commands to intercept the request and process it. If
+  // no command intercepting the request then we will process it ourselves.
+  if ($result = drush_command_invoke_all('drush_rest_api_process_request_alter', $ip_address, $host, $port, $request)) {
     return $result;
   }
   else {
