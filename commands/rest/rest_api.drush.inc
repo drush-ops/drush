@@ -55,7 +55,7 @@ function rest_api_drush_command() {
     'examples' => array(
       'drush rest-api-server' => 'Start a Drush REST API server using WebSockets.',
       'drush rest-api-server --server-type=http' => 'Start a Drush REST API server using PHP\'s built-in HTTP server.',
-      'drush rest-api-server &' => 'Start a Drush REST API server process using WebSockets, and run in the background. End the process by running `drush rest-server stop`.',
+      'drush rest-api-server &' => 'Start a Drush REST API server process using WebSockets, and run in the background. End the process by running `drush rest-api-server stop`.',
       'drush rest-api-server stop' => 'Terminate the current running Drush REST server process.',
     ),
   );
@@ -90,7 +90,7 @@ function rest_api_drush_command() {
 }
 
 /**
- * Command callback for `drush rest-server`.
+ * Command callback for `drush rest-api-server`.
  *
  * Launch a new Drush REST server using a specified engine type.
  */
@@ -114,13 +114,15 @@ function drush_rest_api_server_validate($action) {
       // Kill the process.
       $pid = $cache->data;
       // Check if active first.
-      if (drush_process_is_active($pid)) {
+      if (!drush_process_is_active($pid)) {
         return drush_set_error(dt('There is no currently active Drush REST API server process.'));
       }
       else {
         $result = drush_kill_task($pid);
         if ($result) {
           drush_log(dt('Successfully terminated Drush REST API server process !pid.', array('!pid' => $pid)), 'success');
+          // Returning FALSE to prevent starting a new REST API server instance.
+          return FALSE;
         }
         else {
           return drush_set_error('DRUSH_API_SERVER_PROCESS', dt('Failed to terminate process !pid', array('!pid' => $pid)));
@@ -137,7 +139,7 @@ function drush_rest_api_server_validate($action) {
     if ($cache->data) {
       // N.B. This will only work for Linux.
       if (drush_process_is_active($cache->data)) {
-        return drush_set_error(dt('It appears that a Drush REST server instance is already running with process ID !pid. Run `drush rest-server stop` to terminate the process.', array('!pid' => $cache->data)));
+        return drush_set_error(dt('It appears that a Drush REST server instance is already running with process ID !pid. Run `drush rest-api-server stop` to terminate the process.', array('!pid' => $cache->data)));
       }
     }
   }
@@ -182,7 +184,7 @@ function rest_api_drush_engine_type_info() {
 /**
  * Implements hook_drush_engine_ENGINE_TYPE().
  *
- * Provides information about the rest-server-type engine.
+ * Provides information about the rest-api-server-type engine.
  */
 function rest_api_drush_engine_rest_api_server() {
   return array(
@@ -217,7 +219,7 @@ function rest_api_drush_engine_rest_api_server() {
  *
  * @return array
  *   Returns an array of data to present to the requester. By default, the
- *   `rest-request` command will use the JSON output format.
+ *   `rest-api-request` command will use the JSON output format.
  */
 function drush_rest_api_request($request, $http_host = NULL, $ip_address = NULL) {
   // Check if access is allowed.
@@ -312,7 +314,7 @@ function _rest_api_is_valid_request($request) {
     return FALSE;
   }
   // Don't let users get clever.
-  if (in_array($request['command'], array('rest-server', 'rest-request'))) {
+  if (in_array($request['command'], array('rest-api-server', 'rest-api-request'))) {
     return FALSE;
   }
   // Validate number of args sent does not exceed what the command will accept.

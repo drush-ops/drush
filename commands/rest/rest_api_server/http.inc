@@ -3,8 +3,8 @@
 /**
  * Launch a Drush REST API server over HTTP.
  *
- * This code is run with the `--server-type=http` option for the `rest-server`
- * command.
+ * This code is run with the `--server-type=http` option for the
+ * `rest-api-server` command.
  */
 function rest_api_server_launch() {
   // Warn the user about running this command on a public network.

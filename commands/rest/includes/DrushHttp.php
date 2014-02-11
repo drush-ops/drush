@@ -73,7 +73,7 @@ function _drush_rest_api_http_request() {
   }
   // Log the command.
   error_log('Drush REST API: ' . $command);
-  // `rest-request` will return a JSON encoded string. We need to decode it
+  // `rest-api-request` will return a JSON encoded string. We need to decode it
   // so that we can get at the response code and error status values.
   $response = json_decode(shell_exec($command), TRUE);
   return $response;

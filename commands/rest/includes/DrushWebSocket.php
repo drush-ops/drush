@@ -69,7 +69,7 @@ class DrushWebSocket implements MessageComponentInterface {
           $options['allowable-http-hosts'] = implode(',', $this->allowableHosts);
         }
         // Process the request.
-        $result = drush_invoke_process('@none', 'rest-request', array(
+        $result = drush_invoke_process('@none', 'rest-api-request', array(
           trim($request),
           $host,
           $client->remoteAddress,
