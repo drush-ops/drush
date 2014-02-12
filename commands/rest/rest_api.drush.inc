@@ -222,7 +222,7 @@ function rest_api_drush_engine_rest_api_server() {
  *   Returns an array of data to present to the requester. By default, the
  *   `rest-api-request` command will use the JSON output format.
  */
-function drush_rest_api_request($request, $http_host = NULL, $ip_address = NULL) {
+function drush_rest_api_request($request = NULL, $http_host = NULL, $ip_address = NULL) {
   // Check if access is allowed.
   if (!_rest_api_request_allow($http_host, $ip_address)) {
     return _rest_api_access_denied();
