@@ -27,7 +27,7 @@ class RestApiTest extends Drush_CommandTestCase {
     $this->drush('rest-api-request', array('@none/core-status?format=json'));
     $output = $this->getOutput();
     $this->assertJson($output, 'Received valid JSON');
-    $json = drush_json_decode($output);
+    $json = json_decode($output);
     $this->assertEquals(0, $json['error_status'], 'Successful request.');
     $this->assertEmpty($json['error_log'], 'Error log is empty.');
     $this->assertJson($json['output'], 'Returned JSON data as requested.');
@@ -84,7 +84,7 @@ class RestApiTest extends Drush_CommandTestCase {
     $output = (string) $response->getBody();
     $this->assertEquals(200, $response->getStatusCode(), '200 status code.');
     $this->assertJson($output, 'Received a JSON response.');
-    $json = drush_json_decode($output);
+    $json = json_decode($output);
     $this->assertEquals(0, $json['error_status'], 'Successful request.');
     $this->assertEmpty($json['error_log'], 'Error log is empty.');
     $this->assertJson($json['output'], 'Returned JSON data as requested.');
@@ -119,6 +119,8 @@ class RestApiTest extends Drush_CommandTestCase {
       $this->assertEquals(403, $response->getStatusCode(), '403 status code.');
       $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ACCESS_DENIED_MSG, $output, 'Received an access denied response.');
     }
+    // TODO: Check access denied for allowable hosts.
+    // TODO: Check if one or multiple headers are set correctly.
     // Shutdown server.
     drush_shell_exec('drush rest-api-server stop');
   }
