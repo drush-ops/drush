@@ -7,6 +7,11 @@
  * @group commands
  */
 
+use Guzzle\Http\Client;
+
+define('DRUSH_REST_API_ACCESS_DENIED_MSG', '{"response_code":403,"error_status":1,"error_log":"Access denied."}');
+define('DRUSH_REST_API_ERROR_MSG', '{"error_status":1,"error_log":"Invalid request. REST API requests must use this format: {@alias}\/{command}\/{argument}\/{argument_two}?{option=value\u0026option2=value2}"}');
+
 class RestApiTest extends Drush_CommandTestCase {
   /**
    * Test the rest-api-request command.
@@ -17,8 +22,7 @@ class RestApiTest extends Drush_CommandTestCase {
     $output = $this->getOutput();
     $this->assertJson($output, 'Received valid JSON');
     // Check the contents of the json.
-    $expected_error = '{"error_status":1,"error_log":"Invalid request. REST API requests must use this format: {@alias}\/{command}\/{argument}\/{argument_two}?{option=value\u0026option2=value2}"}';
-    $this->assertJsonStringEqualsJsonString($expected_error, $output, 'Received expected JSON');
+    $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ERROR_MSG, $output, 'Received expected JSON');
     // Now check a valid request, '@none/core-status?format=json'.
     $this->drush('rest-api-request', array('@none/core-status?format=json'));
     $output = $this->getOutput();
@@ -30,12 +34,11 @@ class RestApiTest extends Drush_CommandTestCase {
     // Make an invalid request, using a bogus alias.
     $this->drush('rest-api-request', array('@blah/core-status'));
     $output = $this->getOutput();
-    $this->assertJsonStringEqualsJsonString($expected_error, $output, 'Received error message.');
+    $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ERROR_MSG, $output, 'Received error message.');
     // Check for access denied on invalid host.
     $this->drush('rest-api-request', array('@none/core-status', 'drupal.org'), array('allowable-http-hosts' => 'localhost'));
-    $expected_error = '{"response_code":403,"error_status":1,"error_log":"Access denied."}';
     $output = $this->getOutput();
-    $this->assertJsonStringEqualsJsonString($expected_error, $output, 'Received access denied message for disallowed host.');
+    $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ACCESS_DENIED_MSG, $output, 'Received access denied message for disallowed host.');
     // Check for access denied on invalid IP.
     $this->drush('rest-api-request', array(
         '@none/core-status',
@@ -47,7 +50,7 @@ class RestApiTest extends Drush_CommandTestCase {
       'allowable-ips' => '127.0.0.1,0.0.0.0',
     ));
     $output = $this->getOutput();
-    $this->assertJsonStringEqualsJsonString($expected_error, $output, 'Received access denied for disallowed IP address.');
+    $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ACCESS_DENIED_MSG, $output, 'Received access denied for disallowed IP address.');
     // Check for access granted when using allowable-http-hosts and
     // allowable-ips.
     $this->drush('rest-api-request', array(
@@ -66,18 +69,40 @@ class RestApiTest extends Drush_CommandTestCase {
   }
 
   /**
-   * Tests for the REST API Server.
+   * Tests for the REST API Http Server.
    */
-  public function testRestApiServer() {
-    // Require an action to be specified (e.g. start/stop).
-    $this->drush('rest-api-server', array(), array(), NULL, NULL, self::EXIT_ERROR);
+  public function testRestApiHttpServer() {
     // Stop any existing REST API server processes.
     drush_shell_exec('drush rest-api-server stop');
-    // Launch a WebSocket server.
-//    exec('drush rest-api-server start --server-type=http -y >/dev/null &');
+    // Launch a HTTP server.
+    exec('drush rest-api-server start --server-type=http -y >/dev/null &');
+    sleep(2);
     // Check status command.
-//    drush_shell_exec('curl http://localhost:8888/@none/core-status');
-//    $this->assertJson($output, 'Received a JSON response.');
+    $client = new Client('http://localhost:8888');
+    $request = $client->get('@none/core-status?format=json');
+    $response = $request->send();
+    $output = (string) $response->getBody();
+    $this->assertEquals(200, $response->getStatusCode(), '200 status code.');
+    $this->assertJson($output, 'Received a JSON response.');
+    $json = drush_json_decode($output);
+    $this->assertEquals(0, $json['error_status'], 'Successful request.');
+    $this->assertEmpty($json['error_log'], 'Error log is empty.');
+    $this->assertJson($json['output'], 'Returned JSON data as requested.');
+    // Check an invalid request.
+    unset($request, $response, $client);
+    $client = new Client('http://localhost:8888');
+    $request = $client->get('/@blah/');
+    try {
+      // Guzzle wil throw an exception.
+      $request->send();
+    }
+    catch (Exception $e) {
+      $response = $e->getResponse();
+      $output = (string) $response->getBody();
+      $this->assertJson($output, 'Received a JSON response.');
+      $this->assertEquals(400, $response->getStatusCode(), '400 status code.');
+      $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ERROR_MSG, $output, 'Received an error response.');
+    }
     // Shutdown server.
     drush_shell_exec('drush rest-api-server stop');
   }
