@@ -86,6 +86,17 @@ INSTALL - COMPOSER
 
 [Fuller explanation of the require command.](http://getcomposer.org/doc/03-cli.md#require)
 
+**Tip:**
+
+If composer cannot find a requirement, and suggests that *The package is not available in a stable-enough version according to your minimum-stability setting*, then place the following
+in `$HOME/.composer/composer.json`:
+```
+{
+  "minimum-stability": "dev"
+}
+```
+Merge this in with any other content that may already exist in this file.
+
 INSTALL - PEAR
 -----------
 If you have trouble with PEAR installation, consider trying MANUAL INSTALLATION. It is not too hard.
