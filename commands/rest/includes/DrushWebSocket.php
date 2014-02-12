@@ -94,7 +94,7 @@ class DrushRestApiServerWebSocket implements MessageComponentInterface {
    * Log errors.
    */
   public function onError(ConnectionInterface $conn, \Exception $err) {
-    drush_set_error('DRUSH_WEB_SOCKET_ERROR', dt('An error occurred: !msg',
+    drush_set_error('DRUSH_REST_API_WEBSOCKET_ERROR', dt('An error occurred: !msg',
        array('!msg' => $err->getMessage())));
     $conn->close();
   }

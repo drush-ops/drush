@@ -2,6 +2,11 @@
 
 require_once DRUSH_BASE_PATH . '/commands/rest/includes/DrushHttp.php';
 
+use Ratchet\Http\HttpServer;
+use Ratchet\Server\IoServer;
+
+
+
 /**
  * Launch a Drush REST API server over HTTP.
  *
@@ -26,6 +31,11 @@ function rest_api_server_launch() {
   }
   $host = drush_get_option('host', 'localhost');
   $port = drush_get_option('port', '8888');
-  $http_server = new DrushRestApiServerHttp($port, $host, $allowable_ips, $allowable_http_hosts, $headers);
-  $http_server->run_forever();
+  require_once DRUSH_BASE_PATH . '/commands/rest/includes/DrushHttp.php';
+  $server = new HttpServer(new DrushRestApiServerHttp($allowable_ips, $allowable_http_hosts, $headers));
+//  $server = IoServer::factory($http, $port, $host);
+  $server = IoServer::factory(new \Ratchet\Http\HttpServer(new DrushRestApiServerHttp($allowable_ips, $allowable_http_hosts, $headers)), $port, '127.0.0.1');
+  $server->run();
+//  $http_server = new
+//  $http_server->run_forever();
 }

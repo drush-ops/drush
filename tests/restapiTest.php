@@ -27,7 +27,7 @@ class RestApiTest extends Drush_CommandTestCase {
     $this->drush('rest-api-request', array('@none/core-status?format=json'));
     $output = $this->getOutput();
     $this->assertJson($output, 'Received valid JSON');
-    $json = json_decode($output);
+    $json = json_decode($output, TRUE);
     $this->assertEquals(0, $json['error_status'], 'Successful request.');
     $this->assertEmpty($json['error_log'], 'Error log is empty.');
     $this->assertJson($json['output'], 'Returned JSON data as requested.');
@@ -63,7 +63,7 @@ class RestApiTest extends Drush_CommandTestCase {
       'allowable-ips' => '127.0.0.1,0.0.0.0,8.8.8.8',
     ));
     $output = $this->getOutput();
-    $json = drush_json_decode($output);
+    $json = json_decode($output, TRUE);
     $this->assertEmpty($json['error_log'], 'No errors returned');
     $this->assertEquals(0, $json['error_status'], 'Error status is 0');
   }
@@ -79,12 +79,14 @@ class RestApiTest extends Drush_CommandTestCase {
     sleep(2);
     // Check status command.
     $client = new Client('http://localhost:8888');
-    $request = $client->get('@none/core-status?format=json');
+    $request = $client->get('@none/core-status', [
+      'query' => ['format' => 'json']
+    ]);
     $response = $request->send();
     $output = (string) $response->getBody();
     $this->assertEquals(200, $response->getStatusCode(), '200 status code.');
     $this->assertJson($output, 'Received a JSON response.');
-    $json = json_decode($output);
+    $json = json_decode($output, TRUE);
     $this->assertEquals(0, $json['error_status'], 'Successful request.');
     $this->assertEmpty($json['error_log'], 'Error log is empty.');
     $this->assertJson($json['output'], 'Returned JSON data as requested.');
