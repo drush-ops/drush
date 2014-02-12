@@ -1,0 +1,31 @@
+<h1>Drush REST API Server</h1>
+
+<p>Drush provides support for exposing its functionality over the web via HTTP or a WebSocket.</p>
+
+<p>If the thought of allowing a client (browser or otherwise) to execute Drush commands on your machine over HTTP/WebSockets doesn't give you pause, then you should probably not use this feature. If used without care, you could potentially create some serious security vulnerabilities on your machine.</p>
+
+<p>That said, this feature <strong>can</strong> be used safely and securely, and we will describe how in this document.</p>
+
+<h2>Usage</h2>
+
+<p>To run a Drush REST API server, type <pre>drush rest-api-server start</pre>. By default, Drush will listen at localhost:8080 using the WebSocket protocol.</p>
+
+<p>Now open up a browser and enter the following in the browser's console:</p>
+<pre>
+var conn = new WebSocket('ws://localhost:8080');
+conn.onopen = function(e) {
+    console.log("Connection established!");
+};
+conn.onmessage = function(e) {
+    console.log(e.data);
+};
+conn.send('@none/core-status');
+</pre>
+
+<p>You should get the output of <pre>drush @none core-status</pre></p>.
+
+<p>Back in your terminal, type <pre>drush rest-api-server stop</pre> to switch off the REST API server.</p>
+
+<h3>Deployment</h3>
+
+<p>It is not advisable to deploy a Drush REST API server over HTTP. If you use WebSockets, you should read <a href="http://socketo.me/docs/deploy">the Rachet deployment docs</a> thoroughly.</p>
