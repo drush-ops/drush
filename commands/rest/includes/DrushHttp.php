@@ -78,9 +78,7 @@ class DrushRestApiServerHttp extends HTTPServer
       'Content-Length' => filesize($local_path),
     ));
     $data = drush_json_decode(file_get_contents($local_path));
-    return $this->response($data['error_status'] == 0 ? 200 : 400,
-      fopen($local_path, 'rb'),
-      $headers
-    );
+    $status_code = isset($data['response_code']) && !empty($data['response_code']) ? $data['response_code'] : 200;
+    return $this->response($status_code, fopen($local_path, 'rb'), $headers);
   }
 }
