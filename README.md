@@ -97,32 +97,6 @@ in `$HOME/.composer/composer.json`:
 ```
 Merge this in with any other content that may already exist in this file.
 
-INSTALL - PEAR
------------
-If you have trouble with PEAR installation, consider trying MANUAL INSTALLATION. It is not too hard.
-
-```bash
-pear channel-discover pear.drush.org
-pear install drush/drush
-```
-
-_Tip: Use sudo to overcome permission problems.  If the channel-discover fails, try running the following sequence of commands:_
-
-```bash
-pear upgrade --force Console_Getopt
-pear upgrade --force pear
-pear upgrade-all
-```
-
-To update, run `pear upgrade drush/drush`
-
-To get alternate drush versions, replace that last line with one of the below that matches your fancy.
-
-```bash
-pear install drush/drush-5.0.0
-pear install drush/drush-6.0.0RC4
-```
-
 See the POST-INSTALL section for configuration tips.
 
 INSTALL - MANUAL
