@@ -73,15 +73,13 @@ class RestApiTest extends Drush_CommandTestCase {
    */
   public function testRestApiHttpServer() {
     // Stop any existing REST API server processes.
-    drush_shell_exec('drush rest-api-server stop');
+    exec('drush rest-api-server stop');
     // Launch a HTTP server.
     exec('drush rest-api-server start --server-type=http -y >/dev/null &');
     sleep(2);
     // Check status command.
     $client = new Client('http://localhost:8888');
-    $request = $client->get('@none/core-status', [
-      'query' => ['format' => 'json']
-    ]);
+    $request = $client->get('@none/core-status?format=json');
     $response = $request->send();
     $output = (string) $response->getBody();
     $this->assertEquals(200, $response->getStatusCode(), '200 status code.');
@@ -105,7 +103,8 @@ class RestApiTest extends Drush_CommandTestCase {
       $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ERROR_MSG, $output, 'Received an error response.');
     }
     // Check an access denied request.
-    drush_shell_exec('drush rest-api-server stop');
+    $this->drush('rest-api-server', array('stop'));
+    sleep(2);
     exec('drush rest-api-server start --server-type=http --allowable-ips=8.8.8.8 -y >/dev/null &');
     sleep(2);
     $client = new Client('http://localhost:8888');
@@ -124,6 +123,6 @@ class RestApiTest extends Drush_CommandTestCase {
     // TODO: Check access denied for allowable hosts.
     // TODO: Check if one or multiple headers are set correctly.
     // Shutdown server.
-    drush_shell_exec('drush rest-api-server stop');
+   $this->drush('rest-api-server', array('stop'));
   }
 }

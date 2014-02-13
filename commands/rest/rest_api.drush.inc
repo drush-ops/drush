@@ -147,7 +147,7 @@ function drush_rest_api_server_validate($action) {
   if ($cache->data) {
     drush_cache_clear_all(NULL, 'drush-rest-api');
   }
-  drush_log(dt('Starting Drush REST API server with process ID !pid', array('!pid' => getmypid())));
+  drush_log(dt('Starting Drush REST API server with process ID !pid', array('!pid' => getmypid())), 'ok');
   // Store the process ID for the server.
   drush_cache_set('rest-server-pid', getmypid(), 'drush-rest-api');
   drush_cache_set('rest-server-port', drush_get_option('port', 8888), 'drush-rest-api');
