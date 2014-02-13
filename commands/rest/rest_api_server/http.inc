@@ -44,6 +44,5 @@ function rest_api_server_launch() {
     $port,
     $prepend,
     DRUSH_BASE_PATH . '/commands/rest/includes/cli-server.ini');
-  drush_log(dt('Starting Drush HTTP Server with pid !pid', array('!pid' => getmypid())), 'ok');
   return drush_shell_exec_interactive($cmd);
 }
