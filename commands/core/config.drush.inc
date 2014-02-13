@@ -151,7 +151,7 @@ function config_drush_command() {
  *   The config prefix to retrieve, or empty to return all.
  */
 function drush_config_list($prefix = '') {
-  $names = config_get_storage_names_with_prefix($prefix);
+  $names = \Drupal::configFactory()->listAll($prefix);
 
   if (empty($names)) {
     // Just in case there is no config.
@@ -359,7 +359,7 @@ function drush_config_edit($config_name = '') {
     }
   }
   else {
-    $config_names = config_get_storage_names_with_prefix();
+    $config_names = \Drupal::configFactory()->listAll();
     $choice = drush_choice($config_names, 'Choose a configuration.');
     if (empty($choice)) {
       return drush_user_abort();
