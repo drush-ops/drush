@@ -79,11 +79,11 @@ function config_drush_command() {
   );
 
   $items['config-export'] = array(
-    'description' => 'Export config from the active directory to staging directory.',
+    'description' => 'Export config from the active directory.',
     'core' => array('8+'),
     'aliases' => array('cex'),
     'arguments' => array(
-      'destination' => "A config directory name. Defaults to 'staging'",
+      'destination' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
     ),
     'options' => array(
       'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
@@ -93,7 +93,7 @@ function config_drush_command() {
   $items['config-import'] = array(
     'description' => 'Import config from a config directory.',
     'arguments' => array(
-      'source' => "A config directory name. Defaults to 'staging'",
+      'source' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
     ),
     'core' => array('8+'),
     'aliases' => array('cim'),
@@ -248,13 +248,26 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
 /**
  * Command callback: Export config to specified directory (usually staging).
  */
-function drush_config_export($destination = CONFIG_STAGING_DIRECTORY) {
+function drush_config_export($destination = NULL) {
+  global $config_directories;
+
+  $choices = drush_map_assoc(array_keys($config_directories));
+  unset($choices[CONFIG_ACTIVE_DIRECTORY]);
+  if (is_null($destination) && count($config_directories) >= 2) {
+    $destination = drush_choice($choices, 'Choose a destination.');
+    if (empty($destination)) {
+      return drush_user_abort();
+    }
+  }
+  else {
+    $destination = CONFIG_STAGING_DIRECTORY;
+  }
   // Retrieve a list of differences between the active and staged configuration.
   $active_dir = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
   $destination_dir = config_get_config_directory($destination);
 
   if (count(glob($destination_dir . '/*')) > 0) {
-    if (!drush_confirm(dt('The current contents of your staging directory (!staging) will be deleted.', array('!staging' => $destination_dir)))) {
+    if (!drush_confirm(dt('The current contents of your export directory (!staging) will be deleted.', array('!staging' => $destination_dir)))) {
       return drush_user_abort();
     }
   }
@@ -276,7 +289,21 @@ function drush_config_export($destination = CONFIG_STAGING_DIRECTORY) {
 /**
  * Command callback. Import from specified config directory (defaults to staging).
  */
-function drush_config_import($source = 'staging') {
+function drush_config_import($source = NULL) {
+  global $config_directories;
+
+  $choices = drush_map_assoc(array_keys($config_directories));
+  unset($choices[CONFIG_ACTIVE_DIRECTORY]);
+  if (is_null($source) && count($config_directories) >= 2) {
+    $source= drush_choice($choices, 'Choose a source.');
+    if (empty($source)) {
+      return drush_user_abort();
+    }
+  }
+  else {
+    $source = CONFIG_STAGING_DIRECTORY;
+  }
+
   // Retrieve a list of differences between the active and staged configuration.
   $source_storage = new FileStorage(config_get_config_directory($source));
   $config_comparer = new StorageComparer($source_storage, Drupal::service('config.storage'));
@@ -295,10 +322,8 @@ function _drush_config_import(StorageComparer $storage_comparer) {
   $config_importer = new ConfigImporter(
     $storage_comparer,
     Drupal::service('event_dispatcher'),
-    Drupal::service('config.factory'),
-    Drupal::entityManager(),
+    Drupal::service('config.manager'),
     Drupal::lock(),
-    Drupal::service('uuid'),
     Drupal::service('config.typed')
   );
   if ($config_importer->alreadyImporting()) {

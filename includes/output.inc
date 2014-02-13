@@ -250,8 +250,8 @@ function drush_format_table($rows, $header = FALSE, $widths = array(), $console_
 
 function _drush_format_table($rows, $header = FALSE, $widths = array(), $console_table_options = array()) {
   // Add defaults.
-  $console_table_options += array(CONSOLE_TABLE_ALIGN_LEFT , '');
   $tbl = new ReflectionClass('Console_Table');
+  $console_table_options += array(CONSOLE_TABLE_ALIGN_LEFT , '');
   $tbl = $tbl->newInstanceArgs($console_table_options);
 
   $auto_widths = drush_table_column_autowidth($rows, $widths);
