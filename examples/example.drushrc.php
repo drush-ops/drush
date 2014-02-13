@@ -310,7 +310,7 @@
  * @see: http://grayside.org/node/93.
  */
 #$repo_dir = drush_get_option('root') ? drush_get_option('root') : getcwd();
-#if (drush_shell_exec('cd %s && git rev-parse --show-toplevel 2> ' . drupal_bit_bucket(), $repo_dir)) {
+#if (drush_shell_exec('cd %s && git rev-parse --show-toplevel 2> ' . drush_bit_bucket(), $repo_dir)) {
 #  $output = drush_shell_exec_output();
 #  $repo_top = $output[0];
 #  $options['config'] = $repo_top . '/drush/drushrc.php';
