@@ -195,7 +195,7 @@ function drush_role_perm($action, $rid, $permission = NULL) {
  * DrushRole class suitable for the current version of Drupal.
  */
 function drush_role_get_class($role_name = DRUPAL_ANONYMOUS_RID) {
-  return drush_get_class('DrushRole', array($role_name));
+  return drush_get_class('Drush\DrushRole', func_get_args());
 }
 
 /**
