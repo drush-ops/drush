@@ -321,34 +321,42 @@ function _drush_invoke_hooks($command, $args) {
   // Iterate through the different hook variations
   $variations = array($hook . "_pre_validate", $hook . "_validate", "pre_$hook", $hook, "post_$hook");
   foreach ($variations as $var_hook) {
+    // Get the list of commandfiles that implement this hook.
+    // We re-fetch the list every time through the loop in case one of the
+    // hook functions does something that will add additional commandfiles
+    // to the list (i.e. bootstrapping to a higher phase).
+    $commandfiles = drush_commandfile_list();
     // Compile a list of function callbacks to call.
     $callback_list = array();
     if ($hook == $var_hook) {
       // If this is the primary function, there's no need to look for other
       // hook implementations.
-      $commandfiles = drush_commandfile_list();
       $primary_func = _drush_get_primary_function($command, $var_hook);
       $callback_list[$primary_func] = $commandfiles[$command['commandfile']];
     }
     else {
-      // Get the list of commandfiles that implement this hook.
-      // We re-fetch the list every time through the loop in case one of the
-      // hook functions does something that will add additional commandfiles
-      // to the list (i.e. bootstrapping to a higher phase).
-      $list = array_flip(drush_command_implements($var_hook));
-      foreach ($list as $commandfile => $filename) {
-        $func = sprintf("drush_%s_%s", $commandfile, $var_hook);
-        $callback_list[$func] = $filename;
+      foreach ($commandfiles as $commandfile => $filename) {
+        // Strip the duplicate prefix
+        if (substr($var_hook, 0, strlen($commandfile)) == $commandfile) {
+          $func = sprintf("drush_%s", $var_hook);
+        }
+        else {
+          $func = sprintf("drush_%s_%s", $commandfile, $var_hook);
+        }
+        if (function_exists($func)) {
+          $callback_list[$func] = $filename;
+        }
       }
     }
     if (drush_get_option('show-invoke')) {
-      $commandfiles = drush_commandfile_list();
       foreach ($commandfiles as $commandfile => $filename) {
         $all_available_hooks[] = sprintf("drush_%s_%s", $commandfile, $var_hook);
       }
     }
+
     // Allow modules to control the order of the callback list.
     drush_command_invoke_all_ref('drush_callback_list_alter', $callback_list, $var_hook, $command, $args);
+
     // Run all of the functions available for this variation
     $accumulated_result = NULL;
     foreach ($callback_list as $func => $filename) {
@@ -356,7 +364,9 @@ function _drush_invoke_hooks($command, $args) {
       $available_rollbacks[] = $func . '_rollback';
       $completed[] = $func;
       drush_log(dt("Calling hook !hook", array('!hook' => $func)), 'debug');
-      $result = call_user_func_array($func, $args);
+      if (function_exists($func)) {
+        $result = call_user_func_array($func, $args);
+      }
       drush_log(dt("Returned from hook !hook", array('!hook' => $func)), 'debug');
       // If there is an error, break out of the foreach
       // $variations and foreach $callback_list

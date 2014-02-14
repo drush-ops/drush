@@ -416,8 +416,8 @@ function hook_drush_invoke_alter($modules, $hook) {
  * @see hook_drush_invoke_alter().
  * @see _drush_invoke_hooks().
  */
-function hook_drush_callback_list_alter($callback_list, $var_hook, $command, $args)) {
- if ($var_hook == 'post_make') {
+function hook_drush_callback_list_alter(&$callback_list, $var_hook, $command, $args)) {
+  if ($var_hook == 'post_make') {
     // Find the index of our callback, and pull it out of the list.
     $index = array_search('drush_MY_MODULE_post_make', array_keys($callback_list));
     $callback = array_splice($callback_list, $index, 1);
