@@ -12,7 +12,7 @@ function test_drush_command() {
   $items = array();
 
   $items['test-run'] = array(
-    'description' => "Run tests. Note that you must use the --uri option.",
+    'description' => "Run tests. Note that you must use the --uri option via the CLI or via a site alias.",
     'arguments' => array(
       'targets' => 'A test class, a test group. If omitted, a list of test classes and test groups is presented. Delimit multiple targets using commas.',
     ),
