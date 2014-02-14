@@ -37,19 +37,22 @@ function rest_api_server_launch() {
   }
   // Instantiate the HTTP server, using the environment variables defined above.
   // The `cli-server.ini` file is included for colorized output to the terminal.
-  // TODO: Log output to file.
-  $cmd = sprintf('%s%s -d variables_order=EGPCS -S %s:%s %s -c %s > /dev/null 2>&1 & echo $!;',
+  $log_file = tempnam(drush_find_tmp(), 'drush_rest_api_server_http');
+  $cmd = sprintf('%s%s -d variables_order=EGPCS -S %s:%s %s -c %s > %s 2>&1 & echo $!;',
     $vars,
     $php,
     $host,
     $port,
     $prepend,
-    DRUSH_BASE_PATH . '/commands/rest/includes/cli-server.ini');
+    DRUSH_BASE_PATH . '/commands/rest/includes/cli-server.ini',
+    $log_file
+  );
   $pid = exec($cmd, $output);
   if ($pid) {
-    drush_log(dt('Starting Drush REST API HTTP server with process ID !pid', array('!pid' => $pid)), 'ok');
+    drush_log(dt('Starting Drush REST API HTTP server with process ID !pid. To stop the server, run `drush rest-api-server stop`.', array('!pid' => $pid)), 'ok');
     drush_cache_set('rest-server-pid', $pid, 'drush-rest-api');
-    return TRUE;
+    // TODO: We probably should not call `tail` directly.
+    return drush_shell_exec_interactive('tail -f %s', $log_file);
   }
   else {
     return drush_set_error('DRUSH_REST_API_HTTP_LAUNCH_FAIL', dt('Failed to start Drush REST API HTTP server! Output: !out', array('!out' => $output)));
