@@ -267,7 +267,7 @@ function drush_config_export($destination = NULL) {
   $destination_dir = config_get_config_directory($destination);
 
   if (count(glob($destination_dir . '/*')) > 0) {
-    if (!drush_confirm(dt('The current contents of your export directory (!staging) will be deleted.', array('!staging' => $destination_dir)))) {
+    if (!drush_confirm(dt('The current contents of your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
       return drush_user_abort();
     }
   }
