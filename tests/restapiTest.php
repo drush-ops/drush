@@ -103,23 +103,23 @@ class RestApiTest extends Drush_CommandTestCase {
       $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ERROR_MSG, $output, 'Received an error response.');
     }
     // Check an access denied request.
-//    $this->drush('rest-api-server', array('stop'));
-//    sleep(2);
-//    exec('drush rest-api-server start --server-type=http --allowable-ips=8.8.8.8 -y >/dev/null &');
-//    sleep(2);
-//    $client = new Client('http://localhost:8888');
-//    $request = $client->get('/@none/core-status');
-//    try {
-//      // Guzzle wil throw an exception.
-//      $request->send();
-//    }
-//    catch (Exception $e) {
-//      $response = $e->getResponse();
-//      $output = (string) $response->getBody();
-//      $this->assertJson($output, 'Received a JSON response.');
-//      $this->assertEquals(403, $response->getStatusCode(), '403 status code.');
-//      $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ACCESS_DENIED_MSG, $output, 'Received an access denied response.');
-//    }
+    $this->drush('rest-api-server', array('stop'));
+    sleep(2);
+    exec('drush rest-api-server start --server-type=http --allowable-ips=8.8.8.8 -y >/dev/null &');
+    sleep(2);
+    $client = new Client('http://localhost:8888');
+    $request = $client->get('/@none/core-status');
+    try {
+      // Guzzle wil throw an exception.
+      $request->send();
+    }
+    catch (Exception $e) {
+      $response = $e->getResponse();
+      $output = (string) $response->getBody();
+      $this->assertJson($output, 'Received a JSON response.');
+      $this->assertEquals(403, $response->getStatusCode(), '403 status code.');
+      $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ACCESS_DENIED_MSG, $output, 'Received an access denied response.');
+    }
     // TODO: Check access denied for allowable hosts.
     // TODO: Check if one or multiple headers are set correctly.
     // Shutdown server.

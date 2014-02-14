@@ -37,12 +37,21 @@ function rest_api_server_launch() {
   }
   // Instantiate the HTTP server, using the environment variables defined above.
   // The `cli-server.ini` file is included for colorized output to the terminal.
-  $cmd = sprintf('%s%s -d variables_order=EGPCS -S %s:%s %s -c %s',
+  // TODO: Log output to file.
+  $cmd = sprintf('%s%s -d variables_order=EGPCS -S %s:%s %s -c %s > /dev/null 2>&1 & echo $!;',
     $vars,
     $php,
     $host,
     $port,
     $prepend,
     DRUSH_BASE_PATH . '/commands/rest/includes/cli-server.ini');
-  return drush_shell_exec_interactive($cmd);
+  $pid = exec($cmd, $output);
+  if ($pid) {
+    drush_log(dt('Starting Drush REST API HTTP server with process ID !pid', array('!pid' => $pid)), 'ok');
+    drush_cache_set('rest-server-pid', $pid, 'drush-rest-api');
+    return TRUE;
+  }
+  else {
+    return drush_set_error('DRUSH_REST_API_HTTP_LAUNCH_FAIL', dt('Failed to start Drush REST API HTTP server! Output: !out', array('!out' => $output)));
+  }
 }
