@@ -259,9 +259,10 @@ function drush_config_export($destination = NULL) {
       return drush_user_abort();
     }
   }
-  else {
+  elseif (is_null($destination)) {
     $destination = CONFIG_STAGING_DIRECTORY;
   }
+
   // Retrieve a list of differences between the active and staged configuration.
   $active_dir = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
   $destination_dir = config_get_config_directory($destination);
