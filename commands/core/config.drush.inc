@@ -301,7 +301,7 @@ function drush_config_import($source = NULL) {
       return drush_user_abort();
     }
   }
-  else {
+  elseif (is_null($destination)) {
     $source = CONFIG_STAGING_DIRECTORY;
   }
 
