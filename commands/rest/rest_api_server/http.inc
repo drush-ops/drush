@@ -51,8 +51,13 @@ function rest_api_server_launch() {
   if ($pid) {
     drush_log(dt('Starting Drush REST API HTTP server with process ID !pid. To stop the server, run `drush rest-api-server stop`.', array('!pid' => $pid)), 'ok');
     drush_cache_set('rest-server-pid', $pid, 'drush-rest-api');
-    // TODO: We probably should not call `tail` directly.
-    return drush_shell_exec_interactive('tail -f %s', $log_file);
+    // AFAIK Windows does not have a `tail` command.
+    if (!drush_is_windows()) {
+      return drush_shell_exec_interactive('tail -f %s', $log_file);
+    }
+    else {
+      return drush_log(dt('Drush REST API HTTP server process started. View the log file for the server: "!log"', array('!log' => $log_file)), 'success');
+    }
   }
   else {
     return drush_set_error('DRUSH_REST_API_HTTP_LAUNCH_FAIL', dt('Failed to start Drush REST API HTTP server! Output: !out', array('!out' => $output)));
