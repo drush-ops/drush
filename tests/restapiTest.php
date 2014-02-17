@@ -72,8 +72,6 @@ class RestApiTest extends Drush_CommandTestCase {
    * Tests for the REST API Http Server.
    */
   public function testRestApiHttpServer() {
-    // Stop any existing REST API server processes.
-    exec('drush rest-api-server stop');
     // Launch a HTTP server.
     exec('drush rest-api-server start --server-type=http -y >/dev/null &');
     sleep(2);
@@ -120,9 +118,61 @@ class RestApiTest extends Drush_CommandTestCase {
       $this->assertEquals(403, $response->getStatusCode(), '403 status code.');
       $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ACCESS_DENIED_MSG, $output, 'Received an access denied response.');
     }
-    // TODO: Check access denied for allowable hosts.
-    // TODO: Check if one or multiple headers are set correctly.
-    // Shutdown server.
-   $this->drush('rest-api-server', array('stop'));
+    // Check access denied for allowable hosts.
+    $this->drush('rest-api-server', array('stop'));
+    sleep(2);
+    exec('drush rest-api-server start --server-type=http --allowable-http-hosts=drush.ws -y >/dev/null &');
+    sleep(2);
+    $client = new Client('http://localhost:8888');
+    $request = $client->get('/@none/core-status');
+    try {
+      // Guzzle wil throw an exception.
+      $request->send();
+    }
+    catch (Exception $e) {
+      $response = $e->getResponse();
+      $output = (string) $response->getBody();
+      $this->assertJson($output, 'Received a JSON response.');
+      $this->assertEquals(403, $response->getStatusCode(), '403 status code.');
+      $this->assertJsonStringEqualsJsonString(DRUSH_REST_API_ACCESS_DENIED_MSG, $output, 'Received an access denied response.');
+    }
+    // Check if one or multiple headers are set correctly.
+    $this->drush('rest-api-server', array('stop'));
+    sleep(2);
+    exec('drush rest-api-server start --server-type=http --headers="Access-Control-Allow-Origin:
+ *, Drush: Drush" -y >/dev/null &');
+    sleep(2);
+    $client = new Client('http://localhost:8888');
+    $request = $client->get('/@none/core-status');
+    $response = $request->send();
+    $this->assertEquals($response->hasHeader('Access-Control-Allow-Origin'), 1, 'Access-Control-Allow-Origin custom header is set.');
+    $this->assertEquals($response->hasHeader('Drush'), 1, 'Custom Drush header is set.');
+  }
+
+  /**
+   * Tests for the Drush REST API WebSocket Server.
+   */
+  public function testRestApiWebSocketServer() {
+    // Stop any existing REST API server processes.
+    exec('drush rest-api-server stop');
+    // Launch a HTTP server.
+    exec('drush rest-api-server start -y >/dev/null &');
+    sleep(2);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    $this->log('Stopping any existing Drush REST API server processes.');
+    exec('drush rest-api-server stop');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function tearDown() {
+    $this->log('Shutting down any existing Drush REST API server processes');
+    $this->drush('rest-api-server', array('stop'));
   }
 }

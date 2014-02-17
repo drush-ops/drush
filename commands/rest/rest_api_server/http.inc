@@ -18,15 +18,15 @@ function rest_api_server_launch() {
   $php = drush_get_option('php');
   // Set allowable IPs as an environment variable.
   if ($allowable_ips = array_filter(drush_get_option_list('allowable-ips'))) {
-    $env_vars['DRUSH_API_ALLOWABLE_IPS'] = implode(',', $allowable_ips);
+    $env_vars['DRUSH_REST_API_HTTP_ALLOWABLE_IPS'] = implode(',', $allowable_ips);
   }
   // Set allowable HTTP hosts as an environment variable.
   if ($allowable_http_hosts = array_filter(drush_get_option_list('allowable-http-hosts'))) {
-    $env_vars['DRUSH_API_ALLOWABLE_HOSTS'] = implode(',', $allowable_http_hosts);
+    $env_vars['DRUSH_REST_API_HTTP_ALLOWABLE_HOSTS'] = implode(',', $allowable_http_hosts);
   }
   // Set any additional headers as an environment variable.
   if ($headers = array_filter(drush_get_option_list('headers'))) {
-    $env_vars['DRUSH_API_HEADERS'] = escapeshellarg(serialize($headers));
+    $env_vars['DRUSH_REST_API_HTTP_HEADERS'] = escapeshellarg(serialize($headers));
   }
   $prepend = DRUSH_BASE_PATH . '/commands/rest/includes/DrushHttp.php';
   $host = drush_get_option('host', 'localhost');

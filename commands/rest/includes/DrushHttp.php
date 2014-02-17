@@ -41,8 +41,8 @@ function _drush_rest_api_http_set_output($response) {
 function _drush_rest_api_http_set_headers() {
   header('Content-Type: application/json');
   // Set custom headers.
-  if (isset($_ENV['DRUSH_REST_HEADERS'])) {
-    $headers = unserialize($_ENV['DRUSH_REST_HEADERS']);
+  if (isset($_ENV['DRUSH_REST_API_HTTP_HEADERS'])) {
+    $headers = unserialize($_ENV['DRUSH_REST_API_HTTP_HEADERS']);
     foreach ($headers as $header) {
       header($header);
     }
@@ -65,11 +65,11 @@ function _drush_rest_api_http_request() {
     escapeshellarg($_SERVER['HTTP_HOST']),
     escapeshellarg($_SERVER['REMOTE_ADDR'])
   );
-  if (isset($_ENV['DRUSH_REST_ALLOWABLE_IPS'])) {
-    $command .= sprintf(' --allowable-ips="%s"', $_ENV['DRUSH_REST_ALLOWABLE_IPS']);
+  if (isset($_ENV['DRUSH_REST_API_HTTP_ALLOWABLE_IPS'])) {
+    $command .= sprintf(' --allowable-ips="%s"', $_ENV['DRUSH_REST_API_HTTP_ALLOWABLE_IPS']);
   }
-  if (isset($_ENV['DRUSH_REST_ALLOWABLE_HOSTS'])) {
-    $command .= sprintf(' --allowable-http-hosts="%s"', $_ENV['DRUSH_REST_ALLOWABLE_HOSTS']);
+  if (isset($_ENV['DRUSH_REST_API_HTTP_ALLOWABLE_HOSTS'])) {
+    $command .= sprintf(' --allowable-http-hosts="%s"', $_ENV['DRUSH_REST_API_HTTP_ALLOWABLE_HOSTS']);
   }
   // Log the command.
   error_log('Drush REST API: ' . $command);
