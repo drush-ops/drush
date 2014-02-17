@@ -271,15 +271,14 @@ function drush_config_export($destination = NULL) {
     if (!drush_confirm(dt('The current contents of your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
       return drush_user_abort();
     }
+    drush_delete_dir_contents($destination_dir, TRUE);
   }
 
-  if (drush_delete_dir_contents($destination_dir, TRUE)) {
-    // We specify the MERGE flag below in order to copy only contents, not the dir itself. Since
-    // The dir is empty, it is effectively a copy, not a merge.
-    drush_copy_dir($active_dir, $destination_dir, FILE_EXISTS_MERGE);
-  }
-  else {
-    return drush_set_error('DRUSH_CONFIG_EXPORT_DELETE', dt('Failed to empty staging directory.'));
+  // Empty destination dir and then write all .yml files there.
+  $source_storage = Drupal::service('config.storage');
+  $destination_storage = new FileStorage($destination_dir);
+  foreach ($source_storage->listAll() as $name) {
+    $destination_storage->write($name, $source_storage->read($name));
   }
 
   if (drush_get_option('add')) {

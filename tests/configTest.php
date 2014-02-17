@@ -2,7 +2,7 @@
 
 /**
  * @file
- *   Tests for enable, disable, uninstall, pm-list commands.
+ *   Tests for Configuration Management commands for D8+.
  *
  * @group commands
  */
