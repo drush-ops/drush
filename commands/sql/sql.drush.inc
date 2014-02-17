@@ -247,7 +247,7 @@ function sql_drush_help_alter(&$command) {
     if ($command['command'] == 'sql-sync') {
       unset($command['options']['source-target']['hidden'], $command['options']['target-target']['hidden']);
     }
-    else {
+    elseif ($command['commandfile'] == 'sql') {
       unset($command['options']['target']['hidden']);
     }
   }
