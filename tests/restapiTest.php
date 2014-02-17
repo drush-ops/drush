@@ -147,17 +147,7 @@ class RestApiTest extends Drush_CommandTestCase {
     $response = $request->send();
     $this->assertEquals($response->hasHeader('Access-Control-Allow-Origin'), 1, 'Access-Control-Allow-Origin custom header is set.');
     $this->assertEquals($response->hasHeader('Drush'), 1, 'Custom Drush header is set.');
-  }
-
-  /**
-   * Tests for the Drush REST API WebSocket Server.
-   */
-  public function testRestApiWebSocketServer() {
-    // Stop any existing REST API server processes.
-    exec('drush rest-api-server stop');
-    // Launch a HTTP server.
-    exec('drush rest-api-server start -y >/dev/null &');
-    sleep(2);
+    $this->drush('rest-api-server', array('stop'));
   }
 
   /**
@@ -173,6 +163,6 @@ class RestApiTest extends Drush_CommandTestCase {
    */
   public function tearDown() {
     $this->log('Shutting down any existing Drush REST API server processes');
-    $this->drush('rest-api-server', array('stop'));
+    exec('drush rest-api-server stop');
   }
 }
