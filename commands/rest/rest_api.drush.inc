@@ -29,7 +29,7 @@ function rest_api_drush_command() {
     ),
     'arguments' => array(
       'action' => array(
-        'description' => 'The action to run. Valid actions are `start` and `stop`.',
+        'description' => 'The action to run. Valid actions are: status|start|restart|stop',
       ),
     ),
     'required-arguments' => TRUE,
