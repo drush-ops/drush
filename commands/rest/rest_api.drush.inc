@@ -94,65 +94,104 @@ function rest_api_drush_command() {
  *
  * Launch a new Drush REST server using a specified engine type.
  */
-function drush_rest_api_server() {
+function drush_rest_api_server($action) {
+  if ($action !== 'start') {
+    return TRUE;
+  }
   rest_api_server_launch();
+}
+
+/**
+ * Validation callback for `drush rest-api-server stop`.
+ */
+function _drush_rest_api_server_stop() {
+  $cache = drush_cache_get('rest-server-pid', 'drush-rest-api');
+  if ($cache->data) {
+    // Kill the process.
+    $pid = $cache->data;
+    // Check if active first.
+    if (!drush_process_is_active($pid)) {
+      return drush_set_error(dt('There is no currently active Drush REST API server process.'));
+    }
+    else {
+      $result = drush_kill_task($pid);
+      if ($result) {
+        drush_log(dt('Successfully terminated Drush REST API server process !pid.', array('!pid' => $pid)), 'success');
+      }
+      else {
+        return drush_set_error('DRUSH_API_SERVER_PROCESS', dt('Failed to terminate process !pid', array('!pid' => $pid)));
+      }
+    }
+  }
+  else {
+    return drush_set_error(dt('There is no active Drush REST API server process.'));
+  }
+  return TRUE;
+}
+
+/**
+ * Validation callback for `drush rest-api-server start`.
+ */
+function _drush_rest_api_server_start() {
+  // `start` command. Check if an instance is already running.
+  // If so, return an error.
+  $cache = drush_cache_get('rest-server-pid', 'drush-rest-api');
+  if ($cache->data) {
+    // N.B. This will only work for Linux.
+    if (drush_process_is_active($cache->data)) {
+      return drush_set_error(dt('It appears that a Drush REST server instance is already running with process ID !pid. Run `drush rest-api-server stop` to terminate the process.', array('!pid' => $cache->data)));
+    }
+    drush_cache_clear_all(NULL, 'drush-rest-api');
+  }
+  return TRUE;
+}
+
+/**
+ * Validation callback for `drush rest-api-server status`.
+ */
+function _drush_rest_api_server_status() {
+  $cache = drush_cache_get('rest-server-pid', 'drush-rest-api');
+  if ($cache->data) {
+    if (!drush_process_is_active($cache->data)) {
+      drush_cache_clear_all('rest-server-pid', 'drush-rest-api');
+      return drush_log(dt('There is no Drush REST API server process currently running.'), 'ok');
+    }
+    return drush_log(dt('There is a Drush REST API server process running with pid !pid', array('!pid' => $cache->data)), 'ok');
+  }
+  else {
+    return drush_log(dt('There is no Drush REST API server process currently running.'), 'ok');
+  }
+  return TRUE;
 }
 
 /**
  * Implements hook_COMMAND_validate().
  */
 function drush_rest_api_server_validate($action) {
-  if (!in_array($action, array('stop', 'start'))) {
-    return drush_set_error('DRUSH_REST_API_SERVER_INVALID_ACTION', dt('Only "start" and "stop" are valid actions.'));
+  $valid_actions = array('status', 'start', 'stop', 'restart');
+  if (!in_array($action, $valid_actions)) {
+    return drush_set_error('DRUSH_REST_API_SERVER_INVALID_ACTION', dt('Valid actions are: !actions.', array('!actions' => implode('|', $valid_actions))));
   }
-  // See if a process is already running.
-  $cache = drush_cache_get('rest-server-pid', 'drush-rest-api');
-  // If the 'stop' command was passed, then terminate the Drush REST server
-  // process ID that is stored in the cache.
-  if ($action == 'stop') {
-    if ($cache->data) {
-      // Kill the process.
-      $pid = $cache->data;
-      // Check if active first.
-      if (!drush_process_is_active($pid)) {
-        return drush_set_error(dt('There is no currently active Drush REST API server process.'));
-      }
-      else {
-        $result = drush_kill_task($pid);
-        if ($result) {
-          drush_log(dt('Successfully terminated Drush REST API server process !pid.', array('!pid' => $pid)), 'success');
-          // Returning FALSE to prevent starting a new REST API server instance.
-          return FALSE;
-        }
-        else {
-          return drush_set_error('DRUSH_API_SERVER_PROCESS', dt('Failed to terminate process !pid', array('!pid' => $pid)));
-        }
-      }
-    }
-    else {
-      return drush_set_error(dt('There is no active Drush REST API server process.'));
-    }
-  }
-  else {
-    // `start` command. Check if an instance is already running.
-    // If so, return an error.
-    if ($cache->data) {
-      // N.B. This will only work for Linux.
-      if (drush_process_is_active($cache->data)) {
-        return drush_set_error(dt('It appears that a Drush REST server instance is already running with process ID !pid. Run `drush rest-api-server stop` to terminate the process.', array('!pid' => $cache->data)));
-      }
-    }
-  }
-  // Clear the process ID and port cache, and set the new process ID.
-  if ($cache->data) {
-    drush_cache_clear_all(NULL, 'drush-rest-api');
-  }
-  // Verify PHP requirements.
   if (drush_get_option('server-type') == 'http') {
     // Verify that user is on PHP 5.4+ for HTTP option.
     if (version_compare(phpversion(), '5.4') < 0) {
       return drush_set_error('DRUSH_REST_API_SERVER_REQUIREMENTS_ERROR', dt('You need PHP 5.4 to use the HTTP option for the Drush REST API Server command. You are running PHP !version', array('!version' => phpversion())));
     }
+  }
+  // Handle different actions.
+  switch ($action) {
+    case 'start':
+      return _drush_rest_api_server_start();
+
+    case 'stop':
+      return _drush_rest_api_server_stop();
+
+    case 'restart':
+      _drush_rest_api_server_stop();
+      return _drush_rest_api_server_start();
+
+    case 'status':
+      return _drush_rest_api_server_status();
   }
   return TRUE;
 }
