@@ -95,7 +95,7 @@ function rest_api_drush_command() {
  * Launch a new Drush REST server using a specified engine type.
  */
 function drush_rest_api_server($action) {
-  if ($action !== 'start') {
+  if ($action == 'stop' || $action == 'status') {
     return TRUE;
   }
   rest_api_server_launch();
@@ -111,7 +111,7 @@ function _drush_rest_api_server_stop() {
     $pid = $cache->data;
     // Check if active first.
     if (!drush_process_is_active($pid)) {
-      return drush_set_error(dt('There is no currently active Drush REST API server process.'));
+      return drush_log(dt('There is no currently active Drush REST API server process.'), 'ok');
     }
     else {
       $result = drush_kill_task($pid);
@@ -124,7 +124,7 @@ function _drush_rest_api_server_stop() {
     }
   }
   else {
-    return drush_set_error(dt('There is no active Drush REST API server process.'));
+    return drush_log(dt('There is no active Drush REST API server process.'), 'ok');
   }
   return TRUE;
 }
@@ -187,8 +187,13 @@ function drush_rest_api_server_validate($action) {
       return _drush_rest_api_server_stop();
 
     case 'restart':
-      _drush_rest_api_server_stop();
-      return _drush_rest_api_server_start();
+      if (_drush_rest_api_server_stop()) {
+        sleep(2);
+        return _drush_rest_api_server_start();
+      }
+      else {
+        return drush_set_error('DRUSH_REST_API_SERVER_RESTART_FAIL', dt('Failed to restart the Drush REST API server.'));
+      }
 
     case 'status':
       return _drush_rest_api_server_status();
