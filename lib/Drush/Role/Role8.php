@@ -1,11 +1,11 @@
 <?php
 
-namespace Drush;
+namespace Drush\Role;
 
 // For D8+.
 use Drupal\user\Entity\Role;
 
-class DrushRole8 extends DrushRole7 {
+class Role8 extends Role7 {
   public function role_create($role_machine_name, $role_human_readable_name = '') {
     // In D6 and D7, when we create a new role, the role
     // machine name is specified, and the numeric rid is

@@ -1,8 +1,8 @@
 <?php
 
-namespace Drush;
+namespace Drush\Role;
 
-class DrushRole6 extends DrushRole {
+class Role6 extends RoleBase {
   public $perms = array();
 
   public function getPerms() {

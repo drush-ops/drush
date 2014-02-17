@@ -1,0 +1,1 @@
+class RoleException extends Exception {}

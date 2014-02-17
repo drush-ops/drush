@@ -1,8 +1,8 @@
 <?php
 
-namespace Drush;
+namespace Drush\Role;
 
-abstract class DrushRole {
+abstract class RoleBase {
   /**
    * Drupal 6 and Drupal 7:
    *   'rid' is numeric
@@ -43,7 +43,7 @@ abstract class DrushRole {
       $this->name = is_object($this->roles[$rid]) ? $this->roles[$rid]->label() : $this->roles[$rid];
     }
     else {
-      throw new DrushRoleException(dt('Could not find the role: !role', array('!role' => $rid)));
+      throw new RoleException(dt('Could not find the role: !role', array('!role' => $rid)));
     }
   }
 
