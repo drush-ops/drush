@@ -71,6 +71,9 @@ function _drush_rest_api_http_request() {
   if (isset($_ENV['DRUSH_REST_API_HTTP_ALLOWABLE_HOSTS'])) {
     $command .= sprintf(' --allowable-http-hosts="%s"', $_ENV['DRUSH_REST_API_HTTP_ALLOWABLE_HOSTS']);
   }
+  if (isset($_ENV['DRUSH_REST_API_HTTP_ALLOWABLE_COMMANDS'])) {
+    $command .= sprintf(' --allowable-commands="%s"', $_ENV['DRUSH_REST_API_HTTP_ALLOWABLE_COMMANDS']);
+  }
   // Log the command.
   error_log('Drush REST API: ' . $command);
   // `rest-api-request` will return a JSON encoded string. We need to decode it

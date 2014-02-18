@@ -51,6 +51,10 @@ function rest_api_drush_command() {
         'description' => 'A comma-separated list of host names and ports that will be accepted from the requester. By default all host names are allowed. Note that host names may be spoofed by non-browser clients.',
         'example-value' => "localhost:8080,example.com:443",
       ),
+      'allowable-commands' => array(
+        'description' => 'A comma-separated list of commands to allow via the Drush REST API. If set, all other command requests will be denied.',
+        'example-value' => 'core-status,variable-get',
+      ),
     ),
     'examples' => array(
       'drush rest-api-server' => 'Start a Drush REST API server using WebSockets.',
@@ -73,6 +77,10 @@ function rest_api_drush_command() {
         'description' => 'A comma-separated list of host names and ports that will be accepted from the requester. By default all host names are allowed. Note that host names can be spoofed by non-browser clients.',
         'example-value' => "localhost:8080,example.com:443",
         'hidden' => TRUE,
+      ),
+      'allowable-commands' => array(
+        'description' => 'A comma-separated list of commands to allow via the Drush REST API. If set, all other command requests will be denied.',
+        'example-value' => 'core-status,variable-get',
       ),
     ),
     'arguments' => array(
@@ -382,6 +390,12 @@ function _rest_api_process_request($ip_address, $host, $port, $request) {
   $data = _rest_api_parse_request($request);
   if (!$data) {
     return _rest_api_error();
+  }
+  // Check if the command-whitelist option was set.
+  if ($allowable_commands = array_filter(drush_get_option_list('allowable-commands'))) {
+    if (!in_array($data['command'], $allowable_commands)) {
+      return _rest_api_access_denied();
+    }
   }
   // Allow custom Drush commands to intercept the request and process it. If
   // no command intercepting the request then we will process it ourselves.

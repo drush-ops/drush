@@ -27,9 +27,10 @@ class DrushRestApiServerWebSocket implements MessageComponentInterface {
   /**
    * Constructor.
    */
-  public function __construct($allowable_ips = '', $allowable_hosts = '') {
+  public function __construct($allowable_ips = '', $allowable_hosts = '', $allowable_commands = '') {
     $this->allowableIps = $allowable_ips;
     $this->allowableHosts = $allowable_hosts;
+    $this->allowableCommands = $allowable_commands;
     $this->clients = new \SplObjectStorage();
   }
 
@@ -67,6 +68,9 @@ class DrushRestApiServerWebSocket implements MessageComponentInterface {
         }
         if (count($this->allowableHosts)) {
           $options['allowable-http-hosts'] = implode(',', $this->allowableHosts);
+        }
+        if (count($this->allowableCommands)) {
+          $options['allowable-commands'] = implode(',', $this->allowableCommands);
         }
         // Process the request.
         $result = drush_invoke_process('@none', 'rest-api-request', array(

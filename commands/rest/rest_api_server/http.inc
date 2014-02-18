@@ -24,6 +24,10 @@ function rest_api_server_launch() {
   if ($allowable_http_hosts = array_filter(drush_get_option_list('allowable-http-hosts'))) {
     $env_vars['DRUSH_REST_API_HTTP_ALLOWABLE_HOSTS'] = implode(',', $allowable_http_hosts);
   }
+  // Set allowable commands as environment variable.
+  if ($allowable_commands = array_filter(drush_get_option_list('allowable-commands'))) {
+    $env_vars['DRUSH_REST_API_HTTP_ALLOWABLE_COMMANDS'] = implode(',', $allowable_commands);
+  }
   // Set any additional headers as an environment variable.
   if ($headers = array_filter(drush_get_option_list('headers'))) {
     $env_vars['DRUSH_REST_API_HTTP_HEADERS'] = escapeshellarg(serialize($headers));
