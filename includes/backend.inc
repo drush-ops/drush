@@ -349,9 +349,9 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
   $is_windows = drush_is_windows();
   // Loop through processes until they all close, having a nap as needed.
   $nap_time = 0;
-  while (sizeof($open_processes) || sizeof($cmds)) {
+  while (count($open_processes) || count($cmds)) {
     $nap_time++;
-    if (sizeof($cmds) && (sizeof($open_processes) < $process_limit)) {
+    if (count($cmds) && (count($open_processes) < $process_limit)) {
       // Pop the site and command (key / value) from the cmds array
       end($cmds);
       list($site, $cmd) = each($cmds);
@@ -415,7 +415,7 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
         }
       }
       // Wait up to 2s for data to become ready on one of the read streams.
-      if (sizeof($read_streams)) {
+      if (count($read_streams)) {
         $ss_result = stream_select($read_streams, $write_streams, $except_streams, 2);
         // If stream_select returns a error, then fallback to using $nap_time.
         if ($ss_result !== FALSE) {

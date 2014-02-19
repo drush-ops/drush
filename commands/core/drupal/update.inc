@@ -222,7 +222,7 @@ function update_main() {
   $start['system'] = array();
 
   // Print a list of pending updates for this module and get confirmation.
-  if (sizeof($pending)) {
+  if (count($pending)) {
     drush_print(dt('The following updates are pending:'));
     drush_print();
     foreach ($pending as $module => $updates) {
