@@ -287,7 +287,7 @@ function drush_field_clone($source_field_name, $target_field_name) {
 }
 
 function drush_field_info($type = NULL) {
-  if (is_null($type)) {
+  if (!isset($type)) {
     // Don't ask in 'pipe' mode -- just default to 'fields'.
     if (drush_get_context('DRUSH_PIPE')) {
       $type = 'fields';

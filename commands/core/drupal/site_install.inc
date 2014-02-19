@@ -4,7 +4,7 @@
  * Install Drupal 7+
  */
 function drush_core_site_install_version($profile, array $additional_form_options = array()) {
-  if (is_null($profile)) {
+  if (!isset($profile)) {
     $profile = 'standard';
   }
 

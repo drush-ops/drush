@@ -11,7 +11,7 @@ class FilesystemCase extends Drush_CommandTestCase {
     if ($this->is_windows()) {
       $this->markTestSkipped("s-bit test doesn't apply on Windows.");
     }
-    if (is_null(UNISH_USERGROUP)) {
+    if (UNISH_USERGROUP === NULL) {
       $this->markTestSkipped("s-bit test skipped because of UNISH_USERGROUP was not set.");
     }
 

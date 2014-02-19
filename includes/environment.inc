@@ -535,7 +535,7 @@ function drush_verify_cli() {
 function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $remote_command = FALSE) {
   $os = _drush_get_os($os);
   $additional_options = '';
-  if (is_null($drush_path)) {
+  if (!isset($drush_path)) {
     if (!$remote_command) {
       $drush_path = DRUSH_COMMAND;
     }

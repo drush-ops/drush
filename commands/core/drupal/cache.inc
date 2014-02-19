@@ -13,7 +13,7 @@ function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
   if ($expire == 'CACHE_TEMPORARY') {
     $expire = CACHE_TEMPORARY;
   }
-  if (is_null($expire) || $expire == 'CACHE_PERMANENT') {
+  if (!isset($expire) || $expire == 'CACHE_PERMANENT') {
     $expire = CACHE_PERMANENT;
   }
 

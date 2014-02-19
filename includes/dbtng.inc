@@ -85,10 +85,10 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
     if (!empty($where)) {
       $query = $query->where($where, $args);
     }
-    if (!is_null($order_by_field)) {
+    if (isset($order_by_field)) {
       $query = $query->orderBy($order_by_field, $order_by_direction);
     }
-    if (!is_null($length)) {
+    if (isset($length)) {
       $query = $query->range($start, $length);
     }
     return $query->execute();
@@ -102,17 +102,17 @@ function drush_db_select($table, $fields = '*', $where = NULL, $args = NULL, $st
       $where = _drush_replace_query_placeholders($where, $args);
       $query .= " WHERE ".$where;
     }
-    if (!is_null($order_by_field)) {
+    if (isset($order_by_field)) {
       $query .= " ORDER BY $order_by_field $order_by_direction";
     }
-    if (!is_null($length)) {
+    if (isset($length)) {
       $db_spec = _drush_sql_get_db_spec();
       $db_scheme = _drush_sql_get_scheme($db_spec);
       if ($db_scheme == 'oracle')
         return db_query_range($query, $start, $length);
       else {
 	      $limit = " LIMIT $length";
-	      if (!is_null($start)) {
+	      if (isset($start)) {
           $limit .= " OFFSET $start";
 	      }
 	      $query .= $limit;

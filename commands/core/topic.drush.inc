@@ -53,7 +53,7 @@ function topic_drush_help_alter($command) {
  */
 function drush_topic_core_topic($topic_name = NULL) {
   $commands = drush_get_commands();
-  if (is_null($topic_name)) {
+  if (!isset($topic_name)) {
     // Show choice list.
     foreach (drush_get_topics() as $key => $topic) {
       $choices[$key] = $topic['description'];
