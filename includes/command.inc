@@ -809,7 +809,7 @@ function drush_parse_args() {
   // be either 'help' or 'version' (the later if --version is specified)
   // @todo: it would be handy if one could do `drush @remote st --help` and
   // have that show help for st. Today, that shows --help for help command!
-  if (!sizeof($arguments)) {
+  if (!count($arguments)) {
     if (array_key_exists('version', $options)) {
       $arguments = array('version');
     }
@@ -948,7 +948,7 @@ function drush_adjust_args_if_shebang_script(&$args) {
 function drush_process_bootstrap_to_first_arg(&$arguments) {
   if (drush_get_option('bootstrap-to-first-arg', FALSE)) {
     $shift_alias_pos = 1 + (drush_get_context('DRUSH_SHEBANG_SCRIPT') === TRUE);
-    if (sizeof($arguments) >= $shift_alias_pos) {
+    if (count($arguments) >= $shift_alias_pos) {
       $shifted_alias = $arguments[$shift_alias_pos];
       $alias_record = drush_sitealias_get_record($shifted_alias);
       if (!empty($alias_record)) {
@@ -1449,7 +1449,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
 
   $cache =& drush_get_context('DRUSH_COMMAND_FILES', array());
 
-  if (sizeof($searchpath)) {
+  if (count($searchpath)) {
     if (!$reset) {
       // Assemble a cid specific to the bootstrap phase and searchpaths.
       // Bump $cf_version when making a change to a dev version of Drush
@@ -1550,7 +1550,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       }
     }
 
-    if (sizeof($list)) {
+    if (count($list)) {
       ksort($cache);
     }
   }
