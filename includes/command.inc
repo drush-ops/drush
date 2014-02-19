@@ -573,7 +573,7 @@ function _drush_verify_cli_options($command) {
   // Next check to see if all required options were specified.
   $missing_required_options = array();
   foreach ($command['options'] as $option_name => $option) {
-    if (is_array($option) && !empty($option['required']) && is_null(drush_get_option($option_name, NULL))) {
+    if (is_array($option) && !empty($option['required']) && drush_get_option($option_name, NULL) === NULL) {
       $missing_required_options[] = $option_name;
     }
   }

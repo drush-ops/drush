@@ -5,7 +5,7 @@
  */
 function drush_core_site_install_version($profile, array $additional_form_options = array()) {
   drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), 'ok');
-  if (is_null($profile)) {
+  if (!isset($profile)) {
     $profile = 'default';
   }
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');

@@ -351,7 +351,7 @@ function drush_archive_restore($file, $site_id = NULL) {
 
   // Loop over sites and restore databases and append to settings.php.
   foreach ($ini as $section => $site) {
-    if ($section != 'Global' && (is_null($site_id) || $section == $site_id) && !empty($site['database-default-file'])) {
+    if ($section != 'Global' && (!isset($site_id) || $section == $site_id) && !empty($site['database-default-file'])) {
       $site_destination = $destination . '/' . $site['sitedir'];
       // Restore site, in case not already done above.
       if ($ini['Global']['archiveformat'] == 'site') {

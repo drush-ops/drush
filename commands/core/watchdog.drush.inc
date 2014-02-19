@@ -306,7 +306,7 @@ function drush_core_watchdog_delete($arg = NULL) {
   else {
     $type = drush_get_option('type');
     $severity = drush_get_option('severity');
-    if ((is_null($arg))&&(is_null($type))&&(is_null($severity))) {
+    if ((!isset($arg))&&(!isset($type))&&(!isset($severity))) {
       return drush_set_error(dt('No options provided.'));
     }
     $where = core_watchdog_query($type, $severity, $arg, 'OR');
@@ -349,7 +349,7 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
     $conditions[] = "type = :type";
     $args[':type'] = $type;
   }
-  if (!is_null($severity)) {
+  if (isset($severity)) {
     drush_include_engine('drupal', 'environment');
     $severities = core_watchdog_severity_levels();
     if (isset($severities[$severity])) {

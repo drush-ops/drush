@@ -182,7 +182,7 @@ function drush_backend_output() {
  */
 function drush_backend_output_collect($string) {
   static $output = '';
-  if (is_null($string)) {
+  if (!isset($string)) {
     return $output;
   }
 
@@ -288,7 +288,7 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
       if (isset($backend_options['#output-label'])) {
         $message = $backend_options['#output-label'] . $message;
       }
-      if (!is_null($log['error']) && $backend_options['integrate']) {
+      if (isset($log['error']) && $backend_options['integrate']) {
         drush_set_error($log['error'], $message);
       }
       elseif ($backend_options['integrate']) {
@@ -1123,9 +1123,9 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
     $cmd[] = " " . $option_str;
   }
   $command = implode(' ', array_filter($cmd, 'strlen'));
-  if (!is_null($hostname)) {
+  if (isset($hostname)) {
     if (drush_is_windows($os)) {
-      if (!is_null($username)) {
+      if (isset($username)) {
         $username = " -u:" . drush_escapeshellarg($username, "LOCAL");
         if (array_key_exists('winrs-password', $site_record)) {
           $username .= " -p:" . drush_escapeshellarg($site_record['winrs-password'], "LOCAL");
@@ -1134,9 +1134,9 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
       $command = "winrs" . $username . " -r:" . drush_escapeshellarg($hostname, "LOCAL") . " " . drush_escapeshellarg($command, "LOCAL");
     }
     else {
-      $username = (!is_null($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
+      $username = (isset($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
       $ssh_options = $site_record['ssh-options'];
-      $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
+      $ssh_options = (isset($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
 
       $ssh_cmd[] = "ssh";
       $ssh_cmd[] = $ssh_options;
@@ -1171,7 +1171,7 @@ function _drush_backend_argument_string($data, $os = NULL) {
   $options = array();
 
   foreach ($data as $key => $value) {
-    if (!is_array($value) && !is_object($value) && !is_null($value)) {
+    if (!is_array($value) && !is_object($value) && isset($value)) {
       if (substr($key,0,1) != '#') {
         $options[$key] = $value;
       }

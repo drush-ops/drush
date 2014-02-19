@@ -120,8 +120,9 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
   }
 
   // in the user home directory
-  if (!is_null(drush_server_home())) {
-    $configs['user'] = drush_server_home() . '/.' . $config_file;
+  $server_home = drush_server_home();
+  if (isset($server_home)) {
+    $configs['user'] = $server_home . '/.' . $config_file;
   }
 
   // in $HOME/.drush directory
@@ -326,9 +327,9 @@ function drush_set_context($context, $value) {
  */
 function &drush_get_context($context = NULL, $default = NULL) {
   static $cache = array();
-  if (!is_null($context)) {
+  if (isset($context)) {
     if (!isset($cache[$context])) {
-      $default = is_null($default) ? array() : $default;
+      $default = !isset($default) ? array() : $default;
       $cache[$context] = $default;
     }
     return $cache[$context];

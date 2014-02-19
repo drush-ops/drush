@@ -772,7 +772,7 @@ function _drush_sql_get_raw_table_list($option_name) {
  */
 function _drush_sql_get_db_table_list($db_spec, $site_record = NULL) {
   $target_site = '@self';
-  if (!is_null($site_record)) {
+  if (isset($site_record)) {
     $target_site = $site_record;
   }
 
@@ -1181,7 +1181,7 @@ function drush_sql_dump_file(&$site_record) {
 }
 
 function _drush_sql_get_scheme($db_spec = NULL) {
-  if (is_null($db_spec)) {
+  if (!isset($db_spec)) {
     $db_spec = _drush_sql_get_db_spec();
   }
   return $db_spec['driver'];
@@ -1194,7 +1194,7 @@ function _drush_sql_get_scheme($db_spec = NULL) {
  * @return string
  */
 function _drush_sql_get_credentials($db_spec = NULL) {
-  if (is_null($db_spec)) {
+  if (!isset($db_spec)) {
     $db_spec = _drush_sql_get_db_spec();
   }
 
@@ -1282,7 +1282,7 @@ function _drush_sql_get_credentials($db_spec = NULL) {
 }
 
 function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
-  if (is_null($db_spec)) {
+  if (!isset($db_spec)) {
     $db_spec = _drush_sql_get_db_spec();
   }
   switch (drush_drupal_major_version()) {
