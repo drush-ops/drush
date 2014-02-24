@@ -847,52 +847,8 @@ function _drush_bootstrap_drupal_configuration() {
   $conf = is_array($conf) ? array_merge($conf, $override) : $conf;
 
   // Populate the DRUSH_DB_CREDENTIALS with the fields loaded from the configuration.
-  $creds = array();
-  switch (drush_drupal_major_version()) {
-     case 6:
-       if (!empty($GLOBALS['db_url'])) {
-         $url = $GLOBALS['db_url'];
-         if (is_array($url)) {
-           $url = $url['default'];
-         }
-         $parts = parse_url($url);
-         $parts += array('pass' => '', 'port' => '');
-         $creds['driver'] = $parts['scheme'];
-         $creds['user'] = urldecode($parts['user']);
-         $creds['host'] = $parts['host'];
-         $creds['port'] = $parts['port'];
-         $creds['pass'] = urldecode($parts['pass']);
-         $creds['name'] = trim($parts['path'], '/');
-       }
-       break;
-     case 7:
-     default:
-       if (!empty($GLOBALS['databases']['default']['default'])) {
-         $conn = $GLOBALS['databases']['default']['default'];
-         // Fill in defaults to prevent notices.
-         $conn += array(
-           'username' => NULL,
-           'host' => NULL,
-           'port' => NULL,
-           'password' => NULL,
-           'database' => NULL,
-           'unix_socket' => NULL,
-         );
-         $creds['driver'] = $conn['driver'];
-         $creds['user'] = $conn['username'];
-         $creds['unix_socket'] = $conn['unix_socket'];
-         $creds['host'] = $conn['host'];
-         $creds['port'] = $conn['port'];
-         $creds['name'] = $conn['database'];
-         $creds['pass'] = $conn['password'];
-         if(isset($conn['pdo'])) {
-             $creds['pdo'] = $conn['pdo'];
-         } else { $creds['pdo'] = null; }
-       }
-       break;
-  }
-
-  drush_set_context('DRUSH_DB_CREDENTIALS', $creds);
+  drush_include_engine('drupal', 'sql', drush_drupal_major_version());
+  drush_set_context('DRUSH_DB_CREDENTIALS', drush_get_db_credentials());
 }
 
 /**

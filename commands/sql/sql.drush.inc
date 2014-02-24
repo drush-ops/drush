@@ -1044,23 +1044,9 @@ function _drush_sql_get_db_spec() {
   elseif (($databases = drush_get_option('databases')) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
     return $databases[$database][$target];
   }
-  elseif (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
-    switch (drush_drupal_major_version()) {
-      case 6:
-        if ($url = isset($GLOBALS['db_url']) ? $GLOBALS['db_url'] : drush_get_option('db-url', NULL)) {
-          $url =  is_array($url) ? $url[$database] : $url;
-          $db_spec = drush_convert_db_from_db_url($url);
-          $db_spec['db_prefix'] = isset($GLOBALS['db_prefix']) ? $GLOBALS['db_prefix'] : drush_get_option('db-prefix', NULL);
-          return $db_spec;
-        }
-        return NULL;
-      default:
-        // We don't use DB API here `sql-sync` would have to messily addConnection.
-        if (!isset($GLOBALS['databases']) || !array_key_exists($database, $GLOBALS['databases']) || !array_key_exists($target, $GLOBALS['databases'][$database])) {
-          return NULL;
-        }
-        return $GLOBALS['databases'][$database][$target];
-    }
+  else {
+    drush_include_engine('drupal', 'sql', drush_drupal_major_version());
+    return drush_get_db_settings($database, $target);
   }
 }
 
