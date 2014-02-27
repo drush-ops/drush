@@ -27,7 +27,7 @@ while [ -h "$SELF_PATH" ]; do
     # 3) Get the pwd
     # 4) Append the basename
     DIR="`dirname -- "$SELF_PATH"`"
-    SYM="`readlink $SELF_PATH`"
+    SYM="`readlink "$SELF_PATH"`"
     SYM_DIRNAME="`dirname -- "$SYM"`"
     SELF_PATH="`cd "$DIR" && cd "$SYM_DIRNAME" && pwd`/`basename -- "$SYM"`"
 done
