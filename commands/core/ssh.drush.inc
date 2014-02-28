@@ -10,7 +10,6 @@ function ssh_drush_command() {
   $items['site-ssh'] = array(
     'description' => 'Connect to a Drupal site\'s server via SSH for an interactive session or to run a shell command',
     'arguments' => array(
-      'site-alias' => 'A remote site alias. Can be an alias list.',
       'bash' => 'Bash to execute on target. Optional, except when site-alias is a list.',
     ),
     'options' => array(
