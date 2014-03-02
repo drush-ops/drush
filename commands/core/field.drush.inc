@@ -230,8 +230,8 @@ function drush_field_delete($field_name) {
         $all_bundles[] = $bundle;
       }
     }
-    if (count($bundles) > 1) {
-      $options = array_merge(array('all' => dt('All bundles')), drupal_map_assoc($bundles));
+    if (count($all_bundles) > 1) {
+      $options = array_merge(array('all' => dt('All bundles')), array_combine($all_bundles, $all_bundles));
       $bundle = drush_choice($options, dt("Choose a particular bundle or 'All bundles'"));
       $confirm = FALSE;
     }
@@ -293,7 +293,7 @@ function drush_field_info($type = NULL) {
       $type = 'fields';
     }
     else {
-      $type = drush_choice(drupal_map_assoc(array('types', 'fields')), dt('Which information do you wish to see?'));
+      $type = drush_choice(array_combine(array('types', 'fields'), array('types', 'fields')), dt('Which information do you wish to see?'));
     }
   }
 
