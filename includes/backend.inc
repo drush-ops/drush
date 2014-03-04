@@ -182,7 +182,7 @@ function drush_backend_output() {
  */
 function drush_backend_output_collect($string) {
   static $output = '';
-  if (is_null($string)) {
+  if (!isset($string)) {
     return $output;
   }
 
@@ -288,7 +288,7 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
       if (isset($backend_options['#output-label'])) {
         $message = $backend_options['#output-label'] . $message;
       }
-      if (!is_null($log['error']) && $backend_options['integrate']) {
+      if (isset($log['error']) && $backend_options['integrate']) {
         drush_set_error($log['error'], $message);
       }
       elseif ($backend_options['integrate']) {
@@ -349,9 +349,9 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
   $is_windows = drush_is_windows();
   // Loop through processes until they all close, having a nap as needed.
   $nap_time = 0;
-  while (sizeof($open_processes) || sizeof($cmds)) {
+  while (count($open_processes) || count($cmds)) {
     $nap_time++;
-    if (sizeof($cmds) && (sizeof($open_processes) < $process_limit)) {
+    if (count($cmds) && (count($open_processes) < $process_limit)) {
       // Pop the site and command (key / value) from the cmds array
       end($cmds);
       list($site, $cmd) = each($cmds);
@@ -415,7 +415,7 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
         }
       }
       // Wait up to 2s for data to become ready on one of the read streams.
-      if (sizeof($read_streams)) {
+      if (count($read_streams)) {
         $ss_result = stream_select($read_streams, $write_streams, $except_streams, 2);
         // If stream_select returns a error, then fallback to using $nap_time.
         if ($ss_result !== FALSE) {
@@ -1126,9 +1126,9 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
     $cmd[] = " " . $option_str;
   }
   $command = implode(' ', array_filter($cmd, 'strlen'));
-  if (!is_null($hostname)) {
+  if (isset($hostname)) {
     if (drush_is_windows($os)) {
-      if (!is_null($username)) {
+      if (isset($username)) {
         $username = " -u:" . drush_escapeshellarg($username, "LOCAL");
         if (array_key_exists('winrs-password', $site_record)) {
           $username .= " -p:" . drush_escapeshellarg($site_record['winrs-password'], "LOCAL");
@@ -1137,9 +1137,9 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
       $command = "winrs" . $username . " -r:" . drush_escapeshellarg($hostname, "LOCAL") . " " . drush_escapeshellarg($command, "LOCAL");
     }
     else {
-      $username = (!is_null($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
+      $username = (isset($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
       $ssh_options = $site_record['ssh-options'];
-      $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
+      $ssh_options = (isset($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
 
       $ssh_cmd[] = "ssh";
       $ssh_cmd[] = $ssh_options;
@@ -1177,7 +1177,7 @@ function _drush_backend_argument_string($data, $os = NULL) {
   $options = array();
 
   foreach ($data as $key => $value) {
-    if (!is_array($value) && !is_object($value) && !is_null($value)) {
+    if (!is_array($value) && !is_object($value) && isset($value)) {
       if (substr($key,0,1) != '#') {
         $options[$key] = $value;
       }

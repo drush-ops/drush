@@ -40,7 +40,7 @@ function db_add_column(&$ret, $table, $column, $type, $attributes = array()) {
     $not_null = 'NOT NULL';
   }
   if (array_key_exists('default', $attributes)) {
-    if (is_null($attributes['default'])) {
+    if (!isset($attributes['default'])) {
       $default_val = 'NULL';
       $default = 'default NULL';
     }
@@ -96,7 +96,7 @@ function db_change_column(&$ret, $table, $column, $column_new, $type, $attribute
     $not_null = 'NOT NULL';
   }
   if (array_key_exists('default', $attributes)) {
-    if (is_null($attributes['default'])) {
+    if (!isset($attributes['default'])) {
       $default_val = 'NULL';
       $default = 'default NULL';
     }

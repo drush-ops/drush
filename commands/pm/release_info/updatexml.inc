@@ -156,7 +156,7 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
     return drush_log(dt('No valid projects given.'), 'ok');
   }
 
-  if (is_null($tmpfile)) {
+  if (!isset($tmpfile)) {
     $tmpfile = drush_tempnam('rln-' . implode('-', array_keys($requests)) . '.');
   }
 

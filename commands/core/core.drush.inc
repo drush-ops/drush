@@ -1200,7 +1200,7 @@ function drush_core_execute() {
   $result = TRUE;
   // Get all of the args and options that appear after the command name.
   $args = drush_get_original_cli_args_and_options();
-  for ($x = 0; $x < sizeof($args); $x++) {
+  for ($x = 0; $x < count($args); $x++) {
     // escape all args except for command separators.
     if (!in_array($args[$x], array('&&', '||', ';'))) {
       $args[$x] = drush_escapeshellarg($args[$x]);

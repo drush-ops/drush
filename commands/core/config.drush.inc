@@ -182,7 +182,7 @@ function drush_config_list($prefix = '') {
  *   The config key.
  */
 function drush_config_get($config_name, $key = NULL) {
-  if (is_null($key)) {
+  if (!isset($key)) {
     return drush_config_get_object($config_name);
   }
   else {
@@ -204,7 +204,7 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
   // This hidden option is a convenient way to pass a value without passing a key.
   $data = drush_get_option('value', $data);
 
-  if (is_null($data)) {
+  if (!isset($data)) {
     return drush_set_error('DRUSH_CONFIG_ERROR', dt('No config value specified.'));
   }
 
@@ -278,13 +278,13 @@ function drush_config_export($destination = NULL) {
   else {
     $choices = drush_map_assoc(array_keys($config_directories));
     unset($choices[CONFIG_ACTIVE_DIRECTORY]);
-    if (is_null($destination) && count($config_directories) >= 2) {
+    if (!isset($destination) && count($config_directories) >= 2) {
       $destination = drush_choice($choices, 'Choose a destination.');
       if (empty($destination)) {
         return drush_user_abort();
       }
     }
-    elseif (is_null($destination)) {
+    elseif (!isset($destination)) {
       $destination = CONFIG_STAGING_DIRECTORY;
     }
     $destination_dir = config_get_config_directory($destination);
@@ -318,13 +318,13 @@ function drush_config_import($source = NULL) {
 
   $choices = drush_map_assoc(array_keys($config_directories));
   unset($choices[CONFIG_ACTIVE_DIRECTORY]);
-  if (is_null($source) && count($config_directories) >= 2) {
+  if (!isset($source) && count($config_directories) >= 2) {
     $source= drush_choice($choices, 'Choose a source.');
     if (empty($source)) {
       return drush_user_abort();
     }
   }
-  elseif (is_null($source)) {
+  elseif (!isset($source)) {
     $source = CONFIG_STAGING_DIRECTORY;
   }
   $source_dir = config_get_config_directory($source);

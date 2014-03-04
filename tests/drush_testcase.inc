@@ -241,7 +241,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
     $root = $this->webroot();
     $major_version = substr($version_string, 0, 1);
 
-    if (is_null($profile)) {
+    if (!isset($profile)) {
       $profile = $major_version >= 7 ? 'testing' : 'default';
     }
     $db_driver = $this->db_driver(UNISH_DB_URL);
@@ -414,7 +414,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
           $hide_stderr = TRUE;
           $value = NULL;
         }
-        if (is_null($value)) {
+        if (!isset($value)) {
           $cmd[] = "--$key";
         }
         else {
@@ -438,7 +438,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     }
     // insert drush command options
     foreach ($options as $key => $value) {
-      if (is_null($value)) {
+      if (!isset($value)) {
         $cmd[] = "--$key";
       }
       else {

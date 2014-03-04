@@ -123,7 +123,7 @@ function drush_shell_exec_interactive($cmd) {
  */
 function _drush_shell_exec($args, $interactive = FALSE) {
   // Do not change the command itself, just the parameters.
-  for ($x = 1; $x < sizeof($args); $x++) {
+  for ($x = 1; $x < count($args); $x++) {
     $args[$x] = drush_escapeshellarg($args[$x]);
   }
   // Important: we allow $args to take one of two forms here.  If

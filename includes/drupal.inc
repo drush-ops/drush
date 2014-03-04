@@ -119,7 +119,7 @@ function system_watchdog($log_entry) {
  * of the update process to the logging system.
  */
 function _drush_log_update_sql($ret) {
-  if (sizeof($ret)) {
+  if (count($ret)) {
     foreach ($ret as $info) {
       if (is_array($info)) {
         if (!$info['success']) {
