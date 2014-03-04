@@ -1,14 +1,12 @@
 <h1>Drush REST API Server</h1>
 
-<p>Drush provides support for exposing its functionality over the web via HTTP or a WebSocket.</p>
+<p>Drush provides support for exposing its functionality over the web via HTTP or a <a href="http://en.wikipedia.org/wiki/WebSocket">WebSocket</a>.</p>
 
-<p>If the thought of allowing a client (browser or otherwise) to execute Drush commands on your machine over HTTP/WebSockets doesn't give you pause, then you should probably not use this feature. If used without care, you could potentially create some serious security vulnerabilities on your machine.</p>
-
-<p>That said, this feature <strong>can</strong> be used safely and securely, and we will describe how in this document.</p>
+<p>N.B.: if misused, this feature can open up a rather large security hole in the system that Drush is running on (as well as any other system that Drush may have access to via Drush aliases). That said, this feature <strong>can</strong> be used safely and securely, and we will describe how in this document.</p>
 
 <h2>Usage</h2>
 
-<p>To run a Drush REST API server, type <pre>drush rest-api-server start</pre>. By default, Drush will listen at localhost:8080 using the WebSocket protocol.</p>
+<p>To run a Drush REST API server, type <pre>drush rest-api-server start</pre>. By default, Drush will listen at <code>localhost:8080</code> using the WebSocket protocol.</p>
 
 <p>Now open up a browser and enter the following in the browser's console:</p>
 <pre>
@@ -26,6 +24,22 @@ conn.send('@none/core-status');
 
 <p>Back in your terminal, type <pre>drush rest-api-server stop</pre> to switch off the REST API server.</p>
 
+<h3>Restricting access</h3>
+
+<p>Both the WebSocket and HTTP implementations of the REST API server command allow for restricting client access based on IP address and hostname; so for example you could restrict access to Drush to requests coming from the local machine (127.0.0.1) or from IP address <code>67.207.143.23</code> identified by hostname <code>drush.ws</code>. Note that savvy users and non-browser clients can spoof IP addresses and hostnames.</p>
+
+<p>To increase security, you can also whitelist which commands will be allowed by a requester. By running <code>drush rest-api-server --whitelist=core-status</code>, client requests for any other commands (say, for example, <code>php-eval</code>) will be rejected, and only <code>core-status</code> will be allowed.</p>
+
+<p>Perhaps the best way to boost security is by writing your own Drush command that implements <code>hook_drush_rest_api_process_request_alter</code>. Drush commands that implement this hook have control over processing the incoming API request. This means that you could implement, for example, an encryption scheme to encrypt data sent back to the client from the REST API server.</p>
+
 <h3>Deployment</h3>
 
-<p>It is not advisable to deploy a Drush REST API server over HTTP. If you use WebSockets, you should read <a href="http://socketo.me/docs/deploy">the Rachet deployment docs</a> thoroughly.</p>
+<h4>HTTP</h4>
+<p>It is not advisable to deploy a Drush REST API server over HTTP in a production environment. That's because PHP's built-in server is used for handling HTTP requests. Here is what PHP's team <a href="http://www.php.net/manual/en/features.commandline.webserver.php">has to say about their built-in server functionality</a>:</p>
+<blockquote>
+This web server was designed to aid application development. It may also be useful for testing purposes or for application demonstrations that are run in controlled environments. It is not intended to be a full-featured web server. It should not be used on a public network.  
+</blockquote>
+
+<h4>WebSocket</h4>
+
+If you use WebSockets, you should read <a href="http://socketo.me/docs/deploy">the Rachet deployment docs</a> thoroughly for tips on secure deployment.</p>
