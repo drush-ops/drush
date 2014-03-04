@@ -40,15 +40,13 @@ function rest_api_server_launch() {
     $vars .= $key . '=' . $value . ' ';
   }
   // Instantiate the HTTP server, using the environment variables defined above.
-  // The `cli-server.ini` file is included for colorized output to the terminal.
   $log_file = tempnam(drush_find_tmp(), 'drush_rest_api_server_http');
-  $cmd = sprintf('%s%s -d variables_order=EGPCS -S %s:%s %s -c %s > %s 2>&1 & echo $!;',
+  $cmd = sprintf('%s%s -d variables_order=EGPCS -S %s:%s %s > %s 2>&1 & echo $!;',
     $vars,
     $php,
     $host,
     $port,
     $prepend,
-    DRUSH_BASE_PATH . '/commands/rest/includes/cli-server.ini',
     $log_file
   );
   $pid = exec($cmd, $output);
