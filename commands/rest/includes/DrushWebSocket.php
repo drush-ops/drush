@@ -60,8 +60,6 @@ class DrushRestApiServerWebSocket implements MessageComponentInterface {
             '!ip' => $client->remoteAddress,
             '!request' => trim($request))),
           'ok');
-        // TODO: Get the correct HOST value.
-        $host = 'localhost';
         $options = array();
         if (count($this->allowableIps)) {
           $options['allowable-ips'] = implode(',', $this->allowableIps);
@@ -75,7 +73,7 @@ class DrushRestApiServerWebSocket implements MessageComponentInterface {
         // Process the request.
         $result = drush_invoke_process('@none', 'rest-api-request', array(
           trim($request),
-          $host,
+          $client->WebSocket->request->getHost(),
           $client->remoteAddress,
         ), $options, FALSE);
         drush_log(dt('Processed request.'), 'success');
