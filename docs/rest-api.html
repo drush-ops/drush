@@ -12,6 +12,8 @@
 
 <p>The Drush REST API server command is also useful for developers building web applications that interact with a user's Drush installation.</p>
 
+<p>It's worth noting that in most cases, using the REST API server's WebSocket implementation will be preferable to the HTTP server. This is because the HTTP server relies on PHP's built-in server, which the PHP team advises against using in a production environment. The WebSocket implementation is built on <a href="http://socketo.me/">Rachet</a>, an open-source PHP library built for real time communication and is usable in production environments. The WebSocket implementation is also deployable over SSL for additional security.<p>
+
 <h2>Usage</h2>
 
 <p>To run a Drush REST API server, type <pre>drush rest-api-server start</pre>. By default, Drush will listen at <code>localhost:8080</code> using the WebSocket protocol.</p>
