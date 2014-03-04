@@ -9,7 +9,7 @@
 function rest_api_server_launch() {
   // Warn the user about running this command on a public network.
   if (!drush_confirm('You should not use the HTTP server option on a public network. Are you sure you want to continue?')) {
-    return FALSE;
+    return drush_user_abort();
   }
   // Set the path to Drush as an environment variable, for use in the DrushHttp
   // file.
