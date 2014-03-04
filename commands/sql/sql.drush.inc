@@ -805,6 +805,7 @@ function _drush_sql_get_db_table_list($db_spec, $site_record = NULL) {
   // this is called by sql-drop. Also needed during archive-restore.
   $options = array(
     'db-spec' => $db_spec,
+    'result-file' => FALSE,
   );
   $backend_options = array(
     'integrate' => FALSE,
