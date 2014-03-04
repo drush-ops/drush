@@ -38,7 +38,7 @@ class pmDownloadCase extends Drush_CommandTestCase {
     $options += array('use-site-dir' => NULL);
     $this->drush('pm-download', array('devel'), $options);
     $this->assertFileExists("$root/sites/$uri/modules/devel/README.txt");
-    unish_file_delete_recursive("$root/sites/$uri/modules/devel");
+    unish_file_delete_recursive("{$root}/sites/{$uri}/modules/devel", TRUE);
 
     // If we are in site specific dir, then download belongs there.
     $path_stage = "$root/sites/$uri";
