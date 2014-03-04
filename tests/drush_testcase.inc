@@ -50,7 +50,7 @@ abstract class Drush_TestCase extends PHPUnit_Framework_TestCase {
    */
   public static function tearDownAfterClass() {
     if (file_exists(UNISH_SANDBOX)) {
-      unish_file_delete_recursive(UNISH_SANDBOX);
+      unish_file_delete_recursive(UNISH_SANDBOX, TRUE);
     }
   }
 
@@ -554,7 +554,7 @@ function unish_init() {
     // TODO: We no longer clean up cache dir between runs. Much faster, but we
     // we should watch for subtle problems. To manually clean up, delete the
     // UNISH_TMP/drush-cache directory.
-    // unish_file_delete_recursive($cache);
+    // unish_file_delete_recursive($cache, TRUE);
   }
   else {
     $ret = mkdir(UNISH_CACHE, 0777, TRUE);
