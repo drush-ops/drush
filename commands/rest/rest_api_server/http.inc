@@ -14,7 +14,7 @@ function rest_api_server_launch() {
   // Set the path to Drush as an environment variable, for use in the DrushHttp
   // file.
   $env_vars = array();
-  $env_vars['DRUSH'] = DRUSH_BASE_PATH . '/drush';
+  $env_vars['DRUSH'] = DRUSH_COMMAND;
   $php = drush_get_option('php');
   // Set allowable IPs as an environment variable.
   if ($allowable_ips = array_filter(drush_get_option_list('allowable-ips'))) {
