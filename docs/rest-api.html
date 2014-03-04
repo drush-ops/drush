@@ -4,6 +4,14 @@
 
 <p>N.B.: if misused, this feature can open up a rather large security hole in the system that Drush is running on (as well as any other system that Drush may have access to via Drush aliases). That said, this feature <strong>can</strong> be used safely and securely, and we will describe how in this document.</p>
 
+<h2>Use cases</h2>
+
+<p>Probably the most useful scenario for utilizing the Drush REST API server is as part of a continuous integration framework.</p>
+
+<p>Suppose you are writing tests for your site using a Javascript testing framework (for example, CasperJS). Let's say you wanted to test logging in to the Drupal site, filling out a form, and checking to see if an email was sent. By using a Drush REST API server, you could automate the creation and deletion of the test user account as well as checking the watchdog table to see if the email notification was logged, all from within a browser-based JS testing framework.</p>
+
+<p>The Drush REST API server command is also useful for developers building web applications that interact with a user's Drush installation.</p>
+
 <h2>Usage</h2>
 
 <p>To run a Drush REST API server, type <pre>drush rest-api-server start</pre>. By default, Drush will listen at <code>localhost:8080</code> using the WebSocket protocol.</p>
