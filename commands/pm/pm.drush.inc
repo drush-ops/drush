@@ -514,7 +514,7 @@ function drush_pm_classify_extensions(&$extensions, &$modules, &$themes, $extens
  * extensions.
  */
 function drush_get_projects(&$extensions = NULL) {
-  if (is_null($extensions)) {
+  if (!isset($extensions)) {
     $extensions = drush_get_extensions();
   }
   $projects = array(

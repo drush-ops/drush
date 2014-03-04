@@ -111,7 +111,7 @@ function drush_format($input, $metadata = NULL, $format = NULL) {
     // override whatever is passed in via the $format parameter.
     $format = $metadata['format'];
   }
-  if (is_null(($format))) {
+  if (!isset($format)) {
     // TODO: we shouldn't ever call drush_get_option here.
     // Get rid of this once we confirm that there are no
     // callers that still need it.
@@ -156,7 +156,7 @@ function dt($string, $args = array()) {
   }
 
   // If Drupal's t() function unavailable.
-  if (is_null($output)) {
+  if (!isset($output)) {
     if (!empty($args)) {
       $output = strtr($string, $args);
     }

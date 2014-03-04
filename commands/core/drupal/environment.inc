@@ -71,7 +71,7 @@ function drush_check_module_dependencies($modules, $module_info) {
         $current_version = $module_info[$dependency_name]->info['version'];
         $current_version = str_replace(DRUPAL_CORE_COMPATIBILITY . '-', '', $current_version);
         $incompatibility = drupal_check_incompatibility($v, $current_version);
-        if (!is_null($incompatibility)) {
+        if (isset($incompatibility)) {
           $status[$key]['error'] = array(
             'code' => 'DRUSH_PM_ENABLE_DEPENDENCY_VERSION_MISMATCH',
             'message' => dt('Module !module cannot be enabled because it depends on !dependency !required_version but !current_version is available', array('!module' => $module, '!dependency' => $dependency_name, '!required_version' => $incompatibility, '!current_version' => $current_version))

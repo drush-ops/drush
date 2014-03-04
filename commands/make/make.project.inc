@@ -160,7 +160,7 @@ class DrushMakeProject {
     }
     $this->made = TRUE;
 
-    if (is_null($this->download_location)) {
+    if (!isset($this->download_location)) {
       $this->download_location = $this->findDownloadLocation();
     }
     if ($this->download() === FALSE) {

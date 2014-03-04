@@ -603,7 +603,7 @@ function drush_choice_multiple($options, $defaults = FALSE, $prompt = 'Select so
  * @see drush_confirm()
  */
 function drush_prompt($prompt, $default = NULL, $required = TRUE, $password = FALSE) {
-  if (!is_null($default)) {
+  if (isset($default)) {
     $prompt .= " [" . $default . "]";
   }
   $prompt .= ": ";
@@ -1846,7 +1846,7 @@ function drush_errors_off() {
  * @see drush_errors_off()
  */
 function drush_errors_on($errors = null) {
-  if (is_null($errors)) {
+  if (!isset($errors)) {
     $errors = error_reporting();
   }
   else {

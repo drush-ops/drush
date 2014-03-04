@@ -39,7 +39,7 @@ function drush_ssh_site_ssh($command = NULL) {
   // to work in addition to the preferred form of `drush ssh ls /path`.
   // Supporting the legacy form means that we cannot give the full path to an
   // executable if it contains spaces.
-  for ($x = 1; $x < sizeof($args); $x++) {
+  for ($x = 1; $x < count($args); $x++) {
     $args[$x] = drush_escapeshellarg($args[$x]);
   }
   $command = implode(' ', $args);
