@@ -33,12 +33,7 @@ function rest_api_drush_command() {
       ),
     ),
     'required-arguments' => TRUE,
-    // TODO: Host may not work with Ratchet.
     'options' => array(
-      'host' => array(
-        'description' => 'The hostname to use for the Drush REST API server. Typical values may include "localhost", "127.0.0.1", or "0.0.0.0".',
-        'example-value' => 'localhost',
-      ),
       'port' => array(
         'description' => 'The port to use for the Drush REST API server.',
         'example-value' => '8888',
@@ -243,6 +238,10 @@ function rest_api_drush_engine_rest_api_server() {
         'headers' => array(
           'description' => 'A comma-separated list of additional headers to set.',
           'example-value' => '"Access-Control-Allow-Origin: *"',
+        ),
+        'host' => array(
+          'description' => 'The hostname to use for the Drush REST API HTTP server. Some possible values may include "localhost", "127.0.0.1", or "0.0.0.0".',
+          'example-value' => 'localhost',
         ),
       ),
     ),
