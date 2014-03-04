@@ -412,7 +412,7 @@ function hook_drush_invoke_alter($modules, $hook) {
  * is returned to the requester in JSON format.
  *
  * You can write a Drush command implementing this hook if you want to:
- *  - whitelist/blacklist commands
+ *  - dynamically whitelist/blacklist commands
  *  - perform additional checks on the requster's IP address or host name
  *  - return data in a different format than JSON; or return a subset of data
  *    instead of the full output from drush_invoke_process().
