@@ -434,7 +434,7 @@ abstract class Drush_CommandTestCase extends Drush_TestCase {
     $cmd[] = "--nocolor";
 
     // Insert code coverage argument before command, in order for it to be
-    // parsed as a global command. This matters for commands like ssh and rsync
+    // parsed as a global option. This matters for commands like ssh and rsync
     // where options after the command are passed along to external commands.
     $result = $this->getTestResultObject();
     if ($result->getCollectCodeCoverageInformation()) {
