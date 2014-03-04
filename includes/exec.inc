@@ -250,7 +250,7 @@ function drush_shell_proc_open($cmd) {
  */
 function drush_process_is_active($pid) {
   // TODO: This won't work for Windows.
-  return file_exists(sprintf('/proc/%d', $pid)) ? TRUE : FALSE;
+  return file_exists(sprintf('/proc/%d', $pid));
 }
 
 /**
