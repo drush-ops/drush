@@ -1046,37 +1046,6 @@ function _drush_sql_get_all_db_specs() {
   }
 }
 
-function _drush_sql_get_spec_from_options($prefix, $default_to_self = TRUE) {
-  $db_spec = NULL;
-  $databases = drush_get_option($prefix . 'databases');
-  if (isset($databases) && !empty($databases)) {
-    $database = drush_get_option($prefix . 'database', 'default');
-    $target = drush_get_option($prefix . 'target', 'default');
-    if (array_key_exists($database, $databases) && array_key_exists($target, $databases[$database])) {
-      $db_spec = $databases[$database][$target];
-    }
-  }
-  else {
-    $db_url = drush_get_option($prefix . 'db-url');
-    if (isset($db_url)) {
-      $db_spec = drush_convert_db_from_db_url($db_url);
-    }
-    elseif ($default_to_self) {
-      $db_spec = _drush_sql_get_db_spec();
-    }
-  }
-
-  if (isset($db_spec)) {
-    $remote_host = drush_get_option($prefix . 'remote-host');
-    if (!drush_is_local_host($remote_host)) {
-      $db_spec['remote-host'] = $remote_host;
-      $db_spec['port'] = drush_get_option($prefix . 'remote-port', (isset($db_spec['port']) ? $db_spec['port'] : NULL));
-    }
-  }
-
-  return $db_spec;
-}
-
 /**
  * Determine where to store an sql dump file.  This
  * function is called by sql-sync.
