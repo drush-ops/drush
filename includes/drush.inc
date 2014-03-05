@@ -84,6 +84,9 @@ function drush_include($path, $name, $version = NULL, $extension = 'inc') {
  *   major version number to the end of the class name before instantiation.
  * @param $constructor_args
  *   An array of arguments to pass to the class constructor.
+ * @param array $variations
+ *   An array of variants for determining the class name to instantiate.
+ *   @see
  *
  * Example wrapper class to instantiate a widget, called with the
  * arguments for the WIDGET_CLASS constructor:
@@ -92,15 +95,17 @@ function drush_include($path, $name, $version = NULL, $extension = 'inc') {
  *    retrun drush_get_class('Widget_Class', func_get_args()));
  *  }
  */
-function drush_get_class($class_name, $constructor_args) {
-  $version = drush_drupal_major_version();
-  $version_specific_class_name = $class_name . $version;
+function drush_get_class($class_name, $constructor_args, $variations = array()) {
+  if (empty($variations)) {
+    $variations[] = drush_drupal_major_version();
+  }
+  $version_specific_class_name = $class_name . implode($variations);
   if (class_exists($version_specific_class_name)) {
     $reflectionClass = new ReflectionClass($version_specific_class_name);
     return $reflectionClass->newInstanceArgs($constructor_args);
   }
   else {
-    return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Drupal %d not supported!', $version));
+    return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Unable to load class - %s', $version_specific_class_name));
   }
 }
 

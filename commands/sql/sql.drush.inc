@@ -57,7 +57,8 @@ function sql_drush_command() {
     'hidden' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'options' => array(
-      'all' => 'Show all database connections, instead of just one.',
+      // @todo - no longer supported.
+      // 'all' => 'Show all database connections, instead of just one.',
       'show-passwords' => 'Show database password.',
     ) + $options,
     'outputformat' => array(
@@ -285,52 +286,17 @@ function drush_sql_conf() {
   }
   catch (Exception $e) {
   }
-  if (drush_get_option('db-url', FALSE)) {
-    $db_spec['db-url'] = $GLOBALS['db_url'];
-  }
-  elseif (drush_get_option('all', FALSE)) {
-    $db_spec = _drush_sql_get_all_db_specs();
-  }
-  if (!isset($db_spec)) {
-    $db_spec = _drush_sql_get_db_spec();
-  }
-  return $db_spec;
+  // @todo dropped support for --all.
+  $db_spec = drush_sql_get_class();
+  return $db_spec->db_spec;
 }
 
 /**
  * Command callback. Emits a connect string for mysql or pgsql.
  */
 function _drush_sql_connect($db_spec = NULL) {
-  switch (_drush_sql_get_scheme($db_spec)) {
-    case 'mysql':
-      $command = 'mysql';
-      if (drush_get_option('A', FALSE)) {
-        $command .= ' -A';
-      }
-
-      break;
-    case 'pgsql':
-      $command = 'psql';
-      break;
-    case 'sqlite':
-      $command = 'sqlite3';
-      break;
-    case 'sqlsrv':
-      $command = 'sqlcmd';
-      break;
-    case 'oracle':
-      // use rlwrap if available for readline support
-      if ($handle = popen('rlwrap -v', 'r')) {
-        $command = 'rlwrap sqlplus';
-        pclose($handle);
-      }
-      else {
-        $command = 'sqlplus';
-      }
-      break;
-  }
-  $command .= _drush_sql_get_credentials($db_spec);
-  return $command;
+  $sql = drush_sql_get_class();
+  return $sql->command() . ' ' . $sql->creds();
 }
 
 function drush_sql_connect() {
@@ -1181,107 +1147,6 @@ function drush_sql_dump_file(&$site_record) {
   return $dump_file;
 }
 
-function _drush_sql_get_scheme($db_spec = NULL) {
-  if (!isset($db_spec)) {
-    $db_spec = _drush_sql_get_db_spec();
-  }
-  return $db_spec['driver'];
-}
-
-/**
- * Build a fragment containing credentials and other connection parameters.
- *
- * @param $db_spec
- * @return string
- */
-function _drush_sql_get_credentials($db_spec = NULL) {
-  if (!isset($db_spec)) {
-    $db_spec = _drush_sql_get_db_spec();
-  }
-
-  // Build an array of key-value pairs for the parameters.
-  $parameters = array();
-
-  switch (_drush_sql_get_scheme($db_spec)) {
-    case 'mysql':
-      // Some drush commands (e.g. site-install) want to connect to the
-      // server, but not the database.  Connect to the built-in database.
-      $parameters['database'] = empty($db_spec['database']) ? 'information_schema' : $db_spec['database'];
-
-      // Default to unix socket if configured.
-      if (!empty($db_spec['unix_socket'])) {
-        $parameters['socket'] = $db_spec['unix_socket'];
-      }
-      // EMPTY host is not the same as NO host, and is valid (see unix_socket).
-      elseif (isset($db_spec['host'])) {
-        $parameters['host'] = $db_spec['host'];
-      }
-
-      if (!empty($db_spec['port'])) {
-        $parameters['port'] = $db_spec['port'];
-      }
-
-      // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
-      $parameters['user'] = $db_spec['username'];
-
-      // EMPTY password is not the same as NO password, and is valid.
-      if (isset($db_spec['password'])) {
-        $parameters['password'] = $db_spec['password'];
-      }
-      break;
-
-    case 'pgsql':
-      // Some drush commands (e.g. site-install) want to connect to the
-      // server, but not the database.  Connect to the built-in database.
-      $parameters['dbname'] = empty($db_spec['database']) ? 'template1' : $db_spec['database'];
-
-      // Host and port are optional but have defaults.
-      $parameters['host'] = empty($db_spec['host']) ? 'localhost' : $db_spec['host'];
-      $parameters['port'] = empty($db_spec['port']) ? '5432' : $db_spec['port'];
-
-      // Username is required.
-      $parameters['username'] = $db_spec['username'];
-
-      // Don't set the password.
-      // @see http://drupal.org/node/438828
-      break;
-
-    case 'sqlite':
-      // SQLite doesn't do user management, instead relying on the filesystem
-      // for that. So the only info we really need is the path to the database
-      // file, and not as a "--key=value" parameter.
-      return ' '  .  $db_spec['database'];
-      break;
-
-    case 'sqlsrv':
-      // Some drush commands (e.g. site-install) want to connect to the
-      // server, but not the database.  Connect to the built-in database.
-      $database = empty($db_spec['database']) ? 'master' : $db_spec['database'];
-      // Host and port are optional but have defaults.
-      $host = empty($db_spec['host']) ? '.\SQLEXPRESS' : $db_spec['host'];
-      return ' -S ' . $host . ' -d ' . $database . ' -U ' . $db_spec['username'] . ' -P ' . $db_spec['password'];
-      break;
-
-
-    case 'oracle':
-      // Return an Oracle connection string
-      return ' ' . $db_spec['username'] .'/' . $db_spec['password'] . ($db_spec['host']=='USETNS' ? '@' . $db_spec['database'] : '@//' . $db_spec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $db_spec['database']);
-      break;
-
-  }
-
-  // Turn each parameter into a valid parameter string.
-  $parameter_strings = array();
-  foreach ($parameters as $key => $value) {
-    // Only escape the values, not the keys or the rest of the string.
-    $value = drush_escapeshellarg($value);
-    $parameter_strings[] = "--$key=$value";
-  }
-
-  // Join the parameters and return.
-  return ' ' . implode(' ', $parameter_strings);
-}
-
 function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
   if (!isset($db_spec)) {
     $db_spec = _drush_sql_get_db_spec();
@@ -1540,4 +1405,14 @@ function drush_sql_build_exec($db_spec, $filepath) {
       break;
   }
   return $exec;
+}
+
+/**
+ * Wrapper for drush_get_class; instantiates an instance of the version-specific
+ * Sql class suitable for the current version of Drupal and DB driver.
+ */
+function drush_sql_get_class() {
+  $sql = drush_get_class('Drush\Sql\Sql', func_get_args());
+  $sql_driver_specific = drush_get_class('Drush\Sql\Sql', func_get_args(), array(drush_drupal_major_version(), $sql->scheme()));
+  return $sql_driver_specific;
 }

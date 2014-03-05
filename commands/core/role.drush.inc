@@ -192,7 +192,7 @@ function drush_role_perm($action, $rid, $permission = NULL) {
 
 /**
  * Wrapper for drush_get_class; instantiates an instance of the version-specific
- * DrushRole class suitable for the current version of Drupal.
+ * Role class suitable for the current version of Drupal.
  */
 function drush_role_get_class($role_name = DRUPAL_ANONYMOUS_RID) {
   return drush_get_class('Drush\Role\Role', func_get_args());
