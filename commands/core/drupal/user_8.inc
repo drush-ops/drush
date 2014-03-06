@@ -28,7 +28,6 @@ function drush_user_info_single($account) {
     'name' => drush_get_user_name($account),
     'password' => $account->getPassword(),
     'mail' => $account->getEmail(),
-    'theme' => $account->getDefaultTheme(),
     'signature' => $account->getSignature(),
     'signature_format' => $account->getSignatureFormat(),
     'user_created' => $account->getCreatedTime(),
