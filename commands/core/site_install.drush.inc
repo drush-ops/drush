@@ -178,7 +178,8 @@ function drush_core_pre_site_install($profile = NULL) {
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   }
 
-  $this->drop_or_create();
+  // Empty or create the DB as needed.
+  drush_sql_empty_db($db_spec);
 
   if (drush_drupal_major_version() >= 8) {
     // Empty out any existing config directories.

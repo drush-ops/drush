@@ -287,28 +287,32 @@ function drush_sql_conf() {
   catch (Exception $e) {
   }
   // @todo dropped support for --all.
-  $sql = drush_sql_get_class();
-  return $sql->db_spec;
+  $db_spec = drush_sql_get_class();
+  return $db_spec->db_spec;
 }
 
 /**
- * Command callback. Emits a connect string.
+ * Command callback. Emits a connect string for mysql or pgsql.
  */
+function _drush_sql_connect($db_spec = NULL) {
+  $sql = drush_sql_get_class();
+  return $sql->command() . ' ' . $sql->creds();
+}
+
 function drush_sql_connect() {
   drush_sql_bootstrap_further();
-  $sql = drush_sql_get_class();
-  return $sql->connect();
+  return _drush_sql_connect();
 }
 
 /**
  * Command callback. Create a database.
  */
 function drush_sql_create() {
-  $sql = drush_sql_get_class();
+  $db_spec = _drush_sql_get_db_spec();
+
   // Prompt for confirmation.
   if (!drush_get_context('DRUSH_SIMULATE')) {
-    // @todo odd - maybe for sql-sync.
-    $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $sql->db_spec['database'];
+    $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
     drush_print(dt("Creating database !target. Any possible existing database will be dropped!", array('!target' => $txt_destination)));
 
     if (!drush_confirm(dt('Do you really want to continue?'))) {
@@ -316,9 +320,36 @@ function drush_sql_create() {
     }
   }
 
-  return $sql->createdb();
+  return _drush_sql_create($db_spec);
 }
 
+/**
+ * Generate CREATE DATABASE sql plus additonal preparations.
+ *
+ * NOTE: sqlite needs a correct path for creating it's database file.
+ *
+ * @param type $db_spec
+ * @return type
+ */
+function _drush_sql_create($db_spec) {
+    $sql = drush_sql_build_createdb_sql($db_spec, TRUE);
+    if ($db_spec['driver'] == 'sqlite') {
+      // Make sure sqlite can create file
+      $file = $db_spec['database'];
+      $path = dirname($file);
+      drush_log("SQLITE: creating '$path' for creating '$file'", 'debug');
+      drush_mkdir($path);
+      if (!file_exists($path)) {
+        drush_log("SQLITE: Cannot create $path", 'error');
+      }
+    }
+    // Get credentials to connect to the server, but not the database which we
+    // are about to DROP. @see _drush_sql_get_credentials().
+    $create_db_spec = $db_spec;
+    unset($create_db_spec['database']);
+    $create_db_su = drush_sql_su($create_db_spec);
+    return _drush_sql_query($sql, $create_db_su);
+}
 
 /**
  * Command callback. Outputs the entire Drupal database in SQL format using mysqldump.
@@ -793,8 +824,7 @@ function drush_sql_query($query = NULL) {
   if (drush_get_option('db-prefix')) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
   }
-  $sql = drush_sql_get_class(drush_get_option('db-spec'));
-  $result = $sql->query($query, $filename);
+  $result = _drush_sql_query($query, drush_get_option('db-spec'), $filename);
   if (!$result) {
     return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
   }
@@ -802,15 +832,85 @@ function drush_sql_query($query = NULL) {
 }
 
 /**
+ * Execute a SQL query.
+ *
+ * @param string $query
+ *   The SQL to be executed. Should be NULL if $file is provided.
+ * @param array $db_spec
+ *   A database target.
+ * @param string $filename
+ *   A path to a file containing the SQL to be executed.
+ */
+function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
+  $suffix = '';
+  $scheme = _drush_sql_get_scheme($db_spec);
+  // Inject table prefixes as needed.
+  if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+    if ($filename) {
+      $query = file_get_contents($filename);
+    }
+    // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
+    if (drush_get_option('db-prefix')) {
+      if (drush_drupal_major_version() >= 7) {
+        $query = Database::getConnection()->prefixTables($query);
+      }
+      else {
+        $query = db_prefix_tables($query);
+      }
+    }
+  }
+
+  // Is this an Oracle query?
+  if ($scheme == 'oracle') {
+    $query = drush_sql_format_oracle($query);
+    $suffix = '.sql';
+  }
+
+  // Convert mysql 'show tables;' query into something pgsql understands
+  if (($scheme == 'pgsql') && ($query == 'show tables;')) {
+    $query = drush_sql_show_tables_pgsql();
+  }
+
+  // Save $query to a tmp file if needed. We will redirect it in.
+  if (!$filename) {
+    $filename = drush_save_data_to_temp_file($query, $suffix);
+  }
+  $exec = drush_sql_build_exec($db_spec, $filename);
+  if ($output_file = drush_get_option('result-file')) {
+    $exec .= ' > '. drush_escapeshellarg($output_file);
+  }
+  // In --simulate mode, drush_op will show the call to mysql or psql,
+  // but the sql query itself is stored in a temp file and not displayed.
+  // We will therefore show the query explicitly in the interest of debugging.
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    drush_print('sql-query: ' . $query);
+    if (!empty($exec)) {
+      drush_print('exec: ' . $exec);
+    }
+    return TRUE;
+  }
+  if (empty($scheme)) {
+    return drush_set_error('DRUSH_SQL_NO_DATABASE', dt("No database to operate on."));
+  }
+  if (empty($exec)) {
+    return drush_set_error('DRUSH_SQL_NO_QUERY', 'No query provided');
+  }
+  return (drush_op_system($exec) == 0);
+}
+
+/**
  * Drops all tables in the database.
  */
 function drush_sql_drop() {
   drush_sql_bootstrap_further();
-  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $this->db_spec['database'])))) {
+  $db_spec = _drush_sql_get_db_spec();
+  if (!$db_spec) {
+    return drush_set_error('DRUSH_SQL_NO_DATABASE', dt("No database to operate on."));
+  }
+  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
     return drush_user_abort();
   }
-  $sql = drush_sql_get_class();
-  $sql->drop();
+  _drush_sql_drop($db_spec);
 }
 
 // n.b. site-install uses _drush_sql_drop as a fallback technique if
@@ -847,8 +947,7 @@ function _drush_sql_drop($db_spec = NULL) {
 
 function drush_sql_cli() {
   drush_sql_bootstrap_further();
-  $sql = drush_sql_get_class();
-  drush_shell_proc_open($sql->connect());
+  drush_shell_proc_open(_drush_sql_connect());
 }
 
 /**
@@ -890,6 +989,46 @@ function drush_sql_sanitize() {
 
 //////////////////////////////////////////////////////////////////////////////
 // SQL SERVICE HELPERS
+
+/**
+ * Get a database specification for the active DB connection. Honors the
+ * 'database' and 'target command' line options. Honors a --db-url option.
+ *
+ * @return
+ *   An info array describing a database target.
+ */
+function _drush_sql_get_db_spec() {
+  $database = drush_get_option('database', 'default');
+  $target = drush_get_option('target', 'default');
+
+  if ($url = drush_get_option('db-url')) {
+    $url =  is_array($url) ? $url[$database] : $url;
+    $db_spec = drush_convert_db_from_db_url($url);
+    $db_spec['db_prefix'] = drush_get_option('db-prefix');
+    return $db_spec;
+  }
+  elseif (($databases = drush_get_option('databases')) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
+    return $databases[$database][$target];
+  }
+  elseif (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+    switch (drush_drupal_major_version()) {
+      case 6:
+        if ($url = isset($GLOBALS['db_url']) ? $GLOBALS['db_url'] : drush_get_option('db-url', NULL)) {
+          $url =  is_array($url) ? $url[$database] : $url;
+          $db_spec = drush_convert_db_from_db_url($url);
+          $db_spec['db_prefix'] = isset($GLOBALS['db_prefix']) ? $GLOBALS['db_prefix'] : drush_get_option('db-prefix', NULL);
+          return $db_spec;
+        }
+        return NULL;
+      default:
+        // We don't use DB API here `sql-sync` would have to messily addConnection.
+        if (!isset($GLOBALS['databases']) || !array_key_exists($database, $GLOBALS['databases']) || !array_key_exists($target, $GLOBALS['databases'][$database])) {
+          return NULL;
+        }
+        return $GLOBALS['databases'][$database][$target];
+    }
+  }
+}
 
 function _drush_sql_get_all_db_specs() {
   switch (drush_drupal_major_version()) {
@@ -977,6 +1116,18 @@ function drush_sql_dump_file(&$site_record) {
   return $dump_file;
 }
 
+function _drush_sql_get_invalid_url_msg($db_spec = NULL) {
+  if (!isset($db_spec)) {
+    $db_spec = _drush_sql_get_db_spec();
+  }
+  switch (drush_drupal_major_version()) {
+    case 6:
+      return dt('Unable to parse DB connection string');
+   default:
+     return dt('Unable to parse DB connection array');
+  }
+}
+
 /**
  * Call from a pre-sql-sync hook to register an sql
  * query to be executed in the post-sql-sync hook.
@@ -1031,12 +1182,206 @@ function _drush_sql_get_post_sync_messages() {
   return $messages;
 }
 
+// Convert mysql 'show tables;' query into something pgsql understands.
+function drush_sql_show_tables_pgsql() {
+  return "select tablename from pg_tables where schemaname='public';";
+}
+
+// Format queries to work with Oracle and SqlPlus
+function drush_sql_format_oracle($query) {
+
+  // remove trailing semicolon from query if we have it
+  $query = preg_replace('/\;$/', '', $query);
+
+  // some sqlplus settings
+  $settings[] = "set TRIM ON";
+  $settings[] = "set FEEDBACK OFF";
+  $settings[] = "set UNDERLINE OFF";
+  $settings[] = "set PAGES 0";
+  $settings[] = "set PAGESIZE 50000";
+
+  // are we doing a describe ?
+  if (!preg_match('/^ *desc/i', $query)) {
+    $settings[] = "set LINESIZE 32767";
+  }
+
+  // are we doing a show tables ?
+  if (preg_match('/^ *show tables/i', $query)) {
+    $settings[] = "set HEADING OFF";
+    $query = "select object_name from user_objects where object_type='TABLE' order by object_name asc";
+  }
+
+  // create settings string
+  $sqlp_settings = implode("\n", $settings)."\n";
+
+  // important for sqlplus to exit correctly
+  return "${sqlp_settings}${query};\nexit;\n";
+}
+
+
+/**
+ * Drop all tables (if DB exists) or CREATE target database.
+ *
+ * return boolean
+ *   TRUE or FALSE depending on success.
+ */
+function drush_sql_empty_db($db_spec) {
+  if (drush_sql_db_exists($db_spec)) {
+    _drush_sql_drop($db_spec);
+  }
+  else {
+    _drush_sql_create($db_spec);
+  }
+}
+
+/**
+ * Build DB connection array with superuser credentials if provided.
+ *
+ * The options 'db-su' and 'db-su-pw' will be retreived from the
+ * specified site alias record, if it exists and contains those items.
+ * If it does not, they will be fetched via drush_get_option.
+ *
+ * Note that in the context of sql-sync, the site alias record will
+ * be taken from the target alias (e.g. `drush sql-sync @source @target`),
+ * which will be overlayed with any options that begin with 'target-';
+ * therefore, the commandline options 'target-db-su' and 'target-db-su-pw'
+ * may also affect the operation of this function.
+ */
+function drush_sql_su($db_spec, $site_alias_record = NULL) {
+  $create_db_target = $db_spec;
+  $create_db_target['database'] = '';
+  $db_superuser = drush_sitealias_get_option($site_alias_record, 'db-su');
+  if (isset($db_superuser)) {
+    $create_db_target['username'] = $db_superuser;
+  }
+  $db_su_pw = drush_sitealias_get_option($site_alias_record, 'db-su-pw');
+  // If --db-su-pw is not provided and --db-su is, default to empty password.
+  // This way db cli command will take password from .my.cnf or .pgpass.
+  if (!empty($db_su_pw)) {
+    $create_db_target['password'] = $db_su_pw;
+  }
+  elseif (isset($db_superuser)) {
+    unset($create_db_target['password']);
+  }
+  return $create_db_target;
+}
+
+/**
+ * Build a SQL string for dropping and creating a database.
+ *
+ * @param array $db_spec
+ *   A database specification array.
+ *
+ * @param boolean $quoted
+ *   Quote the database name. Mysql uses backticks to quote which can cause problems
+ *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
+ */
+function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
+  $sql = array();
+  $schema = _drush_sql_get_scheme($db_spec);
+  switch ($schema) {
+    case 'mysql':
+      $dbname = $quoted ? '`' . $db_spec['database'] . '`' : $db_spec['database'];
+      $sql[] = sprintf('DROP DATABASE IF EXISTS %s;', $dbname);
+      $sql[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
+      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $db_spec['username'], $db_spec['host']);
+      $sql[] = sprintf("IDENTIFIED BY '%s';", $db_spec['password']);
+      $sql[] = 'FLUSH PRIVILEGES;';
+      break;
+    case 'pgsql':
+      $dbname = $quoted ? '"' . $db_spec['database'] . '"' : $db_spec['database'];
+      $sql[] = sprintf('drop database if exists %s;', $dbname);
+      $sql[] = sprintf("create database %s ENCODING 'UTF8';", $dbname);
+      break;
+    case 'sqlite':
+      $sql[] = '';
+      break;
+    default:
+      drush_log("Unable to generate CREATE DATABASE sql for $schema", 'error');
+  }
+  return implode(' ', $sql);
+}
+
+/**
+ * Does specified database exist on target server
+ *
+ * @return boolean
+ */
+function drush_sql_db_exists($db_spec) {
+  if  ($db_spec['driver'] == 'sqlite') {
+    return file_exists($db_spec['database']);
+  }
+
+  $connect_yes_db = _drush_sql_connect($db_spec);
+  $database = $db_spec['database'];
+  unset($db_spec['database']);
+  $connect_no_db = _drush_sql_connect($db_spec);
+  // We need the output back so we can't use drush_sql_query().
+  switch ($db_spec['driver']) {
+    case 'mysql':
+      $sql = "SELECT 1;";
+      // Suppress ugly output. Redirect STDERR and STDOUT. We just need exit code.
+      $bit_bucket = drush_bit_bucket();
+      return drush_shell_exec("$connect_yes_db -e \"$sql\" 2> $bit_bucket > $bit_bucket");
+    case 'pgsql':
+      $sql = "SELECT 1 AS result FROM pg_database WHERE datname='$database'";
+      drush_shell_exec("$connect_no_db -t -c \"$sql\"");
+      $output = drush_shell_exec_output();
+      return (bool)$output[0];
+    case 'sqlsrv':
+      // TODO: untested, but the gist is here.
+      $sql = "if db_id('$database') IS NOT NULL print 1";
+      drush_shell_exec("$connect_no_db -Q \"$sql\"");
+      $output = drush_shell_exec_output();
+      return $output[0] == 1;
+  }
+}
+
+function drush_sql_build_exec($db_spec, $filepath) {
+  $scheme = _drush_sql_get_scheme($db_spec);
+  $exec = '';
+  switch ($scheme) {
+    case 'mysql':
+      $exec = 'mysql';
+      $exec .= _drush_sql_get_credentials($db_spec);
+      $exec .= ' ' . drush_get_option('extra');
+      $exec .= " < " . drush_escapeshellarg($filepath);
+
+      break;
+    case 'pgsql':
+      $exec = 'psql -q ';
+      $exec .= _drush_sql_get_credentials($db_spec);
+      $exec .= ' ' . (drush_get_option('extra') ? drush_get_option('extra') : "--no-align --field-separator='\t' --pset footer=off");
+      $exec .= " --file " . drush_escapeshellarg($filepath);
+      break;
+    case 'sqlite':
+      $exec = 'sqlite3';
+      $exec .= ' ' . drush_get_option('extra');
+      $exec .= _drush_sql_get_credentials($db_spec);
+      $exec .= " < " . drush_escapeshellarg($filepath);
+      break;
+    case 'sqlsrv':
+      $exec = 'sqlcmd';
+      $exec .= ' ' . drush_get_option('extra');
+      $exec .= _drush_sql_get_credentials($db_spec);
+      $exec .= ' -h -1 -i "' . $filepath . '"';
+      break;
+    case 'oracle':
+      $exec = 'sqlplus';
+      $exec .= ' ' . drush_get_option('extra');
+      $exec .= _drush_sql_get_credentials($db_spec);
+      $exec .= " @" . drush_escapeshellarg($filepath);
+      break;
+  }
+  return $exec;
+}
+
 /**
  * Wrapper for drush_get_class; instantiates an instance of the version-specific
  * Sql class suitable for the current version of Drupal and DB driver.
  */
-function drush_sql_get_class($db_spec = NULL) {
-  $sql = new Drush\Sql\SQLBase($db_spec);
-  $sql_driver_specific = drush_get_class('Drush\Sql\Sql', func_get_args(), array($sql->scheme(), drush_drupal_major_version()));
+function drush_sql_get_class() {
+  $sql = drush_get_class('Drush\Sql\Sql', func_get_args());
+  $sql_driver_specific = drush_get_class('Drush\Sql\Sql', func_get_args(), array(drush_drupal_major_version(), $sql->scheme()));
   return $sql_driver_specific;
 }
