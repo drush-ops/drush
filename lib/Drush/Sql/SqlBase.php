@@ -207,21 +207,6 @@ class SqlBase {
     return $this->db_spec['driver'];
   }
 
-  public function remove($perm) {
-    $perms = $this->getPerms();
-    if (in_array($perm, $perms)) {
-      $this->revoke_permissions(array($perm));
-      return TRUE;
-    }
-    else {
-      drush_log(dt('"!role" does not have the permission "!perm"', array(
-        '!perm' => $perm,
-        '!role' => $this->name,
-      )), 'ok');
-      return FALSE;
-    }
-  }
-
   /**
    * Extract the name of all existing tables in the given database.
    *
