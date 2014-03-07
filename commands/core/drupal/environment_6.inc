@@ -317,3 +317,39 @@ function _drush_file_public_path() {
 function _drush_file_private_path() {
   // @todo
 }
+
+/**
+ * Gets the extension name.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension name.
+ */
+function _drush_pm_extension_get_name($info) {
+  return $info->name;
+}
+
+/**
+ * Gets the extension type.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension type.
+ */
+function _drush_pm_extension_get_type($info) {
+  return $info->type;
+}
+
+/**
+ * Gets the extension path.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension path.
+ */
+function _drush_pm_extension_get_path($info) {
+  return dirname($info->filename);
+}

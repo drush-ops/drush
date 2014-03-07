@@ -19,7 +19,6 @@ function drush_get_modules($include_hidden = TRUE) {
   $modules = system_rebuild_module_data();
 
   foreach ($modules as $key => $module) {
-    $module->type = 'module';
     if ((!$include_hidden) && (isset($module->info['hidden']))) {
       unset($modules[$key]);
     }
@@ -182,7 +181,6 @@ function drush_module_uninstall($modules) {
 function drush_get_themes($include_hidden = TRUE) {
   $themes = system_rebuild_theme_data();
   foreach ($themes as $key => $theme) {
-    $theme->type = 'theme';
     if (!$include_hidden) {
       if (isset($theme->info['hidden'])) {
         unset($themes[$key]);
@@ -280,5 +278,41 @@ function _drush_file_public_path() {
 
 function _drush_file_private_path() {
   return \Drupal::config('system.file')->get('path.private');
+}
+
+/**
+ * Gets the extension name.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension name.
+ */
+function _drush_pm_extension_get_name($info) {
+  return $info->getName();
+}
+
+/**
+ * Gets the extension type.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension type.
+ */
+function _drush_pm_extension_get_type($info) {
+  return $info->getType();
+}
+
+/**
+ * Gets the extension path.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension path.
+ */
+function _drush_pm_extension_get_path($info) {
+  return $info->getPath();
 }
 
