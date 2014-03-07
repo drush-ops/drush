@@ -337,6 +337,13 @@ function drush_valid_drupal_root($path) {
     if (file_exists($path . '/' . $candidate) && file_exists($path . '/core/misc/drupal.js') && file_exists($path . '/composer.json')) {
       return $candidate;
     }
+    // Panels and Panelizer throw off Drush, because they too contain a file at
+    // "includes/common.inc".
+    foreach (array('panels.module', 'panelizer.module') as $candidate) {
+      if (file_exists($path . '/' . $candidate)) {
+        return FALSE;
+      }
+    }
     // Drupal 7 root. Additional check for the absence of core/composer.json to
     // grant $path is not core/ of a Drupal 8 root.
     $candidate = 'includes/common.inc';
