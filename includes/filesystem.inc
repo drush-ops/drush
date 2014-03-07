@@ -433,7 +433,7 @@ function drush_find_tmp() {
       // If no directory has been found, create one in cwd.
       $temporary_directory = drush_cwd() . '/tmp';
       drush_mkdir($temporary_directory, TRUE);
-      if (!is_dir($directory)) {
+      if (!is_dir($temporary_directory)) {
         return drush_set_error('DRUSH_UNABLE_TO_CREATE_TMP_DIR', dt("Unable to create a temporary directory."));
       }
       drush_register_file_for_deletion($temporary_directory);
