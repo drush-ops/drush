@@ -99,14 +99,16 @@ function drush_get_class($class_name, $constructor_args, $variations = array()) 
   if (empty($variations)) {
     $variations[] = drush_drupal_major_version();
   }
-  $version_specific_class_name = $class_name . implode($variations);
-  if (class_exists($version_specific_class_name)) {
-    $reflectionClass = new ReflectionClass($version_specific_class_name);
-    return $reflectionClass->newInstanceArgs($constructor_args);
+  for ($i=count($variations); $i > 0; $i--) {
+    $variant_class_name = $class_name . implode('', array_slice($variations, 0, $i));
+    if (class_exists($variant_class_name)) {
+      $reflectionClass = new ReflectionClass($variant_class_name);
+      return $reflectionClass->newInstanceArgs($constructor_args);
+    }
   }
-  else {
-    return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Unable to load class - %s', $version_specific_class_name));
-  }
+
+  // Something bad happenned. Exception?
+  // drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Unable to load class - %s', $class_name));
 }
 
 /**
