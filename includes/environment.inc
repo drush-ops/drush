@@ -807,11 +807,11 @@ function drush_get_extensions($include_hidden = TRUE) {
   $extensions = array_merge(drush_get_modules($include_hidden), drush_get_themes($include_hidden));
   foreach ($extensions as $name => $extension) {
     if (isset($extension->info['name'])) {
-      $extensions[$name]->label = $extension->info['name'].' ('.$extension->name.')';
+      $extensions[$name]->label = $extension->info['name'].' ('.$name.')';
     }
     else {
       drush_log(dt("Extension !name provides no human-readable name in .info file.", array('!name' => $name), 'debug'));
-      $extensions[$name]->label = $name.' ('.$extension->name.')';
+      $extensions[$name]->label = $name.' ('.$name.')';
     }
     if (empty($extension->info['package'])) {
       $extensions[$name]->info['package'] = dt('Other');

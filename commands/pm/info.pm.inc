@@ -14,6 +14,8 @@ function drush_pm_info() {
     $args = array_keys($extension_info);
   }
 
+  drush_include_engine('drupal', 'pm', drush_drupal_major_version());
+
   foreach ($args as $extension) {
     if (isset($extension_info[$extension])) {
       $info = $extension_info[$extension];
@@ -22,7 +24,7 @@ function drush_pm_info() {
       drush_log(dt('!extension was not found.', array('!extension' => $extension)), 'warning');
       continue;
     }
-    if ($info->type == 'module') {
+    if (_drush_pm_extension_get_type($info) == 'module') {
       $data = _drush_pm_info_module($info);
     }
     else {
@@ -49,31 +51,6 @@ function _drush_pm_info_format_table_data($data) {
     }
   }
   return $result;
-}
-
-/**
- * Return an array with general info of an extension.
- */
-function _drush_pm_info_extension($info) {
-  $major_version = drush_drupal_major_version();
-
-  $data['extension'] = $info->name;
-  $data['project'] = isset($info->info['project'])?$info->info['project']:dt('Unknown');
-  $data['type'] = $info->type;
-  $data['title'] = $info->info['name'];
-  $data['config'] = isset($info->info['configure']) ? $info->info['configure'] : dt('None');
-  $data['description'] = $info->info['description'];
-  $data['version'] = $info->info['version'];
-  $data['date'] = $info->info['datestamp'] ? format_date($info->info['datestamp'] ?: 0, 'custom', 'Y-m-d') : NULL;
-  $data['package'] = $info->info['package'];
-  $data['core'] = $info->info['core'];
-  $data['php'] = $info->info['php'];
-  $data['status'] = drush_get_extension_status($info);
-  $path = (($info->type == 'module')&&($major_version == 7))?$info->uri:$info->filename;
-  $path = substr($path, 0, strrpos($path, '/'));
-  $data['path'] = $path;
-
-  return $data;
 }
 
 /**
@@ -107,7 +84,7 @@ function _drush_pm_info_module($info) {
   $data['required_by'] = $requiredby;
   if ($info->status == 1) {
     $role = drush_role_get_class();
-    $data['permissions'] = $role->getModulePerms($info->name);
+    $data['permissions'] = $role->getModulePerms(_drush_pm_extension_get_name($info));
   }
   return $data;
 }
