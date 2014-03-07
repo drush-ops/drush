@@ -43,4 +43,19 @@ class Sqlsqlite extends SqlBase {
   public function listTables() {
     return '.tables';
   }
+
+  public function drop($tables) {
+    $sql = '';
+    // SQLite only wants one table per DROP TABLE command (so we have to do
+    // "DROP TABLE foo; DROP TABLE bar;" instead of "DROP TABLE foo, bar;").
+    foreach ($tables as $table) {
+      $sql .= "DROP TABLE $table; ";
+    }
+    // We can't use drush_op('db_query', $sql) because it will only perform one
+    // SQL command and we're technically performing several.
+    // @todo fix.
+    $exec = _drush_sql_connect($db_spec);
+    $exec .= " '{$sql}'";
+    return drush_op_system($exec) == 0;
+  }
 }

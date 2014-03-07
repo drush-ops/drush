@@ -810,39 +810,9 @@ function drush_sql_drop() {
     return drush_user_abort();
   }
   $sql = drush_sql_get_class();
-  $sql->drop();
-}
-
-// n.b. site-install uses _drush_sql_drop as a fallback technique if
-// drop database; create database fails.  If _drush_sql_drop()
-// is rewritten to also use that technique, it should maintain
-// the drop tables code here as a fallback.
-function _drush_sql_drop($db_spec = NULL) {
-  $tables = _drush_sql_get_db_table_list($db_spec);
-  $scheme = _drush_sql_get_scheme($db_spec);
-  if (count($tables)) {
-    if ($scheme === 'sqlite') {
-      $sql = '';
-      // SQLite only wants one table per DROP TABLE command (so we have to do
-      // "DROP TABLE foo; DROP TABLE bar;" instead of "DROP TABLE foo, bar;").
-      foreach ($tables as $table) {
-        $sql .= "DROP TABLE $table; ";
-      }
-      // We can't use drush_op('db_query', $sql) because it will only perform one
-      // SQL command and we're technically performing several.
-      $exec = _drush_sql_connect($db_spec);
-      $exec .= " '{$sql}'";
-      return drush_op_system($exec) == 0;
-    }
-    else {
-      $sql = 'DROP TABLE '. implode(', ', $tables);
-      return _drush_sql_query($sql, $db_spec);
-    }
-  }
-  else {
-    drush_log(dt('No tables to drop.'), 'ok');
-  }
-  return TRUE;
+  // @todo
+  $tables = $sql->listTables();
+  $sql->drop($tables);
 }
 
 function drush_sql_cli() {

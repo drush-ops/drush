@@ -148,7 +148,10 @@ class SqlBase {
     return $query;
   }
 
-  public function drop() {}
+  public function drop($tables) {
+    $sql = 'DROP TABLE '. implode(', ', $tables);
+    return $this->query($sql);
+  }
 
   /**
    * Build a SQL string for dropping and creating a database.
