@@ -2,7 +2,7 @@
 
 namespace Drush\Sql;
 
-class Sql7mysql extends Sql7 {
+class Sqlmysql extends SqlBase {
 
   public function command() {
     $command = 'mysql';
@@ -15,7 +15,7 @@ class Sql7mysql extends Sql7 {
   public function creds() {
     // Some drush commands (e.g. site-install) want to connect to the
     // server, but not the database.  Connect to the built-in database.
-    $parameters['database'] = empty($this->db_spec['database']) ? 'information_schema' : $$this->db_spec['database'];
+    $parameters['database'] = empty($this->db_spec['database']) ? 'information_schema' : $this->db_spec['database'];
 
     // Default to unix socket if configured.
     if (!empty($this->db_spec['unix_socket'])) {
@@ -39,5 +39,25 @@ class Sql7mysql extends Sql7 {
     }
 
     return $this->params_to_options($parameters);
+  }
+
+  public function createdb_sql($dbname, $quoted = FALSE) {
+    if ($quoted) {
+      $dbname = '`' . $dbname . '`';
+    }
+    $sql[] = sprintf('DROP DATABASE IF EXISTS %s;', $dbname);
+    $sql[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
+    $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $this->db_spec['username'], $this->db_spec['host']);
+    $sql[] = sprintf("IDENTIFIED BY '%s';", $this->db_spec['password']);
+    $sql[] = 'FLUSH PRIVILEGES;';
+    return implode(' ', $sql);
+  }
+
+  public function db_exists() {
+    return $this->query("SELECT 1;");
+  }
+
+  public function listTables() {
+    return 'SHOW TABLES';
   }
 }
