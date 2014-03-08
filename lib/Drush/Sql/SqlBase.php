@@ -79,6 +79,97 @@ class SqlBase {
     return trim($this->command() . ' ' . $this->creds() . ' ' . drush_get_option('extra', $this->query_extra));
   }
 
+
+  public function dump($file = '') {
+    $table_selection = drush_sql_get_expanded_table_selection();
+    $file = $this->dumpFile($file);
+    list($cmd, $file) = $this->dumpCmd($table_selection, $file);
+    list($suffix, $file) = $this->dumpGzip($file);
+    return array($cmd . $suffix, $file);
+  }
+
+  /*
+   * Build bash for dumping a database.
+   *
+   * @param array $table_selection
+   *   Supported keys: 'skip', 'structure', 'tables'.
+   * @param file
+   *   Destination for the dump file.
+   * @return array
+   *   A two item indexed array.
+   *     1. A mysqldump/pg_dump/sqlite3/etc statement that is ready for executing.
+   *     2. The filepath where the dump will be saved.
+   */
+  public function dumpCmd($table_selection, $file) {}
+
+  public function dumpFile($file) {
+    $database = $this->db_spec['database'];
+
+    // $file is passed in to us usually via --result-file.  If the user
+    // has set $options['result-file'] = TRUE, then we
+    // will generate an SQL dump file in the same backup
+    // directory that pm-updatecode uses.
+    if ($file) {
+      if ($file === TRUE) {
+        // User did not pass a specific value for --result-file. Make one.
+        $backup = drush_include_engine('version_control', 'backup');
+        $backup_dir = $backup->prepare_backup_dir($database);
+        if (empty($backup_dir)) {
+          $backup_dir = drush_find_tmp();
+        }
+        $file = $backup_dir . '/@DATABASE_@DATE.sql';
+      }
+      $file = str_replace(array('@DATABASE', '@DATE'), array($database, gmdate('Ymd_His')), $file);
+    }
+    return $file;
+  }
+
+  public function dumpPrepare() {
+    $skip_tables = $table_selection['skip'];
+    $structure_tables = $table_selection['structure'];
+    $tables = $table_selection['tables'];
+
+    $ignores = array();
+    $skip_tables  = array_merge($structure_tables, $skip_tables);
+    $data_only = drush_get_option('data-only');
+    // The ordered-dump option is only supported by MySQL for now.
+    // @todo add documention once a hook for drush_get_option_help() is available.
+    // @see drush_get_option_help() in drush.inc
+    $ordered_dump = drush_get_option('ordered-dump');
+
+  }
+
+  /*
+   * Bash which gzips dump file if specified.
+   *
+   * @param string $file
+   *
+   * @return array
+   */
+  function dumpGzip($file) {
+    $suffix = '';
+    if (drush_get_option('gzip')) {
+      if ($file) {
+        $escfile = drush_escapeshellarg($file);
+        if (drush_get_context('DRUSH_AFFIRMATIVE')) {
+          // Gzip the result-file without Gzip confirmation
+          $suffix = " && gzip -f $escfile";
+          $file .= '.gz';
+        }
+        else {
+          // Gzip the result-file
+          $suffix = " && gzip $escfile";
+          $file .= '.gz';
+        }
+      }
+      else {
+        // gzip via pipe since user has not specified a file.
+        $suffix = "| gzip";
+      }
+    }
+    return array($suffix, $file);
+  }
+
   /**
    * Execute a SQL query.
    *
@@ -99,7 +190,8 @@ class SqlBase {
 
     // Save $query to a tmp file if needed. We will redirect it in.
     if (!$filename) {
-      // @todo suffix.
+      // @todo
+      $suffix = '';
       $filename = drush_save_data_to_temp_file($query, $suffix);
     }
 

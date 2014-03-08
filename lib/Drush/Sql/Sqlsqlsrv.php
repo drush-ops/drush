@@ -44,4 +44,13 @@ class Sqlsqlsrv extends SqlBase {
     }
   }
 
+  public function dumpCmd($table_selection, $file) {
+    if (!$file) {
+      $file = $this->db_spec['database'] . '_' . date('Ymd_His') . '.bak';
+    }
+    $exec = "sqlcmd -U \"" . $this->db_spec['username'] . "\" -P \"" . $this->db_spec['password'] . "\" -S \"" . $this->db_spec['host'] . "\" -Q \"BACKUP DATABASE [" . $this->db_spec['database'] . "] TO DISK='" . $file . "'\"";
+    return array($exec, $file);
+  }
+
+
 }

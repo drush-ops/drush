@@ -74,4 +74,22 @@ class Sqlsqlite extends SqlBase {
     $exec .= " '{$sql}'";
     return drush_op_system($exec) == 0;
   }
+
+  public function dumpCmd($table_selection, $file) {
+    // Dumping is usually not necessary in SQLite, since all database data
+    // is stored in a single file which can be copied just
+    // like any other file. But it still has a use in migration purposes and
+    // building human-readable diffs and such, so let's do it anyway.
+    $exec = $this->connect();
+    // SQLite's dump command doesn't support many of the features of its
+    // Postgres or MySQL equivalents. We may be able to fake some in the
+    // future, but for now, let's just support simple dumps.
+    $exec .= ' ".dump"';
+    if ($file) {
+      $exec .= ' > '. $file;
+    }
+    return array($exec, $file);
+  }
+
+
 }

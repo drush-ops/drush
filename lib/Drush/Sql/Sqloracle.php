@@ -65,4 +65,22 @@ class Sqloracle extends SqlBase {
       array_shift($tables);
       return $tables;
     }
+
+
 }
+
+  public function dumpCmd($table_selection, $file) {
+    $create_db = drush_get_option('create-db');
+    $exec = 'exp ' . $this->creds();
+    // Change variable '$file' by reference in order to get drush_log() to report.
+    if (!$file) {
+      $file = $this->db_spec['username'] . '.dmp';
+    }
+    $exec .= ' file=' . $file;
+
+    if (!empty($tables)) {
+      $exec .= ' tables="(' . implode(',', $tables) . ')"';
+    }
+    $exec .= ' owner=' . $this->db_spec['username'];
+    return array($exec, $file);
+  }

@@ -321,12 +321,12 @@ function drush_sql_create() {
 
 
 /**
- * Command callback. Outputs the entire Drupal database in SQL format using mysqldump.
+ * Command callback. Outputs the entire Drupal database in SQL format using mysqldump or equivalent.
  */
 function drush_sql_dump_execute() {
   drush_sql_bootstrap_further();
-  $db_spec = _drush_sql_get_db_spec();
-  list($exec, $file) = drush_sql_dump($db_spec);
+  $sql = drush_sql_get_class();
+  list($exec, $file) = $sql->dump(drush_get_option('result-file', FALSE));
 
   // Avoid the php memory of the $output array in drush_shell_exec().
   if (!$return = drush_op_system($exec)) {
@@ -368,18 +368,15 @@ function drush_sql_get_table_selection() {
  * wildcards (`*`) if necessary so that the array returned only contains valid
  * table names i.e. actual tables that exist, without a wildcard.
  *
- * @param $db_spec
- *   For D5/D6, a $db_url. For D7+, a target in the default DB connection.
- * @param $site_record
- *   Necessary for remote database.
  * @return array
  *   An array of tables with each table name in the appropriate
  *   element of the array.
  */
-function drush_sql_get_expanded_table_selection($db_spec, $site_record = NULL) {
+function drush_sql_get_expanded_table_selection() {
   $table_selection = drush_sql_get_table_selection();
   // Get the existing table names in the specified database.
-  $db_tables = _drush_sql_get_db_table_list($db_spec, $site_record);
+  $sql = drush_sql_get_class();
+  $db_tables = $sql->listTables();
   if (isset($table_selection['skip'])) {
     $table_selection['skip'] = _drush_sql_expand_and_filter_tables($table_selection['skip'], $db_tables);
   }
@@ -437,202 +434,6 @@ function drush_sql_filter_tables($tables, $db_tables) {
   }
 
   return $tables;
-}
-
-/**
- * Build a mysqldump/pg_dump/sqlite statement.
- *
- * @param db_spec
- *   For /D6, a $db_url. For D7+, a target in the default DB connection.
- * @return array
- *   An array with items.
- *     1. A mysqldump/pg_dump/sqlite statement that is ready for executing.
- *     2. The filepath where the dump will be saved.
- */
-function drush_sql_dump($db_spec) {
-  return drush_sql_build_dump_command(drush_sql_get_expanded_table_selection($db_spec), $db_spec, drush_get_option('result-file', FALSE));
-}
-
-/**
- * Build a mysqldump/pg_dump/sqlite statement.
- *
- * @param array $table_selection
- *   Supported keys: 'skip', 'structure', 'tables'.
- * @param db_spec
- *   For D5/D6, a $db_url. For D7, a target in the default DB connection.
- * @param file
- *   Destination for the dump file.
- * @return array
- *   An array with items.
- *     1. A mysqldump/pg_dump/sqlite statement that is ready for executing.
- *     2. The filepath where the dump will be saved.
- */
-function drush_sql_build_dump_command($table_selection, $db_spec, $file = FALSE) {
-  $skip_tables = $table_selection['skip'];
-  $structure_tables = $table_selection['structure'];
-  $tables = $table_selection['tables'];
-
-  $ignores = array();
-  $skip_tables  = array_merge($structure_tables, $skip_tables);
-  $data_only = drush_get_option('data-only');
-  // The ordered-dump option is only supported by MySQL for now.
-  // @todo add documention once a hook for drush_get_option_help() is available.
-  // @see drush_get_option_help() in drush.inc
-  $ordered_dump = drush_get_option('ordered-dump');
-  $database = $db_spec['database'];
-
-  // $file is passed in to us usually via --result-file.  If the user
-  // has set $options['result-file'] = TRUE, then we
-  // will generate an SQL dump file in the same backup
-  // directory that pm-updatecode uses.
-  if ($file) {
-    if ($file === TRUE) {
-      // User did not pass a specific value for --result-file. Make one.
-      $backup = drush_include_engine('version_control', 'backup');
-      $backup_dir = $backup->prepare_backup_dir($db_spec['database']);
-      if (empty($backup_dir)) {
-        $backup_dir = "/tmp";
-      }
-      $file = $backup_dir . '/@DATABASE_@DATE.sql';
-    }
-    $file = str_replace(array('@DATABASE', '@DATE'), array($database, gmdate('Ymd_His')), $file);
-  }
-
-  switch (_drush_sql_get_scheme($db_spec)) {
-    case 'mysqli':
-    case 'mysql':
-      $exec = 'mysqldump';
-      if ($file) {
-        $exec .= ' --result-file '. $file;
-      }
-      // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
-      // We had --skip-add-locks here for a while to help people with insufficient permissions,
-      // but removed it because it slows down the import a lot.  See http://drupal.org/node/1283978
-      $extra = ' --no-autocommit --single-transaction --opt -Q' . str_replace('--database=', ' ', _drush_sql_get_credentials($db_spec));
-      if (isset($data_only)) {
-        $extra .= ' --no-create-info';
-      }
-      if (isset($ordered_dump)) {
-       $extra .= ' --skip-extended-insert --order-by-primary';
-      }
-      $exec .= $extra;
-
-      if (!empty($tables)) {
-        $exec .= ' ' . implode(' ', $tables);
-      }
-      else {
-        // Append the ignore-table options.
-        foreach ($skip_tables as $table) {
-          $ignores[] = "--ignore-table=$database.$table";
-        }
-        $exec .= ' '. implode(' ', $ignores);
-
-        // Run mysqldump again and append output if we need some structure only tables.
-        if (!empty($structure_tables)) {
-          $exec .= " && mysqldump --no-data $extra " . implode(' ', $structure_tables);
-          if ($file) {
-            $exec .= " >> $file";
-          }
-        }
-      }
-      break;
-    case 'pgsql':
-      $create_db = drush_get_option('create-db');
-      $exec = 'pg_dump ';
-      if ($file) {
-        $exec .= ' --file '. $file;
-      }
-      // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
-      $extra = str_replace('--dbname=', ' ', _drush_sql_get_credentials($db_spec));
-      if (isset($data_only)) {
-        $extra .= ' --data-only';
-      }
-      $exec .= $extra;
-      $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
-
-      if (!empty($tables)) {
-        foreach ($tables as $table) {
-          $exec .= " --table=$table";
-        }
-      }
-      else {
-        foreach ($skip_tables as $table) {
-          $ignores[] = "--exclude-table=$table";
-        }
-        $exec .= ' '. implode(' ', $ignores);
-        // Run pg_dump again and append output if we need some structure only tables.
-        if (!empty($structure_tables)) {
-          $schemaonlies = array();
-          foreach ($structure_tables as $table) {
-            $schemaonlies[] = "--table=$table";
-          }
-          $exec .= " && pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
-          $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
-          if ($file) {
-            $exec .= " >> $file";
-          }
-        }
-      }
-      break;
-    case 'sqlite':
-      // Dumping is usually not necessary in SQLite, since all database data
-      // is stored in a single file on the filesystem which can be copied just
-      // like any other file. But it still has a use in migration purposes and
-      // building human-readable diffs and such, so let's do it anyway.
-      $exec = _drush_sql_connect($db_spec);
-      // SQLite's dump command doesn't support many of the features of its
-      // Postgres or MySQL equivalents. We may be able to fake some in the
-      // future, but for now, let's just support simple dumps.
-      $exec .= ' ".dump"';
-      if ($file) {
-        $exec .= ' > '. $file;
-      }
-      break;
-    case 'sqlsrv':
-      // Change variable '$file' by reference in order to get drush_log() to report.
-      if (!$file) {
-        $file = $db_spec['database'] . '_' . date('Ymd_His') . '.bak';
-      }
-      $exec =  "sqlcmd -U \"" . $db_spec['username'] . "\" -P \"" . $db_spec['password'] . "\" -S \"" . $db_spec['host'] . "\" -Q \"BACKUP DATABASE [" . $db_spec['database'] . "] TO DISK='" . $file . "'\"";
-      break;
-    case 'oracle':
-      $create_db = drush_get_option('create-db');
-      $exec = 'exp ' . _drush_sql_get_credentials($db_spec);
-      // Change variable '$file' by reference in order to get drush_log() to report.
-      if (!$file) {
-        $file = $db_spec['username'] . '.dmp';
-      }
-      $exec .= ' file=' . $file;
-
-      if (!empty($tables))
-        $exec .= ' tables="(' . implode(',', $tables) . ')"';
-      else
-        $exec .= ' owner=' . $db_spec['username'];
-
-      break;
-  }
-
-  if (drush_get_option('gzip')) {
-    if ($file) {
-      $escfile = drush_escapeshellarg($file);
-      if (drush_get_context('DRUSH_AFFIRMATIVE')) {
-        // Gzip the result-file without Gzip confirmation
-        $exec .= " && gzip -f $escfile";
-        $file .= '.gz';
-      }
-      else {
-        // Gzip the result-file
-        $exec .= " && gzip $escfile";
-        $file .= '.gz';
-      }
-    }
-    else {
-      // gzip via pipe since user has not specified a file.
-      $exec .= "| gzip";
-    }
-  }
-
-  return array($exec, $file);
 }
 
 /**

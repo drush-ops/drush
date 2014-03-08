@@ -66,4 +66,54 @@ class Sqlmysql extends SqlBase {
       return $tables;
     }
   }
+
+  public function dumpCmd($table_selection, $file) {
+    $skip_tables = $table_selection['skip'];
+    $structure_tables = $table_selection['structure'];
+    $tables = $table_selection['tables'];
+
+    $ignores = array();
+    $skip_tables  = array_merge($structure_tables, $skip_tables);
+    $data_only = drush_get_option('data-only');
+    // The ordered-dump option is only supported by MySQL for now.
+    // @todo add documention once a hook for drush_get_option_help() is available.
+    // @see drush_get_option_help() in drush.inc
+    $ordered_dump = drush_get_option('ordered-dump');
+
+    $exec = 'mysqldump';
+    if ($file) {
+      $exec .= ' --result-file '. $file;
+    }
+    // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
+    // We had --skip-add-locks here for a while to help people with insufficient permissions,
+    // but removed it because it slows down the import a lot.  See http://drupal.org/node/1283978
+    $extra = ' --no-autocommit --single-transaction --opt -Q' . str_replace('--database=', ' ', $this->creds());
+    if (isset($data_only)) {
+      $extra .= ' --no-create-info';
+    }
+    if (isset($ordered_dump)) {
+      $extra .= ' --skip-extended-insert --order-by-primary';
+    }
+    $exec .= $extra;
+
+    if (!empty($tables)) {
+      $exec .= ' ' . implode(' ', $tables);
+    }
+    else {
+      // Append the ignore-table options.
+      foreach ($skip_tables as $table) {
+        $ignores[] = "--ignore-table=$database.$table";
+      }
+      $exec .= ' '. implode(' ', $ignores);
+
+      // Run mysqldump again and append output if we need some structure only tables.
+      if (!empty($structure_tables)) {
+        $exec .= " && mysqldump --no-data $extra " . implode(' ', $structure_tables);
+        if ($file) {
+          $exec .= " >> $file";
+        }
+      }
+    }
+    return array($exec, $file);
+  }
 }

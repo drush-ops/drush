@@ -68,4 +68,52 @@ class Sqlpgsql extends SqlBase {
       }
     }
   }
+
+  public function dumpCmd($table_selection, $file) {
+    $skip_tables = $table_selection['skip'];
+    $structure_tables = $table_selection['structure'];
+    $tables = $table_selection['tables'];
+
+    $ignores = array();
+    $skip_tables  = array_merge($structure_tables, $skip_tables);
+    $data_only = drush_get_option('data-only');
+
+    $create_db = drush_get_option('create-db');
+    $exec = 'pg_dump ';
+    if ($file) {
+      $exec .= ' --file '. $file;
+    }
+    // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
+    $extra = str_replace('--dbname=', ' ', $this->creds());
+    if (isset($data_only)) {
+      $extra .= ' --data-only';
+    }
+    $exec .= $extra;
+    $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
+
+    if (!empty($tables)) {
+      foreach ($tables as $table) {
+        $exec .= " --table=$table";
+      }
+    }
+    else {
+      foreach ($skip_tables as $table) {
+        $ignores[] = "--exclude-table=$table";
+      }
+      $exec .= ' '. implode(' ', $ignores);
+      // Run pg_dump again and append output if we need some structure only tables.
+      if (!empty($structure_tables)) {
+        $schemaonlies = array();
+        foreach ($structure_tables as $table) {
+          $schemaonlies[] = "--table=$table";
+        }
+        $exec .= " && pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
+        $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
+        if ($file) {
+          $exec .= " >> $file";
+        }
+      }
+    }
+    return array($exec, $file);
+  }
 }
