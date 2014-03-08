@@ -374,7 +374,7 @@ function _drush_escapeshellarg_linux($arg) {
  * Stores output for the most recent shell command.
  * This should only be run from drush_shell_exec().
  *
- * @param $output
+ * @param array|bool $output
  *   The output of the most recent shell command.
  *   If this is not set the stored value will be returned.
  */

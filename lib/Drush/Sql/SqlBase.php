@@ -86,8 +86,11 @@ class SqlBase {
    *   The SQL to be executed. Should be NULL if $file is provided.
    * @param string $filename
    *   A path to a file containing the SQL to be executed.
+   * @param bool $save_output
+   *   If TRUE, Drush uses a bit more memory to store query results. Use
+   *   drush_shell_exec_output() to fetch them.
    */
-  public function query($query, $filename = NULL) {
+  public function query($query, $filename = NULL, $save_output = FALSE) {
     if ($filename) {
       $query = file_get_contents($filename);
     }
@@ -124,7 +127,13 @@ class SqlBase {
       }
       return TRUE;
     }
-    return (drush_op_system($exec) == 0);
+
+    if ($save_output) {
+      return drush_shell_exec($exec);
+    }
+    else {
+      return (drush_op_system($exec) == 0);
+    }
   }
 
   public function query_prefix($query) {
@@ -213,14 +222,10 @@ class SqlBase {
   /**
    * Extract the name of all existing tables in the given database.
    *
-   * Note: uses $this->site_record if available. Used for remote DBs.
-   *
    * @return array
    *   An array of table names which exist in the current database.
    */
-  public function listTables() {
-
-  }
+  public function listTables() {}
 
   /*
    * Helper method to turn associative array into options with values.

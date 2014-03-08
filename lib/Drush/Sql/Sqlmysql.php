@@ -58,6 +58,12 @@ class Sqlmysql extends SqlBase {
   }
 
   public function listTables() {
-    return 'SHOW TABLES';
+    $return = $this->query('SHOW TABLES', NULL, TRUE);
+    $tables = drush_shell_exec_output();
+    if (!empty($tables)) {
+      // Shift off the header of the column of data returned.
+      array_shift($tables);
+      return $tables;
+    }
   }
 }

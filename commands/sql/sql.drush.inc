@@ -697,93 +697,6 @@ function _drush_sql_get_raw_table_list($option_name) {
 }
 
 /**
- * Extract the name of all existing tables in the given database.
- *
- * @param $db_spec
- *   For D5/D6, a $db_url. For D7, a target in the default DB connection.
- * @param $site_record
- *   Necessary for remote database.
- * @return array
- *   An array of table names which exist in the current database.
- */
-function _drush_sql_get_db_table_list($db_spec, $site_record = NULL) {
-  $target_site = '@self';
-  if (isset($site_record)) {
-    $target_site = $site_record;
-  }
-
-  // Prepare the query to obtain the list of tables depending on the
-  // database type.
-  $suffix = '';
-  $scheme = _drush_sql_get_scheme($db_spec);
-  switch ($scheme) {
-    case 'pgsql':
-      $query = drush_sql_show_tables_pgsql();
-      break;
-    case 'sqlite':
-      $query = '.tables';
-      break;
-    case 'sqlsrv':
-      $query = 'SELECT TABLE_NAME FROM information_schema.tables';
-      break;
-    case 'oracle':
-      $query = "SELECT TABLE_NAME FROM USER_TABLES WHERE TABLE_NAME NOT IN ('BLOBS','LONG_IDENTIFIERS')";
-      $suffix = '.sql';
-      break;
-    default:
-      $query = 'SHOW TABLES';
-      break;
-  }
-
-  // @todo Add error handling.
-  // Send db-spec because site-install has no $databases written to settings.php when
-  // this is called by sql-drop. Also needed during archive-restore.
-  $options = array(
-    'db-spec' => $db_spec,
-  );
-  $backend_options = array(
-    'integrate' => FALSE,
-    'method' => 'POST',
-    'override-simulated' => TRUE,
-  );
-  $result = drush_invoke_process($target_site, 'sql-query', array($query), $options, $backend_options);
-  $tables_raw = preg_split('/\r\n|\r|\n/', rtrim($result['output']));
-
-  $tables = array();
-  if (!empty($tables_raw)) {
-    if ($scheme === 'sqlite') {
-      // SQLite's '.tables' command always outputs the table names in a column
-      // format, like this:
-      // table_alpha    table_charlie    table_echo
-      // table_bravo    table_delta      table_foxtrot
-      // …and there doesn't seem to be a way to fix that. So we need to do some
-      // clean-up.
-      foreach ($tables_raw as $line) {
-        preg_match_all('/[^\s]+/', $line, $matches);
-        if (!empty($matches[0])) {
-          foreach ($matches[0] as $match) {
-            $tables[] = $match;
-          }
-        }
-      }
-    }
-    elseif ($scheme === 'sqlsrv') {
-      // Shift off the header of the column of data returned.
-      array_pop($tables_raw);
-      array_pop($tables_raw);
-      $tables = $tables_raw;
-    }
-    else {
-      // Shift off the header of the column of data returned.
-      array_shift($tables_raw);
-      $tables = $tables_raw;
-    }
-  }
-
-  return $tables;
-}
-
-/**
  * Command callback. Executes the given SQL query on the Drupal database.
  */
 function drush_sql_query($query = NULL) {
@@ -806,11 +719,10 @@ function drush_sql_query($query = NULL) {
  */
 function drush_sql_drop() {
   drush_sql_bootstrap_further();
-  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $this->db_spec['database'])))) {
+  $sql = drush_sql_get_class();
+  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $sql->db_spec['database'])))) {
     return drush_user_abort();
   }
-  $sql = drush_sql_get_class();
-  // @todo
   $tables = $sql->listTables();
   $sql->drop($tables);
 }
@@ -849,11 +761,11 @@ function drush_sql_sanitize() {
     $sanitize_query .= $data['query'] . " ";
   }
   if ($sanitize_query) {
-    if (!drush_get_context('DRUSH_SIMULATE')) {
-      drush_sql_query($sanitize_query);
-    }
-    else {
-      drush_print("Executing: $sanitize_query");
+    $sql = drush_sql_get_class();
+    $result = $sql->query($query, $filename);
+    // @todo should method set an error?
+    if (!$result) {
+      return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
     }
   }
 }
@@ -1004,6 +916,8 @@ function _drush_sql_get_post_sync_messages() {
 /**
  * Wrapper for drush_get_class; instantiates an instance of the version-specific
  * Sql class suitable for the current version of Drupal and DB driver.
+ *
+ * @return Drush\Sql\SqlBase
  */
 function drush_sql_get_class($db_spec = NULL) {
   $sql = new Drush\Sql\SQLBase($db_spec);

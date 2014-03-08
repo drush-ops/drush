@@ -41,7 +41,23 @@ class Sqlsqlite extends SqlBase {
   }
 
   public function listTables() {
-    return '.tables';
+    $return = $this->query('.tables', NULL, TRUE);
+    $tables_raw = drush_shell_exec_output();
+    // SQLite's '.tables' command always outputs the table names in a column
+    // format, like this:
+    // table_alpha    table_charlie    table_echo
+    // table_bravo    table_delta      table_foxtrot
+    // …and there doesn't seem to be a way to fix that. So we need to do some
+    // clean-up.
+    foreach ($tables_raw as $line) {
+      preg_match_all('/[^\s]+/', $line, $matches);
+      if (!empty($matches[0])) {
+        foreach ($matches[0] as $match) {
+          $tables[] = $match;
+        }
+      }
+    }
+    return $tables;
   }
 
   public function drop($tables) {

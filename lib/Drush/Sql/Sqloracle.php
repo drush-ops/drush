@@ -58,6 +58,11 @@ class Sqloracle extends SqlBase {
   }
 
   public function listTables() {
-    return "SELECT TABLE_NAME FROM USER_TABLES WHERE TABLE_NAME NOT IN ('BLOBS','LONG_IDENTIFIERS')";
-  }
+    $return = $this->query("SELECT TABLE_NAME FROM USER_TABLES WHERE TABLE_NAME NOT IN ('BLOBS','LONG_IDENTIFIERS')", NULL, TRUE);
+    $tables = drush_shell_exec_output();
+    if (!empty($tables)) {
+      // Shift off the header of the column of data returned.
+      array_shift($tables);
+      return $tables;
+    }
 }

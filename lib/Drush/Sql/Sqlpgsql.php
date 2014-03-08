@@ -58,6 +58,14 @@ class Sqlpgsql extends SqlBase {
   }
 
   public function listTables() {
-    return "select tablename from pg_tables where schemaname='public';";
+    public function listTables() {
+      $return = $this->query("SELECT tablename FROM pg_tables WHERE schemaname='public';", NULL, TRUE);
+      $tables = drush_shell_exec_output();
+      if (!empty($tables)) {
+        // Shift off the header of the column of data returned.
+        array_shift($tables);
+        return $tables;
+      }
+    }
   }
 }
