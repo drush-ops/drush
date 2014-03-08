@@ -387,6 +387,7 @@ function core_drush_engine_drupal() {
     'pm' => array(),
     'cache' => array(),
     'image' => array(),
+    'sql' => array(),
   );
   return $engines;
 }
