@@ -217,12 +217,8 @@ function drush_archive_dump($sites_subdirs = '@self') {
         'file' => basename($result_file),
         'driver' => $db_spec['driver'],
       );
-      $table_selection = drush_sql_get_table_selection();
       $sql = drush_sql_get_class($db_spec);
-      list($dump_exec, $dump_file) = $sql->dump($table_selection, $result_file);
-      if (drush_op_system($dump_exec)) {
-        return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed.');
-      }
+      $sql->dump($result_file);
       drush_shell_cd_and_exec($tmp, "$tar {$tar_extra_options} --dereference -rf %s %s", $destination, basename($result_file));
     }
   }

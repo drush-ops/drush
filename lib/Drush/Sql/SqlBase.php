@@ -85,7 +85,16 @@ class SqlBase {
     $file = $this->dumpFile($file);
     list($cmd, $file) = $this->dumpCmd($table_selection, $file);
     list($suffix, $file) = $this->dumpGzip($file);
-    return array($cmd . $suffix, $file);
+    // Avoid the php memory of the $output array in drush_shell_exec().
+    if (!$return = drush_op_system($cmd)) {
+      if ($file) {
+        drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
+        return $file;
+      }
+    }
+    else {
+      return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed');
+    }
   }
 
   /*
@@ -122,21 +131,6 @@ class SqlBase {
       $file = str_replace(array('@DATABASE', '@DATE'), array($database, gmdate('Ymd_His')), $file);
     }
     return $file;
-  }
-
-  public function dumpPrepare() {
-    $skip_tables = $table_selection['skip'];
-    $structure_tables = $table_selection['structure'];
-    $tables = $table_selection['tables'];
-
-    $ignores = array();
-    $skip_tables  = array_merge($structure_tables, $skip_tables);
-    $data_only = drush_get_option('data-only');
-    // The ordered-dump option is only supported by MySQL for now.
-    // @todo add documention once a hook for drush_get_option_help() is available.
-    // @see drush_get_option_help() in drush.inc
-    $ordered_dump = drush_get_option('ordered-dump');
-
   }
 
   /*

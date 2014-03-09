@@ -89,7 +89,6 @@ function sql_drush_command() {
     ) + $options + $db_url,
   );
   $items['sql-dump'] = array(
-    'callback' => 'drush_sql_dump_execute',
     'description' => 'Exports the Drupal DB as SQL using mysqldump or equivalent.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'examples' => array(
@@ -338,20 +337,10 @@ function drush_sql_create() {
 /**
  * Command callback. Outputs the entire Drupal database in SQL format using mysqldump or equivalent.
  */
-function drush_sql_dump_execute() {
+function drush_sql_dump() {
   drush_sql_bootstrap_further();
   $sql = drush_sql_get_class();
-  list($exec, $file) = $sql->dump(drush_get_option('result-file', FALSE));
-
-  // Avoid the php memory of the $output array in drush_shell_exec().
-  if (!$return = drush_op_system($exec)) {
-    if ($file) {
-      drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
-    }
-  }
-  else {
-    return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed');
-  }
+  return $sql->dump(drush_get_option('result-file', FALSE));
 }
 
 /**
