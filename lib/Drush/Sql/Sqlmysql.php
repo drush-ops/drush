@@ -58,7 +58,10 @@ class Sqlmysql extends SqlBase {
   }
 
   public function listTables() {
-    $return = $this->query('SHOW TABLES', NULL, TRUE);
+    // Make sure that we don't honor result-file as this is an internal use of query().
+    drush_set_option('result-file', '', 'process');
+    $return = $this->query('SHOW TABLES;', NULL, TRUE);
+    drush_unset_option('result-file', 'process');
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {
       // Shift off the header of the column of data returned.
@@ -102,7 +105,7 @@ class Sqlmysql extends SqlBase {
     else {
       // Append the ignore-table options.
       foreach ($skip_tables as $table) {
-        $ignores[] = "--ignore-table=$database.$table";
+        $ignores[] = '--ignore-table=' . $this->db_spec['database'] . '.' . $table;
       }
       $exec .= ' '. implode(' ', $ignores);
 

@@ -121,7 +121,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   if (!$final_destination) {
     // No destination provided.
     $backup = drush_include_engine('version_control', 'backup');
-    // TODO: this standard drush pattern leads to a slightly obtuse directory structure.
+    // TODO: this standard Drush pattern leads to a slightly obtuse directory structure.
     $dest_dir = $backup->prepare_backup_dir('archive-dump');
     if (empty($dest_dir)) {
       $dest_dir = drush_tempdir();
@@ -205,19 +205,22 @@ function drush_archive_dump($sites_subdirs = '@self') {
   // Dump the default database for each site and add to the archive.
   foreach ($sites as $key => $alias) {
     if (isset($alias['databases']['default']['default'])) {
-      $db = $alias['databases']['default']['default'];
+      $db_spec = $alias['databases']['default']['default'];
       // Use a subdirectory name matching the docroot name.
       drush_mkdir("{$tmp}/{$docroot}");
+
       // Ensure uniqueness by prefixing key if needed. Remove path delimiters.
-      $dbname = str_replace(DIRECTORY_SEPARATOR, '-', $db['database']);
+      $dbname = str_replace(DIRECTORY_SEPARATOR, '-', $db_spec['database']);
       $result_file = count($sites) == 1 ? "$tmp/$dbname.sql" : str_replace('@', '', "$tmp/$key-$dbname.sql");
+
       $all_dbs[$key] = array(
         'file' => basename($result_file),
-        'driver' => $db['driver'],
+        'driver' => $db_spec['driver'],
       );
       $table_selection = drush_sql_get_table_selection();
-      list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $db, $result_file);
-      if (!drush_shell_exec($dump_exec)) {
+      $sql = drush_sql_get_class($db_spec);
+      list($dump_exec, $dump_file) = $sql->dump($table_selection, $result_file);
+      if (drush_op_system($dump_exec)) {
         return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed.');
       }
       drush_shell_cd_and_exec($tmp, "$tar {$tar_extra_options} --dereference -rf %s %s", $destination, basename($result_file));
@@ -379,8 +382,9 @@ function drush_archive_restore($file, $site_id = NULL) {
           return drush_set_error('DRUSH_ARCHIVE_UNABLE_DISCOVER_DB', dt('Unable to get database details from db-url option or settings.php', array('!key' => $key)));
         }
       }
-      drush_sql_empty_db($db_spec);
-      _drush_sql_query(NULL, $db_spec, $sql_file);
+      $sql = drush_sql_get_class($db_spec);
+      $sql->drop_or_create();
+      $sql->query(NULL, $sql_file);
 
       // Append new DB info to settings.php.
       if ($db_url) {

@@ -1,3 +1,5 @@
 <?php
 
-class RoleException extends Exception {}
+namespace Drush\Role;
+
+class RoleException extends \Exception {}

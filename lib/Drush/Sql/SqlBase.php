@@ -285,7 +285,7 @@ class SqlBase {
    */
   public function drop_or_create() {
     if ($this->db_exists()) {
-      $this->drop();
+      $this->drop($this->listTables());
     }
     else {
       $this->createdb();

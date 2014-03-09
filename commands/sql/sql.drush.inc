@@ -57,8 +57,7 @@ function sql_drush_command() {
     'hidden' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'options' => array(
-      // @todo - no longer supported.
-      // 'all' => 'Show all database connections, instead of just one.',
+      'all' => 'Show all database connections, instead of just one.',
       'show-passwords' => 'Show database password.',
     ) + $options,
     'outputformat' => array(
@@ -286,9 +285,25 @@ function drush_sql_conf() {
   }
   catch (Exception $e) {
   }
-  // @todo dropped support for --all.
-  $sql = drush_sql_get_class();
-  return $sql->db_spec;
+  if (drush_get_option('all')) {
+    switch (drush_drupal_major_version()) {
+      case 6:
+        if (!isset($GLOBALS['db_url'])) {
+          return NULL;
+        }
+        return drush_sitealias_convert_db_from_db_url($GLOBALS['db_url']);
+
+      default:
+        if (!isset($GLOBALS['databases'])) {
+          return NULL;
+        }
+        return $GLOBALS['databases'];
+    }
+  }
+  else {
+    $sql = drush_sql_get_class();
+    return $sql->db_spec;
+  }
 }
 
 /**
@@ -573,22 +588,6 @@ function drush_sql_sanitize() {
 
 //////////////////////////////////////////////////////////////////////////////
 // SQL SERVICE HELPERS
-
-function _drush_sql_get_all_db_specs() {
-  switch (drush_drupal_major_version()) {
-    case 6:
-      if (!isset($GLOBALS['db_url'])) {
-        return NULL;
-      }
-      return drush_sitealias_convert_db_from_db_url($GLOBALS['db_url']);
-
-    default:
-      if (!isset($GLOBALS['databases'])) {
-        return NULL;
-      }
-      return $GLOBALS['databases'];
-  }
-}
 
 /**
  * Determine where to store an sql dump file.  This
