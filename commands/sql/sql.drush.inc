@@ -116,7 +116,7 @@ function sql_drush_command() {
   );
   $items['sql-query'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'description' => 'Execute a query against the site database.',
+    'description' => 'Execute a query against a database.',
     'examples' => array(
       'drush sql-query "SELECT * FROM users WHERE uid=1"' => 'Browse user record. Table prefixes, if used, must be added to table names by hand.',
       'drush sql-query --db-prefix "SELECT * FROM {users} WHERE uid=1"' => 'Browse user record. Table prefixes are honored.  Caution: curly-braces will be stripped from all portions of the query.',
