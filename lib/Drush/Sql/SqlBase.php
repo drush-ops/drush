@@ -175,33 +175,32 @@ class SqlBase {
    *
    * @param string $query
    *   The SQL to be executed. Should be NULL if $file is provided.
-   * @param string $filename
+   * @param string $input_file
    *   A path to a file containing the SQL to be executed.
    * @param bool $save_output
    *   If TRUE, Drush uses a bit more memory to store query results. Use
    *   drush_shell_exec_output() to fetch them.
    */
-  public function query($query, $filename = NULL, $save_output = FALSE) {
-    if ($filename) {
-      $query = file_get_contents($filename);
+  public function query($query, $input_file = NULL, $save_output = FALSE) {
+    if ($input_file) {
+      $query = file_get_contents($input_file);
     }
     $query = $this->query_prefix($query);
     $query = $this->query_format($query);
 
     // Save $query to a tmp file if needed. We will redirect it in.
-    if (!$filename) {
+    if (!$input_file) {
       // @todo
       $suffix = '';
-      $filename = drush_save_data_to_temp_file($query, $suffix);
+      $input_file = drush_save_data_to_temp_file($query, $suffix);
     }
 
-    // $exec = drush_sql_build_exec($db_spec, $filename);
     $parts = array(
       $this->command(),
       $this->creds(),
       drush_get_option('extra', $this->query_extra),
       $this->query_file,
-      drush_escapeshellarg($filename),
+      drush_escapeshellarg($input_file),
     );
     $exec = implode(' ', $parts);
 
