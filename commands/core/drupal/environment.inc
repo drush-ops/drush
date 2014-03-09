@@ -288,7 +288,7 @@ function _drush_file_private_path() {
  * @return string
  *   The extension name.
  */
-function _drush_pm_extension_get_name($info) {
+function _drush_extension_get_name($info) {
   return $info->getName();
 }
 
@@ -300,7 +300,7 @@ function _drush_pm_extension_get_name($info) {
  * @return string
  *   The extension type.
  */
-function _drush_pm_extension_get_type($info) {
+function _drush_extension_get_type($info) {
   return $info->getType();
 }
 
@@ -312,7 +312,7 @@ function _drush_pm_extension_get_type($info) {
  * @return string
  *   The extension path.
  */
-function _drush_pm_extension_get_path($info) {
+function _drush_extension_get_path($info) {
   return $info->getPath();
 }
 

@@ -821,6 +821,45 @@ function drush_get_extensions($include_hidden = TRUE) {
 }
 
 /**
+ * Gets the extension name.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension name.
+ */
+function drush_extension_get_name($info) {
+  drush_include_engine('drupal', 'environment');
+  return _drush_extension_get_name($info);
+}
+
+/**
+ * Gets the extension type.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension type.
+ */
+function drush_extension_get_type($info) {
+  drush_include_engine('drupal', 'environment');
+  return _drush_extension_get_type($info);
+}
+
+/**
+ * Gets the extension path.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension path.
+ */
+function drush_extension_get_path($info) {
+  drush_include_engine('drupal', 'environment');
+  return _drush_extension_get_path($info);
+}
+
+/**
  * Test compatibility of a extension with version of drupal core and php.
  *
  * @param $file Extension object as returned by system_rebuild_module_data().

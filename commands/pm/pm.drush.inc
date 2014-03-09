@@ -446,8 +446,8 @@ function pm_complete_projects() {
  * It will sort first by type, second by package and third by name.
  */
 function _drush_pm_sort_extensions($a, $b) {
-  $a_type = _drush_pm_extension_get_type($a);
-  $b_type = _drush_pm_extension_get_type($b);
+  $a_type = drush_extension_get_type($a);
+  $b_type = drush_extension_get_type($b);
   if ($a_type == 'module' && $b_type == 'theme') {
     return -1;
   }
@@ -471,7 +471,7 @@ function _drush_pm_sort_extensions($a, $b) {
  *   String describing extension status. Values: enabled|disabled|not installed
  */
 function drush_get_extension_status($extension) {
-  if ((_drush_pm_extension_get_type($extension) == 'module') && ($extension->schema_version == -1)) {
+  if ((drush_extension_get_type($extension) == 'module') && ($extension->schema_version == -1)) {
     $status = "not installed";
   }
   else {
@@ -497,7 +497,7 @@ function drush_pm_classify_extensions(&$extensions, &$modules, &$themes, $extens
     if (!isset($extension_info[$extension])) {
       continue;
     }
-    $type = _drush_pm_extension_get_type($extension_info[$extension]);
+    $type = drush_extension_get_type($extension_info[$extension]);
     if ($type == 'module') {
       $modules[$extension] = $extension;
     }
@@ -547,8 +547,8 @@ function drush_get_projects(&$extensions = NULL) {
         $project = 'drupal';
       }
       else {
-        $extension_name = _drush_pm_extension_get_name($extension);
-        $extension_path = _drush_pm_extension_get_path($extension);
+        $extension_name = drush_extension_get_name($extension);
+        $extension_path = drush_extension_get_path($extension);
         if (is_dir($extension_path . '/CVS') && (!module_exists('cvs_deploy'))) {
           $extension->vcs = 'cvs';
           drush_log(dt('Extension !extension is fetched from cvs. Ignoring.', array('!extension' => $extension_name)), 'debug');
@@ -572,7 +572,7 @@ function drush_get_projects(&$extensions = NULL) {
         // no direct relation with the project name. For example,
         // "Text (text)" or "Number (number)" for the CCK project.
         'label' => isset($extensions[$project])?$extensions[$project]->label:$project,
-        'type' => _drush_pm_extension_get_type($extension),
+        'type' => drush_extension_get_type($extension),
         'version' => $extension->info['version'],
         'status' => $extension->status,
         'extensions' => array(),
@@ -584,7 +584,7 @@ function drush_get_projects(&$extensions = NULL) {
     elseif ($extension->status != 0) {
       $projects[$project]['status'] = $extension->status;
     }
-    $projects[$project]['extensions'][] = _drush_pm_extension_get_name($extension);
+    $projects[$project]['extensions'][] = drush_extension_get_name($extension);
   }
 
   // Obtain each project's path and try to provide a better label for ones
@@ -763,7 +763,7 @@ function drush_pm_list() {
 
   $major_version = drush_drupal_major_version();
   foreach ($extension_info as $key => $extension) {
-    if (!in_array(_drush_pm_extension_get_type($extension), $type_filter)) {
+    if (!in_array(drush_extension_get_type($extension), $type_filter)) {
       unset($extension_info[$key]);
       continue;
     }
@@ -799,7 +799,7 @@ function drush_pm_list() {
 
     $row['package'] = $extension->info['package'];
     $row['name'] = $extension->label;
-    $row['type'] = ucfirst(_drush_pm_extension_get_type($extension));
+    $row['type'] = ucfirst(drush_extension_get_type($extension));
     $row['status'] = ucfirst($status);
     // Suppress notice when version is not present.
     $row['version'] = @$extension->info['version'];
@@ -834,7 +834,6 @@ function drush_pm_find_project_from_extension($extension) {
  * Validate callback. Determine the modules and themes that the user would like enabled.
  */
 function drush_pm_enable_validate() {
-  drush_include_engine('drupal', 'pm', drush_drupal_major_version());
   $args = pm_parse_arguments(func_get_args());
 
   $extension_info = drush_get_extensions();
@@ -881,7 +880,7 @@ function drush_pm_enable_validate() {
       // Check if the extension is compatible with Drupal core and php version.
       if ($component = drush_extension_check_incompatibility($extension_info[$name])) {
         drush_set_error('DRUSH_PM_ENABLE_MODULE_INCOMPATIBLE', dt('!name is incompatible with the !component version.', array('!name' => $name, '!component' => $component)));
-        if (_drush_pm_extension_get_type($extension_info[$name]) == 'module') {
+        if (drush_extension_get_type($extension_info[$name]) == 'module') {
           unset($modules[$name]);
         }
         else {
@@ -969,7 +968,7 @@ function drush_pm_enable_validate() {
 
   $searchpath = array();
   foreach (array_merge($modules, $themes) as $name) {
-    $searchpath[] = _drush_pm_extension_get_path($extension_info[$name]);
+    $searchpath[] = drush_extension_get_path($extension_info[$name]);
   }
   // Add all modules that passed validation to the drush
   // list of commandfiles (if they have any).  This

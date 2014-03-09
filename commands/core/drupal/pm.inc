@@ -86,7 +86,7 @@ function _drush_pm_disable($args) {
   // Inform the user of final status.
   $result_extensions = drush_get_named_extensions_list($extensions);
   $problem_extensions = array();
-  foreach ($result_extensions as $name => $extension) {
+  foreach ($result_extensions as $extension) {
     if (!$extension->status) {
       drush_log(dt('!extension was disabled successfully.', array('!extension' => $extension->name)), 'ok');
     }
@@ -157,30 +157,5 @@ function _drush_pm_uninstall($modules) {
   foreach ($modules as $module) {
     drush_log(dt('!module was successfully uninstalled.', array('!module' => $module)), 'ok');
   }
-}
-
-/**
- * Return an array with general info of an extension.
- */
-function _drush_pm_info_extension($info) {
-  $major_version = drush_drupal_major_version();
-
-  $data['extension'] = $info->name;
-  $data['project'] = isset($info->info['project'])?$info->info['project']:dt('Unknown');
-  $data['type'] = $info->type;
-  $data['title'] = $info->info['name'];
-  $data['config'] = isset($info->info['configure']) ? $info->info['configure'] : dt('None');
-  $data['description'] = $info->info['description'];
-  $data['version'] = $info->info['version'];
-  $data['date'] = $info->info['datestamp'] ? format_date($info->info['datestamp'] ?: 0, 'custom', 'Y-m-d') : NULL;
-  $data['package'] = $info->info['package'];
-  $data['core'] = $info->info['core'];
-  $data['php'] = $info->info['php'];
-  $data['status'] = drush_get_extension_status($info);
-  $path = (($info->type == 'module')&&($major_version == 7))?$info->uri:$info->filename;
-  $path = substr($path, 0, strrpos($path, '/'));
-  $data['path'] = $path;
-
-  return $data;
 }
 
