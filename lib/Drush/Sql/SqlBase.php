@@ -303,6 +303,10 @@ class SqlBase {
    */
   public function creds() {}
 
+  /**
+   * The active database driver.
+   * @return string
+   */
   public function scheme() {
     return $this->db_spec['driver'];
   }
@@ -317,6 +321,9 @@ class SqlBase {
 
   /*
    * Helper method to turn associative array into options with values.
+   *
+   * @return string
+   *   A bash fragment.
    */
   public function params_to_options($parameters) {
     // Turn each parameter into a valid parameter string.
@@ -343,6 +350,8 @@ class SqlBase {
    * which will be overlayed with any options that begin with 'target-';
    * therefore, the commandline options 'target-db-su' and 'target-db-su-pw'
    * may also affect the operation of this function.
+   *
+   * @return null
    */
   public function su() {
     $create_db_target = $this->db_spec;
