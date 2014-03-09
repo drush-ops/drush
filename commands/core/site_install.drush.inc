@@ -86,7 +86,8 @@ function drush_core_site_install_validate() {
  * Perform setup tasks for installation.
  */
 function drush_core_pre_site_install($profile = NULL) {
-  if (!$db_spec = _drush_sql_get_db_spec()) {
+  $sql = drush_sql_get_class();
+  if (!$db_spec = $sql->db_spec) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
   }
@@ -114,7 +115,7 @@ function drush_core_pre_site_install($profile = NULL) {
   if (drush_drupal_major_version() >= 8) {
     $msg[] = dt('empty any Config directories');
   }
-  if (drush_sql_db_exists($db_spec)) {
+  if ($sql->db_exists()) {
     $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
   }
   else {
@@ -178,7 +179,7 @@ function drush_core_pre_site_install($profile = NULL) {
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   }
 
-  $this->drop_or_create();
+  $sql->drop_or_create($db_spec);
 
   if (drush_drupal_major_version() >= 8) {
     // Empty out any existing config directories.

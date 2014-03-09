@@ -207,6 +207,9 @@ class SqlBase {
     if ($output_file = drush_get_option('result-file')) {
       $exec .= ' > '. drush_escapeshellarg($output_file);
     }
+    elseif (!$save_output) {
+      $exec .= ' > '. drush_escapeshellarg(drush_bit_bucket());
+    }
 
     // In --simulate mode, drush_op will show the call to mysql or psql,
     // but the sql query itself is stored in a temp file and not displayed.

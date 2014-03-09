@@ -10,7 +10,7 @@ function drush_core_site_install_version($profile, array $additional_form_option
 
   require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
 
-  $db_spec = _drush_sql_get_db_spec();
+  $sql = drush_sql_get_class();
 
   $account_pass = drush_get_option('account-pass', drush_generate_password());
   $account_name = drush_get_option('account-name', 'admin');
@@ -21,8 +21,8 @@ function drush_core_site_install_version($profile, array $additional_form_option
     ),
     'forms' => array(
       'install_settings_form' => array(
-        'driver' => $db_spec['driver'],
-        $db_spec['driver'] => $db_spec,
+        'driver' => $sql->db_spec['driver'],
+        $sql->db_spec['driver'] => $sql->db_spec,
         'op' => dt('Save and continue'),
       ),
       'install_configure_form' => array(
