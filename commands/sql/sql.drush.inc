@@ -173,7 +173,7 @@ function sql_drush_command() {
       'source-target' => array(
           'description' => 'A key within the SOURCE database identifying a particular server in the database group.',
           'example-value' => 'key',
-          // Gets unhidden in help_alter(). We only want to show to D7 users but have to
+          // Gets unhidden in help_alter(). We only want to show to D7+ users but have to
           // declare it here since this command does not bootstrap fully.
           'hidden' => TRUE,
       ),
@@ -185,7 +185,7 @@ function sql_drush_command() {
       'target-target' => array(
           'description' => 'Oy. A key within the TARGET database identifying a particular server in the database group.',
           'example-value' => 'key',
-          // Gets unhidden in help_alter(). We only want to show to D7 users but have to
+          // Gets unhidden in help_alter(). We only want to show to D7+ users but have to
           // declare it here since this command does not bootstrap fully.
           'hidden' => TRUE,
       ),
@@ -201,7 +201,7 @@ function sql_drush_command() {
         'example-value' => 'pass',
       ),
       'no-ordered-dump' => 'Do not pass --ordered-dump to sql-dump.  sql-sync orders the dumpfile by default in order to increase the efficiency of rsync.',
-      'sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync. Optional.',
+      'sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync.',
     ),
     'sub-options' => array(
       'sanitize' => array(
