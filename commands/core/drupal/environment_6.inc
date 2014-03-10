@@ -289,12 +289,10 @@ function drush_queue_get_queues() {
     $queues = module_invoke_all('cron_queue_info');
     drupal_alter('cron_queue_info', $queues);
     foreach($queues as $name => $queue) {
-      $queues[$name] = array(
-        'worker callback' => $queue['worker callback'],
-        'cron' => array(
-          'time' => $queue['time'],
-        ),
-      );
+      $queues[$name]['worker callback'] = $queue['worker callback'];
+      if (isset($queue['time'])) {
+        $queues[$name]['cron']['time'] = $queue['time'];
+      }
     }
   }
   return $queues;
