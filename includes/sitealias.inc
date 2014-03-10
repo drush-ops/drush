@@ -1807,8 +1807,7 @@ function drush_sitealias_evaluate_paths_in_options($option_string) {
  *   the scope of this one call).
  * @param local_only
  *   If TRUE, force an error if the provided path points to a remote
- *   machine.  This is used in core-cli, for example, to insure that you
- *   do not 'cd' to a remote machine.
+ *   machine.
  * @param os
  *   This should be the local system os, unless evaluate path is
  *   being called for rsync, in which case it should be "CWRSYNC"
