@@ -30,7 +30,11 @@ function drush_sql_sink($source, $destination) {
      'strict' => 0,
   );
   // Perform sql-dump on source unless told othrwise.
-  $options = $global_options + array('gzip' => TRUE);
+  $options = $global_options + array(
+      'gzip' => TRUE,
+      'result-file' => TRUE,
+      // 'structure-tables-list' => 'cache*', // Do we want to default to this?
+    );
   if (!drush_get_option('no-dump')) {
     $return = drush_invoke_process($source, 'sql-dump', array(), $options);
     if ($return['error_status']) {
@@ -43,12 +47,13 @@ function drush_sql_sink($source, $destination) {
 
   // Rsync file from source to destination.
   $options = $global_options + array();
-  $return = drush_invoke_process($destination, 'core-rsync', array("$source:$dump_file", "@none:%temp"), $options);
+  $return = drush_invoke_process($destination, 'core-rsync', array("$source:$dump_file", '@none:%temp'), $options);
   if ($return['error_status']) {
     return drush_set_error('core-rsync failed.');
   }
 
   // Import file into destination.
+  // @todo Make sure that the %temp gets resolved to real path.
   $input_file = '%temp/' . basename($dump_file);
   $options = $global_options + array('file' => $input_file);
   $return = drush_invoke_process($destination, 'sql-query', array(), $options);

@@ -145,6 +145,7 @@ function sql_drush_command() {
     'aliases' => array('sqlq'),
   );
   $items['sql-sync'] = array(
+    'command-hook' => 'sql-sink',
     'description' => 'Copy and import source database to target database. Transfers via rsync.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'drush dependencies' => array('core'), // core-rsync.
