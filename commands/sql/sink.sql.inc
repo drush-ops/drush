@@ -22,7 +22,7 @@
 
 function drush_sql_sink($source, $destination) {
   // @todo Fill in placeholders.
-  if (!drush_confirm(dt('You will destroy the %s database and replace with (a sanitized verion of ) %s. Do you really want to continue?'))) {
+  if (!drush_confirm(dt('You will destroy the %s database and replace with (a sanitized version of ) %s. Do you really want to continue?'))) {
     return drush_user_abort();
   }
 
@@ -44,9 +44,13 @@ function drush_sql_sink($source, $destination) {
       $dump_file = $return['object'];
     }
   }
+  else {
+    // @todo caller has to tell us where the dump file is.
+  }
 
   // Rsync file from source to destination.
   $options = $global_options + array();
+  // @todo coax rsync into resolving %temp in destination. core-status not returning it.
   $return = drush_invoke_process($destination, 'core-rsync', array("$source:$dump_file", '@none:%temp'), $options);
   if ($return['error_status']) {
     return drush_set_error('core-rsync failed.');
