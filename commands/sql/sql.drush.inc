@@ -131,7 +131,7 @@ function sql_drush_command() {
         'description' => 'Save to a file. The file should be relative to Drupal root. Optional.',
         'example-value' => '/path/to/file',
       ),
-      'file' => 'Path to a file containing the SQL to be run.',
+      'file' => 'Path to a file containing the SQL to be run. Gzip files are accepted.',
       'extra' => array(
         'description' => 'Add custom options to the mysql command.',
         'example-value' => '--skip-column-names',
@@ -710,7 +710,12 @@ function _drush_sql_get_post_sync_messages() {
  * @return Drush\Sql\SqlBase
  */
 function drush_sql_get_class($db_spec = NULL) {
-  $sql = new Drush\Sql\SQLBase($db_spec);
-  $sql_driver_specific = drush_get_class('Drush\Sql\Sql', func_get_args(), array($sql->scheme(), drush_drupal_major_version()));
+  try {
+    $sql = new Drush\Sql\SQLBase($db_spec);
+    $sql_driver_specific = drush_get_class('Drush\Sql\Sql', func_get_args(), array($sql->scheme(), drush_drupal_major_version()));
+  }
+  catch (\Drush\Sql\SqlException $e) {
+    return drush_set_error('DRUSH_SQL_CLASS_FAILED', $e->getMessage());
+  }
   return $sql_driver_specific;
 }

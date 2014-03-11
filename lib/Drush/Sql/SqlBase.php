@@ -84,7 +84,7 @@ class SqlBase {
     $table_selection = drush_sql_get_expanded_table_selection();
     $file = $this->dumpFile($file);
     list($cmd, $file) = $this->dumpCmd($table_selection, $file);
-    list($suffix, $file) = $this->dumpGzip($file);
+    list($cmd, $file) = $this->dumpGzip($cmd, $file);
     // Avoid the php memory of the $output array in drush_shell_exec().
     if (!$return = drush_op_system($cmd)) {
       if ($file) {
@@ -140,7 +140,7 @@ class SqlBase {
    *
    * @return array
    */
-  function dumpGzip($file) {
+  function dumpGzip($cmd, $file) {
     $suffix = '';
     if (drush_get_option('gzip')) {
       if ($file) {
@@ -161,7 +161,7 @@ class SqlBase {
         $suffix = "| gzip";
       }
     }
-    return array($suffix, $file);
+    return array($cmd . $suffix, $file);
   }
 
   /**
@@ -176,6 +176,15 @@ class SqlBase {
    *   drush_shell_exec_output() to fetch them.
    */
   public function query($query, $input_file = NULL, $save_output = FALSE) {
+    if ($input_file && drush_file_is_tarball($input_file)) {
+      if (drush_shell_exec('gunzip %s', $input_file)) {
+        $input_file = trim($input_file, '.gz');
+      }
+      else {
+        return drush_set_error(dt('Failed to gunzip input file.'));
+      }
+    }
+
     if ($input_file) {
       $query = file_get_contents($input_file);
     }

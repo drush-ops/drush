@@ -1174,6 +1174,9 @@ function _drush_command_translate($source) {
  *       of the data items in it.
  * - engines: declares information on Drush engines the command will load.
  *   Available engines can vary by command type.
+ *
+ * @return bool|array
+ *   A command definition.
  */
 function drush_parse_command() {
   $args = drush_get_arguments();
