@@ -7,7 +7,7 @@ function cli_drush_command() {
   $items['core-cli'] = array(
     'description' => 'Open an interactive shell on a Drupal site.',
     'remote-tty' => TRUE,
-    'aliases' => array('cli', 'php'),
+    'aliases' => array('php'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
   );
   return $items;
