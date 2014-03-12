@@ -55,7 +55,8 @@ function drush_sql_sink($source, $destination) {
   $tmp = $return['object'];
 
   // Rsync file from source to destination.
-  $options = $global_options + array();
+  // Don't send any unrecognized options to rsync as appended after args with sad outcome.
+  $options = $global_options;
   $destination_dump_path = $tmp . '/' . basename($source_dump_path);
   $return = drush_invoke_process($destination, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $options);
   if ($return['error_status']) {

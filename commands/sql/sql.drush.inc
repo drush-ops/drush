@@ -568,11 +568,7 @@ function drush_sql_sanitize() {
   }
   if ($sanitize_query) {
     $sql = drush_sql_get_class();
-    $result = $sql->query($query, $filename);
-    // @todo should method set an error?
-    if (!$result) {
-      return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
-    }
+    $result = $sql->query($sanitize_query);
   }
 }
 
@@ -705,17 +701,32 @@ function _drush_sql_get_post_sync_messages() {
 
 /**
  * Wrapper for drush_get_class; instantiates an instance of the version-specific
- * Sql class suitable for the current version of Drupal and DB driver.
+ * Sql class suitable for the current DB driver (or Drupal major version).
+ *
+ * @param array $db_spec
+ *   If known, specify a $db_spec that the class can operate with.
+ *
+ * @param mixed $variant
+ *   A major version of Drupal. Providing this parameter overrides the usual behavior of this function which
+ *   returns a class that varies on SQL driver. Only specify when needed.
  *
  * @return Drush\Sql\SqlBase
  */
-function drush_sql_get_class($db_spec = NULL) {
+function drush_sql_get_class($db_spec = NULL, $variant = NULL) {
   try {
-    $sql = new Drush\Sql\SQLBase($db_spec);
-    $sql_driver_specific = drush_get_class('Drush\Sql\Sql', func_get_args(), array($sql->scheme(), drush_drupal_major_version()));
+    if ($db_spec) {
+      return drush_get_class('Drush\Sql\Sql', array($db_spec), array($db_spec['driver']));
+    }
+    elseif ($variant == NULL) {
+      $sql = drush_sql_get_class(NULL, drush_drupal_major_version());
+      $db_spec = $sql->determine_db_spec();
+      return drush_sql_get_class($db_spec);
+    }
+    else {
+      return drush_get_class('Drush\Sql\Sql', array(), array($variant));
+    }
   }
   catch (\Drush\Sql\SqlException $e) {
     return drush_set_error('DRUSH_SQL_CLASS_FAILED', $e->getMessage());
   }
-  return $sql_driver_specific;
 }

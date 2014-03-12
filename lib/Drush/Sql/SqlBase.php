@@ -7,9 +7,6 @@ class SqlBase {
   // An Drupal style array containing specs for connecting to database.
   public $db_spec;
 
-  // A site alias which provides and overrides part of the $db_spec.
-  public $site_alias_record;
-
   // Default code appended to sql-query connections.
   public $query_extra = '';
 
@@ -21,47 +18,7 @@ class SqlBase {
    * not explicitly passed.
    */
   public function __construct($db_spec = NULL, $site_alias_record = NULL) {
-    // Determine $db_spec when none was provided.
-    if (!$db_spec) {
-      $database = drush_get_option('database', 'default');
-      $target = drush_get_option('target', 'default');
-
-      if ($url = drush_get_option('db-url')) {
-        $url =  is_array($url) ? $url[$database] : $url;
-        $db_spec = drush_convert_db_from_db_url($url);
-        $db_spec['db_prefix'] = drush_get_option('db-prefix');
-      }
-      elseif (($databases = drush_get_option('databases')) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
-        $db_spec = $databases[$database][$target];
-      }
-      elseif (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
-        switch (drush_drupal_major_version()) {
-          case 6:
-            if ($url = isset($GLOBALS['db_url']) ? $GLOBALS['db_url'] : drush_get_option('db-url', NULL)) {
-              $url =  is_array($url) ? $url[$database] : $url;
-              $db_spec = drush_convert_db_from_db_url($url);
-              $db_spec['db_prefix'] = isset($GLOBALS['db_prefix']) ? $GLOBALS['db_prefix'] : drush_get_option('db-prefix', NULL);
-            }
-            break;
-          default:
-            // We don't use DB API here `sql-sync` would have to messily addConnection.
-            if (!isset($GLOBALS['databases']) || !array_key_exists($database, $GLOBALS['databases']) || !array_key_exists($target, $GLOBALS['databases'][$database])) {
-              // Do nothing
-            }
-            else {
-              $db_spec = $GLOBALS['databases'][$database][$target];;
-            }
-        }
-      }
-    }
-
-    if (empty($db_spec)) {
-      throw new SqlException(dt('Could not find a matching database connection.'));
-    }
-    else {
-      $this->db_spec = $db_spec;
-    }
-    $this->site_alias_record = $site_alias_record;
+    $this->db_spec = $db_spec;
   }
 
   /**
@@ -209,9 +166,6 @@ class SqlBase {
 
     if ($output_file = drush_get_option('result-file')) {
       $exec .= ' > '. drush_escapeshellarg($output_file);
-    }
-    elseif (!$save_output) {
-      $exec .= ' > '. drush_escapeshellarg(drush_bit_bucket());
     }
 
     // In --simulate mode, drush_op will show the call to mysql or psql,
