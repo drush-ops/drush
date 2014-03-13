@@ -219,6 +219,18 @@ Do not use both types of declarations for a single project in your makefile.
   `subtree`  - if the download is an archive, only this subtree within the
   archive will be copied to the target destination. Optional.
 
+- `download[type] = copy`
+
+  Copies a project from a local folder. Options:
+
+  `url` - the URL of the folder. Required.
+          The URL must be a path to a local folder either using the bare path or
+          the file:// protocol. The path may be absolute or relative to the makefile.
+
+     projects[example][type] = "profile"
+     projects[example][download][type] = "copy"
+     projects[example][download][url] = "file://./example"
+
 - `download[type] = bzr`
 
   Use a bazaar repository as the source for this project. Options:
@@ -275,13 +287,13 @@ Do not use both types of declarations for a single project in your makefile.
   `working-copy` - If true, the checked out source will be kept as a working copy rather than exported as standalone files
 
   Shorthand for `download[url]` available for all download types:
-  
+
      projects:
        mytheme:
          download: "git://github.com/jane_doe/mytheme.git"
-         
+
   is equivalent to:
-  
+
      projects:
        mytheme:
          download:
