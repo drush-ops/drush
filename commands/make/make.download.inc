@@ -193,6 +193,41 @@ function make_download_get($name, $type, $download, $download_location) {
 }
 
 /**
+ * Copies a folder the specified location.
+ *
+ * @return mixed
+ *   The TRUE on success, FALSE on failure.
+ */
+function make_download_copy($name, $type, $download, $download_location) {
+    if ($folder = _make_download_copy($download['url'])) {
+        drush_log(dt('@project copied from @url.', array('@project' => $name, '@url' => $download['url'])), 'ok');
+        return drush_copy_dir($folder, $download_location, FILE_EXISTS_OVERWRITE);
+    }
+    make_error('COPY_ERROR', dt('Unable to copy @project from @url.', array('@project' => $name, '@url' => $download['url'])));
+    return FALSE;
+}
+
+/**
+ * Wrapper to drush_download_copy().
+ *
+ * @param string $folder
+ *   The location of the folder to copy.
+ *
+ * @return string
+ *   The location of the folder, or FALSE on failure.
+ */
+function _make_download_copy($folder) {
+    if (substr($folder, 0, 7) == 'file://') {
+        $folder = substr($folder, 7);
+    }
+
+    if (is_dir($folder)) {
+        return $folder;
+    }
+    return FALSE;
+}
+
+/**
  * Checks out a git repository to the specified download location.
  *
  * Allowed parameters in $download, in order of precedence:
