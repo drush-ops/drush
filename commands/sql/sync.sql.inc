@@ -21,7 +21,7 @@
 /*
  * A command validate callback.
  */
-function drush_sql_sink_validate($source, $destination) {
+function drush_sql_sync_validate($source, $destination) {
   // Get destination info for confirmation prompt.
   $source_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($source), 'source-');
   $destination_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($destination), 'target-');
@@ -57,7 +57,7 @@ function drush_sql_sink_validate($source, $destination) {
 /*
  * A command callback.
  */
-function drush_sql_sink($source, $destination) {
+function drush_sql_sync($source, $destination) {
   $global_options = drush_redispatch_get_options() + array(
      'strict' => 0,
   );
@@ -140,7 +140,7 @@ function drush_sql_sink($source, $destination) {
  * always used default values and only worked with Drupal 6 + mysql
  * appears in the drush.api.php.  @see hook_drush_sql_sync_sanitize().
  */
-function sink_drush_sql_sync_sanitize($site) {
+function sync_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
   $databases = sitealias_get_databases_from_record($site_settings);
   $prefix = $databases['default']['default']['prefix'];
