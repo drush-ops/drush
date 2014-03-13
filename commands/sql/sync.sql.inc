@@ -14,7 +14,6 @@
  * - Can we now simplify anything in sitealias.inc or backend.inc?
  *
  * Todo:
- *  - Cleanup temp file on $dest. Verify temp file is deleted on $source.
  *  - Make test pass.
  */
 
@@ -95,18 +94,20 @@ function drush_sql_sync($source, $destination) {
   // Rsync file from source to destination.
   // Don't send redispatch options to rsync as they get appended after core-rsync with sad outcome.
   if (!drush_get_option('no-dump')) {
-    // Cleanup if we made the dump file.
-    $options += array('remove-source-files' => TRUE);
+    // Cleanup if this command created the dump file.
+    $options = array('remove-source-files' => TRUE);
   }
   $destination_dump_path = $tmp . '/' . basename($source_dump_path);
-  $return = drush_invoke_process($destination, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"));
+  $return = drush_invoke_process($destination, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $options);
   if ($return['error_status']) {
     return drush_set_error('core-rsync failed.');
   }
 
   // Import file into destination.
-  // @todo perhaps call drush_register_file_for_deletion($destination_dump_path) on $destination.
-  $options = $global_options + array('file' => $destination_dump_path);
+  $options = $global_options + array(
+    'file' => $destination_dump_path,
+    'file-delete' => TRUE,
+  );
   $return = drush_invoke_process($destination, 'sql-query', array(), $options);
   if ($return['error_status']) {
     // An error was already logged.

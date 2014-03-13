@@ -46,7 +46,7 @@ class SqlBase {
     if (!$return = drush_op_system($cmd)) {
       if ($file) {
         drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
-        return $file;
+        drush_backend_set_result($file);
       }
     }
     else {
@@ -183,11 +183,17 @@ class SqlBase {
     }
 
     if ($save_output) {
-      return drush_shell_exec($exec);
+      $success = drush_shell_exec($exec);
     }
     else {
-      return (drush_op_system($exec) == 0);
+      $success = (drush_op_system($exec) == 0);
     }
+
+    if ($success && drush_get_option('file-delete')) {
+      drush_delete_dir($input_file);
+    }
+
+    return $success;
   }
 
   /*
