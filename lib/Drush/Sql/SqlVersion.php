@@ -3,7 +3,8 @@
 namespace Drush\Sql;
 
 class SqlVersion {
-  public function determine_db_spec() {
+  public function get_db_spec() {
+    $db_spec = NULL;
     $database = drush_get_option('database', 'default');
     $target = drush_get_option('target', 'default');
 
@@ -15,5 +16,6 @@ class SqlVersion {
     elseif (($databases = drush_get_option('databases')) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
       $db_spec = $databases[$database][$target];
     }
+    return $db_spec;
   }
 }

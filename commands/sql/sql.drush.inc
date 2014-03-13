@@ -163,13 +163,13 @@ function sql_drush_command() {
       'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
       'tables-key' => 'A key in the $tables array. Optional.',
       'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
-      'cache' => 'Skip dump if result file exists and is less than "cache" hours old. Optional; default is 24 hours.',
-      'no-cache' => 'Do not cache the sql-dump file.',
+      // 'cache' => 'Skip dump if result file exists and is less than "cache" hours old. Optional; default is 24 hours.',
+      // 'no-cache' => 'Do not cache the sql-dump file.',
       'no-dump' => 'Do not dump the sql database; always use an existing dump file.',
       'source-db-url' => 'Database specification for source system to dump from.',
       'source-remote-port' => 'Override sql database port number in source-db-url. Optional.',
       'source-remote-host' => 'Remote machine to run sql-dump file on. Optional; default is local machine.',
-      'source-dump' => 'Path to dump file. Optional; default is to create a temporary file.',
+      // 'source-dump' => 'Path to dump file. Optional; default is to create a temporary file.',
       'source-database' => 'A key in the $db_url (D6) or $databases (D7+) array which provides the data.',
       'source-target' => array(
           'description' => 'A key within the SOURCE database identifying a particular server in the database group.',
@@ -181,7 +181,7 @@ function sql_drush_command() {
       'target-db-url' => '',
       'target-remote-port' => '',
       'target-remote-host' => '',
-      'target-dump' => '',
+      // 'target-dump' => '',
       'target-database' => 'A key in the $db_url (D6) or $databases (D7+) array which shall receive the data.',
       'target-target' => array(
           'description' => 'Oy. A key within the TARGET database identifying a particular server in the database group.',
@@ -190,8 +190,8 @@ function sql_drush_command() {
           // declare it here since this command does not bootstrap fully.
           'hidden' => TRUE,
       ),
-      'temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
-      'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.',
+      // 'temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
+      // 'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.',
       'create-db' => 'Create a new database before importing the database dump on the target machine.',
       'db-su' => array(
         'description' => 'Account to use when creating a new database. Optional.',
@@ -369,32 +369,6 @@ function drush_sql_get_table_selection() {
 }
 
 /**
- * Get a list of all table names and expand input that may contain
- * wildcards (`*`) if necessary so that the array returned only contains valid
- * table names i.e. actual tables that exist, without a wildcard.
- *
- * @return array
- *   An array of tables with each table name in the appropriate
- *   element of the array.
- */
-function drush_sql_get_expanded_table_selection() {
-  $table_selection = drush_sql_get_table_selection();
-  // Get the existing table names in the specified database.
-  $sql = drush_sql_get_class();
-  $db_tables = $sql->listTables();
-  if (isset($table_selection['skip'])) {
-    $table_selection['skip'] = _drush_sql_expand_and_filter_tables($table_selection['skip'], $db_tables);
-  }
-  if (isset($table_selection['structure'])) {
-    $table_selection['structure'] = _drush_sql_expand_and_filter_tables($table_selection['structure'], $db_tables);
-  }
-  if (isset($table_selection['tables'])) {
-    $table_selection['tables'] = _drush_sql_expand_and_filter_tables($table_selection['tables'], $db_tables);
-  }
-  return $table_selection;
-}
-
-/**
  * Expand wildcard tables.
  *
  * @param array $tables
@@ -513,7 +487,7 @@ function drush_sql_query($query = NULL) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
   }
   $sql = drush_sql_get_class(drush_get_option('db-spec'));
-  $result = $sql->query($query, $filename);
+  $result = $sql->query($query, $filename, FALSE);
   if (!$result) {
     return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
   }
@@ -572,79 +546,6 @@ function drush_sql_sanitize() {
   }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// SQL SERVICE HELPERS
-
-/**
- * Determine where to store an sql dump file.  This
- * function is called by sql-sync.
- *
- * @param array $site_record
- *
- * @return string Full path to the sql-dump file.
- */
-function drush_sql_dump_file(&$site_record) {
-  $site_record['dump-is-temp'] = FALSE;
-  // If the user has set the --{prefix}-dump option, then
-  // use the exact name provided.
-  $dump_file = drush_sitealias_get_path_option($site_record, 'dump');
-  if (!isset($dump_file)) {
-    $databases = sitealias_get_databases_from_record($site_record);
-    if (isset($databases)) {
-      $db_spec = $databases['default']['default'];
-      // Make a base filename pattern to use to name the dump file
-      $filename_pattern = $db_spec['database'];
-      if (isset($db_spec['remote-host'])) {
-        $filename_pattern = $db_spec['remote-host'] . '_' . $filename_pattern;
-      }
-    }
-    // If the user has set the --dump-dir option, then
-    // store persistant sql dump files there.
-    $dump_dir = drush_sitealias_get_path_option($site_record, 'dump-dir');
-    $use_temp_file = drush_sitealias_get_path_option($site_record, 'temp') || !$dump_dir;
-    $remote = isset($site_record['remote-host']);
-    // If this is a remote site, try to find a writable tmpdir.
-    if (!isset($dump_dir) && $remote) {
-      // If the alias is remote, we'll add on the 'sql' suffix.
-      // As mentioned in drush_tempnam, providing a suffix removes
-      // the guarentee of tempnam to return a unique filename;
-      // however, when the file is going to be used on a remote
-      // system, there is no such guarentee anyway, so we might
-      // as well include it.
-      $suffix = '.sql';
-      $remote_site = $site_record;
-      unset($remote_site['root']);
-      unset($remote_site['uri']);
-      $result = drush_invoke_process($site_record, 'php-eval', array('return drush_find_tmp();'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
-      // If the call to invoke process does not work for some reason
-      // (e.g. drush not installed on the target machine),
-      // then we will just presume that the tmp dir is '/tmp'.
-      if (!$result || !empty($result['error_status']) || empty($result['object'])) {
-        $dump_dir = '/tmp';
-      }
-      else {
-        $dump_dir = $result['object'];
-      }
-    }
-    if ($use_temp_file) {
-      $dump_file = drush_tempnam($filename_pattern, $dump_dir, $remote ? '.sql' : '');
-      // If $dump_dir does not exist, tempname will use the system
-      // directory instead.  That is the behavior we want on the local
-      // system, but on remote systems, force the result back to the
-      // specified directory.
-      if ($remote) {
-        $dump_file = $dump_dir . '/' . basename($dump_file);
-      }
-      $site_record['dump-is-temp'] = TRUE;
-    }
-    else {
-      $dump_file = $dump_dir . '/' . $filename_pattern . '.sql';
-    }
-  }
-
-  return $dump_file;
-}
-
 /**
  * Call from a pre-sql-sync hook to register an sql
  * query to be executed in the post-sql-sync hook.
@@ -700,33 +601,27 @@ function _drush_sql_get_post_sync_messages() {
 }
 
 /**
- * Wrapper for drush_get_class; instantiates an instance of the version-specific
- * Sql class suitable for the current DB driver (or Drupal major version).
+ * Wrapper for drush_get_class; instantiates an driver-specific instance
+ * of SqlBase class.
  *
  * @param array $db_spec
  *   If known, specify a $db_spec that the class can operate with.
  *
- * @param mixed $variant
- *   A major version of Drupal. Providing this parameter overrides the usual behavior of this function which
- *   returns a class that varies on SQL driver. Only specify when needed.
- *
  * @return Drush\Sql\SqlBase
  */
-function drush_sql_get_class($db_spec = NULL, $variant = NULL) {
+function drush_sql_get_class($db_spec = NULL) {
   try {
     if ($db_spec) {
       return drush_get_class('Drush\Sql\Sql', array($db_spec), array($db_spec['driver']));
     }
-    elseif ($variant == NULL) {
-      $sql = drush_sql_get_class(NULL, drush_drupal_major_version());
-      $db_spec = $sql->determine_db_spec();
-      return drush_sql_get_class($db_spec);
-    }
     else {
-      return drush_get_class('Drush\Sql\Sql', array(), array($variant));
+      $sqlVersion = drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version()));
+      if ($db_spec = $sqlVersion->get_db_spec()) {
+        return drush_sql_get_class($db_spec);
+      }
     }
   }
   catch (\Drush\Sql\SqlException $e) {
-    return drush_set_error('DRUSH_SQL_CLASS_FAILED', $e->getMessage());
+    return drush_set_error('DRUSH_SQL_GET_CLASS', $e->getMessage());
   }
 }

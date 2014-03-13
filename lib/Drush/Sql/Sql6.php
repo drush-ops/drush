@@ -3,9 +3,9 @@
 namespace Drush\Sql;
 
 class Sql6 extends SqlVersion {
-  public function determine_db_spec() {
+  public function get_db_spec() {
     $db_spec = NULL;
-    if (!$db_spec = parent::determine_db_spec()) {
+    if (!$db_spec = parent::get_db_spec()) {
       if ($url = isset($GLOBALS['db_url']) ? $GLOBALS['db_url'] : drush_get_option('db-url', NULL)) {
         $database = drush_get_option('database', 'default');
         $url =  is_array($url) ? $url[$database] : $url;

@@ -38,7 +38,7 @@ class SqlBase {
 
 
   public function dump($file = '') {
-    $table_selection = drush_sql_get_expanded_table_selection();
+    $table_selection = $this->get_expanded_table_selection();
     $file = $this->dumpFile($file);
     list($cmd, $file) = $this->dumpCmd($table_selection, $file);
     list($cmd, $file) = $this->dumpGzip($cmd, $file);
@@ -128,11 +128,13 @@ class SqlBase {
    *   The SQL to be executed. Should be NULL if $file is provided.
    * @param string $input_file
    *   A path to a file containing the SQL to be executed.
+   * @param bool $silent
+   *   Don't print query results to screen.
    * @param bool $save_output
    *   If TRUE, Drush uses a bit more memory to store query results. Use
    *   drush_shell_exec_output() to fetch them.
    */
-  public function query($query, $input_file = NULL, $save_output = FALSE) {
+  public function query($query, $input_file = NULL, $silent = TRUE, $save_output = FALSE) {
     if ($input_file && drush_file_is_tarball($input_file)) {
       if (drush_shell_exec('gunzip %s', $input_file)) {
         $input_file = trim($input_file, '.gz');
@@ -157,6 +159,7 @@ class SqlBase {
 
     $parts = array(
       $this->command(),
+      $this->silent(),
       $this->creds(),
       drush_get_option('extra', $this->query_extra),
       $this->query_file,
@@ -186,6 +189,11 @@ class SqlBase {
       return (drush_op_system($exec) == 0);
     }
   }
+
+  /*
+   * A string to add to the command when queries should not print their results.
+   */
+  public function silent() {}
 
   public function query_prefix($query) {
     // Inject table prefixes as needed.
@@ -272,6 +280,31 @@ class SqlBase {
    */
   public function scheme() {
     return $this->db_spec['driver'];
+  }
+
+  /**
+   * Get a list of all table names and expand input that may contain
+   * wildcards (`*`) if necessary so that the array returned only contains valid
+   * table names i.e. actual tables that exist, without a wildcard.
+   *
+   * @return array
+   *   An array of tables with each table name in the appropriate
+   *   element of the array.
+   */
+  public function get_expanded_table_selection() {
+    $table_selection = drush_sql_get_table_selection();
+    // Get the existing table names in the specified database.
+    $db_tables = $this->listTables();
+    if (isset($table_selection['skip'])) {
+      $table_selection['skip'] = _drush_sql_expand_and_filter_tables($table_selection['skip'], $db_tables);
+    }
+    if (isset($table_selection['structure'])) {
+      $table_selection['structure'] = _drush_sql_expand_and_filter_tables($table_selection['structure'], $db_tables);
+    }
+    if (isset($table_selection['tables'])) {
+      $table_selection['tables'] = _drush_sql_expand_and_filter_tables($table_selection['tables'], $db_tables);
+    }
+    return $table_selection;
   }
 
   /**

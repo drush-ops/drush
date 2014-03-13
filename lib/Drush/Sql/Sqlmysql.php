@@ -41,6 +41,10 @@ class Sqlmysql extends SqlBase {
     return $this->params_to_options($parameters);
   }
 
+  public function silent() {
+    return '--silent';
+  }
+
   public function createdb_sql($dbname, $quoted = FALSE) {
     if ($quoted) {
       $dbname = '`' . $dbname . '`';
@@ -54,20 +58,21 @@ class Sqlmysql extends SqlBase {
   }
 
   public function db_exists() {
-    return $this->query("SELECT 1;");
+    return $this->query("SELECT 1;", NULL, TRUE);
   }
 
   public function listTables() {
     // Make sure that we don't honor result-file as this is an internal use of query().
     drush_set_option('result-file', '', 'process');
-    $return = $this->query('SHOW TABLES;', NULL, TRUE);
+    $return = $this->query('SHOW TABLES;', NULL, TRUE, TRUE);
     drush_unset_option('result-file', 'process');
     $tables = drush_shell_exec_output();
-    if (!empty($tables)) {
+    // No longer needed since we silenced column headers it seems.
+    // if (!empty($tables)) {
       // Shift off the header of the column of data returned.
-      array_shift($tables);
-      return $tables;
-    }
+      // array_shift($tables);
+    // }
+    return $tables;
   }
 
   public function dumpCmd($table_selection, $file) {
