@@ -79,8 +79,13 @@ INSTALL - COMPOSER
 
         composer global require drush/drush:6.*
 
+* To install Drush 7.x (dev) which is required for Drupal 8:
+
+        composer global require drush/drush:dev-master
+
 * Alternate commands to install some other variant of Drush:
 
+        # Install a specific version of Drush, e.g. Drush 6.1.0
         composer global require drush/drush:6.1.0
         # Master branch as a git clone. Great for contributing back to Drush project.
         composer global require drush/drush:dev-master --prefer-source
