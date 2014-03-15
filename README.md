@@ -35,7 +35,7 @@ For even more documentation, use the 'topic' command:
 
     $ drush topic
 
-Installation instructions can be found below.  For a full list of Drush commands 
+Installation instructions can be found below.  For a full list of Drush commands
 and documentation by version, visit http://www.drush.org.
 
 
@@ -103,7 +103,7 @@ INSTALL - MANUAL
 -----------
 1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in a directory that is outside of your web root.
 1. Make the 'drush' command executable:
-    
+
     `$ chmod u+x /path/to/drush/drush`
 
 1. Configure your system to recognize where Drush resides. There are 3 options:
@@ -134,7 +134,7 @@ INSTALL - MANUAL
 1. From Drush root, run Composer to fetch dependencies.
 
      `$ composer install`
-     
+
 See the POST-INSTALL section for configuration tips.
 
 POST-INSTALL
@@ -161,7 +161,7 @@ POST-INSTALL
    Putting this in a .bashrc/.bash_profile/.profile would produce this prompt:
 
      `msonnabaum@hostname ~/repos/drush (master)[@sitename]$`
-     
+
 1. Help the Drush development team by sending anonymized usage statistics.  To automatically send usage data, please add the following to a .drushrc.php file:
 
        ```php
@@ -170,9 +170,9 @@ POST-INSTALL
        ```
 
      Stats are usually logged locally and sent whenever log file exceeds 50Kb.
-     Alternatively, one may disable automatic sending and instead use 
+     Alternatively, one may disable automatic sending and instead use
      `usage-show` and `usage-send` commands to more carefully send data.
-     
+
 
 ADDITIONAL CONFIGURATIONS FOR MAMP:
 -----------------------------------

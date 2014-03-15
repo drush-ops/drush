@@ -1,7 +1,7 @@
 <h1>Remote Operations on Drupal Sites via a Bastion Server</h1>
 <p>
-Wikipedia defines a <a href="http://en.wikipedia.org/wiki/Bastion_host">bastion server</a> as "a special 
-purpose computer on a network specifically designed and configured 
+Wikipedia defines a <a href="http://en.wikipedia.org/wiki/Bastion_host">bastion server</a> as "a special
+purpose computer on a network specifically designed and configured
 to withstand attacks."</a>  For the purposes of this documentation,
 though, any server that you can ssh through to reach other servers
 will do.  Using standard ssh and drush techniques, it is possible
@@ -22,9 +22,9 @@ $aliases['internal'] = array(
 );
 </pre>
 With this alias defintion, you may use commands such as
-`drush @internal status`, 'drush ssh @internal` and 
-`drush rsync @internal @dev` to operate remotely on the 
-internal machine.  What if you cannot reach the server 
+`drush @internal status`, 'drush ssh @internal` and
+`drush rsync @internal @dev` to operate remotely on the
+internal machine.  What if you cannot reach the server
 that site is on from your current network?  Enter the bastion server.
 
 <h2>Setting up a Bastion server in .ssh/config</h2>
@@ -99,4 +99,3 @@ With this setup, you will be able to use your site alias
 '@internal' to remotely operate on your internal intranet
 Drupal site seemlessly, regardless of your location -- a handy
 trick indeed.
-
