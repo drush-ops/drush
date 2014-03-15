@@ -73,6 +73,7 @@ INSTALL - COMPOSER
 * Make sure Composer's global bin directory is on the system PATH (recommended):
 
         sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
+        source $HOME/.bashrc
 
 * To install Drush 6.x (stable):
 
