@@ -45,6 +45,7 @@ function test_drush_command() {
     // cache the lists of tests, file_prepare_directory(), variable lookup like
     // httpauth creds, copy pre-built registry table from testing side, etc.
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'drupal dependencies' => array('simpletest'),
   );
   $items['test-clean'] = array(
     'description' => "Clean temporary tables and files.",
