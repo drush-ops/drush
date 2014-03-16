@@ -624,3 +624,87 @@ function drush_sql_get_class($db_spec = NULL) {
     return drush_set_error('DRUSH_SQL_GET_CLASS', $e->getMessage());
   }
 }
+
+/**
+ * Implements hook_sql_drush_sql_sync_sanitize.
+ *
+ * Sanitize usernames, passwords, and sessions when the --sanitize option is used.
+ * It is also an example of how to write a database sanitizer for sql sync.
+ *
+ * To write your own sync hook function, define mymodule_drush_sql_sync_sanitize()
+ * and follow the form of this function to add your own database
+ * sanitization operations via the register post-sync op function;
+ * @see drush_sql_register_post_sync_op().  This is the only thing that the
+ * sync hook function needs to do; sql-sync takes care of the rest.
+ *
+ * The function below has a lot of logic to process user preferences and
+ * generate the correct SQL regardless of whether Postgres, Mysql,
+ * Drupal 6 or Drupal 7 is in use.  A simpler sanitize function that
+ * always used default values and only worked with Drupal 6 + mysql
+ * appears in the drush.api.php.  @see hook_drush_sql_sync_sanitize().
+ */
+function sql_drush_sql_sync_sanitize($site) {
+  $site_settings = drush_sitealias_get_record($site);
+  $databases = sitealias_get_databases_from_record($site_settings);
+  $prefix = $databases['default']['default']['prefix'];
+  $prefix = isset($databases['default']['default']['prefix']) ? $databases['default']['default']['prefix'] : '';
+  $user_table_updates = array();
+  $message_list = array();
+
+  // Sanitize passwords.
+  $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
+  if ($newpassword != 'no' && $newpassword !== 0) {
+    $major_version = drush_drupal_major_version();
+    $pw_op = "";
+
+    // In Drupal 6, passwords are hashed via the MD5 algorithm.
+    if ($major_version == 6) {
+      $pw_op = "MD5('$newpassword')";
+    }
+    // In Drupal 7, passwords are hashed via a more complex algorithm,
+    // available via the user_hash_password function.
+    elseif ($major_version >= 7) {
+      $core = DRUSH_DRUPAL_CORE;
+      include_once $core . '/includes/password.inc';
+      include_once $core . '/includes/bootstrap.inc';
+      $hash = user_hash_password($newpassword);
+      $pw_op = "'$hash'";
+    }
+    if (!empty($pw_op)) {
+      $user_table_updates[] = "pass = $pw_op";
+      $message_list[] =  "passwords";
+    }
+  }
+
+  // Sanitize email addresses.
+  $newemail = drush_get_option(array('sanitize-email', 'destination-sanitize-email'), 'user+%uid@localhost.localdomain');
+  if ($newemail != 'no' && $newemail !== 0) {
+    if (strpos($newemail, '%') !== FALSE) {
+      // We need a different sanitization query for Postgres and Mysql.
+
+      $db_driver = $databases['default']['default']['driver'];
+      if ($db_driver == 'pgsql') {
+        $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%name' => "' || replace(name, ' ', '_') || '");
+        $newmail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "'";
+      }
+      else {
+        $email_map = array('%uid' => "', uid, '", '%mail' => "', replace(mail, '@', '_'), '", '%name' => "', replace(name, ' ', '_'), '");
+        $newmail =  "concat('" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "')";
+      }
+      $user_table_updates[] = "mail = $newmail, init = $newmail";
+    }
+    else {
+      $user_table_updates[] = "mail = '$newemail', init = '$newemail'";
+    }
+    $message_list[] = 'email addresses';
+  }
+
+  if (!empty($user_table_updates)) {
+    $sanitize_query = "UPDATE {$prefix}users SET " . implode(', ', $user_table_updates) . " WHERE uid > 0;";
+    drush_sql_register_post_sync_op('user-email', dt('Reset !message in user table', array('!message' => implode(' and ', $message_list))), $sanitize_query);
+  }
+
+  // Seems quite portable (SQLite?) - http://en.wikipedia.org/wiki/Truncate_(SQL)
+  $sql_sessions = "TRUNCATE TABLE {$prefix}sessions;";
+  drush_sql_register_post_sync_op('sessions', dt('Truncate Drupal\'s sessions table'), $sql_sessions);
+}

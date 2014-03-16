@@ -6,15 +6,16 @@
  * - Source and Dest can both be remote. Convenient.
  * - No special handling for multiple targets. Very rare.
  * - We always do 'deferred sanitization'. Would be easy to move this earlier if desired.
- * - A bit tricky to know where to put your drushrc/alias customizations. Can be local, $source, or $destination.
- * - Stop optimizing for efficient rsync.
- *   -- Always use gzip during sql-dump. Don't default to --ordered-dump.
+ * - A bit tricky to know where to put your drushrc/alias customizations. Can be local, $source, or $destination. Just add docs?
+ * - Stop optimizing for efficient rsync. We could add this back if desired.
+ *   -- Always using gzip during sql-dump. Don't default to --ordered-dump.
  *   -- Rsync destination is always a temp dir
  *   -- No 24 hour freshness check for a team of devs.
  * - Can we now simplify anything in sitealias.inc or backend.inc?
  *
  * Todo:
  *  - Make test pass.
+ *  - Add log messages so user knows whats happenning.
  */
 
 /*
@@ -63,6 +64,7 @@ function drush_sql_sync($source, $destination) {
 
   // Create destination DB if needed.
   if (drush_get_option('create-db')) {
+    drush_log(dt('Starting to create database on Destination.'), 'ok');
     $return = drush_invoke_process($destination, 'sql-create', array(), $global_options);
     if ($return['error_status']) {
       return drush_set_error('sql-create failed.');
@@ -76,6 +78,7 @@ function drush_sql_sync($source, $destination) {
       // 'structure-tables-list' => 'cache*', // Do we want to default to this?
     );
   if (!drush_get_option('no-dump')) {
+    drush_log(dt('Starting to dump database on Source.'), 'ok');
     $return = drush_invoke_process($source, 'sql-dump', array(), $options);
     if ($return['error_status']) {
       return drush_set_error('sql-dump failed.');
@@ -86,6 +89,7 @@ function drush_sql_sync($source, $destination) {
   }
 
   $tmp = '/tmp'; // Our fallback plan.
+  drush_log(dt('Starting to discover temporary files directory on Destination.'), 'ok');
   $return = drush_invoke_process($destination, 'php-eval', array('return drush_find_tmp();'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
   if (!$return['error_status']) {
     $tmp = $return['object'];
@@ -98,12 +102,14 @@ function drush_sql_sync($source, $destination) {
     $options = array('remove-source-files' => TRUE);
   }
   $destination_dump_path = $tmp . '/' . basename($source_dump_path);
+  drush_log(dt('Destination is copying dump file from Source.'), 'ok');
   $return = drush_invoke_process($destination, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $options);
   if ($return['error_status']) {
     return drush_set_error('core-rsync failed.');
   }
 
   // Import file into destination.
+  drush_log(dt('Starting to import dump file onto Destination database.'), 'ok');
   $options = $global_options + array(
     'file' => $destination_dump_path,
     'file-delete' => TRUE,
@@ -115,6 +121,7 @@ function drush_sql_sync($source, $destination) {
   }
 
   // Run Sanitize if needed.
+  drush_log(dt('Starting to sanitize target database on Destination.'), 'ok');
   $options = $global_options + array();
   if (drush_get_option('sanitize')) {
     $return = drush_invoke_process($destination, 'sql-sanitize', array(), $options);
@@ -122,87 +129,4 @@ function drush_sql_sync($source, $destination) {
       return drush_set_error('sql-sanitize failed.');
     }
   }
-}
-
-/**
- * Sql sync sanitization function.  This hook function will sanitize usernames,
- * passwords, and sessions when the --sanitize option is used.  It is
- * also an example of how to write a database sanitizer for sql sync.
- *
- * To write your own sync hook function, define mymodule_drush_sql_sync_sanitize()
- * and follow the form of this function to add your own database
- * sanitization operations via the register post-sync op function;
- * @see drush_sql_register_post_sync_op().  This is the only thing that the
- * sync hook function needs to do; sql-sync takes care of the rest.
- *
- * The function below has a lot of logic to process user preferences and
- * generate the correct SQL regardless of whether Postgres, Mysql,
- * Drupal 6 or Drupal 7 is in use.  A simpler sanitize function that
- * always used default values and only worked with Drupal 6 + mysql
- * appears in the drush.api.php.  @see hook_drush_sql_sync_sanitize().
- */
-function sync_drush_sql_sync_sanitize($site) {
-  $site_settings = drush_sitealias_get_record($site);
-  $databases = sitealias_get_databases_from_record($site_settings);
-  $prefix = $databases['default']['default']['prefix'];
-  $prefix = isset($databases['default']['default']['prefix']) ? $databases['default']['default']['prefix'] : '';
-  $user_table_updates = array();
-  $message_list = array();
-
-  // Sanitize passwords.
-  $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
-  if ($newpassword != 'no' && $newpassword !== 0) {
-    $major_version = drush_drupal_major_version();
-    $pw_op = "";
-
-    // In Drupal 6, passwords are hashed via the MD5 algorithm.
-    if ($major_version == 6) {
-      $pw_op = "MD5('$newpassword')";
-    }
-    // In Drupal 7, passwords are hashed via a more complex algorithm,
-    // available via the user_hash_password function.
-    elseif ($major_version >= 7) {
-      $core = DRUSH_DRUPAL_CORE;
-      include_once $core . '/includes/password.inc';
-      include_once $core . '/includes/bootstrap.inc';
-      $hash = user_hash_password($newpassword);
-      $pw_op = "'$hash'";
-    }
-    if (!empty($pw_op)) {
-      $user_table_updates[] = "pass = $pw_op";
-      $message_list[] =  "passwords";
-    }
-  }
-
-  // Sanitize email addresses.
-  $newemail = drush_get_option(array('sanitize-email', 'destination-sanitize-email'), 'user+%uid@localhost.localdomain');
-  if ($newemail != 'no' && $newemail !== 0) {
-    if (strpos($newemail, '%') !== FALSE) {
-      // We need a different sanitization query for Postgres and Mysql.
-
-      $db_driver = $databases['default']['default']['driver'];
-      if ($db_driver == 'pgsql') {
-        $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%name' => "' || replace(name, ' ', '_') || '");
-        $newmail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "'";
-      }
-      else {
-        $email_map = array('%uid' => "', uid, '", '%mail' => "', replace(mail, '@', '_'), '", '%name' => "', replace(name, ' ', '_'), '");
-        $newmail =  "concat('" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "')";
-      }
-      $user_table_updates[] = "mail = $newmail, init = $newmail";
-    }
-    else {
-      $user_table_updates[] = "mail = '$newemail', init = '$newemail'";
-    }
-    $message_list[] = 'email addresses';
-  }
-
-  if (!empty($user_table_updates)) {
-    $sanitize_query = "UPDATE {$prefix}users SET " . implode(', ', $user_table_updates) . " WHERE uid > 0;";
-    drush_sql_register_post_sync_op('user-email', dt('Reset !message in user table', array('!message' => implode(' and ', $message_list))), $sanitize_query);
-  }
-
-  // Seems quite portable (SQLite?) - http://en.wikipedia.org/wiki/Truncate_(SQL)
-  $sql_sessions = "TRUNCATE TABLE {$prefix}sessions;";
-  drush_sql_register_post_sync_op('sessions', dt('Truncate Drupal\'s sessions table'), $sql_sessions);
 }
