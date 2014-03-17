@@ -54,7 +54,7 @@ class EnDisUnListCase extends Drush_CommandTestCase {
     $this->assertTrue(in_array($themeToCheck, $list), 'Themes are in the pm-list');
 
     $path = UNISH_DRUPAL_MAJOR_VERSION >= 7 ? 'devel/settings' : 'admin/settings/devel';
-    $this->drush('sql-query', array("SELECT path FROM menu_router WHERE path = '$path'"), array('root' => $this->webroot(), 'uri' => key($sites)));
+    $this->drush('sql-query', array("SELECT path FROM menu_router WHERE path = '$path';"), array('root' => $this->webroot(), 'uri' => key($sites)));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array($path, $list), 'Cache was cleared after modules were enabled');
 
