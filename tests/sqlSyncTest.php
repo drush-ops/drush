@@ -47,10 +47,6 @@ class sqlSyncTest extends Drush_CommandTestCase {
   }
 
   public function localSqlSync() {
-//    $dump_dir = UNISH_SANDBOX . "/dump-dir";
-//    if (!is_dir($dump_dir)) {
-//      mkdir($dump_dir);
-//    }
     // Create a user in the staging site
     $name = 'joe.user';
     $mail = "joe.user@myhome.com";
@@ -65,7 +61,6 @@ class sqlSyncTest extends Drush_CommandTestCase {
     $sync_options = array(
       'sanitize' => NULL,
       'yes' => NULL,
-      // 'dump-dir' => $dump_dir,
       // @todo test wildcards expansion from within sql-sync.
       // 'skip-tables-list' => 'role_permiss*',
     );
@@ -99,7 +94,6 @@ class sqlSyncTest extends Drush_CommandTestCase {
     $sync_options = array(
       'sanitize' => NULL,
       'yes' => NULL,
-      // 'dump-dir' => $dump_dir,
       'sanitize-email' => 'user@mysite.org',
     );
     $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);

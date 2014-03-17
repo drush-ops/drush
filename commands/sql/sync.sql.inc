@@ -12,10 +12,6 @@
  *   -- Rsync destination is always a temp dir
  *   -- No 24 hour freshness check for a team of devs.
  * - Can we now simplify anything in sitealias.inc or backend.inc?
- *
- * Todo:
- *  - Make test pass.
- *  - Add log messages so user knows whats happenning.
  */
 
 /*
