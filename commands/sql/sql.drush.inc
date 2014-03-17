@@ -168,19 +168,19 @@ function sql_drush_command() {
       'source-db-url' => 'Database specification for source system to dump from.',
       'source-remote-port' => 'Override sql database port number in source-db-url. Optional.',
       'source-remote-host' => 'Remote machine to run sql-dump file on. Optional; default is local machine.',
-      // 'source-dump' => 'Path to dump file. Optional; default is to create a temporary file.',
+      'source-dump' => 'The destination for the dump file, or the path to the dump file when --no-dump is specified.',
       'source-database' => 'A key in the $db_url (D6) or $databases (D7+) array which provides the data.',
       'source-target' => array(
-          'description' => 'A key within the SOURCE database identifying a particular server in the database group.',
-          'example-value' => 'key',
-          // Gets unhidden in help_alter(). We only want to show to D7+ users but have to
-          // declare it here since this command does not bootstrap fully.
-          'hidden' => TRUE,
+        'description' => 'A key within the SOURCE database identifying a particular server in the database group.',
+        'example-value' => 'key',
+        // Gets unhidden in help_alter(). We only want to show to D7+ users but have to
+        // declare it here since this command does not bootstrap fully.
+        'hidden' => TRUE,
       ),
       'target-db-url' => '',
       'target-remote-port' => '',
       'target-remote-host' => '',
-      // 'target-dump' => '',
+      'target-dump' => 'A path for saving the dump file on target. Mandatory when using --no-sync.',
       'target-database' => 'A key in the $db_url (D6) or $databases (D7+) array which shall receive the data.',
       'target-target' => array(
           'description' => 'Oy. A key within the TARGET database identifying a particular server in the database group.',
@@ -200,7 +200,7 @@ function sql_drush_command() {
         'description' => 'Password for the "db-su" account. Optional.',
         'example-value' => 'pass',
       ),
-      'no-ordered-dump' => 'Do not pass --ordered-dump to sql-dump.  sql-sync orders the dumpfile by default in order to increase the efficiency of rsync.',
+      // 'no-ordered-dump' => 'Do not pass --ordered-dump to sql-dump.  sql-sync orders the dumpfile by default in order to increase the efficiency of rsync.',
       'sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync.',
     ),
     'sub-options' => array(

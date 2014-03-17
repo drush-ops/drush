@@ -46,6 +46,14 @@ function drush_sql_sync_validate($source, $destination) {
     return drush_set_error('DRUSH_SAME_DATABASE', dt('Source and target databases are the same; please sync to a different target.'));
   }
 
+  if (drush_get_option('no-dump') && !drush_get_option('source-dump')) {
+    return drush_set_error(DRUSH_SOURCE_DUMP_MISSING, dt('The --source-dump option must be supplied when --no-dump is specified.'))
+  }
+
+  if (drush_get_option('no-sync') && !drush_get_option('target-dump')) {
+    return drush_set_error(DRUSH_TARGET_DUMP_MISSING, dt('The --target-dump option must be supplied when --no-sync is specified.'))
+  }
+
   drush_print(dt("You will destroy data in !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
   // @todo show sanitization messages as per $destination.
   // $messages = _drush_sql_get_post_sync_messages(); // on dest.
@@ -74,7 +82,7 @@ function drush_sql_sync($source, $destination) {
   // Perform sql-dump on source unless told othrwise.
   $options = $global_options + array(
       'gzip' => TRUE,
-      'result-file' => TRUE,
+      'result-file' => drush_get_option('source-dump', TRUE),
       // 'structure-tables-list' => 'cache*', // Do we want to default to this?
     );
   if (!drush_get_option('no-dump')) {
@@ -87,25 +95,30 @@ function drush_sql_sync($source, $destination) {
       $source_dump_path = $return['object'];
     }
   }
-
-  $tmp = '/tmp'; // Our fallback plan.
-  drush_log(dt('Starting to discover temporary files directory on Destination.'), 'ok');
-  $return = drush_invoke_process($destination, 'php-eval', array('return drush_find_tmp();'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
-  if (!$return['error_status']) {
-    $tmp = $return['object'];
+  else {
+    $source_dump_path = drush_get_option('source-dump');
   }
 
-  // Rsync file from source to destination.
-  // Don't send redispatch options to rsync as they get appended after core-rsync with sad outcome.
-  if (!drush_get_option('no-dump')) {
-    // Cleanup if this command created the dump file.
-    $options = array('remove-source-files' => TRUE);
+  // Determine path/to/dump on destination.
+  if (drush_get_option('target-dump')) {
+    $destination_dump_path = drush_get_option('target-dump');
   }
-  $destination_dump_path = $tmp . '/' . basename($source_dump_path);
-  drush_log(dt('Destination is copying dump file from Source.'), 'ok');
-  $return = drush_invoke_process($destination, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $options);
-  if ($return['error_status']) {
-    return drush_set_error('core-rsync failed.');
+  else {
+    $tmp = '/tmp'; // Our fallback plan.
+    drush_log(dt('Starting to discover temporary files directory on Destination.'), 'ok');
+    $return = drush_invoke_process($destination, 'php-eval', array('return drush_find_tmp();'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
+    if (!$return['error_status']) {
+      $tmp = $return['object'];
+    }
+    $destination_dump_path = $tmp . '/' . basename($source_dump_path);
+  }
+
+  if (!drush_get_option('no-sync')) {
+    drush_log(dt('Destination is copying dump file from Source.'), 'ok');
+    $return = drush_invoke_process($destination, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $options);
+    if ($return['error_status']) {
+      return drush_set_error('core-rsync failed.');
+    }
   }
 
   // Import file into destination.
