@@ -47,16 +47,15 @@ function drush_sql_sync_validate($source, $destination) {
   }
 
   if (drush_get_option('no-dump') && !drush_get_option('source-dump')) {
-    return drush_set_error(DRUSH_SOURCE_DUMP_MISSING, dt('The --source-dump option must be supplied when --no-dump is specified.'))
+    return drush_set_error(DRUSH_SOURCE_DUMP_MISSING, dt('The --source-dump option must be supplied when --no-dump is specified.'));
   }
 
   if (drush_get_option('no-sync') && !drush_get_option('target-dump')) {
-    return drush_set_error(DRUSH_TARGET_DUMP_MISSING, dt('The --target-dump option must be supplied when --no-sync is specified.'))
+    return drush_set_error(DRUSH_TARGET_DUMP_MISSING, dt('The --target-dump option must be supplied when --no-sync is specified.'));
   }
 
   drush_print(dt("You will destroy data in !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
-  // @todo show sanitization messages as per $destination.
-  // $messages = _drush_sql_get_post_sync_messages(); // on dest.
+  // @todo Move sanitization prompts to here. They currently show much later.
   if (!drush_confirm(dt('Do you really want to continue?'))) {
     return drush_user_abort();
   }
@@ -114,7 +113,13 @@ function drush_sql_sync($source, $destination) {
   }
 
   if (!drush_get_option('no-sync')) {
-    drush_log(dt('Destination is copying dump file from Source.'), 'ok');
+    drush_log(dt('Copying dump file from Source to Destination.'), 'ok');
+    // Don't send redispatch options to rsync as they get appended after core-rsync with sad outcome.
+    $options = array();
+    if (!drush_get_option('no-dump')) {
+      // Cleanup if this command created the dump file.
+      $options = array('remove-source-files' => TRUE);
+    }
     $return = drush_invoke_process($destination, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $options);
     if ($return['error_status']) {
       return drush_set_error('core-rsync failed.');
