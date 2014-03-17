@@ -2053,17 +2053,21 @@ function drush_sitealias_site_get() {
 }
 
 /**
- * Return the filename for the file tht stores the DRUPAL_SITE variable.
+ * Returns the filename for the file that stores the DRUPAL_SITE variable.
  *
- * @return string
- *   Full path to tmp file.
+ * @param string $filename_prefix
+ *   An arbitrary string to prefix the filename with. Defaults to
+ *   "drush-drupal-site-".
+ *
+ * @return string|false
+ *   Returns the full path to temp file if possible, or FALSE if not.
  */
 function drush_sitealias_get_envar_filename($filename_prefix = 'drush-drupal-site-') {
   $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp/';
 
   if (function_exists('posix_getppid') && is_dir($tmp) && is_writable($tmp)) {
     $dir = $tmp . '/drush-env';
-    if (drush_mkdir($dir, FALSE)) {
+    if (drush_mkdir($dir, TRUE)) {
       return $dir . '/' . $filename_prefix . posix_getppid();
     }
   }
