@@ -4,13 +4,12 @@
  * Notes:
  * - Drush is required on source and dest (except with --no-dump)
  * - Source and Dest can both be remote. Convenient.
- * - No special handling for multiple targets. Very rare.
- * - We always do 'deferred sanitization'. Would be easy to move this earlier if desired.
+ * - No special handling for multiple targets. Use --no-dump.
+ * - We could move the sanitize confirmations earlier if desired.
  * - A bit tricky to know where to put your drushrc/alias customizations. Can be local, $source, or $destination. Just add docs?
- * - Stop optimizing for efficient rsync. We could add this back if desired.
- *   -- Always using gzip during sql-dump. Don't default to --ordered-dump.
- *   -- Rsync destination is always a temp dir
- *   -- No 24 hour freshness check for a team of devs.
+ * - No longer optimizing for efficient rsync. We could add this back if desired.
+ *   -- Always use gzip during sql-dump. Don't use --ordered-dump.
+ *   -- No more 24-hour freshness check for a team of devs.
  * - Can we now simplify anything in sitealias.inc or backend.inc?
  */
 
