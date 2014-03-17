@@ -25,7 +25,7 @@ class Sqlsqlite extends SqlBase {
    *   Quote the database name. Mysql uses backticks to quote which can cause problems
    *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
    */
-  public function createdb($dbname, $quoted = FALSE) {
+  public function createdb($quoted = FALSE) {
     // Make sure sqlite can create file
     $file = $this->db_spec['database'];
     $path = dirname($file);
@@ -41,7 +41,7 @@ class Sqlsqlite extends SqlBase {
   }
 
   public function listTables() {
-    $return = $this->query('.tables', NULL, TRUE);
+    $return = $this->query('.tables', NULL, TRUE, TRUE);
     $tables_raw = drush_shell_exec_output();
     // SQLite's '.tables' command always outputs the table names in a column
     // format, like this:
