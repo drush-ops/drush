@@ -337,7 +337,7 @@ class SqlBase {
     }
 
     // Join the parameters and return.
-    return ' ' . implode(' ', $parameter_strings);
+    return implode(' ', $parameter_strings);
   }
 
   /**
