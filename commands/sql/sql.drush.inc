@@ -491,6 +491,7 @@ function drush_sql_query($query = NULL) {
   if (!$result) {
     return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
   }
+  drush_print(implode("\n", drush_shell_exec_output()));
   return TRUE;
 }
 
