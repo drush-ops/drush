@@ -49,6 +49,7 @@ class outputFormatCase extends Drush_CommandTestCase {
   }
 
   public function getDataForDrupal() {
+    $unish_tmp = UNISH_TMP; // Need local variable.
     return array(
       array(
         'name' => 'Status test - drush version / list',
@@ -78,7 +79,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
         'expected' => "array(
   'drush-version' => '0.0-dev',
-  'drush-temp' => '/tmp',
+  'drush-temp' => '$unish_tmp',
   'drush-conf' => array(),
   'drush-alias-files' => array(
     '/etc/drush/dev.alias.drushrc.php',
@@ -92,9 +93,10 @@ class outputFormatCase extends Drush_CommandTestCase {
         'options' => array(),
         'format' => 'key-value',
         'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
-        'expected' => "Drush version         :  0.0-dev
- Drush configuration   :
- Drush alias files     :  /etc/drush/dev.alias.drushrc.php",
+        'expected' => "Drush version          :  0.0-dev
+ Drush temp directory   :  $unish_tmp
+ Drush configuration    :
+ Drush alias files      :  /etc/drush/dev.alias.drushrc.php",
       ),
       /*
         core-requirements is a little hard to test, because the
