@@ -282,6 +282,44 @@ function hook_drush_sql_sync_sanitize($source) {
 }
 
 /**
+ * Defines help components for commands and categories.
+ *
+ * This hook defines command description, category title, and category summary.
+ * It is invoked whenever a user runs `drush help`.
+ *
+ * @param string $section
+ *   A string corresponding to a help component. It may be one of the following:
+ *   - "drush:{$command}": (optional) The command description is used for the
+ *     help body. Defaults to the command's description as defined in
+ *     hook_drush_command().
+ *   - "meta:{$category}:title": (optional) The 'title' meta item is used to
+ *     name a group of commands in `drush help`. Defaults to "All commands in
+ *     ___", with the specific name of the command file (e.g., sandwich).
+ *     Command files with fewer than four commands will be placed in the "Other
+ *     commands" section, _unless_ they define a title. It is therefore
+ *     preferable to not define a title unless the file defines a lot of
+ *     commands.
+ *   - "meta:{$category}:summary": (optional) The 'summary' meta item is
+ *     displayed in `drush help --filter` and is used to give a general idea
+ *     what the commands in a command file do and what they have in common.
+ *
+ * @return string
+ *   Return a translated string per relevant $section value.
+ */
+function hook_drush_help($section) {
+  switch ($section) {
+    case 'drush:example-command':
+      return dt('Do some exemplary stuff.');
+
+    case 'meta:example-category:title':
+      return dt('Example commands');
+
+    case 'meta:example-category:summary':
+      return dt('Demonstrates patterns with illustrative instances.');
+  }
+}
+
+/**
  * Add help components to a command.
  */
 function hook_drush_help_alter(&$command) {
