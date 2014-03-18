@@ -78,6 +78,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
         'expected' => "array(
   'drush-version' => '0.0-dev',
+  'drush-temp' => '/tmp',
   'drush-conf' => array(),
   'drush-alias-files' => array(
     '/etc/drush/dev.alias.drushrc.php',
