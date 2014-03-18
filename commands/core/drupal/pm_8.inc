@@ -36,7 +36,7 @@ function _drush_pm_uninstall($args) {
 
   // Discard extensions that are not installed.
   foreach ($extensions as $name) {
-    if (!$extension_info[$name]->status && $extension_info[$name]->type == 'theme') {
+    if (!$extension_info[$name]->status && $extension_info[$name]->getType() == 'theme') {
       unset($themes[$name]);
       drush_log(dt('!extension is not installed.', array('!extension' => $name)), 'ok');
     }
@@ -97,15 +97,16 @@ function _drush_pm_uninstall($args) {
   // Inform the user of final status.
   $result_extensions = drush_get_named_extensions_list($extensions);
   $problem_extensions = array();
-  foreach ($result_extensions as $name => $extension) {
+  foreach ($result_extensions as $extension) {
     if (!$extension->status) {
-      drush_log(dt('!extension was uninstalled successfully.', array('!extension' => $extension->name)), 'ok');
+      drush_log(dt('!extension was uninstalled successfully.', array('!extension' => $extension->getName())), 'ok');
     }
     else {
-      $problem_extensions[] = $extension->name;
+      $problem_extensions[] = $extension->getName();
     }
   }
   if (!empty($problem_extensions)) {
     return drush_set_error('DRUSH_PM_UNINSTALL_EXTENSION_ISSUE', dt('There was a problem uninstalling !extension.', array('!extension' => implode(',', $problem_extensions))));
   }
 }
+

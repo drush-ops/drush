@@ -13,7 +13,7 @@ class releaseInfoCase extends Drush_UnitTestCase {
    * @see pm_parse_project_version().
    */
   public function testVersionString() {
-    require_once DRUSH_BASE_PATH . '/commands/pm/pm.drush.inc';
+    _drush_add_commandfiles(array(DRUSH_BASE_PATH . '/commands/pm'));
     $request_data = pm_parse_project_version(array('devel-6.x-1.18'));
     $this->assertArrayHasKey('devel', $request_data);
     $this->assertEquals('6.x', $request_data['devel']['drupal_version']);

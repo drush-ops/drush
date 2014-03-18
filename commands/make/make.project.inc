@@ -547,6 +547,10 @@ class DrushMakeProject {
       $result = FALSE;
     }
     else {
+      // Inherit the translations specified in the extender makefile.
+      if (!empty($this->translations)) {
+        $info['translations'] = $this->translations;
+      }
       // Strip out any modules that have already been processed before this.
       foreach ($this->manifest as $name) {
         unset($info['projects'][$name]);

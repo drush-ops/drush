@@ -22,7 +22,7 @@ function drush_pm_info() {
       drush_log(dt('!extension was not found.', array('!extension' => $extension)), 'warning');
       continue;
     }
-    if ($info->type == 'module') {
+    if (drush_extension_get_type($info) == 'module') {
       $data = _drush_pm_info_module($info);
     }
     else {
@@ -55,11 +55,9 @@ function _drush_pm_info_format_table_data($data) {
  * Return an array with general info of an extension.
  */
 function _drush_pm_info_extension($info) {
-  $major_version = drush_drupal_major_version();
-
-  $data['extension'] = $info->name;
+  $data['extension'] = drush_extension_get_name($info);
   $data['project'] = isset($info->info['project'])?$info->info['project']:dt('Unknown');
-  $data['type'] = $info->type;
+  $data['type'] = drush_extension_get_type($info);
   $data['title'] = $info->info['name'];
   $data['config'] = isset($info->info['configure']) ? $info->info['configure'] : dt('None');
   $data['description'] = $info->info['description'];
@@ -69,9 +67,7 @@ function _drush_pm_info_extension($info) {
   $data['core'] = $info->info['core'];
   $data['php'] = $info->info['php'];
   $data['status'] = drush_get_extension_status($info);
-  $path = (($info->type == 'module')&&($major_version == 7))?$info->uri:$info->filename;
-  $path = substr($path, 0, strrpos($path, '/'));
-  $data['path'] = $path;
+  $data['path'] = drush_extension_get_path($info);
 
   return $data;
 }
@@ -107,7 +103,7 @@ function _drush_pm_info_module($info) {
   $data['required_by'] = $requiredby;
   if ($info->status == 1) {
     $role = drush_role_get_class();
-    $data['permissions'] = $role->getModulePerms($info->name);
+    $data['permissions'] = $role->getModulePerms(drush_extension_get_name($info));
   }
   return $data;
 }

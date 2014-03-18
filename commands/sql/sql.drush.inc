@@ -284,6 +284,7 @@ function drush_sql_conf() {
   }
   catch (Exception $e) {
   }
+
   if (drush_get_option('all')) {
     switch (drush_drupal_major_version()) {
       case 6:

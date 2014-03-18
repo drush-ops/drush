@@ -48,7 +48,7 @@ function drush_pm_updatestatus() {
     }
     // Additionally if the extension name is distinct to the project name and
     // the user asked to update the extension, fix the request.
-    elseif ((isset($requests[$name])) && ($extension->name != $extension->info['project'])) {
+    elseif ((isset($requests[$name])) && ($name != $extension->info['project'])) {
       $requests[$extension->info['project']] = $requests[$name];
       unset($requests[$name]);
     }

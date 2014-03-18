@@ -86,7 +86,7 @@ function _drush_pm_disable($args) {
   // Inform the user of final status.
   $result_extensions = drush_get_named_extensions_list($extensions);
   $problem_extensions = array();
-  foreach ($result_extensions as $name => $extension) {
+  foreach ($result_extensions as $extension) {
     if (!$extension->status) {
       drush_log(dt('!extension was disabled successfully.', array('!extension' => $extension->name)), 'ok');
     }

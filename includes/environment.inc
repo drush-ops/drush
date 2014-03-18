@@ -807,17 +807,56 @@ function drush_get_extensions($include_hidden = TRUE) {
   $extensions = array_merge(drush_get_modules($include_hidden), drush_get_themes($include_hidden));
   foreach ($extensions as $name => $extension) {
     if (isset($extension->info['name'])) {
-      $extensions[$name]->label = $extension->info['name'].' ('.$extension->name.')';
+      $extensions[$name]->label = $extension->info['name'].' ('.$name.')';
     }
     else {
       drush_log(dt("Extension !name provides no human-readable name in .info file.", array('!name' => $name), 'debug'));
-      $extensions[$name]->label = $name.' ('.$extension->name.')';
+      $extensions[$name]->label = $name.' ('.$name.')';
     }
     if (empty($extension->info['package'])) {
       $extensions[$name]->info['package'] = dt('Other');
     }
   }
   return $extensions;
+}
+
+/**
+ * Gets the extension name.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension name.
+ */
+function drush_extension_get_name($info) {
+  drush_include_engine('drupal', 'environment');
+  return _drush_extension_get_name($info);
+}
+
+/**
+ * Gets the extension type.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension type.
+ */
+function drush_extension_get_type($info) {
+  drush_include_engine('drupal', 'environment');
+  return _drush_extension_get_type($info);
+}
+
+/**
+ * Gets the extension path.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension path.
+ */
+function drush_extension_get_path($info) {
+  drush_include_engine('drupal', 'environment');
+  return _drush_extension_get_path($info);
 }
 
 /**
