@@ -15,4 +15,24 @@ class Sql6 extends SqlVersion {
     }
     return $db_spec;
   }
+
+  public function valid_credentials() {
+    $db_spec = $this->get_db_spec();
+    $type = $db_spec['driver'];
+    // Check availability of db extension in PHP and also Drupal support.
+    if (file_exists('./includes/install.'. $type .'.inc')) {
+      require_once './includes/install.'. $type .'.inc';
+      $function = $type .'_is_available';
+      if (!$function()) {
+        drush_log(dt('!type extension for PHP is not installed. Check your php.ini to see how you can enable it.', array('!type' => $type)), 'bootstrap');
+        return FALSE;
+      }
+    }
+    else {
+      drush_log(dt('!type database type is unsupported.', array('!type' => $type)), 'bootstrap');
+      return FALSE;
+    }
+    return TRUE;
+  }
+
 }

@@ -510,7 +510,7 @@ function drush_sql_drop() {
 function drush_sql_cli() {
   drush_sql_bootstrap_further();
   $sql = drush_sql_get_class();
-  drush_shell_proc_open($sql->connect());
+  return !(bool)drush_shell_proc_open($sql->connect());
 }
 
 /**

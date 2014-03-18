@@ -351,135 +351,14 @@ function drush_valid_drupal_root($path) {
  * Tests the currently loaded database credentials to ensure a database connection can be made.
  */
 function drush_valid_db_credentials() {
-  $creds = drush_get_context('DRUSH_DB_CREDENTIALS');
-  // Do minimal checking that we have the necessary information.
-  if (count($creds) == 0) {
+  if (!$sqlVersion = drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version()))) {
     return FALSE;
   }
-  $type = $creds['driver'];
-
-  switch (drush_drupal_major_version()) {
-    case 6:
-      // Check availability of db extension in PHP and also Drupal support.
-      if (file_exists('./includes/install.'. $type .'.inc')) {
-        require_once './includes/install.'. $type .'.inc';
-        $function = $type .'_is_available';
-        if (!$function()) {
-          drush_log(dt('!type extension for PHP is not installed. Check your php.ini to see how you can enable it.', array('!type' => $type)), 'bootstrap');
-          return FALSE;
-        }
-      }
-      else {
-        drush_log(dt('!type database type is unsupported.', array('!type' => $type)), 'bootstrap');
-        return FALSE;
-      }
-      // Verify connection settings.
-      switch ($type) {
-        case 'mysql':
-          $hostspec = $creds['port'] ? $creds['host'] . ':' . $creds['port'] : $creds['host'];
-          $connection = @mysql_connect($hostspec, $creds['user'], $creds['pass']);
-          if (!$connection || !mysql_select_db($creds['name'])) {
-            drush_log(mysql_error(), 'bootstrap');
-            return FALSE;
-          }
-          break;
-        case 'mysqli':
-          $connection = mysqli_init();
-          @mysqli_real_connect($connection, $creds['host'], $creds['user'], $creds['pass'], $creds['name'], (int)$creds['port']);
-          if (mysqli_connect_errno() > 0) {
-            drush_log(mysqli_connect_error(), 'bootstrap');
-            return FALSE;
-          }
-          break;
-        case 'pgsql':
-          $conn_string = sprintf("host=%s user=%s password=%s dbname=%s", $creds['host'], $creds['user'], $creds['pass'], $creds['name']);
-          if (isset($creds['port'])) {
-            $conn_string .= ' port=' . $creds['port'];
-          }
-          // Copied from d6's database.pgsql.inc:
-          // pg_last_error() does not return a useful error message for database
-          // connection errors. We must turn on error tracking to get at a good error
-          // message, which will be stored in $php_errormsg.
-          $php_errormsg = '';
-          $track_errors_previous = ini_get('track_errors');
-          ini_set('track_errors', 1);
-          $connection = @pg_connect($conn_string);
-          // Restore error tracking setting
-          ini_set('track_errors', $track_errors_previous);
-          if (!$connection) {
-            if (empty($php_errormsg)) {
-              drush_log(dt("Unknown error connecting to pgsql database via !constr", array('!constr' => $conn_string)), 'bootstrap');
-            }
-            else {
-              require_once './includes/unicode.inc';
-              drush_log(decode_entities($php_errormsg), 'bootstrap');
-            }
-            return FALSE;
-          }
-          break;
-      }
-      break;
-    case 7:
-    default:
-      $type = ( $type=='oracle' ? 'oci' : $type); // fix PDO driver name, should go away in Drupal 8
-      // Drupal >=7 requires PDO and drush requires php 5.3 which ships with PDO
-      // but it may be compiled with --disable-pdo.
-      if (!class_exists('PDO')) {
-        drush_log(dt('PDO support is required.'), 'bootstrap');
-        return FALSE;
-      }
-      // Check the database specific driver is available.
-      if (!in_array($type, PDO::getAvailableDrivers())) {
-        drush_log(dt('!type extension for PHP PDO is not installed. Check your php.ini to see how you can enable it.', array('!type' => $type)), 'bootstrap');
-        return FALSE;
-      }
-      // Build the connection string.
-      if ($type === 'sqlite') {
-        $constr = 'sqlite:' . $creds['name'];
-      }
-      elseif ($type === 'sqlsrv') {
-        $server = $creds['host'];
-        if (!empty($creds['port'])) {
-          $server .= ", " . $creds['port'];
-        }
-        $constr = sprintf("%s:database=%s;server=%s", $type, $creds['name'], $server);
-      }
-      elseif ($type === 'oci') {
-
-        if (empty($creds['port']))
-          $creds['port'] = 1521;
-
-        if ($creds['host'] == 'USETNS')
-          $constr = 'oci:dbname=' . $creds['database'] . ';charset=AL32UTF8';
-        else
-          $constr = 'oci:dbname=//' . $creds['host'] . ':' . $creds['port'] . '/' . $creds['database'] . ';charset=AL32UTF8';
-
-      }
-      else {
-        $constr = sprintf("%s:dbname=%s", $type, $creds['name']);
-        // Use unix_socket if set instead of host:port.
-        if (!empty($creds['unix_socket'])) {
-          $constr .= sprintf(";unix_socket=%s", $creds['unix_socket']);
-        }
-        else {
-          $constr .= sprintf(";host=%s", $creds['host']);
-          if (!empty($creds['port'])) {
-            $constr .= sprintf(";port=%d", $creds['port']);
-          }
-        }
-      }
-      try {
-        $db = new PDO($constr, $creds['user'], $creds['pass'], $creds['pdo']);
-        $db = null;
-      }
-      catch (PDOException $e) {
-        drush_log($e->getMessage(), 'bootstrap');
-        return FALSE;
-      }
-      break;
+  if (!$sqlVersion->valid_credentials()) {
+    return FALSE;
   }
-
-  return TRUE;
+  $sql = drush_sql_get_class();
+  return $sql->query('SELECT 1;');
 }
 
 /**

@@ -556,17 +556,17 @@ function _core_site_status_table($project = '') {
     $status_table['drupal-version'] = drush_drupal_version();
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $status_table['uri'] = drush_get_context('DRUSH_URI');
-      if ($creds = drush_get_context('DRUSH_DB_CREDENTIALS')) {
-        $status_table['db-driver'] = $creds['driver'];
-        if (!empty($creds['unix_socket'])) {
-          $status_table['db-socket'] = $creds['unix_socket'];
+      if ($sql = drush_sql_get_class()) {
+        $status_table['db-driver'] = $sql->db_spec['driver'];
+        if (!empty($sql->db_spec['unix_socket'])) {
+          $status_table['db-socket'] = $sql->db_spec['unix_socket'];
         }
         else {
-          $status_table['db-hostname'] = $creds['host'];
+          $status_table['db-hostname'] = $sql->db_spec['host'];
         }
-        $status_table['db-username'] = $creds['user'];
-        $status_table['db-name'] = $creds['name'];
-        $status_table['db-password'] = $creds['pass'];
+        $status_table['db-username'] = $sql->db_spec['username'];
+        $status_table['db-name'] = $sql->db_spec['database'];
+        $status_table['db-password'] = $sql->db_spec['password'];
         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
           $status_table['db-status'] = dt('Connected');
           if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
