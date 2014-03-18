@@ -223,11 +223,13 @@ class SqlBase {
   /**
    * Build a SQL string for dropping and creating a database.
    *
+   * @param string dbname
+   *   The database name.
    * @param boolean $quoted
    *   Quote the database name. Mysql uses backticks to quote which can cause problems
    *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
    */
-  public function createdb_sql($quoted = FALSE) {}
+  public function createdb_sql($dbname, $quoted = FALSE) {}
 
   /**
    * Create a new database.
