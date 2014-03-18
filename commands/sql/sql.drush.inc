@@ -487,7 +487,7 @@ function drush_sql_query($query = NULL) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
   }
   $sql = drush_sql_get_class(drush_get_option('db-spec'));
-  $result = $sql->query($query, $filename, FALSE);
+  $result = $sql->query($query, $filename, FALSE, drush_get_option('result-file'));
   if (!$result) {
     return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
   }

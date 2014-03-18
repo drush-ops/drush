@@ -62,16 +62,8 @@ class Sqlmysql extends SqlBase {
   }
 
   public function listTables() {
-    // Make sure that we don't honor result-file as this is an internal use of query().
-    drush_set_option('result-file', '', 'process');
-    $return = $this->query('SHOW TABLES;', NULL, TRUE, TRUE);
-    drush_unset_option('result-file', 'process');
+    $return = $this->query('SHOW TABLES;', NULL, TRUE);
     $tables = drush_shell_exec_output();
-    // No longer needed since we silenced column headers it seems.
-    // if (!empty($tables)) {
-      // Shift off the header of the column of data returned.
-      // array_shift($tables);
-    // }
     return $tables;
   }
 

@@ -34,8 +34,7 @@ class Sqlsqlsrv extends SqlBase {
   }
 
   public function listTables() {
-    // $tables = array();
-    $return = $this->query('SELECT TABLE_NAME FROM information_schema.tables', NULL, TRUE, TRUE);
+    $return = $this->query('SELECT TABLE_NAME FROM information_schema.tables', NULL, TRUE);
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {
       // Shift off the header of the column of data returned.

@@ -124,17 +124,19 @@ class SqlBase {
   /**
    * Execute a SQL query.
    *
+   * Note: This is an API function. Try to avoid using drush_get_option() and instead
+   * get params passed in.
+   *
    * @param string $query
    *   The SQL to be executed. Should be NULL if $file is provided.
    * @param string $input_file
    *   A path to a file containing the SQL to be executed.
    * @param bool $silent
    *   Don't print query results to screen.
-   * @param bool $save_output
-   *   If TRUE, Drush uses a bit more memory to store query results. Use
-   *   drush_shell_exec_output() to fetch them.
+   * @param string $result_file
+   *   A path to save query results to.
    */
-  public function query($query, $input_file = NULL, $silent = TRUE, $save_output = FALSE) {
+  public function query($query, $input_file = NULL, $silent = TRUE, $result_file = '') {
     if ($input_file && drush_file_is_tarball($input_file)) {
       if (drush_shell_exec('gunzip %s', $input_file)) {
         $input_file = trim($input_file, '.gz');
@@ -167,8 +169,8 @@ class SqlBase {
     );
     $exec = implode(' ', $parts);
 
-    if ($output_file = drush_get_option('result-file')) {
-      $exec .= ' > '. drush_escapeshellarg($output_file);
+    if ($result_file) {
+      $exec .= ' > '. drush_escapeshellarg($result_file);
     }
 
     // In --simulate mode, drush_op will show the call to mysql or psql,
@@ -182,12 +184,7 @@ class SqlBase {
       return TRUE;
     }
 
-    if ($save_output) {
-      $success = drush_shell_exec($exec);
-    }
-    else {
-      $success = (drush_op_system($exec) == 0);
-    }
+    $success = drush_shell_exec($exec);
 
     if ($success && drush_get_option('file-delete')) {
       drush_delete_dir($input_file);
