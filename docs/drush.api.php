@@ -160,7 +160,7 @@ function drush_hook_pre_COMMAND() {
  *
  * @return mixed|false
  *   The return value will be passed along to the caller if --backend option is
- *   present. A boolean FALSE indicates failure and rollback will be intitated.
+ *   present. A boolean FALSE indicates failure and rollback will be inititated.
  *
  * @see drush_hook_COMMAND_rollback()
  * @see drush_hook_pre_COMMAND_rollback()
