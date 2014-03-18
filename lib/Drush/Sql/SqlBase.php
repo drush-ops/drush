@@ -173,21 +173,17 @@ class SqlBase {
       $exec .= ' > '. drush_escapeshellarg($result_file);
     }
 
-    // In --simulate mode, drush_op will show the call to mysql or psql,
+    // In --simulate mode, drush_shell_exec() will show the call to mysql or psql,
     // but the sql query itself is stored in a temp file and not displayed.
     // We will therefore show the query explicitly in the interest of debugging.
-    if (drush_get_context('DRUSH_SIMULATE')) {
-      drush_print('sql-query: ' . $query);
-      if (!empty($exec)) {
-        drush_print('exec: ' . $exec);
-      }
-      return TRUE;
+    if (drush_get_context('DRUSH_SIMULATE') && empty($input_file)) {
+      drush_log('sql-query: ' . $query, 'status');
     }
 
     $success = drush_shell_exec($exec);
 
     if ($success && drush_get_option('file-delete')) {
-      drush_delete_dir($input_file);
+      drush_op('drush_delete_dir', $input_file);
     }
 
     return $success;
