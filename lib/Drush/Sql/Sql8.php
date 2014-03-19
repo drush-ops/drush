@@ -1,7 +1,7 @@
 <?php
-use Drupal\Core\Database\Database;
-
 namespace Drush\Sql;
+
+use Drupal\Core\Database\Database;
 
 class Sql8 extends Sql7 {
   public function get_db_spec() {
