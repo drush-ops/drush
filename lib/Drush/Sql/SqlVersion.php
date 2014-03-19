@@ -11,8 +11,7 @@ class SqlVersion {
    */
   public function get_db_spec() {}
 
-  public function valid_credentials() {
-    $db_spec = $this->get_db_spec();
+  public function valid_credentials($db_spec) {
     $type = $db_spec['driver'];
     $type = ( $type=='oracle' ? 'oci' : $type); // fix PDO driver name, should go away in Drupal 8
     // Drupal >=7 requires PDO and Drush requires php 5.3 which ships with PDO
