@@ -612,6 +612,11 @@ function _drush_sql_get_post_sync_messages() {
  */
 function drush_sql_get_class($db_spec = NULL) {
   try {
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+  }
+  catch (Exception $e) {
+  }
+  try {
     if ($db_spec) {
       return drush_get_class('Drush\Sql\Sql', array($db_spec), array($db_spec['driver']));
     }
