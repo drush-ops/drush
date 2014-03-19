@@ -71,6 +71,13 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
 
       drush_log("Executing " . $function);
       $ret['results']['query'] = $function($context['sandbox']);
+
+      // If the update hook returned a status message (common in batch updates),
+      // show it to the user.
+      if ($ret['results']['query']) {
+        drush_log($ret['results']['query'], 'ok');
+      }
+
       $ret['results']['success'] = TRUE;
     }
     // @TODO We may want to do different error handling for different exception
