@@ -96,7 +96,7 @@ function _drush_sitealias_site_list() {
   $base_path = drush_get_context('DRUSH_DRUPAL_ROOT');
   if ($base_path) {
     $base_path .= '/sites';
-    $files = drush_scan_directory($base_path, '/settings\.php/', array('.', '..', 'CVS', 'all'));
+    $files = drush_scan_directory($base_path, '/settings\.php/', array('.', '..', 'CVS', 'all'), FALSE);
     foreach ($files as $filename => $info) {
       if ($info->basename == 'settings.php') {
         $alias_record = drush_sitealias_build_record_from_settings_file($filename);
