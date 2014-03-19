@@ -134,9 +134,9 @@ function drush_sql_sync($source, $destination) {
   }
 
   // Run Sanitize if needed.
-  drush_log(dt('Starting to sanitize target database on Destination.'), 'ok');
   $options = $global_options + array();
   if (drush_get_option('sanitize')) {
+    drush_log(dt('Starting to sanitize target database on Destination.'), 'ok');
     $return = drush_invoke_process($destination, 'sql-sanitize', array(), $options);
     if ($return['error_status']) {
       return drush_set_error('sql-sanitize failed.');
