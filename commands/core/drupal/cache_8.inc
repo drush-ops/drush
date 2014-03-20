@@ -4,22 +4,22 @@
  *   Engine for the cache commands.
  */
 
-use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Cache\Cache;
 
 function _drush_cache_command_get($cid, $bin) {
-  return cache($bin)->get($cid);
+  return \Drupal::cache($bin)->get($cid);
 }
 
 function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
   // Convert the "expire" argument to a valid value for Drupal's cache_set().
   if ($expire == 'CACHE_TEMPORARY') {
-    $expire = Cache::CACHE_TEMPORARY;
+    $expire = Cache::TEMPORARY;
   }
   if (!isset($expire) || $expire == 'CACHE_PERMANENT') {
-    $expire = Cache::CACHE_PERMANENT;
+    $expire = Cache::PERMANENT;
   }
 
-  return cache($bin)->set($cid, $data, $expire, $tags);
+  return \Drupal::cache($bin)->set($cid, $data, $expire, $tags);
 }
 
 function _drush_cache_clear_types($include_bootstrapped_types) {
@@ -53,5 +53,5 @@ function drush_cache_clear_css_js() {
  * Clear the cache of the block output.
  */
 function drush_cache_clear_block() {
-  cache('block')->deleteAll();
+  \Drupal::cache('block')->deleteAll();
 }
