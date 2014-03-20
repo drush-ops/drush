@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * Implementation of hook_drush_help().
+ */
+function search_drush_help($section) {
+  switch ($section) {
+    case 'meta:search:title':
+      return dt('Search commands');
+    case 'meta:search:summary':
+      return dt('Interact with Drupal\s core search system.');
+  }
+}
+
 function search_drush_command() {
   $items['search-status'] = array(
     'description' => 'Show how many items remain to be indexed out of the total.',
