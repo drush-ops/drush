@@ -5,6 +5,10 @@
  */
 function watchdog_drush_help($section) {
   switch ($section)  {
+    case 'meta:watchdog:title':
+      return dt('Watchdog commands');
+    case 'meta:watchdog:summary':
+      return dt('Interact with Drupal\'s db logging system.');
     case 'drush:watchdog-list':
       return dt('Show available message types and severity levels. A prompt will ask for a choice to show watchdog messages.');
     case 'drush:watchdog-show':
