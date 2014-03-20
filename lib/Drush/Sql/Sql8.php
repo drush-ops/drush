@@ -9,7 +9,7 @@ class Sql8 extends Sql7 {
     if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
       $database = drush_get_option('database', 'default');
       $target = drush_get_option('target', 'default');
-      if ($info = Database::getAllConnectionInfo()) {
+      if ($info = Database::getConnectionInfo()) {
         return $info[$database][$target];
       }
     }
