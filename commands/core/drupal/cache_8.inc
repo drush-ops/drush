@@ -13,10 +13,10 @@ function _drush_cache_command_get($cid, $bin) {
 function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
   // Convert the "expire" argument to a valid value for Drupal's cache_set().
   if ($expire == 'CACHE_TEMPORARY') {
-    $expire = CacheBackendInterface::CACHE_TEMPORARY;
+    $expire = Cache::CACHE_TEMPORARY;
   }
   if (!isset($expire) || $expire == 'CACHE_PERMANENT') {
-    $expire = CacheBackendInterface::CACHE_PERMANENT;
+    $expire = Cache::CACHE_PERMANENT;
   }
 
   return cache($bin)->set($cid, $data, $expire, $tags);
