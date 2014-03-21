@@ -9,6 +9,10 @@
 class VariableCase extends Drush_CommandTestCase {
 
   function testVariable() {
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      $this->markTestSkipped("Variable system was removed in Drupal 8.");
+    }
+
     $sites = $this->setUpDrupal(1, TRUE);
     $options = array(
       'yes' => NULL,

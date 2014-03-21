@@ -5,6 +5,7 @@
  *
  * @group commands
  * @group make
+ * @group slow
  */
 class generateMakeCase extends Drush_CommandTestCase {
   function testGenerateMake() {

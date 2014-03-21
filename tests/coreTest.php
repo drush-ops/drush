@@ -150,7 +150,9 @@ drush_invoke("version", $arg);
       'settings.php' => -1,
     );
     foreach ($expected as $key => $value) {
-      $this->assertEquals($value, $loaded->$key->sid);
+      if (isset($loaded->$key)) {
+        $this->assertEquals($value, $loaded->$key->sid);
+      }
     }
   }
 }
