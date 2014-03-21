@@ -1693,7 +1693,7 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   // and 'remote-user' if 'remote-host' is actually the local machine.
   // This prevents drush from using the remote dispatch mechanism (the command
   // is just run directly on the local machine, bootstrapping to the specified alias)
-  elseif (array_key_exists('remote-host', $site_alias_settings) && !array_key_exists('ssh-options', $site_alias_settings) && drush_is_local_host($site_alias_settings['remote-host'])) {
+  elseif (array_key_exists('remote-host', $site_alias_settings) && array_key_exists('#check-local', $site_alias_settings) && drush_is_local_host($site_alias_settings['remote-host'])) {
     $skip_list[] = 'remote-host';
     $skip_list[] = 'remote-user';
   }
