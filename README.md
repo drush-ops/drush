@@ -66,7 +66,7 @@ REQUIREMENTS
 * Drush works best on a Unix-like OS (Linux, OS X)
 * Most Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
 
-INSTALL - COMPOSER
+INSTALL/UPDATE - COMPOSER
 ------------------
 
 * [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements) (if needed).
@@ -82,6 +82,10 @@ INSTALL - COMPOSER
 * To install Drush 7.x (dev) which is required for Drupal 8:
 
         composer global require drush/drush:dev-master
+
+* To update to a newer version (what you get depends on your specification in ~/.composer/composer.json):
+
+        composer global update
 
 * Alternate commands to install some other variant of Drush:
 
