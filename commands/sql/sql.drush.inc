@@ -681,11 +681,18 @@ function sql_drush_sql_sync_sanitize($site) {
     }
     // In Drupal 7, passwords are hashed via a more complex algorithm,
     // available via the user_hash_password function.
-    elseif ($major_version >= 7) {
+    elseif ($major_version == 7) {
       $core = DRUSH_DRUPAL_CORE;
       include_once $core . '/includes/password.inc';
       include_once $core . '/includes/bootstrap.inc';
       $hash = user_hash_password($newpassword);
+      $pw_op = "'$hash'";
+    }
+    else {
+      // Mimic Drupal's /scripts/password-hash.sh
+      drush_bootstrap(DRUPAL_BOOTSTRAP_CODE);
+      $password_hasher = \Drupal::service('password');
+      $hash = $password_hasher->hash($newpassword);
       $pw_op = "'$hash'";
     }
     if (!empty($pw_op)) {
