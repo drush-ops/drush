@@ -223,7 +223,7 @@ function drush_role_list($rid = '') {
     }
   }
   else {
-    drush_hide_output_fields(array('rid', 'role'));
+    drush_hide_output_fields(array('rid', 'label'));
     $role = drush_role_get_class($rid);
     if (!$role) {
       return FALSE;
