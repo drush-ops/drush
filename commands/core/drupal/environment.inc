@@ -7,6 +7,8 @@
  *   is called from.
  */
 
+use Drupal\Component\Utility\Settings;
+
 /**
  * Get complete information for all available modules.
  *
@@ -273,7 +275,7 @@ function _drush_theme_admin() {
 }
 
 function _drush_file_public_path() {
-  return settings()->get('file_public_path', conf_path() . '/files');
+  return Settings::get('file_public_path', conf_path() . '/files');
 }
 
 function _drush_file_private_path() {
