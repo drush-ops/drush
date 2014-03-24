@@ -6,6 +6,23 @@
  */
 
 /**
+ * Implements hook_drush_help_alter().
+ */
+function test_drush_help_alter(&$command) {
+  if (drush_drupal_major_version() >= 8) {
+    if ($command['command'] == 'test-run') {
+      foreach ($command['examples'] as $key => $value) {
+        $newkey = str_replace('BootstrapPageCacheTestCase', 'Drupal\system\Tests\Bootstrap\PageCacheTest', $key);
+        if ($newkey != $key) {
+          $command['examples'][$newkey] = $value;
+          unset($command['examples'][$key]);
+        }
+      }
+    }
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  */
 function test_drush_command() {
@@ -19,10 +36,10 @@ function test_drush_command() {
     'examples' => array(
       'test-run' => 'List all available classes and groups.',
       'sudo -u apache test-run --all' => 'Run all available tests. Avoid permission related failures by running as web server user.',
-      'test-run XMLRPCBasicTestCase' => 'Run one test class.',
-      'test-run XML-RPC' => 'Run all classes in a XML-RPC group.',
-      'test-run XML-RPC,Filter' => 'Run all tests from multiple groups/classes.',
-      'test-run XMLRPCBasicTestCase --methods="testListMethods, testInvalidMessageParsing"' => 'Run particular methods in the specified class or group.',
+      'test-run BootstrapPageCacheTestCase' => 'Run one test class.',
+      'test-run Bootstrap' => 'Run all classes in a XML-RPC group.',
+      'test-run Bootstrap,Filter' => 'Run all tests from multiple groups/classes.',
+      'test-run BootstrapPageCacheTestCase --methods="testPageCompression, testPageCache"' => 'Run particular methods in the specified class or group.',
     ),
     'options' => array(
       'all' => 'Run all available tests',
@@ -90,7 +107,7 @@ function drush_test_run_validate($specs = NULL) {
  */
 function drush_test_run($specs = NULL) {
   if (drush_drupal_major_version() > 7) {
-    cache()->delete('simpletest');
+    // \Drupal::cache('simpletest')->delete();
   }
   else {
     cache_clear_all('simpletest', 'cache');
