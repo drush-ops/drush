@@ -614,33 +614,30 @@ function drush_sql_get_class($db_spec = NULL) {
   $database = drush_get_option('database', 'default');
   $target = drush_get_option('target', 'default');
 
-  try {
-    // Try a few times to quickly get $db_spec.
-    if ($db_spec) {
-      return drush_get_class('Drush\Sql\Sql', array($db_spec), array($db_spec['driver']));
-    }
-    elseif ($url = drush_get_option('db-url')) {
-      $url =  is_array($url) ? $url[$database] : $url;
-      $db_spec = drush_convert_db_from_db_url($url);
-      $db_spec['db_prefix'] = drush_get_option('db-prefix');
-      return drush_sql_get_class($db_spec);
-    }
-    elseif (($databases = drush_get_option('databases')) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
-      $db_spec = $databases[$database][$target];
-      return drush_sql_get_class($db_spec);
-    }
-    else {
-      // No parameter or options provided. Determine $db_spec ourselves.
-      if ($sqlVersion = drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version()))) {
-        if ($db_spec = $sqlVersion->get_db_spec()) {
-          return drush_sql_get_class($db_spec);
-        }
+  // Try a few times to quickly get $db_spec.
+  if ($db_spec) {
+    return drush_get_class('Drush\Sql\Sql', array($db_spec), array($db_spec['driver']));
+  }
+  elseif ($url = drush_get_option('db-url')) {
+    $url =  is_array($url) ? $url[$database] : $url;
+    $db_spec = drush_convert_db_from_db_url($url);
+    $db_spec['db_prefix'] = drush_get_option('db-prefix');
+    return drush_sql_get_class($db_spec);
+  }
+  elseif (($databases = drush_get_option('databases')) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
+    $db_spec = $databases[$database][$target];
+    return drush_sql_get_class($db_spec);
+  }
+  else {
+    // No parameter or options provided. Determine $db_spec ourselves.
+    if ($sqlVersion = drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version()))) {
+      if ($db_spec = $sqlVersion->get_db_spec()) {
+        return drush_sql_get_class($db_spec);
       }
     }
   }
-  catch (\Drush\Sql\SqlException $e) {
-    return drush_set_error('DRUSH_SQL_GET_CLASS', $e->getMessage());
-  }
+
+  throw new \Drush\Sql\SqlException('Unable to find a matching SQL Class. Drush cannot find your database connection details.');
 }
 
 /**

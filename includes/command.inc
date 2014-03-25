@@ -359,8 +359,13 @@ function _drush_invoke_hooks($command, $args) {
         $available_rollbacks[] = $func . '_rollback';
         $completed[] = $func;
         drush_log(dt("Calling hook !hook", array('!hook' => $func)), 'debug');
-        $result = call_user_func_array($func, $args);
-        drush_log(dt("Returned from hook !hook", array('!hook' => $func)), 'debug');
+        try {
+          $result = call_user_func_array($func, $args);
+          drush_log(dt("Returned from hook !hook", array('!hook' => $func)), 'debug');
+        }
+        catch (Exception $e) {
+          drush_set_error('DRUSH_EXECUTION_EXCEPTION', $e->getMessage());
+        }
         // If there is an error, break out of the foreach
         // $variations and foreach $callback_list
         if (drush_get_error() || ($result === FALSE)) {
