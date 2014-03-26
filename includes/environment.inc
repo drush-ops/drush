@@ -351,14 +351,19 @@ function drush_valid_drupal_root($path) {
  * Tests the currently loaded database credentials to ensure a database connection can be made.
  */
 function drush_valid_db_credentials() {
-  $sql = drush_sql_get_class();
-  if (!$sqlVersion = drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version()))) {
+  try {
+    $sql = drush_sql_get_class();
+    if (!$sqlVersion = drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version()))) {
+      return FALSE;
+    }
+    if (!$sqlVersion->valid_credentials($sql->db_spec)) {
+      return FALSE;
+    }
+    return $sql->query('SELECT 1;');
+  }
+  catch (Exception $e) {
     return FALSE;
   }
-  if (!$sqlVersion->valid_credentials($sql->db_spec)) {
-    return FALSE;
-  }
-  return $sql->query('SELECT 1;');
 }
 
 /**

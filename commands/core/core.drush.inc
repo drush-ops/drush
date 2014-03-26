@@ -556,7 +556,8 @@ function _core_site_status_table($project = '') {
     $status_table['drupal-version'] = drush_drupal_version();
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $status_table['uri'] = drush_get_context('DRUSH_URI');
-      if ($sql = drush_sql_get_class()) {
+      try {
+        $sql = drush_sql_get_class();
         $status_table['db-driver'] = $sql->db_spec['driver'];
         if (!empty($sql->db_spec['unix_socket'])) {
           $status_table['db-socket'] = $sql->db_spec['unix_socket'];
@@ -577,6 +578,9 @@ function _core_site_status_table($project = '') {
             }
           }
         }
+      }
+      catch (Exception $e) {
+        // Don't worry be happy.
       }
     }
     if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
