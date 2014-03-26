@@ -608,6 +608,8 @@ function _drush_sql_get_post_sync_messages() {
  * @param array $db_spec
  *   If known, specify a $db_spec that the class can operate with.
  *
+ * @throws \Drush\Sql\SqlException
+ *
  * @return Drush\Sql\SqlBase
  */
 function drush_sql_get_class($db_spec = NULL) {
