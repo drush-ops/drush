@@ -410,6 +410,7 @@ function drush_help_categorize($implemented) {
           $command_categories[$category]['summary'] = $summary[0];
         }
       }
+      $candidate['category'] = $category;
       $command_categories[$category]['commands'][$key] = $candidate;
     }
   }
