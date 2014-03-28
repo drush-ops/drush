@@ -37,12 +37,14 @@ function xkcd_drush_command() {
       'search' => 'Optional argument to retrive the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.',
     ),
     'options' => array(
+      'explained' => 'Show the explanation of the cartoon.',
       'image-viewer' => 'Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).',
       'google-custom-search-api-key' => 'Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.',
     ),
     'examples' => array(
       'drush xkcd' => 'Retrieve and display the latest cartoon.',
       'drush xkcd sandwich' => 'Retrieve and display cartoons about sandwiches.',
+      'drush xkcd --explained sandwich' => 'Retrieve and display cartoons about sandwiches, with the proper explanation.',
       'drush xkcd 123 --image-viewer=eog' => 'Retrieve and display cartoon #123 in eog.',
       'drush xkcd random --image-viewer=firefox' => 'Retrieve and display a random cartoon in Firefox.',
     ),
@@ -109,15 +111,15 @@ access a web site (5) with awesome geek humor.\n
  */
 function drush_xkcd_fetch($search = '') {
   if (empty($search)) {
-    drush_xkcd_display('http://xkcd.com');
+    drush_xkcd_display('http://xkcd.com', drush_get_option('explained'));
   }
   elseif (is_numeric($search)) {
-    drush_xkcd_display('http://xkcd.com/' . $search);
+    drush_xkcd_display('http://xkcd.com/' . $search, drush_get_option('explained'));
   }
   elseif ($search == 'random') {
     $xkcd_response = @json_decode(file_get_contents('http://xkcd.com/info.0.json'));
     if (!empty($xkcd_response->num)) {
-      drush_xkcd_display('http://xkcd.com/' . rand(1, $xkcd_response->num));
+      drush_xkcd_display('http://xkcd.com/' . rand(1, $xkcd_response->num), drush_get_option('explained'));
     }
   }
   else {
@@ -125,7 +127,7 @@ function drush_xkcd_fetch($search = '') {
     $search_response = @json_decode(file_get_contents('https://www.googleapis.com/customsearch/v1?key=' . drush_get_option('google-custom-search-api-key', 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek') . '&cx=012652707207066138651:zudjtuwe28q&q=' . $search));
     if (!empty($search_response->items)) {
       foreach ($search_response->items as $item) {
-        drush_xkcd_display($item->link);
+        drush_xkcd_display($item->link, drush_get_option('explained'));
       }
     }
     else {
@@ -142,13 +144,21 @@ function drush_xkcd_fetch($search = '') {
  *
  * @param string $url
  *   A string with the URL of the cartoon to display.
+ * @param bool $explained
+ *   If true, we show the explanation of the cartoon.
  */
-function drush_xkcd_display($url) {
+function drush_xkcd_display($url, $explained = FALSE) {
   $xkcd_response = @json_decode(file_get_contents($url . '/info.0.json'));
   if (!empty($xkcd_response->num)) {
     $data = (array) $xkcd_response;
     $data['date'] = $data['year'] . '/' . $data['month'] . '/' . $data['day'];
     unset($data['safe_title'], $data['news'], $data['link'], $data['year'], $data['month'], $data['day']);
+
+    if ($explained) {
+      $data += _drush_xkcd_get_explanation_data($xkcd_response->num);
+      unset($data['transcript']);
+    }
+
     drush_print_table(drush_key_value_to_array_table($data));
     $img = drush_download_file($data['img']);
     drush_register_file_for_deletion($img);
@@ -157,4 +167,26 @@ function drush_xkcd_display($url) {
   else {
     drush_set_error('DRUSH_XKCD_METADATA_FAIL', dt('Unable to retrieve cartoon metadata.'));
   }
+}
+
+function _drush_xkcd_get_explanation_data($number) {
+  $redirect_url = "http://www.explainxkcd.com/wiki/api.php?action=parse&page=$number&format=json";
+  $redirect_response = @json_decode(file_get_contents($redirect_url));
+  $valid_path = urlencode($redirect_response->parse->links[0]->{"*"});
+  $final_url = "http://www.explainxkcd.com/wiki/api.php?action=parse&page=$valid_path&format=json";
+  $response = @json_decode(file_get_contents($final_url));
+  $text = strip_tags($response->parse->text->{"*"});
+  $text = substr($text, strpos($text, "[edit] Explanation") + 18);
+  $text = substr($text, 0, strpos($text, "&#160;add a comment! Discussion"));
+  $text = str_replace('[edit] ', '', $text);
+
+  $transcript = substr($text, strpos($text, 'Transcript') + 10);
+  $explanation = substr($text, 0, strpos($text, $transcript) - 10);
+
+  $return = array(
+    'transcription' => trim($transcript),
+    'explained' => trim($explanation),
+  );
+
+  return $return;
 }
