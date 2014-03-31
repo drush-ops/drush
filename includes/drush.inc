@@ -1088,7 +1088,7 @@ function drush_preflight_command_dispatch() {
   drush_command_default_options($command);
 
   // If the command sets the 'strict-option-handling' flag, then we will remove
-  // any cli options that appear after the command name form the 'cli' context.
+  // any cli options that appear after the command name from the 'cli' context.
   // The cli options that appear before the command name are stored in the
   // 'DRUSH_GLOBAL_CLI_OPTIONS' context, so we will just overwrite the cli context
   // with this, after doing the neccessary fixup from short-form to long-form options.
