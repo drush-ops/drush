@@ -30,10 +30,14 @@ class SqlBase {
   /**
    * A string for connecting to a database.
    *
+   * @param bool $hide_password
+   *  If TRUE, DBMS should try to hide password from process list.
+   *  On mysql, that means using --defaults-extra-file to supply the user+password.
+   *
    * @return string
    */
-  public function connect() {
-    return trim($this->command() . ' ' . $this->creds(FALSE) . ' ' . drush_get_option('extra', $this->query_extra));
+  public function connect($hide_password = TRUE) {
+    return trim($this->command() . ' ' . $this->creds($hide_password) . ' ' . drush_get_option('extra', $this->query_extra));
   }
 
 

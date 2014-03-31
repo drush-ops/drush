@@ -316,7 +316,7 @@ function drush_sql_conf() {
 function drush_sql_connect() {
   drush_sql_bootstrap_further();
   $sql = drush_sql_get_class();
-  return $sql->connect();
+  return $sql->connect(FALSE);
 }
 
 /**
