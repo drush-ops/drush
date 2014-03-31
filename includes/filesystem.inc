@@ -483,7 +483,8 @@ function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
   }
   $tmp_file = tempnam($tmp_dir, $pattern);
   drush_register_file_for_deletion($tmp_file);
-
+  $tmp_file_with_suffix = $tmp_file . $suffix;
+  drush_register_file_for_deletion($tmp_file_with_suffix);
   return $tmp_file . $suffix;
 }
 
