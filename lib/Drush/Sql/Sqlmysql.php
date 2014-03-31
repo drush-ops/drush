@@ -9,14 +9,25 @@ class Sqlmysql extends SqlBase {
   }
 
   public function creds($hide_password = TRUE) {
-    // EMPTY password is not the same as NO password, and is valid.
-    if (isset($this->db_spec['password'])) {
-      if ($hide_password) {
-        $data = "#This file was written by Drush.\n[client]\npassword=\"" . $this->db_spec['password'] . '"';
-        $file = drush_save_data_to_temp_file($data);
+    if ($hide_password) {
+      // EMPTY password is not the same as NO password, and is valid.
+      if (isset($this->db_spec['password'])) {
+        $contents = <<<EOT
+#This file was written by Drush's SqlMysql.inc.
+[client]
+user="{$this->db_spec['username']}"
+password="{$this->db_spec['password']}"
+EOT;
+
+        $file = drush_save_data_to_temp_file($contents);
         $parameters['defaults-extra-file'] = $file;
       }
-      else {
+    }
+    else {
+      // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
+      $parameters['user'] = $this->db_spec['username'];
+      // EMPTY password is not the same as NO password, and is valid.
+      if (isset($this->db_spec['password'])) {
         $parameters['password'] = $this->db_spec['password'];
       }
     }
@@ -37,9 +48,6 @@ class Sqlmysql extends SqlBase {
     if (!empty($this->db_spec['port'])) {
       $parameters['port'] = $this->db_spec['port'];
     }
-
-    // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
-    $parameters['user'] = $this->db_spec['username'];
 
     return $this->params_to_options($parameters);
   }
