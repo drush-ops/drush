@@ -133,6 +133,7 @@ function sql_drush_command() {
         'example-value' => '/path/to/file',
       ),
       'file' => 'Path to a file containing the SQL to be run.',
+      'file-delete' => 'Delete the input file after running it. Defaults to 0.',
       'extra' => array(
         'description' => 'Add custom options to the mysql command.',
         'example-value' => '--skip-column-names',
@@ -862,6 +863,9 @@ function drush_sql_query($query = NULL) {
   $result = _drush_sql_query($query, drush_get_option('db-spec'), $filename);
   if (!$result) {
     return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
+  }
+  elseif (drush_get_option('file-delete')) {
+    drush_op('drush_delete_dir', $filename);
   }
   return TRUE;
 }
