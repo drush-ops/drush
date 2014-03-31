@@ -388,7 +388,7 @@ servers.  Once defined, aliases can be references with the @ nomenclature, i.e.
 # Synchronize staging files to production
 $ drush rsync @staging:%files/ @live:%files
 # Syncronize database from production to dev, excluding the cache table
-$ drush sql-sync --structure-tables-key=custom --no-cache @live @dev
+$ drush sql-sync --structure-tables-key=custom @live @dev
 ```
 
 See http://drupal.org/node/670460 and [example.aliases.drushrc.php](examples/example.aliases.drushrc.php) for more
