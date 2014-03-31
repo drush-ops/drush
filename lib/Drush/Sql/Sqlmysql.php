@@ -5,14 +5,22 @@ namespace Drush\Sql;
 class Sqlmysql extends SqlBase {
 
   public function command() {
-    $command = 'mysql';
-    if (drush_get_option('A', FALSE)) {
-      $command .= ' -A';
-    }
-    return $command;
+    return 'mysql';
   }
 
-  public function creds() {
+  public function creds($hide_password = TRUE) {
+    // EMPTY password is not the same as NO password, and is valid.
+    if (isset($this->db_spec['password'])) {
+      if ($hide_password) {
+        $data = "#This file was written by Drush.\n[client]\npassword=\"" . $this->db_spec['password'] . '"';
+        $file = drush_save_data_to_temp_file($data);
+        $parameters['defaults-extra-file'] = $file;
+      }
+      else {
+        $parameters['password'] = $this->db_spec['password'];
+      }
+    }
+
     // Some drush commands (e.g. site-install) want to connect to the
     // server, but not the database.  Connect to the built-in database.
     $parameters['database'] = empty($this->db_spec['database']) ? 'information_schema' : $this->db_spec['database'];
@@ -32,11 +40,6 @@ class Sqlmysql extends SqlBase {
 
     // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
     $parameters['user'] = $this->db_spec['username'];
-
-    // EMPTY password is not the same as NO password, and is valid.
-    if (isset($this->db_spec['password'])) {
-      $parameters['password'] = $this->db_spec['password'];
-    }
 
     return $this->params_to_options($parameters);
   }
@@ -80,14 +83,15 @@ class Sqlmysql extends SqlBase {
     // @see drush_get_option_help() in drush.inc
     $ordered_dump = drush_get_option('ordered-dump');
 
-    $exec = 'mysqldump';
+    $exec = 'mysqldump ';
+    // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
+    $exec .= str_replace('--database=', ' ', $this->creds());
     if ($file) {
       $exec .= ' --result-file '. $file;
     }
-    // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
     // We had --skip-add-locks here for a while to help people with insufficient permissions,
     // but removed it because it slows down the import a lot.  See http://drupal.org/node/1283978
-    $extra = ' --no-autocommit --single-transaction --opt -Q' . str_replace('--database=', ' ', $this->creds());
+    $extra = ' --no-autocommit --single-transaction --opt -Q';
     if (isset($data_only)) {
       $extra .= ' --no-create-info';
     }

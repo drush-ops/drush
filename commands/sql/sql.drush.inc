@@ -69,7 +69,12 @@ function sql_drush_command() {
   $items['sql-connect'] = array(
     'description' => 'A string for connecting to the DB.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'options' => $options + $db_url,
+    'options' => $options + $db_url + array(
+        'extra' => array(
+          'description' => 'Add custom options to the mysql command.',
+          'example-value' => '--skip-column-names',
+        ),
+      ),
     'examples' => array(
       '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
     ),
@@ -215,13 +220,12 @@ function sql_drush_command() {
   $items['sql-cli'] = array(
     'description' => "Open a SQL command-line interface using Drupal's credentials.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'options' => array(
-      'A' => 'Skip reading table information. This gives a quicker start of mysql.',
-    ) + $options + $db_url,
+    // 'options' => $options + $db_url,
+    'allow-additional-options' => array('sql-connect'),
     'aliases' => array('sqlc'),
     'examples' => array(
       'drush sql-cli' => "Open a SQL command-line interface using Drupal's credentials.",
-      'drush sql-cli -A' => "Open a SQL command-line interface using Drupal's credentials and skip reading table information.",
+      'drush sql-cli --extra=-A' => "Open a SQL CLI and skip reading table information.",
     ),
     'remote-tty' => TRUE,
   );

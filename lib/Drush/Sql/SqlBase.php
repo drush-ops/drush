@@ -33,7 +33,7 @@ class SqlBase {
    * @return string
    */
   public function connect() {
-    return trim($this->command() . ' ' . $this->creds() . ' ' . drush_get_option('extra', $this->query_extra));
+    return trim($this->command() . ' ' . $this->creds(FALSE) . ' ' . drush_get_option('extra', $this->query_extra));
   }
 
 
@@ -161,8 +161,8 @@ class SqlBase {
 
     $parts = array(
       $this->command(),
-      $this->silent(),
       $this->creds(),
+      $this->silent(),
       drush_get_option('extra', $this->query_extra),
       $this->query_file,
       drush_escapeshellarg($input_file),
@@ -270,10 +270,14 @@ class SqlBase {
   public function delete() {}
 
   /**
-   * Build a fragment containing credentials and other connection parameters.
+   * Build a fragment connection parameters.
+   *
+   * @param bool $hide_password
+   *  If TRUE, DBMS should try to hide password from process list.
+   *  On mysql, that means using --defaults-extra-file to supply the password.
    * @return string
    */
-  public function creds() {}
+  public function creds($hide_password = TRUE) {}
 
   /**
    * The active database driver.
