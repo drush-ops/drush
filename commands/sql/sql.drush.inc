@@ -396,6 +396,7 @@ function drush_sql_dump_execute() {
   if (!$return = drush_op_system($exec)) {
     if ($file) {
       drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
+      drush_backend_set_result($file);
     }
   }
   else {
