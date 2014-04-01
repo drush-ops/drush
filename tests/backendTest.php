@@ -31,14 +31,10 @@ EOD;
     $options = array(
       'alias-path' => $aliasPath,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
+      'script-path' => dirname(__FILE__) . '/resources', // Find unit.drush.inc commandfile.
       'backend' => TRUE,
     );
-    $php = <<<EOD
-    \$valuesUsingAlias = drush_invoke_process("@dev", "unit-return-argv", array(), array(), array("dispatch-using-alias" => TRUE));
-    \$valuesWithoutAlias = drush_invoke_process("@dev", "unit-return-argv", array(), array(), array());
-    return array('with' => \$valuesUsingAlias['object'], 'without' => \$valuesWithoutAlias['object']);
-EOD;
-    $this->drush('php-eval', array($php), $options);
+    $this->drush('php-script', array('testDispatchUsingAlias_script'), $options);
     $parsed = $this->parse_backend_output($this->getOutput());
 
     // $parsed['with'] and $parsed['without'] now contain an array
