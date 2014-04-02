@@ -175,6 +175,15 @@ function drush_core_site_install($profile = NULL) {
     // Subsequent arguments are additional form values.
     foreach ($args as $arg) {
       list($key, $value) = explode('=', $arg);
+
+      // Allow for numeric and NULL values to be passed in.
+      if (is_numeric($value)) {
+        $value = intval($value);
+      }
+      elseif ($value == 'NULL') {
+        $value = NULL;
+      }
+
       $form_options[$key] = $value;
     }
   }
