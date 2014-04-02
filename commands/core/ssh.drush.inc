@@ -70,7 +70,7 @@ function drush_ssh_site_ssh($command = NULL) {
   $interactive = FALSE;
   $cd = drush_get_option('cd', TRUE);
   if (empty($command)) {
-    $command = 'bash';
+    $command = 'bash -l';
     $interactive = TRUE;
   }
   $cmd = drush_shell_proc_build($site, $command, $cd, $interactive);
