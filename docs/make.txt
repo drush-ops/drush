@@ -235,6 +235,18 @@ Do not use both types of declarations for a single project in your makefile.
 
   `working-copy` - If true, the checked out source will be kept as a working copy rather than exported as standalone files
 
+- `download[type] = copy`
+
+  Copies a project from a local folder. Options:
+
+  `url` - the URL of the folder. Required.
+          The URL must be a path to a local folder either using the bare path or
+          the file:// protocol. The path may be absolute or relative to the makefile.
+
+     projects[example][type] = "profile"
+     projects[example][download][type] = "copy"
+     projects[example][download][url] = "file://./example"
+
 ### Libraries
 
 An array of non-Drupal-specific libraries to be retrieved (e.g. js, PHP or other
