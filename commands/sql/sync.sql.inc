@@ -96,6 +96,7 @@ function drush_sql_sync($source, $destination) {
   // Determine path/to/dump on destination.
   if (drush_get_option('target-dump')) {
     $destination_dump_path = drush_get_option('target-dump');
+    $rsync_options['yes'] = TRUE;  // @temporary: See https://github.com/drush-ops/drush/pull/555
   }
   else {
     $tmp = '/tmp'; // Our fallback plan.
@@ -105,17 +106,16 @@ function drush_sql_sync($source, $destination) {
       $tmp = $return['object'];
     }
     $destination_dump_path = $tmp . '/' . basename($source_dump_path);
+    $rsync_options['yes'] = TRUE;  // No need to prompt as destination is a tmp file.
   }
 
   if (!drush_get_option('no-sync')) {
     drush_log(dt('Copying dump file from Source to Destination.'), 'ok');
-    // Don't send redispatch options to rsync as they get appended after core-rsync with sad outcome.
-    $options = array();
     if (!drush_get_option('no-dump')) {
       // Cleanup if this command created the dump file.
-      $options = array('remove-source-files' => TRUE);
+      $rsync_options['remove-source-files'] = TRUE;
     }
-    $return = drush_invoke_process($destination, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $options);
+    $return = drush_invoke_process($destination, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $rsync_options);
     if ($return['error_status']) {
       return drush_set_error('core-rsync failed.');
     }
