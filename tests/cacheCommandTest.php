@@ -1,11 +1,13 @@
 <?php
 
+namespace Unish;
+
 /**
-  * cache command testing.
+  * Cache command testing.
   *
   * @group base
   */
-class cacheCommandCase extends Drush_CommandTestCase {
+class cacheCommandCase extends CommandUnishTestCase {
   public function testCacheGetSetClear() {
     $this->setUpDrupal(1, TRUE);
     $options = array(

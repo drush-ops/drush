@@ -1,12 +1,11 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for queue commands.
- *
  * @group commands
  */
-class QueueCase extends Drush_CommandTestCase {
+class QueueCase extends CommandUnishTestCase {
 
   function testQueue() {
     if (UNISH_DRUPAL_MAJOR_VERSION == 6) {

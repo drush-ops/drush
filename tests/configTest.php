@@ -1,12 +1,13 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for Configuration Management commands for D8+.
+ * Tests for Configuration Management commands for D8+.
  *
  * @group commands
  */
-class ConfigCase extends Drush_CommandTestCase {
+class ConfigCase extends CommandUnishTestCase {
 
   function testConfig() {
     if (UNISH_DRUPAL_MAJOR_VERSION < 8) {

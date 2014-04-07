@@ -1,12 +1,13 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for core commands.
+ * Tests for core commands.
  *
  * @group commands
  */
-class coreCase extends Drush_CommandTestCase {
+class coreCase extends CommandUnishTestCase {
   /**
    * Test to see if rsync @site:%files calculates the %files path correctly.
    * This tests the non-optimized code path in drush_sitealias_resolve_path_references.

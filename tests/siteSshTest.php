@@ -1,12 +1,14 @@
 <?php
 
+namespace Unish;
+
 /**
  * @file
  *   Tests for ssh.drush.inc
  *
  * @group commands
  */
-class siteSshCase extends Drush_CommandTestCase {
+class siteSshCase extends CommandUnishTestCase {
 
   /**
    * Test drush ssh --simulate. No additional bash passed.

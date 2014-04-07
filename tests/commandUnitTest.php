@@ -1,6 +1,8 @@
 <?php
 
-class commandUnitCase extends Drush_UnitTestCase {
+namespace Unish;
+
+class commandUnitCase extends UnitUnishTestCase {
   /**
    * Assure that matching version-specific command files are loaded and others are ignored.
    */

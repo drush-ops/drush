@@ -611,7 +611,7 @@ function drush_is_local_host($host) {
  * Return the user's home directory.
  */
 function drush_server_home() {
-  // Cannot use $_SERVER superglobal since that's empty during Drush_UnitTestCase
+  // Cannot use $_SERVER superglobal since that's empty during UnitUnishTestCase
   // getenv('HOME') isn't set on windows and generates a Notice.
   $home = getenv('HOME');
   if (empty($home)) {

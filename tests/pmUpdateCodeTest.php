@@ -7,11 +7,13 @@
   *   @todo test security-only once one of these modules or core gets a security release.
   */
 
+namespace Unish;
+
 /**
  *  @group slow
  *  @group pm
  */
-class pmUpdateCode extends Drush_CommandTestCase {
+class pmUpdateCode extends CommandUnishTestCase {
 
   /*
    * An array of modules to be downloaded and enabled.

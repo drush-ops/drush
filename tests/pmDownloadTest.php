@@ -1,11 +1,11 @@
 <?php
 
+namespace Unish;
+
 /**
-  * pm-download testing
-  *
   * @group pm
   */
-class pmDownloadCase extends Drush_CommandTestCase {
+class pmDownloadCase extends CommandUnishTestCase {
   public function testPmDownload() {
     $this->drush('pm-download', array('devel'), array('cache' => NULL, 'skip' => NULL)); // No FirePHP
     $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');

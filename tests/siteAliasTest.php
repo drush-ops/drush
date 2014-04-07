@@ -1,12 +1,13 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for sitealias.inc
+ * Tests for sitealias.inc
  *
  * @group base
  */
-class saCase extends Drush_CommandTestCase {
+class saCase extends CommandUnishTestCase {
   /**
    * Covers the following responsibilities.
    *   - Dispatching a Drush command that uses strict option handling

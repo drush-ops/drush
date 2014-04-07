@@ -1,10 +1,11 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for the 'drush' script itself
+ * Tests for the 'drush' script itself
  */
-class drushScriptCase extends Drush_CommandTestCase {
+class drushScriptCase extends CommandUnishTestCase {
 
   /**
    * Test `PHP_OPTIONS=... drush`

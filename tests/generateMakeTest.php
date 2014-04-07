@@ -1,5 +1,7 @@
 <?php
 
+namespace Unish;
+
 /**
  * Generate makefile tests
  *
@@ -7,7 +9,7 @@
  * @group make
  * @group slow
  */
-class generateMakeCase extends Drush_CommandTestCase {
+class generateMakeCase extends CommandUnishTestCase {
   function testGenerateMake() {
     $sites = $this->setUpDrupal(1, TRUE);
     $major_version = UNISH_DRUPAL_MAJOR_VERSION . '.x';

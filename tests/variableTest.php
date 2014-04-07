@@ -1,12 +1,11 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for enable, disable, uninstall, pm-list commands.
- *
  * @group commands
  */
-class VariableCase extends Drush_CommandTestCase {
+class VariableCase extends CommandUnishTestCase {
 
   function testVariable() {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {

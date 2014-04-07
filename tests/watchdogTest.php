@@ -1,12 +1,11 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests watchdog-show and watchdog-delete commands
- *
  * @group commands
  */
-class WatchdogCase extends Drush_CommandTestCase {
+class WatchdogCase extends CommandUnishTestCase {
 
   function  testWatchdog() {
     $sites = $this->setUpDrupal(1, TRUE);

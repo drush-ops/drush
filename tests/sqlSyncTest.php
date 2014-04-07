@@ -8,12 +8,14 @@
 *  overwriting one site with another.
 */
 
+namespace Unish;
+
 /**
  *  @group slow
  *  @group commands
  *  @group sql
  */
-class sqlSyncTest extends Drush_CommandTestCase {
+class sqlSyncTest extends CommandUnishTestCase {
 
   /**
    * Covers the following responsibilities.

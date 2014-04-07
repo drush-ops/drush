@@ -1,11 +1,13 @@
 <?php
 
+namespace Unish;
+
 /**
  * Make makefile tests.
  * @group make
  * @group slow
  */
-class makeMakefileCase extends Drush_CommandTestCase {
+class makeMakefileCase extends CommandUnishTestCase {
   /**
    * Path to test make files.
    */

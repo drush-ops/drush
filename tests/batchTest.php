@@ -1,14 +1,15 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests the drush batch subsystem.
+ * Tests the drush batch subsystem.
  *
  * @see includes/batch.inc
  *
  * @group base
  */
-class batchCase extends Drush_CommandTestCase {
+class batchCase extends CommandUnishTestCase {
 
   public function testBatch() {
     $sites = $this->setUpDrupal(1, TRUE);
@@ -20,7 +21,7 @@ class batchCase extends Drush_CommandTestCase {
     );
     $this->drush('unit-batch', array(), $options);
     // Collect log messages that begin with "!!!" (@see: _drush_unit_batch_operation())
-    $parsed = parse_backend_output($this->getOutput());
+    $parsed = $this->parse_backend_output($this->getOutput());
     $special_log_msgs = '';
     foreach ($parsed['log'] as $key => $log) {
       if(substr($log['message'],0,3) == '!!!') {

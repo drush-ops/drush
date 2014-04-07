@@ -1,14 +1,15 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
  * Tests for sql-dump commands.
  *
  * @group commands
  * @group sql
  * @group slow
  */
-class SqlDumpTest extends Drush_CommandTestCase {
+class SqlDumpTest extends CommandUnishTestCase {
 
   /**
    * Test that a dump file is created successfully.

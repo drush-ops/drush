@@ -1,9 +1,11 @@
 <?php
 
+namespace Unish;
+
 /**
  * @group base
  */
-class siteSetCommandCase extends Drush_CommandTestCase {
+class siteSetCommandCase extends CommandUnishTestCase {
 
   function testSiteSet() {
     if ($this->is_windows()) {

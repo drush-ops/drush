@@ -5,11 +5,13 @@
  *   Tests for enable, disable, uninstall, pm-list commands.
  */
 
+namespace Unish;
+
 /**
  *  @group slow
  *  @group pm
  */
-class EnDisUnListCase extends Drush_CommandTestCase {
+class EnDisUnListCase extends CommandUnishTestCase {
 
   public function testEnDisUnList() {
     $sites = $this->setUpDrupal(1, TRUE);

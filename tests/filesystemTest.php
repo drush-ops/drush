@@ -1,11 +1,13 @@
 <?php
 
+namespace Unish;
+
 /**
  * Filesystem related testing.
  *
  * @group base
  */
-class FilesystemCase extends Drush_CommandTestCase {
+class FilesystemCase extends CommandUnishTestCase {
 
   public function testSbit() {
     if ($this->is_windows()) {

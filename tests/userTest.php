@@ -1,15 +1,12 @@
 <?php
 
-/**
- * @file
- *   Tests for user.drush.inc
- */
+namespace Unish;
 
 /**
  *  @group slow
  *  @group commands
  */
-class userCase extends Drush_CommandTestCase {
+class userCase extends CommandUnishTestCase {
 
   /**
    * Create, edit, block, and cancel users.
@@ -88,7 +85,7 @@ class userCase extends Drush_CommandTestCase {
     $user_login_options = $options + array('simulate' => TRUE, 'browser' => 'unish');
     // Collect full logs so we can check browser.
     $this->drush('user-login', array(), $user_login_options + array('backend' => NULL));
-    $parsed = parse_backend_output($this->getOutput());
+    $parsed = $this->parse_backend_output($this->getOutput());
     $url = parse_url($parsed['output']);
     $this->assertContains('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
     $browser = FALSE;

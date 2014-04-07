@@ -1,12 +1,13 @@
 <?php
 
+namespace Unish;
+
 /**
-  * @file
-  *   Unit tests for sitealias.inc
+  * Unit tests for sitealias.inc
   *
   * @group base
   */
-class saUnitCase extends Drush_UnitTestCase {
+class saUnitCase extends UnitUnishTestCase {
 
   /**
    * Tests _sitealias_array_merge().
