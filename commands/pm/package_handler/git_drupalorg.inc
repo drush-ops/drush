@@ -189,7 +189,7 @@ function package_handler_post_download($project, $release) {
       $command[] = drush_get_option('gitsubmoduleaddparams');
       $command[] = $project['repository'];
       // We need the submodule relative path.
-      $command[] = substr($project['full_project_path'], strlen($superproject) + 1);
+      $command[] = substr(realpath($project['full_project_path']), strlen(realpath($superproject)) + 1);
       if (!drush_shell_cd_and_exec($superproject, implode(' ', $command))) {
         return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to add !name as a git submodule of !super.', array('!name' => $project['name'], '!super' => $superproject)));
       }
