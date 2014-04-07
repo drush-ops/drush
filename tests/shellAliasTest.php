@@ -1,18 +1,19 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for Shell aliases.
+ * Tests for Shell aliases.
  *
  * @group base
  */
-class shellAliasesCase extends Drush_CommandTestCase {
+class shellAliasesCase extends CommandUnishTestCase {
 
   /**
    * Write a config file that contains the shell-aliases array.
    */
-  static function setUpBeforeClass() {
-    parent::setUpBeforeClass();
+  function setUp() {
+    parent::setUp();
     $contents = "
       <?php
 
@@ -43,7 +44,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
         '%sandbox' => UNISH_SANDBOX,
       ),
     );
-    $contents = unish_file_aliases($aliases);
+    $contents = $this->unish_file_aliases($aliases);
     file_put_contents(UNISH_SANDBOX . '/aliases.drushrc.php', $contents);
   }
 

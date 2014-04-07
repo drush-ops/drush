@@ -5,8 +5,9 @@
  *   Tests for outputformat.drush.inc
  */
 
+namespace Unish;
 
-class outputFormatUnitCase extends Drush_UnitTestCase {
+class outputFormatUnitCase extends UnitUnishTestCase {
 
 /**
  * Test various output formats using php-eval with no Drupal site.

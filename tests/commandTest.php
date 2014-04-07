@@ -1,9 +1,11 @@
 <?php
 
+namespace Unish;
+
 /**
  * @group base
  */
-class commandCase extends Drush_CommandTestCase {
+class commandCase extends CommandUnishTestCase {
   public function testInvoke() {
     $expected = array(
       'unit_drush_init',
@@ -72,7 +74,7 @@ class commandCase extends Drush_CommandTestCase {
       'backend' => NULL, // To obtain and parse the error log.
     );
     $this->drush('unit-drush-dependency', array(), $options, NULL, NULL, self::EXIT_ERROR);
-    $parsed = parse_backend_output($this->getOutput());
+    $parsed = $this->parse_backend_output($this->getOutput());
     $this->assertArrayHasKey("DRUSH_COMMANDFILE_DEPENDENCY_ERROR", $parsed['error_log']);
   }
 
@@ -93,7 +95,7 @@ class commandCase extends Drush_CommandTestCase {
       'backend' => NULL, // To obtain and parse the error log.
     );
     $this->drush('devel-download', array(), $options, NULL, NULL, self::EXIT_ERROR);
-    $parsed = parse_backend_output($this->getOutput());
+    $parsed = $this->parse_backend_output($this->getOutput());
     $this->assertArrayHasKey("DRUSH_COMMAND_DEPENDENCY_ERROR", $parsed['error_log']);
   }
 }

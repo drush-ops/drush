@@ -1,15 +1,16 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests sql-connect command
+ * Tests sql-connect command
  *
  *   Installs Drupal and checks that the given URL by sql-connect is correct.
  *
  * @group commands
  * @group sql
  */
-class SqlConnectCase extends Drush_CommandTestCase {
+class SqlConnectCase extends CommandUnishTestCase {
 
   function testSqlConnect() {
     $sites = $this->setUpDrupal(1, TRUE);

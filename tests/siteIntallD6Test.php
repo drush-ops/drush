@@ -1,12 +1,13 @@
 <?php
+
+namespace Unish;
+
 /**
- * @file
- *   Tests for site-install on a Drupal 6 installation.
+ * Tests for site-install on a Drupal 6 installation.
  *
  * @group commands
  */
-
-class siteInstallD6Case extends Drush_CommandTestCase {
+class siteInstallD6Case extends CommandUnishTestCase {
 
   function setUp() {
     if (UNISH_DRUPAL_MAJOR_VERSION != 6) {

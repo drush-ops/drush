@@ -1,14 +1,15 @@
 <?php
 
-/**
- * @file
- *   Tests for archive-dump and archive-restore
- * @group commands
- */
+namespace Unish;
 
 require_once dirname(__FILE__) . '/../includes/filesystem.inc';
 
-class archiveDumpCase extends Drush_CommandTestCase {
+/**
+ * Tests for archive-dump and archive-restore
+ *
+ * @group commands
+ */
+class archiveDumpCase extends CommandUnishTestCase {
   /**
    * archive-dump behaves slightly different when archiving a site installed
    * at sites/default so we make the test to use sites/default as the

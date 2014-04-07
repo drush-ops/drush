@@ -1,12 +1,13 @@
 <?php
 
+namespace Unish;
+
 /**
-  * @file
   *   Unit tests for table formatting.
   *
   * @group base
   */
-class tablesUnitTest extends Drush_UnitTestCase {
+class tablesUnitTest extends UnitUnishTestCase {
   function setUp() {
     // Bootstrap to ensure the auto-loaded is running so that Console_Table is found.
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUSH);

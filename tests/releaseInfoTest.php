@@ -1,11 +1,12 @@
 <?php
 
+namespace Unish;
 /**
   * pm testing
   *
   * @group pm
   */
-class releaseInfoCase extends Drush_UnitTestCase {
+class releaseInfoCase extends UnitUnishTestCase {
 
   /**
    * Parse Drupal version and release from project specification.

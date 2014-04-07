@@ -5,11 +5,13 @@
  *   Tests for role.drush.inc
  */
 
+namespace Unish;
+
 /**
  *  @group slow
  *  @group commands
  */
-class roleCase extends Drush_CommandTestCase {
+class roleCase extends CommandUnishTestCase {
 
   /**
    * Create, edit, block, and cancel users.

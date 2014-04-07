@@ -1,12 +1,14 @@
 <?php
 
+namespace Unish;
+
 /**
  * core-quick-drupal tests.
  *
  * @group quick-drupal
  * @group slow
  */
-class quickDrupalCase extends Drush_CommandTestCase {
+class quickDrupalCase extends CommandUnishTestCase {
   /**
    * Path to test make files.
    */

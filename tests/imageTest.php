@@ -1,11 +1,13 @@
 <?php
+
+namespace Unish;
+
 /**
- * @file
- *   Tests image-flush command
+ * Tests image-flush command
  *
  * @group commands
  */
-class ImageCase extends Drush_CommandTestCase {
+class ImageCase extends CommandUnishTestCase {
 
   function testImage() {
     if (UNISH_DRUPAL_MAJOR_VERSION == 6) {

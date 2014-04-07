@@ -1,7 +1,8 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
  *   Tests for outputformat.drush.inc
  */
 
@@ -11,7 +12,7 @@
  *  @group slow
  *  @group base
  */
-class outputFormatCase extends Drush_CommandTestCase {
+class outputFormatCase extends CommandUnishTestCase {
 
 /**
  * Test output formats using various Drush commands on a Drupal site.
