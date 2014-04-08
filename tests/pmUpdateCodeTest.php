@@ -94,8 +94,8 @@ class pmUpdateCode extends CommandUnishTestCase {
 
     // Verify that we keep backups as instructed.
     $backup_dir = UNISH_SANDBOX . '/backups';
-    $Directory = new RecursiveDirectoryIterator($backup_dir);
-    $Iterator = new RecursiveIteratorIterator($Directory);
+    $Directory = new \RecursiveDirectoryIterator($backup_dir);
+    $Iterator = new \RecursiveIteratorIterator($Directory);
     $found = FALSE;
     foreach ($Iterator as $item) {
       if (basename($item) == $first . '.module') {
@@ -105,7 +105,7 @@ class pmUpdateCode extends CommandUnishTestCase {
     }
     $this->assertTrue($found, 'Backup exists and contains the first module.');
 
-    $Iterator = new RecursiveIteratorIterator($Directory);
+    $Iterator = new \RecursiveIteratorIterator($Directory);
     $found = FALSE;
     foreach ($Iterator as $item) {
       if (basename($item) == $second . '.module') {
