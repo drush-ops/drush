@@ -1009,7 +1009,7 @@ function drush_core_php_script() {
   }
 
   if ($script == '-') {
-    eval(stream_get_contents(STDIN));
+    return eval(stream_get_contents(STDIN));
   }
   elseif (file_exists($script)) {
     $found = $script;
@@ -1064,7 +1064,7 @@ function drush_core_php_script() {
     // just the arguments that are relevant using drush_shift().
     drush_set_context('DRUSH_SHIFT_SKIP', 2);
     if (_drush_core_eval_shebang_script($found) === FALSE) {
-      include($found);
+      return include($found);
     }
   }
 }
