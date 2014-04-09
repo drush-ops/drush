@@ -5,11 +5,16 @@
  *   Initialize a sandboxed environment. Starts with call unish_init() at bottom.
  */
 
-$autoloadFile = __DIR__ . '/../vendor/autoload.php';
-if (!file_exists($autoloadFile)) {
-  throw new RuntimeException('Install dependencies to run phpunit.');
+// This code copied from drush_bootstrap_prepare() except for 1st line.
+$drush_base_path = dirname(__DIR__);
+$local_vendor_path = $drush_base_path . '/vendor/autoload.php';
+$global_vendor_path = $drush_base_path . '/../../../vendor/autoload.php';
+// Check for a local composer install or a global composer install. Vendor dirs are in different spots.
+if ((!@include $local_vendor_path) && (!@include $global_vendor_path)) {
+  $msg = "Unable to load autoload.php. Drush now requires Composer in order to install its depedencies and autoload classes. Please see README.md\n";
+  fwrite(STDERR, $msg);
+  return FALSE;
 }
-require_once $autoloadFile;
 
 unish_init();
 
