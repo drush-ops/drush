@@ -1211,8 +1211,8 @@ function drush_parse_command() {
 }
 
 /**
- * Called by drush_parse_command.  If a command is dispatched
- * directly by drush_dispatch, then drush_dispatch will call
+ * Called by drush_parse_command().  If a command is dispatched
+ * directly by drush_dispatch(), then drush_dispatch() will call
  * this function.
  */
 function _drush_prepare_command(&$command, $arguments = array()) {

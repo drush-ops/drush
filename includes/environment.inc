@@ -232,7 +232,7 @@ function drush_site_path($path = NULL) {
  * to bootstrap the site itself.  If the implementation of conf_path
  * changes, the site should still bootstrap correctly; the only consequence
  * of this routine not working is that drush configuration files
- * (drushrc.php) stored with the site's settimight not be found.
+ * (drushrc.php) stored with the site's drush folders might not be found.
  */
 function drush_conf_path($server_uri, $require_settings = TRUE) {
   $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
@@ -356,7 +356,7 @@ function drush_valid_db_credentials() {
     if (!$sqlVersion = drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version()))) {
       return FALSE;
     }
-    if (!$sqlVersion->valid_credentials($sql->db_spec)) {
+    if (!$sqlVersion->valid_credentials($sql->db_spec())) {
       return FALSE;
     }
     return $sql->query('SELECT 1;');

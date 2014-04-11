@@ -852,7 +852,7 @@ function _drush_bootstrap_drupal_configuration() {
 /**
  * Validate the DRUSH_BOOTSTRAP_DRUPAL_DATABASE phase
  *
- * Attempt to making a working database connection using the
+ * Attempt to make a working database connection using the
  * database credentials that were loaded during the previous
  * phase.
  */
@@ -945,7 +945,7 @@ function drush_bootstrap_value($context, $value = null) {
 }
 
 /**
- * Prepare drush for bootstrap
+ * Prepare Drush for bootstrap
  *
  * All pre-flight checks and includes necessary to begin the bootstrap
  * process.
