@@ -506,7 +506,8 @@ function drush_sql_query($query = NULL) {
 function drush_sql_drop() {
   drush_sql_bootstrap_further();
   $sql = drush_sql_get_class();
-  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $sql->db_spec()['database'])))) {
+  $db_spec = $sql->db_spec();
+  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
     return drush_user_abort();
   }
   $tables = $sql->listTables();
