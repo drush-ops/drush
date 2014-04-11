@@ -87,7 +87,7 @@ function drush_core_site_install_validate() {
  */
 function drush_core_pre_site_install($profile = NULL) {
   $sql = drush_sql_get_class();
-  if (!$db_spec = $sql->db_spec) {
+  if (!$db_spec = $sql->db_spec()) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
   }

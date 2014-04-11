@@ -558,16 +558,17 @@ function _core_site_status_table($project = '') {
       $status_table['uri'] = drush_get_context('DRUSH_URI');
       try {
         $sql = drush_sql_get_class();
-        $status_table['db-driver'] = $sql->db_spec['driver'];
-        if (!empty($sql->db_spec['unix_socket'])) {
-          $status_table['db-socket'] = $sql->db_spec['unix_socket'];
+        $db_spec = $sql->db_spec();
+        $status_table['db-driver'] = $db_spec['driver'];
+        if (!empty($db_spec['unix_socket'])) {
+          $status_table['db-socket'] = $db_spec['unix_socket'];
         }
         else {
-          $status_table['db-hostname'] = $sql->db_spec['host'];
+          $status_table['db-hostname'] = $db_spec['host'];
         }
-        $status_table['db-username'] = $sql->db_spec['username'];
-        $status_table['db-name'] = $sql->db_spec['database'];
-        $status_table['db-password'] = $sql->db_spec['password'];
+        $status_table['db-username'] = $db_spec['username'];
+        $status_table['db-name'] = $db_spec['database'];
+        $status_table['db-password'] = $db_spec['password'];
         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
           $status_table['db-status'] = dt('Connected');
           if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {

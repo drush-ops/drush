@@ -306,7 +306,7 @@ function drush_sql_conf() {
   }
   else {
     $sql = drush_sql_get_class();
-    return $sql->db_spec;
+    return $sql->db_spec();
   }
 }
 
@@ -324,10 +324,11 @@ function drush_sql_connect() {
  */
 function drush_sql_create() {
   $sql = drush_sql_get_class();
+  $db_spec = $sql->db_spec();
   // Prompt for confirmation.
   if (!drush_get_context('DRUSH_SIMULATE')) {
     // @todo odd - maybe for sql-sync.
-    $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $sql->db_spec['database'];
+    $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
     drush_print(dt("Creating database !target. Any possible existing database will be dropped!", array('!target' => $txt_destination)));
 
     if (!drush_confirm(dt('Do you really want to continue?'))) {
@@ -505,7 +506,7 @@ function drush_sql_query($query = NULL) {
 function drush_sql_drop() {
   drush_sql_bootstrap_further();
   $sql = drush_sql_get_class();
-  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $sql->db_spec['database'])))) {
+  if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $sql->db_spec()['database'])))) {
     return drush_user_abort();
   }
   $tables = $sql->listTables();

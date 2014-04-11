@@ -14,11 +14,17 @@ class SqlBase {
   public $query_file = '<';
 
   /**
-   * This constructor defaults to honoring CLI options if
-   * not explicitly passed.
+   * Typically, SqlBase objects are contructed via drush_sql_get_class().
    */
   public function __construct($db_spec = NULL, $site_alias_record = NULL) {
     $this->db_spec = $db_spec;
+  }
+
+  /*
+   * Get the current $db_spec.
+   */
+  public function db_spec() {
+    return $this->db_spec;
   }
 
   /**
