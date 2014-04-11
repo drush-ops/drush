@@ -556,7 +556,8 @@ function drush_preflight_backup_dir($subdir = NULL) {
     if (empty($subdir)) {
       $subdir = 'unknown';
       if ($sql = drush_sql_get_class()) {
-        $subdir = $sql->db_spec()['database'];
+        $db_spec = $sql->db_spec();
+        $subdir = $db_spec['database'];
       }
     }
 
