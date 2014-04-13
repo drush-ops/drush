@@ -1118,7 +1118,7 @@ function drush_preflight_command_dispatch() {
     }
     drush_expand_short_form_options($cli_options);
     drush_set_context('cli', $cli_options);
-    _drush_bootstrap_global_options();
+    _drush_preflight_global_options();
   }
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
   // remote command dispatching and site-list command dispatching, and always let
