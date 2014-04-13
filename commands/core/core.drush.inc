@@ -1060,8 +1060,8 @@ function drush_core_php_script() {
   }
 }
 
-function drush_core_php_eval($command) {
-  return eval($command . ';');
+function drush_core_php_eval($php) {
+  return eval($php . ';');
 }
 
 /**

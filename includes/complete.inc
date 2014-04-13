@@ -244,9 +244,9 @@ function drush_complete_process_argv() {
   drush_set_command(NULL);
   // Reparse arguments, site alias, and command.
   drush_parse_args();
-  // Ensure the base environment is configures, so tests look in the correct
+  // Ensure the base environment is configured, so tests look in the correct
   // places.
-  _drush_bootstrap_base_environment();
+  _drush_preflight_base_environment();
   // Check for and record any site alias.
   drush_sitealias_check_arg();
   drush_sitealias_check_site_env();
@@ -444,7 +444,9 @@ function drush_complete_rebuild() {
   $complete = array();
   // Bootstrap to the site level (if possible) - commands may need to check
   // the bootstrap level, and perhaps bootstrap higher in extraordinary cases.
-  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+  $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT');
+  $bootstrap->preflight();
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
   $commands = drush_get_commands();
   foreach ($commands as $command_name => $command) {
     // Add command options and suboptions.
