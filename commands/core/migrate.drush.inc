@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * The initial implementation of the migrate from manifest command.
+ */
+
 use Drupal\Core\Database\Database;
 use Drupal\migrate\MigrateExecutable;
 use Symfony\Component\Yaml\Yaml;
