@@ -351,7 +351,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
   // If the user defined the root of a drupal site, then also
   // look for alias files in /drush and /sites/all/drush.
   $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-  if (isset($drupal_root)) {
+  if (!empty($drupal_root)) {
     $site_paths[] = $drupal_root . '/drush';
     $site_paths[] = $drupal_root . '/sites/all/drush';
   }
