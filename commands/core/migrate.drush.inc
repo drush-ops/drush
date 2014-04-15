@@ -47,7 +47,7 @@ function drush_migrate_manifest($db_url, $manifest) {
       drupal_rebuild();
     }
     else {
-      drush_log('Error: The manifest file is in the wrong format..');
+      drush_log('Error: The manifest file is in the wrong format.', 'error');
     }
   }
   else {
