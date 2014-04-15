@@ -2,8 +2,6 @@
 
 use Drupal\Core\Database\Database;
 use Drupal\migrate\MigrateExecutable;
-use Drupal\migrate\Plugin\migrate\source\SqlBase;
-use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Symfony\Component\Yaml\Yaml;
 use Drush\Migrate\DrushLogMigrateMessage;
 
