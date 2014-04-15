@@ -249,10 +249,11 @@ class SqlBase {
    *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
    */
   public function createdb($quoted = FALSE) {
-    // Adjust connection to allow for superuser creds if provided.
     $dbname = $this->db_spec['database'];
+    $sql = $this->createdb_sql($dbname);
+    // Adjust connection to allow for superuser creds if provided.
     $this->su();
-    return $this->query($this->createdb_sql($dbname));
+    return $this->query($sql);
   }
 
   /**
