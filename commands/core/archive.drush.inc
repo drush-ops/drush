@@ -215,7 +215,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
         'file' => basename($result_file),
         'driver' => $db['driver'],
       );
-      $table_selection = drush_sql_get_table_selection();
+      $table_selection = drush_sql_get_expanded_table_selection(drush_sitealias_get_db_spec($alias));
       list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $db, $result_file);
       if (!drush_shell_exec($dump_exec)) {
         return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed.');
