@@ -186,7 +186,7 @@ class SqlBase {
     // In --simulate mode, drush_shell_exec() will show the call to mysql or psql,
     // but the sql query itself is stored in a temp file and not displayed.
     // We will therefore show the query explicitly in the interest of debugging.
-    if (drush_get_context('DRUSH_SIMULATE') && empty($input_file)) {
+    if (drush_get_context('DRUSH_SIMULATE')) {
       drush_log('sql-query: ' . $query, 'status');
     }
 
