@@ -147,6 +147,7 @@ class SqlBase {
    *   A path to save query results to.
    */
   public function query($query, $input_file = NULL, $silent = TRUE, $result_file = '') {
+    $input_file_original = $input_file;
     if ($input_file && drush_file_is_tarball($input_file)) {
       if (drush_shell_exec('gunzip %s', $input_file)) {
         $input_file = trim($input_file, '.gz');
@@ -186,7 +187,7 @@ class SqlBase {
     // In --simulate mode, drush_shell_exec() will show the call to mysql or psql,
     // but the sql query itself is stored in a temp file and not displayed.
     // We will therefore show the query explicitly in the interest of debugging.
-    if (drush_get_context('DRUSH_SIMULATE') && empty($input_file)) {
+    if (drush_get_context('DRUSH_SIMULATE') && empty($input_file_original)) {
       drush_log('sql-query: ' . $query, 'status');
     }
 
