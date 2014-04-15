@@ -96,7 +96,7 @@
 // Load a drushrc.php configuration file from the current working directory.
 # $options['config'][] = './drushrc.php';
 // Load a drushrc.php configuration file from the directory sites/all/drush,
-// releative to the current Drupal site.
+// relative to the current Drupal site.
 # $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
 # if ($root) {
 #   $options['config'][] = $root . "/sites/all/drush/drushrc.php";
