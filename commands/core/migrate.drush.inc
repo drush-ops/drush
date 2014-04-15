@@ -28,7 +28,7 @@ function migrate_drush_command() {
  *
  * @param string $db_url
  *   The database url. Eg. mysql://[username]:[password]@localhost/[database]
- * @param $manifest
+ * @param string $manifest
  *   The path to the manifest path.
  */
 function drush_migrate_manifest($db_url, $manifest) {
