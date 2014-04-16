@@ -45,8 +45,8 @@ function test_drush_command() {
       'all' => 'Run all available tests',
       'methods' => 'A comma delimited list of methods that should be run within the test class. Defaults to all methods.',
       'dirty' => 'Skip cleanup of temporary tables and files. Helpful for reading debug() messages and other post-mortem forensics.',
-      'xml' => 'Output verbose test results to a specified directory using the JUnit test reporting format. Useful for integrating with Jenkins.'
-
+      'xml' => 'Output verbose test results to a specified directory using the JUnit test reporting format. Useful for integrating with Jenkins.',
+      'artifacts' => 'Output to a specific folder the test results in a human-viewable, themed output, including the verbose messages and required CSS for rendering. Useful for saving as an artifact for future viewing in Jenkins.',
     ),
     'outputformat' => array(
       'default' => 'table',
@@ -173,6 +173,9 @@ function drush_test_run_class($class) {
 
 /**
  * Run a single test and display any failure messages.
+ *
+ * @param $class
+ *   A test class name
  */
 function simpletest_drush_run_test($class) {
   if (drush_drupal_major_version() >= 7) {
@@ -204,6 +207,9 @@ function simpletest_drush_run_test($class) {
   $test_suites = drush_test_get_results($test_id, $info);
   if ($dir = drush_get_option('xml')) {
     drush_test_xml_results($test_id, $test_suites, $dir);
+  }
+  if ($dir = drush_get_option('artifacts')) {
+    drush_test_artifact_results($test_id, $test_suites, $dir, $info['name']);
   }
   if ($status === 'error') {
     if (drush_drupal_major_version() >= 7) {
@@ -384,4 +390,227 @@ function drush_test_xml_results($test_id, $test_suites, $dir) {
   }
   // Save to disk.
   file_put_contents($dir . '/testsuite-' . $test_id . '.xml', $xml->saveXML());
+}
+
+/**
+ * Save test-results as human-viewable artifacts.
+ *
+ * This is called when the --artifacts option is set to a specific directory,
+ * in which case the themed results tables, verbose messages, included css.
+ * The results of this folder can then be saved as an artifact in your
+ * continuous integration system for further viewing.
+ *
+ * @param $test_id
+ *   An existing test id in the system
+ * @param $dir
+ *   A target directory
+ * @name
+ *   A non-sanitized name string
+ *
+ * @throws
+ *   Exception
+ */
+function drush_test_artifact_results($test_id, $test_suites, $dir, $name) {
+  $dir = is_string($dir) ? $dir : '.';
+  // Build an XML document from our results.
+  $form_state = array();
+  module_load_include('inc', 'simpletest', 'simpletest.pages');
+  $html = drupal_render_page(array('#type' => 'page', 'content' => simpletest_result_form(array(), $form_state, $test_id)));
+  // Save to disk.
+  file_put_contents($dir . '/_results-' . preg_replace('/[^a-zA-Z0-9_-]/', '_', $name) . '.html', $html);
+  drush_test_artifact_copy_verbose_messages($dir);
+  drush_test_artifact_correct_paths($dir);
+}
+
+/**
+ * Copies html files from sites/../files/simpletest/verbose/*.html to directory
+ *
+ * @param $dir
+ *   A directory to which to copy the files
+ */
+function drush_test_artifact_copy_verbose_messages($dir) {
+  $files = file_scan_directory(file_default_scheme(). '://simpletest/verbose', '/.*\.html/');
+
+  foreach ($files as $uri => $file) {
+    // @TODO not sure how to get the relative path, see
+    // http://stackoverflow.com/questions/23109916
+    // "default" should not be hardcoded here.
+    copy('sites/default/files/simpletest/verbose/' . $file->filename, $dir . '/' . $file->filename);
+  }
+}
+
+/**
+ * Where possible, correct files so that references to files resolve.
+ *
+ * Normally, the themed test report contains links to the verbose message
+ * on the current URL, but because we're archiving the information, this
+ * needs to be relative. The verbose messages themselves contain references
+ * to CSS files on the current site. Again, because we are archiving these
+ * as artifacts, we need to include the css files in this folder and reference
+ * them correctly.
+ */
+function drush_test_artifact_correct_paths($dir) {
+  $dir_resource = opendir($dir);
+  if (!$dir_resource) {
+    throw new Exception('Unknown directory');
+  }
+  while ($file = readdir($dir_resource)) {
+    drush_test_artifact_correct_file($dir, $file);
+  }
+}
+
+/**
+ * Corrects a single file to save as an artifact.
+ *
+ * For test results, the correction will change links to files so they are
+ * relative.
+ * For verbose messages, the css will be imported, and the rereference
+ * corrected.
+ */
+function drush_test_artifact_correct_file($dir, $file) {
+  $corrector = DrushTestArtifactFileCorrector::Get($dir, $file);
+  if ($corrector) {
+    $corrector->Correct();
+  }
+}
+
+class DrushTestArtifactFileCorrector {
+  private $dir;
+  private $file;
+  function GetDir() {
+    return $this->dir;
+  }
+  function GetFile() {
+    return $this->file;
+  }
+  function __construct($dir, $file) {
+    $this->dir = $dir;
+    $this->file = $file;
+  }
+  static function Get($dir, $file) {
+    if (substr($file, strlen($file) - strlen('.html')) == '.html' && strlen($file) > strlen('.html')) {
+      if (substr($file, 0, 1) == '_') {
+        return new DrushTestArtifactFileCorrector($dir, $file);
+      }
+      else {
+        return new DrushTestArtifactFileCorrector($dir, $file);
+      }
+    }
+  }
+  function Filename() {
+    return $this->GetDir() . '/' . $this->GetFile();
+  }
+  function Contents() {
+    $return = file_get_contents($this->Filename());
+    if ($return === FALSE) {
+      throw new Exception('Could not read contents from file ' . $this->Filename);
+    }
+    return $return;
+  }
+  function SetContents($contents) {
+    if (!$contents) {
+      throw new Exception('Cannot remove all contents from file ' . get_calling_function());
+    }
+    if (file_put_contents($this->Filename(), $contents) === FALSE) {
+      throw new Exception('Could not write contents to file ' . $this->Filename);
+    }
+  }
+  function Correct() {
+    $original_contents = $this->Contents();
+    $corrected = $this->MakeRelativePaths();
+    if ($corrected != $original_contents) {
+      $this->SetContents($corrected);
+    }
+  }
+  /**
+   * Wrapper around preg_replace, throws Exception instead of returning NULL.
+   */
+  static function Replace($pattern, $replacement, $content) {
+    $count = 0;
+    $replaced = preg_replace($pattern, $replacement, $content, -1, $count);
+    if ($replaced === NULL) {
+      throw new Exception('preg_replace() could not be executed.');
+    }
+    return $replaced;
+  }
+  function GetExtensions() {
+    return array(
+      'css',
+      'js',
+      'png',
+      'jpeg',
+      'gif',
+      'jpg',
+      'html',
+    );
+  }
+  function MakeRelativePaths() {
+    $content = $this->Contents();
+    global $base_url;
+    $matches = array();
+    // now replace the files locally
+    $extensions = implode('|', $this->GetExtensions());
+    self::CopyReferencedFiles();
+    $pattern = '/"[:\/\.a-zA-Z0-9-_]*\/' . $this->FilePattern(). '"/';
+    $content = self::Replace($pattern, '"\1\2"', $content);
+    if (!$content) {
+      throw new Exception('MakeRelativePaths() is not returning anything');
+    }
+    return $content;
+  }
+
+  function PathPattern() {
+    return '([a-zA-Z0-9-_\/\.]*\/)';
+  }
+
+  function FilePattern() {
+    $extensions = implode('|', $this->GetExtensions());
+    return '([a-zA-Z0-9-_\.]*\.)(' . $extensions . ')[?]*[^a-zA-Z0-9-_\.]*';
+  }
+
+  /**
+   * Copy all referenced files to the same level as the base file.
+   *
+   * The base file (this) might reference something like a/b/c/d.css or
+   * x/y/z.png. We need to copy these as d.css and z.png at the same level
+   * as this file.
+   */
+  function CopyReferencedFiles() {
+    $content = $this->Contents();
+    $pattern = '/\/' . $this->PathPattern() . $this->filePattern() . '/';
+    global $base_url;
+    $content = str_replace($base_url, '', $content);
+    $matches = array();
+    preg_match_all($pattern, $content, $matches);
+    for ($i = 0; $i < count($matches[0]); $i++) {
+      $file = $matches[1][$i] . '/' . $matches[2][$i] . $matches[3][$i];
+      if (strpos($file, '/')) {
+        if (file_exists($file)) {
+          $destination = $this->getDir() . '/' . $matches[2][$i] . $matches[3][$i];
+          copy($file, $destination);
+          if (!file_exists($destination)) {
+            throw new Exception('File ' . $destination . ' should exist');
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+* Returns the calling function through a backtrace
+*/
+function get_calling_function() {
+  // a funciton x has called a function y which called this
+  // see stackoverflow.com/questions/190421
+  $caller = debug_backtrace();
+  $caller = $caller[2];
+  $r = $caller['function'] . '()';
+  if (isset($caller['class'])) {
+    $r .= ' in ' . $caller['class'];
+  }
+  if (isset($caller['object'])) {
+    $r .= ' (' . get_class($caller['object']) . ')';
+  }
+  return $r;
 }
