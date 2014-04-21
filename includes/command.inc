@@ -1551,7 +1551,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
 }
 
 /**
- * Substrings to ignore during commandfile searching.
+ * Substrings to ignore during commandfile and site alias searching.
  */
 function drush_filename_blacklist() {
   $blacklist = array('.', '..', 'drush_make', 'examples', 'tests', 'disabled', 'gitcache', 'cache');
