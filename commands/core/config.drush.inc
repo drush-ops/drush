@@ -83,11 +83,11 @@ function config_drush_command() {
     'core' => array('8+'),
     'aliases' => array('cex'),
     'arguments' => array(
-      'destination' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
+      'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
     ),
     'options' => array(
       'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
-      'target' => 'An arbitrary directory that should receive the exported files. An alternative to destination argument',
+      'destination' => 'An arbitrary directory that should receive the exported files. An alternative to destination argument',
     ),
   );
 
@@ -253,15 +253,15 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
 }
 
 function drush_config_export_validate() {
-  if ($target = drush_get_option('target')) {
-    if (!file_exists($target)) {
-      return drush_set_error('config_export_target', 'The target directory does not exist.');
+  if ($destination = drush_get_option('destination')) {
+    if (!file_exists($destination)) {
+      return drush_set_error('config_export_target', 'The destination directory does not exist.');
     }
-    if (!is_dir($target)) {
-      return drush_set_error('config_export_target', 'The target is not a directory.');
+    if (!is_dir($destination)) {
+      return drush_set_error('config_export_target', 'The destination is not a directory.');
     }
-    if (!is_writable($target)) {
-      return drush_set_error('config_export_target', 'The target directory is not writable.');
+    if (!is_writable($destination)) {
+      return drush_set_error('config_export_target', 'The destination directory is not writable.');
     }
   }
 }
@@ -272,7 +272,7 @@ function drush_config_export_validate() {
 function drush_config_export($destination = NULL) {
   global $config_directories;
 
-  if ($target = drush_get_option('target')) {
+  if ($target = drush_get_option('destination')) {
     $destination_dir = $target;
   }
   else {
@@ -342,10 +342,10 @@ function drush_config_import($source = NULL) {
     _drush_print_config_changes_table($change_list);
   }
   else {
-    $target_dir = drush_tempdir();
-    drush_invoke_process('@self', 'config-export', array(), array('target' => $target_dir));
+    $destination_dir = drush_tempdir();
+    drush_invoke_process('@self', 'config-export', array(), array('destination' => $destination_dir));
     // @todo Can DiffFormatter produce a CLI pretty diff?
-    drush_shell_exec('diff -u %s %s', $target_dir, $source_dir);
+    drush_shell_exec('diff -u %s %s', $destination_dir, $source_dir);
     $output = drush_shell_exec_output();
     drush_print(implode("\n", $output));
   }
@@ -362,7 +362,10 @@ function _drush_config_import(StorageComparer $storage_comparer) {
     Drupal::service('event_dispatcher'),
     Drupal::service('config.manager'),
     Drupal::lock(),
-    Drupal::service('config.typed')
+    Drupal::service('config.typed'),
+    Drupal::moduleHandler(),
+    Drupal::service('theme_handler'),
+    Drupal::service('string_translation')
   );
   if ($config_importer->alreadyImporting()) {
     drush_log('Another request may be synchronizing configuration already.', 'warning');
