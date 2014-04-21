@@ -14,7 +14,6 @@ class ConfigCase extends CommandUnishTestCase {
       $this->markTestSkipped('Config only available on D8+.');
     }
 
-
     // Remove the '.x' once there is a stable release.
     $sites = $this->setUpDrupal(1, TRUE, '8.x');
     $options = array(
@@ -22,20 +21,10 @@ class ConfigCase extends CommandUnishTestCase {
       'root' => $this->webroot(),
       'uri' => key($sites),
     );
-    // Include test site's settings file to get the config directories.
-    include $options['root'] . '/sites/' . key($sites) . '/settings.php';
 
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $options);
     $this->drush('config-get', array('system.site', 'name'), $options);
     $this->assertEquals("'system.site:name': config_test\n", $this->getOutput(), 'Config was successfully set and get.');
-
-    // @todo, test that config-get or similar matches what filesystem says.
-    //$this->drush('config-get', array(), $options);
-    //$system_site_file = $options['root'] . '/sites/' . key($sites) . '/files/' . $config_directories['staging']['path'] . '/system.site.yml';
-    //$this->assertFileExists($system_site_file);
-    //$this->drush('config-get', array('system.site'), $options);
-    //$config_get_yaml = $this->getOutput();
-    //$this->assertEquals($config_get_yaml, file_get_contents($system_site_file), 'Config-get displays YAML that matches the config management system.');
 
     $this->drush('config-list', array(), $options);
     $result = $this->getOutputAsList();
@@ -46,8 +35,27 @@ class ConfigCase extends CommandUnishTestCase {
     $result = $this->getOutputAsList();
     $this->assertTrue(in_array('system.site', $result), 'system.site found in list of config names with "system" prefix.');
 
-    $this->drush('config-list', array('system'), $options += array('format' => 'json'));
+    $this->drush('config-list', array('system'), $options + array('format' => 'json'));
     $result = $this->getOutputFromJSON();
     $this->assertNotEmpty($result, 'Valid, non-empty JSON output was returned.');
+
+    // Get path to staging dir.
+    $this->drush('core-status', array(), $options + array('format' => 'json'));
+    $staging = $this->webroot() . '/' . $this->getOutputFromJSON('config-staging');
+    $system_site_yml = $staging . '/system.site.yml';
+
+    // Test export
+    $this->drush('config-export', array(), $options);
+    $this->assertFileExists($system_site_yml);
+
+    // Test import by finish the round trip.
+    $contents = file_get_contents($system_site_yml);
+    $contents = str_replace('front: user', 'front: unish', $contents);
+    $contents = file_put_contents($system_site_yml, $contents);
+    $this->drush('config-import', array(), $options);
+    $this->drush('config-get', array('system.site', 'page'), $options + array('format' => 'json'));
+    $page = $this->getOutputFromJSON('system.site:page');
+    $this->assertContains('unish', $page->front, 'Config was successfully imported.');
+
   }
 }
