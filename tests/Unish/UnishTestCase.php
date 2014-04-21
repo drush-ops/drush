@@ -204,9 +204,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
   /**
    *    Accessor for the last output, decoded from json.
-   *    @param key Optionally return only a top level element from the json object.
-   *    @return array         Output as php stdClass object.
-   *    @access public
+   *
+   *   @param string $key
+   *     Optionally return only a top level element from the json object.
+   *   @return stdClass
    */
   function getOutputFromJSON($key = NULL) {
     $json = json_decode(current($this->_output));
