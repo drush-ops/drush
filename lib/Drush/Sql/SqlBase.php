@@ -227,8 +227,10 @@ class SqlBase {
   }
 
   public function drop($tables) {
-    $sql = 'DROP TABLE '. implode(', ', $tables);
-    return $this->query($sql);
+    if ($tables) {
+      $sql = 'DROP TABLE '. implode(', ', $tables);
+      return $this->query($sql);
+    }
   }
 
   /**
