@@ -175,7 +175,7 @@ function drush_core_pre_site_install($profile = NULL) {
     // The Drupal 6 installer needs to bootstrap up to the specified site.
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
   }
-  elseif ($conf_path != $default) {
+  else {
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   }
 
