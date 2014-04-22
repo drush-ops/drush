@@ -68,7 +68,7 @@ function _drush_postmortem() {
   // Make sure that the memory limit has been bumped up from the minimum default value of 32M.
   $php_memory_limit = drush_memory_limit();
   if (($php_memory_limit > 0) && ($php_memory_limit <= 32*DRUSH_DRUPAL_KILOBYTE*DRUSH_DRUPAL_KILOBYTE)) {
-    drush_set_error('DRUSH_MEMORY_LIMIT', dt('Your memory limit is set to !memory_limit; drush needs as much memory to run as Drupal.  !php_ini_msg', array('!memory_limit' => $php_memory_limit / (DRUSH_DRUPAL_KILOBYTE*DRUSH_DRUPAL_KILOBYTE) . 'M', '!php_ini_msg' => _drush_php_ini_loaded_file_message())));
+    drush_set_error('DRUSH_MEMORY_LIMIT', dt('Your memory limit is set to !memory_limit; Drush needs as much memory to run as Drupal.  !php_ini_msg', array('!memory_limit' => $php_memory_limit / (DRUSH_DRUPAL_KILOBYTE*DRUSH_DRUPAL_KILOBYTE) . 'M', '!php_ini_msg' => _drush_php_ini_loaded_file_message())));
   }
 }
 

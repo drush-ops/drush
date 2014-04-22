@@ -704,8 +704,14 @@ function drush_print_file($file) {
  * @ingroup php_wrappers
  */
 function drush_json_encode($var) {
+  if (version_compare(phpversion(), '5.4.0', '>=')) {
+    $json = json_encode($var, JSON_PRETTY_PRINT);
+  }
+  else {
+    $json = json_encode($var);
+  }
   // json_encode() does not escape <, > and &, so we do it with str_replace().
-  return str_replace(array('<', '>', '&'), array('\u003c', '\u003e', '\u0026'), json_encode($var));
+  return str_replace(array('<', '>', '&'), array('\u003c', '\u003e', '\u0026'), $json);
 }
 
 /**
