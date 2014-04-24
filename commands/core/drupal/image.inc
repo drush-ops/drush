@@ -9,7 +9,7 @@
  */
 
 function drush_image_styles() {
-  return \Drupal::entityManager()->getStorageController('image_style')->loadMultiple();
+  return \Drupal::entityManager()->getStorage('image_style')->loadMultiple();
 }
 
 function drush_image_flush_single($style_name) {
