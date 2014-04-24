@@ -17,10 +17,9 @@ Reuse by Drush Commandfiles
 -----------
 Drush commandfiles are encouraged to ship with PHPUnit test cases that
 extend UnitUnishTestCase and CommandUnishTestCase. In order to run
-the tests, you have to point to the [bootstrap.inc](tests/bootstrap.inc) file
-such as `phpunit --bootstrap=/path/to/drush/tests/bootstrap.inc`.
-The devel project does exactly this -
-http://drupalcode.org/project/devel.git/blob/refs/heads/8.x-1.x:/drush/develDrushTest.php
+the tests, you have to point to the phpunit.xml file that used by Drush.
+The devel project has a wrapper script which demonstrates this -
+http://drupalcode.org/project/devel.git/blob/refs/heads/8.x-1.x:/run-tests-drush.sh
 
 Cache
 -----------
