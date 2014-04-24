@@ -5,11 +5,17 @@
  */
 
 function _drush_cache_command_get($cid, $bin) {
+  if (is_null($bin)) {
+    $bin = 'cache';
+  }
   return cache_get($cid, $bin);
 }
 
 function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
   // Convert the "expire" argument to a valid value for Drupal's cache_set().
+  if (is_null($bin)) {
+    $bin = 'cache';
+  }
   if ($expire == 'CACHE_TEMPORARY') {
     $expire = CACHE_TEMPORARY;
   }

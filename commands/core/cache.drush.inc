@@ -145,9 +145,9 @@ function drush_cache_command_clear($type = NULL) {
  * @param $cid
  *   The cache ID of the object to fetch.
  * @param $bin
- *   A specific bin to fetch from.
+ *   A specific bin to fetch from. If not specified, the default bin is used.
  */
-function drush_cache_command_get($cid = NULL, $bin = 'cache') {
+function drush_cache_command_get($cid = NULL, $bin = NULL) {
   drush_include_engine('drupal', 'cache', drush_drupal_major_version());
   $result = drush_op('_drush_cache_command_get', $cid, $bin);
 
@@ -165,13 +165,13 @@ function drush_cache_command_get($cid = NULL, $bin = 'cache') {
  * @param $data
  *   The data to save to the cache, or '-' to read from STDIN.
  * @param $bin
- *   A specific bin to fetch from.
+ *   A specific bin to fetch from. If not specified, the default bin is used.
  * @param $expire
  *   The expiry timestamp for the cached object.
  * @param $tags
  *   Cache tags for the cached object.
  */
-function drush_cache_command_set($cid = NULL, $data = '', $bin = 'cache', $expire = NULL, $tags = array()) {
+function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire = NULL, $tags = array()) {
   // In addition to prepare, this also validates. Can't easily be in own validate callback as
   // reading once from STDIN empties it.
   $data = drush_cache_set_prepare_data($data);

@@ -7,10 +7,17 @@
 use Drupal\Core\Cache\Cache;
 
 function _drush_cache_command_get($cid, $bin) {
+  if (is_null($bin)) {
+    $bin = 'default';
+  }
   return \Drupal::cache($bin)->get($cid);
 }
 
 function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
+  if (is_null($bin)) {
+    $bin = 'default';
+  }
+
   // Convert the "expire" argument to a valid value for Drupal's cache_set().
   if ($expire == 'CACHE_TEMPORARY') {
     $expire = Cache::TEMPORARY;
