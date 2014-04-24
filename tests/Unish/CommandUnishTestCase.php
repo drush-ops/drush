@@ -7,10 +7,6 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   // Unix exit codes.
   const EXIT_SUCCESS  = 0;
   const EXIT_ERROR = 1;
-  /**
-   * An array of Drupal sites that are setup in the drush-sandbox.
-   */
-  var $sites;
 
   /*
    * Array of code coverage data collected during a single test.

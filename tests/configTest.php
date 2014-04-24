@@ -4,28 +4,30 @@ namespace Unish;
 
 /**
  * Tests for Configuration Management commands for D8+.
- *
  * @group commands
  */
 class ConfigCase extends CommandUnishTestCase {
 
-  function testConfig() {
+  function setUp() {
     if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
       $this->markTestSkipped('Config only available on D8+.');
     }
 
-    // Remove the '.x' once there is a stable release.
-    $sites = $this->setUpDrupal(1, TRUE, '8.x');
-    $options = array(
-      'yes' => NULL,
-      'root' => $this->webroot(),
-      'uri' => key($sites),
-    );
+    if (!$this->getSites()) {
+      // Remove the '.x' once there is a stable release.
+      $this->setUpDrupal(1, TRUE, '8.x');
+    }
+  }
 
+  function testConfigGetSet() {
+    $options = $this->options();
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $options);
     $this->drush('config-get', array('system.site', 'name'), $options);
     $this->assertEquals("'system.site:name': config_test\n", $this->getOutput(), 'Config was successfully set and get.');
+  }
 
+  function testConfigList() {
+    $options = $this->options();
     $this->drush('config-list', array(), $options);
     $result = $this->getOutputAsList();
     $this->assertNotEmpty($result, 'An array of config names was returned.');
@@ -38,7 +40,10 @@ class ConfigCase extends CommandUnishTestCase {
     $this->drush('config-list', array('system'), $options + array('format' => 'json'));
     $result = $this->getOutputFromJSON();
     $this->assertNotEmpty($result, 'Valid, non-empty JSON output was returned.');
+  }
 
+  function testConfigExportImport() {
+    $options = $this->options();
     // Get path to staging dir.
     $this->drush('core-status', array(), $options + array('format' => 'json'));
     $staging = $this->webroot() . '/' . $this->getOutputFromJSON('config-staging');
@@ -56,6 +61,13 @@ class ConfigCase extends CommandUnishTestCase {
     $this->drush('config-get', array('system.site', 'page'), $options + array('format' => 'json'));
     $page = $this->getOutputFromJSON('system.site:page');
     $this->assertContains('unish', $page->front, 'Config was successfully imported.');
+  }
 
+  function options() {
+    return array(
+      'yes' => NULL,
+      'root' => $this->webroot(),
+      'uri' => key($this->getSites()),
+    );
   }
 }

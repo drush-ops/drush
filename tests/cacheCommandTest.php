@@ -13,7 +13,7 @@ class cacheCommandCase extends CommandUnishTestCase {
     $options = array(
       'yes' => NULL,
       'root' => $this->webroot(),
-      'uri' => key($this->sites),
+      'uri' => key($this->getSites()),
     );
 
     // Test the cache get command.

@@ -15,10 +15,10 @@ class coreCase extends CommandUnishTestCase {
   function testRsyncPercentFiles() {
     $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
-    $site = key($this->sites);
+    $site = key($this->getSites());
     $options = array(
       'root' => $root,
-      'uri' => key($this->sites),
+      'uri' => key($this->getSites()),
       'simulate' => NULL,
       'include-conf' => NULL,
       'include-vcs' => NULL,
@@ -39,10 +39,10 @@ class coreCase extends CommandUnishTestCase {
   function testPercentFilesOptimization() {
     $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
-    $site = key($this->sites);
+    $site = key($this->getSites());
     $options = array(
       'root' => $root,
-      'uri' => key($this->sites),
+      'uri' => key($this->getSites()),
       'simulate' => NULL,
       'include-conf' => NULL,
       'include-vcs' => NULL,
@@ -90,7 +90,7 @@ drush_invoke("version", $arg);
     $sitewide = $this->drupalSitewideDirectory();
     $options = array(
       'root' => $root,
-      'uri' => key($this->sites),
+      'uri' => key($this->getSites()),
       'yes' => NULL,
       'skip' => NULL,
       'cache' => NULL,
@@ -128,7 +128,7 @@ drush_invoke("version", $arg);
     $root = $this->webroot();
     $options = array(
       'root' => $root,
-      'uri' => key($this->sites),
+      'uri' => key($this->getSites()),
       'pipe' => NULL,
       'ignore' => 'cron,http requests,update_core', // no network access when running in tests, so ignore these
       'strict' => 0, // invoke from script: do not verify options

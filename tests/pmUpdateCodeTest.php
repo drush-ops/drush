@@ -61,7 +61,7 @@ class pmUpdateCode extends CommandUnishTestCase {
 
     $options = array(
       'root' => $this->webroot(),
-      'uri' => key($this->sites), // Have to access class property since $sites in in setUp().
+      'uri' => key($this->getSites()),
       'yes' => NULL,
       'backup-dir' => UNISH_SANDBOX . '/backups',
       'cache' => NULL,
