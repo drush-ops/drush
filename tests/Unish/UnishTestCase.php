@@ -210,7 +210,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    *   @return stdClass
    */
   function getOutputFromJSON($key = NULL) {
-    $json = json_decode(current($this->_output));
+    $json = json_decode($this->getOutput());
     if (isset($key)) {
       $json = $json->{$key}; // http://stackoverflow.com/questions/2925044/hyphens-in-keys-of-object
     }
