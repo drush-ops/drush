@@ -20,6 +20,11 @@ class outputFormatUnitCase extends UnitUnishTestCase {
   }
 
   public function provider() {
+    $json = '{"a":{"b":2,"c":3},"d":{"e":5,"f":6}}';
+    if (version_compare(phpversion(), '5.4.0', '>=')) {
+      $json = json_encode(json_decode($json), JSON_PRETTY_PRINT);
+    }
+
     return array(
       array(
         'name' => 'String test',
@@ -80,7 +85,7 @@ class outputFormatUnitCase extends UnitUnishTestCase {
           'a' => array('b' => 2, 'c' => 3),
           'd' => array('e' => 5, 'f' => 6),
         ),
-        'expected' => '{"a":{"b":2,"c":3},"d":{"e":5,"f":6}}',
+        'expected' => $json,
       ),
 //      array(
 //        'name' => 'key-value test 1d array',
