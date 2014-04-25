@@ -8,12 +8,18 @@ namespace Unish;
  * @group commands
  */
 class coreCase extends CommandUnishTestCase {
+
+  function setUp() {
+    if (!$this->getSites()) {
+      $this->setUpDrupal(1, TRUE);
+    }
+  }
+
   /**
    * Test to see if rsync @site:%files calculates the %files path correctly.
    * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
    */
   function testRsyncPercentFiles() {
-    $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
     $site = key($this->getSites());
     $options = array(
@@ -37,7 +43,6 @@ class coreCase extends CommandUnishTestCase {
    * that avoids a call to backend invoke when evaluating %files works.
    */
   function testPercentFilesOptimization() {
-    $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
     $site = key($this->getSites());
     $options = array(
@@ -85,7 +90,6 @@ drush_invoke("version", $arg);
   }
 
   function testDrupalDirectory() {
-    $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
     $sitewide = $this->drupalSitewideDirectory();
     $options = array(
@@ -124,7 +128,6 @@ drush_invoke("version", $arg);
   }
 
   function testCoreRequirements() {
-    $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
     $options = array(
       'root' => $root,
