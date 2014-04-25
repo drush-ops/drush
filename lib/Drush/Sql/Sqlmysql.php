@@ -93,7 +93,8 @@ EOT;
 
     $exec = 'mysqldump ';
     // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
-    $exec .= str_replace('--database=', ' ', $this->creds());
+    $only_db_name = str_replace('--database=', ' ', $this->creds());
+    $exec .= $only_db_name;
     if ($file) {
       $exec .= ' --result-file '. $file;
     }
@@ -120,7 +121,7 @@ EOT;
 
       // Run mysqldump again and append output if we need some structure only tables.
       if (!empty($structure_tables)) {
-        $exec .= " && mysqldump --no-data $extra " . implode(' ', $structure_tables);
+        $exec .= " && mysqldump " . $only_db_name . " --no-data $extra " . implode(' ', $structure_tables);
         if ($file) {
           $exec .= " >> $file";
         }
