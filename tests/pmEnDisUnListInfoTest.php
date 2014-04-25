@@ -11,7 +11,7 @@ namespace Unish;
  *  @group slow
  *  @group pm
  */
-class EnDisUnListCase extends CommandUnishTestCase {
+class EnDisUnListInfoCase extends CommandUnishTestCase {
 
   public function testEnDisUnList() {
     $sites = $this->setUpDrupal(1, TRUE);
