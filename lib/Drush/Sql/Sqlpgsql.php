@@ -55,6 +55,7 @@ class Sqlpgsql extends SqlBase {
     if (strtolower($query) == 'show tables;') {
       return $this->listTables();
     }
+    return $query;
   }
 
   public function listTables() {
@@ -65,6 +66,7 @@ class Sqlpgsql extends SqlBase {
       array_shift($tables);
       return $tables;
     }
+    return array();
   }
 
   public function dumpCmd($table_selection, $file) {
