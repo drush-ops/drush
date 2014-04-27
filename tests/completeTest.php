@@ -21,12 +21,6 @@ class completeCase extends CommandUnishTestCase {
     file_put_contents(UNISH_SANDBOX . '/drushrc.php', trim($contents));
   }
 
-  function setUp() {
-    if (!$this->getSites()) {
-      $this->setUpDrupal(1, TRUE);
-    }
-  }
-
   public function testComplete() {
     // We copy our completetest commandfile into our path.
     // We cannot use --include since complete deliberately avoids drush
