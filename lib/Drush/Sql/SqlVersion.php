@@ -11,18 +11,15 @@ class SqlVersion {
    */
   public function get_db_spec() {}
 
+  /*
+   * Validate that Drupal can connect to the DB without actually using Drupal to do so. Called
+   * by drush_valid_db_credentials().
+   */
   public function valid_credentials($db_spec) {
-    $type = $db_spec['driver'];
-    $type = ( $type=='oracle' ? 'oci' : $type); // fix PDO driver name, should go away in Drupal 8
     // Drupal >=7 requires PDO and Drush requires php 5.3 which ships with PDO
     // but it may be compiled with --disable-pdo.
     if (!class_exists('\PDO')) {
       drush_log(dt('PDO support is required.'), 'bootstrap');
-      return FALSE;
-    }
-    // Check the database specific driver is available.
-    if (!in_array($type, \PDO::getAvailableDrivers())) {
-      drush_log(dt('!type extension for PHP PDO is not installed. Check your php.ini to see how you can enable it.', array('!type' => $type)), 'bootstrap');
       return FALSE;
     }
     return TRUE;

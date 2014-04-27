@@ -16,7 +16,7 @@ class Sql6 extends SqlVersion {
 
   public function valid_credentials($db_spec) {
     $type = $db_spec['driver'];
-    // Check availability of db extension in PHP and also Drupal support.
+    // Check for Drupal support of configured db type.
     if (file_exists('./includes/install.'. $type .'.inc')) {
       require_once './includes/install.'. $type .'.inc';
       $function = $type .'_is_available';
