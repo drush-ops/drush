@@ -148,6 +148,7 @@ function user_drush_command() {
       'password' => 'The password for the new account',
       'mail' => 'The email address for the new account',
     ),
+    'outputformat' => $items['user-information']['outputformat'],
   );
   $items['user-cancel'] = array(
     'description' => 'Cancel a user account with the specified name.',
@@ -327,11 +328,11 @@ function drush_user_create($name) {
       drush_include_engine('drupal', 'user', drush_drupal_major_version());
       $account = _drush_user_create($new_user);
       if ($account) {
-        _drush_user_print_info($account);
-        return $account;
+        $single = drush_user_info_single($account);
+        return array($single['uid'] => $single);
       }
       else {
-        return drush_set_error("Could not create a new user account with the name " . $name . "!");
+        return drush_set_error("Could not create a new user account with the name " . $name . ".");
       }
     }
   }
