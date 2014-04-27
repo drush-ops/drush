@@ -1,5 +1,4 @@
 tests/phpunit.xml
 vendor
-composer.lock
 
 /lib/Console_Table-1.1.3/
