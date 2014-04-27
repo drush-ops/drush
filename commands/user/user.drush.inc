@@ -334,8 +334,10 @@ function drush_user_create($name) {
         $new_user_object = user_save(NULL, $new_user, NULL);
       }
       if ($new_user_object !== FALSE) {
-        _drush_user_print_info($new_user_object->uid);
-        return $new_user_object->uid;
+        // See https://github.com/drush-ops/drush/issues/464
+        // _drush_user_print_info($new_user_object->uid);
+        drush_backend_set_result($new_user_object);
+        return TRUE;
       }
       else {
         return drush_set_error("Could not create a new user account with the name " . $name . "!");
