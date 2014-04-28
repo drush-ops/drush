@@ -854,11 +854,11 @@ function _drush_bootstrap_drupal_configuration() {
  *
  * Attempt to make a working database connection using the
  * database credentials that were loaded during the previous
- * phase. If unable to validate, let's just warn the user.
+ * phase.
  */
 function _drush_bootstrap_drupal_database_validate() {
   if (!drush_valid_db_credentials()) {
-    drush_log('Unable to validate database credentials.', 'warning');
+    return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
   }
   return TRUE;
 }
