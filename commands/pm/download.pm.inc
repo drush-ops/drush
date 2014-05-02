@@ -295,9 +295,9 @@ function _pm_download_destination_lookup($type, $drupal_root, $sitepath, $create
     $destination = $type . 's';
     // Prefer /contrib if it exists.
     if ($sitepath) {
-      $destination = $sitepath . '/' . $destination;
+      $destination = $sitepath . $destination;
     }
-    $contrib = $destination . '/contrib';
+    $contrib = $destination . 'contrib';
     if (is_dir($contrib)) {
       $destination = $contrib;
     }
