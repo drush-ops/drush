@@ -14,6 +14,12 @@ class Sql6 extends SqlVersion {
     return $db_spec;
   }
 
+  public function getAll() {
+    if (isset($GLOBALS['db_url'])) {
+      return drush_sitealias_convert_db_from_db_url($GLOBALS['db_url']);
+    }
+  }
+
   public function valid_credentials($db_spec) {
     $type = $db_spec['driver'];
     // Check for Drupal support of configured db type.

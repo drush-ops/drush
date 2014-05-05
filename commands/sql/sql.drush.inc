@@ -290,19 +290,8 @@ function drush_sql_conf() {
   }
 
   if (drush_get_option('all')) {
-    switch (drush_drupal_major_version()) {
-      case 6:
-        if (!isset($GLOBALS['db_url'])) {
-          return NULL;
-        }
-        return drush_sitealias_convert_db_from_db_url($GLOBALS['db_url']);
-
-      default:
-        if (!isset($GLOBALS['databases'])) {
-          return NULL;
-        }
-        return $GLOBALS['databases'];
-    }
+    $sqlVersion = drush_sql_get_version();
+    return $sqlVersion->getAll();
   }
   else {
     $sql = drush_sql_get_class();
@@ -638,7 +627,7 @@ function drush_sql_get_class($db_spec = NULL) {
   }
   else {
     // No parameter or options provided. Determine $db_spec ourselves.
-    if ($sqlVersion = drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version()))) {
+    if ($sqlVersion = drush_sql_get_version()) {
       if ($db_spec = $sqlVersion->get_db_spec()) {
         return drush_sql_get_class($db_spec);
       }
@@ -646,6 +635,10 @@ function drush_sql_get_class($db_spec = NULL) {
   }
 
   throw new \Drush\Sql\SqlException('Unable to find a matching SQL Class. Drush cannot find your database connection details.');
+}
+
+function drush_sql_get_version() {
+  return drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version())) ?: NULL;
 }
 
 /**

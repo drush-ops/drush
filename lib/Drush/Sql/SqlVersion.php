@@ -12,6 +12,14 @@ class SqlVersion {
   public function get_db_spec() {}
 
   /*
+   * Return all configured DB connections by inspecting the global environment (D6/7) or the DB API (D8+).
+   *
+   * @return array $all
+   *   An array specifying one or more database connections.
+   */
+  public function getAll() {}
+
+  /*
    * Validate that Drupal can connect to the DB without actually using Drupal to do so. Called
    * by drush_valid_db_credentials().
    */
