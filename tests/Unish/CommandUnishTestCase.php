@@ -214,9 +214,9 @@ abstract class CommandUnishTestCase extends UnishTestCase {
 
     if (!isset($major)) {
       $this->drush('version', array('drush_version'), array('pipe' => NULL));
-      $version = $this->getOutput();
+      $version = trim($this->getOutput());
       list($major) = explode('.', $version);
     }
-    return $major;
+    return (int)$major;
   }
 }
