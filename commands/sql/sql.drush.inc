@@ -233,7 +233,7 @@ function sql_drush_command() {
     'description' => "Run sanitization operations on the current database.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'options' => array(
-      'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
+      'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',
       'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
     ) + $db_url,
     'aliases' => array('sqlsan'),
@@ -668,7 +668,7 @@ function sql_drush_sql_sync_sanitize($site) {
   $message_list = array();
 
   // Sanitize passwords.
-  $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
+  $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), drush_generate_password());
   if ($newpassword != 'no' && $newpassword !== 0) {
     $major_version = drush_drupal_major_version();
     $pw_op = "";
