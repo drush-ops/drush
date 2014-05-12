@@ -48,34 +48,34 @@ function drush_main() {
   drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
   $bootstrap->preflight();
 
-  if ($file = drush_get_option('early', FALSE)) {
-    require_once $file;
-    $function = 'drush_early_' . basename($file, '.inc');
-    if (function_exists($function)) {
-      if ($return = $function()) {
-        // If the function returns FALSE, we continue and attempt to bootstrap
-        // as normal. Otherwise, we exit early with the returned output.
-        if ($return === TRUE) {
-          $return = '';
-        }
-        drush_postflight();
-        return $return;
-      }
-    }
-  }
-
   // Process initial global options such as --debug.
   _drush_preflight_global_options();
 
   $return = '';
   drush_preflight();
   if (!drush_get_error()) {
-    // Do any necessary preprocessing operations on the command,
-    // perhaps handling immediately.
-    $command_handled = drush_preflight_command_dispatch();
-    if (!$command_handled) {
-      $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT');
-      $return = $bootstrap->bootstrap_and_dispatch();
+    if ($file = drush_get_option('early', FALSE)) {
+      require_once $file;
+      $function = 'drush_early_' . basename($file, '.inc');
+      if (function_exists($function)) {
+        if ($return = $function()) {
+          // If the function returns FALSE, we continue and attempt to bootstrap
+          // as normal. Otherwise, we exit early with the returned output.
+          if ($return === TRUE) {
+            $return = '';
+          }
+          return $return;
+        }
+      }
+    }
+    else {
+      // Do any necessary preprocessing operations on the command,
+      // perhaps handling immediately.
+      $command_handled = drush_preflight_command_dispatch();
+      if (!$command_handled) {
+        $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT');
+        $return = $bootstrap->bootstrap_and_dispatch();
+      }
     }
   }
   drush_postflight();
