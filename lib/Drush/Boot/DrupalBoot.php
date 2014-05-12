@@ -12,6 +12,8 @@ class DrupalBoot implements Boot {
     // We need our constants before commandfile searching like DRUSH_BOOTSTRAP_DRUPAL_LOGIN.
     require_once __DIR__ . '/bootstrap.inc';
     require_once __DIR__ . '/command.inc';
+
+    drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
   }
 
   function command_defaults() {

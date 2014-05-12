@@ -28,7 +28,7 @@ define('DRUSH_APPLICATION_ERROR', 255);
 /**
  * The number of bytes in a kilobyte. Copied from Drupal.
  */
-define('DRUSH_DRUPAL_KILOBYTE', 1024);
+define('DRUSH_KILOBYTE', 1024);
 
 /**
  * Default amount of time, in seconds, to cache downloads via
@@ -1659,12 +1659,12 @@ function _drush_log_drupal_messages() {
 
 // Copy of format_size() in Drupal.
 function drush_format_size($size, $langcode = NULL) {
-  if ($size < DRUSH_DRUPAL_KILOBYTE) {
+  if ($size < DRUSH_KILOBYTE) {
     // format_plural() not always available.
     return dt('@count bytes', array('@count' => $size));
   }
   else {
-    $size = $size / DRUSH_DRUPAL_KILOBYTE; // Convert bytes to kilobytes.
+    $size = $size / DRUSH_KILOBYTE; // Convert bytes to kilobytes.
     $units = array(
       dt('@size KB', array(), array('langcode' => $langcode)),
       dt('@size MB', array(), array('langcode' => $langcode)),
@@ -1676,8 +1676,8 @@ function drush_format_size($size, $langcode = NULL) {
       dt('@size YB', array(), array('langcode' => $langcode)),
     );
     foreach ($units as $unit) {
-      if (round($size, 2) >= DRUSH_DRUPAL_KILOBYTE) {
-        $size = $size / DRUSH_DRUPAL_KILOBYTE;
+      if (round($size, 2) >= DRUSH_KILOBYTE) {
+        $size = $size / DRUSH_KILOBYTE;
       }
       else {
         break;
@@ -1850,11 +1850,11 @@ function drush_memory_limit() {
   $last = strtolower($value[strlen($value)-1]);
   switch ($last) {
     case 'g':
-      $value *= DRUSH_DRUPAL_KILOBYTE;
+      $value *= DRUSH_KILOBYTE;
     case 'm':
-      $value *= DRUSH_DRUPAL_KILOBYTE;
+      $value *= DRUSH_KILOBYTE;
     case 'k':
-      $value *= DRUSH_DRUPAL_KILOBYTE;
+      $value *= DRUSH_KILOBYTE;
   }
 
   return $value;
