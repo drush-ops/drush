@@ -69,9 +69,6 @@ function drush_preflight_prepare() {
   set_error_handler('drush_error_handler');
   register_shutdown_function('drush_shutdown');
 
-  // Not used?
-  // drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
-
   // We need some global options/arguments processed at this early stage.
   drush_parse_args();
 }

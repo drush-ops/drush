@@ -35,7 +35,8 @@ define('DRUSH_BOOTSTRAP_MAX', -2);
 /**
  * @deprecated
  *
- * No longer used. Drush always runs preflight. Commands may alternatively use DRUSH_BOOTSTRAP_NONE.
+ * No longer used, but 0 remains reserved. Drush always runs preflight.
+ * Commands may alternatively use DRUSH_BOOTSTRAP_NONE.
  */
 define('DRUSH_BOOTSTRAP_DRUSH', 0);
 
@@ -477,7 +478,7 @@ function _drush_bootstrap_drupal_root_validate() {
  * DRUSH_DRUPAL_CORE constants are populated from the value that we determined during
  * the validation phase.
  *
- * We also now load the drushrc.php for this specific platform.
+ * We also now load the drushrc.php for this specific Drupal site.
  * We can now include files from the Drupal Tree, and figure
  * out more context about the platform, such as the version of Drupal.
  */
