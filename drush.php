@@ -64,7 +64,6 @@ function drush_main() {
           if ($return === TRUE) {
             $return = '';
           }
-          return $return;
         }
       }
     }
