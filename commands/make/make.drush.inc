@@ -78,16 +78,16 @@ function make_drush_command() {
         'description' => 'Restrict the make options to this comma-separated list of options.',
         'example' => 'all or none or working-copy or no-core, working-copy',
       ),
-      'generate' => array(
+      'lock' => array(
         'description' => 'Generate a makefile, based on the one passed in, with all versions resolved. Defaults to printing to the terminal, but an output file may be provided.',
         'examples' => array(
-          'drush make example.make example --generate=generated.make' => 'Write the compiled version of example.make to generated.make.',
+          'drush make example.make example --generate=example.lock' => 'Write the compiled version of example.make to example.lock.',
         ),
       ),
-      'generate-update' => array(
+      'lock-update' => array(
         'description' => 'Generate an updated makefile, based on the one passed in, with all versions updated. Defaults to printing to the terminal, but an output file may be provided.',
         'examples' => array(
-          'drush make example.make example --generate-update=updated.make' => 'Write the updated version of example.make to updated.make.',
+          'drush make example.make example --generate-update=example.lock' => 'Write the updated version of example.make to example.lock.',
         ),
       ),
     ),
@@ -211,12 +211,12 @@ function drush_make($makefile = NULL, $build_path = NULL) {
     }
   }
 
-  if (drush_get_option('generate', FALSE)) {
-    make_generate_from_makefile(drush_get_option('generate'), $makefile);
+  if (drush_get_option('lock', FALSE)) {
+    make_generate_from_makefile(drush_get_option('lock'), $makefile);
   }
 
-  if (drush_get_option('generate-update', FALSE)) {
-    make_generate_from_makefile(drush_get_option('generate-update'), $makefile);
+  if (drush_get_option('lock-update', FALSE)) {
+    make_generate_from_makefile(drush_get_option('lock-update'), $makefile);
   }
 
   return $info;
