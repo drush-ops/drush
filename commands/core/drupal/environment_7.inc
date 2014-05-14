@@ -272,6 +272,15 @@ function drush_queue_get_queues() {
         $queues[$name]['cron']['time'] = $queue['time'];
       }
     }
+    // Merge in queues from modules that implement hook_queue_info.
+    // Currently only defined by the queue_ui module.
+    $info_queues = module_invoke_all('queue_info');
+    foreach($info_queues as $name => $queue) {
+      $queues[$name]['worker callback'] = $queue['cron']['callback'];
+      if (isset($queue['cron']['time'])) {
+        $queues[$name]['cron']['time'] = $queue['cron']['time'];
+      }
+    }
   }
   return $queues;
 }
