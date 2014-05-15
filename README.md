@@ -125,7 +125,7 @@ INSTALL - MANUAL
 
     1. Explicitly add the Drush executable to the PATH variable which is defined in the the shell configuration file called .profile, .bash_profile, .bash_aliases, or .bashrc that is located in your home folder, i.e.:
 
-           `export PATH="$PATH:/path/to/drush:/usr/local/bin"`
+           `export PATH="$PATH:/path/to/drush/drush:/usr/local/bin"`
 
      Your system will search path options from left to right until it finds a result.
 
