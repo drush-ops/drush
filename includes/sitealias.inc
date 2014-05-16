@@ -1527,7 +1527,13 @@ function drush_sitealias_uri_to_site_dir($uri) {
     // Handle absolute paths on windows
     $uri = str_replace(array(':/', ':\\'), array('.', '.'), $uri);
   }
-  return str_replace(array('/', ':', '\\'), array('.', '.', '.'), $uri);
+
+  $hostname = str_replace(array('/', ':', '\\'), array('.', '.', '.'), $uri);
+
+  // Check sites.php mappings
+  $site_dir = drush_site_dir_lookup_from_hostname($hostname);
+
+  return $site_dir ? $site_dir : $hostname;
 }
 
 /**

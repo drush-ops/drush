@@ -222,6 +222,28 @@ function drush_site_path($path = NULL) {
 }
 
 /**
+ * Lookup a site's directory via the sites.php file given a hostname.
+ *
+ * @param $hostname
+ *   The hostname of a site.  May be converted from URI.
+ *
+ * @return $dir
+ *   The directory associated with that hostname or FALSE if not found.
+ */
+function drush_site_dir_lookup_from_hostname($hostname) {
+  $site_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  if (file_exists($site_root . '/sites/sites.php')) {
+    $sites = array();
+    // This will overwrite $sites with the desired mappings.
+    include($site_root . '/sites/sites.php');
+    return isset($sites[$hostname]) ? $sites[$hostname] : FALSE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
  * This is a copy of Drupal's conf_path function, taken from D7 and
  * adjusted slightly to search from the selected Drupal Root.
  *
