@@ -356,6 +356,10 @@ function drush_valid_drupal_root($path) {
     // Drupal 8 root. Additional check for the presence of core/composer.json to
     // grant it is not a Drupal 7 site with a base folder named "core".
     $candidate = 'core/includes/common.inc';
+    // Drupal 8 might have .php includes in the future.
+    if (file_exists($path . '/' . $candidate . '.php')) {
+      $candidate .= '.php';
+    }
     if (file_exists($path . '/' . $candidate) && file_exists($path . '/core/misc/drupal.js') && file_exists($path . '/composer.json')) {
       return $candidate;
     }

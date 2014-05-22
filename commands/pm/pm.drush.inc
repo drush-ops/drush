@@ -953,7 +953,11 @@ function drush_pm_enable_validate() {
     }
     $modules = array_diff(array_merge($modules, $all_dependencies), drush_module_list());
     // Discard modules which doesn't meet requirements.
-    require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+    $install_file = '/includes/install.inc';
+    if (file_exists(DRUSH_DRUPAL_CORE . $install_file . '.php')) {
+      $install_file .= '.php';
+    }
+    require_once DRUSH_DRUPAL_CORE . $install_file;
     foreach ($modules as $key => $module) {
       // Check to see if the module can be installed/enabled (hook_requirements).
       // See @system_modules_submit

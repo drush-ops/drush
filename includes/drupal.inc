@@ -29,7 +29,11 @@ function drush_drupal_version($drupal_root = NULL) {
         // Load the autoloader so we can access the class constants.
         require_once $drupal_root .'/core/vendor/autoload.php';
         // Drush depends on bootstrap being loaded at this point;
-        require_once $drupal_root .'/core/includes/bootstrap.inc';
+        $bootstrap_file = '/core/includes/bootstrap.inc';
+        if (file_exists($drupal_root . $bootstrap_file . '.php')) {
+          $bootstrap_file .= '.php';
+        }
+        require_once $drupal_root . $bootstrap_file;
         if (defined('Drupal::VERSION')) {
           $version = Drupal::VERSION;
         }
@@ -273,4 +277,3 @@ function _drush_drupal_parse_info_file($data, $merge_item = NULL) {
 function drush_cid_install_profile() {
   return drush_get_cid('install_profile', array(), array(drush_get_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH')));
 }
-
