@@ -374,16 +374,7 @@ function drush_sitealias_local_site_path($alias_record) {
 
   if (isset($alias_record['root']) && !isset($alias_record['remote-host'])) {
     if (isset($alias_record['uri'])) {
-      if (file_exists($alias_record['root'] . '/sites/sites.php')) {
-        $sites = array();
-        include($alias_record['root'] . '/sites/sites.php');
-        if (array_key_exists($alias_record['uri'], $sites)) {
-          $result = $alias_record['root'] . '/sites/' . $sites[$alias_record['uri']];
-        }
-      }
-      if (!$result) {
-        $result = ($alias_record['root'] . '/sites/' . drush_sitealias_uri_to_site_dir($alias_record['uri']));
-      }
+      $result = ($alias_record['root'] . '/sites/' . drush_sitealias_uri_to_site_dir($alias_record['uri']));
       $result = realpath($result);
     }
     if (!$result) {
@@ -1522,7 +1513,13 @@ function drush_sitealias_uri_to_site_dir($uri) {
     // Handle absolute paths on windows
     $uri = str_replace(array(':/', ':\\'), array('.', '.'), $uri);
   }
-  return str_replace(array('/', ':', '\\'), array('.', '.', '.'), $uri);
+
+  $hostname = str_replace(array('/', ':', '\\'), array('.', '.', '.'), $uri);
+
+  // Check sites.php mappings
+  $site_dir = drush_site_dir_lookup_from_hostname($hostname);
+
+  return $site_dir ? $site_dir : $hostname;
 }
 
 /**
