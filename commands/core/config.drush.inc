@@ -339,13 +339,16 @@ function drush_config_import($source = NULL) {
   // Retrieve a list of differences between the active and source configuration (if any).
   $active_storage = Drupal::service('config.storage');
   $source_storage = new FileStorage($source_dir);
-  $config_comparer = new StorageComparer($source_storage, $active_storage);
+  $config_comparer = new StorageComparer($source_storage, $active_storage, Drupal::service('config.manager'));
   if (!$config_comparer->createChangelist()->hasChanges()) {
     return drush_log(dt('There are no changes to import.'), 'ok');
   }
 
   if (drush_get_option('preview', 'list') == 'list') {
-    $change_list = $config_comparer->getChangelist();
+    $change_list = array();
+    foreach ($config_comparer->getAllCollectionNames() as $collection) {
+      $change_list[$collection] = $config_comparer->getChangelist(NULL, $collection);
+    }
     _drush_print_config_changes_table($change_list);
   }
   else {
@@ -493,7 +496,7 @@ function drush_config_get_value($config_name, $key) {
  * Print a table of config changes.
  *
  * @param array $config_changes
- *   An array of changes.
+ *   An array of changes keyed by collection.
  */
 function _drush_print_config_changes_table(array $config_changes) {
   if (drush_get_context('DRUSH_NOCOLOR')) {
@@ -508,27 +511,30 @@ function _drush_print_config_changes_table(array $config_changes) {
   }
 
   $rows = array();
-  $rows[] =  array('Config', 'Operation');
-  foreach ($config_changes as $change => $configs) {
-    switch ($change) {
-      case 'delete':
-        $colour = $red;
-        break;
-      case 'update':
-        $colour = $yellow;
-        break;
-      case 'create':
-        $colour = $green;
-        break;
-      default:
-        $colour = "%s";
-        break;
-    }
-    foreach($configs as $config) {
-      $rows[] = array(
-        $config,
-        sprintf($colour, $change)
-      );
+  $rows[] = array('Collection', 'Config', 'Operation');
+  foreach ($config_changes as $collection => $changes) {
+    foreach ($changes as $change => $configs) {
+      switch ($change) {
+        case 'delete':
+          $colour = $red;
+          break;
+        case 'update':
+          $colour = $yellow;
+          break;
+        case 'create':
+          $colour = $green;
+          break;
+        default:
+          $colour = "%s";
+          break;
+      }
+      foreach($configs as $config) {
+        $rows[] = array(
+          $collection,
+          $config,
+          sprintf($colour, $change)
+        );
+      }
     }
   }
   drush_print_table($rows, TRUE);
