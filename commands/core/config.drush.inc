@@ -332,7 +332,8 @@ function drush_config_import($source = NULL) {
   // Retrieve a list of differences between the active and source configuration (if any).
   $active_storage = Drupal::service('config.storage');
   $source_storage = new FileStorage($source_dir);
-  $config_comparer = new StorageComparer($source_storage, $active_storage);
+  $config_manager = Drupal::service('config.manager');
+  $config_comparer = new StorageComparer($source_storage, $active_storage, $config_manager);
   if (!$config_comparer->createChangelist()->hasChanges()) {
     return drush_log(dt('There are no changes to import.'), 'ok');
   }
