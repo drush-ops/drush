@@ -251,4 +251,8 @@ function drush_cache_rebuild() {
   // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
   // the Drush cache as well, for consistency with that behavior.
   drush_cache_clear_drush();
+
+  // Clears the render cache.
+  drush_include_engine('drupal', 'cache', drush_drupal_major_version());
+  drush_cache_clear_render();
 }

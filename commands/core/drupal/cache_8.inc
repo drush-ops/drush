@@ -41,6 +41,7 @@ function _drush_cache_clear_types($include_bootstrapped_types) {
       'block' => 'drush_cache_clear_block',
       'module-list' => 'drush_get_modules',
       'theme-list' => 'drush_get_themes',
+      'render' => 'drush_cache_clear_render',
     );
   }
   return $types;
@@ -61,4 +62,11 @@ function drush_cache_clear_css_js() {
  */
 function drush_cache_clear_block() {
   \Drupal::cache('block')->deleteAll();
+}
+
+/**
+ * Clears the render cache entries.
+ */
+function drush_cache_clear_render() {
+  \Drupal::cache('render')->deleteAll();
 }
