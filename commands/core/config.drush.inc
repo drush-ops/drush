@@ -304,7 +304,14 @@ function drush_config_export($destination = NULL) {
   foreach ($source_storage->listAll() as $name) {
     $destination_storage->write($name, $source_storage->read($name));
   }
-
+  // Export configuration collections.
+  foreach (\Drupal::service('config.storage')->getAllCollectionNames() as $collection) {
+    $source_storage = $source_storage->createCollection($collection);
+    $destination_storage = $destination_storage->createCollection($collection);
+    foreach ($source_storage->listAll() as $name) {
+      $destination_storage->write($name, $source_storage->read($name));
+    }
+  }
   if (drush_get_option('add')) {
     drush_shell_exec_interactive('git add -p %s', $destination_dir);
   }
