@@ -111,6 +111,30 @@ Merge this in with any other content that may already exist in this file.
 
 See the POST-INSTALL section for configuration tips.
 
+INSTALL/UPDATE - GLOBALLY ON SERVER (VIA COMPOSER)
+-------------------------------------
+
+Login to your server under the `root` user. If your server does not allow remote `root` login (as many shouldn't), use an account that has `sudo` access and login to `root` using `sudo su -`.
+
+**IMPORTANT**: Using `sudo` commands on the following will not actually change the shell environment's home path. Composer uses the home path of the actually user that is logged in to detect configuration and install components. You **must** log into the `root` account so a new shell environment is created with the correct home path.
+
+* [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements) (if needed).
+* Configure Composer to install in the `/usr/local` directories:
+
+        composer config -g vendor-dir /usr/local/share
+        composer config -g bin-dir /usr/local/bin
+
+* Install Drush globally on the server (replace the version to suite your needs with one from above section):
+
+        composer global require drush/drush:6.*
+        
+Presto! Your server now has Drush install locally.
+
+To update Drush in the future, simply run (logged in as `root`, not using `sudo`):
+
+        composer global update
+
+        
 INSTALL - MANUAL
 -----------
 1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in a directory that is outside of your web root.
