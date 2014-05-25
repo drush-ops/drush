@@ -121,14 +121,14 @@ Login to your server under the `root` user. If your server does not allow remote
 * [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements) (if needed).
 * Configure Composer to install in the `/usr/local` directories:
 
-        composer config -g vendor-dir /usr/local/share
-        composer config -g bin-dir /usr/local/bin
+        composer config --global vendor-dir /usr/local/share
+        composer config --global bin-dir /usr/local/bin
 
 * Install Drush globally on the server (replace the version to suite your needs with one from above section):
 
         composer global require drush/drush:6.*
         
-Presto! Your server now has Drush install locally.
+Presto! Your server now has Drush install globally for all users.
 
 To update Drush in the future, simply run (logged in as `root`, not using `sudo`):
 
