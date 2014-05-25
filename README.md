@@ -116,7 +116,7 @@ INSTALL/UPDATE - GLOBALLY ON SERVER (VIA COMPOSER)
 
 Login to your server under the `root` user. If your server does not allow remote `root` login (as many shouldn't), use an account that has `sudo` access and login to `root` using `sudo su -`.
 
-**IMPORTANT**: Using `sudo` commands on the following will not actually change the shell environment's home path. Composer uses the home path of the actual user that is logged in to detect configuration and install components. You **must** log into the `root` account so a new shell environment is created with the correct home path.
+**IMPORTANT**: `sudo` does not change `$HOME` of the shell environment, which is used by Composer. You must log into the `root` account, so that the shell environment has the correct `$HOME` path.
 
 * [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements) (if needed).
 * Configure Composer to install in the `/usr/local` directories:
