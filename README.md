@@ -71,7 +71,7 @@ REQUIREMENTS
 INSTALL/UPDATE - COMPOSER
 ------------------
 
-* [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements) (if needed).
+* [Install Composer](http://getcomposer.org/doc/00-intro.md#system-requirements).
 * Make sure Composer's global bin directory is on the system PATH (recommended):
 
         sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
@@ -118,7 +118,7 @@ Login to your server under the `root` user. If your server does not allow remote
 
 **IMPORTANT**: `sudo` does not change `$HOME` of the shell environment, which is used by Composer. You must log into the `root` account, so that the shell environment has the correct `$HOME` path.
 
-* [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements) (if needed).
+* [Install Composer](http://getcomposer.org/doc/00-intro.md#system-requirements).
 * Configure Composer to install in the `/usr/local` directories:
 
         composer config --global vendor-dir /usr/local/share
