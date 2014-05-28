@@ -31,7 +31,8 @@
     "pear/console_table": "1.1.5"
   },
   "require-dev": {
-    "phpunit/phpunit": ">=3.5"
+    "phpunit/phpunit": ">=3.5",
+    "symfony/process": "2.4.5"
   },
   "autoload": {
     "psr-0": {

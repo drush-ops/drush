@@ -15,7 +15,7 @@ namespace Unish;
 class contextCase extends CommandUnishTestCase {
 
   function setUpPaths() {
-    $this->log("webroot: ".$this->webroot()."\n");
+    $this->log("webroot: " . $this->webroot() . "\n", 'warning');
     $this->env = key($this->getSites());
     $this->site = $this->webroot() . '/sites/' . $this->env;
     $this->home = UNISH_SANDBOX . '/home';

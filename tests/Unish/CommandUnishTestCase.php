@@ -2,45 +2,210 @@
 
 namespace Unish;
 
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
+
 abstract class CommandUnishTestCase extends UnishTestCase {
 
   // Unix exit codes.
   const EXIT_SUCCESS  = 0;
   const EXIT_ERROR = 1;
 
-  /*
-   * Array of code coverage data collected during a single test.
+  /**
+   * Code coverage data collected during a single test.
+   *
+   * @var array
    */
-  var $coverage_data = array();
+  protected $coverage_data = array();
 
   /**
-   * Actually runs the command. Does not trap the error stream output as this
-   * need PHP 4.3+.
+   * Process of last executed command.
+   *
+   * @var Process
+   */
+  private $process;
+
+  /**
+   * Environment vars to set for run commands.
+   *
+   * Reset for each test run.
+   *
+   * @var array
+   */
+  protected $environment = array();
+  /**
+   * Default timeout for commands.
+   *
+   * @var int
+   */
+  private $defaultTimeout = 60;
+
+  /**
+   * Timeout for command.
+   *
+   * Reset to $defaultTimeout after executing a command.
+   *
+   * @var int
+   */
+  protected $timeout = 60;
+
+  /**
+   * Default idle timeout for commands.
+   *
+   * @var int
+   */
+  private $defaultIdleTimeout = 15;
+
+  /**
+   * Idle timeouts for commands.
+   *
+   * Reset to $defaultIdleTimeout after executing a command.
+   *
+   * @var int
+   */
+  protected $idleTimeout = 15;
+
+  /**
+   * Accessor for the last output, trimmed.
+   *
+   * @return string
+   *   Trimmed output as text.
+   *
+   * @access public
+   */
+  function getOutput() {
+    return trim($this->getOutputRaw());
+  }
+
+  /**
+   * Accessor for the last output, non-trimmed.
+   *
+   * @return string
+   *   Raw output as text.
+   *
+   * @access public
+   */
+  function getOutputRaw() {
+    return $this->process ? $this->process->getOutput() : '';
+  }
+
+  /**
+   * Accessor for the last output, rtrimmed and split on newlines.
+   *
+   * @return array
+   *   Output as array of lines.
+   *
+   * @access public
+   */
+  function getOutputAsList() {
+    return array_map('rtrim', explode("\n", $this->getOutput()));
+  }
+
+  /**
+   * Accessor for the last stderr output, trimmed.
+   *
+   * @return string
+   *   Trimmed stderr as text.
+   *
+   * @access public
+   */
+  function getErrorOutput() {
+    return trim($this->getErrorOutputRaw());
+  }
+
+  /**
+   * Accessor for the last stderr output, non-trimmed.
+   *
+   * @return string
+   *   Raw stderr as text.
+   *
+   * @access public
+   */
+  function getErrorOutputRaw() {
+    return $this->process ? $this->process->getErrorOutput() : '';
+  }
+
+  /**
+   * Accessor for the last stderr output, rtrimmed and split on newlines.
+   *
+   * @return array
+   *   Stderr as array of lines.
+   *
+   * @access public
+   */
+  function getErrorOutputAsList() {
+    return array_map('rtrim', explode("\n", $this->getErrorOutput()));
+  }
+
+  /**
+   * Accessor for the last output, decoded from json.
+   *
+   * @param string $key
+   *   Optionally return only a top level element from the json object.
+   *
+   * @return object
+   *   Decoded object.
+   */
+  function getOutputFromJSON($key = NULL) {
+    $json = json_decode($this->getOutput());
+    if (isset($key)) {
+      $json = $json->{$key}; // http://stackoverflow.com/questions/2925044/hyphens-in-keys-of-object
+    }
+    return $json;
+  }
+
+  /**
+   * Actually runs the command.
    *
    * @param string $command
    *   The actual command line to run.
    * @param integer $expected_return
    *   The return code to expect
+   * @param sting cd
+   *   The directory to run the command in.
    * @param array $env
    *   Extra environment variables
    * @return integer
    *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
    */
-  function execute($command, $expected_return = self::EXIT_SUCCESS, $env = array()) {
-    $this->_output = FALSE;
+  function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = NULL, $env = array()) {
     $return = 1;
-    $this->log("Executing: $command", 'notice');
+    $this->tick();
+    $this->log("Executing: $command", 'warning');
 
-    // Apply the environment variables we need for our test
-    // to the head of the command
-    $prefix = '';
-    foreach ($env as $env_name => $env_value) {
-      $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
+    // Add in env variables set by test.
+    $env = array_merge($this->environment, $env);
+
+    // Add in the env variables listed in the UNISH_EXPORT env var.
+    foreach (explode(',', getenv('UNISH_EXPORT')) as $var) {
+      $env[$var] = getenv($var);
     }
-    exec($prefix . $command, $this->_output, $return);
 
-    $this->assertEquals($expected_return, $return, 'Unexpected exit code: ' .  $command);
-    return $return;
+    try {
+      $this->process = new Process($command, $cd, $env);
+      if (!getenv('UNISH_NO_TIMEOUTS')) {
+        $this->process->setTimeout($this->timeout)
+          ->setIdleTimeout($this->idleTimeout);
+      }
+      $return = $this->process->run();
+      if ($expected_return !== $return) {
+        $message = 'Unexpected exit code ' . $return . ' (expected ' . $expected_return . ") for command:\n" .  $command;
+        throw new UnishProcessFailedError($message, $this->process);
+      }
+      // Reset timeouts to default.
+      $this->timeout = $this->defaultTimeout;
+      $this->idleTimeout = $this->defaultIdleTimeout;
+      return $return;
+    }
+    catch (ProcessTimedOutException $e) {
+      if ($e->isGeneralTimeout()) {
+        $message = 'Command runtime exceeded ' . $this->timeout . " seconds:\n" .  $command;
+      }
+      else {
+        $message = 'Command had no output for ' . $this->idleTimeout . " seconds:\n" .  $command;
+      }
+      throw new UnishProcessFailedError($message, $this->process);
+    }
   }
 
   /**
@@ -66,8 +231,6 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL, $env = array()) {
     $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend');
     $hide_stderr = FALSE;
-    // insert "cd ... ; drush"
-    $cmd[] = $cd ? sprintf('cd %s &&', self::escapeshellarg($cd)) : NULL;
     $cmd[] = UNISH_DRUSH;
 
     // insert global options
@@ -130,7 +293,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     // that tests might cause Drupal to send.
     $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
     $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
-    $return = $this->execute(implode(' ', $exec), $expected_return, $env);
+    $return = $this->execute(implode(' ', $exec), $expected_return, $cd, $env);
 
     // Save code coverage information.
     if (!empty($coverage_file)) {
@@ -159,6 +322,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * @throws PHPUnit_Framework_Exception
    */
   public function run(\PHPUnit_Framework_TestResult $result = NULL) {
+    $this->environment = array();
     $result = parent::run($result);
     $data = array();
     foreach ($this->coverage_data as $merge_data) {

@@ -22,6 +22,23 @@ unish_init();
  * Initialize our environment at the start of each run (i.e. suite).
  */
 function unish_init() {
+  // Always export these env variables to commands run by CommandUnishTestCase.
+  $always_export = array(
+    'UNISH_EXPORT',
+    'HOME',
+    'HOMEDRIVE',
+    'ETC_PREFIX',
+    'SHARE_PREFIX',
+    'TEMP',
+    'CACHE_PREFIX'
+  );
+
+  // Join with any vars specified in the environment.
+  $unish_export = explode(',', getenv('UNISH_EXPORT'));
+  $unish_export = array_merge($unish_export, $always_export);
+  array_unique($unish_export);
+  putenv('UNISH_EXPORT=' . implode(',', $unish_export));
+
   // Default drupal major version to run tests over.
   $unish_drupal_major = '7';
   if (getenv('UNISH_DRUPAL_MAJOR_VERSION')) {
@@ -169,5 +186,3 @@ function unish_delete_dir_contents($dir, $force = FALSE) {
   }
   return TRUE;
 }
-
-
