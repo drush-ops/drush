@@ -25,6 +25,7 @@ function drush_core_site_install_version($profile, array $additional_form_option
         'driver' => $db_spec['driver'],
         $db_spec['driver'] => $db_spec,
         'op' => dt('Save and continue'),
+        '_triggering_element_name' => 'op',
       ),
       'install_configure_form' => array(
         'site_name' => drush_get_option('site-name', 'Site-Install'),
