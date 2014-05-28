@@ -147,20 +147,22 @@ function sql_drush_command() {
     'aliases' => array('sqlq'),
   );
   $items['sql-sync'] = array(
-    'description' => 'Copy and import source database to target database. Transfers via rsync.',
+    'description' => 'Copies the database contents from a source site to a target site. Transfers the database dump via rsync.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'drush dependencies' => array('core'), // core-rsync.
     'examples' => array(
-      'drush sql-sync @prod @dev' => 'Copy the DB defined in sites/prod to the DB in sites/dev.',
+      'drush sql-sync @source @target' => 'Copy the database from the site with the alias "source" to the site with the alias "target".',
+      'drush sql-sync prod dev' => 'Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).',
     ),
     'arguments' => array(
-      'from' => 'Name of subdirectory within /sites or a site-alias.',
-      'to' => 'Name of subdirectory within /sites or a site-alias.',
+      'source' => 'A site-alias or the name of a subdirectory within /sites whose database you want to copy from.',
+      'target' => 'A site-alias or the name of a subdirectory within /sites whose database you want to replace.',
     ),
+    'required-arguments' => TRUE,
     'options' => array(
-      'skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
+      'skip-tables-key' => 'A key in the $skip_tables array. See example.drushrc.php. Optional.',
       'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
-      'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
+      'structure-tables-key' => 'A key in the $structure_tables array. See example.drushrc.php. Optional.',
       'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
       'tables-key' => 'A key in the $tables array. Optional.',
       'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
