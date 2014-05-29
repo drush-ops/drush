@@ -26,14 +26,6 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   private $process;
 
   /**
-   * Environment vars to set for run commands.
-   *
-   * Reset for each test run.
-   *
-   * @var array
-   */
-  protected $environment = array();
-  /**
    * Default timeout for commands.
    *
    * @var int
@@ -173,16 +165,15 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     $this->tick();
     $this->log("Executing: $command", 'warning');
 
-    // Add in env variables set by test.
-    $env = array_merge($this->environment, $env);
-
-    // Add in the env variables listed in the UNISH_EXPORT env var.
-    foreach (explode(',', getenv('UNISH_EXPORT')) as $var) {
-      $env[$var] = getenv($var);
+    // Apply the environment variables we need for our test to the head of the
+    // command.
+    $prefix = '';
+    foreach ($env as $env_name => $env_value) {
+      $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
     }
 
     try {
-      $this->process = new Process($command, $cd, $env);
+      $this->process = new Process($prefix . $command, $cd);
       if (!getenv('UNISH_NO_TIMEOUTS')) {
         $this->process->setTimeout($this->timeout)
           ->setIdleTimeout($this->idleTimeout);
@@ -322,7 +313,6 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * @throws PHPUnit_Framework_Exception
    */
   public function run(\PHPUnit_Framework_TestResult $result = NULL) {
-    $this->environment = array();
     $result = parent::run($result);
     $data = array();
     foreach ($this->coverage_data as $merge_data) {
