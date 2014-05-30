@@ -185,7 +185,7 @@ class DrushMakeProject {
       $this->processGitInfoFiles();
     }
     // Clean-up .git directories.
-    if (!drush_get_option('working-copy') && (empty($this->options['working-copy']) ||  !_make_is_override_allowed('working-copy'))) {
+    if (!_get_working_copy_option($this->download)) {
       $this->removeGitDirectory();
     }
     if (!$this->recurse($this->download_location)) {
