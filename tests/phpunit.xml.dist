@@ -32,6 +32,9 @@
     <!--Uncomment to provide a group the user running the tests belong to. This is needed for some filesystem tests. -->
     <!--<var name="UNISH_USERGROUP" value="staff"/>-->
 
+    <!-- Uncomment to disable the total runtime and output timeouts for commands run through CommandUnishTestCase::execute().  -->
+    <!-- <env name="UNISH_NO_TIMEOUTS" value="y"/> -->
+
     <includePath>.</includePath>
   </php>
 </phpunit>
