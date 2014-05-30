@@ -166,7 +166,11 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     $this->log("Executing: $command", 'warning');
 
     // Apply the environment variables we need for our test to the head of the
-    // command.
+    // command. Process does have an $env argument, but it replaces the entire
+    // environment with the one given. This *could* be used for ensuring the
+    // test ran with a clean environment, but it also makes tests fail hard on
+    // Travis, for unknown reasons.
+    // @see https://github.com/drush-ops/drush/pull/646
     $prefix = '';
     foreach ($env as $env_name => $env_value) {
       $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
