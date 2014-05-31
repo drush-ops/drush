@@ -57,15 +57,19 @@ function views_drush_command() {
         'example-value' => 'enabled',
         'value' => 'required',
       ),
-      'format' => array(
-        'description' => 'Define the output format. Known formats are: json, print_r, and export.',
-      ),
     ),
     'examples' => array(
       'drush vl' => 'Show a list of all available views.',
       'drush vl --name=blog' => 'Show a list of views which names contain "blog".',
       'drush vl --tags=tag1,tag2' => 'Show a list of views tagged with "tag1" or "tag2".',
       'drush vl --status=enabled' => 'Show a list of enabled views.',
+    ),
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'list',
+      'field-default' => array('name', 'label', 'description', 'status', 'tag'),
+      'field-labels' => array('name' => 'Machine Name', 'label' => 'Name', 'description' => 'Description', 'status' => 'Status', 'tag' => 'Tag'),
+      'output-data-type' => 'format-table',
     ),
   ) + $base;
 
@@ -189,7 +193,7 @@ function drush_views_list() {
 
   $format = drush_get_option('format', FALSE);
 
-  $views = Drupal::entityManager()->getStorageController('view')->loadMultiple();
+  $views = Drupal::entityManager()->getStorage('view')->loadMultiple();
 
   // Get the --name option.
   $name = array_filter(drush_get_option_list('name'));
@@ -207,15 +211,6 @@ function drush_views_list() {
     return drush_set_error(dt('Invalid status: @status. Available options are "enabled" or "disabled"', array('@status' => $status)));
   }
 
-  // Set the table headers.
-  $header = array(
-    dt('Machine name'),
-    dt('Human name'),
-    dt('Description'),
-    dt('Status'),
-    dt('Tag'),
-  );
-
   // Setup a row for each view.
   foreach ($views as $view) {
     // If options were specified, check that first mismatch push the loop to the
@@ -232,13 +227,13 @@ function drush_views_list() {
       continue;
     }
 
-    $row = array();
-
-    $row[] = $view->id();
-    $row[] = $view->label();
-    $row[] = $view->get('description');
-    $row[] = $view->status() ? dt('Enabled') : dt('Disabled');
-    $row[] = $view->get('tag');
+    $row = array(
+      'name' => $view->id(),
+      'label' => $view->label(),
+      'description' =>  $view->get('description'),
+      'status' =>  $view->status() ? dt('Enabled') : dt('Disabled'),
+      'tag' =>  $view->get('tag'),
+    );
 
     // Place the row in the appropiate array, so we can have disabled views at
     // the bottom.
@@ -248,64 +243,19 @@ function drush_views_list() {
     else{
       $disabled_views[] = $row;
     }
-
-    unset($row);
   }
-
-  $disabled = count($disabled_views);
 
   // Sort alphabeticaly.
   asort($disabled_views);
   asort($enabled_views);
 
-  // If options were used.
-  $summary = '';
-  if ($with_name || $with_tags || $status) {
-    $summary = dt('Views');
-
-    if ($with_name) {
-      $summary .= ' ' . dt('named "@name"', array('@name' => $name[0]));
-    }
-
-    if ($with_tags) {
-      $tags = implode(' or ', $tags);
-      $summary .= ' ' . dt('tagged with "@tags"', array('@tags' => $tags));
-    }
-
-    if ($status) {
-      $summary .= ' ' . dt('with a status of "@status"', array('@status' => $status));
-    }
-
-    drush_print($summary . ":\n");
-  }
-
-  // Return all rows or print as a table.
   if (count($enabled_views) || count($disabled_views)) {
     $rows = array_merge($enabled_views, $disabled_views);
-
-    if ($format) {
-      $output = drush_format($rows, $format);
-      drush_print($output);
-      return $output;
-    }
-    else {
-      $total = count($rows);
-      // Put the headers as first row.
-      array_unshift($rows, $header);
-
-      drush_print_table($rows, TRUE);
-
-      // Print the summary messages.
-      drush_print(dt('A total of @total views were found in this Drupal installation:', array('@total' => $total)));
-      drush_print('  ' . dt('@dis views are disabled', array('@dis' => $disabled)) . "\n");
-
-      return $rows;
-    }
+    return $rows;
   }
   else {
-    drush_set_error(dt('No views found.'));
+    drush_log(dt('No views found.'));
   }
-
 }
 
 /**
@@ -331,13 +281,17 @@ function drush_views_execute($view_name, $display_id = NULL) {
   $view->execute();
 
   if (drush_get_option('count', FALSE)) {
+    drush_set_default_outputformat('string');
     return count($view->result);
   }
   elseif (!empty($view->result)) {
     if (drush_get_option('rendered', FALSE)) {
+      drush_set_default_outputformat('string');
       // Don't show admin links in markup by default.
       $view->hide_admin_links = !drush_get_option('show-admin-links', FALSE);
-      return $view->preview();
+      $output = $view->preview();
+      return drupal_render($output);
+
     }
     else {
       return $view->result;
@@ -358,7 +312,7 @@ function drush_views_analyze() {
 
   $format = drush_get_option('format', FALSE);
 
-  $views = Drupal::entityManager()->getStorageController('view')->loadMultiple();
+  $views = Drupal::entityManager()->getStorage('view')->loadMultiple();
 
   if (!empty($views)) {
     $analyzer = Drupal::service('views.analyzer');
