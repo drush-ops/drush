@@ -278,7 +278,7 @@ function drush_config_export($destination = NULL) {
   else {
     $choices = drush_map_assoc(array_keys($config_directories));
     unset($choices[CONFIG_ACTIVE_DIRECTORY]);
-    if (!isset($destination) && count($config_directories) >= 2) {
+    if (!isset($destination) && count($choices) >= 2) {
       $destination = drush_choice($choices, 'Choose a destination.');
       if (empty($destination)) {
         return drush_user_abort();
@@ -289,7 +289,6 @@ function drush_config_export($destination = NULL) {
     }
     $destination_dir = config_get_config_directory($destination);
   }
-  $active_dir = config_get_config_directory(CONFIG_ACTIVE_DIRECTORY);
 
   if (count(glob($destination_dir . '/*')) > 0) {
     if (!drush_confirm(dt('The current contents of your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
@@ -304,7 +303,8 @@ function drush_config_export($destination = NULL) {
   foreach ($source_storage->listAll() as $name) {
     $destination_storage->write($name, $source_storage->read($name));
   }
-
+  drush_log(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)), 'success');
+  drush_backend_set_result($destination_dir);
   if (drush_get_option('add')) {
     drush_shell_exec_interactive('git add -p %s', $destination_dir);
   }
