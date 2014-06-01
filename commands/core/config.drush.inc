@@ -303,8 +303,19 @@ function drush_config_export($destination = NULL) {
   foreach ($source_storage->listAll() as $name) {
     $destination_storage->write($name, $source_storage->read($name));
   }
+
+  // Export configuration collections.
+  foreach (\Drupal::service('config.storage')->getAllCollectionNames() as $collection) {
+    $source_storage = $source_storage->createCollection($collection);
+    $destination_storage = $destination_storage->createCollection($collection);
+    foreach ($source_storage->listAll() as $name) {
+      $destination_storage->write($name, $source_storage->read($name));
+    }
+  }
+
   drush_log(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)), 'success');
   drush_backend_set_result($destination_dir);
+
   if (drush_get_option('add')) {
     drush_shell_exec_interactive('git add -p %s', $destination_dir);
   }
@@ -332,14 +343,16 @@ function drush_config_import($source = NULL) {
   // Retrieve a list of differences between the active and source configuration (if any).
   $active_storage = Drupal::service('config.storage');
   $source_storage = new FileStorage($source_dir);
-  $config_manager = Drupal::service('config.manager');
-  $config_comparer = new StorageComparer($source_storage, $active_storage, $config_manager);
+  $config_comparer = new StorageComparer($source_storage, $active_storage, Drupal::service('config.manager'));
   if (!$config_comparer->createChangelist()->hasChanges()) {
     return drush_log(dt('There are no changes to import.'), 'ok');
   }
 
   if (drush_get_option('preview', 'list') == 'list') {
-    $change_list = $config_comparer->getChangelist();
+    $change_list = array();
+    foreach ($config_comparer->getAllCollectionNames() as $collection) {
+      $change_list[$collection] = $config_comparer->getChangelist(NULL, $collection);
+    }
     _drush_print_config_changes_table($change_list);
   }
   else {
@@ -487,7 +500,7 @@ function drush_config_get_value($config_name, $key) {
  * Print a table of config changes.
  *
  * @param array $config_changes
- *   An array of changes.
+ *   An array of changes keyed by collection.
  */
 function _drush_print_config_changes_table(array $config_changes) {
   if (drush_get_context('DRUSH_NOCOLOR')) {
@@ -502,27 +515,30 @@ function _drush_print_config_changes_table(array $config_changes) {
   }
 
   $rows = array();
-  $rows[] =  array('Config', 'Operation');
-  foreach ($config_changes as $change => $configs) {
-    switch ($change) {
-      case 'delete':
-        $colour = $red;
-        break;
-      case 'update':
-        $colour = $yellow;
-        break;
-      case 'create':
-        $colour = $green;
-        break;
-      default:
-        $colour = "%s";
-        break;
-    }
-    foreach($configs as $config) {
-      $rows[] = array(
-        $config,
-        sprintf($colour, $change)
-      );
+  $rows[] = array('Collection', 'Config', 'Operation');
+  foreach ($config_changes as $collection => $changes) {
+    foreach ($changes as $change => $configs) {
+      switch ($change) {
+        case 'delete':
+          $colour = $red;
+          break;
+        case 'update':
+          $colour = $yellow;
+          break;
+        case 'create':
+          $colour = $green;
+          break;
+        default:
+          $colour = "%s";
+          break;
+      }
+      foreach($configs as $config) {
+        $rows[] = array(
+          $collection,
+          $config,
+          sprintf($colour, $change)
+        );
+      }
     }
   }
   drush_print_table($rows, TRUE);

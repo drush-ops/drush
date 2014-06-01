@@ -23,7 +23,7 @@ class ConfigCase extends CommandUnishTestCase {
     $options = $this->options();
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $options);
     $this->drush('config-get', array('system.site', 'name'), $options);
-    $this->assertEquals("'system.site:name': config_test\n", $this->getOutput(), 'Config was successfully set and get.');
+    $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config was successfully set and get.');
   }
 
   function testConfigList() {
