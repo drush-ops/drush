@@ -329,7 +329,7 @@ function drush_config_import($source = NULL) {
 
   $choices = drush_map_assoc(array_keys($config_directories));
   unset($choices[CONFIG_ACTIVE_DIRECTORY]);
-  if (!isset($source) && count($config_directories) >= 2) {
+  if (!isset($source) && count($choices) >= 2) {
     $source= drush_choice($choices, 'Choose a source.');
     if (empty($source)) {
       return drush_user_abort();
