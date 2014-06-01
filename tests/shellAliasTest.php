@@ -26,7 +26,9 @@ class shellAliasesCase extends CommandUnishTestCase {
       );
     ";
     file_put_contents(UNISH_SANDBOX . '/drushrc.php', trim($contents));
-    mkdir(UNISH_SANDBOX . '/b');
+    if (!file_exists(UNISH_SANDBOX . '/b')) {
+      mkdir(UNISH_SANDBOX . '/b');
+    }
     $contents = "
       <?php
 

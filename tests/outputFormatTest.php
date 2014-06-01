@@ -38,7 +38,7 @@ class outputFormatCase extends CommandUnishTestCase {
         'COLUMNS' => '120',
       );
       $this->drush($command, $args, $site_options + $options + array('format' => $format), NULL, NULL, self::EXIT_SUCCESS, NULL, $env);
-      $output = trim($this->getOutput()); // note: we consider trailing eols insignificant
+      $output = implode("\n", $this->getOutputAsList()); // note: we consider trailing eols insignificant
       // If the Drupal command we are running might produce variable output,
       // we can use one or more output filters to simplify the output down
       // to an invariant form.

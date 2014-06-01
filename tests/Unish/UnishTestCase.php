@@ -12,7 +12,6 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   private static $sites = array();
 
   function __construct($name = NULL, array $data = array(), $dataName = '') {
-    $this->_output = FALSE;
     parent::__construct($name, $data, $dataName);
   }
 
@@ -99,6 +98,17 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
   public static function get_tar_executable() {
     return self::is_windows() ? "bsdtar.exe" : "tar";
+  }
+
+  /**
+   * Print out a tick mark.
+   *
+   * Useful for longer running tests to indicate they're working.
+   */
+  function tick() {
+    static $chars = array('/', '-', '\\', '|');
+    static $counter = 0;
+    print $chars[($counter++ % 4)] . "\033[1D";
   }
 
   /**
@@ -190,39 +200,6 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
 
     return $pass;
-  }
-
-  /**
-   *    Accessor for the last output.
-   *    @return string        Output as text.
-   *    @access public
-   */
-  function getOutput() {
-    return implode("\n", $this->_output);
-  }
-
-  /**
-   *    Accessor for the last output.
-   *    @return array         Output as array of lines.
-   *    @access public
-   */
-  function getOutputAsList() {
-    return $this->_output;
-  }
-
-  /**
-   *    Accessor for the last output, decoded from json.
-   *
-   *   @param string $key
-   *     Optionally return only a top level element from the json object.
-   *   @return stdClass
-   */
-  function getOutputFromJSON($key = NULL) {
-    $json = json_decode($this->getOutput());
-    if (isset($key)) {
-      $json = $json->{$key}; // http://stackoverflow.com/questions/2925044/hyphens-in-keys-of-object
-    }
-    return $json;
   }
 
   function webroot() {

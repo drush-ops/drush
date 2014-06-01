@@ -169,5 +169,3 @@ function unish_delete_dir_contents($dir, $force = FALSE) {
   }
   return TRUE;
 }
-
-
