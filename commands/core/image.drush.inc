@@ -14,7 +14,6 @@ function image_drush_command() {
   $items['image-flush'] = array(
     'description' => 'Flush all derived images for a given style.',
     'core' => array('7+'),
-    'drupal dependencies' => array('image'),
     'arguments' => array(
       'style' => 'An image style machine name. If not provided, user may choose from a list of names.',
     ),
