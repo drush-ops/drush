@@ -19,6 +19,7 @@ function migrate_drush_command() {
     'arguments' => array(
       'manifest' => 'The path to the manifest file',
     ),
+    'required-arguments' => 1,
     'options' => array(
       'db-url' => array(
         'description' => 'A Drupal 6 style database URL.',
@@ -26,6 +27,7 @@ function migrate_drush_command() {
         'required' => TRUE,
       ),
     ),
+    'drupal dependencies' => array('migrate_drupal'),
   );
   return $items;
 }
