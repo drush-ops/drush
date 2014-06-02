@@ -15,6 +15,7 @@ use Drush\Migrate\DrushLogMigrateMessage;
  */
 function migrate_drush_command() {
   $items['migrate-manifest'] = array(
+    'description' => 'Execute the migrations as specified in a manifest file.',
     'arguments' => array(
       'manifest' => 'The path to the manifest file',
     ),
