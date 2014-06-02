@@ -177,7 +177,8 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     }
 
     try {
-      $this->process = new Process($prefix . $command, $cd);
+      // Process uses a default timeout of 60 seconds, set it to 0 (none).
+      $this->process = new Process($prefix . $command, $cd, NULL, NULL, 0);
       if (!getenv('UNISH_NO_TIMEOUTS')) {
         $this->process->setTimeout($this->timeout)
           ->setIdleTimeout($this->idleTimeout);
