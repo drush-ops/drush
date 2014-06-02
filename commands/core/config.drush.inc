@@ -87,7 +87,7 @@ function config_drush_command() {
     ),
     'options' => array(
       'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
-      'destination' => 'An arbitrary directory that should receive the exported files. An alternative to destination argument',
+      'destination' => 'An arbitrary directory that should receive the exported files. An alternative to label argument',
     ),
   );
 
