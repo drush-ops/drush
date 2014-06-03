@@ -649,7 +649,7 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
         $environment_variables[] = 'PHP_OPTIONS=' . drush_escapeshellarg($php_options_alias, $os);
       }
       $columns = drush_get_context('DRUSH_COLUMNS');
-      if ($columns) {
+      if (($columns) && ($columns != 80)) {
         $environment_variables[] = 'COLUMNS=' . $columns;
       }
       $prefix = implode(' ', $environment_variables);
