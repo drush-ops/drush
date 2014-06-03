@@ -648,6 +648,10 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
       if ($php_options_alias = drush_get_option('php-options', NULL, 'alias')) {
         $environment_variables[] = 'PHP_OPTIONS=' . drush_escapeshellarg($php_options_alias, $os);
       }
+      $columns = drush_get_context('DRUSH_COLUMNS');
+      if ($columns) {
+        $environment_variables[] = 'COLUMNS=' . $columns;
+      }
       $prefix = implode(' ', $environment_variables);
     }
   }
