@@ -44,7 +44,4 @@
       "Unish":        "tests/"
     }
   },
-  "suggest": {
-    "youngj/httpserver": "dev-master#41dd2b7 as 1.0.1"
-  }
 }
