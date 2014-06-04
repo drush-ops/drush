@@ -98,7 +98,11 @@ INSTALL/UPDATE - COMPOSER
 
 [Fuller explanation of the require command.](http://getcomposer.org/doc/03-cli.md#require)
 
-**Tip:**
+**Tips:**
+
+If Drush cannot find an autoloaded class, run `composer self-update`. Drush often
+tracks composer changes closely, so you may have some problems if you are not
+running a recent version.
 
 If composer cannot find a requirement, and suggests that *The package is not available in a stable-enough version according to your minimum-stability setting*, then place the following
 in `$HOME/.composer/composer.json`:
