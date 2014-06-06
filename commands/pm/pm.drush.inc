@@ -1081,7 +1081,6 @@ function _drush_pm_expand_extensions(&$extensions, $extension_info = array()) {
 
 /**
  * Command callback. Uninstall one or more modules.
- * // TODO: Use drupal_execute on system_modules_uninstall_confirm_form so that input is validated.
  */
 function drush_pm_uninstall() {
   $args = pm_parse_arguments(func_get_args());

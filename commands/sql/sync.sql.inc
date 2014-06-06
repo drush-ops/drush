@@ -110,12 +110,25 @@ function drush_sql_sync($source, $destination) {
   }
 
   if (!drush_get_option('no-sync')) {
-    drush_log(dt('Copying dump file from Source to Destination.'), 'ok');
     if (!drush_get_option('no-dump')) {
       // Cleanup if this command created the dump file.
       $rsync_options['remove-source-files'] = TRUE;
     }
-    $return = drush_invoke_process($destination, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $rsync_options);
+
+    // Try run to rsync locally so that aliases always resolve. https://github.com/drush-ops/drush/issues/668
+    if (empty($source['remote-host'])) {
+      $runner = $source;
+    }
+    elseif (empty($destination['remote-host'])) {
+      $runner = $destination;
+    }
+    else {
+      // Both are remote. Arbitrarily run rsync on destination. Aliases must be defined there (for now).
+      // @todo Add an option for choosing runner? Resolve aliases before rsync?
+      $runner = $destination;
+    }
+    $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $rsync_options);
+    drush_log(dt('Copying dump file from Source to Destination.'), 'ok');
     if ($return['error_status']) {
       return drush_set_error('core-rsync failed.');
     }
