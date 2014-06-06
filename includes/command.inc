@@ -1357,7 +1357,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
   switch ($phase) {
     case DRUSH_BOOTSTRAP_DRUSH:
       // Core commands shipping with drush
-      $searchpath[] = realpath(dirname(__FILE__) . '/../commands/');
+      $searchpath[] = DRUSH_BASE_PATH . '/commands/';
 
       // User commands, specified by 'include' option
       if ($include = drush_get_context('DRUSH_INCLUDE', FALSE)) {
@@ -1520,10 +1520,20 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
           $load_command = FALSE;
         }
         if ($load_command) {
+
+          // Work around for realpath bug when used in a phar implementation.
+          // @See https://bugs.php.net/bug.php?id=52769
+          if (realpath(__FILE__) === FALSE) {
+            $filepath = $filename;
+          }
+          else {
+            $filepath = realpath($filename);
+          }
+
           // Only try to require if the file exists. If not, a file from the
           // command file cache may not be available anymore, in which case
           // we rebuild the cache for this phase.
-          if ($filepath = realpath($filename)) {
+          if ($filepath) {
             $cache[$module_versionless] = $filename;
             require_once $filepath;
             unset($deferred[$module]);

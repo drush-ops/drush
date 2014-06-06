@@ -421,6 +421,14 @@ You can put your Drush command file in a number of places:
 
 In any case, it is important that you end the filename with ".drush.inc", so that Drush can find it.
 
+PHAR
+--------
+
+Drush can be built into a phar for distribution as a single file. To build:
+
+1. Download and install box.phar from http://box-project.org.
+2. Run `box build` in the drush directory.
+
 
 FAQ
 ------

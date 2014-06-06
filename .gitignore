@@ -1,4 +1,6 @@
 tests/phpunit.xml
 vendor
+box.phar
+drush.phar
 
 /lib/Console_Table-1.1.3/
