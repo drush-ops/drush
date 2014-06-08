@@ -469,7 +469,6 @@ function core_drush_help($section) {
   }
 }
 
-// TODO: consolidate with SQL commands?
 function _core_site_credentials($right_margin = 0) {
   // Leave some space on the right so that we can put the result into the
   // drush_log, which will again wordwrap the result.
@@ -480,14 +479,6 @@ function _core_site_credentials($right_margin = 0) {
   $output = drush_format($status_table, $metadata, 'key-value');
   drush_set_context('DRUSH_COLUMNS', $original_columns);
   return $output;
-}
-
-function _core_site_credential_table($status_table) {
-  $credentials = '';
-  foreach ($status_table as $key => $value) {
-    $credentials .= sprintf("  %-18s: %s\n", $key, $value);
-  }
-  return $credentials;
 }
 
 function _core_path_aliases($project = '') {
