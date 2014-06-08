@@ -116,10 +116,10 @@ function drush_sql_sync($source, $destination) {
     }
 
     // Try run to rsync locally so that aliases always resolve. https://github.com/drush-ops/drush/issues/668
-    if (empty($source['remote-host'])) {
+    if (drush_sitealias_is_remote_site($source) === FALSE) {
       $runner = $source;
     }
-    elseif (empty($destination['remote-host'])) {
+    elseif (drush_sitealias_is_remote_site($destination) === FALSE) {
       $runner = $destination;
     }
     else {

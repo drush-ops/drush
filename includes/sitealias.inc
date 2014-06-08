@@ -942,11 +942,11 @@ function drush_sitealias_is_bootstrapped_site($alias_record) {
  *   An alias name or site specification.
  *
  * @return bool
- *   Returns TRUE if the alias refer to a remote site, or FALSE if it does not.
+ *   Returns TRUE if the alias refers to a remote site, FALSE if it does not, or NULL is unsure.
  */
 function drush_sitealias_is_remote_site($alias) {
   if (!is_string($alias) || !strlen($alias)) {
-    return FALSE;
+    return NULL;
   }
 
   $site_record = drush_sitealias_get_record($alias);
@@ -958,8 +958,6 @@ function drush_sitealias_is_remote_site($alias) {
   else {
     drush_set_error('Unrecognized site alias.');
   }
-
-  return FALSE;
 }
 
 /**
