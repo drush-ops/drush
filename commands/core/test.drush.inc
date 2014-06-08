@@ -158,6 +158,7 @@ function drush_test_run_class($class) {
  * Run a single test and display any failure messages.
  */
 function simpletest_drush_run_test($class) {
+  drush_log(dt('Starting test @test.', array('@test' => $class)), 'ok');
   if (drush_drupal_major_version() >= 7) {
     $test_id = db_insert('simpletest_test_id')
     ->useDefaults(array('test_id'))
