@@ -81,13 +81,13 @@ function make_drush_command() {
       'lock' => array(
         'description' => 'Generate a makefile, based on the one passed in, with all versions resolved. Defaults to printing to the terminal, but an output file may be provided.',
         'examples' => array(
-          'drush make example.make example --generate=example.lock' => 'Write the compiled version of example.make to example.lock.',
+          'drush make example.make example --lock=example.lock' => 'Write the compiled version of example.make to example.lock.',
         ),
       ),
       'lock-update' => array(
         'description' => 'Generate an updated makefile, based on the one passed in, with all versions updated. Defaults to printing to the terminal, but an output file may be provided.',
         'examples' => array(
-          'drush make example.make example --generate-update=example.lock' => 'Write the updated version of example.make to example.lock.',
+          'drush make example.make example --lock-update=example.lock' => 'Write the updated version of example.make to example.lock.',
         ),
       ),
     ),
