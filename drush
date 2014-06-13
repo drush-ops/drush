@@ -39,12 +39,12 @@ if [ -n "$CYGWIN" ] ; then
 fi
 
 # If not exported, try to determine and export the number of columns.
-# We do not want to run `tput cols` if $TERM is empty or "dumb", because
+# We do not want to run `tput cols` if $TERM is empty, "unknown", or "dumb", because
 # if we do, tput will output an undesirable error message to stderr.  If
 # we redirect stderr in any way, e.g. `tput cols 2>/dev/null`, then the
 # error message is suppressed, but tput cols becomes confused about the
 # terminal and prints out the default value (80).
-if [ -z $COLUMNS ] && [ -n "$TERM" ] && [ "$TERM" != dumb ] && [ -n "`which tput`" ] ; then
+if [ -z $COLUMNS ] && [ -n "$TERM" ] && [ "$TERM" != dumb ] && [ "$TERM" != unknown ] && [ -n "`which tput`" ] ; then
   # Note to cygwin/mingw/msys users: install the ncurses package to get tput command.
   # Note to mingw/msys users: there is no precompiled ncurses package.
   if COLUMNS="`tput cols`"; then
