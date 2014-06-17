@@ -8,7 +8,7 @@ function search_drush_help($section) {
     case 'meta:search:title':
       return dt('Search commands');
     case 'meta:search:summary':
-      return dt('Interact with Drupal\s core search system.');
+      return dt('Interact with Drupal\'s core search system.');
   }
 }
 
