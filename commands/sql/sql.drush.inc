@@ -710,7 +710,6 @@ function drush_sql_build_dump_command($table_selection, $db_spec, $file = FALSE)
  *   `*` wildcard character.
  * @param array $db_tables
  *   The list of tables present in a database.
-  $db_tables = _drush_sql_get_db_table_list($db_spec, $site_record);
  * @return array
  *   An array of tables with non-existant tables removed.
  */
