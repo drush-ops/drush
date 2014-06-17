@@ -421,7 +421,6 @@ function drush_sql_filter_tables($tables, $db_tables) {
  *   `*` wildcard character.
  * @param array $db_tables
  *   The list of tables present in a database.
-  $db_tables = _drush_sql_get_db_table_list($db_spec, $site_record);
  * @return array
  *   An array of tables with non-existant tables removed.
  */
