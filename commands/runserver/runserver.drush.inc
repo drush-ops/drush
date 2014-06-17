@@ -12,7 +12,8 @@ function runserver_drush_help($section) {
   switch ($section) {
     case 'meta:runserver:title':
       return dt("Runserver commands");
-
+    case 'meta:runserver:summary':
+      return dt('Launch the built-in PHP webserver.');
     case 'drush:runserver':
       return dt("Runs a lightweight built in http server for development.
  - Don't use this for production, it is neither scalable nor secure for this use.
@@ -28,7 +29,7 @@ function runserver_drush_command() {
   $items = array();
 
   $items['runserver'] = array(
-    'description' => 'Runs a lightweight built in http server for development.',
+    'description' => 'Runs PHP\'s built-in http server for development.',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
     'arguments' => array(
       'addr:port/path' => 'Host IP address and port number to bind to and path to open in web browser. Format is addr:port/path, default 127.0.0.1:8888, all elements optional. See examples for shorthand.',
