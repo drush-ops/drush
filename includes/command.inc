@@ -1505,9 +1505,8 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
         drush_cache_set($cid, $list);
       }
     }
-    // Check each file in the consideration list; if there is
-    // a modulename_drush_load() function in modulename.drush.load.inc,
-    // then call it to determine if this file should be loaded.
+    // Check to see if the commandfile is valid for this version of Drupal
+    // and is still present on filesystem (in case of cached commandfile list).
     foreach ($list as $module => $filename) {
       $load_command = TRUE;
       $module_versionless = preg_replace('/\.d([0-9]+)$/', '', $module);
