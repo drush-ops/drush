@@ -251,7 +251,8 @@ EOD;
 
   $tmpfile = drush_tempnam('drush-errorcodes.');
   file_put_contents($tmpfile, $header);
-  drush_print_table($data, FALSE, array(0 => 35), $tmpfile);
+  $handle = fopen($tmpfile, 'r');
+  drush_print_table($data, FALSE, array(0 => 35), $handle);
   drush_print_file($tmpfile);
 }
 
