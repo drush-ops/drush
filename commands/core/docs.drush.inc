@@ -195,7 +195,7 @@ function docs_drush_command() {
 }
 
 /**
- * docs-error-codes command.  Print a list of all error codes
+ * docs-errorcodes command.  Print a list of all error codes
  * that can be found.
  */
 function drush_docs_errorcodes() {
@@ -251,7 +251,9 @@ EOD;
 
   $tmpfile = drush_tempnam('drush-errorcodes.');
   file_put_contents($tmpfile, $header);
-  drush_print_table($data, FALSE, array(0 => 35), $tmpfile);
+  $handle = fopen($tmpfile, 'a');
+  drush_print_table($data, FALSE, array(0 => 35), $handle);
+  fclose($handle);
   drush_print_file($tmpfile);
 }
 
