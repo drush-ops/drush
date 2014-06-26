@@ -50,8 +50,7 @@ function drush_migrate_manifest($manifest) {
         $executable = new MigrateExecutable($migration, $message);
         $executable->import();
       }
-      include_once DRUPAL_ROOT . '/core/includes/utility.inc';
-      drupal_rebuild();
+      drush_invoke_process('@self', 'cache-rebuild', array(), array(), FALSE);
     }
     else {
       return drush_set_error('The manifest file cannot be parsed.');
