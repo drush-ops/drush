@@ -8,8 +8,26 @@ class Sqlpgsql extends SqlBase {
 
   public $query_file = "--file";
 
+  private $password_file = NULL;
+
+  private function password_file() {
+    if (!isset($password_file) && isset($this->db_spec['password'])) {
+      $host = empty($this->db_spec['host']) ? 'localhost' : $this->db_spec['host'];
+      $port = empty($this->db_spec['port']) ? '5432' : $this->db_spec['port'];
+      $pgpass_contents = "{$host}:{$port}:*:{$this->db_spec['username']}:{$this->db_spec['password']}";
+      $password_file = drush_save_data_to_temp_file($pgpass_contents);
+      chmod($password_file, 0600);
+    }
+    return $password_file;
+  }
+
   public function command() {
-    return 'psql -q';
+    $environment = "";
+    $pw_file = $this->password_file();
+    if (isset($pw_file)) {
+      $environment = "PGPASSFILE={$pw_file} ";
+    }
+    return "{$environment}psql -q";
   }
 
   /*
