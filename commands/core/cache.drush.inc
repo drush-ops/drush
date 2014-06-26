@@ -1,5 +1,8 @@
 <?php
 
+use Drupal\Core\DrupalKernel;
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Implementation of hook_drush_help().
  */
@@ -244,10 +247,18 @@ function drush_cache_clear_drush() {
  * Rebuild a Drupal 8 site.
  */
 function drush_cache_rebuild() {
-  require_once DRUPAL_ROOT . '/core/includes/utility.inc';
-  // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it
-  // manually.
-  drupal_rebuild();
+  $drupal_core = drush_get_context('DRUSH_DRUPAL_CORE');
+  chdir(dirname($drupal_core));
+  $autoloader = require  $drupal_core . '/vendor/autoload.php';
+  require_once $drupal_core . '/includes/utility.inc';
+
+  $request = Request::createFromGlobals();
+// Manually resemble early bootstrap of DrupalKernel::boot().
+  require_once $drupal_core . '/includes/bootstrap.inc';
+  DrupalKernel::bootEnvironment();
+
+  // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
+  drupal_rebuild($autoloader, $request);
   // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
   // the Drush cache as well, for consistency with that behavior.
   drush_cache_clear_drush();
