@@ -12,7 +12,11 @@ class Sqlpgsql extends SqlBase {
     return 'psql -q';
   }
 
-  public function creds() {
+  /*
+   * @param $hide_password
+   *   Not used in postgres. Use .pgpass file instead. See http://drupal.org/node/438828.
+   */
+  public function creds($hide_password = TRUE) {
     // Some drush commands (e.g. site-install) want to connect to the
     // server, but not the database.  Connect to the built-in database.
     $parameters['dbname'] = empty($this->db_spec['database']) ? 'template1' : $this->db_spec['database'];
