@@ -320,10 +320,18 @@ For multisite installations, use the -l option to target a particular site.  If
 you are outside the Drupal web root, you might need to use the -r, -l or other
 command line options just for Drush to work. If you do not specify a URI with
 -l and Drush falls back to the default site configuration, Drupal's
-$GLOBAL['base_url'] will be set to http://default.  This may cause some
+$GLOBALS['base_url'] will be set to http://default.  This may cause some
 functionality to not work as expected.
 
     $ drush -l http://example.com pm-update
+
+If you wish to be able to select your Drupal site implicitly from the
+current working directory without using the -l option, but you need your
+base_url to be set correctly, you may force it by setting the uri in
+a drushrc.php file located in the same directory as your settings.php file.
+
+  **sites/default/drushrc.php**
+  `$options['uri'] = "http://example.com";`
 
 Related Options:
   ```
