@@ -330,8 +330,10 @@ current working directory without using the -l option, but you need your
 base_url to be set correctly, you may force it by setting the uri in
 a drushrc.php file located in the same directory as your settings.php file.
 
-  **sites/default/drushrc.php**
-  `$options['uri'] = "http://example.com";`
+**sites/default/drushrc.php:**
+```
+$options['uri'] = "http://example.com";
+```
 
 Related Options:
   ```
