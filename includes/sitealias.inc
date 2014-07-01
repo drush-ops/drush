@@ -291,11 +291,6 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
       if (isset($alias_site_dir)) {
         // Add the sites folder of this site to the alias search path list
         drush_sitealias_add_to_alias_path($alias_site_dir);
-
-        // Load the drush config file if there is one associated with this alias
-        if (!isset($alias_record['config'])) {
-          $alias_record['config'] = realpath($alias_site_dir . '/drushrc.php');
-        }
       }
       if (isset($alias_record['config']) && file_exists($alias_record['config'])) {
         drush_load_config_file('site', $alias_record['config']);
