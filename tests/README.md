@@ -4,7 +4,7 @@ high quality, our tests are run on every push by [Travis](https://travis-ci.org/
 Usage
 --------
 1. Review the configuration settings in tests/phpunit.xml.dist. If customization is needed, copy to phpunit.xml and edit away.
-1. Run unit tests: `unish.sh` or `cd tests && ..\vendor\phpunit`
+1. Run unit tests: `unish.sh`
 
 Advanced usage
 ---------
