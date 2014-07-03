@@ -965,6 +965,9 @@ function drush_sitealias_is_remote_site($alias) {
     if (!empty($site_record['remote-host'])) {
       return TRUE;
     }
+    else {
+      return FALSE;
+    }
   }
   else {
     drush_set_error('Unrecognized site alias.');
