@@ -525,11 +525,7 @@ function _drush_bootstrap_drush() {
 
 function _drush_bootstrap_output_prepare() {
   $backend = drush_get_context('DRUSH_BACKEND');
-
-  // Pipe implies quiet.
-  $quiet = drush_set_context('DRUSH_QUIET', drush_get_option(array('quiet', 'pipe')));
-
-  drush_set_context('DRUSH_PIPE', drush_get_option('pipe'));
+  $quiet = drush_get_context('DRUSH_QUIET');
 
   if ($backend) {
     // Load options passed as a JSON encoded string through STDIN.
@@ -627,6 +623,10 @@ function _drush_bootstrap_global_options() {
   // Backend implies affirmative unless negative is explicitly specified
   drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));
   drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('yes', 'pipe'), FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
+
+  // Pipe implies quiet.
+  drush_set_context('DRUSH_QUIET', drush_get_option(array('quiet', 'pipe')));
+  drush_set_context('DRUSH_PIPE', drush_get_option('pipe'));
 
   // Suppress colored logging if --nocolor option is explicitly given or if
   // terminal does not support it.

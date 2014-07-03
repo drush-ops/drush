@@ -72,11 +72,7 @@ EOD;
     }
     $this->drush('php-eval', array($eval), $options, implode(',', $dirs));
     $output = $this->getOutputAsList();
-    $expected = "You are about to execute 'php-eval print \"bon\";' non-interactively (--yes forced) on all of the following targets:
-  #dev
-  #stage
-Continue?  (y/n): y
-#stage >> bon
+    $expected = "#stage >> bon
 #dev   >> bon";
     $actual = implode("\n", $output);
     $actual = trim(preg_replace('/^#[a-z]* *>> *$/m', '', $actual)); // ignore blank lines

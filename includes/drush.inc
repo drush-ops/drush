@@ -1154,7 +1154,7 @@ function drush_preflight_command_dispatch() {
     $site_record = array('site-list' => $site_list);
     $args = drush_get_arguments();
 
-    if (!drush_get_context('DRUSH_SIMULATE') && !$interactive) {
+    if (!drush_get_context('DRUSH_SIMULATE') && !$interactive  && !drush_get_context('DRUSH_AFFIRMATIVE') && !drush_get_context('DRUSH_QUIET')) {
       drush_print(dt("You are about to execute '!command' non-interactively (--yes forced) on all of the following targets:", array('!command' => implode(" ", $args))));
       foreach ($site_list as $one_destination) {
         drush_print(dt('  !target', array('!target' => $one_destination)));
