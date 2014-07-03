@@ -276,7 +276,7 @@ function drush_backend_parse_output($string, $backend_options = array(), $output
  */
 function _drush_backend_integrate($data, $backend_options, $outputted) {
   // In 'integrate' mode, logs and errors have already been handled
-  // by drush_backend_packet (sender) drush_backend_parse_packets (reciever - us)
+  // by drush_backend_packet (sender) drush_backend_parse_packets (receiver - us)
   // during incremental output.  We therefore do not need to call drush_set_error
   // or drush_log here.  The exception is if the sender is an older version of
   // Drush (version 4.x) that does not send backend packets, then we will
