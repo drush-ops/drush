@@ -407,6 +407,11 @@ function drush_hyphenate_options($options) {
  *   List of candidate completions.
  */
 function drush_complete_get($type, $command = NULL) {
+  static $complete;
+  // Quick return if we already have a complete static cache.
+  if (!empty($complete[$type])) {
+    return $complete[$type];
+  }
   if (empty($command)) {
     // Retrieve global items from a non-command specific cache, or rebuild cache
     // if needed.
@@ -427,7 +432,9 @@ function drush_complete_get($type, $command = NULL) {
     return drush_complete_rebuild_arguments($command);
   }
   // Rebuild cache of general command specific items.
-  $complete = drush_complete_rebuild();
+  if (empty($complete)) {
+    $complete = drush_complete_rebuild();
+  }
   if (!empty($complete['commands'][$command][$type])) {
     return $complete['commands'][$command][$type];
   }
