@@ -408,11 +408,11 @@ function drush_hyphenate_options($options) {
  */
 function drush_complete_get($type, $command = NULL) {
   static $complete;
-  // Quick return if we already have a complete static cache.
-  if (!empty($complete[$type])) {
-    return $complete[$type];
-  }
   if (empty($command)) {
+    // Quick return if we already have a complete static cache.
+    if (!empty($complete[$type])) {
+      return $complete[$type];
+    }
     // Retrieve global items from a non-command specific cache, or rebuild cache
     // if needed.
     $cache = drush_cache_get(drush_complete_cache_cid($type), 'complete');
