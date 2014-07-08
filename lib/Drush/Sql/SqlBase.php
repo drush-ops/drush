@@ -157,17 +157,11 @@ class SqlBase {
       }
     }
 
-    if ($input_file) {
-      $query = file_get_contents($input_file);
-    }
-    $query = $this->query_prefix($query);
-    $query = $this->query_format($query);
-
     // Save $query to a tmp file if needed. We will redirect it in.
     if (!$input_file) {
-      // @todo
-      $suffix = '';
-      $input_file = drush_save_data_to_temp_file($query, $suffix);
+      $query = $this->query_prefix($query);
+      $query = $this->query_format($query);
+      $input_file = drush_save_data_to_temp_file($query);
     }
 
     $parts = array(
