@@ -605,9 +605,9 @@ function _drush_verify_cli_arguments($command) {
       $missing = $required_arg_count > 1 ? dt('Missing required arguments') : dt('Missing required argument');
       $required = array_slice(array_keys($command['argument-description']), 0, $required_arg_count);
 
-      return drush_set_error(dt("@missing: '@required'.  See `drush help @command` for information on usage.", array(
+      return drush_set_error(dt("@missing: @required.  See `drush help @command` for information on usage.", array(
         '@missing' => $missing,
-        '@required' => implode("', '", $required),
+        '@required' => implode(", ", $required),
         '@command' => $command['command'],
       )));
     }
