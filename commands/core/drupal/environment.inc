@@ -113,7 +113,8 @@ function drush_module_dependents($modules, $module_info) {
  * This is a wrapper for module_list().
  */
 function drush_module_list() {
-  return module_list('module_enabled');
+  $modules = array_keys(\Drupal::moduleHandler()->getModuleList());
+  return array_combine($modules, $modules);
 }
 
 /**
