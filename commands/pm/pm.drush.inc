@@ -285,6 +285,9 @@ function pm_drush_command() {
     'examples' => array(
       'drush pm-releases cck zen' => 'View releases for cck and Zen projects for your Drupal version.',
     ),
+    'options' => array(
+      'default-major' => 'Show releases compatible with the specified major version of Drupal.',
+    ),
     'aliases' => array('rl'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'outputformat' => array(
