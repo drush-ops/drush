@@ -314,6 +314,7 @@ function drush_sql_connect() {
  * Command callback. Create a database.
  */
 function drush_sql_create() {
+  drush_sql_bootstrap_further();
   $sql = drush_sql_get_class();
   $db_spec = $sql->db_spec();
   // Prompt for confirmation.
