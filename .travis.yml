@@ -6,6 +6,7 @@ branches:
     - 6.x
     - 5.x
     - sql
+    - drupalboot
 language: php
 php:
   - 5.3
