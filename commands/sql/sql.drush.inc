@@ -885,6 +885,17 @@ function drush_sql_query($query = NULL) {
 function _drush_sql_query($query, $db_spec = NULL, $filename = NULL) {
   $suffix = '';
   $scheme = _drush_sql_get_scheme($db_spec);
+
+  // Handle case when $filename is a tarball. Needed for compat with Drush7's sql-sync.
+  if ($filename && drush_file_is_tarball($filename)) {
+    if (drush_shell_exec('gunzip %s', $filename)) {
+      $filename = trim($filename, '.gz');
+    }
+    else {
+      return drush_set_error(dt('Failed to gunzip input file.'));
+    }
+  }
+
   // Inject table prefixes as needed.
   if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
     if ($filename) {
