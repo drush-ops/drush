@@ -156,6 +156,9 @@ function drush_preflight() {
   // Load a custom config specified with the --config option.
   drush_load_config('custom');
 
+  // Determine if --root and --uri have been defined.
+  _drush_bootstrap_select_drupal_site();
+
   // Process the site alias that specifies which instance
   // of Drush (local or remote) this command will operate on.
   // We must do this after we load our config files (so that
@@ -258,6 +261,29 @@ function _drush_preflight_base_environment() {
     $alias_path[] = $server_home . '/.drush';
     drush_set_context('DRUSH_PER_USER_CONFIGURATION', $server_home . '/.drush');
   }
+}
+
+/**
+ * Determine which Drupal site will be selected.
+ *
+ * The Drupal site itself will be bootstrapped at a later
+ * phase; at this time, we set context variables to
+ * point to the drupal root, site URI and site configuration
+ * path that will be used when needed.
+ *
+ * These early context variables are used to find
+ * drush configuration and alias files stored with the
+ * site to be bootstrapped.
+ */
+function _drush_bootstrap_select_drupal_site() {
+  $drupal_root = drush_get_option('root');
+  if (!isset($drupal_root)) {
+    $drupal_root = drush_locate_root();
+  }
+  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $drupal_root);
+  $uri = drush_get_option('uri');
+  drush_set_context('DRUSH_SELECTED_URI', $uri);
+  drush_sitealias_create_self_alias();
 }
 
 function _drush_find_commandfiles_drush() {

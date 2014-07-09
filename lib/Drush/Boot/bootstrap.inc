@@ -414,34 +414,6 @@ function _drush_bootstrap_output_prepare() {
 }
 
 /**
- * Determine which Drupal site will be selected.
- *
- * The Drupal site itself will be bootstrapped at a later
- * phase; at this time, we set context variables to
- * point to the drupal root, site URI and site configuration
- * path that will be used when needed.
- *
- * These early context variables are used to find
- * drush configuration and alias files stored with the
- * site to be bootstrapped.
- */
-function _drush_bootstrap_select_drupal_site() {
-  $drupal_root = drush_get_option('root');
-  if (!isset($drupal_root)) {
-    $drupal_root = drush_locate_root();
-  }
-  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $drupal_root);
-  $uri = _drush_bootstrap_selected_uri();
-  drush_set_context('DRUSH_SELECTED_URI', $uri);
-  drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($uri));
-
-  if (!empty($drupal_root) && !empty($uri)) {
-    // Create an alias '@self'
-    _drush_sitealias_cache_alias('@self', array('root' => $drupal_root, 'uri' => $uri));
-  }
-}
-
-/**
  * Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.
  *
  * In this function, we will check if a valid Drupal directory is available.
@@ -460,6 +432,12 @@ function _drush_bootstrap_drupal_root_validate() {
 
   drush_bootstrap_value('drupal_root', $drupal_root);
   define('DRUSH_DRUPAL_SIGNATURE', $signature);
+
+  // Define the selected conf path as soon as we have identified that
+  // we have selected a Drupal site.  Drush used to set this context
+  // during the drush_bootstrap_drush phase.
+  $uri = _drush_bootstrap_selected_uri();
+  drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($uri));
 
   return TRUE;
 }
@@ -511,12 +489,12 @@ function _drush_bootstrap_drupal_root() {
 }
 
 /**
- * Find the URI that has been selected by the --uri / -l option
- * or the cwd.
+ * Find the URI that has been selected by the cwd
+ * if it was not previously set via the --uri / -l option
  */
 function _drush_bootstrap_selected_uri() {
-  $uri = drush_get_option('uri');
-  if (!isset($uri)) {
+  $uri = drush_get_context('DRUSH_SELECTED_URI');
+  if (empty($uri)) {
     $site_path = drush_site_path();
     $elements = explode('/', $site_path);
     $current = array_pop($elements);
@@ -524,6 +502,8 @@ function _drush_bootstrap_selected_uri() {
       $current = 'default';
     }
     $uri = 'http://'. $current;
+    $uri = drush_set_context('DRUSH_SELECTED_URI', $uri);
+    drush_sitealias_create_self_alias();
   }
 
   return $uri;
