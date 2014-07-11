@@ -1433,6 +1433,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
     case DRUSH_BOOTSTRAP_DRUPAL_FULL:
       // Add enabled module paths. Since we are bootstrapped,
       // we can use the Drupal API.
+      drush_include_engine('drupal', 'environment');
       $ignored_modules = drush_get_option_list('ignored-modules', array());
       foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
         $filename = drupal_get_filename('module', $module);
