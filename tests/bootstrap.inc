@@ -42,13 +42,13 @@ function unish_init() {
   }
   define('UNISH_DB_URL', $unish_db_url);
 
-  // UNISH_DRUSH value can come from phpunit.xml or `which drush`.
+  // UNISH_DRUSH value can come from phpunit.xml.
   if (!defined('UNISH_DRUSH')) {
     // Let the UNISH_DRUSH environment variable override if set.
     $unish_drush = isset($_SERVER['UNISH_DRUSH']) ? $_SERVER['UNISH_DRUSH'] : NULL;
     $unish_drush = isset($GLOBALS['UNISH_DRUSH']) ? $GLOBALS['UNISH_DRUSH'] : $unish_drush;
     if (empty($unish_drush)) {
-      $unish_drush = \Unish\UnishTestCase::is_windows() ? exec('for %i in (drush) do @echo.   %~$PATH:i') : trim(`which drush`);
+      $unish_drush = \Unish\UnishTestCase::is_windows() ? exec('for %i in (drush) do @echo.   %~$PATH:i') : dirname(__DIR__) . '/drush';
     }
     define('UNISH_DRUSH', $unish_drush);
   }
