@@ -281,7 +281,7 @@ function _drush_bootstrap_select_drupal_site() {
     $drupal_root = drush_locate_root();
   }
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $drupal_root);
-  $uri = drush_get_option('uri');
+  $uri = drush_get_option('uri', '');
   drush_set_context('DRUSH_SELECTED_URI', $uri);
   drush_sitealias_create_self_alias();
 }
