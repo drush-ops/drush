@@ -170,6 +170,14 @@ function drush_module_exists($module_list) {
 }
 
 /**
+ * Determines which modules are implementing a hook.
+ *
+ */
+function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
+  return module_implements($hook, $sort, $reset);
+}
+
+/**
  * Submit the system modules form.
  *
  * The modules should already be fully enabled/disabled before calling this

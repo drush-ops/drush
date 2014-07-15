@@ -187,6 +187,13 @@ function drush_module_exists($module_list) {
   return module_exists($module);
 }
 
+/**
+ * Determines which modules are implementing a hook.
+ *
+ */
+function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
+  return module_implements($hook, $sort, $reset);
+}
 
 /**
  * Get complete information for all available themes.
