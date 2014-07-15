@@ -133,7 +133,7 @@ function drush_module_install($module_list, $enable_dependencies = TRUE) {
  * @see \Drupal\Core\Extension\ModuleHandlerInterface::moduleExists()
  *
  */
-function drush_module_install($module_list) {
+function drush_module_exists($module_list) {
   return \Drupal::moduleHandler()->moduleExists($module);
 }
 
