@@ -123,8 +123,18 @@ function drush_module_list() {
  * @see \Drupal\Core\Extension\ModuleHandlerInterface::install()
  *
  */
-function drush_module_install($module_list, $enable_dependencies = TRUE;) {
+function drush_module_install($module_list, $enable_dependencies = TRUE) {
   return \Drupal::moduleHandler()->install($module_list, $enable_dependencies);
+}
+
+/**
+ * Checks that a given module exists and is enabled.
+ *
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::moduleExists()
+ *
+ */
+function drush_module_install($module_list) {
+  return \Drupal::moduleHandler()->moduleExists($module);
 }
 
 /**
