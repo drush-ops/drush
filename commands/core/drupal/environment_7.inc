@@ -178,6 +178,17 @@ function drush_module_uninstall($modules) {
 }
 
 /**
+ * Checks that a given module exists and is enabled.
+ *
+ * @see module_exists().
+ *
+ */
+function drush_module_exists($module_list) {
+  return module_exists($module);
+}
+
+
+/**
  * Get complete information for all available themes.
  *
  * @param $include_hidden

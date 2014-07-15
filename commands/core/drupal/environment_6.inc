@@ -160,6 +160,16 @@ function drush_module_uninstall($modules) {
 }
 
 /**
+ * Checks that a given module exists and is enabled.
+ *
+ * @see module_exists().
+ *
+ */
+function drush_module_exists($module_list) {
+  return module_exists($module);
+}
+
+/**
  * Submit the system modules form.
  *
  * The modules should already be fully enabled/disabled before calling this
