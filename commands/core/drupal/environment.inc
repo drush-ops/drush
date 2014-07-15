@@ -210,6 +210,17 @@ function drush_module_uninstall($modules) {
 }
 
 /**
+  * Invokes a hook in a particular module.
+  *
+  */
+function module_invoke($module, $hook) {
+  $args = func_get_args();
+  // Remove $module and $hook from the arguments.
+  unset($args[0], $args[1]);
+  return \Drupal::moduleHandler()->invoke($module, $hook, $args);
+}
+
+/**
  * Get complete information for all available themes.
  *
  * @param $include_hidden
