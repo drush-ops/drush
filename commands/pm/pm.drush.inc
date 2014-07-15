@@ -552,11 +552,12 @@ function drush_get_projects(&$extensions = NULL) {
       else {
         $extension_name = drush_extension_get_name($extension);
         $extension_path = drush_extension_get_path($extension);
-        if (is_dir($extension_path . '/CVS') && (!module_exists('cvs_deploy'))) {
+        drush_include_engine('drupal', 'environment');
+        if (is_dir($extension_path . '/CVS') && (!drush_module_exists('cvs_deploy'))) {
           $extension->vcs = 'cvs';
           drush_log(dt('Extension !extension is fetched from cvs. Ignoring.', array('!extension' => $extension_name)), 'debug');
         }
-        elseif (is_dir($extension_path . '/.git') && (!module_exists('git_deploy'))) {
+        elseif (is_dir($extension_path . '/.git') && (!drush_module_exists('git_deploy'))) {
           $extension->vcs = 'git';
           drush_log(dt('Extension !extension is fetched from git. Ignoring.', array('!extension' => $extension_name)), 'debug');
         }
@@ -1018,6 +1019,7 @@ function drush_pm_enable() {
 
   // Enable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
+    drush_include_engine('drupal', 'environment');
     drush_module_enable($modules);
   }
 

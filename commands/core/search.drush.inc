@@ -60,7 +60,8 @@ function _drush_search_status() {
     }
   }
   else {
-    foreach (module_implements('search') as $module) {
+    drush_include_engine('drupal', 'environment');
+    foreach (drush_module_implements('search') as $module) {
       // Special case. Apachesolr recommends disabling core indexing with
       // search_cron_limit = 0. Need to avoid infinite status loop.
       if ($module == 'node' && variable_get('search_cron_limit', 10) == 0) {
@@ -90,12 +91,13 @@ function _drush_search_index() {
     // Use drush_invoke_process() to start subshell. Avoids out of memory issue.
     $eval = "register_shutdown_function('search_update_totals');";
     if (drush_drupal_major_version() >= 7) {
-      // If needed, prod module_implements() to recognize our
+      // If needed, prod drush_module_implements() to recognize our
       // hook_node_update_index() implementations.
-      $implementations = module_implements('node_update_index');
+      drush_include_engine('drupal', 'environment');
+      $implementations = drush_module_implements('node_update_index');
       if (!in_array('system', $implementations)) {
         // Note that this resets module_implements cache.
-        module_implements('node_update_index', FALSE, TRUE);
+        drush_module_implements('node_update_index', FALSE, TRUE);
       }
 
       foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {
