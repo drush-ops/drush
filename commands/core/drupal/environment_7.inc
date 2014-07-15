@@ -196,6 +196,23 @@ function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
 }
 
 /**
+  * Invokes a hook in a particular module.
+  *
+  */
+function drush_module_invoke($module, $hook) {
+  return module_invoke($module, $hook);
+}
+
+/**
+  * Invokes a hook in all enabled modules that implement it.
+  *
+  */
+function drush_module_invoke_all($hook) {
+  return module_invoke_all($hook);
+}
+
+
+/**
  * Get complete information for all available themes.
  *
  * @param $include_hidden
