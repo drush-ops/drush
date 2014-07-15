@@ -213,11 +213,22 @@ function drush_module_uninstall($modules) {
   * Invokes a hook in a particular module.
   *
   */
-function module_invoke($module, $hook) {
+function drush_module_invoke($module, $hook) {
   $args = func_get_args();
   // Remove $module and $hook from the arguments.
   unset($args[0], $args[1]);
   return \Drupal::moduleHandler()->invoke($module, $hook, $args);
+}
+
+/**
+  * Invokes a hook in all enabled modules that implement it.
+  *
+  */
+function drush_module_invoke_all($hook) {
+  $args = func_get_args();
+  // Remove $hook from the arguments.
+  array_shift($args);
+  return Drupal::moduleHandler()->invokeAll($hook, $args);
 }
 
 /**
