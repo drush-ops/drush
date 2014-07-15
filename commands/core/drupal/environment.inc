@@ -140,10 +140,16 @@ function drush_module_exists($module_list) {
 /**
  * Determines which modules are implementing a hook.
  *
- * @see \Drupal\Core\Extension\ModuleHandlerInterface::getImplementations()
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::getImplementations().
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::resetImplementations().
  *
  */
-function drush_module_implements($hook) {
+function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
+  // $sort is there for consistency, but looks like Drupal 8 has no equilavient for it.
+  // We can sort the list manually later if really needed.
+  if ($reset == TRUE){
+    \Drupal::moduleHandler()->resetImplementations();
+  }
   return \Drupal::moduleHandler()->getImplementations($hook);
 }
 
