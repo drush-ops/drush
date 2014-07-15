@@ -79,7 +79,8 @@ function test_drush_command() {
  *  Array of test classes and groups.
  */
 function test_test_run_complete() {
-  if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL) == DRUSH_BOOTSTRAP_DRUPAL_FULL && module_exists('simpletest')) {
+  drush_include_engine('drupal', 'environment');
+  if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL) == DRUSH_BOOTSTRAP_DRUPAL_FULL && drush_module_exists('simpletest')) {
     // Retrieve all tests and groups.
     list($groups, $all_tests) = drush_test_get_all_tests();
     return array('values' => array_keys($groups) + $all_tests);

@@ -1777,7 +1777,8 @@ function drush_enforce_requirement_drupal_dependencies(&$command) {
   // If there are no drupal dependencies, then do nothing
   if (!empty($command['drupal dependencies'])) {
     foreach ($command['drupal dependencies'] as $dependency) {
-      if(!function_exists('module_exists') || !module_exists($dependency)) {
+      drush_include_engine('drupal', 'environment');
+      if(!function_exists('module_exists') || !drush_module_exists($dependency)) {
         $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] = dt('Command !command needs the following modules installed/enabled to run: !dependencies.', array('!command' => $command['command'], '!dependencies' => implode(', ', $command['drupal dependencies'])));
         return FALSE;
       }
