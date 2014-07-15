@@ -54,7 +54,8 @@ function _drush_search_status() {
   $total = 0;
   if (drush_drupal_major_version() >= 7) {
     foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {
-      $status = module_invoke($module, 'search_status');
+      drush_include_engine('drupal', 'environment');
+      $status = drush_module_invoke($module, 'search_status');
       $remaining += $status['remaining'];
       $total += $status['total'];
     }
@@ -101,7 +102,8 @@ function _drush_search_index() {
       }
 
       foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {
-        $eval .= " module_invoke('$module', 'update_index');";
+        // TODO: Make sure that drush_module_invoke is really available when doing this eval().
+        $eval .= " drush_module_invoke('$module', 'update_index');";
       }
     }
     else {
