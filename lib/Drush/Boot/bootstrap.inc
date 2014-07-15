@@ -253,8 +253,6 @@ function drush_bootstrap_validate($phase) {
     $phases = _drush_bootstrap_phases(TRUE);
   }
   static $phase_index = 0;
-  // Check to see if anyone has changed --root or --uri
-  _drush_bootstrap_select_drupal_site();
   if (!array_key_exists($phase, $result_cache)) {
     drush_set_context('DRUSH_BOOTSTRAP_ERRORS', array());
     drush_set_context('DRUSH_BOOTSTRAP_VALUES', array());
