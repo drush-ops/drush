@@ -138,6 +138,16 @@ function drush_module_exists($module_list) {
 }
 
 /**
+ * Determines which modules are implementing a hook.
+ *
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::getImplementations()
+ *
+ */
+function drush_module_implements($hook) {
+  return \Drupal::moduleHandler()->getImplementations($hook);
+}
+
+/**
  * Return a list of modules from a list of named modules.
  * Both enabled and disabled/uninstalled modules are returned.
  */
