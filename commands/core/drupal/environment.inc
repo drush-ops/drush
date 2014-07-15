@@ -118,6 +118,16 @@ function drush_module_list() {
 }
 
 /**
+ * Installs a given list of modules.
+ *
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::install()
+ *
+ */
+function drush_module_install($module_list, $enable_dependencies = TRUE;) {
+  return \Drupal::moduleHandler()->install($module_list, $enable_dependencies);
+}
+
+/**
  * Return a list of modules from a list of named modules.
  * Both enabled and disabled/uninstalled modules are returned.
  */
@@ -148,7 +158,7 @@ function drush_module_enable($modules) {
   // The list of modules already have all the dependencies, but they might not
   // be in the correct order. Still pass $enable_dependencies = TRUE so that
   // Drupal will enable the modules in the correct order.
-  module_install($modules);
+  drush_module_install($modules);
   // Flush all caches.
   drupal_flush_all_caches();
 }
