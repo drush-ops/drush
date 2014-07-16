@@ -57,7 +57,8 @@ abstract class RoleBase {
 
   public function getAllModulePerms() {
     $permissions = array();
-    $module_list = module_list();
+    drush_include_engine('drupal', 'environment');
+    $module_list = drush_module_list();
     ksort($module_list);
     foreach ($module_list as $module) {
       if ($perms = $this->getModulePerms($module)) {

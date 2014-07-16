@@ -160,6 +160,40 @@ function drush_module_uninstall($modules) {
 }
 
 /**
+ * Checks that a given module exists and is enabled.
+ *
+ * @see module_exists().
+ *
+ */
+function drush_module_exists($module) {
+  return module_exists($module);
+}
+
+/**
+ * Determines which modules are implementing a hook.
+ *
+ */
+function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
+  return module_implements($hook, $sort, $reset);
+}
+
+/**
+  * Invokes a hook in a particular module.
+  *
+  */
+function drush_module_invoke($module, $hook) {
+  return module_invoke($module, $hook);
+}
+
+/**
+  * Invokes a hook in all enabled modules that implement it.
+  *
+  */
+function drush_module_invoke_all($hook) {
+  return module_invoke_all($hook);
+}
+
+/**
  * Submit the system modules form.
  *
  * The modules should already be fully enabled/disabled before calling this

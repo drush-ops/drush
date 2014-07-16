@@ -750,8 +750,9 @@ function drush_core_requirements() {
   );
 
   drupal_load_updates();
-
-  $requirements = module_invoke_all('requirements', 'runtime');
+  
+  drush_include_engine('drupal', 'environment');
+  $requirements = drush_module_invoke_all('requirements', 'runtime');
   // If a module uses "$requirements[] = " instead of
   // "$requirements['label'] = ", then build a label from
   // the title.

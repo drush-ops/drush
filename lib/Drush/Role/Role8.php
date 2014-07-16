@@ -33,7 +33,8 @@ class Role8 extends Role7 {
   }
 
   public function getModulePerms($module) {
-    $perms = module_invoke($module, 'permission');
+    drush_include_engine('drupal', 'environment');
+    $perms = drush_module_invoke($module, 'permission');
     return $perms ? array_keys($perms) : array();
   }
 

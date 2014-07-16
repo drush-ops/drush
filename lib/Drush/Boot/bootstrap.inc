@@ -678,10 +678,11 @@ function _drush_bootstrap_drupal_full() {
   }
 
   // If needed, prod module_implements() to recognize our system_watchdog() implementation.
-  $dogs = module_implements('watchdog');
+  drush_include_engine('drupal', 'environment');
+  $dogs = drush_module_implements('watchdog');
   if (!in_array('system', $dogs)) {
     // Note that this resets module_implements cache.
-    module_implements('watchdog', FALSE, TRUE);
+    drush_module_implements('watchdog', FALSE, TRUE);
   }
 
   // Write correct install_profile to cache as needed. Used by _drush_find_commandfiles().

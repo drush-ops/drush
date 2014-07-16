@@ -161,7 +161,8 @@ function drush_role_perm($action, $rid, $permission = NULL) {
   // If a permission wasn't provided, but the module option is specified,
   // provide a list of permissions provided by that module.
   if (!$permission && $module = drush_get_option('module', FALSE)) {
-    if (!module_exists($module)) {
+    drush_include_engine('drupal', 'environment');
+    if (!drush_module_exists($module)) {
       return drush_set_error('DRUSH_ROLE_ERROR', dt('!module not enabled!', array('!module' => $module)));
     }
     $module_perms = $role->getModulePerms($module);

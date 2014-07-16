@@ -113,7 +113,51 @@ function drush_module_dependents($modules, $module_info) {
  * This is a wrapper for module_list().
  */
 function drush_module_list() {
-  return module_list('module_enabled');
+  $modules = array_keys(\Drupal::moduleHandler()->getModuleList());
+  return array_combine($modules, $modules);
+}
+
+/**
+ * Installs a given list of modules.
+ *
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::install()
+ *
+ */
+function drush_module_install($module_list, $enable_dependencies = TRUE) {
+  return \Drupal::moduleHandler()->install($module_list, $enable_dependencies);
+}
+
+/**
+ * Checks that a given module exists and is enabled.
+ *
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::moduleExists()
+ *
+ */
+function drush_module_exists($module) {
+  return \Drupal::moduleHandler()->moduleExists($module);
+}
+
+/**
+ * Determines which modules are implementing a hook.
+ *
+ * @param string $hook
+ *   The hook name.
+ * @param bool $sort
+ *  Not used in Drupal 8 environment.
+ * @param bool $reset
+ *  TRUE to reset the hook implementation cache.
+ *
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::getImplementations().
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::resetImplementations().
+ *
+ */
+function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
+  // $sort is there for consistency, but looks like Drupal 8 has no equilavient for it.
+  // We can sort the list manually later if really needed.
+  if ($reset == TRUE){
+    \Drupal::moduleHandler()->resetImplementations();
+  }
+  return \Drupal::moduleHandler()->getImplementations($hook);
 }
 
 /**
@@ -147,7 +191,7 @@ function drush_module_enable($modules) {
   // The list of modules already have all the dependencies, but they might not
   // be in the correct order. Still pass $enable_dependencies = TRUE so that
   // Drupal will enable the modules in the correct order.
-  module_install($modules);
+  drush_module_install($modules);
   // Flush all caches.
   drupal_flush_all_caches();
 }
@@ -170,6 +214,28 @@ function drush_module_disable($modules) {
  */
 function drush_module_uninstall($modules) {
   module_uninstall($modules);
+}
+
+/**
+  * Invokes a hook in a particular module.
+  *
+  */
+function drush_module_invoke($module, $hook) {
+  $args = func_get_args();
+  // Remove $module and $hook from the arguments.
+  unset($args[0], $args[1]);
+  return \Drupal::moduleHandler()->invoke($module, $hook, $args);
+}
+
+/**
+  * Invokes a hook in all enabled modules that implement it.
+  *
+  */
+function drush_module_invoke_all($hook) {
+  $args = func_get_args();
+  // Remove $hook from the arguments.
+  array_shift($args);
+  return Drupal::moduleHandler()->invokeAll($hook, $args);
 }
 
 /**
