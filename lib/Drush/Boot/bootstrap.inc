@@ -431,12 +431,6 @@ function _drush_bootstrap_drupal_root_validate() {
   drush_bootstrap_value('drupal_root', $drupal_root);
   define('DRUSH_DRUPAL_SIGNATURE', $signature);
 
-  // Define the selected conf path as soon as we have identified that
-  // we have selected a Drupal site.  Drush used to set this context
-  // during the drush_bootstrap_drush phase.
-  $uri = _drush_bootstrap_selected_uri();
-  drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($uri));
-
   return TRUE;
 }
 
@@ -518,7 +512,11 @@ function _drush_bootstrap_selected_uri() {
  * as a configuration file.
  */
 function _drush_bootstrap_drupal_site_validate() {
-  $drush_uri = drush_get_context('DRUSH_SELECTED_URI');
+  // Define the selected conf path as soon as we have identified that
+  // we have selected a Drupal site.  Drush used to set this context
+  // during the drush_bootstrap_drush phase.
+  $drush_uri = _drush_bootstrap_selected_uri();
+  drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($drush_uri));
 
   // Fake the necessary HTTP headers that Drupal needs:
   if ($drush_uri) {
