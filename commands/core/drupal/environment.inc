@@ -140,6 +140,13 @@ function drush_module_exists($module) {
 /**
  * Determines which modules are implementing a hook.
  *
+ * @param (String) $hook.
+ *   The hook name
+ * @param (Bool) $sort
+ *  Not used in Drupal 8 environment.
+ * @param (Bool) $reset
+ *  TRUE to reset the hook implementation cache.
+ *
  * @see \Drupal\Core\Extension\ModuleHandlerInterface::getImplementations().
  * @see \Drupal\Core\Extension\ModuleHandlerInterface::resetImplementations().
  *
