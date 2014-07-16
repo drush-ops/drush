@@ -21,7 +21,7 @@ function migrate_drush_command() {
     ),
     'required-arguments' => 1,
     'options' => array(
-      'db-url' => array(
+      'legacy-db-url' => array(
         'description' => 'A Drupal 6 style database URL.',
         'example-value' => 'mysql://root:pass@127.0.0.1/db',
         'required' => TRUE,
@@ -39,7 +39,7 @@ function migrate_drush_command() {
  */
 function drush_migrate_manifest($manifest) {
   if (file_exists($manifest)) {
-    $db_url = drush_get_option('db-url');
+    $db_url = drush_get_option('legacy-db-url');
     $db_spec = drush_convert_db_from_db_url($db_url);
     Database::addConnectionInfo('migrate', 'default', $db_spec);
     $list = Yaml::parse($manifest);
