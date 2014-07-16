@@ -15,7 +15,7 @@ class outputFormatUnitCase extends UnitUnishTestCase {
  * @dataProvider provider
  **/
   public function testOutputFormat($name, $format, $data, $expected) {
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUSH);
+    drush_preflight();
     $this->assertEquals($expected, trim(drush_format($data, array(), $format)), $name . ': '. $format);
   }
 

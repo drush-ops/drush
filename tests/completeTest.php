@@ -22,6 +22,8 @@ class completeCase extends CommandUnishTestCase {
   }
 
   public function testComplete() {
+    // $this->markTestSkipped('@todo Bootstrap refactor has broken this.');
+
     // We copy our completetest commandfile into our path.
     // We cannot use --include since complete deliberately avoids drush
     // command dispatch.

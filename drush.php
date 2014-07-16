@@ -8,9 +8,9 @@
  * @requires PHP CLI 5.3.0, or newer.
  */
 
-require dirname(__FILE__) . '/includes/bootstrap.inc';
+require dirname(__FILE__) . '/includes/preflight.inc';
 
-if (drush_bootstrap_prepare() === FALSE) {
+if (drush_preflight_prepare() === FALSE) {
   exit(1);
 }
 exit(drush_main());
@@ -24,7 +24,7 @@ exit(drush_main());
  * - Dispatches the given command.
  *
  * function_exists('drush_main') may be used by modules to detect whether
- * they are being called from drush.  See http://drupal.org/node/1181308
+ * they are being called from Drush.  See http://drupal.org/node/1181308
  * and http://drupal.org/node/827478
  *
  * @return mixed
@@ -39,152 +39,47 @@ function drush_main() {
     register_shutdown_function('drush_coverage_shutdown');
   }
 
-  if ($file = drush_get_option('early', FALSE)) {
-    require_once $file;
-    $function = 'drush_early_' . basename($file, '.inc');
-    if (function_exists($function)) {
-      if ($return = $function()) {
-        // If the function returns FALSE, we continue and attempt to bootstrap
-        // as normal. Otherwise, we exit early with the returned output.
-        if ($return === TRUE) {
-          $return = '';
-        }
-        drush_bootstrap_finish();
-        return $return;
-      }
-    }
-  }
+  /* Set up bootstrap object, so that
+   * - 'early' files can bootstrap when needed.
+   * - bootstrap constants are available.
+   */
+  $bootstrap_class = drush_get_option('bootstrap_class', 'Drush\Boot\DrupalBoot');
+  $bootstrap = new $bootstrap_class;
+  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
+  $bootstrap->preflight();
 
   // Process initial global options such as --debug.
-  _drush_bootstrap_global_options();
+  _drush_preflight_global_options();
 
   $return = '';
-  drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUSH);
+  drush_preflight();
   if (!drush_get_error()) {
-    // Do any necessary preprocessing operations on the command,
-    // perhaps handling immediately.
-    $command_handled = drush_preflight_command_dispatch();
-    if (!$command_handled) {
-      $return = _drush_bootstrap_and_dispatch();
-    }
-  }
-  drush_bootstrap_finish();
-
-  // After this point the drush_shutdown function will run,
-  // exiting with the correct exit code.
-  return $return;
-}
-
-/**
- * Bootstraps Drush and dispatches the command.
- *
- * @return mixed
- *   Whatever the given command returns.
- */
-function _drush_bootstrap_and_dispatch() {
-  $phases = _drush_bootstrap_phases(FALSE, TRUE);
-
-  $return = '';
-  $command_found = FALSE;
-  _drush_bootstrap_output_prepare();
-  foreach ($phases as $phase) {
-    if (drush_bootstrap_to_phase($phase)) {
-      $command = drush_parse_command();
-      if (is_array($command)) {
-        $bootstrap_result = drush_bootstrap_to_phase($command['bootstrap']);
-        drush_enforce_requirement_bootstrap_phase($command);
-        drush_enforce_requirement_core($command);
-        drush_enforce_requirement_drupal_dependencies($command);
-        drush_enforce_requirement_drush_dependencies($command);
-
-        if ($bootstrap_result && empty($command['bootstrap_errors'])) {
-          drush_log(dt("Found command: !command (commandfile=!commandfile)", array('!command' => $command['command'], '!commandfile' => $command['commandfile'])), 'bootstrap');
-
-          $command_found = TRUE;
-          // Dispatch the command(s).
-          $return = drush_dispatch($command);
-
-          // Prevent a '1' at the end of the output.
+    if ($file = drush_get_option('early', FALSE)) {
+      require_once $file;
+      $function = 'drush_early_' . basename($file, '.inc');
+      if (function_exists($function)) {
+        if ($return = $function()) {
+          // If the function returns FALSE, we continue and attempt to bootstrap
+          // as normal. Otherwise, we exit early with the returned output.
           if ($return === TRUE) {
             $return = '';
           }
-
-          if (drush_get_context('DRUSH_DEBUG') && !drush_get_context('DRUSH_QUIET')) {
-            drush_print_timers();
-          }
-          drush_log(dt('Peak memory usage was !peak', array('!peak' => drush_format_size(memory_get_peak_usage()))), 'memory');
-          break;
         }
       }
     }
     else {
-      break;
-    }
-  }
-
-  if (!$command_found) {
-    // If we reach this point, command doesn't fit requirements or we have not
-    // found either a valid or matching command.
-
-    // If no command was found check if it belongs to a disabled module.
-    if (!$command) {
-      $command = drush_command_belongs_to_disabled_module();
-    }
-
-    // Set errors related to this command.
-    $args = implode(' ', drush_get_arguments());
-    if (isset($command) && is_array($command)) {
-      foreach ($command['bootstrap_errors'] as $key => $error) {
-        drush_set_error($key, $error);
+      // Do any necessary preprocessing operations on the command,
+      // perhaps handling immediately.
+      $command_handled = drush_preflight_command_dispatch();
+      if (!$command_handled) {
+        $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT');
+        $return = $bootstrap->bootstrap_and_dispatch();
       }
-      drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The drush command '!args' could not be executed.", array('!args' => $args)));
-    }
-    elseif (!empty($args)) {
-      drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!args' could not be found.  Run `drush cache-clear drush` to clear the commandfile cache if you have installed new extensions.", array('!args' => $args)));
-    }
-    // Set errors that occurred in the bootstrap phases.
-    $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
-    foreach ($errors as $code => $message) {
-      drush_set_error($code, $message);
     }
   }
+  drush_postflight();
+
+  // After this point the drush_shutdown function will run,
+  // exiting with the correct exit code.
   return $return;
-}
-
-/**
- * Check if the given command belongs to a disabled module.
- *
- * @return array
- *   Array with a command-like bootstrap error or FALSE if Drupal was not
- *   bootstrapped fully or the command does not belong to a disabled module.
- */
-function drush_command_belongs_to_disabled_module() {
-  if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-    _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE, DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-    $commands = drush_get_commands();
-    $arguments = drush_get_arguments();
-    $command_name = array_shift($arguments);
-    if (isset($commands[$command_name])) {
-      // We found it. Load its module name and set an error.
-      if (is_array($commands[$command_name]['drupal dependencies']) && count($commands[$command_name]['drupal dependencies'])) {
-        $modules = implode(', ', $commands[$command_name]['drupal dependencies']);
-      }
-      else {
-        // The command does not define Drupal dependencies. Derive them.
-        $command_files = drush_get_context('DRUSH_COMMAND_FILES', array());
-        $command_path = $commands[$command_name]['path'] . DIRECTORY_SEPARATOR . $commands[$command_name]['commandfile'] . '.drush.inc';
-        $modules = array_search($command_path, $command_files);
-      }
-      return array(
-        'bootstrap_errors' => array(
-          'DRUSH_COMMAND_DEPENDENCY_ERROR' => dt('Command !command needs the following module(s) enabled to run: !dependencies.', array(
-            '!command' => $command_name,
-            '!dependencies' => $modules,
-          )),
-        ),
-      );
-    }
-  }
-
-  return FALSE;
 }
