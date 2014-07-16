@@ -10,7 +10,7 @@ namespace Unish;
 class tablesUnitTest extends UnitUnishTestCase {
   function setUp() {
     // Bootstrap to ensure the auto-loaded is running so that Console_Table is found.
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUSH);
+    drush_preflight();
     $this->original_columns = drush_get_context('DRUSH_COLUMNS');
 
     // Some table data we reuse between tests.

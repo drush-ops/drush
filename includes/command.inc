@@ -1015,11 +1015,10 @@ function drush_get_commands() {
 }
 
 function drush_command_defaults($key, $commandfile, $path) {
-  return array(
+  $defaults =  array(
     'command' => $key,
     'command-hook' => $key,
     'invoke hooks' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
     'callback arguments' => array(),
     'commandfile' => $commandfile,
     'path' => dirname($path),
@@ -1051,6 +1050,10 @@ function drush_command_defaults($key, $commandfile, $path) {
     'hidden' => FALSE,
     'category' => $commandfile,
   );
+  if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
+    $defaults = array_merge($defaults, $bootstrap->command_defaults());
+  }
+  return $defaults;
 }
 
 /**
@@ -1344,107 +1347,6 @@ function drush_commandfile_list() {
   return drush_get_context('DRUSH_COMMAND_FILES', array());
 }
 
-function _drush_find_commandfiles($phase, $phase_max = FALSE) {
-  if (!$phase_max) {
-    $phase_max = $phase;
-  }
-
-  $searchpath = array();
-  switch ($phase) {
-    case DRUSH_BOOTSTRAP_DRUSH:
-      // Core commands shipping with drush
-      $searchpath[] = realpath(dirname(__FILE__) . '/../commands/');
-
-      // User commands, specified by 'include' option
-      if ($include = drush_get_context('DRUSH_INCLUDE', FALSE)) {
-        foreach ($include as $path) {
-          if (is_dir($path)) {
-            drush_log('Include ' . $path, 'notice');
-            $searchpath[] = $path;
-          }
-        }
-      }
-
-      // System commands, residing in $SHARE_PREFIX/share/drush/commands
-      $share_path = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
-      if (is_dir($share_path)) {
-        $searchpath[] = $share_path;
-      }
-
-      // User commands, residing in ~/.drush
-      $per_user_config_dir = drush_get_context('DRUSH_PER_USER_CONFIGURATION');
-      if (!empty($per_user_config_dir)) {
-        $searchpath[] = $per_user_config_dir;
-      }
-
-      // Include commandfiles located in Drupal's /drush and sites/all/drush even before root is bootstrapped.
-      if ($drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT')) {
-        $searchpath[] = $drupal_root . '/drush';
-        $searchpath[] = $drupal_root . '/sites/all/drush';
-      }
-      break;
-    case DRUSH_BOOTSTRAP_DRUPAL_SITE:
-      // If we are going to stop bootstrapping at the site, then
-      // we will quickly add all commandfiles that we can find for
-      // any module associated with the site, whether it is enabled
-      // or not.  If we are, however, going to continue on to bootstrap
-      // all the way to DRUSH_BOOTSTRAP_DRUPAL_FULL, then we will
-      // instead wait for that phase, which will more carefully add
-      // only those Drush commandfiles that are associated with
-      // enabled modules.
-      if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-        $searchpath[] = conf_path() . '/modules';
-        // Add all module paths, even disabled modules. Prefer speed over accuracy.
-        $searchpath[] = 'sites/all/modules';
-        // In D8, we search top level directories as well.
-        if (drush_drupal_major_version() >=8) {
-          $searchpath[] = 'modules';
-        }
-      }
-
-      $cid = drush_cid_install_profile();
-      if ($cached = drush_cache_get($cid)) {
-        $profile = $cached->data;
-        $path = "profiles/$profile/modules";
-        if (file_exists($path)) {
-          $searchpath[] = $path;
-        }
-        elseif (file_exists('sites/all/' . $path)) {
-          $searchpath[] = 'sites/all/' . $path;
-        }
-      }
-      else {
-        // If install_profile is not available, scan all profiles.
-        $searchpath[] = "profiles";
-        $searchpath[] = "sites/all/profiles";
-      }
-
-      // TODO: Treat themes like modules and stop unconditionally searching here.
-      $searchpath[] = 'sites/all/themes';
-      $searchpath[] = conf_path() . '/themes';
-      // In D8, we search top level directories as well.
-      if (drush_drupal_major_version() >=8) {
-        $searchpath[] = 'themes';
-      }
-      break;
-    case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
-      // Nothing to do here anymore. Left for documentation.
-      break;
-    case DRUSH_BOOTSTRAP_DRUPAL_FULL:
-      // Add enabled module paths. Since we are bootstrapped,
-      // we can use the Drupal API.
-      drush_include_engine('drupal', 'environment');
-      $ignored_modules = drush_get_option_list('ignored-modules', array());
-      foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
-        $filename = drupal_get_filename('module', $module);
-        $searchpath[] = dirname($filename);
-      }
-      break;
-  }
-
-  _drush_add_commandfiles($searchpath, $phase);
-}
-
 function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
   static $evaluated = array();
   static $deferred = array();
@@ -1631,7 +1533,7 @@ function drush_command_set_command_specific($command_default_options, $command =
     // If we set or cleared any options, go back and re-bootstrap any global
     // options such as -y and -v.
     if (!empty($options_were_set)) {
-      _drush_bootstrap_global_options();
+      _drush_preflight_global_options();
     }
     // If the command uses strict option handling, back out any global
     // options that were set.
@@ -1752,42 +1654,6 @@ function drush_enforce_requirement_bootstrap_phase(&$command) {
 }
 
 /**
- * Check that a command has its declared dependencies available or have no
- * dependencies.
- *
- * @param $command
- *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.
- *
- * @return
- *   TRUE if command is valid.
- */
-function drush_enforce_requirement_drupal_dependencies(&$command) {
-  // If the command bootstrap is DRUSH_BOOTSTRAP_MAX, then we will
-  // allow the requirements to pass if we have not successfully
-  // bootstrapped Drupal.  The combination of DRUSH_BOOTSTRAP_MAX
-  // and 'drupal dependencies' indicates that the drush command
-  // will use the dependent modules only if they are available.
-  if ($command['bootstrap'] == DRUSH_BOOTSTRAP_MAX) {
-    // If we have not bootstrapped, then let the dependencies pass;
-    // if we have bootstrapped, then enforce them.
-    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-      return TRUE;
-    }
-  }
-  // If there are no drupal dependencies, then do nothing
-  if (!empty($command['drupal dependencies'])) {
-    foreach ($command['drupal dependencies'] as $dependency) {
-      drush_include_engine('drupal', 'environment');
-      if(!function_exists('module_exists') || !drush_module_exists($dependency)) {
-        $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] = dt('Command !command needs the following modules installed/enabled to run: !dependencies.', array('!command' => $command['command'], '!dependencies' => implode(', ', $command['drupal dependencies'])));
-        return FALSE;
-      }
-    }
-  }
-  return TRUE;
-}
-
-/**
  * Check that a command has its declared drush dependencies available or have no
  * dependencies. Drush dependencies are helpful when a command is invoking
  * another command, or implementing its API.
@@ -1903,6 +1769,6 @@ function drush_shell_alias_replace() {
     array_splice($argv, $pos, 1, $replacement);
     drush_set_context('argv', $argv);
     drush_parse_args();
-    _drush_bootstrap_global_options();
+    _drush_preflight_global_options();
   }
 }

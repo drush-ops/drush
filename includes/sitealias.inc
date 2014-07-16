@@ -33,6 +33,9 @@ function drush_sitealias_check_arg() {
   return FALSE;
 }
 
+/*
+ * Check to see if user has selected a site via site-set command.
+ */
 function drush_sitealias_check_site_env() {
   $site = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
   if (empty($site)) {
@@ -1471,7 +1474,7 @@ function _drush_sitealias_find_local_alias_name($root, $uri) {
  * @return array
  *   An alias record, or empty if none found.
  */
-function _drush_sitealias_find_record_for_local_site($alias, $drupal_root = null) {
+function _drush_sitealias_find_record_for_local_site($alias, $drupal_root = NULL) {
   $alias_record = array();
 
   // Clip off the leading '#' if it is there
@@ -1483,7 +1486,7 @@ function _drush_sitealias_find_record_for_local_site($alias, $drupal_root = null
     $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
   }
 
-  if (isset($drupal_root)) {
+  if (!empty($drupal_root)) {
     $alias_dir = drush_sitealias_uri_to_site_dir($alias);
     $site_settings_file = $drupal_root . '/sites/' . $alias_dir . '/settings.php';
     $alias_record = drush_sitealias_build_record_from_settings_file($site_settings_file, $alias, $drupal_root);
@@ -1702,7 +1705,7 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   $skip_list = drush_get_special_keys();
   // If 'php-options' are set in the alias, then we will force drush
   // to redispatch via the remote dispatch mechanism even if the target is localhost.
-  if (array_key_exists('php-options', $site_alias_settings) || drush_get_context('DRUSH_BACKEND', FALSE)) {
+  if (array_key_exists('php-options', $site_alias_settings) && !drush_get_context('DRUSH_BACKEND', FALSE)) {
     if (!array_key_exists('remote-host', $site_alias_settings)) {
       $site_alias_settings['remote-host'] = 'localhost';
     }
