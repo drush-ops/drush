@@ -127,7 +127,7 @@ function drush_sql_sync($source, $destination) {
       // @todo Add an option for choosing runner? Resolve aliases before rsync?
       $runner = $destination;
     }
-    $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $rsync_options);
+    $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path"), $rsync_options);
     drush_log(dt('Copying dump file from Source to Destination.'), 'ok');
     if ($return['error_status']) {
       return drush_set_error('core-rsync failed.');

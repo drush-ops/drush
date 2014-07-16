@@ -78,7 +78,7 @@ function drush_core_site_install_validate() {
       drush_set_option('sites-subdir', $lower);
     }
     // Make sure that we will bootstrap to the 'sites-subdir' site.
-    drush_set_option('uri', 'http://' . $sites_subdir);
+    drush_set_context('DRUSH_SELECTED_URI', 'http://' . $sites_subdir);
   }
 }
 
@@ -91,6 +91,9 @@ function drush_core_pre_site_install($profile = NULL) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
   }
+
+  // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.
+  _drush_bootstrap_selected_uri();
 
   $alias_record = drush_sitealias_get_record('@self');
   $sites_subdir = drush_sitealias_local_site_path($alias_record);
