@@ -68,7 +68,7 @@ function _drush_search_status() {
       if ($module == 'node' && variable_get('search_cron_limit', 10) == 0) {
         continue;
       }
-      $status = module_invoke($module, 'search', 'status');
+      $status = drush_module_invoke($module, 'search', 'status');
       if (isset($status['remaining']) && isset($status['total'])) {
         $remaining += $status['remaining'];
         $total += $status['total'];
