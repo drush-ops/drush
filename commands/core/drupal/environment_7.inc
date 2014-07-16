@@ -118,6 +118,13 @@ function drush_module_list() {
 }
 
 /**
+ * Checks for existence of given module.
+ */
+function drush_module_exists($module) {
+  return module_exists($module);
+}
+
+/**
  * Return a list of extensions from a list of named extensions.
  * Both enabled and disabled/uninstalled extensions are returned.
  */

@@ -50,7 +50,7 @@ function queue_drush_command() {
  */
 function drush_queue_validate($command) {
   if (drush_drupal_major_version() == 6) {
-    if (!module_exists('drupal_queue')) {
+    if (!drush_module_exists('drupal_queue')) {
       $args = array('!command' => $command, '!dependencies' => 'drupal_queue');
       return drush_set_error('DRUSH_COMMAND_DEPENDENCY_ERROR', dt('Command !command needs the following modules installed/enabled to run: !dependencies.', $args));
     }

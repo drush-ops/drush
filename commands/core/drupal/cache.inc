@@ -47,7 +47,7 @@ function _drush_cache_clear_types($include_bootstrapped_types) {
   if ($drupal_version >= 7) {
     $types['registry'] = 'registry_update';
   }
-  elseif ($drupal_version == 6 && function_exists('module_exists') && module_exists('autoload')) {
+  elseif ($drupal_version == 6 && drush_module_exists('autoload')) {
     // TODO: move this to autoload module.
     $types['registry'] = 'autoload_registry_update';
   }

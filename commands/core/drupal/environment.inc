@@ -117,6 +117,13 @@ function drush_module_list() {
 }
 
 /**
+ * Checks for existence of given module.
+ */
+function drush_module_exists($module) {
+  return $exists = \Drupal::moduleHandler()->moduleExists($module);
+}
+
+/**
  * Return a list of modules from a list of named modules.
  * Both enabled and disabled/uninstalled modules are returned.
  */
