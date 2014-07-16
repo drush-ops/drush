@@ -165,7 +165,7 @@ function drush_module_uninstall($modules) {
  * @see module_exists().
  *
  */
-function drush_module_exists($module_list) {
+function drush_module_exists($module) {
   return module_exists($module);
 }
 
