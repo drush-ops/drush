@@ -16,8 +16,8 @@ function make_download_factory($name, $type, $download, $download_location) {
     $destination_path = FALSE;
     $attempts = 0;
     while (!$destination_path && $attempts < (int) drush_get_option('download-attempts', 1)) {
-      
-      // If this is a retry then inform the user
+
+      // If this is a retry then inform the user.
       if ($attempts > 0) {
         drush_log(dt('Retry number @attempts for @name', array('@attempts' => $attempts, '@name' => $name)), 'warning');
       }
@@ -25,13 +25,18 @@ function make_download_factory($name, $type, $download, $download_location) {
       $destination_path = $function($name, $type, $download, $download_location);
       $attempts++;
 
-      // If we failed to download, and we will be trying again, wait for 
-      // a random amount of time within a user specified period
-      if(!$destination_path && $attempts < (int) drush_get_option('download-attempts', 1)) {
+      // If we failed to download, and we will be trying again, wait for
+      // a random amount of time within a user specified period.
+      if (!$destination_path && $attempts < (int) drush_get_option('download-attempts', 1)) {
         sleep(rand(drush_get_option('download-retry-delay-min-seconds', 5), drush_get_option('download-retry-delay-max-seconds', 30)));
       }
 
     }
+
+    if (!$destination_path) {
+      make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @url.', array('@project' => $name, '@url' => $download['url'])));
+    }
+
     return $destination_path;
   }
   else {
@@ -98,13 +103,13 @@ function make_download_file($name, $type, $download, $download_location, $cache_
 }
 
 /**
- * Makes the simple _make_download_file callable from make_download_factory
+ * Makes the simple _make_download_file callable from make_download_factory.
  * 
  * @return mixed
- *  The destination filename on success, FALSE on failure
+ *   The destination filename on success, FALSE on failure.
  */
 function make_download_simplefile($name, $type, $download, $download_location = NULL, $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT) {
-  if(!$filename = _make_download_file($download['url'], $cache_duration)) {
+  if (!$filename = _make_download_file($download['url'], $cache_duration)) {
     drush_log(dt('Failed to download @project from @url.', array('@project' => $name, '@url' => $download['url'])), 'warning');
   }
 
