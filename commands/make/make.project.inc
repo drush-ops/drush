@@ -254,9 +254,13 @@ class DrushMakeProject {
     $ignore_checksums = drush_get_option('ignore-checksums');
     foreach ($this->patch as $info) {
       $this->preprocessLocalFileUrl($info);
+      $download = array(
+        'type' => 'simplefile',
+        'url' => $info['url'],
+      );
 
       // Download the patch.
-      if ($filename = _make_download_file($info['url'])) {
+      if ($filename = make_download_factory(basename($download_factory['url']), 'Patch', $download, NULL)) {
         $patched = FALSE;
         $output = '';
         // Test each patch style; -p1 is the default with git. See

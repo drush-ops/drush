@@ -13,7 +13,26 @@
 function make_download_factory($name, $type, $download, $download_location) {
   $function = 'make_download_' . $download['type'];
   if (function_exists($function)) {
-    return $function($name, $type, $download, $download_location);
+    $destination_path = FALSE;
+    $attempts = 0;
+    while (!$destination_path && $attempts < (int) drush_get_option('download-attempts', 1)) {
+      
+      // If this is a retry then inform the user
+      if ($attempts > 0) {
+        drush_log(dt('Retry number @attempts for @name', array('@attempts' => $attempts, '@name' => $name)), 'warning');
+      }
+
+      $destination_path = $function($name, $type, $download, $download_location);
+      $attempts++;
+
+      // If we failed to download, and we will be trying again, wait for 
+      // a random amount of time within a user specified period
+      if(!$destination_path && $attempts < (int) drush_get_option('download-attempts', 1)) {
+        sleep(rand(drush_get_option('download-retry-delay-min-seconds', 5), drush_get_option('download-retry-delay-max-seconds', 30)));
+      }
+
+    }
+    return $destination_path;
   }
   else {
     return FALSE;
@@ -74,8 +93,22 @@ function make_download_file($name, $type, $download, $download_location, $cache_
     $subtree = isset($download['subtree']) ? $download['subtree'] : NULL;
     return make_download_file_unpack($filename, $download_location, $download_filename, $subtree);
   }
-  make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @url.', array('@project' => $name, '@url' => $download['url'])));
+  drush_log(dt('Failed to download @project from @url.', array('@project' => $name, '@url' => $download['url'])), 'warning');
   return FALSE;
+}
+
+/**
+ * Makes the simple _make_download_file callable from make_download_factory
+ * 
+ * @return mixed
+ *  The destination filename on success, FALSE on failure
+ */
+function make_download_simplefile($name, $type, $download, $download_location = NULL, $cache_duration = DRUSH_CACHE_LIFETIME_DEFAULT) {
+  if(!$filename = _make_download_file($download['url'], $cache_duration)) {
+    drush_log(dt('Failed to download @project from @url.', array('@project' => $name, '@url' => $download['url'])), 'warning');
+  }
+
+  return $filename;
 }
 
 /**
@@ -259,7 +292,7 @@ function make_download_git($name, $type, $download, $download_location) {
 
   // Before we can checkout anything, we need to clone the repository.
   if (!drush_shell_exec($command, $url, $tmp_location)) {
-    make_error('DOWNLOAD_ERROR', dt('Unable to clone @project from @url.', array('@project' => $name, '@url' => $url)));
+    drush_log(dt('Unable to clone @project from @url.', array('@project' => $name, '@url' => $url)), 'warning');
     return FALSE;
   }
 
@@ -382,7 +415,7 @@ function make_download_bzr($name, $type, $download, $download_location) {
   else {
     $download['url'] = dt("unspecified location");
   }
-  make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @url.', array('@project' => $name, '@url' => $download['url'])));
+  drush_log(dt('Unable to download @project from @url.', array('@project' => $name, '@url' => $download['url'])), 'warning');
   drush_delete_dir(dirname($tmp_location), TRUE);
   return FALSE;
 }
@@ -448,7 +481,7 @@ function make_download_svn($name, $type, $download, $download_location) {
     }
   }
   else {
-    make_error('DOWNLOAD_ERROR', dt('Unable to download @project from @url.', array('@project' => $name, '@url' => $download['url'])));
+    drush_log(dt('Failed to download @project from @url.', array('@project' => $name, '@url' => $download['url'])), 'warning');
     return FALSE;
   }
 }

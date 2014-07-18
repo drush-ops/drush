@@ -66,6 +66,9 @@ function make_drush_command() {
       'translations' => 'Retrieve translations for the specified comma-separated list of language(s) if available for all projects.',
       'working-copy' => 'Preserves VCS directories, like .git, for projects downloaded using such methods.',
       'download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
+      'download-attempts' => 'The number of attempts to download files.',
+      'download-retry-delay-min-seconds' => 'The minimum number of seconds to wait before attempting to retry a download.',
+      'download-retry-delay-max-seconds' => 'The maximum number of seconds to wait before attempting to retry a download.',
       'projects' => array(
         'description' => 'Restrict the make to this comma-separated list of projects. To specify all projects, pass *.',
         'example' => 'views,ctools',
