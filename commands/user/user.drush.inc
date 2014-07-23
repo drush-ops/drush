@@ -460,7 +460,7 @@ function drush_user_login($user = NULL, $path = NULL) {
           if ($path) {
             $options['query']['destination'] = $path;
           }
-          $link = url(user_pass_reset_url($user_object) . '/login', $options);
+          $link = url(user_pass_reset_url($user_object), $options);
         }
         else {
           return drush_set_error("The user account $uid is blocked.");
