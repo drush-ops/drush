@@ -11,7 +11,7 @@ $local_vendor_path = $drush_base_path . '/vendor/autoload.php';
 $global_vendor_path = $drush_base_path . '/../../../vendor/autoload.php';
 // Check for a local composer install or a global composer install. Vendor dirs are in different spots.
 if ((!@include $local_vendor_path) && (!@include $global_vendor_path)) {
-  $msg = "Unable to load autoload.php. Drush now requires Composer in order to install its depedencies and autoload classes. Please see README.md\n";
+  $msg = "Unable to load autoload.php. Drush now requires Composer in order to install its dependencies and autoload classes. Please see README.md\n";
   fwrite(STDERR, $msg);
   return FALSE;
 }
