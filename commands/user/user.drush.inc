@@ -378,7 +378,7 @@ function drush_user_cancel($name) {
     }
   }
   else {
-    drush_set_error("Could not find a user account with the name " . $name . "!");
+    return drush_set_error("Could not find a user account with the name " . $name . ".");
   }
 }
 
