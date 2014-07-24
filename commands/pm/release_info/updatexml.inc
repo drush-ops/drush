@@ -518,6 +518,7 @@ function updatexml_get_releases_from_xml($xml, $project) {
   $releases_xml = @$xml->xpath("/project/releases/release[status='published']");
   $recommended_version = NULL;
   $latest_version = NULL;
+  $releases = array();
   foreach ($releases_xml as $release) {
     $release_info = array();
     foreach (array('name', 'version', 'tag', 'version_major', 'version_extra', 'status', 'release_link', 'download_link', 'date', 'mdhash', 'filesize') as $item) {
