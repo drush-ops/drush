@@ -361,10 +361,8 @@ function drush_user_cancel($name) {
   }
   $uid = drush_db_result($result);
   if ($uid !== FALSE) {
-    drush_print("Cancelling the user account with the following information:");
-    _drush_user_print_info($uid);
     if (drush_get_option('delete-content') && drush_drupal_major_version() >= 7) {
-      drush_print("All content created by this user will be deleted!");
+      drush_log("All content created by this user will be deleted.", 'ok');
     }
     if (drush_confirm('Cancel user account?: ')) {
       if (drush_drupal_major_version() >= 7) {
@@ -385,7 +383,7 @@ function drush_user_cancel($name) {
     }
   }
   else {
-    drush_set_error("Could not find a user account with the name " . $name . "!");
+    return drush_set_error("Could not find a user account with the name " . $name . ".");
   }
 }
 
