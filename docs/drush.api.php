@@ -245,7 +245,8 @@ function drush_hook_pre_pm_enable() {
   if (in_array('hook', $modules) && !drush_get_option('skip')) {
     $url = 'http://server.com/path/MyLibraryName.tgz';
     $path = drush_get_context('DRUSH_DRUPAL_ROOT');
-    if (module_exists('libraries')) {
+    drush_include_engine('drupal', 'environment');
+    if (drush_module_exists('libraries')) {
       $path .= '/' . libraries_get_path('MyLibraryName') . '/MyLibraryName.tgz';
     }
     else {
