@@ -80,6 +80,9 @@ function make_download_pm($name, $type, $download, $download_location) {
     // http://drupal.org/node/1452672.
     drush_log(dt('@project downloaded.', array('@project' => $full_project_version)), 'ok');
   }
+
+  return $full_project_version;
+
 }
 
 /**
