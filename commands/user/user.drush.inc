@@ -193,6 +193,7 @@ function user_drush_command() {
     'options' => array(
       'browser' => 'Optional value denotes which browser to use (defaults to operating system default). Set to 0 to suppress opening a browser.',
       'uid' => 'A uid to log in as.',
+      'redirect-port' => 'The port that the site is redirected to (e.g. when running within a Vagrant environment)',
       'name' => 'A user name to log in as.',
       'mail' => 'A user mail address to log in as.',
     ),
@@ -471,8 +472,8 @@ function drush_user_login($user = NULL, $path = NULL) {
       return FALSE; // An error has already been logged.
     }
   }
-
-  drush_start_browser($link);
+  $port = drush_get_option('redirect-port', FALSE);
+  drush_start_browser($link, FALSE, $port);
   return $link;
 }
 
