@@ -201,6 +201,7 @@ function pm_drush_command() {
       'field-labels' => array('package' => 'Package', 'name' => 'Name', 'type' => 'Type', 'status' => 'Status', 'version' => 'Version'),
       'output-data-type' => 'format-table',
     ),
+    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('pml'),
   );
   $items['pm-refresh'] = array(
