@@ -1636,8 +1636,54 @@ function drush_pm_cache_project_extensions($project, $found) {
  * It does nothing with theme engine projects.
  */
 function drush_pm_extensions_in_project($project) {
+  $found = _drush_pm_extensions_in_project($project);
+  // Drupal core and profiles can contain modules, themes and profiles.
+  if (in_array($project['project_type'], array('core', 'profile'))) {
+    // Log results.
+    $msg = "Project !project contains:\n";
+    $args = array('!project' => $project['name']);
+    foreach (array_keys($found) as $type) {
+      if ($count = count($found[$type])) {
+        $msg .= " - !count_$type !type_$type: !found_$type\n";
+        $args += array(
+          "!count_$type" => $count,
+          "!type_$type" => $type,
+          "!found_$type" => implode(', ', $found[$type])
+        );
+        if ($count > 1) {
+          $args["!type_$type"] = $type . 's';
+        }
+      }
+    }
+    drush_log(dt($msg, $args), 'success');
+    drush_print_pipe(call_user_func_array('array_merge', array_values($found)));
+  }
+  elseif (in_array($project['project_type'], array('module', 'theme'))) {
+    // If there is only one module / theme in the project, only print out
+    // the message if is different than the project name.
+    if (count($found) == 1) {
+      if ($found[0] != $project['name']) {
+        $msg = "Project !project contains a !type named !found.";
+      }
+    }
+    // If there are multiple modules or themes in the project, list them all.
+    else {
+      $msg = "Project !project contains !count !types: !found.";
+    }
+    if (isset($msg)) {
+      drush_print(dt($msg, array('!project' => $project['name'], '!count' => count($found), '!type' => $project['project_type'], '!found' => implode(', ', $found))));
+    }
+    drush_print_pipe($found);
+    // Cache results.
+    drush_pm_cache_project_extensions($project, $found);
+  }
+}
+
+function _drush_pm_extensions_in_project($project) {
+  $found = array();
   // Mask for drush_scan_directory, to match .info.yml files.
-  $mask = $project['drupal_version'][0] >= 8 ? '/(.*)\.info\.yml$/' : '/(.*)\.info$/';
+  $drupal8 = $project['drupal_version'][0] >= 8;
+  $mask = $drupal8 ? '/(.*)\.info\.yml$/' : '/(.*)\.info$/';
 
   // Mask for drush_scan_directory, to avoid tests directories.
   $nomask = array('.', '..', 'CVS', 'tests');
