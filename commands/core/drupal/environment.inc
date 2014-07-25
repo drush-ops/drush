@@ -394,7 +394,7 @@ function _drush_extension_get_name($info) {
  *   The extension type.
  */
 function _drush_extension_get_type($info) {
-  return $info->getType();
+  return isset($info->info) ? $info->info['type'] : $info->getType();
 }
 
 /**
