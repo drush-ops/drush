@@ -1094,8 +1094,6 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
     'remote-host' => NULL,
     'remote-user' => NULL,
     'ssh-options' => NULL,
-    'ssh-command' => 'ssh',
-    'vagrant' => FALSE,
     'path-aliases' => array(),
   );
   $backend_options += array(
@@ -1105,8 +1103,6 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   $hostname = $site_record['remote-host'];
   $username = $site_record['remote-user'];
   $ssh_options = $site_record['ssh-options'];
-  $ssh_command = $site_record['ssh-command'];
-  $vagrant = $site_record['vagrant'];
   $os = drush_os($site_record);
 
   if (array_key_exists('#check-local', $site_record) && drush_is_local_host($hostname)) {
@@ -1144,26 +1140,16 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
       $ssh_options = $site_record['ssh-options'];
       $ssh_options = (isset($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
 
-      if ($vagrant) {
-        $ssh_cmd[] = 'vagrant';
-      }
-      $ssh_cmd[] = $ssh_command;
+      $ssh_cmd[] = "ssh";
       $ssh_cmd[] = $ssh_options;
       if ($backend_options['#tty']) {
         $ssh_cmd[] = '-t';
       }
       $ssh_cmd[] = $username . drush_escapeshellarg($hostname, "LOCAL");
-      if ($vagrant) {
-        $ssh_cmd[] = '-c';
-      }
       $ssh_cmd[] = drush_escapeshellarg($command . ' 2>&1', "LOCAL");
 
       // Remove NULLs and separate with spaces
       $command = implode(' ', array_filter($ssh_cmd, 'strlen'));
-
-      if (is_string($vagrant)) {
-        $command = "(cd $vagrant; $command)";
-      }
     }
   }
 
