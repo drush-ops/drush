@@ -14,6 +14,7 @@ function browse_drush_command() {
     ),
     'options' => array(
       'browser' => 'Specify a particular browser (defaults to operating system default). Set to 0 to suppress opening a browser.',
+      'redirect-port' => 'The port that the web server is redirected to (e.g. when running within a Vagrant environment)',
     ),
     'examples' => array(
       'drush browse' => 'Open default web browser (if configured or detected) to the site front page.',
