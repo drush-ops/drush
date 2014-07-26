@@ -26,7 +26,8 @@ function package_handler_validate() {
   }
   // Check git_deploy is enabled. Only for bootstrapped sites.
   if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-    if (!drush_get_option('gitinfofile') && !module_exists('git_deploy')) {
+    drush_include_engine('drupal', 'environment');
+    if (!drush_get_option('gitinfofile') && !drush_module_exists('git_deploy')) {
       drush_log(dt('git package handler needs git_deploy module enabled to work properly.'), 'warning');
     }
   }

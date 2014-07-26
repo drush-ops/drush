@@ -14,6 +14,13 @@
  */
 
 /*
+ * Implements COMMAND hook init.
+ */
+function drush_sql_sync_init() {
+  // Try to get @self defined when --uri was not provided.
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+}
+/*
  * A command validate callback.
  */
 function drush_sql_sync_validate($source, $destination) {
