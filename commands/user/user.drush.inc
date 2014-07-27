@@ -421,7 +421,7 @@ function drush_user_login($user = NULL, $path = NULL) {
   // the *local* machine.
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
   if (drush_sitealias_is_remote_site($alias)) {
-    $return = drush_invoke_process($site_record, 'user-login', $args, drush_redispatch_get_options(), array('integrate' => FALSE));
+    $return = drush_invoke_process($alias, 'user-login', $args, drush_redispatch_get_options(), array('integrate' => FALSE));
     if ($return['error_status']) {
       return drush_set_error('Unable to execute user login.');
     }
