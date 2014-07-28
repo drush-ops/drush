@@ -714,6 +714,9 @@ function _drush_pm_find_common_path($project_type, $extensions) {
  * Command callback. Show a list of extensions with type and status.
  */
 function drush_pm_list() {
+  if ((drush_drupal_major_version() < 8) && !drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+    return drush_set_error('DRUSH_COMMAND_INSUFFICIENT_BOOTSTRAP', 'This needs a higher bootstrap level.');
+  }
   //--package
   $package_filter = array();
   $package = strtolower(drush_get_option('package'));
