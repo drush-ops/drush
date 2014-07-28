@@ -1,7 +1,15 @@
 <?php
 
+/*
+ * Implements COMMAND hook init.
+ */
+function drush_core_rsync_init() {
+  // Try to get @self defined when --uri was not provided.
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+}
+
 /**
- * Entrypoint for drush rsync.
+ * A command callback.
  *
  * @param source
  *   A site alias ("@dev") or site specification ("/path/to/drupal#mysite.com")
