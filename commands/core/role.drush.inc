@@ -203,8 +203,6 @@ function drush_role_perm($action, $rid, $permission = NULL) {
     }
   }
 
-  $role_perms = $role->getPerms();
-
   $result = $role->{$action}($permission);
   if ($result === FALSE) {
     return FALSE;
