@@ -130,8 +130,8 @@ function drush_role_delete($rid) {
  *
  * @param string $rid machine name for a role
  * @param null|string $permission machine name for permission (may contain spaces)
-
- * @return bool|object TODO: what is done with the result?
+ *
+ * @return bool
  */
 function drush_role_add_perm($rid, $permission = NULL) {
   $perms = func_get_args();
@@ -164,6 +164,14 @@ function drush_role_remove_perm($rid, $permission = NULL) {
 
 /**
  * Implement permission add / remove operations.
+ *
+ * @param string $action
+ * @param string $rid
+ * @param string|null $permission
+ *
+ * @return bool|object
+ *
+ * @see drush_set_error()
  */
 function drush_role_perm($action, $rid, $permission = NULL) {
   $role = drush_role_get_class($rid);
