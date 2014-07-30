@@ -1348,8 +1348,8 @@ function drush_commandfile_list() {
 }
 
 function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
-  static $evaluated = array();
   static $deferred = array();
+  static $loaded = array();
 
   $cache =& drush_get_context('DRUSH_COMMAND_FILES', array());
 
@@ -1389,14 +1389,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
           $dmv = DRUSH_MAJOR_VERSION;
           $files = drush_scan_directory($path, "/\.drush($dmv|)\.inc$/", $nomask);
           foreach ($files as $filename => $info) {
-            $module = basename($filename);
-            $module = preg_replace('/\.*drush[0-9]*\.inc/', '', $module);
-            // Only try to bootstrap modules that we have never seen before, or that we
-            // have tried to load but did not due to an unmet _drush_load() requirement.
-            if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
-              $evaluated[$module] = TRUE;
-              $list[$module] = $filename;
-            }
+            $list[$module] = $filename;
           }
         }
       }
@@ -1422,9 +1415,16 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
           // command file cache may not be available anymore, in which case
           // we rebuild the cache for this phase.
           if ($filepath = realpath($filename)) {
-            $cache[$module_versionless] = $filename;
-            require_once $filepath;
-            unset($deferred[$module]);
+            $module = basename($filename);
+            $module = str_replace(array('.drush.inc', ".drush$dmv.inc"), '', $module);
+            // Only try to bootstrap modules that we have never seen before, or that we
+            // have tried to load but did not due to an unmet _drush_load() requirement.
+            if (!array_key_exists($module, $loaded)) {
+              $loaded[$module] = TRUE;
+              $cache[$module_versionless] = $filename;
+              require_once $filepath;
+              unset($deferred[$module]);
+            }
           }
           elseif (!$reset) {
             _drush_add_commandfiles($searchpath, $phase, TRUE);
