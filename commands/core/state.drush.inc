@@ -5,8 +5,6 @@
  *   Provides State commands.
  */
 
-use Symfony\Component\Yaml\Parser;
-
 /**
  * Implementation of hook_drush_help().
  */
@@ -113,12 +111,6 @@ function drush_state_set($key = NULL, $data = NULL) {
     $data = stream_get_contents(STDIN);
   }
 
-  // Now, we parse the value.
-  switch (drush_get_option('format', 'string')) {
-    case 'yaml':
-      $parser = new Parser();
-      $data = $parser->parse($data, TRUE);
-  }
   \Drupal::state()->set($key, $data);
 }
 
