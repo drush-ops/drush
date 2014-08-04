@@ -1387,8 +1387,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
           foreach ($files as $filename => $info) {
             $module = basename($filename);
             $module = preg_replace('/\.*drush[0-9]*\.inc/', '', $module);
-            // Only try to bootstrap modules that we have never seen before, or that we
-            // have tried to load but did not due to an unmet _drush_load() requirement.
+            // Only try to bootstrap modules that we have never seen before.
             if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
               $evaluated[$module] = TRUE;
               $list[$module] = $filename;
