@@ -428,7 +428,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE) {
       return FALSE;
     }
     if ($port) {
-      $uri = str_replace($host, "$host:$port", $uri);
+      $uri = str_replace($host, "localhost:$port", $uri);
     }
     if ($browser === TRUE) {
       // See if we can find an OS helper to open URLs in default browser.
