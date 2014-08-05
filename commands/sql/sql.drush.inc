@@ -481,12 +481,22 @@ function drush_sql_query($query = NULL) {
   if (drush_get_option('db-prefix')) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
   }
-  $sql = drush_sql_get_class(drush_get_option('db-spec'));
-  $result = $sql->query($query, $filename, FALSE, drush_get_option('result-file'));
-  if (!$result) {
-    return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    if ($query) {
+      drush_print(dt('Simulating sql-query: !q', array('!q' => $query)));
+    }
+    else {
+      drush_print(dt('Simulating sql-import from !f', array('!f' => drush_get_option('file'))));
+    }
   }
-  drush_print(implode("\n", drush_shell_exec_output()));
+  else {
+    $sql = drush_sql_get_class(drush_get_option('db-spec'));
+    $result = $sql->query($query, $filename, FALSE, drush_get_option('result-file'));
+    if (!$result) {
+      return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
+    }
+    drush_print(implode("\n", drush_shell_exec_output()));
+  }
   return TRUE;
 }
 

@@ -56,10 +56,12 @@ function drush_sql_sync_validate($source, $destination) {
     return drush_set_error(DRUSH_TARGET_DUMP_MISSING, dt('The --target-dump option must be supplied when --no-sync is specified.'));
   }
 
-  drush_print(dt("You will destroy data in !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
-  // @todo Move sanitization prompts to here. They currently show much later.
-  if (!drush_confirm(dt('Do you really want to continue?'))) {
-    return drush_user_abort();
+  if (!drush_get_context('DRUSH_SIMULATE')) {
+    drush_print(dt("You will destroy data in !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
+    // @todo Move sanitization prompts to here. They currently show much later.
+    if (!drush_confirm(dt('Do you really want to continue?'))) {
+      return drush_user_abort();
+    }
   }
 }
 
@@ -67,14 +69,18 @@ function drush_sql_sync_validate($source, $destination) {
  * A command callback.
  */
 function drush_sql_sync($source, $destination) {
+  $backend_options = array();
   $global_options = drush_redispatch_get_options() + array(
      'strict' => 0,
   );
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    $backend_options['backend-simulate'] = TRUE;
+  }
 
   // Create destination DB if needed.
   if (drush_get_option('create-db')) {
     drush_log(dt('Starting to create database on Destination.'), 'ok');
-    $return = drush_invoke_process($destination, 'sql-create', array(), $global_options);
+    $return = drush_invoke_process($destination, 'sql-create', array(), $global_options, $backend_options);
     if ($return['error_status']) {
       return drush_set_error('sql-create failed.');
     }
@@ -88,7 +94,7 @@ function drush_sql_sync($source, $destination) {
     );
   if (!drush_get_option('no-dump')) {
     drush_log(dt('Starting to dump database on Source.'), 'ok');
-    $return = drush_invoke_process($source, 'sql-dump', array(), $options);
+    $return = drush_invoke_process($source, 'sql-dump', array(), $options, $backend_options);
     if ($return['error_status']) {
       return drush_set_error('sql-dump failed.');
     }
@@ -147,7 +153,7 @@ function drush_sql_sync($source, $destination) {
     'file' => $destination_dump_path,
     'file-delete' => TRUE,
   );
-  $return = drush_invoke_process($destination, 'sql-query', array(), $options);
+  $return = drush_invoke_process($destination, 'sql-query', array(), $options, $backend_options);
   if ($return['error_status']) {
     // An error was already logged.
     return FALSE;
@@ -157,7 +163,7 @@ function drush_sql_sync($source, $destination) {
   $options = $global_options + array();
   if (drush_get_option('sanitize')) {
     drush_log(dt('Starting to sanitize target database on Destination.'), 'ok');
-    $return = drush_invoke_process($destination, 'sql-sanitize', array(), $options);
+    $return = drush_invoke_process($destination, 'sql-sanitize', array(), $options, $backend_options);
     if ($return['error_status']) {
       return drush_set_error('sql-sanitize failed.');
     }
