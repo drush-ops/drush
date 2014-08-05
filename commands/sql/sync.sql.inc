@@ -20,6 +20,7 @@ function drush_sql_sync_init() {
   // Try to get @self defined when --uri was not provided.
   drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 }
+
 /*
  * A command validate callback.
  */
@@ -31,6 +32,7 @@ function drush_sql_sync_validate($source, $destination) {
   $target_db_url = drush_sitealias_get_db_spec($destination_settings, FALSE, 'target-');
   $txt_source = (isset($source_db_url['remote-host']) ? $source_db_url['remote-host'] . '/' : '') . $source_db_url['database'];
   $txt_destination = (isset($target_db_url['remote-host']) ? $target_db_url['remote-host'] . '/' : '') . $target_db_url['database'];
+
   // Validate.
   if (empty($source_db_url)) {
     if (empty($source_settings)) {
@@ -69,10 +71,18 @@ function drush_sql_sync_validate($source, $destination) {
  * A command callback.
  */
 function drush_sql_sync($source, $destination) {
+  // Get destination info for confirmation prompt.
+  $source_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($source), 'source-');
+  $destination_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($destination), 'target-');
+
+  $source_is_local = !array_key_exists('remote-host', $source_settings) || drush_is_local_host($source_settings);
+  $destination_is_local = !array_key_exists('remote-host', $destination_settings) || drush_is_local_host($destination_settings);
+
   $backend_options = array();
   $global_options = drush_redispatch_get_options() + array(
      'strict' => 0,
   );
+
   if (drush_get_context('DRUSH_SIMULATE')) {
     $backend_options['backend-simulate'] = TRUE;
   }
@@ -105,11 +115,15 @@ function drush_sql_sync($source, $destination) {
   else {
     $source_dump_path = drush_get_option('source-dump');
   }
-
+  $do_rsync = !drush_get_option('no-sync');
   // Determine path/to/dump on destination.
   if (drush_get_option('target-dump')) {
     $destination_dump_path = drush_get_option('target-dump');
     $rsync_options['yes'] = TRUE;  // @temporary: See https://github.com/drush-ops/drush/pull/555
+  }
+  elseif ($source_is_local && $destination_is_local) {
+    $destination_dump_path = $source_dump_path;
+    $do_rsync = false;
   }
   else {
     $tmp = '/tmp'; // Our fallback plan.
@@ -121,8 +135,7 @@ function drush_sql_sync($source, $destination) {
     $destination_dump_path = $tmp . '/' . basename($source_dump_path);
     $rsync_options['yes'] = TRUE;  // No need to prompt as destination is a tmp file.
   }
-
-  if (!drush_get_option('no-sync')) {
+  if ($do_rsync) {
     if (!drush_get_option('no-dump')) {
       // Cleanup if this command created the dump file.
       $rsync_options['remove-source-files'] = TRUE;
