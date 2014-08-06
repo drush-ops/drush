@@ -1401,13 +1401,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
         $cid = drush_cid_install_profile();
         if ($cached = drush_cache_get($cid)) {
           $profile = $cached->data;
-          $path = "profiles/$profile/modules";
-          if (file_exists($path)) {
-            $searchpath[] = $path;
-          }
-          elseif (file_exists('sites/all/' . $path)) {
-            $searchpath[] = 'sites/all/' . $path;
-          }
+          $searchpath[] = "profiles/$profile/modules";
         }
         else {
           // If install_profile is not available, scan all profiles.
