@@ -32,23 +32,25 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
         if (drush_drupal_major_version() >=8) {
           $searchpath[] = 'modules';
         }
-      }
 
-      $cid = drush_cid_install_profile();
-      if ($cached = drush_cache_get($cid)) {
-        $profile = $cached->data;
-        $path = "profiles/$profile/modules";
-        if (file_exists($path)) {
-          $searchpath[] = $path;
+        // Adding commandfiles located within /profiles. Try to limit to one profile for speed. Note
+        // that Drupal allows enabling modules from a non-active profile so this logic is kinda dodgy.
+        $cid = drush_cid_install_profile();
+        if ($cached = drush_cache_get($cid)) {
+          $profile = $cached->data;
+          $path = "profiles/$profile/modules";
+          if (file_exists($path)) {
+            $searchpath[] = $path;
+          }
+          elseif (file_exists('sites/all/' . $path)) {
+            $searchpath[] = 'sites/all/' . $path;
+          }
         }
-        elseif (file_exists('sites/all/' . $path)) {
-          $searchpath[] = 'sites/all/' . $path;
+        else {
+          // If install_profile is not available, scan all profiles.
+          $searchpath[] = "profiles";
+          $searchpath[] = "sites/all/profiles";
         }
-      }
-      else {
-        // If install_profile is not available, scan all profiles.
-        $searchpath[] = "profiles";
-        $searchpath[] = "sites/all/profiles";
       }
 
       // TODO: Treat themes like modules and stop unconditionally searching here.
