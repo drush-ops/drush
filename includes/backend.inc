@@ -749,6 +749,9 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
       list($post_options, $commandline_options, $drush_global_options) = _drush_backend_classify_options($site_record, $command_options, $backend_options);
       $site_record_to_dispatch = '';
     }
+    if (array_key_exists('backend-simulate', $backend_options)) {
+      $commandline_options['simulate'] = TRUE;
+    }
     $site_record += array('path-aliases' => array());
     $site_record['path-aliases'] += array(
       '%drush-script' => NULL,
@@ -977,7 +980,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
  *   backend invoke results from each concurrent command.
  */
 function _drush_backend_invoke($cmds, $common_backend_options = array(), $context = NULL) {
-  if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('override-simulated', $common_backend_options)) {
+  if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('override-simulated', $common_backend_options) && !array_key_exists('backend-simulate', $common_backend_options)) {
     foreach ($cmds as $cmd) {
       drush_print(dt('Simulating backend invoke: !cmd', array('!cmd' => $cmd['cmd'])));
     }

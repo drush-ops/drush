@@ -268,18 +268,10 @@ function sql_sql_sync_complete() {
 }
 
 /**
- * Check whether further bootstrap is needed. If so, do it.
+ * Safely bootstrap Drupal to the point where we can
+ * access the database configuration.
  */
-function drush_sql_bootstrap_further() {
-  if (!drush_get_option(array('db-url', 'db-spec'))) {
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-  }
-}
-
-/**
- * Command callback. Displays the Drupal site's database connection string.
- */
-function drush_sql_conf() {
+function drush_sql_bootstrap_database_configuration() {
   // Under Drupal 7, if the database is configured but empty, then
   // DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION will throw an exception.
   // If this happens, we'll just catch it and continue.
@@ -289,7 +281,22 @@ function drush_sql_conf() {
   }
   catch (Exception $e) {
   }
+}
 
+/**
+ * Check whether further bootstrap is needed. If so, do it.
+ */
+function drush_sql_bootstrap_further() {
+  if (!drush_get_option(array('db-url', 'db-spec'))) {
+    drush_sql_bootstrap_database_configuration();
+  }
+}
+
+/**
+ * Command callback. Displays the Drupal site's database connection string.
+ */
+function drush_sql_conf() {
+  drush_sql_bootstrap_database_configuration();
   if (drush_get_option('all')) {
     $sqlVersion = drush_sql_get_version();
     return $sqlVersion->getAll();
@@ -481,12 +488,22 @@ function drush_sql_query($query = NULL) {
   if (drush_get_option('db-prefix')) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
   }
-  $sql = drush_sql_get_class(drush_get_option('db-spec'));
-  $result = $sql->query($query, $filename, FALSE, drush_get_option('result-file'));
-  if (!$result) {
-    return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    if ($query) {
+      drush_print(dt('Simulating sql-query: !q', array('!q' => $query)));
+    }
+    else {
+      drush_print(dt('Simulating sql-import from !f', array('!f' => drush_get_option('file'))));
+    }
   }
-  drush_print(implode("\n", drush_shell_exec_output()));
+  else {
+    $sql = drush_sql_get_class(drush_get_option('db-spec'));
+    $result = $sql->query($query, $filename, FALSE, drush_get_option('result-file'));
+    if (!$result) {
+      return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
+    }
+    drush_print(implode("\n", drush_shell_exec_output()));
+  }
   return TRUE;
 }
 

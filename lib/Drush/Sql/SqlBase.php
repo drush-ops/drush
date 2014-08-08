@@ -181,7 +181,7 @@ class SqlBase {
     // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
     // but the sql query itself is stored in a temp file and not displayed.
     // We show the query when --debug is used and this function created the temp file.
-    if (drush_get_context('DRUSH_DEBUG') && empty($input_file_original)) {
+    if ((drush_get_context('DRUSH_DEBUG') || drush_get_context('DRUSH_SIMULATE')) && empty($input_file_original)) {
       drush_log('sql-query: ' . $query, 'status');
     }
 
