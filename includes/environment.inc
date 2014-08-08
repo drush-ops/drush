@@ -466,7 +466,7 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
     }
     // We will also add in the php options from --php-options
     $prefix = drush_escapeshellarg($php, $os);
-    $php_options = drush_get_option('php-options','');
+    $php_options = implode(' ', drush_get_context_options('php-options'));
     if (!empty($php_options)) {
       $prefix .= ' ' . $php_options;
       $additional_options .= ' --php-options=' . drush_escapeshellarg($php_options, $os);
