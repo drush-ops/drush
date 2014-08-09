@@ -51,11 +51,11 @@ function drush_sql_sync_validate($source, $destination) {
   }
 
   if (drush_get_option('no-dump') && !drush_get_option('source-dump')) {
-    return drush_set_error(DRUSH_SOURCE_DUMP_MISSING, dt('The --source-dump option must be supplied when --no-dump is specified.'));
+    return drush_set_error('DRUSH_SOURCE_DUMP_MISSING', dt('The --source-dump option must be supplied when --no-dump is specified.'));
   }
 
   if (drush_get_option('no-sync') && !drush_get_option('target-dump')) {
-    return drush_set_error(DRUSH_TARGET_DUMP_MISSING, dt('The --target-dump option must be supplied when --no-sync is specified.'));
+    return drush_set_error('DRUSH_TARGET_DUMP_MISSING', dt('The --target-dump option must be supplied when --no-sync is specified.'));
   }
 
   if (!drush_get_context('DRUSH_SIMULATE')) {
@@ -92,7 +92,7 @@ function drush_sql_sync($source, $destination) {
     drush_log(dt('Starting to create database on Destination.'), 'ok');
     $return = drush_invoke_process($destination, 'sql-create', array(), $global_options, $backend_options);
     if ($return['error_status']) {
-      return drush_set_error('sql-create failed.');
+      return drush_set_error('DRUSH_SQL_CREATE_FAILED', dt('sql-create failed.'));
     }
   }
 
@@ -106,10 +106,13 @@ function drush_sql_sync($source, $destination) {
     drush_log(dt('Starting to dump database on Source.'), 'ok');
     $return = drush_invoke_process($source, 'sql-dump', array(), $options, $backend_options);
     if ($return['error_status']) {
-      return drush_set_error('sql-dump failed.');
+      return drush_set_error('DRUSH_SQL_DUMP_FAILED', dt('sql-dump failed.'));
     }
     else {
       $source_dump_path = $return['object'];
+      if (!is_string($source_dump_path)) {
+        return drush_set_error('DRUSH_SQL_DUMP_FILE_NOT_REPORTED', dt('The Drush sql-dump command did not report the path to the dump file produced.  Try upgrading the version of Drush you are using on the source machine.'));
+      }
     }
   }
   else {
@@ -156,7 +159,7 @@ function drush_sql_sync($source, $destination) {
     $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path"), $rsync_options);
     drush_log(dt('Copying dump file from Source to Destination.'), 'ok');
     if ($return['error_status']) {
-      return drush_set_error('core-rsync failed.');
+      return drush_set_error('DRUSH_RSYNC_FAILED', dt('core-rsync failed.'));
     }
   }
 
@@ -178,7 +181,7 @@ function drush_sql_sync($source, $destination) {
     drush_log(dt('Starting to sanitize target database on Destination.'), 'ok');
     $return = drush_invoke_process($destination, 'sql-sanitize', array(), $options, $backend_options);
     if ($return['error_status']) {
-      return drush_set_error('sql-sanitize failed.');
+      return drush_set_error('DRUSH_SQL_SANITIZE_FAILED', dt('sql-sanitize failed.'));
     }
   }
 }
