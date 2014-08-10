@@ -2,9 +2,11 @@
 
 namespace Drush\Sql;
 
+define('PSQL_SHOW_TABLES', "SELECT tablename FROM pg_tables WHERE schemaname='public';");
+
 class Sqlpgsql extends SqlBase {
 
-  public $query_extra = "--no-align --field-separator='\t' --pset footer=off";
+  public $query_extra = "--no-align --field-separator='\t' --pset tuples_only=on";
 
   public $query_file = "--file";
 
@@ -75,13 +77,13 @@ class Sqlpgsql extends SqlBase {
 
   public function query_format($query) {
     if (strtolower($query) == 'show tables;') {
-      return $this->listTables();
+      return PSQL_SHOW_TABLES;
     }
     return $query;
   }
 
   public function listTables() {
-    $return = $this->query("SELECT tablename FROM pg_tables WHERE schemaname='public';", NULL, TRUE);
+    $return = $this->query(PSQL_SHOW_TABLES, NULL, TRUE);
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {
       // Shift off the header of the column of data returned.
