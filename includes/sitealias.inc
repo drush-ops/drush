@@ -1705,7 +1705,7 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   $skip_list = drush_get_special_keys();
   // If 'php-options' are set in the alias, then we will force drush
   // to redispatch via the remote dispatch mechanism even if the target is localhost.
-  if (array_key_exists('php-options', $site_alias_settings) && !drush_get_context('DRUSH_BACKEND', FALSE)) {
+  if ((array_key_exists('php-options', $site_alias_settings) || array_key_exists('php', $site_alias_settings)) && !drush_get_context('DRUSH_BACKEND', FALSE)) {
     if (!array_key_exists('remote-host', $site_alias_settings)) {
       $site_alias_settings['remote-host'] = 'localhost';
     }
