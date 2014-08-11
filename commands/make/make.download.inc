@@ -113,7 +113,7 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
   if (drush_file_is_tarball($filename)) {
     $tmp_location = drush_tempdir();
 
-    if (!drush_tarball_extract($filename, $tmp_location)) {
+    if (!drush_tarball_extract($filename, $tmp_location, FALSE, '-o')) {
       return FALSE;
     }
 

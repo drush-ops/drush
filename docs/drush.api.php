@@ -252,7 +252,7 @@ function drush_hook_pre_pm_enable() {
     else {
       $path .= '/' . drupal_get_path('module', 'hook') . '/MyLibraryName.tgz';
     }
-    drush_download_file($url, $path) && drush_tarball_extract($path);
+    drush_download_file($url, $path) && drush_tarball_extract($path, FALSE, FALSE, '-o');
   }
 }
 
