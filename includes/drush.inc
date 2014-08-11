@@ -1085,7 +1085,7 @@ function drush_lib_fetch($url) {
   if (!$path) {
     return FALSE;
   }
-  return drush_tarball_extract($path);
+  return drush_tarball_extract($path, FALSE, FALSE, '-o');
 }
 
 /**
