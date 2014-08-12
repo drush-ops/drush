@@ -137,14 +137,27 @@ function drush_role_delete($rid) {
 }
 
 /**
- * Add a permission to the specified role.
+ * Add one or more permission(s) to the specified role.
+ *
+ * @param string $rid machine name for a role
+ * @param null|string $permission machine name for permission (may contain spaces)
+ *
+ * @return bool
  */
 function drush_role_add_perm($rid, $permission = NULL) {
-  $result = drush_role_perm('add', $rid, $permission);
-  if ($result !== FALSE) {
-    drush_log(dt('Added "!perm" to "!role"', array('!perm' => $permission, '!role' => $result->name)), 'success');
-    drush_drupal_cache_clear_all();
+  $perms = func_get_args();
+  array_shift($perms);
+  if (is_null($permission)) {
+    // Assume --module is used thus inject a FALSE
+    $perms = array(FALSE);
   }
+  foreach($perms as $perm) {
+    $result = drush_role_perm('add', $rid, $perm);
+    if ($result !== FALSE) {
+      drush_log(dt('Added "!perm" to "!role"', array('!perm' => $perm, '!role' => $result->name)), 'success');
+    }
+  }
+  drush_drupal_cache_clear_all();
   return $result;
 }
 
@@ -162,6 +175,14 @@ function drush_role_remove_perm($rid, $permission = NULL) {
 
 /**
  * Implement permission add / remove operations.
+ *
+ * @param string $action
+ * @param string $rid
+ * @param string|null $permission
+ *
+ * @return bool|object
+ *
+ * @see drush_set_error()
  */
 function drush_role_perm($action, $rid, $permission = NULL) {
   $role = drush_role_get_class($rid);
@@ -192,8 +213,6 @@ function drush_role_perm($action, $rid, $permission = NULL) {
       return drush_set_error(dt('Could not find the permission: !perm', array('!perm' => $permission)));
     }
   }
-
-  $role_perms = $role->getPerms();
 
   $result = $role->{$action}($permission);
   if ($result === FALSE) {
