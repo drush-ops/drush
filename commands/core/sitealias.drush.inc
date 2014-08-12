@@ -177,6 +177,8 @@ function _drush_sitealias_user_specified_list() {
  * specified.
  */
 function drush_sitealias_print() {
+  // Try to get the @self alias to be defined.
+  $phase = drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   $site_list = _drush_sitealias_user_specified_list();
   if ($site_list === FALSE) {
     return FALSE;
