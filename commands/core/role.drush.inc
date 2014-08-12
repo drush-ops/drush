@@ -13,6 +13,20 @@ function role_drush_help($section) {
 }
 
 /**
+ * Implements hook_drush_help_alter().
+ */
+function role_drush_help_alter(&$command) {
+  // Drupal 8+ has changed role names.
+  if (in_array($command['command'] , array('role-add-perm', 'role-add-perm', 'role-list')) && drush_drupal_major_version() >= 8) {
+    foreach ($command['examples'] as $key => $val) {
+      $newkey = str_replace(array('anonymous user', 'authenticated user'), array('anonymous', 'authenticated'), $key);
+      $command['examples'][$newkey] = $val;
+      unset($command['examples'][$key]);
+    }
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  */
 function role_drush_command() {
@@ -40,10 +54,9 @@ function role_drush_command() {
   );
   $items['role-add-perm'] = array(
     'description' => 'Grant a specified permission to a role.',
-    // @todo Role names changed in D8. Alter them by version.
     'examples' => array(
-      "drush role-add-perm 'anonymous user' 'post comments'" => 'Allow anonymous users to put their own advertisements on your site.',
-      "drush role-add-perm 'authenticated user' --module=node" => 'Select a permission from "node" permissions to add to authenticated users.'
+      "drush role-add-perm 'anonymous user' 'post comments'" => 'Allow anon users to put their own advertisements on your site.',
+      "drush role-add-perm 'authenticated user' --module=node" => 'Select a permission from "node" permissions to add to logged in users.'
     ),
     'arguments' => array(
       'role' => 'The role to modify.  Required.',
@@ -58,9 +71,8 @@ function role_drush_command() {
 
   $items['role-remove-perm'] = array(
     'description' => 'Remove a specified permission from a role.',
-    // @todo Role names changed in D8
     'examples' => array(
-      "drush role-remove-perm 'anonymous user' 'access content'" => 'Hide content from anonymous users.',
+      "drush role-remove-perm 'anonymous user' 'access content'" => 'Hide content from anon users.',
     ),
     'arguments' => array(
       'role' => 'The role to modify.',
@@ -75,10 +87,9 @@ function role_drush_command() {
 
   $items['role-list'] = array(
     'description' => 'Display a list of all roles defined on the system.  If a role name is provided as an argument, then all of the permissions of that role will be listed.  If a permission name is provided as an option, then all of the roles that have been granted that permission will be listed.',
-    // @todo Role names changed in D8. Alter them by version.
     'examples' => array(
       "drush role-list --filter='administer nodes'" => 'Display a list of roles that have the administer nodes permission assigned.',
-      "drush role-list 'anonymous user'" => 'Display all of the permissions assigned to the anonymous user role.'
+      "drush role-list 'anonymous user'" => 'Display all of the permissions assigned to the anon user role.'
     ),
     'arguments' => array(
       'role' => 'The role to list.  Optional; if specified, lists all permissions assigned to that role.  If no role is specified, lists all of the roles available on the system.',
