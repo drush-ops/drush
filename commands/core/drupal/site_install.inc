@@ -18,7 +18,7 @@ function drush_core_site_install_version($profile, array $additional_form_option
   $settings = array(
     'parameters' => array(
       'profile' => $profile,
-      'locale' => drush_get_option('locale', 'en'),
+      (drush_drupal_major_version() === 7 ? 'locale' : 'langcode') => drush_get_option('locale', 'en'),
     ),
     'forms' => array(
       'install_settings_form' => array(
