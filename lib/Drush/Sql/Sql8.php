@@ -17,6 +17,6 @@ class Sql8 extends Sql7 {
   }
 
   public function getAll() {
-    return Database::getConnectionInfo();
+    return Database::getAllConnectionInfo();
   }
 }
