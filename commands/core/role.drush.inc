@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Role\RoleBase;
+
 /**
  * Implementation of hook_drush_help().
  */
@@ -192,11 +194,11 @@ function drush_role_remove_perm($rid, $permissions = NULL) {
 /**
  * Implement permission add / remove operations.
  *
- * @param string $action
+ * @param string $action 'add' | 'remove'
  * @param string $rid
  * @param string|null $permission
  *
- * @return bool|object
+ * @return bool|RoleBase
  *
  * @see drush_set_error()
  */
@@ -238,8 +240,12 @@ function drush_role_perm($action, $rid, $permission = NULL) {
 }
 
 /**
- * Wrapper for drush_get_class; instantiates an instance of the version-specific
- * DrushRole class suitable for the current version of Drupal.
+ * Get core version specific Role handler class.
+ *
+ * @param string $role_name
+ * @return RoleBase
+ *
+ * @see drush_get_class().
  */
 function drush_role_get_class($role_name = DRUPAL_ANONYMOUS_RID) {
   return drush_get_class('Drush\Role\Role', func_get_args());
