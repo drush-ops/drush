@@ -27,7 +27,8 @@ class SqlDumpTest extends CommandUnishTestCase {
 
     $options = array(
       'result-file' => $full_dump_file_path,
-      'skip-tables-list' => 'histo*',
+      // Last 5 entries are for D8+
+      'skip-tables-list' => 'hist*,cache*,router,config*,watchdog,key_valu*',
       'yes' => NULL,
     );
     $site_selection_options = array(
@@ -60,14 +61,14 @@ class SqlDumpTest extends CommandUnishTestCase {
     $aliasFile = $aliasPath . '/bar.aliases.drushrc.php';
     $aliasContents = <<<EOD
   <?php
-  // Writtne by Unish. This file is safe to delete.
+  // Written by Unish. This file is safe to delete.
   \$aliases['test'] = array(
     'root' => '$root',
     'uri' => '$uri',
     'site' => 'stage',
     'command-specific' => array(
       'sql-dump' => array(
-        'skip-tables-list' => 'histo*',
+        'skip-tables-list' => 'hist*,cache*,router,config*,watchdog,key_valu*',
       ),
     ),
   );

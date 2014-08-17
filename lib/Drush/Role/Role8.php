@@ -2,7 +2,6 @@
 
 namespace Drush\Role;
 
-// For D8+.
 use Drupal\user\Entity\Role;
 
 class Role8 extends Role7 {

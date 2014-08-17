@@ -25,7 +25,7 @@ class pmUpdateCode extends CommandUnishTestCase {
    */
   public function setUp() {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      $core = '8.0-alpha6';
+      $core = '8.0-alpha12';
       $modules_str = 'instagram_block-8.x-1.0,honeypot-8.x-1.14-beta5';
       $this->modules = array('block', 'instagram_block', 'honeypot');
     }
@@ -48,7 +48,7 @@ class pmUpdateCode extends CommandUnishTestCase {
       'quiet' => NULL,
       'cache' => NULL,
       'skip' => NULL, // No FirePHP
-      'strict' => 0, // invoke from script: do not verify options
+      'strict' => 0,
     );
 
     $this->drush('pm-download', array($modules_str), $options);

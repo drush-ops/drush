@@ -326,7 +326,7 @@ function drush_queue_get_queues() {
   static $queues;
   if (!isset($queues)) {
     $queues = \Drupal::moduleHandler()->invokeAll('queue_info');
-    drupal_alter('queue_info', $queues);
+    \Drupal::moduleHandler()->alter('queue_info', $queues);
   }
   return $queues;
 }
@@ -382,5 +382,12 @@ function _drush_extension_get_type($info) {
  */
 function _drush_extension_get_path($info) {
   return $info->getPath();
+}
+
+/*
+ * Wrapper for CSRF token generation.
+ */
+function drush_get_token($value = NULL) {
+  return \Drupal::csrfToken()->get($value);
 }
 

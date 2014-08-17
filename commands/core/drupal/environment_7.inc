@@ -371,3 +371,10 @@ function _drush_extension_get_type($info) {
 function _drush_extension_get_path($info) {
   return dirname($info->filename);
 }
+
+/*
+ * Wrapper for CSRF token generation.
+ */
+function drush_get_token($value = NULL) {
+  return drupal_get_token($value);
+}

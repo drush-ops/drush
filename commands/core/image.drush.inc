@@ -69,7 +69,8 @@ function image_image_flush_complete() {
 }
 
 function drush_image_flush_pre_validate($style_name = NULL) {
-  if (!empty($style_name) && !$style = image_style_load($style_name)) {
+  drush_include_engine('drupal', 'image', drush_drupal_major_version());
+  if (!empty($style_name) && !$style = drush_image_style_load($style_name)) {
     return drush_set_error(dt('Image style !style not recognized.', array('!style' => $style_name)));
   }
 }
@@ -102,7 +103,8 @@ function drush_image_flush($style_name = NULL) {
 }
 
 function drush_image_derive_validate($style_name, $source) {
-  if (!$style = image_style_load($style_name)) {
+  drush_include_engine('drupal', 'image', drush_drupal_major_version());
+  if (!$style = drush_image_style_load($style_name)) {
     return drush_set_error(dt('Image style !style not recognized.', array('!style' => $style_name)));
   }
 

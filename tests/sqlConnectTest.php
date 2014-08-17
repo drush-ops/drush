@@ -42,9 +42,9 @@ class SqlConnectCase extends CommandUnishTestCase {
     }
 
     // Issue a query and check the result to verify the connection.
-    $this->execute($output . ' ' . $shell_options . ' "select name from users where uid = 1;"');
+    $this->execute($output . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"');
     $output = $this->getOutput();
-    $this->assertContains('admin', $output);
+    $this->assertContains('1', $output);
 
   }
 }

@@ -55,10 +55,12 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     $themeToCheck = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'stark' : (UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'bartik' : 'garland');
     $this->assertTrue(in_array($themeToCheck, $list), 'Themes are in the pm-list');
 
-    $path = UNISH_DRUPAL_MAJOR_VERSION >= 7 ? 'devel/settings' : 'admin/settings/devel';
-    $this->drush('sql-query', array("SELECT path FROM menu_router WHERE path = '$path';"), array('root' => $this->webroot(), 'uri' => key($sites)));
-    $list = $this->getOutputAsList();
-    $this->assertTrue(in_array($path, $list), 'Cache was cleared after modules were enabled');
+    if (UNISH_DRUPAL_MAJOR_VERSION <= 7) {
+      $path = UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'devel/settings' : 'admin/settings/devel';
+      $this->drush('sql-query', array("SELECT path FROM menu_router WHERE path = '$path';"), array('root' => $this->webroot(), 'uri' => key($sites)));
+      $list = $this->getOutputAsList();
+      $this->assertTrue(in_array($path, $list), 'Cache was cleared after modules were enabled');
+    }
 
     $this->drush('pm-list', array(), $options + array('package' => 'Core'));
     $list = $this->getOutputAsList();
