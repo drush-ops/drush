@@ -601,13 +601,14 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
   if ((array_key_exists('integrate', $backend_options)) && ($backend_options['integrate'] === FALSE) && (!array_key_exists('output', $backend_options))) {
     $backend_options['output'] = FALSE;
   }
+  $has_site_specification = array_key_exists('root', $site_record) || array_key_exists('uri', $site_record);
   $result = $backend_options + array(
      'method' => 'GET',
      'output' => TRUE,
      'log' => TRUE,
      'integrate' => TRUE,
      'backend' => TRUE,
-     'dispatch-using-alias' => FALSE,
+     'dispatch-using-alias' => !$has_site_specification,
   );
   // Convert '#integrate' et. al. into backend options
   foreach ($command_options as $key => $value) {
