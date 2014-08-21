@@ -93,7 +93,7 @@ function drush_include($path, $name, $version = NULL, $extension = 'inc') {
  *  }
  */
 
-function drush_get_class($class_name, $constructor_args, $variations = array()) {
+function drush_get_class($class_name, $constructor_args = array(), $variations = array()) {
   if (empty($variations)) {
     $variations[] = drush_drupal_major_version();
   }
@@ -1974,4 +1974,8 @@ function drush_complete_cache_clear($type = NULL, $command = NULL) {
   }
   // No type or command, so clear the entire complete cache.
   drush_cache_clear_all('*', 'complete', TRUE);
+}
+
+function drush_map($object, $method) {
+  return $object->$method();
 }
