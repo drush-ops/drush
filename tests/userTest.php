@@ -60,15 +60,23 @@ class userCase extends CommandUnishTestCase {
 
   function testUserPassword() {
     $newpass = 'newpass';
+    $name = self::NAME;
     $this->drush('user-password', array(self::NAME), $this->options() + array('password' => $newpass));
     // user_authenticate() is more complex in D6 so skip it.
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {
-      $name = self::NAME;
-      $eval = "return user_authenticate('$name', '$newpass')";
-      $this->drush('php-eval', array($eval), $this->options());
-      $output = $this->getOutput();
-      $this->assertEquals("'2'", $output, 'User can login with new password.');
+    switch (UNISH_DRUPAL_MAJOR_VERSION) {
+      case 6:
+        $this->markTestSkipped('Drupal 6 authentication too complex for testing.');
+        break;
+      case 7:
+        $eval = "return user_authenticate('$name', '$newpass')";
+        break;
+      case 8:
+        $eval = "return \\Drupal::service('user.auth')->authenticate('$name', '$newpass');";
+        break;
     }
+    $this->drush('php-eval', array($eval), $this->options());
+    $output = $this->getOutput();
+    $this->assertEquals("'2'", $output, 'User can login with new password.');
   }
 
    function testUserLogin() {

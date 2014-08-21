@@ -159,6 +159,7 @@ function drush_drupal_login($drush_user) {
   else {
     $user = user_load(is_numeric($drush_user) ? array('uid' => $drush_user) : array('name' => $drush_user));
   }
+
   $name = drush_get_user_name($user);
   $uid = drush_get_user_id($user);
 
