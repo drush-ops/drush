@@ -259,7 +259,7 @@ function drush_set_config_special_contexts(&$options) {
             }
           }
           else {
-            $cache = array_unique(array_merge($cache, $value));
+            $cache = array_unique(array_merge((array)$cache, (array)$value));
           }
           // Once we have moved the option to its special context, we
           // can remove it from its option context -- unless 'propagate-cli-value'
