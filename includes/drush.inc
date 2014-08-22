@@ -1975,7 +1975,3 @@ function drush_complete_cache_clear($type = NULL, $command = NULL) {
   // No type or command, so clear the entire complete cache.
   drush_cache_clear_all('*', 'complete', TRUE);
 }
-
-function drush_map($object, $method) {
-  return $object->$method();
-}

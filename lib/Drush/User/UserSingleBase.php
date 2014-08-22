@@ -77,7 +77,6 @@ abstract class UserSingleBase {
   }
 
   public function passResetUrl($path = '') {
-    $links = array();
     $options = array();
     if ($path) {
       $options['query']['destination'] = $path;
