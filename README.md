@@ -206,7 +206,7 @@ If you want to use php 5.4.x, add this line instead:
 
     export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.4/bin:$PATH"
 
-If you have MAMP v.1.84 or lower, this configuration will work for both version
+If you have MAMP v.1.84 or lower, this configuration will work for both versions
 of PHP:
 
     export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5/bin:$PATH"
