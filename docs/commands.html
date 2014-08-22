@@ -55,10 +55,6 @@ loading.  If drush only bootstraps to DRUSH_BOOTSTRAP_SITE,
 though, then all drush commandfiles will be considered, whether the
 module is enabled or not.  See `drush topic docs-bootstrap` for
 more information on bootstrapping.
-<p>
-Additionally, drush commandfiles may optionally define a function
-COMMANDFILE_drush_load() in the file COMMANDFILE.drush.load.inc.
-If this function returns FALSE, then the commandfile will not be loaded.
 
 <h2>Implement COMMANDFILE_drush_command()</h2>
 <p>
