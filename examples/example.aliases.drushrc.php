@@ -10,10 +10,12 @@
  * A canonical alias named "dev" that points to a local
  * Drupal site named "dev.mydrupalsite.com" looks like this:
  *
- *   $aliases['dev'] = array(
- *     'root' => '/path/to/drupal',
- *     'uri' => 'dev.mydrupalsite.com',
- *   );
+ * @code
+ * $aliases['dev'] = array(
+ *   'root' => '/path/to/drupal',
+ *   'uri' => 'dev.mydrupalsite.com',
+ * );
+ * @endcode
  *
  * With this alias definition, then the following commands
  * are equivalent:
@@ -109,6 +111,38 @@
  * in the output, include the options --with-db and --show-passwords:
  *
  *   $ drush site-alias @self --with-db --show-passwords
+ *
+ * Drush also supports *remote* site aliases.  When a site alias is
+ * defined for a remote site, Drush will use the ssh command to run
+ * the requested command on the remote machine.  The simplest remote
+ * alias looks like this:
+ *
+ * @code
+ * $aliases['live'] = array(
+ *   'remote-host' => 'server.domain.com',
+ *   'remote-user' => 'www-admin',
+ * );
+ * @endcode
+ *
+ * The form above requires that Drush be installed on the remote machine,
+ * and that there also be an alias of the same name defined on that
+ * machine.  The remote alias should define the 'root' and 'uri' elements,
+ * as shown in the initial example at the top of this file.
+ *
+ * If you do not wish to maintain site aliases on the remote machine,
+ * then you may define an alias that contains all of the elements
+ * 'remote-host', 'remote-user', 'root' and 'uri'.  If you do this, then
+ * Drush will make the remote call using the --root and --uri options
+ * to identify the site, so no site alias is required on the remote server.
+ *
+ * @code
+ * $aliases['live'] = array(
+ *   'remote-host' => 'server.domain.com',
+ *   'remote-user' => 'www-admin',
+ *   'root' => '/other/path/to/drupal',
+ *   'uri' => 'mydrupalsite.com',
+ * );
+ * @endcode
  *
  * If you would like to see all of the Drupal sites at a specified
  * root directory, use the built-in alias "@sites":
