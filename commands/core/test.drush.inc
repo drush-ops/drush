@@ -50,6 +50,7 @@ function test_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'table',
+      'fields-default' => array('group', 'class'),
       'field-labels' => array(
         'group' => 'Group',
         'class' => 'Class',
