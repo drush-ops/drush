@@ -93,7 +93,7 @@ function drush_include($path, $name, $version = NULL, $extension = 'inc') {
  *  }
  */
 
-function drush_get_class($class_name, $constructor_args, $variations = array()) {
+function drush_get_class($class_name, $constructor_args = array(), $variations = array()) {
   if (empty($variations)) {
     $variations[] = drush_drupal_major_version();
   }
