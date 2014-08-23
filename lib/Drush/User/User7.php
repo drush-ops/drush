@@ -11,9 +11,4 @@ class User7 extends UserVersion {
     $account = user_save(NULL, $properties, NULL);
     return $account;
   }
-
-  public function id($account) {
-    return $account->uid;
-  }
-
 }

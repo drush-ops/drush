@@ -20,6 +20,11 @@ class UserList {
     }
   }
 
+  /*
+   * Check common options for specifying users. If valid, return the accounts.
+   *
+   * @return \Drush\User\UserSingleBase[]
+   */
   function getFromOptions() {
     $accounts = array();
     $userversion = drush_user_get_class();
@@ -65,11 +70,14 @@ class UserList {
    * Given a comma-separated list of inputs, return accounts
    * for users that match by uid,name or email address.
    *
+   * @param string $inputs
+   *   A comma delimited string (or array) of arguments, specifying user account(s).
+   *
    * @throws UserListException
    *   If any input is unmatched, an exception is thrown.
    *
-   * @return array
-   *   An associative array of $account objects, keyed by user id.
+   * @return \Drush\User\UserSingleBase[]
+   *   An associative array of UserSingleBase objects, keyed by user id.
    */
   function getFromArguments($inputs) {
     $accounts = array();
@@ -98,6 +106,9 @@ class UserList {
     return $accounts;
   }
 
+  /*
+   * A comma delimited list of names built from $this->accounts.
+   */
   public function names() {
     $names = array();
     foreach ($this->accounts as $account) {
