@@ -50,6 +50,7 @@ function test_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'table',
+      'fields-default' => array('group', 'class'),
       'field-labels' => array(
         'group' => 'Group',
         'class' => 'Class',
@@ -198,10 +199,24 @@ function simpletest_drush_run_test($class) {
     $test->run();
   }
 
-  $info = $test->getInfo();
+  if (drush_drupal_major_version() >= 8) {
+    $info = \Drupal\simpletest\TestDiscovery::getTestInfo(new \ReflectionClass($test));
+  } else {
+    $info = $test->getInfo();
+  }
   $status = ((isset($test->results['#fail']) && $test->results['#fail'] > 0)
           || (isset($test->results['#exception']) && $test->results['#exception'] > 0) ? 'error' : 'ok');
-  drush_log($info['name'] . ' ' . _simpletest_format_summary_line($test->results), $status);
+  if (drush_drupal_major_version() >= 8) {
+    $results = array(
+      'pass' => $test->results['#pass'],
+      'fail' => $test->results['#fail'],
+      'exception' => $test->results['#exception'],
+      'debug' => $test->results['#debug']
+    );
+  } else {
+    $results = $test->results;
+  }
+  drush_log($info['name'] . ' ' . _simpletest_format_summary_line($results), $status);
 
   $test_suites = drush_test_get_results($test_id, $info);
   if ($dir = drush_get_option('xml')) {
