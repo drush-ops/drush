@@ -164,7 +164,6 @@ function drush_load_config_file($context, $config_list) {
         $options = array_merge(drush_get_context($context), $options);
         $options['config-file'] = realpath($config);
 
-        //$options['site-aliases'] = array_merge(isset($aliases) ? $aliases : array(), isset($options['site-aliases']) ? $options['site-aliases'] : array());
         unset($options['site-aliases']);
         $options['command-specific'] = array_merge(isset($command_specific) ? $command_specific : array(), isset($options['command-specific']) ? $options['command-specific'] : array());
 
@@ -384,12 +383,11 @@ function drush_set_command($command) {
 
 /**
  * Return the command being executed.
- *
- *
  */
 function drush_get_command() {
   return drush_get_context('command');
 }
+
 /**
  * Get the value for an option.
  *
@@ -649,7 +647,6 @@ function drush_save_config($context) {
     }
     else {
       fwrite($fp, "<?php\n");
-      $timestamp = mktime();
       foreach ($cache as $key => $value) {
         $line = "\n\$options['$key'] = ". var_export($value, TRUE) .';';
         fwrite($fp, $line);
