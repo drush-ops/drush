@@ -673,7 +673,7 @@ function drush_sql_get_version() {
  *
  * The function below has a lot of logic to process user preferences and
  * generate the correct SQL regardless of whether Postgres, Mysql,
- * Drupal 6 or Drupal 7 is in use.  A simpler sanitize function that
+ * Drupal 6/7/8 is in use.  A simpler sanitize function that
  * always used default values and only worked with Drupal 6 + mysql
  * appears in the drush.api.php.  @see hook_drush_sql_sync_sanitize().
  */
@@ -705,8 +705,8 @@ function sql_drush_sql_sync_sanitize($site) {
       $pw_op = "'$hash'";
     }
     else {
-      // Mimic Drupal's /scripts/password-hash.sh
-      drush_bootstrap(DRUPAL_BOOTSTRAP_CODE);
+      // D8+. Mimic Drupal's /scripts/password-hash.sh
+      drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
       $password_hasher = \Drupal::service('password');
       $hash = $password_hasher->hash($newpassword);
       $pw_op = "'$hash'";
@@ -741,8 +741,9 @@ function sql_drush_sql_sync_sanitize($site) {
   }
 
   if (!empty($user_table_updates)) {
-    $sanitize_query = "UPDATE {$prefix}users SET " . implode(', ', $user_table_updates) . " WHERE uid > 0;";
-    drush_sql_register_post_sync_op('user-email', dt('Reset !message in user table', array('!message' => implode(' and ', $message_list))), $sanitize_query);
+    $table = $major_version >= 8 ? 'users_field_data' : 'users';
+    $sanitize_query = "UPDATE {$prefix}{$table} SET " . implode(', ', $user_table_updates) . " WHERE uid > 0;";
+    drush_sql_register_post_sync_op('user-email', dt('Reset !message in !table table', array('!message' => implode(' and ', $message_list), '!table' => $table)), $sanitize_query);
   }
 
   // Seems quite portable (SQLite?) - http://en.wikipedia.org/wiki/Truncate_(SQL)
