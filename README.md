@@ -369,12 +369,6 @@ Related Options:
   -v, --verbose                 Display verbose output.
   ```
 
-Very intensive scripts can exhaust your available PHP memory. One remedy is to
-just restart automatically using bash. For example:
-
-    while true; do drush search-index; sleep 5; done
-
-
 DRUSH CONFIGURATION FILES
 -----------
 
