@@ -302,6 +302,14 @@ magic_quotes_runtime = Off
 magic_quotes_sybase = Off
 ```
 
+Very intensive scripts can exhaust your available PHP memory. One remedy is to
+just restart automatically using bash. For example:
+
+    while true; do drush search-index; sleep 5; done
+
+Alternatively, you can use [Batch API](https://www.drupal.org/node/873132) within
+your script. Drush will run each batch in a new process.
+
 CONFIGURING DRUSH FOR PHP 5.5
 -----------------------------
 
@@ -368,12 +376,6 @@ Related Options:
   -l <uri> , --uri=<uri>        URI of the Drupal site to use
   -v, --verbose                 Display verbose output.
   ```
-
-Very intensive scripts can exhaust your available PHP memory. One remedy is to
-just restart automatically using bash. For example:
-
-    while true; do drush search-index; sleep 5; done
-
 
 DRUSH CONFIGURATION FILES
 -----------
