@@ -35,9 +35,9 @@ function pm_update_filter(&$project) {
 }
 
 // @todo This moved to state() in D8.
-//function pm_update_last_check() {
-//  return variable_get('update_last_check', 0);
-//}
+function pm_update_last_check() {
+  return variable_get('update_last_check', 0);
+}
 
 /**
  * Command callback. Refresh update status information.
@@ -61,46 +61,46 @@ function _pm_get_update_info($projects) {
   // Force to invalidate some caches that are only cleared
   // when visiting update status report page. This allow to detect changes in
   // .info files.
-  update_storage_clear();
+  _update_cache_clear('update_project_data');
+  _update_cache_clear('update_project_projects');
 
   // From update_get_available(): Iterate all projects and create a fetch task
   // for those we have no information or is obsolete.
-//////  module_load_include('inc', 'update', 'update.compare');
-//////  $available = _update_get_cached_available_releases();
-//////  $update_projects = update_get_projects();
-//////  foreach ($update_projects as $key => $project) {
-//////    if (empty($available[$key])) {
-//////      update_create_fetch_task($project);
-//////      continue;
-//////    }
-//////    if ($project['info']['_info_file_ctime'] > $available[$key]['last_fetch']) {
-//////      $available[$key]['fetch_status'] = UPDATE_FETCH_PENDING;
-//////    }
-//////    if (empty($available[$key]['releases'])) {
-//////      $available[$key]['fetch_status'] = UPDATE_FETCH_PENDING;
-//////    }
-//////    if (!empty($available[$key]['fetch_status']) && $available[$key]['fetch_status'] == UPDATE_FETCH_PENDING) {
-//////      update_create_fetch_task($project);
-//////    }
-//////  }
-////
-////  // Set a batch to process all pending tasks.
-////  $batch = array(
-////    'operations' => array(
-////      array('update_fetch_data_batch', array()),
-////    ),
-////    'finished' => 'update_fetch_data_finished',
-////    'file' => drupal_get_path('module', 'update') . '/update.fetch.inc',
-////  );
-////  batch_set($batch);
-////  drush_backend_batch_process();
-//
-//  // Clear any error set by a failed update fetch task. This avoid rollbacks.
-//  drush_clear_error();
+  module_load_include('inc', 'update', 'update.compare');
+  $available = _update_get_cached_available_releases();
+  $update_projects = update_get_projects();
+  foreach ($update_projects as $key => $project) {
+    if (empty($available[$key])) {
+      update_create_fetch_task($project);
+      continue;
+    }
+    if ($project['info']['_info_file_ctime'] > $available[$key]['last_fetch']) {
+      $available[$key]['fetch_status'] = UPDATE_FETCH_PENDING;
+    }
+    if (empty($available[$key]['releases'])) {
+      $available[$key]['fetch_status'] = UPDATE_FETCH_PENDING;
+    }
+    if (!empty($available[$key]['fetch_status']) && $available[$key]['fetch_status'] == UPDATE_FETCH_PENDING) {
+      update_create_fetch_task($project);
+    }
+  }
+
+  // Set a batch to process all pending tasks.
+  $batch = array(
+    'operations' => array(
+      array('update_fetch_data_batch', array()),
+    ),
+    'finished' => 'update_fetch_data_finished',
+    'file' => drupal_get_path('module', 'update') . '/update.fetch.inc',
+  );
+  batch_set($batch);
+  drush_backend_batch_process();
+
+  // Clear any error set by a failed update fetch task. This avoid rollbacks.
+  drush_clear_error();
 
   // Calculate update status data.
-  $projects = \Drupal::service('update.manager')->getProjects();
-  $available = update_get_available(TRUE);
+  $available = _update_get_cached_available_releases();
   $data = update_calculate_project_data($available);
   foreach ($data as $project_name => $project) {
     // Discard custom projects.

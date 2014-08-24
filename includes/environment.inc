@@ -720,7 +720,7 @@ function drush_directory_cache($subdir = '') {
  * Get complete information for all available extensions (modules and themes).
  *
  * @return
- *   An array containing info for all available extensions.
+ *   An array containing info for all available extensions. In D8, these are Extension objects.
  */
 function drush_get_extensions($include_hidden = TRUE) {
   drush_include_engine('drupal', 'environment');
