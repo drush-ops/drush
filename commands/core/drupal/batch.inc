@@ -224,7 +224,9 @@ function _drush_batch_finished() {
       if (function_exists($batch_set['finished'])) {
         $queue = _batch_queue($batch_set);
         $operations = $queue->getAllItems();
-        $batch_set['finished']($batch_set['success'], $batch_set['results'], $operations, format_interval($batch_set['elapsed'] / 1000));
+        $elapsed = $batch_set['elapsed'] / 1000;
+        $elapsed = drush_drupal_major_version() >=8 ? Drupal::service('date.formatter')->formatInterval($elapsed) : format_interval($elapsed);
+        $batch_set['finished']($batch_set['success'], $batch_set['results'], $operations, $elapsed);
       }
     }
   }
