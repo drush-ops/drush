@@ -114,7 +114,7 @@ abstract class UserSingleBase {
     if ($path) {
       $options['query']['destination'] = $path;
     }
-    return url(user_pass_reset_url($this->account), $options);
+    return user_pass_reset_url($this->account, $options);
   }
 
   /**

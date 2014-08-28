@@ -562,6 +562,7 @@ function _drush_bootstrap_drupal_site_validate() {
 
   $_SERVER['SERVER_SOFTWARE'] = NULL;
   $_SERVER['HTTP_USER_AGENT'] = NULL;
+  $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
 
   $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
 

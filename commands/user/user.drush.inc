@@ -184,7 +184,7 @@ function user_drush_command() {
   $items['user-login'] = array(
     'description' => 'Display a one time login link for the given user account (defaults to uid 1).',
     'aliases' => array('uli'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
     'handle-remote-commands' => TRUE,
     'arguments' => array(
       'user' => 'An optional uid, user name, or email address for the user to log in as. Default is to log in as uid 1. The uid/name/mail options take priority if specified.',
