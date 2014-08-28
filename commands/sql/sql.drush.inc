@@ -1235,10 +1235,6 @@ function _drush_sql_get_credentials($db_spec = NULL) {
         $parameters['host'] = $db_spec['host'];
       }
 
-      if (!empty($db_spec['port'])) {
-        $parameters['port'] = $db_spec['port'];
-      }
-
       // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
       $parameters['user'] = $db_spec['username'];
 
@@ -1246,6 +1242,11 @@ function _drush_sql_get_credentials($db_spec = NULL) {
       if (isset($db_spec['password'])) {
         $parameters['password'] = $db_spec['password'];
       }
+
+      if (!empty($db_spec['port'])) {
+        $parameters['port'] = $db_spec['port'];
+      }
+      
       break;
 
     case 'pgsql':
