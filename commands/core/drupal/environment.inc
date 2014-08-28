@@ -203,7 +203,7 @@ function drush_module_enable($modules) {
  *   Array of module names
  */
 function drush_module_disable($modules) {
-  drush_set_error('DRUSH_MODULE_DISABLE', dt('Drupal 8 does not support disabling modules.'));
+  drush_set_error('DRUSH_MODULE_DISABLE', dt('Drupal 8 does not support disabling modules. Use pm-uninstall instead.'));
 }
 
 /**
