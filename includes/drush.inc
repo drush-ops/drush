@@ -735,7 +735,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
       drush_log(dt('!name retrieved from cache.', array('!name' => $cache_file)));
     }
     else {
-      if (_drush_download_file($url, $cache_file, TRUE)) {
+      if (drush_download_with_retries($url, '_drush_download_file', $url, $cache_file, TRUE)) {
         // Cache was set just by downloading file to right location.
       }
       elseif (file_exists($cache_file)) {
@@ -1973,4 +1973,57 @@ function drush_complete_cache_clear($type = NULL, $command = NULL) {
   }
   // No type or command, so clear the entire complete cache.
   drush_cache_clear_all('*', 'complete', TRUE);
+}
+
+/**
+ * Enables multiple attempts at downloading a file.
+ *
+ * Designed to make downloading from drush more robust, this function retries 
+ * each download multiple times on failure. Behaviour is controlled via three
+ * drush options:
+ * 'download-attempts': The number of attempts to download files
+ * 'download-retry-delay-min-seconds': The minimum number of seconds to wait before attempting to retry a download
+ * 'download-retry-delay-max-seconds': The maximum number of seconds to wait before attempting to retry a download
+ * (the actual time between download attempts is a random number between download-retry-delay-min-seconds and
+ * download-retry-delay-max-seconds.
+ *
+ * @param $title
+ *   The title of this download, to display in log messages
+ * @param $function
+ *   The name of the function to call to download the file
+ * @param $param1...$paramN
+ *   Additional parameters to pass to $function.
+ */
+function drush_download_with_retries($title) {
+  if (func_num_args() < 2) {
+    return;
+  }
+
+  $attempts = 0;
+  $success = FALSE;
+  while (!$success && $attempts < (int) drush_get_option('download-attempts', 5)) {
+
+    // If this is a retry then inform the user.
+    if ($attempts > 0) {
+      drush_log(dt('Retry number @attempts for @title', array('@attempts' => $attempts, '@title' => $title)), 'warning');
+    }
+
+    drush_log(dt('running command @command', array('@command' => func_get_arg(1))), 'warning');
+
+    $success = ($ret = call_user_func_array(func_get_arg(1), array_slice(func_get_args(), 2)));
+    $attempts++;
+
+    // If we failed to download, and we will be trying again, wait for
+    // a random amount of time within a user specified period.
+    if (!$success && $attempts < (int) drush_get_option('download-attempts', 5)) {
+      $wait_time = rand(drush_get_option('download-retry-delay-min-seconds', 5), drush_get_option('download-retry-delay-max-seconds', 30));
+      if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+        drush_print('Download failed. Sleeping for ' . $wait_time . ' seconds.', 0, STDERR);
+      }
+      sleep($wait_time);
+    }
+
+  }
+
+  return $ret;
 }

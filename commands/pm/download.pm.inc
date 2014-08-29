@@ -135,7 +135,7 @@ function drush_pm_download() {
     $request['base_project_path'] = drush_tempdir();
     $request['full_project_path'] = $request['base_project_path'] .'/'. $request['project_dir'];
     drush_log(dt('Downloading project !name to !dir ...', array('!name' => $request['name'], '!dir' => $request['base_project_path'])));
-    if (!package_handler_download_project($request, $release)) {
+    if (!drush_download_with_retries($request['name'], 'package_handler_download_project', $request, $release)) {
       // Delete the cached updatexml since it may be invalid.
       drush_delete_dir(drush_download_file_name(updatexml_get_url($request)), TRUE);
       drush_log(dt('Error downloading !name', array('!name' => $request['name']), 'error'));

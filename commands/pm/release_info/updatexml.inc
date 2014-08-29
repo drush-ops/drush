@@ -467,9 +467,11 @@ function updatexml_get_release_history_xml($request) {
   $url =  updatexml_get_url($request);
   drush_log('Downloading release history from ' . $url);
   // Some hosts have allow_url_fopen disabled.
-  if ($path = drush_download_file($url, drush_tempnam($request['name']), drush_get_option('cache-duration-releasexml', 24*3600))) {
+  $xml = NULL;
+  if ($path = drush_download_with_retries($url, 'drush_download_file', $url, drush_tempnam($request['name']), drush_get_option('cache-duration-releasexml', 24*3600))) {
     $xml = simplexml_load_file($path);
   }
+
   if (!$xml) {
     // We are not getting here since drupal.org always serves an XML response.
     return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
