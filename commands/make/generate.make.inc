@@ -117,7 +117,7 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
       $projects[$name]['version'] = preg_replace("/^" . drush_get_drupal_core_compatibility() . "-/", "", $project["version"]);
     }
     foreach ($project['extensions'] as $extension_name) {
-      _drush_make_generate_add_patch_files($projects[$name], dirname($all_extensions[$extension_name]->filename));
+      _drush_make_generate_add_patch_files($projects[$name], _drush_extension_get_path($all_extensions[$extension_name]));
     }
   }
 
