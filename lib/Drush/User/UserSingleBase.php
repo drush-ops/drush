@@ -110,11 +110,11 @@ abstract class UserSingleBase {
    * @return string
    */
   public function passResetUrl($path = '') {
-    $options = array();
+    $url = user_pass_reset_url($this->account, $options);
     if ($path) {
-      $options['query']['destination'] = $path;
+      $url .= '?destination=' . $path;
     }
-    return user_pass_reset_url($this->account, $options);
+    return $url;
   }
 
   /**
