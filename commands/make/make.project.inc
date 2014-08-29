@@ -152,6 +152,9 @@ class DrushMakeProject {
     if (make_download_factory($this->name, $this->type, $this->download, $this->download_location) === FALSE) {
       $this->downloaded = FALSE;
     }
+
+    drush_command_invoke_all('drush_make_post_download', $this);
+
     return $this->downloaded;
   }
 

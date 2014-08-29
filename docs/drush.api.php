@@ -203,6 +203,21 @@ function hook_drush_command_alter(&$command) {
 }
 
 /**
+ * Take action after a project in a make file has been downloaded.
+ *
+ * Similar to hook_drush_pm_post_download() but invoked after each project in a
+ * make file has been downloaded.
+ *
+ * Notice that hook_drush_pm_post_download() is also invoked for make file
+ * projects of type 'pm' (native Drupal.org projects).
+ *
+ * @see hook_drush_pm_post_download()
+ */
+function hook_drush_make_post_download(DrushMakeProject $make_project) {
+
+}
+
+/**
  * Take action after a project has been downloaded.
  */
 function hook_drush_pm_post_download($project, $release) {
