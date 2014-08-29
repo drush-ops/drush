@@ -527,7 +527,8 @@ function _core_path_aliases($project = '') {
         $projects = array_merge(drush_get_modules(), drush_get_themes());
         foreach(explode(',', $project) as $target) {
           if (array_key_exists($target, $projects)) {
-            $paths['%' . $target] = $drupal_root . '/' . dirname($projects[$target]->filename);
+            $pathname = drush_drupal_major_version() >= 8 ? $projects[$target]->getPathname() : $projects[$target]->filename;
+            $paths['%' . $target] = $drupal_root . '/' . dirname($pathname);
           }
         }
       }
