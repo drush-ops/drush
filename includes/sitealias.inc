@@ -1647,7 +1647,7 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
       // Create an alias '@self'
       _drush_sitealias_cache_alias('@self', $site_alias_settings);
       // change the selected site to match the new --root and --uri, if any were set
-      _drush_bootstrap_select_drupal_site();
+      _drush_preflight_root_uri();
     }
     return TRUE;
   }
