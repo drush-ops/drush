@@ -13,11 +13,28 @@ class UserList {
    */
   public function __construct($inputs) {
     if ($this->accounts = $this->getFromOptions() + $this->getFromArguments($inputs)) {
-      // Do nothing.
+      return $this;
     }
     else {
       throw new UserListException('Unable to find a matching user.');
     }
+  }
+
+
+  /**
+   * Iterate over each account and call the specified method.
+   *
+   * @param $method
+   *   A method on a UserSingleBase object.
+   * @param array $params
+   *   An array of params to pass to the method.
+   * @return mixed
+   */
+  public function each($method, array $params = array()) {
+    foreach ($this->accounts as $account) {
+      $return[$account->id()] = call_user_func_array(array($account, $method), $params);
+    }
+    return $return;
   }
 
   /*

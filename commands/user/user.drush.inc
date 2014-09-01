@@ -245,9 +245,7 @@ function drush_user_get_class() {
  */
 function drush_user_information($users) {
   $userlist = new UserList($users);
-  foreach ($userlist->accounts as $account) {
-    $info[$account->id()] = $account->info();
-  }
+  $info = $userlist->each('info');
   return $info;
 }
 
@@ -256,9 +254,7 @@ function drush_user_information($users) {
  */
 function drush_user_block($users = '') {
   $userlist = new UserList($users);
-  foreach ($userlist->accounts as $account) {
-    $account->block();
-  }
+  $userlist->each('block');
   drush_log(dt('Blocked user(s): !users', array('!users' => $userlist->names())), 'success');
 }
 
@@ -267,9 +263,7 @@ function drush_user_block($users = '') {
  */
 function drush_user_unblock($users = '') {
   $userlist = new UserList($users);
-  foreach ($userlist->accounts as $account) {
-    $account->unblock();
-  }
+  $userlist->each('unblock');
   drush_log(dt('Unblocked user(s): !users', array('!users' => $userlist->names())), 'success');
 }
 
@@ -280,9 +274,7 @@ function drush_user_add_role($role, $users = '') {
   // If role is not found, an exception gets thrown and handled by command invoke.
   $role_object = drush_role_get_class($role);
   $userlist = new UserList($users);
-  foreach ($userlist->accounts as $account) {
-    $account->addRole($role_object->rid);
-  }
+  $userlist->each('addRole', array($role_object->rid));
   drush_log(dt('Added role !role role to !users', array('!role' => $role, '!users' => $userlist->names())),'success');
 }
 
@@ -293,9 +285,7 @@ function drush_user_remove_role($role, $users = '') {
   // If role is not found, an exception gets thrown and handled by command invoke.
   $role_object = drush_role_get_class($role);
   $userlist = new UserList($users);
-  foreach ($userlist->accounts as $account) {
-    $account->removeRole($role_object->rid);
-  }
+  $userlist->each('removeRole', array($role_object->rid));
   drush_log(dt('Removed role !role role to !users', array('!role' => $role, '!users' => $userlist->names())),'success');
 }
 
@@ -316,10 +306,7 @@ function drush_user_create($name) {
   if (!drush_get_context('DRUSH_SIMULATE')) {
     if ($account = $userversion->create($new_user)) {
       $userlist = new UserList($users);
-      foreach ($userlist->accounts as $account) {
-        $info[$account->id()] = $account->info();
-      }
-      return $info;
+      return $userlist->each('info');
     }
     else {
       return drush_set_error("Could not create a new user account with the name " . $name . ".");
@@ -367,7 +354,7 @@ function drush_user_password($inputs) {
       $pass = drush_prompt(dt('Password'), NULL, TRUE, TRUE);
     }
     foreach ($userlist->accounts as $account) {
-      $account->password($pass);
+      $userlist->each('password', array($pass));
     }
     drush_log(dt('Changed password for !users', array('!users' => $userlist->names())), 'success');
   }
@@ -414,9 +401,7 @@ function drush_user_login($inputs = '', $path = NULL) {
       // No user option or argument was passed, so we default to uid 1.
         $userlist = new UserList(1);
     }
-    foreach ($userlist->accounts as $account) {
-      $links[$account->id()] = $account->passResetUrl($path);
-    }
+    $links = $userlist->each('passResetUrl', array($path));
   }
   $port = drush_get_option('redirect-port', FALSE);
   // There is almost always only one link so pick the first one for display and browser.
