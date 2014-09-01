@@ -28,7 +28,8 @@ class UserList {
    *   A method on a UserSingleBase object.
    * @param array $params
    *   An array of params to pass to the method.
-   * @return mixed
+   * @return array
+   *   An associate array of values keyed by account ID.
    */
   public function each($method, array $params = array()) {
     foreach ($this->accounts as $account) {
