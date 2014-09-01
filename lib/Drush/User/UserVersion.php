@@ -43,4 +43,25 @@ abstract class UserVersion {
   public function load_by_mail($mail) {
     return user_load_by_mail($mail);
   }
+
+  /**
+   * Load the current user account.
+   *
+   * @return mixed
+   *   A user object.
+   */
+  public function currentUserAsAccount() {
+    global $user;
+    return $user;
+  }
+
+  /**
+   * Load the current user account and return a UserSingle instance.
+   *
+   * @return \Drush\User\UserSingleBase
+   *   A Drush UserSingle instance.
+   */
+  public function currentUserAsSingle() {
+    return drush_usersingle_get_class($this->currentUserAsAccount());
+  }
 }

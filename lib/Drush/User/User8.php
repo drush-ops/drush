@@ -12,4 +12,11 @@ class User8 extends UserVersion {
     $account->save();
     return $account;
   }
+
+  /**
+   * {inheritdoc}
+   */
+  public function currentUserAsAccount() {
+    return \Drupal::currentUser()->getAccount();
+  }
 }

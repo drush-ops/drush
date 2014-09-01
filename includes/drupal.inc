@@ -148,7 +148,6 @@ function drush_find_profiles($drupal_root , $key = 'name') {
  */
 function drush_drupal_login($drush_user) {
   global $user;
-  drush_include_engine('drupal', 'user', drush_drupal_major_version());
   if (drush_drupal_major_version() >= 8) {
     // @todo the global $user is no longer the right way to login a user in D8.
     $user = is_numeric($drush_user) ? user_load($drush_user) : user_load_by_name($drush_user);
@@ -160,8 +159,9 @@ function drush_drupal_login($drush_user) {
     $user = user_load(is_numeric($drush_user) ? array('uid' => $drush_user) : array('name' => $drush_user));
   }
 
-  $name = drush_get_user_name($user);
-  $uid = drush_get_user_id($user);
+  $usersingle = drush_user_get_class()->currentUserAsSingle();
+  $name = $usersingle->getUsername();
+  $uid = $usersingle->id();
 
   if (empty($user)) {
     if (is_numeric($drush_user)) {
