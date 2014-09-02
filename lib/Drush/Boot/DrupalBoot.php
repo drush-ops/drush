@@ -51,9 +51,9 @@ class DrupalBoot implements Boot {
             }
 
             if (drush_get_context('DRUSH_DEBUG') && !drush_get_context('DRUSH_QUIET')) {
+              // @todo Create version independant wrapper around Drupal timers. Use it.
               drush_print_timers();
             }
-            drush_log(dt('Peak memory usage was !peak', array('!peak' => drush_format_size(memory_get_peak_usage()))), 'memory');
             break;
           }
         }
