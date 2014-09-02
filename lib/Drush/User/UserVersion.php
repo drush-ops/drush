@@ -12,7 +12,7 @@ abstract class UserVersion {
    * @return
    *   A user object.
    */
-  public function create($properties) {}
+  public function create(array $properties) {}
 
   /**
    * Attempt to load a user account.
@@ -50,7 +50,7 @@ abstract class UserVersion {
    * @return mixed
    *   A user object.
    */
-  public function currentUserAsAccount() {
+  public function getCurrentUserAsAccount() {
     global $user;
     return $user;
   }
@@ -61,7 +61,18 @@ abstract class UserVersion {
    * @return \Drush\User\UserSingleBase
    *   A Drush UserSingle instance.
    */
-  public function currentUserAsSingle() {
-    return drush_usersingle_get_class($this->currentUserAsAccount());
+  public function getCurrentUserAsSingle() {
+    return drush_usersingle_get_class($this->getCurrentUserAsAccount());
+  }
+
+  /**
+   * Set the current "global" user account in Drupal.
+
+   * @param
+   *   A user object.
+   */
+  public function setCurrentUser($account) {
+    global $user;
+    $user = $account;
   }
 }

@@ -12,7 +12,7 @@ class UserList {
    * or options.
    */
   public function __construct($inputs) {
-    if ($this->accounts = $this->getFromOptions() + $this->getFromArguments($inputs)) {
+    if ($this->accounts = $this->getFromOptions() + $this->getFromParameters($inputs)) {
       return $this;
     }
     else {
@@ -97,7 +97,7 @@ class UserList {
    * @return \Drush\User\UserSingleBase[]
    *   An associative array of UserSingleBase objects, keyed by user id.
    */
-  function getFromArguments($inputs) {
+  public static function getFromParameters($inputs) {
     $accounts = array();
     $userversion = drush_user_get_class();
     if ($inputs) {

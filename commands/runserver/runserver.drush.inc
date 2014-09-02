@@ -126,7 +126,7 @@ function drush_core_runserver($uri = NULL) {
 
   // We log in with the specified user ID (if set) via the password reset URL.
   $user_message = '';
-  if ($usersingle = drush_user_get_class()->currentUserAsSingle()) {
+  if ($usersingle = drush_user_get_class()->getCurrentUserAsSingle()) {
     $browse = $usersingle->passResetUrl($path);
     $user_message = ', logged in as ' . $usersingle->getUsername();
   }
