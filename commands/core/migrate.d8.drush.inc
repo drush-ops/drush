@@ -49,6 +49,16 @@ function drush_migrate_manifest($manifest) {
         drush_log("Running $migration_id", 'ok');
         $executable = new MigrateExecutable($migration, $message);
         $executable->import();
+
+        // Remove the migration from the list, so that we can track whether any
+        // migrations were not found.
+        $list = array_diff($list, array($migration_id));
+      }
+      // Warn the user if any migrations were not found.
+      if ($list) {
+        drush_log(dt('The following migrations were not found: !migrations', array(
+          '!migrations' => implode(', ', $list),
+        )), 'warning');
       }
       drush_invoke_process('@self', 'cache-rebuild', array(), array(), FALSE);
     }
