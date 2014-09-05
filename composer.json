@@ -27,7 +27,7 @@
   "require": {
     "php": ">=5.3.0",
     "d11wtq/boris": "*",
-    "symfony/yaml": "2.2.1",
+    "symfony/yaml": "~2.2",
     "pear/console_table": "1.1.5"
   },
   "require-dev": {
