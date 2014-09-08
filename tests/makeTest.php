@@ -278,6 +278,7 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function testMakeSubtree() {
+    $this->markTestSkipped('@todo External file no longer available. See https://github.com/drush-ops/drush/issues/801.');
     $config = $this->getMakefile('subtree');
 
     $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
