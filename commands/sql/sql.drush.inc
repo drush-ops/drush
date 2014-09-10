@@ -232,6 +232,7 @@ function sql_drush_command() {
     'description' => "Run sanitization operations on the current database.",
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'options' => array(
+      'db-prefix' => 'Enable replacement of braces in sanitize queries.',
       'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
       'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
     ) + $db_url,
@@ -1009,6 +1010,9 @@ function drush_sql_cli() {
  */
 function drush_sql_sanitize() {
   drush_sql_bootstrap_further();
+  if (drush_get_option('db-prefix')) {
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
+  }
   drush_include(DRUSH_BASE_PATH . '/commands/sql', 'sync.sql');
   drush_command_invoke_all('drush_sql_sync_sanitize', 'default');
   $options = drush_get_context('post-sync-ops');
@@ -1027,6 +1031,15 @@ function drush_sql_sanitize() {
 
   $sanitize_query = '';
   foreach($options as $id => $data) {
+    // Enable prefix processing when db-prefix option is used.
+    if (drush_get_option('db-prefix')) {
+      if (drush_drupal_major_version() >= 7) {
+        $data['query'] = Database::getConnection()->prefixTables($data['query']);
+      }
+      else {
+        $data['query'] = db_prefix_tables($data['query']);
+      }
+    }
     $sanitize_query .= $data['query'] . " ";
   }
   if ($sanitize_query) {
