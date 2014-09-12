@@ -12,7 +12,7 @@ abstract class UserVersion {
    * @return
    *   A user object.
    */
-  public function create(array $properties) {}
+  public function create($properties) {}
 
   /**
    * Attempt to load a user account.
