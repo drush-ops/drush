@@ -989,10 +989,6 @@ function drush_core_quick_drupal_options(&$items) {
 /**
  * Command callback. Runs "naked" php scripts
  * and drush "shebang" scripts ("#!/usr/bin/env drush").
- *
- * @params
- *   Command arguments, optional. First argument is site name, remaining
- *   argument(s) are contrib modules to install.
  */
 function drush_core_php_script() {
   $found = FALSE;
