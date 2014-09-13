@@ -90,6 +90,12 @@ function make_drush_command() {
           'drush make example.make example --lock-update=example.lock' => 'Write the updated version of example.make to example.lock.',
         ),
       ),
+      'shallow-clone' => array(
+        'description' => 'For makefile entries which use git for downloading, this option will utilize shallow clones where possible (ie. by using the git-clone\'s depth=1 option). If the "working-copy" option is not desired, this option will significantly speed up makes which involve modules stored in very large git repos. In fact, if "working-copy" option is enabled, this option cannot be used.',
+        'examples' => array(
+          'drush make example.make example --shallow-clone',
+        ),
+      ),
     ),
     'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
@@ -193,6 +199,11 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   if (!drush_get_option('no-build', FALSE) && !($build_path = make_build_path($build_path))) {
     return FALSE;
   }
+
+  // if (drush_get_option('shallow-clone', FALSE) && drush_get_option('working-copy', FALSE)) {
+  //   drush_set_error('MAKE_SHALLOW_CLONE_WORKING_COPY_CONFLICT', dt('You cannot use "--shallow-copy" and "--working-copy" options together.'));
+  //   return FALSE;
+  // }
 
   $info = _make_parse_info_file($makefile);
 
