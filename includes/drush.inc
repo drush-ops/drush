@@ -1733,6 +1733,9 @@ function drush_format_size($size, $langcode = NULL) {
  *   Optional. Error message to be logged. If no message is specified, hook_drush_help will be consulted,
  *   using a key of 'error:MY_ERROR_STRING'.
  *
+ * @param $output_label
+ *   Optional. Label to prepend to the error message.
+ *
  * @return
  *   Always returns FALSE, to allow you to return with false in the calling functions,
  *   such as <code>return drush_set_error('DRUSH_FRAMEWORK_ERROR')</code>
