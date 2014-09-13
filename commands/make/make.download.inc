@@ -216,6 +216,7 @@ function make_download_get($name, $type, $download, $download_location) {
 function make_download_git($name, $type, $download, $download_location) {
   $tmp_path = make_tmp();
   $wc = _get_working_copy_option($download);
+  $checkout_after_clone = TRUE;
   // If no download URL specified, assume anonymous clone from git.drupal.org.
   $download['url'] = isset($download['url']) ? $download['url'] : "http://git.drupal.org/project/$name.git";
   // If no working-copy download URL specified, assume it is the same.
@@ -257,6 +258,18 @@ function make_download_git($name, $type, $download, $download_location) {
     $command .= ' --reference ' . drush_escapeshellarg($git_cache);
   }
 
+  // the shallow clone option is only applicable to git entries which reference a tag or a branch
+  if (drush_get_option('shallow-clone', FALSE) &&
+     (!empty($download['tag']) || !empty($download['branch']))) {
+
+    $branch = (!empty($download['branch']) ? $download['branch'] : $download['tag']);
+    $command .= " --depth=1 --branch=${branch}";
+
+    // since the shallow copy option automatically "checks out" the requested branch, no further
+    // actions are needed after the clone command
+    $checkout_after_clone = FALSE;
+  }
+
   // Before we can checkout anything, we need to clone the repository.
   if (!drush_shell_exec($command, $url, $tmp_location)) {
     make_error('DOWNLOAD_ERROR', dt('Unable to clone @project from @url.', array('@project' => $name, '@url' => $url)));
@@ -265,74 +278,76 @@ function make_download_git($name, $type, $download, $download_location) {
 
   drush_log(dt('@project cloned from @url.', array('@project' => $name, '@url' => $url)), 'ok');
 
-  // Get the current directory (so we can move back later).
-  $cwd = getcwd();
-  // Change into the working copy of the cloned repo.
-  chdir($tmp_location);
+  if ($checkout_after_clone) {
+    // Get the current directory (so we can move back later).
+    $cwd = getcwd();
+    // Change into the working copy of the cloned repo.
+    chdir($tmp_location);
 
-  // We want to use the most specific target possible, so first try a refspec.
-  if (!empty($download['refspec'])) {
-    if (drush_shell_exec("git fetch %s %s", $url, $download['refspec'])) {
-      drush_log(dt("Fetched refspec !refspec.", array('!refspec' => $download['refspec'])), 'ok');
+    // We want to use the most specific target possible, so first try a refspec.
+    if (!empty($download['refspec'])) {
+      if (drush_shell_exec("git fetch %s %s", $url, $download['refspec'])) {
+        drush_log(dt("Fetched refspec !refspec.", array('!refspec' => $download['refspec'])), 'ok');
 
-      if (drush_shell_exec("git checkout FETCH_HEAD")) {
-        drush_log(dt("Checked out FETCH_HEAD."), 'info');
+        if (drush_shell_exec("git checkout FETCH_HEAD")) {
+          drush_log(dt("Checked out FETCH_HEAD."), 'info');
+        }
+      }
+      else {
+        make_error('DOWNLOAD_ERROR', dt("Unable to fetch the refspec @refspec from @project.", array('@refspec' => $download['refspec'], '@project' => $name)));
       }
     }
-    else {
-      make_error('DOWNLOAD_ERROR', dt("Unable to fetch the refspec @refspec from @project.", array('@refspec' => $download['refspec'], '@project' => $name)));
-    }
-  }
 
-  // If there wasn't a refspec, try a tag.
-  elseif (!empty($download['tag'])) {
-    // @TODO: change checkout to refs path.
-    if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
-      drush_log(dt("Checked out tag @tag.", array('@tag' => $download['tag'])), 'ok');
+    // If there wasn't a refspec, try a tag.
+    elseif (!empty($download['tag'])) {
+      // @TODO: change checkout to refs path.
+      if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
+        drush_log(dt("Checked out tag @tag.", array('@tag' => $download['tag'])), 'ok');
+      }
+      else {
+        make_error('DOWNLOAD_ERROR', dt("Unable to check out tag @tag.", array('@tag' => $download['tag'])));
+      }
     }
-    else {
-      make_error('DOWNLOAD_ERROR', dt("Unable to check out tag @tag.", array('@tag' => $download['tag'])));
-    }
-  }
 
-  // If there wasn't a tag, try a specific revision hash.
-  elseif (!empty($download['revision'])) {
-    if (drush_shell_exec("git checkout %s", $download['revision'])) {
-      drush_log(dt("Checked out revision @revision.", array('@revision' => $download['revision'])), 'ok');
+    // If there wasn't a tag, try a specific revision hash.
+    elseif (!empty($download['revision'])) {
+      if (drush_shell_exec("git checkout %s", $download['revision'])) {
+        drush_log(dt("Checked out revision @revision.", array('@revision' => $download['revision'])), 'ok');
+      }
+      else {
+        make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision @revision", array('@revision' => $download['revision'])));
+      }
     }
-    else {
-      make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision @revision", array('@revision' => $download['revision'])));
-    }
-  }
 
-  // If not, see if we at least have a branch.
-  elseif (!empty($download['branch'])) {
-    if (drush_shell_exec("git checkout %s", $download['branch']) && (trim(implode(drush_shell_exec_output())) != '')) {
-      drush_log(dt("Checked out branch @branch.", array('@branch' => $download['branch'])), 'ok');
+    // If not, see if we at least have a branch.
+    elseif (!empty($download['branch'])) {
+      if (drush_shell_exec("git checkout %s", $download['branch']) && (trim(implode(drush_shell_exec_output())) != '')) {
+        drush_log(dt("Checked out branch @branch.", array('@branch' => $download['branch'])), 'ok');
+      }
+      elseif (drush_shell_exec("git checkout -b %s %s", $download['branch'], 'origin/' . $download['branch'])) {
+        drush_log(dt('Checked out branch origin/@branch.', array('@branch' => $download['branch'])), 'ok');
+      }
+      else {
+        make_error('DOWNLOAD_ERROR', dt('Unable to check out branch @branch.', array('@branch' => $download['branch'])));
+      }
     }
-    elseif (drush_shell_exec("git checkout -b %s %s", $download['branch'], 'origin/' . $download['branch'])) {
-      drush_log(dt('Checked out branch origin/@branch.', array('@branch' => $download['branch'])), 'ok');
-    }
-    else {
-      make_error('DOWNLOAD_ERROR', dt('Unable to check out branch @branch.', array('@branch' => $download['branch'])));
-    }
-  }
 
-  if (!empty($download['submodule'])) {
-    $command = 'git submodule update';
-    foreach ($download['submodule'] as $option) {
-      $command .= ' --%s';
+    if (!empty($download['submodule'])) {
+      $command = 'git submodule update';
+      foreach ($download['submodule'] as $option) {
+        $command .= ' --%s';
+      }
+      if (call_user_func_array('drush_shell_exec', array_merge(array($command), $download['submodule']))) {
+        drush_log(dt('Initialized registered submodules.'), 'ok');
+      }
+      else {
+        make_error('DOWNLOAD_ERROR', dt('Unable to initialize submodules.'));
+      }
     }
-    if (call_user_func_array('drush_shell_exec', array_merge(array($command), $download['submodule']))) {
-      drush_log(dt('Initialized registered submodules.'), 'ok');
-    }
-    else {
-      make_error('DOWNLOAD_ERROR', dt('Unable to initialize submodules.'));
-    }
-  }
 
-  // Move back to last current directory (first line).
-  chdir($cwd);
+    // Move back to last current directory (first line).
+    chdir($cwd);
+  }
 
   // Move the directory into the final resting location.
   drush_copy_dir($tmp_location, $download_location, TRUE);
