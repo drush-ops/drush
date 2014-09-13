@@ -201,6 +201,7 @@ function pm_drush_command() {
       'field-labels' => array('package' => 'Package', 'name' => 'Name', 'type' => 'Type', 'status' => 'Status', 'version' => 'Version'),
       'output-data-type' => 'format-table',
     ),
+    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('pml'),
   );
   $items['pm-refresh'] = array(
@@ -713,6 +714,9 @@ function _drush_pm_find_common_path($project_type, $extensions) {
  * Command callback. Show a list of extensions with type and status.
  */
 function drush_pm_list() {
+  if ((drush_drupal_major_version() < 8) && !drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+    return drush_set_error('DRUSH_COMMAND_INSUFFICIENT_BOOTSTRAP', 'This needs a higher bootstrap level.');
+  }
   //--package
   $package_filter = array();
   $package = strtolower(drush_get_option('package'));
@@ -1636,65 +1640,29 @@ function drush_pm_cache_project_extensions($project, $found) {
  * It does nothing with theme engine projects.
  */
 function drush_pm_extensions_in_project($project) {
-  // Mask for drush_scan_directory, to match .info.yml files.
-  $mask = $project['drupal_version'][0] >= 8 ? '/(.*)\.info\.yml$/' : '/(.*)\.info$/';
-
-  // Mask for drush_scan_directory, to avoid tests directories.
-  $nomask = array('.', '..', 'CVS', 'tests');
-
+  $found = _drush_pm_extensions_in_project($project);
   // Drupal core and profiles can contain modules, themes and profiles.
   if (in_array($project['project_type'], array('core', 'profile'))) {
-    $found = array('profile' => array(), 'theme' => array(), 'module' => array());
-    // Find all of the .info files
-    foreach (drush_scan_directory($project['project_install_location'], $mask, $nomask) as $filename => $info) {
-      // Extract extension name from filename.
-      $matches = array();
-      preg_match($mask, $info->basename, $matches);
-      $name = $matches[1];
-
-      // Find the project type corresponding the .info file.
-     // (Only drupal >=7.x has .info for .profile)
-      $base = dirname($filename) . '/' . $name;
-      if (is_file($base . '.module')) {
-        $found['module'][] = $name;
-      }
-      else if (is_file($base . '.profile')) {
-        $found['profile'][] = $name;
-      }
-      else {
-        $found['theme'][] = $name;
-      }
-    }
-    // Special case: find profiles for drupal < 7.x (no .info)
-    if ($project['drupal_version'][0] < 7) {
-      foreach (drush_find_profiles($project['project_install_location']) as $filename => $info) {
-        $found['profile'][] = $info->name;
-      }
-    }
     // Log results.
     $msg = "Project !project contains:\n";
     $args = array('!project' => $project['name']);
     foreach (array_keys($found) as $type) {
       if ($count = count($found[$type])) {
         $msg .= " - !count_$type !type_$type: !found_$type\n";
-        $args += array("!count_$type" => $count, "!type_$type" => $type, "!found_$type" => implode(', ', $found[$type]));
+        $args += array(
+          "!count_$type" => $count,
+          "!type_$type" => $type,
+          "!found_$type" => implode(', ', $found[$type])
+        );
         if ($count > 1) {
-          $args["!type_$type"] = $type.'s';
+          $args["!type_$type"] = $type . 's';
         }
       }
     }
     drush_log(dt($msg, $args), 'success');
     drush_print_pipe(call_user_func_array('array_merge', array_values($found)));
   }
-  // Modules and themes can only contain other extensions of the same type.
   elseif (in_array($project['project_type'], array('module', 'theme'))) {
-    $found = array();
-    foreach (drush_scan_directory($project['project_install_location'], $mask, $nomask) as $filename => $info) {
-      // Extract extension name from filename.
-      $matches = array();
-      preg_match($mask, $info->basename, $matches);
-      $found[] = $matches[1];
-    }
     // If there is only one module / theme in the project, only print out
     // the message if is different than the project name.
     if (count($found) == 1) {
@@ -1713,6 +1681,66 @@ function drush_pm_extensions_in_project($project) {
     // Cache results.
     drush_pm_cache_project_extensions($project, $found);
   }
+}
+
+function _drush_pm_extensions_in_project($project) {
+  $found = array();
+  // Mask for drush_scan_directory, to match .info.yml files.
+  $drupal8 = $project['drupal_version'][0] >= 8;
+  $mask = $drupal8 ? '/(.*)\.info\.yml$/' : '/(.*)\.info$/';
+
+  // Mask for drush_scan_directory, to avoid tests directories.
+  $nomask = array('.', '..', 'CVS', 'tests');
+
+  // Drupal core and profiles can contain modules, themes and profiles.
+  if (in_array($project['project_type'], array('core', 'profile'))) {
+    $found = array('profile' => array(), 'theme' => array(), 'module' => array());
+    // Find all of the .info files
+    foreach (drush_scan_directory($project['project_install_location'], $mask, $nomask) as $filename => $info) {
+      // Extract extension name from filename.
+      $matches = array();
+      preg_match($mask, $info->basename, $matches);
+      $name = $matches[1];
+
+      $file_info = _drush_pm_extensions_info($name, $filename, $drupal8);
+
+      // Find the project type corresponding the .info file.
+     // (Only drupal >=7.x has .info for .profile)
+      $base = dirname($filename) . '/' . $name;
+      if (is_file($base . '.module')) {
+        $found['module'][$name] = $file_info;
+      }
+      else if (is_file($base . '.profile')) {
+        $found['profile'][$name] = $file_info;
+      }
+      else {
+        $found['theme'][$name] = $file_info;
+      }
+    }
+    // Special case: find profiles for drupal < 7.x (no .info)
+    if ($project['drupal_version'][0] < 7) {
+      foreach (drush_find_profiles($project['project_install_location']) as $filename => $info) {
+        $found['profile'][$info->name] = $info->name;
+      }
+    }
+  }
+  // Modules and themes can only contain other extensions of the same type.
+  elseif (in_array($project['project_type'], array('module', 'theme'))) {
+    $found = array();
+    foreach (drush_scan_directory($project['project_install_location'], $mask, $nomask) as $filename => $info) {
+      // Extract extension name from filename.
+      $matches = array();
+      preg_match($mask, $info->basename, $matches);
+      $name = $matches[1];
+      $found[$name] = _drush_pm_extensions_info($name, $filename, $drupal8);
+    }
+  }
+
+  return $found;
+}
+
+function _drush_pm_extensions_info($name, $filename, $drupal8) {
+  return $drupal8 ? (object) array( 'info' => Symfony\Component\Yaml\Yaml::parse($filename)) : $name;
 }
 
 /**

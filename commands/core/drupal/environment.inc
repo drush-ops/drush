@@ -18,15 +18,27 @@ use Drupal\Core\Site\Settings;
  *   An array containing module info for all available modules.
  */
 function drush_get_modules($include_hidden = TRUE) {
-  $modules = system_rebuild_module_data();
+  if (function_exists('system_rebuild_module_data')) {
+    $modules = system_rebuild_module_data();
+    foreach ($modules as $key => $module) {
+      if ((!$include_hidden) && (isset($module->info['hidden']))) {
+        unset($modules[$key]);
+      }
+      else {
+        $module->schema_version = drupal_get_installed_schema_version($key);
+      }
+    }
 
-  foreach ($modules as $key => $module) {
-    if ((!$include_hidden) && (isset($module->info['hidden']))) {
-      unset($modules[$key]);
-    }
-    else {
-      $module->schema_version = drupal_get_installed_schema_version($key);
-    }
+  }
+  else {
+    $project = array(
+      'drupal_version' => "8.x",
+      'project_type' => 'core',
+      'project_install_location' => '.',
+      'project_name' => realpath('.'),
+    );
+    $extensions = _drush_pm_extensions_in_project($project);
+    $modules = $extensions['module'];
   }
 
   return $modules;
@@ -247,15 +259,28 @@ function drush_module_invoke_all($hook) {
  *   An array containing theme info for all available themes.
  */
 function drush_get_themes($include_hidden = TRUE) {
-  $themes = system_rebuild_theme_data();
-  foreach ($themes as $key => $theme) {
-    if (!$include_hidden) {
-      if (isset($theme->info['hidden'])) {
-        unset($themes[$key]);
+  $themes = array();
+  if (function_exists('system_rebuild_theme_data')) {
+    $themes = system_rebuild_theme_data();
+    foreach ($themes as $key => $theme) {
+      if (!$include_hidden) {
+        if (isset($theme->info['hidden'])) {
+          unset($themes[$key]);
+        }
       }
     }
   }
+  else {
+    $project = array(
+      'drupal_version' => "8.x",
+      'project_type' => 'core',
+      'project_install_location' => '.',
+      'project_name' => realpath('.'),
+    );
+    $extensions = _drush_pm_extensions_in_project($project);
+    $themes = $extensions['theme'];
 
+  }
   return $themes;
 }
 
@@ -369,7 +394,7 @@ function _drush_extension_get_name($info) {
  *   The extension type.
  */
 function _drush_extension_get_type($info) {
-  return $info->getType();
+  return isset($info->info) ? $info->info['type'] : $info->getType();
 }
 
 /**
