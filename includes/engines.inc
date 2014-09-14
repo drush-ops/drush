@@ -18,6 +18,7 @@ function drush_get_engine_types_info() {
       'option' => FALSE,
       'default' => NULL,
       'options' => array(),
+      'sub-options' => array(),
       'config-aliases' => array(),
       'add-options-to-command' => FALSE,
       'combine-help' => FALSE,
@@ -76,6 +77,8 @@ function drush_get_engines($engine_type) {
           // Engines by default live in a subdirectory of the commandfile that
           // declared them, named as per the type of engine they are.
           'path' => sprintf("%s/%s", dirname($path), $engine_type),
+          'options' => array(),
+          'sub-options' => array(),
         );
         $engines['engines'][$key] = $engine;
       }
@@ -146,7 +149,7 @@ function drush_load_command_engine($command, $engine_type, $metadata = array()) 
 }
 
 /**
- * Add command structure info from each engine back into the command.
+ * Add command structure info from each engine type back into the command.
  */
 function drush_merge_engine_data(&$command) {
   // First remap engine data from the shortcut location
@@ -169,6 +172,7 @@ function drush_merge_engine_data(&$command) {
       $command['engines'][$engine_type] = $config;
     }
   }
+
   foreach ($command['engines'] as $engine_type => $config) {
     // Normalize engines structure.
     if (!is_array($config)) {
@@ -183,15 +187,9 @@ function drush_merge_engine_data(&$command) {
       return FALSE;
     }
 
-    // Override engine_info with customizations in the command.
-    $config = $command['engines'][$engine_type] += $engine_info['info'];
-
-    // Add engine type global options to the command.
-    $command['options'] += $config['options'];
-    // If the 'combine-help' flag is set in the engine config,
-    // then we will combine all of the help items into the help
-    // text for $config['option'].
-    $combine_help = $config['combine-help'];
+    // Complete command-declared engine type with default info.
+    $command['engines'][$engine_type] += $engine_info['info'];
+    $config = $command['engines'][$engine_type];
 
     $engine_data = array();
 
@@ -203,30 +201,37 @@ function drush_merge_engine_data(&$command) {
     // the command with the engine options.
     if (count($engine_info['engines']) == 1) {
       if ($config['add-options-to-command'] !== FALSE) {
+        // Add options and suboptions of the engine type and
+        // the sole implementation.
         $engine = key($engine_info['engines']);
         $data = $engine_info['engines'][$engine];
-        foreach (array('options', 'sub-options') as $key) {
-          if (isset($data[$key])) {
-            $engine_data[$key] = $data[$key];
-          }
-        }
+        $engine_data += array(
+          'options' => $config['options'] + $data['options'],
+          'sub-options' => $config['sub-options'] + $data['sub-options'],
+        );
       }
     }
     // Otherwise, provide a command option to choose between engines and add
     // the engine options and sub-options.
     else {
+      // Add engine type global options and suboptions.
+      $engine_data += array(
+        'options' => $config['options'],
+        'sub-options' => $config['sub-options'],
+      );
+
+      // If the 'combine-help' flag is set in the engine config,
+      // then we will combine all of the help items into the help
+      // text for $config['option'].
+      $combine_help = $config['combine-help'];
+      $combine_help_data = array();
+
       // Process engines in order. First the default engine, the rest alphabetically.
       $default = drush_find_engine_to_use($config, $engine_info);
       $engines = array_keys($engine_info['engines']);
       asort($engines);
       array_unshift($engines, $default);
       $engines = array_unique($engines);
-
-      $engine_data += array(
-        'options' => array(),
-        'sub-options' => array(),
-      );
-      $combine_help_data = array();
       foreach ($engines as $engine) {
         $data = $engine_info['engines'][$engine];
         // Check to see if the command requires any particular
@@ -274,16 +279,16 @@ function drush_merge_engine_data(&$command) {
       }
       if (!empty($combine_help_data)) {
         $engine_selection_option = $config['option'];
-        if (!is_array($command['options'][$engine_selection_option])) {
-          $command['options'][$engine_selection_option] = array('description' => $command['options'][$engine_selection_option]);
+        if (!is_array($engine_data['options'][$engine_selection_option])) {
+          $engine_data['options'][$engine_selection_option] = array('description' => $config['options'][$engine_selection_option]);
         }
         if (drush_get_context('DRUSH_VERBOSE')) {
-          $command['options'][$engine_selection_option]['description'] .= "\n" . dt("All available values are:") . "\n - " . implode("\n - ", $combine_help_data) . "\n";
+          $engine_data['options'][$engine_selection_option]['description'] .= "\n" . dt("All available values are:") . "\n - " . implode("\n - ", $combine_help_data) . "\n";
         }
         else {
-          $command['options'][$engine_selection_option]['description'] .= " " . dt("Available: ") . implode(', ', array_keys($combine_help_data)) . ". ";
+          $engine_data['options'][$engine_selection_option]['description'] .= " " . dt("Available: ") . implode(', ', array_keys($combine_help_data)) . ". ";
         }
-        $command['options'][$engine_selection_option]['description'] .= dt("Default is !default.", array('!default' => $default));
+        $engine_data['options'][$engine_selection_option]['description'] .= dt("Default is !default.", array('!default' => $default));
       }
       else {
         // If the help options are not combined, then extend the
