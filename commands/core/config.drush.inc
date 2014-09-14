@@ -113,11 +113,6 @@ function config_drush_command() {
     'arguments' => array(
       'prefix' => 'The config prefix. For example, "system". No prefix will return all names in the system.',
     ),
-    'options' => array(
-      'format' => array(
-        'description' => 'Define the output format. Known formats are: json, print_r, and export.',
-      ),
-    ),
     'examples' => array(
       'drush config-list system' => 'Return a list of all system config names.',
       'drush config-list "image.style"' => 'Return a list of all image styles.',
