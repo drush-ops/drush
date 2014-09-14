@@ -116,9 +116,15 @@ function drush_get_engine_topics() {
  * @return FALSE if a engine doesn't validate.
  */
 function drush_load_command_engines($command) {
+  $result = TRUE;
   foreach ($command['engines'] as $engine_type => $config) {
     $result = drush_load_command_engine($command, $engine_type);
+    // Stop loading engines if any of them fails.
+    if ($result === FALSE) {
+      break;
+    }
   }
+  return $result;
 }
 
 function drush_get_command_engine_config($command, $engine_type, $metadata = array()) {
@@ -128,24 +134,33 @@ function drush_get_command_engine_config($command, $engine_type, $metadata = arr
   return $metadata;
 }
 
+/**
+ * Selects and loads an engine implementing the given type.
+ *
+ * Loaded engines are stored as a context.
+ */
 function drush_load_command_engine($command, $engine_type, $metadata = array()) {
-  $config = drush_get_command_engine_config($command, $engine_type, $metadata);
-  $version = drush_drupal_major_version();
   drush_log(dt("Loading !engine engine.", array('!engine' => $engine_type), 'bootstrap'));
+
+  $config = drush_get_command_engine_config($command, $engine_type, $metadata);
   $engine_info = drush_get_engines($engine_type);
   $selected_engine = drush_get_user_selected_engine($config, $engine_info);
-  $result = drush_get_context($engine_type . '_engine_' . $selected_engine . '_' . $version, FALSE);
-  if ($result != FALSE) {
-    drush_set_engine($engine_type, $result);
+  $version = drush_drupal_major_version();
+
+  $context = $engine_type . '_engine_' . $selected_engine . '_' . $version;
+  $instance = drush_get_context($context, FALSE);
+  if ($instance != FALSE) {
+    drush_set_engine($engine_type, $instance);
   }
   else {
-    $result = drush_load_engine($engine_type, $selected_engine, NULL, NULL, $config);
-    if ($result == FALSE) {
+    $instance = drush_load_engine($engine_type, $selected_engine, NULL, NULL, $config);
+      $command['bootstrap_errors']["FOO"] = "BAR";
+    if ($instance == FALSE) {
       return FALSE;
     }
-    drush_set_context($engine_type . '_engine_' . $selected_engine . '_' . $version, $result);
+    drush_set_context($context, $instance);
   }
-  return $result;
+  return $instance;
 }
 
 /**
@@ -370,11 +385,14 @@ function drush_find_engine_to_use(&$config, $engine_info, $selected_engine = NUL
   return $selected_engine;
 }
 
+/**
+ * Loads and validate an engine of the given type.
+ */
 function drush_load_engine($type, $engine, $version = NULL, $path = NULL, $engine_config = NULL) {
   $engine_info = drush_get_engines($type);
   $selected_engine = drush_find_engine_to_use($engine_config, $engine_info, $engine);
   if (!array_key_exists($selected_engine, $engine_info['engines'])) {
-    return drush_set_error('DRUSH_UNKNOWN_ENGINE_TYPE', dt('Unknown !engine_type engine !engine', array('!engine' => $engine, '!engine_type' => $type)));
+    return drush_set_error('DRUSH_UNKNOWN_ENGINE_TYPE', dt('Unknown !engine_type engine !engine', array('!engine' => $selected_engine, '!engine_type' => $type)));
   }
 
   $result = drush_include_engine($type, $selected_engine, $version, $path, $engine_config);
