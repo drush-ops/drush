@@ -15,8 +15,6 @@ function drush_pm_updatecode() {
     drush_set_option('strict', 0);
     return drush_invoke('pm-updatestatus');
   }
-  // We don't provide for other options here, so we supply an explicit path.
-  drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
 
   // Get specific requests.
   $requests = pm_parse_arguments(func_get_args(), FALSE);

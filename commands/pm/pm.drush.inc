@@ -83,7 +83,6 @@ If no --destination is provided, then destination depends on the project type:
 function pm_drush_command() {
   $update = 'update';
   $update_options = array(
-    'security-only' => 'Only update modules that have security updates available.',
     'lock' => array(
       'description' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the project as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.  See also the update_advanced project for similar and improved functionality.',
       'example-value' => 'foo,bar',
@@ -206,6 +205,11 @@ function pm_drush_command() {
   $items['pm-refresh'] = array(
     'description' => 'Refresh update status information.',
     'drupal dependencies' => array($update),
+    'engines' => array(
+      'update_info' => array(
+        'add-options-to-command' => FALSE,
+      ),
+    ),
     'aliases' => array('rf'),
   );
   $items['pm-updatestatus'] = array(
@@ -218,6 +222,9 @@ function pm_drush_command() {
       'pipe' => 'Return a list of the projects with any extensions enabled that need updating, one project per line.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
+    'engines' => array(
+      'update_info',
+    ),
     'outputformat' => array(
       'default' => 'table',
       'pipe-format' => 'list',
@@ -252,6 +259,7 @@ function pm_drush_command() {
       'release_info' => array(
         'add-options-to-command' => FALSE,
       ),
+      'update_info',
     ),
   );
   // Merge all items from above.
@@ -1142,9 +1150,6 @@ function drush_pm_releasenotes() {
  * Command callback. Refresh update status information.
  */
 function drush_pm_refresh() {
-  // We don't provide for other options here, so we supply an explicit path.
-  drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
-
   _pm_refresh();
 }
 
@@ -1338,6 +1343,11 @@ function pm_drush_engine_type_info() {
       'add-options-to-command' => TRUE,
     ),
     'update_info' => array(
+      'description' => 'Determine how to fetch update info.',
+      'add-options-to-command' => TRUE,
+      'options' => array(
+        'security-only' => 'Only update modules that have security updates available.',
+      ),
     ),
     'version_control' => array(
       'option' => 'version-control',
@@ -1395,6 +1405,15 @@ function pm_drush_engine_release_info() {
         ),
       ),
     ),
+  );
+}
+
+/**
+ * Implements hook_drush_engine_ENGINE_TYPE().
+ */
+function pm_drush_engine_update_info() {
+  return array(
+    'drupal' => array(),
   );
 }
 

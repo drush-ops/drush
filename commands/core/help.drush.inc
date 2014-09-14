@@ -170,6 +170,7 @@ function drush_format_help_section($command, $section) {
  *   Formatted rows, suitable for printing via drush_print_table.
  */
 function _drush_format_help_subsection($command, $section, $subsection, $formatter, $prefix = '  ') {
+  $rows = array();
   foreach ($command['sub-' . $section][$subsection] as $name => $help_attributes) {
     if (!is_array($help_attributes)) {
       $help_attributes = array('description' => $help_attributes);
