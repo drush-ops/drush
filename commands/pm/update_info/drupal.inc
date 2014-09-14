@@ -131,28 +131,3 @@ function _pm_get_update_info($projects) {
   return $data;
 }
 
-function pm_get_project_info($projects) {
-  $data = array();
-  include_once drupal_get_path('module', 'update') .'/update.fetch.inc';
-
-  foreach ($projects as $project_name => $project) {
-    $url = UPDATE_DEFAULT_URL. "/$project_name/". drush_drupal_major_version() . '.x';
-    $xml = drupal_http_request($url);
-    if (isset($xml->error)) {
-      drush_set_error(dt(
-        'HTTP Request to @request has failed. @error',
-        array('@request' => $xml->request, '@error' => $xml->error)
-      ));
-    }
-    elseif (!$info = update_parse_xml($xml->data)) {
-      drush_set_error(dt(
-        'No release history found for @project_name',
-        array('@project_name' => $project_name)
-      ));
-    }
-    else {
-      $data[$project_name] = $info;
-    }
-  }
-  return $data;
-}
