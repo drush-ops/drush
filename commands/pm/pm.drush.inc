@@ -81,7 +81,6 @@ If no --destination is provided, then destination depends on the project type:
  * Implementation of hook_drush_command().
  */
 function pm_drush_command() {
-  $update = 'update';
   $update_options = array(
     'lock' => array(
       'description' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the project as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.  See also the update_advanced project for similar and improved functionality.',
@@ -204,7 +203,6 @@ function pm_drush_command() {
   );
   $items['pm-refresh'] = array(
     'description' => 'Refresh update status information.',
-    'drupal dependencies' => array($update),
     'engines' => array(
       'update_info' => array(
         'add-options-to-command' => FALSE,
@@ -214,7 +212,6 @@ function pm_drush_command() {
   );
   $items['pm-updatestatus'] = array(
     'description' => 'Show a report of available minor updates to Drupal core and contrib projects.',
-    'drupal dependencies' => array($update),
     'arguments' => array(
       'projects' => 'Optional. A list of installed projects to show.',
     ),
@@ -237,7 +234,6 @@ function pm_drush_command() {
   );
   $items['pm-updatecode'] = array(
     'description' => 'Update Drupal core and contrib projects to latest recommended releases.',
-    'drupal dependencies' => array($update),
     'examples' => array(
       'drush pm-updatecode --no-core' => 'Update contrib projects, but skip core.',
       'drush pm-updatestatus --format=csv --list-separator=" " --fields="name,existing_version,candidate_version,status_msg"' => 'To show a list of projects with their update status, use pm-updatestatus instead of pm-updatecode.',
@@ -265,7 +261,6 @@ function pm_drush_command() {
   // Merge all items from above.
   $items['pm-update'] = array(
     'description' => 'Update Drupal core and contrib projects and apply any pending database updates (Same as pm-updatecode + updatedb).',
-    'drupal dependencies' => array($update),
     'aliases' => array('up'),
     'allow-additional-options' => array('pm-updatecode', 'updatedb'),
   );
@@ -1413,7 +1408,9 @@ function pm_drush_engine_release_info() {
  */
 function pm_drush_engine_update_info() {
   return array(
-    'drupal' => array(),
+    'drupal' => array(
+      'drupal dependencies' => array('update'),
+    ),
   );
 }
 

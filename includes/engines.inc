@@ -79,6 +79,7 @@ function drush_get_engines($engine_type) {
           'path' => sprintf("%s/%s", dirname($path), $engine_type),
           'options' => array(),
           'sub-options' => array(),
+          'drupal dependencies' => array(),
         );
         $engines['engines'][$key] = $engine;
       }
@@ -394,7 +395,12 @@ function drush_load_engine($type, $engine, $version = NULL, $path = NULL, $engin
   if (!array_key_exists($selected_engine, $engine_info['engines'])) {
     return drush_set_error('DRUSH_UNKNOWN_ENGINE_TYPE', dt('Unknown !engine_type engine !engine', array('!engine' => $selected_engine, '!engine_type' => $type)));
   }
-
+  // Check engine dependency on drupal modules before include.
+  foreach ($engine_config['engine-info']['drupal dependencies'] as $dependency) {
+    if (!drush_module_exists($dependency)) {
+      return drush_set_error('DRUSH_ENGINE_DEPENDENCY_ERROR', dt('!engine_type: !engine engine needs the following modules installed/enabled to run: !dependencies.', array('!engine_type' => $type, '!engine' => $selected_engine, '!dependencies' => implode(', ', $engine_config['engine-info']['drupal dependencies']))));
+    }
+  }
   $result = drush_include_engine($type, $selected_engine, $version, $path, $engine_config);
   if (is_object($result)) {
     $valid = method_exists($result, 'validate') ? $result->validate() : TRUE;
