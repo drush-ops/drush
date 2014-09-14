@@ -10,9 +10,6 @@
  * just to check on. In this case, say at the confirmation prompt.
  */
 function drush_pm_updatestatus() {
-  // We don't provide for other options here, so we supply an explicit path.
-  drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
-
   // Get specific requests.
   $requests = pm_parse_arguments(func_get_args(), FALSE);
 
