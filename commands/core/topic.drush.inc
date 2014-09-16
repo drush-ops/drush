@@ -33,7 +33,7 @@ function topic_drush_command() {
 /**
  * Implement hook_drush_help_alter(). Show 'Topics' section on help detail.
  */
-function topic_drush_help_alter($command) {
+function topic_drush_help_alter(&$command) {
   $implemented = drush_get_commands();
   foreach ($command['topics'] as $topic_name) {
     // We have a related topic. Inject into the $command so the topic displays.
