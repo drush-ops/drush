@@ -117,6 +117,7 @@ function drush_enforce_requirement_drupal_dependencies(&$command) {
 function drush_command_belongs_to_disabled_module() {
   if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
     _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE, DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+    drush_get_commands(TRUE);
     $commands = drush_get_commands();
     $arguments = drush_get_arguments();
     $command_name = array_shift($arguments);

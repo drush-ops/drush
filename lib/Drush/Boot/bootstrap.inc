@@ -182,7 +182,8 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
         drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
         $current_phase();
 
-        // Find any command files that are available during this bootstrap phase.
+        // Reset commandfile cache and find any new command files that are available during this bootstrap phase.
+        drush_get_commands(TRUE);
         _drush_find_commandfiles($phase_index, $phase_max);
       }
       drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);

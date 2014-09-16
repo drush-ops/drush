@@ -970,8 +970,17 @@ function drush_process_bootstrap_to_first_arg(&$arguments) {
  *   Associative array of currently active command descriptors.
  *
  */
-function drush_get_commands() {
-  $commands = $available_commands = array();
+function drush_get_commands($reset = FALSE) {
+  static $commands = array();
+
+  if ($reset) {
+    $commands = array();
+    return;
+  }
+  elseif ($commands) {
+    return $commands;
+  }
+
   $list = drush_commandfile_list();
   foreach ($list as $commandfile => $path) {
     if (drush_command_hook($commandfile, 'drush_command')) {
@@ -1011,7 +1020,7 @@ function drush_get_commands() {
     }
   }
 
-  return drush_set_context('DRUSH_COMMANDS', $commands);
+  return $commands;
 }
 
 function drush_command_defaults($key, $commandfile, $path) {
