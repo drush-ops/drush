@@ -20,10 +20,14 @@ function drush_drupal_version($drupal_root = NULL) {
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
       // D7 stores VERSION in bootstrap.inc.
-      $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc');
+      $version_constant_paths = array('/includes/bootstrap.inc', '/modules/system/system.module');
       foreach ($version_constant_paths as $path) {
         if (file_exists($drupal_root . $path)) {
           require_once $drupal_root . $path;
+          if (defined('VERSION')) {
+            $version = VERSION;
+            break;
+          }
         }
       }
       // We just might be dealing with an early Drupal version (pre 4.7)
