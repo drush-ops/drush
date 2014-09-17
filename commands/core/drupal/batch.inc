@@ -57,6 +57,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
       ->execute();
     $finished = FALSE;
 
+    // Not used in D8+ and possibly earlier.
     global $user;
 
     while (!$finished) {
