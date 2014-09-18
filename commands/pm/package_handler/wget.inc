@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush PM Wget extension
+ * @file
+ * Drush PM Wget extension
  */
 
 /**

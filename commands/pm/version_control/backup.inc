@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush pm directory copy backup extension
+ * @file
+ * Drush pm directory copy backup extension
  */
 
 class drush_version_control_backup implements drush_version_control {

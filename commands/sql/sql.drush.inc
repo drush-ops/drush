@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush sql commands
+ * @file
+ * Drush sql commands
  */
 
 /**

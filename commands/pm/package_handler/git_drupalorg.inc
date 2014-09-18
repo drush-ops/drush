@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush PM drupal.org Git extension.
+ * @file
+ * Drush PM drupal.org Git extension.
  */
 
 /**

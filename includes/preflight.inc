@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Preflight, postflight and shutdown code.
+ */
+
+/**
  * Prepare Drush for preflight.
  *
  * Runs before drush_main().

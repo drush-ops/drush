@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush cache API
+ * @file
+ * Drush cache API
  *
  * Provides a cache API for drush core and commands, forked from Drupal 7.
  *

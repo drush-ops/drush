@@ -4,7 +4,8 @@ use Drush\User\UserList;
 use Drush\User\UserListException;
 
 /**
- * @file Drush User Management commands
+ * @file
+ * Drush User Management commands
  */
 
 function user_drush_help($section) {

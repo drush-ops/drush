@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Implements hook_drush_help_alter().
  */
 function xh_drush_help_alter(&$command) {

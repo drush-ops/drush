@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush backend API
+ * @file
+ * Drush backend API
  *
  * When a drush command is called with the --backend option,
  * it will buffer all output, and instead return a JSON encoded
