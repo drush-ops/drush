@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush release info engine for update.drupal.org and compatible services.
+ * @file
+ * Drush release info engine for update.drupal.org and compatible services.
  *
  * This engine does connect directly to the update service. It doesn't depend
  * on a bootstraped site.

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Utility functions related to Drupal.
+ */
+
+/**
  * Detects the version number of the current Drupal installation,
  * if any. Returns FALSE if there is no current Drupal installation,
  * or it is somehow broken.

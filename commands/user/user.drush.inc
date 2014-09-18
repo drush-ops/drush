@@ -2,7 +2,8 @@
 // $Id:
 
 /**
- * @file Drush User Management commands
+ * @file
+ * Drush User Management commands
  */
 
 function user_drush_help($section) {

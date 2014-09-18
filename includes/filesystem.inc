@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Filesystem utilities.
+ */
+
+/**
  * @defgroup filesystemfunctions Filesystem convenience functions.
  * @{
  */
