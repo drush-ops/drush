@@ -207,8 +207,8 @@ function drush_module_invoke($module, $hook) {
   * Invokes a hook in all enabled modules that implement it.
   *
   */
-function drush_module_invoke_all($hook) {
-  return module_invoke_all($hook);
+function drush_module_invoke_all($hook, $args) {
+  return module_invoke_all($hook, $args);
 }
 
 
