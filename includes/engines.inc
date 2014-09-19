@@ -127,6 +127,9 @@ function drush_load_command_engines($command) {
   return $result;
 }
 
+/**
+ * Returns engine config supplied in the command definition.
+ */
 function drush_get_command_engine_config($command, $engine_type, $metadata = array()) {
   if (isset($command['engines'][$engine_type])) {
     $metadata = array_merge($metadata, $command['engines'][$engine_type]);
@@ -362,6 +365,19 @@ function drush_engine_topic_command($engine) {
   drush_print_file($file);
 }
 
+/**
+ * Obtains the engine to use.
+ *
+ * Precedence:
+ *
+ *  - user supplied engine via cli.
+ *  - default engine configured for the command.
+ *  - the first engine of all available.
+ *
+ *  @see drush_find_engine_to_use().
+ *
+ *  #TODO# clarify naming of functions and entrance point.
+ */
 function drush_get_user_selected_engine(&$config, $engine_info) {
   $engines = array_keys($engine_info['engines']);
   $default = isset($config['default']) ? $config['default'] : current($engines);
@@ -375,6 +391,18 @@ function drush_get_user_selected_engine(&$config, $engine_info) {
   return $selected_engine;
 }
 
+/**
+ * Returns a valid engine to use.
+ *
+ * If no preference is passed in $selected_engine, it will pick the
+ * 'default' engine provided within the command config.
+ *
+ * $config is altered to add the engine info to $config['engine-info'].
+ *
+ *  @see drush_get_user_selected_engine().
+ *
+ *  #TODO# clarify naming of functions and entrance point.
+ */
 function drush_find_engine_to_use(&$config, $engine_info, $selected_engine = NULL) {
   if (!isset($selected_engine)) {
     $selected_engine = $config['default'];

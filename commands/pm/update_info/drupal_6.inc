@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Implementation of 'drupal' update_info engine for Drupal 6.
+ */
+
+/**
+ * Returns update status of a project. Also alters the project object.
+ *
+ * This can set $project['updateable'] and $project['candidate_version'].
+ */
 function pm_update_filter(&$project) {
   $update = FALSE;
   switch($project['status']) {
@@ -33,6 +43,9 @@ function pm_update_filter(&$project) {
   return $status;
 }
 
+/**
+ * Returns time of last check of available updates.
+ */
 function pm_update_last_check() {
   return variable_get('update_last_check', 0);
 }
@@ -49,7 +62,8 @@ function _pm_refresh() {
 /**
  * Get update information for all installed projects.
  *
- * @return An array containing remote and local versions for all installed projects
+ * @return An array containing remote and local versions for all
+ *   installed projects.
  */
 function _pm_get_update_info($projects) {
   // We force a refresh if the cache is not available.

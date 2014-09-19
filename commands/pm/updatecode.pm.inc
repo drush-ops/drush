@@ -1,8 +1,13 @@
 <?php
 
 /**
- * Command callback. Displays update status info and allows to update installed
- * projects.
+ * @file
+ * pm-updatecode command implementation.
+ */
+
+/**
+ * Command callback. Displays update status info and allows to update installed projects.
+ *
  * Pass specific projects as arguments, otherwise we update all that have
  * candidate releases.
  *
@@ -210,7 +215,7 @@ function _pm_update_core(&$project, $tmpfile) {
 }
 
 /**
- * Move some files from one location to another
+ * Move some files from one location to another.
  */
 function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflicts = TRUE) {
   $items_to_move = drush_scan_directory($src_dir, '/.*/', array_merge(array('.', '..'), $skip_list), 0, FALSE, 'filename', 0, TRUE);
@@ -364,6 +369,9 @@ function pm_update_complete($project, $version_control) {
   $version_control->post_update($project);
 }
 
+/**
+ * Rollback the update process.
+ */
 function drush_pm_updatecode_rollback() {
   $projects = array_reverse(drush_get_context('DRUSH_PM_UPDATED', array()));
   foreach($projects as $project) {

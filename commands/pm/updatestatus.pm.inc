@@ -1,13 +1,15 @@
 <?php
 
 /**
- * Command callback. Displays update status info and allows to update installed
- * projects.
- * Pass specific projects as arguments, otherwise we update all that have
- * candidate releases.
+ * @file
+ * pm-updatestatus command implementation.
+ */
+
+/**
+ * Command callback. Displays update status info of installed projects.
  *
- * This command prompts for confirmation before updating, so it is safe to run
- * just to check on. In this case, say at the confirmation prompt.
+ * Pass specific projects as arguments, otherwise we show all that are
+ * updateable.
  */
 function drush_pm_updatestatus() {
   // Get specific requests.

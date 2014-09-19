@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * pm-info command implementation.
+ */
+
+/**
  * Command callback. Show detailed info for one or more extensions.
  */
 function drush_pm_info() {
@@ -33,6 +38,12 @@ function drush_pm_info() {
   return $result;
 }
 
+/**
+ * Output format formatter-filter callback.
+ *
+ * @see drush_parse_command()
+ * @see drush_outputformat
+ */
 function _drush_pm_info_format_table_data($data) {
   $result = array();
   foreach ($data as $extension => $info) {

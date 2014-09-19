@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Tests for release_info engine.
+ */
+
+/**
   * pm testing
   *
   * @group pm

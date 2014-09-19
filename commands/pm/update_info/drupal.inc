@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Implementation of 'drupal' update_info engine for Drupal >= 7.
+ */
+
+/**
+ * Returns update status of a project. Also alters the project object.
+ *
+ * This can set $project['updateable'] and $project['candidate_version'].
+ */
 function pm_update_filter(&$project) {
   $update = FALSE;
   switch($project['status']) {
@@ -34,6 +44,9 @@ function pm_update_filter(&$project) {
   return $status;
 }
 
+/**
+ * Returns time of last check of available updates.
+ */
 // @todo This moved to state() in D8.
 function pm_update_last_check() {
   return variable_get('update_last_check', 0);
