@@ -189,6 +189,8 @@ function drush_sitealias_print() {
   $site_specs = array();
   foreach ($site_list as $site => $alias_record) {
     list($alias_name, $result_record) = _drush_sitealias_prepare_record($alias_record, $site);
+    // Remove the internal #name property.
+    unset($result_record['#name']);
     $site_specs[$alias_name] = $result_record;
   }
   ksort($site_specs);
