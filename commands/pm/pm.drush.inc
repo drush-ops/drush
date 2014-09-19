@@ -1603,10 +1603,16 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
   return $locked_result;
 }
 
+/**
+ * Returns the path to the extensions cache file.
+ */
 function _drush_pm_extension_cache_file() {
   return drush_get_context('DRUSH_PER_USER_CONFIGURATION') . "/drush-extension-cache.inc";
 }
 
+/**
+ * Load the extensions cache.
+ */
 function _drush_pm_get_extension_cache() {
   $extension_cache = array();
   $cache_file = _drush_pm_extension_cache_file();
@@ -1620,6 +1626,9 @@ function _drush_pm_get_extension_cache() {
   return $extension_cache;
 }
 
+/**
+ * Lookup an extension in the extensions cache.
+ */
 function drush_pm_lookup_extension_in_cache($extension) {
   $result = NULL;
   $extension_cache = _drush_pm_get_extension_cache();
@@ -1629,9 +1638,17 @@ function drush_pm_lookup_extension_in_cache($extension) {
   return $result;
 }
 
+/**
+ * Persists extensions cache.
+ *
+ * #TODO# not implemented.
+ */
 function drush_pm_put_extension_cache($extension_cache) {
 }
 
+/**
+ * Store extensions founds within a project in extensions cache.
+ */
 function drush_pm_cache_project_extensions($project, $found) {
   $extension_cache = _drush_pm_get_extension_cache();
   foreach($found as $extension) {

@@ -1,7 +1,12 @@
 <?php
 
 /**
- * Implementation of drush_COMMAND_validate().
+ * @file
+ * pm-download command implementation.
+ */
+
+/**
+ * Implements drush_hook_COMMAND_validate().
  */
 function drush_pm_download_validate() {
   // Accomodate --select to the values accepted by release_info_fetch().
