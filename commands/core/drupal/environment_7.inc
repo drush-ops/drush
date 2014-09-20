@@ -207,10 +207,16 @@ function drush_module_invoke($module, $hook) {
   * Invokes a hook in all enabled modules that implement it.
   *
   */
-function drush_module_invoke_all($hook, $args) {
-  return module_invoke_all($hook, $args);
+function drush_module_invoke_all($hook) {
+  $args = func_get_args();
+  if (count($args) > 1) {
+    unset($args[0]);
+    return module_invoke_all($hook, $args);
+  }
+  else {
+    return module_invoke_all($hook);
+  }    
 }
-
 
 /**
  * Get complete information for all available themes.
