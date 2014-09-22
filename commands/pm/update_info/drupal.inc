@@ -52,14 +52,8 @@ function pm_update_filter(&$project) {
       $status = dt('Unable to check status');
       break;
     case UPDATE_UNKNOWN:
-      $status = "UPDATE_UNKNOWN!";
-      break;
     case UPDATE_NOT_FETCHED:
-      $status = "UPDATE_NOT_FETCHED!";
-      break;
     case UPDATE_FETCH_PENDING:
-      $status = "UPDATE_FETCH_PENDING!";
-      break;
     default:
       $status = dt('Unknown');
       break;
