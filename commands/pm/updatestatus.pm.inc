@@ -105,8 +105,9 @@ function drush_pm_updatestatus() {
       $update_info[$name]['candidate_version'] = $release['version'];
     }
   }
-  // Process locks specified on the command line.
-  $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
+
+  // Update projects with its lock status.
+  drush_pm_update_lock($update_info);
 
   // Build project updatable messages, set candidate version and mark
   // 'updatable' in the project.

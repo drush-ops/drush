@@ -81,25 +81,6 @@ If no --destination is provided, then destination depends on the project type:
  * Implementation of hook_drush_command().
  */
 function pm_drush_command() {
-  $update_options = array(
-    'lock' => array(
-      'description' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the project as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.  See also the update_advanced project for similar and improved functionality.',
-      'example-value' => 'foo,bar',
-    ),
-  );
-  $update_suboptions = array(
-    'lock' => array(
-      'lock-message' => array(
-        'description' => 'A brief message explaining why a project is being locked; displayed during pm-updatecode.  Optional.',
-        'example-value' => 'message',
-      ),
-      'unlock' => array(
-        'description' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
-        'example-value' => 'foo,bar',
-      ),
-    ),
-  );
-
   $items['pm-enable'] = array(
     'description' => 'Enable one or more extensions (modules or themes).',
     'arguments' => array(
@@ -217,8 +198,7 @@ function pm_drush_command() {
     ),
     'options' => array(
       'pipe' => 'Return a list of the projects with any extensions enabled that need updating, one project per line.',
-    ) + $update_options,
-    'sub-options' => $update_suboptions,
+    ),
     'engines' => array(
       'update_info',
     ),
@@ -245,8 +225,23 @@ function pm_drush_command() {
       'notes' => 'Show release notes for each project to be updated.',
       'no-core' => 'Only update modules and skip the core update.',
       'check-updatedb' => 'Check to see if an updatedb is needed after updating the code. Default is on; use --check-updatedb=0 to disable.',
-    ) + $update_options,
-    'sub-options' => $update_suboptions,
+      'lock' => array(
+        'description' => 'Add a persistent lock to remove the specified projects from consideration during updates.  Locks may be removed with the --unlock parameter, or overridden by specifically naming the project as a parameter to pm-update or pm-updatecode.  The lock does not affect pm-download.  See also the update_advanced project for similar and improved functionality.',
+        'example-value' => 'foo,bar',
+      ),
+    ),
+    'sub-options' => array(
+      'lock' => array(
+        'lock-message' => array(
+          'description' => 'A brief message explaining why a project is being locked; displayed during pm-updatecode.  Optional.',
+          'example-value' => 'message',
+        ),
+        'unlock' => array(
+          'description' => 'Remove the persistent lock from the specified projects so that they may be updated again.',
+          'example-value' => 'foo,bar',
+        ),
+      ),
+    ),
     'aliases' => array('upc'),
     'topics' => array('docs-policy'),
     'engines' => array(
@@ -1542,7 +1537,7 @@ function drush_pm_include_version_control($directory = '.') {
  * @return array
  *   A list of projects that are locked.
  */
-function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock, $lock_message = NULL) {
+function drush_pm_update_lock(&$projects, $projects_to_lock = array(), $projects_to_unlock = array(), $lock_message = NULL) {
   $locked_result = array();
 
   // Warn about ambiguous lock / unlock values
