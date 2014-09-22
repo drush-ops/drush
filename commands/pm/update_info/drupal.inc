@@ -6,22 +6,27 @@
  */
 
 /**
- * Returns update status of a project. Also alters the project object.
+ * Returns a human readable message based on update status of a project.
  *
- * This can set $project['updateable'] and $project['candidate_version'].
+ * It also may alter the project object and set $project['updateable']
+ * and $project['candidate_version'].
+ *
+ * @see pm_release_recommended()
+ *
+ * Project status in Drupal >=8 are:
+ * - UPDATE_NOT_SECURE
+ * - UPDATE_REVOKED
+ * - UPDATE_NOT_SUPPORTED
+ * - UPDATE_NOT_CURRENT
+ * - UPDATE_CURRENT
+ * - UPDATE_NOT_CHECKED
+ * - UPDATE_UNKNOWN
+ * - UPDATE_NOT_FETCHED
+ * - UPDATE_FETCH_PENDING
+ *
  */
 function pm_update_filter(&$project) {
-  $update = FALSE;
   switch($project['status']) {
-    case UPDATE_CURRENT:
-      $status = dt('Up to date');
-      pm_release_recommended($project);
-      $project['updateable'] = FALSE;
-      break;
-    case UPDATE_NOT_CURRENT:
-      $status = dt('Update available');
-      pm_release_recommended($project);
-      break;
     case UPDATE_NOT_SECURE:
       $status = dt('SECURITY UPDATE available');
       pm_release_recommended($project);
@@ -34,8 +39,26 @@ function pm_update_filter(&$project) {
       $status = dt('Installed version not supported');
       pm_release_recommended($project);
       break;
+    case UPDATE_NOT_CURRENT:
+      $status = dt('Update available');
+      pm_release_recommended($project);
+      break;
+    case UPDATE_CURRENT:
+      $status = dt('Up to date');
+      pm_release_recommended($project);
+      $project['updateable'] = FALSE;
+      break;
     case UPDATE_NOT_CHECKED:
       $status = dt('Unable to check status');
+      break;
+    case UPDATE_UNKNOWN:
+      $status = "UPDATE_UNKNOWN!";
+      break;
+    case UPDATE_NOT_FETCHED:
+      $status = "UPDATE_NOT_FETCHED!";
+      break;
+    case UPDATE_FETCH_PENDING:
+      $status = "UPDATE_FETCH_PENDING!";
       break;
     default:
       $status = dt('Unknown');
@@ -47,10 +70,10 @@ function pm_update_filter(&$project) {
 /**
  * Returns time of last check of available updates.
  */
-// @todo This moved to state() in D8.
-//function pm_update_last_check() {
-//  return variable_get('update_last_check', 0);
-//}
+function pm_update_last_check() {
+  $last_check = \Drupal::state()->get('update.last_check') ?: 0;
+  return $last_check;
+}
 
 /**
  * Command callback. Refresh update status information.
@@ -73,47 +96,47 @@ function _pm_refresh() {
 function _pm_get_update_info($projects) {
   // Force to invalidate some caches that are only cleared
   // when visiting update status report page. This allow to detect changes in
-  // .info files.
-  update_storage_clear();
+  // .info.yml files.
+  \Drupal::keyValueExpirable('update_project_projects')->deleteAll();
+  \Drupal::keyValueExpirable('update_project_data')->deleteAll();
 
   // From update_get_available(): Iterate all projects and create a fetch task
   // for those we have no information or is obsolete.
-//////  module_load_include('inc', 'update', 'update.compare');
-//////  $available = _update_get_cached_available_releases();
-//////  $update_projects = update_get_projects();
-//////  foreach ($update_projects as $key => $project) {
-//////    if (empty($available[$key])) {
-//////      update_create_fetch_task($project);
-//////      continue;
-//////    }
-//////    if ($project['info']['_info_file_ctime'] > $available[$key]['last_fetch']) {
-//////      $available[$key]['fetch_status'] = UPDATE_FETCH_PENDING;
-//////    }
-//////    if (empty($available[$key]['releases'])) {
-//////      $available[$key]['fetch_status'] = UPDATE_FETCH_PENDING;
-//////    }
-//////    if (!empty($available[$key]['fetch_status']) && $available[$key]['fetch_status'] == UPDATE_FETCH_PENDING) {
-//////      update_create_fetch_task($project);
-//////    }
-//////  }
-////
-////  // Set a batch to process all pending tasks.
-////  $batch = array(
-////    'operations' => array(
-////      array('update_fetch_data_batch', array()),
-////    ),
-////    'finished' => 'update_fetch_data_finished',
-////    'file' => drupal_get_path('module', 'update') . '/update.fetch.inc',
-////  );
-////  batch_set($batch);
-////  drush_backend_batch_process();
-//
-//  // Clear any error set by a failed update fetch task. This avoid rollbacks.
-//  drush_clear_error();
+  $available = \Drupal::keyValueExpirable('update_available_releases')->getAll();
+  $update_projects = \Drupal::service('update.manager')->getProjects();
+  foreach ($update_projects as $key => $project) {
+    if (empty($available[$key])) {
+      \Drupal::service('update.processor')->createFetchTask($project);
+      continue;
+    }
+    if ($project['info']['_info_file_ctime'] > $available[$key]['last_fetch']) {
+      $available[$key]['fetch_status'] = UPDATE_FETCH_PENDING;
+    }
+    if (empty($available[$key]['releases'])) {
+      $available[$key]['fetch_status'] = UPDATE_FETCH_PENDING;
+    }
+    if (!empty($available[$key]['fetch_status']) && $available[$key]['fetch_status'] == UPDATE_FETCH_PENDING) {
+      \Drupal::service('update.processor')->createFetchTask($project);
+    }
+  }
+
+  // Set a batch to process all pending tasks.
+  $batch = array(
+    'operations' => array(
+      array(array(\Drupal::service('update.manager'), 'fetchDataBatch'), array()),
+    ),
+    'finished' => 'update_fetch_data_finished',
+    'file' => drupal_get_path('module', 'update') . '/update.fetch.inc',
+  );
+  batch_set($batch);
+  drush_backend_batch_process();
+
+  // Clear any error set by a failed update fetch task. This avoid rollbacks.
+  drush_clear_error();
 
   // Calculate update status data.
-  $projects = \Drupal::service('update.manager')->getProjects();
-  $available = update_get_available(TRUE);
+  $available = \Drupal::keyValueExpirable('update_available_releases')->getAll();
+  module_load_include('inc', 'update', 'update.compare');
   $data = update_calculate_project_data($available);
   foreach ($data as $project_name => $project) {
     // Discard custom projects.
