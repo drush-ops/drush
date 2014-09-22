@@ -13,7 +13,7 @@
  *
  * @see pm_release_recommended()
  *
- * Project status in Drupal 7 are:
+ * Project statuses in Drupal 7 are:
  * - UPDATE_NOT_SECURE
  * - UPDATE_REVOKED
  * - UPDATE_NOT_SUPPORTED
