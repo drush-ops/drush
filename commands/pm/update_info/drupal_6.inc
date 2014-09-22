@@ -6,21 +6,26 @@
  */
 
 /**
- * Returns update status of a project. Also alters the project object.
+ * Returns a human readable message based on update status of a project.
  *
- * This can set $project['updateable'] and $project['candidate_version'].
+ * It also may alter the project object and set $project['updateable']
+ * and $project['candidate_version'].
+ *
+ * @see pm_release_recommended()
+ *
+ * Project status in Drupal 6 are:
+ * - UPDATE_NOT_SECURE
+ * - UPDATE_REVOKED
+ * - UPDATE_NOT_SUPPORTED
+ * - UPDATE_NOT_CURRENT
+ * - UPDATE_CURRENT
+ * - UPDATE_NOT_CHECKED
+ * - UPDATE_UNKNOWN
+ * - UPDATE_NOT_FETCHED
+ *
  */
 function pm_update_filter(&$project) {
-  $update = FALSE;
   switch($project['status']) {
-    case UPDATE_CURRENT:
-      $status = dt('Up to date');
-      $project['candidate_version'] = $project['recommended'];
-      break;
-    case UPDATE_NOT_CURRENT:
-      $status = dt('Update available');
-      pm_release_recommended($project);
-      break;
     case UPDATE_NOT_SECURE:
       $status = dt('SECURITY UPDATE available');
       pm_release_recommended($project);
@@ -33,9 +38,19 @@ function pm_update_filter(&$project) {
       $status = dt('Installed version not supported');
       pm_release_recommended($project);
       break;
+    case UPDATE_NOT_CURRENT:
+      $status = dt('Update available');
+      pm_release_recommended($project);
+      break;
     case UPDATE_NOT_CHECKED:
       $status = dt('Unable to check status');
       break;
+    case UPDATE_CURRENT:
+      $status = dt('Up to date');
+      $project['candidate_version'] = $project['recommended'];
+      break;
+    case UPDATE_UNKNOWN:
+    case UPDATE_NOT_FETCHED:
     default:
       $status = dt('Unknown');
       break;
