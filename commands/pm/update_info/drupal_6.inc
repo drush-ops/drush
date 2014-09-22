@@ -13,7 +13,7 @@
  *
  * @see pm_release_recommended()
  *
- * Project status in Drupal 6 are:
+ * Project statuses in Drupal 6 are:
  * - UPDATE_NOT_SECURE
  * - UPDATE_REVOKED
  * - UPDATE_NOT_SUPPORTED
