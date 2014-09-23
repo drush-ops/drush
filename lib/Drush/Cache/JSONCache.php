@@ -1,9 +1,15 @@
 <?php
 
 /**
+ * @file
+ * Definition of Drush\Cache\JSONCache.
+ */
+
+namespace Drush\Cache;
+
+/**
  * JSON cache storage backend.
  */
-namespace Drush\Cache;
 class JSONCache extends FileCache {
   const EXTENSION = '.json';
 
