@@ -70,14 +70,13 @@ class FileCache implements CacheInterface {
     return $item ? unserialize($item) : FALSE;
   }
 
-  function set($cid, $data, $expire = DRUSH_CACHE_PERMANENT, array $headers = NULL) {
+  function set($cid, $data, $expire = DRUSH_CACHE_PERMANENT) {
     $created = time();
 
     $cache = new \stdClass;
     $cache->cid = $cid;
     $cache->data = is_object($data) ? clone $data : $data;
     $cache->created = $created;
-    $cache->headers = $headers;
     if ($expire == DRUSH_CACHE_TEMPORARY) {
       $cache->expire = $created + 2591999;
     }
