@@ -751,7 +751,7 @@ function drush_core_requirements() {
   );
 
   drupal_load_updates();
-  
+
   drush_include_engine('drupal', 'environment');
   $requirements = drush_module_invoke_all('requirements', 'runtime');
   // If a module uses "$requirements[] = " instead of
@@ -1119,7 +1119,9 @@ function drush_core_batch_process($id) {
  */
 function drush_core_updatedb_batch_process($id) {
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
-  require_once DRUPAL_ROOT . '/core/includes/install.inc';
+  $includes_path = (drush_drupal_major_version() < 8) ? '/includes' :
+   '/core/includes';
+  require_once DRUPAL_ROOT . $includes_path . '/install.inc';
   // require_once DRUPAL_ROOT . '/core/includes/update.inc';
   drupal_load_updates();
   _update_batch_command($id);
