@@ -178,9 +178,9 @@ function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
 }
 
 /**
-  * Invokes a hook in a particular module.
-  *
-  */
+ * Invokes a hook in a particular module.
+ *
+ */
 function drush_module_invoke($module, $hook) {
   $args = func_get_args();
   if (count($args) > 2) {
@@ -193,9 +193,9 @@ function drush_module_invoke($module, $hook) {
 }
 
 /**
-  * Invokes a hook in all enabled modules that implement it.
-  *
-  */
+ * Invokes a hook in all enabled modules that implement it.
+ *
+ */
 function drush_module_invoke_all($hook) {
   $args = func_get_args();
   if (count($args) > 1) {
