@@ -44,8 +44,8 @@ function drush_pm_updatecode() {
   drush_print($values['output']);
   $tmpfile = drush_tempnam('pm-updatecode.');
 
-//  $last = pm_update_last_check();
-//  drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
+  $last = pm_update_last_check();
+  drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
 
   // Prevent update of core if --no-core was specified.
   if (isset($updateable['drupal']) && drush_get_option('no-core', FALSE)) {
