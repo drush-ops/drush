@@ -129,8 +129,9 @@ class FileCache implements CacheInterface {
       }
 
       foreach ($files as $f) {
-        // Delete immediately instead of drush_register_file_for_deletion().
-        unlink($f);
+        if (file_exists($f)) {
+          unlink($f);
+        }
       }
     }
   }
