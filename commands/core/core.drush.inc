@@ -1119,8 +1119,8 @@ function drush_core_batch_process($id) {
  */
 function drush_core_updatedb_batch_process($id) {
   drush_include_engine('drupal', 'update', drush_drupal_major_version());
-  require_once DRUPAL_ROOT . '/core/includes/install.inc';
-  // require_once DRUPAL_ROOT . '/core/includes/update.inc';
+  require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+  // require_once DRUSH_DRUPAL_CORE . '/includes/update.inc';
   drupal_load_updates();
   _update_batch_command($id);
 }
