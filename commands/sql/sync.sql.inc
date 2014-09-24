@@ -82,6 +82,15 @@ function drush_sql_sync($source, $destination) {
   $global_options = drush_redispatch_get_options() + array(
      'strict' => 0,
   );
+  // Merge command specific options for sql-sync with global options so they are applied
+  // on sub-commands such as sql-dump.
+  if (!empty($source_settings['command-specific']['sql-sync'])) {
+    $global_options = array_merge($global_options, $source_settings['command-specific']['sql-sync']);
+  }
+  // Same for source-command-specific options for sql-sync.
+  if (!empty($source_settings['source-command-specific']['sql-sync'])) {
+    $global_options = array_merge($global_options, $source_settings['source-command-specific']['sql-sync']);
+  }
 
   if (drush_get_context('DRUSH_SIMULATE')) {
     $backend_options['backend-simulate'] = TRUE;
