@@ -634,7 +634,7 @@ function drush_get_projects(&$extensions = NULL) {
     // where a module and a theme are declared as part of a same project.
     // There's a special case, a project called "sites", this is the reason for
     // the second condition here.
-    if ((in_array(basename($path), $reserved)) && (!in_array($name, $reserved))) {
+    if ($path == '.' || (in_array(basename($path), $reserved) && !in_array($name, $reserved))) {
       drush_log(dt('Error while trying to find the common path for enabled extensions of project !project. Extensions are: !extensions.', array('!project' => $name, '!extensions' => implode(', ', $project['extensions']))), 'error');
     }
     else {
