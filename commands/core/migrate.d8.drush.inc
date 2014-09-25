@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Database\Database;
+use Drupal\migrate\Entity\Migration;
 use Drupal\migrate\MigrateExecutable;
 use Symfony\Component\Yaml\Yaml;
 use Drush\Migrate\DrushLogMigrateMessage;
@@ -28,6 +29,17 @@ function migrate_drush_command() {
       ),
     ),
     'drupal dependencies' => array('migrate_drupal'),
+  );
+  $items['migration-destroy-id-map'] = array(
+    'description' => 'Destroys the ID map of a migration. This is useful when repeatedly running a migration during development.',
+    'arguments' => array(
+      'migration' => 'The migration ID.',
+    ),
+    'examples' => array(
+      'drush migration-destroy d6_node' => 'Destory the ID map for the Drupal 6 node migration in order to try it again.'),
+    'aliases' => array('migration-destroy', 'migrate-destroy'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'drupal dependencies' => array('migrate'),
   );
   return $items;
 }
@@ -69,4 +81,19 @@ function drush_migrate_manifest($manifest) {
   else {
     return drush_set_error('The manifest file does not exist.');
   }
+}
+
+/**
+ * Destroys the ID map of a given migration.
+ *
+ * @param string $migration_id
+ *   The migration ID.
+ */
+function drush_migrate_migration_destroy_id_map($migration_id) {
+  /** @var \Drupal\migrate\Entity\MigrationInterface $migration */
+  if (!$migration = Migration::load($migration_id)) {
+    return drush_set_error("The migration $migration_id does not exist.");
+  }
+
+  $migration->getIdMap()->destroy();
 }
