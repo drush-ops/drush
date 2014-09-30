@@ -148,7 +148,7 @@ function dt($string, $args = array()) {
     $output = t($string, $args);
   }
   // The language system requires a working container which is built in DRUPAL_BOOTSTRAP_KERNEL phase.
-  else if (drush_drupal_major_version() >= 8 && function_exists('drupal_get_bootstrap_phase') && drupal_get_bootstrap_phase() >= DRUPAL_BOOTSTRAP_KERNEL) {
+  else if (drush_drupal_major_version() >= 8 && function_exists('drupal_get_bootstrap_phase') && drupal8_bootstrap() >= DRUPAL_BOOTSTRAP_KERNEL) {
     $output = t($string, $args);
   }
   else if (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {

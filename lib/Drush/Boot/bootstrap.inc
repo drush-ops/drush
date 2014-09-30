@@ -15,6 +15,9 @@
  * Sequential Drupal bootstrapping phases.
  */
 
+use Symfony\Component\HttpFoundation\Request;
+use Drupal\Core\DrupalKernel;
+
 /**
  * No bootstrap.
  *
@@ -615,7 +618,12 @@ function _drush_bootstrap_drupal_site() {
 function _drush_bootstrap_drupal_configuration() {
   global $conf;
 
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
+  if (drush_drupal_major_version() <= 7) {
+    drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
+  }
+  else {
+    drupal8_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
+  }
 
   // Unset drupal error handler and restore drush's one.
   if (drush_drupal_major_version() >= 7) {
@@ -669,7 +677,12 @@ function _drush_bootstrap_drupal_full() {
   if (!drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_start();
   }
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  if (drush_drupal_major_version() <= 7) {
+    drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  }
+  else {
+    drupal8_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  }
   if (!drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_end_clean();
   }
@@ -745,4 +758,59 @@ function drush_bootstrap_value($context, $value = null) {
   }
 
   return null;
+}
+
+
+/**
+ * Ensures Drupal 8 is bootstrapped to the specified phase.
+ *
+ * In order to bootstrap Drupal from another PHP script, you can use this code:
+ * @code
+ *   require_once '/path/to/drupal/core/vendor/autoload.php';
+ *   require_once '/path/to/drupal/core/includes/bootstrap.inc';
+ *   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+ * @endcode
+ *
+ * @param $phase
+ *   A constant telling which phase to bootstrap to. Possible values:
+ *   - DRUPAL_BOOTSTRAP_CONFIGURATION: Initializes configuration.
+ *   - DRUPAL_BOOTSTRAP_KERNEL: Initializes a kernel.
+ *
+ * @return int
+ *   The most recently completed phase.
+ */
+function drupal8_bootstrap($phase = NULL) {
+  // Temporary variables used for booting later legacy phases.
+  /** @var \Drupal\Core\DrupalKernel $kernel */
+  static $kernel;
+  static $boot_level = 0;
+
+  if (isset($phase)) {
+    $request = Request::createFromGlobals();
+    for ($current_phase = $boot_level; $current_phase <= $phase; $current_phase++) {
+
+      switch ($current_phase) {
+        case DRUPAL_BOOTSTRAP_CONFIGURATION:
+          $classloader = require DRUSH_DRUPAL_CORE . '/vendor/autoload.php';
+          $kernel = DrupalKernel::createFromRequest($request, $classloader, 'prod');
+          break;
+
+        case DRUPAL_BOOTSTRAP_KERNEL:
+          $kernel->boot();
+          break;
+
+        case DRUPAL_BOOTSTRAP_PAGE_CACHE:
+          $kernel->handlePageCache($request);
+          break;
+
+        case DRUPAL_BOOTSTRAP_CODE:
+        case DRUPAL_BOOTSTRAP_FULL:
+          $kernel->prepareLegacyRequest($request);
+          break;
+      }
+    }
+    $boot_level = $phase;
+  }
+
+  return \Drupal::getContainer() ? DRUPAL_BOOTSTRAP_CODE : DRUPAL_BOOTSTRAP_CONFIGURATION;
 }
