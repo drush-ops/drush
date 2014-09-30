@@ -120,7 +120,7 @@ if [ -n "$PHP_OPTIONS" ] ; then
 fi
 
 # If on PHP 5.3, disable magic_quotes_gpc and friends
-PHP_MINOR_VERSION="`php -r 'print PHP_MINOR_VERSION;'`"
+PHP_MINOR_VERSION="`$php -r 'print PHP_MINOR_VERSION;'`"
 if [ $PHP_MINOR_VERSION -le 3 ] ; then
   php_options="$php_options -d magic_quotes_gpc=Off -d magic_quotes_runtime=Off -d magic_quotes_sybase=Off"
 fi
