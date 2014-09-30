@@ -78,7 +78,7 @@ function drush_core_runserver($uri = NULL) {
     // Allow a path of a single hyphen to clear a default path.
     $uri['path'] = '';
   }
-  // Remove any leading slashes from the path, since that is what url() expects.
+  // Remove any leading slashes from the path, since that is what _url() expects.
   $path = ltrim($uri['path'], '/');
 
   // Determine and set the new URI.
@@ -132,7 +132,7 @@ function drush_core_runserver($uri = NULL) {
     $user_message = ', logged in as ' . $usersingle->getUsername();
   }
   else {
-    $browse = url($path);
+    $browse = _url($path);
   }
 
   drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
