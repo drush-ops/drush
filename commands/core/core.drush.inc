@@ -451,7 +451,7 @@ function drush_core_updatedb() {
 
   // Clear all caches in a new process. We just performed major surgery.
   if (drush_drupal_major_version() == 8) {
-    drush_invoke_process('@self', 'cache-rebuild', array('all'));
+    drush_invoke_process('@self', 'cache-rebuild');
   }
   else {
     drush_invoke_process('@self', 'cache-clear', array('all'));
