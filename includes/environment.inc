@@ -647,14 +647,19 @@ function drush_is_local_host($host) {
  * Return the user's home directory.
  */
 function drush_server_home() {
-  // Cannot use $_SERVER superglobal since that's empty during UnitUnishTestCase
-  // getenv('HOME') isn't set on windows and generates a Notice.
+  // Cannot use $_SERVER superglobal since that's empty during Drush_UnitTestCase
+  // getenv('HOME') isn't set on Windows and generates a Notice.
   $home = getenv('HOME');
-  if (empty($home)) {
-    if (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
-      // home on windows
-      $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
-    }
+  if (!empty($home)) {
+    // home should never end with a trailing slash.
+    $home = rtrim($home, '/');
+  }
+  elseif (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
+    // home on windows
+    $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
+    // If HOMEPATH is a root directory the path can end with a slash. Make sure
+    // that doesn't happen.
+    $home = rtrim($home, '\\/');
   }
   return empty($home) ? NULL : $home;
 }
