@@ -35,7 +35,7 @@ function test_drush_command() {
     ),
     'examples' => array(
       'test-run' => 'List all available classes and groups.',
-      'sudo -u apache test-run --all' => 'Run all available tests. Avoid permission related failures by running as web server user.',
+      'sudo -u apache drush test-run --all' => 'Run all available tests. Avoid permission related failures by running as web server user.',
       'test-run BootstrapPageCacheTestCase' => 'Run one test class.',
       'test-run Bootstrap' => 'Run all classes in a XML-RPC group.',
       'test-run Bootstrap,Filter' => 'Run all tests from multiple groups/classes.',
