@@ -34,7 +34,7 @@ class Role8 extends Role7 {
   public function getModulePerms($module) {
     drush_include_engine('drupal', 'environment');
 
-    // TODO remove next line when contrib modules hook_permissions
+    // TODO remove next line when contrib modules abandonded hook_permission
     $perms = drush_module_invoke($module, 'permission');
 
     /** @var \Drupal\user\PermissionHandlerInterface $permission_handler */
