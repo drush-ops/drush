@@ -391,3 +391,9 @@ function drush_get_token($value = NULL) {
   return \Drupal::csrfToken()->get($value);
 }
 
+/*
+ * Wrapper for _url().
+ */
+function drush_url($path = NULL, array $options = array()) {
+  return \Drupal::urlGenerator()->generateFromPath($path, $options);
+}

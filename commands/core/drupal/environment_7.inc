@@ -378,3 +378,10 @@ function _drush_extension_get_path($info) {
 function drush_get_token($value = NULL) {
   return drupal_get_token($value);
 }
+
+/*
+ * Wrapper for _url().
+ */
+function drush_url($path = NULL, array $options = array()) {
+  return url($path, $options);
+}

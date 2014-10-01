@@ -132,7 +132,7 @@ function drush_core_runserver($uri = NULL) {
     $user_message = ', logged in as ' . $usersingle->getUsername();
   }
   else {
-    $browse = url($path);
+    $browse = drush_url($path);
   }
 
   drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
