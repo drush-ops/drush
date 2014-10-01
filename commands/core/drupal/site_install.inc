@@ -8,7 +8,11 @@ function drush_core_site_install_version($profile, array $additional_form_option
     $profile = 'standard';
   }
 
-  require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+  $install_file = '/includes/install.core.inc';
+  if (file_exists(DRUSH_DRUPAL_CORE . $install_file . '.php')) {
+    $install_file .= '.php';
+  }
+  require_once DRUSH_DRUPAL_CORE . $install_file;
 
   $sql = drush_sql_get_class();
   $db_spec = $sql->db_spec();
