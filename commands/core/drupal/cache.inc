@@ -64,6 +64,10 @@ function drush_cache_clear_theme_registry() {
   }
 }
 
+function drush_cache_clear_menu() {
+  return menu_router_rebuild();
+}
+
 function drush_cache_clear_css_js() {
   _drupal_flush_css_js();
   drupal_clear_css_cache();
