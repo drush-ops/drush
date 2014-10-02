@@ -38,7 +38,7 @@ class UserSingle7 extends UserSingleBase {
       $options['query']['destination'] = $path;
     }
     // D6,D7 append a /login. Otherwise identical to D8+.
-    return url(user_pass_reset_url($this->account) . '/login', $options);
+    return drush_url(user_pass_reset_url($this->account) . '/login', $options);
   }
 
   function password($pass) {

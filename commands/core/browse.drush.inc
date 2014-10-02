@@ -49,7 +49,7 @@ function drush_browse($path = '') {
       // already logged an error.
       return FALSE;
     }
-    $link = url($path, array('absolute' => TRUE));
+    $link = drush_url($path, array('absolute' => TRUE));
   }
 
   drush_start_browser($link);
