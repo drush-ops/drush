@@ -123,7 +123,7 @@ function drush_cache_clear_pre_validate($type = NULL) {
  */
 function drush_cache_command_clear($type = NULL) {
   if (!drush_get_option('cache-clear', TRUE)) {
-    drush_log(dt("Skipping cache-clear operation due to --skip-cache-clear option."), 'warning');
+    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), 'warning');
     return TRUE;
   }
   $types = drush_cache_clear_types(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
