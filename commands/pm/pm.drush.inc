@@ -109,12 +109,18 @@ function pm_drush_command() {
       'resolve-dependencies' => 'Attempt to download any missing dependencies. At the moment, only works when the module name is the same as the project name.',
       'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
     ),
+    'global-options' => array(
+      'cache-clear',
+    ),
     'aliases' => array('en'),
   );
   $items['pm-disable'] = array(
     'description' => 'Disable one or more extensions (modules or themes).',
     'arguments' => array(
       'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to disable multiple matches.',
+    ),
+    'global-options' => array(
+      'cache-clear',
     ),
     'aliases' => array('dis'),
     'engines' => array(
