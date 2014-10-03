@@ -852,7 +852,10 @@ function _drush_backend_get_global_contexts($site_record) {
     if (is_array($global_metadata)) {
       $value = '';
       if (!array_key_exists('never-propagate', $global_metadata)) {
-        if ((array_key_exists('propagate-cli-value', $global_metadata))) {
+        if ((array_key_exists('propagate', $global_metadata))) {
+          $value = drush_get_option($global_key);
+        }
+        elseif ((array_key_exists('propagate-cli-value', $global_metadata))) {
           $value = drush_get_option($global_key, '', 'cli');
         }
         elseif ((array_key_exists('context', $global_metadata))) {
@@ -862,7 +865,7 @@ function _drush_backend_get_global_contexts($site_record) {
             $value = drush_get_context($global_metadata['context'], array());
           }
         }
-        if (!empty($value)) {
+        if (!empty($value) || ($value === '0')) {
           $result[$global_key] = $value;
         }
       }

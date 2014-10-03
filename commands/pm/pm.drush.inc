@@ -257,10 +257,16 @@ function pm_drush_command() {
       ),
       'update_info',
     ),
+    'global-options' => array(
+     'cache-clear',
+    ),
   );
   // Merge all items from above.
   $items['pm-update'] = array(
     'description' => 'Update Drupal core and contrib projects and apply any pending database updates (Same as pm-updatecode + updatedb).',
+    'global-options' => array(
+      'cache-clear',
+    ),
     'aliases' => array('up'),
     'allow-additional-options' => array('pm-updatecode', 'updatedb'),
   );

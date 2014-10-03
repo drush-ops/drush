@@ -106,6 +106,9 @@ function core_drush_command() {
   $items['updatedb'] = array(
     'description' => 'Apply any database updates required (as with running update.php).',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
+    'global-options' => array(
+      'cache-clear',
+    ),
     'aliases' => array('updb'),
   );
   $items['updatedb-status'] = array(
