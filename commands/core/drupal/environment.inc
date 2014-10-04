@@ -247,7 +247,7 @@ function drush_module_invoke_all($hook) {
  *   An array containing theme info for all available themes.
  */
 function drush_get_themes($include_hidden = TRUE) {
-  $themes = system_rebuild_theme_data();
+  $themes = \Drupal::service('theme_handler')->rebuildThemeData();
   foreach ($themes as $key => $theme) {
     if (!$include_hidden) {
       if (isset($theme->info['hidden'])) {
@@ -266,7 +266,7 @@ function drush_get_themes($include_hidden = TRUE) {
  *  Array of theme names.
  */
 function drush_theme_enable($themes) {
-  theme_enable($themes);
+  \Drupal::service('theme_handler')->install($themes);
 }
 
 /**
@@ -276,7 +276,7 @@ function drush_theme_enable($themes) {
  *  Array of theme names.
  */
 function drush_theme_disable($themes) {
-  theme_disable($themes);
+  drush_set_error('DRUSH_THEME_DISABLE', dt('Drupal 8 does not support disabling themes. Use pm-uninstall instead.'));
 }
 
 /**
