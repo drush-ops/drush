@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Core\DrupalKernel;
+use Drupal\Core\Site\Settings;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -75,7 +76,7 @@ function cache_drush_command() {
     // do the same
     'options' => array(),
     'arguments' => array(),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
     'core' => array('8+'),
     'aliases' => array('cr', 'rebuild'),
   );
@@ -245,20 +246,25 @@ function drush_cache_clear_drush() {
 
 /**
  * Rebuild a Drupal 8 site.
+ *
+ * This is a transpose of core/rebuild.php. Additionally
+ * it also clears drush cache and drupal render cache.
  */
 function drush_cache_rebuild() {
-  $drupal_core = drush_get_context('DRUSH_DRUPAL_CORE');
-  chdir(dirname($drupal_core));
-  $autoloader = require  $drupal_core . '/vendor/autoload.php';
-  require_once $drupal_core . '/includes/utility.inc';
+  chdir(DRUPAL_ROOT);
+  $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+  require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
   $request = Request::createFromGlobals();
-// Manually resemble early bootstrap of DrupalKernel::boot().
-  require_once $drupal_core . '/includes/bootstrap.inc';
+  // Manually resemble early bootstrap of DrupalKernel::boot().
+  require_once DRUSH_DRUPAL_CORE . '/includes/bootstrap.inc';
   DrupalKernel::bootEnvironment();
+  Settings::initialize(DrupalKernel::findSitePath($request), $autoloader);
 
   // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
   drupal_rebuild($autoloader, $request);
+  drush_log(dt('Cache rebuild complete.'), 'ok');
+
   // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
   // the Drush cache as well, for consistency with that behavior.
   drush_cache_clear_drush();
@@ -267,3 +273,4 @@ function drush_cache_rebuild() {
   drush_include_engine('drupal', 'cache', drush_drupal_major_version());
   drush_cache_clear_render();
 }
+

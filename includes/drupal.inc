@@ -6,6 +6,17 @@
  */
 
 /**
+ * Loads the Drupal autoloader and returns the instance.
+ */
+function drush_drupal_load_autoloader($drupal_root) {
+  static $autoloader = FALSE;
+  if (!$autoloader) {
+    $autoloader = require_once $drupal_root .'/core/vendor/autoload.php';
+  }
+  return $autoloader;
+}
+
+/**
  * Detects the version number of the current Drupal installation,
  * if any. Returns FALSE if there is no current Drupal installation,
  * or it is somehow broken.
@@ -19,28 +30,29 @@ function drush_drupal_version($drupal_root = NULL) {
 
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
-      // D7 stores VERSION in bootstrap.inc.
-      $version_constant_paths = array('/includes/bootstrap.inc', '/modules/system/system.module');
-      foreach ($version_constant_paths as $path) {
-        if (file_exists($drupal_root . $path)) {
-          require_once $drupal_root . $path;
-          if (defined('VERSION')) {
-            $version = VERSION;
-            break;
-          }
-        }
-      }
-      // We just might be dealing with an early Drupal version (pre 4.7)
-      if (defined('VERSION')) {
-        $version = VERSION;
-      }
-      elseif (file_exists($drupal_root . '/core/vendor/autoload.php')) {
+      // Try and find D8.
+      if (file_exists($drupal_root . '/core/vendor/autoload.php')) {
+        drush_include_engine('drupal', 'environment');
         // Load the autoloader so we can access the class constants.
-        require_once $drupal_root .'/core/vendor/autoload.php';
-        // Drush depends on bootstrap being loaded at this point;
+        drush_drupal_load_autoloader($drupal_root);
+        // Drush depends on bootstrap being loaded at this point.
         require_once $drupal_root .'/core/includes/bootstrap.inc';
         if (defined('Drupal::VERSION')) {
           $version = Drupal::VERSION;
+        }
+      }
+      else {
+        // D7 stores VERSION in bootstrap.inc.
+        // D6 and below does it in system.module.
+        $version_constant_paths = array('/includes/bootstrap.inc', '/modules/system/system.module');
+        foreach ($version_constant_paths as $path) {
+          if (file_exists($drupal_root . $path)) {
+            require_once $drupal_root . $path;
+            if (defined('VERSION')) {
+              $version = VERSION;
+              break;
+            }
+          }
         }
       }
     }
