@@ -1247,7 +1247,7 @@ function pm_parse_project_version($requests) {
     $drupal_version_default = drush_get_option('default-major', 7);
   }
   $drupal_version_default .= '.x';
-  $drupal_bootstrap = drush_get_context('DRUSH_BOOTSTRAP_PHASE') > 0;
+  $drupal_bootstrap = drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE) > DRUSH_BOOTSTRAP_DRUSH;
   foreach($requests as $request) {
     $drupal_version = $drupal_version_default;
     $project_version = NULL;
