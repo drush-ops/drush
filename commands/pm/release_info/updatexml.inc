@@ -497,7 +497,7 @@ function updatexml_get_releases_from_xml($xml, $project) {
   // If bootstraped, we can obtain which is the installed release of a project.
   static $installed_projects = FALSE;
   if (!$installed_projects) {
-    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE) >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+    if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
       $installed_projects = drush_get_projects();
     }
     else {
