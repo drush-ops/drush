@@ -220,6 +220,8 @@ function drush_command() {
       _drush_log_drupal_messages();
     }
   }
+
+  return $result;
 }
 
 /**
