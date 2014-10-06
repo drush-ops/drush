@@ -32,7 +32,6 @@ function drush_drupal_version($drupal_root = NULL) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
       // Try and find D8.
       if (file_exists($drupal_root . '/core/vendor/autoload.php')) {
-        drush_include_engine('drupal', 'environment');
         // Load the autoloader so we can access the class constants.
         drush_drupal_load_autoloader($drupal_root);
         // Drush depends on bootstrap being loaded at this point.
