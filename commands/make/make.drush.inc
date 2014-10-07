@@ -60,6 +60,7 @@ function make_drush_command() {
       'no-gitinfofile' => 'Do not modify .info files when cloning from Git.',
       'force-gitinfofile' => 'Force a modification of .info files when cloning from Git even if repository isn\'t hosted on Drupal.org.',
       'no-gitprojectinfo' => 'Do not inject project info into .info files when cloning from Git.',
+      'overwrite' => 'Overwrite existing directories. Default is to merge.',
       'prepare-install' => 'Prepare the built site for installation. Generate a properly permissioned settings.php and files directory.',
       'tar' => 'Generate a tar archive of the build. The output filename will be [build path].tar.gz.',
       'test' => 'Run a temporary test build and clean up.',
@@ -593,8 +594,9 @@ function make_move_build($build_path) {
         // 'themes', descend in a level if the file exists.
         // TODO: This only protects one level of directories from being removed.
         $files = drush_scan_directory($file->filename, '/./', array('.', '..'), 0, FALSE);
+        $overwrite = drush_get_option('overwrite', FALSE) ? FILE_EXISTS_OVERWRITE : FILE_EXISTS_MERGE;
         foreach ($files as $file) {
-          $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, FILE_EXISTS_MERGE);
+          $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, $overwrite);
         }
       }
       else {
