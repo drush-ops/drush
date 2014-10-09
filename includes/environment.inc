@@ -501,10 +501,11 @@ function drush_valid_db_credentials() {
         drush_log(dt('PDO support is required.'), 'bootstrap');
         return FALSE;
       }
-      // Check the database specific driver is available.
+      // Warn if the database specific driver is available. We don't return FALSE since
+      // Drush6 supports DB drivers that extend mysql.
       if (!in_array($type, PDO::getAvailableDrivers())) {
-        drush_log(dt('!type extension for PHP PDO is not installed. Check your php.ini to see how you can enable it.', array('!type' => $type)), 'bootstrap');
-        return FALSE;
+        drush_log(dt('!type extension for PHP PDO is not installed. Check your php.ini to see how you can enable it. Proceeding with the mysql PDO extension.', array('!type' => $type)), 'bootstrap');
+        $type = 'mysql';
       }
       // Build the connection string.
       if ($type === 'sqlite') {
