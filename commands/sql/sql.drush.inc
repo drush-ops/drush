@@ -520,7 +520,7 @@ function drush_sql_drop() {
     return drush_user_abort();
   }
   $tables = $sql->listTables();
-  $sql->drop($tables);
+  return $sql->drop($tables);
 }
 
 function drush_sql_cli() {
@@ -570,7 +570,7 @@ function drush_sql_sanitize() {
   }
   if ($sanitize_query) {
     $sql = drush_sql_get_class();
-    $result = $sql->query($sanitize_query);
+    return $sql->query($sanitize_query);
   }
 }
 

@@ -145,6 +145,9 @@ class SqlBase {
    *   Don't print query results to screen.
    * @param string $result_file
    *   A path to save query results to.
+   *
+   * @return
+   *   TRUE on success, FALSE on failure
    */
   public function query($query, $input_file = NULL, $silent = TRUE, $result_file = '') {
     $input_file_original = $input_file;
