@@ -205,6 +205,10 @@ To use php 5.3.x, add this line to .bash_profile:
 If you want to use php 5.4.x, add this line instead:
 
     export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.4/bin:$PATH"
+    
+If you use MAMP 3 (php 5.5.14 by default) and want to use php 5.5.x , add this line instead:
+
+    export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php/php5.5.14/bin:$PATH"
 
 If you have MAMP v.1.84 or lower, this configuration will work for both versions
 of PHP:
