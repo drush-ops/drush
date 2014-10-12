@@ -104,7 +104,7 @@ class drush_release_info_updatexml {
    * @return array
    *  The selected release.
    */
-  public function selectReleaseBasedOnStrategy($request, $restrict_to = '', $select = 'never', $all = FALSE) {
+  public function selectReleaseBasedOnStrategy($request, $restrict_to = '', $select = 'never', $all = FALSE, $version = NULL) {
     if (!in_array($select, array('auto', 'never', 'always', 'ignore'))) {
       return drush_set_error('DRUSH_PM_UNKNOWN_SELECT_STRATEGY', dt("Error: select strategy must be one of: auto, never, always, ignore", array()));
     }
@@ -118,13 +118,16 @@ class drush_release_info_updatexml {
       if ($restrict_to == 'dev') {
         $release = $project_release_info->getDevRelease();
         if ($release === FALSE) {
-          return drush_set_error('DRUSN_PM_NO_DEV_RELEASE', dt('There is no development release for project !project.', array('!project' => $request['name'])));
+          return drush_set_error('DRUSH_PM_NO_DEV_RELEASE', dt('There is no development release for project !project.', array('!project' => $request['name'])));
         }
       }
       if (empty($release)) {
         $release = $project_release_info->getSpecificRelease($request['version']);
         if ($release === FALSE) {
-          return drush_set_error('DRUSH_PM_COULD_NOT_FIND_VERSION', dt("Could not locate !project version !version.", array('!project' => $request['name'], '!version' => $request['version'])));
+          return drush_set_error('DRUSH_PM_COULD_NOT_FIND_VERSION', dt("Could not locate !project version !version.", array(
+            '!project' => $request['name'],
+            '!version' => $request['version'],
+          )));
         }
       }
       // If there was no specific release requested, try to identify the most appropriate release.
@@ -146,10 +149,21 @@ class drush_release_info_updatexml {
       }
     }
 
-    $releases = $project_release_info->filterReleases($all, $restrict_to);
+    // At this point the only chance is to ask the user to choose a release.
+    if ($restrict_to == 'dev') {
+      $filter = 'dev';
+    }
+    elseif ($all) {
+      $filter = 'all';
+    }
+    else {
+      $filter = '';
+    }
+    $releases = $project_release_info->filterReleases($filter, $version);
+
     $options = array();
-    foreach($releases as $version => $release) {
-      $options[$version] = array($version, '-', gmdate('Y-M-d', $release['date']), '-', implode(', ', $release['release_status']));
+    foreach($releases as $release) {
+      $options[$release['version']] = array($release['version'], '-', gmdate('Y-M-d', $release['date']), '-', implode(', ', $release['release_status']));
     }
     $choice = drush_choice($options, dt('Choose one of the available releases for !project:', array('!project' => $request['name'])));
     if (!$choice) {
@@ -272,20 +286,12 @@ class UpdateServiceProject {
    *   Project update information.
    */
   private function parseXml(\SimpleXMLElement $xml) {
-    // If bootstrapped, we can obtain which is the installed release of a project.
-    #TODO# Move this out of here. Probably to the engine class methods that rely on this.
-    static $installed_projects = FALSE;
-    if (!$installed_projects) {
-      if (drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE) >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-        $installed_projects = drush_get_projects();
-      }
-      else {
-        $installed_projects = array();
-      }
-    }
-
     $project_info = array();
-    foreach (array('title', 'short_name', 'dc:creator', 'api_version', 'recommended_major', 'supported_majors', 'default_major', 'project_status', 'link') as $item) {
+    $items = array('title', 'short_name', 'dc:creator', 'api_version',
+      'recommended_major', 'supported_majors', 'default_major',
+      'project_status', 'link'
+    );
+    foreach ($items as $item) {
       if (array_key_exists($item, (array)$xml)) {
         $value = $xml->xpath($item);
         $project_info[$item] = (string)$value[0];
@@ -300,9 +306,14 @@ class UpdateServiceProject {
     $recommended_version = NULL;
     $latest_version = NULL;
     $releases = array();
+    $items = array(
+      'name', 'date', 'status',
+      'version', 'tag', 'version_major', 'version_patch', 'version_extra',
+      'release_link', 'download_link', 'mdhash', 'filesize'
+    );
     foreach ($releases_xml as $release) {
       $release_info = array();
-      foreach (array('name', 'version', 'tag', 'version_major', 'version_extra', 'status', 'release_link', 'download_link', 'date', 'mdhash', 'filesize') as $item) {
+      foreach ($items as $item) {
         if (array_key_exists($item, $release)) {
           $value = $release->xpath($item);
           $release_info[$item] = (string)$value[0];
@@ -335,13 +346,6 @@ class UpdateServiceProject {
         if (strpos($release_type, "Security") !== FALSE) {
           $statuses[] = "Security";
         }
-      }
-      // Add to status whether the project is installed.
-      if (isset($installed_projects[$project_info['short_name']])) {
-        if ($installed_projects[$project_info['short_name']]['version'] == $release_info['version']) {
-           $statuses[] = dt('Installed');
-           $project_info['installed'] = $release_info['version'];
-         }
       }
       $release_info['release_status'] = $statuses;
       $releases[$release_info['version']] = $release_info;
@@ -493,18 +497,19 @@ class UpdateServiceProject {
   }
 
   /**
-   * Helper function for release_info_filter_releases().
+   * Comparison routine to order releases by date.
    *
-   * @param $a
-   *   Value to compare.
-   * @param $b
-   *   Value to compare.
+   * @param array $a
+   *   Release to compare.
+   * @param array $b
+   *   Release to compare.
    *
    * @return int
+   * -1, 0 or 1 whether $a is greater, equal or lower than $b.
    */
-  private static function compareDates($a, $b) {
+  private static function compareDates(array $a, array $b) {
     if ($a['date'] == $b['date']) {
-      return 0;
+      return ($a['version_major'] > $b['version_major']) ? -1 : 1;
     }
     if ($a['version_major'] == $b['version_major']) {
       return ($a['date'] > $b['date']) ? -1 : 1;
@@ -513,74 +518,118 @@ class UpdateServiceProject {
   }
 
   /**
+   * Comparison routine to order releases by version.
+   *
+   * @param array $a
+   *   Release to compare.
+   * @param array $b
+   *   Release to compare.
+   *
+   * @return int
+   * -1, 0 or 1 whether $a is greater, equal or lower than $b.
+   */
+  private static function compareVersions(array $a, array $b) {
+    $defaults = array(
+      'version_patch' => '',
+      'version_extra' => '',
+      'date' => 0,
+    );
+    $a += $defaults;
+    $b += $defaults;
+    if ($a['version_major'] != $b['version_major']) {
+      return ($a['version_major'] > $b['version_major']) ? -1 : 1;
+    }
+    else if ($a['version_patch'] != $b['version_patch']) {
+      return ($a['version_patch'] > $b['version_patch']) ? -1 : 1;
+    }
+    else if ($a['version_extra'] != $b['version_extra']) {
+      // Don't rely on version_extra alphabetical order.
+      return ($a['date'] > $b['date']) ? -1 : 1;
+    }
+
+    return 0;
+  }
+
+  /**
    * Filter project releases by a criteria and returns a list.
    *
-   * @param $all
-   *   Show all releases. If FALSE, shows only the first release that is
-   *   Recommended or Supported or Security or Installed.
-   * @param String $restrict_to
-   *   If set to 'dev', show only development release.
-   * @param $show_all_until_installed
-   *   If TRUE, then all releases will be shown until the INSTALLED release
-   *   is found, at which point the algorithm will stop.
+   * If no filter is provided, the first Recommended, Supported, Security
+   * or Development release on each major version will be shown.
+   *
+   * @param string $filter
+   *   Valid values:
+   *     - 'all': Select all releases.
+   *     - 'dev': Select all development releases.
+   * @param string $installed_version
+   *   Version string. If provided, Select all releases in the same
+   *   version_major branch until the provided one is found.
+   *   On any other branch, the default behaviour will be applied.
    *
    * @return array
+   *   List of releases matching the filter criteria.
    */
-  function filterReleases($all = FALSE, $restrict_to = '', $show_all_until_installed = TRUE) {
+  function filterReleases($filter = '', $installed_version = NULL) {
     $releases = $this->parsed['releases'];
-    // Start off by sorting releases by release date.
-    uasort($releases, array($this, 'compareDates'));
-    // Find version_major for the installed release.
-    #TODO# fix this along UpdateServiceProject::parseXml()
-    $installed_version_major = FALSE;
-    foreach ($releases as $version => $release_info) {
-      if (in_array("Installed", $release_info['release_status'])) {
-        $installed_version_major = $release_info['version_major'];
-      }
-    }
-    // Now iterate through and filter out the releases we're interested in.
+    usort($releases, array($this, 'compareDates'));
+
+    $installed_version = pm_parse_version($installed_version);
+
+    // The Drupal core version scheme (ex: 7.31) is different to
+    // other projects (ex 7.x-3.2). We need to manage this special case.
+    $is_core = ($this->request['name'] == 'drupal');
+
+    // Iterate through and filter out the releases we're interested in.
     $options = array();
     $limits_list = array();
-    $dev = $restrict_to == 'dev';
-    foreach ($releases as $version => $release_info) {
-      if (!$dev || ((array_key_exists('version_extra', $release_info)) && ($release_info['version_extra'] == 'dev'))) {
-        $saw_unique_status = FALSE;
-        foreach ($release_info['release_status'] as $one_status) {
-          // We will show the first release of a given kind;
-          // after we show the first security release, we show
-          // no other.  We do this on a per-major-version basis,
-          // though, so if a project has three major versions, then
-          // we will show the first security release from each.
-          // This rule is overridden by $all and $show_all_until_installed.
-          $test_key = $release_info['version_major'] . $one_status;
-          if (!array_key_exists($test_key, $limits_list)) {
-            $limits_list[$test_key] = TRUE;
-            $saw_unique_status = TRUE;
-            // Once we see the "Installed" release we will stop
-            // showing all releases
-            if ($one_status == "Installed") {
-              $show_all_until_installed = FALSE;
-            }
-          }
-        }
-        if ($all || ($show_all_until_installed && ($installed_version_major == $release_info['version_major'])) || $saw_unique_status) {
-          $options[$release_info['version']] = $release_info;
+    foreach ($releases as $release) {
+      $eligible = FALSE;
+
+      // Mark as eligible if the filter criteria matches.
+      if ($filter == 'all') {
+        $eligible = TRUE;
+      }
+      elseif ($filter == 'dev') {
+        if (!empty($release['version_extra']) && ($release['version_extra'] == 'dev')) {
+          $eligible = TRUE;
         }
       }
+      elseif (!$is_core && ($installed_version['version_major'] == $release['version_major'])) {
+        // In case there's no filter, select all releases until the installed one.
+        // Always show the dev release.
+        if (isset($release['version_extra']) && ($release['version_extra'] == 'dev')) {
+          $eligible = TRUE;
+        }
+        else {
+          if (self::compareVersions($release, $installed_version) < 1) {
+            $eligible = TRUE;
+          }
+        }
+      }
+      // Otherwise, pick only the first release in each status.
+      // For example after we pick out the first security release,
+      // we won't pick any other. We do this on a per-major-version basis,
+      // though, so if a project has three major versions, then we will
+      // pick out the first security release from each.
+      else {
+        foreach ($release['release_status'] as $one_status) {
+          $test_key = $release['version_major'] . $one_status;
+          if (empty($limits_list[$test_key])) {
+            $limits_list[$test_key] = TRUE;
+            $eligible = TRUE;
+          }
+        }
+      }
+
+      if ($eligible) {
+        $options[$release['version']] = $release;
+      }
     }
-    // If "show all until installed" is still true, that means that
-    // we never encountered the installed release anywhere in releases,
-    // and therefore we did not filter out any releases at all.  If this
-    // is the case, then call ourselves again, this time with
-    // $show_all_until_installed set to FALSE from the beginning.
-    // The other situation we might encounter is when we do not encounter
-    // the installed release, and $options is still empty.  This means
-    // that there were no supported or recommended or security or development
-    // releases found.  If this is the case, then we will force ALL to TRUE
-    // and show everything on the second iteration.
-    if (($all === FALSE) && ($show_all_until_installed === TRUE)) {
-      $options = $this->filterReleases(empty($options), $restrict_to, FALSE);
+
+    // Add Installed status.
+    if (!is_null($installed_version) && isset($options[$installed_version['version']])) {
+      $options[$installed_version['version']]['release_status'][] = 'Installed';
     }
+
     return $options;
   }
 

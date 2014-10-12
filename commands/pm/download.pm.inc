@@ -86,16 +86,27 @@ function drush_pm_download() {
     $requests = array('drupal');
   }
 
+  // Pick cli options.
   $source = drush_get_option('source', RELEASE_INFO_DEFAULT_URL);
-  $restrict_to = drush_get_option('dev', FALSE) ? 'dev' : '';
+  $restrict_to = drush_get_option('dev', '');
   $select = drush_get_option('select', 'auto');
   $all = drush_get_option('all', FALSE);
+  // If we've bootstrapped a Drupal site and the user may have the chance
+  // to select from a list of filtered releases, we want to pass
+  // the installed project version, if any.
+  $projects = array();
+  if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+    if (!$all and in_array($select, array('auto', 'always'))) {
+      $projects = drush_get_projects();
+    }
+  }
 
   // Get release history for each request and download the project.
   foreach ($requests as $request) {
     $request = pm_parse_request($request);
     $request['status url'] = $source;
-    $release = $release_info->selectReleaseBasedOnStrategy($request, $restrict_to, $select, $all);
+    $version = isset($projects[$request['name']]) ? $projects[$request['name']]['version'] : NULL;
+    $release = $release_info->selectReleaseBasedOnStrategy($request, $restrict_to, $select, $all, $version);
     if ($release == FALSE) {
       // Stop working on the first failure. Return silently on user abort.
       if (drush_get_context('DRUSH_USER_ABORT', FALSE)) {
@@ -110,7 +121,7 @@ function drush_pm_download() {
     $request['project_type'] = $project_release_info->getType();
 
     // Determine the name of the directory that will contain the project.
-    // We face here all the asymetries to make it smooth for package handlers.
+    // We face here all the assymetries to make it smooth for package handlers.
     // For Drupal core: --drupal-project-rename or drupal-x.y
     if (($request['project_type'] == 'core') ||
         (($request['project_type'] == 'profile') && (drush_get_option('variant', 'full') == 'full'))) {

@@ -1108,11 +1108,29 @@ function drush_pm_uninstall() {
 function drush_pm_releases() {
   $release_info = drush_get_engine('release_info');
 
-  $all = drush_get_option('all', FALSE);
-  $dev = drush_get_option('dev', FALSE);
-
-  if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
+  // Obtain requests.
+  $requests = pm_parse_arguments(func_get_args(), FALSE);
+  if (!$requests) {
     $requests = array('drupal');
+  }
+
+  // Get installed projects.
+  if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+    $projects = drush_get_projects();
+  }
+  else {
+    $projects = array();
+  }
+
+  // Select the filter to apply based on cli options.
+  if (drush_get_option('dev', FALSE)) {
+    $filter = 'dev';
+  }
+  elseif (drush_get_option('all', FALSE)) {
+    $filter = 'all';
+  }
+  else {
+    $filter = '';
   }
 
   $rows = array();
@@ -1121,7 +1139,8 @@ function drush_pm_releases() {
     $request = pm_parse_request($request);
     $project_name = $request['name'];
     $project_release_info = $release_info->get($request);
-    $releases = $project_release_info->filterReleases($all, $dev);
+    $version = isset($projects[$request['name']]) ? $projects[$request['name']]['version'] : NULL;
+    $releases = $project_release_info->filterReleases($filter, $version);
     foreach ($releases as $key => $release) {
       $rows[$key] = array(
         'project' => $project_name,
