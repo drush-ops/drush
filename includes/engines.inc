@@ -452,8 +452,8 @@ function drush_load_engine($type, $engine, $version = NULL, $path = NULL, $engin
  * If the engine type has implemented hook_drush_engine_$type the path to the
  * engine specified in the array will be used.
  *
- * If a class named in the form drush_$type_$engine exists, it will be an
- * object of that class will be created and returned.
+ * If a class named in the form drush_$type_$engine exists, it will return an
+ * instance of the class.
  *
  * If you don't need to present any user options for selecting the engine
  * (which is common if the selection is implied by the running environment)
@@ -469,12 +469,14 @@ function drush_load_engine($type, $engine, $version = NULL, $path = NULL, $engin
  * @param $engine
  *   The key for the engine to be included.
  * @param $version
- *   The version of the engine to be included - defaults to the current Drupal core
- *   major version.
+ *   The version of the engine to be included - defaults to the current Drupal
+ *   core major version.
  * @param $path
  *   A path to include from, if the engine has no corresponding
  *   hook_drush_engine_$type item path.
- * @return TRUE or instanced object of available class on success. FALSE on fail.
+ *
+ * @return
+ *   TRUE or instanced object of available class on success. FALSE on fail.
  */
 function drush_include_engine($type, $selected_engine, $version = NULL, $path = NULL, $engine_config = NULL) {
   $engine_info = drush_get_engines($type);

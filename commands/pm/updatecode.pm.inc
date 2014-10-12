@@ -121,6 +121,8 @@ function drush_pm_updatecode() {
  *   copied from $update_info['drupal'].  @see drush_pm_updatecode.
  */
 function _pm_update_core(&$project, $tmpfile) {
+  $release_info = drush_get_engine('release_info');
+
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
   drush_print(dt('Code updates will be made to drupal core.'));
@@ -129,8 +131,9 @@ function _pm_update_core(&$project, $tmpfile) {
   drush_print();
   if (drush_get_option('notes', FALSE)) {
     drush_print('Obtaining release notes for above projects...');
+    #TODO# Build the $request array from info in $project.
     $requests = pm_parse_project_version(array('drupal'));
-    release_info_print_releasenotes($requests, TRUE, $tmpfile);
+    $release_info->get($requests['drupal'])->getReleaseNotes(NULL, TRUE, $tmpfile);
   }
   if(!drush_confirm(dt('Do you really want to continue?'))) {
     drush_print(dt('Rolling back all changes. Run again with --no-core to update modules only.'));
@@ -239,6 +242,8 @@ function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflict
  *   array key candidate_version that specifies the version to be installed.
  */
 function pm_update_packages($update_info, $tmpfile) {
+  $release_info = drush_get_engine('release_info');
+
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
   $print = '';
@@ -266,8 +271,11 @@ function pm_update_packages($update_info, $tmpfile) {
   // Print the release notes for projects to be updated.
   if (drush_get_option('notes', FALSE)) {
     drush_print('Obtaining release notes for above projects...');
+    #TODO# Build the $request array from info in $project.
     $requests = pm_parse_project_version(array_keys($update_info));
-    release_info_print_releasenotes($requests, TRUE, $tmpfile);
+    foreach ($requests as $request) {
+      $release_info->get($request)->getReleaseNotes(NULL, TRUE, $tmpfile);
+    }
   }
 
   // We print some warnings before the user confirms the update.

@@ -110,6 +110,11 @@ function pm_drush_command() {
       'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
     ),
     'aliases' => array('en'),
+    'engines' => array(
+      'release_info' => array(
+        'add-options-to-command' => FALSE,
+      ),
+    ),
   );
   $items['pm-disable'] = array(
     'description' => 'Disable one or more extensions (modules or themes).',
@@ -821,15 +826,16 @@ function drush_pm_list() {
 /**
  * Helper function for pm-enable.
  */
-function drush_pm_find_project_from_extension($extension) {
+function drush_pm_enable_find_project_from_extension($extension) {
   $result =  drush_pm_lookup_extension_in_cache($extension);
 
   if (!isset($result)) {
-    drush_include_engine('release_info', 'updatexml');
+    $release_info = drush_get_engine('release_info');
+
     // If we can find info on a project that has the same name
     // as the requested extension, then we'll call that a match.
     $request = pm_parse_project_version(array($extension));
-    if (release_info_check_project($request[$extension])) {
+    if ($release_info->checkProject($request[$extension])) {
       $result = $extension;
     }
   }
@@ -863,7 +869,7 @@ function drush_pm_enable_validate() {
       $found = array();
       foreach ($unknown as $key => $name) {
         drush_log(dt('!extension was not found.', array('!extension' => $name)), 'warning');
-        $project = drush_pm_find_project_from_extension($name);
+        $project = drush_pm_enable_find_project_from_extension($name);
         if (!empty($project)) {
           $found[] = $project;
         }
@@ -903,7 +909,7 @@ function drush_pm_enable_validate() {
       foreach ($dependencies as $module => $info) {
         if (!empty($info['unmet-dependencies'])) {
           foreach ($info['unmet-dependencies'] as $unmet_module) {
-            $unmet_project = drush_pm_find_project_from_extension($unmet_module);
+            $unmet_project = drush_pm_enable_find_project_from_extension($unmet_module);
             if (!empty($unmet_project)) {
               $unmet_dependencies[$module][$unmet_project] = $unmet_project;
             }
@@ -1100,32 +1106,39 @@ function drush_pm_uninstall() {
  * Command callback. Show available releases for given project(s).
  */
 function drush_pm_releases() {
-  if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
-    $requests = array('drupal');
-  }
-
-  // Parse out project name and version.
-  $requests = pm_parse_project_version($requests);
-
-  $info = release_info_get_releases($requests);
-  drush_backend_set_result($info);
-  if (!$info) {
-    return drush_log(dt('No valid projects given.'), 'ok');
-  }
+  $release_info = drush_get_engine('release_info');
 
   $all = drush_get_option('all', FALSE);
   $dev = drush_get_option('dev', FALSE);
-  foreach ($info as $name => $project) {
-    $releases = release_info_filter_releases($project['releases'], $all, $dev);
+
+  if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
+    $requests = array('drupal');
+  }
+  $requests = pm_parse_project_version($requests);
+
+  $rows = array();
+  $releases_info = array();
+  foreach ($requests as $request) {
+    $project_name = $request['name'];
+    $project_release_info = $release_info->get($request);
+    $releases = $project_release_info->filterReleases($all, $dev);
     foreach ($releases as $key => $release) {
       $rows[$key] = array(
-        'project' => $name,
+        'project' => $project_name,
         'version' => $release['version'],
         'date' => gmdate('Y-M-d', $release['date']),
-        'status' => implode(', ', $release['release_status'])
+        'status' => implode(', ', $release['release_status']),
       );
     }
+    // Collect parsed update service info to set backend result.
+    $releases_info[$project_name] = $project_release_info->getInfo();
   }
+  if (empty($rows)) {
+    return drush_log(dt('No valid projects given.'), 'ok');
+  }
+  #TODO# Ask @weitzman about 5a233660560a0
+  drush_backend_set_result($releases_info);
+
   return $rows;
 }
 
@@ -1133,12 +1146,20 @@ function drush_pm_releases() {
  * Command callback. Show release notes for given project(s).
  */
 function drush_pm_releasenotes() {
+  $release_info = drush_get_engine('release_info');
+
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
   $requests = pm_parse_project_version($requests);
 
-  return release_info_print_releasenotes($requests);
+  $output = '';
+  foreach($requests as $request) {
+    $project_release_info = $release_info->get($request);
+    $version = empty($request['version']) ? NULL : $request['version'];
+    $output .= $project_release_info->getReleaseNotes($version);
+  }
+  return $output;
 }
 
 /**
@@ -1247,7 +1268,7 @@ function pm_parse_project_version($requests) {
     $drupal_version_default = drush_get_option('default-major', 7);
   }
   $drupal_version_default .= '.x';
-  $drupal_bootstrap = drush_get_context('DRUSH_BOOTSTRAP_PHASE') > 0;
+  $drupal_bootstrap = drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE) > DRUSH_BOOTSTRAP_DRUSH;
   foreach($requests as $request) {
     $drupal_version = $drupal_version_default;
     $project_version = NULL;
