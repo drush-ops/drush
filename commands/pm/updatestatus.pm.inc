@@ -13,14 +13,17 @@
  */
 function drush_pm_updatestatus() {
   // Get specific requests.
-  $requests = pm_parse_arguments(func_get_args(), FALSE);
+  $args = pm_parse_arguments(func_get_args(), FALSE);
+
+  // Parse out project name and version.
+  $requests = array();
+  foreach ($args as $request) {
+    $requests[$request] = pm_parse_request($request);
+  }
 
   // Get installed extensions and projects.
   $extensions = drush_get_extensions();
   $projects = drush_get_projects($extensions);
-
-  // Parse out project name and version.
-  $requests = pm_parse_project_version($requests, $projects);
 
   $update_info = _pm_get_update_info($projects);
 

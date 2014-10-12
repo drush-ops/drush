@@ -132,8 +132,8 @@ function _pm_update_core(&$project, $tmpfile) {
   if (drush_get_option('notes', FALSE)) {
     drush_print('Obtaining release notes for above projects...');
     #TODO# Build the $request array from info in $project.
-    $requests = pm_parse_project_version(array('drupal'));
-    $release_info->get($requests['drupal'])->getReleaseNotes(NULL, TRUE, $tmpfile);
+    $request = pm_parse_request('drupal');
+    $release_info->get($request)->getReleaseNotes(NULL, TRUE, $tmpfile);
   }
   if(!drush_confirm(dt('Do you really want to continue?'))) {
     drush_print(dt('Rolling back all changes. Run again with --no-core to update modules only.'));
@@ -272,8 +272,8 @@ function pm_update_packages($update_info, $tmpfile) {
   if (drush_get_option('notes', FALSE)) {
     drush_print('Obtaining release notes for above projects...');
     #TODO# Build the $request array from info in $project.
-    $requests = pm_parse_project_version(array_keys($update_info));
-    foreach ($requests as $request) {
+    foreach (array_keys($update_info) as $project_name) {
+      $request = pm_parse_request($project_name);
       $release_info->get($request)->getReleaseNotes(NULL, TRUE, $tmpfile);
     }
   }

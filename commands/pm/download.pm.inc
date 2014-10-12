@@ -86,15 +86,14 @@ function drush_pm_download() {
     $requests = array('drupal');
   }
 
-  // Parse out project name and version.
-  $requests = pm_parse_project_version($requests);
-
-  // Get release history for each request and download the project.
   $source = drush_get_option('source', RELEASE_INFO_DEFAULT_URL);
   $restrict_to = drush_get_option('dev', FALSE) ? 'dev' : '';
   $select = drush_get_option('select', 'auto');
   $all = drush_get_option('all', FALSE);
-  foreach ($requests as $name => $request) {
+
+  // Get release history for each request and download the project.
+  foreach ($requests as $request) {
+    $request = pm_parse_request($request);
     $request['status url'] = $source;
     $release = $release_info->selectReleaseBasedOnStrategy($request, $restrict_to, $select, $all);
     if ($release == FALSE) {

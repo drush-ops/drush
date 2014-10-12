@@ -834,8 +834,8 @@ function drush_pm_enable_find_project_from_extension($extension) {
 
     // If we can find info on a project that has the same name
     // as the requested extension, then we'll call that a match.
-    $request = pm_parse_project_version(array($extension));
-    if ($release_info->checkProject($request[$extension])) {
+    $request = pm_parse_request($extension);
+    if ($release_info->checkProject($request)) {
       $result = $extension;
     }
   }
@@ -1114,11 +1114,11 @@ function drush_pm_releases() {
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
-  $requests = pm_parse_project_version($requests);
 
   $rows = array();
   $releases_info = array();
   foreach ($requests as $request) {
+    $request = pm_parse_request($request);
     $project_name = $request['name'];
     $project_release_info = $release_info->get($request);
     $releases = $project_release_info->filterReleases($all, $dev);
@@ -1151,10 +1151,10 @@ function drush_pm_releasenotes() {
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
-  $requests = pm_parse_project_version($requests);
 
   $output = '';
   foreach($requests as $request) {
+    $request = pm_parse_request($request);
     $project_release_info = $release_info->get($request);
     $version = empty($request['version']) ? NULL : $request['version'];
     $output .= $project_release_info->getReleaseNotes($version);
@@ -1257,85 +1257,191 @@ function pm_parse_arguments($args, $dashes_to_underscores = TRUE) {
 }
 
 /**
- * Parse out the project name and version and return as a structured array.
+ * Decompound a version string and returns major, minor and extra parts.
  *
- * @param $requests an array of project names
+ * @see _pm_parse_version_compound()
+ * @see pm_parse_version()
+ *
+ * @param ttring $version
+ *    A version string like X.Y-Z or a subset.
+ *
+ * @return array
+ *   Array with major, minor and extra keys.
  */
-function pm_parse_project_version($requests) {
-  $requestdata = array();
-  $drupal_version_default = drush_drupal_major_version();
-  if (!$drupal_version_default) {
-    $drupal_version_default = drush_get_option('default-major', 7);
-  }
-  $drupal_version_default .= '.x';
-  $drupal_bootstrap = drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE) > DRUSH_BOOTSTRAP_DRUSH;
-  foreach($requests as $request) {
-    $drupal_version = $drupal_version_default;
-    $project_version = NULL;
-    $version = NULL;
-    $project = $request;
-    // project-HEAD or project-5.x-1.0-beta
-    // '5.x-' is optional, as is '-beta'
-    preg_match('/-+(HEAD|(?:(\d+\.x)-+)?(\d+\.[\dx]+.*))$/', $request, $matches);
-    if (isset($matches[1])) {
-      // The project is whatever we have prior to the version part of the request.
-      $project = trim(substr($request, 0, strlen($request) - strlen($matches[0])), ' -');
+function _pm_parse_version_decompound($version) {
+  $pattern = '/^(\d+)(?:\.(x|\d+))?(?:-(.*))?$/';
 
-      if ($matches[1] == 'HEAD' || $matches[2] == 'HEAD') {
-        drush_log('DRUSH_PM_HEAD', 'Can\'t download HEAD releases because Drupal.org project information only provides for numbered release nodes.', 'warning');
-        continue;
-      }
-      if (!empty($matches[2])) {
-        // We have a specified Drupal core version.
-        $drupal_version = trim($matches[2], '-.');
-      }
-      if (!empty($matches[3])) {
-        if (!$drupal_bootstrap && empty($matches[2]) && $project != 'drupal') {
-          // We are not working on a bootstrapped site, and the project is not Drupal itself,
-          // so we assume this value is the Drupal core version and we want the stable project.
-          $drupal_version = trim($matches[3], '-.');
-        }
-        else {
-          // We are working on a bootstrapped site, or the user specified a Drupal version,
-          // so this value must be a specified project version.
-          $project_version = trim($matches[3], '-.');
-          if (substr($project_version, -1, 1) == 'x') {
-            // If a dev branch was requested, we add a -dev suffix.
-            $project_version .= '-dev';
-          }
-        }
-      }
-    }
-    // special checking for 'drupal-VERSION', == drupal latest stable release
-    elseif ((substr($request,0,7) == 'drupal-') && (is_numeric(substr($request,7)))) {
-      $project = 'drupal';
-      $drupal_version = substr($request,7) . '.x';
-      $project_version = $version;
-    }
-    if ($project_version) {
-      if ($project == 'drupal') {
-        // For project Drupal, ensure the major version branch is correct, so
-        // we can locate the requested or stable release for that branch.
-        $project_version_array = explode('.', $project_version);
-        $drupal_version = $project_version_array[0] . '.x';
-        // We use the project version only, since it is core.
-        $version = $project_version;
-      }
-      else {
-        // For regular projects the version string includes the Drupal core version.
-        $version = $drupal_version . '-' . $project_version;
-      }
-    }
-    $requestdata[$project] = array(
-      'name' => $project,
-      'version' => $version,
-      'drupal_version' => $drupal_version,
-      'project_version' => $project_version,
-    );
-  }
-  return $requestdata;
+  $matches = array();
+  preg_match($pattern, $version, $matches);
+  $parts = array(
+    'major' => (isset($matches[1])) ? $matches[1] : '',
+    'minor' => (isset($matches[1]) && isset($matches[2])) ? $matches[2] : '',
+    'extra' => (isset($matches[1]) && isset($matches[3])) ? $matches[3] : '',
+  );
+
+  return $parts;
 }
 
+/**
+ * Build a version string from an array of major, minor and extra parts.
+ *
+ * @see _pm_parse_version_decompound()
+ * @see pm_parse_version()
+ *
+ * @param array $parts
+ *    Array of parts.
+ *
+ * @return string
+ *   A Version string.
+ */
+function _pm_parse_version_compound($parts) {
+  $project_version = '';
+  if ($parts['minor'] == 'x') {
+    $project_version = $parts['major'] . '.x-dev';
+  }
+  elseif ($parts['minor'] != '') {
+    $project_version = $parts['major'] . '.' . $parts['minor'];
+    if ($parts['extra'] != '') {
+      $project_version = $project_version . '-' . $parts['extra'];
+    }
+  }
+  return $project_version;
+}
+
+/**
+ * Parses a version string and returns its components.
+ *
+ * @see pm_parse_request()
+ *
+ * @param string $version
+ *   A core or project version string. Examples:
+ *     - '7.x-1.0-beta1'
+ *     - '1.0-beta1'
+ *     - '7.x-1.0'
+ *     - '1.0'
+ *     - '7.x-1.x'
+ *     - '7.x-1.x-dev'
+ *     - '1.x'
+ *
+ * @param bool $is_core
+ *   Whether this is a core version or a project version.
+ *
+ * @return array
+ *   Versions info, including:
+ *     - version         : Fully qualified version string (ex: 7.x-3.2-beta1).
+ *     - drupal_version  : Core compatibility version (ex: 7.x).
+ *     - version_major   : Major version (ex: 3 in 7.x-3.2-beta1).
+ *     - version_patch   : Minor version (ex: 2 in 7.x-3.2-beta1).
+ *     - version_extra   : Extra version (ex: beta1 in 7.x-3.2-beta1).
+ *     - project_version : Project specific part of the version string (ex: 3.2-beta1).
+ *   Tip: 'version' and 'project_version' are the same for Drupal core.
+ */
+function pm_parse_version($version, $is_core = FALSE) {
+  $core_parts = _pm_parse_version_decompound($version);
+
+  // If no major version, we have no version at all. Pick a default.
+  $drupal_version_default = drush_drupal_major_version();
+  if ($core_parts['major'] == '') {
+    $core_parts['major'] = ($drupal_version_default) ? $drupal_version_default : drush_get_option('default-major', 7);
+  }
+
+  if ($is_core) {
+    $project_version = _pm_parse_version_compound($core_parts);
+    $version_parts = array(
+      'version' => $project_version,
+      'drupal_version' => $core_parts['major'] . '.x',
+      'project_version' => $project_version,
+      'version_major' => $core_parts['major'],
+      'version_patch' => ($core_parts['minor'] == 'x') ? '' : $core_parts['minor'],
+      'version_extra' => ($core_parts['minor'] == 'x') ? 'dev' : $core_parts['extra'],
+    );
+  }
+  else {
+    // If something as 7.x-1.0-beta1, the project specific version is
+    // in $version['extra'] and we need to parse it.
+    if (strpbrk($core_parts['extra'], '.-')) {
+      $nocore_parts = _pm_parse_version_decompound($core_parts['extra']);
+      $project_version = _pm_parse_version_compound($nocore_parts);
+      $version_parts = array(
+        'version' => $core_parts['major'] . '.x-' . $project_version,
+        'drupal_version' => $core_parts['major'] . '.x',
+        'project_version' => $project_version,
+        'version_major' => $nocore_parts['major'],
+        'version_patch' => ($nocore_parts['minor'] == 'x') ? '' : $nocore_parts['minor'],
+        'version_extra' => ($nocore_parts['minor'] == 'x') ? 'dev' : $nocore_parts['extra'],
+      );
+    }
+    // At this point we have half a version and must decide if this is a drupal major or a project.
+    else {
+      // If working on a bootstrapped site, core_parts has the project version.
+      if ($drupal_version_default) {
+        $project_version = _pm_parse_version_compound($core_parts);
+        $version = ($project_version) ? $drupal_version_default . '.x-' . $project_version : '';
+        $version_parts = array(
+          'version' => $version,
+          'drupal_version' => $drupal_version_default . '.x',
+          'project_version' => $project_version,
+          'version_major' => $core_parts['major'],
+          'version_patch' => ($core_parts['minor'] == 'x') ? '' : $core_parts['minor'],
+          'version_extra' => ($core_parts['minor'] == 'x') ? 'dev' : $core_parts['extra'],
+        );
+      }
+      // Not working on a bootstrapped site, core_parts is core version.
+      else {
+        $version_parts = array(
+          'version' => '',
+          'drupal_version' => $core_parts['major'] . '.x',
+          'project_version' => '',
+          'version_major' => '',
+          'version_patch' => '',
+          'version_extra' => '',
+        );
+      }
+    }
+  }
+
+  return $version_parts;
+}
+
+/**
+ * Parse out the project name and version and return as a structured array.
+ *
+ * @see pm_parse_version()
+ *
+ * @param string $request_string
+ *   Project name with optional version. Examples: 'ctools-7.x-1.0-beta1'
+ *
+ * @return array
+ *   Array with all parts of the request info.
+ */
+function pm_parse_request($request_string) {
+  $request = array();
+
+  // Split $request_string in project name and version. Note that hyphens (-)
+  // are permitted in project names (ex: field-conditional-state).
+  // We use a regex to split the string. The pattern used matches a string
+  // starting with hyphen, followed by one or more numbers, any of the valid
+  // symbols in version strings (.x-) and a catchall for the rest of the
+  // version string.
+  $parts = preg_split('/-(?:([\d+\.x].*))?$/', $request_string, NULL, PREG_SPLIT_DELIM_CAPTURE);
+
+  if (count($parts) == 1) {
+    // No version in the request string.
+    $project = $request_string;
+    $version = '';
+  }
+  else {
+    $project = $parts[0];
+    $version = $parts[1];
+  }
+
+  $is_core = ($project == 'drupal');
+  $request = array(
+    'name' => $project,
+  ) + pm_parse_version($version, $is_core);
+
+  return $request;
+}
 
 /**
  * @defgroup engines Engine types

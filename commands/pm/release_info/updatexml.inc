@@ -436,7 +436,7 @@ class UpdateServiceProject {
    *    The release or FALSE if no version specified or no release found.
    */
   public function getSpecificRelease($version = NULL) {
-    if (!is_null($version)) {
+    if (!empty($version)) {
       $matches = array();
       // See if we only have a branch version.
       if (preg_match('/^\d+\.x-(\d+)$/', $version, $matches)) {
