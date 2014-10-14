@@ -69,32 +69,32 @@ class pmDownloadCase extends CommandUnishTestCase {
 
   public function testSelect() {
     $options = array(
-      'cache' => NULL,
-      'no' => NULL,
       'select' => NULL,
+      'choice' => 0, // Cancel.
     );
     // --select. Specify 6.x since that has so many releases.
     $this->drush('pm-download', array('devel-6.x'), $options);
     $items = $this->getOutputAsList();
     $output = $this->getOutput();
-
-    // The maximums below are higher then they usually appear since --verbose can add one.
-    $this->assertLessThanOrEqual(8, count($items), '--select offerred no more than 3 options.');
-    $this->assertContains('dev', $output, 'Dev release was shown by --select.');
-
-    // --select --all. Specify 6.x since that has so many releases.
-    $this->drush('pm-download', array('devel-6.x'), $options + array('all' => NULL));
-    $items = $this->getOutputAsList();
-    $output = $this->getOutput();
-    $this->assertGreaterThanOrEqual(20, count($items), '--select --all offerred at least 16 options.');
-    $this->assertContains('6.x-1.5', $output, 'Assure that --all lists very old releases.');
+     // 6 items are: Select message + Cancel + 3 versions.
+    $this->assertEquals(5, count($items), '--select offerred 3 options.');
+    $this->assertContains('6.x-1.x-dev', $output, 'Dev release was shown by --select.');
 
     // --select --dev. Specify 6.x since that has so many releases.
     $this->drush('pm-download', array('devel-6.x'), $options + array('dev' => NULL));
     $items = $this->getOutputAsList();
     $output = $this->getOutput();
-    $this->assertLessThanOrEqual(6, count($items), '--select --dev expected to offer only one option.');
+    // 12 items are: Select message + Cancel + 1 option.
+    $this->assertEquals(3, count($items), '--select --dev expected to offer only one option.');
     $this->assertContains('6.x-1.x-dev', $output, 'Assure that --dev lists the only dev release.');
+
+    // --select --all. Specify 5.x since this is frozen.
+    $this->drush('pm-download', array('devel-5.x'), $options + array('all' => NULL));
+    $items = $this->getOutputAsList();
+    $output = $this->getOutput();
+    // 12 items are: Select message + Cancel + 9 options.
+    $this->assertEquals(11, count($items), '--select --all offerred 8 options.');
+    $this->assertContains('5.x-0.1', $output, 'Assure that --all lists very old releases.');
   }
 
   public function testPackageHandler() {

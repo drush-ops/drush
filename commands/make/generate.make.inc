@@ -41,6 +41,8 @@ function _drush_make_generate_get_version_options() {
  * Generate the $projects makefile array for the current site.
  */
 function _drush_make_generate_projects($all_extensions, $version_options) {
+  $release_info = drush_get_engine('release_info');
+
   $projects = array();
   $project_libraries = array();
 
@@ -70,7 +72,7 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
       'name' => $install_profile,
       'drupal_version' => $drupal_major_version,
     );
-    if (!release_info_check_project($request, 'profile')) {
+    if (!$release_info->checkProject($request, 'profile')) {
       $projects[$install_profile]['custom_download'] = TRUE;
     }
   }
@@ -101,9 +103,9 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
     );
     if (isset($project['status url'])) {
       $request['status url'] = $project['status url'];
-      $projects[$name]['location'] = $status_url;
+      $projects[$name]['location'] = $project['status url'];
     }
-    if (!release_info_check_project($request, $type)) {
+    if (!$release_info->checkProject($request, $type)) {
       // It is not a project on drupal.org neither an external update service.
       $projects[$name]['type'] = $type;
       $projects[$name]['custom_download'] = TRUE;

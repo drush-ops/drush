@@ -183,6 +183,8 @@ function make_make_complete() {
  * Drush callback; make based on the makefile.
  */
 function drush_make($makefile = NULL, $build_path = NULL) {
+  $release_info = drush_get_engine('release_info');
+
   // If --version option is supplied, print it and bail.
   if (drush_get_option('version', FALSE)) {
     drush_print(dt('Drush make API version !version', array('!version' => MAKE_API)));
@@ -226,6 +228,8 @@ function drush_make($makefile = NULL, $build_path = NULL) {
  * Drush callback: hidden file to process an individual project.
  */
 function drush_make_process($directory) {
+  $release_info = drush_get_engine('release_info');
+
   // Set the temporary directory.
   make_tmp(TRUE, $directory);
   $projects = drush_get_option('projects', array());
@@ -281,6 +285,8 @@ function drush_make_post_make($makefile = NULL, $build_path = NULL) {
  * Gather additional data on all projects specified in the make file.
  */
 function make_prepare_projects($recursion, $info, $contrib_destination = '', $build_path = '', $make_dir = '') {
+  $release_info = drush_get_engine('release_info');
+
   $projects = array();
   if (empty($info['projects'])) {
     if (drush_get_option('no-core') || $recursion) {
@@ -339,10 +345,10 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
       if (!drush_get_option('no-cache', FALSE)) {
         drush_set_option('cache', TRUE);
       }
-      $project_type = release_info_check_project($request, 'core');
+      $is_core = $release_info->checkProject($request, 'core');
       // Restore the previous '--cache' option value.
       drush_set_option('cache', $cache_before);
-      $project['download_type'] = ($project_type ? 'core' : 'contrib');
+      $project['download_type'] = ($is_core ? 'core' : 'contrib');
     }
     elseif (!empty($project['type'])) {
       $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
@@ -383,10 +389,12 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
         if (!drush_get_option('no-cache', FALSE)) {
           drush_set_option('cache', TRUE);
         }
-        $release = release_info_fetch($request, '', 'ignore');
+        $release = $release_info->selectReleaseBasedOnStrategy($request, '', 'ignore');
         if ($release === FALSE) {
           return FALSE;
         }
+        $request['project_type'] = $release_info->get($request)->getType();
+
         // Restore the previous '--cache' option value.
         drush_set_option('cache', $cache_before);
         if (!isset($project['type'])) {
@@ -622,7 +630,7 @@ function make_move_build($build_path) {
 }
 
 /**
- * Create a request array for use with release_info_fetch().
+ * Create a request array suitable for release_info engine.
  *
  * @param array $project
  *   Project array.
