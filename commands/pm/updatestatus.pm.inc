@@ -109,7 +109,7 @@ function drush_pm_updatestatus() {
   $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
   // Build project updatable messages, set candidate version and mark
-  // 'updatable' in the project.
+  // 'updateable' in the project.
   foreach ($update_info as $key => $project) {
     switch($project['status']) {
       case DRUSH_PM_REQUESTED_UPDATE:
@@ -153,29 +153,37 @@ function drush_pm_updatestatus() {
     }
   }
 
-  // Only list projects that have updates available. Use pm-list if you want more info.
-  $updateable = pm_project_filter($update_info, drush_get_option('security-only'));
-  return $updateable;
+  // Filter projects to show.
+  return pm_project_filter($update_info, drush_get_option('security-only'));
 }
 
 /**
- * Return an array of updateable projects and fill $rows.
+ * Filter projects based on verbosity level and $security_only flag.
  *
- * Array of updateable projects is obtained from calculated project update
- * status and $security_only flag.
+ * @param array $update_info
+ *   Update info for projects.
+ * @param bool $security_only
+ *   Whether to select only projects with security updates.
+ *
+ * @return
+ *   Array of projects matching filter criteria.
  */
-function pm_project_filter(&$update_info, $security_only) {
-  $updateable = array();
+function pm_project_filter($update_info, $security_only) {
+  $eligible = array();
   foreach ($update_info as $key => $project) {
-    if (!empty($project['updateable'])) {
-      $updateable[$key] = $project;
-      // Find only security updates
-      if ($security_only && ($project['status'] != UPDATE_NOT_SECURE)) {
-        unset($updateable[$key]);
+    if ($security_only) {
+      if ($project['status'] == UPDATE_NOT_SECURE) {
+        $eligible[$key] = $project;
       }
     }
+    elseif (drush_get_context('DRUSH_VERBOSE')) {
+      $eligible[$key] = $project;
+    }
+    elseif ($project['status'] != UPDATE_CURRENT) {
+      $eligible[$key] = $project;
+    }
   }
-  return $updateable;
+  return $eligible;
 }
 
 /**
