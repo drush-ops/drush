@@ -219,7 +219,7 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
       // Build the notes header.
       $header = array();
       $header[] = '<hr>';
-      $header[] = dt("> RELEASE NOTES FOR '!name' PROJECT, VERSION !version:", array('!name' => strtoupper($project_name), '!version' => $version));
+      $header[] = dt("> RELEASE NOTES FOR '!name' PROJECT, VERSION !version:", array('!name' => strtoupper($name), '!version' => $version));
       $header[] = dt("> !last_updated.", array('!last_updated' => $last_updated));
       if ($print_status) {
         $header[] = '> ' . implode(', ', $project['releases'][$version]['release_status']);
