@@ -1,11 +1,9 @@
 <?php
 
-namespace Unish;
-
 /**
-  * @group pm
-  */
-class pmReleaseNotesCase extends CommandUnishTestCase {
+ * @group pm
+ */
+class pmReleaseNotesCase extends Drush_CommandTestCase {
 
   /**
    * Tests for pm-releasenotes command.
