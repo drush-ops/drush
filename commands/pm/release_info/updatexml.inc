@@ -141,6 +141,7 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
     $tmpfile = drush_tempnam('rln-' . implode('-', array_keys($requests)) . '.');
   }
 
+  // Select versions to show.
   foreach ($info as $name => $project) {
     $selected_versions = array();
     // If the request includes version, show the release notes for this version.
@@ -175,6 +176,8 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
         drush_log(dt("Project !project does not have release notes for version !version.", array('!project' => $name, '!version' => $version)), 'warning');
         continue;
       }
+
+      // Download the release node page and get the html as xml to explore it.
       $release_link = $project['releases'][$version]['release_link'];
       $filename = drush_download_file($release_link, drush_tempnam($name));
       @$dom = DOMDocument::loadHTMLFile($filename);
@@ -186,32 +189,30 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
         continue;
       }
       $xml = simplexml_import_dom($dom);
-      $node_content = $xml->xpath('//div[@class="node node-project-release clearfix"]');
 
-      // Prepare the project notes to print.
-      $notes_last_update = $node_content[0]->div[1]->div[0]->asXML();
-      unset($node_content[0]->div);
-      $project_notes = $node_content[0]->asXML();
+      // Extract last update time and the notes.
+      $last_updated = $xml->xpath('//div[@class="last-updated"]');
+      $last_updated = $last_updated[0]->asXML();
+      $notes = $xml->xpath('//div[contains(@class,"field-name-body")]');
+      $notes = $notes[0]->asXML();
 
-      // Build the status message.
-      $status_msg = '> ' . implode(', ', $project['releases'][$version]['release_status']);
-      $break = '<br>';
-      $notes_header = dt("<hr>
- > RELEASE NOTES FOR '!name' PROJECT, VERSION !version:!break
- > !time.!break
- !status
-<hr>
-", array('!status' => $print_status ? $status_msg : '', '!name' => strtoupper($name), '!break' => $break, '!version' => $version, '!time' => $notes_last_update));
+      // Build the notes header.
+      $header = array();
+      $header[] = '<hr>';
+      $header[] = dt("> RELEASE NOTES FOR '!name' PROJECT, VERSION !version:", array('!name' => strtoupper($project_name), '!version' => $version));
+      $header[] = dt("> !last_updated.", array('!last_updated' => $last_updated));
+      if ($print_status) {
+        $header[] = '> ' . implode(', ', $project['releases'][$version]['release_status']);
+       }
+      $header[] = '<hr>';
 
-      // Finally print the release notes for the requested project.
-      if (drush_get_option('html', FALSE)) {
-        $print = $notes_header . $project_notes;
+      // Finally add the release notes for the requested project to the tmpfile.
+      $content = implode("\n", $header) . "\n" . $notes . "\n";
+      #TODO# accept $html as a method argument
+      if (!drush_get_option('html', FALSE)) {
+        $content = drush_html_to_text($content, array('br', 'p', 'ul', 'ol', 'li', 'hr'));
       }
-      else {
-        $print = drush_html_to_text($notes_header . $project_notes . "\n", array('br', 'p', 'ul', 'ol', 'li', 'hr'));
-        if (drush_drupal_major_version() < 7) { $print .= "\n"; }
-      }
-      file_put_contents($tmpfile, $print, FILE_APPEND);
+      file_put_contents($tmpfile, $content, FILE_APPEND);
     }
   }
   drush_print_file($tmpfile);
