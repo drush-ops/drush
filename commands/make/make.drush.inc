@@ -186,8 +186,6 @@ function make_make_complete() {
  * Drush callback; make based on the makefile.
  */
 function drush_make($makefile = NULL, $build_path = NULL) {
-  $release_info = drush_get_engine('release_info');
-
   // Set the cache option based on our '--no-cache' option.
   _make_enable_cache();
 
