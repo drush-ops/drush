@@ -63,8 +63,9 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
       // we can use the Drupal API.
       $ignored_modules = drush_get_option_list('ignored-modules', array());
       foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
-        $filename = drupal_get_filename('module', $module);
-        $searchpath[] = dirname($filename);
+        if ($filename = drupal_get_filename('module', $module)) {
+          $searchpath[] = dirname($filename);
+        }
       }
       break;
   }
