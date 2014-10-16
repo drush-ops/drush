@@ -360,7 +360,7 @@ function _drush_invoke_hooks($command, $args) {
           drush_log(dt("Returned from hook !hook", array('!hook' => $func)), 'debug');
         }
         catch (Exception $e) {
-          drush_set_error('DRUSH_EXECUTION_EXCEPTION', $e->getMessage());
+          drush_set_error('DRUSH_EXECUTION_EXCEPTION', (string) $e);
         }
         // If there is an error, break out of the foreach
         // $variations and foreach $callback_list
