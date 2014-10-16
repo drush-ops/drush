@@ -344,10 +344,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
 
     if ($project['location'] != ReleaseInfo::DEFAULT_URL && !isset($project['type'])) {
       // Set the cache option based on our '--no-cache' option.
-      $cache_before = drush_get_option('cache');
-      if (!drush_get_option('no-cache', FALSE)) {
-        drush_set_option('cache', TRUE);
-      }
+      $cache_before = _make_enable_cache();
       $is_core = $release_info->checkProject($request, 'core');
       // Restore the previous '--cache' option value.
       drush_set_option('cache', $cache_before);
@@ -388,10 +385,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
         // keys.
         $request = make_prepare_request($project, $type);
         // Set the cache option based on our '--no-cache' option.
-        $cache_before = drush_get_option('cache');
-        if (!drush_get_option('no-cache', FALSE)) {
-          drush_set_option('cache', TRUE);
-        }
+        $cache_before = _make_enable_cache();
         $release = $release_info->selectReleaseBasedOnStrategy($request, '', 'ignore');
         if ($release === FALSE) {
           return FALSE;
@@ -444,10 +438,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
         make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project.', array('%type' => $project['type'], '%project' => $project['name'])));
       }
       // Set the cache option based on our '--no-cache' option.
-      $cache_before = drush_get_option('cache');
-      if (!drush_get_option('no-cache', FALSE)) {
-        drush_set_option('cache', TRUE);
-      }
+      $cache_before = _make_enable_cache();
       $project->make();
       // Restore the previous '--cache' option value.
       drush_set_option('cache', $cache_before);
@@ -553,10 +544,14 @@ function make_libraries($recursion, $contrib_destination, $info, $build_path, $m
   if (empty($libraries)) {
     return;
   }
+  // Enable caching.
+  $cache_before = _make_enable_cache();
   foreach ($libraries as $key => $library) {
     $class = DrushMakeProject::getInstance('library', $library);
     $class->make();
   }
+  // Restore previous cache setting.
+  drush_set_option('cache', $cache_before);
 }
 
 /**
@@ -672,4 +667,18 @@ function make_project_needs_release_info($project) {
     // Only fetch release info if the project type is unknown OR if
     // download attributes are unspecified.
     && (!isset($project['type']) || !isset($project['download']));
+}
+
+/**
+ * Enables caching if not explicitly disabled.
+ *
+ * @return bool
+ *   The previous value of the 'cache' option.
+ */
+function _make_enable_cache() {
+  $cache_before = drush_get_option('cache');
+  if (!drush_get_option('no-cache', FALSE)) {
+    drush_set_option('cache', TRUE);
+  }
+  return $cache_before;
 }
