@@ -195,13 +195,9 @@ function make_validate_info_file($info) {
           }
           $names[] = $project;
           foreach ($project_data as $attribute => $value) {
-            // Unset disallowed attributes.
-            if (in_array($attribute, array('contrib_destination'))) {
-              unset($info['projects'][$project][$attribute]);
-            }
             // Prevent malicious attempts to access other areas of the
             // filesystem.
-            elseif (in_array($attribute, array('subdir', 'directory_name')) && !make_safe_path($value)) {
+            if (in_array($attribute, array('subdir', 'directory_name', 'contrib_destination')) && !make_safe_path($value)) {
               $args = array(
                 '!path' => $value,
                 '!attribute' => $attribute,
