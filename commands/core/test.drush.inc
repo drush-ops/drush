@@ -108,7 +108,7 @@ function drush_test_run_validate($specs = NULL) {
  *   A comma delimited string of test classes or group names.
  */
 function drush_test_run($specs = NULL) {
-  if (drush_drupal_major_version() > 7) {
+  if (drush_drupal_major_version() >= 8) {
     // \Drupal::cache('simpletest')->delete();
   }
   else {
