@@ -376,7 +376,8 @@ function drush_user_login($inputs = '', $path = NULL) {
       return drush_set_error('Unable to execute user login.');
     }
     else {
-      $links = $return['object'];
+      // Prior versions of Drupal returned a string so cast to an array if needed.
+      $links = is_string($return['object']) ? array($return['object']) : $return['object'];
     }
   }
   else {
