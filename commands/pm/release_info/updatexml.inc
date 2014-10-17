@@ -8,7 +8,7 @@
  * on a bootstrapped site.
  */
 
-define('RELEASE_INFO_DEFAULT_URL', 'http://updates.drupal.org/release-history');
+define('RELEASE_INFO_DEFAULT_URL', 'https://updates.drupal.org/release-history');
 
 /**
  * Release info engine class.
