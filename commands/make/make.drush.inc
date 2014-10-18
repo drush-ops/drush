@@ -4,6 +4,8 @@
  * Drush Make commands.
  */
 
+use \Drush\UpdateService\ReleaseInfo;
+
 /**
  * Default localization server for downloading translations.
  */
@@ -319,7 +321,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
       'build_path'          => $build_path,
       'contrib_destination' => $contrib_destination,
       'version'             => '',
-      'location'            => drush_get_option('make-update-default-url', RELEASE_INFO_DEFAULT_URL),
+      'location'            => drush_get_option('make-update-default-url', ReleaseInfo::DEFAULT_URL),
       'subdir'              => '',
       'directory_name'      => '',
       'make_directory'      => $make_dir,
@@ -330,7 +332,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
     if (isset($project['download']) && !isset($project['download']['type'])) {
       $project['download']['type'] = 'git';
     }
-    if (!isset($project['l10n_url']) && ($project['location'] == RELEASE_INFO_DEFAULT_URL)) {
+    if (!isset($project['l10n_url']) && ($project['location'] == ReleaseInfo::DEFAULT_URL)) {
       $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
     }
 
@@ -340,7 +342,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
     // keys.
     $request = make_prepare_request($project);
 
-    if ($project['location'] != RELEASE_INFO_DEFAULT_URL && !isset($project['type'])) {
+    if ($project['location'] != ReleaseInfo::DEFAULT_URL && !isset($project['type'])) {
       // Set the cache option based on our '--no-cache' option.
       $cache_before = drush_get_option('cache');
       if (!drush_get_option('no-cache', FALSE)) {

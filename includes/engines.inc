@@ -70,21 +70,39 @@ function drush_get_engines($engine_type) {
     if (drush_command_hook($commandfile, $hook)) {
       $function = $commandfile . '_' . $hook;
       $result = $function();
-      foreach ($result as $key => $engine) {
-        // Add some defaults
+      foreach ($result as $engine_name => $engine) {
+        // Add some defaults.
         $engine += array(
           'commandfile' => $commandfile,
-          // Engines by default live in a subdirectory of the commandfile that
-          // declared them, named as per the type of engine they are.
-          'path' => sprintf("%s/%s", dirname($path), $engine_type),
           'options' => array(),
           'sub-options' => array(),
           'drupal dependencies' => array(),
         );
-        $engines['engines'][$key] = $engine;
+
+        // Legacy engines live in a subdirectory
+        // of the commandfile that declared them.
+        $engine_path = sprintf("%s/%s", dirname($path), $engine_type);
+        if (file_exists($engine_path)) {
+          $engine['path'] = $engine_path;
+        }
+        // Build engine class name, in case the engine doesn't provide it.
+        // The class name is based on the engine type and name, converted
+        // from snake_case to CamelCase.
+        // For example for type 'package_handler' and engine 'git_drupalorg'
+        // the class is \Drush\PackageHandler\GitDrupalorg
+        elseif (!isset($engine['class'])) {
+          $parts = array();
+          $parts[] = '\Drush';
+          $parts[] = str_replace(' ', '', ucwords(strtr($engine_type, '_', ' ')));
+          $parts[] = str_replace(' ', '', ucwords(strtr($engine_name, '_', ' ')));
+          $engine['class'] = implode('\\', $parts);
+        }
+
+        $engines['engines'][$engine_name] = $engine;
       }
     }
   }
+
   return $engines;
 }
 
@@ -148,17 +166,16 @@ function drush_load_command_engine($command, $engine_type, $metadata = array()) 
 
   $config = drush_get_command_engine_config($command, $engine_type, $metadata);
   $engine_info = drush_get_engines($engine_type);
-  $selected_engine = drush_get_user_selected_engine($config, $engine_info);
+  $engine = drush_select_engine($config, $engine_info);
   $version = drush_drupal_major_version();
 
-  $context = $engine_type . '_engine_' . $selected_engine . '_' . $version;
+  $context = $engine_type . '_engine_' . $engine . '_' . $version;
   $instance = drush_get_context($context, FALSE);
   if ($instance != FALSE) {
     drush_set_engine($engine_type, $instance);
   }
   else {
-    $instance = drush_load_engine($engine_type, $selected_engine, NULL, NULL, $config);
-      $command['bootstrap_errors']["FOO"] = "BAR";
+    $instance = drush_load_engine($engine_type, $engine, $config);
     if ($instance == FALSE) {
       return FALSE;
     }
@@ -246,7 +263,7 @@ function drush_merge_engine_data(&$command) {
       $combine_help_data = array();
 
       // Process engines in order. First the default engine, the rest alphabetically.
-      $default = drush_find_engine_to_use($config, $engine_info);
+      $default = drush_select_engine($config, $engine_info);
       $engines = array_keys($engine_info['engines']);
       asort($engines);
       array_unshift($engines, $default);
@@ -367,69 +384,73 @@ function drush_engine_topic_command($engine) {
 }
 
 /**
- * Obtains the engine to use.
+ * Selects an engine between the available ones.
  *
  * Precedence:
  *
+ *  - preferred engine, if available.
  *  - user supplied engine via cli.
- *  - default engine configured for the command.
- *  - the first engine of all available.
+ *  - default engine from engine type / command declaration.
+ *  - the first engine available.
  *
- *  @see drush_find_engine_to_use().
+ * @param array $config
+ *   Engine type configuration. My be overridden in command declaration.
+ * @param array $engine_info
+ *   Engine type declaration.
+ * @param string $default
+ *   Preferred engine.
  *
- *  #TODO# clarify naming of functions and entrance point.
+ * @return string
+ *   Selected engine.
  */
-function drush_get_user_selected_engine(&$config, $engine_info) {
+function drush_select_engine($config, $engine_info, $preferred = NULL) {
   $engines = array_keys($engine_info['engines']);
-  $default = isset($config['default']) ? $config['default'] : current($engines);
-  if (!empty($config['option'])) {
-    $selected_engine = drush_get_option($config['option'], $default);
-  }
-  // Otherwise the default engine is the only option.
-  else {
-    $selected_engine = $default;
-  }
-  return $selected_engine;
-}
 
-/**
- * Returns a valid engine to use.
- *
- * If no preference is passed in $selected_engine, it will pick the
- * 'default' engine provided within the command config.
- *
- * $config is altered to add the engine info to $config['engine-info'].
- *
- *  @see drush_get_user_selected_engine().
- *
- *  #TODO# clarify naming of functions and entrance point.
- */
-function drush_find_engine_to_use(&$config, $engine_info, $selected_engine = NULL) {
-  if (!isset($selected_engine)) {
-    $selected_engine = $config['default'];
+  if (in_array($preferred, $engines)) {
+    return $preferred;
   }
-  if (array_key_exists($selected_engine, $engine_info['engines'])) {
-    $config['engine-info'] = $engine_info['engines'][$selected_engine];
+
+  if (!empty($config['option'])) {
+    $engine = drush_get_option($config['option'], FALSE);
+    if ($engine && in_array($engine, $engines)) {
+      return $engine;
+    }
   }
-  return $selected_engine;
+
+  if (isset($config['default']) && in_array($config['default'], $engines)) {
+    return $config['default'];
+  }
+
+  return current($engines);
 }
 
 /**
  * Loads and validate an engine of the given type.
+ *
+ * @param string $type
+ *   Engine type.
+ * @param string $engine
+ *   Engine name.
+ * @param array $config
+ *   Engine configuration. Tipically it comes from a command declaration.
+ *
+ * @return
+ *   TRUE or instanced object of available class on success. FALSE on fail.
  */
-function drush_load_engine($type, $engine, $version = NULL, $path = NULL, $engine_config = NULL) {
+function drush_load_engine($type, $engine, $config = array()) {
   $engine_info = drush_get_engines($type);
-  $selected_engine = drush_find_engine_to_use($engine_config, $engine_info, $engine);
-  if (!array_key_exists($selected_engine, $engine_info['engines'])) {
-    return drush_set_error('DRUSH_UNKNOWN_ENGINE_TYPE', dt('Unknown !engine_type engine !engine', array('!engine' => $selected_engine, '!engine_type' => $type)));
-  }
+  $engine = drush_select_engine($config, $engine_info, $engine);
+  $config['engine-info'] = $engine_info['engines'][$engine];
+
   // Check engine dependency on drupal modules before include.
-  foreach ($engine_config['engine-info']['drupal dependencies'] as $dependency) {
+  $dependencies = $config['engine-info']['drupal dependencies'];
+  foreach ($dependencies as $dependency) {
     if (!drush_module_exists($dependency)) {
-      return drush_set_error('DRUSH_ENGINE_DEPENDENCY_ERROR', dt('!engine_type: !engine engine needs the following modules installed/enabled to run: !dependencies.', array('!engine_type' => $type, '!engine' => $selected_engine, '!dependencies' => implode(', ', $engine_config['engine-info']['drupal dependencies']))));
+      return drush_set_error('DRUSH_ENGINE_DEPENDENCY_ERROR', dt('!engine_type: !engine engine needs the following modules installed/enabled to run: !dependencies.', array('!engine_type' => $type, '!engine' => $engine, '!dependencies' => implode(', ', $dependencies))));
     }
   }
-  $result = drush_include_engine($type, $selected_engine, $version, $path, $engine_config);
+
+  $result = drush_include_engine($type, $engine, $config);
   if (is_object($result)) {
     $valid = method_exists($result, 'validate') ? $result->validate() : TRUE;
     if ($valid) {
@@ -455,55 +476,46 @@ function drush_load_engine($type, $engine, $version = NULL, $path = NULL, $engin
  * If a class named in the form drush_$type_$engine exists, it will return an
  * instance of the class.
  *
- * If you don't need to present any user options for selecting the engine
- * (which is common if the selection is implied by the running environment)
- * and you don't need to allow other modules to define their own engines you can
- * simply pass the $path to the directory where the engines are, and the
- * appropriate one will be included.
- *
- * Unlike drush_include this function will set errors if the requested engine
- * cannot be found.
- *
- * @param $type
+ * @param string $type
  *   The type of engine.
- * @param $engine
- *   The key for the engine to be included.
- * @param $version
- *   The version of the engine to be included - defaults to the current Drupal
- *   core major version.
- * @param $path
- *   A path to include from, if the engine has no corresponding
- *   hook_drush_engine_$type item path.
+ * @param string $engine
+ *   The name for the engine to include.
+ * @param array $config
+ *   Parameters for the engine class constructor.
  *
  * @return
  *   TRUE or instanced object of available class on success. FALSE on fail.
  */
-function drush_include_engine($type, $selected_engine, $version = NULL, $path = NULL, $engine_config = NULL) {
+function drush_include_engine($type, $engine, $config = NULL) {
   $engine_info = drush_get_engines($type);
-  $engine = isset($engine_info['engines'][$selected_engine]['engine-class']) ? $engine_info['engines'][$selected_engine]['engine-class'] : $selected_engine;
-  if (!$path && isset($engine_info['engines'][$engine])) {
+
+  // Pick the engine name that actually implements the requested engine.
+  $engine = isset($engine_info['engines'][$engine]['implemented-by']) ? $engine_info['engines'][$engine]['implemented-by'] : $engine;
+
+  // Legacy engines live in a subdirectory of the commandfile
+  // that declares them. We need to explicitly include the file.
+  if (isset($engine_info['engines'][$engine]['path'])) {
     $path = $engine_info['engines'][$engine]['path'];
-  }
-  if (!$path) {
-    return drush_set_error('DRUSH_ENGINE_INCLUDE_NO_PATH', dt('No path was set for including the !type engine !engine.', array('!type' => $type, '!engine' => $engine)));
-  }
-  if (drush_include($path, $engine, $version)) {
+    if (!drush_include($path, $engine)) {
+      return drush_set_error('DRUSH_ENGINE_INCLUDE_FAILED', dt('Unable to include the !type engine !engine from !path.' , array('!path' => $path, '!type' => $type, '!engine' => $engine)));
+    }
+    // Legacy engines may be implemented in a magic class name.
     $class = 'drush_' . $type . '_' . str_replace('-', '_', $engine);
     if (class_exists($class)) {
-      $instance = new $class($engine_config);
+      $instance = new $class($config);
       $instance->engine_type = $type;
       $instance->engine = $engine;
-      $instance->selected_engine = $selected_engine;
       return $instance;
     }
+
     return TRUE;
   }
-  return drush_set_error('DRUSH_ENGINE_INCLUDE_FAILED', dt('Unable to include the !type engine !engine from !path.' , array('!path' => $path, '!type' => $type, '!engine' => $engine)));
+
+  return drush_get_class($engine_info['engines'][$engine]['class'], array($type, $engine, $config));
 }
 
 /**
- * Return the engine of the specified type that was loaded
- * by the Drush command.
+ * Return the engine of the specified type that was loaded by the Drush command.
  */
 function drush_get_engine($type) {
   return drush_get_context($type . '_engine', FALSE);

@@ -64,19 +64,19 @@ function image_drush_help_alter(&$command) {
  */
 function image_image_flush_complete() {
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
-  drush_include_engine('drupal', 'image', drush_drupal_major_version());
+  drush_include_engine('drupal', 'image');
   return array('values' => array_keys(drush_image_styles()));
 }
 
 function drush_image_flush_pre_validate($style_name = NULL) {
-  drush_include_engine('drupal', 'image', drush_drupal_major_version());
+  drush_include_engine('drupal', 'image');
   if (!empty($style_name) && !$style = drush_image_style_load($style_name)) {
     return drush_set_error(dt('Image style !style not recognized.', array('!style' => $style_name)));
   }
 }
 
 function drush_image_flush($style_name = NULL) {
-  drush_include_engine('drupal', 'image', drush_drupal_major_version());
+  drush_include_engine('drupal', 'image');
   if (drush_get_option('all')) {
     $style_name = 'all';
   }
@@ -103,7 +103,7 @@ function drush_image_flush($style_name = NULL) {
 }
 
 function drush_image_derive_validate($style_name, $source) {
-  drush_include_engine('drupal', 'image', drush_drupal_major_version());
+  drush_include_engine('drupal', 'image');
   if (!$style = drush_image_style_load($style_name)) {
     return drush_set_error(dt('Image style !style not recognized.', array('!style' => $style_name)));
   }
@@ -123,6 +123,6 @@ function drush_image_derive_validate($style_name, $source) {
  *   The path to a source image, relative to Drupal root.
  */
 function drush_image_derive($style_name, $source) {
-  drush_include_engine('drupal', 'image', drush_drupal_major_version());
+  drush_include_engine('drupal', 'image');
   return _drush_image_derive($style_name, $source);
 }

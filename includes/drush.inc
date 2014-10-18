@@ -61,19 +61,21 @@ define('DRUSH_CACHE_LIFETIME_DEFAULT', 86400);
  *   TRUE if the file was found and included.
  */
 function drush_include($path, $name, $version = NULL, $extension = 'inc') {
+  $name = str_replace('-', '_', $name);
   $version = ($version) ? $version : drush_drupal_major_version();
-  $file = sprintf("%s/%s_%s.%s", $path, str_replace('-', '_', $name), $version, $extension);
+
+  $file = sprintf("%s/%s_%s.%s", $path, $name, $version, $extension);
   if (file_exists($file)) {
-    //drush_log(dt('Including version specific file : @file', array('@file' => $file)));
     include_once($file);
     return TRUE;
   }
-  $file = sprintf("%s/%s.%s", $path, str_replace('-', '_', $name), $extension);
+  $file = sprintf("%s/%s.%s", $path, $name, $extension);
   if (file_exists($file)) {
-    //drush_log(dt('Including non-version specific file : @file', array('@file' => $file)));
     include_once($file);
     return TRUE;
   }
+
+  return drush_set_error('DRUSH_INCLUDE_NO_PATH', dt('Unable to include file !name!version!extension or !name!extension from !path.', array('!name' => $name, '!version' => $version, '!extension' => $extension)));
 }
 
 /**
@@ -97,15 +99,15 @@ function drush_get_class($class_name, $constructor_args = array(), $variations =
   if (empty($variations)) {
     $variations[] = drush_drupal_major_version();
   }
-  for ($i=count($variations); $i > 0; $i--) {
+  for ($i=count($variations); $i >= 0; $i--) {
     $variant_class_name = $class_name . implode('', array_slice($variations, 0, $i));
     if (class_exists($variant_class_name)) {
       $reflectionClass = new ReflectionClass($variant_class_name);
       return $reflectionClass->newInstanceArgs($constructor_args);
     }
   }
-  // Something bad happenned. Exception?
-  // drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Unable to load class - %s', $class_name));
+  // Something bad happenned. TODO Exception?
+  return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Unable to load class !class', array('!class' => $class_name)));
 }
 
 /**

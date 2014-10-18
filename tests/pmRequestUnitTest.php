@@ -162,7 +162,6 @@ class pmRequestUnitCase extends UnitUnishTestCase {
 
     $request = 'field-conditional-state-7.x-1.2';
     $request = pm_parse_request($request);
-    print_r($request);
     $this->assertEquals('field-conditional-state', $request['name']);
     $this->assertEquals('7.x-1.2', $request['version']);
   }

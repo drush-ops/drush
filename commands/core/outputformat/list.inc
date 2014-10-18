@@ -46,7 +46,7 @@ class drush_outputformat_list extends drush_outputformat {
       }
     }
     $sub_formatter = isset($list_metadata['list-item-type']) ? $list_metadata['list-item-type'] : 'string';
-    $this->sub_engine = drush_load_engine('outputformat', $sub_formatter, NULL, NULL, $this->engine_config);
+    $this->sub_engine = drush_load_engine('outputformat', $sub_formatter, $this->engine_config);
     if (!is_object($this->sub_engine)) {
       return drush_set_error('DRUSH_INVALID_SUBFORMATTER', dt("The list output formatter could not load its subformatter: !sub", array('!sub' => $sub_formatter)));
     }

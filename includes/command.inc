@@ -471,7 +471,7 @@ function drush_handle_command_output($command, $structured_output) {
       if ($formatter === TRUE) {
         return drush_set_error(dt('No outputformat class defined for !format', array('!format' => $format)));
       }
-      if ((!empty($command['engines']['outputformat'])) && (!in_array($formatter->selected_engine, $command['engines']['outputformat']['usable']))) {
+      if ((!empty($command['engines']['outputformat'])) && (!in_array($formatter->engine, $command['engines']['outputformat']['usable']))) {
         return $formatter->format_error(dt("The command '!command' does not produce output in a structure usable by this output format.", array('!command' => $command['command'])));
       }
       // Add any user-specified options to the metadata passed to the formatter.

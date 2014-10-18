@@ -71,7 +71,7 @@ function drush_backend_batch_process($command = 'batch-process', $args = array()
   // Command line options to pass to the command.
   $options['u'] = drush_user_get_class()->getCurrentUserAsSingle()->id();
 
-  drush_include_engine('drupal', 'batch', drush_drupal_major_version());
+  drush_include_engine('drupal', 'batch');
   _drush_backend_batch_process($command, $args, $options);
 }
 
@@ -86,6 +86,6 @@ function drush_backend_batch_process($command = 'batch-process', $args = array()
  */
 function drush_batch_command($id) {
   include_once(DRUSH_DRUPAL_CORE . '/includes/batch.inc');
-  drush_include_engine('drupal', 'batch', drush_drupal_major_version());
+  drush_include_engine('drupal', 'batch');
   _drush_batch_command($id);
 }

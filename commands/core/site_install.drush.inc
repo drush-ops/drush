@@ -265,6 +265,6 @@ function drush_core_site_install($profile = NULL) {
       $form_options[$key] = $value;
     }
   }
-  drush_include_engine('drupal', 'site_install', drush_drupal_major_version());
+  drush_include_engine('drupal', 'site_install');
   drush_core_site_install_version($profile, $form_options);
 }
