@@ -130,7 +130,7 @@ function outputformat_drush_engine_outputformat() {
     'hidden' => TRUE,
   );
   $engines['key-value-list'] = array(
-    'engine-class' => 'list',
+    'implemented-by' => 'list',
     'list-item-type' => 'key-value',
     'description' => 'A list of formatted lists of key-value pairs.',
     'list-field-selection-control' => 1,
@@ -175,7 +175,7 @@ function outputformat_drush_engine_outputformat() {
   );
   $engines['config'] = array(
     'machine-parsable' => TRUE,
-    'engine-class' => 'list',
+    'implemented-by' => 'list',
     'list-item-type' => 'var_export',
     'description' => "A configuration file in executable php format. The variable name is \"config\", and the variable keys are taken from the output data array's keys.",
     'metadata' => array(
@@ -195,7 +195,7 @@ function outputformat_drush_engine_outputformat() {
   );
   $engines['nested-csv'] = array(
     'machine-parsable' => TRUE,
-    'engine-class' => 'list',
+    'implemented-by' => 'list',
     'list-separator' => ',',
     'list-item-type' => 'csv-or-string',
     'hidden' => TRUE,
@@ -206,7 +206,7 @@ function outputformat_drush_engine_outputformat() {
   );
   $engines['csv'] = array(
     'machine-parsable' => TRUE,
-    'engine-class' => 'list',
+    'implemented-by' => 'list',
     'list-item-type' => 'nested-csv',
     'labeled-list' => TRUE,
     'description' => 'A list of values, one per row, each of which is a comma-separated list of values.',
@@ -226,7 +226,7 @@ function outputformat_drush_engine_outputformat() {
     'description' => 'A list of php exports, labeled with a name.',
     'engine-capabilities' => array('format-table'),
     'verbose-only' => TRUE,
-    'engine-class' => 'list',
+    'implemented-by' => 'list',
     'list-item-type' => 'var_export',
     'metadata' => array(
       'label-template' => '!label: !value',
@@ -353,7 +353,7 @@ class drush_outputformat {
     $this->engine_config = $config;
   }
   function format_error($message) {
-    return drush_set_error('DRUSH_FORMAT_ERROR', dt("The output data could not be processed by the selected format '!type'.  !message", array('!type' => $this->selected_engine, '!message' => $message)));
+    return drush_set_error('DRUSH_FORMAT_ERROR', dt("The output data could not be processed by the selected format '!type'.  !message", array('!type' => $this->engine, '!message' => $message)));
   }
   function formatter_type() {
     return $this->engine;
@@ -416,9 +416,9 @@ class drush_outputformat {
         }
       }
     }
-    if (isset($metadata[$this->selected_engine . '-metadata'])) {
-      $engine_specific_metadata = $metadata[$this->selected_engine . '-metadata'];
-      unset($metadata[$this->selected_engine . '-metadata']);
+    if (isset($metadata[$this->engine . '-metadata'])) {
+      $engine_specific_metadata = $metadata[$this->engine . '-metadata'];
+      unset($metadata[$this->engine . '-metadata']);
       $metadata = array_merge($metadata, $engine_specific_metadata);
     }
     if ((drush_get_context('DRUSH_PIPE')) && (isset($metadata['pipe-metadata']))) {

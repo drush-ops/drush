@@ -152,7 +152,7 @@ function drush_cache_command_clear($type = NULL) {
  *   A specific bin to fetch from. If not specified, the default bin is used.
  */
 function drush_cache_command_get($cid = NULL, $bin = NULL) {
-  drush_include_engine('drupal', 'cache', drush_drupal_major_version());
+  drush_include_engine('drupal', 'cache');
   $result = drush_op('_drush_cache_command_get', $cid, $bin);
 
   if (empty($result)) {
@@ -184,7 +184,7 @@ function drush_cache_command_set($cid = NULL, $data = '', $bin = NULL, $expire =
     return;
   }
 
-  drush_include_engine('drupal', 'cache', drush_drupal_major_version());
+  drush_include_engine('drupal', 'cache');
   return drush_op('_drush_cache_command_set', $cid, $data, $bin, $expire, $tags);
 }
 
@@ -223,7 +223,7 @@ function drush_cache_set_prepare_data($data) {
  * All types of caches available for clearing. Contrib commands can alter in their own.
  */
 function drush_cache_clear_types($include_bootstrapped_types = FALSE) {
-  drush_include_engine('drupal', 'cache', drush_drupal_major_version());
+  drush_include_engine('drupal', 'cache');
   $types = _drush_cache_clear_types($include_bootstrapped_types);
 
   // Include the appropriate environment engine, so callbacks can use core
@@ -270,7 +270,7 @@ function drush_cache_rebuild() {
   drush_cache_clear_drush();
 
   // Clears the render cache.
-  drush_include_engine('drupal', 'cache', drush_drupal_major_version());
+  drush_include_engine('drupal', 'cache');
   drush_cache_clear_render();
 }
 

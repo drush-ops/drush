@@ -444,7 +444,7 @@ function drush_core_updatedb() {
     return TRUE;
   }
 
-  drush_include_engine('drupal', 'update', drush_drupal_major_version());
+  drush_include_engine('drupal', 'update');
   if (update_main() === FALSE) {
     return FALSE;
   }
@@ -466,7 +466,7 @@ function drush_core_updatedb() {
 function drush_core_updatedb_status() {
   require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
   drupal_load_updates();
-  drush_include_engine('drupal', 'update', drush_drupal_major_version());
+  drush_include_engine('drupal', 'update');
   list($pending, $start) = updatedb_status();
   if (empty($pending)) {
     drush_log(dt("No database updates required"), 'ok');
@@ -756,7 +756,7 @@ function drush_core_requirements() {
   );
 
   drupal_load_updates();
-  
+
   drush_include_engine('drupal', 'environment');
   $requirements = drush_module_invoke_all('requirements', 'runtime');
   // If a module uses "$requirements[] = " instead of
@@ -1123,7 +1123,7 @@ function drush_core_batch_process($id) {
  * upgrades.
  */
 function drush_core_updatedb_batch_process($id) {
-  drush_include_engine('drupal', 'update', drush_drupal_major_version());
+  drush_include_engine('drupal', 'update');
   require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
   // require_once DRUSH_DRUPAL_CORE . '/includes/update.inc';
   drupal_load_updates();

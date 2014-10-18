@@ -350,9 +350,11 @@ function hook_drush_engine_type_info() {
  * Inform drush about one or more engines implementing a given engine type.
  *
  *   - description: The engine implementation's description.
- *   - engine-class:  The class that contains the engine implementation.
+ *   - implemented-by: The engine that actually implements this engine.
+ *       This is useful to allow the implementation of similar engines
+ *       in the reference one.
  *       Defaults to the engine type key (e.g. 'ice-cream').
- *   - verbose-only:  The engine implementation will only appear in help
+ *   - verbose-only: The engine implementation will only appear in help
  *       output in --verbose mode.
  *
  * This hook allow to declare implementations for an engine type.
@@ -367,6 +369,10 @@ function hook_drush_engine_ENGINE_TYPE() {
       'options' => array(
         'flavour' => 'Choose your favorite flavour',
       ),
+    ),
+    'frozen-yogurt' => array(
+      'description' => 'Frozen dairy dessert made with yogurt instead of milk and cream.',
+      'implemented-by' => 'ice-cream',
     ),
   );
 }

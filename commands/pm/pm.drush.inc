@@ -1060,7 +1060,7 @@ function drush_pm_enable() {
  */
 function drush_pm_disable() {
   $args = pm_parse_arguments(func_get_args());
-  drush_include_engine('drupal', 'pm', drush_drupal_major_version());
+  drush_include_engine('drupal', 'pm');
   _drush_pm_disable($args);
 }
 
@@ -1098,7 +1098,7 @@ function _drush_pm_expand_extensions(&$extensions, $extension_info = array()) {
  */
 function drush_pm_uninstall() {
   $args = pm_parse_arguments(func_get_args());
-  drush_include_engine('drupal', 'pm', drush_drupal_major_version());
+  drush_include_engine('drupal', 'pm');
   _drush_pm_uninstall($args);
 }
 
@@ -1545,6 +1545,7 @@ function pm_drush_engine_release_info() {
           'all' => 'Shows all available releases instead of a short list of recent releases.',
         ),
       ),
+      'class' => 'Drush\UpdateService\ReleaseInfo',
     ),
   );
 }

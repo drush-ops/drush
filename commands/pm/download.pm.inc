@@ -5,6 +5,8 @@
  * pm-download command implementation.
  */
 
+use \Drush\UpdateService\ReleaseInfo;
+
 /**
  * Implements drush_hook_COMMAND_validate().
  */
@@ -87,7 +89,7 @@ function drush_pm_download() {
   }
 
   // Pick cli options.
-  $source = drush_get_option('source', RELEASE_INFO_DEFAULT_URL);
+  $source = drush_get_option('source', ReleaseInfo::DEFAULT_URL);
   $restrict_to = drush_get_option('dev', '');
   $select = drush_get_option('select', 'auto');
   $all = drush_get_option('all', FALSE);

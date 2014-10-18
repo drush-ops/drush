@@ -1,211 +1,11 @@
 <?php
 
-/**
- * @file
- * Drush release info engine for update.drupal.org and compatible services.
- *
- * This engine does connect directly to the update service. It doesn't depend
- * on a bootstrapped site.
- */
-
-define('RELEASE_INFO_DEFAULT_URL', 'https://updates.drupal.org/release-history');
-
-/**
- * Release info engine class.
- */
-class drush_release_info_updatexml {
-  #TODO# define an interface or abstract class for engines.
-  private $cache;
-  private $engine_config;
-
-  /**
-   * Constructor.
-   */
-  public function __construct($config) {
-    if (is_null($config)) {
-      $config = array();
-    }
-    $config += array(
-      'cache-duration' => drush_get_option('cache-duration-releasexml', 24*3600),
-    );
-    $this->engine_config = $config;
-    $this->cache = array();
-  }
-
-  /**
-   * Returns configured cache duration.
-   *
-   * Used by 'drush' update_info engine.
-   */
-  public function getCacheDuration() {
-    return $this->engine_config['cache-duration'];
-  }
-
-  /**
-   * Returns a project's release info from the update service.
-   *
-   * @param array $request
-   *   A request array.
-   *
-   * @param bool $refresh
-   *   Whether to discard cached object.
-   *
-   * @return \UpdateServiceProject
-   */
-  public function get($request, $refresh = FALSE) {
-    if ($refresh || !isset($this->cache[$request['name']])) {
-      $project_release_info = UpdateServiceProject::getInstance($request, $this->getCacheDuration());
-      $this->cache[$request['name']] = $project_release_info;
-    }
-    return $this->cache[$request['name']];
-  }
-
-  /**
-   * Delete cached update service file of a project.
-   *
-   * @param array $request
-   *   A request array.
-   */
-  public function clearCached(array $request) {
-    if (isset($this->cache[$request['name']])) {
-      unset($this->cache[$request['name']]);
-    }
-    $url = UpdateServiceProject::buildFetchUrl($request);
-    $cache_file = drush_download_file_name($url);
-    if (file_exists($cache_file)) {
-      unlink($cache_file);
-    }
-  }
-
-  /**
-   * Select the most appropriate release for a project, based on a strategy.
-   *
-   * @param Array &$request
-   *   A request array.
-   *   The array will be expanded with the project type.
-   * @param String $restrict_to
-   *   One of:
-   *     'dev': Forces choosing a -dev release.
-   *     'version': Forces choosing a point release.
-   *     '': No restriction.
-   *   Default is ''.
-   * @param String $select
-   *   Strategy for selecting a release, should be one of:
-   *    - auto: Try to select the latest release, if none found allow the user
-   *            to choose.
-   *    - always: Force the user to choose a release.
-   *    - never: Try to select the latest release, if none found then fail.
-   *    - ignore: Ignore and return NULL.
-   *   If no supported release is found, allow to ask the user to choose one.
-   * @param Boolean $all
-   *   In case $select = TRUE this indicates that all available releases will be
-   *  offered the user to choose.
-   *
-   * @return array
-   *  The selected release.
-   */
-  public function selectReleaseBasedOnStrategy($request, $restrict_to = '', $select = 'never', $all = FALSE, $version = NULL) {
-    if (!in_array($select, array('auto', 'never', 'always', 'ignore'))) {
-      return drush_set_error('DRUSH_PM_UNKNOWN_SELECT_STRATEGY', dt("Error: select strategy must be one of: auto, never, always, ignore", array()));
-    }
-
-    $project_release_info = $this->get($request);
-    if (!$project_release_info) {
-      return FALSE;
-    }
-
-    if ($select != 'always') {
-      if ($restrict_to == 'dev') {
-        $release = $project_release_info->getDevRelease();
-        if ($release === FALSE) {
-          return drush_set_error('DRUSH_PM_NO_DEV_RELEASE', dt('There is no development release for project !project.', array('!project' => $request['name'])));
-        }
-      }
-      if (empty($release)) {
-        $release = $project_release_info->getSpecificRelease($request['version']);
-        if ($release === FALSE) {
-          return drush_set_error('DRUSH_PM_COULD_NOT_FIND_VERSION', dt("Could not locate !project version !version.", array(
-            '!project' => $request['name'],
-            '!version' => $request['version'],
-          )));
-        }
-      }
-      // If there was no specific release requested, try to identify the most appropriate release.
-      if (empty($release)) {
-        $release = $project_release_info->getRecommendedOrSupportedRelease();
-      }
-      if ($release) {
-        return $release;
-      }
-      else {
-        $message = dt('There are no stable releases for project !project.', array('!project' => $request['name']));
-        if ($select == 'never') {
-          return drush_set_error('DRUSH_PM_NO_STABLE_RELEASE', $message);
-        }
-        drush_log($message, 'warning');
-        if ($select == 'ignore') {
-          return NULL;
-        }
-      }
-    }
-
-    // At this point the only chance is to ask the user to choose a release.
-    if ($restrict_to == 'dev') {
-      $filter = 'dev';
-    }
-    elseif ($all) {
-      $filter = 'all';
-    }
-    else {
-      $filter = '';
-    }
-    $releases = $project_release_info->filterReleases($filter, $version);
-
-    $options = array();
-    foreach($releases as $release) {
-      $options[$release['version']] = array($release['version'], '-', gmdate('Y-M-d', $release['date']), '-', implode(', ', $release['release_status']));
-    }
-    $choice = drush_choice($options, dt('Choose one of the available releases for !project:', array('!project' => $request['name'])));
-    if (!$choice) {
-      return drush_user_abort();
-    }
-
-    return $releases[$choice];
-  }
-
-  /**
-   * Check if a project is available in the update service.
-   *
-   * Optionally check for consistency by comparing given project type and
-   * the type obtained from the update service.
-   *
-   * @param array $request
-   *   A request array.
-   * @param string $type
-   *   Optional. If provided, will do a consistent check of the project type.
-   *
-   * @return boolean
-   *   True if the project exists and type matches.
-   */
-  public function checkProject($request, $type = NULL) {
-    $project_release_info = $this->get($request);
-    if (!$project_release_info) {
-      return FALSE;
-    }
-    if ($type) {
-      if ($project_release_info->getType() != $type) {
-        return FALSE;
-      }
-    }
-
-    return TRUE;
-  }
-}
+namespace Drush\UpdateService;
 
 /**
  * Representation of a project's release info from the update service.
  */
-class UpdateServiceProject {
+class Project {
   private $xml;
   private $parsed;
 
@@ -232,7 +32,7 @@ class UpdateServiceProject {
    * @param int $cache_duration
    *   Cache lifetime.
    *
-   * @return UpdateServiceProject
+   * @return \Drush\UpdateService\Project
    */
   public static function getInstance(array $request, $cache_duration) {
     $url = self::buildFetchUrl($request);
@@ -257,7 +57,7 @@ class UpdateServiceProject {
       return drush_set_error('DRUSH_PM_PROJECT_UNPUBLISHED', dt("Project !project is unpublished and has no releases available.", array('!project' => $request['name'])), 'warning');
     }
 
-    return new UpdateServiceProject($xml);
+    return new Project($xml);
   }
 
   /**
@@ -272,7 +72,7 @@ class UpdateServiceProject {
    * @see \Drupal\update\UpdateFetcher::buildFetchUrl()
    */
   public static function buildFetchUrl(array $request) {
-    $status_url = isset($request['status url']) ? $request['status url'] : RELEASE_INFO_DEFAULT_URL;
+    $status_url = isset($request['status url']) ? $request['status url'] : ReleaseInfo::DEFAULT_URL;
     return $status_url . '/' . $request['name'] . '/' . $request['drupal_version'];
   }
 
@@ -574,6 +374,10 @@ class UpdateServiceProject {
 
     $installed_version = pm_parse_version($installed_version);
 
+    // The Drupal core version scheme (ex: 7.31) is different to
+    // other projects (ex 7.x-3.2). We need to manage this special case.
+    $is_core = ($this->request['name'] == 'drupal');
+
     // Iterate through and filter out the releases we're interested in.
     $options = array();
     $limits_list = array();
@@ -589,9 +393,7 @@ class UpdateServiceProject {
           $eligible = TRUE;
         }
       }
-      // The Drupal core version scheme (ex: 7.31) is different to
-      // other projects (ex 7.x-3.2). We need to manage this special case.
-      elseif (($this->getType() != 'core') && ($installed_version['version_major'] == $release['version_major'])) {
+      elseif (!$is_core && ($installed_version['version_major'] == $release['version_major'])) {
         // In case there's no filter, select all releases until the installed one.
         // Always show the dev release.
         if (isset($release['version_extra']) && ($release['version_extra'] == 'dev')) {
@@ -685,7 +487,7 @@ class UpdateServiceProject {
       // Download the release node page and get the html as xml to explore it.
       $release_link = $this->parsed['releases'][$version]['release_link'];
       $filename = drush_download_file($release_link, drush_tempnam($project_name));
-      @$dom = DOMDocument::loadHTMLFile($filename);
+      @$dom = \DOMDocument::loadHTMLFile($filename);
       if ($dom) {
         drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $project_name, '!version' => $version)), 'notice');
       }
@@ -724,4 +526,3 @@ class UpdateServiceProject {
     drush_print_file($tmpfile);
   }
 }
-

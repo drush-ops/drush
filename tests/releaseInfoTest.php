@@ -25,7 +25,7 @@ class releaseInfoCase extends UnitUnishTestCase {
 
     // Use a local, static XML file because live files change over time.
     $xml = simplexml_load_file(dirname(__FILE__). '/devel.xml');
-    $project_release_info = new \UpdateServiceProject($xml);
+    $project_release_info = new \Drush\UpdateService\Project($xml);
 
     // Pick specific release.
     $release = $project_release_info->getSpecificRelease('6.x-1.18');
