@@ -374,10 +374,6 @@ class Project {
 
     $installed_version = pm_parse_version($installed_version);
 
-    // The Drupal core version scheme (ex: 7.31) is different to
-    // other projects (ex 7.x-3.2). We need to manage this special case.
-    $is_core = ($this->request['name'] == 'drupal');
-
     // Iterate through and filter out the releases we're interested in.
     $options = array();
     $limits_list = array();
@@ -393,7 +389,9 @@ class Project {
           $eligible = TRUE;
         }
       }
-      elseif (!$is_core && ($installed_version['version_major'] == $release['version_major'])) {
+      // The Drupal core version scheme (ex: 7.31) is different to
+      // other projects (ex 7.x-3.2). We need to manage this special case.
+      elseif (($this->getType() != 'core') && ($installed_version['version_major'] == $release['version_major'])) {
         // In case there's no filter, select all releases until the installed one.
         // Always show the dev release.
         if (isset($release['version_extra']) && ($release['version_extra'] == 'dev')) {
