@@ -164,9 +164,9 @@ function _drush_make_generate_add_patch_files(&$project, $location) {
  * Create a project record for an extension not downloaded from drupal.org
  */
 function _drush_generate_custom_project($name, $extension, $version_options) {
-  $project['_type'] = $extension->type;
-  $project['type'] = $extension->type;
-  $info_file = $extension->filename;
+  $project['_type'] = $extension->getType();
+  $project['type'] = $extension->getType();
+  $info_file = $extension->getFilename();
   $location = DRUPAL_ROOT . '/' . dirname($info_file);
   // To start off, we will presume that our custom extension is
   // stored in a folder named after its project, and there are
