@@ -315,7 +315,7 @@ INSTALLING DRUSH ON WINDOWS:
 Windows support has improved, but is still lagging. For full functionality,
 consider using on Linux/Unix/OSX using Virtualbox or other virtual machine.
 
-There is a [Windows msi installer](http://drush.ws/sites/default/files/attachments/Drush-6.0-2013-08-28-Installer-v1.0.21.msi). [Install docs](http://drush.ws/sites/default/files/attachments/Drush%20Installation%20Guide.pdf).
+There is a [Windows msi installer](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
 
 Whenever the documentation or the help text refers to 'drush [option]
 <command>' or something similar, 'drush' may need to be replaced by
