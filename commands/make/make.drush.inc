@@ -186,7 +186,8 @@ function make_make_complete() {
  * Drush callback; make based on the makefile.
  */
 function drush_make($makefile = NULL, $build_path = NULL) {
-  $release_info = drush_get_engine('release_info');
+  // Set the cache option based on our '--no-cache' option.
+  _make_enable_cache();
 
   // If --version option is supplied, print it and bail.
   if (drush_get_option('version', FALSE)) {
@@ -343,14 +344,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
     $request = make_prepare_request($project);
 
     if ($project['location'] != ReleaseInfo::DEFAULT_URL && !isset($project['type'])) {
-      // Set the cache option based on our '--no-cache' option.
-      $cache_before = drush_get_option('cache');
-      if (!drush_get_option('no-cache', FALSE)) {
-        drush_set_option('cache', TRUE);
-      }
       $is_core = $release_info->checkProject($request, 'core');
-      // Restore the previous '--cache' option value.
-      drush_set_option('cache', $cache_before);
       $project['download_type'] = ($is_core ? 'core' : 'contrib');
     }
     elseif (!empty($project['type'])) {
@@ -387,19 +381,12 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
         // TODO: refactor to enforce 'make' to internally work with release_info
         // keys.
         $request = make_prepare_request($project, $type);
-        // Set the cache option based on our '--no-cache' option.
-        $cache_before = drush_get_option('cache');
-        if (!drush_get_option('no-cache', FALSE)) {
-          drush_set_option('cache', TRUE);
-        }
         $release = $release_info->selectReleaseBasedOnStrategy($request, '', 'ignore');
         if ($release === FALSE) {
           return FALSE;
         }
         $request['project_type'] = $release_info->get($request)->getType();
 
-        // Restore the previous '--cache' option value.
-        drush_set_option('cache', $cache_before);
         if (!isset($project['type'])) {
           // Translate release_info key for project_type to drush make.
           $project['type'] = $request['project_type'];
@@ -443,14 +430,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
       else {
         make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project.', array('%type' => $project['type'], '%project' => $project['name'])));
       }
-      // Set the cache option based on our '--no-cache' option.
-      $cache_before = drush_get_option('cache');
-      if (!drush_get_option('no-cache', FALSE)) {
-        drush_set_option('cache', TRUE);
-      }
       $project->make();
-      // Restore the previous '--cache' option value.
-      drush_set_option('cache', $cache_before);
     }
   }
 
@@ -672,4 +652,18 @@ function make_project_needs_release_info($project) {
     // Only fetch release info if the project type is unknown OR if
     // download attributes are unspecified.
     && (!isset($project['type']) || !isset($project['download']));
+}
+
+/**
+ * Enables caching if not explicitly disabled.
+ *
+ * @return bool
+ *   The previous value of the 'cache' option.
+ */
+function _make_enable_cache() {
+  $cache_before = drush_get_option('cache');
+  if (!drush_get_option('no-cache', FALSE)) {
+    drush_set_option('cache', TRUE);
+  }
+  return $cache_before;
 }
