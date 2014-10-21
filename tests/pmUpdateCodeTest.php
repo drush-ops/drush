@@ -4,7 +4,6 @@
   * @file
   *   Prepare a codebase and upgrade it in several stages, exercising
   *   updatecode's filters.
-  *   @todo test security-only once one of these modules or core gets a security release.
   */
 
 namespace Unish;
