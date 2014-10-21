@@ -209,7 +209,7 @@ function pm_drush_command() {
   $items['pm-refresh'] = array(
     'description' => 'Refresh update status information.',
     'engines' => array(
-      'update_info' => array(
+      'update_status' => array(
         'add-options-to-command' => FALSE,
       ),
     ),
@@ -225,7 +225,7 @@ function pm_drush_command() {
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'engines' => array(
-      'update_info',
+      'update_status',
     ),
     'outputformat' => array(
       'default' => 'table',
@@ -260,7 +260,7 @@ function pm_drush_command() {
       'release_info' => array(
         'add-options-to-command' => FALSE,
       ),
-      'update_info',
+      'update_status',
     ),
   );
   // Merge all items from above.
@@ -1189,7 +1189,10 @@ function drush_pm_releasenotes() {
  * Command callback. Refresh update status information.
  */
 function drush_pm_refresh() {
-  _pm_refresh();
+  $update_status = drush_get_engine('update_status');
+  drush_print(dt("Refreshing update status information ..."));
+  $update_status->refresh();
+  drush_print(dt("Done."));
 }
 
 /**
@@ -1487,8 +1490,8 @@ function pm_drush_engine_type_info() {
     'release_info' => array(
       'add-options-to-command' => TRUE,
     ),
-    'update_info' => array(
-      'description' => 'Determine how to fetch update info.',
+    'update_status' => array(
+      'description' => 'Determine how to fetch update status information.',
       'add-options-to-command' => TRUE,
       'options' => array(
         'security-only' => 'Only update modules that have security updates available.',
@@ -1557,10 +1560,11 @@ function pm_drush_engine_release_info() {
 /**
  * Implements hook_drush_engine_ENGINE_TYPE().
  */
-function pm_drush_engine_update_info() {
+function pm_drush_engine_update_status() {
   return array(
     'drupal' => array(
       'drupal dependencies' => array('update'),
+      'class' => 'Drush\UpdateService\StatusInfoDrupal',
     ),
   );
 }

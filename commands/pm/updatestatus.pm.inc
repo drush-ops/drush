@@ -26,7 +26,8 @@ function drush_pm_updatestatus() {
   $extensions = drush_get_extensions();
   $projects = drush_get_projects($extensions);
 
-  $update_info = _pm_get_update_info($projects);
+  $update_status = drush_get_engine('update_status');
+  $update_info = $update_status->getStatus($projects);
 
   foreach ($extensions as $name => $extension) {
     // Add an item to $update_info for each enabled extension which was obtained
@@ -137,7 +138,7 @@ function drush_pm_updatestatus() {
         break;
       default:
         // This can set $project['updateable'] and $project['candidate_version']
-        $status = pm_update_filter($project);
+        $status = $update_status->filter($project);
         break;
     }
 

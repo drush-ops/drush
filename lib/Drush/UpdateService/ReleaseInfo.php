@@ -38,8 +38,6 @@ class ReleaseInfo {
 
   /**
    * Returns configured cache duration.
-   *
-   * Used by 'drush' update_info engine.
    */
   public function getCacheDuration() {
     return $this->engine_config['cache-duration'];

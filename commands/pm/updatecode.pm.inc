@@ -21,6 +21,8 @@ function drush_pm_updatecode() {
     return drush_invoke('pm-updatestatus');
   }
 
+  $update_status = drush_get_engine('update_status');
+
   // Get specific requests.
   $requests = pm_parse_arguments(func_get_args(), FALSE);
 
@@ -40,7 +42,7 @@ function drush_pm_updatecode() {
   if (!is_array($values) || $values['error_status']) {
     return drush_set_error('pm-updatestatus failed.');
   }
-  $last = pm_update_last_check();
+  $last = $update_status->lastCheck();
   drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
   drush_print($values['output']);
 
