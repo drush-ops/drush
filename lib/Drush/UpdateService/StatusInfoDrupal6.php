@@ -7,16 +7,7 @@
 
 namespace Drush\UpdateService;
 
-class StatusInfoDrupal6 implements StatusInfoInterface {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct($type, $engine, $config) {
-    $this->engine_type = $type;
-    $this->engine = $engine;
-    $this->engine_config = $config;
-  }
+class StatusInfoDrupal6 extends StatusInfoDrupal7 {
 
   /**
    * Returns a human readable message based on update status of a project.
@@ -69,20 +60,6 @@ class StatusInfoDrupal6 implements StatusInfoInterface {
         break;
     }
     return $status;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  function lastCheck() {
-    return variable_get('update_last_check', 0);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  function refresh() {
-    update_refresh();
   }
 
   /**

@@ -7,7 +7,72 @@
 
 namespace Drush\UpdateService;
 
-class StatusInfoDrupal8 extends StatusInfoDrupal7 {
+class StatusInfoDrupal8 implements StatusInfoInterface {
+
+  /**
+   * Returns a human readable message based on update status of a project.
+   *
+   * It also may alter the project object and set $project['updateable']
+   * and $project['candidate_version'].
+   *
+   * @see pm_release_recommended()
+   *
+   * Project statuses in Drupal 8 are:
+   * - UPDATE_NOT_SECURE
+   * - UPDATE_REVOKED
+   * - UPDATE_NOT_SUPPORTED
+   * - UPDATE_NOT_CURRENT
+   * - UPDATE_CURRENT
+   * - UPDATE_NOT_CHECKED
+   * - UPDATE_UNKNOWN
+   * - UPDATE_NOT_FETCHED
+   * - UPDATE_FETCH_PENDING
+   *
+   */
+  function filter(&$project) {
+    switch($project['status']) {
+      case UPDATE_NOT_SECURE:
+        $status = dt('SECURITY UPDATE available');
+        pm_release_recommended($project);
+        break;
+      case UPDATE_REVOKED:
+        $status = dt('Installed version REVOKED');
+        pm_release_recommended($project);
+        break;
+      case UPDATE_NOT_SUPPORTED:
+        $status = dt('Installed version not supported');
+        pm_release_recommended($project);
+        break;
+      case UPDATE_NOT_CURRENT:
+        $status = dt('Update available');
+        pm_release_recommended($project);
+        break;
+      case UPDATE_CURRENT:
+        $status = dt('Up to date');
+        pm_release_recommended($project);
+        $project['updateable'] = FALSE;
+        break;
+      case UPDATE_NOT_CHECKED:
+        $status = dt('Unable to check status');
+        break;
+      case UPDATE_UNKNOWN:
+      case UPDATE_NOT_FETCHED:
+      case UPDATE_FETCH_PENDING:
+      default:
+        $status = dt('Unknown');
+        break;
+    }
+    return $status;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($type, $engine, $config) {
+    $this->engine_type = $type;
+    $this->engine = $engine;
+    $this->engine_config = $config;
+  }
 
   /**
    * {@inheritdoc}
@@ -15,6 +80,13 @@ class StatusInfoDrupal8 extends StatusInfoDrupal7 {
   function lastCheck() {
     $last_check = \Drupal::state()->get('update.last_check') ?: 0;
     return $last_check;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function refresh() {
+    update_refresh();
   }
 
   /**

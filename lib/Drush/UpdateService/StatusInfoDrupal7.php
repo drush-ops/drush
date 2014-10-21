@@ -7,62 +7,13 @@
 
 namespace Drush\UpdateService;
 
-class StatusInfoDrupal7 extends StatusInfoDrupal6 {
+class StatusInfoDrupal7 extends StatusInfoDrupal8 {
 
   /**
-   * Returns a human readable message based on update status of a project.
-   *
-   * It also may alter the project object and set $project['updateable']
-   * and $project['candidate_version'].
-   *
-   * @see pm_release_recommended()
-   *
-   * Project statuses in Drupal 7 are:
-   * - UPDATE_NOT_SECURE
-   * - UPDATE_REVOKED
-   * - UPDATE_NOT_SUPPORTED
-   * - UPDATE_NOT_CURRENT
-   * - UPDATE_CURRENT
-   * - UPDATE_NOT_CHECKED
-   * - UPDATE_UNKNOWN
-   * - UPDATE_NOT_FETCHED
-   * - UPDATE_FETCH_PENDING
-   *
+   * {@inheritdoc}
    */
-  function filter(&$project) {
-    switch($project['status']) {
-      case UPDATE_NOT_SECURE:
-        $status = dt('SECURITY UPDATE available');
-        pm_release_recommended($project);
-        break;
-      case UPDATE_REVOKED:
-        $status = dt('Installed version REVOKED');
-        pm_release_recommended($project);
-        break;
-      case UPDATE_NOT_SUPPORTED:
-        $status = dt('Installed version not supported');
-        pm_release_recommended($project);
-        break;
-      case UPDATE_NOT_CURRENT:
-        $status = dt('Update available');
-        pm_release_recommended($project);
-        break;
-      case UPDATE_CURRENT:
-        $status = dt('Up to date');
-        pm_release_recommended($project);
-        $project['updateable'] = FALSE;
-        break;
-      case UPDATE_NOT_CHECKED:
-        $status = dt('Unable to check status');
-        break;
-      case UPDATE_UNKNOWN:
-      case UPDATE_NOT_FETCHED:
-      case UPDATE_FETCH_PENDING:
-      default:
-        $status = dt('Unknown');
-        break;
-    }
-    return $status;
+  function lastCheck() {
+    return variable_get('update_last_check', 0);
   }
 
   /**
