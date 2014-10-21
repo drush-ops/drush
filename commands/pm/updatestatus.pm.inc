@@ -18,7 +18,8 @@ function drush_pm_updatestatus() {
   // Parse out project name and version.
   $requests = array();
   foreach ($args as $request) {
-    $requests[$request] = pm_parse_request($request);
+    $request = pm_parse_request($request);
+    $requests[$request['name']] = $request;
   }
 
   // Get installed extensions and projects.
