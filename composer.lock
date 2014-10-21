@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c832e803e5a23151623a64aeb8df68f0",
+    "hash": "601c32e0991410574ce55674a27da19c",
     "packages": [
         {
             "name": "d11wtq/boris",
@@ -42,23 +42,23 @@
         },
         {
             "name": "pear/console_table",
-            "version": "1.1.5",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/RobLoach/Console_Table.git",
-                "reference": "f2d7bb3e644ed5ee770e30f1b2687c4546bf19d2"
+                "reference": "b3d88acf17578c9785cda0daf8fce5c69860cb33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobLoach/Console_Table/zipball/f2d7bb3e644ed5ee770e30f1b2687c4546bf19d2",
-                "reference": "f2d7bb3e644ed5ee770e30f1b2687c4546bf19d2",
+                "url": "https://api.github.com/repos/RobLoach/Console_Table/zipball/b3d88acf17578c9785cda0daf8fce5c69860cb33",
+                "reference": "b3d88acf17578c9785cda0daf8fce5c69860cb33",
                 "shasum": ""
             },
             "require": {
-                "php": ">=4.0.0"
+                "php": ">=4.3.10"
             },
             "suggest": {
-                "pear/Console_Color": ">=0.0.4"
+                "pear/Console_Color2": ">=0.1.2"
             },
             "type": "library",
             "autoload": {
@@ -68,7 +68,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "BSD"
+                "BSD-2-Clause"
             ],
             "authors": [
                 {
@@ -88,12 +88,12 @@
                     "homepage": "http://pear.php.net/user/richard"
                 }
             ],
-            "description": "Class that makes it easy to build console style tables.",
-            "homepage": "https://github.com/pear/Console_Table",
+            "description": "Library that makes it easy to build console style tables.",
+            "homepage": "http://pear.php.net/package/Console_Table/",
             "keywords": [
                 "console"
             ],
-            "time": "2014-02-13 18:31:53"
+            "time": "2014-03-31 20:07:31"
         },
         {
             "name": "symfony/yaml",
@@ -131,7 +131,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Symfony Community",
@@ -740,7 +742,8 @@
                 },
                 {
                     "name": "Adam Harvey",
-                    "email": "aharvey@php.net"
+                    "email": "aharvey@php.net",
+                    "role": "Lead"
                 },
                 {
                     "name": "Bernhard Schussek",
@@ -840,17 +843,12 @@
             "time": "2014-05-22 13:46:01"
         }
     ],
-    "aliases": [
-
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [
-
-    ],
+    "stability-flags": [],
+    "prefer-stable": true,
     "platform": {
         "php": ">=5.3.0"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }
