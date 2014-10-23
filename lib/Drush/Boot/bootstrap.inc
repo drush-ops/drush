@@ -696,7 +696,7 @@ function _drush_bootstrap_drupal_full() {
     }
   }
 
-  // Write correct install_prsofile to cache as needed. Used by _drush_find_commandfiles().
+  // Write correct install_profile to cache as needed. Used by _drush_find_commandfiles().
   $cid = drush_cid_install_profile();
   if ($cached_install_profile = drush_cache_get($cid)) {
     // We have a cached profile. Check it for correctness and save new value if needed.
