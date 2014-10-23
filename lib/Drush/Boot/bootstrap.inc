@@ -681,13 +681,22 @@ function _drush_bootstrap_drupal_full() {
 
   // If needed, prod module_implements() to recognize our system_watchdog() implementation.
   drush_include_engine('drupal', 'environment');
-  $dogs = drush_module_implements('watchdog');
-  if (!in_array('system', $dogs)) {
-    // Note that this resets module_implements cache.
-    drush_module_implements('watchdog', FALSE, TRUE);
+
+  // If we're running on Drupal 8 or later, we provide a logger which will send
+  // output to drush_log(). This should catch every message logged through every
+  // channel.
+  if (drush_drupal_major_version() >= 8) {
+    \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
+  }
+  else {
+    $dogs = drush_module_implements('watchdog');
+    if (!in_array('system', $dogs)) {
+      // Note that this resets module_implements cache.
+      drush_module_implements('watchdog', FALSE, TRUE);
+    }
   }
 
-  // Write correct install_profile to cache as needed. Used by _drush_find_commandfiles().
+  // Write correct install_prsofile to cache as needed. Used by _drush_find_commandfiles().
   $cid = drush_cid_install_profile();
   if ($cached_install_profile = drush_cache_get($cid)) {
     // We have a cached profile. Check it for correctness and save new value if needed.
