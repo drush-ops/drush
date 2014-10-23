@@ -507,7 +507,7 @@ function make_build_path($build_path) {
   else {
     return drush_user_abort(dt('Build aborted.'));
   }
-  if ($build_path != '.' && file_exists($build_path)) {
+  if ($build_path != '.' && file_exists($build_path) && !drush_get_option('no-core', FALSE)) {
     return drush_set_error('MAKE_PATH_EXISTS', dt('Base path %path already exists.', array('%path' => $build_path)));
   }
   $saved_path = $build_path;
@@ -520,7 +520,7 @@ function make_build_path($build_path) {
 function make_move_build($build_path) {
   $tmp_path = make_tmp();
   $ret = TRUE;
-  if ($build_path == '.') {
+  if ($build_path == '.' || (drush_get_option('no-core', FALSE) && file_exists($build_path))) {
     $info = drush_scan_directory($tmp_path . DIRECTORY_SEPARATOR . '__build__', '/./', array('.', '..'), 0, FALSE, 'filename', 0, TRUE);
     foreach ($info as $file) {
       $destination = $build_path . DIRECTORY_SEPARATOR . $file->basename;
