@@ -679,7 +679,6 @@ function _drush_bootstrap_drupal_full() {
     restore_error_handler();
   }
 
-  // If needed, prod module_implements() to recognize our system_watchdog() implementation.
   drush_include_engine('drupal', 'environment');
 
   // If we're running on Drupal 8 or later, we provide a logger which will send
@@ -689,6 +688,7 @@ function _drush_bootstrap_drupal_full() {
     \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
   }
   else {
+    // If needed, prod module_implements() to recognize our system_watchdog() implementation.
     $dogs = drush_module_implements('watchdog');
     if (!in_array('system', $dogs)) {
       // Note that this resets module_implements cache.
