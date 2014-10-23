@@ -410,6 +410,13 @@ function drush_sql_sync($source = NULL, $destination = NULL) {
         }
       }
 
+      // Support mysql views - strip out "DEFINER" clouases which will throw errors.
+      if (_drush_sql_get_scheme($target_db_url) == 'mysql') {
+        $in  = drush_escapeshellarg($target_dump, $target_os);
+        $out = drush_escapeshellarg("$target_dump.tmp", $target_os);
+        $pre_import_commands .= "LANG=C sed -e 's|^/[*]!50001 CREATE ALGORITHM=UNDEFINED [*]/|/*!50001 CREATE */|' -e '/^[/][*]!50013 DEFINER=/d' $in > $out; rm $in; mv $out $in;";
+      }
+
       // Generate the import command
       $import_command = _drush_sql_connect($target_db_url);
       switch (_drush_sql_get_scheme($target_db_url)) {
