@@ -69,28 +69,23 @@ class pmUpdateStatus extends CommandUnishTestCase {
       'root' => $this->webroot(),
       'uri' => key($this->getSites()),
       'verbose' => NULL,
+      'backend' => null,
     );
-    $env = array(
-      'COLUMNS' => '180',
+    $this->drush('pm-updatestatus', array(), $options);
+    $parsed = $this->parse_backend_output($this->getOutput());
+    $data = $parsed['object'];
+
+    $expected = array(
+      'bad_judgement'           => 'Update available',
+      'ctools'                  => 'Up to date',
+      'devel'                   => 'SECURITY UPDATE available',
+      'field-conditional-state' => 'Installed version not supported',
+      'zen'                     => 'Project was not packaged by drupal.org but obtained from git. You need to enable git_deploy module',
     );
-    $this->drush('pm-updatestatus', array(), $options, NULL, NULL, self::EXIT_SUCCESS, NULL, $env);
-    $output = $this->getOutput();
-
-    $pattern = '/Bad judgement(.*)Update available/';
-    $this->assertRegExp($pattern, $output, 'Module has update available');
-
-    $pattern = '/Devel(.*)SECURITY UPDATE available/';
-    $this->assertRegExp($pattern, $output, 'Module has security update available');
-
-    $pattern = '/Field Conditional State(.*)Installed version not supported/';
-    $this->assertRegExp($pattern, $output, 'Module is not supported');
-
-    $pattern = '/Chaos tools(.*)Up to date/';
-    $this->assertRegExp($pattern, $output, 'Module is up to date');
-
-    $pattern = '/Zen(.*)Project was not packaged by drupal.org/';
-    $this->assertRegExp($pattern, $output, 'Module was not packaged by drupal.org');
-
+    foreach ($expected as $module => $status_msg) {
+      $this->assertArrayHasKey($module, $data, "$module module present in pm-updatestatus output");
+      $this->assertEquals($data[$module]['status_msg'], $status_msg, "$module status is '$status_msg'");
+    }
 
     // Test statuses when asked for specific projects and versions.
     $args = array(
@@ -99,19 +94,19 @@ class pmUpdateStatus extends CommandUnishTestCase {
       'devel-1.5',
       'foo',
     );
-    $this->drush('pm-updatestatus', $args, $options, NULL, NULL, self::EXIT_SUCCESS, NULL, $env);
-    $output = $this->getOutput();
+    $this->drush('pm-updatestatus', $args, $options);
+    $parsed = $this->parse_backend_output($this->getOutput());
+    $data = $parsed['object'];
 
-    $pattern = '/Bad judgement(.*)Specified version already installed/';
-    $this->assertRegExp($pattern, $output, 'Module specific version already installed');
-
-    $pattern = '/Chaos tools(.*)Specified version not found/';
-    $this->assertRegExp($pattern, $output, 'Module specific version not found');
-
-    $pattern = '/Devel(.*)Specified version available/';
-    $this->assertRegExp($pattern, $output, 'Module specific version found');
-
-    $pattern = '/foo(.*)Specified project not found/';
-    $this->assertRegExp($pattern, $output, 'Module specific version found');
+    $expected = array(
+      'bad_judgement'           => 'Specified version already installed',
+      'ctools'                  => 'Specified version not found',
+      'devel'                   => 'Specified version available',
+      'foo'                     => 'Specified project not found',
+    );
+    foreach ($expected as $module => $status_msg) {
+      $this->assertArrayHasKey($module, $data, "$module module present in pm-updatestatus output");
+      $this->assertEquals($data[$module]['status_msg'], $status_msg, "$module status is '$status_msg'");
+    }
   }
 }
