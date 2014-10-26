@@ -109,7 +109,7 @@ function _drush_site_install6_stage($profile, $cli_cookie, $initial_op) {
  * Utility function to grab/set current "cli cookie".
  */
 function _drush_site_install6_cookies($profile, $cookie = NULL) {
-  $drupal_base_url = parse_url(drush_get_option('uri', 'http://default'));
+  $drupal_base_url = parse_url(drush_get_context('DRUSH_SELECTED_URI'));
   $output = '$_GET=array("profile"=>"' . $profile . '", "locale"=>"' . drush_get_option('locale', 'en') . '", "id"=>"1"); $_REQUEST=&$_GET;';
   $output .= 'define("DRUSH_SITE_INSTALL6", TRUE);$_SERVER["SERVER_SOFTWARE"] = NULL;';
   $output .= '$_SERVER["SCRIPT_NAME"] = "/install.php";';
