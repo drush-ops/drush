@@ -59,6 +59,9 @@ class ReleaseInfo {
   public function get($request, $refresh = FALSE) {
     if ($refresh || !isset($this->cache[$request['name']])) {
       $project_release_info = Project::getInstance($request, $this->getCacheDuration());
+      if ($project_release_info && !$project_release_info->isValid()) {
+        $project_release_info = FALSE;
+      }
       $this->cache[$request['name']] = $project_release_info;
     }
     return $this->cache[$request['name']];

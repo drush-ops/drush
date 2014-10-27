@@ -21,7 +21,36 @@ class Project {
    */
   function __construct(\SimpleXMLElement $xml) {
     $this->xml = $xml;
-    $this->parsed = self::parseXml($xml);
+
+    // Check if the xml contains an error on the project.
+    if ($error = $xml->xpath('/error')) {
+      $error = (string)$error[0];
+      if (strpos($error, 'No release history available for') === 0) {
+        $project_status = 'unsupported';
+      }
+      elseif (strpos($error, 'No release history was found for the requested project') === 0) {
+        $project_status = 'unknown';
+      }
+      // Any other error we are not aware of.
+      else {
+        $project_status = 'unknown';
+      }
+    }
+    else {
+      $error = FALSE;
+      $project_status = $xml->xpath('/project/project_status');
+      $project_status = (string)$project_status[0];
+    }
+
+    $this->error = $error;
+    $this->project_status = $project_status;
+
+    if ($error) {
+      drush_set_error('DRUSH_RELEASE_INFO_ERROR', $error);
+    }
+    else {
+      $this->parsed = self::parseXml($xml);
+    }
   }
 
   /**
@@ -41,20 +70,8 @@ class Project {
     $path = drush_download_file($url, drush_tempnam($request['name']), $cache_duration);
     $xml = simplexml_load_file($path);
     if (!$xml) {
-      return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Could not download project status information from !url', array('!url' => $url)));
-    }
-    // Validate xml.
-    // #TODO# move to the constructor.
-    if ($error = $xml->xpath('/error')) {
-      // Don't set an error here since it stops processing during site-upgrade.
-      drush_log($error[0], 'warning'); // 'DRUSH_PM_COULD_NOT_LOAD_UPDATE_FILE',
-      return FALSE;
-    }
-    // Unpublished project?
-    // #TODO# move to the constructor.
-    $project_status = $xml->xpath('/project/project_status');
-    if ($project_status[0][0] == 'unpublished') {
-      return drush_set_error('DRUSH_PM_PROJECT_UNPUBLISHED', dt("Project !project is unpublished and has no releases available.", array('!project' => $request['name'])), 'warning');
+      $error = dt('Failed to get available update data from !url', array('!url' => $url));
+      return drush_set_error('DRUSH_RELEASE_INFO_ERROR', $error);
     }
 
     return new Project($xml);
@@ -190,12 +207,30 @@ class Project {
   }
 
   /**
+   * Gets the project status in the update service.
+   *
+   * This is the project status in drupal.org: insecure, revoked, published etc.
+   *
+   * @return string
+   */
+  public function getStatus() {
+    return $this->project_status;
+  }
+
+  /**
+   * Whether this object represents a project in the update service or an error.
+   */
+  public function isValid() {
+    return ($this->error === FALSE);
+  }
+
+  /**
    * Gets the parsed xml.
    *
-   * @return array
+   * @return array or FALSE if the xml has an error.
    */
   public function getInfo() {
-    return $this->parsed;
+    return (!$this->error) ? $this->parsed : FALSE;
   }
 
   /**

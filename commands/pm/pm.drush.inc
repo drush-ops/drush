@@ -1139,18 +1139,20 @@ function drush_pm_releases() {
     $request = pm_parse_request($request);
     $project_name = $request['name'];
     $project_release_info = $release_info->get($request);
-    $version = isset($projects[$request['name']]) ? $projects[$request['name']]['version'] : NULL;
-    $releases = $project_release_info->filterReleases($filter, $version);
-    foreach ($releases as $key => $release) {
-      $rows[$key] = array(
-        'project' => $project_name,
-        'version' => $release['version'],
-        'date' => gmdate('Y-M-d', $release['date']),
-        'status' => implode(', ', $release['release_status']),
-      );
+    if ($project_release_info) {
+      $version = isset($projects[$request['name']]) ? $projects[$request['name']]['version'] : NULL;
+      $releases = $project_release_info->filterReleases($filter, $version);
+      foreach ($releases as $key => $release) {
+        $rows[$key] = array(
+          'project' => $project_name,
+          'version' => $release['version'],
+          'date' => gmdate('Y-M-d', $release['date']),
+          'status' => implode(', ', $release['release_status']),
+        );
+      }
+      // Collect parsed update service info to set backend result.
+      $releases_info[$project_name] = $project_release_info->getInfo();
     }
-    // Collect parsed update service info to set backend result.
-    $releases_info[$project_name] = $project_release_info->getInfo();
   }
   if (empty($rows)) {
     return drush_log(dt('No valid projects given.'), 'ok');
@@ -1175,8 +1177,10 @@ function drush_pm_releasenotes() {
   foreach($requests as $request) {
     $request = pm_parse_request($request);
     $project_release_info = $release_info->get($request);
-    $version = empty($request['version']) ? NULL : $request['version'];
-    $output .= $project_release_info->getReleaseNotes($version);
+    if ($project_release_info) {
+      $version = empty($request['version']) ? NULL : $request['version'];
+      $output .= $project_release_info->getReleaseNotes($version);
+    }
   }
   return $output;
 }
