@@ -13,35 +13,113 @@
  */
 
 /**
- * Project is a user requested version update.
+ * @defgroup update_status_constants Update Status Constants
+ * @{
+ * Represents update status of projects.
+ *
+ * The first set is a mapping of some constants declared in update.module.
+ * We only declare the ones we're interested in.
+ * The rest of the constants are used by pm-updatestatus to represent
+ * a status when the user asked for updates to specific versions or
+ * other circumstances not managed by Drupal.
  */
-define('DRUSH_PM_REQUESTED_UPDATE', 101);
 
 /**
- * User requested version already installed.
+ * Project is missing security update(s).
+ *
+ * Maps UPDATE_NOT_SECURE.
  */
-define('DRUSH_PM_REQUESTED_CURRENT', 102);
+const DRUSH_UPDATESTATUS_NOT_SECURE = 1;
 
 /**
- * User requested project was not packaged by drupal.org.
+ * Current release has been unpublished and is no longer available.
+ *
+ * Maps UPDATE_REVOKED.
  */
-define('DRUSH_PM_REQUESTED_PROJECT_NOT_PACKAGED', 103);
+const DRUSH_UPDATESTATUS_REVOKED = 2;
 
 /**
- * User requested version not found.
+ * Current release is no longer supported by the project maintainer.
+ *
+ * Maps UPDATE_NOT_SUPPORTED.
  */
-define('DRUSH_PM_REQUESTED_VERSION_NOT_FOUND', 104);
+const DRUSH_UPDATESTATUS_NOT_SUPPORTED = 3;
 
 /**
- * User requested project not found.
+ * Project has a new release available, but it is not a security release.
+ *
+ * Maps UPDATE_NOT_CURRENT.
  */
-define('DRUSH_PM_REQUESTED_PROJECT_NOT_FOUND', 105);
+const DRUSH_UPDATESTATUS_NOT_CURRENT = 4;
 
 /**
- * User requested project not updateable.
+ * Project is up to date.
+ *
+ * Maps UPDATE_CURRENT.
  */
-define('DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE', 106);
+const DRUSH_UPDATESTATUS_CURRENT = 5;
 
+/**
+ * Project's status cannot be checked.
+ *
+ * Maps UPDATE_NOT_CHECKED.
+ */
+const DRUSH_UPDATESTATUS_NOT_CHECKED = -1;
+
+/**
+ * No available update data was found for project.
+ *
+ * Maps UPDATE_UNKNOWN.
+ */
+const DRUSH_UPDATESTATUS_UPDATE_UNKNOWN = -2;
+
+/**
+ * There was a failure fetching available update data for this project.
+ *
+ * Maps UPDATE_NOT_FETCHED.
+ */
+const DRUSH_UPDATESTATUS_NOT_FETCHED = -3;
+
+/**
+ * We need to (re)fetch available update data for this project.
+ *
+ * Maps UPDATE_FETCH_PENDING.
+ */
+const DRUSH_UPDATESTATUS_FETCH_PENDING = -4;
+
+/**
+ * Project was not packaged by drupal.org.
+ */
+const DRUSH_UPDATESTATUS_PROJECT_NOT_PACKAGED = 101;
+
+/**
+ * Requested project is not updateable.
+ */
+const DRUSH_UPDATESTATUS_REQUESTED_PROJECT_NOT_UPDATEABLE = 102;
+
+/**
+ * Requested project not found.
+ */
+const DRUSH_UPDATESTATUS_REQUESTED_PROJECT_NOT_FOUND = 103;
+
+/**
+ * Requested version not found.
+ */
+const DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_FOUND = 104;
+
+/**
+ * Requested version available.
+ */
+const DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_CURRENT = 105;
+
+/**
+ * Requested version already installed.
+ */
+const DRUSH_UPDATESTATUS_REQUESTED_VERSION_CURRENT = 106;
+
+/**
+ * @} End of "defgroup update_status_constants".
+ */
 
 /**
  * Implementation of hook_drush_help().

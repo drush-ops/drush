@@ -39,7 +39,7 @@ function drush_pm_updatestatus() {
           'name' => $name,
           'label' => $extension->label,
           'existing_version' => 'Unknown',
-          'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_PACKAGED,
+          'status' => DRUSH_UPDATESTATUS_PROJECT_NOT_PACKAGED,
           'status_msg' => dt('Project was not packaged by drupal.org but obtained from !vcs. You need to enable !vcs_deploy module', array('!vcs' => $extension->vcs)),
         );
         // The user may have requested to update a project matching this
@@ -76,7 +76,7 @@ function drush_pm_updatestatus() {
           'name' => $name,
           'label' => $projects[$name]['label'],
           'existing_version' => $projects[$name]['version'],
-          'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE,
+          'status' => DRUSH_UPDATESTATUS_REQUESTED_PROJECT_NOT_UPDATEABLE,
         );
         unset($requests[$name]);
       }
@@ -87,7 +87,7 @@ function drush_pm_updatestatus() {
           'name' => $name,
           'label' => $name,
           'existing_version' => 'Unknown',
-          'status'=> DRUSH_PM_REQUESTED_PROJECT_NOT_FOUND,
+          'status'=> DRUSH_UPDATESTATUS_REQUESTED_PROJECT_NOT_FOUND,
         );
       }
     }
@@ -98,13 +98,13 @@ function drush_pm_updatestatus() {
     if (!empty($request['version'])) {
       $release = pm_get_release($request, $update_info[$name]);
       if (!$release) {
-        $update_info[$name]['status'] = DRUSH_PM_REQUESTED_VERSION_NOT_FOUND;
+        $update_info[$name]['status'] = DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_FOUND;
       }
       else if ($release['version'] == $update_info[$name]['existing_version']) {
-        $update_info[$name]['status'] = DRUSH_PM_REQUESTED_CURRENT;
+        $update_info[$name]['status'] = DRUSH_UPDATESTATUS_REQUESTED_VERSION_CURRENT;
       }
       else {
-        $update_info[$name]['status'] = DRUSH_PM_REQUESTED_UPDATE;
+        $update_info[$name]['status'] = DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_CURRENT;
       }
       // Set the candidate version to the requested release.
       $update_info[$name]['candidate_version'] = $release['version'];
@@ -117,28 +117,53 @@ function drush_pm_updatestatus() {
   // 'updateable' in the project.
   foreach ($update_info as $key => $project) {
     switch($project['status']) {
-      case DRUSH_PM_REQUESTED_UPDATE:
+      case DRUSH_UPDATESTATUS_NOT_SECURE:
+        $status = dt('SECURITY UPDATE available');
+        pm_release_recommended($project);
+        break;
+      case DRUSH_UPDATESTATUS_REVOKED:
+        $status = dt('Installed version REVOKED');
+        pm_release_recommended($project);
+        break;
+      case DRUSH_UPDATESTATUS_NOT_SUPPORTED:
+        $status = dt('Installed version not supported');
+        pm_release_recommended($project);
+        break;
+      case DRUSH_UPDATESTATUS_NOT_CURRENT:
+        $status = dt('Update available');
+        pm_release_recommended($project);
+        break;
+      case DRUSH_UPDATESTATUS_CURRENT:
+        $status = dt('Up to date');
+        pm_release_recommended($project);
+        $project['updateable'] = FALSE;
+        break;
+      case DRUSH_UPDATESTATUS_NOT_CHECKED:
+      case DRUSH_UPDATESTATUS_NOT_FETCHED:
+      case DRUSH_UPDATESTATUS_FETCH_PENDING:
+        $status = dt('Unable to check status');
+        break;
+      case DRUSH_UPDATESTATUS_PROJECT_NOT_PACKAGED:
+        $status = $project['status_msg'];
+        break;
+      case DRUSH_UPDATESTATUS_REQUESTED_PROJECT_NOT_UPDATEABLE:
+        $status = dt('Project has no enabled extensions and can\'t be updated');
+        break;
+      case DRUSH_UPDATESTATUS_REQUESTED_PROJECT_NOT_FOUND:
+        $status = dt('Specified project not found');
+        break;
+      case DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_FOUND:
+        $status = dt('Specified version not found');
+        break;
+      case DRUSH_UPDATESTATUS_REQUESTED_VERSION_CURRENT:
+        $status = dt('Specified version already installed');
+        break;
+      case DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_CURRENT:
         $status = dt('Specified version available');
         $project['updateable'] = TRUE;
         break;
-      case DRUSH_PM_REQUESTED_CURRENT:
-        $status = dt('Specified version already installed');
-        break;
-      case DRUSH_PM_REQUESTED_PROJECT_NOT_PACKAGED:
-        $status = $project['status_msg'];
-        break;
-      case DRUSH_PM_REQUESTED_VERSION_NOT_FOUND:
-        $status = dt('Specified version not found');
-        break;
-      case DRUSH_PM_REQUESTED_PROJECT_NOT_FOUND:
-        $status = dt('Specified project not found');
-        break;
-      case DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE:
-        $status = dt('Project has no enabled extensions and can\'t be updated');
-        break;
       default:
-        // This can set $project['updateable'] and $project['candidate_version']
-        $status = $update_status->filter($project);
+        $status = dt('Unknown');
         break;
     }
 
@@ -177,14 +202,14 @@ function pm_project_filter($update_info, $security_only) {
   $eligible = array();
   foreach ($update_info as $key => $project) {
     if ($security_only) {
-      if ($project['status'] == UPDATE_NOT_SECURE) {
+      if ($project['status'] == DRUSH_UPDATESTATUS_NOT_SECURE) {
         $eligible[$key] = $project;
       }
     }
     elseif (drush_get_context('DRUSH_VERBOSE')) {
       $eligible[$key] = $project;
     }
-    elseif ($project['status'] != UPDATE_CURRENT) {
+    elseif ($project['status'] != DRUSH_UPDATESTATUS_CURRENT) {
       $eligible[$key] = $project;
     }
   }

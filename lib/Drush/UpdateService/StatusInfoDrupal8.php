@@ -10,62 +10,6 @@ namespace Drush\UpdateService;
 class StatusInfoDrupal8 implements StatusInfoInterface {
 
   /**
-   * Returns a human readable message based on update status of a project.
-   *
-   * It also may alter the project object and set $project['updateable']
-   * and $project['candidate_version'].
-   *
-   * @see pm_release_recommended()
-   *
-   * Project statuses in Drupal 8 are:
-   * - UPDATE_NOT_SECURE
-   * - UPDATE_REVOKED
-   * - UPDATE_NOT_SUPPORTED
-   * - UPDATE_NOT_CURRENT
-   * - UPDATE_CURRENT
-   * - UPDATE_NOT_CHECKED
-   * - UPDATE_UNKNOWN
-   * - UPDATE_NOT_FETCHED
-   * - UPDATE_FETCH_PENDING
-   *
-   */
-  function filter(&$project) {
-    switch($project['status']) {
-      case UPDATE_NOT_SECURE:
-        $status = dt('SECURITY UPDATE available');
-        pm_release_recommended($project);
-        break;
-      case UPDATE_REVOKED:
-        $status = dt('Installed version REVOKED');
-        pm_release_recommended($project);
-        break;
-      case UPDATE_NOT_SUPPORTED:
-        $status = dt('Installed version not supported');
-        pm_release_recommended($project);
-        break;
-      case UPDATE_NOT_CURRENT:
-        $status = dt('Update available');
-        pm_release_recommended($project);
-        break;
-      case UPDATE_CURRENT:
-        $status = dt('Up to date');
-        pm_release_recommended($project);
-        $project['updateable'] = FALSE;
-        break;
-      case UPDATE_NOT_CHECKED:
-        $status = dt('Unable to check status');
-        break;
-      case UPDATE_UNKNOWN:
-      case UPDATE_NOT_FETCHED:
-      case UPDATE_FETCH_PENDING:
-      default:
-        $status = dt('Unknown');
-        break;
-    }
-    return $status;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function __construct($type, $engine, $config) {
@@ -92,13 +36,22 @@ class StatusInfoDrupal8 implements StatusInfoInterface {
   /**
    * Get update information for all installed projects.
    *
-   * @see update_get_available().
-   * @see \Drupal\update\Controller\UpdateController::updateStatusManually()
-   *
-   * * @return Array containing remote and local versions
-   * for all installed projects.
+   * @return
+   *   Array of update status information.
    */
   function getStatus($projects) {
+    $available = $this->getAvailableReleases();
+    $update_info = $this->calculateUpdateStatus($available, $projects);
+    return $update_info;
+  }
+
+  /**
+   * Obtains release info for all installed projects via update.module.
+   *
+   * @see update_get_available().
+   * @see \Drupal\update\Controller\UpdateController::updateStatusManually()
+   */
+  protected function getAvailableReleases() {
     // Force to invalidate some caches that are only cleared
     // when visiting update status report page. This allow to detect changes in
     // .info.yml files.
@@ -139,10 +92,16 @@ class StatusInfoDrupal8 implements StatusInfoInterface {
     // Clear any error set by a failed update fetch task. This avoid rollbacks.
     drush_clear_error();
 
-    // Calculate update status data.
-    $available = \Drupal::keyValueExpirable('update_available_releases')->getAll();
+    return \Drupal::keyValueExpirable('update_available_releases')->getAll();
+  }
+
+  /**
+   * Calculates update status for all projects via update.module.
+   */
+  protected function calculateUpdateStatus($available, $projects) {
     module_load_include('inc', 'update', 'update.compare');
     $data = update_calculate_project_data($available);
+
     foreach ($data as $project_name => $project) {
       // Discard custom projects.
       if ($project['status'] == UPDATE_UNKNOWN) {
@@ -154,16 +113,17 @@ class StatusInfoDrupal8 implements StatusInfoInterface {
         unset($data[$project_name]);
         continue;
       }
+
       // Allow to update disabled projects.
-      if (in_array($project['project_type'], array('module-disabled', 'theme-disabled'))) {
-        $data[$project_name]['project_type'] = substr($project['project_type'], 0, strpos($project['project_type'], '-'));
-      }
+      $data[$project_name]['project_type'] = $this->adjustProjectType($project);
+
       // Add some info from the project to $data.
       $data[$project_name] += array(
         'path'  => isset($projects[$project_name]['path']) ? $projects[$project_name]['path'] : '',
         'label' => $projects[$project_name]['label'],
       );
       // Store all releases, not just the ones selected by update.module.
+      // We use it to allow the user to update to a specific version.
       if (isset($available[$project_name]['releases'])) {
         $data[$project_name]['releases'] = $available[$project_name]['releases'];
       }
@@ -171,4 +131,18 @@ class StatusInfoDrupal8 implements StatusInfoInterface {
 
     return $data;
   }
+
+  /**
+   * Adjust project type for disabled projects.
+   *
+   * update.module sets a different project type
+   * for disabled projects. Here we normalize it.
+   */
+  protected function adjustProjectType($project) {
+    if (in_array($project['project_type'], array('module-disabled', 'theme-disabled'))) {
+      return substr($project['project_type'], 0, strpos($project['project_type'], '-'));
+    }
+    return $project['project_type'];
+  }
 }
+

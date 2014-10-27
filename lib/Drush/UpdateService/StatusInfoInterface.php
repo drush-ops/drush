@@ -16,14 +16,6 @@ interface StatusInfoInterface {
   public function __construct($type, $engine, $config);
 
   /**
-   * Returns a human readable message based on update status of a project.
-   *
-   * It also may alter the project object and set $project['updateable']
-   * and $project['candidate_version'].
-   */
-  function filter(&$project);
-
-  /**
    * Returns time of last check of available updates.
    */
   function lastCheck();

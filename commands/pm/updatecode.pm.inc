@@ -83,7 +83,7 @@ function drush_pm_updatecode() {
     // first.
     else {
       $core_update_available = TRUE;
-      if ($drupal_project['status'] == UPDATE_NOT_SECURE) {
+      if ($drupal_project['status'] == DRUSH_UPDATESTATUS_NOT_SECURE) {
         drush_print(dt("NOTE: A security update for the Drupal core is available."));
       }
       else {
@@ -256,8 +256,8 @@ function pm_update_packages($update_info, $tmpfile) {
     $status[$project['status']] = $project['status'];
   }
   // We print the list of the projects that need to be updated.
-  if (isset($status[UPDATE_NOT_SECURE])) {
-    if (isset($status[UPDATE_NOT_CURRENT])) {
+  if (isset($status[DRUSH_UPDATESTATUS_NOT_SECURE])) {
+    if (isset($status[DRUSH_UPDATESTATUS_NOT_CURRENT])) {
       $title = (dt('Security and code updates will be made to the following projects:'));
     }
     else {
