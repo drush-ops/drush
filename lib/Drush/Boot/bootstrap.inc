@@ -429,7 +429,7 @@ function _drush_bootstrap_drupal_root_validate() {
     return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
   }
 
-  drush_bootstrap_value('drupal_root', $drupal_root);
+  drush_bootstrap_value('drupal_root', realpath($drupal_root));
   define('DRUSH_DRUPAL_SIGNATURE', $signature);
 
   return TRUE;

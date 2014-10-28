@@ -277,7 +277,8 @@ function _drush_preflight_root_uri() {
     $root = drush_locate_root();
   }
   // @todo This context name should not mention Drupal.
-  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
+  // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
+  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', realpath($root));
   $uri = drush_get_option('uri', '');
   drush_set_context('DRUSH_SELECTED_URI', $uri);
   drush_sitealias_create_self_alias();
