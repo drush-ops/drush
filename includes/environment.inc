@@ -303,7 +303,7 @@ function drush_conf_path($server_uri, $require_settings = TRUE) {
 
 /**
  * Exhaustive depth-first search to try and locate the Drupal root directory.
- * This makes it possible to run drush from a subdirectory of the drupal root.
+ * This makes it possible to run Drush from a subdirectory of the drupal root.
  *
  * @param
  *   Search start path. Defaults to current working directory.
