@@ -87,7 +87,7 @@ class StatusInfoDrush implements StatusInfoInterface {
         continue;
       }
 
-      // Get release info from cache and refresh it it case it's obsolete.
+      // Get release info from cache and refresh it in case it's obsolete.
       $needs_refresh = FALSE;
       $cid = "${major_version}-${project_name}";
       $cached = drush_cache_get($cid, 'update');
@@ -118,9 +118,7 @@ class StatusInfoDrush implements StatusInfoInterface {
   }
 
   /**
-   * Calculates update status for all projects via update.module.
-   *
-   * @see update_calculate_project_update_status().
+   * Calculates update status for given projects.
    */
   private function calculateUpdateStatus($available, $projects) {
     $update_info = array();
@@ -200,7 +198,7 @@ class StatusInfoDrush implements StatusInfoInterface {
   /**
    * Obtain the update status of a project and the recommended release.
    *
-   * This is atripped down version of update_calculate_project_status().
+   * This is a stripped down version of update_calculate_project_status().
    * That function has the same logic in Drupal 6,7,8.
    * Note: in Drupal 6 this is part of update_calculate_project_data().
    *

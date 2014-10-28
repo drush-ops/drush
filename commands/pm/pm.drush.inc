@@ -658,7 +658,7 @@ function drush_get_projects(&$extensions = NULL) {
     }
 
     // Obtain the creation time of the extension's .info.yml.
-    // This is needed by update_info 'drush' engine.
+    // This is needed by the 'drush' backend of update_status engine.
     $info_file = $extension_path . '/' . $extension_name . $info_file_extension;
     $ctime = filectime($info_file);
 
