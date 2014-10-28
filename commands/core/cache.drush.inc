@@ -91,7 +91,7 @@ function cache_drush_command() {
  *   Array of clear types.
  */
 function cache_cache_clear_complete() {
-  // Bootstrap as far as possible so that Views and others can add lookup their caches.
+  // Bootstrap as far as possible so that Views and others can list their caches.
   drush_bootstrap_max();
   return array('values' => array_keys(drush_cache_clear_types(TRUE)));
 }
@@ -99,7 +99,7 @@ function cache_cache_clear_complete() {
 function drush_cache_clear_pre_validate($type = NULL) {
   $types = drush_cache_clear_types(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
   // Check if the provided type ($type) is a valid cache type.
-  if ($type && !key_exists($type, $types)) {
+  if ($type && !array_key_exists($type, $types)) {
     if ($type === 'all' && drush_drupal_major_version() >= 8) {
       return drush_set_error(dt('`cache-clear all` is deprecated for Drupal 8 and later. Please use the `cache-rebuild` command instead.'));
     }
