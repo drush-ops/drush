@@ -36,20 +36,24 @@ class Project {
         $project_status = 'unknown';
       }
     }
-    else {
-      $error = FALSE;
-      $project_status = $xml->xpath('/project/project_status');
-      $project_status = (string)$project_status[0];
-    }
-
-    $this->error = $error;
-    $this->project_status = $project_status;
-
-    if ($error) {
-      drush_set_error('DRUSH_RELEASE_INFO_ERROR', $error);
-    }
+    // The xml has a project, but still it can have errors.
     else {
       $this->parsed = self::parseXml($xml);
+      if (empty($this->parsed['releases'])) {
+        $error = dt('No available releases found for the requested project (!name).', array('!name' => $this->parsed['short_name']));
+        $project_status = 'unknown';
+      }
+      else {
+        $error = FALSE;
+        $project_status = $xml->xpath('/project/project_status');
+        $project_status = (string)$project_status[0];
+      }
+    }
+
+    $this->project_status = $project_status;
+    $this->error = $error;
+    if ($error) {
+      drush_set_error('DRUSH_RELEASE_INFO_ERROR', $error);
     }
   }
 
