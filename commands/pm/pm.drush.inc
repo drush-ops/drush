@@ -71,7 +71,7 @@ const DRUSH_UPDATESTATUS_NOT_CHECKED = -1;
  *
  * Maps UPDATE_UNKNOWN.
  */
-const DRUSH_UPDATESTATUS_UPDATE_UNKNOWN = -2;
+const DRUSH_UPDATESTATUS_UNKNOWN = -2;
 
 /**
  * There was a failure fetching available update data for this project.
@@ -670,11 +670,12 @@ function drush_get_projects(&$extensions = NULL) {
         // for the project label because the extension's label may have
         // no direct relation with the project name. For example,
         // "Text (text)" or "Number (number)" for the CCK project.
-        'label'      => isset($extensions[$project])?$extensions[$project]->label:$project,
+        'label'      => isset($extensions[$project]) ? $extensions[$project]->label : $project,
         'type'       => drush_extension_get_type($extension),
         'version'    => $extension->info['version'],
         'status'     => $extension->status,
         'extensions' => array(),
+        'datestamp'  => isset($extension->info['datestamp']) ? $extension->info['datestamp'] : NULL,
         '_info_file_ctime' => $ctime,
       );
       if (isset($extension->info['project status url'])) {
@@ -1585,7 +1586,9 @@ function pm_drush_engine_type_info() {
       'add-options-to-command' => TRUE,
     ),
     'update_status' => array(
+      'option' => 'update-backend',
       'description' => 'Determine how to fetch update status information.',
+      'default' => 'drupal',
       'add-options-to-command' => TRUE,
       'options' => array(
         'security-only' => 'Only update modules that have security updates available.',
@@ -1657,8 +1660,13 @@ function pm_drush_engine_release_info() {
 function pm_drush_engine_update_status() {
   return array(
     'drupal' => array(
+      'description' => 'Check available updates with update.module.',
       'drupal dependencies' => array('update'),
       'class' => 'Drush\UpdateService\StatusInfoDrupal',
+    ),
+    'drush' => array(
+      'description' => 'Check available updates without update.module.',
+      'class' => 'Drush\UpdateService\StatusInfoDrush',
     ),
   );
 }

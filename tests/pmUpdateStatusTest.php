@@ -12,6 +12,7 @@ namespace Unish;
  *  @group pm
  */
 class pmUpdateStatus extends CommandUnishTestCase {
+
   /**
    * Setup the test environment.
    *
@@ -58,18 +59,30 @@ class pmUpdateStatus extends CommandUnishTestCase {
     $this->drush('pm-download', array('zen'), $options + array('package-handler' => 'git_drupalorg'));
     $modules_en[] = 'zen';
     // self::EXIT_ERROR because of bad_judgement.
-    $this->drush('pm-enable', $modules_en, $options,NULL, NULL, self::EXIT_ERROR);
+    $this->drush('pm-enable', $modules_en, $options, NULL, NULL, self::EXIT_ERROR);
   }
 
   /**
-   * Test several update statuses.
+   * Test several update statuses via drupal backend.
    */
-  function testUpdateStatus() {
+  function testUpdateStatusDrupal() {
+    $this->doTest('drupal');
+  }
+
+  /**
+   * Test several update statuses via drush backend.
+   */
+  function testUpdateStatusDrush() {
+    $this->doTest('drush');
+  }
+
+  function doTest($update_backend) {
     $options = array(
       'root' => $this->webroot(),
       'uri' => key($this->getSites()),
       'verbose' => NULL,
-      'backend' => null,
+      'backend' => NULL,
+      'update-backend' => $update_backend,
     );
     $this->drush('pm-updatestatus', array(), $options);
     $parsed = $this->parse_backend_output($this->getOutput());
