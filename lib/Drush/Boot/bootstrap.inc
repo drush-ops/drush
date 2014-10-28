@@ -459,7 +459,7 @@ function _drush_bootstrap_drupal_root() {
   $major_version = drush_drupal_major_version();
 
   if ($major_version <= 5) {
-    drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version. See http://drupal.org/project/drush for more information.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
+    drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
   }
   else {
     if ($major_version <= 7) {
