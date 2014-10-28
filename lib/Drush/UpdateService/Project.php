@@ -108,9 +108,11 @@ class Project {
    */
   private function parseXml(\SimpleXMLElement $xml) {
     $project_info = array();
+
+    // Extract general project info.
     $items = array('title', 'short_name', 'dc:creator', 'api_version',
       'recommended_major', 'supported_majors', 'default_major',
-      'project_status', 'link'
+      'project_status', 'link',
     );
     foreach ($items as $item) {
       if (array_key_exists($item, (array)$xml)) {
@@ -118,29 +120,62 @@ class Project {
         $project_info[$item] = (string)$value[0];
       }
     }
+    $project_info['terms'] = array();
+    if ($xml->terms) {
+      foreach ($xml->terms->children() as $term) {
+        $term_name = (string) $term->name;
+        $term_value = (string) $term->value;
+        if (!isset($project_info[$term_name])) {
+          $project_info['terms'][$term_name] = array();
+        }
+        $project_info['terms'][$term_name][] = $term_value;
+      }
+    }
 
-    $recommended_major = @$xml->xpath("/project/recommended_major");
-    $recommended_major = empty($recommended_major)?"":(string)$recommended_major[0];
-    $supported_majors = @$xml->xpath("/project/supported_majors");
-    $supported_majors = empty($supported_majors)?array():array_flip(explode(',', (string)$supported_majors[0]));
-    $releases_xml = @$xml->xpath("/project/releases/release[status='published']");
+    // Extract and parse releases info.
+    // In addition to the info in the update service, here we calculate
+    // release statuses as Recommended, Security, etc.
+
+    $recommended_major = empty($project_info['recommended_major']) ? '' : $project_info['recommended_major'];
+    $supported_majors = empty($project_info['supported_majors']) ? array() : array_flip(explode(',', $project_info['supported_majors']));
     $recommended_version = NULL;
     $latest_version = NULL;
+
     $releases = array();
     $items = array(
       'name', 'date', 'status',
       'version', 'tag', 'version_major', 'version_patch', 'version_extra',
-      'release_link', 'download_link', 'mdhash', 'filesize'
+      'release_link', 'download_link', 'mdhash', 'filesize',
     );
+    $releases_xml = @$xml->xpath("/project/releases/release[status='published']");
     foreach ($releases_xml as $release) {
       $release_info = array();
+      $statuses = array();
       foreach ($items as $item) {
         if (array_key_exists($item, $release)) {
           $value = $release->xpath($item);
           $release_info[$item] = (string)$value[0];
         }
       }
-      $statuses = array();
+      $release_info['terms'] = array();
+      if ($release->terms) {
+        foreach ($release->terms->children() as $term) {
+          $term_name = (string) $term->name;
+          $term_value = (string) $term->value;
+          if (!isset($release_info['terms'][$term_name])) {
+            $release_info['terms'][$term_name] = array();
+          }
+          $release_info['terms'][$term_name][] = $term_value;
+
+          // Add "Security" for security updates, and nothing
+          // for the other kinds.
+          if (strpos($term_value, "Security") !== FALSE) {
+            $statuses[] = "Security";
+          }
+        }
+      }
+
+      // Calculate statuses.
       if (array_key_exists($release_info['version_major'], $supported_majors)) {
         $statuses[] = "Supported";
         unset($supported_majors[$release_info['version_major']]);
@@ -159,18 +194,11 @@ class Project {
       if (!empty($release_info['version_extra']) && ($release_info['version_extra'] == "dev")) {
         $statuses[] = "Development";
       }
-      foreach ($release->xpath('terms/term/value') as $release_type) {
-        // There are three kinds of release types that we recognize:
-        // "Bug fixes", "New features" and "Security update".
-        // We will add "Security" for security updates, and nothing
-        // for the other kinds.
-        if (strpos($release_type, "Security") !== FALSE) {
-          $statuses[] = "Security";
-        }
-      }
+
       $release_info['release_status'] = $statuses;
       $releases[$release_info['version']] = $release_info;
     }
+
     // If there is no -stable- release in the recommended major,
     // then take the latest version in the recommended major to be
     // the recommended release.
