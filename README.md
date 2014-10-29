@@ -172,6 +172,9 @@ POST-INSTALL
    [drush.complete.sh](drush.complete.sh) file for instructions adding bash completion for drush
    command to your shell.  Once configured, completion works for site aliases,
    command names, shell aliases, global options, and command-specific options.
+   It is also possible to enable completion for aliases, e.g. dr='drush'.
+   Instructions are near the bottom of [drush.complete.sh](drush.complete.sh)
+   where the completion function is registered.
 
 1. Optional. If [drush.complete.sh](drush.complete.sh) is being sourced (ideally in
    bash_completion.d), you can use the supplied __drush_ps1() sh function to
