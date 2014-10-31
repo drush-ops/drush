@@ -2066,25 +2066,19 @@ function drush_find_empty_directories($dir, $exclude = array()) {
  *   TRUE on success, FALSE on any failures appending data to .info files.
  */
 function drush_pm_inject_info_file_metadata($project_dir, $project_name, $version) {
-  $info_files = drush_scan_directory($project_dir, '/.*\.info$/');
+  // `drush_drupal_major_version()` cannot be used here because this may be running
+  // outside of a Drupal context.
+  $yaml_format = strpos($version, '8') === 0;
+  $pattern = preg_quote($yaml_format ? '.info.yml' : '.info');
+  $info_files = drush_scan_directory($project_dir, '/.*' . $pattern . '$/');
   if (!empty($info_files)) {
     // Construct the string of metadata to append to all the .info files.
-    // Taken straight from: http://drupalcode.org/project/drupalorg.git/blob/refs/heads/6.x-3.x:/drupalorg_project/plugins/release_packager/DrupalorgProjectPackageRelease.class.php#l192
-    $info = "\n\n; Information added by drush on " . date('Y-m-d') . "\n";
-    $info .= "version = \"$version\"\n";
-    // .info files started with 5.x, so we don't have to worry about version
-    // strings like "4.7.x-1.0" in this regular expression. If we can't parse
-    // the version (also from an old "HEAD" release), or the version isn't at
-    // least 6.x, don't add any "core" attribute at all.
-    $matches = array();
-    if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
-      $info .= "core = \"$matches[1]\"\n";
+    if ($yaml_format) {
+      $info = _drush_pm_generate_info_yaml_metadata($version, $project_name);
     }
-    if (!drush_get_option('no-gitprojectinfo', FALSE)) {
-      $info .= "project = \"$project_name\"\n";
+    else {
+      $info = _drush_pm_generate_info_ini_metadata($version, $project_name);
     }
-    $info .= 'datestamp = "'. time() ."\"\n";
-    $info .= "\n";
     foreach ($info_files as $info_file) {
       if (!drush_file_append_data($info_file->filename, $info)) {
         return FALSE;
@@ -2092,4 +2086,50 @@ function drush_pm_inject_info_file_metadata($project_dir, $project_name, $versio
     }
   }
   return TRUE;
+}
+
+/**
+ * Generate version information for `.info` files in ini format.
+ */
+function _drush_pm_generate_info_ini_metadata($version, $project_name) {
+  // Taken straight from: http://drupalcode.org/project/drupalorg.git/blob/refs/heads/6.x-3.x:/drupalorg_project/plugins/release_packager/DrupalorgProjectPackageRelease.class.php#l192
+  $info = "\n\n; Information added by drush on " . date('Y-m-d') . "\n";
+  $info .= "version = \"$version\"\n";
+  // .info files started with 5.x, so we don't have to worry about version
+  // strings like "4.7.x-1.0" in this regular expression. If we can't parse
+  // the version (also from an old "HEAD" release), or the version isn't at
+  // least 6.x, don't add any "core" attribute at all.
+  $matches = array();
+  if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
+    $info .= "core = \"$matches[1]\"\n";
+  }
+  if (!drush_get_option('no-gitprojectinfo', FALSE)) {
+    $info .= "project = \"$project_name\"\n";
+  }
+  $info .= 'datestamp = "'. time() ."\"\n";
+  $info .= "\n";
+  return $info;
+}
+
+/**
+ * Generate version information for `.info` files in YAML format.
+ */
+function _drush_pm_generate_info_yaml_metadata($version, $project_name) {
+  // Taken straight from: http://drupalcode.org/project/drupalorg.git/blob/refs/heads/6.x-3.x:/drupalorg_project/plugins/release_packager/DrupalorgProjectPackageRelease.class.php#l192
+  $info = "\n\n# Information added by drush on " . date('Y-m-d') . "\n";
+  $info .= "version: \"$version\"\n";
+  // .info files started with 5.x, so we don't have to worry about version
+  // strings like "4.7.x-1.0" in this regular expression. If we can't parse
+  // the version (also from an old "HEAD" release), or the version isn't at
+  // least 6.x, don't add any "core" attribute at all.
+  $matches = array();
+  if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
+    $info .= "core: \"$matches[1]\"\n";
+  }
+  if (!drush_get_option('no-gitprojectinfo', FALSE)) {
+    $info .= "project: \"$project_name\"\n";
+  }
+  $info .= 'datestamp: "'. time() ."\"\n";
+  $info .= "\n";
+  return $info;
 }
