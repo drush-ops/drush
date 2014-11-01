@@ -8,7 +8,7 @@
 namespace Unish;
 
 /**
- * @group migrate
+ * @group commands
  */
 class migrateManifestTest extends CommandUnishTestCase {
 
