@@ -12,9 +12,9 @@ namespace Unish;
  */
 class migrateManifestTest extends CommandUnishTestCase {
 
-  protected $siteOptions = [];
+  protected $siteOptions = array();
 
-  protected $migrateOptions = [];
+  protected $migrateOptions = array();
 
   /**
    * {@inheritdoc}
@@ -28,18 +28,18 @@ class migrateManifestTest extends CommandUnishTestCase {
     $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
     $site = key($sites);
     $root = $this->webroot();
-    $this->siteOptions = [
+    $this->siteOptions = array(
       'root' => $root,
       'uri' => $site,
       'yes' => NULL,
-    ];
-    $this->drush('pm-enable', ['migrate_drupal'], $this->siteOptions);
+    );
+    $this->drush('pm-enable', array('migrate_drupal'), $this->siteOptions);
 
     // All migrate commands will need this option.
-    $this->migrateOptions = $this->siteOptions + [
+    $this->migrateOptions = $this->siteOptions + array(
       //'legacy-db-url' => 'mysql://root:@localhost/db',
       'legacy-db-url' => $this->db_url($site),
-    ];
+    );
   }
 
   /**
@@ -49,7 +49,7 @@ class migrateManifestTest extends CommandUnishTestCase {
     $manifest = $this->webroot() . '/manifest.yml';
     $yaml = "- non_existent_migration";
     file_put_contents($manifest, $yaml);
-    $this->drush('migrate-manifest', [$manifest], $this->migrateOptions);
+    $this->drush('migrate-manifest', array($manifest), $this->migrateOptions);
     $output = $this->getErrorOutput();
     $this->assertContains('The following migrations were not found: non_existent_migration', $output);
 
@@ -62,7 +62,7 @@ class migrateManifestTest extends CommandUnishTestCase {
     $invalid_manifest_file = $this->webroot() . '/invalid_manifest.yml';
     $invalid_yml = '--- :d6_migration';
     file_put_contents($invalid_manifest_file, $invalid_yml);
-    $this->drushExpectError([$invalid_manifest_file]);
+    $this->drushExpectError(array($invalid_manifest_file));
     $this->assertContains('The manifest file cannot be parsed.', $this->getErrorOutput());
   }
 
@@ -70,7 +70,7 @@ class migrateManifestTest extends CommandUnishTestCase {
    * Test with a non-existed manifest files.
    */
   public function testNonExistentFile() {
-    $this->drushExpectError(['/some/file/that/doesnt/exist']);
+    $this->drushExpectError(array('/some/file/that/doesnt/exist'));
     $this->assertContains('The manifest file does not exist.', $this->getErrorOutput());
   }
 
