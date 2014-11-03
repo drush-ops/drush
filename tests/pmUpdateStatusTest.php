@@ -12,6 +12,7 @@ namespace Unish;
  *  @group pm
  */
 class pmUpdateStatus extends CommandUnishTestCase {
+
   /**
    * Setup the test environment.
    *
@@ -27,7 +28,7 @@ class pmUpdateStatus extends CommandUnishTestCase {
    *  - Drupal 8 still has not enough variety to cover the tests
    */
   function setUp() {
-    $sites = $this->setUpDrupal(1, TRUE, 7);
+    $sites = $this->setUpDrupal(1, TRUE, "7.30");
     $options = array(
       'root' => $this->webroot(),
       'uri' => key($sites),
@@ -58,24 +59,39 @@ class pmUpdateStatus extends CommandUnishTestCase {
     $this->drush('pm-download', array('zen'), $options + array('package-handler' => 'git_drupalorg'));
     $modules_en[] = 'zen';
     // self::EXIT_ERROR because of bad_judgement.
-    $this->drush('pm-enable', $modules_en, $options,NULL, NULL, self::EXIT_ERROR);
+    $this->drush('pm-enable', $modules_en, $options, NULL, NULL, self::EXIT_ERROR);
   }
 
   /**
-   * Test several update statuses.
+   * Test several update statuses via drupal backend.
    */
-  function testUpdateStatus() {
+  function testUpdateStatusDrupal() {
+    $this->doTest('drupal');
+  }
+
+  /**
+   * Test several update statuses via drush backend.
+   */
+  function testUpdateStatusDrush() {
+    $this->doTest('drush');
+  }
+
+  function doTest($update_backend) {
+
+    // Test several projects with a variety of statuses.
     $options = array(
       'root' => $this->webroot(),
       'uri' => key($this->getSites()),
       'verbose' => NULL,
-      'backend' => null,
+      'backend' => NULL,
+      'update-backend' => $update_backend,
     );
     $this->drush('pm-updatestatus', array(), $options);
     $parsed = $this->parse_backend_output($this->getOutput());
     $data = $parsed['object'];
 
     $expected = array(
+      'drupal'                  => 'SECURITY UPDATE available',
       'bad_judgement'           => 'Update available',
       'ctools'                  => 'Up to date',
       'devel'                   => 'SECURITY UPDATE available',
@@ -86,6 +102,7 @@ class pmUpdateStatus extends CommandUnishTestCase {
       $this->assertArrayHasKey($module, $data, "$module module present in pm-updatestatus output");
       $this->assertEquals($data[$module]['status_msg'], $status_msg, "$module status is '$status_msg'");
     }
+
 
     // Test statuses when asked for specific projects and versions.
     $args = array(
@@ -108,5 +125,40 @@ class pmUpdateStatus extends CommandUnishTestCase {
       $this->assertArrayHasKey($module, $data, "$module module present in pm-updatestatus output");
       $this->assertEquals($data[$module]['status_msg'], $status_msg, "$module status is '$status_msg'");
     }
+    // We don't expect any output for other projects than the provided ones.
+    $not_expected = array(
+      'drupal',
+      'field-conditional-state',
+      'zen',
+    );
+    foreach ($not_expected as $module) {
+      $this->assertArrayNotHasKey($module, $data, "$module module not present in pm-updatestatus output");
+    }
+
+
+    // Test --security-only.
+    $this->drush('pm-updatestatus', array(), $options + array('security-only' => NULL));
+    $parsed = $this->parse_backend_output($this->getOutput());
+    $data = $parsed['object'];
+
+    $expected = array(
+      'drupal' => 'SECURITY UPDATE available',
+      'devel'  => 'SECURITY UPDATE available',
+    );
+    foreach ($expected as $module => $status_msg) {
+      $this->assertArrayHasKey($module, $data, "$module module present in pm-updatestatus output");
+      $this->assertEquals($data[$module]['status_msg'], $status_msg, "$module status is '$status_msg'");
+    }
+    // We don't expect any output for projects without security updates.
+    $not_expected = array(
+      'bad_judgement',
+      'ctools',
+      'field-conditional-state',
+      'zen',
+    );
+    foreach ($not_expected as $module) {
+      $this->assertArrayNotHasKey($module, $data, "$module module not present in pm-updatestatus output");
+    }
   }
 }
+

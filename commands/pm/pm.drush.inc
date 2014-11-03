@@ -71,7 +71,7 @@ const DRUSH_UPDATESTATUS_NOT_CHECKED = -1;
  *
  * Maps UPDATE_UNKNOWN.
  */
-const DRUSH_UPDATESTATUS_UPDATE_UNKNOWN = -2;
+const DRUSH_UPDATESTATUS_UNKNOWN = -2;
 
 /**
  * There was a failure fetching available update data for this project.
@@ -614,31 +614,34 @@ function drush_pm_classify_extensions(&$extensions, &$modules, &$themes, $extens
  * extensions.
  */
 function drush_get_projects(&$extensions = NULL) {
+  $info_file_extension = drush_drupal_major_version() >= 8 ? '.info.yml' : '.info';
   if (!isset($extensions)) {
     $extensions = drush_get_extensions();
   }
   $projects = array(
     'drupal' => array(
-      'label' => 'Drupal',
-      'version' => drush_drupal_version(),
-      'type' => 'core',
+      'label'      => 'Drupal',
+      'version'    => drush_drupal_version(),
+      'type'       => 'core',
       'extensions' => array(),
+      '_info_file_ctime' => 0,
     )
   );
+  $info_file_extension = drush_drupal_major_version() >= 8 ? '.info.yml' : '.info';
   foreach ($extensions as $extension) {
-    // The project name is not available in this cases:
-    // 1. the extension is part of drupal core.
-    // 2. the project was checked out from CVS/git and cvs_deploy/git_deploy
-    // is not installed.
-    // 3. it is not a project hosted in drupal.org.
+    $extension_name = drush_extension_get_name($extension);
+    $extension_path = drush_extension_get_path($extension);
+
+    // Obtain the project name. It is not available in this cases:
+    //   1. the extension is part of drupal core.
+    //   2. the project was checked out from CVS/git and cvs_deploy/git_deploy
+    //      is not installed.
+    //   3. it is not a project hosted in drupal.org.
     if (empty($extension->info['project'])) {
       if (isset($extension->info['version']) && ($extension->info['version'] == drush_drupal_version())) {
         $project = 'drupal';
       }
       else {
-        $extension_name = drush_extension_get_name($extension);
-        $extension_path = drush_extension_get_path($extension);
-        drush_include_engine('drupal', 'environment');
         if (is_dir($extension_path . '/CVS') && (!drush_module_exists('cvs_deploy'))) {
           $extension->vcs = 'cvs';
           drush_log(dt('Extension !extension is fetched from cvs. Ignoring.', array('!extension' => $extension_name)), 'debug');
@@ -651,8 +654,14 @@ function drush_get_projects(&$extensions = NULL) {
       }
     }
     else {
-        $project = $extension->info['project'];
+      $project = $extension->info['project'];
     }
+
+    // Obtain the creation time of the extension's .info.yml.
+    // This is needed by the 'drush' backend of update_status engine.
+    $info_file = $extension_path . '/' . $extension_name . $info_file_extension;
+    $ctime = filectime($info_file);
+
     // Create/update the project in $projects with the project data.
     if (!isset($projects[$project])) {
       $projects[$project] = array(
@@ -661,18 +670,26 @@ function drush_get_projects(&$extensions = NULL) {
         // for the project label because the extension's label may have
         // no direct relation with the project name. For example,
         // "Text (text)" or "Number (number)" for the CCK project.
-        'label' => isset($extensions[$project])?$extensions[$project]->label:$project,
-        'type' => drush_extension_get_type($extension),
-        'version' => $extension->info['version'],
-        'status' => $extension->status,
+        'label'      => isset($extensions[$project]) ? $extensions[$project]->label : $project,
+        'type'       => drush_extension_get_type($extension),
+        'version'    => $extension->info['version'],
+        'status'     => $extension->status,
         'extensions' => array(),
+        'datestamp'  => isset($extension->info['datestamp']) ? $extension->info['datestamp'] : NULL,
+        '_info_file_ctime' => $ctime,
       );
       if (isset($extension->info['project status url'])) {
         $projects[$project]['status url'] = $extension->info['project status url'];
       }
     }
-    elseif ($extension->status != 0) {
-      $projects[$project]['status'] = $extension->status;
+    else {
+      // Pick the latest creation time.
+      $projects[$project]['_info_file_ctime'] = max($projects[$project]['_info_file_ctime'], $ctime);
+
+      // If any of the extensions is enabled, consider the project is enabled.
+      if ($extension->status != 0) {
+        $projects[$project]['status'] = $extension->status;
+      }
     }
     $projects[$project]['extensions'][] = drush_extension_get_name($extension);
   }
@@ -1569,7 +1586,9 @@ function pm_drush_engine_type_info() {
       'add-options-to-command' => TRUE,
     ),
     'update_status' => array(
+      'option' => 'update-backend',
       'description' => 'Determine how to fetch update status information.',
+      'default' => 'drupal',
       'add-options-to-command' => TRUE,
       'options' => array(
         'security-only' => 'Only update modules that have security updates available.',
@@ -1641,8 +1660,13 @@ function pm_drush_engine_release_info() {
 function pm_drush_engine_update_status() {
   return array(
     'drupal' => array(
+      'description' => 'Check available updates with update.module.',
       'drupal dependencies' => array('update'),
       'class' => 'Drush\UpdateService\StatusInfoDrupal',
+    ),
+    'drush' => array(
+      'description' => 'Check available updates without update.module.',
+      'class' => 'Drush\UpdateService\StatusInfoDrush',
     ),
   );
 }
