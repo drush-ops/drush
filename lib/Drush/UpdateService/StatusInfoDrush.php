@@ -105,9 +105,7 @@ class StatusInfoDrush implements StatusInfoInterface {
         $request = pm_parse_request($project_name);
         $project_release_info = Project::getInstance($request, $cache_duration);
         if ($project_release_info) {
-          // #TODO# SimpleXMLElement is not serializable. We need to rework
-          // UpdateService\Project to remove dependency on xml object.
-          //drush_cache_set($cid, $project_release_info, 'update', time() + $cache_duration);
+          drush_cache_set($cid, $project_release_info, 'update', time() + $cache_duration);
         }
       }
 
