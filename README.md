@@ -238,14 +238,15 @@ proceed.
 ADDITIONAL CONFIGURATIONS FOR OTHER AMP STACKS:
 -----------------------------------------------
 
-Users of other Apache distributions such as XAMPP, or Acquia's Dev Desktop will
+Users of other Apache distributions such as XAMPP, or Acquia's Dev Desktop v1 will
 want to ensure that its php can be found by the command line by adding it to
 the PATH variable, using the method in 3.b above. Depending on the version and
 distribution of your AMP stack, PHP might reside at:
 
 Path                                       | Application
 -----                                      | ----
-/Applications/acquia-drupal/php/bin        | Acquia Dev Desktop (Mac)
+/Applications/acquia-drupal/php/bin        | Acquia Dev Desktop v1 (Mac)
+   Note: Acquia Dev Desktop v2 for Mac and Windows already includes Drush pre-configured. 
 /Applications/xampp/xamppfiles/bin         | XAMP (Mac)
 /opt/lampp/bin                             | XAMPP (Windows)
 
