@@ -6,7 +6,6 @@ namespace Drush\UpdateService;
  * Representation of a project's release info from the update service.
  */
 class Project {
-  private $xml;
   private $parsed;
 
 
@@ -20,8 +19,6 @@ class Project {
    *    XML data.
    */
   function __construct(\SimpleXMLElement $xml) {
-    $this->xml = $xml;
-
     // Check if the xml contains an error on the project.
     if ($error = $xml->xpath('/error')) {
       $error = (string)$error[0];
@@ -157,22 +154,27 @@ class Project {
     $recommended_version = NULL;
     $latest_version = NULL;
 
-    $releases = array();
     $items = array(
       'name', 'date', 'status', 'type',
       'version', 'tag', 'version_major', 'version_patch', 'version_extra',
       'release_link', 'download_link', 'mdhash', 'filesize',
     );
+
+    $releases = array();
     $releases_xml = @$xml->xpath("/project/releases/release[status='published']");
     foreach ($releases_xml as $release) {
       $release_info = array();
       $statuses = array();
+
+      // Extract general release info.
       foreach ($items as $item) {
         if (array_key_exists($item, $release)) {
           $value = $release->xpath($item);
           $release_info[$item] = (string)$value[0];
         }
       }
+
+      // Extract release terms.
       $release_info['terms'] = array();
       if ($release->terms) {
         foreach ($release->terms->children() as $term) {
@@ -189,6 +191,23 @@ class Project {
             $statuses[] = "Security";
           }
         }
+      }
+
+      // Extract files.
+      $release_info['files'] = array();
+      foreach ($release->files->children() as $file) {
+        // Normalize keys to match the ones in the release info.
+        $item = array(
+          'download_link' => (string) $file->url,
+          'date'          => (string) $file->filedate,
+          'mdhash'        => (string) $file->md5,
+          'filesize'      => (string) $file->size,
+          'archive_type'  => (string) $file->archive_type,
+        );
+        if (!empty($file->variant)) {
+          $item['variant'] = (string) $file->variant;
+        }
+        $release_info['files'][] = $item;
       }
 
       // Calculate statuses.
@@ -296,7 +315,17 @@ class Project {
     }
 
     // First published release is just the first value in $releases.
-    return (array)$releases[0];
+    return reset($releases);
+  }
+
+  private function searchReleases($key, $value) {
+    $releases = array();
+    foreach ($this->parsed['releases'] as $version => $release) {
+      if ($release['status'] == 'published' && isset($release[$key]) && $release[$key] == $value) {
+        $releases[$version] = $release;
+      }
+    }
+    return $releases;
   }
 
   /**
@@ -312,8 +341,7 @@ class Project {
       $matches = array();
       // See if we only have a branch version.
       if (preg_match('/^\d+\.x-(\d+)$/', $version, $matches)) {
-        $xpath_releases = "/project/releases/release[status='published'][version_major=" . (string)$matches[1] . "]";
-        $releases = $this->xml->xpath($xpath_releases);
+        $releases = $this->searchReleases('version_major', $matches[1]);
       }
       else {
         // In some cases, the request only says something like '7.x-3.x' but the
@@ -322,7 +350,7 @@ class Project {
         if (substr($version, -2) == '.x') {
           $version .= '-dev';
         }
-        $releases = $this->xml->xpath("/project/releases/release[status='published'][version='" . $version . "']");
+        $releases = $this->searchReleases('version', $version);
       }
       if (empty($releases)) {
         return FALSE;
@@ -339,7 +367,7 @@ class Project {
    *    The selected release xml object or FALSE.
    */
   public function getDevRelease() {
-    $releases = $this->xml->xpath("/project/releases/release[status='published'][version_extra='dev']");
+    $releases = $this->searchReleases('version_extra', 'dev');
     return self::getBestRelease($releases);
   }
 
@@ -350,14 +378,22 @@ class Project {
    *    The selected release xml object or FALSE.
    */
   public function getRecommendedOrSupportedRelease() {
+    $majors = array();
+    if (!empty($this->parsed['recommended_major'])) {
+      $majors[] = $this->parsed['recommended_major'];
+    }
+    $supported = explode(',', $this->parsed['supported_majors']);
+    foreach ($supported as $v) {
+      if ($v != $this->parsed['recommended_major']) {
+        $majors[] = $v;
+      }
+    }
+
     $releases = array();
-    foreach(array('recommended_major', 'supported_majors') as $release_type) {
-      if ($versions = $this->xml->xpath("/project/$release_type")) {
-        $xpath = "/project/releases/release[status='published'][version_major=" . (string)$versions[0] . "]";
-        $releases = $this->xml->xpath($xpath);
-        if (!empty($releases)) {
-          break;
-        }
+    foreach ($majors as $major) {
+      $releases = $this->searchReleases('version_major', $major);
+      if (!empty($releases)) {
+        break;
       }
     }
 
