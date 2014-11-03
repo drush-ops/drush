@@ -411,7 +411,10 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
   }
   if (!$recursion) {
     $projects['contrib'] = isset($projects['contrib']) ? $projects['contrib'] : array();
-    drush_set_option('DRUSH_MAKE_PROJECTS', array_merge($projects['core'], $projects['contrib']));
+    if (isset($projects['core'])) {
+      $projects['contrib'] = array_merge($projects['core'], $projects['contrib']);
+    }
+    drush_set_option('DRUSH_MAKE_PROJECTS', $projects['contrib']);
   }
   return $projects;
 }
