@@ -106,11 +106,11 @@ class Project {
    * @return array
    *   Project update information.
    */
-  private function parseXml(\SimpleXMLElement $xml) {
+  private static function parseXml(\SimpleXMLElement $xml) {
     $project_info = array();
 
     // Extract general project info.
-    $items = array('title', 'short_name', 'dc:creator', 'api_version',
+    $items = array('title', 'short_name', 'dc:creator', 'type', 'api_version',
       'recommended_major', 'supported_majors', 'default_major',
       'project_status', 'link',
     );
@@ -120,6 +120,22 @@ class Project {
         $project_info[$item] = (string)$value[0];
       }
     }
+
+    // Parse project type.
+    $project_types = array(
+      'core' => 'project_core',
+      'profile' => 'project_distribution',
+      'module' => 'project_module',
+      'theme' => 'project_theme',
+      'theme engine' => 'project_theme_engine',
+      'translation' => 'project_translation',
+    );
+    $type = $project_info['type'];
+    // Probably unused but kept for possible legacy compat.
+    $type = ($type == 'profile-legacy') ? 'profile' : $type;
+    $project_info['type'] = array_search($type, $project_types);
+
+    // Extract project terms.
     $project_info['terms'] = array();
     if ($xml->terms) {
       foreach ($xml->terms->children() as $term) {
@@ -143,7 +159,7 @@ class Project {
 
     $releases = array();
     $items = array(
-      'name', 'date', 'status',
+      'name', 'date', 'status', 'type',
       'version', 'tag', 'version_major', 'version_patch', 'version_extra',
       'release_link', 'download_link', 'mdhash', 'filesize',
     );
@@ -214,28 +230,13 @@ class Project {
   }
 
   /**
-   * Returns the project type the xml data represents.
+   * Gets the project type.
    *
    * @return string
    *   Type of the project.
-   *
-   * #TODO# do parsing in parseXml() and transform this into a simple getter
    */
   public function getType() {
-    $project_types = array(
-      'core' => 'project_core',
-      'profile' => 'project_distribution',
-      'module' => 'project_module',
-      'theme' => 'project_theme',
-      'theme engine' => 'project_theme_engine',
-      'translation' => 'project_translation'
-    );
-
-    $type = (string)$this->xml->type;
-    // Probably unused but kept for possible legacy compat.
-    $type = ($type == 'profile-legacy') ? 'profile' : $type;
-    $type = array_search($type, $project_types);
-    return $type;
+    return $this->parsed['type'];
   }
 
   /**
