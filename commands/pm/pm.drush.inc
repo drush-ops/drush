@@ -2090,24 +2090,27 @@ function drush_pm_inject_info_file_metadata($project_dir, $project_name, $versio
 
 /**
  * Generate version information for `.info` files in ini format.
+ *
+ * Taken with some modifications from:
+ * http://drupalcode.org/project/drupalorg.git/blob/refs/heads/6.x-3.x:/drupalorg_project/plugins/release_packager/DrupalorgProjectPackageRelease.class.php#l192
  */
 function _drush_pm_generate_info_ini_metadata($version, $project_name) {
-  // Taken straight from: http://drupalcode.org/project/drupalorg.git/blob/refs/heads/6.x-3.x:/drupalorg_project/plugins/release_packager/DrupalorgProjectPackageRelease.class.php#l192
-  $info = "\n\n; Information added by drush on " . date('Y-m-d') . "\n";
-  $info .= "version = \"$version\"\n";
-  // .info files started with 5.x, so we don't have to worry about version
-  // strings like "4.7.x-1.0" in this regular expression. If we can't parse
-  // the version (also from an old "HEAD" release), or the version isn't at
-  // least 6.x, don't add any "core" attribute at all.
   $matches = array();
+  $extra = '';
   if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
-    $info .= "core = \"$matches[1]\"\n";
+    $extra .= "\ncore = \"$matches[1]\"";
   }
   if (!drush_get_option('no-gitprojectinfo', FALSE)) {
-    $info .= "project = \"$project_name\"\n";
+    $extra = "\nproject = \"$project_name\"";
   }
-  $info .= 'datestamp = "'. time() ."\"\n";
-  $info .= "\n";
+  $time = time();
+  $date = date('Y-m-d');
+  $info = <<<METADATA
+
+; Information added by drush on {$date}
+version = {$version}{$extra}
+datestamp = {$time}
+METADATA;
   return $info;
 }
 
@@ -2115,16 +2118,21 @@ function _drush_pm_generate_info_ini_metadata($version, $project_name) {
  * Generate version information for `.info` files in YAML format.
  */
 function _drush_pm_generate_info_yaml_metadata($version, $project_name) {
-  $info = "\n\n# Information added by drush on " . date('Y-m-d') . "\n";
-  $info .= "version: \"$version\"\n";
   $matches = array();
+  $extra = '';
   if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
-    $info .= "core: \"$matches[1]\"\n";
+    $extra .= "\ncore: \"$matches[1]\"";
   }
   if (!drush_get_option('no-gitprojectinfo', FALSE)) {
-    $info .= "project: \"$project_name\"\n";
+    $extra = "\nproject: \"$project_name\"";
   }
-  $info .= 'datestamp: "'. time() ."\"\n";
-  $info .= "\n";
+  $time = time();
+  $date = date('Y-m-d');
+  $info = <<<METADATA
+
+# Information added by drush on {$date}
+version: {$version}{$extra}
+datestamp: {$time}
+METADATA;
   return $info;
 }
