@@ -17,6 +17,41 @@ class StatusInfoDrupal7 extends StatusInfoDrupal8 {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  function beforeGetStatus(&$projects, $check_disabled) {
+    // If check-disabled option was provided, alter Drupal settings temporarily.
+    // There's no other way to hook into this.
+    if (!is_null($check_disabled)) {
+      global $conf;
+      $this->update_check_disabled = $conf['update_check_disabled'];
+      $conf['update_check_disabled'] = $check_disabled;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function afterGetStatus(&$update_info, $projects, $check_disabled) {
+    // Restore Drupal settings.
+    if (!is_null($check_disabled)) {
+      global $conf;
+      $conf['update_check_disabled'] = $this->update_check_disabled;
+      unset($this->update_check_disabled);
+    }
+
+    // update.module sets a different project type
+    // for disabled projects. Here we normalize it.
+    if ($check_disabled) {
+      foreach ($update_info as $key => $project) {
+        if (in_array($project['project_type'], array('module-disabled', 'theme-disabled'))) {
+          $update_info[$key]['project_type'] = substr($project['project_type'], 0, strpos($project['project_type'], '-'));
+        }
+      }
+    }
+  }
+
+  /**
    * Obtains release info for all installed projects via update.module.
    *
    * @see update_get_available().

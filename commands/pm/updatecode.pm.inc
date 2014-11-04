@@ -29,7 +29,7 @@ function drush_pm_updatecode() {
   // Print report of modules to update, and record
   // result of that function in $update_info.
   $updatestatus_options = array();
-  foreach (array('lock', 'unlock', 'lock-message', 'update-backend', 'security-only') as $option) {
+  foreach (array('lock', 'unlock', 'lock-message', 'update-backend', 'check-disabled', 'security-only') as $option) {
     $value = drush_get_option($option, FALSE);
     if ($value) {
       $updatestatus_options[$option] = $value;

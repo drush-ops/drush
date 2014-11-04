@@ -159,6 +159,25 @@ class pmUpdateStatus extends CommandUnishTestCase {
     foreach ($not_expected as $module) {
       $this->assertArrayNotHasKey($module, $data, "$module module not present in pm-updatestatus output");
     }
+
+
+    // Test --check-disabled.
+    $dis_options = array(
+      'root' => $this->webroot(),
+      'uri' => key($this->getSites()),
+      'yes' => NULL,
+    );
+    $this->drush('pm-disable', array('devel'), $dis_options);
+
+    $this->drush('pm-updatestatus', array(), $options + array('check-disabled' => 1));
+    $parsed = $this->parse_backend_output($this->getOutput());
+    $data = $parsed['object'];
+    $this->assertArrayHasKey('devel', $data, "devel module present in pm-updatestatus output");
+
+    $this->drush('pm-updatestatus', array(), $options + array('check-disabled' => 0));
+    $parsed = $this->parse_backend_output($this->getOutput());
+    $data = $parsed['object'];
+    $this->assertArrayNotHasKey('devel', $data, "devel module not present in pm-updatestatus output");
   }
 }
 

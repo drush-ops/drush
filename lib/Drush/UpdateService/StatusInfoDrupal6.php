@@ -10,6 +10,41 @@ namespace Drush\UpdateService;
 class StatusInfoDrupal6 extends StatusInfoDrupal7 {
 
   /**
+   * {@inheritdoc}
+   */
+  function beforeGetStatus(&$projects, $check_disabled) {
+    // If check-disabled option was provided, alter Drupal settings temporarily.
+    // There's no other way to hook into this.
+    if (!is_null($check_disabled)) {
+      global $conf;
+      $this->update_check_disabled = $conf['update_advanced_check_disabled'];
+      $conf['update_advanced_check_disabled'] = $check_disabled;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function afterGetStatus(&$update_info, $projects, $check_disabled) {
+    // Restore Drupal settings.
+    if (!is_null($check_disabled)) {
+      global $conf;
+      $conf['update_advanced_check_disabled'] = $this->update_check_disabled;
+      unset($this->update_check_disabled);
+    }
+
+    // update_advanced.module sets a different project type
+    // for disabled projects. Here we normalize it.
+    if ($check_disabled) {
+      foreach ($update_info as $key => $project) {
+        if (in_array($project['project_type'], array('disabled-module', 'disabled-theme'))) {
+          $update_info[$key]['project_type'] = substr($project['project_type'], strpos($project['project_type'], '-') + 1);
+        }
+      }
+    }
+  }
+
+  /**
    * Obtains release info for all installed projects via update.module.
    *
    * @see update_get_available().
@@ -31,16 +66,6 @@ class StatusInfoDrupal6 extends StatusInfoDrupal7 {
     }
 
     return $available;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function adjustProjectType($project) {
-    if (in_array($project['project_type'], array('disabled-module', 'disabled-theme'))) {
-      $data[$project_name]['project_type'] = substr($project['project_type'], strpos($project['project_type'], '-') + 1);
-    }
-    return $project['project_type'];
   }
 }
 
