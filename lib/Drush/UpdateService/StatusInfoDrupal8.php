@@ -55,8 +55,7 @@ class StatusInfoDrupal8 implements StatusInfoInterface {
     // Force to invalidate some caches that are only cleared
     // when visiting update status report page. This allow to detect changes in
     // .info.yml files.
-    \Drupal::keyValueExpirable('update_project_projects')->deleteAll();
-    \Drupal::keyValueExpirable('update_project_data')->deleteAll();
+    \Drupal::keyValueExpirable('update')->deleteMultiple(array('update_project_projects', 'update_project_data'));
 
     // From update_get_available(): Iterate all projects and create a fetch task
     // for those we have no information or is obsolete.
