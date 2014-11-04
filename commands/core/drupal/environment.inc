@@ -192,8 +192,14 @@ function drush_module_enable($modules) {
   // be in the correct order. Still pass $enable_dependencies = TRUE so that
   // Drupal will enable the modules in the correct order.
   drush_module_install($modules);
-  // Flush all caches.
-  drupal_flush_all_caches();
+
+  // Clear all caches in a new process.
+  if (drush_drupal_major_version() == 8) {
+    drush_invoke_process('@self', 'cache-rebuild');
+  }
+  else {
+    drush_invoke_process('@self', 'cache-clear', array('all'));
+  }
 }
 
 /**

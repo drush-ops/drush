@@ -187,6 +187,9 @@ function pm_drush_command() {
       'resolve-dependencies' => 'Attempt to download any missing dependencies. At the moment, only works when the module name is the same as the project name.',
       'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
     ),
+    'global-options' => array(
+      'cache-clear',
+    ),
     'aliases' => array('en'),
     'engines' => array(
       'release_info' => array(
@@ -198,6 +201,9 @@ function pm_drush_command() {
     'description' => 'Disable one or more extensions (modules or themes).',
     'arguments' => array(
       'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to disable multiple matches.',
+    ),
+    'global-options' => array(
+      'cache-clear',
     ),
     'aliases' => array('dis'),
     'engines' => array(
@@ -340,10 +346,16 @@ function pm_drush_command() {
       ),
       'update_status',
     ),
+    'global-options' => array(
+     'cache-clear',
+    ),
   );
   // Merge all items from above.
   $items['pm-update'] = array(
     'description' => 'Update Drupal core and contrib projects and apply any pending database updates (Same as pm-updatecode + updatedb).',
+    'global-options' => array(
+      'cache-clear',
+    ),
     'aliases' => array('up'),
     'allow-additional-options' => array('pm-updatecode', 'updatedb'),
   );
