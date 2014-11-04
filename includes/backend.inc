@@ -643,6 +643,8 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  *            You may also specify a different drush.php script explicitly.  You will need
  *            to set this when calling drush on a remote server if 'drush' is not in the
  *            PATH on that machine.
+ *         '%env-vars'
+ *            Optional. An associative array of environmental variables to prefix the Drush command with.
  *     'command':
  *       A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
  *     'args':
@@ -828,8 +830,9 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // that is running right now.  For remote commands, we will run a wrapper
     // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
     $drush_path = $site_record['path-aliases']['%drush-script'];
+    $env_vars = $site_record['path-aliases']['%env-vars'];
     $php = array_key_exists('php', $site_record) ? $site_record['php'] : (array_key_exists('php', $command_options) ? $command_options['php'] : NULL);
-    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, array_key_exists('remote-host', $site_record));
+    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, array_key_exists('remote-host', $site_record), $env_vars);
     $cmd = _drush_backend_generate_command($site_record, $drush_command_path . " " . _drush_backend_argument_string($drush_global_options, $os) . " " . $site_record_to_dispatch . " " . $command, $args, $commandline_options, $backend_options) . ' 2>&1';
     $cmds[$site] = array(
       'cmd' => $cmd,
@@ -1046,6 +1049,7 @@ function drush_backend_generate_sitealias($backend_options) {
     'remote-user' => NULL,
     'ssh-options' => NULL,
     'drush-script' => NULL,
+    'env-vars' => NULL
   );
   return array(
     'remote-host' => $backend_options['remote-host'],
@@ -1053,6 +1057,7 @@ function drush_backend_generate_sitealias($backend_options) {
     'ssh-options' => $backend_options['ssh-options'],
     'path-aliases' => array(
       '%drush-script' => $backend_options['drush-script'],
+      '%env-vars' => $backend_options['env-vars'],
     ),
   );
 }
@@ -1076,6 +1081,8 @@ function drush_backend_generate_sitealias($backend_options) {
  *        You may also specify a different drush.php script explicitly.  You will need
  *        to set this when calling drush on a remote server if 'drush' is not in the
  *        PATH on that machine.
+ *      '%env-vars'
+ *        Optional. An associative array of environmental variables to prefix the Drush command with.
  * @param command
  *    A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
  * @param args
