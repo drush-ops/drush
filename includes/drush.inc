@@ -1138,9 +1138,7 @@ function drush_preflight_command_dispatch() {
     $user_interactive = drush_get_option('interactive');
     drush_set_option('interactive', TRUE);
     $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, $remote_host, $remote_user, $user_interactive);
-    // In 'interactive' mode, $values is the result code from drush_shell_proc_open.
-    // @todo: in _drush_backend_invoke, return array('error_status' => $ret) instead for uniformity.
-    if (!is_array($values) && ($values != 0)) {
+    if ($values['error_status'] > 0) {
       // Force an error result code.  Note that drush_shutdown() will still run.
       drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
       exit($values);
