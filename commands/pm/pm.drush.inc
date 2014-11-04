@@ -1588,7 +1588,7 @@ function pm_drush_engine_type_info() {
     'update_status' => array(
       'option' => 'update-backend',
       'description' => 'Determine how to fetch update status information.',
-      'default' => 'drupal',
+      'default' => 'drush',
       'add-options-to-command' => TRUE,
       'options' => array(
         'check-disabled' => 'Check for updates of disabled modules and themes.',
