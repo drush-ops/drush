@@ -1591,7 +1591,8 @@ function pm_drush_engine_type_info() {
       'default' => 'drupal',
       'add-options-to-command' => TRUE,
       'options' => array(
-        'security-only' => 'Only update modules that have security updates available.',
+        'check-disabled' => 'Check for updates of disabled modules and themes.',
+        'security-only'  => 'Only update modules that have security updates available.',
       ),
     ),
     'version_control' => array(

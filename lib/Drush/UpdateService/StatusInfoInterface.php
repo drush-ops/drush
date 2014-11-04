@@ -31,5 +31,5 @@ interface StatusInfoInterface {
    * @return Array containing remote and local versions
    * for all installed projects.
    */
-  function getStatus($projects);
+  function getStatus($projects, $check_disabled);
 }

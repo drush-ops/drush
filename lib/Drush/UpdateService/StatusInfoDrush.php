@@ -65,7 +65,15 @@ class StatusInfoDrush implements StatusInfoInterface {
    * @return
    *   Array of update status information.
    */
-  function getStatus($projects) {
+  function getStatus($projects, $check_disabled) {
+    // Exclude disabled projects.
+    if (!$check_disabled) {
+      foreach ($projects as $project_name => $project) {
+        if (!$project['status']) {
+          unset($projects[$project_name]);
+        }
+      }
+    }
     $available = $this->getAvailableReleases($projects);
     $update_info = $this->calculateUpdateStatus($available, $projects);
     return $update_info;

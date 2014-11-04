@@ -26,8 +26,16 @@ function drush_pm_updatestatus() {
   $extensions = drush_get_extensions();
   $projects = drush_get_projects($extensions);
 
+  // Get the engine instance.
   $update_status = drush_get_engine('update_status');
-  $update_info = $update_status->getStatus($projects);
+
+  // If the user doesn't provide a value for check-disabled option,
+  // and the update backend is 'drupal', use NULL, so the engine
+  // will respect update.module defaults.
+  $check_disabled_default = ($update_status->engine == 'drupal') ? NULL : FALSE;
+  $check_disabled = drush_get_option('check-disabled', $check_disabled_default);
+
+  $update_info = $update_status->getStatus($projects, $check_disabled);
 
   foreach ($extensions as $name => $extension) {
     // Add an item to $update_info for each enabled extension which was obtained

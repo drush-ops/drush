@@ -34,15 +34,56 @@ class StatusInfoDrupal8 implements StatusInfoInterface {
   }
 
   /**
+   * Perform adjustments before running get status.
+   *
+   *  - Enforce check-disabled option on update module.
+   */
+  function beforeGetStatus(&$projects, $check_disabled) {
+    // If check-disabled option was provided, alter Drupal settings temporarily.
+    // There's no other way to hook into this.
+    if (!is_null($check_disabled)) {
+      $config = \Drupal::config('update.settings');
+      $this->update_check_disabled = $config->get('check.disabled_extensions');
+      $config->set('check.disabled_extensions', (bool)$check_disabled);
+    }
+  }
+
+  /**
    * Get update information for all installed projects.
    *
    * @return
    *   Array of update status information.
    */
-  function getStatus($projects) {
+  function getStatus($projects, $check_disabled) {
+    $this->beforeGetStatus($projects, $check_disabled);
     $available = $this->getAvailableReleases();
     $update_info = $this->calculateUpdateStatus($available, $projects);
+    $this->afterGetStatus($update_info, $projects, $check_disabled);
     return $update_info;
+  }
+
+  /**
+   * Perform adjustments after running get status.
+   *
+   *  - Restore check-disabled setting in update module.
+   *  - Adjust project type for disabled projects.
+   */
+  function afterGetStatus(&$update_info, $projects, $check_disabled) {
+    // Restore Drupal settings.
+    if (!is_null($check_disabled)) {
+      \Drupal::config('update.settings')->set('check.disabled_extensions', $this->update_check_disabled);
+      unset($this->update_check_disabled);
+    }
+
+    // update.module sets a different project type
+    // for disabled projects. Here we normalize it.
+    if ($check_disabled) {
+      foreach ($update_info as $key => $project) {
+        if (in_array($project['project_type'], array('module-disabled', 'theme-disabled'))) {
+          $update_info[$key]['project_type'] = substr($project['project_type'], 0, strpos($project['project_type'], '-'));
+        }
+      }
+    }
   }
 
   /**
@@ -113,9 +154,6 @@ class StatusInfoDrupal8 implements StatusInfoInterface {
         continue;
       }
 
-      // Allow to update disabled projects.
-      $data[$project_name]['project_type'] = $this->adjustProjectType($project);
-
       // Add some info from the project to $data.
       $data[$project_name] += array(
         'path'  => isset($projects[$project_name]['path']) ? $projects[$project_name]['path'] : '',
@@ -129,19 +167,6 @@ class StatusInfoDrupal8 implements StatusInfoInterface {
     }
 
     return $data;
-  }
-
-  /**
-   * Adjust project type for disabled projects.
-   *
-   * update.module sets a different project type
-   * for disabled projects. Here we normalize it.
-   */
-  protected function adjustProjectType($project) {
-    if (in_array($project['project_type'], array('module-disabled', 'theme-disabled'))) {
-      return substr($project['project_type'], 0, strpos($project['project_type'], '-'));
-    }
-    return $project['project_type'];
   }
 }
 
