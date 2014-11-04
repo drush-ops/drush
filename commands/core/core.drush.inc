@@ -253,7 +253,9 @@ function core_drush_command() {
     'arguments' => array(
       'command' => 'The shell command to be executed.',
     ),
-    'options' => drush_shell_exec_proc_build_options(),
+    'options' => array(
+      'escape' => 'Escape parameters before executing them with the shell. Default is escape; use --escape=0 to disable.',
+    ) + drush_shell_exec_proc_build_options(),
     'required-arguments' => TRUE,
     'allow-additional-options' => TRUE,
     'handle-remote-commands' => TRUE,
@@ -1200,12 +1202,15 @@ function drush_core_version() {
  */
 function drush_core_execute() {
   $result = TRUE;
+  $escape = drush_get_option('escape', true);
   // Get all of the args and options that appear after the command name.
   $args = drush_get_original_cli_args_and_options();
-  for ($x = 0; $x < count($args); $x++) {
-    // escape all args except for command separators.
-    if (!in_array($args[$x], array('&&', '||', ';'))) {
-      $args[$x] = drush_escapeshellarg($args[$x]);
+  if ($escape) {
+    for ($x = 0; $x < count($args); $x++) {
+      // escape all args except for command separators.
+      if (!in_array($args[$x], array('&&', '||', ';'))) {
+        $args[$x] = drush_escapeshellarg($args[$x]);
+      }
     }
   }
   $cmd = implode(' ', $args);

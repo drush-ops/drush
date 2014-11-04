@@ -1720,6 +1720,7 @@ function drush_enforce_requirement_core(&$command) {
  * core-execute and pass alias value along with rest of CLI arguments.
  */
 function drush_shell_alias_replace() {
+  $escape = true;
   $args = drush_get_arguments();
   $argv = drush_get_context('argv');
   $first = current($args);
@@ -1760,8 +1761,8 @@ function drush_shell_alias_replace() {
         $unmatched_replacements = preg_replace('/[{}]/', '', $unmatched_replacements);
         return drush_set_error('DRUSH_SHELL_ALIAS_UNMATCHED_REPLACEMENTS', dt('The shell alias @alias-name uses replacements "@unmatched". You must use this command with a site alias (e.g. `drush @myalias @alias-name ...`) that defines all of these variables.', array('@alias-name' => $first, '@unmatched' => $unmatched_replacements)));
       }
-      // Respect quoting. See http://stackoverflow.com/questions/2202435/php-explode-the-string-but-treat-words-in-quotes-as-a-single-word
-      $alias_value = str_getcsv($alias_value, ' ');
+      $alias_value = array($alias_value);
+      $escape = false;
     }
     drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');
     $replacement = $alias_value;
@@ -1771,6 +1772,9 @@ function drush_shell_alias_replace() {
     }
     $pos = array_search($first, $argv);
     array_splice($argv, $pos, 1, $replacement);
+    if (!$escape) {
+      drush_set_option('escape', false);
+    }
     drush_set_context('argv', $argv);
     drush_parse_args();
     _drush_preflight_global_options();
