@@ -2068,7 +2068,7 @@ function drush_find_empty_directories($dir, $exclude = array()) {
 function drush_pm_inject_info_file_metadata($project_dir, $project_name, $version) {
   // `drush_drupal_major_version()` cannot be used here because this may be running
   // outside of a Drupal context.
-  $yaml_format = strpos($version, '8') === 0;
+  $yaml_format = substr($version, 0, 1) >= 8;
   $pattern = preg_quote($yaml_format ? '.info.yml' : '.info');
   $info_files = drush_scan_directory($project_dir, '/.*' . $pattern . '$/');
   if (!empty($info_files)) {
@@ -2115,13 +2115,8 @@ function _drush_pm_generate_info_ini_metadata($version, $project_name) {
  * Generate version information for `.info` files in YAML format.
  */
 function _drush_pm_generate_info_yaml_metadata($version, $project_name) {
-  // Taken straight from: http://drupalcode.org/project/drupalorg.git/blob/refs/heads/6.x-3.x:/drupalorg_project/plugins/release_packager/DrupalorgProjectPackageRelease.class.php#l192
   $info = "\n\n# Information added by drush on " . date('Y-m-d') . "\n";
   $info .= "version: \"$version\"\n";
-  // .info files started with 5.x, so we don't have to worry about version
-  // strings like "4.7.x-1.0" in this regular expression. If we can't parse
-  // the version (also from an old "HEAD" release), or the version isn't at
-  // least 6.x, don't add any "core" attribute at all.
   $matches = array();
   if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
     $info .= "core: \"$matches[1]\"\n";
