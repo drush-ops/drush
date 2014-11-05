@@ -40,6 +40,7 @@ class User8 extends UserVersion {
    */
   public function setCurrentUser($account) {
     // Some parts of Drupal still rely on a global user object.
+    // @todo remove once https://www.drupal.org/node/2163205 is in.
     global $user;
     $user = $account;
     \Drupal::currentUser()->setAccount($account);
