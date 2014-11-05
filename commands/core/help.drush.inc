@@ -52,6 +52,11 @@ function drush_print_help($command) {
   drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));
   drush_print();
 
+  $global_options = drush_get_global_options();
+  foreach ($command['global-options'] as $global_option) {
+    $command['options'][$global_option] = $global_options[$global_option];
+  }
+
   // Sort command options.
   uksort($command['options'], '_drush_help_sort_command_options');
 

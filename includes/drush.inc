@@ -230,6 +230,8 @@ function drush_flatten_array($a) {
  *   elements for each item are:
  *
  *     - short-form: The shortcut form for specifying the key on the commandline.
+ *     - propagate: backend invoke will use drush_get_option to propagate this
+ *       option, when set, to any other Drush command that is called.
  *     - context: The drush context where the value of this item is cached.  Used
  *       by backend invoke to propagate values set in code.
  *     - never-post: If TRUE, backend invoke will never POST this item's value
@@ -300,7 +302,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['remote-os']           = array('hidden' => TRUE, 'description' => 'The operating system used on the remote host. Managed by site alias.');
     $options['site-list']           = array('hidden' => TRUE, 'description' => 'List of sites to run commands on. Managed by site alias.');
     $options['reserve-margin']      = array('hidden' => TRUE, 'description' => 'Remove columns from formatted opions. Managed by multi-site command handling.');
-    $options['strict']              = array('hidden' => TRUE, 'description' => 'Check requirements more strictly / remove backwards-compatibility features for unit tests.');
+    $options['strict']              = array('propagate' => TRUE, 'hidden' => TRUE, 'description' => 'Check requirements more strictly / remove backwards-compatibility features for unit tests.');
     $options['command-specific']    = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'Command-specific options.');
     $options['site-aliases']        = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'List of site aliases.');
     $options['shell-aliases']       = array('hidden' => TRUE, 'merge' => TRUE, 'never-propagate' => TRUE, 'description' => 'List of shell aliases.');
@@ -310,6 +312,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['db-url']              = array('hidden' => TRUE, 'description' => 'A Drupal 6 style database URL. Used by various commands.', 'example-value' => 'mysql://root:pass@127.0.0.1/db');
     $options['drush-coverage']      = array('hidden' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'description' => 'File to save code coverage data into.');
     $options['redirect-port']       = array('hidden' => TRUE, 'never-propagate' => TRUE, 'description' => 'Used by the user-login command to specify the redirect port on the local machine; it therefore would not do to pass this to the remote machines.');
+    $options['cache-clear']    = array('propagate' => TRUE, 'description' => 'Allow cache-clear operations / skip all cache-clear options. Caller is responsible for guaranteeing that the cache does not need to be invalidated, or to call cache-clear later.', 'example-value' => '0', );
 
     $command = array(
       'options' => $options,
