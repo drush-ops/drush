@@ -157,6 +157,9 @@ function user_drush_command() {
     'arguments' => array(
       'name' => 'The name of the account to cancel',
     ),
+    // The `_user_cancel` method still references global $user.
+    // @todo remove once https://www.drupal.org/node/2163205 is in.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
     'required-arguments' => TRUE,
     'examples' => array(
       'drush user-cancel username' =>
