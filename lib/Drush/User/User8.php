@@ -39,6 +39,9 @@ class User8 extends UserVersion {
    * @param \Drupal\Core\Session\AccountInterface $account
    */
   public function setCurrentUser($account) {
+    // Some parts of Drupal still rely on a global user object.
+    global $user;
+    $user = $account;
     \Drupal::currentUser()->setAccount($account);
   }
 }
