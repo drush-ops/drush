@@ -83,7 +83,7 @@ class StatusInfoDrush implements StatusInfoInterface {
    * Obtains release info for projects.
    */
   private function getAvailableReleases($projects) {
-    drush_print(dt("Checking available update data ..."));
+    drush_log(dt('Checking available update data ...', 'ok'));
 
     $cache_duration = 24 * 3600;
     $major_version = drush_drupal_major_version();
@@ -109,7 +109,7 @@ class StatusInfoDrush implements StatusInfoInterface {
         $project_release_info = $cached->data;
       }
       if ($needs_refresh) {
-        drush_print(dt("Checking available update data for !project.", array('!project' => $project['label'])));
+        drush_log(dt('Checking available update data for !project.', array('!project' => $project['label'])), 'ok');
         $request = pm_parse_request($project_name);
         $project_release_info = Project::getInstance($request, $cache_duration);
         if ($project_release_info) {

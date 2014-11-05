@@ -130,7 +130,7 @@ class Project {
     $type = $project_info['type'];
     // Probably unused but kept for possible legacy compat.
     $type = ($type == 'profile-legacy') ? 'profile' : $type;
-    $project_info['type'] = array_search($type, $project_types);
+    $project_info['project_type'] = array_search($type, $project_types);
 
     // Extract project terms.
     $project_info['terms'] = array();
@@ -255,7 +255,7 @@ class Project {
    *   Type of the project.
    */
   public function getType() {
-    return $this->parsed['type'];
+    return $this->parsed['project_type'];
   }
 
   /**
