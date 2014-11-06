@@ -755,7 +755,7 @@ function drush_parse_args() {
       if (strlen($opt) > 2 && $opt{1} != "-") {
         // Each char becomes a key of its own.
         for ($j = 1; $j < strlen($opt); $j++) {
-          $options[substr($opt, $j, 1)] = true;
+          $options[substr($opt, $j, 1)] = TRUE;
         }
       }
       // Do we have a longopt (starting with '--')?
@@ -764,7 +764,7 @@ function drush_parse_args() {
           $options[substr($opt, 2, $pos - 2)] = substr($opt, $pos + 1);
         }
         else {
-          $options[substr($opt, 2)] = true;
+          $options[substr($opt, 2)] = TRUE;
         }
       }
       else {
@@ -777,7 +777,7 @@ function drush_parse_args() {
           $i++;
         }
         else {
-          $options[$opt] = true;
+          $options[$opt] = TRUE;
         }
       }
     }
@@ -1720,7 +1720,7 @@ function drush_enforce_requirement_core(&$command) {
  * core-execute and pass alias value along with rest of CLI arguments.
  */
 function drush_shell_alias_replace() {
-  $escape = true;
+  $escape = TRUE;
   $args = drush_get_arguments();
   $argv = drush_get_context('argv');
   $first = current($args);
@@ -1764,7 +1764,7 @@ function drush_shell_alias_replace() {
       if (substr($alias_value, 0, 1) == '!') {
         $alias_value = ltrim($alias_value, '!');
         $alias_value = array('core-execute', $alias_value);
-        $escape = false;
+        $escape = FALSE;
       }
       else {
         // Respect quoting. See http://stackoverflow.com/questions/2202435/php-ex
@@ -1775,7 +1775,7 @@ function drush_shell_alias_replace() {
     $pos = array_search($first, $argv);
     array_splice($argv, $pos, 1, $alias_value);
     if (!$escape) {
-      drush_set_option('escape', false);
+      drush_set_option('escape', FALSE);
     }
     drush_set_context('argv', $argv);
     drush_parse_args();

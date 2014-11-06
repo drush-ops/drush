@@ -1202,7 +1202,7 @@ function drush_core_version() {
  */
 function drush_core_execute() {
   $result = TRUE;
-  $escape = drush_get_option('escape', true);
+  $escape = drush_get_option('escape', TRUE);
   // Get all of the args and options that appear after the command name.
   $args = drush_get_original_cli_args_and_options();
   if ($escape) {
