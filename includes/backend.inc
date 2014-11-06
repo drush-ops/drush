@@ -980,9 +980,12 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
  *   Options for the invocation.
  *
  * @return
- *   If the command could not be completed successfully, FALSE.
+ *   If no commands were executed, FALSE.
+ *
  *   If one command was executed, this will return an associative array containing
- *   the data from drush_backend_output().
+ *   the data from drush_backend_output().  The result code is stored
+ *   in $result['error_status'] (0 == no error).
+ *
  *   If multiple commands were executed, this will return an associative array
  *   containing one item, 'concurrent', which will contain a list of the different
  *   backend invoke results from each concurrent command.
@@ -1003,9 +1006,10 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
       if (array_key_exists('fork', $common_backend_options)) {
         $exec_cmd .= ' --quiet &';
       }
-      $ret = drush_shell_proc_open($exec_cmd);
+
+      $result_code = drush_shell_proc_open($exec_cmd);
+      $ret = array('error_status' => $result_code);
     }
-    return $ret;
   }
   else {
     $process_limit = drush_get_option_override($common_backend_options, 'concurrency', 1);
