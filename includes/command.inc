@@ -1761,17 +1761,19 @@ function drush_shell_alias_replace() {
         $unmatched_replacements = preg_replace('/[{}]/', '', $unmatched_replacements);
         return drush_set_error('DRUSH_SHELL_ALIAS_UNMATCHED_REPLACEMENTS', dt('The shell alias @alias-name uses replacements "@unmatched". You must use this command with a site alias (e.g. `drush @myalias @alias-name ...`) that defines all of these variables.', array('@alias-name' => $first, '@unmatched' => $unmatched_replacements)));
       }
-      $alias_value = array($alias_value);
-      $escape = false;
+      if (substr($alias_value, 0, 1) == '!') {
+        $alias_value = ltrim($alias_value, '!');
+        $alias_value = array('core-execute', $alias_value);
+        $escape = false;
+      }
+      else {
+        // Respect quoting. See http://stackoverflow.com/questions/2202435/php-ex
+        $alias_value = str_getcsv($alias_value, ' ');
+      }
     }
     drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');
-    $replacement = $alias_value;
-    if (substr($alias_value[0], 0, 1) == '!') {
-      $replacement[0] = ltrim($replacement[0], '!');
-      array_unshift($replacement, 'core-execute');
-    }
     $pos = array_search($first, $argv);
-    array_splice($argv, $pos, 1, $replacement);
+    array_splice($argv, $pos, 1, $alias_value);
     if (!$escape) {
       drush_set_option('escape', false);
     }
