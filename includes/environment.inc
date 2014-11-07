@@ -791,6 +791,19 @@ function drush_extension_get_path($info) {
 }
 
 /**
+ * Gets the extension filename.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension filename.
+ */
+function drush_extension_get_filename($info) {
+  drush_include_engine('drupal', 'environment');
+  return _drush_extension_get_filename($info);
+}
+
+/**
  * Test compatibility of a extension with version of drupal core and php.
  *
  * @param $file Extension object as returned by system_rebuild_module_data().
