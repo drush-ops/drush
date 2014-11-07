@@ -72,11 +72,11 @@ function cache_drush_command() {
   );
   $items['cache-rebuild'] = array(
     'description' => 'Rebuild a Drupal 8 site and clear all its caches.',
-    // rebuild.php only bootstraps to DRUPAL_BOOTSTRAP_CONFIGURATION, so we'll
-    // do the same
     'options' => array(),
     'arguments' => array(),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
+    // Bootstrap to DRUSH_BOOTSTAP_DRUPAL_SITE to pick the correct site.
+    // Further bootstrap is done by the rebuild script.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
     'core' => array('8+'),
     'aliases' => array('cr', 'rebuild'),
   );
