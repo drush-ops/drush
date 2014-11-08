@@ -1,0 +1,5 @@
+# A wrapper script which launches the Drush that is in your projects vendor dir.
+# The --local option limits Drush to using commandfiles/site aliases/config thats inside your project dir.
+# Install: copy to the root of your project (or wherever you store handy scripts)
+# and edit as desired.
+vendor/bin/drush --local $@
