@@ -1217,6 +1217,14 @@ function drush_core_execute() {
     }
   }
   $cmd = implode(' ', $args);
+  // If we selected a Drupal site, then cwd to the site root prior to exec
+  $cwd = FALSE;
+  if ($selected_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT')) {
+    if (is_dir($selected_root)) {
+      $cwd = getcwd();
+      drush_op('chdir', $selected_root);
+    }
+  }
   if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
     $site = drush_sitealias_get_record($alias);
     if (!empty($site['site-list'])) {
@@ -1235,6 +1243,10 @@ function drush_core_execute() {
   else {
     // Must be a local command.
     $result = (drush_shell_proc_open($cmd) == 0);
+  }
+  // Restore the cwd if we changed it
+  if ($cwd) {
+    drush_op('chdir', $selected_root);
   }
   if (!$result) {
     return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
