@@ -4,6 +4,8 @@
  * General utility functions for Drush Make.
  */
 
+use Drush\Make\Parser\ParserIni;
+
 /**
  * Parse Drupal info file format.
  *
@@ -15,7 +17,23 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
   if (!($data = make_get_data($makefile))) {
     return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
-  if (!($info = _drush_drupal_parse_info_file($data))) {
+
+  if (ParserIni::supportedFile($makefile)) {
+    $parser = new ParserIni();
+  }
+  // Check for stdin.
+  elseif ($makefile === '-') {
+    // @todo
+    throw new Exception('Stdin not supported for YAML files at this time.');
+  }
+  elseif (ParserYaml::supportedFile($makefile)) {
+    $parser = new ParserYaml();
+  }
+  else {
+    return FALSE;
+  }
+
+  if (!($info = $parser->parse($data))) {
     return FALSE;
   }
   // $makefile_options are from projects[projectname][options][...] = value in
