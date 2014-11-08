@@ -19,23 +19,18 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
     return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
 
-  if (ParserIni::supportedFile($makefile)) {
-    $parser = new ParserIni();
-  }
   // Check for stdin.
-  elseif ($makefile === '-') {
-    // @todo
-    throw new Exception('Stdin not supported for YAML files at this time.');
+  if (ParserIni::supportedFile($makefile)) {
+    $info = ParserIni::parse($data);
   }
   elseif (ParserYaml::supportedFile($makefile)) {
-    $parser = new ParserYaml();
+    $info = ParserYaml::parse($data);
+  }
+  elseif ($makefile === '-') {
+    $info = _make_determine_format($data);
   }
   else {
     return drush_set_error('MAKE_INVALID_FORMAT', dt('Invalid file format: !makefile', array('!makefile' => $makefile)));
-  }
-
-  if (!($info = $parser->parse($data))) {
-    return FALSE;
   }
 
   // $makefile_options are from projects[projectname][options][...] = value in
@@ -578,4 +573,21 @@ function _get_working_copy_option($download) {
     $wc = drush_get_option('working-copy');
   }
   return $wc;
+}
+
+/**
+ * Given data from stdin, determine format.
+ *
+ * @return array|bool
+ *   Returns parsed data if it matches any known format.
+ */
+function _make_determine_format($data) {
+  // Test INI first.
+  if ($parsed = ParserIni::parse($data)) {
+    return $parsed;
+  }
+  elseif ($parsed = ParserYaml::parse($data)) {
+    return $parsed;
+  }
+  return drush_set_error('MAKE_STDIN_ERROR', dt('Unknown make file format'));
 }

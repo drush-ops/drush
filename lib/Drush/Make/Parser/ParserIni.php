@@ -30,10 +30,6 @@ class ParserIni implements ParserInterface {
    * {@inheritdoc}
    */
   public static function supportedFile($filename) {
-    // @todo remove this and allow support for stdin in YAML files too.
-    if ($filename === '-') {
-      return TRUE;
-    }
     $info = pathinfo($filename);
     return isset($info['extension']) && $info['extension'] === 'make';
   }
@@ -41,7 +37,7 @@ class ParserIni implements ParserInterface {
   /**
    * {@inheritdoc}
    */
-  public function parse($data) {
+  public static function parse($data) {
     if (preg_match_all(self::$iniRegex, $data, $matches, PREG_SET_ORDER)) {
       $info = array();
       foreach ($matches as $match) {

@@ -10,23 +10,10 @@ use Drush\Make\Parser\ParserIni;
 class ParserIniTest extends \PHPUnit_Framework_testCase {
 
   /**
-   * @var \Drush\Make\Parser\ParserInterface
-   */
-  protected $parser;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
-    $this->parser = new ParserIni();
-  }
-
-  /**
    * @covers ::supportedFile
    */
   public function testSupportedFile() {
-    // @todo allow stdin support for Yaml files as well.
-    $this->assertTrue(ParserIni::supportedFile('-'));
+    $this->assertFalse(ParserIni::supportedFile('-'));
     $this->assertFalse(ParserIni::supportedFile('/tmp/foo/bar/baz.make.yml'));
     $this->assertTrue(ParserIni::supportedFile('./baz/foo.make'));
   }
@@ -36,7 +23,7 @@ class ParserIniTest extends \PHPUnit_Framework_testCase {
    * @covers ::parse
    */
   public function testParse($ini, $expected) {
-    $parsed = $this->parser->parse($ini);
+    $parsed = ParserIni::parse($ini);
     $this->assertSame($expected, $parsed);
   }
 

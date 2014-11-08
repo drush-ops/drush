@@ -26,6 +26,6 @@ interface ParserInterface {
    * @return array
    *   Makefile data as an array.
    */
-  public function parse($data);
+  public static function parse($data);
 
 }

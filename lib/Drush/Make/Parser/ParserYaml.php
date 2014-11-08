@@ -22,7 +22,7 @@ class ParserYaml implements ParserInterface {
   /**
    * {@inheritdoc}
    */
-  public function parse($data) {
+  public static function parse($data) {
     return Yaml::parse($data);
   }
 

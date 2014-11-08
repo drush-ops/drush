@@ -10,18 +10,6 @@ use Drush\Make\Parser\ParserYaml;
 class ParserYamlTest extends \PHPUnit_Framework_testCase {
 
   /**
-   * @var \Drush\Make\Parser\ParserInterface
-   */
-  protected $parser;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
-    $this->parser = new ParserYaml();
-  }
-
-  /**
    * @covers ::supportedFile
    */
   public function testSupportedFile() {
@@ -36,7 +24,7 @@ class ParserYamlTest extends \PHPUnit_Framework_testCase {
    * @covers ::parse
    */
   public function testParse($yaml, $expected) {
-    $parsed = $this->parser->parse($yaml);
+    $parsed = ParserYaml::parse($yaml);
     $this->assertSame($expected, $parsed);
   }
 
