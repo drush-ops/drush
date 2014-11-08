@@ -336,7 +336,7 @@ function core_drush_command() {
       'batch-id' => 'The batch id that will be processed',
     ),
     'required-arguments' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL, // https://github.com/drush-ops/drush/issues/961
   );
   $items['core-global-options'] = array(
     'description' => 'All global options',
