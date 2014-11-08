@@ -213,7 +213,6 @@ function _drush_preflight_global_options() {
   drush_set_context('DRUSH_VERBOSE',     drush_get_option(array('verbose', 'debug'), FALSE));
   drush_set_context('DRUSH_DEBUG', drush_get_option('debug'));
   drush_set_context('DRUSH_SIMULATE',    drush_get_option('simulate', FALSE));
-  drush_set_context('DRUSH_BACKEND', drush_get_option('backend'));
 
   // Backend implies affirmative unless negative is explicitly specified
   drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));

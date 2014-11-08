@@ -383,7 +383,11 @@ function drush_bootstrap_error($code, $message = null) {
 }
 
 function _drush_bootstrap_output_prepare() {
-  $backend = drush_get_context('DRUSH_BACKEND');
+  // Note that as soon as we set the DRUSH_BACKEND context, we change
+  // the behavior of drush_log().  It is therefore important that we
+  // should not set this context until immediately before we call ob_start
+  // (i.e., in this function).
+  $backend = drush_set_context('DRUSH_BACKEND', drush_get_option('backend'));
   $quiet = drush_get_context('DRUSH_QUIET');
 
   if ($backend) {
