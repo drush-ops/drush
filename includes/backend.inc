@@ -1000,7 +1000,7 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
   foreach ($cmds as $cmd) {
     drush_log(dt('Backend invoke: !cmd', array('!cmd' => $cmd['cmd'])), 'command');
   }
-  if (array_key_exists('interactive', $common_backend_options) || array_key_exists('fork', $common_backend_options)) {
+  if (!empty($common_backend_options['interactive']) || !empty($common_backend_options['fork'])) {
     foreach ($cmds as $cmd) {
       $exec_cmd = $cmd['cmd'];
       if (array_key_exists('fork', $common_backend_options)) {
