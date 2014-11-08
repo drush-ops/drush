@@ -93,6 +93,11 @@ function drush_sql_sync($source, $destination) {
   $global_options = drush_redispatch_get_options() + array(
      'strict' => 0,
   );
+  // We do not want to include root or uri here.  If the user
+  // provided -r or -l, their key has already been remapped to
+  // 'root' or 'uri' by the time we get here.
+  unset($global_options['root']);
+  unset($global_options['uri']);
 
   if (drush_get_context('DRUSH_SIMULATE')) {
     $backend_options['backend-simulate'] = TRUE;
