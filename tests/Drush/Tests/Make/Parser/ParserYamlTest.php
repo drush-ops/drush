@@ -7,7 +7,7 @@ use Drush\Make\Parser\ParserYaml;
 /**
  * @coversDefaultClass \Drush\Make\Parser\ParserYaml
  */
-class ParserYamlTest extends \PHPUnit_Framework_testCase {
+class ParserYamlTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::supportedFile

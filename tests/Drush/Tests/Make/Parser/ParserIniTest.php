@@ -7,7 +7,7 @@ use Drush\Make\Parser\ParserIni;
 /**
  * @coversDefaultClass \Drush\Make\Parser\ParserIni
  */
-class ParserIniTest extends \PHPUnit_Framework_testCase {
+class ParserIniTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::supportedFile
