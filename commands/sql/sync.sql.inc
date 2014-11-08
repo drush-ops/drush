@@ -16,9 +16,20 @@
 /*
  * Implements COMMAND hook init.
  */
-function drush_sql_sync_init() {
+function drush_sql_sync_init($source, $destination) {
   // Try to get @self defined when --uri was not provided.
   drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+
+  // Preflight destination in case it defines the alias used by the source
+  _drush_sitealias_get_record($destination);
+
+  // After preflight, get source and destination settings
+  $source_settings = drush_sitealias_get_record($source);
+  $destination_settings = drush_sitealias_get_record($destination);
+
+  // Apply command-specific options.
+  drush_sitealias_command_default_options($source_settings, 'source-');
+  drush_sitealias_command_default_options($destination_settings, 'target-');
 }
 
 /*
