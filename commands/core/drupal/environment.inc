@@ -192,6 +192,10 @@ function drush_module_enable($modules) {
   // be in the correct order. Still pass $enable_dependencies = TRUE so that
   // Drupal will enable the modules in the correct order.
   drush_module_install($modules);
+
+  // Our logger got blown away during the container rebuild above.
+  \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
+
   // Flush all caches.
   drupal_flush_all_caches();
 }
@@ -214,6 +218,8 @@ function drush_module_disable($modules) {
  */
 function drush_module_uninstall($modules) {
   module_uninstall($modules);
+  // Our logger got blown away during the container rebuild above.
+ \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
 }
 
 /**
