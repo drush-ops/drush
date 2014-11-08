@@ -755,7 +755,7 @@ function drush_parse_args() {
       if (strlen($opt) > 2 && $opt{1} != "-") {
         // Each char becomes a key of its own.
         for ($j = 1; $j < strlen($opt); $j++) {
-          $options[substr($opt, $j, 1)] = true;
+          $options[substr($opt, $j, 1)] = TRUE;
         }
       }
       // Do we have a longopt (starting with '--')?
@@ -764,7 +764,7 @@ function drush_parse_args() {
           $options[substr($opt, 2, $pos - 2)] = substr($opt, $pos + 1);
         }
         else {
-          $options[substr($opt, 2)] = true;
+          $options[substr($opt, 2)] = TRUE;
         }
       }
       else {
@@ -777,7 +777,7 @@ function drush_parse_args() {
           $i++;
         }
         else {
-          $options[$opt] = true;
+          $options[$opt] = TRUE;
         }
       }
     }
@@ -1724,6 +1724,7 @@ function drush_enforce_requirement_core(&$command) {
  * core-execute and pass alias value along with rest of CLI arguments.
  */
 function drush_shell_alias_replace() {
+  $escape = TRUE;
   $args = drush_get_arguments();
   $argv = drush_get_context('argv');
   $first = current($args);
@@ -1764,17 +1765,22 @@ function drush_shell_alias_replace() {
         $unmatched_replacements = preg_replace('/[{}]/', '', $unmatched_replacements);
         return drush_set_error('DRUSH_SHELL_ALIAS_UNMATCHED_REPLACEMENTS', dt('The shell alias @alias-name uses replacements "@unmatched". You must use this command with a site alias (e.g. `drush @myalias @alias-name ...`) that defines all of these variables.', array('@alias-name' => $first, '@unmatched' => $unmatched_replacements)));
       }
-      // Respect quoting. See http://stackoverflow.com/questions/2202435/php-explode-the-string-but-treat-words-in-quotes-as-a-single-word
-      $alias_value = str_getcsv($alias_value, ' ');
+      if (substr($alias_value, 0, 1) == '!') {
+        $alias_value = ltrim($alias_value, '!');
+        $alias_value = array('core-execute', $alias_value);
+        $escape = FALSE;
+      }
+      else {
+        // Respect quoting. See http://stackoverflow.com/questions/2202435/php-ex
+        $alias_value = str_getcsv($alias_value, ' ');
+      }
     }
     drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');
-    $replacement = $alias_value;
-    if (substr($alias_value[0], 0, 1) == '!') {
-      $replacement[0] = ltrim($replacement[0], '!');
-      array_unshift($replacement, 'core-execute');
-    }
     $pos = array_search($first, $argv);
-    array_splice($argv, $pos, 1, $replacement);
+    array_splice($argv, $pos, 1, $alias_value);
+    if (!$escape) {
+      drush_set_option('escape', FALSE);
+    }
     drush_set_context('argv', $argv);
     drush_parse_args();
     _drush_preflight_global_options();
