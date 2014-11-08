@@ -384,6 +384,25 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->assertContains('project = "caption_filter"', $contents);
   }
 
+  /**
+   * Test .info file writing and the use of a git reference cache for
+   * git downloads.
+   */
+  function testInfoYamlFileWritingGit() {
+    // Use the Drupal 8 .make file.
+    $config = $this->getMakefile('git-simple-8');
+
+    $options = array('no-core' => NULL);
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
+
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
+    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
+    $this->assertContains('# Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains("version: '8.x-1.18-beta1+1-dev'", $contents);
+    $this->assertContains("project: 'honeypot'", $contents);
+  }
+
   function testMakeFileExtract() {
     $this->runMakefileTest('file-extract');
   }
@@ -443,6 +462,12 @@ class makeMakefileCase extends CommandUnishTestCase {
         'build' => TRUE,
         'md5' => '0147681209adef163a8ac2c0cff2a07e',
         'options'  => array('no-core' => NULL, 'no-gitinfofile' => NULL),
+      ),
+      'git-simple-8' => array(
+        'name' => 'Simple git integration for D8',
+        'makefile' => 'git-simple-8.make',
+        'build' => TRUE,
+        'options'  => array('no-core' => NULL),
       ),
       'no-patch-txt' => array(
         'name'     => 'Test --no-patch-txt option',

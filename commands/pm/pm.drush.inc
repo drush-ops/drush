@@ -2108,8 +2108,8 @@ function _drush_pm_generate_info_ini_metadata($version, $project_name) {
   $info = <<<METADATA
 
 ; Information added by drush on {$date}
-version = {$version}{$extra}
-datestamp = {$time}
+version = "{$version}"{$extra}
+datestamp = "{$time}"
 METADATA;
   return $info;
 }
@@ -2121,17 +2121,17 @@ function _drush_pm_generate_info_yaml_metadata($version, $project_name) {
   $matches = array();
   $extra = '';
   if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
-    $extra .= "\ncore: \"$matches[1]\"";
+    $extra .= "\ncore: '$matches[1]'";
   }
   if (!drush_get_option('no-gitprojectinfo', FALSE)) {
-    $extra = "\nproject: \"$project_name\"";
+    $extra = "\nproject: '$project_name'";
   }
   $time = time();
   $date = date('Y-m-d');
   $info = <<<METADATA
 
 # Information added by drush on {$date}
-version: {$version}{$extra}
+version: '{$version}'{$extra}
 datestamp: {$time}
 METADATA;
   return $info;
