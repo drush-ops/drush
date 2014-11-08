@@ -5,6 +5,7 @@
  */
 
 use Drush\Make\Parser\ParserIni;
+use Drush\Make\Parser\ParserYaml;
 
 /**
  * Parse Drupal info file format.
@@ -30,12 +31,13 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
     $parser = new ParserYaml();
   }
   else {
-    return FALSE;
+    return drush_set_error('MAKE_INVALID_FORMAT', dt('Invalid file format: !makefile', array('!makefile' => $makefile)));
   }
 
   if (!($info = $parser->parse($data))) {
     return FALSE;
   }
+
   // $makefile_options are from projects[projectname][options][...] = value in
   // the makefile that included us, whereas $info['options'] is from
   // options[...] = value in this makefile.

@@ -26,9 +26,9 @@ class ParserYamlTest extends \PHPUnit_Framework_testCase {
    */
   public function testSupportedFile() {
     // @todo allow stdin support for Yaml files as well.
-    $this->assertTrue(ParserYaml::supportedFile('-'));
-    $this->assertFalse(ParserYaml::supportedFile('/tmp/foo/bar/baz.make.yml'));
-    $this->assertTrue(ParserYaml::supportedFile('./baz/foo.make'));
+    $this->assertFalse(ParserYaml::supportedFile('-'));
+    $this->assertTrue(ParserYaml::supportedFile('/tmp/foo/bar/baz.make.yml'));
+    $this->assertFalse(ParserYaml::supportedFile('./baz/foo.make'));
   }
 
   /**

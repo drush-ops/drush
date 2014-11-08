@@ -236,6 +236,10 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->runMakefileTest('contrib-destination');
   }
 
+  function testMakeYaml() {
+    $this->runMakefileTest('contrib-destination-yaml');
+  }
+
   function testMakeDefaults() {
     $this->runMakefileTest('defaults');
   }
@@ -542,6 +546,13 @@ class makeMakefileCase extends CommandUnishTestCase {
       'contrib-destination' => array(
         'name'     => 'Contrib-destination attribute',
         'makefile' => 'contrib-destination.make',
+        'build'    => TRUE,
+        'md5' => '2aed36201ede1849ce43d9b7d6f7e9e1',
+        'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),
+      ),
+      'contrib-destination-yaml' => array(
+        'name'     => 'Contrib-destination attribute in YAML format',
+        'makefile' => 'contrib-destination.make.yml',
         'build'    => TRUE,
         'md5' => '2aed36201ede1849ce43d9b7d6f7e9e1',
         'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),

@@ -15,12 +15,8 @@ class ParserYaml implements ParserInterface {
    * {@inheritdoc}
    */
   public static function supportedFile($filename) {
-    // @todo remove this and allow support for stdin in YAML files too.
-    if ($filename === '-') {
-      return TRUE;
-    }
     $info = pathinfo($filename);
-    return $info['extension'] === 'make';
+    return isset($info['extension']) && $info['extension'] === 'yml';
   }
 
   /**

@@ -35,7 +35,7 @@ class ParserIni implements ParserInterface {
       return TRUE;
     }
     $info = pathinfo($filename);
-    return $info['extension'] === 'make';
+    return isset($info['extension']) && $info['extension'] === 'make';
   }
 
   /**
