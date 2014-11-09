@@ -41,6 +41,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/README.md'),
   );
+  $items['docs-bisect'] = array(
+    'description' => 'git bisect and Drush may be used together to find the commit an error was introduced in.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array($docs_dir . '/examples/git-bisect.example.sh'),
+  );
   $items['docs-bashrc'] = array(
     'description' => 'Bashrc customization examples for Drush.',
     'hidden' => TRUE,
