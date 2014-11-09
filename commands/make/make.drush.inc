@@ -151,7 +151,7 @@ function make_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/examples/example.make'),
+    'callback arguments' => array($docs_dir . '/examples/example.make.yml'),
   );
   return $items;
 }
