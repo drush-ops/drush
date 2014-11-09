@@ -63,11 +63,18 @@ REQUIREMENTS
 * Drush works best on a Unix-like OS (Linux, OS X)
 * Most Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
 
-INSTALL/UPDATE - COMPOSER
+INSTALL/UPDATE - DRUSH FOR COMPOSER BUILT PROJECTS
+-----------------
+* If your project has a composer.json, add the following to the `require` section: `"drush/drush": "6.*"`
+* Run `composer install` for a new project or `composer update` for an existing one.
+* Optional: Copy examples/drush to project root and modify to taste. This is a handy launcher script.
+* To update, change the drush line above and run `composer update`.
+
+INSTALL/UPDATE - A GLOBAL DRUSH FOR ALL PROJECTS
 ------------------
 
 * [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements) (if needed).
-* Make sure Composer's global bin directory is on the system PATH (recommended):
+* Add Composer's global bin directory to the system PATH (recommended):
 
         sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
         source $HOME/.bashrc

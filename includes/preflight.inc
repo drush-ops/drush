@@ -146,17 +146,24 @@ function drush_preflight() {
   // Set up base environment for system-wide file locations.
   _drush_preflight_base_environment();
 
-  // Load a drushrc.php file in the drush.php's directory.
-  drush_load_config('drush');
+  // Setup global alias_paths[] in context system.
+  if (!drush_get_option('local')) {
+    _drush_preflight_alias_path();
+  }
 
-  // Load a drushrc.php file in the $ETC_PREFIX/etc/drush directory.
-  drush_load_config('system');
+  if (!drush_get_option('local')) {
+    // Load a drushrc.php file in the drush.php's directory.
+    drush_load_config('drush');
 
-  // Load a drushrc.php file at ~/.drushrc.php.
-  drush_load_config('user');
+    // Load a drushrc.php file in the $ETC_PREFIX/etc/drush directory.
+    drush_load_config('system');
 
-  // Load a drushrc.php file in the ~/.drush directory.
-  drush_load_config('home.drush');
+    // Load a drushrc.php file at ~/.drushrc.php.
+    drush_load_config('user');
+
+    // Load a drushrc.php file in the ~/.drush directory.
+    drush_load_config('home.drush');
+  }
 
   // Load a custom config specified with the --config option.
   drush_load_config('custom');
@@ -251,19 +258,31 @@ function _drush_preflight_base_environment() {
   if (!file_exists(DRUSH_BASE_PATH . '/README.md') && file_exists(drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush' . '/README.md')) {
     drush_set_context('DOC_PREFIX', drush_get_context('SHARE_PREFIX', '/usr') . '/share/doc/drush');
   }
-  $alias_path =& drush_get_context('ALIAS_PATH');
+
   $default_prefix_configuration = drush_is_windows() ? getenv('ALLUSERSPROFILE') . '/Drush' : '';
   $default_prefix_commandfile = drush_is_windows() ? getenv('ALLUSERSPROFILE') . '/Drush' : '/usr';
   $site_wide_configuration_dir = drush_get_context('ETC_PREFIX', $default_prefix_configuration) . '/etc/drush';
   $site_wide_commandfile_dir = drush_get_context('SHARE_PREFIX', $default_prefix_commandfile) . '/share/drush/commands';
-  $alias_path[] = $site_wide_configuration_dir;
   drush_set_context('DRUSH_SITE_WIDE_CONFIGURATION', $site_wide_configuration_dir);
   drush_set_context('DRUSH_SITE_WIDE_COMMANDFILES', $site_wide_commandfile_dir);
+
+  $server_home = drush_server_home();
+  if (isset($server_home)) {
+    drush_set_context('DRUSH_PER_USER_CONFIGURATION', $server_home . '/.drush');
+  }
+}
+
+function _drush_preflight_alias_path() {
+  $alias_path =& drush_get_context('ALIAS_PATH');
+  $default_prefix_configuration = drush_is_windows() ? getenv('ALLUSERSPROFILE') . '/Drush' : '';
+  $site_wide_configuration_dir = drush_get_context('ETC_PREFIX', $default_prefix_configuration) . '/etc/drush';
+  $alias_path[] = $site_wide_configuration_dir;
+
   $alias_path[] = dirname(__FILE__) . '/..';
+
   $server_home = drush_server_home();
   if (isset($server_home)) {
     $alias_path[] = $server_home . '/.drush';
-    drush_set_context('DRUSH_PER_USER_CONFIGURATION', $server_home . '/.drush');
   }
 }
 
@@ -300,16 +319,18 @@ function _drush_find_commandfiles_drush() {
     }
   }
 
-  // System commands, residing in $SHARE_PREFIX/share/drush/commands
-  $share_path = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
-  if (is_dir($share_path)) {
-    $searchpath[] = $share_path;
-  }
+  if (!drush_get_option('local')) {
+    // System commands, residing in $SHARE_PREFIX/share/drush/commands
+    $share_path = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
+    if (is_dir($share_path)) {
+      $searchpath[] = $share_path;
+    }
 
-  // User commands, residing in ~/.drush
-  $per_user_config_dir = drush_get_context('DRUSH_PER_USER_CONFIGURATION');
-  if (!empty($per_user_config_dir)) {
-    $searchpath[] = $per_user_config_dir;
+    // User commands, residing in ~/.drush
+    $per_user_config_dir = drush_get_context('DRUSH_PER_USER_CONFIGURATION');
+    if (!empty($per_user_config_dir)) {
+      $searchpath[] = $per_user_config_dir;
+    }
   }
 
   // @todo the zero parameter is a bit weird here. It's $phase.
