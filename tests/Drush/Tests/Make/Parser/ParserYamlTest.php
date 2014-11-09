@@ -39,6 +39,15 @@ foo:
 YAML;
     $snippets[] = array($yaml, array('foo' => array('bar' => array('baz' => 'one'))));
 
+    $yaml = <<<'YAML'
+projects:
+  drupal: ~
+  views:
+    version: '3.0'
+YAML;
+
+    $snippets[] = array($yaml, array('projects' => array('drupal' => NULL, 'views' => array('version' => '3.0'))));
+
     // @todo make more tests.
     return $snippets;
   }
