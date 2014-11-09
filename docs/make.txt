@@ -28,24 +28,26 @@ where `drush make` can be used within an existing Drupal site.
 
 The `.make` file format
 -----------------------
-Each makefile is a plain text file that adheres to the Drupal `.info` file
-syntax. See the included `example.make` for an example of a working makefile.
+Each makefile is a plain text file that adheres to YAML syntax. See
+the included `examples/example.make.yml` for an example of a working
+makefile.
 
+The older Drupal `.info` INI format is also supported. See
+`examples/example.make` for a working example.
 
 ### Core version
 
-The make file always begins by specifying the core version of Drupal for which
- each package must be compatible. Example:
+The make file always begins by specifying the core version of Drupal
+for which each package must be compatible. Example:
 
-    core = 6.x
-
+    core: 7.x
 
 ### API version
 
 The make file must specify which Drush Make API version it uses. This version
 of Drush Make uses API version `2`
 
-    api = 2
+    api: 2
 
 
 ### Projects
@@ -57,11 +59,14 @@ specified as the key.
 
 **Project with no further options:**
 
-    projects[] = drupal
+    projects:
+      - drupal
 
 **Project using options (see below):**
 
-    projects[drupal][version] = 7.12
+    projects:
+      drupal:
+        version: 7.33
 
 Do not use both types of declarations for a single project in your makefile.
 
@@ -74,23 +79,39 @@ Do not use both types of declarations for a single project in your makefile.
   This can be as loose as the major branch number or
   as specific as a particular point release.
 
-        projects[views][version] = 3
-        projects[views][version] = 2.8
-        projects[views][version] = 3.0-alpha2
+        projects:
+          views:
+            # Picks the latest release.
+            version: ~
 
-        ; Shorthand syntax for versions if no other options are to be specified
-        projects[views] = 3.0-alpha2
+        projects
+          views:
+            version: 2.8
+
+        projects
+          views
+            version: 3.0-alpha2
+
+        # Shorthand syntax for versions if no other options are to be specified
+        projects:
+          views: 3.0-alpha2
 
 - `patch`
 
   One or more patches to apply to this project. An array of URLs from which
   each patch should be retrieved.
 
-        projects[calendar][patch][rfc-fixes][url] = "http://drupal.org/files/issues/cal-760316-rfc-fixes-2.diff"
-        projects[calendar][patch][rfc-fixes][md5] = "e4876228f449cb0c37ffa0f2142"
-
-        ; shorthand syntax if no md5 checksum is specified
-        projects[adminrole][patch][] = "http://drupal.org/files/issues/adminrole_exceptions.patch"
+        projects:
+          calendar:
+            patch:
+              rfc-fixes:
+                url: "http://drupal.org/files/issues/cal-760316-rfc-fixes-2.diff"
+                md5: "e4876228f449cb0c37ffa0f2142"
+          adminrole:
+            # shorthand syntax if no md5 checksum is specified
+            patch:
+              - "http://drupal.org/files/issues/adminrole_exceptions.patch"
+              - "http://drupal.org/files/issues/adminrole-213212-01.patch"
 
 - `subdir`
 
@@ -98,14 +119,18 @@ Do not use both types of declarations for a single project in your makefile.
   specified. In the example below, `cck` will be placed in
   `sites/all/modules/contrib` instead of the default `sites/all/modules`.
 
-        projects[cck][subdir] = "contrib"
+        projects:
+          cck:
+            subdir: "contrib"
 
 - `location`
 
   URL of an alternate project update XML server to use. Allows project XML data
   to be retrieved from sites other than `updates.drupal.org`.
 
-        projects[tao][location] = "http://code.developmentseed.com/fserver"
+        projects:
+          tao:
+            location: "http://code.developmentseed.com/fserver"
 
 - `type`
 
@@ -113,28 +138,36 @@ Do not use both types of declarations for a single project in your makefile.
   and/or using version control or direct retrieval for a project. May be one of
   the following values: core, module, profile, theme.
 
-        projects[mytheme][type] = "theme"
+        projects:
+          mytheme:
+            type: "theme"
 
 - `directory_name`
 
   Provide an alternative directory name for this project. By default, the
   project name is used.
 
-        projects[mytheme][directory_name] = "yourtheme"
+        projects:
+          mytheme:
+            directory_name: "yourtheme"
 
 - `l10n_path`
 
   Specific URL (can include tokens) to a translation. Allows translations to be
   retrieved from l10n servers other than `localize.drupal.org`.
 
-        projects[mytheme][l10n_path] = "http://myl10nserver.com/files/translations/%project-%core-%version-%language.po"
+        projects:
+          mytheme:
+            l10n_path: "http://myl10nserver.com/files/translations/%project-%core-%version-%language.po"
 
 - `l10n_url`
 
   URL to an l10n server XML info file. Allows translations to be retrieved from
   l10n servers other than `localize.drupal.org`.
 
-        projects[mytheme][l10n_url] = "http://myl10nserver.com/l10n_server.xml"
+        projects:
+          mytheme:
+            l10n_url: "http://myl10nserver.com/l10n_server.xml"
 
 - `overwrite`
 
@@ -143,14 +176,17 @@ Do not use both types of declarations for a single project in your makefile.
   If specified TRUE, drush_make will continue and use the existing directory.
   Useful when adding extra files and folders to existing folders in libraries or module extensions.
 
-        projects[myproject][overwrite] = TRUE
+        projects:
+          myproject:
+            overwrite: TRUE
 
 - `translations`
 
   Retrieve translations for the specified language, if available, for all projects.
 
-               translations[] = es
-
+        translations:
+          - es
+          - fr
 
 ### Project download options
 
@@ -230,8 +266,11 @@ Do not use both types of declarations for a single project in your makefile.
   `password` - the password to use when retrieving an SVN project as a working
   copy or from a private repository. Optional.
 
-     projects[mytheme][download][type] = "svn"
-     projects[mytheme][download][url] = "http://example.com/svnrepo/cool-theme/"
+     projects:
+       mytheme:
+         download:
+           type: "svn"
+           url: "http://example.com/svnrepo/cool-theme/"
 
   `working-copy` - If true, the checked out source will be kept as a working copy rather than exported as standalone files
 
@@ -243,9 +282,12 @@ array of options in the libraries array.
 
 **Example:**
 
-    libraries[jquery_ui][download][type] = "file"
-    libraries[jquery_ui][download][url] = "http://jquery- ui.googlecode.com/files/jquery.ui-1.6.zip"
-    libraries[jquery_ui][download][md5] = "c177d38bc7af59d696b2efd7dda5c605"
+    libraries:
+      jquery_ui:
+        download:
+          type: "file"
+          url: "http://jquery- ui.googlecode.com/files/jquery.ui-1.6.zip"
+          md5: "c177d38bc7af59d696b2efd7dda5c605"
 
 
 ### Library options
@@ -259,7 +301,9 @@ projects. Additionally, they may specify a destination:
   that specified by the `--contrib-destination` option. By default, libraries
   are placed in the `libraries` directory.
 
-        libraries[jquery_ui][destination] = "modules/contrib/jquery_ui
+        libraries:
+          jquery_ui:
+            destination: "modules/contrib/jquery_ui"
 
 
 ### Includes
@@ -271,9 +315,13 @@ makefiles to override the keys/values of former makefiles.
 
 **Example:**
 
-    includes[example] = "example.make"
-    includes[example_relative] = "../example_relative/example_relative.make"
-    includes[remote] = "http://www.example.com/remote.make"
+    includes:
+      # Includes a file in the same directory.
+      - "example.make"
+      # Includes a file with a relative path.
+      - "../example_relative/example_relative.make"
+      # A remote-hosted file.
+      - "http://www.example.com/remote.make"
 
 ### Defaults
 
@@ -283,12 +331,17 @@ rather than specifying the attribute for each project.
 
 **Example:**
 
-    ; Specify common subdir of "contrib"
-    defaults[projects][subdir] = "contrib"
-    ; Projects that don't specify subdir will go to the 'contrib' directory.
-    projects[views][version] = "3.3"
-    ; Override default value
-    projects[devel][subdir] = "development"
+    # Specify common subdir of "contrib"
+    defaults:
+      projects:
+        subdir: "contrib"
+    # Projects that don't specify subdir will go to the 'contrib' directory.
+    projects:
+      views:
+        version: "3.3"
+      # Override a default value.
+      devel:
+        subdir: "development"
 
 ### Overriding properties
 
@@ -299,33 +352,38 @@ Properties in the includer takes precedence over the includee.
 
 `base.make`
 
-    core = "6.x"
-    projects[views][subdir] = "contrib"
-    projects[cck][subdir] = "contrib"
+    core: "6.x"
+      views:
+        subdir: "contrib"
+      cck:
+        subdir: "contrib"
 
 `extender.make`
 
-    includes[base] = "base.make"
+    includes:
+      - "base.make"
+    projects:
+      views:
+        # This line overrides the included makefile's 'subdir' option
+        subdir: "patched"
 
-    ; This line overrides the included makefile's 'subdir' option
-    projects[views][subdir] = "patched"
-
-    ; This line overrides the included makefile, switching the download type
-    ; to a git clone
-    projects[views][type] = "module"
-    projects[views][download][type] = "git"
-    projects[views][download][url] = "http://git.drupal.org/project/views.git"
+        # These lines overrides the included makefile, switching the download type
+        # to a git clone.
+        type: "module"
+        download:
+          type: "git"
+          url: "http://git.drupal.org/project/views.git"
 
 A project or library entry of an included makefile can be removed entirely by
-setting the corresponding key to FALSE:
+setting the corresponding key to NULL:
 
-    ; This line removes CCK entirely which was defined in base.make
-    projects[cck] = FALSE
+      # This line removes CCK entirely which was defined in base.make
+      cck: ~
 
 
 Recursion
 ---------
-If a project that is part of a build contains a `.make` itself, drush make will
+If a project that is part of a build contains a `.make.yml` itself, drush make will
 automatically parse it and recurse into a derivative build.
 
 For example, a full build tree may look something like this:
@@ -335,7 +393,7 @@ For example, a full build tree may look something like this:
     distro.make FOUND
     - Drupal core
     - Foo bar install profile
-      + foobar.make FOUND
+      + foobar.make.yml FOUND
         - CCK
         - Token
         - Module x
@@ -351,20 +409,23 @@ For Drush Make to recognize a makefile embedded within a project, the makefile
 itself must have the same name as the project. For instance, the makefile
 embedded within the managingnews profile must be called "managingnews.make". If
 no makefile matching the project's name is found, Drush Make will look for a
-"drupal-org.make" makefile instead. The file must be in the project's root
+"drupal-org.make.yml" makefile instead. The file must be in the project's root
 directory. Subdirectories will be ignored.
 
 **Build a full Drupal site with the Managing News install profile:**
 
     core = 6.x
-    projects[] = drupal
-    projects[] = managingnews
+    projects:
+      - drupal
+      - managingnews
 
 ** Use a distribution as core **
 
     core = 7.x
-    projects[commerce_kickstart][type] = "core"
-    projects[commerce_kickstart][version] = "7.x-1.19"
+    projects:
+      commerce_kickstart:
+        type: "core"
+        version: "7.x-1.19"
 
 Testing
 -------
@@ -391,7 +452,7 @@ itself. Writing a new test is extremely simple. The process is as follows:
 5. Test! Run drush test suite (see DRUSH/tests/README.md). To just
    run the make tests:
 
-     `phpunit --filter=makeMake .`
+     `./unish.sh --filter=makeMake .`
 
 
 You can check for any messages you want in the message array, but the most
