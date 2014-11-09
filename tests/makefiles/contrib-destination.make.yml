@@ -1,0 +1,13 @@
+core: '6.x'
+api: 2
+projects:
+  boxes:
+    subdir: 'contrib'
+    version: '1.0'
+  admin:
+    subdir: 'contrib'
+    version: '2.0'
+  zen:
+    subdir: 'contrib'
+    version: '2.1'
+    type: 'theme'

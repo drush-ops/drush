@@ -39,7 +39,6 @@ class contextCase extends CommandUnishTestCase {
    * write a sites/dev/aliases.drushrc.php file to the sandbox.
    */
   function setUp() {
-    $this->markTestSkipped('@todo. no longer recognizing aliases within drupal for remote dispatch.');
     parent::setUp();
 
     if (!$this->getSites()) {

@@ -529,13 +529,24 @@ class DrushMakeProject {
                 array("!project" => $this->name)), 'notice');
       return TRUE;
     }
-    $makefile = $this->download_location . '/' . $this->name . '.make';
-    if (!file_exists($makefile)) {
-      $makefile = $this->download_location . '/drupal-org.make';
-      if (!file_exists($makefile)) {
-        return TRUE;
+    $candidates = array(
+      $this->name . '.make.yml',
+      $this->name . '.make',
+      'drupal-org.make.yml',
+      'drupal-org.make',
+    );
+    $makefile = FALSE;
+    foreach ($candidates as $filename) {
+      if (file_exists($this->download_location . '/' . $filename)) {
+        $makefile = $this->download_location . '/' . $filename;
+        break;
       }
     }
+
+    if (!$makefile) {
+      return TRUE;
+    }
+
     drush_log(dt("Found makefile: !makefile", array("!makefile" => basename($makefile))), 'ok');
 
     // Save the original state of the 'custom' context.
