@@ -126,6 +126,7 @@ class Project {
       'theme' => 'project_theme',
       'theme engine' => 'project_theme_engine',
       'translation' => 'project_translation',
+      'utility' => 'project_drupalorg',
     );
     $type = $project_info['type'];
     // Probably unused but kept for possible legacy compat.
