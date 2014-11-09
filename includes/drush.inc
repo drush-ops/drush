@@ -815,7 +815,8 @@ function _drush_download_file($url, $destination, $overwrite = TRUE) {
     drush_shell_exec("wget -q --timeout=30 -O %s %s", $destination_tmp, $url);
   }
   else {
-    drush_shell_exec("curl --fail -s -L --connect-timeout 30 -o %s %s", $destination_tmp, $url);
+    // Force TLS1+ as per https://github.com/drush-ops/drush/issues/894.
+    drush_shell_exec("curl --tlsv1 --fail -s -L --connect-timeout 30 -o %s %s", $destination_tmp, $url);
   }
   if (!drush_file_not_empty($destination_tmp) && $file = @file_get_contents($url)) {
     @file_put_contents($destination_tmp, $file);
