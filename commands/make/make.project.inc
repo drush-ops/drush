@@ -530,8 +530,9 @@ class DrushMakeProject {
       return TRUE;
     }
     $candidates = array(
-      $this->name . '.make',
       $this->name . '.make.yml',
+      $this->name . '.make',
+      'drupal-org.make.yml',
       'drupal-org.make',
     );
     $makefile = FALSE;
