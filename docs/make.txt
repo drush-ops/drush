@@ -29,8 +29,10 @@ where `drush make` can be used within an existing Drupal site.
 The `.make` file format
 -----------------------
 Each makefile is a plain text file that adheres to the Drupal `.info` file
-syntax. See the included `example.make` for an example of a working makefile.
+syntax. See the included `examples/example.make` for an example of a working makefile.
 
+The YAML file format is also supported. Files need to end with `.yml`
+if they use this format. See `examples/example.make.yml`.
 
 ### Core version
 
