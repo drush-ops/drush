@@ -79,6 +79,12 @@ function drush_main() {
   }
   drush_postflight();
 
+  // How strict are we?  If we are very strict, turn 'ok' into 'error'
+  // if there are any warnings in the log.
+  if (($return == 0) && (drush_get_option('strict') > 1) && drush_log_has_errors()) {
+    $return = 1;
+  }
+
   // After this point the drush_shutdown function will run,
   // exiting with the correct exit code.
   return $return;

@@ -302,7 +302,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['remote-os']           = array('hidden' => TRUE, 'description' => 'The operating system used on the remote host. Managed by site alias.');
     $options['site-list']           = array('hidden' => TRUE, 'description' => 'List of sites to run commands on. Managed by site alias.');
     $options['reserve-margin']      = array('hidden' => TRUE, 'description' => 'Remove columns from formatted opions. Managed by multi-site command handling.');
-    $options['strict']              = array('propagate' => TRUE, 'hidden' => TRUE, 'description' => 'Check requirements more strictly / remove backwards-compatibility features for unit tests.');
+    $options['strict']              = array('propagate' => TRUE, 'description' => 'Return an error on unrecognized options. --strict=0: Allow unrecognized options.  --strict=2: Also return an error on any "warning" log messages.  Optional.  Default is 1.');
     $options['command-specific']    = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'Command-specific options.');
     $options['site-aliases']        = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'List of site aliases.');
     $options['shell-aliases']       = array('hidden' => TRUE, 'merge' => TRUE, 'never-propagate' => TRUE, 'description' => 'List of shell aliases.');
@@ -1430,6 +1430,16 @@ function drush_log($message, $type = 'notice', $error = null) {
   drush_backend_packet('log', $entry);
 
   return $callback($entry);
+}
+
+function drush_log_has_errors($types = array('warning', 'error', 'failed')) {
+  $log =& drush_get_context('DRUSH_LOG', array());
+  foreach ($log as $entry) {
+    if (in_array($entry['type'], $types)) {
+      return TRUE;
+    }
+  }
+  return FALSE;
 }
 
 /**
