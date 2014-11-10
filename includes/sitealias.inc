@@ -428,36 +428,17 @@ function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
   $all_site_aliases = drush_get_context('site-aliases');
   $result = array();
 
-  // Check to see if this is a relative alias ('@site/@peer')
-  $relative_alias_pos = strpos($alias, '/@');
-  if ($relative_alias_pos !== false) {
-    $primary_alias = substr($alias,0,$relative_alias_pos);
-    $relative_alias = substr($alias,$relative_alias_pos + 1);
-    $primary_record = drush_sitealias_get_record($primary_alias);
-    _drush_sitealias_find_and_load_alias(substr($relative_alias,1), $primary_record);
-    $result = drush_sitealias_get_record($relative_alias);
+  // Only aliases--those named entities that begin with '@'--can be loaded this way.
+  // We also skip any alias that has already been loaded.
+  if ((substr($alias,0,1) == '@') && !array_key_exists($alias,$all_site_aliases)) {
+    $aliasname = substr($alias,1);
+    $result = _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context);
     if (!empty($result)) {
-      if (array_key_exists('inherited', $result)) {
-        $result = array_merge($primary_record, $result);
-      }
-      $result['#name'] = $relative_alias;
-      _drush_sitealias_add_inherited_values_to_record($result);
-      _drush_sitealias_cache_alias($alias, $result);
-    }
-  }
-  else {
-    // Only aliases--those named entities that begin with '@'--can be loaded this way.
-    // We also skip any alias that has already been loaded.
-    if ((substr($alias,0,1) == '@') && !array_key_exists($alias,$all_site_aliases)) {
-      $aliasname = substr($alias,1);
-      $result = _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context);
-      if (!empty($result)) {
-        $alias_options = array('site-aliases' => array($aliasname => $result));
-        _drush_sitealias_add_inherited_values($alias_options['site-aliases']);
-        drush_set_config_special_contexts($alias_options);
-        if (array_key_exists('#file', $result)) {
-          drush_log(dt('Loaded alias !alias from file !file', array('!alias' => $alias, '!file' => $result['#file'])));
-        }
+      $alias_options = array('site-aliases' => array($aliasname => $result));
+      _drush_sitealias_add_inherited_values($alias_options['site-aliases']);
+      drush_set_config_special_contexts($alias_options);
+      if (array_key_exists('#file', $result)) {
+        drush_log(dt('Loaded alias !alias from file !file', array('!alias' => $alias, '!file' => $result['#file'])));
       }
     }
   }
