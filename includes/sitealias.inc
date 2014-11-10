@@ -1069,59 +1069,6 @@ function drush_sitealias_resolve_sitelist($alias_record) {
   return $result_list;
 }
 
-/**
- * Check to see if the uri is the same in the source and target
- * lists for all items in the array.  This is a strong requirement
- * in D6; in D7, it is still highly convenient for the uri to
- * be the same, because the site folder name == the uri, and if
- * the uris match, then it is easier to rsync between remote machines.
- *
- * @param $source
- *   Array of source alias records
- * @param $target
- *   Array of target alias records to compare against source list
- * @return
- *   TRUE iff the uris of the sources and targets are in alignment
- */
-function drush_sitealias_check_lists_alignment($source, $target) {
-  $is_aligned = TRUE;
-
-  $i = 0;
-  foreach ($source as $one_source) {
-    if ((!isset($target[$i])) || (!_drush_sitelist_check_site_records($one_source, $target[$i]))) {
-      $is_aligned = FALSE;
-      break;
-    }
-    ++$i;
-  }
-
-  return $is_aligned;
-}
-
-/**
- * If the source and target lists contain alias records to the same
- * sets of sites, but in different orders, this routine will re-order
- * the lists so that they are in alignment.
- *
- * TODO:  Review the advisability of this operation.
- */
-function drush_sitelist_align_lists(&$source, &$target, &$source_result, &$target_result) {
-  $source_result = array();
-  $target_result = array();
-
-  foreach ($source as $key => $one_source) {
-    $one_target = _drush_sitelist_find_in_list($one_source, $target);
-    if ($one_target !== FALSE) {
-      $source_result[] = $one_source;
-      $target_result[] = $one_target;
-      unset($source[$key]);
-    }
-  }
-
-  $source = $source_result;
-  $target = $target_result;
-}
-
 function _drush_sitelist_find_in_list($one_source, &$target) {
   $result = FALSE;
 
