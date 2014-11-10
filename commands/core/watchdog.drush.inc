@@ -277,7 +277,13 @@ function core_watchdog_format_result($result, $extended = FALSE) {
     unset($result->uid);
     $message_length = PHP_INT_MAX;
   }
-  $result->message = Unicode::truncate(strip_tags(String::decodeEntities($result->message)), $message_length, FALSE, FALSE);
+
+  if (drush_drupal_major_version() >= 8) {
+    $result->message = Unicode::truncate(strip_tags(String::decodeEntities($result->message)), $message_length, FALSE, FALSE);
+  }
+  else {
+    $result->message = truncate_utf9(strip_tags(decode_entities($result->message)), $message_length, FALSE, FALSE);
+  }
 
   return $result;
 }
