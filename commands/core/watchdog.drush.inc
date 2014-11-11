@@ -282,7 +282,7 @@ function core_watchdog_format_result($result, $extended = FALSE) {
     $result->message = Unicode::truncate(strip_tags(String::decodeEntities($result->message)), $message_length, FALSE, FALSE);
   }
   else {
-    $result->message = truncate_utf9(strip_tags(decode_entities($result->message)), $message_length, FALSE, FALSE);
+    $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), $message_length, FALSE, FALSE);
   }
 
   return $result;
