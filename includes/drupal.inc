@@ -88,7 +88,7 @@ function drush_drupal_major_version($drupal_root = NULL) {
 /**
  * Log Drupal watchdog() calls.
  *
- * A sneaky implementation of hook_watchdog().
+ * A sneaky implementation of hook_watchdog(), for D6/D7.
  */
 function system_watchdog($log_entry) {
   // Transform non informative severity levels to 'error' for compatibility with _drush_print_log.
