@@ -14,8 +14,7 @@ class ConfigCase extends CommandUnishTestCase {
     }
 
     if (!$this->getSites()) {
-      // Remove the '.x' once there is a stable release.
-      $this->setUpDrupal(1, TRUE, '8.0.x');
+      $this->setUpDrupal(1, TRUE);
     }
   }
 
