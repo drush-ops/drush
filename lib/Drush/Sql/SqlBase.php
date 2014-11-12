@@ -135,7 +135,7 @@ class SqlBase {
    * Execute a SQL query.
    *
    * Note: This is an API function. Try to avoid using drush_get_option() and instead
-   * get params passed in.
+   * pass params in.
    *
    * @param string $query
    *   The SQL to be executed. Should be NULL if $file is provided.
