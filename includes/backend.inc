@@ -1012,7 +1012,7 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
     }
   }
   else {
-    $process_limit = drush_get_option_override($common_backend_options, 'concurrency', 1);
+    $process_limit = drush_get_option_override($common_backend_options, 'concurrency', 4);
     $procs = _drush_backend_proc_open($cmds, $process_limit, $context);
     $procs = is_array($procs) ? $procs : array($procs);
 
