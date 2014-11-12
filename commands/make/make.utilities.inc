@@ -26,11 +26,8 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
   elseif (ParserYaml::supportedFile($makefile)) {
     $info = ParserYaml::parse($data);
   }
-  elseif ($makefile === '-') {
-    $info = _make_determine_format($data);
-  }
   else {
-    return drush_set_error('MAKE_INVALID_FORMAT', dt('Invalid file format: !makefile', array('!makefile' => $makefile)));
+    $info = _make_determine_format($data);
   }
 
   // $makefile_options are from projects[projectname][options][...] = value in
