@@ -330,12 +330,7 @@ function drush_queue_get($name) {
  * Returns all defined queues.
  */
 function drush_queue_get_queues() {
-  static $queues;
-  if (!isset($queues)) {
-    $queues = \Drupal::moduleHandler()->invokeAll('queue_info');
-    \Drupal::moduleHandler()->alter('queue_info', $queues);
-  }
-  return $queues;
+  $plugins = \Drupal::service('plugin.manager.queueworker')->getDefinitions();
 }
 
 function _drush_theme_default() {
