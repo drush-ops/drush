@@ -31,10 +31,17 @@ class Role8 extends Role7 {
     return $perms;
   }
 
+  public function getAllModulePerms() {
+    $perms = \Drupal::service('user.permissions')->getPermissions();
+    return array_keys($perms);
+  }
+
   public function getModulePerms($module) {
-    drush_include_engine('drupal', 'environment');
-    $perms = drush_module_invoke($module, 'permission');
-    return $perms ? array_keys($perms) : array();
+    $perms = \Drupal::service('user.permissions')->getPermissions();
+    foreach ($perms as $key => $perm) {
+      $survivors[$key] = $perm;
+    }
+    return $survivors ? array_keys($survivors) : array();
   }
 
   public function delete() {
