@@ -319,20 +319,6 @@ function drush_watchdog_message_types() {
   return _dblog_get_message_types();
 }
 
-/**
- * Returns a queue object.
- */
-function drush_queue_get($name) {
-  return \Drupal::queue($name);
-}
-
-/**
- * Returns all defined queues.
- */
-function drush_queue_get_queues() {
-  return \Drupal::service('plugin.manager.queueworker')->getDefinitions();
-}
-
 function _drush_theme_default() {
   return \Drupal::config('system.theme')->get('default');
 }

@@ -307,31 +307,6 @@ function drush_watchdog_message_types() {
   return drupal_map_assoc(_dblog_get_message_types());
 }
 
-/**
- * Returns a queue object.
- */
-function drush_queue_get($name) {
-  return DrupalQueue::get($name);
-}
-
-/**
- * Returns all defined queues.
- */
-function drush_queue_get_queues() {
-  static $queues;
-  if (!isset($queues)) {
-    $queues = module_invoke_all('cron_queue_info');
-    drupal_alter('cron_queue_info', $queues);
-    foreach($queues as $name => $queue) {
-      $queues[$name]['worker callback'] = $queue['worker callback'];
-      if (isset($queue['time'])) {
-        $queues[$name]['cron']['time'] = $queue['time'];
-      }
-    }
-  }
-  return $queues;
-}
-
 function _drush_theme_default() {
   return variable_get('theme_default', 'garland');
 }
