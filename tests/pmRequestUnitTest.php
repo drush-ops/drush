@@ -20,6 +20,8 @@ class pmRequestUnitCase extends UnitUnishTestCase {
   public function testVersionParserCore() {
     _drush_add_commandfiles(array(DRUSH_BASE_PATH . '/commands/pm'));
 
+    drush_set_option('default-major', UNISH_DRUPAL_MAJOR_VERSION);
+
     $version = '';
     $version_parts = pm_parse_version($version, TRUE);
     $this->assertEquals('', $version_parts['version']);
