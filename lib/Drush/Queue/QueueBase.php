@@ -38,17 +38,6 @@ abstract class QueueBase implements QueueInterface {
   }
 
   /**
-   * Prepare the environment for running a queue.
-   */
-  protected function prepareEnvironment() {
-    // Try to increase the maximum execution time if it is too low.
-    $max_execution_time = ini_get('max_execution_time');
-    if ($max_execution_time > 0 && $max_execution_time < 240 && !ini_get('safe_mode')) {
-      set_time_limit(240);
-    }
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getInfo($name) {

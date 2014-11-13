@@ -39,7 +39,6 @@ class Queue8 extends QueueBase {
    * {@inheritdoc}
    */
   public function run($name) {
-    $this->prepareEnvironment();
     $info = $this->getInfo($name);
     $worker = $this->workerManager->createInstance($name);
     $end = time() + (isset($info['cron']['time']) ? $info['cron']['time'] : 15);
