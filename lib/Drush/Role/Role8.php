@@ -37,11 +37,14 @@ class Role8 extends Role7 {
   }
 
   public function getModulePerms($module) {
+    $module_perms = array();
     $perms = \Drupal::service('user.permissions')->getPermissions();
-    foreach ($perms as $key => $perm) {
-      $survivors[$key] = $perm;
+    foreach ($perms as $name => $perm) {
+      if ($perm['provider'] == $module) {
+        $module_perms[] = $name;
+      }
     }
-    return $survivors ? array_keys($survivors) : array();
+    return $module_perms;
   }
 
   public function delete() {
