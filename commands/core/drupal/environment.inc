@@ -8,6 +8,7 @@
  */
 
 use Drupal\Core\Site\Settings;
+use Drupal\Core\Logger\RfcLogLevel;
 
 /**
  * Get complete information for all available modules.
@@ -297,14 +298,14 @@ function drush_theme_disable($themes) {
  */
 function drush_watchdog_severity_levels() {
   return array(
-    WATCHDOG_EMERGENCY=> 'emergency',
-    WATCHDOG_ALERT    => 'alert',
-    WATCHDOG_CRITICAL => 'critical',
-    WATCHDOG_ERROR    => 'error',
-    WATCHDOG_WARNING  => 'warning',
-    WATCHDOG_NOTICE   => 'notice',
-    WATCHDOG_INFO     => 'info',
-    WATCHDOG_DEBUG    => 'debug',
+    RfcLogLevel::EMERGENCY => 'emergency',
+    RfcLogLevel::ALERT => 'alert',
+    RfcLogLevel::CRITICAL => 'critical',
+    RfcLogLevel::ERROR    => 'error',
+    RfcLogLevel::WARNING  => 'warning',
+    RfcLogLevel::NOTICE   => 'notice',
+    RfcLogLevel::INFO     => 'info',
+    RfcLogLevel::DEBUG    => 'debug',
   );
 }
 
