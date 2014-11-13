@@ -2,7 +2,7 @@
 
 namespace Drush\Queue;
 
-class Queue6 extends QueueBase {
+class Queue6 extends Queue7 {
 
   /**
    * {@inheritdoc}
@@ -33,13 +33,6 @@ class Queue6 extends QueueBase {
       }
     }
     return $this->queues;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getQueue($name) {
-    return DrupalQueue::get($name);
   }
 
 }

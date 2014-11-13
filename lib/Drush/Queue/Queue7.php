@@ -39,4 +39,18 @@ class Queue7 extends QueueBase {
     return DrupalQueue::get($name);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function run($name) {
+    $info = $this->getInfo($name);
+    $function = $info['worker callback'];
+    $end = time() + (isset($info['cron']['time']) ? $info['cron']['time'] : 15);
+    $queue = $this->getQueue($name);
+    while (time() < $end && ($item = $queue->claimItem())) {
+      $function($item->data);
+      $queue->deleteItem($item);
+    }
+  }
+
 }
