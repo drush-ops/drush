@@ -34,6 +34,7 @@ version: ''
 drupal_version: ${drupal_version}.x
 project_version: ''
 version_major: ${drupal_version}
+version_minor: ''
 version_patch: ''
 version_extra: ''
 EXPECTED;
@@ -46,6 +47,7 @@ version: ''
 drupal_version: 5.x
 project_version: ''
 version_major: '5'
+version_minor: ''
 version_patch: ''
 version_extra: ''
 EXPECTED;
@@ -61,6 +63,7 @@ version: ''
 drupal_version: ${drupal_version}.x
 project_version: ''
 version_major: ${drupal_version}
+version_minor: ''
 version_patch: ''
 version_extra: ''
 EXPECTED;
@@ -73,6 +76,7 @@ version: ${drupal_version}.x-1.0
 drupal_version: ${drupal_version}.x
 project_version: '1.0'
 version_major: '1'
+version_minor: ''
 version_patch: '0'
 version_extra: ''
 EXPECTED;
@@ -85,6 +89,7 @@ version: ${drupal_version}.x-1.x-dev
 drupal_version: ${drupal_version}.x
 project_version: 1.x-dev
 version_major: '1'
+version_minor: ''
 version_patch: ''
 version_extra: dev
 EXPECTED;
