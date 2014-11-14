@@ -1378,27 +1378,44 @@ function pm_parse_arguments($args, $dashes_to_underscores = TRUE) {
 }
 
 /**
- * Decompound a version string and returns major, minor and extra parts.
+ * Decompound a version string and returns major, minor, patch and extra parts.
  *
  * @see _pm_parse_version_compound()
  * @see pm_parse_version()
  *
- * @param ttring $version
- *    A version string like X.Y-Z or a subset.
+ * @param string $version
+ *    A version string like X.Y-Z, X.Y.Z-W or a subset.
  *
  * @return array
- *   Array with major, minor and extra keys.
+ *   Array with major, patch and extra keys.
  */
 function _pm_parse_version_decompound($version) {
-  $pattern = '/^(\d+)(?:\.(x|\d+))?(?:-(.*))?$/';
+  $pattern = '/^(\d+)(?:.(\d+))?(?:\.(x|\d+))?(?:-(.*))?$/';
 
   $matches = array();
   preg_match($pattern, $version, $matches);
+
   $parts = array(
-    'major' => (isset($matches[1])) ? $matches[1] : '',
-    'minor' => (isset($matches[1]) && isset($matches[2])) ? $matches[2] : '',
-    'extra' => (isset($matches[1]) && isset($matches[3])) ? $matches[3] : '',
+    'major' => '',
+    'minor' => '',
+    'patch' => '',
+    'extra' => '',
   );
+  if (isset($matches[1])) {
+    $parts['major'] = $matches[1];
+    if (isset($matches[2])) {
+      if (isset($matches[3]) && $matches[3] != '') {
+        $parts['minor'] = $matches[2];
+        $parts['patch'] = $matches[3];
+      }
+      else {
+        $parts['patch'] = $matches[2];
+      }
+    }
+    if (!empty($matches[4])) {
+      $parts['extra'] = $matches[4];
+    }
+  }
 
   return $parts;
 }
@@ -1417,45 +1434,79 @@ function _pm_parse_version_decompound($version) {
  */
 function _pm_parse_version_compound($parts) {
   $project_version = '';
-  if ($parts['minor'] == 'x') {
-    $project_version = $parts['major'] . '.x-dev';
-  }
-  elseif ($parts['minor'] != '') {
-    $project_version = $parts['major'] . '.' . $parts['minor'];
-    if ($parts['extra'] != '') {
-      $project_version = $project_version . '-' . $parts['extra'];
+  if ($parts['patch'] != '') {
+    $project_version = $parts['major'];
+    if ($parts['minor'] != '') {
+      $project_version = $project_version . '.' . $parts['minor'];
+    }
+    if ($parts['patch'] == 'x') {
+      $project_version = $project_version . '.x-dev';
+    }
+    else {
+      $project_version = $project_version . '.' . $parts['patch'];
+      if ($parts['extra'] != '') {
+        $project_version = $project_version . '-' . $parts['extra'];
+      }
     }
   }
+
   return $project_version;
 }
 
 /**
  * Parses a version string and returns its components.
  *
+ * It parses both core and contrib version strings.
+ *
+ * Core (semantic versioning):
+ *   - 8.0.0-beta2
+ *   - 8.0.x-dev
+ *   - 8.1.x
+ *   - 8.0.1
+ *   - 8
+ *
+ * Core (classic drupal scheme):
+ *   - 7.x-dev
+ *   - 7.x
+ *   - 7.33
+ *   - 7
+ *
+ * Contrib:
+ *   - 7.x-1.0-beta1
+ *   - 7.x-1.0
+ *   - 1.0-beta1
+ *   - 1.0
+ *   - 7.x-1.x
+ *   - 7.x-1.x-dev
+ *   - 1.x
+ *
  * @see pm_parse_request()
  *
  * @param string $version
- *   A core or project version string. Examples:
- *     - '7.x-1.0-beta1'
- *     - '1.0-beta1'
- *     - '7.x-1.0'
- *     - '1.0'
- *     - '7.x-1.x'
- *     - '7.x-1.x-dev'
- *     - '1.x'
+ *   A core or project version string.
  *
  * @param bool $is_core
  *   Whether this is a core version or a project version.
  *
  * @return array
- *   Versions info, including:
- *     - version         : Fully qualified version string (ex: 7.x-3.2-beta1).
+ *   Version string in parts.
+ *   Example for a contrib version ()ex: 7.x-3.2-beta1:
+ *     - version         : Fully qualified version string.
  *     - drupal_version  : Core compatibility version (ex: 7.x).
- *     - version_major   : Major version (ex: 3 in 7.x-3.2-beta1).
- *     - version_patch   : Minor version (ex: 2 in 7.x-3.2-beta1).
- *     - version_extra   : Extra version (ex: beta1 in 7.x-3.2-beta1).
- *     - project_version : Project specific part of the version string (ex: 3.2-beta1).
- *   Tip: 'version' and 'project_version' are the same for Drupal core.
+ *     - version_major   : Major version (ex: 3).
+ *     - version_minor   : Minor version. Not applicable. Always empty.
+ *     - version_patch   : Patch version (ex: 2).
+ *     - version_extra   : Extra version (ex: beta1).
+ *     - project_version : Project specific part of the version (ex: 3.2-beta1).
+ *
+ *   Example for a core version (ex: 8.1.2-beta2 or 7.0-beta2):
+ *     - version         : Fully qualified version string.
+ *     - drupal_version  : Core compatibility version (ex: 8.x).
+ *     - version_major   : Major version (ex: 8).
+ *     - version_minor   : Minor version (ex: 1). Empty if not a semver.
+ *     - version_patch   : Patch version (ex: 2).
+ *     - version_extra   : Extra version (ex: beta2).
+ *     - project_version : Same as 'version'.
  */
 function pm_parse_version($version, $is_core = FALSE) {
   $core_parts = _pm_parse_version_decompound($version);
@@ -1473,8 +1524,9 @@ function pm_parse_version($version, $is_core = FALSE) {
       'drupal_version' => $core_parts['major'] . '.x',
       'project_version' => $project_version,
       'version_major' => $core_parts['major'],
-      'version_patch' => ($core_parts['minor'] == 'x') ? '' : $core_parts['minor'],
-      'version_extra' => ($core_parts['minor'] == 'x') ? 'dev' : $core_parts['extra'],
+      'version_minor' => $core_parts['minor'],
+      'version_patch' => ($core_parts['patch'] == 'x') ? '' : $core_parts['patch'],
+      'version_extra' => ($core_parts['patch'] == 'x') ? 'dev' : $core_parts['extra'],
     );
   }
   else {
@@ -1488,8 +1540,9 @@ function pm_parse_version($version, $is_core = FALSE) {
         'drupal_version' => $core_parts['major'] . '.x',
         'project_version' => $project_version,
         'version_major' => $nocore_parts['major'],
-        'version_patch' => ($nocore_parts['minor'] == 'x') ? '' : $nocore_parts['minor'],
-        'version_extra' => ($nocore_parts['minor'] == 'x') ? 'dev' : $nocore_parts['extra'],
+        'version_minor' => $core_parts['minor'],
+        'version_patch' => ($nocore_parts['patch'] == 'x') ? '' : $nocore_parts['patch'],
+        'version_extra' => ($nocore_parts['patch'] == 'x') ? 'dev' : $nocore_parts['extra'],
       );
     }
     // At this point we have half a version and must decide if this is a drupal major or a project.
@@ -1503,8 +1556,9 @@ function pm_parse_version($version, $is_core = FALSE) {
           'drupal_version' => $drupal_version_default . '.x',
           'project_version' => $project_version,
           'version_major' => $core_parts['major'],
-          'version_patch' => ($core_parts['minor'] == 'x') ? '' : $core_parts['minor'],
-          'version_extra' => ($core_parts['minor'] == 'x') ? 'dev' : $core_parts['extra'],
+          'version_minor' => $core_parts['minor'],
+          'version_patch' => ($core_parts['patch'] == 'x') ? '' : $core_parts['patch'],
+          'version_extra' => ($core_parts['patch'] == 'x') ? 'dev' : $core_parts['extra'],
         );
       }
       // Not working on a bootstrapped site, core_parts is core version.
@@ -1514,6 +1568,7 @@ function pm_parse_version($version, $is_core = FALSE) {
           'drupal_version' => $core_parts['major'] . '.x',
           'project_version' => '',
           'version_major' => '',
+          'version_minor' => '',
           'version_patch' => '',
           'version_extra' => '',
         );
