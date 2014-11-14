@@ -24,9 +24,9 @@ class pmUpdateCode extends CommandUnishTestCase {
    */
   public function setUp() {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      $core = '8.0-alpha12';
-      $modules_str = 'instagram_block-8.x-1.0,honeypot-8.x-1.14-beta5';
-      $this->modules = array('block', 'instagram_block', 'honeypot');
+      $core = '8.0.0-beta2';
+      $modules_str = 'wysiwyg_linebreaks-8.x-1.6-beta11,honeypot-8.x-1.18-beta1';
+      $this->modules = array('block', 'wysiwyg_linebreaks', 'honeypot');
     }
     elseif (UNISH_DRUPAL_MAJOR_VERSION == 7) {
       $core = '7.0-rc3';
@@ -68,28 +68,29 @@ class pmUpdateCode extends CommandUnishTestCase {
       'strict' => 0,
     );
 
-    // Try to upgrade a specific module.
+    // Upgrade a specific module.
     $this->drush('pm-updatecode', array($first), $options + array());
+
     // Assure that first was upgraded and second was not.
-    $this->drush('pm-updatestatus', array(), $options + array());
-    $all = $this->getOutput();
-    $this->assertNotContains($first, $all);
-    $this->assertContains($second, $all);
+    $this->drush('pm-updatestatus', array(), $options + array('format' => 'json'));
+    $all = $this->getOutputFromJSON();
+    $this->assertEquals($all->$first->existing_version, $all->$first->candidate_version);
+    $this->assertNotEquals($all->$second->existing_version, $all->$second->candidate_version);
 
     // Lock second, and update core.
     $this->drush('pm-updatecode', array(), $options + array('lock' => $second));
     $list = $this->getOutputAsList(); // For debugging.
-    $this->drush('pm-updatestatus', array(), $options + array());
-    $all = $this->getOutput();
-    $this->assertNotContains('drupal', $all, 'Core was updated');
-    $this->assertContains($second, $all, 'Second was skipped.');
+    $this->drush('pm-updatestatus', array(), $options + array('format' => 'json'));
+    $all = $this->getOutputFromJSON();
+    $this->assertEquals($all->drupal->existing_version, $all->drupal->candidate_version);
+    $this->assertNotEquals($all->$second->existing_version, $all->$second->candidate_version);
 
     // Unlock second, update, and check.
     $this->drush('pm-updatecode', array(), $options + array('unlock' => $second, 'no-backup' => NULL));
     $list = $this->getOutputAsList();
-    $this->drush('pm-updatestatus', array(), $options + array());
-    $all = $this->getOutput();
-    $this->assertNotContains($second, $all, 'Second was updated');
+    $this->drush('pm-updatestatus', array(), $options + array('format' => 'json'));
+    $all = $this->getOutputFromJSON();
+    $this->assertEquals($all->$second->existing_version, $all->$second->candidate_version);
 
     // Verify that we keep backups as instructed.
     $backup_dir = UNISH_SANDBOX . '/backups';
