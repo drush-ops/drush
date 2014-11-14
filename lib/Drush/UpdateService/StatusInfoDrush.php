@@ -83,7 +83,7 @@ class StatusInfoDrush implements StatusInfoInterface {
    * Obtains release info for projects.
    */
   private function getAvailableReleases($projects) {
-    drush_log(dt('Checking available update data ...', 'ok'));
+    drush_log(dt('Checking available update data ...'), 'ok');
 
     $cache_duration = 24 * 3600;
     $major_version = drush_drupal_major_version();
