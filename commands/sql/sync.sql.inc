@@ -39,6 +39,12 @@ function drush_sql_sync_validate($source, $destination) {
   // Get destination info for confirmation prompt.
   $source_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($source), 'source-');
   $destination_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($destination), 'target-');
+
+  // Get overwrites from 'source-command-specific' and 'target-command-specific'
+  // options.
+  drush_sitealias_set_alias_context($source_settings, 'source-');
+  drush_sitealias_set_alias_context($destination_settings, 'target-');
+
   $source_db_url = drush_sitealias_get_db_spec($source_settings, FALSE, 'source-');
   $target_db_url = drush_sitealias_get_db_spec($destination_settings, FALSE, 'target-');
   $txt_source = (isset($source_db_url['remote-host']) ? $source_db_url['remote-host'] . '/' : '') . $source_db_url['database'];
