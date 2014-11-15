@@ -361,6 +361,18 @@ function _drush_extension_get_path($info) {
   return dirname($info->filename);
 }
 
+/**
+ * Gets the extension filename.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension filename.
+ */
+function _drush_extension_get_filename($info) {
+  return $info->filename;
+}
+
 /*
  * Wrapper for CSRF token generation.
  */
