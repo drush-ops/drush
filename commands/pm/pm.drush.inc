@@ -1646,9 +1646,11 @@ function pm_drush_engine_type_info() {
       'default' => 'drush',
       'add-options-to-command' => TRUE,
       'options' => array(
+        'update-backend' => 'Backend to obtain available updates.',
         'check-disabled' => 'Check for updates of disabled modules and themes.',
         'security-only'  => 'Only update modules that have security updates available.',
       ),
+      'combine-help' => TRUE,
     ),
     'version_control' => array(
       'option' => 'version-control',
