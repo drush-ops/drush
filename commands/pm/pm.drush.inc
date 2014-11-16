@@ -1659,7 +1659,11 @@ function pm_drush_engine_type_info() {
 }
 
 /**
- * Used by dl and updatecode commands to determine how to download/checkout new projects and acquire updates to projects.
+ * Implements hook_drush_engine_ENGINE_TYPE().
+ *
+ * Package handler engine is used by pm-download and
+ * pm-updatecode commands to determine how to download/checkout
+ * new projects and acquire updates to projects.
  */
 function pm_drush_engine_package_handler() {
   return array(
@@ -1687,7 +1691,10 @@ function pm_drush_engine_package_handler() {
 }
 
 /**
- * Used by dl and updatecode commands to determine how to download/checkout new projects and acquire updates to projects.
+ * Implements hook_drush_engine_ENGINE_TYPE().
+ *
+ * Release info engine is used by several pm commands to obtain
+ * releases info from Drupal's update service or external sources.
  */
 function pm_drush_engine_release_info() {
   return array(
@@ -1712,6 +1719,9 @@ function pm_drush_engine_release_info() {
 
 /**
  * Implements hook_drush_engine_ENGINE_TYPE().
+ *
+ * Update status engine is used to check available updates for
+ * the projects in a Drupal site.
  */
 function pm_drush_engine_update_status() {
   return array(
@@ -1728,6 +1738,8 @@ function pm_drush_engine_update_status() {
 }
 
 /**
+ * Implements hook_drush_engine_ENGINE_TYPE().
+ *
  * Integration with VCS in order to easily commit your changes to projects.
  */
 function pm_drush_engine_version_control() {
