@@ -346,7 +346,7 @@ function _pm_download_destination($type) {
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   $site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT');
   $full_site_root = empty($drupal_root) ? '' : $drupal_root .'/'. $site_root;
-  $sitewide = $drupal_root . '/' . drush_drupal_sitewide_directory();
+  $sitewide = empty($drupal_root) ? '' : $drupal_root . '/' . drush_drupal_sitewide_directory();
 
   $in_site_directory = FALSE;
   // Check if we are running within the site directory.
