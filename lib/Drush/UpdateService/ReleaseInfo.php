@@ -126,7 +126,7 @@ class ReleaseInfo {
           return drush_set_error('DRUSH_PM_NO_DEV_RELEASE', dt('There is no development release for project !project.', array('!project' => $request['name'])));
         }
       }
-      if (empty($release)) {
+      if (empty($release) && isset($request['version'])) {
         $release = $project_release_info->getSpecificRelease($request['version']);
         if ($release === FALSE) {
           return drush_set_error('DRUSH_PM_COULD_NOT_FIND_VERSION', dt("Could not locate !project version !version.", array(
