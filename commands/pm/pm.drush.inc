@@ -1622,7 +1622,7 @@ function pm_drush_engine_type_info() {
       'description' => 'Determine how to fetch projects from update service.',
       'default' => 'wget',
       'options' => array(
-        'cache' => 'Cache release XML and tarballs or git clones. Git clones use git\'s --reference option.',
+        'cache' => 'Cache release XML and tarballs or git clones. Git clones use git\'s --reference option. Defaults to 1 for downloads, and 0 for git.',
       ),
     ),
     'release_info' => array(
