@@ -79,7 +79,7 @@ class StatusInfoDrush implements StatusInfoInterface {
   private function getAvailableReleases($projects) {
     drush_log(dt('Checking available update data ...'), 'ok');
 
-    $cache_duration = 24 * 3600;
+    $release_info = drush_include_engine('release_info', 'updatexml');
 
     $available = array();
     foreach ($projects as $project_name => $project) {
@@ -89,7 +89,7 @@ class StatusInfoDrush implements StatusInfoInterface {
       }
       drush_log(dt('Checking available update data for !project.', array('!project' => $project['label'])), 'ok');
       $request = pm_parse_request($project_name);
-      $available[$project_name] = Project::getInstance($request, $cache_duration);
+      $available[$project_name] = $release_info->get($request);
     }
 
     return $available;

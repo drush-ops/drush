@@ -736,7 +736,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
     return copy($url, $destination) ? $destination : FALSE;
   }
 
-  if (drush_get_option('cache') && $cache_duration !== 0 && $cache_file = drush_download_file_name($url)) {
+  if ($cache_duration !== 0 && $cache_file = drush_download_file_name($url)) {
     // Check for cached, unexpired file.
     if (file_exists($cache_file) && filectime($cache_file) > ($_SERVER['REQUEST_TIME']-$cache_duration)) {
       drush_log(dt('!name retrieved from cache.', array('!name' => $cache_file)));

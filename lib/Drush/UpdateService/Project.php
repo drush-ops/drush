@@ -64,7 +64,7 @@ class Project {
    *
    * @return \Drush\UpdateService\Project
    */
-  public static function getInstance(array $request, $cache_duration) {
+  public static function getInstance(array $request, $cache_duration = ReleaseInfo::CACHE_LIFETIME) {
     $url = self::buildFetchUrl($request);
     drush_log(dt('Downloading release history from !url', array('!url' => $url)));
 

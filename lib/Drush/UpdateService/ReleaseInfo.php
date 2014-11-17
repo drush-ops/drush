@@ -16,6 +16,9 @@ namespace Drush\UpdateService;
 class ReleaseInfo {
   const DEFAULT_URL = 'https://updates.drupal.org/release-history';
 
+  // Cache release xml files for 24h by default.
+  const CACHE_LIFETIME = 86400;
+
   private $cache;
   private $engine_config;
 
@@ -30,7 +33,7 @@ class ReleaseInfo {
       $config = array();
     }
     $config += array(
-      'cache-duration' => drush_get_option('cache-duration-releasexml', 24*3600),
+      'cache-duration' => drush_get_option('cache-duration-releasexml', self::CACHE_LIFETIME),
     );
     $this->engine_config = $config;
     $this->cache = array();
