@@ -54,7 +54,7 @@ function package_handler_download_project(&$request, $release) {
   // On Windows file name cannot contain '?'
   // See http://drupal.org/node/1782444
   $filename = str_replace('?', '_', basename($release['download_link']));
-  $cache_duration = (drush_get_option('cache', FALSE)) ? 86400*365 : 0;
+  $cache_duration = (drush_get_option('cache', TRUE)) ? 86400*365 : 0;
   $path = drush_download_file($release['download_link'], $request['base_project_path'] . DIRECTORY_SEPARATOR . $filename, $cache_duration);
   if ($path || drush_get_context('DRUSH_SIMULATE')) {
     drush_log("Downloading " . $filename . " was successful.");
