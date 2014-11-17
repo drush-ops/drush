@@ -225,6 +225,9 @@ class SqlBase {
 
   public function drop($tables) {
     if ($tables) {
+      foreach ($tables as &$table) {
+        $table = sprintf("`%s`", $table);
+      }
       $sql = 'DROP TABLE '. implode(', ', $tables);
       return $this->query($sql);
     }
