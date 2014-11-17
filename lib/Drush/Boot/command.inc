@@ -67,9 +67,9 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
         $ignored_modules[] = $cached->data;
       }
       foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
-        $filename = drupal_get_filename('module', $module);
-        if ($filename) {
-          $searchpath[] = dirname($filename);
+        $filepath = drupal_get_path('module', $module);
+        if ($filepath && $filepath != '/') {
+          $searchpath[] = $filepath;
         }
       }
       break;
