@@ -614,7 +614,6 @@ function drush_pm_classify_extensions(&$extensions, &$modules, &$themes, $extens
  * extensions.
  */
 function drush_get_projects(&$extensions = NULL) {
-  $info_file_extension = drush_drupal_major_version() >= 8 ? '.info.yml' : '.info';
   if (!isset($extensions)) {
     $extensions = drush_get_extensions();
   }
@@ -624,10 +623,8 @@ function drush_get_projects(&$extensions = NULL) {
       'version'    => drush_drupal_version(),
       'type'       => 'core',
       'extensions' => array(),
-      '_info_file_ctime' => 0,
     )
   );
-  $info_file_extension = drush_drupal_major_version() >= 8 ? '.info.yml' : '.info';
   foreach ($extensions as $extension) {
     $extension_name = drush_extension_get_name($extension);
     $extension_path = drush_extension_get_path($extension);
@@ -657,11 +654,6 @@ function drush_get_projects(&$extensions = NULL) {
       $project = $extension->info['project'];
     }
 
-    // Obtain the creation time of the extension's .info.yml.
-    // This is needed by the 'drush' backend of update_status engine.
-    $info_file = $extension_path . '/' . $extension_name . $info_file_extension;
-    $ctime = filectime($info_file);
-
     // Create/update the project in $projects with the project data.
     if (!isset($projects[$project])) {
       $projects[$project] = array(
@@ -676,16 +668,12 @@ function drush_get_projects(&$extensions = NULL) {
         'status'     => $extension->status,
         'extensions' => array(),
         'datestamp'  => isset($extension->info['datestamp']) ? $extension->info['datestamp'] : NULL,
-        '_info_file_ctime' => $ctime,
       );
       if (isset($extension->info['project status url'])) {
         $projects[$project]['status url'] = $extension->info['project status url'];
       }
     }
     else {
-      // Pick the latest creation time.
-      $projects[$project]['_info_file_ctime'] = max($projects[$project]['_info_file_ctime'], $ctime);
-
       // If any of the extensions is enabled, consider the project is enabled.
       if ($extension->status != 0) {
         $projects[$project]['status'] = $extension->status;

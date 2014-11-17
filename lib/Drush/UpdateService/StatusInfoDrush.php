@@ -16,9 +16,6 @@ class StatusInfoDrush implements StatusInfoInterface {
     $this->engine_type = $type;
     $this->engine = $engine;
     $this->engine_config = $config;
-
-    // Enforce FileCache to store serialized php objects.
-    drush_set_option('cache-class-update', '\Drush\Cache\FileCache');
   }
 
   /**
@@ -28,13 +25,14 @@ class StatusInfoDrush implements StatusInfoInterface {
     $older = 0;
 
     // Iterate all projects and get the time of the older release info.
-    $major_version = drush_drupal_major_version();
     $projects = drush_get_projects();
-    foreach ($projects as $key => $project) {
-      $cid = "${major_version}-${key}";
-      $data = drush_cache_get($cid, 'update');
-      if ($data) {
-        $older = (!$older) ? $data->created : min($data->created, $older);
+    foreach ($projects as $project_name => $project) {
+      $request = pm_parse_request($project_name);
+      $url = Project::buildFetchUrl($request);
+      $cache_file = drush_download_file_name($url);
+      if (file_exists($cache_file)) {
+        $ctime = filectime($cache_file);
+        $older = (!$older) ? $ctime : min($ctime, $older);
       }
     }
 
@@ -46,14 +44,10 @@ class StatusInfoDrush implements StatusInfoInterface {
    */
   function refresh() {
     $release_info = drush_include_engine('release_info', 'updatexml');
-    $major_version = drush_drupal_major_version();
 
-    // Clear the update cache and the downloaded xml files.
+    // Clear all caches for the available projects.
     $projects = drush_get_projects();
     foreach ($projects as $project_name => $project) {
-      $cid = "${major_version}-${project_name}";
-      drush_cache_clear_all($cid, 'update');
-
       $request = pm_parse_request($project_name);
       $release_info->clearCached($request);
     }
@@ -85,8 +79,7 @@ class StatusInfoDrush implements StatusInfoInterface {
   private function getAvailableReleases($projects) {
     drush_log(dt('Checking available update data ...'), 'ok');
 
-    $cache_duration = 24 * 3600;
-    $major_version = drush_drupal_major_version();
+    $release_info = drush_include_engine('release_info', 'updatexml');
 
     $available = array();
     foreach ($projects as $project_name => $project) {
@@ -94,30 +87,9 @@ class StatusInfoDrush implements StatusInfoInterface {
       if ($project_name != 'drupal' && !isset($project['path'])) {
         continue;
       }
-
-      // Get release info from cache and refresh it in case it's obsolete.
-      $needs_refresh = FALSE;
-      $cid = "${major_version}-${project_name}";
-      $cached = drush_cache_get($cid, 'update');
-      if (!$cached || (REQUEST_TIME > $cached->expire)) {
-        $needs_refresh = TRUE;
-      }
-      elseif ($project['_info_file_ctime'] > $cached->created) {
-        $needs_refresh = TRUE;
-      }
-      else {
-        $project_release_info = $cached->data;
-      }
-      if ($needs_refresh) {
-        drush_log(dt('Checking available update data for !project.', array('!project' => $project['label'])), 'ok');
-        $request = pm_parse_request($project_name);
-        $project_release_info = Project::getInstance($request, $cache_duration);
-        if ($project_release_info) {
-          drush_cache_set($cid, $project_release_info, 'update', time() + $cache_duration);
-        }
-      }
-
-      $available[$project_name] = $project_release_info;
+      drush_log(dt('Checking available update data for !project.', array('!project' => $project['label'])), 'ok');
+      $request = pm_parse_request($project_name);
+      $available[$project_name] = $release_info->get($request);
     }
 
     return $available;
