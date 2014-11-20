@@ -247,7 +247,7 @@ function drush_cache_clear_drush() {
   drush_cache_clear_all(NULL, 'default'); // commandfiles, etc.
   drush_cache_clear_all(NULL, 'complete'); // completion
   // Release XML. We don't clear tarballs since those never change.
-  $matches = drush_scan_directory(drush_directory_cache('download'), "/^http---updates.drupal.org-release-history/", array('.', '..'));
+  $matches = drush_scan_directory(drush_directory_cache('download'), "/^https---updates.drupal.org-release-history/", array('.', '..'));
   array_map('unlink', array_keys($matches));
 }
 
