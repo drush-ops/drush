@@ -169,7 +169,20 @@ function drush_preflight() {
   drush_load_config('custom');
 
   // Determine if --root and --uri have been defined and set constants accordingly.
-  _drush_preflight_root_uri();
+  _drush_preflight_root();
+
+  // Load the config options from Drupal's /drush and sites/all/drush directories,
+  // even prior to bootstrapping the root.
+  drush_load_config('drupal');
+
+  // Similarly, load the Drupal site configuration options upfront.
+  drush_load_config('site');
+
+  // Determine URI and set constants/contexts accordingly. Keep this after loading of drupal,site configs.
+  _drush_preflight_uri();
+
+  // Create a @self site alias record.
+  drush_sitealias_create_self_alias();
 
   // Process the site alias that specifies which instance
   // of Drush (local or remote) this command will operate on.
@@ -179,17 +192,6 @@ function drush_preflight() {
   // done, since site aliases may set option values that
   // affect these phases.
   drush_sitealias_check_arg();
-
-  // If an alias was not created by drush_sitealias_check_arg()
-  // or drush_sitealias_check_site_env(), make one now.
-  drush_sitealias_create_self_alias();
-
-  // Load the config options from Drupal's /drush and sites/all/drush directories,
-  // even prior to bootstrapping the root.
-  drush_load_config('drupal');
-
-  // Similarly, load the Drupal site configuration options upfront.
-  drush_load_config('site');
 
   // Check to see if we 'use'd a site alias with site-set
   drush_sitealias_check_site_env();
@@ -287,9 +289,9 @@ function _drush_preflight_alias_path() {
 }
 
 /**
- * If --root or --uri are provided, set contexts and create a @self site alias.
+ * If --root is provided, set context.
  */
-function _drush_preflight_root_uri() {
+function _drush_preflight_root() {
   $root = drush_get_option('root');
   if (!isset($root)) {
     $root = drush_locate_root();
@@ -300,9 +302,14 @@ function _drush_preflight_root_uri() {
   // @todo This context name should not mention Drupal.
   // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
+}
+
+/**
+ * If --uri is provided, set context.
+ */
+function _drush_preflight_uri() {
   $uri = drush_get_option('uri', '');
   drush_set_context('DRUSH_SELECTED_URI', $uri);
-  drush_sitealias_create_self_alias();
 }
 
 function _drush_find_commandfiles_drush() {
