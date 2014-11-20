@@ -266,7 +266,7 @@ function drush_cache_rebuild() {
   // Manually resemble early bootstrap of DrupalKernel::boot().
   require_once DRUSH_DRUPAL_CORE . '/includes/bootstrap.inc';
   DrupalKernel::bootEnvironment();
-  Settings::initialize(DrupalKernel::findSitePath($request), $autoloader);
+  Settings::initialize(DRUPAL_ROOT, DrupalKernel::findSitePath($request), $autoloader);
 
   // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
   drupal_rebuild($autoloader, $request);
