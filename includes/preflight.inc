@@ -288,6 +288,14 @@ function _drush_preflight_alias_path() {
   }
 }
 
+/*
+ * Set root and uri.
+ */
+function _drush_preflight_root_uri() {
+  _drush_preflight_root();
+  _drush_preflight_uri();
+}
+
 /**
  * If --root is provided, set context.
  */
