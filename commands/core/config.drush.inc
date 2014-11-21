@@ -474,6 +474,7 @@ function drush_config_get_object($config_name) {
   $include_overridden = drush_get_option('include-overridden', FALSE);
 
   if ($include_overridden) {
+    // Displaying overrides only applies to active storage.
     $config = \Drupal::config($config_name);
     $data = $config->get();
   }
@@ -482,8 +483,7 @@ function drush_config_get_object($config_name) {
     $data = $config->read($config_name);
   }
   elseif ($source == 'staging') {
-    // @todo this doesn't currently do anything different from 'active'.
-    $config = \Drupal::service('config.storage');
+    $config = \Drupal::service('config.storage.staging');
     $data = $config->read($config_name);
   }
   else {
