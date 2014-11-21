@@ -43,7 +43,9 @@ class Sqlsqlsrv extends SqlBase {
     }
   }
 
-  public function dumpCmd($table_selection, $file) {
+  // @todo $file is no longer provided. We are supposed to return bash that can be piped to gzip.
+  // Probably sqlsrv needs to override dump() entirely.
+  public function dumpCmd($table_selection) {
     if (!$file) {
       $file = $this->db_spec['database'] . '_' . date('Ymd_His') . '.bak';
     }

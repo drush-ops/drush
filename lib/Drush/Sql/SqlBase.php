@@ -55,10 +55,20 @@ class SqlBase {
    *   based on usual backup directory and current date.
    */
   public function dump($file = '') {
+    $file_suffix = '';
     $table_selection = $this->get_expanded_table_selection();
     $file = $this->dumpFile($file);
-    list($cmd, $file) = $this->dumpCmd($table_selection, $file);
-    list($cmd, $file) = $this->dumpGzip($cmd, $file);
+    $cmd = $this->dumpCmd($table_selection);
+    // Gzip the output from dump command(s) if requested.
+    if (drush_get_option('gzip')) {
+      $cmd .= ' | gzip -f';
+      $file_suffix .= '.gz';
+    }
+    if ($file) {
+      $file .= $file_suffix;
+      $cmd .= ' > ' . drush_escapeshellarg($file);
+    }
+
     // Avoid the php memory of the $output array in drush_shell_exec().
     if (!$return = drush_op_system($cmd)) {
       if ($file) {
@@ -76,14 +86,11 @@ class SqlBase {
    *
    * @param array $table_selection
    *   Supported keys: 'skip', 'structure', 'tables'.
-   * @param file
-   *   Destination for the dump file.
-   * @return array
-   *   A two item indexed array.
-   *     1. A mysqldump/pg_dump/sqlite3/etc statement that is ready for executing.
-   *     2. The filepath where the dump will be saved.
+   * @return string
+   *   One or more mysqldump/pg_dump/sqlite3/etc statements that are ready for executing.
+   *   If multiple statements are needed, enclose in parenthesis.
    */
-  public function dumpCmd($table_selection, $file) {}
+  public function dumpCmd($table_selection) {}
 
   /*
    * Generate a path to an output file for a SQL dump when needed.
@@ -112,37 +119,6 @@ class SqlBase {
       $file = str_replace(array('@DATABASE', '@DATE'), array($database, gmdate('Ymd_His')), $file);
     }
     return $file;
-  }
-
-  /*
-   * Bash which gzips dump file if specified.
-   *
-   * @param string $file
-   *
-   * @return array
-   */
-  function dumpGzip($cmd, $file) {
-    $suffix = '';
-    if (drush_get_option('gzip')) {
-      if ($file) {
-        $escfile = drush_escapeshellarg($file);
-        if (drush_get_context('DRUSH_AFFIRMATIVE')) {
-          // Gzip the result-file without Gzip confirmation
-          $suffix = " && gzip -f $escfile";
-          $file .= '.gz';
-        }
-        else {
-          // Gzip the result-file
-          $suffix = " && gzip $escfile";
-          $file .= '.gz';
-        }
-      }
-      else {
-        // gzip via pipe since user has not specified a file.
-        $suffix = "| gzip";
-      }
-    }
-    return array($cmd . $suffix, $file);
   }
 
   /**

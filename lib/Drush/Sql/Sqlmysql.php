@@ -85,7 +85,8 @@ EOT;
     return $tables;
   }
 
-  public function dumpCmd($table_selection, $file) {
+  public function dumpCmd($table_selection) {
+    $parens = FALSE;
     $skip_tables = $table_selection['skip'];
     $structure_tables = $table_selection['structure'];
     $tables = $table_selection['tables'];
@@ -102,9 +103,7 @@ EOT;
     // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
     $only_db_name = str_replace('--database=', ' ', $this->creds());
     $exec .= $only_db_name;
-    if ($file) {
-      $exec .= ' --result-file '. $file;
-    }
+
     // We had --skip-add-locks here for a while to help people with insufficient permissions,
     // but removed it because it slows down the import a lot.  See http://drupal.org/node/1283978
     $extra = ' --no-autocommit --single-transaction --opt -Q';
@@ -123,17 +122,16 @@ EOT;
       // Append the ignore-table options.
       foreach ($skip_tables as $table) {
         $ignores[] = '--ignore-table=' . $this->db_spec['database'] . '.' . $table;
+        $parens = TRUE;
       }
       $exec .= ' '. implode(' ', $ignores);
 
       // Run mysqldump again and append output if we need some structure only tables.
       if (!empty($structure_tables)) {
         $exec .= " && mysqldump " . $only_db_name . " --no-data $extra " . implode(' ', $structure_tables);
-        if ($file) {
-          $exec .= " >> $file";
-        }
+        $parens = TRUE;
       }
     }
-    return array($exec, $file);
+    return $parens ? "($exec)" : $exec;
   }
 }

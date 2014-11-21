@@ -70,7 +70,7 @@ class Sqlsqlite extends SqlBase {
     return $this->query($sql);
   }
 
-  public function dumpCmd($table_selection, $file) {
+  public function dumpCmd($table_selection) {
     // Dumping is usually not necessary in SQLite, since all database data
     // is stored in a single file which can be copied just
     // like any other file. But it still has a use in migration purposes and
@@ -80,10 +80,7 @@ class Sqlsqlite extends SqlBase {
     // Postgres or MySQL equivalents. We may be able to fake some in the
     // future, but for now, let's just support simple dumps.
     $exec .= ' ".dump"';
-    if ($file) {
-      $exec .= ' > '. $file;
-    }
-    return array($exec, $file);
+    return $exec;
   }
 
 

@@ -69,7 +69,9 @@ class Sqloracle extends SqlBase {
 
 }
 
-  public function dumpCmd($table_selection, $file) {
+  // @todo $file is no longer provided. We are supposed to return bash that can be piped to gzip.
+  // Probably Oracle needs to override dump() entirely - http://stackoverflow.com/questions/2236615/oracle-can-imp-exp-go-to-stdin-stdout.
+  public function dumpCmd($table_selection) {
     $create_db = drush_get_option('create-db');
     $exec = 'exp ' . $this->creds();
     // Change variable '$file' by reference in order to get drush_log() to report.
