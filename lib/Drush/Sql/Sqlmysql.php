@@ -69,12 +69,19 @@ EOT;
   }
 
   public function db_exists() {
-    return $this->query("SELECT 1;", NULL, TRUE);
+    $current = drush_get_context('DRUSH_SIMULATE');
+    drush_set_context('DRUSH_SIMULATE', FALSE);
+    $return = $this->query("SELECT 1;", NULL, TRUE);
+    drush_set_context('DRUSH_SIMULATE', $current);
+    return $return;
   }
 
   public function listTables() {
+    $current = drush_get_context('DRUSH_SIMULATE');
+    drush_set_context('DRUSH_SIMULATE', FALSE);
     $return = $this->query('SHOW TABLES;', NULL, TRUE);
     $tables = drush_shell_exec_output();
+    drush_set_context('DRUSH_SIMULATE', $current);
     return $tables;
   }
 
