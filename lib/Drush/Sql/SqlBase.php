@@ -47,6 +47,13 @@ class SqlBase {
   }
 
 
+  /*
+   * Execute a SQL dump and return the path to the resulting dump file.
+   *
+   * @param string|bool @file
+   *   The path where the dump file should be stored. If TRUE, generate a path
+   *   based on usual backup directory and current date.
+   */
   public function dump($file = '') {
     $table_selection = $this->get_expanded_table_selection();
     $file = $this->dumpFile($file);
@@ -78,6 +85,13 @@ class SqlBase {
    */
   public function dumpCmd($table_selection, $file) {}
 
+  /*
+   * Generate a path to an output file for a SQL dump when needed.
+   *
+   * @param string|bool @file
+   *   If TRUE, generate a path based on usual backup directory and current date.
+   *   Otherwise, just return the path that was provided.
+   */
   public function dumpFile($file) {
     $database = $this->db_spec['database'];
 
