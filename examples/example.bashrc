@@ -75,6 +75,11 @@
 # is used in one of the arguments.
 
 # Aliases for common drush commands that work in a global context.
+#
+# Note: by default, bash completions don't work for aliases. If you
+# would like your completions to appear for e.g. the "dr" alias below,
+# then you need to modify drush.complete.sh. Simply follow the
+# instructions near the end of that file.
 alias dr='drush'
 alias ddd='drush drupal-directory'
 alias dl='drush pm-download'

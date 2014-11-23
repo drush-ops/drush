@@ -32,5 +32,17 @@ _drush_completion() {
   COMPREPLY=( $(drush --early=includes/complete.inc "${COMP_WORDS[@]}" < /dev/null 2> /dev/null) )
 }
 
-# Register our completion function. We include common short aliases for Drush.
-complete -o bashdefault -o default -o nospace -F _drush_completion d dr drush drush5 drush6 drush7 drush.php
+# Register our completion function. By default, Drush only installs
+# one executable, "drush", so we only register completions by that
+# name.
+#
+# If you'd like to register completions for aliases, add the alias
+# names to the end of the command below. For example, in
+# examples/example.bashrc we create an alias dr='drush'. To enable
+# bash completion for the "dr" alias, one would change the command to,
+#
+#   complete -o bashdefault ... -F _drush_completion drush dr
+#
+# Other aliases can be appended in the same manner.
+#
+complete -o bashdefault -o default -o nospace -F _drush_completion drush

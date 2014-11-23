@@ -151,6 +151,10 @@ INSTALL - MANUAL
     1. Add an alias for drush (this method can also be handy if you want to use 2 versions of Drush, for example Drush 5 or 6 (stable) for Drupal 7 development, and Drush 7 (master) for Drupal 8 development).
      To add an alias to your Drush 7 executable, add this to you shell configuration file (see list in previous option):
          `$ alias drush-master=/path/to/drush/drush`
+     Bash completion will not be enabled for these aliases by default, a small
+     modification to the completion script is needed. Instructions can be found
+     near the bottom of [drush.complete.sh](drush.complete.sh) where the
+     completion function is registered.
 
     For options 2 and 3 above, in order to apply your changes to your current session, either log out and then log back in again, or re-load your bash configuration file, i.e.:
 
@@ -179,6 +183,9 @@ POST-INSTALL
    [drush.complete.sh](drush.complete.sh) file for instructions adding bash completion for drush
    command to your shell.  Once configured, completion works for site aliases,
    command names, shell aliases, global options, and command-specific options.
+   It is also possible to enable completion for aliases, e.g. dr='drush'.
+   Instructions are near the bottom of [drush.complete.sh](drush.complete.sh)
+   where the completion function is registered.
 
 1. Optional. If [drush.complete.sh](drush.complete.sh) is being sourced (ideally in
    bash_completion.d), you can use the supplied __drush_ps1() sh function to
