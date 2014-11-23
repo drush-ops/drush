@@ -120,11 +120,11 @@ function drush_module_list() {
 /**
  * Installs a given list of modules.
  *
- * @see \Drupal\Core\Extension\ModuleHandlerInterface::install()
+ * @see \Drupal\Core\Extension\ModuleInstallerInterface::install()
  *
  */
 function drush_module_install($module_list, $enable_dependencies = TRUE) {
-  return \Drupal::moduleHandler()->install($module_list, $enable_dependencies);
+  return \Drupal::service('module_installer')->install($module_list, $enable_dependencies);
 }
 
 /**
@@ -215,9 +215,11 @@ function drush_module_disable($modules) {
  *
  * @param $modules
  *   Array of module names
+ *
+ * @see \Drupal\Core\Extension\ModuleInstallerInterface::uninstall()
  */
 function drush_module_uninstall($modules) {
-  module_uninstall($modules);
+  \Drupal::service('module_installer')->uninstall($modules);
   // Our logger got blown away during the container rebuild above.
  \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
 }
