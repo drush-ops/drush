@@ -853,19 +853,45 @@ function drush_pm_list() {
   }
 
   $result = array();
-  $extension_info = drush_get_extensions(FALSE);
-  uasort($extension_info, '_drush_pm_sort_extensions');
+  $extension_info = drush_get_extensions();
 
+  $extension_info_loaded = db_query('SELECT * FROM {system}')->fetchAllAssoc('name');
+
+  foreach (array_diff_key($extension_info_loaded, $extension_info) as $key => $missing_extension) {
+
+    // Build label from machine name since it isn't stored in database.
+    $missing_extension->label = drupal_ucfirst(str_replace('_', ' ', $missing_extension->name)) . ' (' . $missing_extension->name . ')';
+
+    $missing_extension->missing = TRUE;
+    $missing_extension->info = unserialize($missing_extension->info);
+    $extension_info[$key] = $missing_extension;
+
+  }
+
+  uasort($extension_info, '_drush_pm_sort_extensions');
   $major_version = drush_drupal_major_version();
   foreach ($extension_info as $key => $extension) {
+
+    // Filter out hidden extensions.
+    if (!empty($extension->info['hidden'])) {
+      unset($extension_info[$key]);
+      continue;
+    }
+
     if (!in_array(drush_extension_get_type($extension), $type_filter)) {
       unset($extension_info[$key]);
       continue;
     }
+
     $status = drush_get_extension_status($extension);
+
     if (!in_array($status, $status_filter)) {
       unset($extension_info[$key]);
       continue;
+    }
+
+    if (!empty($extension->missing)) {
+      $status .= ' - ' . dt('Missing!');
     }
 
     // filter out core if --no-core specified
