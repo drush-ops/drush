@@ -868,23 +868,23 @@ function drush_pm_list() {
       continue;
     }
 
-    // filter out core if --no-core specified
+    // Filter out core if --no-core specified.
     if (drush_get_option('no-core', FALSE)) {
-      if (($extension->info['package'] == 'Core') || ((array_key_exists('project', $extension->info)) && ($extension->info['project'] == 'drupal'))) {
+      if ((($major_version >= 8) && ($extension->origin == 'core')) || (($major_version <= 7) && (strpos($extension->info['package'], 'Core') === 0))) {
         unset($extension_info[$key]);
         continue;
       }
     }
 
-    // filter out non-core if --core specified
+    // Filter out non-core if --core specified.
     if (drush_get_option('core', FALSE)) {
-      if (($extension->info['package'] != 'Core') && ((!array_key_exists('project', $extension->info)) || ($extension->info['project'] != 'drupal'))) {
+      if ((($major_version >= 8) && ($extension->origin != 'core')) || (($major_version <= 7) && (strpos($extension->info['package'], 'Core') !== 0))) {
         unset($extension_info[$key]);
         continue;
       }
     }
 
-    // filter by package
+    // Filter by package.
     if (!empty($package_filter)) {
       if (!in_array(strtolower($extension->info['package']), $package_filter)) {
         unset($extension_info[$key]);
