@@ -89,8 +89,14 @@ class StatusInfoDrush implements StatusInfoInterface {
       }
       drush_log(dt('Checking available update data for !project.', array('!project' => $project['label'])), 'ok');
       $request = pm_parse_request($project_name);
-      $available[$project_name] = $release_info->get($request);
+      $project_release_info = $release_info->get($request);
+      if ($project_release_info) {
+        $available[$project_name] = $project_release_info;
+      }
     }
+
+    // Clear any error set by a failed project. This avoid rollbacks.
+    drush_clear_error();
 
     return $available;
   }
