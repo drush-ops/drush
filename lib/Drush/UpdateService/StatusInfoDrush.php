@@ -272,6 +272,12 @@ class StatusInfoDrush implements StatusInfoInterface {
         continue;
       }
 
+      // See if this is a higher major version than our target and discard it.
+      // Note: at this poont Drupal record it as an "Also available" release.
+      if (isset($release['version_major']) && $release['version_major'] > $target_major) {
+        continue;
+      }
+
       // Look for the 'latest version' if we haven't found it yet. Latest is
       // defined as the most recent version for the target major version.
       if (!isset($project_data['latest_version'])
