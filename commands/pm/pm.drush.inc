@@ -625,6 +625,9 @@ function drush_get_projects(&$extensions = NULL) {
       'extensions' => array(),
     )
   );
+  if (isset($extensions['system']->info['datestamp'])) {
+    $projects['drupal']['datestamp'] = $extensions['system']->info['datestamp'];
+  }
   foreach ($extensions as $extension) {
     $extension_name = drush_extension_get_name($extension);
     $extension_path = drush_extension_get_path($extension);
@@ -667,8 +670,10 @@ function drush_get_projects(&$extensions = NULL) {
         'version'    => $extension->info['version'],
         'status'     => $extension->status,
         'extensions' => array(),
-        'datestamp'  => isset($extension->info['datestamp']) ? $extension->info['datestamp'] : NULL,
       );
+      if (isset($extension->info['datestamp'])) {
+        $projects[$project]['datestamp'] = $extension->info['datestamp'];
+      }
       if (isset($extension->info['project status url'])) {
         $projects[$project]['status url'] = $extension->info['project status url'];
       }
@@ -1378,7 +1383,7 @@ function pm_parse_arguments($args, $dashes_to_underscores = TRUE) {
  *   Array with major, patch and extra keys.
  */
 function _pm_parse_version_decompound($version) {
-  $pattern = '/^(\d+)(?:.(\d+))?(?:\.(x|\d+))?(?:-(.*))?$/';
+  $pattern = '/^(\d+)(?:.(\d+))?(?:\.(x|[\d\+]+))?(?:-(.*))?$/';
 
   $matches = array();
   preg_match($pattern, $version, $matches);

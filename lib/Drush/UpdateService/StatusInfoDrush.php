@@ -128,6 +128,7 @@ class StatusInfoDrush implements StatusInfoInterface {
         'existing_version' => $project['version'],
         'existing_major'   => $version_parts['version_major'],
         'status'           => $project_status,
+        'datestamp'        => empty($project['datestamp']) ? NULL : $project['datestamp'],
       );
 
       // If we don't have a project status yet, it means this is
