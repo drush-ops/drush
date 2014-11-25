@@ -221,7 +221,7 @@ function drush_module_disable($modules) {
 function drush_module_uninstall($modules) {
   \Drupal::service('module_installer')->uninstall($modules);
   // Our logger got blown away during the container rebuild above.
- \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
+  \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
 }
 
 /**
@@ -285,6 +285,20 @@ function drush_theme_enable($themes) {
  */
 function drush_theme_disable($themes) {
   drush_set_error('DRUSH_THEME_DISABLE', dt('Drupal 8 does not support disabling themes. Use pm-uninstall instead.'));
+}
+
+/**
+ * Uninstall a list of themes.
+ *
+ * @param $themes
+ *  Array of theme names
+ *
+ * @see \Drupal\Core\Extension\ThemeHandlerInterface::uninstall()
+ */
+function drush_theme_uninstall($themes) {
+  \Drupal::service('theme_handler')->uninstall($themes);
+  // Our logger got blown away during the container rebuild above.
+  \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
 }
 
 /**
