@@ -61,11 +61,10 @@ function migrate_drush_command() {
  */
 function drush_migrate_manifest($manifest) {
   try {
-    $m = drush_migrate_manifest_get_class($manifest);
-    $m->import();
+    drush_migrate_manifest_get_class($manifest)->import();
   }
   catch (\Exception $e) {
-    drush_log($e->getMessage());
+    drush_log($e->getMessage(), 'error');
   }
   drush_invoke_process('@self', 'cache-rebuild', array(), array(), FALSE);
 }
@@ -82,5 +81,5 @@ function drush_migrate_manifest($manifest) {
  * @see drush_get_class().
  */
 function drush_migrate_manifest_get_class($manifest) {
-  return drush_get_class('Drush\Migrate\MigrateManifest', $manifest);
+  return drush_get_class('Drush\Migrate\MigrateManifest', array($manifest));
 }
