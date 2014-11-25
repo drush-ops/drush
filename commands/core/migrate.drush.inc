@@ -60,62 +60,27 @@ function migrate_drush_command() {
  *   The path to the manifest file.
  */
 function drush_migrate_manifest($manifest) {
-  if (!file_exists($manifest)) {
-    return drush_set_error('The manifest file does not exist.');
+  try {
+    $m = drush_migrate_manifest_get_class($manifest);
+    $m->import();
   }
-
-  $migration_list = Yaml::parse($manifest);
-  if (!is_array($migration_list)) {
-    return drush_set_error('The manifest file cannot be parsed.');
-  }
-
-  $db_url = drush_get_option('legacy-db-url');
-  $db_spec = drush_convert_db_from_db_url($db_url);
-  Database::addConnectionInfo('migrate', 'default', $db_spec);
-
-  $nonexistent_migrations = array();
-  $message = new DrushLogMigrateMessage();
-
-  foreach ($migration_list as $migration_info) {
-    if (is_array($migration_info)) {
-      // The migration is stored as the key in the info array.
-      $migration_id = key($migration_info);
-      $migration = entity_load('migration', $migration_id);
-
-      // If we have source config, apply it to the migration.
-      if (isset($migration_info['source'])) {
-        foreach ($migration_info['source'] as $source_key => $source_value) {
-          $migration->source[$source_key] = $source_value;
-        }
-      }
-      // If we have destination config, apply it to the migration.
-      if (isset($migration_info['destination'])) {
-        foreach ($migration_info['destination'] as $destination_key => $destination_value) {
-          $migration->destination[$destination_key] = $destination_value;
-        }
-      }
-    }
-    else {
-      // If it wasn't an array then the info is just the migration_id.
-      $migration_id = $migration_info;
-      $migration = entity_load('migration', $migration_id);
-    }
-
-    if (!is_null($migration)) {
-      drush_log('Running ' . $migration->id(), 'ok');
-      $executable = new MigrateExecutable($migration, $message);
-      $executable->import();
-    }
-    else {
-      // Keep track of any migrations that weren't found.
-      $nonexistent_migrations[] = $migration_id;
-    }
-  }
-  // Warn the user if any migrations were not found.
-  if (count($nonexistent_migrations) > 0) {
-    drush_log(dt('The following migrations were not found: !migrations', array(
-      '!migrations' => implode(', ', $nonexistent_migrations),
-    )), 'warning');
+  catch (\Exception $e) {
+    drush_log($e->getMessage());
   }
   drush_invoke_process('@self', 'cache-rebuild', array(), array(), FALSE);
+}
+
+/**
+ * Get a version specific MigrateManifest class.
+ *
+ * @param string $manifest
+ *   The path to the manifest file.
+ *
+ * @return \Drush\Migrate\MigrateInterface
+ *   The migrate manifest class.
+ *
+ * @see drush_get_class().
+ */
+function drush_migrate_manifest_get_class($manifest) {
+  return drush_get_class('Drush\Migrate\MigrateManifest', $manifest);
 }
