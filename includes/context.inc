@@ -67,6 +67,8 @@
  *     home.drush Loaded from the drushrc.php file in the $HOME/.drush directory.
  *     system   : Loaded from the drushrc.php file in the system's $PREFIX/etc/drush directory.
  *     drush    : Loaded from the drushrc.php file in the same directory as drush.php.
+ *     cwd      : Loaded from the drushrc.php file in the directory from where
+ *                Drush has been launched.
  *
  *   Specified by the script, but has the lowest priority :
  *     default  : The script might provide some sensible defaults during init.
@@ -75,7 +77,7 @@ function drush_context_names() {
   static $contexts = array(
     'process', 'cli', 'stdin', 'specific', 'alias',
     'custom', 'site', 'drupal', 'user', 'home.drush', 'system',
-    'drush', 'default');
+    'drush', 'cwd', 'default');
 
   return $contexts;
 }
@@ -137,6 +139,9 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
 
   // in the drush installation folder
   $configs['drush'] = dirname(__FILE__) . '/../' . $config_file;
+  
+  // In the directory from where Drush has been launched.
+  $configs['cwd'] = drush_cwd() . '/' . $config_file;
 
   return empty($configs[$context]) ? '' : $configs[$context];
 }
