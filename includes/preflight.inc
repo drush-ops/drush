@@ -165,6 +165,9 @@ function drush_preflight() {
     drush_load_config('home.drush');
   }
 
+  // Load a drushrc.php file from the directory where Drush has been launched.
+  drush_load_config('cwd');
+
   // Load a custom config specified with the --config option.
   drush_load_config('custom');
 
