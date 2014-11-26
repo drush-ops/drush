@@ -16,6 +16,7 @@
  * 4.  User's .drush folder (i.e. ~/.drush/drushrc.php).
  * 5.  System wide configuration folder (e.g. /etc/drush/drushrc.php).
  * 6.  Drush installation folder.
+ * 7.  Directory from where Drush is launched.
  *
  * If a configuration file is found in any of the above locations, it will be
  * loaded and merged with other configuration files in the search list.
