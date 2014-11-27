@@ -5,11 +5,6 @@
  * Migrate content into Drupal 8+.
  */
 
-use Drupal\Core\Database\Database;
-use Drupal\migrate\MigrateExecutable;
-use Symfony\Component\Yaml\Yaml;
-use Drush\Migrate\DrushLogMigrateMessage;
-
 /**
  * Implements hook_drush_command().
  */
