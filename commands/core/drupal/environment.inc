@@ -126,7 +126,13 @@ function drush_module_list() {
  *
  */
 function drush_module_install($module_list, $enable_dependencies = TRUE) {
-  return \Drupal::service('module_installer')->install($module_list, $enable_dependencies);
+  // @TODO, remove this once beta4 is tagged. Currently Drush tests run against
+  // the packaged version on drupal.org which is beta3 and the module_installer
+  // service does not exist.
+  if (\Drupal::getContainer()->has('module_installer')) {
+    return \Drupal::service('module_installer')->install($module_list, $enable_dependencies);
+  }
+  return \Drupal::moduleHandler()->install($module_list, $enable_dependencies);
 }
 
 /**
