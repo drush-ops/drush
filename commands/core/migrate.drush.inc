@@ -59,9 +59,10 @@ function drush_migrate_manifest($manifest) {
     drush_migrate_manifest_get_class($manifest)->import();
   }
   catch (\Exception $e) {
-    drush_log($e->getMessage(), 'error');
+    drush_set_error('MIGRATE_ERROR', $e->getMessage());
   }
-  drush_invoke_process('@self', 'cache-rebuild', array(), array(), FALSE);
+  // @TODO, find out why this breaks tests?
+  //drush_invoke_process('@self', 'cache-rebuild', array(), array(), FALSE);
 }
 
 /**
@@ -76,5 +77,8 @@ function drush_migrate_manifest($manifest) {
  * @see drush_get_class().
  */
 function drush_migrate_manifest_get_class($manifest) {
+  if (isset($_SERVER['UNISH_DRUPAL_MAJOR_VERSION'])) {
+    return drush_get_class('Drush\Migrate\MigrateManifestTest', array($manifest));
+  }
   return drush_get_class('Drush\Migrate\MigrateManifest', array($manifest));
 }

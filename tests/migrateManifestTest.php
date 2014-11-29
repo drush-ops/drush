@@ -12,8 +12,18 @@ namespace Unish;
  */
 class migrateManifestTest extends CommandUnishTestCase {
 
+  /**
+   * The site options to be used when running commands against Drupal.
+   *
+   * @var array
+   */
   protected $siteOptions = array();
 
+  /**
+   * Migrate specific options when running commands against Drupal.
+   *
+   * @var array
+   */
   protected $migrateOptions = array();
 
   /**
@@ -37,53 +47,111 @@ class migrateManifestTest extends CommandUnishTestCase {
 
     // All migrate commands will need this option.
     $this->migrateOptions = $this->siteOptions + array(
-      //'legacy-db-url' => 'mysql://root:@localhost/db',
       'legacy-db-url' => $this->db_url($site),
     );
+  }
+
+  /**
+   * Test that simple migration works.
+   */
+  public function testSimpleMigration() {
+    $manifest = $this->createManifestFile('- d6_action_settings');
+    $this->drushExpectSuccess(array($manifest));
+    $this->assertContains('Importing: d6_action_settings', $this->getOutput(), 'Found migration');
+  }
+
+  /**
+   * Test multiple migrations that have config.
+   */
+  public function testMigrationWithConfig() {
+    $yaml = "- d6_file:
+  source:
+    conf_path: sites/assets
+  destination:
+    source_base_path: destination/base/path
+    destination_path_property: uri
+- d6_action_settings";
+    $manifest = $this->createManifestFile($yaml);
+    $output = $this->drushExpectSuccess(array($manifest));
+
+    $this->assertContains('Importing: d6_file', $output);
+    $this->assertContains('[conf_path] => sites/assets', $output);
+    $this->assertContains('[source_base_path] => destination/base/path', $output);
+    $this->assertContains('[destination_path_property] => uri', $output);
+    $this->assertContains('Importing: d6_action_settings', $output);
   }
 
   /**
    * Test that not existent migrations are reported.
    */
   public function testNonExistentMigration() {
-    $manifest = $this->webroot() . '/manifest.yml';
-    $yaml = "- non_existent_migration";
-    file_put_contents($manifest, $yaml);
-    $this->drush('migrate-manifest', array($manifest), $this->migrateOptions);
-    $output = $this->getErrorOutput();
+    $manifest = $this->createManifestFile('- non_existent_migration');
+    $output = $this->drushExpectSuccess(array($manifest));
     $this->assertContains('The following migrations were not found: non_existent_migration', $output);
 
   }
 
   /**
-   * Test invalid yaml files are detected.
+   * Test invalid Yaml files are detected.
    */
   public function testInvalidYamlFile() {
-    $invalid_manifest_file = $this->webroot() . '/invalid_manifest.yml';
     $invalid_yml = '--- :d6_migration';
-    file_put_contents($invalid_manifest_file, $invalid_yml);
-    $this->drushExpectError(array($invalid_manifest_file));
-    $this->assertContains('The manifest file cannot be parsed.', $this->getErrorOutput());
+    $manifest = $this->createManifestFile($invalid_yml);
+    $output = $this->drushExpectError(array($manifest));
+    $this->assertContains('The manifest file cannot be parsed.', $output);
   }
 
   /**
    * Test with a non-existed manifest files.
    */
   public function testNonExistentFile() {
-    $this->drushExpectError(array('/some/file/that/doesnt/exist'));
-    $this->assertContains('The manifest file does not exist.', $this->getErrorOutput());
+    $output = $this->drushExpectError(array('/some/file/that/doesnt/exist'));
+    $this->assertContains('The manifest file does not exist.', $output);
   }
 
   /**
-   * Call the drush command and expect a failure.
+   * Call the Drush command and expect a failure.
    *
    * @param $args
    *   An array of command arguments.
+   *
+   * @return string
+   *   The error output.
    */
   protected function drushExpectError($args) {
     // We don't need an assertion because this just errors out if we don't get
     // the expected exit status.
     $this->drush('migrate-manifest', $args, $this->migrateOptions, NULL, NULL, self::EXIT_ERROR);
+    return $this->getErrorOutput();
+  }
+
+  /**
+   * Call the drush command, expect success and redirect output to standard out.
+   *
+   * @param $args
+   *   An array of command arguments.
+   *
+   * @return string
+   *   The success output.
+   */
+  protected function drushExpectSuccess($args) {
+    $this->drush('migrate-manifest', $args, $this->migrateOptions, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
+    return $this->getOutput();
+  }
+
+  /**
+   * Create a manifest file in the web root with the specified migrations.
+   *
+   * @param string $yaml
+   *   A string of yaml for the migration file.
+   *
+   * @return string
+   *   The path to the manifest file.
+   */
+  protected function createManifestFile($yaml) {
+    $manifest = $this->webroot() . '/manifest.yml';
+    file_put_contents($manifest, $yaml);
+    return $manifest;
   }
 
 }
