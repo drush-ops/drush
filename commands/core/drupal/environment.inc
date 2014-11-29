@@ -8,6 +8,8 @@
  */
 
 use Drupal\Core\Site\Settings;
+use Psr\Log\LogLevel;
+
 
 /**
  * Get complete information for all available modules.
