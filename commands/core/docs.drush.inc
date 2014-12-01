@@ -119,7 +119,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/shellaliases.html'),
+    'callback arguments' => array($docs_dir . '/docs/shellaliases.md'),
   );
   $items['docs-commands'] = array(
     'description' => 'Drush command instructions on creating your own Drush commands.',
