@@ -197,7 +197,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/strict-options.html'),
+    'callback arguments' => array($docs_dir . '/docs/strict-options.md'),
   );
   return $items;
 }
