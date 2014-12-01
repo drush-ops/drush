@@ -143,7 +143,7 @@ function make_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/make.txt'),
+    'callback arguments' => array($docs_dir . '/docs/make.md'),
   );
   $items['docs-make-example'] = array(
     'description' => 'Drush Make example makefile',
