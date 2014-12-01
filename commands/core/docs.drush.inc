@@ -103,7 +103,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/cron.html'),
+    'callback arguments' => array($docs_dir . '/docs/cron.md'),
   );
   $items['docs-scripts'] = array(
     'description' => 'Shell script overview on writing simple sequences of Drush statements.',
