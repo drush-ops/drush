@@ -42,7 +42,7 @@ function outputformat_drush_engine_type_info() {
   $info['outputformat'] = array(
     'description' => 'Output formatting options selection and use.',
     'topic' => 'docs-output-formats',
-    'topic-file' => 'docs/output-formats.html',
+    'topic-file' => 'docs/output-formats.md',
     'combine-help' => TRUE,
     'option' => 'format',
     'options' => array(
