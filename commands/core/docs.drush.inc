@@ -111,7 +111,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/shellscripts.html'),
+    'callback arguments' => array($docs_dir . '/docs/shellscripts.md'),
   );
   $items['docs-shell-aliases'] = array(
     'description' => 'Shell alias overview on creating your own aliases for commonly used Drush commands.',
