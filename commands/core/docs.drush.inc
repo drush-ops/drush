@@ -95,7 +95,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/bootstrap.html'),
+    'callback arguments' => array($docs_dir . '/docs/bootstrap.md'),
   );
   $items['docs-cron'] = array(
     'description' => 'Crontab instructions for running your Drupal cron tasks via `drush cron`.',
