@@ -127,7 +127,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/commands.html'),
+    'callback arguments' => array($docs_dir . '/docs/commands.md'),
   );
   $items['docs-errorcodes'] = array(
     'description' => 'Error code list containing all identifiers used with drush_set_error.',
