@@ -1,4 +1,7 @@
 tests/phpunit.xml
 vendor
-
 /lib/Console_Table-1.1.3/
+#A library from Drush6 and prior that can come back when you switch branches.
+*youngj-httpserver*
+#The mkdocs output directory.
+site

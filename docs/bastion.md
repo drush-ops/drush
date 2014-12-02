@@ -1,10 +1,10 @@
-Remote Operations on Drupal Sites via a Bastion Server
-======================================================
+# Remote Operations on Drupal Sites via a Bastion Server
 
 Wikipedia defines a [bastion server](http://en.wikipedia.org/wiki/Bastion_host) as "a special purpose computer on a network specifically designed and configured to withstand attacks." For the purposes of this documentation, though, any server that you can ssh through to reach other servers will do. Using standard ssh and drush techniques, it is possible to make a two-hop remote command look and act as if the destination machine is on the same network as the source machine.
 
-Recap of Remote Site Aliases
-----------------------------
+--
+
+## Recap of Remote Site Aliases
 
 Site aliases can refer to Drupal sites that are running on remote machines simply including 'remote-host' and 'remote-user' attributes:
 
@@ -17,8 +17,7 @@ Site aliases can refer to Drupal sites that are running on remote machines simpl
 
 With this alias defintion, you may use commands such as `drush @internal status`, `drush ssh @internal` and `drush rsync @internal @dev` to operate remotely on the internal machine. What if you cannot reach the server that site is on from your current network? Enter the bastion server.
 
-Setting up a Bastion server in .ssh/config
-------------------------------------------
+## Setting up a Bastion server in .ssh/config
 
 If you have access to a server, bastion.company.com, which you can ssh to from the open internet, and if the bastion server can in turn reach the internal server, then it is possible to configure ssh to route all traffic to the internal server through the bastion. The .ssh configuratin file would look something like this:
 
@@ -29,8 +28,7 @@ In **.ssh/config:**
 
 That is all that is necessary; however, if the dev machine you are configuring is a laptop that might sometimes be inside the company intranet, you might want to optimize this setup so that the bastion is not used when the internal server can be reached directly. You could do this by changing the contents of your .ssh/config file when your network settings change -- or you could use drush.
 
-Setting up a Bastion server via drush configuration
----------------------------------------------------
+# Setting up a Bastion server via drush configuration
 
 First, make sure that you do not have any configuration options for the internal machine in your .ssh/config file. The next step after that is to identify when you are connected to your company intranet. I like to determine this by using the `route` command to find my network gateway address, since this is always the same on my intranet, and unlikely to be encountered in other places.
 
