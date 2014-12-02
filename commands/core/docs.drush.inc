@@ -141,7 +141,7 @@ function docs_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/drush.api.php'),
+    'callback arguments' => array($docs_dir . '/drush.api.php'),
   );
   $items['docs-context'] = array(
     'description' => 'Contexts overview explaining how Drush manages command line options and configuration file settings.',
