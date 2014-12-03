@@ -12,14 +12,16 @@ Configure
    command names, shell aliases, global options, and command-specific options.
 
 * Optional. If [drush.complete.sh](https://raw.githubusercontent.com/drush-ops/drush/master/drush.complete.sh) is being sourced (ideally in
-   bash_completion.d), you can use the supplied __drush_ps1() sh function to
+   bash_completion.d), you can use the supplied \__drush_ps1() sh function to
    add your current drush site (set with `drush use @sitename`) to your PS1
    prompt like so:
-      ```bash
+      
+      ```   
       if [ "\$(type -t __git_ps1)" ] && [ "\$(type -t __drush_ps1)" ]; then
         PS1='\u@\h \w$(__git_ps1 " (%s)")$(__drush_ps1 "[%s]")\$ '
       fi
       ```
+      
    Putting this in a .bashrc/.bash_profile/.profile would produce this prompt:
 
      `msonnabaum@hostname ~/repos/drush (master)[@sitename]$`
