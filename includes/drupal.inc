@@ -8,8 +8,11 @@
 /**
  * Loads the Drupal autoloader and returns the instance.
  */
-function drush_drupal_load_autoloader($drupal_root) {
+function drush_drupal_load_autoloader($drupal_root, $new_autoloader = NULL) {
   static $autoloader = FALSE;
+  if (isset($new_autoloader)) {
+    $autoloader = $new_autoloader;
+  }
   if (!$autoloader) {
     $autoloader = require_once $drupal_root .'/core/vendor/autoload.php';
   }
