@@ -804,7 +804,7 @@ function drupal8_bootstrap($phase = NULL) {
 
       switch ($current_phase) {
         case DRUPAL_BOOTSTRAP_CONFIGURATION:
-          $classloader = require DRUSH_DRUPAL_CORE . '/vendor/autoload.php';
+          $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
           $kernel = DrupalKernel::createFromRequest($request, $classloader, 'prod');
           break;
 
