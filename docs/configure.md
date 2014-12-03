@@ -1,17 +1,17 @@
 Configure
 -----------------------
 
-1. See [example.bashrc](examples/example.bashrc) for instructions on how to add some
+* See [example.bashrc](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.bashrc) for instructions on how to add some
    useful shell aliases that provides even tighter integration between
    drush and bash. You may source this file directly into your shell by adding to
    your .bashrc (or equivalent): source /path/to/drush/examples/example.bashrc
 
-1. If you didn't source it the step above, see top of
-   [drush.complete.sh](drush.complete.sh) file for instructions adding bash completion for drush
+* If you didn't source it the step above, see top of
+   [drush.complete.sh](https://raw.githubusercontent.com/drush-ops/drush/master/drush.complete.sh) file for instructions adding bash completion for drush
    command to your shell.  Once configured, completion works for site aliases,
    command names, shell aliases, global options, and command-specific options.
 
-1. Optional. If [drush.complete.sh](drush.complete.sh) is being sourced (ideally in
+* Optional. If [drush.complete.sh](https://raw.githubusercontent.com/drush-ops/drush/master/drush.complete.sh) is being sourced (ideally in
    bash_completion.d), you can use the supplied __drush_ps1() sh function to
    add your current drush site (set with `drush use @sitename`) to your PS1
    prompt like so:
@@ -24,19 +24,18 @@ Configure
 
      `msonnabaum@hostname ~/repos/drush (master)[@sitename]$`
 
-1. Help the Drush development team by sending anonymized usage statistics.  To automatically send usage data, please add the following to a .drushrc.php file:
-
-       ```php
-       $options['drush_usage_log'] = TRUE;
-       $options['drush_usage_send'] = TRUE;
-       ```
+* Help the Drush development team by sending anonymized usage statistics.  To automatically send usage data, please add the following to a .drushrc.php file:
+     ```
+     $options['drush_usage_log'] = TRUE;
+     $options['drush_usage_send'] = TRUE;
+     ```
 
      Stats are usually logged locally and sent whenever log file exceeds 50Kb.
      Alternatively, one may disable automatic sending and instead use
      `usage-show` and `usage-send` commands to more carefully send data.
 
 
-ADDITIONAL CONFIGURATIONS FOR MAMP:
+Additional Configurations for Mamp:
 -----------------------------------
 
 Users of MAMP will need to manually specify in their PATH which version of php
@@ -73,7 +72,7 @@ Additionally, you may need to adjust your php.ini settings before you can use
 drush successfully. See CONFIGURING PHP.INI below for more details on how to
 proceed.
 
-ADDITIONAL CONFIGURATIONS FOR OTHER AMP STACKS:
+Additional Configurations for Other amp Stacks:
 -----------------------------------------------
 
 Users of other Apache distributions such as XAMPP, or Acquia's Dev Desktop v1 will
@@ -91,7 +90,7 @@ Additionally, you may need to adjust your php.ini settings before you can use
 drush successfully. See CONFIGURING PHP.INI below for more details on how to
 proceed.
 
-RUNNING A SPECIFIC PHP FOR DRUSH
+Running a Specific php for Drush
 --------------------------
 
   If you want to run Drush with a specific version of php, rather than the
@@ -101,7 +100,7 @@ RUNNING A SPECIFIC PHP FOR DRUSH
 
     export DRUSH_PHP='/path/to/php'
 
-CONFIGURING PHP.INI
+Configuring php.ini
 -------------------
 
 Usually, php is configured to use separate php.ini files for the web server and
@@ -152,16 +151,16 @@ magic_quotes_runtime = Off
 magic_quotes_sybase = Off
 ```
 
-DRUSHRC.PHP
+Drushrc.php
 -----------
 
 If you get tired of typing options all the time you can contain them in a
 drushrc.php file. Multiple Drush configuration files can provide the
 flexibility of providing specific options in different site directories of a
-multi-site installation. See [example.drushrc.php](examples/example.drushrc.php) for examples and installation
+multi-site installation. See [example.drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.drushrc.php) for examples and installation
 details.
 
-SITE ALIASES
+Site Aliases
 ------------
 
 Drush lets you run commands on a remote server, or even on a set of remote
@@ -174,10 +173,9 @@ $ drush rsync @staging:%files/ @live:%files
 $ drush sql-sync --structure-tables-key=custom @live @dev
 ```
 
-See http://drupal.org/node/670460 and [example.aliases.drushrc.php](examples/example.aliases.drushrc.php) for more
-information.
+See [example.aliases.drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.aliases.drushrc.php) for more information.
 
-CONFIGURING DRUSH FOR PHP 5.5
+Configuring Drush for Php 5.5
 -----------------------------
 
 If you are running on Linux, you may find that you need

@@ -1,11 +1,11 @@
-INSTALL/UPDATE - DRUSH FOR COMPOSER BUILT PROJECTS
+Composer - One Drush per Project
 -----------------
 * If your project has a composer.json, add the following to the `require` section: `"drush/drush": "6.*"`
 * Run `composer install` for a new project or `composer update` for an existing one.
 * Optional: Copy examples/drush to project root and modify to taste. This is a handy launcher script.
 * To update, change the drush line above and run `composer update`.
 
-INSTALL/UPDATE - A GLOBAL DRUSH FOR ALL PROJECTS
+Composer - One Drush for all Projects
 ------------------
 
 * [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements) (if needed).
@@ -26,6 +26,13 @@ INSTALL/UPDATE - A GLOBAL DRUSH FOR ALL PROJECTS
 
         composer global update
         
+* Alternate commands to install some other variant of Drush:
+
+        # Install a specific version of Drush, e.g. Drush 6.1.0
+        composer global require drush/drush:6.1.0
+        # Master branch as a git clone. Great for contributing back to Drush project.
+        composer global require drush/drush:dev-master --prefer-source
+        
 * To install for all users on the server:
 
         curl -sS https://getcomposer.org/installer | php
@@ -39,22 +46,15 @@ INSTALL/UPDATE - A GLOBAL DRUSH FOR ALL PROJECTS
         composer install
         drush --version
 
-* Alternate commands to install some other variant of Drush:
-
-        # Install a specific version of Drush, e.g. Drush 6.1.0
-        composer global require drush/drush:6.1.0
-        # Master branch as a git clone. Great for contributing back to Drush project.
-        composer global require drush/drush:dev-master --prefer-source
 
 [Fuller explanation of the require command.](http://getcomposer.org/doc/03-cli.md#require)
 
 **Tips:**
 
-If Drush cannot find an autoloaded class, run `composer self-update`. Drush often
+* If Drush cannot find an autoloaded class, run `composer self-update`. Drush often
 tracks composer changes closely, so you may have some problems if you are not
 running a recent version.
-
-If composer cannot find a requirement, and suggests that *The package is not available in a stable-enough version according to your minimum-stability setting*, then place the following
+* If composer cannot find a requirement, and suggests that *The package is not available in a stable-enough version according to your minimum-stability setting*, then place the following
 in `$HOME/.composer/composer.json`:
 ```
 {
@@ -63,9 +63,9 @@ in `$HOME/.composer/composer.json`:
 ```
 Merge this in with any other content that may already exist in this file.
 
-See the POST-INSTALL section for configuration tips.
+See [Configure](configure.md) for next steps.
 
-INSTALL - MANUAL
+Git Clone (i.e. manual install)
 -----------
 1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in a directory that is outside of your web root.
 1. Make the 'drush' command executable:
@@ -101,9 +101,9 @@ INSTALL - MANUAL
 
      `$ composer install`
 
-See the POST-INSTALL section for configuration tips.
+See [Configure](configure.md) for next steps.
 
-INSTALLING DRUSH ON WINDOWS:
+Windows Installer
 ----------------------------
 
 Windows support has improved, but is still lagging. For full functionality,
