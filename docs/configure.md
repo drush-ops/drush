@@ -160,21 +160,6 @@ flexibility of providing specific options in different site directories of a
 multi-site installation. See [example.drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.drushrc.php) for examples and installation
 details.
 
-Site Aliases
-------------
-
-Drush lets you run commands on a remote server, or even on a set of remote
-servers.  Once defined, aliases can be references with the @ nomenclature, i.e.
-
-```bash
-# Synchronize staging files to production
-$ drush rsync @staging:%files/ @live:%files
-# Syncronize database from production to dev, excluding the cache table
-$ drush sql-sync --structure-tables-key=custom @live @dev
-```
-
-See [example.aliases.drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.aliases.drushrc.php) for more information.
-
 Configuring Drush for Php 5.5
 -----------------------------
 
