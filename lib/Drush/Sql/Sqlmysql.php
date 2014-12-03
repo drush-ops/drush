@@ -13,7 +13,7 @@ class Sqlmysql extends SqlBase {
       // EMPTY password is not the same as NO password, and is valid.
       if (isset($this->db_spec['password'])) {
         $contents = <<<EOT
-#This file was written by Drush's SqlMysql.inc.
+#This file was written by Drush's Sqlmysql.inc.
 [client]
 user="{$this->db_spec['username']}"
 password="{$this->db_spec['password']}"
