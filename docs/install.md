@@ -1,3 +1,17 @@
+Pick a version
+-----------------
+Each version of Drush supports multiple Drupal versions.  Drush 6 is current stable Drush.
+
+Drush Version | Branch  | PHP | Compatible Drupal versions | Code Status
+------------- | ------  | --- | -------------------------- | -----------
+Drush 7       | [master](https://travis-ci.org/drush-ops/drush)  | 5.3.0+ | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master">
+Drush 6       | [6.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=6.x">
+Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7                     | Unsupported
+Drush 4       | 4.x | 5.2.0+ | D5, D6, D7                 | Unsupported
+Drush 3       | 3.x | 5.2.0+ | D5, D6                     | Unsupported
+
+If you are using Debian or Ubuntu, you can alternatively use the Debian packages uploaded in your distribution. You may need to use the backports to get the latest version, if you are running a LTS or "stable" release.
+
 Composer - One Drush per Project
 -----------------
 * If your project has a composer.json, add the following to the `require` section: `"drush/drush": "6.*"`

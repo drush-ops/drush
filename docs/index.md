@@ -1,65 +1,46 @@
-USAGE
+Drush is a command line shell and Unix scripting interface for Drupal. Drush core ships with lots of useful commands for interacting with code like modules/themes/profiles. Similarly, it runs update.php, executes sql queries and DB migrations, and misc utilities like run cron or clear cache. Drush can be extended by [3rd party commandfiles](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654).
+
+[![Latest Stable Version](https://poser.pugx.org/drush/drush/v/stable.png)](https://packagist.org/packages/drush/drush) [![Total Downloads](https://poser.pugx.org/drush/drush/downloads.png)](https://packagist.org/packages/drush/drush) [![Latest Unstable Version](https://poser.pugx.org/drush/drush/v/unstable.png)](https://packagist.org/packages/drush/drush) [![License](https://poser.pugx.org/drush/drush/license.png)](https://packagist.org/packages/drush/drush)
+
+Resources
+-----------
+* [General Documentation](http://drush.readthedocs.org)
+* [API Documentation](http://api.drush.org)
+* [Drush Commands](http://drushcommands.com)
+* Subscribe [this atom feed](https://github.com/drush-ops/drush/releases.atom) to receive notification on new releases. Also, [Version eye](https://www.versioneye.com/).
+* [A list of modules that include Drush integration](http://drupal.org/project/modules?filters=tid%3A4654)
+* Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/master/tests/README.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush).
+
+Support
 -----------
 
-Drush can be run in your shell by typing "drush" from within any Drupal root directory.
+Please take a moment to review the rest of the information in this file before
+pursuing one of the support options below.
 
-    $ drush [options] <command> [argument1] [argument2]
+* Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush).
+* Bug reports and feature requests should be reported in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
+* Use pull requests (PRs) to contribute to Drush.
+* It is still possible to search the old issue queue on Drupal.org for [fixed bugs](https://drupal.org/project/issues/search/drush?status%5B%5D=7&categories%5B%5D=bug), [unmigrated issues](https://drupal.org/project/issues/search/drush?status%5B%5D=5&issue_tags=needs+migration), [unmigrated bugs](https://drupal.org/project/issues/search/drush?status%5B%5D=5&categories%5B%5D=bug&issue_tags=needs+migration), and so on.
 
-Use the 'help' command to get a list of available options and commands:
+FAQ
+------
 
-    $ drush help
+##### What does the name Drush mean?
+The Drupal Shell.
 
-For even more documentation, use the 'topic' command:
+##### How do I pronounce Drush?
+  
+Some people pronounce the dru with a long u like Drupal. Fidelity points go to them, but they are in the minority. Most pronounce Drush so that it rhymes with hush, rush, flush, etc. This is the preferred pronunciation.
 
-    $ drush topic
+##### Does Drush have unit tests?
+  
+Drush has an excellent suite of unit tests. See [tests/README.md](https://github.com/drush-ops/drush/blob/master/tests/README.md) for more information.
 
-OPTIONS
+
+Credits
 -----------
 
-For multisite installations, use the -l option to target a particular site.  If
-you are outside the Drupal web root, you might need to use the -r, -l or other
-command line options just for Drush to work. If you do not specify a URI with
--l and Drush falls back to the default site configuration, Drupal's
-$GLOBALS['base_url'] will be set to http://default.  This may cause some
-functionality to not work as expected.
-
-    $ drush -l http://example.com pm-update
-
-If you wish to be able to select your Drupal site implicitly from the
-current working directory without using the -l option, but you need your
-base_url to be set correctly, you may force it by setting the uri in
-a drushrc.php file located in the same directory as your settings.php file.
-
-**sites/default/drushrc.php:**
-```
-$options['uri'] = "http://example.com";
-```
-
-Related Options:
-  ```
-  -r <path>, --root=<path>      Drupal root directory to use
-                                (defaults to current directory or anywhere in a
-                                Drupal directory tree)
-  -l <uri> , --uri=<uri>        URI of the Drupal site to use
-  -v, --verbose                 Display verbose output.
-  ```
-
-COMMANDS
---------
-
-Drush can be extended to run your own commands. Writing a Drush command is no harder than writing simple Drupal modules, since they both follow the same structure.
-
-See [sandwich.drush.inc](https://github.com/drush-ops/drush/blob/master/examples/sandwich.drush.inc) for a quick tutorial on Drush command files.  Otherwise, the core commands in Drush are good models for your own commands.
-
-You can put your Drush command file in a number of places:
-
-  1. In a folder specified with the --include option (see `drush topic docs-configuration`).
-  1. Along with one of your enabled modules. If your command is related to an
-     existing module, this is the preferred approach.
-  1. In a .drush folder in your HOME folder. Note, that you have to create the
-     .drush folder yourself.
-  1. In the system-wide Drush commands folder, e.g. /usr/share/drush/commands.
-  1. In Drupal's /drush or sites/all/drush folders. Note, that you have to create the
-     drush folder yourself.
-
-In any case, it is important that you end the filename with .drush.inc, so that Drush can find it.
+* Originally developed by [Arto Bendiken](http://bendiken.net) for Drupal 4.7.
+* Redesigned by [Franz Heinzmann](http://unbiskant.org) in May 2007 for Drupal 5.
+* Maintained by [Moshe Weitzman](http://drupal.org/moshe) with much help from
+  Owen Barton, greg.1.anderson, jonhattan, Mark Sonnabaum, and Jonathan Hedstrom.

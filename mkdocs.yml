@@ -3,6 +3,7 @@ pages:
   - [index.md, 'Home']
   - [install.md, 'General', 'Install']
   - [configure.md, 'General', 'Configure']
+  - [usage.md, 'General', 'Usage']
   - [examples.md, 'General', 'Example files']
   - [cron.md, 'General', 'Cron']
   - [make.md, 'General', 'Make']
