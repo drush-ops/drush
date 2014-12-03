@@ -40,7 +40,7 @@ function config_drush_command() {
         'value' => 'required',
       ),
       'include-overridden' => array(
-        'description' => 'Include overridden values from settings.php',
+        'description' => 'Include overridden values.',
       )
     ),
     'examples' => array(
