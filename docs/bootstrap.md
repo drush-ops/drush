@@ -1,23 +1,21 @@
 The Drush Bootstrap Process
 ===========================
 
-When preparing to run a command, drush works by "bootstrapping" the Drupal environment in very much the same way that is done during a normal page request from the web server, so most drush commands run in the context of a fully-initialized website.
+When preparing to run a command, Drush works by "bootstrapping" the Drupal environment in very much the same way that is done during a normal page request from the web server, so most Drush commands run in the context of a fully-initialized website.
 
-For efficiency and convenience, some drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is more efficient, because there is sometimes a slight delay involved with bootstrapping, especially in some of the later stages. It is also a matter of convenience, because some commands are useful to use even when you do not have a working Drupal site available to bootstrap. For example, you can use drush to download Drupal with \`drush dl drupal\`. This obviously does not require any bootstrapping to work.
+For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is more faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site. For example, you can use Drush to download Drupal with `drush dl drupal`. This obviously does not require any bootstrapping to work.
 
-Starting with Drush-5, the loading of configuration files is no longer closely tied to the drush bootstrapping process. All configuration files are now loaded upfront, during DRUSH\_BOOTSTRAP\_DRUSH, with the Drupal root and site configuration files being loaded in advance of the corresponding bootstrap phase. See \`drush topic docs-configuration\` for details on drush configuration files.
-
-DRUSH\_BOOTSTRAP\_DRUSH
+DRUSH\_BOOTSTRAP\_NONE
 -----------------------
 
-Only bootstrap Drush, without any Drupal specific code.
+Only run Drush preflight, without considering Drupal at all.
 
 Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase.
 
 DRUSH\_BOOTSTRAP\_DRUPAL\_ROOT
 ------------------------------
 
-Set up and test for a valid drupal root, either through the -r/--root options, or evaluated based on the current working directory.
+Set up and test for a valid Drupal root, either through the -r/--root options, or evaluated based on the current working directory.
 
 Any code that interacts with an entire Drupal installation, and not a specific site on the Drupal installation should use this bootstrap phase.
 
@@ -73,5 +71,5 @@ Use this bootstrap phase for your command if you need to have access to informat
 DRUSH\_BOOTSTRAP\_MAX
 ---------------------
 
-This is not an actual bootstrap phase. Commands that use DRUSH\_BOOTSTRAP\_MAX will cause drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, \`drush pm-releases modulename\` works without a bootstrapped Drupal site, but will include the version number for the installed module if a Drupal site has been bootstrapped.
+This is not an actual bootstrap phase. Commands that use DRUSH\_BOOTSTRAP\_MAX will cause Drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for Drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, `drush pm-releases modulename` works without a bootstrapped Drupal site, but will include the version number for the installed module if a Drupal site has been bootstrapped.
 

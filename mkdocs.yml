@@ -14,7 +14,7 @@ pages:
   - [bastion.md, 'General', 'Bastion']
   - [commands.md, 'Writing commands', 'Command Authoring']
   - [bootstrap.md, 'Writing commands', 'Bootstrap']
-  - [context.md, 'Writing commands', 'Context']
+  - [context.md, 'Writing commands', 'Context system']
 theme: readthedocs
 site_author: ""
 repo_url: https://github.com/drush-ops/drush
