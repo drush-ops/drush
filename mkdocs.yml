@@ -18,4 +18,5 @@ pages:
 theme: readthedocs
 site_author: ""
 repo_url: https://github.com/drush-ops/drush
+include_search: true
 #use_directory_urls: false
