@@ -375,8 +375,9 @@ function drush_help_listing_print($command_categories, $format) {
     // Build rows for drush_print_table().
     $rows = array();
     foreach($commands as $cmd => $command) {
-      $name = $command['aliases'] ? $cmd . ' (' . implode(', ', $command['aliases']) . ')': $cmd;
-      $rows[$cmd] = array('name' => $name, 'description' => $command['description']);
+      $name = $cmd;
+      $alias = $command['aliases'] ? ' (' . implode(', ', $command['aliases']) . ')': '';
+      $rows[$cmd] = array('name' => $name, 'aliases' => $alias, 'description' => $command['description']);
     }
 
     // Vary the output by mode: CLI or HTML
@@ -386,7 +387,7 @@ function drush_help_listing_print($command_categories, $format) {
     }
     else {
       drush_print($info['title'] . ": (" . $key . ")");
-      drush_print_table($rows, FALSE, array('name' => 20));
+      drush_print_table($rows, FALSE, array('name' => 40, 'aliases' => 35));
     }
   }
 }
