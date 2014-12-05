@@ -289,7 +289,8 @@ function drush_config_export($destination = NULL) {
     if (!drush_confirm(dt('The current contents of your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
       return drush_user_abort();
     }
-    drush_delete_dir_contents($destination_dir, TRUE);
+    // Only delete .yml files, and not .htaccess.
+    drush_scan_directory($destination_dir, '/\.yml$/', array('.', '..'), 'unlink');
   }
 
   // Empty destination dir and then write all .yml files there.
