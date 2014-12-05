@@ -160,7 +160,6 @@ class SqlBase {
     $parts = array(
       $this->command(),
       $this->creds(),
-      $this->silent(),
       drush_get_option('extra', $this->query_extra),
       $this->query_file,
       drush_escapeshellarg($input_file),
@@ -169,6 +168,9 @@ class SqlBase {
 
     if ($result_file) {
       $exec .= ' > '. drush_escapeshellarg($result_file);
+    }
+    elseif ($silent) {
+      $exec .= ' > '. drush_bit_bucket();
     }
 
     // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
@@ -186,11 +188,6 @@ class SqlBase {
 
     return $success;
   }
-
-  /*
-   * A string to add to the command when queries should not print their results.
-   */
-  public function silent() {}
 
   public function query_prefix($query) {
     // Inject table prefixes as needed.

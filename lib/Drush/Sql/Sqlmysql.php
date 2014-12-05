@@ -52,10 +52,6 @@ EOT;
     return $this->params_to_options($parameters);
   }
 
-  public function silent() {
-    return '--silent';
-  }
-
   public function createdb_sql($dbname, $quoted = FALSE) {
     if ($quoted) {
       $dbname = '`' . $dbname . '`';
