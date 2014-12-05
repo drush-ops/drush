@@ -25,8 +25,8 @@ class pmUpdateCode extends CommandUnishTestCase {
   public function setUp() {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
       $core = '8.0.0-beta2';
-      $modules_str = 'webprofiler-8.x-1.1-beta2,honeypot-8.x-1.18-beta1';
-      $this->modules = array('block', 'webprofiler', 'honeypot');
+      $modules_str = 'unish-8.x-1.2,honeypot-8.x-1.18-beta1';
+      $this->modules = array('block', 'unish', 'honeypot');
     }
     elseif (UNISH_DRUPAL_MAJOR_VERSION == 7) {
       $core = '7.0-rc3';
@@ -55,6 +55,7 @@ class pmUpdateCode extends CommandUnishTestCase {
   }
 
   function testUpdateCode() {
+    $extension = UNISH_DRUPAL_MAJOR_VERSION == 8 ? '.info.yml' : '.info';
     $first = $this->modules[1];
     $second = $this->modules[2];
 
@@ -65,6 +66,8 @@ class pmUpdateCode extends CommandUnishTestCase {
       'backup-dir' => UNISH_SANDBOX . '/backups',
       'cache' => NULL,
       'check-updatedb' => 0,
+      // Needed in order to get 'Up to date' in the return value of updatestatus. See pm_project_filter().
+      'verbose' => NULL,
       'strict' => 0,
     );
 
@@ -98,7 +101,7 @@ class pmUpdateCode extends CommandUnishTestCase {
     $Iterator = new \RecursiveIteratorIterator($Directory);
     $found = FALSE;
     foreach ($Iterator as $item) {
-      if (basename($item) == $first . '.module') {
+      if (basename($item) == $first . $extension) {
         $found = TRUE;
         break;
       }
