@@ -125,21 +125,20 @@ class SqlBase {
    * Execute a SQL query.
    *
    * Note: This is an API function. Try to avoid using drush_get_option() and instead
-   * pass params in.
+   * pass params in. If you don't want to query results to print during --debug then
+   * provide a $result_file whose value can be drush_bit_bucket().
    *
    * @param string $query
-   *   The SQL to be executed. Should be NULL if $file is provided.
+   *   The SQL to be executed. Should be NULL if $input_file is provided.
    * @param string $input_file
    *   A path to a file containing the SQL to be executed.
-   * @param bool $silent
-   *   Don't print query results to screen.
    * @param string $result_file
-   *   A path to save query results to.
+   *   A path to save query results to. Can be drush_bit_bucket() if desired.
    *
    * @return
    *   TRUE on success, FALSE on failure
    */
-  public function query($query, $input_file = NULL, $silent = TRUE, $result_file = '') {
+  public function query($query, $input_file = NULL, $result_file = '') {
     $input_file_original = $input_file;
     if ($input_file && drush_file_is_tarball($input_file)) {
       if (drush_shell_exec('gunzip %s', $input_file)) {
@@ -160,6 +159,7 @@ class SqlBase {
     $parts = array(
       $this->command(),
       $this->creds(),
+      $this->silent(), // This removes column header and various helpful things in mysql.
       drush_get_option('extra', $this->query_extra),
       $this->query_file,
       drush_escapeshellarg($input_file),
@@ -168,9 +168,6 @@ class SqlBase {
 
     if ($result_file) {
       $exec .= ' > '. drush_escapeshellarg($result_file);
-    }
-    elseif ($silent) {
-      $exec .= ' > '. drush_bit_bucket();
     }
 
     // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
@@ -188,6 +185,12 @@ class SqlBase {
 
     return $success;
   }
+
+  /*
+   * A string to add to the command when queries should not print their results.
+   */
+  public function silent() {}
+
 
   public function query_prefix($query) {
     // Inject table prefixes as needed.

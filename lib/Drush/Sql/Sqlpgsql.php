@@ -83,7 +83,7 @@ class Sqlpgsql extends SqlBase {
   }
 
   public function listTables() {
-    $return = $this->query(PSQL_SHOW_TABLES, NULL, TRUE);
+    $return = $this->query(PSQL_SHOW_TABLES);
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {
       // Shift off the header of the column of data returned.

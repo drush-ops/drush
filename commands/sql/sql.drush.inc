@@ -500,7 +500,7 @@ function drush_sql_query($query = NULL) {
   }
   else {
     $sql = drush_sql_get_class(drush_get_option('db-spec'));
-    $result = $sql->query($query, $filename, FALSE, drush_get_option('result-file'));
+    $result = $sql->query($query, $filename, drush_get_option('result-file'));
     if (!$result) {
       return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
     }

@@ -52,6 +52,10 @@ EOT;
     return $this->params_to_options($parameters);
   }
 
+  public function silent() {
+    return '--silent';
+  }
+
   public function createdb_sql($dbname, $quoted = FALSE) {
     if ($quoted) {
       $dbname = '`' . $dbname . '`';
@@ -67,7 +71,8 @@ EOT;
   public function db_exists() {
     $current = drush_get_context('DRUSH_SIMULATE');
     drush_set_context('DRUSH_SIMULATE', FALSE);
-    $return = $this->query("SELECT 1;", NULL, TRUE);
+    // Suppress output. We only care about return value.
+    $return = $this->query("SELECT 1;", NULL, drush_bit_bucket());
     drush_set_context('DRUSH_SIMULATE', $current);
     return $return;
   }
@@ -75,7 +80,7 @@ EOT;
   public function listTables() {
     $current = drush_get_context('DRUSH_SIMULATE');
     drush_set_context('DRUSH_SIMULATE', FALSE);
-    $return = $this->query('SHOW TABLES;', NULL, TRUE);
+    $return = $this->query('SHOW TABLES;');
     $tables = drush_shell_exec_output();
     drush_set_context('DRUSH_SIMULATE', $current);
     return $tables;
