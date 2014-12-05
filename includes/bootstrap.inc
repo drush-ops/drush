@@ -789,7 +789,7 @@ function _drush_bootstrap_drupal_site_validate() {
   $conf_path = drush_bootstrap_value('conf_path', conf_path(TRUE, TRUE));
   $conf_file = "$conf_path/settings.php";
   if (!file_exists($conf_file)) {
-    dt("Could not find a Drupal settings.php file at !file.", array('!file' => $conf_file));
+   drush_log( dt("Could not find a Drupal settings.php file at !file.", array('!file' => $conf_file)));
   }
 
   return TRUE;
