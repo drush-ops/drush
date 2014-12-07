@@ -47,54 +47,53 @@ function package_handler_download_project(&$request, $release) {
     }
   }
 
-  // Add <date> to URL so it is part of the cache key . Dev snapshots can then be cached forever.
+  // Add <date> to download link, so it is part of the cache key. Dev snapshots can then be cached forever.
+  $download_link = $release['download_link'];
   if (strpos($release['download_link'], '-dev') !== FALSE) {
-    $release['download_link'] .= '?date=' . $release['date'];
+    $download_link .= '?date=' . $release['date'];
   }
-  // On Windows file name cannot contain '?'
-  // See http://drupal.org/node/1782444
-  $filename = str_replace('?', '_', basename($release['download_link']));
+  // Cache for a year by default.
   $cache_duration = (drush_get_option('cache', TRUE)) ? 86400*365 : 0;
-  $path = drush_download_file($release['download_link'], $request['base_project_path'] . DIRECTORY_SEPARATOR . $filename, $cache_duration);
-  if ($path || drush_get_context('DRUSH_SIMULATE')) {
-    drush_log("Downloading " . $filename . " was successful.");
+
+  // Prepare download path. On Windows file name cannot contain '?'.
+  // See http://drupal.org/node/1782444
+  $filename = str_replace('?', '_', basename($download_link));
+  $download_path = drush_tempdir() . '/' . $filename;
+
+  // Download the tarball.
+  $download_path = drush_download_file($download_link, $download_path, $cache_duration);
+  if ($download_path || drush_get_context('DRUSH_SIMULATE')) {
+    drush_log(dt('Downloading !filename was successful.', array('!filename' => $filename)));
   }
   else {
-    return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', 'Unable to download ' . $filename . ' to ' . $request['base_project_path'] . ' from '. $release['download_link']);
+    return drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt('Unable to download !project to !path from !url.', array('!project' => $request['name'], '!path' => $download_path, '!url' => $download_link)));
   }
 
   // Check Md5 hash.
-  if (drush_op('md5_file', $path) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
-    drush_set_error('DRUSH_PM_FILE_CORRUPT', "File $filename is corrupt (wrong md5 checksum).");
-    drush_delete_dir($path, TRUE);
-    drush_delete_dir(drush_download_file_name($release['download_link']), TRUE);
-    return FALSE;
+  if (drush_op('md5_file', $download_path) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
+    drush_delete_dir(drush_download_file_name($download_link, TRUE));
+    return drush_set_error('DRUSH_PM_FILE_CORRUPT', dt('File !filename is corrupt (wrong md5 checksum).', array('!filename' => $filename)));
   }
   else {
-    drush_log("Md5 checksum of $filename verified.");
+    drush_log(dt('Md5 checksum of !filename verified.', array('!filename' => $filename)));
   }
 
-  // Extract the tarball.
-  $file_list = drush_tarball_extract($path, $request['base_project_path'], TRUE);
+  // Extract the tarball in place and return the full path to the untarred directory.
+  $download_base = dirname($download_path);
+  $tar_file_list = drush_tarball_extract($download_path, $download_base, TRUE);
+  $tar_directory = drush_trim_path($tar_file_list[0]);
 
-  // Move untarred directory to project_dir, if distinct.
-  if (($request['project_type'] == 'core') || (($request['project_type'] == 'profile') && (drush_get_option('variant', 'full') == 'full'))) {
-    // Obtain the dodgy project_dir for drupal core.
-    $project_dir = drush_trim_path($file_list[0]);
-    if ($request['project_dir'] != $project_dir) {
-      $path = $request['base_project_path'];
-      drush_move_dir($path . '/'. $project_dir, $path . '/' . $request['project_dir']);
-    }
-  }
-
-  return TRUE;
+  return $download_base . '/' . $tar_directory;
 }
 
 /**
- * This is an alias of the download function, since they are identical
+ * Update a project.
  */
 function package_handler_update_project(&$request, $release) {
-  return package_handler_download_project($request, $release);
+  $download_path = package_handler_download_project($request, $release);
+  if ($download_path) {
+    return drush_move_dir($download_path, $request['full_project_path']);
+  }
 }
 
 /**

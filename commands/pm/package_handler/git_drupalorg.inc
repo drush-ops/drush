@@ -83,7 +83,9 @@ function package_handler_download_project(&$request, $release) {
     $gitcache = $projectcache;
   }
 
-  // Clone the repo into its appropriate target location.
+  // Clone the repo into a temporary path.
+  $clone_path = drush_tempdir();
+
   $command  = 'git clone';
   $command .= ' ' . drush_get_option('gitcloneparams');
   if (drush_get_option('cache')) {
@@ -93,14 +95,14 @@ function package_handler_download_project(&$request, $release) {
     $command .= ' --verbose --progress';
   }
   $command .= ' ' . drush_escapeshellarg($repository);
-  $command .= ' ' . drush_escapeshellarg($request['full_project_path']);
+  $command .= ' ' . drush_escapeshellarg($clone_path);
   if (!drush_shell_exec($command)) {
     return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to clone project !name from git.drupal.org.', array('!name' => $request['name'])));
   }
 
   // Check if the 'tag' from the release feed is a tag or a branch.
   // If the tag exists, git will return it
-  if (!drush_shell_cd_and_exec($request['full_project_path'], 'git tag -l ' . drush_escapeshellarg($tag))) {
+  if (!drush_shell_cd_and_exec($clone_path, 'git tag -l ' . drush_escapeshellarg($tag))) {
     return drush_set_error('DRUSH_PM_GIT_CHECKOUT_PROBLEMS', dt('Unable to clone project !name from git.drupal.org.', array('!name' => $request['name'])));
   }
   $output = drush_shell_exec_output();
@@ -110,14 +112,14 @@ function package_handler_download_project(&$request, $release) {
     // "detached head" state.
     $command  = 'git checkout ' . drush_get_option('gitcheckoutparams');
     $command .= ' ' . drush_escapeshellarg($tag);
-    if (!drush_shell_cd_and_exec($request['full_project_path'], $command)) {
+    if (!drush_shell_cd_and_exec($clone_path, $command)) {
       return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupal.org.');
     }
   }
   else {
     // Else, we want to checkout a branch.
     // First check if we are not already in the correct branch.
-    if (!drush_shell_cd_and_exec($request['full_project_path'], 'git symbolic-ref HEAD')) {
+    if (!drush_shell_cd_and_exec($clone_path, 'git symbolic-ref HEAD')) {
       return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupal.org.');
     }
     $output = drush_shell_exec_output();
@@ -128,13 +130,13 @@ function package_handler_download_project(&$request, $release) {
       $command  = 'git checkout';
       $command .= ' ' . drush_get_option('gitcheckoutparams');
       $command .= ' --track ' . drush_escapeshellarg('origin/' . $tag) . ' -b ' . drush_escapeshellarg($tag);
-      if (!drush_shell_cd_and_exec($request['full_project_path'], $command)) {
+      if (!drush_shell_cd_and_exec($clone_path, $command)) {
         return drush_set_error('DRUSH_PM_UNABLE_CHECKOUT', 'Unable to retrieve ' . $request['name'] . ' from git.drupal.org.');
       }
     }
   }
 
-  return TRUE;
+  return $clone_path;
 }
 
 /**
@@ -149,7 +151,7 @@ function package_handler_update_project($request, $release) {
   drush_log('Updating project ' . $request['name'] . ' ...');
 
   $commands = array();
-  if ($release['version_extra'] == 'dev') {
+  if ((!empty($release['version_extra'])) && ($release['version_extra'] == 'dev')) {
     // Update the branch of the development repository.
     $commands[] = 'git pull';
     $commands[] = drush_get_option('gitpullparams');
@@ -203,12 +205,12 @@ function package_handler_post_download($project, $release) {
   if (drush_get_option('gitinfofile', FALSE)) {
     $matches = array();
     if (preg_match('/^(.+).x-dev$/', $release['version'], $matches)) {
-      $full_version = drush_pm_git_drupalorg_compute_rebuild_version($project['project_install_location'], $matches[1]);
+      $full_version = drush_pm_git_drupalorg_compute_rebuild_version($project['full_project_path'], $matches[1]);
     }
     else {
       $full_version = $release['version'];
     }
-    drush_pm_inject_info_file_metadata($project['project_install_location'], $project['name'], $full_version);
+    drush_pm_inject_info_file_metadata($project['full_project_path'], $project['name'], $full_version);
   }
 
 }

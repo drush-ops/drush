@@ -126,8 +126,6 @@ function drush_pm_updatecode() {
 function _pm_update_core(&$project, $tmpfile) {
   $release_info = drush_get_engine('release_info');
 
-  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-
   drush_print(dt('Code updates will be made to drupal core.'));
   drush_print(dt("WARNING:  Updating core will discard any modifications made to Drupal core files, most noteworthy among these are .htaccess and robots.txt.  If you have made any modifications to these files, please back them up before updating so that you can re-create your modifications in the updated version of the file."));
   drush_print(dt("Note: Updating core can potentially break your site. It is NOT recommended to update production sites without prior testing."));
@@ -142,6 +140,8 @@ function _pm_update_core(&$project, $tmpfile) {
     drush_print(dt('Rolling back all changes. Run again with --no-core to update modules only.'));
     return drush_user_abort();
   }
+
+  $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
   // We need write permission on $drupal_root.
   if (!is_writable($drupal_root)) {
@@ -184,14 +184,10 @@ function _pm_update_core(&$project, $tmpfile) {
     return FALSE;
   }
 
-  $project['base_project_path'] = dirname($project['full_project_path']);
   // Check we have a version control system, and it clears its pre-flight.
   if (!$version_control->pre_update($project, $items_to_test)) {
     return FALSE;
   }
-
-  // Package handlers want the project directory in project_dir.
-  $project['project_dir'] = $project['path'];
 
   // Update core.
   if (pm_update_project($project, $version_control) === FALSE) {
@@ -200,12 +196,10 @@ function _pm_update_core(&$project, $tmpfile) {
 
   // Take the updated files in the 'core' directory that have been updated,
   // and move all except for the items in the skip list back to
-  // the drupal root
+  // the drupal root.
   _pm_update_move_files($project['full_project_path'], $drupal_root, $project['skip_list']);
   drush_delete_dir($project['full_project_path']);
-
-  // Version control engines expect full_project_path to exist and be accurate.
-  $project['full_project_path'] = $project['base_project_path'];
+  $project['full_project_path'] = $drupal_root;
 
   // If there is a backup target, then find items
   // in the backup target that do not exist at the
@@ -300,6 +294,7 @@ function pm_update_packages($update_info, $tmpfile) {
       return drush_set_error('DRUSH_PM_UPDATING_NO_PROJECT_PATH', dt('The !project project path is not available, perhaps the !type is enabled but has been deleted from disk.', array('!project' => $project['name'], '!type' => $project['project_type'])));
     }
     drush_log(dt('Starting to update !project code at !dir...', array('!project' => $project['title'], '!dir' => $project['path'])));
+
     // Define and check the full path to project directory and base (parent) directory.
     $project['full_project_path'] = $drupal_root . '/' . $project['path'];
     if (stripos($project['path'], $project['project_type']) === FALSE || !is_dir($project['full_project_path'])) {
@@ -308,16 +303,11 @@ function pm_update_packages($update_info, $tmpfile) {
     if (!$version_control = drush_pm_include_version_control($project['full_project_path'])) {
       return FALSE;
     }
-    $project['base_project_path'] = dirname($project['full_project_path']);
+
     // Check we have a version control system, and it clears its pre-flight.
     if (!$version_control->pre_update($project)) {
       return FALSE;
     }
-
-    // Package handlers want the name of the directory in project_dir.
-    // It may be different to the project name for pm-download.
-    // Perhaps we want here filename($project['full_project_path']).
-    $project['project_dir'] = $project['name'];
 
     // Run update on one project.
     if (pm_update_project($project, $version_control) === FALSE) {

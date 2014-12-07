@@ -155,10 +155,9 @@ function drush_pm_download() {
     }
 
     // Download the project to a temporary location.
-    $request['base_project_path'] = drush_tempdir();
-    $request['full_project_path'] = $request['base_project_path'] .'/'. $request['project_dir'];
-    drush_log(dt('Downloading project !name to !dir ...', array('!name' => $request['name'], '!dir' => $request['base_project_path'])));
-    if (!package_handler_download_project($request, $release)) {
+    drush_log(dt('Downloading project !name ...', array('!name' => $request['name'])));
+    $request['full_project_path'] = package_handler_download_project($request, $release);
+    if (!$request['full_project_path']) {
       // Delete the cached update service file since it may be invalid.
       $release_info->clearCached($request);
       drush_log(dt('Error downloading !name', array('!name' => $request['name']), 'error'));
@@ -218,7 +217,7 @@ function drush_pm_download() {
     // Copy the project to the install location.
     if (drush_op('_drush_recursive_copy', $request['full_project_path'], $request['project_install_location'])) {
       drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'success');
-      $request['base_project_path'] = basename($request['project_install_location']);
+      // Adjust full_project_path to the final project location.
       $request['full_project_path'] = $request['project_install_location'];
 
       // If the version control engine is a proper vcs we also need to remove

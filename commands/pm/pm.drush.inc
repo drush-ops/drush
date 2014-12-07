@@ -1999,7 +1999,7 @@ function drush_pm_extensions_in_project($project) {
   if (in_array($project['project_type'], array('core', 'profile'))) {
     $found = array('profile' => array(), 'theme' => array(), 'module' => array());
     // Find all of the .info files
-    foreach (drush_scan_directory($project['project_install_location'], $mask, $nomask) as $filename => $info) {
+    foreach (drush_scan_directory($project['full_project_path'], $mask, $nomask) as $filename => $info) {
       // Extract extension name from filename.
       $matches = array();
       preg_match($mask, $info->basename, $matches);
@@ -2020,7 +2020,7 @@ function drush_pm_extensions_in_project($project) {
     }
     // Special case: find profiles for drupal < 7.x (no .info)
     if ($project['drupal_version'][0] < 7) {
-      foreach (drush_find_profiles($project['project_install_location']) as $filename => $info) {
+      foreach (drush_find_profiles($project['full_project_path']) as $filename => $info) {
         $found['profile'][] = $info->name;
       }
     }
@@ -2042,7 +2042,7 @@ function drush_pm_extensions_in_project($project) {
   // Modules and themes can only contain other extensions of the same type.
   elseif (in_array($project['project_type'], array('module', 'theme'))) {
     $found = array();
-    foreach (drush_scan_directory($project['project_install_location'], $mask, $nomask) as $filename => $info) {
+    foreach (drush_scan_directory($project['full_project_path'], $mask, $nomask) as $filename => $info) {
       // Extract extension name from filename.
       $matches = array();
       preg_match($mask, $info->basename, $matches);
