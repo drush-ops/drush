@@ -117,31 +117,28 @@ Git Clone (i.e. manual install)
 
 See [Configure](configure.md) for next steps.
 
-Windows Installer
+Windows Zip Package
 ----------------------------
 
 Windows support has improved, but is still lagging. For full functionality,
 consider running Linux/Unix/OSX via Virtualbox, or other virtual machone platform.
 [The Vlad virtual machine is popular](https://github.com/hashbangcode/vlad).
 
-These Windows installers include Drush and its dependencies (including MSys). 
-- [7.0.0-alpha7](https://github.com/drush-ops/drush/releases/download/7.0.0-alpha7/windows-installer-drush-7.0.0-alpha7.zip).
-- [6.5.0](https://github.com/drush-ops/drush/releases/download/6.5.0/windows-installer-drush-6.5.0.zip).
+These Windows packages include Drush and its dependencies (including MSys). 
+- [7.0.0-alpha7](https://github.com/drush-ops/drush/releases/download/7.0.0-alpha7/windows-7.0.0-alpha7.zip).
+- [6.5.0](https://github.com/drush-ops/drush/releases/download/6.5.0/windows-6.5.0.zip).
 - [6.0](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
 
 Whenever the documentation or the help text refers to 'drush [option]
 <command>' or something similar, 'drush' may need to be replaced by
 'drush.bat'.
 
-Additional Drush Windows installation documentation can be found at
-http://drupal.org/node/594744.
-
 Most Drush commands will run in a Windows CMD shell or PowerShell, but the
 Git Bash shell provided by the 'Git for Windows' installation is the preferred
 shell in which to run Drush commands. For more information on "Git for Windows'
 visit http://msysgit.github.com/.
 
-When creating aliases for Windows remote machines, pay particular attention to
+When creating site aliases for Windows remote machines, pay particular attention to
 information presented in the example.aliases.drushrc.php file, especially when
 setting values for 'remote-host' and 'os', as these are very important when
 running Drush rsync and Drush sql-sync commands.
