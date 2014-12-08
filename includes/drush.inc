@@ -110,7 +110,7 @@ function drush_get_class($class_name, $constructor_args, $class_dir = NULL) {
     return $reflectionClass->newInstanceArgs($constructor_args);
   }
   else {
-    return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Drupal %d not supported!', $version));
+    return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Drupal %d not supported!', array('%d' => $version)));
   }
 }
 
