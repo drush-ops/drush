@@ -65,11 +65,8 @@ Composer - One Drush for all Projects
 
 **Tips:**
 
-* If Drush cannot find an autoloaded class, run `composer self-update`. Drush often
-tracks composer changes closely, so you may have some problems if you are not
-running a recent version.
-* If composer cannot find a requirement, and suggests that *The package is not available in a stable-enough version according to your minimum-stability setting*, then place the following
-in `$HOME/.composer/composer.json`:
+* If Drush cannot find an autoloaded class, run `composer self-update`. Drush often tracks composer changes closely, so you may have some problems if you are not running a recent version.
+* If composer cannot find a requirement, and suggests that *The package is not available in a stable-enough version according to your minimum-stability setting*, then place the following in `$HOME/.composer/composer.json`:
 ```
 {
   "minimum-stability": "dev"
@@ -95,8 +92,6 @@ Git Clone (i.e. manual install)
 
            `export PATH="$PATH:/path/to/drush:/usr/local/bin"`
 
-     Your system will search path options from left to right until it finds a result.
-
     1. Add an alias for drush (this method can also be handy if you want to use 2 versions of Drush, for example Drush 5 or 6 (stable) for Drupal 7 development, and Drush 7 (master) for Drupal 8 development).
      To add an alias to your Drush 7 executable, add this to you shell configuration file (see list in previous option):
          `$ alias drush-master=/path/to/drush/drush`
@@ -104,8 +99,6 @@ Git Clone (i.e. manual install)
     For options 2 and 3 above, in order to apply your changes to your current session, either log out and then log back in again, or re-load your bash configuration file, i.e.:
 
       `$ source .bashrc`
-
-    NOTE: If you do not follow this step, you will need to inconveniently run Drush commands using the full path to the executable "/path/to/drush/drush" or by navigating to /path/to/drush and running "./drush". The -r or -l options will be required (see USAGE, below).
 
 1. Test that Drush is found by your system:
 
@@ -120,25 +113,16 @@ See [Configure](configure.md) for next steps.
 Windows Zip Package
 ----------------------------
 
-Windows support has improved, but is still lagging. For full functionality,
-consider running Linux/Unix/OSX via Virtualbox, or other virtual machone platform.
-[The Vlad virtual machine is popular](https://github.com/hashbangcode/vlad).
+Windows support has improved, but is still lagging. For full functionality, consider running Linux/Unix/OSX via Virtualbox, or other virtual machone platform. [The Vlad virtual machine](https://github.com/hashbangcode/vlad) is popular.
 
 These Windows packages include Drush and its dependencies (including MSys). 
+
+- [6.5.0 (stable)](https://github.com/drush-ops/drush/releases/download/6.5.0/windows-6.5.0.zip).
 - [7.0.0-alpha7](https://github.com/drush-ops/drush/releases/download/7.0.0-alpha7/windows-7.0.0-alpha7.zip).
-- [6.5.0](https://github.com/drush-ops/drush/releases/download/6.5.0/windows-6.5.0.zip).
 - [6.0](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
 
-Whenever the documentation or the help text refers to 'drush [option]
-<command>' or something similar, 'drush' may need to be replaced by
-'drush.bat'.
+Whenever the documentation or the help text refers to `drush [option] <command>` or something similar, 'drush' may need to be replaced by 'drush.bat'.
 
-Most Drush commands will run in a Windows CMD shell or PowerShell, but the
-Git Bash shell provided by the 'Git for Windows' installation is the preferred
-shell in which to run Drush commands. For more information on "Git for Windows'
-visit http://msysgit.github.com/.
+Most Drush commands will run in a Windows CMD shell or PowerShell, but the Git Bash shell provided by the [Git for Windows](http://msysgit.github.com) installation is the preferred shell in which to run Drush commands.
 
-When creating site aliases for Windows remote machines, pay particular attention to
-information presented in the example.aliases.drushrc.php file, especially when
-setting values for 'remote-host' and 'os', as these are very important when
-running Drush rsync and Drush sql-sync commands.
+When creating site aliases for Windows remote machines, pay particular attention to information presented in the example.aliases.drushrc.php file, especially when setting values for 'remote-host' and 'os', as these are very important when running Drush rsync and Drush sql-sync commands.
