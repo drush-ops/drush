@@ -356,13 +356,12 @@ function drush_valid_drupal_root($path) {
     // Drupal 8 root. Additional check for the presence of core/composer.json to
     // grant it is not a Drupal 7 site with a base folder named "core".
     $candidate = 'core/includes/common.inc';
-    if (file_exists($path . '/' . $candidate) && file_exists($path . '/core/misc/drupal.js') && (file_exists($path . '/composer.json') || file_exists($path . '/core/composer.json'))) {
+    if (file_exists($path . '/' . $candidate) && file_exists($path . '/core/misc/drupal.js') && file_exists($path . '/core/core.services.yml')) {
       return $candidate;
     }
-    // Drupal 7 root. Additional check for the absence of core/composer.json to
-    // grant $path is not core/ of a Drupal 8 root.
+    // Drupal 7 root.
     $candidate = 'includes/common.inc';
-    if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js') && ((basename($path) != 'core') || !file_exists($path . '/../composer.json'))) {
+    if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js')) {
       return $candidate;
     }
   }
