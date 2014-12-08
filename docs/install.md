@@ -121,9 +121,13 @@ Windows Installer
 ----------------------------
 
 Windows support has improved, but is still lagging. For full functionality,
-consider using on Linux/Unix/OSX using Virtualbox or other virtual machine.
+consider running Linux/Unix/OSX via Virtualbox, or other virtual machone platform.
+[The Vlad virtual machine is popular](https://github.com/hashbangcode/vlad).
 
-There is a [Windows msi installer](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
+These Windows installers include Drush and its dependencies (including MSys). 
+- [7.0.0-alpha7](https://github.com/drush-ops/drush/releases/download/7.0.0-alpha7/windows-installer-drush-7.0.0-alpha7.zip).
+- [6.5.0](https://github.com/drush-ops/drush/releases/download/6.5.0/windows-installer-drush-6.5.0.zip).
+- [6.0](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
 
 Whenever the documentation or the help text refers to 'drush [option]
 <command>' or something similar, 'drush' may need to be replaced by
