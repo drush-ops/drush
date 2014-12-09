@@ -113,7 +113,7 @@ See [Configure](configure.md) for next steps.
 Windows Zip Package
 ----------------------------
 
-Windows support has improved, but is still lagging. For full functionality, consider running Linux/Unix/OSX via Virtualbox, or other virtual machone platform. [The Vlad virtual machine](https://github.com/hashbangcode/vlad) is popular.
+Windows support has improved, but is still lagging. For full functionality, consider running Linux/Unix/OSX via Virtualbox, or other virtual machine platform. [The Vlad virtual machine](https://github.com/hashbangcode/vlad) is popular.
 
 These Windows packages include Drush and its dependencies (including MSys). 
 
