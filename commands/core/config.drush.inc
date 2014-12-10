@@ -365,7 +365,7 @@ function drush_config_import($source = NULL) {
   }
 }
 
-// Copied from submitForm() at /core/modules/config/lib/Drupal/config/Form/ConfigSync.php
+// Copied from submitForm() at /core/modules/config/src/Form/ConfigSync.php
 function _drush_config_import(StorageComparer $storage_comparer) {
   $config_importer = new ConfigImporter(
     $storage_comparer,
@@ -374,6 +374,7 @@ function _drush_config_import(StorageComparer $storage_comparer) {
     Drupal::lock(),
     Drupal::service('config.typed'),
     Drupal::moduleHandler(),
+    Drupal::service('module_installer'),
     Drupal::service('theme_handler'),
     Drupal::service('string_translation')
   );
