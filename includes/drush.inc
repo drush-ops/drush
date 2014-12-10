@@ -6,19 +6,19 @@
  */
 
 /**
-* @name Error status definitions
-* @{
-* Error code definitions for interpreting the current error status.
-* @see drush_set_error(), drush_get_error(), drush_get_error_log(), drush_cmp_error()
-*/
+ * @name Error status definitions
+ * @{
+ * Error code definitions for interpreting the current error status.
+ * @see drush_set_error(), drush_get_error(), drush_get_error_log(), drush_cmp_error()
+ */
 
 /** The command completed successfully. */
 define('DRUSH_SUCCESS', 0);
 /** The command could not be completed because the framework has specified errors that have occured. */
 define('DRUSH_FRAMEWORK_ERROR', 1);
 /** The command that was executed resulted in an application error,
-  The most commom causes for this is invalid PHP or a broken SSH
-  pipe when using drush_backend_invoke in a distributed manner. */
+The most commom causes for this is invalid PHP or a broken SSH
+pipe when using drush_backend_invoke in a distributed manner. */
 define('DRUSH_APPLICATION_ERROR', 255);
 
 /**
@@ -316,9 +316,9 @@ function drush_get_global_options($brief = FALSE) {
     $options['local']               = array('propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases');
 
     $command = array(
-      'options' => $options,
-      '#brief' => FALSE,
-    ) + drush_command_defaults('global-options', 'global_options', __FILE__);
+        'options' => $options,
+        '#brief' => FALSE,
+      ) + drush_command_defaults('global-options', 'global_options', __FILE__);
     drush_command_invoke_all_ref('drush_help_alter', $command);
 
     $options = $command['options'];
@@ -340,7 +340,7 @@ function drush_die($msg = NULL, $status = NULL) {
  * "shebang" script line.
  */
 function _drush_is_drush_shebang_line($line) {
-   return ((substr($line,0,2) == '#!') && (strstr($line, 'drush') !== FALSE));
+  return ((substr($line,0,2) == '#!') && (strstr($line, 'drush') !== FALSE));
 }
 
 /**
@@ -395,7 +395,7 @@ function drush_confirm($msg, $indent = 0) {
   $stdin = fopen("php://stdin","r");
 
   while ($line = fgets($stdin)) {
-  $line = trim($line);
+    $line = trim($line);
     if ($line == 'y') {
       return TRUE;
     }
@@ -656,40 +656,46 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE, $password = FA
  * or @see drush_shell_exec() to execute a shell command and capture the
  * shell output.
  *
- * @param $function
+ * @param $callable
  *   The name of the function. Any additional arguments are passed along.
  * @return
  *   The return value of the function, or TRUE if simulation mode is enabled.
  *
  */
-function drush_op($function) {
+function drush_op($callable) {
   $args_printed = array();
   $args = func_get_args();
   array_shift($args); // Skip function name
   foreach ($args as $arg) {
     $args_printed[] = is_scalar($arg) ? $arg : (is_array($arg) ? 'Array' : 'Object');
   }
+  $callable_string = is_array($callable) ? implode('::', $callable) : $callable;
 
   // Special checking for drush_op('system')
-  if ($function == 'system') {
+  if ($callable == 'system') {
     drush_log(dt("Do not call drush_op('system'); use drush_op_system instead"), 'debug');
   }
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-     drush_log(sprintf("Calling %s(%s)", $function, implode(", ", $args_printed)), 'debug');
+    drush_log(sprintf("Calling %s(%s)", $callable_string, implode(", ", $args_printed)), 'debug');
   }
 
   if (drush_get_context('DRUSH_SIMULATE')) {
     return TRUE;
   }
 
-  return drush_call_user_func_array($function, $args);
+  return drush_call_user_func_array($callable, $args);
 }
 
 /**
  * Mimic cufa but still call function directly. See http://drupal.org/node/329012#comment-1260752
  */
 function drush_call_user_func_array($function, $args = array() ) {
+  if (is_array($function)) {
+    // $callable is a method so always use CUFA.
+    return call_user_func_array($function, $args);
+  }
+
   switch (count($args)) {
     case 0: return $function(); break;
     case 1: return $function($args[0]); break;
@@ -1243,8 +1249,8 @@ function drush_preflight_command_dispatch() {
 function _drush_should_remove_command_arg($arg, $removal_list) {
   foreach ($removal_list as $candidate) {
     if (($arg == "-$candidate") ||
-        ($arg == "--$candidate") ||
-        (substr($arg,0,strlen($candidate)+3) == "--$candidate=") ) {
+      ($arg == "--$candidate") ||
+      (substr($arg,0,strlen($candidate)+3) == "--$candidate=") ) {
       return TRUE;
     }
   }
@@ -1344,11 +1350,11 @@ function drush_log($message, $type = 'notice', $error = null) {
   $log =& drush_get_context('DRUSH_LOG', array());
   $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
   $entry = array(
-     'type' => $type,
-     'message' => $message,
-     'timestamp' => microtime(TRUE),
-     'memory' => memory_get_usage(),
-   );
+    'type' => $type,
+    'message' => $message,
+    'timestamp' => microtime(TRUE),
+    'memory' => memory_get_usage(),
+  );
   $entry['error'] = $error;
   $log[] = $entry;
   drush_backend_packet('log', $entry);
@@ -1552,8 +1558,8 @@ function drush_print_timers() {
 }
 
 /**
-* Turn drupal_set_message errors into drush_log errors
-*/
+ * Turn drupal_set_message errors into drush_log errors
+ */
 function _drush_log_drupal_messages() {
   if (function_exists('drupal_get_messages')) {
 
