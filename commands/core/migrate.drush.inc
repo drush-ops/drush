@@ -61,8 +61,8 @@ function drush_migrate_manifest($manifest) {
   catch (\Exception $e) {
     drush_set_error('MIGRATE_ERROR', $e->getMessage());
   }
-  // @TODO, find out why this breaks tests?
-  //drush_invoke_process('@self', 'cache-rebuild', array(), array(), FALSE);
+
+  drush_invoke_process('@self', 'cache-rebuild', array(), array(), FALSE);
 }
 
 /**
