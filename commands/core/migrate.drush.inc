@@ -56,7 +56,7 @@ function migrate_drush_command() {
  */
 function drush_migrate_manifest($manifest) {
   try {
-    drush_migrate_manifest_get_class($manifest)->import();
+    return drush_migrate_manifest_get_class($manifest)->import();
   }
   catch (\Exception $e) {
     drush_set_error('MIGRATE_ERROR', $e->getMessage());
