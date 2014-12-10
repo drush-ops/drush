@@ -91,7 +91,12 @@ class MigrateManifest8 implements MigrateInterface {
       }
 
       if (isset($migration)) {
-        $this->run($migration);
+        $executable = $this->run($migration);
+        // Store all the migrations for later.
+        $this->migrations[$migration->id()] = array(
+          'executable' => $executable,
+          'migration' => $migration,
+        );
       }
       else {
         // Keep track of any migrations that weren't found.
@@ -127,6 +132,9 @@ class MigrateManifest8 implements MigrateInterface {
    *
    * @param \Drupal\migrate\Entity\Migration $migration
    *   The migration to run.
+   *
+   * @return \Drupal\migrate\MigrateExecutable
+   *   The migration executable.
    */
   protected function run($migration) {
     drush_log('Running ' . $migration->id(), 'ok');
@@ -134,11 +142,7 @@ class MigrateManifest8 implements MigrateInterface {
     // drush_op() provides --simulate support.
     drush_op(array($executable, 'import'));
 
-    // Store all the migrations for later.
-    $this->migrations[$migration->id()] = array(
-      'executable' => $executable,
-      'migration' => $migration,
-    );
+    return $executable;
   }
 
   /**
