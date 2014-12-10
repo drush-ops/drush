@@ -11,6 +11,9 @@ interface MigrateInterface {
 
   /**
    * Run all specified migrations.
+   *
+   * @return array
+   *   An array of completed migrations.
    */
   public function import();
 

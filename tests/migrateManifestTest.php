@@ -35,7 +35,9 @@ class migrateManifestTest extends CommandUnishTestCase {
       $this->markTestSkipped('Migrate manifest is for D8');
     }
 
-    $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
+    if (!$sites = $this->getSites()) {
+      $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
+    }
     $site = key($sites);
     $root = $this->webroot();
     $this->siteOptions = array(
@@ -48,6 +50,8 @@ class migrateManifestTest extends CommandUnishTestCase {
     // All migrate commands will need this option.
     $this->migrateOptions = $this->siteOptions + array(
       'legacy-db-url' => $this->db_url($site),
+      'simulate' => NULL,
+      'backend' => NULL,
     );
   }
 
@@ -56,8 +60,8 @@ class migrateManifestTest extends CommandUnishTestCase {
    */
   public function testSimpleMigration() {
     $manifest = $this->createManifestFile('- d6_action_settings');
-    $this->drushExpectSuccess(array($manifest));
-    $this->assertContains('Importing: d6_action_settings', $this->getOutput(), 'Found migration');
+    $return = $this->drushExpectSuccess(array($manifest));
+    $this->assertArrayHasKey('d6_action_settings', $return['object']);
   }
 
   /**
@@ -72,13 +76,19 @@ class migrateManifestTest extends CommandUnishTestCase {
     destination_path_property: uri
 - d6_action_settings";
     $manifest = $this->createManifestFile($yaml);
-    $output = $this->drushExpectSuccess(array($manifest));
+    $return = $this->drushExpectSuccess(array($manifest));
 
-    $this->assertContains('Importing: d6_file', $output);
-    $this->assertContains('[conf_path] => sites/assets', $output);
-    $this->assertContains('[source_base_path] => destination/base/path', $output);
-    $this->assertContains('[destination_path_property] => uri', $output);
-    $this->assertContains('Importing: d6_action_settings', $output);
+    $this->assertArrayHasKey('d6_file', $return['object']);
+    $this->assertArrayHasKey('d6_action_settings', $return['object']);
+
+    // Check source config.
+    $source_config = $return['object']['d6_file']['migration']['source'];
+    $this->assertEquals('sites/assets', $source_config['conf_path']);
+
+    // Check destination config.
+    $destination_config = $return['object']['d6_file']['migration']['destination'];
+    $this->assertEquals('destination/base/path', $destination_config['source_base_path']);
+    $this->assertEquals('uri', $destination_config['destination_path_property']);
   }
 
   /**
@@ -86,9 +96,8 @@ class migrateManifestTest extends CommandUnishTestCase {
    */
   public function testNonExistentMigration() {
     $manifest = $this->createManifestFile('- non_existent_migration');
-    $output = $this->drushExpectSuccess(array($manifest));
-    $this->assertContains('The following migrations were not found: non_existent_migration', $output);
-
+    $return = $this->drushExpectSuccess(array($manifest));
+    $this->assertArrayNotHasKey('non_existent_migration', $return['object']);
   }
 
   /**
@@ -97,16 +106,16 @@ class migrateManifestTest extends CommandUnishTestCase {
   public function testInvalidYamlFile() {
     $invalid_yml = '--- :d6_migration';
     $manifest = $this->createManifestFile($invalid_yml);
-    $output = $this->drushExpectError(array($manifest));
-    $this->assertContains('The manifest file cannot be parsed.', $output);
+    $return = $this->drushExpectError(array($manifest));
+    $this->assertContains('The manifest file cannot be parsed.', $return['error_log']['MIGRATE_ERROR'][0]);
   }
 
   /**
    * Test with a non-existed manifest files.
    */
   public function testNonExistentFile() {
-    $output = $this->drushExpectError(array('/some/file/that/doesnt/exist'));
-    $this->assertContains('The manifest file does not exist.', $output);
+    $return = $this->drushExpectError(array('/some/file/that/doesnt/exist'));
+    $this->assertContains('The manifest file does not exist.', $return['error_log']['MIGRATE_ERROR'][0]);
   }
 
   /**
@@ -122,7 +131,7 @@ class migrateManifestTest extends CommandUnishTestCase {
     // We don't need an assertion because this just errors out if we don't get
     // the expected exit status.
     $this->drush('migrate-manifest', $args, $this->migrateOptions, NULL, NULL, self::EXIT_ERROR);
-    return $this->getErrorOutput();
+    return $this->parse_backend_output($this->getOutput());
   }
 
   /**
@@ -136,7 +145,7 @@ class migrateManifestTest extends CommandUnishTestCase {
    */
   protected function drushExpectSuccess($args) {
     $this->drush('migrate-manifest', $args, $this->migrateOptions, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    return $this->getOutput();
+    return $this->parse_backend_output($this->getOutput());
   }
 
   /**

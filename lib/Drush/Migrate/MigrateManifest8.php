@@ -30,6 +30,13 @@ class MigrateManifest8 implements MigrateInterface {
   protected $migrationList;
 
   /**
+   * An array of all migrations and their info.
+   *
+   * @var array
+   */
+  protected $migrations = array();
+
+  /**
    * The message log.
    *
    * @var \Drush\Migrate\DrushLogMigrateMessage
@@ -98,6 +105,8 @@ class MigrateManifest8 implements MigrateInterface {
         '!migrations' => implode(', ', $nonexistent_migrations),
       )), 'warning');
     }
+
+    return $this->migrations;
   }
 
   /**
@@ -122,7 +131,14 @@ class MigrateManifest8 implements MigrateInterface {
   protected function run($migration) {
     drush_log('Running ' . $migration->id(), 'ok');
     $executable = new MigrateExecutable($migration, $this->log);
-    $executable->import();
+    // drush_op() provides --simulate support.
+    drush_op(array($executable, 'import'));
+
+    // Store all the migrations for later.
+    $this->migrations[$migration->id()] = array(
+      'executable' => $executable,
+      'migration' => $migration,
+    );
   }
 
   /**
