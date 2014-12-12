@@ -103,7 +103,7 @@ function drush_cache_get_multiple(array &$cids, $bin = 'default') {
  * @param $expire
  *   One of the following values:
  *   - DRUSH_CACHE_PERMANENT: Indicates that the item should never be removed
- *     unless explicitly told to using cache_clear_all() with a cache ID.
+ *     unless explicitly told to using drush_cache_clear_all() with a cache ID.
  *   - DRUSH_CACHE_TEMPORARY: Indicates that the item should be removed at
  *     the next general cache wipe.
  *   - A Unix timestamp: Indicates that the item should be kept at least until
