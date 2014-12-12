@@ -91,7 +91,7 @@ class MigrateManifest8 implements MigrateInterface {
       }
 
       if (isset($migration)) {
-        $executable = $this->run($migration);
+        $executable = $this->importSingle($migration);
         // Store all the migrations for later.
         $this->migrations[$migration->id()] = array(
           'executable' => $executable,
@@ -128,7 +128,7 @@ class MigrateManifest8 implements MigrateInterface {
   }
 
   /**
-   * Run a single migration.
+   * Import a single migration.
    *
    * @param \Drupal\migrate\Entity\Migration $migration
    *   The migration to run.
@@ -136,7 +136,7 @@ class MigrateManifest8 implements MigrateInterface {
    * @return \Drupal\migrate\MigrateExecutable
    *   The migration executable.
    */
-  protected function run($migration) {
+  protected function importSingle($migration) {
     drush_log('Running ' . $migration->id(), 'ok');
     $executable = new MigrateExecutable($migration, $this->log);
     // drush_op() provides --simulate support.
