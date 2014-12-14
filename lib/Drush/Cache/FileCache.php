@@ -137,7 +137,7 @@ class FileCache implements CacheInterface {
   }
 
   function isEmpty() {
-    $files = drush_scan_directory($dir, "//", array('.', '..'));
+    $files = drush_scan_directory($this->directory, "//", array('.', '..'));
     return empty($files);
   }
 
