@@ -61,6 +61,7 @@ function drush_core_site_install_version($profile, array $additional_form_option
     $msg .= ' Consider using the --notify global option.';
   }
   drush_log(dt($msg), 'ok');
-  drush_op('install_drupal', $settings);
+  $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+  drush_op('install_drupal', $class_loader, $settings);
   drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
 }
