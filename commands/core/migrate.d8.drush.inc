@@ -5,11 +5,6 @@
  * Migrate content into Drupal 8+.
  */
 
-use Drupal\Core\Database\Database;
-use Drupal\migrate\MigrateExecutable;
-use Symfony\Component\Yaml\Yaml;
-use Drush\Migrate\DrushLogMigrateMessage;
-
 /**
  * Implements hook_drush_command().
  */
@@ -34,39 +29,53 @@ function migrate_drush_command() {
 
 /**
  * Import from a manifest file.
+ *
+ * This command allows you to specify a list of migrations and their config in
+ * a YAML file. An example of a simple migration may look like this:
+ *
+ * @code
+ *  - d6_action_settings
+ *  - d6_aggregator_feed
+ * @endcode
+ *
+ * You can also provide configuration to a migration for both source and the
+ * destination. An example as such:
+ *
+ * @code
+ *  - d6_file:
+ *    source:
+ *      conf_path: sites/assets
+ *    destination:
+ *      source_base_path: destination/base/path
+ *      destination_path_property: uri
+ *  - d6_action_settings
+ * @endcode
+ *
  * @param string $manifest
  *   The path to the manifest file.
  */
 function drush_migrate_manifest($manifest) {
-  if (file_exists($manifest)) {
-    $db_url = drush_get_option('legacy-db-url');
-    $db_spec = drush_convert_db_from_db_url($db_url);
-    Database::addConnectionInfo('migrate', 'default', $db_spec);
-    $list = Yaml::parse($manifest);
-    if (is_array($list)) {
-      $message = new DrushLogMigrateMessage();
-      foreach (entity_load_multiple('migration', $list) as $migration_id => $migration) {
-        drush_log("Running $migration_id", 'ok');
-        $executable = new MigrateExecutable($migration, $message);
-        $executable->import();
+  try {
+    return drush_migrate_manifest_get_class($manifest)->import();
+  }
+  catch (\Exception $e) {
+    drush_set_error('MIGRATE_ERROR', $e->getMessage());
+  }
 
-        // Remove the migration from the list, so that we can track whether any
-        // migrations were not found.
-        $list = array_diff($list, array($migration_id));
-      }
-      // Warn the user if any migrations were not found.
-      if ($list) {
-        drush_log(dt('The following migrations were not found: !migrations', array(
-          '!migrations' => implode(', ', $list),
-        )), 'warning');
-      }
-      drush_invoke_process('@self', 'cache-rebuild', array(), array(), FALSE);
-    }
-    else {
-      return drush_set_error('The manifest file cannot be parsed.');
-    }
-  }
-  else {
-    return drush_set_error('The manifest file does not exist.');
-  }
+  drush_invoke_process('@self', 'cache-rebuild', array(), array(), FALSE);
+}
+
+/**
+ * Get a version specific MigrateManifest class.
+ *
+ * @param string $manifest
+ *   The path to the manifest file.
+ *
+ * @return \Drush\Migrate\MigrateInterface
+ *   The migrate manifest class.
+ *
+ * @see drush_get_class().
+ */
+function drush_migrate_manifest_get_class($manifest) {
+  return drush_get_class('Drush\Migrate\MigrateManifest', array($manifest));
 }
