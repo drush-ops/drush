@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Install Drupal 8+
+ * Install Drupal 7
  */
 function drush_core_site_install_version($profile, array $additional_form_options = array()) {
   if (!isset($profile)) {
@@ -18,7 +18,7 @@ function drush_core_site_install_version($profile, array $additional_form_option
   $settings = array(
     'parameters' => array(
       'profile' => $profile,
-      'langcode' => drush_get_option('locale', 'en'),
+      'locale' => drush_get_option('locale', 'en'),
     ),
     'forms' => array(
       'install_settings_form' => array(
@@ -61,7 +61,6 @@ function drush_core_site_install_version($profile, array $additional_form_option
     $msg .= ' Consider using the --notify global option.';
   }
   drush_log(dt($msg), 'ok');
-  $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
-  drush_op('install_drupal', $class_loader, $settings);
+  drush_op('install_drupal', $settings);
   drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
 }
