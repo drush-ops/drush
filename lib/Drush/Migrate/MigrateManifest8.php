@@ -30,13 +30,6 @@ class MigrateManifest8 implements MigrateInterface {
   protected $migrationList;
 
   /**
-   * An array of all migrations and their info.
-   *
-   * @var array
-   */
-  protected $migrations = array();
-
-  /**
    * The message log.
    *
    * @var \Drush\Migrate\DrushLogMigrateMessage
@@ -63,68 +56,57 @@ class MigrateManifest8 implements MigrateInterface {
   public function import() {
 
     $this->setupLegacyDb();
-    $nonexistent_migrations = array();
+    $migration_ids = array();
+    $migrations = array();
 
+    // Parse out the migration ids into an array for loading.
     foreach ($this->migrationList as $migration_info) {
       if (is_array($migration_info)) {
         // The migration is stored as the key in the info array.
-        $migration_id = key($migration_info);
-        $migration = $this->loadMigration($migration_id);
-
-        // If we have source config, apply it to the migration.
-        if (isset($migration_info['source'])) {
-          foreach ($migration_info['source'] as $source_key => $source_value) {
-            $migration->source[$source_key] = $source_value;
-          }
-        }
-        // If we have destination config, apply it to the migration.
-        if (isset($migration_info['destination'])) {
-          foreach ($migration_info['destination'] as $destination_key => $destination_value) {
-            $migration->destination[$destination_key] = $destination_value;
-          }
-        }
+        $migration_ids[key($migration_info)] = $migration_info;
       }
       else {
         // If it wasn't an array then the info is just the migration_id.
-        $migration_id = $migration_info;
-        $migration = $this->loadMigration($migration_id);
+        $migration_ids[$migration_info] = [];
+      }
+    }
+
+    // Load all the migrations at once so they're correctly ordered.
+    foreach (entity_load_multiple('migration', array_keys($migration_ids)) as $migration) {
+      $migration_info = $migration_ids[$migration->id()];
+
+      // If we have source config, apply it to the migration.
+      if (isset($migration_info['source'])) {
+        foreach ($migration_info['source'] as $source_key => $source_value) {
+          $migration->source[$source_key] = $source_value;
+        }
+      }
+      // If we have destination config, apply it to the migration.
+      if (isset($migration_info['destination'])) {
+        foreach ($migration_info['destination'] as $destination_key => $destination_value) {
+          $migration->destination[$destination_key] = $destination_value;
+        }
       }
 
       if (isset($migration)) {
         $executable = $this->importSingle($migration);
         // Store all the migrations for later.
-        $this->migrations[$migration->id()] = array(
+        $migrations[$migration->id()] = array(
           'executable' => $executable,
           'migration' => $migration,
         );
       }
-      else {
-        // Keep track of any migrations that weren't found.
-        $nonexistent_migrations[] = $migration_id;
-      }
     }
 
     // Warn the user if any migrations were not found.
+    $nonexistent_migrations = array_diff(array_keys($migration_ids), array_keys($migrations));
     if (count($nonexistent_migrations) > 0) {
       drush_log(dt('The following migrations were not found: !migrations', array(
         '!migrations' => implode(', ', $nonexistent_migrations),
       )), 'warning');
     }
 
-    return $this->migrations;
-  }
-
-  /**
-   * Load a migration.
-   *
-   * @param $migration_id
-   *   The migration id to load.
-   *
-   * @return \Drupal\migrate\Entity\Migration
-   *   The loaded migration entity.
-   */
-  protected function loadMigration($migration_id) {
-    return entity_load('migration', $migration_id);
+    return $migrations;
   }
 
   /**
