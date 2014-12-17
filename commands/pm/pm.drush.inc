@@ -1082,6 +1082,7 @@ function drush_pm_enable_validate() {
   drush_set_context('PM_ENABLE_EXTENSION_INFO', $extension_info);
   drush_set_context('PM_ENABLE_MODULES', $modules);
   drush_set_context('PM_ENABLE_THEMES', $themes);
+  drush_set_context('PM_ENABLE_ARGS', $args);
 
   return TRUE;
 }
@@ -1096,13 +1097,15 @@ function drush_pm_enable() {
   $extension_info = drush_get_context('PM_ENABLE_EXTENSION_INFO');
   $modules = drush_get_context('PM_ENABLE_MODULES');
   $themes = drush_get_context('PM_ENABLE_THEMES');
+  $args = drush_get_context('PM_ENABLE_ARGS');
 
   // Inform the user which extensions will finally be enabled.
   $extensions = array_merge($modules, $themes);
   if (empty($extensions)) {
     return drush_log(dt('There were no extensions that could be enabled.'), 'ok');
   }
-  else {
+  // Ask for confirmation if dependencies are hit.
+  elseif (array_diff($extensions, $args)) {
     drush_print(dt('The following extensions will be enabled: !extensions', array('!extensions' => implode(', ', $extensions))));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
       return drush_user_abort();

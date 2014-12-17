@@ -66,7 +66,8 @@ function _drush_pm_disable($args) {
   if (empty($extensions)) {
     return drush_log(dt('There were no extensions that could be disabled.'), 'ok');
   }
-  else {
+  // Ask for confirmation if dependencies are hit.
+  elseif (array_diff($extensions, $args)) {
     drush_print(dt('The following extensions will be disabled: !extensions', array('!extensions' => implode(', ', $extensions))));
     if(!drush_confirm(dt('Do you really want to continue?'))) {
       return drush_user_abort();
