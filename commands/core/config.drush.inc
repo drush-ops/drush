@@ -94,13 +94,14 @@ function config_drush_command() {
   $items['config-import'] = array(
     'description' => 'Import config from a config directory.',
     'arguments' => array(
-      'source' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
+      'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
     ),
     'options' => array(
       'preview' => array(
         'description' => 'Format for displaying proposed changes. Recognized values: list, diff. Defaults to list',
         'example-value' => 'list',
       ),
+      'source' => 'An arbitrary directory that holds the configuration files. An alternative to label argument',
     ),
     'core' => array('8+'),
     'aliases' => array('cim'),
@@ -289,11 +290,11 @@ function drush_config_export($destination = NULL) {
     if (!drush_confirm(dt('The current contents of your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
       return drush_user_abort();
     }
-    // Only delete .yml files, and not .htaccess.
+    // Only delete .yml files, and not .htaccess or .git.
     drush_scan_directory($destination_dir, '/\.yml$/', array('.', '..'), 'unlink');
   }
 
-  // Empty destination dir and then write all .yml files there.
+  // Write all .yml files.
   $source_storage = Drupal::service('config.storage');
   $destination_storage = new FileStorage($destination_dir);
   foreach ($source_storage->listAll() as $name) {
@@ -317,24 +318,40 @@ function drush_config_export($destination = NULL) {
   }
 }
 
+function drush_config_import_validate() {
+  if ($source = drush_get_option('source')) {
+    if (!file_exists($source)) {
+      return drush_set_error('config_import_target', 'The source directory does not exist.');
+    }
+    if (!is_dir($source)) {
+      return drush_set_error('config_import_target', 'The source is not a directory.');
+    }
+  }
+}
+
 /**
  * Command callback. Import from specified config directory (defaults to staging).
  */
 function drush_config_import($source = NULL) {
   global $config_directories;
 
-  $choices = drush_map_assoc(array_keys($config_directories));
-  unset($choices[CONFIG_ACTIVE_DIRECTORY]);
-  if (!isset($source) && count($choices) >= 2) {
-    $source= drush_choice($choices, 'Choose a source.');
-    if (empty($source)) {
-      return drush_user_abort();
+  if ($target = drush_get_option('source')) {
+    $source_dir = $target;
+  }
+  else {
+    $choices = drush_map_assoc(array_keys($config_directories));
+    unset($choices[CONFIG_ACTIVE_DIRECTORY]);
+    if (!isset($source) && count($choices) >= 2) {
+      $source= drush_choice($choices, 'Choose a source.');
+      if (empty($source)) {
+        return drush_user_abort();
+      }
     }
+    elseif (!isset($source)) {
+      $source = CONFIG_STAGING_DIRECTORY;
+    }
+    $source_dir = config_get_config_directory($source);
   }
-  elseif (!isset($source)) {
-    $source = CONFIG_STAGING_DIRECTORY;
-  }
-  $source_dir = config_get_config_directory($source);
 
   // Retrieve a list of differences between the active and source configuration (if any).
   $active_storage = Drupal::service('config.storage');
