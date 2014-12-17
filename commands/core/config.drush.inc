@@ -372,7 +372,7 @@ function drush_config_import($source = NULL) {
     $destination_dir = drush_tempdir();
     drush_invoke_process('@self', 'config-export', array(), array('destination' => $destination_dir));
     // @todo Can DiffFormatter produce a CLI pretty diff?
-    drush_shell_exec('diff -u %s %s', $destination_dir, $source_dir);
+    drush_shell_exec('diff -x %s -u %s %s', '*.git', $destination_dir, $source_dir);
     $output = drush_shell_exec_output();
     drush_print(implode("\n", $output));
   }
