@@ -10,19 +10,17 @@ Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7  
 Drush 4       | 4.x | 5.2.0+ | D5, D6, D7                 | Unsupported
 Drush 3       | 3.x | 5.2.0+ | D5, D6                     | Unsupported
 
-If you are using Debian or Ubuntu, you can alternatively use the Debian packages uploaded in your distribution. You may need to use the backports to get the latest version, if you are running a LTS or "stable" release.
-
 Composer - One Drush per Project
 -----------------
-* If your project has a composer.json, add the following to the `require` section: `"drush/drush": "6.*"`
-* Run `composer install` for a new project or `composer update` for an existing one.
-* Optional: Copy examples/drush to project root and modify to taste. This is a handy launcher script.
-* To update, change the drush line above and run `composer update`.
+* If your web site is built from a composer.json file, add the following to the `require` section: `"drush/drush": "6.*"`
+* Run `composer install` for a new project or `composer update` for an existing one. Do so from the same directory as composer.json.
+* Optional: Copy the /examples/drush file to your project root and modify to taste. This is a handy launcher script.
+* To update, change the drush/drush line and run `composer update`.
 
 Composer - One Drush for all Projects
 ------------------
 
-* [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements) (if needed).
+* [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements).
 * Add Composer's global bin directory to the system PATH (recommended):
 
         sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
