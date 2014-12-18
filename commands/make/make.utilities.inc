@@ -63,6 +63,19 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
           else {
             make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
           }
+        } 
+        elseif (!empty($include) && is_array($include)) {
+          if ($include['download']['type'] = 'git') {
+            $tmp_dir = make_tmp();
+            make_download_git($include['makefile'], $include['download']['type'], $include['download'], $tmp_dir);
+            $makefile = $tmp_dir . '/' . $include['makefile'];
+            if (file_exists($makefile) && $file = make_parse_info_file($makefile, FALSE)) {
+              $includes[] = $file;
+            }
+            else {
+              make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $makefile)));
+            }
+          }
         }
       }
     }
