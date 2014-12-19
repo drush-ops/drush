@@ -9,6 +9,10 @@ language: php
 php:
 #  See master-fulltest branch for broader PHP version testing.
   - 5.4
+
+http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
+sudo: false
+
 env:
 #D7
   - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
