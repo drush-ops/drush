@@ -1258,7 +1258,7 @@ function drush_core_execute() {
  * Helper function for drush_core_execute: run one shell command
  */
 function _drush_core_execute_cmd($site, $cmd) {
-  if (!empty($site['remote-host'])) {
+  if (!empty($site['remote-host']) && !drush_is_local_host($site['remote-host'])) {
     // Remote, so execute an ssh command with a bash fragment at the end.
     $exec = drush_shell_proc_build($site, $cmd, TRUE);
     return (drush_shell_proc_open($exec) == 0);
