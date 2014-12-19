@@ -430,6 +430,7 @@ function pm_drush_command() {
       ),
       'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
       'pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
+      'force' => 'Skip hash validation of downloads.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('dl'),
