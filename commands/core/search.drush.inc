@@ -146,12 +146,20 @@ function drush_search_reindex() {
     return drush_user_abort();
   }
 
-  if (drush_drupal_major_version() >= 7) {
+  if (drush_drupal_major_version() == 8) {
+    // D8 CR: https://www.drupal.org/node/2326575
+    $search_page_repository = \Drupal::service('search.search_page_repository');
+    foreach ($search_page_repository->getIndexableSearchPages() as $entity) {
+      $entity->getPlugin()->markForReindex();
+    }
+  }
+  elseif (drush_drupal_major_version() == 7) {
     drush_op('search_reindex');
   }
   else {
     drush_op('search_wipe');
   }
+
   if (drush_get_option('immediate')) {
     drush_op('_drush_search_index');
     drush_log(dt('The search index has been rebuilt.'), 'ok');

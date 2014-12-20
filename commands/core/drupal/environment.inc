@@ -8,6 +8,7 @@
  */
 
 use Drupal\Core\Site\Settings;
+use Drupal\Core\StreamWrapper\PrivateStream;
 use Psr\Log\LogLevel;
 
 
@@ -350,7 +351,7 @@ function _drush_file_public_path() {
 }
 
 function _drush_file_private_path() {
-  return \Drupal::config('system.file')->get('path.private');
+  return PrivateStream::basePath();
 }
 
 /**
