@@ -1483,9 +1483,13 @@ function drush_sql_build_createdb_sql($db_spec, $quoted = FALSE) {
       $dbname = $quoted ? '`' . $db_spec['database'] . '`' : $db_spec['database'];
       $sql[] = sprintf('DROP DATABASE IF EXISTS %s;', $dbname);
       $sql[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
-      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $db_spec['username'], $db_spec['host']);
-      $sql[] = sprintf("IDENTIFIED BY '%s';", $db_spec['password']);
-      $sql[] = 'FLUSH PRIVILEGES;';
+      // Only GRANT PRIVILEGES when using db-su because site user may not have access to 'GRANT'.
+      $db_superuser = drush_sitealias_get_option(NULL, 'db-su');
+      if (isset($db_superuser)) {
+        $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $db_spec['username'], $db_spec['host']);
+        $sql[] = sprintf("IDENTIFIED BY '%s';", $db_spec['password']);
+        $sql[] = 'FLUSH PRIVILEGES;';
+      }
       break;
     case 'pgsql':
       $dbname = $quoted ? '"' . $db_spec['database'] . '"' : $db_spec['database'];
