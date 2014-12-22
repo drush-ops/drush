@@ -201,13 +201,7 @@ function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
  */
 function drush_module_invoke($module, $hook) {
   $args = func_get_args();
-  if (count($args) > 2) {
-    $args = array_slice($args, 2);
-    return module_invoke($module, $hook, $args);
-  }
-  else {
-    return module_invoke($module, $hook);
-  }
+  return call_user_func_array('module_invoke', $args);  
 }
 
 /**
@@ -216,13 +210,7 @@ function drush_module_invoke($module, $hook) {
  */
 function drush_module_invoke_all($hook) {
   $args = func_get_args();
-  if (count($args) > 1) {
-    unset($args[0]);
-    return module_invoke_all($hook, $args);
-  }
-  else {
-    return module_invoke_all($hook);
-  }    
+  return call_user_func_array('module_invoke_all', $args);
 }
 
 /**
