@@ -46,7 +46,7 @@ function watchdog_drush_command() {
     ),
     'options' => array(
       'count' => 'The number of messages to show. Defaults to 10.',
-      'severity' => 'Restrict to messages of a given severity level.',
+      'severity' => 'Restrict to messages of one or more severity levels.',
       'type' => 'Restrict to messages of a given type.',
       'tail' => 'Continuously show new watchdog messages until interrupted.',
       'sleep-delay' => 'To be used in conjunction with --tail. This is the number of seconds to wait between each poll to the database. Delay is 1 second by default.',
@@ -57,7 +57,8 @@ function watchdog_drush_command() {
       'drush watchdog-show 64' => 'Show in detail message with id 64.',
       'drush watchdog-show "cron run succesful"' => 'Show a listing of most recent 10 messages containing the string "cron run succesful".',
       'drush watchdog-show --count=46' => 'Show a listing of most recent 46 messages.',
-      'drush watchdog-show --severity=notice' => 'Show a listing of most recent 10 messages with a severity of notice.',
+      'drush watchdog-show --severity=notice,info' => 'Show a listing of most recent 10 messages with a severity of either notice or info.',
+      'drush watchdog-show --severity=~debug' => 'Show a listing of most recent 10 messages with any severity but debug.',
       'drush watchdog-show --type=php' => 'Show a listing of most recent 10 messages of type php.',
       'drush watchdog-show --tail --extended' => 'Show a listing of most recent 10 messages with extended information about each one and continue showing messages as they are registered in the watchdog.',
       'drush watchdog-show --tail --sleep-delay=2' => 'Do a tail of the watchdog with a delay of two seconds between each poll to the database.',
@@ -365,25 +366,66 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
     $args[':type'] = $type;
   }
   if (isset($severity)) {
-    $severities = drush_watchdog_severity_levels();
-    if (isset($severities[$severity])) {
-      $level = $severity;
-    }
-    elseif (($key = array_search($severity, $severities)) !== FALSE) {
-      $level = $key;
+    drush_include_engine('drupal', 'environment');
+    $defined_severities = core_watchdog_severity_levels();
+    $levels = $defined_severities;
+    $severities = array_map('trim', explode(',', $severity));
+    $negating = (FALSE !== strpos($severity, '-')) ||
+      (FALSE !== strpos($severity, '~'));
+    if ($negating) {
+      foreach ($severities as $severity) {
+        if (strpos($severity, '-') === 0 || strpos($severity, '~') === 0) {
+          $severity = trim($severity, '-~');
+          if (array_key_exists($severity, $levels)) {
+            unset($levels[$severity]);
+          }
+          elseif (($key = array_search($severity, $defined_severities)) !== FALSE) {
+            unset($levels[$key]);
+          }
+          else {
+            $levels = FALSE;
+            $level = $severity;
+            break;
+          }
+        }
+      }
+      if (is_array($levels) && !empty($levels)) {
+        $levels = array_keys($levels);
+      }
     }
     else {
-      $level = FALSE;
+      $levels = array();
+      foreach ($severities as $severity) {
+        if (array_key_exists($severity, $defined_severities)) {
+          $levels[] = $severity;
+        }
+        elseif (($key = array_search($severity, $defined_severities)) !== FALSE) {
+          $levels[] = $key;
+        }
+        else {
+          $levels = FALSE;
+          $level = $severity;
+          break;
+        }
+      }
     }
-    if ($level === FALSE) {
-      foreach ($severities as $key => $value) {
+    if ($levels === FALSE) {
+      foreach ($defined_severities as $key => $value) {
         $levels[] = "$value($key)";
       }
-      $msg = "Unknown severity level: !severity.\nValid severity levels are: !levels.";
-      return drush_set_error(dt($msg, array('!severity' => $severity, '!levels' => implode(', ', $levels))));
+
+      return drush_set_error(
+        dt(
+          "Unknown severity level: !severity.\nValid severity levels are: !levels.",
+          array(
+            '!severity' => $level,
+            '!levels' => implode(', ', $levels),
+          )
+        )
+      );
     }
-    $conditions[] = 'severity = :severity';
-    $args[':severity'] = $level;
+
+    $conditions[] = 'severity IN (' . implode(', ', $levels) . ')';
   }
   if ($filter) {
     $conditions[] = "message LIKE :filter";
