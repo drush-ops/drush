@@ -38,7 +38,34 @@ class WatchdogCase extends Drush_CommandTestCase {
     $output = $this->getOutput();
     $this->assertGreaterThanOrEqual($message_chars, substr_count($output, $char));
 
-    // Tests message deletion
+    // Test multiple severity levels support.
+    $warnings = 5;
+    $errors = 3;
+    for ($i = 0; $i < $warnings; $i++) {
+      $this->drush('php-eval', array("watchdog('drush', '" . uniqid('drush_') . "', array(), WATCHDOG_WARNING)"), $options);
+    }
+    for ($i = 0; $i < $errors; $i++) {
+      $this->drush('php-eval', array("watchdog('drush', '" . uniqid('drush_') . "', array(), WATCHDOG_ERROR)"), $options);
+    }
+    $this->drush('watchdog-show', array(), $options + array('severity' => 'info', 'field-labels' => 0));
+    $output = array_filter($this->getOutputAsList());
+    $this->assertEquals(2, count($output));
+    $this->drush('watchdog-show', array(), $options + array('severity' => 'warning,error', 'field-labels' => 0));
+    $output = array_filter($this->getOutputAsList());
+    $this->assertEquals($warnings + $errors, count($output));
+    $this->drush('watchdog-show', array(), $options + array('severity' => 'warning,info,doesntexist', 'field-labels' => 0), NULL, NULL, self::EXIT_ERROR);
+    $output = array_filter($this->getOutputAsList());
+    $this->assertEmpty($output);
+    $this->drush('watchdog-show', array(), $options + array('severity' => '~warning,~notice', 'field-labels' => 0));
+    $output = array_filter($this->getOutputAsList());
+    // 2 WATCHDOG_INFO + WATCHDOG_ERRORS.
+    $this->assertEquals(2 + $errors, count($output));
+    $this->drush('watchdog-show', array(), $options + array('severity' => '-error,~notice', 'field-labels' => 0));
+    $output = array_filter($this->getOutputAsList());
+    // 2 WATCHDOG_INFO + WATCHDOG_ERRORS.
+    $this->assertEquals(2 + $warnings, count($output));
+
+    // Tests message deletion.
     $this->drush('watchdog-delete', array('all'), $options);
     $output = $this->getOutput();
     $this->drush('watchdog-show', array(), $options);
