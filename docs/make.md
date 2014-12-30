@@ -327,7 +327,7 @@ makefiles to override the keys/values of former makefiles.
       download:
         type: "git"
         url: "git@github.com:organisation/repository.git"
-        # Branch could be tag or revision, it relays on the standard drush git download feature.
+        # Branch could be tag or revision, it relies on the standard drush git download feature.
         branch: "master"          
 
 ### Defaults
