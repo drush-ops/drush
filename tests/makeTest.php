@@ -118,6 +118,23 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->runMakefileTest('include');
   }
 
+  /**
+   * Test git support on includes directive.
+   */
+  function testMakeIncludesGit() {
+    $config = $this->getMakefile('includes-git');
+    $options = array();
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
+    
+    // Verify that core and example main module were downloaded.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/README.txt');
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/apachesolr/README.txt');
+    
+    // Verify that module included in sub platform was downloaded.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/jquery_update/README.txt');
+  }
+
   function testMakeRecursion() {
     $this->runMakefileTest('recursion');
   }
@@ -492,6 +509,12 @@ class makeMakefileCase extends CommandUnishTestCase {
         'makefile' => 'include.make',
         'build'    => TRUE,
         'md5' => 'e2e230ec5eccaf5618050559ab11510d',
+        'options'  => array(),
+      ),
+      'includes-git' => array(
+        'name'     => 'Including makefiles from remote repositories',
+        'makefile' => 'includes-main.make',
+        'build'    => TRUE,
         'options'  => array(),
       ),
       'recursion' => array(

@@ -309,7 +309,7 @@ projects. Additionally, they may specify a destination:
 ### Includes
 
 An array of makefiles to include. Each include may be a local relative path
-to the includer makefile directory or a direct URL to the makefile. Includes
+to the include makefile directory, a direct URL to the makefile, or from a git repository. Includes
 are appended in order with the source makefile appended last, allowing latter
 makefiles to override the keys/values of former makefiles.
 
@@ -322,6 +322,13 @@ makefiles to override the keys/values of former makefiles.
       - "../example_relative/example_relative.make"
       # A remote-hosted file.
       - "http://www.example.com/remote.make"
+      # A file on a git repository.
+      makefile: "example_dir/example.make"
+      download:
+        type: "git"
+        url: "git@github.com:organisation/repository.git"
+        # Branch could be tag or revision, it relies on the standard drush git download feature.
+        branch: "master"          
 
 ### Defaults
 
