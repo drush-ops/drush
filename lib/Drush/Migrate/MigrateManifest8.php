@@ -77,15 +77,19 @@ class MigrateManifest8 implements MigrateInterface {
 
       // If we have source config, apply it to the migration.
       if (isset($migration_info['source'])) {
+        $source = $migration->get('source');
         foreach ($migration_info['source'] as $source_key => $source_value) {
-          $migration->source[$source_key] = $source_value;
+          $source[$source_key] = $source_value;
         }
+        $migration->set('source', $source);
       }
       // If we have destination config, apply it to the migration.
       if (isset($migration_info['destination'])) {
+        $destination = $migration->get('destination');
         foreach ($migration_info['destination'] as $destination_key => $destination_value) {
-          $migration->destination[$destination_key] = $destination_value;
+          $destination[$destination_key] = $destination_value;
         }
+        $migration->set('destination', $destination);
       }
 
       if (isset($migration)) {
