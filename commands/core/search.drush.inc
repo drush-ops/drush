@@ -52,7 +52,15 @@ function drush_search_status() {
 function _drush_search_status() {
   $remaining = 0;
   $total = 0;
-  if (drush_drupal_major_version() >= 7) {
+  if (drush_drupal_major_version() >= 8) {
+    $search_page_repository = \Drupal::service('search.search_page_repository');
+    foreach ($search_page_repository->getIndexableSearchPages() as $entity) {
+      $status = $entity->getPlugin()->indexStatus();
+      $remaining += $status['remaining'];
+      $total += $status['total'];
+    }   
+  }
+  elseif (drush_drupal_major_version() == 7) {
     foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {
       drush_include_engine('drupal', 'environment');
       $status = drush_module_invoke($module, 'search_status');
@@ -84,14 +92,20 @@ function drush_search_index() {
 }
 
 function _drush_search_index() {
-  list($remaining, ) = _drush_search_status();
+  list($remaining, $total) = _drush_search_status();
   register_shutdown_function('search_update_totals');
   $failures = 0;
   while ($remaining > 0) {
-    drush_log(dt('Remaining items to be indexed: ' . $remaining), 'ok');
-    // Use drush_invoke_process() to start subshell. Avoids out of memory issue.
+    $done = $total - $remaining;
+    $percent = $done / $total * 100;
+    drush_log(dt(number_format($percent, 2) . '% complete. Remaining items to be indexed: ' . $remaining), 'ok');
     $eval = "register_shutdown_function('search_update_totals');";
-    if (drush_drupal_major_version() >= 7) {
+
+    // Use drush_invoke_process() to start subshell. Avoids out of memory issue.
+    if (drush_drupal_major_version() >= 8) {
+      $eval = "drush_module_invoke('search', 'cron');";
+    }
+    elseif (drush_drupal_major_version() == 7) {
       // If needed, prod drush_module_implements() to recognize our
       // hook_node_update_index() implementations.
       drush_include_engine('drupal', 'environment');
