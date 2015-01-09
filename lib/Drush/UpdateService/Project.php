@@ -152,8 +152,6 @@ class Project {
 
     $recommended_major = empty($project_info['recommended_major']) ? '' : $project_info['recommended_major'];
     $supported_majors = empty($project_info['supported_majors']) ? array() : array_flip(explode(',', $project_info['supported_majors']));
-    $recommended_version = NULL;
-    $latest_version = NULL;
 
     $items = array(
       'name', 'date', 'status', 'type',
@@ -244,7 +242,9 @@ class Project {
     }
 
     $project_info['releases'] = $releases;
-    $project_info['recommended'] = $recommended_version;
+    if (isset($recommended_version)) {
+      $project_info['recommended'] = $recommended_version;
+    }
 
     return $project_info;
   }
