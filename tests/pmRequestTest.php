@@ -37,6 +37,7 @@ version_major: ${drupal_version}
 version_minor: ''
 version_patch: ''
 version_extra: ''
+version_offset: ''
 EXPECTED;
     $this->drush('php-eval', array("return pm_parse_version('${version}', ${is_core})"), $options);
     $this->assertEquals($expected, $this->getOutput(), 'Core version not provided. Pick version of the bootstrapped site.');
@@ -50,6 +51,7 @@ version_major: '5'
 version_minor: ''
 version_patch: ''
 version_extra: ''
+version_offset: ''
 EXPECTED;
     $this->drush('php-eval', array("return pm_parse_version('${version}', ${is_core})"), $options);
     $this->assertEquals($expected, $this->getOutput(), 'Core version provided.');
@@ -66,6 +68,7 @@ version_major: ${drupal_version}
 version_minor: ''
 version_patch: ''
 version_extra: ''
+version_offset: ''
 EXPECTED;
     $this->drush('php-eval', array("return pm_parse_version('${version}', ${is_core})"), $options);
     $this->assertEquals($expected, $this->getOutput(), 'Project version not provided. Pick version of the bootstrapped site.');
@@ -79,6 +82,7 @@ version_major: '1'
 version_minor: ''
 version_patch: '0'
 version_extra: ''
+version_offset: ''
 EXPECTED;
     $this->drush('php-eval', array("return pm_parse_version('${version}')"), $options);
     $this->assertEquals($expected, $this->getOutput());
@@ -92,6 +96,7 @@ version_major: '1'
 version_minor: ''
 version_patch: ''
 version_extra: dev
+version_offset: ''
 EXPECTED;
     $this->drush('php-eval', array("return pm_parse_version('${version}')"), $options);
     $this->assertEquals($expected, $this->getOutput());
