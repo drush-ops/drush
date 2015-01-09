@@ -37,6 +37,7 @@ function site_install_drush_command() {
         'example-value' => 'directory_name',
       ),
       'writable' => 'Make CMI and other dirs writable by both web and CLI users. Suitable for non Prod environments.',
+      'keep-config-dirs' => 'Keep CMI directories untouched. This preserves existing configuration.'
     ),
     'examples' => array(
       'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukrainian.',
@@ -212,9 +213,11 @@ function drush_core_pre_site_install($profile = NULL) {
       $directories['staging'] =  $files . '/' . $directories[2];
     }
 
-    foreach ($directories as $directory) {
-      if (file_exists($directory)) {
-        drush_delete_dir_contents($directory, TRUE);
+    if (drush_get_option('keep-config-dirs', FALSE) == FALSE) {
+      foreach ($directories as $directory) {
+        if (file_exists($directory)) {
+          drush_delete_dir_contents($directory, TRUE);
+        }
       }
     }
 
