@@ -118,15 +118,16 @@ class StatusInfoDrush implements StatusInfoInterface {
       // Prepare update info.
       $project = $projects[$project_name];
       $is_core = ($project['type'] == 'core');
-      $version_parts = pm_parse_version($project['version'], $is_core);
-      $install_type = ($version_parts['version_extra'] == 'dev') ? 'dev' : 'official';
+      $version = pm_parse_version($project['version'], $is_core);
+      // If project version ends with 'dev', this is a dev snapshot.
+      $install_type = (substr($project['version'], -3, 3) == 'dev') ? 'dev' : 'official';
       $project_update_info = array(
         'name'             => $project_name,
         'label'            => $project['label'],
         'path'             => isset($project['path']) ? $project['path'] : '',
         'install_type'     => $install_type,
         'existing_version' => $project['version'],
-        'existing_major'   => $version_parts['version_major'],
+        'existing_major'   => $version['version_major'],
         'status'           => $project_status,
         'datestamp'        => empty($project['datestamp']) ? NULL : $project['datestamp'],
       );

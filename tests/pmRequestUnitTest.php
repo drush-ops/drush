@@ -42,6 +42,17 @@ class pmRequestUnitCase extends UnitUnishTestCase {
     $this->assertEquals('dev', $version_parts['version_extra']);
     $this->assertEquals('8.0.x-dev', $version_parts['project_version']);
 
+    $version = '8.0.0-beta3+252-dev';
+    $version_parts = pm_parse_version($version, TRUE);
+    $this->assertEquals('8.0.0-beta3+252-dev', $version_parts['version']);
+    $this->assertEquals('8.x', $version_parts['drupal_version']);
+    $this->assertEquals('8', $version_parts['version_major']);
+    $this->assertEquals('0', $version_parts['version_minor']);
+    $this->assertEquals('0', $version_parts['version_patch']);
+    $this->assertEquals('beta3', $version_parts['version_extra']);
+    $this->assertEquals('252', $version_parts['version_offset']);
+    $this->assertEquals('8.0.0-beta3+252-dev', $version_parts['project_version']);
+
     $version = '8.1.x';
     $version_parts = pm_parse_version($version, TRUE);
     $this->assertEquals('8.1.x-dev', $version_parts['version']);
@@ -182,6 +193,16 @@ class pmRequestUnitCase extends UnitUnishTestCase {
     $this->assertEquals('beta1', $version_parts['version_extra']);
     $this->assertEquals('1.0-beta1', $version_parts['project_version']);
 
+    $version = '7.x-1.0-beta1+30-dev';
+    $version_parts = pm_parse_version($version);
+    $this->assertEquals('7.x', $version_parts['drupal_version']);
+    $this->assertEquals('1', $version_parts['version_major']);
+    $this->assertEquals('', $version_parts['version_minor']);
+    $this->assertEquals('0', $version_parts['version_patch']);
+    $this->assertEquals('beta1', $version_parts['version_extra']);
+    $this->assertEquals('30', $version_parts['version_offset']);
+    $this->assertEquals('1.0-beta1+30-dev', $version_parts['project_version']);
+
     $version = '7.x-1.0';
     $version_parts = pm_parse_version($version);
     $this->assertEquals('7.x', $version_parts['drupal_version']);
@@ -190,6 +211,16 @@ class pmRequestUnitCase extends UnitUnishTestCase {
     $this->assertEquals('0', $version_parts['version_patch']);
     $this->assertEquals('', $version_parts['version_extra']);
     $this->assertEquals('1.0', $version_parts['project_version']);
+
+    $version = '7.x-1.0+30-dev';
+    $version_parts = pm_parse_version($version);
+    $this->assertEquals('7.x', $version_parts['drupal_version']);
+    $this->assertEquals('1', $version_parts['version_major']);
+    $this->assertEquals('', $version_parts['version_minor']);
+    $this->assertEquals('0', $version_parts['version_patch']);
+    $this->assertEquals('', $version_parts['version_extra']);
+    $this->assertEquals('30', $version_parts['version_offset']);
+    $this->assertEquals('1.0+30-dev', $version_parts['project_version']);
 
     // Since we're not on a bootstrapped site, the version string
     // for the following cases is interpreted as a core version.

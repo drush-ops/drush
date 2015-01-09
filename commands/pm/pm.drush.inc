@@ -1383,16 +1383,17 @@ function pm_parse_arguments($args, $dashes_to_underscores = TRUE) {
  *   Array with major, patch and extra keys.
  */
 function _pm_parse_version_decompound($version) {
-  $pattern = '/^(\d+)(?:.(\d+))?(?:\.(x|[\d\+]+))?(?:-(.*))?$/';
+  $pattern = '/^(\d+)(?:.(\d+))?(?:\.(x|\d+))?(?:-([a-z0-9\.-]*))?(?:\+(\d+)-dev)?$/';
 
   $matches = array();
   preg_match($pattern, $version, $matches);
 
   $parts = array(
-    'major' => '',
-    'minor' => '',
-    'patch' => '',
-    'extra' => '',
+    'major'  => '',
+    'minor'  => '',
+    'patch'  => '',
+    'extra'  => '',
+    'offset' => '',
   );
   if (isset($matches[1])) {
     $parts['major'] = $matches[1];
@@ -1407,6 +1408,9 @@ function _pm_parse_version_decompound($version) {
     }
     if (!empty($matches[4])) {
       $parts['extra'] = $matches[4];
+    }
+    if (!empty($matches[5])) {
+      $parts['offset'] = $matches[5];
     }
   }
 
@@ -1441,6 +1445,9 @@ function _pm_parse_version_compound($parts) {
         $project_version = $project_version . '-' . $parts['extra'];
       }
     }
+    if ($parts['offset'] != '') {
+      $project_version = $project_version . '+' . $parts['offset'] . '-dev';
+    }
   }
 
   return $project_version;
@@ -1452,6 +1459,7 @@ function _pm_parse_version_compound($parts) {
  * It parses both core and contrib version strings.
  *
  * Core (semantic versioning):
+ *   - 8.0.0-beta3+252-dev
  *   - 8.0.0-beta2
  *   - 8.0.x-dev
  *   - 8.1.x
@@ -1462,10 +1470,13 @@ function _pm_parse_version_compound($parts) {
  *   - 7.x-dev
  *   - 7.x
  *   - 7.33
+ *   - 7.34+3-dev
  *   - 7
  *
  * Contrib:
+ *   - 7.x-1.0-beta1+30-dev
  *   - 7.x-1.0-beta1
+ *   - 7.x-1.0+30-dev
  *   - 7.x-1.0
  *   - 1.0-beta1
  *   - 1.0
@@ -1483,7 +1494,7 @@ function _pm_parse_version_compound($parts) {
  *
  * @return array
  *   Version string in parts.
- *   Example for a contrib version ()ex: 7.x-3.2-beta1:
+ *   Example for a contrib version (ex: 7.x-3.2-beta1):
  *     - version         : Fully qualified version string.
  *     - drupal_version  : Core compatibility version (ex: 7.x).
  *     - version_major   : Major version (ex: 3).
@@ -1514,12 +1525,13 @@ function pm_parse_version($version, $is_core = FALSE) {
     $project_version = _pm_parse_version_compound($core_parts);
     $version_parts = array(
       'version' => $project_version,
-      'drupal_version' => $core_parts['major'] . '.x',
+      'drupal_version'  => $core_parts['major'] . '.x',
       'project_version' => $project_version,
-      'version_major' => $core_parts['major'],
-      'version_minor' => $core_parts['minor'],
-      'version_patch' => ($core_parts['patch'] == 'x') ? '' : $core_parts['patch'],
-      'version_extra' => ($core_parts['patch'] == 'x') ? 'dev' : $core_parts['extra'],
+      'version_major'   => $core_parts['major'],
+      'version_minor'   => $core_parts['minor'],
+      'version_patch'   => ($core_parts['patch'] == 'x') ? '' : $core_parts['patch'],
+      'version_extra'   => ($core_parts['patch'] == 'x') ? 'dev' : $core_parts['extra'],
+      'version_offset'  => $core_parts['offset'],
     );
   }
   else {
@@ -1527,15 +1539,17 @@ function pm_parse_version($version, $is_core = FALSE) {
     // in $version['extra'] and we need to parse it.
     if (strpbrk($core_parts['extra'], '.-')) {
       $nocore_parts = _pm_parse_version_decompound($core_parts['extra']);
+      $nocore_parts['offset'] = $core_parts['offset'];
       $project_version = _pm_parse_version_compound($nocore_parts);
       $version_parts = array(
         'version' => $core_parts['major'] . '.x-' . $project_version,
-        'drupal_version' => $core_parts['major'] . '.x',
+        'drupal_version'  => $core_parts['major'] . '.x',
         'project_version' => $project_version,
-        'version_major' => $nocore_parts['major'],
-        'version_minor' => $core_parts['minor'],
-        'version_patch' => ($nocore_parts['patch'] == 'x') ? '' : $nocore_parts['patch'],
-        'version_extra' => ($nocore_parts['patch'] == 'x') ? 'dev' : $nocore_parts['extra'],
+        'version_major'   => $nocore_parts['major'],
+        'version_minor'   => $core_parts['minor'],
+        'version_patch'   => ($nocore_parts['patch'] == 'x') ? '' : $nocore_parts['patch'],
+        'version_extra'   => ($nocore_parts['patch'] == 'x') ? 'dev' : $nocore_parts['extra'],
+        'version_offset'  => $core_parts['offset'],
       );
     }
     // At this point we have half a version and must decide if this is a drupal major or a project.
@@ -1545,25 +1559,27 @@ function pm_parse_version($version, $is_core = FALSE) {
         $project_version = _pm_parse_version_compound($core_parts);
         $version = ($project_version) ? $drupal_version_default . '.x-' . $project_version : '';
         $version_parts = array(
-          'version' => $version,
-          'drupal_version' => $drupal_version_default . '.x',
+          'version'         => $version,
+          'drupal_version'  => $drupal_version_default . '.x',
           'project_version' => $project_version,
-          'version_major' => $core_parts['major'],
-          'version_minor' => $core_parts['minor'],
-          'version_patch' => ($core_parts['patch'] == 'x') ? '' : $core_parts['patch'],
-          'version_extra' => ($core_parts['patch'] == 'x') ? 'dev' : $core_parts['extra'],
+          'version_major'   => $core_parts['major'],
+          'version_minor'   => $core_parts['minor'],
+          'version_patch'   => ($core_parts['patch'] == 'x') ? '' : $core_parts['patch'],
+          'version_extra'   => ($core_parts['patch'] == 'x') ? 'dev' : $core_parts['extra'],
+          'version_offset'  => $core_parts['offset'],
         );
       }
       // Not working on a bootstrapped site, core_parts is core version.
       else {
         $version_parts = array(
           'version' => '',
-          'drupal_version' => $core_parts['major'] . '.x',
+          'drupal_version'  => $core_parts['major'] . '.x',
           'project_version' => '',
-          'version_major' => '',
-          'version_minor' => '',
-          'version_patch' => '',
-          'version_extra' => '',
+          'version_major'   => '',
+          'version_minor'   => '',
+          'version_patch'   => '',
+          'version_extra'   => '',
+          'version_offset'  => '',
         );
       }
     }
