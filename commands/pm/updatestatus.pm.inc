@@ -113,7 +113,7 @@ function drush_pm_updatestatus() {
       // TODO: should we warn/reject if this is a downgrade?
       else {
         $update_info[$name]['status'] = DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_CURRENT;
-        $update_info[$name]['candidate_version'] = $release['version'];
+        $update_info[$name]['candidate_version'] = $request['version'];
       }
     }
   }
