@@ -564,7 +564,8 @@ function _drush_bootstrap_drupal_site_validate() {
     $_SERVER['PHP_SELF'] = '/index.php';
   }
 
-  $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
+  $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
+  $_SERVER['REQUEST_URI'] = '/';
   $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
   $_SERVER['REQUEST_METHOD']  = NULL;
 
