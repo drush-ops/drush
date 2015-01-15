@@ -7,8 +7,8 @@ Configure
    your .bashrc (or equivalent): source /path/to/drush/examples/example.bashrc
 
 * If you didn't source it the step above, see top of
-   [drush.complete.sh](https://raw.githubusercontent.com/drush-ops/drush/master/drush.complete.sh) file for instructions adding bash completion for drush
-   command to your shell.  Once configured, completion works for site aliases,
+   [drush.complete.sh](https://raw.githubusercontent.com/drush-ops/drush/master/drush.complete.sh) file for instructions on adding completion for drush
+   commands to your shell.  Once configured, completion works for site aliases,
    command names, shell aliases, global options, and command-specific options.
 
 * Optional. If [drush.complete.sh](https://raw.githubusercontent.com/drush-ops/drush/master/drush.complete.sh) is being sourced (ideally in

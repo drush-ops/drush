@@ -4,6 +4,13 @@
 # ~/.bash_completion or ~/.bash_profile files.  Alternatively, source
 # examples/example.bashrc instead, as it will automatically find and source
 # this file.
+#
+# If you're using ZSH instead of BASH, add the following to your ~/.zshrc file
+# and source it.
+#
+#   autoload bashcompinit
+#   bashcompinit
+#   source /path/to/your/drush.complete.sh
 
 # Ensure drush is available.
 which drush > /dev/null || alias drush &> /dev/null || return
