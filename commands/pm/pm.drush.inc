@@ -2139,11 +2139,13 @@ function drush_find_empty_directories($dir, $exclude = array()) {
  *   The project machine name (AKA shortname).
  * @param string $version
  *   The version string to inject into the .info file(s).
+ * @param int $datestamp
+ *   The datestamp of the last commit.
  *
  * @return boolean
  *   TRUE on success, FALSE on any failures appending data to .info files.
  */
-function drush_pm_inject_info_file_metadata($project_dir, $project_name, $version) {
+function drush_pm_inject_info_file_metadata($project_dir, $project_name, $version, $datestamp) {
   // `drush_drupal_major_version()` cannot be used here because this may be running
   // outside of a Drupal context.
   $yaml_format = substr($version, 0, 1) >= 8;
@@ -2155,7 +2157,7 @@ function drush_pm_inject_info_file_metadata($project_dir, $project_name, $versio
       $info = _drush_pm_generate_info_yaml_metadata($version, $project_name);
     }
     else {
-      $info = _drush_pm_generate_info_ini_metadata($version, $project_name);
+      $info = _drush_pm_generate_info_ini_metadata($version, $project_name, $datestamp);
     }
     foreach ($info_files as $info_file) {
       if (!drush_file_append_data($info_file->filename, $info)) {
@@ -2172,7 +2174,7 @@ function drush_pm_inject_info_file_metadata($project_dir, $project_name, $versio
  * Taken with some modifications from:
  * http://drupalcode.org/project/drupalorg.git/blob/refs/heads/6.x-3.x:/drupalorg_project/plugins/release_packager/DrupalorgProjectPackageRelease.class.php#l192
  */
-function _drush_pm_generate_info_ini_metadata($version, $project_name) {
+function _drush_pm_generate_info_ini_metadata($version, $project_name, $datestamp) {
   $matches = array();
   $extra = '';
   if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
@@ -2181,13 +2183,12 @@ function _drush_pm_generate_info_ini_metadata($version, $project_name) {
   if (!drush_get_option('no-gitprojectinfo', FALSE)) {
     $extra = "\nproject = \"$project_name\"";
   }
-  $time = time();
-  $date = date('Y-m-d');
+  $date = date('Y-m-d', $datestamp);
   $info = <<<METADATA
 
 ; Information added by drush on {$date}
 version = "{$version}"{$extra}
-datestamp = "{$time}"
+datestamp = "{$datestamp}"
 METADATA;
   return $info;
 }
