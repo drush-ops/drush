@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drush\Boris\VarDumperInspector.
+ */
+
 namespace Drush\Boris;
 
 use Symfony\Component\VarDumper\VarDumper;
