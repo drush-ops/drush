@@ -430,7 +430,6 @@ function pm_drush_command() {
       ),
       'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
       'pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
-      'force' => 'Skip hash validation of downloads.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'aliases' => array('dl'),
@@ -1665,6 +1664,9 @@ function pm_drush_engine_package_handler() {
   return array(
     'wget' => array(
       'description' => 'Download project packages using wget or curl.',
+      'options' => array(
+        'no-md5' => 'Skip md5 validation of downloads.',
+      ),
     ),
     'git_drupalorg' => array(
       'description' => 'Use git.drupal.org to checkout and update projects.',
