@@ -204,7 +204,7 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
     return drush_set_error('DRUSH_CONFIG_ERROR', dt('No config value specified.'));
   }
 
-  $config = Drupal::config($config_name);
+  $config = Drupal::configFactory()->getEditable($config_name);
   // Check to see if config key already exists.
   if ($config->get($key) === NULL) {
     $new_key = TRUE;
@@ -422,7 +422,7 @@ function _drush_config_import(StorageComparer $storage_comparer) {
 function drush_config_edit($config_name = '') {
   // Identify and validate input.
   if ($config_name) {
-    $config = Drupal::config($config_name);
+    $config = Drupal::configFactory()->getEditable($config_name);
     if ($config->isNew()) {
       return drush_set_error(dt('Config !name does not exist', array('!name' => $config_name)));
     }
@@ -435,7 +435,7 @@ function drush_config_edit($config_name = '') {
     }
     else {
       $config_name = $config_names[$choice];
-      $config = Drupal::config($config_name);
+      $config = Drupal::configFactory()->getEditable($config_name);
     }
   }
 
