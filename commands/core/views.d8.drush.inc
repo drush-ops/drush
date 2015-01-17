@@ -163,7 +163,7 @@ function drush_views_dev() {
     'ui.show.display_embed' => TRUE,
   );
 
-  $config = \Drupal::config('views.settings');
+  $config = \Drupal::configFactory()->getEditable('views.settings');
 
   foreach ($settings as $setting => $value) {
     $config->set($setting, $value);
