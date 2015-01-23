@@ -201,7 +201,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   }
 
   if (drush_get_option('shallow-clone', FALSE) && drush_get_option('working-copy', FALSE)) {
-    drush_set_error('MAKE_SHALLOW_CLONE_WORKING_COPY_CONFLICT', dt('You cannot use "--shallow-copy" and "--working-copy" options together.'));
+    drush_set_error('MAKE_SHALLOW_CLONE_WORKING_COPY_CONFLICT', dt('You cannot use "--shallow-clone" and "--working-copy" options together.'));
     return FALSE;
   }
 
