@@ -811,11 +811,6 @@ function drupal8_bootstrap($phase = NULL) {
 
         case DRUPAL_BOOTSTRAP_KERNEL:
           $kernel->boot();
-          break;
-
-        case DRUPAL_BOOTSTRAP_PAGE_CACHE:
-          $kernel->handlePageCache($request);
-          break;
 
         case DRUPAL_BOOTSTRAP_CODE:
         case DRUPAL_BOOTSTRAP_FULL:

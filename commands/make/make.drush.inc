@@ -37,6 +37,8 @@ function make_drush_command() {
       'drush make example.make example' => 'Build the example.make makefile in the example directory.',
       'drush make --no-core --contrib-destination=. installprofile.make' => 'Build an installation profile within an existing Drupal site',
       'drush make http://example.com/example.make example' => 'Build the remote example.make makefile in the example directory.',
+      'drush make example.make --no-build --lock=example.lock' => 'Write a new makefile to example.lock. All project versions will be resolved.',
+      'drush make example.make --no-build --lock-update=example.make' => 'Write a new makefile to example.make. All project versions will be updated.',
     ),
     'options' => array(
       'version' => 'Print the make API version and exit.',
@@ -71,33 +73,25 @@ function make_drush_command() {
       'download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
       'projects' => array(
         'description' => 'Restrict the make to this comma-separated list of projects. To specify all projects, pass *.',
-        'example' => 'views,ctools',
+        'example-value' => 'views,ctools',
       ),
       'libraries' => array(
         'description' => 'Restrict the make to this comma-separated list of libraries. To specify all libraries, pass *.',
-        'example' => 'tinymce',
+        'example-value' => 'tinymce',
       ),
       'allow-override' => array(
-        'description' => 'Restrict the make options to this comma-separated list of options.',
-        'example' => 'all or none or working-copy or no-core, working-copy',
+        'description' => 'Restrict the make options to a comma-separated list. Defaults to unrestricted.',
       ),
       'lock' => array(
-        'description' => 'Generate a makefile, based on the one passed in, with all versions resolved. Defaults to printing to the terminal, but an output file may be provided.',
-        'examples' => array(
-          'drush make example.make example --lock=example.lock' => 'Write the compiled version of example.make to example.lock.',
-        ),
+        'description' => 'Generate a makefile, based on the one passed in, with all versions *resolved*. Defaults to printing to the terminal, but an output file may be provided.',
+        'example-value' => 'example.make.lock',
       ),
       'lock-update' => array(
-        'description' => 'Generate an updated makefile, based on the one passed in, with all versions updated. Defaults to printing to the terminal, but an output file may be provided.',
-        'examples' => array(
-          'drush make example.make example --lock-update=example.lock' => 'Write the updated version of example.make to example.lock.',
-        ),
+        'description' => 'Generate an updated makefile, based on the one passed in, with all versions *updated*. Defaults to printing to the terminal, but an output file may be provided.',
+        'example-value' => 'example.make',
       ),
       'shallow-clone' => array(
         'description' => 'For makefile entries which use git for downloading, this option will utilize shallow clones where possible (ie. by using the git-clone\'s depth=1 option). If the "working-copy" option is not desired, this option will significantly speed up makes which involve modules stored in very large git repos. In fact, if "working-copy" option is enabled, this option cannot be used.',
-        'examples' => array(
-          'drush make example.make example --shallow-clone',
-        ),
       ),
     ),
     'engines' => array('release_info'),
@@ -207,7 +201,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   }
 
   if (drush_get_option('shallow-clone', FALSE) && drush_get_option('working-copy', FALSE)) {
-    drush_set_error('MAKE_SHALLOW_CLONE_WORKING_COPY_CONFLICT', dt('You cannot use "--shallow-copy" and "--working-copy" options together.'));
+    drush_set_error('MAKE_SHALLOW_CLONE_WORKING_COPY_CONFLICT', dt('You cannot use "--shallow-clone" and "--working-copy" options together.'));
     return FALSE;
   }
 
