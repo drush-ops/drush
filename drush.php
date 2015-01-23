@@ -8,11 +8,6 @@
  * @requires PHP CLI 5.3.0, or newer.
  */
 
-require dirname(__FILE__) . '/includes/preflight.inc';
-
-if (drush_preflight_prepare() === FALSE) {
-  exit(1);
-}
 exit(drush_main());
 
 /**
@@ -31,7 +26,11 @@ exit(drush_main());
  *   Whatever the given command returns.
  */
 function drush_main() {
-  $return = '';
+  // Load Drush core include files, and parse command line arguments.
+  require dirname(__FILE__) . '/includes/preflight.inc';
+  if (drush_preflight_prepare() === FALSE) {
+    return(1);
+  }
   // Start code coverage collection.
   if ($coverage_file = drush_get_option('drush-coverage', FALSE)) {
     drush_set_context('DRUSH_CODE_COVERAGE', $coverage_file);
@@ -48,10 +47,8 @@ function drush_main() {
   drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
   $bootstrap->preflight();
 
-  // Process initial global options such as --debug.
-  _drush_preflight_global_options();
-
   $return = '';
+  // Load the Drush configuration files.
   drush_preflight();
   if (!drush_get_error()) {
     if ($file = drush_get_option('early', FALSE)) {

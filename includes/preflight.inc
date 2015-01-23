@@ -82,6 +82,9 @@ function drush_preflight_prepare() {
 
   // We need some global options/arguments processed at this early stage.
   drush_parse_args();
+
+  // Process initial global options such as --debug.
+  _drush_preflight_global_options();
 }
 
 /**
