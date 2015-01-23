@@ -133,7 +133,7 @@ drush_invoke("version", $arg);
       'root' => $root,
       'uri' => key($this->getSites()),
       'pipe' => NULL,
-      'ignore' => 'cron,http requests,update_core', // no network access when running in tests, so ignore these
+      'ignore' => 'cron,http requests,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
       'strict' => 0, // invoke from script: do not verify options
     );
     // Verify that there are no severity 2 items in the status report
