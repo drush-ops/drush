@@ -38,6 +38,9 @@ function drush_main() {
     register_shutdown_function('drush_coverage_shutdown');
   }
 
+  // Load the Drush configuration files.
+  drush_preflight();
+
   /* Set up bootstrap object, so that
    * - 'early' files can bootstrap when needed.
    * - bootstrap constants are available.
@@ -48,8 +51,6 @@ function drush_main() {
   $bootstrap->preflight();
 
   $return = '';
-  // Load the Drush configuration files.
-  drush_preflight();
   if (!drush_get_error()) {
     if ($file = drush_get_option('early', FALSE)) {
       require_once $file;

@@ -1060,6 +1060,14 @@ function drush_command_defaults($key, $commandfile, $path) {
     'hidden' => FALSE,
     'category' => $commandfile,
   );
+  // We end up here, setting the defaults for a command, when
+  // called from drush_get_global_options().  Early in the Drush
+  // bootstrap, there will be no bootstrap object, because we
+  // need to get the list of global options when loading config
+  // files, and config files are loaded before the bootstrap object
+  // is created.  In this early stage, we just use the core global
+  // options list.  Later, the bootstrap object can also provide
+  // additional defaults if needed.
   if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
     $defaults = array_merge($defaults, $bootstrap->command_defaults());
   }
