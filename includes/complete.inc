@@ -564,8 +564,8 @@ function drush_complete_cache_cid($type, $command = NULL) {
   // bootstrap, which prevents the caches from being found on the next call.
   static $root, $site;
   if (empty($root)) {
-    $root = drush_get_option(array('r', 'root'), drush_locate_root());
-    $site = drush_get_option(array('l', 'uri'), drush_site_path());
+    $root = drush_get_option(drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT', ''));
+    $site = drush_get_option(drush_set_context('DRUSH_SELECTED_URI', ''));
   }
   return drush_get_cid('complete', array(), array($type, $command, $root, $site));
 }
