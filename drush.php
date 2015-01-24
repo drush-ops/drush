@@ -43,7 +43,11 @@ function drush_main() {
 
   // Get the list of candidate bootstrap classes available for different platforms
   $bootstrap_candidates = drush_preflight_get_bootstrap_candidates();
-  $bootstrap = array_pop($bootstrap_candidates);
+
+  // Find the root for the selected platform
+  $bootstrap = _drush_find_and_preflight_root($bootstrap_candidates);
+  
+  // Remember the bootstrap class we found, and preflight it.
   drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
   $bootstrap->preflight();
 

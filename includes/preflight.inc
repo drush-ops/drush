@@ -183,9 +183,6 @@ function drush_preflight() {
 }
 
 function drush_preflight_site() {
-  // Determine if --root and --uri have been defined and set constants accordingly.
-  _drush_find_and_preflight_root();
-
   // Load the config options from Drupal's /drush and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
@@ -324,12 +321,17 @@ function _drush_preflight_root_uri() {
   _drush_preflight_uri();
 }
 
-function _drush_find_and_preflight_root() {
+function _drush_find_and_preflight_root($bootstrap_candidates) {
   $root = drush_get_option('root');
   if (!isset($root)) {
     $root = drush_locate_root();
   }
+
+  $bootstrap = array_pop($bootstrap_candidates);
+
   _drush_do_preflight_root($root);
+
+  return $bootstrap;
 }
 
 function _drush_do_preflight_root($root) {
