@@ -184,7 +184,7 @@ function drush_preflight() {
 
 function drush_preflight_site() {
   // Determine if --root and --uri have been defined and set constants accordingly.
-  _drush_preflight_root();
+  _drush_find_and_preflight_root();
 
   // Load the config options from Drupal's /drush and sites/all/drush directories,
   // even prior to bootstrapping the root.
@@ -319,24 +319,26 @@ function _drush_preflight_alias_path() {
  * Set root and uri.
  */
 function _drush_preflight_root_uri() {
-  _drush_preflight_root();
+  $root = drush_get_option('root');
+  _drush_do_preflight_root($root);
   _drush_preflight_uri();
 }
 
-/**
- * If --root is provided, set context.
- */
-function _drush_preflight_root() {
+function _drush_find_and_preflight_root() {
   $root = drush_get_option('root');
   if (!isset($root)) {
     $root = drush_locate_root();
   }
+  _drush_do_preflight_root($root);
+}
+
+function _drush_do_preflight_root($root) {
   if ($root) {
     $root = realpath($root);
+    // @todo This context name should not mention Drupal.
+    // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
+    drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
   }
-  // @todo This context name should not mention Drupal.
-  // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
-  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
 }
 
 /**
