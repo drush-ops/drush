@@ -98,6 +98,8 @@ class MigrateManifest8 implements MigrateInterface {
         $migrations[$migration->id()] = array(
           'executable' => $executable,
           'migration' => $migration,
+          'source' => $migration->get('source'),
+          'destination' => $migration->get('destination'),
         );
       }
     }

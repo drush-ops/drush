@@ -82,11 +82,11 @@ class migrateManifestTest extends CommandUnishTestCase {
     $this->assertArrayHasKey('d6_action_settings', $return['object']);
 
     // Check source config.
-    $source_config = $return['object']['d6_file']['migration']['source'];
+    $source_config = $return['object']['d6_file']['source'];
     $this->assertEquals('sites/assets', $source_config['conf_path']);
 
     // Check destination config.
-    $destination_config = $return['object']['d6_file']['migration']['destination'];
+    $destination_config = $return['object']['d6_file']['destination'];
     $this->assertEquals('destination/base/path', $destination_config['source_base_path']);
     $this->assertEquals('uri', $destination_config['destination_path_property']);
   }
