@@ -45,9 +45,7 @@ function drush_main() {
    * - 'early' files can bootstrap when needed.
    * - bootstrap constants are available.
    */
-  $bootstrap_class = drush_get_option('bootstrap_class', 'Drush\Boot\DrupalBoot');
-  $bootstrap = new $bootstrap_class;
-  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
+  $bootstrap = drush_preflight_create_bootstrap_object();
   $bootstrap->preflight();
 
   $return = '';
@@ -70,7 +68,6 @@ function drush_main() {
       // perhaps handling immediately.
       $command_handled = drush_preflight_command_dispatch();
       if (!$command_handled) {
-        $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT');
         $return = $bootstrap->bootstrap_and_dispatch();
       }
     }
