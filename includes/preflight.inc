@@ -177,6 +177,12 @@ function drush_preflight() {
   // Load a custom config specified with the --config option.
   drush_load_config('custom');
 
+  _drush_preflight_global_options();
+
+  _drush_find_commandfiles_drush();
+}
+
+function drush_preflight_site() {
   // Determine if --root and --uri have been defined and set constants accordingly.
   _drush_preflight_root();
 
@@ -222,15 +228,20 @@ function drush_preflight() {
   }
 
   _drush_preflight_global_options();
-
-  _drush_find_commandfiles_drush();
 }
 
-function drush_preflight_create_bootstrap_object() {
-  $bootstrap_class = drush_get_option('bootstrap_class', 'Drush\Boot\DrupalBoot');
-  $bootstrap = new $bootstrap_class;
-  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
-  return $bootstrap;
+function drush_preflight_get_bootstrap_candidates() {
+  // Give all commandfiles a chance to return candidates
+  $candidates = drush_command_invoke_all('bootstrap_candidates');
+  // If a bootstrap class was specified on the command line, consider it first.
+  $bootstrap_class = drush_get_option('bootstrap_class', FALSE);
+  if ($bootstrap_class) {
+    array_unshift($candidates, new $bootstrap_class);
+  }
+  // Always consider our default bootstrap class last.
+  $default_bootstrap_class = 'Drush\Boot\DrupalBoot';
+  $candidates[] = new $default_bootstrap_class;
+  return $candidates;
 }
 
 function _drush_preflight_global_options() {

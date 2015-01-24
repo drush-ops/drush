@@ -38,15 +38,17 @@ function drush_main() {
     register_shutdown_function('drush_coverage_shutdown');
   }
 
-  // Load the Drush configuration files.
+  // Load the global Drush configuration files, and global Drush commands.
   drush_preflight();
 
-  /* Set up bootstrap object, so that
-   * - 'early' files can bootstrap when needed.
-   * - bootstrap constants are available.
-   */
-  $bootstrap = drush_preflight_create_bootstrap_object();
+  // Get the list of candidate bootstrap classes available for different platforms
+  $bootstrap_candidates = drush_preflight_get_bootstrap_candidates();
+  $bootstrap = array_pop($bootstrap_candidates);
+  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
   $bootstrap->preflight();
+
+  // Find the selected site, and load any configuration files associated with it.
+  drush_preflight_site();
 
   $return = '';
   if (!drush_get_error()) {
