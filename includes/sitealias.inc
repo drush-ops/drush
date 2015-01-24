@@ -1087,23 +1087,6 @@ function _drush_sitealias_initialize_alias_record(&$alias_record) {
       $alias_record['site-list'] = $derived_list;
     }
   }
-  // If there is a 'site-search-path' entry, then build
-  // a 'site-list' entry from all of the sites that can be
-  // found in the search path.
-  if (array_key_exists('site-search-path', $alias_record)) {
-    // TODO:  Is there any point in merging the sites from
-    // the search path with any sites already listed in the
-    // 'site-list' entry?  For now we'll just overwrite.
-    $search_path = $alias_record['site-search-path'];
-    if (!is_array($search_path)) {
-      $search_path = explode(',', $search_path);
-    }
-    $found_sites = _drush_sitealias_find_local_sites($search_path);
-    $alias_record['site-list'] = $found_sites;
-    // The 'unordered-list' flag indicates that the order of the items in the site list is not stable.
-    $alias_record['unordered-list'] = '1';
-    // DEBUG: var_export($alias_record, FALSE);
-  }
   if (array_key_exists('site-list', $alias_record)) {
     if (!is_array($alias_record['site-list'])) {
       $alias_record['site-list'] = explode(',', $alias_record['site-list']);
@@ -1238,23 +1221,6 @@ function drush_sitealias_alias_record_to_spec($alias_record, $with_db = false) {
     }
 
     return $result;
-}
-
-/**
- * Search for drupal installations in the search path.
- *
- * @param search_path
- *   An array of drupal root folders
- *
- * @return
- *   An array of site specifications (/path/to/root#sitename.com)
- */
-function _drush_sitealias_find_local_sites($search_path) {
-  $result = array();
-  foreach ($search_path as $a_drupal_root) {
-    $result = array_merge($result, _drush_find_local_sites_at_root($a_drupal_root));
-  }
-  return $result;
 }
 
 /**
