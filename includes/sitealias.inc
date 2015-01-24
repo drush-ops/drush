@@ -159,12 +159,9 @@ function drush_sitealias_valid_alias_format($alias) {
  * - user@server/path/to/drupal#sitename
  * - user@server/path/to/drupal            (sitename == server)
  * - user@server#sitename                  (only if $option['r'] set in some drushrc file on server)
- * - #sitename                             (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
- * - sitename                              (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
  *
- * Note that in the case of the first four forms, it is also possible
- * to add additional site variable to the specification using uri query
- * syntax.  For example:
+ * Note that it is also possible to add additional site variable 
+ * to the specification using uri query syntax.  For example:
  *
  *      user@server/path/to/drupal?db-url=...#sitename
  *
@@ -273,12 +270,6 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
             $alias_record = array();
           }
         }
-      }
-      else {
-        // Case 5.) and 6.):
-        // If the alias is the name of a folder in the 'sites' directory,
-        // then use it as a local site specification.
-        $alias_record = _drush_sitealias_find_record_for_local_site($alias);
       }
     }
   }
@@ -1381,56 +1372,6 @@ function _drush_sitealias_find_local_alias_name($root, $uri) {
   }
 
   return $result;
-}
-
-/**
- * If '$alias' is the name of a folder in the sites folder of the given drupal
- * root, then build an alias record for it
- *
- * @param alias
- *   The name of the site in the 'sites' folder to convert
- * @return array
- *   An alias record, or empty if none found.
- */
-function _drush_sitealias_find_record_for_local_site($alias, $drupal_root = NULL) {
-  $alias_record = array();
-
-  // Clip off the leading '#' if it is there
-  if (substr($alias,0,1) == '#') {
-    $alias = substr($alias,1);
-  }
-
-  if (!isset($drupal_root)) {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-  }
-
-  if (!empty($drupal_root)) {
-    $alias_dir = drush_sitealias_uri_to_site_dir($alias);
-    $site_settings_file = $drupal_root . '/sites/' . $alias_dir . '/settings.php';
-    $alias_record = drush_sitealias_build_record_from_settings_file($site_settings_file, $alias, $drupal_root);
-  }
-
-  return $alias_record;
-}
-
-function drush_sitealias_build_record_from_settings_file($site_settings_file, $alias = null, $drupal_root = null) {
-  $alias_record = array();
-
-  if (file_exists($site_settings_file)) {
-    if (!isset($drupal_root)) {
-      $drupal_root = drush_locate_root($site_settings_file);
-    }
-
-    $alias_record['root'] = $drupal_root;
-    if (isset($alias)) {
-      $alias_record['uri'] = $alias;
-    }
-    else {
-      $alias_record['uri'] = _drush_sitealias_site_dir_to_uri(drush_sitealias_site_dir_from_filename($site_settings_file));
-    }
-  }
-
-  return $alias_record;
 }
 
 /**
