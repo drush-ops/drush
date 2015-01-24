@@ -1312,19 +1312,9 @@ function _drush_find_local_sites_in_sites_folder($a_drupal_root) {
   $files = drush_scan_directory($base_path, '/settings\.php/', array('.', '..', 'CVS', 'all'), 0, 1, 'filename', 1);
   foreach ($files as $filename => $info) {
     if ($info->basename == 'settings.php') {
-      // First we'll resolve the realpath of the settings.php file,
-      // so that we get the correct drupal root when symlinks are in use.
-      $real_sitedir = dirname(realpath($filename));
-      $real_root = drush_locate_root($filename);
-      if ($real_root !== FALSE) {
-        $a_drupal_site = $real_root . '#' . basename($real_sitedir);
-      }
-      // If the symlink points to some folder outside of any drupal
-      // root, then we'll use the
-      else {
-        $uri = drush_sitealias_site_dir_from_filename($filename);
-        $a_drupal_site = $a_drupal_root . '#' . $uri;
-      }
+      // Build the site spec from the root directory and uri
+      $uri = drush_sitealias_site_dir_from_filename($filename);
+      $a_drupal_site = $a_drupal_root . '#' . $uri;
       // Add the site if it isn't already in the array
       if (!in_array($a_drupal_site, $site_list)) {
         $site_list[] = $a_drupal_site;
