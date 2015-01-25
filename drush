@@ -124,12 +124,6 @@ if [ -n "$PHP_OPTIONS" ] ; then
   php_options="$php_options $PHP_OPTIONS"
 fi
 
-# If on PHP 5.3, disable magic_quotes_gpc and friends
-PHP_MINOR_VERSION="`\"$php\" -r 'print PHP_MINOR_VERSION;'`"
-if [ $PHP_MINOR_VERSION -le 3 ] ; then
-  php_options="$php_options -d magic_quotes_gpc=Off -d magic_quotes_runtime=Off -d magic_quotes_sybase=Off"
-fi
-
 # Pass in the path to php so that drush knows which one to use if it
 # re-launches itself to run subcommands.  We will also pass in the php options.
 # Important note: Any options added here must be removed  when Drush processes
