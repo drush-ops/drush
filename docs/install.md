@@ -26,10 +26,10 @@ Composer - One Drush for all Projects
         sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
         source $HOME/.bashrc
         
-        For Mac OS users whose $HOME/.bashrc file may be empty or non-existent.
-        touch $HOME/.bashrc
-        { echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"'; cat $HOME/.bashrc; } | tee $HOME/.bashrc
-        source $HOME/.bashrc
+        For Mac OS users
+        touch $HOME/.bash_profile
+        { echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"'; cat $HOME/.bash_profile; } | tee $HOME/.bash_profile
+        source $HOME/.bash_profile
 
 * To install Drush 6.x (stable):
 
