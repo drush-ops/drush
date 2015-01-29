@@ -92,12 +92,12 @@ using Compser, consider trying MANUAL INSTALLATION. It is not too hard.
     composer global update
 
 1. Alternate commands to install some other variant of Drush:
-
+    ```bash
     # Install a specific version of Drush, e.g. Drush 6.1.0
     composer global require drush/drush:6.1.0
     # Master branch as a git clone. Great for contributing back to Drush project.
     composer global require drush/drush:dev-master --prefer-source
-
+    ```
 1. To install for all users on the server:
     ```bash
     curl -sS https://getcomposer.org/installer | php
