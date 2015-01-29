@@ -66,31 +66,53 @@ REQUIREMENTS
 * Drush works best on a Unix-like OS (Linux, OS X)
 * Most Drush commands run on Windows.  See INSTALLING DRUSH ON WINDOWS, below.
 
-INSTALL - PEAR
+INSTALL - COMPOSER
 -----------
-If you have trouble with PEAR installation, consider trying MANUAL INSTALLATION. It is not too hard.
+Composer is the preferred way to install Drush, but if you have any issues with
+using Compser, consider trying MANUAL INSTALLATION. It is not too hard.
 
-```bash
-pear channel-discover pear.drush.org
-pear install drush/drush
-```
+1. [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements).
 
-_Tip: Use sudo to overcome permission problems.  If the channel-discover fails, try running the following sequence of commands:_
+1. Add Composer's global bin directory to the system PATH (recommended):
+    ```bash
+    sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
+    source $HOME/.bashrc
+    ```
+1. To install Drush
+   1. Version 6.x (stable):
 
-```bash
-pear upgrade --force Console_Getopt
-pear upgrade --force pear
-pear upgrade-all
-```
+      composer global require drush/drush:6.*
 
-To update, run `pear upgrade drush/drush`
+   1. Version 7.x (dev) which is required for Drupal 8:
 
-To get alternate drush versions, replace that last line with one of the below that matches your fancy.
+      composer global require drush/drush:dev-master
 
-```bash
-pear install drush/drush-5.0.0
-pear install drush/drush-6.0.0RC4
-```
+1. To update to a newer version (what you get depends on your specification in ~/.composer/composer.json):
+
+    composer global update
+
+1. Alternate commands to install some other variant of Drush:
+
+    # Install a specific version of Drush, e.g. Drush 6.1.0
+    composer global require drush/drush:6.1.0
+    # Master branch as a git clone. Great for contributing back to Drush project.
+    composer global require drush/drush:dev-master --prefer-source
+
+1. To install for all users on the server:
+    ```bash
+    curl -sS https://getcomposer.org/installer | php
+    mv composer.phar /usr/local/bin/composer
+    ln -s /usr/local/bin/composer /usr/bin/composer
+
+    git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
+    cd /usr/local/src/drush
+    git checkout 7.0.0-alpha5  #or whatever version you want.
+    ln -s /usr/local/src/drush/drush /usr/bin/drush
+    composer install
+    drush --version
+    ```
+
+    [Fuller explanation of the require command](http://getcomposer.org/doc/03-cli.md#require).
 
 See the POST-INSTALL section for configuration tips.
 
