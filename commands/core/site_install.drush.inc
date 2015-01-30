@@ -108,29 +108,15 @@ function drush_core_pre_site_install($profile = NULL) {
   $files = !empty($GLOBALS['conf']['files_public_path']) ? $GLOBALS['conf']['files_public_path'] : "$conf_path/files";
   $settingsfile = "$conf_path/settings.php";
   $sitesfile = "sites/sites.php";
-<<<<<<< HEAD
-  $sitesfile_write = drush_drupal_major_version() >= 8 && !file_exists($sitesfile) && $sites_subdir != 'default';
-  $db_drop_existing_tables = drush_get_option('db-drop-existing-tables', TRUE);
-  
-=======
   $default = realpath($alias_record['root'] . '/sites/default');
   $sitesfile_write = drush_drupal_major_version() >= 8 && $conf_path != $default && !file_exists($sitesfile);
-
->>>>>>> upstream/master
   if (!file_exists($settingsfile)) {
     $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
   }
   if ($sitesfile_write) {
     $msg[] = dt('create a @sitesfile file', array('@sitesfile' => $sitesfile));
   }
-<<<<<<< HEAD
-  if (drush_drupal_major_version() >= 8) {
-    $msg[] = dt('empty any Config directories');
-  }
-  if (drush_sql_db_exists($db_spec) && $db_drop_existing_tables) {
-=======
   if ($sql->db_exists()) {
->>>>>>> upstream/master
     $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
   }
   else {
@@ -194,14 +180,7 @@ function drush_core_pre_site_install($profile = NULL) {
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   }
 
-<<<<<<< HEAD
-  // Empty or create the DB as needed.
-  if ($db_drop_existing_tables) {
-    drush_sql_empty_db($db_spec);
-  }
-=======
   $sql->drop_or_create($db_spec);
->>>>>>> upstream/master
 
   if (drush_drupal_major_version() >= 8) {
     // Empty out any existing config directories.
