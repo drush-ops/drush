@@ -5,3 +5,4 @@ vendor
 *youngj-httpserver*
 #The mkdocs output directory.
 site
+/nbproject/private/
