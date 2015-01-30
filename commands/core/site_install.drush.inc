@@ -110,6 +110,7 @@ function drush_core_pre_site_install($profile = NULL) {
   $sitesfile = "sites/sites.php";
   $default = realpath($alias_record['root'] . '/sites/default');
   $sitesfile_write = drush_drupal_major_version() >= 8 && $conf_path != $default && !file_exists($sitesfile);
+  
   if (!file_exists($settingsfile)) {
     $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
   }
