@@ -333,8 +333,27 @@ function drush_merge_engine_data(&$command) {
         $engine_info['engines'][$default]['description'] = dt('Default !type engine.', array('!type' => $engine_type)) . ' ' . $desc;
       }
     }
-    $command = array_merge_recursive($command, $engine_data);
+    // This was simply array_merge_recursive($command, $engine_data), but this
+    // function has an undesirable behavior when merging primative types.
+    // If there is a 'key' => 'value' in $command, and the same 'key' => 'value'
+    // exists in $engine data, then the result will be 'key' => array('value', 'value');.
+    // This is NOT what we want, so we provide our own 'overlay' function instead.
+    $command = _drush_array_overlay_recursive($command, $engine_data);
   }
+}
+
+// Works like array_merge_recursive(), but does not convert primative
+// types into arrays.  Ever.
+function _drush_array_overlay_recursive($a, $b) {
+  foreach ($b as $key => $value) {
+    if (!isset($a[$key]) || !is_array($a[$key])) {
+      $a[$key] = $b[$key];
+    }
+    else {
+      $a[$key] = _drush_array_overlay_recursive($a[$key], $b[$key]);
+    }
+  }
+  return $a;
 }
 
 /**
