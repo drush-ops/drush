@@ -11,17 +11,15 @@ class Sqlmysql extends SqlBase {
   public function creds($hide_password = TRUE) {
     if ($hide_password) {
       // EMPTY password is not the same as NO password, and is valid.
-      if (isset($this->db_spec['password'])) {
-        $contents = <<<EOT
+      $contents = <<<EOT
 #This file was written by Drush's Sqlmysql.inc.
 [client]
 user="{$this->db_spec['username']}"
 password="{$this->db_spec['password']}"
 EOT;
 
-        $file = drush_save_data_to_temp_file($contents);
-        $parameters['defaults-extra-file'] = $file;
-      }
+      $file = drush_save_data_to_temp_file($contents);
+      $parameters['defaults-extra-file'] = $file;
     }
     else {
       // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
