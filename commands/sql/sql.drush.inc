@@ -344,12 +344,17 @@ function drush_sql_connect() {
 
 /**
  * Command callback. Create a database.
+ * 
+ * @param type $db_spec
+ * @param bool $requires_user_confirmation
  */
-function drush_sql_create() {
-  $db_spec = _drush_sql_get_db_spec();
-
+function drush_sql_create($db_spec = NULL, $requires_user_confirmation = TRUE) {
+  if (is_null($db_spec)) {
+    $db_spec = _drush_sql_get_db_spec();
+  }
+  
   // Prompt for confirmation.
-  if (!drush_get_context('DRUSH_SIMULATE')) {
+  if ($requires_user_confirmation && !drush_get_context('DRUSH_SIMULATE')) {
     $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
     drush_print(dt("Creating database !target. Any possible existing database will be dropped!", array('!target' => $txt_destination)));
 
