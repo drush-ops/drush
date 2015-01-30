@@ -1,14 +1,15 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
  * Tests for sql-dump commands.
  *
  * @group commands
  * @group sql
  * @group slow
  */
-class SqlDumpTest extends Drush_CommandTestCase {
+class SqlDumpTest extends CommandUnishTestCase {
 
   /**
    * Test that a dump file is created successfully.
@@ -19,14 +20,15 @@ class SqlDumpTest extends Drush_CommandTestCase {
       return;
     }
 
-    $this->sites = $this->setUpDrupal(1, TRUE);
+    $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
     $uri = 'dev';
     $full_dump_file_path = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'full_db.sql';
 
     $options = array(
       'result-file' => $full_dump_file_path,
-      'skip-tables-list' => 'histo*',
+      // Last 5 entries are for D8+
+      'skip-tables-list' => 'hist*,cache*,router,config*,watchdog,key_valu*',
       'yes' => NULL,
     );
     $site_selection_options = array(
@@ -38,7 +40,7 @@ class SqlDumpTest extends Drush_CommandTestCase {
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('sequences', $full_dump_file);
+    $this->assertContains('batch', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
     // Next, set up an alias file and run a couple of simulated
@@ -50,7 +52,7 @@ class SqlDumpTest extends Drush_CommandTestCase {
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('sequences', $full_dump_file);
+    $this->assertContains('batch', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertContains('history', $full_dump_file);
 
@@ -59,14 +61,14 @@ class SqlDumpTest extends Drush_CommandTestCase {
     $aliasFile = $aliasPath . '/bar.aliases.drushrc.php';
     $aliasContents = <<<EOD
   <?php
-  // Writtne by Unish. This file is safe to delete.
+  // Written by Unish. This file is safe to delete.
   \$aliases['test'] = array(
     'root' => '$root',
     'uri' => '$uri',
     'site' => 'stage',
     'command-specific' => array(
       'sql-dump' => array(
-        'skip-tables-list' => 'histo*',
+        'skip-tables-list' => 'hist*,cache*,router,config*,watchdog,key_valu*',
       ),
     ),
   );
@@ -79,7 +81,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('sequences', $full_dump_file);
+    $this->assertContains('batch', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
     // Repeat control test:  options not recovered in absence of an alias.
@@ -88,7 +90,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('sequences', $full_dump_file);
+    $this->assertContains('batch', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertContains('history', $full_dump_file);
     // Now run yet with @self, and test to see that Drush can recover the option
@@ -98,7 +100,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('sequences', $full_dump_file);
+    $this->assertContains('batch', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
   }

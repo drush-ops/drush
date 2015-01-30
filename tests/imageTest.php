@@ -1,11 +1,13 @@
 <?php
+
+namespace Unish;
+
 /**
- * @file
- *   Tests image-flush command
+ * Tests image-flush command
  *
  * @group commands
  */
-class ImageCase extends Drush_CommandTestCase {
+class ImageCase extends CommandUnishTestCase {
 
   function testImage() {
     if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
@@ -18,7 +20,7 @@ class ImageCase extends Drush_CommandTestCase {
       'root' => $this->webroot(),
       'uri' => key($sites),
     );
-    $logo = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'core/themes/bartik/logo.png' : 'themes/bartik/logo.png';
+    $logo = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'core/themes/bartik/screenshot.png' : 'themes/bartik/screenshot.png';
     $styles_dir = $options['root'] . '/sites/' . key($sites) . '/files/styles/';
     $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
     $medium = $styles_dir . 'medium/public/' . $logo;

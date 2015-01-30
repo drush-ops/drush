@@ -5,8 +5,9 @@
  *   Tests for outputformat.drush.inc
  */
 
+namespace Unish;
 
-class outputFormatUnitCase extends Drush_UnitTestCase {
+class outputFormatUnitCase extends UnitUnishTestCase {
 
 /**
  * Test various output formats using php-eval with no Drupal site.
@@ -14,11 +15,16 @@ class outputFormatUnitCase extends Drush_UnitTestCase {
  * @dataProvider provider
  **/
   public function testOutputFormat($name, $format, $data, $expected) {
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUSH);
+    drush_preflight();
     $this->assertEquals($expected, trim(drush_format($data, array(), $format)), $name . ': '. $format);
   }
 
   public function provider() {
+    $json = '{"a":{"b":2,"c":3},"d":{"e":5,"f":6}}';
+    if (version_compare(phpversion(), '5.4.0', '>=')) {
+      $json = json_encode(json_decode($json), JSON_PRETTY_PRINT);
+    }
+
     return array(
       array(
         'name' => 'String test',
@@ -79,7 +85,7 @@ class outputFormatUnitCase extends Drush_UnitTestCase {
           'a' => array('b' => 2, 'c' => 3),
           'd' => array('e' => 5, 'f' => 6),
         ),
-        'expected' => '{"a":{"b":2,"c":3},"d":{"e":5,"f":6}}',
+        'expected' => $json,
       ),
 //      array(
 //        'name' => 'key-value test 1d array',

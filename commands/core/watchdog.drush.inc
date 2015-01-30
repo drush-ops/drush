@@ -1,10 +1,17 @@
 <?php
 
+use Drupal\Component\Utility\Unicode;
+use Drupal\Component\Utility\String;
+
 /**
  * Implementation of hook_drush_help().
  */
 function watchdog_drush_help($section) {
   switch ($section)  {
+    case 'meta:watchdog:title':
+      return dt('Watchdog commands');
+    case 'meta:watchdog:summary':
+      return dt('Interact with Drupal\'s db logging system.');
     case 'drush:watchdog-list':
       return dt('Show available message types and severity levels. A prompt will ask for a choice to show watchdog messages.');
     case 'drush:watchdog-show':
@@ -271,7 +278,12 @@ function core_watchdog_format_result($result, $extended = FALSE) {
     $message_length = PHP_INT_MAX;
   }
 
-  $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), $message_length, FALSE, FALSE);
+  if (drush_drupal_major_version() >= 8) {
+    $result->message = Unicode::truncate(strip_tags(String::decodeEntities($result->message)), $message_length, FALSE, FALSE);
+  }
+  else {
+    $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), $message_length, FALSE, FALSE);
+  }
 
   return $result;
 }
@@ -309,7 +321,7 @@ function drush_core_watchdog_delete($arg = NULL) {
   else {
     $type = drush_get_option('type');
     $severity = drush_get_option('severity');
-    if ((is_null($arg))&&(is_null($type))&&(is_null($severity))) {
+    if ((!isset($arg))&&(!isset($type))&&(!isset($severity))) {
       return drush_set_error(dt('No options provided.'));
     }
     $where = core_watchdog_query($type, $severity, $arg, 'OR');
@@ -352,7 +364,7 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
     $conditions[] = "type = :type";
     $args[':type'] = $type;
   }
-  if (!is_null($severity)) {
+  if (isset($severity)) {
     $severities = drush_watchdog_severity_levels();
     if (isset($severities[$severity])) {
       $level = $severity;

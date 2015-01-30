@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Role\RoleBase;
+
 /**
  * Implementation of hook_drush_help().
  */
@@ -9,6 +11,20 @@ function role_drush_help($section) {
       return dt('Role commands');
     case 'meta:role:summary':
       return dt('Interact with the role system.');
+  }
+}
+
+/**
+ * Implements hook_drush_help_alter().
+ */
+function role_drush_help_alter(&$command) {
+  // Drupal 8+ has changed role names.
+  if (in_array($command['command'] , array('role-add-perm', 'role-add-perm', 'role-list')) && drush_drupal_major_version() >= 8) {
+    foreach ($command['examples'] as $key => $val) {
+      $newkey = str_replace(array('anonymous user', 'authenticated user'), array('anonymous', 'authenticated'), $key);
+      $command['examples'][$newkey] = $val;
+      unset($command['examples'][$key]);
+    }
   }
 }
 
@@ -39,46 +55,50 @@ function role_drush_command() {
     'aliases' => array('rdel'),
   );
   $items['role-add-perm'] = array(
-    'description' => 'Grant a specified permission to a role.',
-    // @todo Role names changed in D8. Alter them by version.
+    'description' => 'Grant specified permission(s) to a role.',
     'examples' => array(
-      "drush role-add-perm 'anonymous user' 'post comments'" => 'Allow anonymous users to put their own advertisements on your site.',
-      "drush role-add-perm 'authenticated user' --module=node" => 'Select a permission from "node" permissions to add to authenticated users.'
+      "drush role-add-perm 'anonymous user' 'post comments'" => 'Allow anon users to post comments.',
+      "drush role-add-perm 'anonymous user' \"'post comments','access content'\"" => 'Allow anon users to post comments and access content.',
+      "drush role-add-perm 'authenticated user' --module=node" => 'Select a permission from "node" permissions to add to logged in users.'
     ),
     'arguments' => array(
       'role' => 'The role to modify.  Required.',
-      'permission' => 'The permission to grant. Required, unless the --module option is used.',
+      'permissions' => 'The list of permission to grant, delimited by commas. Required, unless the --module option is used.',
     ),
     'required-arguments' => 1,
     'options' => array(
       'module' => 'Select the permission to modify from an interactive list of all permissions available in the specified module.',
+    ),
+    'global-options' => array(
+      'cache-clear',
     ),
     'aliases' => array('rap'),
   );
 
   $items['role-remove-perm'] = array(
-    'description' => 'Remove a specified permission from a role.',
-    // @todo Role names changed in D8
+    'description' => 'Remove specified permission(s) from a role.',
     'examples' => array(
-      "drush role-remove-perm 'anonymous user' 'access content'" => 'Hide content from anonymous users.',
+      "drush role-remove-perm 'anonymous user' 'access content'" => 'Hide content from anon users.',
     ),
     'arguments' => array(
       'role' => 'The role to modify.',
-      'permission' => 'The permission to remove. Required, unless the --module option is used.',
+      'permissions' => 'The list of permission to grant, delimited by commas. Required, unless the --module option is used.',
     ),
     'required-arguments' => 1,
     'options' => array(
       'module' => 'Select the permission to modify from an interactive list of all permissions available in the specified module.',
+    ),
+    'global-options' => array(
+      'cache-clear',
     ),
     'aliases' => array('rmp'),
   );
 
   $items['role-list'] = array(
     'description' => 'Display a list of all roles defined on the system.  If a role name is provided as an argument, then all of the permissions of that role will be listed.  If a permission name is provided as an option, then all of the roles that have been granted that permission will be listed.',
-    // @todo Role names changed in D8. Alter them by version.
     'examples' => array(
       "drush role-list --filter='administer nodes'" => 'Display a list of roles that have the administer nodes permission assigned.',
-      "drush role-list 'anonymous user'" => 'Display all of the permissions assigned to the anonymous user role.'
+      "drush role-list 'anonymous user'" => 'Display all of the permissions assigned to the anon user role.'
     ),
     'arguments' => array(
       'role' => 'The role to list.  Optional; if specified, lists all permissions assigned to that role.  If no role is specified, lists all of the roles available on the system.',
@@ -126,31 +146,67 @@ function drush_role_delete($rid) {
 }
 
 /**
- * Add a permission to the specified role.
+ * Add one or more permission(s) to the specified role.
+ *
+ * @param string $rid machine name for a role
+ * @param null|string $permissions machine names, delimited by commas.
+ *
+ * @return bool
  */
-function drush_role_add_perm($rid, $permission = NULL) {
-  $result = drush_role_perm('add', $rid, $permission);
-  if ($result !== FALSE) {
-    drush_log(dt('Added "!perm" to "!role"', array('!perm' => $permission, '!role' => $result->name)), 'success');
-    drush_drupal_cache_clear_all();
+function drush_role_add_perm($rid, $permissions = NULL) {
+  if (is_null($permissions)) {
+    // Assume --module is used thus inject a FALSE
+    $perms = array(FALSE);
   }
+  else {
+    $perms = _convert_csv_to_array($permissions);
+  }
+  foreach($perms as $perm) {
+    $result = drush_role_perm('add', $rid, $perm);
+    if ($result !== FALSE) {
+      drush_log(dt('Added "!perm" to "!role"', array('!perm' => $perm, '!role' => $result->name)), 'success');
+    }
+  }
+  drush_drupal_cache_clear_all();
   return $result;
 }
 
 /**
- * Remove a permission from the specified role.
+ * Remove permission(s) from the specified role.
+ *
+ * @param string $rid machine name for a role
+ * @param null|string $permissions machine names, delimited by commas.
+ *
+ * @return bool
  */
-function drush_role_remove_perm($rid, $permission = NULL) {
-  $result = drush_role_perm('remove', $rid, $permission);
-  if ($result !== FALSE) {
-    drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $permission, '!role' => $result->name)), 'ok');
-    drush_drupal_cache_clear_all();
+function drush_role_remove_perm($rid, $permissions = NULL) {
+  if (is_null($permissions)) {
+    // Assume --module is used thus inject a FALSE
+    $perms = array(FALSE);
   }
+  else {
+    $perms = _convert_csv_to_array($permissions);
+  }
+  foreach($perms as $perm) {
+    $result = drush_role_perm('remove', $rid, $perm);
+    if ($result !== FALSE) {
+      drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $perm, '!role' => $result->name)), 'ok');
+    }
+  }
+  drush_drupal_cache_clear_all();
   return $result;
 }
 
 /**
  * Implement permission add / remove operations.
+ *
+ * @param string $action 'add' | 'remove'
+ * @param string $rid
+ * @param string|null $permission
+ *
+ * @return bool|RoleBase
+ *
+ * @see drush_set_error()
  */
 function drush_role_perm($action, $rid, $permission = NULL) {
   $role = drush_role_get_class($rid);
@@ -161,7 +217,8 @@ function drush_role_perm($action, $rid, $permission = NULL) {
   // If a permission wasn't provided, but the module option is specified,
   // provide a list of permissions provided by that module.
   if (!$permission && $module = drush_get_option('module', FALSE)) {
-    if (!module_exists($module)) {
+    drush_include_engine('drupal', 'environment');
+    if (!drush_module_exists($module)) {
       return drush_set_error('DRUSH_ROLE_ERROR', dt('!module not enabled!', array('!module' => $module)));
     }
     $module_perms = $role->getModulePerms($module);
@@ -181,8 +238,6 @@ function drush_role_perm($action, $rid, $permission = NULL) {
     }
   }
 
-  $role_perms = $role->getPerms();
-
   $result = $role->{$action}($permission);
   if ($result === FALSE) {
     return FALSE;
@@ -191,11 +246,15 @@ function drush_role_perm($action, $rid, $permission = NULL) {
 }
 
 /**
- * Wrapper for drush_get_class; instantiates an instance of the version-specific
- * DrushRole class suitable for the current version of Drupal.
+ * Get core version specific Role handler class.
+ *
+ * @param string $role_name
+ * @return RoleBase
+ *
+ * @see drush_get_class().
  */
 function drush_role_get_class($role_name = DRUPAL_ANONYMOUS_RID) {
-  return drush_get_class('DrushRole', array($role_name));
+  return drush_get_class('Drush\Role\Role', func_get_args());
 }
 
 /**
@@ -223,7 +282,7 @@ function drush_role_list($rid = '') {
     }
   }
   else {
-    drush_hide_output_fields(array('rid', 'role'));
+    drush_hide_output_fields(array('rid', 'label'));
     $role = drush_role_get_class($rid);
     if (!$role) {
       return FALSE;

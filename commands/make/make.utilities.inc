@@ -4,6 +4,9 @@
  * General utility functions for Drush Make.
  */
 
+use Drush\Make\Parser\ParserIni;
+use Drush\Make\Parser\ParserYaml;
+
 /**
  * Parse Drupal info file format.
  *
@@ -15,9 +18,18 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
   if (!($data = make_get_data($makefile))) {
     return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
-  if (!($info = _drush_drupal_parse_info_file($data))) {
-    return FALSE;
+
+  // Check for stdin.
+  if (ParserIni::supportedFile($makefile)) {
+    $info = ParserIni::parse($data);
   }
+  elseif (ParserYaml::supportedFile($makefile)) {
+    $info = ParserYaml::parse($data);
+  }
+  else {
+    $info = _make_determine_format($data);
+  }
+
   // $makefile_options are from projects[projectname][options][...] = value in
   // the makefile that included us, whereas $info['options'] is from
   // options[...] = value in this makefile.
@@ -51,6 +63,19 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
           else {
             make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
           }
+        } 
+        elseif (!empty($include) && is_array($include)) {
+          if ($include['download']['type'] = 'git') {
+            $tmp_dir = make_tmp();
+            make_download_git($include['makefile'], $include['download']['type'], $include['download'], $tmp_dir);
+            $makefile = $tmp_dir . '/' . $include['makefile'];
+            if (file_exists($makefile) && $file = make_parse_info_file($makefile, FALSE)) {
+              $includes[] = $file;
+            }
+            else {
+              make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $makefile)));
+            }
+          }
         }
       }
     }
@@ -64,6 +89,26 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
   else {
     return $data;
   }
+}
+
+/**
+ * Helper function to parse a makefile and prune projects.
+ */
+function _make_parse_info_file($makefile) {
+  $info = make_parse_info_file($makefile);
+
+  // Support making just a portion of a make file.
+  $include_only = array(
+    'projects' => array_filter(drush_get_option_list('projects')),
+    'libraries' => array_filter(drush_get_option_list('libraries')),
+  );
+  $info = make_prune_info_file($info, $include_only);
+
+  if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
+    return FALSE;
+  }
+
+  return $info;
 }
 
 /**
@@ -195,13 +240,9 @@ function make_validate_info_file($info) {
           }
           $names[] = $project;
           foreach ($project_data as $attribute => $value) {
-            // Unset disallowed attributes.
-            if (in_array($attribute, array('contrib_destination'))) {
-              unset($info['projects'][$project][$attribute]);
-            }
             // Prevent malicious attempts to access other areas of the
             // filesystem.
-            elseif (in_array($attribute, array('subdir', 'directory_name')) && !make_safe_path($value)) {
+            if (in_array($attribute, array('subdir', 'directory_name', 'contrib_destination')) && !make_safe_path($value)) {
               $args = array(
                 '!path' => $value,
                 '!attribute' => $attribute,
@@ -542,4 +583,21 @@ function _get_working_copy_option($download) {
     $wc = drush_get_option('working-copy');
   }
   return $wc;
+}
+
+/**
+ * Given data from stdin, determine format.
+ *
+ * @return array|bool
+ *   Returns parsed data if it matches any known format.
+ */
+function _make_determine_format($data) {
+  // Test INI first.
+  if ($parsed = ParserIni::parse($data)) {
+    return $parsed;
+  }
+  elseif ($parsed = ParserYaml::parse($data)) {
+    return $parsed;
+  }
+  return drush_set_error('MAKE_STDIN_ERROR', dt('Unknown make file format'));
 }

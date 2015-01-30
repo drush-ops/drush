@@ -4,6 +4,13 @@
 # ~/.bash_completion or ~/.bash_profile files.  Alternatively, source
 # examples/example.bashrc instead, as it will automatically find and source
 # this file.
+#
+# If you're using ZSH instead of BASH, add the following to your ~/.zshrc file
+# and source it.
+#
+#   autoload bashcompinit
+#   bashcompinit
+#   source /path/to/your/drush.complete.sh
 
 # Ensure drush is available.
 which drush > /dev/null || alias drush &> /dev/null || return
@@ -33,4 +40,4 @@ _drush_completion() {
 }
 
 # Register our completion function. We include common short aliases for Drush.
-complete -o bashdefault -o default -o nospace -F _drush_completion d dr drush drush5 drush6 drush6 drush.php
+complete -o bashdefault -o default -o nospace -F _drush_completion d dr drush drush5 drush6 drush7 drush.php

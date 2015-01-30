@@ -1,14 +1,15 @@
 <?php
 
+namespace Unish;
+
 /**
-  * @file
-  *   Unit tests for drush_sql_expand_wildcard_tables and
+  * Unit tests for drush_sql_expand_wildcard_tables and
   *   drush_sql_filter_tables.
   *
   * @group base
   * @group sql
   */
-class WildcardUnitCase extends Drush_UnitTestCase {
+class WildcardUnitCase extends UnitUnishTestCase {
 
   public static function setUpBeforeClass() {
     parent::setUpBeforeClass();

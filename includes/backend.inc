@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush backend API
+ * @file
+ * Drush backend API
  *
  * When a drush command is called with the --backend option,
  * it will buffer all output, and instead return a JSON encoded
@@ -182,7 +183,7 @@ function drush_backend_output() {
  */
 function drush_backend_output_collect($string) {
   static $output = '';
-  if (is_null($string)) {
+  if (!isset($string)) {
     return $output;
   }
 
@@ -276,7 +277,7 @@ function drush_backend_parse_output($string, $backend_options = array(), $output
  */
 function _drush_backend_integrate($data, $backend_options, $outputted) {
   // In 'integrate' mode, logs and errors have already been handled
-  // by drush_backend_packet (sender) drush_backend_parse_packets (reciever - us)
+  // by drush_backend_packet (sender) drush_backend_parse_packets (receiver - us)
   // during incremental output.  We therefore do not need to call drush_set_error
   // or drush_log here.  The exception is if the sender is an older version of
   // Drush (version 4.x) that does not send backend packets, then we will
@@ -288,7 +289,7 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
       if (isset($backend_options['#output-label'])) {
         $message = $backend_options['#output-label'] . $message;
       }
-      if (!is_null($log['error']) && $backend_options['integrate']) {
+      if (isset($log['error']) && $backend_options['integrate']) {
         drush_set_error($log['error'], $message);
       }
       elseif ($backend_options['integrate']) {
@@ -349,9 +350,9 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
   $is_windows = drush_is_windows();
   // Loop through processes until they all close, having a nap as needed.
   $nap_time = 0;
-  while (sizeof($open_processes) || sizeof($cmds)) {
+  while (count($open_processes) || count($cmds)) {
     $nap_time++;
-    if (sizeof($cmds) && (sizeof($open_processes) < $process_limit)) {
+    if (count($cmds) && (count($open_processes) < $process_limit)) {
       // Pop the site and command (key / value) from the cmds array
       end($cmds);
       list($site, $cmd) = each($cmds);
@@ -415,7 +416,7 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
         }
       }
       // Wait up to 2s for data to become ready on one of the read streams.
-      if (sizeof($read_streams)) {
+      if (count($read_streams)) {
         $ss_result = stream_select($read_streams, $write_streams, $except_streams, 2);
         // If stream_select returns a error, then fallback to using $nap_time.
         if ($ss_result !== FALSE) {
@@ -601,13 +602,14 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
   if ((array_key_exists('integrate', $backend_options)) && ($backend_options['integrate'] === FALSE) && (!array_key_exists('output', $backend_options))) {
     $backend_options['output'] = FALSE;
   }
+  $has_site_specification = array_key_exists('root', $site_record) || array_key_exists('uri', $site_record);
   $result = $backend_options + array(
      'method' => 'GET',
      'output' => TRUE,
      'log' => TRUE,
      'integrate' => TRUE,
      'backend' => TRUE,
-     'dispatch-using-alias' => FALSE,
+     'dispatch-using-alias' => !$has_site_specification,
   );
   // Convert '#integrate' et. al. into backend options
   foreach ($command_options as $key => $value) {
@@ -633,6 +635,8 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  *            Optional. Defaults to the current user. If you specify this, you can choose which module to send.
  *         'ssh-options'
  *            Optional.  Defaults to "-o PasswordAuthentication=no"
+ *         '#env-vars'
+ *            Optional. An associative array of environmental variables to prefix the Drush command with.
  *         'path-aliases'
  *            Optional; contains paths to folders and executables useful to the command.
  *         '%drush-script'
@@ -749,7 +753,10 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
       list($post_options, $commandline_options, $drush_global_options) = _drush_backend_classify_options($site_record, $command_options, $backend_options);
       $site_record_to_dispatch = '';
     }
-    $site_record += array('path-aliases' => array());
+    if (array_key_exists('backend-simulate', $backend_options)) {
+      $commandline_options['simulate'] = TRUE;
+    }
+    $site_record += array('path-aliases' => array(), '#env-vars' => array());
     $site_record['path-aliases'] += array(
       '%drush-script' => NULL,
     );
@@ -823,8 +830,9 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // that is running right now.  For remote commands, we will run a wrapper
     // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
     $drush_path = $site_record['path-aliases']['%drush-script'];
+    $env_vars = $site_record['#env-vars'];
     $php = array_key_exists('php', $site_record) ? $site_record['php'] : (array_key_exists('php', $command_options) ? $command_options['php'] : NULL);
-    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, array_key_exists('remote-host', $site_record));
+    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, array_key_exists('remote-host', $site_record), $env_vars);
     $cmd = _drush_backend_generate_command($site_record, $drush_command_path . " " . _drush_backend_argument_string($drush_global_options, $os) . " " . $site_record_to_dispatch . " " . $command, $args, $commandline_options, $backend_options) . ' 2>&1';
     $cmds[$site] = array(
       'cmd' => $cmd,
@@ -847,7 +855,10 @@ function _drush_backend_get_global_contexts($site_record) {
     if (is_array($global_metadata)) {
       $value = '';
       if (!array_key_exists('never-propagate', $global_metadata)) {
-        if ((array_key_exists('propagate-cli-value', $global_metadata))) {
+        if ((array_key_exists('propagate', $global_metadata))) {
+          $value = drush_get_option($global_key);
+        }
+        elseif ((array_key_exists('propagate-cli-value', $global_metadata))) {
           $value = drush_get_option($global_key, '', 'cli');
         }
         elseif ((array_key_exists('context', $global_metadata))) {
@@ -857,7 +868,7 @@ function _drush_backend_get_global_contexts($site_record) {
             $value = drush_get_context($global_metadata['context'], array());
           }
         }
-        if (!empty($value)) {
+        if (!empty($value) || ($value === '0')) {
           $result[$global_key] = $value;
         }
       }
@@ -969,15 +980,18 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
  *   Options for the invocation.
  *
  * @return
- *   If the command could not be completed successfully, FALSE.
+ *   If no commands were executed, FALSE.
+ *
  *   If one command was executed, this will return an associative array containing
- *   the data from drush_backend_output().
+ *   the data from drush_backend_output().  The result code is stored
+ *   in $result['error_status'] (0 == no error).
+ *
  *   If multiple commands were executed, this will return an associative array
  *   containing one item, 'concurrent', which will contain a list of the different
  *   backend invoke results from each concurrent command.
  */
 function _drush_backend_invoke($cmds, $common_backend_options = array(), $context = NULL) {
-  if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('override-simulated', $common_backend_options)) {
+  if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('override-simulated', $common_backend_options) && !array_key_exists('backend-simulate', $common_backend_options)) {
     foreach ($cmds as $cmd) {
       drush_print(dt('Simulating backend invoke: !cmd', array('!cmd' => $cmd['cmd'])));
     }
@@ -986,16 +1000,16 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
   foreach ($cmds as $cmd) {
     drush_log(dt('Backend invoke: !cmd', array('!cmd' => $cmd['cmd'])), 'command');
   }
-  if (array_key_exists('interactive', $common_backend_options) || array_key_exists('fork', $common_backend_options)) {
+  if (!empty($common_backend_options['interactive']) || !empty($common_backend_options['fork'])) {
     foreach ($cmds as $cmd) {
       $exec_cmd = $cmd['cmd'];
       if (array_key_exists('fork', $common_backend_options)) {
         $exec_cmd .= ' --quiet &';
       }
-      drush_log(dt("executing !cmd", array('!cmd' => $exec_cmd)));
-      $ret = drush_shell_proc_open($exec_cmd);
+
+      $result_code = drush_shell_proc_open($exec_cmd);
+      $ret = array('error_status' => $result_code);
     }
-    return $ret;
   }
   else {
     $process_limit = drush_get_option_override($common_backend_options, 'concurrency', 1);
@@ -1042,11 +1056,13 @@ function drush_backend_generate_sitealias($backend_options) {
     'remote-user' => NULL,
     'ssh-options' => NULL,
     'drush-script' => NULL,
+    'env-vars' => NULL
   );
   return array(
     'remote-host' => $backend_options['remote-host'],
     'remote-user' => $backend_options['remote-user'],
     'ssh-options' => $backend_options['ssh-options'],
+    '#env-vars' => $backend_options['env-vars'],
     'path-aliases' => array(
       '%drush-script' => $backend_options['drush-script'],
     ),
@@ -1064,6 +1080,8 @@ function drush_backend_generate_sitealias($backend_options) {
  *      Optional. Defaults to the current user. If you specify this, you can choose which module to send.
  *   'ssh-options'
  *      Optional.  Defaults to "-o PasswordAuthentication=no"
+ *   '#env-vars'
+ *      Optional. An associative array of environmental variables to prefix the Drush command with.
  *   'path-aliases'
  *      Optional; contains paths to folders and executables useful to the command.
  *      '%drush-script'
@@ -1097,13 +1115,16 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
     'ssh-options' => NULL,
     'path-aliases' => array(),
   );
+  $backend_options += array(
+    '#tty' => FALSE,
+  );
 
   $hostname = $site_record['remote-host'];
   $username = $site_record['remote-user'];
   $ssh_options = $site_record['ssh-options'];
   $os = drush_os($site_record);
 
-  if (drush_is_local_host($hostname)) {
+  if (array_key_exists('#check-local', $site_record) && drush_is_local_host($hostname)) {
     $hostname = null;
   }
 
@@ -1123,9 +1144,9 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
     $cmd[] = " " . $option_str;
   }
   $command = implode(' ', array_filter($cmd, 'strlen'));
-  if (!is_null($hostname)) {
+  if (isset($hostname)) {
     if (drush_is_windows($os)) {
-      if (!is_null($username)) {
+      if (isset($username)) {
         $username = " -u:" . drush_escapeshellarg($username, "LOCAL");
         if (array_key_exists('winrs-password', $site_record)) {
           $username .= " -p:" . drush_escapeshellarg($site_record['winrs-password'], "LOCAL");
@@ -1134,12 +1155,15 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
       $command = "winrs" . $username . " -r:" . drush_escapeshellarg($hostname, "LOCAL") . " " . drush_escapeshellarg($command, "LOCAL");
     }
     else {
-      $username = (!is_null($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
+      $username = (isset($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
       $ssh_options = $site_record['ssh-options'];
-      $ssh_options = (!is_null($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
+      $ssh_options = (isset($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
 
       $ssh_cmd[] = "ssh";
       $ssh_cmd[] = $ssh_options;
+      if ($backend_options['#tty']) {
+        $ssh_cmd[] = '-t';
+      }
       $ssh_cmd[] = $username . drush_escapeshellarg($hostname, "LOCAL");
       $ssh_cmd[] = drush_escapeshellarg($command . ' 2>&1', "LOCAL");
 
@@ -1171,7 +1195,7 @@ function _drush_backend_argument_string($data, $os = NULL) {
   $options = array();
 
   foreach ($data as $key => $value) {
-    if (!is_array($value) && !is_object($value) && !is_null($value)) {
+    if (!is_array($value) && !is_object($value) && isset($value)) {
       if (substr($key,0,1) != '#') {
         $options[$key] = $value;
       }

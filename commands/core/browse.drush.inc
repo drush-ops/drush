@@ -14,6 +14,7 @@ function browse_drush_command() {
     ),
     'options' => array(
       'browser' => 'Specify a particular browser (defaults to operating system default). Set to 0 to suppress opening a browser.',
+      'redirect-port' => 'The port that the web server is redirected to (e.g. when running within a Vagrant environment)',
     ),
     'examples' => array(
       'drush browse' => 'Open default web browser (if configured or detected) to the site front page.',
@@ -33,9 +34,10 @@ function drush_browse($path = '') {
   // the *local* machine.
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
   if (drush_sitealias_is_remote_site($alias)) {
-    $return = drush_invoke_process($site_record, 'site-browse', func_get_args(), drush_redispatch_get_options(), array('integrate' => FALSE));
+    $site_record = drush_sitealias_get_record($alias);
+    $return = drush_invoke_process($site_record, 'browse', func_get_args(), drush_redispatch_get_options(), array('integrate' => TRUE));
     if ($return['error_status']) {
-      return drush_set_error('Unable to execute site browse.');
+      return drush_set_error('Unable to execute browse command on remote alias.');
     }
     else {
       $link = $return['object'];
@@ -47,9 +49,9 @@ function drush_browse($path = '') {
       // already logged an error.
       return FALSE;
     }
-    $link = url($path, array('absolute' => TRUE));
-
-    drush_start_browser($link);
-    return $link;
+    $link = drush_url($path, array('absolute' => TRUE));
   }
+
+  drush_start_browser($link);
+  return $link;
 }

@@ -1,9 +1,11 @@
 <?php
 
+namespace Unish;
+
 /**
  * @group base
  */
-class commandCase extends Drush_CommandTestCase {
+class commandCase extends CommandUnishTestCase {
   public function testInvoke() {
     $expected = array(
       'unit_drush_init',
@@ -46,7 +48,7 @@ class commandCase extends Drush_CommandTestCase {
     $return = $this->drush('version', array(), array('pipe' => NULL));
     // Add an unknown option --magic=1234 and insure it fails
     $return = $this->drush('version', array(), array('pipe' => NULL, 'magic' => 1234), NULL, NULL, self::EXIT_ERROR);
-    // Finally, add in a hook that uses drush_hook_help_alter to allow the 'magic' option.
+    // Finally, add in a hook that uses hook_drush_help_alter to allow the 'magic' option.
     // We need to run 'drush cc drush' to clear the commandfile cache; otherwise, our include will not be found.
     $include_path = dirname(__FILE__) . '/hooks/magic_help_alter';
     $this->drush('version', array(), array('include' => $include_path, 'pipe' => NULL, 'magic' => '1234', 'strict' => NULL));
@@ -72,7 +74,7 @@ class commandCase extends Drush_CommandTestCase {
       'backend' => NULL, // To obtain and parse the error log.
     );
     $this->drush('unit-drush-dependency', array(), $options, NULL, NULL, self::EXIT_ERROR);
-    $parsed = parse_backend_output($this->getOutput());
+    $parsed = $this->parse_backend_output($this->getOutput());
     $this->assertArrayHasKey("DRUSH_COMMANDFILE_DEPENDENCY_ERROR", $parsed['error_log']);
   }
 
@@ -93,7 +95,7 @@ class commandCase extends Drush_CommandTestCase {
       'backend' => NULL, // To obtain and parse the error log.
     );
     $this->drush('devel-download', array(), $options, NULL, NULL, self::EXIT_ERROR);
-    $parsed = parse_backend_output($this->getOutput());
+    $parsed = $this->parse_backend_output($this->getOutput());
     $this->assertArrayHasKey("DRUSH_COMMAND_DEPENDENCY_ERROR", $parsed['error_log']);
   }
 }

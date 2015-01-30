@@ -5,17 +5,20 @@
  *   Tests for role.drush.inc
  */
 
+namespace Unish;
+
 /**
  *  @group slow
  *  @group commands
  */
-class roleCase extends Drush_CommandTestCase {
+class roleCase extends CommandUnishTestCase {
 
   /**
    * Create, edit, block, and cancel users.
    */
   public function testRole() {
-    $sites = $this->setUpDrupal(1, TRUE);
+    // In D8+, the testing profile has no perms.
+    $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
     $root = $this->webroot();
     $name = "example";
     $options = array(
@@ -42,6 +45,6 @@ class roleCase extends Drush_CommandTestCase {
     $this->drush('role-remove-perm', array($anonymous, 'administer nodes'), $options );
     $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
     $output = $this->getOutput();
-    $this->assertContains('access content', $output);
+    $this->assertNotContains('administer nodes', $output);
   }
 }

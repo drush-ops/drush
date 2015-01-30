@@ -54,7 +54,7 @@ function _drush_pm_disable($args) {
         $info = $extension_info[$module]->info;
         // No message for hidden modules.
         if (!isset($info['hidden'])) {
-          $explanation = !empty($info['explanation']) ? ' ' . dt('Reason: !explanation', array('!explanation' => strip_tags($info['explanation'])))  : '';
+          $explanation = !empty($info['explanation']) ? ' ' . dt('Reason: !explanation.', array('!explanation' => strip_tags($info['explanation'])))  : '';
           drush_log(dt('!module is a required module and can\'t be disabled.', array('!module' => $module)) . $explanation, 'ok');
         }
       }
@@ -86,7 +86,7 @@ function _drush_pm_disable($args) {
   // Inform the user of final status.
   $result_extensions = drush_get_named_extensions_list($extensions);
   $problem_extensions = array();
-  foreach ($result_extensions as $name => $extension) {
+  foreach ($result_extensions as $extension) {
     if (!$extension->status) {
       drush_log(dt('!extension was disabled successfully.', array('!extension' => $extension->name)), 'ok');
     }
@@ -150,7 +150,7 @@ function _drush_pm_uninstall($modules) {
     }
   }
 
-  // Disable the modules.
+  // Uninstall the modules.
   drush_module_uninstall($modules);
 
   // Inform the user of final status.

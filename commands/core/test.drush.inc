@@ -6,23 +6,40 @@
  */
 
 /**
+ * Implements hook_drush_help_alter().
+ */
+function test_drush_help_alter(&$command) {
+  if (drush_drupal_major_version() >= 8) {
+    if ($command['command'] == 'test-run') {
+      foreach ($command['examples'] as $key => $value) {
+        $newkey = str_replace('BootstrapPageCacheTestCase', 'Drupal\system\Tests\Bootstrap\PageCacheTest', $key);
+        if ($newkey != $key) {
+          $command['examples'][$newkey] = $value;
+          unset($command['examples'][$key]);
+        }
+      }
+    }
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  */
 function test_drush_command() {
   $items = array();
 
   $items['test-run'] = array(
-    'description' => "Run tests. Note that you must use the --uri option.",
+    'description' => "Run tests. Note that you must use the --uri option via the CLI or via a site alias.",
     'arguments' => array(
       'targets' => 'A test class, a test group. If omitted, a list of test classes and test groups is presented. Delimit multiple targets using commas.',
     ),
     'examples' => array(
       'test-run' => 'List all available classes and groups.',
-      'sudo -u apache test-run --all' => 'Run all available tests. Avoid permission related failures by running as web server user.',
-      'test-run XMLRPCBasicTestCase' => 'Run one test class.',
-      'test-run XML-RPC' => 'Run all classes in a XML-RPC group.',
-      'test-run XML-RPC,Filter' => 'Run all tests from multiple groups/classes.',
-      'test-run XMLRPCBasicTestCase --methods="testListMethods, testInvalidMessageParsing"' => 'Run particular methods in the specified class or group.',
+      'sudo -u apache drush test-run --all' => 'Run all available tests. Avoid permission related failures by running as web server user.',
+      'test-run BootstrapPageCacheTestCase' => 'Run one test class.',
+      'test-run Bootstrap' => 'Run all classes in a XML-RPC group.',
+      'test-run Bootstrap,Filter' => 'Run all tests from multiple groups/classes.',
+      'test-run BootstrapPageCacheTestCase --methods="testPageCompression, testPageCache"' => 'Run particular methods in the specified class or group.',
     ),
     'options' => array(
       'all' => 'Run all available tests',
@@ -33,6 +50,7 @@ function test_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'table',
+      'fields-default' => array('group', 'class'),
       'field-labels' => array(
         'group' => 'Group',
         'class' => 'Class',
@@ -45,6 +63,7 @@ function test_drush_command() {
     // cache the lists of tests, file_prepare_directory(), variable lookup like
     // httpauth creds, copy pre-built registry table from testing side, etc.
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'drupal dependencies' => array('simpletest'),
   );
   $items['test-clean'] = array(
     'description' => "Clean temporary tables and files.",
@@ -61,7 +80,8 @@ function test_drush_command() {
  *  Array of test classes and groups.
  */
 function test_test_run_complete() {
-  if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL) == DRUSH_BOOTSTRAP_DRUPAL_FULL && module_exists('simpletest')) {
+  drush_include_engine('drupal', 'environment');
+  if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL) == DRUSH_BOOTSTRAP_DRUPAL_FULL && drush_module_exists('simpletest')) {
     // Retrieve all tests and groups.
     list($groups, $all_tests) = drush_test_get_all_tests();
     return array('values' => array_keys($groups) + $all_tests);
@@ -88,8 +108,8 @@ function drush_test_run_validate($specs = NULL) {
  *   A comma delimited string of test classes or group names.
  */
 function drush_test_run($specs = NULL) {
-  if (drush_drupal_major_version() > 7) {
-    cache()->delete('simpletest');
+  if (drush_drupal_major_version() >= 8) {
+    // \Drupal::cache('simpletest')->delete();
   }
   else {
     cache_clear_all('simpletest', 'cache');
@@ -157,6 +177,7 @@ function drush_test_run_class($class) {
  * Run a single test and display any failure messages.
  */
 function simpletest_drush_run_test($class) {
+  drush_log(dt('Starting test @test.', array('@test' => $class)), 'ok');
   if (drush_drupal_major_version() >= 7) {
     $test_id = db_insert('simpletest_test_id')
     ->useDefaults(array('test_id'))
@@ -178,10 +199,24 @@ function simpletest_drush_run_test($class) {
     $test->run();
   }
 
-  $info = $test->getInfo();
+  if (drush_drupal_major_version() >= 8) {
+    $info = \Drupal\simpletest\TestDiscovery::getTestInfo(new \ReflectionClass($test));
+  } else {
+    $info = $test->getInfo();
+  }
   $status = ((isset($test->results['#fail']) && $test->results['#fail'] > 0)
           || (isset($test->results['#exception']) && $test->results['#exception'] > 0) ? 'error' : 'ok');
-  drush_log($info['name'] . ' ' . _simpletest_format_summary_line($test->results), $status);
+  if (drush_drupal_major_version() >= 8) {
+    $results = array(
+      'pass' => $test->results['#pass'],
+      'fail' => $test->results['#fail'],
+      'exception' => $test->results['#exception'],
+      'debug' => $test->results['#debug']
+    );
+  } else {
+    $results = $test->results;
+  }
+  drush_log($info['name'] . ' ' . _simpletest_format_summary_line($results), $status);
 
   $test_suites = drush_test_get_results($test_id, $info);
   if ($dir = drush_get_option('xml')) {

@@ -24,7 +24,6 @@ function field_drush_command() {
   $items['field-create'] = array(
     'description' => 'Create fields and instances. Returns urls for field editing.',
     'core' => array('7+'),
-    'drupal_dependencies' => array('field_ui'),
     'arguments' => array(
       'bundle' => 'Content type (for nodes). Name of bundle to attach fields to. Required.',
       'field_spec' => 'Comma delimited triple in the form: field_name,field_type,widget_name. If widget_name is omitted, the default widget will be used. Separate multiple fields by space. If omitted, a wizard will prompt you.'
@@ -42,7 +41,6 @@ function field_drush_command() {
   $items['field-update'] = array(
     'description' => 'Return URL for field editing web page.',
     'core' => array('7+'),
-    'drupal_dependencies' => array('field_ui'),
     'arguments' => array(
       'field_name' => 'Name of field that needs updating.',
     ),
@@ -79,7 +77,6 @@ function field_drush_command() {
   );
   $items['field-info'] = array(
     'description' => 'View information about fields, field_types, and widgets.',
-    'drupal_dependencies' => array('field_ui'),
     'core' => array('7+'),
     'arguments' => array(
       'type' => 'Recognized values: fields, types. If omitted, a choice list appears.',
@@ -196,7 +193,7 @@ function drush_field_create($bundle) {
     }
     drush_op('field_create_instance', $instance);
 
-    $urls[] = url(drush_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $name, array('absolute' => TRUE));
+    $urls[] = drush_url(drush_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $name, array('absolute' => TRUE));
   }
   drush_print(implode(' ', $urls));
 }
@@ -214,7 +211,7 @@ function drush_field_update($field_name) {
    $info = field_info_field($field_name);
    foreach ($info['bundles'] as $entity_type => $bundles) {
      foreach ($bundles as $bundle) {
-       $urls[] = url(drush_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $field_name, array('absolute' => TRUE));
+       $urls[] = drush_url(drush_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $field_name, array('absolute' => TRUE));
      }
    }
   drush_print(implode(' ', $urls));
@@ -230,8 +227,8 @@ function drush_field_delete($field_name) {
         $all_bundles[] = $bundle;
       }
     }
-    if (count($bundles) > 1) {
-      $options = array_merge(array('all' => dt('All bundles')), drupal_map_assoc($bundles));
+    if (count($all_bundles) > 1) {
+      $options = array_merge(array('all' => dt('All bundles')), array_combine($all_bundles, $all_bundles));
       $bundle = drush_choice($options, dt("Choose a particular bundle or 'All bundles'"));
       $confirm = FALSE;
     }
@@ -279,7 +276,7 @@ function drush_field_clone($source_field_name, $target_field_name) {
        unset($instance['id']);
        $instance['field_id'] = $target['id'];
        drush_op('field_create_instance', $instance);
-       $urls[] = url(drush_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $target_field_name, array('absolute' => TRUE));
+       $urls[] = drush_url(drush_field_ui_bundle_admin_path($entity_type, $bundle) . '/fields/' . $target_field_name, array('absolute' => TRUE));
      }
    }
 
@@ -287,13 +284,13 @@ function drush_field_clone($source_field_name, $target_field_name) {
 }
 
 function drush_field_info($type = NULL) {
-  if (is_null($type)) {
+  if (!isset($type)) {
     // Don't ask in 'pipe' mode -- just default to 'fields'.
     if (drush_get_context('DRUSH_PIPE')) {
       $type = 'fields';
     }
     else {
-      $type = drush_choice(drupal_map_assoc(array('types', 'fields')), dt('Which information do you wish to see?'));
+      $type = drush_choice(array_combine(array('types', 'fields'), array('types', 'fields')), dt('Which information do you wish to see?'));
     }
   }
 

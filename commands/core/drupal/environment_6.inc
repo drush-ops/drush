@@ -160,6 +160,40 @@ function drush_module_uninstall($modules) {
 }
 
 /**
+ * Checks that a given module exists and is enabled.
+ *
+ * @see module_exists().
+ *
+ */
+function drush_module_exists($module) {
+  return module_exists($module);
+}
+
+/**
+ * Determines which modules are implementing a hook.
+ *
+ */
+function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
+  return module_implements($hook, $sort, $reset);
+}
+
+/**
+  * Invokes a hook in a particular module.
+  *
+  */
+function drush_module_invoke($module, $hook) {
+  return module_invoke($module, $hook);
+}
+
+/**
+  * Invokes a hook in all enabled modules that implement it.
+  *
+  */
+function drush_module_invoke_all($hook) {
+  return module_invoke_all($hook);
+}
+
+/**
  * Submit the system modules form.
  *
  * The modules should already be fully enabled/disabled before calling this
@@ -273,29 +307,70 @@ function drush_watchdog_message_types() {
   return drupal_map_assoc(_dblog_get_message_types());
 }
 
-/**
- * Returns a queue object.
- */
-function drush_queue_get($name) {
-  return DrupalQueue::get($name);
+function _drush_theme_default() {
+  return variable_get('theme_default', 'garland');
+}
+
+function _drush_theme_admin() {
+  return variable_get('admin_theme', drush_theme_get_default());
+}
+
+function _drush_file_public_path() {
+  if (function_exists('file_directory_path')) {
+    return file_directory_path();
+  }
+}
+
+function _drush_file_private_path() {
+  // @todo
 }
 
 /**
- * Returns all defined queues.
+ * Gets the extension name.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension name.
  */
-function drush_queue_get_queues() {
-  static $queues;
-  if (!isset($queues)) {
-    $queues = module_invoke_all('cron_queue_info');
-    drupal_alter('cron_queue_info', $queues);
-    foreach($queues as $name => $queue) {
-      $queues[$name] = array(
-        'worker callback' => $queue['worker callback'],
-        'cron' => array(
-          'time' => $queue['time'],
-        ),
-      );
-    }
-  }
-  return $queues;
+function _drush_extension_get_name($info) {
+  return $info->name;
+}
+
+/**
+ * Gets the extension type.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension type.
+ */
+function _drush_extension_get_type($info) {
+  return $info->type;
+}
+
+/**
+ * Gets the extension path.
+ *
+ * @param $info
+ *   The extension info.
+ * @return string
+ *   The extension path.
+ */
+function _drush_extension_get_path($info) {
+  return dirname($info->filename);
+}
+
+/*
+ * Wrapper for CSRF token generation.
+ */
+function drush_get_token($value = NULL) {
+  return drupal_get_token($value);
+}
+
+/*
+ * Wrapper for _url().
+ */
+function drush_url($path = NULL, $options = array()) {
+  return url($path, $options);
 }

@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+#
+# A wrapper script which launches the Drush that is in your project's /vendor directory.
+# Copy it to the root of your project (or wherever you store handy scripts) and edit as desired.
+#
+# Below are options which you might want to add. More info at `drush topic core-global-options`:
+#
+# --local Only discover commandfiles/site aliases/config that are inside your project dir.
+# --alias-path A list of directories where Drush will search for site alias files.
+# --config A list of paths to config files
+# --include A list of directories to search for commandfiles.
+#
+vendor/bin/drush --local $@

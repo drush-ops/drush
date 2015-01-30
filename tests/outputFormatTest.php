@@ -1,7 +1,8 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
  *   Tests for outputformat.drush.inc
  */
 
@@ -9,9 +10,9 @@
  * @todo, Consider removing these tests now that we have outputFormatUnitCase.
  *
  *  @group slow
- *  @group commands
+ *  @group base
  */
-class outputFormatCase extends Drush_CommandTestCase {
+class outputFormatCase extends CommandUnishTestCase {
 
 /**
  * Test output formats using various Drush commands on a Drupal site.
@@ -37,7 +38,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'COLUMNS' => '120',
       );
       $this->drush($command, $args, $site_options + $options + array('format' => $format), NULL, NULL, self::EXIT_SUCCESS, NULL, $env);
-      $output = trim($this->getOutput()); // note: we consider trailing eols insignificant
+      $output = implode("\n", $this->getOutputAsList()); // note: we consider trailing eols insignificant
       // If the Drupal command we are running might produce variable output,
       // we can use one or more output filters to simplify the output down
       // to an invariant form.
@@ -49,6 +50,7 @@ class outputFormatCase extends Drush_CommandTestCase {
   }
 
   public function getDataForDrupal() {
+    $unish_tmp = UNISH_TMP; // Need local variable.
     return array(
       array(
         'name' => 'Status test - drush version / list',
@@ -78,6 +80,7 @@ class outputFormatCase extends Drush_CommandTestCase {
         'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
         'expected' => "array(
   'drush-version' => '0.0-dev',
+  'drush-temp' => '$unish_tmp',
   'drush-conf' => array(),
   'drush-alias-files' => array(
     '/etc/drush/dev.alias.drushrc.php',
@@ -91,9 +94,10 @@ class outputFormatCase extends Drush_CommandTestCase {
         'options' => array(),
         'format' => 'key-value',
         'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
-        'expected' => "Drush version         :  0.0-dev
- Drush configuration   :
- Drush alias files     :  /etc/drush/dev.alias.drushrc.php",
+        'expected' => "Drush version          :  0.0-dev
+ Drush temp directory   :  $unish_tmp
+ Drush configuration    :
+ Drush alias files      :  /etc/drush/dev.alias.drushrc.php",
       ),
       /*
         core-requirements is a little hard to test, because the

@@ -23,6 +23,7 @@ function topic_drush_command() {
       'drush docs-context' => 'Show documentation for the drush context API',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'remote-tty' => TRUE,
     'aliases' => array('topic'),
     'topics' => array('docs-readme'),
   );
@@ -33,7 +34,7 @@ function topic_drush_command() {
 /**
  * Implement hook_drush_help_alter(). Show 'Topics' section on help detail.
  */
-function topic_drush_help_alter($command) {
+function topic_drush_help_alter(&$command) {
   $implemented = drush_get_commands();
   foreach ($command['topics'] as $topic_name) {
     // We have a related topic. Inject into the $command so the topic displays.
@@ -52,7 +53,7 @@ function topic_drush_help_alter($command) {
  */
 function drush_topic_core_topic($topic_name = NULL) {
   $commands = drush_get_commands();
-  if (is_null($topic_name)) {
+  if (!isset($topic_name)) {
     // Show choice list.
     foreach (drush_get_topics() as $key => $topic) {
       $choices[$key] = $topic['description'];

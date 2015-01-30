@@ -16,6 +16,7 @@
 function variable_drush_command() {
   $items['variable-get'] = array(
     'description' => 'Get a list of some or all site variables and values.',
+    'core' => array(6,7),
     'arguments' => array(
       'name' => 'A string to filter the variables by. Variables whose name contains the string will be listed.',
     ),
@@ -39,6 +40,7 @@ function variable_drush_command() {
   );
   $items['variable-set'] = array(
     'description' => "Set a variable.",
+    'core' => array(6,7),
     'arguments' => array(
       'name' => 'The name of a variable or the first few letters of its name.',
       'value' => 'The value to assign to the variable. Use \'-\' to read the object from STDIN.',
@@ -62,6 +64,7 @@ function variable_drush_command() {
     'aliases' => array('vset'),
   );
   $items['variable-delete'] = array(
+    'core' => array(6,7),
     'description' => "Delete a variable.",
     'arguments' => array(
       'name' => 'The name of a variable or the first few letters of its name.',

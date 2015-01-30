@@ -2,23 +2,23 @@
 
 /**
  * @file
- *   Example drush command.
+ * Example drush command.
  *
- *   To run this *fun* command, execute `sudo drush --include=./examples mmas`
- *   from within your drush directory.
+ * To run this *fun* command, execute `sudo drush --include=./examples mmas`
+ * from within your drush directory.
  *
- *   See `drush topic docs-commands` for more information about command authoring.
+ * See `drush topic docs-commands` for more information about command authoring.
  *
- *   You can copy this file to any of the following
- *     1. A .drush folder in your HOME folder.
- *     2. Anywhere in a folder tree below an active module on your site.
- *     3. /usr/share/drush/commands (configurable)
- *     4. In an arbitrary folder specified with the --include option.
- *     5. Drupal's /drush or /sites/all/drush folders.
+ * You can copy this file to any of the following
+ *   1. A .drush folder in your HOME folder.
+ *   2. Anywhere in a folder tree below an active module on your site.
+ *   3. /usr/share/drush/commands (configurable)
+ *   4. In an arbitrary folder specified with the --include option.
+ *   5. Drupal's /drush or /sites/all/drush folders.
  */
 
 /**
- * Implementation of hook_drush_command().
+ * Implements hook_drush_command().
  *
  * In this hook, you specify which commands your
  * drush module makes available, what it does and
@@ -28,14 +28,11 @@
  * you define menu hooks.
  *
  * See `drush topic docs-commands` for a list of recognized keys.
- *
- * @return
- *   An associative array describing your command(s).
  */
 function sandwich_drush_command() {
   $items = array();
 
-  // The 'make-me-a-sandwich' command
+  // The 'make-me-a-sandwich' command.
   $items['make-me-a-sandwich'] = array(
     'description' => "Makes a delicious sandwich.",
     'arguments' => array(
@@ -51,10 +48,12 @@ function sandwich_drush_command() {
       'drush mmas turkey --spreads=ketchup,mustard' => 'Make a terrible-tasting sandwich that is lacking in pickles.',
     ),
     'aliases' => array('mmas'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+    // No bootstrap at all.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
-  // The 'sandwiches-served' command.  Informs how many 'mmas' commands completed.
+  // The 'sandwiches-served' command.  Informs how many 'mmas' commands
+  // completed.
   $items['sandwiches-served'] = array(
     'description' => "Report how many sandwiches we have made.",
     'examples' => array(
@@ -73,7 +72,8 @@ function sandwich_drush_command() {
         'require-engine-capability' => array('format-single'),
       ),
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+    // No bootstrap at all.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
   // The 'spreads-status' command.  Prints a table about available spreads.
@@ -107,7 +107,8 @@ function sandwich_drush_command() {
         'require-engine-capability' => array('format-table'),
       ),
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+    // No bootstrap at all.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
   );
 
   // Commandfiles may also add topics.  These will appear in
@@ -125,10 +126,8 @@ function sandwich_drush_command() {
   return $items;
 }
 
-
-
 /**
- * Implementation of hook_drush_help().
+ * Implements hook_drush_help().
  *
  * This function is called whenever a drush user calls
  * 'drush help <name-of-your-command>'. This hook is optional. If a command
@@ -136,17 +135,12 @@ function sandwich_drush_command() {
  *
  * This hook is also used to look up help metadata, such as help
  * category title and summary.  See the comments below for a description.
- *
- * @param
- *   A string with the help section (prepend with 'drush:')
- *
- * @return
- *   A string with the help text for your command.
  */
 function sandwich_drush_help($section) {
   switch ($section) {
     case 'drush:make-me-a-sandwich':
       return dt("This command will make you a delicious sandwich, just how you like it.");
+
     // The 'title' meta item is used to name a group of
     // commands in `drush help`.  If a title is not defined,
     // the default is "All commands in ___", with the
@@ -158,6 +152,7 @@ function sandwich_drush_help($section) {
     // of commands.
     case 'meta:sandwich:title':
       return dt("Sandwich commands");
+
     // The 'summary' meta item is displayed in `drush help --filter`,
     // and is used to give a general idea what the commands in this
     // command file do, and what they have in common.
@@ -167,7 +162,7 @@ function sandwich_drush_help($section) {
 }
 
 /**
- * Implementation of drush_hook_COMMAND_validate().
+ * Implements drush_hook_COMMAND_validate().
  *
  * The validate command should exit with
  * `return drush_set_error(...)` to stop execution of
@@ -178,10 +173,10 @@ function sandwich_drush_help($section) {
 function drush_sandwich_make_me_a_sandwich_validate() {
   if (drush_is_windows()) {
     // $name = drush_get_username();
-    // TODO: implement check for elevated process using w32api
+    // @todo Implement check for elevated process using w32api
     // as sudo is not available for Windows
-    // http://php.net/manual/en/book.w32api.php
-    // http://social.msdn.microsoft.com/Forums/en/clr/thread/0957c58c-b30b-4972-a319-015df11b427d
+    // @see http://php.net/manual/en/book.w32api.php
+    // @see http://social.msdn.microsoft.com/Forums/en/clr/thread/0957c58c-b30b-4972-a319-015df11b427d
   }
   else {
     $name = posix_getpwuid(posix_geteuid());
@@ -192,13 +187,15 @@ function drush_sandwich_make_me_a_sandwich_validate() {
 }
 
 /**
- * Example drush command callback. This is where the action takes place.
+ * Implements drush_hook_COMMAND().
+ *
+ * The command callback is where the action takes place.
  *
  * The function name should be same as command name but with dashes turned to
  * underscores and 'drush_commandfile_' prepended, where 'commandfile' is
- * taken from the file 'commandfile.drush.inc', which in this case is 'sandwich'.
- * Note also that a simplification step is also done in instances where
- * the commandfile name is the same as the beginning of the command name,
+ * taken from the file 'commandfile.drush.inc', which in this case is
+ * 'sandwich'. Note also that a simplification step is also done in instances
+ * where the commandfile name is the same as the beginning of the command name,
  * "drush_example_example_foo" is simplified to just "drush_example_foo".
  * To also implement a hook that is called before your command, implement
  * "drush_hook_pre_example_foo".  For a list of all available hooks for a
@@ -218,8 +215,8 @@ function drush_sandwich_make_me_a_sandwich_validate() {
 function drush_sandwich_make_me_a_sandwich($filling = 'ascii') {
   $str_spreads = '';
   // Read options with drush_get_option. Note that the options _must_
-  // be documented in the $items structure for this command in the 'command' hook.
-  // See `drush topic docs-commands` for more information.
+  // be documented in the $items structure for this command in the 'command'
+  // hook. See `drush topic docs-commands` for more information.
   if ($spreads = drush_get_option('spreads')) {
     $list = implode(' and ', explode(',', $spreads));
     $str_spreads = ' with just a dash of ' . $list;
@@ -243,7 +240,7 @@ function drush_sandwich_make_me_a_sandwich($filling = 'ascii') {
 }
 
 /**
- * Implementation of hook_drush_command() for sandwiches-served command.
+ * Implements drush_hook_COMMAND().
  *
  * Demonstrates how to return a simple value that is transformed by
  * the selected formatter to display either with a label (using the
@@ -262,7 +259,7 @@ function drush_sandwich_sandwiches_served() {
 }
 
 /**
- * Implementation of hook_drush_command() for spreads-status command.
+ * Implements drush_hook_COMMAND().
  *
  * This ficticious command shows how a deep array can be constructed
  * and used as a command return value that can be output by different
@@ -298,11 +295,12 @@ function drush_sandwich_spreads_status() {
 }
 
 /**
- * Command argument complete callback. Provides argument
- * values for shell completion.
+ * Command argument complete callback.
  *
- * @return
- *  Array of popular fillings.
+ * Provides argument values for shell completion.
+ *
+ * @return array
+ *   Array of popular fillings.
  */
 function sandwich_make_me_a_sandwich_complete() {
   return array('values' => array('turkey', 'cheese', 'jelly', 'butter'));

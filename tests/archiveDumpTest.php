@@ -1,14 +1,15 @@
 <?php
 
-/**
- * @file
- *   Tests for archive-dump and archive-restore
- * @group commands
- */
+namespace Unish;
 
 require_once dirname(__FILE__) . '/../includes/filesystem.inc';
 
-class archiveDumpCase extends Drush_CommandTestCase {
+/**
+ * Tests for archive-dump and archive-restore
+ *
+ * @group commands
+ */
+class archiveDumpCase extends CommandUnishTestCase {
   /**
    * archive-dump behaves slightly different when archiving a site installed
    * at sites/default so we make the test to use sites/default as the
@@ -44,7 +45,7 @@ class archiveDumpCase extends Drush_CommandTestCase {
    */
   private function unTar($dump_dest) {
     $untar_dest = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'untar';
-    unish_file_delete_recursive($untar_dest);
+    unish_file_delete_recursive($untar_dest, TRUE);
     $tar = self::get_tar_executable();
     $exec = sprintf("mkdir %s && cd %s && $tar -xzf %s", $untar_dest, $untar_dest, $dump_dest);
     $this->execute($exec);
@@ -121,7 +122,7 @@ class archiveDumpCase extends Drush_CommandTestCase {
   public function testArchiveRestoreNoCore($dump_dest) {
     $root = $this->webroot();
     $original_codebase = drush_dir_md5($root);
-    unish_file_delete_recursive($root . '/sites/' . self::uri);
+    unish_file_delete_recursive($root . '/sites/' . self::uri, TRUE);
     $options = array(
       'yes' => NULL,
       'destination' => $root,

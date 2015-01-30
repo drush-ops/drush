@@ -1,12 +1,13 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for field.drush.inc
+ * Tests for field.drush.inc
  *
  * @group commands
  */
-class fieldCase extends Drush_CommandTestCase {
+class fieldCase extends CommandUnishTestCase {
 
   public function testField() {
     if (UNISH_DRUPAL_MAJOR_VERSION == 6) {

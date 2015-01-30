@@ -2,24 +2,25 @@
 
 /**
  * @file
- *   Example policy commandfile. Modify as desired.
+ * Example policy commandfile. Modify as desired.
  *
- *   Validates commands as they are issued and returns an error
- *   or changes options when policy is violated.
+ * Validates commands as they are issued and returns an error
+ * or changes options when policy is violated.
  *
- *   You can copy this file to any of the following
- *     1. A .drush folder in your HOME folder.
- *     2. Anywhere in a folder tree below an active module on your site.
- *     3. /usr/share/drush/commands (configurable)
- *     4. In an arbitrary folder specified with the --include option.
- *     5. Drupal's /drush or sites/all/drush folder (note: sql-sync validation won't work here).
+ * You can copy this file to any of the following
+ *   1. A .drush folder in your HOME folder.
+ *   2. Anywhere in a folder tree below an active module on your site.
+ *   3. /usr/share/drush/commands (configurable)
+ *   4. In an arbitrary folder specified with the --include option.
+ *   5. Drupal's /drush or sites/all/drush folder (note: sql-sync validation
+ *      won't work here).
  */
 
 /**
- * Implement of drush_hook_COMMAND_validate().
+ * Implements drush_hook_COMMAND_validate().
  *
- * Prevent catastrophic braino. Note that this file has to be local to the machine
- * that intitiates sql-sync command.
+ * Prevent catastrophic braino. Note that this file has to be local to the
+ * machine that intitiates sql-sync command.
  */
 function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
   if ($destination == '@prod') {
@@ -28,7 +29,7 @@ function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
 }
 
 /**
- * Implement hook help alter.
+ * Implements hook_drush_help_alter().
  *
  * When a hook extends a command with additional options, it must
  * implement help alter and declare the option(s).  Doing so will add
@@ -44,10 +45,10 @@ function policy_drush_help_alter($command) {
 }
 
 /**
- * Implementation of drush_hook_COMMAND_validate().
+ * Implements drush_hook_COMMAND_validate().
  *
- * To test this example without copying, execute `drush --include=./examples updatedb`
- * from within your drush directory.
+ * To test this example without copying, execute
+ * `drush --include=./examples updatedb` from within your drush directory.
  *
  * Unauthorized users may view pending updates but not execute them.
  */
@@ -61,7 +62,7 @@ function drush_policy_updatedb_validate() {
 }
 
 /**
- * Implementation of drush_hook_COMMAND_validate().
+ * Implements drush_hook_COMMAND_validate().
  *
  * Only sudo tells me to make a sandwich: http://xkcd.com/149/
  */
@@ -70,8 +71,8 @@ function drush_policy_make_me_a_sandwich_validate() {
     // $name = drush_get_username();
     // TODO: implement check for elevated process using w32api
     // as sudo is not available for Windows
-    // http://php.net/manual/en/book.w32api.php
-    // http://social.msdn.microsoft.com/Forums/en/clr/thread/0957c58c-b30b-4972-a319-015df11b427d
+    // @see http://php.net/manual/en/book.w32api.php
+    // @see http://social.msdn.microsoft.com/Forums/en/clr/thread/0957c58c-b30b-4972-a319-015df11b427d
   }
   else {
     $name = posix_getpwuid(posix_geteuid());

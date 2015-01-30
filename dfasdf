@@ -1,0 +1,135 @@
+[1mdiff --cc commands/core/core.drush.inc[m
+[1mindex 20a1550,009550c..0000000[m
+[1m--- a/commands/core/core.drush.inc[m
+[1m+++ b/commands/core/core.drush.inc[m
+[36m@@@ -253,56 -299,8 +299,59 @@@[m [mfunction core_drush_command() [m
+      'aliases' => array('rsync'),[m
+      'topics' => array('docs-aliases'),[m
+    );[m
+[32m++<<<<<<< HEAD[m
+[32m +  $items['site-install'] = array([m
+[32m +    'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',[m
+[32m +    'arguments' => array([m
+[32m +      'profile' => 'the install profile you wish to run. defaults to \'default\' in D6, \'standard\' in D7+',[m
+[32m +      'key=value...' => 'any additional settings you wish to pass to the profile. Fully supported on D7+, partially supported on D6 (single step configure forms only). The key is in the form [form name].[parameter name] on D7 or just [parameter name] on D6.',[m
+[32m +    ),[m
+[32m +    'options' => array([m
+[32m +      'db-url' => array([m
+[32m +        'description' => 'A Drupal 6 style database URL. Only required for initial install - not re-install.',[m
+[32m +        'example-value' => 'mysql://root:pass@host/db',[m
+[32m +        ),[m
+[32m +      'db-prefix' => 'An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).',[m
+[32m +      'db-su' => array([m
+[32m +        'description' => 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.',[m
+[32m +        'example-value' => 'root',[m
+[32m +      ),[m
+[32m +      'db-su-pw' => array([m
+[32m +        'description' => 'Password for the "db-su" account. Optional.',[m
+[32m +        'example-value' => 'pass',[m
+[32m +      ),[m
+[32m +      'db-drop-existing-tables' => 'Defaults to TRUE. Remove all tables in the target database before creating Drupal tables.',[m
+[32m +      'account-name' => 'uid1 name. Defaults to admin',[m
+[32m +      'account-pass' => 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',[m
+[32m +      'account-mail' => 'uid1 email. Defaults to admin@example.com',[m
+[32m +      'locale' => array([m
+[32m +        'description' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',[m
+[32m +        'example-value' => 'en-GB',[m
+[32m +      ),[m
+[32m +      'clean-url'=> 'Defaults to 1',[m
+[32m +      'site-name' => 'Defaults to Site-Install',[m
+[32m +      'site-mail' => 'From: for system mailings. Defaults to admin@example.com',[m
+[32m +      'sites-subdir' => array([m
+[32m +        'description' => "Name of directory under 'sites' which should be created. Only needed when the subdirectory does not already exist. Defaults to 'default'",[m
+[32m +        'value' => 'required',[m
+[32m +        'example-value' => 'directory_name',[m
+[32m +      ),[m
+[32m +    ),[m
+[32m +    'examples' => array([m
+[32m +      'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukranian.',[m
+[32m +      'drush site-install --db-url=mysql://root:pass@localhost:port/dbname' => 'Install using the specified DB params.',[m
+[32m +      'drush site-install --db-url=sqlite://sites/example.com/files/.ht.sqlite' => 'Install using SQLite (D7+ only).',[m
+[32m +      'drush site-install --account-name=joe --account-pass=mom' => 'Re-install with specified uid1 credentials.',[m
+[32m +      'drush site-install standard install_configure_form.site_default_country=FR my_profile_form.my_settings.key=value' => 'Pass additional arguments to the profile (D7 example shown here - for D6, omit the form id).',[m
+[32m +      "drush site-install install_configure_form.update_status_module='array(FALSE,FALSE)'" => 'Disable email notification during install and later. If your server has no smtp, this gets rid of an error during install.',[m
+[32m +    ),[m
+[32m +    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,[m
+[32m +    'aliases' => array('si'),[m
+[32m +  );[m
+[32m++=======[m
+[32m++>>>>>>> upstream/master[m
+    $items['drupal-directory'] = array([m
+[31m-     'description' => 'Return path to a given module/theme directory.',[m
+[32m+     'description' => 'Return the filesystem path for modules/themes and other key folders.',[m
+      'arguments' => array([m
+        'target' => 'A module/theme name, or special names like root, files, private, or an alias : path alias string such as @alias:%files. Defaults to root.',[m
+      ),[m
+[1mdiff --cc commands/core/site_install.drush.inc[m
+[1mindex 7343296,457f5fb..0000000[m
+[1m--- a/commands/core/site_install.drush.inc[m
+[1m+++ b/commands/core/site_install.drush.inc[m
+[36m@@@ -23,28 -93,31 +93,44 @@@[m [mfunction drush_core_pre_site_install($p[m
+      drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));[m
+      return;[m
+    }[m
+[31m-   $default_sites_subdir = drush_get_context('DRUSH_DRUPAL_SITE', 'default');[m
+[31m-   $sites_subdir = drush_get_option('sites-subdir', $default_sites_subdir);[m
+  [m
+[31m-   $conf_path = "sites/$sites_subdir";[m
+[31m-   $files = "$conf_path/files";[m
+[31m-   // Used by a D8 log message.[m
+[31m-   drush_set_context('DRUSH_SITE_INSTALL_FILES', $files);[m
+[32m+   // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.[m
+[32m+   _drush_bootstrap_selected_uri();[m
+[32m+ [m
+[32m+   $alias_record = drush_sitealias_get_record('@self');[m
+[32m+   $sites_subdir = drush_sitealias_local_site_path($alias_record);[m
+[32m+   // Override with sites-subdir if specified.[m
+[32m+   if ($dir = drush_get_option('sites-subdir')) {[m
+[32m+     $sites_subdir = "sites/$dir";[m
+[32m+   }[m
+[32m+   $conf_path = $sites_subdir;[m
+[32m+   // Handle the case where someuse uses --variables to set the file public path. Won't work on D8+.[m
+[32m+   $files = !empty($GLOBALS['conf']['files_public_path']) ? $GLOBALS['conf']['files_public_path'] : "$conf_path/files";[m
+    $settingsfile = "$conf_path/settings.php";[m
+    $sitesfile = "sites/sites.php";[m
+[32m++<<<<<<< HEAD[m
+[32m +  $sitesfile_write = drush_drupal_major_version() >= 8 && !file_exists($sitesfile) && $sites_subdir != 'default';[m
+[32m +  $db_drop_existing_tables = drush_get_option('db-drop-existing-tables', TRUE);[m
+[32m +  [m
+[32m++=======[m
+[32m+   $default = realpath($alias_record['root'] . '/sites/default');[m
+[32m+   $sitesfile_write = drush_drupal_major_version() >= 8 && $conf_path != $default && !file_exists($sitesfile);[m
+[32m+ [m
+[32m++>>>>>>> upstream/master[m
+    if (!file_exists($settingsfile)) {[m
+      $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));[m
+    }[m
+    if ($sitesfile_write) {[m
+      $msg[] = dt('create a @sitesfile file', array('@sitesfile' => $sitesfile));[m
+    }[m
+[32m++<<<<<<< HEAD[m
+[32m +  if (drush_drupal_major_version() >= 8) {[m
+[32m +    $msg[] = dt('empty any Config directories');[m
+[32m +  }[m
+[32m +  if (drush_sql_db_exists($db_spec) && $db_drop_existing_tables) {[m
+[32m++=======[m
+[32m+   if ($sql->db_exists()) {[m
+[32m++>>>>>>> upstream/master[m
+      $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));[m
+    }[m
+    else {[m
+[36m@@@ -108,10 -181,7 +194,14 @@@[m
+      drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);[m
+    }[m
+  [m
+[32m++<<<<<<< HEAD[m
+[32m +  // Empty or create the DB as needed.[m
+[32m +  if ($db_drop_existing_tables) {[m
+[32m +    drush_sql_empty_db($db_spec);[m
+[32m +  }[m
+[32m++=======[m
+[32m+   $sql->drop_or_create($db_spec);[m
+[32m++>>>>>>> upstream/master[m
+  [m
+    if (drush_drupal_major_version() >= 8) {[m
+      // Empty out any existing config directories.[m

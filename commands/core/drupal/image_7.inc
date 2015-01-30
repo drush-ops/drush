@@ -12,6 +12,10 @@ function drush_image_styles() {
   return image_styles();
 }
 
+function drush_image_style_load($style_name) {
+  return image_style_load($style_name);
+}
+
 function drush_image_flush_single($style_name) {
   if ($style = image_style_load($style_name)) {
     image_style_flush($style);

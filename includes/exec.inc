@@ -123,7 +123,7 @@ function drush_shell_exec_interactive($cmd) {
  */
 function _drush_shell_exec($args, $interactive = FALSE) {
   // Do not change the command itself, just the parameters.
-  for ($x = 1; $x < sizeof($args); $x++) {
+  for ($x = 1; $x < count($args); $x++) {
     $args[$x] = drush_escapeshellarg($args[$x]);
   }
   // Important: we allow $args to take one of two forms here.  If
@@ -374,7 +374,7 @@ function _drush_escapeshellarg_linux($arg) {
  * Stores output for the most recent shell command.
  * This should only be run from drush_shell_exec().
  *
- * @param $output
+ * @param array|bool $output
  *   The output of the most recent shell command.
  *   If this is not set the stored value will be returned.
  */
@@ -404,7 +404,7 @@ function drush_shell_exec_output() {
  *   TRUE if browser was opened, FALSE if browser was disabled by the user or a,
  *   default browser could not be found.
  */
-function drush_start_browser($uri = NULL, $sleep = FALSE) {
+function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE) {
   if ($browser = drush_get_option('browser', TRUE)) {
     // We can only open a browser if we have a DISPLAY environment variable on
     // POSIX or are running Windows or OS X.
@@ -426,6 +426,9 @@ function drush_start_browser($uri = NULL, $sleep = FALSE) {
     if (!drush_get_context('DRUSH_SIMULATE') && ($hosterror || $iperror)) {
       drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)), 'warning');
       return FALSE;
+    }
+    if ($port) {
+      $uri = str_replace($host, "localhost:$port", $uri);
     }
     if ($browser === TRUE) {
       // See if we can find an OS helper to open URLs in default browser.

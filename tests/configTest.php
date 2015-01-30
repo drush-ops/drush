@@ -1,41 +1,32 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for enable, disable, uninstall, pm-list commands.
- *
+ * Tests for Configuration Management commands for D8+.
  * @group commands
  */
-class ConfigCase extends Drush_CommandTestCase {
+class ConfigCase extends CommandUnishTestCase {
 
-  function testConfig() {
+  function setUp() {
     if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
       $this->markTestSkipped('Config only available on D8+.');
     }
 
+    if (!$this->getSites()) {
+      $this->setUpDrupal(1, TRUE);
+    }
+  }
 
-    // Remove the '.x' once there is a stable release.
-    $sites = $this->setUpDrupal(1, TRUE, '8.x');
-    $options = array(
-      'yes' => NULL,
-      'root' => $this->webroot(),
-      'uri' => key($sites),
-    );
-    // Include test site's settings file to get the config directories.
-    include $options['root'] . '/sites/' . key($sites) . '/settings.php';
-
+  function testConfigGetSet() {
+    $options = $this->options();
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $options);
     $this->drush('config-get', array('system.site', 'name'), $options);
-    $this->assertEquals("'system.site:name': config_test\n", $this->getOutput(), 'Config was successfully set and get.');
+    $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config was successfully set and get.');
+  }
 
-    // @todo, test that config-get or similar matches what filesystem says.
-    //$this->drush('config-get', array(), $options);
-    //$system_site_file = $options['root'] . '/sites/' . key($sites) . '/files/' . $config_directories['staging']['path'] . '/system.site.yml';
-    //$this->assertFileExists($system_site_file);
-    //$this->drush('config-get', array('system.site'), $options);
-    //$config_get_yaml = $this->getOutput();
-    //$this->assertEquals($config_get_yaml, file_get_contents($system_site_file), 'Config-get displays YAML that matches the config management system.');
-
+  function testConfigList() {
+    $options = $this->options();
     $this->drush('config-list', array(), $options);
     $result = $this->getOutputAsList();
     $this->assertNotEmpty($result, 'An array of config names was returned.');
@@ -45,8 +36,37 @@ class ConfigCase extends Drush_CommandTestCase {
     $result = $this->getOutputAsList();
     $this->assertTrue(in_array('system.site', $result), 'system.site found in list of config names with "system" prefix.');
 
-    $this->drush('config-list', array('system'), $options += array('format' => 'json'));
+    $this->drush('config-list', array('system'), $options + array('format' => 'json'));
     $result = $this->getOutputFromJSON();
     $this->assertNotEmpty($result, 'Valid, non-empty JSON output was returned.');
+  }
+
+  function testConfigExportImport() {
+    $options = $this->options();
+    // Get path to staging dir.
+    $this->drush('core-status', array(), $options + array('format' => 'json'));
+    $staging = $this->webroot() . '/' . $this->getOutputFromJSON('config-staging');
+    $system_site_yml = $staging . '/system.site.yml';
+
+    // Test export
+    $this->drush('config-export', array(), $options);
+    $this->assertFileExists($system_site_yml);
+
+    // Test import by finish the round trip.
+    $contents = file_get_contents($system_site_yml);
+    $contents = str_replace('front: user', 'front: unish', $contents);
+    $contents = file_put_contents($system_site_yml, $contents);
+    $this->drush('config-import', array(), $options);
+    $this->drush('config-get', array('system.site', 'page'), $options + array('format' => 'json'));
+    $page = $this->getOutputFromJSON('system.site:page');
+    $this->assertContains('unish', $page->front, 'Config was successfully imported.');
+  }
+
+  function options() {
+    return array(
+      'yes' => NULL,
+      'root' => $this->webroot(),
+      'uri' => key($this->getSites()),
+    );
   }
 }

@@ -1,10 +1,17 @@
 <?php
 
 /**
- * Implementation of drush_COMMAND_validate().
+ * @file
+ * pm-download command implementation.
+ */
+
+use \Drush\UpdateService\ReleaseInfo;
+
+/**
+ * Implements drush_hook_COMMAND_validate().
  */
 function drush_pm_download_validate() {
-  // Accomodate --select to the values accepted by release_info_fetch().
+  // Accomodate --select to the values accepted by release_info.
   $select = drush_get_option('select', 'auto');
   if ($select === TRUE) {
     drush_set_option('select', 'always');
@@ -75,21 +82,33 @@ function drush_pm_download_validate() {
  * Command callback. Download Drupal core or any project.
  */
 function drush_pm_download() {
+  $release_info = drush_get_engine('release_info');
+
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
 
-  // Parse out project name and version.
-  $requests = pm_parse_project_version($requests);
-
-  // Get release history for each request and download the project.
-  $source = drush_get_option('source', RELEASE_INFO_DEFAULT_URL);
-  $restrict_to = drush_get_option('dev', FALSE) ? 'dev' : '';
+  // Pick cli options.
+  $source = drush_get_option('source', ReleaseInfo::DEFAULT_URL);
+  $restrict_to = drush_get_option('dev', '');
   $select = drush_get_option('select', 'auto');
   $all = drush_get_option('all', FALSE);
-  foreach ($requests as $name => $request) {
+  // If we've bootstrapped a Drupal site and the user may have the chance
+  // to select from a list of filtered releases, we want to pass
+  // the installed project version, if any.
+  $projects = array();
+  if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+    if (!$all and in_array($select, array('auto', 'always'))) {
+      $projects = drush_get_projects();
+    }
+  }
+
+  // Get release history for each request and download the project.
+  foreach ($requests as $request) {
+    $request = pm_parse_request($request);
     $request['status url'] = $source;
-    $release = release_info_fetch($request, $restrict_to, $select, $all);
+    $version = isset($projects[$request['name']]) ? $projects[$request['name']]['version'] : NULL;
+    $release = $release_info->selectReleaseBasedOnStrategy($request, $restrict_to, $select, $all, $version);
     if ($release == FALSE) {
       // Stop working on the first failure. Return silently on user abort.
       if (drush_get_context('DRUSH_USER_ABORT', FALSE)) {
@@ -98,9 +117,13 @@ function drush_pm_download() {
       // Signal that the command failed for all other problems.
       return drush_set_error('DRUSH_DOWNLOAD_FAILED', dt("Could not download requested project(s)."));
     }
+    $request['version'] = $release['version'];
+
+    $project_release_info = $release_info->get($request);
+    $request['project_type'] = $project_release_info->getType();
 
     // Determine the name of the directory that will contain the project.
-    // We face here all the asymetries to make it smooth for package handlers.
+    // We face here all the assymetries to make it smooth for package handlers.
     // For Drupal core: --drupal-project-rename or drupal-x.y
     if (($request['project_type'] == 'core') ||
         (($request['project_type'] == 'profile') && (drush_get_option('variant', 'full') == 'full'))) {
@@ -132,12 +155,11 @@ function drush_pm_download() {
     }
 
     // Download the project to a temporary location.
-    $request['base_project_path'] = drush_tempdir();
-    $request['full_project_path'] = $request['base_project_path'] .'/'. $request['project_dir'];
-    drush_log(dt('Downloading project !name to !dir ...', array('!name' => $request['name'], '!dir' => $request['base_project_path'])));
-    if (!package_handler_download_project($request, $release)) {
-      // Delete the cached updatexml since it may be invalid.
-      drush_delete_dir(drush_download_file_name(updatexml_get_url($request)), TRUE);
+    drush_log(dt('Downloading project !name ...', array('!name' => $request['name'])));
+    $request['full_project_path'] = package_handler_download_project($request, $release);
+    if (!$request['full_project_path']) {
+      // Delete the cached update service file since it may be invalid.
+      $release_info->clearCached($request);
       drush_log(dt('Error downloading !name', array('!name' => $request['name']), 'error'));
       continue;
     }
@@ -195,7 +217,7 @@ function drush_pm_download() {
     // Copy the project to the install location.
     if (drush_op('_drush_recursive_copy', $request['full_project_path'], $request['project_install_location'])) {
       drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'success');
-      $request['base_project_path'] = basename($request['project_install_location']);
+      // Adjust full_project_path to the final project location.
       $request['full_project_path'] = $request['project_install_location'];
 
       // If the version control engine is a proper vcs we also need to remove
@@ -215,7 +237,7 @@ function drush_pm_download() {
 
       // Print release notes if --notes option is set.
       if (drush_get_option('notes') && !drush_get_context('DRUSH_PIPE')) {
-        release_info_print_releasenotes(array($name . '-' . $release['version']), FALSE);
+        $project_release_info->getReleaseNotes($release['version'], FALSE);
       }
 
       // Inform the user about available modules a/o themes in the downloaded project.
@@ -246,14 +268,14 @@ function drush_pm_download() {
  * /usr/share/drush/commands if it exists, or $HOME/.drush if the
  * site-wide location does not exist.
  */
-function pm_drush_pm_download_destination_alter(&$project, $release) {
+function pm_drush_pm_download_destination_alter(&$request, $release) {
   // A module is a pure drush command if it has no .module and contain
   // .drush.inc files.  Skip this test for drush itself, though; we do
   // not want to download drush to the ~/.drush folder.
-  if (($project['project_type'] == 'module') && ($project['name'] != 'drush')) {
-    $drush_command_files = drush_scan_directory($project['full_project_path'], '/.*\.drush.inc/');
+  if (in_array($request['project_type'], array('module', 'utility')) && ($request['name'] != 'drush')) {
+    $drush_command_files = drush_scan_directory($request['full_project_path'], '/.*\.drush.inc/');
     if (!empty($drush_command_files)) {
-      $module_files = drush_scan_directory($project['full_project_path'], '/.*\.module/');
+      $module_files = drush_scan_directory($request['full_project_path'], '/.*\.module/');
       if (empty($module_files)) {
         $install_dir = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
         if (!is_dir($install_dir) || !is_writable($install_dir)) {
@@ -265,7 +287,7 @@ function pm_drush_pm_download_destination_alter(&$project, $release) {
         }
         // Change the location if the mkdir worked.
         if (is_dir($install_dir)) {
-          $project['project_install_location'] = $install_dir;
+          $request['project_install_location'] = $install_dir;
         }
       }
       // We need to clear the drush commandfile cache so that
@@ -321,9 +343,9 @@ function _pm_download_destination_lookup($type, $drupal_root, $sitepath, $create
  */
 function _pm_download_destination($type) {
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-  $site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT', FALSE);
-  $full_site_root = $drupal_root .'/'. $site_root;
-  $sitewide = drush_drupal_sitewide_directory();
+  $site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT');
+  $full_site_root = empty($drupal_root) ? '' : $drupal_root .'/'. $site_root;
+  $sitewide = empty($drupal_root) ? '' : $drupal_root . '/' . drush_drupal_sitewide_directory();
 
   $in_site_directory = FALSE;
   // Check if we are running within the site directory.

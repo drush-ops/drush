@@ -1,25 +1,24 @@
 <?php
 
 /**
- * Install Drupal 7+
+ * Install Drupal 8+
  */
 function drush_core_site_install_version($profile, array $additional_form_options = array()) {
-  if (is_null($profile)) {
+  if (!isset($profile)) {
     $profile = 'standard';
   }
 
   require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
 
-  $db_spec = _drush_sql_get_db_spec();
+  $sql = drush_sql_get_class();
+  $db_spec = $sql->db_spec();
 
   $account_pass = drush_get_option('account-pass', drush_generate_password());
   $account_name = drush_get_option('account-name', 'admin');
   $settings = array(
-    // D8+: Allows files dir and subdirs to be writable by both CLI and web users.
-    'mode' => 0777,
     'parameters' => array(
       'profile' => $profile,
-      'locale' => drush_get_option('locale', 'en'),
+      'langcode' => drush_get_option('locale', 'en'),
     ),
     'forms' => array(
       'install_settings_form' => array(
@@ -57,12 +56,12 @@ function drush_core_site_install_version($profile, array $additional_form_option
     $current = $value;
   }
 
-  drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), 'ok');
-  drush_op('install_drupal', $settings);
-  drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
-  if (drush_drupal_major_version() >= 8) {
-    $files = drush_get_context('DRUSH_SITE_INSTALL_FILES');
-    $symfony = 'http://symfony.com/doc/current/book/installation.html#configuration-and-setup';
-    drush_log(dt('Your !files directory and its subdirectories are mode 0777 so that they can be cleared by both web and CLI users. If desired, you may now adjust to stricter permissions as per !link', array('!files' => $files, '!link' => $symfony)), 'ok');
+  $msg = 'Starting Drupal installation. This takes a while.';
+  if (is_null(drush_get_option('notify'))) {
+    $msg .= ' Consider using the --notify global option.';
   }
+  drush_log(dt($msg), 'ok');
+  $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+  drush_op('install_drupal', $class_loader, $settings);
+  drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
 }

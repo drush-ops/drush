@@ -1,23 +1,30 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for core commands.
+ * Tests for core commands.
  *
  * @group commands
  */
-class coreCase extends Drush_CommandTestCase {
+class coreCase extends CommandUnishTestCase {
+
+  function setUp() {
+    if (!$this->getSites()) {
+      $this->setUpDrupal(1, TRUE);
+    }
+  }
+
   /**
    * Test to see if rsync @site:%files calculates the %files path correctly.
    * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
    */
   function testRsyncPercentFiles() {
-    $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
-    $site = key($this->sites);
+    $site = key($this->getSites());
     $options = array(
       'root' => $root,
-      'uri' => key($this->sites),
+      'uri' => key($this->getSites()),
       'simulate' => NULL,
       'include-conf' => NULL,
       'include-vcs' => NULL,
@@ -36,12 +43,11 @@ class coreCase extends Drush_CommandTestCase {
    * that avoids a call to backend invoke when evaluating %files works.
    */
   function testPercentFilesOptimization() {
-    $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
-    $site = key($this->sites);
+    $site = key($this->getSites());
     $options = array(
       'root' => $root,
-      'uri' => key($this->sites),
+      'uri' => key($this->getSites()),
       'simulate' => NULL,
       'include-conf' => NULL,
       'include-vcs' => NULL,
@@ -84,24 +90,16 @@ drush_invoke("version", $arg);
   }
 
   function testDrupalDirectory() {
-    $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
     $sitewide = $this->drupalSitewideDirectory();
     $options = array(
       'root' => $root,
-      'uri' => key($this->sites),
+      'uri' => key($this->getSites()),
       'yes' => NULL,
       'skip' => NULL,
       'cache' => NULL,
       'strict' => 0, // invoke from script: do not verify options
     );
-    $this->drush('pm-download', array('devel'), $options);
-    $this->drush('pm-enable', array('devel'), $options);
-
-    $this->drush('drupal-directory', array('devel'), $options);
-    $output = $this->getOutput();
-    $this->assertEquals($root  . $sitewide . '/modules/devel', $output);
-
     $this->drush('drupal-directory', array('%files'), $options);
     $output = $this->getOutput();
     $this->assertEquals($root . '/sites/dev/files', $output);
@@ -109,16 +107,33 @@ drush_invoke("version", $arg);
     $this->drush('drupal-directory', array('%modules'), $options);
     $output = $this->getOutput();
     $this->assertEquals($root . $sitewide . '/modules', $output);
+
+    $this->drush('pm-download', array('devel'), $options);
+    $this->drush('pm-enable', array('devel'), $options);
+    $this->drush('pm-download', array('zen'), $options);
+
+    $this->drush('drupal-directory', array('devel'), $options);
+    $output = $this->getOutput();
+    $this->assertEquals($root  . $sitewide . '/modules/devel', $output);
+
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      // Known failure. See https://github.com/drush-ops/drush/pull/382.
+      $this->markTestSkipped('dd needs updating for D8.');
+    }
+    else {
+      $this->drush('drupal-directory', array('zen'), $options);
+      $output = $this->getOutput();
+      $this->assertEquals($root  . $sitewide . '/themes/zen', $output);
+    }
   }
 
   function testCoreRequirements() {
-    $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
     $options = array(
       'root' => $root,
-      'uri' => key($this->sites),
+      'uri' => key($this->getSites()),
       'pipe' => NULL,
-      'ignore' => 'cron,http requests,update_core', // no network access when running in tests, so ignore these
+      'ignore' => 'cron,http requests,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
       'strict' => 0, // invoke from script: do not verify options
     );
     // Verify that there are no severity 2 items in the status report
@@ -139,7 +154,9 @@ drush_invoke("version", $arg);
       'settings.php' => -1,
     );
     foreach ($expected as $key => $value) {
-      $this->assertEquals($value, $loaded->$key->sid);
+      if (isset($loaded->$key)) {
+        $this->assertEquals($value, $loaded->$key->sid);
+      }
     }
   }
 }

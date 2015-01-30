@@ -71,6 +71,13 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
 
       drush_log("Executing " . $function);
       $ret['results']['query'] = $function($context['sandbox']);
+
+      // If the update hook returned a status message (common in batch updates),
+      // show it to the user.
+      if ($ret['results']['query']) {
+        drush_log($ret['results']['query'], 'ok');
+      }
+
       $ret['results']['success'] = TRUE;
     }
     // @TODO We may want to do different error handling for different exception
@@ -180,6 +187,15 @@ function update_main_prepare() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
 
   update_fix_d7_requirements();
+
+  // Clear the module_implements() cache before the full bootstrap. The calls
+  // above to drupal_maintenance_theme() and update_check_requirements() have
+  // invoked hooks before all modules have actually been loaded by the full
+  // bootstrap. This means that the module_implements() results for any hooks
+  // that have been invoked, including hook_module_implements_alter(), is a
+  // smaller set of modules than should be returned normally.
+  // @see https://github.com/drush-ops/drush/pull/399
+  module_implements('', FALSE, TRUE);
 
   // Now proceed with a full bootstrap.
 

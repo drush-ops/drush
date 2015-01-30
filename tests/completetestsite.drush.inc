@@ -1,8 +1,7 @@
 <?php
 /**
- * @file
- *   Commands and options for complete unit tests, to avoid relying on the
- *   ever-changing core command set.
+ * Commands and options for complete unit tests, to avoid relying on the
+ * ever-changing core command set.
  */
 
 /**

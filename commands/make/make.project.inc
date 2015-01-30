@@ -165,7 +165,7 @@ class DrushMakeProject {
     }
     $this->made = TRUE;
 
-    if (is_null($this->download_location)) {
+    if (!isset($this->download_location)) {
       $this->download_location = $this->findDownloadLocation();
     }
     if ($this->download() === FALSE) {
@@ -185,7 +185,7 @@ class DrushMakeProject {
       $this->processGitInfoFiles();
     }
     // Clean-up .git directories.
-    if (!drush_get_option('working-copy') && (empty($this->options['working-copy']) ||  !_make_is_override_allowed('working-copy'))) {
+    if (!_get_working_copy_option($this->download)) {
       $this->removeGitDirectory();
     }
     if (!$this->recurse($this->download_location)) {
@@ -341,8 +341,8 @@ class DrushMakeProject {
    * Process info files when downloading things from git.
    */
   function processGitInfoFiles() {
-    // Bail out if this isn't hosted on Drupal.org.
-    if (isset($this->download['url']) && strpos($this->download['url'], 'drupal.org') === FALSE) {
+    // Bail out if this isn't hosted on Drupal.org (unless --force-gitinfofile option was specified).
+    if (!drush_get_option('force-gitinfofile', FALSE) && isset($this->download['url']) && strpos($this->download['url'], 'drupal.org') === FALSE) {
       return;
     }
 
@@ -529,13 +529,24 @@ class DrushMakeProject {
                 array("!project" => $this->name)), 'notice');
       return TRUE;
     }
-    $makefile = $this->download_location . '/' . $this->name . '.make';
-    if (!file_exists($makefile)) {
-      $makefile = $this->download_location . '/drupal-org.make';
-      if (!file_exists($makefile)) {
-        return TRUE;
+    $candidates = array(
+      $this->name . '.make.yml',
+      $this->name . '.make',
+      'drupal-org.make.yml',
+      'drupal-org.make',
+    );
+    $makefile = FALSE;
+    foreach ($candidates as $filename) {
+      if (file_exists($this->download_location . '/' . $filename)) {
+        $makefile = $this->download_location . '/' . $filename;
+        break;
       }
     }
+
+    if (!$makefile) {
+      return TRUE;
+    }
+
     drush_log(dt("Found makefile: !makefile", array("!makefile" => basename($makefile))), 'ok');
 
     // Save the original state of the 'custom' context.
@@ -547,13 +558,17 @@ class DrushMakeProject {
       $result = FALSE;
     }
     else {
+      // Inherit the translations specified in the extender makefile.
+      if (!empty($this->translations)) {
+        $info['translations'] = $this->translations;
+      }
       // Strip out any modules that have already been processed before this.
       foreach ($this->manifest as $name) {
         unset($info['projects'][$name]);
       }
       $build_path = $this->buildPath($this->name);
       make_projects(TRUE, trim($build_path, '/'), $info, $this->build_path, $this->download_location);
-      make_libraries(trim($build_path, '/'), $info, $this->build_path, $this->download_location);
+      make_libraries(TRUE, trim($build_path, '/'), $info, $this->build_path, $this->download_location);
       $result = TRUE;
     }
     // Restore original 'custom' context so that any

@@ -114,14 +114,16 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
       $drupal_root . '/drush/' . $config_file,
     );
 
-    if ($site_path = $drupal_root . '/' . drush_get_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH')) {
+    if ($conf_path = drush_get_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH')) {
+      $site_path = $drupal_root . '/' . $conf_path;
       $configs['site'] = $site_path . "/" . $config_file;
     }
   }
 
   // in the user home directory
-  if (!is_null(drush_server_home())) {
-    $configs['user'] = drush_server_home() . '/.' . $config_file;
+  $server_home = drush_server_home();
+  if (isset($server_home)) {
+    $configs['user'] = $server_home . '/.' . $config_file;
   }
 
   // in $HOME/.drush directory
@@ -162,7 +164,6 @@ function drush_load_config_file($context, $config_list) {
         $options = array_merge(drush_get_context($context), $options);
         $options['config-file'] = realpath($config);
 
-        //$options['site-aliases'] = array_merge(isset($aliases) ? $aliases : array(), isset($options['site-aliases']) ? $options['site-aliases'] : array());
         unset($options['site-aliases']);
         $options['command-specific'] = array_merge(isset($command_specific) ? $command_specific : array(), isset($options['command-specific']) ? $options['command-specific'] : array());
 
@@ -326,9 +327,9 @@ function drush_set_context($context, $value) {
  */
 function &drush_get_context($context = NULL, $default = NULL) {
   static $cache = array();
-  if (!is_null($context)) {
+  if (isset($context)) {
     if (!isset($cache[$context])) {
-      $default = is_null($default) ? array() : $default;
+      $default = !isset($default) ? array() : $default;
       $cache[$context] = $default;
     }
     return $cache[$context];
@@ -382,12 +383,11 @@ function drush_set_command($command) {
 
 /**
  * Return the command being executed.
- *
- *
  */
 function drush_get_command() {
   return drush_get_context('command');
 }
+
 /**
  * Get the value for an option.
  *
@@ -647,7 +647,6 @@ function drush_save_config($context) {
     }
     else {
       fwrite($fp, "<?php\n");
-      $timestamp = mktime();
       foreach ($cache as $key => $value) {
         $line = "\n\$options['$key'] = ". var_export($value, TRUE) .';';
         fwrite($fp, $line);

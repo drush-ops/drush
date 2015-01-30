@@ -1,14 +1,16 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests sql-connect command
+ * Tests sql-connect command
  *
  *   Installs Drupal and checks that the given URL by sql-connect is correct.
  *
  * @group commands
+ * @group sql
  */
-class SqlConnectCase extends Drush_CommandTestCase {
+class SqlConnectCase extends CommandUnishTestCase {
 
   function testSqlConnect() {
     $sites = $this->setUpDrupal(1, TRUE);
@@ -26,23 +28,23 @@ class SqlConnectCase extends Drush_CommandTestCase {
     $shell_options = "-e";
     $db_driver = $this->db_driver();
     if ($db_driver == 'mysql') {
-      $this->assertRegExp('/^mysql --database=[^\s]+ --host=[^\s]+ --user=[^\s]+ --password=.*$/', $output);
+      $this->assertRegExp('/^mysql --user=[^\s]+ --password=.* --database=[^\s]+ --host=[^\s]+/', $output);
     }
     elseif ($db_driver == 'sqlite') {
       $this->assertContains('sqlite3', $output);
       $shell_options = '';
     }
     elseif ($db_driver == 'pgsql') {
-      $this->assertRegExp('/^psql --dbname=[^\s]+ --host=[^\s]+ --port=[^\s] --username=[^\s]+/', $output);
+      $this->assertRegExp('/^psql -q --dbname=[^\s]+ --host=[^\s]+ --port=[^\s]+ --username=[^\s]+/', $output);
     }
     else {
       $this->markTestSkipped('sql-connect test does not recognize database type in ' . UNISH_DB_URL);
     }
 
     // Issue a query and check the result to verify the connection.
-    $this->execute($output . ' ' . $shell_options . ' "select name from users where uid = 1;"');
+    $this->execute($output . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"');
     $output = $this->getOutput();
-    $this->assertContains('admin', $output);
+    $this->assertContains('1', $output);
 
   }
 }

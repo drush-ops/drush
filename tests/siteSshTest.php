@@ -1,12 +1,14 @@
 <?php
 
+namespace Unish;
+
 /**
  * @file
  *   Tests for ssh.drush.inc
  *
  * @group commands
  */
-class siteSshCase extends Drush_CommandTestCase {
+class siteSshCase extends CommandUnishTestCase {
 
   /**
    * Test drush ssh --simulate. No additional bash passed.
@@ -21,7 +23,7 @@ class siteSshCase extends Drush_CommandTestCase {
     );
     $this->drush('ssh', array(), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getOutput();
-    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no -t %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), "'cd /path/to/drupal && bash'");
+    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no -t %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), "'cd /path/to/drupal && bash -l'");
     $this->assertEquals($expected, $output);
   }
 

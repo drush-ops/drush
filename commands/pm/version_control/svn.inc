@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush pm SVN extension
+ * @file
+ * Drush pm SVN extension
  */
 
 class drush_version_control_svn implements drush_version_control {

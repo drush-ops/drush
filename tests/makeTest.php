@@ -1,11 +1,13 @@
 <?php
 
+namespace Unish;
+
 /**
  * Make makefile tests.
  * @group make
  * @group slow
  */
-class makeMakefileCase extends Drush_CommandTestCase {
+class makeMakefileCase extends CommandUnishTestCase {
   /**
    * Path to test make files.
    */
@@ -114,6 +116,23 @@ class makeMakefileCase extends Drush_CommandTestCase {
 
   function testMakeInclude() {
     $this->runMakefileTest('include');
+  }
+
+  /**
+   * Test git support on includes directive.
+   */
+  function testMakeIncludesGit() {
+    $config = $this->getMakefile('includes-git');
+    $options = array();
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
+    
+    // Verify that core and example main module were downloaded.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/README.txt');
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/apachesolr/README.txt');
+    
+    // Verify that module included in sub platform was downloaded.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/jquery_update/README.txt');
   }
 
   function testMakeRecursion() {
@@ -232,6 +251,10 @@ class makeMakefileCase extends Drush_CommandTestCase {
 
   function testMakeContribDestination() {
     $this->runMakefileTest('contrib-destination');
+  }
+
+  function testMakeYaml() {
+    $this->runMakefileTest('contrib-destination-yaml');
   }
 
   function testMakeDefaults() {
@@ -382,6 +405,25 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->assertContains('project = "caption_filter"', $contents);
   }
 
+  /**
+   * Test .info file writing and the use of a git reference cache for
+   * git downloads.
+   */
+  function testInfoYamlFileWritingGit() {
+    // Use the Drupal 8 .make file.
+    $config = $this->getMakefile('git-simple-8');
+
+    $options = array('no-core' => NULL);
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
+
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
+    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
+    $this->assertContains('# Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains("version: '8.x-1.18-beta1+1-dev'", $contents);
+    $this->assertContains("project: 'honeypot'", $contents);
+  }
+
   function testMakeFileExtract() {
     $this->runMakefileTest('file-extract');
   }
@@ -442,6 +484,12 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'md5' => '0147681209adef163a8ac2c0cff2a07e',
         'options'  => array('no-core' => NULL, 'no-gitinfofile' => NULL),
       ),
+      'git-simple-8' => array(
+        'name' => 'Simple git integration for D8',
+        'makefile' => 'git-simple-8.make',
+        'build' => TRUE,
+        'options'  => array('no-core' => NULL),
+      ),
       'no-patch-txt' => array(
         'name'     => 'Test --no-patch-txt option',
         'makefile' => 'patches.make',
@@ -461,6 +509,12 @@ class makeMakefileCase extends Drush_CommandTestCase {
         'makefile' => 'include.make',
         'build'    => TRUE,
         'md5' => 'e2e230ec5eccaf5618050559ab11510d',
+        'options'  => array(),
+      ),
+      'includes-git' => array(
+        'name'     => 'Including makefiles from remote repositories',
+        'makefile' => 'includes-main.make',
+        'build'    => TRUE,
         'options'  => array(),
       ),
       'recursion' => array(
@@ -515,6 +569,13 @@ class makeMakefileCase extends Drush_CommandTestCase {
       'contrib-destination' => array(
         'name'     => 'Contrib-destination attribute',
         'makefile' => 'contrib-destination.make',
+        'build'    => TRUE,
+        'md5' => '2aed36201ede1849ce43d9b7d6f7e9e1',
+        'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),
+      ),
+      'contrib-destination-yaml' => array(
+        'name'     => 'Contrib-destination attribute in YAML format',
+        'makefile' => 'contrib-destination.make.yml',
         'build'    => TRUE,
         'md5' => '2aed36201ede1849ce43d9b7d6f7e9e1',
         'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),

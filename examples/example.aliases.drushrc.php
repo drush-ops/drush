@@ -1,8 +1,10 @@
 <?php
 
 /**
- * Example of valid statements for an alias file.  Use this
- * file as a guide to creating your own aliases.
+ * @file
+ * Example of valid statements for an alias file.
+ *
+ * Use this file as a guide to creating your own aliases.
  *
  * Aliases are commonly used to define short names for
  * local or remote Drupal installations; however, an alias
@@ -10,10 +12,12 @@
  * A canonical alias named "dev" that points to a local
  * Drupal site named "dev.mydrupalsite.com" looks like this:
  *
- *   $aliases['dev'] = array(
- *     'root' => '/path/to/drupal',
- *     'uri' => 'dev.mydrupalsite.com',
- *   );
+ * @code
+ * $aliases['dev'] = array(
+ *   'root' => '/path/to/drupal',
+ *   'uri' => 'dev.mydrupalsite.com',
+ * );
+ * @endcode
  *
  * With this alias definition, then the following commands
  * are equivalent:
@@ -48,9 +52,9 @@
  *      a parameter to a command
  *
  * Folders and files containing other versions of drush in their names will
- * be *skipped* (e.g. mysite.aliases.drush4rc.php or drush4/mysite.aliases.drushrc.php).
- * Names containing the current version of drush (e.g. mysite.aliases.drush5rc.php)
- * will be loaded.
+ * be *skipped* (e.g. mysite.aliases.drush4rc.php or
+ * drush4/mysite.aliases.drushrc.php). Names containing the current version of
+ * Drush (e.g. mysite.aliases.drush5rc.php) will be loaded.
  *
  * Files stored in these locations can be used to create aliases
  * to local and remote Drupal installations.  These aliases can be
@@ -63,8 +67,10 @@
  * this file, or they may set values in $options, just
  * like a drushrc.php configuration file:
  *
- *   $options['uri'] = 'dev.mydrupalsite.com',
- *   $options['root'] = '/path/to/drupal';
+ * @code
+ * $options['uri'] = 'dev.mydrupalsite.com',
+ * $options['root'] = '/path/to/drupal';
+ * @endcode
  *
  * When alias files use this form, then the name of the alias
  * is taken from the first part of the alias filename.
@@ -76,25 +82,23 @@
  *
  * For example:
  *
- *   # File: mysite.aliases.drushrc.php
- *   $aliases['dev'] = array(
- *     'root' => '/path/to/drupal',
- *     'uri' => 'dev.mydrupalsite.com',
- *   );
- *   $aliases['live'] = array(
- *     'root' => '/other/path/to/drupal',
- *     'uri' => 'mydrupalsite.com',
- *   );
+ * @code
+ * # File: mysite.aliases.drushrc.php
+ * $aliases['dev'] = array(
+ *   'root' => '/path/to/drupal',
+ *   'uri' => 'dev.mydrupalsite.com',
+ * );
+ * $aliases['live'] = array(
+ *   'root' => '/other/path/to/drupal',
+ *   'uri' => 'mydrupalsite.com',
+ * );
+ * @endcode
  *
  * Then the following special aliases are defined:
- *
- *   @mysite            An alias named after the groupname
- *                      may be used to reference all of the
- *                      aliases in the group (e.g. drush @mydrupalsite status)
- *
- *   @mysite.dev        A copy of @dev
- *
- *   @mysite.live       A copy of @live
+ * - @mysite: An alias named after the groupname may be used to reference all of
+ *   the aliases in the group (e.g., `drush @mydrupalsite status`).
+ * - @mysite.dev: A copy of @dev.
+ * - @mysite.live: A copy of @live.
  *
  * Thus, aliases defined in an alias group file may be referred to
  * either by their simple (short) name, or by their full namespace-qualified
@@ -110,6 +114,38 @@
  *
  *   $ drush site-alias @self --with-db --show-passwords
  *
+ * Drush also supports *remote* site aliases.  When a site alias is
+ * defined for a remote site, Drush will use the ssh command to run
+ * the requested command on the remote machine.  The simplest remote
+ * alias looks like this:
+ *
+ * @code
+ * $aliases['live'] = array(
+ *   'remote-host' => 'server.domain.com',
+ *   'remote-user' => 'www-admin',
+ * );
+ * @endcode
+ *
+ * The form above requires that Drush be installed on the remote machine,
+ * and that there also be an alias of the same name defined on that
+ * machine.  The remote alias should define the 'root' and 'uri' elements,
+ * as shown in the initial example at the top of this file.
+ *
+ * If you do not wish to maintain site aliases on the remote machine,
+ * then you may define an alias that contains all of the elements
+ * 'remote-host', 'remote-user', 'root' and 'uri'.  If you do this, then
+ * Drush will make the remote call using the --root and --uri options
+ * to identify the site, so no site alias is required on the remote server.
+ *
+ * @code
+ * $aliases['live'] = array(
+ *   'remote-host' => 'server.domain.com',
+ *   'remote-user' => 'www-admin',
+ *   'root' => '/other/path/to/drupal',
+ *   'uri' => 'mydrupalsite.com',
+ * );
+ * @endcode
+ *
  * If you would like to see all of the Drupal sites at a specified
  * root directory, use the built-in alias "@sites":
  *
@@ -119,9 +155,11 @@
  * alias list definition.  Alias lists contain a list of alias names in
  * the group, and no other information.  For example:
  *
+ * @code
  * $aliases['mydevsites'] = array(
  *   'site-list' => array('@mysite.dev', '@otherside.dev');
  * );
+ * @endcode
  *
  * The built-in alias "@none" represents the state of no Drupal site;
  * to ignore the site at the cwd and just see default drush status:
@@ -136,71 +174,77 @@
  * of settings that are commonly used appear below:
  *
  * - 'uri': In Drupal 7, the value of --uri should always be the same as
- *     when the site is being accessed from a web browser (e.g. http://mysite.org,
- *     although the http:// is optional).  In Drupal 6, the value of --uri should
- *     always be the same as the site's folder name in the 'sites' folder
- *     (e.g. default); it is best if the site folder name matches the
- *     URI from the browser, and is consistent on every instance of the
- *     same site (e.g. also use sites/mysite.org for http://dev.mysite.org).
+ *   when the site is being accessed from a web browser (e.g. http://mysite.org,
+ *   although the http:// is optional).  In Drupal 6, the value of --uri should
+ *   always be the same as the site's folder name in the 'sites' folder
+ *   (e.g. default); it is best if the site folder name matches the
+ *   URI from the browser, and is consistent on every instance of the
+ *   same site (e.g. also use sites/mysite.org for http://dev.mysite.org).
  * - 'root': The Drupal root; must not be specified as a relative path.
  * - 'remote-port': If the database is remote and 'db-url' contains
- *     a tunneled port number, put the actual database port number
- *     used on the remote machine in the 'remote-port' setting.
+ *   a tunneled port number, put the actual database port number
+ *   used on the remote machine in the 'remote-port' setting.
  * - 'remote-host': The fully-qualified domain name of the remote system
- *     hosting the Drupal instance. **Important Note: The remote-host option
- *     must be omitted for local sites, as this option controls whether or not
- *     rsync parameters are for local or remote machines.
+ *   hosting the Drupal instance. **Important Note: The remote-host option
+ *   must be omitted for local sites, as this option controls whether or not
+ *   rsync parameters are for local or remote machines.
+ * - '#check-local': Test to see if 'remote-host' is the local machine; if
+ *   it is, then 'remote-host' will be ignore. Useful when sharing aliases
+ *   among multiple machines.
  * - 'remote-user': The username to log in as when using ssh or rsync.
  * - 'os': The operating system of the remote server.  Valid values
- *     are 'Windows' and 'Linux'. Be sure to set this value for all remote 
- *     aliases because the default value is PHP_OS if 'remote-host'
- *     is not set, and 'Linux' (or $options['remote-os']) if it is. Therefore,
- *     if you set a 'remote-host' value, and your remote OS is Windows, if you
- *     do not set the 'OS' value, it will default to 'Linux' and could cause
- *     unintended consequences, particularly when running 'drush sql-sync'.
+ *   are 'Windows' and 'Linux'. Be sure to set this value for all remote
+ *   aliases because the default value is PHP_OS if 'remote-host'
+ *   is not set, and 'Linux' (or $options['remote-os']) if it is. Therefore,
+ *   if you set a 'remote-host' value, and your remote OS is Windows, if you
+ *   do not set the 'OS' value, it will default to 'Linux' and could cause
+ *   unintended consequences, particularly when running 'drush sql-sync'.
  * - 'ssh-options': If the target requires special options, such as a non-
- *     standard port, alternative identity file, or alternative
- *     authentication method, ssh-options can contain a string of extra
- *     options that are used with the ssh command, eg "-p 100"
+ *   standard port, alternative identity file, or alternative
+ *   authentication method, ssh-options can contain a string of extra
+ *   options that are used with the ssh command, eg "-p 100"
  * - 'parent': The name of a parent alias (e.g. '@server') to use as a basis
- *     for this alias.  Any value of the parent will appear in the child
- *     unless overridden by an item with the same name in the child.
- *     Multiple inheritance is possible; name multiple parents in the
- *     'parent' item separated by commas (e.g. '@server,@devsite').
+ *   for this alias.  Any value of the parent will appear in the child
+ *   unless overridden by an item with the same name in the child.
+ *   Multiple inheritance is possible; name multiple parents in the
+ *   'parent' item separated by commas (e.g. '@server,@devsite').
  * - 'db-url': The Drupal 6 database connection string from settings.php.
- *     For remote databases accessed via an ssh tunnel, set the port
- *     number to the tunneled port as it is accessed on the local machine.
- *     If 'db-url' is not provided, then drush will automatically look it
- *     up, either from settings.php on the local machine, or via backend invoke
- *     if the target alias specifies a remote server.
+ *   For remote databases accessed via an ssh tunnel, set the port
+ *   number to the tunneled port as it is accessed on the local machine.
+ *   If 'db-url' is not provided, then drush will automatically look it
+ *   up, either from settings.php on the local machine, or via backend invoke
+ *   if the target alias specifies a remote server.
  * - 'databases': Like 'db-url', but contains the full Drupal 7 databases
- *     record.  Drush will look up the 'databases' record if it is not specified.
+ *   record.  Drush will look up the 'databases' record if it is not specified.
  * - 'path-aliases': An array of aliases for common rsync targets.
  *   Relative aliases are always taken from the Drupal root.
- *     '%drush-script': The path to the 'drush' script, or to 'drush.php' or
- *       'drush.bat', as desired.  This is used by backend invoke when drush
- *       runs a drush command.  The default is 'drush' on remote machines, or
- *       the full path to drush.php on the local machine.
- *     '%drush': A read-only property: points to the folder that the drush script
- *       is stored in.
- *     '%dump-dir': Path to directory that "drush sql-sync" should use to store
- *       sql-dump files. Helpful filenames are auto-generated.
- *     '%dump': Path to the file that "drush sql-sync" should use to store sql-dump file.
- *     '%files': Path to 'files' directory.  This will be looked up if not specified.
- *     '%root': A reference to the Drupal root defined in the 'root' item
- *       in the site alias record.
+ *   - '%drush-script': The path to the 'drush' script, or to 'drush.php' or
+ *     'drush.bat', as desired.  This is used by backend invoke when drush
+ *     runs a drush command.  The default is 'drush' on remote machines, or
+ *     the full path to drush.php on the local machine.
+ *   - '%drush': A read-only property: points to the folder that the drush
+ *     script is stored in.
+ *   - '%dump-dir': Path to directory that "drush sql-sync" should use to store
+ *     sql-dump files. Helpful filenames are auto-generated.
+ *   - '%dump': Path to the file that "drush sql-sync" should use to store
+ *     sql-dump file.
+ *   - '%files': Path to 'files' directory.  This will be looked up if not
+ *     specified.
+ *   - '%root': A reference to the Drupal root defined in the 'root' item in the
+ *     site alias record.
  * - 'php': path to custom php interpreter. Windows support limited to Cygwin.
  * - 'php-options': commandline options for php interpreter, you may
  *   want to set this to '-d error_reporting="E_ALL^E_DEPRECATED"'
- * - 'variables' : An array of name/value pairs which override Drupal variables/config.
+ * - 'variables' : An array of name/value pairs which override Drupal
+ *   variables/config.
  *    These values take precedence even over settings.php overrides.
  * - 'command-specific': These options will only be set if the alias
  *   is used with the specified command.  In the example below, the option
  *   `--no-cache` will be selected whenever the @stage alias
  *   is used in any of the following ways:
- *      drush @stage sql-sync @self @live
- *      drush sql-sync @stage @live
- *      drush sql-sync @live @stage
+ *   - `drush @stage sql-sync @self @live`
+ *   - `drush sql-sync @stage @live`
+ *   - `drush sql-sync @live @stage`
  *   In case of conflicting options, command-specific options in targets
  *   (source and destination) take precedence over command-specific options
  *   in the bootstrapped site, and command-specific options in a destination
@@ -212,47 +256,50 @@
  *   the alias @live is the target of an sql-sync command, but comments will
  *   be included if @live is the source for the sql-sync command.
  * - '#peer': Settings that begin with a '#' are not used directly by Drush, and
- *   in fact are removed before making a backend invoke call (for example). These
- *   kinds of values are useful in conjunction with shell aliases.  See
+ *   in fact are removed before making a backend invoke call (for example).
+ *   These kinds of values are useful in conjunction with shell aliases.  See
  *   `drush topic docs-shell-aliases` for more information on this.
  * - rsync command options have specific requirements in order to
  *   be passed through by Drush. See the comments on the sample below:
  *
- *       'command-specific' => array (
- *         'core-rsync' => array (
+ * @code
+ * 'command-specific' => array (
+ *   'core-rsync' => array (
  *
- *           // single-letter rsync options are placed in the 'mode' key
- *           // instead of adding '--mode=rultvz' to drush rsync command.
- *           'mode' => 'rultvz',
+ *     // single-letter rsync options are placed in the 'mode' key
+ *     // instead of adding '--mode=rultvz' to drush rsync command.
+ *     'mode' => 'rultvz',
  *
- *           // multi-letter rsync options without values must be set to
- *           // TRUE or NULL to work (i.e. setting $VALUE to 1, 0, or ''
- *           // will not work).
- *           'delete' => TRUE,
+ *     // multi-letter rsync options without values must be set to
+ *     // TRUE or NULL to work (i.e. setting $VALUE to 1, 0, or ''
+ *     // will not work).
+ *     'delete' => TRUE,
  *
- *           // wrapping an option's value in "" preserves inner '' on output;
- *           // but is not always required.
- *           'exclude' => "'*.gz'",
+ *     // wrapping an option's value in "" preserves inner '' on output;
+ *     // but is not always required.
+ *     'exclude' => "'*.gz'",
  *
- *           // cannot add multiple options of same key; each key overwrites
- *           // the previous key's value. This 'exclude' option will overwrite
- *           // the previous one above.
- *           'exclude' => '*.sql',
+ *     // cannot add multiple options of same key; each key overwrites
+ *     // the previous key's value. This 'exclude' option will overwrite
+ *     // the previous one above.
+ *     'exclude' => '*.sql',
  *
- *           // if you need multiple exludes, use an rsync exclude file
- *           'exclude-from' => "'/etc/rsync/exclude.rules'",
+ *     // if you need multiple exludes, use an rsync exclude file
+ *     'exclude-from' => "'/etc/rsync/exclude.rules'",
  *
- *           // filter options with white space must be wrapped in "" to preserve
- *           // the inner ''.
- *           'filter' => "'exclude *.sql'",
+ *     // filter options with white space must be wrapped in "" to preserve
+ *     // the inner ''.
+ *     'filter' => "'exclude *.sql'",
  *
- *           // if you need multple filter options, see rsync merge-file options
- *           'filter' => "'merge /etc/rsync/default.rules'",
- *         ),
- *       ),
+ *     // if you need multple filter options, see rsync merge-file options
+ *     'filter' => "'merge /etc/rsync/default.rules'",
+ *   ),
+ * ),
+ * @endcode
  *
  * Some examples appear below.  Remove the leading hash signs to enable.
  */
+
 #$aliases['stage'] = array(
 #    'uri' => 'stage.mydrupalsite.com',
 #    'root' => '/path/to/remote/drupal/root',
@@ -290,7 +337,8 @@
 #         'no-cache' => TRUE,
 #       ),
 #     ),
-#     # This shell alias will run `mycommand` when executed via `drush @stage site-specific-alias`
+#     # This shell alias will run `mycommand` when executed via
+#     # `drush @stage site-specific-alias`
 #     'shell-aliases' => array (
 #       'site-specific-alias' => '!mycommand',
 #     ),
@@ -298,7 +346,9 @@
 #$aliases['dev'] = array(
 #    'uri' => 'dev.mydrupalsite.com',
 #    'root' => '/path/to/drupal/root',
-#    'variables' => array('mail_system' => array('default-system' => 'DevelMailLog')),
+#    'variables' => array(
+#      'mail_system' => array('default-system' => 'DevelMailLog'),
+#    ),
 #  );
 #$aliases['server'] = array(
 #    'remote-host' => 'mystagingserver.myisp.com',

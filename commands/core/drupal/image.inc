@@ -9,11 +9,15 @@
  */
 
 function drush_image_styles() {
-  return \Drupal::entityManager()->getStorageController('image_style')->loadMultiple();
+  return \Drupal::entityManager()->getStorage('image_style')->loadMultiple();
+}
+
+function drush_image_style_load($style_name) {
+  return \Drupal::entityManager()->getStorage('image_style')->load($style_name);
 }
 
 function drush_image_flush_single($style_name) {
-  if ($style = image_style_load($style_name)) {
+  if ($style = drush_image_style_load($style_name)) {
     $style->flush();
     drush_log(dt('Image style !style_name flushed', array('!style_name' => $style_name)), 'success');
   }
@@ -29,7 +33,7 @@ function drush_image_flush_single($style_name) {
  *   The path to a source image, relative to Drupal root.
  */
 function _drush_image_derive($style_name, $source) {
-  $image_style = image_style_load($style_name);
+  $image_style = drush_image_style_load($style_name);
   $derivative_uri = $image_style->buildUri($source);
   if ($image_style->createDerivative($source, $derivative_uri)) {
     return $derivative_uri;

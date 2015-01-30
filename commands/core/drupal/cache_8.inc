@@ -4,22 +4,29 @@
  *   Engine for the cache commands.
  */
 
-use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Cache\Cache;
 
 function _drush_cache_command_get($cid, $bin) {
-  return cache($bin)->get($cid);
+  if (is_null($bin)) {
+    $bin = 'default';
+  }
+  return \Drupal::cache($bin)->get($cid);
 }
 
 function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
-  // Convert the "expire" argument to a valid value for Drupal's cache_set().
-  if ($expire == 'CACHE_TEMPORARY') {
-    $expire = CacheBackendInterface::CACHE_TEMPORARY;
-  }
-  if (is_null($expire) || $expire == 'CACHE_PERMANENT') {
-    $expire = CacheBackendInterface::CACHE_PERMANENT;
+  if (is_null($bin)) {
+    $bin = 'default';
   }
 
-  return cache($bin)->set($cid, $data, $expire, $tags);
+  // Convert the "expire" argument to a valid value for Drupal's cache_set().
+  if ($expire == 'CACHE_TEMPORARY') {
+    $expire = Cache::TEMPORARY;
+  }
+  if (!isset($expire) || $expire == 'CACHE_PERMANENT') {
+    $expire = Cache::PERMANENT;
+  }
+
+  return \Drupal::cache($bin)->set($cid, $data, $expire, $tags);
 }
 
 function _drush_cache_clear_types($include_bootstrapped_types) {
@@ -29,11 +36,12 @@ function _drush_cache_clear_types($include_bootstrapped_types) {
   if ($include_bootstrapped_types) {
     $types += array(
       'theme-registry' => 'drush_cache_clear_theme_registry',
-      'menu' => 'menu_router_rebuild',
+      'menu' => 'drush_cache_clear_menu',
       'css-js' => 'drush_cache_clear_css_js',
       'block' => 'drush_cache_clear_block',
       'module-list' => 'drush_get_modules',
       'theme-list' => 'drush_get_themes',
+      'render' => 'drush_cache_clear_render',
     );
   }
   return $types;
@@ -41,6 +49,12 @@ function _drush_cache_clear_types($include_bootstrapped_types) {
 
 function drush_cache_clear_theme_registry() {
   \Drupal::service('theme.registry')->reset();
+}
+
+function drush_cache_clear_menu() {
+  /** @var \Drupal\Core\Menu\MenuLinkManagerInterface $menu_link_manager */
+  $menu_link_manager = \Drupal::service('plugin.manager.menu.link');
+  return $menu_link_manager->rebuild();
 }
 
 function drush_cache_clear_css_js() {
@@ -53,5 +67,12 @@ function drush_cache_clear_css_js() {
  * Clear the cache of the block output.
  */
 function drush_cache_clear_block() {
-  cache('block')->deleteAll();
+  \Drupal::cache('block')->deleteAll();
+}
+
+/**
+ * Clears the render cache entries.
+ */
+function drush_cache_clear_render() {
+  \Drupal::cache('render')->deleteAll();
 }

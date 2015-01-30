@@ -5,15 +5,21 @@
  */
 
 function _drush_cache_command_get($cid, $bin) {
+  if (is_null($bin)) {
+    $bin = 'cache';
+  }
   return cache_get($cid, $bin);
 }
 
 function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
   // Convert the "expire" argument to a valid value for Drupal's cache_set().
+  if (is_null($bin)) {
+    $bin = 'cache';
+  }
   if ($expire == 'CACHE_TEMPORARY') {
     $expire = CACHE_TEMPORARY;
   }
-  if (is_null($expire) || $expire == 'CACHE_PERMANENT') {
+  if (!isset($expire) || $expire == 'CACHE_PERMANENT') {
     $expire = CACHE_PERMANENT;
   }
 
@@ -56,6 +62,10 @@ function drush_cache_clear_theme_registry() {
   else {
     cache_clear_all('theme_registry', 'cache', TRUE);
   }
+}
+
+function drush_cache_clear_menu() {
+  return menu_router_rebuild();
 }
 
 function drush_cache_clear_css_js() {

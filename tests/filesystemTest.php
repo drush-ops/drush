@@ -1,17 +1,19 @@
 <?php
 
+namespace Unish;
+
 /**
  * Filesystem related testing.
  *
  * @group base
  */
-class FilesystemCase extends Drush_CommandTestCase {
+class FilesystemCase extends CommandUnishTestCase {
 
   public function testSbit() {
     if ($this->is_windows()) {
       $this->markTestSkipped("s-bit test doesn't apply on Windows.");
     }
-    if (is_null(UNISH_USERGROUP)) {
+    if (UNISH_USERGROUP === NULL) {
       $this->markTestSkipped("s-bit test skipped because of UNISH_USERGROUP was not set.");
     }
 
@@ -36,7 +38,7 @@ class FilesystemCase extends Drush_CommandTestCase {
 
     $dest = UNISH_SANDBOX . '/test-filesystem-execute';
     mkdir($dest);
-    $this->execute(sprintf("git clone https://github.com/drush-ops/drush.git %s", $dest . '/drush'));
+    $this->execute(sprintf("git clone --depth=1 https://github.com/drush-ops/drush.git %s", $dest . '/drush'));
 
     $perms = fileperms($dest . '/drush/drush') & 0111;
     $this->assertEquals($perms, 0111, 'Execute permission is preserved.');

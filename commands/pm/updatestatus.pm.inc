@@ -1,29 +1,41 @@
 <?php
 
 /**
- * Command callback. Displays update status info and allows to update installed
- * projects.
- * Pass specific projects as arguments, otherwise we update all that have
- * candidate releases.
+ * @file
+ * pm-updatestatus command implementation.
+ */
+
+/**
+ * Command callback. Displays update status info of installed projects.
  *
- * This command prompts for confirmation before updating, so it is safe to run
- * just to check on. In this case, say at the confirmation prompt.
+ * Pass specific projects as arguments, otherwise we show all that are
+ * updateable.
  */
 function drush_pm_updatestatus() {
-  // We don't provide for other options here, so we supply an explicit path.
-  drush_include_engine('update_info', 'drupal', NULL, DRUSH_BASE_PATH . '/commands/pm/update_info');
-
   // Get specific requests.
-  $requests = pm_parse_arguments(func_get_args(), FALSE);
+  $args = pm_parse_arguments(func_get_args(), FALSE);
+
+  // Parse out project name and version.
+  $requests = array();
+  foreach ($args as $request) {
+    $request = pm_parse_request($request);
+    $requests[$request['name']] = $request;
+  }
 
   // Get installed extensions and projects.
   $extensions = drush_get_extensions();
   $projects = drush_get_projects($extensions);
 
-  // Parse out project name and version.
-  $requests = pm_parse_project_version($requests, $projects);
+  // Get the engine instance.
+  $update_status = drush_get_engine('update_status');
 
-  $update_info = _pm_get_update_info($projects);
+  // If the user doesn't provide a value for check-disabled option,
+  // and the update backend is 'drupal', use NULL, so the engine
+  // will respect update.module defaults.
+  $check_disabled_default = ($update_status->engine == 'drupal') ? NULL : FALSE;
+  $check_disabled = drush_get_option('check-disabled', $check_disabled_default);
+
+  $update_info = $update_status->getStatus($projects, $check_disabled);
 
   foreach ($extensions as $name => $extension) {
     // Add an item to $update_info for each enabled extension which was obtained
@@ -35,7 +47,7 @@ function drush_pm_updatestatus() {
           'name' => $name,
           'label' => $extension->label,
           'existing_version' => 'Unknown',
-          'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_PACKAGED,
+          'status' => DRUSH_UPDATESTATUS_PROJECT_NOT_PACKAGED,
           'status_msg' => dt('Project was not packaged by drupal.org but obtained from !vcs. You need to enable !vcs_deploy module', array('!vcs' => $extension->vcs)),
         );
         // The user may have requested to update a project matching this
@@ -48,7 +60,7 @@ function drush_pm_updatestatus() {
     }
     // Additionally if the extension name is distinct to the project name and
     // the user asked to update the extension, fix the request.
-    elseif ((isset($requests[$name])) && ($extension->name != $extension->info['project'])) {
+    elseif ((isset($requests[$name])) && ($name != $extension->info['project'])) {
       $requests[$extension->info['project']] = $requests[$name];
       unset($requests[$name]);
     }
@@ -72,7 +84,7 @@ function drush_pm_updatestatus() {
           'name' => $name,
           'label' => $projects[$name]['label'],
           'existing_version' => $projects[$name]['version'],
-          'status' => DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE,
+          'status' => DRUSH_UPDATESTATUS_REQUESTED_PROJECT_NOT_UPDATEABLE,
         );
         unset($requests[$name]);
       }
@@ -83,7 +95,7 @@ function drush_pm_updatestatus() {
           'name' => $name,
           'label' => $name,
           'existing_version' => 'Unknown',
-          'status'=> DRUSH_PM_REQUESTED_PROJECT_NOT_FOUND,
+          'status'=> DRUSH_UPDATESTATUS_REQUESTED_PROJECT_NOT_FOUND,
         );
       }
     }
@@ -92,49 +104,73 @@ function drush_pm_updatestatus() {
   // If specific versions were requested, match the requested release.
   foreach ($requests as $name => $request) {
     if (!empty($request['version'])) {
-      $release = pm_get_release($request, $update_info[$name]);
-      if (!$release) {
-        $update_info[$name]['status'] = DRUSH_PM_REQUESTED_VERSION_NOT_FOUND;
+      if (empty($update_info[$name]['releases'][$request['version']])) {
+        $update_info[$name]['status'] = DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_FOUND;
       }
-      else if ($release['version'] == $update_info[$name]['existing_version']) {
-        $update_info[$name]['status'] = DRUSH_PM_REQUESTED_CURRENT;
+      elseif ($request['version'] == $update_info[$name]['existing_version']) {
+        $update_info[$name]['status'] = DRUSH_UPDATESTATUS_REQUESTED_VERSION_CURRENT;
       }
+      // TODO: should we warn/reject if this is a downgrade?
       else {
-        $update_info[$name]['status'] = DRUSH_PM_REQUESTED_UPDATE;
+        $update_info[$name]['status'] = DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_CURRENT;
+        $update_info[$name]['candidate_version'] = $request['version'];
       }
-      // Set the candidate version to the requested release.
-      $update_info[$name]['candidate_version'] = $release['version'];
     }
   }
   // Process locks specified on the command line.
   $locked_list = drush_pm_update_lock($update_info, drush_get_option_list('lock'), drush_get_option_list('unlock'), drush_get_option('lock-message'));
 
   // Build project updatable messages, set candidate version and mark
-  // 'updatable' in the project.
+  // 'updateable' in the project.
   foreach ($update_info as $key => $project) {
     switch($project['status']) {
-      case DRUSH_PM_REQUESTED_UPDATE:
+      case DRUSH_UPDATESTATUS_NOT_SECURE:
+        $status = dt('SECURITY UPDATE available');
+        pm_release_recommended($project);
+        break;
+      case DRUSH_UPDATESTATUS_REVOKED:
+        $status = dt('Installed version REVOKED');
+        pm_release_recommended($project);
+        break;
+      case DRUSH_UPDATESTATUS_NOT_SUPPORTED:
+        $status = dt('Installed version not supported');
+        pm_release_recommended($project);
+        break;
+      case DRUSH_UPDATESTATUS_NOT_CURRENT:
+        $status = dt('Update available');
+        pm_release_recommended($project);
+        break;
+      case DRUSH_UPDATESTATUS_CURRENT:
+        $status = dt('Up to date');
+        pm_release_recommended($project);
+        $project['updateable'] = FALSE;
+        break;
+      case DRUSH_UPDATESTATUS_NOT_CHECKED:
+      case DRUSH_UPDATESTATUS_NOT_FETCHED:
+      case DRUSH_UPDATESTATUS_FETCH_PENDING:
+        $status = dt('Unable to check status');
+        break;
+      case DRUSH_UPDATESTATUS_PROJECT_NOT_PACKAGED:
+        $status = $project['status_msg'];
+        break;
+      case DRUSH_UPDATESTATUS_REQUESTED_PROJECT_NOT_UPDATEABLE:
+        $status = dt('Project has no enabled extensions and can\'t be updated');
+        break;
+      case DRUSH_UPDATESTATUS_REQUESTED_PROJECT_NOT_FOUND:
+        $status = dt('Specified project not found');
+        break;
+      case DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_FOUND:
+        $status = dt('Specified version not found');
+        break;
+      case DRUSH_UPDATESTATUS_REQUESTED_VERSION_CURRENT:
+        $status = dt('Specified version already installed');
+        break;
+      case DRUSH_UPDATESTATUS_REQUESTED_VERSION_NOT_CURRENT:
         $status = dt('Specified version available');
         $project['updateable'] = TRUE;
         break;
-      case DRUSH_PM_REQUESTED_CURRENT:
-        $status = dt('Specified version already installed');
-        break;
-      case DRUSH_PM_REQUESTED_PROJECT_NOT_PACKAGED:
-        $status = $project['status_msg'];
-        break;
-      case DRUSH_PM_REQUESTED_VERSION_NOT_FOUND:
-        $status = dt('Specified version not found');
-        break;
-      case DRUSH_PM_REQUESTED_PROJECT_NOT_FOUND:
-        $status = dt('Specified project not found');
-        break;
-      case DRUSH_PM_REQUESTED_PROJECT_NOT_UPDATEABLE:
-        $status = dt('Project has no enabled extensions and can\'t be updated');
-        break;
       default:
-        // This can set $project['updateable'] and $project['candidate_version']
-        $status = pm_update_filter($project);
+        $status = dt('Unknown');
         break;
     }
 
@@ -154,29 +190,37 @@ function drush_pm_updatestatus() {
     }
   }
 
-  // Only list projects that have updates available. Use pm-list if you want more info.
-  $updateable = pm_project_filter($update_info, drush_get_option('security-only'));
-  return $updateable;
+  // Filter projects to show.
+  return pm_project_filter($update_info, drush_get_option('security-only'));
 }
 
 /**
- * Return an array of updateable projects and fill $rows.
+ * Filter projects based on verbosity level and $security_only flag.
  *
- * Array of updateable projects is obtained from calculated project update
- * status and $security_only flag.
+ * @param array $update_info
+ *   Update info for projects.
+ * @param bool $security_only
+ *   Whether to select only projects with security updates.
+ *
+ * @return
+ *   Array of projects matching filter criteria.
  */
-function pm_project_filter(&$update_info, $security_only) {
-  $updateable = array();
+function pm_project_filter($update_info, $security_only) {
+  $eligible = array();
   foreach ($update_info as $key => $project) {
-    if (!empty($project['updateable'])) {
-      $updateable[$key] = $project;
-      // Find only security updates
-      if ($security_only && ($project['status'] != UPDATE_NOT_SECURE)) {
-        unset($updateable[$key]);
+    if ($security_only) {
+      if ($project['status'] == DRUSH_UPDATESTATUS_NOT_SECURE) {
+        $eligible[$key] = $project;
       }
     }
+    elseif (drush_get_context('DRUSH_VERBOSE')) {
+      $eligible[$key] = $project;
+    }
+    elseif ($project['status'] != DRUSH_UPDATESTATUS_CURRENT) {
+      $eligible[$key] = $project;
+    }
   }
-  return $updateable;
+  return $eligible;
 }
 
 /**
@@ -190,9 +234,9 @@ function pm_release_recommended(&$project) {
   // If installed version is dev and the candidate version is older, choose
   // latest dev as candidate.
   if (($project['install_type'] == 'dev') && isset($project['candidate_version'])) {
-    if ($project['releases'][$project['candidate_version']]['date'] < $project['info']['datestamp']) {
+    if ($project['releases'][$project['candidate_version']]['date'] < $project['datestamp']) {
       $project['candidate_version'] = $project['latest_dev'];
-      if ($project['releases'][$project['candidate_version']]['date'] <= $project['info']['datestamp']) {
+      if ($project['releases'][$project['candidate_version']]['date'] <= $project['datestamp']) {
         $project['candidate_version'] = $project['existing_version'];
         $project['updateable'] = FALSE;
       }
@@ -200,66 +244,3 @@ function pm_release_recommended(&$project) {
   }
 }
 
-
-/**
- * Get the a best release match for a requested update.
- *
- * @param $request A information array for the requested project
- * @param $project A project information array for this project, as returned by an update service from pm_get_extensions()
- */
-function pm_get_release($request, $project) {
-  $minor = '';
-  $version_patch_changed = '';
-  if ($request['version']) {
-    // The user specified a specific version - try to find that exact version
-    foreach($project['releases'] as $version => $release) {
-      // Ignore unpublished releases.
-      if ($release['status'] != 'published') {
-        continue;
-      }
-
-      // Straight match
-      if (!isset($recommended_version) && $release['version'] == $request['version']) {
-        $recommended_version = $version;
-      }
-    }
-  }
-  else {
-    // No version specified - try to find the best version we can
-    foreach($project['releases'] as $version => $release) {
-      // Ignore unpublished releases.
-      if ($release['status'] != 'published') {
-        continue;
-      }
-
-      // If we haven't found a recommended version yet, put the dev
-      // version as recommended and hope it gets overwritten later.
-      // Look for the 'latest version' if we haven't found it yet.
-      // Latest version is defined as the most recent version for the
-      // default major version.
-      if (!isset($latest_version) && $release['version_major'] == $project['default_major']) {
-        $latest_version = $version;
-      }
-
-      if (!isset($recommended_version) && $release['version_major'] == $project['default_major']) {
-        if ($minor != $release['version_patch']) {
-          $minor = $release['version_patch'];
-          $version_patch_changed = $version;
-        }
-        if (empty($release['version_extra']) && $minor == $release['version_patch']) {
-          $recommended_version = $version_patch_changed;
-        }
-        continue;
-      }
-    }
-  }
-  if (isset($recommended_version)) {
-    return $project['releases'][$recommended_version];
-  }
-  else if (isset($latest_version)) {
-    return $project['releases'][$latest_version];
-  }
-  else {
-    return false;
-  }
-}

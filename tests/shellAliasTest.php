@@ -1,18 +1,19 @@
 <?php
 
+namespace Unish;
+
 /**
- * @file
- *   Tests for Shell aliases.
+ * Tests for Shell aliases.
  *
  * @group base
  */
-class shellAliasesCase extends Drush_CommandTestCase {
+class shellAliasesCase extends CommandUnishTestCase {
 
   /**
    * Write a config file that contains the shell-aliases array.
    */
-  static function setUpBeforeClass() {
-    parent::setUpBeforeClass();
+  function setUp() {
+    parent::setUp();
     $contents = "
       <?php
 
@@ -25,7 +26,9 @@ class shellAliasesCase extends Drush_CommandTestCase {
       );
     ";
     file_put_contents(UNISH_SANDBOX . '/drushrc.php', trim($contents));
-    mkdir(UNISH_SANDBOX . '/b');
+    if (!file_exists(UNISH_SANDBOX . '/b')) {
+      mkdir(UNISH_SANDBOX . '/b');
+    }
     $contents = "
       <?php
 
@@ -43,7 +46,7 @@ class shellAliasesCase extends Drush_CommandTestCase {
         '%sandbox' => UNISH_SANDBOX,
       ),
     );
-    $contents = unish_file_aliases($aliases);
+    $contents = $this->unish_file_aliases($aliases);
     file_put_contents(UNISH_SANDBOX . '/aliases.drushrc.php', $contents);
   }
 
@@ -84,8 +87,14 @@ class shellAliasesCase extends Drush_CommandTestCase {
     // $expected might be different on non unix platforms. We shall see.
     // n.b. --config is not included in calls to remote systems.
     $bash = $this->escapeshellarg('drush  --nocolor --uri=sitename --root=/path/to/drupal  core-topic core-global-options 2>&1');
-    $expected = "Simulating backend invoke: ssh user@server $bash 2>&1";
+    $expected = "Simulating backend invoke: ssh -t user@server $bash 2>&1";
     $output = $this->getOutput();
+    // Remove any coverage arguments. The filename changes, so it's not possible
+    // to create a string for assertEquals, and the need for both shell escaping
+    // and regexp escaping different parts of the expected output for
+    // assertRegexp makes it easier just to remove the argument before checking
+    // the output.
+    $output = preg_replace('{--drush-coverage=[a-zA-Z0-9/_]+ }', '', $output);
     $this->assertEquals($expected, $output, 'Expected remote shell alias to a drush command was built');
   }
 
