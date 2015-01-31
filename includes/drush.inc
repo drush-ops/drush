@@ -1138,7 +1138,7 @@ function drush_preflight_command_dispatch() {
   $args = drush_get_arguments();
   $command_name = array_shift($args);
   $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-  $values = array();
+  $values = NULL;
   if (!empty($root)) {
     foreach (array('drush', 'sites/all/drush') as $local_drush_dir) {
       $local_drush = $root . '/' . $local_drush_dir . '/drush/drush';
@@ -1218,7 +1218,7 @@ function drush_preflight_command_dispatch() {
     }
     $values = drush_invoke_process($site_record, $command_name, $args, $multi_options, $backend_options);
   }
-  if (!empty($values)) {
+  if (isset($values)) {
     if (is_array($values) && ($values['error_status'] > 0)) {
       // Force an error result code.  Note that drush_shutdown() will still run.
       drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
