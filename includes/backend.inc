@@ -758,7 +758,7 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     }
     $site_record += array('path-aliases' => array(), '#env-vars' => array());
     $site_record['path-aliases'] += array(
-      '%drush-script' => NULL,
+      '%drush-script' => $backend_options['drush-script'],
     );
 
     $site = (array_key_exists('#name', $site_record) && !array_key_exists($site_record['#name'], $invocation_options)) ? $site_record['#name'] : $index++;

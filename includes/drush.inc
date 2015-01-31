@@ -1098,6 +1098,7 @@ function drush_preflight_command_dispatch() {
   // option will be set when the site alias is processed.
   // @see drush_sitealias_check_arg
   $remote_host = drush_get_option('remote-host');
+  $site_list = drush_get_option('site-list');
   // Get the command early so that we can allow commands to directly handle remote aliases if they wish
   $command = drush_parse_command();
   drush_command_default_options($command);
@@ -1134,6 +1135,26 @@ function drush_preflight_command_dispatch() {
     drush_set_context('cli', $cli_options);
     _drush_preflight_global_options();
   }
+  $args = drush_get_arguments();
+  $command_name = array_shift($args);
+  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $values = array();
+  if (!empty($root)) {
+    foreach (array('drush', 'sites/all/drush') as $local_drush_dir) {
+      $local_drush = $root . '/' . $local_drush_dir . '/drush/drush';
+      if (file_exists($local_drush) && empty($values)) {
+        $uri = drush_get_context('DRUSH_SELECTED_URI');
+        $aditional_options = array(
+          'root' => $root,
+          'local' => TRUE,
+        );
+        if (!empty($uri)) {
+          $aditional_options['uri'] = $uri;
+        }
+        $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
+      }
+    }
+  }
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
   // remote command dispatching and site-list command dispatching, and always let
   // the command handler run on the local machine.
@@ -1141,24 +1162,15 @@ function drush_preflight_command_dispatch() {
     return FALSE;
   }
   if (isset($remote_host)) {
-    $args = drush_get_arguments();
-    $command_name = array_shift($args);
     $remote_user = drush_get_option('remote-user');
 
     // Force interactive mode if there is a single remote target.  #interactive is added by drush_do_command_redispatch
     $user_interactive = drush_get_option('interactive');
     drush_set_option('interactive', TRUE);
     $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, $remote_host, $remote_user, $user_interactive);
-    if ($values['error_status'] > 0) {
-      // Force an error result code.  Note that drush_shutdown() will still run.
-      drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
-      exit($values);
-    }
-    return TRUE;
   }
   // If the --site-list flag is set, then we will execute the specified
   // command once for every site listed in the site list.
-  $site_list = drush_get_option('site-list');
   if (isset($site_list)) {
     if (!is_array($site_list)) {
       $site_list = explode(',', $site_list);
@@ -1205,6 +1217,13 @@ function drush_preflight_command_dispatch() {
       }
     }
     $values = drush_invoke_process($site_record, $command_name, $args, $multi_options, $backend_options);
+  }
+  if (!empty($values)) {
+    if (is_array($values) && ($values['error_status'] > 0)) {
+      // Force an error result code.  Note that drush_shutdown() will still run.
+      drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
+      exit($values);
+    }
     return TRUE;
   }
   return FALSE;
@@ -1261,9 +1280,10 @@ function _drush_should_remove_command_arg($arg, $removal_list) {
  * Redispatch the specified command using the same
  * options that were passed to this invocation of drush.
  */
-function drush_do_command_redispatch($command, $args = array(), $remote_host = NULL, $remote_user = NULL, $drush_path = NULL, $user_interactive = FALSE) {
+function drush_do_command_redispatch($command, $args = array(), $remote_host = NULL, $remote_user = NULL, $drush_path = NULL, $user_interactive = FALSE, $aditional_options = array()) {
   $additional_global_options = array();
   $command_options = drush_redispatch_get_options();
+  $command_options = $aditional_options + $command_options;
   if (is_array($command)) {
     $command_name = $command['command'];
     // If we are executing a remote command that uses strict option handling,
