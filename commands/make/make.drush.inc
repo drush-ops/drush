@@ -183,52 +183,100 @@ function make_make_complete() {
 }
 
 /**
- * Drush callback; make based on the makefile.
+ * Validation callback for make command.
  */
-function drush_make($makefile = NULL, $build_path = NULL) {
-  // Set the cache option based on our '--no-cache' option.
-  _make_enable_cache();
-
-  // If --version option is supplied, print it and bail.
+function drush_make_validate($makefile = NULL, $build_path = NULL) {
+  // Don't validate if --version option is supplied.
   if (drush_get_option('version', FALSE)) {
-    drush_print(dt('Drush make API version !version', array('!version' => MAKE_API)));
-    drush_print_pipe(MAKE_API);
     return;
-  }
-
-  if (!drush_get_option('no-build', FALSE) && !($build_path = make_build_path($build_path))) {
-    return FALSE;
   }
 
   if (drush_get_option('shallow-clone', FALSE) && drush_get_option('working-copy', FALSE)) {
     return drush_set_error('MAKE_SHALLOW_CLONE_WORKING_COPY_CONFLICT', dt('You cannot use "--shallow-clone" and "--working-copy" options together.'));
   }
 
+  // Error out if the build path is not valid and --no-build was not supplied.
+  if (!drush_get_option('no-build', FALSE) && !make_build_path($build_path)) {
+    return FALSE;
+  }
+}
+
+/**
+ * Implements drush_hook_pre_COMMAND().
+ *
+ * If --version option is supplied, print it and prevent execution of the command.
+ */
+function drush_make_pre_make($makefile = NULL, $build_path = NULL) {
+  if (drush_get_option('version', FALSE)) {
+    drush_print(dt('Drush make API version !version', array('!version' => MAKE_API)));
+    drush_print_pipe(MAKE_API);
+    // Prevent command execution.
+    return FALSE;
+  }
+}
+
+/**
+ * Drush callback; make based on the makefile.
+ */
+function drush_make($makefile = NULL, $build_path = NULL) {
+  // Set the cache option based on our '--no-cache' option.
+  _make_enable_cache();
+
   $info = make_parse_info_file($makefile);
 
+  // Build.
   if (!drush_get_option('no-build', FALSE)) {
     drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), 'ok');
 
-    $make_dir = realpath(dirname($makefile));
+    // Default contrib destination depends on Drupal core version.
     $core_version = str_replace('.x', '', $info['core'][0]);
     $sitewide = drush_drupal_sitewide_directory($core_version);
-    if (make_projects(FALSE, drush_get_option('contrib-destination', $sitewide), $info, $build_path, $make_dir)) {
-      make_libraries(FALSE, drush_get_option('contrib-destination', $sitewide), $info, $build_path, $make_dir);
+    $contrib_destination = drush_get_option('contrib-destination', $sitewide);
+
+    $build_path = make_build_path($build_path);
+    $make_dir = realpath(dirname($makefile));
+
+    $success = make_projects(FALSE, $contrib_destination, $info, $build_path, $make_dir);
+    if ($success) {
+      make_libraries(FALSE, $contrib_destination, $info, $build_path, $make_dir);
 
       if (drush_get_option('prepare-install')) {
         make_prepare_install($build_path);
       }
+      if ($option = drush_get_option('md5')) {
+        $md5 = make_md5();
+        if ($option === 'print') {
+          drush_print($md5);
+        }
+        else {
+          drush_log(dt('Build hash: %md5', array('%md5' => $md5)), 'ok');
+        }
+      }
+      // Only take final build steps if not in testing mode.
+      if (!drush_get_option('test')) {
+        if (drush_get_option('tar')) {
+          make_tar($build_path);
+        }
+        else {
+          make_move_build($build_path);
+        }
+      }
+      make_clean_tmp();
     }
   }
 
+  // Process --lock.
   if (drush_get_option('lock', FALSE)) {
     make_generate_from_makefile(drush_get_option('lock'), $makefile);
   }
 
+  // Process --lock-update.
   if (drush_get_option('lock-update', FALSE)) {
     make_generate_from_makefile(drush_get_option('lock-update'), $makefile);
   }
 
+  // Used by core-quick-drupal command.
+  // @see drush_core_quick_drupal().
   return $info;
 }
 
@@ -258,40 +306,6 @@ function drush_make_process($directory) {
       make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project.', array('%type' => $project['type'], '%project' => $project['name'])));
     }
   }
-}
-
-/**
- * Implements drush_hook_post_COMMAND() for the make command.
- */
-function drush_make_post_make($makefile = NULL, $build_path = NULL) {
-  if (drush_get_option('version') || drush_get_option('no-build')) {
-    return;
-  }
-  if (!($build_path = make_build_path($build_path))) {
-    return;
-  }
-
-  if ($option = drush_get_option('md5')) {
-    $md5 = make_md5();
-    if ($option === 'print') {
-      drush_print($md5);
-    }
-    else {
-      drush_log(dt('Build hash: %md5', array('%md5' => $md5)), 'ok');
-    }
-  }
-
-  // Only take final build steps if not in testing mode.
-  if (!drush_get_option('test')) {
-    if (drush_get_option('tar')) {
-      make_tar($build_path);
-    }
-    else {
-      make_move_build($build_path);
-    }
-  }
-
-  make_clean_tmp();
 }
 
 /**
