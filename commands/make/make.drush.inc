@@ -426,9 +426,14 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
  */
 function make_projects($recursion, $contrib_destination, $info, $build_path, $make_dir) {
   $projects = make_prepare_projects($recursion, $info, $contrib_destination, $build_path, $make_dir);
+  // Abort if there was an error processing projects.
+  if ($projects === FALSE) {
+    return FALSE;
+  }
 
   // Core is built in place, rather than using make-process.
-  if ($project = current($projects['core'])) {
+  if (!empty($projects['core']) && count($projects['core'])) {
+    $project = current($projects['core']);
     $project = DrushMakeProject::getInstance('core', $project);
     $project->make();
   }
