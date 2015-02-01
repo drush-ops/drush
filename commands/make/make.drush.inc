@@ -205,7 +205,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
     return FALSE;
   }
 
-  $info = _make_parse_info_file($makefile);
+  $info = make_parse_info_file($makefile);
 
   if (!drush_get_option('no-build', FALSE)) {
     drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), 'ok');

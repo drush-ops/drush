@@ -8,13 +8,33 @@ use Drush\Make\Parser\ParserIni;
 use Drush\Make\Parser\ParserYaml;
 
 /**
+ * Helper function to parse a makefile and prune projects.
+ */
+function make_parse_info_file($makefile) {
+  $info = _make_parse_info_file($makefile);
+
+  // Support making just a portion of a make file.
+  $include_only = array(
+    'projects' => array_filter(drush_get_option_list('projects')),
+    'libraries' => array_filter(drush_get_option_list('libraries')),
+  );
+  $info = make_prune_info_file($info, $include_only);
+
+  if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
+    return FALSE;
+  }
+
+  return $info;
+}
+
+/**
  * Parse Drupal info file format.
  *
  * Copied with modifications from includes/common.inc.
  *
  * @see drupal_parse_info_file
  */
-function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = array()) {
+function _make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = array()) {
   if (!($data = make_get_data($makefile))) {
     return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
@@ -51,13 +71,13 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
     if (!empty($info['includes']) && is_array($info['includes'])) {
       foreach ($info['includes'] as $include) {
         if (is_string($include)) {
-          if (make_valid_url($include, TRUE) && ($file = make_parse_info_file($include, FALSE))) {
+          if (make_valid_url($include, TRUE) && ($file = _make_parse_info_file($include, FALSE))) {
             $includes[] = $file;
           }
-          elseif (file_exists($include_path . '/' . $include) && ($file = make_parse_info_file($include_path . '/' . $include, FALSE))) {
+          elseif (file_exists($include_path . '/' . $include) && ($file = _make_parse_info_file($include_path . '/' . $include, FALSE))) {
             $includes[] = $file;
           }
-          elseif (file_exists($include) && ($file = make_parse_info_file($include, FALSE))) {
+          elseif (file_exists($include) && ($file = _make_parse_info_file($include, FALSE))) {
             $includes[] = $file;
           }
           else {
@@ -69,7 +89,7 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
             $tmp_dir = make_tmp();
             make_download_git($include['makefile'], $include['download']['type'], $include['download'], $tmp_dir);
             $makefile = $tmp_dir . '/' . $include['makefile'];
-            if (file_exists($makefile) && $file = make_parse_info_file($makefile, FALSE)) {
+            if (file_exists($makefile) && $file = _make_parse_info_file($makefile, FALSE)) {
               $includes[] = $file;
             }
             else {
@@ -89,26 +109,6 @@ function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = arr
   else {
     return $data;
   }
-}
-
-/**
- * Helper function to parse a makefile and prune projects.
- */
-function _make_parse_info_file($makefile) {
-  $info = make_parse_info_file($makefile);
-
-  // Support making just a portion of a make file.
-  $include_only = array(
-    'projects' => array_filter(drush_get_option_list('projects')),
-    'libraries' => array_filter(drush_get_option_list('libraries')),
-  );
-  $info = make_prune_info_file($info, $include_only);
-
-  if ($info === FALSE || ($info = make_validate_info_file($info)) === FALSE) {
-    return FALSE;
-  }
-
-  return $info;
 }
 
 /**
