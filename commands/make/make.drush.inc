@@ -201,8 +201,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   }
 
   if (drush_get_option('shallow-clone', FALSE) && drush_get_option('working-copy', FALSE)) {
-    drush_set_error('MAKE_SHALLOW_CLONE_WORKING_COPY_CONFLICT', dt('You cannot use "--shallow-clone" and "--working-copy" options together.'));
-    return FALSE;
+    return drush_set_error('MAKE_SHALLOW_CLONE_WORKING_COPY_CONFLICT', dt('You cannot use "--shallow-clone" and "--working-copy" options together.'));
   }
 
   $info = make_parse_info_file($makefile);
@@ -307,8 +306,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
       return TRUE;
     }
     else {
-      drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
-      return FALSE;
+      return drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
     }
   }
   $ignore_checksums = drush_get_option('ignore-checksums');
@@ -372,15 +370,13 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
     unset($projects['core']);
   }
   elseif ($cores == 0 && !$recursion) {
-    drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
-    return FALSE;
+    return drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
   }
   elseif ($cores == 1 && $recursion) {
     unset($projects['core']);
   }
   elseif ($cores > 1) {
-    drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
-    return FALSE;
+    return drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
   }
 
   foreach ($projects as $type => $type_projects) {
@@ -641,7 +637,7 @@ function make_move_build($build_path) {
   }
 
   if (!$ret) {
-    drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place."));
+    return drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place."));
   }
   return $ret;
 }
