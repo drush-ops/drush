@@ -694,8 +694,12 @@ function drush_sql_get_version() {
 function sql_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
   $databases = sitealias_get_databases_from_record($site_settings);
-  $prefix = $databases['default']['default']['prefix'];
-  $prefix = isset($databases['default']['default']['prefix']) ? $databases['default']['default']['prefix'] : '';
+  if (drush_get_option('db-prefix') || isset($databases['default']['default']['prefix'])) {
+    $wrap_table_name = TRUE;
+  }
+  else {
+    $wrap_table_name = FALSE;
+  }
   $user_table_updates = array();
   $message_list = array();
 
@@ -756,11 +760,18 @@ function sql_drush_sql_sync_sanitize($site) {
 
   if (!empty($user_table_updates)) {
     $table = $major_version >= 8 ? 'users_field_data' : 'users';
-    $sanitize_query = "UPDATE {$prefix}{$table} SET " . implode(', ', $user_table_updates) . " WHERE uid > 0;";
+    if ($wrap_table_name) {
+      $table = "{{$table}}";
+    }
+    $sanitize_query = "UPDATE {$table} SET " . implode(', ', $user_table_updates) . " WHERE uid > 0;";
     drush_sql_register_post_sync_op('user-email', dt('Reset !message in !table table', array('!message' => implode(' and ', $message_list), '!table' => $table)), $sanitize_query);
   }
 
   // Seems quite portable (SQLite?) - http://en.wikipedia.org/wiki/Truncate_(SQL)
-  $sql_sessions = "TRUNCATE TABLE {$prefix}sessions;";
+  $table = 'sessions';
+  if ($wrap_table_name) {
+    $table = "{{$table}}";
+  }
+  $sql_sessions = "TRUNCATE TABLE {$table};";
   drush_sql_register_post_sync_op('sessions', dt('Truncate Drupal\'s sessions table'), $sql_sessions);
 }
