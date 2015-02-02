@@ -1138,21 +1138,27 @@ function drush_preflight_command_dispatch() {
   $args = drush_get_arguments();
   $command_name = array_shift($args);
   $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $local_drush = drush_get_option('drush-script');
+  $is_local = drush_get_option('local');
   $values = NULL;
-  if (!empty($root)) {
-    foreach (array('drush', 'sites/all/drush') as $local_drush_dir) {
-      $local_drush = $root . '/' . $local_drush_dir . '/drush/drush';
-      if (file_exists($local_drush) && empty($values)) {
-        $uri = drush_get_context('DRUSH_SELECTED_URI');
-        $aditional_options = array(
-          'root' => $root,
-          'local' => TRUE,
-        );
-        if (!empty($uri)) {
-          $aditional_options['uri'] = $uri;
-        }
-        $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
+  if (!empty($root) && !empty($local_drush) && empty($is_local)) {
+    if (!drush_is_absolute_path($local_drush)) {
+      $local_drush = $root . '/' . $local_drush;
+    }
+    $local_drush = realpath($local_drush);
+    $this_drush = realpath($GLOBALS['argv'][0]);
+    // If there is a local drush selected, and it is not the
+    // same drush that is currently running, redispatch to it.
+    if (file_exists($local_drush) && ($this_drush != $local_drush)) {
+      $uri = drush_get_context('DRUSH_SELECTED_URI');
+      $aditional_options = array(
+        'root' => $root,
+        'local' => TRUE,
+      );
+      if (!empty($uri)) {
+        $aditional_options['uri'] = $uri;
       }
+      $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
     }
   }
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
