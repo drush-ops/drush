@@ -217,9 +217,6 @@ function _drush_sitealias_prepare_record($alias_record, $site_alias = '') {
 
   drush_sitealias_resolve_path_references($alias_record);
 
-  if (isset($output_db_url)) {
-    drush_sitealias_add_db_url($alias_record);
-  }
   if (isset($output_db_url) || isset($output_db)) {
     drush_sitealias_add_db_settings($alias_record);
   }
@@ -227,9 +224,10 @@ function _drush_sitealias_prepare_record($alias_record, $site_alias = '') {
   // 'db-url' entry in the alias record (unless it is not
   // set, in which case we will leave the 'databases' record instead).
   if (isset($output_db_url)) {
-    if (isset($alias_record['db-url'])) {
-      unset($alias_record['databases']);
+    if (!isset($alias_record['db-url'])) {
+      $alias_record['db-url'] = drush_sitealias_convert_databases_to_db_url($alias_record['databases']);
     }
+    unset($alias_record['databases']);
   }
   // If the user specified --with-db, then leave the
   // 'databases' entry in the alias record.

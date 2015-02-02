@@ -797,13 +797,48 @@ function _drush_sitealias_cache_alias($alias_name, $alias_record) {
  */
 function drush_sitealias_add_db_url(&$alias_record) {
   if (!isset($alias_record['db-url']) && !isset($alias_record['databases']) && !isset($alias_record['site-list'])) {
-    // We use sql-conf to fetch our database info.  We set 'override-simulated' so that
-    // we will fetch the database values even in --simulate mode.
-    $values = drush_invoke_process($alias_record, "sql-conf", array(), array('db-url' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
-    if (isset($values['object']['db-url'])) {
-      $alias_record['db-url'] = $values['object']['db-url'];
+    drush_sitealias_add_db_settings($alias_record);
+  }
+  if (!isset($alias_record['db-url']) && isset($alias_record['databases'])) {
+    $alias_record['db-url'] = drush_sitealias_convert_databases_to_db_url($alias_record['databases']);
+  }
+}
+
+/**
+ * Drush still accepts --db-url format database specifications as
+ * cli parameters; it is therefore useful to be able to convert
+ * from a database record back to a db-url sometimes.
+ */
+function drush_sitealias_convert_db_spec_to_db_url($db_spec) {
+  $result = urlencode($db_spec["driver"]) . "://";
+  if (isset($db_spec["username"])) { 
+    $result .= urlencode($db_spec["username"]);
+    if (isset($db_spec["password"])) {
+      $result .= ":" . urlencode($db_spec["password"]);
+    }
+    $result .= "@";
+  }
+  $result .= urlencode($db_spec["host"]);
+  if (isset($db_spec["port"])) {
+    $result .= ":" . urlencode($db_spec["port"]);
+  }
+  $result .= "/" . urlencode($db_spec["database"]);
+  return $result;
+}
+
+/**
+ * Create a db-url from the databases record.
+ */
+function drush_sitealias_convert_databases_to_db_url($databases) {
+  if ((count($databases) == 1) && isset($databases['default'])) {
+    $result = drush_sitealias_convert_db_spec_to_db_url($databases['default']['default']);
+  }
+  else {
+    foreach ($databases as $key => $db_info) {
+      $result[$key] = drush_sitealias_convert_db_spec_to_db_url($db_info['default']);
     }
   }
+  return $result;
 }
 
 /**
