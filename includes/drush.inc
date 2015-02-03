@@ -1146,7 +1146,7 @@ function drush_preflight_command_dispatch() {
       $local_drush = $root . '/' . $local_drush;
     }
     $local_drush = realpath($local_drush);
-    $this_drush = realpath($GLOBALS['argv'][0]);
+    $this_drush = drush_find_drush();
     // If there is a local drush selected, and it is not the
     // same drush that is currently running, redispatch to it.
     if (file_exists($local_drush) && ($this_drush != $local_drush)) {
