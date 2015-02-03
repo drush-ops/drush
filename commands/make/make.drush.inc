@@ -115,6 +115,14 @@ function make_drush_command() {
     'aliases' => array('generate-makefile'),
   );
 
+  $items['make-convert-yaml'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'description' => 'Convert a legacy makefile into YAML format.',
+    'examples' => array(
+      'drush makefile-convert-yaml example.make' => 'Convert example.make to example.make.yml',
+    ),
+  );
+
   // Hidden command to build a group of projects.
   $items['make-process'] = array(
     'hidden' => TRUE,
@@ -278,6 +286,31 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   // Used by core-quick-drupal command.
   // @see drush_core_quick_drupal().
   return $info;
+}
+
+/**
+ * Drush callback; convert makefile to YAML.
+ */
+function drush_make_convert_yaml($makefile = NULL) {
+
+  drush_log(dt('Beginning to convert !makefile.', array('!makefile' => $makefile)), 'ok');
+
+  $file = $makefile . '.yml';
+  $info = make_parse_info_file($makefile);
+
+  require dirname(__FILE__) . '/../core/outputformat/yaml.inc';
+  $dumper = new drush_outputformat_yaml(array());
+  $yaml = $dumper->format($info, array());
+
+  if (!$file) {
+    drush_print($yaml);
+  }
+  elseif (file_put_contents($file, $yaml)) {
+    drush_log(dt("Wrote .make file @file", array('@file' => $file)), 'ok');
+  }
+  else {
+    make_error('FILE_ERROR', dt("Unable to write file !file", array('!file' => $file)));
+  }
 }
 
 /**
