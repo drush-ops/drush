@@ -1909,12 +1909,12 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   $include_path = drush_get_option_override($additional_options, 'include-paths', '');
   $exclude_path = drush_get_option_override($additional_options, 'exclude-paths', '');
   if (is_array($include_path)) {
-    $include_path = implode(':', $include_path);
+    $include_path = implode('/', $include_path);
   }
   if (is_array($exclude_path)) {
-    $include_path = implode(':', $exclude_path);
+    $include_path = implode('/', $exclude_path);
   }
-  $resolve_path = "$path:$include_path:$exclude_path";
+  $resolve_path = "$path/$include_path/$exclude_path";
   // Resolve path aliases such as %files, if any exist in the path
   if (!empty($resolve_path)) {
     drush_sitealias_resolve_path_references($site_alias_settings, $resolve_path);

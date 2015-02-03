@@ -114,7 +114,7 @@ drush_invoke("version", $arg);
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();
-    $this->assertEquals($root  . $sitewide . '/modules/devel', $output);
+    $this->assertEquals(realpath($root  . $sitewide . '/modules/devel'), $output);
 
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
       // Known failure. See https://github.com/drush-ops/drush/pull/382.
@@ -123,7 +123,7 @@ drush_invoke("version", $arg);
     else {
       $this->drush('drupal-directory', array('zen'), $options);
       $output = $this->getOutput();
-      $this->assertEquals($root  . $sitewide . '/themes/zen', $output);
+      $this->assertEquals(realpath($root  . $sitewide . '/themes/zen'), $output);
     }
   }
 
