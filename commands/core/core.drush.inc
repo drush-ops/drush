@@ -852,9 +852,17 @@ function drush_core_quick_drupal() {
   drush_set_option('strict', FALSE); // We fail option validation because do so much internal drush_invoke().
   $makefile = drush_get_option('makefile');
   if (drush_get_option('use-existing', FALSE)) {
-    $root = drush_get_option('root', FALSE);
+    $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
     if (!$root) {
       return drush_set_error('QUICK_DRUPAL_NO_ROOT_SPECIFIED', 'Must specify site with --root when using --use-existing.');
+    }
+    // If a --db-url was not explicitly provided, and if there is already
+    // a settings.php file provided, then use the db-url defined inside it.
+    if (!drush_get_option('db-url', FALSE)) {
+      $values = drush_invoke_process('@self', 'site-alias', array('@self'), array('with-db-url' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
+      if (!empty($values['object']['self']['db-url'])) {
+        drush_set_option('db-url', $values['object']['self']['db-url']);
+      }
     }
     if (empty($name)) {
       $name = basename($root);
