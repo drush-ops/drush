@@ -20,12 +20,7 @@ Composer - One Drush per Project
 Composer - One Drush for all Projects
 ------------------
 
-* [Install Composer globally](http://getcomposer.org/doc/00-intro.md#system-requirements).
-* Add Composer's global bin directory to the system PATH (recommended):
-
-        sed -i '1i export PATH="$HOME/.composer/vendor/bin:$PATH"' $HOME/.bashrc
-        source $HOME/.bashrc
-
+* [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
 * To install Drush 6.x (stable):
 
         composer global require drush/drush:6.*
