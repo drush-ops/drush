@@ -134,6 +134,50 @@ function drush_cwd() {
 }
 
 /**
+ * Automatically loads a Drush extension's autoload file.
+ * Does nothing if the autoload file was already included
+ * (e.g. if this drush extension was installed via the composer.json
+ * in the current Drupal site's project).
+ *
+ * Generally speaking, detecting prior autoloading should
+ * not be necessary.  If the drush extension was installed via
+ * the project's composer.json file, then the extension should
+ * be located inside the Drupal project, should not be shared
+ * by any other Drupal project, and should not have its own
+ * 'vendor' directory.
+ *
+ * If the extension is standalone, on the other hand, then it
+ * might exist inside a module directory, or in some global
+ * location (e.g. ~/.drush).  If it has its own composer.json,
+ * then it should also have its own vendor directory and
+ * autoload.php file.
+ *
+ * TODO: Test with composer_manager.  We might need to no-op
+ * this function if it is in use.
+ *
+ * TODO: Determine if it makes sense for Drush to call
+ * 'composer install' for standalone Drush extensions that
+ * have a composer.json file, but no 'vendor' directory.
+ * Perhaps we would do this at 'drush dl' time.
+ *
+ * Usage:
+ *
+ * function mydrushextension_drush_init() 
+ *   drush_autoload(__DIR__);
+ * }
+ */
+function drush_autoload($base_dir) {
+  $candidates = array("vendor/autoload.php");
+
+  foreach ($candidates as $candidate) {
+    $autoload = $base_dir . '/' . $candidate;
+    if (file_exists(autoload)) {
+      include $autoload;
+    }
+  }
+}
+
+/**
  * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
  * Also converts a cygwin "drive emulation" path (/cygdrive/c/dir1) into a
  * proper drive path, still with Unix slashes (c:/dir1).
