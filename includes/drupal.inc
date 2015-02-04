@@ -14,6 +14,7 @@ function drush_drupal_load_autoloader($drupal_root, $new_autoloader = NULL) {
     $autoloader = $new_autoloader;
   }
   if (!$autoloader) {
+    // Should this just be 'require'?  See drush_preflight_prepare()
     $autoloader = require_once $drupal_root .'/core/vendor/autoload.php';
   }
   return $autoloader;
