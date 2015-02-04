@@ -264,9 +264,10 @@ function _drush_recursive_copy($src, $dest) {
   elseif (is_link($src)) {
     symlink(readlink($src), $dest);
   }
-  elseif (!(copy($src, $dest) && touch($dest, filemtime($src)))) {
+  elseif (!copy($src, $dest)) {
     return FALSE;
   }
+  touch($dest, filemtime($src));
 
   // Preserve execute permission.
   if (!is_link($src) && !drush_is_windows()) {
