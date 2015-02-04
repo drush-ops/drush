@@ -20,16 +20,19 @@ function drush_preflight_prepare() {
 
   // Check for a local composer install or a global composer install. Vendor dirs are in different spots).
   if (file_exists($local_vendor_path)) {
-    require $local_vendor_path;
+    $vendor_path = $local_vendor_path;
   }
   elseif (file_exists($global_vendor_path)) {
-    require $global_vendor_path;
+    $vendor_path = $global_vendor_path;
   }
   else {
     $msg = "Unable to load autoload.php. Drush now requires Composer in order to install its dependencies and autoload classes. Please see README.md\n";
     fwrite(STDERR, $msg);
     return FALSE;
   }
+  // drush_drupal_load_autoloader() uses require_once.  Is this going to be
+  // a problem if $vendor_path == $drupal_root .'/core/vendor/autoload.php'
+  require $vendor_path;
 
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
   require_once DRUSH_BASE_PATH . '/includes/command.inc';
@@ -45,6 +48,9 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/cache.inc';
   require_once DRUSH_BASE_PATH . '/includes/filesystem.inc';
   require_once DRUSH_BASE_PATH . '/includes/dbtng.inc';
+
+  // Cache our vendor path
+  drush_set_context('DRUSH_VENDOR_PATH', dirname(realpath($vendor_path)));
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
