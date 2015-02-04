@@ -118,6 +118,9 @@ function make_drush_command() {
   $items['make-convert-yaml'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => 'Convert a legacy makefile into YAML format.',
+    'arguments' => array(
+      'makefile' => 'Filename of the makefile to convert.',
+    ),
     'examples' => array(
       'drush makefile-convert-yaml example.make' => 'Convert example.make to example.make.yml',
     ),
@@ -291,21 +294,17 @@ function drush_make($makefile = NULL, $build_path = NULL) {
 /**
  * Drush callback; convert makefile to YAML.
  */
-function drush_make_convert_yaml($makefile = NULL) {
+function drush_make_convert_yaml($makefile) {
 
   drush_log(dt('Beginning to convert !makefile.', array('!makefile' => $makefile)), 'ok');
 
   $file = $makefile . '.yml';
   $info = make_parse_info_file($makefile);
 
-  require dirname(__FILE__) . '/../core/outputformat/yaml.inc';
-  $dumper = new drush_outputformat_yaml(array());
+  $dumper = drush_load_engine('outputformat', 'yaml');
   $yaml = $dumper->format($info, array());
 
-  if (!$file) {
-    drush_print($yaml);
-  }
-  elseif (file_put_contents($file, $yaml)) {
+  if (file_put_contents($file, $yaml)) {
     drush_log(dt("Wrote .make file @file", array('@file' => $file)), 'ok');
   }
   else {
