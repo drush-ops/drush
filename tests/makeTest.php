@@ -249,6 +249,10 @@ class makeMakefileCase extends CommandUnishTestCase {
     }
   }
 
+  function testMakeProjectDestination() {
+    $this->runMakefileTest('project-destination');
+  }
+
   function testMakeContribDestination() {
     $this->runMakefileTest('contrib-destination');
   }
@@ -565,6 +569,13 @@ class makeMakefileCase extends CommandUnishTestCase {
       'translations-inside7' => array(
         'name'     => 'Translation downloads inside makefile, core 7.x',
         'makefile' => 'translations-inside7.make',
+      ),
+      'project-destination' => array(
+        'name'     => 'Project-destination attribute',
+        'makefile' => 'project-destination.make',
+        'build'    => TRUE,
+        'md5'      => 'df3808a2a46998592fd899509c392adf',
+        'options'  => array('no-core' => NULL),
       ),
       'contrib-destination' => array(
         'name'     => 'Contrib-destination attribute',
