@@ -736,6 +736,9 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     $backend_options += $common_backend_options;
 
     $backend_options = _drush_backend_adjust_options($site_record, $command, $command_options, $backend_options);
+    $backend_options += array(
+      'drush-script' => NULL,
+    );
 
     // Insure that contexts such as DRUSH_SIMULATE and NO_COLOR are included.
     $command_options += _drush_backend_get_global_contexts($site_record);
