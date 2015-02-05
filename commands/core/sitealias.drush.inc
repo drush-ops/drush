@@ -45,6 +45,7 @@ function sitealias_drush_command() {
     'examples' => array(
       'drush site-alias' => 'List all alias records known to drush.',
       'drush site-alias @dev' => 'Print an alias record for the alias \'dev\'.',
+      'drush @none site-alias' => 'Print only actual aliases; omit multisites from the local Drupal installation.',
     ),
     'topics' => array('docs-aliases'),
   );
@@ -93,7 +94,11 @@ function sitealias_site_set_complete() {
  * is the site specification for the given alias.
  */
 function _drush_sitealias_alias_list() {
-  return drush_get_context('site-aliases');
+  $all_aliases = drush_get_context('site-aliases');
+  foreach($all_aliases as $key => $value) {
+    $result['@' . $key] = $value;
+  }
+  return $result;
 }
 
 /**
