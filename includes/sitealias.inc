@@ -1184,7 +1184,9 @@ function _drush_sitealias_add_static_defaults(&$alias_record) {
       $alias_record['path-aliases'] = array();
     }
     // If there is a 'root' entry, then copy it to the '%root' path alias
-    $alias_record['path-aliases']['%root'] = $alias_record['root'];
+    if (isset($alias_record['root'])) {
+      $alias_record['path-aliases']['%root'] = $alias_record['root'];
+    }
   }
 }
 
