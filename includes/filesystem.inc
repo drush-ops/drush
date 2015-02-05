@@ -267,6 +267,9 @@ function _drush_recursive_copy($src, $dest) {
   elseif (!copy($src, $dest)) {
     return FALSE;
   }
+
+  // Preserve file modification time.
+  // https://github.com/drush-ops/drush/pull/1146
   touch($dest, filemtime($src));
 
   // Preserve execute permission.
