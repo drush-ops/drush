@@ -21,7 +21,10 @@ function site_install_drush_command() {
         'description' => 'Password for the "db-su" account. Optional.',
         'example-value' => 'pass',
       ),
-      'db-drop-existing-tables' => 'Defaults to TRUE. Remove all tables in the target database before creating Drupal tables.',
+      'db-drop-existing-tables' => array(
+        'description' => 'Remove all tables in the target database before creating Drupal tables. Defaults to TRUE.',
+        'example-value' => '0'
+      ),
       'account-name' => 'uid1 name. Defaults to admin',
       'account-pass' => 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',
       'account-mail' => 'uid1 email. Defaults to admin@example.com',
@@ -187,8 +190,8 @@ function drush_core_pre_site_install($profile = NULL) {
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   }
 
-  if ($db_drop_existing_tables) {
-    $sql->drop_or_create();
+  if ($db_drop_existing_tables && $sql->db_exists()) {
+    $sql->drop($sql->listTables());
   }
   elseif (!$sql->db_exists()) {
     $sql->createdb();
