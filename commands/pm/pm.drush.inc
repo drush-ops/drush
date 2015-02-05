@@ -1495,6 +1495,9 @@ function pm_drush_engine_package_handler() {
   return array(
     'wget' => array(
       'description' => 'Download project packages using wget or curl.',
+      'options' => array(
+        'no-md5' => 'Skip md5 validation of downloads.',
+      ),
     ),
     'git_drupalorg' => array(
       'description' => 'Use git.drupal.org to checkout and update projects.',
