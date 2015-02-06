@@ -30,6 +30,7 @@ function drush_preflight_prepare() {
     fwrite(STDERR, $msg);
     return FALSE;
   }
+
   // drush_drupal_load_autoloader() uses require_once.  Is this going to be
   // a problem if $vendor_path == $drupal_root .'/core/vendor/autoload.php'
   require $vendor_path;

@@ -1365,47 +1365,12 @@ function drush_command_normalize_name($command_name) {
  *   command files.
  */
 function drush_commandfile_list() {
-  return drush_get_context('DRUSH_COMMAND_FILES', array());
-}
-
-/**
- * Register a single commandfile with Drush.
- *
- * Called by `drush_autoload()` and `_drush_add_commandfiles()`.
- */
-function drush_add_commandfile($commandfile) {
-  $load_command = FALSE;
-  $cache =& drush_get_context('DRUSH_COMMAND_FILES', array());
-  $deferred =& drush_get_context('DRUSH_DEFERRED_COMMAND_FILES', array());
-  $module = basename($commandfile);
-  $module = preg_replace('/\.*drush[0-9]*\.inc/', '', $module);
-  $module_versionless = preg_replace('/\.d([0-9]+)$/', '', $module);
-  if (!isset($cache[$module_versionless])) {
-    $drupal_version = '';
-    if (preg_match('/\.d([0-9]+)$/', $module, $matches)) {
-      $drupal_version = $matches[1];
-    }
-    if (empty($drupal_version) || ($drupal_version == drush_drupal_major_version())) {
-      $load_command = TRUE;
-      $cache[$module_versionless] = $commandfile;
-      require_once $commandfile;
-      unset($deferred[$module]);
-    }
-    elseif (!empty($drupal_version)) {
-      // Signal that we should try again on
-      // the next bootstrap phase.
-      $deferred[$module] = $commandfile;
-    }
-  }
-  return $load_command;
+  return Drush\Drush::commandfiles_cache()->get();
 }
 
 function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
   static $evaluated = array();
   $needs_sort = FALSE;
-
-  $cache =& drush_get_context('DRUSH_COMMAND_FILES', array());
-  $deferred =& drush_get_context('DRUSH_DEFERRED_COMMAND_FILES', array());
 
   if (count($searchpath)) {
     if (!$reset) {
@@ -1427,7 +1392,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
 
     // Build a list of all of the modules to attempt to load.
     // Start with any modules deferred from a previous phase.
-    $list = $deferred;
+    $list = Drush\Drush::commandfiles_cache()->deferred();
     if (isset($cached_list)) {
       $list = array_merge($list, $cached_list);
     }
@@ -1460,7 +1425,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       // command file cache may not be available anymore, in which case
       // we rebuild the cache for this phase.
       if ($filepath = realpath($filename)) {
-        $load_command = drush_add_commandfile($filepath);
+        $load_command = Drush\Drush::commandfiles_cache()->add($filepath);
         if ($load_command) {
           $needs_sort = TRUE;
         }
@@ -1472,7 +1437,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
     }
 
     if ($needs_sort) {
-      ksort($cache);
+      Drush\Drush::commandfiles_cache()->sort();
     }
   }
 }
