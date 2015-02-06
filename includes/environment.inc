@@ -300,7 +300,7 @@ function drush_cwd() {
  * On the last line of any *.drush.inc commandfile, add:
  *
  *   drush_autoload(__FILE__);
- */
+ *
 function drush_autoload($commandfile) {
   $already_added = drush_add_commandfile($commandfile);
 
@@ -317,6 +317,7 @@ function drush_autoload($commandfile) {
     }
   }
 }
+ */
 
 /**
  * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
