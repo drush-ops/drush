@@ -28,6 +28,8 @@ Composer - One Drush for all Projects
 * To install Drush 7.x (dev) which is required for Drupal 8:
 
         composer global require drush/drush:dev-master
+        
+* Now add Drush to your system path by placing `export PATH="$HOME/.composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).
 
 * To update to a newer version (what you get depends on your specification in ~/.composer/composer.json):
 
