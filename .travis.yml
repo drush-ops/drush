@@ -5,7 +5,6 @@ branches:
     - master
     - 6.x
     - 5.x
-    - drush-autoload
 language: php
 php:
 #  See master-fulltest branch for broader PHP version testing.
