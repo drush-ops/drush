@@ -156,7 +156,13 @@ function _pm_update_core(&$project, $tmpfile) {
   }
 
   // Create a list of directories to exclude from the update process.
-  $skip_list = array('sites', $project['path']);
+  // On Drupal >=8 skip also directories in the document root.
+  if (drush_drupal_major_version() >= 8) {
+    $skip_list = array('sites', $project['path'], 'modules', 'profiles', 'themes');
+  }
+  else {
+    $skip_list = array('sites', $project['path']);
+  }
   // Add non-writable directories: we can't move them around.
   // We will also use $items_to_test later for $version_control check.
   $items_to_test = drush_scan_directory($drupal_root, '/.*/', array_merge(array('.', '..'), $skip_list), 0, FALSE, 'basename', 0, TRUE);
