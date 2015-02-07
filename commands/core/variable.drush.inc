@@ -125,22 +125,27 @@ function variable_complete_variables() {
  */
 function drush_variable_get() {
   global $conf;
+  $exact = drush_get_option('exact', FALSE);
 
   $keys = array_keys($conf);
   if ($args = func_get_args()) {
     $args[0] = drush_variable_name_adjust($args[0]);
-    if (drush_get_option('exact', FALSE)) {
+    if ($exact) {
       $keys = in_array($args[0], $keys) ? array($args[0]) : array();
     }
     $keys = preg_grep("/{$args[0]}/", $keys);
   }
 
   $pipe = array();
-  foreach ($keys as $name) {
-    $value = $conf[$name];
-    $returns[$name] = $value;
+  if ($exact) {
+    $returns = $conf[reset($keys)];
   }
-
+  else {
+    foreach ($keys as $name) {
+      $value = $conf[$name];
+      $returns[$name] = $value;
+    }
+  }
   if (empty($keys)) {
     return drush_set_error('No matching variable found.');
   }
