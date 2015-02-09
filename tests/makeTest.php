@@ -468,7 +468,13 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function getMakefile($key) {
-    static $tests = array(
+    static $tests;
+    $tests = $this->listMakefileTests();
+    return $tests[$key];
+  }
+
+  function listMakefileTests() {
+    $tests = array(
       'bzr' => array(
         'name'     => 'Bzr',
         'makefile' => 'bzr.make',
@@ -497,23 +503,9 @@ class makeMakefileCase extends CommandUnishTestCase {
         'md5' => '2aed36201ede1849ce43d9b7d6f7e9e1',
         'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),
       ),
-      'contrib-destination-yaml' => array(
-        'name'     => 'Contrib-destination attribute in YAML format',
-        'makefile' => 'contrib-destination.make.yml',
-        'build'    => TRUE,
-        'md5' => '2aed36201ede1849ce43d9b7d6f7e9e1',
-        'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),
-      ),
       'defaults' => array(
         'name'     => 'Test defaults array.',
         'makefile' => 'defaults.make',
-        'build'    => TRUE,
-        'md5' => 'e6c0d6b37cd8573cbd188742b95a274e',
-        'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),
-      ),
-      'defaults-yaml' => array(
-        'name'     => 'Test defaults array in YAML format.',
-        'makefile' => 'defaults.make.yml',
         'build'    => TRUE,
         'md5' => 'e6c0d6b37cd8573cbd188742b95a274e',
         'options'  => array('no-core' => NULL, 'contrib-destination' => '.'),
@@ -713,6 +705,13 @@ class makeMakefileCase extends CommandUnishTestCase {
         'options'  => array(),
       ),
     );
-    return $tests[$key];
+    // Replicate ini tests for YAML format.
+    foreach ($tests as $id => $test) {
+      $id_yaml = $id  . '-yaml';
+      $tests[$id_yaml] = $test;
+      $tests[$id_yaml]['name'] = $tests[$id]['name'] . '(in YAML format)';
+      $tests[$id_yaml]['makefile'] = $tests[$id]['makefile'] . '.yml';
+    }
+    return $tests;
   }
 }
