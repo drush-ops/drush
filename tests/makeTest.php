@@ -44,429 +44,6 @@ class makeMakefileCase extends CommandUnishTestCase {
     }
   }
 
-  function testMakeGet() {
-    $this->runMakefileTest('get');
-  }
-
-  function testMakeGit() {
-    $this->runMakefileTest('git');
-  }
-
-  function testMakeGitSimple() {
-    $this->runMakefileTest('git-simple');
-  }
-
-  function testMakeNoPatchTxt() {
-    $this->runMakefileTest('no-patch-txt');
-  }
-
-  /**
-   * Test no-core and working-copy in options array.
-   */
-  function testMakeOptionsArray() {
-    // Use the goptions-array.make file.
-    $config = $this->getMakefile('options-array');
-
-    $makefile_path = dirname(__FILE__) . '/makefiles';
-    $makefile = $makefile_path . '/' . $config['makefile'];
-    $install_directory = UNISH_SANDBOX . '/options-array';
-    $this->drush('make', array($makefile, $install_directory));
-
-    // Test cck_signup .git/HEAD file.
-    $this->assertFileExists($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
-    $contents = file_get_contents($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
-    $this->assertContains('2fe932c', $contents);
-
-    // Test context_admin .git/HEAD file.
-    $this->assertFileExists($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
-    $contents = file_get_contents($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
-    $this->assertContains('eb9f05e', $contents);
-  }
-
-  /**
-   * Test per project working-copy option.
-   */
-  function testMakeOptionsProject() {
-    // Use the options-project.make file.
-    $config = $this->getMakefile('options-project');
-
-    $makefile_path = dirname(__FILE__) . '/makefiles';
-    $options = array('no-core' => NULL);
-    $makefile = $makefile_path . '/' . $config['makefile'];
-    $install_directory = UNISH_SANDBOX . '/options-project';
-    $this->drush('make', array($makefile, $install_directory), $options);
-
-    // Test context_admin .git/HEAD file.
-    $this->assertFileExists($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
-    $contents = file_get_contents($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
-    $this->assertContains('eb9f05e', $contents);
-
-    // Test cck_signup .git/HEAD file does not exist.
-    $this->assertFileNotExists($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
-
-    // Test caption_filter .git/HEAD file.
-    $this->assertFileExists($install_directory . '/sites/all/modules/contrib/caption_filter/.git/HEAD');
-    $contents = file_get_contents($install_directory . '/sites/all/modules/contrib//caption_filter/.git/HEAD');
-    $this->assertContains('c9794cf', $contents);
-  }
-
-  function testMakePatch() {
-    $this->runMakefileTest('patch');
-  }
-
-  function testMakeInclude() {
-    $this->runMakefileTest('include');
-  }
-
-  /**
-   * Test git support on includes directive.
-   */
-  function testMakeIncludesGit() {
-    $config = $this->getMakefile('includes-git');
-    $options = array();
-    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
-    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
-    
-    // Verify that core and example main module were downloaded.
-    $this->assertFileExists(UNISH_SANDBOX . '/test-build/README.txt');
-    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/apachesolr/README.txt');
-    
-    // Verify that module included in sub platform was downloaded.
-    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/jquery_update/README.txt');
-  }
-
-  function testMakeRecursion() {
-    $this->runMakefileTest('recursion');
-  }
-
-  function testMakeRecursionOverride() {
-    $this->runMakefileTest('recursion-override');
-  }
-
-  function testMakeNoRecursion() {
-    $config = $this->getMakefile('recursion');
-    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
-
-    $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'norecursion';
-    $this->drush('make', array('--no-core', '--no-recursion', $makefile, $install_directory));
-    $this->assertNotContains("ctools", $this->getOutput(), "Make with --no-recursion does not recurse into drupal_forum to download ctools.");
-  }
-
-  function testMakeSvn() {
-    // Silently skip svn test if svn is not installed.
-    exec('which svn', $output, $whichSvnErrorCode);
-    if (!$whichSvnErrorCode) {
-      $this->runMakefileTest('svn');
-    }
-    else {
-      $this->markTestSkipped('svn command not available.');
-    }
-  }
-
-  function testMakeBzr() {
-    // Silently skip bzr test if bzr is not installed.
-    exec('which bzr', $output, $whichBzrErrorCode);
-    if (!$whichBzrErrorCode) {
-      $this->runMakefileTest('bzr');
-    }
-    else {
-      $this->markTestSkipped('bzr command is not available.');
-    }
-  }
-
-  /**
-   * Translations can change arbitrarily, so these test for the existence of .po
-   * files, rather than trying to match a build hash.
-   */
-  function testMakeTranslations() {
-    $config = $this->getMakefile('translations');
-
-    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
-    $install_directory = UNISH_SANDBOX . '/translations';
-    $this->drush('make', array($makefile, $install_directory), $config['options']);
-
-    $po_files = array(
-      'sites/all/modules/token/translations/pt-br.po',
-      'sites/all/modules/token/translations/es.po',
-    );
-
-    foreach ($po_files as $po_file) {
-      $this->assertFileExists($install_directory . '/' . $po_file);
-    }
-  }
-
-  /**
-   * Translations can change arbitrarily, so these test for the existence of .po
-   * files, rather than trying to match a build hash.
-   */
-  function testMakeTranslationsInside() {
-    $config = $this->getMakefile('translations-inside');
-
-    $makefile = $this->makefile_path . '/' . $config['makefile'];
-    $install_directory = UNISH_SANDBOX . '/translations-inside';
-    $this->drush('make', array($makefile, $install_directory));
-
-    $po_files = array(
-      'profiles/default/translations/pt-br.po',
-      'profiles/default/translations/es.po',
-      'sites/all/modules/token/translations/pt-br.po',
-      'sites/all/modules/token/translations/es.po',
-      'modules/system/translations/pt-br.po',
-      'modules/system/translations/es.po',
-    );
-
-    foreach ($po_files as $po_file) {
-      $this->assertFileExists($install_directory . '/' . $po_file);
-    }
-  }
-
-  /**
-   * Translations can change arbitrarily, so these test for the existence of .po
-   * files, rather than trying to match a build hash.
-   */
-  function testMakeTranslationsInside7() {
-    $config = $this->getMakefile('translations-inside7');
-
-    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
-    $install_directory = UNISH_SANDBOX . '/translations-inside7';
-    $this->drush('make', array($makefile, $install_directory));
-
-    $po_files = array(
-      'profiles/minimal/translations/pt-br.po',
-      'profiles/minimal/translations/es.po',
-      'profiles/testing/translations/pt-br.po',
-      'profiles/testing/translations/es.po',
-      'profiles/standard/translations/pt-br.po',
-      'profiles/standard/translations/es.po',
-      'sites/all/modules/token/translations/pt-br.po',
-      'sites/all/modules/token/translations/es.po',
-      'modules/system/translations/pt-br.po',
-      'modules/system/translations/es.po',
-    );
-
-    foreach ($po_files as $po_file) {
-      $this->assertFileExists($install_directory . '/' . $po_file);
-    }
-  }
-
-  function testMakeContribDestination() {
-    $this->runMakefileTest('contrib-destination');
-  }
-
-  /** @group make.yml */
-  function testMakeContribDestinationYaml() {
-    $this->runMakefileTest('contrib-destination-yaml');
-  }
-
-  function testMakeDefaults() {
-    $this->runMakefileTest('defaults');
-  }
-
-  /** @group make.yml */
-  function testMakeDefaultsYaml() {
-    $this->runMakefileTest('defaults-yaml');
-  }
-
-  function testMakeFile() {
-    $this->runMakefileTest('file');
-  }
-
-  function testMakeBZ2() {
-    // Silently skip bz2 test if bz2 is not installed.
-    exec('which bzip2', $output, $whichBzip2ErrorCode);
-    if (!$whichBzip2ErrorCode) {
-      $this->runMakefileTest('bz2');
-    }
-    else {
-      $this->markTestSkipped('bzip2 command not available.');
-    }
-  }
-
-  function testMakeBZ2SingleFile() {
-    // Silently skip bz2 test if bz2 is not installed.
-    exec('which bzip2', $output, $whichBzip2ErrorCode);
-    if (!$whichBzip2ErrorCode) {
-      $this->runMakefileTest('bz2-singlefile');
-    }
-    else {
-      $this->markTestSkipped('bzip2 command not available.');
-    }
-  }
-
-  function testMakeGZip() {
-    // Silently skip gzip test if gzip is not installed.
-    exec('which gzip', $output, $whichGzipErrorCode);
-    if (!$whichGzipErrorCode) {
-      $this->runMakefileTest('gzip');
-    }
-    else {
-      $this->markTestSkipped('gzip command not available.');
-    }
-  }
-
-  function testMakeSubtree() {
-    $config = $this->getMakefile('subtree');
-
-    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
-    $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'subtree';
-    $this->drush('make', array('--no-core', $makefile, $install_directory));
-
-    $files['nivo-slider'] = array(
-      'exists' => array(
-        'jquery.nivo.slider.js',
-        'jquery.nivo.slider.pack.js',
-        'license.txt',
-        'nivo-slider.css',
-        'README',
-      ),
-      'notexists' => array(
-        '__MACOSX',
-        'nivo-slider',
-      ),
-    );
-    $files['fullcalendar'] = array(
-      'exists' => array(
-        'fullcalendar.css',
-        'fullcalendar.js',
-        'fullcalendar.min.js',
-        'fullcalendar.print.css',
-        'gcal.js',
-      ),
-      'notexists' => array(
-        'changelog.txt',
-        'demos',
-        'fullcalendar',
-        'GPL-LICENSE.txt',
-        'jquery',
-        'MIT-LICENSE.txt',
-      ),
-    );
-    $basedir = $install_directory . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'libraries';
-    foreach ($files as $lib => $details) {
-      $dir =  $basedir . DIRECTORY_SEPARATOR . $lib;
-      if (!empty($details['exists'])) {
-        foreach ($details['exists'] as $file) {
-          $this->assertFileExists($dir . DIRECTORY_SEPARATOR . $file);
-        }
-      }
-
-      if (!empty($details['notexists'])) {
-        foreach ($details['notexists'] as $file) {
-          $this->assertFileNotExists($dir . DIRECTORY_SEPARATOR . $file);
-        }
-      }
-    }
-  }
-
-  function testMakeMd5Succeed() {
-    $this->runMakefileTest('md5-succeed');
-  }
-
-  function testMakeMd5Fail() {
-    $this->runMakefileTest('md5-fail');
-  }
-
-  function testMakeIgnoreChecksums() {
-    $this->runMakefileTest('ignore-checksums');
-  }
-
-  /**
-   * Test .info file writing and the use of a git reference cache for
-   * git downloads.
-   */
-  function testInfoFileWritingGit() {
-    // Use the git-simple.make file.
-    $config = $this->getMakefile('git-simple');
-
-    $options = array('no-core' => NULL);
-    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
-    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
-
-    // Test cck_signup.info file.
-    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
-    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
-    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
-    $this->assertContains('version = "2fe932c"', $contents);
-    $this->assertContains('project = "cck_signup"', $contents);
-
-    // Verify that a reference cache was created.
-    $cache_dir = UNISH_CACHE . DIRECTORY_SEPARATOR . 'cache';
-    $this->assertFileExists($cache_dir . '/git/cck_signup-' . md5('http://git.drupal.org/project/cck_signup.git'));
-
-    // Test context_admin.info file.
-    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
-    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
-    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
-    $this->assertContains('version = "eb9f05e"', $contents);
-    $this->assertContains('project = "context_admin"', $contents);
-
-    // Verify git reference cache exists.
-    $this->assertFileExists($cache_dir . '/git/context_admin-' . md5('http://git.drupal.org/project/context_admin.git'));
-
-    // Text caption_filter .info rewrite.
-    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/caption_filter/caption_filter.info');
-    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/caption_filter/caption_filter.info');
-    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
-    $this->assertContains('version = "7.x-1.2+0-dev"', $contents);
-    $this->assertContains('project = "caption_filter"', $contents);
-  }
-
-  /**
-   * Test .info file writing and the use of a git reference cache for
-   * git downloads.
-   */
-  function testInfoYamlFileWritingGit() {
-    // Use the Drupal 8 .make file.
-    $config = $this->getMakefile('git-simple-8');
-
-    $options = array('no-core' => NULL);
-    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
-    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
-
-    $this->assertFileExists(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
-    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
-    $this->assertContains('# Information added by drush on ' . date('Y-m-d'), $contents);
-    $this->assertContains("version: '8.x-1.18-beta1+1-dev'", $contents);
-    $this->assertContains("project: 'honeypot'", $contents);
-  }
-
-  function testMakeFileExtract() {
-    $this->runMakefileTest('file-extract');
-  }
-
-  function testMakeLimitProjects() {
-    $this->runMakefileTest('limit-projects');
-    $this->runMakefileTest('limit-projects-multiple');
-  }
-
-  function testMakeLimitLibraries() {
-    $this->runMakefileTest('limit-libraries');
-    $this->runMakefileTest('limit-libraries-multiple');
-  }
-
-  /**
-   * Test that make_move_build() doesn't wipe out directories that it shouldn't.
-   */
-  function testMakeMoveBuild() {
-    // Manually download a module.
-    $this->drush('pm-download', array('cck_signup'), array('destination' => UNISH_SANDBOX . '/sites/all/modules/contrib', 'yes' => NULL));
-
-    // Build a make file.
-    $config = $this->getMakefile('contrib-destination');
-    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
-    $this->drush('make', array($makefile, '.'), $config['options']);
-
-    // Verify that the manually downloaded module still exists.
-    $this->assertFileExists(UNISH_SANDBOX . '/sites/all/modules/contrib/cck_signup/README.txt');
-  }
-
-  /**
-   * Test that a distribution can be used as a "core" project.
-   */
-  function testMakeUseDistributionAsCore() {
-    $this->runMakefileTest('use-distribution-as-core');
-  }
-
   function getMakefile($key) {
     static $tests;
     $tests = $this->listMakefileTests();
@@ -713,5 +290,435 @@ class makeMakefileCase extends CommandUnishTestCase {
       $tests[$id_yaml]['makefile'] = $tests[$id]['makefile'] . '.yml';
     }
     return $tests;
+  }
+
+  /************************************************************************
+   *                                                                      *
+   *  List of make tests (in alphabetical order, for easier navigation.)  *
+   *                                                                      *
+   ************************************************************************/
+
+  /**
+   * Test .info file writing and the use of a git reference cache for
+   * git downloads.
+   */
+  function testInfoFileWritingGit() {
+    // Use the git-simple.make file.
+    $config = $this->getMakefile('git-simple');
+
+    $options = array('no-core' => NULL);
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
+
+    // Test cck_signup.info file.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
+    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
+    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains('version = "2fe932c"', $contents);
+    $this->assertContains('project = "cck_signup"', $contents);
+
+    // Verify that a reference cache was created.
+    $cache_dir = UNISH_CACHE . DIRECTORY_SEPARATOR . 'cache';
+    $this->assertFileExists($cache_dir . '/git/cck_signup-' . md5('http://git.drupal.org/project/cck_signup.git'));
+
+    // Test context_admin.info file.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
+    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
+    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains('version = "eb9f05e"', $contents);
+    $this->assertContains('project = "context_admin"', $contents);
+
+    // Verify git reference cache exists.
+    $this->assertFileExists($cache_dir . '/git/context_admin-' . md5('http://git.drupal.org/project/context_admin.git'));
+
+    // Text caption_filter .info rewrite.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/caption_filter/caption_filter.info');
+    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/caption_filter/caption_filter.info');
+    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains('version = "7.x-1.2+0-dev"', $contents);
+    $this->assertContains('project = "caption_filter"', $contents);
+  }
+
+  /**
+   * Test .info file writing and the use of a git reference cache for
+   * git downloads.
+   */
+  function testInfoYamlFileWritingGit() {
+    // Use the Drupal 8 .make file.
+    $config = $this->getMakefile('git-simple-8');
+
+    $options = array('no-core' => NULL);
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
+
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
+    $contents = file_get_contents(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
+    $this->assertContains('# Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains("version: '8.x-1.18-beta1+1-dev'", $contents);
+    $this->assertContains("project: 'honeypot'", $contents);
+  }
+
+  function testMakeBzr() {
+    // Silently skip bzr test if bzr is not installed.
+    exec('which bzr', $output, $whichBzrErrorCode);
+    if (!$whichBzrErrorCode) {
+      $this->runMakefileTest('bzr');
+    }
+    else {
+      $this->markTestSkipped('bzr command is not available.');
+    }
+  }
+
+  function testMakeBZ2() {
+    // Silently skip bz2 test if bz2 is not installed.
+    exec('which bzip2', $output, $whichBzip2ErrorCode);
+    if (!$whichBzip2ErrorCode) {
+      $this->runMakefileTest('bz2');
+    }
+    else {
+      $this->markTestSkipped('bzip2 command not available.');
+    }
+  }
+
+  function testMakeBZ2SingleFile() {
+    // Silently skip bz2 test if bz2 is not installed.
+    exec('which bzip2', $output, $whichBzip2ErrorCode);
+    if (!$whichBzip2ErrorCode) {
+      $this->runMakefileTest('bz2-singlefile');
+    }
+    else {
+      $this->markTestSkipped('bzip2 command not available.');
+    }
+  }
+
+  function testMakeContribDestination() {
+    $this->runMakefileTest('contrib-destination');
+  }
+
+  /** @group make.yml */
+  function testMakeContribDestinationYaml() {
+    $this->runMakefileTest('contrib-destination-yaml');
+  }
+
+  function testMakeDefaults() {
+    $this->runMakefileTest('defaults');
+  }
+
+  /** @group make.yml */
+  function testMakeDefaultsYaml() {
+    $this->runMakefileTest('defaults-yaml');
+  }
+
+  function testMakeFile() {
+    $this->runMakefileTest('file');
+  }
+
+  function testMakeFileExtract() {
+    $this->runMakefileTest('file-extract');
+  }
+
+  function testMakeGet() {
+    $this->runMakefileTest('get');
+  }
+
+  function testMakeGit() {
+    $this->runMakefileTest('git');
+  }
+
+  function testMakeGitSimple() {
+    $this->runMakefileTest('git-simple');
+  }
+
+  function testMakeGZip() {
+    // Silently skip gzip test if gzip is not installed.
+    exec('which gzip', $output, $whichGzipErrorCode);
+    if (!$whichGzipErrorCode) {
+      $this->runMakefileTest('gzip');
+    }
+    else {
+      $this->markTestSkipped('gzip command not available.');
+    }
+  }
+
+  function testMakeIgnoreChecksums() {
+    $this->runMakefileTest('ignore-checksums');
+  }
+
+  function testMakeInclude() {
+    $this->runMakefileTest('include');
+  }
+
+  /**
+   * Test git support on includes directive.
+   */
+  function testMakeIncludesGit() {
+    $config = $this->getMakefile('includes-git');
+    $options = array();
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
+    
+    // Verify that core and example main module were downloaded.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/README.txt');
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/apachesolr/README.txt');
+    
+    // Verify that module included in sub platform was downloaded.
+    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/jquery_update/README.txt');
+  }
+
+  function testMakeLimitProjects() {
+    $this->runMakefileTest('limit-projects');
+    $this->runMakefileTest('limit-projects-multiple');
+  }
+
+  function testMakeLimitLibraries() {
+    $this->runMakefileTest('limit-libraries');
+    $this->runMakefileTest('limit-libraries-multiple');
+  }
+
+
+  function testMakeMd5Fail() {
+    $this->runMakefileTest('md5-fail');
+  }
+
+  function testMakeMd5Succeed() {
+    $this->runMakefileTest('md5-succeed');
+  }
+
+  /**
+   * Test that make_move_build() doesn't wipe out directories that it shouldn't.
+   */
+  function testMakeMoveBuild() {
+    // Manually download a module.
+    $this->drush('pm-download', array('cck_signup'), array('destination' => UNISH_SANDBOX . '/sites/all/modules/contrib', 'yes' => NULL));
+
+    // Build a make file.
+    $config = $this->getMakefile('contrib-destination');
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $this->drush('make', array($makefile, '.'), $config['options']);
+
+    // Verify that the manually downloaded module still exists.
+    $this->assertFileExists(UNISH_SANDBOX . '/sites/all/modules/contrib/cck_signup/README.txt');
+  }
+
+  function testMakeNoPatchTxt() {
+    $this->runMakefileTest('no-patch-txt');
+  }
+
+  function testMakeNoRecursion() {
+    $config = $this->getMakefile('recursion');
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+
+    $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'norecursion';
+    $this->drush('make', array('--no-core', '--no-recursion', $makefile, $install_directory));
+    $this->assertNotContains("ctools", $this->getOutput(), "Make with --no-recursion does not recurse into drupal_forum to download ctools.");
+  }
+
+  /**
+   * Test no-core and working-copy in options array.
+   */
+  function testMakeOptionsArray() {
+    // Use the goptions-array.make file.
+    $config = $this->getMakefile('options-array');
+
+    $makefile_path = dirname(__FILE__) . '/makefiles';
+    $makefile = $makefile_path . '/' . $config['makefile'];
+    $install_directory = UNISH_SANDBOX . '/options-array';
+    $this->drush('make', array($makefile, $install_directory));
+
+    // Test cck_signup .git/HEAD file.
+    $this->assertFileExists($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
+    $contents = file_get_contents($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
+    $this->assertContains('2fe932c', $contents);
+
+    // Test context_admin .git/HEAD file.
+    $this->assertFileExists($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
+    $contents = file_get_contents($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
+    $this->assertContains('eb9f05e', $contents);
+  }
+
+  /**
+   * Test per project working-copy option.
+   */
+  function testMakeOptionsProject() {
+    // Use the options-project.make file.
+    $config = $this->getMakefile('options-project');
+
+    $makefile_path = dirname(__FILE__) . '/makefiles';
+    $options = array('no-core' => NULL);
+    $makefile = $makefile_path . '/' . $config['makefile'];
+    $install_directory = UNISH_SANDBOX . '/options-project';
+    $this->drush('make', array($makefile, $install_directory), $options);
+
+    // Test context_admin .git/HEAD file.
+    $this->assertFileExists($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
+    $contents = file_get_contents($install_directory . '/sites/all/modules/context_admin/.git/HEAD');
+    $this->assertContains('eb9f05e', $contents);
+
+    // Test cck_signup .git/HEAD file does not exist.
+    $this->assertFileNotExists($install_directory . '/sites/all/modules/cck_signup/.git/HEAD');
+
+    // Test caption_filter .git/HEAD file.
+    $this->assertFileExists($install_directory . '/sites/all/modules/contrib/caption_filter/.git/HEAD');
+    $contents = file_get_contents($install_directory . '/sites/all/modules/contrib//caption_filter/.git/HEAD');
+    $this->assertContains('c9794cf', $contents);
+  }
+
+  function testMakePatch() {
+    $this->runMakefileTest('patch');
+  }
+
+  function testMakeRecursion() {
+    $this->runMakefileTest('recursion');
+  }
+
+  function testMakeRecursionOverride() {
+    $this->runMakefileTest('recursion-override');
+  }
+
+  function testMakeSubtree() {
+    $config = $this->getMakefile('subtree');
+
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'subtree';
+    $this->drush('make', array('--no-core', $makefile, $install_directory));
+
+    $files['nivo-slider'] = array(
+      'exists' => array(
+        'jquery.nivo.slider.js',
+        'jquery.nivo.slider.pack.js',
+        'license.txt',
+        'nivo-slider.css',
+        'README',
+      ),
+      'notexists' => array(
+        '__MACOSX',
+        'nivo-slider',
+      ),
+    );
+    $files['fullcalendar'] = array(
+      'exists' => array(
+        'fullcalendar.css',
+        'fullcalendar.js',
+        'fullcalendar.min.js',
+        'fullcalendar.print.css',
+        'gcal.js',
+      ),
+      'notexists' => array(
+        'changelog.txt',
+        'demos',
+        'fullcalendar',
+        'GPL-LICENSE.txt',
+        'jquery',
+        'MIT-LICENSE.txt',
+      ),
+    );
+    $basedir = $install_directory . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'libraries';
+    foreach ($files as $lib => $details) {
+      $dir =  $basedir . DIRECTORY_SEPARATOR . $lib;
+      if (!empty($details['exists'])) {
+        foreach ($details['exists'] as $file) {
+          $this->assertFileExists($dir . DIRECTORY_SEPARATOR . $file);
+        }
+      }
+
+      if (!empty($details['notexists'])) {
+        foreach ($details['notexists'] as $file) {
+          $this->assertFileNotExists($dir . DIRECTORY_SEPARATOR . $file);
+        }
+      }
+    }
+  }
+
+  function testMakeSvn() {
+    // Silently skip svn test if svn is not installed.
+    exec('which svn', $output, $whichSvnErrorCode);
+    if (!$whichSvnErrorCode) {
+      $this->runMakefileTest('svn');
+    }
+    else {
+      $this->markTestSkipped('svn command not available.');
+    }
+  }
+
+  /**
+   * Translations can change arbitrarily, so these test for the existence of .po
+   * files, rather than trying to match a build hash.
+   */
+  function testMakeTranslations() {
+    $config = $this->getMakefile('translations');
+
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $install_directory = UNISH_SANDBOX . '/translations';
+    $this->drush('make', array($makefile, $install_directory), $config['options']);
+
+    $po_files = array(
+      'sites/all/modules/token/translations/pt-br.po',
+      'sites/all/modules/token/translations/es.po',
+    );
+
+    foreach ($po_files as $po_file) {
+      $this->assertFileExists($install_directory . '/' . $po_file);
+    }
+  }
+
+  /**
+   * Translations can change arbitrarily, so these test for the existence of .po
+   * files, rather than trying to match a build hash.
+   */
+  function testMakeTranslationsInside() {
+    $config = $this->getMakefile('translations-inside');
+
+    $makefile = $this->makefile_path . '/' . $config['makefile'];
+    $install_directory = UNISH_SANDBOX . '/translations-inside';
+    $this->drush('make', array($makefile, $install_directory));
+
+    $po_files = array(
+      'profiles/default/translations/pt-br.po',
+      'profiles/default/translations/es.po',
+      'sites/all/modules/token/translations/pt-br.po',
+      'sites/all/modules/token/translations/es.po',
+      'modules/system/translations/pt-br.po',
+      'modules/system/translations/es.po',
+    );
+
+    foreach ($po_files as $po_file) {
+      $this->assertFileExists($install_directory . '/' . $po_file);
+    }
+  }
+
+  /**
+   * Translations can change arbitrarily, so these test for the existence of .po
+   * files, rather than trying to match a build hash.
+   */
+  function testMakeTranslationsInside7() {
+    $config = $this->getMakefile('translations-inside7');
+
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $install_directory = UNISH_SANDBOX . '/translations-inside7';
+    $this->drush('make', array($makefile, $install_directory));
+
+    $po_files = array(
+      'profiles/minimal/translations/pt-br.po',
+      'profiles/minimal/translations/es.po',
+      'profiles/testing/translations/pt-br.po',
+      'profiles/testing/translations/es.po',
+      'profiles/standard/translations/pt-br.po',
+      'profiles/standard/translations/es.po',
+      'sites/all/modules/token/translations/pt-br.po',
+      'sites/all/modules/token/translations/es.po',
+      'modules/system/translations/pt-br.po',
+      'modules/system/translations/es.po',
+    );
+
+    foreach ($po_files as $po_file) {
+      $this->assertFileExists($install_directory . '/' . $po_file);
+    }
+  }
+
+  /**
+   * Test that a distribution can be used as a "core" project.
+   */
+  function testMakeUseDistributionAsCore() {
+    $this->runMakefileTest('use-distribution-as-core');
   }
 }
