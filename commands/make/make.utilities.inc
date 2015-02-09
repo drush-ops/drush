@@ -34,7 +34,7 @@ function make_parse_info_file($makefile) {
  *
  * @see drupal_parse_info_file
  */
-function _make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = array()) {
+function _make_parse_info_file($makefile, $parsed = TRUE) {
   if (!($data = make_get_data($makefile))) {
     return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
@@ -50,14 +50,8 @@ function _make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = ar
     $info = _make_determine_format($data);
   }
 
-  // $makefile_options are from projects[projectname][options][...] = value in
-  // the makefile that included us, whereas $info['options'] is from
-  // options[...] = value in this makefile.
   if (!empty($info['options'])) {
-    $makefile_options = array_merge($makefile_options, $info['options']);
-  }
-  if (!empty($makefile_options)) {
-    foreach ($makefile_options as $key => $value) {
+    foreach ($info['options'] as $key => $value) {
       if (_make_is_override_allowed($key)) {
         // n.b. 'custom' context has lower priority than 'cli', so
         // options entered on the command line will "mask" makefile options.
