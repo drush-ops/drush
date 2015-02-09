@@ -26,6 +26,7 @@ function variable_drush_command() {
       'drush vget' => 'List all variables and values.',
       'drush vget user' => 'List all variables containing the string "user".',
       'drush vget site_mail --exact' => 'Show only the value of the variable with the exact key "site_mail".',
+      'drush vget site_mail --exact --pipe' => 'Show only the variable with the exact key "site_mail" without changing the structure of the output.',
     ),
     'options' => array(
       'exact' => "Only get the one variable that exactly matches the specified name.  Output will contain only the variable's value.",
@@ -138,9 +139,10 @@ function drush_variable_get() {
     $keys = preg_grep("/{$args[0]}/", $keys);
   }
 
-  $pipe = array();
-  if ($exact) {
-    $returns = $conf[reset($keys)];
+  // In --exact mode, if --pipe is not set, then simplify the return type.
+  if ($exact && !drush_get_context('DRUSH_PIPE')) {
+    $key = reset($keys);
+    $returns = isset($conf[$key]) ? $conf[$key] : FALSE;
   }
   else {
     foreach ($keys as $name) {
