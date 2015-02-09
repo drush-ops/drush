@@ -28,13 +28,9 @@ function make_parse_info_file($makefile) {
 }
 
 /**
- * Parse Drupal info file format.
- *
- * Copied with modifications from includes/common.inc.
- *
- * @see drupal_parse_info_file
+ * Parse makefile recursively.
  */
-function _make_parse_info_file($makefile, $parsed = TRUE) {
+function _make_parse_info_file($makefile) {
   if (!($data = make_get_data($makefile))) {
     return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
@@ -52,50 +48,42 @@ function _make_parse_info_file($makefile, $parsed = TRUE) {
       }
     }
   }
+
+  // Merge includes recursively.
   if (!empty($info['includes'])) {
-    $include_path = dirname($makefile);
-    $includes = array();
-    if (!empty($info['includes']) && is_array($info['includes'])) {
+    if (is_array($info['includes'])) {
+      $include_path = dirname($makefile);
+      $includes = array();
       foreach ($info['includes'] as $include) {
-        if (is_string($include)) {
-          if (make_valid_url($include, TRUE) && ($file = _make_parse_info_file($include, FALSE))) {
-            $includes[] = $file;
-          }
-          elseif (file_exists($include_path . '/' . $include) && ($file = _make_parse_info_file($include_path . '/' . $include, FALSE))) {
-            $includes[] = $file;
-          }
-          elseif (file_exists($include) && ($file = _make_parse_info_file($include, FALSE))) {
-            $includes[] = $file;
-          }
-          else {
-            make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
-          }
-        } 
-        elseif (!empty($include) && is_array($include)) {
-          if ($include['download']['type'] = 'git') {
+        if (!empty($include)) {
+          if (is_array($include) && $include['download']['type'] = 'git') {
             $tmp_dir = make_tmp();
             make_download_git($include['makefile'], $include['download']['type'], $include['download'], $tmp_dir);
-            $makefile = $tmp_dir . '/' . $include['makefile'];
-            if (file_exists($makefile) && $file = _make_parse_info_file($makefile, FALSE)) {
-              $includes[] = $file;
+            $include_makefile = $tmp_dir . '/' . $include['makefile'];
+          }
+          elseif (is_string($include)) {
+            if (make_valid_url($include, TRUE)) {
+              $include_makefile = $include;
+            }
+            elseif (file_exists($include_path . '/' . $include)) {
+              $include_makefile = $include_path . '/' . $include;
+            }
+            elseif (file_exists($include)) {
+              $include_makefile = $include;
             }
             else {
-              make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $makefile)));
+              make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
             }
           }
-        }
+          else {
+            make_error('BUILD_ERROR', dt("Cannot determine include file location: !include", array('!include' => $include)));
+          }
+          $info = array_replace_recursive(_make_parse_info_file($include_makefile), $info);
+        }    
       }
     }
-    $includes[] = $data;
-    $data = implode("\n", $includes);
-    $info = _drush_drupal_parse_info_file($data);
   }
-  if ($parsed) {
-    return $info;
-  }
-  else {
-    return $data;
-  }
+  return $info;
 }
 
 /**
