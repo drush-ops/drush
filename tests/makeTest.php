@@ -414,7 +414,14 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function testMakeFileExtract() {
-    $this->runMakefileTest('file-extract');
+    // Silently skip file extraction test if unzip is not installed.
+    exec('which unzip', $output, $whichUnzipErrorCode);
+    if (!$whichUnzipErrorCode) {
+      $this->runMakefileTest('file-extract');
+    }
+    else {
+      $this->markTestSkipped('unzip command not available.');
+    }
   }
 
   function testMakeGet() {
@@ -430,10 +437,16 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function testMakeGZip() {
-    // Silently skip gzip test if gzip is not installed.
+    // Silently skip gzip test if either gzip or unzip is not installed.
     exec('which gzip', $output, $whichGzipErrorCode);
     if (!$whichGzipErrorCode) {
-      $this->runMakefileTest('gzip');
+      exec('which unzip', $output, $whichUnzipErrorCode);
+      if (!$whichUnzipErrorCode) {
+        $this->runMakefileTest('gzip');
+      }
+      else {
+        $this->markTestSkipped('unzip command not available.');
+      }
     }
     else {
       $this->markTestSkipped('gzip command not available.');
@@ -577,60 +590,74 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function testMakeRecursionOverride() {
-    $this->runMakefileTest('recursion-override');
+    // Silently skip file extraction test if unzip is not installed.
+    exec('which unzip', $output, $whichUnzipErrorCode);
+    if (!$whichUnzipErrorCode) {
+      $this->runMakefileTest('recursion-override');
+    }
+    else {
+      $this->markTestSkipped('unzip command not available.');
+    }
   }
 
   function testMakeSubtree() {
-    $config = $this->getMakefile('subtree');
+    // Silently skip subtree test if unzip is not installed.
+    exec('which unzip', $output, $whichUnzipErrorCode);
+    if (!$whichUnzipErrorCode) {
+      $config = $this->getMakefile('subtree');
 
-    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
-    $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'subtree';
-    $this->drush('make', array('--no-core', $makefile, $install_directory));
+      $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+      $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'subtree';
+      $this->drush('make', array('--no-core', $makefile, $install_directory));
 
-    $files['nivo-slider'] = array(
-      'exists' => array(
-        'jquery.nivo.slider.js',
-        'jquery.nivo.slider.pack.js',
-        'license.txt',
-        'nivo-slider.css',
-        'README',
-      ),
-      'notexists' => array(
-        '__MACOSX',
-        'nivo-slider',
-      ),
-    );
-    $files['fullcalendar'] = array(
-      'exists' => array(
-        'fullcalendar.css',
-        'fullcalendar.js',
-        'fullcalendar.min.js',
-        'fullcalendar.print.css',
-        'gcal.js',
-      ),
-      'notexists' => array(
-        'changelog.txt',
-        'demos',
-        'fullcalendar',
-        'GPL-LICENSE.txt',
-        'jquery',
-        'MIT-LICENSE.txt',
-      ),
-    );
-    $basedir = $install_directory . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'libraries';
-    foreach ($files as $lib => $details) {
-      $dir =  $basedir . DIRECTORY_SEPARATOR . $lib;
-      if (!empty($details['exists'])) {
-        foreach ($details['exists'] as $file) {
-          $this->assertFileExists($dir . DIRECTORY_SEPARATOR . $file);
+      $files['nivo-slider'] = array(
+        'exists' => array(
+          'jquery.nivo.slider.js',
+          'jquery.nivo.slider.pack.js',
+          'license.txt',
+          'nivo-slider.css',
+          'README',
+        ),
+        'notexists' => array(
+          '__MACOSX',
+          'nivo-slider',
+        ),
+      );
+      $files['fullcalendar'] = array(
+        'exists' => array(
+          'fullcalendar.css',
+          'fullcalendar.js',
+          'fullcalendar.min.js',
+          'fullcalendar.print.css',
+          'gcal.js',
+        ),
+        'notexists' => array(
+          'changelog.txt',
+          'demos',
+          'fullcalendar',
+          'GPL-LICENSE.txt',
+          'jquery',
+          'MIT-LICENSE.txt',
+        ),
+      );
+      $basedir = $install_directory . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'libraries';
+      foreach ($files as $lib => $details) {
+        $dir =  $basedir . DIRECTORY_SEPARATOR . $lib;
+        if (!empty($details['exists'])) {
+          foreach ($details['exists'] as $file) {
+            $this->assertFileExists($dir . DIRECTORY_SEPARATOR . $file);
+          }
+        }
+
+        if (!empty($details['notexists'])) {
+          foreach ($details['notexists'] as $file) {
+            $this->assertFileNotExists($dir . DIRECTORY_SEPARATOR . $file);
+          }
         }
       }
-
-      if (!empty($details['notexists'])) {
-        foreach ($details['notexists'] as $file) {
-          $this->assertFileNotExists($dir . DIRECTORY_SEPARATOR . $file);
-        }
-      }
+    }
+    else {
+      $this->markTestSkipped('unzip command not available.');
     }
   }
 
