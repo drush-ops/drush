@@ -1,0 +1,9 @@
+core: 6.x
+api: 2
+
+projects:
+  cck: "2.6"
+  token: FALSE
+
+includes:
+  - included2.make.yml

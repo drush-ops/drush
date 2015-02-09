@@ -481,6 +481,7 @@ it is fully functional.
 Maintainers
 -----------
 - Jonathan Hedstrom (jhedstrom)
+- Christopher Gervais ([ergonlogic](http://drupal.org/u/ergonlogic))
 - The rest of the Drush maintainers
 
 Original Author
