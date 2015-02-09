@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Implementation of hook_drush_command().
  *
@@ -23,13 +25,13 @@ function variable_drush_command() {
     'examples' => array(
       'drush vget' => 'List all variables and values.',
       'drush vget user' => 'List all variables containing the string "user".',
-      'drush vget site_mail --exact' => 'Show the variable with the exact key "site_mail".',
+      'drush vget site_mail --exact' => 'Show only the value of the variable with the exact key "site_mail".',
     ),
     'options' => array(
-      'exact' => 'Only get the one variable that exactly matches the specified name.',
+      'exact' => "Only get the one variable that exactly matches the specified name.  Output will contain only the variable's value.",
     ),
     'outputformat' => array(
-      'default' => 'labeled-export',
+      'default' => 'yaml',
       'pipe-format' => 'config',
       'variable-name' => 'variables',
       'table-metadata' => array(
@@ -254,6 +256,10 @@ function _drush_variable_format($value, $format) {
 
     case 'json':
       $value = drush_json_decode($value);
+      break;
+
+    case 'yaml':
+      $value = Yaml::parse($value);
       break;
   }
   return $value;
