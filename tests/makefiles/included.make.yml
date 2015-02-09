@@ -6,4 +6,4 @@ projects:
   token: FALSE
 
 includes:
-  - included2.make
+  - included2.make.yml

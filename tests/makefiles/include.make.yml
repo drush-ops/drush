@@ -6,7 +6,7 @@ projects:
   eldorado_superfly: 1.1
 
 includes:
-  - included.make
+  - included.make.yml
 
 # Final build should contain:
 # - drupal 6.17
