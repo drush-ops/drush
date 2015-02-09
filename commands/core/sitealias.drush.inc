@@ -94,11 +94,7 @@ function sitealias_site_set_complete() {
  * is the site specification for the given alias.
  */
 function _drush_sitealias_alias_list() {
-  $all_aliases = drush_get_context('site-aliases');
-  foreach($all_aliases as $key => $value) {
-    $result['@' . $key] = $value;
-  }
-  return $result;
+  return drush_get_context('site-aliases');
 }
 
 /**
@@ -193,8 +189,8 @@ function drush_sitealias_print() {
 
   $site_specs = array();
   foreach ($site_list as $site => $alias_record) {
-    list($alias_name, $result_record) = _drush_sitealias_prepare_record($alias_record, $site);
-    $site_specs[$alias_name] = $result_record;
+    $result_record = _drush_sitealias_prepare_record($alias_record);
+    $site_specs[$site] = $result_record;
   }
   ksort($site_specs);
   return $site_specs;
@@ -207,7 +203,7 @@ function drush_sitealias_print() {
  * @param alias_record
  *   The name of the site alias to print
  */
-function _drush_sitealias_prepare_record($alias_record, $site_alias = '') {
+function _drush_sitealias_prepare_record($alias_record) {
   $output_db = drush_get_option('with-db');
   $output_db_url = drush_get_option('with-db-url');
   $output_optional_items = drush_get_option('with-optional');
@@ -246,16 +242,6 @@ function _drush_sitealias_prepare_record($alias_record, $site_alias = '') {
     unset($alias_record['databases']);
   }
 
-  // The alias name will be the same as the site alias name,
-  // unless the user specified some other name on the command line.
-  $alias_name = drush_get_option('alias-name');
-  if (!isset($alias_name)) {
-    $alias_name = $site_alias;
-    if (empty($alias_name) || is_numeric($alias_name)) {
-      $alias_name = drush_sitealias_uri_to_site_dir($alias_record['uri']);
-    }
-  }
-
   // We don't want certain fields to go into the output
   unset($alias_record['#group']);
   unset($alias_record['#hidden']);
@@ -269,17 +255,28 @@ function _drush_sitealias_prepare_record($alias_record, $site_alias = '') {
     }
   }
 
+  return $alias_record;
+}
+
+function _drush_sitealias_print_record($alias_record, $site_alias = '') {
+  $result_record = _drush_sitealias_prepare_record($alias_record);
+
+  // The alias name will be the same as the site alias name,
+  // unless the user specified some other name on the command line.
+  $alias_name = drush_get_option('alias-name');
+  if (!isset($alias_name)) {
+    $alias_name = $site_alias;
+    if (empty($alias_name) || is_numeric($alias_name)) {
+      $alias_name = drush_sitealias_uri_to_site_dir($result_record['uri']);
+    }
+  }
+
   // Alias names contain an '@' when referenced, but do
   // not contain an '@' when defined.
   if (substr($alias_name,0,1) == '@') {
     $alias_name = substr($alias_name,1);
   }
 
-  return array($alias_name, $alias_record);
-}
-
-function _drush_sitealias_print_record($alias_record, $site_alias = '') {
-  list($alias_name, $result_record) = _drush_sitealias_prepare_record($alias_record, $site_alias);
   $exported_alias = var_export($result_record, TRUE);
   drush_print('$aliases[\'' . $alias_name . '\'] = ' . $exported_alias . ';');
 }
