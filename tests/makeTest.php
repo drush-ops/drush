@@ -473,14 +473,14 @@ class makeMakefileCase extends CommandUnishTestCase {
     $config = $this->getMakefile('includes-git');
     $options = array();
     $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
-    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-build'), $options);
+    $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-git-includes'), $options);
     
     // Verify that core and example main module were downloaded.
-    $this->assertFileExists(UNISH_SANDBOX . '/test-build/README.txt');
-    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/apachesolr/README.txt');
+    $this->assertFileExists(UNISH_SANDBOX . '/test-git-includes/README.txt');
+    $this->assertFileExists(UNISH_SANDBOX . '/test-git-includes/sites/all/modules/contrib/apachesolr/README.txt');
     
     // Verify that module included in sub platform was downloaded.
-    $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/jquery_update/README.txt');
+    $this->assertFileExists(UNISH_SANDBOX . '/test-git-includes/sites/all/modules/contrib/jquery_update/README.txt');
   }
 
   function testMakeLimitProjects() {
