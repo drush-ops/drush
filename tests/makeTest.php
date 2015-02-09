@@ -448,6 +448,11 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->runMakefileTest('include');
   }
 
+  /** @group make.yml */
+  function testMakeIncludeYaml() {
+    $this->runMakefileTest('include-yaml');
+  }
+
   /**
    * Test git support on includes directive.
    */
