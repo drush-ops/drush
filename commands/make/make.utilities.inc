@@ -39,17 +39,10 @@ function _make_parse_info_file($makefile, $parsed = TRUE) {
     return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
 
-  // Check for stdin.
-  if (ParserIni::supportedFile($makefile)) {
-    $info = ParserIni::parse($data);
-  }
-  elseif (ParserYaml::supportedFile($makefile)) {
-    $info = ParserYaml::parse($data);
-  }
-  else {
-    $info = _make_determine_format($data);
-  }
+  // $info['format'] will specify the determined format.
+  $info = _make_determine_format($data);
 
+  // Set any allowed options.
   if (!empty($info['options'])) {
     foreach ($info['options'] as $key => $value) {
       if (_make_is_override_allowed($key)) {
@@ -588,9 +581,11 @@ function _get_working_copy_option($download) {
 function _make_determine_format($data) {
   // Test INI first.
   if ($parsed = ParserIni::parse($data)) {
+    $parsed['format'] = 'ini';
     return $parsed;
   }
   elseif ($parsed = ParserYaml::parse($data)) {
+    $parsed['format'] = 'yaml';
     return $parsed;
   }
   return drush_set_error('MAKE_STDIN_ERROR', dt('Unknown make file format'));
