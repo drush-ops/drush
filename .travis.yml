@@ -5,6 +5,7 @@ branches:
     - master
     - 6.x
     - 5.x
+    - autoload-bootstrap
 language: php
 php:
 #  See master-fulltest branch for broader PHP version testing.
