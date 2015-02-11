@@ -105,6 +105,7 @@ function config_drush_command() {
         'example-value' => 'list',
       ),
       'source' => 'An arbitrary directory that holds the configuration files. An alternative to label argument',
+      'partial' => 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).',
     ),
     'core' => array('8+'),
     'aliases' => array('cim'),
@@ -358,8 +359,21 @@ function drush_config_import($source = NULL) {
   }
 
   // Retrieve a list of differences between the active and source configuration (if any).
-  $active_storage = Drupal::service('config.storage');
   $source_storage = new FileStorage($source_dir);
+  /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+  $active_storage = Drupal::service('config.storage');
+  if (drush_get_option('partial', FALSE)) {
+    // With partial imports, the comparison must only be made against configs
+    // that exist in the source directory.
+    $temp_active_storage = new FileStorage(drush_tempdir());
+    foreach ($source_storage->listAll() as $name) {
+      // Copy active storage to our temporary active store.
+      if ($existing = $active_storage->read($name)) {
+        $temp_active_storage->write($name, $existing);
+      }
+    }
+    $active_storage = $temp_active_storage;
+  }
   $config_comparer = new StorageComparer($source_storage, $active_storage, Drupal::service('config.manager'));
   if (!$config_comparer->createChangelist()->hasChanges()) {
     return drush_log(dt('There are no changes to import.'), 'ok');
@@ -382,6 +396,10 @@ function drush_config_import($source = NULL) {
   }
 
   if (drush_confirm(dt('Import the listed configuration changes?'))) {
+    if (drush_get_option('partial')) {
+      // Partial imports require different processing.
+      return drush_op('_drush_config_import_partial', $source_storage);
+    }
     return drush_op('_drush_config_import', $config_comparer);
   }
 }
@@ -417,6 +435,17 @@ function _drush_config_import(StorageComparer $storage_comparer) {
       watchdog_exception('config_import', $e);
       return drush_set_error('config_import_fail', 'The import failed due to an error. Any errors have been logged.');
     }
+  }
+}
+
+/**
+ * Imports a partial set of configurations.
+ */
+function _drush_config_import_partial(FileStorage $source) {
+  /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+  $active_storage = Drupal::service('config.storage');
+  foreach ($source->listAll() as $name) {
+    $active_storage->write($name, $source->read($name));
   }
 }
 
