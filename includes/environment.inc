@@ -352,20 +352,18 @@ function drush_locate_root($start_path = NULL) {
  *   a Drupal root.
  */
 function drush_valid_drupal_root($path) {
-  if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
-    // Drupal 8 root. Additional check for the presence of core/composer.json to
-    // grant it is not a Drupal 7 site with a base folder named "core".
-    $candidate = 'core/includes/common.inc';
-    if (file_exists($path . '/' . $candidate) && file_exists($path . '/core/misc/drupal.js') && file_exists($path . '/core/core.services.yml')) {
-      return $candidate;
-    }
-    // Drupal 7 root.
-    $candidate = 'includes/common.inc';
-    if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js')) {
+  $bootstrap_class = drush_bootstrap_class_for_root($path);
+  return $bootstrap_class != null;
+}
+
+function drush_bootstrap_class_for_root($path) {
+  $candidates = drush_preflight_get_bootstrap_candidates();
+  foreach ($candidates as $candidate) {
+    if ($candidate->valid_root($path)) {
       return $candidate;
     }
   }
-  return FALSE;
+  return null;
 }
 
 /**

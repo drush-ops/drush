@@ -5,7 +5,26 @@ namespace Drush\Boot;
 class DrupalBoot implements Boot {
 
   function __construct() {
-    // @todo Find current version of Drupal and return more specific subclass. For now, there is only 1.
+  }
+
+  // @todo We could split this into separate classes for Drupal 8, and Drupal 7 + 6,
+  // and give each one its own 'valid_root' implementation.  To do this, just add
+  // another candidate in drush_preflight_get_bootstrap_candidates().
+  function valid_root($path) {
+    if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
+      // Drupal 8 root. Additional check for the presence of core/composer.json to
+      // grant it is not a Drupal 7 site with a base folder named "core".
+      $candidate = 'core/includes/common.inc';
+      if (file_exists($path . '/' . $candidate) && file_exists($path . '/core/misc/drupal.js') && file_exists($path . '/core/core.services.yml')) {
+        return $candidate;
+      }
+      // Drupal 7 root.
+      $candidate = 'includes/common.inc';
+      if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js')) {
+        return $candidate;
+      }
+    }
+    return FALSE;
   }
 
   function preflight() {
