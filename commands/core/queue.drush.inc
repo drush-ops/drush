@@ -116,8 +116,11 @@ function drush_queue_run($queue_name) {
   $end = time() + (isset($info['cron']['time']) ? $info['cron']['time'] : 15);
   $queue = drush_queue_get($queue_name);
   while (time() < $end && ($item = $queue->claimItem())) {
-    $function($item->data);
+    $result = $function($item->data);
     $queue->deleteItem($item);
+    if (isset($result) && $result === FALSE) {
+      drush_set_error('DRUSH_QUEUE_RUN_ERROR', dt('Error during queue run.'));
+    }
   }
 }
 
