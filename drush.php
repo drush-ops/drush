@@ -41,13 +41,11 @@ function drush_main() {
   // Load the global Drush configuration files, and global Drush commands.
   drush_preflight();
 
-  // Get the list of candidate bootstrap classes available for different platforms
-  $bootstrap_candidates = drush_preflight_get_bootstrap_candidates();
-  $bootstrap = array_pop($bootstrap_candidates);
-  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
-  $bootstrap->preflight();
+  // Find the selected site based on --root, --uri or cwd, and
+  // return the bootstrap object that goes with it.
+  $bootstrap = _drush_preflight_root();
 
-  // Find the selected site, and load any configuration files associated with it.
+  // Preflight the selected site, and load any configuration and commandfiles associated with it.
   drush_preflight_site();
 
   $return = '';
