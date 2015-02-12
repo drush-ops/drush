@@ -287,6 +287,22 @@ class Project {
   }
 
   /**
+   * Helper function to pick the stable releases from a list
+   * of available releases.
+   */
+  private static function filterStableReleases(array $releases) {
+    // If there are releases found, let's try first to fetch one with no
+    // 'version_extra'. Otherwise, use all.
+    $stable_releases = array();
+    foreach ($releases as $one_release) {
+      if (!array_key_exists('version_extra', $one_release)) {
+        $stable_releases[] = $one_release;
+      }
+    }
+    return $stable_releases;
+  }
+
+  /**
    * Helper to pick the best release in a list of candidates.
    *
    * The best one is the first stable release if there are stable
@@ -304,12 +320,7 @@ class Project {
     else {
       // If there are releases found, let's try first to fetch one with no
       // 'version_extra'. Otherwise, use all.
-      $stable_releases = array();
-      foreach ($releases as $one_release) {
-        if (!array_key_exists('version_extra', $one_release)) {
-          $stable_releases[] = $one_release;
-        }
-      }
+      $stable_releases = self::filterStableReleases($releases);
       if (!empty($stable_releases)) {
         $releases = $stable_releases;
       }
@@ -368,8 +379,45 @@ class Project {
    *    The selected release xml object or FALSE.
    */
   public function getDevRelease() {
+    $bestDev = FALSE;
+    $bestWeight = 0;
     $releases = $this->searchReleases('version_extra', 'dev');
-    return self::getBestRelease($releases);
+    $stable_releases = $this->parsed['releases'];
+    foreach ($releases as $oneDevRelease) {
+      $devWeight = $this->calculateReleaseWeight($oneDevRelease, $stable_releases);
+      if ($devWeight > $bestWeight) {
+        $bestDev = $oneDevRelease;
+        $bestWeight = $devWeight;
+      }
+    }
+    return $bestDev;
+  }
+
+  /**
+   * Return a weighted value proportional to the number
+   * of releases similar to the one being checked.
+   */
+  private function calculateReleaseWeight($release, $releases) {
+    $weight = 0;
+    foreach ($releases as $compareRelease) {
+      if ($this->similarReleases($release, $compareRelease)) {
+        $timeDelta = $release['date'] - $compareRelease['date'];
+        $oneMonth = 60*60*24*30;
+        if ($timeDelta > 0) {
+          $oneweight = pow(M_E, -($timeDelta / $oneMonth));
+          $weight += $oneweight;
+        }
+      }
+    }
+    return $weight;
+  }
+
+  /**
+   * Check to see if two releases are similar.
+   */
+  private function similarReleases($release, $compareRelease) {
+    $pattern = str_replace(array('.', 'x'), array('\.', '[a-z0-9]+'), $release['tag']);
+    return preg_match("#^$pattern#", $compareRelease['tag']);
   }
 
   /**
