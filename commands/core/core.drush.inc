@@ -940,6 +940,9 @@ function drush_core_quick_drupal() {
   }
   if (!drush_get_option('no-server', FALSE)) {
     if ($server = drush_get_option('server', '/')) {
+      // Tell reunserver to save our host and port in ROOT/drush/drushrc.php 
+      // file for future reference.
+      drush_set_option('cache-uri', TRUE);
       // Current CLI user is also the web server user, which is for development
       // only. Hence we can safely make the site directory writable. This makes
       // it easier to delete and edit settings.php.
