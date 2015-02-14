@@ -60,48 +60,32 @@ class MigrateManifest8 implements MigrateInterface {
     $migrations = array();
 
     // Parse out the migration ids into an array for loading.
+    $entity_type = \Drupal::entityManager()->getDefinition('migration');
+    $prefix = $entity_type->getConfigPrefix();
     foreach ($this->migrationList as $migration_info) {
       if (is_array($migration_info)) {
         // The migration is stored as the key in the info array.
-        $migration_ids[key($migration_info)] = $migration_info;
+        $migration_id = key($migration_info);
+        \Drupal::config("$prefix.$migration_id")->setSettingsOverride($migration_info);
       }
       else {
         // If it wasn't an array then the info is just the migration_id.
-        $migration_ids[$migration_info] = [];
+        $migration_id = $migration_info;
       }
+      $migration_ids[] = $migration_id;
     }
 
+
     // Load all the migrations at once so they're correctly ordered.
-    foreach (entity_load_multiple('migration', array_keys($migration_ids)) as $migration) {
-      $migration_info = $migration_ids[$migration->id()];
-
-      // If we have source config, apply it to the migration.
-      if (isset($migration_info['source'])) {
-        $source = $migration->get('source');
-        foreach ($migration_info['source'] as $source_key => $source_value) {
-          $source[$source_key] = $source_value;
-        }
-        $migration->set('source', $source);
-      }
-      // If we have destination config, apply it to the migration.
-      if (isset($migration_info['destination'])) {
-        $destination = $migration->get('destination');
-        foreach ($migration_info['destination'] as $destination_key => $destination_value) {
-          $destination[$destination_key] = $destination_value;
-        }
-        $migration->set('destination', $destination);
-      }
-
-      if (isset($migration)) {
-        $executable = $this->importSingle($migration);
-        // Store all the migrations for later.
-        $migrations[$migration->id()] = array(
-          'executable' => $executable,
-          'migration' => $migration,
-          'source' => $migration->get('source'),
-          'destination' => $migration->get('destination'),
-        );
-      }
+    foreach (entity_load_multiple('migration', $migration_ids) as $migration) {
+      $executable = $this->importSingle($migration);
+      // Store all the migrations for later.
+      $migrations[$migration->id()] = array(
+        'executable' => $executable,
+        'migration' => $migration,
+        'source' => $migration->get('source'),
+        'destination' => $migration->get('destination'),
+      );
     }
 
     // Warn the user if any migrations were not found.
