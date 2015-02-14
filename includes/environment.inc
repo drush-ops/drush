@@ -353,7 +353,7 @@ function drush_locate_root($start_path = NULL) {
  */
 function drush_valid_drupal_root($path) {
   $bootstrap_class = drush_bootstrap_class_for_root($path);
-  return $bootstrap_class != null;
+  return $bootstrap_class != NULL;
 }
 
 function drush_bootstrap_class_for_root($path) {
@@ -363,7 +363,7 @@ function drush_bootstrap_class_for_root($path) {
       return $candidate;
     }
   }
-  return null;
+  return NULL;
 }
 
 /**
