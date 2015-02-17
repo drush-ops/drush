@@ -70,12 +70,14 @@ function package_handler_download_project(&$request, $release) {
   }
 
   // Check Md5 hash.
-  if (drush_op('md5_file', $download_path) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
-    drush_delete_dir(drush_download_file_name($download_link, TRUE));
-    return drush_set_error('DRUSH_PM_FILE_CORRUPT', dt('File !filename is corrupt (wrong md5 checksum).', array('!filename' => $filename)));
-  }
-  else {
-    drush_log(dt('Md5 checksum of !filename verified.', array('!filename' => $filename)));
+  if (!drush_get_option('no-md5')) {
+    if (drush_op('md5_file', $download_path) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
+      drush_delete_dir(drush_download_file_name($download_link, TRUE));
+      return drush_set_error('DRUSH_PM_FILE_CORRUPT', dt('File !filename is corrupt (wrong md5 checksum).', array('!filename' => $filename)));
+    }
+    else {
+      drush_log(dt('Md5 checksum of !filename verified.', array('!filename' => $filename)));
+    }
   }
 
   // Extract the tarball in place and return the full path to the untarred directory.

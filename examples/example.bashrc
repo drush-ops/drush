@@ -120,11 +120,17 @@ fi
 # If the file found is a symlink, resolve to the actual file.
 if [ -h "$d" ] ; then
   # Change `readlink` to `readlink -f` if your drush is a symlink to a symlink. -f is unavailable on OSX's readlink.
-  d=$(readlink $d)
+  d2="$(readlink "$d")"
+  # If 'readlink' comes back as a relative path, then we need to fix it up.
+  if [[ "$d2" =~ ^"/" ]] ; then
+    d="$d2"
+  else
+    d="$(dirname $d)/$d2"
+  fi 
 fi
 
 # Get the directory that drush is stored in.
-d="${d%/*}"
+d="$(dirname "$d")"
 # If we have found drush.complete.sh, then source it.
 if [ -f "$d/drush.complete.sh" ] ; then
   . "$d/drush.complete.sh"

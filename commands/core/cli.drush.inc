@@ -18,7 +18,8 @@ function cli_drush_command() {
  */
 function drush_cli_core_cli() {
   $boris = new \Boris\Boris(drush_sitealias_bootstrapped_site_name() . '> ');
-  $boris->setInspector(new \Boris\ColoredInspector());
+  // Use the Symfony var-dumper to inspect variables.
+  $boris->setInspector(new \Drush\Boris\VarDumperInspector());
 
   // Boris will never return control to us, but our shutdown
   // handler will still run after the user presses ^D.  Mark

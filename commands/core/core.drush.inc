@@ -360,7 +360,7 @@ function core_drush_command() {
     ),
     'examples' => array(
       'drush qd' => 'Download and install stable release of Drupal into a timestamped directory, start server, and open the site logged in as admin.',
-      'drush qd --profile=minimal --dev --cache --core=drupal-8.x --yes' => 'Fire up dev release of Drupal site with minimal install profile.',
+      'drush qd --profile=minimal --cache --core=drupal-8.0.x --yes' => 'Fire up dev release of Drupal site with minimal install profile.',
       'drush qd testsite devel --server=:8081/admin --browser=firefox --cache --yes' => 'Fire up stable release (using the cache) of Drupal site called "testsite", download and enable devel module, start a server on port 8081 and open /admin in firefox.',
       'drush qd commercesite --core=commerce_kickstart --profile=commerce_kickstart --cache --yes --watchdog' => 'Download and install the "Commerce Kickstart" distribution/install profile, display watchdog messages on the server console.',
       'drush qd --makefile=mysite.make' => 'Create and install a site from a makefile.',
@@ -852,9 +852,17 @@ function drush_core_quick_drupal() {
   drush_set_option('strict', FALSE); // We fail option validation because do so much internal drush_invoke().
   $makefile = drush_get_option('makefile');
   if (drush_get_option('use-existing', FALSE)) {
-    $root = drush_get_option('root', FALSE);
+    $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
     if (!$root) {
       return drush_set_error('QUICK_DRUPAL_NO_ROOT_SPECIFIED', 'Must specify site with --root when using --use-existing.');
+    }
+    // If a --db-url was not explicitly provided, and if there is already
+    // a settings.php file provided, then use the db-url defined inside it.
+    if (!drush_get_option('db-url', FALSE)) {
+      $values = drush_invoke_process('@self', 'site-alias', array('@self'), array('with-db-url' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
+      if (!empty($values['object']['self']['db-url'])) {
+        drush_set_option('db-url', $values['object']['self']['db-url']);
+      }
     }
     if (empty($name)) {
       $name = basename($root);

@@ -83,7 +83,7 @@ function _drush_make_generate_makefile_body($projects, $output = array()) {
 function make_generate_from_makefile($file, $makefile) {
   $projects = drush_get_option('DRUSH_MAKE_PROJECTS', FALSE);
   if ($projects === FALSE || drush_get_option('lock-update', FALSE)) {
-    $info = _make_parse_info_file($makefile);
+    $info = make_parse_info_file($makefile);
     if (drush_get_option('lock-update', FALSE)) {
       foreach ($info['projects'] as $name => $project) {
         unset($info['projects'][$name]['version']);
@@ -145,7 +145,7 @@ function make_generate_from_makefile($file, $makefile) {
 
   $libraries = drush_get_option('DRUSH_MAKE_LIBRARIES', FALSE);
   if ($libraries === FALSE) {
-    $info = _make_parse_info_file($makefile);
+    $info = make_parse_info_file($makefile);
     $libraries = $info['libraries'];
   }
   if (is_array($libraries)) {

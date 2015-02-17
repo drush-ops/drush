@@ -37,6 +37,8 @@ function make_drush_command() {
       'drush make example.make example' => 'Build the example.make makefile in the example directory.',
       'drush make --no-core --contrib-destination=. installprofile.make' => 'Build an installation profile within an existing Drupal site',
       'drush make http://example.com/example.make example' => 'Build the remote example.make makefile in the example directory.',
+      'drush make example.make --no-build --lock=example.lock' => 'Write a new makefile to example.lock. All project versions will be resolved.',
+      'drush make example.make --no-build --lock-update=example.make' => 'Write a new makefile to example.make. All project versions will be updated.',
     ),
     'options' => array(
       'version' => 'Print the make API version and exit.',
@@ -71,33 +73,25 @@ function make_drush_command() {
       'download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
       'projects' => array(
         'description' => 'Restrict the make to this comma-separated list of projects. To specify all projects, pass *.',
-        'example' => 'views,ctools',
+        'example-value' => 'views,ctools',
       ),
       'libraries' => array(
         'description' => 'Restrict the make to this comma-separated list of libraries. To specify all libraries, pass *.',
-        'example' => 'tinymce',
+        'example-value' => 'tinymce',
       ),
       'allow-override' => array(
-        'description' => 'Restrict the make options to this comma-separated list of options.',
-        'example' => 'all or none or working-copy or no-core, working-copy',
+        'description' => 'Restrict the make options to a comma-separated list. Defaults to unrestricted.',
       ),
       'lock' => array(
-        'description' => 'Generate a makefile, based on the one passed in, with all versions resolved. Defaults to printing to the terminal, but an output file may be provided.',
-        'examples' => array(
-          'drush make example.make example --lock=example.lock' => 'Write the compiled version of example.make to example.lock.',
-        ),
+        'description' => 'Generate a makefile, based on the one passed in, with all versions *resolved*. Defaults to printing to the terminal, but an output file may be provided.',
+        'example-value' => 'example.make.lock',
       ),
       'lock-update' => array(
-        'description' => 'Generate an updated makefile, based on the one passed in, with all versions updated. Defaults to printing to the terminal, but an output file may be provided.',
-        'examples' => array(
-          'drush make example.make example --lock-update=example.lock' => 'Write the updated version of example.make to example.lock.',
-        ),
+        'description' => 'Generate an updated makefile, based on the one passed in, with all versions *updated*. Defaults to printing to the terminal, but an output file may be provided.',
+        'example-value' => 'example.make',
       ),
       'shallow-clone' => array(
         'description' => 'For makefile entries which use git for downloading, this option will utilize shallow clones where possible (ie. by using the git-clone\'s depth=1 option). If the "working-copy" option is not desired, this option will significantly speed up makes which involve modules stored in very large git repos. In fact, if "working-copy" option is enabled, this option cannot be used.',
-        'examples' => array(
-          'drush make example.make example --shallow-clone',
-        ),
       ),
     ),
     'engines' => array('release_info'),
@@ -189,53 +183,100 @@ function make_make_complete() {
 }
 
 /**
+ * Validation callback for make command.
+ */
+function drush_make_validate($makefile = NULL, $build_path = NULL) {
+  // Don't validate if --version option is supplied.
+  if (drush_get_option('version', FALSE)) {
+    return;
+  }
+
+  if (drush_get_option('shallow-clone', FALSE) && drush_get_option('working-copy', FALSE)) {
+    return drush_set_error('MAKE_SHALLOW_CLONE_WORKING_COPY_CONFLICT', dt('You cannot use "--shallow-clone" and "--working-copy" options together.'));
+  }
+
+  // Error out if the build path is not valid and --no-build was not supplied.
+  if (!drush_get_option('no-build', FALSE) && !make_build_path($build_path)) {
+    return FALSE;
+  }
+}
+
+/**
+ * Implements drush_hook_pre_COMMAND().
+ *
+ * If --version option is supplied, print it and prevent execution of the command.
+ */
+function drush_make_pre_make($makefile = NULL, $build_path = NULL) {
+  if (drush_get_option('version', FALSE)) {
+    drush_print(dt('Drush make API version !version', array('!version' => MAKE_API)));
+    drush_print_pipe(MAKE_API);
+    // Prevent command execution.
+    return FALSE;
+  }
+}
+
+/**
  * Drush callback; make based on the makefile.
  */
 function drush_make($makefile = NULL, $build_path = NULL) {
   // Set the cache option based on our '--no-cache' option.
   _make_enable_cache();
 
-  // If --version option is supplied, print it and bail.
-  if (drush_get_option('version', FALSE)) {
-    drush_print(dt('Drush make API version !version', array('!version' => MAKE_API)));
-    drush_print_pipe(MAKE_API);
-    return;
-  }
+  $info = make_parse_info_file($makefile);
 
-  if (!drush_get_option('no-build', FALSE) && !($build_path = make_build_path($build_path))) {
-    return FALSE;
-  }
-
-  if (drush_get_option('shallow-clone', FALSE) && drush_get_option('working-copy', FALSE)) {
-    drush_set_error('MAKE_SHALLOW_CLONE_WORKING_COPY_CONFLICT', dt('You cannot use "--shallow-copy" and "--working-copy" options together.'));
-    return FALSE;
-  }
-
-  $info = _make_parse_info_file($makefile);
-
+  // Build.
   if (!drush_get_option('no-build', FALSE)) {
     drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), 'ok');
 
-    $make_dir = realpath(dirname($makefile));
+    // Default contrib destination depends on Drupal core version.
     $core_version = str_replace('.x', '', $info['core'][0]);
     $sitewide = drush_drupal_sitewide_directory($core_version);
-    if (make_projects(FALSE, drush_get_option('contrib-destination', $sitewide), $info, $build_path, $make_dir)) {
-      make_libraries(FALSE, drush_get_option('contrib-destination', $sitewide), $info, $build_path, $make_dir);
+    $contrib_destination = drush_get_option('contrib-destination', $sitewide);
+
+    $build_path = make_build_path($build_path);
+    $make_dir = realpath(dirname($makefile));
+
+    $success = make_projects(FALSE, $contrib_destination, $info, $build_path, $make_dir);
+    if ($success) {
+      make_libraries(FALSE, $contrib_destination, $info, $build_path, $make_dir);
 
       if (drush_get_option('prepare-install')) {
         make_prepare_install($build_path);
       }
+      if ($option = drush_get_option('md5')) {
+        $md5 = make_md5();
+        if ($option === 'print') {
+          drush_print($md5);
+        }
+        else {
+          drush_log(dt('Build hash: %md5', array('%md5' => $md5)), 'ok');
+        }
+      }
+      // Only take final build steps if not in testing mode.
+      if (!drush_get_option('test')) {
+        if (drush_get_option('tar')) {
+          make_tar($build_path);
+        }
+        else {
+          make_move_build($build_path);
+        }
+      }
+      make_clean_tmp();
     }
   }
 
+  // Process --lock.
   if (drush_get_option('lock', FALSE)) {
     make_generate_from_makefile(drush_get_option('lock'), $makefile);
   }
 
+  // Process --lock-update.
   if (drush_get_option('lock-update', FALSE)) {
     make_generate_from_makefile(drush_get_option('lock-update'), $makefile);
   }
 
+  // Used by core-quick-drupal command.
+  // @see drush_core_quick_drupal().
   return $info;
 }
 
@@ -268,56 +309,22 @@ function drush_make_process($directory) {
 }
 
 /**
- * Implements drush_hook_post_COMMAND() for the make command.
- */
-function drush_make_post_make($makefile = NULL, $build_path = NULL) {
-  if (drush_get_option('version') || drush_get_option('no-build')) {
-    return;
-  }
-  if (!($build_path = make_build_path($build_path))) {
-    return;
-  }
-
-  if ($option = drush_get_option('md5')) {
-    $md5 = make_md5();
-    if ($option === 'print') {
-      drush_print($md5);
-    }
-    else {
-      drush_log(dt('Build hash: %md5', array('%md5' => $md5)), 'ok');
-    }
-  }
-
-  // Only take final build steps if not in testing mode.
-  if (!drush_get_option('test')) {
-    if (drush_get_option('tar')) {
-      make_tar($build_path);
-    }
-    else {
-      make_move_build($build_path);
-    }
-  }
-
-  make_clean_tmp();
-}
-
-/**
  * Gather additional data on all projects specified in the make file.
  */
 function make_prepare_projects($recursion, $info, $contrib_destination = '', $build_path = '', $make_dir = '') {
   $release_info = drush_get_engine('release_info');
 
-  $projects = array();
+  // Nothing to make if the project list is empty. Maybe complain about it.
   if (empty($info['projects'])) {
     if (drush_get_option('no-core') || $recursion) {
       return TRUE;
     }
     else {
-      drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
-      return FALSE;
+      return drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
     }
   }
-  $ignore_checksums = drush_get_option('ignore-checksums');
+
+  // Obtain translations to download along with the projects.
   $translations = array();
   if (isset($info['translations'])) {
     $translations = $info['translations'];
@@ -325,11 +332,11 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
   if ($arg_translations = drush_get_option('translations', FALSE)) {
     $translations = array_merge(explode(',', $arg_translations), $translations);
   }
+
+  // Normalize projects.
+  $projects = array();
+  $ignore_checksums = drush_get_option('ignore-checksums');
   foreach ($info['projects'] as $key => $project) {
-    $md5 = '';
-    if (isset($project['md5'])) {
-      $md5 = $project['md5'];
-    }
     // Merge the known data onto the project info.
     $project += array(
       'name'                => $key,
@@ -344,22 +351,26 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
       'make_directory'      => $make_dir,
       'options'             => array(),
     );
+    // MD5 Checksum.
+    if ($ignore_checksums) {
+      unset($project['download']['md5']);
+    }
+    elseif (!empty($project['md5'])) {
+      $project['download']['md5'] = $project['md5'];
+    }
+
     // If download components are specified, but not the download
     // type, default to git.
     if (isset($project['download']) && !isset($project['download']['type'])) {
       $project['download']['type'] = 'git';
     }
+    // Localization server.
     if (!isset($project['l10n_url']) && ($project['location'] == ReleaseInfo::DEFAULT_URL)) {
       $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
     }
-
-    // For convenience: define $request to be compatible with release_info
-    // engine.
-    // TODO: refactor to enforce 'make' to internally work with release_info
-    // keys.
-    $request = make_prepare_request($project);
-
+    // Classify projects in core or contrib.
     if ($project['location'] != ReleaseInfo::DEFAULT_URL && !isset($project['type'])) {
+      $request = make_prepare_request($project);
       $is_core = $release_info->checkProject($request, 'core');
       $project['download_type'] = ($is_core ? 'core' : 'contrib');
     }
@@ -372,31 +383,26 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
     $projects[$project['download_type']][$project['name']] = $project;
   }
 
+  // Verify there're enough cores, but not too many.
   $cores = !empty($projects['core']) ? count($projects['core']) : 0;
-
   if (drush_get_option('no-core')) {
     unset($projects['core']);
   }
   elseif ($cores == 0 && !$recursion) {
-    drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
-    return FALSE;
+    return drush_set_error('MAKE_NO_CORE', dt('No core project specified.'));
   }
   elseif ($cores == 1 && $recursion) {
     unset($projects['core']);
   }
   elseif ($cores > 1) {
-    drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
-    return FALSE;
+    return drush_set_error('MAKE_MULTIPLE_CORES', dt('More than one core project specified.'));
   }
 
-  foreach ($projects as $type => $type_projects) {
-    foreach ($type_projects as $project) {
+  // Set download type = pm for suitable projects.
+  foreach (array_keys($projects) as $project_type) {
+    foreach ($projects[$project_type] as $project) {
       if (make_project_needs_release_info($project)) {
-        // For convenience: define $request to be compatible with release_info
-        // engine.
-        // TODO: refactor to enforce 'make' to internally work with release_info
-        // keys.
-        $request = make_prepare_request($project, $type);
+        $request = make_prepare_request($project, $project_type);
         $release = $release_info->selectReleaseBasedOnStrategy($request, '', 'ignore');
         if ($release === FALSE) {
           return FALSE;
@@ -416,13 +422,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
           );
         }
       }
-      if (!empty($md5)) {
-        $project['download']['md5'] = $md5;
-      }
-      if ($ignore_checksums) {
-        unset($project['download']['md5']);
-      }
-      $projects[($project['type'] == 'core' ? 'core' : 'contrib')][$project['name']] = $project;
+      $projects[$project_type][$project['name']] = $project;
     }
   }
   if (!$recursion) {
@@ -440,17 +440,16 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
  */
 function make_projects($recursion, $contrib_destination, $info, $build_path, $make_dir) {
   $projects = make_prepare_projects($recursion, $info, $contrib_destination, $build_path, $make_dir);
+  // Abort if there was an error processing projects.
+  if ($projects === FALSE) {
+    return FALSE;
+  }
+
   // Core is built in place, rather than using make-process.
-  if (isset($projects['core'])) {
-    foreach ($projects['core'] as $project) {
-      if ($instance = DrushMakeProject::getInstance($project['type'], $project)) {
-        $project = $instance;
-      }
-      else {
-        make_error('PROJECT-TYPE', dt('Non-existent project type %type on project %project.', array('%type' => $project['type'], '%project' => $project['name'])));
-      }
-      $project->make();
-    }
+  if (!empty($projects['core']) && count($projects['core'])) {
+    $project = current($projects['core']);
+    $project = DrushMakeProject::getInstance('core', $project);
+    $project->make();
   }
 
   // Process all projects concurrently using make-process.
@@ -533,11 +532,13 @@ function _make_write_project_json(array &$invocations) {
  * Gather additional data on all libraries specified in the make file.
  */
 function make_prepare_libraries($recursion, $info, $contrib_destination = '', $build_path = '', $make_dir = '') {
+  // Nothing to make if the libraries list is empty.
   if (empty($info['libraries'])) {
     return;
   }
-  $ignore_checksums = drush_get_option('ignore-checksums');
+
   $libraries = array();
+  $ignore_checksums = drush_get_option('ignore-checksums');
   foreach ($info['libraries'] as $key => $library) {
     if (!is_string($key) || !is_array($library)) {
       // TODO Print a prettier message.
@@ -647,13 +648,18 @@ function make_move_build($build_path) {
   }
 
   if (!$ret) {
-    drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place."));
+    return drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place."));
   }
   return $ret;
 }
 
 /**
  * Create a request array suitable for release_info engine.
+ *
+ * This is a convenience function to easily integrate drush_make
+ * with drush release_info engine.
+ *
+ * @todo: refactor 'make' to internally work with release_info keys.
  *
  * @param array $project
  *   Project array.

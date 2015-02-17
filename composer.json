@@ -3,7 +3,7 @@
   "description": "Drush is a command line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those of us who spend some of our working hours hacking away at the command prompt.",
   "homepage": "http://www.drush.org",
   "license": "GPL-2.0+",
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "prefer-stable": true,
   "authors": [
     { "name": "Moshe Weitzman", "email": "weitzman@tejasa.com" },
@@ -12,7 +12,8 @@
     { "name": "Antoine Beaupré", "email": "anarcat@koumbit.org" },
     { "name": "Greg Anderson", "email": "greg.1.anderson@greenknowe.org" },
     { "name": "Jonathan Araña Cruz", "email": "jonhattan@faita.net" },
-    { "name": "Jonathan Hedstrom", "email": "jhedstrom@gmail.com" }
+    { "name": "Jonathan Hedstrom", "email": "jhedstrom@gmail.com" },
+    { "name": "Christopher Gervais", "email": "chris@ergonlogic.com" }
   ],
   "support": {
     "forum": "http://drupal.stackexchange.com/questions/tagged/drush",
@@ -26,8 +27,9 @@
   ],
   "require": {
     "php": ">=5.3.0",
-    "d11wtq/boris": "*",
+    "d11wtq/boris": "~1.0",
     "symfony/yaml": "~2.2",
+    "symfony/var-dumper": "2.6.3",
     "pear/console_table": "~1.2.0"
   },
   "require-dev": {
@@ -42,6 +44,11 @@
   "autoload-dev": {
     "psr-0": {
       "Unish":        "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+        "dev-master": "7.0.x-dev"
     }
   }
 }

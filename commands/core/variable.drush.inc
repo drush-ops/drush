@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Implementation of hook_drush_command().
  *
@@ -23,13 +25,14 @@ function variable_drush_command() {
     'examples' => array(
       'drush vget' => 'List all variables and values.',
       'drush vget user' => 'List all variables containing the string "user".',
-      'drush vget site_mail --exact' => 'Show the variable with the exact key "site_mail".',
+      'drush vget site_mail --exact' => 'Show only the value of the variable with the exact key "site_mail".',
+      'drush vget site_mail --exact --pipe' => 'Show only the variable with the exact key "site_mail" without changing the structure of the output.',
     ),
     'options' => array(
-      'exact' => 'Only get the one variable that exactly matches the specified name.',
+      'exact' => "Only get the one variable that exactly matches the specified name.  Output will contain only the variable's value.",
     ),
     'outputformat' => array(
-      'default' => 'labeled-export',
+      'default' => 'yaml',
       'pipe-format' => 'config',
       'variable-name' => 'variables',
       'table-metadata' => array(
@@ -125,22 +128,28 @@ function variable_complete_variables() {
  */
 function drush_variable_get() {
   global $conf;
+  $exact = drush_get_option('exact', FALSE);
 
   $keys = array_keys($conf);
   if ($args = func_get_args()) {
     $args[0] = drush_variable_name_adjust($args[0]);
-    if (drush_get_option('exact', FALSE)) {
+    if ($exact) {
       $keys = in_array($args[0], $keys) ? array($args[0]) : array();
     }
     $keys = preg_grep("/{$args[0]}/", $keys);
   }
 
-  $pipe = array();
-  foreach ($keys as $name) {
-    $value = $conf[$name];
-    $returns[$name] = $value;
+  // In --exact mode, if --pipe is not set, then simplify the return type.
+  if ($exact && !drush_get_context('DRUSH_PIPE')) {
+    $key = reset($keys);
+    $returns = isset($conf[$key]) ? $conf[$key] : FALSE;
   }
-
+  else {
+    foreach ($keys as $name) {
+      $value = $conf[$name];
+      $returns[$name] = $value;
+    }
+  }
   if (empty($keys)) {
     return drush_set_error('No matching variable found.');
   }
@@ -249,6 +258,10 @@ function _drush_variable_format($value, $format) {
 
     case 'json':
       $value = drush_json_decode($value);
+      break;
+
+    case 'yaml':
+      $value = Yaml::parse($value);
       break;
   }
   return $value;

@@ -275,7 +275,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['quiet']               = array('short-form' => 'q', 'description' => 'Suppress non-error messages.');
     $options['include']             = array('short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of additional directory paths to search for drush commands.", 'example-value' => '/path/dir');
     $options['exclude']             = array('propagate-cli-value' => TRUE, 'never-post' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of files and directory paths to exclude from consideration when searching for drush commandfiles.", 'example-value' => '/path/dir');
-    $options['config']              = array('short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'local-context-only' => TRUE, 'merge-pathlist' => TRUE, 'description' => "Specify an additional config file to load. See example.drushrc.php.", 'example-value' => '/path/file');
+    $options['config']              = array('short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "Specify an additional config file to load. See example.drushrc.php.", 'example-value' => '/path/file');
     $options['user']                = array('short-form' => 'u', 'short-has-arg' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specify a Drupal user to login with. May be a name or a number.", 'example-value' => 'name_or_number');
     $options['backend']             = array('short-form' => 'b', 'never-propagate' => TRUE, 'description' => "Hide all output and return structured data.");
     $options['choice']              = array('description' => "Provide an answer to a multiple-choice prompt.", 'example-value' => 'number');
@@ -1098,6 +1098,7 @@ function drush_preflight_command_dispatch() {
   // option will be set when the site alias is processed.
   // @see drush_sitealias_check_arg
   $remote_host = drush_get_option('remote-host');
+  $site_list = drush_get_option('site-list');
   // Get the command early so that we can allow commands to directly handle remote aliases if they wish
   $command = drush_parse_command();
   drush_command_default_options($command);
@@ -1134,6 +1135,32 @@ function drush_preflight_command_dispatch() {
     drush_set_context('cli', $cli_options);
     _drush_preflight_global_options();
   }
+  $args = drush_get_arguments();
+  $command_name = array_shift($args);
+  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $local_drush = drush_get_option('drush-script');
+  $is_local = drush_get_option('local');
+  $values = NULL;
+  if (!empty($root) && !empty($local_drush) && empty($is_local)) {
+    if (!drush_is_absolute_path($local_drush)) {
+      $local_drush = $root . '/' . $local_drush;
+    }
+    $local_drush = realpath($local_drush);
+    $this_drush = drush_find_drush();
+    // If there is a local drush selected, and it is not the
+    // same drush that is currently running, redispatch to it.
+    if (file_exists($local_drush) && ($this_drush != $local_drush)) {
+      $uri = drush_get_context('DRUSH_SELECTED_URI');
+      $aditional_options = array(
+        'root' => $root,
+        'local' => TRUE,
+      );
+      if (!empty($uri)) {
+        $aditional_options['uri'] = $uri;
+      }
+      $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
+    }
+  }
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
   // remote command dispatching and site-list command dispatching, and always let
   // the command handler run on the local machine.
@@ -1141,24 +1168,15 @@ function drush_preflight_command_dispatch() {
     return FALSE;
   }
   if (isset($remote_host)) {
-    $args = drush_get_arguments();
-    $command_name = array_shift($args);
     $remote_user = drush_get_option('remote-user');
 
     // Force interactive mode if there is a single remote target.  #interactive is added by drush_do_command_redispatch
     $user_interactive = drush_get_option('interactive');
     drush_set_option('interactive', TRUE);
     $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, $remote_host, $remote_user, $user_interactive);
-    if ($values['error_status'] > 0) {
-      // Force an error result code.  Note that drush_shutdown() will still run.
-      drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
-      exit($values);
-    }
-    return TRUE;
   }
   // If the --site-list flag is set, then we will execute the specified
   // command once for every site listed in the site list.
-  $site_list = drush_get_option('site-list');
   if (isset($site_list)) {
     if (!is_array($site_list)) {
       $site_list = explode(',', $site_list);
@@ -1205,6 +1223,13 @@ function drush_preflight_command_dispatch() {
       }
     }
     $values = drush_invoke_process($site_record, $command_name, $args, $multi_options, $backend_options);
+  }
+  if (isset($values)) {
+    if (is_array($values) && ($values['error_status'] > 0)) {
+      // Force an error result code.  Note that drush_shutdown() will still run.
+      drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
+      exit($values);
+    }
     return TRUE;
   }
   return FALSE;
@@ -1261,9 +1286,10 @@ function _drush_should_remove_command_arg($arg, $removal_list) {
  * Redispatch the specified command using the same
  * options that were passed to this invocation of drush.
  */
-function drush_do_command_redispatch($command, $args = array(), $remote_host = NULL, $remote_user = NULL, $drush_path = NULL, $user_interactive = FALSE) {
+function drush_do_command_redispatch($command, $args = array(), $remote_host = NULL, $remote_user = NULL, $drush_path = NULL, $user_interactive = FALSE, $aditional_options = array()) {
   $additional_global_options = array();
   $command_options = drush_redispatch_get_options();
+  $command_options = $aditional_options + $command_options;
   if (is_array($command)) {
     $command_name = $command['command'];
     // If we are executing a remote command that uses strict option handling,

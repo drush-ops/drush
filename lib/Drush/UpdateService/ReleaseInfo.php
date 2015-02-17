@@ -123,19 +123,31 @@ class ReleaseInfo {
     }
 
     if ($select != 'always') {
-      if ($restrict_to == 'dev') {
-        $release = $project_release_info->getDevRelease();
-        if ($release === FALSE) {
-          return drush_set_error('DRUSH_PM_NO_DEV_RELEASE', dt('There is no development release for project !project.', array('!project' => $request['name'])));
-        }
-      }
-      if (empty($release) && isset($request['version'])) {
+      if (isset($request['version'])) {
         $release = $project_release_info->getSpecificRelease($request['version']);
         if ($release === FALSE) {
           return drush_set_error('DRUSH_PM_COULD_NOT_FIND_VERSION', dt("Could not locate !project version !version.", array(
             '!project' => $request['name'],
             '!version' => $request['version'],
           )));
+        }
+      }
+      if ($restrict_to == 'dev') {
+        // If you specified a specific release AND --dev, that is either
+        // redundant (okay), or contradictory (error).
+        if (!empty($release)) {
+          if ($release['version_extra'] != 'dev') {
+            return drush_set_error('DRUSH_PM_COULD_NOT_FIND_VERSION', dt("You requested both --dev and !project version !version, which is not a '-dev' release.", array(
+              '!project' => $request['name'],
+              '!version' => $request['version'],
+           )));
+         }
+        }
+        else {
+          $release = $project_release_info->getDevRelease();
+          if ($release === FALSE) {
+            return drush_set_error('DRUSH_PM_NO_DEV_RELEASE', dt('There is no development release for project !project.', array('!project' => $request['name'])));
+          }
         }
       }
       // If there was no specific release requested, try to identify the most appropriate release.
