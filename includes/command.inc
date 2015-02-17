@@ -1365,7 +1365,7 @@ function drush_command_normalize_name($command_name) {
  *   command files.
  */
 function drush_commandfile_list() {
-  return Drush\Drush::commandfiles_cache()->get();
+  return commandfiles_cache()->get();
 }
 
 function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
@@ -1392,7 +1392,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
 
     // Build a list of all of the modules to attempt to load.
     // Start with any modules deferred from a previous phase.
-    $list = Drush\Drush::commandfiles_cache()->deferred();
+    $list = commandfiles_cache()->deferred();
     if (isset($cached_list)) {
       $list = array_merge($list, $cached_list);
     }
@@ -1425,7 +1425,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       // command file cache may not be available anymore, in which case
       // we rebuild the cache for this phase.
       if ($filepath = realpath($filename)) {
-        $load_command = Drush\Drush::commandfiles_cache()->add($filepath);
+        $load_command = commandfiles_cache()->add($filepath);
         if ($load_command) {
           $needs_sort = TRUE;
         }
@@ -1437,7 +1437,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
     }
 
     if ($needs_sort) {
-      Drush\Drush::commandfiles_cache()->sort();
+      commandfiles_cache()->sort();
     }
   }
 }
@@ -1771,4 +1771,13 @@ function drush_shell_alias_replace() {
     drush_parse_args();
     _drush_preflight_global_options();
   }
+}
+
+function commandfiles_cache() {
+  static $commandfiles_cache = NULL;
+
+  if (!isset($commandfiles_cache)) {
+    $commandfiles_cache = new Drush\Command\Commandfiles();
+  }
+  return $commandfiles_cache;
 }

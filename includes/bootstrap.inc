@@ -101,3 +101,30 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
  * be different based on who is logged in.
  */
 define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
+
+/**
+ * Used by a Drush extension to request that its Composer autoload
+ * files be loaded by Drush, if they have not already been.
+ *
+ * Usage:
+ *
+ * function myextension_init() {
+ *   drush_autoload(__FILE__)
+ * }
+ */
+function drush_autoload($commandfile) {
+	$already_added = commandfiles_cache()->add($commandfile);
+
+	if (!$already_added) {
+		$dir = dirname($commandfile);
+		$candidates = array("vendor/autoload.php", "../../../vendor/autoload.php");
+		$drush_autoload_file = drush_get_context('DRUSH_VENDOR_PATH', '');
+
+		foreach ($candidates as $candidate) {
+		    $autoload = $dir . '/' . $candidate;
+		    if (file_exists($autoload) && (realpath($autoload) != $drush_autoload_file)) {
+		    	include $autoload;
+		    }
+		}
+	}
+}
