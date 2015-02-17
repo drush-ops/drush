@@ -379,7 +379,7 @@ class DrushMakeProject {
       }
     }
     require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
-    if (drush_shell_cd_and_exec(dirname($this->download_location), 'git log -1 --pretty=format:%ct')) {
+    if (drush_shell_cd_and_exec($this->download_location, 'git log -1 --pretty=format:%ct')) {
       $output = drush_shell_exec_output();
       $datestamp = $output[0];
     }
