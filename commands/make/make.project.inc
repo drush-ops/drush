@@ -379,7 +379,14 @@ class DrushMakeProject {
       }
     }
     require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
-    drush_pm_inject_info_file_metadata($this->download_location, $this->name, $full_version);
+    if (drush_shell_cd_and_exec(dirname($this->download_location), 'git log -1 --pretty=format:%ct')) {
+      $output = drush_shell_exec_output();
+      $datestamp = $output[0];
+    }
+    else {
+      $datestamp = time();
+    }
+    drush_pm_inject_info_file_metadata($this->download_location, $this->name, $full_version, $datestamp);
   }
 
   /**
