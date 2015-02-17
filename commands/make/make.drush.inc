@@ -79,6 +79,10 @@ function make_drush_command() {
         'description' => 'Restrict the make to this comma-separated list of libraries. To specify all libraries, pass *.',
         'example-value' => 'tinymce',
       ),
+      'composer' => array(
+        'description' => 'Run "composer install" on the specified composer file before processing makefile.',
+        'example-value' => 'composer.json',
+      ),
       'allow-override' => array(
         'description' => 'Restrict the make options to a comma-separated list. Defaults to unrestricted.',
       ),
@@ -224,7 +228,49 @@ function drush_make($makefile = NULL, $build_path = NULL) {
 
   $info = make_parse_info_file($makefile);
 
+  // Find the build path
+  if (!drush_get_option('no-build', FALSE) || drush_get_option('composer', FALSE)) {
+    $build_path = make_build_path($build_path);
+  }
+
+  // Compose.
+  $composed = FALSE;
+  if ($composer_file = drush_get_option('composer', FALSE)) {
+    if (!drush_is_absolute_path($composer_file)) {
+      if (drush_is_absolute_path($makefile)) {
+        $source_dir = dirname($makefile);
+      }
+      else {
+        $source_dir = drush_cwd();
+      }
+      $composer_file = $source_dir . '/' . $composer_file;
+    }
+    // Copy the composer.json file to the build path.
+    // This file must be named 'composer.json' when
+    // passed to composer, but we allow other names
+    // for the source file.
+    drush_mkdir($build_path);
+    copy($composer_file, $build_path . '/composer.json');
+
+    $options = array('--working-dir="%s"');
+
+    // TODO:  we could specify --no-plugins and --no-scripts if run
+    // in a high-security mode.  However, currently, --no-plugins would
+    // break some Drupal installs.  Check to see if this works with split-core.
+    $run_securely = FALSE;
+    if ($run_securely) {
+      $options[] = '--no-plugins';
+      $options[] = '--no-scripts';
+    }
+    if (drush_get_context('DRUSH_AFFIRMATIVE')) {
+      $options[] = '--no-interaction';
+    }
+    $command = 'composer install ' . implode(' ', $options);
+    drush_shell_exec_interactive($command, $build_path);
+    $composed = TRUE;
+  }
   // Build.
+  $built = FALSE;
   if (!drush_get_option('no-build', FALSE)) {
     drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), 'ok');
 
@@ -233,7 +279,6 @@ function drush_make($makefile = NULL, $build_path = NULL) {
     $sitewide = drush_drupal_sitewide_directory($core_version);
     $contrib_destination = drush_get_option('contrib-destination', $sitewide);
 
-    $build_path = make_build_path($build_path);
     $make_dir = realpath(dirname($makefile));
 
     $success = make_projects(FALSE, $contrib_destination, $info, $build_path, $make_dir);
@@ -252,17 +297,21 @@ function drush_make($makefile = NULL, $build_path = NULL) {
           drush_log(dt('Build hash: %md5', array('%md5' => $md5)), 'ok');
         }
       }
-      // Only take final build steps if not in testing mode.
-      if (!drush_get_option('test')) {
-        if (drush_get_option('tar')) {
-          make_tar($build_path);
-        }
-        else {
-          make_move_build($build_path);
-        }
-      }
-      make_clean_tmp();
+      $built = TRUE;
     }
+  }
+
+  if ($built || $composed) {
+    // Only take final build steps if not in testing mode.
+    if (!drush_get_option('test')) {
+      if (drush_get_option('tar')) {
+        make_tar($build_path);
+      }
+      elseif ($built) {
+        make_move_build($build_path);
+      }
+    }
+    make_clean_tmp();
   }
 
   // Process --lock.
@@ -615,7 +664,7 @@ function make_build_path($build_path) {
 function make_move_build($build_path) {
   $tmp_path = make_tmp();
   $ret = TRUE;
-  if ($build_path == '.' || (drush_get_option('no-core', FALSE) && file_exists($build_path))) {
+  if ($build_path == '.' || ((drush_get_option('no-core', FALSE) || drush_get_option('composer', FALSE)) && file_exists($build_path))) {
     $info = drush_scan_directory($tmp_path . DIRECTORY_SEPARATOR . '__build__', '/./', array('.', '..'), 0, FALSE, 'filename', 0, TRUE);
     foreach ($info as $file) {
       $destination = $build_path . DIRECTORY_SEPARATOR . $file->basename;

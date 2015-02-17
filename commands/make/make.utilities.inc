@@ -38,6 +38,18 @@ function _make_parse_info_file($makefile) {
   // $info['format'] will specify the determined format.
   $info = _make_determine_format($data);
 
+  // If this is a composer file, then point to it
+  // via the 'composer' option so that we will run
+  // 'composer install' on it later. 
+  //
+  // n.b. --allow-overrides=compsoer or --allow-overides=all
+  // must be set for this to work.
+  if ($info['format'] == 'composer') {
+    $info['options']['composer'] = $makefile;
+    // There is no makefile here, so we will also set the 'no-build' option.
+    drush_set_option('no-build', TRUE);
+  }
+
   // Set any allowed options.
   if (!empty($info['options'])) {
     foreach ($info['options'] as $key => $value) {
@@ -166,6 +178,11 @@ function make_validate_info_file($info) {
   // Assume no errors to start.
   $errors = FALSE;
 
+  // Don't validate $info if it is a proxy for
+  // a composer.json file.
+  if ($info['format'] == 'composer') {
+    return $info;
+  }
   if (empty($info['core'])) {
     make_error('BUILD_ERROR', dt("The 'core' attribute is required"));
     $errors = TRUE;
@@ -571,6 +588,15 @@ function _make_determine_format($data) {
   if ($parsed = ParserIni::parse($data)) {
     $parsed['format'] = 'ini';
     return $parsed;
+  }
+  elseif ($json = (array)json_decode($data)) {
+    // The composer.json file must have 'name' and 'require' sections
+    // for us to consider it valid and usable.
+    if (array_key_exists('name', $json) && array_key_exists('require', $json)) {
+      $parsed = $json;
+      $parsed['format'] = 'composer';
+      return $parsed;
+    }
   }
   elseif ($parsed = ParserYaml::parse($data)) {
     $parsed['format'] = 'yaml';
