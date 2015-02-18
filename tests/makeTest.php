@@ -313,7 +313,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     // Test cck_signup.info file.
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
     $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
-    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains('; Information added by drush on 2011-07-27', $contents);
     $this->assertContains('version = "2fe932c"', $contents);
     $this->assertContains('project = "cck_signup"', $contents);
 
@@ -324,7 +324,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     // Test context_admin.info file.
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
     $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/context_admin/context_admin.info');
-    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains('; Information added by drush on 2011-10-27', $contents);
     $this->assertContains('version = "eb9f05e"', $contents);
     $this->assertContains('project = "context_admin"', $contents);
 
@@ -334,7 +334,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     // Text caption_filter .info rewrite.
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/caption_filter/caption_filter.info');
     $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/contrib/caption_filter/caption_filter.info');
-    $this->assertContains('; Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains('; Information added by drush on 2011-09-20', $contents);
     $this->assertContains('version = "7.x-1.2+0-dev"', $contents);
     $this->assertContains('project = "caption_filter"', $contents);
   }
@@ -474,11 +474,11 @@ class makeMakefileCase extends CommandUnishTestCase {
     $options = array();
     $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
     $this->drush('make', array($makefile, UNISH_SANDBOX . '/test-git-includes'), $options);
-    
+
     // Verify that core and example main module were downloaded.
     $this->assertFileExists(UNISH_SANDBOX . '/test-git-includes/README.txt');
     $this->assertFileExists(UNISH_SANDBOX . '/test-git-includes/sites/all/modules/contrib/apachesolr/README.txt');
-    
+
     // Verify that module included in sub platform was downloaded.
     $this->assertFileExists(UNISH_SANDBOX . '/test-git-includes/sites/all/modules/contrib/jquery_update/README.txt');
   }
