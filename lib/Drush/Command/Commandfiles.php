@@ -14,7 +14,6 @@ namespace Drush\Command;
  * in Drush for the current command invocation.
  */
 class Commandfiles implements CommandfilesInterface {
-  const FOO = 'my constant';
   protected $cache;
   protected $deferred;
 
