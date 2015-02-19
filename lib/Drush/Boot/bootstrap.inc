@@ -821,5 +821,5 @@ function drupal8_bootstrap($phase = NULL) {
     $boot_level = $phase;
   }
 
-  return \Drupal::hasContainer() ? DRUPAL_BOOTSTRAP_CODE : DRUPAL_BOOTSTRAP_CONFIGURATION;
+  return \Drupal::getContainer() !== NULL ? DRUPAL_BOOTSTRAP_CODE : DRUPAL_BOOTSTRAP_CONFIGURATION;
 }
