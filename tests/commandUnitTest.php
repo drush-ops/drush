@@ -32,10 +32,10 @@ EOD;
     drush_set_context('DRUSH_INCLUDE', array($path));
     drush_preflight();
     $loaded = drush_commandfile_list();
-    $this->assertTrue(in_array($files[0], $loaded), 'Loaded a version-specific command file.');
-    $this->assertTrue(in_array($files[1], $loaded), 'Loaded a version-specific command directory.');
-    $this->assertFalse(in_array($files[2], $loaded), 'Did not load a mismatched version-specific command file.');
-    $this->assertFalse(in_array($files[3], $loaded), 'Did not load a a mismatched version-specific command directory.');
+    $this->assertTrue(in_array(realpath($files[0]), $loaded), 'Loaded a version-specific command file.');
+    $this->assertTrue(in_array(realpath($files[1]), $loaded), 'Loaded a version-specific command directory.');
+    $this->assertFalse(in_array(realpath($files[2]), $loaded), 'Did not load a mismatched version-specific command file.');
+    $this->assertFalse(in_array(realpath($files[3]), $loaded), 'Did not load a a mismatched version-specific command directory.');
   }
 
   /**
