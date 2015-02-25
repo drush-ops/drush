@@ -106,17 +106,27 @@ function update_main() {
 
   $start = array();
 
+  $change_summary = \Drupal::service('entity.definition_update_manager')->getChangeSummary();
+
   // Print a list of pending updates for this module and get confirmation.
-  if (count($pending)) {
+  if (count($pending) || count($change_summary)) {
     drush_print(dt('The following updates are pending:'));
     drush_print();
+
+    foreach ($change_summary as $entity_type_id => $changes) {
+      drush_print($entity_type_id . ' entity type : ');
+      foreach ($changes as $change) {
+        drush_print(strip_tags($change), 2);
+      }
+    }
+
     foreach ($pending as $module => $updates) {
       if (isset($updates['start']))  {
         drush_print($module . ' module : ');
         if (isset($updates['start'])) {
           $start[$module] = $updates['start'];
           foreach ($updates['pending'] as $update) {
-            drush_print($update, 2);
+            drush_print(strip_tags($update), 2);
           }
         }
         drush_print();
@@ -170,6 +180,14 @@ function drush_update_batch($start) {
   }
 
   $operations = array();
+
+  // First of all perform entity definition updates, which will update
+  // storage schema if needed, so that module update functions work with
+  // the correct entity schema.
+  if (\Drupal::service('entity.definition_update_manager')->needsUpdates()) {
+    $operations[] = array('update_entity_definitions', array('system', '0 - Update entity definitions'));
+  }
+
   foreach ($updates as $update) {
     if ($update['allowed']) {
       // Set the installed version of each module so updates will start at the
@@ -212,4 +230,40 @@ function drush_get_update_list() {
 
 function drush_update_finished($success, $results, $operations) {
   // Nothing to do here. All caches already cleared. Kept as documentation of 'finished' callback.
+}
+
+/**
+ * Return a 2 item array with
+ *  - an array where each item is a 3 item associative array describing a pending update.
+ *  - an array listing the first update to run, keyed by module.
+ */
+function updatedb_status() {
+  $pending = update_get_update_list();
+
+  $return = array();
+  // Ensure system module's updates run first.
+  $start['system'] = array();
+
+  foreach (\Drupal::service('entity.definition_update_manager')->getChangeSummary() as $entity_type_id => $changes) {
+    foreach ($changes as $change) {
+      $return[] = array(
+        'module' => dt('@type entity type', array('@type' => $entity_type_id)), 'update_id' => '', 'description' => strip_tags($change));
+    }
+  }
+
+  // Print a list of pending updates for this module and get confirmation.
+  foreach ($pending as $module => $updates) {
+    if (isset($updates['start']))  {
+      foreach ($updates['pending'] as $update_id => $description) {
+        // Strip cruft from front.
+        $description = str_replace($update_id . ' -   ', '', $description);
+        $return[] = array('module' => ucfirst($module), 'update_id' => $update_id, 'description' => $description);
+      }
+      if (isset($updates['start'])) {
+        $start[$module] = $updates['start'];
+      }
+    }
+  }
+
+  return array($return, $start);
 }
