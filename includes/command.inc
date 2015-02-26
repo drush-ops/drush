@@ -1067,7 +1067,9 @@ function drush_command_defaults($key, $commandfile, $path) {
   // files, and config files are loaded before the bootstrap object
   // is created.  In this early stage, we just use the core global
   // options list.  Later, the bootstrap object can also provide
-  // additional defaults if needed.
+  // additional defaults if needed.  The bootstrap command defaults
+  // will be merged into the command object again just before
+  // running it in bootstrap_and_dispatch().
   if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
     $defaults = array_merge($defaults, $bootstrap->command_defaults());
   }

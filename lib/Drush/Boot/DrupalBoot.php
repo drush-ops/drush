@@ -53,6 +53,7 @@ class DrupalBoot implements Boot {
       if (drush_bootstrap_to_phase($phase)) {
         $command = drush_parse_command();
         if (is_array($command)) {
+          $command += $this->command_defaults();
           $bootstrap_result = drush_bootstrap_to_phase($command['bootstrap']);
           drush_enforce_requirement_bootstrap_phase($command);
           drush_enforce_requirement_core($command);
