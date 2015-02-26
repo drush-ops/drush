@@ -309,7 +309,7 @@ function drush_user_create($name) {
   );
   if (!drush_get_context('DRUSH_SIMULATE')) {
     if ($account = $userversion->create($new_user)) {
-      $userlist = new UserList($users);
+      $userlist = new UserList($account->uid);
       return $userlist->each('info');
     }
     else {
