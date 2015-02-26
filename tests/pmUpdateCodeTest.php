@@ -25,7 +25,7 @@ class pmUpdateCode extends CommandUnishTestCase {
   public function setUp() {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
       $core = '8.0.0-beta2';
-      $modules_str = 'unish-8.x-1.2,honeypot-8.x-1.18-beta1';
+      $modules_str = 'unish-8.x-1.2,honeypot-8.x-1.18-beta3';
       $this->modules = array('block', 'unish', 'honeypot');
     }
     elseif (UNISH_DRUPAL_MAJOR_VERSION == 7) {
