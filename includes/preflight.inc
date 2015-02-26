@@ -87,7 +87,6 @@ function drush_preflight_prepare() {
   // Set an error handler and a shutdown function
   set_error_handler('drush_error_handler');
   register_shutdown_function('drush_shutdown');
-
   // We need some global options/arguments processed at this early stage.
   drush_parse_args();
 
@@ -167,7 +166,6 @@ function drush_preflight() {
   if (!drush_get_option('local')) {
     _drush_preflight_alias_path();
   }
-
   if (!drush_get_option('local')) {
     // Load a drushrc.php file in the drush.php's directory.
     drush_load_config('drush');
@@ -186,7 +184,6 @@ function drush_preflight() {
   drush_load_config('custom');
 
   _drush_preflight_global_options();
-
   // Load all the commandfiles findable from any of the
   // scopes listed above.
   _drush_find_commandfiles_drush();

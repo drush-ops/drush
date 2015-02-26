@@ -230,9 +230,11 @@ function drush_site_path($path = NULL) {
  * @return $dir
  *   The directory associated with that hostname or FALSE if not found.
  */
-function drush_site_dir_lookup_from_hostname($hostname) {
-  $site_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-  if (file_exists($site_root . '/sites/sites.php')) {
+function drush_site_dir_lookup_from_hostname($hostname, $site_root = NULL) {
+  if (!isset($site_root)) {
+    $site_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  }
+  if (!empty($site_root) && file_exists($site_root . '/sites/sites.php')) {
     $sites = array();
     // This will overwrite $sites with the desired mappings.
     include($site_root . '/sites/sites.php');
