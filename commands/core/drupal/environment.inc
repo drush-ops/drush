@@ -8,6 +8,9 @@
  */
 
 use Drupal\Core\Site\Settings;
+use Drupal\Core\StreamWrapper\PrivateStream;
+use Psr\Log\LogLevel;
+
 
 /**
  * Get complete information for all available modules.
@@ -113,7 +116,51 @@ function drush_module_dependents($modules, $module_info) {
  * This is a wrapper for module_list().
  */
 function drush_module_list() {
-  return module_list('module_enabled');
+  $modules = array_keys(\Drupal::moduleHandler()->getModuleList());
+  return array_combine($modules, $modules);
+}
+
+/**
+ * Installs a given list of modules.
+ *
+ * @see \Drupal\Core\Extension\ModuleInstallerInterface::install()
+ *
+ */
+function drush_module_install($module_list, $enable_dependencies = TRUE) {
+  return \Drupal::service('module_installer')->install($module_list, $enable_dependencies);
+}
+
+/**
+ * Checks that a given module exists and is enabled.
+ *
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::moduleExists()
+ *
+ */
+function drush_module_exists($module) {
+  return \Drupal::moduleHandler()->moduleExists($module);
+}
+
+/**
+ * Determines which modules are implementing a hook.
+ *
+ * @param string $hook
+ *   The hook name.
+ * @param bool $sort
+ *  Not used in Drupal 8 environment.
+ * @param bool $reset
+ *  TRUE to reset the hook implementation cache.
+ *
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::getImplementations().
+ * @see \Drupal\Core\Extension\ModuleHandlerInterface::resetImplementations().
+ *
+ */
+function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
+  // $sort is there for consistency, but looks like Drupal 8 has no equilavient for it.
+  // We can sort the list manually later if really needed.
+  if ($reset == TRUE){
+    \Drupal::moduleHandler()->resetImplementations();
+  }
+  return \Drupal::moduleHandler()->getImplementations($hook);
 }
 
 /**
@@ -147,9 +194,13 @@ function drush_module_enable($modules) {
   // The list of modules already have all the dependencies, but they might not
   // be in the correct order. Still pass $enable_dependencies = TRUE so that
   // Drupal will enable the modules in the correct order.
-  module_install($modules);
-  // Flush all caches.
-  drupal_flush_all_caches();
+  drush_module_install($modules);
+
+  // Our logger got blown away during the container rebuild above.
+  \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
+
+  // Flush all caches. No longer needed in D8 per https://github.com/drush-ops/drush/issues/1207
+  // drupal_flush_all_caches();
 }
 
 /**
@@ -159,7 +210,7 @@ function drush_module_enable($modules) {
  *   Array of module names
  */
 function drush_module_disable($modules) {
-  drush_set_error('DRUSH_MODULE_DISABLE', dt('Drupal 8 does not support disabling modules.'));
+  drush_set_error('DRUSH_MODULE_DISABLE', dt('Drupal 8 does not support disabling modules. Use pm-uninstall instead.'));
 }
 
 /**
@@ -167,9 +218,35 @@ function drush_module_disable($modules) {
  *
  * @param $modules
  *   Array of module names
+ *
+ * @see \Drupal\Core\Extension\ModuleInstallerInterface::uninstall()
  */
 function drush_module_uninstall($modules) {
-  module_uninstall($modules);
+  \Drupal::service('module_installer')->uninstall($modules);
+  // Our logger got blown away during the container rebuild above.
+  \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
+}
+
+/**
+  * Invokes a hook in a particular module.
+  *
+  */
+function drush_module_invoke($module, $hook) {
+  $args = func_get_args();
+  // Remove $module and $hook from the arguments.
+  unset($args[0], $args[1]);
+  return \Drupal::moduleHandler()->invoke($module, $hook, $args);
+}
+
+/**
+  * Invokes a hook in all enabled modules that implement it.
+  *
+  */
+function drush_module_invoke_all($hook) {
+  $args = func_get_args();
+  // Remove $hook from the arguments.
+  array_shift($args);
+  return Drupal::moduleHandler()->invokeAll($hook, $args);
 }
 
 /**
@@ -181,7 +258,7 @@ function drush_module_uninstall($modules) {
  *   An array containing theme info for all available themes.
  */
 function drush_get_themes($include_hidden = TRUE) {
-  $themes = system_rebuild_theme_data();
+  $themes = \Drupal::service('theme_handler')->rebuildThemeData();
   foreach ($themes as $key => $theme) {
     if (!$include_hidden) {
       if (isset($theme->info['hidden'])) {
@@ -200,7 +277,7 @@ function drush_get_themes($include_hidden = TRUE) {
  *  Array of theme names.
  */
 function drush_theme_enable($themes) {
-  theme_enable($themes);
+  \Drupal::service('theme_handler')->install($themes);
 }
 
 /**
@@ -210,7 +287,21 @@ function drush_theme_enable($themes) {
  *  Array of theme names.
  */
 function drush_theme_disable($themes) {
-  theme_disable($themes);
+  drush_set_error('DRUSH_THEME_DISABLE', dt('Drupal 8 does not support disabling themes. Use pm-uninstall instead.'));
+}
+
+/**
+ * Uninstall a list of themes.
+ *
+ * @param $themes
+ *  Array of theme names
+ *
+ * @see \Drupal\Core\Extension\ThemeHandlerInterface::uninstall()
+ */
+function drush_theme_uninstall($themes) {
+  \Drupal::service('theme_handler')->uninstall($themes);
+  // Our logger got blown away during the container rebuild above.
+  \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
 }
 
 /**
@@ -225,14 +316,14 @@ function drush_theme_disable($themes) {
  */
 function drush_watchdog_severity_levels() {
   return array(
-    WATCHDOG_EMERGENCY=> 'emergency',
-    WATCHDOG_ALERT    => 'alert',
-    WATCHDOG_CRITICAL => 'critical',
-    WATCHDOG_ERROR    => 'error',
-    WATCHDOG_WARNING  => 'warning',
-    WATCHDOG_NOTICE   => 'notice',
-    WATCHDOG_INFO     => 'info',
-    WATCHDOG_DEBUG    => 'debug',
+    LogLevel::EMERGENCY => 'emergency',
+    LogLevel::ALERT => 'alert',
+    LogLevel::CRITICAL => 'critical',
+    LogLevel::ERROR    => 'error',
+    LogLevel::WARNING  => 'warning',
+    LogLevel::NOTICE   => 'notice',
+    LogLevel::INFO     => 'info',
+    LogLevel::DEBUG    => 'debug',
   );
 }
 
@@ -244,25 +335,6 @@ function drush_watchdog_severity_levels() {
  */
 function drush_watchdog_message_types() {
   return _dblog_get_message_types();
-}
-
-/**
- * Returns a queue object.
- */
-function drush_queue_get($name) {
-  return \Drupal::queue($name);
-}
-
-/**
- * Returns all defined queues.
- */
-function drush_queue_get_queues() {
-  static $queues;
-  if (!isset($queues)) {
-    $queues = \Drupal::moduleHandler()->invokeAll('queue_info');
-    drupal_alter('queue_info', $queues);
-  }
-  return $queues;
 }
 
 function _drush_theme_default() {
@@ -279,7 +351,7 @@ function _drush_file_public_path() {
 }
 
 function _drush_file_private_path() {
-  return \Drupal::config('system.file')->get('path.private');
+  return PrivateStream::basePath();
 }
 
 /**
@@ -318,3 +390,16 @@ function _drush_extension_get_path($info) {
   return $info->getPath();
 }
 
+/*
+ * Wrapper for CSRF token generation.
+ */
+function drush_get_token($value = NULL) {
+  return \Drupal::csrfToken()->get($value);
+}
+
+/*
+ * Wrapper for _url().
+ */
+function drush_url($path = NULL, array $options = array()) {
+  return \Drupal::urlGenerator()->generateFromPath($path, $options);
+}

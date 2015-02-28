@@ -20,7 +20,7 @@ class Sqloracle extends SqlBase {
   }
 
   public function creds() {
-    return ' ' . $this->db_spec['username'] .'/' . $this->db_spec['password'] . ($this->db_spec['host']=='USETNS' ? '@' . $this->db_spec['database'] : '@//' . $this->db_spec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $this->db_spec['database']);
+    return ' ' . $this->db_spec['username'] . '/' . $this->db_spec['password'] . ($this->db_spec['host'] == 'USETNS' ? '@' . $this->db_spec['database'] : '@//' . $this->db_spec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $this->db_spec['database']);
   }
 
   public function createdb_sql($dbname) {
@@ -51,25 +51,25 @@ class Sqloracle extends SqlBase {
     }
 
     // create settings string
-    $sqlp_settings = implode("\n", $settings)."\n";
+    $sqlp_settings = implode("\n", $settings) . "\n";
 
     // important for sqlplus to exit correctly
     return "${sqlp_settings}${query};\nexit;\n";
   }
 
   public function listTables() {
-    $return = $this->query("SELECT TABLE_NAME FROM USER_TABLES WHERE TABLE_NAME NOT IN ('BLOBS','LONG_IDENTIFIERS')", NULL, TRUE);
+    $return = $this->query("SELECT TABLE_NAME FROM USER_TABLES WHERE TABLE_NAME NOT IN ('BLOBS','LONG_IDENTIFIERS')");
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {
       // Shift off the header of the column of data returned.
       array_shift($tables);
       return $tables;
     }
+  }
 
-
-}
-
-  public function dumpCmd($table_selection, $file) {
+  // @todo $file is no longer provided. We are supposed to return bash that can be piped to gzip.
+  // Probably Oracle needs to override dump() entirely - http://stackoverflow.com/questions/2236615/oracle-can-imp-exp-go-to-stdin-stdout.
+  public function dumpCmd($table_selection) {
     $create_db = drush_get_option('create-db');
     $exec = 'exp ' . $this->creds();
     // Change variable '$file' by reference in order to get drush_log() to report.
@@ -84,3 +84,4 @@ class Sqloracle extends SqlBase {
     $exec .= ' owner=' . $this->db_spec['username'];
     return array($exec, $file);
   }
+}

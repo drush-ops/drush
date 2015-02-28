@@ -37,6 +37,7 @@ function site_install_drush_command() {
         'example-value' => 'directory_name',
       ),
       'writable' => 'Make CMI and other dirs writable by both web and CLI users. Suitable for non Prod environments.',
+      'keep-config' => 'Keep CMI directories untouched. This preserves existing configuration.'
     ),
     'examples' => array(
       'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukrainian.',
@@ -63,6 +64,7 @@ function site_install_drush_help_alter(&$command) {
     }
     else {
       unset($command['options']['writable']);
+      unset($command['options']['keep-config']);
     }
   }
 }
@@ -78,7 +80,7 @@ function drush_core_site_install_validate() {
       drush_set_option('sites-subdir', $lower);
     }
     // Make sure that we will bootstrap to the 'sites-subdir' site.
-    drush_set_option('uri', 'http://' . $sites_subdir);
+    drush_set_context('DRUSH_SELECTED_URI', 'http://' . $sites_subdir);
   }
 }
 
@@ -91,6 +93,9 @@ function drush_core_pre_site_install($profile = NULL) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
     return;
   }
+
+  // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.
+  _drush_bootstrap_selected_uri();
 
   $alias_record = drush_sitealias_get_record('@self');
   $sites_subdir = drush_sitealias_local_site_path($alias_record);
@@ -105,7 +110,7 @@ function drush_core_pre_site_install($profile = NULL) {
   $sitesfile = "sites/sites.php";
   $default = realpath($alias_record['root'] . '/sites/default');
   $sitesfile_write = drush_drupal_major_version() >= 8 && $conf_path != $default && !file_exists($sitesfile);
-  
+
   if (!file_exists($settingsfile)) {
     $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
   }
@@ -209,9 +214,11 @@ function drush_core_pre_site_install($profile = NULL) {
       $directories['staging'] =  $files . '/' . $directories[2];
     }
 
-    foreach ($directories as $directory) {
-      if (file_exists($directory)) {
-        drush_delete_dir_contents($directory, TRUE);
+    if (drush_get_option('keep-config', FALSE) == FALSE) {
+      foreach ($directories as $directory) {
+        if (file_exists($directory)) {
+          drush_delete_dir_contents($directory, TRUE);
+        }
       }
     }
 
@@ -262,6 +269,6 @@ function drush_core_site_install($profile = NULL) {
       $form_options[$key] = $value;
     }
   }
-  drush_include_engine('drupal', 'site_install', drush_drupal_major_version());
+  drush_include_engine('drupal', 'site_install');
   drush_core_site_install_version($profile, $form_options);
 }

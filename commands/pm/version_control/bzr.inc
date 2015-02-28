@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush pm Bazaar extension
+ * @file
+ * Drush pm Bazaar extension
  */
 
 class drush_version_control_bzr implements drush_version_control {

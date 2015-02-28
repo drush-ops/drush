@@ -4,73 +4,14 @@
  * General utility functions for Drush Make.
  */
 
-/**
- * Parse Drupal info file format.
- *
- * Copied with modifications from includes/common.inc.
- *
- * @see drupal_parse_info_file
- */
-function make_parse_info_file($makefile, $parsed = TRUE, $makefile_options = array()) {
-  if (!($data = make_get_data($makefile))) {
-    return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
-  }
-  if (!($info = _drush_drupal_parse_info_file($data))) {
-    return FALSE;
-  }
-  // $makefile_options are from projects[projectname][options][...] = value in
-  // the makefile that included us, whereas $info['options'] is from
-  // options[...] = value in this makefile.
-  if (!empty($info['options'])) {
-    $makefile_options = array_merge($makefile_options, $info['options']);
-  }
-  if (!empty($makefile_options)) {
-    foreach ($makefile_options as $key => $value) {
-      if (_make_is_override_allowed($key)) {
-        // n.b. 'custom' context has lower priority than 'cli', so
-        // options entered on the command line will "mask" makefile options.
-        drush_set_option($key, $value, 'custom');
-      }
-    }
-  }
-  if (!empty($info['includes'])) {
-    $include_path = dirname($makefile);
-    $includes = array();
-    if (!empty($info['includes']) && is_array($info['includes'])) {
-      foreach ($info['includes'] as $include) {
-        if (is_string($include)) {
-          if (make_valid_url($include, TRUE) && ($file = make_parse_info_file($include, FALSE))) {
-            $includes[] = $file;
-          }
-          elseif (file_exists($include_path . '/' . $include) && ($file = make_parse_info_file($include_path . '/' . $include, FALSE))) {
-            $includes[] = $file;
-          }
-          elseif (file_exists($include) && ($file = make_parse_info_file($include, FALSE))) {
-            $includes[] = $file;
-          }
-          else {
-            make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
-          }
-        }
-      }
-    }
-    $includes[] = $data;
-    $data = implode("\n", $includes);
-    $info = _drush_drupal_parse_info_file($data);
-  }
-  if ($parsed) {
-    return $info;
-  }
-  else {
-    return $data;
-  }
-}
+use Drush\Make\Parser\ParserIni;
+use Drush\Make\Parser\ParserYaml;
 
 /**
  * Helper function to parse a makefile and prune projects.
  */
-function _make_parse_info_file($makefile) {
-  $info = make_parse_info_file($makefile);
+function make_parse_info_file($makefile) {
+  $info = _make_parse_info_file($makefile);
 
   // Support making just a portion of a make file.
   $include_only = array(
@@ -83,6 +24,65 @@ function _make_parse_info_file($makefile) {
     return FALSE;
   }
 
+  return $info;
+}
+
+/**
+ * Parse makefile recursively.
+ */
+function _make_parse_info_file($makefile) {
+  if (!($data = make_get_data($makefile))) {
+    return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
+  }
+
+  // $info['format'] will specify the determined format.
+  $info = _make_determine_format($data);
+
+  // Set any allowed options.
+  if (!empty($info['options'])) {
+    foreach ($info['options'] as $key => $value) {
+      if (_make_is_override_allowed($key)) {
+        // n.b. 'custom' context has lower priority than 'cli', so
+        // options entered on the command line will "mask" makefile options.
+        drush_set_option($key, $value, 'custom');
+      }
+    }
+  }
+
+  // Merge includes recursively.
+  if (!empty($info['includes'])) {
+    if (is_array($info['includes'])) {
+      $include_path = dirname($makefile);
+      $includes = array();
+      foreach ($info['includes'] as $include) {
+        if (!empty($include)) {
+          if (is_array($include) && $include['download']['type'] = 'git') {
+            $tmp_dir = make_tmp();
+            make_download_git($include['makefile'], $include['download']['type'], $include['download'], $tmp_dir);
+            $include_makefile = $tmp_dir . '/' . $include['makefile'];
+          }
+          elseif (is_string($include)) {
+            if (make_valid_url($include, TRUE)) {
+              $include_makefile = $include;
+            }
+            elseif (file_exists($include_path . '/' . $include)) {
+              $include_makefile = $include_path . '/' . $include;
+            }
+            elseif (file_exists($include)) {
+              $include_makefile = $include;
+            }
+            else {
+              make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
+            }
+          }
+          else {
+            make_error('BUILD_ERROR', dt("Cannot determine include file location: !include", array('!include' => $include)));
+          }
+          $info = array_replace_recursive(_make_parse_info_file($include_makefile), $info);
+        }    
+      }
+    }
+  }
   return $info;
 }
 
@@ -558,4 +558,23 @@ function _get_working_copy_option($download) {
     $wc = drush_get_option('working-copy');
   }
   return $wc;
+}
+
+/**
+ * Given data from stdin, determine format.
+ *
+ * @return array|bool
+ *   Returns parsed data if it matches any known format.
+ */
+function _make_determine_format($data) {
+  // Test INI first.
+  if ($parsed = ParserIni::parse($data)) {
+    $parsed['format'] = 'ini';
+    return $parsed;
+  }
+  elseif ($parsed = ParserYaml::parse($data)) {
+    $parsed['format'] = 'yaml';
+    return $parsed;
+  }
+  return drush_set_error('MAKE_STDIN_ERROR', dt('Unknown make file format'));
 }

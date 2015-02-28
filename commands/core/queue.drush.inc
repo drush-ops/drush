@@ -43,43 +43,26 @@ function queue_drush_command() {
 }
 
 /**
- * Validation for Drupal 6 to ensure the drupal_queue module is enabled.
- *
- * @param $command
- *   The command being validated.
- */
-function drush_queue_validate($command) {
-  if (drush_drupal_major_version() == 6) {
-    if (!module_exists('drupal_queue')) {
-      $args = array('!command' => $command, '!dependencies' => 'drupal_queue');
-      return drush_set_error('DRUSH_COMMAND_DEPENDENCY_ERROR', dt('Command !command needs the following modules installed/enabled to run: !dependencies.', $args));
-    }
-    else {
-      drupal_queue_include();
-    }
-  }
-}
-
-/**
  * Validation callback for drush queue-run.
  */
 function drush_queue_run_validate($queue_name) {
-  drush_include_engine('drupal', 'environment');
-
-  drush_queue_validate('queue-run');
-
-  // Get all queues.
-  $queues = drush_queue_get_queues();
-  if (!isset($queues[$queue_name])) {
-    return drush_set_error('DRUSH_QUEUE_ERROR', dt('Could not find the !name queue.', array('!name' => $queue_name)));
-  }
+  $queue = drush_queue_get_class();
+  $queue->validate('queue-run');
 }
 
 /**
  * Validation callback for drush queue-list.
  */
 function drush_queue_list_validate() {
-  drush_queue_validate('queue-list');
+  $queue = drush_queue_get_class();
+  $queue->validate('queue-list');
+}
+
+/**
+ * Return the appropriate queue class.
+ */
+function drush_queue_get_class() {
+  return drush_get_class('Drush\Queue\Queue');
 }
 
 /**
@@ -92,41 +75,15 @@ function drush_queue_list_validate() {
  *   Arbitrary string. The name of the queue to work with.
  */
 function drush_queue_run($queue_name) {
-  drush_include_engine('drupal', 'environment');
-
-  // Try to increase the maximum execution time if it is too low.
-  $max_execution_time = ini_get('max_execution_time');
-  if ($max_execution_time > 0 && $max_execution_time < 240 && !ini_get('safe_mode')) {
-    set_time_limit(240);
-  }
-
-  $queues = drush_queue_get_queues();
-  $info = $queues[$queue_name];
-  $function = $info['worker callback'];
-  $end = time() + (isset($info['cron']['time']) ? $info['cron']['time'] : 15);
-  $queue = drush_queue_get($queue_name);
-  while (time() < $end && ($item = $queue->claimItem())) {
-    $function($item->data);
-    $queue->deleteItem($item);
-  }
+  $queue = drush_queue_get_class();
+  $queue->run($queue_name);
 }
 
 /**
  * Command callback for drush queue-list.
  */
 function drush_queue_list() {
-  drush_include_engine('drupal', 'environment');
-
-  $result = array();
-  $queues = drush_queue_get_queues();
-  foreach (array_keys($queues) as $name) {
-    $q = drush_queue_get($name);
-    $result[$name] = array(
-      'queue' => $name,
-      'items' => $q->numberOfItems(),
-      'class' => get_class($q),
-    );
-  }
-  return $result;
+  $queue = drush_queue_get_class();
+  return $queue->listQueues();
 }
 

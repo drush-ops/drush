@@ -200,7 +200,7 @@
 # $options['strict'] = FALSE;
 
 /**
- * Drush requires at least rsync version 2.6.4 for some functions to work
+ * Drush requires at least rsync version 2.6.9 for some functions to work
  * correctly.  rsync version 2.6.8 or earlier may give the following error
  * message: "--remove-source-files: unknown option".  To fix this, set
  * $options['rsync-version'] = '2.6.8'; (replace with the lowest version of

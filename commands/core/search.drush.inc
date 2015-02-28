@@ -52,21 +52,31 @@ function drush_search_status() {
 function _drush_search_status() {
   $remaining = 0;
   $total = 0;
-  if (drush_drupal_major_version() >= 7) {
+  if (drush_drupal_major_version() >= 8) {
+    $search_page_repository = \Drupal::service('search.search_page_repository');
+    foreach ($search_page_repository->getIndexableSearchPages() as $entity) {
+      $status = $entity->getPlugin()->indexStatus();
+      $remaining += $status['remaining'];
+      $total += $status['total'];
+    }   
+  }
+  elseif (drush_drupal_major_version() == 7) {
     foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {
-      $status = module_invoke($module, 'search_status');
+      drush_include_engine('drupal', 'environment');
+      $status = drush_module_invoke($module, 'search_status');
       $remaining += $status['remaining'];
       $total += $status['total'];
     }
   }
   else {
-    foreach (module_implements('search') as $module) {
+    drush_include_engine('drupal', 'environment');
+    foreach (drush_module_implements('search') as $module) {
       // Special case. Apachesolr recommends disabling core indexing with
       // search_cron_limit = 0. Need to avoid infinite status loop.
       if ($module == 'node' && variable_get('search_cron_limit', 10) == 0) {
         continue;
       }
-      $status = module_invoke($module, 'search', 'status');
+      $status = drush_module_invoke($module, 'search', 'status');
       if (isset($status['remaining']) && isset($status['total'])) {
         $remaining += $status['remaining'];
         $total += $status['total'];
@@ -82,24 +92,32 @@ function drush_search_index() {
 }
 
 function _drush_search_index() {
-  list($remaining, ) = _drush_search_status();
+  list($remaining, $total) = _drush_search_status();
   register_shutdown_function('search_update_totals');
   $failures = 0;
   while ($remaining > 0) {
-    drush_log(dt('Remaining items to be indexed: ' . $remaining), 'ok');
-    // Use drush_invoke_process() to start subshell. Avoids out of memory issue.
+    $done = $total - $remaining;
+    $percent = $done / $total * 100;
+    drush_log(dt(number_format($percent, 2) . '% complete. Remaining items to be indexed: ' . $remaining), 'ok');
     $eval = "register_shutdown_function('search_update_totals');";
-    if (drush_drupal_major_version() >= 7) {
-      // If needed, prod module_implements() to recognize our
+
+    // Use drush_invoke_process() to start subshell. Avoids out of memory issue.
+    if (drush_drupal_major_version() >= 8) {
+      $eval = "drush_module_invoke('search', 'cron');";
+    }
+    elseif (drush_drupal_major_version() == 7) {
+      // If needed, prod drush_module_implements() to recognize our
       // hook_node_update_index() implementations.
-      $implementations = module_implements('node_update_index');
+      drush_include_engine('drupal', 'environment');
+      $implementations = drush_module_implements('node_update_index');
       if (!in_array('system', $implementations)) {
         // Note that this resets module_implements cache.
-        module_implements('node_update_index', FALSE, TRUE);
+        drush_module_implements('node_update_index', FALSE, TRUE);
       }
 
       foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {
-        $eval .= " module_invoke('$module', 'update_index');";
+        // TODO: Make sure that drush_module_invoke is really available when doing this eval().
+        $eval .= " drush_module_invoke('$module', 'update_index');";
       }
     }
     else {
@@ -142,12 +160,20 @@ function drush_search_reindex() {
     return drush_user_abort();
   }
 
-  if (drush_drupal_major_version() >= 7) {
+  if (drush_drupal_major_version() == 8) {
+    // D8 CR: https://www.drupal.org/node/2326575
+    $search_page_repository = \Drupal::service('search.search_page_repository');
+    foreach ($search_page_repository->getIndexableSearchPages() as $entity) {
+      $entity->getPlugin()->markForReindex();
+    }
+  }
+  elseif (drush_drupal_major_version() == 7) {
     drush_op('search_reindex');
   }
   else {
     drush_op('search_wipe');
   }
+
   if (drush_get_option('immediate')) {
     drush_op('_drush_search_index');
     drush_log(dt('The search index has been rebuilt.'), 'ok');

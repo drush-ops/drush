@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Install Drupal 7+
+ * Install Drupal 8+
  */
 function drush_core_site_install_version($profile, array $additional_form_options = array()) {
   if (!isset($profile)) {
@@ -18,7 +18,7 @@ function drush_core_site_install_version($profile, array $additional_form_option
   $settings = array(
     'parameters' => array(
       'profile' => $profile,
-      'locale' => drush_get_option('locale', 'en'),
+      'langcode' => drush_get_option('locale', 'en'),
     ),
     'forms' => array(
       'install_settings_form' => array(
@@ -56,7 +56,12 @@ function drush_core_site_install_version($profile, array $additional_form_option
     $current = $value;
   }
 
-  drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), 'ok');
-  drush_op('install_drupal', $settings);
+  $msg = 'Starting Drupal installation. This takes a while.';
+  if (is_null(drush_get_option('notify'))) {
+    $msg .= ' Consider using the --notify global option.';
+  }
+  drush_log(dt($msg), 'ok');
+  $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+  drush_op('install_drupal', $class_loader, $settings);
   drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
 }

@@ -18,7 +18,13 @@ class WatchdogCase extends CommandUnishTestCase {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {
       $this->drush('pm-enable', array('dblog'), $options);
     }
-    $this->drush('php-eval', array("watchdog('drush', 'Unish rocks.');"), $options);
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      $eval1 = "\\Drupal::logger('drush')->notice('Unish rocks.');";
+    }
+    else {
+      $eval1 = "watchdog('drush', 'Unish rocks.');";
+    }
+    $this->drush('php-eval', array($eval1), $options);
     $this->drush('watchdog-show', array(), $options + array('count' => 50));
     $output = $this->getOutput();
     $this->assertContains('Unish rocks.', $output);
@@ -30,7 +36,13 @@ class WatchdogCase extends CommandUnishTestCase {
     $message_chars = 300;
     $char = '*';
     $message = str_repeat($char, $message_chars);
-    $this->drush('php-eval', array("watchdog('drush', '" . $message . "')"), $options);
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      $eval2 = "\\Drupal::logger('drush')->notice('$message');";
+    }
+    else {
+      $eval2 = "watchdog('drush', '$message');";
+    }
+    $this->drush('php-eval', array($eval2), $options);
     $this->drush('watchdog-show', array(), $options);
     $output = $this->getOutput();
     $this->assertGreaterThan(substr_count($output, $char), $message_chars);

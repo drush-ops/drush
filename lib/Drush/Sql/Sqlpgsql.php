@@ -2,9 +2,11 @@
 
 namespace Drush\Sql;
 
+define('PSQL_SHOW_TABLES', "SELECT tablename FROM pg_tables WHERE schemaname='public';");
+
 class Sqlpgsql extends SqlBase {
 
-  public $query_extra = "--no-align --field-separator='\t' --pset footer=off";
+  public $query_extra = "--no-align --field-separator='\t' --pset tuples_only=on";
 
   public $query_file = "--file";
 
@@ -75,13 +77,13 @@ class Sqlpgsql extends SqlBase {
 
   public function query_format($query) {
     if (strtolower($query) == 'show tables;') {
-      return $this->listTables();
+      return PSQL_SHOW_TABLES;
     }
     return $query;
   }
 
   public function listTables() {
-    $return = $this->query("SELECT tablename FROM pg_tables WHERE schemaname='public';", NULL, TRUE);
+    $return = $this->query(PSQL_SHOW_TABLES);
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {
       // Shift off the header of the column of data returned.
@@ -91,7 +93,8 @@ class Sqlpgsql extends SqlBase {
     return array();
   }
 
-  public function dumpCmd($table_selection, $file) {
+  public function dumpCmd($table_selection) {
+    $parens = FALSE;
     $skip_tables = $table_selection['skip'];
     $structure_tables = $table_selection['structure'];
     $tables = $table_selection['tables'];
@@ -102,9 +105,6 @@ class Sqlpgsql extends SqlBase {
 
     $create_db = drush_get_option('create-db');
     $exec = 'pg_dump ';
-    if ($file) {
-      $exec .= ' --file '. $file;
-    }
     // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
     $extra = str_replace('--dbname=', ' ', $this->creds());
     if (isset($data_only)) {
@@ -125,17 +125,15 @@ class Sqlpgsql extends SqlBase {
       $exec .= ' '. implode(' ', $ignores);
       // Run pg_dump again and append output if we need some structure only tables.
       if (!empty($structure_tables)) {
+        $parens = TRUE;
         $schemaonlies = array();
         foreach ($structure_tables as $table) {
           $schemaonlies[] = "--table=$table";
         }
         $exec .= " && pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
         $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
-        if ($file) {
-          $exec .= " >> $file";
-        }
       }
     }
-    return array($exec, $file);
+    return $parens ? "($exec)" : $exec;
   }
 }

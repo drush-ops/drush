@@ -47,17 +47,27 @@ abstract class RoleBase {
     }
   }
 
+  /*
+   * Get all perms for a given Role.
+   */
   public function getPerms() {
     return array();
   }
 
+  /*
+   * Get all perms for a given module.
+   */
   public function getModulePerms($module) {
     return array();
   }
 
+  /*
+   * Get all permissions site-wide.
+   */
   public function getAllModulePerms() {
     $permissions = array();
-    $module_list = module_list();
+    drush_include_engine('drupal', 'environment');
+    $module_list = drush_module_list();
     ksort($module_list);
     foreach ($module_list as $module) {
       if ($perms = $this->getModulePerms($module)) {

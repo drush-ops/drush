@@ -1,5 +1,8 @@
 <?php
 
+use Drupal\Component\Utility\Unicode;
+use Drupal\Component\Utility\String;
+
 /**
  * Implementation of hook_drush_help().
  */
@@ -275,7 +278,12 @@ function core_watchdog_format_result($result, $extended = FALSE) {
     $message_length = PHP_INT_MAX;
   }
 
-  $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), $message_length, FALSE, FALSE);
+  if (drush_drupal_major_version() >= 8) {
+    $result->message = Unicode::truncate(strip_tags(String::decodeEntities($result->message)), $message_length, FALSE, FALSE);
+  }
+  else {
+    $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), $message_length, FALSE, FALSE);
+  }
 
   return $result;
 }

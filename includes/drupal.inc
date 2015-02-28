@@ -1,6 +1,26 @@
 <?php
 
 /**
+ * @file
+ * Utility functions related to Drupal.
+ */
+
+/**
+ * Loads the Drupal autoloader and returns the instance.
+ */
+function drush_drupal_load_autoloader($drupal_root, $new_autoloader = NULL) {
+  static $autoloader = FALSE;
+  if (isset($new_autoloader)) {
+    $autoloader = $new_autoloader;
+  }
+  if (!$autoloader) {
+    // Should this just be 'require'?  See drush_preflight_prepare()
+    $autoloader = require_once $drupal_root .'/core/vendor/autoload.php';
+  }
+  return $autoloader;
+}
+
+/**
  * Detects the version number of the current Drupal installation,
  * if any. Returns FALSE if there is no current Drupal installation,
  * or it is somehow broken.
@@ -14,24 +34,28 @@ function drush_drupal_version($drupal_root = NULL) {
 
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
-      // D7 stores VERSION in bootstrap.inc.
-      $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc');
-      foreach ($version_constant_paths as $path) {
-        if (file_exists($drupal_root . $path)) {
-          require_once $drupal_root . $path;
-        }
-      }
-      // We just might be dealing with an early Drupal version (pre 4.7)
-      if (defined('VERSION')) {
-        $version = VERSION;
-      }
-      elseif (file_exists($drupal_root . '/core/vendor/autoload.php')) {
+      // Try and find D8.
+      if (file_exists($drupal_root . '/core/vendor/autoload.php')) {
         // Load the autoloader so we can access the class constants.
-        require_once $drupal_root .'/core/vendor/autoload.php';
-        // Drush depends on bootstrap being loaded at this point;
+        drush_drupal_load_autoloader($drupal_root);
+        // Drush depends on bootstrap being loaded at this point.
         require_once $drupal_root .'/core/includes/bootstrap.inc';
         if (defined('Drupal::VERSION')) {
           $version = Drupal::VERSION;
+        }
+      }
+      else {
+        // D7 stores VERSION in bootstrap.inc.
+        // D6 and below does it in system.module.
+        $version_constant_paths = array('/includes/bootstrap.inc', '/modules/system/system.module');
+        foreach ($version_constant_paths as $path) {
+          if (file_exists($drupal_root . $path)) {
+            require_once $drupal_root . $path;
+            if (defined('VERSION')) {
+              $version = VERSION;
+              break;
+            }
+          }
         }
       }
     }
@@ -41,13 +65,13 @@ function drush_drupal_version($drupal_root = NULL) {
 
 function drush_drupal_cache_clear_all() {
   if (drush_drupal_major_version() >= 8) {
-    drush_invoke('cache-rebuild');
+    drush_invoke_process('@self', 'cache-rebuild');
   }
   else {
-    $prior = drush_get_context('DRUSH_AFFIRMATIVE');
-    drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
-    drush_invoke('cache-clear', 'all');
-    drush_set_context('DRUSH_AFFIRMATIVE', $prior);
+    // $prior = drush_get_context('DRUSH_AFFIRMATIVE');
+    // drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
+    drush_invoke_process('@self', 'cache-clear', array('all'));
+    // drush_set_context('DRUSH_AFFIRMATIVE', $prior);
   }
 }
 
@@ -68,7 +92,7 @@ function drush_drupal_major_version($drupal_root = NULL) {
 /**
  * Log Drupal watchdog() calls.
  *
- * A sneaky implementation of hook_watchdog().
+ * A sneaky implementation of hook_watchdog(), for D6/D7.
  */
 function system_watchdog($log_entry) {
   // Transform non informative severity levels to 'error' for compatibility with _drush_print_log.
@@ -135,50 +159,6 @@ function _drush_log_update_sql($ret) {
 
 function drush_find_profiles($drupal_root , $key = 'name') {
   return drush_scan_directory($drupal_root . '/profiles', "/.*\.profile$/", array('.', '..', 'CVS', 'tests'), 0, 2, $key);
-}
-
-/**
- * Log the given user in to a bootstrapped Drupal site.
- *
- * @param mixed
- *   Numeric user id or user name.
- *
- * @return boolean
- *   TRUE if user was logged in, otherwise FALSE.
- */
-function drush_drupal_login($drush_user) {
-  global $user;
-  drush_include_engine('drupal', 'user', drush_drupal_major_version());
-  if (drush_drupal_major_version() >= 8) {
-    // @todo the global $user is no longer the right way to login a user in D8.
-    $user = is_numeric($drush_user) ? user_load($drush_user) : user_load_by_name($drush_user);
-  }
-  elseif (drush_drupal_major_version() == 7) {
-    $user = is_numeric($drush_user) ? user_load($drush_user) : user_load_by_name($drush_user);
-  }
-  else {
-    $user = user_load(is_numeric($drush_user) ? array('uid' => $drush_user) : array('name' => $drush_user));
-  }
-  $name = drush_get_user_name($user);
-  $uid = drush_get_user_id($user);
-
-  if (empty($user)) {
-    if (is_numeric($drush_user)) {
-      $message = dt('Could not login with user ID #!user.', array('!user' => $drush_user));
-      if ($drush_user === 0) {
-        $message .= ' ' . dt('This is typically caused by importing a MySQL database dump from a faulty tool which re-numbered the anonymous user ID in the users table. See !link for help recovering from this situation.', array('!link' => 'http://drupal.org/node/1029506'));
-      }
-    }
-    else {
-      $message = dt('Could not login with user account `!user\'.', array('!user' => $drush_user));
-    }
-    return drush_set_error('DRUPAL_USER_LOGIN_FAILED', $message);
-  }
-  else {
-    drush_log(dt('Successfully logged into Drupal as !name', array('!name' => $name . " (uid=$uid)")), 'bootstrap');
-  }
-
-  return TRUE;
 }
 
 /**

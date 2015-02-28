@@ -147,9 +147,10 @@ function dt($string, $args = array()) {
   if (function_exists('t') && drush_drupal_major_version() == 7) {
     $output = t($string, $args);
   }
-  // The language system requires a working container which is built in DRUPAL_BOOTSTRAP_KERNEL phase.
-  else if (drush_drupal_major_version() >= 8 && function_exists('drupal_get_bootstrap_phase') && drupal_get_bootstrap_phase() >= DRUPAL_BOOTSTRAP_KERNEL) {
-    $output = t($string, $args);
+  // The language system requires a working container which has the string
+  // translation service.
+  else if (drush_drupal_major_version() >= 8 && \Drupal::hasService('string_translation')) {
+    $output = \Drupal::translation()->translate($string, $args);
   }
   else if (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
     $output = t($string, $args);

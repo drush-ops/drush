@@ -47,11 +47,28 @@ class SqlBase {
   }
 
 
+  /*
+   * Execute a SQL dump and return the path to the resulting dump file.
+   *
+   * @param string|bool @file
+   *   The path where the dump file should be stored. If TRUE, generate a path
+   *   based on usual backup directory and current date.
+   */
   public function dump($file = '') {
+    $file_suffix = '';
     $table_selection = $this->get_expanded_table_selection();
     $file = $this->dumpFile($file);
-    list($cmd, $file) = $this->dumpCmd($table_selection, $file);
-    list($cmd, $file) = $this->dumpGzip($cmd, $file);
+    $cmd = $this->dumpCmd($table_selection);
+    // Gzip the output from dump command(s) if requested.
+    if (drush_get_option('gzip')) {
+      $cmd .= ' | gzip -f';
+      $file_suffix .= '.gz';
+    }
+    if ($file) {
+      $file .= $file_suffix;
+      $cmd .= ' > ' . drush_escapeshellarg($file);
+    }
+
     // Avoid the php memory of the $output array in drush_shell_exec().
     if (!$return = drush_op_system($cmd)) {
       if ($file) {
@@ -69,15 +86,19 @@ class SqlBase {
    *
    * @param array $table_selection
    *   Supported keys: 'skip', 'structure', 'tables'.
-   * @param file
-   *   Destination for the dump file.
-   * @return array
-   *   A two item indexed array.
-   *     1. A mysqldump/pg_dump/sqlite3/etc statement that is ready for executing.
-   *     2. The filepath where the dump will be saved.
+   * @return string
+   *   One or more mysqldump/pg_dump/sqlite3/etc statements that are ready for executing.
+   *   If multiple statements are needed, enclose in parenthesis.
    */
-  public function dumpCmd($table_selection, $file) {}
+  public function dumpCmd($table_selection) {}
 
+  /*
+   * Generate a path to an output file for a SQL dump when needed.
+   *
+   * @param string|bool @file
+   *   If TRUE, generate a path based on usual backup directory and current date.
+   *   Otherwise, just return the path that was provided.
+   */
   public function dumpFile($file) {
     $database = $this->db_spec['database'];
 
@@ -100,53 +121,24 @@ class SqlBase {
     return $file;
   }
 
-  /*
-   * Bash which gzips dump file if specified.
-   *
-   * @param string $file
-   *
-   * @return array
-   */
-  function dumpGzip($cmd, $file) {
-    $suffix = '';
-    if (drush_get_option('gzip')) {
-      if ($file) {
-        $escfile = drush_escapeshellarg($file);
-        if (drush_get_context('DRUSH_AFFIRMATIVE')) {
-          // Gzip the result-file without Gzip confirmation
-          $suffix = " && gzip -f $escfile";
-          $file .= '.gz';
-        }
-        else {
-          // Gzip the result-file
-          $suffix = " && gzip $escfile";
-          $file .= '.gz';
-        }
-      }
-      else {
-        // gzip via pipe since user has not specified a file.
-        $suffix = "| gzip";
-      }
-    }
-    return array($cmd . $suffix, $file);
-  }
-
   /**
    * Execute a SQL query.
    *
    * Note: This is an API function. Try to avoid using drush_get_option() and instead
-   * get params passed in.
+   * pass params in. If you don't want to query results to print during --debug then
+   * provide a $result_file whose value can be drush_bit_bucket().
    *
    * @param string $query
-   *   The SQL to be executed. Should be NULL if $file is provided.
+   *   The SQL to be executed. Should be NULL if $input_file is provided.
    * @param string $input_file
    *   A path to a file containing the SQL to be executed.
-   * @param bool $silent
-   *   Don't print query results to screen.
    * @param string $result_file
-   *   A path to save query results to.
+   *   A path to save query results to. Can be drush_bit_bucket() if desired.
+   *
+   * @return
+   *   TRUE on success, FALSE on failure
    */
-  public function query($query, $input_file = NULL, $silent = TRUE, $result_file = '') {
+  public function query($query, $input_file = NULL, $result_file = '') {
     $input_file_original = $input_file;
     if ($input_file && drush_file_is_tarball($input_file)) {
       if (drush_shell_exec('gunzip %s', $input_file)) {
@@ -167,7 +159,7 @@ class SqlBase {
     $parts = array(
       $this->command(),
       $this->creds(),
-      $this->silent(),
+      $this->silent(), // This removes column header and various helpful things in mysql.
       drush_get_option('extra', $this->query_extra),
       $this->query_file,
       drush_escapeshellarg($input_file),
@@ -181,7 +173,7 @@ class SqlBase {
     // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
     // but the sql query itself is stored in a temp file and not displayed.
     // We show the query when --debug is used and this function created the temp file.
-    if (drush_get_context('DRUSH_DEBUG') && empty($input_file_original)) {
+    if ((drush_get_context('DRUSH_DEBUG') || drush_get_context('DRUSH_SIMULATE')) && empty($input_file_original)) {
       drush_log('sql-query: ' . $query, 'status');
     }
 
@@ -198,6 +190,7 @@ class SqlBase {
    * A string to add to the command when queries should not print their results.
    */
   public function silent() {}
+
 
   public function query_prefix($query) {
     // Inject table prefixes as needed.

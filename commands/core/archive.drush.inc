@@ -79,6 +79,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   }
   foreach ($aliases as $key => $alias) {
     $sites[$key] = $alias;
+
     if (($db_record = sitealias_get_databases_from_record($alias))) {
       $sites[$key]['databases'] = $db_record;
     }
@@ -191,8 +192,8 @@ function drush_archive_dump($sites_subdirs = '@self') {
     drush_shell_cd_and_exec($workdir, "$tar {$tar_extra_options} --exclude \"{$docroot}/sites\" {$dereference}-cf %s %s", $destination, $docroot);
     // Add sites/all to the same archive.
     drush_shell_cd_and_exec($workdir, "$tar {$tar_extra_options} {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
-    // Add special files in sites/ to the archive.
-    $files_to_add = array('sites/README.txt', 'sites/sites.php', 'sites/example.sites.php');
+    // Add special files in sites/ to the archive. Last 2 items are new in Drupal8.
+    $files_to_add = array('sites/README.txt', 'sites/sites.php', 'sites/example.sites.php', 'sites/development.services.yml', 'sites/example.settings.local.php');
     foreach ($files_to_add as $file_to_add) {
       if (file_exists($file_to_add)) {
         drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, $docroot . '/' . $file_to_add);
@@ -237,7 +238,8 @@ function drush_archive_dump($sites_subdirs = '@self') {
 
   $i=0;
   foreach ($sites as $key => $alias) {
-    if (!$status = drush_invoke_process($alias, 'core-status', array(), array(), array('integrate' => FALSE))) {
+    $status = drush_invoke_process($alias, 'core-status', array(), array(), array('integrate' => FALSE));
+    if (!$status || $status['error_log']) {
       drush_log(dt('Unable to determine sites directory for !alias', array('!alias' => $key)), 'warning');
     }
 
@@ -339,7 +341,7 @@ function drush_archive_restore($file, $site_id = NULL) {
   $destination = drush_get_option('destination', realpath('.') . "/$docroot");
 
   if ($ini['Global']['archiveformat'] == 'platform') {
-    // Move the whole platform inplace at once.
+    // Move the whole platform in-place at once.
     if (!drush_move_dir("$tmp/$docroot", $destination, drush_get_option('overwrite'))) {
       return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_RESTORE_FILES', dt('Unable to restore platform to !dest', array('!dest' => $destination)));
     }

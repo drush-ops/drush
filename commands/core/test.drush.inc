@@ -35,7 +35,7 @@ function test_drush_command() {
     ),
     'examples' => array(
       'test-run' => 'List all available classes and groups.',
-      'sudo -u apache test-run --all' => 'Run all available tests. Avoid permission related failures by running as web server user.',
+      'sudo -u apache drush test-run --all' => 'Run all available tests. Avoid permission related failures by running as web server user.',
       'test-run BootstrapPageCacheTestCase' => 'Run one test class.',
       'test-run Bootstrap' => 'Run all classes in a XML-RPC group.',
       'test-run Bootstrap,Filter' => 'Run all tests from multiple groups/classes.',
@@ -50,6 +50,7 @@ function test_drush_command() {
     ),
     'outputformat' => array(
       'default' => 'table',
+      'fields-default' => array('group', 'class'),
       'field-labels' => array(
         'group' => 'Group',
         'class' => 'Class',
@@ -79,7 +80,8 @@ function test_drush_command() {
  *  Array of test classes and groups.
  */
 function test_test_run_complete() {
-  if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL) == DRUSH_BOOTSTRAP_DRUPAL_FULL && module_exists('simpletest')) {
+  drush_include_engine('drupal', 'environment');
+  if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL) == DRUSH_BOOTSTRAP_DRUPAL_FULL && drush_module_exists('simpletest')) {
     // Retrieve all tests and groups.
     list($groups, $all_tests) = drush_test_get_all_tests();
     return array('values' => array_keys($groups) + $all_tests);
@@ -106,7 +108,7 @@ function drush_test_run_validate($specs = NULL) {
  *   A comma delimited string of test classes or group names.
  */
 function drush_test_run($specs = NULL) {
-  if (drush_drupal_major_version() > 7) {
+  if (drush_drupal_major_version() >= 8) {
     // \Drupal::cache('simpletest')->delete();
   }
   else {
@@ -197,10 +199,24 @@ function simpletest_drush_run_test($class) {
     $test->run();
   }
 
-  $info = $test->getInfo();
+  if (drush_drupal_major_version() >= 8) {
+    $info = \Drupal\simpletest\TestDiscovery::getTestInfo(new \ReflectionClass($test));
+  } else {
+    $info = $test->getInfo();
+  }
   $status = ((isset($test->results['#fail']) && $test->results['#fail'] > 0)
           || (isset($test->results['#exception']) && $test->results['#exception'] > 0) ? 'error' : 'ok');
-  drush_log($info['name'] . ' ' . _simpletest_format_summary_line($test->results), $status);
+  if (drush_drupal_major_version() >= 8) {
+    $results = array(
+      'pass' => $test->results['#pass'],
+      'fail' => $test->results['#fail'],
+      'exception' => $test->results['#exception'],
+      'debug' => $test->results['#debug']
+    );
+  } else {
+    $results = $test->results;
+  }
+  drush_log($info['name'] . ' ' . _simpletest_format_summary_line($results), $status);
 
   $test_suites = drush_test_get_results($test_id, $info);
   if ($dir = drush_get_option('xml')) {

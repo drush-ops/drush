@@ -126,14 +126,13 @@ function drush_core_runserver($uri = NULL) {
 
   // We log in with the specified user ID (if set) via the password reset URL.
   $user_message = '';
-  drush_include_engine('drupal', 'user', drush_drupal_major_version());
-  if (drush_get_user_id()) {
-    $options = array('query' => array('destination' => $path));
-    $browse = url(user_pass_reset_url($user) . '/login', $options);
-    $user_message = ', logged in as ' . drush_get_user_name();
+  $usersingle = drush_user_get_class()->getCurrentUserAsSingle();
+  if ($usersingle->id()) {
+    $browse = $usersingle->passResetUrl($path);
+    $user_message = ', logged in as ' . $usersingle->getUsername();
   }
   else {
-    $browse = url($path);
+    $browse = drush_url($path);
   }
 
   drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
@@ -149,7 +148,13 @@ function drush_core_runserver($uri = NULL) {
   }
   // Start the server using 'php -S'.
   $php = drush_get_option('php');
-  drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"');
+  if (drush_drupal_major_version() >=8) {
+    $extra = ' "' . __DIR__ . '/d8-rs-router.php"';
+  }
+  else {
+    $extra = ' --define auto_prepend_file="' . __DIR__ . '/runserver-prepend.php"';
+  }
+  drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . $extra);
 }
 
 /**

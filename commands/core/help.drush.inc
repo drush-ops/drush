@@ -52,6 +52,11 @@ function drush_print_help($command) {
   drush_print(wordwrap(implode("\n", $help), drush_get_context('DRUSH_COLUMNS', 80)));
   drush_print();
 
+  $global_options = drush_get_global_options();
+  foreach ($command['global-options'] as $global_option) {
+    $command['options'][$global_option] = $global_options[$global_option];
+  }
+
   // Sort command options.
   uksort($command['options'], '_drush_help_sort_command_options');
 
@@ -170,6 +175,7 @@ function drush_format_help_section($command, $section) {
  *   Formatted rows, suitable for printing via drush_print_table.
  */
 function _drush_format_help_subsection($command, $section, $subsection, $formatter, $prefix = '  ') {
+  $rows = array();
   foreach ($command['sub-' . $section][$subsection] as $name => $help_attributes) {
     if (!is_array($help_attributes)) {
       $help_attributes = array('description' => $help_attributes);

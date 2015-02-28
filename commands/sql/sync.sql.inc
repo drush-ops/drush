@@ -14,6 +14,25 @@
  */
 
 /*
+ * Implements COMMAND hook init.
+ */
+function drush_sql_sync_init($source, $destination) {
+  // Try to get @self defined when --uri was not provided.
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+
+  // Preflight destination in case it defines the alias used by the source
+  _drush_sitealias_get_record($destination);
+
+  // After preflight, get source and destination settings
+  $source_settings = drush_sitealias_get_record($source);
+  $destination_settings = drush_sitealias_get_record($destination);
+
+  // Apply command-specific options.
+  drush_sitealias_command_default_options($source_settings, 'source-');
+  drush_sitealias_command_default_options($destination_settings, 'target-');
+}
+
+/*
  * A command validate callback.
  */
 function drush_sql_sync_validate($source, $destination) {
@@ -24,6 +43,7 @@ function drush_sql_sync_validate($source, $destination) {
   $target_db_url = drush_sitealias_get_db_spec($destination_settings, FALSE, 'target-');
   $txt_source = (isset($source_db_url['remote-host']) ? $source_db_url['remote-host'] . '/' : '') . $source_db_url['database'];
   $txt_destination = (isset($target_db_url['remote-host']) ? $target_db_url['remote-host'] . '/' : '') . $target_db_url['database'];
+
   // Validate.
   if (empty($source_db_url)) {
     if (empty($source_settings)) {
@@ -42,17 +62,19 @@ function drush_sql_sync_validate($source, $destination) {
   }
 
   if (drush_get_option('no-dump') && !drush_get_option('source-dump')) {
-    return drush_set_error(DRUSH_SOURCE_DUMP_MISSING, dt('The --source-dump option must be supplied when --no-dump is specified.'));
+    return drush_set_error('DRUSH_SOURCE_DUMP_MISSING', dt('The --source-dump option must be supplied when --no-dump is specified.'));
   }
 
   if (drush_get_option('no-sync') && !drush_get_option('target-dump')) {
-    return drush_set_error(DRUSH_TARGET_DUMP_MISSING, dt('The --target-dump option must be supplied when --no-sync is specified.'));
+    return drush_set_error('DRUSH_TARGET_DUMP_MISSING', dt('The --target-dump option must be supplied when --no-sync is specified.'));
   }
 
-  drush_print(dt("You will destroy data in !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
-  // @todo Move sanitization prompts to here. They currently show much later.
-  if (!drush_confirm(dt('Do you really want to continue?'))) {
-    return drush_user_abort();
+  if (!drush_get_context('DRUSH_SIMULATE')) {
+    drush_print(dt("You will destroy data in !target and replace with data from !source.", array('!source' => $txt_source, '!target' => $txt_destination)));
+    // @todo Move sanitization prompts to here. They currently show much later.
+    if (!drush_confirm(dt('Do you really want to continue?'))) {
+      return drush_user_abort();
+    }
   }
 }
 
@@ -60,16 +82,33 @@ function drush_sql_sync_validate($source, $destination) {
  * A command callback.
  */
 function drush_sql_sync($source, $destination) {
+  // Get destination info for confirmation prompt.
+  $source_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($source), 'source-');
+  $destination_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($destination), 'target-');
+
+  $source_is_local = !array_key_exists('remote-host', $source_settings) || drush_is_local_host($source_settings);
+  $destination_is_local = !array_key_exists('remote-host', $destination_settings) || drush_is_local_host($destination_settings);
+
+  $backend_options = array();
   $global_options = drush_redispatch_get_options() + array(
      'strict' => 0,
   );
+  // We do not want to include root or uri here.  If the user
+  // provided -r or -l, their key has already been remapped to
+  // 'root' or 'uri' by the time we get here.
+  unset($global_options['root']);
+  unset($global_options['uri']);
+
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    $backend_options['backend-simulate'] = TRUE;
+  }
 
   // Create destination DB if needed.
   if (drush_get_option('create-db')) {
     drush_log(dt('Starting to create database on Destination.'), 'ok');
-    $return = drush_invoke_process($destination, 'sql-create', array(), $global_options);
+    $return = drush_invoke_process($destination, 'sql-create', array(), $global_options, $backend_options);
     if ($return['error_status']) {
-      return drush_set_error('sql-create failed.');
+      return drush_set_error('DRUSH_SQL_CREATE_FAILED', dt('sql-create failed.'));
     }
   }
 
@@ -81,22 +120,29 @@ function drush_sql_sync($source, $destination) {
     );
   if (!drush_get_option('no-dump')) {
     drush_log(dt('Starting to dump database on Source.'), 'ok');
-    $return = drush_invoke_process($source, 'sql-dump', array(), $options);
+    $return = drush_invoke_process($source, 'sql-dump', array(), $options, $backend_options);
     if ($return['error_status']) {
-      return drush_set_error('sql-dump failed.');
+      return drush_set_error('DRUSH_SQL_DUMP_FAILED', dt('sql-dump failed.'));
     }
     else {
       $source_dump_path = $return['object'];
+      if (!is_string($source_dump_path)) {
+        return drush_set_error('DRUSH_SQL_DUMP_FILE_NOT_REPORTED', dt('The Drush sql-dump command did not report the path to the dump file produced.  Try upgrading the version of Drush you are using on the source machine.'));
+      }
     }
   }
   else {
     $source_dump_path = drush_get_option('source-dump');
   }
-
+  $do_rsync = !drush_get_option('no-sync');
   // Determine path/to/dump on destination.
   if (drush_get_option('target-dump')) {
     $destination_dump_path = drush_get_option('target-dump');
     $rsync_options['yes'] = TRUE;  // @temporary: See https://github.com/drush-ops/drush/pull/555
+  }
+  elseif ($source_is_local && $destination_is_local) {
+    $destination_dump_path = $source_dump_path;
+    $do_rsync = false;
   }
   else {
     $tmp = '/tmp'; // Our fallback plan.
@@ -108,8 +154,7 @@ function drush_sql_sync($source, $destination) {
     $destination_dump_path = $tmp . '/' . basename($source_dump_path);
     $rsync_options['yes'] = TRUE;  // No need to prompt as destination is a tmp file.
   }
-
-  if (!drush_get_option('no-sync')) {
+  if ($do_rsync) {
     if (!drush_get_option('no-dump')) {
       // Cleanup if this command created the dump file.
       $rsync_options['remove-source-files'] = TRUE;
@@ -127,10 +172,10 @@ function drush_sql_sync($source, $destination) {
       // @todo Add an option for choosing runner? Resolve aliases before rsync?
       $runner = $destination;
     }
-    $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "@self:$destination_dump_path"), $rsync_options);
+    $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path"), $rsync_options);
     drush_log(dt('Copying dump file from Source to Destination.'), 'ok');
     if ($return['error_status']) {
-      return drush_set_error('core-rsync failed.');
+      return drush_set_error('DRUSH_RSYNC_FAILED', dt('core-rsync failed.'));
     }
   }
 
@@ -140,7 +185,7 @@ function drush_sql_sync($source, $destination) {
     'file' => $destination_dump_path,
     'file-delete' => TRUE,
   );
-  $return = drush_invoke_process($destination, 'sql-query', array(), $options);
+  $return = drush_invoke_process($destination, 'sql-query', array(), $options, $backend_options);
   if ($return['error_status']) {
     // An error was already logged.
     return FALSE;
@@ -150,9 +195,9 @@ function drush_sql_sync($source, $destination) {
   $options = $global_options + array();
   if (drush_get_option('sanitize')) {
     drush_log(dt('Starting to sanitize target database on Destination.'), 'ok');
-    $return = drush_invoke_process($destination, 'sql-sanitize', array(), $options);
+    $return = drush_invoke_process($destination, 'sql-sanitize', array(), $options, $backend_options);
     if ($return['error_status']) {
-      return drush_set_error('sql-sanitize failed.');
+      return drush_set_error('DRUSH_SQL_SANITIZE_FAILED', dt('sql-sanitize failed.'));
     }
   }
 }

@@ -2,7 +2,6 @@
 
 namespace Drush\Role;
 
-// For D8+.
 use Drupal\user\Entity\Role;
 
 class Role8 extends Role7 {
@@ -32,9 +31,20 @@ class Role8 extends Role7 {
     return $perms;
   }
 
+  public function getAllModulePerms() {
+    $perms = \Drupal::service('user.permissions')->getPermissions();
+    return array_keys($perms);
+  }
+
   public function getModulePerms($module) {
-    $perms = module_invoke($module, 'permission');
-    return $perms ? array_keys($perms) : array();
+    $module_perms = array();
+    $perms = \Drupal::service('user.permissions')->getPermissions();
+    foreach ($perms as $name => $perm) {
+      if ($perm['provider'] == $module) {
+        $module_perms[] = $name;
+      }
+    }
+    return $module_perms;
   }
 
   public function delete() {

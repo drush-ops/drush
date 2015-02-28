@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Wrappers to abstract database operations from Drupal version.
+ */
+
+/**
  * @defgroup dbfunctions Database convenience functions.
  * @{
  */

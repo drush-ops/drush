@@ -160,6 +160,40 @@ function drush_module_uninstall($modules) {
 }
 
 /**
+ * Checks that a given module exists and is enabled.
+ *
+ * @see module_exists().
+ *
+ */
+function drush_module_exists($module) {
+  return module_exists($module);
+}
+
+/**
+ * Determines which modules are implementing a hook.
+ *
+ */
+function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
+  return module_implements($hook, $sort, $reset);
+}
+
+/**
+  * Invokes a hook in a particular module.
+  *
+  */
+function drush_module_invoke($module, $hook) {
+  return module_invoke($module, $hook);
+}
+
+/**
+  * Invokes a hook in all enabled modules that implement it.
+  *
+  */
+function drush_module_invoke_all($hook) {
+  return module_invoke_all($hook);
+}
+
+/**
  * Submit the system modules form.
  *
  * The modules should already be fully enabled/disabled before calling this
@@ -273,31 +307,6 @@ function drush_watchdog_message_types() {
   return drupal_map_assoc(_dblog_get_message_types());
 }
 
-/**
- * Returns a queue object.
- */
-function drush_queue_get($name) {
-  return DrupalQueue::get($name);
-}
-
-/**
- * Returns all defined queues.
- */
-function drush_queue_get_queues() {
-  static $queues;
-  if (!isset($queues)) {
-    $queues = module_invoke_all('cron_queue_info');
-    drupal_alter('cron_queue_info', $queues);
-    foreach($queues as $name => $queue) {
-      $queues[$name]['worker callback'] = $queue['worker callback'];
-      if (isset($queue['time'])) {
-        $queues[$name]['cron']['time'] = $queue['time'];
-      }
-    }
-  }
-  return $queues;
-}
-
 function _drush_theme_default() {
   return variable_get('theme_default', 'garland');
 }
@@ -350,4 +359,18 @@ function _drush_extension_get_type($info) {
  */
 function _drush_extension_get_path($info) {
   return dirname($info->filename);
+}
+
+/*
+ * Wrapper for CSRF token generation.
+ */
+function drush_get_token($value = NULL) {
+  return drupal_get_token($value);
+}
+
+/*
+ * Wrapper for _url().
+ */
+function drush_url($path = NULL, $options = array()) {
+  return url($path, $options);
 }

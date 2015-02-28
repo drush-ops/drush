@@ -1,0 +1,22 @@
+site_name: Drush docs
+pages:
+  - [index.md, 'Home']
+  - [install.md, 'General', 'Install']
+  - [configure.md, 'General', 'Configure']
+  - [usage.md, 'General', 'Usage']
+  - [examples.md, 'General', 'Example files']
+  - [cron.md, 'General', 'Cron']
+  - [make.md, 'General', 'Make']
+  - [output-formats.md, 'General', 'Output formats']
+  - [shellaliases.md, 'General', 'Shell aliases']
+  - [shellscripts.md, 'General', 'Shell scripts']
+  - [strict-options.md, 'General', 'Strict options']
+  - [bastion.md, 'General', 'Bastion']
+  - [commands.md, 'Writing commands', 'Command Authoring']
+  - [bootstrap.md, 'Writing commands', 'Bootstrap']
+  - [context.md, 'Writing commands', 'Context system']
+theme: readthedocs
+site_author: ""
+repo_url: https://github.com/drush-ops/drush
+include_search: true
+#use_directory_urls: false

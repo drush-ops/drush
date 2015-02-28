@@ -244,9 +244,9 @@ function drush_complete_process_argv() {
   drush_set_command(NULL);
   // Reparse arguments, site alias, and command.
   drush_parse_args();
-  // Ensure the base environment is configures, so tests look in the correct
+  // Ensure the base environment is configured, so tests look in the correct
   // places.
-  _drush_bootstrap_base_environment();
+  _drush_preflight_base_environment();
   // Check for and record any site alias.
   drush_sitealias_check_arg();
   drush_sitealias_check_site_env();
@@ -407,7 +407,12 @@ function drush_hyphenate_options($options) {
  *   List of candidate completions.
  */
 function drush_complete_get($type, $command = NULL) {
+  static $complete;
   if (empty($command)) {
+    // Quick return if we already have a complete static cache.
+    if (!empty($complete[$type])) {
+      return $complete[$type];
+    }
     // Retrieve global items from a non-command specific cache, or rebuild cache
     // if needed.
     $cache = drush_cache_get(drush_complete_cache_cid($type), 'complete');
@@ -427,7 +432,9 @@ function drush_complete_get($type, $command = NULL) {
     return drush_complete_rebuild_arguments($command);
   }
   // Rebuild cache of general command specific items.
-  $complete = drush_complete_rebuild();
+  if (empty($complete)) {
+    $complete = drush_complete_rebuild();
+  }
   if (!empty($complete['commands'][$command][$type])) {
     return $complete['commands'][$command][$type];
   }
@@ -444,7 +451,7 @@ function drush_complete_rebuild() {
   $complete = array();
   // Bootstrap to the site level (if possible) - commands may need to check
   // the bootstrap level, and perhaps bootstrap higher in extraordinary cases.
-  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
   $commands = drush_get_commands();
   foreach ($commands as $command_name => $command) {
     // Add command options and suboptions.

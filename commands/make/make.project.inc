@@ -204,8 +204,7 @@ class DrushMakeProject {
     // This directory shouldn't exist yet -- if it does, stop,
     // unless overwrite has been set to TRUE.
     if (is_dir($this->download_location) && !$this->overwrite) {
-      drush_set_error('MAKE_DIRECTORY_EXISTS', dt('Directory not empty: !directory', array('!directory' => $this->download_location)));
-      return FALSE;
+      return drush_set_error('MAKE_DIRECTORY_EXISTS', dt('Directory not empty: !directory', array('!directory' => $this->download_location)));
     }
     elseif ($this->download['type'] === 'pm') {
       // pm-download will create the final contrib directory.
@@ -379,7 +378,14 @@ class DrushMakeProject {
       }
     }
     require_once dirname(__FILE__) . '/../pm/pm.drush.inc';
-    drush_pm_inject_info_file_metadata($this->download_location, $this->name, $full_version);
+    if (drush_shell_cd_and_exec($this->download_location, 'git log -1 --pretty=format:%ct')) {
+      $output = drush_shell_exec_output();
+      $datestamp = $output[0];
+    }
+    else {
+      $datestamp = time();
+    }
+    drush_pm_inject_info_file_metadata($this->download_location, $this->name, $full_version, $datestamp);
   }
 
   /**
@@ -529,13 +535,24 @@ class DrushMakeProject {
                 array("!project" => $this->name)), 'notice');
       return TRUE;
     }
-    $makefile = $this->download_location . '/' . $this->name . '.make';
-    if (!file_exists($makefile)) {
-      $makefile = $this->download_location . '/drupal-org.make';
-      if (!file_exists($makefile)) {
-        return TRUE;
+    $candidates = array(
+      $this->name . '.make.yml',
+      $this->name . '.make',
+      'drupal-org.make.yml',
+      'drupal-org.make',
+    );
+    $makefile = FALSE;
+    foreach ($candidates as $filename) {
+      if (file_exists($this->download_location . '/' . $filename)) {
+        $makefile = $this->download_location . '/' . $filename;
+        break;
       }
     }
+
+    if (!$makefile) {
+      return TRUE;
+    }
+
     drush_log(dt("Found makefile: !makefile", array("!makefile" => basename($makefile))), 'ok');
 
     // Save the original state of the 'custom' context.
@@ -589,8 +606,7 @@ class DrushMakeProject_Core extends DrushMakeProject {
     $this->path = $this->download_location = $this->generatePath();
     $this->project_directory = '';
     if (is_dir($this->download_location)) {
-      drush_set_error('MAKE_DIRECTORY_EXISTS', dt('Directory not empty: !directory', array('!directory' => $this->download_location)));
-      return FALSE;
+      return drush_set_error('MAKE_DIRECTORY_EXISTS', dt('Directory not empty: !directory', array('!directory' => $this->download_location)));
     }
     elseif ($this->download['type'] === 'pm') {
       // pm-download will create the final __build__ directory, so nothing to do

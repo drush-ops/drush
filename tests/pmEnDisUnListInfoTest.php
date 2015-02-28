@@ -51,14 +51,16 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));
-    // In D7, the testing profile uses 'bartik', whereas in D8, 'stark' is used.
-    $themeToCheck = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'stark' : (UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'bartik' : 'garland');
+    // In D7, the testing profile uses 'bartik', whereas in D8, 'classy' is used.
+    $themeToCheck = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'classy' : (UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'bartik' : 'garland');
     $this->assertTrue(in_array($themeToCheck, $list), 'Themes are in the pm-list');
 
-    $path = UNISH_DRUPAL_MAJOR_VERSION >= 7 ? 'devel/settings' : 'admin/settings/devel';
-    $this->drush('sql-query', array("SELECT path FROM menu_router WHERE path = '$path';"), array('root' => $this->webroot(), 'uri' => key($sites)));
-    $list = $this->getOutputAsList();
-    $this->assertTrue(in_array($path, $list), 'Cache was cleared after modules were enabled');
+    if (UNISH_DRUPAL_MAJOR_VERSION <= 7) {
+      $path = UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'devel/settings' : 'admin/settings/devel';
+      $this->drush('sql-query', array("SELECT path FROM menu_router WHERE path = '$path';"), array('root' => $this->webroot(), 'uri' => key($sites)));
+      $list = $this->getOutputAsList();
+      $this->assertTrue(in_array($path, $list), 'Cache was cleared after modules were enabled');
+    }
 
     $this->drush('pm-list', array(), $options + array('package' => 'Core'));
     $list = $this->getOutputAsList();

@@ -1,90 +1,63 @@
 <?php
 
-namespace Unish;
 /**
-  * pm testing
-  *
-  * @group pm
-  */
-class releaseInfoCase extends UnitUnishTestCase {
+ * @file
+ * Tests for release_info engine.
+ */
 
-  /**
-   * Parse Drupal version and release from project specification.
-   *
-   * @see pm_parse_project_version().
-   */
-  public function testVersionString() {
-    _drush_add_commandfiles(array(DRUSH_BASE_PATH . '/commands/pm'));
-    $request_data = pm_parse_project_version(array('devel-6.x-1.18'));
-    $this->assertArrayHasKey('devel', $request_data);
-    $this->assertEquals('6.x', $request_data['devel']['drupal_version']);
-    $this->assertEquals('1.18', $request_data['devel']['project_version']);
-  }
+namespace Unish;
+
+require "lib/Drush/Boot/bootstrap.inc";
+
+/**
+ * pm testing
+ *
+ * @group pm
+ */
+class releaseInfoCase extends UnitUnishTestCase {
 
   /**
    * Pick right release from the XML (dev, latest published+recommended, ...).
    */
   public function testReleaseXML() {
     _drush_add_commandfiles(array(DRUSH_BASE_PATH . '/commands/pm'));
-    drush_include_engine('release_info', 'updatexml');
+    $release_info = drush_include_engine('release_info', 'updatexml');
 
     // Use a local, static XML file because live files change over time.
     $xml = simplexml_load_file(dirname(__FILE__). '/devel.xml');
+    $project_release_info = new \Drush\UpdateService\Project($xml);
 
     // Pick specific release.
-    $request_data = array(
-      'name' => 'devel',
-      'drupal_version' => '6.x',
-      'project_version' => '1.18',
-      'version' => '6.x-1.18',
-    );
-    $release = updatexml_parse_release($request_data, $xml);
+    $release = $project_release_info->getSpecificRelease('6.x-1.18');
     $this->assertEquals('6.x-1.18', $release['version']);
 
     // Pick latest recommended+published with no further specification.
     // 6.x-2.2 is skipped because it is unpublished.
     // 6.x-2.2-rc1 is skipped because it is not a stable release.
-    $request_data = array(
-      'name' => 'devel',
-      'drupal_version' => '6.x',
-    );
-    $release = updatexml_parse_release($request_data, $xml);
+    $release = $project_release_info->getRecommendedOrSupportedRelease();
     $this->assertEquals('6.x-2.1', $release['version']);
 
     // Pick latest from a specific branch.
-    $request_data = array(
-      'name' => 'devel',
-      'drupal_version' => '6.x',
-      'version' => '6.x-1',
-    );
-    $release = updatexml_parse_release($request_data, $xml);
+    $release = $project_release_info->getSpecificRelease('6.x-1');
     $this->assertEquals('6.x-1.23', $release['version']);
 
     // Pick latest from a different branch.
-    $request_data = array(
-      'name' => 'devel',
-      'drupal_version' => '6.x',
-      'version' => '6.x-2',
-    );
-    $release = updatexml_parse_release($request_data, $xml);
     // 6.x-2.2 is skipped because it is unpublished.
     // 6.x-2.2-rc1 is skipped because it is not a stable release.
+    $release = $project_release_info->getSpecificRelease('6.x-2');
     $this->assertEquals('6.x-2.1', $release['version']);
 
     // Pick a -dev release.
-    $request_data = array(
-      'name' => 'devel',
-      'drupal_version' => '6.x',
-      'version' => '6.x-1.x',
-    );
-    $release = updatexml_parse_release($request_data, $xml);
+    $release = $project_release_info->getSpecificRelease('6.x-1.x');
     $this->assertEquals('6.x-1.x-dev', $release['version']);
 
-    // Test $restrict_to parameter.
-    $request_data['version'] = '6.x-1';
-    $release = updatexml_parse_release($request_data, $xml, 'version');
+    // Test UpdateServiceProject::getSpecificRelease().
+    // Test we get latest release in branch 1.
+    $release = $project_release_info->getSpecificRelease('6.x-1');
     $this->assertEquals('6.x-1.23', $release['version']);
-    $release = updatexml_parse_release($request_data, $xml, 'dev');
+
+    // Test UpdateServiceProject::getDevRelease().
+    $release = $project_release_info->getDevRelease();
     $this->assertEquals('6.x-1.x-dev', $release['version']);
   }
 }

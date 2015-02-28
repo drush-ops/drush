@@ -1,13 +1,19 @@
 <?php
 
 /**
+ * @file
+ * Definition of Drush\Cache\FileCache.
+ */
+
+namespace Drush\Cache;
+
+/**
  * Default cache implementation.
  *
  * This cache implementation uses plain text files
  * containing serialized php to store cached data. Each cache bin corresponds
  * to a directory by the same name.
  */
-namespace Drush\Cache;
 class FileCache implements CacheInterface {
   const EXTENSION = '.cache';
   protected $bin;
@@ -17,6 +23,11 @@ class FileCache implements CacheInterface {
     $this->directory = $this->cacheDirectory();
   }
 
+   /**
+    * Returns the cache directory for the given bin.
+    *
+    * @param string $bin
+    */
   function cacheDirectory($bin = NULL) {
     $bin = $bin ? $bin : $this->bin;
     return drush_directory_cache($bin);
@@ -48,19 +59,24 @@ class FileCache implements CacheInterface {
     }
   }
 
+  /**
+   * Returns the contents of the given filename unserialized.
+   *
+   * @param string $filename
+   *   Absolute path to filename to read contents from.
+   */
   function readFile($filename) {
     $item = file_get_contents($filename);
     return $item ? unserialize($item) : FALSE;
   }
 
-  function set($cid, $data, $expire = DRUSH_CACHE_PERMANENT, array $headers = NULL) {
+  function set($cid, $data, $expire = DRUSH_CACHE_PERMANENT) {
     $created = time();
 
     $cache = new \stdClass;
     $cache->cid = $cid;
     $cache->data = is_object($data) ? clone $data : $data;
     $cache->created = $created;
-    $cache->headers = $headers;
     if ($expire == DRUSH_CACHE_TEMPORARY) {
       $cache->expire = $created + 2591999;
     }
@@ -80,6 +96,14 @@ class FileCache implements CacheInterface {
     return $this->writeFile($filename, $cache);
   }
 
+  /**
+   * Serializes data and write it to the given filename.
+   *
+   * @param string $filename
+   *   Absolute path to filename to write cache data.
+   * @param $cache
+   *   Cache data to serialize and write to $filename.
+   */
   function writeFile($filename, $cache) {
     return file_put_contents($filename, serialize($cache));
   }
@@ -105,14 +129,15 @@ class FileCache implements CacheInterface {
       }
 
       foreach ($files as $f) {
-        // Delete immediately instead of drush_register_file_for_deletion().
-        unlink($f);
+        if (file_exists($f)) {
+          unlink($f);
+        }
       }
     }
   }
 
   function isEmpty() {
-    $files = drush_scan_directory($dir, "//", array('.', '..'));
+    $files = drush_scan_directory($this->directory, "//", array('.', '..'));
     return empty($files);
   }
 
@@ -121,6 +146,7 @@ class FileCache implements CacheInterface {
    *
    * @param $cid
    *   The cache ID of the data to retrieve.
+   *
    * @return
    *   The full path to the cache file.
    */

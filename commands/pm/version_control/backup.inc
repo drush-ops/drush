@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush pm directory copy backup extension
+ * @file
+ * Drush pm directory copy backup extension
  */
 
 class drush_version_control_backup implements drush_version_control {
@@ -11,6 +12,10 @@ class drush_version_control_backup implements drush_version_control {
    */
   public function pre_update(&$project, $items_to_test = array()) {
     if (drush_get_option('no-backup', FALSE)) {
+      // Delete the project path to clean up files that should be removed
+      if (!drush_delete_dir($project['full_project_path'])) {
+        return FALSE;
+      }
       return TRUE;
     }
     if ($backup_target = $this->prepare_backup_dir()) {

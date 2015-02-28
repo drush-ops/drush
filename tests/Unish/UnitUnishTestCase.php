@@ -25,15 +25,15 @@ abstract class UnitUnishTestCase extends UnishTestCase {
    */
   public static function setUpBeforeClass() {
     parent::setUpBeforeClass();
-    require_once(__DIR__ . '/../../includes/bootstrap.inc');
-    drush_bootstrap_prepare();
+    require_once(__DIR__ . '/../../includes/preflight.inc');
+    drush_preflight_prepare();
     // Need to set DRUSH_COMMAND so that drush will be called and not phpunit
     define('DRUSH_COMMAND', UNISH_DRUSH);
   }
 
   public static function tearDownAfterClass() {
     parent::tearDownAfterClass();
-    drush_bootstrap_finish();
+    \drush_postflight();
   }
 
   function drush_major_version() {

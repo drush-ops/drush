@@ -39,6 +39,9 @@ function config_drush_command() {
         'example-value' => 'active',
         'value' => 'required',
       ),
+      'include-overridden' => array(
+        'description' => 'Include overridden values.',
+      )
     ),
     'examples' => array(
       'drush config-get system.site' => 'Displays the system.site config.',
@@ -94,13 +97,14 @@ function config_drush_command() {
   $items['config-import'] = array(
     'description' => 'Import config from a config directory.',
     'arguments' => array(
-      'source' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
+      'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
     ),
     'options' => array(
       'preview' => array(
         'description' => 'Format for displaying proposed changes. Recognized values: list, diff. Defaults to list',
         'example-value' => 'list',
       ),
+      'source' => 'An arbitrary directory that holds the configuration files. An alternative to label argument',
     ),
     'core' => array('8+'),
     'aliases' => array('cim'),
@@ -112,11 +116,6 @@ function config_drush_command() {
     'aliases' => array('cli'),
     'arguments' => array(
       'prefix' => 'The config prefix. For example, "system". No prefix will return all names in the system.',
-    ),
-    'options' => array(
-      'format' => array(
-        'description' => 'Define the output format. Known formats are: json, print_r, and export.',
-      ),
     ),
     'examples' => array(
       'drush config-list system' => 'Return a list of all system config names.',
@@ -208,7 +207,7 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
     return drush_set_error('DRUSH_CONFIG_ERROR', dt('No config value specified.'));
   }
 
-  $config = Drupal::config($config_name);
+  $config = Drupal::configFactory()->getEditable($config_name);
   // Check to see if config key already exists.
   if ($config->get($key) === NULL) {
     $new_key = TRUE;
@@ -294,10 +293,11 @@ function drush_config_export($destination = NULL) {
     if (!drush_confirm(dt('The current contents of your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
       return drush_user_abort();
     }
-    drush_delete_dir_contents($destination_dir, TRUE);
+    // Only delete .yml files, and not .htaccess or .git.
+    drush_scan_directory($destination_dir, '/\.yml$/', array('.', '..'), 'unlink');
   }
 
-  // Empty destination dir and then write all .yml files there.
+  // Write all .yml files.
   $source_storage = Drupal::service('config.storage');
   $destination_storage = new FileStorage($destination_dir);
   foreach ($source_storage->listAll() as $name) {
@@ -321,24 +321,40 @@ function drush_config_export($destination = NULL) {
   }
 }
 
+function drush_config_import_validate() {
+  if ($source = drush_get_option('source')) {
+    if (!file_exists($source)) {
+      return drush_set_error('config_import_target', 'The source directory does not exist.');
+    }
+    if (!is_dir($source)) {
+      return drush_set_error('config_import_target', 'The source is not a directory.');
+    }
+  }
+}
+
 /**
  * Command callback. Import from specified config directory (defaults to staging).
  */
 function drush_config_import($source = NULL) {
   global $config_directories;
 
-  $choices = drush_map_assoc(array_keys($config_directories));
-  unset($choices[CONFIG_ACTIVE_DIRECTORY]);
-  if (!isset($source) && count($choices) >= 2) {
-    $source= drush_choice($choices, 'Choose a source.');
-    if (empty($source)) {
-      return drush_user_abort();
+  if ($target = drush_get_option('source')) {
+    $source_dir = $target;
+  }
+  else {
+    $choices = drush_map_assoc(array_keys($config_directories));
+    unset($choices[CONFIG_ACTIVE_DIRECTORY]);
+    if (!isset($source) && count($choices) >= 2) {
+      $source= drush_choice($choices, 'Choose a source.');
+      if (empty($source)) {
+        return drush_user_abort();
+      }
     }
+    elseif (!isset($source)) {
+      $source = CONFIG_STAGING_DIRECTORY;
+    }
+    $source_dir = config_get_config_directory($source);
   }
-  elseif (!isset($source)) {
-    $source = CONFIG_STAGING_DIRECTORY;
-  }
-  $source_dir = config_get_config_directory($source);
 
   // Retrieve a list of differences between the active and source configuration (if any).
   $active_storage = Drupal::service('config.storage');
@@ -359,7 +375,7 @@ function drush_config_import($source = NULL) {
     $destination_dir = drush_tempdir();
     drush_invoke_process('@self', 'config-export', array(), array('destination' => $destination_dir));
     // @todo Can DiffFormatter produce a CLI pretty diff?
-    drush_shell_exec('diff -u %s %s', $destination_dir, $source_dir);
+    drush_shell_exec('diff -x %s -u %s %s', '*.git', $destination_dir, $source_dir);
     $output = drush_shell_exec_output();
     drush_print(implode("\n", $output));
   }
@@ -369,7 +385,7 @@ function drush_config_import($source = NULL) {
   }
 }
 
-// Copied from submitForm() at /core/modules/config/lib/Drupal/config/Form/ConfigSync.php
+// Copied from submitForm() at /core/modules/config/src/Form/ConfigSync.php
 function _drush_config_import(StorageComparer $storage_comparer) {
   $config_importer = new ConfigImporter(
     $storage_comparer,
@@ -378,6 +394,7 @@ function _drush_config_import(StorageComparer $storage_comparer) {
     Drupal::lock(),
     Drupal::service('config.typed'),
     Drupal::moduleHandler(),
+    Drupal::service('module_installer'),
     Drupal::service('theme_handler'),
     Drupal::service('string_translation')
   );
@@ -408,7 +425,7 @@ function _drush_config_import(StorageComparer $storage_comparer) {
 function drush_config_edit($config_name = '') {
   // Identify and validate input.
   if ($config_name) {
-    $config = Drupal::config($config_name);
+    $config = Drupal::configFactory()->getEditable($config_name);
     if ($config->isNew()) {
       return drush_set_error(dt('Config !name does not exist', array('!name' => $config_name)));
     }
@@ -421,7 +438,7 @@ function drush_config_edit($config_name = '') {
     }
     else {
       $config_name = $config_names[$choice];
-      $config = Drupal::config($config_name);
+      $config = Drupal::configFactory()->getEditable($config_name);
     }
   }
 
@@ -454,14 +471,25 @@ function drush_config_edit($config_name = '') {
  */
 function drush_config_get_object($config_name) {
   $source = drush_get_option('source', 'active');
-  if ($source == 'active') {
+  $include_overridden = drush_get_option('include-overridden', FALSE);
+
+  if ($include_overridden) {
+    // Displaying overrides only applies to active storage.
+    $config = \Drupal::config($config_name);
+    $data = $config->get();
+  }
+  elseif ($source == 'active') {
     $config = \Drupal::service('config.storage');
+    $data = $config->read($config_name);
   }
   elseif ($source == 'staging') {
-    $config = \Drupal::service('config.storage');
+    $config = \Drupal::service('config.storage.staging');
+    $data = $config->read($config_name);
+  }
+  else {
+    return drush_set_error(dt('Unknown value !value for config source.', array('!value' => $source)));
   }
 
-  $data = $config->read($config_name);
   if ($data === FALSE) {
     return drush_set_error(dt('Config !name does not exist in !source configuration.', array('!name' => $config_name, '!source' => $source)));
   }

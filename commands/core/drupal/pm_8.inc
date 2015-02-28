@@ -19,61 +19,49 @@ function _drush_pm_disable($args) {
  * @param array $args
  *   Arguments from the command line.
  */
-function _drush_pm_uninstall($args) {
+function _drush_pm_uninstall($extensions) {
   $extension_info = drush_get_extensions();
+  $required = drush_drupal_required_modules($extension_info);
 
-  // classify $args in themes, modules or unknown.
-  $modules = array();
-  $themes = array();
-  drush_pm_classify_extensions($args, $modules, $themes, $extension_info);
-  $extensions = array_merge($modules, $themes);
-  $unknown = array_diff($args, $extensions);
-
-  // Discard and set an error for each unknown extension.
-  foreach ($unknown as $name) {
-    drush_log('DRUSH_PM_DISABLE_EXTENSION_NOT_FOUND', dt('!extension was not found and will not be uninstalled.', array('!extension' => $name)), 'warning');
-  }
-
-  // Discard extensions that are not installed.
-  foreach ($extensions as $name) {
-    if (!$extension_info[$name]->status && $extension_info[$name]->getType() == 'theme') {
-      unset($themes[$name]);
-      drush_log(dt('!extension is not installed.', array('!extension' => $name)), 'ok');
+  // Discards extensions which are enabled, not found or already uninstalled.
+  $extensions = array_combine($extensions, $extensions);
+  foreach ($extensions as $extension) {
+    if (!isset($extension_info[$extension])) {
+      unset($extensions[$extension]);
+      drush_log(dt('Extension !extension was not found and will not be uninstalled.', array('!extension' => $extension)), 'warning');
     }
-  }
-
-  // Discard default theme.
-  if (!empty($themes)) {
-    $default_theme = drush_theme_get_default();
-    if (in_array($default_theme, $themes)) {
-      unset($themes[$default_theme]);
-      drush_log(dt('!theme is the default theme and can\'t be disabled.', array('!theme' => $default_theme)), 'ok');
+    elseif (in_array($extension, $required)) {
+      unset($extensions[$extension]);
+      $info = $extension_info[$extension]->info;
+      $explanation = !empty($info['explanation']) ? ' ' . dt('Reason: !explanation.', array('!explanation' => strip_tags($info['explanation'])))  : '';
+      drush_log(dt('!extension is a required extension and can\'t be uninstalled.', array('!extension' => $extension)) . $explanation, 'ok');
     }
-  }
-
-  if (!empty($modules)) {
-    // Add enabled dependents to the list of modules to uninstall.
-    $dependents = drush_module_dependents($modules, $extension_info);
-    $dependents = array_intersect($dependents, drush_module_list());
-    $modules = array_merge($modules, $dependents);
-
-    // Discard required modules.
-    $required = drush_drupal_required_modules($extension_info);
-    foreach ($required as $module) {
-      if (isset($modules[$module])) {
-        unset($modules[$module]);
-        $info = $extension_info[$module]->info;
-        // No message for hidden modules.
-        if (!isset($info['hidden'])) {
-          $explanation = !empty($info['explanation']) ? ' ' . dt('Reason: !explanation', array('!explanation' => strip_tags($info['explanation'])))  : '';
-          drush_log(dt('!module is a required module and can\'t be uninstalled.', array('!module' => $module)) . $explanation, 'ok');
+    elseif (!$extension_info[$extension]->status) {
+      unset($extensions[$extension]);
+      drush_log(dt('!extension is already uninstalled.', array('!extension' => $extension)), 'ok');
+    }
+    elseif (drush_extension_get_type($extension_info[$extension]) == 'module') {
+      $dependents = array();
+      foreach (drush_module_dependents(array($extension), $extension_info) as $dependent) {
+        if (!in_array($dependent, $required) && ($extension_info[$dependent]->status)) {
+          $dependents[] = $dependent;
         }
+      }
+      if (count($dependents)) {
+        drush_log(dt('To uninstall !extension, the following extensions must be uninstalled first: !required', array('!extension' => $extension, '!required' => implode(', ', $dependents))), 'error');
+        unset($extensions[$extension]);
       }
     }
   }
 
-  // Inform the user which extensions will finally be uninstalled.
-  $extensions = array_merge($modules, $themes);
+  // Discard default theme.
+  $default_theme = drush_theme_get_default();
+  if (in_array($default_theme, $extensions)) {
+    unset($extensions[$default_theme]);
+    drush_log(dt('!theme is the default theme and can\'t be uninstalled.', array('!theme' => $default_theme)), 'ok');
+  }
+
+  // Inform the user which extensions will finally be disabled.
   if (empty($extensions)) {
     return drush_log(dt('There were no extensions that could be uninstalled.'), 'ok');
   }
@@ -84,29 +72,17 @@ function _drush_pm_uninstall($args) {
     }
   }
 
-  // Disable themes.
-  if (!empty($themes)) {
-    drush_theme_disable($themes);
-  }
+  // Classify extensions in themes and modules.
+  $modules = array();
+  $themes = array();
+  drush_pm_classify_extensions($extensions, $modules, $themes, $extension_info);
 
-  // Uninstall modules and pass dependency validation in form submit.
-  if (!empty($modules)) {
-    drush_module_uninstall($modules);
-  }
+  drush_module_uninstall($modules);
+  drush_theme_uninstall($themes);
 
   // Inform the user of final status.
-  $result_extensions = drush_get_named_extensions_list($extensions);
-  $problem_extensions = array();
-  foreach ($result_extensions as $extension) {
-    if (!$extension->status) {
-      drush_log(dt('!extension was uninstalled successfully.', array('!extension' => $extension->getName())), 'ok');
-    }
-    else {
-      $problem_extensions[] = $extension->getName();
-    }
-  }
-  if (!empty($problem_extensions)) {
-    return drush_set_error('DRUSH_PM_UNINSTALL_EXTENSION_ISSUE', dt('There was a problem uninstalling !extension.', array('!extension' => implode(',', $problem_extensions))));
+  foreach ($extensions as $extension) {
+    drush_log(dt('!extension was successfully uninstalled.', array('!extension' => $extension)), 'ok');
   }
 }
 

@@ -277,18 +277,25 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
+    $options = array();
     $root = $this->webroot();
     $site = "$root/sites/$env";
 
 
-    // Validate
+
     if (substr($version_string, 0, 1) == 6 && $this->db_driver(UNISH_DB_URL) == 'sqlite') {
+      // Validate
       $this->markTestSkipped("Drupal 6 does not support SQLite.");
+    }
+    if ($version_string == 8) {
+      // We want to track Drupal 8 very closely.
+      $version_string = '8.0.x';
+      $options['no-md5'] = NULL;
     }
 
     // Download Drupal if not already present.
     if (!file_exists($root)) {
-      $options = array(
+      $options += array(
         'destination' => UNISH_SANDBOX,
         'drupal-project-rename' => 'web',
         'yes' => NULL,

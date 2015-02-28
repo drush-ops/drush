@@ -41,6 +41,8 @@ function _drush_make_generate_get_version_options() {
  * Generate the $projects makefile array for the current site.
  */
 function _drush_make_generate_projects($all_extensions, $version_options) {
+  $release_info = drush_get_engine('release_info');
+
   $projects = array();
   $project_libraries = array();
 
@@ -70,7 +72,7 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
       'name' => $install_profile,
       'drupal_version' => $drupal_major_version,
     );
-    if (!release_info_check_project($request, 'profile')) {
+    if (!$release_info->checkProject($request, 'profile')) {
       $projects[$install_profile]['custom_download'] = TRUE;
     }
   }
@@ -101,9 +103,9 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
     );
     if (isset($project['status url'])) {
       $request['status url'] = $project['status url'];
-      $projects[$name]['location'] = $status_url;
+      $projects[$name]['location'] = $project['status url'];
     }
-    if (!release_info_check_project($request, $type)) {
+    if (!$release_info->checkProject($request, $type)) {
       // It is not a project on drupal.org neither an external update service.
       $projects[$name]['type'] = $type;
       $projects[$name]['custom_download'] = TRUE;
@@ -117,7 +119,7 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
       $projects[$name]['version'] = preg_replace("/^" . drush_get_drupal_core_compatibility() . "-/", "", $project["version"]);
     }
     foreach ($project['extensions'] as $extension_name) {
-      _drush_make_generate_add_patch_files($projects[$name], dirname($all_extensions[$extension_name]->filename));
+      _drush_make_generate_add_patch_files($projects[$name], _drush_extension_get_path($all_extensions[$extension_name]));
     }
   }
 
@@ -162,10 +164,9 @@ function _drush_make_generate_add_patch_files(&$project, $location) {
  * Create a project record for an extension not downloaded from drupal.org
  */
 function _drush_generate_custom_project($name, $extension, $version_options) {
-  $project['_type'] = $extension->type;
-  $project['type'] = $extension->type;
-  $info_file = $extension->filename;
-  $location = DRUPAL_ROOT . '/' . dirname($info_file);
+  $project['_type'] = drush_extension_get_type($extension);
+  $project['type'] = drush_extension_get_type($extension);
+  $location = drush_extension_get_path($extension);
   // To start off, we will presume that our custom extension is
   // stored in a folder named after its project, and there are
   // no subfolders between the .info file and the project root.

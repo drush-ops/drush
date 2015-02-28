@@ -67,8 +67,8 @@ function _drush_php_ini_loaded_file_message() {
 function _drush_postmortem() {
   // Make sure that the memory limit has been bumped up from the minimum default value of 32M.
   $php_memory_limit = drush_memory_limit();
-  if (($php_memory_limit > 0) && ($php_memory_limit <= 32*DRUSH_DRUPAL_KILOBYTE*DRUSH_DRUPAL_KILOBYTE)) {
-    drush_set_error('DRUSH_MEMORY_LIMIT', dt('Your memory limit is set to !memory_limit; Drush needs as much memory to run as Drupal.  !php_ini_msg', array('!memory_limit' => $php_memory_limit / (DRUSH_DRUPAL_KILOBYTE*DRUSH_DRUPAL_KILOBYTE) . 'M', '!php_ini_msg' => _drush_php_ini_loaded_file_message())));
+  if (($php_memory_limit > 0) && ($php_memory_limit <= 32*DRUSH_KILOBYTE*DRUSH_KILOBYTE)) {
+    drush_set_error('DRUSH_MEMORY_LIMIT', dt('Your memory limit is set to !memory_limit; Drush needs as much memory to run as Drupal.  !php_ini_msg', array('!memory_limit' => $php_memory_limit / (DRUSH_KILOBYTE*DRUSH_KILOBYTE) . 'M', '!php_ini_msg' => _drush_php_ini_loaded_file_message())));
   }
 }
 
@@ -230,9 +230,11 @@ function drush_site_path($path = NULL) {
  * @return $dir
  *   The directory associated with that hostname or FALSE if not found.
  */
-function drush_site_dir_lookup_from_hostname($hostname) {
-  $site_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-  if (file_exists($site_root . '/sites/sites.php')) {
+function drush_site_dir_lookup_from_hostname($hostname, $site_root = NULL) {
+  if (!isset($site_root)) {
+    $site_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  }
+  if (!empty($site_root) && file_exists($site_root . '/sites/sites.php')) {
     $sites = array();
     // This will overwrite $sites with the desired mappings.
     include($site_root . '/sites/sites.php');
@@ -303,7 +305,7 @@ function drush_conf_path($server_uri, $require_settings = TRUE) {
 
 /**
  * Exhaustive depth-first search to try and locate the Drupal root directory.
- * This makes it possible to run drush from a subdirectory of the drupal root.
+ * This makes it possible to run Drush from a subdirectory of the drupal root.
  *
  * @param
  *   Search start path. Defaults to current working directory.
@@ -352,21 +354,18 @@ function drush_locate_root($start_path = NULL) {
  *   a Drupal root.
  */
 function drush_valid_drupal_root($path) {
-  if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
-    // Drupal 8 root. Additional check for the presence of core/composer.json to
-    // grant it is not a Drupal 7 site with a base folder named "core".
-    $candidate = 'core/includes/common.inc';
-    if (file_exists($path . '/' . $candidate) && file_exists($path . '/core/misc/drupal.js') && file_exists($path . '/composer.json')) {
-      return $candidate;
-    }
-    // Drupal 7 root. Additional check for the absence of core/composer.json to
-    // grant $path is not core/ of a Drupal 8 root.
-    $candidate = 'includes/common.inc';
-    if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js') && ((basename($path) != 'core') || !file_exists($path . '/../composer.json'))) {
+  $bootstrap_class = drush_bootstrap_class_for_root($path);
+  return $bootstrap_class != NULL;
+}
+
+function drush_bootstrap_class_for_root($path) {
+  $candidates = drush_preflight_get_bootstrap_candidates();
+  foreach ($candidates as $candidate) {
+    if ($candidate->valid_root($path)) {
       return $candidate;
     }
   }
-  return FALSE;
+  return NULL;
 }
 
 /**
@@ -438,10 +437,10 @@ function drush_verify_cli() {
  * Build a drush command suitable for use for drush to call itself
  * e.g. in backend_invoke.
  */
-function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $remote_command = FALSE) {
-  $environment_variables = array();
+function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $remote_command = FALSE, $environment_variables = array()) {
   $os = _drush_get_os($os);
   $additional_options = '';
+  $prefix = '';
   if (!isset($drush_path)) {
     if (!$remote_command) {
       $drush_path = DRUSH_COMMAND;
@@ -465,8 +464,8 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
       $additional_options .= ' --php=' . drush_escapeshellarg($php, $os);
     }
     // We will also add in the php options from --php-options
-    $prefix = drush_escapeshellarg($php, $os);
-    $php_options = drush_get_option('php-options','');
+    $prefix .= drush_escapeshellarg($php, $os);
+    $php_options = implode(' ', drush_get_context_options('php-options'));
     if (!empty($php_options)) {
       $prefix .= ' ' . $php_options;
       $additional_options .= ' --php-options=' . drush_escapeshellarg($php_options, $os);
@@ -476,16 +475,22 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
     // Set environment variables to propogate config to redispatched calls.
     if (drush_has_bash($os)) {
       if ($php) {
-        $environment_variables[] = 'DRUSH_PHP=' . drush_escapeshellarg($php, $os);
+        $environment_variables['DRUSH_PHP'] = $php;
       }
       if ($php_options_alias = drush_get_option('php-options', NULL, 'alias')) {
-        $environment_variables[] = 'PHP_OPTIONS=' . drush_escapeshellarg($php_options_alias, $os);
+        $environment_variables['PHP_OPTIONS'] = $php_options_alias;
       }
       $columns = drush_get_context('DRUSH_COLUMNS');
       if (($columns) && ($columns != 80)) {
-        $environment_variables[] = 'COLUMNS=' . $columns;
+        $environment_variables['COLUMNS'] = $columns;
       }
-      $prefix = implode(' ', $environment_variables);
+    }
+  }
+
+  // Add environmental variables, if present
+  if (!empty($environment_variables)) {
+    foreach ($environment_variables as $key=>$value) {
+      $prefix .= ' ' . drush_escapeshellarg($key, $os) . '=' . drush_escapeshellarg($value, $os);
     }
   }
 
@@ -648,13 +653,18 @@ function drush_is_local_host($host) {
  */
 function drush_server_home() {
   // Cannot use $_SERVER superglobal since that's empty during UnitUnishTestCase
-  // getenv('HOME') isn't set on windows and generates a Notice.
+  // getenv('HOME') isn't set on Windows and generates a Notice.
   $home = getenv('HOME');
-  if (empty($home)) {
-    if (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
-      // home on windows
-      $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
-    }
+  if (!empty($home)) {
+    // home should never end with a trailing slash.
+    $home = rtrim($home, '/');
+  }
+  elseif (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
+    // home on windows
+    $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
+    // If HOMEPATH is a root directory the path can end with a slash. Make sure
+    // that doesn't happen.
+    $home = rtrim($home, '\\/');
   }
   return empty($home) ? NULL : $home;
 }
@@ -720,7 +730,7 @@ function drush_directory_cache($subdir = '') {
  * Get complete information for all available extensions (modules and themes).
  *
  * @return
- *   An array containing info for all available extensions.
+ *   An array containing info for all available extensions. In D8, these are Extension objects.
  */
 function drush_get_extensions($include_hidden = TRUE) {
   drush_include_engine('drupal', 'environment');

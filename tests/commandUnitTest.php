@@ -30,12 +30,12 @@ EOD;
       $return = file_put_contents($file, $contents);
     }
     drush_set_context('DRUSH_INCLUDE', array($path));
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUSH);
+    drush_preflight();
     $loaded = drush_commandfile_list();
-    $this->assertTrue(in_array($files[0], $loaded), 'Loaded a version-specific command file.');
-    $this->assertTrue(in_array($files[1], $loaded), 'Loaded a version-specific command directory.');
-    $this->assertFalse(in_array($files[2], $loaded), 'Did not load a mismatched version-specific command file.');
-    $this->assertFalse(in_array($files[3], $loaded), 'Did not load a a mismatched version-specific command directory.');
+    $this->assertTrue(in_array(realpath($files[0]), $loaded), 'Loaded a version-specific command file.');
+    $this->assertTrue(in_array(realpath($files[1]), $loaded), 'Loaded a version-specific command directory.');
+    $this->assertFalse(in_array(realpath($files[2]), $loaded), 'Did not load a mismatched version-specific command file.');
+    $this->assertFalse(in_array(realpath($files[3]), $loaded), 'Did not load a a mismatched version-specific command directory.');
   }
 
   /**
@@ -43,7 +43,7 @@ EOD;
    * it's alias (dl) to assure that those aliases are built as expected.
    */
   public function testGetCommands() {
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUSH);
+    drush_preflight();
     $commands = drush_get_commands();
     $command = $commands['dl'];
 

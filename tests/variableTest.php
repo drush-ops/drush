@@ -13,11 +13,13 @@ class VariableCase extends CommandUnishTestCase {
     }
 
     $sites = $this->setUpDrupal(1, TRUE);
-    $options = array(
+    $options_without_pipe = array(
       'yes' => NULL,
-      'pipe' => NULL,
       'root' => $this->webroot(),
       'uri' => key($sites),
+    );
+    $options = $options_without_pipe + array(
+      'pipe' => NULL,
     );
 
     $this->drush('variable-set', array('test_integer', '3.14159'), $options);
@@ -44,6 +46,10 @@ class VariableCase extends CommandUnishTestCase {
     $var_export = $this->getOutput();
     eval($var_export);
     $this->assertEquals('exactish', $variables['site_n'], '--exact option works as expected.');
+
+    $this->drush('variable-get', array('site_n'), $options_without_pipe + array('exact' => NULL));
+    $site_n_value = $this->getOutput();
+    $this->assertEquals('exactish', $site_n_value, '--exact option works as expected with --pipe.');
 
     $this->drush('variable-delete', array('site_name'), $options);
     $output = $this->getOutput();

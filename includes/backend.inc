@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush backend API
+ * @file
+ * Drush backend API
  *
  * When a drush command is called with the --backend option,
  * it will buffer all output, and instead return a JSON encoded
@@ -601,13 +602,14 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
   if ((array_key_exists('integrate', $backend_options)) && ($backend_options['integrate'] === FALSE) && (!array_key_exists('output', $backend_options))) {
     $backend_options['output'] = FALSE;
   }
+  $has_site_specification = array_key_exists('root', $site_record) || array_key_exists('uri', $site_record);
   $result = $backend_options + array(
      'method' => 'GET',
      'output' => TRUE,
      'log' => TRUE,
      'integrate' => TRUE,
      'backend' => TRUE,
-     'dispatch-using-alias' => FALSE,
+     'dispatch-using-alias' => !$has_site_specification,
   );
   // Convert '#integrate' et. al. into backend options
   foreach ($command_options as $key => $value) {
@@ -633,6 +635,8 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  *            Optional. Defaults to the current user. If you specify this, you can choose which module to send.
  *         'ssh-options'
  *            Optional.  Defaults to "-o PasswordAuthentication=no"
+ *         '#env-vars'
+ *            Optional. An associative array of environmental variables to prefix the Drush command with.
  *         'path-aliases'
  *            Optional; contains paths to folders and executables useful to the command.
  *         '%drush-script'
@@ -732,6 +736,9 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     $backend_options += $common_backend_options;
 
     $backend_options = _drush_backend_adjust_options($site_record, $command, $command_options, $backend_options);
+    $backend_options += array(
+      'drush-script' => NULL,
+    );
 
     // Insure that contexts such as DRUSH_SIMULATE and NO_COLOR are included.
     $command_options += _drush_backend_get_global_contexts($site_record);
@@ -749,9 +756,12 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
       list($post_options, $commandline_options, $drush_global_options) = _drush_backend_classify_options($site_record, $command_options, $backend_options);
       $site_record_to_dispatch = '';
     }
-    $site_record += array('path-aliases' => array());
+    if (array_key_exists('backend-simulate', $backend_options)) {
+      $commandline_options['simulate'] = TRUE;
+    }
+    $site_record += array('path-aliases' => array(), '#env-vars' => array());
     $site_record['path-aliases'] += array(
-      '%drush-script' => NULL,
+      '%drush-script' => $backend_options['drush-script'],
     );
 
     $site = (array_key_exists('#name', $site_record) && !array_key_exists($site_record['#name'], $invocation_options)) ? $site_record['#name'] : $index++;
@@ -823,8 +833,9 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // that is running right now.  For remote commands, we will run a wrapper
     // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
     $drush_path = $site_record['path-aliases']['%drush-script'];
+    $env_vars = $site_record['#env-vars'];
     $php = array_key_exists('php', $site_record) ? $site_record['php'] : (array_key_exists('php', $command_options) ? $command_options['php'] : NULL);
-    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, array_key_exists('remote-host', $site_record));
+    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, array_key_exists('remote-host', $site_record), $env_vars);
     $cmd = _drush_backend_generate_command($site_record, $drush_command_path . " " . _drush_backend_argument_string($drush_global_options, $os) . " " . $site_record_to_dispatch . " " . $command, $args, $commandline_options, $backend_options) . ' 2>&1';
     $cmds[$site] = array(
       'cmd' => $cmd,
@@ -847,7 +858,10 @@ function _drush_backend_get_global_contexts($site_record) {
     if (is_array($global_metadata)) {
       $value = '';
       if (!array_key_exists('never-propagate', $global_metadata)) {
-        if ((array_key_exists('propagate-cli-value', $global_metadata))) {
+        if ((array_key_exists('propagate', $global_metadata))) {
+          $value = drush_get_option($global_key);
+        }
+        elseif ((array_key_exists('propagate-cli-value', $global_metadata))) {
           $value = drush_get_option($global_key, '', 'cli');
         }
         elseif ((array_key_exists('context', $global_metadata))) {
@@ -857,7 +871,7 @@ function _drush_backend_get_global_contexts($site_record) {
             $value = drush_get_context($global_metadata['context'], array());
           }
         }
-        if (!empty($value)) {
+        if (!empty($value) || ($value === '0')) {
           $result[$global_key] = $value;
         }
       }
@@ -969,15 +983,18 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
  *   Options for the invocation.
  *
  * @return
- *   If the command could not be completed successfully, FALSE.
+ *   If no commands were executed, FALSE.
+ *
  *   If one command was executed, this will return an associative array containing
- *   the data from drush_backend_output().
+ *   the data from drush_backend_output().  The result code is stored
+ *   in $result['error_status'] (0 == no error).
+ *
  *   If multiple commands were executed, this will return an associative array
  *   containing one item, 'concurrent', which will contain a list of the different
  *   backend invoke results from each concurrent command.
  */
 function _drush_backend_invoke($cmds, $common_backend_options = array(), $context = NULL) {
-  if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('override-simulated', $common_backend_options)) {
+  if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('override-simulated', $common_backend_options) && !array_key_exists('backend-simulate', $common_backend_options)) {
     foreach ($cmds as $cmd) {
       drush_print(dt('Simulating backend invoke: !cmd', array('!cmd' => $cmd['cmd'])));
     }
@@ -986,15 +1003,16 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
   foreach ($cmds as $cmd) {
     drush_log(dt('Backend invoke: !cmd', array('!cmd' => $cmd['cmd'])), 'command');
   }
-  if (array_key_exists('interactive', $common_backend_options) || array_key_exists('fork', $common_backend_options)) {
+  if (!empty($common_backend_options['interactive']) || !empty($common_backend_options['fork'])) {
     foreach ($cmds as $cmd) {
       $exec_cmd = $cmd['cmd'];
       if (array_key_exists('fork', $common_backend_options)) {
         $exec_cmd .= ' --quiet &';
       }
-      $ret = drush_shell_proc_open($exec_cmd);
+
+      $result_code = drush_shell_proc_open($exec_cmd);
+      $ret = array('error_status' => $result_code);
     }
-    return $ret;
   }
   else {
     $process_limit = drush_get_option_override($common_backend_options, 'concurrency', 1);
@@ -1041,11 +1059,13 @@ function drush_backend_generate_sitealias($backend_options) {
     'remote-user' => NULL,
     'ssh-options' => NULL,
     'drush-script' => NULL,
+    'env-vars' => NULL
   );
   return array(
     'remote-host' => $backend_options['remote-host'],
     'remote-user' => $backend_options['remote-user'],
     'ssh-options' => $backend_options['ssh-options'],
+    '#env-vars' => $backend_options['env-vars'],
     'path-aliases' => array(
       '%drush-script' => $backend_options['drush-script'],
     ),
@@ -1063,6 +1083,8 @@ function drush_backend_generate_sitealias($backend_options) {
  *      Optional. Defaults to the current user. If you specify this, you can choose which module to send.
  *   'ssh-options'
  *      Optional.  Defaults to "-o PasswordAuthentication=no"
+ *   '#env-vars'
+ *      Optional. An associative array of environmental variables to prefix the Drush command with.
  *   'path-aliases'
  *      Optional; contains paths to folders and executables useful to the command.
  *      '%drush-script'

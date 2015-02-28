@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Filesystem utilities.
+ */
+
+/**
  * @defgroup filesystemfunctions Filesystem convenience functions.
  * @{
  */
@@ -472,7 +477,7 @@ function drush_find_tmp() {
  * drush_save_data_to_temp_file() should be used instead
  * of this function.
  *
- * @param string suffix
+ * @param string $suffix
  *   Append this suffix to the filename. Use of this parameter is discouraged as
  *   it can break the guarantee of tempname(). See http://www.php.net/manual/en/function.tempnam.php#42052.
  *   Originally added to support Oracle driver.
@@ -533,7 +538,7 @@ function _drush_delete_registered_files() {
         drush_delete_dir($file, TRUE);
       }
       else {
-        @chmod($dir, 0777); // Make file writeable
+        @chmod($file, 0777); // Make file writeable
         unlink($file);
       }
     }

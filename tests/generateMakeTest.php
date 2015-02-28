@@ -22,8 +22,8 @@ class generateMakeCase extends CommandUnishTestCase {
       'cache' => NULL,
       'strict' => 0, // Don't validate options
     );
-    $this->drush('pm-download', array('basic', 'devel'), $options);
-    $this->drush('pm-enable', array('basic', 'devel'), $options);
+    $this->drush('pm-download', array('omega', 'devel'), $options);
+    $this->drush('pm-enable', array('omega', 'devel'), $options);
 
     $makefile = UNISH_SANDBOX . '/dev.make';
 
@@ -39,7 +39,7 @@ projects[] = "drupal"
 ; Modules
 projects[] = "devel"
 ; Themes
-projects[] = "basic"
+projects[] = "omega"
 EOD;
     $actual = trim(file_get_contents($makefile));
 
@@ -62,7 +62,7 @@ projects[] = "devel"
 projects[libraries][subdir] = "contrib"
 
 ; Themes
-projects[] = "basic"
+projects[] = "omega"
 EOD;
     $actual = trim(file_get_contents($makefile));
 

@@ -7,14 +7,14 @@ class Sqlsqlite extends SqlBase {
     return 'sqlite3';
   }
 
-  public function creds() {
+  public function creds($hide_password = TRUE) {
     // SQLite doesn't do user management, instead relying on the filesystem
     // for that. So the only info we really need is the path to the database
     // file, and not as a "--key=value" parameter.
     return ' '  .  $this->db_spec['database'];
   }
 
-  public function createdb_sql() {
+  public function createdb_sql($dbname, $quoted = false) {
     return '';
   }
 
@@ -41,7 +41,7 @@ class Sqlsqlite extends SqlBase {
   }
 
   public function listTables() {
-    $return = $this->query('.tables', NULL, TRUE);
+    $return = $this->query('.tables');
     $tables_raw = drush_shell_exec_output();
     // SQLite's '.tables' command always outputs the table names in a column
     // format, like this:
@@ -70,7 +70,7 @@ class Sqlsqlite extends SqlBase {
     return $this->query($sql);
   }
 
-  public function dumpCmd($table_selection, $file) {
+  public function dumpCmd($table_selection) {
     // Dumping is usually not necessary in SQLite, since all database data
     // is stored in a single file which can be copied just
     // like any other file. But it still has a use in migration purposes and
@@ -80,10 +80,7 @@ class Sqlsqlite extends SqlBase {
     // Postgres or MySQL equivalents. We may be able to fake some in the
     // future, but for now, let's just support simple dumps.
     $exec .= ' ".dump"';
-    if ($file) {
-      $exec .= ' > '. $file;
-    }
-    return array($exec, $file);
+    return $exec;
   }
 
 

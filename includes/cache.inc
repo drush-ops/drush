@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file Drush cache API
+ * @file
+ * Drush cache API
  *
  * Provides a cache API for drush core and commands, forked from Drupal 7.
  *
@@ -25,15 +26,16 @@ define('DRUSH_CACHE_TEMPORARY', -1);
 /**
  * Get the cache object for a cache bin.
  *
- * By default, this returns an instance of the DrushFileCache class.
- * Classes implementing DrushCacheInterface can register themselves both as a
- * default implementation and for specific bins.
+ * By default, this returns an instance of the \Drush\Cache\FileCache class.
+ * Classes implementing \Drush\Cache\CacheInterface can register themselves
+ * both as a default implementation and for specific bins.
  *
- * @see DrushCacheInterface
+ * @see \Drush\Cache\CacheInterface
  *
- * @param $bin
+ * @param string $bin
  *   The cache bin for which the cache object should be returned.
- * @return DrushCacheInterface
+ *
+ * @return \Drush\Cache\CacheInterface
  *   The cache object associated with the specified bin.
  */
 function _drush_cache_get_object($bin) {
@@ -50,18 +52,20 @@ function _drush_cache_get_object($bin) {
 }
 
 /**
- * Return data from the persistent cache
+ * Return data from the persistent cache.
  *
- * Data may be stored as either plain text or as serialized data. _drush_cache_get
- * will automatically return unserialized objects and arrays.
+ * Data may be stored as either plain text or as serialized data.
+ * _drush_cache_get() will automatically return unserialized
+ * objects and arrays.
  *
- * @param $cid
+ * @param string $cid
  *   The cache ID of the data to retrieve.
- * @param $bin
+ * @param string $bin
  *   The cache bin to store the data in.
  *
  * @return
  *   The cache or FALSE on failure.
+ *
  */
 function drush_cache_get($cid, $bin = 'default') {
   $ret = _drush_cache_get_object($bin)->get($cid);
@@ -73,11 +77,12 @@ function drush_cache_get($cid, $bin = 'default') {
 /**
  * Return data from the persistent cache when given an array of cache IDs.
  *
- * @param $cids
+ * @param array $cids
  *   An array of cache IDs for the data to retrieve. This is passed by
  *   reference, and will have the IDs successfully returned from cache removed.
- * @param $bin
+ * @param string $bin
  *   The cache bin where the data is stored.
+ *
  * @return
  *   An array of the items successfully returned from cache indexed by cid.
  */
@@ -88,20 +93,23 @@ function drush_cache_get_multiple(array &$cids, $bin = 'default') {
 /**
  * Store data in the persistent cache.
  *
- * @param $cid
+ * @param string $cid
  *   The cache ID of the data to store.
+ *
  * @param $data
  *   The data to store in the cache.
- * @param $bin
+ * @param string $bin
  *   The cache bin to store the data in.
  * @param $expire
  *   One of the following values:
- *   - DRUSH_CACHE_PERMANENT: Indicates that the item should never be removed unless
- *     explicitly told to using cache_clear_all() with a cache ID.
- *   - DRUSH_CACHE_TEMPORARY: Indicates that the item should be removed at the next
- *     general cache wipe.
+ *   - DRUSH_CACHE_PERMANENT: Indicates that the item should never be removed
+ *     unless explicitly told to using drush_cache_clear_all() with a cache ID.
+ *   - DRUSH_CACHE_TEMPORARY: Indicates that the item should be removed at
+ *     the next general cache wipe.
  *   - A Unix timestamp: Indicates that the item should be kept at least until
  *     the given time, after which it behaves like DRUSH_CACHE_TEMPORARY.
+ *
+ * @return bool
  */
 function drush_cache_set($cid, $data, $bin = 'default', $expire = DRUSH_CACHE_PERMANENT) {
   $ret = _drush_cache_get_object($bin)->set($cid, $data, $expire);
@@ -115,15 +123,13 @@ function drush_cache_set($cid, $data, $bin = 'default', $expire = DRUSH_CACHE_PE
  * If called without arguments, expirable entries will be cleared from all known
  * cache bins.
  *
- * @param $cid
+ * @param string $cid
  *   If set, the cache ID to delete. Otherwise, all cache entries that can
  *   expire are deleted.
- *
- * @param $bin
+ * @param string $bin
  *   If set, the bin $bin to delete from. Mandatory
  *   argument if $cid is set.
- *
- * @param $wildcard
+ * @param bool $wildcard
  *   If $wildcard is TRUE, cache IDs starting with $cid are deleted in
  *   addition to the exact cache ID specified by $cid.  If $wildcard is
  *   TRUE and $cid is '*' then the entire bin $bin is emptied.
@@ -146,6 +152,7 @@ function drush_cache_clear_all($cid = NULL, $bin = 'default', $wildcard = FALSE)
  *
  * @param $bin
  *   The cache bin to check.
+ *
  * @return
  *   TRUE if the cache bin specified is empty.
  */
@@ -154,8 +161,7 @@ function _drush_cache_is_empty($bin) {
 }
 
 /**
- * Return drush cache bins and any bins added by
- * implementing hook_drush_flush_caches().
+ * Return drush cache bins and any bins added by hook_drush_flush_caches().
  */
 function drush_cache_get_bins() {
   $drush = array('default');
@@ -163,15 +169,14 @@ function drush_cache_get_bins() {
 }
 
 /**
- * Create a cache id from a given prefix, contexts, and any additional
- * parameters necessary.
+ * Create a cache id from a given prefix, contexts, and additional parameters.
  *
  * @param prefix
  *   A human readable cid prefix that will not be hashed.
  * @param contexts
- *   Optional. An array of drush contexts that will be used to build a unique hash.
+ *   Array of drush contexts that will be used to build a unique hash.
  * @param params
- *   Optional. An array of any addition parameters to be hashed.
+ *   Array of any addition parameters to be hashed.
  *
  * @return
  *   A cache id string.
