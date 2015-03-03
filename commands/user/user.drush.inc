@@ -21,6 +21,24 @@ function user_drush_help($section) {
  * Implementation of hook_drush_command().
  */
 function user_drush_command() {
+  $options_common = array(
+    'uid' => array(
+      'description' => 'A comma delimited list of uids to block.',
+      'example-value' => '3,5',
+      'value' => 'required',
+    ),
+    'name' => array(
+      'description' => 'A comma delimited list of user names to block.',
+      'example-value' => 'foo',
+      'value' => 'required',
+    ),
+    'mail' => array(
+      'description' => 'A comma delimited list of user mail addresses to block.',
+      'example-value' => 'me@example.com',
+      'value' => 'required',
+    )
+  );
+
   $items['user-information'] = array(
     'description' => 'Print information about the specified user(s).',
     'aliases' => array('uinf'),
@@ -76,11 +94,7 @@ function user_drush_command() {
       'drush user-block 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Block the users with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
     ),
-    'options' => array(
-      'uid' => 'A comma delimited list of uids to block',
-      'name' => 'A comma delimited list of user names to block',
-      'mail' => 'A comma delimited list of user mail addresses to block',
-    ),
+    'options' => $options_common,
   );
   $items['user-unblock'] = array(
     'description' => 'Unblock the specified user(s).',
@@ -92,11 +106,7 @@ function user_drush_command() {
       'drush user-unblock 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Unblock the users with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
     ),
-    'options' => array(
-      'uid' => 'A comma delimited list of uids to unblock',
-      'name' => 'A comma delimited list of user names to unblock',
-      'mail' => 'A comma delimited list of user mail addresses to unblock',
-    ),
+    'options' => $options_common,
   );
   $items['user-add-role'] = array(
     'description' => 'Add a role to the specified user accounts.',
@@ -110,11 +120,7 @@ function user_drush_command() {
       'drush user-add-role "power user" 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Add the "power user" role to the accounts with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
     ),
-    'options' => array(
-      'uid' => 'A comma delimited list of uids',
-      'name' => 'A comma delimited list of user names',
-      'mail' => 'A comma delimited list of user mail addresses',
-    ),
+    'options' => $options_common,
   );
   $items['user-remove-role'] = array(
     'description' => 'Remove a role from the specified user accounts.',
@@ -128,11 +134,7 @@ function user_drush_command() {
       'drush user-remove-role "power user" 5,user3 --uid=2,3 --name=someguy,somegal --mail=billgates@microsoft.com' =>
         'Remove the "power user" role from the accounts with name, id, or email 5 or user3, uids 2 and 3, names someguy and somegal, and email address of billgates@microsoft.com',
     ),
-    'options' => array(
-      'uid' => 'A comma delimited list of uids',
-      'name' => 'A comma delimited list of user names',
-      'mail' => 'A comma delimited list of user mail addresses',
-    ),
+    'options' => $options_common,
   );
   $items['user-create'] = array(
     'description' => 'Create a user account with the specified name.',
