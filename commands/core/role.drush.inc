@@ -162,12 +162,12 @@ function drush_role_add_perm($rid, $permissions = NULL) {
     $perms = _convert_csv_to_array($permissions);
   }
 
-  $added_perm = false;
+  $added_perm = FALSE;
 
   foreach($perms as $perm) {
     $result = drush_role_perm('add', $rid, $perm);
     if ($result !== FALSE) {
-      $added_perm = true;
+      $added_perm = TRUE;
       drush_log(dt('Added "!perm" to "!role"', array('!perm' => $perm, '!role' => $result->name)), 'success');
     }
   }
@@ -196,12 +196,12 @@ function drush_role_remove_perm($rid, $permissions = NULL) {
     $perms = _convert_csv_to_array($permissions);
   }
 
-  $removed_perm = false;
+  $removed_perm = FALSE;
 
   foreach($perms as $perm) {
     $result = drush_role_perm('remove', $rid, $perm);
     if ($result !== FALSE) {
-      $removed_perm = true;
+      $removed_perm = TRUE;
       drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $perm, '!role' => $result->name)), 'ok');
     }
   }
