@@ -336,7 +336,7 @@ function core_drush_command() {
       'batch-id' => 'The batch id that will be processed',
     ),
     'required-arguments' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL, // https://github.com/drush-ops/drush/issues/961
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, // https://github.com/drush-ops/drush/issues/961
   );
   $items['core-global-options'] = array(
     'description' => 'All global options',
@@ -1137,9 +1137,6 @@ function drush_core_batch_process($id) {
  */
 function drush_core_updatedb_batch_process($id) {
   drush_include_engine('drupal', 'update');
-  require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-  // require_once DRUSH_DRUPAL_CORE . '/includes/update.inc';
-  drupal_load_updates();
   _update_batch_command($id);
 }
 
