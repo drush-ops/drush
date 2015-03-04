@@ -273,10 +273,7 @@ function core_drush_command() {
         'description' => 'Password for the "db-su" account. Optional.',
         'example-value' => 'pass',
       ),
-      'db-drop-existing-tables' => array(
-        'description' => 'Remove all tables in the target database before creating Drupal tables. Defaults to TRUE.',
-        'example-value' => '0'
-      ),
+      'db-drop-existing-tables' => 'Defaults to TRUE. Remove all tables in the target database before creating Drupal tables.',
       'account-name' => 'uid1 name. Defaults to admin',
       'account-pass' => 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',
       'account-mail' => 'uid1 email. Defaults to admin@example.com',
