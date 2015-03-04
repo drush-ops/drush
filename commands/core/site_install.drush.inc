@@ -44,11 +44,13 @@ function drush_core_pre_site_install($profile = NULL) {
   }
   
   $db_already_exists = drush_sql_db_exists($db_spec);
-  $db_drop_existing_tables = drush_get_option('db-drop-existing-tables', TRUE);
-  if ($db_already_exists && $db_drop_existing_tables) {
-    $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
+  if ($db_already_exists) {
+    $db_drop_existing_tables = drush_get_option('db-drop-existing-tables', TRUE);
+    if ($db_drop_existing_tables) {
+      $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
+    }
   }
-  elseif (!$db_already_exists) {
+  else {
     $msg[] = dt("CREATE  the '@db' database.", array('@db' => $db_spec['database']));
   }
 
@@ -121,7 +123,7 @@ function drush_core_pre_site_install($profile = NULL) {
   if ($db_already_exists && $db_drop_existing_tables) {
     drush_sql_empty_db($db_spec);
   }
-  elseif (!$db_already_exists) {
+  else {
     drush_sql_create($db_spec, FALSE);
   }
   
