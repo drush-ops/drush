@@ -534,25 +534,6 @@ function drush_config_edit($config_name = '') {
 }
 
 function drush_config_merge($alias = '', $config_label = 'staging') {
-  // Is the current site under git revision control?  If not, fail.
-  $result = drush_shell_exec('git rev-parse --abbrev-ref HEAD');
-  if (!$result) {
-    return drush_set_error('DRUSH_CONFIG_MERGE_NO_GIT', dt("The drush config-merge command requires that the current site be under git revision control."));
-  }
-  $output = drush_shell_exec_output();
-  $original_branch = $output[0];
-  drush_log(dt("Original branch is !branch", array('!branch' => $original_branch)), 'notice');
-  // Fail if there are any uncommitted changes on the current branch
-  // inside the configuration path.
-  $result = drush_shell_exec('git status --porcelain');
-  if (!$result) {
-    return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git status` failed."));
-  }
-  $uncommitted_changes = drush_shell_exec_output();
-  if (!empty($uncommitted_changes)) {
-    return drush_set_error('DRUSH_CONFIG_MERGE_UNCOMMITTED_CHANGES', dt("Working set has uncommitted changes; please commit or discard them before merging.  `git stash` before config-merge, and `git stash pop` afterwards can be useful here."));
-  }
-
   // Allow the user to provide a specific tracking branch to do live work on.
   $tracking_branch = drush_get_option('tracking', FALSE);
   $tracking_branch_is_tmp = FALSE;
@@ -568,7 +549,6 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     'commit' => !drush_get_option('no-commit', FALSE),
     'tool' => drush_get_option('tool', ''),
     'config-label' => $config_label,
-    'original-branch' => $original_branch,
     'live-site' => $alias,
     'dev-site' => '@self',
     'live-config' => $tracking_branch,
@@ -586,8 +566,29 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   $configuration_path = config_get_config_directory($merge_info['config-label']);
   $merge_info['configuration_path'] = $configuration_path;
 
+  // Is the selected configuration directory under git revision control?  If not, fail.
+  $result = drush_shell_cd_and_exec($configuration_path, 'git rev-parse --abbrev-ref HEAD');
+  if (!$result) {
+    return drush_set_error('DRUSH_CONFIG_MERGE_NO_GIT', dt("The drush config-merge command requires that the selected configuration directory !dir be under git revision control.", array('!dir' => $configuration_path)));
+  }
+  $output = drush_shell_exec_output();
+  $original_branch = $output[0];
+  drush_log(dt("Original branch is !branch", array('!branch' => $original_branch)), 'notice');
+  $merge_info['original-branch'] = $original_branch;
+
   // Stash the merge info in case we need it during a rollback.
   drush_set_context('DRUSH_CONFIG_MERGE_INFO', $merge_info);
+
+  // Fail if there are any uncommitted changes on the current branch
+  // inside the configuration path.
+  $result = drush_shell_cd_and_exec($configuration_path, 'git status --porcelain .');
+  if (!$result) {
+    return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git status` failed."));
+  }
+  $uncommitted_changes = drush_shell_exec_output();
+  if (!empty($uncommitted_changes)) {
+    return drush_set_error('DRUSH_CONFIG_MERGE_UNCOMMITTED_CHANGES', dt("Working set has uncommitted changes; please commit or discard them before merging.  `git stash` before `drush config-merge`, and `git stash pop` afterwards can be useful here."));
+  }
 
   // Run config-export on '$alias'.
   $values = drush_invoke_process($merge_info['live-site'], 'config-export', array($config_label));
@@ -598,7 +599,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   // If the user failed to provide a base commit, and no policy
   // file supplied one, give the user a firm warning.
   if (!$merge_info['base'] && $merge_info['autodelete-live-config']) {
-    $result = drush_shell_exec('git rev-parse HEAD');
+    $result = drush_shell_cd_and_exec($configuration_path, 'git rev-parse HEAD');
     if (!$result) {
       return drush_set_error('DRUSH_CONFIG_MERGE_NO_BASE', dt("--base not specified, and could not determine sha-hash of HEAD."));
     }
@@ -615,19 +616,19 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   // which is like checking out the specified sha-hash before creating the
   // branch.
   if ($merge_info['autodelete-live-config']) {
-    $result = drush_shell_exec('git checkout -B %s %s', $merge_info['live-config'], $merge_info['base']);
+    $result = drush_shell_cd_and_exec($configuration_path, 'git checkout -B %s %s', $merge_info['live-config'], $merge_info['base']);
     if (!$result) {
       return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("Could not create temporary branch !b", array('!b' => $merge_info['live-config'])));
     }
   }
   else {
-    $result = drush_shell_exec('git checkout -b %s', $merge_info['live-config']);
+    $result = drush_shell_cd_and_exec($configuration_path, 'git checkout -b %s', $merge_info['live-config']);
   }
   // We set the upstream branch as a service for the user, to help with
   // cleanup should this process end before completion.  We skip this if
   // the branch already existed (i.e. with --tracking option).
   if ($result) {
-    drush_shell_exec('git branch --set-upstream-to=%s', $original_branch);
+    drush_shell_cd_and_exec($configuration_path, 'git branch --set-upstream-to=%s', $original_branch);
   }
 
   // Copy the exported configuration from 'live-site' via rsync
@@ -638,7 +639,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
 
   // Commit the new changes to the branch prepared for @live. Exit with
   // "nothing to do" if there are no changes to be committed.
-  $result = drush_shell_exec('git status --porcelain %s', $configuration_path);
+  $result = drush_shell_cd_and_exec($configuration_path, 'git status --porcelain .');
   if (!$result) {
     return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git status` failed."));
   }
@@ -648,27 +649,27 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     _drush_config_merge_cleanup($merge_info);
     return TRUE;
   }
-  $result = drush_shell_exec('git add -A %s', $configuration_path);
+  $result = drush_shell_cd_and_exec($configuration_path, 'git add -A .');
   if (!$result) {
     return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git add -A` failed."));
   }
   // Note that this commit will be `merge --squash`-ed away.  We'll put in
   // a descriptive comment to help users understand where it came from, if
   // they end up with dirty branches after an aborted run.
-  $result = drush_shell_exec('git commit -m %s', 'Drush config-merge exported configuration from ' . $merge_info['live-site'] . ' ' . $merge_info['comment']);
+  $result = drush_shell_cd_and_exec($configuration_path, 'git commit -m %s', 'Drush config-merge exported configuration from ' . $merge_info['live-site'] . ' ' . $merge_info['comment']);
   if (!$result) {
     return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git commit` failed."));
   }
 
   // Create a new temporary branch to hold the configuration changes
   // from the dev site ('@self').
-  $result = drush_shell_exec('git checkout -B %s %s', $merge_info['dev-config'], $merge_info['base']);
+  $result = drush_shell_cd_and_exec($configuration_path, 'git checkout -B %s %s', $merge_info['dev-config'], $merge_info['base']);
   if (!$result) {
     return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("Could not create temporary branch !b", array('!b' => $merge_info['dev-config'])));
   }
   // We set the upstream branch as a service for the user, to help with
   // cleanup should this process end before completion.
-  drush_shell_exec('git branch --set-upstream-to=%s', $original_branch);
+  drush_shell_cd_and_exec($configuration_path, 'git branch --set-upstream-to=%s', $original_branch);
 
   // Run drush @dev cex label
   $values = drush_invoke_process($merge_info['dev-site'], 'config-export', array($config_label));
@@ -677,7 +678,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   }
 
   // Commit this exported configuration.
-  $result = drush_shell_exec('git status --porcelain %s', $configuration_path);
+  $result = drush_shell_cd_and_exec($configuration_path, 'git status --porcelain .');
   if (!$result) {
     return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git status` failed."));
   }
@@ -686,14 +687,14 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     drush_log(dt("No configuration changes on !site; no merge necessary.", array('!site' => $merge_info['dev-site'])), 'ok');
   }
   else {
-    $result = drush_shell_exec('git add -A %s', $configuration_path);
+    $result = drush_shell_cd_and_exec($configuration_path, 'git add -A .');
     if (!$result) {
       return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git add -A` failed."));
     }
     // Note that this commit will be `merge --squash`-ed away.  We'll put in
     // a descriptive comment to help users understand where it came from, if
     // they end up with dirty branches after an aborted run.
-    $result = drush_shell_exec('git commit -m %s', 'Drush config-merge exported configuration from ' . $merge_info['dev-site'] . ' ' . $merge_info['comment']);
+    $result = drush_shell_cd_and_exec($configuration_path, 'git commit -m %s', 'Drush config-merge exported configuration from ' . $merge_info['dev-site'] . ' ' . $merge_info['comment']);
     if (!$result) {
       return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git commit` failed."));
     }
@@ -703,17 +704,17 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     // merge in the changes from the temporary dev branch,
     // and rebase the live-config branch to include all of
     // the commits from the dev config branch.
-    $result = drush_shell_exec('git checkout %s && git rebase %s', $merge_info['live-config'], $merge_info['dev-config']);
+    $result = drush_shell_cd_and_exec($configuration_path, 'git checkout %s && git rebase %s', $merge_info['live-config'], $merge_info['dev-config']);
 
     // We don't need the dev-config branch any more, so we'll get rid of
     // it right away, so there is less to clean up / hang around should
     // we happen to abort before everything is done.
     if ($merge_info['autodelete-dev-config']) {
-      drush_shell_exec('git branch -D %s 2>/dev/null', $merge_info['dev-config']);
+      drush_shell_cd_and_exec($configuration_path, 'git branch -D %s 2>/dev/null', $merge_info['dev-config']);
     }
 
     // If there are MERGE CONFLICTS: prompt the user and run 3-way diff tool.
-    $result = drush_shell_exec('git status --porcelain %s', $configuration_path);
+    $result = drush_shell_cd_and_exec($configuration_path, 'git status --porcelain .', $configuration_path);
     if (!$result) {
       return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git status` failed."));
     }
@@ -740,7 +741,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
 
     // Stop right here if the user specified --merge-only.
     if (drush_get_option('prepare-only', FALSE)) {
-      drush_log(dt("Specified --prepare-only, so stopping here after the merge."), 'ok');
+      drush_log(dt("Specified --prepare-only, so stopping here after the merge.  Use `git checkout !b` to return to your original branch.", array('!b' => $original_branch)), 'ok');
       return TRUE;
     }
 
@@ -749,10 +750,10 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
       $choice = 'mergetool';
       while ($choice == 'mergetool') {
         if (empty($merge_info['tool'])) {
-          $result = drush_shell_exec('git mergetool');
+          $result = drush_shell_cd_and_exec($configuration_path, 'git mergetool .');
         }
         else {
-          $result = drush_shell_exec('git mergetool --tool=%s', $merge_info['tool']);
+          $result = drush_shell_cd_and_exec($configuration_path, 'git mergetool --tool=%s .', $merge_info['tool']);
         }
         // Can we tell what the outcome of the merge was?
         //
@@ -812,28 +813,28 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
       // commit will be squash-merged with the others below; if the
       // --no-commit option was selected, the results of the squash-merge
       // will remain unstaged.
-      $result = drush_shell_exec('git add -A %s', $configuration_path);
+      $result = drush_shell_cd_and_exec($configuration_path, 'git add -A .');
       if (!$result) {
         return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git add -A` failed."));
       }
-      $result = drush_shell_exec('git commit -m %s', 'Drush config-merge merge commit for ' . $merge_info['live-site']. ' configuration with ' . $merge_info['dev-site'] . ' configuration.');
+      $result = drush_shell_cd_and_exec($configuration_path, 'git commit -m %s', 'Drush config-merge merge commit for ' . $merge_info['live-site']. ' configuration with ' . $merge_info['dev-site'] . ' configuration.');
       if (!$result) {
         return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git commit` failed."));
       }
     }
   }
   // Merge the results of the 3-way merge back to the original branch.
-  drush_shell_exec('git checkout %s', $merge_info['original-branch']);
+  drush_shell_cd_and_exec($configuration_path, 'git checkout %s', $merge_info['original-branch']);
   if ($merge_info['commit']) {
     if (empty($merge_info['comment'])) {
       // TODO: we could probably make a better default commmit.  'dev-site' is
       // likely to be '@self', for example.
       $merge_info['comment'] = dt("Drush config-merge configuraton from sites !live and !dev", array('!live' => $merge_info['live-site'], '!dev' => $merge_info['dev-site']));
     }
-    $result = drush_shell_exec('git merge -m %s --squash %s', $merge_info['comment'], $merge_info['live-config']);
+    $result = drush_shell_cd_and_exec($configuration_path, 'git merge -m %s --squash %s', $merge_info['comment'], $merge_info['live-config']);
   }
   else {
-    $result = drush_shell_exec('git merge --no-commit --squash %s', $merge_info['live-config']);
+    $result = drush_shell_cd_and_exec($configuration_path, 'git merge --no-commit --squash %s', $merge_info['live-config']);
   }
   if (!$result) {
     return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git merge --squash` failed."));
@@ -875,31 +876,30 @@ function _drush_config_merge_action_abandon(&$merge_info) {
  * Reset our state after a config-merge command
  */
 function _drush_config_merge_cleanup($merge_info) {
-  if (!empty($merge_info)) {
+  if (!empty($merge_info) && !empty($merge_info['configuration_path'])) {
+    $configuration_path = $merge_info['configuration_path'];
     // If we are in the middle of a rebase, we must abort, or
     // git will remember this state for a long time (that is,
     // you can switch away from this branch and come back later,
     // and you'll still be in a "rebasing" state.)
-    drush_shell_exec('git rebase --abort');
+    drush_shell_cd_and_exec($configuration_path, 'git rebase --abort');
     // Violently delete any untracked files in the configuration path
     // without prompting.  This isn't as dangerous as it sounds;
     // drush config-merge refuses to run if you have untracked files
     // here, and you can get anything that Drush config-merge put here
     // via `drush cex` (or just run config-merge again).
-    if (!empty($merge_info['configuration_path'])) {
-      drush_shell_exec('git clean -d -f %s', $merge_info['configuration_path']);
-    }
+    drush_shell_cd_and_exec($configuration_path, 'git clean -d -f .');
     // Switch back to the branch we started on.
-    $result = drush_shell_exec('git checkout %s', $merge_info['original-branch']);
+    $result = drush_shell_cd_and_exec($configuration_path, 'git checkout %s', $merge_info['original-branch']);
     if (!$result) {
       drush_log(dt("Could not return to original branch !branch", array('!branch' => $merge_info['original-branch'])), 'warning');
     }
     // Delete our temporary branches
     if ($merge_info['autodelete-live-config']) {
-      drush_shell_exec('git branch -D %s 2>/dev/null', $merge_info['live-config']);
+      drush_shell_cd_and_exec($configuration_path, 'git branch -D %s 2>/dev/null', $merge_info['live-config']);
     }
     if ($merge_info['autodelete-dev-config']) {
-      drush_shell_exec('git branch -D %s 2>/dev/null', $merge_info['dev-config']);
+      drush_shell_cd_and_exec($configuration_path, 'git branch -D %s 2>/dev/null', $merge_info['dev-config']);
     }
   }
 }
