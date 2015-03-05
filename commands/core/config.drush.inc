@@ -160,7 +160,7 @@ function config_drush_command() {
       'comment' => 'Commit comment for the merged configuration.',
       'no-commit' => 'Do not commit the fetched configuration; leave the modified files unstaged.',
       'tool' => 'Specific tool to use with `git mergetool`.',
-      'prepare-only' => "Don't run `git mergetool`; fetch all configuration changes from both sites, and merge them onto the tracking branch.  May result in unresolved merge conflicts.",
+      'fetch-only' => "Don't run `git mergetool`; fetch all configuration changes from both sites, and merge them onto the tracking branch.  May result in unresolved merge conflicts.",
     ),
     'examples' => array(
       'drush @dev config-merge @production' => 'Merge configuration changes from the production site with the configuration changes made on the development site.',
@@ -688,8 +688,8 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     }
 
     // Stop right here if the user specified --merge-only.
-    if (drush_get_option('prepare-only', FALSE)) {
-      drush_log(dt("Specified --prepare-only, so stopping here after the merge.  Use `git checkout !b` to return to your original branch.", array('!b' => $original_branch)), 'ok');
+    if (drush_get_option('fetch-only', FALSE)) {
+      drush_log(dt("Specified --fetch-only, so stopping here after the merge.  Use `git checkout !b` to return to your original branch.", array('!b' => $original_branch)), 'ok');
       return TRUE;
     }
 
