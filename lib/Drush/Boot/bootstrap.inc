@@ -688,7 +688,7 @@ function drush_bootstrap_value($context, $value = null) {
  *   A constant telling which phase to bootstrap to. Possible values:
  *   - DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION: Initializes configuration and
  *     kernel.
- *   - DRUSH_BOOTSTRAP_DRUPAL_FULL: Initializes a kernel.
+ *   - DRUSH_BOOTSTRAP_DRUPAL_FULL: Boots the kernel.
  */
 function drupal8_bootstrap($phase = NULL) {
   // Temporary variables used for booting later legacy phases.
@@ -704,10 +704,10 @@ function drupal8_bootstrap($phase = NULL) {
         case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
           $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
           $kernel = DrupalKernel::createFromRequest($request, $classloader, 'prod');
-          $kernel->boot();
           break;
 
         case DRUSH_BOOTSTRAP_DRUPAL_FULL:
+          $kernel->boot();
           $kernel->prepareLegacyRequest($request);
           break;
       }
