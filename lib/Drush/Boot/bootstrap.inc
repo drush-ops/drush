@@ -526,7 +526,7 @@ function _drush_bootstrap_drupal_configuration() {
     drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
   }
   else {
-    drupal8_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
+    drupal8_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
   }
 
   // Unset drupal error handler and restore drush's one.
@@ -585,7 +585,7 @@ function _drush_bootstrap_drupal_full() {
     drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   }
   else {
-    drupal8_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+    drupal8_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
   }
   if (!drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_end_clean();
@@ -686,11 +686,9 @@ function drush_bootstrap_value($context, $value = null) {
  *
  * @param $phase
  *   A constant telling which phase to bootstrap to. Possible values:
- *   - DRUPAL_BOOTSTRAP_CONFIGURATION: Initializes configuration.
- *   - DRUPAL_BOOTSTRAP_KERNEL: Initializes a kernel.
- *
- * @return int
- *   The most recently completed phase.
+ *   - DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION: Initializes configuration and
+ *     kernel.
+ *   - DRUSH_BOOTSTRAP_DRUPAL_FULL: Initializes a kernel.
  */
 function drupal8_bootstrap($phase = NULL) {
   // Temporary variables used for booting later legacy phases.
@@ -703,22 +701,17 @@ function drupal8_bootstrap($phase = NULL) {
     for ($current_phase = $boot_level; $current_phase <= $phase; $current_phase++) {
 
       switch ($current_phase) {
-        case DRUPAL_BOOTSTRAP_CONFIGURATION:
+        case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
           $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
           $kernel = DrupalKernel::createFromRequest($request, $classloader, 'prod');
+          $kernel->boot();
           break;
 
-        case DRUPAL_BOOTSTRAP_KERNEL:
-          $kernel->boot();
-
-        case DRUPAL_BOOTSTRAP_CODE:
-        case DRUPAL_BOOTSTRAP_FULL:
+        case DRUSH_BOOTSTRAP_DRUPAL_FULL:
           $kernel->prepareLegacyRequest($request);
           break;
       }
     }
     $boot_level = $phase;
   }
-
-  return \Drupal::hasContainer() ? DRUPAL_BOOTSTRAP_CODE : DRUPAL_BOOTSTRAP_CONFIGURATION;
 }
