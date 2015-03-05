@@ -590,12 +590,6 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     return drush_set_error('DRUSH_CONFIG_MERGE_UNCOMMITTED_CHANGES', dt("Working set has uncommitted changes; please commit or discard them before merging.  `git stash` before `drush config-merge`, and `git stash pop` afterwards can be useful here."));
   }
 
-  // Run config-export on '$alias'.
-  $values = drush_invoke_process($merge_info['live-site'], 'config-export', array($config_label));
-  if ($values['error_status']) {
-    return drush_set_error('DRUSH_CONFIG_MERGE_CANNOT_EXPORT', dt("Could not export configuration for site !site", array('!site' => $merge_info['live-config'])));
-  }
-
   // If the user failed to provide a base commit, and no policy
   // file supplied one, give the user a firm warning.
   if (!$merge_info['base'] && $merge_info['autodelete-live-config']) {
@@ -609,6 +603,12 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     if (!drush_confirm(dt("No base commit specified.  It is STRONGLY recommended that you re-run this command with --base=TAG, where TAG is either a tag or an sha-hash of the content that was deployed to !live.  If you continue, --base=HEAD (currently: !sha) will be assumed.  DANGER: if there have been any commits to !dev that were made AFTER the last time code was deployed, this command will REMOVE those commits, ERASING your configuration changes.  It is only safe to continue if you have no committed configuration changes that have not been deployed.  If you DO HAVE undeployed, committed configuration changes, please find a base sha-hash that comes BEFORE all undeployed configuration commits.\n\nWould you like to continue, POTENTIALLY ERASING YOUR LOCAL CONFIGURATION CHANGES?", array('!sha' => $short_sha_hash, '!live' => $merge_info['live-site'], '!dev' => $merge_info['dev-site'])))) {
       return drush_user_abort();
     }
+  }
+
+  // Run config-export on the live site.
+  $values = drush_invoke_process($merge_info['live-site'], 'config-export', array($merge_info['config-label']));
+  if ($values['error_status']) {
+    return drush_set_error('DRUSH_CONFIG_MERGE_CANNOT_EXPORT', dt("Could not export configuration for site !site", array('!site' => $merge_info['live-config'])));
   }
 
   // Create a new temporary branch to hold the configuration changes
@@ -825,19 +825,22 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   }
   // Merge the results of the 3-way merge back to the original branch.
   drush_shell_cd_and_exec($configuration_path, 'git checkout %s', $merge_info['original-branch']);
+  // Run 'git merge' and 'git commit' as separate operations, as 'git merge --squash'
+  // seems to ignore the --commit option.
+  $result = drush_shell_cd_and_exec($configuration_path, 'git merge --no-commit --squash %s', $merge_info['live-config']);
+  if (!$result) {
+    return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git merge --squash` failed."));
+  }
   if ($merge_info['commit']) {
     if (empty($merge_info['comment'])) {
       // TODO: we could probably make a better default commmit.  'dev-site' is
       // likely to be '@self', for example.
       $merge_info['comment'] = dt("Drush config-merge configuraton from sites !live and !dev", array('!live' => $merge_info['live-site'], '!dev' => $merge_info['dev-site']));
     }
-    $result = drush_shell_cd_and_exec($configuration_path, 'git merge -m %s --squash %s', $merge_info['comment'], $merge_info['live-config']);
-  }
-  else {
-    $result = drush_shell_cd_and_exec($configuration_path, 'git merge --no-commit --squash %s', $merge_info['live-config']);
-  }
-  if (!$result) {
-    return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git merge --squash` failed."));
+    $result = drush_shell_cd_and_exec($configuration_path, 'git commit -m %s', $merge_info['comment']);
+    if (!$result) {
+      return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git commit` failed."));
+    }
   }
 
   // Re-import the merged changes into the database for the local site.
