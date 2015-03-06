@@ -446,7 +446,7 @@ function drush_find_tmp() {
       }
     }
     else {
-      $directories[] = '/tmp';
+      $directories[] = drush_get_option('temporary-dir', '/tmp');
     }
     $directories[] = sys_get_temp_dir();
 
