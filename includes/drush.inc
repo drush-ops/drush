@@ -1705,7 +1705,7 @@ function drush_version_control_reserved_files() {
 
   if (!$files) {
     // Also support VCSs that are not drush vc engines.
-    $files = array('.git', '.gitignore', '.hg', '.hgignore', '.hgrags');
+    $files = array('.hg', '.hgignore', '.hgrags');
     $engine_info = drush_get_engines('version_control');
     $vcs = array_keys($engine_info['engines']);
     foreach ($vcs as $name) {

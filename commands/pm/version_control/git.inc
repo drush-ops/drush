@@ -140,6 +140,7 @@ class drush_version_control_git implements drush_version_control {
   }
 
   public static function reserved_files() {
+    // .gitignore is not in this list as it can be safely committed to a project.
     return array('.git');
   }
 }
