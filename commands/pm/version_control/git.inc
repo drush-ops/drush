@@ -88,26 +88,11 @@ class drush_version_control_git implements drush_version_control {
   private function sync($project) {
     if (drush_get_option('gitsync')) {
       $errors = '';
-      if (drush_shell_exec('git status '. drush_get_option('gitstatusparams') .' '. $project['full_project_path'])) {
-        $output = drush_shell_exec_output();
-        foreach ($output as $line) {
-          if (preg_match('/^\? *(.*)/', $line, $matches)) {
-            if (!drush_shell_exec('git add '. drush_get_option('gitaddparams') .' '. $matches[1])) {
-              $errors .= implode("\n", drush_shell_exec_output());
-            }
-          }
-          if (preg_match('/^\! *(.*)/', $line, $matches)) {
-            if (!drush_shell_exec('git remove '. drush_get_option('gitremoveparams') .' '. $matches[1])) {
-              $errors .= implode("\n", drush_shell_exec_output());
-            }
-          }
-        }
-        if (!empty($errors)) {
-          return drush_set_error('DRUSH_PM_GIT_SYNC_PROBLEMS', dt("Problems were encountered adding or removing files to/from this GIT working copy.\nThe specific errors are below:\n!errors", array('!errors' => $errors)));
-        }
+      if (!drush_shell_exec('git add --all '. drush_get_option('gitaddparams') .' '. $project['full_project_path'])) {
+        $errors .= implode("\n", drush_shell_exec_output());
       }
-      else {
-        return drush_set_error('DRUSH_PM_GIT_NOT_FOUND', dt("Drush was unable to get the git status on !path. Check that you have Git \ninstalled and that this directory is a subversion working copy.\nThe specific errors are below:\n!errors", array('!path' => $project['full_project_path'], '!errors' => implode("\n", drush_shell_exec_output()))));
+      if (!empty($errors)) {
+        return drush_set_error('DRUSH_PM_GIT_SYNC_PROBLEMS', dt("Problems were encountered adding or removing files to/from this GIT working copy.\nThe specific errors are below:\n!errors", array('!errors' => $errors)));
       }
       return TRUE;
     }
@@ -127,8 +112,8 @@ class drush_version_control_git implements drush_version_control {
         $version = !empty($project['version']) ? $project['version'] : $project['recommended'];
         $message = dt("Update $project[name] ${from}to $version");
       }
-      if (drush_shell_exec('git commit '. drush_get_option('gitcommitparams') .' -m '. escapeshellarg($message) .' '. escapeshellarg($project['full_project_path']))) {
-        drush_log(dt('Project committed to Git successfully'), 'ok');
+      if (drush_shell_exec('git commit '. drush_get_option('gitcommitparams') .' -m '. escapeshellarg($message))) {
+        drush_log(dt('Project !name committed to Git successfully', array('!name' => $project['name'])), 'ok');
       }
       else {
         drush_set_error('DRUSH_PM_GIT_COMMIT_PROBLEMS', dt("Problems were encountered committing your changes to Git.\nThe specific errors are below:\n!errors", array('!errors' => implode("\n", drush_shell_exec_output()))));
