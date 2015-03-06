@@ -1802,6 +1802,27 @@ function pm_drush_engine_version_control() {
         'drush [command] cck --svncommitparams=\"--username joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
       ),
     ),
+    'git' => array(
+      'signature' => 'git status %s',
+      'description' => 'Quickly add/remove/commit your project changes to Git.',
+      'options' => array(
+        'gitsync' => 'Automatically add new files to the Git repository and remove deleted files. Caution.',
+        'gitcommit' => 'Automatically commit changes to Git repository. You must also using the --gitsync option.',
+        'gitstatusparams' => "Add options to the 'git status' command",
+        'gitaddparams' => 'Add options to the `git add` command',
+        'gitremoveparams' => 'Add options to the `git remove` command',
+        'gitrevertparams' => 'Add options to the `git revert` command',
+        'gitcommitparams' => 'Add options to the `git commit` command',
+      ),
+      'sub-options' => array(
+        'gitcommit' => array(
+         'gitmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+        ),
+      ),
+      'examples' => array(
+        'drush [command] ctools --gitsync --gitcommit --gitcommitparams=\"--author joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
+      ),
+    ),
   );
 }
 
