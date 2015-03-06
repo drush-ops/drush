@@ -831,24 +831,40 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   if (!$result) {
     return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git merge --squash` failed."));
   }
-  if ($merge_info['commit']) {
-    if (empty($merge_info['comment'])) {
-      // TODO: we could probably make a better default commmit.  'dev-site' is
-      // likely to be '@self', for example.
-      $merge_info['comment'] = dt("Drush config-merge configuraton from sites !live and !dev", array('!live' => $merge_info['live-site'], '!dev' => $merge_info['dev-site']));
+
+  // Check to see if the merge resulted in any changed files.
+  $result = drush_shell_cd_and_exec($configuration_path, 'git status --porcelain .');
+  if (!$result) {
+    return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git status` failed."));
+  }
+  $files_changed_by_merge = drush_shell_exec_output();
+
+  // If there were any files changed in the merge, then import them and commit.
+  if (empty($files_changed_by_merge)) {
+    drush_log(dt("No configuration changes."), 'ok');
+  }
+  else {
+    // Re-import the merged changes into the database for the local site.
+    drush_set_option('strict', 0);
+    $result = drush_invoke('config-import', array($config_label));
+    if ($result === FALSE) {
+      // If there was an error, or nothing to import, return FALSE,
+      // signaling rollback.
+      return FALSE;
     }
-    $result = drush_shell_cd_and_exec($configuration_path, 'git commit -m %s', $merge_info['comment']);
-    if (!$result) {
-      return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git commit` failed."));
+
+    if ($merge_info['commit']) {
+      if (empty($merge_info['comment'])) {
+        // TODO: we could probably make a better default commmit.  'dev-site' is
+        // likely to be '@self', for example.
+        $merge_info['comment'] = dt("Drush config-merge configuraton from sites !live and !dev", array('!live' => $merge_info['live-site'], '!dev' => $merge_info['dev-site']));
+      }
+      $result = drush_shell_cd_and_exec($configuration_path, 'git commit -m %s', $merge_info['comment']);
+      if (!$result) {
+        return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git commit` failed."));
+      }
     }
   }
-
-  // Re-import the merged changes into the database for the local site.
-  $values = drush_invoke_process($merge_info['dev-site'], 'config-import', array($config_label));
-  if ($values['error_status']) {
-    return drush_set_error('DRUSH_CONFIG_MERGE_CANNOT_EXPORT', dt("Could not import merged configuration back into site !site", array('!site' => $merge_info['dev-site'])));
-  }
-
   _drush_config_merge_cleanup($merge_info);
   return TRUE;
 }
