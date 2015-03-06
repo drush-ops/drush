@@ -118,10 +118,10 @@ function drush_core_pre_site_install($profile = NULL) {
     $msg[] = dt('create a @sitesfile file', array('@sitesfile' => $sitesfile));
   }
   if ($sql->db_exists()) {
-    $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
+    $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => _drush_core_site_install_db_url($db_spec)));
   }
   else {
-    $msg[] = dt("CREATE the '@db' database.", array('@db' => $db_spec['database']));
+    $msg[] = dt("CREATE the '@db' database.", array('@db' => _drush_core_site_install_db_url($db_spec)));
   }
 
   if (!drush_confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
@@ -271,4 +271,38 @@ function drush_core_site_install($profile = NULL) {
   }
   drush_include_engine('drupal', 'site_install');
   drush_core_site_install_version($profile, $form_options);
+}
+
+/**
+ * Build a database URL from a database connection specification.
+ *
+ * @param array $db_spec
+ *   Standard database connection.
+ *
+ * @return string
+ *   Database URL.
+ */
+function _drush_core_site_install_db_url($db_spec) {
+  $db_url = $db_spec['driver'] . '://';
+  if (!empty($db_spec['username'])) {
+    $db_url .= $db_spec['username'];
+
+    if (!empty($db_spec['password'])) {
+      $db_url .= ':****';
+    }
+
+    $db_url .= '@';
+  }
+
+  if (!empty($db_spec['host'])) {
+    $db_url .= $db_spec['host'];
+
+    if (!empty($db_spec['port'])) {
+      $db_url .= ':' . $db_spec['port'];
+    }
+
+    $db_url .= '/';
+  }
+
+  return $db_url . $db_spec['database'];
 }
