@@ -480,7 +480,7 @@ it is fully functional.
 
 Maintainers
 -----------
-- Jonathan Hedstrom (jhedstrom)
+- Jonathan Hedstrom ([jhedstrom](https://www.drupal.org/u/jhedstrom))
 - Christopher Gervais ([ergonlogic](http://drupal.org/u/ergonlogic))
 - The rest of the Drush maintainers
 

@@ -571,16 +571,35 @@ function _drush_verify_cli_options($command) {
     }
   }
 
-  // Next check to see if all required options were specified.
+  // Next check to see if all required options were specified,
+  // and if all specified options with required values have values.
   $missing_required_options = array();
+  $options_missing_required_values = array();
   foreach ($command['options'] as $option_name => $option) {
     if (is_array($option) && !empty($option['required']) && drush_get_option($option_name, NULL) === NULL) {
       $missing_required_options[] = $option_name;
     }
+    // Note that drush_get_option() will return TRUE if an option
+    // was specified without a value (--option), as opposed to
+    // the string "1" is --option=1 was used.
+    elseif (is_array($option) && !empty($option['value']) && ($option['value'] == 'required') && drush_get_option($option_name, NULL) === TRUE) {
+      $options_missing_required_values[] = $option_name;
+    }
   }
-  if (!empty($missing_required_options)) {
-    $missing = count($missing_required_options) > 1 ? dt('Missing required options') : dt('Missing required option');
-    return drush_set_error(dt("@missing: --@options.  See `drush help @command` for information on usage.", array('@missing' => $missing, '@options' => implode(', --', $missing_required_options), '@command' => $command['command'])));
+  if (!empty($missing_required_options) || !empty($options_missing_required_values)) {
+    $missing_message = '';
+    if (!empty($missing_required_options)) {
+      $missing = count($missing_required_options) > 1 ? dt('Missing required options') : dt('Missing required option');
+      $missing_message = dt("@missing: --@options.", array('@missing' => $missing, '@options' => implode(', --', $missing_required_options)));
+    }
+    if (!empty($options_missing_required_values)) {
+      if (!empty($missing_message)) {
+        $missing_message .= "  ";
+      }
+      $missing = count($options_missing_required_values) > 1 ? dt('Options used without providing required values') : dt('Option used without a value where one was required');
+      $missing_message .= dt("@missing: --@options.", array('@missing' => $missing, '@options' => implode(', --', $options_missing_required_values)));
+    }
+    return drush_set_error(dt("!message  See `drush help @command` for information on usage.", array('!message' => $missing_message, '@command' => $command['command'])));
   }
   return TRUE;
 }

@@ -23,17 +23,17 @@ function user_drush_help($section) {
 function user_drush_command() {
   $options_common = array(
     'uid' => array(
-      'description' => 'A comma delimited list of uids to block.',
+      'description' => 'A comma delimited list of uids of users to operate on.',
       'example-value' => '3,5',
       'value' => 'required',
     ),
     'name' => array(
-      'description' => 'A comma delimited list of user names to block.',
+      'description' => 'A comma delimited list of user names of users to operate on.',
       'example-value' => 'foo',
       'value' => 'required',
     ),
     'mail' => array(
-      'description' => 'A comma delimited list of user mail addresses to block.',
+      'description' => 'A comma delimited list of user mail addresses of users to operate on.',
       'example-value' => 'me@example.com',
       'value' => 'required',
     )
