@@ -122,7 +122,7 @@ if [ -h "$d" ] ; then
   # Change `readlink` to `readlink -f` if your drush is a symlink to a symlink. -f is unavailable on OSX's readlink.
   d2="$(readlink "$d")"
   # If 'readlink' comes back as a relative path, then we need to fix it up.
-  if [ "x$d2" == "x/" ] ; then
+  if [[ "$d2" =~ ^"/" ]] ; then
     d="$d2"
   else
     d="$(dirname $d)/$d2"

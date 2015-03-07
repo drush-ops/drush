@@ -39,6 +39,9 @@ function config_drush_command() {
         'example-value' => 'active',
         'value' => 'required',
       ),
+      'include-overridden' => array(
+        'description' => 'Include overridden values.',
+      )
     ),
     'examples' => array(
       'drush config-get system.site' => 'Displays the system.site config.',
@@ -468,14 +471,25 @@ function drush_config_edit($config_name = '') {
  */
 function drush_config_get_object($config_name) {
   $source = drush_get_option('source', 'active');
-  if ($source == 'active') {
+  $include_overridden = drush_get_option('include-overridden', FALSE);
+
+  if ($include_overridden) {
+    // Displaying overrides only applies to active storage.
+    $config = \Drupal::config($config_name);
+    $data = $config->get();
+  }
+  elseif ($source == 'active') {
     $config = \Drupal::service('config.storage');
+    $data = $config->read($config_name);
   }
   elseif ($source == 'staging') {
-    $config = \Drupal::service('config.storage');
+    $config = \Drupal::service('config.storage.staging');
+    $data = $config->read($config_name);
+  }
+  else {
+    return drush_set_error(dt('Unknown value !value for config source.', array('!value' => $source)));
   }
 
-  $data = $config->read($config_name);
   if ($data === FALSE) {
     return drush_set_error(dt('Config !name does not exist in !source configuration.', array('!name' => $config_name, '!source' => $source)));
   }

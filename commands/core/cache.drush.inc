@@ -258,6 +258,10 @@ function drush_cache_clear_drush() {
  * it also clears drush cache and drupal render cache.
  */
 function drush_cache_rebuild() {
+  if (!drush_get_option('cache-clear', TRUE)) {
+    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), 'ok');
+    return TRUE;
+  }
   chdir(DRUPAL_ROOT);
   $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
   require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';

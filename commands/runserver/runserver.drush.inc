@@ -148,7 +148,13 @@ function drush_core_runserver($uri = NULL) {
   }
   // Start the server using 'php -S'.
   $php = drush_get_option('php');
-  drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"');
+  if (drush_drupal_major_version() >=8) {
+    $extra = ' "' . __DIR__ . '/d8-rs-router.php"';
+  }
+  else {
+    $extra = ' --define auto_prepend_file="' . __DIR__ . '/runserver-prepend.php"';
+  }
+  drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . $extra);
 }
 
 /**

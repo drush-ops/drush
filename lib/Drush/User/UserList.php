@@ -46,8 +46,6 @@ class UserList {
   function getFromOptions() {
     $accounts = array();
     $userversion = drush_user_get_class();
-    // Unused?
-    // $uids = drush_get_option_list('uids');
     if ($mails = _convert_csv_to_array(drush_get_option('mail'))) {
       foreach ($mails as $mail) {
         if ($account = $userversion->load_by_mail($mail)) {

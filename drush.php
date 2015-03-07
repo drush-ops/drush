@@ -38,17 +38,15 @@ function drush_main() {
     register_shutdown_function('drush_coverage_shutdown');
   }
 
-  // Load the Drush configuration files.
+  // Load the global Drush configuration files, and global Drush commands.
   drush_preflight();
 
-  /* Set up bootstrap object, so that
-   * - 'early' files can bootstrap when needed.
-   * - bootstrap constants are available.
-   */
-  $bootstrap_class = drush_get_option('bootstrap_class', 'Drush\Boot\DrupalBoot');
-  $bootstrap = new $bootstrap_class;
-  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
-  $bootstrap->preflight();
+  // Find the selected site based on --root, --uri or cwd, and
+  // return the bootstrap object that goes with it.
+  $bootstrap = _drush_preflight_root();
+
+  // Preflight the selected site, and load any configuration and commandfiles associated with it.
+  drush_preflight_site();
 
   $return = '';
   if (!drush_get_error()) {
@@ -70,7 +68,6 @@ function drush_main() {
       // perhaps handling immediately.
       $command_handled = drush_preflight_command_dispatch();
       if (!$command_handled) {
-        $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT');
         $return = $bootstrap->bootstrap_and_dispatch();
       }
     }

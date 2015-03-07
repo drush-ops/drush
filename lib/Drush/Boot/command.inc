@@ -135,7 +135,7 @@ function drush_command_belongs_to_disabled_module() {
       }
       else {
         // The command does not define Drupal dependencies. Derive them.
-        $command_files = drush_get_context('DRUSH_COMMAND_FILES', array());
+        $command_files = commandfiles_cache()->get();
         $command_path = $commands[$command_name]['path'] . DIRECTORY_SEPARATOR . $commands[$command_name]['commandfile'] . '.drush.inc';
         $modules = array_search($command_path, $command_files);
       }

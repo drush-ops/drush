@@ -20,10 +20,10 @@ function drush_preflight_prepare() {
 
   // Check for a local composer install or a global composer install. Vendor dirs are in different spots).
   if (file_exists($local_vendor_path)) {
-    require $local_vendor_path;
+    $vendor_path = $local_vendor_path;
   }
   elseif (file_exists($global_vendor_path)) {
-    require $global_vendor_path;
+    $vendor_path = $global_vendor_path;
   }
   else {
     $msg = "Unable to load autoload.php. Drush now requires Composer in order to install its dependencies and autoload classes. Please see README.md\n";
@@ -31,6 +31,11 @@ function drush_preflight_prepare() {
     return FALSE;
   }
 
+  // drush_drupal_load_autoloader() uses require_once.  Is this going to be
+  // a problem if $vendor_path == $drupal_root .'/core/vendor/autoload.php'
+  require $vendor_path;
+
+  require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
   require_once DRUSH_BASE_PATH . '/includes/command.inc';
   require_once DRUSH_BASE_PATH . '/includes/drush.inc';
@@ -45,6 +50,9 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/cache.inc';
   require_once DRUSH_BASE_PATH . '/includes/filesystem.inc';
   require_once DRUSH_BASE_PATH . '/includes/dbtng.inc';
+
+  // Cache our vendor path
+  drush_set_context('DRUSH_VENDOR_PATH', dirname(realpath($vendor_path)));
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -79,7 +87,6 @@ function drush_preflight_prepare() {
   // Set an error handler and a shutdown function
   set_error_handler('drush_error_handler');
   register_shutdown_function('drush_shutdown');
-
   // We need some global options/arguments processed at this early stage.
   drush_parse_args();
 
@@ -159,7 +166,6 @@ function drush_preflight() {
   if (!drush_get_option('local')) {
     _drush_preflight_alias_path();
   }
-
   if (!drush_get_option('local')) {
     // Load a drushrc.php file in the drush.php's directory.
     drush_load_config('drush');
@@ -177,9 +183,56 @@ function drush_preflight() {
   // Load a custom config specified with the --config option.
   drush_load_config('custom');
 
-  // Determine if --root and --uri have been defined and set constants accordingly.
-  _drush_preflight_root();
+  _drush_preflight_global_options();
+  // Load all the commandfiles findable from any of the
+  // scopes listed above.
+  _drush_find_commandfiles_drush();
 
+  // Process the site alias that specifies which instance
+  // of Drush (local or remote) this command will operate on.
+  // We must do this after we load our config files (so that
+  // site aliases are available), but before the rest of
+  // Drush preflight and Drupal root bootstrap phase are
+  // done, since site aliases may set option values that
+  // affect these phases.
+  drush_sitealias_check_arg();
+
+  // Check to see if we 'use'd a site alias with site-set
+  drush_sitealias_check_site_env();
+}
+
+/**
+ * If --root is provided, set context.
+ */
+function _drush_preflight_root() {
+  $root = drush_get_option('root');
+  if (!isset($root)) {
+    $root = drush_locate_root();
+  }
+  if ($root) {
+    $root = realpath($root);
+  }
+  // @todo This context name should not mention Drupal.
+  // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
+  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
+
+  // Once we have selected a Drupal root, we will reduce our bootstrap
+  // candidates down to just the one used to select this site root.
+  $bootstrap = drush_bootstrap_class_for_root($root);
+  // TEMPORARY: if we have not found a bootstrap class by this point,
+  // then take the last one and use it.  This should be Drupal.
+  if ($bootstrap == NULL) {
+    $candidates = drush_preflight_get_bootstrap_candidates();
+    $bootstrap = array_pop($candidates);
+  }
+  drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
+  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
+  $bootstrap->preflight();
+
+  return $bootstrap;
+}
+
+function drush_preflight_site() {
   // Load the config options from Drupal's /drush and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
@@ -193,26 +246,13 @@ function drush_preflight() {
   // Create a @self site alias record.
   drush_sitealias_create_self_alias();
 
-  // Process the site alias that specifies which instance
-  // of Drush (local or remote) this command will operate on.
-  // We must do this after we load our config files (so that
-  // site aliases are available), but before the rest of
-  // Drush preflight and Drupal root bootstrap phase are
-  // done, since site aliases may set option values that
-  // affect these phases.
-  drush_sitealias_check_arg();
-
-  // Check to see if we 'use'd a site alias with site-set
-  drush_sitealias_check_site_env();
-
   // If applicable swaps in shell alias value (or executes it).
   drush_shell_alias_replace();
 
-  // @todo Move this code?
   // If drush_load_config defined a site alias that did not
   // exist before, then sitealias check arg might now match
   // against one of those aliases.
-  if ((drush_sitealias_check_arg() === TRUE) || (drush_sitealias_check_site_env() === TRUE)) {
+  if (drush_sitealias_check_arg() === TRUE) {
     $remote_host = drush_get_option('remote-host');
     if (!isset($remote_host)) {
       // Load the config files for the "new" site.
@@ -222,8 +262,24 @@ function drush_preflight() {
   }
 
   _drush_preflight_global_options();
+}
 
-  _drush_find_commandfiles_drush();
+function drush_preflight_get_bootstrap_candidates() {
+  $candidates = drush_get_context('DRUSH_BOOTSTRAP_CANDIDATES', FALSE);
+  if (!$candidates) {
+    // Give all commandfiles a chance to return candidates
+    $candidates = drush_command_invoke_all('bootstrap_candidates');
+    // If a bootstrap class was specified on the command line, consider it first.
+    $bootstrap_class = drush_get_option('bootstrap_class', FALSE);
+    if ($bootstrap_class) {
+      array_unshift($candidates, new $bootstrap_class);
+    }
+    // Always consider our default bootstrap class last.
+    $default_bootstrap_class = 'Drush\Boot\DrupalBoot';
+    $candidates[] = new $default_bootstrap_class;
+    drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', $candidates);
+  }
+  return $candidates;
 }
 
 function _drush_preflight_global_options() {
@@ -303,22 +359,6 @@ function _drush_preflight_alias_path() {
 function _drush_preflight_root_uri() {
   _drush_preflight_root();
   _drush_preflight_uri();
-}
-
-/**
- * If --root is provided, set context.
- */
-function _drush_preflight_root() {
-  $root = drush_get_option('root');
-  if (!isset($root)) {
-    $root = drush_locate_root();
-  }
-  if ($root) {
-    $root = realpath($root);
-  }
-  // @todo This context name should not mention Drupal.
-  // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
-  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
 }
 
 /**

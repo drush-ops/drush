@@ -210,7 +210,14 @@ function package_handler_post_download($project, $release) {
     else {
       $full_version = $release['version'];
     }
-    drush_pm_inject_info_file_metadata($project['full_project_path'], $project['name'], $full_version);
+    if (drush_shell_cd_and_exec(dirname($project['full_project_path']), 'git log -1 --pretty=format:%ct')) {
+      $output = drush_shell_exec_output();
+      $datestamp = $output[0];
+    }
+    else {
+      $datestamp = time();
+    }
+    drush_pm_inject_info_file_metadata($project['full_project_path'], $project['name'], $full_version, $datestamp);
   }
 
 }
