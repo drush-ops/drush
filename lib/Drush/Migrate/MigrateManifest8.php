@@ -7,6 +7,7 @@
 
 namespace Drush\Migrate;
 
+use Drupal\Component\Utility\NestedArray;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
@@ -66,7 +67,13 @@ class MigrateManifest8 implements MigrateInterface {
       if (is_array($migration_info)) {
         // The migration is stored as the key in the info array.
         $migration_id = key($migration_info);
-        \Drupal::config("$prefix.$migration_id")->setSettingsOverride($migration_info);
+        $config_name = "$prefix.$migration_id";
+
+        // If there is some existing global overrides then we merge them in.
+        if (isset($GLOBALS['config'][$config_name])) {
+          $migration_info = NestedArray::mergeDeep($GLOBALS['config'][$config_name], $migration_info);
+        }
+        \Drupal::config($config_name)->setSettingsOverride($migration_info);
       }
       else {
         // If it wasn't an array then the info is just the migration_id.
