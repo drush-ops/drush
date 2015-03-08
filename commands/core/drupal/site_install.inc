@@ -4,11 +4,25 @@
  * Install Drupal 8+
  */
 function drush_core_site_install_version($profile, array $additional_form_options = array()) {
-  if (!isset($profile)) {
-    $profile = 'standard';
-  }
-
   require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+  $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+
+  if (!isset($profile)) {
+    // If there is an installation profile that acts as a distribution, use that
+    // one.
+    $install_state = array('interactive' => FALSE) + install_state_defaults();
+    try {
+      install_begin_request($class_loader, $install_state);
+      $profile = _install_select_profile($install_state);
+    }
+    catch (\Exception $e) {
+      // This is only a best effort to provide a better default, no harm done
+      // if it fails.
+    }
+    if (!isset($profile) || !$profile) {
+      $profile = 'standard';
+    }
+  }
 
   $sql = drush_sql_get_class();
   $db_spec = $sql->db_spec();
@@ -61,7 +75,6 @@ function drush_core_site_install_version($profile, array $additional_form_option
     $msg .= ' Consider using the --notify global option.';
   }
   drush_log(dt($msg), 'ok');
-  $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
   drush_op('install_drupal', $class_loader, $settings);
   drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
 }
