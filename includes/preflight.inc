@@ -199,6 +199,9 @@ function drush_preflight() {
 
   // Check to see if we 'use'd a site alias with site-set
   drush_sitealias_check_site_env();
+
+  //Set Env. Variables for given site-alias.
+  drush_set_environment_vars();
 }
 
 /**

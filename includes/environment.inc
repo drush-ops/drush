@@ -875,3 +875,18 @@ function drush_get_drupal_core_compatibility() {
     return Drupal::CORE_COMPATIBILITY;
   }
 }
+
+/**
+ * Set Env. Variables for given Site-Alias.
+ */
+function drush_set_environment_vars() {
+  $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
+  $site_record = drush_sitealias_get_record($alias);
+  $os = drush_os(NULL);
+  if (isset($site_record['#env-vars'])) {
+    foreach ($site_record['#env-vars'] as $var => $value) {
+      $env_var = drush_escapeshellarg($var, $os) . '=' . substr(drush_escapeshellarg($value, $os), 1, -1);
+      putenv($env_var);
+    }
+  }
+}
