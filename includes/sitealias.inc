@@ -2065,8 +2065,12 @@ function drush_sitealias_get_envar_filename($filename_prefix = 'drush-drupal-sit
     return FALSE;
   }
 
+  // Unfortunately, we cannot use drush_directory_cache() here, as
+  // we need to use a path that can be very predictably reproduced
+  // in __drush_ps1.  See
   $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp/';
-  return "{$tmp}/drush-env/{$filename_prefix}" . posix_getppid();
+  $user = drush_get_username();
+  return "{$tmp}/drush-{$user}-env/{$filename_prefix}" . posix_getppid();
 }
 
 /**
