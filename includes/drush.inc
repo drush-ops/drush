@@ -1226,7 +1226,7 @@ function drush_preflight_command_dispatch() {
     if (is_array($values) && ($values['error_status'] > 0)) {
       // Force an error result code.  Note that drush_shutdown() will still run.
       drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
-      exit($values);
+      exit($values['error_status']);
     }
     return TRUE;
   }
