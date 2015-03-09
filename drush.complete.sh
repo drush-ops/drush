@@ -16,7 +16,7 @@
 which drush > /dev/null || alias drush &> /dev/null || return
 
 __drush_ps1() {
-  f="${TMPDIR:-/tmp/}/drush-env/drush-drupal-site-$$"
+  f="${TMPDIR:-/tmp/}/drush-${USER}-env/drush-drupal-site-$$"
   if [ -f $f ]
   then
     __DRUPAL_SITE=$(cat "$f")
