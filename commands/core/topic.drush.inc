@@ -53,9 +53,20 @@ function topic_drush_help_alter(&$command) {
  */
 function drush_topic_core_topic($topic_name = NULL) {
   $commands = drush_get_commands();
-  if (!isset($topic_name)) {
-    // Show choice list.
+  $topics = drush_get_topics();
+  if (isset($topic_name)) {
     foreach (drush_get_topics() as $key => $topic) {
+      if (strstr($key, $topic_name) === FALSE) {
+        unset($topics[$key]);
+      }
+    }
+  }
+  if (empty($topics)) {
+    return drush_set_error('DRUSH_NO_SUCH_TOPIC', dt("No topics on !topic found.", array('!topic' => $topic_name)));
+  }
+  if (count($topics) > 1) {
+    // Show choice list.
+    foreach ($topics as $key => $topic) {
       $choices[$key] = $topic['description'];
     }
     natcasesort($choices);
@@ -63,12 +74,7 @@ function drush_topic_core_topic($topic_name = NULL) {
       return;
     }
   }
-  // If the topic name is not found, check for
-  // "docs-$topic_name".  This allows users to be
-  // just a bit lazy when selecting core topics by name.
-  if (!isset($commands[$topic_name]) && isset($commands["docs-$topic_name"])) {
-    $topic_name = "docs-$topic_name";
-  }
+  $topic_name = array_pop(array_keys($topics));
   return drush_dispatch($commands[$topic_name]);
 }
 
