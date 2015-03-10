@@ -261,6 +261,17 @@ function drush_preflight_site() {
     }
   }
 
+  // If someone set 'uri' in the 'site' context, then copy it
+  // to the 'process' context (to give it a higher priority
+  // than the 'cli' and 'alias' contexts) and reset our selected
+  // site and @self alias.
+  $uri = drush_get_option('uri');
+  if ($uri != drush_get_option('uri', $uri, 'site')) {
+    drush_set_option('uri', drush_get_option('uri', $uri, 'site'));
+    _drush_preflight_uri();
+    drush_sitealias_create_self_alias();
+  }
+
   _drush_preflight_global_options();
 }
 
