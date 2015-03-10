@@ -274,9 +274,11 @@ function drush_preflight_get_bootstrap_candidates() {
     if ($bootstrap_class) {
       array_unshift($candidates, new $bootstrap_class);
     }
-    // Always consider our default bootstrap class last.
-    $default_bootstrap_class = 'Drush\Boot\DrupalBoot';
-    $candidates[] = new $default_bootstrap_class;
+    // Always consider our default bootstrap classes last.
+    foreach (array('8', '7', '6') as $version) {
+      $default_bootstrap_class = 'Drush\Boot\DrupalBoot' . $version;
+      $candidates[] = new $default_bootstrap_class;
+    }
     drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', $candidates);
   }
   return $candidates;
