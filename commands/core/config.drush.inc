@@ -19,6 +19,8 @@ function config_drush_help($section) {
       return dt('Config commands');
     case 'meta:config:summary':
       return dt('Interact with the configuration system.');
+    case 'drush:config-merge':
+      return dt('Combine configuration data from this site with the configuration data of another site; if there are conflicts, open an interactive three-way merge tool comparing the changes with the base revision');
   }
 }
 
@@ -157,7 +159,7 @@ function config_drush_command() {
     ),
   );
   $items['config-merge'] = array(
-    'description' => 'Combine configuration data from this site with the configuration data of another site; if there are conflicts, open an interactive three-way merge tool comparing the changes with the base revision.',
+    'description' => 'Merge configuration data from two sites.',
     'aliases' => array('cm'),
     'required-arguments' => 1,
     'arguments' => array(
@@ -386,7 +388,7 @@ function drush_config_export($destination = NULL) {
       if (!$result) {
         return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git add -A` failed."));
       }
-      $comment = drush_get_option('comment', FALSE);
+      $comment = drush_get_option('message', FALSE);
       if (!$comment) {
         $comment = "Default cex comment."; // TODO: do it better.
       }
@@ -396,7 +398,7 @@ function drush_config_export($destination = NULL) {
       }
       if ($remote) {
         // Remote might be FALSE, if --push was not specified, or
-        // it might be TRUE is --push was not given a value.
+        // it might be TRUE if --push was not given a value.
         if (!is_string($remote)) {
           $remote = 'origin';
         }
@@ -599,7 +601,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   }
   $output = drush_shell_exec_output();
   $original_branch = $output[0];
-  drush_log(dt("Original branch is !branch", array('!branch' => $original_branch)), 'notice');
+  drush_log(dt("Original branch is !branch", array('!branch' => $original_branch)), 'debug');
   $merge_info['original-branch'] = $original_branch;
 
   // Find the current sha-hash
@@ -641,7 +643,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     $output = drush_shell_exec_output();
     $merge_info['base'] = $output[0];
     $short_sha_hash = substr($merge_info['base'], 0, 6);
-    if (!drush_confirm(dt("No base commit specified.  It is STRONGLY recommended that you re-run this command with --base=TAG, where TAG is either a tag or an sha-hash of the content that was deployed to !live.  If you do not know what TAG was deployed, you risk losing some of your local configuration changes.\n\nWould you like to continue, POTENTIALLY ERASING YOUR LOCAL CONFIGURATION CHANGES?", array('!sha' => $short_sha_hash, '!live' => $merge_info['live-site'], '!dev' => $merge_info['dev-site'])))) {
+    if (!drush_confirm(dt("No base commit specified.  It is strongly recommended that you re-run this command with --base=TAG, where TAG is either a tag or an sha-hash of the content that was deployed to !live.  If you do not know what TAG was deployed, you risk losing some of your local configuration changes.\n\nWould you like to continue, potentially erasing some configuration changes?", array('!sha' => $short_sha_hash, '!live' => $merge_info['live-site'], '!dev' => $merge_info['dev-site'])))) {
       return drush_user_abort();
     }
   }
@@ -663,7 +665,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
 
   // Copy the exported configuration from 'live-site', either via git pull or via rsync
   $commit_needed = FALSE;
-  if($merge_info['git-transport']) {
+  if ($merge_info['git-transport']) {
     // If the config-export command worked, and exported changes, then this should
     // pull down the appropriate commit, which should change files in $configuration_path
     // (and nowhere else).
