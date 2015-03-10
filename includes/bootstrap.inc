@@ -108,23 +108,22 @@ define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
  *
  * Usage:
  *
- * function myextension_init() {
+ * function mycommandfile_drush_init() {
  *   drush_autoload(__FILE__)
  * }
+ *
  */
 function drush_autoload($commandfile) {
-	$already_added = commandfiles_cache()->add($commandfile);
+  $already_added = commandfiles_cache()->add($commandfile);
 
-	if (!$already_added) {
-		$dir = dirname($commandfile);
-		$candidates = array("vendor/autoload.php", "../../../vendor/autoload.php");
-		$drush_autoload_file = drush_get_context('DRUSH_VENDOR_PATH', '');
+  $dir = dirname($commandfile);
+  $candidates = array("vendor/autoload.php", "../../../vendor/autoload.php");
+  $drush_autoload_file = drush_get_context('DRUSH_VENDOR_PATH', '');
 
-		foreach ($candidates as $candidate) {
-		    $autoload = $dir . '/' . $candidate;
-		    if (file_exists($autoload) && (realpath($autoload) != $drush_autoload_file)) {
-		    	include $autoload;
-		    }
-		}
-	}
+  foreach ($candidates as $candidate) {
+    $autoload = $dir . '/' . $candidate;
+    if (file_exists($autoload) && (realpath($autoload) != $drush_autoload_file)) {
+      include $autoload;
+    }
+  }
 }
