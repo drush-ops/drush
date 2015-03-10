@@ -19,7 +19,7 @@ function drush_core_site_install_version($profile, array $additional_form_option
       // This is only a best effort to provide a better default, no harm done
       // if it fails.
     }
-    if (!isset($profile) || !$profile) {
+    if (empty($profile)) {
       $profile = 'standard';
     }
   }
