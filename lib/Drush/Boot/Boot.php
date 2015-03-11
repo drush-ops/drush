@@ -17,4 +17,6 @@ interface Boot {
   function bootstrap_init_phases();
 
   function command_defaults();
+
+  function enforce_requirement(&$command);
 }

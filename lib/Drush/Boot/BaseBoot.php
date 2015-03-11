@@ -16,7 +16,7 @@ abstract class BaseBoot implements Boot {
   function command_defaults() {
   }
 
-  function enforce_requirement($command) {
+  function enforce_requirement(&$command) {
     drush_enforce_requirement_bootstrap_phase($command);
     drush_enforce_requirement_core($command);
     drush_enforce_requirement_drush_dependencies($command);

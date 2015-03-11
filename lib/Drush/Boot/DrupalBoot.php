@@ -30,7 +30,7 @@ abstract class DrupalBoot extends BaseBoot {
     require_once __DIR__ . '/command.inc';
   }
 
-  function enforce_requirement($command) {
+  function enforce_requirement(&$command) {
     parent::enforce_requirement($command);
     drush_enforce_requirement_drupal_dependencies($command);
   }
