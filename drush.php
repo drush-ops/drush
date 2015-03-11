@@ -43,11 +43,13 @@ function drush_main() {
 
   // Find the selected site based on --root, --uri or cwd, and
   // return the bootstrap object that goes with it.
-  $bootstrap = _drush_preflight_root();
+  drush_preflight_root();
 
   // Preflight the selected site, and load any configuration and commandfiles associated with it.
   drush_preflight_site();
 
+  // Select the bootstrap class and preflight it.
+  $bootstrap = drush_preflight_bootstrap_class();
   $return = '';
   if (!drush_get_error()) {
     if ($file = drush_get_option('early', FALSE)) {

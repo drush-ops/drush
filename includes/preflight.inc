@@ -204,7 +204,7 @@ function drush_preflight() {
 /**
  * If --root is provided, set context.
  */
-function _drush_preflight_root() {
+function drush_preflight_root() {
   $root = drush_get_option('root');
   if (!isset($root)) {
     $root = drush_locate_root();
@@ -215,17 +215,33 @@ function _drush_preflight_root() {
   // @todo This context name should not mention Drupal.
   // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
+}
+
+function drush_preflight_bootstrap_class() {
+  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+
+  // TODO: This has historically happened here; perhaps it should be elsewhere
+  drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
 
   // Once we have selected a Drupal root, we will reduce our bootstrap
   // candidates down to just the one used to select this site root.
   $bootstrap = drush_bootstrap_class_for_root($root);
-  // TEMPORARY: if we have not found a bootstrap class by this point,
-  // then take the last one and use it.  This should be Drupal.
+  // If we have not found a bootstrap class by this point,
+  // then take the last one and use it.  This should be our
+  // default bootstrap class.  The default bootstrap class
+  // should pass through all calls without doing anything that
+  // changes state in a CMS-specific way.
   if ($bootstrap == NULL) {
     $candidates = drush_preflight_get_bootstrap_candidates();
     $bootstrap = array_pop($candidates);
   }
-  drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
+  else {
+    // If we find a non-default bootstrap class, then erase
+    // all of the other candidates -- we won't allow a switch
+    // after the bootstrap class has changed any state in
+    // a CMS-specific way.
+    drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
+  }
   drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
   $bootstrap->preflight();
 
@@ -247,6 +263,7 @@ function drush_preflight_site() {
   drush_sitealias_create_self_alias();
 
   // If applicable swaps in shell alias value (or executes it).
+  // TODO: This should probably come later in bootstrap.
   drush_shell_alias_replace();
 
   // If drush_load_config defined a site alias that did not
@@ -285,11 +302,14 @@ function drush_preflight_get_bootstrap_candidates() {
     if ($bootstrap_class) {
       array_unshift($candidates, new $bootstrap_class);
     }
-    // Always consider our default bootstrap classes last.
+    // Add candidate bootstrap classes for Drupal
     foreach (array('8', '7', '6') as $version) {
-      $default_bootstrap_class = 'Drush\Boot\DrupalBoot' . $version;
-      $candidates[] = new $default_bootstrap_class;
+      $drupal_bootstrap_class = 'Drush\Boot\DrupalBoot' . $version;
+      $candidates[] = new $drupal_bootstrap_class;
     }
+    // Always consider our default bootstrap class last.
+    $candidates[] = new Drush\Boot\EmptyBoot;
+
     drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', $candidates);
   }
   return $candidates;
@@ -370,7 +390,7 @@ function _drush_preflight_alias_path() {
  * Set root and uri.
  */
 function _drush_preflight_root_uri() {
-  _drush_preflight_root();
+  drush_preflight_root();
   _drush_preflight_uri();
 }
 

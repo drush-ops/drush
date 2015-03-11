@@ -103,6 +103,298 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
 define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
 
 /**
+ * Helper function listing phases.
+ *
+ * For commands that need to iterate through the phases, such as help
+ */
+function _drush_bootstrap_phases($function_names = FALSE, $init_phases_only = FALSE) {
+  $result = array();
+
+  if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
+    $functions = $bootstrap->bootstrap_phases();
+
+    if ($init_phases_only) {
+      foreach (array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_FULL) as $phase) {
+        $result[$phase] = $functions[$phase];
+      }
+    }
+    else {
+      $result = $functions;
+    }
+    if (!$function_names) {
+      $result = array_keys($result);
+    }
+  }
+  return $result;
+}
+
+/**
+ * Bootstrap Drush to the desired phase.
+ *
+ * This function will sequentially bootstrap each
+ * lower phase up to the phase that has been requested.
+ *
+ * @param phase
+ *   The bootstrap phase to bootstrap to.
+ *   Any of the following constants :
+ *     DRUSH_BOOTSTRAP_DRUSH                = Only Drush.
+ *     DRUSH_BOOTSTRAP_DRUPAL_ROOT          = Find a valid Drupal root.
+ *     DRUSH_BOOTSTRAP_DRUPAL_SITE          = Find a valid Drupal site.
+ *     DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION = Load the site's settings.
+ *     DRUSH_BOOTSTRAP_DRUPAL_DATABASE      = Initialize the database.
+ *     DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.
+ *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
+ */
+function drush_bootstrap($phase, $phase_max = FALSE) {
+  static $phases;
+  if (!$phases) {
+    $phases = _drush_bootstrap_phases(TRUE);
+  }
+  static $phase_index = 0;
+
+  drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);
+  while ($phase >= $phase_index && isset($phases[$phase_index])) {
+    if (drush_bootstrap_validate($phase_index)) {
+      $current_phase = $phases[$phase_index];
+      if (function_exists($current_phase) && !drush_get_error()) {
+        drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
+        $current_phase();
+
+        // Reset commandfile cache and find any new command files that are available during this bootstrap phase.
+        drush_get_commands(TRUE);
+        _drush_find_commandfiles($phase_index, $phase_max);
+      }
+      drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
+    }
+    else {
+      $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
+      foreach ($errors as $code => $message) {
+        drush_set_error($code, $message);
+      }
+      break;
+    }
+    unset($phases[$phase_index++]);
+  }
+  drush_set_context('DRUSH_BOOTSTRAPPING', FALSE);
+  return !drush_get_error();
+}
+
+/**
+ * Determine whether a given bootstrap phase has been completed
+ *
+ * This function name has a typo which makes me laugh so we choose not to
+ * fix it. Take a deep breath, and smile. See
+ * http://en.wikipedia.org/wiki/HTTP_referer
+ *
+ *
+ * @param phase
+ *   The bootstrap phase to test
+ *
+ * @returns
+ *   TRUE if the specified bootstrap phase has completed.
+ */
+function drush_has_boostrapped($phase) {
+  $phase_index = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+
+  return isset($phase_index) && ($phase_index >= $phase);
+}
+
+/**
+ * Validate whether a bootstrap phase can be reached.
+ *
+ * This function will validate the settings that will be used
+ * during the actual bootstrap process, and allow commands to
+ * progressively bootstrap to the highest level that can be reached.
+ *
+ * This function will only run the validation function once, and
+ * store the result from that execution in a local static. This avoids
+ * validating phases multiple times.
+ *
+ * @param phase
+ *   The bootstrap phase to validate to.
+ *   Any of the following constants :
+ *     DRUSH_BOOTSTRAP_DRUSH                = Only Drush.
+ *     DRUSH_BOOTSTRAP_DRUPAL_ROOT          = Find a valid Drupal root.
+ *     DRUSH_BOOTSTRAP_DRUPAL_SITE          = Find a valid Drupal site.
+ *     DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION = Load the site's settings.
+ *     DRUSH_BOOTSTRAP_DRUPAL_DATABASE      = Initialize the database.
+ *     DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.
+ *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
+ *
+ * @return
+ *   True if bootstrap is possible, False if the validation failed.
+ *
+ */
+function drush_bootstrap_validate($phase) {
+  static $phases;
+  static $result_cache = array();
+  if (!$phases) {
+    $phases = _drush_bootstrap_phases(TRUE);
+  }
+  static $phase_index = 0;
+  if (!array_key_exists($phase, $result_cache)) {
+    drush_set_context('DRUSH_BOOTSTRAP_ERRORS', array());
+    drush_set_context('DRUSH_BOOTSTRAP_VALUES', array());
+
+    while ($phase >= $phase_index && isset($phases[$phase_index])) {
+      $current_phase = $phases[$phase_index] . '_validate';
+      if (function_exists($current_phase)) {
+        $result_cache[$phase_index] = $current_phase();
+      }
+      else {
+        $result_cache[$phase_index] = TRUE;
+      }
+      drush_set_context('DRUSH_BOOTSTRAP_VALIDATION_PHASE', $phase_index);
+      unset($phases[$phase_index++]);
+    }
+  }
+  return $result_cache[$phase];
+}
+
+/**
+ * Bootstrap to the specified phase.
+ *
+ * @param $max_phase_index
+ *   Only attempt bootstrap to the specified level.
+ */
+function drush_bootstrap_to_phase($max_phase_index) {
+  // If $max_phase_index is DRUSH_BOOTSTRAP_MAX, then
+  // we will bootstrap as far as we can.  drush_bootstrap_max
+  // is different than drush_bootstrap_to_phase in that
+  // it is not an error if DRUSH_BOOTSTRAP_LOGIN is not reached.
+  if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
+    drush_bootstrap_max();
+    return TRUE;
+  }
+
+  drush_log(dt("Bootstrap to phase !phase.", array('!phase' => $max_phase_index)), 'bootstrap');
+  $phases = _drush_bootstrap_phases();
+  $result = TRUE;
+
+  // Try to bootstrap to the maximum possible level, without generating errors
+  foreach ($phases as $phase_index) {
+    if ($phase_index > $max_phase_index) {
+      // Stop trying, since we achieved what was specified.
+      break;
+    }
+
+    if (drush_bootstrap_validate($phase_index)) {
+      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE)) {
+        $result = drush_bootstrap($phase_index, $max_phase_index);
+      }
+    }
+    else {
+      $result = FALSE;
+      break;
+    }
+  }
+
+  return $result;
+}
+
+/**
+ * Bootstrap to the highest level possible, without triggering any errors.
+ *
+ * @param $max_phase_index
+ *   Only attempt bootstrap to the specified level.
+ *
+ *  @return int
+ *    The maximum phase to which we bootstrapped.
+ */
+function drush_bootstrap_max($max_phase_index = FALSE) {
+  $phases = _drush_bootstrap_phases();
+  $phase_index = DRUSH_BOOTSTRAP_DRUSH;
+  if (!$max_phase_index) {
+    $max_phase_index = count($phases);
+  }
+
+  // Try to bootstrap to the maximum possible level, without generating errors
+  foreach ($phases as $phase_index) {
+    if ($phase_index > $max_phase_index) {
+      // Stop trying, since we achieved what was specified.
+      break;
+    }
+
+    if (drush_bootstrap_validate($phase_index)) {
+      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
+        drush_bootstrap($phase_index, $max_phase_index);
+      }
+    }
+    else {
+      break;
+    }
+  }
+
+  return drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+}
+
+/**
+ * Bootstrap the specified site alias.  The site alias must
+ * be a valid alias to a local site.
+ *
+ * @param $site_record
+ *   The alias record for the given site alias.
+ *   @see drush_sitealias_get_record().
+ * @param $max_phase_index
+ *   Only attempt bootstrap to the specified level.
+ * @returns TRUE if attempted to bootstrap, or FALSE
+ *   if no bootstrap attempt was made.
+ */
+function drush_bootstrap_max_to_sitealias($site_record, $max_phase_index = NULL) {
+  if ((array_key_exists('root', $site_record) && !array_key_exists('remote-host', $site_record))) {
+    drush_sitealias_set_alias_context($site_record);
+    drush_bootstrap_max($max_phase_index);
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Helper function to collect any errors that occur during the bootstrap process.
+ * Always returns FALSE, for convenience.
+ */
+function drush_bootstrap_error($code, $message = null) {
+  $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS');
+  $errors[$code] = $message;
+  drush_set_context('DRUSH_BOOTSTRAP_ERRORS', $errors);
+  return FALSE;
+}
+
+function _drush_bootstrap_output_prepare() {
+  // Note that as soon as we set the DRUSH_BACKEND context, we change
+  // the behavior of drush_log().  It is therefore important that we
+  // should not set this context until immediately before we call ob_start
+  // (i.e., in this function).
+  $backend = drush_set_context('DRUSH_BACKEND', drush_get_option('backend'));
+  $quiet = drush_get_context('DRUSH_QUIET');
+
+  if ($backend) {
+    // Load options passed as a JSON encoded string through STDIN.
+    $stdin_options = _drush_backend_get_stdin();
+    if (is_array($stdin_options)) {
+      drush_set_context('stdin', $stdin_options);
+    }
+    // Add an output buffer handler to collect output/pass through backend
+    // packets. Using a chunksize of 2 ensures that each line is flushed
+    // straight away.
+    if ($quiet) {
+      // Pass through of backend packets, discard regular output.
+      ob_start('drush_backend_output_discard', 2);
+    }
+    else {
+      // Collect output.
+      ob_start('drush_backend_output_collect', 2);
+    }
+  }
+
+  // In non-backend quiet mode we start buffering and discards it on command
+  // completion.
+  if ($quiet && !$backend) {
+    ob_start();
+  }
+}
+
+/**
  * Used by a Drush extension to request that its Composer autoload
  * files be loaded by Drush, if they have not already been.
  *

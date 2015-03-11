@@ -7,10 +7,14 @@ namespace Drush\Boot;
  */
 interface Boot {
   function valid_root($path);
-  
+
   function bootstrap_and_dispatch();
 
   function preflight();
+
+  function bootstrap_phases();
+
+  function bootstrap_init_phases();
 
   function command_defaults();
 }
