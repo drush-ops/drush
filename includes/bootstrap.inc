@@ -151,10 +151,18 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
     $phases = _drush_bootstrap_phases(TRUE);
   }
   static $phase_index = 0;
+  $result = TRUE;
+
+  // If the requested phase does not exist in the list of available
+  // phases, it means that the command requires bootstrap to a certain
+  // level, but no site root could be found.
+  if (!isset($phases[$phase])) {
+    $result = drush_bootstrap_error('DRUSH_NO_SITE', dt("A site root installation directory could not be found"));
+  }
 
   drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);
-  while ($phase >= $phase_index && isset($phases[$phase_index])) {
-    if (drush_bootstrap_validate($phase_index)) {
+  while ($phase >= $phase_index && isset($phases[$phase_index]) && $result) {
+    if ($result = drush_bootstrap_validate($phase_index)) {
       $current_phase = $phases[$phase_index];
       if (function_exists($current_phase) && !drush_get_error()) {
         drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
@@ -166,16 +174,15 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
       }
       drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
     }
-    else {
-      $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
-      foreach ($errors as $code => $message) {
-        drush_set_error($code, $message);
-      }
-      break;
-    }
     unset($phases[$phase_index++]);
   }
   drush_set_context('DRUSH_BOOTSTRAPPING', FALSE);
+  if (!$result || drush_get_error()) {
+    $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
+    foreach ($errors as $code => $message) {
+      drush_set_error($code, $message);
+    }
+  }
   return !drush_get_error();
 }
 
