@@ -1155,3 +1155,26 @@ function drush_shutdown() {
 function drush_return_status() {
   exit((drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS);
 }
+
+/**
+ * Used by a Drush extension to request that its Composer autoload
+ * files be loaded by Drush, if they have not already been.
+ *
+ * Usage:
+ *
+ * function mycommandfile_drush_init() {
+ *   drush_autoload(__FILE__)
+ * }
+ *
+ */
+function drush_autoload($commandfile) {
+  $dir = dirname($commandfile);
+  $candidates = array("vendor/autoload.php", "../../../vendor/autoload.php");
+
+  foreach ($candidates as $candidate) {
+      $autoload = $dir . '/' . $candidate;
+      if (file_exists($autoload)) {
+        include $autoload;
+      }
+  }
+}
