@@ -385,12 +385,11 @@ function _drush_find_commandfiles_drush() {
   $searchpath[] = realpath(dirname(__FILE__) . '/../commands/');
 
   // User commands, specified by 'include' option
-  if ($include = drush_get_context('DRUSH_INCLUDE', FALSE)) {
-    foreach ($include as $path) {
-      if (is_dir($path)) {
-        drush_log('Include ' . $path, 'notice');
-        $searchpath[] = $path;
-      }
+  $include = drush_get_context('DRUSH_INCLUDE', array());
+  foreach ($include as $path) {
+    if (is_dir($path)) {
+      drush_log('Include ' . $path, 'notice');
+      $searchpath[] = $path;
     }
   }
 
