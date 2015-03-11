@@ -19,4 +19,6 @@ interface Boot {
   function command_defaults();
 
   function enforce_requirement(&$command);
+
+  function report_command_error($command);
 }

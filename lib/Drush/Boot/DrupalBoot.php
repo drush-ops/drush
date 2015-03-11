@@ -35,6 +35,17 @@ abstract class DrupalBoot extends BaseBoot {
     drush_enforce_requirement_drupal_dependencies($command);
   }
 
+  function report_command_error($command) {
+    // If we reach this point, command doesn't fit requirements or we have not
+    // found either a valid or matching command.
+
+    // If no command was found check if it belongs to a disabled module.
+    if (!$command) {
+      $command = drush_command_belongs_to_disabled_module();
+    }
+    parent::report_command_error($command);
+  }
+
   function command_defaults() {
     return array(
       'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,

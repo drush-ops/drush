@@ -22,6 +22,25 @@ abstract class BaseBoot implements Boot {
     drush_enforce_requirement_drush_dependencies($command);
   }
 
+  function report_command_error($command) {
+    // Set errors related to this command.
+    $args = implode(' ', drush_get_arguments());
+    if (isset($command) && is_array($command)) {
+      foreach ($command['bootstrap_errors'] as $key => $error) {
+        drush_set_error($key, $error);
+      }
+      drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The drush command '!args' could not be executed.", array('!args' => $args)));
+    }
+    elseif (!empty($args)) {
+      drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!args' could not be found.  Run `drush cache-clear drush` to clear the commandfile cache if you have installed new extensions.", array('!args' => $args)));
+    }
+    // Set errors that occurred in the bootstrap phases.
+    $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
+    foreach ($errors as $code => $message) {
+      drush_set_error($code, $message);
+    }
+  }
+
   function bootstrap_and_dispatch() {
     $phases = $this->bootstrap_init_phases();
 
@@ -64,28 +83,7 @@ abstract class BaseBoot implements Boot {
     if (!$command_found) {
       // If we reach this point, command doesn't fit requirements or we have not
       // found either a valid or matching command.
-
-      // If no command was found check if it belongs to a disabled module.
-      if (!$command) {
-        $command = drush_command_belongs_to_disabled_module();
-      }
-
-      // Set errors related to this command.
-      $args = implode(' ', drush_get_arguments());
-      if (isset($command) && is_array($command)) {
-        foreach ($command['bootstrap_errors'] as $key => $error) {
-          drush_set_error($key, $error);
-        }
-        drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The drush command '!args' could not be executed.", array('!args' => $args)));
-      }
-      elseif (!empty($args)) {
-        drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!args' could not be found.  Run `drush cache-clear drush` to clear the commandfile cache if you have installed new extensions.", array('!args' => $args)));
-      }
-      // Set errors that occurred in the bootstrap phases.
-      $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
-      foreach ($errors as $code => $message) {
-        drush_set_error($code, $message);
-      }
+      $this->report_command_error($command);
     }
     return $return;
   }
