@@ -4,7 +4,7 @@ function site_install_drush_command() {
   $items['site-install'] = array(
     'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
     'arguments' => array(
-      'profile' => 'the install profile you wish to run. defaults to \'default\' in D6, \'standard\' in D7+',
+      'profile' => 'the install profile you wish to run. defaults to \'default\' in D6, \'standard\' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used',
       'key=value...' => 'any additional settings you wish to pass to the profile. Fully supported on D7+, partially supported on D6 (single step configure forms only). The key is in the form [form name].[parameter name] on D7 or just [parameter name] on D6.',
     ),
     'options' => array(
