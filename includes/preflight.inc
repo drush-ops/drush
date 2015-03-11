@@ -261,6 +261,17 @@ function drush_preflight_site() {
     }
   }
 
+  // If someone set 'uri' in the 'site' context, then copy it
+  // to the 'process' context (to give it a higher priority
+  // than the 'cli' and 'alias' contexts) and reset our selected
+  // site and @self alias.
+  $uri = drush_get_option('uri');
+  if ($uri != drush_get_option('uri', $uri, 'site')) {
+    drush_set_option('uri', drush_get_option('uri', $uri, 'site'));
+    _drush_preflight_uri();
+    drush_sitealias_create_self_alias();
+  }
+
   _drush_preflight_global_options();
 }
 
@@ -376,12 +387,11 @@ function _drush_find_commandfiles_drush() {
   $searchpath[] = realpath(dirname(__FILE__) . '/../commands/');
 
   // User commands, specified by 'include' option
-  if ($include = drush_get_context('DRUSH_INCLUDE', FALSE)) {
-    foreach ($include as $path) {
-      if (is_dir($path)) {
-        drush_log('Include ' . $path, 'notice');
-        $searchpath[] = $path;
-      }
+  $include = drush_get_context('DRUSH_INCLUDE', array());
+  foreach ($include as $path) {
+    if (is_dir($path)) {
+      drush_log('Include ' . $path, 'notice');
+      $searchpath[] = $path;
     }
   }
 

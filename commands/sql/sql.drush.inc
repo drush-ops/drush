@@ -694,7 +694,7 @@ function drush_sql_get_version() {
 function sql_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
   $databases = sitealias_get_databases_from_record($site_settings);
-  if (drush_get_option('db-prefix') || isset($databases['default']['default']['prefix'])) {
+  if (drush_get_option('db-prefix') || !empty($databases['default']['default']['prefix'])) {
     $wrap_table_name = TRUE;
   }
   else {

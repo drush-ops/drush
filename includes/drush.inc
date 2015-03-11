@@ -1196,9 +1196,7 @@ function drush_preflight_command_dispatch() {
       }
     }
     $command_name = array_shift($args);
-    $multi_options = drush_get_context('cli');
-    unset($multi_options['php']);
-    unset($multi_options['php-options']);
+    $multi_options = drush_redispatch_get_options();
     $backend_options = array();
     if (drush_get_option('pipe') || drush_get_option('interactive')) {
       $backend_options['interactive'] = TRUE;
@@ -1228,7 +1226,7 @@ function drush_preflight_command_dispatch() {
     if (is_array($values) && ($values['error_status'] > 0)) {
       // Force an error result code.  Note that drush_shutdown() will still run.
       drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
-      exit($values);
+      exit($values['error_status']);
     }
     return TRUE;
   }
