@@ -6,9 +6,13 @@ class DrupalBoot6 extends DrupalBoot {
 
   function valid_root($path) {
     if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
-      // Drupal 7 root.
+      // Drupal 6 root.
+      // We check for the absence of 'modules/field/field.module' to differentiate this from a D7 site.
+      // n.b. we want D5 and earlier to match here, if possible, so that we can print a 'not supported'
+      // error durring bootstrap.  If someone later adds a commandfile that adds a boot class for
+      // Drupal 5, it will be tested first, so we shouldn't get here.
       $candidate = 'includes/common.inc';
-      if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js')) {
+      if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js') && !file_exists($path . '/modules/field/field.module')) {
         return $candidate;
       }
     }

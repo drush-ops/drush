@@ -7,8 +7,9 @@ class DrupalBoot7 extends DrupalBoot {
   function valid_root($path) {
     if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
       // Drupal 7 root.
+      // We check for the presence of 'modules/field/field.module' to differentiate this from a D6 site
       $candidate = 'includes/common.inc';
-      if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js')) {
+      if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js') && file_exists($path . '/modules/field/field.module')) {
         return $candidate;
       }
     }
