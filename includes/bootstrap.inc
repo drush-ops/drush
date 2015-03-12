@@ -254,18 +254,14 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
   $bootstrap = drush_get_bootstrap_object();
-  static $phases;
-  if (!$phases) {
-    $phases = _drush_bootstrap_phases(TRUE);
-  }
-  static $phase_index = 0;
+  $phases = _drush_bootstrap_phases(TRUE);
   $result = TRUE;
 
   // If the requested phase does not exist in the list of available
   // phases, it means that the command requires bootstrap to a certain
   // level, but no site root could be found.
   if (!isset($phases[$phase])) {
-    $result = drush_bootstrap_error('DRUSH_NO_SITE', dt("A site root installation directory could not be found"));
+    $result = drush_bootstrap_error('DRUSH_NO_SITE', dt("We could not find an applicable site for that command."));
   }
 
   // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
@@ -275,20 +271,24 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
   }
 
   drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);
-  while ($phase >= $phase_index && isset($phases[$phase_index]) && $result) {
-    if ($result = drush_bootstrap_validate($phase_index)) {
-      $current_phase = $phases[$phase_index];
-      if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
-        drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
-        $bootstrap->{$current_phase}();
-
-        // Reset commandfile cache and find any new command files that are available during this bootstrap phase.
-        drush_get_commands(TRUE);
-        _drush_find_commandfiles($phase_index, $phase_max);
-      }
-      drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
+  foreach ($phases as $phase_index => $current_phase) {
+    $bootstrapped_phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE', -1);
+    if ($phase_index > $phase) {
+      break;
     }
-    unset($phases[$phase_index++]);
+    if ($phase_index > $bootstrapped_phase) {
+      if ($result = drush_bootstrap_validate($phase_index)) {
+        if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
+          drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
+          $bootstrap->{$current_phase}();
+
+          // Reset commandfile cache and find any new command files that are available during this bootstrap phase.
+          drush_get_commands(TRUE);
+          _drush_find_commandfiles($phase_index, $phase_max);
+        }
+        drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
+      }
+    }
   }
   drush_set_context('DRUSH_BOOTSTRAPPING', FALSE);
   if (!$result || drush_get_error()) {
@@ -348,26 +348,28 @@ function drush_has_boostrapped($phase) {
  */
 function drush_bootstrap_validate($phase) {
   $bootstrap = drush_get_bootstrap_object();
-  static $phases;
+  $phases = _drush_bootstrap_phases(TRUE);
   static $result_cache = array();
-  if (!$phases) {
-    $phases = _drush_bootstrap_phases(TRUE);
-  }
-  static $phase_index = 0;
+
   if (!array_key_exists($phase, $result_cache)) {
     drush_set_context('DRUSH_BOOTSTRAP_ERRORS', array());
     drush_set_context('DRUSH_BOOTSTRAP_VALUES', array());
 
-    while ($phase >= $phase_index && isset($phases[$phase_index])) {
-      $current_phase = $phases[$phase_index] . '_validate';
-      if (method_exists($bootstrap, $current_phase)) {
-        $result_cache[$phase_index] = $bootstrap->{$current_phase}();
+    foreach ($phases as $phase_index => $current_phase) {
+      $validated_phase = drush_get_context('DRUSH_BOOTSTRAP_VALIDATION_PHASE', -1);
+      if ($phase_index > $phase) {
+        break;
       }
-      else {
-        $result_cache[$phase_index] = TRUE;
+      if ($phase_index > $validated_phase) {
+        $current_phase .= '_validate';
+        if (method_exists($bootstrap, $current_phase)) {
+          $result_cache[$phase_index] = $bootstrap->{$current_phase}();
+        }
+        else {
+          $result_cache[$phase_index] = TRUE;
+        }
+        drush_set_context('DRUSH_BOOTSTRAP_VALIDATION_PHASE', $phase_index);
       }
-      drush_set_context('DRUSH_BOOTSTRAP_VALIDATION_PHASE', $phase_index);
-      unset($phases[$phase_index++]);
     }
   }
   return $result_cache[$phase];
