@@ -152,20 +152,11 @@ function drush_bootstrap_value($context, $value = null) {
  *
  * For commands that need to iterate through the phases, such as help
  */
-function _drush_bootstrap_phases($function_names = FALSE, $init_phases_only = FALSE) {
+function _drush_bootstrap_phases($function_names = FALSE) {
   $result = array();
 
   if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
-    $functions = $bootstrap->bootstrap_phases();
-
-    if ($init_phases_only) {
-      foreach (array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_FULL) as $phase) {
-        $result[$phase] = $functions[$phase];
-      }
-    }
-    else {
-      $result = $functions;
-    }
+    $result = $bootstrap->bootstrap_phases();
     if (!$function_names) {
       $result = array_keys($result);
     }
