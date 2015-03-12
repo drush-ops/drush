@@ -19,9 +19,6 @@ class EmptyBoot extends BaseBoot {
     return FALSE;
   }
 
-  function preflight() {
-  }
-
   function bootstrap_phases() {
     return array(
       DRUSH_BOOTSTRAP_DRUSH => '_drush_bootstrap_drush',

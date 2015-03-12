@@ -10,9 +10,6 @@ abstract class BaseBoot implements Boot {
   function valid_root($path) {
   }
 
-  function preflight() {
-  }
-
   function command_defaults() {
   }
 

@@ -243,7 +243,6 @@ function drush_preflight_bootstrap_class() {
     drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
   }
   drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
-  $bootstrap->preflight();
 
   return $bootstrap;
 }
