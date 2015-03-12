@@ -217,36 +217,6 @@ function drush_preflight_root() {
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
 }
 
-function drush_preflight_bootstrap_class() {
-  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-
-  // TODO: This has historically happened here; perhaps it should be elsewhere
-  drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
-
-  // Once we have selected a Drupal root, we will reduce our bootstrap
-  // candidates down to just the one used to select this site root.
-  $bootstrap = drush_bootstrap_class_for_root($root);
-  // If we have not found a bootstrap class by this point,
-  // then take the last one and use it.  This should be our
-  // default bootstrap class.  The default bootstrap class
-  // should pass through all calls without doing anything that
-  // changes state in a CMS-specific way.
-  if ($bootstrap == NULL) {
-    $candidates = drush_preflight_get_bootstrap_candidates();
-    $bootstrap = array_pop($candidates);
-  }
-  else {
-    // If we find a non-default bootstrap class, then erase
-    // all of the other candidates -- we won't allow a switch
-    // after the bootstrap class has changed any state in
-    // a CMS-specific way.
-    drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
-  }
-  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
-
-  return $bootstrap;
-}
-
 function drush_preflight_site() {
   // Load the config options from Drupal's /drush and sites/all/drush directories,
   // even prior to bootstrapping the root.

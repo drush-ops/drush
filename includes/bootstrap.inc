@@ -108,6 +108,36 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
  */
 define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
 
+function drush_select_bootstrap_class() {
+  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+
+  // Once we have selected a Drupal root, we will reduce our bootstrap
+  // candidates down to just the one used to select this site root.
+  $bootstrap = drush_bootstrap_class_for_root($root);
+  // If we have not found a bootstrap class by this point,
+  // then take the last one and use it.  This should be our
+  // default bootstrap class.  The default bootstrap class
+  // should pass through all calls without doing anything that
+  // changes state in a CMS-specific way.
+  if ($bootstrap == NULL) {
+    $candidates = drush_preflight_get_bootstrap_candidates();
+    $bootstrap = array_pop($candidates);
+  }
+  else {
+    // If we find a non-default bootstrap class, then erase
+    // all of the other candidates -- we won't allow a switch
+    // after the bootstrap class has changed any state in
+    // a CMS-specific way.
+    drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
+  }
+  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
+
+  return $bootstrap;
+}
+
+function drush_get_bootstrap_object() {
+  return drush_get_context('DRUSH_BOOTSTRAP_OBJECT', NULL);
+}
 
 /**
  * Find the URI that has been selected by the cwd
@@ -155,7 +185,7 @@ function drush_bootstrap_value($context, $value = null) {
 function _drush_bootstrap_phases($function_names = FALSE) {
   $result = array();
 
-  if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
+  if ($bootstrap = drush_get_bootstrap_object()) {
     $result = $bootstrap->bootstrap_phases();
     if (!$function_names) {
       $result = array_keys($result);
@@ -182,7 +212,7 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
-  $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT');
+  $bootstrap = drush_get_bootstrap_object();
   static $phases;
   if (!$phases) {
     $phases = _drush_bootstrap_phases(TRUE);
@@ -270,7 +300,7 @@ function drush_has_boostrapped($phase) {
  *
  */
 function drush_bootstrap_validate($phase) {
-  $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT');
+  $bootstrap = drush_get_bootstrap_object();
   static $phases;
   static $result_cache = array();
   if (!$phases) {

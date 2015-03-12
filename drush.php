@@ -48,8 +48,11 @@ function drush_main() {
   // Preflight the selected site, and load any configuration and commandfiles associated with it.
   drush_preflight_site();
 
+  // Reset our bootstrap phase to the beginning
+  drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
+
   // Select the bootstrap class and preflight it.
-  $bootstrap = drush_preflight_bootstrap_class();
+  $bootstrap = drush_select_bootstrap_class();
   $return = '';
   if (!drush_get_error()) {
     if ($file = drush_get_option('early', FALSE)) {
