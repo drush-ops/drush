@@ -1069,7 +1069,6 @@ function drush_command_defaults($key, $commandfile, $path) {
     'aliases' => array(),
     'core' => array(),
     'scope' => 'site',
-    'drupal dependencies' => array(),
     'drush dependencies' => array(),
     'handle-remote-commands' => FALSE,
     'remote-tty' => FALSE,

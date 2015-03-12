@@ -46,6 +46,7 @@ abstract class DrupalBoot extends BaseBoot {
 
   function command_defaults() {
     return array(
+      'drupal dependencies' => array(),
       'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
     );
   }
