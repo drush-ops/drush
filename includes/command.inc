@@ -1389,6 +1389,13 @@ function drush_commandfile_list() {
   return commandfiles_cache()->get();
 }
 
+function _drush_find_commandfiles($phase, $phase_max = FALSE) {
+  if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
+    $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
+    _drush_add_commandfiles($searchpath, $phase);
+  }
+}
+
 function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
   static $evaluated = array();
   $needs_sort = FALSE;
