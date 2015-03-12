@@ -190,7 +190,7 @@ function drush_site_path($path = NULL) {
     // Move up dir by dir and check each.
     // Stop if we get to a Drupal root.   We don't care
     // if it is DRUSH_SELECTED_DRUPAL_ROOT or some other root.
-    while ($path = _drush_shift_path_up($path) && !drush_valid_drupal_root($path)) {
+    while ($path = _drush_shift_path_up($path) && !drush_valid_root($path)) {
       if (file_exists($path . '/settings.php')) {
         $site_path = $path;
         break;
@@ -322,7 +322,7 @@ function drush_locate_root($start_path = NULL) {
       $path = realpath($path);
     }
     // Check the start path.
-    if (drush_valid_drupal_root($path)) {
+    if (drush_valid_root($path)) {
       $drupal_root = $path;
       break;
     }
@@ -332,7 +332,7 @@ function drush_locate_root($start_path = NULL) {
         if ($follow_symlinks && is_link($path)) {
           $path = realpath($path);
         }
-        if (drush_valid_drupal_root($path)) {
+        if (drush_valid_root($path)) {
           $drupal_root = $path;
           break 2;
         }
@@ -353,19 +353,9 @@ function drush_locate_root($start_path = NULL) {
  *   The relative path to common.inc (varies by Drupal version), or FALSE if not
  *   a Drupal root.
  */
-function drush_valid_drupal_root($path) {
+function drush_valid_root($path) {
   $bootstrap_class = drush_bootstrap_class_for_root($path);
   return $bootstrap_class != NULL;
-}
-
-function drush_bootstrap_class_for_root($path) {
-  $candidates = drush_get_bootstrap_candidates();
-  foreach ($candidates as $candidate) {
-    if ($candidate->valid_root($path)) {
-      return $candidate;
-    }
-  }
-  return NULL;
 }
 
 /**

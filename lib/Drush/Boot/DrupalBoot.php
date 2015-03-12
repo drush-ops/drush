@@ -217,7 +217,7 @@ abstract class DrupalBoot extends BaseBoot {
     if (empty($drupal_root)) {
       return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
     }
-    if (!$signature = drush_valid_drupal_root($drupal_root)) {
+    if (!$signature = drush_valid_root($drupal_root)) {
       return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
     }
 

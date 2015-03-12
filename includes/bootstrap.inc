@@ -132,6 +132,16 @@ function drush_get_bootstrap_candidates() {
   return $candidates;
 }
 
+function drush_bootstrap_class_for_root($path) {
+  $candidates = drush_get_bootstrap_candidates();
+  foreach ($candidates as $candidate) {
+    if ($candidate->valid_root($path)) {
+      return $candidate;
+    }
+  }
+  return NULL;
+}
+
 /**
  * Select the bootstrap class to use.  If this is called multiple
  * times, the bootstrap class returned might change on subsequent
