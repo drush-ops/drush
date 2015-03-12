@@ -261,29 +261,6 @@ function drush_preflight_site() {
   _drush_preflight_global_options();
 }
 
-function drush_preflight_get_bootstrap_candidates() {
-  $candidates = drush_get_context('DRUSH_BOOTSTRAP_CANDIDATES', FALSE);
-  if (!$candidates) {
-    // Give all commandfiles a chance to return candidates
-    $candidates = drush_command_invoke_all('bootstrap_candidates');
-    // If a bootstrap class was specified on the command line, consider it first.
-    $bootstrap_class = drush_get_option('bootstrap_class', FALSE);
-    if ($bootstrap_class) {
-      array_unshift($candidates, new $bootstrap_class);
-    }
-    // Add candidate bootstrap classes for Drupal
-    foreach (array('8', '7', '6') as $version) {
-      $drupal_bootstrap_class = 'Drush\Boot\DrupalBoot' . $version;
-      $candidates[] = new $drupal_bootstrap_class;
-    }
-    // Always consider our default bootstrap class last.
-    $candidates[] = new Drush\Boot\EmptyBoot;
-
-    drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', $candidates);
-  }
-  return $candidates;
-}
-
 function _drush_preflight_global_options() {
   // Debug implies verbose
   drush_set_context('DRUSH_VERBOSE',     drush_get_option(array('verbose', 'debug'), FALSE));

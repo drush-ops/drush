@@ -108,6 +108,38 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
  */
 define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
 
+function drush_get_bootstrap_candidates() {
+  // If someone has 'latched' the candidates, then we won't
+  // regenerate these again.  Otherwise, we'll allow these
+  // to change,
+  $candidates = drush_get_context('DRUSH_BOOTSTRAP_CANDIDATES', FALSE);
+  if (!$candidates) {
+    // Give all commandfiles a chance to return candidates
+    $candidates = drush_command_invoke_all('bootstrap_candidates');
+    // If a bootstrap class was specified on the command line, consider it first.
+    $bootstrap_class = drush_get_option('bootstrap_class', FALSE);
+    if ($bootstrap_class) {
+      array_unshift($candidates, new $bootstrap_class);
+    }
+    // Add candidate bootstrap classes for Drupal
+    foreach (array('8', '7', '6') as $version) {
+      $drupal_bootstrap_class = 'Drush\Boot\DrupalBoot' . $version;
+      $candidates[] = new $drupal_bootstrap_class;
+    }
+    // Always consider our default bootstrap class last.
+    $candidates[] = new Drush\Boot\EmptyBoot;
+  }
+  return $candidates;
+}
+
+/**
+ * Select the bootstrap class to use.  If this is called multiple
+ * times, the bootstrap class returned might change on subsequent
+ * calls, if the root directory changes.  Once the bootstrap object
+ * starts changing the state of the system, however, it will
+ * be 'latched', and further calls to drush_select_bootstrap_class()
+ * will always return the same object.
+ */
 function drush_select_bootstrap_class() {
   $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
 
@@ -120,23 +152,32 @@ function drush_select_bootstrap_class() {
   // should pass through all calls without doing anything that
   // changes state in a CMS-specific way.
   if ($bootstrap == NULL) {
-    $candidates = drush_preflight_get_bootstrap_candidates();
+    $candidates = drush_get_bootstrap_candidates();
     $bootstrap = array_pop($candidates);
   }
-  else {
-    // If we find a non-default bootstrap class, then erase
-    // all of the other candidates -- we won't allow a switch
-    // after the bootstrap class has changed any state in
-    // a CMS-specific way.
-    drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
-  }
-  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
 
   return $bootstrap;
 }
 
+/**
+ * Don't allow the bootstrap object to change once we start bootstrapping
+ */
+function drush_latch_bootstrap_object($bootstrap) {
+  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
+  drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
+}
+
+/**
+ * Get the appropriate bootstrap object.  We'll search for a new
+ * bootstrap object every time someone asks for one until we start
+ * bootstrapping; then we'll returned the same cached one every time.
+ */
 function drush_get_bootstrap_object() {
-  return drush_get_context('DRUSH_BOOTSTRAP_OBJECT', NULL);
+  $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT', FALSE);
+  if (!$bootstrap) {
+    $bootstrap = drush_select_bootstrap_class();
+  }
+  return $bootstrap;
 }
 
 /**
@@ -225,6 +266,12 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
   // level, but no site root could be found.
   if (!isset($phases[$phase])) {
     $result = drush_bootstrap_error('DRUSH_NO_SITE', dt("A site root installation directory could not be found"));
+  }
+
+  // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
+  // will latch the bootstrap object, and prevent it from changing.
+  if ($phase > DRUSH_BOOTSTRAP_DRUSH) {
+    drush_latch_bootstrap_object($bootstrap);
   }
 
   drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);

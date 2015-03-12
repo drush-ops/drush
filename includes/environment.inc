@@ -359,7 +359,7 @@ function drush_valid_drupal_root($path) {
 }
 
 function drush_bootstrap_class_for_root($path) {
-  $candidates = drush_preflight_get_bootstrap_candidates();
+  $candidates = drush_get_bootstrap_candidates();
   foreach ($candidates as $candidate) {
     if ($candidate->valid_root($path)) {
       return $candidate;
