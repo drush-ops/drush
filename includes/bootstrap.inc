@@ -182,6 +182,7 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
+  $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT');
   static $phases;
   if (!$phases) {
     $phases = _drush_bootstrap_phases(TRUE);
@@ -200,9 +201,9 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
   while ($phase >= $phase_index && isset($phases[$phase_index]) && $result) {
     if ($result = drush_bootstrap_validate($phase_index)) {
       $current_phase = $phases[$phase_index];
-      if (function_exists($current_phase) && !drush_get_error()) {
+      if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
         drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
-        $current_phase();
+        $bootstrap->{$current_phase}();
 
         // Reset commandfile cache and find any new command files that are available during this bootstrap phase.
         drush_get_commands(TRUE);
@@ -269,6 +270,7 @@ function drush_has_boostrapped($phase) {
  *
  */
 function drush_bootstrap_validate($phase) {
+  $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT');
   static $phases;
   static $result_cache = array();
   if (!$phases) {
@@ -281,8 +283,8 @@ function drush_bootstrap_validate($phase) {
 
     while ($phase >= $phase_index && isset($phases[$phase_index])) {
       $current_phase = $phases[$phase_index] . '_validate';
-      if (function_exists($current_phase)) {
-        $result_cache[$phase_index] = $current_phase();
+      if (method_exists($bootstrap, $current_phase)) {
+        $result_cache[$phase_index] = $bootstrap->{$current_phase}();
       }
       else {
         $result_cache[$phase_index] = TRUE;
