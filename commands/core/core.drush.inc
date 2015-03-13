@@ -902,6 +902,9 @@ function drush_core_quick_drupal() {
   if (!drush_get_option('db-url', FALSE)) {
     drush_set_option('db-url', 'sqlite:' . $base . '/' . $name . '.sqlite');
   }
+  // We have just created a site root where one did not exist before.
+  // We therefore must manually reset DRUSH_SELECTED_DRUPAL_ROOT to
+  // our new root, and force a bootstrap to DRUSH_BOOTSTRAP_DRUPAL_ROOT.
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
   if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
     return drush_set_error('QUICK_DRUPAL_ROOT_LOCATE_FAIL', 'Unable to locate Drupal root directory.');
