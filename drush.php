@@ -8,6 +8,8 @@
  * @requires PHP CLI 5.3.0, or newer.
  */
 
+use Drush\Boot\Boot;
+
 exit(drush_main());
 
 /**
@@ -44,6 +46,7 @@ function drush_main() {
   // Find the selected site based on --root, --uri or cwd, and
   // return the bootstrap object that goes with it.
   $bootstrap = _drush_preflight_root();
+  drush_bootstrap_instance($bootstrap);
 
   // Preflight the selected site, and load any configuration and commandfiles associated with it.
   drush_preflight_site();
@@ -72,6 +75,9 @@ function drush_main() {
       }
     }
   }
+
+  $bootstrap->terminate();
+
   drush_postflight();
 
   // How strict are we?  If we are very strict, turn 'ok' into 'error'
@@ -83,4 +89,20 @@ function drush_main() {
   // After this point the drush_shutdown function will run,
   // exiting with the correct exit code.
   return $return;
+}
+
+/**
+ * Returns the used drush bootstrap instance.
+ *
+ * @param \Drush\Boot\Boot $instance
+ *
+ * @return \Drush\Boot\Boot
+ */
+function drush_bootstrap_instance(Boot $instance = NULL) {
+  static $boot;
+
+  if ($instance) {
+    $boot = $instance;
+  }
+  return $boot;
 }

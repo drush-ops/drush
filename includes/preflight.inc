@@ -203,6 +203,8 @@ function drush_preflight() {
 
 /**
  * If --root is provided, set context.
+ *
+ * @return \Drush\Boot\Boot
  */
 function _drush_preflight_root() {
   $root = drush_get_option('root');
@@ -275,8 +277,8 @@ function drush_preflight_get_bootstrap_candidates() {
       array_unshift($candidates, new $bootstrap_class);
     }
     // Always consider our default bootstrap class last.
-    $default_bootstrap_class = 'Drush\Boot\DrupalBoot';
-    $candidates[] = new $default_bootstrap_class;
+    $candidates[] = new Drush\Boot\Drupal8Boot;
+    $candidates[] = new Drush\Boot\DrupalBoot;
     drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', $candidates);
   }
   return $candidates;
