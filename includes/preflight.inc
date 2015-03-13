@@ -95,9 +95,12 @@ function drush_preflight_prepare() {
 }
 
 /**
- * During the initialization of Drush,
- * this is the first step where all we are
- * aware of is Drush itself.
+ * During the initialization of Drush, this is the first
+ * step where we load our configuration and commandfiles,
+ * and select the site we are going to operate on; however,
+ * we take no irreversible actions (e.g. site bootstrapping).
+ * This allows commands that are declared with no bootstrap
+ * to select a new site root and bootstrap it.
  *
  * In this step we will register the shutdown function,
  * parse the command line arguments and store them in their
@@ -199,12 +202,21 @@ function drush_preflight() {
 
   // Check to see if we 'use'd a site alias with site-set
   drush_sitealias_check_site_env();
+
+  // Find the selected site based on --root, --uri or cwd
+  drush_preflight_root();
+
+  // Preflight the selected site, and load any configuration and commandfiles associated with it.
+  drush_preflight_site();
+
+  // Select the bootstrap object and return it.
+  return drush_select_bootstrap_class();
 }
 
 /**
  * If --root is provided, set context.
  */
-function _drush_preflight_root() {
+function drush_preflight_root() {
   $root = drush_get_option('root');
   if (!isset($root)) {
     $root = drush_locate_root();
@@ -215,21 +227,6 @@ function _drush_preflight_root() {
   // @todo This context name should not mention Drupal.
   // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
-
-  // Once we have selected a Drupal root, we will reduce our bootstrap
-  // candidates down to just the one used to select this site root.
-  $bootstrap = drush_bootstrap_class_for_root($root);
-  // TEMPORARY: if we have not found a bootstrap class by this point,
-  // then take the last one and use it.  This should be Drupal.
-  if ($bootstrap == NULL) {
-    $candidates = drush_preflight_get_bootstrap_candidates();
-    $bootstrap = array_pop($candidates);
-  }
-  drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
-  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
-  $bootstrap->preflight();
-
-  return $bootstrap;
 }
 
 function drush_preflight_site() {
@@ -246,7 +243,7 @@ function drush_preflight_site() {
   // Create a @self site alias record.
   drush_sitealias_create_self_alias();
 
-  // If applicable swaps in shell alias value (or executes it).
+  // If applicable swaps in shell alias values.
   drush_shell_alias_replace();
 
   // If drush_load_config defined a site alias that did not
@@ -273,24 +270,6 @@ function drush_preflight_site() {
   }
 
   _drush_preflight_global_options();
-}
-
-function drush_preflight_get_bootstrap_candidates() {
-  $candidates = drush_get_context('DRUSH_BOOTSTRAP_CANDIDATES', FALSE);
-  if (!$candidates) {
-    // Give all commandfiles a chance to return candidates
-    $candidates = drush_command_invoke_all('bootstrap_candidates');
-    // If a bootstrap class was specified on the command line, consider it first.
-    $bootstrap_class = drush_get_option('bootstrap_class', FALSE);
-    if ($bootstrap_class) {
-      array_unshift($candidates, new $bootstrap_class);
-    }
-    // Always consider our default bootstrap class last.
-    $default_bootstrap_class = 'Drush\Boot\DrupalBoot';
-    $candidates[] = new $default_bootstrap_class;
-    drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', $candidates);
-  }
-  return $candidates;
 }
 
 function _drush_preflight_global_options() {
@@ -368,7 +347,7 @@ function _drush_preflight_alias_path() {
  * Set root and uri.
  */
 function _drush_preflight_root_uri() {
-  _drush_preflight_root();
+  drush_preflight_root();
   _drush_preflight_uri();
 }
 
@@ -412,6 +391,157 @@ function _drush_find_commandfiles_drush() {
 }
 
 
+/**
+ * Handle any command preprocessing that may need to be done, including
+ * potentially redispatching the command immediately (e.g. for remote
+ * commands).
+ *
+ * @return
+ *   TRUE if the command was handled remotely.
+ */
+function drush_preflight_command_dispatch() {
+  $interactive = drush_get_option('interactive', FALSE);
+
+  // The command will be executed remotely if the --remote-host flag
+  // is set; note that if a site alias is provided on the command line,
+  // and the site alias references a remote server, then the --remote-host
+  // option will be set when the site alias is processed.
+  // @see drush_sitealias_check_arg
+  $remote_host = drush_get_option('remote-host');
+  $site_list = drush_get_option('site-list');
+  // Get the command early so that we can allow commands to directly handle remote aliases if they wish
+  $command = drush_parse_command();
+  drush_command_default_options($command);
+
+  // If the command sets the 'strict-option-handling' flag, then we will remove
+  // any cli options that appear after the command name from the 'cli' context.
+  // The cli options that appear before the command name are stored in the
+  // 'DRUSH_GLOBAL_CLI_OPTIONS' context, so we will just overwrite the cli context
+  // with this, after doing the neccessary fixup from short-form to long-form options.
+  // After we do that, we put back any local drush options identified by $command['options'].
+  if (is_array($command) && !empty($command['strict-option-handling'])) {
+    $cli_options = drush_get_context('DRUSH_GLOBAL_CLI_OPTIONS', array());
+    // Now we are going to sort out any options that exist in $command['options'];
+    // we will remove these from DRUSH_COMMAND_ARGS and put them back into the
+    // cli options.
+    $cli_context = drush_get_context('cli');
+    $remove_from_command_args = array();
+    foreach ($command['options'] as $option => $info) {
+      if (array_key_exists($option, $cli_context)) {
+        $cli_options[$option] = $cli_context[$option];
+        $remove_from_command_args[$option] = $option;
+      }
+    }
+    if (!empty($remove_from_command_args)) {
+      $drush_command_args = array();
+      foreach (drush_get_context('DRUSH_COMMAND_ARGS') as $arg) {
+        if (!_drush_should_remove_command_arg($arg, $remove_from_command_args)) {
+          $drush_command_args[] = $arg;
+        }
+      }
+      drush_set_context('DRUSH_COMMAND_ARGS', $drush_command_args);
+    }
+    drush_expand_short_form_options($cli_options);
+    drush_set_context('cli', $cli_options);
+    _drush_preflight_global_options();
+  }
+  $args = drush_get_arguments();
+  $command_name = array_shift($args);
+  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $local_drush = drush_get_option('drush-script');
+  $is_local = drush_get_option('local');
+  $values = NULL;
+  if (!empty($root) && !empty($local_drush) && empty($is_local)) {
+    if (!drush_is_absolute_path($local_drush)) {
+      $local_drush = $root . '/' . $local_drush;
+    }
+    $local_drush = realpath($local_drush);
+    $this_drush = drush_find_drush();
+    // If there is a local drush selected, and it is not the
+    // same drush that is currently running, redispatch to it.
+    if (file_exists($local_drush) && ($this_drush != $local_drush)) {
+      $uri = drush_get_context('DRUSH_SELECTED_URI');
+      $aditional_options = array(
+        'root' => $root,
+        'local' => TRUE,
+      );
+      if (!empty($uri)) {
+        $aditional_options['uri'] = $uri;
+      }
+      $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
+    }
+  }
+  // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
+  // remote command dispatching and site-list command dispatching, and always let
+  // the command handler run on the local machine.
+  if (is_array($command) && !empty($command['handle-remote-commands'])) {
+    return FALSE;
+  }
+  if (isset($remote_host)) {
+    $remote_user = drush_get_option('remote-user');
+
+    // Force interactive mode if there is a single remote target.  #interactive is added by drush_do_command_redispatch
+    $user_interactive = drush_get_option('interactive');
+    drush_set_option('interactive', TRUE);
+    $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, $remote_host, $remote_user, $user_interactive);
+  }
+  // If the --site-list flag is set, then we will execute the specified
+  // command once for every site listed in the site list.
+  if (isset($site_list)) {
+    if (!is_array($site_list)) {
+      $site_list = explode(',', $site_list);
+    }
+    $site_record = array('site-list' => $site_list);
+    $args = drush_get_arguments();
+
+    if (!drush_get_context('DRUSH_SIMULATE') && !$interactive  && !drush_get_context('DRUSH_AFFIRMATIVE') && !drush_get_context('DRUSH_QUIET')) {
+      drush_print(dt("You are about to execute '!command' non-interactively (--yes forced) on all of the following targets:", array('!command' => implode(" ", $args))));
+      foreach ($site_list as $one_destination) {
+        drush_print(dt('  !target', array('!target' => $one_destination)));
+      }
+
+      if (drush_confirm('Continue? ') === FALSE) {
+        drush_user_abort();
+        return TRUE;
+      }
+    }
+    $command_name = array_shift($args);
+    $multi_options = drush_redispatch_get_options();
+    $backend_options = array();
+    if (drush_get_option('pipe') || drush_get_option('interactive')) {
+      $backend_options['interactive'] = TRUE;
+    }
+    if (drush_get_option('no-label', FALSE)) {
+      $backend_options['no-label'] = TRUE;
+    }
+    // If the user specified a format, try to look up the
+    // default list separator for the specified format.
+    // If the user did not specify a different label separator,
+    // then pass in the default as an option, so that the
+    // separator between the items in the list and the site
+    // name will be consistent.
+    $format = drush_get_option('format', FALSE);
+    if ($format && !array_key_exists('label-separator', $multi_options)) {
+      $formatter = drush_load_engine('outputformat', $format);
+      if ($formatter) {
+        $list_separator = $formatter->get_info('list-separator');
+        if ($list_separator) {
+          $multi_options['label-separator'] = $list_separator;
+        }
+      }
+    }
+    $values = drush_invoke_process($site_record, $command_name, $args, $multi_options, $backend_options);
+  }
+  if (isset($values)) {
+    if (is_array($values) && ($values['error_status'] > 0)) {
+      // Force an error result code.  Note that drush_shutdown() will still run.
+      drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
+      exit($values['error_status']);
+    }
+    return TRUE;
+  }
+  return FALSE;
+}
 
 /**
  * We set this context to let the shutdown function know we reached the end of drush_main().

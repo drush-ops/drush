@@ -26,6 +26,12 @@ define('DRUSH_BOOTSTRAP_MAX', -2);
  */
 define('DRUSH_BOOTSTRAP_DRUSH', 0);
 
+// TODO: Move all of the constants below to a Drupal-specific file.
+// We can't do this until commands are declaring which CMS they work
+// with, because right now, commands that do not declare a 'bootstrap'
+// level default to DRUSH_BOOTSTRAP_DRUPAL_LOGIN, so we need this constant,
+// at least, available in non-Drupal contexts.
+
 /**
  * Set up and test for a valid drupal root, either through the -r/--root options,
  * or evaluated based on the current working directory.
@@ -101,6 +107,410 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
  * be different based on who is logged in.
  */
 define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
+
+function drush_get_bootstrap_candidates() {
+  // If someone has 'latched' the candidates, then we won't
+  // regenerate these again.  Otherwise, we'll allow these
+  // to change,
+  $candidates = drush_get_context('DRUSH_BOOTSTRAP_CANDIDATES', FALSE);
+  if (!$candidates) {
+    // Give all commandfiles a chance to return candidates
+    $candidates = drush_command_invoke_all('bootstrap_candidates');
+    // If a bootstrap class was specified on the command line, consider it first.
+    $bootstrap_class = drush_get_option('bootstrap_class', FALSE);
+    if ($bootstrap_class) {
+      array_unshift($candidates, new $bootstrap_class);
+    }
+    // Add candidate bootstrap classes for Drupal
+    foreach (array('8', '7', '6') as $version) {
+      $drupal_bootstrap_class = 'Drush\Boot\DrupalBoot' . $version;
+      $candidates[] = new $drupal_bootstrap_class;
+    }
+    // Always consider our default bootstrap class last.
+    $candidates[] = new Drush\Boot\EmptyBoot;
+  }
+  return $candidates;
+}
+
+function drush_bootstrap_class_for_root($path) {
+  $candidates = drush_get_bootstrap_candidates();
+  foreach ($candidates as $candidate) {
+    if ($candidate->valid_root($path)) {
+      return $candidate;
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Select the bootstrap class to use.  If this is called multiple
+ * times, the bootstrap class returned might change on subsequent
+ * calls, if the root directory changes.  Once the bootstrap object
+ * starts changing the state of the system, however, it will
+ * be 'latched', and further calls to drush_select_bootstrap_class()
+ * will always return the same object.
+ */
+function drush_select_bootstrap_class() {
+  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+
+  // Once we have selected a Drupal root, we will reduce our bootstrap
+  // candidates down to just the one used to select this site root.
+  $bootstrap = drush_bootstrap_class_for_root($root);
+  // If we have not found a bootstrap class by this point,
+  // then take the last one and use it.  This should be our
+  // default bootstrap class.  The default bootstrap class
+  // should pass through all calls without doing anything that
+  // changes state in a CMS-specific way.
+  if ($bootstrap == NULL) {
+    $candidates = drush_get_bootstrap_candidates();
+    $bootstrap = array_pop($candidates);
+  }
+
+  return $bootstrap;
+}
+
+/**
+ * Don't allow the bootstrap object to change once we start bootstrapping
+ */
+function drush_latch_bootstrap_object($bootstrap) {
+  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
+  drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
+}
+
+/**
+ * Get the appropriate bootstrap object.  We'll search for a new
+ * bootstrap object every time someone asks for one until we start
+ * bootstrapping; then we'll returned the same cached one every time.
+ */
+function drush_get_bootstrap_object() {
+  $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT', FALSE);
+  if (!$bootstrap) {
+    $bootstrap = drush_select_bootstrap_class();
+  }
+  return $bootstrap;
+}
+
+/**
+ * Find the URI that has been selected by the cwd
+ * if it was not previously set via the --uri / -l option
+ */
+function _drush_bootstrap_selected_uri() {
+  $uri = drush_get_context('DRUSH_SELECTED_URI');
+  if (empty($uri)) {
+    $site_path = drush_site_path();
+    $elements = explode('/', $site_path);
+    $current = array_pop($elements);
+    if (!$current) {
+      $current = 'default';
+    }
+    $uri = 'http://'. $current;
+    $uri = drush_set_context('DRUSH_SELECTED_URI', $uri);
+    drush_sitealias_create_self_alias();
+  }
+
+  return $uri;
+}
+
+/**
+ * Helper function to store any context settings that are being validated.
+ */
+function drush_bootstrap_value($context, $value = null) {
+  $values =& drush_get_context('DRUSH_BOOTSTRAP_VALUES', array());
+
+  if (isset($value)) {
+    $values[$context] = $value;
+  }
+
+  if (array_key_exists($context, $values)) {
+    return $values[$context];
+  }
+
+  return null;
+}
+
+/**
+ * Helper function listing phases.
+ *
+ * For commands that need to iterate through the phases, such as help
+ */
+function _drush_bootstrap_phases($function_names = FALSE) {
+  $result = array();
+
+  if ($bootstrap = drush_get_bootstrap_object()) {
+    $result = $bootstrap->bootstrap_phases();
+    if (!$function_names) {
+      $result = array_keys($result);
+    }
+  }
+  return $result;
+}
+
+/**
+ * Bootstrap Drush to the desired phase.
+ *
+ * This function will sequentially bootstrap each
+ * lower phase up to the phase that has been requested.
+ *
+ * @param phase
+ *   The bootstrap phase to bootstrap to.  @see \Drush\Boot::bootstrap_phases
+ */
+function drush_bootstrap($phase, $phase_max = FALSE) {
+  $bootstrap = drush_get_bootstrap_object();
+  $phases = _drush_bootstrap_phases(TRUE);
+  $result = TRUE;
+
+  // If the requested phase does not exist in the list of available
+  // phases, it means that the command requires bootstrap to a certain
+  // level, but no site root could be found.
+  if (!isset($phases[$phase])) {
+    $result = drush_bootstrap_error('DRUSH_NO_SITE', dt("We could not find an applicable site for that command."));
+  }
+
+  // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
+  // will latch the bootstrap object, and prevent it from changing.
+  if ($phase > DRUSH_BOOTSTRAP_DRUSH) {
+    drush_latch_bootstrap_object($bootstrap);
+  }
+
+  drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);
+  foreach ($phases as $phase_index => $current_phase) {
+    $bootstrapped_phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE', -1);
+    if ($phase_index > $phase) {
+      break;
+    }
+    if ($phase_index > $bootstrapped_phase) {
+      if ($result = drush_bootstrap_validate($phase_index)) {
+        if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
+          drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
+          $bootstrap->{$current_phase}();
+
+          // Reset commandfile cache and find any new command files that are available during this bootstrap phase.
+          drush_get_commands(TRUE);
+          _drush_find_commandfiles($phase_index, $phase_max);
+        }
+        drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
+      }
+    }
+  }
+  drush_set_context('DRUSH_BOOTSTRAPPING', FALSE);
+  if (!$result || drush_get_error()) {
+    $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
+    foreach ($errors as $code => $message) {
+      drush_set_error($code, $message);
+    }
+  }
+  return !drush_get_error();
+}
+
+/**
+ * Determine whether a given bootstrap phase has been completed
+ *
+ * This function name has a typo which makes me laugh so we choose not to
+ * fix it. Take a deep breath, and smile. See
+ * http://en.wikipedia.org/wiki/HTTP_referer
+ *
+ *
+ * @param phase
+ *   The bootstrap phase to test
+ *
+ * @returns
+ *   TRUE if the specified bootstrap phase has completed.
+ */
+function drush_has_boostrapped($phase) {
+  $phase_index = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+
+  return isset($phase_index) && ($phase_index >= $phase);
+}
+
+/**
+ * Validate whether a bootstrap phase can be reached.
+ *
+ * This function will validate the settings that will be used
+ * during the actual bootstrap process, and allow commands to
+ * progressively bootstrap to the highest level that can be reached.
+ *
+ * This function will only run the validation function once, and
+ * store the result from that execution in a local static. This avoids
+ * validating phases multiple times.
+ *
+ * @param phase
+ *   The bootstrap phase to validate to.  @see \Drush\Boot::bootstrap_phases
+ *
+ * @return
+ *   True if bootstrap is possible, False if the validation failed.
+ *
+ */
+function drush_bootstrap_validate($phase) {
+  $bootstrap = drush_get_bootstrap_object();
+  $phases = _drush_bootstrap_phases(TRUE);
+  static $result_cache = array();
+
+  if (!array_key_exists($phase, $result_cache)) {
+    drush_set_context('DRUSH_BOOTSTRAP_ERRORS', array());
+    drush_set_context('DRUSH_BOOTSTRAP_VALUES', array());
+
+    foreach ($phases as $phase_index => $current_phase) {
+      $validated_phase = drush_get_context('DRUSH_BOOTSTRAP_VALIDATION_PHASE', -1);
+      if ($phase_index > $phase) {
+        break;
+      }
+      if ($phase_index > $validated_phase) {
+        $current_phase .= '_validate';
+        if (method_exists($bootstrap, $current_phase)) {
+          $result_cache[$phase_index] = $bootstrap->{$current_phase}();
+        }
+        else {
+          $result_cache[$phase_index] = TRUE;
+        }
+        drush_set_context('DRUSH_BOOTSTRAP_VALIDATION_PHASE', $phase_index);
+      }
+    }
+  }
+  return $result_cache[$phase];
+}
+
+/**
+ * Bootstrap to the specified phase.
+ *
+ * @param $max_phase_index
+ *   Only attempt bootstrap to the specified level.
+ */
+function drush_bootstrap_to_phase($max_phase_index) {
+  // If $max_phase_index is DRUSH_BOOTSTRAP_MAX, then
+  // we will bootstrap as far as we can.  drush_bootstrap_max
+  // is different than drush_bootstrap_to_phase in that
+  // it is not an error if DRUSH_BOOTSTRAP_LOGIN is not reached.
+  if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
+    drush_bootstrap_max();
+    return TRUE;
+  }
+
+  drush_log(dt("Bootstrap to phase !phase.", array('!phase' => $max_phase_index)), 'bootstrap');
+  $phases = _drush_bootstrap_phases();
+  $result = TRUE;
+
+  // Try to bootstrap to the maximum possible level, without generating errors
+  foreach ($phases as $phase_index) {
+    if ($phase_index > $max_phase_index) {
+      // Stop trying, since we achieved what was specified.
+      break;
+    }
+
+    if (drush_bootstrap_validate($phase_index)) {
+      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE)) {
+        $result = drush_bootstrap($phase_index, $max_phase_index);
+      }
+    }
+    else {
+      $result = FALSE;
+      break;
+    }
+  }
+
+  return $result;
+}
+
+/**
+ * Bootstrap to the highest level possible, without triggering any errors.
+ *
+ * @param $max_phase_index
+ *   Only attempt bootstrap to the specified level.
+ *
+ *  @return int
+ *    The maximum phase to which we bootstrapped.
+ */
+function drush_bootstrap_max($max_phase_index = FALSE) {
+  $phases = _drush_bootstrap_phases();
+  $phase_index = DRUSH_BOOTSTRAP_DRUSH;
+  if (!$max_phase_index) {
+    $max_phase_index = count($phases);
+  }
+
+  // Try to bootstrap to the maximum possible level, without generating errors
+  foreach ($phases as $phase_index) {
+    if ($phase_index > $max_phase_index) {
+      // Stop trying, since we achieved what was specified.
+      break;
+    }
+
+    if (drush_bootstrap_validate($phase_index)) {
+      if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
+        drush_bootstrap($phase_index, $max_phase_index);
+      }
+    }
+    else {
+      break;
+    }
+  }
+
+  return drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+}
+
+/**
+ * Bootstrap the specified site alias.  The site alias must
+ * be a valid alias to a local site.
+ *
+ * @param $site_record
+ *   The alias record for the given site alias.
+ *   @see drush_sitealias_get_record().
+ * @param $max_phase_index
+ *   Only attempt bootstrap to the specified level.
+ * @returns TRUE if attempted to bootstrap, or FALSE
+ *   if no bootstrap attempt was made.
+ */
+function drush_bootstrap_max_to_sitealias($site_record, $max_phase_index = NULL) {
+  if ((array_key_exists('root', $site_record) && !array_key_exists('remote-host', $site_record))) {
+    drush_sitealias_set_alias_context($site_record);
+    drush_bootstrap_max($max_phase_index);
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Helper function to collect any errors that occur during the bootstrap process.
+ * Always returns FALSE, for convenience.
+ */
+function drush_bootstrap_error($code, $message = null) {
+  $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS');
+  $errors[$code] = $message;
+  drush_set_context('DRUSH_BOOTSTRAP_ERRORS', $errors);
+  return FALSE;
+}
+
+function _drush_bootstrap_output_prepare() {
+  // Note that as soon as we set the DRUSH_BACKEND context, we change
+  // the behavior of drush_log().  It is therefore important that we
+  // should not set this context until immediately before we call ob_start
+  // (i.e., in this function).
+  $backend = drush_set_context('DRUSH_BACKEND', drush_get_option('backend'));
+  $quiet = drush_get_context('DRUSH_QUIET');
+
+  if ($backend) {
+    // Load options passed as a JSON encoded string through STDIN.
+    $stdin_options = _drush_backend_get_stdin();
+    if (is_array($stdin_options)) {
+      drush_set_context('stdin', $stdin_options);
+    }
+    // Add an output buffer handler to collect output/pass through backend
+    // packets. Using a chunksize of 2 ensures that each line is flushed
+    // straight away.
+    if ($quiet) {
+      // Pass through of backend packets, discard regular output.
+      ob_start('drush_backend_output_discard', 2);
+    }
+    else {
+      // Collect output.
+      ob_start('drush_backend_output_collect', 2);
+    }
+  }
+
+  // In non-backend quiet mode we start buffering and discards it on command
+  // completion.
+  if ($quiet && !$backend) {
+    ob_start();
+  }
+}
 
 /**
  * Used by a Drush extension to request that its Composer autoload

@@ -1069,7 +1069,6 @@ function drush_command_defaults($key, $commandfile, $path) {
     'aliases' => array(),
     'core' => array(),
     'scope' => 'site',
-    'drupal dependencies' => array(),
     'drush dependencies' => array(),
     'handle-remote-commands' => FALSE,
     'remote-tty' => FALSE,
@@ -1089,7 +1088,7 @@ function drush_command_defaults($key, $commandfile, $path) {
   // additional defaults if needed.  The bootstrap command defaults
   // will be merged into the command object again just before
   // running it in bootstrap_and_dispatch().
-  if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
+  if ($bootstrap = drush_get_bootstrap_object()) {
     $defaults = array_merge($defaults, $bootstrap->command_defaults());
   }
   return $defaults;
@@ -1387,6 +1386,13 @@ function drush_command_normalize_name($command_name) {
  */
 function drush_commandfile_list() {
   return commandfiles_cache()->get();
+}
+
+function _drush_find_commandfiles($phase, $phase_max = FALSE) {
+  if ($bootstrap = drush_get_bootstrap_object()) {
+    $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
+    _drush_add_commandfiles($searchpath, $phase);
+  }
 }
 
 function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
