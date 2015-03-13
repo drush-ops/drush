@@ -13,6 +13,22 @@ abstract class DrupalBoot extends BaseBoot {
   function get_profile() {
   }
 
+  /**
+   * Bootstrap phases used with Drupal:
+   *
+   *     DRUSH_BOOTSTRAP_DRUSH                = Only Drush.
+   *     DRUSH_BOOTSTRAP_DRUPAL_ROOT          = Find a valid Drupal root.
+   *     DRUSH_BOOTSTRAP_DRUPAL_SITE          = Find a valid Drupal site.
+   *     DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION = Load the site's settings.
+   *     DRUSH_BOOTSTRAP_DRUPAL_DATABASE      = Initialize the database.
+   *     DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.
+   *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
+   *
+   * The value is the name of the method of the Boot class to
+   * execute when bootstrapping.  Prior to bootstrapping, a "validate"
+   * method is called, if defined.  The validate method name is the
+   * bootstrap method name with "_validate" appended.
+   */
   function bootstrap_phases() {
     return array(
       DRUSH_BOOTSTRAP_DRUSH                  => 'bootstrap_drush',
@@ -24,6 +40,13 @@ abstract class DrupalBoot extends BaseBoot {
       DRUSH_BOOTSTRAP_DRUPAL_LOGIN           => 'bootstrap_drupal_login');
   }
 
+  /**
+   * The phases where Drush will look to see if new commandfiles
+   * have been defined.  For Drupal, we first do a preflight, and
+   * if a command is not found at that point, we next attempt a full
+   * bootstrap.  If a command is found after preflight, then we
+   * bootstrap to the phase declared by the command.
+   */
   function bootstrap_init_phases() {
     return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_FULL);
   }

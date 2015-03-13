@@ -3,21 +3,90 @@
 namespace Drush\Boot;
 
 /**
- * Defines the interface for a Boot classes.
+ * Defines the interface for a Boot classes.  Any CMS that wishes
+ * to work with Drush should extend BaseBoot.  If the CMS has a
+ * Drupal-Compatibility layer, then it should extend DrupalBoot.
+ *
  * @todo Doc these methods.
  */
 interface Boot {
+  /**
+   * This function determines if the specified path points to
+   * the root directory of a CMS that can be bootstrapped by
+   * the specific subclass that implements it.
+   *
+   * These functions should be written such that one and only
+   * one class will return TRUE for any given $path.
+   *
+   * @param $path to a directory to test
+   *
+   * @return TRUE if $path is a valid root directory
+   */
   function valid_root($path);
 
+  /**
+   * Main entrypoint to bootstrap the selected CMS and
+   * execute the selected command.
+   *
+   * The implementation provided in BaseBoot should be
+   * sufficient; this method usually will not need to
+   * be overridden.
+   */
   function bootstrap_and_dispatch();
 
+  /**
+   * Returns an array that determines what bootstrap phases
+   * are necessary to bootstrap this CMS.  This array
+   * should map from a numeric phase to the name of a method
+   * (string) in the Boot class that handles the bootstrap
+   * phase.
+   *
+   * @see \Drush\Boot\DrupalBoot::bootstrap_phases()
+   *
+   * @return array of PHASE index => method name.
+   */
   function bootstrap_phases();
 
+  /**
+   * Lists the key bootstrap phases where Drush should
+   * stop and look for more commandfiles.  In Drupal, Drush
+   * first does just a preflight, and if the selected
+   * command is not found after preflight, then a full
+   * bootstrap is done.
+   *
+   * @return array of PHASE indexes.
+   */
   function bootstrap_init_phases();
 
-  function command_defaults();
+  /**
+   * Fill in default values in the provided command
+   * record (e.g. values needed in enforce_requirements(),
+   * etc.)
+   *
+   * @param &$command
+   */
+  function command_defaults(&$command);
 
+  /**
+   * Called by Drush when a command is selected, but
+   * before it runs.  This gives the Boot class an
+   * opportunity to determine if any minimum
+   * requirements (e.g. minimum Drupal version) declared
+   * in the command have been met.
+   *
+   * @return TRUE if command is valid. $command['bootstrap_errors']
+   * should be populated with an array of error messages if
+   * the command is not valid.
+   */
   function enforce_requirement(&$command);
 
+  /**
+   * Called by Drush if a command is not found, or if the
+   * command was found, but did not meet requirements.
+   *
+   * The implementation in BaseBoot should be sufficient
+   * for most cases, so this method typically will not need
+   * to be overridden.
+   */
   function report_command_error($command);
 }

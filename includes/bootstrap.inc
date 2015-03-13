@@ -252,15 +252,7 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  * lower phase up to the phase that has been requested.
  *
  * @param phase
- *   The bootstrap phase to bootstrap to.
- *   Any of the following constants :
- *     DRUSH_BOOTSTRAP_DRUSH                = Only Drush.
- *     DRUSH_BOOTSTRAP_DRUPAL_ROOT          = Find a valid Drupal root.
- *     DRUSH_BOOTSTRAP_DRUPAL_SITE          = Find a valid Drupal site.
- *     DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION = Load the site's settings.
- *     DRUSH_BOOTSTRAP_DRUPAL_DATABASE      = Initialize the database.
- *     DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.
- *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
+ *   The bootstrap phase to bootstrap to.  @see \Drush\Boot::bootstrap_phases
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
   $bootstrap = drush_get_bootstrap_object();
@@ -342,15 +334,7 @@ function drush_has_boostrapped($phase) {
  * validating phases multiple times.
  *
  * @param phase
- *   The bootstrap phase to validate to.
- *   Any of the following constants :
- *     DRUSH_BOOTSTRAP_DRUSH                = Only Drush.
- *     DRUSH_BOOTSTRAP_DRUPAL_ROOT          = Find a valid Drupal root.
- *     DRUSH_BOOTSTRAP_DRUPAL_SITE          = Find a valid Drupal site.
- *     DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION = Load the site's settings.
- *     DRUSH_BOOTSTRAP_DRUPAL_DATABASE      = Initialize the database.
- *     DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.
- *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
+ *   The bootstrap phase to validate to.  @see \Drush\Boot::bootstrap_phases
  *
  * @return
  *   True if bootstrap is possible, False if the validation failed.
