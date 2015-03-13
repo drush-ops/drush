@@ -49,6 +49,8 @@ abstract class BaseBoot implements Boot {
         $command = drush_parse_command();
         if (is_array($command)) {
           $command += $this->command_defaults();
+          // Insure that we have bootstrapped to a high enough
+          // phase for the command prior to enforcing requirements.
           $bootstrap_result = drush_bootstrap_to_phase($command['bootstrap']);
           $this->enforce_requirement($command);
 
