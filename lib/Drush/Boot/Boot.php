@@ -13,4 +13,12 @@ interface Boot {
   function preflight();
 
   function command_defaults();
+
+  /**
+   * This method is called during the shutdown of drush.
+   *
+   * @return void
+   */
+  public function terminate();
+
 }

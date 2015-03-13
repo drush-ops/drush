@@ -696,6 +696,8 @@ function drupal8_bootstrap($phase = NULL) {
   static $kernel;
   static $boot_level = 0;
 
+  $boot = drush_bootstrap_instance();
+
   if (isset($phase)) {
     $request = Request::createFromGlobals();
     for ($current_phase = $boot_level; $current_phase <= $phase; $current_phase++) {
@@ -704,6 +706,9 @@ function drupal8_bootstrap($phase = NULL) {
         case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
           $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
           $kernel = DrupalKernel::createFromRequest($request, $classloader, 'prod');
+          if (method_exists($boot, 'setKernel')) {
+            $boot->setKernel($kernel);
+          }
           break;
 
         case DRUSH_BOOTSTRAP_DRUPAL_FULL:
