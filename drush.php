@@ -39,20 +39,14 @@ function drush_main() {
   }
 
   // Load the global Drush configuration files, and global Drush commands.
-  drush_preflight();
-
-  // Find the selected site based on --root, --uri or cwd, and
-  // return the bootstrap object that goes with it.
-  drush_preflight_root();
-
+  // Find the selected site based on --root, --uri or cwd
   // Preflight the selected site, and load any configuration and commandfiles associated with it.
-  drush_preflight_site();
+  // Select and return the bootstrap class.
+  $bootstrap = drush_preflight();
 
   // Reset our bootstrap phase to the beginning
   drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
 
-  // Select the bootstrap class.
-  $bootstrap = drush_select_bootstrap_class();
   $return = '';
   if (!drush_get_error()) {
     if ($file = drush_get_option('early', FALSE)) {

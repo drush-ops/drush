@@ -95,9 +95,12 @@ function drush_preflight_prepare() {
 }
 
 /**
- * During the initialization of Drush,
- * this is the first step where all we are
- * aware of is Drush itself.
+ * During the initialization of Drush, this is the first
+ * step where we load our configuration and commandfiles,
+ * and select the site we are going to operate on; however,
+ * we take no irreversible actions (e.g. site bootstrapping).
+ * This allows commands that are declared with no bootstrap
+ * to select a new site root and bootstrap it.
  *
  * In this step we will register the shutdown function,
  * parse the command line arguments and store them in their
@@ -199,6 +202,15 @@ function drush_preflight() {
 
   // Check to see if we 'use'd a site alias with site-set
   drush_sitealias_check_site_env();
+
+  // Find the selected site based on --root, --uri or cwd
+  drush_preflight_root();
+
+  // Preflight the selected site, and load any configuration and commandfiles associated with it.
+  drush_preflight_site();
+
+  // Select the bootstrap object and return it.
+  return drush_select_bootstrap_class();
 }
 
 /**
