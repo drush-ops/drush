@@ -51,7 +51,7 @@ function drush_main() {
   // Reset our bootstrap phase to the beginning
   drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
 
-  // Select the bootstrap class and preflight it.
+  // Select the bootstrap class.
   $bootstrap = drush_select_bootstrap_class();
   $return = '';
   if (!drush_get_error()) {
