@@ -59,13 +59,11 @@ interface Boot {
   function bootstrap_init_phases();
 
   /**
-   * Fill in default values in the provided command
-   * record (e.g. values needed in enforce_requirements(),
+   * Return an array of default values that should be added
+   * to every command (e.g. values needed in enforce_requirements(),
    * etc.)
-   *
-   * @param &$command
    */
-  function command_defaults(&$command);
+  function command_defaults();
 
   /**
    * Called by Drush when a command is selected, but
