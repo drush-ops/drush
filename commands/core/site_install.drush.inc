@@ -16,7 +16,7 @@ function site_install_drush_command() {
       // by providing a
       // @code
       //   distribution:
-      //   name: 'Distribution name'
+      //     name: 'Distribution name'
       // @endcode
       // block in the profile's info YAML file.
       // See https://www.drupal.org/node/2210443 for more information.
