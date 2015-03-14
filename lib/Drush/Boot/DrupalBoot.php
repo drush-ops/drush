@@ -74,6 +74,28 @@ abstract class DrupalBoot extends BaseBoot {
     );
   }
 
+  /**
+   * @return array of strings - paths to directories where contrib
+   * modules can be found
+   */
+  function contrib_modules_paths() {
+    return array(
+      conf_path() . '/modules',
+      'sites/all/modules',
+    );
+  }
+
+  /**
+   * @return array of strings - paths to directories where contrib
+   * themes can be found
+   */
+  function contrib_themes_paths() {
+    return array(
+      conf_path() . '/themes',
+      'sites/all/themes',
+    );
+  }
+
   function commandfile_searchpaths($phase, $phase_max = FALSE) {
     if (!$phase_max) {
       $phase_max = $phase;
@@ -99,13 +121,7 @@ abstract class DrupalBoot extends BaseBoot {
         // only those Drush commandfiles that are associated with
         // enabled modules.
         if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-          $searchpath[] = conf_path() . '/modules';
-          // Add all module paths, even disabled modules. Prefer speed over accuracy.
-          $searchpath[] = 'sites/all/modules';
-          // In D8, we search top level directories as well.
-          if (drush_drupal_major_version() >=8) {
-            $searchpath[] = 'modules';
-          }
+          $searchpath += $this->contrib_modules_paths();
 
           // Adding commandfiles located within /profiles. Try to limit to one profile for speed. Note
           // that Drupal allows enabling modules from a non-active profile so this logic is kinda dodgy.
@@ -122,12 +138,7 @@ abstract class DrupalBoot extends BaseBoot {
         }
 
         // TODO: Treat themes like modules and stop unconditionally searching here.
-        $searchpath[] = 'sites/all/themes';
-        $searchpath[] = conf_path() . '/themes';
-        // In D8, we search top level directories as well.
-        if (drush_drupal_major_version() >=8) {
-          $searchpath[] = 'themes';
-        }
+        $searchpath += $this->contrib_themes_paths();
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
         // Nothing to do here anymore. Left for documentation.

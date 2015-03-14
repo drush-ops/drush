@@ -31,6 +31,18 @@ class DrupalBoot8 extends DrupalBoot {
     \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
   }
 
+  function contrib_modules_paths() {
+    return parent::contrib_modules_paths() + array(
+      'modules',
+    );
+  }
+
+  function contrib_themes_paths() {
+    return parent::contrib_themes_paths() + array(
+      'themes',
+    );
+  }
+
   function bootstrap_drupal_core($drupal_root) {
     $core = DRUPAL_ROOT . '/core';
 
