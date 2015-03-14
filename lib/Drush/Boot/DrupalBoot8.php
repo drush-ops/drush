@@ -32,13 +32,21 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   function contrib_modules_paths() {
-    return parent::contrib_modules_paths() + array(
+    return array(
+      conf_path() . '/modules',
+      'sites/all/modules',
       'modules',
     );
   }
 
+  /**
+   * @return array of strings - paths to directories where contrib
+   * themes can be found
+   */
   function contrib_themes_paths() {
-    return parent::contrib_themes_paths() + array(
+    return array(
+      conf_path() . '/themes',
+      'sites/all/themes',
       'themes',
     );
   }

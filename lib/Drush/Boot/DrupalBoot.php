@@ -78,23 +78,13 @@ abstract class DrupalBoot extends BaseBoot {
    * @return array of strings - paths to directories where contrib
    * modules can be found
    */
-  function contrib_modules_paths() {
-    return array(
-      conf_path() . '/modules',
-      'sites/all/modules',
-    );
-  }
+  abstract function contrib_modules_paths();
 
   /**
    * @return array of strings - paths to directories where contrib
    * themes can be found
    */
-  function contrib_themes_paths() {
-    return array(
-      conf_path() . '/themes',
-      'sites/all/themes',
-    );
-  }
+  abstract function contrib_themes_paths();
 
   function commandfile_searchpaths($phase, $phase_max = FALSE) {
     if (!$phase_max) {
@@ -121,7 +111,7 @@ abstract class DrupalBoot extends BaseBoot {
         // only those Drush commandfiles that are associated with
         // enabled modules.
         if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-          $searchpath += $this->contrib_modules_paths();
+          $searchpath = array_merge($searchpath, $this->contrib_modules_paths());
 
           // Adding commandfiles located within /profiles. Try to limit to one profile for speed. Note
           // that Drupal allows enabling modules from a non-active profile so this logic is kinda dodgy.
@@ -138,7 +128,7 @@ abstract class DrupalBoot extends BaseBoot {
         }
 
         // TODO: Treat themes like modules and stop unconditionally searching here.
-        $searchpath += $this->contrib_themes_paths();
+        $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
         // Nothing to do here anymore. Left for documentation.
