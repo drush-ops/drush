@@ -7,6 +7,11 @@ use Drupal\Core\DrupalKernel;
 
 class DrupalBoot8 extends DrupalBoot {
 
+  /**
+   * @var \Drupal\Core\DrupalKernelInterface
+   */
+  protected $kernel;
+
   function valid_root($path) {
     if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
       // Additional check for the presence of core/composer.json to
@@ -43,7 +48,9 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   function bootstrap_drupal_configuration() {
-    $this->drupal8_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+    $request = Request::createFromGlobals();
+    $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+    $this->kernel = DrupalKernel::createFromRequest($request, $classloader, 'prod');
 
     // Unset drupal error handler and restore drush's one.
     restore_error_handler();
@@ -55,7 +62,9 @@ class DrupalBoot8 extends DrupalBoot {
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_start();
     }
-    $this->drupal8_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+    $request = Request::createFromGlobals();
+    $this->kernel->boot();
+    $this->kernel->prepareLegacyRequest($request);
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_end_clean();
     }
@@ -64,44 +73,13 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   /**
-   * Ensures Drupal 8 is bootstrapped to the specified phase.
-   *
-   * In order to bootstrap Drupal from another PHP script, you can use this code:
-   * @code
-   *   require_once '/path/to/drupal/core/vendor/autoload.php';
-   *   require_once '/path/to/drupal/core/includes/bootstrap.inc';
-   *   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-   * @endcode
-   *
-   * @param $phase
-   *   A constant telling which phase to bootstrap to. Possible values:
-   *   - DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION: Initializes configuration and
-   *     kernel.
-   *   - DRUSH_BOOTSTRAP_DRUPAL_FULL: Boots the kernel.
+   * {@inheritdoc}
    */
-  function drupal8_bootstrap($phase = NULL) {
-    // Temporary variables used for booting later legacy phases.
-    /** @var \Drupal\Core\DrupalKernel $kernel */
-    static $kernel;
-    static $boot_level = 0;
+  public function terminate() {
+    parent::terminate();
 
-    if (isset($phase)) {
-      $request = Request::createFromGlobals();
-      for ($current_phase = $boot_level; $current_phase <= $phase; $current_phase++) {
-
-        switch ($current_phase) {
-          case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
-            $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
-            $kernel = DrupalKernel::createFromRequest($request, $classloader, 'prod');
-            break;
-
-          case DRUSH_BOOTSTRAP_DRUPAL_FULL:
-            $kernel->boot();
-            $kernel->prepareLegacyRequest($request);
-            break;
-        }
-      }
-      $boot_level = $phase;
+    if ($this->kernel) {
+      $this->kernel->terminate();
     }
   }
 }

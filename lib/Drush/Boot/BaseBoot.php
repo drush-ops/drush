@@ -86,4 +86,10 @@ abstract class BaseBoot implements Boot {
     }
     return $return;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function terminate() {
+  }
 }
