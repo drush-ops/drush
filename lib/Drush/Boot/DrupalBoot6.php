@@ -31,6 +31,20 @@ class DrupalBoot6 extends DrupalBoot {
     }
   }
 
+  function contrib_modules_paths() {
+    return array(
+      conf_path() . '/modules',
+      'sites/all/modules',
+    );
+  }
+
+  function contrib_themes_paths() {
+    return array(
+      conf_path() . '/themes',
+      'sites/all/themes',
+    );
+  }
+
   function bootstrap_drupal_core($drupal_root) {
     define('DRUPAL_ROOT', $drupal_root);
     $core = DRUPAL_ROOT;
