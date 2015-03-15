@@ -121,6 +121,14 @@ function drush_module_list() {
 }
 
 /**
+ * TODO: Returns a list of enabled themes.
+ */
+function drush_theme_list() {
+  return array();
+}
+
+
+/**
  * Installs a given list of modules.
  *
  * @see \Drupal\Core\Extension\ModuleInstallerInterface::install()
