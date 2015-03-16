@@ -559,13 +559,13 @@ function _core_site_status_table($project = '') {
         if (!empty($db_spec['unix_socket'])) {
           $status_table['db-socket'] = $db_spec['unix_socket'];
         }
-        else {
+        elseif (isset($db_spec['host'])) {
           $status_table['db-hostname'] = $db_spec['host'];
         }
-        $status_table['db-username'] = $db_spec['username'];
-        $status_table['db-password'] = $db_spec['password'];
-        $status_table['db-name'] = $db_spec['database'];
-        $status_table['db-port'] = $db_spec['port'];
+        $status_table['db-username'] = isset($db_spec['username']) ? $db_spec['username'] : NULL;
+        $status_table['db-password'] = isset($db_spec['password']) ? $db_spec['password'] : NULL;
+        $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : NULL;
+        $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : NULL;
         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
           $status_table['db-status'] = dt('Connected');
           if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
