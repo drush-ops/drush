@@ -1535,6 +1535,10 @@ function drush_convert_db_from_db_url($db_url) {
   else {
     $url = parse_url($db_url);
   }
+  // If parse_url failed, return an empty array
+  if (!is_array($db_url)) {
+    return array();
+  }
   // Fill in defaults to prevent notices.
   $url += array(
     'driver' => NULL,
