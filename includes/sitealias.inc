@@ -265,7 +265,7 @@ function _drush_sitealias_get_record($alias, $alias_context = NULL) {
           // Special checking: /path/@sites
           $base = substr($alias_record['root'], 0, $relative_alias_pos);
           $relative_alias = substr($alias_record['root'], $relative_alias_pos + 1);
-          if (drush_valid_drupal_root($base) || ($relative_alias == '@sites')) {
+          if (drush_valid_root($base) || ($relative_alias == '@sites')) {
             drush_sitealias_create_sites_alias($base);
             $alias_record = drush_sitealias_get_record($relative_alias);
           }
@@ -1313,7 +1313,7 @@ function _drush_find_local_sites_at_root($a_drupal_root = '', $search_depth = 1)
   $site_list = array();
   $base_path = (empty($a_drupal_root) ? drush_get_context('DRUSH_DRUPAL_ROOT') : $a_drupal_root );
   if (!empty($base_path)) {
-    if (drush_valid_drupal_root($base_path)) {
+    if (drush_valid_root($base_path)) {
       // If $a_drupal_root is in fact a valid drupal root, then return
       // all of the sites found inside the 'sites' folder of this drupal instance.
       $site_list = _drush_find_local_sites_in_sites_folder($base_path);
@@ -1534,6 +1534,10 @@ function drush_convert_db_from_db_url($db_url) {
   }
   else {
     $url = parse_url($db_url);
+  }
+  // If parse_url failed, return an empty array
+  if (!is_array($url)) {
+    return array();
   }
   // Fill in defaults to prevent notices.
   $url += array(
@@ -2066,7 +2070,9 @@ function drush_sitealias_get_envar_filename($filename_prefix = 'drush-drupal-sit
   }
 
   $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp/';
-  return "{$tmp}/drush-env/{$filename_prefix}" . posix_getppid();
+  $username = drush_get_username();
+
+  return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . posix_getppid();
 }
 
 /**

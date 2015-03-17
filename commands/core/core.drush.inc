@@ -559,13 +559,13 @@ function _core_site_status_table($project = '') {
         if (!empty($db_spec['unix_socket'])) {
           $status_table['db-socket'] = $db_spec['unix_socket'];
         }
-        else {
+        elseif (isset($db_spec['host'])) {
           $status_table['db-hostname'] = $db_spec['host'];
         }
-        $status_table['db-username'] = $db_spec['username'];
-        $status_table['db-password'] = $db_spec['password'];
-        $status_table['db-name'] = $db_spec['database'];
-        $status_table['db-port'] = $db_spec['port'];
+        $status_table['db-username'] = isset($db_spec['username']) ? $db_spec['username'] : NULL;
+        $status_table['db-password'] = isset($db_spec['password']) ? $db_spec['password'] : NULL;
+        $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : NULL;
+        $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : NULL;
         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
           $status_table['db-status'] = dt('Connected');
           if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
@@ -902,6 +902,9 @@ function drush_core_quick_drupal() {
   if (!drush_get_option('db-url', FALSE)) {
     drush_set_option('db-url', 'sqlite:' . $base . '/' . $name . '.sqlite');
   }
+  // We have just created a site root where one did not exist before.
+  // We therefore must manually reset DRUSH_SELECTED_DRUPAL_ROOT to
+  // our new root, and force a bootstrap to DRUSH_BOOTSTRAP_DRUPAL_ROOT.
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
   if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
     return drush_set_error('QUICK_DRUPAL_ROOT_LOCATE_FAIL', 'Unable to locate Drupal root directory.');

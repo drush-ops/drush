@@ -48,8 +48,8 @@ class pmUpdateStatus extends CommandUnishTestCase {
     $modules_dl[] = 'devel-7.x-1.0-rc1';
     $modules_en[] = 'devel';
     // Installed version not supported.
-    $modules_dl[] = 'field-conditional-state-2.x-dev';
-    $modules_en[] = 'field_conditional_state';
+    $modules_dl[] = 'cck-2.x-dev';
+    $modules_en[] = 'cck';
     // Up to date.
     $modules_dl[] = 'ctools';
     $modules_en[] = 'ctools';
@@ -95,7 +95,7 @@ class pmUpdateStatus extends CommandUnishTestCase {
       'bad_judgement'           => 'Update available',
       'ctools'                  => 'Up to date',
       'devel'                   => 'SECURITY UPDATE available',
-      'field-conditional-state' => 'Installed version not supported',
+      'cck'                     => 'Installed version not supported',
       'zen'                     => 'Project was not packaged by drupal.org but obtained from git. You need to enable git_deploy module',
     );
     foreach ($expected as $module => $status_msg) {
@@ -128,7 +128,7 @@ class pmUpdateStatus extends CommandUnishTestCase {
     // We don't expect any output for other projects than the provided ones.
     $not_expected = array(
       'drupal',
-      'field-conditional-state',
+      'cck',
       'zen',
     );
     foreach ($not_expected as $module) {
@@ -153,7 +153,7 @@ class pmUpdateStatus extends CommandUnishTestCase {
     $not_expected = array(
       'bad_judgement',
       'ctools',
-      'field-conditional-state',
+      'cck',
       'zen',
     );
     foreach ($not_expected as $module) {
