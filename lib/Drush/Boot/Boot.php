@@ -87,4 +87,11 @@ interface Boot {
    * to be overridden.
    */
   function report_command_error($command);
+
+  /**
+   * This method is called during the shutdown of drush.
+   *
+   * @return void
+   */
+  public function terminate();
 }

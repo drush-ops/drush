@@ -71,6 +71,7 @@ function drush_main() {
       }
     }
   }
+  $bootstrap->terminate();
   drush_postflight();
 
   // How strict are we?  If we are very strict, turn 'ok' into 'error'
