@@ -821,11 +821,22 @@ function drush_sitealias_convert_db_spec_to_db_url($db_spec) {
     }
     $result .= "@";
   }
-  $result .= urlencode($db_spec["host"]);
-  if (isset($db_spec["port"])) {
-    $result .= ":" . urlencode($db_spec["port"]);
+  // Host is required, unless this is an sqlite db.
+  if (isset($db_spec["host"]))
+  {
+    $result .= urlencode($db_spec["host"]);
+    if (isset($db_spec["port"])) {
+      $result .= ":" . urlencode($db_spec["port"]);
+    }
+    $result .= '/' . urlencode($db_spec["database"]);
   }
-  $result .= "/" . urlencode($db_spec["database"]);
+  else {
+    // URL-encode the database, but convert slashes
+    // back to their original form for readability.
+    // This portion is the "path" of the URL, so it may
+    // contain slashes.  This is important for sqlite.
+    $result .= str_replace("%2F", "/", urlencode(ltrim($db_spec["database"], '/')));
+  }
   return $result;
 }
 
@@ -1530,11 +1541,12 @@ function drush_sitealias_uri_to_site_dir($uri, $site_root = NULL) {
  */
 function drush_convert_db_from_db_url($db_url) {
   if (is_array($db_url)) {
-    $url = parse_url($db_url['default']);
+    $db_url_default = $db_url['default'];
   }
   else {
-    $url = parse_url($db_url);
+    $db_url_default = $db_url;
   }
+  $url = parse_url($db_url_default);
   // If parse_url failed, return an empty array
   if (!is_array($url)) {
     return array();
@@ -1550,15 +1562,30 @@ function drush_convert_db_from_db_url($db_url) {
     'database' => NULL,
   );
   $url = (object)array_map('urldecode', $url);
+  $host = $url->host;
+  $database = substr($url->path, 1);
+  if ($url->scheme == 'sqlite') {
+    $host = '';
+    // The sqlite path with start with a / if there
+    // is both a host and a path component; sqlite
+    // databases without an abosolute path will have only
+    // a host component.
+    if (isset($url->path)) {
+      $database = '/' . $url->host  . $url->path;
+    }
+    else {
+      $database = $url->host;
+    }
+  }
   return array(
     'driver' => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
     'username' => $url->user,
     'password' => $url->pass,
     'port' => $url->port,
-    'host' => $url->scheme == 'sqlite' ? '' : $url->host,
+    'host' => $host,
     // Remove leading / character from database names, unless we're installing
     // to SQLite (which won't have a slash there unless it's part of a path).
-    'database' => $url->scheme == 'sqlite'  ? $url->host  . $url->path : substr($url->path, 1),
+    'database' => $database,
   );
 }
 

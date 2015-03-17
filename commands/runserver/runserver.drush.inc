@@ -40,6 +40,7 @@ function runserver_drush_command() {
       'user' => 'If opening a web browser, automatically log in as this user (user ID or username).',
       'browser' => 'If opening a web browser, which browser to user (defaults to operating system default).',
       'dns' => 'Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.',
+      'cache-uri' => 'Cache the server URI in a drush/drushrc.php file in the Drupal root, so that it will be available to subsequent Drush commands.',
     ),
     'aliases' => array('rs'),
     'examples' => array(
@@ -133,6 +134,43 @@ function drush_core_runserver($uri = NULL) {
   }
   else {
     $browse = drush_url($path);
+  }
+  // Special checking for 'default' on localhost
+  if (preg_match('#://default/#', $browse) && drush_is_local_host($uri['host'])) {
+    $server = $uri["host"];
+    if (!empty($uri["port"])) {
+      $server .= ':' . $uri["port"];
+    }
+    $browse = str_replace('://default/', '://' . $server . '/', $browse);
+  }
+  // If the user specified --cache-uri, then create a drushrc.php so that
+  // future calls to drush uli will work seemlessly.
+  if (drush_get_option('cache-uri')) {
+    $dir = DRUPAL_ROOT . '/drush';
+    $target_file = $dir . '/drushrc.php';
+    $create_file = TRUE;
+    if (file_exists($target_file)) {
+      // Don't bother to ask with --use-existing; just
+      // continue.
+      if (drush_get_option('use-existing', FALSE)) {
+        $create_file = FALSE;
+      }
+      else {
+        $create_file = drush_confirm(dt('!target already exists. Overwrite?', array('!target' => $target_file)));
+      }
+    }
+    $content = <<<EOT
+<?php
+
+// Inserted by `drush runserver`.  This allows `drush user-login`
+// and similar commands to work seemlessly.  Remove if using 
+// Drupal multisite feature.
+\$options['uri'] = "$server";
+EOT;
+    if ($create_file) {
+      drush_mkdir($dir);
+      file_put_contents($target_file, $content);
+    }
   }
 
   drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
