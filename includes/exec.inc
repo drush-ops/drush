@@ -306,26 +306,28 @@ function drush_wrap_with_quotes($arg) {
 /**
  * Platform-dependent version of escapeshellarg().
  * Given the target platform, return an appropriately-escaped
- * string.  The target platform may be omitted for args that
+ * string. The target platform may be omitted for args that
  * are /known/ to be for the local machine.
+ * Use raw to get an unquoted version of the escaped arg.
+ * Notice that you can't add quotes later until you know the platform.
  */
-function drush_escapeshellarg($arg, $os = NULL, $wrap = true) {
+function drush_escapeshellarg($arg, $os = NULL, $raw = FALSE) {
   // Short-circuit escaping for simple params (keep stuff readable)
   if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
     return $arg;
   }
   elseif (drush_is_windows($os)) {
-    return _drush_escapeshellarg_windows($arg, $wrap);
+    return _drush_escapeshellarg_windows($arg, $raw);
   }
   else {
-    return _drush_escapeshellarg_linux($arg, $wrap);
+    return _drush_escapeshellarg_linux($arg, $raw);
   }
 }
 
 /**
  * Windows version of escapeshellarg().
  */
-function _drush_escapeshellarg_windows($arg, $wrap = true) {
+function _drush_escapeshellarg_windows($arg, $raw = FALSE) {
   // Double up existing backslashes
   $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
 
@@ -336,7 +338,7 @@ function _drush_escapeshellarg_windows($arg, $wrap = true) {
   $arg = preg_replace('/%/', '%%', $arg);
 
   // Only wrap with quotes when needed.
-  if($wrap) {
+  if(!$raw) {
     // Add surrounding quotes.
     $arg = '"' . $arg . '"';
   }
@@ -352,7 +354,7 @@ function _drush_escapeshellarg_windows($arg, $wrap = true) {
  * a Linux system, then we need our own implementation of escapeshellarg,
  * because the Windows version behaves differently.
  */
-function _drush_escapeshellarg_linux($arg, $wrap = true) {
+function _drush_escapeshellarg_linux($arg, $raw = FALSE) {
   // For single quotes existing in the string, we will "exit"
   // single-quote mode, add a \' and then "re-enter"
   // single-quote mode.  The result of this is that
@@ -368,7 +370,7 @@ function _drush_escapeshellarg_linux($arg, $wrap = true) {
   $arg = str_replace(array("\t", "\n", "\r", "\0", "\x0B"), ' ', $arg);
 
   // Only wrap with quotes when needed.
-  if($wrap) {
+  if(!$raw) {
     // Add surrounding quotes.
     $arg = "'" . $arg . "'";
   }

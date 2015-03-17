@@ -875,7 +875,7 @@ function drush_set_environment_vars() {
     $os = drush_os($site_record);
     if (isset($site_record['#env-vars'])) {
       foreach ($site_record['#env-vars'] as $var => $value) {
-        $env_var = drush_escapeshellarg($var, $os, false) . '=' . drush_escapeshellarg($value, $os, false);
+        $env_var = drush_escapeshellarg($var, $os, TRUE) . '=' . drush_escapeshellarg($value, $os, TRUE);
         putenv($env_var);
       }
     }
