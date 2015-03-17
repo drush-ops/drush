@@ -309,23 +309,23 @@ function drush_wrap_with_quotes($arg) {
  * string.  The target platform may be omitted for args that
  * are /known/ to be for the local machine.
  */
-function drush_escapeshellarg($arg, $os = NULL) {
+function drush_escapeshellarg($arg, $os = NULL, $wrap = true) {
   // Short-circuit escaping for simple params (keep stuff readable)
   if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
     return $arg;
   }
   elseif (drush_is_windows($os)) {
-    return _drush_escapeshellarg_windows($arg);
+    return _drush_escapeshellarg_windows($arg, $wrap);
   }
   else {
-    return _drush_escapeshellarg_linux($arg);
+    return _drush_escapeshellarg_linux($arg, $wrap);
   }
 }
 
 /**
  * Windows version of escapeshellarg().
  */
-function _drush_escapeshellarg_windows($arg) {
+function _drush_escapeshellarg_windows($arg, $wrap = true) {
   // Double up existing backslashes
   $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
 
@@ -335,8 +335,11 @@ function _drush_escapeshellarg_windows($arg) {
   // Double up percents.
   $arg = preg_replace('/%/', '%%', $arg);
 
-  // Add surrounding quotes.
-  $arg = '"' . $arg . '"';
+  // Only wrap with quotes when needed.
+  if($wrap) {
+    // Add surrounding quotes.
+    $arg = '"' . $arg . '"';
+  }
 
   return $arg;
 }
@@ -349,7 +352,7 @@ function _drush_escapeshellarg_windows($arg) {
  * a Linux system, then we need our own implementation of escapeshellarg,
  * because the Windows version behaves differently.
  */
-function _drush_escapeshellarg_linux($arg) {
+function _drush_escapeshellarg_linux($arg, $wrap = true) {
   // For single quotes existing in the string, we will "exit"
   // single-quote mode, add a \' and then "re-enter"
   // single-quote mode.  The result of this is that
@@ -364,8 +367,11 @@ function _drush_escapeshellarg_linux($arg) {
   // (this can happen when generating a command to run on a remote Linux server.)
   $arg = str_replace(array("\t", "\n", "\r", "\0", "\x0B"), ' ', $arg);
 
-  // Add surrounding quotes.
-  $arg = "'" . $arg . "'";
+  // Only wrap with quotes when needed.
+  if($wrap) {
+    // Add surrounding quotes.
+    $arg = "'" . $arg . "'";
+  }
 
   return $arg;
 }
