@@ -1745,7 +1745,7 @@ function drush_enforce_requirement_core(&$command) {
  * Check if a shell alias exists for current request. If so, re-route to
  * core-execute and pass alias value along with rest of CLI arguments.
  */
-function drush_shell_alias_replace() {
+function drush_shell_alias_replace($target_site_alias) {
   $escape = TRUE;
   $args = drush_get_arguments();
   $argv = drush_get_context('argv');
@@ -1762,7 +1762,6 @@ function drush_shell_alias_replace() {
       // when the alias value is a string; if it is already broken out into an array,
       // then the values therein are used literally.
       $alias_variables = array( '{{@target}}' => '@none' );
-      $target_site_alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS', FALSE);
       if ($target_site_alias) {
         $alias_variables = array( '{{@target}}' => $target_site_alias );
         $target = drush_sitealias_get_record($target_site_alias);
@@ -1799,7 +1798,12 @@ function drush_shell_alias_replace() {
     }
     drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');
     $pos = array_search($first, $argv);
-    array_splice($argv, $pos, 1, $alias_value);
+    $number = 1;
+    if ($target_site_alias && ($argv[$pos - 1] == $target_site_alias)) {
+      --$pos;
+      ++$number;
+    }
+    array_splice($argv, $pos, $number, $alias_value);
     if (!$escape) {
       drush_set_option('escape', FALSE);
     }
