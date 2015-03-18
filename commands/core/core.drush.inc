@@ -936,8 +936,13 @@ function drush_core_quick_drupal() {
      return drush_set_error('QUICK_DRUPAL_PROJECT_ENABLE_FAIL', 'Project enable failed.');
     }
   }
+  $server = drush_get_option('server', '/');
+  if ($server) {
+    $server_uri = runserver_uri($server);
+    _drush_core_qd_cache_uri($server_uri);
+  }
   if (!drush_get_option('no-server', FALSE)) {
-    if ($server = drush_get_option('server', '/')) {
+    if ($server) {
       // Current CLI user is also the web server user, which is for development
       // only. Hence we can safely make the site directory writable. This makes
       // it easier to delete and edit settings.php.
@@ -947,6 +952,40 @@ function drush_core_quick_drupal() {
   }
   else {
     drush_print(dt('Login URL: ') . drush_invoke('user-login'));
+  }
+}
+
+// Write a drushrc.php to cache the server information for future Drush calls
+function _drush_core_qd_cache_uri($uri) {
+  $server = $uri['host'];
+  if (!empty($uri["port"])) {
+    $server .= ':' . $uri["port"];
+  }
+  $dir = DRUPAL_ROOT . '/drush';
+  $target_file = $dir . '/drushrc.php';
+  drush_log(dt("Caching 'uri' !uri in !target", array('!uri' => $server, '!target' => $target_file)), 'ok');
+  $create_file = TRUE;
+  if (file_exists($target_file)) {
+    // Don't bother to ask with --use-existing; just
+    // continue.
+    if (drush_get_option('use-existing', FALSE)) {
+      $create_file = FALSE;
+    }
+    else {
+      $create_file = drush_confirm(dt('!target already exists. Overwrite?', array('!target' => $target_file)));
+    }
+  }
+  $content = <<<EOT
+<?php
+
+// Inserted by `drush quick-drupal`.  This allows `drush user-login`
+// and similar commands to work seemlessly.  Remove if using
+// Drupal multisite feature.
+\$options['uri'] = "$server";
+EOT;
+  if ($create_file) {
+    drush_mkdir($dir);
+    file_put_contents($target_file, $content);
   }
 }
 
