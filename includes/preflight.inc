@@ -232,7 +232,7 @@ function drush_preflight() {
   }
 
   // If applicable swaps in shell alias values.
-  drush_shell_alias_replace();
+  drush_shell_alias_replace($target_alias);
 
   // Copy global options to their respective contexts
   _drush_preflight_global_options();
