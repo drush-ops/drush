@@ -10,6 +10,44 @@
  */
 
 /**
+ * Check to see if the user specified an alias
+ * in an arguement, or via site-set.  If so, return
+ * the name of the alias.
+ *
+ * If the alias came from args, then remove it
+ * from args.
+ */
+function drush_sitealias_check_arg_and_site_set() {
+  $args = drush_get_arguments();
+
+  // Test to see if the first arg is a valid alias identifier.
+  // If the first arguement is a well-formed identifier, but we
+  // cannot find a record for it, then we will fail with an error.
+  if (!empty($args) && drush_sitealias_valid_alias_format($args[0])) {
+    // Pop the alias off the arguments list first thing.
+    $target_alias = array_shift($args);
+    drush_set_arguments($args);
+    // Record the user's desired target alias name
+    drush_set_context('DRUSH_TARGET_SITE_ALIAS', $target_alias);
+    return $target_alias;
+  }
+  // If the user did not specify an alias via an argument,
+  // check to see if a site env was set.  For the site env,
+  // we insist on being able to find the alias record, or
+  // we will silently ignore
+  $site_env = drush_sitealias_site_get();
+  if ($site_env) {
+    $site_alias_settings = drush_sitealias_get_record($alias);
+    if (!empty($site_alias_settings)) {
+      drush_set_context('DRUSH_TARGET_SITE_ALIAS', $site_env);
+      return $site_env;
+    }
+  }
+  // Return an empty array to indicate that no site alias was specified.
+  return FALSE;
+}
+
+/**
  * Check to see if the first command-line arg or the
  * -l option is a site alias; if it is, copy its record
  * values to the 'alias' context.
@@ -139,7 +177,6 @@ function drush_sitealias_valid_alias_format($alias) {
     ($alias{0} == '#') ||
     ($alias{0} == '@')
   );
-  return $alias{0} == '@';
 }
 
 /**
@@ -1611,17 +1648,19 @@ function _drush_sitealias_set_record_element(&$alias_record, $key, $value) {
  *   TRUE is an alias was found and processed.
  */
 function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
-  $site_alias_settings = drush_sitealias_get_record($alias);
-  if (!empty($site_alias_settings)) {
-    drush_sitealias_set_alias_context($site_alias_settings, $prefix);
-    drush_sitealias_cache_alias_by_path($site_alias_settings);
-    if (empty($prefix)) {
-      // Create an alias '@self'
-      _drush_sitealias_cache_alias('@self', $site_alias_settings);
-      // change the selected site to match the new --root and --uri, if any were set
-      _drush_preflight_root_uri();
+  if ($alias) {
+    $site_alias_settings = drush_sitealias_get_record($alias);
+    if (!empty($site_alias_settings)) {
+      drush_sitealias_set_alias_context($site_alias_settings, $prefix);
+      drush_sitealias_cache_alias_by_path($site_alias_settings);
+      if (empty($prefix)) {
+        // Create an alias '@self'
+        _drush_sitealias_cache_alias('@self', $site_alias_settings);
+        // change the selected site to match the new --root and --uri, if any were set
+        _drush_preflight_root_uri();
+      }
+      return TRUE;
     }
-    return TRUE;
   }
   return FALSE;
 }
