@@ -10,6 +10,10 @@ Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7  
 Drush 4       | 4.x | 5.2.0+ | D5, D6, D7                 | Unsupported
 Drush 3       | 3.x | 5.2.0+ | D5, D6                     | Unsupported
 
+Pick an install method
+-----------------
+The four sections below describe ways to install Drush. None is superior to the others. 
+
 Composer - One Drush per Project
 -----------------
 * If your web site is built from a composer.json file, add the following to the `require` section: `"drush/drush": "6.*"`
@@ -115,6 +119,8 @@ These Windows packages include Drush and its dependencies (including MSys).
 - [6.5.0 (stable)](https://github.com/drush-ops/drush/releases/download/6.5.0/windows-6.5.0.zip).
 - [7.0.0-alpha7](https://github.com/drush-ops/drush/releases/download/7.0.0-alpha7/windows-7.0.0-alpha7.zip).
 - [6.0](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
+
+Unzip the downloaded file to anywhere thats convenient on your system. 
 
 Whenever the documentation or the help text refers to `drush [option] <command>` or something similar, 'drush' may need to be replaced by 'drush.bat'.
 
