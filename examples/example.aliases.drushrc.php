@@ -47,9 +47,7 @@
  *        a. /etc/drush
  *        b. $HOME/.drush
  *        c. The /drush and /sites/all/drush folders for the current Drupal site
- *   3. Inside the sites folder of any bootstrapped Drupal site,
- *      or any local Drupal site indicated by an alias used as
- *      a parameter to a command
+ *   3. Inside the /sites subdirectory for the specified Drupal site.
  *
  * Folders and files containing other versions of drush in their names will
  * be *skipped* (e.g. mysite.aliases.drush4rc.php or
