@@ -96,9 +96,10 @@ function drush_core_runserver($uri = NULL) {
   // We pass in the currently logged in user (if set via the --user option),
   // which will automatically log this user in the browser during the first
   // request.
-  if (drush_get_option('user', FALSE)) {
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
+  if (drush_get_option('user', FALSE) === FALSE) {
+    drush_set_option('user', 1);
   }
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
 
   // We delete any registered files here, since they are not caught by Ctrl-C.
   _drush_delete_registered_files();
