@@ -870,7 +870,6 @@ function drush_get_drupal_core_compatibility() {
  * Set Env. Variables for given site-alias.
  */
 function drush_set_environment_vars(array $site_record) {
-  var_dump($site_record);
   if (!empty($site_record)) {
     $os = drush_os($site_record);
     if (isset($site_record['#env-vars'])) {
