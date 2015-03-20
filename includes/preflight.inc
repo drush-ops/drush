@@ -191,6 +191,10 @@ function drush_preflight() {
   // scopes listed above.
   _drush_find_commandfiles_drush();
 
+  // Look up the alias identifier that the user wants to use,
+  // either via an arguement or via 'site-set'.
+  $target_alias = drush_sitealias_check_arg_and_site_set();
+
   // Process the site alias that specifies which instance
   // of Drush (local or remote) this command will operate on.
   // We must do this after we load our config files (so that
@@ -198,16 +202,43 @@ function drush_preflight() {
   // Drush preflight and Drupal root bootstrap phase are
   // done, since site aliases may set option values that
   // affect these phases.
-  drush_sitealias_check_arg();
-
-  // Check to see if we 'use'd a site alias with site-set
-  drush_sitealias_check_site_env();
+  $alias_record = _drush_sitealias_set_context_by_name($target_alias);
 
   // Find the selected site based on --root, --uri or cwd
   drush_preflight_root();
 
   // Preflight the selected site, and load any configuration and commandfiles associated with it.
   drush_preflight_site();
+
+  // Check to see if anything changed during the 'site' preflight
+  // that might allow us to find our alias record now
+  if (empty($alias_record)) {
+    $alias_record = _drush_sitealias_set_context_by_name($target_alias);
+
+    // If the site alias settings changed late in the preflight,
+    // then run the preflight for the root and site contexts again.
+    if (!empty($alias_record)) {
+      $remote_host = drush_get_option('remote-host');
+      if (!isset($remote_host)) {
+        drush_preflight_root();
+        drush_preflight_site();
+      }
+    }
+  }
+
+  // Fail if we could not find the selected site alias.
+  if ($target_alias && empty($alias_record)) {
+    return drush_set_error('DRUSH_BOOTSTRAP_NO_ALIAS', dt("Could not find the alias !alias", array('!alias' => $target_alias)));
+  }
+
+  // If applicable swaps in shell alias values.
+  drush_shell_alias_replace($target_alias);
+
+  // Copy global options to their respective contexts
+  _drush_preflight_global_options();
+
+  // Set environment variables based on #env-vars.
+  drush_set_environment_vars($alias_record);
 
   // Select the bootstrap object and return it.
   return drush_select_bootstrap_class();
@@ -227,38 +258,20 @@ function drush_preflight_root() {
   // @todo This context name should not mention Drupal.
   // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
-}
 
-function drush_preflight_site() {
   // Load the config options from Drupal's /drush and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
+}
 
-  // Similarly, load the Drupal site configuration options upfront.
+function drush_preflight_site() {
+  // Load the Drupal site configuration options upfront.
   drush_load_config('site');
 
   // Determine URI and set constants/contexts accordingly. Keep this after loading of drupal,site configs.
   _drush_preflight_uri();
 
-  // Create a @self site alias record.
-  drush_sitealias_create_self_alias();
-
-  // If applicable swaps in shell alias values.
-  drush_shell_alias_replace();
-
-  // If drush_load_config defined a site alias that did not
-  // exist before, then sitealias check arg might now match
-  // against one of those aliases.
-  if (drush_sitealias_check_arg() === TRUE) {
-    $remote_host = drush_get_option('remote-host');
-    if (!isset($remote_host)) {
-      // Load the config files for the "new" site.
-      drush_load_config('drupal');
-      drush_load_config('site');
-    }
-  }
-
-   // If someone set 'uri' in the 'site' context, then copy it
+  // If someone set 'uri' in the 'site' context, then copy it
   // to the 'process' context (to give it a higher priority
   // than the 'cli' and 'alias' contexts) and reset our selected
   // site and @self alias.
@@ -266,13 +279,10 @@ function drush_preflight_site() {
   if ($uri != drush_get_option('uri', $uri, 'site')) {
     drush_set_option('uri', drush_get_option('uri', $uri, 'site'));
     _drush_preflight_uri();
-    drush_sitealias_create_self_alias();
   }
 
-  _drush_preflight_global_options();
-
-  //Set Env. Variables for given site-alias.
-  drush_set_environment_vars();
+  // Create a @self site alias record.
+  drush_sitealias_create_self_alias();
 }
 
 function _drush_preflight_global_options() {
@@ -393,7 +403,6 @@ function _drush_find_commandfiles_drush() {
   _drush_add_commandfiles($searchpath, 0);
 }
 
-
 /**
  * Handle any command preprocessing that may need to be done, including
  * potentially redispatching the command immediately (e.g. for remote
@@ -409,7 +418,7 @@ function drush_preflight_command_dispatch() {
   // is set; note that if a site alias is provided on the command line,
   // and the site alias references a remote server, then the --remote-host
   // option will be set when the site alias is processed.
-  // @see drush_sitealias_check_arg
+  // @see drush_sitealias_check_arg_and_site_set and _drush_sitealias_set_context_by_name
   $remote_host = drush_get_option('remote-host');
   $site_list = drush_get_option('site-list');
   // Get the command early so that we can allow commands to directly handle remote aliases if they wish

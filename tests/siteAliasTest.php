@@ -28,6 +28,7 @@ class saCase extends CommandUnishTestCase {
     'remote-host' => 'fake.remote-host.com',
     'remote-user' => 'www-admin',
     'root' => '/fake/path/to/root',
+    '#env-vars' => array('DRUSH_ENV_TEST' => 'WORKING_CASE'),
     'uri' => 'default',
     'command-specific' => array(
       'rsync' => array(
@@ -52,6 +53,7 @@ EOD;
     $this->assertTrue($command_specific_position !== FALSE);
     $this->assertTrue($command_position > $global_option_position);
     $this->assertTrue($command_position < $command_specific_position);
+    $this->assertEquals(getenv('DRUSH_ENV_TEST'), 'WORKING_CASE');
   }
 
   /**
