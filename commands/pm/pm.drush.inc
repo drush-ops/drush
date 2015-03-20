@@ -1614,11 +1614,13 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
 
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   foreach ($projects as $name => $project) {
-    if ($name == 'drupal') {
-      continue;
-    }
     $message = NULL;
-    $lockfile = $drupal_root . '/' . $project['path'] . '/.drush-lock-update';
+    if ($name == 'drupal') {
+      $lockfile = $drupal_root . '/.drush-lock-update';
+    }
+    else {
+      $lockfile = $drupal_root . '/' . $project['path'] . '/.drush-lock-update';
+    }
 
     // Remove the lock file if the --unlock option was specified
     if (((in_array($name, $projects_to_unlock)) || (in_array('all', $projects_to_unlock))) && (file_exists($lockfile))) {
@@ -1650,10 +1652,16 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
   return $locked_result;
 }
 
+/**
+ * Returns the path to the extensions cache file.
+ */
 function _drush_pm_extension_cache_file() {
   return drush_get_context('DRUSH_PER_USER_CONFIGURATION') . "/drush-extension-cache.inc";
 }
 
+/**
+ * Load the extensions cache.
+ */
 function _drush_pm_get_extension_cache() {
   $extension_cache = array();
   $cache_file = _drush_pm_extension_cache_file();
@@ -1667,6 +1675,9 @@ function _drush_pm_get_extension_cache() {
   return $extension_cache;
 }
 
+/**
+ * Lookup an extension in the extensions cache.
+ */
 function drush_pm_lookup_extension_in_cache($extension) {
   $result = NULL;
   $extension_cache = _drush_pm_get_extension_cache();
@@ -1676,9 +1687,17 @@ function drush_pm_lookup_extension_in_cache($extension) {
   return $result;
 }
 
+/**
+ * Persists extensions cache.
+ *
+ * #TODO# not implemented.
+ */
 function drush_pm_put_extension_cache($extension_cache) {
 }
 
+/**
+ * Store extensions founds within a project in extensions cache.
+ */
 function drush_pm_cache_project_extensions($project, $found) {
   $extension_cache = _drush_pm_get_extension_cache();
   foreach($found as $extension) {
@@ -1699,7 +1718,7 @@ function drush_pm_cache_project_extensions($project, $found) {
  * It does nothing with theme engine projects.
  */
 function drush_pm_extensions_in_project($project) {
-  // Mask for drush_scan_directory, to  avoid tests directories.
+  // Mask for drush_scan_directory, to avoid tests directories.
   $nomask = array('.', '..', 'CVS', 'tests');
 
   // Drupal core and profiles can contain modules, themes and profiles.
