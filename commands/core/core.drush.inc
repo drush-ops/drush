@@ -101,7 +101,7 @@ function core_drush_command() {
   $items['core-cron'] = array(
     'description' => 'Run all cron hooks in all active modules for specified site.',
     'aliases' => array('cron'),
-    'topics' => array('core-cron'),
+    'topics' => array('docs-cron'),
   );
   $items['updatedb'] = array(
     'description' => 'Apply any database updates required (as with running update.php).',
