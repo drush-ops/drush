@@ -237,6 +237,9 @@ function drush_preflight() {
   // Copy global options to their respective contexts
   _drush_preflight_global_options();
 
+  // Set environment variables based on #env-vars.
+  drush_set_environment_vars($alias_record);
+
   // Select the bootstrap object and return it.
   return drush_select_bootstrap_class();
 }

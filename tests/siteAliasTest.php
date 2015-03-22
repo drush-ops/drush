@@ -35,6 +35,15 @@ class saCase extends CommandUnishTestCase {
       ),
     ),
   );
+  \$aliases['env-test'] = array(
+    'root' => '/fake/path/to/root',
+    '#env-vars' => array(
+      'DRUSH_ENV_TEST' => 'WORKING_CASE',
+      'DRUSH_ENV_TEST2' => '{foo:[bar:{key:"val"},bar2:{key:"long val"}]}',
+      'DRUSH_ENV_TEST3' => "WORKING CASE = TRUE",
+    ),
+    'uri' => 'default',
+  );
 EOD;
     file_put_contents($aliasFile, $aliasContents);
     $options = array(
@@ -52,6 +61,26 @@ EOD;
     $this->assertTrue($command_specific_position !== FALSE);
     $this->assertTrue($command_position > $global_option_position);
     $this->assertTrue($command_position < $command_specific_position);
+
+    $eval =  '$env_test = getenv("DRUSH_ENV_TEST");';
+    $eval .= '$env_test2 = getenv("DRUSH_ENV_TEST2");';
+    $eval .= 'print json_encode(get_defined_vars());';
+    $config = UNISH_SANDBOX . '/drushrc.php';
+    $options = array(
+      'alias-path' => $aliasPath,
+      'root' => $this->webroot(),
+      'uri' => key($this->getSites()),
+      'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
+    );
+    $this->drush('unit-eval', array($eval), $options, '@env-test');
+    $output = $this->getOutput();
+    $actuals = json_decode(trim($output));
+    $this->assertEquals('WORKING_CASE', $actuals->env_test);
+    $this->assertEquals('{foo:[bar:{key:"val"},bar2:{key:"long val"}]}', $actuals->env_test2);
+    $eval = 'print getenv("DRUSH_ENV_TEST3");';
+    $this->drush('unit-eval', array($eval), $options, '@env-test');
+    $output = $this->getOutput();
+    $this->assertEquals( "WORKING CASE = TRUE", $output);
   }
 
   /**

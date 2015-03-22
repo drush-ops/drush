@@ -865,3 +865,18 @@ function drush_get_drupal_core_compatibility() {
     return Drupal::CORE_COMPATIBILITY;
   }
 }
+
+/**
+ * Set Env. Variables for given site-alias.
+ */
+function drush_set_environment_vars(array $site_record) {
+  if (!empty($site_record)) {
+    $os = drush_os($site_record);
+    if (isset($site_record['#env-vars'])) {
+      foreach ($site_record['#env-vars'] as $var => $value) {
+        $env_var = drush_escapeshellarg($var, $os, TRUE) . '=' . drush_escapeshellarg($value, $os, TRUE);
+        putenv($env_var);
+      }
+    }
+  }
+}
