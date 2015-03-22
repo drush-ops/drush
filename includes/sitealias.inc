@@ -1659,10 +1659,10 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
         // change the selected site to match the new --root and --uri, if any were set
         _drush_preflight_root_uri();
       }
-      return TRUE;
+      return $site_alias_settings;
     }
   }
-  return FALSE;
+  return array();
 }
 
 /**
