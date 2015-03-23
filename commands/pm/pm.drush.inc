@@ -1816,7 +1816,7 @@ function pm_drush_engine_version_control() {
       ),
       'sub-options' => array(
         'gitcommit' => array(
-         'gitmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
+          'gitmessage' => 'Override default commit message which is: Drush automatic commit: <the drush command line used>',
         ),
       ),
       'examples' => array(
