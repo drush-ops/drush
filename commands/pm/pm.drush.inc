@@ -1807,7 +1807,7 @@ function pm_drush_engine_version_control() {
       'description' => 'Quickly add/remove/commit your project changes to Git.',
       'options' => array(
         'gitsync' => 'Automatically add new files to the Git repository and remove deleted files. Caution.',
-        'gitcommit' => 'Automatically commit changes to Git repository. You must also using the --gitsync option.',
+        'gitcommit' => 'Automatically commit changes to Git repository. Implies the --gitsync option.',
         'gitstatusparams' => "Add options to the 'git status' command",
         'gitaddparams' => 'Add options to the `git add` command',
         'gitremoveparams' => 'Add options to the `git remove` command',
@@ -1820,7 +1820,7 @@ function pm_drush_engine_version_control() {
         ),
       ),
       'examples' => array(
-        'drush [command] ctools --gitsync --gitcommit --gitcommitparams=\"--author joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
+        'drush [command] ctools --gitcommit --gitcommitparams=\"--author joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
       ),
     ),
   );

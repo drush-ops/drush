@@ -49,7 +49,7 @@ class drush_version_control_git implements drush_version_control {
    * that have been deleted on the file system in the full_project_path.
    */
   private function sync($project) {
-    if (drush_get_option('gitsync')) {
+    if (drush_get_option('gitsync') || drush_get_option('gitcommit')) {
       $errors = '';
       if (!drush_shell_exec('git add --all '. drush_get_option('gitaddparams') .' '. $project['full_project_path'])) {
         $errors .= implode("\n", drush_shell_exec_output());
