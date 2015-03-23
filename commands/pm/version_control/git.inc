@@ -11,36 +11,8 @@ class drush_version_control_git implements drush_version_control {
    * Implementation of pre_update().
    */
   public function pre_update(&$project, $items_to_test = array()) {
-/*
-    // If items to test is empty, test everything; otherwise, pass just
-    // the list of files to test to git status.
-    $args = array_keys($items_to_test);
-    array_unshift($args, 'git status '. drush_get_option('gitstatusparams') . str_repeat('%s ', count($args)));
-    array_unshift($args, $project['full_project_path']);
-    if (call_user_func_array('drush_shell_cd_and_exec', $args)) {
-      $output = preg_grep('/^[ ACDMRX?!~][ CM][ L][ +][ SX][ K]/', drush_shell_exec_output());
-      if (!empty($output)) {
-        return drush_set_error('DRUSH_PM_GIT_LOCAL_CHANGES', dt("The GIT working copy at !path appears to have uncommitted changes (see below). Please commit or revert these changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
-      }
-    }
-    else {
-      return drush_set_error('DRUSH_PM_GIT_NOT_FOUND', dt("Drush was unable to get the git status on !path.\nThe specific errors are below:\n!errors", array('!path' => $project['full_project_path'], '!errors' => implode("\n", drush_shell_exec_output()))));
-    }
-*/
 
-#    // Check for incoming updates
-#    $args = array_keys($items_to_test);
-#    array_unshift($args, 'git status -u '. drush_get_option('gitstatusparams') . str_repeat('%s ', count($args)));
-#    array_unshift($args, $project['full_project_path']);
-#    if (call_user_func_array('drush_shell_cd_and_exec', $args)) {
-#      $output = preg_grep('/\*/', drush_shell_exec_output());
-#      if (!empty($output)) {
-#        return drush_set_error('DRUSH_PM_GIT_REMOTE_CHANGES', dt("The GIT working copy at !path appears to be out of date with the repository (see below). Please run 'git update' to pull down changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
-#      }
-#    }
-#    else {
-#      return drush_set_error('DRUSH_PM_GIT_NOT_FOUND', dt("Drush was unable to get the git remote status on !path. Check that you have connectivity to the repository.\nThe specific errors are below:\n!errors", array('!path' => $project['full_project_path'], '!errors' => implode("\n", drush_shell_exec_output()))));
-#  }
+    // No-op. Nothing to do here.
     return TRUE;
   }
 
@@ -48,17 +20,8 @@ class drush_version_control_git implements drush_version_control {
    * Implementation of rollback().
    */
   public function rollback($project) {
-    /*
-    if (drush_shell_exec('git revert '. drush_get_option('gitrevertparams') .' '. $project['full_project_path'])) {
-      $output = drush_shell_exec_output();
-      if (!empty($output)) {
-        return drush_set_error('DRUSH_PM_GIT_LOCAL_CHANGES', dt("The GIT working copy at !path appears to have uncommitted changes (see below). Please commit or revert these changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
-      }
-    }
-    else {
-      return drush_set_error('DRUSH_PM_GIT_NOT_FOUND', dt("Drush was unable to get the git status on !path. Check that you have Git \ninstalled and that this directory is a subversion working copy.\nThe specific errors are below:\n!errors", array('!path' => $project['full_project_path'], '!errors' => implode("\n", drush_shell_exec_output()))));
-    }
-     */
+    // TODO, do we need this at all?
+    // Other VCS implementations do a revert ... but can we trust that a commit was made?
   }
 
   /**
