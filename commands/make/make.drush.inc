@@ -26,6 +26,15 @@ include_once 'generate.contents.make.inc';
  * Implements hook_drush_command().
  */
 function make_drush_command() {
+  $projects = array(
+    'description' => 'Restrict the make to this comma-separated list of projects. To specify all projects, pass *.',
+    'example-value' => 'views,ctools',
+  );
+  $libraries = array(
+    'description' => 'Restrict the make to this comma-separated list of libraries. To specify all libraries, pass *.',
+    'example-value' => 'tinymce',
+  );
+
   $items['make'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'description' => 'Turns a makefile into a working Drupal codebase.',
@@ -71,14 +80,8 @@ function make_drush_command() {
       'translations' => 'Retrieve translations for the specified comma-separated list of language(s) if available for all projects.',
       'working-copy' => 'Preserves VCS directories, like .git, for projects downloaded using such methods.',
       'download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
-      'projects' => array(
-        'description' => 'Restrict the make to this comma-separated list of projects. To specify all projects, pass *.',
-        'example-value' => 'views,ctools',
-      ),
-      'libraries' => array(
-        'description' => 'Restrict the make to this comma-separated list of libraries. To specify all libraries, pass *.',
-        'example-value' => 'tinymce',
-      ),
+      'projects' => $projects,
+      'libraries' => $libraries,
       'allow-override' => array(
         'description' => 'Restrict the make options to a comma-separated list. Defaults to unrestricted.',
       ),
@@ -115,14 +118,19 @@ function make_drush_command() {
     'aliases' => array('generate-makefile'),
   );
 
-  $items['make-convert-yaml'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+  $items['make-convert'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'description' => 'Convert a legacy makefile into YAML format.',
     'arguments' => array(
       'makefile' => 'Filename of the makefile to convert.',
     ),
+    'options' => array(
+      'projects' => $projects,
+      'libraries' => $libraries,
+    ),
+    'required-arguments' => TRUE,
     'examples' => array(
-      'drush makefile-convert-yaml example.make' => 'Convert example.make to example.make.yml',
+      'drush make-convert example.make' => 'Convert example.make to example.make.yml',
     ),
   );
 
@@ -292,20 +300,23 @@ function drush_make($makefile = NULL, $build_path = NULL) {
 }
 
 /**
- * Drush callback; convert makefile to YAML.
+ * Command callback; convert ini makefile to YAML.
  */
-function drush_make_convert_yaml($makefile) {
+function drush_make_convert($makefile) {
 
   drush_log(dt('Beginning to convert !makefile.', array('!makefile' => $makefile)), 'ok');
 
   $file = $makefile . '.yml';
   $info = make_parse_info_file($makefile);
+  // Remove incorrect value.
+  unset($info['format']);
 
   $dumper = drush_load_engine('outputformat', 'yaml');
   $yaml = $dumper->format($info, array());
 
   if (file_put_contents($file, $yaml)) {
-    drush_log(dt("Wrote .make file @file", array('@file' => $file)), 'ok');
+    drush_log(dt("Wrote make file @file", array('@file' => $file)), 'ok');
+    return $file;
   }
   else {
     make_error('FILE_ERROR', dt("Unable to write file !file", array('!file' => $file)));
