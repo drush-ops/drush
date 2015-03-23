@@ -1820,6 +1820,7 @@ function pm_drush_engine_version_control() {
         ),
       ),
       'examples' => array(
+        'drush dl --gitcommit ctools' =>  'Download the ctools module and commit the changes.',
         'drush [command] ctools --gitcommit --gitcommitparams=\"--author joe\"' =>  'Commit changes as the user \'joe\' (Quotes are required).'
       ),
     ),
