@@ -105,6 +105,7 @@ function config_drush_command() {
         'example-value' => 'list',
       ),
       'source' => 'An arbitrary directory that holds the configuration files. An alternative to label argument',
+      'partial' => 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).',
     ),
     'core' => array('8+'),
     'aliases' => array('cim'),
@@ -138,6 +139,7 @@ function config_drush_command() {
     ),
     'options' => array(
       'bg' => 'Run editor in the background. Does not work with editors such as `vi` that run in the terminal. Supresses config-import at the end.',
+      'file' => 'Import from a file instead of interactively editing a given config.',
     ),
     'examples' => array(
       'drush config-edit image.style.large' => 'Edit the image style configurations.',
@@ -357,8 +359,21 @@ function drush_config_import($source = NULL) {
   }
 
   // Retrieve a list of differences between the active and source configuration (if any).
-  $active_storage = Drupal::service('config.storage');
   $source_storage = new FileStorage($source_dir);
+  /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+  $active_storage = Drupal::service('config.storage');
+  if (drush_get_option('partial', FALSE)) {
+    // With partial imports, the comparison must only be made against configs
+    // that exist in the source directory.
+    $temp_active_storage = new FileStorage(drush_tempdir());
+    foreach ($source_storage->listAll() as $name) {
+      // Copy active storage to our temporary active store.
+      if ($existing = $active_storage->read($name)) {
+        $temp_active_storage->write($name, $existing);
+      }
+    }
+    $active_storage = $temp_active_storage;
+  }
   $config_comparer = new StorageComparer($source_storage, $active_storage, Drupal::service('config.manager'));
   if (!$config_comparer->createChangelist()->hasChanges()) {
     return drush_log(dt('There are no changes to import.'), 'ok');
@@ -381,6 +396,10 @@ function drush_config_import($source = NULL) {
   }
 
   if (drush_confirm(dt('Import the listed configuration changes?'))) {
+    if (drush_get_option('partial')) {
+      // Partial imports require different processing.
+      return drush_op('_drush_config_import_partial', $source_storage);
+    }
     return drush_op('_drush_config_import', $config_comparer);
   }
 }
@@ -420,9 +439,25 @@ function _drush_config_import(StorageComparer $storage_comparer) {
 }
 
 /**
+ * Imports a partial set of configurations.
+ */
+function _drush_config_import_partial(FileStorage $source) {
+  /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+  $active_storage = Drupal::service('config.storage');
+  foreach ($source->listAll() as $name) {
+    $active_storage->write($name, $source->read($name));
+  }
+}
+
+/**
  * Edit command callback.
  */
 function drush_config_edit($config_name = '') {
+  if (empty($config_name) && $file = drush_get_option('file', FALSE)) {
+    // If not provided, assume config name from the given file.
+    $config_name = basename($file, '.yml');
+  }
+
   // Identify and validate input.
   if ($config_name) {
     $config = Drupal::configFactory()->getEditable($config_name);
@@ -445,13 +480,30 @@ function drush_config_edit($config_name = '') {
   $active_storage = $config->getStorage();
   $contents = $active_storage->read($config_name);
 
-  // Write tmp YAML file for editing.
   $temp_storage = new FileStorage(drush_tempdir());
-  $temp_storage->write($config_name, $contents);
+  if ($file) {
+    $temp_storage->write($config_name, \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file)));
+    // Show difference.
+    $existing = new FileStorage(drush_tempdir());
+    $existing->write($config_name, $contents);
+    // @todo Can DiffFormatter produce a CLI pretty diff?
+    drush_shell_exec('diff -u %s %s', $existing->getFilePath($config_name), $temp_storage->getFilePath($config_name));
+    $output = drush_shell_exec_output();
+    drush_print(implode("\n", $output));
 
-  // $filepath = drush_save_data_to_temp_file();
-  $exec = drush_get_editor();
-  drush_shell_exec_interactive($exec, $temp_storage->getFilePath($config_name));
+    if (!drush_confirm(dt('Keep these changes?'))) {
+      return drush_user_abort(dt('Config not edited.'));
+    }
+  }
+  else {
+    // Write tmp YAML file for editing.
+    $temp_storage->write($config_name, $contents);
+
+    // $filepath = drush_save_data_to_temp_file();
+    $exec = drush_get_editor();
+    drush_shell_exec_interactive($exec, $temp_storage->getFilePath($config_name));
+  }
+
   // Perform import operation if user did not immediately exit editor.
   if (!drush_get_option('bg', FALSE)) {
     $new_data = $temp_storage->read($config_name);
