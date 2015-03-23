@@ -1808,9 +1808,6 @@ function pm_drush_engine_version_control() {
       'options' => array(
         'gitsync' => 'Automatically add new files to the Git repository and remove deleted files. Caution.',
         'gitcommit' => 'Automatically commit changes to Git repository. Implies the --gitsync option.',
-        'gitstatusparams' => "Add options to the 'git status' command",
-        'gitremoveparams' => 'Add options to the `git remove` command',
-        'gitrevertparams' => 'Add options to the `git revert` command',
       ),
       'sub-options' => array(
         'gitcommit' => array(
