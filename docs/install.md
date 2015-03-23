@@ -24,6 +24,7 @@ Composer - One Drush per Project
 Composer - One Drush for all Projects
 ------------------
 
+* Optional - [video instructions by Drupalize.me.](https://youtu.be/eAtDaD8xz0Q)
 * [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
 * To install Drush 6.x (stable):
 
