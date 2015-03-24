@@ -37,7 +37,7 @@ function runserver_drush_command() {
     'options' => array(
       'variables' => 'Key-value array of variables to override in the $conf array for the running site. By default disables drupal_http_request_fails to avoid errors on Windows (which supports only one connection at a time). Comma delimited list of name=value pairs (or array in drushrc).',
       'default-server' => 'A default addr:port/path to use for any values not specified as an argument.',
-      'user' => 'If opening a web browser, automatically log in as this user (user ID or username).',
+      'user' => 'If opening a web browser, automatically log in as this user (user ID or username). Default is to log in as uid 1.',
       'browser' => 'If opening a web browser, which browser to user (defaults to operating system default).',
       'dns' => 'Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.',
     ),
