@@ -43,7 +43,7 @@ function sql_drush_command() {
     'description' => 'Drop all tables in a given database.',
     'arguments' => array(
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'options' => array(
       'yes' => 'Skip confirmation and proceed.',
       'result-file' => array(
@@ -56,7 +56,7 @@ function sql_drush_command() {
   $items['sql-conf'] = array(
     'description' => 'Print database connection details using print_r().',
     'hidden' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'options' => array(
       'all' => 'Show all database connections, instead of just one.',
       'show-passwords' => 'Show database password.',
@@ -69,7 +69,7 @@ function sql_drush_command() {
   );
   $items['sql-connect'] = array(
     'description' => 'A string for connecting to the DB.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'options' => $options + $db_url + array(
         'extra' => array(
           'description' => 'Add custom options to the mysql command.',
@@ -82,7 +82,7 @@ function sql_drush_command() {
   );
   $items['sql-create'] = array(
     'description' => 'Create a database.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'examples' => array(
       'drush sql-create' => 'Create the database for the current site.',
       'drush @site.test sql-create' => 'Create the database as specified for @site.test.',
@@ -96,7 +96,7 @@ function sql_drush_command() {
   );
   $items['sql-dump'] = array(
     'description' => 'Exports the Drupal DB as SQL using mysqldump or equivalent.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'examples' => array(
       'drush sql-dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
       'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.php',
@@ -120,7 +120,7 @@ function sql_drush_command() {
     ) + $options + $db_url,
   );
   $items['sql-query'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'description' => 'Execute a query against a database.',
     'examples' => array(
       'drush sql-query "SELECT * FROM users WHERE uid=1"' => 'Browse user record. Table prefixes, if used, must be added to table names by hand.',
@@ -151,7 +151,7 @@ function sql_drush_command() {
   );
   $items['sql-sync'] = array(
     'description' => 'Copies the database contents from a source site to a target site. Transfers the database dump via rsync.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'drush dependencies' => array('core'), // core-rsync.
     'examples' => array(
       'drush sql-sync @source @target' => 'Copy the database from the site with the alias "source" to the site with the alias "target".',
@@ -221,7 +221,7 @@ function sql_drush_command() {
   );
   $items['sql-cli'] = array(
     'description' => "Open a SQL command-line interface using Drupal's credentials.",
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     // 'options' => $options + $db_url,
     'allow-additional-options' => array('sql-connect'),
     'aliases' => array('sqlc'),
@@ -233,7 +233,7 @@ function sql_drush_command() {
   );
   $items['sql-sanitize'] = array(
     'description' => "Run sanitization operations on the current database.",
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'options' => array(
       'db-prefix' => 'Enable replacement of braces in sanitize queries.',
       'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',

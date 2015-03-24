@@ -4,8 +4,8 @@
 /**
  * No bootstrap.
  *
- * This constant is only used to indicate that the bootstrap process has
- * not started yet.  It is not possible to have no bootstrap.
+ * Commands that only preflight, but do not bootstrap, should use
+ * a bootstrap level of DRUSH_BOOTSTRAP_NONE.
  */
 define('DRUSH_BOOTSTRAP_NONE', -1);
 

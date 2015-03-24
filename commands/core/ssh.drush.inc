@@ -23,7 +23,7 @@ function ssh_drush_command() {
       'drush @prod git pull' => 'Run "git pull" on the Drupal root directory on the @prod site.',
     ),
     'aliases' => array('ssh'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'topics' => array('docs-aliases'),
   );
   return $items;

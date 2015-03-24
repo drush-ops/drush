@@ -36,7 +36,7 @@ function make_drush_command() {
   );
 
   $items['make'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'description' => 'Turns a makefile into a working Drupal codebase.',
     'arguments' => array(
       'makefile' => 'Filename of the makefile to use for this build.',
@@ -139,12 +139,12 @@ function make_drush_command() {
       'projects-location' => 'Name of a temporary file containing json-encoded output of make_projects().',
       'manifest' => 'An array of projects already being processed.',
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'engines' => array('release_info'),
   );
 
   $items['make-update'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'description' => 'Process a makefile and outputs an equivalent makefile with projects version resolved to latest available.',
     'arguments' => array(
       'makefile' => 'Filename of the makefile to use for this build.',
@@ -164,7 +164,7 @@ function make_drush_command() {
     'description' => 'Drush Make overview with examples',
     'hidden' => TRUE,
     'topic' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/docs/make.md'),
   );
@@ -172,7 +172,7 @@ function make_drush_command() {
     'description' => 'Drush Make example makefile',
     'hidden' => TRUE,
     'topic' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/example.make.yml'),
   );

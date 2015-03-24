@@ -16,7 +16,7 @@
 function usage_drush_command() {
   $disclaimer = 'Usage statistics contain the Drush command name and the Drush option names, but no arguments or option values.';
   $items['usage-show'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'description' => 'Show Drush usage information that has been logged but not sent.  ' . $disclaimer,
     'examples' => array(
       'drush usage-show' => 'Show cached usage statistics.',
@@ -25,7 +25,7 @@ function usage_drush_command() {
     'aliases' => array('ushow'),
   );
   $items['usage-send'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'description' => 'Send anonymous Drush usage information to statistics logging site.  ' . $disclaimer,
     'examples' => array(
       'drush usage-send' => 'Immediately send cached usage statistics.',
