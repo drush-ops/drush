@@ -73,7 +73,9 @@ function drush_topic_core_topic($topic_name = NULL) {
       return;
     }
   }
-  $topic_name = array_pop(array_keys($topics));
+  else {
+    $topic_name = array_pop(array_keys($topics));
+  }
   return drush_dispatch($commands[$topic_name]);
 }
 
