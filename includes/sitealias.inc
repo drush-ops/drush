@@ -37,7 +37,7 @@ function drush_sitealias_check_arg_and_site_set() {
   // we will silently ignore
   $site_env = drush_sitealias_site_get();
   if ($site_env) {
-    $site_alias_settings = drush_sitealias_get_record($alias);
+    $site_alias_settings = drush_sitealias_get_record($site_env);
     if (!empty($site_alias_settings)) {
       drush_set_context('DRUSH_TARGET_SITE_ALIAS', $site_env);
       return $site_env;
