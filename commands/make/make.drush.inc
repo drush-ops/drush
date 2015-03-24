@@ -47,7 +47,6 @@ function make_drush_command() {
       'drush make --no-core --contrib-destination=. installprofile.make' => 'Build an installation profile within an existing Drupal site',
       'drush make http://example.com/example.make example' => 'Build the remote example.make makefile in the example directory.',
       'drush make example.make --no-build --lock=example.lock' => 'Write a new makefile to example.lock. All project versions will be resolved.',
-      'drush make example.make --no-build --lock-update=example.make' => 'Write a new makefile to example.make. All project versions will be updated.',
     ),
     'options' => array(
       'version' => 'Print the make API version and exit.',
@@ -88,10 +87,6 @@ function make_drush_command() {
       'lock' => array(
         'description' => 'Generate a makefile, based on the one passed in, with all versions *resolved*. Defaults to printing to the terminal, but an output file may be provided.',
         'example-value' => 'example.make.lock',
-      ),
-      'lock-update' => array(
-        'description' => 'Generate an updated makefile, based on the one passed in, with all versions *updated*. Defaults to printing to the terminal, but an output file may be provided.',
-        'example-value' => 'example.make',
       ),
       'shallow-clone' => array(
         'description' => 'For makefile entries which use git for downloading, this option will utilize shallow clones where possible (ie. by using the git-clone\'s depth=1 option). If the "working-copy" option is not desired, this option will significantly speed up makes which involve modules stored in very large git repos. In fact, if "working-copy" option is enabled, this option cannot be used.',
@@ -146,6 +141,21 @@ function make_drush_command() {
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'engines' => array('release_info'),
+  );
+
+  $items['make-update'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'description' => 'Process a makefile and outputs an equivalent makefile with projects version resolved to latest available.',
+    'arguments' => array(
+      'makefile' => 'Filename of the makefile to use for this build.',
+    ),
+    'options' => array(
+      'result-file' => array(
+        'description' => 'Save to a file. If not provided, the updated makefile will be dump to stdout.',
+        'example-value' => 'updated.make',
+      ),
+    ),
+    'engines' => array('release_info', 'update_status'),
   );
 
   // Add docs topic.
@@ -287,11 +297,6 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   // Process --lock.
   if (drush_get_option('lock', FALSE)) {
     make_generate_from_makefile(drush_get_option('lock'), $makefile);
-  }
-
-  // Process --lock-update.
-  if (drush_get_option('lock-update', FALSE)) {
-    make_generate_from_makefile(drush_get_option('lock-update'), $makefile);
   }
 
   // Used by core-quick-drupal command.
