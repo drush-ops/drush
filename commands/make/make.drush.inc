@@ -148,6 +148,21 @@ function make_drush_command() {
     'engines' => array('release_info'),
   );
 
+  $items['make-update'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'description' => 'Process a makefile and outputs an equivalent makefile with projects version resolved to latest available.',
+    'arguments' => array(
+      'makefile' => 'Filename of the makefile to use for this build.',
+    ),
+    'options' => array(
+      'result-file' => array(
+        'description' => 'Save to a file. If not provided, the updated makefile will be dump to stdout.',
+        'example-value' => 'updated.make',
+      ),
+    ),
+    'engines' => array('release_info', 'update_status'),
+  );
+
   // Add docs topic.
   $docs_dir = drush_get_context('DOC_PREFIX', DRUSH_BASE_PATH);
   $items['docs-make'] = array(
