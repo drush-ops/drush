@@ -661,5 +661,11 @@ function drush_coverage_shutdown() {
 }
 
 function drush_return_status() {
-  exit((drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS);
+  // If a specific exit code was set, then use it.
+  $exit_code = drush_get_context('DRUSH_EXIT_CODE');
+  if (empty($exit_code)) {
+    $exit_code = (drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS;
+  }
+
+  exit($exit_code);
 }

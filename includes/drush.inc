@@ -16,6 +16,11 @@
 define('DRUSH_SUCCESS', 0);
 /** The command could not be completed because the framework has specified errors that have occured. */
 define('DRUSH_FRAMEWORK_ERROR', 1);
+/** The command was aborted because the user chose to cancel it at some prompt.
+This exit code is arbitrarily the same as EX_TEMPFAIL in sysexits.h, although
+note that shell error codes are distinct from C exit codes, so this alignment
+not meaningful. */
+define('DRUSH_EXITCODE_USER_ABORT', 75);
 /** The command that was executed resulted in an application error,
 The most commom causes for this is invalid PHP or a broken SSH
 pipe when using drush_backend_invoke in a distributed manner. */
@@ -496,7 +501,6 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value', 
   if (drush_get_context('DRUSH_AFFIRMATIVE')  && (count($options) == 1)) {
     return $selection_list[1];
   }
-  drush_print(dt('Cancelled'));
   return FALSE;
 }
 
@@ -1614,7 +1618,8 @@ function drush_clear_error() {
  */
 function drush_user_abort($msg = NULL) {
   drush_set_context('DRUSH_USER_ABORT', TRUE);
-  drush_log($msg ? $msg : dt('Aborting.'), 'cancel');
+  drush_set_context('DRUSH_EXIT_CODE', DRUSH_EXITCODE_USER_ABORT);
+  drush_log($msg ? $msg : dt('Cancelled.'), 'cancel');
   return FALSE;
 }
 
