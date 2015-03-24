@@ -775,7 +775,9 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
 }
 
 function _drush_sitealias_add_inherited_values_to_record(&$alias_value) {
+  drush_command_invoke_all_ref('drush_sitealias_alter', $alias_value);
   if (isset($alias_value['parent'])) {
+    drush_log(dt("Using deprecated 'parent' element '!parent' in '!name'.", array('!parent' => $alias_value['parent'], '!name' => $alias_value['#name'])), 'warning');
     // Fetch and merge in each parent
     foreach (explode(',', $alias_value['parent']) as $parent) {
       $parent_record = drush_sitealias_get_record($parent);
@@ -790,8 +792,8 @@ function _drush_sitealias_add_inherited_values_to_record(&$alias_value) {
       }
       $alias_value = array_merge($parent_record, $alias_value);
     }
-    unset($alias_value['parent']);
   }
+  unset($alias_value['parent']);
 }
 
 /**
