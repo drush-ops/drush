@@ -218,12 +218,13 @@ function drush_variable_set() {
   }
   else {
     $choice = drush_choice($options, 'Enter a number to choose which variable to set.');
-    if ($choice !== FALSE) {
-      $choice = $options[$choice];
-      $choice = str_replace(' ' . dt('(new variable)'), '', $choice);
-      drush_op('variable_set', $choice, $value);
-      drush_log(dt('!name was set to !value', array('!name' => $choice, '!value' => $display)), 'success');
+    if ($choice === FALSE) {
+      return drush_user_abort();
     }
+    $choice = $options[$choice];
+    $choice = str_replace(' ' . dt('(new variable)'), '', $choice);
+    drush_op('variable_set', $choice, $value);
+    drush_log(dt('!name was set to !value', array('!name' => $choice, '!value' => $display)), 'success');
   }
 }
 
