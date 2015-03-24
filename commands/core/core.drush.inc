@@ -61,7 +61,7 @@ function core_drush_command() {
 
   $items['help'] = array(
     'description' => 'Print this help message. See `drush help help` for more options.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE, // No bootstrap.
     'allow-additional-options' => TRUE,
     'options' => array(
       'sort' => 'Sort commands in alphabetical order. Drush waits for full bootstrap before printing any commands when this option is used.',
@@ -87,7 +87,7 @@ function core_drush_command() {
   );
   $items['version'] = array(
     'description' => 'Show drush version.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE, // No bootstrap.
     'options' => array(
       'pipe' => 'Print just the version number, and nothing else.',
     ),
@@ -252,7 +252,7 @@ function core_drush_command() {
   );
   $items['core-execute'] = array(
     'description' => 'Execute a shell command. Usually used with a site alias.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE, // No bootstrap.
     'arguments' => array(
       'command' => 'The shell command to be executed.',
     ),
@@ -271,7 +271,7 @@ function core_drush_command() {
   );
   $items['core-rsync'] = array(
     'description' => 'Rsync the Drupal tree to/from another server using ssh.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE, // No bootstrap.
     'arguments' => array(
       'source' => 'May be rsync path or site alias. See rsync documentation and example.aliases.drushrc.php.',
       'destination' => 'May be rsync path or site alias. See rsync documentation and example.aliases.drushrc.php.',
@@ -316,7 +316,7 @@ function core_drush_command() {
       'edit `drush dd devel`/devel.module' => "Open devel module in your editor (customize 'edit' for your editor)",
     ),
     'aliases' => array('dd'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
 
   $items['batch-process'] = array(
@@ -342,7 +342,7 @@ function core_drush_command() {
     'description' => 'All global options',
     'hidden' => TRUE,
     'topic' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'outputformat' => array(
       'default' => 'table',
       'pipe-format' => 'csv',
@@ -352,7 +352,7 @@ function core_drush_command() {
   );
   $items['core-quick-drupal'] = array(
     'description' => 'Download, install, serve and login to Drupal with minimal configuration and dependencies.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'aliases' => array('qd'),
     'arguments' => array(
       'site' => 'Short name for the site to be created - used as a directory name and as sqlite file name. Optional - if omitted timestamped "quick-drupal" directory will be used instead.',

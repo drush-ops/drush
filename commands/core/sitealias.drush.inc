@@ -18,7 +18,7 @@ function sitealias_drush_command() {
   $items['site-alias'] = array(
     'callback' => 'drush_sitealias_print',
     'description' => 'Print site alias records for all known site aliases and local sites.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'arguments' => array(
       'site' => 'Site specification to print',
     ),
@@ -51,7 +51,7 @@ function sitealias_drush_command() {
   );
   $items['site-set'] = array(
     'description' => 'Set a site alias to work on that will persist for the current session.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
     'arguments' => array(
       'site' => 'Site specification to use, or "-" for previous site. Omit this argument to "unset"',

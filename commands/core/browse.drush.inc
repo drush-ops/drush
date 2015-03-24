@@ -7,7 +7,7 @@ function browse_drush_command() {
   $items = array();
   $items['browse'] = array(
     'description' => 'Display a link to a given path or open link in a browser.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
     'arguments' => array(
       'path' => 'Path to open. If omitted, the site front page will be opened.',
