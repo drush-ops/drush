@@ -29,6 +29,34 @@ function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
 }
 
 /**
+ * Implements hook_drush_sitealias_alter
+ *
+ * Alter alias record data in code.
+ */
+function policy_drush_sitealias_alter(&$alias_record) {
+  // A duplicate of the old implementation of the 'parent' element.
+  // Keep this if you want to keep using 'parent', but do not want
+  // to be nagged (or worse, break when it is removed).
+  if (isset($alias_record['parent'])) {
+    // Fetch and merge in each parent
+    foreach (explode(',', $alias_record['parent']) as $parent) {
+      $parent_record = drush_sitealias_get_record($parent);
+      unset($parent_record['#name']);
+      unset($parent_record['#file']);
+      unset($parent_record['#hidden']);
+      $array_based_keys = array_merge(drush_get_special_keys(), array('path-aliases'));
+      foreach ($array_based_keys as $array_based_key) {
+        if (isset($alias_record[$array_based_key]) && isset($parent_record[$array_based_key])) {
+          $alias_record[$array_based_key] = array_merge($parent_record[$array_based_key], $alias_record[$array_based_key]);
+        }
+      }
+      $alias_record = array_merge($parent_record, $alias_record);
+    }
+    unset($alias_record['parent']);
+  }
+}
+
+/**
  * Implements hook_drush_help_alter().
  *
  * When a hook extends a command with additional options, it must
