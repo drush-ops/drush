@@ -73,7 +73,7 @@ class pmDownloadCase extends CommandUnishTestCase {
       'choice' => 0, // Cancel.
     );
     // --select. Specify 6.x since that has so many releases.
-    $this->drush('pm-download', array('devel-6.x'), $options);
+    $this->drush('pm-download', array('devel-6.x'), $options, NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
     $items = $this->getOutputAsList();
     $output = $this->getOutput();
      // 6 items are: Select message + Cancel + 3 versions.
@@ -81,7 +81,7 @@ class pmDownloadCase extends CommandUnishTestCase {
     $this->assertContains('6.x-1.x-dev', $output, 'Dev release was shown by --select.');
 
     // --select --dev. Specify 6.x since that has so many releases.
-    $this->drush('pm-download', array('devel-6.x'), $options + array('dev' => NULL));
+    $this->drush('pm-download', array('devel-6.x'), $options + array('dev' => NULL), NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
     $items = $this->getOutputAsList();
     $output = $this->getOutput();
     // 12 items are: Select message + Cancel + 1 option.
@@ -89,7 +89,7 @@ class pmDownloadCase extends CommandUnishTestCase {
     $this->assertContains('6.x-1.x-dev', $output, 'Assure that --dev lists the only dev release.');
 
     // --select --all. Specify 5.x since this is frozen.
-    $this->drush('pm-download', array('devel-5.x'), $options + array('all' => NULL));
+    $this->drush('pm-download', array('devel-5.x'), $options + array('all' => NULL), NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
     $items = $this->getOutputAsList();
     $output = $this->getOutput();
     // 12 items are: Select message + Cancel + 9 options.
