@@ -209,7 +209,7 @@ function drush_role_remove_perm($rid, $permissions = NULL) {
   if ($removed_perm) {
     drush_drupal_cache_clear_all();
   }
-  
+
   return $result;
 }
 
@@ -243,7 +243,7 @@ function drush_role_perm($action, $rid, $permission = NULL) {
     }
     $choice = drush_choice($module_perms, "Enter a number to choose which permission to $action.");
     if ($choice === FALSE) {
-      return FALSE;
+      return drush_user_abort();
     }
     $permission = $module_perms[$choice];
   }

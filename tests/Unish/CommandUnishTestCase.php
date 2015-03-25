@@ -10,6 +10,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   // Unix exit codes.
   const EXIT_SUCCESS  = 0;
   const EXIT_ERROR = 1;
+  const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
 
   /**
    * Code coverage data collected during a single test.

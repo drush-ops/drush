@@ -675,15 +675,15 @@ function drush_core_config($filter = NULL) {
   $exec = drush_get_editor();
   if (count($all) == 1) {
     $filepath = current($all);
-    return drush_shell_exec_interactive($exec, $filepath, $filepath);
   }
   else {
     $choice = drush_choice($all, 'Enter a number to choose which file to edit.', '!key');
-    if ($choice !== FALSE) {
-      $filepath = $all[$choice];
-      drush_shell_exec_interactive($exec, $filepath, $filepath);
+    if (!$choice) {
+      return drush_user_abort();
     }
+    $filepath = $all[$choice];
   }
+  return drush_shell_exec_interactive($exec, $filepath, $filepath);
 }
 
 /**

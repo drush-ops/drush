@@ -71,7 +71,7 @@ function drush_topic_core_topic($topic_name = NULL) {
     }
     natcasesort($choices);
     if (!$topic_name = drush_choice($choices, dt('Choose a topic'), '!value (!key)', array(5))) {
-      return;
+      return drush_user_abort();
     }
   }
   else {
