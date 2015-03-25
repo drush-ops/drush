@@ -408,6 +408,14 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
   if (!empty($drupal_root)) {
     $site_paths[] = $drupal_root . '/drush';
     $site_paths[] = $drupal_root . '/sites/all/drush';
+    $uri = drush_get_context('DRUSH_SELECTED_URI');
+    if (empty($uri)) {
+      $uri = 'default';
+    }
+    $site_dir = drush_sitealias_uri_to_site_dir($uri, $drupal_root);
+    if ($site_dir) {
+      $site_paths[] = "$drupal_root/sites/$site_dir";
+    }
   }
   $alias_path = (array) drush_get_context('ALIAS_PATH', array());
   return array_unique(array_merge($context_path, $alias_path, $site_paths));
