@@ -398,7 +398,7 @@ function make_clean_tmp() {
  */
 function make_prepare_install($build_path) {
   $default = make_tmp() . '/__build__/sites/default';
-  drush_copy_dir($default . DIRECTORY_SEPARATOR . 'default.settings.php', $default . DIRECTORY_SEPARATOR . 'settings.php', TRUE);
+  drush_copy_dir($default . DIRECTORY_SEPARATOR . 'default.settings.php', $default . DIRECTORY_SEPARATOR . 'settings.php', FILE_EXISTS_OVERWRITE);
   drush_mkdir($default . '/files');
   chmod($default . DIRECTORY_SEPARATOR . 'settings.php', 0666);
   chmod($default . DIRECTORY_SEPARATOR . 'files', 0777);

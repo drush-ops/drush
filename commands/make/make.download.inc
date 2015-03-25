@@ -167,7 +167,7 @@ function _make_download_file_move($tmp_path, $filename, $download_location, $sub
     if ($directory->basename != $main_directory) {
       drush_move_dir($directory->filename, $tmp_path . DIRECTORY_SEPARATOR . $main_directory, TRUE);
     }
-    drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . $main_directory . DIRECTORY_SEPARATOR . $subtree, $download_location, TRUE);
+    drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . $main_directory . DIRECTORY_SEPARATOR . $subtree, $download_location, FILE_EXISTS_OVERWRITE);
     drush_delete_dir($tmp_path, TRUE);
   }
   elseif (count($lines) > 1) {
@@ -350,7 +350,7 @@ function make_download_git($name, $type, $download, $download_location) {
   }
 
   // Move the directory into the final resting location.
-  drush_copy_dir($tmp_location, $download_location, TRUE);
+  drush_copy_dir($tmp_location, $download_location, FILE_EXISTS_OVERWRITE);
 
   return dirname($tmp_location);
 }
@@ -390,7 +390,7 @@ function make_download_bzr($name, $type, $download, $download_location) {
     array_unshift($args, $command);
     if (call_user_func_array('drush_shell_exec', $args)) {
       drush_log(dt('@project downloaded from @url.', array('@project' => $name, '@url' => $download['url'])), 'ok');
-      drush_copy_dir($tmp_location, $download_location, TRUE);
+      drush_copy_dir($tmp_location, $download_location, FILE_EXISTS_OVERWRITE);
       return dirname($download_location);
     }
   }
