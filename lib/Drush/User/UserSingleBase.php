@@ -22,8 +22,6 @@ abstract class UserSingleBase {
       'name' => $this->account->getUsername(),
       'password' => $this->account->getPassword(),
       'mail' => $this->account->getEmail(),
-      'signature' => $this->account->getSignature(),
-      'signature_format' => $this->account->getSignatureFormat(),
       'user_created' => $this->account->getCreatedTime(),
       'created' => format_date($this->account->getCreatedTime()),
       'user_access' => $this->account->getLastAccessedTime(),
