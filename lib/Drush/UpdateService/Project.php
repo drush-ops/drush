@@ -380,7 +380,7 @@ class Project {
    */
   public function getRecommendedOrSupportedRelease() {
     $majors = array();
-    if (!empty($this->parsed['recommended_major'])) {
+    if (!empty($this->parsed['recommended_major']) || $this->parsed['recommended_major'] == 0) {
       $majors[] = $this->parsed['recommended_major'];
     }
     $supported = explode(',', $this->parsed['supported_majors']);
@@ -389,7 +389,6 @@ class Project {
         $majors[] = $v;
       }
     }
-
     $releases = array();
     foreach ($majors as $major) {
       $releases = $this->searchReleases('version_major', $major);
