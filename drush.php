@@ -71,7 +71,7 @@ function drush_main() {
       }
     }
   }
-  if ($bootstrap) {
+  if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
     $bootstrap->terminate();
   }
   drush_postflight();
