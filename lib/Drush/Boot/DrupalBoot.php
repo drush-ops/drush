@@ -308,6 +308,15 @@ abstract class DrupalBoot extends BaseBoot {
     $drush_uri = _drush_bootstrap_selected_uri();
     drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($drush_uri));
 
+    $this->bootstrap_drupal_site_setup_server_global($drush_uri);
+    return $this->bootstrap_drupal_site_validate_settings_present();
+  }
+
+  /**
+   * Set up the $_SERVER globals so that Drupal will see the same values
+   * that it does when serving pages via the web server.
+   */
+  function bootstrap_drupal_site_setup_server_global() {
     // Fake the necessary HTTP headers that Drupal needs:
     if ($drush_uri) {
       $drupal_base_url = parse_url($drush_uri);
@@ -354,7 +363,13 @@ abstract class DrupalBoot extends BaseBoot {
     $_SERVER['SERVER_SOFTWARE'] = NULL;
     $_SERVER['HTTP_USER_AGENT'] = NULL;
     $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
+  }
 
+  /**
+   * Validate that the Drupal site has all of the settings that it
+   * needs to operated.
+   */
+  function bootstrap_drupal_site_validate_settings_present() {
     $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
 
     $conf_path = drush_bootstrap_value('conf_path', conf_path(TRUE, TRUE));
