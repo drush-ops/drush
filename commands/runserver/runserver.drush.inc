@@ -153,7 +153,7 @@ function runserver_uri($uri) {
   $user_default = runserver_parse_uri(drush_get_option('default-server', ''));
   $site_default = runserver_parse_uri(drush_get_option('uri', ''));
   $uri = runserver_parse_uri($uri);
-  if ($uri) {
+  if (is_array($uri)) {
     // Populate defaults.
     $uri = $uri + $user_default + $site_default + $drush_default;
     if (ltrim($uri['path'], '/') == '-') {
