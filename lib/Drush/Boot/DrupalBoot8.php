@@ -3,6 +3,7 @@
 namespace Drush\Boot;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DrupalKernel;
 
 class DrupalBoot8 extends DrupalBoot {
@@ -11,6 +12,11 @@ class DrupalBoot8 extends DrupalBoot {
    * @var \Drupal\Core\DrupalKernelInterface
    */
   protected $kernel;
+
+  /**
+   * @var \Symfony\Component\HttpFoundation\Request
+   */
+  protected $request;
 
   function valid_root($path) {
     if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
@@ -68,9 +74,9 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   function bootstrap_drupal_configuration() {
-    $request = Request::createFromGlobals();
+    $this->request = Request::createFromGlobals();
     $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
-    $this->kernel = DrupalKernel::createFromRequest($request, $classloader, 'prod');
+    $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod');
 
     // Unset drupal error handler and restore drush's one.
     restore_error_handler();
@@ -82,9 +88,8 @@ class DrupalBoot8 extends DrupalBoot {
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_start();
     }
-    $request = Request::createFromGlobals();
     $this->kernel->boot();
-    $this->kernel->prepareLegacyRequest($request);
+    $this->kernel->prepareLegacyRequest($this->request);
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_end_clean();
     }
@@ -99,7 +104,8 @@ class DrupalBoot8 extends DrupalBoot {
     parent::terminate();
 
     if ($this->kernel) {
-      $this->kernel->terminate();
+      $response = Response::create('');
+      $this->kernel->terminate($this->request, $response);
     }
   }
 }
