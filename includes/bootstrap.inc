@@ -108,27 +108,51 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
  */
 define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
 
+/**
+ * Return the list of bootstrap objects that are available for
+ * initializing a CMS with Drush.  We insure that any given candidate
+ * class is instantiated only once.
+ */
 function drush_get_bootstrap_candidates() {
-  // If someone has 'latched' the candidates, then we won't
-  // regenerate these again.  Otherwise, we'll allow these
-  // to change,
-  $candidates = drush_get_context('DRUSH_BOOTSTRAP_CANDIDATES', FALSE);
-  if (!$candidates) {
-    // Give all commandfiles a chance to return candidates
-    $candidates = drush_command_invoke_all('bootstrap_candidates');
-    // If a bootstrap class was specified on the command line, consider it first.
-    $bootstrap_class = drush_get_option('bootstrap_class', FALSE);
-    if ($bootstrap_class) {
-      array_unshift($candidates, new $bootstrap_class);
+  $candidate_classes = drush_get_bootstrap_candidate_classnames();
+
+  $cache =& drush_get_context('DRUSH_BOOTSTRAP_CANDIDATE_OBJECTS');
+
+  $result = array();
+  foreach($candidate_classes as $candidate_class) {
+    if (array_key_exists($candidate_class, $cache)) {
+      $result[$candidate_class] = $cache[$candidate_class];
     }
-    // Add candidate bootstrap classes for Drupal
-    foreach (array('8', '7', '6') as $version) {
-      $drupal_bootstrap_class = 'Drush\Boot\DrupalBoot' . $version;
-      $candidates[] = new $drupal_bootstrap_class;
+    else {
+      $result[$candidate_class] = new $candidate_class;
     }
-    // Always consider our default bootstrap class last.
-    $candidates[] = new Drush\Boot\EmptyBoot;
   }
+
+  $cache = $result;
+  return $result;
+}
+
+/**
+ * Find the list of bootstrap classnames available for initializing a
+ * CMS with Drush.
+ */
+function drush_get_bootstrap_candidate_classnames() {
+  // Give all commandfiles a chance to return candidates.  They should
+  // return STRINGS with the class name of the bootstrap object they provide.
+  $candidates = drush_command_invoke_all('bootstrap_candidates');
+  // If a bootstrap class was specified on the command line, consider it first.
+  $bootstrap_class = drush_get_option('bootstrap_class', FALSE);
+  if ($bootstrap_class) {
+    array_unshift($candidates, $bootstrap_class);
+  }
+  // Add candidate bootstrap classes for Drupal
+  foreach (array('8', '7', '6') as $version) {
+    $drupal_bootstrap_class = 'Drush\Boot\DrupalBoot' . $version;
+    $candidates[] = $drupal_bootstrap_class;
+  }
+  // Always consider our default bootstrap class last.
+  $candidates[] = 'Drush\Boot\EmptyBoot';
+
   return $candidates;
 }
 
@@ -174,7 +198,6 @@ function drush_select_bootstrap_class() {
  */
 function drush_latch_bootstrap_object($bootstrap) {
   drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
-  drush_set_context('DRUSH_BOOTSTRAP_CANDIDATES', array($bootstrap));
 }
 
 /**
