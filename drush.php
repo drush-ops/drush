@@ -71,6 +71,10 @@ function drush_main() {
       }
     }
   }
+  // TODO: Get rid of global variable access here, and just trust
+  // the bootstrap object returned from drush_preflight().  This will
+  // require some adjustments to Drush bootstrapping.
+  // See: https://github.com/drush-ops/drush/pull/1303
   if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
     $bootstrap->terminate();
   }
