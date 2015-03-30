@@ -316,7 +316,7 @@ abstract class DrupalBoot extends BaseBoot {
    * Set up the $_SERVER globals so that Drupal will see the same values
    * that it does when serving pages via the web server.
    */
-  function bootstrap_drupal_site_setup_server_global() {
+  function bootstrap_drupal_site_setup_server_global($drush_uri) {
     // Fake the necessary HTTP headers that Drupal needs:
     if ($drush_uri) {
       $drupal_base_url = parse_url($drush_uri);
