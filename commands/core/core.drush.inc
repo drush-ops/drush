@@ -336,7 +336,9 @@ function core_drush_command() {
       'batch-id' => 'The batch id that will be processed',
     ),
     'required-arguments' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, // https://github.com/drush-ops/drush/issues/961
+    // Drupal 7 needs DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, while Drupal 8 needs _FULL.
+    // Therefore we bootstrap to _FULL in commands/core/drupal/update.inc.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
   );
   $items['core-global-options'] = array(
     'description' => 'All global options',

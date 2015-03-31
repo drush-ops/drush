@@ -145,6 +145,9 @@ function update_main() {
 }
 
 function _update_batch_command($id) {
+  // In D8, we expect to be in full bootstrap.
+  drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+
   drush_batch_command($id);
 }
 
