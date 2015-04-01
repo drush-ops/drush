@@ -34,6 +34,7 @@ class configMergeTest extends CommandUnishTestCase {
       'uri' => 'stage',
       'yes' => NULL,
       'tool' => '0',
+      'strict' => '0',
     );
 
     $dev_options = array(
