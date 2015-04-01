@@ -509,7 +509,7 @@ function make_apply_defaults(&$info) {
     foreach ($defaults as $type => $default_data) {
       if (isset($info[$type])) {
         foreach ($info[$type] as $project => $data) {
-          $info[$type][$project] += $default_data;
+          $info[$type][$project] = _drush_array_overlay_recursive($default_data, $info[$type][$project]);
         }
       }
       else {
