@@ -177,7 +177,7 @@ function config_drush_command() {
       'tracking' => 'A tracking branch to use when doing the configuration merge (advanced). Default is to use a temporary branch.',
       'comment' => 'Commit comment for the merged configuration.',
       'no-commit' => 'Do not commit the fetched configuration; leave the modified files unstaged.',
-      'tool' => 'Specific tool to use with `git mergetool`.',
+      'tool' => 'Specific tool to use with `git mergetool`.  Use --tool=0 to prevent use of mergetool.  Defaults to whatever tool is configured in git.',
       'fetch-only' => "Don't run `git mergetool`; fetch all configuration changes from both sites, and merge them onto the tracking branch.  May result in unresolved merge conflicts.",
       'git' => "Fetch changes from the other site using git instead of rsync.",
       'remote' => array(
@@ -924,6 +924,10 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
 
     // If there are any conflicts, run the merge tool.
     if (!empty($conflicting_files)) {
+      if (!$merge_info['tool'] && ($merge_info['tool'] != '')) {
+        // If --tool=0, then we will never run the merge tool
+        return drush_set_error('DRUSH_CONFLICTS_NOT_MERGED', dt("There were conflicts that needed merging, but mergetool disabled via --tool option.  Rolling back; run again with --fetch-only to stop prior to merge."));
+      }
       $choice = 'mergetool';
       while ($choice == 'mergetool') {
         if (empty($merge_info['tool'])) {
