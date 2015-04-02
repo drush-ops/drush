@@ -43,14 +43,30 @@ class configMergeTest extends CommandUnishTestCase {
       'yes' => NULL,
     );
 
+    // Both sites must be based off of the same install; otherwise, the uuids
+    // for the initial configuration items will not match, which will cause
+    // problems.
+    $this->drush('sql-sync', array('@self', 'stage'), $dev_options);
+
+    // Export initial configuration
+    $this->drush('config-export', array(), $dev_options);
+    $this->drush('config-export', array(), $stage_options);
+
+    // Make a git repository
+    $this->createGitRepository($this->webroot());
+
     // Make a configuration change on 'stage' site
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $stage_options);
 
-    // Run config-merge to copy the configuration change to the 'dev' site
+    // Run config-merge to copy the configuration change from 'stage' to the 'dev' site
     $this->drush('config-merge', array('stage'), $dev_options);
 
     // Verify that the configuration change we made on 'stage' now exists on 'dev'
     $this->drush('config-get', array('system.site', 'name'), $dev_options);
-    $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config was successfully set, merged and fetched.');
+    $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config set, merged and fetched.');
+  }
+
+  protected function createGitRepository($dir) {
+    exec("cd $dir && git init && git add . && git commit -m 'Initial commit.'", $output, $return);
   }
 }

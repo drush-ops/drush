@@ -643,6 +643,14 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     $tracking_branch_is_tmp = TRUE;
   }
 
+  // Use in log and commit messages
+  $site_label = $alias;
+  // If '$alias' is a 'sites' folder, then convert it into a site
+  // specification, root#uri
+  if ($alias[0] != '@') {
+    $alias = DRUPAL_ROOT . "#$alias";
+  }
+
   // Figure out what our base commit is going to be for this operation.
   $merge_info = array(
     'base' => drush_get_option('base', FALSE),
@@ -704,8 +712,11 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   }
 
   // Did not specify a base commit or a tracking branch, then
-  // default to using 'format-patch'
-  if (!$merge_info['base'] && $merge_info['autodelete-live-config'] && !$merge_info['format-patch-remote']) {
+  // default to using 'format-patch'.  Format patch only works
+  // if both sites have the same config path, so look up the
+  // remote config path to see if this is the case.
+  $values = drush_invoke_process($merge_info['live-site'], 'drupal-directory', array('config-' . $merge_info['config-label']));
+  if (($configuration_path == trim($values['output'])) && !$merge_info['base'] && $merge_info['autodelete-live-config'] && !$merge_info['format-patch-remote']) {
     $merge_info['format-patch-remote'] = '/tmp/drush-config-export/exported-configuration.patch';
   }
 
@@ -799,7 +810,8 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     }
     else {
       // Copy the exported configuration files from 'live-site' via rsync and commit them
-      $values = drush_invoke_process($merge_info['dev-site'], 'core-rsync', array($merge_info['live-site'] . ":$configuration_path/", $merge_info['dev-site'] . ":$configuration_path/"), array('delete' => TRUE));
+      $remote_configuration_path = "%config-" . $merge_info['config-label'];
+      $values = drush_invoke_process($merge_info['dev-site'], 'core-rsync', array($merge_info['live-site'] . ":$remote_configuration_path/", $merge_info['dev-site'] . ":$configuration_path/"), array('delete' => TRUE));
       if ($values['error_status']) {
         return drush_set_error('DRUSH_CONFIG_MERGE_RSYNC_FAILED', dt("Could not rsync from !live to !dev.", array('!live' => $merge_info['live-config'], '!dev' => $merge_info['dev-config'])));
       }
