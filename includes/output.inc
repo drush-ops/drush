@@ -497,6 +497,10 @@ function drush_hide_empty_fields($input, $fields) {
  *    array('col1' => 'Column 1 Label', 'col2' => 'Column 2 Label')
  * @param $metadata
  *    (optional) An array of special options, all optional:
+ *    - preprocess-columns: an array of:
+ *         - dest-col: array('column' => 'callback')
+ *         Preprocess the data in the column with the callback function before
+ *         formatting.
  *    - strip-tags: call the strip_tags function on the data
  *         before placing it in the table
  *    - concatenate-columns: an array of:
@@ -518,6 +522,16 @@ function drush_hide_empty_fields($input, $fields) {
  *    An array of arrays
  */
 function drush_rows_of_key_value_to_array_table($rows_of_keyvalue_table, $header, $metadata) {
+  // Allow to preprocess raw column data.
+  if (array_key_exists('preprocess-columns', $metadata)) {
+    foreach ($rows_of_keyvalue_table as $key => $columns) {
+      foreach ($metadata['preprocess-columns'] as $column => $callback) {
+        if (array_key_exists($column, $columns)) {
+          $rows_of_keyvalue_table[$key][$column] = $callback($rows_of_keyvalue_table[$key][$column], $metadata);
+        }
+      }
+    }
+  }
   if (isset($metadata['hide-empty-fields'])) {
     $header = drush_hide_empty_fields($rows_of_keyvalue_table, $header);
   }

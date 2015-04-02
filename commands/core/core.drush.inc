@@ -200,6 +200,7 @@ function core_drush_command() {
       'fields-default' => array('title', 'severity', 'description'),
       'column-widths' => array('severity' => 8),
       'concatenate-columns' => array('description' => array('value', 'description')),
+      'preprocess-columns' => array('description' => '_drush_core_requirements_preprocess_description'),
       'strip-tags' => TRUE,
       'ini-item' => 'sid',
       'key-value-item' => 'severity',
@@ -1311,4 +1312,14 @@ function _drush_core_execute_cmd($site, $cmd) {
     return (drush_shell_proc_open('cd ' . drush_escapeshellarg($site['root']) . ' && ' . $cmd) == 0);
   }
   return (drush_shell_proc_open($cmd) == 0);
+}
+
+/**
+ * Table column preprocess callback.
+ *
+ * The description column of core requirements may be a render array. Render it
+ * to a string to display in the table.
+ */
+function _drush_core_requirements_preprocess_description($data, $metadata) {
+  return is_array($data) ? drupal_render($data) : $data;
 }
