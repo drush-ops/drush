@@ -319,6 +319,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['redirect-port']       = array('hidden' => TRUE, 'never-propagate' => TRUE, 'description' => 'Used by the user-login command to specify the redirect port on the local machine; it therefore would not do to pass this to the remote machines.');
     $options['cache-clear']         = array('propagate' => TRUE, 'description' => 'Allow cache-clear operations / skip all cache-clear options. Caller is responsible for guaranteeing that the cache does not need to be invalidated, or to call cache-clear later.', 'example-value' => '0', );
     $options['local']               = array('propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases');
+    $options['temporary-dir']       = array('propagate' => TRUE, 'short-form' => 'tmp', 'description' => 'Specify the temporary directory to use.');
 
     $command = array(
         'options' => $options,
