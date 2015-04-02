@@ -289,9 +289,11 @@ function make_validate_info_file($info) {
 
   // Convert shorthand project/library download style to array format.
   foreach (array('projects', 'libraries') as $type) {
-    foreach ($info[$type] as $name => $item) {
-      if (!empty($item['download']) && is_string($item['download'])) {
-        $info[$type][$name]['download'] = array('url' => $item['download']);
+    if (isset($info[$type]) && is_array($info[$type])) {
+      foreach ($info[$type] as $name => $item) {
+        if (!empty($item['download']) && is_string($item['download'])) {
+          $info[$type][$name]['download'] = array('url' => $item['download']);
+        }
       }
     }
   }
