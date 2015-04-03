@@ -479,6 +479,7 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
 
   // Add environmental variables, if present
   if (!empty($environment_variables)) {
+    $prefix .= ' env';
     foreach ($environment_variables as $key=>$value) {
       $prefix .= ' ' . drush_escapeshellarg($key, $os) . '=' . drush_escapeshellarg($value, $os);
     }
