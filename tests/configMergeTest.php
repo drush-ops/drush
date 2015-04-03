@@ -2,7 +2,7 @@
 
 /**
 * @file
-*  Test config merge, to copy configuration from one site to another.
+*  Test config-merge, that merges configuration changes from one site to another.
 */
 
 namespace Unish;
@@ -10,14 +10,14 @@ namespace Unish;
 /**
  *  @group slow
  *  @group commands
- *  @group sql
  */
 class configMergeTest extends CommandUnishTestCase {
 
   /**
    * Covers the following responsibilities.
-   *   - A user created on the source site is copied to the destination site.
-   *   - The email address of the copied user is sanitized on the destination site.
+   *   - The site name configuration property is set on the 'stage' site.
+   *   - config-merge is used to merge the change into the 'dev' site.
+   *   - The site name is tested to confirm that it changed.
    *
    * General handling of site aliases will be in sitealiasTest.php.
    */
@@ -58,7 +58,7 @@ class configMergeTest extends CommandUnishTestCase {
     // Make a configuration change on 'stage' site
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $stage_options);
 
-    // Run config-merge to copy the configuration change from 'stage' to the 'dev' site
+    // Run config-merge to merge the configuration change from 'stage' into the 'dev' site's configuration
     $this->drush('config-merge', array('stage'), $dev_options);
 
     // Verify that the configuration change we made on 'stage' now exists on 'dev'
@@ -67,6 +67,6 @@ class configMergeTest extends CommandUnishTestCase {
   }
 
   protected function createGitRepository($dir) {
-    exec("cd $dir && git init && git add . && git commit -m 'Initial commit.'", $output, $return);
+    $this->execute("git init && git add . && git commit -m 'Initial commit.'", CommandUnishTestCase::EXIT_SUCCESS, $dir);
   }
 }
