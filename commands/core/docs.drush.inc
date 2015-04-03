@@ -65,6 +65,14 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/example.drushrc.php'),
   );
+  $items['docs-cmi'] = array(
+    'description' => 'Configuration management on Drupal 8 with Drush.',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array($docs_dir . '/docs/cmi.md'),
+  );
   $items['docs-aliases'] = array(
     'description' => 'Site aliases overview on creating your own aliases for commonly used Drupal sites with examples from example.aliases.drushrc.php.',
     'hidden' => TRUE,
