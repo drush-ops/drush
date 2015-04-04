@@ -853,6 +853,19 @@ function _drush_download_file($url, $destination, $overwrite = TRUE) {
  *   The MIME content type of the file or FALSE.
  */
 function drush_mime_content_type($filename) {
+  $content_type = drush_attempt_mime_content_type($filename);
+  if ($content_type) {
+    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), 'notice');
+    return $content_type;
+  }
+  return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', array('!file' => $filename)));
+}
+
+/**
+ * Works like drush_mime_content_type, but does not set an error
+ * if the type is unknown.
+ */
+function drush_attempt_mime_content_type($filename) {
   $content_type = FALSE;
   if (class_exists('finfo')) {
     $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -925,13 +938,7 @@ function drush_mime_content_type($filename) {
       }
     }
   }
-
-  if ($content_type) {
-    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), 'notice');
-    return $content_type;
-  }
-
-  return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', array('!file' => $filename)));
+  return $content_type;
 }
 
 /**
@@ -941,7 +948,7 @@ function drush_mime_content_type($filename) {
  *   The file content type if it's a tarball. FALSE otherwise.
  */
 function drush_file_is_tarball($path) {
-  $content_type = drush_mime_content_type($path);
+  $content_type = drush_attempt_mime_content_type($path);
   $supported = array(
     'application/x-bzip2',
     'application/x-gzip',
