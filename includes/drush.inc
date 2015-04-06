@@ -104,11 +104,14 @@ function drush_get_class($class_name, $constructor_args = array(), $variations =
   if (empty($variations)) {
     $variations[] = drush_drupal_major_version();
   }
-  for ($i=count($variations); $i >= 0; $i--) {
-    $variant_class_name = $class_name . implode('', array_slice($variations, 0, $i));
-    if (class_exists($variant_class_name)) {
-      $reflectionClass = new ReflectionClass($variant_class_name);
-      return $reflectionClass->newInstanceArgs($constructor_args);
+  $class_names = is_array($class_name) ? $class_name : array($class_name);
+  foreach ($class_names as $class_name) {
+    for ($i=count($variations); $i >= 0; $i--) {
+      $variant_class_name = $class_name . implode('', array_slice($variations, 0, $i));
+      if (class_exists($variant_class_name)) {
+        $reflectionClass = new ReflectionClass($variant_class_name);
+        return $reflectionClass->newInstanceArgs($constructor_args);
+      }
     }
   }
   // Something bad happenned. TODO Exception?
