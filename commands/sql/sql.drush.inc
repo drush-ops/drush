@@ -149,6 +149,19 @@ function sql_drush_command() {
     ) + $options + $db_url,
     'aliases' => array('sqlq'),
   );
+
+  $sanitize_options = array(
+    'sanitize-password' => array(
+      'description' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.',
+      'example-value' => 'password',
+      'required' => TRUE,
+    ),
+    'sanitize-email' => array(
+      'description' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.',
+      'example-value' => 'user+%uid@localhost',
+      'required' => TRUE,
+    ),
+  );
   $items['sql-sync'] = array(
     'description' => 'Copies the database contents from a source site to a target site. Transfers the database dump via rsync.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
@@ -211,9 +224,7 @@ function sql_drush_command() {
       'sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync.',
     ),
     'sub-options' => array(
-      'sanitize' => array(
-        'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
-        'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
+      'sanitize' => $sanitize_options + array(
         'confirm-sanitizations' => 'Prompt yes/no after importing the database, but before running the sanitizations',
       ),
     ),
@@ -234,10 +245,8 @@ function sql_drush_command() {
   $items['sql-sanitize'] = array(
     'description' => "Run sanitization operations on the current database.",
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'options' => array(
+    'options' => $sanitize_options + array(
       'db-prefix' => 'Enable replacement of braces in sanitize queries.',
-      'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
-      'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
     ) + $db_url,
     'aliases' => array('sqlsan'),
   );
