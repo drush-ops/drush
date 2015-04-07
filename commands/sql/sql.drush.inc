@@ -669,6 +669,12 @@ function drush_sql_get_class($db_spec = NULL) {
   throw new \Drush\Sql\SqlException('Unable to find a matching SQL Class. Drush cannot find your database connection details.');
 }
 
+/**
+ * Wrapper for drush_get_class; instantiates a Drupal version-specific instance
+ * of SqlVersion class.
+ *
+ * @return Drush\Sql\SqlVersion
+ */
 function drush_sql_get_version() {
   return drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version())) ?: NULL;
 }

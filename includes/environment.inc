@@ -364,7 +364,7 @@ function drush_valid_root($path) {
 function drush_valid_db_credentials() {
   try {
     $sql = drush_sql_get_class();
-    if (!$sqlVersion = drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version()))) {
+    if (!$sqlVersion = drush_sql_get_version()) {
       return FALSE;
     }
     if (!$sqlVersion->valid_credentials($sql->db_spec())) {
