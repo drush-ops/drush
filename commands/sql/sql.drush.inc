@@ -154,12 +154,12 @@ function sql_drush_command() {
     'sanitize-password' => array(
       'description' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.',
       'example-value' => 'password',
-      'required' => TRUE,
+      'value' => 'required',
     ),
     'sanitize-email' => array(
       'description' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.',
       'example-value' => 'user+%uid@localhost',
-      'required' => TRUE,
+      'value' => 'required',
     ),
   );
   $items['sql-sync'] = array(
