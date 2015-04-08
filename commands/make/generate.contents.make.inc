@@ -81,17 +81,16 @@ function _drush_make_generate_makefile_body($projects, $output = array()) {
  *   A makefile on which to base our generated one.
  */
 function make_generate_from_makefile($file, $makefile) {
+  $info = make_parse_info_file($makefile);
   $projects = drush_get_option('DRUSH_MAKE_PROJECTS', FALSE);
   if ($projects === FALSE) {
-    $info = make_parse_info_file($makefile);
     $projects = make_prepare_projects(FALSE, $info);
     if (isset($projects['contrib'])) {
       $projects = array_merge($projects['core'], $projects['contrib']);
     }
   }
 
-  $defaults = make_parse_info_file($makefile);
-  $defaults = $defaults['defaults'];
+  $defaults = $info['defaults'];
 
   $core = current($projects);
   $core = $core['core'];
@@ -140,7 +139,6 @@ function make_generate_from_makefile($file, $makefile) {
 
   $libraries = drush_get_option('DRUSH_MAKE_LIBRARIES', FALSE);
   if ($libraries === FALSE) {
-    $info = make_parse_info_file($makefile);
     $libraries = $info['libraries'];
   }
   if (is_array($libraries)) {

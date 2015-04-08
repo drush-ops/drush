@@ -251,10 +251,9 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   // Set the cache option based on our '--no-cache' option.
   _make_enable_cache();
 
-  $info = make_parse_info_file($makefile);
-
   // Build.
   if (!drush_get_option('no-build', FALSE)) {
+    $info = make_parse_info_file($makefile);
     drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), 'ok');
 
     // Default contrib destination depends on Drupal core version.
@@ -296,7 +295,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
 
   // Process --lock.
   if (drush_get_option('lock', FALSE)) {
-    make_generate_from_makefile(drush_get_option('lock'), $makefile);
+    return make_generate_from_makefile(drush_get_option('lock'), $makefile);
   }
 
   // Used by core-quick-drupal command.
