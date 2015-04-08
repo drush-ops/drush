@@ -54,7 +54,7 @@ function _make_parse_info_file($makefile) {
     if (is_array($info['includes'])) {
       $include_path = dirname($makefile);
       $includes = array();
-      foreach ($info['includes'] as $include) {
+      foreach ($info['includes'] as $key => $include) {
         if (!empty($include)) {
           if (is_array($include) && $include['download']['type'] = 'git') {
             $tmp_dir = make_tmp();
@@ -78,7 +78,13 @@ function _make_parse_info_file($makefile) {
           else {
             make_error('BUILD_ERROR', dt("Cannot determine include file location: !include", array('!include' => $include)));
           }
-          $info = array_replace_recursive(_make_parse_info_file($include_makefile), $info);
+          $merged_info = array_merge_recursive($info, _make_parse_info_file($include_makefile));
+          // array_merge_recursive() turns various meta parameters (api, format, etc.) into arrays.
+          // So we only update the elements that we actually want merged.
+          $merge_elements = array('projects', 'libraries');
+          foreach ($merge_elements as $element) {
+            $info[$element] = $merged_info[$element];
+          }
         }    
       }
     }
