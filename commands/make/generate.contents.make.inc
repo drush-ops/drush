@@ -91,7 +91,6 @@ function make_generate_from_makefile($file, $makefile) {
   }
 
   $defaults = $info['defaults'];
-
   $core = current($projects);
   $core = $core['core'];
   foreach ($projects as $name => $project) {
