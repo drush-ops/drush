@@ -32,7 +32,7 @@ function drush_preflight_prepare() {
   }
 
   // drush_drupal_load_autoloader() uses require_once.  Is this going to be
-  // a problem if $vendor_path == $drupal_root .'/core/vendor/autoload.php'
+  // a problem if $vendor_path == $drupal_root .'/autoload.php'
   require $vendor_path;
 
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';

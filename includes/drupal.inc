@@ -15,7 +15,7 @@ function drush_drupal_load_autoloader($drupal_root, $new_autoloader = NULL) {
   }
   if (!$autoloader) {
     // Should this just be 'require'?  See drush_preflight_prepare()
-    $autoloader = require_once $drupal_root .'/core/vendor/autoload.php';
+    $autoloader = require $drupal_root .'/autoload.php';
   }
   return $autoloader;
 }
@@ -35,7 +35,7 @@ function drush_drupal_version($drupal_root = NULL) {
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
       // Try and find D8.
-      if (file_exists($drupal_root . '/core/vendor/autoload.php')) {
+      if (file_exists($drupal_root . '/autoload.php')) {
         // Load the autoloader so we can access the class constants.
         drush_drupal_load_autoloader($drupal_root);
         // Drush depends on bootstrap being loaded at this point.
