@@ -160,7 +160,7 @@ function drush_cache_command_get($cid = NULL, $bin = NULL) {
   $result = drush_op('_drush_cache_command_get', $cid, $bin);
 
   if (empty($result)) {
-    return drush_set_error('DRUSH_CACHE_OBJECT_NOT_FOUND', dt('The !cid object in the !bin cache bin was not found.', array('!cid' => $cid, '!bin' => $bin)));
+    return drush_set_error('DRUSH_CACHE_OBJECT_NOT_FOUND', dt('The !cid object in the !bin bin was not found.', array('!cid' => $cid, '!bin' => $bin ? $bin : _drush_cache_bin_default())));
   }
   return $result;
 }

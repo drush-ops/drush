@@ -6,15 +6,24 @@
 
 function _drush_cache_command_get($cid, $bin) {
   if (is_null($bin)) {
-    $bin = 'cache';
+    $bin = _drush_cache_bin_default();
   }
   return cache_get($cid, $bin);
+}
+
+/**
+ * The default bin.
+ *
+ * @return string
+ */
+function _drush_cache_bin_default() {
+  return 'cache';
 }
 
 function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
   // Convert the "expire" argument to a valid value for Drupal's cache_set().
   if (is_null($bin)) {
-    $bin = 'cache';
+    $bin = _drush_cache_bin_default();
   }
   if ($expire == 'CACHE_TEMPORARY') {
     $expire = CACHE_TEMPORARY;
