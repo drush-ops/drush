@@ -18,13 +18,13 @@ class cacheCommandCase extends CommandUnishTestCase {
   function testCacheGet() {
     $options = $this->getOptions();
     // Test the cache get command.
-    $key_map = array(
-      6 => 'variables',
-      7 => 'schema',
-      8 => 'filter_format:en'
+    $inputs = array(
+      6 => array('variables', NULL),
+      7 => array('schema', NULL),
+      8 => array('system.filter', 'config'),
     );
-    $key = $key_map[UNISH_DRUPAL_MAJOR_VERSION];
-    $this->drush('cache-get', array($key), $options + array('format' => 'json'));
+    list($key, $bin) = $inputs[UNISH_DRUPAL_MAJOR_VERSION];
+    $this->drush('cache-get', array($key, $bin), $options + array('format' => 'json'));
     $schema = $this->getOutputFromJSON('data');
     $this->assertNotEmpty($schema);
 
