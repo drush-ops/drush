@@ -15,6 +15,8 @@
  */
 function drush_preflight_prepare() {
   define('DRUSH_BASE_PATH', dirname(dirname(__FILE__)));
+  // Local means that autoload.php is inside of Drush. That is, Drush is its own Composer project.
+  // Global means autoload.php is outside of Drush. That is, Drush is a dependency of a bigger project.
   $local_vendor_path = DRUSH_BASE_PATH . '/vendor/autoload.php';
   $global_vendor_path = DRUSH_BASE_PATH . '/../../../vendor/autoload.php';
 
@@ -31,9 +33,7 @@ function drush_preflight_prepare() {
     return FALSE;
   }
 
-  // drush_drupal_load_autoloader() uses require_once.  Is this going to be
-  // a problem if $vendor_path == $drupal_root .'/autoload.php'
-  require $vendor_path;
+  $classloader = require $vendor_path;
 
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
@@ -51,8 +51,9 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/filesystem.inc';
   require_once DRUSH_BASE_PATH . '/includes/dbtng.inc';
 
-  // Cache our vendor path
+  // Stash our vendor path and classloader.
   drush_set_context('DRUSH_VENDOR_PATH', dirname(realpath($vendor_path)));
+  drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
