@@ -49,3 +49,5 @@ Credits
   [Christopher Gervais](http://drupal.org/u/ergonlogic).
 
 ![Drush Logo](drush_logo-black.png)
+
+This is some test.
