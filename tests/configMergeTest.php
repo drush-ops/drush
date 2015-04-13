@@ -67,6 +67,6 @@ class configMergeTest extends CommandUnishTestCase {
   }
 
   protected function createGitRepository($dir) {
-    $this->execute("git init && git add . && git commit -m 'Initial commit.'", CommandUnishTestCase::EXIT_SUCCESS, $dir);
+    $this->execute("git init && git config user.email 'unish@drush.org' && git config user.name 'Unish' && git add . && git commit -m 'Initial commit.'", CommandUnishTestCase::EXIT_SUCCESS, $dir);
   }
 }
