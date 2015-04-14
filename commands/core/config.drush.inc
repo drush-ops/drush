@@ -199,6 +199,7 @@ function config_drush_command() {
     ),
     'examples' => array(
       'drush @dev config-merge @production' => 'Merge configuration changes from the production site with the configuration changes made on the development site.',
+      'drush @dev config-merge /path/to/drupal#sitefolder' => 'Merge configuration changes from the site indicated by the provided site specification.',
     ),
     'topics' => array('docs-cmi'),
   );
@@ -654,7 +655,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   $site_label = $alias;
   // If '$alias' is a 'sites' folder, then convert it into a site
   // specification, root#uri
-  if ($alias[0] != '@') {
+  if (($alias[0] != '@') && is_dir(DRUPAL_ROOT . '/sites/' . $alias)) {
     $alias = DRUPAL_ROOT . "#$alias";
   }
 
