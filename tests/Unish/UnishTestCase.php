@@ -52,7 +52,8 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
   public static function tearDownAfterClass() {
-    if (file_exists(UNISH_SANDBOX) && empty(getenv('UNISH_DIRTY'))) {
+    $dirty = getenv('UNISH_DIRTY');
+    if (file_exists(UNISH_SANDBOX) && empty($dirty)) {
       unish_file_delete_recursive(UNISH_SANDBOX, TRUE);
     }
     self::$sites = array();
