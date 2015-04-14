@@ -429,8 +429,10 @@ function drush_config_export($destination = NULL) {
         }
       }
       if ($format_patch_path) {
-        // TODO: if $format_patch_path === TRUE, then make up a filename for it.
-        // Something that is -not- registered for deletion.
+        // Use a well-known filename if --format-patch is specified without a path.
+        if ($format_patch_path === TRUE) {
+          $format_patch_path = DRUPAL_ROOT . '/config-export.patch';
+        }
         $result = drush_mkdir(dirname($format_patch_path));
         if ($result === FALSE) {
           return FALSE;
@@ -681,6 +683,11 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   if (array_search(FALSE, $result, TRUE) !== FALSE) {
     return FALSE;
   }
+  // If format-patch was specified without a path, then make a temporary file
+  // to hold it in.
+  if ($merge_info['format-patch-remote'] === TRUE) {
+    $merge_info['format-patch-remote'] = drush_tempnam('config-export-patch-');
+  }
 
   // Find the current configuration path
   // TODO: this throws an exception if $config_label does not exist.
@@ -722,9 +729,12 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   // Format patch only works if both sites have the same config path, so look up the
   // remote config path to see if this is the case, and error out if it is not.
   if ($merge_info['format-patch-remote'] || $merge_info['git-transport']) {
-    $values = drush_invoke_process($merge_info['live-site'], 'drupal-directory', array('config-' . $merge_info['config-label']));
-    if ($configuration_path != trim($values['output'])) {
-      return drush_set_error('CONFIG_MERGE_INCOMPATIBLE_PATHS', dt("The --git and --format-patch options only work when the configuration path is the same on the source and destination sites.  On your source site, the configuration path is !remote; on the target site, it was !local.  You must use the default transport mechanism (rsync).", array('!remote' => $values['output'], '!local' => $configuration_path)));
+    $configdir_values = drush_invoke_process($merge_info['live-site'], 'drupal-directory', array('config-' . $merge_info['config-label']));
+    $rootdir_values = drush_invoke_process($merge_info['live-site'], 'drupal-directory', array());
+    // n.b. $configuration_path is a relative path, whereas drupal-directory will give us
+    // an absolute path.  We therefore compare only the ends of the strings.
+    if ($configuration_path != substr(trim($configdir_values['output']), -strlen($configuration_path))) {
+      return drush_set_error('CONFIG_MERGE_INCOMPATIBLE_PATHS', dt("The --git and --format-patch options only work when the configuration path is the same on the source and destination sites.  On your source site, the configuration path is !remote; on the target site, it was !local.  You must use the default transport mechanism (rsync).", array('!remote' => $configdir_values['output'], '!local' => $configuration_path)));
     }
   }
 
@@ -763,7 +773,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     // (and nowhere else).
     $result = drush_shell_cd_and_exec($configuration_path, 'git pull %s %s', $merge_info['remote'], $merge_info['live-config']);
     if (!$result) {
-      return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git pull` failed."));
+      return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git pull` failed.  Output:\n\n!output", array('!output' => implode("\n", drush_shell_exec_output()))));
     }
     $result = drush_shell_cd_and_exec($configuration_path, 'git checkout %s', $merge_info['live-config']);
     if (!$result) {
@@ -1016,7 +1026,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   // seems to ignore the --commit option.
   $result = drush_shell_cd_and_exec($configuration_path, 'git merge --no-commit --squash %s', $merge_info['live-config']);
   if (!$result) {
-    return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git merge --squash` failed."));
+    return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git merge --squash` failed.  Output:\n\n!output", array('!output' => implode("\n", drush_shell_exec_output()))));
   }
 
   // Re-import the merged changes into the database for the local site.

@@ -21,7 +21,7 @@ class configMergeTest extends CommandUnishTestCase {
    *
    * General handling of site aliases will be in sitealiasTest.php.
    */
-  public function testConfigMerge() {
+  public function testConfigMergeMultisite() {
     if (UNISH_DRUPAL_MAJOR_VERSION != 8) {
       $this->markTestSkipped('config-merge only works with Drupal 8.');
       return;
@@ -55,6 +55,9 @@ class configMergeTest extends CommandUnishTestCase {
     // Make a git repository
     $this->createGitRepository($this->webroot());
 
+    // 'config-merge' only supports 'rsync' for mutisites, so that is all we
+    // are going to test here.
+
     // Make a configuration change on 'stage' site
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $stage_options);
 
@@ -64,6 +67,101 @@ class configMergeTest extends CommandUnishTestCase {
     // Verify that the configuration change we made on 'stage' now exists on 'dev'
     $this->drush('config-get', array('system.site', 'name'), $dev_options);
     $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config set, merged and fetched.');
+  }
+
+  public function testConfigMergeSeparateSites() {
+    if (UNISH_DRUPAL_MAJOR_VERSION != 8) {
+      $this->markTestSkipped('config-merge only works with Drupal 8.');
+      return;
+    }
+
+    // Pass $separate_roots TRUE to install each site in a different directory
+    $sites = $this->setUpDrupal(2, TRUE, UNISH_DRUPAL_MAJOR_VERSION, NULL, TRUE);
+
+    $dev_options = array(
+      'root' => $this->webroot('dev'),
+      'uri' => 'default',
+      'yes' => NULL,
+    );
+
+    $stage_options = array(
+      'root' => $this->webroot('stage'),
+      'uri' => 'default',
+      'yes' => NULL,
+      'tool' => '0',
+      'strict' => '0',
+    );
+
+    // Both sites must be based off of the same install; otherwise, the uuids
+    // for the initial configuration items will not match, which will cause
+    // problems.
+    $this->drush('sql-sync', array('@self', '@stage'), $dev_options);
+
+    // Export initial configuration
+    $this->drush('config-export', array(), $dev_options);
+    $this->drush('config-export', array(), $stage_options);
+
+    // Write a .gitignore file for each site, to ignore settings.php.
+    foreach (array_keys($sites) as $site) {
+      file_put_contents($this->webroot($site) . '/.gitignore', "sites/default/settings.php\nsites/default/files/php");
+    }
+    // Make a git repository for the dev site.
+    $this->createGitRepository($this->webroot('dev'));
+
+    // We have to check out the files in the 'stage' site from
+    // the git repository of the 'dev' site so that we can
+    // use git to transfer configuration.  To do this, we will
+    // first save the settings.php file from the stage site,
+    // then we will do the checkout, and replace settings.php.
+    $stage_settings = file_get_contents($this->webroot('stage') . '/sites/default/settings.php');
+    unish_file_delete_recursive($this->webroot('stage'), TRUE);
+    // make a bare repository, push the dev site up to it, and clone from there.
+    $master_repo = dirname($this->webroot('dev')) . '/config-merge.git';
+    mkdir($master_repo, 0777, TRUE);
+    $this->execute("git init --bare", CommandUnishTestCase::EXIT_SUCCESS, $master_repo);
+    $this->execute("git remote add origin file://" . $master_repo . " && git push origin master", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
+    $this->execute("git clone file://" . $master_repo . " " . $this->webroot('stage'));
+    file_put_contents($this->webroot('stage') . '/sites/default/settings.php', $stage_settings);
+
+    // Part one:  test config-merge using the git push / pull mechanism
+
+    // Get the last commit hash
+    $this->execute("git log --pretty=format:%h -1", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
+    $base = $this->getOutput();
+
+    // Make a configuration change on 'stage' site
+    $this->drush('config-set', array('system.site', 'name', 'git'), $stage_options);
+
+    // Run config-merge to copy the configuration change to the 'dev' site
+    $this->drush('config-merge', array('@stage'), $dev_options + array('git' => NULL, 'base' => $base));
+
+    // Verify that the configuration change we made on 'stage' now exists on 'dev'
+    $this->drush('config-get', array('system.site', 'name'), $dev_options);
+    $this->assertEquals("'system.site:name': git", $this->getOutput(), 'Config set, merged and fetched via git.');
+
+    // Part two:  test config-merge using the format-patch mechanism
+
+    // Make a configuration change on 'stage' site
+    $this->drush('config-set', array('system.site', 'name', 'format_patch'), $stage_options);
+
+    // Run config-merge to copy the configuration change to the 'dev' site
+    $this->drush('config-merge', array('@stage'), $dev_options + array('format-patch' => NULL));
+
+    // Verify that the configuration change we made on 'stage' now exists on 'dev'
+    $this->drush('config-get', array('system.site', 'name'), $dev_options);
+    $this->assertEquals("'system.site:name': format_patch", $this->getOutput(), 'Config set, merged and fetched via format-patch.');
+
+    // Part three:  test config-merge using the rsync mechanism
+
+    // Make a configuration change on 'stage' site
+    $this->drush('config-set', array('system.site', 'name', 'config_test'), $stage_options);
+
+    // Run config-merge to copy the configuration change to the 'dev' site
+    $this->drush('config-merge', array('@stage'), $dev_options);
+
+    // Verify that the configuration change we made on 'stage' now exists on 'dev'
+    $this->drush('config-get', array('system.site', 'name'), $dev_options);
+    $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config set, merged and fetched via rsync.');
   }
 
   protected function createGitRepository($dir) {
