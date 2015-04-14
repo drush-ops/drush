@@ -300,7 +300,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
     $root = $this->webroot($env);
     $uri = $separate_roots ? "default" : "$env";
-    return fetchInstallDrupalSite($env, $root, $uri, $install, $version_string, $profile);
+    return $this->fetchInstallDrupalSite($env, $root, $uri, $install, $version_string, $profile);
   }
 
   function fetchInstallDrupalSite($env, $root, $uri, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
