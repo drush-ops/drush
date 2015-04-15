@@ -328,6 +328,7 @@ function drush_config_export_validate() {
 function drush_config_export($destination = NULL) {
   global $config_directories;
 
+  // Determine which target directory to use.
   if ($target = drush_get_option('destination')) {
     $destination_dir = $target;
   }
@@ -363,7 +364,7 @@ function drush_config_export($destination = NULL) {
     if (!$branch) {
       $branch = $original_branch;
     }
-    else {
+    if ($branch != $original_branch) {
       // Switch to the working branch; create it if it does not exist.
       // We do NOT want to use -B here, as we do NOT want to reset the
       // branch if it already exists.
@@ -374,6 +375,18 @@ function drush_config_export($destination = NULL) {
     }
   }
 
+  // Do the actual config export operation
+  $result = _drush_config_export($destination, $destination_dir, $branch);
+
+  // Regardless of the result of the export, reset to our original branch.
+  if ($branch != $original_branch) {
+    drush_shell_cd_and_exec($destination_dir, 'git checkout %s', $original_branch);
+  }
+
+  return $result;
+}
+
+function _drush_config_export($destination, $destination_dir, $branch) {
   if (count(glob($destination_dir . '/*')) > 0) {
     if (!drush_confirm(dt('The current contents of your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
       return drush_user_abort();
@@ -402,6 +415,8 @@ function drush_config_export($destination = NULL) {
   drush_backend_set_result($destination_dir);
 
   // Commit and push, or add exported configuration if requested.
+  $remote = drush_get_option('push', FALSE);
+  $format_patch_path = drush_get_option('format-patch', FALSE);
   if (drush_get_option('commit') || $remote || $format_patch_path) {
     // There must be changed files at the destination dir; if there are not, then
     // we will skip the commit-and-push step
@@ -452,11 +467,6 @@ function drush_config_export($destination = NULL) {
   }
   elseif (drush_get_option('add')) {
     drush_shell_exec_interactive('git add -p %s', $destination_dir);
-  }
-  // TODO: reset to the original branch on failure?  Many exit points above
-  // that do not get here.
-  if ($branch != $original_branch) {
-    $result = drush_shell_cd_and_exec($destination_dir, 'git checkout %s', $original_branch);
   }
 }
 
