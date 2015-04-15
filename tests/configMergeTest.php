@@ -122,6 +122,7 @@ class configMergeTest extends CommandUnishTestCase {
     $this->execute("git init --bare", CommandUnishTestCase::EXIT_SUCCESS, $master_repo);
     $this->execute("git remote add origin file://" . $master_repo . " && git push origin master", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
     $this->execute("git clone file://" . $master_repo . " " . $this->webroot('stage'));
+    $this->execute("git config user.email 'unish@drush.org' && git config user.name 'Unish'", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('stage'));
     file_put_contents($this->webroot('stage') . '/sites/default/settings.php', $stage_settings);
 
     // Part one:  test config-merge using the git push / pull mechanism
