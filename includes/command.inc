@@ -1021,15 +1021,17 @@ function drush_get_commands($reset = FALSE) {
   foreach ($list as $commandfile => $path) {
     if (drush_command_hook($commandfile, 'drush_command')) {
       $function = $commandfile . '_drush_command';
-      $results = array_merge($results, (array)$function());
+      $items = (array)$function();
+      foreach ($items as $key => $command) {
+        // Add some defaults and normalize the command descriptor.
+        $command += drush_command_defaults($key, $commandfile, $path);
+        $results[$key] = $command;
+      }
     }
   }
   $console_commands = drush_get_context('CONSOLE_APPLICATION_COMMANDS');
   $results = array_merge($results, $console_commands);
   foreach ((array)$results as $key => $command) {
-    // Add some defaults and normalize the command descriptor.
-    $command += drush_command_defaults($key, $commandfile, $path);
-
     // Add engine data.
     drush_merge_engine_data($command);
 
@@ -1061,14 +1063,20 @@ function drush_get_commands($reset = FALSE) {
   return $commands;
 }
 
-function drush_command_defaults($key, $commandfile, $path) {
+  function drush_command_defaults($key, $commandfile, $path) {
+    return array(
+      'commandfile' => $commandfile,
+      'path' => dirname($path),
+      'category' => $commandfile,
+    ) + _drush_command_defaults($key);
+  }
+
+  function _drush_command_defaults($key) {
   $defaults =  array(
     'command' => $key,
     'command-hook' => $key,
     'invoke hooks' => TRUE,
     'callback arguments' => array(),
-    'commandfile' => $commandfile,
-    'path' => dirname($path),
     'engines' => array(), // Helpful for drush_show_help().
     'callback' => 'drush_command',
     'primary function' => FALSE,
@@ -1095,7 +1103,6 @@ function drush_command_defaults($key, $commandfile, $path) {
     'bootstrap_errors' => array(),
     'topics' => array(),
     'hidden' => FALSE,
-    'category' => $commandfile,
   );
   // We end up here, setting the defaults for a command, when
   // called from drush_get_global_options().  Early in the Drush

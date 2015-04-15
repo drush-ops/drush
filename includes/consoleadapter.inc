@@ -142,6 +142,8 @@ function consoleadapter_callback() {
     }
     $argv = array_merge($argv, $drush_args, $options);
 
+    // Console exits, so we'd better tell the shutdown function that that's okay.
+    drush_set_context("DRUSH_EXECUTION_COMPLETED", TRUE);
     $application->run(new ArgvInput($argv));
 }
 
@@ -173,7 +175,10 @@ function consoleadapter_convert_console_commands_to_drush($console_command_list)
             'callback' => 'consoleadapter_callback',
             // We will let the console command bootstrap, since it expects to do that.
             'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-        );
+            'commandfile' => 'core',
+            'path' => FALSE,
+            'category' => 'console',
+        ) + _drush_command_defaults($drush_name);
     }
     return $items;
 }
