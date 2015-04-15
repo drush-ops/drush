@@ -76,7 +76,8 @@ class configMergeTest extends CommandUnishTestCase {
     }
 
     // Pass $separate_roots TRUE to install each site in a different directory
-    $sites = $this->setUpDrupal(2, TRUE, UNISH_DRUPAL_MAJOR_VERSION, NULL, TRUE);
+    $sites = $this->setUpSingleSiteDrupal('dev', TRUE);
+    $sites = $this->setUpSingleSiteDrupal('stage', TRUE);
 
     $dev_options = array(
       'root' => $this->webroot('dev'),

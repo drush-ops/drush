@@ -231,53 +231,37 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return parse_url(UNISH_DB_URL, PHP_URL_SCHEME);
   }
 
-  // TODO: split this into single-site and multisite methods -- restore setupDrupal() to its old function signature.
-  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
+  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
     $root = $this->webroot();
     $major_version = substr($version_string, 0, 1);
-
-    if ($separate_roots) {
-      foreach ($sites_subdirs as $subdir) {
-        self::$sites[$subdir]['root'] = $root . "-$subdir";
-      }
-    }
 
     if (!isset($profile)) {
       $profile = $major_version >= 7 ? 'testing' : 'default';
     }
     $db_driver = $this->db_driver(UNISH_DB_URL);
 
-    $cache_keys = array($separate_roots ? 'default' : $num_sites, $install ? 'install' : 'noinstall', $version_string, $profile, $db_driver);
+    $cache_keys = array($num_sites, $install ? 'install' : 'noinstall', $version_string, $profile, $db_driver);
     $source = $this->directory_cache('environments') . '/' . implode('-', $cache_keys) . '.tar.gz';
     if (file_exists($source)) {
       $this->log('Cache HIT. Environment: ' . $source, 'verbose');
-      if ($separate_roots) {
-        foreach ($sites_subdirs as $subdir) {
-          $this->drush('archive-restore', array($source), array('destination' => $this->webroot($subdir), 'overwrite' => NULL, 'db-url' => $this->db_url($subdir)));
-        }
-      }
-      else {
-        $this->drush('archive-restore', array($source), array('destination' => $root, 'overwrite' => NULL));
-      }
+      $this->drush('archive-restore', array($source), array('destination' => $root, 'overwrite' => NULL));
     }
     else {
       $this->log('Cache MISS. Environment: ' . $source, 'verbose');
       // Build the site(s), install (if needed), then cache.
       foreach ($sites_subdirs as $subdir) {
-        $this->fetchInstallDrupal($subdir, $install, $version_string, $profile, $separate_roots);
+        $this->fetchInstallDrupal($subdir, $install, $version_string, $profile);
       }
       // Write an empty sites.php if we are on D8+. Needed for multi-site.
-      if (!$separate_roots) {
-        if ($major_version >= 8 && !file_exists($root . '/sites/sites.php')) {
-          copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
-        }
+      if ($major_version >= 8 && !file_exists($root . '/sites/sites.php')) {
+        copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
       }
       $options = array(
         'destination' => $source,
-        'root' => $this->webroot("dev"),
-        'uri' => $separate_roots ? 'default' : reset($sites_subdirs),
+        'root' => $root,
+        'uri' => reset($sites_subdirs),
         'overwrite' => NULL,
       );
       if ($install) {
@@ -287,15 +271,58 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
     // Stash details about each site.
     foreach ($sites_subdirs as $subdir) {
-      $uri = $separate_roots ? "default" : $subdir;
-      self::$sites[$subdir]['db_url'] = $this->db_url($subdir);
-      self::$sites[$subdir]['uri'] = $uri;
+      self::$sites[$subdir] = array(
+        'db_url' => $this->db_url($subdir),
+      );
       // Make an alias for the site
-      $alias_definition = array($subdir => array('root' => $this->webroot($subdir),  'uri' => $uri));
+      $alias_definition = array($subdir => array('root' => $root,  'uri' => $subdir));
       file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $subdir . '.alias.drushrc.php', $this->unish_file_aliases($alias_definition));
     }
     return self::$sites;
   }
+
+  function setUpSingleSiteDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
+    $root = $this->webroot() . "-$env";
+    $uri = 'default';
+    $major_version = substr($version_string, 0, 1);
+    self::$sites[$env]['root'] = $root;
+
+    if (!isset($profile)) {
+      $profile = $major_version >= 7 ? 'testing' : 'default';
+    }
+    $db_driver = $this->db_driver(UNISH_DB_URL);
+
+    $cache_keys = array('default', $install ? 'install' : 'noinstall', $version_string, $profile, $db_driver);
+    $source = $this->directory_cache('environments') . '/' . implode('-', $cache_keys) . '.tar.gz';
+    if (file_exists($source)) {
+      $this->log('Cache HIT. Environment: ' . $source, 'verbose');
+      $this->drush('archive-restore', array($source), array('destination' => $this->webroot($env), 'overwrite' => NULL, 'db-url' => $this->db_url($env)));
+    }
+    else {
+      $this->log('Cache MISS. Environment: ' . $source, 'verbose');
+      // Build the site, install (if needed), then cache.
+      $this->fetchInstallDrupalSite($env, $root, $uri, $install, $version_string, $profile);
+      $options = array(
+        'destination' => $source,
+        'root' => $root,
+        'uri' => $uri,
+        'overwrite' => NULL,
+      );
+      if ($install) {
+        $this->drush('archive-dump', array('@sites'), $options);
+      }
+    }
+
+    // Stash details about the site.
+    self::$sites[$env]['db_url'] = $this->db_url($env);
+    self::$sites[$env]['uri'] = $uri;
+    // Make an alias for the site
+    $alias_definition = array($env => array('root' => $root,  'uri' => $uri));
+    file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $env . '.alias.drushrc.php', $this->unish_file_aliases($alias_definition));
+
+    return self::$sites;
+  }
+
 
   function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
     $root = $this->webroot($env);
