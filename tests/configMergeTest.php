@@ -223,10 +223,45 @@ class configMergeTest extends CommandUnishTestCase {
     $this->drush('config-get', array('system.site', 'name'), $dev_options);
     $this->assertEquals("'system.site:name': config_test_2", $this->getOutput(), 'Config set, merged and fetched via rsync.');
 
-    $this->execute("git reset --hard", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
 
-
-
+    // Finally, make sure that we have all of the commits we should
+    // in the 'dev' site
+    $this->execute("git log", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
+    // First, we remove blank lines, and lines that do not begin with a space.
+    // This gets rid of all of the header lines, like "commit" and "Date:" that
+    // contain variable data.
+    $outputList = array_filter($this->getOutputAsList(),
+      function($line) {
+        if (empty($line)) {
+          return FALSE;
+        }
+        return ($line[0] == ' ');
+      });
+    // Next, convert all runs of spaces into a single space, and trim.
+    $outputList = array_map(
+      function($line) {
+        return trim(preg_replace("/  */", " ", $line));
+      }, $outputList);
+    // Test to see if the compressed result matches our expectations.
+    $this->assertEquals("Merged configuration from @stage in config_test_2
+Collection Config Operation
+system.site update
+Merged configuration from @stage in config_test
+Collection Config Operation
+system.site update
+Merged configuration from @stage in format_patch-2
+Collection Config Operation
+system.site update
+Merged configuration from @stage in format_patch
+Collection Config Operation
+system.site update
+Exported configuration.
+Collection Config Operation
+system.site update
+Exported configuration.
+Collection Config Operation
+system.site update
+Initial commit.", implode("\n", $outputList));
   }
 
   protected function createGitRepository($dir) {

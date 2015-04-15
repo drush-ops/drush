@@ -387,8 +387,37 @@ function drush_config_export($destination = NULL) {
 }
 
 function _drush_config_export($destination, $destination_dir, $branch) {
+  $commit = drush_get_option('commit');
+  $comment = drush_get_option('message', FALSE);
+  if (!$comment) {
+    $comment = "Exported configuration.";
+  }
   if (count(glob($destination_dir . '/*')) > 0) {
-    if (!drush_confirm(dt('The current contents of your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
+    // Retrieve a list of differences between the active and target configuration (if any).
+    $target_storage = new FileStorage($destination_dir);
+    /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+    $active_storage = Drupal::service('config.storage');
+    $config_comparer = new StorageComparer($active_storage, $target_storage, Drupal::service('config.manager'));
+    if (!$config_comparer->createChangelist()->hasChanges()) {
+      return drush_log(dt('There are no changes to export.'), 'ok');
+    }
+
+    drush_print("The following configuration changes have been made since the last export:\n");
+    $change_list = array();
+    foreach ($config_comparer->getAllCollectionNames() as $collection) {
+      $change_list[$collection] = $config_comparer->getChangelist(NULL, $collection);
+    }
+    // Print a table with changes in color, then re-generate again without
+    // color to place in the commit comment.
+    _drush_print_config_changes_table($change_list);
+    $tbl = _drush_format_config_changes_table($change_list);
+    $output = $tbl->getTable();
+    if (!stristr(PHP_OS, 'WIN')) {
+      $output = str_replace("\r\n", PHP_EOL, $output);
+    }
+    $comment .= "\n\n$output";
+
+    if (!$commit && !drush_confirm(dt('The current contents of your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
       return drush_user_abort();
     }
     // Only delete .yml files, and not .htaccess or .git.
@@ -417,7 +446,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   // Commit and push, or add exported configuration if requested.
   $remote = drush_get_option('push', FALSE);
   $format_patch_path = drush_get_option('format-patch', FALSE);
-  if (drush_get_option('commit') || $remote || $format_patch_path) {
+  if ($commit || $remote || $format_patch_path) {
     // There must be changed files at the destination dir; if there are not, then
     // we will skip the commit-and-push step
     $result = drush_shell_cd_and_exec($destination_dir, 'git status --porcelain .');
@@ -430,11 +459,8 @@ function _drush_config_export($destination, $destination_dir, $branch) {
       if (!$result) {
         return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git add -A` failed."));
       }
-      $comment = drush_get_option('message', FALSE);
-      if (!$comment) {
-        $comment = "Default cex comment."; // TODO: do it better.
-      }
-      $result = drush_shell_cd_and_exec($destination_dir, 'git commit -m %s', $comment);
+      $comment_file = drush_save_data_to_temp_file($comment);
+      $result = drush_shell_cd_and_exec($destination_dir, 'git commit --file=%s', $comment_file);
       if (!$result) {
         return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git commit` failed.  Output:\n\n!output", array('!output' => implode("\n", drush_shell_exec_output()))));
       }
@@ -706,7 +732,6 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   }
 
   // Find the current configuration path
-  // TODO: this throws an exception if $config_label does not exist.
   $configuration_path = config_get_config_directory($merge_info['config-label']);
   $merge_info['configuration_path'] = $configuration_path;
 
@@ -774,6 +799,11 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     $export_options['remote'] = $merge_info['remote'];
     $export_options['branch'] = $merge_info['live-config'];
   }
+
+  // Make a temporary copy of our configuration directory, so that we
+  // can record what changed after calling config-export and merging.
+  $original_configuration_files = drush_tempdir() . '/original';
+  drush_copy_dir($configuration_path, $original_configuration_files, FILE_EXISTS_OVERWRITE);
 
   // Run config-export on the live site.
   $values = drush_invoke_process($merge_info['live-site'], 'config-export', array($merge_info['config-label']), $export_options);
@@ -943,7 +973,6 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     }
     // Check to see if any line in the output starts with 'UU'.
     // This means "both sides updated" -- i.e. a conflict.
-    // TODO: Are there other patterns that also mean conflict?
     $conflicting_configuration_changes = drush_shell_exec_output();
     $conflicting_files = array_reduce(
       $conflicting_configuration_changes,
@@ -1067,11 +1096,32 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   if (!empty($files_changed_by_merge)) {
     if ($merge_info['commit']) {
       if (empty($merge_info['message'])) {
-        // TODO: we could probably make a better default commmit.  'dev-site' is
-        // likely to be '@self', for example.
-        $merge_info['message'] = dt("Drush config-merge configuraton from sites !live and !dev", array('!live' => $merge_info['live-site'], '!dev' => $merge_info['dev-site']));
+        // The 'dev-site' is probably just '@self', so we'll put the site-name
+        // in the comment, which hopefully will read okay
+        $config = Drupal::config('system.site');
+        $site_name = $config->get('name');
+        $merge_info['message'] = dt("Merged configuration from !live in !site", array('!live' => $merge_info['live-site'], '!site' => $site_name));
+
+        // Retrieve a list of differences between the active and target configuration (if any).
+        $target_storage = new FileStorage($configuration_path);
+        /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+        $active_storage = new FileStorage($original_configuration_files);
+        $config_comparer = new StorageComparer($active_storage, $target_storage, Drupal::service('config.manager'));
+        if ($config_comparer->createChangelist()->hasChanges()) {
+          $change_list = array();
+          foreach ($config_comparer->getAllCollectionNames() as $collection) {
+            $change_list[$collection] = $config_comparer->getChangelist(NULL, $collection);
+          }
+          $tbl = _drush_format_config_changes_table($change_list);
+          $output = $tbl->getTable();
+          if (!stristr(PHP_OS, 'WIN')) {
+            $output = str_replace("\r\n", PHP_EOL, $output);
+          }
+          $merge_info['message'] .= "\n\n$output";
+        }
       }
-      $result = drush_shell_cd_and_exec($configuration_path, 'git commit -m %s', $merge_info['message']);
+      $comment_file = drush_save_data_to_temp_file($merge_info['message']);
+      $result = drush_shell_cd_and_exec($configuration_path, 'git commit --file=%s', $comment_file);
       if (!$result) {
         return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git commit` failed."));
       }
@@ -1202,8 +1252,8 @@ function drush_config_get_value($config_name, $key) {
  * @param array $config_changes
  *   An array of changes keyed by collection.
  */
-function _drush_print_config_changes_table(array $config_changes) {
-  if (drush_get_context('DRUSH_NOCOLOR')) {
+function _drush_format_config_changes_table(array $config_changes, $use_color = FALSE) {
+  if (!$use_color) {
     $red = "%s";
     $yellow = "%s";
     $green = "%s";
@@ -1241,7 +1291,26 @@ function _drush_print_config_changes_table(array $config_changes) {
       }
     }
   }
-  drush_print_table($rows, TRUE);
+  $tbl = _drush_format_table($rows);
+  return $tbl;
+}
+
+/**
+ * Print a table of config changes.
+ *
+ * @param array $config_changes
+ *   An array of changes keyed by collection.
+ */
+function _drush_print_config_changes_table(array $config_changes) {
+  $tbl =  _drush_format_config_changes_table($config_changes, !drush_get_context('DRUSH_NOCOLOR'));
+
+  $output = $tbl->getTable();
+  if (!stristr(PHP_OS, 'WIN')) {
+    $output = str_replace("\r\n", PHP_EOL, $output);
+  }
+
+  drush_print(rtrim($output));
+  return $tbl;
 }
 
 /**
