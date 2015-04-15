@@ -415,7 +415,7 @@ function drush_config_export($destination = NULL) {
       }
       $result = drush_shell_cd_and_exec($destination_dir, 'git commit -m %s', $comment);
       if (!$result) {
-        return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git commit` failed."));
+        return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git commit` failed.  Output:\n\n!output", array('!output' => implode("\n", drush_shell_exec_output()))));
       }
       if ($remote) {
         // Remote might be FALSE, if --push was not specified, or
