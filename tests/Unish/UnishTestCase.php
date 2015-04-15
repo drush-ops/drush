@@ -282,7 +282,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   function setUpSingleSiteDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
-    $root = $this->webroot() . "-$env";
+    $root = $this->webroot("base") . "-$env";
     $uri = 'default';
     $major_version = substr($version_string, 0, 1);
     self::$sites[$env]['root'] = $root;
