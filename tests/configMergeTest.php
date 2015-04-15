@@ -67,6 +67,16 @@ class configMergeTest extends CommandUnishTestCase {
     // Verify that the configuration change we made on 'stage' now exists on 'dev'
     $this->drush('config-get', array('system.site', 'name'), $dev_options);
     $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config set, merged and fetched.');
+
+    // Make a second configuration change on 'stage' site
+    $this->drush('config-set', array('system.site', 'name', 'second_test'), $stage_options);
+
+    // Run config-merge again to insure that the second pass also works
+    $this->drush('config-merge', array('stage'), $dev_options);
+
+    // Verify that the configuration change we made on 'stage' now exists on 'dev'
+    $this->drush('config-get', array('system.site', 'name'), $dev_options);
+    $this->assertEquals("'system.site:name': second_test", $this->getOutput(), 'Config set, merged and fetched a second time.');
   }
 
   public function testConfigMergeSeparateSites() {
@@ -140,6 +150,19 @@ class configMergeTest extends CommandUnishTestCase {
     // Verify that the configuration change we made on 'stage' now exists on 'dev'
     $this->drush('config-get', array('system.site', 'name'), $dev_options);
     $this->assertEquals("'system.site:name': git", $this->getOutput(), 'Config set, merged and fetched via git.');
+
+
+    // Make a second configuration change on 'stage' site
+    $this->drush('config-set', array('system.site', 'name', 'git-2'), $stage_options);
+
+    // Run config-merge again
+    $this->drush('config-merge', array('@stage'), $dev_options + array('git' => NULL, 'base' => $base));
+
+    // Verify that the configuration change we made on 'stage' now exists on 'dev'
+    $this->drush('config-get', array('system.site', 'name'), $dev_options);
+    $this->assertEquals("'system.site:name': git-2", $this->getOutput(), 'Config set, merged and fetched via git a second time.');
+
+
 
     // Part two:  test config-merge using the rsync mechanism
 
