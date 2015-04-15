@@ -712,6 +712,17 @@ function drush_redispatch_get_options() {
   // If we can parse the current command, then examine all contexts
   // in order for any option that is directly related to the current command
   $command = drush_parse_command();
+  $command_options = drush_get_options_for_command($command);
+  // If --bootstrap-to-first-arg is specified, do not
+  // pass it along to remote commands.
+  unset($options['bootstrap-to-first-arg']);
+
+  return $options;
+}
+
+function drush_get_options_for_command($command)
+{
+  $options = array();
   if (is_array($command)) {
     foreach ($command['options'] as $key => $value) {
       // Strip leading --
@@ -722,10 +733,6 @@ function drush_redispatch_get_options() {
       }
     }
   }
-  // If --bootstrap-to-first-arg is specified, do not
-  // pass it along to remote commands.
-  unset($options['bootstrap-to-first-arg']);
-
   return $options;
 }
 
@@ -1010,40 +1017,43 @@ function drush_get_commands($reset = FALSE) {
   }
 
   $list = drush_commandfile_list();
+  $results = array();
   foreach ($list as $commandfile => $path) {
     if (drush_command_hook($commandfile, 'drush_command')) {
       $function = $commandfile . '_drush_command';
-      $result = $function();
-      foreach ((array)$result as $key => $command) {
-        // Add some defaults and normalize the command descriptor.
-        $command += drush_command_defaults($key, $commandfile, $path);
+      $results = array_merge($results, (array)$function());
+    }
+  }
+  $console_commands = drush_get_context('CONSOLE_APPLICATION_COMMANDS');
+  $results = array_merge($results, $console_commands);
+  foreach ((array)$results as $key => $command) {
+    // Add some defaults and normalize the command descriptor.
+    $command += drush_command_defaults($key, $commandfile, $path);
 
-        // Add engine data.
-        drush_merge_engine_data($command);
+    // Add engine data.
+    drush_merge_engine_data($command);
 
-        // Translate command.
-        drush_command_translate($command);
+    // Translate command.
+    drush_command_translate($command);
 
-        // If the command callback is not 'drush_command', then
-        // copy the callback function to an alternate element
-        // of the command array that will be called when Drush
-        // calls the command function hooks.  Then, set the
-        // callback to drush_command so that the function hooks
-        // will be called.
-        if (($command['callback'] != 'drush_command') && $command['invoke hooks']) {
-          $command['primary function'] = $command['callback'];
-          $command['callback'] = 'drush_command';
-        }
+    // If the command callback is not 'drush_command', then
+    // copy the callback function to an alternate element
+    // of the command array that will be called when Drush
+    // calls the command function hooks.  Then, set the
+    // callback to drush_command so that the function hooks
+    // will be called.
+    if (($command['callback'] != 'drush_command') && $command['invoke hooks']) {
+      $command['primary function'] = $command['callback'];
+      $command['callback'] = 'drush_command';
+    }
 
-        $commands[$key] = $command;
-        // For every alias, make a copy of the command and store it in the command list
-        // using the alias as a key
-        if (isset($command['aliases']) && count($command['aliases'])) {
-          foreach ($command['aliases'] as $alias) {
-            $commands[$alias] = $command;
-            $commands[$alias]['is_alias'] = TRUE;
-          }
-        }
+    $commands[$key] = $command;
+    // For every alias, make a copy of the command and store it in the command list
+    // using the alias as a key
+    if (isset($command['aliases']) && count($command['aliases'])) {
+      foreach ($command['aliases'] as $alias) {
+        $commands[$alias] = $command;
+        $commands[$alias]['is_alias'] = TRUE;
       }
     }
   }
