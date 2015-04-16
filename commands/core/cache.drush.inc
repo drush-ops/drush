@@ -263,6 +263,12 @@ function drush_cache_rebuild() {
     return TRUE;
   }
   chdir(DRUPAL_ROOT);
+
+  // Clear the APC cache to ensure APC class loader is reset.
+  if (function_exists('apc_fetch')) {
+    apc_clear_cache('user');
+  }
+
   $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
   require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
@@ -285,9 +291,5 @@ function drush_cache_rebuild() {
   // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
   // the Drush cache as well, for consistency with that behavior.
   drush_cache_clear_drush();
-
-  // Clears the render cache.
-  drush_include_engine('drupal', 'cache');
-  drush_cache_clear_render();
 }
 
