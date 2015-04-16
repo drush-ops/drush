@@ -167,22 +167,19 @@ function drush_preflight() {
   _drush_preflight_base_environment();
 
   // Setup global alias_paths[] in context system.
-  if (!drush_get_option('local')) {
-    _drush_preflight_alias_path();
-  }
-  if (!drush_get_option('local')) {
-    // Load a drushrc.php file in the drush.php's directory.
-    drush_load_config('drush');
+  _drush_preflight_alias_path();
 
-    // Load a drushrc.php file in the $ETC_PREFIX/etc/drush directory.
-    drush_load_config('system');
+  // Load a drushrc.php file in the drush.php's directory.
+  drush_load_config('drush');
 
-    // Load a drushrc.php file at ~/.drushrc.php.
-    drush_load_config('user');
+  // Load a drushrc.php file in the $ETC_PREFIX/etc/drush directory.
+  drush_load_config('system');
 
-    // Load a drushrc.php file in the ~/.drush directory.
-    drush_load_config('home.drush');
-  }
+  // Load a drushrc.php file at ~/.drushrc.php.
+  drush_load_config('user');
+
+  // Load a drushrc.php file in the ~/.drush directory.
+  drush_load_config('home.drush');
 
   // Load a custom config specified with the --config option.
   drush_load_config('custom');
@@ -386,7 +383,7 @@ function _drush_find_commandfiles_drush() {
     }
   }
 
-  if (!drush_get_option('local')) {
+  if (!drush_get_option('site-local')) {
     // System commands, residing in $SHARE_PREFIX/share/drush/commands
     $share_path = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
     if (is_dir($share_path)) {
@@ -462,7 +459,7 @@ function drush_preflight_command_dispatch() {
   $command_name = array_shift($args);
   $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
   $local_drush = drush_get_option('drush-script');
-  $is_local = drush_get_option('local');
+  $is_local = drush_get_option('site-local');
   $values = NULL;
   if (!empty($root) && !empty($local_drush) && empty($is_local)) {
     if (!drush_is_absolute_path($local_drush)) {
@@ -476,7 +473,7 @@ function drush_preflight_command_dispatch() {
       $uri = drush_get_context('DRUSH_SELECTED_URI');
       $aditional_options = array(
         'root' => $root,
-        'local' => TRUE,
+        'site-local' => TRUE,
       );
       if (!empty($uri)) {
         $aditional_options['uri'] = $uri;
